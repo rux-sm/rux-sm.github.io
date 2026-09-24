@@ -4237,6 +4237,10 @@
     { kind: 'other', label: 'Other', item: '', description: '' },
   ];
   const lineKind = kind => LINE_KINDS.find(k => k.kind === kind) ?? LINE_KINDS.at(-1);
+  // What the Route tab's stop dialog does on Done, set each time it opens.
+  let stopDone = null;
+  document.getElementById('scheduler-stop-done')?.addEventListener('click', () => stopDone?.());
+
   let linePending = [];
   let redrawLines = () => {};
   let lineEditing = null;
@@ -4743,31 +4747,17 @@
       depart_prev: yardOut, depart_prev_date: yardOut ? earlier(yardOut, spot, spotDate ?? from) : null,
       ...driveCols(r.pickup, drive, r.driveMiles, r.driveSource),
     };
-    /* The destination's two times, when the stops section asked for them. They
-       split the middle in two: the first stop is where the group spends the
-       day and holds its arrival and what that waiting counts as, the last is
-       where the group is let off and holds its return. Without them the
-       middle stays the one row it is, and `arrive` on it is left alone. */
-    const destArrive = v('scheduler-f-destarrive'), destDepart = v('scheduler-f-destdepart');
-    const destPair = !!(destArrive && destDepart);
-    const first = {
-      depart_prev: leave, depart_prev_date: leave ? from : null,
-      ...(destPair ? {
-        arrive: destArrive, arrive_date: from,
-        dwell_status: document.getElementById('scheduler-f-dwell')?.value || 'on',
-      } : {}),
-    };
-    const drop = round && !destPair ? null : {
+    const first = { depart_prev: leave, depart_prev_date: leave ? from : null };
+    const drop = round ? null : {
       ...(r.dropPlace !== r.dropOpen ? r.dropPlace ?? placeOf({}) : {}),
       arrive: end, arrive_date: end ? to : null,
-      ...(destPair ? { depart_prev: destDepart, depart_prev_date: to } : {}),
     };
     const ret = {
       depart_prev: end, depart_prev_date: end ? to : null,
       arrive: yardBack, arrive_date: yardBack ? (end && toMin(yardBack) < toMin(end) ? dayAfter(to, 1) : to) : null,
       ...driveCols(r.back, driveBack, r.backMiles, r.backSource),
     };
-    return { pickup, first, drop, ret, destPair };
+    return { pickup, first, drop, ret };
   }
 
   // Whether a stored value and a wanted one are the same, times cut to HH:MM
@@ -4800,6 +4790,7 @@
     const r = editing?.route;
     const wanted = routeWanted();
     if (!r || !wanted) return { updates: [], inserts: [], work: false };
+    if (r.listTouched && r.pickup && r.back) return listRoutePlan(wanted);
     const { from, to } = routeDates(r.leg);
     const datesMoved = !same(from, r.from) || !same(to, r.to);
     const updates = [];
@@ -4818,17 +4809,7 @@
        leaves for is its drop-off, so a leg with no stops gets one row that is
        both, and a leg with one stop has it hold both. */
     const destination = () => document.getElementById('scheduler-f-destination')?.value.trim() || null;
-    if (wanted.destPair) {
-      /* The destination's two times split the middle in two: the first stop
-         keeps the destination and gains the group's arrival there, and the
-         drop-off becomes a row of its own before the return. A leg that
-         already has both stops has each hold its own half. */
-      plan(r.first, wanted.first, want => ({ at: 'after-pickup', row: { type: 'stop', name: destination(), ...want } }));
-      const held = r.drop && r.drop !== r.first ? r.drop : null;
-      const place = held ? {} : { name: r.dropPlace?.name ?? null, address: r.dropPlace?.address ?? null,
-                                  lat: r.dropPlace?.lat ?? null, lng: r.dropPlace?.lng ?? null };
-      plan(held, wanted.drop, want => ({ at: 'before-return', row: { type: 'stop', ...place, ...want } }));
-    } else if (!wanted.drop) {
+    if (!wanted.drop) {
       plan(r.first, wanted.first, want => ({ at: 'after-pickup', row: { type: 'stop', name: destination(), ...want } }));
     } else if (!r.first || r.first === r.drop) {
       plan(r.first, { ...wanted.first, ...wanted.drop }, want => ({ at: 'after-pickup', row: { type: 'stop', ...want } }));
@@ -4842,12 +4823,130 @@
     return { updates, inserts, work: !!(updates.length || inserts.length) };
   }
 
+  /* ── The full itinerary ──
+     The Route tab's list of the stops between the pickup and where the group
+     is let off, each a place, when the group gets there and leaves, and what
+     the wait counts as. Once the list is touched, Save writes the leg's rows
+     in the list's order: each stop takes the place a stop held, day and
+     sleeper rows keep theirs, and a new stop goes after the last one. A
+     stop's leave time is kept where rux-ui keeps it, as the next row's
+     `depart_prev`, so the first stop holds when the group departs the pickup
+     and the drop-off holds when it leaves the last stop. A round trip gets a
+     drop-off row, back at the pickup, only once its last stop has a leave
+     time. The leg's `position`s are renumbered from its first, and a leg
+     that grows moves the other leg's rows down, since rux-ui orders a trip's
+     stops by `position` across both legs. */
+  function listRoutePlan(wanted) {
+    const r = editing.route;
+    const { from, to } = routeDates(r.leg);
+    const datesMoved = !same(from, r.from) || !same(to, r.to);
+    const v = id => document.getElementById(id)?.value.trim() || null;
+    const leave = v('scheduler-f-leave'), end = v('scheduler-f-endtrip');
+    const round = routeRound();
+    const list = r.list;
+    const departs = [leave, ...list.map(st => st.leave)];
+    const departDays = [leave ? from : null, ...list.map(st => (st.leave ? st.date ?? from : null))];
+    const drives = (min, miles) => ({ drive: driveText(min), miles: min == null ? null : miles,
+      drive_source: min == null ? null : 'estimated', miles_source: min == null ? null : 'estimated' });
+    const placeCols = p => ({ name: p?.name ?? null, address: p?.address ?? null,
+      lat: p?.lat ?? null, lng: p?.lng ?? null, mapbox_id: p?.mapbox_id ?? null });
+
+    const stopWant = (st, i) => ({
+      ...(st.placeChanged || !st.id ? placeCols(st.place) : {}),
+      arrive: st.arrive, arrive_date: st.arrive ? st.date ?? from : null,
+      depart_prev: departs[i], depart_prev_date: departDays[i],
+      dwell_status: st.dwell || null,
+      ...(st.driveChanged || !st.id ? drives(st.drive, st.miles) : {}),
+    });
+    const needDrop = !round || !!(list.length && list.at(-1).leave);
+    const dropWant = () => ({
+      ...(!r.dropRow ? placeCols(round ? r.pickupPlace : r.dropPlace)
+        : !round && r.dropPlace !== r.dropOpen ? placeCols(r.dropPlace) : {}),
+      arrive: end, arrive_date: end ? to : null,
+      depart_prev: departs[list.length], depart_prev_date: departDays[list.length],
+      ...(r.dropDrive != null && !same(driveText(r.dropDrive), r.dropRow?.drive ?? null)
+        ? drives(r.dropDrive, r.dropMiles) : {}),
+    });
+
+    const legRows = r.all.filter(x => x.leg === r.leg).sort((a, b) => a.position - b.position);
+    const middleIds = new Set(r.middleOpen.map(st => String(st.id)));
+    const keptIds = new Set(list.filter(st => st.id).map(st => String(st.id)));
+    const deletes = [...middleIds].filter(id => !keptIds.has(id));
+    const dropId = r.dropRow ? String(r.dropRow.id) : null;
+
+    const queue = list.map((st, i) => ({ stop: st, i }));
+    const seq = [];
+    let flushed = false;
+    const flush = () => {
+      flushed = true;
+      while (queue.length) seq.push(queue.shift());
+      if (needDrop && !r.dropRow) seq.push({ drop: true });
+    };
+    for (const row of legRows) {
+      const id = String(row.id);
+      if (middleIds.has(id)) {
+        if (queue.length) seq.push(queue.shift());
+        continue;
+      }
+      if (!flushed && (id === dropId || row.type === 'return')) flush();
+      seq.push({ row });
+    }
+    if (!flushed) flush();
+
+    const start = legRows[0].position;
+    const delta = seq.length - legRows.length;
+    const updates = [];
+    const inserts = [];
+    if (delta) {
+      const last = legRows.at(-1).position;
+      for (const x of r.all.filter(x => x.leg !== r.leg && x.position > last)) {
+        updates.push({ id: x.id, patch: { position: x.position + delta } });
+      }
+    }
+    seq.forEach((item, i) => {
+      const position = start + i;
+      if (item.drop) { inserts.push({ position, row: { type: 'stop', ...dropWant() } }); return; }
+      if (item.stop && !item.stop.id) {
+        inserts.push({ position, row: { type: 'stop', ...stopWant(item.stop, item.i) } }); return;
+      }
+      const id = String(item.stop ? item.stop.id : item.row.id);
+      const open = item.stop ? item.stop.open
+        : id === dropId ? r.dropRow
+        : id === String(r.pickup.id) ? r.pickup
+        : id === String(r.back.id) ? r.back : null;
+      const want = item.stop ? stopWant(item.stop, item.i)
+        : id === dropId ? dropWant()
+        : id === String(r.pickup.id) ? wanted.pickup
+        : id === String(r.back.id) ? wanted.ret : {};
+      const patch = open ? rowPatch(open, want, datesMoved) : {};
+      const was = legRows.find(x => String(x.id) === id)?.position;
+      if (was !== position) patch.position = position;
+      if (Object.keys(patch).length) updates.push({ id, patch });
+    });
+    return { updates, inserts, deletes, explicit: true,
+             work: !!(updates.length || inserts.length || deletes.length) };
+  }
+
   /* Writes the plan. A new row takes its place by moving the rows at and
      after it one down, since rux-ui orders a trip's stops by `position`
-     across both legs. */
+     across both legs. A list plan names every row's place itself. */
   async function saveRoute(tripId, write) {
     const r = editing?.route;
-    const { updates, inserts } = routePlan();
+    const planned = routePlan();
+    if (planned.explicit) {
+      for (const id of planned.deletes) {
+        await write('its route', client.from('trip_stops').delete().eq('id', id));
+      }
+      for (const u of planned.updates) {
+        await write('its route', client.from('trip_stops').update(u.patch).eq('id', u.id));
+      }
+      for (const ins of planned.inserts) {
+        await write('its route', client.from('trip_stops')
+          .insert({ trip_id: tripId, leg: r.leg, position: ins.position, ...ins.row }));
+      }
+      return;
+    }
+    const { updates, inserts } = planned;
     for (const u of updates) {
       await write('its route', client.from('trip_stops').update(u.patch).eq('id', u.id));
     }
@@ -5389,7 +5488,13 @@
       const r = editing.route;
       /* The drop-off defaults to the pickup, which is what a round trip
          means. `routeWanted` writes a drop-off row only when the two places
-         differ, so a round trip's rows stay exactly as rux-ui left them. */
+         differ, so a round trip's rows stay exactly as rux-ui left them. A
+         trip typed as a round trip is let off at its pickup whatever its last
+         stop is, so that stop reads as a stop in the full itinerary rather
+         than as where the group is let off. */
+      if (document.getElementById('scheduler-f-type')?.value === 'round_trip' && r.pickupPlace) {
+        r.dropOpen = r.dropPlace = { ...r.pickupPlace };
+      }
       if (!r.dropPlace && r.pickupPlace) r.dropPlace = { ...r.pickupPlace };
       // A line under a field, hidden while it has nothing to say.
       const note = text => {
@@ -5626,60 +5731,182 @@
          Closed, always, however full: a trip nobody opens it for is one line
          taller than today, which is what keeps the tab a minute's work. The
          heading says what is inside, so a press is never a surprise. */
+      /* The stops as a list, in the order the group reaches them. The row
+         where the group is let off is not one of them: a one-way trip's is its
+         last stop, which the fields above edit, and a round trip's is a row
+         back at the pickup, which Save makes once the last stop has a leave
+         time. A stop leaves when the next row says it departs. */
       const inner = r.inner ?? [];
-      const hasPair = inner.length > 1;
-      const between = hasPair ? inner.slice(1, -1) : [];
-      const stopsBody = el('div', 'rux--stack-vertical rux--stack-scale-6');
+      r.dropRow = !inner.length ? null
+        : !routeRound() ? inner.at(-1)
+        : inner.length > 1 && samePlace(placeOf(inner.at(-1)), r.pickupPlace) ? inner.at(-1) : null;
+      r.middleOpen = r.dropRow ? inner.slice(0, -1) : inner;
+      r.list = r.middleOpen.map((st, i) => ({
+        id: String(st.id), open: st, place: placeOf(st), placeChanged: false,
+        arrive: hhmmOrNull(st.arrive), leave: hhmmOrNull((r.middleOpen[i + 1] ?? r.dropRow)?.depart_prev),
+        date: st.arrive_date ?? st.depart_prev_date ?? null,
+        dwell: st.dwell_status ?? null, drive: driveMin(st.drive), miles: numOrNull(st.miles), driveChanged: false,
+      }));
+      r.listTouched = false;
+      r.dropDrive = r.dropRow ? driveMin(r.dropRow.drive) : null;
+      r.dropMiles = r.dropRow ? numOrNull(r.dropRow.miles) : null;
+
+      const DWELL = { on: 'on duty', off: 'off duty', sleeper: 'sleeper berth' };
+      const stopsBody = el('div', 'rux--stack-vertical rux--stack-scale-5');
+      const stopsList = rowList();
       const totals = el('p', 'rux--form__helper-text scheduler-route-note');
+      // A leg with no rows yet has nowhere to put a stop until it is saved.
+      const canList = !!(r.pickup && r.back);
+      const listNote = note(canList ? '' : 'Save the trip once, then add its stops here.');
+      stopsBody.append(stopsList.list, listNote, totals);
 
-      /* A one-way trip's drop-off is its destination and Group arrives
-         already records it, so only a round trip is asked where the group
-         spends the day. The wait is asked for beside it, because whether it
-         is duty time is what decides if the day is legal to drive. */
-      if (routeRound()) {
-        stopsBody.append(
-          pair(timeField('scheduler-f-destarrive', 'Destination arrives', hasPair ? r.first?.arrive : null),
-               timeField('scheduler-f-destdepart', 'Destination departs', hasPair ? r.drop?.depart_prev : null)),
-          full(selectField('scheduler-f-dwell', 'The wait counts as', r.first?.dwell_status ?? 'on',
-            [['on', 'On duty'], ['off', 'Off duty'], ['sleeper', 'Sleeper berth']])),
-        );
-      }
+      const waitOf = st => {
+        const got = toMin(st.arrive), left = toMin(st.leave);
+        return got != null && left != null && left > got ? left - got : null;
+      };
+      const touch = () => { r.listTouched = true; drawStops(); refreshDirty(); measureStops(); };
 
-      /* Anything past the destination is read-only here. rux-ui's Itinerary
-         tab is the only thing that writes these rows; the driver itinerary in
-         `print.html` only prints them, and this app has no editor for them. */
-      if (between.length) {
-        const list = el('dl', 'scheduler-def scheduler-route-timeline');
-        for (const st of between) {
-          const dd = el('dd');
-          const when = [st.arrive, st.depart_prev].filter(Boolean).map(clock).join(' – ');
-          dd.appendChild(el('span', 'scheduler-route-time', when || '—'));
-          const said = driveWords(driveMin(st.drive), numOrNull(st.miles));
-          if (said) dd.appendChild(el('span', 'scheduler-route-why', said));
-          list.append(el('dt', null, st.name || st.address || 'Stop'), dd);
+      function drawStops() {
+        stopsList.body.replaceChildren();
+        r.list.forEach((st, i) => {
+          const name = st.place?.name || st.place?.address || 'Stop';
+          const much = st.arrive || st.leave
+            ? `${st.arrive ? clock(st.arrive) : '—'} – ${st.leave ? clock(st.leave) : '—'}` : 'No times';
+          const wait = waitOf(st);
+          const drove = driveWords(st.drive, st.miles);
+          const meta = [drove ? `${drove} drive` : null,
+            wait ? `waits ${driveText(wait)} hr${st.dwell ? `, ${DWELL[st.dwell]}` : ''}` : null]
+            .filter(Boolean).join(' · ');
+          // A round trip keeps its destination, which holds when the group
+          // leaves the pickup.
+          const lastOfRound = routeRound() && r.list.length === 1;
+          const move = by => { r.list.splice(i + by, 0, r.list.splice(i, 1)[0]); touch(); };
+          stopsList.body.appendChild(listRow({
+            name, much, meta,
+            title: [name, much, meta].filter(Boolean).join(' · '),
+            edit: () => openStopDialog(i),
+            items: [
+              { label: 'Edit', run: () => openStopDialog(i) },
+              { label: 'Move up', disabled: i === 0, run: () => move(-1) },
+              { label: 'Move down', disabled: i === r.list.length - 1, run: () => move(1) },
+              { label: 'Remove', danger: true, disabled: lastOfRound, run: () => { r.list.splice(i, 1); touch(); } },
+            ],
+          }));
+        });
+        if (canList) {
+          stopsList.body.appendChild(listAddRow({
+            label: 'Add stop', id: 'scheduler-f-stopadd', onClick: () => openStopDialog(null),
+          }).li);
         }
-        stopsBody.append(note("These come from rux-ui's itinerary and are edited there."), list);
+        drawStopsTitle();
+        drawTotals();
       }
-      stopsBody.appendChild(totals);
 
-      /* The day's two totals. Driving is every leg's drive, the yard's two as
-         the tab has them now; on duty is the yard-to-yard span less a wait
-         the driver is off the clock for, which is the passenger rule's own
-         sum and the number that says whether the trip may be run. */
+      /* Every leg of the list is measured, from the stop before it or the
+         pickup, and the leg on to where the group is let off, by the same
+         lookup the yard's two legs use. */
+      async function measureStops() {
+        let prev = r.pickupPlace;
+        for (const st of r.list) {
+          if (prev?.lat != null && st.place?.lat != null) {
+            try {
+              const d = await driveBetween(prev, st.place);
+              if (d && (d.min !== st.drive || d.miles !== st.miles)) {
+                Object.assign(st, { drive: d.min, miles: d.miles, driveChanged: true });
+              }
+            } catch { /* the drive stays as it was */ }
+          }
+          prev = st.place;
+        }
+        const to = routeRound() ? (r.list.at(-1)?.leave ? r.pickupPlace : null) : r.dropPlace;
+        if (to?.lat != null && prev?.lat != null && prev !== to) {
+          try {
+            const d = await driveBetween(prev, to);
+            if (d) { r.dropDrive = d.min; r.dropMiles = d.miles; }
+          } catch { /* the drive stays as it was */ }
+        }
+        drawStops();
+        refreshDirty();
+      }
+
+      /* One stop, edited in a dialog as a quote line is: where, which day on a
+         trip of more than one, when the group gets there and leaves, and what
+         the wait counts as. */
+      function openStopDialog(index) {
+        const host = document.getElementById('scheduler-stop-fields');
+        if (!host) return;
+        const { from, to } = routeDates(r.leg);
+        const st = index === null
+          ? { id: null, open: null, place: null, placeChanged: true, arrive: null, leave: null,
+              date: from, dwell: 'on', drive: null, miles: null, driveChanged: false }
+          : r.list[index];
+        let picked = st.place;
+        document.getElementById('scheduler-stop-h').textContent = index === null ? 'Add stop' : 'Edit stop';
+        const grid = el('div', 'scheduler-dialog-grid');
+        const name = textField('scheduler-f-stopname', 'Location', st.place?.name);
+        name.classList.add('scheduler-dialog-grid__wide');
+        const where = placeSearch('scheduler-f-stopaddr', 'Address', st.place, (place, typed) => {
+          const typedName = document.getElementById('scheduler-f-stopname')?.value.trim() || null;
+          if (place && !typedName) setVal('scheduler-f-stopname', place.name ?? '');
+          picked = place ? { ...place } : (typed ? { ...placeOf({}), address: typed } : null);
+        }, 'address');
+        where.classList.add('scheduler-dialog-grid__wide');
+        const days = [];
+        for (let d = from; d && to && d <= to && days.length < 31; d = dayAfter(d, 1)) days.push(d);
+        const day = days.length > 1
+          ? selectField('scheduler-f-stopday', 'Day', st.date ?? from, days.map((d, n) =>
+            [d, `Day ${n + 1} · ${parseISO(d).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}`]))
+          : null;
+        day?.classList.add('scheduler-dialog-grid__wide');
+        const arrive = timeField('scheduler-f-stoparrive', 'Arrives', st.arrive);
+        const leaveAt = timeField('scheduler-f-stopleave', 'Leaves', st.leave);
+        const dwell = selectField('scheduler-f-stopdwell', 'The wait counts as', st.dwell ?? 'on',
+          [['on', 'On duty'], ['off', 'Off duty'], ['sleeper', 'Sleeper berth']]);
+        dwell.classList.add('scheduler-dialog-grid__wide');
+        grid.append(name, where, ...(day ? [day] : []), arrive, leaveAt, dwell);
+        host.replaceChildren(grid);
+
+        stopDone = () => {
+          const typedName = val('scheduler-f-stopname') || null;
+          const place = picked || typedName
+            ? { ...(picked ?? placeOf({})), name: typedName ?? picked?.name ?? null } : null;
+          // An empty dialog adds nothing, as in the other dialogs.
+          if (!place && !val('scheduler-f-stoparrive') && !val('scheduler-f-stopleave')) {
+            window.Rux?.modal?.close?.('scheduler-stop-modal');
+            return;
+          }
+          const moved = !samePlace(place, st.place) || (place?.name ?? null) !== (st.place?.name ?? null);
+          const next = {
+            ...st, place,
+            placeChanged: st.placeChanged || moved,
+            arrive: val('scheduler-f-stoparrive') || null,
+            leave: val('scheduler-f-stopleave') || null,
+            date: document.getElementById('scheduler-f-stopday')?.value || st.date || from,
+            dwell: document.getElementById('scheduler-f-stopdwell')?.value || null,
+          };
+          if (index === null) r.list.push(next); else r.list[index] = next;
+          window.Rux?.modal?.close?.('scheduler-stop-modal');
+          touch();
+        };
+        window.Rux?.modal?.open?.('scheduler-stop-modal');
+      }
+
+      /* The day's two totals. Driving is every leg's drive: the yard's two as
+         the tab has them now, and each stop's; on duty is the yard-to-yard
+         span less the waits the driver is off the clock for, which is the
+         passenger rule's own sum and says whether the trip may be run. */
       function drawTotals() {
-        const legs = [r.driveOut, ...inner.map(st => driveMin(st.drive)), r.backDrive];
+        const legs = [r.driveOut, ...r.list.map(st => st.drive),
+          ...(r.dropRow || (routeRound() && r.list.at(-1)?.leave) || (!routeRound() && r.list.length) ? [r.dropDrive] : []),
+          r.backDrive];
         const known = legs.filter(m => m != null);
         const drive = known.reduce((n, m) => n + m, 0);
         const out = toMin(val('scheduler-f-depart')), home = toMin(val('scheduler-f-return'));
         let span = out != null && home != null ? home - out : null;
         if (span != null && span < 0) span += 1440;
-        const got = toMin(val('scheduler-f-destarrive')), left = toMin(val('scheduler-f-destdepart'));
-        const waiting = got != null && left != null && left > got ? left - got : 0;
-        const rest = waiting && (val('scheduler-f-dwell') || 'on') !== 'on' ? waiting : 0;
-        /* A leg with no drive on it is named rather than left out of the sum:
-           the tab measures the yard's two legs and nothing between them, so a
-           total that quietly dropped the longest leg of the day would read
-           as though the driver had hours in hand. */
+        const rest = r.list.reduce((n, st) => n + (st.dwell && st.dwell !== 'on' ? waitOf(st) ?? 0 : 0), 0);
+        /* A leg with no drive on it is named rather than left out of the sum,
+           so the total never reads as though the driver had hours in hand. */
         const short = legs.length - known.length;
         const said = [
           short ? `${short === 1 ? 'one leg' : `${short} legs`} not measured, so no driving total`
@@ -5691,16 +5918,14 @@
         totals.hidden = !said;
       }
 
-      /* The heading names the section and then what is in it, and says
-         nothing where there is nothing to say: at the panel's width a longer
-         line wraps to two, which is half the cost of the closed section
-         again. */
+      /* The heading names the section and what is in it: how many stops and
+         the day's miles, which a press on it opens. */
       const stopsSaid = () => {
-        if (between.length) return between.length === 1 ? 'one between' : `${between.length} between`;
-        // How long the bus waits: the one thing the fields above cannot say.
-        const got = toMin(val('scheduler-f-destarrive')), left = toMin(val('scheduler-f-destdepart'));
-        if (got != null && left != null && left > got) return `waits ${driveText(left - got)} hr`;
-        return routeRound() ? '' : 'none';
+        const n = r.list.length;
+        const miles = [r.driveMiles, ...r.list.map(st => st.miles), r.dropMiles, r.backMiles]
+          .reduce((t, m) => t + (Number(m) || 0), 0);
+        return [n ? `${n} ${n === 1 ? 'stop' : 'stops'}` : 'no stops', miles ? `${Math.round(miles)} mi` : null]
+          .filter(Boolean).join(' · ');
       };
 
       const stops = el('ul', 'rux--accordion rux--accordion--end rux--layout--size-md');
@@ -5717,10 +5942,7 @@
       arrowUse.setAttribute('href', '#m-keyboard_arrow_right');
       arrow.appendChild(arrowUse);
       const stopsTitle = el('div', 'rux--accordion__title');
-      const drawStopsTitle = () => {
-        const said = stopsSaid();
-        stopsTitle.textContent = (routeRound() ? 'Destination and stops' : 'Stops between') + (said ? ` · ${said}` : '');
-      };
+      const drawStopsTitle = () => { stopsTitle.textContent = `Full itinerary · ${stopsSaid()}`; };
       stopsHead.append(arrow, stopsTitle);
       const stopsWrap = el('div', 'rux--accordion__wrapper');
       /* `design/js/accordion.js` opens and closes this from a delegated click
@@ -5735,8 +5957,6 @@
       stopsWrap.appendChild(stopsContent);
       stopsItem.append(stopsHead, stopsWrap);
       stops.appendChild(stopsItem);
-      stopsBody.addEventListener('input', () => { drawStopsTitle(); drawTotals(); });
-      stopsBody.addEventListener('change', () => { drawStopsTitle(); drawTotals(); });
 
       /* The trip's miles, both legs together. The estimate is an override, as
          in rux-ui: left blank, the stops' own miles stand, and the field shows
@@ -5754,7 +5974,7 @@
         section(null, stops),
         section('Miles', miles),
       );
-      drawStopsTitle();
+      drawStops();
       drawTimeline();
 
       document.getElementById('scheduler-f-leave')?.addEventListener('input', recalcSpot);

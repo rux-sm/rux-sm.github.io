@@ -7708,7 +7708,8 @@
   });
 
   /* ── View options ─────────────────────────────────────────────────────────
-     Start on Sunday and the bar-row toggles. Turning a row off removes it
+     Start on Sunday, equipment under the bus numbers, which a bus's tip
+     switches too, and the bar-row toggles. Turning a row off removes it
      rather than blanking it: `--scheduler-bar-rows` is the count, so the bar
      shrinks and more buses fit. Saved in `localStorage` and read with a
      try-catch, so a browser that refuses storage gets the defaults. */

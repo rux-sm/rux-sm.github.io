@@ -13,9 +13,9 @@ unfinished, and `docs/plans/` holds the plans.
 **Public, and the whole website.** GitHub Pages serves this tree as-is at
 rux-sm.github.io: `/` is `index.html` here, and every folder named like a
 URL path is that app — `design/` at `/design/`, `scheduler/` at
-`/scheduler/`, `notes/` at `/notes/`. **A push to `main`
-publishes**, after CI runs the check. There is no release, no tag and no
-separate publish step.
+`/scheduler/`, `notes/` at `/notes/`, `pixels/` at `/pixels/`. **A push
+to `main` publishes**, after CI runs the check. There is no release, no tag
+and no separate publish step.
 
 One thing stays outside it, for privacy, cloned beside it: `atlas`,
 the LN knowledge library the Notes pages are rendered from. A task that
@@ -138,6 +138,7 @@ Every app has one word, and its names derive from it.
 | Design | `design/` | Rux Design | `rux--` | `design` |
 | Notes | `notes/` | Rux Notes | `notes-` | `notes` |
 | Scheduler | `scheduler/` | the company logo, alone | `scheduler-` | `scheduler` |
+| Pixels | `pixels/` | Rux Pixels | `pixels-` | `pixels` |
 
 - **Names people read are sentence case.** A page title is `Page — App`, and
   an app's front page is titled with the app name alone.

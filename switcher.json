@@ -18,6 +18,12 @@
       "icon": "/scheduler/brand/icon.svg"
     },
     {
+      "name": "Pixels",
+      "path": "/pixels/",
+      "description": "Picture logic puzzles",
+      "icon": "/pixels/brand/icon.svg"
+    },
+    {
       "name": "Design",
       "path": "/design/",
       "description": "Rux Design System, the system these are built on",

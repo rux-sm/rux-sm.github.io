@@ -13,7 +13,8 @@ applied on a yes as a named migration.
 **A table is closed unless a signed-in account passes `is_staff()`.** Almost
 every table carries one rule, `staff_all`, which says exactly that. Where a
 table needs finer grain it says so in the name: `staff_read`, `staff_add`,
-`staff_remove`, `staff_update_own`, `staff_join_lobby`, `staff_leave_lobby`.
+`staff_remove`, `staff_update_own`, `staff_own`, `staff_join_lobby`,
+`staff_leave_lobby`.
 `trip_drafts` has `author_all`, because a draft belongs to whoever wrote it.
 
 **No rule may name `anon` or `public`.** The publishable key in `account.js`

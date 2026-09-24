@@ -9,7 +9,7 @@
 // carried 78. `--check` therefore fails a page two ways: carrying a symbol
 // Design has since redrawn, or naming one it does not carry at all.
 //
-//   node tools/inline-sprite.mjs                  the site's own pages: /, account/, login/, scheduler/, scheduler/share/
+//   node tools/inline-sprite.mjs                  the site's own pages: /, account/, login/, scheduler/, scheduler/share/, pixels/
 //   node tools/inline-sprite.mjs --check          fail if any of them carries an old sprite
 //   node tools/inline-sprite.mjs <page.html> ...  exactly these pages; Notes' build passes its own
 //
@@ -23,7 +23,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DS = resolve(ROOT, process.env.DS ?? 'design');
 const BEGIN = /<!-- SPRITE:BEGIN[\s\S]*?-->\n/;
 const END = '<!-- SPRITE:END -->';
-const SITE_DIRS = ['.', 'account', 'login', 'oauth/consent', 'scheduler', 'scheduler/share'];
+const SITE_DIRS = ['.', 'account', 'login', 'oauth/consent', 'scheduler', 'scheduler/share', 'pixels'];
 
 const args = process.argv.slice(2);
 const check = args.includes('--check');

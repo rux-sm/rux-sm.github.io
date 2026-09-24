@@ -1,0 +1,118 @@
+/* app.css -- Pixels' own components, under the pixels- prefix, every colour a
+   --rux-* token so each theme draws them from its own values. Design's
+   components are used as they are and never restyled here. */
+
+/* THE BOARD. The clues sit in the first row and column of the same grid as
+   the squares, so a row's numbers and its squares always line up. A square is
+   as wide as the phone allows: 10 squares and the widest row of clues fit a
+   402px screen, and a desktop stops at 40px. */
+.pixels-board {
+  --cell: clamp(1.5rem, calc((100vw - 8rem) / 10), 2.5rem);
+  --line: var(--rux-border-subtle-01);
+  --guide: var(--rux-border-strong-01);
+  display: grid;
+  grid-template-columns: auto repeat(var(--size, 10), var(--cell));
+  grid-template-rows: auto repeat(var(--size, 10), var(--cell));
+  inline-size: max-content;
+  margin-inline: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: none;
+}
+.pixels-cell {
+  position: relative;
+  background: var(--rux-layer-01);
+  border-inline-end: 1px solid var(--line);
+  border-block-end: 1px solid var(--line);
+  cursor: pointer;
+}
+/* A stronger line every five squares, and round the edge, as on the DS. */
+.pixels-cell[data-x="0"] { border-inline-start: 1px solid var(--guide); }
+.pixels-cell[data-y="0"] { border-block-start: 1px solid var(--guide); }
+.pixels-cell[data-x="4"], .pixels-cell[data-x="9"] { border-inline-end-color: var(--guide); }
+.pixels-cell[data-y="4"], .pixels-cell[data-y="9"] { border-block-end-color: var(--guide); }
+/* The row and column under the finger or the keyboard cursor. */
+.pixels-cell.is-line { background: var(--rux-highlight); }
+.pixels-cell.is-cursor { outline: 2px solid var(--rux-focus); outline-offset: -2px; z-index: 1; }
+.pixels-cell.is-fill { background: var(--rux-text-primary); }
+.pixels-cell.is-x::before,
+.pixels-cell.is-x::after {
+  content: '';
+  position: absolute;
+  inset-inline: 22%;
+  inset-block-start: calc(50% - 1px);
+  block-size: 2px;
+  background: var(--rux-icon-secondary);
+  transform: rotate(45deg);
+}
+.pixels-cell.is-x::after { transform: rotate(-45deg); }
+.pixels-cell.is-miss::before,
+.pixels-cell.is-miss::after { background: var(--rux-support-error); }
+/* In the maker, a square the clues cannot decide without a guess. */
+.pixels-cell.is-unknown { box-shadow: inset 0 0 0 3px var(--rux-support-warning); }
+
+.pixels-clue {
+  display: flex;
+  gap: .5em;
+  justify-content: end;
+  align-items: center;
+  padding-inline: .5rem;
+  font-size: .875rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.pixels-clue--col { flex-direction: column; gap: .15em; padding: .5rem 0 .375rem; }
+.pixels-clue.is-line { background: var(--rux-highlight); }
+.pixels-clue.is-done { color: var(--rux-text-disabled); }
+
+/* THE FINISHED PICTURE: the squares alone, no lines and no clues. */
+.pixels-picture {
+  display: grid;
+  grid-template-columns: repeat(var(--size, 10), var(--px, 1.5rem));
+  grid-auto-rows: var(--px, 1.5rem);
+  inline-size: max-content;
+  background: var(--rux-layer-01);
+}
+.pixels-picture > [data-on] { background: var(--rux-text-primary); }
+.pixels-picture--sm { --px: .5rem; }
+
+/* THE PUZZLE LIST, a level at a time. */
+.pixels-level-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+.pixels-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); gap: 1rem; }
+.pixels-list .rux--tile { display: grid; gap: .75rem; align-content: start; }
+.pixels-blank {
+  display: grid;
+  place-items: center;
+  inline-size: 5rem;
+  block-size: 5rem;
+  background: var(--rux-layer-accent-01);
+  color: var(--rux-text-secondary);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.pixels-meta { color: var(--rux-text-secondary); font-variant-numeric: tabular-nums; }
+
+/* THE GAME. One column as wide as the board, centred. */
+.pixels-game { display: grid; gap: 1rem; inline-size: max-content; max-inline-size: 100%; margin-inline: auto; }
+.pixels-top { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+.pixels-clock { font-family: 'IBM Plex Mono', monospace; font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+.pixels-status { min-block-size: 1.25rem; color: var(--rux-text-secondary); }
+.pixels-status[data-error] { color: var(--rux-text-error); }
+.pixels-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+/* Each view's display would outrank the hidden attribute. */
+.pixels-game[hidden], .pixels-solved[hidden] { display: none; }
+.pixels-solved { display: grid; gap: 1.5rem; justify-items: center; text-align: center; padding-block: 1rem; }
+
+/* THE MAKER. The board, then the check, name and buttons beside it on a
+   wide screen and under it on a phone. */
+.pixels-maker { display: flex; flex-wrap: wrap; gap: 2rem; align-items: start; justify-content: center; }
+/* The clues change as the picture does, so the maker keeps room for the most
+   a line can hold, five numbers, and the squares never move under a finger. */
+.pixels-maker .pixels-board {
+  --cell: clamp(1.5rem, calc((100vw - 9.5rem) / 10), 2.5rem);
+  grid-template-columns: 5.5rem repeat(var(--size, 10), var(--cell));
+  grid-template-rows: 7rem repeat(var(--size, 10), var(--cell));
+  margin-inline: 0;
+}
+.pixels-maker-side { display: grid; gap: 1.5rem; align-content: start; inline-size: 18rem; max-inline-size: 100%; }

@@ -34,6 +34,12 @@ done and how.
   customer quote. The printed schedule, an hours-of-service form and a
   passenger roster are still named for it; which comes next is undecided.
 
+## Pixels
+
+- A solved puzzle shows in black and white. The DS reveals a colour picture;
+  that needs a colour step in the maker.
+- There is no free mode, where mistakes are not pointed out.
+
 ## The database
 
 - **Trip paperwork is readable by anyone with its address.** Writing is staff

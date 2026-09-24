@@ -36,6 +36,11 @@ of one trip at a time.
 - **The ranking is the Fleet tab's**, from `fitFor` and `rankDrivers` in
   `scheduler/data.js`: free before busy, strictly by priority, no back-to-back
   before back-to-back, then the fewest days in four weeks.
+- **The suggestion is the automatic order's first,** as Assign best takes it:
+  a driver with no back-to-back trip, whatever their priority, before a
+  back-to-back one, who is a last resort and only with 10 hours from the one
+  trip's return arrival to the other's departure. A missing time rules them
+  out, and a row with no one rested opens on a blank for a pick by hand.
 - **The week is planned as one.** Rows are filled earliest leg first, and each
   suggestion counts as a trip for the rows after it, so one driver is never
   suggested for two buses on overlapping days, and the days it adds count

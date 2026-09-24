@@ -2239,13 +2239,15 @@
 
   /* The trips, time off and out-of-service days around a range: trips from
      90 days before it, so one still running into it is seen, to a day past it,
-     so one starting the day after reads as back-to-back. */
+     so one starting the day after reads as back-to-back. Each trip comes with
+     its times and stops, which say how long a back-to-back driver rests. */
   async function readNearby(lo, hi) {
     const past = iso(addDays(parseISO(hi), 1));
     const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
     const [trips, off, oos] = await withTimeout(Promise.all([
       client.from('trips')
-        .select('id,destination,start_date,end_date,return_start_date,return_end_date,bus_count,return_bus_count,trip_assignments(id,bus_id,leg,active_roles,trip_drivers(driver_id,role))')
+        .select('id,destination,start_date,end_date,return_start_date,return_end_date,departure_time,return_time,bus_count,return_bus_count,'
+          + 'trip_stops(position,leg,type,depart_prev,arrive,spot),trip_assignments(id,bus_id,leg,active_roles,trip_drivers(driver_id,role))')
         .is('cancelled_at', null).lte('start_date', past).gte('start_date', iso(addDays(parseISO(lo), -90)))
         .then(unwrap),
       client.from('driver_time_off').select('driver_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
@@ -2254,17 +2256,34 @@
     return { trips, off, oos };
   }
 
+  /* A back-to-back driver may be picked automatically only with REST_HOURS
+     between leaving one trip at the yard and leaving for the next: the earlier
+     leg's return arrival to the later leg's departure. A leg missing either
+     time cannot show the rest, so its driver is never picked automatically. */
+  const REST_HOURS = 10;
+  const clockHours = t => {
+    const m = /^(\d{1,2}):(\d{2})/.exec(t || '');
+    return m ? Number(m[1]) + Number(m[2]) / 60 : null;
+  };
+  // Hours from one leg's end to the next leg's start the day after, or null.
+  const restHours = (backTime, departTime) => {
+    const end = clockHours(backTime), start = clockHours(departTime);
+    return end == null || start == null ? null : 24 - end + start;
+  };
+
   /* What stands in each bus's and driver's way on one leg's dates. `buses`
      and `drivers` are clashes, which a pick warns of; `near` is a trip ending
      the day before or starting the day after, which warns but does not rule
-     the driver out; `worked` is the days each driver drove in the RECENT_DAYS
-     before the leg, which ranks drivers of one priority so the work spreads.
-     `skip` leaves out the editor's whole trip, whose buses it holds unsaved, or
-     the one bus a bar is. */
+     the driver out, and `tight` the drivers among them whose rest is under
+     REST_HOURS or unknown; `worked` is the days each driver drove in the
+     RECENT_DAYS before the leg, which ranks drivers of one priority so the
+     work spreads. `range` is the leg's dates, with its `depart` and `back`
+     times when it has them. `skip` leaves out the editor's whole trip, whose
+     buses it holds unsaved, or the one bus a bar is. */
   function fitFor({ trips, off, oos }, range, skip) {
-    const buses = new Map(), drivers = new Map(), near = new Map(), worked = new Map();
+    const buses = new Map(), drivers = new Map(), near = new Map(), worked = new Map(), tight = new Set();
     const add = (map, id, text) => { if (id == null) return; if (!map.has(id)) map.set(id, []); if (!map.get(id).includes(text)) map.get(id).push(text); };
-    if (!range) return { buses, drivers, near, worked };
+    if (!range) return { buses, drivers, near, tight, worked };
     const before = iso(addDays(parseISO(range.from), -1));
     const after = iso(addDays(parseISO(range.to), 1));
     const recent = { from: iso(addDays(parseISO(range.from), -RECENT_DAYS)), to: before };
@@ -2288,7 +2307,14 @@
             add(buses, a.bus_id, text);
             for (const d of crew) add(drivers, d.driver_id, text);
           }
-          if (next) for (const d of crew) add(near, d.driver_id, `Back-to-back with ${t.destination || 'a trip'}`);
+          if (next) {
+            const rest = l.to === before ? restHours(l.back, range.depart) : restHours(range.back, l.depart);
+            const said = rest == null ? 'rest unknown' : `${Math.round(rest * 10) / 10}h rest`;
+            for (const d of crew) {
+              add(near, d.driver_id, `Back-to-back with ${t.destination || 'a trip'}, ${said}`);
+              if (rest == null || rest < REST_HOURS) tight.add(d.driver_id);
+            }
+          }
           for (const d of crew) {
             if (!worked.has(d.driver_id)) worked.set(d.driver_id, new Set());
             for (const day of days) worked.get(d.driver_id).add(day);
@@ -2298,23 +2324,26 @@
     }
     for (const r of off) if (datesOverlap(range, { from: r.start_date, to: r.end_date })) add(drivers, r.driver_id, 'Time off');
     for (const r of oos) if (datesOverlap(range, { from: r.start_date, to: r.end_date })) add(buses, r.bus_id, 'Out of service');
-    return { buses, drivers, near, worked };
+    return { buses, drivers, near, tight, worked };
   }
 
   /* Who to ask next, first: drivers free on the leg's dates before those on
      another trip or away, then strictly by priority, the order the office
      calls in; within one priority a driver with no back-to-back trip first,
-     then whoever drove the fewest days lately, so the work spreads. `fit` is
-     null until it is read, and then only priority and name order. */
+     then one back-to-back with enough rest, then one without, then whoever
+     drove the fewest days lately, so the work spreads. This is the order a
+     person picks from. `fit` is null until it is read, and then only
+     priority and name order. */
   function rankDrivers(drivers, fit) {
     const text = (map, id) => (map?.get(id) ?? []).join(' · ');
     return drivers.map(d => {
       const days = fit?.worked.get(d.id)?.size ?? 0;
       const busy = text(fit?.drivers, d.id);
       const near = text(fit?.near, d.id);
+      const tight = !!fit?.tight.has(d.id);
       return {
-        d, days, busy, near,
-        rank: [busy ? 1 : 0, d.priority ?? 9, near ? 1 : 0, days],
+        d, days, busy, near, tight,
+        rank: [busy ? 1 : 0, d.priority ?? 9, near ? (tight ? 2 : 1) : 0, days],
         detail: [
           d.status && d.status !== 'active' ? 'Inactive' : '',
           d.priority != null ? `Priority ${d.priority}` : '',
@@ -2325,9 +2354,23 @@
       || String(a.d.name ?? '').localeCompare(String(b.d.name ?? '')));
   }
 
+  /* The order an automatic pick takes, from a ranked list: every free driver
+     with no back-to-back trip, whatever their priority, before a back-to-back
+     one, who is a last resort and only with REST_HOURS of rest. */
+  const autoPicks = ranked => [
+    ...ranked.filter(r => !r.busy && !r.near),
+    ...ranked.filter(r => !r.busy && r.near && !r.tight),
+  ];
+
   async function loadFleetClashes() {
     if (!client || !editing?.fleet) return;
-    const ranges = Object.fromEntries(['outbound', 'return'].map(l => [l, fleetLegDates(l)]));
+    // The dates as the form holds them, with the times the trip was saved with.
+    const saved = editing.id != null ? legsOf(panelIndex.trips.get(editing.id) ?? {}) : [];
+    const ranges = Object.fromEntries(['outbound', 'return'].map(l => {
+      const r = fleetLegDates(l);
+      const times = saved.find(x => x.leg === l);
+      return [l, r && { ...r, depart: times?.depart ?? null, back: times?.back ?? null }];
+    }));
     const all = Object.values(ranges).filter(Boolean);
     if (!all.length) return;
     const key = JSON.stringify(ranges);
@@ -2644,9 +2687,9 @@
     return item;
   }
 
-  /* ASSIGN BEST fills a leg's empty seats with the drivers the picker lists
-     first: Driver seats on every bus before co-drivers and relief, each the
-     top free driver not already in a seat on the leg. It only fills the form,
+  /* ASSIGN BEST fills a leg's empty seats in the automatic order: Driver
+     seats on every bus before co-drivers and relief, each the first of
+     `autoPicks` not already in a seat on the leg. It only fills the form,
      so Save or Reset decides. It waits for the read of who is free, since a
      ranking without it would offer a driver who is away. */
   const emptySeats = leg => ROLES.flatMap(r => (editing?.fleet?.[leg] ?? [])
@@ -2672,9 +2715,9 @@
     const taken = new Set((editing.fleet[leg] ?? []).flatMap(b => ROLES
       .filter(r => r.role === 'driver' || b.seats[r.role].on)
       .map(r => b.seats[r.role].driverId).filter(id => id != null).map(String)));
-    const free = rankDrivers([...panelIndex.driversById.values()]
-      .filter(d => !d.status || d.status === 'active'), fit)
-      .filter(r => !r.busy && !taken.has(String(r.d.id)));
+    const free = autoPicks(rankDrivers([...panelIndex.driversById.values()]
+      .filter(d => !d.status || d.status === 'active'), fit))
+      .filter(r => !taken.has(String(r.d.id)));
     let filled = 0;
     for (const seat of seats) {
       const next = free.shift();
@@ -2684,9 +2727,9 @@
     }
     drawFleet(`scheduler-fleet-${leg}-best`);
     refreshDirty();
-    if (!filled) toast('warning', 'No free drivers for the empty seats');
+    if (!filled) toast('warning', 'No free, rested drivers for the empty seats');
     else toast('info', `Filled ${filled} ${filled === 1 ? 'seat' : 'seats'}`,
-      filled < seats.length ? `${seats.length - filled} still empty: no one else is free. Check, then Save.` : 'Check them, then Save.');
+      filled < seats.length ? `${seats.length - filled} still empty: no one else is free and rested. Check, then Save.` : 'Check them, then Save.');
   }
   panelFleet?.addEventListener('click', e => {
     const btn = e.target.closest?.('[data-fleet-best]');
@@ -8734,7 +8777,7 @@
     const leg = assign.leg || 'outbound';
     const range = legsOf(trip).find(l => l.leg === leg);
     const seat = (assign.trip_drivers || []).find(d => (d.role || 'driver') === 'driver') ?? null;
-    return { trip, assign, leg, range: range ? { from: range.from, to: range.to } : null, seat };
+    return { trip, assign, leg, range: range ? { from: range.from, to: range.to, depart: range.depart, back: range.back } : null, seat };
   }
 
   function assignItem(label, { id, icon, note, title, checked, disabled } = {}) {
@@ -8897,7 +8940,7 @@
           if (state === 'pending-response' || state === 'confirmed') continue;
           rows.push({
             key: String(assign.id), trip, assign, now, state, split: legs.length > 1,
-            leg: { leg: l.leg, from: l.from, to: l.to },
+            leg: { leg: l.leg, from: l.from, to: l.to, depart: l.depart, back: l.back },
             ticked: state !== 'off', choice: null, pick: null, options: [], error: null,
           });
         }
@@ -8922,12 +8965,13 @@
     const stand = new Map();
     const active = [...panelIndex.driversById.values()].filter(d => !d.status || d.status === 'active');
     for (const row of suggest.rows) {
-      const fit = fitFor(withStand(suggest.nearby, stand), { from: row.leg.from, to: row.leg.to }, { assignmentId: row.assign.id });
+      const fit = fitFor(withStand(suggest.nearby, stand), row.leg, { assignmentId: row.assign.id });
       // Never the driver there now, nor one already in another seat on this bus.
       const skip = new Set((row.assign.trip_drivers || []).map(d => String(d.driver_id)));
       row.options = rankDrivers(active.filter(d => !skip.has(String(d.id))), fit).filter(r => !r.busy);
       if (row.choice != null && !row.options.some(r => String(r.d.id) === row.choice)) row.choice = null;
-      row.pick = (row.choice != null ? row.options.find(r => String(r.d.id) === row.choice) : row.options[0]) ?? null;
+      // A pick by hand stands; otherwise the automatic order, which may find no one rested.
+      row.pick = (row.choice != null ? row.options.find(r => String(r.d.id) === row.choice) : autoPicks(row.options)[0]) ?? null;
       if (row.ticked && row.pick) stand.set(row.key, row.pick.d.id);
     }
   }
@@ -8953,9 +8997,12 @@
       body.appendChild(el('p', 'rux--type-helper-text-01 scheduler-suggest__now', row.now
         ? `Now: ${crewName(row.now)} · ${SUGGEST_STATE[row.state]}` : 'Now: no driver'));
       if (row.options.length) {
-        const pick = selectField(`${id}-driver`, 'Suggested driver', row.pick ? String(row.pick.d.id) : '',
-          row.options.map(r => [String(r.d.id),
-            [r.d.name || r.d.short_name || 'Unnamed driver', r.detail, r.near].filter(Boolean).join(' · ')]));
+        // With no one free and rested, the select opens on a blank, and a pick by hand is the only way.
+        const pick = selectField(`${id}-driver`, 'Suggested driver', row.pick ? String(row.pick.d.id) : '', [
+          ...(row.pick ? [] : [['', 'No rested driver: choose one']]),
+          ...row.options.map(r => [String(r.d.id),
+            [r.d.name || r.d.short_name || 'Unnamed driver', r.detail, r.near].filter(Boolean).join(' · ')]),
+        ]);
         pick.querySelector('select').dataset.suggestPick = row.key;
         body.appendChild(pick);
       } else {
@@ -9023,7 +9070,11 @@
     const row = suggest?.rows.find(r => r.key === (t.dataset.suggestRow ?? t.dataset.suggestPick));
     if (!row) return;
     if (t.dataset.suggestRow) row.ticked = t.checked;
-    else row.choice = t.value;
+    else {
+      row.choice = t.value || null;
+      // A driver chosen by hand is meant to be applied.
+      if (row.choice) row.ticked = true;
+    }
     planSuggest();
     drawSuggest(t.id);
   });

@@ -726,6 +726,13 @@
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg></div>
       <div class="rux--menu-item__label">New trip</div>
     </li>
+    <!-- Suggest drivers lists the buses on the board whose Driver seat wants
+         one, with the driver the Fleet tab ranks first, to tick and apply. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-menu-suggest">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-person-fill"/></svg></div>
+      <div class="rux--menu-item__label">Suggest drivers…</div>
+    </li>
     <!-- Today shows here only below md, where its toolbar button hides, so one
          of the pair is on screen. -->
     <li class="rux--menu-item scheduler-menu-item--sm-only" role="menuitem" tabindex="0" id="scheduler-menu-today">
@@ -1161,6 +1168,30 @@
       <div class="rux--modal-footer">
         <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Not now</button>
         <button type="button" class="rux--btn rux--btn--primary" id="scheduler-lists-save">Save to lists</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Suggest drivers: one row per bus whose Driver seat wants a driver, each
+       with a checkbox, the driver there now and a picker holding the
+       suggestion. data.js fills the list; Apply saves the ticked rows. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-suggest-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-suggest-h" aria-describedby="scheduler-suggest-text" tabindex="-1" class="rux--modal-container">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-suggest-h">Suggest drivers</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <p class="rux--type-body-01" id="scheduler-suggest-text"></p>
+        <ul class="scheduler-suggest" id="scheduler-suggest-list"></ul>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-suggest-apply" disabled>Apply</button>
       </div>
     </div>
   </div>

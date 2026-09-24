@@ -8806,44 +8806,56 @@
     list.replaceChildren(...current, ...picks, rule(), more);
   }
 
-  /* Puts a driver in the bar's Driver seat and saves at once, like a colour.
-     The seat's row is changed, or added on a bus with none; a saved
+  /* Puts drivers in Driver seats of one trip: each pick is a bus row and a
+     driver. Each seat's row is changed, or added on a bus with none; a saved
      `driver:state` in the bus's roles goes back to plain `driver`, as the
-     Fleet tab's save leaves it; and the crew's statuses are sent again, which
-     drops the old driver's and starts the new one at Not sent. */
-  async function assignDriver(bar, driverId) {
-    const found = barSeat(bar);
-    const driver = [...panelIndex.driversById.values()].find(d => String(d.id) === String(driverId));
-    if (!found || !driver) return;
-    const { trip, assign, leg, seat } = found;
-    if (same(seat?.driver_id, driver.id)) return;
-    const saved = Array.isArray(assign.active_roles) ? assign.active_roles.map(String) : null;
-    const roles = saved?.map(r => (r.split(':')[0] === 'driver' ? 'driver' : r)) ?? null;
-    const statuses = (trip.trip_assignments || []).flatMap(a =>
-      crewOf(trip, a, panelIndex.driversById, panelIndex.statuses).filter(c => !c.needed).map(c => {
-        const mine = a === assign && c.role === 'driver';
-        return { driverId: mine ? driver.id : c.driverId, leg: c.leg, role: c.role,
-          status: mine ? 'off' : c.status.value, dirty: false };
-      }));
-    if (seat?.driver_id == null) statuses.push({ driverId: driver.id, leg, role: 'driver', status: 'off', dirty: false });
+     Fleet tab's save leaves it; and the crew's statuses are sent once for the
+     whole trip, which drops the old drivers' and starts the new ones at Not
+     sent, because the function deletes a status its list leaves out. One
+     history entry names every change. Throws on the first failed write. */
+  async function saveSeats(trip, picks) {
     const run = async query => {
       const { error } = await withTimeout(query.then(r => r));
       if (error) throw new Error(error.message);
     };
-    toast('info', 'Assigning the driver…');
-    try {
+    const byAssign = new Map(picks.map(p => [p.assign, p.driver]));
+    const statuses = (trip.trip_assignments || []).flatMap(a =>
+      crewOf(trip, a, panelIndex.driversById, panelIndex.statuses).filter(c => !c.needed).map(c => {
+        const mine = byAssign.has(a) && c.role === 'driver';
+        return { driverId: mine ? byAssign.get(a).id : c.driverId, leg: c.leg, role: c.role,
+          status: mine ? 'off' : c.status.value, dirty: false };
+      }));
+    const changes = [];
+    for (const { assign, driver } of picks) {
+      const leg = assign.leg || 'outbound';
+      const seat = (assign.trip_drivers || []).find(d => (d.role || 'driver') === 'driver') ?? null;
       if (seat?.id) await run(client.from('trip_drivers').update({ driver_id: driver.id }).eq('id', seat.id));
       else await run(client.from('trip_drivers').insert({ assignment_id: assign.id, driver_id: driver.id, role: 'driver' }));
+      const saved = Array.isArray(assign.active_roles) ? assign.active_roles.map(String) : null;
+      const roles = saved?.map(r => (r.split(':')[0] === 'driver' ? 'driver' : r)) ?? null;
       if (roles && JSON.stringify(roles) !== JSON.stringify(saved)) {
         await run(client.from('trip_assignments').update({ active_roles: roles }).eq('id', assign.id));
       }
-      await run(client.rpc('sync_trip_driver_statuses', { p_trip_id: trip.id, p_statuses: statuses }));
+      if (seat?.driver_id == null) statuses.push({ driverId: driver.id, leg, role: 'driver', status: 'off', dirty: false });
       const who = `${leg === 'return' ? 'Inbound' : 'Outbound'} driver`;
-      recordHistory(trip.id, 'assignment_changed', [{
+      changes.push({
         field: 'driver', label: 'Driver',
         before: seat?.driver_id != null ? `${who}: ${histDriverName(seat.driver_id)}` : null,
         after: `${who}: ${driver.name}`,
-      }]);
+      });
+    }
+    await run(client.rpc('sync_trip_driver_statuses', { p_trip_id: trip.id, p_statuses: statuses }));
+    recordHistory(trip.id, 'assignment_changed', changes);
+  }
+
+  // The bar's menu: one driver for its bus, saved at once, like a colour.
+  async function assignDriver(bar, driverId) {
+    const found = barSeat(bar);
+    const driver = [...panelIndex.driversById.values()].find(d => String(d.id) === String(driverId));
+    if (!found || !driver || same(found.seat?.driver_id, driver.id)) return;
+    toast('info', 'Assigning the driver…');
+    try {
+      await saveSeats(found.trip, [{ assign: found.assign, driver }]);
       assignRead = null;
       await show();
       toast('success', `${driver.name || 'The driver'} is driving this bus now.`);
@@ -8851,6 +8863,208 @@
       toast('error', `The driver was not assigned. ${err.message}`);
     }
   }
+
+  /* ── Suggest drivers, for the board's range ──
+     Every bus whose Driver seat wants a driver is a row: empty, declined and
+     pending assignment ticked; not sent unticked, and listed only while a free
+     driver of better priority exists. Pending response and confirmed are left
+     alone, as are a placeholder trip, which is not booked yet, and the trip in
+     the editor, which holds its drivers unsaved. The rows are planned earliest
+     leg first, each ticked suggestion standing in its seat for the rows after
+     it, so no driver is suggested for two buses on one day and the days it
+     adds count. A tick or a pick plans again. Apply saves a trip at a time. */
+  const suggestModal = document.getElementById('scheduler-suggest-modal');
+  const suggestList = document.getElementById('scheduler-suggest-list');
+  const suggestText = document.getElementById('scheduler-suggest-text');
+  const suggestApply = document.getElementById('scheduler-suggest-apply');
+  const suggestDay = new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+  let suggest = null;
+  let suggestSeq = 0;
+
+  function suggestRows(range) {
+    const rows = [];
+    for (const trip of panelIndex.trips.values()) {
+      if (trip.cancelled_at || tripColorOf(trip) === 'amber') continue;
+      if (editing?.id != null && String(editing.id) === String(trip.id)) continue;
+      const legs = legsOf(trip);
+      for (const l of legs) {
+        if (!datesOverlap(range, l)) continue;
+        for (const assign of trip.trip_assignments || []) {
+          if ((assign.leg || 'outbound') !== l.leg) continue;
+          const now = crewOf(trip, assign, panelIndex.driversById, panelIndex.statuses)
+            .find(c => c.role === 'driver' && !c.needed) ?? null;
+          const state = now ? now.status.value : 'empty';
+          if (state === 'pending-response' || state === 'confirmed') continue;
+          rows.push({
+            key: String(assign.id), trip, assign, now, state, split: legs.length > 1,
+            leg: { leg: l.leg, from: l.from, to: l.to },
+            ticked: state !== 'off', choice: null, pick: null, options: [], error: null,
+          });
+        }
+      }
+    }
+    return rows.sort((a, b) => a.leg.from.localeCompare(b.leg.from)
+      || String(a.trip.destination ?? '').localeCompare(String(b.trip.destination ?? ''))
+      || (a.assign.position ?? 0) - (b.assign.position ?? 0));
+  }
+
+  // The trips read around the range, with each ticked suggestion so far in its seat.
+  const withStand = (nearby, stand) => (!stand.size ? nearby : {
+    ...nearby,
+    trips: nearby.trips.map(t => ({ ...t, trip_assignments: (t.trip_assignments || []).map(a => {
+      if (!stand.has(String(a.id))) return a;
+      const others = (a.trip_drivers || []).filter(d => (d.role || 'driver') !== 'driver');
+      return { ...a, trip_drivers: [...others, { driver_id: stand.get(String(a.id)), role: 'driver' }] };
+    }) })),
+  });
+
+  function planSuggest() {
+    const stand = new Map();
+    const active = [...panelIndex.driversById.values()].filter(d => !d.status || d.status === 'active');
+    for (const row of suggest.rows) {
+      const fit = fitFor(withStand(suggest.nearby, stand), { from: row.leg.from, to: row.leg.to }, { assignmentId: row.assign.id });
+      // Never the driver there now, nor one already in another seat on this bus.
+      const skip = new Set((row.assign.trip_drivers || []).map(d => String(d.driver_id)));
+      row.options = rankDrivers(active.filter(d => !skip.has(String(d.id))), fit).filter(r => !r.busy);
+      if (row.choice != null && !row.options.some(r => String(r.d.id) === row.choice)) row.choice = null;
+      row.pick = (row.choice != null ? row.options.find(r => String(r.d.id) === row.choice) : row.options[0]) ?? null;
+      if (row.ticked && row.pick) stand.set(row.key, row.pick.d.id);
+    }
+  }
+
+  const suggestDates = l => (l.from === l.to ? suggestDay.format(parseISO(l.from))
+    : `${suggestDay.format(parseISO(l.from))} – ${suggestDay.format(parseISO(l.to))}`);
+  const SUGGEST_STATE = { empty: 'No driver', off: 'Not sent', declined: 'Declined', 'pending-assignment': 'Pending assignment' };
+
+  function drawSuggest(focusId) {
+    const { rows } = suggest;
+    suggestList.replaceChildren(...rows.map(row => {
+      const id = `scheduler-suggest-${row.key}`;
+      const li = el('li', 'scheduler-suggest__row');
+      const where = [
+        row.split ? (row.leg.leg === 'return' ? 'Pick-up' : 'Drop-off') : null,
+        row.assign.bus_id ? histBusName(row.assign.bus_id) : 'No bus yet',
+      ].filter(Boolean).join(' · ');
+      const check = checkField(id, `${row.trip.destination || 'Trip'} · ${suggestDates(row.leg)} · ${where}`, row.ticked && !!row.pick);
+      const box = check.querySelector('input');
+      box.dataset.suggestRow = row.key;
+      box.disabled = !row.pick;
+      const body = el('div', 'scheduler-suggest__body');
+      body.appendChild(el('p', 'rux--type-helper-text-01 scheduler-suggest__now', row.now
+        ? `Now: ${crewName(row.now)} · ${SUGGEST_STATE[row.state]}` : 'Now: no driver'));
+      if (row.options.length) {
+        const pick = selectField(`${id}-driver`, 'Suggested driver', row.pick ? String(row.pick.d.id) : '',
+          row.options.map(r => [String(r.d.id),
+            [r.d.name || r.d.short_name || 'Unnamed driver', r.detail, r.near].filter(Boolean).join(' · ')]));
+        pick.querySelector('select').dataset.suggestPick = row.key;
+        body.appendChild(pick);
+      } else {
+        body.appendChild(el('p', 'rux--type-helper-text-01', 'No driver is free on these days.'));
+      }
+      if (row.error) body.appendChild(el('p', 'rux--type-helper-text-01 scheduler-suggest__error', `Not saved: ${row.error}`));
+      li.append(check, body);
+      return li;
+    }));
+    const n = rows.filter(r => r.ticked && r.pick).length;
+    suggestApply.disabled = !n;
+    suggestApply.textContent = n ? `Apply ${n}` : 'Apply';
+    if (focusId) document.getElementById(focusId)?.focus();
+  }
+
+  /* Reads the trips around the board's range and lists the rows. `keep`
+     names rows to keep, by bus row, with their pick and error, after an Apply
+     that saved only some: those are the only rows then. */
+  async function loadSuggest(keep) {
+    if (!availAll) return;
+    const seq = ++suggestSeq;
+    const range = { from: iso(availAll.weekStart), to: iso(addDays(availAll.weekStart, availAll.days - 1)) };
+    suggestText.textContent = 'Finding free drivers…';
+    suggestList.replaceChildren();
+    suggestApply.disabled = true;
+    suggestApply.textContent = 'Apply';
+    let nearby;
+    try {
+      nearby = await readNearby(range.from, range.to);
+    } catch (err) {
+      if (seq === suggestSeq) suggestText.textContent = `The drivers could not be read. ${err.message}`;
+      return;
+    }
+    if (seq !== suggestSeq) return;
+    let rows = suggestRows(range);
+    if (keep) {
+      rows = rows.filter(r => keep.has(r.key));
+      for (const r of rows) Object.assign(r, keep.get(r.key));
+    }
+    suggest = { nearby, rows };
+    planSuggest();
+    if (!keep) {
+      // A not-sent driver is listed only while a free driver of better priority exists.
+      const rank = d => d?.priority ?? 9;
+      suggest.rows = rows.filter(r => r.state !== 'off' || (r.pick && rank(r.pick.d) < rank(r.now.who)));
+      planSuggest();
+    }
+    const inEditor = editing?.id != null && [...panelIndex.trips.values()].some(t => String(t.id) === String(editing.id));
+    suggestText.textContent = !suggest.rows.length
+      ? `Every bus here has a driver, or one who has been sent the trip.${inEditor ? ' The trip open in the editor is left out.' : ''}`
+      : keep ? 'These were not saved. Apply tries them again.'
+      : 'Empty, declined and pending seats are ticked; a not-sent driver shows only when someone of better priority is free. '
+        + `Applying saves at once and sends nothing to drivers.${inEditor ? ' The trip open in the editor is left out.' : ''}`;
+    drawSuggest();
+  }
+
+  function openSuggest() {
+    if (!client) { toast('info', 'Log in to suggest drivers'); return; }
+    window.Rux?.modal?.open?.(suggestModal);
+    loadSuggest();
+  }
+
+  suggestList?.addEventListener('change', e => {
+    const t = e.target;
+    const row = suggest?.rows.find(r => r.key === (t.dataset.suggestRow ?? t.dataset.suggestPick));
+    if (!row) return;
+    if (t.dataset.suggestRow) row.ticked = t.checked;
+    else row.choice = t.value;
+    planSuggest();
+    drawSuggest(t.id);
+  });
+
+  suggestApply?.addEventListener('click', async () => {
+    const todo = suggest?.rows.filter(r => r.ticked && r.pick) ?? [];
+    if (!todo.length) return;
+    suggestApply.disabled = true;
+    const byTrip = new Map();
+    for (const r of todo) {
+      if (!byTrip.has(r.trip)) byTrip.set(r.trip, []);
+      byTrip.get(r.trip).push(r);
+    }
+    toast('info', 'Assigning drivers…');
+    let saved = 0;
+    const failed = new Map();
+    for (const [trip, rows] of byTrip) {
+      try {
+        await saveSeats(trip, rows.map(r => ({ assign: r.assign, driver: r.pick.d })));
+        saved += rows.length;
+      } catch (err) {
+        for (const r of rows) failed.set(r.key, { error: err.message, choice: String(r.pick.d.id), ticked: true });
+      }
+    }
+    assignRead = null;
+    await show();
+    const drivers = n => `${n} ${n === 1 ? 'driver' : 'drivers'}`;
+    if (!failed.size) {
+      window.Rux?.modal?.close?.(suggestModal);
+      toast('success', `Assigned ${drivers(saved)}`, 'Each starts at Not sent.');
+      return;
+    }
+    toast('warning', saved ? `Assigned ${drivers(saved)}; ${failed.size} not saved` : 'No drivers were saved');
+    loadSuggest(failed);
+  });
+
+  document.getElementById('scheduler-menu-suggest')?.addEventListener('click', () => {
+    const menu = document.getElementById('scheduler-view-menu');
+    if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }
+    openSuggest();
+  });
 
   // Opens the bar's trip on its Fleet tab, for every driver and every seat.
   function openOnFleet(bar) {

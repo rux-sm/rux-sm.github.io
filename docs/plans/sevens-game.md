@@ -31,15 +31,17 @@ retired with its tables.
   discarded. During Flip Three, a Second Chance is kept at once and any other
   action waits until the three cards are done.
 - **Every player signs in, and a seat is an account.** The name shown is the
-  account's own name.
-- **Four tables.** `sevens_tables` is each game: its host, whether it is
+  account's own name. Each player's account is made in the Supabase dashboard
+  and given Sevens on the Access page.
+- **Five tables.** `sevens_tables` is each game: its host, whether it is
   waiting, playing or finished, the round, the dealer and whose turn it is.
   `sevens_seats` is each player at a table: the account, seat order, total
   score and whether they are in, stayed, busted or frozen this round.
   `sevens_cards` is all 94 cards of a game, one row each: in the deck with its
   place, in a player's hand, or discarded, with who drew it and in which
   round. `sevens_moves` is the history of every flip, stay, action and bust,
-  which the table page shows as it happens.
+  which the table page shows as it happens. `sevens_messages` is each
+  table's chat, which only its players read and write.
 - **A card in the deck is hidden by the database.** Row security shows a page
   every card in a hand or the discard pile and none in the deck, so the order
   cannot be read; a page sees only how many are left.
@@ -60,13 +62,8 @@ retired with its tables.
 
 ## Questions
 
-- Who will you play with, and do they have log-ins yet? Each player needs an
-  account, made in the Supabase dashboard, with Sevens ticked on the Access
-  page.
-- Should a slow turn time out, or should the host be able to skip a player
-  who left?
-- Keep the old game's chat, or leave it out since you are usually talking
-  anyway?
+- Is it right that whoever started a table can skip a player who left, with
+  no turn timer?
 
 ## Tasks
 

@@ -6955,7 +6955,6 @@
      this browser's, as the editor's size is. */
   const ROSTER_DAYS_KEY = 'rux.scheduler.roster-days';
   const availDaysBtn = document.getElementById('scheduler-avail-days');
-  const availRange = document.getElementById('scheduler-avail-range');
   let rosterBoth = false;
   try { rosterBoth = localStorage.getItem(ROSTER_DAYS_KEY) === '14'; } catch { /* one week */ }
 
@@ -7048,17 +7047,10 @@
     availEl.classList.toggle('scheduler-week--avail-both', count > 7);
     asideSlot?.classList.toggle('scheduler-aside--wide', count > 7);
 
-    // The head names the dates shown and offers the other count, only while the
-    // board shows two weeks; with one, the toolbar's own week label says it.
+    // The head offers the other count only while the board shows two weeks.
     const two = days > 7;
-    availRange.hidden = !two;
     availDaysBtn.hidden = !two;
     if (two) {
-      const fmt = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' });
-      const from = addDays(weekStart, first);
-      const to = addDays(weekStart, first + count - 1);
-      availRange.textContent = typeof fmt.formatRange === 'function'
-        ? fmt.formatRange(from, to) : `${fmt.format(from)} - ${fmt.format(to)}`;
       const words = rosterBoth ? 'Show one week' : 'Show both weeks';
       availDaysBtn.setAttribute('aria-pressed', String(rosterBoth));
       availDaysBtn.setAttribute('aria-label', words);

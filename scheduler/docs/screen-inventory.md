@@ -153,11 +153,10 @@ it is a companion view, not panel content, and it stays on until turned off.
 
 The grid and the panel can both be open. Only the panel is one at a time.
 
-With two weeks on the board the grid shows one of them, named under its title:
-the week the selected trip starts in, or with nothing selected the week holding
-today, else the first. Its head's days button shows both weeks, widening the
-pane from 20rem to 40rem so each day keeps its size, and the browser keeps that
-choice.
+With two weeks on the board the grid shows one of them: the week the selected
+trip starts in, or with nothing selected the week holding today, else the
+first. Its head's days button shows both weeks, widening the pane from 20rem to
+40rem so each day keeps its size, and the browser keeps that choice.
 
 ### The trip bar does not expand
 

@@ -1140,24 +1140,9 @@ button.scheduler-row-head__num::after {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-/* The title and, under it with two weeks on the board, the dates the roster
-   shows. It takes the head's free width, so the buttons sit together at the
-   end. */
-.scheduler-aside__titles {
-  display: flex;
-  flex-direction: column;
+  /* The head's free width, so the buttons sit together at the end. */
   flex: 1 1 auto;
   min-inline-size: 0;
-}
-/* `helper-text-01`, 12px, the size Carbon gives the line under a label, in
-   the secondary colour, so the pair fits the head's 40px. */
-.scheduler-aside__range {
-  font-size: var(--rux-helper-text-01-font-size);
-  line-height: var(--rux-helper-text-01-line-height);
-  letter-spacing: var(--rux-helper-text-01-letter-spacing);
-  color: var(--rux-text-secondary);
-  white-space: nowrap;
 }
 
 /* The trip editor's column, sized here as an app decision; overrides.css only

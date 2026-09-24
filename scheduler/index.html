@@ -493,13 +493,9 @@
                the close control; the toolbar's toggle opens it. -->
           <div class="scheduler-aside" id="scheduler-aside" hidden>
             <div class="scheduler-aside__head">
-              <!-- With two weeks on the board, the dates the roster shows go
-                   under its title, and the days button shows one week or both.
-                   data.js fills the dates and shows both only then. -->
-              <div class="scheduler-aside__titles">
-                <span class="scheduler-aside__title">Driver availability</span>
-                <span class="scheduler-aside__range" id="scheduler-avail-range" hidden></span>
-              </div>
+              <!-- With two weeks on the board the days button shows one week or
+                   both; data.js shows it only then. -->
+              <span class="scheduler-aside__title">Driver availability</span>
               <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-avail-days" aria-label="Show both weeks" aria-pressed="false" title="Show both weeks" hidden>
                 <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-open_in_full"/></svg>
               </button>

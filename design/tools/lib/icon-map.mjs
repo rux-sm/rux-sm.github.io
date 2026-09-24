@@ -72,6 +72,7 @@ export const ICONS = {
   'building': { material: 'apartment', rux: null },
   'bus': { material: 'directions_bus', rux: null },
   'calculator': { material: 'calculate', rux: null },
+  'car': { material: 'directions_car', rux: null },
   'calendar': { material: 'calendar_month', rux: null },
   'caret--down': { material: 'arrow_drop_down', rux: null },
   'caret--left': { material: 'arrow_left', rux: null },
@@ -98,6 +99,7 @@ export const ICONS = {
   'critical-severity': { material: 'change_history', rux: null },
   'currency': { material: 'paid', rux: null },  // A dollar inside a ring, in both families; `currency--dollar` is the bare sign.
   'currency--dollar': { material: 'attach_money', rux: null },
+  'delivery-truck': { material: 'local_shipping', rux: null },
   'diamond-fill': { material: 'diamond-fill', rux: null },  // Material draws the diamond; `square` is low-severity's.
   'document': { material: 'description', rux: null },
   'download': { material: 'download', rux: null },
@@ -128,6 +130,7 @@ export const ICONS = {
   'request-quote': { material: 'request_quote', rux: null },
   'route': { material: 'route', rux: null },  // Carbon draws no route; Material's is a path between two pins.
   'search': { material: 'search', rux: null },
+  'shuttle': { material: 'airport_shuttle', rux: null },
   'subtract': { material: 'remove', rux: null },
   'time': { material: 'schedule', rux: null },
   'trash-can': { material: 'delete', rux: null },

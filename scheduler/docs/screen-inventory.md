@@ -112,7 +112,7 @@ Three homes, and one rule for choosing.
 
 - **Trip and request detail go in the panel.** One editing surface beats
   two. A driver, a bus, a contact, a customer and a location are each edited
-  on their own page, `drivers.html?id=`, `buses.html?id=`,
+  on their own page, `drivers.html?id=`, `fleet.html?id=`,
   `contacts.html?id=`, `customers.html?id=` and `locations.html?id=`, because
   each is a list you go to and its record opens from that list;
   `docs/plans/site-page-pair.md` decides the shape they all take.

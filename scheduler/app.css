@@ -2684,6 +2684,37 @@ html:has(.scheduler-page[data-takeover]) {
   #scheduler-buses-rows td:nth-child(4),
   #scheduler-buses-rows td:nth-child(5) { display: none; }
 }
+/* The type's initial, where it has no drawing, sits on the disc as the
+   drawing would. */
+.scheduler-bus-disc__letter {
+  font-size: var(--rux-label-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: 1;
+}
+
+/* The Vehicle types dialog: a row per type, its name and drawing side by side
+   with the moves at the end, and how many units hold it under them. */
+.scheduler-types {
+  list-style: none;
+  margin: 0 0 var(--rux-spacing-03);
+  padding: 0;
+  display: grid;
+  gap: var(--rux-spacing-03);
+}
+.scheduler-types__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 8rem auto;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+}
+.scheduler-types__actions { display: flex; }
+.scheduler-types__held {
+  grid-column: 1 / -1;
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-label-01-font-size);
+}
+.scheduler-types__error:empty { display: none; }
+
 /* The bus's own colour as a disc, the size Carbon's small avatar is, so the
    list reads down the same edge the Drivers page does. The colour is the
    board's, set on the element; the icon sits on it in whichever of black or

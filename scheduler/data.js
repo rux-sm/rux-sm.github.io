@@ -113,6 +113,8 @@
 
   const UNASSIGNED = ' unassigned';
 
+  // A vehicle as every screen names it, "Coach 218" or "Van 12"; vehicles.js.
+  const vehicleName = bus => window.SchedulerVehicles?.label(bus) ?? `Unit ${bus?.number ?? ''}`.trim();
   const client = window.Rux?.account?.client
     ?? (window.supabase ? window.supabase.createClient(PROJECT, PUBLISHABLE, { auth: { persistSession: false } }) : null);
 
@@ -422,7 +424,7 @@
          the Mapbox token the Route tab looks drives up with. A refused read
          keeps what was there, as rux-ui does. */
       client.from('settings').select('key,value')
-        .in('key', ['billing-workflow-v1', 'yard-location-v1', 'mapbox-token-v1', 'requirements-v1'])
+        .in('key', ['billing-workflow-v1', 'yard-location-v1', 'mapbox-token-v1', 'requirements-v1', 'vehicle-types-v1'])
         .then(r => {
           if (r.error) return;
           const byKey = new Map((r.data || []).map(row => [row.key, row.value]));
@@ -431,6 +433,7 @@
           if (yard?.lat != null && yard?.lng != null) yardPlace = yard;
           if (typeof byKey.get('mapbox-token-v1') === 'string') mapboxToken = byKey.get('mapbox-token-v1');
           setRequirementList(byKey.get('requirements-v1'));
+          window.SchedulerVehicles?.set(byKey.get('vehicle-types-v1'));
         }),
     ]));
     // The fleet is never empty, so an empty one is a read the database refused,
@@ -1170,12 +1173,12 @@
         const trigger = el('button', 'rux--toggletip-button scheduler-row-head__num');
         trigger.type = 'button';
         trigger.setAttribute('aria-expanded', 'false');
-        trigger.setAttribute('aria-label', `Bus ${r.bus.number} details`);
+        trigger.setAttribute('aria-label', `${vehicleName(r.bus)} details`);
         trigger.textContent = String(r.bus.number);
         const pop = el('span', 'rux--popover');
         const content = el('span', 'rux--popover-content');
         const inner = el('div', 'rux--toggletip-content scheduler-bus-tip');
-        inner.appendChild(el('p', 'rux--toggletip-label', `Bus ${r.bus.number}`));
+        inner.appendChild(el('p', 'rux--toggletip-label', vehicleName(r.bus)));
         const spec = [
           [r.bus.capacity ? `${r.bus.capacity} pax` : null, r.bus.type].filter(Boolean).join(' · '),
           [r.bus.year, r.bus.make, r.bus.model].filter(Boolean).join(' '),
@@ -1198,7 +1201,7 @@
       if (!r.bus) head.title = 'Trips with no bus yet';
       if (r.bus) {
         head.title = [
-          `Bus ${r.bus.number}`,
+          vehicleName(r.bus),
           r.bus.capacity ? `${r.bus.capacity} pax` : null,
           r.bus.type,
           r.bus.ada_lift ? 'ADA lift' : null,
@@ -2199,7 +2202,7 @@
     for (const b of panelIndex.buses.values()) {
       if (b.status && b.status !== 'active' && String(b.id) !== String(currentId)) continue;
       out.push({
-        id: b.id, name: `Bus ${b.number}`,
+        id: b.id, name: vehicleName(b),
         detail: [b.capacity ? `${b.capacity} seats` : null, b.type].filter(Boolean).join(' · '),
         clash: clashText(leg, 'buses', b.id),
       });
@@ -2473,7 +2476,7 @@
     if (!held.length || !fleetRemoveModal) { apply(); return; }
     // What goes, in words: each bus by its number and each driver by name.
     const names = held.flatMap(b => [
-      b.busId && panelIndex.buses.get(b.busId) ? `Bus ${panelIndex.buses.get(b.busId).number}` : null,
+      b.busId && panelIndex.buses.get(b.busId) ? vehicleName(panelIndex.buses.get(b.busId)) : null,
       ...ROLES.filter(r => seatFilled(b.seats[r.role]))
         .map(r => panelIndex.driversById.get(b.seats[r.role].driverId)?.name),
     ]).filter(Boolean);
@@ -8412,7 +8415,7 @@
       r.cost !== null ? `${r.quantity ?? 1} × ${histUsd(r.cost)}` : null].filter(Boolean).join(' ')).join(' · ');
   }
 
-  const histBusName = id => `Bus ${panelIndex.buses.get(id)?.number ?? id}`;
+  const histBusName = id => (panelIndex.buses.get(id) ? vehicleName(panelIndex.buses.get(id)) : `Unit ${id}`);
   const histDriverName = id => panelIndex.driversById.get(id)?.name ?? id;
 
   // "Outbound · Bus 12 · Driver: Name ($300 · report 06:00) | …"

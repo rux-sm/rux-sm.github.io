@@ -1,19 +1,22 @@
 /* ==========================================================================
-   buses.js — THE BUSES PAGE
+   fleet.js — THE FLEET PAGE
    --------------------------------------------------------------------------
-   buses.html lists every bus. buses.html?id=<bus id> edits one and
-   buses.html?new makes one. Both read and write the tables rux-ui writes,
-   `buses` and `bus_out_of_service`, so both apps show the same fleet.
+   fleet.html lists every vehicle, a unit. fleet.html?id=<bus id> edits one
+   and fleet.html?new makes one. Both read and write the tables rux-ui writes,
+   `buses` and `bus_out_of_service`, so both apps show the same fleet; the
+   table keeps its name. A unit's type is one of the office's own list, which
+   the Vehicle types dialog edits, and vehicles.js names a unit everywhere.
 
    The list sorts itself rather than through js/data-table.js, because the
-   fleet's own order is by model year and two columns sort by the date they
-   describe, not by their text.
+   fleet's own order is by type and model year and two columns sort by the
+   date they describe, not by their text.
 
-   THE FLEET'S ORDER IS THE MODEL YEAR, newest first, buses of one year by
-   their number, and a bus with no year last. `buses.sort_order` carries it,
-   because rux-ui draws its rows from that column; Save renumbers the whole
-   fleet whenever the years no longer match the numbering, so the board and
-   rux-ui never disagree about which row is which.
+   THE FLEET'S ORDER IS THE TYPE, in the list's order, then the model year,
+   newest first, units of one year by their number, and no year last.
+   `buses.sort_order` carries it, because rux-ui draws its rows from that
+   column; a Save of a unit or of the types renumbers the whole fleet whenever
+   the order no longer matches the numbering, so the board and rux-ui never
+   disagree about which row is which.
 
    A bus is never deleted here, only set Inactive, so past trips keep the
    bus's number. Out of service is worked out from the dates, never stored:
@@ -128,7 +131,7 @@
     return box;
   }
 
-  const TYPES = [['Coach', 'Coach'], ['Van', 'Van']];
+  const Vehicles = window.SchedulerVehicles;
   const isActive = b => b.status !== 'inactive';
   // Both ends of a window count, so one day out is a window of that day twice.
   const outOn = (windows, when) => (windows || []).some(w => w.start_date <= when && w.end_date >= when);
@@ -154,8 +157,14 @@
     const digits = String(b.number ?? '').replace(/\D/g, '');
     return digits ? Number(digits) : Number.MAX_SAFE_INTEGER;
   };
+  // A type the list lacks sorts after every type it has.
+  const typeRank = b => {
+    const at = Vehicles.types.findIndex(t => t.name === b.type);
+    return at < 0 ? Vehicles.types.length : at;
+  };
   const fleetOrder = (a, b) =>
-    ((b.year ?? -Infinity) - (a.year ?? -Infinity) || 0)
+    (typeRank(a) - typeRank(b))
+    || ((b.year ?? -Infinity) - (a.year ?? -Infinity) || 0)
     || (numberOf(a) - numberOf(b))
     || String(a.number || '').localeCompare(String(b.number || ''));
 
@@ -182,9 +191,10 @@
     compliance: (a, b) => compliance(a).rank - compliance(b).rank,
   };
 
-  /* The bus's own colour as a disc. A bus may be any colour, so the icon on
-     it is black or white by the colour's own brightness, not by the theme. */
-  function disc(colour) {
+  /* The unit's own colour as a disc, wearing its type's drawing, or the type's
+     initial where it has none. A unit may be any colour, so the mark on it is
+     black or white by the colour's own brightness, not by the theme. */
+  function disc(colour, type) {
     const box = el('div', 'scheduler-bus-disc');
     box.setAttribute('aria-hidden', 'true');
     if (HEX.test(String(colour || ''))) {
@@ -193,7 +203,9 @@
       box.style.background = hex;
       box.style.color = (0.299 * r + 0.587 * g + 0.114 * bl) > 150 ? '#000000' : '#ffffff';
     }
-    box.appendChild(svgUse('#m-directions_bus', '16', '0 0 32 32'));
+    const icon = Vehicles.iconOf(type);
+    box.appendChild(icon ? svgUse(icon, '16', '0 0 32 32')
+      : el('span', 'scheduler-bus-disc__letter', String(type || 'U').trim().charAt(0).toUpperCase()));
     return box;
   }
 
@@ -258,14 +270,14 @@
       const which = el('td');
       const cell = el('div', 'scheduler-pair-cell');
       const lines = el('div', 'scheduler-pair-cell__lines');
-      const link = el('a', 'scheduler-pair-cell__name', b.number ? `Unit ${b.number}` : 'Unnumbered unit');
-      link.href = `buses.html?id=${encodeURIComponent(b.id)}`;
+      const link = el('a', 'scheduler-pair-cell__name', b.number ? Vehicles.label(b) : 'Unnumbered unit');
+      link.href = `fleet.html?id=${encodeURIComponent(b.id)}`;
       lines.appendChild(link);
       // The year is what the fleet is ordered by, so the row shows it.
-      const detail = [b.year || 'No year', [b.make, b.model].filter(Boolean).join(' ') || null, b.type]
+      const detail = [b.year || 'No year', [b.make, b.model].filter(Boolean).join(' ') || null]
         .filter(Boolean).join(' · ');
       lines.appendChild(el('span', 'scheduler-pair-cell__detail', detail));
-      cell.append(disc(b.color), lines);
+      cell.append(disc(b.color, b.type), lines);
       which.appendChild(cell);
 
       const seats = el('td', null, b.capacity ? String(b.capacity) : '—');
@@ -292,7 +304,8 @@
 
   // Search, sort and a row's click, which opens its bus. The list opens in
   // the fleet's own order, which a third press of a column returns to.
-  const view = pair.table({ sortKey: null, sortDir: 'none', draw: drawList });
+  const view = pair.table({ sortKey: null, sortDir: 'none', draw: drawList,
+    open: tr => `fleet.html?id=${encodeURIComponent(tr.dataset.id)}` });
 
   // The Show choice picks which buses the table holds.
   $('scheduler-buses-filter')?.addEventListener('change', e => {
@@ -397,7 +410,8 @@
     const set = (id, v) => { field(id).value = v ?? ''; };
     set('number', b.number);
     set('capacity', b.capacity == null ? '' : String(b.capacity));
-    set('type', TYPES.some(([v]) => v === b.type) ? b.type : 'Coach');
+    fillTypes(b.type);
+    set('type', b.type || Vehicles.types[0]?.name || '');
     set('year', b.year == null ? '' : String(b.year));
     set('make', b.make);
     set('model', b.model);
@@ -419,7 +433,7 @@
   }
 
   function drawTitle() {
-    const name = loaded?.number ? `Unit ${loaded.number}` : null;
+    const name = loaded?.number ? Vehicles.label(loaded) : null;
     $('scheduler-bus-h').textContent = name || 'New unit';
     document.title = `${name || 'New unit'} — Scheduler`;
     const tag = $('scheduler-bus-status-tag');
@@ -740,7 +754,7 @@
       loaded = null;
       loadedOut = [];
       out = [];
-      fillForm({ status: 'active', type: 'Coach' });
+      fillForm({ status: 'active', type: Vehicles.types[0]?.name || null });
     } else {
       loaded = buses.find(b => b.id === busId) || null;
       if (!loaded) return false;
@@ -803,7 +817,7 @@
       }
       const saved = await window.SchedulerPair.saveRecord(client, 'buses',
         { id, creating: !loaded, row, columns: BUS_COLUMNS });
-      if (!loaded) history.replaceState(null, '', `buses.html?id=${encodeURIComponent(id)}`);
+      if (!loaded) history.replaceState(null, '', `fleet.html?id=${encodeURIComponent(id)}`);
       loaded = saved;
       currentId = id;
       buses = [...buses.filter(b => b.id !== id), saved];
@@ -874,13 +888,132 @@
   // Leaving with unsaved changes, and a conflict found by Save.
   const guard = pair.guard({ editing, dirty, save, reload });
 
+  /* The Type select lists the office's types, and the unit's own type too
+     where the list has lost it, so opening a unit never changes it. */
+  function fillTypes(own) {
+    const select = field('type');
+    const names = Vehicles.types.map(t => [t.name, t.label || t.name]);
+    if (own && !names.some(([n]) => n === own)) names.push([own, own]);
+    select.replaceChildren(...names.map(([value, text]) => {
+      const option = el('option', 'rux--select-option', text);
+      option.value = value;
+      return option;
+    }));
+  }
+
+  /* ══ Vehicle types ══════════════════════════════════════════════════════
+     The office's own list, edited in a dialog opened from the list's
+     toolbar: a row per type with its name and its drawing, moved up or down,
+     and removed only while no unit holds it. Save writes the list, and a
+     renamed type is renamed on every unit and every trip that carries it. */
+  let typeRows = [];
+
+  function drawTypes() {
+    const host = $('scheduler-types-rows');
+    host.replaceChildren();
+    typeRows.forEach((t, i) => {
+      const row = el('li', 'scheduler-types__row');
+      const nameId = `scheduler-types-name-${i}`;
+      const name = el('input', 'rux--text-input');
+      name.id = nameId;
+      name.value = t.name;
+      name.setAttribute('aria-label', `Type ${i + 1} name`);
+      name.addEventListener('input', () => { t.name = name.value; });
+      const icon = el('select', 'rux--select-input');
+      icon.setAttribute('aria-label', `Type ${i + 1} drawing`);
+      for (const [key, value] of [['', 'Initial'], ...Object.entries(Vehicles.ICONS).map(([k, v]) => [k, v.label])]) {
+        const option = el('option', 'rux--select-option', value);
+        option.value = key;
+        icon.appendChild(option);
+      }
+      icon.value = t.icon || '';
+      icon.addEventListener('change', () => { t.icon = icon.value || null; });
+      const iconWrap = el('div', 'rux--select-input__wrapper');
+      iconWrap.append(icon, svgUse('#m-keyboard_arrow_down', '16', '0 0 32 32', 'rux--select__arrow'));
+      const nameWrap = el('div', 'rux--text-input__field-wrapper');
+      nameWrap.appendChild(name);
+
+      const held = buses.filter(b => b.type === t.was).length;
+      const button = (href, label, off, run) => {
+        const b = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md');
+        b.type = 'button';
+        b.setAttribute('aria-label', label);
+        b.title = label;
+        b.disabled = off;
+        if (off) b.classList.add('rux--btn--disabled');
+        b.appendChild(svgUse(href, '16', '0 0 32 32'));
+        b.addEventListener('click', run);
+        return b;
+      };
+      const move = by => { typeRows.splice(i + by, 0, typeRows.splice(i, 1)[0]); drawTypes(); };
+      const actions = el('div', 'scheduler-types__actions');
+      actions.append(
+        button('#m-arrow_upward', `Move ${t.name || 'this type'} up`, i === 0, () => move(-1)),
+        button('#m-arrow_downward', `Move ${t.name || 'this type'} down`, i === typeRows.length - 1, () => move(1)),
+        button('#m-delete', held ? `${held} ${held === 1 ? 'unit is' : 'units are'} this type, so it stays`
+          : `Remove ${t.name || 'this type'}`, held > 0, () => { typeRows.splice(i, 1); drawTypes(); }),
+      );
+      row.append(nameWrap, iconWrap, actions);
+      if (held) row.appendChild(el('span', 'scheduler-types__held', `${held} ${held === 1 ? 'unit' : 'units'}`));
+      host.appendChild(row);
+    });
+    $('scheduler-types-error').textContent = '';
+  }
+
+  $('scheduler-types-open')?.addEventListener('click', () => {
+    typeRows = Vehicles.types.map(t => ({ ...t, was: t.name }));
+    drawTypes();
+    window.Rux?.modal?.open?.('scheduler-types-modal');
+  });
+  $('scheduler-types-add')?.addEventListener('click', () => {
+    typeRows.push({ name: '', icon: null, was: null });
+    drawTypes();
+    $(`scheduler-types-name-${typeRows.length - 1}`)?.focus();
+  });
+
+  $('scheduler-types-save')?.addEventListener('click', async () => {
+    const error = $('scheduler-types-error');
+    const rows = typeRows.map(t => ({ ...t, name: String(t.name || '').trim() })).filter(t => t.name);
+    const names = rows.map(t => t.name.toLowerCase());
+    if (!rows.length) { error.textContent = 'Keep at least one type.'; return; }
+    if (new Set(names).size !== names.length) { error.textContent = 'Two types have the same name.'; return; }
+    const save = $('scheduler-types-save');
+    save.disabled = true;
+    try {
+      // A renamed type is renamed where it is held first, so no unit or trip
+      // is left holding a name the list has lost.
+      for (const t of rows.filter(r => r.was && r.was !== r.name)) {
+        for (const [table, column] of [['buses', 'type'], ['trips', 'vehicle_type']]) {
+          const { error: e } = await client.from(table).update({ [column]: t.name }).eq(column, t.was);
+          if (e) throw new Error(e.message);
+        }
+        for (const b of buses) if (b.type === t.was) b.type = t.name;
+      }
+      await Vehicles.save(client, rows.map(({ was, ...t }) => t));
+      // The fleet's order follows the list's, in `sort_order` too.
+      for (const r of renumbering(buses)) {
+        const { error: e } = await client.from('buses').update({ sort_order: r.sort_order }).eq('id', r.id);
+        if (e) throw new Error(e.message);
+        buses.find(b => b.id === r.id).sort_order = r.sort_order;
+      }
+      window.Rux?.modal?.close?.('scheduler-types-modal');
+      drawList();
+      say('success', 'Vehicle types saved.', '');
+    } catch (e) {
+      error.textContent = `The types did not save. ${e.message}`;
+    } finally {
+      save.disabled = false;
+    }
+  });
+
   /* ══ Start ══════════════════════════════════════════════════════════════ */
   pair.start(async signedIn => {
     client = signedIn;
+    await Vehicles.read(client).catch(() => {});
     if (!editing) { await loadList(); return; }
     if (!(await loadBus())) {
       say('info', 'That unit is not in the list', 'Pick a unit from the list below.');
-      history.replaceState(null, '', 'buses.html');
+      history.replaceState(null, '', 'fleet.html');
       $('scheduler-buses-h').hidden = false;
       $('scheduler-buses-table').hidden = false;
       drawList();

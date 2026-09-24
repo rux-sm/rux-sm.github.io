@@ -22,12 +22,13 @@ vehicles adds its types without a code change.
   with Car / SUV stored as `Car`, since rux-ui's type select already stores
   `Car`.
 - **Each type is a name and an icon,** the icon picked from a fixed set of
-  drawings: bus, shuttle, car, truck and trailer. A type with no icon shows
+  drawings: bus, shuttle, car and truck, the Material drawings Design pairs
+  with a Carbon icon; Carbon has no trailer. A type with no icon shows
   its initial, as a requirement the app has no drawing for does.
 - **The list is edited in a Vehicle types modal** opened from the Fleet page's
-  toolbar, since the scheduler has no Settings page yet: a contained list
-  with an Add row, and each row's menu holding Rename, Move up, Move down and
-  Remove. When a Settings page is built, the list moves there.
+  toolbar, since the scheduler has no Settings page yet: a row per type with
+  its name and drawing typed in place, buttons to move it up or down or
+  remove it, and Add type under them. When a Settings page is built, the list moves there.
 - **Renaming a type renames it on every vehicle and trip** that carries it,
   in the same save, so no vehicle is left holding a name the list lost.
 - **A type in use cannot be removed;** Remove says how many vehicles hold it.
@@ -50,7 +51,8 @@ vehicles adds its types without a code change.
 - **The table keeps its name, `buses`,** because rux-ui writes it too.
 - **One form for every type.** A van leaves Sleeper and ADA lift unticked.
 - **No type filter.** The row already shows the type, and search finds it.
-- **The list's disc and the board's row wear the type's icon.**
+- **The list's disc wears the type's icon.** The board's row does not, since
+  an icon under the number would set every row's height.
 - **The fleet is ordered by type in the list's order, then model year newest
   first,** so the board lists the coaches together and a van never sits
   between two of them. The order still lands in `buses.sort_order`, which
@@ -69,18 +71,5 @@ None open.
 
 ## Tasks
 
-- [ ] Write the `vehicle-types-v1` row with the four starting types, through
-      the Supabase connection, shown to rux first.
-- [ ] Load the type list and add the label function in `scheduler/data.js`,
-      and use them wherever a vehicle is named.
-- [ ] Build the Vehicle types modal, with rename carried to vehicles and trips
-      and removal blocked while a type is in use.
-- [ ] Rename the page to `fleet.html` and `fleet.js`, leave `buses.html`
-      forwarding, and point every page's nav at it.
-- [ ] Add the shuttle, car, truck and trailer icons to Design's icon map and
-      run the full check.
-- [ ] Order the fleet by type, then year, on the page and in `sort_order`.
 - [ ] Make rux-ui's type select read `vehicle-types-v1`, after reading its
       own `CLAUDE.md`.
-- [ ] Update `scheduler/docs/screen-inventory.md` and
-      `scheduler/docs/database-inventory.md` to the new words and types.

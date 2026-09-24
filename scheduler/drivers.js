@@ -607,7 +607,7 @@
     const section = $('scheduler-driver-trips-section');
     const list = $('scheduler-driver-trips');
     const { data, error } = await client.from('trip_drivers')
-      .select('role,trip_assignments(leg,buses(number),trips(id,trip_ref,destination,customer,start_date,end_date,return_start_date,return_end_date,cancelled_at))')
+      .select('role,trip_assignments(leg,buses(number,type),trips(id,trip_ref,destination,customer,start_date,end_date,return_start_date,return_end_date,cancelled_at))')
       .eq('driver_id', loaded.id);
     section.hidden = false;
     list.replaceChildren();
@@ -620,7 +620,7 @@
       const from = String((back ? t.return_start_date : t.start_date) || '').slice(0, 10);
       const to = String((back ? (t.return_end_date || t.return_start_date) : (t.end_date || t.start_date)) || '').slice(0, 10);
       if (!ISO.test(from) || (to || from) < now) return null;
-      return { t, from, to: to || from, leg: a.leg, bus: a.buses?.number, role: r.role };
+      return { t, from, to: to || from, leg: a.leg, bus: a.buses, role: r.role };
     }).filter(Boolean).sort((a, b) => a.from.localeCompare(b.from));
 
     if (error || !legs.length) {
@@ -641,7 +641,7 @@
       const detail = [
         l.t.customer,
         l.t.return_start_date ? LEG[l.leg] || null : null,
-        l.bus ? `Bus ${l.bus}` : 'No bus',
+        l.bus?.number != null ? window.SchedulerVehicles.label(l.bus) : 'No bus',
         l.role && l.role !== 'driver' ? sentence(l.role) : null,
       ].filter(Boolean).join(' · ');
       lines.appendChild(el('span', 'scheduler-pair-item__detail', detail));

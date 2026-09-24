@@ -7106,7 +7106,8 @@
   };
   gridEl?.addEventListener('mouseover', e => {
     const bar = e.target.closest('.scheduler-bar[data-trip-id]');
-    if (!bar || !canPeek()) return;
+    // The trip in the editor has no card to peek at; its panel is open.
+    if (!bar || !canPeek() || isEditorBar(bar)) return;
     clearTimeout(unpeekTimer);
     if (bar === peekWant || bar === ((peekBar?.isConnected ? peekBar : null) ?? selectedBar())) return;
     peekWant = bar;
@@ -9564,6 +9565,10 @@
     // Add update is always the last slot, after the person's own choices.
     slots.push('add_update');
     const trip = panelIndex.trips.get(bar.dataset.tripId);
+    /* The trip open in the editor keeps only its slots: the panel beside it
+       already shows its updates, and a card would stand out from under the
+       panel with nothing to point at. */
+    const carded = !!trip && !isEditorBar(bar);
     const key = [bar.dataset.tripId, bar.dataset.leg, bar.dataset.itineraryId,
       bar.dataset.assignmentId, bar.dataset.busId, bar.dataset.needHotel,
       bar.dataset.hotelBooked, isEditorBar(bar), slots.join(), cardKey(trip)].join('|');
@@ -9594,8 +9599,8 @@
       if (why) btn.setAttribute('aria-disabled', 'true');
       btn.appendChild(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '16', '0 0 32 32'));
       return btn;
-    }), ...(trip ? [drawCard(trip)] : []));
-    barShortcuts.toggleAttribute('data-card', !!trip);
+    }), ...(carded ? [drawCard(trip)] : []));
+    barShortcuts.toggleAttribute('data-card', carded);
   }
 
   /* Add update opens the trip on its Updates tab with the box in hand; on the

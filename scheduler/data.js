@@ -2644,6 +2644,55 @@
     return item;
   }
 
+  /* ASSIGN BEST fills a leg's empty seats with the drivers the picker lists
+     first: Driver seats on every bus before co-drivers and relief, each the
+     top free driver not already in a seat on the leg. It only fills the form,
+     so Save or Reset decides. It waits for the read of who is free, since a
+     ranking without it would offer a driver who is away. */
+  const emptySeats = leg => ROLES.flatMap(r => (editing?.fleet?.[leg] ?? [])
+    .filter(b => (r.role === 'driver' || b.seats[r.role].on) && !b.seats[r.role].driverId)
+    .map(b => b.seats[r.role]));
+
+  function assignBestButton(leg) {
+    const btn = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm', 'Assign best');
+    btn.type = 'button';
+    btn.id = `scheduler-fleet-${leg}-best`;
+    btn.dataset.fleetBest = leg;
+    const why = !emptySeats(leg).length ? 'Every seat has a driver'
+      : !fleetClashes ? 'Checking who is free…' : null;
+    if (why) btn.disabled = true;
+    btn.title = why ?? 'Fill the empty seats with the top free drivers';
+    return btn;
+  }
+
+  function assignBest(leg) {
+    const seats = emptySeats(leg);
+    const fit = fleetClashes?.[leg];
+    if (!seats.length || !fit) return;
+    const taken = new Set((editing.fleet[leg] ?? []).flatMap(b => ROLES
+      .filter(r => r.role === 'driver' || b.seats[r.role].on)
+      .map(r => b.seats[r.role].driverId).filter(id => id != null).map(String)));
+    const free = rankDrivers([...panelIndex.driversById.values()]
+      .filter(d => !d.status || d.status === 'active'), fit)
+      .filter(r => !r.busy && !taken.has(String(r.d.id)));
+    let filled = 0;
+    for (const seat of seats) {
+      const next = free.shift();
+      if (!next) break;
+      Object.assign(seat, { driverId: next.d.id, status: 'off', statusDirty: false });
+      filled++;
+    }
+    drawFleet(`scheduler-fleet-${leg}-best`);
+    refreshDirty();
+    if (!filled) toast('warning', 'No free drivers for the empty seats');
+    else toast('info', `Filled ${filled} ${filled === 1 ? 'seat' : 'seats'}`,
+      filled < seats.length ? `${seats.length - filled} still empty: no one else is free. Check, then Save.` : 'Check them, then Save.');
+  }
+  panelFleet?.addEventListener('click', e => {
+    const btn = e.target.closest?.('[data-fleet-best]');
+    if (btn && !btn.disabled) assignBest(btn.dataset.fleetBest);
+  });
+
   /* Draws the tab from the model. `focusId` names the control to focus after
      a redraw that replaced the one in use. */
   function drawFleet(focusId) {
@@ -2661,7 +2710,7 @@
       buses.forEach((b, i) => tiles.appendChild(busGroup(leg, b, i, buses.length, dups)));
       body.appendChild(tiles);
       const title = !split ? 'Buses' : leg === 'outbound' ? 'Drop-off buses' : 'Pick-up buses';
-      const sec = section(title, body);
+      const sec = section(title, body, assignBestButton(leg));
       sec.dataset.fleetSection = leg;
       sec.hidden = leg === 'return' && !split;
       panelFleet.appendChild(sec);

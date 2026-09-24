@@ -3011,11 +3011,23 @@ html:has(.scheduler-page[data-takeover]) {
    two columns, a section never split between them. */
 .scheduler-page[data-editor="wide"] { --scheduler-editor-w: var(--scheduler-editor-wide-w); }
 @media (min-width: 42rem) {
+  /* A 1px rule parts the columns in place of the rules between sections:
+     those would open the second column with a line the first does not have,
+     wherever the balancing happened to start it. The sections part by 32px
+     instead, and the margin opening a column is dropped at the break, so both
+     columns start level. */
   .scheduler-page[data-editor="wide"] #scheduler-panel-body > .rux--tab-content {
     columns: 2;
-    column-gap: var(--rux-spacing-07);
+    column-gap: var(--rux-spacing-09);
+    column-rule: 1px solid var(--rux-border-subtle-01);
   }
   .scheduler-page[data-editor="wide"] #scheduler-panel-body > .rux--tab-content > * {
     break-inside: avoid;
+  }
+  .scheduler-page[data-editor="wide"] #scheduler-panel-body .rux--tab-content > * + .scheduler-panel-section::before {
+    content: none;
+  }
+  .scheduler-page[data-editor="wide"] #scheduler-panel-body .rux--tab-content > .scheduler-panel-section:not(:first-child) {
+    margin-block-start: var(--rux-spacing-07);
   }
 }

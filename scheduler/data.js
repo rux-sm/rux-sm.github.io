@@ -6561,16 +6561,12 @@
         linesNote.hidden = !linesNote.textContent;
       };
       redrawLines = drawLines;
-      const linesBody = el('div', 'rux--stack-vertical rux--stack-scale-3');
-      linesBody.append(lineList.list, linesNote);
-      panelBilling.appendChild(section('Quote lines', linesBody));
-
       /* The description the office pastes into its QuickBooks estimate. It
-         sits under the price because the two are the halves of one line item
-         there, and it carries the block alone for the reason `qbDescription`
-         gives. A browser that refuses the clipboard says so, because a copy
+         ends the Quote lines section, under the lines it copies, so the larger
+         editor's columns never part them, and it carries the block alone for
+         the reason `qbDescription` gives. A browser that refuses the clipboard says so, because a copy
          button that goes quiet is worse than one that reports a failure. */
-      const qbButton = el('button', 'rux--btn rux--btn--tertiary rux--layout--size-md', 'Copy for QuickBooks');
+      const qbButton = el('button', 'rux--btn rux--btn--tertiary rux--layout--size-md scheduler-quickbooks', 'Copy for QuickBooks');
       qbButton.type = 'button';
       qbButton.id = 'scheduler-f-quickbooks';
       qbButton.addEventListener('click', async () => {
@@ -6581,7 +6577,10 @@
           toast('error', 'Could not copy that', 'The browser would not reach the clipboard.');
         }
       });
-      panelBilling.appendChild(section(null, qbButton));
+      const linesBody = el('div', 'rux--stack-vertical rux--stack-scale-3');
+      linesBody.append(lineList.list, linesNote, qbButton);
+      panelBilling.appendChild(section('Quote lines', linesBody));
+
 
       /* Payments use the same `rowList` as PO and invoice, named by their
          method, with no switch: a receipt has no milestone to gate. */

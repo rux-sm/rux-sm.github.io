@@ -1528,6 +1528,9 @@ button.scheduler-row-head__num::after {
 .scheduler-updates__body { white-space: pre-wrap; overflow-wrap: anywhere; }
 .scheduler-updates__meta { color: var(--rux-text-secondary); margin-block-start: var(--rux-spacing-02); }
 .scheduler-updates-empty { color: var(--rux-text-secondary); }
+/* Copy for QuickBooks ends the Quote lines, 16px under the last of them
+   rather than the list's own 8px, at its own width. */
+.scheduler-quickbooks { margin-block-start: var(--rux-spacing-03); justify-self: start; align-self: flex-start; }
 /* The update prompt: what changed, the box, then the quick reasons in a row. */
 .scheduler-prompt-changes { color: var(--rux-text-secondary); margin-block-end: var(--rux-spacing-05); }
 .scheduler-prompt-reasons { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); margin-block-start: var(--rux-spacing-05); }

@@ -37,9 +37,10 @@
 }
 
 /* `.rux--text-area` sets no width, so inside its flex wrapper it sits at the
-   browser's default `cols` width; it grows to fill the wrapper, which is
-   `inline-size: 100%`. */
-.rux--side-panel .rux--text-area { flex: 1 1 auto; }
+   browser's default `cols` width; in a panel or a modal it grows to fill the
+   wrapper, which is `inline-size: 100%`. */
+.rux--side-panel .rux--text-area,
+.rux--modal .rux--text-area { flex: 1 1 auto; }
 
 /* Notes sizes itself to its text (data.js), so its drag handle comes off. */
 #scheduler-f-notes { resize: none; }

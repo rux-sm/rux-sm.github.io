@@ -7021,6 +7021,127 @@
     presenceTell();
   }
 
+  /* ── The update prompt ── A save that changes something the customer would
+     ask about asks for a line for the trip's updates first: the dates, the
+     times or route, the destination, the customer or booking contact, the
+     quote, the contract, a PO, an invoice or a payment. The buses, the drivers
+     and the bar's colour ask nothing, because they are the office's own
+     arrangements, and a new trip asks nothing. `customerChange` names what
+     changed, a phrase each, and its first phrase is the line the box comes
+     filled with. */
+  function customerChange(patch) {
+    const said = [];
+    const keys = [];
+    const has = (...k) => k.some(x => x in patch);
+    const now = k => (k in patch ? patch[k] : editing.before[k]);
+    const day = d => parseISO(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    const say = (key, text) => { keys.push(key); said.push(text); };
+    if (has('start_date', 'end_date', 'return_start_date', 'return_end_date')) {
+      const from = now('start_date');
+      const to = now('end_date') || from;
+      say('dates', from ? `Moved the dates to ${day(from)}${to && to !== from ? `–${day(to)}` : ''}` : 'Changed the dates');
+    }
+    if (has('destination')) say('destination', patch.destination ? `Changed the destination to ${patch.destination}` : 'Changed the destination');
+    if (has('trip_type') || routePlan().work) say('route', 'Changed the times or route');
+    if (has('customer')) say('customer', patch.customer ? `Changed the customer to ${patch.customer}` : 'Changed the customer');
+    if (has('booking_contact_id', 'booking_contact_name', 'booking_contact_phone', 'booking_contact_email')) {
+      say('contact', 'booking_contact_name' in patch && patch.booking_contact_name
+        ? `Changed the booking contact to ${patch.booking_contact_name}` : 'Changed the booking contact');
+    }
+    if (has('quoted_price') || linesPatch()?.work) {
+      say('quote', patch.quoted_price != null ? `Quoted ${usd(Number(patch.quoted_price))}` : 'Changed the quote');
+    }
+    if (has('contract_status', 'contract_note')) say('contract', patch.contract_status === 'Signed' ? 'Contract signed' : 'Changed the contract');
+    const po = posPatch();
+    if (po?.work || has('po_received', 'po_ref', 'po_amount')) {
+      const added = po?.inserts.find(r => r.ref);
+      say('po', added ? `Added PO ${added.ref}` : 'Changed the PO');
+    }
+    const inv = invoicesPatch();
+    if (inv?.work || has('invoice_status', 'invoiced', 'invoice_number')) {
+      const added = inv?.inserts.find(r => r.number);
+      say('invoice', added ? `Added invoice ${added.number}` : 'Changed the invoice');
+    }
+    const pay = paymentsPatch();
+    if (pay?.work) {
+      const added = pay.inserts.find(r => Number(r.amount) > 0);
+      say('payment', added ? `Recorded a payment of ${usd(Number(added.amount))}` : 'Changed a payment');
+    }
+    return said.length ? { said, keys, line: said[0] } : null;
+  }
+
+  /* The prompt, as a step Save waits on. It resolves `{ kind, body }`: kind
+     `update` from Save with update, or `nothing` from Save, no update, whose
+     row keeps the change's own line and is never drawn, so the bar's age still
+     runs from the last real update. Closing the box resolves null, and Save
+     goes back to the trip unsaved. The change's own line is the first quick
+     reason, so picking another loses nothing. */
+  const updateModal = document.getElementById('scheduler-update-modal');
+  const updateText = document.getElementById('scheduler-update-text');
+  const updateSave = document.getElementById('scheduler-update-save');
+  const UPDATE_REASONS = ['Follow-up email sent', 'Called the customer', 'Quote sent', 'Waiting on a PO', 'Customer confirmed'];
+  let updateSettle = null;
+  let updateLine = '';
+  function askForUpdate(change) {
+    if (!updateModal || !updateText) return Promise.resolve({ kind: 'nothing', body: change.line, keys: change.keys });
+    const phrases = change.said.map(p => p.charAt(0).toLowerCase() + p.slice(1));
+    const list = phrases.length > 1 ? `${phrases.slice(0, -1).join(', ')} and ${phrases.at(-1)}` : phrases[0];
+    document.getElementById('scheduler-update-what').textContent = `You ${list}.`;
+    updateText.value = updateLine = change.line;
+    const tags = [change.line, ...UPDATE_REASONS.filter(r => r !== change.line)].map(r => {
+      const tag = el('button', 'rux--tag rux--tag--selectable rux--layout--size-md');
+      tag.type = 'button';
+      tag.appendChild(el('span', 'rux--tag__label', r));
+      tag.addEventListener('click', () => { updateText.value = r; pickTag(tag); updateSave.disabled = false; });
+      return tag;
+    });
+    const pickTag = picked => tags.forEach(t => {
+      t.setAttribute('aria-pressed', String(t === picked));
+      t.classList.toggle('rux--tag--selectable-selected', t === picked);
+    });
+    pickTag(tags[0]);
+    document.getElementById('scheduler-update-reasons').replaceChildren(...tags);
+    updateSave.disabled = false;
+    return new Promise(resolve => {
+      updateSettle = answer => { updateSettle = null; resolve(answer && { ...answer, keys: change.keys }); };
+      window.Rux?.modal?.open?.(updateModal);
+      updateText.focus();
+      updateText.setSelectionRange(updateText.value.length, updateText.value.length);
+    });
+  }
+  const answerUpdate = answer => {
+    const settle = updateSettle;
+    updateSettle = null;
+    window.Rux?.modal?.close?.(updateModal);
+    settle?.(answer);
+  };
+  updateText?.addEventListener('input', () => { updateSave.disabled = !updateText.value.trim(); });
+  updateSave?.addEventListener('click', () => {
+    const body = updateText.value.trim();
+    if (body) answerUpdate({ kind: 'update', body });
+  });
+  document.getElementById('scheduler-update-skip')?.addEventListener('click', () => {
+    answerUpdate({ kind: 'nothing', body: updateLine });
+  });
+  updateModal?.addEventListener('rux:modal-closed', () => updateSettle?.(null));
+
+  // The prompt's answer, written once the save has landed. A failure is logged
+  // and reported, and never undoes the save.
+  async function writeUpdate(tripId, answer) {
+    try {
+      const actor = await actorName()
+        ?? (await Promise.resolve(window.Rux?.account?.person?.()).catch(() => null))?.name ?? null;
+      const { error } = await withTimeout(client.from('trip_updates')
+        .insert({ trip_id: tripId, body: answer.body, kind: answer.kind, actor_name: actor, changes: answer.keys })
+        .then(r => r));
+      if (error) throw new Error(error.message);
+      return true;
+    } catch (err) {
+      console.warn('The update was not written:', err);
+      return false;
+    }
+  }
+
   /* The trip changed under the editor. Reload trip drops the editor's changes
      and opens the trip as it is now; Save anyway saves over it and then runs
      what the save was for; closing the box keeps editing. */
@@ -7506,6 +7627,10 @@
         return false;
       }
     }
+    // A change the customer would ask about asks for its update first.
+    const change = creating ? null : customerChange(patch);
+    const answer = change ? await askForUpdate(change) : null;
+    if (change && !answer) return false;
     /* The trip as it stands, for the history entry to diff against. A read
        that fails leaves `historyBefore` undefined, and the save unrecorded. */
     let historyBefore;
@@ -7642,10 +7767,12 @@
 
       if (fleet?.work) await saveFleet(tripId, write, fleet);
       recordThisSave(tripId);
+      const updateLost = answer ? !(await writeUpdate(tripId, answer)) : false;
       // Read back rather than trusting the write, as the drag does.
       await show();
       const fields = Object.keys(patch).length;
-      if (unlinked.length) toast('warning', creating ? 'Trip created.' : 'Saved.',
+      if (updateLost) toast('warning', 'Saved, but the update was not added.', 'Add it from the Updates section on the Details tab.');
+      else if (unlinked.length) toast('warning', creating ? 'Trip created.' : 'Saved.',
         `${unlinked.join(', ')} could not be added to the contacts list, so the trip keeps its earlier link.`);
       else if (creating) toast('success', onBus ? 'Trip created on its bus.' : 'Trip created. It is in the Unassigned row until it has a bus.');
       else toast('success', fields ? `Saved ${fields} change${fields === 1 ? '' : 's'}.` : 'Saved.');

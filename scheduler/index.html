@@ -1222,6 +1222,39 @@
     </div>
   </div>
 
+  <!-- Asked when Save changes something the customer would ask about. data.js
+       names the change and fills the line; Save with update writes it to the
+       trip's updates, Save, no update saves without one, and closing the box
+       goes back to the trip unsaved. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-update-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-update-h" aria-describedby="scheduler-update-what" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-update-h">Add an update</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Back to the trip, not saved" title="Back to the trip, not saved" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <p class="rux--type-body-compact-01 scheduler-prompt-changes" id="scheduler-update-what"></p>
+        <div class="rux--form-item">
+          <div class="rux--text-area__label-wrapper">
+            <label class="rux--label" for="scheduler-update-text">Update</label>
+          </div>
+          <div class="rux--text-area__wrapper">
+            <textarea id="scheduler-update-text" class="rux--text-area" rows="2"></textarea>
+          </div>
+        </div>
+        <div class="scheduler-prompt-reasons" id="scheduler-update-reasons" role="group" aria-label="Quick reasons"></div>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" id="scheduler-update-skip">Save, no update</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-update-save">Save with update</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Fewer buses on the Fleet tab, when a bus that goes has a bus or a driver
        on it. Nothing is written until Save; keeping the buses puts the count
        back. data.js fills the sentence. -->

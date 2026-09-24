@@ -24,9 +24,11 @@ standing facts about the trip. No note in the table contains a newline.
   sent, a quote signed, a PO received, a date the customer moved.
 - **The prompt fires on a customer-facing change only:** the dates, the times,
   the route, the destination, the customer and booking contact, the quoted
-  price and quote lines, confirmed, the contract, a PO, an invoice, a payment
-  and a cancellation. The buses, the drivers, their statuses and the bar's
-  colour ask nothing, because they are the office's own arrangements.
+  price and quote lines, the contract, a PO, an invoice and a payment, which
+  between them decide confirmed. A new trip asks nothing. A cancellation
+  already asks its reason, and that reason is written as an update. The
+  buses, the drivers, their statuses and the bar's colour ask nothing,
+  because they are the office's own arrangements.
 - **The prompt's box comes filled with a line naming the change,** such as
   "Added PO 4512", which the person keeps or rewrites, and quick reasons,
   such as "Follow-up email sent", spell the common ones one way. The change's
@@ -87,8 +89,7 @@ None open.
 
 ## Tasks
 
-- [ ] Add the prompt to Save over the customer-facing changes, with the line
-  filled in, the quick reasons and the two Save buttons.
+- [ ] Write the cancel dialog's reason to the trip's updates.
 - [ ] Replace the bar's notes row with the icon row, put the update icon at
   the drivers row's end, and make the shortcut bar the one card, updates
   below its icons, Dismiss an icon at the reminder row's end and Add update

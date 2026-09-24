@@ -1374,6 +1374,9 @@ button.scheduler-row-head__num::after {
 .scheduler-updates__body { white-space: pre-wrap; overflow-wrap: anywhere; }
 .scheduler-updates__meta { color: var(--rux-text-secondary); margin-block-start: var(--rux-spacing-02); }
 .scheduler-updates-empty { color: var(--rux-text-secondary); }
+/* The update prompt: what changed, the box, then the quick reasons in a row. */
+.scheduler-prompt-changes { color: var(--rux-text-secondary); margin-block-end: var(--rux-spacing-05); }
+.scheduler-prompt-reasons { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); margin-block-start: var(--rux-spacing-05); }
 
 /* A section that follows anything on its tab opens with a 1px rule, 32px under
    what precedes it and 24px over its heading. Carbon has no rule for rules in a

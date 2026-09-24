@@ -366,7 +366,7 @@
     'trip_stops(id,position,leg,type,label,name,address,lat,lng,mapbox_id,depart_prev,arrive,spot,'
       + 'depart_prev_date,arrive_date,spot_date,miles,drive,miles_source,drive_source)',
     // What was said to the customer, for the bar's follow-up mark and its card.
-    'trip_updates(id,created_at,actor_name,body,kind)',
+    'trip_updates(id,created_at,actor_name,body,kind,edited_at)',
   ].join(',');
 
   /* A hung connection never rejects, so a request races this timeout and the
@@ -3339,15 +3339,17 @@
      `trip_updates` without saving the trip, so an update never waits on the
      rest of the form, and a new trip has no id to hang one on until it is
      saved. A `nothing` row marks a skipped prompt and is not drawn; an
-     `imported` row was copied out of the old notes, with its date alone and no
-     author. */
-  const UPDATE_COLUMNS = 'id,created_at,actor_name,body,kind';
+     `imported` row was copied out of the old notes, so it has a date and no
+     time. An update whose words were changed says so. */
+  const UPDATE_COLUMNS = 'id,created_at,actor_name,body,kind,edited_at';
   function updateStamp(u) {
     const at = new Date(u.created_at);
     const opts = { month: 'short', day: 'numeric' };
     if (at.getFullYear() !== new Date().getFullYear()) opts.year = 'numeric';
-    if (u.kind === 'imported') return `${at.toLocaleDateString(undefined, opts)} · From the old notes`;
-    return `${at.toLocaleString(undefined, { ...opts, hour: 'numeric', minute: '2-digit' })} · ${u.actor_name || 'Someone'}`;
+    const when = u.kind === 'imported' ? at.toLocaleDateString(undefined, opts)
+      : at.toLocaleString(undefined, { ...opts, hour: 'numeric', minute: '2-digit' });
+    return [when, u.actor_name || (u.kind === 'imported' ? 'From the old notes' : 'Someone'),
+      u.edited_at ? 'edited' : null].filter(Boolean).join(' · ');
   }
 
   /* The Updates tab: Add an update, then the list. Its name carries how many
@@ -3360,13 +3362,89 @@
     const status = el('p', 'rux--type-body-compact-01 scheduler-updates-empty');
     let rows = [];
     if (updatesLabel) updatesLabel.textContent = 'Updates';
-    const draw = () => {
-      list.replaceChildren(...rows.filter(u => u.kind !== 'nothing').map(u => {
-        const li = el('li', 'scheduler-updates__item');
-        li.append(el('div', 'rux--type-body-compact-01 scheduler-updates__body', u.body),
-          el('div', 'rux--type-label-01 scheduler-updates__meta', updateStamp(u)));
+    /* Each update has a menu of Edit and Delete. Edit turns its words into a
+       box with Cancel and Save; Delete asks on the row itself before the row
+       goes. Either writes at once, like Add update, and the board reads it. */
+    let changing = null;   // { id, mode: 'edit' | 'delete' }
+    const small = (cls, text) => {
+      const b = el('button', `rux--btn ${cls} rux--btn--sm`, text);
+      b.type = 'button';
+      return b;
+    };
+    const change = async (u, query, fail) => {
+      try {
+        const { data, error: failed } = await withTimeout(query.then(r => r));
+        if (failed) throw new Error(failed.message);
+        rows = data ? rows.map(r => (r.id === u.id ? data : r)) : rows.filter(r => r.id !== u.id);
+        changing = null;
+        draw();
+        show();
+      } catch (err) {
+        console.warn(fail, err);
+        toast('error', fail, String(err?.message ?? err));
+        draw();
+      }
+    };
+    const itemOf = u => {
+      const li = el('li', 'scheduler-updates__item');
+      const text = el('div', 'scheduler-updates__text');
+      li.appendChild(text);
+      if (changing?.id === u.id && changing.mode === 'edit') {
+        const edit = el('textarea', 'rux--text-area');
+        edit.rows = 2;
+        edit.value = u.body;
+        edit.setAttribute('aria-label', 'Update');
+        const wrapEdit = el('div', 'rux--text-area__wrapper');
+        wrapEdit.appendChild(edit);
+        const cancel = small('rux--btn--ghost', 'Cancel');
+        const keep = small('rux--btn--tertiary', 'Save');
+        cancel.addEventListener('click', () => { changing = null; draw(); });
+        edit.addEventListener('input', () => { keep.disabled = !edit.value.trim() || edit.value.trim() === u.body; });
+        keep.disabled = true;
+        keep.addEventListener('click', () => {
+          keep.disabled = true;
+          change(u, client.from('trip_updates').update({ body: edit.value.trim(), edited_at: new Date().toISOString() })
+            .eq('id', u.id).select(UPDATE_COLUMNS).single(), 'The update was not changed.');
+        });
+        const actions = el('div', 'scheduler-updates__actions');
+        actions.append(cancel, keep);
+        text.append(wrapEdit, actions);
+        requestAnimationFrame(() => { edit.focus(); edit.setSelectionRange(edit.value.length, edit.value.length); });
         return li;
+      }
+      text.append(el('div', 'rux--type-body-compact-01 scheduler-updates__body', u.body),
+        el('div', 'rux--type-label-01 scheduler-updates__meta', updateStamp(u)));
+      if (changing?.id === u.id && changing.mode === 'delete') {
+        const cancel = small('rux--btn--ghost', 'Cancel');
+        const gone = small('rux--btn--danger', 'Delete');
+        cancel.addEventListener('click', () => { changing = null; draw(); });
+        gone.addEventListener('click', () => {
+          gone.disabled = true;
+          change(u, client.from('trip_updates').delete().eq('id', u.id), 'The update was not deleted.');
+        });
+        const actions = el('div', 'scheduler-updates__actions');
+        actions.append(el('span', 'rux--type-body-compact-01 scheduler-updates__ask', 'Delete this update?'), cancel, gone);
+        text.appendChild(actions);
+        requestAnimationFrame(() => cancel.focus());
+        return li;
+      }
+      const more = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger');
+      more.type = 'button';
+      more.setAttribute('aria-haspopup', 'true');
+      more.setAttribute('aria-expanded', 'false');
+      more.setAttribute('aria-label', 'Update actions');
+      more.title = 'Update actions';
+      more.appendChild(svgUse('#m-more_vert', '16', '0 0 32 32'));
+      more.lastChild.setAttribute('class', 'rux--btn__icon');
+      more.addEventListener('click', () => openRowMenu(more, {
+        editText: 'Edit', edit: () => { changing = { id: u.id, mode: 'edit' }; draw(); },
+        removeText: 'Delete', remove: () => { changing = { id: u.id, mode: 'delete' }; draw(); },
       }));
+      li.appendChild(more);
+      return li;
+    };
+    const draw = () => {
+      list.replaceChildren(...rows.filter(u => u.kind !== 'nothing').map(itemOf));
       status.hidden = list.childElementCount > 0;
       status.textContent = 'No updates yet.';
       if (updatesLabel) updatesLabel.textContent = `Updates (${list.childElementCount})`;
@@ -9538,10 +9616,11 @@
     const updates = updatesOf(trip);
     updates.forEach((u, n) => {
       const li = row(`scheduler-card__update${n === 0 ? ' scheduler-card__update--newest' : ''}`, 'li');
-      const imported = u.kind === 'imported';
-      const who = imported ? 'From the old notes' : u.actor_name || 'Someone';
-      const face = el('div', `rux--user-avatar rux--user-avatar--sm ${imported ? 'rux--user-avatar--order-2-gray' : avatarColour(who)}`,
-        imported ? '' : who.charAt(0).toUpperCase());
+      // A line copied from the old notes with nobody named is a grey face.
+      const who = u.actor_name || (u.kind === 'imported' ? 'From the old notes' : 'Someone');
+      const nobody = !u.actor_name;
+      const face = el('div', `rux--user-avatar rux--user-avatar--sm ${nobody ? 'rux--user-avatar--order-2-gray' : avatarColour(who)}`,
+        nobody ? '' : who.charAt(0).toUpperCase());
       face.title = who;
       face.setAttribute('role', 'img');
       face.setAttribute('aria-label', who);

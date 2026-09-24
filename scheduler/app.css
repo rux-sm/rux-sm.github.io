@@ -1508,7 +1508,23 @@ button.scheduler-row-head__num::after {
 .scheduler-updates-add > .rux--form-item { align-self: stretch; }
 .scheduler-updates-error { align-self: stretch; color: var(--rux-text-error); }
 .scheduler-updates { list-style: none; margin: 0; padding: 0; }
-.scheduler-updates__item { padding-block: var(--rux-spacing-04); border-block-start: 1px solid var(--rux-border-subtle-01); }
+.scheduler-updates__item {
+  display: flex;
+  gap: var(--rux-spacing-03);
+  align-items: flex-start;
+  padding-block: var(--rux-spacing-04);
+  border-block-start: 1px solid var(--rux-border-subtle-01);
+}
+.scheduler-updates__text { flex: 1; min-inline-size: 0; }
+/* An update's Edit box, or the ask before it goes: the buttons at the right. */
+.scheduler-updates__actions {
+  display: flex;
+  gap: var(--rux-spacing-03);
+  align-items: center;
+  justify-content: flex-end;
+  margin-block-start: var(--rux-spacing-03);
+}
+.scheduler-updates__ask { margin-inline-end: auto; }
 .scheduler-updates__body { white-space: pre-wrap; overflow-wrap: anywhere; }
 .scheduler-updates__meta { color: var(--rux-text-secondary); margin-block-start: var(--rux-spacing-02); }
 .scheduler-updates-empty { color: var(--rux-text-secondary); }

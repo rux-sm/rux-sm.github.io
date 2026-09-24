@@ -82,8 +82,11 @@ standing facts about the trip. No note in the table contains a newline.
   changing anything else, and its Add update button is the outlined kind, so
   Save stays the panel's one main button.
 - **The log is a `trip_updates` table of its own,** staff only, with the 203
-  dated lines already in `notes` copied in as `imported` entries with no
-  author; those notes are blanked once both apps read the log.
+  dated lines already in `notes` copied in as `imported` entries credited to
+  Sergio; those notes are blanked once both apps read the log.
+- **An update can be edited or deleted** from its menu on the Updates tab:
+  Edit turns its words into a box, Delete asks on the row first, and an
+  edited update says "edited" beside its time. The card stays read-only.
 - **Both apps prompt,** because a prompt in one app teaches people to save
   from the other.
 - **The log is for the office only,** so its lines stay short and internal.

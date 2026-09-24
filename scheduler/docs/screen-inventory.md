@@ -66,6 +66,7 @@ Design account panel replaces it).
 | Placeholder bar | keep | Amber is the office's placeholder, a trip not yet quoted, named Placeholder in the colour menu. Its bar is a yellow tint beside the others in a light theme and the warning colour in a dark one, and draws no marks, no empty seat and no Needs a bus; a driver someone has named still shows. |
 | Upload itinerary | keep | On the bar's right-click menu, in place of Open itinerary on a trip without one. |
 | Driver status marks | keep | The drivers row lists the crew in role order: a person icon for a driver or co-driver and two opposite arrows for relief, then the short name. The icon sits on a disc in the status's colour, one step of the run each: grey Not sent, amber pending response, green confirmed, red pending assignment or declined. A declined name is struck through, and a role that is on with nobody in it is its red icon alone. The tooltip names the role, the status, who set it and when. |
+| Assign driver menu | keep | Assign driver, or Change driver, on the bar's right-click menu after the itinerary: the driver on the bus now, then the five free drivers the Fleet tab would list first for that bus's leg, a back-to-back one marked, and More drivers, which opens the trip on its Fleet tab. A pick fills the bus's Driver seat and saves at once, starting the driver at Not sent. Hidden on the trip in the editor. |
 | Driver status menu | keep | One item per driver on the bar's right-click menu, after Mark hotel booked, whose submenu sets that driver's status at once. |
 | Bar menu | keep | Every action on the bar, in five groups parted by rules: open the trip and its itinerary; Forms, a submenu of each form and All forms; the trip's colour, hotel and drivers' statuses; Take off this bus and Cancel trip; Customize shortcuts. Each item carries the icon its shortcut carries, and what cannot act on the bar is hidden. |
 | Open email thread | keep | In the trip editor rather than on the bar: an open icon on the Booking contact title line once the trip has a thread, whose menu adds, changes or removes it through a small box. The field itself never shows. |
@@ -177,7 +178,7 @@ its arrow still pointing at the trip. Nothing is taken from the trip, so the
 slots are the same on every trip however short or narrow. It holds Open trip,
 then the person's own choices in the order they set them — the itinerary,
 opened or uploaded, the driver envelope, the driver itinerary, the customer
-quote, all forms, Color, Mark hotel booked, Take off this bus or Cancel trip —
+quote, all forms, Assign driver, Color, Mark hotel booked, Take off this bus or Cancel trip —
 set from the right-click menu's Customize shortcuts and saved on their
 profile. An empty
 choice is left out, and an empty slot only pads the row up to three, the

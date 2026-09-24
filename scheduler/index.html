@@ -821,6 +821,17 @@
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-upload"/></svg></div>
       <div class="rux--menu-item__label">Upload itinerary</div>
     </li>
+    <!-- Assign driver, or Change driver on a bus that has one: the free
+         drivers data.js ranks for this bus's leg, the one on it now, and More
+         drivers, which opens the trip's Fleet tab. Hidden on the trip open in
+         the editor, which holds its own drivers. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" aria-haspopup="true" aria-expanded="false" id="scheduler-bar-menu-assign">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-person-fill"/></svg></div>
+      <div class="rux--menu-item__label">Assign driver</div>
+      <div class="rux--menu-item__shortcut"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-arrow_right"/></svg></div>
+      <ul class="rux--menu rux--menu--sm rux--menu--with-icons rux--menu--with-selectable-items" role="menu" aria-label="Drivers" tabindex="-1" id="scheduler-bar-menu-assign-list"></ul>
+    </li>
     <li class="rux--menu-item-divider" role="separator"></li>
     <!-- The forms, each opened on this bar straight away, in the document
          panel beside the board, with the Forms page's own icons; All forms is

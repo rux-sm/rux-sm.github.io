@@ -2237,6 +2237,94 @@
   };
   const datesOverlap = (a, b) => a.from <= b.to && b.from <= a.to;
 
+  /* The trips, time off and out-of-service days around a range: trips from
+     90 days before it, so one still running into it is seen, to a day past it,
+     so one starting the day after reads as back-to-back. */
+  async function readNearby(lo, hi) {
+    const past = iso(addDays(parseISO(hi), 1));
+    const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
+    const [trips, off, oos] = await withTimeout(Promise.all([
+      client.from('trips')
+        .select('id,destination,start_date,end_date,return_start_date,return_end_date,bus_count,return_bus_count,trip_assignments(id,bus_id,leg,active_roles,trip_drivers(driver_id,role))')
+        .is('cancelled_at', null).lte('start_date', past).gte('start_date', iso(addDays(parseISO(lo), -90)))
+        .then(unwrap),
+      client.from('driver_time_off').select('driver_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
+      client.from('bus_out_of_service').select('bus_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
+    ]));
+    return { trips, off, oos };
+  }
+
+  /* What stands in each bus's and driver's way on one leg's dates. `buses`
+     and `drivers` are clashes, which a pick warns of; `near` is a trip ending
+     the day before or starting the day after, which warns but does not rule
+     the driver out; `worked` is the days each driver drove in the RECENT_DAYS
+     before the leg, which ranks drivers of one priority so the work spreads.
+     `skip` leaves out the editor's whole trip, whose buses it holds unsaved, or
+     the one bus a bar is. */
+  function fitFor({ trips, off, oos }, range, skip) {
+    const buses = new Map(), drivers = new Map(), near = new Map(), worked = new Map();
+    const add = (map, id, text) => { if (id == null) return; if (!map.has(id)) map.set(id, []); if (!map.get(id).includes(text)) map.get(id).push(text); };
+    if (!range) return { buses, drivers, near, worked };
+    const before = iso(addDays(parseISO(range.from), -1));
+    const after = iso(addDays(parseISO(range.to), 1));
+    const recent = { from: iso(addDays(parseISO(range.from), -RECENT_DAYS)), to: before };
+    for (const t of trips) {
+      if (skip.tripId != null && String(t.id) === String(skip.tripId)) continue;
+      for (const l of legsOf(t)) {
+        const clash = datesOverlap(range, l);
+        const next = !clash && (l.to === before || l.from === after);
+        const days = [];
+        if (datesOverlap(recent, l)) {
+          for (let d = parseISO(l.from > recent.from ? l.from : recent.from); iso(d) <= (l.to < recent.to ? l.to : recent.to); d = addDays(d, 1)) days.push(iso(d));
+        }
+        if (!clash && !next && !days.length) continue;
+        for (const a of t.trip_assignments || []) {
+          if ((a.leg || 'outbound') !== l.leg) continue;
+          if (skip.assignmentId != null && String(a.id) === String(skip.assignmentId)) continue;
+          const text = `On trip ${t.destination || 'with no destination'}`;
+          const on = activeRolesOf(a);
+          const crew = (a.trip_drivers || []).filter(d => d.driver_id != null && on.has(d.role || 'driver'));
+          if (clash) {
+            add(buses, a.bus_id, text);
+            for (const d of crew) add(drivers, d.driver_id, text);
+          }
+          if (next) for (const d of crew) add(near, d.driver_id, `Back-to-back with ${t.destination || 'a trip'}`);
+          for (const d of crew) {
+            if (!worked.has(d.driver_id)) worked.set(d.driver_id, new Set());
+            for (const day of days) worked.get(d.driver_id).add(day);
+          }
+        }
+      }
+    }
+    for (const r of off) if (datesOverlap(range, { from: r.start_date, to: r.end_date })) add(drivers, r.driver_id, 'Time off');
+    for (const r of oos) if (datesOverlap(range, { from: r.start_date, to: r.end_date })) add(buses, r.bus_id, 'Out of service');
+    return { buses, drivers, near, worked };
+  }
+
+  /* Who to ask next, first: drivers free on the leg's dates before those on
+     another trip or away, then strictly by priority, the order the office
+     calls in; within one priority a driver with no back-to-back trip first,
+     then whoever drove the fewest days lately, so the work spreads. `fit` is
+     null until it is read, and then only priority and name order. */
+  function rankDrivers(drivers, fit) {
+    const text = (map, id) => (map?.get(id) ?? []).join(' · ');
+    return drivers.map(d => {
+      const days = fit?.worked.get(d.id)?.size ?? 0;
+      const busy = text(fit?.drivers, d.id);
+      const near = text(fit?.near, d.id);
+      return {
+        d, days, busy, near,
+        rank: [busy ? 1 : 0, d.priority ?? 9, near ? 1 : 0, days],
+        detail: [
+          d.status && d.status !== 'active' ? 'Inactive' : '',
+          d.priority != null ? `Priority ${d.priority}` : '',
+          fit ? `${days} ${days === 1 ? 'day' : 'days'} in ${RECENT_DAYS / 7} weeks` : '',
+        ].filter(Boolean).join(' · '),
+      };
+    }).sort((a, b) => a.rank.reduce((c, v, i) => c || v - b.rank[i], 0)
+      || String(a.d.name ?? '').localeCompare(String(b.d.name ?? '')));
+  }
+
   async function loadFleetClashes() {
     if (!client || !editing?.fleet) return;
     const ranges = Object.fromEntries(['outbound', 'return'].map(l => [l, fleetLegDates(l)]));
@@ -2245,78 +2333,21 @@
     const key = JSON.stringify(ranges);
     if (key === fleetClashKey) return;
     fleetClashKey = key;
-    const lo = all.map(r => r.from).sort()[0];
-    const hi = all.map(r => r.to).sort().at(-1);
-    // A day past the last leg, so a trip starting the day after reads as back-to-back.
-    const past = iso(addDays(parseISO(hi), 1));
-    const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
     const forTrip = editing;
-    let trips, off, oos;
+    let nearby;
     try {
-      [trips, off, oos] = await withTimeout(Promise.all([
-        client.from('trips')
-          .select('id,destination,start_date,end_date,return_start_date,return_end_date,bus_count,return_bus_count,trip_assignments(bus_id,leg,active_roles,trip_drivers(driver_id,role))')
-          .is('cancelled_at', null).lte('start_date', past).gte('start_date', iso(addDays(parseISO(lo), -90)))
-          .then(unwrap),
-        client.from('driver_time_off').select('driver_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
-        client.from('bus_out_of_service').select('bus_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
-      ]));
+      nearby = await readNearby(all.map(r => r.from).sort()[0], all.map(r => r.to).sort().at(-1));
     } catch {
       fleetClashKey = '';
       return;
     }
     if (editing !== forTrip) return;
-    const clashes = {};
-    for (const leg of ['outbound', 'return']) {
-      const range = ranges[leg];
-      /* `near` is a trip ending the day before this leg or starting the day
-         after, which warns but does not rule the driver out; `worked` is the
-         days each driver drove in the RECENT_DAYS before the leg, which ranks
-         drivers of one priority so the work spreads. */
-      const buses = new Map(), drivers = new Map(), near = new Map(), worked = new Map();
-      const add = (map, id, text) => { if (id == null) return; if (!map.has(id)) map.set(id, []); if (!map.get(id).includes(text)) map.get(id).push(text); };
-      if (range) {
-        const before = iso(addDays(parseISO(range.from), -1));
-        const after = iso(addDays(parseISO(range.to), 1));
-        const recent = { from: iso(addDays(parseISO(range.from), -RECENT_DAYS)), to: before };
-        for (const t of trips) {
-          if (t.id === editing.id) continue;
-          for (const l of legsOf(t)) {
-            const clash = datesOverlap(range, l);
-            const next = !clash && (l.to === before || l.from === after);
-            const days = [];
-            if (datesOverlap(recent, l)) {
-              for (let d = parseISO(l.from > recent.from ? l.from : recent.from); iso(d) <= (l.to < recent.to ? l.to : recent.to); d = addDays(d, 1)) days.push(iso(d));
-            }
-            if (!clash && !next && !days.length) continue;
-            for (const a of t.trip_assignments || []) {
-              if ((a.leg || 'outbound') !== l.leg) continue;
-              const text = `On trip ${t.destination || 'with no destination'}`;
-              const on = activeRolesOf(a);
-              const crew = (a.trip_drivers || []).filter(d => d.driver_id != null && on.has(d.role || 'driver'));
-              if (clash) {
-                add(buses, a.bus_id, text);
-                for (const d of crew) add(drivers, d.driver_id, text);
-              }
-              if (next) for (const d of crew) add(near, d.driver_id, `Back-to-back with ${t.destination || 'a trip'}`);
-              for (const d of crew) {
-                if (!worked.has(d.driver_id)) worked.set(d.driver_id, new Set());
-                for (const day of days) worked.get(d.driver_id).add(day);
-              }
-            }
-          }
-        }
-        for (const r of off) if (datesOverlap(range, { from: r.start_date, to: r.end_date })) add(drivers, r.driver_id, 'Time off');
-        for (const r of oos) if (datesOverlap(range, { from: r.start_date, to: r.end_date })) add(buses, r.bus_id, 'Out of service');
-      }
-      clashes[leg] = { buses, drivers, near, worked };
-    }
-    fleetClashes = clashes;
+    fleetClashes = Object.fromEntries(['outbound', 'return']
+      .map(leg => [leg, fitFor(nearby, ranges[leg], { tripId: editing.id })]));
     drawFleet();
   }
 
   const clashText = (leg, kind, id) => (id == null ? '' : (fleetClashes?.[leg]?.[kind].get(id) ?? []).join(' · '));
-  const workedDays = (leg, id) => fleetClashes?.[leg]?.worked.get(id)?.size ?? 0;
 
   // What the trip needs that a bus lacks, in the bar's words.
   function busLacks(bus) {
@@ -2408,35 +2439,12 @@
     return out;
   };
 
-  /* Who to ask next, first: drivers free on the leg's dates before those on
-     another trip or away, then strictly by priority, the order the office
-     calls in; within one priority a driver with no back-to-back trip first,
-     then whoever drove the fewest days lately, so the work spreads. */
-  const fleetDriverOptions = (leg, currentId) => {
-    const rank = d => [
-      clashText(leg, 'drivers', d.id) ? 1 : 0,
-      d.priority ?? 9,
-      clashText(leg, 'near', d.id) ? 1 : 0,
-      workedDays(leg, d.id),
-    ];
-    return [...panelIndex.driversById.values()]
-      .filter(d => !d.status || d.status === 'active' || String(d.id) === String(currentId))
-      .map(d => ({ d, rank: rank(d) }))
-      .sort((a, b) => a.rank.reduce((c, v, i) => c || v - b.rank[i], 0)
-        || String(a.d.name ?? '').localeCompare(String(b.d.name ?? '')))
-      .map(({ d }) => {
-        const days = workedDays(leg, d.id);
-        return {
-          id: d.id, name: d.name || d.short_name || 'Unnamed driver',
-          detail: [
-            d.status && d.status !== 'active' ? 'Inactive' : '',
-            d.priority != null ? `Priority ${d.priority}` : '',
-            fleetClashes ? `${days} ${days === 1 ? 'day' : 'days'} in ${RECENT_DAYS / 7} weeks` : '',
-          ].filter(Boolean).join(' · '),
-          clash: [clashText(leg, 'drivers', d.id), clashText(leg, 'near', d.id)].filter(Boolean).join(' · '),
-        };
-      });
-  };
+  const fleetDriverOptions = (leg, currentId) => rankDrivers([...panelIndex.driversById.values()]
+    .filter(d => !d.status || d.status === 'active' || String(d.id) === String(currentId)), fleetClashes?.[leg] ?? null)
+    .map(r => ({
+      id: r.d.id, name: r.d.name || r.d.short_name || 'Unnamed driver',
+      detail: r.detail, clash: [r.busy, r.near].filter(Boolean).join(' · '),
+    }));
 
   /* A status as Carbon's icon indicator: a shape per status as well as a
      colour, and the yellow one carries its own dark mark, so each reads in
@@ -8389,6 +8397,8 @@
     if (!item || !barMenuFor) return;
     // The Color item opens its submenu, which Design's menu does; it is no action.
     if (item.getAttribute('aria-haspopup') === 'true') return;
+    // The driver list's notes, such as the driver on the bus now, are not actions.
+    if (item.getAttribute('aria-disabled') === 'true') return;
     const bar = barMenuFor;
     window.Rux?.menu?.close?.(barMenu);
     barMenu.hidden = true;
@@ -8446,6 +8456,16 @@
       return;
     }
 
+    if (item.dataset.assignDriver) {
+      await assignDriver(bar, item.dataset.assignDriver);
+      return;
+    }
+
+    if (item.id === 'scheduler-bar-menu-assign-more') {
+      openOnFleet(bar);
+      return;
+    }
+
     if (item.dataset.driverStatus) {
       await setDriverStatus(bar, item.dataset.driverId, item.dataset.crewRole, item.dataset.driverStatus);
       return;
@@ -8500,6 +8520,7 @@
       }
     }
     fillCrewItems(bar);
+    fillAssignItems(bar);
     document.getElementById('scheduler-bar-menu-itinerary').hidden = !bar.dataset.itineraryId;
     // Hidden where it cannot act: a slot with no bus, or a bus with no driver.
     document.getElementById('scheduler-bar-menu-form-envelope').hidden =
@@ -8644,6 +8665,154 @@
     } catch (err) {
       toast('error', `The hotel was not marked. ${err.message}`);
     }
+  }
+
+  /* ── Assign driver, from the bar ──
+     The bar is one bus on one leg, so its menu fills that bus's Driver seat
+     with a pick from the free drivers ranked as the Fleet tab ranks them. The
+     trips around the leg are read when the menu opens, since the board holds
+     only its own weeks, and kept a minute, so the shortcut and the menu share
+     one read. Co-drivers and relief stay in the Fleet tab. */
+  const ASSIGN_SHOWN = 5;
+  let assignRead = null;
+  let assignSeq = 0;
+
+  // The bar's trip, its bus row, the leg's dates and the driver in its Driver seat.
+  function barSeat(bar) {
+    const trip = panelIndex.trips.get(bar.dataset.tripId);
+    const assign = trip?.trip_assignments?.find(a => String(a.id) === bar.dataset.assignmentId);
+    if (!assign) return null;
+    const leg = assign.leg || 'outbound';
+    const range = legsOf(trip).find(l => l.leg === leg);
+    const seat = (assign.trip_drivers || []).find(d => (d.role || 'driver') === 'driver') ?? null;
+    return { trip, assign, leg, range: range ? { from: range.from, to: range.to } : null, seat };
+  }
+
+  function assignItem(label, { id, icon, note, title, checked, disabled } = {}) {
+    const item = el('li', disabled ? 'rux--menu-item rux--menu-item--disabled' : 'rux--menu-item');
+    item.setAttribute('role', 'menuitem');
+    item.tabIndex = -1;
+    if (disabled) item.setAttribute('aria-disabled', 'true');
+    if (id != null) item.dataset.assignDriver = id;
+    if (title) item.title = title;
+    const check = el('div', 'rux--menu-item__selection-icon');
+    if (checked) check.appendChild(svgUse('#m-check', '16', '0 0 20 20'));
+    const mark = el('div', 'rux--menu-item__icon');
+    if (icon) mark.appendChild(svgUse(icon, '16', '0 0 32 32'));
+    item.append(check, mark, el('div', 'rux--menu-item__label', label));
+    if (note) item.appendChild(el('div', 'rux--menu-item__shortcut', note));
+    return item;
+  }
+
+  /* Fills the Assign driver submenu: the driver on the bus now, checked, then
+     the first free drivers in rank order, a back-to-back one marked with a
+     warning, then More drivers. The list says it is looking while the trips
+     around the leg are read. */
+  async function fillAssignItems(bar) {
+    const parent = document.getElementById('scheduler-bar-menu-assign');
+    const list = document.getElementById('scheduler-bar-menu-assign-list');
+    const found = client && !isEditorTrip(bar) ? barSeat(bar) : null;
+    parent.hidden = !found?.range;
+    if (parent.hidden) return;
+    const { seat, range, assign } = found;
+    parent.querySelector('.rux--menu-item__label').textContent = seat?.driver_id ? 'Change driver' : 'Assign driver';
+    const more = el('li', 'rux--menu-item');
+    more.setAttribute('role', 'menuitem');
+    more.tabIndex = -1;
+    more.id = 'scheduler-bar-menu-assign-more';
+    more.append(el('div', 'rux--menu-item__selection-icon'), el('div', 'rux--menu-item__icon'),
+      el('div', 'rux--menu-item__label', 'More drivers…'));
+    const rule = () => { const r = el('li', 'rux--menu-item-divider'); r.setAttribute('role', 'separator'); return r; };
+    const current = seat?.driver_id != null
+      ? [assignItem(histDriverName(seat.driver_id), { checked: true, disabled: true, title: 'On this bus now' }), rule()] : [];
+    const seq = ++assignSeq;
+    list.replaceChildren(...current, assignItem('Finding free drivers…', { disabled: true }), rule(), more);
+
+    const key = `${range.from}:${range.to}`;
+    let nearby = assignRead?.key === key && Date.now() - assignRead.at < 60000 ? assignRead.nearby : null;
+    if (!nearby) {
+      try {
+        nearby = await readNearby(range.from, range.to);
+        assignRead = { key, at: Date.now(), nearby };
+      } catch {
+        if (seq === assignSeq) list.replaceChildren(...current, assignItem('The drivers could not be read', { disabled: true }), rule(), more);
+        return;
+      }
+    }
+    if (seq !== assignSeq) return;
+    const fit = fitFor(nearby, range, { assignmentId: assign.id });
+    // Anyone already in a seat on this bus is left out, so one driver never takes two.
+    const onBus = new Set((assign.trip_drivers || []).map(d => String(d.driver_id)));
+    const free = rankDrivers([...panelIndex.driversById.values()]
+      .filter(d => (!d.status || d.status === 'active') && !onBus.has(String(d.id))), fit)
+      .filter(r => !r.busy).slice(0, ASSIGN_SHOWN);
+    const picks = free.length
+      ? free.map(r => assignItem(r.d.name || r.d.short_name || 'Unnamed driver', {
+          id: String(r.d.id),
+          icon: r.near ? '#m-warning-fill' : '#m-person-fill',
+          note: [r.d.priority != null ? `P${r.d.priority}` : '', `${r.days}d`].filter(Boolean).join(' · '),
+          title: [r.detail, r.near].filter(Boolean).join(' · '),
+        }))
+      : [assignItem('No free drivers', { disabled: true })];
+    list.replaceChildren(...current, ...picks, rule(), more);
+  }
+
+  /* Puts a driver in the bar's Driver seat and saves at once, like a colour.
+     The seat's row is changed, or added on a bus with none; a saved
+     `driver:state` in the bus's roles goes back to plain `driver`, as the
+     Fleet tab's save leaves it; and the crew's statuses are sent again, which
+     drops the old driver's and starts the new one at Not sent. */
+  async function assignDriver(bar, driverId) {
+    const found = barSeat(bar);
+    const driver = [...panelIndex.driversById.values()].find(d => String(d.id) === String(driverId));
+    if (!found || !driver) return;
+    const { trip, assign, leg, seat } = found;
+    if (same(seat?.driver_id, driver.id)) return;
+    const saved = Array.isArray(assign.active_roles) ? assign.active_roles.map(String) : null;
+    const roles = saved?.map(r => (r.split(':')[0] === 'driver' ? 'driver' : r)) ?? null;
+    const statuses = (trip.trip_assignments || []).flatMap(a =>
+      crewOf(trip, a, panelIndex.driversById, panelIndex.statuses).filter(c => !c.needed).map(c => {
+        const mine = a === assign && c.role === 'driver';
+        return { driverId: mine ? driver.id : c.driverId, leg: c.leg, role: c.role,
+          status: mine ? 'off' : c.status.value, dirty: false };
+      }));
+    if (seat?.driver_id == null) statuses.push({ driverId: driver.id, leg, role: 'driver', status: 'off', dirty: false });
+    const run = async query => {
+      const { error } = await withTimeout(query.then(r => r));
+      if (error) throw new Error(error.message);
+    };
+    toast('info', 'Assigning the driver…');
+    try {
+      if (seat?.id) await run(client.from('trip_drivers').update({ driver_id: driver.id }).eq('id', seat.id));
+      else await run(client.from('trip_drivers').insert({ assignment_id: assign.id, driver_id: driver.id, role: 'driver' }));
+      if (roles && JSON.stringify(roles) !== JSON.stringify(saved)) {
+        await run(client.from('trip_assignments').update({ active_roles: roles }).eq('id', assign.id));
+      }
+      await run(client.rpc('sync_trip_driver_statuses', { p_trip_id: trip.id, p_statuses: statuses }));
+      const who = `${leg === 'return' ? 'Inbound' : 'Outbound'} driver`;
+      recordHistory(trip.id, 'assignment_changed', [{
+        field: 'driver', label: 'Driver',
+        before: seat?.driver_id != null ? `${who}: ${histDriverName(seat.driver_id)}` : null,
+        after: `${who}: ${driver.name}`,
+      }]);
+      assignRead = null;
+      await show();
+      toast('success', `${driver.name || 'The driver'} is driving this bus now.`);
+    } catch (err) {
+      toast('error', `The driver was not assigned. ${err.message}`);
+    }
+  }
+
+  // Opens the bar's trip on its Fleet tab, for every driver and every seat.
+  function openOnFleet(bar) {
+    const toFleet = () => {
+      const tab = document.getElementById('scheduler-tab-fleet');
+      if (tab && tab.getAttribute('aria-selected') !== 'true') window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
+    };
+    if (isEditorBar(bar)) { toFleet(); return; }
+    const ref = barRef(bar);
+    selectBar(bar);
+    whenSafe(() => { openRef(ref); requestAnimationFrame(toFleet); });
   }
 
   // Takes a bar's trip off its bus, the same write as a drop on the Unassigned row.
@@ -9765,6 +9934,16 @@
 
   // Color from a slot opens the bar menu beside the slot, with Color's own
   // submenu already open.
+  // The Assign driver slot opens the menu's driver list beside it, as Color does.
+  function openAssignFrom(bar, slot) {
+    const box = slot.getBoundingClientRect();
+    prepareBarMenu(bar);
+    popMenuAt(barMenu, { clientX: box.right, clientY: box.top });
+    const assign = document.getElementById('scheduler-bar-menu-assign');
+    const sub = assign?.querySelector(':scope > .rux--menu');
+    if (sub) window.Rux?.menu?.open?.(sub, assign);
+  }
+
   function openColorFrom(bar, slot) {
     const box = slot.getBoundingClientRect();
     prepareBarMenu(bar);
@@ -9788,6 +9967,7 @@
     color: bar => (isEditorTrip(bar) ? 'Change the color in the editor' : null),
     hotel: bar => (isEditorTrip(bar) ? 'Mark the hotel in the editor' : null),
     bus: bar => (isEditorTrip(bar) ? 'Change the bus in the editor' : null),
+    driver: bar => (isEditorTrip(bar) ? 'Change the driver in the editor' : null),
   };
 
   const SHORTCUT_ACTIONS = [
@@ -9818,6 +9998,10 @@
       blocked: () => null, run: bar => openQuote(bar) },
     { id: 'forms', label: 'All forms', icon: '#m-description',
       blocked: () => null, run: bar => openForms(bar) },
+    { id: 'assign', label: 'Assign driver', icon: '#m-person-fill',
+      label_for: bar => (barSeat(bar)?.seat?.driver_id != null ? 'Change driver' : 'Assign driver'),
+      blocked: bar => (!client ? 'Not signed in' : !barSeat(bar)?.range ? 'Not on a bus' : EDITOR_HAS.driver(bar)),
+      run: (bar, slot) => openAssignFrom(bar, slot) },
     { id: 'color', label: 'Color', icon: '#m-palette',
       blocked: bar => EDITOR_HAS.color(bar), run: (bar, slot) => openColorFrom(bar, slot) },
     { id: 'hotel', label: 'Mark hotel booked', icon: '#m-apartment',

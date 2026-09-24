@@ -2,7 +2,7 @@
    pair.js — WHAT EVERY PAGE PAIR DOES THE SAME WAY
    --------------------------------------------------------------------------
    Buses, Drivers, Contacts, Customers and Locations are each a list and one
-   record in one file. What they do alike lives here, so a fix reaches all
+   record in one file, and Trips is a list alone. What they do alike lives here, so a fix reaches all
    five; each page's own script keeps only what its record has.
 
    SAVING. A page pair writes a record and the rows that hang off it, such as
@@ -158,8 +158,10 @@
     narrow.addEventListener('change', stackButtons);
 
     /* The list's search, sort and rows. `state` holds the search and the
-       sort, which `draw` reads; every change draws the list again. */
-    function table({ sortKey, sortDir = 'ascending', draw }) {
+       sort, which `draw` reads; every change draws the list again. `open`
+       names where a row goes, its own record unless the page says else. */
+    function table({ sortKey, sortDir = 'ascending', draw,
+      open = tr => `${list}.html?id=${encodeURIComponent(tr.dataset.id)}` }) {
       const state = { query: '', sortKey, sortDir };
 
       // A click anywhere on a row opens its record; the name is the link a
@@ -167,7 +169,7 @@
       $(id(`${list}-rows`))?.addEventListener('click', e => {
         const tr = e.target.closest('tr[data-id]');
         if (!tr || e.target.closest('a')) return;
-        location.href = `${list}.html?id=${encodeURIComponent(tr.dataset.id)}`;
+        location.href = open(tr);
       });
 
       document.querySelector(`#${id(`${list}-list`)} thead`)?.addEventListener('click', e => {

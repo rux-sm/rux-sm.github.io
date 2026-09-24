@@ -19,8 +19,8 @@ the schedule with a press.
 - **A row opens the trip on the schedule,** at `./?trip=<id>&date=<start>`,
   the address the Drivers and Fleet pages already link a trip by.
 - **The list is Carbon's data table at large density, sortable,** with a
-  toolbar holding the search and a content switcher: Upcoming, Past,
-  Cancelled and All, with counts. Upcoming is the default, soonest first.
+  toolbar holding the search and a Show choice, as the Drivers page's:
+  Upcoming, Past, Cancelled and All, with counts. Upcoming is the default, soonest first.
 - **Six columns:** Dates, Trip (reference, with the customer beneath),
   Destination, Buses, Price and Status. A phone shows Dates, Trip and Status.
 - **Status is one tag:** Cancelled, Paid, Invoiced, Confirmed or Quote,
@@ -38,9 +38,4 @@ None open.
 
 ## Tasks
 
-- [ ] Build `scheduler/trips.html` and `trips.js` from the page pair's list
-      template, with the table, the search, the switcher and the pagination.
-- [ ] Add Trips to the side nav of every scheduler page.
-- [ ] Add the page to `scheduler/docs/screen-inventory.md` and the
-      scheduler's `README.md`.
 - [ ] rux opens a cancelled trip from the page and reads its reason.

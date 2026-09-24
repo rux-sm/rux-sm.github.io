@@ -9930,8 +9930,9 @@
 
   /* Going to a trip moves to the week of the given day, reads it, then selects
      the trip's bar and opens it through `whenSafe`. A trip with no bar on that
-     week still moves the week, and a toast says so. Search and the Drivers
-     page's `?trip=<id>&date=<day>` both come here. */
+     week still moves the week, and a toast says so, unless it is cancelled,
+     which opens the cancelled dialog. Search and the Drivers and Trips
+     pages' `?trip=<id>&date=<day>` all come here. */
   /* ── A trip the Claude connector filled in ──
      The connector parks a draft and hands back /scheduler/?draft=<id>. The
      draft carries only the fields it was sure of, and its notes say what it
@@ -10103,7 +10104,15 @@
     cursor = mondayOf(parseISO(day));
     await show();
     const bar = gridEl.querySelector(`.scheduler-bar[data-trip-id="${CSS.escape(id)}"]`);
-    if (!bar) { toast('info', 'That week is showing', 'The trip has no bar on it — it may have no bus yet.'); return; }
+    if (!bar) {
+      // A cancelled trip has no bar, so its link opens the cancelled dialog.
+      const { data: trip } = await withTimeout(client.from('trips')
+        .select('id,destination,customer,start_date,cancelled_at,cancellation_reason')
+        .eq('id', id).maybeSingle().then(r => r)).catch(() => ({ data: null }));
+      if (trip?.cancelled_at) { openCancelledModal(trip); return; }
+      toast('info', 'That week is showing', 'The trip has no bar on it — it may have no bus yet.');
+      return;
+    }
     bar.scrollIntoView({ block: 'center', inline: 'center' });
     const ref = barRef(bar);
     selectBar(bar);

@@ -16,6 +16,11 @@ invoices — and is that app's replacement, mid-flight.
 That database is production and shared with `rux-ui`, so nothing here is
 ever tried with a test record.
 
+`trips.html` lists every trip, cancelled ones with their reason, searched,
+sorted, filtered to upcoming, past or cancelled, and paged fifty at a time. A
+row opens the trip on the board through `./?trip=<id>&date=<day>`, and a
+cancelled one opens its cancelled dialog there.
+
 `drivers.html` lists every driver, flags a licence or medical card that has
 run out or will within 45 days, and edits one driver at `drivers.html?id=`:
 details, photo and time off. A driver is set Inactive, never deleted, and the

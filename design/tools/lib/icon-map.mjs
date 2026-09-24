@@ -63,6 +63,7 @@ export const PREFIX = { carbon: 'i-', material: 'm-', rux: 'r-' };
 export const ICONS = {
   'accessibility': { material: 'accessible', rux: null },
   'add': { material: 'add', rux: null },
+  'add-comment': { material: 'add_comment', rux: null },
   'arrow--down': { material: 'arrow_downward', rux: null },
   'arrow--left': { material: 'arrow_back', rux: null },
   'arrow--right': { material: 'arrow_forward', rux: null },
@@ -122,10 +123,12 @@ export const ICONS = {
   'menu': { material: 'menu', rux: null },
   'minimize': { material: 'close_fullscreen', rux: null },
   'notification': { material: 'notifications', rux: null },
+  'notification--new': { material: 'notifications_active', rux: null },
   'overflow-menu--horizontal': { material: 'more_horiz', rux: null },
   'overflow-menu--vertical': { material: 'more_vert', rux: null },
   'pending--filled': { material: 'pending-fill', rux: null },
   'phone': { material: 'call', rux: null },
+  'pin': { material: 'keep', rux: null },
   'printer': { material: 'print', rux: null },
   'purchase': { material: 'credit_card', rux: null },  // Carbon's purchase is a credit card.
   'radio-button': { material: 'radio_button_unchecked', rux: null },

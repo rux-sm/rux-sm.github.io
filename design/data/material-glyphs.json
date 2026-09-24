@@ -34,6 +34,22 @@
         "path|d=M450-450H200v-60h250v-250h60v250h250v60H510v250h-60v-250Z"
       ]
     },
+    "add_comment@960": {
+      "name": "add_comment",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/add_comment.svg",
+      "geometry": [
+        "path|d=M450-400h60v-130h130v-60H510v-130h-60v130H320v60h130v130ZM80-80v-800h800v640H240L80-80Zm134-220h606v-520H140v600l74-80Zm-74 0v-520 520Z"
+      ]
+    },
+    "add_comment-fill@960": {
+      "name": "add_comment-fill",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/add_comment-fill.svg",
+      "geometry": [
+        "path|d=M450-400h60v-130h130v-60H510v-130h-60v130H320v60h130v130ZM80-80v-800h800v640H240L80-80Z"
+      ]
+    },
     "arrow_downward@960": {
       "name": "arrow_downward",
       "size": "960",
@@ -906,6 +922,22 @@
         "path|d=M160-200v-60h80v-304q0-84 49.5-150.5T420-798v-82h120v82q81 17 130.5 83.5T720-564v304h80v60H160ZM480-80q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80Z"
       ]
     },
+    "notifications_active@960": {
+      "name": "notifications_active",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/notifications_active.svg",
+      "geometry": [
+        "path|d=M160-200v-60h80v-304q0-84 49.5-150.5T420-798v-82h120v82q81 17 130.5 83.5T720-564v304h80v60H160Zm320-302Zm0 422q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM300-260h360v-304q0-75-52.5-127.5T480-744q-75 0-127.5 52.5T300-564v304ZM120-566q0-90 40-165t107-125l36 48q-56 42-89.5 104.5T180-566h-60Zm660 0q0-75-33.5-137.5T657-808l36-48q67 50 107 125t40 165h-60Z"
+      ]
+    },
+    "notifications_active-fill@960": {
+      "name": "notifications_active-fill",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/notifications_active-fill.svg",
+      "geometry": [
+        "path|d=M160-200v-60h80v-304q0-84 49.5-150.5T420-798v-82h120v82q81 17 130.5 83.5T720-564v304h80v60H160ZM480-80q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM120-566q0-90 40-165t107-125l36 48q-56 42-89.5 104.5T180-566h-60Zm660 0q0-75-33.5-137.5T657-808l36-48q67 50 107 125t40 165h-60Z"
+      ]
+    },
     "more_horiz@960": {
       "name": "more_horiz",
       "size": "960",
@@ -960,6 +992,22 @@
       "source": "node_modules/@material-symbols/svg-400/sharp/call-fill.svg",
       "geometry": [
         "path|d=M780-120q-108 0-225-56.5T336-335Q233-437 176.5-554T120-780v-60h215l40 189-117 119q28 45 57.5 83.5T377-378q36 36 77 67.5t88 57.5l117-121 181 39v215h-60Z"
+      ]
+    },
+    "keep@960": {
+      "name": "keep",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/keep.svg",
+      "geometry": [
+        "path|d=m634-448 86 77v60H510v241l-30 30-30-30v-241H240v-60l80-77v-332h-50v-60h414v60h-50v332Zm-313 77h312l-59-55v-354H380v354l-59 55Zm156 0Z"
+      ]
+    },
+    "keep-fill@960": {
+      "name": "keep-fill",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/keep-fill.svg",
+      "geometry": [
+        "path|d=m634-448 86 77v60H510v241l-30 30-30-30v-241H240v-60l80-77v-333h-50v-60h414v60h-50v333Z"
       ]
     },
     "print@960": {

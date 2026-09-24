@@ -72,9 +72,8 @@ None open.
 
 ## Tasks
 
-- [ ] Redo `scheduler/updates-specimen.html` with the bar's icon, a trip
-  asking for a follow-up and the hover bubble, on invented trips, for rux to
-  see first.
+- [ ] rux tries `scheduler/updates-specimen.html` and says go, or what to
+  change, before any of the rest is built.
 - [ ] Add the Updates list to the editor, newest first, with a box to add one
   without saving the trip.
 - [ ] Add the prompt to Save over the customer-facing changes, with the line

@@ -1791,13 +1791,8 @@ button.scheduler-row-head__num::after {
 }
 /* Both weeks at once: the pane widens to Carbon's `lg`, so every day stays a
    square and the names gain room, beside the board or in front of it. Two
-   weeks are only shown above md, where 40rem always fits the window. The
-   second week's first day rules its edge in the strong border, so the two
-   weeks count apart. */
+   weeks are only shown above md, where 40rem always fits the window. */
 .scheduler-aside--wide { --scheduler-panel-w: var(--scheduler-panel-wide-w); }
-.scheduler-week--avail-both .scheduler-avail__cell[data-day="7"] {
-  border-inline-start-color: var(--rux-border-strong-01);
-}
 /* Pinned to the pane's width. `.scheduler-grid` is `max-content` so the board
    can overflow and scroll; here that would stop the name column shrinking and
    give the roster a sideways scroll. */

@@ -87,14 +87,5 @@ None open.
 
 ## Tasks
 
-- [ ] Let the Billing tab's quote lines be reordered.
-- [ ] Load `quote_rates` and `quote_mileage_rates` in the trip editor, and
-      price each rental and second driver line from its leg's route miles,
-      dead miles, days and rate, showing the calculator's figure beside a
-      typed cost.
-- [ ] Keep each leg's second driver line in step with its co-driver seats.
-- [ ] Make `qbDescription` copy every line, each rental leg in its own
-      words.
-- [ ] Add the lines to the trip history.
 - [ ] Bring rux-ui's Billing section onto the same lines, after reading its
       own `CLAUDE.md`.

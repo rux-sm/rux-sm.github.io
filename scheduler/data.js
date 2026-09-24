@@ -1734,8 +1734,10 @@
 
      The tile carries the whole record in `aria-label`, so a screen reader
      hears one sentence, and the full text in `title`. */
+  /* A row of a list. Its menu is Edit and Remove, or `items` in their place
+     for a list that also moves its rows. */
   const listRow = ({ name, meta, much, tag, title, edit, remove, removeLabel,
-                    open: openRow = edit, openLabel = `Edit ${title}`, editText, removeText }) => {
+                    open: openRow = edit, openLabel = `Edit ${title}`, editText, removeText, items }) => {
     const li = el('li', 'rux--layer-two scheduler-item');
     const open = el('button', 'rux--tile rux--tile--clickable scheduler-item__open');
     open.type = 'button';
@@ -1759,9 +1761,9 @@
     more.setAttribute('aria-label', `Actions for ${title}`);
     more.appendChild(svgUse('#m-more_vert', '16', '0 0 32 32'));
     more.lastChild.setAttribute('class', 'rux--btn__icon');
-    more.addEventListener('click', () => openRowMenu(more, {
-      edit, remove, removeLabel, editText, removeText,
-    }));
+    more.addEventListener('click', () => (items
+      ? openItemsMenu(more, items, `Actions for ${title}`)
+      : openRowMenu(more, { edit, remove, removeLabel, editText, removeText })));
     li.append(open, more);
     return li;
   };
@@ -4035,21 +4037,39 @@
     // Not `iso`, which is this file's own Date formatter.
     const day = id => isoOrNull(document.getElementById(id)?.value ?? '');
     const split = val('scheduler-f-type') === SPLIT;
-    const start = day('scheduler-f-start');
-    const end = (split ? day('scheduler-f-rend') ?? day('scheduler-f-rstart') : day('scheduler-f-end')) ?? start;
-    const fleet = editing?.fleet?.outbound ?? [];
-    const picked = fleet.find(b => b.busId);
-    return window.SchedulerQuoteText.description({
-      type: val('scheduler-f-type'),
-      buses: fleet.length,
-      seats: picked ? panelIndex.buses.get(picked.busId)?.capacity ?? null : null,
-      pickup: val('scheduler-f-pickup') || editing?.route?.pickupPlace?.address || '',
-      destination: val('scheduler-f-destination'),
-      from: start,
-      to: end,
-      leave: val('scheduler-f-leave'),
-      back: val('scheduler-f-endtrip'),
-    });
+    const pickup = val('scheduler-f-pickup') || editing?.route?.pickupPlace?.address || '';
+    // One leg's block, or the whole trip's with `leg` null. A leg of a split
+    // trip departs at its own time: the drop-off's departure, the pickup's end.
+    const words = leg => {
+      const fleet = editing?.fleet?.[leg === 'return' ? 'return' : 'outbound'] ?? [];
+      const picked = fleet.find(b => b.busId);
+      const start = day(leg === 'return' ? 'scheduler-f-rstart' : 'scheduler-f-start');
+      const end = leg === 'return' ? day('scheduler-f-rend') ?? start
+        : (split && !leg ? day('scheduler-f-rend') ?? day('scheduler-f-rstart') : day('scheduler-f-end')) ?? start;
+      return window.SchedulerQuoteText.description({
+        type: val('scheduler-f-type'),
+        buses: fleet.length,
+        seats: picked ? panelIndex.buses.get(picked.busId)?.capacity ?? null : null,
+        pickup,
+        destination: val('scheduler-f-destination'),
+        from: start,
+        to: end,
+        leave: leg === 'return' ? val('scheduler-f-endtrip') : val('scheduler-f-leave'),
+        back: leg ? '' : val('scheduler-f-endtrip'),
+        oneLeg: !!leg,
+      });
+    };
+    /* WITH LINES, EVERY LINE, as the estimate's line items: its item, its
+       quantity at its cost, and its words, a bus rental's written from its
+       leg. A trip priced as one number is the one block it always was. */
+    const lines = linesLive ? linesToSave() : [];
+    if (!lines.length || (lines.length === 1 && lines[0].kind === 'rental' && !split)) return words(null);
+    return lines.map(l => {
+      const head = [l.item || lineKind(l.kind).label,
+        l.cost === null ? null : `${l.quantity ?? 1} × ${usdCents(l.cost)}`].filter(Boolean).join(' — ');
+      const body = l.kind === 'rental' && !l.description ? words(split ? l.leg ?? 'outbound' : null) : l.description || '';
+      return [head, body].filter(Boolean).join('\n');
+    }).join('\n\n');
   }
 
   /* The six methods rux-ui offers, in its order. `trip_payments.method` is free
@@ -4228,12 +4248,140 @@
   // A leg's buses on the Fleet tab. A trip that is not split has one rental,
   // on the outbound leg's count.
   const legBuses = leg => Math.max(editing?.fleet?.[leg === 'return' ? 'return' : 'outbound']?.length || 0, 1);
-  const lineQty = l => (l.kind === 'rental' ? legBuses(l.leg) : money(String(l.quantity ?? '')));
+  // A leg's co-driver seats that are on, which a second driver line counts.
+  const coDrivers = leg => (editing?.fleet?.[leg === 'return' ? 'return' : 'outbound'] ?? [])
+    .filter(b => b.seats?.['co-driver']?.on).length;
+  const lineQty = l => (l.kind === 'rental' ? legBuses(l.leg)
+    : l.kind === 'second_driver' && linesLive && coDrivers(l.leg) > 0 ? coDrivers(l.leg)
+    : money(String(l.quantity ?? '')));
   const lineAmount = l => {
     const cost = money(String(l.cost ?? ''));
     return cost === null ? null : round2((lineQty(l) ?? 1) * cost);
   };
   const linesTotal = () => round2(linePending.reduce((n, l) => n + (lineAmount(l) ?? 0), 0));
+
+  /* ── What the calculator says a line costs ──
+     The quote calculator's own formulas, `Rux.quote`, on what the editor
+     already knows of a leg: its miles by route, the drive from the yard and
+     back as its dead miles, and its days as the customer sees them. The rates
+     are read once, the first time a trip opens. */
+  let quoteRates = null;
+  let quoteRatesAsked = null;
+  function askQuoteRates() {
+    if (quoteRates || quoteRatesAsked || !client) return;
+    quoteRatesAsked = Promise.all([
+      client.from('quote_rates').select('key,value'),
+      client.from('quote_mileage_rates').select('id,rate,note,is_default'),
+    ]).then(([named, miles]) => {
+      if (named.error || miles.error) throw new Error((named.error || miles.error).message);
+      quoteRates = {
+        named: Object.fromEntries((named.data || []).map(r => [r.key, Number(r.value)])),
+        mileage: (miles.data || []).map(m => ({ ...m, rate: Number(m.rate) })).sort((a, b) => a.rate - b.rate),
+      };
+      if (linesLive && syncLines()) { redrawLines(); refreshDirty(); }
+    }).catch(err => {
+      quoteRatesAsked = null;
+      console.warn('The quote rates did not load:', err);
+    });
+  }
+  const defaultRate = () => quoteRates?.mileage.find(m => m.is_default)?.rate ?? null;
+
+  /* A leg's miles, dead miles and days. The Route tab's own leg reads the
+     drives it has looked up since the trip opened; the other leg reads its
+     saved stops. Estimated miles override the route on a trip that is not
+     split, as they override the stops' sum on the Route tab. */
+  function legFigures(leg) {
+    const l = leg === 'return' ? 'return' : 'outbound';
+    const r = editing?.route;
+    const mine = r?.leg === l;
+    const stops = (editing?.stops || []).filter(st => (st.leg || 'outbound') === l);
+    const pickup = stops.find(st => st.type === 'pickup');
+    const back = stops.filter(st => st.type === 'return').at(-1);
+    const out = mine ? r.driveMiles : numOrNull(pickup?.miles);
+    const home = mine ? r.backMiles : numOrNull(back?.miles);
+    const between = stops.filter(st => st !== pickup && st !== back)
+      .reduce((n, st) => n + (Number(st.miles) || 0), 0);
+    const routeMiles = between + (Number(out) || 0) + (Number(home) || 0);
+    const est = splitNow() ? null : money(document.getElementById('scheduler-f-estmiles')?.value ?? '');
+    const from = isoOrNull(document.getElementById(l === 'return' ? 'scheduler-f-rstart' : 'scheduler-f-start')?.value ?? '');
+    const to = isoOrNull(document.getElementById(l === 'return' ? 'scheduler-f-rend' : 'scheduler-f-end')?.value ?? '') ?? from;
+    const days = from && to ? Math.max(1, Math.round((parseISO(to) - parseISO(from)) / 86400000) + 1) : null;
+    return { miles: round2(est ?? routeMiles), dead: round2((Number(out) || 0) + (Number(home) || 0)), days };
+  }
+
+  // What a line is priced from, and the calculator's cost for one bus or one
+  // extra driver; null where the leg has no miles or days yet.
+  function lineBasis(l) {
+    const f = legFigures(l.leg);
+    const dead = l.deadTyped ? Number(l.dead_miles) || 0 : f.dead;
+    return { miles: f.miles, dead, days: f.days, rate: l.rate ?? defaultRate() };
+  }
+  function calcCost(l, b = lineBasis(l)) {
+    const q = window.Rux?.quote;
+    if (!q || !quoteRates || !b.days || !(b.miles > 0)) return null;
+    const perDay = Array.from({ length: b.days }, () => b.miles / b.days);
+    if (l.kind === 'rental') {
+      if (b.rate == null) return null;
+      const amount = q.tripQuote({ miles: perDay, rate: b.rate, dead: b.dead }, quoteRates.named).amount;
+      return amount == null ? null : round2(amount);
+    }
+    if (l.kind === 'second_driver') {
+      const half = perDay.map(m => m / 2);
+      const amount = q.driverPay({ driver1: half, driver2: half, drivers: 2 }, quoteRates.named).amount;
+      return amount == null ? null : round2(amount);
+    }
+    return null;
+  }
+
+  /* Brings the lines in step with the editor, and says whether any moved.
+     A cost nobody typed follows the calculator when what it is priced from
+     changes, and a rental line keeps the miles, dead miles and rate it was
+     priced on. On a trip priced as lines, a leg's second driver line comes
+     when its co-driver seats change and one is on, and goes with the last. */
+  function syncLines() {
+    if (!editing) return false;
+    let moved = false;
+    if (linePending.some(l => l.kind === 'rental')) {
+      const legs = splitNow() ? ['outbound', 'return'] : [null];
+      editing.coBefore ??= {};
+      for (const leg of legs) {
+        const key = leg ?? 'outbound';
+        const now = coDrivers(key);
+        const was = editing.coBefore[key] ?? now;
+        const at = linePending.findIndex(l => l.kind === 'second_driver' && (l.leg ?? null) === leg);
+        if (was !== now && now > 0 && at < 0) {
+          const kind = lineKind('second_driver');
+          const rental = linePending.findIndex(l => l.kind === 'rental' && (l.leg ?? null) === leg);
+          linePending.splice(rental < 0 ? linePending.length : rental + 1, 0, {
+            kind: 'second_driver', leg, item: kind.item, description: kind.description,
+            quantity: null, cost: null, cost_typed: false, miles: null, dead_miles: null, rate: null,
+          });
+          moved = true;
+        } else if (was > 0 && now === 0 && at >= 0) {
+          linePending.splice(at, 1);
+          moved = true;
+        }
+        editing.coBefore[key] = now;
+      }
+    }
+    for (const l of linePending) {
+      if (l.kind !== 'rental' && l.kind !== 'second_driver') continue;
+      const b = lineBasis(l);
+      const key = JSON.stringify(b);
+      if (l.cost_typed || (l.basis === key && l.cost != null)) continue;
+      const cost = calcCost(l, b);
+      if (cost == null) continue;
+      if (cost !== money(String(l.cost ?? ''))) moved = true;
+      l.cost = cost;
+      l.basis = key;
+      l.miles = b.miles;
+      if (l.kind === 'rental') {
+        l.dead_miles = b.dead;
+        l.rate = b.rate;
+      }
+    }
+    return moved;
+  }
 
   /* The dialog: what the line is, which leg on a split trip, the words the
      quote prints and the price. A bus rental's quantity is the leg's buses and
@@ -4272,7 +4420,20 @@
     const qty = moneyField('scheduler-f-lqty', 'Quantity', l.kind === 'rental' ? legBuses(l.leg) : (l.quantity ?? 1));
     const costField = moneyField('scheduler-f-lcost', l.kind === 'discount' ? 'Amount off' : 'Cost',
       cost === null ? null : Math.abs(cost));
-    grid.append(kind, ...(leg ? [leg] : []), item, descItem, qty, costField);
+    /* A bus rental is priced at a mileage rate on its miles, with the drive
+       from the yard and back as dead miles. The rate is picked from the
+       calculator's list, and the dead miles can be typed over the route's. */
+    const basis = lineBasis(l);
+    const rateField = selectField('scheduler-f-lrate', 'Mileage rate', String(l.rate ?? defaultRate() ?? ''),
+      (quoteRates?.mileage ?? []).map(m => [String(m.rate), `$${m.rate.toFixed(2)}${m.note ? ` · ${m.note}` : ''}`]));
+    const deadField = moneyField('scheduler-f-ldead', 'Dead miles', l.deadTyped ? l.dead_miles : null);
+    deadField.querySelector('input').placeholder = `${Math.round(legFigures(l.leg).dead)} by route`;
+    const costHelp = el('div', 'rux--form__helper-text scheduler-dialog-grid__wide');
+    const calc = calcCost(l, basis);
+    costHelp.textContent = calc === null
+      ? 'Left blank, the cost is worked out once the trip has miles and dates.'
+      : `Left blank, the cost is the calculator's: ${usdCents(calc)} on ${Math.round(basis.miles)} miles over ${basis.days} ${basis.days === 1 ? 'day' : 'days'}.`;
+    grid.append(kind, ...(leg ? [leg] : []), item, descItem, qty, costField, rateField, deadField, costHelp);
     host.replaceChildren(grid);
 
     // The kind decides the item's usual name and words, whether the quantity
@@ -4281,9 +4442,14 @@
       const k = document.getElementById('scheduler-f-lkind').value;
       const qtyInput = document.getElementById('scheduler-f-lqty');
       const legNow = document.getElementById('scheduler-f-lleg')?.value ?? null;
-      qtyInput.disabled = k === 'rental';
+      const drivers = k === 'second_driver' ? coDrivers(legNow) : 0;
+      qtyInput.disabled = k === 'rental' || drivers > 0;
       if (k === 'rental') qtyInput.value = String(legBuses(legNow));
+      if (drivers > 0) qtyInput.value = String(drivers);
       descHelp.hidden = k !== 'rental';
+      rateField.hidden = k !== 'rental' || !quoteRates;
+      deadField.hidden = k !== 'rental';
+      costHelp.hidden = k !== 'rental' && k !== 'second_driver';
       costField.querySelector('label').textContent = k === 'discount' ? 'Amount off' : 'Cost';
     };
     let kindBefore = l.kind;
@@ -4320,6 +4486,12 @@
       cost: typed === null ? null : (kind === 'discount' ? -Math.abs(typed) : typed),
       cost_typed: typed !== null,
     };
+    if (kind === 'rental') {
+      const rate = money(val('scheduler-f-lrate'));
+      const dead = money(val('scheduler-f-ldead'));
+      Object.assign(row, { rate: rate ?? (lineEditing === null ? null : linePending[lineEditing].rate),
+        dead_miles: dead, deadTyped: dead !== null });
+    }
     // An empty dialog adds nothing, as in the other dialogs.
     if (!row.item && !row.description && row.cost === null) {
       window.Rux?.modal?.close?.('scheduler-line-modal');
@@ -4335,7 +4507,7 @@
   /* The lines Save writes, in order, each with the quantity and amount it has
      now: a rental's quantity is read from the Fleet tab at the moment of the
      save. */
-  const linesToSave = () => linePending.map((l, position) => ({
+  const linesToSave = () => (linesLive && syncLines(), linePending).map((l, position) => ({
     id: l.id ?? null, position, kind: l.kind, leg: l.leg ?? null,
     item: l.item ?? null, description: l.description ?? null,
     quantity: lineQty(l), cost: money(String(l.cost ?? '')), amount: lineAmount(l),
@@ -4744,6 +4916,8 @@
   }
 
   function refreshDirty() {
+    // A date, a type, the miles or a drive can move a line's price.
+    if (linesLive && syncLines()) redrawLines();
     const startEl = document.getElementById('scheduler-f-start');
     const destEl = document.getElementById('scheduler-f-destination');
     const startOk = !!isoOrNull(startEl?.value);
@@ -4902,6 +5076,9 @@
     // The quote's lines, diffed by `linesPatch` as the POs are by `listPatch`.
     editing.linesLoaded = creating || Array.isArray(trip.trip_quote_lines);
     editing.lines = creating ? [] : byPosition(trip.trip_quote_lines);
+    // The saved stops, which price the quote's lines for the leg the Route
+    // tab is not showing.
+    editing.stops = creating ? [] : (trip.trip_stops || []);
 
     /* The route's rows are kept apart from `editing.before`: they are
        `trip_stops` rows, not `trips` columns, so they diff and write
@@ -5305,6 +5482,7 @@
           r.driveMiles = drive.miles;
           r.driveSource = 'estimated';
           recalcYard();
+          refreshDirty();
         } catch (e) { r.driveOut = null; recalcYard(); lookupFailed(e, 'from the yard'); }
       };
       const driveBackFrom = async place => {
@@ -5315,6 +5493,7 @@
           r.backMiles = drive.miles;
           r.backSource = 'estimated';
           recalcReturn();
+          refreshDirty();
         } catch (e) { r.backDrive = null; recalcReturn(); lookupFailed(e, 'back to the yard'); }
       };
 
@@ -5798,9 +5977,20 @@
           id: String(l.id), kind: l.kind || 'other', leg: l.leg ?? null,
           item: l.item ?? null, description: l.description ?? null,
           quantity: l.quantity ?? null, cost: l.cost ?? null, cost_typed: !!l.cost_typed,
-          miles: l.miles ?? null, dead_miles: l.dead_miles ?? null, rate: l.rate ?? null,
+          miles: l.miles ?? null, dead_miles: l.dead_miles ?? null,
+          rate: l.rate == null ? null : Number(l.rate),
         }))
         : [];
+      /* A saved line is priced on what it was saved with, so opening a trip
+         reprices nothing: its basis is today's, and only a change moves it.
+         Dead miles that differ from the route's were typed. */
+      for (const l of linePending) {
+        const f = legFigures(l.leg);
+        l.deadTyped = l.kind === 'rental' && l.dead_miles != null && Math.round(l.dead_miles) !== Math.round(f.dead);
+        l.basis = JSON.stringify(lineBasis(l));
+      }
+      editing.coBefore = null;
+      askQuoteRates();
       linesLive = false;
       const lineList = rowList();
       const linesNote = el('p', 'rux--form__helper-text');
@@ -5821,27 +6011,46 @@
           linePending.push({ kind: 'rental', leg, item: 'Bus Rental', description: null,
             quantity: null, cost, cost_typed: cost !== null, miles: null, dead_miles: null, rate: null });
         });
+        // Co-drivers already on get their line with the first rental.
+        editing.coBefore = { outbound: 0, return: 0 };
         drawLines();
         refreshDirty();
       };
       const drawLines = () => {
+        if (linesLive) syncLines();
         lineList.body.replaceChildren();
         const split = splitNow();
         linePending.forEach((l, i) => {
           const cost = money(String(l.cost ?? ''));
           const amount = lineAmount(l);
           const name = l.item || lineKind(l.kind).label;
+          // A typed cost says what the calculator makes it, until the two agree.
+          const calc = l.cost_typed ? calcCost(l) : null;
           const meta = [
-            split && l.kind === 'rental' ? (l.leg === 'return' ? 'Pickup' : 'Drop-off') : null,
+            split && (l.kind === 'rental' || l.kind === 'second_driver') ? (l.leg === 'return' ? 'Pickup' : 'Drop-off') : null,
             cost === null ? 'No cost yet' : `${lineQty(l) ?? 1} × ${usdCents(cost)}`,
+            calc !== null && calc !== cost ? `calculator ${usdCents(calc)}` : null,
           ].filter(Boolean).join(' · ');
           const much = amount === null ? '' : usdCents(amount);
+          // A line moves up or down one place, which is the order the quote
+          // prints them in.
+          const move = by => {
+            const [line] = linePending.splice(i, 1);
+            linePending.splice(i + by, 0, line);
+            drawLines();
+            refreshDirty();
+          };
           lineList.body.appendChild(listRow({
             name, meta, much,
             title: [name, meta, much].filter(Boolean).join(' · '),
             edit: () => openLineDialog(i),
-            removeLabel: `Remove ${name}`,
-            remove: () => { linePending.splice(i, 1); drawLines(); refreshDirty(); },
+            items: [
+              { label: 'Edit', run: () => openLineDialog(i) },
+              { label: 'Move up', disabled: i === 0, run: () => move(-1) },
+              { label: 'Move down', disabled: i === linePending.length - 1, run: () => move(1) },
+              { label: 'Remove', danger: true,
+                run: () => { linePending.splice(i, 1); drawLines(); refreshDirty(); } },
+            ],
           }));
         });
         // With no lines yet, the trip's own rental comes first.
@@ -8192,6 +8401,17 @@
     [refField]: histNull(r[refField]), amount: histNumber(r.amount), date: histNull(r.date),
   }));
 
+  const histLines = rows => histByPosition(rows).map(r => ({
+    kind: histNull(r.kind), leg: histNull(r.leg), item: histNull(r.item),
+    quantity: histNumber(r.quantity), cost: histNumber(r.cost), amount: histNumber(r.amount),
+  }));
+  // "Bus Rental 2 × $3,320 · Addt'l Driver 1 × $470"
+  function histLinesSummary(rows) {
+    if (!rows.length) return null;
+    return rows.map(r => [r.item || r.kind,
+      r.cost !== null ? `${r.quantity ?? 1} × ${histUsd(r.cost)}` : null].filter(Boolean).join(' ')).join(' · ');
+  }
+
   const histBusName = id => `Bus ${panelIndex.buses.get(id)?.number ?? id}`;
   const histDriverName = id => panelIndex.driversById.get(id)?.name ?? id;
 
@@ -8237,7 +8457,8 @@
     + 'trip_stops(position,leg,type,label,name,address,depart_prev,arrive,spot),'
     + 'trip_payments(position,amount,method,date,ref),'
     + 'trip_pos(position,ref,amount,date),'
-    + 'trip_invoices(position,number,amount,date)';
+    + 'trip_invoices(position,number,amount,date),'
+    + 'trip_quote_lines(position,kind,leg,item,quantity,cost,amount)';
   async function readTripState(tripId) {
     const { data, error } = await withTimeout(client.from('trips').select(HISTORY_READ).eq('id', tripId).single().then(r => r));
     if (error) throw new Error(error.message);
@@ -8267,6 +8488,7 @@
       ['payments', 'Payments', 'trip_payments', histPayments, histPaymentSummary],
       ['purchase_orders', 'Purchase orders', 'trip_pos', r => histBilling(r, 'ref'), r => histBillingSummary(r, 'ref', 'PO')],
       ['invoices', 'Invoices', 'trip_invoices', r => histBilling(r, 'number'), r => histBillingSummary(r, 'number', 'Invoice')],
+      ['quote_lines', 'Quote lines', 'trip_quote_lines', histLines, histLinesSummary],
     ];
     for (const [field, label, key, shape, summary] of lists) {
       const was = shape(before[key]);

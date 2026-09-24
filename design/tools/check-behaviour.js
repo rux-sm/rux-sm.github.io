@@ -368,6 +368,31 @@
       `--expanded=${has(nav, EXP)}, glyph=${glyph()}`);
   })();
 
+  // ── ui-shell: the collapsible nav, which opens over the page as a panel ──
+  // js/ui-shell.js: a nav carrying `--side-nav--hidden` closes on an outside
+  // press and marks its hamburger `header__action--active`, as the switcher
+  // panel does. The sink's own page shell is one; the fixture above is not.
+  (() => {
+    const nav = q('.rux--side-nav--hidden');
+    if (!nav) return skip('ui-shell', 'collapsible nav', 'no collapsible nav here');
+    const trigger = nav.closest('.rux--header')?.querySelector('.rux--header__menu-toggle');
+    if (!trigger) return record('ui-shell', 'collapsible nav', false,
+      'a collapsible nav with no hamburger in its header');
+    const EXP = 'rux--side-nav--expanded', ACTIVE = 'rux--header__action--active';
+    if (has(nav, EXP)) click(trigger);
+
+    click(trigger);
+    record('ui-shell', 'the collapsible nav opens and marks its hamburger active',
+      has(nav, EXP) && has(trigger, ACTIVE),
+      `--expanded=${has(nav, EXP)}, active=${has(trigger, ACTIVE)}`);
+
+    document.body.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }));
+    record('ui-shell', 'an outside press closes it, as it does the panel',
+      !has(nav, EXP) && !has(trigger, ACTIVE),
+      `--expanded=${has(nav, EXP)}, active=${has(trigger, ACTIVE)} after a press on the body`);
+    if (has(nav, EXP)) click(trigger);
+  })();
+
   // ── ui-shell: the switcher panel, which DOES dismiss on an outside press ─
   // Confirmed on components-ui-shell-header--header-w-actions-and-switcher
   // 2026-09-02: a press expands the panel 0 to 256px and marks the action
@@ -394,7 +419,7 @@
       `--expanded=${has(panel, EXP)}, active=${has(trigger, 'rux--header__action--active')}, tabindex=${link?.tabIndex}`);
 
     document.body.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }));
-    record('ui-shell', 'an outside press closes the panel, unlike the nav',
+    record('ui-shell', 'an outside press closes the panel, unlike the persistent nav',
       !has(panel, EXP) && link?.tabIndex === -1,
       `--expanded=${has(panel, EXP)}, tabindex=${link?.tabIndex}`);
 

@@ -45,14 +45,16 @@
    The sink harness set `style.inlineSize = '0'` by hand; a behaviour layer for
    a CSS design system should never be writing widths, and it does not need to.
 
-   ESCAPE CLOSES THE SIDE NAV; AN OUTSIDE PRESS DOES NOT. This is the second
-   place the kernel's default is wrong for a component, and for the opposite
-   reason to the tooltip's: a nav panel is part of the page rather than a
-   surface floating over it, so dismissing it because someone clicked the
-   content they navigated to would fight the user. `dismissOn: { outside:
-   false }` says so. What DOES dismiss it by pointer is its own scrim —
-   `side-nav__overlay`, which only covers the viewport under the mobile media
-   query, so handling it explicitly beats guessing at a breakpoint in JS.
+   ESCAPE CLOSES EITHER NAV; AN OUTSIDE PRESS CLOSES ONLY THE COLLAPSIBLE ONE.
+   The persistent nav is part of the page rather than a surface floating over
+   it, so dismissing it because someone clicked the content they navigated to
+   would fight the user, and `dismissOn: { outside: false }` says so; what
+   dismisses it by pointer is its own scrim, `side-nav__overlay`, which only
+   covers the viewport under the mobile media query. The collapsible nav opens
+   over the page at every width, as a header panel does, so it is treated as
+   one: an outside press closes it, the hamburger takes the panel trigger's
+   `header__action--active`, and css/rux-overrides.css draws it on the panel's
+   layer.
 
    THE SUBMENU CHEVRON IS NOT OURS TO TURN. `.rux--side-nav__submenu[aria-
    expanded=true] .rux--side-nav__submenu-chevron > svg` rotates it in CSS, off
@@ -78,8 +80,8 @@
 
    THE TWO DISTINCTIVE DECISIONS BOTH HELD. Escape closes the nav -- 256px back to 0,
    aria-expanded false. An outside press does NOT: clicking page content well clear of the
-   panel left it open at 256px. That is exactly `dismissOn: { outside: false }`, and it was
-   the part most at risk of being a guess.
+   panel left it open at 256px. That story's nav is the persistent one, and
+   `dismissOn: { outside: false }` is kept for it; the collapsible nav is Rux's.
 
    ONE DEFECT: THE NAME DID NOT MOVE WITH THE GLYPH. Carbon swaps aria-label from
    "Open menu" to "Close menu" on open. This module swapped the icon to an X and left the
@@ -99,8 +101,8 @@
    (0 to 256px), `header__action--active` on the button and aria-expanded=true; the
    links inside go from tabindex -1 to 0, so a collapsed panel is invisible to Tab.
    A second press closes it. An OUTSIDE press closes it, and so does Escape on the
-   document — the opposite of the side nav on both counts, which is why the panel
-   takes the kernel's defaults and the nav declines them. Focus does NOT move into
+   document — the opposite of the persistent side nav on the first count, which is why
+   the panel takes the kernel's defaults and that nav declines them. Focus does NOT move into
    the panel on open: document.activeElement stayed on the body.
 
    NOT REIMPLEMENTED: Carbon's HeaderPanel `onHeaderPanelFocus`, which the story does
@@ -112,6 +114,7 @@
   if (!overlay) return; // js/overlay.js must load first
 
   const EXPANDED = 'rux--side-nav--expanded';
+  const FLOATS = 'rux--side-nav--hidden';
   const live = new Map();   // nav -> { registration, trigger }
 
   const scrimFor = nav => nav.closest('.rux--header, body')
@@ -188,6 +191,8 @@
     // uses `--hidden` for a nav that is not shown at all, which is a
     // different thing from one the reader just collapsed.
     nav.classList.toggle(EXPANDED, open);
+    const floats = nav.classList.contains(FLOATS);   // the collapsible shell, see the header
+    if (floats) trigger?.classList.toggle('rux--header__action--active', open);
     trigger?.setAttribute('aria-expanded', String(open));
     setTriggerGlyph(trigger, open);
     setTriggerLabel(trigger, open);
@@ -206,7 +211,7 @@
         registration: overlay.register({
           element: nav,
           anchor: trigger,
-          dismissOn: { outside: false },   // see the header
+          dismissOn: { outside: floats },   // see the header
           dismissOthers: !adopt,
           close: opts => setNav(nav, false, opts?.trigger ?? trigger),
         }),

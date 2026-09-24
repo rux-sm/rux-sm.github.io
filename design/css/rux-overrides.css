@@ -146,6 +146,20 @@
   .rux--side-nav__submenu { block-size: 2.75rem; }
 }
 
+/* A NAV THAT OPENS OVER THE PAGE IS DRAWN AS A HEADER PANEL. The collapsible
+   shell's nav, the one carrying `--side-nav--hidden`, is closed at every width
+   until the hamburger opens it over the content, which is what a header panel
+   does; js/ui-shell.js gives its hamburger the panel trigger's active state.
+   So it takes the panel's own layer and edges, from Carbon's
+   `.rux--header-panel` and `--expanded`, and the active button joins onto it
+   as the switcher's does. A persistent nav keeps Carbon's background, because
+   it is part of the page beside the content. */
+.rux--side-nav--hidden { background-color: var(--rux-layer); }
+.rux--side-nav--hidden.rux--side-nav--expanded {
+  border-inline-end: 1px solid var(--rux-border-subtle);
+  border-inline-start: 1px solid var(--rux-border-subtle);
+}
+
 /* A FILTERED LIST'S FIRST ROW DRAWS A LINE ABOVE ITSELF. Carbon separates
    options with a line on each one's top edge and takes it off
    `:first-of-type`, but js/list-box.js filters by marking an option `hidden`

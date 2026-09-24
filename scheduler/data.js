@@ -3315,6 +3315,113 @@
     return item;
   }
 
+  /* ── Updates ── What was said to or heard from the customer, newest first,
+     each stamped with who wrote it and when. Add update writes straight to
+     `trip_updates` without saving the trip, so an update never waits on the
+     rest of the form, and a new trip has no id to hang one on until it is
+     saved. A `nothing` row marks a skipped prompt and is not drawn; an
+     `imported` row was copied out of the old notes, with its date alone and no
+     author. */
+  const UPDATE_COLUMNS = 'id,created_at,actor_name,body,kind';
+  function updateStamp(u) {
+    const at = new Date(u.created_at);
+    const opts = { month: 'short', day: 'numeric' };
+    if (at.getFullYear() !== new Date().getFullYear()) opts.year = 'numeric';
+    if (u.kind === 'imported') return `${at.toLocaleDateString(undefined, opts)} · From the old notes`;
+    return `${at.toLocaleString(undefined, { ...opts, hour: 'numeric', minute: '2-digit' })} · ${u.actor_name || 'Someone'}`;
+  }
+
+  function updatesSection(trip, creating) {
+    const wrap = el('div');
+    const list = el('ol', 'scheduler-updates');
+    list.setAttribute('aria-label', 'Updates, newest first');
+    const status = el('p', 'rux--type-body-compact-01 scheduler-updates-empty');
+    let rows = [];
+    const draw = () => {
+      list.replaceChildren(...rows.filter(u => u.kind !== 'nothing').map(u => {
+        const li = el('li', 'scheduler-updates__item');
+        li.append(el('div', 'rux--type-body-compact-01 scheduler-updates__body', u.body),
+          el('div', 'rux--type-label-01 scheduler-updates__meta', updateStamp(u)));
+        return li;
+      }));
+      status.hidden = list.childElementCount > 0;
+      status.textContent = 'No updates yet.';
+    };
+    if (creating) {
+      status.textContent = 'Updates can be added once the trip is saved.';
+      wrap.append(status);
+      return section('Updates', wrap);
+    }
+
+    const field = el('div', 'rux--form-item');
+    const lw = el('div', 'rux--text-area__label-wrapper');
+    const lab = el('label', 'rux--label', 'Update');
+    lab.setAttribute('for', 'scheduler-f-update');
+    lw.appendChild(lab);
+    const taWrap = el('div', 'rux--text-area__wrapper');
+    const box = el('textarea', 'rux--text-area');
+    box.id = 'scheduler-f-update';
+    box.rows = 2;
+    box.placeholder = 'Follow-up email sent';
+    taWrap.appendChild(box);
+    field.append(lw, taWrap);
+    const error = el('p', 'rux--type-helper-text-01 scheduler-updates-error');
+    error.setAttribute('role', 'alert');
+    error.hidden = true;
+    // The outlined button, so Save stays the panel's one main button.
+    const add = el('button', 'rux--btn rux--btn--tertiary rux--btn--sm', 'Add update');
+    add.type = 'button';
+    add.disabled = true;
+    const adder = el('div', 'scheduler-updates-add');
+    adder.append(field, error, add);
+
+    box.addEventListener('input', () => { add.disabled = !box.value.trim(); });
+    // Cmd or Ctrl with Enter adds it, as a chat box sends.
+    box.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && !add.disabled) { e.preventDefault(); add.click(); }
+    });
+    add.addEventListener('click', async () => {
+      const body = box.value.trim();
+      if (!body) return;
+      add.disabled = true;
+      error.hidden = true;
+      try {
+        // The name history records, or the staff profile's where it has none.
+        const actor = await actorName()
+          ?? (await Promise.resolve(window.Rux?.account?.person?.()).catch(() => null))?.name ?? null;
+        const { data, error: failed } = await withTimeout(client.from('trip_updates')
+          .insert({ trip_id: trip.id, body, kind: 'update', actor_name: actor })
+          .select(UPDATE_COLUMNS).single().then(r => r));
+        if (failed) throw new Error(failed.message);
+        rows = [data, ...rows];
+        box.value = '';
+        draw();
+      } catch (err) {
+        console.warn('The update was not added:', err);
+        error.textContent = 'The update was not added. Try again.';
+        error.hidden = false;
+        add.disabled = !box.value.trim();
+      }
+    });
+
+    status.textContent = 'Reading updates…';
+    wrap.append(adder, list, status);
+    (async () => {
+      try {
+        const { data, error: failed } = await withTimeout(client.from('trip_updates')
+          .select(UPDATE_COLUMNS).eq('trip_id', trip.id)
+          .order('created_at', { ascending: false }).then(r => r));
+        if (failed) throw new Error(failed.message);
+        rows = data || [];
+        draw();
+      } catch (err) {
+        console.warn('The updates were not read:', err);
+        status.textContent = 'The updates could not be read.';
+      }
+    })();
+    return section('Updates', wrap);
+  }
+
   /* A Carbon range date picker, from the capture
      `preview-preview-datepicker--range-with-calendar@open`: the root, `--from`
      and `--to` containers and one shared calendar container. Only the shell is
@@ -5395,6 +5502,7 @@
       hotelBox,
     );
     panelDetails.appendChild(section('Trip', topFields, tripMenu));
+    panelDetails.appendChild(updatesSection(trip, creating));
 
     /* ── Booking contact ──
        The search suggests and does not lock: picking a contact fills its phone

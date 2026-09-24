@@ -87,10 +87,6 @@ None open.
 
 ## Tasks
 
-- [ ] Create `trip_updates`, staff only with anon's grants revoked, and copy
-  the 203 dated lines in as `imported`. SQL shown to rux.
-- [ ] Add the Updates list to the editor, newest first, with a box to add one
-  without saving the trip.
 - [ ] Add the prompt to Save over the customer-facing changes, with the line
   filled in, the quick reasons and the two Save buttons.
 - [ ] Replace the bar's notes row with the icon row, put the update icon at

@@ -31,17 +31,27 @@ in the table contains a newline.
 - **The app writes the stamp, and no one types it.** The dates typed today are
   spelt four ways and cannot be trusted, since nothing stops a line dated the
   21st being written on the 22nd.
-- **The prompt fires on a material change only:** the dates, the times, the
-  quoted price, the bus count, the destination, the customer, confirmed, the
-  contract, a PO, an invoice and a cancellation. A colour pick, a driver swap
-  and a corrected phone number ask nothing, because a prompt on every save is
-  trained away inside a week.
+- **The log is a `trip_updates` table of its own,** because a customer thread
+  mixed into the field-by-field history is read well by neither.
+- **The prompt fires on a material change:** the dates, the times, the route,
+  the quoted price, the bus count, the destination, the customer, confirmed,
+  the contract, a PO, an invoice and a cancellation. A colour pick, a driver
+  swap and a corrected phone number ask nothing.
+- **The prompt's box comes filled with a line describing the change,** which
+  the person confirms or rewrites, so asking on every route edit costs one
+  press.
 - **The prompt offers the answer before the box.** Six quick reasons drawn from
   what is already written — quote sent, follow-up sent, waiting on a PO,
   customer confirmed, date changed, working on payment — spell one thing one
   way and make the reasons countable.
 - **The prompt names what changed,** each material field with its before and
   after, so the line is written against the change rather than from memory.
+- **The 177 dated lines already in `notes` move into the log,** one entry
+  each, dated from the line where its date reads and marked as having no
+  known author.
+- **Both apps prompt,** because a prompt in one app teaches people to save
+  from the other.
+- **The log is for the office only,** so its lines stay short and internal.
 - **Declining is a line of its own.** "Nothing to tell the customer" writes its
   own entry under the same stamp, so a save that says nothing is visible in the
   log instead of invisible.
@@ -67,39 +77,20 @@ in the table contains a newline.
 
 ## Questions
 
-- **Where does the log live?** `trip_history` already records every change with
-  its actor and moment and the scheduler already writes it, so a `note_added`
-  action would need only its `action` check widened — no new table, and the
-  entries sit in the list rux-ui already shows. Against that: a customer-facing
-  thread mixed into a field-diff audit is read by neither well. The alternative
-  is a `trip_updates` table of its own.
-- **What is material, exactly?** The list above is a first cut. Times and the
-  route are the doubtful ones: an itinerary changed 204 times and said nothing
-  166 of them, which is either the worst gap here or proof that a route edit is
-  routine and a prompt on it would be noise.
-- **What happens to the notes already written?** 177 dated lines could be
-  parsed into first entries of the log, or left in `notes` to age out. Parsing
-  invents an author for every one of them.
-- **Does the escape hatch stay?** It can be counted once the log exists; if one
-  person presses it on nine saves in ten, the answer is a conversation, not a
-  stricter dialog.
-- **Does rux-ui prompt too, or only display?** A prompt in one app and not the
-  other teaches which app to use to avoid the question.
-- **Is the note ever shown to the customer?** It changes the wording of every
-  chip if a line can leave the office.
+None open.
 
 ## Tasks
 
 - [ ] Move the breadcrumb off the 290 trips: one `trip_history` entry each,
   `updated` with the reference before and after and the source key in the
   metadata, then blank `notes`. SQL shown to rux, applied as its own migration.
-- [ ] Answer the first question, and write the migration the answer needs.
+- [ ] Write the `trip_updates` migration, staff-only with anon granted
+  nothing, and move the 177 dated lines into it. SQL shown to rux.
 - [ ] Add the update log to the scheduler's panel: the lines newest first, the
   stamp rendered from the row, and a box to add one without saving the trip.
-- [ ] Add the prompt to Save, over the material fields the second question
-  settles, with the changes named, the quick reasons, the box and the recorded
-  decline.
+- [ ] Add the prompt to Save, over the material fields, with the changes
+  named, the box filled from them, the quick reasons and the recorded decline.
 - [ ] Show the newest line on the bar's note row, and keep the standing facts
   reachable in the panel.
 - [ ] Add the stale mark to the bar's warning chips.
-- [ ] Make rux-ui read the log, and decide there whether it prompts.
+- [ ] Make rux-ui read the log and prompt on its own saves.

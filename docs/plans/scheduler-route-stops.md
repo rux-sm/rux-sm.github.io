@@ -40,10 +40,15 @@ nobody opens it for is one line taller than today.
   one meaning instead of sharing a row. A trip left closed writes what it
   writes today.
 
-- **Stops beyond the destination are listed and not editable,** with each
-  leg's miles and drive. rux-ui's Itinerary tab is the only thing that writes
-  them and this app has no editor for them at all, so a list that offered to
-  edit would be offering something that is not there.
+- **The whole itinerary can be entered inside the section,** simply: one
+  row per stop with its place, its times and its dwell, added, removed and
+  reordered there. The quick path stays the six fields and the times, and the
+  section is for the day someone goes back to fill the rest. It keeps only
+  what a driver's day needs from rux-ui's Itinerary tab, not all of it.
+
+- **Every leg is measured,** including the ones between middle stops, by the
+  same Mapbox call that measures the yard's two, so the section's driving
+  total covers the whole day.
 
 - **No database change.** `trip_stops` already carries every field the four
   rows need; the tab stops collapsing two of them onto one.
@@ -72,25 +77,21 @@ nobody opens it for is one line taller than today.
 
 ## Questions
 
-- The two times are the only stops this app can write, and everything past
-  the destination is still rux-ui's to enter. Does that stand until the
-  Itinerary tab's grid is built, or does this section grow an editor first?
-- The tab measures the yard's two legs and nothing between them, so a trip
-  whose middle stops carry no drive has no driving total, only a line naming
-  how many legs are unmeasured. Should the tab ask Mapbox for the drive from
-  the destination to the drop-off as it does for the yard's two, or does that
-  drive belong to the driver itinerary?
+- Which layout for the stop list inside the section? A page of options is
+  built for rux to pick from before the editor is built.
 
 ## Tasks
 
-- [ ] rux answers the questions above.
+- [ ] Build a page of two or three stop-list layouts with invented stops,
+      and rux picks one.
 - [ ] Render a round trip's drop-off as the pickup, with a link that opens
       the two fields.
 - [ ] Add the closed section under the Times list, named for what it holds.
 - [ ] Ask the destination's two times and its dwell inside it, and write the
       two stop rows they describe.
 - [ ] Total the leg's driving and on-duty hours inside the section.
-- [ ] List the stops beyond the destination, with each leg's miles and drive.
+- [ ] Build the stop list in the picked layout: add, remove and reorder
+      stops, each leg measured with its miles and drive.
 - [ ] Check a trip rux-ui built an itinerary for keeps every stop through a
       save from this tab.
 - [ ] Check a trip left closed writes the rows it writes today.

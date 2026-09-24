@@ -33,15 +33,17 @@ vehicles adds its types without a code change.
 - **A type in use cannot be removed;** Remove says how many vehicles hold it.
 - **The editor's Type select lists the office's types,** plus the vehicle's
   own type when the list lacks it, so opening a vehicle never changes it.
-- **Motorcoach becomes Coach.** The two Motorcoach rows are the same Prevost
-  as the Coach rows, and the editor turns them into Coach on save anyway.
 - **One label function names a vehicle everywhere:** the type, then the
-  number, as "Coach 218" or "Van 12", and "Vehicle 218" when the type is
-  empty. It replaces every hand-built "Bus ${number}" on the Fleet page, the
-  board's rows, the trip editor, the Drivers page and trip history.
-- **Page and words say Fleet and vehicle:** the side nav and heading say
-  Fleet, the button says New vehicle, the field says Number, the trip
-  editor's tiles say Vehicle 1 and its count says Vehicles needed.
+  number, as "Coach 218" or "Van 12", and "Unit 218" when the type is
+  empty. It replaces every hand-built "Bus ${number}" that names one vehicle:
+  the Fleet page, the board's rows, the trip editor, the Drivers page and
+  trip history.
+- **A number that repeats its type is shown once,** so the van, whose number
+  is "Van" until it is given one, reads "Van". `buses.number` cannot be
+  empty.
+- **The Fleet page says unit; the board and trip editor say bus** for the
+  seat a trip needs filled, as "Bus 1" and "Buses needed", which is the
+  office's word for it.
 - **The file becomes `scheduler/fleet.html` and `fleet.js`,** with the nav in
   every scheduler page pointing there; `buses.html` stays as a page that only
   forwards to it, so a saved bookmark still works.
@@ -63,20 +65,18 @@ vehicles adds its types without a code change.
 
 ## Questions
 
-- What number should the van have? Its number today is the word "Van".
+None open.
 
 ## Tasks
 
-- [ ] Change the two Motorcoach rows to Coach, and the van's number to the
-      answer above, through the Supabase connection, shown to rux first.
 - [ ] Write the `vehicle-types-v1` row with the four starting types, through
       the Supabase connection, shown to rux first.
 - [ ] Load the type list and add the label function in `scheduler/data.js`,
       and use them wherever a vehicle is named.
 - [ ] Build the Vehicle types modal, with rename carried to vehicles and trips
       and removal blocked while a type is in use.
-- [ ] Rename the page to `fleet.html` and `fleet.js`, change its words,
-      leave `buses.html` forwarding, and point every page's nav at Fleet.
+- [ ] Rename the page to `fleet.html` and `fleet.js`, leave `buses.html`
+      forwarding, and point every page's nav at it.
 - [ ] Add the shuttle, car, truck and trailer icons to Design's icon map and
       run the full check.
 - [ ] Order the fleet by type, then year, on the page and in `sort_order`.

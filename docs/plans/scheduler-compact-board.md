@@ -95,28 +95,15 @@ the bottom edge.
 - **The toolbar already answers this width.** `data-room="tight"` moves `Today`
   into the overflow menu and the week reads as its months; compact adds nothing.
 
+- **`share/maintenance.html` keeps its scrolling week,** since nothing opens
+  from its grid and a block there could not be tapped.
+
 - **No `rux--*` class is invented.** The grid, the trip bar and the docked bar
   are this app's own under `scheduler-`, as Carbon has none of the three.
 
 ## Questions
 
-- **Is a cut destination worth the line?** On a 402px phone a one-day block
-  leaves 41px for it, which is four to eight characters rather than a fixed
-  count: the font's letters run from 3px for an `i` to 10.4px for a `W`, so the
-  same box holds "Illinois" whole and cuts "Miami". 44 of 837 destinations fit,
-  and six in ten end in a state the phone does not need. The departure fits
-  whole at every width. Wider compact boards, which is every one that is not a
-  phone, leave 55px to 93px and read in full.
-
-- **Nothing on a block says a trip has no driver, no purchase order or a
-  requirement its bus fails.** That is what the marks carried, and the decision
-  above gives the room to the writing instead; the colour and the double-booked
-  band are the only states left.
-
-- **Does `share/maintenance.html` go compact too?** Its grid is
-  `.scheduler-week--static`: nothing opens from a bar, so a block there would
-  be untappable and the docked bar would never come. The choice is a
-  read-only compact week, or leaving that page scrolling as it is.
+None open.
 
 ## Tasks
 

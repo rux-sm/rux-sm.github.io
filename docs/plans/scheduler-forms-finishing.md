@@ -28,24 +28,20 @@ field can be used by ear as well as by eye.
   the day, not a section, and on a blank envelope it is empty.
 - **Every typed field carries the name of the label beside it.** A field with
   no name is a blank to anyone listening rather than looking.
+- **The multi-stop envelope stays on a white 6 by 9 sheet** and the standard
+  one on the kraft envelope, as they print now.
+- **The itinerary has no Activity column.** It read an empty stop label on
+  every row, and drivers do not need it.
 - **A blank itinerary comes ruled to the foot of the sheet.** A paper form
   handed over blank is written on by hand, and pressing a button for each line
   is not writing.
 
 ## Questions
 
-- The multi-stop envelope prints on a white 6 by 9 sheet while the standard one
-  prints on the kraft envelope itself. Is that right, or should both be the
-  envelope?
-- The Activity column was empty on every row of the trip I opened. It fills
-  from a label on each stop. Is that what should fill it, or something else?
-- Should what is typed survive a reload, or only the sitting? Surviving a
-  reload means storing it somewhere.
-- How many ruled lines should a blank itinerary come with?
+None open.
 
 ## Tasks
 
-- [ ] rux answers the questions above.
 - [ ] Keep what is typed when the layout or the copy changes.
 - [ ] Make Print all a cell, flush and the band's height.
 - [ ] Give the Printed tick its whole cell as the press target.
@@ -55,4 +51,5 @@ field can be used by ear as well as by eye.
 - [ ] Name every typed field on both forms.
 - [ ] Tell the two links on the Forms page apart by name.
 - [ ] Give the itinerary's table its column scopes and a caption.
+- [ ] Take the Activity column off the itinerary.
 - [ ] Rule a blank itinerary to the foot of the sheet.

@@ -1787,6 +1787,12 @@ button.scheduler-row-head__num::after {
 .scheduler-row--last > * {
   border-block-end: var(--scheduler-last-rule, 1px solid var(--rux-border-subtle-01));
 }
+/* The row over a priority band takes the band's rule for its own, as the
+   column header meets the first row: none where the surface change separates
+   them, Carbon's way, and the hairline in a theme that separates with one. */
+.scheduler-avail__row:has(+ .scheduler-avail__band) > * {
+  border-block-end: var(--scheduler-band-rule);
+}
 /* Sticky on the left on the pane's own surface, like the board's bus column,
    and opaque so nothing shows through. */
 .scheduler-avail__day,

@@ -165,8 +165,8 @@
      titles above are the only bright text in their rows. */
   color: var(--rux-text-secondary);
 }
-/* The corner takes the row head's inline padding, so the # sits centred over
-   the bus numbers. */
+/* The corner takes the row head's inline padding, so the type's drawing sits
+   centred over the bus numbers. */
 .scheduler-corner {
   inset-inline-start: 0;
   z-index: 4;
@@ -178,6 +178,10 @@
   min-inline-size: 2rem;
   justify-content: center;
 }
+/* The type being read, as data.js draws it; 16px, so it never widens the
+   column past its bus numbers. */
+.scheduler-corner__type { display: inline-flex; }
+.scheduler-corner__type svg { display: block; }
 .scheduler-day__num { font-variant-numeric: tabular-nums; }
 .scheduler-day--weekend { color: var(--rux-text-placeholder); }
 /* Today is the day in `link-primary`, with no mark under it: the 32px band has
@@ -277,6 +281,15 @@ button.scheduler-row-head__num::after {
 .scheduler-bus-tip__mark > svg { flex: none; color: var(--rux-icon-inverse); }
 .scheduler-bus-tip__vin { opacity: .75; font-variant-numeric: tabular-nums; }
 .scheduler-bus-tip__status { font-weight: var(--rux-heading-compact-01-font-weight); }
+/* The view option's switch: its words at the start, the switch at the end. */
+.scheduler-bus-tip__switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--rux-spacing-04);
+  padding-block: var(--rux-spacing-03);
+}
+.scheduler-bus-tip__switch-label { cursor: pointer; }
 .scheduler-row-head__num {
   font-size: var(--rux-label-01-font-size);
   line-height: var(--rux-label-01-line-height);
@@ -288,19 +301,28 @@ button.scheduler-row-head__num::after {
 /* The out-of-service mark, stacked under the number so the number stays the
    widest thing in the cell. */
 .scheduler-row-head__kit {
-  /* Above the number's click layer, so the mark keeps its hover label. */
+  /* Above the number's click layer, so the out-of-service mark keeps its
+     hover label; every other mark lets a press through to the number, which
+     opens the tip that names it. */
   position: relative;
+  pointer-events: none;
   display: flex;
   flex-direction: column;
   gap: var(--rux-spacing-02);
   color: var(--rux-text-secondary);
 }
 .scheduler-row-head__kit svg { display: block; }
-.scheduler-row-head__oos { color: var(--rux-support-warning); display: inline-flex; }
-.scheduler-row-head__type { display: inline-flex; }
+.scheduler-row-head__oos { color: var(--rux-support-warning); display: inline-flex; pointer-events: auto; }
+/* The lift and sleeper, shown while the tip's switch is on. */
+.scheduler-row-head__equip { display: none; }
+.scheduler-week--equipment .scheduler-row-head__equip { display: inline-flex; }
+/* The whole head opens the tip, so the whole head answers the pointer, and
+   stays marked while its tip is open. */
+.scheduler-row-head:has(> .rux--popover-container):hover { background: var(--rux-layer-hover); }
+.scheduler-row-head:has(> .rux--popover--open) { background: var(--rux-layer-selected); }
 
 /* The heading over each vehicle type after the primary one, which is the day
-   band again, lower down: the same surface, rule and type, so a van's section
+   band again, lower down: the same surface, rule and ink, so a van's section
    reads as a section of the board. */
 .scheduler-type-band {
   grid-column: 1 / -1;
@@ -313,13 +335,18 @@ button.scheduler-row-head__num::after {
   font-weight: var(--rux-heading-compact-01-font-weight);
   letter-spacing: var(--rux-heading-compact-01-letter-spacing);
 }
-/* The name rides the left edge, so a wide week scrolled sideways keeps it in
-   view, where the bus column is. */
+/* The drawing rides the left edge, so a wide week scrolled sideways keeps it
+   in view, where the bus column is. */
 .scheduler-type-band > span {
   position: sticky;
   inset-inline-start: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+  block-size: 100%;
   padding-inline: var(--rux-spacing-03);
 }
+.scheduler-type-band svg { flex: none; }
 /* The row over a band takes the band's rule for its own, as the day band
    meets the first row. */
 .scheduler-row:has(+ .scheduler-type-band) > * {

@@ -146,8 +146,34 @@
   /* What a bus number's toggletip says, laid out as the trip card is: a head
      with the bus in its own colour, a disc wearing its type's drawing beside
      its name and make, then a ruled row each for its equipment, VIN and any
-     status but active. Every value with textContent: a bus's details are data,
+     status but active, and last the switch that shows every bus's equipment
+     under its number. Every value with textContent: a bus's details are data,
      never markup. */
+  // The equipment each bus has, as the icon and word the tip and the bus
+  // column both draw.
+  const equipmentOf = bus => [bus.ada_lift && ['#m-accessible-fill', 'ADA lift'],
+    bus.sleeper && ['#m-airline_seat_flat-fill', 'Sleeper']].filter(Boolean);
+  /* The board's corner: the type's drawing, or its initial where it has
+     none, named for a screen reader and on hover. */
+  function paintCorner(corner, type) {
+    corner.dataset.type = type;
+    const known = window.SchedulerVehicles?.typeOf(type);
+    const name = known ? (known.label || known.name) : (type || 'Vehicle');
+    const icon = window.SchedulerVehicles?.iconOf(type);
+    const mark = el('span', 'scheduler-corner__type', icon ? null : name.charAt(0).toUpperCase());
+    mark.setAttribute('role', 'img');
+    mark.setAttribute('aria-label', `Bus number, ${name}`);
+    if (icon) mark.appendChild(svgUse(icon, '16', '0 0 32 32'));
+    corner.title = `Bus number · ${name}`;
+    corner.replaceChildren(mark);
+  }
+  // Set by render for the week on screen, and called as the board scrolls.
+  let nameBoardCorner = () => {};
+  // The board's view option for that switch; applyView keeps it.
+  let showEquipment = false;
+  // Each tip's switch needs an id its label can name, and a spare week draws
+  // the same buses again, so the bus id alone would repeat.
+  let equipSwitchSeq = 0;
   function busTip(bus) {
     const tip = el('div', 'rux--toggletip-content scheduler-bus-tip');
     const head = el('div', 'scheduler-bus-tip__head');
@@ -166,7 +192,7 @@
     head.append(disc, said);
     tip.appendChild(head);
 
-    const marks = [bus.ada_lift && ['#m-accessible-fill', 'ADA lift'], bus.sleeper && ['#m-airline_seat_flat-fill', 'Sleeper']].filter(Boolean);
+    const marks = equipmentOf(bus);
     if (marks.length) {
       const row = el('div', 'scheduler-bus-tip__row scheduler-bus-tip__kit');
       for (const [href, label] of marks) {
@@ -180,6 +206,40 @@
     if (bus.status && bus.status !== 'active') {
       tip.appendChild(el('div', 'scheduler-bus-tip__row scheduler-bus-tip__status', bus.status.charAt(0).toUpperCase() + bus.status.slice(1)));
     }
+
+    /* Carbon's small toggle, from `sink/toggle.html`, its words to the left
+       and a label for the switch, so either flips it. `js/form-controls.js`
+       binds it and fires `rux:toggle`, which applyView answers for every bus. */
+    const id = `scheduler-equip-switch-${++equipSwitchSeq}`;
+    const row = el('div', 'scheduler-bus-tip__row scheduler-bus-tip__switch');
+    const words = el('label', 'scheduler-bus-tip__switch-label', 'Equipment under bus numbers');
+    words.htmlFor = id;
+    words.id = `${id}-label`;
+    const box = el('div', 'rux--toggle');
+    const btn = el('button', 'rux--toggle__button');
+    btn.type = 'button';
+    btn.id = id;
+    btn.setAttribute('role', 'switch');
+    btn.setAttribute('aria-checked', String(showEquipment));
+    btn.setAttribute('aria-labelledby', words.id);
+    const lab = el('label', 'rux--toggle__label');
+    lab.htmlFor = id;
+    const appearance = el('div', 'rux--toggle__appearance rux--toggle__appearance--sm');
+    const sw = el('div', 'rux--toggle__switch');
+    if (showEquipment) sw.classList.add('rux--toggle__switch--checked');
+    const check = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    check.setAttribute('class', 'rux--toggle__check');
+    check.setAttribute('width', '6px'); check.setAttribute('height', '5px');
+    check.setAttribute('viewBox', '0 0 6 5');
+    const tick = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    tick.setAttribute('d', 'M2.2 2.7L5 0 6 1 2.2 5 0 2.7 1 1.5z');
+    check.appendChild(tick);
+    sw.appendChild(check);
+    appearance.appendChild(sw);
+    lab.appendChild(appearance);
+    box.append(btn, lab);
+    row.append(words, box);
+    tip.appendChild(row);
     return tip;
   }
 
@@ -1181,9 +1241,11 @@
     rows.push({ id: UNASSIGNED, bus: null, empty: !tracks.has(UNASSIGNED) });
 
     into.replaceChildren();
-    // "#" heads the column of bus numbers; the title spells it out.
-    const corner = el('div', 'scheduler-corner', '#');
-    corner.title = 'Bus number';
+    /* The corner heads the column of bus numbers with the drawing of the type
+       being read: the primary type's at the top, then each band's as it
+       reaches the day band, so the first group needs no band of its own. */
+    const corner = el('div', 'scheduler-corner');
+    paintCorner(corner, typeList[0]?.name ?? '');
     into.appendChild(corner);
 
     // Today is marked on its header cell only.
@@ -1226,13 +1288,24 @@
 
     let bandType = primaryType;
     for (const r of rows) {
-      /* A band where the type changes, naming it as the vehicle-types list
-         writes it. The No bus row has its own tint and draws none. */
+      /* A band where the type changes, drawn as the type's icon alone, the
+         same the corner takes up once the band passes under it. Its name, as
+         the vehicle-types list writes it, is for hover and a screen reader; a
+         type with no drawing shows its initial, as the corner does. The No bus
+         row has its own tint and draws none. */
       if (r.bus && typeKey(r.bus) !== bandType) {
         bandType = typeKey(r.bus);
         const name = window.SchedulerVehicles?.typeOf(r.bus.type);
         const band = el('div', 'scheduler-type-band');
-        band.appendChild(el('span', null, name ? (name.label || name.name) : (String(r.bus.type || '').trim() || 'No type')));
+        band.dataset.type = r.bus.type || '';
+        const said = name ? (name.label || name.name) : (String(r.bus.type || '').trim() || 'No type');
+        const icon = window.SchedulerVehicles?.iconOf(r.bus.type);
+        const label = el('span', null, icon ? null : said.charAt(0).toUpperCase());
+        label.setAttribute('role', 'img');
+        label.setAttribute('aria-label', said);
+        band.title = said;
+        if (icon) label.appendChild(svgUse(icon, '16', '0 0 32 32'));
+        band.appendChild(label);
         into.appendChild(band);
       }
       const bars = tracks.get(r.id) ?? [];
@@ -1279,10 +1352,9 @@
         ].filter(Boolean).join(' · ');
       }
 
-      /* Two marks in this column: the type's drawing on any vehicle that is
-         not the primary type, so a van is told from a coach at the number,
-         and out of service, a state that changes what the row can take this
-         week. The lift and sleeper are fixed and sit in the toggletip. Each
+      /* The marks in this column: the lift and sleeper while the view option
+         shows them, and out of service, a state that changes what the row can
+         take this week. The type is the band's and the corner's to say. Each
          symbol keeps its own viewBox. */
       const kit = el('div', 'scheduler-row-head__kit');
       const flag = (href, box, label, cls) => {
@@ -1294,8 +1366,9 @@
         kit.appendChild(span);
       };
 
-      const typeIcon = r.bus && typeKey(r.bus) !== primaryType ? window.SchedulerVehicles?.iconOf(r.bus.type) : null;
-      if (typeIcon) flag(typeIcon, '0 0 16 16', r.bus.type, 'scheduler-row-head__type');
+      // Drawn on every bus and shown only while the view option is on, so the
+      // switch needs no redraw.
+      if (r.bus) for (const [href, label] of equipmentOf(r.bus)) flag(href, '0 0 16 16', label, 'scheduler-row-head__equip');
 
       const windows = (oosByBus.get(r.id) ?? []).filter(w => clip(w.start_date, w.end_date, weekStart, weekEnd));
       if (windows.length) {
@@ -1334,6 +1407,21 @@
     // A spare grid is drawn and nothing else: what follows belongs to the week
     // the board is actually reading.
     if (target) return;
+
+    // The corner hands over to each band as it passes under the day band.
+    const bands = [...into.querySelectorAll('.scheduler-type-band')];
+    nameBoardCorner = () => {
+      const edge = corner.getBoundingClientRect().bottom;
+      // A hidden board measures zero; it is named again when it is drawn.
+      if (!edge) return;
+      let type = typeList[0]?.name ?? '';
+      for (const b of bands) {
+        if (b.getBoundingClientRect().top >= edge) break;
+        type = b.dataset.type;
+      }
+      if (corner.dataset.type !== type) paintCorner(corner, type);
+    };
+    nameBoardCorner();
 
     // The editor keeps its trip across a render. Its opener becomes the new bar
     // for that trip when this week has one, so focus can go back to it.
@@ -7452,6 +7540,7 @@
      again. Close trip is a tab on its bar and needs nothing. */
   schEl.addEventListener('scroll', () => {
     if (!barShortcuts?.hidden) requestAnimationFrame(() => placeBarOpen());
+    nameBoardCorner();
   }, { passive: true });
 
   // Enter on the selected bar opens it. Enter on any other bar is app.js's and
@@ -7632,12 +7721,12 @@
     notes: 'scheduler-week--no-notes',
     drivers: 'scheduler-week--no-drivers',
   };
-  const view = { client: true, contact: true, time: true, notes: true, drivers: true, sunday: false };
+  const view = { client: true, contact: true, time: true, notes: true, drivers: true, sunday: false, equipment: false };
   const VIEW_KEY = 'scheduler.view';
 
   try {
     const saved = JSON.parse(localStorage.getItem(VIEW_KEY) || '{}');
-    for (const k of [...VIEW_ROWS, 'sunday']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
+    for (const k of [...VIEW_ROWS, 'sunday', 'equipment']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
   } catch { /* no storage, or nothing worth reading: the defaults stand */ }
   // Set before `cursor` is first computed below, because `mondayOf` reads it
   // and the first week drawn must honour a saved Sunday start.
@@ -7649,6 +7738,14 @@
   function applyView() {
     weekStartsSunday = view.sunday;
     for (const r of VIEW_ROWS) schEl.classList.toggle(HIDE_ROW[r], !view[r]);
+    // Equipment under the bus numbers, and every open or closed tip's switch
+    // saying so.
+    showEquipment = view.equipment;
+    schEl.classList.toggle('scheduler-week--equipment', showEquipment);
+    for (const btn of schEl.querySelectorAll('.scheduler-bus-tip__switch .rux--toggle__button')) {
+      btn.setAttribute('aria-checked', String(showEquipment));
+      btn.parentElement.querySelector('.rux--toggle__switch')?.classList.toggle('rux--toggle__switch--checked', showEquipment);
+    }
     // One for the destination, which never goes, plus whatever is left on.
     schEl.style.setProperty('--scheduler-bar-rows', String(1 + VIEW_ROWS.filter(r => view[r]).length));
     // The bars change height and lane, which the scroll pane may not report as
@@ -7688,6 +7785,14 @@
     if (key === 'sunday') { cursor = mondayOf(cursor); show(); }
   });
   viewMenu?.addEventListener('rux:menu-closed', () => { viewMenu.hidden = true; });
+
+  // A bus tip's switch. Design's `setToggle` fires on the `.rux--toggle` box,
+  // which bubbles to the pane.
+  schEl.addEventListener('rux:toggle', e => {
+    if (!e.target.closest?.('.scheduler-bus-tip__switch')) return;
+    view.equipment = !!e.detail?.on;
+    applyView();
+  });
 
   // Once at start, so the saved rows are off before the first week is drawn
   // rather than blinking off after it.

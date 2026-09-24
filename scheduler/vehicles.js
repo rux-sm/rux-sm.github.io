@@ -15,11 +15,13 @@
   const KEY = 'vehicle-types-v1';
 
   // The drawings a type may wear. A type with none shows its initial.
+  // Solid, to match the weight of the semibold headers and the solid
+  // equipment marks they sit beside.
   const ICONS = {
-    bus: { href: '#m-directions_bus', label: 'Bus' },
-    shuttle: { href: '#m-airport_shuttle', label: 'Shuttle' },
-    car: { href: '#m-directions_car', label: 'Car' },
-    truck: { href: '#m-local_shipping', label: 'Truck' },
+    bus: { href: '#m-directions_bus-fill', label: 'Bus' },
+    shuttle: { href: '#m-airport_shuttle-fill', label: 'Shuttle' },
+    car: { href: '#m-directions_car-fill', label: 'Car' },
+    truck: { href: '#m-local_shipping-fill', label: 'Truck' },
   };
 
   // What the list holds until it is read, so a page never names nothing.

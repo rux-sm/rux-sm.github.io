@@ -4,11 +4,6 @@ The one list of open work for the whole site. Each item says what is open and
 why, in a line or two. When it is done, delete it; git history keeps what was
 done and how.
 
-## Home and account
-
-- An interrupted anonymous sign-in, when Turnstile times out or the network
-  drops, isn't retried until the next page load.
-
 ## Design
 
 - **Published themes.** A theme saved in the Theme Creator stays in that

@@ -62,7 +62,9 @@
   };
 
   // One Turnstile token for one log-in attempt, rendered into `host`. A token
-  // works once, so each attempt replaces the widget before asking again.
+  // works once, so each attempt replaces the widget before asking again. Every
+  // way the check can end without a token resolves null, so a challenge left
+  // unsolved or a dropped network hands the button back instead of holding it.
   let widget = null;
   const captchaToken = host => new Promise(resolve => {
     let tries = 0;
@@ -79,6 +81,8 @@
           callback: token => resolve(token),
           'error-callback': () => resolve(null),
           'expired-callback': () => resolve(null),
+          'timeout-callback': () => resolve(null),
+          'unsupported-callback': () => resolve(null),
         });
       } catch { resolve(null); }
     };

@@ -292,11 +292,11 @@
 }
 @keyframes scheduler-card-fade { from { opacity: 0; } }
 
-/* THE CARD'S RULES are the inverse surface's text at a fifth, a hairline that
-   reads on the light card in every theme: Carbon's own inverse border is the
+/* THE CARD'S RULES are the inverse surface's text at 35%, a hairline that
+   reads plainly on the light card in every theme: Carbon's own inverse border is the
    card's own colour in the dark themes, and would vanish. Each rule runs the
    card's full width, under the icons and between every line. */
-.scheduler-card { --card-rule: color-mix(in srgb, var(--rux-text-inverse) 20%, transparent); }
+.scheduler-card { --card-rule: color-mix(in srgb, var(--rux-text-inverse) 35%, transparent); }
 
 /* The shortcut icons, the selected bar's top row. */
 .scheduler-card__icons { display: flex; }

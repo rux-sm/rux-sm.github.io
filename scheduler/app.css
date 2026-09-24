@@ -758,6 +758,9 @@ button.scheduler-row-head__num::after {
   margin-block: calc(-1 * var(--rux-spacing-01));
   padding: 0;
   border: 0;
+  /* A tile of the slots' own corner where the theme rounds them, so its hover
+     is the same shape as theirs. */
+  border-radius: var(--scheduler-shortcut-radius, 0);
   background: none;
   color: var(--card-icon);
   cursor: pointer;

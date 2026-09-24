@@ -131,6 +131,21 @@
   }
 }
 
+/* A SIDE-NAV ROW IS 44PX TO A FINGER. Carbon draws a link and a submenu
+   button 32px tall, and the rows are stacked edge to edge, so the hit area
+   cannot grow invisibly the way a toggle's does: on a touch screen the row
+   itself is 44px. A large item keeps its 48px, which Carbon sets with a more
+   specific rule. Asked for by Notes, whose side nav is how a phone moves
+   between pages. */
+@media (pointer: coarse) {
+  a.rux--side-nav__link { min-block-size: 2.75rem; }
+  .rux--side-nav__menu a.rux--side-nav__link {
+    block-size: 2.75rem;
+    min-block-size: 2.75rem;
+  }
+  .rux--side-nav__submenu { block-size: 2.75rem; }
+}
+
 /* A FILTERED LIST'S FIRST ROW DRAWS A LINE ABOVE ITSELF. Carbon separates
    options with a line on each one's top edge and takes it off
    `:first-of-type`, but js/list-box.js filters by marking an option `hidden`

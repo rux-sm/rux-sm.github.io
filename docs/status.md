@@ -17,12 +17,6 @@ done and how.
   problems are open, and three controls need hearing again. The list is in
   `design/docs/screen-reader-pass.md`.
 
-
-### Asked for by Notes
-
-- A side-nav link that meets 44px at touch widths. It is 32px tall, and the
-  side nav is how a phone moves between Notes pages.
-
 ## Scheduler
 
 - Trip search shows the 50 newest matches, with no ranking by relevance.

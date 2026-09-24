@@ -2222,6 +2222,8 @@
      dates as the Overview tab holds them, so a picker can say which buses and
      drivers are taken. A clash warns; it never stops a pick. */
   let fleetClashes = null;
+  // How far back a driver's days are counted, to spread work within a priority.
+  const RECENT_DAYS = 28;
   let fleetClashKey = '';
 
   const fleetLegDates = leg => {
@@ -2245,6 +2247,8 @@
     fleetClashKey = key;
     const lo = all.map(r => r.from).sort()[0];
     const hi = all.map(r => r.to).sort().at(-1);
+    // A day past the last leg, so a trip starting the day after reads as back-to-back.
+    const past = iso(addDays(parseISO(hi), 1));
     const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
     const forTrip = editing;
     let trips, off, oos;
@@ -2252,7 +2256,7 @@
       [trips, off, oos] = await withTimeout(Promise.all([
         client.from('trips')
           .select('id,destination,start_date,end_date,return_start_date,return_end_date,bus_count,return_bus_count,trip_assignments(bus_id,leg,active_roles,trip_drivers(driver_id,role))')
-          .is('cancelled_at', null).lte('start_date', hi).gte('start_date', iso(addDays(parseISO(lo), -90)))
+          .is('cancelled_at', null).lte('start_date', past).gte('start_date', iso(addDays(parseISO(lo), -90)))
           .then(unwrap),
         client.from('driver_time_off').select('driver_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
         client.from('bus_out_of_service').select('bus_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
@@ -2265,32 +2269,54 @@
     const clashes = {};
     for (const leg of ['outbound', 'return']) {
       const range = ranges[leg];
-      const buses = new Map(), drivers = new Map();
+      /* `near` is a trip ending the day before this leg or starting the day
+         after, which warns but does not rule the driver out; `worked` is the
+         days each driver drove in the RECENT_DAYS before the leg, which ranks
+         drivers of one priority so the work spreads. */
+      const buses = new Map(), drivers = new Map(), near = new Map(), worked = new Map();
       const add = (map, id, text) => { if (id == null) return; if (!map.has(id)) map.set(id, []); if (!map.get(id).includes(text)) map.get(id).push(text); };
       if (range) {
+        const before = iso(addDays(parseISO(range.from), -1));
+        const after = iso(addDays(parseISO(range.to), 1));
+        const recent = { from: iso(addDays(parseISO(range.from), -RECENT_DAYS)), to: before };
         for (const t of trips) {
           if (t.id === editing.id) continue;
           for (const l of legsOf(t)) {
-            if (!datesOverlap(range, l)) continue;
+            const clash = datesOverlap(range, l);
+            const next = !clash && (l.to === before || l.from === after);
+            const days = [];
+            if (datesOverlap(recent, l)) {
+              for (let d = parseISO(l.from > recent.from ? l.from : recent.from); iso(d) <= (l.to < recent.to ? l.to : recent.to); d = addDays(d, 1)) days.push(iso(d));
+            }
+            if (!clash && !next && !days.length) continue;
             for (const a of t.trip_assignments || []) {
               if ((a.leg || 'outbound') !== l.leg) continue;
               const text = `On trip ${t.destination || 'with no destination'}`;
-              add(buses, a.bus_id, text);
               const on = activeRolesOf(a);
-              for (const d of a.trip_drivers || []) if (on.has(d.role || 'driver')) add(drivers, d.driver_id, text);
+              const crew = (a.trip_drivers || []).filter(d => d.driver_id != null && on.has(d.role || 'driver'));
+              if (clash) {
+                add(buses, a.bus_id, text);
+                for (const d of crew) add(drivers, d.driver_id, text);
+              }
+              if (next) for (const d of crew) add(near, d.driver_id, `Back-to-back with ${t.destination || 'a trip'}`);
+              for (const d of crew) {
+                if (!worked.has(d.driver_id)) worked.set(d.driver_id, new Set());
+                for (const day of days) worked.get(d.driver_id).add(day);
+              }
             }
           }
         }
         for (const r of off) if (datesOverlap(range, { from: r.start_date, to: r.end_date })) add(drivers, r.driver_id, 'Time off');
         for (const r of oos) if (datesOverlap(range, { from: r.start_date, to: r.end_date })) add(buses, r.bus_id, 'Out of service');
       }
-      clashes[leg] = { buses, drivers };
+      clashes[leg] = { buses, drivers, near, worked };
     }
     fleetClashes = clashes;
     drawFleet();
   }
 
   const clashText = (leg, kind, id) => (id == null ? '' : (fleetClashes?.[leg]?.[kind].get(id) ?? []).join(' · '));
+  const workedDays = (leg, id) => fleetClashes?.[leg]?.worked.get(id)?.size ?? 0;
 
   // What the trip needs that a bus lacks, in the bar's words.
   function busLacks(bus) {
@@ -2382,14 +2408,35 @@
     return out;
   };
 
-  const fleetDriverOptions = (leg, currentId) => [...panelIndex.driversById.values()]
-    .filter(d => !d.status || d.status === 'active' || String(d.id) === String(currentId))
-    .sort((a, b) => String(a.name ?? '').localeCompare(String(b.name ?? '')))
-    .map(d => ({
-      id: d.id, name: d.name || d.short_name || 'Unnamed driver',
-      detail: d.status && d.status !== 'active' ? 'Inactive' : '',
-      clash: clashText(leg, 'drivers', d.id),
-    }));
+  /* Who to ask next, first: drivers free on the leg's dates before those on
+     another trip or away, then strictly by priority, the order the office
+     calls in; within one priority a driver with no back-to-back trip first,
+     then whoever drove the fewest days lately, so the work spreads. */
+  const fleetDriverOptions = (leg, currentId) => {
+    const rank = d => [
+      clashText(leg, 'drivers', d.id) ? 1 : 0,
+      d.priority ?? 9,
+      clashText(leg, 'near', d.id) ? 1 : 0,
+      workedDays(leg, d.id),
+    ];
+    return [...panelIndex.driversById.values()]
+      .filter(d => !d.status || d.status === 'active' || String(d.id) === String(currentId))
+      .map(d => ({ d, rank: rank(d) }))
+      .sort((a, b) => a.rank.reduce((c, v, i) => c || v - b.rank[i], 0)
+        || String(a.d.name ?? '').localeCompare(String(b.d.name ?? '')))
+      .map(({ d }) => {
+        const days = workedDays(leg, d.id);
+        return {
+          id: d.id, name: d.name || d.short_name || 'Unnamed driver',
+          detail: [
+            d.status && d.status !== 'active' ? 'Inactive' : '',
+            d.priority != null ? `Priority ${d.priority}` : '',
+            fleetClashes ? `${days} ${days === 1 ? 'day' : 'days'} in ${RECENT_DAYS / 7} weeks` : '',
+          ].filter(Boolean).join(' · '),
+          clash: [clashText(leg, 'drivers', d.id), clashText(leg, 'near', d.id)].filter(Boolean).join(' · '),
+        };
+      });
+  };
 
   /* A status as Carbon's icon indicator: a shape per status as well as a
      colour, and the yellow one carries its own dark mark, so each reads in
@@ -2450,7 +2497,7 @@
       options: fleetDriverOptions(leg, seat.driverId),
       current: seat.driverId,
       error: dup ? 'This driver is in another seat on this leg' : '',
-      warn: seat.on ? clashText(leg, 'drivers', seat.driverId) : '',
+      warn: seat.on ? [clashText(leg, 'drivers', seat.driverId), clashText(leg, 'near', seat.driverId)].filter(Boolean).join(' · ') : '',
     });
     picker.dataset.fleetLeg = leg;
     picker.dataset.fleetBus = bus.key;

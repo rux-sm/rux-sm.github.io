@@ -38,8 +38,21 @@ standing facts about the trip. No note in the table contains a newline.
 - **Standing facts stay in Notes,** undated and never prompted: a gate code, a
   shuttle, which driver runs which route.
 - **The bar's notes row goes;** that row holds the pending and requirement
-  icons. The bar carries a small speech-bubble icon instead, coloured by how
-  old the newest update is.
+  icons. The bar carries a small speech-bubble icon instead.
+- **The icon says who needs a follow-up.** A trip is waiting on the customer
+  while it is not confirmed, its PO or deposit is pending, its itinerary is
+  missing, or its balance is unpaid near departure. Once the newest update on
+  such a trip is older than the follow-up wait, its icon asks; a trip waiting
+  on nothing never asks, however old its updates.
+- **The follow-up wait is the office's setting,** a `follow-up-v1` settings
+  row edited from the Trips page as Vehicle types is from Fleet, starting at
+  3 days.
+- **A reminder can be dismissed, and comes back** after the setting's
+  snooze, starting at a day, until a real update is written. Dismissing is
+  each person's own, kept in their browser, so one person's dismissal never
+  hides a trip from another.
+- **The Trips page's Show choice gains Needs follow-up,** with its count, the
+  longest waiting first.
 - **Hovering over a bar opens a chat-style bubble:** the latest updates,
   newest first, each with who and when, standing notes pinned at the top,
   scrolling rather than cut short. On a phone, tapping a bar shows it above
@@ -55,19 +68,21 @@ standing facts about the trip. No note in the table contains a newline.
 
 ## Questions
 
-- How old should the newest update be before its icon turns amber, and red:
-  3 and 7 days, or counted towards the trip's date?
+None open.
 
 ## Tasks
 
-- [ ] Redo `scheduler/updates-specimen.html` with the bar's icon, its colours
-  and the hover bubble, on invented trips, for rux to see first.
+- [ ] Redo `scheduler/updates-specimen.html` with the bar's icon, a trip
+  asking for a follow-up and the hover bubble, on invented trips, for rux to
+  see first.
 - [ ] Add the Updates list to the editor, newest first, with a box to add one
   without saving the trip.
 - [ ] Add the prompt to Save over the customer-facing changes, with the line
   filled in, the quick reasons and No update.
 - [ ] Replace the bar's notes row with the icon row and the update icon, and
-  add the hover and tap bubble.
+  add the hover and tap bubble with Dismiss.
+- [ ] Write the `follow-up-v1` row, its dialog on the Trips page, and the
+  Needs follow-up choice there.
 - [ ] Make rux-ui read the log and prompt on its own saves.
 - [ ] Blank the 203 dated notes the log copied, where a note is still the
   text it copied, once both apps read the log. SQL shown to rux.

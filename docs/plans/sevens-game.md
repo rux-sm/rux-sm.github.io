@@ -57,8 +57,9 @@ retired with its tables.
 - **Phone first.** Your own cards large at the bottom with Flip and Stay
   under your thumb, the other players as compact rows with their cards and
   scores, the deck and whose turn it is in the middle.
-- **The look is chosen from a specimen** before the game is built, as Pixels'
-  was.
+- **Each card is one solid colour,** the colour its number or name has on the
+  real deck, toned to a matte shade, kept in `sevens/theme.css`. rux will
+  draw pixel art for the cards later, and it replaces these faces.
 
 ## Questions
 
@@ -67,8 +68,6 @@ retired with its tables.
 
 ## Tasks
 
-- [ ] rux picks a look from a specimen of the table, the cards and the
-      player rows, on the phone.
 - [ ] rux reads and approves the database change: the tables, the access
       check and every move as a function, tested with rounds played in SQL
       and rolled back.

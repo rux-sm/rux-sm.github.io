@@ -1,0 +1,37 @@
+/* theme.css -- this project's own, linked after /design/css/rux-theme.css,
+   served from Design's own repository and never copied here. Only what THIS
+   project changes goes here: token values inside a [data-theme] block
+   (theme.css), or component rules at Carbon's own specificity with no
+   !important (overrides.css). Design AGENTS.md, "Where a change goes". */
+
+/* THE CARDS' OWN COLOURS. Each card is one solid colour, the colour its
+   number or name is printed in on the real deck, toned down to a matte
+   shade. They sit on :root and in no [data-theme] block because a card is the
+   same colour whatever theme the person keeps; it is the colour of a thing,
+   not of the interface. Each face names its ink too: the darker text on the
+   lighter faces and white on the darker ones, whichever reads better, and at
+   least 4.2 to 1 on every face. */
+:root {
+  --sevens-ink-dark: #161616;
+  --sevens-ink-light: #ffffff;
+
+  --sevens-card-0: #e2b240;   --sevens-ink-0: var(--sevens-ink-dark);
+  --sevens-card-1: #a99b8b;   --sevens-ink-1: var(--sevens-ink-dark);
+  --sevens-card-2: #cfc93a;   --sevens-ink-2: var(--sevens-ink-dark);
+  --sevens-card-3: #c8264f;   --sevens-ink-3: var(--sevens-ink-light);
+  --sevens-card-4: #3fb5b1;   --sevens-ink-4: var(--sevens-ink-dark);
+  --sevens-card-5: #2e9e48;   --sevens-ink-5: var(--sevens-ink-dark);
+  --sevens-card-6: #a3308f;   --sevens-ink-6: var(--sevens-ink-light);
+  --sevens-card-7: #d9736b;   --sevens-ink-7: var(--sevens-ink-dark);
+  --sevens-card-8: #a8cf62;   --sevens-ink-8: var(--sevens-ink-dark);
+  --sevens-card-9: #ee8f2a;   --sevens-ink-9: var(--sevens-ink-dark);
+  --sevens-card-10: #d33a36;  --sevens-ink-10: var(--sevens-ink-light);
+  --sevens-card-11: #6f97cd;  --sevens-ink-11: var(--sevens-ink-dark);
+  --sevens-card-12: #978472;  --sevens-ink-12: var(--sevens-ink-dark);
+
+  /* +2 to +10 and ×2 share the modifiers' gold. */
+  --sevens-card-bonus: #efb152;   --sevens-ink-bonus: var(--sevens-ink-dark);
+  --sevens-card-freeze: #8fcae3;  --sevens-ink-freeze: var(--sevens-ink-dark);
+  --sevens-card-three: #e3d63a;   --sevens-ink-three: var(--sevens-ink-dark);
+  --sevens-card-second: #c9564f;  --sevens-ink-second: var(--sevens-ink-light);
+}

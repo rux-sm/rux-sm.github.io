@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="/design/css/rux.css">
 <link rel="stylesheet" href="/design/css/rux-theme.css">
 <link rel="stylesheet" href="/design/css/rux-overrides.css">
+<link rel="stylesheet" href="theme.css">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
 <style>
@@ -36,30 +37,32 @@ body { background: var(--rux-background); color: var(--rux-text-primary); }
   background: var(--card-bg); color: var(--card-fg); border: 1px solid var(--card-edge);
   font-size: 1.75rem; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1; text-align: center;
 }
-.sevens-card--word { font-size: .625rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; padding: .25rem; }
+.sevens-card--word { font-size: .75rem; font-weight: 600; line-height: 1.15; padding: .125rem; }
 .sevens-card--sm { inline-size: 1.75rem; block-size: 2.45rem; font-size: .9375rem; }
-.sevens-card--sm.sevens-card--word { font-size: .5rem; padding: .125rem; letter-spacing: 0; }
+.sevens-card--sm.sevens-card--word { font-size: .5rem; padding: .0625rem; }
 .sevens-card--new { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
-.sevens-card--dup { --card-edge: var(--rux-support-error); border-width: 2px; }
 .sevens-back { background: var(--rux-background-inverse); color: var(--rux-text-inverse); --card-edge: transparent; font-size: 1.125rem; }
 
-/* B · Kinds: bonus and action cards take a tag colour pair each. */
-.sevens-look--kinds .sevens-card[data-kind="bonus"],
-.sevens-look--colour .sevens-card[data-kind="bonus"] { --card-bg: var(--rux-tag-background-green); --card-fg: var(--rux-tag-color-green); --card-edge: transparent; }
-.sevens-look--kinds .sevens-card[data-kind="freeze"],
-.sevens-look--colour .sevens-card[data-kind="freeze"] { --card-bg: var(--rux-tag-background-blue); --card-fg: var(--rux-tag-color-blue); --card-edge: transparent; }
-.sevens-look--kinds .sevens-card[data-kind="three"],
-.sevens-look--colour .sevens-card[data-kind="three"] { --card-bg: var(--rux-tag-background-purple); --card-fg: var(--rux-tag-color-purple); --card-edge: transparent; }
-.sevens-look--kinds .sevens-card[data-kind="second"],
-.sevens-look--colour .sevens-card[data-kind="second"] { --card-bg: var(--rux-tag-background-magenta); --card-fg: var(--rux-tag-color-magenta); --card-edge: transparent; }
-/* C · Colours: each number too, as the box colours its numbers. */
-.sevens-look--colour .sevens-card[data-hue="0"] { --card-bg: var(--rux-tag-background-gray); --card-fg: var(--rux-tag-color-gray); --card-edge: transparent; }
-.sevens-look--colour .sevens-card[data-hue="1"] { --card-bg: var(--rux-tag-background-red); --card-fg: var(--rux-tag-color-red); --card-edge: transparent; }
-.sevens-look--colour .sevens-card[data-hue="2"] { --card-bg: var(--rux-tag-background-cyan); --card-fg: var(--rux-tag-color-cyan); --card-edge: transparent; }
-.sevens-look--colour .sevens-card[data-hue="3"] { --card-bg: var(--rux-tag-background-teal); --card-fg: var(--rux-tag-color-teal); --card-edge: transparent; }
-.sevens-look--colour .sevens-card[data-hue="4"] { --card-bg: var(--rux-tag-background-warm-gray); --card-fg: var(--rux-tag-color-warm-gray); --card-edge: transparent; }
-.sevens-look--colour .sevens-card[data-hue="5"] { --card-bg: var(--rux-tag-background-cool-gray); --card-fg: var(--rux-tag-color-cool-gray); --card-edge: transparent; }
-.sevens-look--colour .sevens-card--dup { --card-edge: var(--rux-support-error); }
+/* Each card is its own solid colour, from theme.css. */
+.sevens-card[data-card="0"] { --card-bg: var(--sevens-card-0); --card-fg: var(--sevens-ink-0); --card-edge: transparent; }
+.sevens-card[data-card="1"] { --card-bg: var(--sevens-card-1); --card-fg: var(--sevens-ink-1); --card-edge: transparent; }
+.sevens-card[data-card="2"] { --card-bg: var(--sevens-card-2); --card-fg: var(--sevens-ink-2); --card-edge: transparent; }
+.sevens-card[data-card="3"] { --card-bg: var(--sevens-card-3); --card-fg: var(--sevens-ink-3); --card-edge: transparent; }
+.sevens-card[data-card="4"] { --card-bg: var(--sevens-card-4); --card-fg: var(--sevens-ink-4); --card-edge: transparent; }
+.sevens-card[data-card="5"] { --card-bg: var(--sevens-card-5); --card-fg: var(--sevens-ink-5); --card-edge: transparent; }
+.sevens-card[data-card="6"] { --card-bg: var(--sevens-card-6); --card-fg: var(--sevens-ink-6); --card-edge: transparent; }
+.sevens-card[data-card="7"] { --card-bg: var(--sevens-card-7); --card-fg: var(--sevens-ink-7); --card-edge: transparent; }
+.sevens-card[data-card="8"] { --card-bg: var(--sevens-card-8); --card-fg: var(--sevens-ink-8); --card-edge: transparent; }
+.sevens-card[data-card="9"] { --card-bg: var(--sevens-card-9); --card-fg: var(--sevens-ink-9); --card-edge: transparent; }
+.sevens-card[data-card="10"] { --card-bg: var(--sevens-card-10); --card-fg: var(--sevens-ink-10); --card-edge: transparent; }
+.sevens-card[data-card="11"] { --card-bg: var(--sevens-card-11); --card-fg: var(--sevens-ink-11); --card-edge: transparent; }
+.sevens-card[data-card="12"] { --card-bg: var(--sevens-card-12); --card-fg: var(--sevens-ink-12); --card-edge: transparent; }
+.sevens-card[data-card="bonus"] { --card-bg: var(--sevens-card-bonus); --card-fg: var(--sevens-ink-bonus); --card-edge: transparent; }
+.sevens-card[data-card="freeze"] { --card-bg: var(--sevens-card-freeze); --card-fg: var(--sevens-ink-freeze); --card-edge: transparent; }
+.sevens-card[data-card="three"] { --card-bg: var(--sevens-card-three); --card-fg: var(--sevens-ink-three); --card-edge: transparent; }
+.sevens-card[data-card="second"] { --card-bg: var(--sevens-card-second); --card-fg: var(--sevens-ink-second); --card-edge: transparent; }
+/* A repeated number is ringed outside the card, where every face shows it. */
+.sevens-card--dup { outline: 2px solid var(--rux-support-error); outline-offset: 2px; }
 
 /* Other players: one compact row each. */
 .sevens-players { display: grid; gap: .5rem; }
@@ -80,7 +83,7 @@ body { background: var(--rux-background); color: var(--rux-text-primary); }
 /* Seven cards fit one row across the phone; more wrap under them. */
 .sevens-you .sevens-hand { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: .375rem; }
 .sevens-you .sevens-card { inline-size: auto; block-size: auto; aspect-ratio: 5 / 7; font-size: clamp(1.125rem, 5.5vw, 1.75rem); }
-.sevens-you .sevens-card--word { font-size: .5rem; letter-spacing: 0; overflow-wrap: anywhere; }
+.sevens-you .sevens-card--word { font-size: clamp(.5rem, 2.2vw, .75rem); padding: 0; }
 .sevens-sum { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
 .sevens-sum .rux--type-productive-heading-04 { font-variant-numeric: tabular-nums; }
 .sevens-math { font-size: .875rem; color: var(--rux-text-secondary); font-variant-numeric: tabular-nums; }
@@ -115,18 +118,10 @@ body { background: var(--rux-background); color: var(--rux-text-primary); }
 <symbol id="i-chevron--down" viewBox="0 0 16 16"><path d="M8 11 3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"/></symbol>
 </svg>
 <!-- SPRITE:END -->
-<main class="sevens-spec sevens-look--kinds" id="sevens-spec">
+<main class="sevens-spec" id="sevens-spec">
   <div class="sevens-bar">
     <h1 class="rux--type-productive-heading-05">Sevens — style specimen</h1>
     <div class="sevens-controls">
-      <div>
-        <p class="sevens-label">Cards</p>
-        <div class="rux--content-switcher rux--layout--size-md" role="tablist" aria-label="Cards" id="sevens-look" style="inline-size:21rem">
-          <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-look="plain"><span class="rux--content-switcher__label">A · Plain</span></button>
-          <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-look="kinds"><span class="rux--content-switcher__label">B · Kinds</span></button>
-          <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-look="colour"><span class="rux--content-switcher__label">C · Colours</span></button>
-        </div>
-      </div>
       <div class="rux--form-item">
         <div class="rux--select rux--select--inline">
           <label class="rux--label" for="sevens-theme">Theme</label>
@@ -233,15 +228,14 @@ body { background: var(--rux-background); color: var(--rux-text-primary); }
 </main>
 
 <script>
-/* A card is a number, a bonus (+2 to +10, x2) or an action. The hue of a
-   number is only for look C. */
+/* A card is a number, a bonus (+2 to +10, x2) or an action. */
 const card = (value, size = '') => {
   const el = document.createElement('span');
   const words = { freeze: 'Freeze', three: 'Flip three', second: 'Second chance' };
   el.className = 'sevens-card' + (size ? ' sevens-card--' + size : '');
-  if (words[value]) { el.dataset.kind = value; el.classList.add('sevens-card--word'); el.textContent = words[value]; }
-  else if (/^[+x]/.test(value)) { el.dataset.kind = 'bonus'; el.textContent = value.replace('x', '×'); }
-  else { el.dataset.hue = Number(value) % 6; el.textContent = value; }
+  if (words[value]) { el.dataset.card = value; el.classList.add('sevens-card--word'); el.textContent = words[value]; }
+  else if (/^[+x]/.test(value)) { el.dataset.card = 'bonus'; el.textContent = value.replace('x', '×'); }
+  else { el.dataset.card = value; el.textContent = value; }
   return el;
 };
 const OTHERS = [
@@ -267,13 +261,6 @@ const all = document.getElementById('sevens-all');
 ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '+2', '+4', '+6', '+8', '+10', 'x2', 'freeze', 'three', 'second'].forEach(v => all.appendChild(card(v)));
 all.style.gap = '.5rem';
 
-const spec = document.getElementById('sevens-spec');
-document.getElementById('sevens-look').addEventListener('click', e => {
-  const b = e.target.closest('button'); if (!b) return;
-  document.querySelectorAll('#sevens-look button').forEach(x => { const on = x === b; x.classList.toggle('rux--content-switcher--selected', on); x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; });
-  spec.classList.remove('sevens-look--plain', 'sevens-look--kinds', 'sevens-look--colour');
-  spec.classList.add('sevens-look--' + b.dataset.look);
-});
 const themeSel = document.getElementById('sevens-theme');
 themeSel.value = document.documentElement.dataset.theme;
 themeSel.addEventListener('change', () => { document.documentElement.dataset.theme = themeSel.value; });

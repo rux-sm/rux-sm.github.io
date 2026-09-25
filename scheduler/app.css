@@ -2765,9 +2765,6 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-leg-card__buttons { display: grid; grid-template-columns: 1fr 1fr; gap: var(--rux-spacing-03); }
 .scheduler-leg-card__buttons > .rux--btn { inline-size: 100%; max-inline-size: none; }
 .scheduler-leg-card__error { margin: 0; color: var(--rux-text-error); }
-.scheduler-leg-card__state { display: flex; align-items: center; gap: var(--rux-spacing-03); margin: 0; }
-.scheduler-leg-card__state--accepted svg { color: var(--rux-support-success); }
-.scheduler-leg-card__state--declined svg { color: var(--rux-support-error); }
 .scheduler-leg-card__changes { margin: var(--rux-spacing-02) 0 0; padding-inline-start: var(--rux-spacing-05); list-style: disc; }
 .scheduler-leg-card__section {
   display: grid;
@@ -2785,14 +2782,6 @@ html:has(.scheduler-page[data-takeover]) {
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
-.scheduler-leg-card__row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--rux-spacing-03) var(--rux-spacing-05);
-}
-.scheduler-leg-card__row > div:first-child { flex: 1 1 12rem; min-inline-size: 0; }
 .scheduler-leg-card__actions { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-02); }
 .scheduler-leg-card__crew,
 .scheduler-leg-card__bus { display: grid; gap: var(--rux-spacing-04); }
@@ -2802,13 +2791,40 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-leg-card__plan { display: grid; gap: var(--rux-spacing-02); }
 .scheduler-leg-card__plan p,
 .scheduler-leg-card__plan address { margin: 0; font-style: normal; overflow-wrap: anywhere; }
-/* The leg's itinerary and envelope, side by side, as wide as the answer. */
-.scheduler-leg-card__papers { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: var(--rux-spacing-03); }
+/* The leg's itinerary and envelope, side by side where each keeps its words
+   on one line, and one above the other on a phone. */
+.scheduler-leg-card__papers { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: var(--rux-spacing-03); }
 .scheduler-leg-card__papers > .rux--btn { inline-size: 100%; max-inline-size: none; }
-/* A person on one row: name and role, then Call and Text as icons. */
-.scheduler-leg-card__person { display: flex; align-items: center; gap: var(--rux-spacing-03); }
+/* A person on one row: name and role or number, then Call and Text at the
+   right. */
+.scheduler-leg-card__person { display: flex; align-items: center; gap: var(--rux-spacing-04); }
 .scheduler-leg-card__person > div:first-child { flex: 1 1 auto; min-inline-size: 0; }
-.scheduler-leg-card__person .scheduler-leg-card__actions { flex-wrap: nowrap; }
+.scheduler-leg-card__person .scheduler-leg-card__actions { flex-wrap: nowrap; gap: var(--rux-spacing-03); }
+/* Call or Text: the icon with its word under it, in a square the size of a
+   thumb, in Carbon's secondary button colours. Carbon's button puts the word
+   beside the icon, which leaves a name no room on a phone. */
+.scheduler-call-button {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rux-spacing-01);
+  inline-size: 3.5rem;
+  block-size: 3.5rem;
+  background: var(--rux-button-secondary);
+  color: var(--rux-text-on-color);
+  text-decoration: none;
+  font-size: var(--rux-label-01-font-size);
+  line-height: 1;
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+.scheduler-call-button:hover { background: var(--rux-button-secondary-hover); }
+.scheduler-call-button:active { background: var(--rux-button-secondary-active); }
+.scheduler-call-button:focus-visible {
+  outline: 2px solid var(--rux-focus);
+  outline-offset: -2px;
+  box-shadow: inset 0 0 0 3px var(--rux-focus-inset);
+}
 
 /* A driver's sheet (share/form.html): the way back over the paper, which
    keeps its own width and is taken down whole to the phone's by print.css. */

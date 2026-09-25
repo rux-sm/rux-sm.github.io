@@ -295,15 +295,13 @@
         </div>
         <!-- The driver's page, at the width it has on a phone held sideways. -->
         <div class="scheduler-leg-staff rux--stack-vertical rux--stack-scale-6">
-        <!-- Who the page is for and when dispatch last changed it, filled in by driver.js. -->
+        <!-- Who the page is for and how many trips wait for an answer, filled in by driver.js. -->
         <!-- A plain wrapper carries `hidden`, because the stack's display
              rule beats the browser's. -->
         <div id="scheduler-leg-intro" hidden>
         <div class="rux--stack-vertical rux--stack-scale-2">
           <h1 class="rux--type-productive-heading-04" id="scheduler-leg-hello"></h1>
-          <div id="scheduler-leg-updated-tag" hidden>
-            <span class="rux--tag rux--tag--gray rux--layout--size-sm"><span class="rux--tag__label" id="scheduler-leg-updated"></span></span>
-          </div>
+          <p class="rux--type-body-01" id="scheduler-leg-summary"></p>
         </div>
         </div>
         <!-- A card per trip leg, soonest first, drawn by driver.js. -->

@@ -316,7 +316,7 @@
         el('div', 'rux--toast-notification__title', title),
         el('div', 'rux--toast-notification__subtitle', subtitle),
       );
-      box.append(icon, details, closeButton('rux--toast-notification'));
+      box.append(icon, details, closeButton('rux--toast-notification', title));
       return box;
     }
     if (!action) {
@@ -357,22 +357,23 @@
     buttons.appendChild(btn);
     focus.append(details, buttons);
     box.appendChild(focus);
-    if (asToast) box.appendChild(closeButton('rux--actionable-notification'));
+    if (asToast) box.appendChild(closeButton('rux--actionable-notification', title));
     return box;
   }
 
   /* A toast carries Carbon's close button because nothing else clears it: the
      next render clears `say`'s region and leaves the toast. Written out in full
-     per variant for check-classes. */
+     per variant for check-classes. The button names the notice it closes, as
+     Design's notifications do. */
   const CLOSE = {
     'rux--actionable-notification': { btn: 'rux--actionable-notification__close-button', icon: 'rux--actionable-notification__close-icon' },
     'rux--toast-notification': { btn: 'rux--toast-notification__close-button', icon: 'rux--toast-notification__close-icon' },
   };
-  function closeButton(base) {
+  function closeButton(base, title) {
     const spec = CLOSE[base];
     const b = el('button', spec.btn);
     b.type = 'button';
-    b.setAttribute('aria-label', 'Close notification');
+    b.setAttribute('aria-label', `Close notification: ${title}`);
     const svg = svgUse('#m-close', '20', '0 0 32 32');
     svg.setAttribute('class', spec.icon);
     b.appendChild(svg);

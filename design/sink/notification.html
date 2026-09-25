@@ -30,6 +30,11 @@
     The DEFAULT inline notification is high contrast (#393939 on the white theme).
     --low-contrast is the light one that uses --rux-notification-background-*.
     Both are shipped states, not a bug.
+
+    Each close button names the notification it closes. Carbon's default label
+    is "closes notification" on every one, so a reader moving by Tab cannot
+    tell them apart; its `aria-label` prop is where Carbon lets a page say
+    more, and "Close notification: <title>" is what this library passes.
   -->
   <div class="ks-label">inline · default (high contrast)</div>
   <div style="display:grid;gap:.5rem;margin-block-end:2rem">
@@ -42,7 +47,7 @@
           <div class="rux--inline-notification__subtitle">Something went wrong.</div>
         </div>
       </div>
-      <button type="button" class="rux--inline-notification__close-button" aria-label="Close">
+      <button type="button" class="rux--inline-notification__close-button" aria-label="Close notification: Error">
         <svg class="rux--inline-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
       </button>
     </div>
@@ -55,7 +60,7 @@
           <div class="rux--inline-notification__subtitle">Check this before saving.</div>
         </div>
       </div>
-      <button type="button" class="rux--inline-notification__close-button" aria-label="Close">
+      <button type="button" class="rux--inline-notification__close-button" aria-label="Close notification: Warning">
         <svg class="rux--inline-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
       </button>
     </div>
@@ -67,7 +72,7 @@
           <div class="rux--inline-notification__subtitle">That worked.</div>
         </div>
       </div>
-      <button type="button" class="rux--inline-notification__close-button" aria-label="Close">
+      <button type="button" class="rux--inline-notification__close-button" aria-label="Close notification: Success">
         <svg class="rux--inline-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
       </button>
     </div>
@@ -79,7 +84,7 @@
           <div class="rux--inline-notification__subtitle">Something worth knowing.</div>
         </div>
       </div>
-      <button type="button" class="rux--inline-notification__close-button" aria-label="Close">
+      <button type="button" class="rux--inline-notification__close-button" aria-label="Close notification: Info">
         <svg class="rux--inline-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
       </button>
     </div>
@@ -95,7 +100,7 @@
           <div class="rux--inline-notification__subtitle">Something went wrong.</div>
         </div>
       </div>
-      <button type="button" class="rux--inline-notification__close-button" aria-label="Close">
+      <button type="button" class="rux--inline-notification__close-button" aria-label="Close notification: Error">
         <svg class="rux--inline-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
       </button>
     </div>
@@ -107,7 +112,7 @@
           <div class="rux--inline-notification__subtitle">Check this before saving.</div>
         </div>
       </div>
-      <button type="button" class="rux--inline-notification__close-button" aria-label="Close">
+      <button type="button" class="rux--inline-notification__close-button" aria-label="Close notification: Warning">
         <svg class="rux--inline-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
       </button>
     </div>
@@ -119,7 +124,7 @@
           <div class="rux--inline-notification__subtitle">That worked.</div>
         </div>
       </div>
-      <button type="button" class="rux--inline-notification__close-button" aria-label="Close">
+      <button type="button" class="rux--inline-notification__close-button" aria-label="Close notification: Success">
         <svg class="rux--inline-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
       </button>
     </div>
@@ -131,7 +136,7 @@
           <div class="rux--inline-notification__subtitle">Something worth knowing.</div>
         </div>
       </div>
-      <button type="button" class="rux--inline-notification__close-button" aria-label="Close">
+      <button type="button" class="rux--inline-notification__close-button" aria-label="Close notification: Info">
         <svg class="rux--inline-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
       </button>
     </div>
@@ -146,7 +151,7 @@
         <div class="rux--toast-notification__subtitle">Your changes are live.</div>
         <div class="rux--toast-notification__caption">just now</div>
       </div>
-      <button type="button" class="rux--toast-notification__close-button" aria-label="Close">
+      <button type="button" class="rux--toast-notification__close-button" aria-label="Close notification: Saved">
         <svg class="rux--toast-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
       </button>
     </div>
@@ -157,7 +162,7 @@
         <div class="rux--toast-notification__subtitle">The connection dropped at 40%.</div>
         <div class="rux--toast-notification__caption">just now</div>
       </div>
-      <button type="button" class="rux--toast-notification__close-button" aria-label="Close">
+      <button type="button" class="rux--toast-notification__close-button" aria-label="Close notification: Upload failed">
         <svg class="rux--toast-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
       </button>
     </div>
@@ -168,7 +173,7 @@
         <div class="rux--toast-notification__subtitle">92% of your quota is in use.</div>
         <div class="rux--toast-notification__caption">just now</div>
       </div>
-      <button type="button" class="rux--toast-notification__close-button" aria-label="Close">
+      <button type="button" class="rux--toast-notification__close-button" aria-label="Close notification: Storage almost full">
         <svg class="rux--toast-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
       </button>
     </div>
@@ -190,7 +195,7 @@
         </div>
         <div class="rux--actionable-notification__button-wrapper">
           <button type="button" class="rux--actionable-notification__action-button rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm">Install</button>
-          <button type="button" class="rux--actionable-notification__close-button" aria-label="Close">
+          <button type="button" class="rux--actionable-notification__close-button" aria-label="Close notification: Update available">
             <svg class="rux--actionable-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
           </button>
         </div>
@@ -211,7 +216,7 @@
         </div>
         <div class="rux--actionable-notification__button-wrapper">
           <button type="button" class="rux--actionable-notification__action-button rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm">Retry</button>
-          <button type="button" class="rux--actionable-notification__close-button" aria-label="Close">
+          <button type="button" class="rux--actionable-notification__close-button" aria-label="Close notification: Sync failed">
             <svg class="rux--actionable-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
           </button>
         </div>
@@ -232,7 +237,7 @@
         </div>
         <div class="rux--actionable-notification__button-wrapper">
           <button type="button" class="rux--actionable-notification__action-button rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm">Renew</button>
-          <button type="button" class="rux--actionable-notification__close-button" aria-label="Close">
+          <button type="button" class="rux--actionable-notification__close-button" aria-label="Close notification: Certificate expires Friday">
             <svg class="rux--actionable-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
           </button>
         </div>
@@ -253,7 +258,7 @@
         </div>
         <div class="rux--actionable-notification__button-wrapper">
           <button type="button" class="rux--actionable-notification__action-button rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm">View</button>
-          <button type="button" class="rux--actionable-notification__close-button" aria-label="Close">
+          <button type="button" class="rux--actionable-notification__close-button" aria-label="Close notification: Import finished">
             <svg class="rux--actionable-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
           </button>
         </div>

@@ -9,9 +9,11 @@
     wrapper, and `__counter-alert` inside it. All three have rules in
     @carbon/styles and none had an element here.
 
-    The counter text is static — keeping it in sync with typing is a behaviour,
-    and behaviours are Phase 5. The markup is the contract that
-    module will drive.
+    The limit is read from the visually-hidden span, which the textarea names
+    in `aria-describedby` after its helper text, as Carbon's does
+    (components-textarea--default, 2026-09-24): "Character limit 500". The
+    live count, and the alert Carbon speaks near the limit, are behaviours no
+    module here writes yet.
 
     `__label-counter` is NOT here, though the reference emits it: the Phase 3
     strip showed @carbon/styles defines that class only inside the fluid-text-area
@@ -24,12 +26,12 @@
       <div class="rux--text-area__label-wrapper">
         <label class="rux--label" for="ta-1">Notes</label>
       </div>
-      <span class="rux--visually-hidden">Character count</span>
+      <span class="rux--visually-hidden" id="ta-1-counter-desc">Character limit 500</span>
       <div class="rux--text-area__wrapper">
-        <textarea id="ta-1" class="rux--text-area" rows="4" cols="50" placeholder="Placeholder" maxlength="500"></textarea>
+        <textarea id="ta-1" class="rux--text-area" rows="4" cols="50" placeholder="Placeholder" maxlength="500" aria-describedby="ta-1-helper ta-1-counter-desc"></textarea>
         <span class="rux--text-area__counter-alert" role="alert"></span>
       </div>
-      <div class="rux--form__helper-text">Optional helper text</div>
+      <div class="rux--form__helper-text" id="ta-1-helper">Optional helper text</div>
     </div>
 
     <div class="rux--form-item">

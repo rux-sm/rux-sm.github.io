@@ -78,16 +78,17 @@ select (all five are labelled).
 
 **Heard and still open:**
 
-- **textarea** — "Character count" is read with no number.
-- **notification** — all eleven close buttons say only "Close, button", so a reader
-  moving by Tab cannot tell which notification each one dismisses. Carbon may do the
-  same.
 - **table** — sortable headers say "Service, button" with no sort state. `aria-sort` is
   on the `<th>`, not the button inside it. Whether `VO`+Shift+↓ announces it is untested.
 - **links** — the "link" role was not heard.
 
 **Not yet heard clearly:** text-input (the field's name, re-do with Tab), number-input
 and list-box.
+
+**Changed, to hear again:** textarea should now say "Character limit 500" after its
+helper text, as Carbon's does. Each notification's close button should say "Close
+notification:" and the notification's title; Carbon's own says only "closes
+notification".
 
 Write new results into this section: the section, what was said, and what should have
 been.

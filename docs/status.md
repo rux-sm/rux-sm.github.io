@@ -8,8 +8,8 @@ done and how.
 
 - **Published themes.** A theme saved in the Theme Creator stays in that
   browser. It should be a shared record every app's theme picker offers.
-- **Screen-reader pass.** Toggle, modal and popover are not heard yet, four
-  problems are open, and three controls need hearing again. The list is in
+- **Screen-reader pass.** Toggle, modal and popover are not heard yet, two
+  problems are open, and five controls need hearing again. The list is in
   `design/docs/screen-reader-pass.md`.
 
 ## Scheduler

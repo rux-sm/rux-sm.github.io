@@ -96,29 +96,6 @@ None open.
 ## Tasks
 
 - [ ] rux turns on two-factor sign-in for the Supabase dashboard login.
-- [ ] Press "Force refresh all users" in rux-ui, in working hours while the
-      stale tab is open. One Mac still runs rux-ui from before sign-in
-      shipped: a Safari that never asks `/auth/v1` or `my_staff_profile` at
-      all, so it has no sign-in screen to show. It reads trips, passengers,
-      ticket options, documents, payments and drivers, writes notifications
-      and holds a realtime channel with the key alone, right through a working
-      day, and its cached `supabase-js` is 2.112.4 where every signed-in
-      client is 2.116.0. The reload broadcast has shipped since July, so that
-      build carries it, but it reaches only a tab that is open and anyone with
-      unsaved work loses it. rux-ui's Worker hides the browser's address, so
-      only the Worker's own logs could name the machine.
-- [ ] Watch for at least seven days, until three business days in a row show
-      every account but the guest signed in and every remaining key-only
-      request in the edge logs named: the driver, maintenance, document and
-      request links, and any stale browser already known and chased. Anything unnamed stops the close
-      until it is identified. A dry run inside a rolled-back transaction shows
-      staff see rows and the key alone does not.
-- [ ] Migration `staff_cutover_tables`: drop the open and `transition_open`
-      policies, revoke table and sequence grants from `anon`, and grant a
-      profile update on the display name, photo, colour and settings only.
-      A grant, not a limit: `authenticated` holds no update on `profiles` at
-      all today, so `staff_update_own` has never been able to fire and nobody
-      can edit their own profile.
 - [ ] Migration `staff_cutover_rpcs`: keep the driver link, maintenance
       schedule, trip request submission and the two new link functions open to
       `anon`; revoke the rest from `anon` and start each with `assert_staff()`.

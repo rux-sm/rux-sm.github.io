@@ -108,8 +108,8 @@ None open.
 
 ## Tasks
 
-- [ ] Renumber `buses.sort_order` by type, then model year, once, as a named
-      migration through the Supabase connection; the Van, which has no place
-      today, takes the last one. The statement is shown to rux before it runs.
+- [ ] Give the Van, the one unit with no `buses.sort_order`, the last place, as a
+      named migration through the Supabase connection; the coaches already run
+      by model year. The statement is shown to rux before it runs.
 - [ ] rux saves one real bus, and checks the board's rows and rux-ui's roster
       show the same order.

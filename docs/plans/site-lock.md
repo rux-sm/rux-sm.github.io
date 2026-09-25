@@ -171,12 +171,6 @@ None open.
 ## Tasks
 
 - [ ] Build the request page, tested without sending a request.
-- [ ] Migration `driver_accepted_view`: a `accepted_view` column on
-      `trip_driver_statuses`, and `confirm_trip_assignment` taking it beside
-      the answer. rux-ui's page keeps working without sending it. Shown to rux
-      before it runs; tested on PGlite first.
-- [ ] Move the envelope form out of `print.js`'s page start-up, so the
-      driver page can draw the driver's envelope, and add it there.
 - [ ] rux opens Driver view from a driver on the Drivers page, and a real
       link on the phone, and accepts one real trip there.
 - [ ] Turn rux-ui's four link pages into forwarders and switch its link-making

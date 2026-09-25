@@ -141,23 +141,6 @@ None open.
 
 ## Tasks
 
-- [ ] Subset each page's sprite block to the symbols it names, as its own
-      change and first, so the second family never costs a page that has no
-      use for it.
-- [ ] Teach `build-icons.mjs` a second source: a Material list beside the
-      Carbon one, each entry with its reason, quarried from
-      `@material-symbols/svg-400/sharp` and written as `m-<name>`.
-- [ ] Fail a page whose block is missing a symbol it references, so a subset
-      can never quietly drop one.
-- [ ] Split the glyph snapshot in two and teach `check-glyphs` to pick by
-      prefix; regenerate both.
-- [ ] Add Google's entry to `NOTICE`, beside IBM's.
-- [ ] Say in `design/README.md` that the sprite holds two families and what
-      each is for.
-- [ ] Move all 43 of the scheduler's icon references to the Material solid
-      set, and point each requirement at the icon name the office's list
-      already stores, so the letter fallback is left only for a name Material
-      does not have.
 - [ ] Drop the Carbon symbols the scheduler was the only caller of.
 - [ ] rux looks at a real week, a toolbar and a menu, and says whether the
       scheduler reads as one thing.

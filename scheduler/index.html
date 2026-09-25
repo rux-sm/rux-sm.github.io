@@ -562,10 +562,6 @@
             <button id="scheduler-tab-details" class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true" aria-controls="scheduler-panel-details" tabindex="0">
               <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Overview</span></div>
             </button>
-            <!-- Its name carries the count, which data.js writes. -->
-            <button id="scheduler-tab-updates" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-panel-updates" tabindex="-1">
-              <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label" id="scheduler-tab-updates-label">Updates</span></div>
-            </button>
             <button id="scheduler-tab-billing" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-panel-billing" tabindex="-1">
               <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Billing</span></div>
             </button>
@@ -582,7 +578,6 @@
           <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--next rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_right"/></svg></button>
         </div>
         <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-details" aria-labelledby="scheduler-tab-details" tabindex="0"></div>
-        <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-updates" aria-labelledby="scheduler-tab-updates" tabindex="0" hidden></div>
         <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-billing" aria-labelledby="scheduler-tab-billing" tabindex="0" hidden></div>
         <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-route" aria-labelledby="scheduler-tab-route" tabindex="0" hidden></div>
         <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-fleet" aria-labelledby="scheduler-tab-fleet" tabindex="0" hidden></div>
@@ -1349,16 +1344,18 @@
     </div>
   </div>
 
-  <!-- Asked when Save changes something the customer would ask about. data.js
-       names the change and fills the line; Save with update writes it to the
-       trip's updates, Save, no update saves without one, and closing the box
-       goes back to the trip unsaved. -->
+  <!-- The Updates window: a box for a new update with its quick reasons, over
+       the trip's updates so far. Every Save opens it, with Save, no update and
+       Save with update, and its close goes back to the trip unsaved; the
+       Update shortcut opens it on its own, with Close and Add update. data.js
+       fills the label, the sentence, the buttons' words and the list. -->
   <div class="rux--layer-one rux--modal" id="scheduler-update-modal" role="presentation">
     <div role="dialog" aria-modal="true" aria-labelledby="scheduler-update-h" aria-describedby="scheduler-update-what" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
       <div class="rux--modal-header">
-        <h2 class="rux--modal-header__heading" id="scheduler-update-h">Add an update</h2>
+        <h2 class="rux--modal-header__label" id="scheduler-update-trip"></h2>
+        <h2 class="rux--modal-header__heading" id="scheduler-update-h">Updates</h2>
         <div class="rux--modal-close-button">
-          <button type="button" class="rux--modal-close" aria-label="Back to the trip, not saved" title="Back to the trip, not saved" data-rux-close>
+          <button type="button" class="rux--modal-close" id="scheduler-update-close" aria-label="Close" title="Close" data-rux-close>
             <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
           </button>
         </div>
@@ -1374,6 +1371,12 @@
           </div>
         </div>
         <div class="scheduler-prompt-reasons" id="scheduler-update-reasons" role="group" aria-label="Quick reasons"></div>
+        <p class="rux--type-helper-text-01 scheduler-updates-error" id="scheduler-update-error" role="alert" hidden></p>
+        <div class="scheduler-updates-log" id="scheduler-updates-section">
+          <h3 class="rux--type-heading-compact-01 scheduler-updates-log__title">Earlier updates</h3>
+          <ol class="scheduler-updates" id="scheduler-updates-log" aria-label="Updates, newest first"></ol>
+          <p class="rux--type-body-compact-01 scheduler-updates-empty" id="scheduler-updates-status" hidden></p>
+        </div>
       </div>
       <div class="rux--modal-footer">
         <button type="button" class="rux--btn rux--btn--secondary" id="scheduler-update-skip">Save, no update</button>

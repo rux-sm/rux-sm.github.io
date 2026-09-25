@@ -92,13 +92,13 @@
     return !(dismissals()[trip.id] > Date.now());
   }
 
-  /* "today", "yesterday", then "7d", the way a chat says it. Days are counted
-     on the office's calendar, so last night's update is "yesterday" this
-     morning even though fewer than 24 hours have passed. */
+  /* "today", then "1d", "7d", the way a chat says it, so the ages line up.
+     Days are counted on the office's calendar, so last night's update is "1d"
+     this morning even though fewer than 24 hours have passed. */
   const officeDay = at => Date.parse(new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(at));
   const agoShort = at => {
     const d = Math.round((officeDay(new Date()) - officeDay(new Date(at))) / 864e5);
-    return d <= 0 ? 'today' : d === 1 ? 'yesterday' : `${d}d`;
+    return d <= 0 ? 'today' : `${d}d`;
   };
 
   window.SchedulerFollowUp = {

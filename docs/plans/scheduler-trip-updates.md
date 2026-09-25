@@ -7,8 +7,7 @@ type: plan
 ## Goal
 
 A trip carries a dated, stamped log of what has been said to the customer, and
-a save that changes something the customer would ask about cannot be recorded
-without adding a line to it.
+every save asks for a line for it, so a change is told or skipped on purpose.
 
 The gap is measured. Of 1,472 recorded trip updates, 376 touched the note; of
 the 234 that changed a note already written, 225 overwrote it and 9 appended,
@@ -22,23 +21,24 @@ standing facts about the trip. No note in the table contains a newline.
   and the newest is its status.
 - **An update is what was said to or heard from the customer.** A follow-up
   sent, a quote signed, a PO received, a date the customer moved.
-- **The prompt fires on a customer-facing change only:** the dates, the times,
-  the route, the destination, the customer and booking contact, the quoted
-  price and quote lines, the contract, a PO, an invoice and a payment, which
-  between them decide confirmed. A new trip asks nothing. A cancellation
-  already asks its reason, and that reason is written as an update. The
-  buses, the drivers, their statuses and the bar's colour ask nothing,
-  because they are the office's own arrangements.
-- **The prompt's box comes filled with a line naming the change,** such as
-  "Added PO 4512", which the person keeps or rewrites, and quick reasons,
-  such as "Follow-up email sent", spell the common ones one way. The change's
-  own line is the first quick reason, so picking another loses nothing.
+- **Every save asks, in the Updates window.** A new trip's box comes filled
+  with Quote sent. A customer-facing change fills it with a line naming the
+  change, such as "Added PO 4512": the dates, the times, the route, the
+  destination, the customer and booking contact, the quoted price and quote
+  lines, the contract, a PO, an invoice and a payment, which between them
+  decide confirmed. Any other save, such as the buses, the drivers or the
+  bar's colour, leaves it empty. A cancellation already asks its reason, and
+  that reason is written as an update.
+- **Quick reasons,** such as "Follow-up email sent", spell the common ones one
+  way. A change's own line is the first quick reason, so picking another loses
+  nothing.
 - **The app writes the stamp,** the moment and the person, and no one types
   it.
-- **The prompt can be skipped.** Its buttons are Save, no update and Save
-  with update, and its ✕ goes back to the trip unsaved. Save, no update adds
-  nothing to the list, and the bar's icon keeps its age from the last real
-  update, so a skipped prompt never makes a trip look freshly followed up.
+- **The window can be skipped.** From Save its buttons are Save, no update
+  and Save with update, and its ✕ goes back to the trip unsaved. Save, no
+  update adds nothing to the list, and the bar's icon keeps its age from the
+  last real update, so a skipped window never makes a trip look freshly
+  followed up.
 - **Standing facts stay in Notes,** undated and never prompted: a gate code, a
   shuttle, which driver runs which route.
 - **The bar has no notes row;** the note is read on the card. The bar
@@ -63,29 +63,30 @@ standing facts about the trip. No note in the table contains a newline.
   hides a trip from another.
 - **The Trips page's Show choice gains Needs follow-up,** with its count, the
   longest waiting first.
-- **One card per bar, in the shortcut bar's own style:** hovering a bar shows
-  its card with what it waits on first, then the standing note pinned, then
-  the updates newest first with who and when, each a compact row under a
-  full-width rule, three showing and the rest scrolling, and with none yet
-  the booking's age at the row's end;
-  selecting the bar adds the shortcut icons as the card's top row, so only
-  one thing ever floats over the week. On a phone the updates sit under the
-  docked shortcut bar.
+- **One card per bar, in the shortcut bar's own style:** hovering or
+  selecting a bar shows its labelled shortcut icons and its card, with what
+  it waits on first, then the standing note pinned with the trip's needs
+  named under it, then the updates newest first with who and when, each a
+  compact row under a full-width rule, three showing and the rest scrolling,
+  and with none yet the booking's age at the row's end. Neither part has a
+  heading. The icons sit on the side nearest the trip, so only one thing
+  ever floats over the week. On a phone the updates sit under the docked
+  shortcut bar.
 - **The card arrives with a small pop:** it rises 6px from the arrow's side
   and grows from 94% over 240ms on Carbon's expressive entrance curve, each
   update following 40ms after the one above, and leaves at once; docked, and
   under reduced motion, it only fades in.
-- **The editor lists every update on an Updates tab of its own,** after
-  Details and named with the count, as "Updates (5)", because the log only
-  grows and Notes stays on Details. The tab has a box to add one without
-  changing anything else, and its Add update button is the outlined kind, so
-  Save stays the panel's one main button.
+- **Updates live in a window, not an editor tab.** Every Save opens it, and
+  the Update shortcut and an update on the card open it on its own, to add
+  one without opening the trip, with Close and Add update. It lists the
+  trip's updates under its box, and Notes stays on Details.
 - **The log is a `trip_updates` table of its own,** staff only, with the 203
   dated lines already in `notes` copied in as `imported` entries credited to
   Sergio; those notes are blanked once both apps read the log.
-- **An update can be edited or deleted** from its menu on the Updates tab:
-  Edit turns its words into a box, Delete asks on the row first, and an
-  edited update says "edited" beside its time. The card stays read-only.
+- **An update can be edited or deleted** from its Edit and Delete buttons in
+  the Updates window: Edit turns its words into a box, Delete asks on the row
+  first, and an edited update says "edited" beside its time. The card stays
+  read-only.
 - **Both apps prompt,** because a prompt in one app teaches people to save
   from the other.
 - **The log is for the office only,** so its lines stay short and internal.

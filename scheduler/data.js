@@ -1607,7 +1607,6 @@
   let panelIndex = { trips: new Map(), buses: new Map(), driversById: new Map(), statuses: new Map(), contacts: [], customers: [], locations: [] };
   let panelOpener = null;
   const panelDetails = document.getElementById('scheduler-panel-details');
-  const panelUpdates = document.getElementById('scheduler-panel-updates');
   const panelFleet = document.getElementById('scheduler-panel-fleet');
   const panelBilling = document.getElementById('scheduler-panel-billing');
   const panelRoute = document.getElementById('scheduler-panel-route');
@@ -3550,178 +3549,124 @@
       u.edited_at ? 'edited' : null].filter(Boolean).join(' · ');
   }
 
-  /* The Updates tab: Add an update, then the list. Its name carries how many
-     there are, so the count is read without opening it. */
-  const updatesLabel = document.getElementById('scheduler-tab-updates-label');
-  function updatesTab(trip, creating) {
-    const wrap = el('div');
-    const list = el('ol', 'scheduler-updates');
-    list.setAttribute('aria-label', 'Updates, newest first');
-    const status = el('p', 'rux--type-body-compact-01 scheduler-updates-empty');
-    let rows = [];
-    if (updatesLabel) updatesLabel.textContent = 'Updates';
-    /* Each update has a menu of Edit and Delete. Edit turns its words into a
-       box with Cancel and Save; Delete asks on the row itself before the row
-       goes. Either writes at once, like Add update, and the board reads it. */
-    let changing = null;   // { id, mode: 'edit' | 'delete' }
-    const small = (cls, text) => {
-      const b = el('button', `rux--btn ${cls} rux--btn--sm`, text);
-      b.type = 'button';
-      return b;
-    };
-    const change = async (u, query, fail) => {
-      try {
-        const { data, error: failed } = await withTimeout(query.then(r => r));
-        if (failed) throw new Error(failed.message);
-        rows = data ? rows.map(r => (r.id === u.id ? data : r)) : rows.filter(r => r.id !== u.id);
-        changing = null;
-        draw();
-        show();
-      } catch (err) {
-        console.warn(fail, err);
-        toast('error', fail, String(err?.message ?? err));
-        draw();
-      }
-    };
-    const itemOf = u => {
-      const li = el('li', 'scheduler-updates__item');
-      const text = el('div', 'scheduler-updates__text');
-      li.appendChild(text);
-      if (changing?.id === u.id && changing.mode === 'edit') {
-        const edit = el('textarea', 'rux--text-area');
-        edit.rows = 2;
-        edit.value = u.body;
-        edit.setAttribute('aria-label', 'Update');
-        const wrapEdit = el('div', 'rux--text-area__wrapper');
-        wrapEdit.appendChild(edit);
-        const cancel = small('rux--btn--ghost', 'Cancel');
-        const keep = small('rux--btn--tertiary', 'Save');
-        cancel.addEventListener('click', () => { changing = null; draw(); });
-        edit.addEventListener('input', () => { keep.disabled = !edit.value.trim() || edit.value.trim() === u.body; });
-        keep.disabled = true;
-        keep.addEventListener('click', () => {
-          keep.disabled = true;
-          change(u, client.from('trip_updates').update({ body: edit.value.trim(), edited_at: new Date().toISOString() })
-            .eq('id', u.id).select(UPDATE_COLUMNS).single(), 'The update was not changed.');
-        });
-        const actions = el('div', 'scheduler-updates__actions');
-        actions.append(cancel, keep);
-        text.append(wrapEdit, actions);
-        requestAnimationFrame(() => { edit.focus(); edit.setSelectionRange(edit.value.length, edit.value.length); });
-        return li;
-      }
-      text.append(el('div', 'rux--type-body-compact-01 scheduler-updates__body', u.body),
-        el('div', 'rux--type-label-01 scheduler-updates__meta', updateStamp(u)));
-      if (changing?.id === u.id && changing.mode === 'delete') {
-        const cancel = small('rux--btn--ghost', 'Cancel');
-        const gone = small('rux--btn--danger', 'Delete');
-        cancel.addEventListener('click', () => { changing = null; draw(); });
-        gone.addEventListener('click', () => {
-          gone.disabled = true;
-          change(u, client.from('trip_updates').delete().eq('id', u.id), 'The update was not deleted.');
-        });
-        const actions = el('div', 'scheduler-updates__actions');
-        actions.append(el('span', 'rux--type-body-compact-01 scheduler-updates__ask', 'Delete this update?'), cancel, gone);
-        text.appendChild(actions);
-        requestAnimationFrame(() => cancel.focus());
-        return li;
-      }
-      const more = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger');
-      more.type = 'button';
-      more.setAttribute('aria-haspopup', 'true');
-      more.setAttribute('aria-expanded', 'false');
-      more.setAttribute('aria-label', 'Update actions');
-      more.title = 'Update actions';
-      more.appendChild(svgUse('#m-more_vert', '16', '0 0 32 32'));
-      more.lastChild.setAttribute('class', 'rux--btn__icon');
-      more.addEventListener('click', () => openRowMenu(more, {
-        editText: 'Edit', edit: () => { changing = { id: u.id, mode: 'edit' }; draw(); },
-        removeText: 'Delete', remove: () => { changing = { id: u.id, mode: 'delete' }; draw(); },
-      }));
-      li.appendChild(more);
-      return li;
-    };
-    const draw = () => {
-      list.replaceChildren(...rows.filter(u => u.kind !== 'nothing').map(itemOf));
-      status.hidden = list.childElementCount > 0;
-      status.textContent = 'No updates yet.';
-      if (updatesLabel) updatesLabel.textContent = `Updates (${list.childElementCount})`;
-    };
-    if (creating) {
-      status.textContent = 'Updates can be added once the trip is saved.';
-      wrap.append(status);
-      return [section('Updates', wrap)];
+  /* The Updates window's list: the trip's updates, newest first, each over
+     its stamp with Edit and Delete beside it. Edit turns its words into a box
+     with Cancel and Save; Delete asks on the row itself before the row goes.
+     Either writes at once, and the board reads it. It is read fresh each time
+     the window opens, for the trip `logTrip` names. */
+  const logEl = document.getElementById('scheduler-updates-log');
+  const logStatus = document.getElementById('scheduler-updates-status');
+  let logTrip = null;
+  let logRows = [];
+  let logChanging = null;   // { id, mode: 'edit' | 'delete' }
+  const smallBtn = (cls, text) => {
+    const b = el('button', `rux--btn ${cls} rux--btn--sm`, text);
+    b.type = 'button';
+    return b;
+  };
+  const iconBtn = (icon, label) => {
+    const b = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm');
+    b.type = 'button';
+    b.setAttribute('aria-label', label);
+    b.title = label;
+    b.appendChild(svgUse(icon, '16', '0 0 32 32'));
+    b.lastChild.setAttribute('class', 'rux--btn__icon');
+    return b;
+  };
+  async function changeLogged(u, query, fail) {
+    try {
+      const { data, error: failed } = await withTimeout(query.then(r => r));
+      if (failed) throw new Error(failed.message);
+      logRows = data ? logRows.map(r => (r.id === u.id ? data : r)) : logRows.filter(r => r.id !== u.id);
+      logChanging = null;
+      drawLog();
+      show();
+    } catch (err) {
+      console.warn(fail, err);
+      toast('error', fail, String(err?.message ?? err));
+      drawLog();
     }
-
-    const field = el('div', 'rux--form-item');
-    const lw = el('div', 'rux--text-area__label-wrapper');
-    const lab = el('label', 'rux--label', 'Update');
-    lab.setAttribute('for', 'scheduler-f-update');
-    lw.appendChild(lab);
-    const taWrap = el('div', 'rux--text-area__wrapper');
-    const box = el('textarea', 'rux--text-area');
-    box.id = 'scheduler-f-update';
-    box.rows = 2;
-    box.placeholder = 'Follow-up email sent';
-    taWrap.appendChild(box);
-    field.append(lw, taWrap);
-    const error = el('p', 'rux--type-helper-text-01 scheduler-updates-error');
-    error.setAttribute('role', 'alert');
-    error.hidden = true;
-    // The outlined button, so Save stays the panel's one main button.
-    const add = el('button', 'rux--btn rux--btn--tertiary rux--btn--sm', 'Add update');
-    add.type = 'button';
-    add.disabled = true;
-    const adder = el('div', 'scheduler-updates-add');
-    adder.append(field, error, add);
-
-    box.addEventListener('input', () => { add.disabled = !box.value.trim(); });
-    // Cmd or Ctrl with Enter adds it, as a chat box sends.
-    box.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && !add.disabled) { e.preventDefault(); add.click(); }
-    });
-    add.addEventListener('click', async () => {
-      const body = box.value.trim();
-      if (!body) return;
-      add.disabled = true;
-      error.hidden = true;
-      try {
-        // The name history records, or the staff profile's where it has none.
-        const actor = await actorName()
-          ?? (await Promise.resolve(window.Rux?.account?.person?.()).catch(() => null))?.name ?? null;
-        const { data, error: failed } = await withTimeout(client.from('trip_updates')
-          .insert({ trip_id: trip.id, body, kind: 'update', actor_name: actor })
-          .select(UPDATE_COLUMNS).single().then(r => r));
-        if (failed) throw new Error(failed.message);
-        rows = [data, ...rows];
-        box.value = '';
-        draw();
-        // The bar's mark and card read the updates too.
-        show();
-      } catch (err) {
-        console.warn('The update was not added:', err);
-        error.textContent = 'The update was not added. Try again.';
-        error.hidden = false;
-        add.disabled = !box.value.trim();
-      }
-    });
-
-    status.textContent = 'Reading updates…';
-    wrap.append(list, status);
-    (async () => {
-      try {
-        const { data, error: failed } = await withTimeout(client.from('trip_updates')
-          .select(UPDATE_COLUMNS).eq('trip_id', trip.id)
-          .order('created_at', { ascending: false }).then(r => r));
-        if (failed) throw new Error(failed.message);
-        rows = data || [];
-        draw();
-      } catch (err) {
-        console.warn('The updates were not read:', err);
-        status.textContent = 'The updates could not be read.';
-      }
-    })();
-    return [section('Add an update', adder), section('Updates', wrap)];
+  }
+  function logItem(u) {
+    const li = el('li', 'scheduler-updates__item');
+    const text = el('div', 'scheduler-updates__text');
+    li.appendChild(text);
+    if (logChanging?.id === u.id && logChanging.mode === 'edit') {
+      const edit = el('textarea', 'rux--text-area');
+      edit.rows = 2;
+      edit.value = u.body;
+      edit.setAttribute('aria-label', 'Update');
+      const wrapEdit = el('div', 'rux--text-area__wrapper');
+      wrapEdit.appendChild(edit);
+      const cancel = smallBtn('rux--btn--ghost', 'Cancel');
+      const keep = smallBtn('rux--btn--tertiary', 'Save');
+      cancel.addEventListener('click', () => { logChanging = null; drawLog(); });
+      edit.addEventListener('input', () => { keep.disabled = !edit.value.trim() || edit.value.trim() === u.body; });
+      keep.disabled = true;
+      keep.addEventListener('click', () => {
+        keep.disabled = true;
+        changeLogged(u, client.from('trip_updates').update({ body: edit.value.trim(), edited_at: new Date().toISOString() })
+          .eq('id', u.id).select(UPDATE_COLUMNS).single(), 'The update was not changed.');
+      });
+      const actions = el('div', 'scheduler-updates__actions');
+      actions.append(cancel, keep);
+      text.append(wrapEdit, actions);
+      requestAnimationFrame(() => { edit.focus(); edit.setSelectionRange(edit.value.length, edit.value.length); });
+      return li;
+    }
+    text.append(el('div', 'rux--type-body-compact-01 scheduler-updates__body', u.body),
+      el('div', 'rux--type-label-01 scheduler-updates__meta', updateStamp(u)));
+    if (logChanging?.id === u.id && logChanging.mode === 'delete') {
+      const cancel = smallBtn('rux--btn--ghost', 'Cancel');
+      const gone = smallBtn('rux--btn--danger', 'Delete');
+      cancel.addEventListener('click', () => { logChanging = null; drawLog(); });
+      gone.addEventListener('click', () => {
+        gone.disabled = true;
+        changeLogged(u, client.from('trip_updates').delete().eq('id', u.id), 'The update was not deleted.');
+      });
+      const actions = el('div', 'scheduler-updates__actions');
+      actions.append(el('span', 'rux--type-body-compact-01 scheduler-updates__ask', 'Delete this update?'), cancel, gone);
+      text.appendChild(actions);
+      requestAnimationFrame(() => cancel.focus());
+      return li;
+    }
+    /* Edit and Delete sit on the row rather than behind a menu, because a
+       menu opened inside a window would float over the window's own edge. */
+    const editBtn = iconBtn('#m-edit', 'Edit update');
+    const deleteBtn = iconBtn('#m-delete', 'Delete update');
+    editBtn.addEventListener('click', () => { logChanging = { id: u.id, mode: 'edit' }; drawLog(); });
+    deleteBtn.addEventListener('click', () => { logChanging = { id: u.id, mode: 'delete' }; drawLog(); });
+    const tools = el('div', 'scheduler-updates__tools');
+    tools.append(editBtn, deleteBtn);
+    li.appendChild(tools);
+    return li;
+  }
+  function drawLog() {
+    if (!logEl) return;
+    logEl.replaceChildren(...logRows.filter(u => u.kind !== 'nothing').map(logItem));
+    logStatus.hidden = logEl.childElementCount > 0;
+    logStatus.textContent = 'No updates yet.';
+  }
+  async function loadLog(tripId) {
+    if (!logEl) return;
+    logTrip = tripId;
+    logRows = [];
+    logChanging = null;
+    logEl.replaceChildren();
+    logStatus.hidden = false;
+    logStatus.textContent = 'Reading updates…';
+    try {
+      const { data, error: failed } = await withTimeout(client.from('trip_updates')
+        .select(UPDATE_COLUMNS).eq('trip_id', tripId)
+        .order('created_at', { ascending: false }).then(r => r));
+      if (failed) throw new Error(failed.message);
+      if (logTrip !== tripId) return;
+      logRows = data || [];
+      drawLog();
+    } catch (err) {
+      console.warn('The updates were not read:', err);
+      if (logTrip === tripId) logStatus.textContent = 'The updates could not be read.';
+    }
   }
 
   /* A Carbon range date picker, from the capture
@@ -5722,7 +5667,6 @@
     needsSection.addEventListener('change', refreshDirty);
     panelFleet.querySelector(':scope > [data-fleet-needs]')?.remove();
     panelFleet.prepend(needsSection);
-    panelUpdates?.replaceChildren(...updatesTab(trip, creating));
 
     /* ── Booking contact ──
        The search suggests and does not lock: picking a contact fills its phone
@@ -7246,7 +7190,7 @@
     if (none && contactsOpen) closeContacts(false);
     if (none) { poppedFor = null; schEl.style.removeProperty('--scheduler-docked-h'); return; }
     if (barShortcuts.previousElementSibling !== bar) bar.after(barShortcuts);
-    // A hovered bar that is not the selected one shows its card alone.
+    // A hovered bar that is not the selected one shows the same slots and card.
     barShortcuts.toggleAttribute('data-peek', bar !== selectedBar());
     drawShortcuts(bar);
     // And with its slot, when the slots are drawn again for another trip.
@@ -7254,7 +7198,8 @@
     /* The card pops each time it comes to a trip, and not while it follows
        the same one through a scroll or a redraw. It starts once the bar is
        placed, because the pop's scale would shrink what the placing measures. */
-    const target = `${bar.dataset.tripId}|${bar.dataset.leg}|${bar.dataset.assignmentId}|${barShortcuts.hasAttribute('data-peek')}`;
+    // A hovered trip that is then selected keeps the card it already shows.
+    const target = `${bar.dataset.tripId}|${bar.dataset.leg}|${bar.dataset.assignmentId}`;
     const pop = () => {
       if (target === poppedFor) return;
       poppedFor = target;
@@ -7342,10 +7287,10 @@
     }
   }
 
-  /* HOVERING A BAR SHOWS ITS CARD, after a short wait so a pointer crossing
-     the week does not light every bar, and leaving it brings the card back to
-     the selected trip or takes it away. The pointer can cross onto the card
-     to scroll it or dismiss its reminder. Only where there is hover to be had
+  /* HOVERING A BAR SHOWS ITS SLOTS AND CARD, after a short wait so a pointer
+     crossing the week does not light every bar, and leaving it brings them
+     back to the selected trip or takes them away. The pointer can cross onto
+     them to use a slot, scroll the card or dismiss its reminder. Only where there is hover to be had
      and the board is not the compact one, whose bar docks instead. */
   let peekTimer = 0;
   let unpeekTimer = 0;
@@ -7480,25 +7425,38 @@
     return said.length ? { said, keys, line: said[0] } : null;
   }
 
-  /* The prompt, as a step Save waits on. It resolves `{ kind, body }`: kind
-     `update` from Save with update, or `nothing` from Save, no update, whose
-     row keeps the change's own line and is never drawn, so the bar's age still
-     runs from the last real update. Closing the box resolves null, and Save
-     goes back to the trip unsaved. The change's own line is the first quick
-     reason, so picking another loses nothing. */
+  /* THE UPDATES WINDOW: a box for a new update and its quick reasons, over
+     the trip's updates so far. Every Save opens it, so each change is told or
+     skipped on purpose, and the Update shortcut opens it on its own.
+
+     From Save it is a step Save waits on, and resolves `{ kind, body }`:
+     `update` from Save with update; `nothing` from Save, no update after a
+     change the customer would ask about, whose row keeps the change's own line
+     and is never drawn, so the bar's age still runs from the last real update;
+     `none` from Save, no update after any other change, which writes nothing.
+     Closing it resolves null, and Save goes back to the trip unsaved. A new
+     trip's box comes filled with Quote sent, a customer-facing change's with
+     its own line, and any other's empty.
+
+     On its own, Add update writes at once and closes it, and Close closes it. */
   const updateModal = document.getElementById('scheduler-update-modal');
   const updateText = document.getElementById('scheduler-update-text');
   const updateSave = document.getElementById('scheduler-update-save');
+  const updateSkip = document.getElementById('scheduler-update-skip');
+  const updateClose = document.getElementById('scheduler-update-close');
+  const updateError = document.getElementById('scheduler-update-error');
+  const updateWhat = document.getElementById('scheduler-update-what');
   const UPDATE_REASONS = ['Follow-up email sent', 'Called the customer', 'Quote sent', 'Waiting on a PO', 'Customer confirmed'];
-  let updateSettle = null;
-  let updateLine = '';
-  function askForUpdate(change) {
-    if (!updateModal || !updateText) return Promise.resolve({ kind: 'nothing', body: change.line, keys: change.keys });
-    const phrases = change.said.map(p => p.charAt(0).toLowerCase() + p.slice(1));
-    const list = phrases.length > 1 ? `${phrases.slice(0, -1).join(', ')} and ${phrases.at(-1)}` : phrases[0];
-    document.getElementById('scheduler-update-what').textContent = `You ${list}.`;
-    updateText.value = updateLine = change.line;
-    const tags = [change.line, ...UPDATE_REASONS.filter(r => r !== change.line)].map(r => {
+  let updateSettle = null;   // Save's step, while Save opened the window
+  let updateAlone = null;    // the trip, while the window stands on its own
+  let updateChange = null;
+  function fillUpdateWindow({ trip, what, line, reasons, tripId }) {
+    document.getElementById('scheduler-update-trip').textContent = trip;
+    updateWhat.textContent = what;
+    updateWhat.hidden = !what;
+    updateError.hidden = true;
+    updateText.value = line;
+    const tags = reasons.map(r => {
       const tag = el('button', 'rux--tag rux--tag--selectable rux--layout--size-md');
       tag.type = 'button';
       tag.appendChild(el('span', 'rux--tag__label', r));
@@ -7509,15 +7467,53 @@
       t.setAttribute('aria-pressed', String(t === picked));
       t.classList.toggle('rux--tag--selectable-selected', t === picked);
     });
-    pickTag(tags[0]);
+    pickTag(tags.find(t => t.textContent === line) ?? null);
     document.getElementById('scheduler-update-reasons').replaceChildren(...tags);
-    updateSave.disabled = false;
+    updateSave.disabled = !line;
+    // A new trip has nothing earlier to list.
+    document.getElementById('scheduler-updates-section').hidden = !tripId;
+    if (tripId) loadLog(tripId);
+    window.Rux?.modal?.open?.(updateModal);
+    updateText.focus();
+    updateText.setSelectionRange(updateText.value.length, updateText.value.length);
+  }
+  const tripName = t => [t?.destination, t?.customer].filter(Boolean).join(' · ') || 'New trip';
+  function askForUpdate(change, creating, trip) {
+    const skipped = change ? { kind: 'nothing', body: change.line, keys: change.keys } : { kind: 'none' };
+    if (!updateModal || !updateText) return Promise.resolve(skipped);
+    updateAlone = null;
+    updateChange = change;
+    let what;
+    if (creating) what = 'You created the trip. Say what the customer has been sent.';
+    else if (change) {
+      const phrases = change.said.map(p => p.charAt(0).toLowerCase() + p.slice(1));
+      what = `You ${phrases.length > 1 ? `${phrases.slice(0, -1).join(', ')} and ${phrases.at(-1)}` : phrases[0]}.`;
+    } else what = 'Say what changed, or save with no update.';
+    const line = creating ? 'Quote sent' : change?.line ?? '';
+    updateSkip.textContent = 'Save, no update';
+    updateSave.textContent = 'Save with update';
+    updateClose.setAttribute('aria-label', 'Back to the trip, not saved');
+    updateClose.title = 'Back to the trip, not saved';
     return new Promise(resolve => {
-      updateSettle = answer => { updateSettle = null; resolve(answer && { ...answer, keys: change.keys }); };
-      window.Rux?.modal?.open?.(updateModal);
-      updateText.focus();
-      updateText.setSelectionRange(updateText.value.length, updateText.value.length);
+      updateSettle = answer => { updateSettle = null; resolve(answer && { ...answer, keys: change?.keys ?? null }); };
+      fillUpdateWindow({
+        trip: tripName(trip), what, line,
+        reasons: change ? [change.line, ...UPDATE_REASONS.filter(r => r !== change.line)] : UPDATE_REASONS,
+        tripId: creating ? null : trip?.id,
+      });
     });
+  }
+  // The window on its own, for a trip on the board.
+  function openUpdatesWindow(trip) {
+    if (!updateModal || !trip) return;
+    updateSettle = null;
+    updateChange = null;
+    updateAlone = trip;
+    updateSkip.textContent = 'Close';
+    updateSave.textContent = 'Add update';
+    updateClose.setAttribute('aria-label', 'Close');
+    updateClose.title = 'Close';
+    fillUpdateWindow({ trip: tripName(trip), what: '', line: '', reasons: UPDATE_REASONS, tripId: trip.id });
   }
   const answerUpdate = answer => {
     const settle = updateSettle;
@@ -7526,14 +7522,33 @@
     settle?.(answer);
   };
   updateText?.addEventListener('input', () => { updateSave.disabled = !updateText.value.trim(); });
-  updateSave?.addEventListener('click', () => {
+  // Cmd or Ctrl with Enter presses the main button, as a chat box sends.
+  updateText?.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && !updateSave.disabled) { e.preventDefault(); updateSave.click(); }
+  });
+  updateSave?.addEventListener('click', async () => {
     const body = updateText.value.trim();
-    if (body) answerUpdate({ kind: 'update', body });
+    if (!body) return;
+    if (!updateAlone) { answerUpdate({ kind: 'update', body }); return; }
+    const trip = updateAlone;
+    updateSave.disabled = true;
+    updateError.hidden = true;
+    if (await writeUpdate(trip.id, { kind: 'update', body, keys: null })) {
+      updateAlone = null;
+      window.Rux?.modal?.close?.(updateModal);
+      await show();
+      toast('success', 'Update added', body);
+    } else {
+      updateError.textContent = 'The update was not added. Try again.';
+      updateError.hidden = false;
+      updateSave.disabled = !updateText.value.trim();
+    }
   });
-  document.getElementById('scheduler-update-skip')?.addEventListener('click', () => {
-    answerUpdate({ kind: 'nothing', body: updateLine });
+  updateSkip?.addEventListener('click', () => {
+    if (updateAlone) { updateAlone = null; window.Rux?.modal?.close?.(updateModal); return; }
+    answerUpdate(updateChange ? { kind: 'nothing', body: updateChange.line } : { kind: 'none' });
   });
-  updateModal?.addEventListener('rux:modal-closed', () => updateSettle?.(null));
+  updateModal?.addEventListener('rux:modal-closed', () => { updateAlone = null; updateSettle?.(null); });
 
   // The prompt's answer, written once the save has landed. A failure is logged
   // and reported, and never undoes the save.
@@ -7541,9 +7556,11 @@
     try {
       const actor = await actorName()
         ?? (await Promise.resolve(window.Rux?.account?.person?.()).catch(() => null))?.name ?? null;
-      const { error } = await withTimeout(client.from('trip_updates')
-        .insert({ trip_id: tripId, body: answer.body, kind: answer.kind, actor_name: actor, changes: answer.keys })
-        .then(r => r));
+      // `changes` is not null in the table, so an update that names no change
+      // leaves it out and takes the column's default.
+      const row = { trip_id: tripId, body: answer.body, kind: answer.kind, actor_name: actor };
+      if (Array.isArray(answer.keys)) row.changes = answer.keys;
+      const { error } = await withTimeout(client.from('trip_updates').insert(row).then(r => r));
       if (error) throw new Error(error.message);
       return true;
     } catch (err) {
@@ -8077,10 +8094,12 @@
         return false;
       }
     }
-    // A change the customer would ask about asks for its update first.
+    // Every save asks for its update first; closing the window keeps editing.
     const change = creating ? null : customerChange(patch);
-    const answer = change ? await askForUpdate(change) : null;
-    if (change && !answer) return false;
+    const named = k => (k in patch ? patch[k] : editing.before?.[k]);
+    const answer = await askForUpdate(change, creating,
+      { id: savedId, destination: named('destination'), customer: named('customer') });
+    if (!answer) return false;
     /* The trip as it stands, for the history entry to diff against. A read
        that fails leaves `historyBefore` undefined, and the save unrecorded. */
     let historyBefore;
@@ -8217,11 +8236,11 @@
 
       if (fleet?.work) await saveFleet(tripId, write, fleet);
       recordThisSave(tripId);
-      const updateLost = answer ? !(await writeUpdate(tripId, answer)) : false;
+      const updateLost = answer.kind !== 'none' && !(await writeUpdate(tripId, answer));
       // Read back rather than trusting the write, as the drag does.
       await show();
       const fields = Object.keys(patch).length;
-      if (updateLost) toast('warning', 'Saved, but the update was not added.', 'Add it from the trip\'s Updates tab.');
+      if (updateLost) toast('warning', 'Saved, but the update was not added.', 'Add it from the trip\'s Update shortcut.');
       else if (unlinked.length) toast('warning', creating ? 'Trip created.' : 'Saved.',
         `${unlinked.join(', ')} could not be added to the contacts list, so the trip keeps its earlier link.`);
       else if (creating) toast('success', onBus ? 'Trip created on its bus.' : 'Trip created. It is in the Unassigned row until it has a bus.');
@@ -10350,12 +10369,12 @@
   let noteOpenFor = null;
   function fitNote(docked) {
     const note = barShortcuts.querySelector('.scheduler-card__note');
-    if (!note) return;
+    const words = note?.querySelector('.scheduler-card__note-words');
+    if (!words) return;
     const tripId = note.closest('.scheduler-card')?.dataset.tripId;
     const open = docked && !!tripId && tripId === noteOpenFor;
     note.toggleAttribute('data-open', open);
-    const words = note.firstElementChild;
-    const long = docked && (open || (!!words && words.scrollHeight > words.clientHeight + 1));
+    const long = docked && (open || words.scrollHeight > words.clientHeight + 1);
     if (long) {
       note.setAttribute('role', 'button');
       note.tabIndex = 0;
@@ -10371,10 +10390,12 @@
     placeBarOpen();
   }
   barShortcuts?.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
     const note = e.target.closest?.('.scheduler-card__note[role="button"]');
-    if (!note || (e.key !== 'Enter' && e.key !== ' ')) return;
+    const update = e.target.closest?.('.scheduler-card__update[tabindex]');
+    if (!note && !update) return;
     e.preventDefault();
-    toggleNote(note);
+    if (note) toggleNote(note); else openUpdatesFromCard();
   });
 
   let shortcutsDrawn = '';
@@ -10429,20 +10450,10 @@
     barShortcuts.toggleAttribute('data-card', carded);
   }
 
-  /* Add update opens the trip on its Updates tab with the box in hand; on the
-     trip the editor already holds it goes straight to the tab. It is not one of the
-     choices, because every trip has it. */
+  /* Add update opens the trip's Updates window, without opening the trip. It
+     is not one of the choices, because every trip has it. */
   const ADD_UPDATE = { id: 'add_update', label: 'Add update', short: 'Update', icon: '#m-add_comment', blocked: () => null,
-    run: bar => {
-      const toBox = () => {
-        const tab = document.getElementById('scheduler-tab-updates');
-        if (tab && tab.getAttribute('aria-selected') !== 'true') window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
-        document.getElementById('scheduler-f-update')?.focus();
-      };
-      if (isEditorBar(bar)) { toBox(); return; }
-      const ref = barRef(bar);
-      whenSafe(() => { openRef(ref); requestAnimationFrame(toBox); });
-    } };
+    run: bar => openUpdatesWindow(panelIndex.trips.get(bar.dataset.tripId)) };
 
   /* Contacts opens a small window of everyone to reach about this bar, in
      three parts: the customer's people, the crew on this bus, and the crew on
@@ -10551,7 +10562,7 @@
         onClick: async () => {
           toast(null);
           if (await writeUpdate(trip.id, { kind: 'update', body, keys: null })) { await show(); toast('success', 'Update added', body); }
-          else toast('warning', 'The update was not added.', 'Add it from the trip\'s Updates tab.');
+          else toast('warning', 'The update was not added.', 'Add it from the trip\'s Update shortcut.');
         },
       });
     };
@@ -10680,14 +10691,11 @@
         el('strong', null, `Waiting on ${waitsOf(trip).map(w => WAIT_WORDS[w]).join(', ')}`), dismiss);
       card.appendChild(band);
     }
-    const notesHead = row(`scheduler-card__head scheduler-card__head--notes${trip.notes ? '' : ' scheduler-card__head--alone'}`);
-    notesHead.append(svgUse('#m-keep', '16', '0 0 32 32'), el('span', null, 'Notes'));
-    if (!trip.notes) notesHead.appendChild(el('span', 'scheduler-card__count', '· none'));
-    /* At the heading's end, what the trip needs, and a phone in the warning
+    /* On the notes row, what the trip needs, and a phone in the warning
        colour when nobody is named to call on the day and the trip is not marked
        as needing no one; the Contacts shortcut reaches whoever is named. Each
-       is its glyph, a need red where this bus falls short, its name on hover
-       and written beside it on the docked sheet, where a phone has no hover. */
+       is its glyph with its name written beside it, a need red where this bus
+       falls short, and its state, such as Hotel not booked, on hover. */
     const side = el('span', 'scheduler-card__facts');
     for (const n of facts?.needs ?? []) {
       const need = el('span', `scheduler-card__need${n.short ? ' scheduler-card__need--short' : n.done ? '' : ' scheduler-card__need--todo'}`);
@@ -10702,19 +10710,22 @@
       none.append(svgUse('#m-call-fill', '16', '0 0 32 32'), el('span', 'scheduler-card__fact-name', 'No day-of contact'));
       side.appendChild(none);
     }
-    if (side.childElementCount) notesHead.appendChild(side);
-    if (trip.notes) {
+    /* The note is one row with no heading: its pin, its words, then the facts.
+       A trip with no note shows the facts alone, and with neither, no row. */
+    if (trip.notes || side.childElementCount) {
       const note = row('scheduler-card__note');
-      note.appendChild(el('span', null, trip.notes));
-      card.append(notesHead, note);
-    } else {
-      card.appendChild(notesHead);
+      if (trip.notes) {
+        const pin = svgUse('#m-keep', '16', '0 0 32 32');
+        pin.removeAttribute('aria-hidden');
+        pin.setAttribute('role', 'img');
+        pin.setAttribute('aria-label', 'Notes');
+        note.append(pin, el('span', 'scheduler-card__note-words', trip.notes));
+      }
+      if (side.childElementCount) note.appendChild(side);
+      card.appendChild(note);
     }
+    // The updates take no heading: a face, words and an age say what they are.
     const updates = updatesOf(trip);
-    const updatesHead = row('scheduler-card__head');
-    updatesHead.append(svgUse('#m-chat', '16', '0 0 32 32'), el('span', null, 'Updates'));
-    if (updates.length) updatesHead.appendChild(el('span', 'scheduler-card__count', `· ${updates.length}`));
-    card.appendChild(updatesHead);
     const list = el('ol', 'scheduler-card__list');
     list.setAttribute('aria-label', 'Updates, newest first');
     updates.forEach((u, n) => {
@@ -10738,6 +10749,8 @@
       const when = el('span', 'scheduler-card__when', agoShort(u.created_at));
       when.title = updateStamp(u);
       li.append(face, el('span', 'scheduler-card__words', u.body), when);
+      li.tabIndex = 0;
+      li.title = 'Open the trip\'s updates';
       list.appendChild(li);
     });
     if (!updates.length) {
@@ -10754,11 +10767,27 @@
     return card;
   }
 
-  // A slot acts on the selected bar. An empty slot opens Customize shortcuts at
+  /* The bar the slots and card are showing: the hovered one, or else the
+     selected one. Acting on it selects it first, so the roster lights its days
+     and what the action does finds it selected. */
+  function takeShownBar() {
+    const bar = (peekBar?.isConnected ? peekBar : null) ?? selectedBar();
+    if (bar && bar !== selectedBar()) selectBar(bar);
+    return bar;
+  }
+  function openUpdatesFromCard() {
+    const bar = takeShownBar();
+    if (bar) openUpdatesWindow(panelIndex.trips.get(bar.dataset.tripId));
+  }
+
+  // A slot acts on the bar it shows. An empty slot opens Customize shortcuts at
   // that slot, and a disabled one does nothing.
   barShortcuts?.addEventListener('click', e => {
     const note = e.target.closest('.scheduler-card__note[role="button"]');
     if (note) { toggleNote(note); return; }
+    // An update opens the trip's Updates window, to read it whole or answer.
+    const update = e.target.closest('.scheduler-card__update[tabindex]');
+    if (update) { openUpdatesFromCard(); return; }
     // The docked sheet's trip is the whole bar written out, and a tap on it
     // opens the trip as the Open slot does; its phone number dials instead.
     if (e.target.closest('.scheduler-bar-shortcuts__trip') && !e.target.closest('a')) { openSelected(); return; }
@@ -10778,8 +10807,9 @@
       return;
     }
     const btn = e.target.closest('.scheduler-bar-shortcut');
-    const bar = selectedBar();
-    if (!btn || !bar || btn.getAttribute('aria-disabled') === 'true') return;
+    if (!btn || btn.getAttribute('aria-disabled') === 'true') return;
+    const bar = takeShownBar();
+    if (!bar) return;
     if (!btn.dataset.shortcut) {
       const first = shortcutChoice.findIndex(id => !id);
       openShortcutsModal(first < 0 ? SHORTCUT_SLOTS : first + 1);

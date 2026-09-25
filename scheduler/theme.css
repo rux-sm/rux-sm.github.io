@@ -105,8 +105,8 @@
   --scheduler-amber-border: oklch(77.21% 0.1991 64.28);
   --scheduler-amber-hover-ring: none;
 }
-/* The selected trip's floating shortcuts are a Geist menu rather than Carbon's
-   inverse slab: a raised dark surface inside a hairline, with light icons, so
+/* The selected trip's floating shortcuts are a Geist menu rather than the
+   header band: a raised dark surface inside a hairline, with light icons, so
    the brightest thing on the board is the ring on the trip it belongs to. */
 [data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked]) {
   background: var(--rux-layer-02);
@@ -160,14 +160,15 @@
 [data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__asks > svg { color: var(--rux-support-warning); }
 [data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__asks + .scheduler-card__row,
 [data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__asks + .scheduler-card__list > :first-child { border-block-start: 0; }
-/* Its parts are told apart by their headings and the hairline between them, as
-   a Geist menu parts its groups, so the notes take no shade of their own: a
+/* Its parts are told apart by the note's pin and the hairline between them, as
+   a Geist menu parts its groups, so the note takes no shade of its own: a
    square fill inside the 12px corner was the one slab in the card. The rule
    between two updates steps down to the faintest border, as Design's Geist
    table rows do, so a wrapped update still reads as one row without its rule
-   matching the ones that part the card's groups. */
-[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) :is(.scheduler-card__head--notes, .scheduler-card__note) { background: none; }
+   matching the one under the note. */
+[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__note { background: none; }
 [data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update { border-block-start-color: var(--rux-border-subtle-00); }
+[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__note + .scheduler-card__list > :first-child { border-block-start-color: var(--card-rule); }
 [data-theme="geist-dark"] .scheduler-bar--red {
   --scheduler-bg: oklch(27% 0.1084 19.02); --scheduler-hover: oklch(31% 0.1084 19.02);
   --scheduler-fg: oklch(69.96% 0.2136 22.03); --scheduler-border: oklch(69.96% 0.2136 22.03);

@@ -2179,8 +2179,9 @@ button.scheduler-row-head__num::after {
    block above them already is. The height is set on the slot and never on
    `--scheduler-slot-w`: in compact that token is also the day column's floor,
    and widening the week to suit a button would be the tail wagging the dog.
-   They come last, under the trip and its card, where a thumb rests, and each
-   carries its word under its icon, because a phone has no hover to name it. */
+   They come last, under the trip, where a thumb rests, and each carries its
+   word under its icon, because a phone has no hover to name it. The trip's
+   fill above them parts them, so they take no rule. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut {
   /* A basis of the target size, not zero, so they cannot squeeze in beside
      the full-width card and wrap to a line of their own, where they share it
@@ -2193,7 +2194,6 @@ button.scheduler-row-head__num::after {
   block-size: auto;
   min-block-size: var(--rux-layout-size-height-lg);
   padding-block: var(--rux-spacing-03);
-  border-block-start: 1px solid var(--rux-border-subtle-02);
 }
 .scheduler-bar-shortcut__label { display: none; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut__label {
@@ -2207,16 +2207,40 @@ button.scheduler-row-head__num::after {
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
-/* The card's rows join the sheet's own flow, so the reminder can stand above
-   the trip's head: the sheet grows upward when a trip asks for a follow-up,
-   and the trip, its notes, its updates and the slots keep their places. The
-   reminder at the top and the notes under the head need no rule above them:
-   the sheet's edge and the head's fill part them. */
+/* The card's rows join the sheet's own flow and stand above the trip: the
+   reminder, the notes, then the updates. What changes size from trip to trip
+   is all up there, so the sheet grows upward and the trip and its slots keep
+   one place at the foot on every trip. The reminder at the top and the notes
+   under it need no rule above them. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-card { display: contents; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card > * { flex: 1 0 100%; min-inline-size: 0; }
-.scheduler-bar-shortcuts[data-docked] .scheduler-card__asks { order: -1; }
+.scheduler-bar-shortcuts[data-docked] .scheduler-card__asks { order: -3; }
+.scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__head--notes, .scheduler-card__note) {
+  order: -2;
+  /* The board's own layer, a step down from the sheet, so the pinned notes
+     read as their own panel and never as one of the updates. */
+  background: var(--rux-layer-01);
+}
+.scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__head:not(.scheduler-card__head--notes), .scheduler-card__list) { order: -1; }
 .scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__asks, .scheduler-card__head--notes) { border-block-start: 0; }
-/* The trip, at the top of the sheet: the bar's own rows, cloned, so they keep
+/* The note stops at three lines on an ellipsis until it is tapped open. The
+   words are cut, not the row, so the row's padding shows none of a fourth. */
+.scheduler-bar-shortcuts[data-docked] .scheduler-card__note:not([data-open]) > span {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+.scheduler-bar-shortcuts[data-docked] .scheduler-card__note[role="button"] { cursor: pointer; }
+.scheduler-bar-shortcuts[data-docked] .scheduler-card__note[role="button"]:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
+/* The updates are always two rows high, however many there are, and the rest
+   scroll, so the sheet is the same height with none, one or twenty. */
+.scheduler-bar-shortcuts[data-docked] .scheduler-card__list {
+  block-size: calc(2 * 2rem + 2px);
+  max-block-size: none;
+}
+/* The trip, above its slots: the bar's own rows, cloned, so they keep
    one builder and one set of rules. The trip's colour comes with them as the
    bar's colour class, and the head paints its fill and ink, so it reads as
    the whole bar the block on the board stands for. */
@@ -2621,6 +2645,69 @@ html:has(.scheduler-page[data-takeover]) {
 /* Each has a display rule that beats the browser's own [hidden]. */
 .scheduler-maintenance-link[hidden],
 .scheduler-maintenance-title .rux--btn[hidden] { display: none; }
+
+/* ── A driver's schedule link (share/driver.html) and its staff view ────────
+   (driver-view.html). A card per trip leg, a tile, sections under the head
+   parted by a rule. Phone first: rows keep their words on the left and their
+   buttons on the right, and wrap under when the screen is too narrow. The
+   staff view holds the cards to the width a phone held sideways gives them,
+   so staff read the page at the size drivers do. */
+.scheduler-leg-list { display: grid; gap: var(--rux-spacing-05); }
+/* The Drivers page's Copy link and See their page, side by side. */
+.scheduler-driver-link-actions { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); }
+.scheduler-leg-list:empty { display: none; }
+.scheduler-leg-staff { max-inline-size: 42rem; }
+.scheduler-leg-picker { flex: 0 1 20rem; min-inline-size: 12rem; }
+.scheduler-leg-card { display: grid; gap: var(--rux-spacing-05); }
+.scheduler-leg-card__head { display: grid; gap: var(--rux-spacing-02); }
+.scheduler-leg-card__head > * { margin: 0; overflow-wrap: anywhere; }
+.scheduler-leg-card__customer,
+.scheduler-leg-card__muted { color: var(--rux-text-secondary); }
+.scheduler-leg-card__tags { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-02); margin-block-start: var(--rux-spacing-03); }
+.scheduler-leg-card__response { display: grid; gap: var(--rux-spacing-04); }
+.scheduler-leg-card__buttons { display: grid; grid-template-columns: 1fr 1fr; gap: var(--rux-spacing-03); }
+.scheduler-leg-card__buttons > .rux--btn { inline-size: 100%; max-inline-size: none; }
+.scheduler-leg-card__error { margin: 0; color: var(--rux-text-error); }
+.scheduler-leg-card__state { display: flex; align-items: center; gap: var(--rux-spacing-03); margin: 0; }
+.scheduler-leg-card__state--accepted svg { color: var(--rux-support-success); }
+.scheduler-leg-card__state--declined svg { color: var(--rux-support-error); }
+.scheduler-leg-card__changes { margin: var(--rux-spacing-02) 0 0; padding-inline-start: var(--rux-spacing-05); list-style: disc; }
+.scheduler-leg-card__section {
+  display: grid;
+  gap: var(--rux-spacing-03);
+  padding-block-start: var(--rux-spacing-05);
+  border-block-start: 1px solid var(--rux-border-subtle-01);
+}
+.scheduler-leg-card__section p,
+.scheduler-leg-card__section address { margin: 0; font-style: normal; overflow-wrap: anywhere; }
+.scheduler-leg-card__label {
+  margin: 0;
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-label-01-font-size);
+  font-weight: var(--rux-label-01-font-weight);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+.scheduler-leg-card__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--rux-spacing-03) var(--rux-spacing-05);
+}
+.scheduler-leg-card__row > div:first-child { flex: 1 1 12rem; min-inline-size: 0; }
+.scheduler-leg-card__actions { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-02); }
+.scheduler-leg-card__crew,
+.scheduler-leg-card__bus { display: grid; gap: var(--rux-spacing-04); }
+.scheduler-leg-card__bus-name { margin: 0; color: var(--rux-text-secondary); }
+.scheduler-leg-card__bus[hidden] { display: none; }
+.scheduler-leg-card__notes { white-space: pre-line; }
+.scheduler-leg-card__notes--folded {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+}
 
 /* ── The quote calculator (quote.html) and its rates (quote-rates.html) ─────
    Both pages use Carbon's editorial style model, which Carbon names for

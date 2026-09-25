@@ -7400,6 +7400,7 @@
        the placing below applies to a bar that is not pointing at anything. */
     const docked = pageEl?.getAttribute('data-board') === 'compact';
     barShortcuts.toggleAttribute('data-docked', docked);
+    fitNote(docked);
     if (docked) {
       drawDockedTrip(bar);
       barShortcuts.removeAttribute('data-out');
@@ -10451,6 +10452,40 @@
     barShortcuts.prepend(head);
   }
 
+  /* On the docked sheet a trip's note shows three lines and ends in an
+     ellipsis; a tap on a longer one opens it whole and a second tap closes it.
+     The trip it is open for is kept, so a redraw of the same card keeps it
+     open. Floating, the card shows the whole note and none of this applies. */
+  let noteOpenFor = null;
+  function fitNote(docked) {
+    const note = barShortcuts.querySelector('.scheduler-card__note');
+    if (!note) return;
+    const tripId = note.closest('.scheduler-card')?.dataset.tripId;
+    const open = docked && !!tripId && tripId === noteOpenFor;
+    note.toggleAttribute('data-open', open);
+    const words = note.firstElementChild;
+    const long = docked && (open || (!!words && words.scrollHeight > words.clientHeight + 1));
+    if (long) {
+      note.setAttribute('role', 'button');
+      note.tabIndex = 0;
+      note.setAttribute('aria-expanded', String(open));
+    } else {
+      note.removeAttribute('role');
+      note.removeAttribute('tabindex');
+      note.removeAttribute('aria-expanded');
+    }
+  }
+  function toggleNote(note) {
+    noteOpenFor = note.hasAttribute('data-open') ? null : note.closest('.scheduler-card')?.dataset.tripId ?? null;
+    placeBarOpen();
+  }
+  barShortcuts?.addEventListener('keydown', e => {
+    const note = e.target.closest?.('.scheduler-card__note[role="button"]');
+    if (!note || (e.key !== 'Enter' && e.key !== ' ')) return;
+    e.preventDefault();
+    toggleNote(note);
+  });
+
   let shortcutsDrawn = '';
   function drawShortcuts(bar) {
     /* Open trip, then the chosen actions with the empty choices left out. An
@@ -10619,6 +10654,8 @@
   // A slot acts on the selected bar. An empty slot opens Customize shortcuts at
   // that slot, and a disabled one does nothing.
   barShortcuts?.addEventListener('click', e => {
+    const note = e.target.closest('.scheduler-card__note[role="button"]');
+    if (note) { toggleNote(note); return; }
     // The reminder's ✕ acts on the trip the card shows, peeked or selected.
     const dismiss = e.target.closest('.scheduler-card__dismiss');
     if (dismiss) {

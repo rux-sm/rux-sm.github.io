@@ -278,6 +278,20 @@
     return head;
   }
 
+  /* What the driver calls the vehicle: a coach is the Bus, any other type
+     goes by its own name, as Van, and a vehicle with no type is the Unit. */
+  function unitWord(type) {
+    const name = String(type || '').trim();
+    if (!name) return 'Unit';
+    return name.toLowerCase() === 'coach' ? 'Bus' : name;
+  }
+
+  // The vehicle's number, blank where the number is only its type's name.
+  function unitNumber(bus) {
+    const number = String(bus?.number ?? '').trim();
+    return number.toLowerCase() === String(bus?.type || '').trim().toLowerCase() ? '' : number;
+  }
+
   /* Bus, then the seat this copy is for beside the trip's own driver. A
      relief's copy shows the swap time it reports at, where a driver's shows
      the bus's spot time. */
@@ -295,7 +309,7 @@
       : { label: roleName(relief?.role || 'co-driver'), name: nameOf(relief) };
 
     frag.appendChild(row(
-      cell('Unit', assignment.buses?.number != null ? String(assignment.buses.number) : ''),
+      cell(unitWord(assignment.buses?.type), unitNumber(assignment.buses)),
       cell(mine.label, mine.name),
       cell(other.label, other.name),
     ));
@@ -1359,7 +1373,7 @@
      is a seat the form drops without saying so. */
   const BUS_SEATS_QUERY = [
     'id', 'leg', 'position', 'bus_id',
-    'buses:bus_id(number)',
+    'buses:bus_id(number,type)',
     'trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed,drivers:driver_id(name,short_name))',
   ].join(',');
 
@@ -2317,7 +2331,7 @@
     const columns = tripQuery(form);
     const { data, error } = assignmentId
       ? await client.from('trip_assignments')
-        .select(`id,leg,buses:bus_id(number),trips:trip_id(${columns})`)
+        .select(`id,leg,buses:bus_id(number,type),trips:trip_id(${columns})`)
         .eq('id', assignmentId).maybeSingle()
       : await client.from('trips').select(columns).eq('id', tripId).maybeSingle();
     if (error) return say('error', 'The schedule did not answer.', error.message);

@@ -47,7 +47,7 @@ only which panel is in front.
 17rem, the width the tight toolbar is measured to read at. The week never goes
 narrower than its own controls, which makes the number derived rather than
 chosen. It is not the compact week's 26rem: that asks whether the board can show
-three readable days, which `scheduler-compact-board.md` decides from the board's
+three readable days, which the compact board decides from the board's
 own width and never from what the panels leave.
 
 ### Everything is priced from its token

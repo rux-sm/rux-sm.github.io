@@ -43,3 +43,34 @@ done and how.
 - Print a customer quote from a real trip and hold it beside the QuickBooks
   one: the price, the description, the terms, and whether the grey label cells
   reach the paper with Chrome's Background graphics box left unticked.
+- Use the floating bar's shortcuts on real trips, on the computer and the
+  phone.
+- Read a real week on the compact board on the phone, and on 8641 with the
+  roster and the editor open; then resize that board and read the week again.
+- Read every tab of the trip editor on real trips, in Chrome, Safari and on the
+  phone.
+- Check the driver and bus pickers near the bottom of a long trip panel, and
+  the contact search on a phone.
+- Sign a contract on an unconfirmed trip and check the bar turns blue on both
+  boards.
+- Assign a bus, a driver and a relief on a trip rux-ui saved, and check rux-ui
+  shows the same crew and statuses.
+- Set a driver status on a real trip and check rux-ui shows the same.
+- Pick a colour on a real trip, from the editor and from the bar menu, and check
+  rux-ui shows the same colour.
+- Add a stop to a real trip, save, and check rux-ui's Itinerary tab and the
+  driver itinerary show every stop in order.
+- Upload, replace and delete a file on a real trip, then open it in rux-ui.
+- Edit, recolour, move and cancel a trip, set a driver status, and check each
+  entry in rux-ui's History panel.
+- Open Suggest drivers on a real week, apply a few picks and check the saved
+  drivers on the board.
+- Open a cancelled trip from the Trips page and read its reason.
+- Enter a trip from a real itinerary through the Claude app, and a change to an
+  existing trip, from the desktop and the phone.
+- Save one real driver edit and one real contact edit, and open the Drivers and
+  Contacts pages on a phone.
+- Save a bus with a day out, a driver with time off, and a new contact, customer
+  and location, and leave each with an unsaved change to see the modal ask.
+- Check the header on Home, Design, Notes and the scheduler, with and without a
+  photo, and upload and remove a photo on the account page.

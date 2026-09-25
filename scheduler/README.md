@@ -75,13 +75,9 @@ lists lack: a person who is no one's contact yet, a contact's missing or
 different phone or email, and a pickup or drop-off no location holds. Nothing
 is added to a list unless ticked, and the trip is saved either way.
 
-On the compact board, a swipe moves one week of trip cells while the date and
-bus headers stay fixed. Stationary cell viewports clip the moving bars at the
-bus-column boundary during both dragging and settling. Further swipes during a slide are ignored. Cached weeks
-are ready after the slide; background refreshes wait for a gesture to finish
-before repainting. An uncached week keeps the current board visible, shows a
-loading indicator after 200 ms, then slides in when ready. The indicator clears
-when the week lands; a failed load keeps the current week and offers a retry.
+On the compact board a swipe slides one week of trip cells under fixed date and
+bus headers; a week not yet loaded shows a loading mark after 200 ms, slides in
+when it lands, and a failed load keeps the current week and offers a retry.
 
 The quote page, `quote.html`, is the quote calculator: the office spreadsheet's
 formulas in `quote.js`. Its rates, and the rules the formulas follow such as
@@ -137,14 +133,9 @@ no pin to move.
 
 From the repository root, one level up:
 
-    npm run serve        # the whole site on :8640; this app at /scheduler/
     npm run check        # Design's shared check over this app, plus the sprite
 
-The pages link `/design/…` absolutely, so this folder is never served alone.
-The check cannot see whether the page looks right. Open it.
-
-## How it deploys
-
-A push to the repository's `main` runs the full check and deploys the whole
-site only if it passes. A failing push stays in git and the last good
-deployment keeps serving.
+Open it at http://localhost:8641/scheduler/, the always-on preview the root
+`README.md` describes; the pages link `/design/…` absolutely, so this folder is
+never served alone. The check cannot see whether the page looks right. A push to
+`main` publishes it, as the root `AGENTS.md` says.

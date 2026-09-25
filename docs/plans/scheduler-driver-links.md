@@ -39,8 +39,8 @@ scheduler makes open the scheduler's driver page.
 - **A relief leg can be shared without a swap time,** because relief drivers
   often agree the handoff between themselves. The driver's card then says to
   coordinate the handoff with the driver they relieve, by name, in place of
-  "details will be provided by dispatch". This needs the database's two link
-  functions to stop refusing it.
+  "details will be provided by dispatch", and the database's two link
+  functions take it.
 - **At most 50 legs a link,** the limit rux-ui keeps.
 - **rux-ui keeps its Driver week info window** until rux has used this one
   for real, and then it is removed there.
@@ -51,9 +51,6 @@ None open.
 
 ## Tasks
 
-- [ ] Migration `driver_share_relief_time_optional`: `create_driver_schedule_share`
-      and `update_driver_schedule_share` stop refusing a relief leg with no
-      swap time. Tested on PGlite first and shown to rux before it runs.
 - [ ] rux sends one real driver a link made here, and checks the board turns
       the legs yellow and the driver's answer comes back.
 - [ ] Remove Driver week info from rux-ui, after reading its own `CLAUDE.md`.

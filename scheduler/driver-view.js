@@ -232,9 +232,7 @@
       ? await client.rpc('update_driver_schedule_share', { p_token: link.token, p_assignment_ids: ids, p_range_start: from, p_range_end: to })
       : await client.rpc('create_driver_schedule_share', { p_driver_id: driver.id, p_assignment_ids: ids, p_range_start: from, p_range_end: to });
     if (r.error || !r.data?.token) {
-      problem(/swap time/i.test(r.error?.message || '')
-        ? "The database still asks for a relief driver's swap time before sharing. Set it on the trip, or untick that trip."
-        : "The link didn't save. Try again.");
+      problem("The link didn't save. Try again.");
       refresh();
       return;
     }

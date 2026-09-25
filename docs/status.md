@@ -26,7 +26,6 @@ done and how.
 
 - A solved puzzle shows in black and white. The DS reveals a colour picture;
   that needs a colour step in the maker.
-- There is no free mode, where mistakes are not pointed out.
 
 ## The database
 

@@ -154,6 +154,17 @@
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="pixels-restart">Start over</button>
           <a class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="pixels-edit" href="make.html">Edit</a>
         </div>
+        <!-- play.js sets it from the saved choice; changing it starts over. -->
+        <div class="rux--toggle" id="pixels-free">
+          <button id="pixels-free-button" class="rux--toggle__button" role="switch" type="button" aria-checked="false" aria-labelledby="pixels-free-label"></button>
+          <label class="rux--toggle__label" for="pixels-free-button" id="pixels-free-label">
+            <span class="rux--toggle__label-text">Free mode</span>
+            <div class="rux--toggle__appearance">
+              <div class="rux--toggle__switch"></div>
+              <span class="rux--toggle__text" aria-hidden="true">Off</span>
+            </div>
+          </label>
+        </div>
       </div>
       <div class="pixels-solved" id="pixels-solved" hidden>
         <div class="pixels-picture" id="pixels-picture"></div>

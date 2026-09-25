@@ -16,8 +16,10 @@ unsolved one a question mark, and its name stays hidden until it is solved.
 by tap, by dragging along a row or column, or with the arrow keys, Z and X.
 Filling a square not in the picture is a mistake: it is crossed out in red and
 2, then 4, then 8 minutes are added to the clock. A line's numbers grey out
-when it is right. A game in progress is kept in the browser, so a reload
-picks it up.
+when it is right. Free mode points out nothing: a wrong square fills like a
+right one, Fill empties a filled square, and the puzzle is solved when the
+filled squares are exactly the picture. A game in progress is kept in the
+browser, so a reload picks it up.
 
 `make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits
 or deletes one. It checks as you draw whether the numbers alone can solve the

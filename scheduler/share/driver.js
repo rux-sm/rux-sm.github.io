@@ -261,6 +261,9 @@
       const a = was?.[key] ?? (Array.isArray(now[key]) ? [] : '');
       const b = now[key];
       if (JSON.stringify(a) === JSON.stringify(b)) continue;
+      // A relief driver's card gives the handoff, which `relief` compares, and
+      // not the bus's spot time.
+      if (key === 'time' && isRelief(l.role)) continue;
       if (key === 'itinerary') lines.push(b ? 'New itinerary' : 'Itinerary removed');
       else if (key === 'stops') lines.push('Stops changed');
       else if (key === 'requirements') {
@@ -268,7 +271,7 @@
         if (added.length) lines.push(`Added: ${added.join(', ')}`);
         if (gone.length) lines.push(`Removed: ${gone.join(', ')}`);
       } else {
-        const label = key === 'time' ? (isRelief(l.role) ? 'Report time' : 'Spot time') : VIEW_LABELS[key];
+        const label = key === 'time' ? 'Spot time' : VIEW_LABELS[key];
         lines.push(`${label}: ${a || 'none'} → ${b || 'none'}`);
       }
     }
@@ -485,23 +488,23 @@
 
     // Where to be, and when, first: it is what the driver comes back for.
     const plan = el('div', 'scheduler-leg-card__plan');
-    if (l.time) plan.appendChild(el('p', 'rux--type-heading-compact-02', `${isRelief(l.role) ? 'Report' : 'Spot'} at ${timeText(l.time)}`));
     if (l.relief) {
-      // With no time set, relief drivers agree the handoff between themselves.
-      const lines = [
-        l.relief.at ? `Handoff at ${timeText(l.relief.at)}`
-          : l.relief.from ? `Coordinate the handoff time with ${l.relief.from}.` : '',
-        l.relief.instructions,
-      ].filter(Boolean);
-      for (const t of (lines.length ? lines : ['Dispatch will send the handoff details.'])) {
-        plan.appendChild(el('p', 'rux--type-body-compact-01', t));
-      }
+      /* A relief driver works to the handoff, not the bus's spot time, so the
+         card gives the one and never the other. With no time set, relief
+         drivers agree it between themselves. */
+      plan.appendChild(el('p', 'rux--type-heading-compact-02', l.relief.at ? `Handoff at ${timeText(l.relief.at)}`
+        : l.relief.from ? `Agree the handoff time with ${l.relief.from}` : 'Dispatch will send the handoff time'));
+      if (l.relief.instructions) plan.appendChild(el('p', 'rux--type-body-compact-01', l.relief.instructions));
+    } else if (l.time) {
+      plan.appendChild(el('p', 'rux--type-heading-compact-02', `Spot at ${timeText(l.time)}`));
     }
     const where = [l.place.name, l.place.address].filter(Boolean).join(', ');
     if (where) {
       const row = el('div', 'scheduler-leg-card__row');
       const lines = el('div');
-      lines.appendChild(el('address', 'rux--type-body-compact-01', where));
+      // The bus's pickup, which is not where a relief driver takes over, so
+      // their card says whose it is.
+      lines.appendChild(el('address', 'rux--type-body-compact-01', l.relief ? `Trip pickup: ${where}` : where));
       row.append(lines, linkButton('Navigate', `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(where)}`, '#m-location_on', `Navigate to ${where}`));
       plan.appendChild(row);
     }

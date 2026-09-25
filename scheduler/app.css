@@ -54,7 +54,7 @@
      percentage of seven lands on Blink's 1/64px and paints a bar edge across
      two device pixels. */
   --scheduler-day-w: calc(100% / var(--scheduler-days));
-  --scheduler-bar-rows: 6;
+  --scheduler-bar-rows: 5;
   /* The one line that draws the rule round a bar somebody else is in and the
      two inner edges of the square in its corner. A width, not a theme choice,
      so every theme draws it the same. */
@@ -593,7 +593,6 @@ button.scheduler-row-head__num::after {
 .scheduler-week--no-client .scheduler-bar__client,
 .scheduler-week--no-contact .scheduler-bar__contact,
 .scheduler-week--no-time .scheduler-bar__time,
-.scheduler-week--no-notes .scheduler-bar__notes,
 .scheduler-week--no-drivers .scheduler-bar__drivers { display: none; }
 
 .scheduler-bar__row { display: flex; justify-content: space-between; gap: var(--rux-spacing-03); block-size: var(--scheduler-row-h); white-space: nowrap; overflow: hidden; }
@@ -712,6 +711,8 @@ button.scheduler-row-head__num::after {
   --card-hover: var(--rux-background-inverse-hover);
   --card-rule: color-mix(in srgb, var(--card-ink) 35%, transparent);
   --card-focus: var(--rux-focus-inverse);
+  --card-error: var(--rux-support-error-inverse);
+  --card-warning: var(--rux-support-warning-inverse);
   transform-origin: var(--scheduler-open-tip, 2rem) 100%;
 }
 .scheduler-bar-shortcuts[data-card][data-side="below"] { transform-origin: var(--scheduler-open-tip, 2rem) 0; }
@@ -727,6 +728,8 @@ button.scheduler-row-head__num::after {
   --card-icon: var(--rux-icon-primary);
   --card-hover: var(--rux-layer-hover-02);
   --card-focus: var(--rux-focus);
+  --card-error: var(--rux-support-error);
+  --card-warning: var(--rux-support-warning);
 }
 .scheduler-bar-shortcuts[data-peek] > .scheduler-bar-shortcut { display: none; }
 .scheduler-card {
@@ -758,6 +761,18 @@ button.scheduler-row-head__num::after {
   padding-inline-start: calc(var(--rux-spacing-04) - 3px);
 }
 .scheduler-card__asks > svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--card-icon); }
+/* A bus that does not fit is a band like the reminder's, in the error colour,
+   above it: a mistake on the board comes before a job still to do. */
+.scheduler-card__misfit {
+  display: flex;
+  gap: var(--rux-spacing-03);
+  align-items: center;
+  background: color-mix(in srgb, var(--card-error) 22%, var(--card-surface));
+  border-inline-start: 3px solid var(--card-error);
+  padding-inline-start: calc(var(--rux-spacing-04) - 3px);
+}
+.scheduler-card__misfit > svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--card-icon); }
+.scheduler-card__misfit > strong { flex: 1; min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
 .scheduler-card__asks > strong { flex: 1; min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
 .scheduler-card__dismiss {
   display: flex;
@@ -791,6 +806,36 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-card__head > svg { flex: none; inline-size: .875rem; block-size: .875rem; }
 .scheduler-card__count { font-weight: var(--rux-body-compact-01-font-weight); }
+/* The Notes heading's end: the trip's needs and its day-of contact, in the
+   card's full ink and body weight, wrapping under the heading where they do
+   not fit beside it. */
+.scheduler-card__head--notes { flex-wrap: wrap; }
+.scheduler-card__facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--rux-spacing-02) var(--rux-spacing-04);
+  margin-inline-start: auto;
+  color: var(--card-ink);
+  font-weight: var(--rux-body-compact-01-font-weight);
+}
+.scheduler-card__need,
+.scheduler-card__dayof { display: inline-flex; align-items: center; gap: var(--rux-spacing-02); }
+.scheduler-card__facts svg { flex: none; inline-size: 1rem; block-size: 1rem; }
+/* A need this bus meets is quiet, one still to do is in full ink, and one
+   the bus falls short of is red. Its name is on hover; the docked sheet
+   writes it out. */
+.scheduler-card__need { opacity: .7; }
+.scheduler-card__need--todo,
+.scheduler-card__need--short { opacity: 1; }
+.scheduler-card__need--short { color: var(--card-error); }
+.scheduler-card__need-letter { inline-size: 1rem; text-align: center; font-weight: var(--rux-heading-compact-01-font-weight); }
+.scheduler-card__need-name { display: none; }
+.scheduler-bar-shortcuts[data-docked] .scheduler-card__need-name { display: inline; }
+/* The day-of contact dials; with none, its phone is in the warning colour. */
+a.scheduler-card__dayof { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.scheduler-card__dayof--none > svg { color: var(--card-warning); }
 .scheduler-card__head + .scheduler-card__row,
 .scheduler-card__head + .scheduler-card__list > :first-child { border-block-start: 0; }
 /* A trip with no note says so on the heading's own line, which then closes
@@ -844,45 +889,13 @@ button.scheduler-row-head__num::after {
   .scheduler-bar-shortcuts[data-pop] .scheduler-card__row { animation: none; }
 }
 
-/* A requirement the bus fails, or a missing itinerary: the missing item's icon
-   on the warning colour, in the text colour that reads on it, so it shows on
-   every bar tint. They sit at the end of the notes row, because a note gives
-   way by the letter and a crew gives way a whole name at a time. The copy
-   on the destination row shows only while the notes row is turned off. */
-/* The marks have the notes row to themselves, at the bar's own start, so they
-   begin where every other row begins and read down the week as a column. The
-   trip's note is read on its card. */
-/* The gap is a step wider than elsewhere because the glyph fills its box: at
-   16 there is no air inside a mark, so all of it is here. Two marks would
-   otherwise sit 2px apart and the strip would read as one run. */
-.scheduler-bar__warn { display: flex; gap: var(--rux-spacing-02); flex: none; }
-/* The row hands its first child the shrinking, which on this row is the
-   marks: without this they are squeezed and every chip with them. `fitMarks`
-   hides what does not fit instead. */
-.scheduler-bar__notes > .scheduler-bar__warn { flex: none; }
-.scheduler-bar__notes { justify-content: flex-start; }
-/* On the destination row they travel to the end instead, with the reference,
-   because the destination is the row's own subject and wants the near side. */
-.scheduler-bar__warn--dest { display: none; margin-inline-start: auto; }
-.scheduler-week--no-notes .scheduler-bar__warn--dest { display: flex; }
 /* WHAT TRAVELS TO THE DESTINATION ROW'S END STOPS AT THE END OF THE TRIP'S
-   FIRST DAY, however many days the bar runs: the leg reference, and the marks
-   beside it while the notes row is off. They used to sit at the bar's far end,
-   so across a week they landed wherever each trip happened to finish and none
-   of them lined up; held to the first day they sit a fixed distance from where
-   every bar starts. The row itself is not narrowed, so the destination still
-   gives way across the whole bar. */
-.scheduler-bar__ref,
-.scheduler-bar__warn--dest { margin-inline-end: var(--scheduler-day-one-end); }
-/* On the destination row the two travel together, so only the one at the end
-   holds that space -- the marks when the notes row is off and they are drawn
-   here, the reference when it is on and they are not. */
-.scheduler-week--no-notes .scheduler-bar__dest > .scheduler-bar__ref { margin-inline-end: 0; }
-/* The reference and the marks travel together at the destination row's end:
-   the first of the two takes the row's free space, so the other sits beside it
-   rather than at the far side of the row. */
+   FIRST DAY, however many days the bar runs: the leg reference. Held to the
+   first day it sits a fixed distance from where every bar starts, so down a
+   week the references line up. The row itself is not narrowed, so the
+   destination still gives way across the whole bar. */
+.scheduler-bar__ref { margin-inline-end: var(--scheduler-day-one-end); }
 .scheduler-bar__dest > .scheduler-bar__ref { margin-inline-start: auto; }
-.scheduler-bar__dest > .scheduler-bar__ref ~ .scheduler-bar__warn { margin-inline-start: 0; }
 /* THE UPDATES MARK, in the bar's bottom corner at the drivers row's end, a
    step wider than a mark and as tall as the row; the crew gives way to it. The
    filled bubble says the trip has updates, the outline that it has none, drawn
@@ -905,79 +918,14 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__drivers > .scheduler-bar__crew { flex: 0 1 auto; }
 .scheduler-bar__msg--dest { display: none; }
 .scheduler-week--no-drivers .scheduler-bar__msg--dest { display: flex; margin-inline-end: var(--scheduler-day-one-end); }
-.scheduler-week--no-drivers .scheduler-bar__dest > :is(.scheduler-bar__ref, .scheduler-bar__warn) { margin-inline-end: 0; }
-.scheduler-bar__dest > :is(.scheduler-bar__ref, .scheduler-bar__warn) ~ .scheduler-bar__msg { margin-inline-start: 0; }
-/* EVERY MARK IS THE GLYPH ALONE, carrying its state in its own colour: the
-   mark-warning colour while something is still to be done, and the bar's own
-   text colour once nothing is. A filled square each was too heavy a block beside a
-   note, and rux chose the bare glyph over an outline.
-
-   It keeps a row-high box, though nothing is drawn on it, so the glyphs sit
-   evenly apart and `fitMarks` still counts what fits from one measurement.
-
-   THE AMBER BAR DRAWS NO MARKS: it is a placeholder, with nothing due yet.
-   `--scheduler-mark-warning` is set per theme in theme.css, so the mark clears
-   3 to 1 against every other bar in light and dark alike. */
-.scheduler-bar__warn-chip {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--scheduler-row-h);
-  block-size: var(--scheduler-row-h);
-  color: var(--scheduler-mark-warning);
-}
-/* The size is CSS's, not the attribute the script writes, which is why one
-   number here changes the bar's marks and the crew's glyphs together. The
-   attribute says 16 as well, so a mark drawn where this sheet is not loaded --
-   a print, a page fragment lifted out -- is the size it is meant to be rather
-   than an older one. */
-.scheduler-bar__warn-chip svg {
-  display: block;
-  inline-size: var(--scheduler-mark-glyph);
-  block-size: var(--scheduler-mark-glyph);
-}
-/* The payment mark carries its rung in its own colour like every other mark:
-   red while nothing stands against the quote, the warning colour while what
-   does is the wrong amount, green once the money is in.
-
-   RED AND GREEN ARE LOW AGAINST A COLOURED BAR, and rux chose this knowing it:
-   measured against all nine hues the error colour reaches 2.29 to 2.33 and the
-   success colour 3.22 to 3.27, against the 3 to 1 a 12px mark wants. The solid
-   glyph is what makes it liveable -- a filled silhouette carries at a contrast
-   that would lose an outline's strokes -- and no mark on this bar is a block
-   any more. */
-.scheduler-bar__warn-chip--error { color: var(--scheduler-mark-error); }
-.scheduler-bar__warn-chip--success { color: var(--scheduler-mark-success); }
-/* The count standing in for the marks a narrow bar has no room for, in the
-   place of the last that fits. It is a chip like the others and the same
-   square, so `fitMarks` can count what fits from one measurement. `hidden`
-   is restated because the chip sets a display. */
-.scheduler-bar__warn-more {
-  font-size: 0.625rem;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0;
-  line-height: 1;
-}
-.scheduler-bar__warn-chip[hidden] { display: none; }
-
-/* A requirement Design has no glyph for wears its initial, in the same square
-   as every other mark so `fitMarks` still counts what fits from one of them.
-   Carbon's data-table header type, the same step the compact board's code
-   takes, which is the largest that sits inside a row-high square. */
-.scheduler-bar__warn-chip--letter {
-  font-size: var(--rux-heading-compact-01-font-size);
-  font-weight: var(--rux-heading-compact-01-font-weight);
-  line-height: 1;
-  letter-spacing: 0;
-}
-
-/* A mark this bus already answers for takes `--scheduler-mark-done`, or the
-   bar's own text colour in a theme that sets none: the trip has a sleeper, or
-   a hotel, and nothing is left to do about it. The glyph is the same either
-   way and only its colour changes, so a requirement reads as one thing
-   whether it is met or not. */
-.scheduler-bar__warn-chip.scheduler-bar__warn-chip--done { color: var(--scheduler-mark-done, currentColor); }
+.scheduler-week--no-drivers .scheduler-bar__dest > .scheduler-bar__ref { margin-inline-end: 0; }
+.scheduler-bar__dest > .scheduler-bar__ref ~ .scheduler-bar__msg { margin-inline-start: 0; }
+/* A BUS THAT DOES NOT FIT THIS TRIP -- the wrong type, or one that falls
+   short of a need -- draws a red edge inside the bar, the shape of the
+   selection ring, which takes its place while the bar is selected. The card
+   says what is wrong. The docked sheet's copy of the bar carries the class
+   and not the edge. */
+.scheduler-bar.scheduler-bar--misfit:not([aria-pressed="true"]) { box-shadow: inset 0 0 0 2px var(--rux-support-error); }
 
 /* The drivers row's crew: each driver's role icon and short name, in role
    order. The row gives way from the end, a whole name at a time. */
@@ -2222,6 +2170,7 @@ button.scheduler-row-head__num::after {
    under it need no rule above them. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-card { display: contents; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card > * { flex: 1 0 100%; min-inline-size: 0; }
+.scheduler-bar-shortcuts[data-docked] .scheduler-card__misfit { order: -4; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__asks { order: -3; }
 .scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__head--notes, .scheduler-card__note) {
   order: -2;
@@ -2230,7 +2179,7 @@ button.scheduler-row-head__num::after {
   background: var(--rux-layer-01);
 }
 .scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__head:not(.scheduler-card__head--notes), .scheduler-card__list) { order: -1; }
-.scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__asks, .scheduler-card__head--notes) { border-block-start: 0; }
+.scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__misfit, .scheduler-card__asks, .scheduler-card__head--notes) { border-block-start: 0; }
 /* The reminder's dismiss is a thumb's 48px on a phone, and the band grows to
    hold it; it stands at the top, so only the sheet's top edge moves. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__asks { padding-block: 0; padding-inline-end: 0; }
@@ -2280,15 +2229,8 @@ button.scheduler-row-head__num::after {
    board. Those toggles buy height among the bars; this is where the writing a
    block gave up is read, so hiding a row here would leave it nowhere. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcuts__trip .scheduler-bar__row { display: flex; }
-/* The bar's updates mark is left off: the updates are read just above it. So
-   is the marks' copy on the destination row, since every row is drawn here. */
-.scheduler-bar-shortcuts__trip :is(.scheduler-bar__msg, .scheduler-bar__warn--dest) { display: none; }
-/* Each mark with its name beside it, wrapping as a sentence does, so its row
-   takes the height the names need. */
-.scheduler-bar-shortcuts__trip .scheduler-bar__notes { block-size: auto; white-space: normal; }
-.scheduler-bar-shortcuts__trip .scheduler-bar__warn { flex: 1 1 auto; min-inline-size: 0; flex-wrap: wrap; column-gap: var(--rux-spacing-04); }
-.scheduler-bar__warn-pair { display: inline-flex; align-items: center; gap: var(--rux-spacing-02); }
-.scheduler-bar__warn-pair > .scheduler-bar__warn-chip { flex: none; }
+/* The bar's updates mark is left off: the updates are read just above it. */
+.scheduler-bar-shortcuts__trip .scheduler-bar__msg { display: none; }
 /* The phone number dials, drawn as a link in the trip's own ink. */
 .scheduler-bar__phone--call { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 /* A trip the sheet comes up over scrolls clear of it by the sheet's height. */

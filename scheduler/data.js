@@ -76,7 +76,7 @@
   /* The trip colours, read by the board, the editor and the bar menu. `value`
      is what `trips.trip_bar_color` stores and `hue` is the `scheduler-bar--*`
      class that paints it. Amber is the office's placeholder, a trip not yet
-     quoted, and its bar draws no marks.
+     quoted, and its bar is never marked as the wrong bus.
 
      Retired names are mapped on read and never rewritten, as rux-ui does:
      orange and yellow paint as amber, cyan as teal. */
@@ -425,7 +425,7 @@
     'return_start_date', 'return_end_date', 'departure_time', 'return_time',
     'trip_type', 'confirmed', 'trip_bar_color', 'bus_count', 'return_bus_count',
     'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'notes', 'updated_at',
-    // What the trip needs, for the bar's marks: the list the office keeps,
+    // What the trip needs, for its card and the bus fit: the list the office keeps,
     // with the older columns behind it for a trip saved before it existed.
     'trip_reqs', 'need_fuel_card',
     // The vehicle the trip needs, `Coach` or `Van`; null is any.
@@ -768,6 +768,9 @@
   }
 
   // -- drawing --------------------------------------------------------------
+  /* What each bar knows about its bus and its trip's needs, for the trip's card:
+     `{ needs, misfits }`, set as the bar is drawn. */
+  const barFacts = new WeakMap();
   const addRow = (bar, cls, ...parts) => {
     const r = el('div', `scheduler-bar__row ${cls}`);
     for (const p of parts) if (p != null) r.appendChild(p);
@@ -793,59 +796,6 @@
     for (const r of rows) r.classList.remove('scheduler-bar__time--short');
     const narrow = rows.filter(r => r.clientWidth && r.firstElementChild.scrollWidth > r.clientWidth);
     for (const r of narrow) r.classList.add('scheduler-bar__time--short');
-  }
-
-  /* How many marks a bar draws. A mark is a square the height of a row, and
-     the row it sits in is as wide as the day column, so the narrowest bar
-     holds five and a trip can raise seven. The ones past what fits would be
-     cut off by the row's own overflow, saying nothing; instead the last that
-     fits becomes a "+N" chip carrying the rest, so the bar still counts what
-     is pending. Rows are all reset, then all read, then all set, as
-     `fitTimes` does. */
-  function fitMarks() {
-    // The bars' own boxes; the docked sheet's copy of a bar has room for them all.
-    const boxes = [...gridEl.querySelectorAll('.scheduler-bar .scheduler-bar__warn')];
-    // Reset: every mark back, every count away.
-    for (const box of boxes) {
-      for (const chip of box.children) chip.hidden = chip.classList.contains('scheduler-bar__warn-more');
-    }
-    /* Read. A chip and the gaps around it are the same on every bar, so one
-       drawn chip is measured and every other bar counted from it. Drawn is
-       what the probe insists on: the copy on the destination row is there in
-       every bar and shown in none of them until the notes row is turned off,
-       and a box nobody draws measures nothing. */
-    const probe = boxes.find(b => b.getBoundingClientRect().width);
-    if (!probe) return;
-    const chipW = probe.firstElementChild.getBoundingClientRect().width;
-    const gap = parseFloat(getComputedStyle(probe).columnGap) || 0;
-    const rowGap = parseFloat(getComputedStyle(probe.parentElement).columnGap) || 0;
-    const plans = boxes.map(box => {
-      const row = box.parentElement;
-      if (!box.getBoundingClientRect().width) return null;
-      /* What the row leaves once everything before the marks has given way to
-         nothing: its width, less the gap each of those still takes, less the
-         leg reference, which is `flex: none` and so gives way to nothing. */
-      const ref = row.querySelector('.scheduler-bar__ref');
-      /* And less what the box holds clear at its end, which is app.css keeping
-         the marks inside the trip's first day and differs with the bar's span.
-         It is read per box for that reason, not once from the probe. */
-      const kept = parseFloat(getComputedStyle(box).marginInlineEnd) || 0;
-      const room = row.clientWidth - kept - [...row.children].indexOf(box) * rowGap
-        - (ref ? ref.getBoundingClientRect().width : 0);
-      const total = box.children.length - 1;
-      const fits = Math.floor((room + gap) / (chipW + gap));
-      return fits < total ? { box, total, show: Math.max(1, fits) } : null;
-    });
-    // Set.
-    for (const p of plans) {
-      if (!p) continue;
-      const chips = [...p.box.children];
-      for (let i = p.show - 1; i < p.total; i++) chips[i].hidden = true;
-      const more = chips[p.total];
-      more.hidden = false;
-      more.textContent = `+${p.total - p.show + 1}`;
-      more.title = chips.slice(p.show - 1, p.total).map(c => c.title).join(', ');
-    }
   }
 
   // The trip's documents labelled Itinerary, newest first. The first is the one
@@ -1015,105 +965,48 @@
     bar.style.setProperty('--scheduler-lane', b.lane);
 
     /* A PLACEHOLDER IS NOT A TRIP YET: the office paints amber on a trip that
-       has not been quoted. Nothing is due on it, so its bar draws no marks, no
-       empty seat and no missing bus; a driver someone has named still shows. */
+       has not been quoted. Nothing is due on it, so its bar is never the wrong
+       bus and draws no empty seat and no missing bus; a driver someone has named
+       still shows. */
     const placeholder = tripColorOf(trip) === 'amber';
 
     const count = leg.count || 1;
     const ref = [leg.leg === 'return' ? 'Return' : '', count > 1 ? `${slot + 1} of ${count}` : '']
       .filter(Boolean).join(' · ');
 
-    /* THE MARKS COME IN TWO GROUPS: what is still to be done, then what the
-       trip needs. Within each they keep a fixed order -- the office's own list
-       for the needs -- so a mark is in the same place on every bar and the eye
-       learns where to look, which grouping buys at the cost of the old
-       arrangement by urgency. A narrow bar still drops from the end, so what it
-       drops is a need rather than a job. */
-    const pending = [];
-    // Where a confirmed trip's money stands, bus or no bus: the one mark on
-    // this bar that is about the booking rather than the vehicle.
-    const owed = paymentMark(trip);
-    if (owed) pending.push(owed);
-    /* A missing itinerary is flagged the same way, bus or no bus, as rux-ui's
-       Pending itinerary is: no document labelled Itinerary, and the trip not
-       marked as not needing one. */
-    if (!itinerary && !trip.itinerary_not_needed) pending.push({ href: '#m-attachment-fill', label: 'No itinerary yet' });
-    /* And the day-of contact the same way: nobody to call on the day, and the
-       trip not marked as needing no one. Any of the five counts, since the
-       warning is that the list is empty, not that the first slot is. */
-    const dayOf = [1, 2, 3, 4, 5].some(n => tripContact(trip, n));
-    if (!dayOf && !trip.contact_not_needed) pending.push({ href: '#m-call-fill', label: 'No day-of contact' });
-
+    /* WHETHER THIS BUS FITS THIS TRIP, and what the trip needs. The bar draws
+       no marks: what is still to be done is the reminder's to ask, and the
+       needs are read on the trip's card, which `barFacts` hands them to. Only a
+       bus that does not fit shows on the bar itself, as a red edge, since that
+       is a mistake to put right rather than a job still to come: the wrong type
+       of bus, or one that falls short of a need. A placeholder has neither. */
     const bus = assign?.bus_id != null ? busesById.get(assign.bus_id) : null;
-    /* EVERY REQUIREMENT THE TRIP CARRIES GETS ONE MARK, and its colour says
-       whether this bus meets it: the warning fill where it falls short, the
-       bar's own colour otherwise. Only the failing ones used to be drawn, so a
-       trip that needed a sleeper and had one said nothing at all; one mark
-       either way is one rule for the whole family, and the hotel already read
-       this way on its own. They keep the office's order whether they are met
-       or not, so a need does not move about as a bus changes.
-
-       The wrong bus leads them: it is the same kind of thing as a need this
-       bus falls short of, not a job somebody has to go and do. */
     const wrong = bus ? wrongType(trip.vehicle_type, bus) : null;
-    const needs = requirementsOf(trip).map(id => {
-      const missing = shortfall(id, bus);
-      /* The hotel is the one a bus cannot answer for: it is booked or it is
-         not, per leg, and the trip says which. */
+    /* Every need the trip carries, in the office's order, and whether this bus
+       meets it. The hotel is the one a bus cannot answer for: it is booked or
+       it is not, per leg, and the trip says which. */
+    const needs = placeholder ? [] : requirementsOf(trip).map(id => {
+      const name = id === 'hotel' ? (REQUIREMENTS.hotel?.label || 'Hotel') : requirementLabel(id);
       if (id === 'hotel') {
         const booked = !!trip[`hotel_booked_${leg.leg}`];
-        return { id, href: REQUIREMENTS.hotel?.icon, label: booked ? 'Hotel booked' : 'Hotel not booked', done: booked };
+        return { id, href: REQUIREMENTS.hotel?.icon, name, label: booked ? 'Hotel booked' : 'Hotel not booked', done: booked };
       }
+      const missing = shortfall(id, bus);
       return {
         id,
         href: requirementIcon(id),
-        letter: requirementIcon(id) ? null : requirementLabel(id).trim().charAt(0).toUpperCase(),
-        label: missing || requirementLabel(id),
+        letter: requirementIcon(id) ? null : name.trim().charAt(0).toUpperCase(),
+        name,
+        label: missing || name,
         done: !missing,
+        short: !!missing,
       };
     });
-    const marks = placeholder ? [] : [
-      ...pending,
-      ...(wrong ? [{ href: '#m-directions_bus-fill', label: wrong }] : []),
-      ...needs,
-    ];
-    /* Drawn on the notes row and again on the destination row; app.css shows
-       the second only while the notes row is turned off, so hiding a row never
-       hides the warning. The notes row rather than the drivers row because a
-       note gives way with an ellipsis and a crew gives way a whole name at a
-       time: on the narrowest bar the marks cost the end of a sentence instead
-       of every driver's name. The bar's label carries them for a screen
-       reader, whole and in every width. */
-    const TONES = ['error', 'success'];
-    const warn = where => {
-      if (!marks.length) return null;
-      const box = el('span', `scheduler-bar__warn scheduler-bar__warn--${where}`);
-      for (const w of marks) {
-        // A chip is the warning colour unless it says otherwise: `done` drops
-        // the fill, and the payment mark asks for red or green by its rung.
-        const tone = w.done ? 'done' : TONES.includes(w.tone) ? w.tone : null;
-        const chip = el('span', `scheduler-bar__warn-chip${tone ? ` scheduler-bar__warn-chip--${tone}` : ''}`);
-        chip.title = w.label;
-        // A requirement Design has no glyph for wears its initial instead, in
-        // the same square. The name is on hover and in the bar's own label.
-        if (w.href) {
-          chip.appendChild(svgUse(w.href, '16', '0 0 32 32'));
-        } else {
-          chip.classList.add('scheduler-bar__warn-chip--letter');
-          chip.append(w.letter || '?');
-        }
-        box.appendChild(chip);
-      }
-      /* The count that stands for the marks a narrow bar has no room for.
-         `fitMarks` fills it in, and leaves it hidden on a bar that holds them
-         all. It is last, so the marks before it keep their own places. */
-      const more = el('span', 'scheduler-bar__warn-chip scheduler-bar__warn-more');
-      more.hidden = true;
-      box.appendChild(more);
-      return box;
-    };
+    const misfits = placeholder ? [] : [wrong, ...needs.filter(n => n.short).map(n => n.label)].filter(Boolean);
+    barFacts.set(bar, { needs, misfits });
+    bar.classList.toggle('scheduler-bar--misfit', misfits.length > 0);
 
-    addRow(bar, 'scheduler-bar__dest', el('span', null, trip.destination || 'No destination'), ref ? el('span', 'scheduler-bar__ref', ref) : null, warn('dest'));
+    addRow(bar, 'scheduler-bar__dest', el('span', null, trip.destination || 'No destination'), ref ? el('span', 'scheduler-bar__ref', ref) : null);
     addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
 
     // The booking contact as the trip records it. When both do not fit, the
@@ -1154,14 +1047,11 @@
     const when = times(false), whenShort = times(true);
     addRow(bar, 'scheduler-bar__time', when, whenShort, whenDep);
 
-    // The marks alone: the trip's note is read on its card, pinned first.
-    addRow(bar, 'scheduler-bar__notes', warn('notes'));
-
     /* The Updates mark, in the bar's bottom corner at the drivers row's end: a
        filled bubble once the trip has updates, its outline with none, and the
        warning colour when it asks for a follow-up. A mark, not a button,
        because the bar is the button. A copy rides the destination row, shown
-       only while the drivers row is turned off, as the warning marks do. */
+       only while the drivers row is turned off. */
     const asks = asksFollowUp(trip);
     const talked = updatesOf(trip).length > 0;
     const msg = where => {
@@ -1191,7 +1081,7 @@
       place.toNext ? 'continues into the next week' : null,
       trip.confirmed === false ? 'unconfirmed' : null,
       ...crew.map(crewText),
-      ...marks.map(w => w.label),
+      ...misfits,
       asks ? 'needs a follow-up' : null,
     ].filter(Boolean).join(', '));
     return bar;
@@ -1473,7 +1363,7 @@
 
     // The notice above changes how much height is left for the grid. app.js
     // owns that sum, so this asks it to refit.
-    window.Rux?.schedule?.fit?.();    fitTimes();    fitMarks();
+    window.Rux?.schedule?.fit?.();    fitTimes();
   }
 
   /* ── Moving a trip to another bus ──
@@ -4397,7 +4287,7 @@
   /* The billing rules, `billing.js`: the workflow the `billing-workflow-v1`
      row sets, the status ladder, and where a saved trip's money stands. */
   const { setWorkflow: setBillingWorkflow, stepOn, status: billingStatus, confirmRungOf, confirmsTrip,
-    contractSignedOf, poReceivedOf, invoicedOf, of: billingOf } = window.SchedulerBilling;
+    contractSignedOf, poReceivedOf, invoicedOf } = window.SchedulerBilling;
 
   /* The open editor's billing as it stands: the status, whether it confirms
      the trip, and whether the payments reach the quote, with the latest
@@ -4428,33 +4318,6 @@
     return { confirmed: b.confirmed, balance_paid: b.fullyPaid, date_paid: b.datePaid };
   }
 
-
-  /* The bar's payment mark, rux-ui's billing marks in one glyph the colour
-     carries: red while nothing stands against the quote, amber while what does
-     is the wrong amount, short or over, and green once the money is in. A PO
-     that covers the balance shows nothing, because the trip is authorised and
-     the payment is simply still to come. A trip with no quoted price has no
-     coverage to judge and shows no mark either.
-
-     An unconfirmed trip shows none at all. There is no contract behind it yet,
-     so no purchase order and no payment is the state it is supposed to be in,
-     and a mark saying so on every such bar marks nothing. The bar's own colour
-     already says unconfirmed, and the Billing tab says the rest. */
-  function paymentMark(trip) {
-    if (trip.confirmed === false) return null;
-    const { price, paid, poAmount, remaining, rung, datePaid } = billingOf(trip);
-    if (price <= 0) return null;
-    const mark = (label, tone) => ({ href: '#m-paid-fill', label, tone });
-    if (rung === 'pending') return mark('No purchase order or payment yet', 'error');
-    if (rung === 'contract_signed') return mark('No purchase order yet', 'error');
-    if (rung === 'po_partial') return mark(`Purchase order covers ${usd(poAmount)} of ${usd(remaining)}`, 'warning');
-    if (rung === 'deposit_received' && remaining > 0) {
-      return mark(`${usd(remaining)} not covered by a payment or purchase order`, 'warning');
-    }
-    if (rung === 'overpaid') return mark(`Paid ${usd(paid - price)} over the quote`, 'warning');
-    if (rung === 'paid_full') return mark(datePaid ? `Paid in full ${mdy(datePaid)}` : 'Paid in full', 'success');
-    return null;
-  }
 
   /* The follow-up rules, `follow-up.js`: what a trip waits on, how long it
      has been quiet, whether it asks, and the reminders dismissed here. */
@@ -7774,9 +7637,9 @@
      changed width -- the editor opening beside it, the window resized, the
      compact board taking over -- has to place them again, or a shrunken bar
      keeps a face it can no longer hold and a grown one never gets its. */
-  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); markEditorBars(); fitTimes(); fitMarks(); presenceDraw(); })).observe(gridEl);
+  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); markEditorBars(); fitTimes(); presenceDraw(); })).observe(gridEl);
   // A web font that arrives after the first render changes every time's width.
-  document.fonts?.ready.then(() => { fitTimes(); fitMarks(); });
+  document.fonts?.ready.then(() => { fitTimes(); });
   /* The shortcut bar scrolls with its trip, but which side of the trip it fits
      on changes as the board scrolls under the sticky day band, so it is placed
      again. Close trip is a tab on its bar and needs nothing. */
@@ -7956,16 +7819,15 @@
      rather than blanking it: `--scheduler-bar-rows` is the count, so the bar
      shrinks and more buses fit. Saved in `localStorage` and read with a
      try-catch, so a browser that refuses storage gets the defaults. */
-  const VIEW_ROWS = ['client', 'contact', 'time', 'notes', 'drivers'];
+  const VIEW_ROWS = ['client', 'contact', 'time', 'drivers'];
   // The class that hides each row, written out in full so the check can read it.
   const HIDE_ROW = {
     client: 'scheduler-week--no-client',
     contact: 'scheduler-week--no-contact',
     time: 'scheduler-week--no-time',
-    notes: 'scheduler-week--no-notes',
     drivers: 'scheduler-week--no-drivers',
   };
-  const view = { client: true, contact: true, time: true, notes: true, drivers: true, sunday: false, equipment: false, twoWeeks: false };
+  const view = { client: true, contact: true, time: true, drivers: true, sunday: false, equipment: false, twoWeeks: false };
   const VIEW_KEY = 'scheduler.view';
 
   try {
@@ -7996,11 +7858,9 @@
     // One for the destination, which never goes, plus whatever is left on.
     schEl.style.setProperty('--scheduler-bar-rows', String(1 + VIEW_ROWS.filter(r => view[r]).length));
     // The bars change height and lane, which the scroll pane may not report as
-    // a resize, so the trip tabs follow here. Turning the notes row off moves
-    // the marks to the destination row, which has its own room for them.
+    // a resize, so the trip tabs follow here.
     placeBarOpen();
     markEditorBars();
-    fitMarks();
     for (const item of viewMenu?.querySelectorAll('[role="menuitemcheckbox"]') || []) {
       const key = item.dataset.row || item.dataset.view;
       const on = !!view[key];
@@ -10468,17 +10328,7 @@
     head.className = ['scheduler-bar-shortcuts__trip',
       ...[...bar.classList].filter(c => c.startsWith('scheduler-bar--'))].join(' ');
     head.replaceChildren(...[...bar.children].map(node => node.cloneNode(true)));
-    /* The sheet has the room a block had not, and a phone has no hover: every
-       mark shows, each with its name beside it, and the phone number dials. */
-    for (const box of head.querySelectorAll('.scheduler-bar__warn')) {
-      for (const chip of [...box.children]) {
-        if (chip.classList.contains('scheduler-bar__warn-more')) { chip.remove(); continue; }
-        chip.hidden = false;
-        const pair = el('span', 'scheduler-bar__warn-pair');
-        chip.replaceWith(pair);
-        pair.append(chip, el('span', 'scheduler-bar__warn-word', chip.title));
-      }
-    }
+    // A phone has the dialler the bar has not: the number calls.
     for (const phone of head.querySelectorAll('.scheduler-bar__phone')) {
       const call = el('a', 'scheduler-bar__phone scheduler-bar__phone--call', phone.textContent);
       call.href = `tel:${phone.textContent.replace(/[^\d+]/g, '')}`;
@@ -10538,7 +10388,8 @@
     const carded = !!trip && !isEditorBar(bar);
     const key = [bar.dataset.tripId, bar.dataset.leg, bar.dataset.itineraryId,
       bar.dataset.assignmentId, bar.dataset.busId, bar.dataset.needHotel,
-      bar.dataset.hotelBooked, isEditorBar(bar), slots.join(), cardKey(trip)].join('|');
+      bar.dataset.hotelBooked, isEditorBar(bar), slots.join(), cardKey(trip),
+      JSON.stringify(barFacts.get(bar) ?? null)].join('|');
     // The same slots on the same bar are left alone, so a focused slot keeps focus.
     // The slots are counted rather than every child, because the docked bar
     // carries the trip's rows ahead of them.
@@ -10567,7 +10418,7 @@
       btn.append(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '16', '0 0 32 32'),
         el('span', 'scheduler-bar-shortcut__label', action.short_for ? action.short_for(bar) : action.short));
       return btn;
-    }), ...(carded ? [drawCard(trip)] : []));
+    }), ...(carded ? [drawCard(trip, bar)] : []));
     barShortcuts.toggleAttribute('data-card', carded);
   }
 
@@ -10586,8 +10437,9 @@
       whenSafe(() => { openRef(ref); requestAnimationFrame(toBox); });
     } };
 
-  /* THE CARD'S ROWS, as the shortcut bar draws them under its slots: the
-     reminder while the trip asks for a follow-up, then two parts under their
+  /* THE CARD'S ROWS, as the shortcut bar draws them under its slots: a red
+     band while this bar's bus does not fit the trip, the reminder while the
+     trip asks for a follow-up, then two parts under their
      own headings, the pin and the bubble the bar's updates mark wears: the
      trip's notes, shaded, or a heading that says none in one line, and
      the updates with their count, newest first with who
@@ -10612,9 +10464,13 @@
   client?.from('profiles').select('id,user_id,display_name,photo_path,avatar_color').then(r => {
     if (!r.error) staffFaces = new Map((r.data || []).map(p => [p.user_id, p]));
   });
-  const cardKey = trip => (trip ? JSON.stringify([trip.notes, asksFollowUp(trip), waitsOf(trip),
+  /* The trip's day-of contact: the first of the five slots that holds anyone,
+     or null. The card says whether there is one, and who. */
+  const dayOfContact = trip => [1, 2, 3, 4, 5].map(n => tripContact(trip, n)).find(Boolean) ?? null;
+  const cardKey = trip => (trip ? JSON.stringify([trip.notes, asksFollowUp(trip), waitsOf(trip), dayOfContact(trip),
+    !!trip.contact_not_needed,
     (trip.trip_updates || []).map(u => u.id).sort(), agoShort(quietSince(trip) || Date.now())]) : '');
-  function drawCard(trip) {
+  function drawCard(trip, bar) {
     const card = el('div', 'scheduler-card');
     card.dataset.tripId = trip.id;
     let i = 0;
@@ -10623,6 +10479,14 @@
       r.style.setProperty('--i', String(i++));
       return r;
     };
+    /* A bus that does not fit this trip leads, in red and with no dismiss: it
+       is a mistake on the board, and it goes when the bus is changed. */
+    const facts = bar ? barFacts.get(bar) : null;
+    if (facts?.misfits.length) {
+      const band = row('scheduler-card__misfit');
+      band.append(svgUse('#m-warning-fill', '16', '0 0 32 32'), el('strong', null, facts.misfits.join('; ')));
+      card.appendChild(band);
+    }
     if (asksFollowUp(trip)) {
       const band = row('scheduler-card__asks');
       const hours = window.SchedulerFollowUp.setting.snoozeHours;
@@ -10639,12 +10503,38 @@
     }
     const notesHead = row(`scheduler-card__head scheduler-card__head--notes${trip.notes ? '' : ' scheduler-card__head--alone'}`);
     notesHead.append(svgUse('#m-keep', '16', '0 0 32 32'), el('span', null, 'Notes'));
+    if (!trip.notes) notesHead.appendChild(el('span', 'scheduler-card__count', '· none'));
+    /* At the heading's end, what the trip needs and who to call on the day.
+       Each need is its glyph, red where this bus falls short and in the warning
+       colour for a hotel still to book, its name on hover and written beside
+       it on the docked sheet, where a phone has no hover. The day-of contact
+       dials; with none, and the trip not marked as needing none, it says so. */
+    const side = el('span', 'scheduler-card__facts');
+    for (const n of facts?.needs ?? []) {
+      const need = el('span', `scheduler-card__need${n.short ? ' scheduler-card__need--short' : n.done ? '' : ' scheduler-card__need--todo'}`);
+      need.title = n.label;
+      need.append(n.href ? svgUse(n.href, '16', '0 0 32 32') : el('span', 'scheduler-card__need-letter', n.letter || '?'),
+        el('span', 'scheduler-card__need-name', n.name));
+      side.appendChild(need);
+    }
+    const contact = dayOfContact(trip);
+    if (contact) {
+      const who = el(contact.phone ? 'a' : 'span', 'scheduler-card__dayof', contact.name);
+      if (contact.phone) who.href = `tel:${String(contact.phone).replace(/[^\d+]/g, '')}`;
+      who.title = ['Day-of contact', contact.name, contact.phone ? showPhone(contact.phone) : null].filter(Boolean).join(' · ');
+      who.prepend(svgUse('#m-call-fill', '16', '0 0 32 32'));
+      side.appendChild(who);
+    } else if (!trip.contact_not_needed) {
+      const none = el('span', 'scheduler-card__dayof scheduler-card__dayof--none', 'No day-of contact');
+      none.prepend(svgUse('#m-call-fill', '16', '0 0 32 32'));
+      side.appendChild(none);
+    }
+    if (side.childElementCount) notesHead.appendChild(side);
     if (trip.notes) {
       const note = row('scheduler-card__note');
       note.appendChild(el('span', null, trip.notes));
       card.append(notesHead, note);
     } else {
-      notesHead.appendChild(el('span', 'scheduler-card__count', '· none'));
       card.appendChild(notesHead);
     }
     const updates = updatesOf(trip);

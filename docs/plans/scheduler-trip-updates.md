@@ -41,13 +41,12 @@ standing facts about the trip. No note in the table contains a newline.
   update, so a skipped prompt never makes a trip look freshly followed up.
 - **Standing facts stay in Notes,** undated and never prompted: a gate code, a
   shuttle, which driver runs which route.
-- **The bar's notes row goes;** that row holds the pending and requirement
-  icons, the view menu calls it Status icons, and the note is read on the
-  card. The bar carries a small speech-bubble icon at the drivers row's end,
-  its bottom corner, and the names give way to it. With the drivers row
-  hidden from the view menu, the icon moves up as the warning marks do. It is
-  a mark, not a button, because the bar is the button: Enter and Space select
-  a bar as a click does, and Escape lets it go.
+- **The bar has no notes row;** the note is read on the card. The bar
+  carries a small speech-bubble icon at the drivers row's end, its bottom
+  corner, and the names give way to it. With the drivers row hidden from the
+  view menu, the icon moves up to the destination row. It is a mark, not a
+  button, because the bar is the button: Enter and Space select a bar as a
+  click does, and Escape lets it go.
 - **The icon says who needs a follow-up.** A trip is waiting on the customer
   while it is not confirmed, its PO or deposit is pending, its itinerary is
   missing, or its balance is unpaid within two weeks of leaving; once it has

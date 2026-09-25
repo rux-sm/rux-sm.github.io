@@ -2156,8 +2156,8 @@ button.scheduler-row-head__num::after {
   /* Docked, it is a sheet across the foot of the screen rather than a chip
      floating over one trip, so it takes the page's own raised surface in place
      of Carbon's inverse one: that surface is for a tooltip's 40px, and a 150px
-     slab of it reads as another app's. The trip's colour stays as the stripe,
-     which is what says which trip this is. */
+     slab of it reads as another app's. The trip's head wears the trip's own
+     colour, which is what says which trip this is. */
   background: var(--rux-layer-02);
   border-block-start: 1px solid var(--rux-border-subtle-01);
   /* The head takes a whole line and the slots flow beneath it, which spares
@@ -2169,37 +2169,56 @@ button.scheduler-row-head__num::after {
 }
 /* No arrow: from the bottom edge it points at nothing. */
 .scheduler-bar-shortcuts[data-docked]::after { content: none; }
-/* Its writing and its slots take the ink of the surface they now sit on, and
-   the ring and the hover with them. */
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcuts__trip { color: var(--rux-text-primary); }
+/* Its slots take the ink of the surface they now sit on, and the ring and the
+   hover with them. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut { color: var(--rux-icon-primary); }
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut:hover { background: var(--rux-layer-hover-02); }
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut:focus-visible { outline-color: var(--rux-focus); }
-/* The slots share the width rather than sitting in a clump at one end, and
-   take the 48px token, which is what a phone asks of a target and what the
+/* The slots share the width rather than sitting in a clump at one end, at
+   least the 48px token, which is what a phone asks of a target and what the
    block above them already is. The height is set on the slot and never on
    `--scheduler-slot-w`: in compact that token is also the day column's floor,
-   and widening the week to suit a button would be the tail wagging the dog. */
+   and widening the week to suit a button would be the tail wagging the dog.
+   They come last, under the trip and its card, where a thumb rests, and each
+   carries its word under its icon, because a phone has no hover to name it. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut {
-  flex: 1 1 auto;
-  block-size: var(--rux-layout-size-height-lg);
+  /* A basis of the target size, not zero, so they cannot squeeze in beside
+     the full-width card and wrap to a line of their own, where they share it
+     equally. */
+  flex: 1 1 var(--rux-layout-size-height-lg);
+  order: 1;
+  flex-direction: column;
+  gap: var(--rux-spacing-01);
+  min-inline-size: 0;
+  block-size: auto;
+  min-block-size: var(--rux-layout-size-height-lg);
+  padding-block: var(--rux-spacing-03);
+  border-block-start: 1px solid var(--rux-border-subtle-02);
 }
-/* The trip, above its slots: the bar's own rows, cloned, so they keep one
-   builder and one set of rules. The trip's colour comes with them as the
-   bar's colour class, which this stripe reads. */
+.scheduler-bar-shortcut__label { display: none; }
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut__label {
+  display: block;
+  max-inline-size: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+/* Under the head, the card's first row needs no rule: the head's fill parts them. */
+.scheduler-bar-shortcuts[data-docked] .scheduler-card > :first-child { border-block-start: 0; }
+/* The trip, at the top of the sheet: the bar's own rows, cloned, so they keep
+   one builder and one set of rules. The trip's colour comes with them as the
+   bar's colour class, and the head paints its fill and ink, so it reads as
+   the whole bar the block on the board stands for. */
 .scheduler-bar-shortcuts__trip {
   flex: 1 0 100%;
   min-inline-size: 0;
-  padding: var(--rux-spacing-03) var(--rux-spacing-05);
-  /* A rule between what is read and what is tapped, as Carbon parts a panel's
-     content from its actions and as every other band in geist is parted. It is
-     `border-subtle-02` because the sheet is layer two, and the divider takes
-     the level of the surface it is drawn on; `-01` is the edge against the
-     board, which is layer one. The 16px above it gives the last row room. */
-  border-block-end: 1px solid var(--rux-border-subtle-02);
-  padding-block-end: var(--rux-spacing-05);
-  border-inline-start: var(--rux-spacing-02) solid var(--scheduler-bg, transparent);
-  color: var(--rux-text-inverse);
+  padding: var(--rux-spacing-03) var(--rux-spacing-05) var(--rux-spacing-05);
+  background: var(--scheduler-bg);
+  color: var(--scheduler-fg);
   font-size: var(--scheduler-fs);
   letter-spacing: var(--scheduler-ls);
   line-height: var(--scheduler-row-h);

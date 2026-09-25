@@ -10363,48 +10363,51 @@
     driver: bar => (isEditorTrip(bar) ? 'Change the driver in the editor' : null),
   };
 
+  /* `short` is the word under the slot on the docked sheet, where a phone has
+     no hover to show the name; `short_for` changes it with `label_for`. */
   const SHORTCUT_ACTIONS = [
     /* Slot 1 works the editor both ways: it opens the trip, and on the very bar
        the editor holds it closes it. That is what the tab down the bar's start
        edge used to do, without taking any of the bar's writing. */
     { id: 'open', label: 'Open trip', icon: '#m-open_in_new',
       label_for: bar => (isEditorBar(bar) ? 'Close trip' : 'Open trip'),
+      short: 'Open', short_for: bar => (isEditorBar(bar) ? 'Close' : 'Open'),
       icon_for: bar => (isEditorBar(bar) ? '#m-close' : '#m-open_in_new'),
       blocked: () => null,
       run: bar => (isEditorBar(bar) ? whenSafe(() => closePanel()) : openSelected()) },
     // Opens the itinerary, or uploads one on a trip that has none, as the
     // right-click menu swaps the two.
-    { id: 'itinerary', label: 'Open or upload itinerary', icon: '#m-attachment',
+    { id: 'itinerary', label: 'Open or upload itinerary', icon: '#m-attachment', short: 'Itinerary',
       label_for: bar => (bar.dataset.itineraryId ? 'Open itinerary' : 'Upload itinerary'),
       icon_for: bar => (bar.dataset.itineraryId ? '#m-attachment' : '#m-upload'),
       blocked: bar => (bar.dataset.itineraryId || client ? null : 'No itinerary yet'),
       run: bar => (bar.dataset.itineraryId ? openItinerary(bar)
         : pickFile(file => uploadFrom(bar.dataset.tripId, 'Itinerary', file))) },
     // The forms, each with the Forms page's own icon, and the list of them all.
-    { id: 'envelope', label: 'Driver envelope', icon: '#m-mail',
+    { id: 'envelope', label: 'Driver envelope', icon: '#m-mail', short: 'Envelope',
       blocked: bar => (!bar.dataset.assignmentId ? 'Not on a bus'
         : !barHasCrew(bar) ? 'No driver on this bus' : null),
       run: bar => openEnvelope(bar) },
-    { id: 'driver_itinerary', label: 'Driver itinerary', icon: '#m-route',
+    { id: 'driver_itinerary', label: 'Driver itinerary', icon: '#m-route', short: 'Driver sheet',
       blocked: () => null, run: bar => openDriverItinerary(bar) },
-    { id: 'quote', label: 'Customer quote', icon: '#m-request_quote',
+    { id: 'quote', label: 'Customer quote', icon: '#m-request_quote', short: 'Quote',
       blocked: () => null, run: bar => openQuote(bar) },
-    { id: 'forms', label: 'All forms', icon: '#m-description',
+    { id: 'forms', label: 'All forms', icon: '#m-description', short: 'Forms',
       blocked: () => null, run: bar => openForms(bar) },
-    { id: 'assign', label: 'Assign driver', icon: '#m-person-fill',
+    { id: 'assign', label: 'Assign driver', icon: '#m-person-fill', short: 'Driver',
       label_for: bar => (barSeat(bar)?.seat?.driver_id != null ? 'Change driver' : 'Assign driver'),
       blocked: bar => (!client ? 'Not signed in' : !barSeat(bar)?.range ? 'Not on a bus' : EDITOR_HAS.driver(bar)),
       run: (bar, slot) => openAssignFrom(bar, slot) },
-    { id: 'color', label: 'Color', icon: '#m-palette',
+    { id: 'color', label: 'Color', icon: '#m-palette', short: 'Color',
       blocked: bar => EDITOR_HAS.color(bar), run: (bar, slot) => openColorFrom(bar, slot) },
-    { id: 'hotel', label: 'Mark hotel booked', icon: '#m-apartment',
+    { id: 'hotel', label: 'Mark hotel booked', icon: '#m-apartment', short: 'Hotel',
       label_for: bar => (bar.dataset.hotelBooked ? 'Mark hotel not booked' : 'Mark hotel booked'),
       blocked: bar => (!bar.dataset.needHotel ? 'No hotel on this trip' : EDITOR_HAS.hotel(bar)),
       run: bar => markHotel(bar) },
-    { id: 'unassign', label: 'Take off this bus', icon: '#m-remove',
+    { id: 'unassign', label: 'Take off this bus', icon: '#m-remove', short: 'Take off',
       blocked: bar => (!bar.dataset.assignmentId || !bar.dataset.busId ? 'Not on a bus' : EDITOR_HAS.bus(bar)),
       run: bar => takeOffBus(bar) },
-    { id: 'cancel', label: 'Cancel trip…', icon: '#m-delete',
+    { id: 'cancel', label: 'Cancel trip…', icon: '#m-delete', short: 'Cancel',
       blocked: () => null, run: bar => openCancelModal(bar.dataset.tripId) },
   ];
   // How many actions follow Open trip, and so how many dropdowns Customize
@@ -10481,7 +10484,7 @@
         btn.classList.add('scheduler-bar-shortcut--empty');
         btn.setAttribute('aria-label', 'Add a shortcut');
         btn.title = 'Add a shortcut';
-        btn.appendChild(svgUse('#m-motion_photos_on', '16', '0 0 32 32'));
+        btn.append(svgUse('#m-motion_photos_on', '16', '0 0 32 32'), el('span', 'scheduler-bar-shortcut__label', 'Add'));
         return btn;
       }
       // Open trip and Mark hotel booked each say which way they act on this bar.
@@ -10491,7 +10494,8 @@
       btn.setAttribute('aria-label', label);
       btn.title = label;
       if (why) btn.setAttribute('aria-disabled', 'true');
-      btn.appendChild(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '16', '0 0 32 32'));
+      btn.append(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '16', '0 0 32 32'),
+        el('span', 'scheduler-bar-shortcut__label', action.short_for ? action.short_for(bar) : action.short));
       return btn;
     }), ...(carded ? [drawCard(trip)] : []));
     barShortcuts.toggleAttribute('data-card', carded);
@@ -10500,7 +10504,7 @@
   /* Add update opens the trip on its Updates tab with the box in hand; on the
      trip the editor already holds it goes straight to the tab. It is not one of the
      choices, because every trip has it. */
-  const ADD_UPDATE = { id: 'add_update', label: 'Add update', icon: '#m-add_comment', blocked: () => null,
+  const ADD_UPDATE = { id: 'add_update', label: 'Add update', short: 'Update', icon: '#m-add_comment', blocked: () => null,
     run: bar => {
       const toBox = () => {
         const tab = document.getElementById('scheduler-tab-updates');

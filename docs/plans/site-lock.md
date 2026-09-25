@@ -175,8 +175,6 @@ None open.
       `trip_driver_statuses`, and `confirm_trip_assignment` taking it beside
       the answer. rux-ui's page keeps working without sending it. Shown to rux
       before it runs; tested on PGlite first.
-- [ ] rux says yes to `driver_accepted_view`, shown in the session that
-      built the page and tested on PGlite, and it is applied.
 - [ ] Move the envelope form out of `print.js`'s page start-up, so the
       driver page can draw the driver's envelope, and add it there.
 - [ ] rux opens Driver view from a driver on the Drivers page, and a real

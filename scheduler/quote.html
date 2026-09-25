@@ -401,6 +401,35 @@
               </ul>
             </section>
 
+            <!-- Price by miles, drawn by quote.js at the saved rates, so the drop
+                 at 295 miles can be seen rather than read. -->
+            <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="scheduler-quote-chart-h">
+              <h2 class="rux--type-heading-03" id="scheduler-quote-chart-h">Price by miles</h2>
+              <div class="scheduler-quote-chart__controls">
+                <div class="rux--form-item">
+                  <div class="rux--select">
+                    <label class="rux--label" for="scheduler-quote-chart-days">Trip length</label>
+                    <div class="rux--select-input__wrapper">
+                      <select id="scheduler-quote-chart-days" class="rux--select-input">
+                        <option class="rux--select-option" value="1">1 day</option>
+                        <option class="rux--select-option" value="2">2 days</option>
+                        <option class="rux--select-option" value="3" selected>3 days</option>
+                        <option class="rux--select-option" value="4">4 days</option>
+                        <option class="rux--select-option" value="5">5 days</option>
+                      </select>
+                      <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg>
+                    </div>
+                  </div>
+                </div>
+                <ul class="scheduler-quote-chart__legend">
+                  <li><span class="scheduler-quote-chart__key scheduler-quote-chart__key--today"></span>Price today</li>
+                  <li><span class="scheduler-quote-chart__key scheduler-quote-chart__key--higher"></span>If it charged whichever is higher</li>
+                </ul>
+              </div>
+              <p class="scheduler-quote-chart__note" id="scheduler-quote-chart-note" aria-live="polite"></p>
+              <div class="scheduler-quote-chart" id="scheduler-quote-chart"></div>
+            </section>
+
             <section class="rux--data-table-container scheduler-quote-rules__table" aria-labelledby="scheduler-quote-quirks-h">
               <div class="rux--data-table-header">
                 <div>
@@ -460,6 +489,12 @@
                       <td><strong>No miles means no charge.</strong> A quote with no miles entered comes to $0 plus other charges.</td>
                       <td class="scheduler-quote-quirks__example" id="scheduler-quote-quirk-7"></td>
                       <td>Ask for miles instead of showing a price.</td>
+                    </tr>
+                    <tr>
+                      <td>8</td>
+                      <td><strong>Each 250 miles past 500 can lower the price.</strong> From 750 miles every 250 more adds half a free day, so a trip with extra days dips at 750, 1,000 and 1,250 miles.</td>
+                      <td class="scheduler-quote-quirks__example" id="scheduler-quote-quirk-8"></td>
+                      <td>Charge at least the price just under each step, or keep the dips as the free days working.</td>
                     </tr>
                   </tbody>
                 </table>

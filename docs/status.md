@@ -14,7 +14,7 @@ done and how.
 
 ## Scheduler
 
-- The quote calculator's seven spreadsheet quirks are kept until rux and the
+- The quote calculator's eight spreadsheet quirks are kept until rux and the
   manager decide them. The list is on the calculator's Rules tab.
 - The driver page, §4 of `scheduler/docs/screen-inventory.md`, is not built
   yet.

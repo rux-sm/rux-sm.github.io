@@ -209,7 +209,61 @@
     const half = spread(total, days).map(m => m / 2);
     return money.format(driverPay({ driver1: half, driver2: half, drivers: 2 }, rates).amount ?? 0);
   };
+  /* The Rules tab's chart: a trip's price by its total miles, for the chosen
+     number of days, beside what it would be if the quote charged whichever
+     is higher of the local days and the mileage price. An SVG built here,
+     every colour a token from app.css, so it follows the theme. */
+  const SVG = 'http://www.w3.org/2000/svg';
+  const CHART = { w: 640, h: 280, left: 64, right: 16, top: 12, bottom: 36, from: 100, to: 1400, step: 5 };
+  const svgEl = (name, attrs, text) => {
+    const node = document.createElementNS(SVG, name);
+    for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
+    if (text != null) node.textContent = text;
+    return node;
+  };
+  const whole = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+  const drawChart = rate => {
+    const host = $('scheduler-quote-chart');
+    const days = Number($('scheduler-quote-chart-days').value) || 3;
+    const today = m => tripQuote({ miles: spread(m, days), rate, dead: 0 }, rates).amount ?? 0;
+    const higher = m => Math.max(days * rates.trip_local_daily, today(m));
+    const miles = [];
+    for (let m = CHART.from; m <= CHART.to; m += CHART.step) miles.push(m);
+    const top = Math.max(1, ...miles.map(higher), ...miles.map(today));
+    // A y step of 1, 2 or 5 times a power of ten, about five of them.
+    const raw = top / 5, pow = 10 ** Math.floor(Math.log10(raw));
+    const yStep = [1, 2, 5, 10].map(n => n * pow).find(n => n >= raw);
+    const yMax = Math.ceil(top / yStep) * yStep;
+    const { w, h, left, right, top: pad, bottom } = CHART;
+    const x = m => left + (m - CHART.from) / (CHART.to - CHART.from) * (w - left - right);
+    const y = v => pad + (1 - v / yMax) * (h - pad - bottom);
+    const line = (fn, cls) => svgEl('polyline', { class: cls, points: miles.map(m => `${x(m).toFixed(1)},${y(fn(m)).toFixed(1)}`).join(' ') });
+
+    const svg = svgEl('svg', { viewBox: `0 0 ${w} ${h}`, role: 'img', 'aria-labelledby': 'scheduler-quote-chart-h scheduler-quote-chart-note' });
+    for (let v = 0; v <= yMax; v += yStep) {
+      svg.append(svgEl('line', { class: 'scheduler-quote-chart__grid', x1: left, x2: w - right, y1: y(v), y2: y(v) }),
+        svgEl('text', { class: 'scheduler-quote-chart__tick', x: left - 8, y: y(v) + 4, 'text-anchor': 'end' }, whole.format(v)));
+    }
+    for (let m = 200; m <= CHART.to; m += 200) {
+      svg.append(svgEl('text', { class: 'scheduler-quote-chart__tick', x: x(m), y: h - bottom + 18, 'text-anchor': 'middle' }, count.format(m)));
+    }
+    svg.append(svgEl('text', { class: 'scheduler-quote-chart__tick', x: w - right, y: h - 4, 'text-anchor': 'end' }, 'total miles'));
+    svg.append(svgEl('line', { class: 'scheduler-quote-chart__mark', x1: x(295), x2: x(295), y1: pad, y2: h - bottom }),
+      svgEl('text', { class: 'scheduler-quote-chart__tick', x: x(295) + 6, y: pad + 12 }, '295 mi'));
+    svg.append(line(higher, 'scheduler-quote-chart__higher'), line(today, 'scheduler-quote-chart__today'));
+    host.replaceChildren(svg);
+
+    const drop = today(294) - today(295);
+    const back = miles.find(m => m >= 295 && today(m) >= today(294));
+    $('scheduler-quote-chart-note').textContent = !rate ? 'Pick a mileage rate on the Calculator tab to draw the chart.'
+      : drop <= 0 ? `At ${plural(days, 'day', 'days')} the price does not drop at 295 miles.`
+      : `At ${plural(days, 'day', 'days')} the price drops ${whole.format(drop)} at 295 miles${back ? `, and is back to the 294-mile price by ${count.format(back)} miles` : ''}.`;
+  };
+  let chartRate = 0;
+
   const drawRules = rate => {
+    chartRate = rate;
+    drawChart(rate);
     $('scheduler-quote-rules-rate').textContent = rate ? `${money.format(rate)} a mile` : 'chosen';
     const meal = rates.driver_meal_daily;
     const example = [
@@ -221,6 +275,7 @@
       [['Quote, 800 mi', plural(tripFreeDays(800), 'free day', 'free days')], ['Driver pay, 800 mi', plural(driverFreeDays(800), 'free day', 'free days')]],
       [['Meals, 1 day', money.format(meal)], ['Meals, 3 days', money.format(meal * 3)]],
       [['No miles, $150 other', money.format(150)]],
+      [['749 mi, 3 days', priced(spread(749, 3), rate)], ['750 mi, 3 days', priced(spread(750, 3), rate)]],
     ];
     example.forEach((rows, i) => {
       $(`scheduler-quote-quirk-${i + 1}`).replaceChildren(...rows.map(([label, value]) => {
@@ -347,6 +402,7 @@
     };
 
     form.addEventListener('input', compute);
+    $('scheduler-quote-chart-days').addEventListener('change', () => drawChart(chartRate));
     form.addEventListener('change', compute);
     form.addEventListener('reset', () => setTimeout(() => {
       dayCount = 1;

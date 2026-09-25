@@ -2732,13 +2732,48 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-quote-rules__table { min-inline-size: 0; }
 .scheduler-quote-quirks { min-inline-size: 48rem; }
 .scheduler-quote-quirks td { vertical-align: top; }
-.scheduler-quote-quirks__example { min-inline-size: 15rem; }
 .scheduler-quote-quirks__line {
   display: flex;
   justify-content: space-between;
   gap: var(--rux-spacing-05);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
+
+/* The price-by-miles chart: today's price solid, the whichever-is-higher
+   price dashed under it, a rule at 295 miles. The legend's keys are the
+   lines' own strokes. */
+.scheduler-quote-chart__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--rux-spacing-05) var(--rux-spacing-07);
+}
+.scheduler-quote-chart__controls .rux--form-item { flex: 0 0 10rem; }
+.scheduler-quote-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--rux-spacing-03) var(--rux-spacing-06);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-label-01-font-size);
+  line-height: 2.5rem;
+}
+.scheduler-quote-chart__legend li { display: flex; align-items: center; gap: var(--rux-spacing-03); }
+.scheduler-quote-chart__key { inline-size: 1.5rem; border-block-start: 2px solid; }
+.scheduler-quote-chart__key--today { border-color: var(--rux-interactive); }
+.scheduler-quote-chart__key--higher { border-color: var(--rux-support-caution-major); border-block-start-style: dashed; }
+.scheduler-quote-chart__note { margin: 0; max-inline-size: 40rem; }
+.scheduler-quote-chart svg { display: block; inline-size: 100%; max-inline-size: 48rem; block-size: auto; }
+.scheduler-quote-chart__grid { stroke: var(--rux-border-subtle-01); stroke-width: 1; }
+.scheduler-quote-chart__mark { stroke: var(--rux-border-strong-01); stroke-width: 1; stroke-dasharray: 2 3; }
+.scheduler-quote-chart__tick { fill: var(--rux-text-secondary); font-size: 12px; font-variant-numeric: tabular-nums; }
+.scheduler-quote-chart__today,
+.scheduler-quote-chart__higher { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.scheduler-quote-chart__today { stroke: var(--rux-interactive); }
+.scheduler-quote-chart__higher { stroke: var(--rux-support-caution-major); stroke-dasharray: 6 4; }
 
 /* The rates page: the calculator's three tiles, the trip rates, the mileage
    rates and the driver pay, sharing one height. At md the mileage rates go

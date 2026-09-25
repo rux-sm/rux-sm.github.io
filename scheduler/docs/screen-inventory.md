@@ -43,7 +43,7 @@ Dropped: Documents, Game, the Samsara and Gallery links.
 | Request detail | keep | Panel with a Create draft trip button. |
 | Itinerary editor | later | App component, with the Itineraries view. |
 | Trip manifest | later | Passengers as a `table-page` section under the trip, edit in a modal. |
-| Trip finder results page | keep | `trips.html`, every trip in a data table with search, a Show choice and pagination; a row opens its trip on the board. Results in a data table on a page. The header search and Cmd-K exist. The header search finds cancelled trips too, tagged Cancelled; one opens a dialog with the date and reason and a Bring back button. Cancelling needs a typed reason. |
+| Trip finder results page | keep | `trips.html`, every trip in a data table with search, a Show choice and pagination; a row opens its trip on the board. Results in a data table on a page. The schedule's toolbar search, always open, and Cmd-K exist. It finds cancelled trips too, tagged Cancelled; one opens a dialog with the date and reason and a Bring back button. Cancelling needs a typed reason. |
 | Contact info, Driver week info | later | Modals with a text area and the copy button module. Sending marks each sent driver Pending response unless already confirmed or declined, as rux-ui does. |
 | Print schedule | later | An entry in `print.html`'s registry beside the driver envelope's, the driver itinerary's and the customer quote's, naming what it binds to and the paper it takes. |
 | Requirements editor | keep | Settings section; a contained list with an add row. Icons come from the rux sprite by a fixed name. |

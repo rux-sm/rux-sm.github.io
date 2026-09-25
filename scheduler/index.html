@@ -141,44 +141,10 @@
   <a class="rux--header__name" href="./"><img src="brand/logo-header.png" alt="Escamilla Tour Buses" style="height:1.25rem;width:auto;flex:none"></a>
 
   <!-- Global actions, in Carbon's order from the right: the switcher, then
-       account, with search furthest left so its field expands without moving
-       the others. Icon-only, so each has an aria-label. The theme control is
+       account. Icon-only, so each has an aria-label. The theme control is
        in the account panel, not here, because Carbon keeps these actions for
        system-level functions. -->
   <div class="rux--header__global">
-    <!-- Carbon's expandable search (components-search--expandable). It searches
-         every trip in the database that is not cancelled, not only the week on
-         screen. The magnifier is a role=button trigger and the input is
-         tabindex=-1 while collapsed; data.js moves the expanded class and both
-         attributes together. It is not a header__action, so js/ui-shell.js
-         does not claim it, and data.js opens the results. -->
-    <div class="scheduler-header-search">
-      <div class="rux--search rux--search--expandable rux--layout--size-lg" role="search" aria-labelledby="scheduler-search-label" id="scheduler-search">
-        <div class="rux--search-magnifier" role="button" tabindex="0" aria-expanded="false" aria-labelledby="scheduler-search-label" id="scheduler-search-trigger">
-          <svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-search"/></svg>
-        </div>
-        <label class="rux--label rux--visually-hidden" id="scheduler-search-label" for="scheduler-search-input">Search trips</label>
-        <!-- A combobox, not the capture's searchbox, because the field owns a
-             listbox of suggestions: the arrow keys move aria-activedescendant
-             while focus stays in the field. data.js keeps aria-expanded and
-             aria-activedescendant in step with what is drawn. -->
-        <input id="scheduler-search-input" class="rux--search-input" type="text" role="combobox" aria-expanded="false" aria-controls="scheduler-search-list" aria-autocomplete="list" tabindex="-1" placeholder="Destination, organization or contact…" autocomplete="off">
-        <button type="button" class="rux--search-close rux--search-close--hidden" id="scheduler-search-clear" aria-label="Clear search input"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg></button>
-      </div>
-      <!-- The results hang under the field and take its width, as Carbon's
-           type-ahead shows results immediately below the search field. -->
-      <div class="scheduler-search__results" id="scheduler-search-results" hidden>
-        <!-- The count, list and note are static and only their contents change,
-             so aria-controls names an id that is in the markup. The count and
-             note sit outside the listbox, whose children must be options. -->
-        <p class="scheduler-search__count" id="scheduler-search-count" hidden></p>
-        <!-- tabindex="-1" stops the browser making this scrolling list a tab
-             stop of its own; its rows are reached through the combobox's arrow
-             keys. -->
-        <div class="rux--contained-list rux--contained-list--inset-rulers" id="scheduler-search-list" role="listbox" aria-label="Matching trips" tabindex="-1"></div>
-        <p class="scheduler-search__empty" id="scheduler-search-note" hidden></p>
-      </div>
-    </div>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-account_circle"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="App switcher" aria-expanded="false" aria-controls="rux-switcher-panel"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-grid_view"/></svg></button>
   </div>
@@ -369,10 +335,9 @@
              driver grid has its own head. -->
           <div class="scheduler-frame">
           <div class="scheduler-toolbar">
-            <!-- The week reads first and every control sits right.
-                 .scheduler-toolbar__spacer takes the free width, so a wider
-                 week does not move the buttons, and DOM order is reading
-                 order. -->
+            <!-- The week reads first and every control sits right. The search
+                 between them takes the free width, so a wider week does not
+                 move the buttons, and DOM order is reading order. -->
             <!-- The week is its own control: the week picker's trigger. data.js
                  builds the picker, appends it to this row and sets
                  data-rux-open on the button, so the markup names no id that
@@ -389,7 +354,37 @@
               </h2>
               <div id="scheduler-week-loading" class="scheduler-week-loading" role="status" aria-live="polite"></div>
             </div>
-            <div class="scheduler-toolbar__spacer"></div>
+            <!-- Carbon's persistent table-toolbar search, as on the Trips page,
+                 always open so a trip is one keystroke away. It searches every
+                 trip in the database, cancelled ones too, not only the week on
+                 screen, and data.js opens the results. -->
+            <div class="scheduler-toolbar__search">
+              <div class="rux--search rux--layout--size-md rux--toolbar-search-container-persistent" role="search" aria-labelledby="scheduler-search-label" id="scheduler-search">
+                <div class="rux--search-magnifier"><svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-search"/></svg></div>
+                <label class="rux--label rux--visually-hidden" id="scheduler-search-label" for="scheduler-search-input">Search trips</label>
+                <!-- A combobox, not the capture's searchbox, because the field
+                     owns a listbox of suggestions: the arrow keys move
+                     aria-activedescendant while focus stays in the field.
+                     data.js keeps aria-expanded and aria-activedescendant in
+                     step with what is drawn. -->
+                <input id="scheduler-search-input" class="rux--search-input" type="text" role="combobox" aria-expanded="false" aria-controls="scheduler-search-list" aria-autocomplete="list" placeholder="Search trips" autocomplete="off">
+                <button type="button" class="rux--search-close rux--search-close--hidden" id="scheduler-search-clear" aria-label="Clear search input"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg></button>
+              </div>
+              <!-- The results hang under the field and take its width, as
+                   Carbon's type-ahead shows results immediately below the
+                   search field. The count, list and note are static and only
+                   their contents change, so aria-controls names an id that is
+                   in the markup. The count and note sit outside the listbox,
+                   whose children must be options. -->
+              <div class="scheduler-search__results" id="scheduler-search-results" hidden>
+                <p class="scheduler-search__count" id="scheduler-search-count" hidden></p>
+                <!-- tabindex="-1" stops the browser making this scrolling list
+                     a tab stop of its own; its rows are reached through the
+                     combobox's arrow keys. -->
+                <div class="rux--contained-list rux--contained-list--inset-rulers" id="scheduler-search-list" role="listbox" aria-label="Matching trips" tabindex="-1"></div>
+                <p class="scheduler-search__empty" id="scheduler-search-note" hidden></p>
+              </div>
+            </div>
             <!-- The two arrows are neighbours because paging back and forth is
                  the most repeated gesture here. -->
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__step" id="scheduler-prev" aria-label="Previous week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_left"/></svg></button>

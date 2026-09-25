@@ -11012,12 +11012,12 @@
   document.getElementById('scheduler-scrim')?.addEventListener('click', () => leaveFront());
   /* Escape acts where focus is. Inside the itinerary panel it closes that
      panel; inside the editor it closes the editor; on the board it clears a
-     selection first. An open dialog or search keeps the key
-     for itself, and so does anything that already took it -- a list or date
+     selection first. An open dialog, or the search while it has focus, keeps
+     the key for itself, and so does anything that already took it -- a list or date
      picker closing, a combo box clearing -- so one press does one thing. */
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape' || e.defaultPrevented) return;
-    if (document.querySelector('.rux--modal.is-visible') || searchOpen()) return;
+    if (document.querySelector('.rux--modal.is-visible') || searchWrap?.contains(document.activeElement)) return;
     /* A panel in front of the board is the only thing on screen, so Escape
        leaves it wherever focus is: the board behind it is inert and has
        nothing to take the key for. */
@@ -11033,13 +11033,11 @@
   });
 
   /* ── Searching trips ──────────────────────────────────────────────────────
-     The header search finds trips by destination, organization or booking
-     contact across every trip, not only the week on screen, and a result opens
-     its trip on its own week. Design ships no search module, so expanding,
-     collapsing, the results list and its keys are all wired here. */
-  const searchWrap = document.querySelector('.scheduler-header-search');
-  const searchBox = document.getElementById('scheduler-search');
-  const searchTrigger = document.getElementById('scheduler-search-trigger');
+     The board toolbar's search finds trips by destination, organization or
+     booking contact across every trip, not only the week on screen, and a
+     result opens its trip on its own week. The field is always open; Design
+     ships no search module, so the results list and its keys are wired here. */
+  const searchWrap = document.querySelector('.scheduler-toolbar__search');
   const searchInput = document.getElementById('scheduler-search-input');
   const searchResults = document.getElementById('scheduler-search-results');
   const searchList = document.getElementById('scheduler-search-list');
@@ -11047,59 +11045,39 @@
   const searchNoteEl = document.getElementById('scheduler-search-note');
   const searchClear = document.getElementById('scheduler-search-clear');
 
-  /* Expanding sets three things together: Carbon's CSS keys the width off
-     `--expanded`, the magnifier reports state through `aria-expanded`, and the
-     input is `tabindex=-1` while collapsed so Tab cannot land in a 0px field. */
-  const EXPANDED = 'rux--search--expanded';
-
-  function expandSearch() {
-    searchBox?.classList.add(EXPANDED);
-    searchTrigger?.setAttribute('aria-expanded', 'true');
-    if (searchInput) { searchInput.tabIndex = 0; searchInput.focus(); }
-  }
-
-  // Collapsing clears the field, as Carbon's expandable search does, so no
-  // query is left hidden inside a bare magnifier.
-  function collapseSearch() {
-    searchBox?.classList.remove(EXPANDED);
-    searchTrigger?.setAttribute('aria-expanded', 'false');
-    if (searchInput) { searchInput.value = ''; searchInput.tabIndex = -1; }
+  // Emptying the field closes the results too, so a picked trip or an Escape
+  // leaves a clean field for the next search.
+  function clearSearch() {
+    if (searchInput) searchInput.value = '';
     searchClear?.classList.add('rux--search-close--hidden');
     showResults(false);
   }
 
-  const searchOpen = () => searchBox?.classList.contains(EXPANDED);
-  const toggleSearch = () => { if (searchOpen()) collapseSearch(); else expandSearch(); };
-
-  // Carbon's magnifier is a `role=button` div, so Enter and Space are wired by
-  // hand.
-  searchTrigger?.addEventListener('click', toggleSearch);
-  searchTrigger?.addEventListener('keydown', e => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSearch(); }
-  });
-
-  /* A press outside collapses the search, since the expanded field covers the
-     magnifier. The test is the wrapper, not `#scheduler-search`, because the
-     results panel is its sibling inside `.scheduler-header-search` and a press
-     on the list must not collapse it. */
+  /* A press outside closes the results and keeps the query, as a combobox's
+     list closes without losing what was typed. The test is the wrapper, not
+     `#scheduler-search`, because the results panel is its sibling and a press
+     on the list must not close it. */
   document.addEventListener('pointerdown', e => {
-    if (!searchOpen()) return;
-    if (searchWrap.contains(e.target)) return;
-    collapseSearch();
+    if (searchResults.hidden || searchWrap.contains(e.target)) return;
+    showResults(false);
   });
 
-  /* Tabbing away collapses it too. The options are `tabindex=-1` in an
+  /* Tabbing away closes them too. The options are `tabindex=-1` in an
      activedescendant listbox, so Tab leaves the widget rather than walking it.
      `relatedTarget` covers a Tab; the deferred check covers focus leaving for
-     the window or a non-focusable press, without collapsing on the way to the
+     the window or a non-focusable press, without closing on the way to the
      clear button. */
   searchWrap?.addEventListener('focusout', e => {
-    if (!searchOpen()) return;
     const to = e.relatedTarget;
     if (to && searchWrap.contains(to)) return;
     setTimeout(() => {
-      if (searchOpen() && !searchWrap.contains(document.activeElement)) collapseSearch();
+      if (!searchResults.hidden && !searchWrap.contains(document.activeElement)) showResults(false);
     }, 0);
+  });
+
+  // Back in a field that still holds a query, the results come back.
+  searchInput?.addEventListener('focus', () => {
+    if (searchInput.value.trim() && searchResults.hidden) runSearch();
   });
 
   /* Every trip is searched, cancelled ones included, in three plain columns
@@ -11322,7 +11300,8 @@
           'scheduler-search__meta', safe),
       );
       btn.addEventListener('click', () => {
-        collapseSearch();
+        clearSearch();
+        searchInput.blur();
         if (trip.cancelled_at) openCancelledModal(trip);
         else goToTrip(trip.id, trip.start_date);
       });
@@ -11344,9 +11323,8 @@
   /* The arrows, Home and End walk the results, and Enter takes the highlighted
      row or else the first. Escape is two-stage, because Carbon's escape leaves
      the menu, not the search: with the list open it closes the list and keeps
-     the query, and with it closed the document handler below collapses the
-     field. These listen on the field, so they cannot take a key the editor or
-     the board wants. */
+     the query, and with it closed it empties the field. These listen on the
+     field, so they cannot take a key the editor or the board wants. */
   searchInput?.addEventListener('keydown', e => {
     const open = !searchResults.hidden && searchOptions().length > 0;
     switch (e.key) {
@@ -11363,6 +11341,7 @@
       }
       case 'Escape':
         if (!searchResults.hidden) { e.preventDefault(); e.stopPropagation(); showResults(false); }
+        else if (searchInput.value) { e.preventDefault(); e.stopPropagation(); clearSearch(); }
         break;
     }
   });
@@ -11376,14 +11355,14 @@
     if (at !== -1 && at !== activeAt) setActive(at);
   });
 
-  /* Cmd-K or Ctrl-K toggles the search through the magnifier's own toggle, so
-     `aria-expanded` stays in step. Escape collapses an open search. */
+  // Cmd-K or Ctrl-K puts the cursor in the search, with any old query selected
+  // so typing replaces it.
   document.addEventListener('keydown', e => {
     if ((e.metaKey || e.ctrlKey) && !e.altKey && (e.key === 'k' || e.key === 'K')) {
       e.preventDefault();
-      toggleSearch();
+      searchInput?.focus();
+      searchInput?.select();
     }
-    if (e.key === 'Escape' && searchOpen()) { e.preventDefault(); collapseSearch(); }
   });
   // A click on empty board space puts the selection down. A click on a bar is
   // app.js's toggle and opens nothing; a click on a bar's button is the button's.
@@ -12331,7 +12310,6 @@
      other than the cloud preview gets a notice in their place, and nothing is read. */
   const stop = (kind, title, subtitle) => {
     if (boardEl) boardEl.hidden = true;
-    if (searchWrap) searchWrap.hidden = true;
     say(kind, title, subtitle);
   };
 

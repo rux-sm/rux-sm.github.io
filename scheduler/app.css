@@ -1242,9 +1242,10 @@ button.scheduler-row-head__num::after {
   align-items: center;
   /* No gap: Carbon's table toolbar sets its buttons edge to edge. */
   gap: 0;
-  /* Never two rows. A flex container breaks its lines at each item's own width
-     before it shrinks anything, so a toolbar allowed to wrap drops its buttons
-     to a second row instead of ever letting the week ellipse. */
+  /* One row, except the phone's search row below. A flex container breaks its
+     lines at each item's own width before it shrinks anything, so a toolbar
+     allowed to wrap drops its buttons to a second row instead of ever letting
+     the week ellipse. */
   flex-wrap: nowrap;
   /* What the week's two labels are chosen by: the panels beside the schedule
      are what take the toolbar's room, and a window's width cannot see them. */
@@ -2534,50 +2535,45 @@ html:has(.scheduler-page[data-takeover]) {
   overflow: hidden;
 }
 
-/* ── Header search ──────────────────────────────────────────────────────────
-   Carbon's expanded search is `inline-size: 100%`, so it needs a box to expand
-   into; this wrapper takes the slack in `.rux--header__global`. It grows at
-   all times, because a wrapper that grows only while expanded is shrink-to-fit
-   around a 100% child and collapses to zero mid-transition. `flex-end` keeps
-   the magnifier still while the field widens leftward, and `flex-start` keeps
-   the search on the header's top edge beside the other actions, where its
-   focus ring has room. `position: relative` anchors the results. */
-.scheduler-header-search {
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-end;
+/* ── Toolbar search ─────────────────────────────────────────────────────────
+   Carbon's persistent table-toolbar search, as the Trips page has, between the
+   week and the controls. The wrapper takes the free width, as
+   `.scheduler-toolbar__spacer` does where there is no search, and anchors the
+   results. Carbon's search is 100% wide, so it fills the wrapper. */
+.scheduler-toolbar__search {
+  flex: 1 1 0;
+  min-inline-size: 0;
   position: relative;
-  /* Content height, not the header's, so the results start below the field and
-     do not cover the bottom of its focus ring. */
-  align-self: flex-start;
+  align-self: stretch;
+  display: flex;
 }
-.scheduler-header-search { flex: 1 1 auto; min-inline-size: 0; }
-.scheduler-header-search .rux--search--expandable.rux--search--expanded { inline-size: 100%; }
-
-/* OPEN, THE SEARCH TAKES THE PHONE'S HEADER. The header is full before it
-   opens: at 402px the logo alone is 152 and the menu, account and switcher
-   another 144, so the field that is left is 106px -- about four characters.
-   Open, it lies across the header instead and the rest waits behind it. Its
-   own wrapper does the covering, because the header is Design's and an app
-   does not restyle Design's pieces. The account and switcher buttons come
-   after it in the header, so without a layer they would paint over the field.
-   Above md nothing changes: there the header has room to share. */
+/* On a phone the controls leave the field about 75px, room for the magnifier
+   and no query, so the search takes a full-width row under the week and the
+   controls, and the week's own margin pushes the controls right. Only the
+   search wraps: it comes last and takes the whole row, and the first row is
+   the months label and at most four buttons, which fit at 320px. */
 @media (max-width: 41.98rem) {
-  .scheduler-header-search:has(.rux--search--expanded) {
-    position: absolute;
-    inset-block: 0;
-    inset-inline: 0;
-    z-index: 1;
-    background: var(--rux-background);
+  .scheduler-toolbar { flex-wrap: wrap; }
+  .scheduler-toolbar__weekrow { margin-inline-end: auto; }
+  .scheduler-toolbar__search {
+    order: 1;
+    flex-basis: 100%;
+    border-block-start: 1px solid var(--rux-border-subtle);
   }
 }
 
 /* ── Search results ─────────────────────────────────────────────────────────
    A menu attached to the field: pinned to the wrapper's inline edges so it
-   takes the field's width, on `--rux-layer` with `.rux--menu`'s shadow. */
+   takes the field's width, on `--rux-layer` with `.rux--menu`'s shadow. It
+   stays between 20rem and 40rem, so a phone's narrow field still gets a
+   readable list and a desktop's wide one does not cover the board, and it
+   hangs from the field's start so it stays on screen. */
 .scheduler-search__results {
   position: absolute;
-  inset-inline: 0;
+  inset-inline-start: 0;
+  inline-size: 100%;
+  min-inline-size: min(20rem, 100vw - 2rem);
+  max-inline-size: 40rem;
   inset-block-start: 100%;
   z-index: 8100;
   background: var(--rux-layer);
@@ -2668,10 +2664,9 @@ html:has(.scheduler-page[data-takeover]) {
   padding: var(--rux-spacing-05);
 }
 
-/* Without a staff profile, data.js hides the board and the header search.
-   Each has a display rule that beats the browser's own `[hidden]`. */
-.scheduler-board[hidden],
-.scheduler-header-search[hidden] { display: none; }
+/* Without a staff profile, data.js hides the board, and its search with it.
+   The board has a display rule that beats the browser's own `[hidden]`. */
+.scheduler-board[hidden] { display: none; }
 
 /* The maintenance link's grid is read-only: nothing opens from a bar, so a bar
    takes no pointer and no hover. */

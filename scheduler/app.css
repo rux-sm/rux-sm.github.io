@@ -2231,6 +2231,14 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__head:not(.scheduler-card__head--notes), .scheduler-card__list) { order: -1; }
 .scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__asks, .scheduler-card__head--notes) { border-block-start: 0; }
+/* The reminder's dismiss is a thumb's 48px on a phone, and the band grows to
+   hold it; it stands at the top, so only the sheet's top edge moves. */
+.scheduler-bar-shortcuts[data-docked] .scheduler-card__asks { padding-block: 0; padding-inline-end: 0; }
+.scheduler-bar-shortcuts[data-docked] .scheduler-card__dismiss {
+  inline-size: var(--rux-layout-size-height-lg);
+  block-size: var(--rux-layout-size-height-lg);
+  margin-block: 0;
+}
 /* The note stops at three lines on an ellipsis until it is tapped open. The
    words are cut, not the row, so the row's padding shows none of a fourth. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__note:not([data-open]) > span {
@@ -2272,8 +2280,19 @@ button.scheduler-row-head__num::after {
    board. Those toggles buy height among the bars; this is where the writing a
    block gave up is read, so hiding a row here would leave it nowhere. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcuts__trip .scheduler-bar__row { display: flex; }
-/* The bar's updates mark is left off: the updates are read just above it. */
-.scheduler-bar-shortcuts__trip .scheduler-bar__msg { display: none; }
+/* The bar's updates mark is left off: the updates are read just above it. So
+   is the marks' copy on the destination row, since every row is drawn here. */
+.scheduler-bar-shortcuts__trip :is(.scheduler-bar__msg, .scheduler-bar__warn--dest) { display: none; }
+/* Each mark with its name beside it, wrapping as a sentence does, so its row
+   takes the height the names need. */
+.scheduler-bar-shortcuts__trip .scheduler-bar__notes { block-size: auto; white-space: normal; }
+.scheduler-bar-shortcuts__trip .scheduler-bar__warn { flex: 1 1 auto; min-inline-size: 0; flex-wrap: wrap; column-gap: var(--rux-spacing-04); }
+.scheduler-bar__warn-pair { display: inline-flex; align-items: center; gap: var(--rux-spacing-02); }
+.scheduler-bar__warn-pair > .scheduler-bar__warn-chip { flex: none; }
+/* The phone number dials, drawn as a link in the trip's own ink. */
+.scheduler-bar__phone--call { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+/* A trip the sheet comes up over scrolls clear of it by the sheet's height. */
+.scheduler-page[data-board="compact"] .scheduler-bar { scroll-margin-block-end: calc(var(--scheduler-docked-h, 0px) + var(--rux-spacing-03)); }
 /* Up here the double-booked strip is a row like the others, not a band pinned
    to the bottom of a block. */
 .scheduler-bar-shortcuts__trip .scheduler-bar__conflict {

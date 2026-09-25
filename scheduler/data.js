@@ -803,7 +803,8 @@
      is pending. Rows are all reset, then all read, then all set, as
      `fitTimes` does. */
   function fitMarks() {
-    const boxes = [...gridEl.querySelectorAll('.scheduler-bar__warn')];
+    // The bars' own boxes; the docked sheet's copy of a bar has room for them all.
+    const boxes = [...gridEl.querySelectorAll('.scheduler-bar .scheduler-bar__warn')];
     // Reset: every mark back, every count away.
     for (const box of boxes) {
       for (const chip of box.children) chip.hidden = chip.classList.contains('scheduler-bar__warn-more');
@@ -7412,7 +7413,12 @@
          view's to choose. */
       schEl.style.setProperty('--scheduler-docked-h',
         `${Math.round(barShortcuts.getBoundingClientRect().height)}px`);
+      /* A trip the sheet has just come up over is scrolled clear of it, once:
+         the bar's scroll margin is the sheet's height, so `nearest` moves the
+         board only as far as that takes and not at all when it is clear. */
+      const fresh = target !== poppedFor;
       pop();
+      if (fresh && !barShortcuts.hasAttribute('data-peek')) bar.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
       return;
     }
     schEl.style.removeProperty('--scheduler-docked-h');
@@ -10462,6 +10468,22 @@
     head.className = ['scheduler-bar-shortcuts__trip',
       ...[...bar.classList].filter(c => c.startsWith('scheduler-bar--'))].join(' ');
     head.replaceChildren(...[...bar.children].map(node => node.cloneNode(true)));
+    /* The sheet has the room a block had not, and a phone has no hover: every
+       mark shows, each with its name beside it, and the phone number dials. */
+    for (const box of head.querySelectorAll('.scheduler-bar__warn')) {
+      for (const chip of [...box.children]) {
+        if (chip.classList.contains('scheduler-bar__warn-more')) { chip.remove(); continue; }
+        chip.hidden = false;
+        const pair = el('span', 'scheduler-bar__warn-pair');
+        chip.replaceWith(pair);
+        pair.append(chip, el('span', 'scheduler-bar__warn-word', chip.title));
+      }
+    }
+    for (const phone of head.querySelectorAll('.scheduler-bar__phone')) {
+      const call = el('a', 'scheduler-bar__phone scheduler-bar__phone--call', phone.textContent);
+      call.href = `tel:${phone.textContent.replace(/[^\d+]/g, '')}`;
+      phone.replaceWith(call);
+    }
     barShortcuts.prepend(head);
   }
 
@@ -10616,7 +10638,7 @@
       card.appendChild(band);
     }
     const notesHead = row(`scheduler-card__head scheduler-card__head--notes${trip.notes ? '' : ' scheduler-card__head--alone'}`);
-    notesHead.append(svgUse('#m-keep', '16', '0 0 32 32'), el('span', null, 'Trip notes'));
+    notesHead.append(svgUse('#m-keep', '16', '0 0 32 32'), el('span', null, 'Notes'));
     if (trip.notes) {
       const note = row('scheduler-card__note');
       note.appendChild(el('span', null, trip.notes));
@@ -10675,8 +10697,8 @@
     const note = e.target.closest('.scheduler-card__note[role="button"]');
     if (note) { toggleNote(note); return; }
     // The docked sheet's trip is the whole bar written out, and a tap on it
-    // opens the trip as the Open slot does.
-    if (e.target.closest('.scheduler-bar-shortcuts__trip')) { openSelected(); return; }
+    // opens the trip as the Open slot does; its phone number dials instead.
+    if (e.target.closest('.scheduler-bar-shortcuts__trip') && !e.target.closest('a')) { openSelected(); return; }
     // The reminder's ✕ acts on the trip the card shows, peeked or selected.
     const dismiss = e.target.closest('.scheduler-card__dismiss');
     if (dismiss) {

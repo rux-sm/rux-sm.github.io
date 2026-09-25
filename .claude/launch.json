@@ -10,10 +10,8 @@
     },
     {
       "name": "serve-cloud",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["tools/serve.mjs", "--cloud"],
-      "port": 8641,
-      "autoPort": false
+      "url": "http://localhost:8641",
+      "port": 8641
     }
   ]
 }

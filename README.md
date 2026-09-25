@@ -55,6 +55,10 @@ A page links `/design/css/rux.css` and `/design/assets/fonts/…` by absolute
 path, so served from this folder it renders with no internet connection.
 Opening a file with `file://` does not work; use the server.
 
+On rux's Mac the `--cloud` server runs from this folder at log-in, restarted if
+it stops, from `~/Library/LaunchAgents/io.github.rux-sm.serve-cloud.plist`;
+sessions connect to it and never start or stop their own.
+
 ## A new app
 
 Make a folder named for its URL, start its `index.html` from a page in

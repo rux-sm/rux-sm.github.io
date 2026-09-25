@@ -2164,7 +2164,12 @@
 
   const seatRow = (role, s) => ({ driver_id: s.driverId, role, report_time: s.reportTime, instructions: s.note });
 
-  const fleetChanged = () => !!fleetWork()?.work;
+  /* Whether the Fleet tab holds changes someone made. A new trip's fleet is all
+     work to Save, which writes its count and its cell's bus however untouched,
+     so for one the question is whether the tab moved from how it opened. */
+  const fleetChanged = () => (editing?.creating
+    ? JSON.stringify(editing.fleet) !== JSON.stringify(editing.fleetBefore)
+    : !!fleetWork()?.work);
 
   // A driver in two seats of one leg is the one thing that blocks Save.
   function fleetDuplicates() {

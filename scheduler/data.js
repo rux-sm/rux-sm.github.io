@@ -10518,8 +10518,9 @@
 
   /* THE CARD'S ROWS, as the shortcut bar draws them under its slots: the
      reminder while the trip asks for a follow-up, then two parts under their
-     own headings: the trip's notes, shaded and always there, saying so when
-     there are none, and the updates with their count, newest first with who
+     own headings, the pin and the bubble the bar's updates mark wears: the
+     trip's notes, shaded and always there, saying so when there are none, and
+     the updates with their count, newest first with who
      and how long ago, three showing and the rest scrolling. With none yet the row says so, and the time at
      its end is the booking's, so the card still says how long the trip has
      gone without one. Each person keeps one of Carbon's avatar colours, picked
@@ -10573,7 +10574,7 @@
     card.append(notesHead, note);
     const updates = updatesOf(trip);
     const updatesHead = row('scheduler-card__head');
-    updatesHead.appendChild(el('span', null, 'Updates'));
+    updatesHead.append(svgUse('#m-chat', '16', '0 0 32 32'), el('span', null, 'Updates'));
     if (updates.length) updatesHead.appendChild(el('span', 'scheduler-card__count', `· ${updates.length}`));
     card.appendChild(updatesHead);
     const list = el('ol', 'scheduler-card__list');

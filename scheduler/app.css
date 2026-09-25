@@ -2207,8 +2207,15 @@ button.scheduler-row-head__num::after {
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
-/* Under the head, the card's first row needs no rule: the head's fill parts them. */
-.scheduler-bar-shortcuts[data-docked] .scheduler-card > :first-child { border-block-start: 0; }
+/* The card's rows join the sheet's own flow, so the reminder can stand above
+   the trip's head: the sheet grows upward when a trip asks for a follow-up,
+   and the trip, its notes, its updates and the slots keep their places. The
+   reminder at the top and the notes under the head need no rule above them:
+   the sheet's edge and the head's fill part them. */
+.scheduler-bar-shortcuts[data-docked] .scheduler-card { display: contents; }
+.scheduler-bar-shortcuts[data-docked] .scheduler-card > * { flex: 1 0 100%; min-inline-size: 0; }
+.scheduler-bar-shortcuts[data-docked] .scheduler-card__asks { order: -1; }
+.scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__asks, .scheduler-card__head--notes) { border-block-start: 0; }
 /* The trip, at the top of the sheet: the bar's own rows, cloned, so they keep
    one builder and one set of rules. The trip's colour comes with them as the
    bar's colour class, and the head paints its fill and ink, so it reads as

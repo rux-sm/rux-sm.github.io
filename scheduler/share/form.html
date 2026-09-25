@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Your paperwork — Scheduler</title>
+<title>Envelope — Scheduler</title>
 <script src="/funnel.js"></script>
 <style>html:not([data-rux-unlocked]){visibility:hidden}</style>
 <link rel="icon" href="../brand/favicon.svg" type="image/svg+xml">
@@ -22,11 +22,10 @@
 <script src="/design/js/theme.js"></script>
 </head>
 <body>
-<!-- One of a driver's two sheets for one trip leg, opened from a card on
-     their schedule link: the envelope for their seat, or the office's
-     itinerary for the leg. form.js reads the trip through the link's token and
-     draws the sheet with the forms page's own renderers from ../print.js, so
-     the driver sees the paper dispatch prints. -->
+<!-- A driver's envelope for one trip leg, opened from a card on their
+     schedule link. form.js reads the trip through the link's token and draws
+     the sheet with the forms page's own renderer from ../print.js, so the
+     driver sees the paper dispatch prints. -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. npm run build rewrites this block
      from design/assets/icons.svg. -->
@@ -62,7 +61,7 @@
   <div class="rux--stack-vertical rux--stack-scale-5">
     <div class="scheduler-sheet-head">
       <a class="rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md" id="scheduler-sheet-back"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-arrow_back"/></svg>Your schedule</a>
-      <h1 class="rux--type-productive-heading-03" id="scheduler-sheet-title">Paperwork</h1>
+      <h1 class="rux--type-productive-heading-03" id="scheduler-sheet-title">Envelope</h1>
     </div>
     <!-- A link that will not load, or a sheet that is not the driver's. A
          plain wrapper carries `hidden`, because the notification's own

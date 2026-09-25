@@ -4,9 +4,8 @@
    driver.html?s=<token> shows a driver, without a log-in, the trip legs
    dispatch sent them, one card each, and lets them accept or decline. A card
    holds the basics: the day, where to be and when, the bus, and who to call.
-   The rest is on the leg's itinerary and the driver's envelope, which the
-   card opens, the customer's itinerary file where one is attached and the
-   office's own sheet from form.html where not. A trip changed since it was
+   The rest is on the itinerary file uploaded to the trip and the driver's
+   envelope from form.html, which the card opens. A trip changed since it was
    accepted asks again, saying what changed.
 
    Everything comes through token-checked functions, so the page keeps
@@ -391,10 +390,10 @@
     person(c.name || 'No name given', c.phone ? phone(c.phone) : '', c.phone, true));
 
   /* THE LEG'S PAPERWORK, where the details are, at the foot of the card
-     for whoever wants more than the card gives. The customer's itinerary file
-     where the trip has one, the office's own sheet for the leg where it has
-     none and the leg has a route, and always the driver's envelope. The staff
-     page opens them in a tab, so its driver stays picked. */
+     for whoever wants more than the card gives: the itinerary file uploaded
+     to the trip, or No itinerary, disabled, where there is none, and always
+     the driver's envelope. The staff page opens them in a tab, so its driver
+     stays picked. */
   const sheetUrl = (l, form) => `/scheduler/share/form.html?${new URLSearchParams({ s: token, form, trip: l.trip.id, leg: l.leg })}`;
   function paperworkOf(l) {
     const wrap = el('div', 'scheduler-leg-card__papers');
@@ -409,8 +408,13 @@
     // "View itinerary", from a file's own label however it is capitalised.
     const view = label => `View ${label.charAt(0).toLowerCase()}${label.slice(1)}`;
     for (const [d, url] of files) wrap.appendChild(button(view(d.updated ? `${d.label} (updated)` : d.label), url, '#m-description'));
-    const routed = (l.trip.trip_stops || []).some(st => (st.leg || 'outbound') === l.leg);
-    if (!files.length && routed) wrap.appendChild(button('View itinerary', sheetUrl(l, 'driver-itinerary'), '#m-route'));
+    if (!files.length) {
+      const none = el('button', 'rux--btn rux--btn--secondary rux--layout--size-lg', 'No itinerary');
+      none.type = 'button';
+      none.disabled = true;
+      const i = icon('#m-description'); i.setAttribute('class', 'rux--btn__icon'); none.appendChild(i);
+      wrap.appendChild(none);
+    }
     wrap.appendChild(button('View envelope', sheetUrl(l, 'envelope'), '#m-mail'));
     return wrap;
   }

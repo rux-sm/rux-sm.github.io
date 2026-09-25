@@ -14,7 +14,6 @@ done and how.
 
 ## Scheduler
 
-- Trip search shows the 50 newest matches, with no ranking by relevance.
 - The quote calculator's seven spreadsheet quirks are kept until rux and the
   manager decide them. The list is on the calculator's Rules tab.
 - The driver page, §4 of `scheduler/docs/screen-inventory.md`, is not built

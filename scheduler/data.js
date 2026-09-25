@@ -10913,29 +10913,61 @@
     }, 0);
   });
 
-  /* Every trip is searched, newest first, cancelled ones included, in three
-     plain columns on `trips`: `customer` (the organization), `destination` and
+  /* Every trip is searched, cancelled ones included, in three plain columns
+     on `trips`: `customer` (the organization), `destination` and
      `booking_contact_name`, so no join is needed. A cancelled trip is tagged
      and opens the cancelled dialog instead of the board.
 
+     Best match first. Two reads run together: the newest `SEARCH_POOL` trips
+     with the text anywhere in a column, and the newest trips with a column
+     that starts with it, so a strong match on an old trip is not lost behind
+     newer weak ones. `searchRank` orders the merged rows: a column equal to
+     the text, then one starting with it, then a word in one starting with it,
+     then the text anywhere; and among equals, the trip nearest today.
+
      The query is sanitised first because PostgREST parses `or=(...)` as a
      list: a typed comma, parenthesis or backslash would re-parse into other
-     filters, and `%` or `*` would widen the match. One more than `SEARCH_CAP`
-     is fetched, so the count can say "more than" without counting the table. */
+     filters, and `%` or `*` would widen the match. The pool reads more than
+     `SEARCH_CAP`, so the count can say "more than" without counting the
+     table. */
   const SEARCH_MIN = 2;
+  const SEARCH_POOL = 200;
+  const SEARCH_COLUMNS = ['destination', 'customer', 'booking_contact_name'];
   const searchSafe = q => q.replace(/[,()\\%*]/g, ' ').replace(/\s+/g, ' ').trim();
+
+  // 0 equal, 1 starts with, 2 a word starts with, 3 anywhere, 4 not at all.
+  const columnRank = (text, needle) => {
+    const hay = String(text ?? '').toLowerCase();
+    let i = hay.indexOf(needle);
+    if (i === -1) return 4;
+    if (hay === needle) return 0;
+    if (i === 0) return 1;
+    for (; i !== -1; i = hay.indexOf(needle, i + 1)) if (!/[\p{L}\p{N}]/u.test(hay[i - 1])) return 2;
+    return 3;
+  };
+  const searchRank = (rows, q) => {
+    const needle = q.toLowerCase();
+    const today = Date.now();
+    const away = trip => trip.start_date ? Math.abs(parseISO(trip.start_date) - today) : Infinity;
+    return rows
+      .map(trip => ({ trip, rank: Math.min(...SEARCH_COLUMNS.map(c => columnRank(trip[c], needle))), away: away(trip) }))
+      .sort((a, b) => a.rank - b.rank || a.away - b.away)
+      .map(r => r.trip);
+  };
 
   async function searchTrips(q) {
     const safe = searchSafe(q);
     if (safe.length < SEARCH_MIN) return { rows: [] };
-    const like = `*${safe}*`;
-    const { data, error } = await client.from('trips')
+    const read = (like, limit) => client.from('trips')
       .select('id,destination,customer,booking_contact_name,start_date,cancelled_at,cancellation_reason')
-      .or(`destination.ilike.${like},customer.ilike.${like},booking_contact_name.ilike.${like}`)
+      .or(SEARCH_COLUMNS.map(c => `${c}.ilike.${like}`).join(','))
       .order('start_date', { ascending: false })
-      .limit(SEARCH_CAP + 1);
+      .limit(limit);
+    const [anywhere, starts] = await Promise.all([read(`*${safe}*`, SEARCH_POOL), read(`${safe}*`, SEARCH_CAP)]);
+    const error = anywhere.error || starts.error;
     if (error) throw new Error(error.message);
-    return { rows: data || [] };
+    const byId = new Map([...(anywhere.data || []), ...(starts.data || [])].map(t => [t.id, t]));
+    return { rows: searchRank([...byId.values()], safe) };
   }
 
   /* Replies can land out of order, so a slow reply for "dal" could replace one

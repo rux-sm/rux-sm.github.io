@@ -11506,8 +11506,11 @@
      read it would otherwise flash a face across everyone's board for each bar
      passed. Opening is sent at once, being deliberate. */
   const PRESENCE_SETTLE = 900;
-  let presenceCh = null, presenceTimer = null, presenceRetry = null;
-  // What this tab is on, and what the server was last successfully told.
+  const People = window.SchedulerPeople;
+  let presenceTimer = null, presenceRetry = null;
+  /* What this tab is on, and what the server was last successfully told. An
+     open trip carries its destination and date too, so a face in the header
+     can say which trip and lead to it; people.js adds who and which page. */
   let presenceMine = { tripId: null, state: null };
   let presenceSaid = null;
   // tripId -> [{ id, name, photoPath, colour, state }], everyone but me.
@@ -11522,10 +11525,10 @@
      once the burst is over. */
   async function presenceSend() {
     clearTimeout(presenceRetry);
-    if (!presenceMe || presenceCh?.state !== 'joined') return;
+    if (!presenceMe || !People?.joined()) return;
     const saying = `${presenceMine.tripId}:${presenceMine.state}`;
     if (saying === presenceSaid) return;
-    const answer = await presenceCh.track({ ...presenceMe, ...presenceMine }).catch(() => 'error');
+    const answer = await People.track(presenceMine);
     if (answer === 'ok') { presenceSaid = saying; return; }
     presenceSaid = null;
     presenceRetry = setTimeout(presenceSend, PRESENCE_SETTLE);
@@ -11534,8 +11537,8 @@
   /* Opening a trip is deliberate and said at once. Everything else waits for
      the clicking to stop, deselecting included, so running along a row is one
      message rather than two per bar passed. */
-  function presenceSoon(tripId, state) {
-    presenceMine = { tripId: tripId ?? null, state: tripId ? state : null };
+  function presenceSoon(tripId, state, trip = null, tripDate = null) {
+    presenceMine = { tripId: tripId ?? null, state: tripId ? state : null, trip, tripDate };
     clearTimeout(presenceTimer);
     if (tripId && state === 'open') { presenceSend(); return; }
     presenceTimer = setTimeout(presenceSend, PRESENCE_SETTLE);
@@ -11548,7 +11551,9 @@
     // The editor may have just opened on a trip somebody else already holds,
     // or just closed, and either way its line is owed an answer now.
     presenceNote();
-    if (!panelEl.hidden && editing?.id) return presenceSoon(editing.id, 'open');
+    if (!panelEl.hidden && editing?.id) {
+      return presenceSoon(editing.id, 'open', editing.before?.destination ?? null, editing.before?.start_date ?? null);
+    }
     const bar = selectedBar();
     presenceSoon(bar?.dataset.tripId ?? null, 'selected');
   }
@@ -11560,13 +11565,10 @@
      firmer of the two. */
   function presenceRead() {
     const seen = new Map();
-    const everyone = new Map();
-    const state = presenceCh?.presenceState?.() ?? {};
+    const state = People?.state() ?? {};
     for (const entries of Object.values(state)) {
       for (const who of entries) {
-        if (!who?.id || who.id === presenceMe?.id) continue;
-        everyone.set(who.id, who);
-        if (!who.tripId) continue;
+        if (!who?.tripId || !who.id || who.id === presenceMe?.id) continue;
         if (!seen.has(who.tripId)) seen.set(who.tripId, new Map());
         const here = seen.get(who.tripId);
         const already = here.get(who.id);
@@ -11575,35 +11577,6 @@
     }
     presenceOthers = new Map([...seen].map(([id, here]) => [id, [...here.values()]]));
     presenceDraw();
-    peopleDraw([...everyone.values()]);
-  }
-
-  /* Everyone else with the schedule open, as faces in the header beside my own
-     on the Account action, whether or not they are on a trip. Past
-     `PRESENCE_FACES` the rest are a count, as on a bar; a phone's header has
-     room beside the logo for one face only. The faces are one image whose name
-     lists everybody, since a face is not read aloud. */
-  const peopleEl = document.getElementById('scheduler-people');
-  const peoplePhone = window.matchMedia('(max-width: 41.98rem)');
-  function peopleDraw(list) {
-    if (!peopleEl) return;
-    list.sort((a, b) => String(a.name ?? '').localeCompare(String(b.name ?? '')));
-    peopleEl.replaceChildren();
-    peopleEl.hidden = !list.length;
-    if (!list.length) { peopleEl.removeAttribute('aria-label'); return; }
-    const shown = list.slice(0, peoplePhone.matches ? 1 : PRESENCE_FACES);
-    for (const who of shown) {
-      const face = el('span', 'rux--user-avatar rux--user-avatar--sm scheduler-header-people__face');
-      face.title = who.name || 'Somebody';
-      window.Rux?.account?.drawAvatar?.(face, who, 'sm');
-      peopleEl.appendChild(face);
-    }
-    if (list.length > shown.length) {
-      const more = el('span', 'scheduler-header-people__more', `+${list.length - shown.length}`);
-      more.title = presenceNames(list.slice(shown.length));
-      peopleEl.appendChild(more);
-    }
-    peopleEl.setAttribute('aria-label', `Also on the schedule: ${presenceNames(list)}`);
   }
 
   /* Drawn after every render too, because `render` replaces every bar. A bar
@@ -11680,8 +11653,6 @@
     presenceNoteEl.hidden = !said.length;
   }
 
-  let presenceKey = null;
-
   let boardCh = null;
   const boardStatus = status => {
     // Only a failure is worth a line; a healthy channel says nothing, as it did.
@@ -11697,27 +11668,6 @@
     boardCh.subscribe(boardStatus);
   }
 
-  const presenceStatus = status => {
-    if (status === 'CHANNEL_ERROR') {
-      console.info('scheduler: presence is off -- realtime.messages has no rule letting staff join.');
-      return;
-    }
-    if (status !== 'SUBSCRIBED') return;
-    presenceTell();
-  };
-  function openPresence() {
-    /* PRIVATE, so only a signed-in staff account may join. A public channel is
-       joinable by anyone holding the publishable key, which is in this file,
-       and everything tracked on it -- name, photo, account and trip -- would be
-       readable and forgeable from outside. The database decides, through a rule
-       on realtime.messages; without that rule the channel is closed to
-       everyone and no face is drawn, which is the safe way to fail. */
-    presenceSaid = null;
-    presenceCh = client.channel('scheduler-presence', { config: { private: true, presence: { key: presenceKey } } });
-    presenceCh.on('presence', { event: 'sync' }, presenceRead);
-    presenceCh.subscribe(presenceStatus);
-  }
-
   /* A channel that has gone away is thrown out and a new one opened in its
      place: the library refuses to join the same channel twice, so reviving one
      is not an option. The socket comes back on its own after a sleep or a
@@ -11731,16 +11681,12 @@
     return true;
   }
 
-  /* Coming back re-announces this tab as well as re-reading the week. A
-     presence lives on the connection, so a connection that died while the Mac
-     slept took it with it; and even where the socket survived, the server may
-     have timed this tab out while it was away. Saying it again costs one
-     message and is the only thing that brings the face back. */
+  /* Coming back re-reads the week and revives the board's channel; people.js
+     revives the presence channel and asks this tab to say itself again. */
   function liveWake() {
     if (!document.hidden) liveRefresh();
     if (!client?.channel) return;
     wake(boardCh, openBoard);
-    if (presenceCh && !wake(presenceCh, openPresence)) presenceTell();
   }
 
   async function listen() {
@@ -11752,17 +11698,16 @@
     if (!client?.channel) return;
     openBoard();
 
-    /* One tab is one presence, so the key is this tab and not the account: the
-       same person on a laptop and a phone is two, and closing one leaves the
-       other. Without a person there is nobody to show, so the channel is not
-       opened at all. */
-    const me = await Promise.resolve(window.Rux?.account?.person?.()).catch(() => null);
-    if (!me) return;
-    // Known before the channel opens, so the first sync already knows which
-    // account is mine and does not draw me to myself.
-    presenceMe = { id: me.id, name: me.name, photoPath: me.photoPath, colour: me.colour };
-    presenceKey = `${me.id}:${Math.random().toString(36).slice(2, 8)}`;
-    openPresence();
+    /* The presence channel is people.js's, shared with the header's faces.
+       This tab says which trip it is on each time the channel joins, and the
+       server is told again rather than trusted to remember. Without a staff
+       person there is nobody to show. */
+    presenceMe = await People?.ready;
+    if (!presenceMe) return;
+    const sayAgain = () => { presenceSaid = null; presenceTell(); };
+    People.onSync(presenceRead);
+    People.onJoin(sayAgain);
+    if (People.joined()) { sayAgain(); presenceRead(); }
   }
 
   async function readWeek() {

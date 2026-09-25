@@ -145,10 +145,10 @@
        in the account panel, not here, because Carbon keeps these actions for
        system-level functions. -->
   <div class="rux--header__global">
-    <!-- Who else has the schedule open, one face each, beside my own on the
-         Account action. data.js fills it from the same presence channel that
-         puts faces on trip bars, and shows it only while somebody is here. -->
-    <div class="scheduler-header-people" id="scheduler-people" role="img" hidden></div>
+    <!-- Who else has the Scheduler open, one face each beside my own on the
+         Account action; a face links to the page that person is on. people.js
+         fills it and shows it only while somebody is here. -->
+    <div class="scheduler-header-people" id="scheduler-people" hidden></div>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-account_circle"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="App switcher" aria-expanded="false" aria-controls="rux-switcher-panel"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-grid_view"/></svg></button>
   </div>
@@ -1434,6 +1434,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <script src="/account.js"></script>
+<script src="people.js"></script>
 <script src="requirements.js"></script>
 <script src="quote-text.js"></script>
 <script src="quote.js"></script>

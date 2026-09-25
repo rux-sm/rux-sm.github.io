@@ -784,3 +784,31 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    initial takes the on-colour text every fill is picked to hold. The class
    pair is Carbon's own specificity for a size variant. */
 .scheduler-card .rux--user-avatar { color: var(--rux-text-on-color); }
+
+/* WHO ELSE HAS THE SCHEDULER OPEN, in the header beside the Account action's
+   own face and at its size, so the row reads as the people here. This app's
+   own piece, here rather than in app.css because every Scheduler page links
+   this file and the Forms page does not link app.css. Each face is a link to
+   where that person is, with the focus ring every control here draws. */
+.scheduler-header-people {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-02);
+  padding-inline: var(--rux-spacing-03);
+}
+.scheduler-header-people[hidden] { display: none; }
+.scheduler-header-people__link {
+  display: flex;
+  border-radius: 50%;
+  text-decoration: none;
+}
+.scheduler-header-people__link:focus-visible {
+  outline: 2px solid var(--rux-focus);
+  outline-offset: 2px;
+}
+.scheduler-header-people__more {
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  color: var(--rux-text-secondary);
+}

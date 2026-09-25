@@ -36,7 +36,8 @@ done and how.
 ## Only rux can do
 
 - Press Save on a real trip. The database is live and shared with rux-ui.
-- Try the scheduler on a real phone. The cell menu may be unreachable on iOS.
+- Hold an empty cell on the scheduler on the iPhone and check New trip here
+  opens. The simulator says it does.
 - Print a driver itinerary from a real trip, in the panel and in its own tab,
   and check the sheet against the itinerary the customer sent.
 - Print a customer quote from a real trip and hold it beside the QuickBooks

@@ -383,6 +383,12 @@ button.scheduler-row-head__num::after {
      row's own tint and under every child, so bars and out-of-service stripes
      cover it with no stacking order. */
   background-image: linear-gradient(90deg, var(--scheduler-day-rules));
+  /* A finger holding an empty cell opens the cell menu, so the browser's own
+     hold gestures, the callout and text selection, are off. Safari reads only
+     the prefixed selection property. */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 /* The day rule is `border-subtle-01`, the token the row rules already use on
    every row, the Unassigned tint included. */
@@ -476,6 +482,7 @@ button.scheduler-row-head__num::after {
      data.js stops the scroll once the hold completes. */
   touch-action: manipulation;
   -webkit-touch-callout: none;
+  -webkit-user-select: none;
   user-select: none;
 }
 .scheduler-bar:hover { background: var(--scheduler-hover); }

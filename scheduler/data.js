@@ -8407,7 +8407,7 @@
     }, () => {});
   }
 
-  /* ── Right-click an empty cell ─────────────────────────────────────────────
+  /* ── Right-click or hold an empty cell ─────────────────────────────────────
      New trip here fills in the two things a cell knows: the row's bus and the
      column's day. The day comes from the pointer's offset across the track,
      because bars are placed by percentage inside one track and there is no
@@ -8452,12 +8452,14 @@
     window.Rux?.menu?.open?.(menu, null);
   }
 
-  gridEl.addEventListener('contextmenu', e => {
-    const track = e.target.closest('.scheduler-track');
-    if (!track || e.target.closest('.scheduler-bar, .scheduler-bar-shortcuts')) return;
-    if (!shown) return;
-    e.preventDefault();
+  // The empty cell's track under a press, or null for a bar, its shortcuts or
+  // anywhere off the tracks.
+  const cellTrack = target => {
+    const track = target.closest('.scheduler-track');
+    return !track || target.closest('.scheduler-bar, .scheduler-bar-shortcuts') ? null : track;
+  };
 
+  function openCellMenu(track, e) {
     const box = track.getBoundingClientRect();
     const days = parseInt(getComputedStyle(gridEl).getPropertyValue('--scheduler-days'), 10) || 7;
     const index = Math.min(days - 1, Math.max(0, Math.floor((e.clientX - box.left) / (box.width / days))));
@@ -8465,8 +8467,41 @@
       startDate: iso(addDays(shown, index)),
       busId: track.dataset.unassigned ? null : (track.dataset.busId || null),
     };
-
     popMenuAt(cellMenu, e);
+  }
+
+  gridEl.addEventListener('contextmenu', e => {
+    const track = cellTrack(e.target);
+    if (!track || !shown) return;
+    e.preventDefault();
+    openCellMenu(track, e);
+  });
+
+  /* A finger opens the same menu by holding still on an empty cell, timed and
+     bounded the way a bar's hold is. iOS sends no `contextmenu` for a hold, so
+     this is the only way in there; Android sends one as its own hold
+     completes, after this has opened the menu, and opening an open menu again
+     changes nothing. Travel past the slop is a scroll or a week swipe, and
+     ends the hold. */
+  gridEl.addEventListener('pointerdown', down => {
+    if (down.pointerType !== 'touch' || !down.isPrimary) return;
+    const track = cellTrack(down.target);
+    if (!track || !shown) return;
+    const mine = e => e.pointerId === down.pointerId;
+    const move = e => {
+      if (mine(e) && Math.hypot(e.clientX - down.clientX, e.clientY - down.clientY) > TOUCH_SLOP) end();
+    };
+    const up = e => { if (mine(e)) end(); };
+    const end = () => {
+      clearTimeout(hold);
+      gridEl.removeEventListener('pointermove', move);
+      gridEl.removeEventListener('pointerup', up);
+      gridEl.removeEventListener('pointercancel', up);
+    };
+    const hold = setTimeout(() => { end(); openCellMenu(track, down); }, TOUCH_HOLD_MS);
+    gridEl.addEventListener('pointermove', move);
+    gridEl.addEventListener('pointerup', up);
+    gridEl.addEventListener('pointercancel', up);
   });
 
   /* The bar's own menu: Open trip, Take off this bus, Color and Cancel trip.

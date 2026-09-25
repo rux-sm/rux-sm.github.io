@@ -709,9 +709,9 @@
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items" id="scheduler-viewer-copies" role="menu" tabindex="-1" hidden></ul>
 
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items" id="scheduler-view-menu" role="menu" tabindex="-1" hidden>
-    <!-- New trip opens a blank editor. Right-clicking an empty cell prefills
-         the bus and the day, but the Unassigned row hides when it is empty and
-         a touch screen may offer no right-click, so this item stays. -->
+    <!-- New trip opens a blank editor. Right-clicking or holding an empty cell
+         prefills the bus and the day, but the Unassigned row hides when it is
+         empty, so this item stays. -->
     <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-menu-new-trip">
       <!-- An empty selection slot. In a menu with selectable items every row
            keeps the checkmark column, or its label lands in that column and
@@ -782,7 +782,7 @@
     </li>
   </ul>
 
-  <!-- The board's context menu, opened by right-clicking an empty cell. data.js
+  <!-- The board's context menu, opened by right-clicking or holding an empty cell. data.js
        places it at the pointer and opens it through Rux.menu.open, which
        supplies Escape, outside press and focus return. The module repositions
        only position: fixed surfaces, so this absolute one keeps its place. -->

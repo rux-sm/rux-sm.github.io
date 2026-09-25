@@ -19,8 +19,8 @@ done and how.
 - The driver page, §4 of `scheduler/docs/screen-inventory.md`, is not built
   yet.
 - The forms page draws the driver envelope, the driver itinerary and the
-  customer quote. The printed schedule, an hours-of-service form and a
-  passenger roster are still named for it; which comes next is undecided.
+  customer quote. An hours-of-service form and a passenger roster are still
+  named for it, after the printed schedule.
 
 ## Pixels
 

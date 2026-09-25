@@ -108,11 +108,13 @@ follows the theme the person keeps and the sheet on it carries the light one,
 so the ink drawn there is the ink that prints.
 
 The pages in `share/` are for people without a log-in, who arrive by a link:
-`share/document.html` opens a trip document, and `share/maintenance.html`
-shows the maintenance crew two weeks of buses and the recent changes. Staff
-see the same schedule inside the app at `maintenance.html`, from the side nav,
-where they copy the public link to send and replace it when it has gone
-further than it should.
+`share/document.html` opens a trip document, `share/maintenance.html`
+shows the maintenance crew two weeks of buses and the recent changes, and
+`share/driver.html` shows a driver the trips dispatch sent them to accept or
+decline. Staff see the same schedule inside the app at `maintenance.html`,
+from the side nav, where they copy the public link to send and replace it
+when it has gone further than it should, and a driver's page at
+`driver-view.html`, from See their page on the Drivers page.
 
 Staff can also work the schedule from the Claude app, which asks the
 `scheduler-connector` Edge Function, this project's only one, with its source

@@ -573,9 +573,10 @@
   async function drawLink() {
     const section = $('scheduler-driver-link-section');
     const note = $('scheduler-driver-link-text');
-    const copy = $('scheduler-driver-link-copy');
+    const copy = $('scheduler-driver-link-button');
     section.hidden = false;
     copy.hidden = true;
+    $('scheduler-driver-view').href = `driver-view.html?driver=${encodeURIComponent(loaded.id)}`;
     note.textContent = 'Loading…';
     const { data, error } = await client.rpc('get_driver_schedule_share_for_driver', { p_driver_id: loaded.id });
     if (error) { note.textContent = "The link didn't load."; return; }

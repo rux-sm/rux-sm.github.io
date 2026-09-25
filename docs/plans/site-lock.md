@@ -135,17 +135,17 @@ Other improvements wait until it is live and the old links forward to it.
   Maps, and the spot time, or the report time for a relief driver.
 - **Who to call.** The trip's day-of contact, falling back to the second
   contact and then the booking contact, with Call and Text.
-- **The role.** For a relief driver, who they take over from, the handoff
-  time and place and dispatch's instructions, or a line saying dispatch will
-  send them.
+- **The role.** For a relief driver, the handoff time and dispatch's
+  instructions, or a line saying dispatch will send them.
 - **The crew.** Everyone else on the trip, grouped by bus with the driver's
   own bus first as "Your bus", each with Call and Text. Past two buses the
   rest fold under View all crew.
 - **Notes.** The trip's notes, folded after 240 characters under View full
   notes.
 - **Documents.** Each itinerary file, newest version, marked Updated when it
-  replaced one, and the driver's envelope, drawn by `print.js`'s envelope
-  form for this driver alone. An itinerary opens through
+  replaced one. rux-ui also shows the driver's envelope; this page will too,
+  drawn by `print.js`'s envelope form for this driver alone, once that form
+  can draw outside the forms page. An itinerary opens through
   `trip-document-link` once `site-paperwork-lock.md` is built, and by its
   public address until then.
 - **Telling the boards.** An answer sends the `driver-status-changed` message
@@ -155,6 +155,14 @@ Other improvements wait until it is live and the old links forward to it.
   with Try again. No current legs: "No current assignments", and that new
   ones appear here. A load that fails: say so, with Try again.
 - **Times** read in Central time, as rux-ui's do.
+- **Staff see a driver's page inside the app,** as the maintenance schedule
+  is seen: `scheduler/driver-view.html`, with the full header and side nav,
+  opened by See their page on each driver in the Drivers page, with a driver
+  picker at the top. It draws the driver's page with the same script, from
+  the driver's link read through `get_driver_schedule_share_for_driver`, and
+  shows the link with a Copy button. Accept and Decline show but are
+  disabled, because staff set a driver's status from the trip. A driver with
+  no link is told to get one from rux-ui, which makes the links.
 
 ## Questions
 
@@ -167,8 +175,12 @@ None open.
       `trip_driver_statuses`, and `confirm_trip_assignment` taking it beside
       the answer. rux-ui's page keeps working without sending it. Shown to rux
       before it runs; tested on PGlite first.
-- [ ] Build the driver page, tested against a real link without accepting or
-      declining, and the change list against invented trips.
+- [ ] rux says yes to `driver_accepted_view`, shown in the session that
+      built the page and tested on PGlite, and it is applied.
+- [ ] Move the envelope form out of `print.js`'s page start-up, so the
+      driver page can draw the driver's envelope, and add it there.
+- [ ] rux opens Driver view from a driver on the Drivers page, and a real
+      link on the phone, and accepts one real trip there.
 - [ ] Turn rux-ui's four link pages into forwarders and switch its link-making
       code to the new addresses.
 - [ ] Migration `profiles_sees_all_apps_drop`: drop the column, which no code

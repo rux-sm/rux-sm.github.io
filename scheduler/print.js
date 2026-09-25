@@ -1261,11 +1261,12 @@
         roleName(subject.seat?.role),
         String(subject.seat?.drivers?.name || nameOf(subject.seat)).trim() || null,
       ].filter(Boolean).join(' · '),
-      /* Only what dispatch would have filled in, and only on a blank one: a
-         filled envelope prints what dispatch knows and dispatch is right. The
-         day-of block is left alone on both, because the driver's pen fills it
+      /* What dispatch fills in can be typed over, filled or blank, as the
+         itinerary and the quote can, for a change the trip does not hold yet.
+         The day-of block is left alone, because the driver's pen fills it
          after the trip. */
       typed: {
+        always: true,
         fields: [
           '.scheduler-envelope__value',
           '.scheduler-envelope__blank',

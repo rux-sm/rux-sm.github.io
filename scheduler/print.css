@@ -1354,10 +1354,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   .scheduler-customer-quote__add { display: none; }
 }
 
-/* ── A BLANK ONE ──────────────────────────────────────────────────────────
-   Fields on a blank form can be typed into before it is printed. The dotted
-   rule says which, and it is a screen rule: on paper there is only what was
-   typed, on a form as empty as one from the drawer. */
+/* ── WHAT CAN BE TYPED ────────────────────────────────────────────────────
+   Fields on a form can be typed into before it is printed. The dotted rule
+   says which, and it is a screen rule: on paper there is only what was
+   typed, as on a form from the drawer. */
 @media screen {
   [data-typed] { border-block-end: 1px dotted var(--rux-border-strong-01); }
 

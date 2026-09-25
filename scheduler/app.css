@@ -2089,6 +2089,86 @@ button.scheduler-row-head__num::after {
   transition: transform 200ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
 
+/* ── The Contacts window ────────────────────────────────────────────────────
+   Opened from the Contacts slot: a card for each person to reach about the
+   trip, their name over their role and number, with Call and Text beside them.
+   It is fixed to the window, on the raised layer menus use, with their shadow
+   and above the sheet and the trip panel; data.js places it by the slot, or
+   across the phone just above the docked slots, and caps its height to the
+   room there, the list scrolling inside it. */
+.scheduler-contacts {
+  position: fixed;
+  z-index: 9000;
+  inline-size: min(22rem, calc(100vw - 2 * var(--rux-spacing-03)));
+  display: flex;
+  flex-direction: column;
+  background: var(--rux-layer-01);
+  color: var(--rux-text-primary);
+  border: 1px solid var(--rux-border-subtle-01);
+  border-radius: var(--scheduler-surface-radius, 0);
+  box-shadow: 0 2px 6px var(--rux-shadow, rgba(0, 0, 0, 0.3));
+  overflow: hidden;
+}
+.scheduler-contacts[hidden] { display: none; }
+/* Docked, it runs across the phone with the gutter at either side. */
+.scheduler-contacts[data-docked] { inset-inline: var(--rux-spacing-03); inline-size: auto; }
+.scheduler-contacts__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline-start: var(--rux-spacing-05);
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+}
+.scheduler-contacts__title {
+  margin: 0;
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--rux-heading-compact-01-line-height);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+}
+.scheduler-contacts__list {
+  display: grid;
+  gap: var(--rux-spacing-03);
+  padding: var(--rux-spacing-03);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.scheduler-contacts__empty { margin: 0; padding: var(--rux-spacing-03); color: var(--rux-text-secondary); }
+/* A card: the person on the left, their two buttons on the right, the buttons
+   wrapping under the name where the card is too narrow for both. */
+.scheduler-contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--rux-spacing-03) var(--rux-spacing-04);
+  padding: var(--rux-spacing-04);
+  background: var(--rux-layer-02);
+  border-radius: var(--scheduler-shortcut-radius, var(--scheduler-surface-radius, 0));
+}
+.scheduler-contact__who { display: grid; flex: 1 1 10rem; min-inline-size: 0; }
+.scheduler-contact__name,
+.scheduler-contact__meta { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scheduler-contact__name {
+  font-size: var(--rux-body-compact-02-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--rux-body-compact-02-line-height);
+}
+.scheduler-contact__meta {
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  font-variant-numeric: tabular-nums;
+}
+.scheduler-contact__actions { display: flex; gap: var(--rux-spacing-03); flex: none; }
+.scheduler-contact__action { max-inline-size: none; }
+/* On the phone the two buttons share the card's width under the name, a
+   thumb's target each. */
+.scheduler-contacts[data-docked] .scheduler-contact__actions { flex: 1 1 100%; }
+.scheduler-contacts[data-docked] .scheduler-contact__action { flex: 1 1 0; }
+.scheduler-contacts:focus { outline: none; }
+
 /* ── The docked shortcut bar ────────────────────────────────────────────────
    A block one slot wide has nothing for the shortcut bar to float beside, so
    the bar docks to the bottom edge instead and, having the width down there,

@@ -7241,15 +7241,21 @@
   const TIP_GAP = 4;
   let peekBar = null;
   let poppedFor = null;
+  // The Contacts window, while it is open: its overlay registration and slot.
+  let contactsOpen = null;
   function placeBarOpen(bar = (peekBar?.isConnected ? peekBar : null) ?? selectedBar()) {
     if (!barShortcuts) return;
     const none = !bar?.dataset.tripId || gridEl.querySelector('.scheduler-bar--dragging');
     barShortcuts.hidden = none;
+    // The Contacts window goes with its trip when it is put down.
+    if (none && contactsOpen) closeContacts(false);
     if (none) { poppedFor = null; schEl.style.removeProperty('--scheduler-docked-h'); return; }
     if (barShortcuts.previousElementSibling !== bar) bar.after(barShortcuts);
     // A hovered bar that is not the selected one shows its card alone.
     barShortcuts.toggleAttribute('data-peek', bar !== selectedBar());
     drawShortcuts(bar);
+    // And with its slot, when the slots are drawn again for another trip.
+    if (contactsOpen && !contactsOpen.slot.isConnected) closeContacts(false);
     /* The card pops each time it comes to a trip, and not while it follows
        the same one through a scroll or a redraw. It starts once the bar is
        placed, because the pop's scale would shrink what the placing measures. */
@@ -10443,73 +10449,107 @@
       whenSafe(() => { openRef(ref); requestAnimationFrame(toBox); });
     } };
 
-  /* Contacts opens a menu of everyone to reach about this bar: the booking
-     contact, each day-of contact, then the crew on this bus, each with Call and
-     Text and their role at the end. Call dials. Text opens the phone's own
-     messages, except a driver's on a computer, which opens the office's Google
-     Messages conversation with them where the Drivers page holds one. Anyone
-     without a number is left out. */
-  const contactsMenu = document.getElementById('scheduler-contacts-menu');
+  /* Contacts opens a small window of everyone to reach about this bar: a card
+     each for the booking contact, every day-of contact, then the crew on this
+     bus, with their role and number and a Call and a Text button. Call dials.
+     Text opens the phone's own messages, except a driver's on a computer, which
+     opens the office's Google Messages conversation with them where the
+     Drivers page holds one. Anyone without a number is left out. It stands
+     above the slots on the docked sheet and beside the slot on a wide board,
+     and Design's overlay closes it on Escape or a press outside. */
+  const contactsBox = document.getElementById('scheduler-contacts');
+  const contactsList = document.getElementById('scheduler-contacts-list');
   const CONTACTS = { id: 'contacts', label: 'Call or text', short: 'Contacts', icon: '#m-call', blocked: () => null,
     run: (bar, slot) => openContactsFrom(bar, slot) };
   const FIXED_SHORTCUTS = { add_update: ADD_UPDATE, contacts: CONTACTS };
   const dial = phone => String(phone).replace(/[^\d+]/g, '');
+  function closeContacts(restoreFocus) {
+    if (!contactsOpen) return;
+    const { registration, slot } = contactsOpen;
+    contactsOpen = null;
+    registration?.release();
+    contactsBox.hidden = true;
+    if (restoreFocus && slot?.isConnected) slot.focus();
+  }
+  function placeContacts(slot) {
+    const gap = 8;
+    const box = slot.getBoundingClientRect();
+    contactsBox.style.removeProperty('inset-block-start');
+    contactsBox.style.removeProperty('inset-block-end');
+    contactsBox.style.removeProperty('inset-inline-start');
+    const docked = barShortcuts.hasAttribute('data-docked');
+    contactsBox.toggleAttribute('data-docked', docked);
+    if (docked) {
+      // Across the phone, just above the slots, with the room above them to scroll in.
+      contactsBox.style.insetBlockEnd = `${Math.round(window.innerHeight - box.top + gap)}px`;
+      contactsBox.style.maxBlockSize = `${Math.round(box.top - 2 * gap)}px`;
+      return;
+    }
+    const width = contactsBox.offsetWidth;
+    const left = Math.max(gap, Math.min(box.left, document.documentElement.clientWidth - width - gap));
+    contactsBox.style.insetInlineStart = `${Math.round(left)}px`;
+    const below = window.innerHeight - box.bottom - 2 * gap;
+    if (below >= Math.min(contactsBox.scrollHeight, 320) || below >= box.top) {
+      contactsBox.style.insetBlockStart = `${Math.round(box.bottom + gap)}px`;
+      contactsBox.style.maxBlockSize = `${Math.round(below)}px`;
+    } else {
+      contactsBox.style.insetBlockEnd = `${Math.round(window.innerHeight - box.top + gap)}px`;
+      contactsBox.style.maxBlockSize = `${Math.round(box.top - 2 * gap)}px`;
+    }
+  }
   function openContactsFrom(bar, slot) {
     const trip = panelIndex.trips.get(bar.dataset.tripId);
-    if (!contactsMenu || !trip) return;
+    if (!contactsBox || !trip) return;
+    closeContacts(false);
     const docked = barShortcuts.hasAttribute('data-docked');
-    const people = [
-      [tripContact(trip, 0), 'Booking'],
-      ...[1, 2, 3, 4, 5].map(n => [tripContact(trip, n), 'Day-of']),
-    ].filter(([c]) => c?.phone).map(([c, role]) => ({ name: c.name, role, phone: c.phone, texting: null }));
-    const crew = (barFacts.get(bar)?.crew ?? []).filter(c => c.phone || c.texting);
-    const item = (icon, words, role, href, away) => {
-      const li = el('li', 'rux--menu-item');
-      li.setAttribute('role', 'menuitem');
-      li.tabIndex = -1;
-      li.dataset.href = href;
-      if (away) li.dataset.away = 'true';
-      const glyph = el('div', 'rux--menu-item__icon');
-      glyph.appendChild(svgUse(icon, '16', '0 0 32 32'));
-      li.append(glyph, el('div', 'rux--menu-item__label', words), el('div', 'rux--menu-item__shortcut', role));
-      return li;
-    };
-    const rows = [];
-    const group = list => {
-      if (!list.length) return;
-      if (rows.length) {
-        const rule = el('li', 'rux--menu-item-divider');
-        rule.setAttribute('role', 'separator');
-        rows.push(rule);
-      }
-      for (const p of list) {
-        if (p.phone) rows.push(item('#m-call', `Call ${p.name}`, p.role, `tel:${dial(p.phone)}`));
-        const messages = p.texting && !docked;
-        if (messages || p.phone) rows.push(item('#m-chat', `Text ${p.name}`, p.role, messages ? p.texting : `sms:${dial(p.phone)}`, messages));
-      }
-    };
-    group(people);
-    group(crew);
-    if (!rows.length) {
-      const none = el('li', 'rux--menu-item rux--menu-item--disabled');
-      none.setAttribute('role', 'menuitem');
-      none.setAttribute('aria-disabled', 'true');
-      none.appendChild(el('div', 'rux--menu-item__label', 'No phone numbers on this trip'));
-      rows.push(none);
+    /* The customer's side, one card per person: the booking contact who is
+       also a day-of contact, by name and number, is one card saying both. */
+    const people = [];
+    for (const [c, day] of [[tripContact(trip, 0), false], ...[1, 2, 3, 4, 5].map(n => [tripContact(trip, n), true])]) {
+      if (!c?.phone) continue;
+      const same = people.find(p => p.name === c.name && dial(p.phone) === dial(c.phone));
+      if (same) { if (day && !same.day) { same.day = true; same.role = 'Booking and day-of contact'; } continue; }
+      people.push({ name: c.name, role: day ? 'Day-of contact' : 'Booking contact', day, phone: c.phone, texting: null });
     }
-    contactsMenu.replaceChildren(...rows);
-    const box = slot.getBoundingClientRect();
-    popMenuAt(contactsMenu, { clientX: box.left, clientY: docked ? box.top : box.bottom });
+    const crew = (barFacts.get(bar)?.crew ?? []).filter(c => c.phone || c.texting);
+    const button = (words, icon, href, away) => {
+      const a = el('a', 'rux--btn rux--btn--secondary rux--layout--size-md scheduler-contact__action', words);
+      a.href = href;
+      if (away) { a.target = '_blank'; a.rel = 'noopener'; }
+      const glyph = svgUse(icon, '16', '0 0 32 32');
+      glyph.classList.add('rux--btn__icon');
+      a.appendChild(glyph);
+      return a;
+    };
+    const card = p => {
+      const c = el('div', 'scheduler-contact');
+      const who = el('div', 'scheduler-contact__who');
+      who.append(el('strong', 'scheduler-contact__name', p.name),
+        el('span', 'scheduler-contact__meta', [p.role, p.phone ? showPhone(p.phone) : null].filter(Boolean).join(' · ')));
+      const acts = el('div', 'scheduler-contact__actions');
+      if (p.phone) acts.appendChild(button('Call', '#m-call', `tel:${dial(p.phone)}`));
+      const messages = p.texting && !docked;
+      if (messages || p.phone) acts.appendChild(button('Text', '#m-chat', messages ? p.texting : `sms:${dial(p.phone)}`, messages));
+      c.append(who, acts);
+      return c;
+    };
+    const cards = [...people, ...crew].map(card);
+    contactsList.replaceChildren(...(cards.length ? cards : [el('p', 'scheduler-contacts__empty', 'No phone numbers on this trip.')]));
+    contactsBox.hidden = false;
+    placeContacts(slot);
+    const registration = window.Rux?.overlay?.register?.({
+      element: contactsBox, anchor: slot,
+      close: opts => closeContacts(!!opts?.restoreFocus),
+      reposition: () => { if (contactsOpen?.slot.isConnected) placeContacts(contactsOpen.slot); else closeContacts(false); },
+    });
+    contactsOpen = { registration, slot };
+    // The window takes focus itself, so Tab starts at its first button and a
+    // tap shows no ring on one.
+    contactsBox.focus();
   }
-  contactsMenu?.addEventListener('click', e => {
-    const li = e.target.closest('.rux--menu-item[data-href]');
-    if (!li) return;
-    window.Rux?.menu?.close?.(contactsMenu);
-    contactsMenu.hidden = true;
-    if (li.dataset.away) window.open(li.dataset.href, '_blank', 'noopener');
-    else window.location.href = li.dataset.href;
-  });
-  contactsMenu?.addEventListener('rux:menu-closed', () => { contactsMenu.hidden = true; });
+  document.getElementById('scheduler-contacts-close')?.addEventListener('click', () => closeContacts(true));
+  // A tap on Call or Text follows its link and puts the window away.
+  contactsList?.addEventListener('click', e => { if (e.target.closest('.scheduler-contact__action')) closeContacts(false); });
 
   /* THE CARD'S ROWS, as the shortcut bar draws them under its slots: a red
      band while this bar's bus does not fit the trip, the reminder while the

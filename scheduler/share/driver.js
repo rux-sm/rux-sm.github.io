@@ -164,13 +164,12 @@
     return ids.map(id => requirementNames.get(id) || LEGACY_NAMES[id] || id);
   };
 
-  // The day-of contact first, then the second, then whoever booked, which
-  // the card names as such, since they may not be on the trip.
+  // The day-of contact first, then the second, then whoever booked.
   const contactOf = trip => [
-    [trip.trip_contact_1_name, trip.trip_contact_1_phone, true],
-    [trip.trip_contact_2_name, trip.trip_contact_2_phone, true],
-    [trip.booking_contact_name, trip.booking_contact_phone, false],
-  ].map(([name, tel, dayOf]) => ({ name: clean(name), phone: clean(tel), dayOf })).find(c => c.name || c.phone) || null;
+    [trip.trip_contact_1_name, trip.trip_contact_1_phone],
+    [trip.trip_contact_2_name, trip.trip_contact_2_phone],
+    [trip.booking_contact_name, trip.booking_contact_phone],
+  ].map(([name, tel]) => ({ name: clean(name), phone: clean(tel) })).find(c => c.name || c.phone) || null;
 
   // The newest file of each itinerary label, marked Updated when it replaced one.
   const itinerariesOf = trip => {
@@ -384,10 +383,12 @@
     return s;
   };
 
-  // The day-of contact, named for whoever it turned out to be, in bold
-  // because on the day it is the one call the driver makes.
-  const contactSection = c => section(c.dayOf ? 'Day-of contact' : 'Booking contact',
-    person(c.name || 'No name given', c.phone ? phone(c.phone) : '', c.phone, true));
+  /* WHO TO CALL, each under a one-word label: the trip's contact, then the
+     crew by their role, as Co-driver or Relief. Every one reads the same, the
+     name in bold and the number under it. */
+  const CREW_LABEL = { 'Co-driver': 'Co-driver', 'Relief driver': 'Relief', 'Driver': 'Driver' };
+  const callSection = (label, name, tel) =>
+    section(label, person(name || 'No name given', tel ? phone(tel) : '', tel, true));
 
   /* THE LEG'S PAPERWORK, where the details are, at the foot of the card
      for whoever wants more than the card gives: the itinerary file uploaded
@@ -533,30 +534,25 @@
     // The answer under what it answers, then who to call on the day.
     const response = responseOf(l, card);
     if (response) card.appendChild(response);
-    if (l.contact) card.appendChild(contactSection(l.contact));
+    if (l.contact) card.appendChild(callSection('Contact', l.contact.name, l.contact.phone));
 
-    if (l.crew.length) {
-      const list = el('div', 'scheduler-leg-card__crew');
-      l.crew.forEach((bus, i) => {
-        const group = el('div', 'scheduler-leg-card__bus');
-        group.appendChild(el('p', 'rux--type-label-01 scheduler-leg-card__bus-name', bus.mine ? 'Your bus' : `Bus ${bus.bus || 'not set'}`));
-        for (const p of bus.people) group.appendChild(person(p.name, p.role, p.phone));
-        group.hidden = i > 1;
-        list.appendChild(group);
+    // The driver's own bus first; another bus's crew says which bus.
+    const crew = l.crew.flatMap(bus => bus.people.map(p => callSection(
+      [CREW_LABEL[p.role] || p.role, bus.mine ? '' : `Bus ${bus.bus || 'not set'}`].filter(Boolean).join(' · '), p.name, p.phone)));
+    // A big trip's crew past the first three waits behind a button.
+    crew.forEach((c, i) => { c.hidden = i > 2; card.appendChild(c); });
+    if (crew.length > 3) {
+      const all = `Show all crew (${crew.length})`;
+      const more = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', all);
+      more.type = 'button';
+      more.setAttribute('aria-expanded', 'false');
+      more.addEventListener('click', () => {
+        const open = more.getAttribute('aria-expanded') !== 'true';
+        more.setAttribute('aria-expanded', String(open));
+        crew.forEach((c, i) => { if (i > 2) c.hidden = !open; });
+        more.textContent = open ? 'Show less crew' : all;
       });
-      const all = `View all crew (${l.crew.reduce((n, b) => n + b.people.length, 0)})`;
-      const more = l.crew.length > 2 ? el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', all) : null;
-      if (more) {
-        more.type = 'button';
-        more.setAttribute('aria-expanded', 'false');
-        more.addEventListener('click', () => {
-          const open = more.getAttribute('aria-expanded') !== 'true';
-          more.setAttribute('aria-expanded', String(open));
-          [...list.children].forEach((g, i) => { if (i > 1) g.hidden = !open; });
-          more.textContent = open ? 'Show less crew' : all;
-        });
-      }
-      card.appendChild(section('Crew', list, more));
+      card.appendChild(more);
     }
     card.appendChild(section(null, paperworkOf(l)));
     return card;

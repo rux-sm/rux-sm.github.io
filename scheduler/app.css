@@ -2783,10 +2783,7 @@ html:has(.scheduler-page[data-takeover]) {
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
 .scheduler-leg-card__actions { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-02); }
-.scheduler-leg-card__crew,
-.scheduler-leg-card__bus { display: grid; gap: var(--rux-spacing-04); }
-.scheduler-leg-card__bus-name { margin: 0; color: var(--rux-text-secondary); }
-.scheduler-leg-card__bus[hidden] { display: none; }
+.scheduler-leg-card__section[hidden] { display: none; }
 /* Where to be and when, under the head and before the answer. */
 .scheduler-leg-card__plan { display: grid; gap: var(--rux-spacing-02); }
 .scheduler-leg-card__plan p,

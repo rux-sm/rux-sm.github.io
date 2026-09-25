@@ -2134,6 +2134,24 @@ button.scheduler-row-head__num::after {
   overscroll-behavior: contain;
 }
 .scheduler-contacts__empty { margin: 0; padding: var(--rux-spacing-03); color: var(--rux-text-secondary); }
+/* Each part's name, Customer, the bus and Other buses, in label type over its
+   cards; the space above it parts the groups. */
+.scheduler-contacts__part {
+  margin: var(--rux-spacing-03) 0 0;
+  padding-inline: var(--rux-spacing-02);
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-label-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+.scheduler-contacts__part:first-child { margin-block-start: 0; }
+/* Text all drivers spans the list under its part's name. */
+.scheduler-contacts__all { inline-size: 100%; max-inline-size: none; }
+/* A driver's status in its colour, as the bar's crew marks carry it. */
+.scheduler-contact__status--success { color: var(--rux-support-success); }
+.scheduler-contact__status--warning { color: var(--rux-support-warning); }
+.scheduler-contact__status--error { color: var(--rux-support-error); }
 /* A card: the person on the left, their two buttons on the right, the buttons
    wrapping under the name where the card is too narrow for both. */
 .scheduler-contact {
@@ -2161,7 +2179,7 @@ button.scheduler-row-head__num::after {
   letter-spacing: var(--rux-label-01-letter-spacing);
   font-variant-numeric: tabular-nums;
 }
-.scheduler-contact__actions { display: flex; gap: var(--rux-spacing-03); flex: none; }
+.scheduler-contact__actions { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); flex: none; }
 .scheduler-contact__action { max-inline-size: none; }
 /* On the phone the two buttons share the card's width under the name, a
    thumb's target each. */

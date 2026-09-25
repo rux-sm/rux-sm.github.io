@@ -188,10 +188,15 @@ a one-day trip bar is at the narrowest day column, because that column is
 sized from this bar. A padding slot
 shows a dashed circle and opens Customize shortcuts; a fourth action and
 beyond are added from the right-click menu. Contacts and Add update close
-every row: Contacts opens a small window with a card for the booking
-contact, each day-of contact and the crew on that bus, each with its role,
-number, and Call and Text buttons, a driver's Text opening their Google
-Messages link on a computer where the Drivers page holds one. A shortcut
+every row: Contacts opens a small window of cards in three parts, the
+customer's people, the crew on that bus and the crew on the trip's other
+buses for that leg, each with its role, number, and Call and Text buttons,
+Email for a booking contact who has one, and a driver's status and report
+time. A person with no number says so, with Add number. Two drivers or more
+add Text all drivers, one group message. A driver's Text opens their Google
+Messages link on a computer where the Drivers page holds one. A call, text
+or email to the customer's people offers to add it to the trip's updates,
+and writes nothing if the offer is ignored. A shortcut
 that cannot act on the trip, such as the envelope on a bus with no driver, shows faint
 with the reason as its label. Escape clears the selection and takes the bar
 with it. The

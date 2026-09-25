@@ -768,9 +768,8 @@
   }
 
   // -- drawing --------------------------------------------------------------
-  /* What each bar knows about its bus, its trip's needs and its crew, for the
-     trip's card and the Contacts menu: `{ needs, misfits, crew }`, set as the
-     bar is drawn. */
+  /* What each bar knows about its bus and its trip's needs, for the trip's
+     card: `{ needs, misfits }`, set as the bar is drawn. */
   const barFacts = new WeakMap();
   const addRow = (bar, cls, ...parts) => {
     const r = el('div', `scheduler-bar__row ${cls}`);
@@ -879,7 +878,7 @@
         const row = statuses?.get(statusKey(trip.id, d.driver_id, leg, r.role)) ?? null;
         const value = row ? row.status : on.get(r.role);
         crew.push({
-          ...r, leg, row, driverId: d.driver_id, who: driversById.get(d.driver_id),
+          ...r, leg, row, driverId: d.driver_id, who: driversById.get(d.driver_id), reportTime: d.report_time ?? null,
           status: DRIVER_STATUSES.find(x => x.value === value) ?? DRIVER_STATUSES[0],
         });
       }
@@ -1069,10 +1068,6 @@
     const crew = assign ? crewOf(trip, assign, driversById, statuses).filter(c => !(placeholder && c.needed)) : [];
     const crewBox = el('span', 'scheduler-bar__crew', assign || placeholder ? null : 'Needs a bus');
     crewBox.append(...crew.map(crewEl));
-    // Who is on this bus, for the Contacts shortcut's menu.
-    barFacts.get(bar).crew = crew.filter(c => c.who).map(c => ({
-      role: c.label, name: c.who.name, phone: c.who.phone || null, texting: c.who.texting_url || null,
-    }));
     addRow(bar, 'scheduler-bar__drivers', crewBox, msg('drivers'));
 
     /* The compact board's label. Not a row, so the full board never draws it
@@ -10449,14 +10444,24 @@
       whenSafe(() => { openRef(ref); requestAnimationFrame(toBox); });
     } };
 
-  /* Contacts opens a small window of everyone to reach about this bar: a card
-     each for the booking contact, every day-of contact, then the crew on this
-     bus, with their role and number and a Call and a Text button. Call dials.
-     Text opens the phone's own messages, except a driver's on a computer, which
-     opens the office's Google Messages conversation with them where the
-     Drivers page holds one. Anyone without a number is left out. It stands
-     above the slots on the docked sheet and beside the slot on a wide board,
-     and Design's overlay closes it on Escape or a press outside. */
+  /* Contacts opens a small window of everyone to reach about this bar, in
+     three parts: the customer's people, the crew on this bus, and the crew on
+     the trip's other buses for the same leg. Each is a card, their name over
+     their role and number, with Call and Text, and Email for the booking
+     contact who has one. A driver's card adds their status and report time. A
+     person with no number stays, saying so, with a button to add one: the
+     trip for the customer's people, the Drivers page for a driver. Two drivers
+     or more get one Text all drivers, a group message to every driver on the
+     leg. Text opens the phone's own messages, except a driver's on a computer,
+     which opens the office's Google Messages conversation with them where the
+     Drivers page holds one.
+
+     A call or text to the customer's people offers, in a notice, to add it to
+     the trip's updates; ignored, nothing is written. Calls to drivers offer
+     nothing, because updates are what was said to the customer.
+
+     It stands above the slots on the docked sheet and beside the slot on a
+     wide board, and Design's overlay closes it on Escape or a press outside. */
   const contactsBox = document.getElementById('scheduler-contacts');
   const contactsList = document.getElementById('scheduler-contacts-list');
   const CONTACTS = { id: 'contacts', label: 'Call or text', short: 'Contacts', icon: '#m-call', blocked: () => null,
@@ -10502,39 +10507,99 @@
     if (!contactsBox || !trip) return;
     closeContacts(false);
     const docked = barShortcuts.hasAttribute('data-docked');
+
     /* The customer's side, one card per person: the booking contact who is
        also a day-of contact, by name and number, is one card saying both. */
     const people = [];
     for (const [c, day] of [[tripContact(trip, 0), false], ...[1, 2, 3, 4, 5].map(n => [tripContact(trip, n), true])]) {
-      if (!c?.phone) continue;
-      const same = people.find(p => p.name === c.name && dial(p.phone) === dial(c.phone));
+      if (!c?.name) continue;
+      const same = people.find(p => p.name === c.name && dial(p.phone || '') === dial(c.phone || ''));
       if (same) { if (day && !same.day) { same.day = true; same.role = 'Booking and day-of contact'; } continue; }
-      people.push({ name: c.name, role: day ? 'Day-of contact' : 'Booking contact', day, phone: c.phone, texting: null });
+      people.push({ name: c.name, role: day ? 'Day-of contact' : 'Booking contact', day, phone: c.phone || null,
+        email: day ? null : c.email || null, customer: true });
     }
-    const crew = (barFacts.get(bar)?.crew ?? []).filter(c => c.phone || c.texting);
-    const button = (words, icon, href, away) => {
+    // The crew on each bus of this leg, this bar's bus first.
+    const leg = bar.dataset.leg || 'outbound';
+    const assigns = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === leg)
+      .sort((a, b) => (String(a.id) === bar.dataset.assignmentId ? -1 : String(b.id) === bar.dataset.assignmentId ? 1
+        : (a.position ?? 0) - (b.position ?? 0)));
+    const crewOfBus = a => crewOf(trip, a, panelIndex.driversById, panelIndex.statuses)
+      .filter(c => c.who)
+      .map(c => ({
+        name: c.who.name, role: c.label, driverId: c.driverId, phone: c.who.phone || null, texting: c.who.texting_url || null,
+        status: c.status, report: c.reportTime ? hhmm(c.reportTime) : null,
+        bus: a.bus_id != null ? panelIndex.buses.get(a.bus_id)?.number ?? null : null,
+      }));
+    const mine = assigns.filter(a => String(a.id) === bar.dataset.assignmentId).flatMap(crewOfBus);
+    const others = assigns.filter(a => String(a.id) !== bar.dataset.assignmentId).flatMap(crewOfBus);
+
+    const button = (words, icon, href, away, onTap) => {
       const a = el('a', 'rux--btn rux--btn--secondary rux--layout--size-md scheduler-contact__action', words);
       a.href = href;
       if (away) { a.target = '_blank'; a.rel = 'noopener'; }
+      if (onTap) a.addEventListener('click', onTap);
       const glyph = svgUse(icon, '16', '0 0 32 32');
       glyph.classList.add('rux--btn__icon');
       a.appendChild(glyph);
       return a;
     };
-    const card = p => {
+    // The offer to record a call or text to the customer's people.
+    const offer = (did, name) => () => {
+      const body = `${did} ${name}`;
+      toast('info', body, 'Add it to the trip\'s updates?', {
+        label: 'Add update',
+        onClick: async () => {
+          toast(null);
+          if (await writeUpdate(trip.id, { kind: 'update', body, keys: null })) { await show(); toast('success', 'Update added', body); }
+          else toast('warning', 'The update was not added.', 'Add it from the trip\'s Updates tab.');
+        },
+      });
+    };
+    const card = (p, where) => {
       const c = el('div', 'scheduler-contact');
       const who = el('div', 'scheduler-contact__who');
-      who.append(el('strong', 'scheduler-contact__name', p.name),
-        el('span', 'scheduler-contact__meta', [p.role, p.phone ? showPhone(p.phone) : null].filter(Boolean).join(' · ')));
+      who.appendChild(el('strong', 'scheduler-contact__name', p.name));
+      const role = el('span', 'scheduler-contact__meta');
+      role.append([where, p.role].filter(Boolean).join(' · '));
+      if (p.status) {
+        role.append(' · ', el('span', `scheduler-contact__status scheduler-contact__status--${p.status.tone}`, p.status.label));
+      }
+      if (p.report) role.append(` · reports ${p.report}`);
+      who.append(role, el('span', 'scheduler-contact__meta', p.phone ? showPhone(p.phone) : 'No number'));
       const acts = el('div', 'scheduler-contact__actions');
-      if (p.phone) acts.appendChild(button('Call', '#m-call', `tel:${dial(p.phone)}`));
+      if (p.phone) acts.appendChild(button('Call', '#m-call', `tel:${dial(p.phone)}`, false, p.customer ? offer('Called', p.name) : null));
       const messages = p.texting && !docked;
-      if (messages || p.phone) acts.appendChild(button('Text', '#m-chat', messages ? p.texting : `sms:${dial(p.phone)}`, messages));
+      if (messages || p.phone) {
+        acts.appendChild(button('Text', '#m-chat', messages ? p.texting : `sms:${dial(p.phone)}`, messages, p.customer ? offer('Texted', p.name) : null));
+      }
+      if (p.email) acts.appendChild(button('Email', '#m-mail', `mailto:${p.email}`, false, p.customer ? offer('Emailed', p.name) : null));
+      if (!p.phone && !messages) {
+        const add = p.customer
+          ? button('Add number', '#m-edit', '#', false, e => { e.preventDefault(); closeContacts(false); openSelected(); })
+          : button('Add number', '#m-edit', `drivers.html?id=${encodeURIComponent(p.driverId)}`);
+        acts.appendChild(add);
+      }
       c.append(who, acts);
       return c;
     };
-    const cards = [...people, ...crew].map(card);
-    contactsList.replaceChildren(...(cards.length ? cards : [el('p', 'scheduler-contacts__empty', 'No phone numbers on this trip.')]));
+    const part = (title, cards, extra) => {
+      if (!cards.length) return [];
+      return [el('h3', 'scheduler-contacts__part', title), ...(extra ? [extra] : []), ...cards];
+    };
+    // Every driver on the leg in one group message, from two drivers up.
+    const numbers = [...new Set([...mine, ...others].map(d => d.phone && dial(d.phone)).filter(Boolean))];
+    const all = numbers.length > 1
+      ? button(`Text all drivers (${numbers.length})`, '#m-chat', `sms:/open?addresses=${numbers.join(',')}`)
+      : null;
+    all?.classList.add('scheduler-contacts__all');
+    const own = assigns.find(a => String(a.id) === bar.dataset.assignmentId);
+    const busName = own?.bus_id != null ? panelIndex.buses.get(own.bus_id)?.number ?? null : null;
+    const rows = [
+      ...part('Customer', people.map(p => card(p))),
+      ...part(busName ? `Bus ${busName}` : 'This bus', mine.map(p => card(p)), all),
+      ...part('Other buses', others.map(p => card(p, p.bus ? `Bus ${p.bus}` : null)), mine.length ? null : all),
+    ];
+    contactsList.replaceChildren(...(rows.length ? rows : [el('p', 'scheduler-contacts__empty', 'Nobody to reach on this trip yet.')]));
     contactsBox.hidden = false;
     placeContacts(slot);
     const registration = window.Rux?.overlay?.register?.({

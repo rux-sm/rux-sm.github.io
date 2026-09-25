@@ -983,6 +983,22 @@ button.scheduler-row-head__num::after {
   padding: 0 var(--rux-spacing-02);
 }
 
+/* WHO ELSE HAS THE SCHEDULE OPEN, in the header beside the Account action's
+   own face and at its size, so the row reads as the people here. */
+.scheduler-header-people {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-02);
+  padding-inline: var(--rux-spacing-03);
+}
+.scheduler-header-people[hidden] { display: none; }
+.scheduler-header-people__more {
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  color: var(--rux-text-secondary);
+}
+
 /* The same news in words, under the editor's header: the faces sit on bars
    this panel covers, and a face is not read aloud. */
 .scheduler-presence-note {

@@ -11560,10 +11560,13 @@
      firmer of the two. */
   function presenceRead() {
     const seen = new Map();
+    const everyone = new Map();
     const state = presenceCh?.presenceState?.() ?? {};
     for (const entries of Object.values(state)) {
       for (const who of entries) {
-        if (!who?.tripId || !who.id || who.id === presenceMe?.id) continue;
+        if (!who?.id || who.id === presenceMe?.id) continue;
+        everyone.set(who.id, who);
+        if (!who.tripId) continue;
         if (!seen.has(who.tripId)) seen.set(who.tripId, new Map());
         const here = seen.get(who.tripId);
         const already = here.get(who.id);
@@ -11572,6 +11575,35 @@
     }
     presenceOthers = new Map([...seen].map(([id, here]) => [id, [...here.values()]]));
     presenceDraw();
+    peopleDraw([...everyone.values()]);
+  }
+
+  /* Everyone else with the schedule open, as faces in the header beside my own
+     on the Account action, whether or not they are on a trip. Past
+     `PRESENCE_FACES` the rest are a count, as on a bar; a phone's header has
+     room beside the logo for one face only. The faces are one image whose name
+     lists everybody, since a face is not read aloud. */
+  const peopleEl = document.getElementById('scheduler-people');
+  const peoplePhone = window.matchMedia('(max-width: 41.98rem)');
+  function peopleDraw(list) {
+    if (!peopleEl) return;
+    list.sort((a, b) => String(a.name ?? '').localeCompare(String(b.name ?? '')));
+    peopleEl.replaceChildren();
+    peopleEl.hidden = !list.length;
+    if (!list.length) { peopleEl.removeAttribute('aria-label'); return; }
+    const shown = list.slice(0, peoplePhone.matches ? 1 : PRESENCE_FACES);
+    for (const who of shown) {
+      const face = el('span', 'rux--user-avatar rux--user-avatar--sm scheduler-header-people__face');
+      face.title = who.name || 'Somebody';
+      window.Rux?.account?.drawAvatar?.(face, who, 'sm');
+      peopleEl.appendChild(face);
+    }
+    if (list.length > shown.length) {
+      const more = el('span', 'scheduler-header-people__more', `+${list.length - shown.length}`);
+      more.title = presenceNames(list.slice(shown.length));
+      peopleEl.appendChild(more);
+    }
+    peopleEl.setAttribute('aria-label', `Also on the schedule: ${presenceNames(list)}`);
   }
 
   /* Drawn after every render too, because `render` replaces every bar. A bar

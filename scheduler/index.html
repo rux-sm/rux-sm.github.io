@@ -145,6 +145,10 @@
        in the account panel, not here, because Carbon keeps these actions for
        system-level functions. -->
   <div class="rux--header__global">
+    <!-- Who else has the schedule open, one face each, beside my own on the
+         Account action. data.js fills it from the same presence channel that
+         puts faces on trip bars, and shows it only while somebody is here. -->
+    <div class="scheduler-header-people" id="scheduler-people" role="img" hidden></div>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-account_circle"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="App switcher" aria-expanded="false" aria-controls="rux-switcher-panel"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-grid_view"/></svg></button>
   </div>

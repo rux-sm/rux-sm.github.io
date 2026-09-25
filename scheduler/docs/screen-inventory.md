@@ -50,8 +50,9 @@ Dropped: Documents, Game, the Samsara and Gallery links.
 | Notifications | later | Shell header panel, the one the switcher uses. |
 | Driver card | later | Popover from a cell of the availability grid (§7). |
 
-Dropped: dev notes, team chat and presence, and the old profile menu (the
-Design account panel replaces it).
+Dropped: dev notes, team chat, and the old profile menu (the Design account
+panel replaces it). Presence is kept: faces in the header show who else has
+the schedule open, and faces on a bar show who has that trip.
 
 ## 3. Schedule view in detail
 

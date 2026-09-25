@@ -2798,13 +2798,23 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-leg-card__bus { display: grid; gap: var(--rux-spacing-04); }
 .scheduler-leg-card__bus-name { margin: 0; color: var(--rux-text-secondary); }
 .scheduler-leg-card__bus[hidden] { display: none; }
-.scheduler-leg-card__notes { white-space: pre-line; }
-.scheduler-leg-card__notes--folded {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
-  overflow: hidden;
-}
+/* Where to be and when, under the head and before the answer. */
+.scheduler-leg-card__plan { display: grid; gap: var(--rux-spacing-02); }
+.scheduler-leg-card__plan p,
+.scheduler-leg-card__plan address { margin: 0; font-style: normal; overflow-wrap: anywhere; }
+/* The leg's itinerary and envelope, side by side, as wide as the answer. */
+.scheduler-leg-card__papers { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: var(--rux-spacing-03); }
+.scheduler-leg-card__papers > .rux--btn { inline-size: 100%; max-inline-size: none; }
+/* A person on one row: name and role, then Call and Text as icons. */
+.scheduler-leg-card__person { display: flex; align-items: center; gap: var(--rux-spacing-03); }
+.scheduler-leg-card__person > div:first-child { flex: 1 1 auto; min-inline-size: 0; }
+.scheduler-leg-card__person .scheduler-leg-card__actions { flex-wrap: nowrap; }
+
+/* A driver's sheet (share/form.html): the way back over the paper, which
+   keeps its own width and is taken down whole to the phone's by print.css. */
+.scheduler-sheet-head { display: grid; justify-items: start; gap: var(--rux-spacing-03); }
+.scheduler-sheet-head > h1 { margin: 0; }
+.scheduler-sheet { min-inline-size: 0; }
 
 /* ── The quote calculator (quote.html) and its rates (quote-rates.html) ─────
    Both pages use Carbon's editorial style model, which Carbon names for

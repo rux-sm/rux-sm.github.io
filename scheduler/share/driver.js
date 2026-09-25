@@ -2,10 +2,12 @@
    share/driver.js — A DRIVER'S SCHEDULE LINK
    --------------------------------------------------------------------------
    driver.html?s=<token> shows a driver, without a log-in, the trip legs
-   dispatch sent them, one card each, and lets them accept or decline. It is
-   rux-ui's driver.html drawn with Design, feature for feature, plus two
-   things: each trip's requirements, and a trip changed since it was accepted
-   asks again, saying what changed.
+   dispatch sent them, one card each, and lets them accept or decline. A card
+   holds the basics: the day, where to be and when, the bus, and who to call.
+   The rest is on the leg's itinerary and the driver's envelope, which the
+   card opens, the customer's itinerary file where one is attached and the
+   office's own sheet from form.html where not. A trip changed since it was
+   accepted asks again, saying what changed.
 
    Everything comes through token-checked functions, so the page keeps
    working once the database admits only staff:
@@ -96,12 +98,16 @@
     const d = dateOnly(v);
     return d ? dayFmt({ weekday: 'short', month: 'short', day: 'numeric', ...(year ? { year: 'numeric' } : {}) }).format(d) : '';
   };
-  const rangeText = (from, to) => {
+  // `short` leaves the year off a range within this year, for a card's title.
+  // What Accept keeps is always the long form, so it compares alike.
+  const rangeText = (from, to, short = false) => {
     const a = dateOnly(from), b = dateOnly(to) || a;
     if (!a) return '';
-    if (a.getTime() === b.getTime()) return dayText(from);
+    const year = !(short && a.getUTCFullYear() === b.getUTCFullYear()
+      && b.getUTCFullYear() === +todayIso().slice(0, 4));
+    if (a.getTime() === b.getTime()) return dayText(from, year);
     const sameYear = a.getUTCFullYear() === b.getUTCFullYear();
-    return `${dayFmt({ weekday: 'short', month: 'short', day: 'numeric', ...(sameYear ? {} : { year: 'numeric' }) }).format(a)} – ${dayText(to)}`;
+    return `${dayFmt({ weekday: 'short', month: 'short', day: 'numeric', ...(sameYear ? {} : { year: 'numeric' }) }).format(a)} – ${dayText(to, year)}`;
   };
   // A wall-clock time as it was typed, "06:00" or "6:00 am", as 6:00 AM.
   const timeText = v => {
@@ -216,9 +222,7 @@
         from: clean(activeSeats(mine).find(d => (d.role || 'driver') === 'driver' && String(d.driver_id) !== String(driverId))?.drivers?.short_name
           || activeSeats(mine).find(d => (d.role || 'driver') === 'driver' && String(d.driver_id) !== String(driverId))?.drivers?.name),
       } : null,
-      instructions: clean(seat.instructions),
       requirements: requirementsOf(trip),
-      notes: clean(trip.notes),
       contact: contactOf(trip),
       crew,
       itineraries: itinerariesOf(trip),
@@ -226,9 +230,10 @@
     };
   }
 
-  /* THE DRIVER'S JOB, AS THE CARD SHOWS IT. What Accept keeps and a later
-     load compares. Every value is text as the card writes it, so a change
-     reads as the driver would read it. */
+  /* THE DRIVER'S JOB, AS THE CARD AND ITS SHEETS SHOW IT. What Accept keeps
+     and a later load compares. Every value is text as the card writes it, so
+     a change reads as the driver would read it. The trip's notes are on
+     neither, so a change to them asks nothing. */
   const stopText = s => [clean(s.name) || clean(s.address) || clean(s.label) || 'Stop',
     s.arrive && `arrive ${timeText(s.arrive)}`, s.depart_prev && `leave ${timeText(s.depart_prev)}`].filter(Boolean).join(' · ');
   function jobView(l) {
@@ -242,13 +247,12 @@
       role: roleLabel(l.role),
       relief: l.relief ? [l.relief.at && `Handoff at ${timeText(l.relief.at)}`, l.relief.instructions].filter(Boolean).join(' · ') : '',
       requirements: [...l.requirements].sort(),
-      notes: l.notes,
       itinerary: l.itineraries[0]?.id || '',
     };
   }
   const VIEW_LABELS = {
     dates: 'Dates', time: 'Time', place: 'Pickup', destination: 'Destination', stops: 'Stops', bus: 'Bus',
-    role: 'Role', relief: 'Relief details', requirements: 'Requirements', notes: 'Notes', itinerary: 'Itinerary',
+    role: 'Role', relief: 'Relief details', requirements: 'Requirements', itinerary: 'Itinerary',
   };
   // Each difference as one line the driver reads.
   function changesBetween(was, now, l) {
@@ -258,7 +262,6 @@
       const b = now[key];
       if (JSON.stringify(a) === JSON.stringify(b)) continue;
       if (key === 'itinerary') lines.push(b ? 'New itinerary' : 'Itinerary removed');
-      else if (key === 'notes') lines.push('Notes changed');
       else if (key === 'stops') lines.push('Stops changed');
       else if (key === 'requirements') {
         const added = b.filter(x => !a.includes(x)), gone = a.filter(x => !b.includes(x));
@@ -331,7 +334,7 @@
 
   // -- a card -------------------------------------------------------------------
   // Whole class names, so the check can find each one in this file.
-  const TAG = { blue: 'rux--tag rux--tag--blue rux--layout--size-sm', gray: 'rux--tag rux--tag--gray rux--layout--size-sm', purple: 'rux--tag rux--tag--purple rux--layout--size-sm' };
+  const TAG = { blue: 'rux--tag rux--tag--blue rux--layout--size-sm', gray: 'rux--tag rux--tag--gray rux--layout--size-sm' };
   const tag = (text, color, iconId) => {
     const t = el('span', TAG[color]);
     if (iconId) { const i = icon(iconId); i.setAttribute('class', 'rux--tag__custom-icon'); t.appendChild(i); }
@@ -346,12 +349,27 @@
     if (iconId) { const i = icon(iconId); i.setAttribute('class', 'rux--btn__icon'); a.appendChild(i); }
     return a;
   };
-  const callAndText = (name, tel) => {
-    const wrap = el('div', 'scheduler-leg-card__actions');
-    if (!tel) return wrap;
-    const digits = tel.replace(/[^\d+]/g, '');
-    wrap.append(linkButton('Call', `tel:${digits}`, '#m-call', `Call ${name}`), linkButton('Text', `sms:${digits}`, '#m-chat', `Text ${name}`));
-    return wrap;
+  // Call and Text as icons beside the name, so a person is one row on a phone.
+  const iconLink = (href, iconId, label) => {
+    const a = el('a', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--md rux--layout--size-md');
+    a.href = href;
+    a.setAttribute('aria-label', label);
+    const i = icon(iconId, 20); i.setAttribute('class', 'rux--btn__icon'); a.appendChild(i);
+    return a;
+  };
+  const person = (name, detail, tel) => {
+    const row = el('div', 'scheduler-leg-card__person');
+    const lines = el('div');
+    lines.appendChild(el('p', 'rux--type-body-compact-02', name));
+    if (detail) lines.appendChild(el('p', 'rux--type-body-compact-01 scheduler-leg-card__muted', detail));
+    row.appendChild(lines);
+    if (tel) {
+      const digits = tel.replace(/[^\d+]/g, '');
+      const actions = el('div', 'scheduler-leg-card__actions');
+      actions.append(iconLink(`tel:${digits}`, '#m-call', `Call ${name}`), iconLink(`sms:${digits}`, '#m-chat', `Text ${name}`));
+      row.appendChild(actions);
+    }
+    return row;
   };
   const section = (title, ...children) => {
     const s = el('section', 'scheduler-leg-card__section');
@@ -359,6 +377,28 @@
     s.append(...children.filter(Boolean));
     return s;
   };
+
+  /* THE LEG'S PAPERWORK, where the details are. The customer's itinerary file
+     where the trip has one, the office's own sheet for the leg where it has
+     none and the leg has a route, and always the driver's envelope. The staff
+     page opens them in a tab, so its driver stays picked. */
+  const sheetUrl = (l, form) => `/scheduler/share/form.html?${new URLSearchParams({ s: token, form, trip: l.trip.id, leg: l.leg })}`;
+  function paperworkOf(l) {
+    const wrap = el('div', 'scheduler-leg-card__papers');
+    const button = (label, href, iconId) => {
+      const a = el('a', 'rux--btn rux--btn--tertiary rux--btn--md rux--layout--size-md', label);
+      a.href = href;
+      if (staffPage || /^https?:/.test(href)) { a.target = '_blank'; a.rel = 'noopener'; }
+      const i = icon(iconId); i.setAttribute('class', 'rux--btn__icon'); a.appendChild(i);
+      return a;
+    };
+    const files = l.itineraries.map(d => [d, fileUrl(d.path)]).filter(([, url]) => url);
+    for (const [d, url] of files) wrap.appendChild(button(d.updated ? `${d.label} (updated)` : d.label, url, '#m-description'));
+    const routed = (l.trip.trip_stops || []).some(st => (st.leg || 'outbound') === l.leg);
+    if (!files.length && routed) wrap.appendChild(button('Itinerary', sheetUrl(l, 'driver-itinerary'), '#m-route'));
+    wrap.appendChild(button('Envelope', sheetUrl(l, 'envelope'), '#m-mail'));
+    return wrap;
+  }
 
   function responseOf(l, card) {
     const state = stateOf(l);
@@ -431,39 +471,21 @@
     card.setAttribute('aria-labelledby', id);
 
     const head = el('header', 'scheduler-leg-card__head');
-    const title = el('h2', 'rux--type-productive-heading-03', rangeText(l.start, l.end) || 'Assignment');
+    const title = el('h2', 'rux--type-productive-heading-03', rangeText(l.start, l.end, true) || 'Assignment');
     title.id = id;
     head.appendChild(title);
     head.appendChild(el('p', 'rux--type-body-compact-02 scheduler-leg-card__where', l.destination));
     if (l.customer) head.appendChild(el('p', 'rux--type-body-compact-01 scheduler-leg-card__customer', l.customer));
     const tags = el('div', 'scheduler-leg-card__tags');
-    tags.append(tag(l.bus ? `Bus ${l.bus}` : 'Bus not set', 'blue', '#m-directions_bus'), tag(roleLabel(l.role), 'gray', '#m-person'));
-    for (const r of l.requirements) tags.appendChild(tag(r, 'purple'));
+    tags.appendChild(tag(l.bus ? `Bus ${l.bus}` : 'Bus not set', 'blue', '#m-directions_bus'));
+    // The role only where it is not the usual one.
+    if ((l.role || 'driver') !== 'driver') tags.appendChild(tag(roleLabel(l.role), 'gray', '#m-person'));
     head.appendChild(tags);
     card.appendChild(head);
-    card.appendChild(responseOf(l, card));
 
-    // Where to be, and when.
-    const where = [l.place.name, l.place.address].filter(Boolean).join(', ');
-    if (where || l.time) {
-      const body = el('div', 'scheduler-leg-card__row');
-      const lines = el('div');
-      if (l.time) lines.appendChild(el('p', 'rux--type-heading-compact-02', `${isRelief(l.role) ? 'Report' : 'Spot'} at ${timeText(l.time)}`));
-      if (where) lines.appendChild(el('address', 'rux--type-body-compact-01', where));
-      body.appendChild(lines);
-      if (where) body.appendChild(linkButton('Navigate', `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(where)}`, '#m-location_on', `Navigate to ${where}`));
-      card.appendChild(section('Where to be', body));
-    }
-
-    if (l.contact) {
-      const body = el('div', 'scheduler-leg-card__row');
-      const lines = el('div');
-      if (l.contact.name) lines.appendChild(el('p', 'rux--type-body-compact-02', l.contact.name));
-      if (l.contact.phone) lines.appendChild(el('p', 'rux--type-body-compact-01', phone(l.contact.phone)));
-      body.append(lines, callAndText(l.contact.name || 'the trip contact', l.contact.phone));
-      card.appendChild(section('Trip contact', body));
-    }
-
+    // Where to be, and when, first: it is what the driver comes back for.
+    const plan = el('div', 'scheduler-leg-card__plan');
+    if (l.time) plan.appendChild(el('p', 'rux--type-heading-compact-02', `${isRelief(l.role) ? 'Report' : 'Spot'} at ${timeText(l.time)}`));
     if (l.relief) {
       // With no time set, relief drivers agree the handoff between themselves.
       const lines = [
@@ -471,10 +493,24 @@
           : l.relief.from ? `Coordinate the handoff time with ${l.relief.from}.` : '',
         l.relief.instructions,
       ].filter(Boolean);
-      card.appendChild(section('Relief assignment', ...(lines.length ? lines : ['Dispatch will send the handoff details.'])
-        .map(t => el('p', 'rux--type-body-compact-01', t))));
-    } else if (l.instructions) {
-      card.appendChild(section('Role details', el('p', 'rux--type-body-compact-01', l.instructions)));
+      for (const t of (lines.length ? lines : ['Dispatch will send the handoff details.'])) {
+        plan.appendChild(el('p', 'rux--type-body-compact-01', t));
+      }
+    }
+    const where = [l.place.name, l.place.address].filter(Boolean).join(', ');
+    if (where) {
+      const row = el('div', 'scheduler-leg-card__row');
+      const lines = el('div');
+      lines.appendChild(el('address', 'rux--type-body-compact-01', where));
+      row.append(lines, linkButton('Navigate', `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(where)}`, '#m-location_on', `Navigate to ${where}`));
+      plan.appendChild(row);
+    }
+    if (plan.childElementCount) card.appendChild(plan);
+    card.appendChild(paperworkOf(l));
+    card.appendChild(responseOf(l, card));
+
+    if (l.contact) {
+      card.appendChild(section('Trip contact', person(l.contact.name || 'Trip contact', l.contact.phone ? phone(l.contact.phone) : '', l.contact.phone)));
     }
 
     if (l.crew.length) {
@@ -482,18 +518,12 @@
       l.crew.forEach((bus, i) => {
         const group = el('div', 'scheduler-leg-card__bus');
         group.appendChild(el('p', 'rux--type-label-01 scheduler-leg-card__bus-name', bus.mine ? 'Your bus' : `Bus ${bus.bus || 'not set'}`));
-        for (const p of bus.people) {
-          const row = el('div', 'scheduler-leg-card__row');
-          const lines = el('div');
-          lines.append(el('p', 'rux--type-body-compact-02', p.name), el('p', 'rux--type-body-compact-01 scheduler-leg-card__muted', p.role));
-          row.append(lines, callAndText(p.name, p.phone));
-          group.appendChild(row);
-        }
+        for (const p of bus.people) group.appendChild(person(p.name, p.role, p.phone));
         group.hidden = i > 1;
         list.appendChild(group);
       });
-      const more = l.crew.length > 2 ? el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm',
-        `View all crew (${l.crew.reduce((n, b) => n + b.people.length, 0)})`) : null;
+      const all = `View all crew (${l.crew.reduce((n, b) => n + b.people.length, 0)})`;
+      const more = l.crew.length > 2 ? el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', all) : null;
       if (more) {
         more.type = 'button';
         more.setAttribute('aria-expanded', 'false');
@@ -501,37 +531,10 @@
           const open = more.getAttribute('aria-expanded') !== 'true';
           more.setAttribute('aria-expanded', String(open));
           [...list.children].forEach((g, i) => { if (i > 1) g.hidden = !open; });
-          more.textContent = open ? 'Show less crew' : `View all crew (${l.crew.reduce((n, b) => n + b.people.length, 0)})`;
+          more.textContent = open ? 'Show less crew' : all;
         });
       }
       card.appendChild(section('Crew', list, more));
-    }
-
-    if (l.notes) {
-      const notes = el('p', 'rux--type-body-compact-01 scheduler-leg-card__notes', l.notes);
-      let more = null;
-      if (l.notes.length > 240) {
-        notes.classList.add('scheduler-leg-card__notes--folded');
-        more = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', 'View full notes');
-        more.type = 'button';
-        more.setAttribute('aria-expanded', 'false');
-        more.addEventListener('click', () => {
-          const open = more.getAttribute('aria-expanded') !== 'true';
-          more.setAttribute('aria-expanded', String(open));
-          notes.classList.toggle('scheduler-leg-card__notes--folded', !open);
-          more.textContent = open ? 'Show less' : 'View full notes';
-        });
-      }
-      card.appendChild(section('Notes', notes, more));
-    }
-
-    if (l.itineraries.length) {
-      const docs = el('div', 'scheduler-leg-card__actions');
-      for (const d of l.itineraries) {
-        const url = fileUrl(d.path);
-        if (url) docs.appendChild(linkButton(d.updated ? `${d.label} (updated)` : d.label, url, '#m-description'));
-      }
-      if (docs.childElementCount) card.appendChild(section('Documents', docs));
     }
     return card;
   }
@@ -553,7 +556,7 @@
     if (share.error) { clear(); say('error', "Your schedule can't be loaded right now", 'Check your connection and try again.', load); return; }
     if (!share.data) {
       clear();
-      say('error', 'This link is no longer active', staffPage ? 'Make a new link for this driver in rux-ui.' : 'Contact dispatch if you still need your schedule.', load);
+      say('error', 'This link is no longer active', staffPage ? 'Make a new link for this driver above.' : 'Contact dispatch if you still need your schedule.', load);
       return;
     }
     const s = share.data;
@@ -579,7 +582,6 @@
       .sort((a, b) => (!!a.error - !!b.error) || String(a.start || '').localeCompare(String(b.start || '')));
 
     $('scheduler-leg-hello').textContent = `Hello ${s.driver.shortName || s.driver.name}`;
-    $('scheduler-leg-range').textContent = rangeText(s.rangeStart, s.rangeEnd);
     const updated = updatedText(s.updatedAt);
     $('scheduler-leg-updated').textContent = updated;
     $('scheduler-leg-updated-tag').hidden = !updated;

@@ -231,8 +231,13 @@
   async function readRequirementNames(client) {
     const { data } = await client
       .from('settings').select('value').eq('key', REQUIREMENTS_KEY).maybeSingle();
-    if (!Array.isArray(data?.value)) return;
-    const rows = data.value.filter(r => r && typeof r.id === 'string');
+    useRequirements(data?.value);
+  }
+  // The list itself, however it was read: the driver's page has it from the
+  // link's own function, since a driver cannot read `settings`.
+  function useRequirements(value) {
+    if (!Array.isArray(value)) return;
+    const rows = value.filter(r => r && typeof r.id === 'string');
     requirementNames = new Map(rows.filter(r => r.label).map(r => [r.id, String(r.label)]));
     requirementIconNames = new Map(rows.filter(r => r.icon).map(r => [r.id, String(r.icon)]));
   }
@@ -265,7 +270,7 @@
     // The day, not a section, so it is no heading.
     head.appendChild(el('p', 'scheduler-envelope__day', weekdayOf(start)));
     const logo = el('img', 'scheduler-envelope__logo');
-    logo.src = 'brand/logo.png';
+    logo.src = '/scheduler/brand/logo.png';
     logo.alt = '';
     head.appendChild(logo);
     head.appendChild(el('p', 'scheduler-envelope__line', COMPANY.address));
@@ -614,7 +619,7 @@
   function itineraryHead() {
     const head = el('header', 'scheduler-driver-itinerary__head');
     const logo = el('img', 'scheduler-driver-itinerary__logo');
-    logo.src = 'brand/logo.png';
+    logo.src = '/scheduler/brand/logo.png';
     logo.alt = '';
     head.appendChild(logo);
     head.appendChild(el('p', 'scheduler-driver-itinerary__line', COMPANY.address));
@@ -948,7 +953,7 @@
   function quoteHead(lines) {
     const head = el('header', 'scheduler-customer-quote__head');
     const logo = el('img', 'scheduler-customer-quote__logo');
-    logo.src = 'brand/logo.png';
+    logo.src = '/scheduler/brand/logo.png';
     logo.alt = '';
     head.appendChild(logo);
     for (const line of lines) head.appendChild(el('p', 'scheduler-customer-quote__line', line));
@@ -1329,7 +1334,11 @@
     },
   ];
 
-  window.SchedulerForms = { FORMS, envelope, itinerary, quote, seatsOf, needsOf, contactOf, roleName };
+  window.SchedulerForms = { FORMS, envelope, itinerary, quote, seatsOf, needsOf, contactOf, roleName, useRequirements };
+
+  /* A page that only draws with these, the driver's share/form.html, has no
+     forms page around them to run. */
+  if (!document.getElementById('scheduler-print-sheet')) return;
 
   /* ── The page ─────────────────────────────────────────────────────────────
      With no ?form= it lists the forms. With one, it reads that form's subject

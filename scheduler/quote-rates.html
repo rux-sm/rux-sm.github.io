@@ -269,6 +269,28 @@
               </fieldset>
             </div>
           </div>
+
+          <!-- The rules the formulas follow: where a trip stops being local,
+               the free-day tables and the driver pay bands. The calculator's
+               Rules tab shows what each one does to a price. -->
+          <div class="rux--tile scheduler-quote-rates__rules">
+            <div class="rux--layer-two rux--stack-vertical rux--stack-scale-5 scheduler-quote__body">
+              <div class="rux--stack-vertical rux--stack-scale-3">
+                <h2 class="rux--type-heading-compact-02">Rules</h2>
+                <p class="scheduler-quote-rates__hint">These decide how every quote is worked out. The calculator's Rules tab shows what each one does to a price.</p>
+              </div>
+              <div class="scheduler-quote-rules-groups">
+                <fieldset class="scheduler-quote__group">
+                  <legend class="rux--type-heading-compact-01">Quote</legend>
+                  <div class="scheduler-quote-rules-grid" id="scheduler-quote-rates-rules-trip"></div>
+                </fieldset>
+                <fieldset class="scheduler-quote__group">
+                  <legend class="rux--type-heading-compact-01">Driver pay</legend>
+                  <div class="scheduler-quote-rules-grid" id="scheduler-quote-rates-rules-driver"></div>
+                </fieldset>
+              </div>
+            </div>
+          </div>
         </form>
       </div>
     </div>

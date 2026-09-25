@@ -19,11 +19,13 @@
 (() => {
   'use strict';
 
-  const MAX_DAYS = 20;
   const PREVIEW_KEY = 'rux.scheduler.quote-preview';
 
   // Every named rate, in the order the rates page shows them. `key` is the
-  // `quote_rates` row; `unit` decides the field's hint.
+  // `quote_rates` row; `unit` decides the field's hint. A driver pay band's
+  // label names the band's miles, which are rules below.
+  const mi = n => new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(n);
+  const labelOf = (f, r) => (typeof f.label === 'function' ? f.label(r) : f.label);
   const RATE_FIELDS = {
     trip: [
       { key: 'trip_local_daily', label: 'Local daily rate', unit: '$/day' },
@@ -31,15 +33,40 @@
       { key: 'trip_dead_miles', label: 'Dead miles rate', unit: '$/mi' },
     ],
     driver: [
-      { key: 'driver_local_daily', label: 'Under 200 miles', unit: '$/day' },
-      { key: 'driver_short_first_day', label: '200 to 429 miles, first day', unit: '$' },
+      { key: 'driver_local_daily', label: r => `Under ${mi(r.driver_band_2)} miles`, unit: '$/day' },
+      { key: 'driver_short_first_day', label: r => `${mi(r.driver_band_2)} to ${mi(r.driver_band_3 - 1)} miles, first day`, unit: '$' },
       { key: 'driver_extra_day', label: 'Extra day', unit: '$/day' },
-      { key: 'driver_per_mile', label: '430 to 999 miles', unit: '$/mi' },
-      { key: 'driver_per_mile_1k_one', label: '1,000+ miles, 1 driver', unit: '$/mi' },
-      { key: 'driver_per_mile_1k_two', label: '1,000+ miles, 2 drivers', unit: '$/mi' },
+      { key: 'driver_per_mile', label: r => `${mi(r.driver_band_3)} to ${mi(r.driver_band_4 - 1)} miles`, unit: '$/mi' },
+      { key: 'driver_per_mile_1k_one', label: r => `${mi(r.driver_band_4)}+ miles, 1 driver`, unit: '$/mi' },
+      { key: 'driver_per_mile_1k_two', label: r => `${mi(r.driver_band_4)}+ miles, 2 drivers`, unit: '$/mi' },
       { key: 'driver_meal_daily', label: 'Meal allowance', unit: '$/day' },
     ],
   };
+
+  /* The rules the formulas follow, kept in `quote_rates` beside the rates
+     and edited on the same page. `value` is the spreadsheet's, used until a
+     rule is saved, so a quote reads the same before and after. A driver band
+     starts at its miles. */
+  const RULE_FIELDS = {
+    trip: [
+      { key: 'trip_local_under', label: 'Local trips are under', unit: 'mi', value: 295 },
+      { key: 'free_day_step', label: 'Free-day step', unit: 'mi', value: 250 },
+      { key: 'free_days_per_step', label: 'Free days a step', unit: 'days', value: 0.5 },
+      { key: 'trip_one_free_day_under', label: 'One free day under', unit: 'mi', value: 750 },
+      { key: 'trip_free_days_end', label: 'Free days stop at', unit: 'mi', value: 10250 },
+      { key: 'max_days', label: 'Most days in a quote', unit: 'days', value: 20, whole: true },
+    ],
+    driver: [
+      { key: 'driver_band_2', label: 'Second band starts at', unit: 'mi', value: 200 },
+      { key: 'driver_band_3', label: 'Third band starts at', unit: 'mi', value: 430 },
+      { key: 'driver_band_4', label: 'Fourth band starts at', unit: 'mi', value: 1000 },
+      { key: 'driver_one_free_day_under', label: 'One free day under', unit: 'mi', value: 1000 },
+      { key: 'driver_free_days_end', label: 'Free days stop at', unit: 'mi', value: 6250 },
+    ],
+  };
+  const RULE_DEFAULTS = Object.fromEntries([...RULE_FIELDS.trip, ...RULE_FIELDS.driver].map(f => [f.key, f.value]));
+  // A rule from a set of rates, or the spreadsheet's while it is not saved.
+  const rule = (r, key) => (Number.isFinite(r?.[key]) ? r[key] : RULE_DEFAULTS[key]);
 
   /* ── THE FORMULAS ─────────────────────────────────────────────────────────
      `null` is the spreadsheet's #N/A. The trip total counts it as $0, as the
@@ -53,31 +80,30 @@
     return null;
   };
 
-  // R9: whole 250-mile steps, 1 or 2 give 1 day, then half a day a step, to 40.
-  const tripFreeDays = miles => {
-    const steps = Math.floor(miles / 250);
-    if (steps < 1 || steps > 40) return null;
-    return steps <= 2 ? 1 : steps / 2;
+  /* R9 and AF21: whole free-day steps of miles. Under one step there is no
+     table; under the one-free-day line it gives 1 day; past it, the free days
+     a step for every step; from where the table stops, null. The sheet's
+     steps are 250 miles and half a day, 1 day under 750 and 1,000 miles, and
+     the tables stop at 10,250 and 6,250. */
+  const freeDays = (miles, r, oneDayUnder, end) => {
+    const steps = Math.floor(miles / rule(r, 'free_day_step'));
+    if (steps < 1 || miles >= rule(r, end)) return null;
+    return miles < rule(r, oneDayUnder) ? 1 : steps * rule(r, 'free_days_per_step');
   };
-
-  // AF21: the same steps, but 1 to 3 give 1 day, and the table stops at 24.
-  const driverFreeDays = miles => {
-    const steps = Math.floor(miles / 250);
-    if (steps < 1 || steps > 24) return null;
-    return steps <= 3 ? 1 : steps / 2;
-  };
+  const tripFreeDays = (miles, r) => freeDays(miles, r, 'trip_one_free_day_under', 'trip_free_days_end');
+  const driverFreeDays = (miles, r) => freeDays(miles, r, 'driver_one_free_day_under', 'driver_free_days_end');
 
   // E17, with N9, P9 and T9.
   const tripQuote = ({ miles, rate, dead }, r) => {
     const total = sum(miles);
     const days = lastDay(miles);
-    const out = { total, days, local: total < 295, free: null, extra: null, amount: null };
+    const out = { total, days, local: total < rule(r, 'trip_local_under'), free: null, extra: null, amount: null };
     if (days === null) return out;
     if (out.local) {
       out.amount = days * r.trip_local_daily;
       return out;
     }
-    out.free = tripFreeDays(total);
+    out.free = tripFreeDays(total, r);
     if (out.free === null) return out;
     out.extra = Math.max(0, days - out.free);
     out.amount = rate * (total - dead) + dead * r.trip_dead_miles + r.trip_extra_day * out.extra;
@@ -90,23 +116,24 @@
     const perDay = driver1.map((m, i) => m + (driver2[i] || 0));
     const total = sum(perDay);
     const days = lastDay(perDay);
-    const free = driverFreeDays(total);
+    const free = driverFreeDays(total, r);
     const extra = free === null || days === null ? null : Math.max(0, days - free);
     const out = { total, days, free, extra, meal: days === null ? null : r.driver_meal_daily * days, band: null, amount: null };
     if (days === null) return out;
-    if (total < 200) { out.band = 'under200'; out.amount = r.driver_local_daily * days; return out; }
-    if (total < 430) { out.band = 'under430'; out.amount = r.driver_short_first_day + r.driver_extra_day * (days - 1); return out; }
+    if (total < rule(r, 'driver_band_2')) { out.band = 1; out.amount = r.driver_local_daily * days; return out; }
+    if (total < rule(r, 'driver_band_3')) { out.band = 2; out.amount = r.driver_short_first_day + r.driver_extra_day * (days - 1); return out; }
     if (extra === null) return out;
-    const perMile = total < 1000 ? r.driver_per_mile
+    const long = total >= rule(r, 'driver_band_4');
+    const perMile = !long ? r.driver_per_mile
       : drivers === 2 ? r.driver_per_mile_1k_two : r.driver_per_mile_1k_one;
-    out.band = total < 1000 ? 'under1000' : 'over1000';
+    out.band = long ? 4 : 3;
     out.amount = total * perMile + r.driver_extra_day * extra;
     return out;
   };
 
   // The console can check a quote against the spreadsheet with these.
   window.Rux = window.Rux || {};
-  window.Rux.quote = { tripQuote, driverPay, tripFreeDays, driverFreeDays };
+  window.Rux.quote = { tripQuote, driverPay, tripFreeDays, driverFreeDays, rule };
 
   /* ── SHARED BY BOTH PAGES ─────────────────────────────────────────────── */
 
@@ -119,7 +146,7 @@
   };
   const plural = (n, one, many) => `${count.format(n)} ${n === 1 ? one : many}`;
 
-  const rates = Object.fromEntries([...RATE_FIELDS.trip, ...RATE_FIELDS.driver].map(f => [f.key, 0]));
+  const rates = { ...Object.fromEntries([...RATE_FIELDS.trip, ...RATE_FIELDS.driver].map(f => [f.key, 0])), ...RULE_DEFAULTS };
   let mileage = [];          // [{ id, rate, note, is_default }] as saved
   let client = null;
   let canSave = false;
@@ -188,13 +215,13 @@
 
   // The second driver's pay, worked the way its band works it.
   const driverMath = d => d.amount === null ? ''
-    : d.band === 'under200' ? times(d.days, 'day', 'days', rates.driver_local_daily)
-    : d.band === 'under430' ? lines([
+    : d.band === 1 ? times(d.days, 'day', 'days', rates.driver_local_daily)
+    : d.band === 2 ? lines([
       `${money.format(rates.driver_short_first_day)} first day`,
       d.days > 1 && times(d.days - 1, 'day', 'days', rates.driver_extra_day),
     ])
     : lines([
-      times(d.total, 'mi', 'mi', d.band === 'under1000' ? rates.driver_per_mile : rates.driver_per_mile_1k_two),
+      times(d.total, 'mi', 'mi', d.band === 3 ? rates.driver_per_mile : rates.driver_per_mile_1k_two),
       d.extra > 0 && times(d.extra, 'extra day', 'extra days', rates.driver_extra_day),
     ]);
 
@@ -248,34 +275,47 @@
       svg.append(svgEl('text', { class: 'scheduler-quote-chart__tick', x: x(m), y: h - bottom + 18, 'text-anchor': 'middle' }, count.format(m)));
     }
     svg.append(svgEl('text', { class: 'scheduler-quote-chart__tick', x: w - right, y: h - 4, 'text-anchor': 'end' }, 'total miles'));
-    svg.append(svgEl('line', { class: 'scheduler-quote-chart__mark', x1: x(295), x2: x(295), y1: pad, y2: h - bottom }),
-      svgEl('text', { class: 'scheduler-quote-chart__tick', x: x(295) + 6, y: pad + 12 }, '295 mi'));
+    const at = rates.trip_local_under, under = at - 1;
+    if (at > CHART.from && at < CHART.to) {
+      svg.append(svgEl('line', { class: 'scheduler-quote-chart__mark', x1: x(at), x2: x(at), y1: pad, y2: h - bottom }),
+        svgEl('text', { class: 'scheduler-quote-chart__tick', x: x(at) + 6, y: pad + 12 }, `${count.format(at)} mi`));
+    }
     svg.append(line(higher, 'scheduler-quote-chart__higher'), line(today, 'scheduler-quote-chart__today'));
     host.replaceChildren(svg);
 
-    const drop = today(294) - today(295);
-    const back = miles.find(m => m >= 295 && today(m) >= today(294));
+    const drop = today(under) - today(at);
+    const back = miles.find(m => m >= at && today(m) >= today(under));
     $('scheduler-quote-chart-note').textContent = !rate ? 'Pick a mileage rate on the Calculator tab to draw the chart.'
-      : drop <= 0 ? `At ${plural(days, 'day', 'days')} the price does not drop at 295 miles.`
-      : `At ${plural(days, 'day', 'days')} the price drops ${whole.format(drop)} at 295 miles${back ? `, and is back to the 294-mile price by ${count.format(back)} miles` : ''}.`;
+      : drop <= 0 ? `At ${plural(days, 'day', 'days')} the price does not drop at ${count.format(at)} miles.`
+      : `At ${plural(days, 'day', 'days')} the price drops ${whole.format(drop)} at ${count.format(at)} miles${back ? `, and is back to the ${count.format(under)}-mile price by ${count.format(back)} miles` : ''}.`;
   };
   let chartRate = 0;
 
   const drawRules = rate => {
     chartRate = rate;
     drawChart(rate);
+    // The rules' own figures in the tab's sentences, as saved; `key:-1` is
+    // one under the rule.
+    for (const node of document.querySelectorAll('[data-quote-rule]')) {
+      const [key, shift] = node.dataset.quoteRule.split(':');
+      node.textContent = count.format(rates[key] + Number(shift || 0));
+    }
     $('scheduler-quote-rules-rate').textContent = rate ? `${money.format(rate)} a mile` : 'chosen';
     const meal = rates.driver_meal_daily;
+    const miles = n => `${count.format(n)} mi`;
+    const local = rates.trip_local_under, oneDay = rates.trip_one_free_day_under;
+    const tripEnd = rates.trip_free_days_end, driverEnd = rates.driver_free_days_end;
+    const longDays = Math.min(20, rates.max_days);
     const example = [
-      [['294 mi, 3 days', priced(spread(294, 3), rate)], ['295 mi, 3 days', priced(spread(295, 3), rate)]],
-      [['294 mi, 1 day', priced([294], rate)], ['295 mi, 1 day', priced([295], rate)]],
+      [[`${miles(local - 1)}, 3 days`, priced(spread(local - 1, 3), rate)], [`${miles(local)}, 3 days`, priced(spread(local, 3), rate)]],
+      [[`${miles(local - 1)}, 1 day`, priced([local - 1], rate)], [`${miles(local)}, 1 day`, priced([local], rate)]],
       [['Miles on days 1 and 3', priced([100, 0, 100], rate)], ['Miles on days 1 and 2', priced([100, 100, 0], rate)]],
-      [['10,249 mi, 20 days', priced(spread(10249, 20), rate)], ['10,250 mi, 20 days', priced(spread(10250, 20), rate)],
-        ['2nd driver, 6,249 mi', secondDriver(6249, 10)], ['2nd driver, 6,250 mi', secondDriver(6250, 10)]],
-      [['Quote, 800 mi', plural(tripFreeDays(800), 'free day', 'free days')], ['Driver pay, 800 mi', plural(driverFreeDays(800), 'free day', 'free days')]],
+      [[`${miles(tripEnd - 1)}, ${longDays} days`, priced(spread(tripEnd - 1, longDays), rate)], [`${miles(tripEnd)}, ${longDays} days`, priced(spread(tripEnd, longDays), rate)],
+        [`2nd driver, ${miles(driverEnd - 1)}`, secondDriver(driverEnd - 1, 10)], [`2nd driver, ${miles(driverEnd)}`, secondDriver(driverEnd, 10)]],
+      [[`Quote, ${miles(oneDay)}`, plural(tripFreeDays(oneDay, rates) ?? 0, 'free day', 'free days')], [`Driver pay, ${miles(oneDay)}`, plural(driverFreeDays(oneDay, rates) ?? 0, 'free day', 'free days')]],
       [['Meals, 1 day', money.format(meal)], ['Meals, 3 days', money.format(meal * 3)]],
       [['No miles, $150 other', money.format(150)]],
-      [['749 mi, 3 days', priced(spread(749, 3), rate)], ['750 mi, 3 days', priced(spread(750, 3), rate)]],
+      [[`${miles(oneDay - 1)}, 3 days`, priced(spread(oneDay - 1, 3), rate)], [`${miles(oneDay)}, 3 days`, priced(spread(oneDay, 3), rate)]],
     ];
     example.forEach((rows, i) => {
       $(`scheduler-quote-quirk-${i + 1}`).replaceChildren(...rows.map(([label, value]) => {
@@ -302,7 +342,7 @@
         const id = `scheduler-quote-trip-${d}`;
         rows.append(textField({ id, label: `Day ${d}`, value: kept[id] ?? '', placeholder: '0' }));
       }
-      $('scheduler-quote-add-day').disabled = dayCount >= MAX_DAYS;
+      $('scheduler-quote-add-day').disabled = dayCount >= rates.max_days;
       // Only the last day can be removed, so no day renumbers under a person,
       // and the button names the day it removes.
       const remove = $('scheduler-quote-remove-day');
@@ -366,8 +406,8 @@
         $('scheduler-quote-driver').textContent = driver.amount == null ? '—' : money.format(driver.amount);
         $('scheduler-quote-driver-note').textContent =
           driver.days === null ? 'No miles yet'
-          : driver.band === 'under200' ? 'Under-200 rate'
-          : driver.band === 'under430' ? '200-to-429 rate'
+          : driver.band === 1 ? `Under-${count.format(rates.driver_band_2)} rate`
+          : driver.band === 2 ? `${count.format(rates.driver_band_2)}-to-${count.format(rates.driver_band_3 - 1)} rate`
           : driver.amount === null ? 'Past the free-day table, counted as $0'
           : `${plural(driver.free, 'free day', 'free days')} · ${plural(driver.extra, 'extra day', 'extra days')}`;
         $('scheduler-quote-driver-math').textContent = driverMath(driver);
@@ -415,7 +455,7 @@
     }));
 
     const addDay = () => {
-      if (dayCount >= MAX_DAYS) return;
+      if (dayCount >= rates.max_days) return;
       dayCount++;
       drawDays();
       $(`scheduler-quote-trip-${dayCount}`)?.focus();
@@ -508,7 +548,9 @@
     const drawRates = () => {
       for (const group of ['trip', 'driver']) {
         $(`scheduler-quote-rates-${group}`).replaceChildren(...RATE_FIELDS[group].map(f =>
-          textField({ id: `scheduler-quote-r-${f.key}`, label: `${f.label} (${f.unit})`, value: String(rates[f.key] ?? 0) })));
+          textField({ id: `scheduler-quote-r-${f.key}`, label: `${labelOf(f, rates)} (${f.unit})`, value: String(rates[f.key] ?? 0) })));
+        $(`scheduler-quote-rates-rules-${group}`).replaceChildren(...RULE_FIELDS[group].map(f =>
+          textField({ id: `scheduler-quote-r-${f.key}`, label: `${f.label} (${f.unit})`, value: String(rates[f.key]) })));
       }
       $('scheduler-quote-mileage-rows').replaceChildren();
       for (const m of mileage) addRateRow(m);
@@ -522,8 +564,23 @@
       for (const f of [...RATE_FIELDS.trip, ...RATE_FIELDS.driver]) {
         const raw = $(`scheduler-quote-r-${f.key}`).value.trim();
         const value = Number(raw.replace(/[$,]/g, ''));
-        if (raw === '' || !Number.isFinite(value) || value < 0) return { problem: `${f.label} needs a number of 0 or more.` };
+        if (raw === '' || !Number.isFinite(value) || value < 0) return { problem: `${labelOf(f, rates)} needs a number of 0 or more.` };
         named.push({ key: f.key, value });
+      }
+      // A rule is a count of miles or days, so it must be more than 0.
+      const chosen = {};
+      for (const [group, name] of [['trip', 'Quote'], ['driver', 'Driver pay']]) {
+        for (const f of RULE_FIELDS[group]) {
+          const raw = $(`scheduler-quote-r-${f.key}`).value.trim();
+          const value = Number(raw.replace(/,/g, ''));
+          if (raw === '' || !Number.isFinite(value) || value <= 0) return { problem: `${name}: ${f.label} needs a number more than 0.` };
+          if (f.whole && (!Number.isInteger(value) || value > 60)) return { problem: `${name}: ${f.label} needs a whole number from 1 to 60.` };
+          named.push({ key: f.key, value });
+          chosen[f.key] = value;
+        }
+      }
+      if (!(chosen.driver_band_2 < chosen.driver_band_3 && chosen.driver_band_3 < chosen.driver_band_4)) {
+        return { problem: 'Driver pay: each band has to start at more miles than the one before.' };
       }
       const list = [];
       for (const row of $('scheduler-quote-mileage-rows').children) {

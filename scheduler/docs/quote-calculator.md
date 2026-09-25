@@ -17,7 +17,7 @@ written here, because this repository is public.
 - Dead miles are part of the trip's miles. More of them than the trip has
   would make the mileage charge negative, so the dead miles field warns and the
   Mileage note says to check it. The quote still counts them.
-- The rates page's one-driver rate for 1,000+ miles is not used.
+- The rates page's one-driver rate for the fourth driver pay band is not used.
 - The spreadsheet's local church choice is not offered, so its rate is not on
   the rates page.
 

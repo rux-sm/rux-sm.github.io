@@ -393,11 +393,11 @@
             <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="scheduler-quote-how-h">
               <h2 class="rux--type-heading-03" id="scheduler-quote-how-h">How a quote is priced</h2>
               <ul class="rux--list--unordered">
-                <li class="rux--list__item">Under 295 miles in all, a trip is billed a day at a time, at the local daily rate.</li>
-                <li class="rux--list__item">From 295 miles, it is billed by the mile, with free days. Each day past the free days adds the long distance extra day rate.</li>
-                <li class="rux--list__item">Dead miles are part of the trip's miles. They are billed at the dead miles rate instead of the mileage rate, and still count toward the 295-mile line and the free days.</li>
+                <li class="rux--list__item">Under <span data-quote-rule="trip_local_under">295</span> miles in all, a trip is billed a day at a time, at the local daily rate.</li>
+                <li class="rux--list__item">From <span data-quote-rule="trip_local_under">295</span> miles, it is billed by the mile, with free days. Each day past the free days adds the long distance extra day rate.</li>
+                <li class="rux--list__item">Dead miles are part of the trip's miles. They are billed at the dead miles rate instead of the mileage rate, and still count toward the <span data-quote-rule="trip_local_under">295</span>-mile line and the free days.</li>
                 <li class="rux--list__item">The regular quote includes one driver. Choosing two adds the second driver's pay, worked out on the trip's miles at the two-driver rates.</li>
-                <li class="rux--list__item">Every rate is set on the rates page, under Edit rates.</li>
+                <li class="rux--list__item">Every rate and rule is set on the rates page, under Edit rates, including the mile figures on this tab.</li>
               </ul>
             </section>
 
@@ -450,13 +450,13 @@
                   <tbody>
                     <tr>
                       <td>1</td>
-                      <td><strong>Crossing 295 miles can lower the price.</strong> Under 295 a trip pays for every day. From 295 it pays by the mile with free days, which for a trip of a few days can come to less.</td>
+                      <td><strong>Crossing <span data-quote-rule="trip_local_under">295</span> miles can lower the price.</strong> Under <span data-quote-rule="trip_local_under">295</span> a trip pays for every day. From <span data-quote-rule="trip_local_under">295</span> it pays by the mile with free days, which for a trip of a few days can come to less.</td>
                       <td class="scheduler-quote-quirks__example" id="scheduler-quote-quirk-1"></td>
                       <td>Charge whichever is higher: the local days or the mileage price.</td>
                     </tr>
                     <tr>
                       <td>2</td>
-                      <td><strong>The daily minimum only applies to local trips.</strong> A one-day trip of 295 miles is billed by the mile, which can come to less than one local day.</td>
+                      <td><strong>The daily minimum only applies to local trips.</strong> A one-day trip of <span data-quote-rule="trip_local_under">295</span> miles is billed by the mile, which can come to less than one local day.</td>
                       <td class="scheduler-quote-quirks__example" id="scheduler-quote-quirk-2"></td>
                       <td>The same change as 1 covers it.</td>
                     </tr>
@@ -468,13 +468,13 @@
                     </tr>
                     <tr>
                       <td>4</td>
-                      <td><strong>Very long trips drop a charge.</strong> From 10,250 trip miles the free-day table runs out and the mileage charge counts as $0. Driver pay does the same from 6,250 miles.</td>
+                      <td><strong>Very long trips drop a charge.</strong> From <span data-quote-rule="trip_free_days_end">10,250</span> trip miles the free-day table runs out and the mileage charge counts as $0. Driver pay does the same from <span data-quote-rule="driver_free_days_end">6,250</span> miles.</td>
                       <td class="scheduler-quote-quirks__example" id="scheduler-quote-quirk-4"></td>
-                      <td>Carry the free-day tables on past their ends.</td>
+                      <td>Set both "Free days stop at" rules on the rates page past any real trip.</td>
                     </tr>
                     <tr>
                       <td>5</td>
-                      <td><strong>The two free-day tables differ.</strong> At 750 to 999 miles a quote gets 1.5 free days and driver pay gets 1.</td>
+                      <td><strong>The two free-day tables differ.</strong> At <span data-quote-rule="trip_one_free_day_under">750</span> to <span data-quote-rule="driver_one_free_day_under:-1">999</span> miles a quote gets more free days than driver pay does.</td>
                       <td class="scheduler-quote-quirks__example" id="scheduler-quote-quirk-5"></td>
                       <td>Keep, if the quote and the driver pay are meant to differ.</td>
                     </tr>
@@ -492,7 +492,7 @@
                     </tr>
                     <tr>
                       <td>8</td>
-                      <td><strong>Each 250 miles past 500 can lower the price.</strong> From 750 miles every 250 more adds half a free day, so a trip with extra days dips at 750, 1,000 and 1,250 miles.</td>
+                      <td><strong>Each free-day step can lower the price.</strong> From <span data-quote-rule="trip_one_free_day_under">750</span> miles every <span data-quote-rule="free_day_step">250</span> more adds free days, so a trip with extra days dips at each step.</td>
                       <td class="scheduler-quote-quirks__example" id="scheduler-quote-quirk-8"></td>
                       <td>Charge at least the price just under each step, or keep the dips as the free days working.</td>
                     </tr>

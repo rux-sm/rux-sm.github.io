@@ -47,6 +47,11 @@ named.
   `notes-learning-tool.md`'s open tile, which inlines the phases of the
   walkthrough the tile opens.
 
+- **"Before starting" and "what LN is doing" move behind that link**, so the
+  tile keeps only the action.
+
+- **A collapsed tile carries no quest count**; the overview list shows it.
+
 - **The answers sit in a band across the foot of the card**, so they are held by
   something rather than floating on it.
 
@@ -79,27 +84,20 @@ named.
 - **The quest mark belongs in Design's icon set**, drawn there rather than
   inlined per page, because a shared icon cannot be recoloured inside.
 
+- **Design gains a token for the quest mark's dark counter**, set in every
+  theme, because a colour belongs in a theme and never in a drawing.
+
 - **The rules live in `notes/tools/build.mjs`**, which generates the page; the
   specimen's own stylesheet is scaffolding and does not ship.
 
 ## Questions
 
-- **`notes-learning-tool.md` puts "Before starting" and "what LN is doing" in
-  the open tile, and the new shape has neither.** Do they move behind the full
-  procedure link, or does the tile keep them?
-
-- **A collapsed tile no longer carries its quest count**, now that the subtitle
-  is gone. The overview list still shows it. Is that enough?
-
-- **The quest mark needs a dark counter that survives every theme**, and no
-  token gives one. Does Design gain a token, or does the drawn icon carry the
-  colour itself?
+None open.
 
 ## Tasks
 
-- [ ] Answer the three questions above.
-- [ ] Draw the quest mark into Design's icon set with its counter colour
-      settled, and remove the inlined copy.
+- [ ] Add the counter token to Design in every theme, draw the quest mark into
+      Design's icon set reading it, and remove the inlined copy.
 - [ ] Move the specimen's rules into `notes/tools/build.mjs` under the tile's
       own class names.
 - [ ] Change the tile markup the build tool emits to the shape above, including

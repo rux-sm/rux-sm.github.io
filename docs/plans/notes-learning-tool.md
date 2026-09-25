@@ -166,9 +166,15 @@ arriving, never knowledge verified.
   atlas until rux presses it. This is also how a desk investigation or a tile
   with no procedure submits anything.
 
-- **An upload stays private.** A screenshot is never published from here, and
-  releasing one waits on the clearance question below without holding up the
-  upload itself.
+- **An upload stays private.** A screenshot is never published from here
+  until rux clears it.
+
+- **Clearing a screenshot is rux's own attestation, separate from
+  `transcribed`:** rux has checked the whole image, its values, title bar and
+  notifications included, and nothing in it identifies a person, an
+  environment, a client or a vendor document. Only rux clears one, rux can
+  withdraw it at any time, and a withdrawn screenshot leaves the site with the
+  next publish.
 
 ### One intake, and what feeds it
 
@@ -196,8 +202,13 @@ arriving, never knowledge verified.
 ### Saying where a fact came from
 
 - **Labels come after the path, not before it.** A page first says which sources
-  it rests on, as `sources` already allows; a label per statement waits for the
-  scope question below.
+  it rests on, as `sources` already allows, and a label per statement follows.
+
+- **Three labels, each covering only what its source shows:** *Seen in LN* for
+  a walk, a capture or the screen in a recording, which establishes what was
+  visible and not every sentence citing it; *From help* for how LN is meant to
+  work, a configuration claim included; and *Said in a meeting* for speech,
+  including a recording's, which is unchecked.
 
 - **A label names what kind of fact a statement is, never how much to trust
   it**, and a disagreement between the environment and the help shows both.
@@ -239,17 +250,7 @@ command are built; `notes/docs/owner-tools.md` describes them. What this plan ch
 
 ## Questions
 
-Neither holds up building; each gates only the one thing it names.
-
-- **What does a source establish, and how far does its reach extend?** Help can
-  make a configuration claim; a recording holds both observed screen and
-  unverified speech; a capture establishes what was visible, not every sentence
-  citing it. Answering it lets labels be added.
-
-- **What does clearing a capture attest, and who withdraws it?** Transcribing
-  every field label is not review of every value, title bar and notification.
-  Clearance is its own attestation, distinct from `transcribed`. Answering it
-  lets a screenshot be released.
+None open.
 
 ## Tasks
 

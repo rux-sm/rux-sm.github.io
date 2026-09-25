@@ -131,14 +131,13 @@ size it needs, and every requirement wearing the icon the office picked.
   Naming the 30 in the scheduler's own source keeps every symbol a page needs
   findable, and `check-icons` fails a page that references one its block does
   not carry.
+- **The scheduler's own Settings page, when it is built, offers the same 30.**
+  A new icon joins that list by name, with a line saying who asked and why,
+  so the list stays one Design ships and subsetting stays safe.
 
 ## Questions
 
-- **Does the scheduler's Settings page, when it is built, keep the same 30?**
-  The list is rux-ui's today. A Settings page here could offer more of
-  Material, which would unbound what a requirement's icon can be and take
-  subsetting's safety with it. Whatever it offers has to stay a list Design
-  ships.
+None open.
 
 ## Tasks
 

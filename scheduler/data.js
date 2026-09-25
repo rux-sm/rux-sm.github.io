@@ -7403,6 +7403,7 @@
     fitNote(docked);
     if (docked) {
       drawDockedTrip(bar);
+      wearShell();
       barShortcuts.removeAttribute('data-out');
       barShortcuts.removeAttribute('data-side');
       /* The sheet stands over the foot of the board, so the pane is given that
@@ -10434,6 +10435,18 @@
       (_, i) => (known.has(value[i]) ? value[i] : null));
   };
 
+  /* The docked sheet stands on the header's own surface. The header is a theme
+     zone of its own in theme.js, g100 under Carbon's four whatever the page
+     is, so its colours are read off it rather than named, and a saved theme's
+     bar is matched as well as a built-in one. */
+  const SHELL_TOKENS = ['background', 'background-hover', 'icon-primary', 'text-secondary', 'focus'];
+  function wearShell() {
+    const shell = document.querySelector('.rux--header[data-theme]');
+    if (!shell) return;
+    const cs = getComputedStyle(shell);
+    for (const t of SHELL_TOKENS) barShortcuts.style.setProperty(`--scheduler-shell-${t}`, cs.getPropertyValue(`--rux-${t}`).trim());
+  }
+
   /* The docked bar's head: the rows the compact block gave up, cloned from the
      bar itself rather than built again, so a row has one builder and one set of
      rules. The bar's colour class comes with them, which the head's stripe
@@ -10554,7 +10567,7 @@
   /* THE CARD'S ROWS, as the shortcut bar draws them under its slots: the
      reminder while the trip asks for a follow-up, then two parts under their
      own headings, the pin and the bubble the bar's updates mark wears: the
-     trip's notes, shaded and always there, saying so when there are none, and
+     trip's notes, shaded, or a heading that says none in one line, and
      the updates with their count, newest first with who
      and how long ago, three showing and the rest scrolling. With none yet the row says so, and the time at
      its end is the booking's, so the card still says how long the trip has
@@ -10602,11 +10615,16 @@
         el('strong', null, `Waiting on ${waitsOf(trip).map(w => WAIT_WORDS[w]).join(', ')}`), dismiss);
       card.appendChild(band);
     }
-    const notesHead = row('scheduler-card__head scheduler-card__head--notes');
+    const notesHead = row(`scheduler-card__head scheduler-card__head--notes${trip.notes ? '' : ' scheduler-card__head--alone'}`);
     notesHead.append(svgUse('#m-keep', '16', '0 0 32 32'), el('span', null, 'Trip notes'));
-    const note = row('scheduler-card__note');
-    note.appendChild(trip.notes ? el('span', null, trip.notes) : el('span', 'scheduler-card__empty', 'No notes'));
-    card.append(notesHead, note);
+    if (trip.notes) {
+      const note = row('scheduler-card__note');
+      note.appendChild(el('span', null, trip.notes));
+      card.append(notesHead, note);
+    } else {
+      notesHead.appendChild(el('span', 'scheduler-card__count', '· none'));
+      card.appendChild(notesHead);
+    }
     const updates = updatesOf(trip);
     const updatesHead = row('scheduler-card__head');
     updatesHead.append(svgUse('#m-chat', '16', '0 0 32 32'), el('span', null, 'Updates'));
@@ -10656,6 +10674,9 @@
   barShortcuts?.addEventListener('click', e => {
     const note = e.target.closest('.scheduler-card__note[role="button"]');
     if (note) { toggleNote(note); return; }
+    // The docked sheet's trip is the whole bar written out, and a tap on it
+    // opens the trip as the Open slot does.
+    if (e.target.closest('.scheduler-bar-shortcuts__trip')) { openSelected(); return; }
     // The reminder's ✕ acts on the trip the card shows, peeked or selected.
     const dismiss = e.target.closest('.scheduler-card__dismiss');
     if (dismiss) {

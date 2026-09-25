@@ -108,7 +108,7 @@ Material icon from Design's sprite, what it binds to and its paper, and the
 page gives it the same tile, frame and fit as the rest. A form leaves as paper
 or as Save as PDF in the print dialog, which keeps its type sharp. The page
 follows the theme the person keeps and the sheet on it carries the light one,
-so the ink drawn there is the ink that prints.
+so the ink drawn there is the ink that prints. After a sent quote: `docs/booking.md`.
 
 The pages in `share/` are for people without a log-in, who arrive by a link:
 `share/document.html` opens a trip document, `share/maintenance.html`

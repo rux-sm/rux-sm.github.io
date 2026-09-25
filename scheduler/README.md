@@ -83,8 +83,8 @@ when the week lands; a failed load keeps the current week and offers a retry.
 The quote page, `quote.html`, is the quote calculator: the office spreadsheet's
 formulas in `quote.js`. Its rates are edited on `quote-rates.html` and kept in
 the `quote_rates` and `quote_mileage_rates` tables, which only a staff session
-can read or change. `docs/quote-calculator.md` lists where it copies the
-spreadsheet's quirks.
+can read or change. Its Rules tab says how a quote is priced and lists where
+it copies the spreadsheet's quirks, each worked out at the saved rates.
 
 `print.html` is the forms this app fills in and prints. On its own it lists
 them; with a form named in the query it reads that form's subject and draws it,

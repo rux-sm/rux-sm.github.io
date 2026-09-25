@@ -2639,10 +2639,9 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-quote__day-buttons [hidden] { display: none; }
 .scheduler-quote-days .rux--text-input { font-variant-numeric: tabular-nums; }
 
-/* The quote: rows a field's height, a 16px label line over a 40px value
-   line, 24px apart as the fields are, so each row lines up with the day and
-   the modifier beside it. A rule sits in the gap above the charges and above
-   the total. */
+/* The quote: a 16px label line over a 40px value line, rows 24px apart as
+   the fields are. A charge's working adds a third line under its figure. A
+   rule sits in the gap above the charges and above the total. */
 .scheduler-quote-rows { display: grid; gap: var(--rux-spacing-06); margin: 0; }
 .scheduler-quote-row {
   position: relative;
@@ -2678,6 +2677,17 @@ html:has(.scheduler-page[data-takeover]) {
   text-align: end;
 }
 .scheduler-quote-row__value--reference { color: var(--rux-text-secondary); }
+/* A charge's working, a line a part, under its figure. */
+.scheduler-quote-row__math {
+  grid-area: 3 / 1 / 4 / 3;
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-helper-text-01-font-size);
+  line-height: var(--rux-helper-text-01-line-height);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  white-space: pre-line;
+}
+.scheduler-quote-row__math:empty { display: none; }
 .scheduler-quote-row--ruled::before {
   content: "";
   position: absolute;
@@ -2705,6 +2715,23 @@ html:has(.scheduler-page[data-takeover]) {
   }
 }
 .scheduler-quote-bar { display: none; }
+
+/* The Rules tab: what the calculator does and where it follows the
+   spreadsheet. A quirk's example is a line a trip, in figures that line up. */
+/* A stack child may not grow past the column, so a narrow screen scrolls
+   the table inside Carbon's table container instead of the page. The table
+   keeps a width its four columns read at. */
+.scheduler-quote-tabs,
+.scheduler-quote-rules__table { min-inline-size: 0; }
+.scheduler-quote-quirks { min-inline-size: 48rem; }
+.scheduler-quote-quirks td { vertical-align: top; }
+.scheduler-quote-quirks__example { min-inline-size: 15rem; }
+.scheduler-quote-quirks__line {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--rux-spacing-05);
+  font-variant-numeric: tabular-nums;
+}
 
 /* The rates page: the calculator's three tiles, the trip rates, the mileage
    rates and the driver pay, sharing one height. At md the mileage rates go

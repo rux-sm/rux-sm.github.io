@@ -2,11 +2,11 @@
    quote.js — THE QUOTE CALCULATOR AND ITS RATES
    --------------------------------------------------------------------------
    The office spreadsheet's Calculator tab, formula for formula, quirks
-   included; scheduler/docs/quote-calculator.md lists them. One script for two
-   pages: quote.html works a quote out, and quote-rates.html edits the rates it
-   uses. The rates are rows in `quote_rates` and `quote_mileage_rates`, which
-   only a staff session can read or write, so no rate is written in this
-   public file.
+   included; quote.html's Rules tab lists them, with examples worked out here
+   from the saved rates. One script for two pages: quote.html works a quote
+   out, and quote-rates.html edits the rates it uses. The rates are rows in
+   `quote_rates` and `quote_mileage_rates`, which only a staff session can
+   read or write, so no rate is written in this public file.
 
    The regular quote pays for one driver. Choosing two adds the second
    driver's pay, worked out on both drivers' combined miles, which are the
@@ -181,6 +181,58 @@
 
   /* ── THE CALCULATOR (quote.html) ──────────────────────────────────────── */
 
+  // A charge's working, a line a part: each count times its rate. A falsy
+  // part is left out, and every line after the first starts with a plus.
+  const times = (n, one, many, rate) => `${plural(n, one, many)} × ${money.format(rate)}`;
+  const lines = parts => parts.filter(Boolean).map((p, i) => (i ? `+ ${p}` : p)).join('\n');
+
+  // The second driver's pay, worked the way its band works it.
+  const driverMath = d => d.amount === null ? ''
+    : d.band === 'under200' ? times(d.days, 'day', 'days', rates.driver_local_daily)
+    : d.band === 'under430' ? lines([
+      `${money.format(rates.driver_short_first_day)} first day`,
+      d.days > 1 && times(d.days - 1, 'day', 'days', rates.driver_extra_day),
+    ])
+    : lines([
+      times(d.total, 'mi', 'mi', d.band === 'under1000' ? rates.driver_per_mile : rates.driver_per_mile_1k_two),
+      d.extra > 0 && times(d.extra, 'extra day', 'extra days', rates.driver_extra_day),
+    ]);
+
+  /* The Rules tab's examples, each one quirk shown on small trips at the
+     saved rates and the chosen mileage rate, a line a trip: what it is, then
+     its figure. A trip's total miles are spread over its days, the remainder
+     on the first; the second driver's trips run 10 days. */
+  const spread = (total, days) => Array.from({ length: days }, (_, i) =>
+    Math.floor(total / days) + (i === 0 ? total % days : 0));
+  const priced = (miles, rate) => money.format(tripQuote({ miles, rate, dead: 0 }, rates).amount ?? 0);
+  const secondDriver = (total, days) => {
+    const half = spread(total, days).map(m => m / 2);
+    return money.format(driverPay({ driver1: half, driver2: half, drivers: 2 }, rates).amount ?? 0);
+  };
+  const drawRules = rate => {
+    $('scheduler-quote-rules-rate').textContent = rate ? `${money.format(rate)} a mile` : 'chosen';
+    const meal = rates.driver_meal_daily;
+    const example = [
+      [['294 mi, 3 days', priced(spread(294, 3), rate)], ['295 mi, 3 days', priced(spread(295, 3), rate)]],
+      [['294 mi, 1 day', priced([294], rate)], ['295 mi, 1 day', priced([295], rate)]],
+      [['Miles on days 1 and 3', priced([100, 0, 100], rate)], ['Miles on days 1 and 2', priced([100, 100, 0], rate)]],
+      [['10,249 mi, 20 days', priced(spread(10249, 20), rate)], ['10,250 mi, 20 days', priced(spread(10250, 20), rate)],
+        ['2nd driver, 6,249 mi', secondDriver(6249, 10)], ['2nd driver, 6,250 mi', secondDriver(6250, 10)]],
+      [['Quote, 800 mi', plural(tripFreeDays(800), 'free day', 'free days')], ['Driver pay, 800 mi', plural(driverFreeDays(800), 'free day', 'free days')]],
+      [['Meals, 1 day', money.format(meal)], ['Meals, 3 days', money.format(meal * 3)]],
+      [['No miles, $150 other', money.format(150)]],
+    ];
+    example.forEach((rows, i) => {
+      $(`scheduler-quote-quirk-${i + 1}`).replaceChildren(...rows.map(([label, value]) => {
+        const line = document.createElement('div');
+        line.className = 'scheduler-quote-quirks__line';
+        line.append(Object.assign(document.createElement('span'), { textContent: label }),
+          Object.assign(document.createElement('span'), { textContent: value }));
+        return line;
+      }));
+    });
+  };
+
   const calculator = () => {
     const form = $('scheduler-quote-form');
     let dayCount = 1;
@@ -209,7 +261,8 @@
       const n = driversChosen();
       const trip = column('trip');
       const dead = num($('scheduler-quote-dead').value);
-      const quote = tripQuote({ miles: trip, rate: num($('scheduler-quote-rate').value), dead }, rates);
+      const rate = num($('scheduler-quote-rate').value);
+      const quote = tripQuote({ miles: trip, rate, dead }, rates);
       // Dead miles are part of the trip's miles, so more of them than the trip
       // has makes the mileage charge wrong. The field warns and the Mileage
       // note points to it; the quote still counts them.
@@ -237,6 +290,13 @@
       $('scheduler-quote-days-out').textContent = count.format(quote.days ?? 0);
 
       $('scheduler-quote-mileage').textContent = quote.amount === null ? '—' : money.format(quote.amount);
+      $('scheduler-quote-mileage-math').textContent = quote.amount === null ? ''
+        : quote.local ? times(quote.days, 'day', 'days', rates.trip_local_daily)
+        : lines([
+          times(quote.total - dead, 'mi', 'mi', rate),
+          dead > 0 && times(dead, 'dead mi', 'dead mi', rates.trip_dead_miles),
+          quote.extra > 0 && times(quote.extra, 'extra day', 'extra days', rates.trip_extra_day),
+        ]);
       $('scheduler-quote-mileage-note').textContent =
         quote.days === null ? 'No miles yet'
         : deadWarn ? 'Check dead miles'
@@ -255,7 +315,11 @@
           : driver.band === 'under430' ? '200-to-429 rate'
           : driver.amount === null ? 'Past the free-day table, counted as $0'
           : `${plural(driver.free, 'free day', 'free days')} · ${plural(driver.extra, 'extra day', 'extra days')}`;
-        if (driver.meal != null) $('scheduler-quote-meals').textContent = money.format(driver.meal);
+        $('scheduler-quote-driver-math').textContent = driverMath(driver);
+        if (driver.meal != null) {
+          $('scheduler-quote-meals').textContent = money.format(driver.meal);
+          $('scheduler-quote-meals-math').textContent = times(driver.days, 'day', 'days', rates.driver_meal_daily);
+        }
       }
 
       $('scheduler-quote-other-line').hidden = other === 0;
@@ -264,6 +328,7 @@
       // Two totals, one showing at each width: the quote's own, and the bar's.
       $('scheduler-quote-total').textContent = money.format(total);
       $('scheduler-quote-bar-total').textContent = money.format(total);
+      drawRules(rate);
     };
 
     // Keeps the chosen rate while it still exists; `fresh` starts from the default.
@@ -321,7 +386,7 @@
     });
 
     return {
-      app: form,
+      app: $('scheduler-quote-tabs-wrap'),
       preview: 'This preview has no log-in, so the rates are blank until they are saved on the rates page. Open http://localhost:8641/, the cloud preview, to load the real ones.',
       start: () => {
         drawDays();

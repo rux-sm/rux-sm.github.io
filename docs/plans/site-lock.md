@@ -88,13 +88,69 @@ customer requests, are rebuilt with Design here and open without a login.
   page.** A change reaches someone already logged in at the next page they
   open.
 
+### The driver page, feature for feature from rux-ui's
+
+`scheduler/share/driver.html` does what rux-ui's `driver.html` and
+`js/pages/driver-share.js` do, drawn with Design, phone first, in sentence
+case. Improvements wait until it is live and the old links forward to it.
+
+- **What it reads.** `get_driver_schedule_share` for the driver and the link's
+  dates, `get_driver_share_trips` for the trips with their stops, crew,
+  documents and the requirement labels, and `get_driver_assignment_statuses`
+  for each answer. All three are token-checked, so nothing else is read.
+- **The top.** "Hello" and the driver's short name, "Here are your current
+  assignments", the link's date range, and when dispatch last updated the
+  link, as "Updated today at 3:40 PM".
+- **Which trips.** One card per leg the link names, oldest first. A leg shows
+  until the end of its last day. A cancelled trip is left out. A leg that is
+  no longer the driver's says so on its own card, with Try again.
+- **Each card's head.** The dates, the destination (the yard for a return
+  leg), the customer, the bus number and the driver's role, such as Relief
+  driver.
+- **Answering.** A leg waiting for an answer has Accept and Decline. Decline
+  first asks "Decline this assignment?", saying dispatch will be told. Once
+  answered, the card shows Accepted or Declined in their place. An accepted
+  leg that dispatch changed afterwards shows Changes requested, with no
+  buttons. A failed answer says so on the card and keeps the buttons.
+- **Where to be.** The pickup's name and address with a Navigate link to
+  Maps, and the spot time, or the report time for a relief driver.
+- **Who to call.** The trip's day-of contact, falling back to the second
+  contact and then the booking contact, with Call and Text.
+- **The role.** For a relief driver, who they take over from, the handoff
+  time and place and dispatch's instructions, or a line saying dispatch will
+  send them.
+- **The crew.** Everyone else on the trip, grouped by bus with the driver's
+  own bus first as "Your bus", each with Call and Text. Past two buses the
+  rest fold under View all crew.
+- **Notes.** The trip's notes, folded after 240 characters under View full
+  notes.
+- **Documents.** Each itinerary file, newest version, marked Updated when it
+  replaced one, and the driver's envelope, drawn by `print.js`'s envelope
+  form for this driver alone. An itinerary opens through
+  `trip-document-link` once `site-paperwork-lock.md` is built, and by its
+  public address until then.
+- **Telling the boards.** An answer sends the `driver-status-changed` message
+  on the `scheduler-trips` channel, which rux-ui's board listens for.
+- **When there is nothing to show.** No token: "This link has no schedule in
+  it", and ask dispatch. An inactive link: "This link is no longer active",
+  with Try again. No current legs: "No current assignments", and that new
+  ones appear here. A load that fails: say so, with Try again.
+- **Times** read in Central time, as rux-ui's do.
+
 ## Questions
 
-None open.
+1. rux-ui works out each trip's requirements, such as a wheelchair lift or a
+   hotel, but never shows them to the driver. Should the new page show them
+   on each card?
+2. When dispatch changes a trip the driver already accepted, rux-ui shows
+   Changes requested but gives no button to accept it again. Should the new
+   page offer Accept and Decline again?
 
 ## Tasks
 
 - [ ] Build the request page, tested without sending a request.
+- [ ] rux reads the driver page list above against rux-ui's page and
+      answers the question.
 - [ ] Build the driver page, tested against a real link without accepting or
       declining.
 - [ ] Turn rux-ui's four link pages into forwarders and switch its link-making

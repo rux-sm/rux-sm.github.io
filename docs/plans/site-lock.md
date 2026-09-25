@@ -92,7 +92,9 @@ customer requests, are rebuilt with Design here and open without a login.
 
 `scheduler/share/driver.html` does what rux-ui's `driver.html` and
 `js/pages/driver-share.js` do, drawn with Design, phone first, in sentence
-case. Improvements wait until it is live and the old links forward to it.
+case, with two additions: it shows each trip's requirements, and it asks
+again, saying what changed, when a trip changes after the driver accepted it.
+Other improvements wait until it is live and the old links forward to it.
 
 - **What it reads.** `get_driver_schedule_share` for the driver and the link's
   dates, `get_driver_share_trips` for the trips with their stops, crew,
@@ -107,11 +109,28 @@ case. Improvements wait until it is live and the old links forward to it.
 - **Each card's head.** The dates, the destination (the yard for a return
   leg), the customer, the bus number and the driver's role, such as Relief
   driver.
+- **Requirements.** Each one the trip needs, such as a wheelchair lift, a
+  hotel, a sleeper bus, a 56-passenger bus or a fuel card, as a tag under the
+  head, named by the requirement labels the share function returns.
 - **Answering.** A leg waiting for an answer has Accept and Decline. Decline
   first asks "Decline this assignment?", saying dispatch will be told. Once
-  answered, the card shows Accepted or Declined in their place. An accepted
-  leg that dispatch changed afterwards shows Changes requested, with no
-  buttons. A failed answer says so on the card and keeps the buttons.
+  answered, the card shows Accepted or Declined in their place. A failed
+  answer says so on the card and keeps the buttons.
+- **What the driver accepted is kept.** Accept sends, with the answer, what
+  the card showed of the driver's own job: the leg's dates, the spot or report
+  time and place, the destination, every stop with its times, their bus, their
+  role and relief details, the requirements, the notes and the newest
+  itinerary. The database keeps it beside the answer.
+- **A change to that job asks again.** When the card's job no longer matches
+  what was accepted, the card says "This trip changed since you accepted it",
+  lists each change as before and after, such as "Spot time 6:00 AM → 5:30
+  AM" or "New itinerary", and offers Accept and Decline again. Anything else
+  dispatch edits, like the price, billing, the trip's colour, its reference,
+  the booking contact or other buses' crew, changes the card quietly and asks
+  nothing. The trip contact and the crew update on the card without asking.
+- **A leg accepted before this page** has nothing kept to compare. It asks
+  again, with no list, when the trip was saved after the answer, which is
+  rux-ui's rule today.
 - **Where to be.** The pickup's name and address with a Navigate link to
   Maps, and the spot time, or the report time for a relief driver.
 - **Who to call.** The trip's day-of contact, falling back to the second
@@ -139,20 +158,17 @@ case. Improvements wait until it is live and the old links forward to it.
 
 ## Questions
 
-1. rux-ui works out each trip's requirements, such as a wheelchair lift or a
-   hotel, but never shows them to the driver. Should the new page show them
-   on each card?
-2. When dispatch changes a trip the driver already accepted, rux-ui shows
-   Changes requested but gives no button to accept it again. Should the new
-   page offer Accept and Decline again?
+None open.
 
 ## Tasks
 
 - [ ] Build the request page, tested without sending a request.
-- [ ] rux reads the driver page list above against rux-ui's page and
-      answers the question.
+- [ ] Migration `driver_accepted_view`: a `accepted_view` column on
+      `trip_driver_statuses`, and `confirm_trip_assignment` taking it beside
+      the answer. rux-ui's page keeps working without sending it. Shown to rux
+      before it runs; tested on PGlite first.
 - [ ] Build the driver page, tested against a real link without accepting or
-      declining.
+      declining, and the change list against invented trips.
 - [ ] Turn rux-ui's four link pages into forwarders and switch its link-making
       code to the new addresses.
 - [ ] Migration `profiles_sees_all_apps_drop`: drop the column, which no code

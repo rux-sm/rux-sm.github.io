@@ -806,7 +806,7 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-card__head > svg { flex: none; inline-size: .875rem; block-size: .875rem; }
 .scheduler-card__count { font-weight: var(--rux-body-compact-01-font-weight); }
-/* The Notes heading's end: the trip's needs and its day-of contact, in the
+/* The Notes heading's end: the trip's needs and a missing day-of contact, in the
    card's full ink and body weight, wrapping under the heading where they do
    not fit beside it. */
 .scheduler-card__head--notes { flex-wrap: wrap; }
@@ -831,11 +831,10 @@ button.scheduler-row-head__num::after {
 .scheduler-card__need--short { opacity: 1; }
 .scheduler-card__need--short { color: var(--card-error); }
 .scheduler-card__need-letter { inline-size: 1rem; text-align: center; font-weight: var(--rux-heading-compact-01-font-weight); }
-.scheduler-card__need-name { display: none; }
-.scheduler-bar-shortcuts[data-docked] .scheduler-card__need-name { display: inline; }
-/* The day-of contact dials; with none, its phone is in the warning colour. */
-a.scheduler-card__dayof { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
-.scheduler-card__dayof--none > svg { color: var(--card-warning); }
+.scheduler-card__fact-name { display: none; }
+.scheduler-bar-shortcuts[data-docked] .scheduler-card__fact-name { display: inline; }
+/* No day-of contact: its phone in the warning colour. */
+.scheduler-card__dayof > svg { color: var(--card-warning); }
 .scheduler-card__head + .scheduler-card__row,
 .scheduler-card__head + .scheduler-card__list > :first-child { border-block-start: 0; }
 /* A trip with no note says so on the heading's own line, which then closes

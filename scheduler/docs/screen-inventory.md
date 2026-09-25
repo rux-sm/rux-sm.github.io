@@ -62,7 +62,7 @@ Design account panel replaces it).
 | Tasks, History | later | Pages (§7). |
 | Pending marks on the bar | drop | A missing itinerary, purchase order or balance is what the follow-up reminder waits on, so the reminder asks for it; drawn on the bar as well, the itinerary and day-of contact marks sat on four in five upcoming trips and said nothing. |
 | Bus fit | keep | A bar whose bus is the wrong type, or falls short of a need the trip carries, has a red edge inside it, the shape of the selection ring; its card says what is wrong in a red band above the reminder. |
-| Needs and day-of contact | keep | On the card, at the Notes heading's end: each need's icon, quiet where the bus meets it, red where it falls short, with its name on hover and written beside it on the phone; then the day-of contact's name, which dials, or No day-of contact. |
+| Needs and day-of contact | keep | On the card, at the Notes heading's end: each need's icon, quiet where the bus meets it, red where it falls short, with its name on hover and written beside it on the phone; then a phone in the warning colour when the trip has no day-of contact. |
 | Placeholder bar | keep | Amber is the office's placeholder, a trip not yet quoted, named Placeholder in the colour menu. Its bar is a yellow tint beside the others in a light theme and the warning colour in a dark one, and is never marked as the wrong bus, and draws no empty seat and no Needs a bus; a driver someone has named still shows. |
 | Upload itinerary | keep | On the bar's right-click menu, in place of Open itinerary on a trip without one. |
 | Driver status marks | keep | The drivers row lists the crew in role order: a person icon for a driver or co-driver and two opposite arrows for relief, then the short name. The icon sits on a disc in the status's colour, one step of the run each: grey Not sent, amber pending response, green confirmed, red pending assignment or declined. A declined name is struck through, and a role that is on with nobody in it is its red icon alone. The tooltip names the role, the status, who set it and when. |
@@ -187,7 +187,10 @@ fewest it ever shows: three slots at 40px come to 120px, which is exactly what
 a one-day trip bar is at the narrowest day column, because that column is
 sized from this bar. A padding slot
 shows a dashed circle and opens Customize shortcuts; a fourth action and
-beyond are added from the right-click menu. A shortcut
+beyond are added from the right-click menu. Contacts and Add update close
+every row: Contacts is a menu of Call and Text for the booking contact, each
+day-of contact and the crew on that bus, a driver's Text opening their Google
+Messages link on a computer where the Drivers page holds one. A shortcut
 that cannot act on the trip, such as the envelope on a bus with no driver, shows faint
 with the reason as its label. Escape clears the selection and takes the bar
 with it. The

@@ -779,6 +779,11 @@
        places it at the pointer and opens it through Rux.menu.open, which
        supplies Escape, outside press and focus return. The module repositions
        only position: fixed surfaces, so this absolute one keeps its place. -->
+  <!-- The Contacts shortcut's menu: Call and Text for the booking contact,
+       each day-of contact and the crew on the selected bar's bus, each with
+       its role at the end. data.js fills and places it. -->
+  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons" id="scheduler-contacts-menu" role="menu" tabindex="-1" aria-label="Contacts" hidden></ul>
+
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown" id="scheduler-cell-menu" role="menu" tabindex="-1" hidden>
     <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-cell-menu-new">
       <div class="rux--menu-item__label">New trip here</div>

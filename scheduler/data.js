@@ -520,7 +520,7 @@
         .gte('start_date', lo).lte('start_date', hi).order('start_date').then(unwrap),
       // `status`, so the Fleet tab offers active drivers; `priority`, so the
       // roster lists them in the order they are called on.
-      client.from('drivers').select('id,name,short_name,status,priority').then(unwrap),
+      client.from('drivers').select('id,name,short_name,status,priority,phone,texting_url').then(unwrap),
       // Every contact, read once with the week for the contact search rather
       // than on each keystroke.
       client.from('contacts').select('id,name,phone,email,client,customer_id').order('name').then(unwrap),
@@ -768,8 +768,9 @@
   }
 
   // -- drawing --------------------------------------------------------------
-  /* What each bar knows about its bus and its trip's needs, for the trip's card:
-     `{ needs, misfits }`, set as the bar is drawn. */
+  /* What each bar knows about its bus, its trip's needs and its crew, for the
+     trip's card and the Contacts menu: `{ needs, misfits, crew }`, set as the
+     bar is drawn. */
   const barFacts = new WeakMap();
   const addRow = (bar, cls, ...parts) => {
     const r = el('div', `scheduler-bar__row ${cls}`);
@@ -1068,6 +1069,10 @@
     const crew = assign ? crewOf(trip, assign, driversById, statuses).filter(c => !(placeholder && c.needed)) : [];
     const crewBox = el('span', 'scheduler-bar__crew', assign || placeholder ? null : 'Needs a bus');
     crewBox.append(...crew.map(crewEl));
+    // Who is on this bus, for the Contacts shortcut's menu.
+    barFacts.get(bar).crew = crew.filter(c => c.who).map(c => ({
+      role: c.label, name: c.who.name, phone: c.who.phone || null, texting: c.who.texting_url || null,
+    }));
     addRow(bar, 'scheduler-bar__drivers', crewBox, msg('drivers'));
 
     /* The compact board's label. Not a row, so the full board never draws it
@@ -10379,8 +10384,9 @@
        need. A fourth and beyond are added from the right-click menu. */
     const slots = ['open', ...shortcutChoice.filter(Boolean)];
     while (slots.length < SHORTCUT_MIN) slots.push(null);
-    // Add update is always the last slot, after the person's own choices.
-    slots.push('add_update');
+    // Contacts and Add update are always the last two, after the person's own
+    // choices, because every trip has people to reach and updates to write.
+    slots.push('contacts', 'add_update');
     const trip = panelIndex.trips.get(bar.dataset.tripId);
     /* The trip open in the editor keeps only its slots: the panel beside it
        already shows its updates, and a card would stand out from under the
@@ -10400,7 +10406,7 @@
       const btn = el('button', 'scheduler-bar-shortcut');
       btn.type = 'button';
       btn.dataset.slot = String(i + 1);
-      const action = id === 'add_update' ? ADD_UPDATE : SHORTCUT_ACTIONS.find(a => a.id === id);
+      const action = FIXED_SHORTCUTS[id] ?? SHORTCUT_ACTIONS.find(a => a.id === id);
       if (!action) {
         btn.classList.add('scheduler-bar-shortcut--empty');
         btn.setAttribute('aria-label', 'Add a shortcut');
@@ -10437,6 +10443,74 @@
       whenSafe(() => { openRef(ref); requestAnimationFrame(toBox); });
     } };
 
+  /* Contacts opens a menu of everyone to reach about this bar: the booking
+     contact, each day-of contact, then the crew on this bus, each with Call and
+     Text and their role at the end. Call dials. Text opens the phone's own
+     messages, except a driver's on a computer, which opens the office's Google
+     Messages conversation with them where the Drivers page holds one. Anyone
+     without a number is left out. */
+  const contactsMenu = document.getElementById('scheduler-contacts-menu');
+  const CONTACTS = { id: 'contacts', label: 'Call or text', short: 'Contacts', icon: '#m-call', blocked: () => null,
+    run: (bar, slot) => openContactsFrom(bar, slot) };
+  const FIXED_SHORTCUTS = { add_update: ADD_UPDATE, contacts: CONTACTS };
+  const dial = phone => String(phone).replace(/[^\d+]/g, '');
+  function openContactsFrom(bar, slot) {
+    const trip = panelIndex.trips.get(bar.dataset.tripId);
+    if (!contactsMenu || !trip) return;
+    const docked = barShortcuts.hasAttribute('data-docked');
+    const people = [
+      [tripContact(trip, 0), 'Booking'],
+      ...[1, 2, 3, 4, 5].map(n => [tripContact(trip, n), 'Day-of']),
+    ].filter(([c]) => c?.phone).map(([c, role]) => ({ name: c.name, role, phone: c.phone, texting: null }));
+    const crew = (barFacts.get(bar)?.crew ?? []).filter(c => c.phone || c.texting);
+    const item = (icon, words, role, href, away) => {
+      const li = el('li', 'rux--menu-item');
+      li.setAttribute('role', 'menuitem');
+      li.tabIndex = -1;
+      li.dataset.href = href;
+      if (away) li.dataset.away = 'true';
+      const glyph = el('div', 'rux--menu-item__icon');
+      glyph.appendChild(svgUse(icon, '16', '0 0 32 32'));
+      li.append(glyph, el('div', 'rux--menu-item__label', words), el('div', 'rux--menu-item__shortcut', role));
+      return li;
+    };
+    const rows = [];
+    const group = list => {
+      if (!list.length) return;
+      if (rows.length) {
+        const rule = el('li', 'rux--menu-item-divider');
+        rule.setAttribute('role', 'separator');
+        rows.push(rule);
+      }
+      for (const p of list) {
+        if (p.phone) rows.push(item('#m-call', `Call ${p.name}`, p.role, `tel:${dial(p.phone)}`));
+        const messages = p.texting && !docked;
+        if (messages || p.phone) rows.push(item('#m-chat', `Text ${p.name}`, p.role, messages ? p.texting : `sms:${dial(p.phone)}`, messages));
+      }
+    };
+    group(people);
+    group(crew);
+    if (!rows.length) {
+      const none = el('li', 'rux--menu-item rux--menu-item--disabled');
+      none.setAttribute('role', 'menuitem');
+      none.setAttribute('aria-disabled', 'true');
+      none.appendChild(el('div', 'rux--menu-item__label', 'No phone numbers on this trip'));
+      rows.push(none);
+    }
+    contactsMenu.replaceChildren(...rows);
+    const box = slot.getBoundingClientRect();
+    popMenuAt(contactsMenu, { clientX: box.left, clientY: docked ? box.top : box.bottom });
+  }
+  contactsMenu?.addEventListener('click', e => {
+    const li = e.target.closest('.rux--menu-item[data-href]');
+    if (!li) return;
+    window.Rux?.menu?.close?.(contactsMenu);
+    contactsMenu.hidden = true;
+    if (li.dataset.away) window.open(li.dataset.href, '_blank', 'noopener');
+    else window.location.href = li.dataset.href;
+  });
+  contactsMenu?.addEventListener('rux:menu-closed', () => { contactsMenu.hidden = true; });
+
   /* THE CARD'S ROWS, as the shortcut bar draws them under its slots: a red
      band while this bar's bus does not fit the trip, the reminder while the
      trip asks for a follow-up, then two parts under their
@@ -10465,7 +10539,7 @@
     if (!r.error) staffFaces = new Map((r.data || []).map(p => [p.user_id, p]));
   });
   /* The trip's day-of contact: the first of the five slots that holds anyone,
-     or null. The card says whether there is one, and who. */
+     or null. The card says when there is none. */
   const dayOfContact = trip => [1, 2, 3, 4, 5].map(n => tripContact(trip, n)).find(Boolean) ?? null;
   const cardKey = trip => (trip ? JSON.stringify([trip.notes, asksFollowUp(trip), waitsOf(trip), dayOfContact(trip),
     !!trip.contact_not_needed,
@@ -10504,29 +10578,23 @@
     const notesHead = row(`scheduler-card__head scheduler-card__head--notes${trip.notes ? '' : ' scheduler-card__head--alone'}`);
     notesHead.append(svgUse('#m-keep', '16', '0 0 32 32'), el('span', null, 'Notes'));
     if (!trip.notes) notesHead.appendChild(el('span', 'scheduler-card__count', '· none'));
-    /* At the heading's end, what the trip needs and who to call on the day.
-       Each need is its glyph, red where this bus falls short and in the warning
-       colour for a hotel still to book, its name on hover and written beside
-       it on the docked sheet, where a phone has no hover. The day-of contact
-       dials; with none, and the trip not marked as needing none, it says so. */
+    /* At the heading's end, what the trip needs, and a phone in the warning
+       colour when nobody is named to call on the day and the trip is not marked
+       as needing no one; the Contacts shortcut reaches whoever is named. Each
+       is its glyph, a need red where this bus falls short, its name on hover
+       and written beside it on the docked sheet, where a phone has no hover. */
     const side = el('span', 'scheduler-card__facts');
     for (const n of facts?.needs ?? []) {
       const need = el('span', `scheduler-card__need${n.short ? ' scheduler-card__need--short' : n.done ? '' : ' scheduler-card__need--todo'}`);
       need.title = n.label;
       need.append(n.href ? svgUse(n.href, '16', '0 0 32 32') : el('span', 'scheduler-card__need-letter', n.letter || '?'),
-        el('span', 'scheduler-card__need-name', n.name));
+        el('span', 'scheduler-card__fact-name', n.name));
       side.appendChild(need);
     }
-    const contact = dayOfContact(trip);
-    if (contact) {
-      const who = el(contact.phone ? 'a' : 'span', 'scheduler-card__dayof', contact.name);
-      if (contact.phone) who.href = `tel:${String(contact.phone).replace(/[^\d+]/g, '')}`;
-      who.title = ['Day-of contact', contact.name, contact.phone ? showPhone(contact.phone) : null].filter(Boolean).join(' · ');
-      who.prepend(svgUse('#m-call-fill', '16', '0 0 32 32'));
-      side.appendChild(who);
-    } else if (!trip.contact_not_needed) {
-      const none = el('span', 'scheduler-card__dayof scheduler-card__dayof--none', 'No day-of contact');
-      none.prepend(svgUse('#m-call-fill', '16', '0 0 32 32'));
+    if (!dayOfContact(trip) && !trip.contact_not_needed) {
+      const none = el('span', 'scheduler-card__dayof');
+      none.title = 'No day-of contact';
+      none.append(svgUse('#m-call-fill', '16', '0 0 32 32'), el('span', 'scheduler-card__fact-name', 'No day-of contact'));
       side.appendChild(none);
     }
     if (side.childElementCount) notesHead.appendChild(side);
@@ -10612,7 +10680,7 @@
       openShortcutsModal(first < 0 ? SHORTCUT_SLOTS : first + 1);
       return;
     }
-    (btn.dataset.shortcut === 'add_update' ? ADD_UPDATE : SHORTCUT_ACTIONS.find(a => a.id === btn.dataset.shortcut))?.run(bar, btn);
+    (FIXED_SHORTCUTS[btn.dataset.shortcut] ?? SHORTCUT_ACTIONS.find(a => a.id === btn.dataset.shortcut))?.run(bar, btn);
   });
 
   const shortcutsModal = document.getElementById('scheduler-shortcuts-modal');

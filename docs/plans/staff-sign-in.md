@@ -34,6 +34,8 @@ that make share links.
   there is no link between the scheduler and rux-ui.
 - **Sign-in replaces "Who's this?".** Identity and the trip-history name come
   from the session; changing person is sign out, then sign in.
+- **The Escamilla account stays as a guest account**, so it is expected
+  never to sign in and the watch does not wait for it.
 - **The display account has full staff access** and stays signed in, because
   the display moves buses today.
 - **Each person edits only their own profile.**
@@ -89,8 +91,7 @@ that make share links.
 
 ## Questions
 
-- The Escamilla account has never signed in. Is it still someone's, or does it
-  go with its profile?
+None open.
 
 ## Tasks
 
@@ -107,9 +108,9 @@ that make share links.
       unsaved work loses it. rux-ui's Worker hides the browser's address, so
       only the Worker's own logs could name the machine.
 - [ ] Watch for at least seven days, until three business days in a row show
-      every account signed in and every remaining key-only request in the edge
-      logs named: the driver, maintenance, document and request links, and any
-      stale browser already known and chased. Anything unnamed stops the close
+      every account but the guest signed in and every remaining key-only
+      request in the edge logs named: the driver, maintenance, document and
+      request links, and any stale browser already known and chased. Anything unnamed stops the close
       until it is identified. A dry run inside a rolled-back transaction shows
       staff see rows and the key alone does not.
 - [ ] Migration `staff_cutover_tables`: drop the open and `transition_open`

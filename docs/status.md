@@ -44,5 +44,3 @@ done and how.
 - Print a customer quote from a real trip and hold it beside the QuickBooks
   one: the price, the description, the terms, and whether the grey label cells
   reach the paper with Chrome's Background graphics box left unticked.
-- Delete the archived GitHub repositories, and decide whether `trip-board`
-  stays.

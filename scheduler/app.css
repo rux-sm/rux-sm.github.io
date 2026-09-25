@@ -2688,6 +2688,29 @@ html:has(.scheduler-page[data-takeover]) {
    staff view holds the cards to the width a phone held sideways gives them,
    so staff read the page at the size drivers do. */
 .scheduler-leg-list { display: grid; gap: var(--rux-spacing-05); }
+/* Driver view's sending section: the trips to tick beside the message to
+   copy, stacked on a narrow screen. The list scrolls inside itself past a
+   screen's height, so the message stays in reach. */
+.scheduler-send {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: var(--rux-spacing-07);
+  align-items: start;
+}
+.scheduler-send__trips { display: grid; gap: var(--rux-spacing-04); margin: 0; padding: 0; border: 0; min-inline-size: 0; }
+.scheduler-send__trips > legend { margin-block-end: var(--rux-spacing-03); }
+.scheduler-send__list { display: grid; gap: var(--rux-spacing-03); max-block-size: 28rem; overflow-y: auto; }
+.scheduler-send__month { margin: var(--rux-spacing-03) 0 0; color: var(--rux-text-secondary); }
+.scheduler-send__leg { display: grid; }
+.scheduler-send__meta,
+.scheduler-send__note { color: var(--rux-text-secondary); }
+.scheduler-send__note { margin: 0; }
+.scheduler-send__note:empty { display: none; }
+.scheduler-send__buttons { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); }
+.scheduler-send__buttons [hidden] { display: none; }
+.scheduler-send__error { margin: 0; color: var(--rux-text-error); }
+.scheduler-send__message { display: grid; gap: var(--rux-spacing-04); min-inline-size: 0; }
+
 /* The Drivers page's Copy link and See their page, side by side. */
 .scheduler-driver-link-actions { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); }
 .scheduler-leg-list:empty { display: none; }

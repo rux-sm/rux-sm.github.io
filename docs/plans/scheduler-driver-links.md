@@ -32,7 +32,8 @@ scheduler makes open the scheduler's driver page.
   link's dates set from the first and last ticked leg. Update keeps the same
   address, so a driver's saved link keeps working. Revoke, confirmed first,
   stops the link through `revoke_driver_schedule_share`.
-- **The link opens the scheduler's page,** `scheduler/share/driver.html?s=`.
+- **The link opens the scheduler's page,** `scheduler/share/driver.html?s=`,
+  always on the published site, since a driver's phone cannot reach a preview.
   A token works on both apps' pages, so drivers holding rux-ui links lose
   nothing.
 - **A relief leg can be shared without a swap time,** because relief drivers
@@ -53,11 +54,6 @@ None open.
 - [ ] Migration `driver_share_relief_time_optional`: `create_driver_schedule_share`
       and `update_driver_schedule_share` stop refusing a relief leg with no
       swap time. Tested on PGlite first and shown to rux before it runs.
-- [ ] The trip list, the message and Copy on `scheduler/driver-view.html`,
-      with the ticked legs marked Pending response on copy.
-- [ ] Create link, Update link and Revoke, with the driver's page below
-      redrawn from the saved link.
-- [ ] The relief card's line for a leg with no swap time.
 - [ ] rux sends one real driver a link made here, and checks the board turns
       the legs yellow and the driver's answer comes back.
 - [ ] Remove Driver week info from rux-ui, after reading its own `CLAUDE.md`.

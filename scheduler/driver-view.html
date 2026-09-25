@@ -202,7 +202,7 @@
         <div class="scheduler-maintenance-title">
           <div class="rux--stack-vertical rux--stack-scale-2">
             <h1 class="rux--type-productive-heading-04">Driver view</h1>
-            <p class="rux--type-body-01">A driver's page as they see it. Drivers answer there; staff set a status from the trip.</p>
+            <p class="rux--type-body-01">Pick the trips to send, copy the message, and read the driver's page as they will see it.</p>
           </div>
           <div class="rux--form-item scheduler-leg-picker">
             <div class="rux--select">
@@ -235,6 +235,43 @@
             </div>
             <a class="rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md" id="scheduler-leg-link-open" target="_blank" rel="noopener">Open their page<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-open_in_new"/></svg></a>
           </div>
+        </div>
+
+        <!-- Sending: which of the driver's trips go on their link, the message
+             to copy to them, and the link itself. driver-view.js draws the
+             list and writes the message; the driver's page below redraws
+             from the link once it is saved. A plain wrapper carries
+             `hidden`, because the grid's display rule beats the browser's. -->
+        <div id="scheduler-send" hidden>
+        <div class="scheduler-send">
+          <fieldset class="scheduler-send__trips">
+            <legend class="rux--type-heading-compact-02">Trips on the link</legend>
+            <p class="rux--type-body-compact-01 scheduler-send__note" id="scheduler-send-state" role="status"></p>
+            <div class="scheduler-send__list" id="scheduler-send-list"></div>
+            <div class="scheduler-send__buttons">
+              <button type="button" class="rux--btn rux--btn--primary rux--btn--md rux--layout--size-md" id="scheduler-send-save">Create link</button>
+              <button type="button" class="rux--btn rux--btn--danger--ghost rux--btn--md rux--layout--size-md" id="scheduler-send-revoke" hidden>Revoke link</button>
+            </div>
+            <p class="rux--form-requirement scheduler-send__error" id="scheduler-send-error" role="alert" hidden></p>
+          </fieldset>
+          <div class="scheduler-send__message">
+            <div class="rux--form-item">
+              <div class="rux--text-area__label-wrapper">
+                <label class="rux--label" for="scheduler-send-text">Message to send</label>
+              </div>
+              <div class="rux--text-area__wrapper">
+                <textarea id="scheduler-send-text" class="rux--text-area" rows="12" readonly aria-describedby="scheduler-send-text-helper" style="width: 100%;"></textarea>
+              </div>
+              <div class="rux--form__helper-text" id="scheduler-send-text-helper">Copying marks the ticked trips the driver hasn't answered Pending response.</div>
+            </div>
+            <div>
+              <button type="button" class="rux--btn rux--btn--secondary rux--btn--md rux--layout--size-md" id="scheduler-send-copy">Copy message
+                <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-content_copy"/></svg>
+              </button>
+            </div>
+            <p class="rux--type-body-compact-01 scheduler-send__note" id="scheduler-send-copied" role="status"></p>
+          </div>
+        </div>
         </div>
 
         <!-- One notice for the page: no link, a link no longer active, a
@@ -300,6 +337,27 @@
   </div>
 </div>
 
+<!-- Revoking is confirmed first, because the driver's link stops working. -->
+<div class="rux--layer-one rux--modal" id="scheduler-send-revoke-modal" role="presentation">
+  <div role="dialog" aria-modal="true" aria-labelledby="scheduler-send-revoke-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+    <div class="rux--modal-header">
+      <h2 class="rux--modal-header__heading" id="scheduler-send-revoke-h">Revoke this driver's link?</h2>
+      <div class="rux--modal-close-button">
+        <button type="button" class="rux--modal-close" aria-label="Keep the link" data-rux-close>
+          <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="rux--modal-content">
+      <p>The link stops working for the driver, in the old app too. Making a link again brings back the same address.</p>
+    </div>
+    <div class="rux--modal-footer">
+      <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+      <button type="button" class="rux--btn rux--btn--danger" id="scheduler-send-revoke-confirm">Revoke link</button>
+    </div>
+  </div>
+</div>
+
 <script src="/design/js/overlay.js"></script>
 <script src="/design/js/popover.js"></script>
 <script src="/design/js/copy-button.js"></script>
@@ -313,5 +371,6 @@
 <script src="/account.js"></script>
 <script src="phone.js"></script>
 <script src="share/driver.js"></script>
+<script src="driver-view.js"></script>
 </body>
 </html>

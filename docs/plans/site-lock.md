@@ -161,8 +161,8 @@ Other improvements wait until it is live and the old links forward to it.
   picker at the top. It draws the driver's page with the same script, from
   the driver's link read through `get_driver_schedule_share_for_driver`, and
   shows the link with a Copy button. Accept and Decline show but are
-  disabled, because staff set a driver's status from the trip. A driver with
-  no link is told to get one from rux-ui, which makes the links.
+  disabled, because staff set a driver's status from the trip. Making and
+  sending the link there is `scheduler-driver-links.md`.
 
 ## Questions
 

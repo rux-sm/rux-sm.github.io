@@ -23,10 +23,10 @@
    no list, when the trip was saved after the answer, which is rux-ui's rule.
 
    Two pages load this. The public page takes the token from its address.
-   The staff page, driver-view.html, marks its body data-driver="staff": it
-   waits for the staff profile, picks a driver, reads that driver's link
-   through get_driver_schedule_share_for_driver, and draws the same cards
-   with Accept and Decline disabled, because staff answer from the trip.
+   The staff page, driver-view.html, marks its body data-driver="staff" and
+   draws the same cards through `SchedulerDriverPage` below, with Accept and
+   Decline disabled, because staff answer from the trip; driver-view.js
+   picks the driver and makes their link.
    ========================================================================== */
 (() => {
   'use strict';
@@ -209,7 +209,13 @@
       time: isRelief(role) ? (seat.report_time || pickup.spot || trip.spot_time) : (pickup.spot || trip.spot_time),
       place: { name: clean(pickup.name), address: clean(pickup.address) },
       stops,
-      relief: isRelief(role) ? { at: clean(seat.report_time), instructions: clean(seat.instructions) } : null,
+      relief: isRelief(role) ? {
+        at: clean(seat.report_time),
+        instructions: clean(seat.instructions),
+        // Who they take over from, to agree the handoff with when no time is set.
+        from: clean(activeSeats(mine).find(d => (d.role || 'driver') === 'driver' && String(d.driver_id) !== String(driverId))?.drivers?.short_name
+          || activeSeats(mine).find(d => (d.role || 'driver') === 'driver' && String(d.driver_id) !== String(driverId))?.drivers?.name),
+      } : null,
       instructions: clean(seat.instructions),
       requirements: requirementsOf(trip),
       notes: clean(trip.notes),
@@ -459,8 +465,13 @@
     }
 
     if (l.relief) {
-      const lines = [l.relief.at && `Handoff at ${timeText(l.relief.at)}`, l.relief.instructions].filter(Boolean);
-      card.appendChild(section('Relief assignment', ...(lines.length ? lines : ['Relief assignment details will be provided by dispatch.'])
+      // With no time set, relief drivers agree the handoff between themselves.
+      const lines = [
+        l.relief.at ? `Handoff at ${timeText(l.relief.at)}`
+          : l.relief.from ? `Coordinate the handoff time with ${l.relief.from}.` : '',
+        l.relief.instructions,
+      ].filter(Boolean);
+      card.appendChild(section('Relief assignment', ...(lines.length ? lines : ['Dispatch will send the handoff details.'])
         .map(t => el('p', 'rux--type-body-compact-01', t))));
     } else if (l.instructions) {
       card.appendChild(section('Role details', el('p', 'rux--type-body-compact-01', l.instructions)));
@@ -577,38 +588,13 @@
     if (!items.length) say('info', 'No current assignments', 'New assignments will appear here after dispatch schedules them.');
   }
 
-  // -- the staff page's driver ----------------------------------------------------
-  const PUBLIC = `${location.origin}/scheduler/share/driver.html?s=`;
-  async function staffStart() {
-    const account = window.Rux.account;
-    let staff = null;
-    try { staff = await account.staffProfile(); } catch { /* said below */ }
-    if (!staff) { say('error', "This account isn't set up as staff yet", 'Ask the owner to set it up.'); return; }
-    const picker = $('scheduler-leg-driver');
-    const { data: drivers, error } = await client.from('drivers').select('id,name,short_name').order('name');
-    if (error) { say('error', "The drivers didn't load", 'Reload the page to try again.'); return; }
-    for (const d of drivers || []) {
-      picker.appendChild(Object.assign(el('option', 'rux--select-option', d.name || d.short_name), { value: d.id }));
-    }
-    const pick = async id => {
-      clear();
-      $('scheduler-leg-link').hidden = true;
-      if (!id) { say('info', 'Pick a driver', "Their page appears here as they see it."); return; }
-      history.replaceState(null, '', `driver-view.html?driver=${encodeURIComponent(id)}`);
-      const { data, error: linkError } = await client.rpc('get_driver_schedule_share_for_driver', { p_driver_id: id });
-      if (linkError) { say('error', "The driver's link didn't load", 'Try again.', () => pick(id)); return; }
-      if (!data?.token) { say('info', 'This driver has no link yet', 'Driver links are made in rux-ui.'); return; }
-      token = data.token;
-      $('scheduler-leg-link-url').textContent = PUBLIC + encodeURIComponent(token);
-      $('scheduler-leg-link-open').href = PUBLIC + encodeURIComponent(token);
-      $('scheduler-leg-link').hidden = false;
-      await load();
-    };
-    picker.addEventListener('change', () => pick(picker.value));
-    const wanted = new URLSearchParams(location.search).get('driver') || '';
-    if (wanted && [...picker.options].some(o => o.value === wanted)) picker.value = wanted;
-    await pick(picker.value);
-  }
+  /* The staff page, driver-view.html, draws a driver's page through this:
+     driver-view.js picks the driver and their link, and hands over the token. */
+  window.SchedulerDriverPage = {
+    show: t => { token = t; return load().catch(() => say('error', 'Something went wrong', 'Check your connection and try again.', load)); },
+    clear: () => { clear(); say(null); },
+    say,
+  };
 
   // -- start ------------------------------------------------------------------------
   if (!client) {
@@ -616,9 +602,7 @@
     return;
   }
   const run = f => f().catch(() => say('error', 'Something went wrong', 'Check your connection and try again.', () => run(f)));
-  if (staffPage) {
-    run(staffStart);
-  } else {
+  if (!staffPage) {
     token = (new URLSearchParams(location.search).get('s') ?? '').trim().toLowerCase();
     if (!token) { say('error', 'This link has no schedule in it', 'Ask dispatch for a new driver schedule link.'); return; }
     channel = client.channel(CHANNEL);

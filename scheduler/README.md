@@ -114,7 +114,8 @@ shows the maintenance crew two weeks of buses and the recent changes, and
 decline. Staff see the same schedule inside the app at `maintenance.html`,
 from the side nav, where they copy the public link to send and replace it
 when it has gone further than it should, and a driver's page at
-`driver-view.html`, from See their page on the Drivers page.
+`driver-view.html`, from See their page on the Drivers page, where they tick
+the trips to send, copy the message and make, update or revoke the link.
 
 Staff can also work the schedule from the Claude app, which asks the
 `scheduler-connector` Edge Function, this project's only one, with its source

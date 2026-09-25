@@ -53,6 +53,17 @@ Publishing is `git push`. The pre-commit hook sweeps the staged bytes of
 every text file for names before the commit exists, then runs the fast
 check; arm it once per clone: `git config core.hooksPath .githooks`.
 
+## Previewing
+
+Work in the main checkout, not a worktree, because the preview on :8641
+serves only this folder and a worktree's edits never show there. That server
+is always running, as `README.md` describes: open it with the `serve-cloud`
+launch entry, which attaches, and never start, stop or kill a server on 8641;
+if it is down, ask rux, who turns it off on purpose. Test in rux's Chrome
+through Claude in Chrome, already logged in there, because the built-in
+browser pane cannot pass the log-in's captcha; the pane is fine for pages
+behind no log-in. Close the tabs a session opened before it ends.
+
 ## What must not be invented
 
 Every `rux--*` class comes from `design/css/rux.css`, compiled from Carbon;

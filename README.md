@@ -56,8 +56,8 @@ path, so served from this folder it renders with no internet connection.
 Opening a file with `file://` does not work; use the server.
 
 On rux's Mac the `--cloud` server runs from this folder at log-in, restarted if
-it stops, from `~/Library/LaunchAgents/io.github.rux-sm.serve-cloud.plist`;
-sessions connect to it and never start or stop their own.
+it stops, from `~/Library/LaunchAgents/io.github.rux-sm.serve-cloud.plist`,
+and the Site server shortcut in the menu bar turns it off and on.
 
 ## A new app
 

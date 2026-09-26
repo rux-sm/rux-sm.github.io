@@ -23,3 +23,15 @@
 .coins-row__sub { color: var(--rux-text-secondary); font-size: .75rem; line-height: 1rem; letter-spacing: .32px; }
 .coins-row__side { display: grid; justify-items: end; gap: var(--rux-spacing-02); flex: none; }
 .coins-amount { font-variant-numeric: tabular-nums; text-align: end; }
+
+/* A row with a tick box before it, for choosing which lines to save. */
+.coins-row--pick { justify-content: flex-start; }
+.coins-row--pick .coins-row__main { flex: 1; }
+.coins-row__title { overflow-wrap: anywhere; }
+
+/* A step's buttons side by side, wrapping on a phone. */
+.coins-actions { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-05); }
+
+/* A flow's title stands clear of the step list and panel below it, which
+   start a new row of the page grid. */
+.coins-flow-title { margin-block-end: var(--rux-spacing-07); }

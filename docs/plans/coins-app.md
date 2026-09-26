@@ -120,7 +120,6 @@ tools and review page it grows out of.
 ## Tasks
 
 - [ ] Tick Coins for the second member on the Access page.
-- [ ] Build Import, porting the Mac tool's reading and overlap rules.
 - [ ] Import every file in the money folder and match its yearly totals to
       the cent.
 - [ ] Build Transactions and the rules page, with a migration adding the

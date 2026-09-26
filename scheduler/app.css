@@ -1610,11 +1610,13 @@ button.scheduler-row-head__num::after {
    label, twice the 8px between a label and its field, so the heading and the
    label read as two levels. */
 .scheduler-panel-section { margin-block-start: var(--rux-spacing-06); }
+/* `heading-compact-02`, 16px, the trip name's size, so a section heading
+   holds its own beside the editor's 40px fields. */
 .scheduler-panel-section__title {
-  font-size: var(--rux-heading-compact-01-font-size);
-  font-weight: var(--rux-heading-compact-01-font-weight);
-  line-height: var(--rux-heading-compact-01-line-height);
-  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+  font-size: var(--rux-heading-compact-02-font-size);
+  font-weight: var(--rux-heading-compact-02-font-weight);
+  line-height: var(--rux-heading-compact-02-line-height);
+  letter-spacing: var(--rux-heading-compact-02-letter-spacing);
   color: var(--rux-text-primary);
   margin-block-end: var(--rux-spacing-05);
 }
@@ -1672,8 +1674,8 @@ button.scheduler-row-head__num::after {
 }
 /* A group's heading line with an overflow menu trigger at its end. The line
    keeps the title's own height, so the title sits 16px over the first label as
-   every heading does, and the 32px trigger reaches 7px above and below it,
-   (18px line - 32px button) / 2, into the gaps around it. */
+   every heading does, and the 32px trigger reaches 5px above and below it,
+   (22px line - 32px button) / 2, into the gaps around it. */
 .scheduler-group__head {
   display: flex;
   align-items: center;
@@ -1682,7 +1684,7 @@ button.scheduler-row-head__num::after {
   margin-block-end: var(--rux-spacing-05);
 }
 .scheduler-group__head > .scheduler-panel-section__title { margin-block-end: 0; }
-.scheduler-group__head > .rux--btn { margin-block: -0.4375rem; }
+.scheduler-group__head > .rux--btn { margin-block: -0.3125rem; }
 /* The title takes the line, so a second trigger, as the booking's open-thread
    icon, sits against the menu at the end rather than between. */
 .scheduler-group__head > .scheduler-panel-section__title { flex: 1; min-inline-size: 0; }
@@ -1782,9 +1784,8 @@ button.scheduler-row-head__num::after {
   /* Each day column is as wide as the row is tall, so a day reads as a square
      mark; the two-letter day heads fit inside it. */
   --scheduler-day-track: var(--rux-layout-size-height-sm);
-  /* Takes what the head leaves of the cap app.js gives the aside, and no more:
-     the card is as tall as its list until the cap binds, and the pane scrolls
-     from there. `max-block-size: none` lifts the base `.scheduler-week`
+  /* Takes what the head leaves of the height app.js gives the aside: a short
+     list leaves the rest of the card empty, and a long one scrolls in it. `max-block-size: none` lifts the base `.scheduler-week`
      viewport cap. */
   flex: 1 1 auto;
   min-block-size: 0;

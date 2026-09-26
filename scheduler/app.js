@@ -59,7 +59,9 @@
     // A floor, so a short window scrolls the page rather than crushing the grid.
     const height = Math.max(12 * 16, Math.round(window.innerHeight - top - below));
     const next = `${height}px`;
-    if (sch.style.maxBlockSize !== next) sch.style.maxBlockSize = next;
+    // A height, not a cap: a short week leaves the frame empty below its last
+    // bus, so the frame ends level with the roster and the editor beside it.
+    if (sch.style.blockSize !== next) { sch.style.blockSize = next; sch.style.maxBlockSize = next; }
 
     // The regions beside the grid start at `.scheduler-board`'s top, above the
     // grid, so their height is measured from the board.
@@ -67,11 +69,10 @@
     const panelTop = board ? board.getBoundingClientRect().top : top;
     const panelNext = `${Math.max(12 * 16, Math.round(window.innerHeight - panelTop - below))}px`;
 
-    /* The driver roster takes that figure as a cap rather than a height: a
-       list shorter than the column ends where it ends instead of drawing an
-       empty card to the foot of the page, and a longer one scrolls inside the
-       cap, the pane taking what the aside's head leaves: see
-       `.scheduler-aside .scheduler-week--avail`. */
+    /* The driver roster takes that figure as its height, so its card ends
+       level with the board and the editor: a short list leaves the card empty
+       below it, and a longer one scrolls inside, the pane taking what the
+       aside's head leaves: see `.scheduler-aside .scheduler-week--avail`. */
     const aside = document.getElementById('scheduler-aside');
     const avail = document.getElementById('scheduler-avail');
     /* Below md the roster is a card fixed over the board, and its height is
@@ -80,8 +81,9 @@
        stays in app.css. */
     const floats = aside && getComputedStyle(aside).position === 'fixed';
     if (aside && avail && !aside.hidden && aside.contains(avail) && !floats) {
-      if (aside.style.maxBlockSize !== panelNext) aside.style.maxBlockSize = panelNext;
-    } else if (aside && aside.style.maxBlockSize) {
+      if (aside.style.blockSize !== panelNext) { aside.style.blockSize = panelNext; aside.style.maxBlockSize = panelNext; }
+    } else if (aside && aside.style.blockSize) {
+      aside.style.removeProperty('block-size');
       aside.style.removeProperty('max-block-size');
     }
     if (avail && avail.style.maxBlockSize) avail.style.removeProperty('max-block-size');

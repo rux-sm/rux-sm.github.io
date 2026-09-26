@@ -1402,22 +1402,25 @@
 
     /* THE LINES WRITTEN IN BY HAND, on white, where the database has nothing
        yet. They share whatever height the card has left, each ruled at its
-       foot to write on. */
+       foot to write on; print.css sizes them from how many there are. */
     const write = el('div', 'scheduler-week__write');
+    const lines = el('div', 'scheduler-week__lines');
     const po = firstAndMore(trip.po_ref, (trip.trip_pos || []).length);
     const pay = detailLine(crew.length ? crew.map(d => ['$', payText(d.pay)]) : [['$', '']]);
     pay.classList.add('scheduler-week__pay');
-    write.appendChild(pay);
-    write.appendChild(detailLine([['Mi:', milesText(milesOf(trip))], ['Act:', milesText(trip.actual_miles)]]));
-    write.appendChild(detailLine([['Qt:', weekMoney(trip.quoted_price)],
+    lines.appendChild(pay);
+    lines.appendChild(detailLine([['Mi:', milesText(milesOf(trip))], ['Act:', milesText(trip.actual_miles)]]));
+    lines.appendChild(detailLine([['Qt:', weekMoney(trip.quoted_price)],
       ['Inv:', firstAndMore(trip.invoice_number, (trip.trip_invoices || []).length)]]));
     // The PO has a line of its own, the one field long enough to need it.
-    write.appendChild(detailLine([['PO:', po]]));
+    lines.appendChild(detailLine([['PO:', po]]));
     const payments = [...(trip.trip_payments || [])]
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
       .filter(p => p.ref || Number(p.amount))
       .map(p => [p.method, p.ref, weekMoney(p.amount)].filter(Boolean).join(' '));
-    write.appendChild(detailLine([['Pmt:', payments.join(' · ')]]));
+    lines.appendChild(detailLine([['Pmt:', payments.join(' · ')]]));
+    lines.style.setProperty('--scheduler-week-lines', String(lines.children.length));
+    write.appendChild(lines);
     card.appendChild(write);
     return card;
   }
@@ -1470,6 +1473,7 @@
       card.appendChild(head);
 
       const grid = el('div', 'scheduler-week__grid');
+      grid.style.setProperty('--scheduler-week-rows', String(BUSES_PER_SHEET));
       const days = el('div', 'scheduler-week__days');
       days.appendChild(el('div', 'scheduler-week__corner'));
       for (let d = 0; d < 7; d++) {
@@ -1670,7 +1674,8 @@
       blurb: 'Five buses a sheet, on Legal',
       icon: '#m-calendar_month',
       binds: 'week',
-      page: { name: 'Legal, landscape', size: '14in 8.5in', width: '14in', height: '8.5in', margin: '0.2in', exact: true },
+      // The margin is 18 CSS pixels, so the grid starts on a whole pixel.
+      page: { name: 'Legal, landscape', size: '14in 8.5in', width: '14in', height: '8.5in', margin: '0.1875in', exact: true },
       // The weeks around the one asked for, which the list steps through;
       // one week is printed at a time, never the list.
       copies: subject => [subject],

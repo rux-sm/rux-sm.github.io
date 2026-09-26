@@ -1454,13 +1454,17 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    measured off the paper, as the quote's are. The trip colours and the grey
    of the headings print past Chrome's Background graphics box, because on
    this sheet a colour is what tells one trip from another at a glance. */
+/* The margin, the head and the gap under it are whole CSS pixels -- 18, 36
+   and 4 -- so the grid starts on a whole pixel. */
 .scheduler-week {
   block-size: var(--scheduler-paper-height);
   font-size: 7.5pt;
   line-height: 1.12;
-  gap: 4pt;
+  gap: 3pt;
 }
 .scheduler-week__head {
+  flex: none;
+  block-size: 27pt;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -1481,25 +1485,29 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 /* EVERY LINE A CARD CAN MEET IS 0.75PT, one CSS pixel, the width Chrome
    prints any line of about that weight at, and each is drawn inside the
    cell before it: a day's line at its cell's end, a row's line at its
-   cells' foot. The frame's right and bottom are the last day's and last
-   row's lines, so the grid draws only its top and left. A card sits over the
-   line before it, so its own line lands exactly on the gridline under it. */
+   cells' foot. The frame is the header's top, the bus column's start,
+   Sunday's end and the last row's foot. A card sits over the line before
+   it, so its own line lands exactly on the gridline under it. */
+/* EVERY ROW AND DAY IS A WHOLE NUMBER OF PIXELS, the unit Chrome prints
+   each line's place in, and so is the grid's corner on the page, so all five
+   rows and all seven days print the same size and every line inside them
+   lands the same way. The header is 21pt, 28 pixels; the bus column takes
+   what the days leave of the width, and the paper below the last row what
+   the rows leave of the height. */
 .scheduler-week__grid {
   flex: 1 1 0;
   min-block-size: 0;
-  display: flex;
-  flex-direction: column;
-  border: 0.75pt solid var(--rux-border-strong-01);
-  border-inline-end: 0;
-  border-block-end: 0;
+  display: grid;
+  grid-template-rows: 21pt;
+  grid-auto-rows: round(down, calc((100% - 21pt) / var(--scheduler-week-rows, 5)), 1px);
 }
 .scheduler-week__days,
 .scheduler-week__row {
   display: grid;
-  grid-template-columns: 26pt repeat(7, minmax(0, 1fr));
+  grid-template-columns: minmax(26pt, 1fr) repeat(7, round(down, calc((100% - 26pt) / 7), 1px));
 }
 .scheduler-week__days {
-  border-block-end: 0.75pt solid var(--rux-border-strong-01);
+  border-block: 0.75pt solid var(--rux-border-strong-01);
 }
 .scheduler-week__corner,
 .scheduler-week__day,
@@ -1508,19 +1516,20 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
-.scheduler-week__corner { border-inline-end: 0.75pt solid var(--rux-border-strong-01); }
+.scheduler-week__corner,
+.scheduler-week__bus {
+  border-inline: 0.75pt solid var(--rux-border-strong-01);
+}
 .scheduler-week__day {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   padding: 4pt 6pt;
   font-size: 9pt;
   font-weight: 600;
   border-inline-end: 0.75pt solid var(--rux-border-subtle-01);
 }
-.scheduler-week__row {
-  flex: 1 1 0;
-  min-block-size: 0;
-}
+.scheduler-week__row { min-block-size: 0; }
 .scheduler-week__bus {
   grid-column: 1;
   grid-row: 1;
@@ -1529,7 +1538,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   justify-content: center;
   font-size: 10.5pt;
   font-weight: 600;
-  border-inline-end: 0.75pt solid var(--rux-border-strong-01);
 }
 .scheduler-week__cell {
   grid-row: 1;
@@ -1558,17 +1566,26 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   min-block-size: 0;
   overflow: clip;
   overflow-clip-margin: 0.75pt;
+  /* Its cards never size the row: on paper Chrome grew a crowded row to hold
+     every stacked card, and its cells' foot line printed inside the next row. */
+  contain: size;
 }
 /* A row with one lane gives its cards the whole height, so a card is centred
    in its row and its write-in lines get the room. */
 .scheduler-week__lanes[data-lanes="1"] { grid-template-rows: minmax(0, 1fr); }
+.scheduler-week__lanes[data-lanes="1"] > .scheduler-week__trip { block-size: calc(100% + 0.75pt); }
 
 /* A card reaches back over the line above it and the line before it, so its
    top and start lines lie on those gridlines, its end and foot lines lie on
-   its own cells' lines, and two cards that touch share one line. */
+   its own cells' lines, and two cards that touch share one line. ITS SIZE IS
+   SET, NOT STRETCHED: Chrome prints a stretched box with a negative margin
+   one pixel longer than it lays it out. */
 .scheduler-week__trip {
   display: flex;
   flex-direction: column;
+  align-self: start;
+  justify-self: start;
+  inline-size: calc(100% + 0.75pt);
   min-inline-size: 0;
   min-block-size: 0;
   margin-block-start: -0.75pt;
@@ -1598,17 +1615,19 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-week__trip--continued { min-block-size: 12pt; }
 
 /* What the database knows sits on the trip's colour, each line inset from
-   the card's edge; the crew's rules run to the edges. */
+   the card's edge; the crew's rules run to the edges. EVERY ROW OF THE CARD
+   IS A WHOLE NUMBER OF PIXELS TALL, so the lines under them start on a whole
+   pixel and Chrome prints each where the layout puts it. */
 .scheduler-week__facts {
-  padding-block-start: 2.5pt;
-  line-height: 1.12;
+  padding-block-start: 3px;
+  line-height: 11px;
 }
 .scheduler-week__facts > :not(.scheduler-week__crew) { padding-inline: 4pt; }
 .scheduler-week__trip-top {
   display: flex;
   align-items: center;
   gap: 3pt;
-  line-height: 1.1;
+  line-height: 12px;
 }
 .scheduler-week__destination {
   font-size: 8.5pt;
@@ -1631,7 +1650,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-week__times {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin-block-start: 1.5pt;
+  block-size: 11px;
+  margin-block-start: 2px;
   white-space: nowrap;
 }
 .scheduler-week__time { display: flex; align-items: baseline; gap: 2pt; }
@@ -1651,7 +1671,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   grid-template-columns: repeat(var(--scheduler-week-fields, 2), minmax(0, 1fr));
 }
 .scheduler-week__crew {
-  margin-block-start: 1.5pt;
+  margin-block-start: 2px;
   border-block-start: 0.5pt solid var(--rux-border-strong-01);
   font-weight: 600;
 }
@@ -1660,7 +1680,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   align-items: center;
   gap: 2pt;
   min-inline-size: 0;
-  padding: 1pt 4pt 0.5pt;
+  padding: 1px 4pt;
   white-space: nowrap;
   overflow: hidden;
 }
@@ -1679,30 +1699,46 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-week__pay > .scheduler-week__field { align-items: flex-end; }
 
 /* The write-in lines, on white, share the card's remaining height evenly,
-   each with its text sitting on a rule that runs to the card's edges. */
+   each with its text sitting on a rule that runs to the card's edges. The
+   card's own foot line is the last line's rule: the lines reach over it and
+   the last rule is left clear. */
 .scheduler-week__write {
   flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-block-size: 0;
+}
+.scheduler-week__lines {
+  box-sizing: content-box;
   display: grid;
   grid-auto-rows: minmax(min-content, 1fr);
-  background: var(--rux-layer-01);
+  margin-block-end: -0.75pt;
   border-block-start: 0.5pt solid var(--rux-border-strong-01);
-  line-height: 1.02;
+  line-height: 10px;
+}
+/* IN A CARD THE ROW'S HEIGHT, EVERY LINE IS THE SAME WHOLE NUMBER OF PIXELS:
+   the lines take the largest multiple of their count that fits, and what is
+   left over stays on the trip's colour above them, under the drivers. */
+.scheduler-week__lanes[data-lanes="1"] .scheduler-week__lines {
+  block-size: round(down, 100%, calc(var(--scheduler-week-lines, 5) * 1px));
 }
 .scheduler-week__detail {
   align-items: end;
   border-block-end: 0.5pt solid var(--rux-border-strong-01);
+  background: var(--rux-layer-01);
+  background-clip: padding-box;
 }
 :is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="1"] { --scheduler-week-fields: 1; }
 :is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="2"] { --scheduler-week-fields: 2; }
 :is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="3"] { --scheduler-week-fields: 3; }
 :is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="4"] { --scheduler-week-fields: 4; }
-/* The card's own line is the last line's rule. */
-.scheduler-week__detail:last-child { border-block-end: 0; }
+.scheduler-week__detail:last-child { border-block-end-color: transparent; }
 .scheduler-week__field {
   display: flex;
   gap: 2pt;
   min-inline-size: 0;
-  padding: 0 4pt 1pt;
+  padding: 0 4pt 1px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -145,9 +145,8 @@ Other improvements wait until it is live and the old links forward to it.
 - **Documents.** Each itinerary file, newest version, marked Updated when it
   replaced one. rux-ui also shows the driver's envelope; this page will too,
   drawn by `print.js`'s envelope form for this driver alone, once that form
-  can draw outside the forms page. An itinerary opens through
-  `trip-document-link` once `site-paperwork-lock.md` is built, and by its
-  public address until then.
+  can draw outside the forms page. An itinerary opens through the document
+  page, which asks `trip-document-link` for a ten-minute link.
 - **Telling the boards.** An answer sends the `driver-status-changed` message
   on the `scheduler-trips` channel, which rux-ui's board listens for.
 - **When there is nothing to show.** No token: "This link has no schedule in

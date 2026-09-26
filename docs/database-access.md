@@ -48,15 +48,14 @@ them in the same migration that creates one.
 ## Files
 
 **Five buckets.** Notes' two are private and their rules ask for the owner.
-`trip-documents`, `driver-photos` and `profile-photos` are public, and only
-staff may upload, replace or delete in them.
+`trip-documents` and `driver-photos` are private: staff read them through
+links signed for ten minutes, and the link pages through the
+`trip-document-link` Edge Function, which signs one for a document's id. Only
+staff may upload, replace or delete in any of the three scheduler buckets.
 
-**A public bucket serves its files to anyone holding the address**, whatever
-its rules say, so those three keep a rule that names strangers for reading.
-This is the one exception to the rule above, and it stands until the two
-document share pages ask for a time-limited link rather than a permanent one.
-Until then a trip's paperwork is readable by anyone who has, or guesses, its
-address.
+**`profile-photos` is the one exception to the rule above.** It is public, so
+it serves a staff member's face to anyone holding the address, and keeps a rule
+that names strangers for reading.
 
 ## The check
 

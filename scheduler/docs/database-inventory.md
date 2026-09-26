@@ -131,10 +131,10 @@ Trigger functions `set_bus_ref`, `set_driver_ref`, `touch_trips_updated_at`,
 ### Storage buckets
 
 `trip-documents` (paths under the trip id), `driver-photos` and
-`profile-photos`. All three are public for reading, with no size or file-type
-limit; only staff can upload, replace or delete. Staff pages read the first
-two through ten-minute signed links, and the link pages through
-`trip-document-link` (§6).
+`profile-photos`, with no size or file-type limit; only staff can upload,
+replace or delete. The first two are private: staff pages read them through
+ten-minute signed links, and the link pages through `trip-document-link` (§6).
+`profile-photos` is public.
 
 ### Realtime
 
@@ -217,7 +217,7 @@ any it cannot place. The editor's Save stays the only writer of a trip.
 `scheduler/trip-document-link/`. A page without a log-in posts a trip
 document's id to `/functions/v1/trip-document-link` and gets back a link to the
 file signed for ten minutes, or 404 for an id with no file. It reads with the
-service role, so it keeps working once the bucket is closed, and it is deployed
+service role, since the bucket is closed to all but staff, and it is deployed
 with Verify JWT off because the publishable key is not a token; the document's
 id is its only secret, as it is on the link pages. It answers the site's origin
 and the two local servers.

@@ -27,8 +27,3 @@ done and how.
 - A solved puzzle shows in black and white. The DS reveals a colour picture;
   that needs a colour step in the maker.
 
-## The database
-
-- **Trip paperwork is readable by anyone with its address.** Writing is staff
-  only now, but the three buckets stay public, so closing reading waits on the
-  two document share pages asking for a time-limited link.

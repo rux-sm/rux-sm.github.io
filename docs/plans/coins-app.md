@@ -59,15 +59,37 @@ tools and review page it grows out of.
   what is owed and what it costs each month.
 - **The budget comes last,** written from the real numbers once a year of
   every member's statements is in.
-- **Six pages,** each started from a Design template:
-  - **Overview** — this month in and out, what is left, and bills due soon.
-  - **Transactions** — every row, filtered by member, account, month and kind.
-  - **Bills** — the review page, saved to the database instead of the browser.
-  - **Accounts** — every account and debt, with balances and due days.
-  - **Budget** — the plan per category against what was actually spent.
-  - **Import** — drop a bank file, check it, save it.
-- **It works on the phone,** as every app here does, because bills get paid
-  from there.
+- **Every page has a Both, first member, second member switch,** and the
+  month pages a month with arrows. An account belongs to one member or to
+  both, and its transactions follow it.
+- **Six pages in a side nav,** each started from a Design template:
+  - **Overview** leads with Left this month, then money in, money out and
+    bills still to pay; a notice when an import is waiting for a look; the
+    bills due in the next seven days; spending against the budget as bars.
+  - **Transactions** is one list for every account with search and filters,
+    the month's in, out and net above it, and a dot on each line nobody has
+    looked at yet. A line opens in a side panel to change its category, kind,
+    bill and note, with a tick to make that a rule for every line like it.
+  - **Bills** has totals still to pay, paid, subscriptions a year and to
+    decide; a notice offering the repeating payments an import found, which
+    become bills only when confirmed; and lists due in seven days, later this
+    month and paid. A bill is paid when a matching line arrives, late when
+    none has by its day, and flagged when it costs more than usual. A bill
+    opens on its own page with its usual and latest price, its yearly cost,
+    the website, the login and a button to open the website.
+  - **Accounts** totals what is in the bank, owed and the two together, then
+    lists bank accounts, cards with the share of the limit used as a bar that
+    turns red when high, and loans; one line says what paying a little more
+    each month would clear and save.
+  - **Budget** has three parts: fixed bills from the Bills page, one amount
+    for day-to-day spending split by category, and yearly costs spread over
+    twelve months.
+  - **Import** is four steps, account, file, check and done. Check counts the
+    lines found, already saved, new and bills matched, lists the new lines
+    ticked, and saves them; an import can be undone.
+- **On a phone** the side nav sits behind the menu button, tables become
+  lists of two-line rows with the amount on the right, number tiles sit two
+  to a row, transactions are grouped by day and a bill opens full screen.
 - **The app is called Coins:** folder and address `coins/`, header Rux
   Coins, class prefix `coins-`, commit scope `coins`.
 - **Every member sees everything.** No account is private to its owner,
@@ -91,9 +113,12 @@ None open.
 - [ ] Build Import, porting the Mac tool's reading and overlap rules.
 - [ ] Import every file in the money folder and match its yearly totals to
       the cent.
-- [ ] Build Transactions and the rules page.
-- [ ] Build Bills, and carry over any keep or cancel marks the old review
-      page saved in rux's browser.
+- [ ] Build Transactions and the rules page, with a migration adding the
+      looked-at mark to each line.
+- [ ] Build Bills and the bill page, with a migration for how a bill
+      matches its lines and for remembering a suggestion that was turned
+      down. Carry over any keep or cancel marks the old review page saved in
+      rux's browser.
 - [ ] Build Accounts, with the debt fields.
 - [ ] Build Overview.
 - [ ] Build Budget, with its table as a migration of its own.

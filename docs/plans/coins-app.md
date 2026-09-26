@@ -43,9 +43,9 @@ tools and review page it grows out of.
   line is rent, which transfers are between members, and which merchant
   names are one service are saved in the database and edited on a page.
   Today they are written into the Mac tool, which could never go public.
-- **Every transaction gets one kind:** earned, spent, moved between own
-  accounts, moved between members, card payment, or fee. Only earned and
-  spent count toward totals, so no money is counted twice.
+- **Every transaction gets one kind:** bought or earned, fee, moved between
+  own accounts, card payment, or moved between members. Only the first two
+  count toward totals, so no money is counted twice.
 - **A bill is anything that comes back:** a subscription, a utility, rent,
   a loan or a card payment. Each has an amount, a due day, the account it
   is paid from, the website, the login email it is under, a keep or cancel
@@ -87,7 +87,10 @@ None open.
 
 - [ ] Write the tables, the member rule and their grants as one migration,
       test it offline first, show it to rux and apply it on a yes. Run the
-      check in `docs/database-access.md` after.
+      check in `docs/database-access.md` after. The budget's table waits for
+      the Budget task.
+- [ ] Add the household and link rux's and the second member's logins to
+      their people.
 - [ ] Prove the tables are closed: from outside with the publishable key,
       and signed in as an account that is staff but not a member.
 - [ ] Start `coins/` from a Design template, add it to `switcher.json`,

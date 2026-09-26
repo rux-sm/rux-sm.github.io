@@ -1591,6 +1591,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   gap: 3pt;
 }
 .scheduler-week__destination {
+  font-size: 8.5pt;
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
@@ -1604,6 +1605,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Depart at the card's left edge, spot in the middle and return at the
+   right, so the three line up with the text above and the lines below. */
 .scheduler-week__times {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1611,18 +1614,24 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   font-weight: 600;
   white-space: nowrap;
 }
+.scheduler-week__times > :first-child { text-align: start; }
+.scheduler-week__times > :last-child { text-align: end; }
+/* The names on their pay line's columns, and a little room under them
+   before the lines written by hand begin. */
 .scheduler-week__crew {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0 8pt;
+  display: grid;
+  grid-template-columns: repeat(var(--scheduler-week-fields, 1), minmax(0, 1fr));
+  gap: 0 4pt;
+  margin-block-end: 2pt;
   font-weight: 600;
 }
 .scheduler-week__driver {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 2pt;
+  min-inline-size: 0;
   white-space: nowrap;
+  overflow: hidden;
 }
 .scheduler-week__role { inline-size: 8pt; block-size: 8pt; }
 /* The write-in lines share the card's remaining height evenly, each with its
@@ -1642,12 +1651,15 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   border-block-end: 0.5pt solid var(--rux-border-strong-01);
 }
 /* A long PO number on the card: the second column takes three fifths. */
-.scheduler-week__trip[data-wide] .scheduler-week__detail[data-fields="2"] {
+.scheduler-week__trip[data-wide] :is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="2"] {
   grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
 }
-.scheduler-week__detail[data-fields="1"] { --scheduler-week-fields: 1; }
-.scheduler-week__detail[data-fields="3"] { --scheduler-week-fields: 3; }
-.scheduler-week__detail[data-fields="4"] { --scheduler-week-fields: 4; }
+:is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="1"] { --scheduler-week-fields: 1; }
+:is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="2"] { --scheduler-week-fields: 2; }
+:is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="3"] { --scheduler-week-fields: 3; }
+:is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="4"] { --scheduler-week-fields: 4; }
+/* The card's own border is the last line's rule. */
+.scheduler-week__detail:last-child { border-block-end: 0; }
 .scheduler-week__field {
   display: flex;
   gap: 2pt;

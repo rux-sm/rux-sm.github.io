@@ -1362,7 +1362,9 @@
     card.appendChild(times);
 
     const crew = crewOnBus(assignment);
+    // On the same columns as their pay line, so each name sits over its D1.
     const crewLine = el('div', 'scheduler-week__crew');
+    crewLine.dataset.fields = String(Math.max(1, crew.length));
     for (const d of crew) {
       const person = el('span', 'scheduler-week__driver');
       if (String(d.role).startsWith('relief')) {

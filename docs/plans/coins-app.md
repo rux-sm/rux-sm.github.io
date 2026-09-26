@@ -51,6 +51,15 @@ tools and review page it grows out of.
   is paid from, the website, the login email it is under, a keep or cancel
   mark and notes. Bills are found from the transactions, as the review page
   does now, and can also be added by hand.
+- **A bill's login is found in the household's mail,** which is in two
+  mailboxes: a Gmail one, read through Claude's Gmail connector, and a Proton
+  one, read on rux's Mac through Proton Mail Bridge, since Proton has no
+  connector. A session searches for the service's receipts and writes only
+  the address they went to; no mail is copied into Coins.
+- **Claude tidies after each import, on a yes.** A session reads the lines no
+  rule sorted, proposes categories, rules and bills in one table, and saves
+  what rux accepts as rules, so the rules do the routine work and each month
+  leaves less to sort. It never changes the household's rows unasked.
 - **No passwords, ever.** The login email or username only; the password
   stays in a password manager. Accounts are stored by name and last four
   digits, never the full number.
@@ -103,7 +112,10 @@ tools and review page it grows out of.
 
 ## Questions
 
-None open.
+- **Should lines also arrive by themselves?** SimpleFIN Bridge reads the
+  banks for $15 a year and could feed Coins daily through a database-side
+  function, beside the bank files. Recommended once Import works, if it
+  covers all three banks.
 
 ## Tasks
 
@@ -117,6 +129,9 @@ None open.
       matches its lines and for remembering a suggestion that was turned
       down. Carry over any keep or cancel marks the old review page saved in
       rux's browser.
+- [ ] Fill each bill's login from the two mailboxes, once rux connects Gmail
+      and installs Proton Mail Bridge.
+- [ ] Tidy the first imports with rux, then make the tidy a skill.
 - [ ] Build Accounts, with the debt fields.
 - [ ] Build Overview.
 - [ ] Build Budget, with its table as a migration of its own.

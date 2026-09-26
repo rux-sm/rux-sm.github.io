@@ -1455,8 +1455,14 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    of the headings print past Chrome's Background graphics box, because on
    this sheet a colour is what tells one trip from another at a glance. */
 /* The margin, the head and the gap under it are whole CSS pixels -- 18, 36
-   and 4 -- so the grid starts on a whole pixel. */
+   and 4 -- so the grid starts on a whole pixel.
+
+   EVERY LINE ON THE SHEET IS ONE LINE: one colour and one width, the frame,
+   the grid and the rules inside the trips alike, so no line reads heavier
+   than another. The theme's darker subtle grey still shows where a line
+   runs along a trip's fill. */
 .scheduler-week {
+  --scheduler-week-line: var(--rux-border-subtle-00);
   block-size: var(--scheduler-paper-height);
   font-size: 7.5pt;
   line-height: 1.12;
@@ -1482,11 +1488,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   font-size: 7pt;
   color: var(--rux-text-secondary);
 }
-/* The day and row lines are the theme's darker subtle grey, #c6c6c6 on the
-   sheet, so they still show where they run along a trip's fill; the lighter
-   one is as bright as the pink and vanished there.
-
-   EVERY LINE IS 0.75PT, one CSS pixel, the width Chrome prints any line of
+/* EVERY LINE IS 0.75PT, one CSS pixel, the width Chrome prints any line of
    about that weight at, and each is drawn inside a cell: a day's line at its
    cell's end, a row's line at its cells' foot. The frame is the header's
    top, the bus column's start, Sunday's end and the last row's foot. */
@@ -1511,7 +1513,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   grid-template-columns: minmax(27px, 1fr) repeat(7, round(down, calc((100% - 27px) / 7 + 0.01px), 1px));
 }
 .scheduler-week__days {
-  border-block: 0.75pt solid var(--rux-border-strong-01);
+  border-block: 0.75pt solid var(--scheduler-week-line);
 }
 .scheduler-week__corner,
 .scheduler-week__day,
@@ -1522,7 +1524,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 .scheduler-week__corner,
 .scheduler-week__bus {
-  border-inline: 0.75pt solid var(--rux-border-strong-01);
+  border-inline: 0.75pt solid var(--scheduler-week-line);
 }
 .scheduler-week__day {
   display: flex;
@@ -1531,7 +1533,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   padding: 4pt 6pt;
   font-size: 9pt;
   font-weight: 600;
-  border-inline-end: 0.75pt solid var(--rux-border-subtle-00);
+  border-inline-end: 0.75pt solid var(--scheduler-week-line);
 }
 .scheduler-week__row { min-block-size: 0; }
 .scheduler-week__bus {
@@ -1540,22 +1542,15 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 9pt;
+  font-size: 8pt;
   font-weight: 600;
 }
 .scheduler-week__cell {
   grid-row: 1;
-  border-inline-end: 0.75pt solid var(--rux-border-subtle-00);
+  border-inline-end: 0.75pt solid var(--scheduler-week-line);
 }
 .scheduler-week__bus,
-.scheduler-week__cell { border-block-end: 0.75pt solid var(--rux-border-subtle-00); }
-/* The frame: Sunday's line, the eighth child after the bus, and the last
-   row's foot. */
-.scheduler-week__day:last-child,
-.scheduler-week__cell:nth-child(8) { border-inline-end-color: var(--rux-border-strong-01); }
-.scheduler-week__row:last-child > :is(.scheduler-week__bus, .scheduler-week__cell) {
-  border-block-end-color: var(--rux-border-strong-01);
-}
+.scheduler-week__cell { border-block-end: 0.75pt solid var(--scheduler-week-line); }
 /* A day line a trip runs across, in every lane of its row, is not drawn:
    print.js marks the cell, and the trip's colour runs on unbroken. */
 .scheduler-week__cell[data-inside] { border-inline-end-color: transparent; }
@@ -1584,12 +1579,12 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    in its row and its write-in lines get the room. */
 .scheduler-week__lanes[data-lanes="1"] { grid-template-rows: minmax(0, 1fr); }
 /* Cards stacked in a crowded row have no gridline between them, so each
-   draws its own foot line in the grid's colour, straight under its last
+   draws its own foot line, straight under its last
    write-in line. */
 .scheduler-week__lanes:not([data-lanes="1"]) > .scheduler-week__trip {
   align-self: start;
   padding-block-end: 0;
-  border-block-end: 0.75pt solid var(--rux-border-subtle-00);
+  border-block-end: 0.75pt solid var(--scheduler-week-line);
 }
 
 /* A card draws no line of its own round its edge; the grid's lines lie over
@@ -1683,7 +1678,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 .scheduler-week__crew {
   margin-block-start: 2px;
-  border-block-start: 0.5pt solid var(--rux-border-strong-01);
+  border-block-start: 0.75pt solid var(--scheduler-week-line);
   font-weight: 600;
 }
 .scheduler-week__driver {
@@ -1696,13 +1691,13 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   overflow: hidden;
 }
 .scheduler-week__role { flex: none; inline-size: 8pt; block-size: 8pt; }
-/* Every second column starts after a 0.5pt rule, drawn only between the
+/* Every second column starts after a 0.75pt rule, drawn only between the
    drivers and their pay, so all second columns start on one vertical. */
 :is(.scheduler-week__driver, .scheduler-week__field) + * {
-  border-inline-start: 0.5pt solid transparent;
+  border-inline-start: 0.75pt solid transparent;
 }
 :is(.scheduler-week__driver, .scheduler-week__pay > .scheduler-week__field) + * {
-  border-inline-start-color: var(--rux-border-strong-01);
+  border-inline-start-color: var(--scheduler-week-line);
 }
 /* The pay line's boxes fill its height, so their rules meet the lines above
    and below, with the text still sitting on the foot. */
@@ -1733,7 +1728,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 .scheduler-week__detail {
   align-items: end;
-  border-block-start: 0.5pt solid var(--rux-border-strong-01);
+  border-block-start: 0.75pt solid var(--scheduler-week-line);
   background: var(--rux-layer-01);
   background-clip: padding-box;
 }

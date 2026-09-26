@@ -1478,12 +1478,20 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   font-size: 7pt;
   color: var(--rux-text-secondary);
 }
+/* EVERY LINE A CARD CAN MEET IS 0.75PT, one CSS pixel, the width Chrome
+   prints any line of about that weight at, and each is drawn inside the
+   cell before it: a day's line at its cell's end, a row's line at its
+   cells' foot. The frame's right and bottom are the last day's and last
+   row's lines, so the grid draws only its top and left. A card sits over the
+   line before it, so its own line lands exactly on the gridline under it. */
 .scheduler-week__grid {
   flex: 1 1 0;
   min-block-size: 0;
   display: flex;
   flex-direction: column;
-  border: 1pt solid var(--rux-border-strong-01);
+  border: 0.75pt solid var(--rux-border-strong-01);
+  border-inline-end: 0;
+  border-block-end: 0;
 }
 .scheduler-week__days,
 .scheduler-week__row {
@@ -1491,7 +1499,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   grid-template-columns: 26pt repeat(7, minmax(0, 1fr));
 }
 .scheduler-week__days {
-  border-block-end: 1pt solid var(--rux-border-strong-01);
+  border-block-end: 0.75pt solid var(--rux-border-strong-01);
 }
 .scheduler-week__corner,
 .scheduler-week__day,
@@ -1500,21 +1508,19 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
-.scheduler-week__corner { border-inline-end: 1pt solid var(--rux-border-strong-01); }
+.scheduler-week__corner { border-inline-end: 0.75pt solid var(--rux-border-strong-01); }
 .scheduler-week__day {
   display: flex;
   justify-content: space-between;
   padding: 4pt 6pt;
   font-size: 9pt;
   font-weight: 600;
-  border-inline-start: 0.75pt solid var(--rux-border-subtle-01);
+  border-inline-end: 0.75pt solid var(--rux-border-subtle-01);
 }
 .scheduler-week__row {
   flex: 1 1 0;
   min-block-size: 0;
-  border-block-start: 0.75pt solid var(--rux-border-subtle-01);
 }
-.scheduler-week__days + .scheduler-week__row { border-block-start: 0; }
 .scheduler-week__bus {
   grid-column: 1;
   grid-row: 1;
@@ -1523,19 +1529,25 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   justify-content: center;
   font-size: 10.5pt;
   font-weight: 600;
-  border-inline-end: 1pt solid var(--rux-border-strong-01);
+  border-inline-end: 0.75pt solid var(--rux-border-strong-01);
 }
-/* The day lines print at three quarters of a point, clear enough to line a
-   handwritten note up with its day. */
 .scheduler-week__cell {
   grid-row: 1;
-  border-inline-start: 0.75pt solid var(--rux-border-subtle-01);
+  border-inline-end: 0.75pt solid var(--rux-border-subtle-01);
 }
-.scheduler-week__cell:nth-child(2) { border-inline-start: 0; }
+.scheduler-week__bus,
+.scheduler-week__cell { border-block-end: 0.75pt solid var(--rux-border-subtle-01); }
+/* The frame: Sunday's line (the eighth child, after the bus) and the last
+   row's foot. */
+.scheduler-week__day:last-child,
+.scheduler-week__cell:nth-child(8) { border-inline-end-color: var(--rux-border-strong-01); }
+.scheduler-week__row:last-child > :is(.scheduler-week__bus, .scheduler-week__cell) {
+  border-block-end-color: var(--rux-border-strong-01);
+}
 /* The cards lie over the day cells, on the same seven columns with no gap
-   or inset, so a card's edges are its days' lines and a card across three
-   days is exactly three days wide. What will not fit the row is hidden here
-   and named above the sheet. */
+   or inset, so a card across three days is exactly three days wide. The clip
+   margin keeps the edge each card lays over the line before it. What will
+   not fit the row is hidden here and named above the sheet. */
 .scheduler-week__lanes {
   grid-column: 2 / -1;
   grid-row: 1;
@@ -1545,24 +1557,23 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   align-content: start;
   min-block-size: 0;
   overflow: clip;
-  overflow-clip-margin: 0.5pt;
+  overflow-clip-margin: 0.75pt;
 }
 /* A row with one lane gives its cards the whole height, so a card is centred
    in its row and its write-in lines get the room. */
 .scheduler-week__lanes[data-lanes="1"] { grid-template-rows: minmax(0, 1fr); }
 
-/* A card's line is an outline centred on its edge, so two cards that touch
-   share one 1pt line, as table cells do, and the half past the row's edge is
-   kept by the lanes' clip margin. The padding is the half inside, so the
-   card's own rules run to the line and its text starts 4pt past it. */
+/* A card reaches back over the line above it and the line before it, so its
+   top and start lines lie on those gridlines, its end and foot lines lie on
+   its own cells' lines, and two cards that touch share one line. */
 .scheduler-week__trip {
   display: flex;
   flex-direction: column;
   min-inline-size: 0;
   min-block-size: 0;
-  padding: 0.5pt;
-  outline: 1pt solid var(--scheduler-week-border);
-  outline-offset: -0.5pt;
+  margin-block-start: -0.75pt;
+  margin-inline-start: -0.75pt;
+  border: 0.75pt solid var(--scheduler-week-border);
   background: var(--scheduler-week-bg);
   color: var(--rux-text-primary);
   -webkit-print-color-adjust: exact;
@@ -1577,11 +1588,11 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-week__trip--red     { --scheduler-week-bg: var(--rux-tag-background-red);     --scheduler-week-border: var(--rux-tag-border-red); }
 .scheduler-week__trip--amber   { --scheduler-week-bg: var(--scheduler-amber-bg);         --scheduler-week-border: var(--scheduler-amber-border); }
 /* A card across several days keeps its lines to one day's width: the card
-   divided by its days, less the share of the padding a one-day card has that
+   divided by its days, less the share of the border a one-day card has that
    this one spends only once. */
 .scheduler-week__trip > * {
   max-inline-size: calc(100% / var(--scheduler-week-span, 1)
-    - (var(--scheduler-week-span, 1) - 1) * 1pt / var(--scheduler-week-span, 1));
+    - (var(--scheduler-week-span, 1) - 1) * 0.75pt / var(--scheduler-week-span, 1));
 }
 /* A trip that began last week is its colour and nothing else here. */
 .scheduler-week__trip--continued { min-block-size: 12pt; }

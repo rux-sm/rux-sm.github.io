@@ -57,13 +57,6 @@ const ICONS = [
   'pending--filled', 'unknown--filled', 'warning-square--filled',
   // state demos in the sink: the icon-only content switcher and a disabled menu item
   'list', 'grid', 'location', 'download',
-  // EQUIPMENT ON A VEHICLE, asked for by Scheduler 2026-09-06: a bus row
-  // says what the bus HAS, and the sprite had no way to say it. `accessibility`
-  // is Carbon's own wheelchair mark, the one every product uses for a lift or a
-  // ramp; `hotel` is its bed, which is what a sleeper coach is. Neither is
-  // scheduler-specific -- any app with a row of equipment flags needs them --
-  // so they belong here rather than spliced into one app's page.
-  'accessibility', 'hotel',
   // AN APP TILE'S ICON, asked for by rux 2026-09-07. Rux Home's grid gives each
   // app a 32px glyph until drawn marks exist, and the design system's tile had
   // no honest candidate in the sprite: `grid` is what the header's app-switcher
@@ -73,30 +66,6 @@ const ICONS = [
   // this sprite -- which is why check-icons counts it among the symbols nothing
   // points at rather than failing on it.
   'color-palette',
-  // A FUEL CARD, asked for by Scheduler 2026-09-20 for a trip bar's mark strip,
-  // where a requirement the office arranges needed a drawing. Carbon has no
-  // credit-card icon; `purchase` IS the card, and of everything it does ship
-  // that could stand for one -- payment--methods, wallet, gas-station,
-  // fuel-can -- it is the only one still legible rasterised at the 12px a mark
-  // draws at, being a plain rectangle and one rule. Carbon's name is kept, as
-  // every symbol here keeps the name of the file it came from.
-  'purchase',
-  // A CALCULATOR, asked for by Scheduler for its quote calculator's side-nav
-  // item, where every entry needs an icon and none of the others says pricing.
-  'calculator',
-  // A TRIP'S SHORTCUTS, asked for by Scheduler for the selected bar's shortcut
-  // slots and its right-click menu: `launch` opens a trip, and rux picked it
-  // over the arrow it replaces; `attachment` is Carbon's paperclip, for a
-  // trip's itinerary file.
-  'launch', 'attachment',
-  // A DOCUMENT VIEWER'S TOOLBAR, asked for by Scheduler for its itinerary
-  // panel, which hides the browser's PDF toolbar and stands in for it: zoom
-  // out, fit to width, zoom in and print. `download` and `launch` are above.
-  'zoom--out', 'fit-to-width', 'zoom--in', 'printer',
-  // A HOTEL, asked for by Scheduler for a trip bar's hotel mark. `building`,
-  // not `hotel`: Carbon's `hotel` is a bed, which already means a sleeper coach
-  // on the same bar.
-  'building',
   // A GROUP OF PEOPLE, asked for by Scheduler 2026-09-07. A roster control
   // sitting in a toolbar Carbon draws as icons had to be a text button, because
   // the sprite held exactly one person in 62 -- `user--avatar`, which the shell's
@@ -110,36 +79,9 @@ const ICONS = [
   // no multi-person glyph among its 68 sixteens, which is its own judgement about
   // this same risk, and the reason the ask was for two and not one.
   'user--multiple',
-  // A FILE GOING UP, for Scheduler's Upload itinerary menu item. Carbon's
-  // file uploader draws no icon of its own, and `download` points the other way.
-  'upload',
-  // A DRIVER'S ROLE, for Scheduler's trip bar: `user` is a driver or co-driver,
-  // and `channels`, two opposite arrows, is a relief driver's handover, so
-  // relief is the one role that is not a person.
-  'user', 'channels',
-  // A VEHICLE, for Scheduler's trip bar warning that a bus is the wrong type
-  // for the trip. Carbon's `bus` is a coach seen from the front.
-  'bus',
-  // A TELEPHONE, for Scheduler's trip bar warning that a trip has nobody to
-  // call on the day. `phone` is Carbon's plain handset, an outline like the
-  // other marks on that bar; the filled and directional variants say a call is
-  // happening, which is not what a missing number means.
-  'phone',
-  // MONEY, asked for by Scheduler for its trip bar's payment mark. Every
-  // candidate was drawn at the 12px the bar's chips use and looked at:
-  // `receipt`, `purchase` and `money` collapse into a lined rectangle at that
-  // size, next to chips that are already rectangles, and `order-details` and
-  // `document--tasks` read as a person and as a tick. `currency--dollar` is a
-  // single dollar sign, which stays a dollar sign at 12 and means one thing.
-  //
-  // AND THE SAME SIGN INSIDE A RING, asked for by Scheduler 2026-09-20 once the
-  // bar's marks went solid. Material's fill axis does nothing to `attach_money`
-  // -- the outline and the `-fill` file are byte-identical, both a bare stroked
-  // sign -- so the payment mark was the one mark on the bar with no solid form
-  // to take. `currency` is the ring both families draw around it, and Material's
-  // `paid-fill` is a filled disc with the sign knocked out of it, which is a
-  // silhouette where a stroked sign is three thin strokes.
-  'currency', 'currency--dollar',
+  // A PERSON: `user`, one figure, where `user--avatar` would mean the account
+  // that is signed in.
+  'user',
 ];
 
 const symbols = [], missing = [], from = {};

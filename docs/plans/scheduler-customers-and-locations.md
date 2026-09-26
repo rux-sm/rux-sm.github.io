@@ -55,5 +55,3 @@ None open.
 ## Tasks
 
 - [ ] rux picks the usual pickups the copy left blank.
-- [ ] Delete the `locations-v1` settings row, which both apps have stopped
-      reading, once rux decides about the places in it the table lacks.

@@ -23,7 +23,7 @@
   const KINDS = { subscription: 'Subscription', utility: 'Utility', rent: 'Rent', loan: 'Loan', card: 'Card', insurance: 'Insurance', person: 'A person', other: 'Other' };
   const DECISIONS = { undecided: 'Not chosen yet', keep: 'Keep', cancel: 'Cancel', cancelled: 'Cancelled' };
 
-  let people = [], accounts = [], bill = null, lines = [], through = new Map();
+  let people = [], accounts = [], bill = null, lines = [], through = new Map(), mainLogin = '';
 
   const fail = error => { console.error(error); C.notice(error?.message ? `That did not save: ${error.message}` : 'Coins could not reach the household. Try again.'); };
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
@@ -57,6 +57,7 @@
       ['Paid from', accountName(bill.account_id)],
       ['Website', bill.website],
       ['Login', bill.login],
+      ['Checked', bill.checked_on ? day(bill.checked_on) : 'Not yet'],
       ['Whose', person ? person.name : 'Both'],
       ['Kind', KINDS[bill.kind]],
       ['Finds payments containing', bill.match],
@@ -70,6 +71,12 @@
       row.append(el('div', 'rux--structured-list-td coins-fact__key', k), cell);
       return row;
     }));
+    // Checking: logged into and confirmed, and the login on the main address.
+    const moved = !mainLogin || !bill.login.trim() || bill.login.trim().toLowerCase() === mainLogin.toLowerCase();
+    $('coins-check').hidden = false;
+    $('coins-check').textContent = bill.checked_on ? 'Checked again today' : 'Mark as checked';
+    $('coins-move').hidden = moved;
+    $('coins-move').textContent = `Moved its login to ${mainLogin}`;
     $('coins-open-site').hidden = !bill.website;
     if (bill.website) $('coins-open-site').href = href(bill.website);
 
@@ -112,6 +119,11 @@
   }
 
   $('coins-edit').addEventListener('click', () => edit(bill));
+  const check = async patch => {
+    try { bill = await C.data.checkBill(bill.id, patch); C.notice(); show(); } catch (error) { fail(error); }
+  };
+  $('coins-check').addEventListener('click', () => check());
+  $('coins-move').addEventListener('click', () => check({ login: mainLogin }));
   $('coins-cancel').addEventListener('click', () => { if (bill) { C.notice(); show(); } else location.href = 'bills.html'; });
 
   $('coins-form').addEventListener('submit', async e => {
@@ -153,7 +165,9 @@
   (async () => {
     // What the files cover comes from every account's recent lines, not this bill's.
     let recent;
-    [people, accounts, recent] = await Promise.all([C.data.people(), C.data.accounts(), C.data.outgoing(C.iso(new Date(C.today().getTime() - 90 * 864e5)))]);
+    let home;
+    [people, accounts, recent, home] = await Promise.all([C.data.people(), C.data.accounts(), C.data.outgoing(C.iso(new Date(C.today().getTime() - 90 * 864e5))), C.data.household()]);
+    mainLogin = String(home?.main_login || '').trim();
     through = C.coverage(recent);
     $('coins-f-kind').replaceChildren(...Object.entries(KINDS).map(([k, t]) => option(k, t)));
     $('coins-f-cadence').replaceChildren(...Object.entries(EVERY).map(([k, t]) => option(k, t)));

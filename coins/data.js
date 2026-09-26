@@ -10,6 +10,8 @@
 
   const client = window.Rux?.account?.client ?? null;
   const fail = error => { if (error) throw error; };
+  // Today as an ISO date, on this device's calendar.
+  const todayIso = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 
   // Supabase answers at most 1000 rows a request, so a long read is paged.
   const all = async make => {
@@ -23,6 +25,17 @@
   };
 
   const data = client && {
+    // The household, with the address every bill's login is moving to.
+    async household() {
+      const { data: rows, error } = await client.from('coins_households').select('id, name, main_login').limit(1);
+      fail(error);
+      return rows[0] ?? null;
+    },
+    async checkBill(id, patch = {}) {
+      const { data: bill, error } = await client.from('coins_bills').update({ ...patch, checked_on: todayIso() }).eq('id', id).select('*').single();
+      fail(error);
+      return bill;
+    },
     people: () => all(() => client.from('coins_people').select('id, household_id, name, sort, user_id').order('sort')),
     accounts: () => all(() => client.from('coins_accounts').select('*').order('name')),
     async updateAccount(id, patch) {

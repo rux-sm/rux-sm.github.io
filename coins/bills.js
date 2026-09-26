@@ -19,9 +19,12 @@
   const STATE = { late: ['Late', 'rux--tag--red'], due: ['Due', 'rux--tag--blue'], paid: ['Paid', 'rux--tag--green'] };
   const DECISION = { keep: ['Keep', 'rux--tag--green'], cancel: ['Cancel', 'rux--tag--red'], cancelled: ['Cancelled', 'rux--tag--cool-gray'], undecided: ['Decide', 'rux--tag--gray'] };
   const EVERY = { weekly: 'Weekly', monthly: 'Monthly', quarterly: 'Every 3 months', yearly: 'Yearly', irregular: 'Now and then' };
-  const VIEWS = [['month', 'This month'], ['all', 'All bills'], ['decide', 'To decide']];
+  const VIEWS = [['month', 'This month'], ['all', 'All bills'], ['decide', 'To decide'], ['check', 'To check']];
 
-  let people = [], accounts = [], bills = [], lines = [], skips = new Set(), suggestions = [], through = new Map();
+  let people = [], accounts = [], bills = [], lines = [], skips = new Set(), suggestions = [], through = new Map(), mainLogin = '';
+  // A bill still to check: never confirmed, or a login not yet on the
+  // household's main address. A bill paid to a person has no login to move.
+  const toCheck = b => b.decision !== 'cancelled' && (!b.checked_on || Boolean(mainLogin && b.login.trim() && b.login.trim().toLowerCase() !== mainLogin));
 
   const fail = error => { console.error(error); C.notice(error?.message ? `That did not save: ${error.message}` : 'Coins could not reach the household. Try again.'); };
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
@@ -161,15 +164,15 @@
       if (paid.length) out.push(group('Paid', heads, paid.sort(byDue).map(row), cells, side));
       if (!out.length) out.push(el('p', '', bills.length ? 'No bills fall in this month.' : 'No bills yet. Add one, or turn a repeating payment into one.'));
     } else {
-      const list = (v === 'decide' ? items.filter(it => it.bill.decision === 'undecided') : items)
+      const list = (v === 'decide' ? items.filter(it => it.bill.decision === 'undecided') : v === 'check' ? items.filter(it => toCheck(it.bill)) : items)
         .sort((a, b) => v === 'decide' ? b.facts.yearly - a.facts.yearly : a.bill.name.localeCompare(b.bill.name))
         .map(it => ({ ...it, amount: C.money(it.facts.usual ?? 0), sub: [EVERY[it.bill.cadence], accountName(it.bill.account_id), it.bill.login].filter(Boolean).join(' · ') }));
       const heads = [['Bill'], ['Every'], ['Usually', 1], ['A year', 1], ['Paid from'], ['Login'], ['Keep?']];
       const tags = it => [tag(DECISION[it.bill.decision]), ...(it.halted && it.bill.decision !== 'cancelled' ? [tag(['Stopped', 'rux--tag--warm-gray'])] : []),
         ...(C.tracked(it.bill) ? [] : [tag(['Inside another bill', 'rux--tag--cool-gray'])])];
       const cells = it => [td(it.bill.name), td(EVERY[it.bill.cadence]), td(it.amount, 'coins-amount'), td(C.money(it.facts.yearly), 'coins-amount'), td(accountName(it.bill.account_id)), td(it.bill.login), tdTags(tags(it))];
-      out.push(list.length ? group(v === 'decide' ? 'Keep or cancel' : 'Every bill', heads, list, cells, tags)
-        : el('p', '', v === 'decide' ? 'Every bill has keep or cancel chosen.' : 'No bills yet.'));
+      out.push(list.length ? group(v === 'decide' ? 'Keep or cancel' : v === 'check' ? 'Log in, confirm, and move the login to the main address' : 'Every bill', heads, list, cells, tags)
+        : el('p', '', v === 'decide' ? 'Every bill has keep or cancel chosen.' : v === 'check' ? 'Every bill is checked and on the main address.' : 'No bills yet.'));
     }
     $('coins-groups').replaceChildren(...out);
   }
@@ -179,7 +182,7 @@
     box.replaceChildren(...VIEWS.map(([key, label]) => {
       const b = el('button', 'rux--content-switcher-btn' + (key === v ? ' rux--content-switcher--selected' : ''));
       b.type = 'button'; b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', String(key === v)); b.tabIndex = key === v ? 0 : -1;
-      const n = key === 'decide' ? bills.filter(x => x.decision === 'undecided').length : 0;
+      const n = key === 'decide' ? bills.filter(x => x.decision === 'undecided').length : key === 'check' ? bills.filter(toCheck).length : 0;
       b.append(el('span', 'rux--content-switcher__label', n ? `${label} (${n})` : label));
       b.addEventListener('click', () => { C.setParam('view', key === 'month' ? null : key); draw(); });
       return b;
@@ -217,7 +220,9 @@
   (async () => {
     const since = C.iso(new Date(C.today().getTime() - 400 * 864e5));
     let skipRows;
-    [people, accounts, bills, lines, skipRows] = await Promise.all([C.data.people(), C.data.accounts(), C.data.bills(), C.data.outgoing(since), C.data.skips()]);
+    let home;
+    [people, accounts, bills, lines, skipRows, home] = await Promise.all([C.data.people(), C.data.accounts(), C.data.bills(), C.data.outgoing(since), C.data.skips(), C.data.household()]);
+    mainLogin = String(home?.main_login || '').trim().toLowerCase();
     skips = new Set(skipRows.map(s => s.merchant));
     through = C.coverage(lines);
     suggestions = suggest();

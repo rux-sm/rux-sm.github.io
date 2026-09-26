@@ -32,7 +32,10 @@ the last twelve months at a steady amount, are offered as bills, and one
 turned down is not offered again. `bill.html?id=` is one bill: its usual,
 latest and yearly cost, a price rise when the latest is over $1.99 and 5%
 above usual, where it is paid from, its website and login, and its payments;
-Edit turns it into its form, and `bill.html?new=1` adds one.
+Edit turns it into its form, and `bill.html?new=1` adds one. The To check
+view lists every bill not yet confirmed, or whose login is not yet on the
+household's main address, which is kept in the database rather than here; a
+bill's page marks it checked, or its login moved to that address.
 
 `accounts.html` has every account in three groups: bank accounts with their
 balance, cards with what is owed and the share of the limit it is, and loans

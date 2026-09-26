@@ -106,16 +106,28 @@ tools and review page it grows out of.
 - **The second member already has a login.** It gets Coins ticked on the
   Access page and is linked to its person in the household; its other apps
   stay as they are.
+- **One account is shared.** Each member keeps a checking account of their
+  own and transfers into a shared one that pays most bills; the second
+  member also pays some bills from their own. The shared account belongs to
+  both, and a transfer into it is money the household already has.
+- **A contribution plan, once the picture is full.** From a year of every
+  account: what the shared account pays each month, bills and day-to-day,
+  split between the members by the rule they choose; so what each transfers,
+  how often, how much the shared account keeps in reserve, and what each is
+  left to spend from their own. It lives on the Budget page.
 - **The money folder on the Mac stays until Coins matches it.** The same
   bank files imported into Coins must give the same yearly totals the Mac
   tool gives, to the cent, before the folder is retired.
 
 ## Questions
 
-- **Should lines also arrive by themselves?** SimpleFIN Bridge reads the
-  banks for $15 a year and could feed Coins daily through a database-side
-  function, beside the bank files. Recommended once Import works, if it
-  covers all three banks.
+- **How is the shared account split?** Half each, or in proportion to what
+  each earns. The plan shows both; the household picks one.
+- **Which bills belong to the shared account?** Some personal subscriptions
+  are paid from it today, and some shared bills from the second member's own
+  account.
+- **How much reserve should the shared account hold?** Recommended one
+  month of its bills, so a late transfer never makes a bill fail.
 
 ## Tasks
 
@@ -126,5 +138,9 @@ tools and review page it grows out of.
       hand.
 - [ ] Tidy the first imports with rux, then make the tidy a skill.
 - [ ] Build Overview.
+- [ ] Import a full year of the second member's card, which today holds one
+      month.
+- [ ] Build the contribution plan on the Budget page, once the questions
+      above are answered.
 - [ ] Retire the money folder on the Mac, and update
       `~/claude-config/developer/CLAUDE.md` that describes it.

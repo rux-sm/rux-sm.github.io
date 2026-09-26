@@ -22,7 +22,7 @@
   const SAID = { complete: 'Complete', current: 'Current', incomplete: 'Not started' };
   const KIND = { trade: '', fee: 'Fee', 'own-transfer': 'Own transfer', 'card-payment': 'Card payment', household: 'Between us' };
 
-  let people = [], accounts = [], rules = [];
+  let people = [], accounts = [], rules = [], bills = [];
   let account = null, file = null, fresh = [], step = 0;
 
   const fail = error => { console.error(error); C.notice(error?.message ? `That did not save: ${error.message}` : 'Coins could not reach the household. Try again.'); };
@@ -135,9 +135,10 @@
         last4: accounts.map(a => a.last4).filter(Boolean),
         members: people.map(p => p.name.split(' ')[0].toUpperCase()),
       };
+      // Each new line takes the household's rules, then the first bill it fits.
       fresh = lines.filter(l => !known.has(`${B.same(l)}#${l.occurrence}`)).map(l => B.apply({
         ...l, kind: B.kind(l, ctx), merchant: B.merchant(l.description), category: '',
-      }, rules));
+      }, rules)).map(l => ({ ...l, bill_id: bills.find(b => b.decision !== 'cancelled' && C.matches(b, l))?.id ?? null }));
       file = { name: f.name, layout, lines, first: days[0], last: days[days.length - 1] };
       drawCheck();
       show(2);
@@ -192,7 +193,7 @@
         household_id: account.household_id, account_id: account.id,
         day: l.day, description: l.description, amount: l.amount,
         bank_type: l.bank_type, bank_category: l.bank_category, occurrence: l.occurrence,
-        merchant: l.merchant, kind: l.kind, category: l.category,
+        merchant: l.merchant, kind: l.kind, category: l.category, bill_id: l.bill_id,
       })));
       $('coins-done-text').textContent = `${added === 1 ? '1 line' : `${added} lines`} saved into ${accountName(account)}.`;
       show(3);
@@ -205,7 +206,7 @@
   $('coins-again').addEventListener('click', () => { file = null; fresh = []; show(0); });
 
   (async () => {
-    [people, accounts, rules] = await Promise.all([C.data.people(), C.data.accounts(), C.data.rules()]);
+    [people, accounts, rules, bills] = await Promise.all([C.data.people(), C.data.accounts(), C.data.rules(), C.data.bills()]);
     if (!people.length) return C.notice('This login is not linked to a household yet.');
     fillAccounts();
     show(0);

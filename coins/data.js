@@ -107,6 +107,45 @@
       return { rule: made, changed };
     },
 
+    // Money that left from `from` on, with what a bill or a suggestion needs.
+    outgoing: from => all(() => client.from('coins_transactions')
+      .select('id, account_id, day, amount, kind, merchant, description, bill_id')
+      .gte('day', from).lt('amount', 0).order('day').order('id')),
+
+    // Every line a bill has, however old.
+    billLines: billId => all(() => client.from('coins_transactions')
+      .select('id, account_id, day, amount, kind, merchant, description, bill_id')
+      .eq('bill_id', billId).order('day').order('id')),
+
+    skips: () => all(() => client.from('coins_bill_skips').select('merchant')),
+    async skip(householdId, merchant) {
+      fail((await client.from('coins_bill_skips').insert({ household_id: householdId, merchant })).error);
+    },
+
+    /* SAVING A BILL, and linking its lines. The lines it had are let go and
+       every money-out line whose merchant or description contains its match
+       is linked again, so a changed match moves the right lines. A line
+       another bill already holds stays with that bill. */
+    async saveBill(row) {
+      const q = row.id ? client.from('coins_bills').update(row).eq('id', row.id) : client.from('coins_bills').insert(row);
+      const { data: bill, error } = await q.select('*').single();
+      fail(error);
+      fail((await client.from('coins_transactions').update({ bill_id: null }).eq('bill_id', bill.id)).error);
+      const m = String(bill.match || '').trim();
+      if (m.length >= 3) {
+        const like = `%${m.replace(/[\\%_]/g, c => '\\' + c)}%`;
+        for (const field of ['merchant', 'description']) {
+          fail((await client.from('coins_transactions').update({ bill_id: bill.id })
+            .is('bill_id', null).lt('amount', 0).ilike(field, like)).error);
+        }
+      }
+      return bill;
+    },
+
+    async deleteBill(id) {
+      fail((await client.from('coins_bills').delete().eq('id', id)).error);
+    },
+
     // Whether anything has ever been imported, for the empty notice.
     async anyTransactions() {
       const { count, error } = await client.from('coins_transactions').select('id', { count: 'exact', head: true });

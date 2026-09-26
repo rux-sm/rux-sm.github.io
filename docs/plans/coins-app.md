@@ -122,10 +122,8 @@ tools and review page it grows out of.
 - [ ] Tick Coins for the second member on the Access page.
 - [ ] Build the rules page, to see, change and delete the rules the
       Transactions panel makes.
-- [ ] Build Bills and the bill page, with a migration for how a bill
-      matches its lines and for remembering a suggestion that was turned
-      down. Carry over any keep or cancel marks the old review page saved in
-      rux's browser.
+- [ ] Offer a bill in the Transactions panel, to link or unlink one line by
+      hand.
 - [ ] Fill each bill's login from the two mailboxes, once rux connects Gmail
       and installs Proton Mail Bridge.
 - [ ] Tidy the first imports with rux, then make the tidy a skill.

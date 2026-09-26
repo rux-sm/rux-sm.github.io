@@ -22,6 +22,18 @@ nobody has looked at yet. A line opens in a side panel to change its
 category, kind and note, and a tick there makes it a rule, which sorts every
 saved line that contains its text now and every line imported later.
 
+`bills.html` has this month's bills in three groups, due in the next
+seven days with any late, later this month, and paid, or every bill, or the
+ones with keep or cancel still to decide, under the month's totals. A bill
+finds its payments by text: every money-out line whose merchant or
+description contains its match is linked to it, when it is saved and when a
+file is imported. Payments that repeat without a bill, charged in three of
+the last twelve months at a steady amount, are offered as bills, and one
+turned down is not offered again. `bill.html?id=` is one bill: its usual,
+latest and yearly cost, a price rise when the latest is over $1.99 and 5%
+above usual, where it is paid from, its website and login, and its payments;
+Edit turns it into its form, and `bill.html?new=1` adds one.
+
 `import.html` takes a bank file into one account in four steps: the
 account, which can be added there; the file, read on the device and never
 uploaded; a check of the lines the account does not hold yet, each ticked;
@@ -30,8 +42,8 @@ import's lines.
 
 ## How it works
 
-Seven tables named `coins_*` hold the household, its people, accounts,
-imports, lines, bills and rules. Only an account that can open Coins **and**
+Eight tables named `coins_*` hold the household, its people, accounts,
+imports, lines, bills, rules and the suggestions turned down. Only an account that can open Coins **and**
 is linked to a person in the household reads them; scheduler staff do not.
 `docs/database-access.md` is the rule. Nothing about the household is ever
 written here, because this repository is public.
@@ -39,9 +51,9 @@ written here, because this repository is public.
 | | |
 | :--- | :--- |
 | `data.js` | the reads and writes |
-| `app.js` | money as text, the month and member in the address, the switch, totals |
+| `app.js` | money as text, the month and member in the address, the switch, totals, where a bill stands |
 | `bank-file.js` | an export read by its column layout, and each line's kind and merchant |
-| `overview.js`, `transactions.js`, `import.js` | each page's own behaviour |
+| `overview.js`, `transactions.js`, `bills.js`, `bill.js`, `import.js` | each page's own behaviour |
 | `app.css` | the title row, filters, two-line rows and step buttons, under `coins-` |
 | `overrides.css` | the side panel hidden when closed and full width on a phone |
 

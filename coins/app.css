@@ -21,6 +21,9 @@
 /* A two-line row: the name over a detail line on the left, the amount and
    its tag on the right. */
 .coins-row { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--rux-spacing-05); }
+/* A clickable row is a button, which Carbon makes inline-block at two
+   classes; this matches that weight so the row stays a flex line. */
+.rux--contained-list-item--clickable .coins-row { display: flex; inline-size: 100%; text-align: start; }
 .coins-row__main { display: grid; min-inline-size: 0; }
 .coins-row__sub { color: var(--rux-text-secondary); font-size: .75rem; line-height: 1rem; letter-spacing: .32px; }
 .coins-row__side { display: grid; justify-items: end; gap: var(--rux-spacing-02); flex: none; }

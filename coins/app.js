@@ -83,6 +83,85 @@
     return new Date(year, monthIndex, Math.min(bill.due_day, last));
   };
 
+  /* BILLS. A line is a bill's when its merchant or description contains the
+     bill's match text; lines already linked carry bill_id. */
+  const median = a => { const s = [...a].sort((x, y) => x - y); return s.length ? s[Math.floor(s.length / 2)] : null; };
+  const matches = (bill, line) => {
+    const m = String(bill.match || '').toUpperCase();
+    return m.length >= 3 && Number(line.amount) < 0
+      && (String(line.merchant || '').toUpperCase().includes(m) || String(line.description || '').toUpperCase().includes(m));
+  };
+  const EVERY = { weekly: 0, monthly: 1, quarterly: 3, yearly: 12, irregular: 0 };
+  const PER_YEAR = { weekly: 52, monthly: 12, quarterly: 4, yearly: 1, irregular: 0 };
+
+  // What a bill's own lines say: its usual amount, its latest payment, what a
+  // year costs, and whether the latest cost more than usual by more than
+  // $1.99 and 5% together, the line a price rise is drawn at.
+  const billFacts = (bill, linked) => {
+    const paid = linked.filter(l => l.bill_id === bill.id).sort((a, b) => a.day.localeCompare(b.day));
+    const amounts = paid.map(l => -Number(l.amount));
+    const latest = paid.at(-1) ?? null;
+    const before = median(amounts.slice(-7, -1));
+    const usual = median(amounts.slice(-6)) ?? (bill.amount == null ? null : Number(bill.amount));
+    const yearAgo = iso(new Date(today().getTime() - 365 * 864e5));
+    const lastYear = paid.filter(l => l.day >= yearAgo);
+    const yearly = lastYear.length >= 2 ? lastYear.reduce((s, l) => s - Number(l.amount), 0)
+      : (usual ?? 0) * PER_YEAR[bill.cadence];
+    const latestAmount = latest ? -Number(latest.amount) : null;
+    const rose = latest && before != null && latestAmount - before > Math.max(1.99, before * 0.05) ? latestAmount - before : 0;
+    return { paid, usual, latest, latestAmount, yearly, rose };
+  };
+
+  // When a bill falls due in a month, or null when it does not come that
+  // month. Monthly and weekly bills come every month; quarterly and yearly
+  // ones in step with their last payment, or on the due day when none is known.
+  const billDue = (bill, facts, year, monthIndex) => {
+    if (bill.decision === 'cancelled' || !bill.due_day) return null;
+    const step = EVERY[bill.cadence];
+    if (step > 1 && facts.latest) {
+      const [y, m] = facts.latest.day.split('-').map(Number);
+      const gap = (year * 12 + monthIndex) - (y * 12 + m - 1);
+      if (gap % step !== 0) return null;
+    }
+    return dueIn(bill, year, monthIndex);
+  };
+
+  /* WHAT THE FILES COVER. The last day each account's lines reach, so a bill
+     due after it is not called late: its payment cannot have been imported
+     yet. A bill is judged by its own account, or by the account its latest
+     payment came from, or by today when neither is known. */
+  const coverage = lines => {
+    const through = new Map();
+    for (const l of lines) if (l.day > (through.get(l.account_id) ?? '')) through.set(l.account_id, l.day);
+    return through;
+  };
+  const coveredTo = (bill, facts, through) => {
+    const d = through.get(bill.account_id) ?? (facts.latest && through.get(facts.latest.account_id));
+    return d ? new Date(`${d}T00:00`) : today();
+  };
+
+  // A bill has stopped when nothing has been paid for two of its periods up
+  // to the last day the files cover, so it is no longer expected.
+  const GAP = { weekly: 21, monthly: 62, quarterly: 200, yearly: 400, irregular: Infinity };
+  const stopped = (bill, facts, covered) => Boolean(facts.latest)
+    && (covered - new Date(`${facts.latest.day}T00:00`)) / 864e5 > GAP[bill.cadence];
+
+  // Where a bill stands in a month: paid, late or due, or null when it does
+  // not fall in the month or has stopped. Late only when the files already
+  // cover the due day.
+  const billState = (bill, facts, start, through = new Map()) => {
+    const month = iso(start).slice(0, 7);
+    const due = billDue(bill, facts, start.getFullYear(), start.getMonth());
+    // Paid in the month, or up to ten days early for a due day early in it.
+    const early = due && iso(new Date(due.getTime() - 10 * 864e5));
+    const paidNow = facts.paid.find(l => l.day.startsWith(month))
+      ?? (due && facts.paid.find(l => l.day >= early && l.day < month));
+    if (paidNow) return { state: 'paid', due: due ?? new Date(`${paidNow.day}T00:00`), line: paidNow };
+    const covered = coveredTo(bill, facts, through);
+    if (!due || stopped(bill, facts, covered)) return null;
+    return { state: due <= covered && due < today() ? 'late' : 'due', due };
+  };
+
   const notice = (text = '') => {
     const box = document.getElementById('coins-error');
     if (!box) return;
@@ -92,5 +171,6 @@
 
   window.Coins = Object.assign(window.Coins || {}, {
     money, iso, today, month, shiftMonth, who, setParam, accountsFor, whoSwitch, totals, dueIn, notice,
+    median, matches, billFacts, billDue, billState, coverage, coveredTo, stopped, PER_YEAR,
   });
 })();

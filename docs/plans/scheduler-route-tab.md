@@ -31,8 +31,6 @@ Read from the code and from six trips on the board, all round trips:
 
 ## Decisions
 
-These are proposals until rux answers the questions below.
-
 - **The pickup is one field, Pickup,** an address search. A pick fills the
   place's name and address together; the field shows the name, and the
   address is a grey line under it. A saved location's name is changed on the
@@ -61,8 +59,16 @@ These are proposals until rux answers the questions below.
 - **The bus's times live only in the summary:** leaving the yard, at the
   pickup, and back at the yard. They are worked out, never typed, so they
   get no rows of their own.
-- **The summary is short and grey:** the bus's three times, then miles,
-  driving and on duty. A leg that could not be measured says so in it.
+- **The two times are Departs and Returns,** and Departs and Arrives on a
+  one-way trip, side by side on one row.
+- **The summary sits on the Stops heading's line,** at its end, in grey:
+  miles, driving and on duty for the whole trip. The bus's three times are
+  its tooltip. A leg that could not be measured says so in it.
+- **A trip of more than one day groups its stops by day.** Each day is a
+  small heading, such as "Day 2 · Tue, Sep 22", with that day's miles,
+  driving and on duty at its end, and the Stops heading keeps the trip's
+  total. A day's on duty runs from its first time to its last, less the
+  waits marked off duty or sleeper. A one-day trip has no day headings.
 - **What a figure was worked out from is a tooltip,** such as "35 min · 15 mi
   from the yard", never a line on the page.
 - **Estimated miles and Actual miles move to the Billing tab,** beside the
@@ -73,12 +79,7 @@ These are proposals until rux answers the questions below.
 
 ## Questions
 
-1. What are the two times called? Options: Departs and Returns; Leaves and
-   Back; Pickup time and Drop-off time; Departs and Back at pickup. A one-way
-   trip's second time would be Arrives in each.
-2. Where does the summary go: two grey lines at the very top of the tab,
-   above Pickup, or on the Stops heading's line with the bus's times in its
-   tooltip?
+None open.
 
 ## Tasks
 
@@ -87,11 +88,11 @@ These are proposals until rux answers the questions below.
       questions from what is on screen.
 - [ ] Make the pickup, drop-off and stop addresses one field each, with the
       saved-location icon on the field and in the search's list.
-- [ ] Put the two times on one row and name them as question 1 lands.
+- [ ] Put Departs and Returns on one row.
 - [ ] Replace Times and the Full itinerary accordion with the Stops list,
       stops editable in place and Add stop at its end.
-- [ ] Draw the summary where question 2 lands, with the explanations as
-      tooltips.
+- [ ] Draw the summary on the Stops heading, the day headings and their
+      totals on a trip of more than one day, and the explanations as tooltips.
 - [ ] Move Estimated miles and Actual miles to the Billing tab.
 - [ ] Rewrite the Route tab's row in `scheduler/docs/screen-inventory.md`,
       which still describes Depart beside End and an overflow menu the tab no

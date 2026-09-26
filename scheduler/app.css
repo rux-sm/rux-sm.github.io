@@ -542,6 +542,17 @@ button.scheduler-row-head__num::after {
   transform: translateY(-50%);
 }
 .scheduler-copy-host > .scheduler-copy[hidden] { display: none; }
+/* The saved-record mark sits at the field's end, or just before the copy
+   button when there is one. */
+.scheduler-copy-host > .scheduler-saved {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 50%;
+  inset-inline-end: 0.25rem;
+  transform: translateY(-50%);
+}
+.scheduler-copy-on > .scheduler-saved { inset-inline-end: 2.25rem; }
+.scheduler-copy-host > .scheduler-saved[hidden] { display: none; }
 .scheduler-contact-option__name,
 .scheduler-contact-option__detail {
   display: block;

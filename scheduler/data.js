@@ -3260,7 +3260,82 @@
     for (const tip of document.querySelectorAll('.scheduler-copy')) {
       syncCopyTip(tip, document.getElementById(tip.dataset.copyFor));
     }
+    syncSaved();
   };
+
+  /* A SAVED RECORD'S MARK. A name or customer picked from the saved lists
+     carries a person icon at the end of its field, before the copy button,
+     which opens that record on the Contacts or Customers page in a new tab, so
+     the trip open here keeps its edits. One typed by hand carries none, so the
+     field says whether Save will link it or offer to add it. The mark follows
+     the field's `data-contact-id` or `data-customer-id`, which a pick sets and
+     typing clears. */
+  const SAVED = {
+    contact: { data: 'contactId', page: 'contacts.html', word: 'Open saved contact' },
+    customer: { data: 'customerId', page: 'customers.html', word: 'Open saved customer' },
+  };
+  function withSaved(item, id, kind) {
+    const input = item.querySelector(`#${id}`);
+    const host = input?.closest('.rux--combo-box');
+    if (!host) return item;
+    host.classList.add('scheduler-copy-host');
+    const tip = el('span', 'rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--left '
+      + 'rux--popover--caret rux--popover--high-contrast scheduler-saved');
+    tip.dataset.savedFor = id;
+    tip.dataset.savedKind = kind;
+    const trigger = el('div', 'rux--tooltip-trigger__wrapper');
+    const btn = el('a', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm');
+    btn.target = '_blank';
+    btn.rel = 'noopener';
+    btn.tabIndex = -1;
+    btn.setAttribute('aria-label', SAVED[kind].word);
+    btn.appendChild(svgUse('#m-account_circle', '16', '0 0 32 32'));
+    trigger.appendChild(btn);
+    const pop = el('span', 'rux--popover');
+    pop.append(el('span', 'rux--popover-content rux--tooltip-content', SAVED[kind].word), el('span', 'rux--popover-caret'));
+    tip.append(trigger, pop);
+    host.appendChild(tip);
+    syncSavedTip(tip, input);
+    return item;
+  }
+  function syncSavedTip(tip, input) {
+    const kind = SAVED[tip.dataset.savedKind];
+    const id = input?.value.trim() ? input.dataset[kind.data] || '' : '';
+    const btn = tip.querySelector('.rux--btn');
+    if (id) btn.href = `${kind.page}?id=${encodeURIComponent(id)}`; else btn.removeAttribute('href');
+    tip.hidden = !id;
+    tip.parentElement?.classList.toggle('scheduler-saved-on', !!id);
+  }
+  /* A phone or email that is not the linked contact's says what the saved one
+     is, in a line under the field: the trip keeps its own copy, and Save
+     offers to update the saved contact. Nothing shows while they match, or
+     when the contact is not linked or has none saved. */
+  const SAVED_DIFF = [
+    ['scheduler-f-cfind', 'scheduler-f-cphone', 'phone'],
+    ['scheduler-f-cfind', 'scheduler-f-cemail', 'email'],
+    ...[1, 2, 3, 4, 5].map(n => [`scheduler-f-d${n}`, `scheduler-f-dphone${n}`, 'phone']),
+  ];
+  const sameSaved = (key, a, b) => (key === 'phone'
+    ? String(a).replace(/[^\d]/g, '') === String(b).replace(/[^\d]/g, '')
+    : String(a).trim().toLowerCase() === String(b).trim().toLowerCase());
+  function syncSaved() {
+    for (const tip of document.querySelectorAll('.scheduler-saved')) {
+      syncSavedTip(tip, document.getElementById(tip.dataset.savedFor));
+    }
+    for (const [nameId, fieldId, key] of SAVED_DIFF) {
+      const field = document.getElementById(fieldId);
+      const outer = field?.closest('.rux--text-input__field-outer-wrapper');
+      if (!outer) continue;
+      const name = document.getElementById(nameId);
+      const id = name?.value.trim() ? name.dataset.contactId : null;
+      const saved = id ? (panelIndex.contacts || []).find(c => String(c.id) === String(id))?.[key] : null;
+      const differs = !!saved && !sameSaved(key, field.value, saved);
+      let note = outer.querySelector(':scope > .scheduler-saved-diff');
+      if (!differs) { note?.remove(); continue; }
+      if (!note) outer.appendChild(note = el('div', 'rux--form__helper-text scheduler-saved-diff'));
+      note.textContent = `Saved: ${saved}`;
+    }
+  }
 
   function selectField(id, label, value, options) {
     const box = el('div', 'rux--select');
@@ -5550,11 +5625,11 @@
        for rux-ui. A trip not linked yet offers the customer whose name its
        typed one matches exactly, and Save keeps it. It stands last under
        Booking contact, because picking the contact suggests it. */
-    const customerBox = customerSearch('scheduler-f-customer', 'Customer', panelIndex.customers || [],
+    const customerBox = withSaved(customerSearch('scheduler-f-customer', 'Customer', panelIndex.customers || [],
       (panelIndex.customers || []).find(c => c.id === trip.customer_id)
         || (!trip.customer_id && trip.customer
           ? (panelIndex.customers || []).find(c => folded(c.name) === folded(trip.customer)) : null),
-      trip.customer);
+      trip.customer), 'scheduler-f-customer', 'customer');
 
     const topFields = el('div', 'rux--stack-vertical rux--stack-scale-5');
     topFields.append(
@@ -5615,8 +5690,8 @@
       const threadField = thread.querySelector('#scheduler-f-cthread');
       const bookingStack = el('div', 'rux--stack-vertical rux--stack-scale-5');
       bookingStack.append(
-        pair(withCopy(contactSearch('scheduler-f-cfind', 'Name', allContacts, contact),
-          'scheduler-f-cfind', 'Booking contact name'),
+        pair(withSaved(withCopy(contactSearch('scheduler-f-cfind', 'Name', allContacts, contact),
+          'scheduler-f-cfind', 'Booking contact name'), 'scheduler-f-cfind', 'contact'),
         withCopy(textField('scheduler-f-cphone', 'Phone', contact?.phone),
           'scheduler-f-cphone', 'Booking contact phone')),
         withCopy(textField('scheduler-f-cemail', 'Email', contact?.email),
@@ -5710,8 +5785,8 @@
         list.forEach((c, i) => {
           const n = i + 1;
           const row = pair(
-            withCopy(contactSearch(`scheduler-f-d${n}`, 'Name', allContacts, c?.name ? c : null),
-              `scheduler-f-d${n}`, `Contact ${n} name`),
+            withSaved(withCopy(contactSearch(`scheduler-f-d${n}`, 'Name', allContacts, c?.name ? c : null),
+              `scheduler-f-d${n}`, `Contact ${n} name`), `scheduler-f-d${n}`, 'contact'),
             withCopy(textField(`scheduler-f-dphone${n}`, 'Phone', c?.phone),
               `scheduler-f-dphone${n}`, `Contact ${n} phone`),
           );
@@ -6794,6 +6869,7 @@
       refreshDirty();
     });
 
+    syncSaved();
     refreshDirty();
     loadFleetClashes();
 

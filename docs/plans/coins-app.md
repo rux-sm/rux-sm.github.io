@@ -85,16 +85,9 @@ None open.
 
 ## Tasks
 
-- [ ] Write the tables, the member rule and their grants as one migration,
-      test it offline first, show it to rux and apply it on a yes. Run the
-      check in `docs/database-access.md` after. The budget's table waits for
-      the Budget task.
-- [ ] Add the household and link rux's and the second member's logins to
-      their people.
-- [ ] Prove the tables are closed: from outside with the publishable key,
-      and signed in as an account that is staff but not a member.
 - [ ] Start `coins/` from a Design template, add it to `switcher.json`,
-      and add its row to the Names table in `AGENTS.md`.
+      and add its row to the Names table in `AGENTS.md`. Then tick Coins for
+      the second member on the Access page.
 - [ ] Build Import, porting the Mac tool's reading and overlap rules.
 - [ ] Import every file in the money folder and match its yearly totals to
       the cent.
@@ -103,6 +96,6 @@ None open.
       page saved in rux's browser.
 - [ ] Build Accounts, with the debt fields.
 - [ ] Build Overview.
-- [ ] Build Budget.
+- [ ] Build Budget, with its table as a migration of its own.
 - [ ] Retire the money folder on the Mac, and update
       `~/claude-config/developer/CLAUDE.md` that describes it.

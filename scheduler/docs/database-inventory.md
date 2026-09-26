@@ -131,8 +131,10 @@ Trigger functions `set_bus_ref`, `set_driver_ref`, `touch_trips_updated_at`,
 ### Storage buckets
 
 `trip-documents` (paths under the trip id), `driver-photos` and
-`profile-photos`. All three are public, with no size or file-type limit, and
-the publishable key can upload to and delete from each.
+`profile-photos`. All three are public for reading, with no size or file-type
+limit; only staff can upload, replace or delete. Staff pages read the first
+two through ten-minute signed links, and the link pages through
+`trip-document-link` (§6).
 
 ### Realtime
 
@@ -177,7 +179,7 @@ bucket. None of the three exists in the live project, and neither does a
 
 ## 5. The Claude connector
 
-`scheduler-connector`, the project's one Edge Function, source in
+`scheduler-connector`, one of the project's two Edge Functions, source in
 `scheduler/connector/index.ts`. It serves MCP at
 `/functions/v1/scheduler-connector`, which the Claude app speaks to a custom
 connector, and it is deployed with Verify JWT off because it carries its own
@@ -208,3 +210,14 @@ each of those to the control it is typed into, and names in the panel's notice
 any it cannot place. The editor's Save stays the only writer of a trip.
 
 `scheduler/docs/working-from-claude.md` is how to use it.
+
+## 6. The document link
+
+`trip-document-link`, the project's other Edge Function, source in
+`scheduler/trip-document-link/`. A page without a log-in posts a trip
+document's id to `/functions/v1/trip-document-link` and gets back a link to the
+file signed for ten minutes, or 404 for an id with no file. It reads with the
+service role, so it keeps working once the bucket is closed, and it is deployed
+with Verify JWT off because the publishable key is not a token; the document's
+id is its only secret, as it is on the link pages. It answers the site's origin
+and the two local servers.

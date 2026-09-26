@@ -52,8 +52,6 @@ None open.
 
 ## Tasks
 
-- [ ] Write `trip-document-link` and test it on PGlite and a stand-in storage
-      client, then show it to rux before it is deployed.
 - [ ] `scheduler/share/document.js` and rux-ui's `doc.html` ask the function
       for the link instead of building the public address.
 - [ ] rux-ui's `driver-share.js` and `scheduler/share/driver.js` ask the

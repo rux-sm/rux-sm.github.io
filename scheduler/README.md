@@ -119,11 +119,12 @@ when it has gone further than it should, and a driver's page at
 the trips to send, copy the message and make, update or revoke the link.
 
 Staff can also work the schedule from the Claude app, which asks the
-`scheduler-connector` Edge Function, this project's only one, with its source
-in `connector/`. It reads the live tables and writes no trip: a trip Claude
+`scheduler-connector` Edge Function, with its source in `connector/`. It reads the live tables and writes no trip: a trip Claude
 fills in comes back as a link that opens the editor at `./?draft=<id>` with
 the filled fields marked, and Save there writes it. `docs/working-from-claude.md`
 is how to use it, and section 5 of `docs/database-inventory.md` is what it is.
+The link pages open a trip document through the other Edge Function,
+`trip-document-link/`, which hands back a ten-minute link to the file.
 
 The schedule grid and the trip bar are this app's own; Carbon has neither.
 Everything else is Design's, linked live at `/design/…` with no copy here and

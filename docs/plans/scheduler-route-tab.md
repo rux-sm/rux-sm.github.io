@@ -8,9 +8,9 @@ type: plan
 
 Most trips are set up with three things: where the group is picked up, when
 it leaves and when it is back. The Route tab keeps those three at the top and
-quick to fill. The rest of the day, the stops and the bus's own times, reads
-as one short list under them that can be filled in later without the tab
-growing heavy, and the day's totals sit in one line where they are seen.
+quick to fill. The stops between them are one short list that can be filled
+in later without the tab growing heavy, and the bus's times and the day's
+totals are a short summary. Nothing else is drawn.
 
 ## What the tab is now
 
@@ -51,32 +51,34 @@ These are proposals until rux answers the questions below.
 - **"Group arrives" becomes "Back at pickup"** on a round trip and "Arrives"
   on a one-way trip, because on a round trip it is the time the group is
   back, not when it reaches the destination.
-- **Times and Full itinerary become one list, Itinerary, always open.** It is
-  the day in order, one line per row: the bus leaving the yard, the bus at
-  the pickup, the group leaving, each stop, the group back, the bus back at
-  the yard. The worked-out rows are grey; the stops are the rows that can be
-  pressed to edit, as today's dialog does. An Add stop row sits after the
-  last stop. The destination shows on the tab without opening anything.
-- **One line of totals** on the Itinerary heading's line, at its end, in grey:
-  miles, driving and on duty, such as "185 mi · 3 h 51 driving · 12 h 13 on
-  duty". It replaces the count in the accordion's title and the totals line
-  at its foot.
-- **What each row explains moves to its tooltip,** such as "35 min · 15 mi
-  from the yard", so every row is one line. A warning, such as a leg not
-  measured, stays visible.
+- **The tab shows only what is needed.** Nothing is drawn that the fields
+  above it already say, and nothing explains itself in a second line.
+- **Times and Full itinerary become one list, Stops, always open.** It holds
+  only the stops between the pickup and the return, one line each: the time,
+  then the place. The pickup and return are the fields above, so they are not
+  repeated. A stop is pressed to edit it in today's dialog, and Add stop sits
+  at the list's end. The destination shows without opening anything.
+- **The bus's times live only in the summary:** leaving the yard, at the
+  pickup, and back at the yard. They are worked out, never typed, so they
+  get no rows of their own.
+- **The summary is short and grey:** the bus's three times, then miles,
+  driving and on duty. A leg that could not be measured says so in it.
+- **What a figure was worked out from is a tooltip,** such as "35 min · 15 mi
+  from the yard", never a line on the page.
+- **Estimated miles and Actual miles move to the Billing tab,** beside the
+  quote that Estimated miles feeds.
 - **Split trips keep one leg per bar,** with Drop-off leg and Pick-up leg as
   the section names.
 - **No database change.** The rows Save writes stay as they are.
 
 ## Questions
 
-1. Is "Back at pickup" the right words for a round trip's return time?
-2. Where should Estimated miles and Actual miles go: the foot of the Route
-   tab as now, or the Billing tab beside the quote they feed?
-3. Should the totals sit on the Itinerary heading's line, or in a line of
-   their own at the very top of the tab?
-4. Should the bus's yard times show as rows in the list, or only in the
-   totals line?
+1. What are the two times called? Options: Departs and Returns; Leaves and
+   Back; Pickup time and Drop-off time; Departs and Back at pickup. A one-way
+   trip's second time would be Arrives in each.
+2. Where does the summary go: two grey lines at the very top of the tab,
+   above Pickup, or on the Stops heading's line with the bus's times in its
+   tooltip?
 
 ## Tasks
 
@@ -85,11 +87,12 @@ These are proposals until rux answers the questions below.
       questions from what is on screen.
 - [ ] Make the pickup, drop-off and stop addresses one field each, with the
       saved-location icon on the field and in the search's list.
-- [ ] Put the two times on one row and rename the return time.
-- [ ] Replace Times and the Full itinerary accordion with the Itinerary list,
+- [ ] Put the two times on one row and name them as question 1 lands.
+- [ ] Replace Times and the Full itinerary accordion with the Stops list,
       stops editable in place and Add stop at its end.
-- [ ] Move the totals to one line and the row explanations to tooltips.
-- [ ] Move the miles fields to wherever question 3 lands.
+- [ ] Draw the summary where question 2 lands, with the explanations as
+      tooltips.
+- [ ] Move Estimated miles and Actual miles to the Billing tab.
 - [ ] Rewrite the Route tab's row in `scheduler/docs/screen-inventory.md`,
       which still describes Depart beside End and an overflow menu the tab no
       longer has.

@@ -270,7 +270,7 @@
     // The day, not a section, so it is no heading.
     head.appendChild(el('p', 'scheduler-envelope__day', weekdayOf(start)));
     const logo = el('img', 'scheduler-envelope__logo');
-    logo.src = '/scheduler/brand/logo.png';
+    logo.src = '/scheduler/brand/logo.svg';
     logo.alt = '';
     head.appendChild(logo);
     head.appendChild(el('p', 'scheduler-envelope__line', COMPANY.address));
@@ -633,7 +633,7 @@
   function itineraryHead() {
     const head = el('header', 'scheduler-driver-itinerary__head');
     const logo = el('img', 'scheduler-driver-itinerary__logo');
-    logo.src = '/scheduler/brand/logo.png';
+    logo.src = '/scheduler/brand/logo.svg';
     logo.alt = '';
     head.appendChild(logo);
     head.appendChild(el('p', 'scheduler-driver-itinerary__line', COMPANY.address));
@@ -968,7 +968,7 @@
   function quoteHead(lines) {
     const head = el('header', 'scheduler-customer-quote__head');
     const logo = el('img', 'scheduler-customer-quote__logo');
-    logo.src = '/scheduler/brand/logo.png';
+    logo.src = '/scheduler/brand/logo.svg';
     logo.alt = '';
     head.appendChild(logo);
     for (const line of lines) head.appendChild(el('p', 'scheduler-customer-quote__line', line));
@@ -1473,7 +1473,7 @@
       const card = el('article', 'scheduler-form scheduler-week');
       const head = el('header', 'scheduler-week__head');
       const logo = el('img', 'scheduler-week__logo');
-      logo.src = 'brand/logo.png';
+      logo.src = 'brand/logo.svg';
       logo.alt = 'Escamilla Tour Buses';
       // The day it was printed, so a sheet on the wall says how current it is.
       const stamp = el('div', 'scheduler-week__stamp');

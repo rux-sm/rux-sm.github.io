@@ -5044,9 +5044,11 @@
     const round = routeRound();
     const drive = r.driveOut;
     const driveBack = r.backDrive;
+    /* Both source columns are required, `estimated` by default, so a drive
+       not measured yet still says `estimated` rather than sending null. */
     const driveCols = (row, min, miles, source) => (same(driveText(min), row?.drive ?? null) ? {} : {
       drive: driveText(min), miles: min == null ? null : miles,
-      drive_source: min == null ? null : source, miles_source: min == null ? null : source,
+      drive_source: source || 'estimated', miles_source: source || 'estimated',
     });
     const earlier = (a, b, day) => (a && b && toMin(a) > toMin(b) ? dayAfter(day, -1) : day);
     const spotDate = spot ? earlier(spot, leave, from) : null;
@@ -5155,8 +5157,9 @@
     const list = r.list;
     const departs = [leave, ...list.map(st => st.leave)];
     const departDays = [leave ? from : null, ...list.map(st => (st.leave ? st.date ?? from : null))];
+    // A drive not measured yet is still `estimated`: both source columns are required.
     const drives = (min, miles) => ({ drive: driveText(min), miles: min == null ? null : miles,
-      drive_source: min == null ? null : 'estimated', miles_source: min == null ? null : 'estimated' });
+      drive_source: 'estimated', miles_source: 'estimated' });
     const placeCols = p => ({ name: p?.name ?? null, address: p?.address ?? null,
       lat: p?.lat ?? null, lng: p?.lng ?? null, mapbox_id: p?.mapbox_id ?? null });
 

@@ -1493,20 +1493,22 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 /* EVERY ROW AND DAY IS A WHOLE NUMBER OF PIXELS, the unit Chrome prints
    each line's place in, and so is the grid's corner on the page, so all five
    rows and all seven days print the same size and every line inside them
-   lands the same way. The header is 21pt, 28 pixels; the bus column takes
-   what the days leave of the width, and the paper below the last row what
-   the rows leave of the height. */
+   lands the same way; the hundredth of a pixel keeps a division that comes
+   out whole from rounding down a pixel. The header row and the bus column
+   are both 27 pixels, so the corner is square; the bus column takes
+   whatever the days leave of the width, none on Legal, and the paper below
+   the last row what the rows leave of the height. */
 .scheduler-week__grid {
   flex: 1 1 0;
   min-block-size: 0;
   display: grid;
-  grid-template-rows: 21pt;
-  grid-auto-rows: round(down, calc((100% - 21pt) / var(--scheduler-week-rows, 5)), 1px);
+  grid-template-rows: 27px;
+  grid-auto-rows: round(down, calc((100% - 27px) / var(--scheduler-week-rows, 5) + 0.01px), 1px);
 }
 .scheduler-week__days,
 .scheduler-week__row {
   display: grid;
-  grid-template-columns: minmax(26pt, 1fr) repeat(7, round(down, calc((100% - 26pt) / 7), 1px));
+  grid-template-columns: minmax(27px, 1fr) repeat(7, round(down, calc((100% - 27px) / 7 + 0.01px), 1px));
 }
 .scheduler-week__days {
   border-block: 0.75pt solid var(--rux-border-strong-01);
@@ -1538,7 +1540,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10.5pt;
+  font-size: 9pt;
   font-weight: 600;
 }
 .scheduler-week__cell {

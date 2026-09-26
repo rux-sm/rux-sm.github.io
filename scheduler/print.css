@@ -1590,20 +1590,33 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   min-block-size: 0;
   margin-block-start: -0.75pt;
   margin-inline-start: -0.75pt;
-  border: 0.75pt solid var(--scheduler-week-border);
+  border: 0.75pt solid var(--rux-border-subtle-01);
+  border-block-end-color: var(--scheduler-week-foot);
   background: var(--scheduler-week-bg);
   color: var(--rux-text-primary);
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
+/* A CARD'S EDGES ARE THE GRID'S OWN LINES, each in the colour of the gridline
+   under it: light between days and rows, dark on the frame, under the header
+   and beside the bus column. Its colour is the fill alone. */
+.scheduler-week__trip { --scheduler-week-foot: var(--rux-border-subtle-01); }
+.scheduler-week__trip[data-edge~="start"] { border-inline-start-color: var(--rux-border-strong-01); }
+.scheduler-week__trip[data-edge~="end"] { border-inline-end-color: var(--rux-border-strong-01); }
+.scheduler-week__days + .scheduler-week__row .scheduler-week__trip[data-edge~="top"] {
+  border-block-start-color: var(--rux-border-strong-01);
+}
+.scheduler-week__row:last-child .scheduler-week__lanes[data-lanes="1"] > .scheduler-week__trip {
+  --scheduler-week-foot: var(--rux-border-strong-01);
+}
 /* The board's own trip colours, from the same tag tokens it paints with. */
-.scheduler-week__trip--blue    { --scheduler-week-bg: var(--rux-tag-background-blue);    --scheduler-week-border: var(--rux-tag-border-blue); }
-.scheduler-week__trip--teal    { --scheduler-week-bg: var(--rux-tag-background-teal);    --scheduler-week-border: var(--rux-tag-border-teal); }
-.scheduler-week__trip--green   { --scheduler-week-bg: var(--rux-tag-background-green);   --scheduler-week-border: var(--rux-tag-border-green); }
-.scheduler-week__trip--purple  { --scheduler-week-bg: var(--rux-tag-background-purple);  --scheduler-week-border: var(--rux-tag-border-purple); }
-.scheduler-week__trip--magenta { --scheduler-week-bg: var(--rux-tag-background-magenta); --scheduler-week-border: var(--rux-tag-border-magenta); }
-.scheduler-week__trip--red     { --scheduler-week-bg: var(--rux-tag-background-red);     --scheduler-week-border: var(--rux-tag-border-red); }
-.scheduler-week__trip--amber   { --scheduler-week-bg: var(--scheduler-amber-bg);         --scheduler-week-border: var(--scheduler-amber-border); }
+.scheduler-week__trip--blue    { --scheduler-week-bg: var(--rux-tag-background-blue); }
+.scheduler-week__trip--teal    { --scheduler-week-bg: var(--rux-tag-background-teal); }
+.scheduler-week__trip--green   { --scheduler-week-bg: var(--rux-tag-background-green); }
+.scheduler-week__trip--purple  { --scheduler-week-bg: var(--rux-tag-background-purple); }
+.scheduler-week__trip--magenta { --scheduler-week-bg: var(--rux-tag-background-magenta); }
+.scheduler-week__trip--red     { --scheduler-week-bg: var(--rux-tag-background-red); }
+.scheduler-week__trip--amber   { --scheduler-week-bg: var(--scheduler-amber-bg); }
 /* A card across several days keeps its lines to one day's width: the card
    divided by its days, less the share of the border a one-day card has that
    this one spends only once. */
@@ -1735,7 +1748,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 /* The last line's rule is the card's own foot line, drawn in its colour at
    its width over the card's border, so the shrunk preview cannot lose it
    under the line's white. */
-.scheduler-week__detail:last-child { border-block-end: 0.75pt solid var(--scheduler-week-border); }
+.scheduler-week__detail:last-child { border-block-end: 0.75pt solid var(--scheduler-week-foot); }
 .scheduler-week__field {
   display: flex;
   gap: 2pt;

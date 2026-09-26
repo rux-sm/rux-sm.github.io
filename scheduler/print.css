@@ -1624,7 +1624,9 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 /* THE CREW AND THE PAY LINE UNDER IT share their columns: a column per
    driver, ruled apart, the rules running from the line above the names to
-   the pay line's foot. */
+   the pay line's foot. A line of two fields splits at the middle too, so two
+   drivers, Act and Inv all start on one vertical, and every column's text
+   sits 4pt inside its edge or rule, as the card's other lines do. */
 .scheduler-week__crew,
 .scheduler-week__detail {
   display: grid;
@@ -1640,16 +1642,19 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   align-items: center;
   gap: 2pt;
   min-inline-size: 0;
-  padding: 1pt 3pt 0.5pt;
+  padding: 1pt 4pt 0.5pt;
   white-space: nowrap;
   overflow: hidden;
 }
 .scheduler-week__role { flex: none; inline-size: 8pt; block-size: 8pt; }
-:is(.scheduler-week__driver, .scheduler-week__pay > .scheduler-week__field) + * {
-  border-inline-start: 0.5pt solid var(--rux-border-strong-01);
+/* Every second column starts after a 0.5pt rule, drawn only between the
+   drivers and their pay, so all second columns start on one vertical. */
+:is(.scheduler-week__driver, .scheduler-week__field) + * {
+  border-inline-start: 0.5pt solid transparent;
 }
-.scheduler-week__driver:first-child,
-.scheduler-week__field:first-child { padding-inline-start: 4pt; }
+:is(.scheduler-week__driver, .scheduler-week__pay > .scheduler-week__field) + * {
+  border-inline-start-color: var(--rux-border-strong-01);
+}
 /* The pay line's boxes fill its height, so their rules meet the lines above
    and below, with the text still sitting on the foot. */
 .scheduler-week__detail.scheduler-week__pay { align-items: stretch; }
@@ -1669,12 +1674,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   align-items: end;
   border-block-end: 0.5pt solid var(--rux-border-strong-01);
 }
-/* A line of two fields gives the second three fifths, room to write Act or
-   an invoice number by hand, on every card so they line up down the sheet.
-   The pay line keeps a column per driver, even. */
-.scheduler-week__detail[data-fields="2"]:not(.scheduler-week__pay) {
-  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-}
 :is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="1"] { --scheduler-week-fields: 1; }
 :is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="2"] { --scheduler-week-fields: 2; }
 :is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="3"] { --scheduler-week-fields: 3; }
@@ -1685,7 +1684,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   display: flex;
   gap: 2pt;
   min-inline-size: 0;
-  padding: 0 3pt 1pt;
+  padding: 0 4pt 1pt;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

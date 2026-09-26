@@ -52,10 +52,6 @@ None open.
 
 ## Tasks
 
-- [ ] `scheduler/share/document.js` and rux-ui's `doc.html` ask the function
-      for the link instead of building the public address.
-- [ ] rux-ui's `driver-share.js` and `scheduler/share/driver.js` ask the
-      function when a document is tapped.
 - [ ] Migration `trip_documents_and_driver_photos_private`, then check from
       outside that a public file address answers 400 in each bucket and a
       signed link opens.

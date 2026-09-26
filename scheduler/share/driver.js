@@ -181,8 +181,10 @@
       return { id: newest.id, label, path: newest.file_path, updated: same.length > 1 };
     }).sort((a, b) => (/^itinerary$/i.test(a.label) ? -1 : /^itinerary$/i.test(b.label) ? 1 : a.label.localeCompare(b.label)));
   };
-  // A public address until share/document asks for a short-lived link.
-  const fileUrl = path => (path && client ? client.storage.from('trip-documents').getPublicUrl(path).data?.publicUrl : '');
+  // A file opens through its document page, which asks for a link signed for
+  // ten minutes each time it is opened, since the bucket is closed. Absolute,
+  // so it opens in its own tab as the file itself did.
+  const fileUrl = id => (id ? `${location.origin}/scheduler/share/document.html?id=${encodeURIComponent(id)}` : '');
 
   /* One leg of one trip, as this driver works it. */
   function legOf(ref, trip, driverId) {
@@ -405,7 +407,7 @@
       const i = icon(iconId); i.setAttribute('class', 'rux--btn__icon'); a.appendChild(i);
       return a;
     };
-    const files = l.itineraries.map(d => [d, fileUrl(d.path)]).filter(([, url]) => url);
+    const files = l.itineraries.map(d => [d, fileUrl(d.id)]).filter(([, url]) => url);
     // "View itinerary", from a file's own label however it is capitalised.
     const view = label => `View ${label.charAt(0).toLowerCase()}${label.slice(1)}`;
     for (const [d, url] of files) wrap.appendChild(button(view(d.updated ? `${d.label} (updated)` : d.label), url, '#m-description'));

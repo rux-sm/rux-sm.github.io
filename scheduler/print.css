@@ -1482,7 +1482,11 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   font-size: 7pt;
   color: var(--rux-text-secondary);
 }
-/* EVERY LINE A CARD CAN MEET IS 0.75PT, one CSS pixel, the width Chrome
+/* The day and row lines are the theme's darker subtle grey, #c6c6c6 on the
+   sheet, so they still show where they run along a trip's fill; the lighter
+   one is as bright as the pink and vanished there.
+
+   EVERY LINE A CARD CAN MEET IS 0.75PT, one CSS pixel, the width Chrome
    prints any line of about that weight at, and each is drawn inside the
    cell before it: a day's line at its cell's end, a row's line at its
    cells' foot. The frame is the header's top, the bus column's start,
@@ -1527,7 +1531,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   padding: 4pt 6pt;
   font-size: 9pt;
   font-weight: 600;
-  border-inline-end: 0.75pt solid var(--rux-border-subtle-01);
+  border-inline-end: 0.75pt solid var(--rux-border-subtle-00);
 }
 .scheduler-week__row { min-block-size: 0; }
 .scheduler-week__bus {
@@ -1541,10 +1545,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 .scheduler-week__cell {
   grid-row: 1;
-  border-inline-end: 0.75pt solid var(--rux-border-subtle-01);
+  border-inline-end: 0.75pt solid var(--rux-border-subtle-00);
 }
 .scheduler-week__bus,
-.scheduler-week__cell { border-block-end: 0.75pt solid var(--rux-border-subtle-01); }
+.scheduler-week__cell { border-block-end: 0.75pt solid var(--rux-border-subtle-00); }
 /* The frame: Sunday's line (the eighth child, after the bus) and the last
    row's foot. */
 .scheduler-week__day:last-child,

@@ -321,9 +321,15 @@
 
 /* The tabs take `spacing-03` inline padding in place of `spacing-05`, so all
    of them fit the panel without scrolling, and the list fills the strip so its
-   rule runs to the panel's edge. */
+   rule runs to the panel's edge. Carbon grows each tab to fill the list, so
+   its word is centred in it, as the shortcuts above are in theirs. */
 #scheduler-panel-body .rux--tabs__nav-link {
   padding-inline: var(--rux-spacing-03);
+  justify-content: center;
+  text-align: center;
+}
+#scheduler-panel-body .rux--tabs__nav-item-label-wrapper {
+  justify-content: center;
 }
 #scheduler-panel-body .rux--tab--list {
   flex: 1 1 auto;

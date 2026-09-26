@@ -1472,6 +1472,12 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   font-size: 10pt;
   font-weight: 600;
 }
+.scheduler-week__stamp { text-align: end; }
+.scheduler-week__printed {
+  margin: 0;
+  font-size: 7pt;
+  color: var(--rux-text-secondary);
+}
 .scheduler-week__grid {
   flex: 1 1 0;
   min-block-size: 0;

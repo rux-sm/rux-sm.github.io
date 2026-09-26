@@ -1378,14 +1378,16 @@
 
     /* THE FIVE LINES WRITTEN IN BY HAND where the database has nothing yet.
        They share whatever height the card has left, each ruled at its foot
-       to write on. D1 is the first driver and R1, R2 each one after, as
-       rux-ui numbers them. */
+       to write on. Each driver is numbered by role, D1 and D2 for a driver
+       and a co-driver and R1 for a relief driver, so the line says who
+       took over. */
     const write = el('div', 'scheduler-week__write');
     const po = firstAndMore(trip.po_ref, (trip.trip_pos || []).length);
     // A long PO takes the room the fields beside it do not need.
     if (detailText(po).length > 8) card.dataset.wide = '';
+    let drivers = 0, reliefs = 0;
     write.appendChild(detailLine(crew.length
-      ? crew.map((d, i) => [i === 0 ? 'D1' : `R${i}`, weekMoney(d.pay)])
+      ? crew.map(d => [String(d.role).startsWith('relief') ? `R${++reliefs}` : `D${++drivers}`, weekMoney(d.pay)])
       : [['D1', '']]));
     write.appendChild(detailLine([['Mi', milesText(milesOf(trip))], ['Act', milesText(trip.actual_miles)]]));
     write.appendChild(detailLine([['Qt', weekMoney(trip.quoted_price)], ['PO', po]]));
@@ -1430,6 +1432,8 @@
     const buses = (subject.buses || []).filter(b => b.status === 'active' || byBus.has(b.id));
     const pages = Math.max(1, Math.ceil(buses.length / BUSES_PER_SHEET));
     const title = weekTitle(first);
+    const today = new Date();
+    const printedOn = `${MONTHS[today.getMonth()].slice(0, 3)} ${today.getDate()}, ${today.getFullYear()}`;
     const sheets = [];
     for (let p = 0; p < pages; p++) {
       const card = el('article', 'scheduler-form scheduler-week');
@@ -1437,8 +1441,11 @@
       const logo = el('img', 'scheduler-week__logo');
       logo.src = 'brand/logo.png';
       logo.alt = 'Escamilla Tour Buses';
-      head.append(logo, el('p', 'scheduler-week__title',
-        pages > 1 ? `${title} — Page ${p + 1} of ${pages}` : title));
+      // The day it was printed, so a sheet on the wall says how current it is.
+      const stamp = el('div', 'scheduler-week__stamp');
+      stamp.append(el('p', 'scheduler-week__printed', `Printed ${printedOn}`),
+        el('p', 'scheduler-week__title', pages > 1 ? `${title} — Page ${p + 1} of ${pages}` : title));
+      head.append(logo, stamp);
       card.appendChild(head);
 
       const grid = el('div', 'scheduler-week__grid');

@@ -370,6 +370,14 @@
 #scheduler-panel-body .rux--tab-content {
   padding-block: 0 var(--rux-spacing-07);
 }
+/* From md up the fields and the trip's name stand 24px off the panel's edge,
+   8px past Carbon's 16px, so the form has room to breathe while the head, the
+   shortcut row, the tabs and the rules between sections still run edge to
+   edge. A phone keeps 16px, because there the fields need the width. */
+@media (min-width: 42rem) {
+  #scheduler-panel-body .rux--tab-content { padding-inline: var(--rux-spacing-03); }
+  #scheduler-panel .rux--side-panel__title-text { padding-inline-start: var(--rux-spacing-03); }
+}
 
 
 /* The editor's action buttons divide the bar evenly. Carbon pads a filled

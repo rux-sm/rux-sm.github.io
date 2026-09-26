@@ -33,6 +33,18 @@ Read from the code and from six trips on the board, all round trips:
 
 These are proposals until rux answers the questions below.
 
+- **The pickup is one field, Pickup,** an address search. A pick fills the
+  place's name and address together; the field shows the name, and the
+  address is a grey line under it. A saved location's name is changed on the
+  Locations page, not here.
+- **A saved location is marked the way a saved contact is:** a location icon
+  at the field's end that opens it on the Locations page in a new tab, and
+  none for a place from the map search.
+- **The search's list tells the two apart.** Saved locations come first, as
+  now, each with the same location icon; the map's suggestions follow
+  without it.
+- **Every address search on the tab works the same way:** the drop-off and a
+  stop's address in its dialog take the same field, icon and list.
 - **The top section stays the quick path:** pickup, departs, back. The two
   times share one row, since a time needs half the width, so the section is
   a row shorter.
@@ -58,14 +70,12 @@ These are proposals until rux answers the questions below.
 
 ## Questions
 
-1. Should the pickup stay two fields, a name and an address, or become one
-   address search that fills the name, with the name changeable after?
-2. Is "Back at pickup" the right words for a round trip's return time?
-3. Where should Estimated miles and Actual miles go: the foot of the Route
+1. Is "Back at pickup" the right words for a round trip's return time?
+2. Where should Estimated miles and Actual miles go: the foot of the Route
    tab as now, or the Billing tab beside the quote they feed?
-4. Should the totals sit on the Itinerary heading's line, or in a line of
+3. Should the totals sit on the Itinerary heading's line, or in a line of
    their own at the very top of the tab?
-5. Should the bus's yard times show as rows in the list, or only in the
+4. Should the bus's yard times show as rows in the list, or only in the
    totals line?
 
 ## Tasks
@@ -73,6 +83,8 @@ These are proposals until rux answers the questions below.
 - [ ] Mock the new layout on a real trip, a round trip with stops, a one-way
       trip and a split trip, in one Chrome tab per option, and settle the
       questions from what is on screen.
+- [ ] Make the pickup, drop-off and stop addresses one field each, with the
+      saved-location icon on the field and in the search's list.
 - [ ] Put the two times on one row and rename the return time.
 - [ ] Replace Times and the Full itinerary accordion with the Itinerary list,
       stops editable in place and Add stop at its end.

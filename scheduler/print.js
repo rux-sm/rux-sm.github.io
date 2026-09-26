@@ -1282,6 +1282,9 @@
     if (!t || !Number.isFinite(hr) || m === undefined) return '--:--';
     return `${hr % 12 || 12}:${m}${hr < 12 ? 'a' : 'p'}`;
   };
+  // What a card line with nothing to print holds, so it keeps its height: a
+  // plain space collapses, and the line would vanish.
+  const BLANK = '\u00a0';
   // A driver's pay under the "$" its line prints: "250", or nothing to write on.
   const payText = n => (Number(n) ? Number(n).toLocaleString('en-US') : '');
 
@@ -1362,12 +1365,12 @@
 
     const riders = (trip.trip_passengers || []).length;
     facts.appendChild(el('div', 'scheduler-week__line', trip.is_self_organized
-      ? `${riders} passenger${riders === 1 ? '' : 's'}` : trip.customer || ' '));
+      ? `${riders} passenger${riders === 1 ? '' : 's'}` : trip.customer || BLANK));
     const who = trip.booking_contact_name || trip.booking_contact_phone
       ? [trip.booking_contact_name, trip.booking_contact_phone]
       : [trip.trip_contact_1_name, trip.trip_contact_1_phone];
     facts.appendChild(el('div', 'scheduler-week__line scheduler-week__contact',
-      [who[0], who[1] ? showPhone(who[1]) : ''].filter(Boolean).join(' ') || ' '));
+      [who[0], who[1] ? showPhone(who[1]) : ''].filter(Boolean).join(' ') || BLANK));
 
     const times = el('div', 'scheduler-week__times');
     for (const [label, t] of [['Out', bar.leg.depart], ['Spot', bar.leg.spot], ['Back', bar.leg.back]]) {
@@ -1393,7 +1396,7 @@
       person.appendChild(el('span', null, d.drivers.short_name || d.drivers.name || ''));
       crewLine.appendChild(person);
     }
-    if (!crew.length) crewLine.appendChild(el('span', 'scheduler-week__driver', ' '));
+    if (!crew.length) crewLine.appendChild(el('span', 'scheduler-week__driver', BLANK));
     facts.appendChild(crewLine);
     card.appendChild(facts);
 

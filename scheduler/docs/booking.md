@@ -20,6 +20,10 @@ Print the customer quote from the trip on `print.html` and save it as a PDF.
 The PDF is two sheets, the quote and the Terms and Conditions form. Always send
 both.
 
+The quote's Estimate no. is the trip's six-digit number. Type the same number
+into the QuickBooks estimate's Estimate no., so the customer, the estimate and
+the trip share one number until QuickBooks gives the invoice its own.
+
 When the customer asks for something to appear on the quote, type it as a line
 under the first line item, so the copy they sign carries it:
 

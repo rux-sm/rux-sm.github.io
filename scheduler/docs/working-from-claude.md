@@ -33,7 +33,7 @@ Plain questions, no particular wording:
 - what does bus 12 have next week
 - who is free to drive on the 3rd
 - show me the trips for a customer
-- what is on trip TRP260921-001
+- what is on trip 100842
 
 Availability counts a bus busy when it is on a trip or out of service, and a
 driver busy when they are on a trip or on time off.

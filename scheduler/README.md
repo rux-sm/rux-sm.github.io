@@ -93,7 +93,7 @@ a multi-stop layout, on the 6 by 9 envelope itself. The driver itinerary is one
 copy per leg of a trip, on Letter, running onto as many sheets as its stops
 need, and every line of it can be typed into before it is printed. The
 customer quote is one copy per trip, on two Letter sheets: the QUOTE / PROPOSAL
-the office sends, with its price and first line item read from the trip, lines
+the office sends, with its estimate number, price and first line item read from the trip, lines
 typed under it that the Total adds up, and the Terms and Conditions Agreement
 Form behind it; Save as PDF names the file for the trip's first day,
 `2026-12-05-qt`. Its wording is `quote-text.js`, which the trip editor's

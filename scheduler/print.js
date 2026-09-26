@@ -762,9 +762,10 @@
      the page stacks them as it stacks Print all's envelopes: a gap between
      them on screen and a new page on paper.
 
-     THE ESTIMATE NUMBER IS TYPED. QuickBooks numbers the estimate and the
-     office files by that number, so the box beside the date is where it is
-     copied across; the trip keeps no number of its own.
+     THE ESTIMATE NUMBER IS THE TRIP'S. The database gives every trip a
+     six-digit number on its first save, and the office types the same number
+     into the QuickBooks estimate, whose invoice later takes its own five-digit
+     one. The box stays typeable like every other.
 
      AND THE WORDING IS NOT ITS OWN. The first line item's description is
      `quote-text.js`, which the Billing tab's Copy for QuickBooks reads too. */
@@ -1134,7 +1135,7 @@
        it is typed into like every other field for one sent a day later. */
     const meta = el('div', 'scheduler-customer-quote__meta');
     const dated = el('div', 'scheduler-customer-quote__meta-boxes');
-    dated.append(quoteBox('Date', [today()]), quoteBox('Estimate no.', []));
+    dated.append(quoteBox('Date', [today()]), quoteBox('Estimate no.', [blank ? '' : trip.trip_ref || '']));
     meta.append(dated, el('h2', 'scheduler-customer-quote__title', 'QUOTE / PROPOSAL'));
     card.appendChild(meta);
 
@@ -2300,7 +2301,7 @@
      The columns a tick is written to come from the form's own `marks`, so the
      registry stays the one place either is named. */
   const TRIP_COLUMNS = [
-    'id', 'customer', 'destination', 'trip_type',
+    'id', 'trip_ref', 'customer', 'destination', 'trip_type',
     'start_date', 'end_date', 'return_start_date', 'return_end_date',
     'booking_contact_name', 'booking_contact_phone',
     'trip_contact_1_name', 'trip_contact_1_phone',

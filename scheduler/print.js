@@ -1409,8 +1409,10 @@
     pay.classList.add('scheduler-week__pay');
     write.appendChild(pay);
     write.appendChild(detailLine([['Mi:', milesText(milesOf(trip))], ['Act:', milesText(trip.actual_miles)]]));
-    write.appendChild(detailLine([['Qt:', weekMoney(trip.quoted_price)], ['PO:', po]]));
-    write.appendChild(detailLine([['Inv:', firstAndMore(trip.invoice_number, (trip.trip_invoices || []).length)]]));
+    write.appendChild(detailLine([['Qt:', weekMoney(trip.quoted_price)],
+      ['Inv:', firstAndMore(trip.invoice_number, (trip.trip_invoices || []).length)]]));
+    // The PO has a line of its own, the one field long enough to need it.
+    write.appendChild(detailLine([['PO:', po]]));
     const payments = [...(trip.trip_payments || [])]
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
       .filter(p => p.ref || Number(p.amount))

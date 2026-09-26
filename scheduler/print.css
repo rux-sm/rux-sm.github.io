@@ -1669,9 +1669,9 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   align-items: end;
   border-block-end: 0.5pt solid var(--rux-border-strong-01);
 }
-/* A line of two fields gives the second three fifths, the room a long PO
-   number needs, on every card so Act and PO line up down the sheet. The pay
-   line keeps a column per driver, even. */
+/* A line of two fields gives the second three fifths, room to write Act or
+   an invoice number by hand, on every card so they line up down the sheet.
+   The pay line keeps a column per driver, even. */
 .scheduler-week__detail[data-fields="2"]:not(.scheduler-week__pay) {
   grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
 }

@@ -51,11 +51,11 @@ tools and review page it grows out of.
   is paid from, the website, the login email it is under, a keep or cancel
   mark and notes. Bills are found from the transactions, as the review page
   does now, and can also be added by hand.
-- **A bill's login is found in the household's mail,** which is in two
-  mailboxes: a Gmail one, read through Claude's Gmail connector, and a Proton
-  one, read on rux's Mac through Proton Mail Bridge, since Proton has no
-  connector. A session searches for the service's receipts and writes only
-  the address they went to; no mail is copied into Coins.
+- **A bill's login comes from the household's mail,** already read into a
+  list in the private money folder on rux's Mac: the Proton mailbox through
+  Proton Mail Bridge, and the Gmail ones through Claude's Gmail connector,
+  one account at a time. Only the address each service uses goes into the
+  bill's login in the database; the list and any mail stay on the Mac.
 - **Claude tidies after each import, on a yes.** A session reads the lines no
   rule sorted, proposes categories, rules and bills in one table, and saves
   what rux accepts as rules, so the rules do the routine work and each month
@@ -124,8 +124,9 @@ tools and review page it grows out of.
       Transactions panel makes.
 - [ ] Offer a bill in the Transactions panel, to link or unlink one line by
       hand.
-- [ ] Fill each bill's login from the two mailboxes, once rux connects Gmail
-      and installs Proton Mail Bridge.
+- [ ] On rux's yes, copy each bill's login from the money folder's list into
+      the database, and add the bills the mail found that the bank lines
+      had not named apart.
 - [ ] Tidy the first imports with rux, then make the tidy a skill.
 - [ ] Build Overview.
 - [ ] Build Budget, with its table as a migration of its own.

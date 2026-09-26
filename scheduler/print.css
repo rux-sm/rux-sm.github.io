@@ -1446,3 +1446,197 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   margin: var(--rux-spacing-03) 0 0;
 }
 
+
+/* ── The week schedule ────────────────────────────────────────────────────
+   rux-ui's billing report of a week, in its format and layout: Legal
+   landscape, the logo and the week at the top, a ruled grid of five buses by
+   seven days, and a card per trip leg across its days. Sizes are in points,
+   measured off the paper, as the quote's are. The trip colours and the grey
+   of the headings print past Chrome's Background graphics box, because on
+   this sheet a colour is what tells one trip from another at a glance. */
+.scheduler-week {
+  block-size: var(--scheduler-paper-height);
+  font-size: 7.5pt;
+  line-height: 1.12;
+  gap: 4pt;
+}
+.scheduler-week__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12pt;
+}
+.scheduler-week__logo { block-size: 22pt; inline-size: auto; }
+.scheduler-week__title {
+  margin: 0;
+  font-size: 10pt;
+  font-weight: 600;
+}
+.scheduler-week__grid {
+  flex: 1 1 0;
+  min-block-size: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1pt solid var(--rux-border-strong-01);
+}
+.scheduler-week__days,
+.scheduler-week__row {
+  display: grid;
+  grid-template-columns: 26pt repeat(7, minmax(0, 1fr));
+}
+.scheduler-week__days {
+  border-block-end: 1pt solid var(--rux-border-strong-01);
+}
+.scheduler-week__corner,
+.scheduler-week__day,
+.scheduler-week__bus {
+  background: var(--rux-layer-accent-01);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.scheduler-week__corner { border-inline-end: 1pt solid var(--rux-border-strong-01); }
+.scheduler-week__day {
+  display: flex;
+  justify-content: space-between;
+  padding: 4pt 6pt;
+  font-size: 9pt;
+  font-weight: 600;
+  border-inline-start: 0.5pt solid var(--rux-border-subtle-01);
+}
+.scheduler-week__row {
+  flex: 1 1 0;
+  min-block-size: 0;
+  border-block-start: 0.5pt solid var(--rux-border-subtle-01);
+}
+.scheduler-week__days + .scheduler-week__row { border-block-start: 0; }
+.scheduler-week__bus {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10.5pt;
+  font-weight: 600;
+  border-inline-end: 1pt solid var(--rux-border-strong-01);
+}
+.scheduler-week__cell {
+  grid-row: 1;
+  border-inline-start: 0.5pt solid var(--rux-border-subtle-01);
+}
+.scheduler-week__cell:nth-child(2) { border-inline-start: 0; }
+/* The cards lie over the day cells, on the same seven columns, so a card
+   across three days is exactly three days wide. What will not fit the row is
+   hidden here and named above the sheet. */
+.scheduler-week__lanes {
+  grid-column: 2 / -1;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-auto-rows: min-content;
+  align-content: start;
+  gap: 3pt;
+  padding: 3pt;
+  min-block-size: 0;
+  overflow: hidden;
+}
+
+.scheduler-week__trip {
+  min-inline-size: 0;
+  padding: 3pt 4pt;
+  border: 1pt solid var(--scheduler-week-border);
+  background: var(--scheduler-week-bg);
+  color: var(--rux-text-primary);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+/* The board's own trip colours, from the same tag tokens it paints with. */
+.scheduler-week__trip--blue    { --scheduler-week-bg: var(--rux-tag-background-blue);    --scheduler-week-border: var(--rux-tag-border-blue); }
+.scheduler-week__trip--teal    { --scheduler-week-bg: var(--rux-tag-background-teal);    --scheduler-week-border: var(--rux-tag-border-teal); }
+.scheduler-week__trip--green   { --scheduler-week-bg: var(--rux-tag-background-green);   --scheduler-week-border: var(--rux-tag-border-green); }
+.scheduler-week__trip--purple  { --scheduler-week-bg: var(--rux-tag-background-purple);  --scheduler-week-border: var(--rux-tag-border-purple); }
+.scheduler-week__trip--magenta { --scheduler-week-bg: var(--rux-tag-background-magenta); --scheduler-week-border: var(--rux-tag-border-magenta); }
+.scheduler-week__trip--red     { --scheduler-week-bg: var(--rux-tag-background-red);     --scheduler-week-border: var(--rux-tag-border-red); }
+.scheduler-week__trip--amber   { --scheduler-week-bg: var(--scheduler-amber-bg);         --scheduler-week-border: var(--scheduler-amber-border); }
+/* A card across several days keeps its lines to one day's width: the card
+   less the gaps between its days, divided by its days, less the share of the
+   padding and border a one-day card has that this one spends only once. */
+.scheduler-week__trip > * {
+  max-inline-size: calc((100% - (var(--scheduler-week-span, 1) - 1) * 3pt) / var(--scheduler-week-span, 1)
+    - (var(--scheduler-week-span, 1) - 1) * 10pt / var(--scheduler-week-span, 1));
+}
+/* A trip that began last week is its colour and nothing else here. */
+.scheduler-week__trip--continued { min-block-size: 12pt; }
+
+.scheduler-week__trip-top {
+  display: flex;
+  align-items: center;
+  gap: 3pt;
+}
+.scheduler-week__destination {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.scheduler-week__of { color: var(--rux-text-secondary); white-space: nowrap; }
+.scheduler-week__paid { font-weight: 600; white-space: nowrap; }
+.scheduler-week__paid-date { font-weight: 400; }
+.scheduler-week__marks {
+  display: flex;
+  gap: 2pt;
+  margin-inline-start: auto;
+  color: var(--rux-text-secondary);
+}
+.scheduler-week__mark { inline-size: 8pt; block-size: 8pt; flex: none; }
+.scheduler-week__mark-letter { font-weight: 600; }
+.scheduler-week__line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.scheduler-week__times {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  text-align: center;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.scheduler-week__crew {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 8pt;
+  font-weight: 600;
+}
+.scheduler-week__driver {
+  display: inline-flex;
+  align-items: center;
+  gap: 2pt;
+  white-space: nowrap;
+}
+.scheduler-week__role { inline-size: 8pt; block-size: 8pt; color: var(--rux-support-success); }
+.scheduler-week__detail {
+  display: grid;
+  grid-template-columns: repeat(var(--scheduler-week-fields, 2), minmax(0, 1fr));
+  gap: 0 4pt;
+  border-block-start: 0.5pt solid var(--rux-border-subtle-01);
+}
+.scheduler-week__detail[data-fields="1"] { --scheduler-week-fields: 1; }
+.scheduler-week__detail[data-fields="3"] { --scheduler-week-fields: 3; }
+.scheduler-week__detail[data-fields="4"] { --scheduler-week-fields: 4; }
+.scheduler-week__crew + .scheduler-week__detail { margin-block-start: 1pt; }
+.scheduler-week__field {
+  display: flex;
+  gap: 2pt;
+  min-inline-size: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.scheduler-week__label { color: var(--rux-text-secondary); }
+.scheduler-week__value { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+
+/* The note naming the trips that do not fit sits above the sheet on screen
+   and is never printed. */
+.scheduler-week__cut { margin-block-end: var(--rux-spacing-05); }
+@media print { .scheduler-week__cut { display: none; } }

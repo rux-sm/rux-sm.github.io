@@ -1222,6 +1222,284 @@
      offers: the trip's first day and `qt`, 2026-12-05-qt, which is how the
      office already names the ones QuickBooks makes. A blank one has no day
      and keeps the page's own title. */
+  /* ── THE WEEK SCHEDULE ────────────────────────────────────────────────────
+     rux-ui's billing report of a week, in its format and layout: Legal
+     landscape, five buses a sheet, a row per bus and a column per day, and a
+     card per trip leg on each bus across the days it covers. Only the look is
+     this app's. Where a trip sits, its lane and its colour come from week.js,
+     which the board places with too, so the sheet and the board cannot
+     disagree. */
+  const WEEK = window.SchedulerWeek;
+  const BUSES_PER_SHEET = 5;
+  const WEEKDAYS = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+  const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+    'August', 'September', 'October', 'November', 'December'];
+  // The crew in the order a card lists them, and the drawing each role takes,
+  // as the board draws them.
+  const CREW_ORDER = ['driver', 'co-driver', 'relief-start', 'relief-end'];
+  const CREW_ICON = { driver: '#m-person-fill', 'co-driver': '#m-person-fill',
+    'relief-start': '#m-swap_horiz-fill', 'relief-end': '#m-swap_horiz-fill' };
+
+  const dayOf = s => { const [y, m, d] = String(s).split('-').map(Number); return new Date(y, m - 1, d); };
+  const plusDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+  const isoDay = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+  // "September 21-27, 2026", or across a month or a year as rux-ui writes it.
+  function weekTitle(first) {
+    const last = plusDays(first, 6);
+    const a = MONTHS[first.getMonth()], b = MONTHS[last.getMonth()];
+    if (first.getFullYear() !== last.getFullYear()) {
+      return `${a} ${first.getDate()}, ${first.getFullYear()}-${b} ${last.getDate()}, ${last.getFullYear()}`;
+    }
+    return a === b
+      ? `${a} ${first.getDate()}-${last.getDate()}, ${last.getFullYear()}`
+      : `${a} ${first.getDate()}-${b} ${last.getDate()}, ${last.getFullYear()}`;
+  }
+
+  /* A value a detail line prints. rux-ui leaves a status word out of a field
+     that should hold a number or a reference, so "pending" and the office's
+     other holding words print as an empty line to write on. */
+  const HOLDING_WORDS = ['draft', 'hold', 'working on approval', 'check in mail'];
+  function detailText(value) {
+    if (value === undefined || value === null) return '';
+    const text = String(value).trim();
+    const words = text.toLowerCase().replace(/\s+/g, ' ');
+    return !text || words.includes('pending') || HOLDING_WORDS.includes(words) ? '' : text;
+  }
+  const weekMoney = n => (Number(n) ? `$${Number(n).toLocaleString('en-US')}` : '');
+  const milesText = n => (n == null || n === '' ? '' : String(Number(n) % 1 === 0 ? Number(n) : Number(n).toFixed(1)));
+  // The first of several, and how many more, as "4471 +1".
+  const firstAndMore = (first, count) => {
+    const extra = Math.max(0, (Number(count) || 0) - 1);
+    if (!first) return extra > 0 ? `${extra + 1} on file` : '';
+    return extra > 0 ? `${first} +${extra}` : String(first);
+  };
+  const timeOrDash = t => (t ? clock(t) : '--:--');
+
+  // The trip's miles: what the Route tab worked out, or its stops added up.
+  function milesOf(trip) {
+    if (trip.est_miles != null) return trip.est_miles;
+    const sum = (trip.trip_stops || []).filter(s => s.type !== 'day' && s.type !== 'sleeper')
+      .reduce((n, s) => n + (parseFloat(s.miles) || 0), 0);
+    return sum > 0 ? sum : null;
+  }
+
+  // An assignment's crew in role order, each in a role that is on.
+  function crewOnBus(assignment) {
+    const saved = Array.isArray(assignment.active_roles)
+      ? assignment.active_roles.map(r => String(r).split(':')[0]) : null;
+    return (assignment.trip_drivers || [])
+      .filter(d => d.drivers && (!saved || saved.includes(d.role || 'driver')))
+      .sort((a, b) => CREW_ORDER.indexOf(a.role || 'driver') - CREW_ORDER.indexOf(b.role || 'driver'));
+  }
+
+  function weekIcon(href, cls) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', cls);
+    svg.setAttribute('viewBox', '0 0 32 32');
+    svg.setAttribute('fill', 'currentColor');
+    svg.setAttribute('aria-hidden', 'true');
+    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    use.setAttribute('href', href);
+    svg.appendChild(use);
+    return svg;
+  }
+
+  // A ruled line of labelled fields, two across or one, each label printed
+  // whether or not it has a value, so every card rules the same lines.
+  function detailLine(fields) {
+    const line = el('div', 'scheduler-week__detail');
+    line.dataset.fields = String(fields.length);
+    for (const [label, value] of fields) {
+      const field = el('span', 'scheduler-week__field');
+      field.append(el('span', 'scheduler-week__label', `${label}:`),
+        el('span', 'scheduler-week__value', detailText(value)));
+      line.appendChild(field);
+    }
+    return line;
+  }
+
+  function weekCard(bar) {
+    const { trip, assignment, place, lane, of } = bar;
+    const hue = WEEK.hueFor(trip);
+    const card = el('div', `scheduler-week__trip scheduler-week__trip--${hue}`);
+    card.style.gridColumn = `${place.start + 1} / span ${place.span}`;
+    card.style.gridRow = String(lane + 1);
+    // Its lines keep to the first day's width, as rux-ui's do, however many
+    // days the colour runs across.
+    card.style.setProperty('--scheduler-week-span', String(place.span));
+    card.dataset.trip = trip.destination || 'Trip';
+    // A trip that began last week is only its continuation here, as on the
+    // board: repeating its lines on Monday reads as the trip starting again.
+    if (place.fromPrev) {
+      card.classList.add('scheduler-week__trip--continued');
+      return card;
+    }
+
+    const top = el('div', 'scheduler-week__trip-top');
+    top.appendChild(el('span', 'scheduler-week__destination', trip.destination || 'Trip'));
+    if (of) top.appendChild(el('span', 'scheduler-week__of', of));
+    const billing = window.SchedulerBilling?.of(trip);
+    if (billing && (billing.rung === 'paid_full' || billing.rung === 'overpaid')) {
+      const paid = el('span', 'scheduler-week__paid', billing.rung === 'overpaid' ? 'OVERPAID' : 'PAID');
+      const on = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(billing.datePaid || ''));
+      if (on) paid.appendChild(el('span', 'scheduler-week__paid-date', ` ${Number(on[2])}/${Number(on[3])}`));
+      top.appendChild(paid);
+    }
+    const needs = needsOf(trip);
+    if (needs.length) {
+      const marks = el('span', 'scheduler-week__marks');
+      for (const need of needs) {
+        const mark = need.icon ? weekIcon(need.icon, 'scheduler-week__mark')
+          : el('span', 'scheduler-week__mark-letter', String(need.label).trim().charAt(0));
+        mark.setAttribute('aria-label', need.label);
+        marks.appendChild(mark);
+      }
+      top.appendChild(marks);
+    }
+    card.appendChild(top);
+
+    const riders = (trip.trip_passengers || []).length;
+    card.appendChild(el('div', 'scheduler-week__line', trip.is_self_organized
+      ? `${riders} passenger${riders === 1 ? '' : 's'}` : trip.customer || ' '));
+    const who = trip.booking_contact_name || trip.booking_contact_phone
+      ? [trip.booking_contact_name, trip.booking_contact_phone]
+      : [trip.trip_contact_1_name, trip.trip_contact_1_phone];
+    card.appendChild(el('div', 'scheduler-week__line',
+      [who[0], who[1] ? showPhone(who[1]) : ''].filter(Boolean).join(' ') || ' '));
+
+    const times = el('div', 'scheduler-week__times');
+    for (const t of [bar.leg.depart, bar.leg.spot, bar.leg.back]) times.appendChild(el('span', null, timeOrDash(t)));
+    card.appendChild(times);
+
+    const crew = crewOnBus(assignment);
+    const crewLine = el('div', 'scheduler-week__crew');
+    for (const d of crew) {
+      const person = el('span', 'scheduler-week__driver');
+      person.append(weekIcon(CREW_ICON[d.role || 'driver'], 'scheduler-week__role'),
+        el('span', null, d.drivers.short_name || d.drivers.name || ''));
+      crewLine.appendChild(person);
+    }
+    if (!crew.length) crewLine.appendChild(el('span', 'scheduler-week__driver', ' '));
+    card.appendChild(crewLine);
+
+    // D1 is the first driver and R1, R2 each one after, as rux-ui numbers them.
+    card.appendChild(detailLine(crew.length
+      ? crew.map((d, i) => [i === 0 ? 'D1' : `R${i}`, weekMoney(d.pay)])
+      : [['D1', '']]));
+    card.appendChild(detailLine([['Mi', milesText(milesOf(trip))], ['Act', milesText(trip.actual_miles)]]));
+    card.appendChild(detailLine([['Qt', weekMoney(trip.quoted_price)], ['PO', firstAndMore(trip.po_ref, (trip.trip_pos || []).length)]]));
+    card.appendChild(detailLine([['Inv', firstAndMore(trip.invoice_number, (trip.trip_invoices || []).length)]]));
+    const payments = [...(trip.trip_payments || [])]
+      .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+      .filter(p => p.ref || Number(p.amount))
+      .map(p => [p.method, p.ref, weekMoney(p.amount)].filter(Boolean).join(' '));
+    card.appendChild(detailLine([['Pmt', payments.join(' · ')]]));
+    return card;
+  }
+
+  // Every leg of every trip on a bus this week, with the days it covers, as
+  // the board places them: one card per bus the leg is on.
+  function barsOfWeek(trips, first) {
+    const last = plusDays(first, 6);
+    const byBus = new Map();
+    for (const trip of trips) {
+      for (const leg of WEEK.legsOf(trip)) {
+        const place = WEEK.clip(leg.from, leg.to, first, last);
+        if (!place) continue;
+        const onLeg = (trip.trip_assignments || [])
+          .filter(a => (a.leg || 'outbound') === leg.leg && a.bus_id)
+          .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+        onLeg.forEach((assignment, i) => {
+          if (!byBus.has(assignment.bus_id)) byBus.set(assignment.bus_id, []);
+          byBus.get(assignment.bus_id).push({
+            trip, leg, assignment, place: { ...place },
+            of: leg.count > 1 ? `${i + 1} of ${leg.count}` : '',
+          });
+        });
+      }
+    }
+    return byBus;
+  }
+
+  function weekSchedule(subject) {
+    const first = dayOf(subject.week);
+    const byBus = barsOfWeek(subject.trips || [], first);
+    // Every active bus, and an inactive one only in a week it has a trip.
+    const buses = (subject.buses || []).filter(b => b.status === 'active' || byBus.has(b.id));
+    const pages = Math.max(1, Math.ceil(buses.length / BUSES_PER_SHEET));
+    const title = weekTitle(first);
+    const sheets = [];
+    for (let p = 0; p < pages; p++) {
+      const card = el('article', 'scheduler-form scheduler-week');
+      const head = el('header', 'scheduler-week__head');
+      const logo = el('img', 'scheduler-week__logo');
+      logo.src = 'brand/logo.png';
+      logo.alt = 'Escamilla Tour Buses';
+      head.append(logo, el('p', 'scheduler-week__title',
+        pages > 1 ? `${title} — Page ${p + 1} of ${pages}` : title));
+      card.appendChild(head);
+
+      const grid = el('div', 'scheduler-week__grid');
+      const days = el('div', 'scheduler-week__days');
+      days.appendChild(el('div', 'scheduler-week__corner'));
+      for (let d = 0; d < 7; d++) {
+        const date = plusDays(first, d);
+        const day = el('div', 'scheduler-week__day');
+        day.append(el('span', null, WEEKDAYS[date.getDay()]), el('span', null, String(date.getDate())));
+        days.appendChild(day);
+      }
+      grid.appendChild(days);
+
+      // The last sheet keeps its empty rows, so every sheet is ruled the same.
+      for (let r = 0; r < BUSES_PER_SHEET; r++) {
+        const bus = buses[p * BUSES_PER_SHEET + r];
+        const row = el('div', 'scheduler-week__row');
+        row.appendChild(el('div', 'scheduler-week__bus', bus ? String(bus.number ?? '') : ''));
+        for (let d = 0; d < 7; d++) row.appendChild(el('div', 'scheduler-week__cell'));
+        const lanes = el('div', 'scheduler-week__lanes');
+        const bars = bus ? byBus.get(bus.id) || [] : [];
+        WEEK.assignLanes(bars);
+        for (const bar of bars) lanes.appendChild(weekCard(bar));
+        row.appendChild(lanes);
+        grid.appendChild(row);
+      }
+      card.appendChild(grid);
+      sheets.push(card);
+    }
+    return sheets;
+  }
+
+  /* WHAT DID NOT FIT. rux-ui squeezes a crowded row to 55% and clips the rest;
+     this names the trips instead, above the sheet and off the paper, so a
+     crowded day is seen before it is printed rather than after. */
+  function weekOverflow(card) {
+    const cut = [];
+    for (const lanes of card.querySelectorAll('.scheduler-week__lanes')) {
+      const bottom = lanes.getBoundingClientRect().bottom + 1;
+      for (const trip of lanes.querySelectorAll('.scheduler-week__trip')) {
+        if (trip.getBoundingClientRect().bottom > bottom) cut.push(trip.dataset.trip);
+      }
+    }
+    return cut;
+  }
+
+  function showWeekCut(sheetEl) {
+    sheetEl.querySelector(':scope > .scheduler-week__cut')?.remove();
+    const cut = [...sheetEl.querySelectorAll(':scope > .scheduler-week')].flatMap(weekOverflow);
+    if (!cut.length) return;
+    const box = el('div', 'rux--inline-notification rux--inline-notification--warning scheduler-week__cut');
+    const inner = el('div', 'rux--inline-notification__details');
+    const text = el('div', 'rux--inline-notification__text-wrapper');
+    text.append(el('p', 'rux--inline-notification__title', 'Some trips do not fit their row.'),
+      el('p', 'rux--inline-notification__subtitle', `They will be cut off on paper: ${[...new Set(cut)].join(', ')}.`));
+    inner.appendChild(text);
+    box.appendChild(inner);
+    sheetEl.prepend(box);
+  }
+
+  const weekFileName = subject => (subject.week ? `${subject.week}-schedule` : null);
+
   const quoteFileName = subject => (subject.trip?.start_date ? `${subject.trip.start_date}-qt` : null);
 
   /* ── The registry ─────────────────────────────────────────────────────── */
@@ -1347,6 +1625,24 @@
       typed: { always: true, fields: QUOTE_FIELDS },
       fileName: quoteFileName,
       render: quote,
+    },
+    {
+      id: 'week-schedule',
+      name: 'Week schedule',
+      group: 'Schedule',
+      short: 'Week schedule',
+      blurb: 'Five buses a sheet, on Legal',
+      icon: '#m-calendar_month',
+      binds: 'week',
+      page: { name: 'Legal, landscape', size: '14in 8.5in', width: '14in', height: '8.5in', margin: '0.2in', exact: true },
+      // The weeks around the one asked for, which the list steps through;
+      // one week is printed at a time, never the list.
+      copies: subject => [subject],
+      copyName: subject => weekTitle(dayOf(subject.week)),
+      oneAtATime: true,
+      fileName: weekFileName,
+      render: weekSchedule,
+      afterDraw: showWeekCut,
     },
   ];
 
@@ -1739,12 +2035,13 @@
     // By what the copy is rather than where it sits, because the list grows
     // when the trip's other buses answer.
     const copy = current.every[current.chosen];
-    const key = [copy?.assignment?.id, copy?.seat?.id, copy?.leg, current.layout].join('|');
+    const key = [copy?.assignment?.id, copy?.seat?.id, copy?.leg, copy?.week, current.layout].join('|');
     const kept = drawnSheets.get(key);
     if (kept) {
       sheet.replaceChildren(...kept);
       countSheets();
       fitPaper();
+      current.form.afterDraw?.(sheet);
       return;
     }
     // A form draws one sheet or, like the quote and its agreement, several.
@@ -1768,6 +2065,7 @@
     drawnSheets.set(key, cards);
     for (const card of cards) current.form.drawn?.(card, current.blank);
     countSheets();
+    current.form.afterDraw?.(sheet);
     /* Fitted here, with the sheet holding what it will hold. The observer
        hears the room change and not the drawing, and the first drawing lands
        after the room is already its final size. */
@@ -2097,7 +2395,7 @@
        stack out draws every copy again, which takes back what was typed into
        the one on the sheet -- silently, between pressing the button and the
        dialog opening. Its copies are printed one at a time instead. */
-    const stack = every.length > 1 && !form.typed?.always;
+    const stack = every.length > 1 && !form.typed?.always && !form.oneAtATime;
     if (host && stack) {
       if (menu.length) menu.push({ kind: 'separator' });
       menu.push({
@@ -2225,7 +2523,7 @@
         let href = null;
         let need = null;
         const tripHref = `print.html?form=${form.id}&trip=${encodeURIComponent(trip)}&from=forms`;
-        if (form.binds === null) href = `print.html?form=${form.id}`;
+        if (form.binds === null || form.binds === 'week') href = `print.html?form=${form.id}`;
         else if (!trip) {
           if (form.blank) href = `print.html?form=${form.id}&blank=1`;
           else need = 'Open it from a trip on the board.';
@@ -2317,6 +2615,51 @@
     ...(form.columns || []),
     ...(form.marks?.by === 'leg' ? LEGS.map(leg => `${form.marks.column}_${leg}`) : []),
   ].join(',');
+
+  /* THE WEEK, for the week schedule. `?week=` is its first day, as the board
+     sends it; without one it is this week from Monday. The weeks either side
+     are read in the same request, so the list steps between them without
+     asking again. A cancelled trip is left off, as the board leaves it. */
+  const WEEKS_BEFORE = 4, WEEKS_AFTER = 8;
+  const WEEK_TRIP_COLUMNS = [
+    'id,destination,customer,is_self_organized,start_date,end_date,return_start_date,return_end_date',
+    'bus_count,return_bus_count,trip_type,trip_bar_color,confirmed,contract_status,trip_reqs',
+    'req_56pax,req_sleeper,req_ada,need_hotel,need_fuel_card,departure_time,return_time',
+    'booking_contact_name,booking_contact_phone,trip_contact_1_name,trip_contact_1_phone',
+    'est_miles,actual_miles,quoted_price,deposit_amount,balance_paid,date_paid',
+    'po_ref,po_received,po_amount,invoice_number,invoiced,invoice_status',
+    'trip_stops(leg,position,type,depart_prev,spot,arrive,miles)',
+    'trip_assignments(id,bus_id,position,leg,active_roles,trip_drivers(id,role,pay,drivers(name,short_name)))',
+    'trip_payments(position,amount,method,date,ref)',
+    'trip_pos(position,ref,amount)',
+    'trip_invoices(position,number)',
+    'trip_passengers(id)',
+  ].join(',');
+
+  async function showWeekForm(form) {
+    const client = window.Rux?.account?.client;
+    if (!client) return notConnected();
+    const asked = /^\d{4}-\d{2}-\d{2}$/.test(params.get('week') || '') ? dayOf(params.get('week')) : null;
+    const today = new Date();
+    const first = asked || plusDays(new Date(today.getFullYear(), today.getMonth(), today.getDate()), -((today.getDay() + 6) % 7));
+    const from = plusDays(first, -7 * WEEKS_BEFORE);
+    const to = plusDays(first, 7 * (WEEKS_AFTER + 1) - 1);
+    const [buses, trips] = await Promise.all([
+      client.from('buses').select('id,number,status,sort_order').order('sort_order', { ascending: true, nullsFirst: false }),
+      client.from('trips').select(WEEK_TRIP_COLUMNS).is('cancelled_at', null)
+        .lte('start_date', isoDay(to))
+        .or(`end_date.gte.${isoDay(from)},return_end_date.gte.${isoDay(from)},start_date.gte.${isoDay(from)}`),
+      readRequirementNames(client).catch(() => {}),
+    ]);
+    if (buses.error || trips.error) {
+      return say('error', "The week can't be read right now.", 'Check your connection, then reload the page.');
+    }
+    const weeks = [];
+    for (let i = -WEEKS_BEFORE; i <= WEEKS_AFTER; i++) {
+      weeks.push({ week: isoDay(plusDays(first, 7 * i)), buses: buses.data || [], trips: trips.data || [] });
+    }
+    return show(form, weeks[WEEKS_BEFORE], weeks, WEEKS_BEFORE);
+  }
 
   async function showTripForm(form) {
     const client = window.Rux?.account?.client;
@@ -2445,6 +2788,7 @@
       return show(form, subject, [subject], 0, true);
     }
 
+    if (form.binds === 'week') return showWeekForm(form);
     if (form.binds === 'trip' || form.binds === 'trip+leg') return showTripForm(form);
     return showBusForm(form);
   }

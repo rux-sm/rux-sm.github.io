@@ -720,6 +720,13 @@
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-person-fill"/></svg></div>
       <div class="rux--menu-item__label">Suggest drivers…</div>
     </li>
+    <!-- Print week opens the week on screen as the printed schedule, in a tab
+         of its own: it is a Legal sheet, too wide for the panel. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-menu-print-week">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-print"/></svg></div>
+      <div class="rux--menu-item__label">Print week</div>
+    </li>
     <!-- Today shows here only below md, where its toolbar button hides, so one
          of the pair is on screen. -->
     <li class="rux--menu-item scheduler-menu-item--sm-only" role="menuitem" tabindex="0" id="scheduler-menu-today">
@@ -1445,6 +1452,7 @@
 <script src="vehicles.js"></script>
 <script src="billing.js"></script>
 <script src="follow-up.js"></script>
+<script src="week.js"></script>
 <script src="data.js"></script>
 </body>
 </html>

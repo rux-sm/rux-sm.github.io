@@ -98,7 +98,10 @@ typed under it that the Total adds up, and the Terms and Conditions Agreement
 Form behind it; Save as PDF names the file for the trip's first day,
 `2026-12-05-qt`. Its wording is `quote-text.js`, which the trip editor's
 Copy for QuickBooks button reads too, so a pasted estimate and a printed quote
-cannot disagree. `print.js` holds the registry every form is an entry in; a
+cannot disagree. The week schedule is rux-ui's billing report of a week on
+Legal landscape, five buses a sheet, opened from the board's menu as Print
+week; `week.js` places its trips as it places the board's, and a trip that
+does not fit its row is named above the sheet. `print.js` holds the registry every form is an entry in; a
 new form names its group, its short name for the tile, one line under it, a
 Material icon from Design's sprite, what it binds to and its paper, and the
 page gives it the same tile, frame and fit as the rest. A form leaves as paper

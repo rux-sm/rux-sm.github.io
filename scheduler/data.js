@@ -9185,6 +9185,17 @@
   // The download running: its document id, and the controller that stops it.
   let viewerLoading = null;
   const documentLink = id => `share/document.html?id=${encodeURIComponent(id)}`;
+  /* A stored file is read through a link signed for ten minutes, never its
+     public address, because the trip-documents bucket is closed to all but
+     staff. Null when the file cannot be signed, and the caller falls back to
+     the document's share page. */
+  const signedDocumentUrl = async path => {
+    if (!client || !path) return null;
+    try {
+      const { data, error } = await client.storage.from('trip-documents').createSignedUrl(path, 600);
+      return error ? null : data?.signedUrl ?? null;
+    } catch { return null; }
+  };
 
   /* Each load gets a new frame: a PDF viewer does not read a changed fragment
      again, and navigating a frame that has loaded adds to the tab's history,
@@ -9556,8 +9567,7 @@
   async function openDocument(doc, opener) {
     if (!doc) return;
     setViewerMode('file');
-    const url = client && doc.file_path
-      ? client.storage.from('trip-documents').getPublicUrl(doc.file_path).data?.publicUrl : null;
+    const url = await signedDocumentUrl(doc.file_path);
     if (!viewerEl || !url) {
       window.open(documentLink(doc.id), '_blank', 'noopener');
       return;
@@ -9570,7 +9580,9 @@
     setViewerHead(kind);
     const when = uploadedOn(doc.created_at);
     viewerUploaded.textContent = when ? `Uploaded ${when}` : '';
-    viewerNewTab.href = url;
+    // The panel can stay open past the link's ten minutes; the share page
+    // signs a fresh one each time it is opened.
+    viewerNewTab.href = documentLink(doc.id);
     viewerDocId = String(doc.id);
     if (viewerEl.hidden) {
       viewerOpener = opener ?? null;

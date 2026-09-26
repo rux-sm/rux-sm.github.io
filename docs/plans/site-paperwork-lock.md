@@ -58,10 +58,6 @@ None open.
       for the link instead of building the public address.
 - [ ] rux-ui's `driver-share.js` and `scheduler/share/driver.js` ask the
       function when a document is tapped.
-- [ ] The scheduler's Files tab and rux-ui's `trip-db.js` sign staff links.
-- [ ] The scheduler's `drivers.js` and rux-ui's `driver-db.js` sign photo
-      links, and rux-ui's driver panel and roster draw a photo once its link
-      arrives.
 - [ ] Migration `trip_documents_and_driver_photos_private`, then check from
       outside that a public file address answers 400 in each bucket and a
       signed link opens.

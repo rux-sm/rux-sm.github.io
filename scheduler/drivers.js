@@ -3,8 +3,9 @@
    --------------------------------------------------------------------------
    drivers.html lists every driver. drivers.html?id=<driver id> edits one and
    drivers.html?new makes one. Both read and write the tables rux-ui writes,
-   `drivers` and `driver_time_off`, and the public `driver-photos` bucket, so
-   both apps show the same driver.
+   `drivers` and `driver_time_off`, and the `driver-photos` bucket, so both
+   apps show the same driver. A photo is read through a link signed for ten
+   minutes, since the bucket is closed to all but staff.
 
    The list sorts itself rather than through js/data-table.js, because the
    Licence and medical column sorts by the date it describes, not its text.
@@ -100,24 +101,43 @@
 
   const initials = name => String(name || '').trim().split(/\s+/).filter(Boolean)
     .map(w => w[0]).slice(0, 2).join('').toUpperCase() || '?';
-  const photoUrl = path => (path && client ? client.storage.from(PHOTO_BUCKET).getPublicUrl(path).data.publicUrl : '');
+  // A photo's signed link, asked for once per path and reused until a minute
+  // before it runs out; '' when there is none.
+  const PHOTO_LINK_SECONDS = 600;
+  const photoLinks = new Map();
+  const photoUrl = path => {
+    if (!path || !client) return Promise.resolve('');
+    const hit = photoLinks.get(path);
+    if (hit && Date.now() - hit.at < (PHOTO_LINK_SECONDS - 60) * 1000) return hit.link;
+    const link = client.storage.from(PHOTO_BUCKET).createSignedUrl(path, PHOTO_LINK_SECONDS)
+      .then(({ data, error }) => (error ? '' : data?.signedUrl || ''), () => '');
+    photoLinks.set(path, { at: Date.now(), link });
+    return link;
+  };
 
   // Size classes written out whole, for the class sweep.
   const PHOTO_SIZE = {
     sm: 'rux--user-avatar__photo rux--user-avatar__photo--sm',
     xl: 'rux--user-avatar__photo rux--user-avatar__photo--xl',
   };
-  // Fills an avatar with the photo, or the initials while there is none or it
-  // will not load.
+  // Which photo each avatar was last asked to show, so a link that comes back
+  // after the avatar moved on to another driver is dropped.
+  const painting = new WeakMap();
+  // Fills an avatar with the initials, then the photo once its link arrives;
+  // the initials stay when there is no photo or it will not load.
   function paintAvatar(box, name, path, size) {
     box.replaceChildren();
-    const url = photoUrl(path);
-    if (!url) { box.textContent = initials(name); return; }
-    const img = el('img', PHOTO_SIZE[size]);
-    img.alt = '';
-    img.src = url;
-    img.addEventListener('error', () => { box.textContent = initials(name); }, { once: true });
-    box.appendChild(img);
+    box.textContent = initials(name);
+    painting.set(box, path || '');
+    if (!path) return;
+    photoUrl(path).then(url => {
+      if (!url || painting.get(box) !== path) return;
+      const img = el('img', PHOTO_SIZE[size]);
+      img.alt = '';
+      img.src = url;
+      img.addEventListener('error', () => { box.textContent = initials(name); }, { once: true });
+      box.replaceChildren(img);
+    });
   }
 
 

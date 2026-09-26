@@ -758,13 +758,15 @@ button.scheduler-row-head__num::after {
 /* THE EDITOR'S SHORTCUTS: the floating card's slots in a row above the tabs,
    each word beside its icon and the slots sharing the row's width as the tabs
    do. It is the day row's band, 2rem on the band surface, and sits level with
-   it, so the two read as one grey row across the screen. */
+   it, so the two read as one grey row across the screen, with the day row's
+   rules: none where the surface change separates, a hairline in geist-dark. */
 .scheduler-panel-shortcuts {
   display: flex;
   box-sizing: border-box;
   block-size: 2rem;
   background: var(--scheduler-band-surface);
-  border-block-end: 1px solid var(--rux-border-subtle-01);
+  border-block-start: var(--scheduler-band-rule);
+  border-block-end: var(--scheduler-band-rule);
 }
 .scheduler-panel-shortcuts[hidden] { display: none; }
 .scheduler-panel-shortcuts > .scheduler-bar-shortcut {

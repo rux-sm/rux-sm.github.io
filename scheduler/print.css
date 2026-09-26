@@ -1547,6 +1547,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 .scheduler-week__cell {
   grid-row: 1;
+  position: relative;
+  z-index: 1;
   border-inline-end: 0.75pt solid var(--scheduler-week-line);
 }
 .scheduler-week__bus,
@@ -1555,9 +1557,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    print.js marks the cell, and the trip's colour runs on unbroken. */
 .scheduler-week__cell[data-inside] { border-inline-end-color: transparent; }
 
-/* THE CARDS LIE UNDER THE GRID. The lanes paint first and the cells after,
-   so every line on the sheet is drawn on top of the trips and no rounding,
-   on screen or on paper, can lay a trip's colour over one. The cards fill
+/* THE CARDS LIE UNDER THE GRID. The cells sit a layer above the cards,
+   which are positioned to hold the marks on their edges, and the lanes paint
+   first, so every line on the sheet is drawn on top of the trips and no
+   rounding, on screen or on paper, can lay a trip's colour over one. The cards fill
    the same seven columns with no gap, so a card across three days is exactly
    three days wide. What will not fit the row is hidden here and named above
    the sheet. */
@@ -1595,6 +1598,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   flex-direction: column;
   min-inline-size: 0;
   min-block-size: 0;
+  position: relative;
   padding-inline-end: 0.75pt;
   padding-block-end: 0.75pt;
   background: var(--scheduler-week-bg);
@@ -1602,14 +1606,35 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
-/* The board's own trip colours, from the same tag tokens it paints with. */
-.scheduler-week__trip--blue    { --scheduler-week-bg: var(--rux-tag-background-blue); }
-.scheduler-week__trip--teal    { --scheduler-week-bg: var(--rux-tag-background-teal); }
-.scheduler-week__trip--green   { --scheduler-week-bg: var(--rux-tag-background-green); }
-.scheduler-week__trip--purple  { --scheduler-week-bg: var(--rux-tag-background-purple); }
-.scheduler-week__trip--magenta { --scheduler-week-bg: var(--rux-tag-background-magenta); }
-.scheduler-week__trip--red     { --scheduler-week-bg: var(--rux-tag-background-red); }
-.scheduler-week__trip--amber   { --scheduler-week-bg: var(--scheduler-amber-bg); }
+/* The board's own trip colours, from the same tag tokens it paints with: the
+   fill, and the darker edge a trip that runs past the week is marked in. */
+.scheduler-week__trip--blue    { --scheduler-week-bg: var(--rux-tag-background-blue);        --scheduler-week-edge: var(--rux-tag-border-blue); }
+.scheduler-week__trip--teal    { --scheduler-week-bg: var(--rux-tag-background-teal);        --scheduler-week-edge: var(--rux-tag-border-teal); }
+.scheduler-week__trip--green   { --scheduler-week-bg: var(--rux-tag-background-green);       --scheduler-week-edge: var(--rux-tag-border-green); }
+.scheduler-week__trip--purple  { --scheduler-week-bg: var(--rux-tag-background-purple);      --scheduler-week-edge: var(--rux-tag-border-purple); }
+.scheduler-week__trip--magenta { --scheduler-week-bg: var(--rux-tag-background-magenta);     --scheduler-week-edge: var(--rux-tag-border-magenta); }
+.scheduler-week__trip--red     { --scheduler-week-bg: var(--rux-tag-background-red);         --scheduler-week-edge: var(--rux-tag-border-red); }
+.scheduler-week__trip--amber   { --scheduler-week-bg: var(--scheduler-amber-bg);             --scheduler-week-edge: var(--scheduler-amber-border); }
+/* A TRIP THAT RUNS PAST THE WEEK is marked on that edge as the board marks
+   it: a column of 3-pixel squares 3 pixels apart in the trip's darker colour,
+   each a real box on whole pixels, starting a gap below the card's top, so
+   every square prints sharp. It is drawn over the card's contents, so the
+   white write-in lines do not hide it, and the end one sits clear of the day
+   line over the card's last pixel. */
+.scheduler-week__edge {
+  position: absolute;
+  inset-block: 0;
+  inline-size: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-block-start: 3px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.scheduler-week__edge > i { flex: none; block-size: 3px; background: var(--scheduler-week-edge); }
+.scheduler-week__edge--start { inset-inline-start: 0; }
+.scheduler-week__edge--end { inset-inline-end: 0.75pt; }
 /* A card across several days keeps its lines to one day's width: the card
    divided by its days, less the share of the room under its end line that a
    one-day card has and this one spends only once. */

@@ -1341,6 +1341,16 @@
     // days the colour runs across.
     card.style.setProperty('--scheduler-week-span', String(place.span));
     card.dataset.trip = trip.destination || 'Trip';
+    // An edge where the trip runs on past the week is marked as the board
+    // marks it, with a column of squares: real boxes, because a pattern prints
+    // soft. More than a row's height of them; the edge cuts the rest.
+    for (const [on, side] of [[place.fromPrev, 'start'], [place.toNext, 'end']]) {
+      if (!on) continue;
+      const edge = el('span', `scheduler-week__edge scheduler-week__edge--${side}`);
+      edge.setAttribute('aria-hidden', 'true');
+      for (let i = 0; i < 32; i++) edge.appendChild(el('i'));
+      card.appendChild(edge);
+    }
     // A trip that began last week is only its continuation here, as on the
     // board: repeating its lines on Monday reads as the trip starting again.
     if (place.fromPrev) {

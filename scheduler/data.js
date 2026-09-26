@@ -3164,6 +3164,8 @@
       where.textContent = p?.address && p.address !== input.value.trim() ? p.address : '';
       where.hidden = !where.textContent;
       syncSaved();
+      // Says what is shown now: a place, and whether it is saved; none while typing.
+      input.dispatchEvent(new CustomEvent('scheduler:place', { bubbles: true, detail: { place: p, saved: !!loc } }));
     };
 
     let found = [];
@@ -5970,7 +5972,7 @@
       /* A place is one search. Its name, which the field shows, and its
          address, the grey line under it that the drive is measured from, come
          from the pick together; a place typed and not picked is named by what
-         was typed. The names stay in hidden fields, which Save reads. */
+         was typed. */
       const named = (place, name) => (place || name ? { ...(place ?? placeOf({})), name: name ?? place?.name ?? null } : null);
 
       const driveOutFrom = async place => {
@@ -5996,8 +5998,23 @@
         } catch (e) { r.backDrive = null; recalcReturn(); lookupFailed(e, 'back to the yard'); }
       };
 
-      const pickupName = textField('scheduler-f-pickupname', 'Pickup location', r.pickupPlace?.name);
-      const dropName = textField('scheduler-f-dropname', 'Drop-off location', r.dropPlace?.name);
+      /* A place picked that is not a saved location yet gets a Name field
+         under it, filled with the map's name, so it is named the way the office
+         names places, such as a chain with its town after it. A saved
+         location's name is changed on the Locations page. The search shows
+         whatever name the place is given. */
+      const nameFor = (search, nameField) => {
+        const row = full(nameField);
+        row.style.display = 'none';
+        const input = search.querySelector('input[role="combobox"]');
+        input.addEventListener('scheduler:place', e => {
+          row.style.display = e.detail.place && !e.detail.saved ? '' : 'none';
+        });
+        nameField.querySelector('input').addEventListener('input', e => { input.value = e.target.value; });
+        return row;
+      };
+      const pickupName = textField('scheduler-f-pickupname', 'Name', r.pickupPlace?.name);
+      const dropName = textField('scheduler-f-dropname', 'Name', r.dropPlace?.name);
 
       /* While the drop-off is hidden the page says the group is let off
          where it was picked up, so its hidden fields copy the pickup;
@@ -6078,10 +6095,7 @@
          hours without saying so. The fields stay in the page, hidden, because
          the summary and Save read them wherever they are. */
       const dropBox = el('div', 'rux--stack-vertical rux--stack-scale-5 scheduler-route-drop');
-      dropBox.append(full(dropField));
-      const names = el('div');
-      names.hidden = true;
-      names.append(pickupName, dropName);
+      dropBox.append(full(dropField), nameFor(dropField, dropName));
       const dropSaid = el('p', 'rux--form__helper-text scheduler-route-note');
       const dropOpen = el('button', 'rux--link rux--link--sm scheduler-route-open', 'Set a different drop-off');
       dropOpen.type = 'button';
@@ -6099,12 +6113,12 @@
 
       fields.append(
         full(pickupField),
+        nameFor(pickupField, pickupName),
         dropSaid,
         dropOpen,
         dropBox,
         pair(timeField('scheduler-f-leave', 'Departs', r.first?.depart_prev),
           timeField('scheduler-f-endtrip', 'Returns', r.back?.depart_prev)),
-        names,
       );
       showDrop(!routeRound());
 
@@ -6261,14 +6275,20 @@
         let picked = st.place;
         document.getElementById('scheduler-stop-h').textContent = index === null ? 'Add stop' : 'Edit stop';
         const grid = el('div', 'scheduler-dialog-grid');
-        // One place search, as the pickup is; the name rides in a hidden field.
-        const name = textField('scheduler-f-stopname', 'Location', st.place?.name);
+        // One place search, as the pickup is, and a Name for a new place.
+        const name = textField('scheduler-f-stopname', 'Name', st.place?.name);
+        name.classList.add('scheduler-dialog-grid__wide');
         name.style.display = 'none';
         const where = placeSearch('scheduler-f-stopaddr', 'Location', st.place, (place, typed) => {
           setVal('scheduler-f-stopname', place ? place.name ?? '' : typed ?? '');
           picked = place ? { ...place } : (typed ? { ...placeOf({}), address: typed } : null);
         });
         where.classList.add('scheduler-dialog-grid__wide');
+        const whereInput = where.querySelector('input[role="combobox"]');
+        whereInput.addEventListener('scheduler:place', e => {
+          name.style.display = e.detail.place && !e.detail.saved ? '' : 'none';
+        });
+        name.querySelector('input').addEventListener('input', e => { whereInput.value = e.target.value; });
         const days = [];
         for (let d = from; d && to && d <= to && days.length < 31; d = dayAfter(d, 1)) days.push(d);
         const day = days.length > 1
@@ -6281,7 +6301,7 @@
         const dwell = selectField('scheduler-f-stopdwell', 'The wait counts as', st.dwell ?? 'on',
           [['on', 'On duty'], ['off', 'Off duty'], ['sleeper', 'Sleeper berth']]);
         dwell.classList.add('scheduler-dialog-grid__wide');
-        grid.append(name, where, ...(day ? [day] : []), arrive, leaveAt, dwell);
+        grid.append(where, name, ...(day ? [day] : []), arrive, leaveAt, dwell);
         host.replaceChildren(grid);
 
         stopDone = () => {

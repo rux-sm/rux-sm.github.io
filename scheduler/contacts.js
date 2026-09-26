@@ -394,7 +394,7 @@
       const detail = [
         t.trip_ref,
         t.customer,
-        [booked ? 'Booked it' : null, dayOf ? 'Day-of contact' : null].filter(Boolean).join(' and '),
+        [booked ? 'Booked it' : null, dayOf ? 'Trip contact' : null].filter(Boolean).join(' and '),
         t.cancelled_at ? 'Cancelled' : to >= now ? 'Upcoming' : null,
       ].filter(Boolean).join(' · ');
       lines.appendChild(el('span', 'scheduler-pair-item__detail', detail));

@@ -1674,7 +1674,7 @@
     const menu = rowMenu();
     rowMenuFor = actions;
     /* The two items' words and states are the caller's: Edit and Remove unless
-       it names them, as Day-of contacts' Add contact and Remove last contact,
+       it names them, as Trip contacts' Add contact and Remove last contact,
        and either can be disabled. */
     for (const li of menu.children) {
       const pick = li.dataset.pick;
@@ -5570,7 +5570,7 @@
       colorBox,
       notesField('scheduler-f-notes', 'Notes', trip.notes),
     );
-    panelDetails.appendChild(section('Trip', topFields));
+    panelDetails.appendChild(section('Trip information', topFields));
 
     /* WHAT THE TRIP NEEDS opens the Buses tab, beside the buses it is asked
        of: the vehicle type, then the needs, then each leg's hotel while Hotel
@@ -5658,7 +5658,7 @@
           bookingMenu.focus();
         },
       }));
-      // A group named by its title, as Day-of contacts is, so the menu can sit
+      // A group named by its title, as Trip contacts is, so the menu can sit
       // on the title line.
       const booking = el('div', 'scheduler-panel-section');
       const bookingTitle = el('div', 'scheduler-panel-section__title', 'Booking contact');
@@ -5724,8 +5724,8 @@
       menuBtn.id = 'scheduler-f-dmenu';
       menuBtn.setAttribute('aria-haspopup', 'true');
       menuBtn.setAttribute('aria-expanded', 'false');
-      menuBtn.setAttribute('aria-label', 'Day-of contact actions');
-      menuBtn.title = 'Day-of contact actions';
+      menuBtn.setAttribute('aria-label', 'Trip contact actions');
+      menuBtn.title = 'Trip contact actions';
       menuBtn.appendChild(svgUse('#m-more_vert', '16', '0 0 32 32'));
       menuBtn.lastChild.setAttribute('class', 'rux--btn__icon');
       menuBtn.addEventListener('click', () => {
@@ -5755,7 +5755,7 @@
          title line also holds the menu, and a legend must be the fieldset's
          first child and nothing beside it. */
       const days = el('div', 'scheduler-panel-section');
-      const dayTitle = el('div', 'scheduler-panel-section__title', 'Day-of contacts');
+      const dayTitle = el('div', 'scheduler-panel-section__title', 'Trip contacts');
       dayTitle.id = 'scheduler-f-dgroup';
       const dayHead = el('div', 'scheduler-group__head');
       dayHead.append(dayTitle, menuBtn);
@@ -6008,7 +6008,7 @@
       );
       showDrop(!routeRound());
 
-      // The section is a group named by its title, as Day-of contacts is.
+      // The section is a group named by its title, as Trip contacts is.
       const routeBox = el('div', 'scheduler-panel-section');
       const routeTitle = el('div', 'scheduler-panel-section__title', r.leg === 'return' ? 'Pick-up leg' : 'Pickup');
       routeTitle.id = 'scheduler-f-routegroup';
@@ -10460,8 +10460,8 @@
     for (const [c, day] of [[tripContact(trip, 0), false], ...[1, 2, 3, 4, 5].map(n => [tripContact(trip, n), true])]) {
       if (!c?.name) continue;
       const same = people.find(p => p.name === c.name && dial(p.phone || '') === dial(c.phone || ''));
-      if (same) { if (day && !same.day) { same.day = true; same.role = 'Booking and day-of contact'; } continue; }
-      people.push({ name: c.name, role: day ? 'Day-of contact' : 'Booking contact', day, phone: c.phone || null,
+      if (same) { if (day && !same.day) { same.day = true; same.role = 'Booking and trip contact'; } continue; }
+      people.push({ name: c.name, role: day ? 'Trip contact' : 'Booking contact', day, phone: c.phone || null,
         email: day ? null : c.email || null, customer: true });
     }
     // The crew on each bus of this leg, this bar's bus first.
@@ -10641,8 +10641,8 @@
     }
     if (!dayOfContact(trip) && !trip.contact_not_needed) {
       const none = el('span', 'scheduler-card__dayof');
-      none.title = 'No day-of contact';
-      none.append(svgUse('#m-call-fill', '16', '0 0 32 32'), el('span', 'scheduler-card__fact-name', 'No day-of contact'));
+      none.title = 'No trip contact';
+      none.append(svgUse('#m-call-fill', '16', '0 0 32 32'), el('span', 'scheduler-card__fact-name', 'No trip contact'));
       side.appendChild(none);
     }
     /* The note is one row with no heading: its pin, its words, then the facts.

@@ -107,9 +107,7 @@ None open.
 
 ## Tasks
 
-- [ ] Start `coins/` from a Design template, add it to `switcher.json`,
-      and add its row to the Names table in `AGENTS.md`. Then tick Coins for
-      the second member on the Access page.
+- [ ] Tick Coins for the second member on the Access page.
 - [ ] Build Import, porting the Mac tool's reading and overlap rules.
 - [ ] Import every file in the money folder and match its yearly totals to
       the cent.

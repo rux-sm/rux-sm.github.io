@@ -1501,12 +1501,12 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   padding: 4pt 6pt;
   font-size: 9pt;
   font-weight: 600;
-  border-inline-start: 0.5pt solid var(--rux-border-subtle-01);
+  border-inline-start: 0.75pt solid var(--rux-border-subtle-01);
 }
 .scheduler-week__row {
   flex: 1 1 0;
   min-block-size: 0;
-  border-block-start: 0.5pt solid var(--rux-border-subtle-01);
+  border-block-start: 0.75pt solid var(--rux-border-subtle-01);
 }
 .scheduler-week__days + .scheduler-week__row { border-block-start: 0; }
 .scheduler-week__bus {
@@ -1519,9 +1519,11 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   font-weight: 600;
   border-inline-end: 1pt solid var(--rux-border-strong-01);
 }
+/* The day lines print at three quarters of a point, clear enough to line a
+   handwritten note up with its day. */
 .scheduler-week__cell {
   grid-row: 1;
-  border-inline-start: 0.5pt solid var(--rux-border-subtle-01);
+  border-inline-start: 0.75pt solid var(--rux-border-subtle-01);
 }
 .scheduler-week__cell:nth-child(2) { border-inline-start: 0; }
 /* The cards lie over the day cells, on the same seven columns, so a card
@@ -1534,15 +1536,21 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   grid-template-columns: repeat(7, minmax(0, 1fr));
   grid-auto-rows: min-content;
   align-content: start;
-  gap: 3pt;
-  padding: 3pt;
+  gap: 2pt;
+  padding: 2pt;
   min-block-size: 0;
   overflow: hidden;
 }
+/* A row with one lane gives its cards the whole height, so a card is centred
+   in its row and its write-in lines get the room. */
+.scheduler-week__lanes[data-lanes="1"] { grid-template-rows: minmax(0, 1fr); }
 
 .scheduler-week__trip {
+  display: flex;
+  flex-direction: column;
   min-inline-size: 0;
-  padding: 3pt 4pt;
+  min-block-size: 0;
+  padding: 2pt 4pt;
   border: 1pt solid var(--scheduler-week-border);
   background: var(--scheduler-week-bg);
   color: var(--rux-text-primary);
@@ -1561,12 +1569,16 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    less the gaps between its days, divided by its days, less the share of the
    padding and border a one-day card has that this one spends only once. */
 .scheduler-week__trip > * {
-  max-inline-size: calc((100% - (var(--scheduler-week-span, 1) - 1) * 3pt) / var(--scheduler-week-span, 1)
+  max-inline-size: calc((100% - (var(--scheduler-week-span, 1) - 1) * 2pt) / var(--scheduler-week-span, 1)
     - (var(--scheduler-week-span, 1) - 1) * 10pt / var(--scheduler-week-span, 1));
 }
 /* A trip that began last week is its colour and nothing else here. */
 .scheduler-week__trip--continued { min-block-size: 12pt; }
 
+.scheduler-week__trip-top,
+.scheduler-week__line,
+.scheduler-week__times,
+.scheduler-week__crew { line-height: 1.02; }
 .scheduler-week__trip-top {
   display: flex;
   align-items: center;
@@ -1615,16 +1627,29 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   white-space: nowrap;
 }
 .scheduler-week__role { inline-size: 8pt; block-size: 8pt; color: var(--rux-support-success); }
+/* The write-in lines share the card's remaining height evenly, each with its
+   text sitting on a rule to write along. */
+.scheduler-week__write {
+  flex: 1 1 auto;
+  display: grid;
+  grid-auto-rows: minmax(min-content, 1fr);
+  margin-block-start: 1pt;
+}
 .scheduler-week__detail {
   display: grid;
   grid-template-columns: repeat(var(--scheduler-week-fields, 2), minmax(0, 1fr));
+  align-items: end;
   gap: 0 4pt;
-  border-block-start: 0.5pt solid var(--rux-border-subtle-01);
+  padding-block-end: 1pt;
+  border-block-end: 0.5pt solid var(--rux-border-strong-01);
+}
+/* A long PO number on the card: the second column takes three fifths. */
+.scheduler-week__trip[data-wide] .scheduler-week__detail[data-fields="2"] {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
 }
 .scheduler-week__detail[data-fields="1"] { --scheduler-week-fields: 1; }
 .scheduler-week__detail[data-fields="3"] { --scheduler-week-fields: 3; }
 .scheduler-week__detail[data-fields="4"] { --scheduler-week-fields: 4; }
-.scheduler-week__crew + .scheduler-week__detail { margin-block-start: 1pt; }
 .scheduler-week__field {
   display: flex;
   gap: 2pt;

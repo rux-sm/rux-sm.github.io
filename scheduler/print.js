@@ -1383,18 +1383,26 @@
     if (!crew.length) crewLine.appendChild(el('span', 'scheduler-week__driver', ' '));
     card.appendChild(crewLine);
 
-    // D1 is the first driver and R1, R2 each one after, as rux-ui numbers them.
-    card.appendChild(detailLine(crew.length
+    /* THE FIVE LINES WRITTEN IN BY HAND where the database has nothing yet.
+       They share whatever height the card has left, each ruled at its foot
+       to write on. D1 is the first driver and R1, R2 each one after, as
+       rux-ui numbers them. */
+    const write = el('div', 'scheduler-week__write');
+    const po = firstAndMore(trip.po_ref, (trip.trip_pos || []).length);
+    // A long PO takes the room the fields beside it do not need.
+    if (detailText(po).length > 8) card.dataset.wide = '';
+    write.appendChild(detailLine(crew.length
       ? crew.map((d, i) => [i === 0 ? 'D1' : `R${i}`, weekMoney(d.pay)])
       : [['D1', '']]));
-    card.appendChild(detailLine([['Mi', milesText(milesOf(trip))], ['Act', milesText(trip.actual_miles)]]));
-    card.appendChild(detailLine([['Qt', weekMoney(trip.quoted_price)], ['PO', firstAndMore(trip.po_ref, (trip.trip_pos || []).length)]]));
-    card.appendChild(detailLine([['Inv', firstAndMore(trip.invoice_number, (trip.trip_invoices || []).length)]]));
+    write.appendChild(detailLine([['Mi', milesText(milesOf(trip))], ['Act', milesText(trip.actual_miles)]]));
+    write.appendChild(detailLine([['Qt', weekMoney(trip.quoted_price)], ['PO', po]]));
+    write.appendChild(detailLine([['Inv', firstAndMore(trip.invoice_number, (trip.trip_invoices || []).length)]]));
     const payments = [...(trip.trip_payments || [])]
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
       .filter(p => p.ref || Number(p.amount))
       .map(p => [p.method, p.ref, weekMoney(p.amount)].filter(Boolean).join(' '));
-    card.appendChild(detailLine([['Pmt', payments.join(' · ')]]));
+    write.appendChild(detailLine([['Pmt', payments.join(' · ')]]));
+    card.appendChild(write);
     return card;
   }
 
@@ -1456,10 +1464,17 @@
         const bus = buses[p * BUSES_PER_SHEET + r];
         const row = el('div', 'scheduler-week__row');
         row.appendChild(el('div', 'scheduler-week__bus', bus ? String(bus.number ?? '') : ''));
-        for (let d = 0; d < 7; d++) row.appendChild(el('div', 'scheduler-week__cell'));
+        for (let d = 0; d < 7; d++) {
+          // Placed by hand: the lanes already hold these columns in the same
+          // row, and a cell left to find its own place is pushed past them.
+          const cell = el('div', 'scheduler-week__cell');
+          cell.style.gridColumn = String(d + 2);
+          row.appendChild(cell);
+        }
         const lanes = el('div', 'scheduler-week__lanes');
         const bars = bus ? byBus.get(bus.id) || [] : [];
-        WEEK.assignLanes(bars);
+        // One lane stretches its cards to the row's height; two or more stack.
+        lanes.dataset.lanes = String(bars.length ? WEEK.assignLanes(bars) : 0);
         for (const bar of bars) lanes.appendChild(weekCard(bar));
         row.appendChild(lanes);
         grid.appendChild(row);

@@ -125,7 +125,7 @@
 
   async function read(f) {
     try {
-      const { layout, lines } = B.parse(await f.text());
+      const { layout, lines, balance } = B.parse(await f.text());
       if (!layout) return C.notice('Coins does not know this file\'s columns. Export a .csv of transactions from the bank\'s website.');
       if (!lines.length) return C.notice('The file has no transactions in it.');
       const days = lines.map(l => l.day).sort();
@@ -139,7 +139,9 @@
       fresh = lines.filter(l => !known.has(`${B.same(l)}#${l.occurrence}`)).map(l => B.apply({
         ...l, kind: B.kind(l, ctx), merchant: B.merchant(l.description), category: '',
       }, rules)).map(l => ({ ...l, bill_id: bills.find(b => b.decision !== 'cancelled' && C.matches(b, l))?.id ?? null }));
-      file = { name: f.name, layout, lines, first: days[0], last: days[days.length - 1] };
+      // A stated balance is kept only when it is newer than the one the account has.
+      const newer = balance && (!account.balance_on || balance.day > account.balance_on) ? balance : null;
+      file = { name: f.name, layout, lines, balance: newer, first: days[0], last: days[days.length - 1] };
       drawCheck();
       show(2);
     } catch (error) { fail(error); }
@@ -147,7 +149,8 @@
 
   // ---------- 3. Check
   function drawCheck() {
-    $('coins-check-what').textContent = `${file.name} into ${accountName(account)} (${whoseName(account)}).`;
+    $('coins-check-what').textContent = `${file.name} into ${accountName(account)} (${whoseName(account)}).`
+      + (file.balance ? ` Its balance on ${when(file.balance.day)} was ${C.money(file.balance.amount)}, and saving keeps it.` : '');
     $('coins-found').textContent = file.lines.length;
     $('coins-range').textContent = `${when(file.first)} to ${when(file.last)}`;
     $('coins-known').textContent = file.lines.length - fresh.length;
@@ -175,8 +178,8 @@
   const picked = () => fresh.filter((_, i) => $(`coins-l${i}`)?.checked);
   const count = () => {
     const n = picked().length;
-    $('coins-save').textContent = n === 1 ? 'Save 1 line' : `Save ${n} lines`;
-    $('coins-save').disabled = !n;
+    $('coins-save').textContent = n ? (n === 1 ? 'Save 1 line' : `Save ${n} lines`) : 'Save the balance';
+    $('coins-save').disabled = !n && !file?.balance;
   };
   $('coins-lines').addEventListener('change', count);
 
@@ -185,6 +188,17 @@
     const save = $('coins-save');
     save.disabled = true;
     try {
+      const said = [];
+      if (file.balance) {
+        await C.data.updateAccount(account.id, { balance: file.balance.amount, balance_on: file.balance.day });
+        Object.assign(account, { balance: file.balance.amount, balance_on: file.balance.day });
+        said.push(`The balance is ${C.money(file.balance.amount)} on ${when(file.balance.day)}.`);
+      }
+      if (!lines.length) {
+        $('coins-done-text').textContent = said.join(' ');
+        show(3);
+        return;
+      }
       const { added } = await C.data.saveImport({
         household_id: account.household_id, account_id: account.id,
         file_name: file.name, layout: file.layout,
@@ -195,7 +209,7 @@
         bank_type: l.bank_type, bank_category: l.bank_category, occurrence: l.occurrence,
         merchant: l.merchant, kind: l.kind, category: l.category, bill_id: l.bill_id,
       })));
-      $('coins-done-text').textContent = `${added === 1 ? '1 line' : `${added} lines`} saved into ${accountName(account)}.`;
+      $('coins-done-text').textContent = [`${added === 1 ? '1 line' : `${added} lines`} saved into ${accountName(account)}.`, ...said].join(' ');
       show(3);
       drawEarlier(await C.data.imports());
     } catch (error) { fail(error); save.disabled = false; }

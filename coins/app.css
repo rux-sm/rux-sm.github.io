@@ -66,3 +66,11 @@ th.coins-amount .rux--table-header-label { justify-content: flex-end; }
 
 /* The form in the side panel starts clear of the panel's head. */
 .coins-panel-form { padding-block: var(--rux-spacing-05); }
+
+/* A row with more under it, like a card's bar: the name and amount on one
+   line, the rest below. */
+.rux--contained-list-item--clickable .coins-row.coins-row--stack { display: block; }
+.coins-row--stack > * + * { margin-block-start: var(--rux-spacing-03); }
+
+/* The extra amount in the paying-off sentence's field stays narrow. */
+.coins-extra { max-inline-size: 12rem; }

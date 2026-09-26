@@ -127,7 +127,6 @@ tools and review page it grows out of.
 - [ ] Fill each bill's login from the two mailboxes, once rux connects Gmail
       and installs Proton Mail Bridge.
 - [ ] Tidy the first imports with rux, then make the tidy a skill.
-- [ ] Build Accounts, with the debt fields.
 - [ ] Build Overview.
 - [ ] Build Budget, with its table as a migration of its own.
 - [ ] Retire the money folder on the Mac, and update

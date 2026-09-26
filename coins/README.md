@@ -34,10 +34,19 @@ latest and yearly cost, a price rise when the latest is over $1.99 and 5%
 above usual, where it is paid from, its website and login, and its payments;
 Edit turns it into its form, and `bill.html?new=1` adds one.
 
+`accounts.html` has every account in three groups: bank accounts with their
+balance, cards with what is owed and the share of the limit it is, and loans
+with when they are paid off; above them what is in the bank, what is owed
+and the two together, and below the cards what paying more than the
+minimums each month, highest interest first, would clear and save. A bank
+account's balance is saved from its latest file; a card's or a loan's is
+typed into the account's side panel, since no export states one.
+
 `import.html` takes a bank file into one account in four steps: the
 account, which can be added there; the file, read on the device and never
 uploaded; a check of the lines the account does not hold yet, each ticked;
-and done. Earlier imports are listed with Undo, which deletes exactly that
+and done. A file that states a balance, newer than the account's, saves it,
+even when it has no new lines. Earlier imports are listed with Undo, which deletes exactly that
 import's lines.
 
 ## How it works
@@ -52,8 +61,8 @@ written here, because this repository is public.
 | :--- | :--- |
 | `data.js` | the reads and writes |
 | `app.js` | money as text, the month and member in the address, the switch, totals, where a bill stands |
-| `bank-file.js` | an export read by its column layout, and each line's kind and merchant |
-| `overview.js`, `transactions.js`, `bills.js`, `bill.js`, `import.js` | each page's own behaviour |
+| `bank-file.js` | an export read by its column layout, its stated balance, and each line's kind and merchant |
+| `overview.js`, `transactions.js`, `bills.js`, `bill.js`, `accounts.js`, `import.js` | each page's own behaviour |
 | `app.css` | the title row, filters, two-line rows and step buttons, under `coins-` |
 | `overrides.css` | the side panel hidden when closed and full width on a phone |
 

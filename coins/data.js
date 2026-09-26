@@ -24,12 +24,17 @@
 
   const data = client && {
     people: () => all(() => client.from('coins_people').select('id, household_id, name, sort, user_id').order('sort')),
-    accounts: () => all(() => client.from('coins_accounts').select('id, household_id, person_id, name, kind, last4, institution, closed').order('name')),
+    accounts: () => all(() => client.from('coins_accounts').select('*').order('name')),
+    async updateAccount(id, patch) {
+      const { data: saved, error } = await client.from('coins_accounts').update(patch).eq('id', id).select('*').single();
+      fail(error);
+      return saved;
+    },
     rules: () => all(() => client.from('coins_rules').select('match, merchant, kind, category, sort').order('sort')),
     imports: () => all(() => client.from('coins_imports').select('*').order('created_at', { ascending: false })),
 
     async addAccount(row) {
-      const { data: saved, error } = await client.from('coins_accounts').insert(row).select('id, household_id, person_id, name, kind, last4, institution, closed').single();
+      const { data: saved, error } = await client.from('coins_accounts').insert(row).select('*').single();
       fail(error);
       return saved;
     },

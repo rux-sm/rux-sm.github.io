@@ -46,16 +46,24 @@
   // "1,622.47" and "-$30.00" both become a number.
   const number = x => parseFloat(String(x).replace(/[$,\s]/g, ''));
 
-  // An export as { layout, lines }, or { layout: null } when no header is known.
-  // Each line is { day, description, amount, bank_type, bank_category,
-  // occurrence }, where occurrence numbers identical lines within the file.
+  // An export as { layout, lines, balance }, or { layout: null } when no
+  // header is known. Each line is { day, description, amount, bank_type,
+  // bank_category, occurrence }, where occurrence numbers identical lines
+  // within the file. `balance` is { amount, day } when the export states one,
+  // or null: the summary's ending balance, or the newest line's running
+  // balance, since a line still pending carries none.
   const parse = text => {
     const rows = csv(String(text).replace(/^﻿/, ''));
     const at = rows.findIndex(r => layoutOf(r));
-    if (at < 0) return { layout: null, lines: [] };
+    if (at < 0) return { layout: null, lines: [], balance: null };
     const head = rows[at].map(c => c.trim()), layout = layoutOf(head), L = LAYOUTS[layout];
     const get = (r, name) => name ? (r[head.indexOf(name)] ?? '').trim() : '';
     const lines = [], seen = new Map();
+    let balance = null;
+    for (const r of rows.slice(0, at)) {
+      const m = String(r[0]).match(/^Ending balance as of (\d\d)\/(\d\d)\/(\d{4})/);
+      if (m && !Number.isNaN(number(r[2]))) balance = { amount: number(r[2]), day: `${m[3]}-${m[1]}-${m[2]}` };
+    }
     for (const r of rows.slice(at + 1)) {
       const date = get(r, L.day);
       let amount = number(get(r, 'Amount'));
@@ -69,12 +77,14 @@
         bank_type: get(r, L.type),
         bank_category: get(r, L.category),
       };
+      const running = number(get(r, 'Balance'));
+      if (!Number.isNaN(running) && (!balance || line.day > balance.day)) balance = { amount: running, day: line.day };
       const key = same(line);
       line.occurrence = (seen.get(key) ?? 0) + 1;
       seen.set(key, line.occurrence);
       lines.push(line);
     }
-    return { layout, lines };
+    return { layout, lines, balance };
   };
 
   // What makes two lines the same line: everything the bank reported. The

@@ -42,7 +42,6 @@ that make share links.
 - **Secret links stay open through token-checked functions**, never direct
   table reads. A driver link shows the fields it shows today, phones included,
   for the trips in that link only.
-- **Storage files stay public.** Closing them is a later plan.
 - **Staff means a `public.profiles` row whose `user_id` is `auth.uid()` in a
   session that is not anonymous, on an account that is the owner or has
   Scheduler ticked**, so anonymous site visitors, self-made accounts and
@@ -84,7 +83,7 @@ that make share links.
   page behind a log-in and the account's ticked apps, `account.js` sends a
   log-in that ends to the log-in page, and `switcher.js` lists only the apps
   the account can open. The scheduler reads an empty fleet as an ended log-in.
-- **Later plans:** per-person chat rules, private storage, private realtime
+- **Later plans:** per-person chat rules, private realtime
   channels, and reporting a scheduler write the database refused as not
   saved, which only an ended log-in could cause once the page lock guards the
   board.
@@ -96,13 +95,8 @@ None open.
 ## Tasks
 
 - [ ] rux turns on two-factor sign-in for the Supabase dashboard login.
-- [ ] Migration `staff_cutover_rpcs`: keep the driver link, maintenance
-      schedule, trip request submission and the two new link functions open to
-      `anon`; revoke the rest from `anon` and start each with `assert_staff()`.
-      Two hand a link to anyone holding the key and close here:
-      `get_maintenance_schedule_share()`, which takes no argument at all, and
-      `get_driver_schedule_share_for_driver()`, which takes a driver's id. The
-      maintenance link is reissued after, because the old one cannot be
-      assumed private.
+- [ ] rux replaces the maintenance link on the scheduler's Maintenance page
+      and sends the shop the new one, since anyone holding the key could read
+      the old one until `staff_cutover_rpcs` closed it.
 - [ ] Migration `staff_default_privileges`: new tables and functions no longer
       grant `anon` by default.

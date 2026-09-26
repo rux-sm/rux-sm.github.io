@@ -26,9 +26,15 @@ and `data.js` is not a secret and belongs to the `anon` role, so a rule naming
 it is a rule open to the internet. `anon` holds no table grants either.
 
 **A page that works without a log-in calls a function, not a table.** The
-driver share, the maintenance share, a trip document and the customer request
-form each call a `SECURITY DEFINER` function with a token, which runs as its
-owner and never consults these rules. Copy that pattern; never grant to `anon`.
+driver share, the maintenance share and the customer request form each call a
+`SECURITY DEFINER` function with a token, which runs as its owner and never
+consults these rules; a trip document goes through the `trip-document-link`
+Edge Function. Copy that pattern; never grant to `anon`.
+
+**The key can call only those functions.** Every other function is revoked
+from `anon` and `public`, and one a staff page calls checks for staff first.
+The list the key may call is in `scheduler/docs/database-inventory.md` §1; a
+new link-page function is granted to `anon` by name, and nothing else is.
 
 **Eight tables carry no rule and no grant on purpose** — the share tables, the
 driver statuses and confirmations, trip requests and trip history. Only a
@@ -85,7 +91,9 @@ table name from the same `where`. For live channels, the same question is asked
 of `pg_policies` where `schemaname='realtime'`: no rule there may name
 strangers either. For files, it is asked of
 `pg_policies` where `schemaname='storage'`: no rule there may name strangers
-for anything but `SELECT`, and only for those three buckets.
+for anything but `SELECT`, and only for `profile-photos`. For functions, list
+the ones `anon` can run — `has_function_privilege('anon', oid, 'EXECUTE')` over
+`pg_proc` in `public` — and compare them with the inventory's list.
 
 **What the check cannot tell you.** It reads names and grants, not meaning. A
 rule called `staff_all` that asks the wrong question still passes. The only

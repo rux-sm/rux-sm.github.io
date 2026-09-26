@@ -27,36 +27,31 @@ the schema to match the page.
   Worker (`../rux-ui/worker/`), a pass-through to the Supabase host plus one
   route of its own, `/ai/extract`, used only by the intake page. This app
   talks to the Supabase host directly.
-- **Every table has row level security, and most still let the publishable
-  key in.** Each carries a `staff_all` rule for a staff session beside an open
-  one: `dev_all` on `trips`, `buses`, `drivers`, `trip_assignments`,
-  `trip_drivers`, `trip_stops`, `trip_pos` and `trip_invoices`; a
-  public-select and manage-all pair on `contacts`, `driver_time_off`,
-  passengers, tickets, notifications, team chat and dev notes; full access on
-  `bus_out_of_service`; and `transition_open` on `settings`,
-  `trip_documents`, `trip_itineraries` and `trip_payments`. `profiles` is open
-  to read and manage, but neither role can write its `user_id` or
-  `sees_all_apps`. The game tables are public to read and to join.
-- **Two tables are staff only:** `quote_rates` and `quote_mileage_rates`.
+- **Every table has row level security, and the publishable key reaches
+  none.** `anon` holds no table grant. The scheduler's tables carry a
+  `staff_all` rule for a staff session; `profiles` lets staff read and each
+  person update their own row, but never its `user_id` or `sees_all_apps`;
+  `quote_rates` and `quote_mileage_rates` are staff only too.
 - **Eight tables have no rule at all**, so they are reachable only through
   `security definer` functions: `trip_requests`, `trip_history`,
   `driver_schedule_shares`, `maintenance_schedule_shares`,
   `trip_driver_confirmations`, `trip_driver_statuses`, `trip_buses`,
   `trip_docs`.
-- **The publishable key can run 33 of the 44 `security definer` functions.**
-  The eleven it cannot are `is_staff`, `assert_staff`, `staff_profile_id`,
-  `my_staff_profile`, `signal_maintenance_schedule`, `is_owner`,
-  `list_accounts`, `set_account_apps`, `replace_maintenance_schedule_share`,
-  `get_trip_driver_statuses` and `sync_trip_driver_statuses`. The last two
-  also call `assert_staff`, because an anonymous sign-in is signed in.
+- **The publishable key can run eleven functions, the ones the link pages
+  call:** the driver page's `get_driver_schedule_share`,
+  `get_driver_share_trips`, `get_driver_assignment_statuses`,
+  `get_driver_confirmations`, `get_driver_accepted_views`,
+  `record_driver_accepted_view`, `confirm_trip_assignment` and
+  `decline_trip_assignment`; the maintenance page's `get_maintenance_schedule`
+  and `get_maintenance_schedule_changes`; and the request form's
+  `submit_trip_request`. Each takes the link's token or, for the form, only
+  adds a request. Every other function is closed to the key, and the ones a
+  staff page calls check `is_staff` first, so an account signed in without the
+  Scheduler is refused too.
 
-**What this means for this app.** A staff session and the publishable key
-alone reach the same rows until the open rules come down. That is a cutover
-step, taken once nothing uses the key alone, as a migration applied through
-the Supabase connection. `platform.profiles` is a separate table that holds a
-staff member's name and theme across the site, and in `scheduler_shortcuts`
-their choice for slots 2 to 4 of the selected bar's shortcuts, null for the
-default set.
+`platform.profiles` is a separate table that holds a staff member's name and
+theme across the site, and in `scheduler_shortcuts` their choice for slots 2
+to 4 of the selected bar's shortcuts, null for the default set.
 
 ## 2. Tables
 
@@ -116,7 +111,7 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 ### Functions the app calls
 
 Trigger functions `set_bus_ref`, `set_driver_ref`, `touch_trips_updated_at`,
-`trip_itineraries_touch` run on their own. The RPCs a screen calls:
+`touch_updated_at` and `trip_itineraries_touch` run on their own. The RPCs a screen calls:
 
 | Area | Functions |
 |---|---|
@@ -124,7 +119,7 @@ Trigger functions `set_bus_ref`, `set_driver_ref`, `touch_trips_updated_at`,
 | Driver acceptance | `confirm_trip_assignment`, `decline_trip_assignment`, `get_trip_driver_statuses`, `sync_trip_driver_statuses`, `get_driver_assignment_statuses`, `get_driver_confirmations`, `record_driver_accepted_view`, `get_driver_accepted_views` |
 | Maintenance link | `create_maintenance_schedule_share`, `get_maintenance_schedule_share`, `get_maintenance_schedule`, `get_maintenance_schedule_changes`, `revoke_maintenance_schedule_share`; `replace_maintenance_schedule_share`, staff only, gives the link a new token or makes the first one |
 | Trip requests | `create_trip_request`, `submit_trip_request`, `get_trip_request`, `list_trip_requests`, `update_trip_request_status`, `link_trip_request`, `delete_trip_request`, `new_trip_request_reference` |
-| Document links | `get_trip_document`, for this app's and rux-ui's document link pages |
+| Document links | the `trip-document-link` Edge Function (§6), for this app's and rux-ui's document link pages; `get_trip_document` is staff only and nothing calls it |
 | History | `record_trip_history`, `get_trip_history` |
 | Access, owner only, on the Account page | `is_owner`, `list_accounts`, `set_account_apps`; not callable without a log-in |
 

@@ -4,9 +4,10 @@
 // Design's shared check on every app except Design, which has its own; an app
 // with a tools/check.mjs of its own (Notes) runs that instead, and it includes
 // the shared check. Then the sprite currency rule for the pages that paste the
-// sprite by hand, the names sweep over every text file in the repository, and
-// the switcher rule. `--full` adds Design's `npm run verify`. Exits 1 on any
-// failure. The pre-commit hook runs the fast form; CI runs --full.
+// sprite by hand, the names sweep over every text file in the repository, the
+// switcher rule, the lock rule and the print rule. `--full` adds Design's
+// `npm run verify`. Exits 1 on any failure. The pre-commit hook runs the fast
+// form; CI runs --full.
 //
 //   node tools/check.mjs
 //   node tools/check.mjs --full
@@ -101,6 +102,39 @@ const open = pages.filter(([, s]) => s.match(/<script\b[^>]*>/)?.[0] !== '<scrip
 for (const p of open) console.log(`  FAIL  ${p}: it needs <script src="/funnel.js"> first with the lock style after it, and a pinned supabase-js before account.js`);
 console.log(`  ${open.length ? 'FAIL' : ' ok '}  pages   ${pages.length} full pages${open.length ? '' : ', each locked first and confirming its login once open'}`);
 if (open.length) failed.push('funnel');
+
+// THE PRINT RULE. A printed form stays vector -- type, rules and fills Chrome
+// writes as shapes -- only while nothing on it has to be painted as a picture:
+// a gradient, a filter, a mask, a shadow or a background image comes out of
+// the print dialog as pixels, and so does an image that is not an SVG or a
+// page drawn to a canvas. Every form is drawn by print.js and styled by
+// print.css; the pages round them hold only the screen's header and menus.
+// What sits in an `@media screen` block never prints, so it is left out.
+console.log('\n── print');
+const FORMS = ['scheduler/print.css', 'scheduler/print.js'];
+const PAINTED = [
+  [/gradient\(/, 'a gradient'], [/(?:^|[\s;{])(?:-webkit-)?(?:backdrop-)?filter\s*:/m, 'a filter'],
+  [/(?:^|[\s;{])(?:-webkit-)?mask(?:-[a-z]+)?\s*:/m, 'a mask'], [/(?:box|text)-shadow\s*:/, 'a shadow'],
+  [/(?:background|background-image|border-image|list-style|content)\s*:[^;{}]*url\(/, 'a background image'],
+  [/\.(?:png|jpe?g|webp|gif)\b/i, 'an image that is not an SVG'], [/html2canvas|jspdf|toDataURL|getContext\(/i, 'a page drawn to a canvas'],
+];
+// Comments out, then every `@media screen { ... }` block, matched to its brace.
+const printed = s => {
+  s = s.replace(/\/\*[\s\S]*?\*\//g, '').replace(/<!--[\s\S]*?-->/g, '').replace(/^\s*\/\/.*$/gm, '');
+  for (let at; (at = s.search(/@media\s+screen\b[^{]*\{/)) >= 0;) {
+    let i = s.indexOf('{', at) + 1;
+    for (let depth = 1; depth && i < s.length; i++) depth += s[i] === '{' ? 1 : s[i] === '}' ? -1 : 0;
+    s = s.slice(0, at) + s.slice(i);
+  }
+  return s;
+};
+let painted = 0;
+for (const f of FORMS) {
+  const s = printed(readFileSync(join(ROOT, f), 'utf8'));
+  for (const [re, what] of PAINTED) if (re.test(s)) { painted++; console.log(`  FAIL  ${f}: ${what} prints as pixels; draw it with rules, fills, text or an SVG`); }
+}
+console.log(`  ${painted ? 'FAIL' : ' ok '}  forms   ${FORMS.length} files${painted ? '' : ', nothing on a form is painted as a picture'}`);
+if (painted) failed.push('print');
 
 if (FULL) step('design verify', 'npm', ['run', 'verify', '--silent'], { cwd: DS });
 

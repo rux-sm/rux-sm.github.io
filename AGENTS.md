@@ -45,7 +45,7 @@ deliberate step, never by a website deploy.
     npm run serve -- --cloud    the same at http://localhost:8641/, with log-in and live data
     npm run serve -- --private  atlas's internal tier, rendered and served on :8644, never published
     npm run build               regenerate what is committed but derived
-    npm run check               every app through the shared check, Notes' gates, the names sweep
+    npm run check               every app through the shared check, Notes' gates, the names sweep, the print rule
     npm run check -- --full     the same plus Design's own verify; what CI runs
     npm run export              atlas's export tier into notes/data/atlas/, rebuilt and checked
 

@@ -46,7 +46,7 @@ npm run serve                  # http://localhost:8640/ — the whole site, loop
 npm run serve -- --cloud       # http://localhost:8641/ — the same, with log-in and live data
 npm run serve -- --private     # atlas's internal tier on :8644, never published
 npm run build                  # regenerate what is committed but derived
-npm run check                  # every app, Notes' gates, the names sweep; --full adds Design verify
+npm run check                  # every app, Notes' gates, the names sweep, the print rule; --full adds Design verify
 npm test                       # the same check, under the name every tool expects
 npm run export                 # pull atlas's export tier into Notes, rebuild, check
 git push                       # publishes, after CI runs the full check

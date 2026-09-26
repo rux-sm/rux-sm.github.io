@@ -3989,7 +3989,11 @@
     if (!r) return [];
     const yard = folded(yardPlace?.address);
     const out = [];
-    for (const [place, open] of [[r.pickupPlace, r.pickupOpen], [r.dropPlace, r.dropOpen]]) {
+    /* The pickup and drop-off when changed, and every stop new or moved to
+       another place, so a place named in the stop dialog is offered too. */
+    const changed = [[r.pickupPlace, r.pickupOpen], [r.dropPlace, r.dropOpen],
+      ...(r.list || []).filter(st => st.placeChanged || !st.id).map(st => [st.place, null])];
+    for (const [place, open] of changed) {
       if (!place || place === open || place.lat == null || !place.address) continue;
       if (yard && folded(place.address) === yard) continue;
       const saved = (panelIndex.locations || []).some(l =>
@@ -6326,6 +6330,15 @@
             dwell: document.getElementById('scheduler-f-stopdwell')?.value || null,
           };
           if (index === null) r.list.push(next); else r.list[index] = next;
+          /* The list is the order Save writes, so it is kept in time order: by
+             day, and within a day by time where both stops have one; a stop
+             with no time keeps its place among its day's. */
+          const at = st => st.arrive || st.leave;
+          r.list.sort((x, y) => {
+            const dx = x.date || from, dy = y.date || from;
+            if (dx !== dy) return dx < dy ? -1 : 1;
+            return at(x) && at(y) ? toMin(at(x)) - toMin(at(y)) : 0;
+          });
           window.Rux?.modal?.close?.('scheduler-stop-modal');
           touch();
         };

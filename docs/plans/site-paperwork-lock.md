@@ -2,20 +2,23 @@
 type: plan
 ---
 
-# Plan: Trip paperwork opens only through a short-lived link
+# Plan: Trip paperwork and driver photos open only through a short-lived link
 
 ## Goal
 
-Close the `trip-documents` bucket, so a trip's paperwork can no longer be read
-by anyone who has, or guesses, its file address. Every page that shows a trip
-document asks for a link that stops working after a few minutes: the two
-document share pages, the driver share pages, and each app's Files tab.
+Close the `trip-documents` and `driver-photos` buckets, so a trip's paperwork
+and a driver's face can no longer be read by anyone who has, or guesses, the
+file's address. Every page that shows one asks for a link that stops working
+after ten minutes: the two document share pages, the driver share pages, each
+app's Files tab, and the pages that show a driver's photo.
 
 ## Decisions
 
-- **Only `trip-documents` closes here.** It holds the 214 files of paperwork.
-  `driver-photos` and `profile-photos` stay public until the question below
-  is answered.
+- **`trip-documents` and `driver-photos` close; `profile-photos` stays
+  public.** The first holds the 214 files of paperwork and the second 18
+  drivers' faces; staff's own faces in the header are not in scope.
+- **A link lasts ten minutes,** because a page asks for one the moment it shows
+  the file; an open file is unaffected, and a copied address stops working.
 - **One server function makes the public links,** `trip-document-link`, a
   Supabase Edge Function beside `scheduler-connector`. It takes a document id,
   finds the file the way `get_trip_document` does, and answers with a link
@@ -27,23 +30,25 @@ document share pages, the driver share pages, and each app's Files tab.
   `trip-document-link` for the link when the driver taps it, not when the page
   loads.
 - **Staff pages sign their own links,** with `createSignedUrl` for ten minutes,
-  under a new rule that lets staff read the bucket. That is the scheduler's
-  Files tab and rux-ui's trip editor.
+  under a new rule that lets staff read each bucket. That is the scheduler's
+  Files tab and rux-ui's trip editor for paperwork, and the scheduler's Drivers
+  page and rux-ui's driver panel and roster for photos. No link page shows a
+  driver's photo, so photos need no server function.
+- **A photo is drawn once its link arrives.** rux-ui's `getDriverPhotoUrl`
+  returns an address at once today; signing takes a request, so the panel and
+  the roster show the initials until the photo's link comes back.
 - **One migration, applied only after every page asks for signed links.**
-  `trip_documents_private`: add `trip-documents staff read`, drop `Public read
-  access`, and set the bucket's `public` to false. Shown to rux before it runs.
+  `trip_documents_and_driver_photos_private`: for each bucket, add a staff
+  read rule, drop its public read rule, and set its `public` to false. Shown
+  to rux before it runs.
   Until it runs, both kinds of link work, so the pages can change first
   without breaking anything.
-- **`docs/database-access.md` loses its exception** for `trip-documents` in the
+- **`docs/database-access.md` loses its exception** for both buckets in the
   same commit as the migration.
 
 ## Questions
 
-1. Close `driver-photos` too? Its 18 files are drivers' faces. The staff
-   pages and rux-ui's driver page would sign links the same way.
-2. Is ten minutes right? A link is used the moment it is made, so shorter is
-   safer; a customer who keeps the file open is unaffected, but a copied file
-   address stops working after that time.
+None open.
 
 ## Tasks
 
@@ -54,5 +59,9 @@ document share pages, the driver share pages, and each app's Files tab.
 - [ ] rux-ui's `driver-share.js` and `scheduler/share/driver.js` ask the
       function when a document is tapped.
 - [ ] The scheduler's Files tab and rux-ui's `trip-db.js` sign staff links.
-- [ ] Migration `trip_documents_private`, then check from outside that a
-      public file address answers 400 and a signed link opens.
+- [ ] The scheduler's `drivers.js` and rux-ui's `driver-db.js` sign photo
+      links, and rux-ui's driver panel and roster draw a photo once its link
+      arrives.
+- [ ] Migration `trip_documents_and_driver_photos_private`, then check from
+      outside that a public file address answers 400 in each bucket and a
+      signed link opens.

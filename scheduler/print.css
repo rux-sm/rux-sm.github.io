@@ -1590,25 +1590,17 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   min-block-size: 0;
   margin-block-start: -0.75pt;
   margin-inline-start: -0.75pt;
-  border: 0.75pt solid var(--rux-border-subtle-01);
-  border-block-end-color: var(--scheduler-week-foot);
+  border: 0.75pt solid transparent;
   background: var(--scheduler-week-bg);
+  background-clip: padding-box;
   color: var(--rux-text-primary);
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
-/* A CARD'S EDGES ARE THE GRID'S OWN LINES, each in the colour of the gridline
-   under it: light between days and rows, dark on the frame, under the header
-   and beside the bus column. Its colour is the fill alone. */
-.scheduler-week__trip { --scheduler-week-foot: var(--rux-border-subtle-01); }
-.scheduler-week__trip[data-edge~="start"] { border-inline-start-color: var(--rux-border-strong-01); }
-.scheduler-week__trip[data-edge~="end"] { border-inline-end-color: var(--rux-border-strong-01); }
-.scheduler-week__days + .scheduler-week__row .scheduler-week__trip[data-edge~="top"] {
-  border-block-start-color: var(--rux-border-strong-01);
-}
-.scheduler-week__row:last-child .scheduler-week__lanes[data-lanes="1"] > .scheduler-week__trip {
-  --scheduler-week-foot: var(--rux-border-strong-01);
-}
+/* A CARD DRAWS NO LINE OF ITS OWN. Its border is clear and its fill stops
+   inside it, so the gridline under each edge shows through: every line on
+   the sheet is the grid's, the same on screen and on paper. A card across
+   several days covers the day lines inside it. */
 /* The board's own trip colours, from the same tag tokens it paints with. */
 .scheduler-week__trip--blue    { --scheduler-week-bg: var(--rux-tag-background-blue); }
 .scheduler-week__trip--teal    { --scheduler-week-bg: var(--rux-tag-background-teal); }
@@ -1712,8 +1704,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-week__pay > .scheduler-week__field { align-items: flex-end; }
 
 /* The write-in lines, on white, share the card's remaining height evenly,
-   each with its text sitting on a rule that runs to the card's edges. The
-   lines reach over the card's foot line, and the last one draws it. */
+   each ruled at its head and its text sitting on the next rule; the last
+   sits on the row's own gridline under the card. */
 .scheduler-week__write {
   flex: 1 1 auto;
   display: flex;
@@ -1725,8 +1717,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   box-sizing: content-box;
   display: grid;
   grid-auto-rows: minmax(min-content, 1fr);
-  margin-block-end: -0.75pt;
-  border-block-start: 0.5pt solid var(--rux-border-strong-01);
   line-height: 10px;
 }
 /* IN A CARD THE ROW'S HEIGHT, EVERY LINE IS THE SAME WHOLE NUMBER OF PIXELS:
@@ -1737,7 +1727,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 .scheduler-week__detail {
   align-items: end;
-  border-block-end: 0.5pt solid var(--rux-border-strong-01);
+  border-block-start: 0.5pt solid var(--rux-border-strong-01);
   background: var(--rux-layer-01);
   background-clip: padding-box;
 }
@@ -1745,10 +1735,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 :is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="2"] { --scheduler-week-fields: 2; }
 :is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="3"] { --scheduler-week-fields: 3; }
 :is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="4"] { --scheduler-week-fields: 4; }
-/* The last line's rule is the card's own foot line, drawn in its colour at
-   its width over the card's border, so the shrunk preview cannot lose it
-   under the line's white. */
-.scheduler-week__detail:last-child { border-block-end: 0.75pt solid var(--scheduler-week-foot); }
 .scheduler-week__field {
   display: flex;
   gap: 2pt;

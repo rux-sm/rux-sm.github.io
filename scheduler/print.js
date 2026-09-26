@@ -1337,11 +1337,6 @@
     const card = el('div', `scheduler-week__trip scheduler-week__trip--${hue}`);
     card.style.gridColumn = `${place.start + 1} / span ${place.span}`;
     card.style.gridRow = String(lane + 1);
-    // Which of its edges lie on the sheet's frame, the header or the bus
-    // column, whose lines are the dark ones; print.css draws each edge in the
-    // colour of the gridline under it.
-    card.dataset.edge = [lane === 0 && 'top', place.start === 0 && 'start',
-      place.start + place.span === 7 && 'end'].filter(Boolean).join(' ');
     // Its lines keep to the first day's width, as rux-ui's do, however many
     // days the colour runs across.
     card.style.setProperty('--scheduler-week-span', String(place.span));

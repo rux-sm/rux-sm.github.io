@@ -45,5 +45,4 @@ envelope, the driver itinerary and the customer quote.
 - [ ] Measure the sheet at letter landscape and portrait with four and eight
       rows, and at the most trips one day has had.
 - [ ] Open it from the board's menu for the week on screen.
-- [ ] rux prints a real week of each report and holds it beside rux-ui's.
 - [ ] Remove Print schedule from rux-ui, after reading its own `CLAUDE.md`.

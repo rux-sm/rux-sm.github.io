@@ -67,8 +67,5 @@ retired with its tables.
 
 ## Tasks
 
-- [ ] rux starts a table on the Mac, a second account joins from the phone,
-      and they play a round to the end with a Freeze, a Flip Three and a
-      Second Chance in it.
 - [ ] rux says yes, and the Flip 7 panel leaves rux-ui with its `game_*`
       tables and `*flip_seven*` functions.

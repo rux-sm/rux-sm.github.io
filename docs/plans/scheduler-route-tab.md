@@ -83,7 +83,3 @@ None open.
 ## Tasks
 
 - [ ] rux redeploys the connector, so Claude may send the route's four names.
-- [ ] rux enters a pickup, a drop-off and both times on a real trip, saves,
-      and checks both boards show the same yard times, that a round trip
-      gained no drop-off stop, and that a trip rux-ui built kept its
-      itinerary. Nothing here has been opened with a log-in.

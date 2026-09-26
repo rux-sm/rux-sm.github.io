@@ -54,6 +54,5 @@ document share pages, the driver share pages, and each app's Files tab.
 - [ ] rux-ui's `driver-share.js` and `scheduler/share/driver.js` ask the
       function when a document is tapped.
 - [ ] The scheduler's Files tab and rux-ui's `trip-db.js` sign staff links.
-- [ ] rux opens a document from each page on 8641 and from a real share link.
 - [ ] Migration `trip_documents_private`, then check from outside that a
       public file address answers 400 and a signed link opens.

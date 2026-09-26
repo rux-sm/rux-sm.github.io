@@ -119,7 +119,8 @@ Three homes, and one rule for choosing.
   on their own page, `drivers.html?id=`, `fleet.html?id=`,
   `contacts.html?id=`, `customers.html?id=` and `locations.html?id=`, because
   each is a list you go to and its record opens from that list;
-  `docs/plans/site-page-pair.md` decides the shape they all take.
+  Design's `list-page.html` and `record-page.html` templates are the shape they
+  all take, and `scheduler/pair.js` what they do alike.
 - **Tasks and History are pages.** Neither is the detail of anything, and as
   panels they would hold the panel open. History sits below Settings in the nav:
   it is consulted, not worked in.

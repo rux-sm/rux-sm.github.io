@@ -142,5 +142,3 @@ None open.
 ## Tasks
 
 - [ ] Drop the Carbon symbols the scheduler was the only caller of.
-- [ ] rux looks at a real week, a toolbar and a menu, and says whether the
-      scheduler reads as one thing.

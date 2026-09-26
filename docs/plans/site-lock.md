@@ -171,8 +171,6 @@ None open.
 ## Tasks
 
 - [ ] Build the request page, tested without sending a request.
-- [ ] rux opens Driver view from a driver on the Drivers page, and a real
-      link on the phone, and accepts one real trip there.
 - [ ] Turn rux-ui's four link pages into forwarders and switch its link-making
       code to the new addresses.
 - [ ] Migration `profiles_sees_all_apps_drop`: drop the column, which no code

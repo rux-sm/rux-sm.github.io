@@ -51,6 +51,4 @@ None open.
 
 ## Tasks
 
-- [ ] rux sends one real driver a link made here, and checks the board turns
-      the legs yellow and the driver's answer comes back.
 - [ ] Remove Driver week info from rux-ui, after reading its own `CLAUDE.md`.

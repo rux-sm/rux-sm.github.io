@@ -15,8 +15,8 @@ capacity, a service date or the days a bus is out.
 - **Two views in one file.** `scheduler/fleet.html` lists the units,
   `fleet.html?id=<bus id>` edits one, and `fleet.html?new` makes one.
   `scheduler/README.md` and `scheduler/fleet.js` say what the page is now.
-- **Both take the page pair's layout**, which `docs/plans/site-page-pair.md`
-  decides for every such pair and this plan does not restate.
+- **Both take the page pair's layout**, Design's `list-page.html` and
+  `record-page.html` templates, which this plan does not restate.
 - **This corrects the screen inventory.** `scheduler/docs/screen-inventory.md`
   says a bus is edited in the panel, in §2 and in §7's list of what the panel
   holds; the page pair decided otherwise, and the inventory changes with this
@@ -111,5 +111,3 @@ None open.
 - [ ] Give the Van, the one unit with no `buses.sort_order`, the last place, as a
       named migration through the Supabase connection; the coaches already run
       by model year. The statement is shown to rux before it runs.
-- [ ] rux saves one real bus, and checks the board's rows and rux-ui's roster
-      show the same order.

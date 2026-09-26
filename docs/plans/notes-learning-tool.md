@@ -254,8 +254,6 @@ None open.
 
 ## Tasks
 
-- [ ] rux reads the path on the site and checks what atlas links: the phases
-      each tile opens, where each task sits, its homework and its quest kinds.
 - [ ] Carry each phase's walked date in the data (OI-275), so a tile can say
       Verified.
 - [ ] rux attests to `order-planning` and `planned-order`, and the glossary shows
@@ -265,7 +263,5 @@ None open.
 - [ ] Take one quest from a tile through Walk this, the pull, the intake and a
       verified correction, and time it against what the same correction costs
       today.
-- [ ] Read the path on desktop and the phone, with the keyboard and back-button
-      checks above, and write down what rux could not find unprompted.
 - [ ] Turn walkthrough, experiment and meeting pages into landings, and retire
       the session map when its condition above is met.

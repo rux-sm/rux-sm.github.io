@@ -126,7 +126,9 @@ any document: decisions get corrected, found work gets added, and answered
 questions and finished tasks get deleted. It never records when something was
 done, and it is deleted with its last task. Site work is planned here even when
 it touches atlas; atlas-only work is planned in atlas. The status list does not
-name plans, because the plans folder is the list.
+name plans, because the plans folder is the list. No plan or status item asks rux to
+check a result: a session checks its own work in Chrome on :8641, and its
+report says what only a real save could prove.
 
 **Principles no check can prove:**
 

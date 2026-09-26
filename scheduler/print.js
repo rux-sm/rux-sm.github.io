@@ -1402,8 +1402,6 @@
        foot to write on. */
     const write = el('div', 'scheduler-week__write');
     const po = firstAndMore(trip.po_ref, (trip.trip_pos || []).length);
-    // A long PO takes the room the fields beside it do not need.
-    if (detailText(po).length > 8) card.dataset.wide = '';
     const pay = detailLine(crew.length ? crew.map(d => ['$', payText(d.pay)]) : [['$', '']]);
     pay.classList.add('scheduler-week__pay');
     write.appendChild(pay);

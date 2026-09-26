@@ -215,7 +215,10 @@ While a trip is in the panel its bars are locked on the board: they do not
 drag, and their bus, colour and hotel are the panel's to change, so each
 changes in one place. The bar the panel holds keeps the shortcut bar, whose
 first slot turns into an X and closes the trip; the slots the panel has taken
-over stay in place and say to change it in the editor. Its other bars — the
+over stay in place and say to change it in the editor. The editor carries
+the same slots in a row above its tabs, less Open trip and the empty one;
+there Color opens Trip actions, and Mark hotel booked, Assign driver and Take
+off this bus go to the Fleet tab, so the change saves with the trip. Its other bars — the
 return leg, or the same leg on another bus — wear a dashed ring in the
 selection's colour, which says they belong to the open trip without costing
 any of their writing. Save checks the trip's `updated_at` against the value

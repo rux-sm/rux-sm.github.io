@@ -306,6 +306,18 @@
   letter-spacing: var(--rux-heading-compact-02-letter-spacing);
 }
 
+/* THE EDITOR'S ROWS. Carbon's panel is three rows, head, content and actions,
+   and gives its middle row the spare height. The editor puts who else is on
+   the trip and the trip's shortcuts between the head and the content, so each
+   part is given its own row, and a hidden one leaves an empty row rather than
+   taking the content's height. */
+#scheduler-panel { grid-template-rows: auto auto auto minmax(0, 1fr) auto; }
+#scheduler-panel > .rux--side-panel__header { grid-row: 1; }
+#scheduler-presence-note { grid-row: 2; }
+#scheduler-panel-shortcuts { grid-row: 3; }
+#scheduler-panel-body { grid-row: 4; }
+#scheduler-panel > .rux--side-panel__actions-container { grid-row: 5; }
+
 /* The contained tabs take `spacing-03` inline padding in place of
    `spacing-05`, so all six fit the panel without scrolling. The list fills
    the strip in the board's band surface, so past the last tab the strip is the

@@ -1542,6 +1542,9 @@
   const pageEl = document.querySelector('.scheduler-page');
   // The selected trip's shortcut bar, placed and drawn by placeBarOpen.
   const barShortcuts = document.getElementById('scheduler-bar-shortcuts');
+  // The same shortcuts in a row above the editor's tabs, drawn by drawPanelShortcuts.
+  const panelShortcuts = document.getElementById('scheduler-panel-shortcuts');
+  let panelShortcutsDrawn = '';
   const unsavedModal = document.getElementById('scheduler-unsaved-modal');
 
   /* A section can carry one control on its heading line, as each billing
@@ -7102,6 +7105,7 @@
   // The Contacts window, while it is open: its overlay registration and slot.
   let contactsOpen = null;
   function placeBarOpen(bar = (peekBar?.isConnected ? peekBar : null) ?? selectedBar()) {
+    drawPanelShortcuts();
     if (!barShortcuts) return;
     const none = !bar?.dataset.tripId || gridEl.querySelector('.scheduler-bar--dragging');
     barShortcuts.hidden = none;
@@ -10747,6 +10751,67 @@
       return;
     }
     (FIXED_SHORTCUTS[btn.dataset.shortcut] ?? SHORTCUT_ACTIONS.find(a => a.id === btn.dataset.shortcut))?.run(bar, btn);
+  });
+
+  /* THE EDITOR'S SHORTCUTS: the floating card's slots in a row above the
+     editor's tabs, less Open trip, which the editor already is, and with no
+     empty slot, because Customize shortcuts is the bar menu's. They act on the
+     bar the editor holds, so a trip not on the week shown keeps its row faint
+     until it is. The four the board hands to the editor while the trip is
+     open go to the place in the editor that changes them instead, so the
+     change is saved with the rest of the trip. */
+  const toFleetTab = () => {
+    const tab = document.getElementById('scheduler-tab-fleet');
+    if (tab && tab.getAttribute('aria-selected') !== 'true') window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
+  };
+  const IN_EDITOR = {
+    color: () => document.getElementById('scheduler-panel-menu')?.click(),
+    // The leg's Booked box, where Hotel is ticked; the Fleet tab where it is not.
+    hotel: ref => {
+      toFleetTab();
+      const box = document.getElementById(`scheduler-f-hotelbooked-${ref.leg}`);
+      if (box?.offsetParent) { box.scrollIntoView({ block: 'nearest' }); box.focus(); }
+    },
+    assign: toFleetTab,
+    unassign: toFleetTab,
+  };
+  function drawPanelShortcuts() {
+    if (!panelShortcuts) return;
+    const ref = !panelEl.hidden && !panelArgs?.draft ? panelArgs?.ref : null;
+    panelShortcuts.hidden = !ref;
+    if (!ref) { panelShortcutsDrawn = ''; return; }
+    const bar = findBar(ref);
+    const slots = [...shortcutChoice.filter(Boolean), 'contacts', 'add_update'].map(id => {
+      const action = FIXED_SHORTCUTS[id] ?? SHORTCUT_ACTIONS.find(a => a.id === id);
+      const why = IN_EDITOR[id] ? null : !bar ? 'This trip is not on the week shown' : action.blocked(bar);
+      return { id, why,
+        label: why ?? (action.label_for && bar ? action.label_for(bar) : action.label),
+        icon: action.icon_for && bar ? action.icon_for(bar) : action.icon,
+        short: action.short_for && bar ? action.short_for(bar) : action.short };
+    });
+    // The same slots are left alone, so a focused slot keeps focus.
+    const key = JSON.stringify(slots);
+    if (key === panelShortcutsDrawn) return;
+    panelShortcutsDrawn = key;
+    panelShortcuts.replaceChildren(...slots.map(s => {
+      const btn = el('button', 'scheduler-bar-shortcut');
+      btn.type = 'button';
+      btn.dataset.shortcut = s.id;
+      btn.setAttribute('aria-label', s.label);
+      btn.title = s.label;
+      if (s.why) btn.setAttribute('aria-disabled', 'true');
+      btn.append(svgUse(s.icon, '16', '0 0 32 32'), el('span', 'scheduler-bar-shortcut__label', s.short));
+      return btn;
+    }));
+  }
+  panelShortcuts?.addEventListener('click', e => {
+    const btn = e.target.closest('.scheduler-bar-shortcut');
+    const ref = panelArgs?.ref;
+    if (!btn || !ref || btn.getAttribute('aria-disabled') === 'true') return;
+    const id = btn.dataset.shortcut;
+    if (IN_EDITOR[id]) { IN_EDITOR[id](ref); return; }
+    const bar = findBar(ref);
+    if (bar) (FIXED_SHORTCUTS[id] ?? SHORTCUT_ACTIONS.find(a => a.id === id))?.run(bar, btn);
   });
 
   const shortcutsModal = document.getElementById('scheduler-shortcuts-modal');

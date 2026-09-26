@@ -755,7 +755,26 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) .scheduler-card > :first-child,
 .scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) .scheduler-card > .scheduler-card__list:first-child > :first-child { border-block-start: 0; }
-.scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut__label {
+/* THE EDITOR'S SHORTCUTS: the floating card's slots in a row above the tabs,
+   on the panel's own surface, each word under its icon and the slots sharing
+   the row's width as they share the card's. */
+.scheduler-panel-shortcuts {
+  display: flex;
+  background: var(--rux-layer-01);
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+}
+.scheduler-panel-shortcuts[hidden] { display: none; }
+.scheduler-panel-shortcuts > .scheduler-bar-shortcut {
+  flex: 1 1 auto;
+  flex-direction: column;
+  inline-size: auto;
+  min-inline-size: var(--scheduler-slot-w);
+  block-size: auto;
+  padding: var(--rux-spacing-02);
+}
+.scheduler-panel-shortcuts > .scheduler-bar-shortcut:not([aria-disabled="true"]):hover { background: var(--rux-layer-hover-01); }
+.scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut__label,
+.scheduler-panel-shortcuts .scheduler-bar-shortcut__label {
   display: block;
   max-inline-size: 100%;
   overflow: hidden;

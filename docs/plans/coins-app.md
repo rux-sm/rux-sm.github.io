@@ -120,8 +120,6 @@ tools and review page it grows out of.
 ## Tasks
 
 - [ ] Tick Coins for the second member on the Access page.
-- [ ] Import every file in the money folder and match its yearly totals to
-      the cent.
 - [ ] Build Transactions and the rules page, with a migration adding the
       looked-at mark to each line.
 - [ ] Build Bills and the bill page, with a migration for how a bill

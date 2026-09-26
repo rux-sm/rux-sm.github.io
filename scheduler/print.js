@@ -1274,7 +1274,16 @@
     if (!first) return extra > 0 ? `${extra + 1} on file` : '';
     return extra > 0 ? `${first} +${extra}` : String(first);
   };
-  const timeOrDash = t => (t ? clock(t) : '--:--');
+  // "10:40a", the board's short form, so three times and their labels share
+  // one day's width.
+  const weekClock = t => {
+    const [h, m] = String(t || '').split(':');
+    const hr = Number(h);
+    if (!t || !Number.isFinite(hr) || m === undefined) return '--:--';
+    return `${hr % 12 || 12}:${m}${hr < 12 ? 'a' : 'p'}`;
+  };
+  // A driver's pay under the "$" its line prints: "250", or nothing to write on.
+  const payText = n => (Number(n) ? Number(n).toLocaleString('en-US') : '');
 
   // The trip's miles: what the Route tab worked out, or its stops added up.
   function milesOf(trip) {
@@ -1305,14 +1314,14 @@
     return svg;
   }
 
-  // A ruled line of labelled fields, two across or one, each label printed
+  // A ruled line of labelled fields, one to four across, each label printed
   // whether or not it has a value, so every card rules the same lines.
   function detailLine(fields) {
     const line = el('div', 'scheduler-week__detail');
     line.dataset.fields = String(fields.length);
     for (const [label, value] of fields) {
       const field = el('span', 'scheduler-week__field');
-      field.append(el('span', 'scheduler-week__label', `${label}:`),
+      field.append(el('span', 'scheduler-week__label', label),
         el('span', 'scheduler-week__value', detailText(value)));
       line.appendChild(field);
     }
@@ -1336,6 +1345,9 @@
       return card;
     }
 
+    /* WHAT THE DATABASE KNOWS, on the trip's colour: where, for whom, the
+       three times and the crew. */
+    const facts = el('div', 'scheduler-week__facts');
     const top = el('div', 'scheduler-week__trip-top');
     top.appendChild(el('span', 'scheduler-week__destination', trip.destination || 'Trip'));
     if (of) top.appendChild(el('span', 'scheduler-week__of', of));
@@ -1346,25 +1358,31 @@
       if (on) paid.appendChild(el('span', 'scheduler-week__paid-date', ` ${Number(on[2])}/${Number(on[3])}`));
       top.appendChild(paid);
     }
-    card.appendChild(top);
+    facts.appendChild(top);
 
     const riders = (trip.trip_passengers || []).length;
-    card.appendChild(el('div', 'scheduler-week__line', trip.is_self_organized
-      ? `${riders} passenger${riders === 1 ? '' : 's'}` : trip.customer || ' '));
+    facts.appendChild(el('div', 'scheduler-week__line', trip.is_self_organized
+      ? `${riders} passenger${riders === 1 ? '' : 's'}` : trip.customer || ' '));
     const who = trip.booking_contact_name || trip.booking_contact_phone
       ? [trip.booking_contact_name, trip.booking_contact_phone]
       : [trip.trip_contact_1_name, trip.trip_contact_1_phone];
-    card.appendChild(el('div', 'scheduler-week__line',
-      [who[0], who[1] ? showPhone(who[1]) : ''].filter(Boolean).join(' ') || ' '));
+    facts.appendChild(el('div', 'scheduler-week__line scheduler-week__contact',
+      [who[0], who[1] ? showPhone(who[1]) : ''].filter(Boolean).join(' ') || ' '));
 
     const times = el('div', 'scheduler-week__times');
-    for (const t of [bar.leg.depart, bar.leg.spot, bar.leg.back]) times.appendChild(el('span', null, timeOrDash(t)));
-    card.appendChild(times);
+    for (const [label, t] of [['Out', bar.leg.depart], ['Spot', bar.leg.spot], ['Back', bar.leg.back]]) {
+      const time = el('span', 'scheduler-week__time');
+      time.append(el('span', 'scheduler-week__label', label), el('span', 'scheduler-week__value', weekClock(t)));
+      times.appendChild(time);
+    }
+    facts.appendChild(times);
 
+    // A column per driver, ruled apart, with the pay line's "$" under each
+    // name. Only a relief driver is marked, with the board's handover arrows.
     const crew = crewOnBus(assignment);
-    // On the same columns as their pay line, so each name sits over its D1.
+    const columns = String(Math.max(1, crew.length));
     const crewLine = el('div', 'scheduler-week__crew');
-    crewLine.dataset.fields = String(Math.max(1, crew.length));
+    crewLine.dataset.fields = columns;
     for (const d of crew) {
       const person = el('span', 'scheduler-week__driver');
       if (String(d.role).startsWith('relief')) {
@@ -1375,30 +1393,28 @@
       person.appendChild(el('span', null, d.drivers.short_name || d.drivers.name || ''));
       crewLine.appendChild(person);
     }
-    if (!crew.length) crewLine.appendChild(el('span', 'scheduler-week__driver', ' '));
-    card.appendChild(crewLine);
+    if (!crew.length) crewLine.appendChild(el('span', 'scheduler-week__driver', ' '));
+    facts.appendChild(crewLine);
+    card.appendChild(facts);
 
-    /* THE FIVE LINES WRITTEN IN BY HAND where the database has nothing yet.
-       They share whatever height the card has left, each ruled at its foot
-       to write on. Each driver is numbered by role, D1 and D2 for a driver
-       and a co-driver and R1 for a relief driver, so the line says who
-       took over. */
+    /* THE LINES WRITTEN IN BY HAND, on white, where the database has nothing
+       yet. They share whatever height the card has left, each ruled at its
+       foot to write on. */
     const write = el('div', 'scheduler-week__write');
     const po = firstAndMore(trip.po_ref, (trip.trip_pos || []).length);
     // A long PO takes the room the fields beside it do not need.
     if (detailText(po).length > 8) card.dataset.wide = '';
-    let drivers = 0, reliefs = 0;
-    write.appendChild(detailLine(crew.length
-      ? crew.map(d => [String(d.role).startsWith('relief') ? `R${++reliefs}` : `D${++drivers}`, weekMoney(d.pay)])
-      : [['D1', '']]));
-    write.appendChild(detailLine([['Mi', milesText(milesOf(trip))], ['Act', milesText(trip.actual_miles)]]));
-    write.appendChild(detailLine([['Qt', weekMoney(trip.quoted_price)], ['PO', po]]));
-    write.appendChild(detailLine([['Inv', firstAndMore(trip.invoice_number, (trip.trip_invoices || []).length)]]));
+    const pay = detailLine(crew.length ? crew.map(d => ['$', payText(d.pay)]) : [['$', '']]);
+    pay.classList.add('scheduler-week__pay');
+    write.appendChild(pay);
+    write.appendChild(detailLine([['Mi:', milesText(milesOf(trip))], ['Act:', milesText(trip.actual_miles)]]));
+    write.appendChild(detailLine([['Qt:', weekMoney(trip.quoted_price)], ['PO:', po]]));
+    write.appendChild(detailLine([['Inv:', firstAndMore(trip.invoice_number, (trip.trip_invoices || []).length)]]));
     const payments = [...(trip.trip_payments || [])]
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
       .filter(p => p.ref || Number(p.amount))
       .map(p => [p.method, p.ref, weekMoney(p.amount)].filter(Boolean).join(' '));
-    write.appendChild(detailLine([['Pmt', payments.join(' · ')]]));
+    write.appendChild(detailLine([['Pmt:', payments.join(' · ')]]));
     card.appendChild(write);
     return card;
   }

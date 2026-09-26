@@ -1556,7 +1556,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   flex-direction: column;
   min-inline-size: 0;
   min-block-size: 0;
-  padding: 2pt 4pt;
   border: 1pt solid var(--scheduler-week-border);
   background: var(--scheduler-week-bg);
   color: var(--rux-text-primary);
@@ -1573,22 +1572,26 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-week__trip--amber   { --scheduler-week-bg: var(--scheduler-amber-bg);         --scheduler-week-border: var(--scheduler-amber-border); }
 /* A card across several days keeps its lines to one day's width: the card
    less the gaps between its days, divided by its days, less the share of the
-   padding and border a one-day card has that this one spends only once. */
+   border a one-day card has that this one spends only once. */
 .scheduler-week__trip > * {
   max-inline-size: calc((100% - (var(--scheduler-week-span, 1) - 1) * 2pt) / var(--scheduler-week-span, 1)
-    - (var(--scheduler-week-span, 1) - 1) * 10pt / var(--scheduler-week-span, 1));
+    - (var(--scheduler-week-span, 1) - 1) * 2pt / var(--scheduler-week-span, 1));
 }
 /* A trip that began last week is its colour and nothing else here. */
 .scheduler-week__trip--continued { min-block-size: 12pt; }
 
-.scheduler-week__trip-top,
-.scheduler-week__line,
-.scheduler-week__times,
-.scheduler-week__crew { line-height: 1.02; }
+/* What the database knows sits on the trip's colour, each line inset from
+   the card's edge; the crew's rules run to the edges. */
+.scheduler-week__facts {
+  padding-block-start: 2.5pt;
+  line-height: 1.12;
+}
+.scheduler-week__facts > :not(.scheduler-week__crew) { padding-inline: 4pt; }
 .scheduler-week__trip-top {
   display: flex;
   align-items: center;
   gap: 3pt;
+  line-height: 1.1;
 }
 .scheduler-week__destination {
   font-size: 8.5pt;
@@ -1605,24 +1608,32 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* Depart at the card's left edge, spot in the middle and return at the
-   right, so the three line up with the text above and the lines below. */
+.scheduler-week__contact { color: var(--rux-text-secondary); }
+/* Out at the card's left edge, spot in the middle and back at the right,
+   each time after its label. */
 .scheduler-week__times {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  text-align: center;
-  font-weight: 600;
+  margin-block-start: 1.5pt;
   white-space: nowrap;
 }
-.scheduler-week__times > :first-child { text-align: start; }
-.scheduler-week__times > :last-child { text-align: end; }
-/* The names on their pay line's columns, and a little room under them
-   before the lines written by hand begin. */
-.scheduler-week__crew {
+.scheduler-week__time { display: flex; align-items: baseline; gap: 2pt; }
+.scheduler-week__times > :nth-child(2) { justify-content: center; }
+.scheduler-week__times > :last-child { justify-content: end; }
+.scheduler-week__time .scheduler-week__label { font-size: 6pt; }
+.scheduler-week__time .scheduler-week__value { font-weight: 600; }
+
+/* THE CREW AND THE PAY LINE UNDER IT share their columns: a column per
+   driver, ruled apart, the rules running from the line above the names to
+   the pay line's foot. */
+.scheduler-week__crew,
+.scheduler-week__detail {
   display: grid;
-  grid-template-columns: repeat(var(--scheduler-week-fields, 1), minmax(0, 1fr));
-  gap: 0 4pt;
-  margin-block-end: 2pt;
+  grid-template-columns: repeat(var(--scheduler-week-fields, 2), minmax(0, 1fr));
+}
+.scheduler-week__crew {
+  margin-block-start: 1.5pt;
+  border-block-start: 0.5pt solid var(--rux-border-strong-01);
   font-weight: 600;
 }
 .scheduler-week__driver {
@@ -1630,24 +1641,29 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   align-items: center;
   gap: 2pt;
   min-inline-size: 0;
+  padding: 1pt 3pt 0.5pt;
   white-space: nowrap;
   overflow: hidden;
 }
-.scheduler-week__role { inline-size: 8pt; block-size: 8pt; }
-/* The write-in lines share the card's remaining height evenly, each with its
-   text sitting on a rule to write along. */
+.scheduler-week__role { flex: none; inline-size: 8pt; block-size: 8pt; }
+:is(.scheduler-week__driver, .scheduler-week__pay > .scheduler-week__field) + * {
+  border-inline-start: 0.5pt solid var(--rux-border-strong-01);
+}
+.scheduler-week__driver:first-child,
+.scheduler-week__field:first-child { padding-inline-start: 4pt; }
+
+/* The write-in lines, on white, share the card's remaining height evenly,
+   each with its text sitting on a rule that runs to the card's edges. */
 .scheduler-week__write {
   flex: 1 1 auto;
   display: grid;
   grid-auto-rows: minmax(min-content, 1fr);
-  margin-block-start: 1pt;
+  background: var(--rux-layer-01);
+  border-block-start: 0.5pt solid var(--rux-border-strong-01);
+  line-height: 1.02;
 }
 .scheduler-week__detail {
-  display: grid;
-  grid-template-columns: repeat(var(--scheduler-week-fields, 2), minmax(0, 1fr));
   align-items: end;
-  gap: 0 4pt;
-  padding-block-end: 1pt;
   border-block-end: 0.5pt solid var(--rux-border-strong-01);
 }
 /* A long PO number on the card: the second column takes three fifths. */
@@ -1664,6 +1680,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   display: flex;
   gap: 2pt;
   min-inline-size: 0;
+  padding: 0 3pt 1pt;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

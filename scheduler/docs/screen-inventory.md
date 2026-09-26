@@ -135,7 +135,9 @@ Three homes, and one rule for choosing.
   panel sits beside the week while the board holds them and the week's 17rem
   minimum; past that the newest comes in front of the board, dimming what it
   covers, and the rest wait beside the week behind it. Nothing closes itself
-  and nothing is refused. `docs/plans/scheduler-panel-placement.md` decides it.
+  and nothing is refused. A panel in front sits 16px in from the header and
+  every edge, and Escape, its close button or the dim leave it; `placeRoom` in
+  `scheduler/data.js` decides which is in front.
 - **A generated form is a page, not a modal.** `print.html` draws it and the
   document viewer frames it, so nothing has to hide the board in order to
   print, and two forms on different paper never argue over one `@page`.

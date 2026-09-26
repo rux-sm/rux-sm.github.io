@@ -1486,12 +1486,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    sheet, so they still show where they run along a trip's fill; the lighter
    one is as bright as the pink and vanished there.
 
-   EVERY LINE A CARD CAN MEET IS 0.75PT, one CSS pixel, the width Chrome
-   prints any line of about that weight at, and each is drawn inside the
-   cell before it: a day's line at its cell's end, a row's line at its
-   foot. The frame is the header's top, the bus column's start, Sunday's end
-   and the last row's foot. A card sits over the line before
-   it, so its own line lands exactly on the gridline under it. */
+   EVERY LINE IS 0.75PT, one CSS pixel, the width Chrome prints any line of
+   about that weight at, and each is drawn inside a cell: a day's line at its
+   cell's end, a row's line at its cells' foot. The frame is the header's
+   top, the bus column's start, Sunday's end and the last row's foot. */
 /* EVERY ROW AND DAY IS A WHOLE NUMBER OF PIXELS, the unit Chrome prints
    each line's place in, and so is the grid's corner on the page, so all five
    rows and all seven days print the same size and every line inside them
@@ -1534,22 +1532,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   border-inline-end: 0.75pt solid var(--rux-border-subtle-00);
 }
 .scheduler-week__row { min-block-size: 0; }
-/* A ROW'S FOOT LINE IS DRAWN IN FRONT OF THE CARDS, by the row itself, so no
-   rounding can lay a card's fill over it: the preview shrinks the sheet and
-   rounded the next row's card over the line on screen. A row line never
-   crosses a card, so it can always be in front; the day lines stay behind,
-   where a card across several days covers the ones inside it. */
-.scheduler-week__row::after {
-  content: "";
-  grid-column: 1 / -1;
-  grid-row: 1;
-  align-self: end;
-  position: relative;
-  z-index: 1;
-  border-block-end: 0.75pt solid var(--rux-border-subtle-00);
-  pointer-events: none;
-}
-.scheduler-week__row:last-child::after { border-block-end-color: var(--rux-border-strong-01); }
 .scheduler-week__bus {
   grid-column: 1;
   grid-row: 1;
@@ -1563,14 +1545,27 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   grid-row: 1;
   border-inline-end: 0.75pt solid var(--rux-border-subtle-00);
 }
-/* The frame's right side: Sunday's line, the eighth child after the bus. */
+.scheduler-week__bus,
+.scheduler-week__cell { border-block-end: 0.75pt solid var(--rux-border-subtle-00); }
+/* The frame: Sunday's line, the eighth child after the bus, and the last
+   row's foot. */
 .scheduler-week__day:last-child,
 .scheduler-week__cell:nth-child(8) { border-inline-end-color: var(--rux-border-strong-01); }
-/* The cards lie over the day cells, on the same seven columns with no gap
-   or inset, so a card across three days is exactly three days wide. The clip
-   margin keeps the edge each card lays over the line before it. What will
-   not fit the row is hidden here and named above the sheet. */
+.scheduler-week__row:last-child > :is(.scheduler-week__bus, .scheduler-week__cell) {
+  border-block-end-color: var(--rux-border-strong-01);
+}
+/* A day line a trip runs across, in every lane of its row, is not drawn:
+   print.js marks the cell, and the trip's colour runs on unbroken. */
+.scheduler-week__cell[data-inside] { border-inline-end-color: transparent; }
+
+/* THE CARDS LIE UNDER THE GRID. The lanes paint first and the cells after,
+   so every line on the sheet is drawn on top of the trips and no rounding,
+   on screen or on paper, can lay a trip's colour over one. The cards fill
+   the same seven columns with no gap, so a card across three days is exactly
+   three days wide. What will not fit the row is hidden here and named above
+   the sheet. */
 .scheduler-week__lanes {
+  order: -1;
   grid-column: 2 / -1;
   grid-row: 1;
   display: grid;
@@ -1579,7 +1574,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   align-content: start;
   min-block-size: 0;
   overflow: clip;
-  overflow-clip-margin: 0.75pt;
   /* Its cards never size the row: on paper Chrome grew a crowded row to hold
      every stacked card, and its foot line printed inside the next row. */
   contain: size;
@@ -1587,34 +1581,30 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 /* A row with one lane gives its cards the whole height, so a card is centred
    in its row and its write-in lines get the room. */
 .scheduler-week__lanes[data-lanes="1"] { grid-template-rows: minmax(0, 1fr); }
-.scheduler-week__lanes[data-lanes="1"] > .scheduler-week__trip { block-size: calc(100% + 0.75pt); }
+/* Cards stacked in a crowded row have no gridline between them, so each
+   draws its own foot line in the grid's colour, straight under its last
+   write-in line. */
+.scheduler-week__lanes:not([data-lanes="1"]) > .scheduler-week__trip {
+  align-self: start;
+  padding-block-end: 0;
+  border-block-end: 0.75pt solid var(--rux-border-subtle-00);
+}
 
-/* A card reaches back over the line above it and the line before it, so its
-   top and start lines lie on those gridlines, its end and foot lines lie on
-   its own cells' lines, and two cards that touch share one line. ITS SIZE IS
-   SET, NOT STRETCHED: Chrome prints a stretched box with a negative margin
-   one pixel longer than it lays it out. */
+/* A card draws no line of its own round its edge; the grid's lines lie over
+   its end and its foot, and the space under them is kept clear of its
+   content by the padding, so its rules and text stop at the line. */
 .scheduler-week__trip {
   display: flex;
   flex-direction: column;
-  align-self: start;
-  justify-self: start;
-  inline-size: calc(100% + 0.75pt);
   min-inline-size: 0;
   min-block-size: 0;
-  margin-block-start: -0.75pt;
-  margin-inline-start: -0.75pt;
-  border: 0.75pt solid transparent;
+  padding-inline-end: 0.75pt;
+  padding-block-end: 0.75pt;
   background: var(--scheduler-week-bg);
-  background-clip: padding-box;
   color: var(--rux-text-primary);
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
-/* A CARD DRAWS NO LINE OF ITS OWN. Its border is clear and its fill stops
-   inside it, so the gridline under each edge shows through: every line on
-   the sheet is the grid's, the same on screen and on paper. A card across
-   several days covers the day lines inside it. */
 /* The board's own trip colours, from the same tag tokens it paints with. */
 .scheduler-week__trip--blue    { --scheduler-week-bg: var(--rux-tag-background-blue); }
 .scheduler-week__trip--teal    { --scheduler-week-bg: var(--rux-tag-background-teal); }
@@ -1624,8 +1614,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-week__trip--red     { --scheduler-week-bg: var(--rux-tag-background-red); }
 .scheduler-week__trip--amber   { --scheduler-week-bg: var(--scheduler-amber-bg); }
 /* A card across several days keeps its lines to one day's width: the card
-   divided by its days, less the share of the border a one-day card has that
-   this one spends only once. */
+   divided by its days, less the share of the room under its end line that a
+   one-day card has and this one spends only once. */
 .scheduler-week__trip > * {
   max-inline-size: calc(100% / var(--scheduler-week-span, 1)
     - (var(--scheduler-week-span, 1) - 1) * 0.75pt / var(--scheduler-week-span, 1));

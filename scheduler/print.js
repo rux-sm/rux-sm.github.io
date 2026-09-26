@@ -1499,8 +1499,15 @@
         const lanes = el('div', 'scheduler-week__lanes');
         const bars = bus ? byBus.get(bus.id) || [] : [];
         // One lane stretches its cards to the row's height; two or more stack.
-        lanes.dataset.lanes = String(bars.length ? WEEK.assignLanes(bars) : 0);
+        const laneCount = bars.length ? WEEK.assignLanes(bars) : 0;
+        lanes.dataset.lanes = String(laneCount);
         for (const bar of bars) lanes.appendChild(weekCard(bar));
+        // A day line a trip runs across in every lane is left undrawn, so the
+        // trip's colour runs on unbroken.
+        for (let d = 0; d < 6 && laneCount; d++) {
+          const across = new Set(bars.filter(b => b.place.start <= d && b.place.start + b.place.span - 1 > d).map(b => b.lane));
+          if (across.size === laneCount) row.children[d + 1].dataset.inside = '';
+        }
         row.appendChild(lanes);
         grid.appendChild(row);
       }

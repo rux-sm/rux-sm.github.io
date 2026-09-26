@@ -1,0 +1,25 @@
+/* app.css -- Coins' own layout, under the coins- prefix. Every colour is a
+   --rux-* token. Design's components are used as they are and never restyled. */
+
+/* The side nav is persistent from 66rem, so the page clears its 16rem there,
+   and keeps .rux--content's own 2rem beside it. templates/app-shell.html
+   explains why this is a padding and not a grid offset. */
+@media (min-width: 66rem) {
+  .coins-main { padding-inline-start: 18rem; }
+}
+
+/* The page title, with the month and the Both / member switch beside it,
+   wrapping under it on a narrow screen. */
+.coins-title { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--rux-spacing-05); }
+.coins-controls { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-05); }
+.coins-month { display: flex; align-items: center; gap: var(--rux-spacing-02); }
+.coins-month__name { min-inline-size: 9rem; text-align: center; }
+.coins-who { inline-size: 22rem; max-inline-size: 100%; }
+
+/* A two-line row: the name over a detail line on the left, the amount and
+   its tag on the right. */
+.coins-row { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--rux-spacing-05); }
+.coins-row__main { display: grid; min-inline-size: 0; }
+.coins-row__sub { color: var(--rux-text-secondary); font-size: .75rem; line-height: 1rem; letter-spacing: .32px; }
+.coins-row__side { display: grid; justify-items: end; gap: var(--rux-spacing-02); flex: none; }
+.coins-amount { font-variant-numeric: tabular-nums; text-align: end; }

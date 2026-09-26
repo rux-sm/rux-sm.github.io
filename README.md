@@ -11,6 +11,7 @@ https://rux-sm.github.io/. The folders are the site:
 | `notes/` | `/notes/` | Infor LN walkthroughs, rendered from the private `atlas` |
 | `pixels/` | `/pixels/` | picture logic puzzles and a maker to draw them |
 | `sevens/` | `/sevens/` | an online card game by the rules of Flip 7 |
+| `coins/` | `/coins/` | the household's money: income, spending, accounts, debts and bills |
 | `tools/` | — | the commands below |
 | `docs/` | — | `docs/status.md`, what is unfinished, `docs/database-access.md`, who may read the database, and `docs/plans/`, changes being decided or built |
 

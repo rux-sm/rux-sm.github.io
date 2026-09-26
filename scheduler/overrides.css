@@ -216,9 +216,9 @@
 .rux--side-panel .rux--side-panel__collapsed-title-text { inset-inline: 0; }
 /* The head is 40px on a desktop, the md token, as tall as the toolbar and the
    roster's head, and Carbon's close button, which `rux--btn--md` fixes at
-   2.5rem, already matches it. On a phone the head, its close button and the
-   tab strip take the 48px token, so everything tapped in the editor is
-   finger-sized. */
+   2.5rem, already matches it. On a phone the head, its close button, the
+   shortcut row and the tab strip take the 48px token, so everything tapped in
+   the editor is finger-sized. */
 @media (max-width: 41.98rem) {
   .rux--side-panel .rux--side-panel__header.rux--side-panel__header--has-title {
     --rux-layout-size-height-md: var(--rux-layout-size-height-lg);
@@ -227,8 +227,9 @@
     block-size: var(--rux-layout-size-height-lg);
     inline-size: var(--rux-layout-size-height-lg);
   }
+  #scheduler-panel-shortcuts { block-size: var(--rux-layout-size-height-lg); }
   #scheduler-panel-body .rux--tabs {
-    --rux-layout-size-height-sm: var(--rux-layout-size-height-lg);
+    --rux-layout-size-height-md: var(--rux-layout-size-height-lg);
   }
 }
 /* THE DOCUMENT PANEL'S HEAD, scoped by `.scheduler-viewer`, the app's box
@@ -318,17 +319,14 @@
 #scheduler-panel-body { grid-row: 4; }
 #scheduler-panel > .rux--side-panel__actions-container { grid-row: 5; }
 
-/* The contained tabs take `spacing-03` inline padding in place of
-   `spacing-05`, so all six fit the panel without scrolling. The list fills
-   the strip in the board's band surface, so past the last tab the strip is the
-   same grey band the day row and the availability roster's heading are, and
-   the three read as one row across the screen. */
+/* The tabs take `spacing-03` inline padding in place of `spacing-05`, so all
+   of them fit the panel without scrolling, and the list fills the strip so its
+   rule runs to the panel's edge. */
 #scheduler-panel-body .rux--tabs__nav-link {
   padding-inline: var(--rux-spacing-03);
 }
 #scheduler-panel-body .rux--tab--list {
   flex: 1 1 auto;
-  background: var(--scheduler-band-surface);
 }
 /* The week picker's input is never seen: the week label is its trigger, and
    Design's `.rux--date-picker__input[hidden]` hides the input. This hides its
@@ -343,7 +341,7 @@
    while the date picker's calendar still opens over it. Negative margins and
    `inline-size: auto` run it edge to edge across `__inner-content`'s padding.
    The 16px gap under the tabs is the strip's own bottom padding rather than
-   the tab content's, so the gap travels with it; the height is the 32px band
+   the tab content's, so the gap travels with it; the height is the 40px tabs
    plus that gap, because the tabs stretch to the strip's content box. */
 #scheduler-panel-body .rux--tabs {
   position: sticky;
@@ -353,7 +351,7 @@
   margin-inline: calc(-1 * var(--rux-spacing-05));
   inline-size: auto;
   padding-block-end: var(--rux-spacing-05);
-  block-size: calc(var(--rux-layout-size-height-sm) + var(--rux-spacing-05));
+  block-size: calc(var(--rux-layout-size-height-md) + var(--rux-spacing-05));
   max-block-size: none;
 }
 /* The tab opens straight under the strip's gap, and ends 48px above the

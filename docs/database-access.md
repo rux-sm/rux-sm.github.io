@@ -48,8 +48,11 @@ consulted at all.
 
 **TRUNCATE, TRIGGER and REFERENCES are revoked from `anon` and
 `authenticated`.** Row security cannot filter them, so a rule cannot stop them;
-only a revoke can. Supabase grants them again on every new table, so revoke
-them in the same migration that creates one.
+only a revoke can. A new table in `public` no longer gets them, nor anything
+for `anon`: the defaults give a signed-in account select, insert, update and
+delete, which its rules govern, and a new function runs for signed-in accounts
+only. Those defaults hold for objects the `postgres` user makes, which every
+migration does.
 
 ## Files
 

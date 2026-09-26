@@ -95,8 +95,3 @@ None open.
 ## Tasks
 
 - [ ] rux turns on two-factor sign-in for the Supabase dashboard login.
-- [ ] rux replaces the maintenance link on the scheduler's Maintenance page
-      and sends the shop the new one, since anyone holding the key could read
-      the old one until `staff_cutover_rpcs` closed it.
-- [ ] Migration `staff_default_privileges`: new tables and functions no longer
-      grant `anon` by default.

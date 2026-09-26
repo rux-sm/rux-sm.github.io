@@ -3478,19 +3478,55 @@ html:has(.scheduler-page[data-takeover]) {
   #scheduler-customers-rows td:nth-child(2) { display: none; }
 }
 
-/* The Route tab's note under its timeline, 8px below it, as the PO coverage
-   line sits under the POs it speaks to; the timeline's rows are 8px apart. */
+/* A Route tab note, 8px under what it speaks to, as the PO coverage line sits
+   under the POs. */
 .scheduler-route-note { margin-block-start: var(--rux-spacing-03); }
 .scheduler-route-note[hidden] { display: none; }
-/* The worked-out times: each time over what it was worked out from, in the
-   label size, so the typed fields above stay the loudest thing on the tab. */
-.scheduler-route-timeline dd { display: flex; flex-direction: column; }
-.scheduler-route-time { font-variant-numeric: tabular-nums; }
-.scheduler-route-why {
-  font-size: var(--rux-label-01-font-size);
-  line-height: var(--rux-label-01-line-height);
-  letter-spacing: var(--rux-label-01-letter-spacing);
+/* The trip's totals on the Stops heading's line, and a day's on its own
+   heading: grey, one line, ending in an ellipsis before they would wrap; the
+   whole line is the tooltip's too. */
+.scheduler-route-sum,
+.scheduler-route-day__sum {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: var(--rux-text-secondary);
+  font-size: var(--rux-body-compact-01-font-size);
+  font-weight: var(--rux-body-compact-01-font-weight);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+}
+/* A day's heading over its stops, in the list, 16px above and 8px below. */
+.scheduler-route-day {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--rux-spacing-05);
+  padding-block: var(--rux-spacing-05) var(--rux-spacing-03);
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--rux-heading-compact-01-line-height);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+}
+.scheduler-route-day:first-child { padding-block-start: 0; }
+.scheduler-route-day__name { flex: none; }
+/* A stop is one line, its time first in a column wide enough for
+   "10:00 AM – 4:00 PM" so the places line up, and its drive and wait in the
+   row's tooltip rather than a second line. */
+.scheduler-route-stops .scheduler-item__much {
+  order: -1;
+  flex: none;
+  min-inline-size: 8.5rem;
+  color: var(--rux-text-secondary);
+}
+.scheduler-route-stops .scheduler-item__meta { display: none; }
+/* A place search's address, under the name it shows. */
+.scheduler-place-where[hidden] { display: none; }
+/* A saved location in the search's list, marked before its name. */
+.scheduler-place-saved {
+  vertical-align: -0.1875rem;
+  margin-inline-end: var(--rux-spacing-02);
 }
 /* The drop-off pair a round trip does not ask for. `rux--stack-vertical` is
    `display: grid`, which outranks the bare `[hidden]` attribute. */

@@ -12,23 +12,6 @@ quick to fill. The stops between them are one short list that can be filled
 in later without the tab growing heavy, and the bus's times and the day's
 totals are a short summary. Nothing else is drawn.
 
-## What the tab is now
-
-Read from the code and from six trips on the board, all round trips:
-
-- **Pickup:** Pickup location, Pickup address, a line saying the group is let
-  off where it was picked up with Set a different drop-off, then Group
-  departs and Group arrives, one field per row.
-- **Times:** five rows of two lines each, Yard depart, Bus arrives, Group
-  departs, Group arrives and Yard return, each with what it was worked out
-  from. Two of the five repeat the fields just above.
-- **Full itinerary:** a closed accordion titled with its count and miles,
-  such as "Full itinerary · 1 stop · 185 mi". Every trip read has one stop,
-  which is the destination itself, so the trip's main place is hidden behind
-  a click. The driving and on-duty totals are at the foot of it, hidden too.
-- **Miles:** Estimated miles and Actual miles. Estimated miles overrides the
-  route's own sum in the quote calculator.
-
 ## Decisions
 
 - **The pickup is one field, Pickup,** an address search. A pick fills the
@@ -83,20 +66,6 @@ None open.
 
 ## Tasks
 
-- [ ] Mock the new layout on a real trip, a round trip with stops, a one-way
-      trip and a split trip, in one Chrome tab per option, and settle the
-      questions from what is on screen.
-- [ ] Make the pickup, drop-off and stop addresses one field each, with the
-      saved-location icon on the field and in the search's list.
-- [ ] Put Departs and Returns on one row.
-- [ ] Replace Times and the Full itinerary accordion with the Stops list,
-      stops editable in place and Add stop at its end.
-- [ ] Draw the summary on the Stops heading, the day headings and their
-      totals on a trip of more than one day, and the explanations as tooltips.
-- [ ] Move Estimated miles and Actual miles to the Billing tab.
-- [ ] Rewrite the Route tab's row in `scheduler/docs/screen-inventory.md`,
-      which still describes Depart beside End and an overflow menu the tab no
-      longer has.
-- [ ] Check every trip type in Chrome at full width, the wide editor and a
-      402px frame, and that Save writes the same rows as before on an
-      untouched trip.
+- [ ] Check the Route tab on a one-way trip and a split trip in Chrome once
+      one is on the board: the Arrives label, the drop-off search and each
+      leg's Stops list.

@@ -2,11 +2,11 @@
 type: plan
 ---
 
-# Plan: Money, the household's money in one app
+# Plan: Coins, the household's money in one app
 
 ## Goal
 
-A new app, Money, at `/money/`, where the household sees all of its money in
+A new app, Coins, at `/coins/`, where the household sees all of its money in
 one place: every member's income, spending, accounts, debts, bills and
 subscriptions, with the due date of each bill and the login email each
 service is under. It replaces the private money folder on rux's Mac, whose
@@ -22,14 +22,14 @@ tools and review page it grows out of.
   without an account on the site, so their bank files can still be counted.
   A person gets a login only if they want to open the app.
 - **The data lives in the Supabase project, in its own tables** named
-  `money_*`, bank rows included, so nothing stays only on the Mac. Nothing
+  `coins_*`, bank rows included, so nothing stays only on the Mac. Nothing
   about the household is ever written into this repository, because the
   repository is public: code only, and Design's pages for it use invented
   content.
 - **Only household members can read it, not staff.** Every other table asks
-  `is_staff()`, which means the scheduler's company staff. The money tables
-  ask a new `money_is_member()` instead: the account can open Money *and* is
-  linked to a person in the household. Ticking Money for someone is not
+  `is_staff()`, which means the scheduler's company staff. The Coins tables
+  ask a new `coins_is_member()` instead: the account can open Coins *and* is
+  linked to a person in the household. Ticking Coins for someone is not
   enough on its own, and no scheduler staff member sees a penny.
 - **Bank files are dropped onto the Import page.** The browser reads the
   export, shows the rows it found, and saves them on a yes. The raw file is
@@ -68,20 +68,20 @@ tools and review page it grows out of.
   - **Import** — drop a bank file, check it, save it.
 - **It works on the phone,** as every app here does, because bills get paid
   from there.
+- **The app is called Coins:** folder and address `coins/`, header Rux
+  Coins, class prefix `coins-`, commit scope `coins`.
 - **Every member sees everything.** No account is private to its owner,
   so every total reads the same for both.
-- **The second member already has a login.** It gets Money ticked on the
+- **The second member already has a login.** It gets Coins ticked on the
   Access page and is linked to its person in the household; its other apps
   stay as they are.
-- **The money folder on the Mac stays until Money matches it.** The same
-  bank files imported into Money must give the same yearly totals the Mac
+- **The money folder on the Mac stays until Coins matches it.** The same
+  bank files imported into Coins must give the same yearly totals the Mac
   tool gives, to the cent, before the folder is retired.
 
 ## Questions
 
-- **What is the app called?** Money is the working name. It gives the
-  folder, the address, the header and the class prefix, so it is picked
-  before the first page is built.
+None open.
 
 ## Tasks
 
@@ -90,7 +90,8 @@ tools and review page it grows out of.
       check in `docs/database-access.md` after.
 - [ ] Prove the tables are closed: from outside with the publishable key,
       and signed in as an account that is staff but not a member.
-- [ ] Start `money/` from a Design template and add it to `switcher.json`.
+- [ ] Start `coins/` from a Design template, add it to `switcher.json`,
+      and add its row to the Names table in `AGENTS.md`.
 - [ ] Build Import, porting the Mac tool's reading and overlap rules.
 - [ ] Import every file in the money folder and match its yearly totals to
       the cent.

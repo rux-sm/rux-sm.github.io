@@ -5546,6 +5546,16 @@
     outRange.querySelector('#scheduler-f-start').setAttribute('aria-label', trip.trip_type === SPLIT ? 'Drop-off start' : 'Start date');
     outRange.querySelector('#scheduler-f-end').setAttribute('aria-label', trip.trip_type === SPLIT ? 'Drop-off end' : 'End date');
 
+    /* The customer is `trips.customer_id`, with its name in `trips.customer`
+       for rux-ui. A trip not linked yet offers the customer whose name its
+       typed one matches exactly, and Save keeps it. It stands last under
+       Booking contact, because picking the contact suggests it. */
+    const customerBox = customerSearch('scheduler-f-customer', 'Customer', panelIndex.customers || [],
+      (panelIndex.customers || []).find(c => c.id === trip.customer_id)
+        || (!trip.customer_id && trip.customer
+          ? (panelIndex.customers || []).find(c => folded(c.name) === folded(trip.customer)) : null),
+      trip.customer);
+
     const topFields = el('div', 'rux--stack-vertical rux--stack-scale-5');
     topFields.append(
       outRange,
@@ -5559,14 +5569,6 @@
           [SPLIT, 'Split'],
         ]),
       ),
-      /* The customer is `trips.customer_id`, with its name in `trips.customer`
-         for rux-ui. A trip not linked yet offers the customer whose name its
-         typed one matches exactly, and Save keeps it. */
-      customerSearch('scheduler-f-customer', 'Customer', panelIndex.customers || [],
-        (panelIndex.customers || []).find(c => c.id === trip.customer_id)
-          || (!trip.customer_id && trip.customer
-            ? (panelIndex.customers || []).find(c => folded(c.name) === folded(trip.customer)) : null),
-        trip.customer),
       colorBox,
       notesField('scheduler-f-notes', 'Notes', trip.notes),
     );
@@ -5619,6 +5621,7 @@
           'scheduler-f-cphone', 'Booking contact phone')),
         withCopy(textField('scheduler-f-cemail', 'Email', contact?.email),
           'scheduler-f-cemail', 'Booking contact email'),
+        customerBox,
         thread,
       );
       const bookingMenu = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger');
@@ -5675,9 +5678,9 @@
       // Phone and email are this trip's copy; editing them never changes the
       // shared contact record. `linkContacts` keeps the link.
 
-      /* ── Day-of-trip contacts ──
-         "Day-of-trip", not "on-site": the person may travel with the group or
-         coordinate from a desk. The trip's own contacts are drawn, or one empty
+      /* ── Trip contacts ──
+         Whoever to reach while the trip runs, not "on-site": the person may
+         travel with the group or coordinate from a desk. The trip's own contacts are drawn, or one empty
          contact when it has none, and the section's menu adds one up to the
          schema's five or removes the last. */
       const dayRows = creating ? [] : [1, 2, 3, 4, 5].map(i => tripContact(trip, i)).filter(Boolean);

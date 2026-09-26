@@ -61,6 +61,13 @@
   /* mm/dd/yyyy, split rather than passed to `new Date()`, which reads a bare
      date as UTC midnight and prints the day before west of Greenwich. Same
      rule as data.js's `mdy`. */
+  // An ISO date moved by whole days.
+  const dayShift = (d, n) => {
+    const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(d || ''));
+    if (!m) return d;
+    const t = new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]) + n));
+    return t.toISOString().slice(0, 10);
+  };
   const mdy = d => {
     const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(d || '').trim());
     return m ? `${m[2]}/${m[3]}/${m[1]}` : (d || '');
@@ -697,25 +704,35 @@
     table.appendChild(head);
 
     const body = el('tbody');
-    const stops = stopsOf(trip, leg);
+    // The run of stops alone: a day row is the old format, never a stop.
+    const stops = stopsOf(trip, leg).filter(s => s.type !== 'day');
     const yard = yardRow(stops);
     if (yard) body.appendChild(yard);
-    // A day divider takes no place in the run of stops, because the departure
-    // a row lends the one before it is the next real stop's.
-    const onward = stops.filter(s => s.type !== 'day');
-    let place = 0;
-    for (const stop of stops) {
-      if (stop.type === 'day') {
+    /* A leg of more than one day is broken into days by the stops' own
+       dates, as the Route tab's Stops list is: a divider names the day before
+       its first row. */
+    /* A date outside the leg, from a trip whose dates moved after its stops
+       were saved, names no day: the row stays under the day before it. The
+       yard times may fall a day either side. */
+    const legFrom = leg === 'return' ? trip.return_start_date || trip.start_date : trip.start_date;
+    const legTo = leg === 'return' ? trip.return_end_date || trip.return_start_date || trip.end_date || legFrom
+      : trip.end_date || legFrom;
+    const inLeg = d => !!d && (!legFrom || d >= dayShift(legFrom, -1)) && (!legTo || d <= dayShift(legTo, 1));
+    const dateOf = s => [s.type === 'pickup' ? s.spot_date : s.arrive_date, s.depart_prev_date].find(inLeg) || null;
+    const dates = stops.map(dateOf);
+    const manyDays = new Set(dates.filter(Boolean)).size > 1;
+    let shown = null;
+    stops.forEach((stop, i) => {
+      if (manyDays && dates[i] && dates[i] !== shown) {
+        shown = dates[i];
         const dayRow = el('tr', 'scheduler-driver-itinerary__day');
-        const cell = el('td', 'scheduler-driver-itinerary__typed', dayName(stop.label));
+        const cell = el('td', 'scheduler-driver-itinerary__typed', dayName(dates[i]));
         cell.colSpan = COLUMNS.length;
         dayRow.appendChild(cell);
         body.appendChild(dayRow);
-        continue;
       }
-      body.appendChild(itineraryRow(stop, onward[place + 1] || null));
-      place += 1;
-    }
+      body.appendChild(itineraryRow(stop, stops[i + 1] || null));
+    });
     if (!body.children.length) body.appendChild(blankRow());
     table.appendChild(body);
     card.appendChild(table);
@@ -2665,7 +2682,7 @@
     'trip_contact_3_name', 'trip_contact_3_phone',
     'trip_contact_4_name', 'trip_contact_4_phone',
     'trip_contact_5_name', 'trip_contact_5_phone',
-    'trip_stops(id,position,leg,type,label,name,address,depart_prev,arrive,spot,miles,drive)',
+    'trip_stops(id,position,leg,type,name,address,depart_prev,depart_prev_date,arrive,arrive_date,spot,spot_date,miles,drive)',
   ];
 
   const tripQuery = form => [

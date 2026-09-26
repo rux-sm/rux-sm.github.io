@@ -66,11 +66,10 @@ None open.
 
 ## Tasks
 
-- [ ] Group the printed driver itinerary by the stops' dates, as the Stops
-      list does, then remove the 253 day rows and 11 sleeper rows from
-      `trip_stops` as a named change shown to rux first.
-- [ ] Make rux-ui read the same format: one list of stops between the pickup
-      and the return, dated by each stop, with no day or sleeper rows.
+- [ ] Remove the 253 day rows and 11 sleeper rows from `trip_stops` as a
+      named change shown to rux first; nothing reads them now.
+- [ ] Correct the 35 stop dates on 12 trips that fall outside their trip's
+      dates, as a named change shown to rux first.
 
 - [ ] Check the Route tab on a one-way trip and a split trip in Chrome once
       one is on the board: the Arrives label, the drop-off search and each

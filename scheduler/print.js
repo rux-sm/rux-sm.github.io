@@ -1234,11 +1234,11 @@
   const WEEKDAYS = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
   const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
     'August', 'September', 'October', 'November', 'December'];
-  // The crew in the order a card lists them, and the drawing each role takes,
-  // as the board draws them.
+  // The crew in the order a card lists them. After the trip the one thing a
+  // role still says is whether a relief driver took over, so only a relief
+  // driver carries a mark, the board's handover arrows.
   const CREW_ORDER = ['driver', 'co-driver', 'relief-start', 'relief-end'];
-  const CREW_ICON = { driver: '#m-person-fill', 'co-driver': '#m-person-fill',
-    'relief-start': '#m-swap_horiz-fill', 'relief-end': '#m-swap_horiz-fill' };
+  const RELIEF_ICON = '#m-swap_horiz-fill';
 
   const dayOf = s => { const [y, m, d] = String(s).split('-').map(Number); return new Date(y, m - 1, d); };
   const plusDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
@@ -1346,17 +1346,6 @@
       if (on) paid.appendChild(el('span', 'scheduler-week__paid-date', ` ${Number(on[2])}/${Number(on[3])}`));
       top.appendChild(paid);
     }
-    const needs = needsOf(trip);
-    if (needs.length) {
-      const marks = el('span', 'scheduler-week__marks');
-      for (const need of needs) {
-        const mark = need.icon ? weekIcon(need.icon, 'scheduler-week__mark')
-          : el('span', 'scheduler-week__mark-letter', String(need.label).trim().charAt(0));
-        mark.setAttribute('aria-label', need.label);
-        marks.appendChild(mark);
-      }
-      top.appendChild(marks);
-    }
     card.appendChild(top);
 
     const riders = (trip.trip_passengers || []).length;
@@ -1376,8 +1365,12 @@
     const crewLine = el('div', 'scheduler-week__crew');
     for (const d of crew) {
       const person = el('span', 'scheduler-week__driver');
-      person.append(weekIcon(CREW_ICON[d.role || 'driver'], 'scheduler-week__role'),
-        el('span', null, d.drivers.short_name || d.drivers.name || ''));
+      if (String(d.role).startsWith('relief')) {
+        const mark = weekIcon(RELIEF_ICON, 'scheduler-week__role');
+        mark.setAttribute('aria-label', 'Relief');
+        person.appendChild(mark);
+      }
+      person.appendChild(el('span', null, d.drivers.short_name || d.drivers.name || ''));
       crewLine.appendChild(person);
     }
     if (!crew.length) crewLine.appendChild(el('span', 'scheduler-week__driver', ' '));

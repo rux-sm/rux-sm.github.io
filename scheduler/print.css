@@ -1593,14 +1593,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-week__of { color: var(--rux-text-secondary); white-space: nowrap; }
 .scheduler-week__paid { font-weight: 600; white-space: nowrap; }
 .scheduler-week__paid-date { font-weight: 400; }
-.scheduler-week__marks {
-  display: flex;
-  gap: 2pt;
-  margin-inline-start: auto;
-  color: var(--rux-text-secondary);
-}
-.scheduler-week__mark { inline-size: 8pt; block-size: 8pt; flex: none; }
-.scheduler-week__mark-letter { font-weight: 600; }
 .scheduler-week__line {
   white-space: nowrap;
   overflow: hidden;
@@ -1626,7 +1618,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   gap: 2pt;
   white-space: nowrap;
 }
-.scheduler-week__role { inline-size: 8pt; block-size: 8pt; color: var(--rux-support-success); }
+.scheduler-week__role { inline-size: 8pt; block-size: 8pt; }
 /* The write-in lines share the card's remaining height evenly, each with its
    text sitting on a rule to write along. */
 .scheduler-week__write {

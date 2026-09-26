@@ -129,7 +129,7 @@
     $('coins-topay-note').textContent = unpaid.length === 1 ? '1 bill' : `${unpaid.length} bills`;
     $('coins-paid').textContent = C.money(paid.reduce((s, it) => s - Number(it.state.line.amount), 0));
     $('coins-paid-note').textContent = paid.length === 1 ? '1 bill' : `${paid.length} bills`;
-    const subs = items.filter(it => it.bill.kind === 'subscription' && it.bill.decision !== 'cancelled' && !it.halted).map(it => it.bill);
+    const subs = items.filter(it => it.bill.kind === 'subscription' && it.bill.decision !== 'cancelled' && !it.halted && C.tracked(it.bill)).map(it => it.bill);
     $('coins-subs').textContent = C.money(items.filter(it => subs.includes(it.bill)).reduce((s, it) => s + it.facts.yearly, 0));
     $('coins-subs-note').textContent = subs.length === 1 ? '1 service' : `${subs.length} services`;
     const undecided = mine.filter(b => b.decision === 'undecided');
@@ -165,7 +165,8 @@
         .sort((a, b) => v === 'decide' ? b.facts.yearly - a.facts.yearly : a.bill.name.localeCompare(b.bill.name))
         .map(it => ({ ...it, amount: C.money(it.facts.usual ?? 0), sub: [EVERY[it.bill.cadence], accountName(it.bill.account_id), it.bill.login].filter(Boolean).join(' · ') }));
       const heads = [['Bill'], ['Every'], ['Usually', 1], ['A year', 1], ['Paid from'], ['Login'], ['Keep?']];
-      const tags = it => [tag(DECISION[it.bill.decision]), ...(it.halted && it.bill.decision !== 'cancelled' ? [tag(['Stopped', 'rux--tag--warm-gray'])] : [])];
+      const tags = it => [tag(DECISION[it.bill.decision]), ...(it.halted && it.bill.decision !== 'cancelled' ? [tag(['Stopped', 'rux--tag--warm-gray'])] : []),
+        ...(C.tracked(it.bill) ? [] : [tag(['Inside another bill', 'rux--tag--cool-gray'])])];
       const cells = it => [td(it.bill.name), td(EVERY[it.bill.cadence]), td(it.amount, 'coins-amount'), td(C.money(it.facts.yearly), 'coins-amount'), td(accountName(it.bill.account_id)), td(it.bill.login), tdTags(tags(it))];
       out.push(list.length ? group(v === 'decide' ? 'Keep or cancel' : 'Every bill', heads, list, cells, tags)
         : el('p', '', v === 'decide' ? 'Every bill has keep or cancel chosen.' : 'No bills yet.'));

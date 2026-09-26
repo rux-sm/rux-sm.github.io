@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Accounts — Coins</title>
+<title>Budget — Coins</title>
 <script src="/funnel.js"></script>
 <style>html:not([data-rux-unlocked]){visibility:hidden}</style>
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
@@ -21,9 +21,9 @@
 <script src="/design/js/theme.js"></script>
 </head>
 <body>
-<!-- Accounts: every bank account, card and loan, what is owed and what
-     paying more would save, from accounts.js; an account opens in the side
-     panel. The shell is templates/app-shell.html. -->
+<!-- Budget: the month's plan in three parts, fixed bills, flexible
+     categories and yearly costs, from budget.js; a flexible or yearly line
+     opens in the side panel. The shell is templates/app-shell.html. -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run build` rewrites this
      block from design/assets/icons.svg. -->
@@ -34,8 +34,9 @@
      Both licensed under the Apache License, Version 2.0. r- is drawn here.
      The sprite wrapper and the symbol naming are Design. See NOTICE. -->
 <symbol id="i-chevron--down" viewBox="0 0 16 16"><path d="M8 11 3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"/></symbol>
+<symbol id="i-chevron--left" viewBox="0 0 16 16"><path d="M5 8 10 3 10.7 3.7 6.4 8 10.7 12.3 10 13z"/></symbol>
+<symbol id="i-chevron--right" viewBox="0 0 16 16"><path d="M11 8 6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"/></symbol>
 <symbol id="i-close" viewBox="0 0 32 32"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></symbol>
-<symbol id="i-warning--filled" viewBox="0 0 16 16"><path d="M8,1C4.2,1,1,4.2,1,8s3.2,7,7,7s7-3.1,7-7S11.9,1,8,1z M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2	c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z"/><path d="M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8	c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z" data-icon-path="inner-path" opacity="0"/></symbol>
 <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2 12H14V13H2z"/><path d="M2 9H14V10H2z"/><path d="M2 6H14V7H2z"/><path d="M2 3H14V4H2z"/></symbol>
 <symbol id="i-user--avatar" viewBox="0 0 16 16"><path d="M8,1C4.1,1,1,4.1,1,8s3.1,7,7,7s7-3.1,7-7S11.9,1,8,1z M5,13.2v-1.5c0-0.9,0.6-1.6,1.5-1.7h3c0.9,0.1,1.5,0.8,1.5,1.7v1.5	C9.1,14.3,6.9,14.3,5,13.2L5,13.2z M12,12l0-0.8c0-0.9-1.1-2.1-2.5-2.2h-3C5.1,9.1,4,10.3,4,11.7l0,0.5v0.3c-2.5-2.2-2.7-6-0.5-8.5	s6-2.7,8.5-0.5s2.7,6,0.5,8.5c-0.1,0.2-0.3,0.3-0.5,0.5V12z"/><path d="M8,3C6.6,3,5.5,4.1,5.5,5.5S6.6,8,8,8s2.5-1.1,2.5-2.5S9.4,3,8,3z M8,7C7.2,7,6.5,6.3,6.5,5.5S7.2,4,8,4s1.5,0.7,1.5,1.5	S8.8,7,8,7z"/></symbol>
 <symbol id="i-document" viewBox="0 0 32 32"><path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3	z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"/><path d="M10 22H22V24H10z"/><path d="M10 16H22V18H10z"/></symbol>
@@ -158,14 +159,14 @@
           <span class="rux--side-nav__link-text">Bills</span>
         </a>
       </li>
-      <li class="rux--side-nav__item rux--side-nav__item--large rux--side-nav__item--active">
-        <a class="rux--side-nav__link rux--side-nav__link--current" href="accounts.html" aria-current="page">
+      <li class="rux--side-nav__item rux--side-nav__item--large">
+        <a class="rux--side-nav__link" href="accounts.html">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-credit_card"/></svg></div>
           <span class="rux--side-nav__link-text">Accounts</span>
         </a>
       </li>
-      <li class="rux--side-nav__item rux--side-nav__item--large">
-        <a class="rux--side-nav__link" href="budget.html">
+      <li class="rux--side-nav__item rux--side-nav__item--large rux--side-nav__item--active">
+        <a class="rux--side-nav__link rux--side-nav__link--current" href="budget.html" aria-current="page">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-request_quote"/></svg></div>
           <span class="rux--side-nav__link-text">Budget</span>
         </a>
@@ -185,11 +186,16 @@
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-6">
         <div class="coins-title">
-          <h1>Accounts</h1>
+          <h1>Budget</h1>
           <div class="coins-controls">
-            <div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm coins-who" role="tablist" aria-label="Whose money" id="coins-who"></div>
+            <div class="coins-month">
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm" id="coins-prev" aria-label="Previous month"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
+              <span class="rux--type-heading-02 coins-month__name" id="coins-month" aria-live="polite"></span>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm" id="coins-next" aria-label="Next month"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button>
+            </div>
           </div>
         </div>
+
         <div id="coins-error" hidden>
           <div class="rux--inline-notification rux--inline-notification--error" role="alert">
             <div class="rux--inline-notification__details">
@@ -201,50 +207,25 @@
 
         <div class="rux--subgrid rux--subgrid--wide rux--subgrid--with-row-gap">
           <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-4">
-            <div class="rux--tile"><p>All together</p><p class="rux--type-heading-04" id="coins-together">—</p><p class="rux--type-helper-text-01">What is in the bank, less what is owed</p></div>
+            <div class="rux--tile"><p>Left to spend</p><p class="rux--type-heading-04" id="coins-free">—</p><p class="rux--type-helper-text-01" id="coins-free-note"></p></div>
           </div>
           <div class="rux--css-grid-column rux--sm:col-span-2 rux--md:col-span-4 rux--lg:col-span-4">
-            <div class="rux--tile"><p>In the bank</p><p class="rux--type-heading-04" id="coins-bank">—</p><p class="rux--type-helper-text-01" id="coins-bank-note"></p></div>
+            <div class="rux--tile"><p>Planned</p><p class="rux--type-heading-04" id="coins-planned">—</p><p class="rux--type-helper-text-01" id="coins-planned-note"></p></div>
           </div>
           <div class="rux--css-grid-column rux--sm:col-span-2 rux--md:col-span-4 rux--lg:col-span-4">
-            <div class="rux--tile"><p>Owed on cards</p><p class="rux--type-heading-04" id="coins-cards">—</p><p class="rux--type-helper-text-01" id="coins-cards-note"></p></div>
+            <div class="rux--tile"><p>Spent so far</p><p class="rux--type-heading-04" id="coins-spent">—</p><p class="rux--type-helper-text-01" id="coins-spent-note"></p></div>
           </div>
           <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-4">
-            <div class="rux--tile"><p>Owed on loans</p><p class="rux--type-heading-04" id="coins-loans">—</p><p class="rux--type-helper-text-01" id="coins-loans-note"></p></div>
+            <div class="rux--tile"><p>Put aside</p><p class="rux--type-heading-04" id="coins-aside">—</p><p class="rux--type-helper-text-01">For the yearly costs, each month</p></div>
           </div>
         </div>
-
-        <div id="coins-missing-wrap" hidden>
-          <div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast" role="status">
-            <div class="rux--inline-notification__details">
-              <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
-              <div class="rux--inline-notification__text-wrapper"><div class="rux--inline-notification__subtitle" id="coins-missing"></div></div>
-            </div>
-          </div>
-        </div>
-
         <div class="rux--stack-vertical rux--stack-scale-7" id="coins-groups"></div>
-
-        <div id="coins-plan-wrap" hidden>
-          <div class="rux--tile">
-            <div class="rux--stack-vertical rux--stack-scale-5">
-              <h2 class="rux--type-heading-03">Paying off the cards</h2>
-              <div class="rux--form-item rux--text-input-wrapper coins-extra">
-                <div class="rux--text-input__label-wrapper"><label class="rux--label" for="coins-extra">More than the minimums, each month</label></div>
-                <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-                  <input id="coins-extra" class="rux--text-input" type="number" min="0" step="10" value="100" inputmode="decimal">
-                </div></div>
-              </div>
-              <p id="coins-plan" aria-live="polite"></p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
 </main>
 
-<!-- The account opened, from accounts.js: Carbon's side panel over the page. -->
+<!-- A flexible or yearly line, from budget.js: Carbon's side panel over the page. -->
 <aside class="rux--side-panel rux--side-panel--right-placement rux--side-panel--md" id="coins-panel" aria-labelledby="coins-panel-title" hidden>
   <div class="rux--side-panel__header rux--side-panel__header--has-title rux--side-panel__header--no-title-animation">
     <p class="rux--side-panel__label-text" id="coins-panel-label"></p>
@@ -256,110 +237,36 @@
     </div>
   </div>
   <div class="rux--side-panel__inner-content rux--side-panel--scrolls">
-    <form id="coins-account" class="coins-panel-form" novalidate>
+    <form id="coins-b-form" class="coins-panel-form" novalidate>
       <div class="rux--stack-vertical rux--stack-scale-6">
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="coins-a-name">Name</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="coins-b-name">Name</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="coins-a-name" class="rux--text-input" type="text" autocomplete="off">
+            <input id="coins-b-name" class="rux--text-input" type="text" autocomplete="off">
           </div></div>
-          
+          <div class="rux--form__helper-text">A category counts the lines sorted under the same name.</div>
         </div>
-        <div class="rux--form-item">
-          <div class="rux--select">
-            <label class="rux--label" for="coins-a-whose">Whose</label>
-            <div class="rux--select-input__wrapper">
-              <select id="coins-a-whose" class="rux--select-input"></select>
-              <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="coins-b-amount" id="coins-b-amount-label">Each month</label></div>
+          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+            <input id="coins-b-amount" class="rux--text-input" type="text" autocomplete="off" inputmode="decimal">
+          </div></div>
+        </div>
+        <div id="coins-b-month-wrap" hidden>
+          <div class="rux--form-item">
+            <div class="rux--select">
+              <label class="rux--label" for="coins-b-month">Due in</label>
+              <div class="rux--select-input__wrapper">
+                <select id="coins-b-month" class="rux--select-input"></select>
+                <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="rux--form-item">
-          <div class="rux--select">
-            <label class="rux--label" for="coins-a-kind">Kind</label>
-            <div class="rux--select-input__wrapper">
-              <select id="coins-a-kind" class="rux--select-input"></select>
-              <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
-            </div>
-          </div>
-        </div>
-        <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="coins-a-last4">Last four digits</label></div>
-          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="coins-a-last4" class="rux--text-input" type="text" autocomplete="off" inputmode="numeric" maxlength="4">
-          </div></div>
-          <div class="rux--form__helper-text">Only the last four, never the whole number</div>
-        </div>
-        <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="coins-a-bank">Bank</label></div>
-          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="coins-a-bank" class="rux--text-input" type="text" autocomplete="off">
-          </div></div>
-          <div class="rux--form__helper-text">Optional</div>
-        </div>
-        <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="coins-a-balance" id="coins-a-balance-label">Balance</label></div>
-          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="coins-a-balance" class="rux--text-input" type="text" autocomplete="off" inputmode="decimal">
-          </div></div>
-          
-        </div>
-        <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="coins-a-balance-on">On</label></div>
-          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="coins-a-balance-on" class="rux--text-input" type="date" autocomplete="off">
-          </div></div>
-          <div class="rux--form__helper-text">The day the balance was true.</div>
-        </div>
-        <div id="coins-a-limit-wrap">
-        <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="coins-a-limit">Credit limit</label></div>
-          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="coins-a-limit" class="rux--text-input" type="text" autocomplete="off" inputmode="decimal">
-          </div></div>
-          
-        </div>
-        </div>
-        <div id="coins-a-apr-wrap">
-        <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="coins-a-apr">Interest rate</label></div>
-          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="coins-a-apr" class="rux--text-input" type="text" autocomplete="off" inputmode="decimal">
-          </div></div>
-          <div class="rux--form__helper-text">A yearly percentage, like 24.9.</div>
-        </div>
-        </div>
-        <div id="coins-a-minimum-wrap">
-        <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="coins-a-minimum" id="coins-a-minimum-label">Minimum payment</label></div>
-          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="coins-a-minimum" class="rux--text-input" type="text" autocomplete="off" inputmode="decimal">
-          </div></div>
-          
-        </div>
-        </div>
-        <div id="coins-a-due-wrap">
-        <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="coins-a-due">Due day</label></div>
-          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="coins-a-due" class="rux--text-input" type="text" autocomplete="off" inputmode="numeric" maxlength="2">
-          </div></div>
-          <div class="rux--form__helper-text">The day of the month the payment is due.</div>
-        </div>
-        </div>
-        <div class="rux--form-item">
-          <div class="rux--checkbox-wrapper">
-            <input type="checkbox" class="rux--checkbox" id="coins-a-closed">
-            <label for="coins-a-closed" class="rux--checkbox-label"><span class="rux--checkbox-label-text">Closed. Its lines stay; it leaves the totals.</span></label>
-          </div>
-        </div>
-        <div class="rux--form-item">
-          <div class="rux--text-area__label-wrapper"><label class="rux--label" for="coins-a-notes">Note</label></div>
-          <div class="rux--text-area__wrapper"><textarea id="coins-a-notes" class="rux--text-area" rows="3"></textarea></div>
         </div>
         <div class="coins-actions">
-          <button type="submit" class="rux--btn rux--btn--primary" id="coins-a-save">Save</button>
-          <button type="button" class="rux--btn rux--btn--ghost" id="coins-a-cancel">Cancel</button>
+          <button type="submit" class="rux--btn rux--btn--primary" id="coins-b-save">Save</button>
+          <button type="button" class="rux--btn rux--btn--ghost" id="coins-b-cancel">Cancel</button>
+          <button type="button" class="rux--btn rux--btn--danger--ghost" id="coins-b-delete" hidden>Delete</button>
         </div>
       </div>
     </form>
@@ -379,6 +286,6 @@
 <script src="/account.js"></script>
 <script src="app.js"></script>
 <script src="data.js"></script>
-<script src="accounts.js"></script>
+<script src="budget.js"></script>
 </body>
 </html>

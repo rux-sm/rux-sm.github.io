@@ -74,3 +74,7 @@ th.coins-amount .rux--table-header-label { justify-content: flex-end; }
 
 /* The extra amount in the paying-off sentence's field stays narrow. */
 .coins-extra { max-inline-size: 12rem; }
+
+/* A part's title with its add button at the end of the line. */
+.coins-group-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--rux-spacing-03); }
+.coins-bar-cell { min-inline-size: 10rem; }

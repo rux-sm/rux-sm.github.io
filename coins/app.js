@@ -91,6 +91,10 @@
     return m.length >= 3 && Number(line.amount) < 0
       && (String(line.merchant || '').toUpperCase().includes(m) || String(line.description || '').toUpperCase().includes(m));
   };
+  // A bill with no match text is paid inside another, like an app billed
+  // through Apple: it has no lines of its own, so it has no month to be paid,
+  // late or due in, and the bill that holds it already counts its cost.
+  const tracked = bill => String(bill.match || '').trim().length >= 3;
   const EVERY = { weekly: 0, monthly: 1, quarterly: 3, yearly: 12, irregular: 0 };
   const PER_YEAR = { weekly: 52, monthly: 12, quarterly: 4, yearly: 1, irregular: 0 };
 
@@ -150,6 +154,7 @@
   // not fall in the month or has stopped. Late only when the files already
   // cover the due day.
   const billState = (bill, facts, start, through = new Map()) => {
+    if (!tracked(bill)) return null;
     const month = iso(start).slice(0, 7);
     const due = billDue(bill, facts, start.getFullYear(), start.getMonth());
     // Paid in the month, or up to ten days early for a due day early in it.
@@ -171,6 +176,6 @@
 
   window.Coins = Object.assign(window.Coins || {}, {
     money, iso, today, month, shiftMonth, who, setParam, accountsFor, whoSwitch, totals, dueIn, notice,
-    median, matches, billFacts, billDue, billState, coverage, coveredTo, stopped, PER_YEAR,
+    median, matches, tracked, billFacts, billDue, billState, coverage, coveredTo, stopped, PER_YEAR,
   });
 })();

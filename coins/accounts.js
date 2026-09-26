@@ -55,8 +55,9 @@
   const loanMonths = a => {
     const B = num(a.balance), r = num(a.apr) / 1200, P = num(a.minimum_payment);
     if (!B || !P) return null;
-    if (!r) return Math.ceil(B / P);
-    return P <= B * r ? null : Math.ceil(-Math.log(1 - r * B / P) / Math.log(1 + r));
+    // A cent's rounding in the payment is not a whole extra month.
+    if (!r) return Math.ceil(B / P - 0.01);
+    return P <= B * r ? null : Math.ceil(-Math.log(1 - r * B / P) / Math.log(1 + r) - 0.01);
   };
   const inMonths = n => { const d = C.today(); d.setDate(1); d.setMonth(d.getMonth() + n); return d; };
 

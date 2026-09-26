@@ -124,11 +124,7 @@ tools and review page it grows out of.
       Transactions panel makes.
 - [ ] Offer a bill in the Transactions panel, to link or unlink one line by
       hand.
-- [ ] On rux's yes, copy each bill's login from the money folder's list into
-      the database, and add the bills the mail found that the bank lines
-      had not named apart.
 - [ ] Tidy the first imports with rux, then make the tidy a skill.
 - [ ] Build Overview.
-- [ ] Build Budget, with its table as a migration of its own.
 - [ ] Retire the money folder on the Mac, and update
       `~/claude-config/developer/CLAUDE.md` that describes it.

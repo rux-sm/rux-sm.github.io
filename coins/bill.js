@@ -43,6 +43,7 @@
     $('coins-name').textContent = bill.name;
     $('coins-tags').replaceChildren(...[tag(DECISION[bill.decision]), state && tag(STATE[state.state]),
       halted && bill.decision !== 'cancelled' && tag(['Stopped', 'rux--tag--warm-gray']),
+      !C.tracked(bill) && tag(['Inside another bill', 'rux--tag--cool-gray']),
       facts.rose && tag([`Last payment ${C.money(facts.rose)} more than usual`, 'rux--tag--purple'])].filter(Boolean));
     $('coins-usual').textContent = facts.usual == null ? '—' : C.money(facts.usual);
     $('coins-usual-note').textContent = [EVERY[bill.cadence], bill.due_day ? `around the ${ordinal(bill.due_day)}` : ''].filter(Boolean).join(', ');

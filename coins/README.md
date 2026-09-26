@@ -42,6 +42,16 @@ minimums each month, highest interest first, would clear and save. A bank
 account's balance is saved from its latest file; a card's or a loan's is
 typed into the account's side panel, since no export states one.
 
+`budget.html` is the month's plan in three parts: fixed, the bills of each
+kind and the cards' minimums, against what was paid; flexible, one amount a
+category against the month's bought lines of that category, with the rest
+under Not in the budget; and once a year, costs spread over twelve months.
+A category or yearly cost is added, changed and deleted in the side panel.
+
+A bill with no match text is paid inside another, like an app billed through
+Apple: it shows on its own with its yearly cost, but has no month of its own
+and leaves every total to the bill that holds it.
+
 `import.html` takes a bank file into one account in four steps: the
 account, which can be added there; the file, read on the device and never
 uploaded; a check of the lines the account does not hold yet, each ticked;
@@ -51,8 +61,8 @@ import's lines.
 
 ## How it works
 
-Eight tables named `coins_*` hold the household, its people, accounts,
-imports, lines, bills, rules and the suggestions turned down. Only an account that can open Coins **and**
+Nine tables named `coins_*` hold the household, its people, accounts,
+imports, lines, bills, rules, the suggestions turned down and the budget. Only an account that can open Coins **and**
 is linked to a person in the household reads them; scheduler staff do not.
 `docs/database-access.md` is the rule. Nothing about the household is ever
 written here, because this repository is public.
@@ -62,7 +72,7 @@ written here, because this repository is public.
 | `data.js` | the reads and writes |
 | `app.js` | money as text, the month and member in the address, the switch, totals, where a bill stands |
 | `bank-file.js` | an export read by its column layout, its stated balance, and each line's kind and merchant |
-| `overview.js`, `transactions.js`, `bills.js`, `bill.js`, `accounts.js`, `import.js` | each page's own behaviour |
+| `overview.js`, `transactions.js`, `bills.js`, `bill.js`, `accounts.js`, `budget.js`, `import.js` | each page's own behaviour |
 | `app.css` | the title row, filters, two-line rows and step buttons, under `coins-` |
 | `overrides.css` | the side panel hidden when closed and full width on a phone |
 

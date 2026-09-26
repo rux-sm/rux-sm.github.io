@@ -151,6 +151,18 @@
       fail((await client.from('coins_bills').delete().eq('id', id)).error);
     },
 
+    // The plan's flexible and yearly lines; fixed bills come from coins_bills.
+    budget: () => all(() => client.from('coins_budget').select('*').order('part').order('sort').order('name')),
+    async saveBudget(row) {
+      const q = row.id ? client.from('coins_budget').update(row).eq('id', row.id) : client.from('coins_budget').insert(row);
+      const { data: saved, error } = await q.select('*').single();
+      fail(error);
+      return saved;
+    },
+    async deleteBudget(id) {
+      fail((await client.from('coins_budget').delete().eq('id', id)).error);
+    },
+
     // Whether anything has ever been imported, for the empty notice.
     async anyTransactions() {
       const { count, error } = await client.from('coins_transactions').select('id', { count: 'exact', head: true });

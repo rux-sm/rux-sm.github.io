@@ -22,6 +22,12 @@ nobody has looked at yet. A line opens in a side panel to change its
 category, kind and note, and a tick there makes it a rule, which sorts every
 saved line that contains its text now and every line imported later.
 
+`rules.html` lists the household's rules in the order they are tried, each
+with what it matches, the name, kind and category it gives, and how many
+saved lines contain its text. A rule is added, changed or deleted in the side
+panel; saving sorts every saved line it fits, and deleting leaves those lines
+as they are.
+
 `bills.html` has this month's bills in three groups, due in the next
 seven days with any late, later this month, and paid, or every bill, or the
 ones with keep or cancel still to decide, under the month's totals. A bill
@@ -75,7 +81,7 @@ written here, because this repository is public.
 | `data.js` | the reads and writes |
 | `app.js` | money as text, the month and member in the address, the switch, totals, where a bill stands |
 | `bank-file.js` | an export read by its column layout, its stated balance, and each line's kind and merchant |
-| `overview.js`, `transactions.js`, `bills.js`, `bill.js`, `accounts.js`, `budget.js`, `import.js` | each page's own behaviour |
+| `overview.js`, `transactions.js`, `rules.js`, `bills.js`, `bill.js`, `accounts.js`, `budget.js`, `import.js` | each page's own behaviour |
 | `app.css` | the title row, filters, two-line rows and step buttons, under `coins-` |
 | `overrides.css` | the side panel hidden when closed and full width on a phone |
 

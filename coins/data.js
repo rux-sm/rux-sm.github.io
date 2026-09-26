@@ -10,6 +10,8 @@
 
   const client = window.Rux?.account?.client ?? null;
   const fail = error => { if (error) throw error; };
+  // Plain text as an ilike pattern that contains it: % and _ escaped.
+  const likeOf = text => `%${String(text).replace(/[\\%_]/g, c => '\\' + c)}%`;
   // Today as an ISO date, on this device's calendar.
   const todayIso = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 
@@ -43,7 +45,7 @@
       fail(error);
       return saved;
     },
-    rules: () => all(() => client.from('coins_rules').select('match, merchant, kind, category, sort').order('sort')),
+    rules: () => all(() => client.from('coins_rules').select('*').order('sort').order('created_at')),
     imports: () => all(() => client.from('coins_imports').select('*').order('created_at', { ascending: false })),
 
     async addAccount(row) {
@@ -102,14 +104,15 @@
       }
     },
 
-    /* A RULE, and every line it already fits. A line whose kind was set by
-       hand keeps it; the rule's merchant and category still reach it. The
-       match is plain text, so % and _ are escaped for ilike. Returns how many
-       lines changed. */
-    async addRule(rule) {
-      const { data: made, error } = await client.from('coins_rules').insert(rule).select('match, merchant, kind, category, sort').single();
+    /* A RULE, added or changed, and every line it already fits. A line whose
+       kind was set by hand keeps it; the rule's merchant and category still
+       reach it. The match is plain text, so % and _ are escaped for ilike.
+       Returns the rule and how many lines changed. */
+    async saveRule(rule) {
+      const q = rule.id ? client.from('coins_rules').update(rule).eq('id', rule.id) : client.from('coins_rules').insert(rule);
+      const { data: made, error } = await q.select('*').single();
       fail(error);
-      const like = `%${rule.match.replace(/[\\%_]/g, c => '\\' + c)}%`;
+      const like = likeOf(rule.match);
       const set = {};
       if (rule.merchant) set.merchant = rule.merchant;
       if (rule.category) set.category = rule.category;
@@ -123,6 +126,18 @@
         fail(e); changed = Math.max(changed, rows.length);
       }
       return { rule: made, changed };
+    },
+
+    // Deleting a rule leaves the lines it sorted as they are.
+    async deleteRule(id) {
+      fail((await client.from('coins_rules').delete().eq('id', id)).error);
+    },
+
+    // How many saved lines a rule's text is found in.
+    async ruleLines(match) {
+      const { count, error } = await client.from('coins_transactions').select('id', { count: 'exact', head: true }).ilike('description', likeOf(match));
+      fail(error);
+      return count;
     },
 
     // Money that left from `from` on, with what a bill or a suggestion needs.
@@ -151,7 +166,7 @@
       fail((await client.from('coins_transactions').update({ bill_id: null }).eq('bill_id', bill.id)).error);
       const m = String(bill.match || '').trim();
       if (m.length >= 3) {
-        const like = `%${m.replace(/[\\%_]/g, c => '\\' + c)}%`;
+        const like = likeOf(m);
         for (const field of ['merchant', 'description']) {
           fail((await client.from('coins_transactions').update({ bill_id: bill.id })
             .is('bill_id', null).lt('amount', 0).ilike(field, like)).error);

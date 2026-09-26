@@ -158,7 +158,7 @@
       if ($('coins-edit-rule').checked) {
         const match = $('coins-edit-match').value.trim();
         if (match.length < 3) { save.disabled = false; return C.notice('A rule needs at least three letters to match.'); }
-        const { rule, changed } = await C.data.addRule({
+        const { rule, changed } = await C.data.saveRule({
           household_id: people[0].household_id, match: match.toUpperCase(),
           category: patch.category, kind: patch.kind ?? null, sort: rules.length,
         });

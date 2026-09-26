@@ -78,3 +78,6 @@ th.coins-amount .rux--table-header-label { justify-content: flex-end; }
 /* A part's title with its add button at the end of the line. */
 .coins-group-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--rux-spacing-03); }
 .coins-bar-cell { min-inline-size: 10rem; }
+
+/* A rule's matching text, as the bank writes it. */
+.coins-code { font-family: var(--rux-code-01-font-family, 'IBM Plex Mono', monospace); letter-spacing: 0; }

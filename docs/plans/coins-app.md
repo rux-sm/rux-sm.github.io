@@ -132,8 +132,6 @@ tools and review page it grows out of.
 ## Tasks
 
 - [ ] Tick Coins for the second member on the Access page.
-- [ ] Build the rules page, to see, change and delete the rules the
-      Transactions panel makes.
 - [ ] Offer a bill in the Transactions panel, to link or unlink one line by
       hand.
 - [ ] Tidy the first imports with rux, then make the tidy a skill.

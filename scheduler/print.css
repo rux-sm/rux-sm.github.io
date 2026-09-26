@@ -1544,18 +1544,25 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   grid-auto-rows: min-content;
   align-content: start;
   min-block-size: 0;
-  overflow: hidden;
+  overflow: clip;
+  overflow-clip-margin: 0.5pt;
 }
 /* A row with one lane gives its cards the whole height, so a card is centred
    in its row and its write-in lines get the room. */
 .scheduler-week__lanes[data-lanes="1"] { grid-template-rows: minmax(0, 1fr); }
 
+/* A card's line is an outline centred on its edge, so two cards that touch
+   share one 1pt line, as table cells do, and the half past the row's edge is
+   kept by the lanes' clip margin. The padding is the half inside, so the
+   card's own rules run to the line and its text starts 4pt past it. */
 .scheduler-week__trip {
   display: flex;
   flex-direction: column;
   min-inline-size: 0;
   min-block-size: 0;
-  border: 1pt solid var(--scheduler-week-border);
+  padding: 0.5pt;
+  outline: 1pt solid var(--scheduler-week-border);
+  outline-offset: -0.5pt;
   background: var(--scheduler-week-bg);
   color: var(--rux-text-primary);
   -webkit-print-color-adjust: exact;
@@ -1570,11 +1577,11 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-week__trip--red     { --scheduler-week-bg: var(--rux-tag-background-red);     --scheduler-week-border: var(--rux-tag-border-red); }
 .scheduler-week__trip--amber   { --scheduler-week-bg: var(--scheduler-amber-bg);         --scheduler-week-border: var(--scheduler-amber-border); }
 /* A card across several days keeps its lines to one day's width: the card
-   divided by its days, less the share of the border a one-day card has that
+   divided by its days, less the share of the padding a one-day card has that
    this one spends only once. */
 .scheduler-week__trip > * {
   max-inline-size: calc(100% / var(--scheduler-week-span, 1)
-    - (var(--scheduler-week-span, 1) - 1) * 2pt / var(--scheduler-week-span, 1));
+    - (var(--scheduler-week-span, 1) - 1) * 1pt / var(--scheduler-week-span, 1));
 }
 /* A trip that began last week is its colour and nothing else here. */
 .scheduler-week__trip--continued { min-block-size: 12pt; }
@@ -1678,7 +1685,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 :is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="2"] { --scheduler-week-fields: 2; }
 :is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="3"] { --scheduler-week-fields: 3; }
 :is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="4"] { --scheduler-week-fields: 4; }
-/* The card's own border is the last line's rule. */
+/* The card's own line is the last line's rule. */
 .scheduler-week__detail:last-child { border-block-end: 0; }
 .scheduler-week__field {
   display: flex;

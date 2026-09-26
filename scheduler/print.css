@@ -1700,8 +1700,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 /* The write-in lines, on white, share the card's remaining height evenly,
    each with its text sitting on a rule that runs to the card's edges. The
-   card's own foot line is the last line's rule: the lines reach over it and
-   the last rule is left clear. */
+   lines reach over the card's foot line, and the last one draws it. */
 .scheduler-week__write {
   flex: 1 1 auto;
   display: flex;
@@ -1733,7 +1732,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 :is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="2"] { --scheduler-week-fields: 2; }
 :is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="3"] { --scheduler-week-fields: 3; }
 :is(.scheduler-week__detail, .scheduler-week__crew)[data-fields="4"] { --scheduler-week-fields: 4; }
-.scheduler-week__detail:last-child { border-block-end-color: transparent; }
+/* The last line's rule is the card's own foot line, drawn in its colour at
+   its width over the card's border, so the shrunk preview cannot lose it
+   under the line's white. */
+.scheduler-week__detail:last-child { border-block-end: 0.75pt solid var(--scheduler-week-border); }
 .scheduler-week__field {
   display: flex;
   gap: 2pt;

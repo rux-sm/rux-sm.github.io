@@ -138,6 +138,9 @@ tools and review page it grows out of.
       hand.
 - [ ] Tidy the first imports with rux, then make the tidy a skill.
 - [ ] Build Overview.
+- [ ] Once every bill's login is confirmed, go through the bills with the
+      household and set each one's whose to one member or both, apart from
+      the account it is paid from; power, water and internet are both.
 - [ ] Import a full year of the second member's card, which today holds one
       month.
 - [ ] Build the contribution plan on the Budget page, once the questions

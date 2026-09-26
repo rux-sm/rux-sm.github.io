@@ -1489,8 +1489,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    EVERY LINE A CARD CAN MEET IS 0.75PT, one CSS pixel, the width Chrome
    prints any line of about that weight at, and each is drawn inside the
    cell before it: a day's line at its cell's end, a row's line at its
-   cells' foot. The frame is the header's top, the bus column's start,
-   Sunday's end and the last row's foot. A card sits over the line before
+   foot. The frame is the header's top, the bus column's start, Sunday's end
+   and the last row's foot. A card sits over the line before
    it, so its own line lands exactly on the gridline under it. */
 /* EVERY ROW AND DAY IS A WHOLE NUMBER OF PIXELS, the unit Chrome prints
    each line's place in, and so is the grid's corner on the page, so all five
@@ -1534,6 +1534,22 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   border-inline-end: 0.75pt solid var(--rux-border-subtle-00);
 }
 .scheduler-week__row { min-block-size: 0; }
+/* A ROW'S FOOT LINE IS DRAWN IN FRONT OF THE CARDS, by the row itself, so no
+   rounding can lay a card's fill over it: the preview shrinks the sheet and
+   rounded the next row's card over the line on screen. A row line never
+   crosses a card, so it can always be in front; the day lines stay behind,
+   where a card across several days covers the ones inside it. */
+.scheduler-week__row::after {
+  content: "";
+  grid-column: 1 / -1;
+  grid-row: 1;
+  align-self: end;
+  position: relative;
+  z-index: 1;
+  border-block-end: 0.75pt solid var(--rux-border-subtle-00);
+  pointer-events: none;
+}
+.scheduler-week__row:last-child::after { border-block-end-color: var(--rux-border-strong-01); }
 .scheduler-week__bus {
   grid-column: 1;
   grid-row: 1;
@@ -1547,15 +1563,9 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   grid-row: 1;
   border-inline-end: 0.75pt solid var(--rux-border-subtle-00);
 }
-.scheduler-week__bus,
-.scheduler-week__cell { border-block-end: 0.75pt solid var(--rux-border-subtle-00); }
-/* The frame: Sunday's line (the eighth child, after the bus) and the last
-   row's foot. */
+/* The frame's right side: Sunday's line, the eighth child after the bus. */
 .scheduler-week__day:last-child,
 .scheduler-week__cell:nth-child(8) { border-inline-end-color: var(--rux-border-strong-01); }
-.scheduler-week__row:last-child > :is(.scheduler-week__bus, .scheduler-week__cell) {
-  border-block-end-color: var(--rux-border-strong-01);
-}
 /* The cards lie over the day cells, on the same seven columns with no gap
    or inset, so a card across three days is exactly three days wide. The clip
    margin keeps the edge each card lays over the line before it. What will
@@ -1571,7 +1581,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   overflow: clip;
   overflow-clip-margin: 0.75pt;
   /* Its cards never size the row: on paper Chrome grew a crowded row to hold
-     every stacked card, and its cells' foot line printed inside the next row. */
+     every stacked card, and its foot line printed inside the next row. */
   contain: size;
 }
 /* A row with one lane gives its cards the whole height, so a card is centred

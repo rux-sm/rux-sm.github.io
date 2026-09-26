@@ -166,5 +166,6 @@ None open.
 
 ## Tasks
 
-- [ ] Turn rux-ui's three link pages into forwarders and switch its link-making
+- [ ] Once rux has sent every driver their assignments through the scheduler,
+      turn rux-ui's three link pages into forwarders and switch its link-making
       code to the new addresses.

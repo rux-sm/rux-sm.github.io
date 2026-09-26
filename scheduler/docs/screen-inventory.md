@@ -21,7 +21,6 @@ of Design's `js/*.js` behaviours; an *app component* is this app's own.
 | Old view | Verdict | Becomes |
 |---|---|---|
 | Customers | keep | `contacts.html`, the Contacts list, and one contact at `contacts.html?id=` (§7). |
-| Requests | keep | `table-page` with a content switcher for status. Detail opens in the panel. |
 | Itineraries | later | Needs the itinerary editor, an app component, and the AI intake. |
 | Settings (`Options`) | keep, trimmed | `settings-page`. Yard, requirements, billing defaults. Saved locations have their own page, `locations.html`. Mapbox and Extract keys move with intake. |
 
@@ -40,7 +39,6 @@ Dropped: Documents, Game, the Samsara and Gallery links.
 | Charter or Ticketed, ticket prices | later | With the trip manifest. |
 | Trip editor, Route tab | keep | One section: Pickup location, Depart beside End, and Drop-off location when the trip is not a round trip; its overflow menu opens Padding and the drive fields. A Times section lists yard depart, spot time, depart, end and yard return, each with what it was worked out from; drives are looked up from Mapbox. Under them a closed Full itinerary section lists the stops between the pickup and where the group is let off, each with its times, drive and wait, and a dialog adds, edits, moves or removes one; a round trip is let off at its pickup. Untouched, the tab edits only the leg's pickup, first stop, drop-off and return rows; once the list is touched, Save rewrites the leg's stops in its order and keeps day and sleeper rows where they are. |
 | Customer editor | keep | The Contacts page's record: name, organization, phone and email (§7). |
-| Request detail | keep | Panel with a Create draft trip button. |
 | Itinerary editor | later | App component, with the Itineraries view. |
 | Trip manifest | later | Passengers as a `table-page` section under the trip, edit in a modal. |
 | Trip finder results page | keep | `trips.html`, every trip in a data table with search, a Show choice and pagination; a row opens its trip on the board. Results in a data table on a page. The schedule's toolbar search, always open, and Cmd-K exist. It finds cancelled trips too, tagged Cancelled; one opens a dialog with the date and reason and a Bring back button. Cancelling needs a typed reason. |
@@ -85,7 +83,6 @@ now line.
 |---|---|---|
 | `../rux-ui/driver.html`, token in the query | keep | Header-only shell, mobile first, trip legs as tiles with Accept and Decline, through the existing RPCs. |
 | `../rux-ui/maintenance.html` | later | Same shell, a read-only bus by day grid; may reuse the week grid. |
-| `../rux-ui/request.html` | keep, with Requests | Public `form-page`, submits through the existing RPC. |
 | `../rux-ui/intake.html` | later | Needs the Worker's extract route and the itinerary component. |
 | `../rux-ui/m.html`, `../rux-ui/d.html` | keep | Redirect stubs, unchanged. |
 | `../rux-ui/doc.html` | keep | Redirect by document id, unchanged. |
@@ -96,7 +93,7 @@ Dropped: `../rux-ui/gallery.html` and the four specimen pages.
 
 Each step ends with the page opened in every theme.
 
-5. Print schedule. Requests and `../rux-ui/request.html`. Driver page.
+5. Print schedule. Driver page.
 6. Everything marked *later*.
 
 ## 6. Not verified
@@ -114,7 +111,7 @@ Three homes, and one rule for choosing.
 | **A page** | A list, a feed or a workspace: something you navigate to. |
 | **A menu or a modal** | Options that change how the page draws, and one-off actions. |
 
-- **Trip and request detail go in the panel.** One editing surface beats
+- **Trip detail goes in the panel.** One editing surface beats
   two. A driver, a bus, a contact, a customer and a location are each edited
   on their own page, `drivers.html?id=`, `fleet.html?id=`,
   `contacts.html?id=`, `customers.html?id=` and `locations.html?id=`, because

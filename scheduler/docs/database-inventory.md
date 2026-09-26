@@ -22,7 +22,7 @@ the schema to match the page.
   This app's client is the site's `account.js`; the old app's is
   `../rux-ui/js/data/supabase.js`.
 - **A third reader is the Claude connector**, an Edge Function rather than a
-  page; section 5 covers it.
+  page; section 4 covers it.
 - **The old app goes through a proxy.** Its client's URL is a Cloudflare
   Worker (`../rux-ui/worker/`), a pass-through to the Supabase host plus one
   route of its own, `/ai/extract`, used only by the intake page. This app
@@ -32,20 +32,19 @@ the schema to match the page.
   `staff_all` rule for a staff session; `profiles` lets staff read and each
   person update their own row, but never its `user_id`;
   `quote_rates` and `quote_mileage_rates` are staff only too.
-- **Eight tables have no rule at all**, so they are reachable only through
-  `security definer` functions: `trip_requests`, `trip_history`,
+- **Seven tables have no rule at all**, so they are reachable only through
+  `security definer` functions: `trip_history`,
   `driver_schedule_shares`, `maintenance_schedule_shares`,
   `trip_driver_confirmations`, `trip_driver_statuses`, `trip_buses`,
   `trip_docs`.
-- **The publishable key can run eleven functions, the ones the link pages
+- **The publishable key can run ten functions, the ones the link pages
   call:** the driver page's `get_driver_schedule_share`,
   `get_driver_share_trips`, `get_driver_assignment_statuses`,
   `get_driver_confirmations`, `get_driver_accepted_views`,
   `record_driver_accepted_view`, `confirm_trip_assignment` and
-  `decline_trip_assignment`; the maintenance page's `get_maintenance_schedule`
-  and `get_maintenance_schedule_changes`; and the request form's
-  `submit_trip_request`. Each takes the link's token or, for the form, only
-  adds a request. Every other function is closed to the key, and the ones a
+  `decline_trip_assignment`; and the maintenance page's
+  `get_maintenance_schedule` and `get_maintenance_schedule_changes`. Each takes
+  the link's token. Every other function is closed to the key, and the ones a
   staff page calls check `is_staff` first, so an account signed in without the
   Scheduler is refused too.
 
@@ -91,7 +90,6 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 | `trip_passenger_payments` | manifest | `passenger_id`, `amount`, `method`, `date`, `ref` |
 | `trip_documents` | trip editor Files, driver page, `../rux-ui/doc.html` | `trip_id`, `label`, `file_name`, `file_path`, `file_size`. Files in bucket `trip-documents`. |
 | `trip_itineraries` | Itineraries view | `trip_id` (unique when set), `document` jsonb, `status` (new, reviewed, closed), `label` |
-| `trip_requests` | Requests view, `../rux-ui/request.html` | `reference` (`REQ-` plus six), `status`, `source`, `contact` jsonb, `payload` jsonb, `trip_id`. RPC only. |
 | `trip_history` | History tab | `trip_id`, `trip_ref`, `action` (nine values), `changes` jsonb, `metadata` jsonb. RPC only. |
 | `trip_driver_statuses` | driver page, Tasks | `trip_id`, `driver_id`, `leg`, `role`, `status` (five values), `source` (dispatcher, driver), `accepted_at`, `declined_at`, and `accepted_view`, what the driver page showed of the driver's job when they accepted, which a later change is compared with. RPC only. |
 | `trip_driver_confirmations` | legacy | superseded by `trip_driver_statuses`; still written by the confirm and decline RPCs |
@@ -118,8 +116,7 @@ Trigger functions `set_bus_ref`, `set_driver_ref`, `touch_trips_updated_at`,
 | Driver share links | `create_driver_schedule_share`, `update_driver_schedule_share`, `get_driver_schedule_share`, `get_driver_schedule_share_for_driver`, `revoke_driver_schedule_share` |
 | Driver acceptance | `confirm_trip_assignment`, `decline_trip_assignment`, `get_trip_driver_statuses`, `sync_trip_driver_statuses`, `get_driver_assignment_statuses`, `get_driver_confirmations`, `record_driver_accepted_view`, `get_driver_accepted_views` |
 | Maintenance link | `create_maintenance_schedule_share`, `get_maintenance_schedule_share`, `get_maintenance_schedule`, `get_maintenance_schedule_changes`, `revoke_maintenance_schedule_share`; `replace_maintenance_schedule_share`, staff only, gives the link a new token or makes the first one |
-| Trip requests | `create_trip_request`, `submit_trip_request`, `get_trip_request`, `list_trip_requests`, `update_trip_request_status`, `link_trip_request`, `delete_trip_request`, `new_trip_request_reference` |
-| Document links | the `trip-document-link` Edge Function (§6), for this app's and rux-ui's document link pages; `get_trip_document` is staff only and nothing calls it |
+| Document links | the `trip-document-link` Edge Function (§5), for this app's and rux-ui's document link pages; `get_trip_document` is staff only and nothing calls it |
 | History | `record_trip_history`, `get_trip_history` |
 | Access, owner only, on the Account page | `is_owner`, `list_accounts`, `set_account_apps`; not callable without a log-in |
 
@@ -128,7 +125,7 @@ Trigger functions `set_bus_ref`, `set_driver_ref`, `touch_trips_updated_at`,
 `trip-documents` (paths under the trip id), `driver-photos` and
 `profile-photos`, with no size or file-type limit; only staff can upload,
 replace or delete. The first two are private: staff pages read them through
-ten-minute signed links, and the link pages through `trip-document-link` (§6).
+ten-minute signed links, and the link pages through `trip-document-link` (§5).
 `profile-photos` is public.
 
 ### Realtime
@@ -157,7 +154,6 @@ as in `screen-inventory.md`.
 | `trip_quote_lines` | Trip editor Billing, the customer quote on the Forms page | Trip editor, which writes `quoted_price` as the lines' sum |
 | `trip_passengers`, `trip_passenger_payments` | Manifest | Manifest |
 | `trip_documents` + bucket | Trip editor Files, driver page, `../rux-ui/doc.html` | Trip editor Files and the bar menu's Upload itinerary, each change with a `trip_history` entry |
-| `trip_requests` (RPC) | Requests, `../rux-ui/request.html` | `../rux-ui/request.html` submits; Requests changes status and links |
 | `trip_history` (RPC) | History | every save in the trip editor |
 | `trip_driver_statuses` (RPC) | Schedule, Tasks, Drivers | driver page accepts and declines; the bar menu's driver status items |
 | `driver_schedule_shares` (RPC) | Driver editor | Driver editor |
@@ -165,14 +161,7 @@ as in `screen-inventory.md`.
 | `notifications`, `notification_reads` | header bell | old app's notification job; unchanged |
 | `trip_itineraries` | Itineraries, deferred | intake, deferred |
 
-## 4. What the old app names that the project lacks
-
-`../rux-ui/js/data/trip-request-db.js` calls `attach_trip_request_document`
-and `list_trip_request_documents` and uploads to a `trip-request-uploads`
-bucket. None of the three exists in the live project, and neither does a
-`trip_request_documents` table.
-
-## 5. The Claude connector
+## 4. The Claude connector
 
 `scheduler-connector`, one of the project's two Edge Functions, source in
 `scheduler/connector/index.ts`. It serves MCP at
@@ -206,7 +195,7 @@ any it cannot place. The editor's Save stays the only writer of a trip.
 
 `scheduler/docs/working-from-claude.md` is how to use it.
 
-## 6. The document link
+## 5. The document link
 
 `trip-document-link`, the project's other Edge Function, source in
 `scheduler/trip-document-link/`. A page without a log-in posts a trip

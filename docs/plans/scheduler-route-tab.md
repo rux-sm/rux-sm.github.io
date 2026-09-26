@@ -66,10 +66,10 @@ None open.
 
 ## Tasks
 
-- [ ] Remove the 253 day rows and 11 sleeper rows from `trip_stops` as a
-      named change shown to rux first; nothing reads them now.
-- [ ] Correct the 35 stop dates on 12 trips that fall outside their trip's
-      dates, as a named change shown to rux first.
+- [ ] Remove the 253 day rows and 11 sleeper rows from `trip_stops`; nothing
+      reads them now, rux said yes, and their copy is in
+      `~/Developer/db-backups/`. The delete was refused by the session's
+      safety check, so it waits for rux to run it or allow it.
 
 - [ ] Check the Route tab on a one-way trip and a split trip in Chrome once
       one is on the board: the Arrives label, the drop-off search and each

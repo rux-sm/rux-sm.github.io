@@ -22,9 +22,10 @@ tools and review page it grows out of.
   without an account on the site, so their bank files can still be counted.
   A person gets a login only if they want to open the app.
 - **The data lives in the Supabase project, in its own tables** named
-  `money_*`. Nothing about the household is ever written into this
-  repository, because the repository is public: code only, and Design's
-  pages for it use invented content.
+  `money_*`, bank rows included, so nothing stays only on the Mac. Nothing
+  about the household is ever written into this repository, because the
+  repository is public: code only, and Design's pages for it use invented
+  content.
 - **Only household members can read it, not staff.** Every other table asks
   `is_staff()`, which means the scheduler's company staff. The money tables
   ask a new `money_is_member()` instead: the account can open Money *and* is
@@ -67,24 +68,20 @@ tools and review page it grows out of.
   - **Import** — drop a bank file, check it, save it.
 - **It works on the phone,** as every app here does, because bills get paid
   from there.
+- **Every member sees everything.** No account is private to its owner,
+  so every total reads the same for both.
+- **The second member already has a login.** It gets Money ticked on the
+  Access page and is linked to its person in the household; its other apps
+  stay as they are.
 - **The money folder on the Mac stays until Money matches it.** The same
   bank files imported into Money must give the same yearly totals the Mac
   tool gives, to the cent, before the folder is retired.
 
 ## Questions
 
-- **Is putting the bank rows online all right?** Today they never leave the
-  Mac. This plan moves every transaction into the Supabase project, behind
-  the log-in and the member rule. Recommended yes: it is the only way two
-  people see one household.
-- **Does the second member want a login?** If yes, rux makes the account in
-  the Supabase dashboard and ticks Money for it. If no, rux imports their
-  bank files and they see nothing.
-- **Should every member see everything?** Recommended yes, one open
-  household. The other choice is marking some accounts private to their
-  owner, which makes every total harder to read.
-- **Is the name Money right?** It gives `/money/`, the header Rux Money and
-  the prefix `money-`.
+- **What is the app called?** Money is the working name. It gives the
+  folder, the address, the header and the class prefix, so it is picked
+  before the first page is built.
 
 ## Tasks
 

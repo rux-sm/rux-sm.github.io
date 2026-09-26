@@ -1650,6 +1650,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 .scheduler-week__driver:first-child,
 .scheduler-week__field:first-child { padding-inline-start: 4pt; }
+/* The pay line's boxes fill its height, so their rules meet the lines above
+   and below, with the text still sitting on the foot. */
+.scheduler-week__detail.scheduler-week__pay { align-items: stretch; }
+.scheduler-week__pay > .scheduler-week__field { align-items: flex-end; }
 
 /* The write-in lines, on white, share the card's remaining height evenly,
    each with its text sitting on a rule that runs to the card's edges. */

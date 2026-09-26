@@ -162,7 +162,7 @@ Other improvements wait until it is live and the old links forward to it.
   the driver's link read through `get_driver_schedule_share_for_driver`, and
   shows the link with a Copy button. Accept and Decline show but are
   disabled, because staff set a driver's status from the trip. Making and
-  sending the link there is `scheduler-driver-links.md`.
+  sending the link is on that page too, beside rux-ui's own.
 
 ## Questions
 

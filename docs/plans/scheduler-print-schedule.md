@@ -7,8 +7,8 @@ type: plan
 ## Goal
 
 The scheduler prints the week the way rux-ui's Print schedule does, so the
-office can pin a week to the wall or hand it to the shop, and rux-ui's version
-can be retired. It is the fourth form on the forms page, beside the driver
+office can pin a week to the wall or hand it to the shop; rux-ui keeps its own.
+It is the fourth form on the forms page, beside the driver
 envelope, the driver itinerary and the customer quote.
 
 ## Decisions
@@ -45,4 +45,3 @@ envelope, the driver itinerary and the customer quote.
 - [ ] Measure the sheet at letter landscape and portrait with four and eight
       rows, and at the most trips one day has had.
 - [ ] Open it from the board's menu for the week on screen.
-- [ ] Remove Print schedule from rux-ui, after reading its own `CLAUDE.md`.

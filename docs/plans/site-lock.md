@@ -8,8 +8,8 @@ type: plan
 
 Every page of rux-sm.github.io opens only for a logged-in account, and the
 apps ticked for the account decide which pages it can open and where everything
-else sends it. The scheduler's public link pages, for drivers, maintenance, documents and
-customer requests, are rebuilt with Design here and open without a login.
+else sends it. The scheduler's public link pages, for drivers, maintenance and documents, are
+rebuilt with Design here and open without a login.
 
 ## Decisions
 
@@ -25,7 +25,7 @@ customer requests, are rebuilt with Design here and open without a login.
   Supabase's standard place for it, which the account's own login cannot
   change. The database reads it from the account record, so a change applies
   at once; the pages read its copy in the login token.
-- **Access replaces `sees_all_apps` and the `rux.team-account` record.** Staff
+- **Access replaces the `rux.team-account` record.** Staff
   in the database is a linked profile whose account is the owner or has
   Scheduler ticked, so a Notes reader never sees trip data.
 - **An Access page for the owner**, on the Account page: a row per account and
@@ -58,24 +58,21 @@ customer requests, are rebuilt with Design here and open without a login.
   separate decision.
 - **A local preview has no lock,** except the cloud preview on port 8641, as
   `account.js` behaves today.
-- **The link pages live in `/scheduler/share/`** as driver, maintenance,
-  document and request pages. They use Design and the `scheduler-` prefix, are
+- **The link pages live in `/scheduler/share/`** as driver, maintenance and
+  document pages. They use Design and the `scheduler-` prefix, are
   not apps and are not in the switcher. They read only the token-checked
   functions, so they keep working after the database closes.
 - **The scheduler carries the company's logo** in every page's header, the
   link pages' included, and its own bus mark as its favicon and its tile.
 - **Each keeps its old page's address shape:** `driver.html?s=`,
-  `maintenance.html?s=`, `document.html?id=` and `request.html?r=`, so a
-  forwarder swaps only the start of the address.
-- **The request page takes no file attachments.** rux-ui's form uploads to a
-  `trip-request-uploads` bucket and records each file with
-  `attach_trip_request_document`, and neither exists, so no attachment has
-  ever arrived; the page says to send files when dispatch follows up.
+  `maintenance.html?s=` and `document.html?id=`, so a forwarder swaps only the
+  start of the address.
+- **No customer request page is built here.** rux scrapped the feature.
 - **Old and new pages work side by side until the forwarders.** Both read the
   same functions with the same link, so they show the same trips, and an
   accept or decline on either is one record.
-- **Old links keep working.** rux-ui's driver, maintenance, document and
-  request pages become forwarders to the new pages, keeping the token, and
+- **Old links keep working.** rux-ui's driver, maintenance and document pages
+  become forwarders to the new pages, keeping the token, and
   rux-ui's link-making code switches to the new addresses.
 - **rux-ui keeps making driver and maintenance links**, pointing at the new
   pages. The scheduler making links is a plan of its own.
@@ -169,8 +166,5 @@ None open.
 
 ## Tasks
 
-- [ ] Build the request page, tested without sending a request.
-- [ ] Turn rux-ui's four link pages into forwarders and switch its link-making
+- [ ] Turn rux-ui's three link pages into forwarders and switch its link-making
       code to the new addresses.
-- [ ] Migration `profiles_sees_all_apps_drop`: drop the column, which no code
-      reads, and its key from `my_staff_profile()`.

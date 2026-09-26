@@ -30,7 +30,7 @@ the schema to match the page.
 - **Every table has row level security, and the publishable key reaches
   none.** `anon` holds no table grant. The scheduler's tables carry a
   `staff_all` rule for a staff session; `profiles` lets staff read and each
-  person update their own row, but never its `user_id` or `sees_all_apps`;
+  person update their own row, but never its `user_id`;
   `quote_rates` and `quote_mileage_rates` are staff only too.
 - **Eight tables have no rule at all**, so they are reachable only through
   `security definer` functions: `trip_requests`, `trip_history`,
@@ -99,7 +99,7 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 | `trip_drafts` | Claude connector, trip editor `?draft=` | `author` to `auth.users`, cascade; `trip_id` to `trips`, cascade and null for a new trip; `fields` jsonb, `notes`, `expires_at`. Only the author reads it, only while staff, only before it expires; a nightly job deletes the rest. |
 | `maintenance_schedule_shares` | this app's maintenance pages, `../rux-ui/maintenance.html` | one row, `scope = 'main'`, `token`, `revoked_at`. RPC only. |
 | `settings` | Settings view | key-value, `value` jsonb. Yard, locations, requirements, billing defaults and `vehicle-types-v1`, the office's vehicle types as `{ name, label?, icon }`, live here. |
-| `profiles` | both apps' staff log-in, the old app's profile | `display_name`, `photo_path`, `settings` jsonb, `avatar_color`; `user_id`, the Auth user this staff member logs in as; `sees_all_apps`, which no code reads; the owner switch in `app_metadata` decides instead. Not `platform.profiles`. |
+| `profiles` | both apps' staff log-in, the old app's profile | `display_name`, `photo_path`, `settings` jsonb, `avatar_color`; `user_id`, the Auth user this staff member logs in as; which apps an account opens is in its `app_metadata`. Not `platform.profiles`. |
 | `notifications`, `notification_reads` | header bell | `type` (three values), `severity`, `title`, `ref_table`, `ref_id`, `dedupe_key` unique |
 | `team_messages`, `team_message_reactions`, `team_chat_reads` | team chat | dropped from this app, see the screen inventory |
 | `dev_notes` | dev notes popover | dropped |

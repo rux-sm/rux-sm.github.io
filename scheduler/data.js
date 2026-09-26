@@ -405,11 +405,11 @@
     'trip_reqs', 'need_fuel_card',
     // The vehicle the trip needs, `Coach` or `Van`; null is any.
     'vehicle_type',
-    // Each leg's hotel: the bar's hotel mark, its menu item and the Fleet tab.
+    // Each leg's hotel: the bar's hotel mark, its menu item and the Buses tab.
     'hotel_booked_outbound', 'hotel_booked_return',
     'hotel_itinerary_number_outbound', 'hotel_itinerary_number_return',
     // The roles an assignment turns on, and who fills them: the drivers row.
-    // The Fleet tab edits each seat by its row id, with its relief swap time and note.
+    // The Buses tab edits each seat by its row id, with its relief swap time and note.
     'trip_assignments(id,bus_id,position,leg,active_roles,trip_drivers(id,driver_id,role,report_time,instructions))',
     // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
     // and the itinerary panel, which frames the file at its path.
@@ -493,7 +493,7 @@
       // A cancelled trip stays in the table but is not on the schedule.
       client.from('trips').select(TRIP_COLUMNS).is('cancelled_at', null)
         .gte('start_date', lo).lte('start_date', hi).order('start_date').then(unwrap),
-      // `status`, so the Fleet tab offers active drivers; `priority`, so the
+      // `status`, so the Buses tab offers active drivers; `priority`, so the
       // roster lists them in the order they are called on.
       client.from('drivers').select('id,name,short_name,status,priority,phone,texting_url').then(unwrap),
       // Every contact, read once with the week for the contact search rather
@@ -1757,7 +1757,7 @@
   };
 
   /* ── A menu of any items ──
-     The row menu above has two fixed items. The Fleet tab's bus and status
+     The row menu above has two fixed items. The Buses tab's bus and status
      menus have more, so this menu is rebuilt from its items on every open and
      placed the way the row menu is. An item with `checked` is a radio item. */
   let itemsMenuEl = null;
@@ -1827,7 +1827,7 @@
     itemsMenuTrigger = trigger;
   };
 
-  /* ══ The Fleet tab ══
+  /* ══ The Buses tab ══
      How many buses each leg needs, the bus on each, and who fills each bus's
      four seats, as rux-ui stores them: `bus_count` and `return_bus_count` on
      the trip, a `trip_assignments` row per bus, a `trip_drivers` row per
@@ -1976,7 +1976,7 @@
 
   const seatRow = (role, s) => ({ driver_id: s.driverId, role, report_time: s.reportTime, instructions: s.note });
 
-  /* Whether the Fleet tab holds changes someone made. A new trip's fleet is all
+  /* Whether the Buses tab holds changes someone made. A new trip's fleet is all
      work to Save, which writes its count and its cell's bus however untouched,
      so for one the question is whether the tab moved from how it opened. */
   const fleetChanged = () => (editing?.creating
@@ -2037,7 +2037,7 @@
 
   /* ── What clashes ──
      Read when the tab is built and again when it is chosen, for the trip's
-     dates as the Overview tab holds them, so a picker can say which buses and
+     dates as the Details tab holds them, so a picker can say which buses and
      drivers are taken. A clash warns; it never stops a pick. */
   let fleetClashes = null;
   // How far back a driver's days are counted, to spread work within a priority.
@@ -2457,7 +2457,7 @@
     busPick.dataset.fleetBus = bus.key;
     /* The bus and its drivers are one group of fields 16px apart; each relief,
        with its swap time and note, is a group of its own, 24px from the next,
-       as the Overview tab spaces its contacts. ROLES lists the reliefs last. */
+       as the Details tab spaces its contacts. ROLES lists the reliefs last. */
     const stack = el('div', 'rux--stack-vertical rux--stack-scale-6');
     const seats = el('div', 'rux--stack-vertical rux--stack-scale-5');
     seats.append(full(busPick));
@@ -2689,7 +2689,7 @@
     // Redrawn once focus has landed, so its warning and status button follow.
     setTimeout(() => drawFleet(document.activeElement?.id), 0);
   });
-  // The dates may have moved on Overview, so choosing the tab reads the clashes again.
+  // The dates may have moved on Details, so choosing the tab reads the clashes again.
   document.addEventListener('rux:tab-selected', e => {
     if (e.detail?.panel === panelFleet) loadFleetClashes();
   });
@@ -4425,7 +4425,7 @@
 
   /* ── The quote's lines ──
      A line is a quantity at a cost. A bus rental is one leg's buses at the
-     price of one bus, so its quantity is always the Fleet tab's count; a
+     price of one bus, so its quantity is always the Buses tab's count; a
      second driver is the extra drivers at one driver's pay; a discount is a
      negative cost. Pending rows like the POs, kept with their
      `trip_quote_lines` ids, and drawn on the Billing tab under Quoted price,
@@ -4448,7 +4448,7 @@
   let linePending = [];
   let redrawLines = () => {};
   let lineEditing = null;
-  // Set once the Fleet tab has drawn, so a line's bus count reads this trip's.
+  // Set once the Buses tab has drawn, so a line's bus count reads this trip's.
   let linesLive = false;
 
   const round2 = n => Math.round(n * 100) / 100;
@@ -4456,7 +4456,7 @@
   const usdCents = n => `${n < 0 ? '−' : ''}$${Math.abs(n).toLocaleString('en-US',
     { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   const splitNow = () => document.getElementById('scheduler-f-type')?.value === SPLIT;
-  // A leg's buses on the Fleet tab. A trip that is not split has one rental,
+  // A leg's buses on the Buses tab. A trip that is not split has one rental,
   // on the outbound leg's count.
   const legBuses = leg => Math.max(editing?.fleet?.[leg === 'return' ? 'return' : 'outbound']?.length || 0, 1);
   // A leg's co-driver seats that are on, which a second driver line counts.
@@ -4716,7 +4716,7 @@
   });
 
   /* The lines Save writes, in order, each with the quantity and amount it has
-     now: a rental's quantity is read from the Fleet tab at the moment of the
+     now: a rental's quantity is read from the Buses tab at the moment of the
      save. */
   const linesToSave = () => (linesLive && syncLines(), linePending).map((l, position) => ({
     id: l.id ?? null, position, kind: l.kind, leg: l.leg ?? null,
@@ -4913,7 +4913,7 @@
     return same(a.name ?? null, b.name ?? null) && same(a.address ?? null, b.address ?? null);
   };
   const routeRound = () => samePlace(editing?.route?.dropPlace, editing?.route?.pickupPlace);
-  // The leg's dates as the Overview tab has them now.
+  // The leg's dates as the Details tab has them now.
   const routeDates = leg => {
     const v = id => isoOrNull(document.getElementById(id)?.value ?? '');
     const from = leg === 'return' ? v('scheduler-f-rstart') : v('scheduler-f-start');
@@ -5239,7 +5239,7 @@
        from its draft, so an untouched panel is unchanged either way. */
     const nothingChanged = !changed();
     const nothingToDo = !editing?.creating && nothingChanged;
-    // A driver in two seats of one leg is the Fleet tab's one blocking error.
+    // A driver in two seats of one leg is the Buses tab's one blocking error.
     const fleetOk = !fleetDuplicates().size;
     panelSave.disabled = !startOk || !destOk || !fleetOk || nothingToDo;
     setTitle();
@@ -5532,7 +5532,7 @@
        colour is picked from the panel head's Trip actions menu, as from the
        bar's own: it is seldom changed and the bar itself shows it, so its
        field stays in the page, hidden, for Save to read. The tab is
-       Overview, and its first section is the trip itself, then its people. */
+       Details, and its first section is the trip itself, then its people. */
     const colorItem = colorField('scheduler-f-color', trip);
     tripColorItem = colorItem;
     const colorBox = el('div');
@@ -5572,7 +5572,7 @@
     );
     panelDetails.appendChild(section('Trip', topFields));
 
-    /* WHAT THE TRIP NEEDS opens the Fleet tab, beside the buses it is asked
+    /* WHAT THE TRIP NEEDS opens the Buses tab, beside the buses it is asked
        of: the vehicle type, then the needs, then each leg's hotel while Hotel
        is ticked. It is drawn once per opening, and `drawFleet` redraws only
        the bus sections after it. */
@@ -6010,7 +6010,7 @@
 
       // The section is a group named by its title, as Day-of contacts is.
       const routeBox = el('div', 'scheduler-panel-section');
-      const routeTitle = el('div', 'scheduler-panel-section__title', r.leg === 'return' ? 'Pick-up leg' : 'Trip');
+      const routeTitle = el('div', 'scheduler-panel-section__title', r.leg === 'return' ? 'Pick-up leg' : 'Pickup');
       routeTitle.id = 'scheduler-f-routegroup';
       const routeGroup = el('div');
       routeGroup.setAttribute('role', 'group');
@@ -6727,7 +6727,7 @@
     }
 
     /* Fleet is how many buses each leg needs, the bus on each and who fills its
-       seats; the dates are in Overview and the times in Route. A new trip from a
+       seats; the dates are in Details and the times in Route. A new trip from a
        cell starts on that cell's bus. */
     editing.fleet = fleetOf(trip, creating);
     editing.fleetBefore = cloneFleet(editing.fleet);
@@ -6735,7 +6735,7 @@
     fleetClashes = null;
     fleetClashKey = '';
     drawFleet();
-    // The quote's lines count the Fleet tab's buses, so they draw after it,
+    // The quote's lines count the Buses tab's buses, so they draw after it,
     // and from here follow it.
     redrawLines();
     linesLive = true;
@@ -6879,7 +6879,7 @@
     const rows = (drivers || [])
       /* Active drivers only. The roster answers who can take a trip, and an
          inactive driver cannot, so their week is noise. A driver with no
-         status counts as active, as the Fleet tab's picker reads it. */
+         status counts as active, as the Buses tab's picker reads it. */
       .filter(d => !d.status || d.status === 'active')
       /* Priority first, the order the office calls drivers in, so the top of
          the roster is who to ask next. 1 to 5; a driver with none sorts below
@@ -7999,7 +7999,7 @@
   async function saveEditor(after, force = false) {
     if (!editing || (!editing.creating && !changed())) return false;
     if (fleetDuplicates().size) {
-      toast('error', 'The trip was not saved.', 'A driver is in two seats on one leg. Choose another driver on the Fleet tab.');
+      toast('error', 'The trip was not saved.', 'A driver is in two seats on one leg. Choose another driver on the Buses tab.');
       return false;
     }
     const patch = patchOf() || {};
@@ -8061,7 +8061,7 @@
       /* Create writes every field, not the diff. `readForm` returns null when a
          field is missing, and spreading null would insert a trip with no
          destination or start date, so a missing field fails loudly instead.
-         The bus counts come from the Fleet tab, and a new trip always has one. */
+         The bus counts come from the Buses tab, and a new trip always has one. */
       const form = creating ? readForm() : null;
       if (creating && !form) throw new Error('The form is not complete — a field is missing from the panel.');
       const fleet = fleetWork();
@@ -8185,7 +8185,7 @@
          match the database, and sending them again would save some twice, so
          the board is read back and the editor lets them go. A new trip closes,
          since it exists now; an existing one reopens as it is saved. */
-      const check = part === 'its buses' ? 'Check its buses on the Fleet tab.'
+      const check = part === 'its buses' ? 'Check its buses on the Buses tab.'
         : part === 'the trip' ? 'Check the trip and make the change again if it is missing.'
         : `Check ${part} and add what is missing.`;
       const didNot = e.timedOut ? 'may not have saved' : 'did not save';
@@ -8623,10 +8623,10 @@
 
   /* ── Assign driver, from the bar ──
      The bar is one bus on one leg, so its menu fills that bus's Driver seat
-     with a pick from the free drivers ranked as the Fleet tab ranks them. The
+     with a pick from the free drivers ranked as the Buses tab ranks them. The
      trips around the leg are read when the menu opens, since the board holds
      only its own weeks, and kept a minute, so the shortcut and the menu share
-     one read. Co-drivers and relief stay in the Fleet tab. */
+     one read. Co-drivers and relief stay in the Buses tab. */
   const ASSIGN_SHOWN = 5;
   let assignRead = null;
   let assignSeq = 0;
@@ -8720,7 +8720,7 @@
      driver, or null to empty the seat, which deletes its row, as the Fleet
      tab's save does. Each seat's row is changed, or added on a bus with none; a saved
      `driver:state` in the bus's roles goes back to plain `driver`, as the
-     Fleet tab's save leaves it; and the crew's statuses are sent once for the
+     Buses tab's save leaves it; and the crew's statuses are sent once for the
      whole trip, which drops the old drivers' and starts the new ones at Not
      sent, because the function deletes a status its list leaves out. One
      history entry names every change. Throws on the first failed write. */
@@ -9027,7 +9027,7 @@
   });
   unassignModal?.addEventListener('rux:modal-closed', () => { unassignAfter = null; });
 
-  // Opens the bar's trip on its Fleet tab, for every driver and every seat.
+  // Opens the bar's trip on its Buses tab, for every driver and every seat.
   function openOnFleet(bar) {
     const toFleet = () => {
       const tab = document.getElementById('scheduler-tab-fleet');
@@ -10766,7 +10766,7 @@
   };
   const IN_EDITOR = {
     color: () => document.getElementById('scheduler-panel-menu')?.click(),
-    // The leg's Booked box, where Hotel is ticked; the Fleet tab where it is not.
+    // The leg's Booked box, where Hotel is ticked; the Buses tab where it is not.
     hotel: ref => {
       toFleetTab();
       const box = document.getElementById(`scheduler-f-hotelbooked-${ref.leg}`);

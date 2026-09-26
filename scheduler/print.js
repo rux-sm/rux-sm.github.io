@@ -164,13 +164,13 @@
   const isRelief = role => role === 'relief-start' || role === 'relief-end';
 
   // Carbon's own order for a bus's seats, which is the order the board's
-  // drivers row and the Fleet tab's tiles already use.
+  // drivers row and the Buses tab's tiles already use.
   const SEAT_ORDER = ['driver', 'co-driver', 'relief-start', 'relief-end'];
   const seatsOf = assignment => [...(assignment.trip_drivers || [])]
     .filter(seat => seat.driver_id && nameOf(seat))
     .sort((a, b) => SEAT_ORDER.indexOf(a.role || 'driver') - SEAT_ORDER.indexOf(b.role || 'driver'));
 
-  /* The short name first, the way the board's bars and the Fleet tab name a
+  /* The short name first, the way the board's bars and the Buses tab name a
      driver: it is the name the office says out loud, and it holds one line in
      a cell an envelope has only so much of. The full name is what the record
      is under, so it stands in for a driver the office never gave a short one. */
@@ -2793,7 +2793,7 @@
     const copies = form.copies(subject);
     if (!copies.length) {
       return say('info', 'This bus has no driver yet.',
-        'Fill a seat on the trip\'s Fleet tab, and the envelope has someone to print for.');
+        'Fill a seat on the trip\'s Buses tab, and the envelope has someone to print for.');
     }
     const wanted = params.get('driver');
     const chosen = Math.max(0, copies.findIndex(c => wanted

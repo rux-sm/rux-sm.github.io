@@ -2,5 +2,18 @@
    served from Design's own repository and never copied here. Only what THIS
    project changes goes here: token values inside a [data-theme] block
    (theme.css), or component rules at Carbon's own specificity with no
-   !important (overrides.css). Empty is the normal state. Design
-   AGENTS.md, "Where a change goes". */
+   !important (overrides.css). Design AGENTS.md, "Where a change goes". */
+
+/* A closed side panel is gone, not merely faded: Carbon's own display rule
+   beats [hidden], and a transparent panel would still catch presses. */
+.rux--side-panel[hidden] { display: none; }
+
+/* On a phone the panel is the whole screen. Carbon caps it at 75vw, which
+   leaves a strip of page too narrow to use beside it. */
+@media (max-width: 41.98rem) {
+  .rux--side-panel { max-inline-size: 100vw; }
+}
+
+/* A note in the side panel is as wide as the fields above it; Carbon sizes a
+   text area by its columns. */
+.rux--side-panel .rux--text-area__wrapper, .rux--side-panel .rux--text-area { inline-size: 100%; }

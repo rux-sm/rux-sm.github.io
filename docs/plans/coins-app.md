@@ -120,8 +120,8 @@ tools and review page it grows out of.
 ## Tasks
 
 - [ ] Tick Coins for the second member on the Access page.
-- [ ] Build Transactions and the rules page, with a migration adding the
-      looked-at mark to each line.
+- [ ] Build the rules page, to see, change and delete the rules the
+      Transactions panel makes.
 - [ ] Build Bills and the bill page, with a migration for how a bill
       matches its lines and for remembering a suggestion that was turned
       down. Carry over any keep or cancel marks the old review page saved in

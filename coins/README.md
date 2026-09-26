@@ -15,6 +15,13 @@ the bills due in the next seven days. The month has arrows, and a switch
 shows both members or one; a member sees the accounts that are theirs alone,
 so a joint account counts only under Both.
 
+`transactions.html` lists every line of the month, newest first, with
+search, an account and a kind filter, and the month's in, out and net; a
+table on a wide screen and a list a day on a phone. A dot marks a line
+nobody has looked at yet. A line opens in a side panel to change its
+category, kind and note, and a tick there makes it a rule, which sorts every
+saved line that contains its text now and every line imported later.
+
 `import.html` takes a bank file into one account in four steps: the
 account, which can be added there; the file, read on the device and never
 uploaded; a check of the lines the account does not hold yet, each ticked;
@@ -34,8 +41,9 @@ written here, because this repository is public.
 | `data.js` | the reads and writes |
 | `app.js` | money as text, the month and member in the address, the switch, totals |
 | `bank-file.js` | an export read by its column layout, and each line's kind and merchant |
-| `overview.js`, `import.js` | each page's own behaviour |
-| `app.css` | the title row, the two-line rows and the step buttons, under `coins-` |
+| `overview.js`, `transactions.js`, `import.js` | each page's own behaviour |
+| `app.css` | the title row, filters, two-line rows and step buttons, under `coins-` |
+| `overrides.css` | the side panel hidden when closed and full width on a phone |
 
 The local preview on :8640 has no log-in and reads nothing; use the cloud
 preview on :8641 or the published site.

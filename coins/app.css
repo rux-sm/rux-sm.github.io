@@ -11,10 +11,12 @@
 /* The page title, with the month and the Both / member switch beside it,
    wrapping under it on a narrow screen. */
 .coins-title { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--rux-spacing-05); }
-.coins-controls { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-05); }
+.coins-controls { display: flex; flex: 1 1 auto; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--rux-spacing-05); }
 .coins-month { display: flex; align-items: center; gap: var(--rux-spacing-02); }
 .coins-month__name { min-inline-size: 9rem; text-align: center; }
-.coins-who { inline-size: 22rem; max-inline-size: 100%; }
+/* As wide as it may be up to 22rem, so a phone narrower than that squeezes
+   the switch instead of pushing the page past its edge. */
+.coins-who { inline-size: 100%; max-inline-size: 22rem; }
 
 /* A two-line row: the name over a detail line on the left, the amount and
    its tag on the right. */
@@ -35,3 +37,29 @@
 /* A flow's title stands clear of the step list and panel below it, which
    start a new row of the page grid. */
 .coins-flow-title { margin-block-end: var(--rux-spacing-07); }
+
+/* The Transactions page's search and filters, one row that wraps. */
+.coins-filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-03) var(--rux-spacing-05); }
+.coins-filters > * { min-inline-size: 0; }
+.coins-filters__search { flex: 1 1 12rem; }
+
+/* A table on a wide screen, the same lines as a list on a phone. */
+.coins-narrow { display: none; }
+@media (max-width: 41.98rem) {
+  .coins-wide { display: none; }
+  .coins-narrow { display: block; }
+}
+
+/* A line in the table opens in the side panel. */
+.coins-line { cursor: pointer; }
+.coins-line > td:first-child, .coins-line > td.coins-amount { white-space: nowrap; }
+.coins-line__name { display: flex; align-items: center; gap: var(--rux-spacing-03); }
+th.coins-amount .rux--table-header-label { justify-content: flex-end; }
+.coins-amount--in { font-weight: 600; }
+
+/* The mark on a line nobody has looked at yet. */
+.coins-dot { display: inline-block; flex: none; inline-size: .5rem; block-size: .5rem; border-radius: 50%; background: var(--rux-interactive); margin-inline-end: var(--rux-spacing-02); }
+.coins-row__title { display: flex; align-items: center; }
+
+/* The form in the side panel starts clear of the panel's head. */
+.coins-panel-form { padding-block: var(--rux-spacing-05); }

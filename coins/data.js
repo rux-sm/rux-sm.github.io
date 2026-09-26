@@ -69,6 +69,44 @@
       .select('id, account_id, day, amount, kind, bill_id')
       .gte('day', from).lt('day', to).order('day').order('id')),
 
+    // Every field a line shows and edits, for the Transactions page.
+    lines: (from, to) => all(() => client.from('coins_transactions')
+      .select('id, account_id, day, description, amount, kind, kind_by_hand, category, bank_category, merchant, note, seen, bill_id')
+      .gte('day', from).lt('day', to).order('day', { ascending: false }).order('id')),
+
+    async updateLine(id, patch) {
+      fail((await client.from('coins_transactions').update(patch).eq('id', id)).error);
+    },
+
+    async markSeen(ids) {
+      for (let i = 0; i < ids.length; i += 200) {
+        fail((await client.from('coins_transactions').update({ seen: true }).in('id', ids.slice(i, i + 200))).error);
+      }
+    },
+
+    /* A RULE, and every line it already fits. A line whose kind was set by
+       hand keeps it; the rule's merchant and category still reach it. The
+       match is plain text, so % and _ are escaped for ilike. Returns how many
+       lines changed. */
+    async addRule(rule) {
+      const { data: made, error } = await client.from('coins_rules').insert(rule).select('match, merchant, kind, category, sort').single();
+      fail(error);
+      const like = `%${rule.match.replace(/[\\%_]/g, c => '\\' + c)}%`;
+      const set = {};
+      if (rule.merchant) set.merchant = rule.merchant;
+      if (rule.category) set.category = rule.category;
+      let changed = 0;
+      if (Object.keys(set).length) {
+        const { data: rows, error: e } = await client.from('coins_transactions').update(set).ilike('description', like).select('id');
+        fail(e); changed = rows.length;
+      }
+      if (rule.kind) {
+        const { data: rows, error: e } = await client.from('coins_transactions').update({ kind: rule.kind }).ilike('description', like).eq('kind_by_hand', false).select('id');
+        fail(e); changed = Math.max(changed, rows.length);
+      }
+      return { rule: made, changed };
+    },
+
     // Whether anything has ever been imported, for the empty notice.
     async anyTransactions() {
       const { count, error } = await client.from('coins_transactions').select('id', { count: 'exact', head: true });

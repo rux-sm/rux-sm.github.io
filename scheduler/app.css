@@ -756,23 +756,26 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) .scheduler-card > :first-child,
 .scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) .scheduler-card > .scheduler-card__list:first-child > :first-child { border-block-start: 0; }
 /* THE EDITOR'S SHORTCUTS: the floating card's slots in a row above the tabs,
-   on the panel's own surface, each word under its icon and the slots sharing
-   the row's width as they share the card's. */
+   each word beside its icon and the slots sharing the row's width as the tabs
+   do. It is the day row's band, 2rem on the band surface, and sits level with
+   it, so the two read as one grey row across the screen. */
 .scheduler-panel-shortcuts {
   display: flex;
-  background: var(--rux-layer-01);
+  box-sizing: border-box;
+  block-size: 2rem;
+  background: var(--scheduler-band-surface);
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
 .scheduler-panel-shortcuts[hidden] { display: none; }
 .scheduler-panel-shortcuts > .scheduler-bar-shortcut {
   flex: 1 1 auto;
-  flex-direction: column;
+  gap: var(--rux-spacing-03);
   inline-size: auto;
-  min-inline-size: var(--scheduler-slot-w);
-  block-size: auto;
-  padding: var(--rux-spacing-02);
+  min-inline-size: 2rem;
+  block-size: 100%;
+  padding: 0 var(--rux-spacing-03);
 }
-.scheduler-panel-shortcuts > .scheduler-bar-shortcut:not([aria-disabled="true"]):hover { background: var(--rux-layer-hover-01); }
+.scheduler-panel-shortcuts > .scheduler-bar-shortcut:not([aria-disabled="true"]):hover { background: var(--rux-layer-accent-hover-01); }
 .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut__label,
 .scheduler-panel-shortcuts .scheduler-bar-shortcut__label {
   display: block;

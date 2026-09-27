@@ -3586,18 +3586,30 @@ html:has(.scheduler-page[data-takeover]) {
 }
 .scheduler-route-day:first-child { padding-block-start: 0; }
 .scheduler-route-day__name { flex: none; }
-/* A stop is one line, its time first in a column wide enough for
-   "10:00 AM – 4:00 PM" so the places line up, and its drive and wait in the
-   row's tooltip rather than a second line. */
-.scheduler-route-stops .scheduler-item__much {
-  order: -1;
-  flex: none;
-  min-inline-size: 8.5rem;
+/* The drive between two stops, on its own line between their rows: a short
+   rule, the bus, then the time and miles in grey, set in from the tiles' edge
+   so it reads as the road and not as a record. */
+.scheduler-route-leg {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+  padding-inline-start: var(--rux-spacing-05);
   color: var(--rux-text-secondary);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
 }
-.scheduler-route-stops .scheduler-item__meta { display: none; }
-/* The place follows its time rather than being pushed to the row's far end. */
-.scheduler-route-stops .scheduler-item__name { flex: 0 1 auto; }
+.scheduler-route-leg::before {
+  content: '';
+  flex: none;
+  inline-size: 1px;
+  block-size: var(--rux-spacing-06);
+  margin-inline-end: var(--rux-spacing-03);
+  background: var(--rux-border-strong-01);
+}
+.scheduler-route-leg > svg { flex: none; }
+/* A stop with no wait keeps its row one line high. */
+.scheduler-route-stops .scheduler-item__meta:empty { display: none; }
 /* A place search's address, under the name it shows. */
 .scheduler-place-where[hidden] { display: none; }
 /* A saved location in the search's list, marked before its name. */

@@ -6198,22 +6198,32 @@
       let daySums = [];
       function drawStops() {
         stopsList.body.replaceChildren();
+        /* The road between two places, between their rows: its drive and
+           miles, which belong to neither place. The first comes from the
+           pickup and the last goes on to the drop-off. */
+        const legLine = (from, min, miles) => {
+          const li = el('li', 'scheduler-route-leg');
+          li.appendChild(svgUse('#m-directions_bus', '16', '0 0 32 32'));
+          const drive = min == null ? 'not measured' : min < 60 ? `${min} min` : hm(min);
+          li.appendChild(el('span', null, [from, drive, miles == null ? null : `${Math.round(miles)} mi`]
+            .filter(Boolean).join(' · ')));
+          return li;
+        };
         const rowFor = (st, i) => {
           const name = st.place?.name || st.place?.address || 'Stop';
           const much = st.arrive && st.leave ? `${clock(st.arrive)} – ${clock(st.leave)}`
             : st.arrive ? clock(st.arrive) : st.leave ? `leaves ${clock(st.leave)}` : 'No times';
           const wait = waitOf(st);
           const drove = driveWords(st.drive, st.miles);
-          const meta = [drove ? `${drove} drive` : null,
-            wait ? `waits ${driveText(wait)} hr${st.dwell ? `, ${DWELL[st.dwell]}` : ''}` : null]
-            .filter(Boolean).join(' · ');
+          // Under the place, only what happens there: the wait.
+          const meta = wait ? `Waits ${hm(wait)}${st.dwell ? `, ${DWELL[st.dwell]}` : ''}` : '';
           // A round trip keeps its destination, which holds when the group
           // leaves the pickup.
           const lastOfRound = routeRound() && r.list.length === 1;
           const move = by => { r.list.splice(i + by, 0, r.list.splice(i, 1)[0]); touch(); };
-          return listRow({
+          const row = listRow({
             name, much, meta,
-            title: [name, much, meta].filter(Boolean).join(' · '),
+            title: [name, much, drove ? `${drove} drive` : null, meta].filter(Boolean).join(' · '),
             edit: () => openStopDialog(i),
             items: [
               { label: 'Edit', run: () => openStopDialog(i) },
@@ -6222,6 +6232,7 @@
               { label: 'Remove', danger: true, disabled: lastOfRound, run: () => { r.list.splice(i, 1); touch(); } },
             ],
           });
+          return [legLine(i === 0 ? 'From pickup' : null, st.drive, st.miles), row];
         };
         const { from, to } = routeDates(r.leg);
         const days = [];
@@ -6235,12 +6246,13 @@
               `Day ${n + 1} · ${parseISO(d).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}`), sum);
             daySums.push([d, sum]);
             stopsList.body.appendChild(head);
-            r.list.forEach((st, i) => { if (dayOf(st) === d) stopsList.body.appendChild(rowFor(st, i)); });
+            r.list.forEach((st, i) => { if (dayOf(st) === d) stopsList.body.append(...rowFor(st, i)); });
           });
-          r.list.forEach((st, i) => { if (!days.includes(dayOf(st))) stopsList.body.appendChild(rowFor(st, i)); });
+          r.list.forEach((st, i) => { if (!days.includes(dayOf(st))) stopsList.body.append(...rowFor(st, i)); });
         } else {
-          r.list.forEach((st, i) => stopsList.body.appendChild(rowFor(st, i)));
+          r.list.forEach((st, i) => stopsList.body.append(...rowFor(st, i)));
         }
+        if (r.list.length && dropCounts()) stopsList.body.appendChild(legLine('To drop-off', r.dropDrive, r.dropMiles));
         if (canList) {
           stopsList.body.appendChild(listAddRow({
             label: 'Add stop', id: 'scheduler-f-stopadd', onClick: () => openStopDialog(null),

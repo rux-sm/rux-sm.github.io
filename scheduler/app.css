@@ -673,37 +673,37 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--same-trip { outline: 2px dashed var(--rux-layer-selected-inverse); outline-offset: -2px; }
 
 /* EVERY BAR OF THE TRIP IN YOUR EDITOR wears the selection's ring with a
-   brighter arc running round it, so the open trip is found at a glance and
-   told apart from a trip merely selected, whose ring stands still. Those bars
-   are locked: they do not drag, and their bus, colour and hotel are the
-   editor's to change. The ring is a masked conic gradient on the bar's
-   `::after`, over the still selection ring it replaces, and it wins over the
-   rule a trip someone else has open wears there, because this one is yours. */
-@property --scheduler-open-turn {
-  syntax: '<angle>';
-  inherits: false;
-  initial-value: 0deg;
-}
-@keyframes scheduler-open-turn { to { --scheduler-open-turn: 360deg; } }
+   brighter stretch running round it at one speed, so the open trip is found
+   at a glance and told apart from a trip merely selected, whose ring stands
+   still. Those bars are locked: they do not drag, and their bus, colour and
+   hotel are the editor's to change. data.js draws the ring as three strokes
+   of one rectangle, whose edge is 100 long: the whole ring faint, a tail, and
+   a head at the tail's front. The stroke is twice the ring and centred on the
+   bar's edge, so the bar clips it to 2px inside. It stands over the still
+   selection ring it replaces, and over the rule a trip someone else has open
+   wears, because this one is yours. */
+@keyframes scheduler-open-tail { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -100; } }
+@keyframes scheduler-open-head { from { stroke-dashoffset: -16; } to { stroke-dashoffset: -116; } }
 .scheduler-bar.scheduler-bar--open { box-shadow: none; }
-.scheduler-bar.scheduler-bar--open::after {
-  content: '';
+.scheduler-bar__open-ring {
   position: absolute;
   inset: 0;
-  border-radius: inherit;
-  padding: 2px;
+  inline-size: 100%;
+  block-size: 100%;
   pointer-events: none;
-  background: conic-gradient(from var(--scheduler-open-turn),
-    color-mix(in srgb, var(--rux-layer-selected-inverse) 50%, transparent) 0 40%,
-    var(--rux-layer-selected-inverse) 85% 100%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
-  box-shadow: none;
-  animation: scheduler-open-turn 2.4s linear infinite;
+  z-index: 1;
+  fill: none;
+  stroke: var(--rux-layer-selected-inverse);
+  stroke-width: 4px;
 }
+.scheduler-bar__open-ring rect { rx: var(--scheduler-bar-radius, 0); }
+.scheduler-bar__open-base { stroke-opacity: .5; }
+.scheduler-bar__open-tail { stroke-opacity: .75; stroke-dasharray: 30 70; animation: scheduler-open-tail 3s linear infinite; }
+.scheduler-bar__open-head { stroke-dasharray: 14 86; animation: scheduler-open-head 3s linear infinite; }
 @media (prefers-reduced-motion: reduce) {
-  .scheduler-bar.scheduler-bar--open::after { animation: none; background: var(--rux-layer-selected-inverse); }
+  .scheduler-bar__open-base { stroke-opacity: 1; }
+  .scheduler-bar__open-tail,
+  .scheduler-bar__open-head { display: none; }
 }
 
 /* The selected trip's shortcuts: a row of square slots floating clear of the

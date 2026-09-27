@@ -3596,6 +3596,8 @@ html:has(.scheduler-page[data-takeover]) {
   color: var(--rux-text-secondary);
 }
 .scheduler-route-stops .scheduler-item__meta { display: none; }
+/* The place follows its time rather than being pushed to the row's far end. */
+.scheduler-route-stops .scheduler-item__name { flex: 0 1 auto; }
 /* A place search's address, under the name it shows. */
 .scheduler-place-where[hidden] { display: none; }
 /* A saved location in the search's list, marked before its name. */
@@ -3603,6 +3605,16 @@ html:has(.scheduler-page[data-takeover]) {
   vertical-align: -0.1875rem;
   margin-inline-end: var(--rux-spacing-02);
 }
+/* A round trip's drop-off line, 8px under the pickup's address, with Change
+   at its end. */
+.scheduler-route-dropline {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--rux-spacing-05);
+  margin-block-start: var(--rux-spacing-03);
+}
+.scheduler-route-dropline[hidden] { display: none; }
 /* The drop-off pair a round trip does not ask for. `rux--stack-vertical` is
    `display: grid`, which outranks the bare `[hidden]` attribute. */
 .scheduler-route-drop[hidden] { display: none; }

@@ -6111,15 +6111,16 @@
          the summary and Save read them wherever they are. */
       const dropBox = el('div', 'rux--stack-vertical rux--stack-scale-5 scheduler-route-drop');
       dropBox.append(full(dropField), nameFor(dropField, dropName));
-      const dropSaid = el('p', 'rux--form__helper-text scheduler-route-note');
-      const dropOpen = el('button', 'rux--link rux--link--sm scheduler-route-open', 'Set a different drop-off');
+      // One line in its place: what the drop-off is, and Change at its end.
+      const dropLine = el('div', 'scheduler-route-dropline');
+      const dropSaid = el('p', 'rux--form__helper-text', 'Drop-off: same as pickup.');
+      const dropOpen = el('button', 'rux--link rux--link--sm scheduler-route-open', 'Change');
       dropOpen.type = 'button';
+      dropOpen.setAttribute('aria-label', 'Set a different drop-off');
+      dropLine.append(dropSaid, dropOpen);
       const showDrop = open => {
         dropBox.hidden = !open;
-        dropSaid.hidden = open;
-        dropOpen.hidden = open;
-        const where = r.pickupPlace?.name || r.pickupPlace?.address;
-        dropSaid.textContent = `The group is let off where it was picked up${where ? `, at ${where}` : ''}.`;
+        dropLine.hidden = open;
       };
       dropOpen.addEventListener('click', () => {
         showDrop(true);
@@ -6129,8 +6130,7 @@
       fields.append(
         full(pickupField),
         nameFor(pickupField, pickupName),
-        dropSaid,
-        dropOpen,
+        dropLine,
         dropBox,
         pair(timeField('scheduler-f-leave', 'Departs', r.first?.depart_prev),
           timeField('scheduler-f-endtrip', 'Returns', r.back?.depart_prev)),
@@ -6433,9 +6433,8 @@
       // A name typed by hand belongs to whichever place it names.
       document.getElementById('scheduler-f-pickupname')?.addEventListener('input', () => {
         r.pickupPlace = named(r.pickupPlace, val('scheduler-f-pickupname') || null);
-        // A round trip's drop-off, and the line naming it, follow the pickup.
+        // A round trip's drop-off follows the pickup.
         if (dropBox.hidden) followPickup();
-        showDrop(!dropBox.hidden);
         drawTimeline();
       });
       document.getElementById('scheduler-f-dropname')?.addEventListener('input', () => {

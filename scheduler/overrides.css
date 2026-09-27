@@ -848,3 +848,15 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   letter-spacing: var(--rux-label-01-letter-spacing);
   color: var(--rux-text-secondary);
 }
+
+/* The bus count on a trip bar is Carbon's outline tag with no fill: its ring
+   and number take the bar's own text colour, so the tag reads on every trip
+   colour, and it is the bar's row tall rather than Carbon's 18px, so the row
+   holds it whole. Carbon's own outline rule, one element deeper. */
+.scheduler-bar__ref > .rux--tag--outline:not(.rux--tag--operational):not(span):not([disabled]) {
+  min-block-size: var(--scheduler-row-h);
+  block-size: var(--scheduler-row-h);
+  background-color: transparent;
+  color: inherit;
+  outline-color: currentColor;
+}

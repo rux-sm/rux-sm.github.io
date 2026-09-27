@@ -660,15 +660,19 @@ button.scheduler-row-head__num::after {
 /* Two levels of brightness, and the split is what the row is for: bright is
    what the trip does -- where it goes, when, what to know on the day and who
    drives it -- and dim is who it is for. */
-.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__ref { opacity: .85; }
-/* A bar of the trip in the editor that is not the selected one: its return
-   leg, or the same leg on another bus. It is locked -- it does not drag, and
-   its bus, colour and hotel are the editor's to change -- so it is marked as
-   belonging to the open trip. The selection's own colour says which trip, and
-   the dashes say this is not the bar in hand; an outline inside the bar costs
-   none of its writing, where the tab this replaces took 32px of it. The bar's
-   own `:focus-visible` outranks it on specificity, so focus still shows. */
-.scheduler-bar--locked { outline: 2px dashed var(--rux-layer-selected-inverse); outline-offset: -2px; }
+.scheduler-bar__client, .scheduler-bar__contact { opacity: .85; }
+/* THE BUS COUNT, on a trip with more than one bus: "1/3" in Carbon's outline
+   tag, its ring and number in the bar's own text colour, which overrides.css
+   draws. The tag is the row's height and centred in it, so its ring is whole. */
+.scheduler-bar__ref { display: flex; align-items: center; }
+/* A bar of the selected trip, or of the trip in the editor, that is not the
+   selected bar: its other buses and its other leg. The selection's own colour
+   says which trip, and the dashes say this is not the bar in hand; an outline
+   inside the bar costs none of its writing. The trip in the editor's are also
+   locked -- they do not drag, and their bus, colour and hotel are the
+   editor's to change. The bar's own `:focus-visible` outranks it on
+   specificity, so focus still shows. */
+.scheduler-bar--same-trip { outline: 2px dashed var(--rux-layer-selected-inverse); outline-offset: -2px; }
 
 /* The selected trip's shortcuts: a row of square slots floating clear of the
    trip, so a selected trip loses none of its writing. data.js places it inside
@@ -1013,7 +1017,7 @@ button.scheduler-row-head__num::after {
 /* WHO ELSE IS ON THIS TRIP. A square notched into the bar's top right corner,
    sharing the bar's own top and right edges, so only its two inner edges are
    ruled. It sits over the reference and the marks that corner carries, which
-   rux chose: knowing somebody else is in a trip is worth more than "1 of 2".
+   rux chose: knowing somebody else is in a trip is worth more than "1/2".
    It takes no clicks, so the bar beneath still selects, opens and drags. */
 .scheduler-presence {
   position: absolute;

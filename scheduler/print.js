@@ -1504,7 +1504,7 @@
           if (!byBus.has(assignment.bus_id)) byBus.set(assignment.bus_id, []);
           byBus.get(assignment.bus_id).push({
             trip, leg, assignment, place: { ...place },
-            of: leg.count > 1 ? `${i + 1} of ${leg.count}` : '',
+            of: leg.count > 1 ? `${i + 1}/${leg.count}` : '',
           });
         });
       }

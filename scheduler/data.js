@@ -851,7 +851,7 @@
   }
 
   function barEl(b, driversById, busesById, statuses) {
-    const { trip, leg, assign, place, slot } = b;
+    const { trip, leg, assign, place, slot, nth } = b;
     const hue = hueFor(trip);
     const bar = el('article', `scheduler-bar scheduler-bar--${hue}`);
     // The bar menu reads both to check the trip's colour and paint Standard.
@@ -899,7 +899,14 @@
     if (stripe) bar.classList.add(`scheduler-bar--stripe-${stripe}`);
     const kind = trip.trip_type === 'one_way' ? 'one way' : !split ? null : leg.leg === 'return' ? 'pickup' : 'drop-off';
     const count = leg.count || 1;
-    const ref = count > 1 ? `${slot + 1} of ${count}` : '';
+    const ref = count > 1 ? `${nth}/${count}` : '';
+    let refTag = null;
+    if (ref) {
+      refTag = el('span', 'scheduler-bar__ref');
+      const tag = el('div', 'rux--tag rux--tag--outline rux--layout--size-sm');
+      tag.appendChild(el('span', 'rux--tag__label', ref));
+      refTag.appendChild(tag);
+    }
 
     /* WHETHER THIS BUS FITS THIS TRIP, and what the trip needs. The bar draws
        no marks: what is still to be done is the reminder's to ask, and the
@@ -933,7 +940,7 @@
     barFacts.set(bar, { needs, misfits });
     bar.classList.toggle('scheduler-bar--misfit', misfits.length > 0);
 
-    addRow(bar, 'scheduler-bar__dest', el('span', null, trip.destination || 'No destination'), ref ? el('span', 'scheduler-bar__ref', ref) : null);
+    addRow(bar, 'scheduler-bar__dest', el('span', null, trip.destination || 'No destination'), refTag);
     addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
 
     // The booking contact as the trip records it. When both do not fit, the
@@ -1003,7 +1010,7 @@
     if (code) bar.appendChild(el('span', 'scheduler-bar__code', code));
 
     bar.setAttribute('aria-label', [
-      trip.destination || 'No destination', trip.customer, kind, ref,
+      trip.destination || 'No destination', trip.customer, kind, ref ? `bus ${nth} of ${count}` : null,
       place.fromPrev ? 'continues from the previous week' : null,
       place.toNext ? 'continues into the next week' : null,
       trip.confirmed === false ? 'unconfirmed' : null,
@@ -1044,8 +1051,10 @@
         const assigns = (trip.trip_assignments || [])
           .filter(a => (a.leg || 'outbound') === leg.leg)
           .sort((x, y) => (x.position ?? 0) - (y.position ?? 0));
-        for (const a of assigns) push(a.bus_id ?? UNASSIGNED, { trip, leg, assign: a, place, slot: a.position ?? 0 });
-        for (let i = assigns.length; i < (leg.count || 1); i++) push(UNASSIGNED, { trip, leg, assign: null, place, slot: i });
+        // `nth` counts the leg's buses from 1; the stored position can run on
+        // from the other leg's, so it is not the number shown.
+        assigns.forEach((a, i) => push(a.bus_id ?? UNASSIGNED, { trip, leg, assign: a, place, slot: a.position ?? 0, nth: i + 1 }));
+        for (let i = assigns.length; i < (leg.count || 1); i++) push(UNASSIGNED, { trip, leg, assign: null, place, slot: i, nth: i + 1 });
       }
     }
 
@@ -7373,16 +7382,16 @@
     pop();
   }
 
-  /* The other bars of the trip in the editor: its return leg, or the same leg
-     on another bus. They are locked -- they do not drag, and their bus, colour
-     and hotel are the editor's to change -- so they are marked as belonging to
-     the open trip. A dashed ring in the selection's own colour, which costs
-     none of the bar's writing: the same trip, but not the one in hand. Closing
-     is the shortcut bar's first slot and the editor's own close button. */
-  function markEditorBars() {
+  /* The other bars of the selected trip, and of the trip in the editor: its
+     other buses and its other leg, ringed as app.css draws them, so a trip's
+     buses are found together on a busy day. The editor's are also locked.
+     Closing is the shortcut bar's first slot and the editor's own close
+     button. */
+  function markTripBars() {
     const picked = selectedBar();
     for (const bar of gridEl.querySelectorAll('.scheduler-bar[data-trip-id]')) {
-      bar.classList.toggle('scheduler-bar--locked', isEditorTrip(bar) && bar !== picked);
+      bar.classList.toggle('scheduler-bar--same-trip', bar !== picked
+        && (isEditorTrip(bar) || (!!picked && bar.dataset.tripId === picked.dataset.tripId)));
     }
   }
 
@@ -7434,7 +7443,7 @@
     const bar = selectedBar();
     peekBar = null;
     placeBarOpen(bar);
-    markEditorBars();
+    markTripBars();
     // The roster moves to the selected trip's week, and lights its days.
     drawRoster();
     // What this tab is on has changed, so everyone else's board says so.
@@ -7759,7 +7768,7 @@
      changed width -- the editor opening beside it, the window resized, the
      compact board taking over -- has to place them again, or a shrunken bar
      keeps a face it can no longer hold and a grown one never gets its. */
-  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); markEditorBars(); fitTimes(); presenceDraw(); })).observe(gridEl);
+  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); markTripBars(); fitTimes(); presenceDraw(); })).observe(gridEl);
   // A web font that arrives after the first render changes every time's width.
   document.fonts?.ready.then(() => { fitTimes(); });
   /* The shortcut bar scrolls with its trip, but which side of the trip it fits
@@ -7982,7 +7991,7 @@
     // The bars change height and lane, which the scroll pane may not report as
     // a resize, so the trip tabs follow here.
     placeBarOpen();
-    markEditorBars();
+    markTripBars();
     for (const item of viewMenu?.querySelectorAll('[role="menuitemcheckbox"]') || []) {
       const key = item.dataset.row || item.dataset.view;
       const on = !!view[key];

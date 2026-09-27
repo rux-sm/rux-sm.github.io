@@ -6801,20 +6801,22 @@
           total[2] = status ?? (on ? hm(on) : '—');
           total[3] = status || !on ? '—' : hm(on - off);
         }
-        rows.push(['Total', ...total]);
+        /* A leg of more than one day has a row a day and a Total, under a Day
+           column; a one-day leg is its one row of figures, with no Day column. */
+        if (days) rows.push(['Total', ...total]); else rows.push([...total]);
         const table = el('table', 'rux--data-table rux--data-table--xs');
         const head = el('tr');
-        for (const h of ['Day', 'Miles', 'Drive', 'On duty', 'Less rest']) {
+        for (const h of [...(days ? ['Day'] : []), 'Miles', 'Drive', 'On duty', 'Less rest']) {
           const th = el('th');
           th.scope = 'col';
-          th.appendChild(el('div', 'rux--table-header-label', days ? h : h === 'Day' ? '' : h));
+          th.appendChild(el('div', 'rux--table-header-label', h));
           head.appendChild(th);
         }
         const thead = el('thead');
         thead.appendChild(head);
         const tbody = el('tbody');
         rows.forEach((cells, i) => {
-          const tr = el('tr', i === rows.length - 1 ? 'scheduler-route-total' : null);
+          const tr = el('tr', days && i === rows.length - 1 ? 'scheduler-route-total' : null);
           for (const c of cells) tr.appendChild(el('td', null, c));
           tbody.appendChild(tr);
         });

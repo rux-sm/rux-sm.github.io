@@ -762,10 +762,29 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   color: var(--rux-text-primary);
 }
 
-/* A blank form is written on, so the dates get a line to write on. */
-.scheduler-form[data-blank] .scheduler-driver-itinerary__dates {
+/* A BLANK FORM IS WRITTEN ON, so every field in the head gets a line to
+   write on: the dates, the destination under the bar, the client and the
+   contact. The destination's and the client's stop short of the Address
+   column, where the contact's starts. The lines print, and show the same on
+   screen, over the dotted rule an empty field takes there. */
+.scheduler-form[data-blank] .scheduler-driver-itinerary__head .scheduler-driver-itinerary__dates {
   min-inline-size: 12rem;
   border-block-end: 1px solid var(--rux-border-subtle-01);
+}
+
+.scheduler-form[data-blank] .scheduler-driver-itinerary__where .scheduler-driver-itinerary__destination {
+  display: block;
+  inline-size: calc(58% - var(--rux-spacing-07));
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+}
+
+.scheduler-form[data-blank] .scheduler-driver-itinerary__meta .scheduler-driver-itinerary__value {
+  min-block-size: 1.75rem;
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+}
+
+.scheduler-form[data-blank] .scheduler-driver-itinerary__meta .scheduler-driver-itinerary__field:first-child {
+  margin-inline-end: var(--rux-spacing-07);
 }
 
 /* WHERE THE GROUP IS GOING, the largest type on the sheet because it is what

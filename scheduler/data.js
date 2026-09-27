@@ -5075,6 +5075,12 @@
   ].filter(Boolean).join(' · ');
   const numOrNull = v => (v === null || v === undefined || v === '' ? null : Number(v));
   const dayAfter = (d, n) => (d ? iso(addDays(parseISO(d), n)) : null);
+  /* The day a stop is left: the day it is reached, or the next when it is
+     left at an earlier time than it was reached, a night spent there. */
+  const leaveDayOf = (st, from) => {
+    const d = st.date ?? from;
+    return d && st.arrive && st.leave && toMin(st.leave) < toMin(st.arrive) ? dayAfter(d, 1) : d;
+  };
 
   // Geoapify, through places.js: the places matching what is typed, and the
   // drive between two.
@@ -5233,7 +5239,7 @@
     const round = routeRound();
     const list = r.list;
     const departs = [leave, ...list.map(st => st.leave)];
-    const departDays = [leave ? from : null, ...list.map(st => (st.leave ? st.date ?? from : null))];
+    const departDays = [leave ? from : null, ...list.map(st => (st.leave ? leaveDayOf(st, from) : null))];
     // A drive not measured yet is still `estimated`: both source columns are required.
     const drives = (min, miles) => ({ drive: driveText(min), miles: min == null ? null : miles,
       drive_source: 'estimated', miles_source: 'estimated' });
@@ -5242,7 +5248,8 @@
 
     const stopWant = (st, i) => ({
       ...(st.placeChanged || !st.id ? placeCols(st.place) : {}),
-      arrive: st.arrive, arrive_date: st.arrive ? st.date ?? from : null,
+      // The stop's day is kept even with no times, so it stays under its day.
+      arrive: st.arrive, arrive_date: st.date ?? from,
       depart_prev: departs[i], depart_prev_date: departDays[i],
       dwell_status: st.dwell || null,
       ...(st.driveChanged || st.found || !st.id ? drives(st.drive, st.miles) : {}),
@@ -5329,6 +5336,13 @@
         : id === String(r.pickup.id) ? wanted.pickup
         : id === String(r.back.id) ? wanted.ret : {};
       const patch = open ? rowPatch(open, want, datesMoved) : {};
+      /* A stop moved to another day moves its day, whether or not a time moved,
+         and a departure's day is put right, such as a morning's after a night
+         at a hotel. */
+      if (item.stop && open && !same(open.arrive_date ?? null, want.arrive_date)) patch.arrive_date = want.arrive_date;
+      if ((item.stop || id === dropId) && open && !same(open.depart_prev_date ?? null, want.depart_prev_date ?? null)) {
+        patch.depart_prev_date = want.depart_prev_date ?? null;
+      }
       const was = legRows.find(x => String(x.id) === id)?.position;
       if (was !== position) patch.position = position;
       if (Object.keys(patch).length) updates.push({ id, patch });
@@ -6307,9 +6321,11 @@
       routeTimesDrawn = () => { drawTimesLine(); drawTotals(); };
       stopsBody.append(stopsList.list, listNote, timesLine);
 
+      // A stop left at an earlier time than it was reached is left the next day.
       const waitOf = st => {
         const got = toMin(st.arrive), left = toMin(st.leave);
-        return got != null && left != null && left > got ? left - got : null;
+        if (got == null || left == null || left === got) return null;
+        return left > got ? left - got : left + 1440 - got;
       };
       /* A stop with no point on the map, a restroom break on the road, is
          passed over: the drive is measured from the place before it to the
@@ -6372,7 +6388,7 @@
           const passed = [];
           while (k >= 0 && !located(r.list[k])) passed.push(r.list[k--]);
           const start = k >= 0
-            ? minutesAt(r.list[k].leave, r.list[k].date)
+            ? minutesAt(r.list[k].leave, leaveDayOf(r.list[k], routeDates(r.leg).from))
             : minutesAt(val('scheduler-f-leave'), routeDates(r.leg).from);
           return { first: k < 0, start, passed };
         };
@@ -6650,10 +6666,16 @@
           ...(d === last ? [...(dropCounts() ? [[r.dropDrive, r.dropMiles]] : []), [r.backDrive, r.backMiles]] : [])];
         const times = [];
         const put = (t, less = 0) => { const m = toMin(t); if (m != null) times.push(m - less); };
+        /* A day starts with the yard on the first day, or with the bus leaving
+           where it spent the night, or else the drive to its first stop. A
+           stop left the next day ends its own day when it is reached. */
+        const from0 = routeDates(r.leg).from;
+        const leftToday = r.list.filter(st => dayOf(st) !== d && st.leave && leaveDayOf(st, from0) === d);
         if (d === first) { put(val('scheduler-f-depart'), routeTimes.pre); put(val('scheduler-f-spot')); put(val('scheduler-f-leave')); }
+        else if (leftToday.length) put(leftToday.at(-1).leave);
         else if (mine[0]) put(mine[0].arrive, mine[0].drive ?? 0);
         else if (d === last) put(val('scheduler-f-endtrip'), r.dropDrive ?? 0);
-        for (const st of mine) { put(st.arrive); put(st.leave); }
+        for (const st of mine) { put(st.arrive); if (leaveDayOf(st, from0) === d) put(st.leave); }
         if (d === last) { put(val('scheduler-f-endtrip')); put(val('scheduler-f-return'), -routeTimes.post); }
         // A time earlier than the one before it is past midnight.
         let roll = 0;
@@ -6662,7 +6684,9 @@
           if (run.length && m + roll < run.at(-1)) roll += 1440;
           run.push(m + roll);
         }
-        const rest = mine.reduce((n, st) => n + (st.dwell && st.dwell !== 'on' ? waitOf(st) ?? 0 : 0), 0);
+        // A night's wait belongs to neither day, which each end or start at it.
+        const rest = mine.filter(st => leaveDayOf(st, from0) === d)
+          .reduce((n, st) => n + (st.dwell && st.dwell !== 'on' ? waitOf(st) ?? 0 : 0), 0);
         const span = run.length > 1 ? run.at(-1) - run[0] : null;
         return figures(legs, span, rest);
       }

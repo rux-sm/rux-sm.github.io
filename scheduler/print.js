@@ -81,22 +81,28 @@
 
   /* THE ITINERARY'S DATES, in words, because a sheet read down a column of
      days reads "Wednesday, Aug 26" faster than a row of numbers. The year is
-     printed once, in the title: "Aug 26 – 29, 2026", "Aug 30 – Sep 2, 2026",
-     or both years when the trip runs into the next. */
+     printed once, in the head: "Sun Sep 27 – Tue 29, 2026", "Mon Aug 31 – Wed
+     Sep 2, 2026", or both years when the trip runs into the next. */
   const partsOf = d => {
     const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(d || '').trim());
     if (!m) return null;
     const date = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
-    return { year: m[1], month: date.toLocaleDateString('en-US', { month: 'short' }), day: Number(m[3]) };
+    return {
+      year: m[1],
+      month: date.toLocaleDateString('en-US', { month: 'short' }),
+      weekday: date.toLocaleDateString('en-US', { weekday: 'short' }),
+      day: Number(m[3]),
+    };
   };
   const dateWords = (from, to) => {
     const a = partsOf(from);
     const b = to && to !== from ? partsOf(to) : null;
     if (!a) return mdy(from);
-    if (!b) return `${a.month} ${a.day}, ${a.year}`;
-    if (a.year !== b.year) return `${a.month} ${a.day}, ${a.year} – ${b.month} ${b.day}, ${b.year}`;
-    if (a.month !== b.month) return `${a.month} ${a.day} – ${b.month} ${b.day}, ${a.year}`;
-    return `${a.month} ${a.day} – ${b.day}, ${a.year}`;
+    const first = `${a.weekday} ${a.month} ${a.day}`;
+    if (!b) return `${first}, ${a.year}`;
+    if (a.year !== b.year) return `${first}, ${a.year} – ${b.weekday} ${b.month} ${b.day}, ${b.year}`;
+    if (a.month !== b.month) return `${first} – ${b.weekday} ${b.month} ${b.day}, ${a.year}`;
+    return `${first} – ${b.weekday} ${b.day}, ${a.year}`;
   };
 
   const weekdayOf = d => {
@@ -651,35 +657,50 @@
      naming what the row would have been. */
   const blankRow = () => itineraryRow({}, null);
 
-  /* THE LOGO, THE FORM'S NAME AND THE TRIP. The left is the app bar's shape,
-     the logo and then the name past a rule, so the paper reads as the same
-     company as the screen. The right is where the group is going and the
-     days it runs; both can be typed over like any other line of the form.
-     No address or phones: the sheet goes to the company's own driver, who
-     has both. */
+  /* THE APP BAR ON PAPER: the logo's one-line wordmark and the form's name
+     past a rule on the left, the days the trip runs on the right, at the
+     screen header's height and type. Under it, across the full width so a
+     long one keeps to one line, where the group is going. Both trip lines can
+     be typed over like any other line of the form. No address or phones:
+     the sheet goes to the company's own driver, who has both. */
   function itineraryHead(subject) {
     const { trip, leg } = subject;
     const start = leg === 'return' ? (trip.return_start_date || trip.end_date) : trip.start_date;
     const end = leg === 'return' ? (trip.return_end_date || trip.end_date) : trip.end_date;
-    const head = el('header', 'scheduler-driver-itinerary__head');
-    const brand = el('div', 'scheduler-driver-itinerary__brand');
-    const logo = el('img', 'scheduler-driver-itinerary__logo');
-    logo.src = '/scheduler/brand/logo.svg';
-    logo.alt = 'Escamilla Tour Buses';
-    brand.appendChild(logo);
-    brand.appendChild(el('h2', 'scheduler-driver-itinerary__name', 'Trip itinerary'));
-    head.appendChild(brand);
-    const title = el('div', 'scheduler-driver-itinerary__title');
     const typed = (cls, name, value) => {
       const node = el('span', `scheduler-driver-itinerary__${cls} scheduler-driver-itinerary__typed`, value || '');
       node.dataset.name = name;
       return node;
     };
-    title.appendChild(typed('destination', 'Destination', trip.destination));
-    title.appendChild(typed('dates', 'Date', start ? dateWords(start, end) : ''));
-    head.appendChild(title);
-    return head;
+    const head = el('header', 'scheduler-driver-itinerary__head');
+    const brand = el('div', 'scheduler-driver-itinerary__brand');
+    // The logo drawing with its TOUR BUSES line cut off, as the header shows it.
+    const mark = el('span', 'scheduler-driver-itinerary__mark');
+    const logo = el('img', 'scheduler-driver-itinerary__logo');
+    logo.src = '/scheduler/brand/logo.svg';
+    logo.alt = 'Escamilla Tour Buses';
+    mark.appendChild(logo);
+    brand.appendChild(mark);
+    brand.appendChild(el('h2', 'scheduler-driver-itinerary__name', 'Trip itinerary'));
+    head.appendChild(brand);
+    head.appendChild(typed('dates', 'Date', start ? dateWords(start, end) : ''));
+
+    /* A note the office wrote in brackets after the place, "(Fiesta Texas)",
+       is printed smaller, so the place is what the eye lands on. */
+    const where = el('div', 'scheduler-driver-itinerary__where');
+    const destination = typed('destination', 'Destination', '');
+    const text = String(trip.destination || '').trim();
+    const note = /^(.*?\S)\s*(\(.*\))$/.exec(text);
+    if (note) {
+      destination.append(`${note[1]} `);
+      destination.appendChild(el('span', 'scheduler-driver-itinerary__note', note[2]));
+    } else destination.textContent = text;
+    where.appendChild(destination);
+    const frag = document.createDocumentFragment();
+    frag.append(head, where);
+    return frag;
   }
+
 
   const headField = (label, value) => {
     const node = el('div', 'scheduler-driver-itinerary__field');

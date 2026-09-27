@@ -710,66 +710,91 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   justify-content: space-between;
   align-items: center;
   gap: var(--rux-spacing-07);
-  padding-block-end: var(--rux-spacing-05);
+  min-block-size: 3rem;
   border-block-end: 1px solid var(--rux-border-strong-01);
 }
 
-/* THE APP BAR'S SHAPE: the logo, a rule, and the form's name, the way the
-   header on screen sets the logo beside the page it is on. */
+/* THE APP BAR'S SHAPE, at its size: the wordmark 20px tall, a rule, and the
+   form's name in the header's 14px semibold. */
 .scheduler-driver-itinerary__brand {
   display: flex;
-  align-items: stretch;
+  align-items: center;
   gap: var(--rux-spacing-05);
   flex: none;
 }
 
-.scheduler-driver-itinerary__logo {
+/* The logo drawing is 1492 by 288 with its wordmark in rows 5 to 171, so a
+   box 20px tall that shows only those rows is the header's one-line logo,
+   still drawn as curves rather than the header's picture. */
+.scheduler-driver-itinerary__mark {
   display: block;
   flex: none;
-  height: 2rem;
-  width: auto;
+  overflow: hidden;
+  block-size: 1.25rem;
+  inline-size: calc(1.25rem * 1492 / 167);
+}
+
+.scheduler-driver-itinerary__logo {
+  display: block;
+  inline-size: 100%;
+  block-size: calc(1.25rem * 288 / 167);
+  margin-block-start: calc(1.25rem * -5 / 167);
 }
 
 .scheduler-driver-itinerary__name {
-  display: flex;
-  align-items: center;
   margin: 0;
   padding-inline-start: var(--rux-spacing-05);
   border-inline-start: 1px solid var(--rux-border-strong-01);
   white-space: nowrap;
-  font-size: var(--rux-productive-heading-03-font-size);
-  font-weight: var(--rux-productive-heading-03-font-weight);
-  line-height: var(--rux-productive-heading-03-line-height);
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: 1.25rem;
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
   color: var(--rux-text-primary);
 }
 
-/* The title is where the group is going, the largest type on the sheet
-   because it is what tells one trip's sheet from another's, set to the
-   right across from the name. The envelope leads with the day instead,
-   because a driver picks one out of a stack by it. */
-.scheduler-driver-itinerary__title {
-  display: flex;
-  flex-direction: column;
-  align-items: end;
-  min-inline-size: 0;
-  text-align: end;
+.scheduler-driver-itinerary__dates {
+  white-space: nowrap;
+  font-size: var(--rux-body-compact-01-font-size);
+  font-weight: var(--rux-body-compact-01-font-weight);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+  color: var(--rux-text-primary);
+}
+
+/* A blank form is written on, so the dates get a line to write on. */
+.scheduler-form[data-blank] .scheduler-driver-itinerary__dates {
+  min-inline-size: 12rem;
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+}
+
+/* WHERE THE GROUP IS GOING, the largest type on the sheet because it is what
+   tells one trip's sheet from another's, centred across the full width under
+   the bar. The envelope leads with the day instead, because a driver picks
+   one out of a stack by it. */
+.scheduler-driver-itinerary__where {
+  padding-block: var(--rux-spacing-05);
+  border-block-end: 1px solid var(--rux-border-strong-01);
+  text-align: center;
+  text-wrap: balance;
   font-size: var(--rux-productive-heading-04-font-size);
   font-weight: var(--rux-productive-heading-04-font-weight);
   line-height: var(--rux-productive-heading-04-line-height);
 }
 
-.scheduler-driver-itinerary__dates {
-  margin-block-start: var(--rux-spacing-01);
-  font-size: var(--rux-body-compact-02-font-size);
-  font-weight: var(--rux-body-compact-02-font-weight);
-  line-height: var(--rux-body-compact-02-line-height);
-  color: var(--rux-text-secondary);
+/* Empty, on a blank form, it keeps a line's height to write in. */
+.scheduler-driver-itinerary__destination:empty {
+  display: inline-block;
+  min-inline-size: 12rem;
+  min-block-size: 1lh;
 }
 
-/* An empty title keeps a line's height, so a blank form has room to write
-   where the group is going. */
-.scheduler-driver-itinerary__destination:empty,
-.scheduler-driver-itinerary__dates:empty { min-inline-size: 12rem; min-block-size: 1lh; }
+.scheduler-driver-itinerary__note {
+  white-space: nowrap;
+  font-size: var(--rux-body-compact-02-font-size);
+  font-weight: var(--rux-body-compact-02-font-weight);
+  color: var(--rux-text-secondary);
+}
 
 /* WHAT THE HEAD NAMES, as pairs rather than as fields to fill in: this form
    arrives filled and is corrected, where the envelope arrives blank in the
@@ -962,7 +987,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
      shape. The rule goes the moment something is typed, and it was never on
      the paper. */
   .scheduler-driver-itinerary__value[data-typed]:empty,
-  .scheduler-driver-itinerary__title [data-typed]:empty {
+  .scheduler-driver-itinerary__head [data-typed]:empty,
+  .scheduler-driver-itinerary__where [data-typed]:empty {
     border-block-end: 1px dotted var(--rux-border-strong-01);
   }
 

@@ -1614,6 +1614,9 @@ button.scheduler-row-head__num::after {
    surfaces, square in Carbon's themes, and a hover turns the edge and the
    words to the link colour over Carbon's ghost hover fill. It spans the
    list, past the 20rem Carbon caps a button at. */
+/* It stands 16px under the rows, twice their gap, so it reads as the list's
+   action rather than one more row. */
+.scheduler-list-additem:not(:first-child) { margin-block-start: var(--rux-spacing-03); }
 .scheduler-list-additem .scheduler-list-add {
   align-items: center;
   justify-content: center;

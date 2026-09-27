@@ -868,3 +868,9 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   .scheduler-panel-cancel.rux--btn--secondary:hover { background-color: var(--rux-button-danger-primary); }
 }
 .scheduler-panel-cancel.rux--btn--secondary:active { background-color: var(--rux-button-danger-active); }
+
+/* A disabled button in a panel's action bar: in a dark theme Carbon paints its
+   fill and its border in the same see-through grey, so the edge where they
+   overlap paints darker and the button reads a pixel smaller on every side
+   than an enabled one beside it. Without the border each is one whole block. */
+.rux--side-panel__actions-container .rux--btn:disabled { border-color: transparent; }

@@ -106,7 +106,9 @@
 <symbol id="m-print" viewBox="0 -960 960 960"><path d="M658-648v-132H302v132h-60v-192h476v192h-60Zm-518 60h680-680Zm599 95q12 0 21-9t9-21q0-12-9-21t-21-9q-12 0-21 9t-9 21q0 12 9 21t21 9Zm-81 313v-192H302v192h356Zm60 60H242v-176H80v-352h800v352H718v176Zm102-236v-232H140v232h102v-76h476v76h102Z"/></symbol>
 <symbol id="m-credit_card-fill" viewBox="0 -960 960 960"><path d="M80-160v-640h800v640H80Zm60-342h680v-129H140v129Z"/></symbol>
 <symbol id="m-request_quote" viewBox="0 -960 960 960"><path d="M450-201h60v-40h90v-190H420v-70h180v-60h-90v-40h-60v40h-90v190h180v70H360v60h90v40ZM160-80v-800h421l219 219v581H160Zm60-60h520v-494H554v-186H220v680Zm0-680v186-186 680-680Z"/></symbol>
+<symbol id="m-restart_alt" viewBox="0 -960 960 960"><path d="M451-122q-123-10-207-101t-84-216q0-77 35.5-145T295-695l43 43q-56 33-87 90.5T220-439q0 100 66 173t165 84v60Zm60 0v-60q100-12 165-84.5T741-439q0-109-75.5-184.5T481-699h-20l60 60-43 43-133-133 133-133 43 43-60 60h20q134 0 227 93.5T801-439q0 125-83.5 216T511-122Z"/></symbol>
 <symbol id="m-route" viewBox="0 -960 960 960"><path d="M200-120v-503.56q-35-13.44-57.5-41.7-22.5-28.27-22.5-64.41Q120-776 152.5-808t78-32q45.5 0 77.5 32.14t32 78.05q0 35.81-22.5 64.31T260-624v444h190v-660h310v503.56q35 13.44 57.5 41.8Q840-266.27 840-230q0 45-32.08 77.5Q775.83-120 730-120q-45 0-77.5-32.5T620-230q0-36.3 22.5-65.15Q665-324 700-336v-444H510v660H200Zm30.5-560q20.5 0 35-15t14.5-35.5q0-20.5-14.37-35Q251.25-780 230-780q-20 0-35 14.37-15 14.38-15 35.63 0 20 15 35t35.5 15Zm500 500q20.5 0 35-15t14.5-35.5q0-20.5-14.37-35Q751.25-280 730-280q-20 0-35 14.37-15 14.38-15 35.63 0 20 15 35t35.5 15ZM230-730Zm500 500Z"/></symbol>
+<symbol id="m-save" viewBox="0 -960 960 960"><path d="M840-683v563H120v-720h563l157 157Zm-60 27L656-780H180v600h600v-476ZM553.5-275.26q30.5-30.27 30.5-73.5 0-43.24-30.26-73.74-30.27-30.5-73.5-30.5-43.24 0-73.74 30.26-30.5 30.27-30.5 73.5 0 43.24 30.26 73.74 30.27 30.5 73.5 30.5 43.24 0 73.74-30.26ZM233-584h358v-143H233v143Zm-53-72v476-600 124Z"/></symbol>
 <symbol id="m-search" viewBox="0 -960 960 960"><path d="M796-121 533-384q-30 26-70 40.5T378-329q-108 0-183-75t-75-181q0-106 75-181t182-75q106 0 180.5 75T632-585q0 43-14 83t-42 75l264 262-44 44ZM377-389q81 0 138-57.5T572-585q0-81-57-138.5T377-781q-82 0-139.5 57.5T180-585q0 81 57.5 138.5T377-389Z"/></symbol>
 <symbol id="m-airport_shuttle-fill" viewBox="0 -960 960 960"><path d="M152-232.08q-32-32.09-32-77.92H40v-450h646l234 234v216h-80q0 45.83-32.12 77.92-32.12 32.08-78 32.08T652-232.08q-32-32.09-32-77.92H340q0 46-32.12 78t-78 32Q184-200 152-232.08ZM600-560h194L654-700h-54v140Zm-250 0h190v-140H350v140Zm-250 0h190v-140H100v140Zm172.5 292.64q17.5-17.36 17.5-42.5t-17.36-42.64q-17.36-17.5-42.5-17.5t-42.64 17.36q-17.5 17.36-17.5 42.5t17.36 42.64q17.36 17.5 42.5 17.5t42.64-17.36Zm500 0q17.5-17.36 17.5-42.5t-17.36-42.64q-17.36-17.5-42.5-17.5t-42.64 17.36q-17.5 17.36-17.5 42.5t17.36 42.64q17.36 17.5 42.5 17.5t42.64-17.36Z"/></symbol>
 <symbol id="m-remove" viewBox="0 -960 960 960"><path d="M200-450v-60h560v60H200Z"/></symbol>
@@ -598,11 +600,12 @@
            action here and the modal it opens is where the danger is: it only opens
            #scheduler-cancel-modal, and names the trip
            because the close button is what leaves the editor; Reset drops
-           unsaved edits. -->
+           unsaved edits. Each carries an icon at its end, Carbon's place for
+           one, which answers the label at the start. -->
       <div class="rux--action-set rux--side-panel__actions-container rux--action-set--row-double rux--action-set--md rux--btn-set" role="presentation">
-        <button type="button" class="rux--action-set__action-button rux--btn rux--btn--secondary scheduler-panel-cancel" id="scheduler-panel-cancel">Cancel trip</button>
-        <button type="button" class="rux--action-set__action-button rux--btn rux--btn--secondary" id="scheduler-panel-reset" disabled>Reset</button>
-        <button type="button" class="rux--action-set__action-button rux--btn rux--btn--primary" id="scheduler-panel-save" disabled>Save</button>
+        <button type="button" class="rux--action-set__action-button rux--btn rux--btn--secondary scheduler-panel-cancel" id="scheduler-panel-cancel">Cancel trip <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-delete"/></svg></button>
+        <button type="button" class="rux--action-set__action-button rux--btn rux--btn--secondary" id="scheduler-panel-reset" disabled>Reset <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-restart_alt"/></svg></button>
+        <button type="button" class="rux--action-set__action-button rux--btn rux--btn--primary" id="scheduler-panel-save" disabled>Save <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-save"/></svg></button>
       </div>
     </aside>
           </div>

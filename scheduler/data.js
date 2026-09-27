@@ -6318,11 +6318,13 @@
       const stopsBody = el('div', 'rux--stack-vertical rux--stack-scale-5');
       const stopsList = rowList();
       stopsList.list.classList.add('scheduler-route-stops');
-      // The trip's totals, on the Stops heading's line.
       /* The trip's figures, one home at the top of the tab: when the bus
          leaves the yard, is spotted and is back, then each day's miles, drive
-         and on duty on a leg of more than one day, then the whole leg's. */
-      const summary = el('div', 'rux--stack-vertical rux--stack-scale-5');
+         and on duty on a leg of more than one day, then the whole leg's.
+         One tile, the figures padded and the table flush with its edges. */
+      const summary = el('div', 'rux--tile scheduler-summary');
+      const summaryLayer = el('div', 'rux--layer-two');
+      summaryLayer.appendChild(summary);
       /* Stops can be added to a leg with its rows, or to one with none yet,
          whose Save writes them all. A leg rux-ui left with some rows but no
          pickup or yard row has nowhere to put one. */
@@ -6752,7 +6754,7 @@
           tbody.appendChild(tr);
         });
         table.append(thead, tbody);
-        const wrap = el('div', 'rux--data-table-content');
+        const wrap = el('div', 'rux--data-table-content scheduler-summary__table');
         wrap.appendChild(table);
         summary.replaceChildren(times, wrap);
       }
@@ -6804,7 +6806,7 @@
       const routeTitle = routeSection.querySelector('.scheduler-panel-section__title');
       // The kept times go last, so the Summary is the tab's first section.
       panelRoute.append(
-        section('Summary', summary),
+        section('Summary', summaryLayer),
         routeSection,
         routeBox,
       );

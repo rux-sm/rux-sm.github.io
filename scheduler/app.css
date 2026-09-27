@@ -3599,6 +3599,13 @@ html:has(.scheduler-page[data-takeover]) {
 /* The Summary: the bus's times as figures, then a compact table of each
    day's miles, drive and on duty, its total row in the heading weight. */
 .scheduler-route-total td { font-weight: var(--rux-heading-compact-01-font-weight); }
+/* The Summary is one tile: the figures in its padding, then the table 16px
+   under them and flush with the tile's sides and bottom, its padding taken
+   back by Carbon's own tile padding variable. */
+.scheduler-summary__table {
+  margin: var(--rux-spacing-05) calc(-1 * var(--rux-layout-density-padding-inline-local))
+    calc(-1 * var(--rux-layout-density-padding-inline-local));
+}
 /* A day's heading over its stops, in the list, 16px above and 8px below. */
 .scheduler-route-day {
   display: flex;

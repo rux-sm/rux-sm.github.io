@@ -6283,7 +6283,8 @@
 
       /* The list is named for both of its ends, or on a split trip for what
          its leg does, as its dates and buses are. */
-      const routeHeading = () => !splitNow() ? 'Route' : r.leg === 'return' ? 'Pickup leg' : 'Drop-off leg';
+      // Only a split trip's list has a title, naming the leg; the days head every other.
+      const routeHeading = () => !splitNow() ? '' : r.leg === 'return' ? 'Pickup leg' : 'Drop-off leg';
       // The worked-out times, kept where Save reads them.
       const routeBox = el('div');
       routeBox.hidden = true;
@@ -6511,6 +6512,13 @@
           });
           r.list.forEach((st, i) => { if (!days.includes(dayOf(st))) stopsList.body.append(...rowFor(st, i, ++num)); });
         } else {
+          // A one-day leg is headed by its date alone.
+          if (from) {
+            const head = el('li', 'scheduler-route-day');
+            head.appendChild(el('span', 'scheduler-route-day__name',
+              parseISO(from).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })));
+            stopsList.body.appendChild(head);
+          }
           stopsList.body.appendChild(pickupTile());
           r.list.forEach((st, i) => stopsList.body.append(...rowFor(st, i, ++num)));
         }
@@ -6802,8 +6810,11 @@
         return figures(legs, span, rest, wrong ? 'check' : needs && (mine.length > 0 || d === first || d === last));
       }
 
-      const routeSection = section(routeHeading(), stopsBody);
+      // The title is always built, so a change of type can show or hide it.
+      const routeSection = section('Route', stopsBody);
       const routeTitle = routeSection.querySelector('.scheduler-panel-section__title');
+      routeTitle.textContent = routeHeading();
+      routeTitle.hidden = !routeTitle.textContent;
       // The kept times go last, so the Summary is the tab's first section.
       panelRoute.append(
         section('Summary', summaryLayer),
@@ -6839,6 +6850,7 @@
       document.getElementById('scheduler-f-type')?.addEventListener('change', () => {
         if (!dropBox.hidden !== !letOffAtPickup()) showDrop(!letOffAtPickup());
         routeTitle.textContent = routeHeading();
+        routeTitle.hidden = !routeTitle.textContent;
         drawTimeline();
       });
     }

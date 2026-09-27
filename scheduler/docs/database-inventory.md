@@ -157,7 +157,7 @@ as in `screen-inventory.md`.
 | `trip_history` (RPC) | History | every save in the trip editor |
 | `trip_driver_statuses` (RPC) | Schedule, Tasks, Drivers | driver page accepts and declines; the bar menu's driver status items |
 | `driver_schedule_shares` (RPC) | Driver editor | Driver editor |
-| `settings` | Settings, trip editor defaults, the Billing tab's `billing-workflow-v1`, the Route tab's and Locations page's `yard-location-v1` and `geoapify-key-v1`, and rux-ui's `mapbox-token-v1` | Settings |
+| `settings` | Settings, trip editor defaults, the Billing tab's `billing-workflow-v1`, the Route tab's and Locations page's `yard-location-v1`, `geoapify-key-v1` and `route-times-v1`, and rux-ui's `mapbox-token-v1` | Settings |
 | `notifications`, `notification_reads` | header bell | old app's notification job; unchanged |
 | `trip_itineraries` | Itineraries, deferred | intake, deferred |
 

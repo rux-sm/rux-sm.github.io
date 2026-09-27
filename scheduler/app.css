@@ -3483,6 +3483,20 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-types__error:empty { display: none; }
 /* The Follow-ups box's error, hidden while it has nothing to say. */
 .scheduler-follow-error:empty { display: none; }
+/* The Route times box's error, in the error's colour, hidden while empty. */
+.scheduler-routetimes-error {
+  color: var(--rux-text-error);
+  font-size: var(--rux-helper-text-01-font-size);
+  line-height: var(--rux-helper-text-01-line-height);
+}
+.scheduler-routetimes-error:empty { display: none; }
+/* The route times under the Stops list, and the link that changes them. */
+.scheduler-route-times {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: var(--rux-spacing-03);
+}
 /* The Email thread box's error, the same way. */
 .scheduler-thread-error:empty { display: none; }
 /* A follow-up in the Trips list reads in the warning's own words, not its colour. */

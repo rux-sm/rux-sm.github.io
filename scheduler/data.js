@@ -515,7 +515,7 @@
          the Geoapify key the Route tab finds places and drives with. A
          refused read keeps what was there, as rux-ui does. */
       client.from('settings').select('key,value')
-        .in('key', ['billing-workflow-v1', 'yard-location-v1', 'geoapify-key-v1', 'requirements-v1', 'vehicle-types-v1',
+        .in('key', ['billing-workflow-v1', 'yard-location-v1', 'geoapify-key-v1', 'route-times-v1', 'requirements-v1', 'vehicle-types-v1',
           'follow-up-v1'])
         .then(r => {
           if (r.error) return;
@@ -524,6 +524,7 @@
           const yard = byKey.get('yard-location-v1');
           if (yard?.lat != null && yard?.lng != null) yardPlace = yard;
           window.SchedulerPlaces.use(byKey.get('geoapify-key-v1'), yardPlace);
+          setRouteTimes(byKey.get('route-times-v1'));
           setRequirementList(byKey.get('requirements-v1'));
           window.SchedulerVehicles?.set(byKey.get('vehicle-types-v1'));
           setFollowUp(byKey.get('follow-up-v1'));
@@ -4595,6 +4596,44 @@
   let stopDone = null;
   document.getElementById('scheduler-stop-done')?.addEventListener('click', () => stopDone?.());
 
+  /* The route times, one settings row for every trip, each a choice of
+     minutes; a value saved outside the choices is offered as well. */
+  const MINUTE_CHOICES = [0, 5, 10, 15, 20, 25, 30, 45, 60];
+  function openRouteTimes() {
+    const host = document.getElementById('scheduler-routetimes-fields');
+    if (!host) return;
+    const choices = now => [...new Set([...MINUTE_CHOICES, now])].sort((a, b) => a - b)
+      .map(n => [String(n), n ? `${n} min` : 'None']);
+    const grid = el('div', 'rux--stack-vertical rux--stack-scale-6');
+    grid.append(
+      selectField('scheduler-f-rtspot', 'Spot at the pickup before departure', String(routeTimes.spot), choices(routeTimes.spot)),
+      selectField('scheduler-f-rtpre', 'Pre-trip at the yard, before the bus leaves', String(routeTimes.pre), choices(routeTimes.pre)),
+      selectField('scheduler-f-rtpost', 'Post-trip at the yard, after the bus is back', String(routeTimes.post), choices(routeTimes.post)),
+    );
+    host.replaceChildren(grid);
+    document.getElementById('scheduler-routetimes-error').textContent = '';
+    window.Rux?.modal?.open?.('scheduler-routetimes-modal');
+  }
+  document.getElementById('scheduler-routetimes-save')?.addEventListener('click', async () => {
+    const button = document.getElementById('scheduler-routetimes-save');
+    const num = id => Number(document.getElementById(id)?.value);
+    const value = { spot_minutes: num('scheduler-f-rtspot'), pre_trip_minutes: num('scheduler-f-rtpre'),
+                    post_trip_minutes: num('scheduler-f-rtpost') };
+    button.disabled = true;
+    try {
+      const { error } = await withTimeout(client.from('settings')
+        .upsert({ key: 'route-times-v1', value }, { onConflict: 'key' }).then(r => r));
+      if (error) throw error;
+      setRouteTimes(value);
+      window.Rux?.modal?.close?.('scheduler-routetimes-modal');
+      routeTimesDrawn?.();
+    } catch {
+      document.getElementById('scheduler-routetimes-error').textContent = "The route times didn't save. Try again.";
+    } finally {
+      button.disabled = false;
+    }
+  });
+
   let linePending = [];
   let redrawLines = () => {};
   let lineEditing = null;
@@ -4988,6 +5027,21 @@
      trip ends somewhere else, the last `stop` before the return, which may be
      the first. Every other stop, rux-ui's itinerary, is left as it is. */
   let yardPlace = null;     // `yard-location-v1`: { name, address, lat, lng }
+
+  /* The office's `route-times-v1`: how long before the group leaves the bus is
+     spotted at the pickup, and the pre-trip and post-trip time at the yard
+     that on duty adds before the bus leaves and after it is back, in minutes.
+     Either yard time may be 0. */
+  const ROUTE_TIMES = { spot: 15, pre: 0, post: 0 };
+  let routeTimes = { ...ROUTE_TIMES };
+  const minutesOr = (v, d) => (Number.isFinite(Number(v)) && Number(v) >= 0 && v !== null && v !== '' ? Math.round(Number(v)) : d);
+  function setRouteTimes(v) {
+    routeTimes = { spot: minutesOr(v?.spot_minutes, ROUTE_TIMES.spot),
+                   pre: minutesOr(v?.pre_trip_minutes, ROUTE_TIMES.pre),
+                   post: minutesOr(v?.post_trip_minutes, ROUTE_TIMES.post) };
+  }
+  // The open Route tab's redraw, for a change to the route times.
+  let routeTimesDrawn = null;
 
   // Minutes after midnight, and back, wrapping round the clock.
   const toMin = t => {
@@ -5945,8 +5999,6 @@
       const val = id => document.getElementById(id)?.value.trim() || '';
       const setVal = (id, value) => { const input = document.getElementById(id); if (input) input.value = value ?? ''; };
 
-      // The bus is spotted a fixed fifteen minutes before the group leaves.
-      const PADDING = 15;
 
       /* The worked-out times are not fields: they are kept in hidden inputs,
          which `routeWanted` reads, and said in the summary's tooltip. */
@@ -5964,7 +6016,7 @@
       };
       const recalcSpot = () => {
         const leave = toMin(val('scheduler-f-leave'));
-        setVal('scheduler-f-spot', leave == null ? '' : fromMin(leave - PADDING));
+        setVal('scheduler-f-spot', leave == null ? '' : fromMin(leave - routeTimes.spot));
         recalcYard();
       };
       const recalcReturn = () => {
@@ -6206,7 +6258,22 @@
       // A leg with no rows yet has nowhere to put a stop until it is saved.
       const canList = !!(r.pickup && r.back);
       const listNote = note(canList ? '' : 'Save the trip once, then add its stops here.');
-      stopsBody.append(stopsList.list, listNote);
+      /* The route times the figures use, under the list, with the control
+         that changes them for every trip. */
+      const timesLine = el('p', 'rux--form__helper-text scheduler-route-times');
+      const timesWords = el('span');
+      const timesEdit = el('button', 'rux--link rux--link--sm', 'Change');
+      timesEdit.type = 'button';
+      timesEdit.addEventListener('click', openRouteTimes);
+      timesLine.append(timesWords, timesEdit);
+      const drawTimesLine = () => {
+        const { spot, pre, post } = routeTimes;
+        timesWords.textContent = `Spot ${spot} min before departure · Pre-trip ${pre} min · Post-trip ${post} min`;
+      };
+      drawTimesLine();
+      // A new spot time applies when Departs is next typed; the figures redraw now.
+      routeTimesDrawn = () => { drawTimesLine(); drawTotals(); };
+      stopsBody.append(stopsList.list, listNote, timesLine);
 
       const waitOf = st => {
         const got = toMin(st.arrive), left = toMin(st.leave);
@@ -6524,6 +6591,7 @@
         const out = toMin(val('scheduler-f-depart')), home = toMin(val('scheduler-f-return'));
         let span = out != null && home != null ? home - out : null;
         if (span != null && span < 0) span += 1440;
+        if (span != null) span += routeTimes.pre + routeTimes.post;
         const rest = r.list.reduce((n, st) => n + (st.dwell && st.dwell !== 'on' ? waitOf(st) ?? 0 : 0), 0);
         const { from, to } = routeDates(r.leg);
         // Over more than one day the yard-to-yard span is the days', not a clock's.
@@ -6543,11 +6611,11 @@
           ...(d === last ? [...(dropCounts() ? [[r.dropDrive, r.dropMiles]] : []), [r.backDrive, r.backMiles]] : [])];
         const times = [];
         const put = (t, less = 0) => { const m = toMin(t); if (m != null) times.push(m - less); };
-        if (d === first) { put(val('scheduler-f-depart')); put(val('scheduler-f-spot')); put(val('scheduler-f-leave')); }
+        if (d === first) { put(val('scheduler-f-depart'), routeTimes.pre); put(val('scheduler-f-spot')); put(val('scheduler-f-leave')); }
         else if (mine[0]) put(mine[0].arrive, mine[0].drive ?? 0);
         else if (d === last) put(val('scheduler-f-endtrip'), r.dropDrive ?? 0);
         for (const st of mine) { put(st.arrive); put(st.leave); }
-        if (d === last) { put(val('scheduler-f-endtrip')); put(val('scheduler-f-return')); }
+        if (d === last) { put(val('scheduler-f-endtrip')); put(val('scheduler-f-return'), -routeTimes.post); }
         // A time earlier than the one before it is past midnight.
         let roll = 0;
         const run = [];

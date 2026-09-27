@@ -5129,10 +5129,14 @@
   ].filter(Boolean).join(' · ');
   const numOrNull = v => (v === null || v === undefined || v === '' ? null : Number(v));
   const dayAfter = (d, n) => (d ? iso(addDays(parseISO(d), n)) : null);
-  /* The day a stop is left: the day it is reached, or the next when it is
-     left at an earlier time than it was reached, a night spent there. */
+  /* The day a stop is left: the day picked for it when that is after the day
+     it is reached, a stay of nights; otherwise the day it is reached, or the
+     next when it is left at an earlier time than it was reached, one night
+     spent there. A saved day no later than the arrival is read the same way,
+     which puts right a morning saved under the night before. */
   const leaveDayOf = (st, from) => {
     const d = st.date ?? from;
+    if (d && st.leaveDate && st.leaveDate > d) return st.leaveDate;
     return d && st.arrive && st.leave && toMin(st.leave) < toMin(st.arrive) ? dayAfter(d, 1) : d;
   };
 
@@ -6356,6 +6360,8 @@
         id: String(st.id), open: st, place: placeOf(st), placeChanged: false,
         arrive: hhmmOrNull(st.arrive), leave: hhmmOrNull((r.middleOpen[i + 1] ?? r.dropRow)?.depart_prev),
         date: st.arrive_date ?? st.depart_prev_date ?? null,
+        // The day it is left is kept with the departure, on the row after it.
+        leaveDate: (r.middleOpen[i + 1] ?? r.dropRow)?.depart_prev_date ?? null,
         dwell: st.dwell_status ?? null, drive: driveMin(st.drive), miles: numOrNull(st.miles), driveChanged: false,
       }));
       r.listTouched = false;
@@ -6393,11 +6399,17 @@
       routeTimesDrawn = () => drawTotals();
       stopsBody.append(stopsList.list, listNote);
 
-      // A stop left at an earlier time than it was reached is left the next day.
+      // A wait runs from the arrival to the leave on the day each falls, which
+      // may be the next day or, for a stay of nights, a later one.
       const waitOf = st => {
         const got = toMin(st.arrive), left = toMin(st.leave);
-        if (got == null || left == null || left === got) return null;
-        return left > got ? left - got : left + 1440 - got;
+        if (got == null || left == null) return null;
+        const { from } = routeDates(r.leg);
+        const d = st.date ?? from;
+        if (!d) return left > got ? left - got : left < got ? left + 1440 - got : null;
+        const days = Math.round((parseISO(leaveDayOf(st, from)) - parseISO(d)) / 864e5);
+        const span = days * 1440 + left - got;
+        return span > 0 ? span : null;
       };
       /* A stop with no point on the map, a restroom break on the road, is
          passed over: the drive is measured from the place before it to the
@@ -6476,7 +6488,11 @@
         // A stop's number, counted down the list from 1 across every day.
         const rowFor = (st, i, n) => {
           const name = st.place?.name || st.place?.address || 'Stop';
-          const much = st.arrive && st.leave ? `${clock(st.arrive)} – ${clock(st.leave)}`
+          // A leave on a later day than the arrival carries its weekday.
+          const leaveDay = leaveDayOf(st, routeDates(r.leg).from);
+          const leaveWord = st.leave && leaveDay && leaveDay !== (st.date ?? routeDates(r.leg).from)
+            ? `${parseISO(leaveDay).toLocaleDateString(undefined, { weekday: 'short' })} ${clock(st.leave)}` : clock(st.leave);
+          const much = st.arrive && st.leave ? `${clock(st.arrive)} – ${leaveWord}`
             : st.arrive ? clock(st.arrive) : st.leave ? `leaves ${clock(st.leave)}` : 'No times';
           const wait = waitOf(st);
           const drove = driveWords(st.drive, st.miles);
@@ -6674,18 +6690,45 @@
         name.querySelector('input').addEventListener('input', e => { whereInput.value = e.target.value; });
         const days = [];
         for (let d = from; d && to && d <= to && days.length < 31; d = dayAfter(d, 1)) days.push(d);
-        const day = days.length > 1
-          ? selectField('scheduler-f-stopday', 'Day', st.date ?? from, days.map((d, n) =>
-            [d, `Day ${n + 1} · ${parseISO(d).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}`]))
-          : null;
-        day?.classList.add('scheduler-dialog-grid__wide');
-        const arrive = timeField('scheduler-f-stoparrive', 'Arrives', st.arrive);
-        const leaveAt = timeField('scheduler-f-stopleave', 'Leaves', st.leave);
+        /* On a leg of more than one day each time has its day beside it,
+           Arrives and Leaves each a day and a time, the way an itinerary reads.
+           The leave's day starts as the arrival's, or the next when the leave
+           is earlier, and is moved for a stay of nights; it never falls before
+           the arrival's. A one-day leg asks only the two times. */
+        const dayOptions = days.map((d, n) =>
+          [d, `Day ${n + 1} · ${parseISO(d).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}`]);
+        const multi = days.length > 1;
+        const arriveDay = multi ? selectField('scheduler-f-stopday', 'Arrives', st.date ?? from, dayOptions) : null;
+        const leaveDay = multi ? selectField('scheduler-f-stopleaveday', 'Leaves', leaveDayOf(st, from) ?? from, dayOptions) : null;
+        const arrive = timeField('scheduler-f-stoparrive', multi ? '\u00a0' : 'Arrives', st.arrive);
+        const leaveAt = timeField('scheduler-f-stopleave', multi ? '\u00a0' : 'Leaves', st.leave);
+        if (multi) {
+          arrive.querySelector('input').setAttribute('aria-label', 'Arrival time');
+          leaveAt.querySelector('input').setAttribute('aria-label', 'Leave time');
+        }
         const dwell = selectField('scheduler-f-stopdwell', 'The wait counts as', st.dwell ?? 'on',
           [['on', 'On duty'], ['off', 'Off duty'], ['sleeper', 'Sleeper berth']]);
         dwell.classList.add('scheduler-dialog-grid__wide');
-        grid.append(where, name, ...(day ? [day] : []), arrive, leaveAt, dwell);
+        grid.append(where, name, ...(multi ? [arriveDay, arrive, leaveDay, leaveAt] : [arrive, leaveAt]), dwell);
         host.replaceChildren(grid);
+        if (multi) {
+          const aDay = document.getElementById('scheduler-f-stopday');
+          const lDay = document.getElementById('scheduler-f-stopleaveday');
+          const aTime = document.getElementById('scheduler-f-stoparrive');
+          const lTime = document.getElementById('scheduler-f-stopleave');
+          let lDayPicked = !!(st.leaveDate && st.date && st.leaveDate > st.date);
+          lDay.addEventListener('change', () => { lDayPicked = true; });
+          // Until a leave day is picked, it follows the arrival and the two times.
+          const follow = () => {
+            const d = aDay.value;
+            if (!lDayPicked) {
+              const a = toMin(aTime.value), l = toMin(lTime.value);
+              lDay.value = a != null && l != null && l < a ? (dayAfter(d, 1) <= to ? dayAfter(d, 1) : d) : d;
+            } else if (lDay.value < d) lDay.value = d;
+          };
+          for (const input of [aDay, aTime, lTime]) input.addEventListener('input', follow);
+          aDay.addEventListener('change', follow);
+        }
 
         stopDone = () => {
           // Words left in the search and not picked name a stop with no location.
@@ -6706,6 +6749,7 @@
             arrive: val('scheduler-f-stoparrive') || null,
             leave: val('scheduler-f-stopleave') || null,
             date: document.getElementById('scheduler-f-stopday')?.value || st.date || from,
+            leaveDate: document.getElementById('scheduler-f-stopleaveday')?.value || null,
             dwell: document.getElementById('scheduler-f-stopdwell')?.value || null,
           };
           if (index === null) r.list.push(next); else r.list[index] = next;
@@ -6724,12 +6768,11 @@
         window.Rux?.modal?.open?.('scheduler-stop-modal');
       }
 
-      /* The trip's totals, one grey line. Miles and driving are every leg's:
-         the yard's two as the tab has them now, and each stop's. On duty is
-         the span from pre-trip to post-trip, shown whole and in brackets less
-         the waits the driver is off the clock for, which is the passenger rule's
-         own sum and says whether the trip may be run. A leg with no drive is named rather than left out of the sum, so
-         the total never reads as though the driver had hours in hand. */
+      /* The trip's figures. Miles and drive are every leg's: the yard's two as
+         the tab has them now, and each stop's. On duty is the span from
+         pre-trip to post-trip, and less rest is that less the waits the driver
+         is off the clock for, the passenger rule's own sum. A leg with no
+         drive leaves Drive blank rather than a sum that reads short. */
       const hm = n => {
         const h = Math.floor(n / 60), m = Math.round(n % 60);
         if (!h) return `${m} min`;

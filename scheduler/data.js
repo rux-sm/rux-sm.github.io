@@ -5959,6 +5959,10 @@
         return `${(Math.floor(m / 60) % 12) || 12}:${String(m % 60).padStart(2, '0')} ${m < 720 ? 'AM' : 'PM'}`;
       };
       let busSaid = '';
+      /* Whether the tab shows the group let off where it was picked up: a
+         round trip whose drop-off is its pickup. A one-way or split leg always
+         ends elsewhere, even while neither place is filled in. */
+      const letOffAtPickup = () => document.getElementById('scheduler-f-type')?.value === 'round_trip' && routeRound();
       const drawTimeline = () => {
         const yard = val('scheduler-f-depart'), spot = val('scheduler-f-spot'), home = val('scheduler-f-return');
         const outWords = driveWords(r.driveOut, r.driveMiles);
@@ -5972,7 +5976,7 @@
         const day = to && from && to !== from
           ? ` · ${parseISO(to).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}` : '';
         const backLabel = document.querySelector('label[for="scheduler-f-endtrip"]');
-        if (backLabel) backLabel.textContent = `${routeRound() ? 'Returns' : 'Arrives'}${day}`;
+        if (backLabel) backLabel.textContent = `${letOffAtPickup() ? 'Returns' : 'Arrives'}${day}`;
         drawTotals();
       };
 
@@ -6127,7 +6131,7 @@
         pair(timeField('scheduler-f-leave', 'Departs', r.first?.depart_prev),
           timeField('scheduler-f-endtrip', 'Returns', r.back?.depart_prev)),
       );
-      showDrop(!routeRound());
+      showDrop(!letOffAtPickup());
 
       // The section is a group named by its title, as Trip contacts is.
       const routeBox = el('div', 'scheduler-panel-section');
@@ -6433,7 +6437,10 @@
       });
       // The summary and the time's label follow every field, after the handlers above.
       fields.addEventListener('input', drawTimeline);
-      document.getElementById('scheduler-f-type')?.addEventListener('change', drawTimeline);
+      document.getElementById('scheduler-f-type')?.addEventListener('change', () => {
+        if (!dropBox.hidden !== !letOffAtPickup()) showDrop(!letOffAtPickup());
+        drawTimeline();
+      });
     }
 
     /* ── Billing ── */

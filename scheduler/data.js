@@ -6563,8 +6563,8 @@
 
       /* The trip's totals, one grey line. Miles and driving are every leg's:
          the yard's two as the tab has them now, and each stop's. On duty is
-         the span from pre-trip to post-trip, shown whole and then less the
-         waits the driver is off the clock for, which is the passenger rule's
+         the span from pre-trip to post-trip, shown whole and in brackets less
+         the waits the driver is off the clock for, which is the passenger rule's
          own sum and says whether the trip may be run. A leg with no drive is named rather than left out of the sum, so
          the total never reads as though the driver had hours in hand. */
       const hm = n => {
@@ -6582,9 +6582,9 @@
           miles ? `${Math.round(miles)} mi` : null,
           short ? `${short === 1 ? 'one leg' : `${short} legs`} not measured`
                 : `${hm(known.reduce((n, [m]) => n + m, 0))} driving`,
-          // On duty as the clock runs, then less the waits off duty or in the sleeper.
-          span == null ? null : `${hm(span)} on duty`,
-          span == null ? null : `${hm(span - rest)} less rest`,
+          // On duty as the clock runs, and in brackets less the waits off duty or
+          // in the sleeper berth, when there are any.
+          span == null ? null : `${hm(span)} on duty${rest ? ` (${hm(span - rest)})` : ''}`,
         ].filter(Boolean).join(' · ');
       };
       // Each figure is kept whole, so a narrow panel wraps between figures.

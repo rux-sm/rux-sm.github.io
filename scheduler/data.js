@@ -5213,7 +5213,7 @@
       arrive: st.arrive, arrive_date: st.arrive ? st.date ?? from : null,
       depart_prev: departs[i], depart_prev_date: departDays[i],
       dwell_status: st.dwell || null,
-      ...(st.driveChanged || !st.id ? drives(st.drive, st.miles) : {}),
+      ...(st.driveChanged || st.found || !st.id ? drives(st.drive, st.miles) : {}),
     });
     const needDrop = !round || !!(list.length && list.at(-1).leave);
     const dropWant = () => ({
@@ -5284,6 +5284,20 @@
              work: !!(updates.length || inserts.length || deletes.length) };
   }
 
+  /* The drives looked up when the trip opened, for a Save that leaves the
+     list untouched: each on its stop's row, and the drive to the drop-off on
+     the drop-off row when the leg has one. `changed` never sees them, so they
+     wait for a Save made for something else. */
+  function foundDrives() {
+    const r = editing?.route;
+    if (!r || r.listTouched) return [];
+    const cols = (min, miles) => ({ drive: driveText(min), miles, drive_source: 'estimated', miles_source: 'estimated' });
+    const out = (r.list || []).filter(st => st.found && st.id && st.drive != null)
+      .map(st => ({ id: st.id, patch: cols(st.drive, st.miles) }));
+    if (r.dropFound && r.dropRow?.id && r.dropDrive != null) out.push({ id: r.dropRow.id, patch: cols(r.dropDrive, r.dropMiles) });
+    return out;
+  }
+
   /* Writes the plan. A new row takes its place by moving the rows at and
      after it one down, since rux-ui orders a trip's stops by `position`
      across both legs. A list plan names every row's place itself. */
@@ -5304,7 +5318,7 @@
       return;
     }
     const { updates, inserts } = planned;
-    for (const u of updates) {
+    for (const u of [...updates, ...foundDrives()]) {
       await write('its route', client.from('trip_stops').update(u.patch).eq('id', u.id));
     }
     const rows = (r?.all ?? []).map(x => ({ ...x }));
@@ -6328,6 +6342,35 @@
         refreshDirty();
       }
 
+      /* Every leg of the list with a place at both ends and no drive yet is
+         looked up when the trip opens, and drawn at once. It is marked
+         `found`, not changed, so opening a trip is still no edit: the next
+         Save stores it with whatever else it writes. The yard's two legs are
+         left alone, because they move the yard times the tab works out. */
+      async function fillMissingDrives() {
+        let prev = r.pickupPlace;
+        let got = false;
+        for (const st of r.list) {
+          if (st.drive == null && prev?.lat != null && st.place?.lat != null) {
+            try {
+              const d = await driveBetween(prev, st.place);
+              if (editing?.route !== r) return;
+              if (d && st.drive == null) { Object.assign(st, { drive: d.min, miles: d.miles, found: true }); got = true; }
+            } catch { /* the leg stays not measured */ }
+          }
+          prev = st.place;
+        }
+        const to = routeRound() ? r.pickupPlace : r.dropPlace;
+        if (r.list.length && dropCounts() && r.dropDrive == null && prev?.lat != null && to?.lat != null) {
+          try {
+            const d = await driveBetween(prev, to);
+            if (editing?.route !== r) return;
+            if (d && r.dropDrive == null) { r.dropDrive = d.min; r.dropMiles = d.miles; r.dropFound = true; got = true; }
+          } catch { /* the leg stays not measured */ }
+        }
+        if (got) drawStops();
+      }
+
       /* One stop, edited in a dialog as a quote line is: where, which day on a
          trip of more than one, when the group gets there and leaves, and what
          the wait counts as. */
@@ -6476,6 +6519,7 @@
       );
       drawStops();
       drawTimeline();
+      fillMissingDrives();
 
       document.getElementById('scheduler-f-leave')?.addEventListener('input', recalcSpot);
       document.getElementById('scheduler-f-endtrip')?.addEventListener('input', recalcReturn);

@@ -335,7 +335,7 @@
         : cell('Spot time', clock(stop?.spot || trip.spot_time || trip.departure_time)),
     ));
 
-    frag.appendChild(row(cell('Pick up address', shortAddress(stop?.address))));
+    frag.appendChild(row(cell('Pickup address', shortAddress(stop?.address))));
     return frag;
   }
 

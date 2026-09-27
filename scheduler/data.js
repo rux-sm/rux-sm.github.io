@@ -2570,7 +2570,7 @@
       const tiles = el('div', 'rux--stack-vertical rux--stack-scale-5');
       buses.forEach((b, i) => tiles.appendChild(busGroup(leg, b, i, buses.length, dups)));
       body.appendChild(tiles);
-      const title = !split ? 'Buses' : leg === 'outbound' ? 'Drop-off buses' : 'Pick-up buses';
+      const title = !split ? 'Buses' : leg === 'outbound' ? 'Drop-off buses' : 'Pickup buses';
       const sec = section(title, body, assignBestButton(leg));
       sec.dataset.fleetSection = leg;
       sec.hidden = leg === 'return' && !split;
@@ -5539,13 +5539,13 @@
        so `legsOf` draws it as a second bar; it shows only for a split. */
     const returnDates = el('div', 'scheduler-panel-return-dates');
     returnDates.appendChild(dateRange(
-      'scheduler-f-rstart', 'scheduler-f-rend', 'Pick-up start', 'Pick-up end',
+      'scheduler-f-rstart', 'scheduler-f-rend', 'Pickup start', 'Pickup end',
       trip.return_start_date, trip.return_end_date || trip.return_start_date));
     returnDates.hidden = trip.trip_type !== SPLIT;
 
     /* The ranges name their own legs. The outbound range shows for every type,
        so it reads Drop-off only while a split is selected; the return pair
-       shows only for a split and keeps its Pick-up labels. */
+       shows only for a split and keeps its Pickup labels. */
     /* One Dates label over the pair, the end's own label left blank to keep
        the two boxes level, and each box named for a screen reader. A split
        names both, since its return pair is two more. */
@@ -5624,7 +5624,7 @@
       return row;
     };
     const hotelOut = hotelLeg('outbound', 'Hotel confirmation');
-    const hotelBack = hotelLeg('return', 'Pick-up hotel confirmation');
+    const hotelBack = hotelLeg('return', 'Pickup hotel confirmation');
     const hotelBox = el('div', 'rux--stack-vertical rux--stack-scale-5 scheduler-hotel');
     hotelBox.append(hotelOut, hotelBack);
     // A split trip's first hotel is the drop-off's, and its second row shows.
@@ -5640,7 +5640,7 @@
     /* The trip's own fields are one stack, 16px apart. Destination has Type
        beside it, a short menu a third of the row, so the split type is named
        "Split" there, which a third fits; the date labels still say Drop-off
-       and Pick-up. The trip bar's
+       and Pickup. The trip bar's
        colour is picked from the panel head's Trip actions menu, as from the
        bar's own: it is seldom changed and the bar itself shows it, so its
        field stays in the page, hidden, for Save to read. The tab is
@@ -6133,9 +6133,12 @@
       );
       showDrop(!letOffAtPickup());
 
-      // The section is a group named by its title, as Trip contacts is.
+      /* The section is a group named by its title, as Trip contacts is. A
+         split trip's two legs are named for what each does, as its dates and
+         buses are; every other trip's is named for where it starts. */
       const routeBox = el('div', 'scheduler-panel-section');
-      const routeTitle = el('div', 'scheduler-panel-section__title', r.leg === 'return' ? 'Pick-up leg' : 'Pickup');
+      const routeHeading = () => !splitNow() ? 'Pickup' : r.leg === 'return' ? 'Pickup leg' : 'Drop-off leg';
+      const routeTitle = el('div', 'scheduler-panel-section__title', routeHeading());
       routeTitle.id = 'scheduler-f-routegroup';
       const routeGroup = el('div');
       routeGroup.setAttribute('role', 'group');
@@ -6439,6 +6442,7 @@
       fields.addEventListener('input', drawTimeline);
       document.getElementById('scheduler-f-type')?.addEventListener('change', () => {
         if (!dropBox.hidden !== !letOffAtPickup()) showDrop(!letOffAtPickup());
+        routeTitle.textContent = routeHeading();
         drawTimeline();
       });
     }
@@ -9021,7 +9025,7 @@
       const id = `scheduler-suggest-${row.key}`;
       const li = el('li', 'scheduler-suggest__row');
       const where = [
-        row.split ? (row.leg.leg === 'return' ? 'Pick-up' : 'Drop-off') : null,
+        row.split ? (row.leg.leg === 'return' ? 'Pickup' : 'Drop-off') : null,
         row.assign.bus_id ? histBusName(row.assign.bus_id) : 'No bus yet',
       ].filter(Boolean).join(' · ');
       const check = checkField(id, `${row.trip.destination || 'Trip'} · ${suggestDates(row.leg)} · ${where}`, row.ticked && !!row.pick);

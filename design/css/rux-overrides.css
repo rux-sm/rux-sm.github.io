@@ -131,6 +131,15 @@
   }
 }
 
+/* A TOGGLE'S FOCUS RING STANDS 2PX OFF THE SWITCH. Carbon's 1px gap rounds
+   away along the switch's flat top and bottom at a browser zoom under 100%,
+   and the ring reads as cut off there while its ends still show the gap.
+   Carbon's two selectors, so its specificity. */
+.rux--toggle__button:focus + .rux--toggle__label .rux--toggle__switch::after,
+.rux--toggle:not(.rux--toggle--disabled):active .rux--toggle__switch::after {
+  outline-offset: 2px;
+}
+
 /* A SIDE-NAV ROW IS 44PX TO A FINGER. Carbon draws a link and a submenu
    button 32px tall, and the rows are stacked edge to edge, so the hit area
    cannot grow invisibly the way a toggle's does: on a touch screen the row

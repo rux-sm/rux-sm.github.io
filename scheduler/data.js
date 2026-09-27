@@ -7819,6 +7819,13 @@
   gridEl.addEventListener('keydown', e => {
     if (e.key === 'Enter' && e.target.matches?.('.scheduler-bar[aria-pressed="true"]')) openSelected();
   });
+  // A double-click on a trip opens it, as Enter does; its first click selected it.
+  gridEl.addEventListener('dblclick', e => {
+    const bar = e.target.closest('.scheduler-bar[data-trip-id]');
+    if (!bar || bar !== selectedBar()) return;
+    window.getSelection?.()?.removeAllRanges();
+    openSelected();
+  });
 
   // Every selection change, from a click, a key or a script, lands here.
   new MutationObserver(syncSelection).observe(gridEl, { subtree: true, attributes: true, attributeFilter: ['aria-pressed'] });
@@ -11213,6 +11220,7 @@
     if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }
     whenSafe(() => openCreate());
   });
+  document.getElementById('scheduler-new-trip')?.addEventListener('click', () => whenSafe(() => openCreate()));
   document.getElementById('scheduler-panel-close')?.addEventListener('click', () => whenSafe(() => closePanel()));
 
   /* THE EDITOR'S TWO SIZES. The size button swaps Carbon's medium panel for its

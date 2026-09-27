@@ -3,13 +3,14 @@
 //
 // A bar is a role=button whose aria-pressed is the selection; no class mirrors
 // it. A click or Space toggles it. Enter only selects, because data.js takes
-// Enter on a selected bar as "open this trip".
+// Enter on a selected bar as "open this trip", and so does a double-click, whose
+// second click leaves the bar selected rather than toggling it back off.
 (() => {
   'use strict';
 
   document.addEventListener('click', e => {
     const bar = e.target.closest('.scheduler-bar');
-    if (!bar) return;
+    if (!bar || e.detail > 1) return;
     const on = bar.getAttribute('aria-pressed') === 'true';
     for (const b of document.querySelectorAll('.scheduler-bar[aria-pressed="true"]')) b.setAttribute('aria-pressed', 'false');
     bar.setAttribute('aria-pressed', on ? 'false' : 'true');

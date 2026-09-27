@@ -173,8 +173,9 @@ same size selected or not.
 ### Selecting is not opening
 
 A click selects a trip bar: its outline, and its days in the driver grid. The
-Open trip slot on the selected bar's shortcut bar, Enter or the bar's
-right-click menu loads it into the panel. The shortcut bar floats clear of the
+Open trip slot on the selected bar's shortcut bar, a double-click, Enter or
+the bar's right-click menu loads it into the panel. New trip is a + in the
+toolbar, and a row of its overflow menu where the toolbar has no room. The shortcut bar floats clear of the
 trip, placed the way a tooltip is: above it where there is room, below it where
 the day band is in the way, and slid back inside the board at either edge with
 its arrow still pointing at the trip. Nothing is taken from the trip, so the

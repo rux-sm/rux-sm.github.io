@@ -396,13 +396,16 @@
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md scheduler-toolbar__lg-only" id="scheduler-today">Today</button>
             
             
+          <!-- New trip is a toolbar button where the toolbar has room for it,
+               and the overflow menu's first row where it has not. -->
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__new" id="scheduler-new-trip" aria-label="New trip" title="New trip"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg></button>
           <!-- Named "Driver availability", like the pane's own head, so one
                control has one name. It stays in the toolbar on a phone, where
                the week label shortens to make room for it. -->
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-avail-toggle" aria-pressed="false" aria-label="Driver availability"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-person-fill"/></svg></button>
-            <!-- The overflow menu (#scheduler-view-menu): New trip at every
-                 width, Today below md, then the options for how the board
-                 draws. -->
+            <!-- The overflow menu (#scheduler-view-menu): New trip where its
+                 toolbar button hides, Today below md, then the options for how
+                 the board draws. -->
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-view-trigger" aria-label="More" aria-haspopup="menu" aria-expanded="false"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-more_vert"/></svg></button>
           </div>
             <!-- The loading skeleton: the corner, seven day cells and ten rows of
@@ -706,8 +709,8 @@
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items" id="scheduler-view-menu" role="menu" tabindex="-1" hidden>
     <!-- New trip opens a blank editor. Right-clicking or holding an empty cell
          prefills the bus and the day, but the Unassigned row hides when it is
-         empty, so this item stays. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-menu-new-trip">
+         empty, so this item stays wherever the toolbar's button does not. -->
+    <li class="rux--menu-item scheduler-menu-item--new" role="menuitem" tabindex="0" id="scheduler-menu-new-trip">
       <!-- An empty selection slot. In a menu with selectable items every row
            keeps the checkmark column, or its label lands in that column and
            truncates. -->

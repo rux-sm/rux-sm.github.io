@@ -6262,7 +6262,7 @@
          that changes them for every trip. */
       const timesLine = el('p', 'rux--form__helper-text scheduler-route-times');
       const timesWords = el('span');
-      const timesEdit = el('button', 'rux--link rux--link--sm', 'Change');
+      const timesEdit = el('button', 'rux--link rux--link--sm scheduler-route-open', 'Change');
       timesEdit.type = 'button';
       timesEdit.addEventListener('click', openRouteTimes);
       timesLine.append(timesWords, timesEdit);
@@ -6562,10 +6562,10 @@
       }
 
       /* The trip's totals, one grey line. Miles and driving are every leg's:
-         the yard's two as the tab has them now, and each stop's; on duty is
-         the yard-to-yard span less the waits the driver is off the clock for,
-         which is the passenger rule's own sum and says whether the trip may be
-         run. A leg with no drive is named rather than left out of the sum, so
+         the yard's two as the tab has them now, and each stop's. On duty is
+         the span from pre-trip to post-trip, shown whole and then less the
+         waits the driver is off the clock for, which is the passenger rule's
+         own sum and says whether the trip may be run. A leg with no drive is named rather than left out of the sum, so
          the total never reads as though the driver had hours in hand. */
       const hm = n => {
         const h = Math.floor(n / 60), m = Math.round(n % 60);
@@ -6582,8 +6582,15 @@
           miles ? `${Math.round(miles)} mi` : null,
           short ? `${short === 1 ? 'one leg' : `${short} legs`} not measured`
                 : `${hm(known.reduce((n, [m]) => n + m, 0))} driving`,
-          span == null ? null : `${hm(span - rest)} on duty`,
+          // On duty as the clock runs, then less the waits off duty or in the sleeper.
+          span == null ? null : `${hm(span)} on duty`,
+          span == null ? null : `${hm(span - rest)} less rest`,
         ].filter(Boolean).join(' · ');
+      };
+      // Each figure is kept whole, so a narrow panel wraps between figures.
+      const showFigures = (node, text) => {
+        node.replaceChildren(...text.split(' · ').flatMap((part, i) =>
+          [...(i ? [' · '] : []), el('span', 'scheduler-route-figure', part)]));
       };
       function drawTotals() {
         const legs = [[r.driveOut, r.driveMiles], ...legStops().map(st => [st.drive, st.miles]),
@@ -6596,9 +6603,9 @@
         const { from, to } = routeDates(r.leg);
         // Over more than one day the yard-to-yard span is the days', not a clock's.
         if (span != null && from && to && to > from) span = null;
-        summary.textContent = figures(legs, span, rest);
+        showFigures(summary, figures(legs, span, rest));
         summary.title = [busSaid, rest ? `${hm(rest)} off the clock` : null].filter(Boolean).join(' · ');
-        for (const [d, el2] of daySums) el2.textContent = dayFigures(d, daySums[0][0], daySums.at(-1)[0]);
+        for (const [d, el2] of daySums) showFigures(el2, dayFigures(d, daySums[0][0], daySums.at(-1)[0]));
       }
 
       /* One day's figures: the legs that end that day, the yard's leg out on

@@ -1592,12 +1592,14 @@ button.scheduler-row-head__num::after {
    add a row. The icon leads the words and both sit in the middle, so
    Carbon's trailing icon is taken back into the row. Its corners follow the theme's
    surfaces, square in Carbon's themes, and a hover turns the edge and the
-   words to the link colour over Carbon's ghost hover fill. */
+   words to the link colour over Carbon's ghost hover fill. It spans the
+   list, past the 20rem Carbon caps a button at. */
 .scheduler-list-additem .scheduler-list-add {
   align-items: center;
   justify-content: center;
   gap: var(--rux-spacing-03);
   inline-size: 100%;
+  max-inline-size: none;
   padding-inline: var(--rux-spacing-05);
   border: 1px dashed var(--rux-border-strong-01);
   border-radius: var(--scheduler-surface-radius, 0);
@@ -3572,20 +3574,19 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-route-note { margin-block-start: var(--rux-spacing-03); }
 .scheduler-route-note[hidden] { display: none; }
 /* The trip's totals on the Stops heading's line, and a day's on its own
-   heading: grey, one line, ending in an ellipsis before they would wrap; the
-   whole line is the tooltip's too. */
+   heading: grey, set to the end, wrapping onto a second line on a narrow
+   panel rather than cutting off the on-duty figures that end them. */
 .scheduler-route-sum,
 .scheduler-route-day__sum {
   min-inline-size: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  text-align: end;
   color: var(--rux-text-secondary);
   font-size: var(--rux-body-compact-01-font-size);
   font-weight: var(--rux-body-compact-01-font-weight);
   line-height: var(--rux-body-compact-01-line-height);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
+.scheduler-route-figure { white-space: nowrap; }
 /* A day's heading over its stops, in the list, 16px above and 8px below. */
 .scheduler-route-day {
   display: flex;
@@ -3674,8 +3675,9 @@ html:has(.scheduler-page[data-takeover]) {
 /* The drop-off pair a round trip does not ask for. `rux--stack-vertical` is
    `display: grid`, which outranks the bare `[hidden]` attribute. */
 .scheduler-route-drop[hidden] { display: none; }
-/* The link that opens them is a button, because it acts on this page rather
-   than going anywhere, and Carbon's link is written for an anchor. */
+/* The link that opens them, and the route times' Change, is a button,
+   because it acts on this page rather than going anywhere, and Carbon's link
+   is written for an anchor. */
 .scheduler-route-open {
   appearance: none;
   background: none;

@@ -6139,9 +6139,9 @@
 
       /* The section is a group named by its title, as Trip contacts is. A
          split trip's two legs are named for what each does, as its dates and
-         buses are; every other trip's is named for where it starts. */
+         buses are; every other trip's is named for both of its ends. */
       const routeBox = el('div', 'scheduler-panel-section');
-      const routeHeading = () => !splitNow() ? 'Pickup' : r.leg === 'return' ? 'Pickup leg' : 'Drop-off leg';
+      const routeHeading = () => !splitNow() ? 'Pickup and drop-off' : r.leg === 'return' ? 'Pickup leg' : 'Drop-off leg';
       const routeTitle = el('div', 'scheduler-panel-section__title', routeHeading());
       routeTitle.id = 'scheduler-f-routegroup';
       const routeGroup = el('div');

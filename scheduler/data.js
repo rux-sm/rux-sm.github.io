@@ -453,7 +453,7 @@
     // `miles` sums to the estimate a trip without its own shows. The rest are
     // what the Route tab edits on a leg's pickup, drop-off and return rows.
     'trip_stops(id,position,leg,type,label,name,address,lat,lng,mapbox_id,depart_prev,arrive,spot,'
-      + 'depart_prev_date,arrive_date,spot_date,miles,drive,miles_source,drive_source)',
+      + 'depart_prev_date,arrive_date,spot_date,miles,drive,miles_source,drive_source,dwell_status)',
     // What was said to the customer, for the bar's follow-up mark and its card.
     'trip_updates(id,created_at,actor_id,actor_name,body,kind,edited_at)',
   ].join(',');

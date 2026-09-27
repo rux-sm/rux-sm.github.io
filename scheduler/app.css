@@ -3608,6 +3608,18 @@ html:has(.scheduler-page[data-takeover]) {
   background: var(--rux-border-strong-01);
 }
 .scheduler-route-leg > svg { flex: none; }
+/* A warning in the Stops list, a leg the times leave too little room for or
+   a stop with no location: the warning icon in its colour, then the words. */
+.scheduler-route-warn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rux-spacing-02);
+  vertical-align: bottom;
+}
+.scheduler-route-warn > svg {
+  flex: none;
+  color: var(--rux-support-warning);
+}
 /* A stop with no wait keeps its row one line high. */
 .scheduler-route-stops .scheduler-item__meta:empty { display: none; }
 /* A place search's address, under the name it shows. */

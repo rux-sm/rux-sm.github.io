@@ -6212,6 +6212,36 @@
         const got = toMin(st.arrive), left = toMin(st.leave);
         return got != null && left != null && left > got ? left - got : null;
       };
+      /* A stop with no point on the map, a restroom break on the road, is
+         passed over: the drive is measured from the place before it to the
+         place after, and kept on the stop after. */
+      const located = st => st.place?.lat != null;
+      const legStops = () => r.list.filter(located);
+      // A leg's time and date as minutes from the leg's first day.
+      const minutesAt = (time, date) => {
+        const m = toMin(time);
+        if (m == null) return null;
+        const { from } = routeDates(r.leg);
+        const days = date && from ? Math.round((parseISO(date) - parseISO(from)) / 864e5) : 0;
+        return days * 1440 + m;
+      };
+      /* The minutes the typed times leave for a drive: from leaving the place
+         before to reaching the next, less any wait at a stop passed over on
+         the way. A time earlier than the one it follows on the same day is
+         past midnight. Null when either end has no time. */
+      const timeBetween = (start, end, passed) => {
+        if (start == null || end == null) return null;
+        let span = end - start;
+        if (span < 0) span += 1440;
+        return span - passed.reduce((n, st) => n + (waitOf(st) ?? 0), 0);
+      };
+      const warnLine = text => {
+        const w = el('span', 'scheduler-route-warn');
+        const icon = svgUse('#m-warning-fill', '16', '0 0 32 32');
+        icon.setAttribute('aria-hidden', 'true');
+        w.append(icon, el('span', null, text));
+        return w;
+      };
       const touch = () => { r.listTouched = true; drawStops(); refreshDirty(); measureStops(); };
 
       /* A leg of more than one day lists its stops under a heading per day,
@@ -6224,13 +6254,28 @@
         /* The road between two places, between their rows: its drive and
            miles, which belong to neither place. The first comes from the
            pickup and the last goes on to the drop-off. */
-        const legLine = (from, min, miles) => {
+        /* A leg the typed times leave too little time for says so after its
+           figures, as does the leg on to the drop-off. */
+        const legLine = (from, min, miles, room) => {
           const li = el('li', 'scheduler-route-leg');
           li.appendChild(svgUse('#m-directions_bus', '16', '0 0 32 32'));
           const drive = min == null ? 'not measured' : min < 60 ? `${min} min` : hm(min);
           li.appendChild(el('span', null, [from, drive, miles == null ? null : `${Math.round(miles)} mi`]
             .filter(Boolean).join(' · ')));
+          if (min != null && room != null && room < min) {
+            li.appendChild(warnLine(`only ${hm(Math.max(room, 0))} between the times`));
+          }
           return li;
+        };
+        // Where the leg into a stop starts: the last place on the map before it.
+        const legInto = i => {
+          let k = i - 1;
+          const passed = [];
+          while (k >= 0 && !located(r.list[k])) passed.push(r.list[k--]);
+          const start = k >= 0
+            ? minutesAt(r.list[k].leave, r.list[k].date)
+            : minutesAt(val('scheduler-f-leave'), routeDates(r.leg).from);
+          return { first: k < 0, start, passed };
         };
         const rowFor = (st, i) => {
           const name = st.place?.name || st.place?.address || 'Stop';
@@ -6238,6 +6283,7 @@
             : st.arrive ? clock(st.arrive) : st.leave ? `leaves ${clock(st.leave)}` : 'No times';
           const wait = waitOf(st);
           const drove = driveWords(st.drive, st.miles);
+          const here = located(st);
           // Under the place, only what happens there: the wait.
           const meta = wait ? `Waits ${hm(wait)}${st.dwell ? `, ${DWELL[st.dwell]}` : ''}` : '';
           // A round trip keeps its destination, which holds when the group
@@ -6246,7 +6292,8 @@
           const move = by => { r.list.splice(i + by, 0, r.list.splice(i, 1)[0]); touch(); };
           const row = listRow({
             name, much, meta,
-            title: [name, much, drove ? `${drove} drive` : null, meta].filter(Boolean).join(' · '),
+            title: [name, much, drove ? `${drove} drive` : null, meta,
+              here ? null : 'No location, so the drive is measured past it'].filter(Boolean).join(' · '),
             edit: () => openStopDialog(i),
             items: [
               { label: 'Edit', run: () => openStopDialog(i) },
@@ -6255,7 +6302,22 @@
               { label: 'Remove', danger: true, disabled: lastOfRound, run: () => { r.list.splice(i, 1); touch(); } },
             ],
           });
-          return [legLine(i === 0 ? 'From pickup' : null, st.drive, st.miles), row];
+          if (!here) {
+            const under = row.querySelector('.scheduler-item__meta');
+            if (meta) under.append(' · ');
+            under.appendChild(warnLine('No location'));
+            return [row];
+          }
+          const into = legInto(i);
+          const room = timeBetween(into.start, minutesAt(st.arrive, st.date), into.passed);
+          return [legLine(into.first ? 'From pickup' : null, st.drive, st.miles, room), row];
+        };
+        // The leg on to where the group is let off, from the last place on the map.
+        const dropLine = () => {
+          const into = legInto(r.list.length);
+          const { to } = routeDates(r.leg);
+          const room = timeBetween(into.start, minutesAt(val('scheduler-f-endtrip'), to), into.passed);
+          return legLine('To drop-off', r.dropDrive, r.dropMiles, room);
         };
         const { from, to } = routeDates(r.leg);
         const days = [];
@@ -6275,7 +6337,7 @@
         } else {
           r.list.forEach((st, i) => stopsList.body.append(...rowFor(st, i)));
         }
-        if (r.list.length && dropCounts()) stopsList.body.appendChild(legLine('To drop-off', r.dropDrive, r.dropMiles));
+        if (r.list.length && dropCounts()) stopsList.body.appendChild(dropLine());
         if (canList) {
           stopsList.body.appendChild(listAddRow({
             label: 'Add stop', id: 'scheduler-f-stopadd', onClick: () => openStopDialog(null),
@@ -6290,7 +6352,11 @@
       async function measureStops() {
         let prev = r.pickupPlace;
         for (const st of r.list) {
-          if (prev?.lat != null && st.place?.lat != null) {
+          if (!located(st)) {
+            if (st.drive != null || st.miles != null) Object.assign(st, { drive: null, miles: null, driveChanged: true });
+            continue;
+          }
+          if (prev?.lat != null) {
             try {
               const d = await driveBetween(prev, st.place);
               if (d && (d.min !== st.drive || d.miles !== st.miles)) {
@@ -6320,7 +6386,8 @@
         let prev = r.pickupPlace;
         let got = false;
         for (const st of r.list) {
-          if (st.drive == null && prev?.lat != null && st.place?.lat != null) {
+          if (!located(st)) continue;
+          if (st.drive == null && prev?.lat != null) {
             try {
               const d = await driveBetween(prev, st.place);
               if (editing?.route !== r) return;
@@ -6358,12 +6425,19 @@
         const name = textField('scheduler-f-stopname', 'Name', st.place?.name);
         name.classList.add('scheduler-dialog-grid__wide');
         name.style.display = 'none';
+        /* Words typed and not picked, such as "Restroom break", name a stop
+           with no location: it has no address and no point on the map. */
         const where = placeSearch('scheduler-f-stopaddr', 'Location', st.place, (place, typed) => {
           setVal('scheduler-f-stopname', place ? place.name ?? '' : typed ?? '');
-          picked = place ? { ...place } : (typed ? { ...placeOf({}), address: typed } : null);
+          picked = place ? { ...place } : (typed ? { ...placeOf({}), name: typed } : null);
         });
         where.classList.add('scheduler-dialog-grid__wide');
         const whereInput = where.querySelector('input[role="combobox"]');
+        // Typing drops the place picked, and the name it brought.
+        whereInput.addEventListener('input', () => {
+          picked = null;
+          setVal('scheduler-f-stopname', '');
+        });
         whereInput.addEventListener('scheduler:place', e => {
           name.style.display = e.detail.place && !e.detail.saved ? '' : 'none';
         });
@@ -6384,6 +6458,9 @@
         host.replaceChildren(grid);
 
         stopDone = () => {
+          // Words left in the search and not picked name a stop with no location.
+          const typedWhere = whereInput.value.trim();
+          if (!picked && typedWhere) picked = { ...placeOf({}), name: typedWhere };
           const typedName = val('scheduler-f-stopname') || null;
           const place = picked || typedName
             ? { ...(picked ?? placeOf({})), name: typedName ?? picked?.name ?? null } : null;
@@ -6425,6 +6502,7 @@
          the total never reads as though the driver had hours in hand. */
       const hm = n => {
         const h = Math.floor(n / 60), m = Math.round(n % 60);
+        if (!h) return `${m} min`;
         return m ? `${h} h ${String(m).padStart(2, '0')}` : `${h} h`;
       };
       const dropCounts = () => !!(r.dropRow || (routeRound() && r.list.at(-1)?.leave) || (!routeRound() && r.list.length));
@@ -6441,7 +6519,7 @@
         ].filter(Boolean).join(' · ');
       };
       function drawTotals() {
-        const legs = [[r.driveOut, r.driveMiles], ...r.list.map(st => [st.drive, st.miles]),
+        const legs = [[r.driveOut, r.driveMiles], ...legStops().map(st => [st.drive, st.miles]),
           ...(dropCounts() ? [[r.dropDrive, r.dropMiles]] : []), [r.backDrive, r.backMiles]];
         const out = toMin(val('scheduler-f-depart')), home = toMin(val('scheduler-f-return'));
         let span = out != null && home != null ? home - out : null;
@@ -6461,7 +6539,7 @@
          later day starts when the bus leaves for its first stop. */
       function dayFigures(d, first, last) {
         const mine = r.list.filter(st => dayOf(st) === d);
-        const legs = [...(d === first ? [[r.driveOut, r.driveMiles]] : []), ...mine.map(st => [st.drive, st.miles]),
+        const legs = [...(d === first ? [[r.driveOut, r.driveMiles]] : []), ...mine.filter(located).map(st => [st.drive, st.miles]),
           ...(d === last ? [...(dropCounts() ? [[r.dropDrive, r.dropMiles]] : []), [r.backDrive, r.backMiles]] : [])];
         const times = [];
         const put = (t, less = 0) => { const m = toMin(t); if (m != null) times.push(m - less); };

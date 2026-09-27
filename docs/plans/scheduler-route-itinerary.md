@@ -13,35 +13,20 @@ Laredo volleyball trip of Sep 22 goes in whole, without workarounds.
 
 ## Decisions
 
-- **A stop is where the bus stands still.** Games, meals and other events
-  during a wait are not entered; only the bus's movements matter.
-- **Times come from the customer's itinerary, drives from the map.** A stop's
-  arrive and leave times are typed as the customer gives them. The drive and
-  miles between two places are always Geoapify's, never typed.
-- **A stop may have no address,** like a restroom break on the road. Its name
-  says what it is, and its row carries a warning tag, No address. The drive
-  is measured across it, from the place before to the place after, and shown
-  on the leg after it.
-- **The Route tab is for the office.** The driver keeps the customer's
-  uploaded itinerary. The driver page and the printed driver itinerary stay as
-  they are until the tab is trusted.
-- **Every test runs on invented trips** in a preview with a stand-in database,
-  so no real trip is changed to try the tab.
+- **On duty runs from the yard departure to the yard return,** less waits
+  marked off duty or sleeper berth. It counts no inspection time before or
+  after, which is why the Laredo trip reads 10 h 10 where its itinerary says
+  13 h 45: 25 minutes before the yard, 10 after it, and the 2 h 45 sleeper.
 
 ## Questions
 
-- When the typed times leave less time between two stops than the map's
-  drive, should the tab warn on that leg, such as "Drive 2 h 47, only 2 h 15
-  between these times"?
+- Should on duty add a fixed pre-trip time before the yard departure and a
+  post-trip time after the yard return, and how long is each? The Laredo
+  itinerary uses 25 minutes before and 10 after.
+- Should a wait marked sleeper berth count off the clock, as it does now, or
+  stay on duty as the Laredo itinerary counts it?
 
 ## Tasks
 
-- [ ] Let the stop dialog save a stop with a name and no place, and tag it No
-  address in the list.
-- [ ] Measure the drive across a stop with no address, from the place before
-  to the place after, and count it once in the totals.
-- [ ] Enter the Laredo trip's itinerary in a stand-in preview, every stop and
-  time, and fix whatever does not go in or does not add up.
-- [ ] Check the yard times, miles, driving and on-duty figures against the
-  trip's own totals, and account for every difference.
-- [ ] Update the Route tab's line in `scheduler/docs/screen-inventory.md`.
+- [ ] Count on duty the way the two answers above say, in the Stops totals
+  and each day's figures.

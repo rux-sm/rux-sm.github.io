@@ -1116,6 +1116,42 @@
     </div>
   </div>
 
+  <!-- The Route tab's pickup: its place and when the group departs. data.js moves the fields in; they edit as they are typed, so Done only closes. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-pickup-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-pickup-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-pickup-h">Pickup</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content" id="scheduler-pickup-fields"></div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--primary" data-rux-close>Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- The Route tab's drop-off: where the group is let off and when. data.js moves the fields in, as for the pickup. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-dropoff-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-dropoff-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-dropoff-h">Drop-off</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content" id="scheduler-dropoff-fields"></div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--primary" data-rux-close>Done</button>
+      </div>
+    </div>
+  </div>
+
   <!-- The route times every trip's Route tab uses, filled by data.js. -->
   <div class="rux--layer-one rux--modal" id="scheduler-routetimes-modal" role="presentation">
     <div role="dialog" aria-modal="true" aria-labelledby="scheduler-routetimes-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">

@@ -1725,12 +1725,14 @@
      hears one sentence, and the full text in `title`. */
   /* A row of a list. Its menu is Edit and Remove, or `items` in their place
      for a list that also moves its rows. */
-  const listRow = ({ name, meta, much, tag, title, edit, remove, removeLabel,
+  const listRow = ({ name, meta, much, tag, lead, title, edit, remove, removeLabel,
                     open: openRow = edit, openLabel = `Edit ${title}`, editText, removeText, items }) => {
     const li = el('li', 'rux--layer-two scheduler-item');
     const open = el('button', 'rux--tile rux--tile--clickable scheduler-item__open');
     open.type = 'button';
     const top = el('span', 'scheduler-item__line');
+    // `lead` is a grey tag before the name, such as a stop's number.
+    if (lead) top.appendChild(el('span', 'rux--tag rux--layout--size-sm rux--tag--gray', lead));
     top.appendChild(el('span', 'scheduler-item__name', name));
     if (tag) {
       const t = el('span', `rux--tag rux--layout--size-sm ${tag.tone}`, tag.code);
@@ -4594,6 +4596,11 @@
   const lineKind = kind => LINE_KINDS.find(k => k.kind === kind) ?? LINE_KINDS.at(-1);
   // What the Route tab's stop dialog does on Done, set each time it opens.
   let stopDone = null;
+  // The Route tab's redraw when its Pickup or Drop-off dialog closes.
+  let routeEndsClosed = null;
+  for (const id of ['scheduler-pickup-modal', 'scheduler-dropoff-modal']) {
+    document.getElementById(id)?.addEventListener('rux:modal-closed', () => routeEndsClosed?.());
+  }
   document.getElementById('scheduler-stop-done')?.addEventListener('click', () => stopDone?.());
 
   /* The route times, one settings row for every trip, each a choice of
@@ -6219,9 +6226,13 @@
         refreshDirty();
       });
 
-      /* A place search takes the whole row, to show what is being typed; the
-         two times share one, since a time needs half of it. */
-      const fields = el('div', 'rux--stack-vertical rux--stack-scale-5');
+      /* The pickup and the drop-off are tiles at the two ends of the Route
+         list, and each is edited in a dialog of its own: the place and the
+         time the group moves there. Their fields live in the dialogs, which
+         stay in the page, so Save and the summary read them wherever they
+         are. */
+      const pickupFields = el('div', 'rux--stack-vertical rux--stack-scale-5');
+      const dropFields = el('div', 'rux--stack-vertical rux--stack-scale-5');
 
       /* A round trip ends where it began, so its drop-off is shown and not
          asked: "Drop-off" reads as where the group is let out for the day,
@@ -6231,42 +6242,39 @@
          the summary and Save read them wherever they are. */
       const dropBox = el('div', 'rux--stack-vertical rux--stack-scale-5 scheduler-route-drop');
       dropBox.append(full(dropField), nameFor(dropField, dropName));
-      // Its only mention is the link that opens it, at the end of the pickup
-      // Location's label line.
+      // Until it is opened, the dialog says the group is let off at the pickup.
+      const sameNote = el('p', 'rux--type-body-compact-01', 'The group is let off where it was picked up.');
       const dropOpen = el('button', 'rux--link rux--link--sm scheduler-route-open', 'Change drop-off location');
       dropOpen.type = 'button';
-      pickupField.querySelector('.scheduler-label-row')?.append(dropOpen);
       const showDrop = open => {
         dropBox.hidden = !open;
         dropOpen.hidden = open;
+        sameNote.hidden = open;
       };
       dropOpen.addEventListener('click', () => {
         showDrop(true);
         dropBox.querySelector('input')?.focus();
       });
 
-      fields.append(
+      pickupFields.append(
         full(pickupField),
         nameFor(pickupField, pickupName),
-        dropBox,
-        pair(timeField('scheduler-f-leave', 'Departs', r.first?.depart_prev),
-          timeField('scheduler-f-endtrip', 'Returns', r.back?.depart_prev)),
+        full(timeField('scheduler-f-leave', 'Departs', r.first?.depart_prev)),
       );
+      dropFields.append(
+        sameNote, dropOpen, dropBox,
+        full(timeField('scheduler-f-endtrip', 'Returns', r.back?.depart_prev)),
+      );
+      document.getElementById('scheduler-pickup-fields')?.replaceChildren(pickupFields);
+      document.getElementById('scheduler-dropoff-fields')?.replaceChildren(dropFields);
       showDrop(!letOffAtPickup());
 
-      /* The section is a group named by its title, as Trip contacts is. A
-         split trip's two legs are named for what each does, as its dates and
-         buses are; every other trip's is named for both of its ends. */
-      const routeBox = el('div', 'scheduler-panel-section');
-      const routeHeading = () => !splitNow() ? 'Pickup and drop-off' : r.leg === 'return' ? 'Pickup leg' : 'Drop-off leg';
-      const routeTitle = el('div', 'scheduler-panel-section__title', routeHeading());
-      routeTitle.id = 'scheduler-f-routegroup';
-      const routeGroup = el('div');
-      routeGroup.setAttribute('role', 'group');
-      routeGroup.setAttribute('aria-labelledby', routeTitle.id);
-      routeGroup.append(routeTitle, fields);
-      routeBox.appendChild(routeGroup);
-
+      /* The list is named for both of its ends, or on a split trip for what
+         its leg does, as its dates and buses are. */
+      const routeHeading = () => !splitNow() ? 'Route' : r.leg === 'return' ? 'Pickup leg' : 'Drop-off leg';
+      // The worked-out times, kept where Save reads them.
+      const routeBox = el('div');
+      routeBox.hidden = true;
       routeBox.append(kept('scheduler-f-spot', r.pickup?.spot), kept('scheduler-f-depart', r.pickup?.depart_prev),
         kept('scheduler-f-return', r.back?.arrive));
 
@@ -6393,7 +6401,8 @@
             : minutesAt(val('scheduler-f-leave'), routeDates(r.leg).from);
           return { first: k < 0, start, passed };
         };
-        const rowFor = (st, i) => {
+        // A stop's number, counted down the list from 1 across every day.
+        const rowFor = (st, i, n) => {
           const name = st.place?.name || st.place?.address || 'Stop';
           const much = st.arrive && st.leave ? `${clock(st.arrive)} – ${clock(st.leave)}`
             : st.arrive ? clock(st.arrive) : st.leave ? `leaves ${clock(st.leave)}` : 'No times';
@@ -6407,8 +6416,8 @@
           const lastOfRound = routeRound() && r.list.length === 1;
           const move = by => { r.list.splice(i + by, 0, r.list.splice(i, 1)[0]); touch(); };
           const row = listRow({
-            name, much, meta,
-            title: [name, much, drove ? `${drove} drive` : null, meta,
+            name, much, meta, lead: String(n),
+            title: [`Stop ${n}`, name, much, drove ? `${drove} drive` : null, meta,
               here ? null : 'No location, so the drive is measured past it'].filter(Boolean).join(' · '),
             edit: () => openStopDialog(i),
             items: [
@@ -6426,15 +6435,43 @@
           }
           const into = legInto(i);
           const room = timeBetween(into.start, minutesAt(st.arrive, st.date), into.passed);
-          return [legLine(into.first ? 'From pickup' : null, st.drive, st.miles, room), row];
+          return [legLine(null, st.drive, st.miles, room), row];
         };
         // The leg on to where the group is let off, from the last place on the map.
         const dropLine = () => {
           const into = legInto(r.list.length);
           const { to } = routeDates(r.leg);
           const room = timeBetween(into.start, minutesAt(val('scheduler-f-endtrip'), to), into.passed);
-          return legLine('To drop-off', r.dropDrive, r.dropMiles, room);
+          return legLine(null, r.dropDrive, r.dropMiles, room);
         };
+        /* The two ends of the route, tiles like the stops': the pickup with when
+           the group departs, and when the bus leaves the yard and is spotted
+           there; the drop-off with when the group returns or arrives, and when
+           the bus is back at the yard. Each opens its own dialog. */
+        const openEnd = (modal, field) => {
+          window.Rux?.modal?.open?.(modal);
+          document.getElementById(field)?.focus();
+        };
+        const endTile = (lead, place, empty, much, meta, open) => {
+          const name = place?.name || place?.address || empty;
+          return listRow({ name, much, meta, lead, title: [lead, name, much, meta].filter(Boolean).join(' · '),
+            edit: open, items: [{ label: 'Edit', run: open }] });
+        };
+        const pickupTile = () => {
+          const leave = val('scheduler-f-leave'), yard = val('scheduler-f-depart'), spot = val('scheduler-f-spot');
+          return endTile('Pickup', r.pickupPlace, 'Add pickup', leave ? `Departs ${clock(leave)}` : 'No time',
+            [yard ? `Leaves yard ${clock(yard)}` : null, spot ? `Spot ${clock(spot)}` : null].filter(Boolean).join(' · '),
+            () => openEnd('scheduler-pickup-modal', 'scheduler-f-pickup'));
+        };
+        const dropTile = () => {
+          const end = val('scheduler-f-endtrip'), home = val('scheduler-f-return');
+          const word = letOffAtPickup() ? 'Returns' : 'Arrives';
+          return endTile('Drop-off', letOffAtPickup() ? r.pickupPlace : r.dropPlace, 'Add drop-off',
+            end ? `${word} ${clock(end)}` : 'No time', home ? `Back at yard ${clock(home)}` : '',
+            () => openEnd('scheduler-dropoff-modal', 'scheduler-f-endtrip'));
+        };
+        let num = 0;  // the stops numbered so far
+        let daysDrawn = 0;  // so the pickup goes under the first day
         const { from, to } = routeDates(r.leg);
         const days = [];
         if (from && to && to > from) for (let d = from; d <= to && days.length < 31; d = dayAfter(d, 1)) days.push(d);
@@ -6447,13 +6484,16 @@
               `Day ${n + 1} · ${parseISO(d).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}`), sum);
             daySums.push([d, sum]);
             stopsList.body.appendChild(head);
-            r.list.forEach((st, i) => { if (dayOf(st) === d) stopsList.body.append(...rowFor(st, i)); });
+            if (!daysDrawn++) stopsList.body.appendChild(pickupTile());
+            r.list.forEach((st, i) => { if (dayOf(st) === d) stopsList.body.append(...rowFor(st, i, ++num)); });
           });
-          r.list.forEach((st, i) => { if (!days.includes(dayOf(st))) stopsList.body.append(...rowFor(st, i)); });
+          r.list.forEach((st, i) => { if (!days.includes(dayOf(st))) stopsList.body.append(...rowFor(st, i, ++num)); });
         } else {
-          r.list.forEach((st, i) => stopsList.body.append(...rowFor(st, i)));
+          stopsList.body.appendChild(pickupTile());
+          r.list.forEach((st, i) => stopsList.body.append(...rowFor(st, i, ++num)));
         }
         if (r.list.length && dropCounts()) stopsList.body.appendChild(dropLine());
+        stopsList.body.appendChild(dropTile());
         if (canList) {
           stopsList.body.appendChild(listAddRow({
             label: 'Add stop', id: 'scheduler-f-stopadd', onClick: () => openStopDialog(null),
@@ -6707,9 +6747,11 @@
         return figures(legs, span, rest, needs && (mine.length > 0 || d === first || d === last));
       }
 
+      const routeSection = section(routeHeading(), stopsBody, summary);
+      const routeTitle = routeSection.querySelector('.scheduler-panel-section__title');
       panelRoute.append(
         routeBox,
-        section('Stops', stopsBody, summary),
+        routeSection,
       );
       drawStops();
       drawTimeline();
@@ -6729,7 +6771,10 @@
         drawTimeline();
       });
       // The summary and the time's label follow every field, after the handlers above.
-      fields.addEventListener('input', drawTimeline);
+      pickupFields.addEventListener('input', drawTimeline);
+      dropFields.addEventListener('input', drawTimeline);
+      // The tiles at the two ends show what their dialogs now hold.
+      routeEndsClosed = () => { drawTimeline(); drawStops(); };
       document.getElementById('scheduler-f-type')?.addEventListener('change', () => {
         if (!dropBox.hidden !== !letOffAtPickup()) showDrop(!letOffAtPickup());
         routeTitle.textContent = routeHeading();
@@ -8450,10 +8495,14 @@
   panelBilling?.addEventListener('rux:toggle', refreshDirty);
   // Files has one switch.
   panelFiles?.addEventListener('rux:toggle', refreshDirty);
-  // Route has fields and two place searches.
-  panelRoute?.addEventListener('input', refreshDirty);
-  panelRoute?.addEventListener('change', refreshDirty);
-  panelRoute?.addEventListener('rux:listbox-selected', refreshDirty);
+  // Route has fields and two place searches, the pickup's and the drop-off's
+  // in their own dialogs, which sit outside the panel.
+  for (const host of [panelRoute, document.getElementById('scheduler-pickup-modal'),
+    document.getElementById('scheduler-dropoff-modal')]) {
+    host?.addEventListener('input', refreshDirty);
+    host?.addEventListener('change', refreshDirty);
+    host?.addEventListener('rux:listbox-selected', refreshDirty);
+  }
 
   /* Reset replays `openPanel` with the arguments that opened it, which rewrites
      every field from the trip at once, date labels, return pair, added contact

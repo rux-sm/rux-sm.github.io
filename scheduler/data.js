@@ -512,10 +512,10 @@
       // neither date inside this week and is still away every day of it.
       client.from('driver_time_off').select('driver_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
       /* rux-ui's settings this app follows: the billing workflow, the yard and
-         the Mapbox token the Route tab looks drives up with. A refused read
-         keeps what was there, as rux-ui does. */
+         the Geoapify key the Route tab finds places and drives with. A
+         refused read keeps what was there, as rux-ui does. */
       client.from('settings').select('key,value')
-        .in('key', ['billing-workflow-v1', 'yard-location-v1', 'mapbox-token-v1', 'requirements-v1', 'vehicle-types-v1',
+        .in('key', ['billing-workflow-v1', 'yard-location-v1', 'geoapify-key-v1', 'requirements-v1', 'vehicle-types-v1',
           'follow-up-v1'])
         .then(r => {
           if (r.error) return;
@@ -523,7 +523,7 @@
           setBillingWorkflow(byKey.get('billing-workflow-v1'));
           const yard = byKey.get('yard-location-v1');
           if (yard?.lat != null && yard?.lng != null) yardPlace = yard;
-          if (typeof byKey.get('mapbox-token-v1') === 'string') mapboxToken = byKey.get('mapbox-token-v1');
+          window.SchedulerPlaces.use(byKey.get('geoapify-key-v1'), yardPlace);
           setRequirementList(byKey.get('requirements-v1'));
           window.SchedulerVehicles?.set(byKey.get('vehicle-types-v1'));
           setFollowUp(byKey.get('follow-up-v1'));
@@ -3130,14 +3130,14 @@
       .slice(0, 5)
       .map(l => ({ name: l.name, address: l.address, lat: l.lat, lng: l.lng, mapbox_id: l.mapbox_id ?? null, saved: true }));
   }
-  // The saved location a place is, by Mapbox's id or by its address, or null.
+  // The saved location a place is, by the Mapbox id rux-ui saves or by its address, or null.
   const savedLocationOf = place => (place ? (panelIndex.locations || []).find(l =>
     (place.mapbox_id && l.mapbox_id === place.mapbox_id)
     || (!!place.address && folded(l.address) === folded(place.address))) ?? null : null);
 
   /* A search over places, as Carbon's combo box, for the Route tab. Its
      options are the saved locations that match, each marked with a location
-     icon, then Mapbox's answers to what is typed, drawn when they arrive, as
+     icon, then Geoapify's answers to what is typed, drawn when they arrive, as
      two lines like a contact's: the place's name over its address. Showing a
      name, the field has the place's address in a grey line under it, and a
      saved location carries the saved mark at the field's end. `onPick` gets
@@ -3156,7 +3156,7 @@
     input.setAttribute('aria-haspopup', 'listbox');
     input.setAttribute('aria-expanded', 'false');
     input.autocomplete = NO_AUTOFILL;
-    input.placeholder = mapboxToken ? 'Search places' : 'Address';
+    input.placeholder = window.SchedulerPlaces.unavailable() ? 'Address' : 'Search places';
     input.value = place?.[show] || place?.address || '';
     input.title = place?.address ?? '';
     field.append(input);
@@ -3201,11 +3201,12 @@
         option.appendChild(body);
         return option;
       }));
+      if (found.some(p => !p.saved)) menu.appendChild(window.SchedulerPlaces.creditRow());
       // `list-box.js` shows the list only if it had options when it opened.
       menu.hidden = !found.length || !root.classList.contains('rux--list-box--expanded');
     };
     /* The saved locations that hold every word typed come first, at once;
-       Mapbox is asked a quarter second after typing stops, and its answers
+       Geoapify is asked a quarter second after typing stops, and its answers
        follow, less any place already saved. Only the latest answer is drawn. */
     input.addEventListener('input', () => {
       clearTimeout(timer);
@@ -4987,7 +4988,6 @@
      trip ends somewhere else, the last `stop` before the return, which may be
      the first. Every other stop, rux-ui's itinerary, is left as it is. */
   let yardPlace = null;     // `yard-location-v1`: { name, address, lat, lng }
-  let mapboxToken = null;   // `mapbox-token-v1`, Mapbox's public token
 
   // Minutes after midnight, and back, wrapping round the clock.
   const toMin = t => {
@@ -5017,43 +5017,12 @@
   const numOrNull = v => (v === null || v === undefined || v === '' ? null : Number(v));
   const dayAfter = (d, n) => (d ? iso(addDays(parseISO(d), n)) : null);
 
-  /* Mapbox, as rux-ui calls it: Search Box for places, which knows schools
-     and venues by name, and Directions for the drive between two. */
-  async function mapboxJson(url) {
-    const r = await fetch(url);
-    if (!r.ok) throw new Error(`Mapbox answered ${r.status}.`);
-    return r.json();
-  }
-  async function searchPlaces(text) {
-    if (!mapboxToken || text.trim().length < 3) return [];
-    const q = new URLSearchParams({ q: text.trim(), auto_complete: 'true', limit: '6',
-                                    country: 'us,mx', access_token: mapboxToken });
-    if (yardPlace) q.set('proximity', `${yardPlace.lng},${yardPlace.lat}`);
-    const data = await mapboxJson(`https://api.mapbox.com/search/searchbox/v1/forward?${q}`);
-    return (data.features || []).map(f => {
-      const p = f.properties || {};
-      return { name: p.name || p.full_address || '', address: p.full_address || p.place_formatted || null,
-               lat: p.coordinates?.latitude ?? null, lng: p.coordinates?.longitude ?? null,
-               mapbox_id: p.mapbox_id || null };
-    }).filter(p => p.name && p.lat != null);
-  }
-  const drives = new Map();
-  function driveBetween(a, b) {
-    if (!mapboxToken || a?.lat == null || b?.lat == null) return Promise.resolve(null);
-    const key = `${a.lng},${a.lat};${b.lng},${b.lat}`;
-    if (!drives.has(key)) {
-      drives.set(key, mapboxJson(`https://api.mapbox.com/directions/v5/mapbox/driving/${key}`
-        + `?overview=false&access_token=${encodeURIComponent(mapboxToken)}`)
-        .then(d => {
-          const route = d.routes?.[0];
-          return route ? { min: Math.round(route.duration / 60), miles: Math.round(route.distance / 160.934) / 10 } : null;
-        })
-        .catch(e => { drives.delete(key); throw e; }));
-    }
-    return drives.get(key);
-  }
+  // Geoapify, through places.js: the places matching what is typed, and the
+  // drive between two.
+  const searchPlaces = text => window.SchedulerPlaces.search(text);
+  const driveBetween = (a, b) => window.SchedulerPlaces.drive(a, b);
 
-  /* Two places are the same when Mapbox gave them the same id, or when
+  /* Two places are the same when both carry the Mapbox id rux-ui saves, or when
      their name and address both read the same. A drop-off the same as the
      pickup is what a round trip means, and writes no drop-off row. */
   const samePlace = (a, b) => {
@@ -6004,7 +5973,7 @@
       };
 
       const lookupFailed = (e, what) => toast('warning', `The drive ${what} was not found.`,
-        `${e?.message || 'Mapbox did not answer.'} The yard time stays blank until it answers.`);
+        `${e?.message || 'Geoapify did not answer.'} The yard time stays blank until it answers.`);
 
       /* The bus's three times, each with the drive it was worked out from,
          are the summary's tooltip. The group's second time is named for what

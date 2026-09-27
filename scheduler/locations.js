@@ -6,7 +6,8 @@
    `locations`, which rux-ui's Settings list and itinerary search read too.
 
    A location is a name, an address and a map point. The address is picked
-   from the map search in places.js, so every saved place has the point a
+   from the search in places.js, which brings its point, or typed and its
+   point tapped on the map under it, so every saved place has the point a
    drive time is worked out from; typed text alone is not saved.
 
    A trip keeps its own copy of every stop, so changing or deleting a location
@@ -126,8 +127,10 @@
   let loaded = null;       // the row as the page read it
   // A new record's id, made once, so a Save sent again cannot insert it twice.
   const newId = crypto.randomUUID();
-  let place = null;       // the address picked: { address, lat, lng, mapbox_id }
+  let place = null;       // the address and its point: { address, lat, lng, mapbox_id }
+  let tapped = false;     // whether the point was tapped on the map, not picked
   let typed = '';         // the address field's text
+  let mapView = null;     // the map under the address, once drawn
   let autoName = null;    // the name the last pick filled in, until one is typed
   let baseline = '';
 
@@ -149,6 +152,8 @@
       typed = text;
       if (picked) {
         place = { address: picked.address || picked.name, lat: picked.lat, lng: picked.lng, mapbox_id: picked.mapbox_id };
+        tapped = false;
+        mapView?.show(place);
         /* A place takes the name the map knows it by, until one is typed,
            unless that name is only its street address, which leaves the
            field for a real one. */
@@ -157,8 +162,13 @@
           nameField.value = known;
           autoName = known;
         }
+      } else if (tapped && place) {
+        // A point tapped stays where it was while its address is typed.
+        place = { ...place, address: text || null };
       } else {
+        // A point picked belongs to the address it came with.
         place = null;
+        mapView?.show(null);
       }
       noteAddress();
     });
@@ -167,7 +177,23 @@
     wrap.appendChild(req);
     // Design's list-box.js listens on the document, so a field built now works.
     slot.replaceChildren(wrap);
+    drawMap();
     noteAddress();
+  }
+
+  /* The map under the address shows its point, and a tap sets the point for
+     whatever address is typed, for a place the search does not find. */
+  function drawMap() {
+    const host = $('scheduler-l-map');
+    if (!host) return;
+    host.hidden = !!window.SchedulerPlaces.unavailable();
+    if (host.hidden) return;
+    mapView ??= window.SchedulerPlaces.map(host, place, p => {
+      place = { address: typed || place?.address || null, lat: p.lat, lng: p.lng, mapbox_id: null };
+      tapped = true;
+      noteAddress();
+    });
+    mapView?.show(place);
   }
 
   // An address with no map point cannot be saved, so when the search cannot
@@ -180,6 +206,7 @@
     nameField.value = p.name ?? '';
     autoName = null;
     place = p.address ? { address: p.address, lat: p.lat, lng: p.lng, mapbox_id: p.mapbox_id ?? null } : null;
+    tapped = false;
     typed = p.address ?? '';
     drawAddress();
     showNameError('');
@@ -205,8 +232,11 @@
     }
     if (!place || place.lat == null) {
       showAddressError(window.SchedulerPlaces.unavailable() ?? (typed
-        ? 'Pick the address from the list, so it has a place on the map.'
+        ? 'Pick the address from the list, or tap its spot on the map.'
         : 'Search for the address and pick it from the list.'));
+      first ??= $('scheduler-l-address');
+    } else if (!place.address) {
+      showAddressError('Enter the address of the spot tapped on the map.');
       first ??= $('scheduler-l-address');
     } else {
       // The same place twice would offer two answers for one stop.

@@ -3617,6 +3617,34 @@ html:has(.scheduler-page[data-takeover]) {
   vertical-align: -0.1875rem;
   margin-inline-end: var(--rux-spacing-02);
 }
+/* The credit Geoapify's free plan asks for, the last row of a place search's
+   list: small helper text, not an option. */
+.scheduler-place-credit-row {
+  padding: var(--rux-spacing-03) var(--rux-spacing-05);
+  border-block-start: 1px solid var(--rux-border-subtle-01);
+}
+.scheduler-place-credit {
+  color: var(--rux-text-helper);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+/* The Locations page's map under the address, and its pin, whose point is
+   the spot's bottom tip. Isolated, so Leaflet's layers stay under the
+   search's open list. */
+.scheduler-location-map {
+  isolation: isolate;
+  grid-column: 1 / -1;
+  block-size: 20rem;
+  background: var(--rux-layer-01);
+  border: 1px solid var(--rux-border-subtle-01);
+}
+.scheduler-location-map[hidden] { display: none; }
+.scheduler-map-pin {
+  color: var(--rux-support-error);
+  filter: drop-shadow(0 0 1px var(--rux-icon-on-color));
+}
+.scheduler-map-pin svg { display: block; }
 /* The drop-off pair a round trip does not ask for. `rux--stack-vertical` is
    `display: grid`, which outranks the bare `[hidden]` attribute. */
 .scheduler-route-drop[hidden] { display: none; }

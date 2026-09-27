@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="/design/css/rux.css">
 <link rel="stylesheet" href="/design/css/rux-theme.css">
 <link rel="stylesheet" href="/design/css/rux-overrides.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">
 <link rel="stylesheet" href="theme.css">
 <link rel="stylesheet" href="overrides.css">
 <link rel="stylesheet" href="app.css">
@@ -321,8 +322,11 @@
                 <!-- The address search, drawn by locations.js through places.js,
                      since a place has its map point only when picked. -->
                 <div class="rux--form-item scheduler-pair-grid__wide" id="scheduler-l-address-slot"></div>
+                <!-- The address's point, drawn by places.js; a tap sets it
+                     for an address the search does not find. -->
+                <div class="scheduler-location-map" id="scheduler-l-map" hidden></div>
               </div>
-              <p class="rux--form__helper-text scheduler-pair-note">Pick the address from the search, so it has a place on the map for drive times.</p>
+              <p class="rux--form__helper-text scheduler-pair-note">Pick the address from the search. If it isn't found, type it and tap its spot on the map.</p>
             </div>
           </fieldset>
 
@@ -428,6 +432,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
 <script src="people.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
 <script src="places.js"></script>
 <script src="pair.js"></script>
 <script src="locations.js"></script>

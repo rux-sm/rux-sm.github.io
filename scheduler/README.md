@@ -42,7 +42,9 @@ never changes a trip, which keeps the phone it was saved with.
 
 `locations.html` lists the saved places a bus goes, which rux-ui's itinerary
 search reads too, and edits one at `locations.html?id=`. An address is picked
-from the map search in `places.js`, so every place has its map point. A trip
+from the search in `places.js`, or typed and its spot tapped on the map under
+it, so every place has its map point. Search, drives and the map are
+Geoapify's, whose free plan lets a place found be kept. A trip
 keeps its own copy of each stop, and a location a customer uses as their usual
 pickup is never deleted.
 

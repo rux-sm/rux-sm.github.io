@@ -698,8 +698,8 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar__open-ring rect { rx: var(--scheduler-bar-radius, 0); }
 .scheduler-bar__open-base { stroke-opacity: .5; }
-.scheduler-bar__open-tail { stroke-opacity: .75; stroke-dasharray: 30 70; animation: scheduler-open-tail 3s linear infinite; }
-.scheduler-bar__open-head { stroke-dasharray: 14 86; animation: scheduler-open-head 3s linear infinite; }
+.scheduler-bar__open-tail { stroke-opacity: .75; stroke-dasharray: 30 70; animation: scheduler-open-tail 2s linear infinite; }
+.scheduler-bar__open-head { stroke-dasharray: 14 86; animation: scheduler-open-head 2s linear infinite; }
 @media (prefers-reduced-motion: reduce) {
   .scheduler-bar__open-base { stroke-opacity: 1; }
   .scheduler-bar__open-tail,

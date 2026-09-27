@@ -5390,6 +5390,9 @@
   function openCreate(opts = {}) {
     const start = opts.startDate || iso(shown && cursor ? cursor : mondayOf(new Date()));
     createBusId = opts.busId || null;
+    // Nothing on the board is the new trip, so no other trip stays picked
+    // with its card floating beside the editor.
+    clearSelection();
     openPanel(null, {
       id: null,
       // Null, not '': every getter reads a blank field as null and `same` does
@@ -6981,6 +6984,13 @@
     refreshDirty();
     loadFleetClashes();
 
+    /* A trip keeps the tab the last one was on, so going through trips on
+       Buses stays on Buses; a new trip starts on Details, where it begins. */
+    if (creating && !again) {
+      const details = document.getElementById('scheduler-tab-details');
+      if (details && details.getAttribute('aria-selected') !== 'true') window.Rux?.tabs?.select?.(details.closest('[role="tablist"]'), details);
+    }
+
     if (!again) panelOpener = bar;
     panelEl.hidden = false;
     if (tripEl) tripEl.hidden = false;
@@ -6991,6 +7001,23 @@
     placeRoom();
     window.Rux?.schedule?.fit?.();
     document.getElementById('scheduler-panel-close')?.focus();
+    // The narrower board can leave the trip half under its edge.
+    if (!creating) requestAnimationFrame(() => revealBar(panelArgs?.ref && findBar(panelArgs.ref)));
+  }
+
+  /* Scrolls the board across just far enough to show a bar whole, clear of
+     the sticky bus column, or its start when it is wider than the board. */
+  function revealBar(bar) {
+    if (!bar?.isConnected) return;
+    const pane = schEl.getBoundingClientRect();
+    const head = gridEl.querySelector('.scheduler-row-head')?.getBoundingClientRect();
+    const box = bar.getBoundingClientRect();
+    const first = (head ? head.right : pane.left) + TIP_GAP;
+    const last = pane.left + schEl.clientWidth - TIP_GAP;
+    const by = box.left < first ? box.left - first
+      : box.right > last ? Math.min(box.right - last, box.left - first) : 0;
+    // At once, as the editor itself appears.
+    if (by) schEl.scrollLeft += by;
   }
 
   /* ── Driver availability ───────────────────────────────────────────────────
@@ -7289,12 +7316,14 @@
   const TIP_GAP = 4;
   let peekBar = null;
   let poppedFor = null;
+  // True while a bar's right-click menu is open, which the card waits behind.
+  let menuHidesCard = false;
   // The Contacts window, while it is open: its overlay registration and slot.
   let contactsOpen = null;
   function placeBarOpen(bar = (peekBar?.isConnected ? peekBar : null) ?? selectedBar()) {
     drawPanelShortcuts();
     if (!barShortcuts) return;
-    const none = !bar?.dataset.tripId || isEditorBar(bar) || gridEl.querySelector('.scheduler-bar--dragging');
+    const none = !bar?.dataset.tripId || isEditorBar(bar) || menuHidesCard || gridEl.querySelector('.scheduler-bar--dragging');
     barShortcuts.hidden = none;
     // The Contacts window goes with its trip when it is put down.
     if (none && contactsOpen) closeContacts(false);
@@ -8555,6 +8584,12 @@
     // On touch a hold lifts the bar for dragging and can also fire this event,
     // so the menu stays shut while a finger carries a bar.
     if (touchDragging) return;
+    /* The menu acts on the bar under the pointer, so that bar is the one
+       picked, and its card waits until the menu shuts, so one thing floats
+       over the week at a time. */
+    menuHidesCard = true;
+    selectBar(bar);
+    placeBarOpen();
     prepareBarMenu(bar);
     popMenuAt(barMenu, e);
   });
@@ -8665,7 +8700,11 @@
     if (item.id === 'scheduler-bar-menu-unassign') await takeOffBus(bar);
   });
   // The Color submenu's own close bubbles here too, and must not hide the menu.
-  barMenu?.addEventListener('rux:menu-closed', e => { if (e.target === barMenu) barMenu.hidden = true; });
+  barMenu?.addEventListener('rux:menu-closed', e => {
+    if (e.target !== barMenu) return;
+    barMenu.hidden = true;
+    if (menuHidesCard) { menuHidesCard = false; placeBarOpen(); }
+  });
 
   // Fills the bar menu for one bar: which items apply, the Color chips and
   // the drivers' statuses.

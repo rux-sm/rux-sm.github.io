@@ -3591,13 +3591,15 @@ html:has(.scheduler-page[data-takeover]) {
    under the POs. */
 .scheduler-route-note { margin-block-start: var(--rux-spacing-03); }
 .scheduler-route-note[hidden] { display: none; }
-/* The trip's totals on the Stops heading's line, and a day's on its own
-   heading: grey, set to the end, wrapping onto a second line on a narrow
-   panel rather than cutting off the on-duty figures that end them. */
-.scheduler-route-sum,
-.scheduler-route-day__sum {
-  min-inline-size: 0;
-  text-align: end;
+/* The Summary's lines, the bus's times and then each day's figures and the
+   trip's: grey body text, 4px apart, wrapping between figures on a narrow
+   panel rather than inside one. */
+.scheduler-route-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rux-spacing-02);
+}
+.scheduler-route-summary__line {
   color: var(--rux-text-secondary);
   font-size: var(--rux-body-compact-01-font-size);
   font-weight: var(--rux-body-compact-01-font-weight);

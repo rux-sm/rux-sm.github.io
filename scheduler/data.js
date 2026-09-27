@@ -6307,7 +6307,10 @@
       const stopsList = rowList();
       stopsList.list.classList.add('scheduler-route-stops');
       // The trip's totals, on the Stops heading's line.
-      const summary = el('span', 'scheduler-route-sum');
+      /* The trip's figures, one home at the top of the tab: when the bus
+         leaves the yard, is spotted and is back, then each day's miles, drive
+         and on duty on a leg of more than one day, then the whole leg's. */
+      const summary = el('div', 'scheduler-route-summary');
       /* Stops can be added to a leg with its rows, or to one with none yet,
          whose Save writes them all. A leg rux-ui left with some rows but no
          pickup or yard row has nowhere to put one. */
@@ -6372,7 +6375,6 @@
          each with that day's own figures, and a stop dated outside the leg
          after them. */
       const dayOf = st => st.date || routeDates(r.leg).from;
-      let daySums = [];
       function drawStops() {
         stopsList.body.replaceChildren();
         /* The road between two places, between their rows: its drive and
@@ -6445,29 +6447,29 @@
           return legLine(null, r.dropDrive, r.dropMiles, room);
         };
         /* The two ends of the route, tiles like the stops': the pickup with when
-           the group departs, and when the bus leaves the yard and is spotted
-           there; the drop-off with when the group returns or arrives, and when
-           the bus is back at the yard. Each opens its own dialog. */
+           the group departs, the drop-off with when it returns or arrives. The
+           bus's yard and spot times are the summary's. Each opens its own
+           dialog. */
         const openEnd = (modal, field) => {
           window.Rux?.modal?.open?.(modal);
           document.getElementById(field)?.focus();
         };
-        const endTile = (lead, place, empty, much, meta, open) => {
+        // Marked P and D, named in full for the tooltip and a screen reader.
+        const endTile = (mark, word, place, empty, much, open) => {
           const name = place?.name || place?.address || empty;
-          return listRow({ name, much, meta, lead, title: [lead, name, much, meta].filter(Boolean).join(' · '),
+          return listRow({ name, much, lead: mark, title: [word, name, much].join(' · '),
             edit: open, items: [{ label: 'Edit', run: open }] });
         };
         const pickupTile = () => {
-          const leave = val('scheduler-f-leave'), yard = val('scheduler-f-depart'), spot = val('scheduler-f-spot');
-          return endTile('Pickup', r.pickupPlace, 'Add pickup', leave ? `Departs ${clock(leave)}` : 'No time',
-            [yard ? `Leaves yard ${clock(yard)}` : null, spot ? `Spot ${clock(spot)}` : null].filter(Boolean).join(' · '),
+          const leave = val('scheduler-f-leave');
+          return endTile('P', 'Pickup', r.pickupPlace, 'Add pickup', leave ? `Departs ${clock(leave)}` : 'No time',
             () => openEnd('scheduler-pickup-modal', 'scheduler-f-pickup'));
         };
         const dropTile = () => {
-          const end = val('scheduler-f-endtrip'), home = val('scheduler-f-return');
+          const end = val('scheduler-f-endtrip');
           const word = letOffAtPickup() ? 'Returns' : 'Arrives';
-          return endTile('Drop-off', letOffAtPickup() ? r.pickupPlace : r.dropPlace, 'Add drop-off',
-            end ? `${word} ${clock(end)}` : 'No time', home ? `Back at yard ${clock(home)}` : '',
+          return endTile('D', 'Drop-off', letOffAtPickup() ? r.pickupPlace : r.dropPlace, 'Add drop-off',
+            end ? `${word} ${clock(end)}` : 'No time',
             () => openEnd('scheduler-dropoff-modal', 'scheduler-f-endtrip'));
         };
         let num = 0;  // the stops numbered so far
@@ -6475,14 +6477,11 @@
         const { from, to } = routeDates(r.leg);
         const days = [];
         if (from && to && to > from) for (let d = from; d <= to && days.length < 31; d = dayAfter(d, 1)) days.push(d);
-        daySums = [];
         if (days.length > 1) {
           days.forEach((d, n) => {
             const head = el('li', 'scheduler-route-day');
-            const sum = el('span', 'scheduler-route-day__sum');
-            head.append(el('span', 'scheduler-route-day__name',
-              `Day ${n + 1} · ${parseISO(d).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}`), sum);
-            daySums.push([d, sum]);
+            head.appendChild(el('span', 'scheduler-route-day__name',
+              `Day ${n + 1} · ${parseISO(d).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}`));
             stopsList.body.appendChild(head);
             if (!daysDrawn++) stopsList.body.appendChild(pickupTile());
             r.list.forEach((st, i) => { if (dayOf(st) === d) stopsList.body.append(...rowFor(st, i, ++num)); });
@@ -6677,7 +6676,7 @@
         return [
           miles ? `${Math.round(miles)} mi` : null,
           short ? `${short === 1 ? 'one leg' : `${short} legs`} not measured`
-                : `${hm(known.reduce((n, [m]) => n + m, 0))} driving`,
+                : `${hm(known.reduce((n, [m]) => n + m, 0))} drive`,
           // On duty as the clock runs, and in brackets less the waits off duty or
           // in the sleeper berth, when there are any.
           needsTimes ? 'on duty needs times'
@@ -6702,9 +6701,31 @@
         const days = !!(from && to && to > from);
         if (days) span = null;
         const needs = !days && !(val('scheduler-f-leave') && val('scheduler-f-endtrip') && timesComplete(r.list));
-        showFigures(summary, figures(legs, span, rest, needs));
-        summary.title = [busSaid, rest ? `${hm(rest)} off the clock` : null].filter(Boolean).join(' · ');
-        for (const [d, el2] of daySums) showFigures(el2, dayFigures(d, daySums[0][0], daySums.at(-1)[0]));
+        const line = (label, text) => {
+          const p = el('p', 'scheduler-route-summary__line');
+          showFigures(p, `${label} · ${text}`);
+          return p;
+        };
+        const yardOut = val('scheduler-f-depart'), spot = val('scheduler-f-spot'), yardBack = val('scheduler-f-return');
+        const lastDay = days ? ` ${parseISO(to).toLocaleDateString(undefined, { weekday: 'short' })}` : '';
+        const times = [yardOut ? `Start ${clock(yardOut)}` : null, spot ? `Spot ${clock(spot)}` : null,
+          yardBack ? `End ${clock(yardBack)}${lastDay}` : null].filter(Boolean);
+        const lines = [];
+        if (times.length) {
+          const p = el('p', 'scheduler-route-summary__line');
+          showFigures(p, times.join(' · '));
+          p.title = busSaid;
+          lines.push(p);
+        }
+        if (days) {
+          const all = [];
+          for (let d = from; d <= to && all.length < 31; d = dayAfter(d, 1)) all.push(d);
+          all.forEach((d, n) => lines.push(line(`Day ${n + 1}`, dayFigures(d, all[0], all.at(-1)))));
+        }
+        const total = line(days ? 'Total' : 'Trip', figures(legs, span, rest, needs));
+        if (rest) total.title = `${hm(rest)} off the clock`;
+        lines.push(total);
+        summary.replaceChildren(...lines);
       }
 
       /* One day's figures: the legs that end that day, the yard's leg out on
@@ -6747,10 +6768,11 @@
         return figures(legs, span, rest, needs && (mine.length > 0 || d === first || d === last));
       }
 
-      const routeSection = section(routeHeading(), stopsBody, summary);
+      const routeSection = section(routeHeading(), stopsBody);
       const routeTitle = routeSection.querySelector('.scheduler-panel-section__title');
       panelRoute.append(
         routeBox,
+        section('Summary', summary),
         routeSection,
       );
       drawStops();

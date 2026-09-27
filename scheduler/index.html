@@ -637,6 +637,12 @@
           <h2 class="rux--side-panel__collapsed-title-text" id="scheduler-viewer-title-collapsed">Document</h2>
         </div>
         <div class="rux--side-panel__decorator-and-close">
+          <!-- The viewer's three sizes: Carbon's medium, large and extra-large
+               panels, a step wider each press and back to medium from the
+               widest. data.js swaps the drawing and keeps the choice. -->
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--md rux--layout--size-md" id="scheduler-viewer-size" aria-label="Larger document" title="Larger document">
+            <svg class="rux--side-panel--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-open_in_full"/></svg>
+          </button>
           <button type="button" class="rux--side-panel__close-button rux--btn rux--btn--primary rux--btn--icon-only rux--btn--md" id="scheduler-viewer-close" aria-label="Close document">
             <svg class="rux--side-panel--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
           </button>

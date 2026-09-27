@@ -8556,7 +8556,7 @@
       ['roster', availOn, asideSlot?.classList.contains('scheduler-aside--wide')
         ? '--scheduler-panel-wide-w' : '--scheduler-panel-w'],
       ['editor', !!tripEl && !tripEl.hidden, '--scheduler-editor-narrow-w'],
-      ['viewer', !!viewerEl && !viewerEl.hidden, '--scheduler-viewer-w'],
+      ['viewer', !!viewerEl && !viewerEl.hidden, `--scheduler-viewer-${pageEl.dataset.viewer ?? 'md'}-w`],
     ].filter(([, on]) => on);
     const names = open.map(([name]) => name);
     openOrder = openOrder.filter(name => names.includes(name))
@@ -11928,6 +11928,39 @@
     setEditorSize(wide);
   });
   try { if (localStorage.getItem(EDITOR_SIZE_KEY) === 'wide') setEditorSize(true); } catch { /* narrow */ }
+
+  /* THE VIEWER'S THREE SIZES. Each press of the size button takes the panel a
+     Carbon size wider, medium to large to extra-large, and the widest goes
+     back to medium. A wider panel is a larger page, since the document fits
+     its width. The choice is this browser's, kept for the next document. */
+  const VIEWER_SIZES = ['md', 'lg', 'xl'];
+  const VIEWER_CLASSES = { md: 'rux--side-panel--md', lg: 'rux--side-panel--lg', xl: 'rux--side-panel--xl' };
+  const VIEWER_SIZE_KEY = 'rux.scheduler.viewer-size';
+  const viewerSizeBtn = document.getElementById('scheduler-viewer-size');
+  const viewerPanelEl = document.getElementById('scheduler-viewer-panel');
+  function setViewerSize(size) {
+    if (!pageEl || !viewerPanelEl) return;
+    if (size === 'md') delete pageEl.dataset.viewer; else pageEl.dataset.viewer = size;
+    for (const each of VIEWER_SIZES) viewerPanelEl.classList.toggle(VIEWER_CLASSES[each], each === size);
+    if (viewerSizeBtn) {
+      const widest = size === VIEWER_SIZES.at(-1);
+      const words = widest ? 'Smaller document' : 'Larger document';
+      viewerSizeBtn.setAttribute('aria-label', words);
+      viewerSizeBtn.title = words;
+      viewerSizeBtn.querySelector('use')?.setAttribute('href', widest ? '#m-close_fullscreen' : '#m-open_in_full');
+    }
+    placeRoom();
+  }
+  viewerSizeBtn?.addEventListener('click', () => {
+    const now = VIEWER_SIZES.indexOf(pageEl?.dataset.viewer ?? 'md');
+    const size = VIEWER_SIZES[(now + 1) % VIEWER_SIZES.length];
+    try { localStorage.setItem(VIEWER_SIZE_KEY, size); } catch { /* kept for this visit */ }
+    setViewerSize(size);
+  });
+  try {
+    const kept = localStorage.getItem(VIEWER_SIZE_KEY);
+    if (VIEWER_SIZES.includes(kept) && kept !== 'md') setViewerSize(kept);
+  } catch { /* medium */ }
   /* Leaving whichever panel is in front of the board, which Escape and a press
      on the scrim both do. It answers whether there was one, so Escape can go
      on to what it means with nothing in front. */

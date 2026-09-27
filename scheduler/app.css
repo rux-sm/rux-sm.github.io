@@ -17,8 +17,8 @@
 
 /* The panels beside the board. The roster is Carbon's `sm`, and showing both
    weeks its `lg`; the trip editor its `md` and, made larger, its `xl`; and the
-   document viewer is wide because its width is the document's zoom: a letter
-   page in 20rem renders 11pt text at under 6px. `placeRoom` in data.js prices
+   document viewer its `md`, `lg` or `xl`, never narrower, because its width is
+   the document's zoom: a letter page in 20rem renders 11pt text at under 6px. `placeRoom` in data.js prices
    the panels by reading these back off them, so the arithmetic and the layout
    cannot drift. */
 :root {
@@ -27,7 +27,12 @@
      smallest of its widths that holds a second week of 2rem squares and still
      leaves the names their room. */
   --scheduler-panel-wide-w: 40rem;
-  --scheduler-viewer-w: 30rem;
+  /* The document viewer, Carbon's `rux--side-panel--md`, and made larger its
+     `lg` and then its `xl`. `--scheduler-viewer-w` is the one showing. */
+  --scheduler-viewer-md-w: 30rem;
+  --scheduler-viewer-lg-w: 40rem;
+  --scheduler-viewer-xl-w: 65rem;
+  --scheduler-viewer-w: var(--scheduler-viewer-md-w);
   /* The trip editor, Carbon's `rux--side-panel--md`, and made larger its
      `rux--side-panel--xl`. */
   --scheduler-editor-narrow-w: 30rem;
@@ -1245,11 +1250,14 @@ button.scheduler-row-head__num::after {
   block-size: max(24rem, calc(100dvh - 15rem));
 }
 
-/* The itinerary panel's column, left of everything on the board. 30rem matches
-   the panel's `rux--side-panel--md` class, and the two move together. Like the
+/* The itinerary panel's column, left of everything on the board. Its width
+   matches the panel's `rux--side-panel--md`, `--lg` or `--xl` class, which
+   data.js swaps together with the page's `data-viewer`. Like the
    editor's column it never shrinks and app.js gives it a definite height. A
    document always opens: where the board cannot hold this column the panel
    comes in front of it instead, and is never sent to a browser tab. */
+.scheduler-page[data-viewer="lg"] { --scheduler-viewer-w: var(--scheduler-viewer-lg-w); }
+.scheduler-page[data-viewer="xl"] { --scheduler-viewer-w: var(--scheduler-viewer-xl-w); }
 .scheduler-viewer {
   order: -2;
   flex: 0 0 var(--scheduler-viewer-w);

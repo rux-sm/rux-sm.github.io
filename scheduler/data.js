@@ -6066,9 +6066,15 @@
         const spot = toMin(val('scheduler-f-spot'));
         setVal('scheduler-f-depart', spot != null && r.driveOut != null ? fromMin(spot - r.driveOut) : '');
       };
+      /* The spot is the route times' minutes before Departs, unless the
+         customer gave a time of their own: one that differs from that when the
+         trip opens, or one typed into Spot, stays when Departs moves.
+         Clearing Spot hands it back to Departs. */
+      const saidLeave = toMin(r.first?.depart_prev), saidSpot = toMin(r.pickup?.spot);
+      let spotTyped = saidSpot != null && saidLeave != null && saidSpot !== ((saidLeave - routeTimes.spot + 1440) % 1440);
       const recalcSpot = () => {
         const leave = toMin(val('scheduler-f-leave'));
-        setVal('scheduler-f-spot', leave == null ? '' : fromMin(leave - routeTimes.spot));
+        if (!spotTyped) setVal('scheduler-f-spot', leave == null ? '' : fromMin(leave - routeTimes.spot));
         recalcYard();
       };
       const recalcReturn = () => {
@@ -6259,7 +6265,9 @@
       pickupFields.append(
         full(pickupField),
         nameFor(pickupField, pickupName),
-        full(timeField('scheduler-f-leave', 'Departs', r.first?.depart_prev)),
+        // Spot first, since the bus is there before the group leaves.
+        pair(timeField('scheduler-f-spot', 'Spot', r.pickup?.spot),
+          timeField('scheduler-f-leave', 'Departs', r.first?.depart_prev)),
       );
       dropFields.append(
         sameNote, dropOpen, dropBox,
@@ -6275,7 +6283,7 @@
       // The worked-out times, kept where Save reads them.
       const routeBox = el('div');
       routeBox.hidden = true;
-      routeBox.append(kept('scheduler-f-spot', r.pickup?.spot), kept('scheduler-f-depart', r.pickup?.depart_prev),
+      routeBox.append(kept('scheduler-f-depart', r.pickup?.depart_prev),
         kept('scheduler-f-return', r.back?.arrive));
 
       /* ── The stops ──
@@ -6801,6 +6809,10 @@
       fillMissingDrives();
 
       document.getElementById('scheduler-f-leave')?.addEventListener('input', recalcSpot);
+      document.getElementById('scheduler-f-spot')?.addEventListener('input', () => {
+        spotTyped = !!val('scheduler-f-spot');
+        if (spotTyped) recalcYard(); else recalcSpot();
+      });
       document.getElementById('scheduler-f-endtrip')?.addEventListener('input', recalcReturn);
       // A name typed by hand belongs to whichever place it names.
       document.getElementById('scheduler-f-pickupname')?.addEventListener('input', () => {

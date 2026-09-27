@@ -7275,8 +7275,8 @@
     return !panelEl.hidden && !!panelArgs?.ref && !panelArgs.draft && bar.dataset.tripId === panelArgs.ref.tripId;
   }
 
-  /* The shortcut bar follows the selection, the trip in the editor included:
-     there its first slot closes the editor. It is placed the way a tooltip is:
+  /* The shortcut bar follows the selection, except onto the bar the editor
+     holds, whose toolbar already carries the same slots. It is placed the way a tooltip is:
      above the trip where there is room and below it where there is not, and
      slid back inside the board at either edge with its arrow still pointing at
      the trip. Nothing is taken from the trip itself, so the slots are the same
@@ -7292,7 +7292,7 @@
   function placeBarOpen(bar = (peekBar?.isConnected ? peekBar : null) ?? selectedBar()) {
     drawPanelShortcuts();
     if (!barShortcuts) return;
-    const none = !bar?.dataset.tripId || gridEl.querySelector('.scheduler-bar--dragging');
+    const none = !bar?.dataset.tripId || isEditorBar(bar) || gridEl.querySelector('.scheduler-bar--dragging');
     barShortcuts.hidden = none;
     // The Contacts window goes with its trip when it is put down.
     if (none && contactsOpen) closeContacts(false);
@@ -7384,9 +7384,7 @@
 
   /* The other bars of the selected trip, and of the trip in the editor: its
      other buses and its other leg, ringed as app.css draws them, so a trip's
-     buses are found together on a busy day. The editor's are also locked.
-     Closing is the shortcut bar's first slot and the editor's own close
-     button. */
+     buses are found together on a busy day. The editor's are also locked. */
   function markTripBars() {
     const picked = selectedBar();
     for (const bar of gridEl.querySelectorAll('.scheduler-bar[data-trip-id]')) {
@@ -7773,7 +7771,7 @@
   document.fonts?.ready.then(() => { fitTimes(); });
   /* The shortcut bar scrolls with its trip, but which side of the trip it fits
      on changes as the board scrolls under the sticky day band, so it is placed
-     again. Close trip is a tab on its bar and needs nothing. */
+     again. */
   schEl.addEventListener('scroll', () => {
     if (!barShortcuts?.hidden) requestAnimationFrame(() => placeBarOpen());
     nameBoardCorner();
@@ -10377,17 +10375,10 @@
   };
 
   /* `short` is the word under the slot on the docked sheet, where a phone has
-     no hover to show the name; `short_for` changes it with `label_for`. */
+     no hover to show the name. */
   const SHORTCUT_ACTIONS = [
-    /* Slot 1 works the editor both ways: it opens the trip, and on the very bar
-       the editor holds it closes it. That is what the tab down the bar's start
-       edge used to do, without taking any of the bar's writing. */
-    { id: 'open', label: 'Open trip', icon: '#m-open_in_new',
-      label_for: bar => (isEditorBar(bar) ? 'Close trip' : 'Open trip'),
-      short: 'Open', short_for: bar => (isEditorBar(bar) ? 'Close' : 'Open'),
-      icon_for: bar => (isEditorBar(bar) ? '#m-close' : '#m-open_in_new'),
-      blocked: () => null,
-      run: bar => (isEditorBar(bar) ? whenSafe(() => closePanel()) : openSelected()) },
+    { id: 'open', label: 'Open trip', icon: '#m-open_in_new', short: 'Open',
+      blocked: () => null, run: () => openSelected() },
     // Opens the itinerary, or uploads one on a trip that has none, as the
     // right-click menu swaps the two.
     { id: 'itinerary', label: 'Open or upload itinerary', icon: '#m-attachment', short: 'Itinerary',
@@ -10530,13 +10521,10 @@
     // choices, because every trip has people to reach and updates to write.
     slots.push('contacts', 'add_update');
     const trip = panelIndex.trips.get(bar.dataset.tripId);
-    /* The trip open in the editor keeps only its slots: the panel beside it
-       already shows its updates, and a card would stand out from under the
-       panel with nothing to point at. */
-    const carded = !!trip && !isEditorBar(bar);
+    const carded = !!trip;
     const key = [bar.dataset.tripId, bar.dataset.leg, bar.dataset.itineraryId,
       bar.dataset.assignmentId, bar.dataset.busId, bar.dataset.needHotel,
-      bar.dataset.hotelBooked, isEditorBar(bar), slots.join(), cardKey(trip),
+      bar.dataset.hotelBooked, slots.join(), cardKey(trip),
       JSON.stringify(barFacts.get(bar) ?? null)].join('|');
     // The same slots on the same bar are left alone, so a focused slot keeps focus.
     // The slots are counted rather than every child, because the docked bar
@@ -10556,7 +10544,7 @@
         btn.append(svgUse('#m-motion_photos_on', '16', '0 0 32 32'), el('span', 'scheduler-bar-shortcut__label', 'Add'));
         return btn;
       }
-      // Open trip and Mark hotel booked each say which way they act on this bar.
+      // Mark hotel booked and Assign driver each say which way they act on this bar.
       const why = action.blocked(bar);
       const label = why ?? (action.label_for ? action.label_for(bar) : action.label);
       btn.dataset.shortcut = action.id;
@@ -10564,7 +10552,7 @@
       btn.title = label;
       if (why) btn.setAttribute('aria-disabled', 'true');
       btn.append(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '16', '0 0 32 32'),
-        el('span', 'scheduler-bar-shortcut__label', action.short_for ? action.short_for(bar) : action.short));
+        el('span', 'scheduler-bar-shortcut__label', action.short));
       return btn;
     }), ...(carded ? [drawCard(trip, bar)] : []));
     barShortcuts.toggleAttribute('data-card', carded);
@@ -10972,7 +10960,7 @@
       return { id, why,
         label: why ?? (action.label_for && bar ? action.label_for(bar) : action.label),
         icon: action.icon_for && bar ? action.icon_for(bar) : action.icon,
-        short: action.short_for && bar ? action.short_for(bar) : action.short };
+        short: action.short };
     });
     // The same slots are left alone, so a focused slot keeps focus.
     const key = JSON.stringify(slots);

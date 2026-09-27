@@ -6504,7 +6504,7 @@
         if (days.length > 1) {
           days.forEach((d, n) => {
             const head = el('li', 'scheduler-route-day');
-            head.appendChild(el('span', 'scheduler-route-day__name',
+            head.appendChild(el('span', 'scheduler-panel-section__title scheduler-route-day__name',
               `Day ${n + 1} · ${parseISO(d).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}`));
             stopsList.body.appendChild(head);
             if (!daysDrawn++) stopsList.body.appendChild(pickupTile());
@@ -6515,7 +6515,7 @@
           // A one-day leg is headed by its date alone.
           if (from) {
             const head = el('li', 'scheduler-route-day');
-            head.appendChild(el('span', 'scheduler-route-day__name',
+            head.appendChild(el('span', 'scheduler-panel-section__title scheduler-route-day__name',
               parseISO(from).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })));
             stopsList.body.appendChild(head);
           }

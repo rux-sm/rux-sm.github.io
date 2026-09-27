@@ -3613,13 +3613,10 @@ html:has(.scheduler-page[data-takeover]) {
   justify-content: space-between;
   gap: var(--rux-spacing-05);
   padding-block: var(--rux-spacing-05) var(--rux-spacing-03);
-  font-size: var(--rux-heading-compact-01-font-size);
-  font-weight: var(--rux-heading-compact-01-font-weight);
-  line-height: var(--rux-heading-compact-01-line-height);
-  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
 }
 .scheduler-route-day:first-child { padding-block-start: 0; }
-.scheduler-route-day__name { flex: none; }
+/* The day's name is a section title, in its type; the row sets its spacing. */
+.scheduler-route-day__name { flex: none; margin-block-end: 0; }
 /* The drive between two stops, on its own line between their rows: a short
    rule, the bus, then the time and miles in grey, set in from the tiles' edge
    so it reads as the road and not as a record. */

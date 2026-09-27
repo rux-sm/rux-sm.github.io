@@ -1516,14 +1516,16 @@ button.scheduler-row-head__num::after {
   flex-wrap: wrap;
   gap: var(--rux-spacing-03) var(--rux-spacing-05);
 }
-/* Paid and Balance side by side, each a small label over its amount. */
-.scheduler-billing-figures {
+/* Figures side by side, each a small label over its value, one column each:
+   Billing's Paid and Balance, the Route summary's Start, Spot and End. */
+.scheduler-figures {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
   gap: var(--rux-spacing-05);
   margin: 0;
 }
-.scheduler-billing-figures dt {
+.scheduler-figures dt {
   font-size: var(--rux-label-01-font-size);
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
@@ -1531,7 +1533,7 @@ button.scheduler-row-head__num::after {
 }
 /* The amount sits 4px under its label: read-only, so tighter than a field's
    8px, with room to breathe. */
-.scheduler-billing-figures dd {
+.scheduler-figures dd {
   margin: var(--rux-spacing-02) 0 0;
   font-size: var(--rux-heading-compact-02-font-size);
   font-weight: var(--rux-heading-compact-02-font-weight);
@@ -3591,22 +3593,9 @@ html:has(.scheduler-page[data-takeover]) {
    under the POs. */
 .scheduler-route-note { margin-block-start: var(--rux-spacing-03); }
 .scheduler-route-note[hidden] { display: none; }
-/* The Summary's lines, the bus's times and then each day's figures and the
-   trip's: grey body text, 4px apart, wrapping between figures on a narrow
-   panel rather than inside one. */
-.scheduler-route-summary {
-  display: flex;
-  flex-direction: column;
-  gap: var(--rux-spacing-02);
-}
-.scheduler-route-summary__line {
-  color: var(--rux-text-secondary);
-  font-size: var(--rux-body-compact-01-font-size);
-  font-weight: var(--rux-body-compact-01-font-weight);
-  line-height: var(--rux-body-compact-01-line-height);
-  letter-spacing: var(--rux-body-compact-01-letter-spacing);
-}
-.scheduler-route-figure { white-space: nowrap; }
+/* The Summary: the bus's times as figures, then a compact table of each
+   day's miles, drive and on duty, its total row in the heading weight. */
+.scheduler-route-total td { font-weight: var(--rux-heading-compact-01-font-weight); }
 /* A day's heading over its stops, in the list, 16px above and 8px below. */
 .scheduler-route-day {
   display: flex;

@@ -6310,7 +6310,7 @@
       /* The trip's figures, one home at the top of the tab: when the bus
          leaves the yard, is spotted and is back, then each day's miles, drive
          and on duty on a leg of more than one day, then the whole leg's. */
-      const summary = el('div', 'scheduler-route-summary');
+      const summary = el('div', 'rux--stack-vertical rux--stack-scale-5');
       /* Stops can be added to a leg with its rows, or to one with none yet,
          whose Save writes them all. A leg rux-ui left with some rows but no
          pickup or yard row has nowhere to put one. */
@@ -6668,25 +6668,20 @@
          miles and driving come from the places alone and always show. */
       const timesComplete = stops => stops.every(st => st.arrive)
         && stops.slice(0, -1).every(st => !st.dwell || st.dwell === 'on' || st.leave);
+      // One row of the Summary's table: miles, drive and on duty, a dash for none.
       const figures = (legs, span, rest, needsTimes = false) => {
-        if (!legs.length && span == null && !needsTimes) return 'No driving';
         const known = legs.filter(([m]) => m != null);
         const short = legs.length - known.length;
         const miles = legs.reduce((t, [, mi]) => t + (Number(mi) || 0), 0);
         return [
-          miles ? `${Math.round(miles)} mi` : null,
-          short ? `${short === 1 ? 'one leg' : `${short} legs`} not measured`
-                : `${hm(known.reduce((n, [m]) => n + m, 0))} drive`,
+          miles ? `${Math.round(miles)} mi` : '—',
+          !legs.length ? '—' : short ? `${short === 1 ? 'One leg' : `${short} legs`} not measured`
+            : hm(known.reduce((n, [m]) => n + m, 0)),
           // On duty as the clock runs, and in brackets less the waits off duty or
           // in the sleeper berth, when there are any.
-          needsTimes ? 'on duty needs times'
-            : span == null ? null : `${hm(span)} on duty${rest ? ` (${hm(span - rest)})` : ''}`,
-        ].filter(Boolean).join(' · ');
-      };
-      // Each figure is kept whole, so a narrow panel wraps between figures.
-      const showFigures = (node, text) => {
-        node.replaceChildren(...text.split(' · ').flatMap((part, i) =>
-          [...(i ? [' · '] : []), el('span', 'scheduler-route-figure', part)]));
+          needsTimes ? 'Needs times'
+            : span == null ? '—' : `${hm(span)}${rest ? ` (${hm(span - rest)})` : ''}`,
+        ];
       };
       function drawTotals() {
         const legs = [[r.driveOut, r.driveMiles], ...legStops().map(st => [st.drive, st.miles]),
@@ -6701,31 +6696,43 @@
         const days = !!(from && to && to > from);
         if (days) span = null;
         const needs = !days && !(val('scheduler-f-leave') && val('scheduler-f-endtrip') && timesComplete(r.list));
-        const line = (label, text) => {
-          const p = el('p', 'scheduler-route-summary__line');
-          showFigures(p, `${label} · ${text}`);
-          return p;
-        };
         const yardOut = val('scheduler-f-depart'), spot = val('scheduler-f-spot'), yardBack = val('scheduler-f-return');
         const lastDay = days ? ` ${parseISO(to).toLocaleDateString(undefined, { weekday: 'short' })}` : '';
-        const times = [yardOut ? `Start ${clock(yardOut)}` : null, spot ? `Spot ${clock(spot)}` : null,
-          yardBack ? `End ${clock(yardBack)}${lastDay}` : null].filter(Boolean);
-        const lines = [];
-        if (times.length) {
-          const p = el('p', 'scheduler-route-summary__line');
-          showFigures(p, times.join(' · '));
-          p.title = busSaid;
-          lines.push(p);
+        const times = el('dl', 'scheduler-figures');
+        for (const [label, time, after] of [['Start', yardOut, ''], ['Spot', spot, ''], ['End', yardBack, lastDay]]) {
+          const box = el('div');
+          box.append(el('dt', null, label), el('dd', null, time ? `${clock(time)}${after}` : '—'));
+          times.appendChild(box);
         }
+        times.title = busSaid;
+        const rows = [];
         if (days) {
           const all = [];
           for (let d = from; d <= to && all.length < 31; d = dayAfter(d, 1)) all.push(d);
-          all.forEach((d, n) => lines.push(line(`Day ${n + 1}`, dayFigures(d, all[0], all.at(-1)))));
+          all.forEach((d, n) => rows.push([`Day ${n + 1}`, ...dayFigures(d, all[0], all.at(-1))]));
         }
-        const total = line(days ? 'Total' : 'Trip', figures(legs, span, rest, needs));
-        if (rest) total.title = `${hm(rest)} off the clock`;
-        lines.push(total);
-        summary.replaceChildren(...lines);
+        rows.push(['Total', ...figures(legs, span, rest, needs)]);
+        const table = el('table', 'rux--data-table rux--data-table--xs');
+        const head = el('tr');
+        for (const h of ['Day', 'Miles', 'Drive', 'On duty']) {
+          const th = el('th');
+          th.scope = 'col';
+          th.appendChild(el('div', 'rux--table-header-label', days ? h : h === 'Day' ? '' : h));
+          head.appendChild(th);
+        }
+        const thead = el('thead');
+        thead.appendChild(head);
+        const tbody = el('tbody');
+        rows.forEach((cells, i) => {
+          const tr = el('tr', i === rows.length - 1 ? 'scheduler-route-total' : null);
+          for (const c of cells) tr.appendChild(el('td', null, c));
+          if (i === rows.length - 1 && rest) tr.title = `${hm(rest)} off the clock`;
+          tbody.appendChild(tr);
+        });
+        table.append(thead, tbody);
+        const wrap = el('div', 'rux--data-table-content');
+        wrap.appendChild(table);
+        summary.replaceChildren(times, wrap);
       }
 
       /* One day's figures: the legs that end that day, the yard's leg out on
@@ -6770,10 +6777,11 @@
 
       const routeSection = section(routeHeading(), stopsBody);
       const routeTitle = routeSection.querySelector('.scheduler-panel-section__title');
+      // The kept times go last, so the Summary is the tab's first section.
       panelRoute.append(
-        routeBox,
         section('Summary', summary),
         routeSection,
+        routeBox,
       );
       drawStops();
       drawTimeline();
@@ -6945,7 +6953,7 @@
       const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
 
       const statusLine = el('div', 'scheduler-billing-status');
-      const figures = el('dl', 'scheduler-billing-figures');
+      const figures = el('dl', 'scheduler-figures');
       const confirmWhy = el('p', 'rux--form__helper-text');
       const drawSummary = () => {
         // The PO amount is the sum of the PO rows, so coverage counts every PO.

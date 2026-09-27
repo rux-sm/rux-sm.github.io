@@ -249,12 +249,20 @@
        the New button does not move. */
     view.count(shown.length, pool.length);
 
+    /* Next service and Compliance show once any unit has a date in them, so a
+       fleet with none on file is not two columns of Not booked and Not on
+       file. They are read from every unit, so the Show choice never moves them. */
+    const showService = buses.some(b => day(b.next_service));
+    const showCompliance = buses.some(b => COMPLIANCE_DATES.some(([, col]) => day(b[col])));
+    document.querySelector('th[data-sort="service"]').hidden = !showService;
+    document.querySelector('th[data-sort="compliance"]').hidden = !showCompliance;
+
     const body = $('scheduler-buses-rows');
     body.replaceChildren();
     if (!shown.length) {
       const tr = el('tr');
       const td = el('td', null, query ? `No units match “${query}”.` : 'No units here.');
-      td.colSpan = 6;
+      td.colSpan = 4 + showService + showCompliance;
       tr.appendChild(td);
       body.appendChild(tr);
       return;
@@ -293,6 +301,8 @@
       if (legalState.hint) legal.title = legalState.hint;
       legal.appendChild(indicator(legalState));
 
+      due.hidden = !showService;
+      legal.hidden = !showCompliance;
       tr.append(which, seats, kit, status, due, legal);
       body.appendChild(tr);
     }

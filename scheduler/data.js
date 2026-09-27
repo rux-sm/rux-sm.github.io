@@ -1725,8 +1725,12 @@
      hears one sentence, and the full text in `title`. */
   /* A row of a list. Its menu is Edit and Remove, or `items` in their place
      for a list that also moves its rows. */
+  /* With `context`, the row has no menu button, which gives its line the
+     room: its `items`, if any, open where it is right-clicked, or held on a
+     touch screen, which on iOS sends no right-click of its own. A hold that
+     opens the menu keeps its tap from opening the row as well. */
   const listRow = ({ name, meta, much, tag, lead, title, edit, remove, removeLabel,
-                    open: openRow = edit, openLabel = `Edit ${title}`, editText, removeText, items }) => {
+                    open: openRow = edit, openLabel = `Edit ${title}`, editText, removeText, items, context }) => {
     const li = el('li', 'rux--layer-two scheduler-item');
     const open = el('button', 'rux--tile rux--tile--clickable scheduler-item__open');
     open.type = 'button';
@@ -1743,7 +1747,39 @@
     open.append(top, el('span', 'scheduler-item__meta', meta || ''));
     open.title = title;
     open.setAttribute('aria-label', openLabel);
-    open.addEventListener('click', openRow);
+    let held = false;
+    open.addEventListener('click', e => {
+      if (held) { held = false; e.preventDefault(); return; }
+      openRow(e);
+    });
+    if (context) {
+      li.classList.add('scheduler-item--context');
+      li.append(open);
+      if (!items) return li;
+      const show = point => openItemsMenu(open, items, `Actions for ${title}`, point);
+      // Kept from the page's own menu handling, which would shut it at once.
+      open.addEventListener('contextmenu', e => { e.preventDefault(); e.stopPropagation(); show(e); });
+      open.addEventListener('pointerdown', down => {
+        held = false;
+        if (down.pointerType !== 'touch' || !down.isPrimary) return;
+        const mine = e => e.pointerId === down.pointerId;
+        const move = e => {
+          if (mine(e) && Math.hypot(e.clientX - down.clientX, e.clientY - down.clientY) > TOUCH_SLOP) end();
+        };
+        const up = e => { if (mine(e)) end(); };
+        const end = () => {
+          clearTimeout(hold);
+          open.removeEventListener('pointermove', move);
+          open.removeEventListener('pointerup', up);
+          open.removeEventListener('pointercancel', up);
+        };
+        const hold = setTimeout(() => { end(); held = true; show(down); }, TOUCH_HOLD_MS);
+        open.addEventListener('pointermove', move);
+        open.addEventListener('pointerup', up);
+        open.addEventListener('pointercancel', up);
+      });
+      return li;
+    }
     const more = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger scheduler-item__menu');
     more.type = 'button';
     more.setAttribute('aria-haspopup', 'true');
@@ -1778,7 +1814,9 @@
     menu.style.insetInlineStart = `${Math.round(left)}px`;
     menu.style.insetBlockStart = `${Math.round(top)}px`;
   };
-  const openItemsMenu = (trigger, items, label) => {
+  /* `point`, a pointer event, places the menu where the pointer is, for a
+     right-click or a hold; without it the menu drops from `trigger`. */
+  const openItemsMenu = (trigger, items, label, point) => {
     if (!itemsMenuEl) {
       itemsMenuEl = el('ul', 'rux--menu rux--menu--sm rux--menu--open rux--menu--shown');
       itemsMenuEl.setAttribute('role', 'menu');
@@ -1824,7 +1862,16 @@
       });
       return li;
     }));
-    placeMenuAt(menu, trigger);
+    if (point) {
+      menu.hidden = false;
+      menu.style.position = 'fixed';
+      const { width, height } = menu.getBoundingClientRect();
+      const fit = (at, size, max) => (at + size <= max ? at : Math.max(0, at - size));
+      menu.style.insetInlineStart = `${Math.round(fit(point.clientX, width, window.innerWidth))}px`;
+      menu.style.insetBlockStart = `${Math.round(fit(point.clientY, height, window.innerHeight))}px`;
+    } else {
+      placeMenuAt(menu, trigger);
+    }
     window.Rux?.menu?.open?.(menu, null);
     trigger.setAttribute('aria-expanded', 'true');
     itemsMenuTrigger = trigger;
@@ -6324,6 +6371,17 @@
          and on duty on a leg of more than one day, then the whole leg's.
          One tile, the figures padded and the table flush with its edges. */
       const summary = el('div', 'rux--tile scheduler-summary');
+      // The Summary's menu, at the end of its title line: the route times,
+      // which apply to every trip.
+      const summaryMenu = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger');
+      summaryMenu.type = 'button';
+      summaryMenu.setAttribute('aria-haspopup', 'true');
+      summaryMenu.setAttribute('aria-expanded', 'false');
+      summaryMenu.setAttribute('aria-label', 'Summary options');
+      summaryMenu.appendChild(svgUse('#m-more_vert', '16', '0 0 32 32'));
+      summaryMenu.lastChild.setAttribute('class', 'rux--btn__icon');
+      summaryMenu.addEventListener('click', () => openItemsMenu(summaryMenu,
+        [{ label: 'Route times', run: openRouteTimes }], 'Summary options'));
       const summaryLayer = el('div', 'rux--layer-two');
       summaryLayer.appendChild(summary);
       /* Stops can be added to a leg with its rows, or to one with none yet,
@@ -6331,22 +6389,9 @@
          pickup or yard row has nowhere to put one. */
       const canList = !!(r.pickup && r.back) || !r.all.some(x => x.leg === r.leg);
       const listNote = note(canList ? '' : "This leg has no pickup or yard row, so stops can't be added here.");
-      /* The route times the figures use, under the list, with the control
-         that changes them for every trip. */
-      const timesLine = el('p', 'rux--form__helper-text scheduler-route-times');
-      const timesWords = el('span');
-      const timesEdit = el('button', 'rux--link rux--link--sm scheduler-route-open', 'Change');
-      timesEdit.type = 'button';
-      timesEdit.addEventListener('click', openRouteTimes);
-      timesLine.append(timesWords, timesEdit);
-      const drawTimesLine = () => {
-        const { spot, pre, post, slow } = routeTimes;
-        timesWords.textContent = `Spot ${spot} min before departure · Pre-trip ${pre} min · Post-trip ${post} min · Drives +${slow}%`;
-      };
-      drawTimesLine();
-      // A new spot time applies when Departs is next typed; the figures redraw now.
-      routeTimesDrawn = () => { drawTimesLine(); drawTotals(); };
-      stopsBody.append(stopsList.list, listNote, timesLine);
+      // A change to the route times redraws the figures; a new spot applies when Departs is next typed.
+      routeTimesDrawn = () => drawTotals();
+      stopsBody.append(stopsList.list, listNote);
 
       // A stop left at an earlier time than it was reached is left the next day.
       const waitOf = st => {
@@ -6443,7 +6488,7 @@
           const lastOfRound = routeRound() && r.list.length === 1;
           const move = by => { r.list.splice(i + by, 0, r.list.splice(i, 1)[0]); touch(); };
           const row = listRow({
-            name, much, meta, lead: String(n),
+            name, much, meta, lead: String(n), context: true,
             title: [`Stop ${n}`, name, much, drove ? `${drove} drive` : null, meta,
               here ? null : 'No location, so the drive is measured past it'].filter(Boolean).join(' · '),
             edit: () => openStopDialog(i),
@@ -6481,8 +6526,7 @@
         // Marked P and D, named in full for the tooltip and a screen reader.
         const endTile = (mark, word, place, empty, much, open) => {
           const name = place?.name || place?.address || empty;
-          return listRow({ name, much, lead: mark, title: [word, name, much].join(' · '),
-            edit: open, items: [{ label: 'Edit', run: open }] });
+          return listRow({ name, much, lead: mark, title: [word, name, much].join(' · '), edit: open, context: true });
         };
         const pickupTile = () => {
           const leave = val('scheduler-f-leave');
@@ -6700,19 +6744,23 @@
       const timesComplete = stops => stops.every(st => st.arrive)
         && stops.slice(0, -1).every(st => !st.dwell || st.dwell === 'on' || st.leave);
       // One row of the Summary's table: miles, drive and on duty, a dash for none.
+      /* A row's cells: miles, drive, on duty as the clock runs and on duty
+         less the waits off duty or in the sleeper berth, a dash for none. The
+         row keeps its raw figures, which the Total adds up. */
       const figures = (legs, span, rest, needsTimes = false) => {
         const known = legs.filter(([m]) => m != null);
         const short = legs.length - known.length;
         const miles = legs.reduce((t, [, mi]) => t + (Number(mi) || 0), 0);
-        return [
-          miles ? `${Math.round(miles)} mi` : '—',
+        const status = needsTimes === 'check' ? 'Check times' : needsTimes ? 'Needs times' : null;
+        const cells = [
+          // The column is headed Miles, so the figure goes bare.
+          miles ? String(Math.round(miles)) : '—',
           !legs.length ? '—' : short ? `${short === 1 ? 'One leg' : `${short} legs`} not measured`
             : hm(known.reduce((n, [m]) => n + m, 0)),
-          // On duty as the clock runs, and in brackets less the waits off duty or
-          // in the sleeper berth, when there are any.
-          needsTimes === 'check' ? 'Check times' : needsTimes ? 'Needs times'
-            : span == null ? '—' : `${hm(span)}${rest ? ` (${hm(span - rest)})` : ''}`,
+          status ?? (span == null ? '—' : hm(span)),
+          status || span == null ? '—' : hm(span - rest),
         ];
+        return Object.assign(cells, { span: status ? null : span, rest, status });
       };
       function drawTotals() {
         const legs = [[r.driveOut, r.driveMiles], ...legStops().map(st => [st.drive, st.miles]),
@@ -6728,25 +6776,35 @@
         if (days) span = null;
         const needs = !days && !(val('scheduler-f-leave') && val('scheduler-f-endtrip') && timesComplete(r.list));
         const yardOut = val('scheduler-f-depart'), spot = val('scheduler-f-spot'), yardBack = val('scheduler-f-return');
-        const lastDay = days ? ` ${parseISO(to).toLocaleDateString(undefined, { weekday: 'short' })}` : '';
+        // The last day's weekday goes in End's label, so the time itself never wraps.
+        const lastDay = days ? ` · ${parseISO(to).toLocaleDateString(undefined, { weekday: 'short' })}` : '';
         const times = el('dl', 'scheduler-figures');
-        for (const [label, time, after] of [['Start', yardOut, ''], ['Spot', spot, ''], ['End', yardBack, lastDay]]) {
+        for (const [label, time] of [['Start', yardOut], ['Spot', spot], [`End${lastDay}`, yardBack]]) {
           const box = el('div');
-          box.append(el('dt', null, label), el('dd', null, time ? `${clock(time)}${after}` : '—'));
+          box.append(el('dt', null, label), el('dd', null, time ? clock(time) : '—'));
           times.appendChild(box);
         }
         times.title = busSaid;
         const rows = [];
+        const wrong = !days && r.list.some(st => located(st) && (roomInto(st) ?? 0) < 0);
+        const total = figures(legs, span, rest, wrong ? 'check' : needs);
         if (days) {
           const all = [];
           for (let d = from; d <= to && all.length < 31; d = dayAfter(d, 1)) all.push(d);
-          all.forEach((d, n) => rows.push([`Day ${n + 1}`, ...dayFigures(d, all[0], all.at(-1))]));
+          const each = all.map(d => dayFigures(d, all[0], all.at(-1)));
+          each.forEach((cells, n) => rows.push([String(n + 1), ...cells]));
+          /* The leg's on duty is its days' added up, once every day has its
+             times; a day missing them, or with them out of order, says so. */
+          const status = each.find(c => c.status === 'Check times')?.status ?? each.find(c => c.status)?.status;
+          const on = each.reduce((n, c) => n + (c.span ?? 0), 0);
+          const off = each.reduce((n, c) => n + (c.span == null ? 0 : c.rest), 0);
+          total[2] = status ?? (on ? hm(on) : '—');
+          total[3] = status || !on ? '—' : hm(on - off);
         }
-        const wrong = !days && r.list.some(st => located(st) && (roomInto(st) ?? 0) < 0);
-        rows.push(['Total', ...figures(legs, span, rest, wrong ? 'check' : needs)]);
+        rows.push(['Total', ...total]);
         const table = el('table', 'rux--data-table rux--data-table--xs');
         const head = el('tr');
-        for (const h of ['Day', 'Miles', 'Drive', 'On duty']) {
+        for (const h of ['Day', 'Miles', 'Drive', 'On duty', 'Less rest']) {
           const th = el('th');
           th.scope = 'col';
           th.appendChild(el('div', 'rux--table-header-label', days ? h : h === 'Day' ? '' : h));
@@ -6758,7 +6816,6 @@
         rows.forEach((cells, i) => {
           const tr = el('tr', i === rows.length - 1 ? 'scheduler-route-total' : null);
           for (const c of cells) tr.appendChild(el('td', null, c));
-          if (i === rows.length - 1 && rest) tr.title = `${hm(rest)} off the clock`;
           tbody.appendChild(tr);
         });
         table.append(thead, tbody);
@@ -6817,7 +6874,7 @@
       routeTitle.hidden = !routeTitle.textContent;
       // The kept times go last, so the Summary is the tab's first section.
       panelRoute.append(
-        section('Summary', summaryLayer),
+        section('Summary', summaryLayer, summaryMenu),
         routeSection,
         routeBox,
       );

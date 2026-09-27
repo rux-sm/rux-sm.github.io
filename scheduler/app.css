@@ -3515,13 +3515,6 @@ html:has(.scheduler-page[data-takeover]) {
   line-height: var(--rux-helper-text-01-line-height);
 }
 .scheduler-routetimes-error:empty { display: none; }
-/* The route times under the Stops list, and the link that changes them. */
-.scheduler-route-times {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  column-gap: var(--rux-spacing-03);
-}
 /* The Email thread box's error, the same way. */
 .scheduler-thread-error:empty { display: none; }
 /* A follow-up in the Trips list reads in the warning's own words, not its colour. */

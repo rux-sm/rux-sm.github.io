@@ -1729,6 +1729,7 @@
      room: its `items`, if any, open where it is right-clicked, or held on a
      touch screen, which on iOS sends no right-click of its own. A hold that
      opens the menu keeps its tap from opening the row as well. */
+  let itemHints = 0;
   const listRow = ({ name, meta, much, tag, lead, title, edit, remove, removeLabel,
                     open: openRow = edit, openLabel = `Edit ${title}`, editText, removeText, items, context }) => {
     const li = el('li', 'rux--layer-two scheduler-item');
@@ -1756,6 +1757,11 @@
       li.classList.add('scheduler-item--context');
       li.append(open);
       if (!items) return li;
+      // With no button to find, a screen reader is told how the actions open.
+      const hint = el('span', 'rux--visually-hidden', 'Right-click, hold, or press the menu key for actions.');
+      hint.id = `scheduler-item-hint-${++itemHints}`;
+      open.setAttribute('aria-describedby', hint.id);
+      open.appendChild(hint);
       const show = point => openItemsMenu(open, items, `Actions for ${title}`, point);
       // Kept from the page's own menu handling, which would shut it at once.
       open.addEventListener('contextmenu', e => { e.preventDefault(); e.stopPropagation(); show(e); });

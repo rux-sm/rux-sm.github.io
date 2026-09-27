@@ -5202,6 +5202,9 @@
     const drop = round ? null : {
       ...(r.dropPlace !== r.dropOpen ? placeOf(r.dropPlace ?? {}) : {}),
       arrive: end, arrive_date: end ? to : null,
+      /* The drive into it, measured when either end moves. One only looked up
+         as the trip opened waits for `foundDrives`, so opening is no edit. */
+      ...(r.dropFound ? {} : driveCols(r.drop, r.dropDrive, r.dropMiles, 'estimated')),
     };
     const ret = {
       depart_prev: end, depart_prev_date: end ? to : null,
@@ -6268,6 +6271,12 @@
         }
         drawTimeline();
         refreshDirty();
+        remeasure();
+      }
+      /* A new pickup or drop-off moves the drives beside it: the list's, which
+         then saves whole, or with no stops the one leg between the two. */
+      function remeasure() {
+        if (r.list?.length) touch(); else measureStops();
       }
 
       const dropField = placeSearch('scheduler-f-dropoff', 'Drop-off', r.dropPlace, async (place, typed) => {
@@ -6285,6 +6294,7 @@
         await driveBackFrom(r.dropPlace);
         drawTimeline();
         refreshDirty();
+        remeasure();
       });
 
       /* The pickup and the drop-off are tiles at the two ends of the Route
@@ -6582,7 +6592,8 @@
           stopsList.body.appendChild(pickupTile());
           r.list.forEach((st, i) => stopsList.body.append(...rowFor(st, i, ++num)));
         }
-        if (r.list.length && dropCounts()) stopsList.body.appendChild(dropLine());
+        // The leg on to the drop-off, from the last stop or, with none, the pickup.
+        if (dropCounts()) stopsList.body.appendChild(dropLine());
         stopsList.body.appendChild(dropTile());
         if (canList) {
           stopsList.body.appendChild(listAddRow({
@@ -6616,7 +6627,7 @@
         if (to?.lat != null && prev?.lat != null && prev !== to) {
           try {
             const d = await driveBetween(prev, to);
-            if (d) { r.dropDrive = d.min; r.dropMiles = d.miles; }
+            if (d) { r.dropDrive = d.min; r.dropMiles = d.miles; r.dropFound = false; }
           } catch { /* the drive stays as it was */ }
         }
         drawStops();
@@ -6643,7 +6654,7 @@
           prev = st.place;
         }
         const to = routeRound() ? r.pickupPlace : r.dropPlace;
-        if (r.list.length && dropCounts() && r.dropDrive == null && prev?.lat != null && to?.lat != null) {
+        if (dropCounts() && r.dropDrive == null && prev?.lat != null && to?.lat != null) {
           try {
             const d = await driveBetween(prev, to);
             if (editing?.route !== r) return;

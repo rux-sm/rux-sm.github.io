@@ -184,6 +184,9 @@
   const STATE_ORDER = { active: 0, out: 1, inactive: 2 };
   const SORTS = {
     bus: (a, b) => numberOf(a) - numberOf(b) || String(a.number || '').localeCompare(String(b.number || '')),
+    type: (a, b) => typeRank(a) - typeRank(b),
+    year: (a, b) => (a.year ?? -Infinity) - (b.year ?? -Infinity) || 0,
+    model: (a, b) => modelOf(a).localeCompare(modelOf(b)),
     capacity: (a, b) => (a.capacity ?? -1) - (b.capacity ?? -1),
     equipment: (a, b) => equipmentRank(b) - equipmentRank(a),
     status: (a, b) => STATE_ORDER[state(a, outByBus.get(a.id))] - STATE_ORDER[state(b, outByBus.get(b.id))],
@@ -191,19 +194,18 @@
     compliance: (a, b) => compliance(a).rank - compliance(b).rank,
   };
 
-  /* The unit's own colour as a disc, wearing its type's drawing, or the type's
-     initial where it has none. A unit may be any colour, so the mark on it is
-     black or white by the colour's own brightness, not by the theme. */
-  function disc(colour, type) {
-    const box = el('div', 'scheduler-bus-disc');
-    box.setAttribute('aria-hidden', 'true');
-    const ink = Vehicles.inkOn(colour);
-    if (ink) { box.style.background = colour; box.style.color = ink; }
+  // The type's drawing beside its name, as the list of types writes it.
+  function typeCell(type) {
+    const known = Vehicles.typeOf(type);
+    const name = known ? (known.label || known.name) : String(type || '').trim();
+    if (!name) return el('span', null, '—');
+    const box = el('div', 'scheduler-bus-type');
     const icon = Vehicles.iconOf(type);
-    box.appendChild(icon ? svgUse(icon, '16', '0 0 32 32')
-      : el('span', 'scheduler-bus-disc__letter', String(type || 'U').trim().charAt(0).toUpperCase()));
+    if (icon) box.appendChild(svgUse(icon, '20', '0 0 32 32'));
+    box.appendChild(el('span', null, name));
     return box;
   }
+  const modelOf = b => [b.make, b.model].filter(Boolean).join(' ');
 
   // Icons, because the words would be longer than the column. Each carries
   // its own label, so a screen reader hears what the icon means.
@@ -262,7 +264,7 @@
     if (!shown.length) {
       const tr = el('tr');
       const td = el('td', null, query ? `No units match “${query}”.` : 'No units here.');
-      td.colSpan = 4 + showService + showCompliance;
+      td.colSpan = 7 + showService + showCompliance;
       tr.appendChild(td);
       body.appendChild(tr);
       return;
@@ -271,18 +273,19 @@
       const tr = el('tr', 'scheduler-pair-row');
       tr.dataset.id = b.id;
 
+      // The number alone: the type has its own column. A van whose number is
+      // still its type's name has none yet.
       const which = el('td');
-      const cell = el('div', 'scheduler-pair-cell');
-      const lines = el('div', 'scheduler-pair-cell__lines');
-      const link = el('a', 'scheduler-pair-cell__name', b.number ? Vehicles.label(b) : 'Unnumbered unit');
+      const number = String(b.number ?? '').trim();
+      const numbered = number && number.toLowerCase() !== String(b.type || '').trim().toLowerCase();
+      const link = el('a', 'scheduler-pair-cell__name', numbered ? number : 'No number');
       link.href = `fleet.html?id=${encodeURIComponent(b.id)}`;
-      lines.appendChild(link);
-      // The year is what the fleet is ordered by, so the row shows it.
-      const detail = [b.year || 'No year', [b.make, b.model].filter(Boolean).join(' ') || null]
-        .filter(Boolean).join(' · ');
-      lines.appendChild(el('span', 'scheduler-pair-cell__detail', detail));
-      cell.append(disc(b.color, b.type), lines);
-      which.appendChild(cell);
+      link.setAttribute('aria-label', b.number ? Vehicles.label(b) : 'Unnumbered unit');
+      which.appendChild(link);
+      const kind = el('td');
+      kind.appendChild(typeCell(b.type));
+      const year = el('td', null, b.year ? String(b.year) : '—');
+      const model = el('td', null, modelOf(b) || '—');
 
       const seats = el('td', null, b.capacity ? String(b.capacity) : '—');
       const kit = el('td');
@@ -303,7 +306,7 @@
 
       due.hidden = !showService;
       legal.hidden = !showCompliance;
-      tr.append(which, seats, kit, status, due, legal);
+      tr.append(which, kind, year, model, seats, kit, status, due, legal);
       body.appendChild(tr);
     }
   }

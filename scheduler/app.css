@@ -3433,16 +3433,25 @@ html:has(.scheduler-page[data-takeover]) {
   #scheduler-trips-rows td:nth-child(5) { display: none; }
 }
 
-/* ── Buses only ── */
+/* ── Buses only ── A phone shows the unit, its type, its status and its
+   compliance, when that column shows at all. */
 @media (max-width: 41.98rem) {
-  #scheduler-buses-list th:nth-child(2),
   #scheduler-buses-list th:nth-child(3),
   #scheduler-buses-list th:nth-child(4),
   #scheduler-buses-list th:nth-child(5),
-  #scheduler-buses-rows td:nth-child(2),
+  #scheduler-buses-list th:nth-child(6),
+  #scheduler-buses-list th:nth-child(8),
   #scheduler-buses-rows td:nth-child(3),
   #scheduler-buses-rows td:nth-child(4),
-  #scheduler-buses-rows td:nth-child(5) { display: none; }
+  #scheduler-buses-rows td:nth-child(5),
+  #scheduler-buses-rows td:nth-child(6),
+  #scheduler-buses-rows td:nth-child(8) { display: none; }
+}
+/* A unit's type: its drawing, then its name. */
+.scheduler-bus-type {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-03);
 }
 /* The type's initial, where it has no drawing, sits on the disc as the
    drawing would. */
@@ -3481,10 +3490,10 @@ html:has(.scheduler-page[data-takeover]) {
 /* A follow-up in the Trips list reads in the warning's own words, not its colour. */
 .scheduler-trips-follow { font-weight: var(--rux-heading-compact-01-font-weight); }
 
-/* The bus's own colour as a disc, the size Carbon's small avatar is, so the
-   list reads down the same edge the Drivers page does. The colour is the
-   board's, set on the element; the icon sits on it in whichever of black or
-   white the row works out, since a bus may be any colour. */
+/* The bus's own colour as a disc, the size Carbon's small avatar is, in the
+   board's bus tooltip. The colour is the board's, set on the element; the icon
+   sits on it in whichever of black or white the colour works out, since a bus
+   may be any colour. */
 .scheduler-bus-disc {
   flex: none;
   inline-size: 1.5rem;

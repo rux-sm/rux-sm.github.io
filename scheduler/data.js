@@ -709,18 +709,6 @@
     return `${hr % 12 || 12}:${m}${hr < 12 ? 'a' : 'p'}${short ? '' : 'm'}`;
   };
 
-  /* A bar's times row holds a long form, "2:10pm – 12:30am", and a short one,
-     "2:10p–12:30a", which fits the narrowest day column. The short one shows
-     only on a bar too narrow for the long, measured, because the width a time
-     needs depends on its digits. Rows are all reset, then all read, then all
-     set, so the board lays out twice rather than once per bar. */
-  function fitTimes() {
-    const rows = [...gridEl.querySelectorAll('.scheduler-bar__time')];
-    for (const r of rows) r.classList.remove('scheduler-bar__time--short');
-    const narrow = rows.filter(r => r.clientWidth && r.firstElementChild.scrollWidth > r.clientWidth);
-    for (const r of narrow) r.classList.add('scheduler-bar__time--short');
-  }
-
   // The trip's documents labelled Itinerary, newest first. The first is the one
   // rux-ui picks: a re-uploaded itinerary replaces the one before.
   const itinerariesOf = trip => (trip.trip_documents || [])
@@ -954,33 +942,27 @@
     if (contact) who.title = [contact.name, showPhone(contact.phone)].filter(Boolean).join(' · ');
     addRow(bar, 'scheduler-bar__contact', who, contact?.phone ? el('span', 'scheduler-bar__phone', showPhone(contact.phone)) : null);
 
-    // Departure and return on one line, an en dash between them. A leg with
-    // neither says so, so an empty row never reads as a rendering fault. The
-    // spot time is not drawn, because two times already fill the row; the
-    // editor shows it.
-    const nextDay = returnsNextDay(leg);
-    const times = short => {
-      const dep = hhmm(leg.depart, short), back = hhmm(leg.back, short);
-      const span = el('span', `scheduler-bar__time-${short ? 'short' : 'long'}`, dep && back ? (short ? `${dep}\u2013${back}` : `${dep} \u2013 ${back}`)
-        : dep ? `Dep ${dep}`
-        : back ? `Ret ${back}`
-        : (short ? 'No times' : 'No times yet'));
-      if (nextDay) {
-        const mark = el('sup', 'scheduler-bar__next-day', '+1');
-        mark.title = 'Returns the next day';
-        span.appendChild(mark);
-      }
-      return span;
-    };
-    /* A third form, for the compact board: one line has room for one time, and
+    // Departure and return on one line, "2:10p–12:30a", the short form on
+    // every bar so bars of one width read alike and the narrowest day column
+    // holds it. A leg with neither says so, so an empty row never reads as a
+    // rendering fault. The spot time is not drawn, because two times already
+    // fill the row; the editor shows it.
+    const dep = hhmm(leg.depart, true), back = hhmm(leg.back, true);
+    const when = el('span', null, dep && back ? `${dep}\u2013${back}`
+      : dep ? `Dep ${dep}`
+      : back ? `Ret ${back}`
+      : 'No times');
+    if (returnsNextDay(leg)) {
+      const mark = el('sup', 'scheduler-bar__next-day', '+1');
+      mark.title = 'Returns the next day';
+      when.appendChild(mark);
+    }
+    /* A second form, for the compact board: one line has room for one time, and
        the one worth reading at a glance is when the bus leaves. A leg with only
        a return says so, and a leg with neither says the times are still to come,
        rather than leaving the row empty. */
-    const depAlone = hhmm(leg.depart, true), backAlone = hhmm(leg.back, true);
-    const whenDep = el('span', 'scheduler-bar__time-dep',
-      depAlone || (backAlone ? `Ret ${backAlone}` : 'No times'));
-    const when = times(false), whenShort = times(true);
-    addRow(bar, 'scheduler-bar__time', when, whenShort, whenDep);
+    const whenDep = el('span', 'scheduler-bar__time-dep', dep || (back ? `Ret ${back}` : 'No times'));
+    addRow(bar, 'scheduler-bar__time', when, whenDep);
 
     /* The Updates mark, in the bar's bottom corner at the drivers row's end: a
        filled bubble once the trip has updates, its outline with none, and the
@@ -1300,7 +1282,7 @@
 
     // The notice above changes how much height is left for the grid. app.js
     // owns that sum, so this asks it to refit.
-    window.Rux?.schedule?.fit?.();    fitTimes();
+    window.Rux?.schedule?.fit?.();
   }
 
   /* ── Moving a trip to another bus ──
@@ -7823,9 +7805,7 @@
      changed width -- the editor opening beside it, the window resized, the
      compact board taking over -- has to place them again, or a shrunken bar
      keeps a face it can no longer hold and a grown one never gets its. */
-  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); markTripBars(); fitTimes(); presenceDraw(); })).observe(gridEl);
-  // A web font that arrives after the first render changes every time's width.
-  document.fonts?.ready.then(() => { fitTimes(); });
+  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); markTripBars(); presenceDraw(); })).observe(gridEl);
   /* The shortcut bar scrolls with its trip, but which side of the trip it fits
      on changes as the board scrolls under the sticky day band, so it is placed
      again. */
@@ -10485,7 +10465,7 @@
     { id: 'unassign', label: 'Take off this bus', icon: '#m-remove', short: 'Take off',
       blocked: bar => (!bar.dataset.assignmentId || !bar.dataset.busId ? 'Not on a bus' : EDITOR_HAS.bus(bar)),
       run: bar => takeOffBus(bar) },
-    { id: 'cancel', label: 'Cancel trip…', icon: '#m-delete', short: 'Cancel',
+    { id: 'cancel', label: 'Cancel trip…', icon: '#m-dangerous', short: 'Cancel',
       blocked: () => null, run: bar => openCancelModal(bar.dataset.tripId) },
   ];
   // How many actions follow Open trip, and so how many dropdowns Customize

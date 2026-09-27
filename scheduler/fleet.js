@@ -210,7 +210,7 @@
   function equipment(b) {
     const box = el('div', 'scheduler-bus-equipment-marks');
     const mark = (icon, label) => {
-      const svg = svgUse(icon, '16', '0 0 32 32');
+      const svg = svgUse(icon, '20', '0 0 32 32');
       svg.removeAttribute('aria-hidden');
       svg.setAttribute('role', 'img');
       const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
@@ -218,8 +218,8 @@
       svg.prepend(title);
       box.appendChild(svg);
     };
-    if (b.ada_lift) mark('#m-accessible', 'ADA lift');
-    if (b.sleeper) mark('#m-airline_seat_flat', 'Sleeper');
+    if (b.ada_lift) mark('#m-accessible-fill', 'ADA lift');
+    if (b.sleeper) mark('#m-airline_seat_flat-fill', 'Sleeper');
     if (!box.childElementCount) return el('span', null, '—');
     return box;
   }

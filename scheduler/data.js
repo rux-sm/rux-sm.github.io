@@ -5225,9 +5225,9 @@
      sleeper rows keep theirs, and a new stop goes after the last one. A
      stop's leave time is kept where rux-ui keeps it, as the next row's
      `depart_prev`, so the first stop holds when the group departs the pickup
-     and the drop-off holds when it leaves the last stop. A round trip gets a
-     drop-off row, back at the pickup, only once its last stop has a leave
-     time. The leg's `position`s are renumbered from its first, and a leg
+     and the drop-off holds when it leaves the last stop. A round trip with
+     stops gets a drop-off row back at the pickup, so the drive home counts
+     whether or not the last stop has a leave time. The leg's `position`s are renumbered from its first, and a leg
      that grows moves the other leg's rows down, since rux-ui orders a trip's
      stops by `position` across both legs. */
   function listRoutePlan(wanted) {
@@ -5254,7 +5254,8 @@
       dwell_status: st.dwell || null,
       ...(st.driveChanged || st.found || !st.id ? drives(st.drive, st.miles) : {}),
     });
-    const needDrop = !round || !!(list.length && list.at(-1).leave);
+    // A leg with stops always ends at its drop-off, on a round trip back at the pickup.
+    const needDrop = !round || list.length > 0;
     const dropWant = () => ({
       ...(!r.dropRow ? placeCols(round ? r.pickupPlace : r.dropPlace)
         : !round && r.dropPlace !== r.dropOpen ? placeCols(r.dropPlace) : {}),
@@ -6481,7 +6482,7 @@
           }
           prev = st.place;
         }
-        const to = routeRound() ? (r.list.at(-1)?.leave ? r.pickupPlace : null) : r.dropPlace;
+        const to = routeRound() ? r.pickupPlace : r.dropPlace;
         if (to?.lat != null && prev?.lat != null && prev !== to) {
           try {
             const d = await driveBetween(prev, to);
@@ -6620,7 +6621,8 @@
         if (!h) return `${m} min`;
         return m ? `${h} h ${String(m).padStart(2, '0')}` : `${h} h`;
       };
-      const dropCounts = () => !!(r.dropRow || (routeRound() && r.list.at(-1)?.leave) || (!routeRound() && r.list.length));
+      // The drive on to the drop-off counts whenever the leg has stops.
+      const dropCounts = () => !!(r.dropRow || r.list.length);
       const figures = (legs, span, rest) => {
         if (!legs.length && span == null) return 'No driving';
         const known = legs.filter(([m]) => m != null);
@@ -6673,8 +6675,11 @@
         const leftToday = r.list.filter(st => dayOf(st) !== d && st.leave && leaveDayOf(st, from0) === d);
         if (d === first) { put(val('scheduler-f-depart'), routeTimes.pre); put(val('scheduler-f-spot')); put(val('scheduler-f-leave')); }
         else if (leftToday.length) put(leftToday.at(-1).leave);
-        else if (mine[0]) put(mine[0].arrive, mine[0].drive ?? 0);
-        else if (d === last) put(val('scheduler-f-endtrip'), r.dropDrive ?? 0);
+        else {
+          const timed = mine.find(st => st.arrive);
+          if (timed) put(timed.arrive, timed.drive ?? 0);
+          else if (d === last) put(val('scheduler-f-endtrip'), r.dropDrive ?? 0);
+        }
         for (const st of mine) { put(st.arrive); if (leaveDayOf(st, from0) === d) put(st.leave); }
         if (d === last) { put(val('scheduler-f-endtrip')); put(val('scheduler-f-return'), -routeTimes.post); }
         // A time earlier than the one before it is past midnight.

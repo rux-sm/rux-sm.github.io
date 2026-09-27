@@ -79,6 +79,26 @@
   const dayRange = (from, to) => [mdy(from), to && to !== from ? mdy(to) : '']
     .filter(Boolean).join(' – ');
 
+  /* THE ITINERARY'S DATES, in words, because a sheet read down a column of
+     days reads "Wednesday, Aug 26" faster than a row of numbers. The year is
+     printed once, in the title: "Aug 26 – 29, 2026", "Aug 30 – Sep 2, 2026",
+     or both years when the trip runs into the next. */
+  const partsOf = d => {
+    const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(d || '').trim());
+    if (!m) return null;
+    const date = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+    return { year: m[1], month: date.toLocaleDateString('en-US', { month: 'short' }), day: Number(m[3]) };
+  };
+  const dateWords = (from, to) => {
+    const a = partsOf(from);
+    const b = to && to !== from ? partsOf(to) : null;
+    if (!a) return mdy(from);
+    if (!b) return `${a.month} ${a.day}, ${a.year}`;
+    if (a.year !== b.year) return `${a.month} ${a.day}, ${a.year} – ${b.month} ${b.day}, ${b.year}`;
+    if (a.month !== b.month) return `${a.month} ${a.day} – ${b.month} ${b.day}, ${a.year}`;
+    return `${a.month} ${a.day} – ${b.day}, ${a.year}`;
+  };
+
   const weekdayOf = d => {
     const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(d || '').trim());
     if (!m) return '';
@@ -96,15 +116,15 @@
     return `${hr % 12 || 12}:${m} ${hr < 12 ? 'AM' : 'PM'}`;
   };
 
-  /* A drive as `trip_stops` keeps it, "H:MM", in the words the Route tab
-     writes: "4 h 03", "4 h", or minutes alone under the hour. */
+  /* A drive as `trip_stops` keeps it, "H:MM", in words: "4 h 03 min", "4 h",
+     or "31 min". Every part is named, so no drive reads as a time of day. */
   const driveWords = t => {
     const m = /^(\d+):([0-5]\d)$/.exec(String(t || '').trim());
     if (!m) return '';
     const hours = Number(m[1]);
     const mins = Number(m[2]);
     if (!hours && !mins) return '';
-    return hours ? (mins ? `${hours} h ${String(mins).padStart(2, '0')}` : `${hours} h`) : `${mins} min`;
+    return hours ? (mins ? `${hours} h ${String(mins).padStart(2, '0')} min` : `${hours} h`) : `${mins} min`;
   };
 
   // Whole miles, as the Route tab gives them.
@@ -576,7 +596,8 @@
      customer wrote "Day 1". Its `name` is a marker and never printed. */
   const dayName = label => {
     const day = weekdayOf(label);
-    return day ? `${day} ${mdy(label)}` : String(label || '').trim();
+    const at = partsOf(label);
+    return day ? `${day}, ${at.month} ${at.day}` : String(label || '').trim();
   };
 
   const timeCell = lines => {
@@ -596,14 +617,24 @@
     el('td', `scheduler-driver-itinerary__${cls} scheduler-driver-itinerary__typed`, text || '');
 
   /* THE LEG INTO THIS STOP, under its name: the miles and the drive the Route
-     tab worked out and wrote on the row. The pickup has none: its leg is the
-     drive from the yard, which is off the sheet like the drive back to it. */
+     tab worked out and wrote on the row, headed Drive so they read as the way
+     here rather than a fact about the place. The pickup has none: its leg is
+     the drive from the yard, which is off the sheet like the drive back. */
   function locationCell(stop) {
     const td = textCell('loc', stop.name || ITINERARY_TITLE[stop.type] || '');
     const words = stop.type === 'pickup' ? ''
       : [milesWords(stop.miles), driveWords(stop.drive)].filter(Boolean).join(' · ');
-    if (words) td.appendChild(el('span', 'scheduler-driver-itinerary__leg', words));
+    if (words) td.appendChild(el('span', 'scheduler-driver-itinerary__leg', `Drive ${words}`));
     return td;
+  }
+
+  /* The street on one line and the city, state and ZIP on the next, so no
+     ZIP is left alone on a line and every row's address has one shape. An
+     address of two parts or fewer has no street and stays on one line. */
+  function addressLines(text) {
+    const parts = shortAddress(text).split(', ').filter(Boolean);
+    if (parts.length < 3) return parts.join(', ');
+    return `${parts.slice(0, -2).join(', ')}\n${parts.slice(-2).join(', ')}`;
   }
 
   // One line of the table: when, where and the address.
@@ -611,7 +642,7 @@
     const tr = el('tr');
     tr.appendChild(timeCell(itineraryTimes(stop, next, day)));
     tr.appendChild(locationCell(stop));
-    tr.appendChild(textCell('addr', shortAddress(stop.address)));
+    tr.appendChild(textCell('addr', addressLines(stop.address)));
     return tr;
   }
 
@@ -641,7 +672,7 @@
       return node;
     };
     title.appendChild(typed('destination', 'Destination', trip.destination));
-    title.appendChild(typed('dates', 'Date', dayRange(start, end)));
+    title.appendChild(typed('dates', 'Date', start ? dateWords(start, end) : ''));
     head.appendChild(title);
     return head;
   }

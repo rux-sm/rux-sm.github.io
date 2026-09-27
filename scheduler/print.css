@@ -831,6 +831,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
 
+/* An address is printed on two lines, the street and then the city, and
+   print.js puts the break between them. */
+.scheduler-driver-itinerary__addr { white-space: pre-line; }
+
 /* A blank form is written on by hand, so its rows keep a pen's height. */
 .scheduler-form[data-blank] .scheduler-driver-itinerary__table td { padding-block: var(--rux-spacing-03); }
 
@@ -882,7 +886,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 /* A day is a line across the table rather than a stop on it, set apart by
-   weight, case and the room above it, because a fill prints as nothing. */
+   weight, a rule and the room above it, because a fill prints as nothing. As
+   written, not in capitals, which are slower to read. */
 .scheduler-driver-itinerary__table .scheduler-driver-itinerary__day th {
   border-block-end: 1px solid var(--rux-border-strong-01);
   padding-block: var(--rux-spacing-05) var(--rux-spacing-02);
@@ -891,7 +896,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   line-height: var(--rux-body-compact-01-line-height);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
   color: var(--rux-text-primary);
-  text-transform: uppercase;
 }
 
 /* WHERE THE PAPER RUNS OUT, on screen and never on it. A dashed rule across

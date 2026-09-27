@@ -133,7 +133,9 @@ export const ICONS = {
   'purchase': { material: 'credit_card', rux: null },  // Carbon's purchase is a credit card.
   'radio-button': { material: 'radio_button_unchecked', rux: null },
   'request-quote': { material: 'request_quote', rux: null },
+  'reset': { material: 'restart_alt', rux: null },
   'route': { material: 'route', rux: null },  // Carbon draws no route; Material's is a path between two pins.
+  'save': { material: 'save', rux: null },
   'search': { material: 'search', rux: null },
   'shuttle': { material: 'airport_shuttle', rux: null },
   'subtract': { material: 'remove', rux: null },

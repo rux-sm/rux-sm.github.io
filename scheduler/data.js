@@ -6755,8 +6755,8 @@
         const cells = [
           // The column is headed Miles, so the figure goes bare.
           miles ? String(Math.round(miles)) : '—',
-          !legs.length ? '—' : short ? `${short === 1 ? 'One leg' : `${short} legs`} not measured`
-            : hm(known.reduce((n, [m]) => n + m, 0)),
+          // A leg not measured says so on its own line, so the cell stays short.
+          !legs.length || short ? '—' : hm(known.reduce((n, [m]) => n + m, 0)),
           status ?? (span == null ? '—' : hm(span)),
           status || span == null ? '—' : hm(span - rest),
         ];

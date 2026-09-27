@@ -5162,7 +5162,11 @@
     if (a.mapbox_id && b.mapbox_id) return a.mapbox_id === b.mapbox_id;
     return same(a.name ?? null, b.name ?? null) && same(a.address ?? null, b.address ?? null);
   };
-  const routeRound = () => samePlace(editing?.route?.dropPlace, editing?.route?.pickupPlace);
+  /* A one-way trip, and each leg of a split one, ends somewhere other than
+     where it began, even while neither place is filled in, so it is never
+     read as a round trip. */
+  const oneWayType = () => ['one_way', SPLIT].includes(document.getElementById('scheduler-f-type')?.value);
+  const routeRound = () => !oneWayType() && samePlace(editing?.route?.dropPlace, editing?.route?.pickupPlace);
   // The leg's dates as the Details tab has them now.
   const routeDates = leg => {
     const v = id => isoOrNull(document.getElementById(id)?.value ?? '');
@@ -6101,11 +6105,12 @@
          differ, so a round trip's rows stay exactly as rux-ui left them. A
          trip typed as a round trip is let off at its pickup whatever its last
          stop is, so that stop reads as a stop in the full itinerary rather
-         than as where the group is let off. */
+         than as where the group is let off. A one-way or split leg has no
+         such default: until one is picked it has no drop-off. */
       if (document.getElementById('scheduler-f-type')?.value === 'round_trip' && r.pickupPlace) {
         r.dropOpen = r.dropPlace = { ...r.pickupPlace };
       }
-      if (!r.dropPlace && r.pickupPlace) r.dropPlace = { ...r.pickupPlace };
+      if (!r.dropPlace && r.pickupPlace && !oneWayType()) r.dropPlace = { ...r.pickupPlace };
       // A line under a field, hidden while it has nothing to say.
       const note = text => {
         const line = el('p', 'rux--form__helper-text scheduler-route-note', text);
@@ -6267,8 +6272,9 @@
       async function pickPickup(place) {
         setVal('scheduler-f-pickupname', place.name ?? '');
         r.pickupPlace = named(place, place.name || null);
-        // A round trip's drop-off, or one nobody has filled, follows the pickup.
-        if (dropBox.hidden || (!val('scheduler-f-dropname') && !val('scheduler-f-dropoff'))) followPickup();
+        // A round trip's drop-off, or one nobody has filled, follows the
+        // pickup; a one-way or split leg's never does.
+        if (dropBox.hidden || (!oneWayType() && !val('scheduler-f-dropname') && !val('scheduler-f-dropoff'))) followPickup();
         drawTimeline();
         await driveOutFrom(r.pickupPlace);
         if (r.dropPlace && samePlace(r.dropPlace, r.pickupPlace)) {
@@ -6967,11 +6973,50 @@
       // The tiles at the two ends show what their dialogs now hold.
       routeEndsClosed = () => { drawTimeline(); drawStops(); };
       document.getElementById('scheduler-f-type')?.addEventListener('change', () => {
+        /* A drop-off that only copied the pickup, as a round trip's does, is
+           let go when the trip becomes one-way or split, which ends
+           elsewhere. */
+        if (oneWayType() && r.pickupPlace && samePlace(r.dropPlace, r.pickupPlace)) {
+          setVal('scheduler-f-dropname', '');
+          setVal('scheduler-f-dropoff', '');
+          r.dropPlace = null;
+          r.backDrive = r.backMiles = null;
+          r.dropDrive = r.dropMiles = null;
+          recalcReturn();
+          drawStops();
+        }
         if (!dropBox.hidden !== !letOffAtPickup()) showDrop(!letOffAtPickup());
         routeTitle.textContent = routeHeading();
         routeTitle.hidden = !routeTitle.textContent;
         drawTimeline();
       });
+
+      /* A SPLIT TRIP'S PICKUP LEG MIRRORS ITS DROP-OFF LEG: the group is
+         picked up where it was let off and taken back to where it started.
+         A pickup leg with neither place yet takes both from the drop-off leg
+         as saved, and Save keeps them; either can be changed first. */
+      const hasPlace = p => !!(p && (p.name || p.address));
+      if (!creating && r.leg === 'return' && splitNow() && !hasPlace(r.pickupPlace) && !hasPlace(r.dropPlace)) {
+        const out = stopsOfLeg(trip, 'outbound').stops;
+        const outPickup = placeOf(out.find(x => x.type === 'pickup'));
+        const outDrop = placeOf(out.filter(x => x.type === 'stop').at(-1));
+        if (hasPlace(outPickup) && hasPlace(outDrop)) {
+          setVal('scheduler-f-pickupname', outDrop.name ?? '');
+          setVal('scheduler-f-pickup', outDrop.address ?? '');
+          setVal('scheduler-f-dropname', outPickup.name ?? '');
+          setVal('scheduler-f-dropoff', outPickup.address ?? '');
+          r.pickupPlace = { ...outDrop };
+          r.dropPlace = { ...outPickup };
+          drawTimeline();
+          drawStops();
+          (async () => {
+            await Promise.all([driveOutFrom(r.pickupPlace), driveBackFrom(r.dropPlace)]);
+            drawTimeline();
+            refreshDirty();
+            remeasure();
+          })();
+        }
+      }
     }
 
     /* ── Billing ── */

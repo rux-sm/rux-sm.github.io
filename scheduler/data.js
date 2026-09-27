@@ -6623,8 +6623,14 @@
       };
       // The drive on to the drop-off counts whenever the leg has stops.
       const dropCounts = () => !!(r.dropRow || r.list.length);
-      const figures = (legs, span, rest) => {
-        if (!legs.length && span == null) return 'No driving';
+      /* On duty needs its clock times: every stop's arrival, a leave time on a
+         wait off the clock that is not the day's last, and the day's start and
+         end. Missing any, it says so rather than giving a figure that is short;
+         miles and driving come from the places alone and always show. */
+      const timesComplete = stops => stops.every(st => st.arrive)
+        && stops.slice(0, -1).every(st => !st.dwell || st.dwell === 'on' || st.leave);
+      const figures = (legs, span, rest, needsTimes = false) => {
+        if (!legs.length && span == null && !needsTimes) return 'No driving';
         const known = legs.filter(([m]) => m != null);
         const short = legs.length - known.length;
         const miles = legs.reduce((t, [, mi]) => t + (Number(mi) || 0), 0);
@@ -6634,7 +6640,8 @@
                 : `${hm(known.reduce((n, [m]) => n + m, 0))} driving`,
           // On duty as the clock runs, and in brackets less the waits off duty or
           // in the sleeper berth, when there are any.
-          span == null ? null : `${hm(span)} on duty${rest ? ` (${hm(span - rest)})` : ''}`,
+          needsTimes ? 'on duty needs times'
+            : span == null ? null : `${hm(span)} on duty${rest ? ` (${hm(span - rest)})` : ''}`,
         ].filter(Boolean).join(' · ');
       };
       // Each figure is kept whole, so a narrow panel wraps between figures.
@@ -6652,8 +6659,10 @@
         const rest = r.list.reduce((n, st) => n + (st.dwell && st.dwell !== 'on' ? waitOf(st) ?? 0 : 0), 0);
         const { from, to } = routeDates(r.leg);
         // Over more than one day the yard-to-yard span is the days', not a clock's.
-        if (span != null && from && to && to > from) span = null;
-        showFigures(summary, figures(legs, span, rest));
+        const days = !!(from && to && to > from);
+        if (days) span = null;
+        const needs = !days && !(val('scheduler-f-leave') && val('scheduler-f-endtrip') && timesComplete(r.list));
+        showFigures(summary, figures(legs, span, rest, needs));
         summary.title = [busSaid, rest ? `${hm(rest)} off the clock` : null].filter(Boolean).join(' · ');
         for (const [d, el2] of daySums) showFigures(el2, dayFigures(d, daySums[0][0], daySums.at(-1)[0]));
       }
@@ -6693,7 +6702,9 @@
         const rest = mine.filter(st => leaveDayOf(st, from0) === d)
           .reduce((n, st) => n + (st.dwell && st.dwell !== 'on' ? waitOf(st) ?? 0 : 0), 0);
         const span = run.length > 1 ? run.at(-1) - run[0] : null;
-        return figures(legs, span, rest);
+        const needs = !timesComplete(mine) || (d === first && !val('scheduler-f-leave'))
+          || (d === last && !val('scheduler-f-endtrip'));
+        return figures(legs, span, rest, needs && (mine.length > 0 || d === first || d === last));
       }
 
       panelRoute.append(

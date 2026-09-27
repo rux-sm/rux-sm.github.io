@@ -354,9 +354,11 @@
    scrolls. It has an opaque surface and a z-index so fields pass under it,
    while the date picker's calendar still opens over it. Negative margins and
    `inline-size: auto` run it edge to edge across `__inner-content`'s padding.
-   The 16px gap under the tabs is the strip's own bottom padding rather than
-   the tab content's, so the gap travels with it; the height is the 40px tabs
-   plus that gap, because the tabs stretch to the strip's content box. */
+   The 16px gap under the tabs is half the strip's own bottom padding, so
+   part of the gap travels with it, and half the tab content's, so a focus
+   ring on a tab's first control, as Itinerary not needed's switch, is not
+   painted over; the height is the 40px tabs plus the strip's part, because
+   the tabs stretch to the strip's content box. */
 #scheduler-panel-body .rux--tabs {
   position: sticky;
   inset-block-start: 0;
@@ -364,15 +366,15 @@
   background: var(--rux-layer-01);
   margin-inline: calc(-1 * var(--rux-spacing-05));
   inline-size: auto;
-  padding-block-end: var(--rux-spacing-05);
-  block-size: calc(var(--rux-layout-size-height-md) + var(--rux-spacing-05));
+  padding-block-end: var(--rux-spacing-03);
+  block-size: calc(var(--rux-layout-size-height-md) + var(--rux-spacing-03));
   max-block-size: none;
 }
-/* The tab opens straight under the strip's gap, and ends 48px above the
-   actions with `__inner-content`'s own 16px, the spacer Carbon's form pattern
-   puts between the last input and the button group. */
+/* The tab opens 8px under the strip, the rest of the gap, and ends 48px
+   above the actions with `__inner-content`'s own 16px, the spacer Carbon's
+   form pattern puts between the last input and the button group. */
 #scheduler-panel-body .rux--tab-content {
-  padding-block: 0 var(--rux-spacing-07);
+  padding-block: var(--rux-spacing-03) var(--rux-spacing-07);
 }
 /* From md up the fields and the trip's name stand 24px off the panel's edge,
    8px past Carbon's 16px, so the form has room to breathe while the head, the
@@ -667,6 +669,10 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 /* Carbon's uploaded-file list keeps its 8px top margin while it holds no
    file, which left the Files tab's drop zone 40px from the next section. */
 .rux--file-container:empty { display: none; }
+
+/* The Files tab's drop zone takes the tab's width, as the Type field above it
+   does, rather than Carbon's 20rem. */
+.scheduler-file-add .rux--file-browse-btn { max-inline-size: none; }
 
 /* Carbon spaces a checkbox for a single column: the first after a label
    rises 2px and the rest hang 6px margins. In a record page's three-column

@@ -1551,7 +1551,8 @@
   /* A section can carry one control on its heading line, as each billing
      switch does. The head is app markup rather than a `contained-list`
      header, because Contract holds form fields, not list rows; every billing
-     section uses it, so the switches share one right edge. */
+     section uses it, so the switches share one right edge. A section that is
+     only its switch, as Itinerary not needed, passes no body. */
   const section = (title, node, action) => {
     const wrap = el('div', 'scheduler-panel-section');
     // A titleless section still keeps the `spacing-07` above it.
@@ -1564,7 +1565,7 @@
     if (!action) { wrap.append(head, node); return wrap; }
     const bar = el('div', 'scheduler-panel-section__head');
     bar.append(head, action);
-    wrap.append(bar, node);
+    wrap.append(bar, ...(node ? [node] : []));
     return wrap;
   };
 
@@ -2893,8 +2894,7 @@
     const container = el('div', 'rux--file-container rux--file-container--drop');
     /* No visible title: the section heading says Add a file, and the input
        keeps its hidden PDF file label. */
-    item.append(el('p', 'rux--label-description', 'PDF only. It is added to the trip at once, without Save.'),
-      zone, container);
+    item.append(zone, container);
 
     const busy = on => {
       drop.disabled = on;
@@ -7538,8 +7538,7 @@
        field, then the uploader and the trip's files, which write at once. A
        trip not yet saved has no id to file under. */
     panelFiles.replaceChildren();
-    const notNeeded = section('Itinerary not needed',
-      el('p', 'rux--form__helper-text', 'On for a trip that runs without one, so its follow-up stops waiting on an itinerary.'),
+    const notNeeded = section('Itinerary not needed', null,
       toggleAction('scheduler-f-notneeded', 'Itinerary not needed', !!trip.itinerary_not_needed));
     if (creating || !client) {
       filesBody = null;

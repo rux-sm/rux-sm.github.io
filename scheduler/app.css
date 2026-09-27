@@ -547,7 +547,13 @@ button.scheduler-row-head__num::after {
   transform: translateY(-50%);
 }
 .scheduler-copy-host > .scheduler-copy[hidden] { display: none; }
-/* The saved-record link ends its label's line. */
+/* The saved-record link follows its label on the label's line. The label
+   keeps Carbon's space under it, so the row sets the field's distance. */
+.scheduler-label-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--rux-spacing-03);
+}
 .scheduler-saved[hidden] { display: none; }
 .scheduler-contact-option__name,
 .scheduler-contact-option__detail {

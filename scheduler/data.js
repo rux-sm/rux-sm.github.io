@@ -3320,8 +3320,8 @@
   };
 
   /* A SAVED RECORD'S MARK. A name, customer or place picked from the saved
-     lists says so at the end of its label's line, in Carbon's label row, as a
-     small link that opens that
+     lists says so right after its label, on the label's line, as a small link
+     that opens that
      record on the Contacts, Customers or Locations page in a new tab, so the
      trip open here keeps its edits. It stays out of the field, where the value
      is read and copied. One typed by hand shows none, so the label says
@@ -3343,7 +3343,7 @@
     link.target = '_blank';
     link.rel = 'noopener';
     link.title = `Open the ${SAVED[kind].word.toLowerCase()} in a new tab`;
-    const row = el('div', 'rux--text-input__label-wrapper');
+    const row = el('div', 'scheduler-label-row');
     label.replaceWith(row);
     row.append(label, link);
     syncSavedTip(link, input);

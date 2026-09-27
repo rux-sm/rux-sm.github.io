@@ -96,22 +96,21 @@
     return `${hr % 12 || 12}:${m} ${hr < 12 ? 'AM' : 'PM'}`;
   };
 
-  /* A drive as `trip_stops` keeps it, "H:MM", in the words the office writes:
-     "4h 39m", or minutes alone under the hour. */
+  /* A drive as `trip_stops` keeps it, "H:MM", in the words the Route tab
+     writes: "4 h 03", "4 h", or minutes alone under the hour. */
   const driveWords = t => {
     const m = /^(\d+):([0-5]\d)$/.exec(String(t || '').trim());
     if (!m) return '';
     const hours = Number(m[1]);
     const mins = Number(m[2]);
     if (!hours && !mins) return '';
-    return hours ? (mins ? `${hours}h ${mins}m` : `${hours}h`) : `${mins} min`;
+    return hours ? (mins ? `${hours} h ${String(mins).padStart(2, '0')}` : `${hours} h`) : `${mins} min`;
   };
 
-  // Miles as the stop holds them, without the trailing zero a whole number
-  // would otherwise print.
+  // Whole miles, as the Route tab gives them.
   const milesWords = v => {
     const n = Number(v);
-    return Number.isFinite(n) && n > 0 ? `${Math.round(n * 10) / 10} mi` : '';
+    return Number.isFinite(n) && n > 0 ? `${Math.round(n)} mi` : '';
   };
 
   /* The company's own line, at the head of every form. It is here rather than
@@ -553,15 +552,21 @@
 
      There is no report time. rux-ui works one out in its Grid tab from the
      yard plan; nothing on `trip_stops` holds it, and a form does not compute. */
-  function itineraryTimes(stop, next) {
+  /* `day` is the row's own date. A departure on another day, the morning after
+     a night at a hotel or the end of a stay of nights, carries its weekday; a
+     stop left the moment it is reached, a drop-off, prints its arrival alone. */
+  function itineraryTimes(stop, next, day) {
+    const leaveDay = next?.depart_prev_date || null;
     const after = next?.depart_prev || null;
+    const afterDay = after && leaveDay && day && leaveDay !== day ? leaveDay : null;
     // The yard line the sheet opens with: the one time on it is when the bus
     // rolls, which the pickup lends it.
     if (stop.type === 'yard') return [['Roll', after]];
-    if (stop.type === 'sleeper') return [['Rest', stop.depart_prev], ['Up', stop.arrive], ['Dep', after]];
-    if (stop.type === 'pickup') return [['Spot', stop.spot], ['Dep', after]];
+    if (stop.type === 'sleeper') return [['Rest', stop.depart_prev], ['Up', stop.arrive], ['Dep', after, afterDay]];
+    if (stop.type === 'pickup') return [['Spot', stop.spot], ['Dep', after, afterDay]];
     if (stop.type === 'return') return [['Arr', stop.arrive]];
-    return [['Arr', stop.arrive], ['Dep', after]];
+    const same = stop.arrive && after && String(stop.arrive).slice(0, 5) === String(after).slice(0, 5) && !afterDay;
+    return same ? [['Arr', stop.arrive]] : [['Arr', stop.arrive], ['Dep', after, afterDay]];
   }
 
   const ITINERARY_TITLE = {
@@ -581,11 +586,12 @@
 
   const timeCell = lines => {
     const td = el('td', 'scheduler-driver-itinerary__time scheduler-driver-itinerary__typed');
-    for (const [label, time] of lines) {
+    for (const [label, time, day] of lines) {
       if (!time) continue;
       const at = el('span', 'scheduler-driver-itinerary__at');
       at.appendChild(el('span', 'scheduler-driver-itinerary__at-label', label));
       at.appendChild(document.createTextNode(clock(time)));
+      if (day) at.appendChild(el('span', 'scheduler-driver-itinerary__at-day', weekdayOf(day).slice(0, 3)));
       td.appendChild(at);
     }
     return td;
@@ -605,9 +611,9 @@
   }
 
   // One line of the table: when, where and the address.
-  function itineraryRow(stop, next) {
+  function itineraryRow(stop, next, day = null) {
     const tr = el('tr');
-    tr.appendChild(timeCell(itineraryTimes(stop, next)));
+    tr.appendChild(timeCell(itineraryTimes(stop, next, day)));
     tr.appendChild(locationCell(stop));
     tr.appendChild(textCell('addr', shortAddress(stop.address)));
     return tr;
@@ -703,11 +709,9 @@
     head.appendChild(headRow);
     table.appendChild(head);
 
-    const body = el('tbody');
     // The run of stops alone: a day row is the old format, never a stop.
     const stops = stopsOf(trip, leg).filter(s => s.type !== 'day');
-    const yard = yardRow(stops);
-    if (yard) body.appendChild(yard);
+    let yard = yardRow(stops);
     /* A leg of more than one day is broken into days by the stops' own
        dates, as the Route tab's Stops list is: a divider names the day before
        its first row. */
@@ -721,20 +725,34 @@
     const dateOf = s => [s.type === 'pickup' ? s.spot_date : s.arrive_date, s.depart_prev_date].find(inLeg) || null;
     const dates = stops.map(dateOf);
     const manyDays = new Set(dates.filter(Boolean)).size > 1;
+    /* A day's divider is printed with its first row, in a group of their own
+       the printer keeps together, so a day never starts at the foot of a page
+       with its rows on the next. The yard line goes under the first day, as
+       leaving the yard is that day's first thing. */
+    let body = el('tbody');
+    table.appendChild(body);
     let shown = null;
+    let lead = null;
+    const place = row => {
+      if (lead) { lead.appendChild(row); lead = null; } else body.appendChild(row);
+    };
     stops.forEach((stop, i) => {
       if (manyDays && dates[i] && dates[i] !== shown) {
         shown = dates[i];
+        lead = el('tbody', 'scheduler-driver-itinerary__lead');
         const dayRow = el('tr', 'scheduler-driver-itinerary__day');
         const cell = el('td', 'scheduler-driver-itinerary__typed', dayName(dates[i]));
         cell.colSpan = COLUMNS.length;
         dayRow.appendChild(cell);
-        body.appendChild(dayRow);
-      }
-      body.appendChild(itineraryRow(stop, stops[i + 1] || null));
+        lead.appendChild(dayRow);
+        table.appendChild(lead);
+        body = el('tbody');
+        table.appendChild(body);
+        if (yard) { lead.appendChild(yard); yard = null; }
+      } else if (yard) { body.appendChild(yard); yard = null; }
+      place(itineraryRow(stop, stops[i + 1] || null, dates[i] ?? shown));
     });
-    if (!body.children.length) body.appendChild(blankRow());
-    table.appendChild(body);
+    if (!table.querySelector('tbody > tr')) body.appendChild(blankRow());
     card.appendChild(table);
 
     /* Screen only, and inside the sheet because that is where the row it adds
@@ -2063,7 +2081,8 @@
     const pieces = e => {
       if (whole(e)) return [e];
       if (e.matches('table')) {
-        const rows = [...e.querySelectorAll(':scope > tbody > tr')];
+        // A row group kept whole, a day's divider with its first row, is one.
+        const rows = [...e.querySelectorAll(':scope > tbody')].flatMap(g => (whole(g) ? [g] : [...g.rows]));
         return rows.length ? rows : [e];
       }
       return holdsKept(e) ? [...e.children].flatMap(pieces) : [e];

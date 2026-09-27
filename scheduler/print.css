@@ -824,6 +824,17 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   color: var(--rux-text-secondary);
 }
 
+/* A departure on another day than its row carries that day, small after the
+   time, in the label's voice. */
+.scheduler-driver-itinerary__at-day {
+  margin-inline-start: var(--rux-spacing-02);
+  font-size: var(--rux-label-01-font-size);
+  font-weight: var(--rux-label-01-font-weight);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  text-transform: uppercase;
+  color: var(--rux-text-secondary);
+}
+
 /* The leg into this stop, under its name and quieter than it: what was driven
    to get here, never a total worked out on the page. */
 .scheduler-driver-itinerary__leg {
@@ -913,6 +924,9 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    nothing, because the preview reads it to put its folds where the printer's
    are. */
 .scheduler-driver-itinerary__table tr { break-inside: avoid; }
+/* A day's divider and its first row are one group, so no day starts on one
+   page and goes on the next. */
+.scheduler-driver-itinerary__lead { break-inside: avoid; }
 
 @media print {
   .scheduler-driver-itinerary__add { display: none; }

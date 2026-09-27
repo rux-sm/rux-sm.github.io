@@ -769,13 +769,12 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 /* WHERE THE GROUP IS GOING, the largest type on the sheet because it is what
-   tells one trip's sheet from another's, centred across the full width under
-   the bar. The envelope leads with the day instead, because a driver picks
-   one out of a stack by it. */
+   tells one trip's sheet from another's, across the full width under the bar
+   and on the left edge every other line starts from. Its size sets it apart,
+   so it takes no rule of its own. The envelope leads with the day instead,
+   because a driver picks one out of a stack by it. */
 .scheduler-driver-itinerary__where {
-  padding-block: var(--rux-spacing-05);
-  border-block-end: 1px solid var(--rux-border-strong-01);
-  text-align: center;
+  padding-block-start: var(--rux-spacing-05);
   text-wrap: balance;
   font-size: var(--rux-productive-heading-04-font-size);
   font-weight: var(--rux-productive-heading-04-font-weight);

@@ -81,8 +81,9 @@
 
   /* THE ITINERARY'S DATES, in words, because a sheet read down a column of
      days reads "Wednesday, Aug 26" faster than a row of numbers. The year is
-     printed once, in the head: "Sun Sep 27 – Tue 29, 2026", "Mon Aug 31 – Wed
-     Sep 2, 2026", or both years when the trip runs into the next. */
+     printed once, in the head, and each end names its own month so neither
+     is read against the other: "Wed, Aug 26 – Sat, Aug 29, 2026", or both
+     years when the trip runs into the next. */
   const partsOf = d => {
     const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(d || '').trim());
     if (!m) return null;
@@ -98,11 +99,10 @@
     const a = partsOf(from);
     const b = to && to !== from ? partsOf(to) : null;
     if (!a) return mdy(from);
-    const first = `${a.weekday} ${a.month} ${a.day}`;
-    if (!b) return `${first}, ${a.year}`;
-    if (a.year !== b.year) return `${first}, ${a.year} – ${b.weekday} ${b.month} ${b.day}, ${b.year}`;
-    if (a.month !== b.month) return `${first} – ${b.weekday} ${b.month} ${b.day}, ${a.year}`;
-    return `${first} – ${b.weekday} ${b.day}, ${a.year}`;
+    const day = p => `${p.weekday}, ${p.month} ${p.day}`;
+    if (!b) return `${day(a)}, ${a.year}`;
+    if (a.year !== b.year) return `${day(a)}, ${a.year} – ${day(b)}, ${b.year}`;
+    return `${day(a)} – ${day(b)}, ${a.year}`;
   };
 
   const weekdayOf = d => {

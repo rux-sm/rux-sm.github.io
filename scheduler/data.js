@@ -5212,6 +5212,10 @@
     const destination = () => document.getElementById('scheduler-f-destination')?.value.trim() || null;
     if (!wanted.drop) {
       plan(r.first, wanted.first, want => ({ at: 'after-pickup', row: { type: 'stop', name: destination(), ...want } }));
+      // A round trip's row back at the pickup is reached when the trip ends.
+      if (r.dropRow && r.dropRow !== r.first) {
+        plan(r.dropRow, { arrive: wanted.ret.depart_prev, arrive_date: wanted.ret.depart_prev_date });
+      }
     } else if (!r.first || r.first === r.drop) {
       plan(r.first, { ...wanted.first, ...wanted.drop }, want => ({ at: 'after-pickup', row: { type: 'stop', ...want } }));
     } else {

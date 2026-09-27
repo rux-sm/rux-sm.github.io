@@ -708,10 +708,19 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-driver-itinerary__head {
   display: flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: center;
   gap: var(--rux-spacing-07);
   padding-block-end: var(--rux-spacing-05);
   border-block-end: 1px solid var(--rux-border-strong-01);
+}
+
+/* THE APP BAR'S SHAPE: the logo, a rule, and the form's name, the way the
+   header on screen sets the logo beside the page it is on. */
+.scheduler-driver-itinerary__brand {
+  display: flex;
+  align-items: stretch;
+  gap: var(--rux-spacing-05);
+  flex: none;
 }
 
 .scheduler-driver-itinerary__logo {
@@ -719,36 +728,38 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   flex: none;
   height: 2rem;
   width: auto;
-  margin-block-end: var(--rux-spacing-02);
+}
+
+.scheduler-driver-itinerary__name {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding-inline-start: var(--rux-spacing-05);
+  border-inline-start: 1px solid var(--rux-border-strong-01);
+  white-space: nowrap;
+  font-size: var(--rux-productive-heading-03-font-size);
+  font-weight: var(--rux-productive-heading-03-font-weight);
+  line-height: var(--rux-productive-heading-03-line-height);
+  color: var(--rux-text-primary);
 }
 
 /* The title is where the group is going, the largest type on the sheet
    because it is what tells one trip's sheet from another's, set to the
-   right across from the logo. The envelope leads with the day instead,
+   right across from the name. The envelope leads with the day instead,
    because a driver picks one out of a stack by it. */
 .scheduler-driver-itinerary__title {
   display: flex;
   flex-direction: column;
   align-items: end;
   min-inline-size: 0;
-  margin: 0;
   text-align: end;
-  font-size: var(--rux-productive-heading-05-font-size);
-  font-weight: var(--rux-productive-heading-05-font-weight);
-  line-height: var(--rux-productive-heading-05-line-height);
-}
-
-.scheduler-driver-itinerary__kicker {
-  font-size: var(--rux-label-01-font-size);
-  font-weight: var(--rux-heading-compact-01-font-weight);
-  line-height: var(--rux-label-01-line-height);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--rux-text-secondary);
+  font-size: var(--rux-productive-heading-04-font-size);
+  font-weight: var(--rux-productive-heading-04-font-weight);
+  line-height: var(--rux-productive-heading-04-line-height);
 }
 
 .scheduler-driver-itinerary__dates {
-  margin-block-start: var(--rux-spacing-02);
+  margin-block-start: var(--rux-spacing-01);
   font-size: var(--rux-body-compact-02-font-size);
   font-weight: var(--rux-body-compact-02-font-weight);
   line-height: var(--rux-body-compact-02-line-height);

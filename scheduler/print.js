@@ -651,21 +651,25 @@
      naming what the row would have been. */
   const blankRow = () => itineraryRow({}, null);
 
-  /* THE LOGO AND THE TRIP. No address or phones: the sheet goes to the
-     company's own driver, who has both. The title is where the group is
-     going, under a small Itinerary, and the days it runs; both can be typed
-     over like any other line of the form. */
+  /* THE LOGO, THE FORM'S NAME AND THE TRIP. The left is the app bar's shape,
+     the logo and then the name past a rule, so the paper reads as the same
+     company as the screen. The right is where the group is going and the
+     days it runs; both can be typed over like any other line of the form.
+     No address or phones: the sheet goes to the company's own driver, who
+     has both. */
   function itineraryHead(subject) {
     const { trip, leg } = subject;
     const start = leg === 'return' ? (trip.return_start_date || trip.end_date) : trip.start_date;
     const end = leg === 'return' ? (trip.return_end_date || trip.end_date) : trip.end_date;
     const head = el('header', 'scheduler-driver-itinerary__head');
+    const brand = el('div', 'scheduler-driver-itinerary__brand');
     const logo = el('img', 'scheduler-driver-itinerary__logo');
     logo.src = '/scheduler/brand/logo.svg';
-    logo.alt = '';
-    head.appendChild(logo);
-    const title = el('h2', 'scheduler-driver-itinerary__title');
-    title.appendChild(el('span', 'scheduler-driver-itinerary__kicker', 'Itinerary'));
+    logo.alt = 'Escamilla Tour Buses';
+    brand.appendChild(logo);
+    brand.appendChild(el('h2', 'scheduler-driver-itinerary__name', 'Trip itinerary'));
+    head.appendChild(brand);
+    const title = el('div', 'scheduler-driver-itinerary__title');
     const typed = (cls, name, value) => {
       const node = el('span', `scheduler-driver-itinerary__${cls} scheduler-driver-itinerary__typed`, value || '');
       node.dataset.name = name;

@@ -624,13 +624,14 @@
 
   /* THE LEG INTO THIS STOP, under its name: the miles and the drive the Route
      tab worked out and wrote on the row, headed Drive so they read as the way
-     here rather than a fact about the place. The pickup has none: its leg is
-     the drive from the yard, which is off the sheet like the drive back. */
+     here rather than a fact about the place. The pickup's is the drive from
+     the yard, and says so, since on a split trip's pickup leg it is the
+     longest of the day. */
   function locationCell(stop) {
     const td = textCell('loc', stop.name || ITINERARY_TITLE[stop.type] || '');
-    const words = stop.type === 'pickup' ? ''
-      : [milesWords(stop.miles), driveWords(stop.drive)].filter(Boolean).join(' · ');
-    if (words) td.appendChild(el('span', 'scheduler-driver-itinerary__leg', `Drive ${words}`));
+    const words = [milesWords(stop.miles), driveWords(stop.drive)].filter(Boolean).join(' · ');
+    const head = stop.type === 'pickup' ? 'Drive from yard' : 'Drive';
+    if (words) td.appendChild(el('span', 'scheduler-driver-itinerary__leg', `${head} ${words}`));
     return td;
   }
 

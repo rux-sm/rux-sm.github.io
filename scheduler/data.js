@@ -4040,7 +4040,13 @@
             `Matched by the name alone. On file: ${[showPhone(o.contact.phone), o.contact.email].filter(Boolean).join(' · ') || 'no phone or email'}.`));
         } else {
           row.appendChild(checkField(id, `Save ${o.place.name || o.place.address} to Locations`, true));
-          row.appendChild(textField(`${id}-name`, 'Name', o.place.name));
+          // A map name that is only the street address is left for a real one.
+          const nameItem = textField(`${id}-name`, 'Name',
+            window.SchedulerPlaces.nameIsAddress(o.place.name, o.place.address) ? '' : o.place.name);
+          const need = el('div', 'rux--form-requirement');
+          need.id = `${id}-name-error`;
+          nameItem.querySelector('.rux--text-input__field-outer-wrapper')?.appendChild(need);
+          row.appendChild(nameItem);
           row.appendChild(placeSearch(`${id}-address`, 'Address', o.place, picked => {
             if (picked) o.place = { ...picked, name: o.place.name };
           }, 'address'));
@@ -4053,12 +4059,45 @@
     window.Rux?.modal?.open?.('scheduler-lists-modal');
   }
 
+  /* A text field's error, as Carbon's invalid state draws it: the red
+     outline, the icon and the message in the requirement under the field.
+     An empty message clears it. */
+  function nameError(input, message) {
+    const wrap = input.closest('.rux--text-input__field-wrapper');
+    const on = !!message;
+    input.classList.toggle('rux--text-input--invalid', on);
+    input.toggleAttribute('data-invalid', on);
+    wrap.toggleAttribute('data-invalid', on);
+    if (on) input.setAttribute('aria-invalid', 'true'); else input.removeAttribute('aria-invalid');
+    input.setAttribute('aria-describedby', `${input.id}-error`);
+    let icon = wrap.querySelector('.rux--text-input__invalid-icon');
+    if (on && !icon) {
+      icon = svgUse('#m-report-fill', '16', '0 0 32 32');
+      icon.setAttribute('class', 'rux--text-input__invalid-icon');
+      wrap.prepend(icon);
+    }
+    if (!on) icon?.remove();
+    const need = document.getElementById(`${input.id}-error`);
+    if (need) need.textContent = message;
+  }
+
   document.getElementById('scheduler-lists-save')?.addEventListener('click', async e => {
     const button = e.currentTarget;
     const job = listOffers;
     if (!job) return;
     const ticked = job.rows.filter(o => document.getElementById(o.check)?.checked);
     const val = id => document.getElementById(id)?.value.trim() || null;
+    /* Every place about to be saved has a real name first, or nothing is
+       written and the first field wanting one takes the focus. */
+    let wanting = null;
+    for (const o of job.rows.filter(r => r.kind === 'place')) {
+      const input = document.getElementById(`${o.check}-name`);
+      if (!input) continue;
+      const bad = ticked.includes(o) && window.SchedulerPlaces.nameIsAddress(input.value, o.place.address);
+      nameError(input, bad ? window.SchedulerPlaces.NAME_HELP : '');
+      if (bad) wanting ??= input;
+    }
+    if (wanting) { wanting.focus(); return; }
     const customerName = (panelIndex.customers || []).find(c => c.id === job.customerId)?.name ?? null;
     button.disabled = true;
     let done = 0;
@@ -4089,7 +4128,7 @@
           if (!up.data?.length) { moved.push(o.contact.name); continue; }
           o.contact[o.key] = o.value;
         } else {
-          const place = { name: val(`${o.check}-name`) || o.place.name || o.place.address, address: o.place.address,
+          const place = { name: val(`${o.check}-name`), address: o.place.address,
             lat: o.place.lat, lng: o.place.lng, mapbox_id: o.place.mapbox_id ?? null };
           const add = await withTimeout(client.from('locations').insert(place).select('id,name,address,lat,lng,mapbox_id').single().then(r => r));
           if (add.error) throw new Error(add.error.message);

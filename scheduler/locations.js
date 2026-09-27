@@ -149,10 +149,13 @@
       typed = text;
       if (picked) {
         place = { address: picked.address || picked.name, lat: picked.lat, lng: picked.lng, mapbox_id: picked.mapbox_id };
-        // A place takes the name the map knows it by, until one is typed.
+        /* A place takes the name the map knows it by, until one is typed,
+           unless that name is only its street address, which leaves the
+           field for a real one. */
         if (!nameField.value.trim() || nameField.value === autoName) {
-          nameField.value = picked.name;
-          autoName = picked.name;
+          const known = window.SchedulerPlaces.nameIsAddress(picked.name, picked.address) ? '' : picked.name;
+          nameField.value = known;
+          autoName = known;
         }
       } else {
         place = null;
@@ -196,6 +199,10 @@
     showAddressError('');
     let first = null;
     if (!nameField.value.trim()) { showNameError('Enter a name.'); first ??= nameField; }
+    else if (window.SchedulerPlaces.nameIsAddress(nameField.value, place?.address ?? typed)) {
+      showNameError(window.SchedulerPlaces.NAME_HELP);
+      first ??= nameField;
+    }
     if (!place || place.lat == null) {
       showAddressError(window.SchedulerPlaces.unavailable() ?? (typed
         ? 'Pick the address from the list, so it has a place on the map.'

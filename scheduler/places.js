@@ -11,7 +11,10 @@
    onPick)` returns the field, and `onPick` gets the place picked, or null and
    the text when the field is typed in. `.unavailable()` says why the search
    cannot run, a settings read that failed or no token, or null when it can.
-   Design's `js/list-box.js` opens and closes the menu.
+   Design's `js/list-box.js` opens and closes the menu. `.nameIsAddress(name,
+   address)` says a saved location's name is missing or only a street
+   address, and `.NAME_HELP` asks for a real one; the trip editor loads this
+   file for those two alone.
    ========================================================================== */
 (() => {
   'use strict';
@@ -127,5 +130,19 @@
     return wrap;
   }
 
-  window.SchedulerPlaces = { init, search, field, unavailable };
+  /* A saved location's name says what the place is, the school or the venue.
+     One that is blank, or only a street address, whether its own address's
+     street line or a house number with a street word after it, says nothing
+     the address does not, so every place that saves a location asks for a
+     real one. The street word keeps a name like "3M Arena" a name. */
+  const STREET = /^\d+[a-z]?\s.*\b(st|street|ave|avenue|avenida|rd|road|dr|drive|ln|lane|bl|blvd|boulevard|hwy|highway|pkwy|parkway|way|route|interstate|fm|us|ct|court|pl|place|cir|circle|trl|trail|loop|expy|expressway|fwy|freeway)\b/;
+  function nameIsAddress(name, address) {
+    const fold = v => String(v ?? '').trim().toLowerCase().replace(/\s+/g, ' ');
+    const n = fold(name);
+    const a = fold(address);
+    return !n || n === a || n === a.split(',')[0].trim() || STREET.test(n);
+  }
+  const NAME_HELP = "Enter the place's name, such as the school or venue, not its street address.";
+
+  window.SchedulerPlaces = { init, search, field, unavailable, nameIsAddress, NAME_HELP };
 })();

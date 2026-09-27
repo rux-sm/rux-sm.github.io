@@ -559,12 +559,8 @@
     const leaveDay = next?.depart_prev_date || null;
     const after = next?.depart_prev || null;
     const afterDay = after && leaveDay && day && leaveDay !== day ? leaveDay : null;
-    // The yard line the sheet opens with: the one time on it is when the bus
-    // rolls, which the pickup lends it.
-    if (stop.type === 'yard') return [['Roll', after]];
     if (stop.type === 'sleeper') return [['Rest', stop.depart_prev], ['Up', stop.arrive], ['Dep', after, afterDay]];
     if (stop.type === 'pickup') return [['Spot', stop.spot], ['Dep', after, afterDay]];
-    if (stop.type === 'return') return [['Arr', stop.arrive]];
     const same = stop.arrive && after && String(stop.arrive).slice(0, 5) === String(after).slice(0, 5) && !afterDay;
     return same ? [['Arr', stop.arrive]] : [['Arr', stop.arrive], ['Dep', after, afterDay]];
   }
@@ -573,7 +569,6 @@
     pickup: 'Pickup',
     stop: 'Stop',
     sleeper: 'Rest',
-    return: 'Yard',
   };
 
   /* A `day` row is the itinerary's own day divider, and its `label` is the
@@ -623,25 +618,6 @@
      It has no type either, so the Location column stays empty rather than
      naming what the row would have been. */
   const blankRow = () => itineraryRow({}, null);
-
-  /* THE YARD IS NO ROW OF ITS OWN. The leg's pickup holds the drive from the
-     yard and the yard departure, in `depart_prev`, so the sheet opens with a
-     yard line built from them -- otherwise the one time that tells a driver
-     when to roll is the only stored time the form does not print, and the
-     pickup row would have to label it "Dep" and say the bus leaves the school
-     half an hour before it gets there. The yard's own name and address are
-     the leg's `return` row, which is the same yard at the end of the day. */
-  function yardRow(stops) {
-    const pickup = stops.find(s => s.type === 'pickup');
-    if (!pickup?.depart_prev) return null;
-    const yard = stops.find(s => s.type === 'return');
-    return itineraryRow({
-      type: 'yard',
-      name: yard?.name || 'Yard',
-      address: yard?.address || COMPANY.address,
-      arrive: null,
-    }, { depart_prev: pickup.depart_prev });
-  }
 
   function itineraryHead() {
     const head = el('header', 'scheduler-driver-itinerary__head');
@@ -709,9 +685,11 @@
     head.appendChild(headRow);
     table.appendChild(head);
 
-    // The run of stops alone: a day row is the old format, never a stop.
+    /* The run of stops alone: a day row is the old format, never a stop. The
+       yard is not printed at either end: the sheet runs from the pickup's
+       spot to the drop-off, the part of the day the group sees, and the yard
+       row is read only for when the last stop is left. */
     const stops = stopsOf(trip, leg).filter(s => s.type !== 'day');
-    let yard = yardRow(stops);
     /* A leg of more than one day is broken into days by the stops' own
        dates, as the Route tab's Stops list is: a divider names the day before
        its first row. */
@@ -723,12 +701,11 @@
       : trip.end_date || legFrom;
     const inLeg = d => !!d && (!legFrom || d >= dayShift(legFrom, -1)) && (!legTo || d <= dayShift(legTo, 1));
     const dateOf = s => [s.type === 'pickup' ? s.spot_date : s.arrive_date, s.depart_prev_date].find(inLeg) || null;
-    const dates = stops.map(dateOf);
+    const dates = stops.map(s => (s.type === 'return' ? null : dateOf(s)));
     const manyDays = new Set(dates.filter(Boolean)).size > 1;
     /* A day's divider is printed with its first row, in a group of their own
        the printer keeps together, so a day never starts at the foot of a page
-       with its rows on the next. The yard line goes under the first day, as
-       leaving the yard is that day's first thing. */
+       with its rows on the next. */
     let body = el('tbody');
     table.appendChild(body);
     let shown = null;
@@ -737,6 +714,7 @@
       if (lead) { lead.appendChild(row); lead = null; } else body.appendChild(row);
     };
     stops.forEach((stop, i) => {
+      if (stop.type === 'return') return;
       if (manyDays && dates[i] && dates[i] !== shown) {
         shown = dates[i];
         lead = el('tbody', 'scheduler-driver-itinerary__lead');
@@ -748,8 +726,7 @@
         table.appendChild(lead);
         body = el('tbody');
         table.appendChild(body);
-        if (yard) { lead.appendChild(yard); yard = null; }
-      } else if (yard) { body.appendChild(yard); yard = null; }
+      }
       place(itineraryRow(stop, stops[i + 1] || null, dates[i] ?? shown));
     });
     if (!table.querySelector('tbody > tr')) body.appendChild(blankRow());

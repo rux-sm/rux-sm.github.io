@@ -5487,6 +5487,59 @@
     }
   }
 
+  /* A SPLIT TRIP'S PICKUP LEG MIRRORS ITS DROP-OFF LEG. Saving the drop-off
+     leg with both its places, while the pickup leg has none, gives the pickup
+     leg the same two reversed: picked up where the group was let off and
+     taken back to where it started. The drives are measured and the times
+     left blank, since the customer gives those. A pickup leg with rows of
+     its own shape gets its places written into them; one with no rows gets
+     its pickup, drop-off and yard rows after the drop-off leg's. */
+  async function mirrorPickupLeg(tripId, write) {
+    const r = editing?.route;
+    if (!r || r.leg !== 'outbound' || !splitNow()) return;
+    const has = p => !!(p && (p.name || p.address));
+    const from = r.dropPlace;
+    const to = r.pickupPlace;
+    if (!has(from) || !has(to)) return;
+    const rows = r.otherStops || [];
+    if (rows.some(x => x.type !== 'return' && has(placeOf(x)))) return;
+    const measure = async (a, b) => {
+      try { return a && b ? await driveBetween(a, b) : null; } catch { return null; }
+    };
+    const [yardOut, legDrive, yardBack] = await Promise.all([
+      measure(yardPlace, from), measure(from, to), measure(to, yardPlace)]);
+    const cols = d => ({ drive: d ? driveText(d.min) : null, miles: d ? d.miles : null,
+      drive_source: 'estimated', miles_source: 'estimated' });
+    const placeCols = p => ({ name: p.name ?? null, address: p.address ?? null,
+      lat: p.lat ?? null, lng: p.lng ?? null, mapbox_id: p.mapbox_id ?? null });
+    const want = {
+      pickup: { ...placeCols(from), ...cols(yardOut) },
+      drop: { ...placeCols(to), ...cols(legDrive) },
+      yard: cols(yardBack),
+    };
+    const pickupRow = rows.find(x => x.type === 'pickup');
+    const dropRow = rows.filter(x => x.type === 'stop').at(-1);
+    const yardRow = rows.filter(x => x.type === 'return').at(-1);
+    if (pickupRow && dropRow && yardRow) {
+      await write('the pickup leg', client.from('trip_stops').update(want.pickup).eq('id', pickupRow.id));
+      await write('the pickup leg', client.from('trip_stops').update(want.drop).eq('id', dropRow.id));
+      await write('the pickup leg', client.from('trip_stops').update(want.yard).eq('id', yardRow.id));
+      return;
+    }
+    if (rows.length) return;
+    const last = await write('the pickup leg', client.from('trip_stops').select('position')
+      .eq('trip_id', tripId).order('position', { ascending: false }).limit(1));
+    const top = last?.[0]?.position ?? -1;
+    const yard = { name: yardPlace?.name ?? 'Yard', address: yardPlace?.address ?? null,
+                   lat: yardPlace?.lat ?? null, lng: yardPlace?.lng ?? null };
+    const insert = [
+      { type: 'pickup', ...want.pickup },
+      { type: 'stop', ...want.drop },
+      { type: 'return', ...yard, ...want.yard },
+    ].map((row, i) => ({ trip_id: tripId, leg: 'return', position: top + 1 + i, ...row }));
+    await write('the pickup leg', client.from('trip_stops').insert(insert));
+  }
+
   /* `===` for the columns that hold a value, and a key-by-key compare for
      `trip_reqs`, which holds an object: two equal objects are never `===`, so
      without this every open would read as an unsaved change. `histStable`
@@ -5722,6 +5775,8 @@
       return {
         leg, pickup, first, drop, back, inner, ...dates,
         between: inner.length,
+        // The other leg's rows whole, which a split trip's pickup leg is filled from.
+        otherStops: creating ? [] : stopsOfLeg(trip, leg === 'return' ? 'outbound' : 'return').stops,
         all: (trip.trip_stops || []).map(x => ({ id: x.id, leg: x.leg || 'outbound', type: x.type, position: x.position ?? 0 })),
         driveOut: driveMin(pickup?.drive),
         driveMiles: numOrNull(pickup?.miles), driveSource: pickup?.drive_source ?? 'estimated',
@@ -8918,6 +8973,7 @@
          upsert would need every column and write back stale copies of those
          the tab never shows. */
       await saveRoute(tripId, write);
+      await mirrorPickupLeg(tripId, write);
 
       /* Payments, then `deposit_amount`, which holds their sum despite its
          name: rux-ui reads it as the amount paid (`normalizeRecord` in its

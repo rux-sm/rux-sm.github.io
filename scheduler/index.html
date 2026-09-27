@@ -82,6 +82,7 @@
 <symbol id="m-close" viewBox="0 -960 960 960"><path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></symbol>
 <symbol id="m-palette" viewBox="0 -960 960 960"><path d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-85 32-158t87.5-127q55.5-54 130-84.5T489-880q79 0 150 26.5T763.5-780q53.5 47 85 111.5T880-527q0 108-63 170.5T650-294h-75q-18 0-31 14t-13 31q0 27 14.5 46t14.5 44q0 38-21 58.5T480-80Zm0-400Zm-198 11q15-15 15-35t-15-35q-15-15-35-15t-35 15q-15 15-15 35t15 35q15 15 35 15t35-15Zm126-170q15-15 15-35t-15-35q-15-15-35-15t-35 15q-15 15-15 35t15 35q15 15 35 15t35-15Zm214 0q15-15 15-35t-15-35q-15-15-35-15t-35 15q-15 15-15 35t15 35q15 15 35 15t35-15Zm131 170q15-15 15-35t-15-35q-15-15-35-15t-35 15q-15 15-15 35t15 35q15 15 35 15t35-15ZM480-140q11 0 15.5-4.5T500-159q0-14-14.5-26T471-238q0-46 30-81t76-35h73q76 0 123-44.5T820-527q0-132-100-212.5T489-820q-146 0-247.5 98.5T140-480q0 141 99.5 240.5T480-140Z"/></symbol>
 <symbol id="m-content_copy" viewBox="0 -960 960 960"><path d="M240-200v-680h560v680H240Zm60-60h440v-560H300v560ZM120-80v-680h60v620h500v60H120Zm180-180v-560 560Z"/></symbol>
+<symbol id="m-dangerous" viewBox="0 -960 960 960"><path d="M330-120 120-330v-300l210-210h300l210 210v300L630-120H330Zm27-195 123-123 123 123 42-42-123-123 123-123-42-42-123 123-123-123-42 42 123 123-123 123 42 42Zm-2 135h250l175-175v-250L605-780H355L180-605v250l175 175Zm125-300Z"/></symbol>
 <symbol id="m-local_shipping-fill" viewBox="0 -960 960 960"><path d="M140.5-195.5Q106-230 106-279H40v-521h639v167h105l136 181v173h-71q0 49-34.5 83.5T731-161q-49 0-83.5-34.5T613-279H342q0 49-34.5 83.5T224-161q-49 0-83.5-34.5ZM265-238q17-17 17-41t-17-41q-17-17-41-17t-41 17q-17 17-17 41t17 41q17 17 41 17t41-17Zm507 0q17-17 17-41t-17-41q-17-17-41-17t-41 17q-17 17-17 41t17 41q17 17 41 17t41-17Zm-93-187h186L754-573h-75v148Z"/></symbol>
 <symbol id="m-description" viewBox="0 -960 960 960"><path d="M319-250h322v-60H319v60Zm0-170h322v-60H319v60ZM160-80v-800h421l219 219v581H160Zm391-554v-186H220v680h520v-494H551ZM220-820v186-186 680-680Z"/></symbol>
 <symbol id="m-download" viewBox="0 -960 960 960"><path d="M480-313 287-506l43-43 120 120v-371h60v371l120-120 43 43-193 193ZM160-160v-203h60v143h520v-143h60v203H160Z"/></symbol>
@@ -603,7 +604,7 @@
            unsaved edits. Each carries an icon at its end, Carbon's place for
            one, which answers the label at the start. -->
       <div class="rux--action-set rux--side-panel__actions-container rux--action-set--row-double rux--action-set--md rux--btn-set" role="presentation">
-        <button type="button" class="rux--action-set__action-button rux--btn rux--btn--secondary scheduler-panel-cancel" id="scheduler-panel-cancel">Cancel trip <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-delete"/></svg></button>
+        <button type="button" class="rux--action-set__action-button rux--btn rux--btn--secondary scheduler-panel-cancel" id="scheduler-panel-cancel">Cancel trip <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-dangerous"/></svg></button>
         <button type="button" class="rux--action-set__action-button rux--btn rux--btn--secondary" id="scheduler-panel-reset" disabled>Reset <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-restart_alt"/></svg></button>
         <button type="button" class="rux--action-set__action-button rux--btn rux--btn--primary" id="scheduler-panel-save" disabled>Save <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-save"/></svg></button>
       </div>
@@ -950,7 +951,7 @@
     </li>
     <li class="rux--menu-item rux--menu-item--danger" role="menuitem" tabindex="0" id="scheduler-bar-menu-cancel">
       <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-delete"/></svg></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-dangerous"/></svg></div>
       <div class="rux--menu-item__label">Cancel trip…</div>
     </li>
     <li class="rux--menu-item-divider" role="separator"></li>

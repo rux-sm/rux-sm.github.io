@@ -674,29 +674,15 @@
     card.appendChild(itineraryHead());
     card.appendChild(itineraryMeta(subject));
 
-    const table = el('table', 'scheduler-driver-itinerary__table');
-    table.appendChild(el('caption', 'rux--visually-hidden', 'Stops'));
-    const head = el('thead');
-    const headRow = el('tr');
-    for (const label of COLUMNS) {
-      const th = el('th', null, label);
-      th.scope = 'col';
-      headRow.appendChild(th);
-    }
-    head.appendChild(headRow);
-    table.appendChild(head);
-
     /* The run of stops alone: a day row is the old format, never a stop. The
        yard is not printed at either end: the sheet runs from the pickup's
        spot to the drop-off, the part of the day the group sees, and the yard
        row is read only for when the last stop is left. */
     const stops = stopsOf(trip, leg).filter(s => s.type !== 'day');
     /* A leg of more than one day is broken into days by the stops' own
-       dates, as the Route tab's Stops list is: a divider names the day before
-       its first row. */
-    /* A date outside the leg, from a trip whose dates moved after its stops
-       were saved, names no day: the row stays under the day before it. The
-       yard times may fall a day either side. */
+       dates, as the Route tab's Stops list is. A date outside the leg, from a
+       trip whose dates moved after its stops were saved, names no day: the
+       row stays under the day before it. */
     const legFrom = leg === 'return' ? trip.return_start_date || trip.start_date : trip.start_date;
     const legTo = leg === 'return' ? trip.return_end_date || trip.return_start_date || trip.end_date || legFrom
       : trip.end_date || legFrom;
@@ -704,34 +690,52 @@
     const dateOf = s => [s.type === 'pickup' ? s.spot_date : s.arrive_date, s.depart_prev_date].find(inLeg) || null;
     const dates = stops.map(s => (s.type === 'return' ? null : dateOf(s)));
     const manyDays = new Set(dates.filter(Boolean)).size > 1;
-    /* A day's divider is printed with its first row, in a group of their own
-       the printer keeps together, so a day never starts at the foot of a page
-       with its rows on the next. */
-    let body = el('tbody');
-    table.appendChild(body);
-    let shown = null;
-    let lead = null;
-    const place = row => {
-      if (lead) { lead.appendChild(row); lead = null; } else body.appendChild(row);
+
+    /* A TABLE TO A DAY, its name in the table's head, because the printer
+       repeats a head at the top of every sheet the table runs onto: a day cut
+       by the fold is named again over the rest of it. The column names head
+       only the first table, as they are read once. */
+    let body = null;
+    const table = day => {
+      const t = el('table', 'scheduler-driver-itinerary__table');
+      t.appendChild(el('caption', 'rux--visually-hidden', day ? dayName(day) : 'Stops'));
+      const cols = el('colgroup');
+      for (let i = 0; i < COLUMNS.length; i += 1) cols.appendChild(el('col'));
+      t.appendChild(cols);
+      const head = el('thead');
+      if (!card.querySelector('.scheduler-driver-itinerary__table')) {
+        const row = el('tr');
+        for (const label of COLUMNS) {
+          const th = el('th', null, label);
+          th.scope = 'col';
+          row.appendChild(th);
+        }
+        head.appendChild(row);
+      }
+      if (day) {
+        const row = el('tr', 'scheduler-driver-itinerary__day');
+        const th = el('th', 'scheduler-driver-itinerary__typed', dayName(day));
+        th.scope = 'colgroup';
+        th.colSpan = COLUMNS.length;
+        row.appendChild(th);
+        head.appendChild(row);
+      }
+      if (head.rows.length) t.appendChild(head);
+      body = el('tbody');
+      t.appendChild(body);
+      card.appendChild(t);
     };
+    let shown = null;
     stops.forEach((stop, i) => {
       if (stop.type === 'return') return;
       if (manyDays && dates[i] && dates[i] !== shown) {
         shown = dates[i];
-        lead = el('tbody', 'scheduler-driver-itinerary__lead');
-        const dayRow = el('tr', 'scheduler-driver-itinerary__day');
-        const cell = el('td', 'scheduler-driver-itinerary__typed', dayName(dates[i]));
-        cell.colSpan = COLUMNS.length;
-        dayRow.appendChild(cell);
-        lead.appendChild(dayRow);
-        table.appendChild(lead);
-        body = el('tbody');
-        table.appendChild(body);
-      }
-      place(itineraryRow(stop, stops[i + 1] || null, dates[i] ?? shown));
+        table(shown);
+      } else if (!body) table(null);
+      body.appendChild(itineraryRow(stop, stops[i + 1] || null, dates[i] ?? shown));
     });
-    if (!table.querySelector('tbody > tr')) body.appendChild(blankRow());
-    card.appendChild(table);
+    if (!body) table(null);
+    if (!card.querySelector('.scheduler-driver-itinerary__table tbody > tr')) body.appendChild(blankRow());
 
     /* Screen only, and inside the sheet because that is where the row it adds
        goes. print.css takes it off the paper. */
@@ -2056,35 +2060,48 @@
        counting the terms as one block missed the folds between them. */
     const whole = e => getComputedStyle(e).breakInside === 'avoid';
     const holdsKept = e => [...e.children].some(c => whole(c) || c.matches('table') || holdsKept(c));
-    const pieces = e => {
-      if (whole(e)) return [e];
-      if (e.matches('table')) {
-        // A row group kept whole, a day's divider with its first row, is one.
-        const rows = [...e.querySelectorAll(':scope > tbody')].flatMap(g => (whole(g) ? [g] : [...g.rows]));
-        return rows.length ? rows : [e];
-      }
-      return holdsKept(e) ? [...e.children].flatMap(pieces) : [e];
-    };
-    const units = [...card.children].flatMap(pieces)
-      // A button is the screen's, and print.css takes it off the paper.
-      .filter(e => e.offsetHeight && !e.matches('button, .scheduler-driver-itinerary__break'));
     // From the sheet's own top, through every positioned box between.
     const topIn = e => {
       let top = 0;
       for (let n = e; n && n !== card; n = n.offsetParent) top += n.offsetTop;
       return top;
     };
+    const unit = e => ({ top: topIn(e), height: e.offsetHeight, again: 0 });
+    /* A TABLE IS ITS ROWS, and its head goes with the first of them: the
+       printer keeps a head with a row under it, and prints it again at the
+       top of every sheet the table runs onto, so a row that starts a sheet
+       has the head's height above it there. */
+    const rowsOf = t => {
+      const rows = [...t.tBodies].flatMap(g => (whole(g) ? [g] : [...g.rows])).map(unit);
+      const head = t.tHead?.offsetHeight || 0;
+      if (!rows.length) return [unit(t)];
+      if (head) {
+        rows[0].height += rows[0].top - topIn(t.tHead);
+        rows[0].top = topIn(t.tHead);
+        for (const row of rows.slice(1)) row.again = head;
+      }
+      return rows;
+    };
+    const pieces = e => {
+      if (whole(e)) return [unit(e)];
+      if (e.matches('table')) return rowsOf(e);
+      return holdsKept(e) ? [...e.children].flatMap(pieces) : [unit(e)];
+    };
+    const units = [...card.children]
+      // A button is the screen's, and print.css takes it off the paper.
+      .filter(e => e.offsetHeight && !e.matches('button, .scheduler-driver-itinerary__break'))
+      .flatMap(pieces);
     const start = parseFloat(getComputedStyle(card).paddingBlockStart) || 0;
 
     // Measured first and marked after, because a mark laid over the form does
     // not move a row but reading one row at a time while inserting would.
     const breaks = [];
     let ends = usable;
-    for (const unit of units) {
-      const top = topIn(unit) - start;
-      if (top + unit.offsetHeight <= ends) continue;
+    for (const { top: at, height, again } of units) {
+      const top = at - start;
+      if (top + height <= ends) continue;
       breaks.push(top + start);
-      ends = top + usable;
+      ends = top - again + usable;
     }
     return breaks;
   }
@@ -2198,12 +2215,15 @@
       return before.textContent.trim();
     }
     const td = field.closest('td');
-    const th = td?.closest('table')?.tHead?.rows[0]?.cells[td.cellIndex];
+    // The column names head the first of a form's tables, and name the rest.
+    const names = td && ([...(td.closest('table').tHead?.rows || [])].find(r => r.cells.length > 1)
+      || td.closest('.scheduler-form')?.querySelector('thead tr:has(th + th)'));
+    const th = names?.cells[td.cellIndex];
     if (th && td.colSpan === 1) {
       const tr = td.parentElement;
       return `${th.textContent.trim()}, row ${[...tr.parentElement.rows].indexOf(tr) + 1}`;
     }
-    if (field.matches('[class*="__day"], [class*="__day"] td')) return 'Day';
+    if (field.matches('[class*="__day"], [class*="__day"] td, [class*="__day"] th')) return 'Day';
     return field.querySelector(':scope > [class$="__label"]')?.textContent.trim() || null;
   }
 

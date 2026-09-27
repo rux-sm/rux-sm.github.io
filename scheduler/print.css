@@ -772,6 +772,7 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 .scheduler-driver-itinerary__table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   margin-block-start: var(--rux-spacing-06);
   font-size: var(--rux-body-compact-01-font-size);
@@ -780,9 +781,13 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
 
+/* A day's table follows the one before it with no gap of its own: its name
+   carries the room above it. */
+.scheduler-driver-itinerary__table + .scheduler-driver-itinerary__table { margin-block-start: 0; }
+
 .scheduler-driver-itinerary__table th,
 .scheduler-driver-itinerary__table td {
-  padding: var(--rux-spacing-03) var(--rux-spacing-05) var(--rux-spacing-03) 0;
+  padding: var(--rux-spacing-02) var(--rux-spacing-05) var(--rux-spacing-02) 0;
   text-align: start;
   vertical-align: top;
 }
@@ -801,11 +806,16 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
 
-/* Time and Location are what a glance lands on and they are short, so they
-   keep a width; the address takes what is left. */
-.scheduler-driver-itinerary__table th:nth-child(1) { inline-size: 16%; }
-.scheduler-driver-itinerary__table th:nth-child(2) { inline-size: 34%; }
-.scheduler-driver-itinerary__table th:nth-child(3) { inline-size: 50%; }
+/* A blank form is written on by hand, so its rows keep a pen's height. */
+.scheduler-form[data-blank] .scheduler-driver-itinerary__table td { padding-block: var(--rux-spacing-03); }
+
+/* Time and Location are what a glance lands on, so they keep a width wide
+   enough for a hotel's whole name on one line; the address takes what is
+   left and wraps beside the leg's line. Every day's table shares them, so
+   the columns stand under one another down the sheet. */
+.scheduler-driver-itinerary__table col:nth-child(1) { inline-size: 20%; }
+.scheduler-driver-itinerary__table col:nth-child(2) { inline-size: 38%; }
+.scheduler-driver-itinerary__table col:nth-child(3) { inline-size: 42%; }
 
 /* One time to a line, its label in a column of its own so the times stand
    under one another however the rows are labelled. */
@@ -848,10 +858,14 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 /* A day is a line across the table rather than a stop on it, set apart by
    weight, case and the room above it, because a fill prints as nothing. */
-.scheduler-driver-itinerary__day td {
+.scheduler-driver-itinerary__table .scheduler-driver-itinerary__day th {
   border-block-end: 1px solid var(--rux-border-strong-01);
-  padding-block-start: var(--rux-spacing-05);
+  padding-block: var(--rux-spacing-05) var(--rux-spacing-02);
+  font-size: var(--rux-body-compact-01-font-size);
   font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+  color: var(--rux-text-primary);
   text-transform: uppercase;
 }
 
@@ -924,14 +938,16 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    nothing, because the preview reads it to put its folds where the printer's
    are. */
 .scheduler-driver-itinerary__table tr { break-inside: avoid; }
-/* A day's divider and its first row are one group, so no day starts on one
-   page and goes on the next. */
-.scheduler-driver-itinerary__lead { break-inside: avoid; }
+/* A day's name stays with its first row, so no day starts at the foot of a
+   page with its rows on the next. Chrome keeps them together when the row
+   asks and not when the head does. */
+.scheduler-driver-itinerary__table tbody > tr:first-child { break-before: avoid; }
 
 @media print {
   .scheduler-driver-itinerary__add { display: none; }
 
-  /* The columns are named again at the top of every sheet. */
+  /* A table's head, the column names or the day, is printed again at the
+     top of every sheet the table runs onto. */
   .scheduler-driver-itinerary__table thead { display: table-header-group; }
 }
 

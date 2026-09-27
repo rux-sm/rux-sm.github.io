@@ -4599,6 +4599,7 @@
   /* The route times, one settings row for every trip, each a choice of
      minutes; a value saved outside the choices is offered as well. */
   const MINUTE_CHOICES = [0, 5, 10, 15, 20, 25, 30, 45, 60];
+  const PERCENT_CHOICES = [0, 5, 10, 15, 20, 25, 30];
   function openRouteTimes() {
     const host = document.getElementById('scheduler-routetimes-fields');
     if (!host) return;
@@ -4609,6 +4610,8 @@
       selectField('scheduler-f-rtspot', 'Spot at the pickup before departure', String(routeTimes.spot), choices(routeTimes.spot)),
       selectField('scheduler-f-rtpre', 'Pre-trip at the yard, before the bus leaves', String(routeTimes.pre), choices(routeTimes.pre)),
       selectField('scheduler-f-rtpost', 'Post-trip at the yard, after the bus is back', String(routeTimes.post), choices(routeTimes.post)),
+      selectField('scheduler-f-rtslow', 'Bus drives slower than the map by', String(routeTimes.slow),
+        [...new Set([...PERCENT_CHOICES, routeTimes.slow])].sort((a, b) => a - b).map(n => [String(n), n ? `${n}%` : 'None'])),
     );
     host.replaceChildren(grid);
     document.getElementById('scheduler-routetimes-error').textContent = '';
@@ -4618,7 +4621,7 @@
     const button = document.getElementById('scheduler-routetimes-save');
     const num = id => Number(document.getElementById(id)?.value);
     const value = { spot_minutes: num('scheduler-f-rtspot'), pre_trip_minutes: num('scheduler-f-rtpre'),
-                    post_trip_minutes: num('scheduler-f-rtpost') };
+                    post_trip_minutes: num('scheduler-f-rtpost'), drive_slowdown_percent: num('scheduler-f-rtslow') };
     button.disabled = true;
     try {
       const { error } = await withTimeout(client.from('settings')
@@ -5030,15 +5033,17 @@
 
   /* The office's `route-times-v1`: how long before the group leaves the bus is
      spotted at the pickup, and the pre-trip and post-trip time at the yard
-     that on duty adds before the bus leaves and after it is back, in minutes.
-     Either yard time may be 0. */
-  const ROUTE_TIMES = { spot: 15, pre: 0, post: 0 };
+     that on duty adds before the bus leaves and after it is back, in minutes,
+     and how much slower than the map's car times a bus drives, in percent.
+     Any of the last three may be 0. */
+  const ROUTE_TIMES = { spot: 15, pre: 0, post: 0, slow: 0 };
   let routeTimes = { ...ROUTE_TIMES };
   const minutesOr = (v, d) => (Number.isFinite(Number(v)) && Number(v) >= 0 && v !== null && v !== '' ? Math.round(Number(v)) : d);
   function setRouteTimes(v) {
     routeTimes = { spot: minutesOr(v?.spot_minutes, ROUTE_TIMES.spot),
                    pre: minutesOr(v?.pre_trip_minutes, ROUTE_TIMES.pre),
-                   post: minutesOr(v?.post_trip_minutes, ROUTE_TIMES.post) };
+                   post: minutesOr(v?.post_trip_minutes, ROUTE_TIMES.post),
+                   slow: minutesOr(v?.drive_slowdown_percent, ROUTE_TIMES.slow) };
   }
   // The open Route tab's redraw, for a change to the route times.
   let routeTimesDrawn = null;
@@ -5074,7 +5079,10 @@
   // Geoapify, through places.js: the places matching what is typed, and the
   // drive between two.
   const searchPlaces = text => window.SchedulerPlaces.search(text);
-  const driveBetween = (a, b) => window.SchedulerPlaces.drive(a, b);
+  // A drive is the map's car time made slower by the office's slow-down, so a
+  // drive measured from now on is a bus's; one already saved keeps its minutes.
+  const driveBetween = (a, b) => window.SchedulerPlaces.drive(a, b).then(d =>
+    (d && routeTimes.slow ? { ...d, min: Math.round(d.min * (1 + routeTimes.slow / 100)) } : d));
 
   /* Two places are the same when both carry the Mapbox id rux-ui saves, or when
      their name and address both read the same. A drop-off the same as the
@@ -5169,7 +5177,8 @@
     const r = editing?.route;
     const wanted = routeWanted();
     if (!r || !wanted) return { updates: [], inserts: [], work: false };
-    if (r.listTouched && r.pickup && r.back) return listRoutePlan(wanted);
+    const legEmpty = !r.all.some(x => x.leg === r.leg);
+    if (r.listTouched && ((r.pickup && r.back) || (legEmpty && r.list.length))) return listRoutePlan(wanted);
     const { from, to } = routeDates(r.leg);
     const datesMoved = !same(from, r.from) || !same(to, r.to);
     const updates = [];
@@ -5249,6 +5258,27 @@
     });
 
     const legRows = r.all.filter(x => x.leg === r.leg).sort((a, b) => a.position - b.position);
+    /* A leg with no rows yet, a trip not saved or a return leg not started,
+       has every row new: the pickup, the stops, the drop-off and the yard, in
+       that order. An outbound leg goes before the return leg's rows, which
+       move down to make room; a return leg goes after the outbound's. */
+    if (!legRows.length) {
+      const others = r.all.filter(x => x.leg !== r.leg);
+      const yard = { name: yardPlace?.name ?? 'Yard', address: yardPlace?.address ?? null,
+                     lat: yardPlace?.lat ?? null, lng: yardPlace?.lng ?? null };
+      const rows = [{ type: 'pickup', ...wanted.pickup },
+        ...list.map((st, i) => ({ type: 'stop', ...stopWant(st, i) })),
+        ...(needDrop ? [{ type: 'stop', ...dropWant() }] : []),
+        { type: 'return', ...yard, ...wanted.ret }];
+      const before = r.leg === 'outbound' && others.length;
+      const start = before ? Math.min(...others.map(x => x.position))
+        : others.reduce((n, x) => Math.max(n, x.position), -1) + 1;
+      return {
+        updates: before ? others.map(x => ({ id: x.id, patch: { position: x.position + rows.length } })) : [],
+        inserts: rows.map((row, i) => ({ position: start + i, row })),
+        deletes: [], explicit: true, work: true,
+      };
+    }
     const middleIds = new Set(r.middleOpen.map(st => String(st.id)));
     const keptIds = new Set(list.filter(st => st.id).map(st => String(st.id)));
     const deletes = [...middleIds].filter(id => !keptIds.has(id));
@@ -6255,9 +6285,11 @@
       stopsList.list.classList.add('scheduler-route-stops');
       // The trip's totals, on the Stops heading's line.
       const summary = el('span', 'scheduler-route-sum');
-      // A leg with no rows yet has nowhere to put a stop until it is saved.
-      const canList = !!(r.pickup && r.back);
-      const listNote = note(canList ? '' : 'Save the trip once, then add its stops here.');
+      /* Stops can be added to a leg with its rows, or to one with none yet,
+         whose Save writes them all. A leg rux-ui left with some rows but no
+         pickup or yard row has nowhere to put one. */
+      const canList = !!(r.pickup && r.back) || !r.all.some(x => x.leg === r.leg);
+      const listNote = note(canList ? '' : "This leg has no pickup or yard row, so stops can't be added here.");
       /* The route times the figures use, under the list, with the control
          that changes them for every trip. */
       const timesLine = el('p', 'rux--form__helper-text scheduler-route-times');
@@ -6267,8 +6299,8 @@
       timesEdit.addEventListener('click', openRouteTimes);
       timesLine.append(timesWords, timesEdit);
       const drawTimesLine = () => {
-        const { spot, pre, post } = routeTimes;
-        timesWords.textContent = `Spot ${spot} min before departure · Pre-trip ${pre} min · Post-trip ${post} min`;
+        const { spot, pre, post, slow } = routeTimes;
+        timesWords.textContent = `Spot ${spot} min before departure · Pre-trip ${pre} min · Post-trip ${post} min · Drives +${slow}%`;
       };
       drawTimesLine();
       // A new spot time applies when Departs is next typed; the figures redraw now.

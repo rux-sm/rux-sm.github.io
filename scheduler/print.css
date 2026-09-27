@@ -1692,7 +1692,21 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.scheduler-week__of { color: var(--rux-text-secondary); white-space: nowrap; }
+/* The bus count, "1/3", ringed as the board rings it: a real border, since a
+   line printed as an outline lands on no whole pixel, one pixel under the
+   row's height so the row keeps its 12px. */
+.scheduler-week__of {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  box-sizing: border-box;
+  block-size: 11px;
+  padding-inline: 3px;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  line-height: 9px;
+  white-space: nowrap;
+}
 .scheduler-week__paid { font-weight: 600; white-space: nowrap; }
 .scheduler-week__paid-date { font-weight: 400; }
 .scheduler-week__line {

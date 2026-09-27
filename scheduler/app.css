@@ -555,6 +555,24 @@ button.scheduler-row-head__num::after {
   gap: var(--rux-spacing-03);
 }
 .scheduler-saved[hidden] { display: none; }
+/* A row's mark before its name, a Route stop's number or Pickup and
+   Drop-off: a solid circle in the inverse colours, as a counter badge is,
+   which a longer mark stretches to a pill. */
+.scheduler-item__mark {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 1.25rem;
+  block-size: 1.25rem;
+  padding-inline: 0.375rem;
+  border-radius: 0.625rem;
+  background: var(--rux-background-inverse);
+  color: var(--rux-text-inverse);
+  font-size: var(--rux-label-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: 1;
+}
 .scheduler-contact-option__name,
 .scheduler-contact-option__detail {
   display: block;

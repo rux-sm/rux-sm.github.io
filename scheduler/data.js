@@ -1731,8 +1731,8 @@
     const open = el('button', 'rux--tile rux--tile--clickable scheduler-item__open');
     open.type = 'button';
     const top = el('span', 'scheduler-item__line');
-    // `lead` is a grey tag before the name, such as a stop's number.
-    if (lead) top.appendChild(el('span', 'rux--tag rux--layout--size-sm rux--tag--gray', lead));
+    // `lead` is a round mark before the name, such as a stop's number.
+    if (lead) top.appendChild(el('span', 'scheduler-item__mark', lead));
     top.appendChild(el('span', 'scheduler-item__name', name));
     if (tag) {
       const t = el('span', `rux--tag rux--layout--size-sm ${tag.tone}`, tag.code);

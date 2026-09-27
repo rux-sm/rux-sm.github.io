@@ -1599,7 +1599,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   min-inline-size: 0;
   min-block-size: 0;
   position: relative;
-  padding-inline-end: 0.75pt;
+  --scheduler-week-stripe-start: 0px;
+  --scheduler-week-stripe-end: 0px;
+  padding-inline-start: var(--scheduler-week-stripe-start);
+  padding-inline-end: calc(0.75pt + var(--scheduler-week-stripe-end));
   padding-block-end: 0.75pt;
   background: var(--scheduler-week-bg);
   color: var(--rux-text-primary);
@@ -1635,12 +1638,34 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-week__edge > i { flex: none; block-size: 3px; background: var(--scheduler-week-edge); }
 .scheduler-week__edge--start { inset-inline-start: 0; }
 .scheduler-week__edge--end { inset-inline-end: 0.75pt; }
+/* A LEG THAT LEAVES THE GROUP, OR FETCHES IT, is striped at one end as the
+   board stripes it: 8px of 45° bands in the text colour faded, which print.js
+   draws. The card's lines move in by the strip, and a strip on a continuing
+   edge lies inside its squares. */
+.scheduler-week__trip--stripe-start { --scheduler-week-stripe-start: calc(8px + var(--scheduler-week-stripe-inset, 0px)); }
+.scheduler-week__trip--stripe-end { --scheduler-week-stripe-end: calc(8px + var(--scheduler-week-stripe-inset, 0px)); }
+.scheduler-week__stripe {
+  position: absolute;
+  inset-block: 0;
+  inline-size: 8px;
+  overflow: hidden;
+  pointer-events: none;
+  color: color-mix(in srgb, var(--rux-text-primary) 45%, transparent);
+}
+.scheduler-week__stripe > svg { display: block; fill: currentColor; }
+.scheduler-week__stripe--start { inset-inline-start: var(--scheduler-week-stripe-inset, 0px); }
+.scheduler-week__stripe--end { inset-inline-end: calc(0.75pt + var(--scheduler-week-stripe-inset, 0px)); }
 /* A card across several days keeps its lines to one day's width: the card
    divided by its days, less the share of the room under its end line that a
-   one-day card has and this one spends only once. */
+   one-day card has and this one spends only once, and less a stripe that
+   falls in that day. The start's always does; the end's only on a one-day
+   card, since a longer card's lines stop before its last day. */
 .scheduler-week__trip > * {
-  max-inline-size: calc(100% / var(--scheduler-week-span, 1)
-    - (var(--scheduler-week-span, 1) - 1) * 0.75pt / var(--scheduler-week-span, 1));
+  max-inline-size: calc((100% + var(--scheduler-week-stripe-start) + var(--scheduler-week-stripe-end))
+    / var(--scheduler-week-span, 1)
+    - (var(--scheduler-week-span, 1) - 1) * 0.75pt / var(--scheduler-week-span, 1)
+    - var(--scheduler-week-stripe-start)
+    - var(--scheduler-week-stripe-end) * max(0, 2 - var(--scheduler-week-span, 1)));
 }
 /* A trip that began last week is its colour and nothing else here. */
 .scheduler-week__trip--continued { min-block-size: 12pt; }

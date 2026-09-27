@@ -1348,6 +1348,31 @@
     return line;
   }
 
+  /* The stripe at a leg's end: 45° bands 4px along the edge and 4px apart,
+     drawn as shapes, because a pattern prints soft. More than a row's height
+     of them; the strip cuts the rest. The end leans one way and the start the
+     other, as on the board. */
+  function weekStripe(side) {
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('width', '8');
+    svg.setAttribute('height', '400');
+    svg.setAttribute('viewBox', '0 0 8 400');
+    const d = [];
+    for (let y = -16; y < 416; y += 8) {
+      d.push(side === 'end'
+        ? `M0 ${y}V${y + 4}L8 ${y - 4}V${y - 8}Z`
+        : `M0 ${y}V${y + 4}L8 ${y + 12}V${y + 8}Z`);
+    }
+    const path = document.createElementNS(ns, 'path');
+    path.setAttribute('d', d.join(''));
+    svg.appendChild(path);
+    const strip = el('span', `scheduler-week__stripe scheduler-week__stripe--${side}`);
+    strip.setAttribute('aria-hidden', 'true');
+    strip.appendChild(svg);
+    return strip;
+  }
+
   function weekCard(bar) {
     const { trip, assignment, place, lane, of } = bar;
     const hue = WEEK.hueFor(trip);
@@ -1367,6 +1392,17 @@
       edge.setAttribute('aria-hidden', 'true');
       for (let i = 0; i < 32; i++) edge.appendChild(el('i'));
       card.appendChild(edge);
+    }
+    // A leg that leaves the group or fetches it is striped at one end, as the
+    // board stripes it. The strip lies inside a continuing edge's squares.
+    const split = trip.trip_type === 'dropoff_pickup';
+    const stripe = trip.trip_type === 'one_way' || (split && bar.leg.leg !== 'return') ? 'end'
+      : split ? 'start' : null;
+    if (stripe) {
+      card.classList.add(`scheduler-week__trip--stripe-${stripe}`);
+      const inside = stripe === 'start' ? place.fromPrev : place.toNext;
+      card.style.setProperty('--scheduler-week-stripe-inset', inside ? '3px' : '0px');
+      card.appendChild(weekStripe(stripe));
     }
     // A trip that began last week is only its continuation here, as on the
     // board: repeating its lines on Monday reads as the trip starting again.

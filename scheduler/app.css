@@ -454,17 +454,22 @@ button.scheduler-row-head__num::after {
   inline-size: calc(var(--scheduler-span) * var(--scheduler-day-w) - var(--scheduler-gap) - var(--scheduler-gap-clear));
   block-size: var(--scheduler-bar-h);
   box-sizing: border-box;
-  padding: var(--rux-spacing-02) var(--rux-spacing-03);
+  /* Each side's padding is its own property, so a striped end can widen its
+     side and the arithmetic below still finds day one's edge. */
+  --scheduler-pad-start: var(--rux-spacing-03);
+  --scheduler-pad-end: var(--rux-spacing-03);
+  padding: var(--rux-spacing-02) var(--scheduler-pad-end) var(--rux-spacing-02) var(--scheduler-pad-start);
   /* WHAT DAY ONE LEAVES, for the things on a bar that travel to its end: the
      leg reference and the marks. A bar is `span` days wide less the clear
      space and the gap, so one day inside it is that width plus what was taken
      off, divided by the span; day one's edge is then that, less the clear
      space and the padding this side. `max()` holds it at zero on a one-day
      bar, where the sum is the bar itself and the arithmetic would push them
-     out into the gap. `fitMarks` subtracts it from the room it counts. */
-  --scheduler-day-one-end: max(0px, calc(100% - (100%
-    + var(--scheduler-gap) + var(--scheduler-gap-clear) + 2 * var(--rux-spacing-03))
-    / var(--scheduler-span) + var(--scheduler-gap-clear) + var(--rux-spacing-03)));
+     out into the gap. */
+  --scheduler-day-one-end: max(0px, calc(100% + var(--scheduler-pad-start) - (100%
+    + var(--scheduler-pad-start) + var(--scheduler-pad-end)
+    + var(--scheduler-gap) + var(--scheduler-gap-clear))
+    / var(--scheduler-span) + var(--scheduler-gap-clear)));
   /* Square unless the theme rounds its controls, as ant-dark does. */
   border-radius: var(--scheduler-bar-radius, 0);
   background: var(--scheduler-bg);
@@ -596,6 +601,31 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar--to-next { inset-inline-end: 0; inline-size: auto; border-inline-end: 3px solid transparent; border-start-end-radius: 0; border-end-end-radius: 0; }
 .scheduler-bar--from-prev.scheduler-bar--to-next { inline-size: auto; }
+
+/* A LEG THAT LEAVES THE GROUP, OR FETCHES IT, is striped at one end: a one-way
+   trip and a split trip's drop-off at the end, where the group is let off, and
+   the split's pickup at the start, where it is collected. A round trip has no
+   stripe. The strip is 8px of 45° stripes, each 4px along the edge, in the
+   bar's own text colour faded; the writing moves in by the strip, so nothing
+   sits on it. On a continuing edge it lies inside the column of squares. */
+.scheduler-bar--stripe-start,
+.scheduler-bar--stripe-end { --scheduler-stripe: var(--rux-spacing-03); }
+.scheduler-bar--stripe-start { --scheduler-pad-start: calc(var(--scheduler-stripe) + var(--rux-spacing-03)); }
+.scheduler-bar--stripe-end { --scheduler-pad-end: calc(var(--scheduler-stripe) + var(--rux-spacing-03)); }
+.scheduler-bar--stripe-start::before,
+.scheduler-bar--stripe-end::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inline-size: var(--scheduler-stripe);
+  pointer-events: none;
+  /* 2.828px across is 4px along the edge at 45°. */
+  background: repeating-linear-gradient(var(--scheduler-stripe-angle),
+    color-mix(in srgb, var(--scheduler-fg) 45%, transparent) 0 2.828px,
+    transparent 2.828px 5.657px);
+}
+.scheduler-bar--stripe-start::before { inset-inline-start: 0; --scheduler-stripe-angle: 45deg; }
+.scheduler-bar--stripe-end::before { inset-inline-end: 0; --scheduler-stripe-angle: -45deg; }
 
 /* The rows the view menu can turn off. `display: none` rather than
    `visibility: hidden`, so the height comes back: `--scheduler-bar-rows` drops
@@ -2087,6 +2117,9 @@ button.scheduler-row-head__num::after {
   font-weight: var(--rux-heading-compact-01-font-weight);
   letter-spacing: var(--rux-heading-compact-01-letter-spacing);
 }
+/* The code stays centred in what the stripe leaves. */
+.scheduler-page[data-board="compact"] .scheduler-bar--stripe-start > .scheduler-bar__code { inset-inline-start: var(--scheduler-stripe); }
+.scheduler-page[data-board="compact"] .scheduler-bar--stripe-end > .scheduler-bar__code { inset-inline-end: var(--scheduler-stripe); }
 /* A double booking becomes a band across the block's foot rather than a strip
    with words in it: the block holds its code and no line beside it, and the
    error colour is what carries the warning. The bar's own label still says it. */

@@ -889,9 +889,17 @@
        still shows. */
     const placeholder = tripColorOf(trip) === 'amber';
 
+    /* A leg that leaves the group or fetches it is striped at one end, as
+       app.css draws it: a one-way trip and a split's drop-off where the group
+       is let off, a split's pickup where it is collected. The stripe says
+       which leg of a split this is, so the reference is only its count. */
+    const split = trip.trip_type === SPLIT;
+    const stripe = trip.trip_type === 'one_way' || (split && leg.leg !== 'return') ? 'end'
+      : split ? 'start' : null;
+    if (stripe) bar.classList.add(`scheduler-bar--stripe-${stripe}`);
+    const kind = trip.trip_type === 'one_way' ? 'one way' : !split ? null : leg.leg === 'return' ? 'pickup' : 'drop-off';
     const count = leg.count || 1;
-    const ref = [leg.leg === 'return' ? 'Return' : '', count > 1 ? `${slot + 1} of ${count}` : '']
-      .filter(Boolean).join(' · ');
+    const ref = count > 1 ? `${slot + 1} of ${count}` : '';
 
     /* WHETHER THIS BUS FITS THIS TRIP, and what the trip needs. The bar draws
        no marks: what is still to be done is the reminder's to ask, and the
@@ -995,7 +1003,7 @@
     if (code) bar.appendChild(el('span', 'scheduler-bar__code', code));
 
     bar.setAttribute('aria-label', [
-      trip.destination || 'No destination', trip.customer, ref,
+      trip.destination || 'No destination', trip.customer, kind, ref,
       place.fromPrev ? 'continues from the previous week' : null,
       place.toNext ? 'continues into the next week' : null,
       trip.confirmed === false ? 'unconfirmed' : null,

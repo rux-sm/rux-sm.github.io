@@ -596,11 +596,12 @@
     el('td', `scheduler-driver-itinerary__${cls} scheduler-driver-itinerary__typed`, text || '');
 
   /* THE LEG INTO THIS STOP, under its name: the miles and the drive the Route
-     tab worked out and wrote on the row. The first row of a leg has none,
-     because nothing was driven to reach it. */
+     tab worked out and wrote on the row. The pickup has none: its leg is the
+     drive from the yard, which is off the sheet like the drive back to it. */
   function locationCell(stop) {
     const td = textCell('loc', stop.name || ITINERARY_TITLE[stop.type] || '');
-    const words = [milesWords(stop.miles), driveWords(stop.drive)].filter(Boolean).join(' · ');
+    const words = stop.type === 'pickup' ? ''
+      : [milesWords(stop.miles), driveWords(stop.drive)].filter(Boolean).join(' · ');
     if (words) td.appendChild(el('span', 'scheduler-driver-itinerary__leg', words));
     return td;
   }

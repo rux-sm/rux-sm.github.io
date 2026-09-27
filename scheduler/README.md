@@ -93,8 +93,9 @@ them; with a form named in the query it reads that form's subject and draws it,
 filled in. The driver envelope is one copy per seat on a bus, in a standard and
 a multi-stop layout, on the 6 by 9 envelope itself. The driver itinerary is one
 copy per leg of a trip, on Letter, running onto as many sheets as its stops
-need, a day never starting at the foot of a sheet, and every line of it can be
-typed into before it is printed. The
+need, a day never starting at the foot of a sheet and named again over the
+rest of it on the next, and every line of it can be typed into before it is
+printed. The
 customer quote is one copy per trip, on two Letter sheets: the QUOTE / PROPOSAL
 the office sends, with its estimate number, price and first line item read from the trip, lines
 typed under it that the Total adds up, and the Terms and Conditions Agreement

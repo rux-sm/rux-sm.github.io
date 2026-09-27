@@ -620,15 +620,29 @@
      naming what the row would have been. */
   const blankRow = () => itineraryRow({}, null);
 
-  function itineraryHead() {
+  /* THE LOGO AND THE TRIP. No address or phones: the sheet goes to the
+     company's own driver, who has both. The title is where the group is
+     going, under a small Itinerary, and the days it runs; both can be typed
+     over like any other line of the form. */
+  function itineraryHead(subject) {
+    const { trip, leg } = subject;
+    const start = leg === 'return' ? (trip.return_start_date || trip.end_date) : trip.start_date;
+    const end = leg === 'return' ? (trip.return_end_date || trip.end_date) : trip.end_date;
     const head = el('header', 'scheduler-driver-itinerary__head');
     const logo = el('img', 'scheduler-driver-itinerary__logo');
     logo.src = '/scheduler/brand/logo.svg';
     logo.alt = '';
     head.appendChild(logo);
-    head.appendChild(el('p', 'scheduler-driver-itinerary__line', COMPANY.address));
-    head.appendChild(el('p', 'scheduler-driver-itinerary__line', COMPANY.phones));
-    head.appendChild(el('h2', 'scheduler-driver-itinerary__title', 'Itinerary'));
+    const title = el('h2', 'scheduler-driver-itinerary__title');
+    title.appendChild(el('span', 'scheduler-driver-itinerary__kicker', 'Itinerary'));
+    const typed = (cls, name, value) => {
+      const node = el('span', `scheduler-driver-itinerary__${cls} scheduler-driver-itinerary__typed`, value || '');
+      node.dataset.name = name;
+      return node;
+    };
+    title.appendChild(typed('destination', 'Destination', trip.destination));
+    title.appendChild(typed('dates', 'Date', dayRange(start, end)));
+    head.appendChild(title);
     return head;
   }
 
@@ -640,19 +654,14 @@
     return node;
   };
 
-  /* WHAT THE HEAD NAMES: the day, the client, where they are going and who
-     to call on the day. No crew, no bus and no leg, because the envelope this
-     sheet goes in names all three, and naming them twice is one fact with two
-     homes. */
+  /* WHO: the client and who to call on the day. No crew, no bus and no leg,
+     because the envelope this sheet goes in names all three, and naming them
+     twice is one fact with two homes. */
   function itineraryMeta(subject) {
-    const { trip, leg } = subject;
-    const start = leg === 'return' ? (trip.return_start_date || trip.end_date) : trip.start_date;
-    const end = leg === 'return' ? (trip.return_end_date || trip.end_date) : trip.end_date;
+    const { trip } = subject;
     const contact = contactOf(trip);
     const meta = el('dl', 'scheduler-driver-itinerary__meta');
-    meta.appendChild(headField('Date', dayRange(start, end)));
     meta.appendChild(headField('Client', trip.customer || ''));
-    meta.appendChild(headField('Destination', trip.destination || ''));
     meta.appendChild(headField('Contact',
       [contact.name, contact.phone].filter(Boolean).join(' · ')));
     return meta;
@@ -671,7 +680,7 @@
   function itinerary(subject) {
     const { trip, leg } = subject;
     const card = el('article', 'scheduler-form scheduler-driver-itinerary');
-    card.appendChild(itineraryHead());
+    card.appendChild(itineraryHead(subject));
     card.appendChild(itineraryMeta(subject));
 
     /* The run of stops alone: a day row is the old format, never a stop. The
@@ -2210,6 +2219,7 @@
      EVERY FIELD IS NAMED FOR ITS LABEL, so a field heard rather than seen is
      not a blank: the label beside it, or in a table its column and row. */
   function fieldName(field) {
+    if (field.dataset.name) return field.dataset.name;
     const before = field.previousElementSibling;
     if (before && (before.tagName === 'DT' || /__(trip-|total-)?label\b/.test(before.className))) {
       return before.textContent.trim();

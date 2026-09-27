@@ -706,44 +706,69 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    nothing else. Two forms drawn the same way are one form printed twice. */
 
 .scheduler-driver-itinerary__head {
-  text-align: center;
-  padding-block-end: var(--rux-spacing-06);
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: var(--rux-spacing-07);
+  padding-block-end: var(--rux-spacing-05);
+  border-block-end: 1px solid var(--rux-border-strong-01);
 }
 
 .scheduler-driver-itinerary__logo {
+  display: block;
+  flex: none;
   height: 2rem;
   width: auto;
   margin-block-end: var(--rux-spacing-02);
 }
 
-.scheduler-driver-itinerary__line {
-  font-size: var(--rux-label-01-font-size);
-  font-weight: var(--rux-label-01-font-weight);
-  line-height: var(--rux-label-01-line-height);
-  letter-spacing: var(--rux-label-01-letter-spacing);
-  color: var(--rux-text-secondary);
+/* The title is where the group is going, the largest type on the sheet
+   because it is what tells one trip's sheet from another's, set to the
+   right across from the logo. The envelope leads with the day instead,
+   because a driver picks one out of a stack by it. */
+.scheduler-driver-itinerary__title {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  min-inline-size: 0;
   margin: 0;
+  text-align: end;
+  font-size: var(--rux-productive-heading-05-font-size);
+  font-weight: var(--rux-productive-heading-05-font-weight);
+  line-height: var(--rux-productive-heading-05-line-height);
 }
 
-/* The envelope leads with the day in the largest type on the page, because a
-   driver picks one out of a stack by it. This is one sheet in one envelope and
-   the page around it is already named, so its own name is quiet. */
-.scheduler-driver-itinerary__title {
-  font-size: var(--rux-productive-heading-03-font-size);
-  font-weight: var(--rux-productive-heading-03-font-weight);
-  line-height: var(--rux-productive-heading-03-line-height);
-  margin: var(--rux-spacing-04) 0 0;
+.scheduler-driver-itinerary__kicker {
+  font-size: var(--rux-label-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rux-text-secondary);
 }
+
+.scheduler-driver-itinerary__dates {
+  margin-block-start: var(--rux-spacing-02);
+  font-size: var(--rux-body-compact-02-font-size);
+  font-weight: var(--rux-body-compact-02-font-weight);
+  line-height: var(--rux-body-compact-02-line-height);
+  color: var(--rux-text-secondary);
+}
+
+/* An empty title keeps a line's height, so a blank form has room to write
+   where the group is going. */
+.scheduler-driver-itinerary__destination:empty,
+.scheduler-driver-itinerary__dates:empty { min-inline-size: 12rem; min-block-size: 1lh; }
 
 /* WHAT THE HEAD NAMES, as pairs rather than as fields to fill in: this form
    arrives filled and is corrected, where the envelope arrives blank in the
-   places a pen is wanted. Three to a row where there is room, two where there
-   is not, and never boxed. */
+   places a pen is wanted. Contact stands over the Address column, so the
+   head and the table share one edge. */
 .scheduler-driver-itinerary__meta {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--rux-spacing-05);
+  grid-template-columns: 58% 42%;
   margin: 0;
+  padding-block-start: var(--rux-spacing-05);
 }
 
 .scheduler-driver-itinerary__field { min-inline-size: 0; }
@@ -917,11 +942,12 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
      of them, and a page of dotted rules is a page of dots. */
   .scheduler-driver-itinerary__value[data-typed] { border-block-end: 0; }
 
-  /* AN EMPTY FIELD IN THE HEAD SAYS SO. There are six of them and they are
-     filled together, so a gap among five answers is a question rather than a
+  /* AN EMPTY FIELD IN THE HEAD SAYS SO. There are four of them and they are
+     filled together, so a gap among three answers is a question rather than a
      shape. The rule goes the moment something is typed, and it was never on
      the paper. */
-  .scheduler-driver-itinerary__value[data-typed]:empty {
+  .scheduler-driver-itinerary__value[data-typed]:empty,
+  .scheduler-driver-itinerary__title [data-typed]:empty {
     border-block-end: 1px dotted var(--rux-border-strong-01);
   }
 

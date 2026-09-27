@@ -71,6 +71,10 @@
   // Math.round, because a span crossing a daylight-saving change is 23 or 25
   // hours and integer division would drop or add a day.
   const daysBetween = (a, b) => Math.round((b - a) / DAY);
+  // A one-day leg whose return is earlier than its departure comes back after
+  // midnight: the bar marks its return +1, and a driver's rest counts from it.
+  const returnsNextDay = leg => !!leg.depart && !!leg.back && leg.from === leg.to
+    && String(leg.back).slice(0, 5) < String(leg.depart).slice(0, 5);
 
   // -- the palette ----------------------------------------------------------
   // The trip colours and what a trip paints as, shared with the printed week.
@@ -954,10 +958,7 @@
     // neither says so, so an empty row never reads as a rendering fault. The
     // spot time is not drawn, because two times already fill the row; the
     // editor shows it.
-    // A one-day leg whose return is earlier than its departure comes back after
-    // midnight, so the return is marked +1.
-    const legDays = daysBetween(parseISO(leg.from), parseISO(leg.to)) + 1;
-    const nextDay = leg.depart && leg.back && legDays === 1 && String(leg.back).slice(0, 5) < String(leg.depart).slice(0, 5);
+    const nextDay = returnsNextDay(leg);
     const times = short => {
       const dep = hhmm(leg.depart, short), back = hhmm(leg.back, short);
       const span = el('span', `scheduler-bar__time-${short ? 'short' : 'long'}`, dep && back ? (short ? `${dep}\u2013${back}` : `${dep} \u2013 ${back}`)
@@ -2100,10 +2101,15 @@
     const m = /^(\d{1,2}):(\d{2})/.exec(t || '');
     return m ? Number(m[1]) + Number(m[2]) / 60 : null;
   };
-  // Hours from one leg's end to the next leg's start the day after, or null.
-  const restHours = (backTime, departTime) => {
-    const end = clockHours(backTime), start = clockHours(departTime);
-    return end == null || start == null ? null : 24 - end + start;
+  /* Hours from the earlier leg's return to the later leg's departure, or null
+     without both times. The return is on the earlier leg's last day, or the
+     day after it when the leg comes back past midnight. Below zero, the two
+     legs overlap. */
+  const restBetween = (earlier, later) => {
+    const end = clockHours(earlier.back), start = clockHours(later.depart);
+    if (end == null || start == null) return null;
+    const backDay = addDays(parseISO(earlier.to), returnsNextDay(earlier) ? 1 : 0);
+    return daysBetween(backDay, parseISO(later.from)) * 24 - end + start;
   };
 
   /* What stands in each bus's and driver's way on one leg's dates. `buses`
@@ -2142,8 +2148,13 @@
             add(buses, a.bus_id, text);
             for (const d of crew) add(drivers, d.driver_id, text);
           }
-          if (next) {
-            const rest = l.to === before ? restHours(l.back, range.depart) : restHours(range.back, l.depart);
+          // A leg the day before that runs past midnight into this one is a
+          // clash, not a short rest.
+          const rest = next ? (l.to === before ? restBetween(l, range) : restBetween(range, l)) : null;
+          if (rest != null && rest < 0) {
+            add(buses, a.bus_id, text);
+            for (const d of crew) add(drivers, d.driver_id, text);
+          } else if (next) {
             const said = rest == null ? 'rest unknown' : `${Math.round(rest * 10) / 10}h rest`;
             for (const d of crew) {
               add(near, d.driver_id, `Back-to-back with ${t.destination || 'a trip'}, ${said}`);
@@ -6929,7 +6940,7 @@
        trip not yet saved has no id to file under. */
     panelFiles.replaceChildren();
     const notNeeded = section('Itinerary not needed',
-      el('p', 'rux--form__helper-text', 'On for a trip that runs without one, so its bars stop showing No itinerary yet.'),
+      el('p', 'rux--form__helper-text', 'On for a trip that runs without one, so its follow-up stops waiting on an itinerary.'),
       toggleAction('scheduler-f-notneeded', 'Itinerary not needed', !!trip.itinerary_not_needed));
     if (creating || !client) {
       filesBody = null;

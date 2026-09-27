@@ -1651,9 +1651,10 @@ button.scheduler-row-head__num::after {
    `[hidden]`, so hidden is restated, scoped to this app's class. */
 .scheduler-milestone-fields[hidden] { display: none; }
 
-/* A section heading with an inline control on its right: a switch, 24px
-   tall, so the row is too and its words start where a plain heading's do.
-   What sits under it stands 16px below, as under a plain heading. */
+/* A section heading with an inline control on its right, a switch or a
+   button. The row keeps the 22px title line's height, so its words start where
+   a plain heading's do, and what sits under it stands 16px below, as under a
+   plain heading. */
 .scheduler-panel-section__head {
   display: flex;
   align-items: center;
@@ -1664,10 +1665,11 @@ button.scheduler-row-head__num::after {
 /* Centred beside its control, a title keeps no bottom margin, which would lift
    it 4px off the control's middle. */
 .scheduler-panel-section__head .scheduler-panel-section__title { margin-block-end: 0; }
-/* A 32px button, as the Summary's menu or Assign best, reaches 5px above and
-   below the 22px title line, as a group's menu does, so the line stays a plain
-   heading's height. */
+/* The control reaches past the title line into the gaps around it: a 32px
+   button, as the Summary's menu or Assign best, 5px above and below, as a
+   group's menu does, and a 24px switch 1px. */
 .scheduler-panel-section__head > .rux--btn { margin-block: -0.3125rem; }
+.scheduler-panel-section__head > .rux--toggle { margin-block: -0.0625rem; }
 /* A switch's heading is its label and takes the rest of the row, full height,
    so a tap anywhere left of the switch flips it. */
 .scheduler-panel-section__head > label.scheduler-panel-section__title {

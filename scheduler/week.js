@@ -61,12 +61,44 @@
     };
   };
 
+  /* The midnights a one-day leg's return comes after its departure. The leg's
+     times are read in the order they happen, the yard out, the spot, the
+     group's departure, each stop and the yard back, and a time earlier on the
+     clock than the one before it is past midnight. The count starts at the
+     group's departure, which is on the leg's day, so a yard departure the
+     night before is not counted. A longer leg dates its times instead. */
+  const clockMin = t => {
+    const m = /^(\d{1,2}):(\d{2})/.exec(t || '');
+    return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+  };
+  const midnightsOf = (stops, pickup, back, depart) => {
+    if (!back?.arrive) return 0;
+    const rows = stops.slice(Math.max(stops.indexOf(pickup), 0), stops.indexOf(back) + 1);
+    // The pickup row's yard departure, arrival and spot, then each row after it.
+    const run = [depart, pickup?.arrive, pickup?.spot];
+    for (const s of rows.slice(1)) run.push(s.depart_prev, s.arrive, s.spot);
+    // The group's departure is the row after the pickup's `depart_prev`.
+    const group = rows.length > 1 ? 3 : 0;
+    let last = null, days = 0, start = 0;
+    run.forEach((t, i) => {
+      const m = clockMin(t);
+      if (m != null) {
+        if (last != null && m < last) days++;
+        last = m;
+      }
+      if (i === group) start = days;
+    });
+    return days - start;
+  };
+
   const timesOf = (trip, leg) => {
-    const { pickup, back } = stopsOfLeg(trip, leg);
+    const { stops, pickup, back } = stopsOfLeg(trip, leg);
+    const depart = pickup?.depart_prev || (leg === 'outbound' ? trip.departure_time : trip.return_time) || null;
     return {
-      depart: pickup?.depart_prev || (leg === 'outbound' ? trip.departure_time : trip.return_time) || null,
+      depart,
       back: back?.arrive || null,
       spot: pickup?.spot || null,
+      backDays: midnightsOf(stops, pickup, back, depart),
     };
   };
 

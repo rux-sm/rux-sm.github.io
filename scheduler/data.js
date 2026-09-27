@@ -71,10 +71,10 @@
   // Math.round, because a span crossing a daylight-saving change is 23 or 25
   // hours and integer division would drop or add a day.
   const daysBetween = (a, b) => Math.round((b - a) / DAY);
-  // A one-day leg whose return is earlier than its departure comes back after
-  // midnight: the bar marks its return +1, and a driver's rest counts from it.
-  const returnsNextDay = leg => !!leg.depart && !!leg.back && leg.from === leg.to
-    && String(leg.back).slice(0, 5) < String(leg.depart).slice(0, 5);
+  // The days after its own a one-day leg comes back, past midnight, as
+  // `SchedulerWeek.timesOf` counts them: the bar marks its return +1, and a
+  // driver's rest counts from it.
+  const daysBack = leg => (leg.from === leg.to && leg.back ? leg.backDays ?? 0 : 0);
 
   // -- the palette ----------------------------------------------------------
   // The trip colours and what a trip paints as, shared with the printed week.
@@ -953,9 +953,9 @@
       : dep ? `Dep ${dep}`
       : back ? `Ret ${back}`
       : 'No times');
-    if (returnsNextDay(leg)) {
-      const mark = el('sup', 'scheduler-bar__next-day', '+1');
-      mark.title = 'Returns the next day';
+    if (daysBack(leg)) {
+      const mark = el('sup', 'scheduler-bar__next-day', `+${daysBack(leg)}`);
+      mark.title = daysBack(leg) > 1 ? `Returns ${daysBack(leg)} days later` : 'Returns the next day';
       when.appendChild(mark);
     }
     /* A second form, for the compact board: one line has room for one time, and
@@ -2147,7 +2147,7 @@
   const restBetween = (earlier, later) => {
     const end = clockHours(earlier.back), start = clockHours(later.depart);
     if (end == null || start == null) return null;
-    const backDay = addDays(parseISO(earlier.to), returnsNextDay(earlier) ? 1 : 0);
+    const backDay = addDays(parseISO(earlier.to), daysBack(earlier));
     return daysBetween(backDay, parseISO(later.from)) * 24 - end + start;
   };
 
@@ -2254,7 +2254,7 @@
     const ranges = Object.fromEntries(['outbound', 'return'].map(l => {
       const r = fleetLegDates(l);
       const times = saved.find(x => x.leg === l);
-      return [l, r && { ...r, depart: times?.depart ?? null, back: times?.back ?? null }];
+      return [l, r && { ...r, depart: times?.depart ?? null, back: times?.back ?? null, backDays: times?.backDays ?? 0 }];
     }));
     const all = Object.values(ranges).filter(Boolean);
     if (!all.length) return;
@@ -6525,6 +6525,37 @@
           : minutesAt(val('scheduler-f-leave'), routeDates(r.leg).from);
         return { first: k < 0, start, passed };
       };
+      /* On a one-day leg, the days past the leg's own each time falls, the
+         rule the bar's +1 keeps: the times in the order they happen, the yard
+         out to the yard back, and one earlier on the clock than the one before
+         it past midnight. The group's departure is on the leg's day, so a yard
+         departure the night before counts back from it. Keyed by the field's
+         id, or by a stop and 'arrive' or 'leave'; empty on a longer leg, whose
+         times carry their dates. */
+      const pastMidnight = () => {
+        const at = new Map();
+        const { from, to } = routeDates(r.leg);
+        if (from && to && to > from) return at;
+        const run = [['scheduler-f-depart', val('scheduler-f-depart')], ['scheduler-f-spot', val('scheduler-f-spot')],
+          ['scheduler-f-leave', val('scheduler-f-leave')],
+          ...r.list.flatMap(st => [[st, st.arrive, 'arrive'], [st, st.leave, 'leave']]),
+          ['scheduler-f-endtrip', val('scheduler-f-endtrip')], ['scheduler-f-return', val('scheduler-f-return')]];
+        let last = null, days = 0;
+        for (const [key, time, which] of run) {
+          const m = toMin(time);
+          if (m == null) continue;
+          if (last != null && m < last) days++;
+          last = m;
+          at.set(which ? `${r.list.indexOf(key)}:${which}` : key, days);
+        }
+        const start = at.get('scheduler-f-leave') ?? 0;
+        for (const [key, days] of at) at.set(key, days - start);
+        return at;
+      };
+      // A time on a later day than the leg's, with that day's weekday before it.
+      const clockOn = (time, days) => (days > 0 && routeDates(r.leg).from
+        ? `${parseISO(dayAfter(routeDates(r.leg).from, days)).toLocaleDateString(undefined, { weekday: 'short' })} ${clock(time)}`
+        : clock(time));
       // The minutes the typed times leave for the drive into a stop, or null.
       const roomInto = st => {
         const into = legInto(r.list.indexOf(st));
@@ -6545,6 +6576,7 @@
       const dayOf = st => st.date || routeDates(r.leg).from;
       function drawStops() {
         stopsList.body.replaceChildren();
+        const late = pastMidnight();
         /* The road between two places, between their rows: its drive and
            miles, which belong to neither place. The first comes from the
            pickup and the last goes on to the drop-off. */
@@ -6567,10 +6599,13 @@
           const name = st.place?.name || st.place?.address || 'Stop';
           // A leave on a later day than the arrival carries its weekday.
           const leaveDay = leaveDayOf(st, routeDates(r.leg).from);
+          // On a one-day leg a time past midnight carries the next day's.
+          const got = late.get(`${i}:arrive`) ?? 0, left = late.get(`${i}:leave`) ?? got;
           const leaveWord = st.leave && leaveDay && leaveDay !== (st.date ?? routeDates(r.leg).from)
-            ? `${parseISO(leaveDay).toLocaleDateString(undefined, { weekday: 'short' })} ${clock(st.leave)}` : clock(st.leave);
-          const much = st.arrive && st.leave ? `${clock(st.arrive)} – ${leaveWord}`
-            : st.arrive ? clock(st.arrive) : st.leave ? `leaves ${clock(st.leave)}` : 'No times';
+            ? `${parseISO(leaveDay).toLocaleDateString(undefined, { weekday: 'short' })} ${clock(st.leave)}`
+            : left !== got || !st.arrive ? clockOn(st.leave, left) : clock(st.leave);
+          const much = st.arrive && st.leave ? `${clockOn(st.arrive, got)} – ${leaveWord}`
+            : st.arrive ? clockOn(st.arrive, got) : st.leave ? `leaves ${clockOn(st.leave, left)}` : 'No times';
           const wait = waitOf(st);
           const drove = driveWords(st.drive, st.miles);
           const here = located(st);
@@ -6630,7 +6665,7 @@
           const end = val('scheduler-f-endtrip');
           const word = letOffAtPickup() ? 'Returns' : 'Arrives';
           return endTile('D', 'Drop-off', letOffAtPickup() ? r.pickupPlace : r.dropPlace, 'Add drop-off',
-            end ? `${word} ${clock(end)}` : 'No time',
+            end ? `${word} ${clockOn(end, late.get('scheduler-f-endtrip') ?? 0)}` : 'No time',
             () => openEnd('scheduler-dropoff-modal', 'scheduler-f-endtrip'));
         };
         let num = 0;  // the stops numbered so far
@@ -6886,8 +6921,12 @@
       function drawTotals() {
         const legs = [[r.driveOut, r.driveMiles], ...legStops().map(st => [st.drive, st.miles]),
           ...(dropCounts() ? [[r.dropDrive, r.dropMiles]] : []), [r.backDrive, r.backMiles]];
+        /* Yard to yard, each end on the day `pastMidnight` puts it, so a leg
+           out past midnight and back after the hour it left is a day long. */
+        const late = pastMidnight();
         const out = toMin(val('scheduler-f-depart')), home = toMin(val('scheduler-f-return'));
-        let span = out != null && home != null ? home - out : null;
+        let span = out != null && home != null
+          ? home + 1440 * (late.get('scheduler-f-return') ?? 0) - out - 1440 * (late.get('scheduler-f-depart') ?? 0) : null;
         if (span != null && span < 0) span += 1440;
         if (span != null) span += routeTimes.pre + routeTimes.post;
         const rest = r.list.reduce((n, st) => n + (st.dwell && st.dwell !== 'on' ? waitOf(st) ?? 0 : 0), 0);
@@ -6897,8 +6936,12 @@
         if (days) span = null;
         const needs = !days && !(val('scheduler-f-leave') && val('scheduler-f-endtrip') && timesComplete(r.list));
         const yardOut = val('scheduler-f-depart'), spot = val('scheduler-f-spot'), yardBack = val('scheduler-f-return');
-        // The last day's weekday goes in End's label, so the time itself never wraps.
-        const lastDay = days ? ` · ${parseISO(to).toLocaleDateString(undefined, { weekday: 'short' })}` : '';
+        /* The last day's weekday goes in End's label, so the time itself never
+           wraps: a longer leg's last day, or the next day a one-day leg comes
+           back on past midnight. */
+        const backOn = days ? to : (late.get('scheduler-f-return') ?? 0) > 0 && from
+          ? dayAfter(from, late.get('scheduler-f-return')) : null;
+        const lastDay = backOn ? ` · ${parseISO(backOn).toLocaleDateString(undefined, { weekday: 'short' })}` : '';
         const times = el('dl', 'scheduler-figures');
         for (const [label, time] of [['Start', yardOut], ['Spot', spot], [`End${lastDay}`, yardBack]]) {
           const box = el('div');
@@ -9503,7 +9546,7 @@
     const leg = assign.leg || 'outbound';
     const range = legsOf(trip).find(l => l.leg === leg);
     const seat = (assign.trip_drivers || []).find(d => (d.role || 'driver') === 'driver') ?? null;
-    return { trip, assign, leg, range: range ? { from: range.from, to: range.to, depart: range.depart, back: range.back } : null, seat };
+    return { trip, assign, leg, range: range ? { from: range.from, to: range.to, depart: range.depart, back: range.back, backDays: range.backDays } : null, seat };
   }
 
   function assignItem(label, { id, icon, note, title, checked, disabled } = {}) {
@@ -9675,7 +9718,7 @@
           if (state === 'pending-response' || state === 'confirmed') continue;
           rows.push({
             key: String(assign.id), trip, assign, now, state, split: legs.length > 1,
-            leg: { leg: l.leg, from: l.from, to: l.to, depart: l.depart, back: l.back },
+            leg: { leg: l.leg, from: l.from, to: l.to, depart: l.depart, back: l.back, backDays: l.backDays },
             ticked: state !== 'off', choice: null, pick: null, options: [], error: null,
           });
         }

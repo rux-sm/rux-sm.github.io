@@ -3320,49 +3320,40 @@
   };
 
   /* A SAVED RECORD'S MARK. A name, customer or place picked from the saved
-     lists carries an icon at the end of its field, before any copy button,
-     which opens that record on the Contacts, Customers or Locations page in a
-     new tab, so
-     the trip open here keeps its edits. One typed by hand carries none, so the
-     field says whether Save will link it or offer to add it. The mark follows
-     the field's `data-contact-id`, `data-customer-id` or `data-location-id`,
-     which a pick sets and typing clears. */
+     lists says so at the end of its label's line, in Carbon's label row, as a
+     small link that opens that
+     record on the Contacts, Customers or Locations page in a new tab, so the
+     trip open here keeps its edits. It stays out of the field, where the value
+     is read and copied. One typed by hand shows none, so the label says
+     whether Save will link it or offer to add it. The mark follows the field's
+     `data-contact-id`, `data-customer-id` or `data-location-id`, which a pick
+     sets and typing clears. */
   const SAVED = {
-    contact: { data: 'contactId', page: 'contacts.html', word: 'Open saved contact', icon: '#m-account_circle' },
-    customer: { data: 'customerId', page: 'customers.html', word: 'Open saved customer', icon: '#m-account_circle' },
-    location: { data: 'locationId', page: 'locations.html', word: 'Open saved location', icon: '#m-location_on' },
+    contact: { data: 'contactId', page: 'contacts.html', word: 'Saved contact' },
+    customer: { data: 'customerId', page: 'customers.html', word: 'Saved customer' },
+    location: { data: 'locationId', page: 'locations.html', word: 'Saved location' },
   };
   function withSaved(item, id, kind) {
     const input = item.querySelector(`#${id}`);
-    const host = input?.closest('.rux--combo-box');
-    if (!host) return item;
-    host.classList.add('scheduler-copy-host');
-    const tip = el('span', 'rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--left '
-      + 'rux--popover--caret rux--popover--high-contrast scheduler-saved');
-    tip.dataset.savedFor = id;
-    tip.dataset.savedKind = kind;
-    const trigger = el('div', 'rux--tooltip-trigger__wrapper');
-    const btn = el('a', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm');
-    btn.target = '_blank';
-    btn.rel = 'noopener';
-    btn.tabIndex = -1;
-    btn.setAttribute('aria-label', SAVED[kind].word);
-    btn.appendChild(svgUse(SAVED[kind].icon, '16', '0 0 32 32'));
-    trigger.appendChild(btn);
-    const pop = el('span', 'rux--popover');
-    pop.append(el('span', 'rux--popover-content rux--tooltip-content', SAVED[kind].word), el('span', 'rux--popover-caret'));
-    tip.append(trigger, pop);
-    host.appendChild(tip);
-    syncSavedTip(tip, input);
+    const label = item.querySelector(`label[for="${id}"]`);
+    if (!input || !label) return item;
+    const link = el('a', 'rux--link rux--link--sm scheduler-saved', SAVED[kind].word);
+    link.dataset.savedFor = id;
+    link.dataset.savedKind = kind;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.title = `Open the ${SAVED[kind].word.toLowerCase()} in a new tab`;
+    const row = el('div', 'rux--text-input__label-wrapper');
+    label.replaceWith(row);
+    row.append(label, link);
+    syncSavedTip(link, input);
     return item;
   }
-  function syncSavedTip(tip, input) {
-    const kind = SAVED[tip.dataset.savedKind];
+  function syncSavedTip(link, input) {
+    const kind = SAVED[link.dataset.savedKind];
     const id = input?.value.trim() ? input.dataset[kind.data] || '' : '';
-    const btn = tip.querySelector('.rux--btn');
-    if (id) btn.href = `${kind.page}?id=${encodeURIComponent(id)}`; else btn.removeAttribute('href');
-    tip.hidden = !id;
-    tip.parentElement?.classList.toggle('scheduler-saved-on', !!id);
+    if (id) link.href = `${kind.page}?id=${encodeURIComponent(id)}`; else link.removeAttribute('href');
+    link.hidden = !id;
   }
   /* A phone or email that is not the linked contact's says what the saved one
      is, in a line under the field: the trip keeps its own copy, and Save

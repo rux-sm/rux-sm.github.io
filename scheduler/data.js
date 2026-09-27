@@ -6111,16 +6111,14 @@
          the summary and Save read them wherever they are. */
       const dropBox = el('div', 'rux--stack-vertical rux--stack-scale-5 scheduler-route-drop');
       dropBox.append(full(dropField), nameFor(dropField, dropName));
-      // One line in its place: what the drop-off is, and Change at its end.
-      const dropLine = el('div', 'scheduler-route-dropline');
-      const dropSaid = el('p', 'rux--form__helper-text', 'Drop-off: same as pickup.');
-      const dropOpen = el('button', 'rux--link rux--link--sm scheduler-route-open', 'Change');
+      // Its only mention is the link that opens it, at the end of the pickup
+      // Location's label line.
+      const dropOpen = el('button', 'rux--link rux--link--sm scheduler-route-open', 'Change drop-off location');
       dropOpen.type = 'button';
-      dropOpen.setAttribute('aria-label', 'Set a different drop-off');
-      dropLine.append(dropSaid, dropOpen);
+      pickupField.querySelector('.scheduler-label-row')?.append(dropOpen);
       const showDrop = open => {
         dropBox.hidden = !open;
-        dropLine.hidden = open;
+        dropOpen.hidden = open;
       };
       dropOpen.addEventListener('click', () => {
         showDrop(true);
@@ -6130,7 +6128,6 @@
       fields.append(
         full(pickupField),
         nameFor(pickupField, pickupName),
-        dropLine,
         dropBox,
         pair(timeField('scheduler-f-leave', 'Departs', r.first?.depart_prev),
           timeField('scheduler-f-endtrip', 'Returns', r.back?.depart_prev)),

@@ -3605,16 +3605,6 @@ html:has(.scheduler-page[data-takeover]) {
   vertical-align: -0.1875rem;
   margin-inline-end: var(--rux-spacing-02);
 }
-/* A round trip's drop-off line, 8px under the pickup's address, with Change
-   at its end. */
-.scheduler-route-dropline {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--rux-spacing-05);
-  margin-block-start: var(--rux-spacing-03);
-}
-.scheduler-route-dropline[hidden] { display: none; }
 /* The drop-off pair a round trip does not ask for. `rux--stack-vertical` is
    `display: grid`, which outranks the bare `[hidden]` attribute. */
 .scheduler-route-drop[hidden] { display: none; }
@@ -3629,6 +3619,8 @@ html:has(.scheduler-page[data-takeover]) {
   justify-self: start;
 }
 .scheduler-route-open[hidden] { display: none; }
+/* On the pickup Location's label line it ends the line. */
+.scheduler-label-row > .scheduler-route-open { margin-inline-start: auto; }
 
 /* ══ The larger trip editor ═══════════════════════════════════════════════
    The panel's size button marks the page, and the editor takes Carbon's

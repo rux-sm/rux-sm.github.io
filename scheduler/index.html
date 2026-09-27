@@ -594,13 +594,13 @@
            so three share the bar in even thirds, and two share it in halves
            when Cancel trip is hidden for a new trip; geist-dark ends the bar
            instead and gives each its own width. Cancel trip is a secondary button
-           like Reset, not a red one, because it is the rarest action here and
-           the modal it opens is where the danger is: it only opens
+           like Reset that turns red under the pointer, because it is the rarest
+           action here and the modal it opens is where the danger is: it only opens
            #scheduler-cancel-modal, and names the trip
            because the close button is what leaves the editor; Reset drops
            unsaved edits. -->
       <div class="rux--action-set rux--side-panel__actions-container rux--action-set--row-double rux--action-set--md rux--btn-set" role="presentation">
-        <button type="button" class="rux--action-set__action-button rux--btn rux--btn--secondary" id="scheduler-panel-cancel">Cancel trip</button>
+        <button type="button" class="rux--action-set__action-button rux--btn rux--btn--secondary scheduler-panel-cancel" id="scheduler-panel-cancel">Cancel trip</button>
         <button type="button" class="rux--action-set__action-button rux--btn rux--btn--secondary" id="scheduler-panel-reset" disabled>Reset</button>
         <button type="button" class="rux--action-set__action-button rux--btn rux--btn--primary" id="scheduler-panel-save" disabled>Save</button>
       </div>

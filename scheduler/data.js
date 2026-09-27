@@ -6359,8 +6359,27 @@
       const timeBetween = (start, end, passed) => {
         if (start == null || end == null) return null;
         let span = end - start;
-        if (span < 0) span += 1440;
+        /* On a one-day leg a time earlier than the one it follows is past
+           midnight. On a leg of more than one day every time has its day, so
+           an arrival before the departure is left negative and said so. */
+        const { from, to } = routeDates(r.leg);
+        if (span < 0 && !(from && to && to > from)) span += 1440;
         return span - passed.reduce((n, st) => n + (waitOf(st) ?? 0), 0);
+      };
+      // Where the leg into a stop starts: the last place on the map before it.
+      const legInto = i => {
+        let k = i - 1;
+        const passed = [];
+        while (k >= 0 && !located(r.list[k])) passed.push(r.list[k--]);
+        const start = k >= 0
+          ? minutesAt(r.list[k].leave, leaveDayOf(r.list[k], routeDates(r.leg).from))
+          : minutesAt(val('scheduler-f-leave'), routeDates(r.leg).from);
+        return { first: k < 0, start, passed };
+      };
+      // The minutes the typed times leave for the drive into a stop, or null.
+      const roomInto = st => {
+        const into = legInto(r.list.indexOf(st));
+        return timeBetween(into.start, minutesAt(st.arrive, st.date), into.passed);
       };
       const warnLine = text => {
         const w = el('span', 'scheduler-route-warn');
@@ -6388,20 +6407,11 @@
           const drive = min == null ? 'not measured' : min < 60 ? `${min} min` : hm(min);
           li.appendChild(el('span', null, [from, drive, miles == null ? null : `${Math.round(miles)} mi`]
             .filter(Boolean).join(' · ')));
-          if (min != null && room != null && room < min) {
-            li.appendChild(warnLine(`only ${hm(Math.max(room, 0))} between the times`));
+          if (room != null && room < 0) li.appendChild(warnLine('arrives before it leaves'));
+          else if (min != null && room != null && room < min) {
+            li.appendChild(warnLine(`only ${hm(room)} between the times`));
           }
           return li;
-        };
-        // Where the leg into a stop starts: the last place on the map before it.
-        const legInto = i => {
-          let k = i - 1;
-          const passed = [];
-          while (k >= 0 && !located(r.list[k])) passed.push(r.list[k--]);
-          const start = k >= 0
-            ? minutesAt(r.list[k].leave, leaveDayOf(r.list[k], routeDates(r.leg).from))
-            : minutesAt(val('scheduler-f-leave'), routeDates(r.leg).from);
-          return { first: k < 0, start, passed };
         };
         // A stop's number, counted down the list from 1 across every day.
         const rowFor = (st, i, n) => {
@@ -6435,8 +6445,7 @@
             under.appendChild(warnLine('No location'));
             return [row];
           }
-          const into = legInto(i);
-          const room = timeBetween(into.start, minutesAt(st.arrive, st.date), into.passed);
+          const room = roomInto(st);
           return [legLine(null, st.drive, st.miles, room), row];
         };
         // The leg on to where the group is let off, from the last place on the map.
@@ -6679,7 +6688,7 @@
             : hm(known.reduce((n, [m]) => n + m, 0)),
           // On duty as the clock runs, and in brackets less the waits off duty or
           // in the sleeper berth, when there are any.
-          needsTimes ? 'Needs times'
+          needsTimes === 'check' ? 'Check times' : needsTimes ? 'Needs times'
             : span == null ? '—' : `${hm(span)}${rest ? ` (${hm(span - rest)})` : ''}`,
         ];
       };
@@ -6711,7 +6720,8 @@
           for (let d = from; d <= to && all.length < 31; d = dayAfter(d, 1)) all.push(d);
           all.forEach((d, n) => rows.push([`Day ${n + 1}`, ...dayFigures(d, all[0], all.at(-1))]));
         }
-        rows.push(['Total', ...figures(legs, span, rest, needs)]);
+        const wrong = !days && r.list.some(st => located(st) && (roomInto(st) ?? 0) < 0);
+        rows.push(['Total', ...figures(legs, span, rest, wrong ? 'check' : needs)]);
         const table = el('table', 'rux--data-table rux--data-table--xs');
         const head = el('tr');
         for (const h of ['Day', 'Miles', 'Drive', 'On duty']) {
@@ -6772,7 +6782,10 @@
         const span = run.length > 1 ? run.at(-1) - run[0] : null;
         const needs = !timesComplete(mine) || (d === first && !val('scheduler-f-leave'))
           || (d === last && !val('scheduler-f-endtrip'));
-        return figures(legs, span, rest, needs && (mine.length > 0 || d === first || d === last));
+        // A day with a stop reached before the bus left the last one has no
+        // on-duty figure to give until its times are put right.
+        const wrong = mine.some(st => located(st) && (roomInto(st) ?? 0) < 0);
+        return figures(legs, span, rest, wrong ? 'check' : needs && (mine.length > 0 || d === first || d === last));
       }
 
       const routeSection = section(routeHeading(), stopsBody);

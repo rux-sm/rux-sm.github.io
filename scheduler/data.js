@@ -5058,14 +5058,15 @@
     const earlier = (a, b, day) => (a && b && toMin(a) > toMin(b) ? dayAfter(day, -1) : day);
     const spotDate = spot ? earlier(spot, leave, from) : null;
     const pickup = {
-      ...(r.pickupPlace !== r.pickupOpen ? r.pickupPlace ?? placeOf({}) : {}),
+      // Only the place's columns: a pick from the saved list also carries `saved`.
+      ...(r.pickupPlace !== r.pickupOpen ? placeOf(r.pickupPlace ?? {}) : {}),
       spot, spot_date: spotDate,
       depart_prev: yardOut, depart_prev_date: yardOut ? earlier(yardOut, spot, spotDate ?? from) : null,
       ...driveCols(r.pickup, drive, r.driveMiles, r.driveSource),
     };
     const first = { depart_prev: leave, depart_prev_date: leave ? from : null };
     const drop = round ? null : {
-      ...(r.dropPlace !== r.dropOpen ? r.dropPlace ?? placeOf({}) : {}),
+      ...(r.dropPlace !== r.dropOpen ? placeOf(r.dropPlace ?? {}) : {}),
       arrive: end, arrive_date: end ? to : null,
     };
     const ret = {

@@ -7382,14 +7382,17 @@
     pop();
   }
 
-  /* The other bars of the selected trip, and of the trip in the editor: its
-     other buses and its other leg, ringed as app.css draws them, so a trip's
-     buses are found together on a busy day. The editor's are also locked. */
+  /* The other bars of the selected trip, its other buses and its other leg,
+     and every bar of the trip in the editor, ringed as app.css draws them, so a
+     trip's buses are found together on a busy day. The editor's are also
+     locked. */
   function markTripBars() {
     const picked = selectedBar();
     for (const bar of gridEl.querySelectorAll('.scheduler-bar[data-trip-id]')) {
-      bar.classList.toggle('scheduler-bar--same-trip', bar !== picked
-        && (isEditorTrip(bar) || (!!picked && bar.dataset.tripId === picked.dataset.tripId)));
+      const open = isEditorTrip(bar);
+      bar.classList.toggle('scheduler-bar--open', open);
+      bar.classList.toggle('scheduler-bar--same-trip', !open && bar !== picked
+        && !!picked && bar.dataset.tripId === picked.dataset.tripId);
     }
   }
 

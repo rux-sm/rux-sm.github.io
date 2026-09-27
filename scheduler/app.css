@@ -665,14 +665,46 @@ button.scheduler-row-head__num::after {
    tag, its ring and number in the bar's own text colour, which overrides.css
    draws. The tag is the row's height and centred in it, so its ring is whole. */
 .scheduler-bar__ref { display: flex; align-items: center; }
-/* A bar of the selected trip, or of the trip in the editor, that is not the
-   selected bar: its other buses and its other leg. The selection's own colour
-   says which trip, and the dashes say this is not the bar in hand; an outline
-   inside the bar costs none of its writing. The trip in the editor's are also
-   locked -- they do not drag, and their bus, colour and hotel are the
-   editor's to change. The bar's own `:focus-visible` outranks it on
-   specificity, so focus still shows. */
+/* A bar of the selected trip that is not the selected bar: its other buses
+   and its other leg. The selection's own colour says which trip, and the
+   dashes say this is not the bar in hand; an outline inside the bar costs none
+   of its writing. The bar's own `:focus-visible` outranks it on specificity,
+   so focus still shows. */
 .scheduler-bar--same-trip { outline: 2px dashed var(--rux-layer-selected-inverse); outline-offset: -2px; }
+
+/* EVERY BAR OF THE TRIP IN YOUR EDITOR wears the selection's ring with a
+   brighter arc running round it, so the open trip is found at a glance and
+   told apart from a trip merely selected, whose ring stands still. Those bars
+   are locked: they do not drag, and their bus, colour and hotel are the
+   editor's to change. The ring is a masked conic gradient on the bar's
+   `::after`, over the still selection ring it replaces, and it wins over the
+   rule a trip someone else has open wears there, because this one is yours. */
+@property --scheduler-open-turn {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes scheduler-open-turn { to { --scheduler-open-turn: 360deg; } }
+.scheduler-bar.scheduler-bar--open { box-shadow: none; }
+.scheduler-bar.scheduler-bar--open::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  pointer-events: none;
+  background: conic-gradient(from var(--scheduler-open-turn),
+    color-mix(in srgb, var(--rux-layer-selected-inverse) 50%, transparent) 0 40%,
+    var(--rux-layer-selected-inverse) 85% 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  box-shadow: none;
+  animation: scheduler-open-turn 2.4s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .scheduler-bar.scheduler-bar--open::after { animation: none; background: var(--rux-layer-selected-inverse); }
+}
 
 /* The selected trip's shortcuts: a row of square slots floating clear of the
    trip, so a selected trip loses none of its writing. data.js places it inside
@@ -1041,7 +1073,7 @@ button.scheduler-row-head__num::after {
    state that matters -- somebody is in there and might be saving over you --
    is the louder of the two rather than merely another shade of it. Fading and
    a dashed rule were both tried: fading dulled the photo inside the square,
-   and dashed is what a leg of the trip in your own editor already wears.
+   and dashed is what the other buses of a selected trip already wear.
 
    On its own layer, so `inherit` carries a rounded theme's corners. A bar too
    narrow even for the small square shows nothing at all when it is merely

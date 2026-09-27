@@ -666,11 +666,11 @@ button.scheduler-row-head__num::after {
    draws. The tag is the row's height and centred in it, so its ring is whole. */
 .scheduler-bar__ref { display: flex; align-items: center; }
 /* A bar of the selected trip that is not the selected bar: its other buses
-   and its other leg. The selection's own colour says which trip, and the
-   dashes say this is not the bar in hand; an outline inside the bar costs none
-   of its writing. The bar's own `:focus-visible` outranks it on specificity,
-   so focus still shows. */
-.scheduler-bar--same-trip { outline: 2px dashed var(--rux-layer-selected-inverse); outline-offset: -2px; }
+   and its other leg. It wears the selection's own ring, so the whole trip
+   reads as selected; an outline inside the bar costs none of its writing. The
+   bar's own `:focus-visible` outranks it on specificity, so focus still
+   shows. */
+.scheduler-bar--same-trip { outline: 2px solid var(--rux-layer-selected-inverse); outline-offset: -2px; }
 
 /* EVERY BAR OF THE TRIP IN YOUR EDITOR wears the selection's ring with a
    brighter stretch running round it at one speed, so the open trip is found
@@ -1071,9 +1071,8 @@ button.scheduler-row-head__num::after {
    square alone; one they have open wears the square and this rule round the
    whole bar. So there is one colour and no second style to learn, and the
    state that matters -- somebody is in there and might be saving over you --
-   is the louder of the two rather than merely another shade of it. Fading and
-   a dashed rule were both tried: fading dulled the photo inside the square,
-   and dashed is what the other buses of a selected trip already wear.
+   is the louder of the two rather than merely another shade of it. Fading it
+   instead would dull the photo inside the square.
 
    On its own layer, so `inherit` carries a rounded theme's corners. A bar too
    narrow even for the small square shows nothing at all when it is merely

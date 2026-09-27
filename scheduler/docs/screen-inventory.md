@@ -223,6 +223,6 @@ off this bus go to the Buses tab, so the change saves with the trip. Every bar o
 trip — the return leg, or the same leg on another bus, too — wears the
 selection's ring with a brighter arc running round it, which costs none of
 its writing; with reduced motion the ring stands still. The other bars of a
-trip merely selected wear a dashed ring instead. Save checks the trip's `updated_at` against the value
+trip merely selected wear the selection's still ring, as the selected bar does. Save checks the trip's `updated_at` against the value
 the panel opened with and asks before replacing a change someone else saved
 in between.

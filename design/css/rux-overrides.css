@@ -756,6 +756,15 @@
 [data-theme="geist-dark"] .rux--modal-footer .rux--btn:not(.rux--skeleton) {
   padding-inline: var(--rux-spacing-05);
 }
+/* An icon in a footer button follows its label rather than covering it.
+   Carbon places the icon absolutely in the trailing padding the rule above
+   takes back, so at the button's own width it would sit on the words. */
+[data-theme="geist-dark"] .rux--action-set .rux--action-set__action-button .rux--btn__icon,
+[data-theme="geist-dark"] .rux--modal-footer .rux--btn .rux--btn__icon {
+  position: static;
+  margin-block-start: 0;
+  margin-inline-start: var(--rux-spacing-03);
+}
 /* Three or more, and the first stands away from the rest: the trip editor's
    Cancel trip is destructive where Reset and Save are the safe pair, so a
    reach for Save never crosses it. Two sit together at the end. The first

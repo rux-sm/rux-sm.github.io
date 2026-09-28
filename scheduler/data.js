@@ -7348,6 +7348,16 @@
       const lineList = rowList();
       const linesNote = el('p', 'rux--form__helper-text');
       const quotedInput = panelBilling.querySelector('#scheduler-f-quoted');
+      /* The price reads as money, as the Balance above it does: $1,669, with
+         cents only when it has them. `money` reads the sign and commas back, so
+         what is saved is still the number. */
+      const showQuoted = () => {
+        const n = money(quotedInput.value);
+        if (n !== null) quotedInput.value = `$${n.toLocaleString('en-US',
+          { minimumFractionDigits: Number.isInteger(n) ? 0 : 2, maximumFractionDigits: 2 })}`;
+      };
+      showQuoted();
+      quotedInput.addEventListener('change', showQuoted);
       // The total at the last draw; the first draw, as the trip opens, only
       // records it.
       let totalBefore = null;
@@ -7421,6 +7431,7 @@
         const total = linesTotal();
         if (linePending.length && totalBefore !== null && total !== totalBefore) {
           quotedInput.value = String(total);
+          showQuoted();
           drawSummary();
         }
         totalBefore = total;
@@ -7443,6 +7454,9 @@
          button that goes quiet is worse than one that reports a failure. */
       const qbButton = el('button', 'rux--btn rux--btn--tertiary rux--layout--size-md scheduler-quickbooks', 'Copy for QuickBooks');
       qbButton.type = 'button';
+      const qbIcon = svgUse('#m-content_copy', '16', '0 0 32 32');
+      qbIcon.classList.add('rux--btn__icon');
+      qbButton.appendChild(qbIcon);
       qbButton.id = 'scheduler-f-quickbooks';
       qbButton.addEventListener('click', async () => {
         try {

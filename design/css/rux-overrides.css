@@ -253,6 +253,11 @@
 [data-theme="geist-dark"] .rux--btn--ghost:not(:disabled):not(.rux--btn--disabled) {
   color: var(--rux-text-primary, #161616);
 }
+/* The same button on a notification's light inverse slab takes that slab's
+   own ink, because the page's light text there would be light on light. */
+[data-theme="geist-dark"] .rux--actionable-notification:not(.rux--actionable-notification--low-contrast) .rux--actionable-notification__action-button.rux--btn--ghost:not(:disabled):not(.rux--btn--disabled) {
+  color: var(--rux-text-inverse, #ffffff);
+}
 
 /* A FILLED BUTTON'S LABEL IS DARK ONLY WHERE THE FILL IS THE BRAND'S. Carbon
    gives every filled button `text-on-color`, which this theme sets to black
@@ -274,6 +279,14 @@
 [data-theme="geist-dark"] .rux--btn--danger:hover:not(:disabled):not(.rux--btn--disabled),
 [data-theme="geist-dark"] .rux--menu-item--danger:not(.rux--menu-item--disabled):is(:hover, :focus) {
   color: #ffffff;
+}
+/* Spotify's text-on-color is black for the same reason, a light green brand,
+   and its secondary fill is a dark grey, so that button is labelled in the
+   page's own text as well. */
+[data-theme="spotify-dark"] .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled),
+[data-theme="spotify-dark"] .rux--btn--secondary:hover:not(:disabled):not(.rux--btn--disabled),
+[data-theme="spotify-dark"] .rux--btn--secondary:focus:not(:disabled):not(.rux--btn--disabled) {
+  color: var(--rux-text-primary, #161616);
 }
 /* The ring that makes the outline. Carbon already draws a 1px border on the
    secondary button and leaves it transparent, so only its colour is named.

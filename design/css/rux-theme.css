@@ -801,9 +801,13 @@
   --rux-text-secondary: #b3b3b3;
 
   /* link */
-  --rux-link-inverse: #169c46;
+  /* A link on the white inverse surface is a dark step of the green, since
+     #169c46 reads 3.6:1 there. A notification's action keeps this colour
+     over the #e6e6e6 hover fill, so it is chosen to pass on both: 6.6:1 on
+     white and 5.3:1 on the hover fill. */
+  --rux-link-inverse: #0e6b30;
   --rux-link-inverse-active: #121212;
-  --rux-link-inverse-hover: #117a37;
+  --rux-link-inverse-hover: #0a4a21;
   --rux-link-inverse-visited: #7b4bb7;
   --rux-link-primary: #1ed760;
   --rux-link-primary-hover: #3be477;

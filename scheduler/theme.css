@@ -92,23 +92,19 @@
   --scheduler-amber-hover-ring: inset 0 0 0 1px var(--scheduler-on-warning);
 }
 
-/* THE THREE HEADS ARE GEIST'S DEFAULT CONTROLS: the toolbar, the roster's head
-   and the trip editor's head each hold 36px buttons and, in the toolbar, a
-   36px search field, the default size on Geist's Button and Input pages, 6px
-   from the top and bottom of a 48px bar and 8px from the card's end. Nothing
-   fills its bar edge to edge, so the field's ring stays clear of the card's
-   outline and the day band's rule, the three heads and the rows under them
-   line up across the board, and every button takes Geist's 6px corners rather
-   than staying square with the last one following the card's curve. The
-   heads' md size is redefined in their scope, as Design's table toolbar does,
-   so every control in them follows. The roster's head keeps its full height
-   where the grid under it wants more room than the pane has. On a phone the
-   controls fill the first row with no room to spare, so there only the
-   search's own row is inset. */
+/* THE THREE HEADS HOLD GEIST'S DEFAULT CONTROLS: the toolbar, the roster's
+   head and the trip editor's head each hold the 36px buttons and, in the
+   toolbar, the 36px search field that Design sizes every geist-dark control
+   at, 6px from the top and bottom of a 48px bar and 8px from the card's end.
+   Nothing fills its bar edge to edge, so the field's ring stays clear of the
+   card's outline and the day band's rule, the three heads and the rows under
+   them line up across the board, and every button takes Geist's 6px corners
+   rather than staying square with the last one following the card's curve. The
+   editor's close button fixes its own 40px, so it is named. The roster's head
+   keeps its full height where the grid under it wants more room than the pane
+   has. On a phone the controls fill the first row with no room to spare, so
+   there only the search's own row is inset. */
 @media (min-width: 42rem) {
-  [data-theme="geist-dark"] :is(.scheduler-toolbar, .scheduler-aside__head, .scheduler-trip .rux--side-panel__header) {
-    --rux-layout-size-height-md: 2.25rem;
-  }
   [data-theme="geist-dark"] .scheduler-toolbar {
     padding: 6px var(--rux-spacing-03);
     gap: var(--rux-spacing-02);

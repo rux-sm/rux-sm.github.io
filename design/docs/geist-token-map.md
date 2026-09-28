@@ -7,9 +7,10 @@ type: reference
 Every colour `[data-theme="geist-dark"]` sets, against the Geist token that
 best matches it. Geist's values are read from its own published Colors page
 in dark mode and converted to sRGB; ours are read from `css/rux-theme.css`.
+A link on the light inverse surface takes Geist's light mode, and its row says so.
 
-**201 colours. 68 land on a Geist token exactly, 52 sit within a
-shade of one, and 81 have no Geist colour near them** -- the third column
+**201 colours. 70 land on a Geist token exactly, 51 sit within a
+shade of one, and 80 have no Geist colour near them** -- the third column
 then names the closest there is, which is a starting point and not a match.
 
 A transparent value is only ever matched against a transparent Geist token, so
@@ -101,9 +102,9 @@ Nothing in these apps draws them.
 | `--rux-text-placeholder` | `rgba(237, 237, 237, 0.4)` | `--ds-gray-alpha-800 #ffffff/0.47` | nearest |
 | `--rux-text-primary` | `#ededed` | `--ds-gray-1000 #ededed` | exact |
 | `--rux-text-secondary` | `#a1a1a1` | `--ds-gray-900 #a1a1a1` | exact |
-| `--rux-link-inverse` | `#0070f3` | `--ds-blue-700 #006efe` | close |
+| `--rux-link-inverse` | `#005ff2` | `--ds-blue-900 #005ff2`, light mode | exact |
 | `--rux-link-inverse-active` | `#000000` | `--ds-background-200 #000000` | exact |
-| `--rux-link-inverse-hover` | `#0060d1` | `--ds-blue-800 #005be7` | nearest |
+| `--rux-link-inverse-hover` | `#002359` | `--ds-blue-1000 #002359`, light mode | exact |
 | `--rux-link-inverse-visited` | `#7c3aed` | `--ds-purple-600 #9440d5` | nearest |
 | `--rux-link-primary` | `#52a8ff` | `--ds-blue-900 #47a8ff` | close |
 | `--rux-link-primary-hover` | `#8fc7ff` | `--ds-blue-900 #47a8ff` | nearest |

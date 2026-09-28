@@ -285,9 +285,11 @@
   --rux-text-secondary: #a1a1a1;
 
   /* link */
-  --rux-link-inverse: #0070f3;
+  /* A link on the light inverse surface is Geist's link blue from its own
+     light mode, blue-900, 4.6:1 on #ededed, and hovers to blue-1000. */
+  --rux-link-inverse: #005ff2;
   --rux-link-inverse-active: #000000;
-  --rux-link-inverse-hover: #0060d1;
+  --rux-link-inverse-hover: #002359;
   --rux-link-inverse-visited: #7c3aed;
   --rux-link-primary: #52a8ff;
   --rux-link-primary-hover: #8fc7ff;
@@ -898,31 +900,33 @@
   --rux-button-separator: #121212;
   --rux-button-disabled: rgba(255, 255, 255, 0.25);
 
-  /* tag (component tokens — Carbon's own dark set, see header) */
+  /* tag (component tokens — Carbon's own dark set, see header), except each
+     hover, which goes 80% of the way from the tag's fill to Carbon's hover:
+     Carbon's own left the light text at 4.35 to 1, and this holds 4.62. */
   --rux-tag-background-red: #a2191f;
   --rux-tag-color-red: #ffd7d9;
-  --rux-tag-hover-red: #c21e25;
+  --rux-tag-hover-red: #bc1d24;
   --rux-tag-background-magenta: #9f1853;
   --rux-tag-color-magenta: #ffd6e8;
-  --rux-tag-hover-magenta: #bf1d63;
+  --rux-tag-hover-magenta: #b91c60;
   --rux-tag-background-purple: #6929c4;
   --rux-tag-color-purple: #e8daff;
-  --rux-tag-hover-purple: #7c3dd6;
+  --rux-tag-hover-purple: #7839d2;
   --rux-tag-background-blue: #0043ce;
   --rux-tag-color-blue: #d0e2ff;
-  --rux-tag-hover-blue: #0053ff;
+  --rux-tag-hover-blue: #0050f5;
   --rux-tag-background-cyan: #00539a;
   --rux-tag-color-cyan: #bae6ff;
-  --rux-tag-hover-cyan: #0066bd;
+  --rux-tag-hover-cyan: #0062b6;
   --rux-tag-background-teal: #005d5d;
   --rux-tag-color-teal: #9ef0f0;
-  --rux-tag-hover-teal: #007070;
+  --rux-tag-hover-teal: #006c6c;
   --rux-tag-background-green: #0e6027;
   --rux-tag-color-green: #a7f0ba;
-  --rux-tag-hover-green: #11742f;
+  --rux-tag-hover-green: #10702d;
   --rux-tag-background-gray: #525252;
   --rux-tag-color-gray: #f4f4f4;
-  --rux-tag-hover-gray: #636363;
+  --rux-tag-hover-gray: #606060;
   --rux-tag-border-red: #fa4d56;
   --rux-tag-border-blue: #4589ff;
   --rux-tag-border-cyan: #1192e8;
@@ -935,10 +939,10 @@
   --rux-tag-border-warm-gray: #8f8b8b;
   --rux-tag-background-cool-gray: #4d5358;
   --rux-tag-color-cool-gray: #f2f4f8;
-  --rux-tag-hover-cool-gray: #5d646a;
+  --rux-tag-hover-cool-gray: #5a6166;
   --rux-tag-background-warm-gray: #565151;
   --rux-tag-color-warm-gray: #f7f3f2;
-  --rux-tag-hover-warm-gray: #696363;
+  --rux-tag-hover-warm-gray: #655f5f;
 
   /* notification (component tokens — Carbon's own dark set;
      the four surface backgrounds take THIS theme's layer-01) */

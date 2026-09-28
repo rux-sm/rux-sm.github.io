@@ -82,8 +82,6 @@ now line.
 
 | Page | Verdict | Becomes |
 |---|---|---|
-| `../rux-ui/driver.html`, token in the query | keep | Header-only shell, mobile first, trip legs as tiles with Accept and Decline, through the existing RPCs. |
-| `../rux-ui/maintenance.html` | later | Same shell, a read-only bus by day grid; may reuse the week grid. |
 | `../rux-ui/intake.html` | later | Needs the Worker's extract route and the itinerary component. |
 | `../rux-ui/m.html`, `../rux-ui/d.html` | keep | Redirect stubs, unchanged. |
 | `../rux-ui/doc.html` | keep | Redirect by document id, unchanged. |
@@ -94,7 +92,7 @@ Dropped: `../rux-ui/gallery.html` and the four specimen pages.
 
 Each step ends with the page opened in every theme.
 
-5. Print schedule. Driver page.
+5. Print schedule.
 6. Everything marked *later*.
 
 ## 6. Not verified

@@ -16,8 +16,6 @@ done and how.
 
 - The quote calculator's eight spreadsheet quirks are kept until rux and the
   manager decide them. The list is on the calculator's Rules tab.
-- The driver page, §4 of `scheduler/docs/screen-inventory.md`, is not built
-  yet.
 - The forms page draws the driver envelope, the driver itinerary and the
   customer quote. An hours-of-service form and a passenger roster are still
   named for it, after the printed schedule.

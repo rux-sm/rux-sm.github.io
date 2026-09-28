@@ -413,6 +413,26 @@
 [data-theme="geist-dark"] .rux--number :is(input[type=number], input[type=text]) {
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle-01);
 }
+/* GEIST'S DEFAULT CONTROL IS 36px, measured on its Button and Input pages:
+   the default button and the default field are both 36px with 6px corners,
+   between a 32px small and a 40px large. Carbon's md size is 40, and three
+   scopes set it -- the page, a popover's content and the table toolbar -- so
+   each takes 36 here, and every button, field, dropdown, tab and switcher
+   sized md follows. A button given no size draws at Carbon's 48 and takes the
+   md size too, unless it or a container around it names a size. The date
+   picker's field fixes its own 40 and takes the md size with the fields beside
+   it. Buttons that set their own height keep it: the header's actions, the
+   page-number buttons of the pagination nav and the dialog's 64px footer. */
+[data-theme="geist-dark"],
+[data-theme="geist-dark"] :is(.rux--popover-content, .rux--table-toolbar) {
+  --rux-layout-size-height-md: 2.25rem;
+}
+[data-theme="geist-dark"] .rux--btn:not([class*="rux--layout--size-"]):not([class*="rux--layout--size-"] *) {
+  --rux-layout-size-height: var(--rux-layout-size-height-md);
+}
+[data-theme="geist-dark"] .rux--date-picker__input:not(.rux--date-picker__input--lg, .rux--date-picker__input--sm) {
+  block-size: var(--rux-layout-size-height-md);
+}
 /* GEIST'S SELECTION BAR IS NOT A BRAND SLAB. Every other theme fills this bar
    with its brand colour and gets a blue, purple or green band; geist-dark's brand
    is near-white, so on a black page inside an outlined box it was the loudest

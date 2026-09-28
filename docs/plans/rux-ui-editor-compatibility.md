@@ -32,9 +32,9 @@ rux-ui keeps its own look; only how it saves changes.
   a drop-off's own arrival, takes the spot minutes from `route-times-v1`
   instead of a fixed 15, and never deletes the other leg's rows unless the trip
   stopped being a split.
-- **Billing reads and writes the quote lines,** the Hotel line with them, and
-  the price is their total once a trip has any, as on the scheduler's Billing
-  tab.
+- **rux-ui's Billing shows the quote lines and leaves them to the
+  scheduler,** which edits them: while a trip has any, its price is read-only
+  in rux-ui, and a Hotel line holds the hotel tag.
 - **Both apps prompt for what changed,** because a prompt in one app teaches
   people to save from the other; rux-ui writes `trip_updates` as the scheduler
   does. The 203 dated notes the log copied are blanked once both apps read it.
@@ -63,8 +63,6 @@ None open.
 - [ ] rux-ui takes the spot minutes from `route-times-v1` instead of its fixed
   15, taking a trip's opening copy again when the setting arrives after the
   trip opened, so the setting is never read as an edit.
-- [ ] Bring rux-ui's Billing section onto the quote lines, the Hotel line
-  included.
 - [ ] Make rux-ui read the updates log and prompt on its own saves.
 - [ ] Blank the 203 dated notes the log copied, where a note is still the text
   it copied, once both apps read the log. SQL shown to rux.

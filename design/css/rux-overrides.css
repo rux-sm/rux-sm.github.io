@@ -509,6 +509,23 @@
 [data-theme="geist-dark"] .rux--data-table th:first-child > .rux--table-sort {
   padding-inline-start: 16px;
 }
+/* - A menu's items are 36px at every menu size, with their text 8px in, so
+     inside the menu's 6px they start 14px from its edge, as on Geist's Menu
+     page. That covers Carbon's menu, a dropdown's or combo box's options and
+     the overflow menu. */
+[data-theme="geist-dark"] .rux--menu .rux--menu-item {
+  block-size: 2.25rem;
+  padding-inline: 8px;
+}
+[data-theme="geist-dark"] :is(.rux--list-box__menu-item, .rux--overflow-menu-options__option) {
+  --rux-layout-size-height-local: 2.25rem;
+}
+[data-theme="geist-dark"] .rux--list-box__menu-item__option {
+  margin-inline: 8px;
+}
+[data-theme="geist-dark"] .rux--overflow-menu-options__btn {
+  padding-inline: 8px;
+}
 /* - A dialog's title and body sit 20px from its edges. The header keeps
      Carbon's 48px at the end for the close button. */
 [data-theme="geist-dark"] .rux--modal-header {
@@ -648,19 +665,20 @@
    editor's bus tile was reported invisible. They take the modal's own
    treatment, at the border level that matches the layer they sit on, as an
    inset ring so nothing moves. */
-[data-theme="geist-dark"] :is(.rux--tile, .rux--popover-content, .rux--list-box__menu, .rux--menu, .rux--date-picker__calendar) {
+[data-theme="geist-dark"] :is(.rux--tile, .rux--popover-content, .rux--list-box__menu, .rux--menu, .rux--overflow-menu-options, .rux--date-picker__calendar) {
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
 }
 /* GEIST'S MENU HOLDS ITS ITEMS OFF ITS EDGE, measured on its Menu page: 6px of
    padding inside a 12px corner, and each item a 6px pill, so the corners nest.
    Carbon runs its items to the menu's edge, which in this theme laid a hovered
    item's fill over the ring on both sides and squared the focus outline against
-   the rounded box. The outline follows the item's corner. */
-[data-theme="geist-dark"] .rux--menu {
+   the rounded box. The outline follows the item's corner. The overflow menu is
+   the same surface and takes the same answer. */
+[data-theme="geist-dark"] :is(.rux--menu, .rux--overflow-menu-options) {
   padding: 6px;
   border-radius: 12px;
 }
-[data-theme="geist-dark"] .rux--menu-item {
+[data-theme="geist-dark"] :is(.rux--menu-item, .rux--overflow-menu-options__option, .rux--overflow-menu-options__btn) {
   border-radius: 6px;
 }
 /* A dropdown's or combo box's list is the same surface and takes the same

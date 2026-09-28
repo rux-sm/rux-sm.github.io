@@ -60,8 +60,9 @@ None open.
 
 ## Tasks
 
-- [ ] Rebuild rux-ui's itinerary on the Route tab's model, as the decision
-  above says.
+- [ ] rux-ui takes the spot minutes from `route-times-v1` instead of its fixed
+  15, taking a trip's opening copy again when the setting arrives after the
+  trip opened, so the setting is never read as an edit.
 - [ ] Bring rux-ui's Billing section onto the quote lines, the Hotel line
   included.
 - [ ] Make rux-ui read the updates log and prompt on its own saves.

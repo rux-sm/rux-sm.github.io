@@ -92,15 +92,29 @@
   --scheduler-amber-hover-ring: inset 0 0 0 1px var(--scheduler-on-warning);
 }
 
-/* The board's toolbar sits inside the card as Design's Geist table toolbar
-   does on the Trips page: 16px from the edges and 8px apart, so the search
-   field's ring no longer lies on the card's outline and the day band's rule.
-   On a phone the controls fill the first row with no room to spare, so there
-   only the search's own row is inset. */
+/* The board's search is Geist's own search field, measured on its Input page:
+   36px tall with 6px corners. The toolbar takes 4px above and below its 40px
+   buttons and 8px at each end, so the field sits 6px clear of the card's
+   outline and the day band's rule instead of lying on both. On a phone the
+   controls fill the first row with no room to spare, so there only the
+   search's own row is inset. */
 @media (min-width: 42rem) {
   [data-theme="geist-dark"] .scheduler-toolbar {
-    padding: var(--rux-spacing-05);
-    gap: var(--rux-spacing-03);
+    padding: var(--rux-spacing-02) var(--rux-spacing-03);
+    gap: var(--rux-spacing-02);
+  }
+  [data-theme="geist-dark"] .scheduler-toolbar__search {
+    align-self: center;
+  }
+  [data-theme="geist-dark"] .scheduler-toolbar .rux--search {
+    --rux-layout-size-height-local: 2.25rem;
+  }
+  [data-theme="geist-dark"] .scheduler-toolbar .rux--search-input {
+    block-size: 2.25rem;
+  }
+  [data-theme="geist-dark"] .scheduler-toolbar .rux--search-close {
+    block-size: 2.25rem;
+    inline-size: 2.25rem;
   }
 }
 @media (max-width: 41.98rem) {

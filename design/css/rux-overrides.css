@@ -220,7 +220,8 @@
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--date-picker__calendar,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--popover-content,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification {
   border-radius: 8px;
 }
 /* Ant's tag is a 4px rectangle. Geist has no square badge at all -- its Badge
@@ -252,11 +253,6 @@
    and keeps its red. */
 [data-theme="geist-dark"] .rux--btn--ghost:not(:disabled):not(.rux--btn--disabled) {
   color: var(--rux-text-primary, #161616);
-}
-/* The same button on a notification's light inverse slab takes that slab's
-   own ink, because the page's light text there would be light on light. */
-[data-theme="geist-dark"] .rux--actionable-notification:not(.rux--actionable-notification--low-contrast) .rux--actionable-notification__action-button.rux--btn--ghost:not(:disabled):not(.rux--btn--disabled) {
-  color: var(--rux-text-inverse, #ffffff);
 }
 
 /* A FILLED BUTTON'S LABEL IS DARK ONLY WHERE THE FILL IS THE BRAND'S. Carbon
@@ -604,13 +600,14 @@
   fill: color-mix(in srgb, var(--rux-support-warning) 60%, var(--rux-text-primary));
 }
 /* THE ROUNDED THEMES' NOTIFICATIONS. Both draw an alert as a tint of its own
-   hue inside a 1px border of it, with the text in the page's own ink. Carbon
-   draws one as an inverse slab with a 3px bar down one side, which on a dark
-   page is the brightest thing on screen. The four tints are the
+   hue inside a 1px border of it, with the text in the page's own ink, whether
+   or not it carries an action. Carbon draws one as an inverse slab with a 3px
+   bar down one side, which on a dark page is the brightest thing on screen. The four tints are the
    notification-background tokens, set per theme in rux-theme.css; the borders
    and the glyphs are the support colours each theme already carries. */
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification {
   border: 1px solid transparent;
   color: var(--rux-text-primary);
 }
@@ -619,57 +616,104 @@
    rather than inheriting the card's, so on a tinted card they draw in black.
    The container's colour above is what the title reads by. */
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification__subtitle,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification__caption {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification__caption,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification__subtitle,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification__caption {
   color: var(--rux-text-primary);
+}
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification a {
+  color: var(--rux-link-primary);
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification .rux--inline-notification__close-icon,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification .rux--inline-notification__close-icon,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification .rux--toast-notification__close-icon {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification .rux--toast-notification__close-icon,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification .rux--actionable-notification__close-icon {
   fill: var(--rux-icon-primary);
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--error,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--error {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--error,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification--error {
   background: var(--rux-notification-background-error);
   border-color: var(--rux-support-error);
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--error .rux--inline-notification__icon,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--error .rux--toast-notification__icon {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--error .rux--toast-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification--error :is(.rux--inline-notification__icon, .rux--toast-notification__icon, .rux--actionable-notification__icon) {
   fill: var(--rux-support-error);
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--success,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--success {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--success,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification--success {
   background: var(--rux-notification-background-success);
   border-color: var(--rux-support-success);
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--success .rux--inline-notification__icon,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--success .rux--toast-notification__icon {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--success .rux--toast-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification--success :is(.rux--inline-notification__icon, .rux--toast-notification__icon, .rux--actionable-notification__icon) {
   fill: var(--rux-support-success);
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--info,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--info-square,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--info,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--info-square {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--info-square,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification--info,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification--info-square {
   background: var(--rux-notification-background-info);
   border-color: var(--rux-support-info);
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--info .rux--inline-notification__icon,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--info-square .rux--inline-notification__icon,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--info .rux--toast-notification__icon,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--info-square .rux--toast-notification__icon {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--info-square .rux--toast-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification--info :is(.rux--inline-notification__icon, .rux--toast-notification__icon, .rux--actionable-notification__icon),
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification--info-square :is(.rux--inline-notification__icon, .rux--toast-notification__icon, .rux--actionable-notification__icon) {
   fill: var(--rux-support-info);
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--warning,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--warning-alt,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--warning,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--warning-alt {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--warning-alt,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification--warning,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification--warning-alt {
   background: var(--rux-notification-background-warning);
   border-color: var(--rux-support-warning);
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--warning .rux--inline-notification__icon,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--inline-notification--warning-alt .rux--inline-notification__icon,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--warning .rux--toast-notification__icon,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--warning-alt .rux--toast-notification__icon {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--toast-notification--warning-alt .rux--toast-notification__icon,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification--warning :is(.rux--inline-notification__icon, .rux--toast-notification__icon, .rux--actionable-notification__icon),
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification--warning-alt :is(.rux--inline-notification__icon, .rux--toast-notification__icon, .rux--actionable-notification__icon) {
   fill: var(--rux-support-warning);
+}
+/* A notification's action is each system's own small button, not Carbon's
+   link-coloured text. Geist's Note page puts a small solid button in the
+   note, its primary fill under dark text; Ant's Alert page puts a small text
+   button in the alert's own ink, with the hover and pressed fills of
+   `colorBgTextHover` and `colorBgTextActive`, which are this theme's
+   background-hover and background-active. On a tint, the ring is the page's
+   focus colour rather than Carbon's inverse one. */
+[data-theme="geist-dark"] .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:not(:disabled):not(.rux--btn--disabled) {
+  background-color: var(--rux-button-primary);
+  color: var(--rux-text-on-color);
+}
+[data-theme="geist-dark"] .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:not(:disabled):not(.rux--btn--disabled):hover {
+  background-color: var(--rux-button-primary-hover);
+}
+[data-theme="geist-dark"] .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:not(:disabled):not(.rux--btn--disabled):active {
+  background-color: var(--rux-button-primary-active);
+}
+[data-theme="ant-dark"] .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:not(:disabled):not(.rux--btn--disabled) {
+  color: var(--rux-text-primary);
+}
+[data-theme="ant-dark"] .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:not(:disabled):not(.rux--btn--disabled):hover {
+  background-color: var(--rux-background-hover);
+}
+[data-theme="ant-dark"] .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:not(:disabled):not(.rux--btn--disabled):active {
+  background-color: var(--rux-background-active);
+}
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:focus {
+  outline-color: var(--rux-focus);
 }
 /* A button that fills its bar edge to edge is that bar's edge, so it stays
    square, and where it sits in a rounded corner it takes that corner's

@@ -60,8 +60,6 @@ None open.
 
 ## Tasks
 
-- [ ] rux-ui writes payments and ticket options by id, deletes only the buses
-  it loaded and removed, and sends statuses only when they changed.
 - [ ] Rebuild rux-ui's itinerary on the Route tab's model, as the decision
   above says.
 - [ ] Bring rux-ui's Billing section onto the quote lines, the Hotel line

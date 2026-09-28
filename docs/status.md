@@ -18,9 +18,6 @@ done and how.
   manager decide them. The list is on the calculator's Rules tab.
 - The driver page, §4 of `scheduler/docs/screen-inventory.md`, is not built
   yet.
-- rux-ui's itinerary is to be rebuilt on the Route tab's model and layout.
-  Until then it is unchecked against stops kept by day without times and a
-  round trip's row back at the pickup.
 - The forms page draws the driver envelope, the driver itinerary and the
   customer quote. An hours-of-service form and a passenger roster are still
   named for it, after the printed schedule.

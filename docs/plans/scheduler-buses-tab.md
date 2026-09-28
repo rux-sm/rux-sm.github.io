@@ -51,8 +51,6 @@ None open.
 
 ## Tasks
 
-- [ ] Give each vehicle a switch per equipment entry on the Fleet page, Sleeper
-  and ADA Lift writing their own columns.
 - [ ] Change rux-ui's trip save to update `trip_assignments` by id and keep a
   row with needs and no bus, after reading its `CLAUDE.md`.
 - [ ] Read and write each vehicle's needs and type in the Buses tab's model,

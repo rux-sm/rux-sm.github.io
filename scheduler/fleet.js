@@ -40,7 +40,7 @@
   const HEX = /^#[0-9a-fA-F]{6}$/;
 
   const BUS_COLUMNS = [
-    'id', 'number', 'capacity', 'type', 'ada_lift', 'sleeper', 'status',
+    'id', 'number', 'capacity', 'type', 'ada_lift', 'sleeper', 'equipment', 'status',
     'make', 'model', 'year', 'vin', 'color', 'mileage',
     'last_service', 'next_service', 'insurance_exp', 'registration_exp', 'inspection_exp',
     'sort_order', 'notes', 'bus_ref',
@@ -180,7 +180,28 @@
       .filter(Boolean).join(' ').toLowerCase().includes(q.toLowerCase());
   };
 
-  const equipmentRank = b => (b.ada_lift ? 2 : 0) + (b.sleeper ? 1 : 0);
+  /* EQUIPMENT is the office's requirements list, its vehicle entries. Sleeper
+     and ADA lift keep their own columns, which rux-ui and the print pages
+     read, and 56 passengers is the unit's seats, so `buses.equipment` holds
+     every other entry by its id, `{ id: true }`. An entry the office has since
+     switched off stays on a unit that has it, drawn and saved as it was. */
+  const OWN_COLUMNS = new Set(['sleeper', 'adaLift', 'pax56']);
+  const REQUIREMENTS = window.SchedulerRequirements || {};
+  const REQUIREMENT_ICONS = window.SchedulerRequirementIcons || {};
+  let requirementList = [];
+  async function readRequirements() {
+    const { data, error } = await client.from('settings').select('value').eq('key', 'requirements-v1').maybeSingle();
+    if (error || !Array.isArray(data?.value)) return;
+    requirementList = data.value.filter(r => r && typeof r.id === 'string' && r.label
+      && (r.type || 'vehicle') === 'vehicle' && !OWN_COLUMNS.has(r.id))
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  }
+  const heldBy = b => Object.keys(b?.equipment || {}).filter(id => b.equipment[id] === true);
+  // The entries a unit's form offers: every active one, and any it holds.
+  const offered = b => requirementList.filter(r => r.active !== false || heldBy(b).includes(r.id));
+  const entryIcon = r => REQUIREMENTS[r.id]?.icon || REQUIREMENT_ICONS[r.icon] || null;
+
+  const equipmentRank = b => (b.ada_lift ? 2 : 0) + (b.sleeper ? 1 : 0) + heldBy(b).length / 100;
   const STATE_ORDER = { active: 0, out: 1, inactive: 2 };
   const SORTS = {
     bus: (a, b) => numberOf(a) - numberOf(b) || String(a.number || '').localeCompare(String(b.number || '')),
@@ -222,6 +243,15 @@
     };
     if (b.ada_lift) mark('#m-accessible-fill', 'ADA lift');
     if (b.sleeper) mark('#m-airline_seat_flat-fill', 'Sleeper');
+    // An entry with no drawing shows its initial, as a trip's card does.
+    for (const r of requirementList.filter(r => heldBy(b).includes(r.id))) {
+      if (entryIcon(r)) { mark(entryIcon(r), r.label); continue; }
+      const letter = el('span', 'scheduler-bus-equipment-letter', r.label.trim().charAt(0).toUpperCase());
+      letter.title = r.label;
+      letter.setAttribute('role', 'img');
+      letter.setAttribute('aria-label', r.label);
+      box.appendChild(letter);
+    }
     if (!box.childElementCount) return el('span', null, '—');
     return box;
   }
@@ -367,6 +397,35 @@
   const newId = crypto.randomUUID();
   let baseline = '';        // the form as loaded, to tell whether it changed
 
+  /* A switch per equipment entry after Sleeper and ADA lift, in the office's
+     order. What the form does not draw, an entry since deleted from the list,
+     is kept as the unit held it. */
+  const equipmentBox = $('scheduler-b-equipment');
+  const equipmentId = id => `scheduler-b-eq-${id}`;
+  let equipmentDrawn = [];
+  function drawEquipment(b) {
+    equipmentBox?.querySelectorAll('[data-equipment]').forEach(n => n.remove());
+    equipmentDrawn = offered(b).map(r => r.id);
+    for (const r of offered(b)) {
+      const wrap = el('div', 'rux--form-item rux--checkbox-wrapper');
+      wrap.dataset.equipment = r.id;
+      const input = el('input', 'rux--checkbox');
+      input.type = 'checkbox';
+      input.id = equipmentId(r.id);
+      input.checked = heldBy(b).includes(r.id);
+      const label = el('label', 'rux--checkbox-label');
+      label.htmlFor = input.id;
+      label.appendChild(el('div', 'rux--checkbox-label-text', r.label));
+      wrap.append(input, label);
+      equipmentBox?.appendChild(wrap);
+    }
+  }
+  function readEquipment() {
+    const held = Object.fromEntries(heldBy(loaded).filter(id => !equipmentDrawn.includes(id)).map(id => [id, true]));
+    for (const id of equipmentDrawn) if ($(equipmentId(id))?.checked) held[id] = true;
+    return held;
+  }
+
   /* The columns Save writes, read off the form. A blank field saves as null.
      `sort_order` is not among them: it is the fleet's order, renumbered by
      Save over every bus, never typed. */
@@ -382,6 +441,7 @@
       color: text('color')?.toLowerCase() ?? null,
       ada_lift: field('ada').checked,
       sleeper: field('sleeper').checked,
+      equipment: readEquipment(),
       status: document.querySelector('input[name="scheduler-b-status"]:checked')?.value || 'active',
       mileage: digits('mileage'),
       last_service: dateOf('last-service'),
@@ -394,7 +454,7 @@
   }
   const WRITTEN = Object.keys({
     number: 0, capacity: 0, type: 0, year: 0, make: 0, model: 0, vin: 0, color: 0,
-    ada_lift: 0, sleeper: 0, status: 0, mileage: 0, last_service: 0, next_service: 0,
+    ada_lift: 0, sleeper: 0, equipment: 0, status: 0, mileage: 0, last_service: 0, next_service: 0,
     insurance_exp: 0, registration_exp: 0, inspection_exp: 0, notes: 0,
   });
 
@@ -404,6 +464,7 @@
     if (v === undefined || v === '') return null;
     if (k.endsWith('_exp') || k.endsWith('_service')) return day(v);
     if (k === 'ada_lift' || k === 'sleeper') return !!v;
+    if (k === 'equipment') return heldBy(row).sort();
     return v;
   }));
   const outRow = r => [r.start_date, r.end_date, r.reason || null];
@@ -428,6 +489,7 @@
     set('color', b.color);
     field('ada').checked = !!b.ada_lift;
     field('sleeper').checked = !!b.sleeper;
+    drawEquipment(b);
     $(`scheduler-b-status-${b.status === 'inactive' ? 'inactive' : 'active'}`).checked = true;
     set('mileage', b.mileage == null ? '' : String(b.mileage));
     set('last-service', shownDay(day(b.last_service) || ''));
@@ -1018,7 +1080,7 @@
   /* ══ Start ══════════════════════════════════════════════════════════════ */
   pair.start(async signedIn => {
     client = signedIn;
-    await Vehicles.read(client).catch(() => {});
+    await Promise.all([Vehicles.read(client).catch(() => {}), readRequirements().catch(() => {})]);
     if (!editing) { await loadList(); return; }
     if (!(await loadBus())) {
       say('info', 'That unit is not in the list', 'Pick a unit from the list below.');

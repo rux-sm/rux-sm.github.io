@@ -3553,6 +3553,12 @@ html:has(.scheduler-page[data-takeover]) {
   gap: var(--rux-spacing-03);
   color: var(--rux-text-secondary);
 }
+/* An entry with no drawing is its initial, as wide as an icon. */
+.scheduler-bus-equipment-letter {
+  inline-size: 1.25rem;
+  text-align: center;
+  font-weight: var(--rux-heading-compact-01-font-weight);
+}
 /* Carbon has no colour control. The swatch is the browser's own input with
    its chrome taken off, sized and bordered like the field beside it so the
    pair reads as one control. */

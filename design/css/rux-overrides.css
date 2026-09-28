@@ -182,6 +182,25 @@
   border-block-start-color: transparent;
 }
 
+/* A DARK THEME'S AVATARS TAKE CARBON'S DARK SET. Carbon ships two sets of
+   avatar colours and switches by a `.rux--g90` or `.rux--g100` class, which no
+   page here carries, so every dark theme drew the light set under its own dark
+   `text-inverse`: dark initials on a dark fill, as low as 1.8 to 1. These are
+   Carbon's dark set, copied, and they read at 5.4 to 1 or better under each
+   dark theme's `text-inverse`. */
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"]) .rux--user-avatar--order-1-cyan { background-color: #1192e8; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"]) .rux--user-avatar--order-2-gray { background-color: #8d8d8d; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"]) .rux--user-avatar--order-3-green { background-color: #24a148; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"]) .rux--user-avatar--order-4-magenta { background-color: #ee5396; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"]) .rux--user-avatar--order-5-purple { background-color: #a56eff; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"]) .rux--user-avatar--order-6-teal { background-color: #009d9a; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"]) .rux--user-avatar--order-7-cyan { background-color: #82cfff; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"]) .rux--user-avatar--order-8-gray { background-color: #c6c6c6; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"]) .rux--user-avatar--order-9-green { background-color: #6fdc8c; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"]) .rux--user-avatar--order-10-magenta { background-color: #ffafd2; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"]) .rux--user-avatar--order-11-purple { background-color: #d4bbff; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"]) .rux--user-avatar--order-12-teal { background-color: #3ddbd9; }
+
 /* ROUNDED THEMES. Ant Design Pro and Geist were both measured at the same
    three radii -- a tag 4px, a control 6px, a surface 8px -- and both draw a
    field as a filled box with no underline, so one set of rules serves both and

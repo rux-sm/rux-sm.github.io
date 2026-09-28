@@ -28,8 +28,8 @@ with its fields, and Add vehicle in place of the Buses needed count.
   columns for its needs and its type, and a vehicle with needs but no bus yet
   keeps its row with no bus, as a cleared one does now.
 - **rux-ui saves buses as the scheduler does:** by row id, updating and adding
-  rows instead of deleting and rewriting them, and keeping a row with needs and
-  no bus. Until it does, a save there would drop every vehicle's needs.
+  rows instead of deleting and rewriting them, and keeping a row with no bus,
+  in its `js/core/trip-assignment-write.js`.
 - **Equipment on a vehicle keeps its old home for the first two:** `sleeper`
   and `ada_lift` stay where those live, because rux-ui and the print pages
   read them, and a new `buses.equipment` holds every other entry by its id.
@@ -51,8 +51,6 @@ None open.
 
 ## Tasks
 
-- [ ] Change rux-ui's trip save to update `trip_assignments` by id and keep a
-  row with needs and no bus, after reading its `CLAUDE.md`.
 - [ ] Read and write each vehicle's needs and type in the Buses tab's model,
   and set the trip-wide columns from them on save.
 - [ ] Draw the tab: the legs as headings, a tile per vehicle, its window, Add

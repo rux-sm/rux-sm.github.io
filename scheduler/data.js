@@ -6446,6 +6446,9 @@
       r.dropMiles = r.dropRow ? numOrNull(r.dropRow.miles) : null;
 
       const DWELL = { on: 'on duty', off: 'off duty', sleeper: 'sleeper berth' };
+      // Each kind of wait's mark on a stop: the clock running, the clock
+      // stopped, and the sleeper mark the board gives a sleeper bus.
+      const DWELL_ICON = { on: '#m-play_circle-fill', off: '#m-pause_circle-fill', sleeper: '#m-airline_seat_flat-fill' };
       const stopsBody = el('div', 'rux--stack-vertical rux--stack-scale-5');
       const stopsList = rowList();
       stopsList.list.classList.add('scheduler-route-stops');
@@ -6609,17 +6612,16 @@
           const wait = waitOf(st);
           const drove = driveWords(st.drive, st.miles);
           const here = located(st);
-          // Under the place, only what happens there: the wait. A sleeper-berth
-          // wait shows the sleeper mark the board gives a sleeper bus in place
-          // of its words, which stay in the tile's title.
+          // Under the place, only what happens there: the wait, its kind shown
+          // by its mark in place of the words, which stay in the tile's title.
           const meta = wait ? `Waits ${hm(wait)}${st.dwell ? `, ${DWELL[st.dwell]}` : ''}` : '';
-          const berth = wait && st.dwell === 'sleeper';
+          const dwellIcon = wait && DWELL_ICON[st.dwell];
           // A round trip keeps its destination, which holds when the group
           // leaves the pickup.
           const lastOfRound = routeRound() && r.list.length === 1;
           const move = by => { r.list.splice(i + by, 0, r.list.splice(i, 1)[0]); touch(); };
           const row = listRow({
-            name, much, meta: berth ? `Waits ${hm(wait)}` : meta, lead: String(n), context: true,
+            name, much, meta: dwellIcon ? `Waits ${hm(wait)}` : meta, lead: String(n), context: true,
             title: [`Stop ${n}`, name, much, drove ? `${drove} drive` : null, meta,
               here ? null : 'No location, so the drive is measured past it'].filter(Boolean).join(' · '),
             edit: () => openStopDialog(i),
@@ -6630,10 +6632,10 @@
               { label: 'Remove', danger: true, disabled: lastOfRound, run: () => { r.list.splice(i, 1); touch(); } },
             ],
           });
-          if (berth) {
-            const bunk = svgUse('#m-airline_seat_flat-fill', '16', '0 0 32 32');
-            bunk.classList.add('scheduler-route-berth');
-            row.querySelector('.scheduler-item__meta').appendChild(bunk);
+          if (dwellIcon) {
+            const mark = svgUse(dwellIcon, '16', '0 0 32 32');
+            mark.classList.add('scheduler-route-dwell');
+            row.querySelector('.scheduler-item__meta').appendChild(mark);
           }
           // No location is about the place, so it ends the name's line.
           if (!here) {

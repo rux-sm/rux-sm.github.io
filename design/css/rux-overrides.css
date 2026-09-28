@@ -433,6 +433,91 @@
 [data-theme="geist-dark"] .rux--date-picker__input:not(.rux--date-picker__input--lg, .rux--date-picker__input--sm) {
   block-size: var(--rux-layout-size-height-md);
 }
+/* GEIST'S SPACING INSIDE A CONTROL, measured on its own pages. Carbon's
+   spacing stays everywhere else, including cards and menus, which are not
+   measured yet.
+   - A button holds its label 10px from each side, centred. Carbon keeps 64px
+     at the end for an icon whether or not there is one; here an icon follows
+     its label 8px after it, in the same 10px. Carbon's button carries a 1px
+     border inside its padding, so each side is a pixel less. */
+[data-theme="geist-dark"] .rux--btn:not(.rux--btn--icon-only) {
+  padding-inline: 9px;
+  justify-content: center;
+  text-align: center;
+}
+/* - A field starts its text 12px in, and a mark at its end -- a select's or a
+     dropdown's arrow, a date field's calendar -- sits 12px from that end. */
+[data-theme="geist-dark"] :is(.rux--text-input, .rux--text-area, .rux--select-input, .rux--date-picker__input, .rux--list-box__field),
+[data-theme="geist-dark"] .rux--number :is(input[type=number], input[type=text]) {
+  padding-inline-start: 12px;
+}
+[data-theme="geist-dark"] :is(.rux--select__arrow, .rux--date-picker__icon) {
+  inset-inline-end: 12px;
+}
+/* - Tabs sit 24px apart, each only as wide as its label, so the line under
+     the chosen one is the label's width. Carbon follows every tab with a
+     spacer, or with the close button of a tab that can be closed, so the
+     24px goes on each tab rather than between the list's children, and the
+     spacers go. A tab followed by its close button keeps Carbon's end
+     padding, which the button sits in. The list is inset so the first label
+     stays where Carbon's 16px padding put it. Contained and vertical tabs are
+     boxes and keep Carbon's spacing. */
+[data-theme="geist-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tab--list {
+  padding-inline-start: 14px;
+}
+[data-theme="geist-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-item--close--hidden {
+  display: none;
+}
+[data-theme="geist-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-link {
+  flex: none;
+  padding-inline-start: 2px;
+}
+[data-theme="geist-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-link:not(:has(+ .rux--tabs__nav-item--close)) {
+  padding-inline-end: 2px;
+}
+[data-theme="geist-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-link:not(:first-child) {
+  margin-inline-start: 24px;
+}
+/*   The row takes one hairline under all its tabs, as Geist's does, and a tab
+     draws its own line only when chosen, or hovered, so the rule is not
+     broken into a grey stroke under each label. */
+[data-theme="geist-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tab--list {
+  box-shadow: inset 0 -1px 0 var(--rux-border-subtle-01);
+}
+[data-theme="geist-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-link:not(.rux--tabs__nav-item--selected, :hover) {
+  border-block-end-color: transparent;
+}
+/* - A table's cells are 8px from each side, 16px between two columns; the
+     first and last keep 16px to the box's edge, where the title and the
+     toolbar above them start. A sortable header's button carries the
+     padding in place of its cell. */
+[data-theme="geist-dark"] .rux--data-table :is(td, th) {
+  padding-inline: 8px;
+}
+[data-theme="geist-dark"] .rux--data-table :is(td, th):first-child {
+  padding-inline-start: 16px;
+}
+[data-theme="geist-dark"] .rux--data-table :is(td, th):last-child {
+  padding-inline-end: 16px;
+}
+[data-theme="geist-dark"] .rux--data-table th:has(> .rux--table-sort) {
+  padding-inline: 0;
+}
+[data-theme="geist-dark"] .rux--data-table .rux--table-sort {
+  padding-inline: 8px;
+}
+[data-theme="geist-dark"] .rux--data-table th:first-child > .rux--table-sort {
+  padding-inline-start: 16px;
+}
+/* - A dialog's title and body sit 20px from its edges. The header keeps
+     Carbon's 48px at the end for the close button. */
+[data-theme="geist-dark"] .rux--modal-header {
+  padding-block-start: 20px;
+  padding-inline-start: 20px;
+}
+[data-theme="geist-dark"] .rux--modal-content {
+  padding: 20px;
+}
 /* GEIST'S SELECTION BAR IS NOT A BRAND SLAB. Every other theme fills this bar
    with its brand colour and gets a blue, purple or green band; geist-dark's brand
    is near-white, so on a black page inside an outlined box it was the loudest
@@ -503,17 +588,18 @@
   background: var(--rux-layer-hover-01);
 }
 /* THE TOOLBAR SITS INSIDE THE BOX, as Geist's own controls sit inside a card:
-   16px from its edges and 8px apart, so the search field's ring and the
-   button's corners no longer lie on the box's outline, doubling its line and
-   meeting its 8px corners with their 6px ones. The toolbar takes the box's
-   surface rather than a fill of its own. */
+   6px from its top and bottom, 8px from its ends and 4px apart, so its 36px
+   controls make a 48px bar, as the scheduler's heads do, and the search
+   field's ring and the buttons' corners no longer lie on the box's outline,
+   doubling its line and meeting its 8px corners with their 6px ones. The
+   toolbar takes the box's surface rather than a fill of its own. */
 [data-theme="geist-dark"] .rux--data-table-container .rux--table-toolbar {
   block-size: auto;
-  padding: var(--rux-spacing-05);
+  padding: 6px var(--rux-spacing-03);
   background-color: transparent;
 }
 [data-theme="geist-dark"] .rux--data-table-container .rux--toolbar-content {
-  gap: var(--rux-spacing-03);
+  gap: var(--rux-spacing-02);
 }
 /* GEIST'S SEGMENTED CONTROL, measured on its Switch page: a box on the
    surface inside a 1px ring, 6px corners and 4px of padding, holding 28px

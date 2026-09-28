@@ -484,8 +484,10 @@
   text-align: center;
 }
 /* - A field starts its text 12px in, and a mark at its end -- a select's or a
-     dropdown's arrow, a date field's calendar -- sits 12px from that end. */
-[data-theme="geist-dark"] :is(.rux--text-input, .rux--text-area, .rux--select-input, .rux--date-picker__input, .rux--list-box__field),
+     dropdown's arrow, a date field's calendar -- sits 12px from that end. A
+     combo box's field only frames its input, which takes the 12px itself, so
+     it keeps Carbon's 0; `:where` keeps the rule at the specificity it had. */
+[data-theme="geist-dark"] :is(.rux--text-input, .rux--text-area, .rux--select-input, .rux--date-picker__input, .rux--list-box__field:not(:where(.rux--combo-box) *)),
 [data-theme="geist-dark"] .rux--number :is(input[type=number], input[type=text]) {
   padding-inline-start: 12px;
 }

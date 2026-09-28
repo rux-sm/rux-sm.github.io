@@ -88,10 +88,13 @@ workflow in `../billing.js`.
 
 On the trip itself:
 
-- Mark the ADA lift need when the customer asked for an accessible bus, and
-  assign a unit that has a lift.
-- Turn on the hotel need only when the office books the drivers' room itself.
-  It does not mean the trip is overnight. The bar menu's Mark hotel booked
-  closes it.
+- Mark ADA Lift on the vehicle that needs it, in its window on the Buses tab,
+  and pick a unit that has a lift.
+- Add a Hotel line on the Billing tab only when the office books the drivers'
+  room itself, with its price. It does not mean the trip is overnight. Typing
+  the confirmation number in the line's window marks it booked, as the bar
+  menu's Mark hotel booked does.
+- Add a fuel card from the Route summary's menu, or from the note the Route tab
+  shows when a trip is past the office's miles or days.
 - Attach the final itinerary when it comes in, and fill in the trip contacts
   from it.

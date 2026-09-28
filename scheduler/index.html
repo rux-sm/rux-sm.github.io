@@ -1182,6 +1182,32 @@
   </div>
 
   <!-- The route times every trip's Route tab uses, filled by data.js. -->
+  <!-- The fuel card limits, the office's, from the Route summary's menu: a trip
+       past either suggests a fuel card. data.js draws the two fields. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-fuelcard-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-fuelcard-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-fuelcard-h">Fuel card limits</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <div class="rux--stack-vertical rux--stack-scale-6">
+          <p class="rux--type-body-compact-01">A trip over either suggests a fuel card. These apply to every trip.</p>
+          <div id="scheduler-fuelcard-fields"></div>
+          <p class="scheduler-routetimes-error" id="scheduler-fuelcard-error" role="alert"></p>
+        </div>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-fuelcard-save">Save</button>
+      </div>
+    </div>
+  </div>
+
   <div class="rux--layer-one rux--modal" id="scheduler-routetimes-modal" role="presentation">
     <div role="dialog" aria-modal="true" aria-labelledby="scheduler-routetimes-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
       <div class="rux--modal-header">

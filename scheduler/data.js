@@ -340,6 +340,9 @@
     return box;
   }
 
+  // The Route tab names its own `note`, so it reaches this one by this name.
+  const notice = (...args) => note(...args);
+
   /* A toast carries Carbon's close button because nothing else clears it: the
      next render clears `say`'s region and leaves the toast. Written out in full
      per variant for check-classes. The button names the notice it closes, as
@@ -517,7 +520,7 @@
          refused read keeps what was there, as rux-ui does. */
       client.from('settings').select('key,value')
         .in('key', ['billing-workflow-v1', 'yard-location-v1', 'geoapify-key-v1', 'route-times-v1', 'requirements-v1', 'vehicle-types-v1',
-          'follow-up-v1'])
+          'follow-up-v1', 'fuel-card-v1'])
         .then(r => {
           if (r.error) return;
           const byKey = new Map((r.data || []).map(row => [row.key, row.value]));
@@ -526,6 +529,7 @@
           if (yard?.lat != null && yard?.lng != null) yardPlace = yard;
           window.SchedulerPlaces.use(byKey.get('geoapify-key-v1'), yardPlace);
           setRouteTimes(byKey.get('route-times-v1'));
+          setFuelLimits(byKey.get('fuel-card-v1'));
           setRequirementList(byKey.get('requirements-v1'));
           window.SchedulerVehicles?.set(byKey.get('vehicle-types-v1'));
           setFollowUp(byKey.get('follow-up-v1'));
@@ -4056,7 +4060,9 @@
        was, for the same reason as above. */
     { key: 'trip_reqs', get: () => {
         const out = { ...(editing?.reqs || {}) };
-        for (const r of tripNeedList()) out[r.id] = needPressed(r.id) === true;
+        // The trip's two: the hotel from its quote line, the fuel card from the
+        // Route tab. Anything else the office lists for the trip keeps its answer.
+        if (editing) { out.hotel = hotelNeeded(); out.fuelCard = !!editing.fuelCard; }
         const union = fleetNeedUnion();
         if (union) {
           for (const r of vehicleNeedList()) out[r.id] = union.has(r.id);
@@ -4068,12 +4074,12 @@
     ...[['req_sleeper', 'sleeper'], ['req_ada', 'adaLift'], ['req_56pax', 'pax56']]
       .map(([key, id]) => ({ key, get: () => fleetNeedUnion()?.has(id) ?? !!editing?.before?.[key] })),
     // A reminder to book a hotel, not the bus's equipment; rux-ui lists it with the needs.
-    ...[['need_hotel', 'hotel'], ['need_fuel_card', 'fuelCard']]
-      .map(([key, id]) => ({ key, get: () => needPressed(id) ?? !!editing?.before?.[key] })),
+    { key: 'need_hotel', get: () => hotelNeeded() },
+    { key: 'need_fuel_card', get: () => !!editing?.fuelCard },
     // Each leg's hotel: whether it is booked, and its confirmation number.
     ...['outbound', 'return'].flatMap(l => [
-      { key: `hotel_booked_${l}`, get: () => !!document.getElementById(`scheduler-f-hotelbooked-${l}`)?.checked },
-      { key: `hotel_itinerary_number_${l}`, get: () => fieldVal(`scheduler-f-hotelref-${l}`) ?? null },
+      { key: `hotel_booked_${l}`, get: () => !!editing?.hotel?.[l]?.booked },
+      { key: `hotel_itinerary_number_${l}`, get: () => editing?.hotel?.[l]?.ref ?? null },
     ]),
     { key: 'notes', get: f => f['scheduler-f-notes'].value.trim() || null },
     /* Billing. Money goes to the column as a number or null, never NaN, which
@@ -4816,9 +4822,17 @@
     { kind: 'second_driver', label: 'Second driver', item: "Addt'l Driver",
       description: 'Additional driver required by law after exceeding 10 driving hrs or 15 on-duty hrs.' },
     { kind: 'discount', label: 'Discount', item: 'Deductions', description: 'Discount approved by manager.' },
+    { kind: 'hotel', label: 'Hotel', item: 'Hotel', description: 'Hotel room for the drivers.' },
     { kind: 'other', label: 'Other', item: '', description: '' },
   ];
   const lineKind = kind => LINE_KINDS.find(k => k.kind === kind) ?? LINE_KINDS.at(-1);
+
+  /* THE HOTEL IS A QUOTE LINE. A trip needs a hotel while it has a Hotel line,
+     or while it carried the reminder before there were lines, until a Hotel
+     line is taken off. Each leg's confirmation is typed in the line's window,
+     and typing one marks that leg booked. */
+  const hotelNeeded = () => !!editing && (linePending.some(l => l.kind === 'hotel') || !!editing.hotelWanted);
+  const hotelLeg = l => (splitNow() ? (l.leg ?? 'outbound') : 'outbound');
   // What the Route tab's stop dialog does on Done, set each time it opens.
   let stopDone = null;
   // The Route tab's redraw when its Pickup or Drop-off dialog closes.
@@ -4864,6 +4878,39 @@
       routeTimesDrawn?.();
     } catch {
       document.getElementById('scheduler-routetimes-error').textContent = "The route times didn't save. Try again.";
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  function openFuelLimits() {
+    const host = document.getElementById('scheduler-fuelcard-fields');
+    if (!host) return;
+    const grid = el('div', 'scheduler-dialog-grid');
+    const miles = moneyField('scheduler-f-fuelmiles', 'Over miles', fuelLimits.miles);
+    const days = moneyField('scheduler-f-fueldays', 'Over days', fuelLimits.days);
+    grid.append(miles, days);
+    host.replaceChildren(grid);
+    document.getElementById('scheduler-fuelcard-error').textContent = '';
+    window.Rux?.modal?.open?.('scheduler-fuelcard-modal');
+  }
+  document.getElementById('scheduler-fuelcard-save')?.addEventListener('click', async () => {
+    const button = document.getElementById('scheduler-fuelcard-save');
+    const error = document.getElementById('scheduler-fuelcard-error');
+    const miles = money(document.getElementById('scheduler-f-fuelmiles')?.value);
+    const days = money(document.getElementById('scheduler-f-fueldays')?.value);
+    if (!(miles > 0) || !(days > 0)) { error.textContent = 'Both limits need a number above 0.'; return; }
+    const value = { miles: Math.round(miles), days: Math.round(days) };
+    button.disabled = true;
+    try {
+      const { error: failed } = await withTimeout(client.from('settings')
+        .upsert({ key: 'fuel-card-v1', value }, { onConflict: 'key' }).then(r => r));
+      if (failed) throw failed;
+      setFuelLimits(value);
+      window.Rux?.modal?.close?.('scheduler-fuelcard-modal');
+      routeTimesDrawn?.();
+    } catch {
+      error.textContent = "The fuel card limits didn't save. Try again.";
     } finally {
       button.disabled = false;
     }
@@ -5068,7 +5115,11 @@
     costHelp.textContent = calc === null
       ? 'Left blank, the cost is worked out once the trip has miles and dates.'
       : `Left blank, the cost is the calculator's: ${usdCents(calc)} on ${Math.round(basis.miles)} miles over ${basis.days} ${basis.days === 1 ? 'day' : 'days'}.`;
-    grid.append(kind, ...(leg ? [leg] : []), item, descItem, qty, costField, rateField, deadField, costHelp);
+    const hotelRef = textField('scheduler-f-lhotelref', 'Confirmation number', editing?.hotel?.[hotelLeg(l)]?.ref ?? null);
+    hotelRef.classList.add('scheduler-dialog-grid__wide');
+    const hotelHelp = el('div', 'rux--form__helper-text', 'Typed in, the hotel counts as booked.');
+    hotelRef.appendChild(hotelHelp);
+    grid.append(kind, ...(leg ? [leg] : []), item, descItem, qty, costField, rateField, deadField, costHelp, hotelRef);
     host.replaceChildren(grid);
 
     // The kind decides the item's usual name and words, whether the quantity
@@ -5086,6 +5137,13 @@
       deadField.hidden = k !== 'rental';
       costHelp.hidden = k !== 'rental' && k !== 'second_driver';
       costField.querySelector('label').textContent = k === 'discount' ? 'Amount off' : 'Cost';
+      // A hotel's confirmation is its leg's; a new leg shows that leg's.
+      hotelRef.hidden = k !== 'hotel';
+      const refInput = hotelRef.querySelector('input');
+      if (refInput.dataset.leg !== (legNow ?? 'outbound')) {
+        refInput.dataset.leg = legNow ?? 'outbound';
+        refInput.value = editing?.hotel?.[splitNow() ? (legNow ?? 'outbound') : 'outbound']?.ref ?? '';
+      }
     };
     let kindBefore = l.kind;
     document.getElementById('scheduler-f-lkind').addEventListener('change', e => {
@@ -5132,8 +5190,18 @@
       window.Rux?.modal?.close?.('scheduler-line-modal');
       return;
     }
+    if (kind === 'hotel' && editing?.hotel) {
+      const ref = val('scheduler-f-lhotelref') || null;
+      const stay = editing.hotel[hotelLeg(row)];
+      stay.ref = ref;
+      if (ref) stay.booked = true;
+    }
     if (lineEditing === null) linePending.push({ miles: null, dead_miles: null, rate: null, ...row });
-    else Object.assign(linePending[lineEditing], row);
+    else {
+      // A line that stops being the hotel takes the reminder with it.
+      if (linePending[lineEditing].kind === 'hotel' && kind !== 'hotel') editing.hotelWanted = false;
+      Object.assign(linePending[lineEditing], row);
+    }
     window.Rux?.modal?.close?.('scheduler-line-modal');
     redrawLines();
     refreshDirty();
@@ -5279,6 +5347,15 @@
   }
   // The open Route tab's redraw, for a change to the route times.
   let routeTimesDrawn = null;
+
+  /* THE FUEL CARD LIMITS, the office's, kept in `settings` as `fuel-card-v1`:
+     a trip longer than either suggests a fuel card on its Route tab. */
+  const FUEL_LIMITS = { miles: 600, days: 2 };
+  let fuelLimits = { ...FUEL_LIMITS };
+  function setFuelLimits(v) {
+    const n = (x, d) => (Number.isFinite(Number(x)) && Number(x) > 0 ? Number(x) : d);
+    fuelLimits = { miles: n(v?.miles, FUEL_LIMITS.miles), days: n(v?.days, FUEL_LIMITS.days) };
+  }
 
   // Minutes after midnight, and back, wrapping round the clock.
   const toMin = t => {
@@ -5846,6 +5923,14 @@
          for it: a save merges its own tags over this, so a requirement the
          office has since deactivated keeps its answer. */
       reqs: (trip.trip_reqs && typeof trip.trip_reqs === 'object') ? { ...trip.trip_reqs } : {},
+      /* The trip's two needs that are not a vehicle's: each leg's hotel, its
+         confirmation and whether it is booked, edited in the Hotel line's
+         window; the reminder a trip carried before it had lines; and the fuel
+         card, turned on from the Route tab. */
+      hotel: Object.fromEntries(['outbound', 'return'].map(l => [l,
+        { ref: trip[`hotel_itinerary_number_${l}`] ?? null, booked: !!trip[`hotel_booked_${l}`] }])),
+      hotelWanted: !!trip.need_hotel,
+      fuelCard: !!trip.need_fuel_card,
       before: {
       destination: trip.destination ?? null,
       customer: trip.customer ?? null,
@@ -5990,50 +6075,6 @@
     };
     const [outFrom, outTo] = outLabels(trip.trip_type === SPLIT);
 
-    /* Needs is a row of Carbon's selectable tags under a field label, one row
-       that wraps if the labels outgrow the panel: the trip's own, Hotel, a
-       reminder that one has to be booked, and Fuel card. What a vehicle needs
-       is asked in its own window. */
-    const flags = el('div', 'scheduler-needs');
-    const needsLabel = el('div', 'rux--label', 'Needs');
-    needsLabel.id = 'scheduler-f-needs-label';
-    const needsRow = el('div', 'scheduler-needs__tags');
-    needsRow.setAttribute('role', 'group');
-    needsRow.setAttribute('aria-labelledby', needsLabel.id);
-    /* One tag per requirement the office keeps, rather than four written out
-       here: the list is theirs to grow, and a need this app did not know about
-       was one the board could show and nobody could set. */
-    const ticked = new Set(requirementsOf(trip));
-    needsRow.append(...tripNeedList().map(r => tagField(needFieldId(r.id), r.label, ticked.has(r.id))));
-    flags.append(needsLabel, needsRow);
-
-    /* While Hotel is ticked, each leg the trip has shows its hotel's
-       confirmation number beside a Booked box, the leg's
-       `hotel_itinerary_number_` and `hotel_booked_` columns rux-ui writes too;
-       a drop-off and pick-up trip has two. Unticking hides them and clears
-       nothing, so a slip loses no confirmation number. */
-    const hotelLeg = (legKey, label) => {
-      const row = pair(
-        textField(`scheduler-f-hotelref-${legKey}`, label, trip[`hotel_itinerary_number_${legKey}`]),
-        checkField(`scheduler-f-hotelbooked-${legKey}`, 'Booked', trip[`hotel_booked_${legKey}`]),
-      );
-      row.classList.add('scheduler-pair--end');
-      return row;
-    };
-    const hotelOut = hotelLeg('outbound', 'Hotel confirmation');
-    const hotelBack = hotelLeg('return', 'Pickup hotel confirmation');
-    const hotelBox = el('div', 'rux--stack-vertical rux--stack-scale-5 scheduler-hotel');
-    hotelBox.append(hotelOut, hotelBack);
-    // A split trip's first hotel is the drop-off's, and its second row shows.
-    const setHotelLegs = split => {
-      hotelBack.hidden = !split;
-      hotelOut.querySelector('.rux--label').textContent = split ? 'Drop-off hotel confirmation' : 'Hotel confirmation';
-    };
-    setHotelLegs(trip.trip_type === SPLIT);
-    hotelBox.hidden = !trip.need_hotel;
-    flags.querySelector(`#${needFieldId('hotel')}`)
-      ?.addEventListener('input', e => { hotelBox.hidden = !pressed(e.target); });
-
     /* The trip's own fields are one stack, 16px apart. Destination has Type
        beside it, a short menu a third of the row, so the split type is named
        "Split" there, which a third fits; the date labels still say Drop-off
@@ -6083,17 +6124,8 @@
     );
     panelDetails.appendChild(section('Trip information', topFields));
 
-    /* WHAT THE TRIP NEEDS opens the Buses tab: the trip's own needs, then each
-       leg's hotel while Hotel is ticked. It is drawn once per opening, and
-       `drawFleet` redraws only the vehicles after it. */
-    const needsStack = el('div', 'rux--stack-vertical rux--stack-scale-5');
-    needsStack.append(flags, hotelBox);
-    const needsSection = section('What the trip needs', needsStack);
-    needsSection.dataset.fleetNeeds = '';
-    needsSection.addEventListener('input', refreshDirty);
-    needsSection.addEventListener('change', refreshDirty);
+    // The Buses tab is its vehicles alone; what the trip needs is on Billing and Route.
     panelFleet.querySelector(':scope > [data-fleet-needs]')?.remove();
-    panelFleet.prepend(needsSection);
 
     /* ── Booking contact ──
        The search suggests and does not lock: picking a contact fills its phone
@@ -6601,10 +6633,19 @@
       summaryMenu.setAttribute('aria-label', 'Summary options');
       summaryMenu.appendChild(svgUse('#m-more_vert', '16', '0 0 32 32'));
       summaryMenu.lastChild.setAttribute('class', 'rux--btn__icon');
-      summaryMenu.addEventListener('click', () => openItemsMenu(summaryMenu,
-        [{ label: 'Route times', run: openRouteTimes }], 'Summary options'));
-      const summaryLayer = el('div', 'rux--layer-two');
-      summaryLayer.appendChild(summary);
+      // The fuel card is turned on and off here, and suggested under the Summary.
+      const setFuelCard = on => { editing.fuelCard = on; drawTotals(); refreshDirty(); };
+      summaryMenu.addEventListener('click', () => openItemsMenu(summaryMenu, [
+        { label: 'Route times', run: openRouteTimes },
+        { label: 'Fuel card limits', run: openFuelLimits },
+        editing.fuelCard ? { label: 'Remove fuel card', run: () => setFuelCard(false) }
+          : { label: 'Add fuel card', run: () => setFuelCard(true) },
+      ], 'Summary options'));
+      const fuelBox = el('div', 'scheduler-fuel');
+      const summaryLayer = el('div', 'rux--stack-vertical rux--stack-scale-4');
+      const summaryTile = el('div', 'rux--layer-two');
+      summaryTile.appendChild(summary);
+      summaryLayer.append(summaryTile, fuelBox);
       /* Stops can be added to a leg with its rows, or to one with none yet,
          whose Save writes them all. A leg rux-ui left with some rows but no
          pickup or yard row has nowhere to put one. */
@@ -7132,6 +7173,22 @@
         const wrap = el('div', 'rux--data-table-content scheduler-summary__table');
         wrap.appendChild(table);
         summary.replaceChildren(times, wrap);
+
+        /* The fuel card: a line saying the trip has one, or, past the office's
+           miles or days, the offer to add one. */
+        const legMiles = Math.round(legs.reduce((t, [, mi]) => t + (Number(mi) || 0), 0));
+        const legDays = from && to ? Math.round((parseISO(to) - parseISO(from)) / 864e5) + 1 : 1;
+        const past = legMiles > fuelLimits.miles || legDays > fuelLimits.days;
+        if (editing?.fuelCard) {
+          const line = el('div', 'scheduler-fuel__on');
+          line.append(svgUse('#m-credit_card-fill', '16', '0 0 32 32'), el('span', null, 'Fuel card needed'));
+          fuelBox.replaceChildren(line);
+        } else if (past) {
+          const said = [legMiles > fuelLimits.miles ? `${legMiles} miles` : null,
+            legDays > fuelLimits.days ? `${legDays} days` : null].filter(Boolean).join(' and ');
+          fuelBox.replaceChildren(notice('info', 'Fuel card', `At ${said}, this trip is past the office's fuel card limits.`,
+            { label: 'Add fuel card', onClick: () => setFuelCard(true) }));
+        } else fuelBox.replaceChildren();
       }
 
       /* One day's figures: the legs that end that day, the yard's leg out on
@@ -7547,7 +7604,11 @@
               { label: 'Move up', disabled: i === 0, run: () => move(-1) },
               { label: 'Move down', disabled: i === linePending.length - 1, run: () => move(1) },
               { label: 'Remove', danger: true,
-                run: () => { linePending.splice(i, 1); drawLines(); refreshDirty(); } },
+                run: () => {
+                  // Taking a Hotel line off takes the trip's hotel reminder with it.
+                  if (linePending[i].kind === 'hotel') editing.hotelWanted = false;
+                  linePending.splice(i, 1); drawLines(); refreshDirty();
+                } },
             ],
           }));
         });
@@ -7775,7 +7836,6 @@
       const split = e.target.value === SPLIT;
       returnDates.hidden = !split;
       setOutLabels(split);
-      setHotelLegs(split);
       drawFleet();
       refreshDirty();
     });
@@ -11816,11 +11876,17 @@
   };
   const IN_EDITOR = {
     color: () => document.getElementById('scheduler-panel-menu')?.click(),
-    // The leg's Booked box, where Hotel is ticked; the Buses tab where it is not.
+    // The leg's Hotel line, where its confirmation is typed; a trip with the
+    // reminder and no line is marked booked for Save to keep.
     hotel: ref => {
-      toFleetTab();
-      const box = document.getElementById(`scheduler-f-hotelbooked-${ref.leg}`);
-      if (box?.offsetParent) { box.scrollIntoView({ block: 'nearest' }); box.focus(); }
+      const tab = document.getElementById('scheduler-tab-billing');
+      if (tab && tab.getAttribute('aria-selected') !== 'true') window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
+      const at = linePending.findIndex(l => l.kind === 'hotel' && hotelLeg(l) === (ref.leg || 'outbound'));
+      if (at >= 0) { openLineDialog(at); document.getElementById('scheduler-f-lhotelref')?.focus(); return; }
+      if (!editing?.hotel?.[ref.leg || 'outbound']) return;
+      editing.hotel[ref.leg || 'outbound'].booked = true;
+      refreshDirty();
+      toast('info', 'Hotel marked booked', 'Save to keep it.');
     },
     assign: toFleetTab,
     unassign: toFleetTab,
@@ -12977,8 +13043,9 @@
     req_sleeper: { kind: 'fleet', need: 'sleeper' },
     req_ada: { kind: 'fleet', need: 'adaLift' },
     req_56pax: { kind: 'fleet', need: 'pax56' },
-    need_hotel: { id: needFieldId('hotel'), kind: 'tag' },
-    need_fuel_card: { id: needFieldId('fuelCard'), kind: 'tag' },
+    // The hotel reminder and the fuel card are the trip's own, kept in the editor.
+    need_hotel: { kind: 'trip', key: 'hotelWanted' },
+    need_fuel_card: { kind: 'trip', key: 'fuelCard' },
     quoted_price: { id: 'scheduler-f-quoted', kind: 'text' },
     est_miles: { id: 'scheduler-f-estmiles', kind: 'text' },
     booking_contact_name: { id: 'scheduler-f-cfind', kind: 'text' },
@@ -13039,6 +13106,12 @@
     const unpicked = [];
     for (const [key, value] of Object.entries(fields || {})) {
       const control = DRAFT_CONTROLS[key];
+      if (control?.kind === 'trip') {
+        if (!editing) { missed.push([key, value]); continue; }
+        editing[control.key] = !!value;
+        routeTimesDrawn?.();
+        continue;
+      }
       if (control?.kind === 'fleet') {
         const first = editing?.fleet?.outbound?.[0];
         if (!first) { missed.push([key, value]); continue; }

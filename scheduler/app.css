@@ -3692,6 +3692,18 @@ html:has(.scheduler-page[data-takeover]) {
   margin-inline-start: var(--rux-spacing-02);
   vertical-align: -0.1875rem;
 }
+/* The fuel card under the Route summary: a quiet line once the trip has one. */
+.scheduler-fuel:empty { display: none; }
+.scheduler-fuel__on {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+
 /* ── The Buses tab's vehicles ──
    A tile per vehicle, as a Route stop is: its number and the vehicle on the
    first line with what it asks for at the end, then any warning about the

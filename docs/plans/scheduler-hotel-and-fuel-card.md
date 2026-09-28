@@ -30,12 +30,12 @@ miles or days instead of being remembered.
   the fuel card need on when taken.
 - **The limits are set from the Route summary's menu,** in a Fuel card window
   beside Route times, and kept in `settings` as `fuel-card-v1`, as Route times
-  keeps `route-times-v1`.
+  keeps `route-times-v1`. They start at over 600 miles or over 2 days,
+  whichever comes first.
 
 ## Questions
 
-1. **The starting limits.** Suggest a fuel card over 600 miles or over 2 days,
-   whichever comes first, until the office changes them?
+None open.
 
 ## Tasks
 

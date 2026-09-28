@@ -30,9 +30,9 @@ with its fields, and Add vehicle in place of the Buses needed count.
 - **rux-ui saves buses as the scheduler does:** by row id, updating and adding
   rows instead of deleting and rewriting them, and keeping a row with needs and
   no bus. Until it does, a save there would drop every vehicle's needs.
-- **Equipment on a vehicle is stored beside the old switches:** a new column
-  holds every entry, and `sleeper` and `ada_lift` keep matching it, because
-  rux-ui and the print pages read them.
+- **Equipment on a vehicle keeps its old home for the first two:** `sleeper`
+  and `ada_lift` stay where those live, because rux-ui and the print pages
+  read them, and a new `buses.equipment` holds every other entry by its id.
 - **The trip-wide columns keep working:** on save, `req_sleeper`, `req_ada`,
   `req_56pax` and `trip_reqs` hold every need any vehicle has, and
   `vehicle_type` holds the type when every vehicle wants the same one.
@@ -51,11 +51,10 @@ None open.
 
 ## Tasks
 
-- [ ] Write the migration that adds the equipment column to `buses` and the
-  needs and type columns to `trip_assignments`, show it to rux, and apply it
-  on a yes.
-- [ ] Give each vehicle a switch per equipment entry on the Fleet page, kept in
-  step with `sleeper` and `ada_lift`.
+- [ ] Apply the migration that adds `buses.equipment`, and
+  `trip_assignments.needs` and `vehicle_type`, on rux's yes.
+- [ ] Give each vehicle a switch per equipment entry on the Fleet page, Sleeper
+  and ADA Lift writing their own columns.
 - [ ] Change rux-ui's trip save to update `trip_assignments` by id and keep a
   row with needs and no bus, after reading its `CLAUDE.md`.
 - [ ] Read and write each vehicle's needs and type in the Buses tab's model,

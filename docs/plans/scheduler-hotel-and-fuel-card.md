@@ -23,16 +23,19 @@ miles or days instead of being remembered.
   now; the bar and card keep the hotel mark until then.
 - **The customer's own hotel needs nothing,** since the office books a room
   only when the customer does not.
+- **The hotel is priced like any other line:** the office types its cost, and
+  its quantity counts the rooms or nights as the office wants.
 - **A fuel card is suggested from the route.** A trip whose miles or days pass
   a limit the office sets shows a suggestion to assign a fuel card, which turns
-  the fuel card need on when taken; the limits are kept in `settings`.
+  the fuel card need on when taken.
+- **The limits are set from the Route summary's menu,** in a Fuel card window
+  beside Route times, and kept in `settings` as `fuel-card-v1`, as Route times
+  keeps `route-times-v1`.
 
 ## Questions
 
-1. **The fuel card limits.** What should suggest a fuel card by default: over
-   how many miles, or over how many days?
-2. **The hotel price.** Is the hotel line priced per night per room, or one
-   amount typed for the whole stay?
+1. **The starting limits.** Suggest a fuel card over 600 miles or over 2 days,
+   whichever comes first, until the office changes them?
 
 ## Tasks
 
@@ -40,9 +43,9 @@ miles or days instead of being remembered.
   confirmation per leg, and tie `need_hotel` to the line.
 - [ ] Keep the hotel mark on the bar and card until every leg's confirmation
   is in.
-- [ ] Store the fuel card limits in `settings`, give them a place on the
-  Settings page, and suggest the fuel card on the Route tab when a trip passes
-  them.
+- [ ] Add Fuel card to the Route summary's menu, its window setting the miles
+  and days kept in `fuel-card-v1`, and suggest the fuel card on the Route tab
+  when a trip passes them.
 - [ ] Take Hotel and Fuel card off the Buses tab.
 - [ ] Update `scheduler/docs/screen-inventory.md` and `scheduler/docs/booking.md`.
 - [ ] Check it in Chrome on :8641 on a trip with a hotel and a long trip.

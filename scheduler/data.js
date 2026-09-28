@@ -415,6 +415,9 @@
     // Each leg's hotel: the bar's hotel mark, its menu item and the Buses tab.
     'hotel_booked_outbound', 'hotel_booked_return',
     'hotel_itinerary_number_outbound', 'hotel_itinerary_number_return',
+    // Each leg's hours-of-service record, printed or not, which a bus with a
+    // part-time driver needs.
+    'hos_form_printed_outbound', 'hos_form_printed_return',
     // The roles an assignment turns on, and who fills them: the drivers row.
     // The Buses tab edits each seat by its row id, with its relief swap time and
     // note, and each vehicle's own needs and type.
@@ -502,8 +505,9 @@
       client.from('trips').select(TRIP_COLUMNS).is('cancelled_at', null)
         .gte('start_date', lo).lte('start_date', hi).order('start_date').then(unwrap),
       // `status`, so the Buses tab offers active drivers; `priority`, so the
-      // roster lists them in the order they are called on.
-      client.from('drivers').select('id,name,short_name,status,priority,phone,texting_url').then(unwrap),
+      // roster lists them in the order they are called on; `employment_type`,
+      // because a part-time driver needs an hours-of-service record.
+      client.from('drivers').select('id,name,short_name,status,priority,phone,texting_url,employment_type').then(unwrap),
       // Every contact, read once with the week for the contact search rather
       // than on each keystroke.
       client.from('contacts').select('id,name,phone,email,client,customer_id').order('name').then(unwrap),
@@ -731,6 +735,15 @@
   /* What each bar knows about its bus and its trip's needs, for the trip's
      card: `{ needs, misfits }`, set as the bar is drawn. */
   const barFacts = new WeakMap();
+  // The bar's Updates mark, asking for a follow-up or saying there are updates.
+  const updatesMark = (asks, where) => {
+    const m = el('span', `scheduler-bar__msg scheduler-bar__msg--${where} scheduler-bar__msg--${asks ? 'asks' : 'quiet'}`);
+    m.setAttribute('role', 'img');
+    m.setAttribute('aria-label', asks ? 'Needs a follow-up' : 'Has updates');
+    m.title = asks ? 'Needs a follow-up' : 'Updates';
+    m.appendChild(svgUse(asks ? '#m-notifications_active-fill' : '#m-chat-fill', '16', '0 0 32 32'));
+    return m;
+  };
   const addRow = (bar, cls, ...parts) => {
     const r = el('div', `scheduler-bar__row ${cls}`);
     for (const p of parts) if (p != null) r.appendChild(p);
@@ -965,6 +978,18 @@
         short: !!missing,
       };
     });
+    /* A PART-TIME DRIVER SIGNS AN HOURS-OF-SERVICE RECORD, so a bus with one
+       in any seat needs it, and it is done once the Forms page marks this
+       leg's printed. Like the hotel, it is a job and not the bus's
+       equipment, so it is never a misfit. */
+    const partTime = !placeholder && (assign?.trip_drivers || []).some(d => d.driver_id
+      && activeRolesOf(assign).has(d.role || 'driver')
+      && driversById.get(d.driver_id)?.employment_type === 'part-time');
+    if (partTime) {
+      const printed = !!trip[`hos_form_printed_${leg.leg}`];
+      needs.push({ id: 'hos', href: '#m-schedule', name: 'Hours of service',
+        label: printed ? 'Hours of service printed' : 'Hours of service not printed', done: printed });
+    }
     const misfits = placeholder ? [] : [wrong, ...needs.filter(n => n.short).map(n => n.label)].filter(Boolean);
     barFacts.set(bar, { needs, misfits });
     bar.classList.toggle('scheduler-bar--misfit', misfits.length > 0);
@@ -1002,21 +1027,15 @@
     addRow(bar, 'scheduler-bar__time', when, whenDep);
 
     /* The Updates mark, in the bar's bottom corner at the drivers row's end: a
-       filled bubble once the trip has updates, its outline with none, and the
-       warning colour when it asks for a follow-up. A mark, not a button,
+       bell in the warning colour when the trip asks for a follow-up, else a
+       filled bubble once it has updates, else nothing. A mark, not a button,
        because the bar is the button. A copy rides the destination row, shown
        only while the drivers row is turned off. */
     const asks = asksFollowUp(trip);
     const talked = updatesOf(trip).length > 0;
-    const msg = where => {
-      const m = el('span', `scheduler-bar__msg scheduler-bar__msg--${where} scheduler-bar__msg--${asks ? 'asks' : talked ? 'quiet' : 'none'}`);
-      m.setAttribute('role', 'img');
-      m.setAttribute('aria-label', asks ? 'Needs a follow-up' : talked ? 'Has updates' : 'No updates');
-      m.title = asks ? 'Needs a follow-up' : talked ? 'Updates' : 'No updates yet';
-      m.appendChild(svgUse(talked ? '#m-chat-fill' : '#m-chat', '16', '0 0 32 32'));
-      return m;
-    };
-    bar.querySelector('.scheduler-bar__dest')?.appendChild(msg('dest'));
+    const msg = where => (asks || talked ? updatesMark(asks, where) : null);
+    const destMark = msg('dest');
+    if (destMark) bar.querySelector('.scheduler-bar__dest')?.appendChild(destMark);
 
     // The crew in role order, or what the bar needs before it can have one.
     const crew = assign ? crewOf(trip, assign, driversById, statuses).filter(c => !(placeholder && c.needed)) : [];
@@ -1442,7 +1461,7 @@
       const startX = down.clientX, startY = down.clientY;
       const start = +bar.dataset.start, span = +bar.dataset.span;
       const fromBus = bar.dataset.busId || null;
-      let moved = false, target = null, tracks = [], unassignedRow = null, hold = 0;
+      let moved = false, done = false, target = null, tracks = [], unassignedRow = null, hold = 0;
 
       const clear = () => {
         for (const { track } of tracks) track.classList.remove('scheduler-track--drop', 'scheduler-track--warn');
@@ -1467,14 +1486,16 @@
         if (touch) { touchDragging = true; bar.addEventListener('touchmove', eat, { passive: false }); }
       };
 
-      /* Every ending comes through here, and only a release writes. A gesture
-         the browser cancels -- a scroll takeover, a system dialog -- leaves the
-         trip where it was. */
+      /* Every ending comes through here, once, and only a release writes. A
+         gesture the browser cancels -- a scroll takeover, a system dialog, a
+         button let go outside the window -- leaves the trip where it was. */
       const finish = async (release) => {
+        if (done) return;
+        done = true;
         if (hold) { clearTimeout(hold); hold = 0; }
-        bar.removeEventListener('pointermove', move);
-        bar.removeEventListener('pointerup', onUp);
-        bar.removeEventListener('pointercancel', onCancel);
+        window.removeEventListener('pointermove', move);
+        window.removeEventListener('pointerup', onUp);
+        window.removeEventListener('pointercancel', onCancel);
         bar.removeEventListener('touchmove', eat);
         touchDragging = false;
         if (!moved) return;              // a press that never lifted still selects
@@ -1486,10 +1507,12 @@
         // The browser fires a click after this; suppress the one that would
         // otherwise toggle selection at the end of a drag.
         bar.addEventListener('click', e => e.stopPropagation(), { capture: true, once: true });
-        if (!release) return;
-
         const toBus = target ? (target.dataset.busId ?? null) : fromBus;
-        if (!target || toBus === fromBus) return;
+        if (!release || !target || toBus === fromBus) {
+          // A read the drag held is owed now that nothing is in hand.
+          if (liveHeld) setTimeout(liveRefresh, 0);
+          return;
+        }
         /* Held as values, not as elements: `show()` below replaces every bar,
            so `bar` is detached by the time the undo can be pressed. */
         let assignmentId = bar.dataset.assignmentId;
@@ -1519,6 +1542,9 @@
       };
 
       const move = ev => {
+        if (ev.pointerId !== down.pointerId) return;
+        // A mouse button let go where no pointerup reached the page.
+        if (!touch && !(ev.buttons & 1)) { finish(false); return; }
         if (!moved) {
           const dx = Math.abs(ev.clientX - startX), dy = Math.abs(ev.clientY - startY);
           // A finger that travels before the hold is done means to scroll, so the
@@ -1539,14 +1565,17 @@
         }
       };
 
-      const onUp = () => finish(true);
-      const onCancel = () => finish(false);
+      const onUp = ev => { if (ev.pointerId === down.pointerId) finish(true); };
+      const onCancel = ev => { if (ev.pointerId === down.pointerId) finish(false); };
 
       if (touch) hold = setTimeout(() => { hold = 0; lift(); }, TOUCH_HOLD_MS);
 
-      bar.addEventListener('pointermove', move);
-      bar.addEventListener('pointerup', onUp);
-      bar.addEventListener('pointercancel', onCancel);
+      /* Heard on the window, not the bar: a mouse is not captured until the bar
+         lifts, so a press that leaves the bar first would otherwise never hear
+         its release, and lift the bar the next time the cursor passed over it. */
+      window.addEventListener('pointermove', move);
+      window.addEventListener('pointerup', onUp);
+      window.addEventListener('pointercancel', onCancel);
     });
   }
 
@@ -4581,7 +4610,7 @@
 
   /* The follow-up rules, `follow-up.js`: what a trip waits on, how long it
      has been quiet, whether it asks, and the reminders dismissed here. */
-  const { set: setFollowUp, waitsOf, updatesOf, quietSince, asks: asksFollowUp, dismiss: dismissFollowUp,
+  const { set: setFollowUp, waitsOf, updatesOf, quietSince, asks: asksFollowUp, due: dueFollowUp, daysToGo, dismiss: dismissFollowUp,
     agoShort, WORDS: WAIT_WORDS } = window.SchedulerFollowUp;
 
   let editing = null;   // { id, before: {...} }
@@ -11740,18 +11769,26 @@
       band.append(svgUse('#m-warning-fill', '16', '0 0 32 32'), el('strong', null, facts.misfits.join('; ')));
       card.appendChild(band);
     }
+    /* A due trip says when it leaves in place of the ✕, since only the
+       missing thing arriving clears it. */
     if (asksFollowUp(trip)) {
       const band = row('scheduler-card__asks');
-      const hours = window.SchedulerFollowUp.setting.snoozeHours;
-      const snooze = hours % 24 ? `${hours} hour${hours === 1 ? '' : 's'}` : `${hours / 24} day${hours === 24 ? '' : 's'}`;
-      const dismiss = el('button', 'scheduler-card__dismiss');
-      dismiss.type = 'button';
-      dismiss.dataset.dismiss = trip.id;
-      dismiss.title = `Dismiss for ${snooze}`;
-      dismiss.setAttribute('aria-label', `Dismiss the follow-up for ${snooze}`);
-      dismiss.appendChild(svgUse('#m-close', '16', '0 0 32 32'));
-      band.append(svgUse('#m-notifications_active-fill', '16', '0 0 32 32'),
-        el('strong', null, `Waiting on ${waitsOf(trip).map(w => WAIT_WORDS[w]).join(', ')}`), dismiss);
+      const waiting = el('strong', null, `Waiting on ${waitsOf(trip).map(w => WAIT_WORDS[w]).join(', ')}`);
+      if (dueFollowUp(trip)) {
+        const days = daysToGo(trip);
+        band.append(svgUse('#m-notifications_active-fill', '16', '0 0 32 32'), waiting,
+          el('span', 'scheduler-card__asks-when', days === 0 ? 'Leaves today' : days === 1 ? 'Leaves tomorrow' : `Leaves in ${days} days`));
+      } else {
+        const hours = window.SchedulerFollowUp.setting.snoozeHours;
+        const snooze = hours % 24 ? `${hours} hour${hours === 1 ? '' : 's'}` : `${hours / 24} day${hours === 24 ? '' : 's'}`;
+        const dismiss = el('button', 'scheduler-card__dismiss');
+        dismiss.type = 'button';
+        dismiss.dataset.dismiss = trip.id;
+        dismiss.title = `Dismiss for ${snooze}`;
+        dismiss.setAttribute('aria-label', `Dismiss the follow-up for ${snooze}`);
+        dismiss.appendChild(svgUse('#m-close', '16', '0 0 32 32'));
+        band.append(svgUse('#m-notifications_active-fill', '16', '0 0 32 32'), waiting, dismiss);
+      }
       card.appendChild(band);
     }
     /* On the notes row, what the trip needs, and a phone in the warning
@@ -11859,10 +11896,10 @@
     if (dismiss) {
       dismissFollowUp(dismiss.dataset.dismiss);
       for (const b of gridEl.querySelectorAll(`.scheduler-bar[data-trip-id="${CSS.escape(dismiss.dataset.dismiss)}"]`)) {
+        const talked = updatesOf(panelIndex.trips.get(b.dataset.tripId) || {}).length > 0;
         for (const m of b.querySelectorAll('.scheduler-bar__msg--asks')) {
-          m.classList.replace('scheduler-bar__msg--asks', updatesOf(panelIndex.trips.get(b.dataset.tripId) || {}).length
-            ? 'scheduler-bar__msg--quiet' : 'scheduler-bar__msg--none');
-          m.title = m.getAttribute('aria-label');
+          const where = m.classList.contains('scheduler-bar__msg--dest') ? 'dest' : 'drivers';
+          if (talked) m.replaceWith(updatesMark(false, where)); else m.remove();
         }
       }
       shortcutsDrawn = '';
@@ -12670,7 +12707,7 @@
   const LIVE_SETTLE = 400;
   let liveTimer = null, liveHeld = false;
 
-  /* Nothing is redrawn under someone's hands. A week being dragged, an open
+  /* Nothing is redrawn under someone's hands. A week or a bar being dragged, an open
      editor with unsaved work in it and a tab nobody is looking at all hold the
      read until they are done, and `liveHeld` is what remembers one is owed.
      The panel's own `hidden` is what says the editor is open: `editing` keeps
@@ -12678,7 +12715,8 @@
      board for the rest of the session. */
   function liveRefresh() {
     const busyEditing = !panelEl.hidden && editing && changed();
-    if (document.hidden || weekMotion || busyEditing) { liveHeld = true; return; }
+    const carrying = gridEl.querySelector('.scheduler-bar--dragging');
+    if (document.hidden || weekMotion || busyEditing || carrying) { liveHeld = true; return; }
     liveHeld = false;
     show();
   }

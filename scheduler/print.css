@@ -694,6 +694,180 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    taller than the sheet it is showing. */
 .scheduler-envelope__log td { height: 0.19in; }
 
+/* ── The hours-of-service record ──────────────────────────────────────────
+   The office's own form, redrawn: a letterhead, the driver's name, and a
+   ruled box of the seven days, the two totals and the signature. It is
+   ruled, not boxed, as the form in use is: every answer is a line to write
+   on. */
+
+/* THE TOP HALF OF THE SHEET, from the paper's edge to its middle, whatever
+   the ink margin above it. On screen a dashed line says where the half ends;
+   on paper there is nothing under it. */
+.scheduler-hos__half {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rux-spacing-04);
+  box-sizing: border-box;
+  block-size: calc(5.5in - var(--scheduler-paper-margin, 0.375in));
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+}
+
+@media screen {
+  .scheduler-hos__half { border-block-end: 1px dashed var(--rux-border-strong-01); }
+}
+
+.scheduler-hos :where(p, h2, ul) { margin: 0; }
+
+.scheduler-hos__head {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-05);
+}
+
+.scheduler-hos__logo {
+  block-size: 1.75rem;
+  inline-size: auto;
+  flex: none;
+}
+
+.scheduler-hos__head-words {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rux-spacing-01);
+  min-inline-size: 0;
+}
+
+.scheduler-hos__title {
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--rux-heading-compact-01-line-height);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+  text-transform: uppercase;
+}
+
+.scheduler-hos__line {
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+
+/* A label and the line after it, which takes the rest of the row. */
+.scheduler-hos__field {
+  display: flex;
+  align-items: baseline;
+  gap: var(--rux-spacing-03);
+}
+
+.scheduler-hos__label {
+  flex: none;
+  font-weight: var(--rux-heading-compact-01-font-weight);
+}
+
+/* A line to write on: a rule under whatever the form already knows. */
+.scheduler-hos__fill {
+  display: block;
+  flex: 1;
+  min-inline-size: 0;
+  min-block-size: 1.25rem;
+  border-block-end: 1px solid var(--rux-border-strong-01);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+}
+
+.scheduler-hos__driver {
+  font-size: var(--rux-heading-compact-02-font-size);
+  line-height: var(--rux-heading-compact-02-line-height);
+}
+
+.scheduler-hos__driver .scheduler-hos__fill { text-transform: uppercase; }
+
+/* The time column and the two totals under it are one width, so their
+   lines stand in one column down the right of the box. */
+.scheduler-hos__box {
+  --scheduler-hos-hours: 8rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--rux-spacing-04);
+  border: 1px solid var(--rux-border-strong-01);
+  padding: var(--rux-spacing-04) var(--rux-spacing-06);
+}
+
+.scheduler-hos__body {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--rux-spacing-06);
+  align-items: start;
+}
+
+/* In red, as the office's form prints it, so the driver reads it first. */
+.scheduler-hos__instructions { color: var(--rux-text-error); }
+
+.scheduler-hos__instructions-title {
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  margin-block-end: var(--rux-spacing-03);
+}
+
+.scheduler-hos__instructions-list {
+  list-style: disc;
+  padding-inline-start: var(--rux-spacing-05);
+}
+
+.scheduler-hos__days { border-collapse: collapse; }
+
+.scheduler-hos__days th {
+  text-align: start;
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  padding: 0 var(--rux-spacing-05) var(--rux-spacing-02) 0;
+}
+
+.scheduler-hos__days thead th:last-child,
+.scheduler-hos__days td:last-child { padding-inline-end: 0; }
+
+.scheduler-hos__days td {
+  padding: var(--rux-spacing-01) var(--rux-spacing-05) 0 0;
+}
+
+/* On the line, every cell: a filled line and an empty one have different
+   baselines, and aligning on them made every row taller than its lines. */
+.scheduler-hos__days :is(td, tbody th) { vertical-align: bottom; }
+
+.scheduler-hos__days td:nth-child(2) { inline-size: 7rem; }
+.scheduler-hos__days td:last-child { inline-size: var(--scheduler-hos-hours); }
+
+.scheduler-hos__days tbody th { padding-block-start: var(--rux-spacing-01); }
+
+.scheduler-hos__totals {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rux-spacing-03);
+}
+
+.scheduler-hos__totals .scheduler-hos__field { justify-content: flex-end; }
+
+.scheduler-hos__totals .scheduler-hos__fill {
+  flex: none;
+  inline-size: var(--scheduler-hos-hours);
+}
+
+.scheduler-hos__certify {
+  text-align: center;
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+
+.scheduler-hos__sign {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--rux-spacing-07);
+}
+
+/* The page's dotted rule says a field takes typing; these are lines already,
+   so they keep their own. */
+@media screen {
+  .scheduler-hos__fill[data-typed] { border-block-end: 1px solid var(--rux-border-strong-01); }
+}
+
 /* ── The driver itinerary ────────────────────────────────────────────────
    The plan for the day. It names no paper, so on screen it is a page of this
    app in the theme the person keeps, and it prints onto whatever is in the

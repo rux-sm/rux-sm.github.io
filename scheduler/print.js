@@ -421,7 +421,11 @@
      person holding the envelope. */
   function envelopeNeeds(trip, seat) {
     const box = el('div', 'scheduler-envelope__reqs');
-    const needs = needsOf(trip);
+    /* A part-time driver's copy adds the hours-of-service record they sign,
+       which the board asks for on their bus. It is theirs alone, so the other
+       seats' copies leave it off. */
+    const needs = [...needsOf(trip), ...(seat?.drivers?.employment_type === 'part-time'
+      ? [{ id: 'hos', label: 'Hours of service', icon: '#m-schedule' }] : [])];
     // The label names what is under it. A requirement is something the driver
     // must do, and calling it a note demotes it; but an empty box headed
     // "requirements" reads as a form that ran out, and the hand that writes
@@ -528,6 +532,117 @@
     card.appendChild(envelopeNeeds(trip, seat));
     return card;
   }
+
+  /* ── The hours-of-service record ──────────────────────────────────────────
+     What a driver who is new to the company, or drives for it now and then,
+     signs before a trip: the hours on duty on each of the seven days before
+     it, and when the last shift ended. It prints the driver's full name, as
+     the record is under it, and the seven dates, counted back from the day
+     the leg starts, the day before it first; the hours, the signature and its
+     date and time are the driver's to write.
+
+     IT TAKES THE TOP HALF OF A LETTER SHEET and leaves the rest white, which
+     is the half the office kept when it printed the form two to a page. */
+
+  const HOS_DAYS = 7;
+
+  // A line to write on, holding what the form already knows, if anything.
+  const hosFill = (name, value) => {
+    const node = el('span', 'scheduler-hos__fill', value || '');
+    node.dataset.name = name;
+    return node;
+  };
+
+  // A label and its line, on one row.
+  const hosField = (label, name, value, cls) => {
+    const node = el('p', `scheduler-hos__field${cls ? ` ${cls}` : ''}`);
+    node.append(el('span', 'scheduler-hos__label', label), hosFill(name, value));
+    return node;
+  };
+
+  function hoursOfService(subject) {
+    const { trip, leg, seat } = subject;
+    const start = leg === 'return' ? (trip.return_start_date || trip.end_date) : trip.start_date;
+    const card = el('article', 'scheduler-form scheduler-hos');
+    const half = el('div', 'scheduler-hos__half');
+    card.appendChild(half);
+
+    const head = el('header', 'scheduler-hos__head');
+    const logo = el('img', 'scheduler-hos__logo');
+    logo.src = '/scheduler/brand/logo.svg';
+    logo.alt = 'Escamilla Tour Buses';
+    const words = el('div', 'scheduler-hos__head-words');
+    words.append(
+      el('h2', 'scheduler-hos__title', 'Hours-of-service record for first time or intermittent drivers'),
+      el('p', 'scheduler-hos__line', `${COMPANY.address} · Ph. ${COMPANY.phones}`),
+    );
+    head.append(logo, words);
+    half.appendChild(head);
+
+    const driver = String(seat?.drivers?.name || nameOf(seat)).trim();
+    half.appendChild(hosField('Driver name:', 'Driver name', driver, 'scheduler-hos__driver'));
+
+    const box = el('div', 'scheduler-hos__box');
+    const body = el('div', 'scheduler-hos__body');
+
+    const told = el('div', 'scheduler-hos__instructions');
+    told.appendChild(el('p', 'scheduler-hos__instructions-title', 'Instructions: Fill out and sign this form to show:'));
+    const list = el('ul', 'scheduler-hos__instructions-list');
+    list.append(
+      el('li', null, 'Total hours on duty (including driving) for each of the last 7 days.'),
+      el('li', null, 'The time your last shift ended before starting work today.'),
+    );
+    told.appendChild(list);
+
+    const table = el('table', 'scheduler-hos__days');
+    const headRow = el('tr');
+    for (const name of ['Day', 'Date', 'Time on duty']) headRow.appendChild(el('th', null, name));
+    table.appendChild(el('thead')).appendChild(headRow);
+    const rows = el('tbody');
+    for (let day = 1; day <= HOS_DAYS; day++) {
+      const tr = el('tr');
+      const th = el('th', null, String(day));
+      th.scope = 'row';
+      const date = el('td');
+      date.appendChild(hosFill(`Date, day ${day}`, start ? mdy(dayShift(start, -day)) : ''));
+      const hours = el('td');
+      hours.appendChild(hosFill(`Time on duty, day ${day}`, ''));
+      tr.append(th, date, hours);
+      rows.appendChild(tr);
+    }
+    table.appendChild(rows);
+    body.append(told, table);
+    box.appendChild(body);
+
+    const totals = el('div', 'scheduler-hos__totals');
+    totals.append(
+      hosField('Add the total time on duty for the last 7 days:', 'Total time on duty, last 7 days', ''),
+      hosField('Time released from duty on the last workday:', 'Time released from duty', ''),
+    );
+    box.appendChild(totals);
+
+    box.appendChild(el('p', 'scheduler-hos__certify',
+      'I hereby certify that the information contained herein is true to the best of my knowledge and belief.'));
+
+    // Both the driver's, written when they sign.
+    const sign = el('div', 'scheduler-hos__sign');
+    sign.append(
+      hosField('Signature:', 'Signature', ''),
+      hosField('Date & time:', 'Date and time', ''),
+    );
+    box.appendChild(sign);
+    half.appendChild(box);
+    return card;
+  }
+
+  /* One copy per filled seat, told apart as the envelope's are: the bus, the
+     leg where it is the way back, the seat and the driver's full name. */
+  const seatCopyName = subject => [
+    subject.assignment?.buses?.number != null ? String(subject.assignment.buses.number) : null,
+    subject.leg === 'return' ? 'Return' : null,
+    roleName(subject.seat?.role),
+    String(subject.seat?.drivers?.name || nameOf(subject.seat)).trim() || null,
+  ].filter(Boolean).join(' · ');
 
   /* ── The driver itinerary ─────────────────────────────────────────────────
      The office's clean copy of the plan for the day: where the bus goes, when,
@@ -1707,15 +1822,7 @@
       // Print all covers the bus's whole crew, one sheet each.
       copies: subject => seatsOf(subject.assignment)
         .map(seat => ({ ...subject, seat })),
-      /* The bus, the leg where it is the way back, the seat and the driver's
-         full name: what tells two copies apart in a list that covers the whole
-         trip, in the order they are told apart by. */
-      copyName: subject => [
-        subject.assignment?.buses?.number != null ? String(subject.assignment.buses.number) : null,
-        subject.leg === 'return' ? 'Return' : null,
-        roleName(subject.seat?.role),
-        String(subject.seat?.drivers?.name || nameOf(subject.seat)).trim() || null,
-      ].filter(Boolean).join(' · '),
+      copyName: seatCopyName,
       /* What dispatch fills in can be typed over, filled or blank, as the
          itinerary and the quote can, for a change the trip does not hold yet.
          The day-of block is left alone, because the driver's pen fills it
@@ -1730,6 +1837,32 @@
         ],
       },
       render: envelope,
+    },
+    {
+      id: 'hours-of-service',
+      name: 'Hours-of-service record',
+      group: 'Drivers',
+      short: 'Hours of service',
+      blurb: 'The last 7 days, signed',
+      icon: '#m-schedule',
+      /* ONE PER DRIVER, AS THE ENVELOPE IS: it is signed by one person, and the
+         dates it prints count back from the day that driver's leg starts. */
+      binds: 'assignment+seat',
+      blank: true,
+      /* The mark rux-ui already writes and its task list already reads. It is
+         the leg's, not the seat's, so every driver's copy on a leg shares it. */
+      marks: { table: 'trips', column: 'hos_form_printed', by: 'leg' },
+      /* LETTER, HELD TO ONE SHEET, with the form in its top half and the rest
+         left white. */
+      page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.375in', exact: true },
+      copies: subject => seatsOf(subject.assignment)
+        .map(seat => ({ ...subject, seat })),
+      copyName: seatCopyName,
+      /* A blank one can be typed into; a filled one prints what the trip
+         knows and the driver's pen does the rest, which leaves Print all
+         free to stack every driver's copy on the trip. */
+      typed: { fields: ['.scheduler-hos__fill'] },
+      render: hoursOfService,
     },
     {
       id: 'driver-itinerary',
@@ -1849,7 +1982,7 @@
   const BUS_SEATS_QUERY = [
     'id', 'leg', 'position', 'bus_id',
     'buses:bus_id(number,type)',
-    'trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed,drivers:driver_id(name,short_name))',
+    'trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed,drivers:driver_id(name,short_name,employment_type))',
   ].join(',');
 
   /* Outbound before return, then along the trip: the order the hub lists a
@@ -1858,7 +1991,9 @@
     ? (a.position ?? 0) - (b.position ?? 0)
     : a.leg === 'return' ? 1 : -1);
 
-  const ASSIGNMENT_QUERY = BUS_SEATS_QUERY + ',' + [
+  /* The bus, its seats and its trip, with the trip's tick for this form where
+     the form keeps one on the leg. */
+  const assignmentQuery = form => BUS_SEATS_QUERY + ',' + [
     'trips:trip_id(' + [
       'id', 'destination', 'trip_type',
       'start_date', 'end_date', 'return_start_date', 'return_end_date',
@@ -1871,6 +2006,7 @@
       'trip_contact_4_name', 'trip_contact_4_phone',
       'trip_contact_5_name', 'trip_contact_5_phone',
       'trip_stops(id,leg,type,address,spot)',
+      ...(form.marks?.by === 'leg' ? LEGS.map(leg => `${form.marks.column}_${leg}`) : []),
     ].join(',') + ')',
   ].join(',');
 
@@ -2609,8 +2745,8 @@
          button has to say, and an icon cannot say six. */
       const all = el('button', 'scheduler-print__cell scheduler-print__cell--action scheduler-print__cell--label', `Print all ${every.length}`);
       all.type = 'button';
-      all.title = 'Every envelope on this trip';
-      all.setAttribute('aria-label', `Print every envelope on this trip, ${every.length} in all`);
+      all.title = 'Every copy on this trip';
+      all.setAttribute('aria-label', `Print every copy on this trip, ${every.length} in all`);
       all.addEventListener('click', () => {
         printingAll = true;
         drawAll();
@@ -2915,7 +3051,7 @@
     // Both at once: the names only decide what a requirement is called, and
     // waiting for them in turn would hold the form back for nothing.
     const [{ data, error }] = await Promise.all([
-      client.from('trip_assignments').select(ASSIGNMENT_QUERY).eq('id', assignmentId).maybeSingle(),
+      client.from('trip_assignments').select(assignmentQuery(form)).eq('id', assignmentId).maybeSingle(),
       readRequirementNames(client).catch(() => {}),
     ]);
     if (error) return say('error', 'The schedule did not answer.', error.message);
@@ -2930,7 +3066,7 @@
     const copies = form.copies(subject);
     if (!copies.length) {
       return say('info', 'This bus has no driver yet.',
-        'Fill a seat on the trip\'s Buses tab, and the envelope has someone to print for.');
+        `Fill a seat on the trip's Buses tab, and the ${form.name.toLowerCase()} has someone to print for.`);
     }
     const wanted = params.get('driver');
     const chosen = Math.max(0, copies.findIndex(c => wanted

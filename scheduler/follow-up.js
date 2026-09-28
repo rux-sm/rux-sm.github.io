@@ -7,9 +7,11 @@
    within two weeks of leaving; once it has left, only its balance can still
    be waited on, and a placeholder waits on nothing. Once its newest real
    update, or its booking where it has none, is older than the office's
-   follow-up wait, it asks for a follow-up. A trip waiting on nothing never
-   asks, however old its updates. A skipped prompt's `nothing` row is not an
-   update, so it never makes a trip look followed up.
+   follow-up wait, it asks for a follow-up. A trip leaving within a week that
+   still waits on something is due: it asks however new its updates, and no
+   dismissal hides it. A trip waiting on nothing never asks, however old its
+   updates. A skipped prompt's `nothing` row is not an update, so it never
+   makes a trip look followed up.
 
    The wait and the snooze are the office's `follow-up-v1` settings row,
    `{ wait_days, snooze_hours }`. A dismissed reminder is each person's own,
@@ -22,6 +24,7 @@
   const KEY = 'follow-up-v1';
   const DEFAULT = { waitDays: 3, snoozeHours: 24 };
   const BALANCE_DAYS = 14;
+  const DUE_DAYS = 7;
   // How the card and the list name what a trip waits on.
   const WORDS = { confirmation: 'confirmation', po: 'PO', itinerary: 'itinerary', balance: 'balance' };
   let setting = { ...DEFAULT };
@@ -85,8 +88,17 @@
     try { localStorage.setItem(DISMISS_KEY, JSON.stringify(all)); } catch { /* kept for this page only */ }
   }
 
+  // Whole days until the trip leaves, 0 on the day, or null with no date.
+  const daysToGo = trip => (trip.start_date
+    ? Math.round((parseISO(trip.start_date) - parseISO(iso(new Date()))) / 864e5) : null);
+  function due(trip) {
+    const days = daysToGo(trip);
+    return days != null && days >= 0 && days <= DUE_DAYS && waitsOf(trip).length > 0;
+  }
+
   function asks(trip) {
     if (!waitsOf(trip).length) return false;
+    if (due(trip)) return true;
     const since = quietSince(trip);
     if (since && Date.now() - Date.parse(since) <= setting.waitDays * 864e5) return false;
     return !(dismissals()[trip.id] > Date.now());
@@ -102,7 +114,7 @@
   };
 
   window.SchedulerFollowUp = {
-    KEY, WORDS, set, read, save, waitsOf, updatesOf, quietSince, asks, dismiss, agoShort,
+    KEY, WORDS, set, read, save, waitsOf, updatesOf, quietSince, due, daysToGo, asks, dismiss, agoShort,
     get setting() { return { ...setting }; },
   };
 })();

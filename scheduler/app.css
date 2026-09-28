@@ -925,6 +925,8 @@ button.scheduler-row-head__num::after {
 .scheduler-card__misfit > svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--card-icon); }
 .scheduler-card__misfit > strong { flex: 1; min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
 .scheduler-card__asks > strong { flex: 1; min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
+/* A due reminder names the day it leaves where the dismiss would stand. */
+.scheduler-card__asks-when { flex: none; }
 .scheduler-card__dismiss {
   display: flex;
   flex: none;
@@ -1032,10 +1034,10 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__ref { margin-inline-end: var(--scheduler-day-one-end); }
 .scheduler-bar__dest > .scheduler-bar__ref { margin-inline-start: auto; }
 /* THE UPDATES MARK, in the bar's bottom corner at the drivers row's end, a
-   step wider than a mark and as tall as the row; the crew gives way to it. The
-   filled bubble says the trip has updates, the outline that it has none, drawn
-   quieter than the text, and the warning colour every other mark wears, set
-   per theme, that it asks for a follow-up. The destination row's copy shows
+   step wider than a mark and as tall as the row; the crew gives way to it. A
+   bell in the warning colour every other mark wears, set per theme, says the
+   trip asks for a follow-up; a filled bubble that it has updates; a trip with
+   neither draws no mark. The destination row's copy shows
    only while the drivers row is off, and then it holds the first day's end in
    place of the reference or the marks beside it. */
 .scheduler-bar__msg {
@@ -1049,7 +1051,6 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar__msg svg { display: block; inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
 .scheduler-bar__msg--asks { color: var(--scheduler-mark-warning); }
-.scheduler-bar__msg--none { opacity: .7; }
 .scheduler-bar__drivers > .scheduler-bar__crew { flex: 0 1 auto; }
 .scheduler-bar__msg--dest { display: none; }
 .scheduler-week--no-drivers .scheduler-bar__msg--dest { display: flex; margin-inline-end: var(--scheduler-day-one-end); }
@@ -2436,6 +2437,12 @@ button.scheduler-row-head__num::after {
 /* The reminder's dismiss is a thumb's 48px on a phone, and the band grows to
    hold it; it stands at the top, so only the sheet's top edge moves. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__asks { padding-block: 0; padding-inline-end: 0; }
+.scheduler-bar-shortcuts[data-docked] .scheduler-card__asks-when {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--rux-layout-size-height-lg);
+  padding-inline-end: var(--rux-spacing-05);
+}
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__dismiss {
   inline-size: var(--rux-layout-size-height-lg);
   block-size: var(--rux-layout-size-height-lg);

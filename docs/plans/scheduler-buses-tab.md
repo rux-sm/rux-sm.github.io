@@ -51,8 +51,6 @@ None open.
 
 ## Tasks
 
-- [ ] Apply the migration that adds `buses.equipment`, and
-  `trip_assignments.needs` and `vehicle_type`, on rux's yes.
 - [ ] Give each vehicle a switch per equipment entry on the Fleet page, Sleeper
   and ADA Lift writing their own columns.
 - [ ] Change rux-ui's trip save to update `trip_assignments` by id and keep a

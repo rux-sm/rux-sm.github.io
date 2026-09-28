@@ -5460,7 +5460,7 @@
     const first = { depart_prev: leave, depart_prev_date: leave ? from : null };
     const drop = round ? null : {
       ...(r.dropPlace !== r.dropOpen ? placeOf(r.dropPlace ?? {}) : {}),
-      arrive: end, arrive_date: end ? to : null,
+      arrive: dropArrival(r.drop, end), arrive_date: end ? to : null,
       /* The drive into it, measured when either end moves. One only looked up
          as the trip opened waits for `foundDrives`, so opening is no edit. */
       ...(r.dropFound ? {} : driveCols(r.drop, r.dropDrive, r.dropMiles, 'estimated')),
@@ -5472,6 +5472,13 @@
     };
     return { pickup, first, drop, ret };
   }
+
+  /* The group's arrival where it is let off. The tab keeps one end time, the
+     arrival and the bus leaving at once, where rux-ui can hold the two apart;
+     until that time is changed, a drop-off's own stored arrival stands, so
+     opening such a leg is no edit. */
+  const dropArrival = (row, end) => (row?.arrive && same(hhmmOrNull(end), editing?.route?.endOpen ?? null)
+    ? hhmmOrNull(row.arrive) : end);
 
   // Whether a stored value and a wanted one are the same, times cut to HH:MM
   // and numbers compared as numbers.
@@ -5527,7 +5534,7 @@
       plan(r.first, wanted.first, want => ({ at: 'after-pickup', row: { type: 'stop', name: destination(), ...want } }));
       // A round trip's row back at the pickup is reached when the trip ends.
       if (r.dropRow && r.dropRow !== r.first) {
-        plan(r.dropRow, { arrive: wanted.ret.depart_prev, arrive_date: wanted.ret.depart_prev_date });
+        plan(r.dropRow, { arrive: dropArrival(r.dropRow, wanted.ret.depart_prev), arrive_date: wanted.ret.depart_prev_date });
       }
     } else if (!r.first || r.first === r.drop) {
       plan(r.first, { ...wanted.first, ...wanted.drop }, want => ({ at: 'after-pickup', row: { type: 'stop', ...want } }));
@@ -5583,7 +5590,7 @@
     const dropWant = () => ({
       ...(!r.dropRow ? placeCols(round ? r.pickupPlace : r.dropPlace)
         : !round && r.dropPlace !== r.dropOpen ? placeCols(r.dropPlace) : {}),
-      arrive: end, arrive_date: end ? to : null,
+      arrive: dropArrival(r.dropRow, end), arrive_date: end ? to : null,
       depart_prev: departs[list.length], depart_prev_date: departDays[list.length],
       ...(r.dropDrive != null && !same(driveText(r.dropDrive), r.dropRow?.drive ?? null)
         ? drives(r.dropDrive, r.dropMiles) : {}),
@@ -6038,6 +6045,8 @@
         driveOut: driveMin(pickup?.drive),
         driveMiles: numOrNull(pickup?.miles), driveSource: pickup?.drive_source ?? 'estimated',
         backDrive: driveMin(back?.drive), backMiles: numOrNull(back?.miles), backSource: back?.drive_source ?? 'estimated',
+        // The end time the leg opened on, as its field shows it.
+        endOpen: hhmmOrNull(back?.depart_prev),
       };
     })();
     // The places as they opened, so `routeWanted` can tell a new pick.

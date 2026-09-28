@@ -60,9 +60,6 @@ None open.
 
 ## Tasks
 
-- [ ] rux-ui writes only the trip columns that changed, checks `updated_at`
-  before saving, merges `trip_reqs`, and stops writing `contact_not_needed`
-  from a control the page no longer has.
 - [ ] rux-ui writes payments and ticket options by id, deletes only the buses
   it loaded and removed, and sends statuses only when they changed.
 - [ ] Rebuild rux-ui's itinerary on the Route tab's model, as the decision

@@ -10,6 +10,7 @@ A trip saved in either app never undoes, drops or duplicates what the other
 saved. rux-ui's trip editor writes the same tables the same way the scheduler's
 does: only what changed, row by row by id, over the same model of a route, a
 quote and a trip's updates, so the two can be used side by side on one trip.
+rux-ui keeps its own look; only how it saves changes.
 
 ## Decisions
 
@@ -25,7 +26,8 @@ quote and a trip's updates, so the two can be used side by side on one trip.
 - **The needs are merged, not rebuilt.** `trip_reqs` keeps the keys it held,
   including false answers and needs the office has switched off, as the
   scheduler keeps them.
-- **The itinerary is rebuilt on the Route tab's model.** Written by id, it
+- **The itinerary is rebuilt on the Route tab's model,** in rux-ui's own
+  layout. Written by id, it
   keeps day and sleeper rows, a spot typed for the customer, the yard times and
   a drop-off's own arrival, takes the spot minutes from `route-times-v1`
   instead of a fixed 15, and never deletes the other leg's rows unless the trip
@@ -43,6 +45,10 @@ quote and a trip's updates, so the two can be used side by side on one trip.
 - **Two fixes are the scheduler's:** replacing a file keeps its row's id, as
   rux-ui does, so a document link keeps working; and a trip whose day-of
   contacts have a gap opens unchanged.
+- **A cancelled trip loses its buses and drivers in both apps,** as rux-ui
+  does now, so they are free for other trips at once.
+- **A route changed in the scheduler clears rux-ui's Confirm mark,**
+  `itinerary_confirmed`, since a changed route needs checking again.
 - **What only rux-ui has stays,** each written only when changed: pay per
   seat, ticket options and ticketed service, the manifest, the email thread,
   self-organized, the itinerary's Confirm mark and the tasks panel's fuel card
@@ -50,13 +56,7 @@ quote and a trip's updates, so the two can be used side by side on one trip.
 
 ## Questions
 
-1. **The look.** Should rux-ui's tabs also be laid out as the scheduler's are
-   (Details, Route, Buses, Billing, Files, with tiles and windows), or keep
-   their own look and only save the same way?
-2. **Cancelling a trip.** rux-ui takes the trip's buses and drivers off when it
-   is cancelled and the scheduler keeps them. Which should both do?
-3. **The itinerary's Confirm mark.** When a trip's route changes in the
-   scheduler, should rux-ui's Confirm mark on that itinerary clear?
+None open.
 
 ## Tasks
 
@@ -74,9 +74,9 @@ quote and a trip's updates, so the two can be used side by side on one trip.
   it copied, once both apps read the log. SQL shown to rux.
 - [ ] rux-ui links the customer and the booking contact's customer as the
   scheduler does.
-- [ ] The scheduler keeps a replaced file's row id, and opens a trip whose
-  day-of contacts have a gap unchanged.
-- [ ] Lay rux-ui's tabs out as question 1 decides.
+- [ ] The scheduler keeps a replaced file's row id, opens a trip whose day-of
+  contacts have a gap unchanged, takes a cancelled trip's buses and drivers
+  off, and clears `itinerary_confirmed` when a save changes the route.
 - [ ] Update `scheduler/docs/database-inventory.md` for what each table's
   writers now do, and rux-ui's own docs as its `CLAUDE.md` asks.
 - [ ] Check in Chrome that a save in each app, then the other, leaves both

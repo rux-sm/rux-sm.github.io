@@ -92,54 +92,47 @@
   --scheduler-amber-hover-ring: inset 0 0 0 1px var(--scheduler-on-warning);
 }
 
-/* The board's search is Geist's own search field, measured on its Input page:
-   36px tall with 6px corners. The toolbar takes 4px above and below its 40px
-   buttons and 8px at each end, so the field sits 6px clear of the card's
-   outline and the day band's rule instead of lying on both. On a phone the
+/* THE THREE HEADS ARE GEIST'S DEFAULT CONTROLS: the toolbar, the roster's head
+   and the trip editor's head each hold 36px buttons and, in the toolbar, a
+   36px search field, the default size on Geist's Button and Input pages, 6px
+   from the top and bottom of a 48px bar and 8px from the card's end. Nothing
+   fills its bar edge to edge, so the field's ring stays clear of the card's
+   outline and the day band's rule, the three heads and the rows under them
+   line up across the board, and every button takes Geist's 6px corners rather
+   than staying square with the last one following the card's curve. The
+   heads' md size is redefined in their scope, as Design's table toolbar does,
+   so every control in them follows. The roster's head keeps its full height
+   where the grid under it wants more room than the pane has. On a phone the
    controls fill the first row with no room to spare, so there only the
    search's own row is inset. */
 @media (min-width: 42rem) {
+  [data-theme="geist-dark"] :is(.scheduler-toolbar, .scheduler-aside__head, .scheduler-trip .rux--side-panel__header) {
+    --rux-layout-size-height-md: 2.25rem;
+  }
   [data-theme="geist-dark"] .scheduler-toolbar {
-    padding: var(--rux-spacing-02) var(--rux-spacing-03);
+    padding: 6px var(--rux-spacing-03);
     gap: var(--rux-spacing-02);
   }
   [data-theme="geist-dark"] .scheduler-toolbar__search {
     align-self: center;
   }
-  [data-theme="geist-dark"] .scheduler-toolbar .rux--search {
-    --rux-layout-size-height-local: 2.25rem;
-  }
-  [data-theme="geist-dark"] .scheduler-toolbar .rux--search-input {
-    block-size: 2.25rem;
-  }
-  [data-theme="geist-dark"] .scheduler-toolbar .rux--search-close {
-    block-size: 2.25rem;
-    inline-size: 2.25rem;
-  }
-}
-/* The roster's head and the trip editor's head match the toolbar beside them:
-   48px, with their 40px buttons 4px from top and bottom and 8px from the
-   card's end, so the three heads and the rows under them line up across the
-   board. No button fills its bar edge to edge any more, so each takes Geist's
-   6px corners, the editor's close included, rather than staying square with
-   the last one following the card's curve. The roster's head keeps its full
-   height where the grid under it wants more room than the pane has. */
-@media (min-width: 42rem) {
   [data-theme="geist-dark"] .scheduler-aside__head {
     flex: none;
-    padding-block: var(--rux-spacing-02);
+    padding-block: 6px;
     padding-inline-end: var(--rux-spacing-03);
   }
-  [data-theme="geist-dark"] .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) .rux--btn {
-    border-radius: 6px;
-  }
   [data-theme="geist-dark"] .rux--side-panel .rux--side-panel__header.rux--side-panel__header--has-title {
-    padding-block: var(--rux-spacing-02);
+    padding-block: 6px;
   }
   [data-theme="geist-dark"] .scheduler-trip .rux--side-panel .rux--side-panel__decorator-and-close {
     margin-inline-end: calc(var(--rux-spacing-03) - var(--rux-spacing-05));
   }
-  [data-theme="geist-dark"] .scheduler-trip .rux--side-panel .rux--side-panel__close-button {
+  [data-theme="geist-dark"] .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) :is(.rux--btn, .scheduler-weekbtn) {
+    border-radius: 6px;
+  }
+  [data-theme="geist-dark"] .scheduler-trip .rux--side-panel .rux--btn--md.rux--side-panel__close-button {
+    block-size: 2.25rem;
+    inline-size: 2.25rem;
     border-radius: 6px;
   }
 }

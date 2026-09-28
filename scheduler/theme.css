@@ -131,6 +131,12 @@
     inline-size: 2.25rem;
     border-radius: 6px;
   }
+  /* Geist's footer buttons are ordinary buttons rather than a band, so they
+     line up with the fields above them, 24px in (overrides.css), where
+     Design's footer holds them at 16. */
+  [data-theme="geist-dark"] #scheduler-panel .rux--action-set {
+    padding-inline: var(--rux-spacing-06);
+  }
 }
 @media (max-width: 41.98rem) {
   [data-theme="geist-dark"] .scheduler-toolbar__search {

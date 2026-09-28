@@ -2357,7 +2357,7 @@
      its id, its name as the text a pick writes, and a second line with what
      clashes. The field's own warning or error sits under it in Carbon's
      requirement. */
-  function fleetPicker({ id, label, options, current, warn, error, placeholder }) {
+  function fleetPicker({ id, label, options, current, warn, error, placeholder, warnIcon = true }) {
     const lab = el('label', 'rux--label', label);
     lab.setAttribute('for', id);
     const root = el('div', 'rux--combo-box rux--list-box');
@@ -2406,11 +2406,16 @@
         root.setAttribute('data-invalid', '');
         input.setAttribute('aria-invalid', 'true');
       } else root.classList.add('rux--list-box--warning');
-      const icon = svgUse(error ? '#m-report-fill' : '#m-warning-fill', '16', '0 0 32 32');
-      icon.setAttribute('class', error
-        ? 'rux--list-box__invalid-icon'
-        : 'rux--list-box__invalid-icon rux--list-box__invalid-icon--warning');
-      field.appendChild(icon);
+      /* A seat's field ends in its status, so a warning there is said in
+         words under it alone, as the vehicle's tile says it, rather than as a
+         second icon beside the status. */
+      if (error || warnIcon) {
+        const icon = svgUse(error ? '#m-report-fill' : '#m-warning-fill', '16', '0 0 32 32');
+        icon.setAttribute('class', error
+          ? 'rux--list-box__invalid-icon'
+          : 'rux--list-box__invalid-icon rux--list-box__invalid-icon--warning');
+        field.appendChild(icon);
+      }
       const req = el('div', 'rux--form-requirement', say);
       req.id = `${id}-req`;
       input.setAttribute('aria-describedby', req.id);
@@ -2499,6 +2504,7 @@
       current: seat.driverId,
       error: dup ? 'This driver is in another seat on this leg' : '',
       warn: seat.on ? [clashText(leg, 'drivers', seat.driverId), clashText(leg, 'near', seat.driverId)].filter(Boolean).join(' · ') : '',
+      warnIcon: false,
     });
     picker.dataset.fleetLeg = leg;
     picker.dataset.fleetBus = bus.key;
@@ -3043,8 +3049,11 @@
       if (!other.hidden) otherInput.focus();
     });
     const item = el('div', 'rux--form-item');
-    const drop = el('button', 'rux--file__drop-container rux--file-browse-btn', 'Drag and drop a PDF here or click to upload');
+    const drop = el('button', 'rux--file__drop-container rux--file-browse-btn');
     drop.type = 'button';
+    // Its icon before its words, centred, as the dashed add rows are.
+    const dropIcon = svgUse('#m-upload', '16', '0 0 32 32');
+    drop.append(dropIcon, el('span', null, 'Drag and drop a PDF here or click to upload'));
     const inputLabel = el('label', 'rux--visually-hidden', 'PDF file');
     inputLabel.htmlFor = 'scheduler-f-file';
     const input = el('input', 'rux--file-input rux--visually-hidden');

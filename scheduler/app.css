@@ -196,11 +196,13 @@
    text is the faintest that still reads at 4.5 to 1 on this band in every
    theme, so a weekend keeps it and drops to regular weight. */
 .scheduler-day--weekend { font-weight: var(--rux-body-compact-01-font-weight); }
-/* Today is the day in `link-primary`, with no mark under it: the 32px band has
-   no room for Carbon's calendar dot. It follows the weekend rule, so a weekend
-   today is marked the same. data.js also sets `aria-current="date"` on the
-   cell. */
-.scheduler-day--today { color: var(--rux-link-primary); }
+/* Today is the day in `link-primary-hover`, Carbon's stronger step of the
+   link: plain `link-primary` reads 3.3 to 1 on the grey band in g90 and 3.8 in
+   the light themes, and this step is 4.6 or better in all of them. No mark
+   goes under it: the 32px band has no room for Carbon's calendar dot. It
+   follows the weekend rule, so a weekend today is marked the same. data.js
+   also sets `aria-current="date"` on the cell. */
+.scheduler-day--today { color: var(--rux-link-primary-hover); }
 
 /* ── Bus column ─────────────────────────────────────────────────────────────
    The bus number and its out-of-service mark, sticky on the left. The lift and

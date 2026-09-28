@@ -126,9 +126,11 @@ export const ICONS = {
   'notification--new': { material: 'notifications_active', rux: null },
   'overflow-menu--horizontal': { material: 'more_horiz', rux: null },
   'overflow-menu--vertical': { material: 'more_vert', rux: null },
+  'pause--outline--filled': { material: 'pause_circle-fill', rux: null },  // A solid disc with the bars cut out; `pause--filled` is the bare bars.
   'pending--filled': { material: 'pending-fill', rux: null },
   'phone': { material: 'call', rux: null },
   'pin': { material: 'keep', rux: null },
+  'play--filled': { material: 'play_circle-fill', rux: null },  // A solid disc with the triangle cut out.
   'printer': { material: 'print', rux: null },
   'purchase': { material: 'credit_card', rux: null },  // Carbon's purchase is a credit card.
   'radio-button': { material: 'radio_button_unchecked', rux: null },

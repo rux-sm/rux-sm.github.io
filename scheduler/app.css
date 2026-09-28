@@ -192,7 +192,10 @@
 .scheduler-corner__type { display: inline-flex; }
 .scheduler-corner__type svg { display: block; }
 .scheduler-day__num { font-variant-numeric: tabular-nums; }
-.scheduler-day--weekend { color: var(--rux-text-placeholder); }
+/* A weekend is quieter by weight rather than colour: the weekdays' secondary
+   text is the faintest that still reads at 4.5 to 1 on this band in every
+   theme, so a weekend keeps it and drops to regular weight. */
+.scheduler-day--weekend { font-weight: var(--rux-body-compact-01-font-weight); }
 /* Today is the day in `link-primary`, with no mark under it: the 32px band has
    no room for Carbon's calendar dot. It follows the weekend rule, so a weekend
    today is marked the same. data.js also sets `aria-current="date"` on the
@@ -2070,10 +2073,10 @@ button.scheduler-row-head__num::after {
    question there is free or not. */
 .scheduler-avail__cell > span { visibility: hidden; }
 
-/* Weekend day letters dim, as the board's weekend day names do. Two classes,
-   to beat the band's colour on
+/* Weekend day letters take regular weight, as the board's weekend day names
+   do. Two classes, to beat the band's weight on
    `.scheduler-avail__days > .scheduler-avail__day`. */
-.scheduler-avail__days > .scheduler-avail__day--weekend { color: var(--rux-text-placeholder); }
+.scheduler-avail__days > .scheduler-avail__day--weekend { font-weight: var(--rux-body-compact-01-font-weight); }
 
 /* The heading over each priority band, which is the column header band again,
    lower down: the same surface, type and colour, across the same eight

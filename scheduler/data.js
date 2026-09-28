@@ -6627,10 +6627,9 @@
               { label: 'Remove', danger: true, disabled: lastOfRound, run: () => { r.list.splice(i, 1); touch(); } },
             ],
           });
+          // No location is about the place, so it ends the name's line.
           if (!here) {
-            const under = row.querySelector('.scheduler-item__meta');
-            if (meta) under.append(' · ');
-            under.appendChild(warnLine('No location'));
+            row.querySelector('.scheduler-item__line').appendChild(warnLine('No location'));
             return [row];
           }
           const room = roomInto(st);

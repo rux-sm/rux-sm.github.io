@@ -631,6 +631,15 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   user-select: none;
 }
 
+/* A Route stop's tile is three columns, the mark, the times and the wait,
+   the name spanning the last two above them; app.css places each part. The
+   columns stand 8px apart, as the mark and name do in every other list. */
+.scheduler-route-stops .scheduler-item .rux--tile--clickable {
+  grid-template-columns: auto 1fr auto;
+  column-gap: var(--rux-spacing-03);
+  align-items: baseline;
+}
+
 /* Carbon sizes a menu to its own default, which cuts a bus and a driver's name
    to an ellipsis. This one lists documents by their full names, so it takes
    the width those names need and the panel's own width as its ceiling. */

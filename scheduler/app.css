@@ -3655,7 +3655,26 @@ html:has(.scheduler-page[data-takeover]) {
   flex: none;
   color: var(--rux-support-warning);
 }
-/* A stop with no wait keeps its row one line high. */
+/* A stop's tile gives its name the whole top line after the mark, then sets
+   the times under the name and the wait at the line's end, so a long name
+   never gives way to the times. A stop with no location ends the name's line
+   with the warning, in the wait's type and centred on the name. The line's
+   own box steps aside for the tile's grid, which overrides.css lays out. */
+.scheduler-route-stops .scheduler-item__line { display: contents; }
+.scheduler-route-stops .scheduler-item__mark { grid-area: 1 / 1; }
+.scheduler-route-stops .scheduler-item__name { grid-area: 1 / 2 / auto / -1; }
+.scheduler-route-stops .scheduler-item__open:has(.scheduler-route-warn) .scheduler-item__name { grid-column: 2; }
+.scheduler-route-stops .scheduler-item__line > .scheduler-route-warn {
+  grid-area: 1 / 3;
+  place-self: center end;
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+.scheduler-route-stops .scheduler-item__much { grid-area: 2 / 2; white-space: nowrap; }
+.scheduler-route-stops .scheduler-item__meta { grid-area: 2 / 3; justify-self: end; text-align: end; }
+/* A stop with no wait leaves the times alone on their line. */
 .scheduler-route-stops .scheduler-item__meta:empty { display: none; }
 /* A place search's address, under the name it shows. */
 .scheduler-place-where[hidden] { display: none; }

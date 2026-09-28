@@ -3674,6 +3674,12 @@ html:has(.scheduler-page[data-takeover]) {
 }
 .scheduler-route-stops .scheduler-item__much { grid-area: 2 / 2; white-space: nowrap; }
 .scheduler-route-stops .scheduler-item__meta { grid-area: 2 / 3; justify-self: end; text-align: end; }
+/* The sleeper mark after a sleeper-berth wait, 4px off the time and sat on
+   the text's line as the saved-location mark is. */
+.scheduler-route-berth {
+  margin-inline-start: var(--rux-spacing-02);
+  vertical-align: -0.1875rem;
+}
 /* A stop with no wait leaves the times alone on their line. */
 .scheduler-route-stops .scheduler-item__meta:empty { display: none; }
 /* A place search's address, under the name it shows. */

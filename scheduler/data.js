@@ -6609,14 +6609,17 @@
           const wait = waitOf(st);
           const drove = driveWords(st.drive, st.miles);
           const here = located(st);
-          // Under the place, only what happens there: the wait.
+          // Under the place, only what happens there: the wait. A sleeper-berth
+          // wait shows the sleeper mark the board gives a sleeper bus in place
+          // of its words, which stay in the tile's title.
           const meta = wait ? `Waits ${hm(wait)}${st.dwell ? `, ${DWELL[st.dwell]}` : ''}` : '';
+          const berth = wait && st.dwell === 'sleeper';
           // A round trip keeps its destination, which holds when the group
           // leaves the pickup.
           const lastOfRound = routeRound() && r.list.length === 1;
           const move = by => { r.list.splice(i + by, 0, r.list.splice(i, 1)[0]); touch(); };
           const row = listRow({
-            name, much, meta, lead: String(n), context: true,
+            name, much, meta: berth ? `Waits ${hm(wait)}` : meta, lead: String(n), context: true,
             title: [`Stop ${n}`, name, much, drove ? `${drove} drive` : null, meta,
               here ? null : 'No location, so the drive is measured past it'].filter(Boolean).join(' · '),
             edit: () => openStopDialog(i),
@@ -6627,6 +6630,11 @@
               { label: 'Remove', danger: true, disabled: lastOfRound, run: () => { r.list.splice(i, 1); touch(); } },
             ],
           });
+          if (berth) {
+            const bunk = svgUse('#m-airline_seat_flat-fill', '16', '0 0 32 32');
+            bunk.classList.add('scheduler-route-berth');
+            row.querySelector('.scheduler-item__meta').appendChild(bunk);
+          }
           // No location is about the place, so it ends the name's line.
           if (!here) {
             row.querySelector('.scheduler-item__line').appendChild(warnLine('No location'));

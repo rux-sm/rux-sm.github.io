@@ -95,18 +95,18 @@
 /* THE THREE HEADS HOLD GEIST'S DEFAULT CONTROLS: the toolbar, the roster's
    head and the trip editor's head each hold the 36px buttons and, in the
    toolbar, the 36px search field that Design sizes every geist-dark control
-   at, 6px from the top and bottom of a 48px bar and 8px from the card's end.
-   Nothing fills its bar edge to edge, so the field's ring stays clear of the
-   card's outline and the day band's rule, the three heads and the rows under
-   them line up across the board, and every button takes Geist's 6px corners
-   rather than staying square with the last one following the card's curve. The
-   editor's close button fixes its own 40px, so it is named. The roster's head
-   keeps its full height where the grid under it wants more room than the pane
-   has. On a phone the controls fill the first row with no room to spare, so
-   there only the search's own row is inset. */
+   at, 6px from every edge of a 48px bar, so their 6px corners sit concentric
+   in the card's 12px. Nothing fills its bar edge to edge, so the field's ring
+   stays clear of the card's outline and the day band's rule, the three heads
+   and the rows under them line up across the board, and every button takes
+   Geist's 6px corners rather than staying square with the last one following
+   the card's curve. The editor's close button fixes its own 40px, so it is
+   named. The roster's head keeps its full height where the grid under it wants
+   more room than the pane has. On a phone the controls fill the first row with
+   no room to spare, so there only the search's own row is inset. */
 @media (min-width: 42rem) {
   [data-theme="geist-dark"] .scheduler-toolbar {
-    padding: 6px var(--rux-spacing-03);
+    padding: 6px;
     gap: var(--rux-spacing-02);
   }
   [data-theme="geist-dark"] .scheduler-toolbar__search {
@@ -115,13 +115,13 @@
   [data-theme="geist-dark"] .scheduler-aside__head {
     flex: none;
     padding-block: 6px;
-    padding-inline-end: var(--rux-spacing-03);
+    padding-inline-end: 6px;
   }
   [data-theme="geist-dark"] .rux--side-panel .rux--side-panel__header.rux--side-panel__header--has-title {
     padding-block: 6px;
   }
   [data-theme="geist-dark"] .scheduler-trip .rux--side-panel .rux--side-panel__decorator-and-close {
-    margin-inline-end: calc(var(--rux-spacing-03) - var(--rux-spacing-05));
+    margin-inline-end: calc(6px - var(--rux-spacing-05));
   }
   [data-theme="geist-dark"] .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) :is(.rux--btn, .scheduler-weekbtn) {
     border-radius: 6px;
@@ -136,6 +136,21 @@
   [data-theme="geist-dark"] .scheduler-toolbar__search {
     padding: var(--rux-spacing-05);
   }
+}
+
+/* Geist's header is 64px, not the shell's 48 (Design's rux-overrides.css), so
+   what the board places under it -- a panel brought in front, its scrim and
+   the quote's pinned total -- sits 4rem down rather than 3rem. */
+[data-theme="geist-dark"] .scheduler-page[data-takeover="editor"] .scheduler-trip .rux--side-panel,
+[data-theme="geist-dark"] .scheduler-page[data-takeover="viewer"] .scheduler-viewer .rux--side-panel,
+[data-theme="geist-dark"] .scheduler-page[data-takeover="roster"] .scheduler-aside {
+  inset-block-start: calc(4rem + var(--rux-spacing-05));
+}
+[data-theme="geist-dark"] .scheduler-page[data-takeover] .scheduler-scrim {
+  inset-block-start: 4rem;
+}
+[data-theme="geist-dark"] .scheduler-quote__quote > .scheduler-quote__body {
+  inset-block-start: calc(4rem + var(--rux-spacing-07));
 }
 
 /* GEIST'S BARS ARE ITS SUBTLE BADGE, which Geist asks for on a dense surface:

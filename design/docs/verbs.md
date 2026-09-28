@@ -69,3 +69,11 @@ no focus, so press Tab once first and confirm `focusRingChecked: true`; and a
 reading taken with the wrong theme active is a reading of that theme.
 
 The browser gates run whenever a page changes, from the page.
+
+**Text contrast in every theme** is `measure-contrast.js`, loaded the same
+way. It lists each piece of text under 4.5 to 1, theme by theme, and fails
+nothing: screenshot each row before calling it a defect, because a fill drawn
+by `::before` or `::after` reads as a false failure. To narrow it, set
+`window.MEASURE_CONTRAST = { themes: ['geist-dark'], scope: '#scheduler-panel' }`
+first. Run it after changing a theme's colours, on every app page that theme
+reaches.

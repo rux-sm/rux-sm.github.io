@@ -3690,6 +3690,69 @@ html:has(.scheduler-page[data-takeover]) {
   margin-inline-start: var(--rux-spacing-02);
   vertical-align: -0.1875rem;
 }
+/* ── The Buses tab's vehicles ──
+   A tile per vehicle, as a Route stop is: its number and the vehicle on the
+   first line with what it asks for at the end, then any warning about the
+   vehicle and a line per seat, each set in from the tile's edge to line up
+   with the vehicle's name. */
+.scheduler-fleet-tile .scheduler-item__meta:empty { display: none; }
+.scheduler-fleet-tile .scheduler-item__open > :not(.scheduler-item__line) {
+  margin-inline-start: calc(1.25rem + var(--rux-spacing-03));
+}
+.scheduler-fleet-tile__none,
+.scheduler-fleet-seat__name--none {
+  color: var(--rux-text-secondary);
+  font-weight: var(--rux-body-compact-01-font-weight);
+}
+.scheduler-fleet-marks {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--rux-spacing-02);
+  color: var(--rux-icon-secondary);
+}
+.scheduler-fleet-marks__type,
+.scheduler-fleet-seat__role,
+.scheduler-fleet-warn {
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+.scheduler-fleet-marks__need--short { color: var(--rux-support-warning); }
+.scheduler-fleet-marks__letter {
+  inline-size: 1rem;
+  text-align: center;
+  font-weight: var(--rux-heading-compact-01-font-weight);
+}
+.scheduler-fleet-seat {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--rux-spacing-02) var(--rux-spacing-03);
+  min-inline-size: 0;
+}
+.scheduler-fleet-seat__nobody { flex: none; color: var(--rux-icon-secondary); }
+.scheduler-fleet-seat__who {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: baseline;
+  gap: var(--rux-spacing-03);
+  min-inline-size: 0;
+}
+.scheduler-fleet-seat__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.scheduler-fleet-seat__role { white-space: nowrap; }
+/* A seat's warning takes the line under the driver, set in to the name, so a
+   long one never squeezes the name. */
+.scheduler-fleet-seat > .scheduler-fleet-warn {
+  flex: 0 0 calc(100% - 1rem - var(--rux-spacing-03));
+  margin-inline-start: calc(1rem + var(--rux-spacing-03));
+}
+
 /* A stop with no wait leaves the times alone on their line. */
 .scheduler-route-stops .scheduler-item__meta:empty { display: none; }
 /* A place search's address, under the name it shows. */

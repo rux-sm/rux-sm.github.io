@@ -413,8 +413,9 @@
     'hotel_booked_outbound', 'hotel_booked_return',
     'hotel_itinerary_number_outbound', 'hotel_itinerary_number_return',
     // The roles an assignment turns on, and who fills them: the drivers row.
-    // The Buses tab edits each seat by its row id, with its relief swap time and note.
-    'trip_assignments(id,bus_id,position,leg,active_roles,trip_drivers(id,driver_id,role,report_time,instructions))',
+    // The Buses tab edits each seat by its row id, with its relief swap time and
+    // note, and each vehicle's own needs and type.
+    'trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,trip_drivers(id,driver_id,role,report_time,instructions))',
     // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
     // and the itinerary panel, which frames the file at its path.
     'trip_documents(id,label,created_at,file_name,file_path,file_size)',
@@ -493,7 +494,7 @@
     const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
 
     const [buses, trips, drivers, contacts, customers, locations, oos, timeOff] = await withTimeout(Promise.all([
-      client.from('buses').select('id,number,capacity,type,status,sort_order,ada_lift,sleeper,year,make,model,color,vin').order('sort_order').then(unwrap),
+      client.from('buses').select('id,number,capacity,type,status,sort_order,ada_lift,sleeper,equipment,year,make,model,color,vin').order('sort_order').then(unwrap),
       // A cancelled trip stays in the table but is not on the schedule.
       client.from('trips').select(TRIP_COLUMNS).is('cancelled_at', null)
         .gte('start_date', lo).lte('start_date', hi).order('start_date').then(unwrap),
@@ -646,6 +647,22 @@
     return [...byType('vehicle'), ...byType('driver')];
   }
   const needFieldId = id => `scheduler-f-req-${id}`;
+
+  /* A need is the vehicle's or the trip's. Sleeper, 56 passengers, ADA lift and
+     anything else the office lists as vehicle equipment are asked of each
+     vehicle, on its own `trip_assignments` row; Hotel and Fuel card are the
+     trip's. Before the office's list is read, the three this app knows are the
+     vehicle's. */
+  const VEHICLE_FALLBACK = new Set(['sleeper', 'pax56', 'adaLift']);
+  const isVehicleNeed = id => {
+    const r = requirementList.find(x => x.id === id);
+    return r ? (r.type || 'vehicle') === 'vehicle' : VEHICLE_FALLBACK.has(id);
+  };
+  const vehicleNeedList = () => editableNeeds().filter(r => isVehicleNeed(r.id));
+  const tripNeedList = () => editableNeeds().filter(r => !isVehicleNeed(r.id));
+  // The ids a needs object holds true, sorted, so two can be compared.
+  const needIds = o => (o && typeof o === 'object' ? Object.keys(o).filter(k => o[k] === true).sort() : []);
+  const needsObject = ids => Object.fromEntries([...ids].map(id => [id, true]));
   // A tag's state, or undefined where the office has since deactivated that
   // requirement and the editor never drew it.
   function needPressed(id) {
@@ -680,7 +697,22 @@
     if (id === 'pax56' && bus.capacity != null && bus.capacity < 56) {
       return `Needs 56 seats, bus ${bus.number} has ${bus.capacity}`;
     }
+    // Any other equipment is the unit's `equipment`, set on the Fleet page.
+    if (!VEHICLE_FALLBACK.has(id) && isVehicleNeed(id) && !bus.equipment?.[id]) {
+      return `Needs ${requirementLabel(id)}, bus ${bus.number} has none`;
+    }
     return null;
+  }
+
+  /* A bar's needs: its vehicle's own, which its row holds, then the trip's;
+     a bar with no row yet, an empty slot, takes the trip's whole list. In the
+     office's order, anything off the list after it. */
+  function needsFor(trip, assign) {
+    const all = requirementsOf(trip);
+    if (!assign) return all;
+    const on = new Set([...needIds(assign.needs), ...all.filter(id => !isVehicleNeed(id))]);
+    const order = editableNeeds().map(r => r.id);
+    return [...order.filter(id => on.has(id)), ...[...on].filter(id => !order.includes(id))];
   }
 
   /* The warning for a bus of another type than the trip needs, or null. A trip
@@ -908,11 +940,11 @@
        is a mistake to put right rather than a job still to come: the wrong type
        of bus, or one that falls short of a need. A placeholder has neither. */
     const bus = assign?.bus_id != null ? busesById.get(assign.bus_id) : null;
-    const wrong = bus ? wrongType(trip.vehicle_type, bus) : null;
+    const wrong = bus ? wrongType(assign.vehicle_type, bus) : null;
     /* Every need the trip carries, in the office's order, and whether this bus
        meets it. The hotel is the one a bus cannot answer for: it is booked or
        it is not, per leg, and the trip says which. */
-    const needs = placeholder ? [] : requirementsOf(trip).map(id => {
+    const needs = placeholder ? [] : needsFor(trip, assign).map(id => {
       const name = id === 'hotel' ? (REQUIREMENTS.hotel?.label || 'Hotel') : requirementLabel(id);
       if (id === 'hotel') {
         const booked = !!trip[`hotel_booked_${leg.leg}`];
@@ -1879,7 +1911,11 @@
     } else {
       placeMenuAt(menu, trigger);
     }
-    window.Rux?.menu?.open?.(menu, null);
+    /* A menu opened from inside a window names its trigger, so the overlay
+       stack keeps the window open under it rather than taking the press on
+       the menu as a press outside the window. Elsewhere it is placed above
+       and opened on its own. */
+    window.Rux?.menu?.open?.(menu, trigger.closest?.('.rux--modal') ? trigger : null);
     trigger.setAttribute('aria-expanded', 'true');
     itemsMenuTrigger = trigger;
   };
@@ -1900,10 +1936,16 @@
   let fleetSeq = 0;
 
   const blankSeat = () => ({ on: false, rowId: null, driverId: null, reportTime: null, note: null, status: 'off', statusDirty: false });
-  const blankBus = () => {
+  /* A vehicle not yet on a row. `seed` is the needs and type it starts with:
+     an empty slot of a trip takes the trip's, so it still asks for them, and
+     only a change from them makes it worth a row. */
+  const blankBus = (seed = {}) => {
     const seats = Object.fromEntries(ROLES.map(r => [r.role, blankSeat()]));
     seats.driver.on = true;
-    return { key: `new-${++fleetSeq}`, id: null, position: null, busId: null, seats };
+    const needs = needsObject(needIds(seed.needs));
+    const vehicleType = seed.vehicleType ?? null;
+    return { key: `new-${++fleetSeq}`, id: null, position: null, busId: null, seats,
+      needs, vehicleType, seed: { needs: { ...needs }, vehicleType } };
   };
 
   // One bus as the trip holds it: the first row per seat is the seat, and a
@@ -1914,6 +1956,8 @@
     bus.id = a.id;
     bus.position = a.position ?? null;
     bus.busId = a.bus_id ?? null;
+    bus.needs = needsObject(needIds(a.needs));
+    bus.vehicleType = a.vehicle_type ?? null;
     const on = activeRolesOf(a);
     const leg = a.leg || 'outbound';
     for (const r of ROLES) {
@@ -1932,8 +1976,10 @@
     return bus;
   }
 
-  // Each leg's buses in position order, padded with empty buses up to its count.
+  // Each leg's buses in position order, padded with empty buses up to its
+  // count, which ask for what the trip does.
   function fleetOf(trip, creating) {
+    const seed = { needs: needsObject(requirementsOf(trip).filter(isVehicleNeed)), vehicleType: trip.vehicle_type ?? null };
     const legs = {};
     for (const leg of ['outbound', 'return']) {
       const buses = (trip.trip_assignments || [])
@@ -1941,7 +1987,7 @@
         .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
         .map(a => fleetBusOf(trip, a, panelIndex.statuses));
       const count = leg === 'outbound' ? (trip.bus_count || 1) : (trip.return_bus_count || trip.bus_count || 1);
-      while (buses.length < Math.min(MAX_BUSES, Math.max(1, count))) buses.push(blankBus());
+      while (buses.length < Math.min(MAX_BUSES, Math.max(1, count))) buses.push(blankBus(seed));
       legs[leg] = buses;
     }
     if (creating && createBusId) legs.outbound[0].busId = createBusId;
@@ -1950,9 +1996,12 @@
 
   const cloneFleet = legs => JSON.parse(JSON.stringify(legs));
   const seatFilled = s => s.on && !!s.driverId;
-  // A bus with nothing on it is only a count, so it gets no row until it has.
+  const sameNeeds = (a, b) => needIds(a).join() === needIds(b).join();
+  // A bus with nothing on it is only a count, so it gets no row until it has:
+  // no bus, no driver, no other seat, and the needs and type it started with.
   const busEmpty = b => !b.busId && ROLES.every(r => r.role === 'driver' || !b.seats[r.role].on)
-    && !seatFilled(b.seats.driver);
+    && !seatFilled(b.seats.driver)
+    && sameNeeds(b.needs, b.seed?.needs) && (b.vehicleType ?? null) === (b.seed?.vehicleType ?? null);
 
   // `active_roles` as rux-ui writes it: the driver first, then each seat that
   // is on, with its status after a colon unless it is Not sent.
@@ -1962,6 +2011,15 @@
 
   const fleetSplit = () => document.getElementById('scheduler-f-type')?.value === SPLIT;
   const fleetLegs = () => (fleetSplit() ? ['outbound', 'return'] : ['outbound']);
+
+  /* THE TRIP-WIDE NEEDS SUM UP ITS VEHICLES, the ones on the legs it has, so
+     rux-ui, the print pages and the connector, which read the trip's columns,
+     see every need any vehicle has. Null before the tab is built. */
+  const fleetVehicles = () => (editing?.fleet ? fleetLegs().flatMap(leg => editing.fleet[leg]) : null);
+  const fleetNeedUnion = () => {
+    const v = fleetVehicles();
+    return v ? new Set(v.flatMap(b => needIds(b.needs))) : null;
+  };
 
   // The legs Save touches: the ones shown, and the return leg of a trip that
   // stopped being a split in this editor, whose buses go as rux-ui drops them.
@@ -1998,11 +2056,16 @@
         const prev = b.id ? oldById.get(b.id) : null;
         const roles = activeRolesValue(b);
         if (!prev) {
-          if (!busEmpty(b)) ops.inserts.push({ bus: b, row: { leg, position: i, bus_id: b.busId, active_roles: roles } });
+          if (!busEmpty(b)) {
+            ops.inserts.push({ bus: b, row: { leg, position: i, bus_id: b.busId, active_roles: roles,
+              needs: needsObject(needIds(b.needs)), vehicle_type: b.vehicleType ?? null } });
+          }
           return;
         }
         const patch = {};
         if (!same(b.busId, prev.busId)) patch.bus_id = b.busId;
+        if (!sameNeeds(b.needs, prev.needs)) patch.needs = needsObject(needIds(b.needs));
+        if ((b.vehicleType ?? null) !== (prev.vehicleType ?? null)) patch.vehicle_type = b.vehicleType ?? null;
         if (renumber && prev.position !== i) patch.position = i;
         if (JSON.stringify(roles) !== JSON.stringify(activeRolesValue(prev))) patch.active_roles = roles;
         const seats = [];
@@ -2041,11 +2104,11 @@
     : !!fleetWork()?.work);
 
   // A driver in two seats of one leg is the one thing that blocks Save.
-  function fleetDuplicates() {
+  function fleetDuplicates(fleet = editing?.fleet) {
     const dup = new Set();
     for (const leg of fleetLegs()) {
       const seen = new Set();
-      for (const b of editing?.fleet?.[leg] ?? []) {
+      for (const b of fleet?.[leg] ?? []) {
         for (const r of ROLES) {
           const s = b.seats[r.role];
           if (!seatFilled(s)) continue;
@@ -2277,13 +2340,11 @@
 
   const clashText = (leg, kind, id) => (id == null ? '' : (fleetClashes?.[leg]?.[kind].get(id) ?? []).join(' · '));
 
-  // What the trip needs that a bus lacks, in the bar's words.
-  function busLacks(bus) {
-    if (!bus) return [];
-    return [
-      wrongType(document.getElementById('scheduler-f-vehicle')?.value, bus),
-      ...['sleeper', 'adaLift', 'pax56'].map(id => (needPressed(id) ? shortfall(id, bus) : null)),
-    ].filter(Boolean);
+  // What a vehicle asks for that its bus lacks, in the bar's words.
+  function busLacks(busRow, vehicle) {
+    if (!busRow || !vehicle) return [];
+    return [wrongType(vehicle.vehicleType, busRow), ...needIds(vehicle.needs).map(id => shortfall(id, busRow))]
+      .filter(Boolean);
   }
 
   /* ── The pickers ──
@@ -2404,7 +2465,7 @@
     btn.type = 'button';
     btn.setAttribute('aria-haspopup', 'true');
     btn.setAttribute('aria-expanded', 'false');
-    const name = `Bus ${n} ${SEAT_LABEL[role].toLowerCase()} status`;
+    const name = `Vehicle ${n} ${SEAT_LABEL[role].toLowerCase()} status`;
     btn.setAttribute('aria-label', `${name}: ${status.label}`);
     btn.title = `${SEAT_LABEL[role]} status: ${status.label}`;
     btn.appendChild(statusIcon(status.value));
@@ -2464,113 +2525,223 @@
     return box;
   }
 
-  /* One bus and its crew, as a Carbon tile on the next layer, as the Billing
-     summary sits, so each bus has an edge of its own. The fields inside step
-     up a layer again, or they would take the tile's own colour. */
-  function busGroup(leg, bus, i, count, dups) {
-    const n = i + 1;
-    const group = el('div', 'rux--layer-three scheduler-fleet-bus');
-    group.setAttribute('role', 'group');
-    const title = el('div', 'scheduler-panel-section__title', `Bus ${n}`);
-    title.id = `scheduler-fleet-${leg}-${bus.key}-title`;
-    group.setAttribute('aria-labelledby', title.id);
-    const more = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger');
-    more.type = 'button';
-    more.id = `scheduler-fleet-${leg}-${bus.key}-menu`;
-    more.setAttribute('aria-haspopup', 'true');
-    more.setAttribute('aria-expanded', 'false');
-    more.setAttribute('aria-label', `Bus ${n} actions`);
-    more.title = `Bus ${n} actions`;
-    more.appendChild(svgUse('#m-more_vert', '16', '0 0 32 32'));
-    more.lastChild.setAttribute('class', 'rux--btn__icon');
-    more.addEventListener('click', () => openItemsMenu(more, [
-      ...ROLES.filter(r => r.role !== 'driver').map(r => {
-        const seat = bus.seats[r.role];
-        const word = SEAT_LABEL[r.role].toLowerCase();
-        return {
-          label: seat.on ? `Remove ${word}` : `Add ${word}`,
-          run: () => {
-            seat.on = !seat.on;
-            if (seat.on) drawFleet(`scheduler-fleet-${leg}-${bus.key}-${r.role}`);
-            else drawFleet(more.id);
-            refreshDirty();
-          },
-        };
-      }),
-      {
-        label: 'Remove bus', danger: true, disabled: count <= 1,
-        run: () => {
-          const list = editing.fleet[leg];
-          list.splice(list.indexOf(bus), 1);
-          drawFleet(`scheduler-fleet-${leg}-count`);
-          refreshDirty();
-        },
-      },
-    ], `Bus ${n} actions`));
-    const head = el('div', 'scheduler-group__head');
-    head.append(title, more);
+  /* ── A tile per vehicle ──
+     Each vehicle reads as a Route stop does: its number, the vehicle on its
+     first line with what it asks for at the end, then a line per seat with the
+     driver's status and any warning in words. Pressing it opens the vehicle's
+     window; right-click or hold moves or removes it. */
+  const fleetWarn = text => {
+    const w = el('span', 'scheduler-route-warn scheduler-fleet-warn');
+    const icon = svgUse('#m-warning-fill', '16', '0 0 32 32');
+    icon.setAttribute('aria-hidden', 'true');
+    w.append(icon, el('span', null, text));
+    return w;
+  };
 
-    const busRow = panelIndex.buses.get(bus.busId);
-    // The same bus twice on one leg of this trip is a warning, as a clash is.
-    const twin = bus.busId == null ? -1
-      : editing.fleet[leg].findIndex(b => b !== bus && same(b.busId, bus.busId));
+  // What a vehicle asks for, as the card's marks: its type, then each need, a
+  // need its bus lacks in the warning colour.
+  function vehicleMarks(vehicle, busRow) {
+    const box = el('span', 'scheduler-fleet-marks');
+    if (vehicle.vehicleType) box.appendChild(el('span', 'scheduler-fleet-marks__type', vehicle.vehicleType));
+    const order = editableNeeds().map(r => r.id);
+    const ids = needIds(vehicle.needs).sort((a, b) => (order.indexOf(a) + 1 || 99) - (order.indexOf(b) + 1 || 99));
+    for (const id of ids) {
+      const name = requirementLabel(id);
+      const short = !!(busRow && shortfall(id, busRow));
+      const mark = requirementIcon(id)
+        ? svgUse(requirementIcon(id), '16', '0 0 32 32')
+        : el('span', 'scheduler-fleet-marks__letter', name.trim().charAt(0).toUpperCase());
+      mark.classList.add('scheduler-fleet-marks__need');
+      if (short) mark.classList.add('scheduler-fleet-marks__need--short');
+      mark.setAttribute('role', 'img');
+      mark.removeAttribute('aria-hidden');
+      mark.setAttribute('aria-label', name);
+      const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+      title.textContent = name;
+      if (mark instanceof SVGElement) mark.prepend(title); else mark.title = name;
+      box.appendChild(mark);
+    }
+    return box;
+  }
+
+  // One seat on the tile: the status, the driver, the seat when it is not the
+  // driver's, and what clashes.
+  function seatLine(leg, bus, role, dups) {
+    const seat = bus.seats[role];
+    const line = el('span', 'scheduler-fleet-seat');
+    const driver = seat.driverId != null ? panelIndex.driversById.get(seat.driverId) : null;
+    const mark = seat.driverId != null ? statusIcon(DRIVER_STATUSES.some(st => st.value === seat.status) ? seat.status : 'off')
+      : svgUse('#m-person-fill', '16', '0 0 32 32');
+    if (seat.driverId == null) mark.classList.add('scheduler-fleet-seat__nobody');
+    const who = el('span', 'scheduler-fleet-seat__who');
+    who.appendChild(el('span', seat.driverId != null ? 'scheduler-fleet-seat__name' : 'scheduler-fleet-seat__name scheduler-fleet-seat__name--none',
+      seat.driverId != null ? (driver?.name || driver?.short_name || 'Unnamed driver') : 'No driver yet'));
+    if (role !== 'driver') {
+      const swap = seat.reportTime ? `, swap ${hhmm(seat.reportTime)}` : '';
+      who.appendChild(el('span', 'scheduler-fleet-seat__role', `${SEAT_LABEL[role].toLowerCase()}${swap}`));
+    }
+    line.append(mark, who);
+    const dup = seat.driverId != null && dups.has(`${leg}:${seat.driverId}`);
+    const warn = dup ? 'In another seat on this leg'
+      : [clashText(leg, 'drivers', seat.driverId), clashText(leg, 'near', seat.driverId)].filter(Boolean).join(' · ');
+    if (warn) line.appendChild(fleetWarn(warn));
+    return line;
+  }
+
+  function fleetTile(leg, bus, i, count, dups) {
+    const n = i + 1;
+    const list = editing.fleet[leg];
+    const busRow = bus.busId != null ? panelIndex.buses.get(bus.busId) : null;
+    const name = busRow ? vehicleName(busRow) : 'No vehicle yet';
+    const open = () => openVehicleDialog(leg, bus);
+    const move = by => { list.splice(i + by, 0, list.splice(i, 1)[0]); drawFleet(); refreshDirty(); };
+    const li = listRow({
+      name, lead: String(n), context: true, edit: open,
+      title: [`Vehicle ${n}`, name].join(' · '), openLabel: `Edit vehicle ${n}, ${name}`,
+      items: [
+        { label: 'Edit', run: open },
+        { label: 'Move up', disabled: i === 0, run: () => move(-1) },
+        { label: 'Move down', disabled: i === count - 1, run: () => move(1) },
+        { label: 'Remove', danger: true, disabled: count <= 1, run: () => removeBus(leg, bus) },
+      ],
+    });
+    li.classList.add('scheduler-fleet-tile');
+    const tile = li.querySelector('.scheduler-item__open');
+    if (!busRow) tile.querySelector('.scheduler-item__name').classList.add('scheduler-fleet-tile__none');
+    tile.querySelector('.scheduler-item__line').appendChild(vehicleMarks(bus, busRow));
+    // What is wrong with the vehicle itself: the same bus twice, a clash, or
+    // a bus short of what this vehicle asks for.
+    const twin = bus.busId == null ? -1 : list.findIndex(b => b !== bus && same(b.busId, bus.busId));
+    const wrong = [twin >= 0 ? `Also vehicle ${twin + 1} on this trip` : null,
+      clashText(leg, 'buses', bus.busId), ...busLacks(busRow, bus)].filter(Boolean).join(' · ');
+    if (wrong) tile.appendChild(fleetWarn(wrong));
+    for (const r of ROLES) {
+      if (r.role === 'driver' || bus.seats[r.role].on) tile.appendChild(seatLine(leg, bus, r.role, dups));
+    }
+    return li;
+  }
+
+  /* ── The vehicle's window ──
+     Opened from a tile, or from Add vehicle with a new one. It edits a copy,
+     so Cancel leaves the tile as it was and Done puts the copy in its place:
+     what it should be and what it needs, then the bus, then each seat, the
+     driver always and the others as they are turned on. */
+  let vehicleEdit = null;          // { leg, bus: the copy, index: its place, or null for a new one }
+  const vehicleHost = document.getElementById('scheduler-vehicle-fields');
+
+  function openVehicleDialog(leg, bus) {
+    if (!vehicleHost) return;
+    const index = bus ? editing.fleet[leg].indexOf(bus) : null;
+    vehicleEdit = { leg, bus: bus ? JSON.parse(JSON.stringify(bus)) : blankBus(), index };
+    const n = index === null ? editing.fleet[leg].length + 1 : index + 1;
+    document.getElementById('scheduler-vehicle-h').textContent = index === null ? 'Add vehicle' : `Vehicle ${n}`;
+    drawVehicleFields();
+    window.Rux?.modal?.open?.('scheduler-vehicle-modal');
+  }
+
+  function drawVehicleFields(focusId) {
+    if (!vehicleHost || !vehicleEdit) return;
+    const { leg, bus, index } = vehicleEdit;
+    const n = index === null ? editing.fleet[leg].length + 1 : index + 1;
+    // Duplicates as the leg would stand with this copy in its place.
+    const legNow = [...editing.fleet[leg]];
+    if (index === null) legNow.push(bus); else legNow[index] = bus;
+    const dups = fleetDuplicates({ ...editing.fleet, [leg]: legNow });
+
+    const fleetTypes = [...(panelIndex.buses?.values() ?? [])].filter(b => b.status === 'active').map(b => b.type);
+    const types = [...new Set([...fleetTypes, bus.vehicleType].filter(Boolean))].sort();
+    const type = selectField('scheduler-fleet-vtype', 'Type', bus.vehicleType ?? '', [['', 'Any'], ...types.map(t => [t, t])]);
+    type.querySelector('select').dataset.fleetVehicle = 'type';
+    // Every vehicle need the office lists, and any this one already holds.
+    const held = needIds(bus.needs);
+    const offered = [...vehicleNeedList(), ...held.filter(id => !vehicleNeedList().some(r => r.id === id))
+      .map(id => ({ id, label: requirementLabel(id) }))];
+    const needs = el('div', 'scheduler-needs');
+    const needsLabel = el('div', 'rux--label', 'Needs');
+    needsLabel.id = 'scheduler-fleet-vneeds-label';
+    const needRow = el('div', 'scheduler-needs__tags');
+    needRow.setAttribute('role', 'group');
+    needRow.setAttribute('aria-labelledby', needsLabel.id);
+    for (const r of offered) {
+      const tag = tagField(`scheduler-fleet-vneed-${r.id}`, r.label, held.includes(r.id));
+      tag.dataset.fleetNeed = r.id;
+      needRow.appendChild(tag);
+    }
+    needs.append(needsLabel, needRow);
+
+    const busRow = bus.busId != null ? panelIndex.buses.get(bus.busId) : null;
+    const twin = bus.busId == null ? -1 : legNow.findIndex(b => b !== bus && same(b.busId, bus.busId));
     const busPick = fleetPicker({
-      id: `scheduler-fleet-${leg}-${bus.key}-bus`, label: 'Bus', placeholder: 'Choose a bus',
+      id: `scheduler-fleet-${leg}-${bus.key}-bus`, label: 'Vehicle', placeholder: 'Choose a vehicle',
       options: fleetBusOptions(leg, bus.busId), current: bus.busId,
-      warn: [twin >= 0 ? `Also Bus ${twin + 1} on this trip` : null,
-             clashText(leg, 'buses', bus.busId), ...busLacks(busRow)].filter(Boolean).join(' · '),
+      warn: [twin >= 0 ? `Also vehicle ${twin + 1} on this trip` : null,
+             clashText(leg, 'buses', bus.busId), ...busLacks(busRow, bus)].filter(Boolean).join(' · '),
     });
     busPick.dataset.fleetLeg = leg;
     busPick.dataset.fleetBus = bus.key;
-    /* The bus and its drivers are one group of fields 16px apart; each relief,
-       with its swap time and note, is a group of its own, 24px from the next,
-       as the Details tab spaces its contacts. ROLES lists the reliefs last. */
-    const stack = el('div', 'rux--stack-vertical rux--stack-scale-6');
+
+    // The other seats, turned on and off here as Needs are.
+    const crew = el('div', 'scheduler-needs');
+    const crewLabel = el('div', 'rux--label', 'Also on board');
+    crewLabel.id = 'scheduler-fleet-crew-label';
+    const crewRow = el('div', 'scheduler-needs__tags');
+    crewRow.setAttribute('role', 'group');
+    crewRow.setAttribute('aria-labelledby', crewLabel.id);
+    for (const r of ROLES.filter(x => x.role !== 'driver')) {
+      const tag = tagField(`scheduler-fleet-seat-${r.role}`, SEAT_LABEL[r.role], bus.seats[r.role].on);
+      tag.dataset.fleetSeatToggle = r.role;
+      crewRow.appendChild(tag);
+    }
+    crew.append(crewLabel, crewRow);
+
+    /* What the vehicle is and needs, then who drives it, 16px apart within
+       each, 24px between; each relief, with its swap time and note, is a
+       group of its own. ROLES lists the reliefs last. */
+    const what = el('div', 'rux--stack-vertical rux--stack-scale-5');
+    what.append(full(type), needs, full(busPick));
     const seats = el('div', 'rux--stack-vertical rux--stack-scale-5');
-    seats.append(full(busPick));
-    stack.append(seats);
+    seats.append(seatBlock(leg, bus, 'driver', n, dups), crew);
+    const stack = el('div', 'rux--stack-vertical rux--stack-scale-6');
+    stack.append(what, seats);
     for (const r of ROLES) {
-      if (!bus.seats[r.role].on) continue;
+      if (r.role === 'driver' || !bus.seats[r.role].on) continue;
       (RELIEF.has(r.role) ? stack : seats).appendChild(seatBlock(leg, bus, r.role, n, dups));
     }
-    group.append(head, stack);
-    const tile = el('div', 'rux--tile rux--layer-two');
-    tile.appendChild(group);
-    return tile;
+    vehicleHost.replaceChildren(stack);
+    if (focusId) document.getElementById(focusId)?.focus();
   }
 
-  // Carbon's number input at its default 40px, as every field in the editor
-  // is, with the steppers `js/form-controls.js` drives.
-  function busCountField(leg, count) {
-    const id = `scheduler-fleet-${leg}-count`;
-    const root = el('div', 'rux--number');
-    const lab = el('label', 'rux--label', 'Buses needed');
-    lab.setAttribute('for', id);
-    const wrap = el('div', 'rux--number__input-wrapper');
-    const input = el('input');
-    input.type = 'number';
-    input.id = id;
-    input.min = '1';
-    input.max = String(MAX_BUSES);
-    input.step = '1';
-    input.value = String(count);
-    input.dataset.fleetCount = leg;
-    const controls = el('div', 'rux--number__controls');
-    const stepBtn = (cls, icon, text) => {
-      const b = el('button', `rux--number__control-btn ${cls}`);
-      b.type = 'button';
-      b.setAttribute('aria-label', text);
-      b.appendChild(svgUse(icon, '16', '0 0 32 32'));
-      return b;
-    };
-    controls.append(stepBtn('down-icon', '#m-remove', 'Fewer buses'), el('div', 'rux--number__rule-divider'),
-                    stepBtn('up-icon', '#m-add', 'More buses'), el('div', 'rux--number__rule-divider'));
-    wrap.append(input, controls);
-    root.append(lab, wrap);
-    const item = el('div', 'rux--form-item');
-    item.appendChild(root);
-    return item;
-  }
+  document.getElementById('scheduler-vehicle-done')?.addEventListener('click', () => {
+    if (!vehicleEdit) return;
+    const { leg, bus, index } = vehicleEdit;
+    const list = editing.fleet[leg];
+    if (index === null) list.push(bus); else list[index] = bus;
+    vehicleEdit = null;
+    window.Rux?.modal?.close?.('scheduler-vehicle-modal');
+    drawFleet();
+    refreshDirty();
+  });
+  document.getElementById('scheduler-vehicle-modal')?.addEventListener('rux:modal-closed', () => { vehicleEdit = null; });
+
+  // The window's own controls: the type, a need, and a seat turned on or off.
+  vehicleHost?.addEventListener('change', e => {
+    if (!vehicleEdit || e.target.dataset?.fleetVehicle !== 'type') return;
+    vehicleEdit.bus.vehicleType = e.target.value || null;
+    drawVehicleFields(e.target.id);
+  });
+  vehicleHost?.addEventListener('input', e => {
+    const tag = e.target.closest?.('[data-fleet-need], [data-fleet-seat-toggle]');
+    if (!vehicleEdit || !tag) return;
+    const on = tag.getAttribute('aria-pressed') === 'true';
+    if (tag.dataset.fleetNeed) {
+      const next = new Set(needIds(vehicleEdit.bus.needs));
+      if (on) next.add(tag.dataset.fleetNeed); else next.delete(tag.dataset.fleetNeed);
+      vehicleEdit.bus.needs = needsObject(next);
+    } else {
+      vehicleEdit.bus.seats[tag.dataset.fleetSeatToggle].on = on;
+    }
+    drawVehicleFields(tag.id);
+  });
 
   /* ASSIGN BEST fills a leg's empty seats in the automatic order: Driver
      seats on every bus before co-drivers and relief, each the first of
@@ -2622,64 +2793,61 @@
   });
 
   /* Draws the tab from the model. `focusId` names the control to focus after
-     a redraw that replaced the one in use. */
+     a redraw that replaced the one in use; while a vehicle's window is open,
+     it redraws too, since its pickers and statuses call here. */
   function drawFleet(focusId) {
     if (!editing?.fleet) return;
     const dups = fleetDuplicates();
-    // What the trip needs stays, and keeps any focus in it; the buses redraw.
+    // What the trip needs stays, and keeps any focus in it; the vehicles redraw.
     for (const n of [...panelFleet.children]) if (!n.hasAttribute('data-fleet-needs')) n.remove();
     const split = fleetSplit();
     for (const leg of ['outbound', 'return']) {
       const buses = editing.fleet[leg];
-      const body = el('div', 'rux--stack-vertical rux--stack-scale-6');
-      body.appendChild(busCountField(leg, buses.length));
-      // The tiles part by 16px, closer than the 24px under Buses needed.
-      const tiles = el('div', 'rux--stack-vertical rux--stack-scale-5');
-      buses.forEach((b, i) => tiles.appendChild(busGroup(leg, b, i, buses.length, dups)));
-      body.appendChild(tiles);
-      const title = !split ? 'Buses' : leg === 'outbound' ? 'Drop-off buses' : 'Pickup buses';
-      const sec = section(title, body, assignBestButton(leg));
+      const { list, body } = rowList();
+      list.classList.add('scheduler-fleet-list');
+      buses.forEach((b, i) => body.appendChild(fleetTile(leg, b, i, buses.length, dups)));
+      const add = listAddRow({ label: 'Add vehicle', id: `scheduler-fleet-${leg}-add`, onClick: () => openVehicleDialog(leg, null) });
+      if (buses.length >= MAX_BUSES) add.btn.disabled = true;
+      body.appendChild(add.li);
+      const title = !split ? 'Vehicles' : leg === 'outbound' ? 'Drop-off vehicles' : 'Pickup vehicles';
+      const sec = section(title, list, assignBestButton(leg));
       sec.dataset.fleetSection = leg;
       sec.hidden = leg === 'return' && !split;
       panelFleet.appendChild(sec);
     }
-    if (focusId) document.getElementById(focusId)?.focus();
+    if (vehicleEdit) drawVehicleFields(focusId);
+    else if (focusId) document.getElementById(focusId)?.focus();
     // A bus added or taken off changes a rental line's quantity.
     if (linesLive) redrawLines();
   }
 
+  // The vehicle a control edits: the window's copy inside the window, else the tab's.
   const fleetBus = node => {
     const leg = node?.dataset.fleetLeg;
-    return leg ? { leg, bus: editing?.fleet?.[leg]?.find(b => b.key === node.dataset.fleetBus) } : {};
+    if (!leg) return {};
+    if (vehicleEdit && vehicleHost?.contains(node)) return { leg, bus: vehicleEdit.bus };
+    return { leg, bus: editing?.fleet?.[leg]?.find(b => b.key === node.dataset.fleetBus) };
   };
 
-  // Fewer buses: the last ones go, after a question when any has a bus or a driver.
+  // A vehicle comes off, after a question when it has a bus or a driver.
   const fleetRemoveModal = document.getElementById('scheduler-fleet-remove-modal');
   let fleetRemoveAfter = null;
-  function setBusCount(leg, want) {
+  function removeBus(leg, bus) {
     const list = editing.fleet[leg];
-    const n = Math.min(MAX_BUSES, Math.max(1, Math.round(Number(want)) || 1));
-    if (n > list.length) {
-      while (list.length < n) list.push(blankBus());
-      drawFleet(`scheduler-fleet-${leg}-count`);
-      refreshDirty();
-      return;
-    }
-    if (n === list.length) { drawFleet(`scheduler-fleet-${leg}-count`); return; }
-    const gone = list.slice(n);
     const apply = () => {
-      list.length = n;
-      drawFleet(`scheduler-fleet-${leg}-count`);
+      const at = list.indexOf(bus);
+      if (at >= 0 && list.length > 1) list.splice(at, 1);
+      drawFleet();
       refreshDirty();
     };
-    const held = gone.filter(b => b.busId || ROLES.some(r => seatFilled(b.seats[r.role])));
-    if (!held.length || !fleetRemoveModal) { apply(); return; }
-    // What goes, in words: each bus by its number and each driver by name.
-    const names = held.flatMap(b => [
-      b.busId && panelIndex.buses.get(b.busId) ? vehicleName(panelIndex.buses.get(b.busId)) : null,
-      ...ROLES.filter(r => seatFilled(b.seats[r.role]))
-        .map(r => panelIndex.driversById.get(b.seats[r.role].driverId)?.name),
-    ]).filter(Boolean);
+    const held = bus.busId || ROLES.some(r => seatFilled(bus.seats[r.role]));
+    if (!held || !fleetRemoveModal) { apply(); return; }
+    // What goes, in words: the bus by its number and each driver by name.
+    const names = [
+      bus.busId && panelIndex.buses.get(bus.busId) ? vehicleName(panelIndex.buses.get(bus.busId)) : null,
+      ...ROLES.filter(r => seatFilled(bus.seats[r.role]))
+        .map(r => panelIndex.driversById.get(bus.seats[r.role].driverId)?.name),
+    ].filter(Boolean);
     const said = names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}` : names[0];
     document.getElementById('scheduler-fleet-remove-text').textContent =
       `${said} will come off this trip when you save.`;
@@ -2692,32 +2860,23 @@
     window.Rux?.modal?.close?.(fleetRemoveModal);
     run?.();
   });
-  // Keeping the buses puts the count back as it was.
-  fleetRemoveModal?.addEventListener('rux:modal-closed', () => {
-    if (!fleetRemoveAfter) return;
-    fleetRemoveAfter = null;
-    drawFleet();
-  });
+  // Keeping the vehicle leaves it as it was.
+  fleetRemoveModal?.addEventListener('rux:modal-closed', () => { fleetRemoveAfter = null; });
 
-  panelFleet?.addEventListener('change', e => {
-    const t = e.target;
-    if (t.dataset?.fleetCount) { setBusCount(t.dataset.fleetCount, t.value); return; }
-    const { bus } = fleetBus(t);
-    if (!bus || !t.dataset.fleetField) return;
-    bus.seats[t.dataset.fleetSeat][t.dataset.fleetField] =
-      t.dataset.fleetField === 'reportTime' ? (t.value || null) : (t.value.trim() || null);
-    refreshDirty();
-  });
-  panelFleet?.addEventListener('input', e => {
+  /* The seats' fields and pickers, in the vehicle's window. A relief's swap
+     time and note are typed into the copy; Done keeps them. */
+  const fleetTyped = e => {
     const t = e.target;
     const { bus } = fleetBus(t);
     if (!bus || !t.dataset.fleetField) return;
     bus.seats[t.dataset.fleetSeat][t.dataset.fleetField] =
       t.dataset.fleetField === 'reportTime' ? (t.value || null) : (t.value.trim() || null);
     refreshDirty();
-  });
+  };
+  vehicleHost?.addEventListener('change', fleetTyped);
+  vehicleHost?.addEventListener('input', fleetTyped);
   // A pick sets the bus or the driver; a new driver starts at Not sent.
-  panelFleet?.addEventListener('rux:listbox-selected', e => {
+  vehicleHost?.addEventListener('rux:listbox-selected', e => {
     const wrap = e.target.closest?.('.rux--list-box__wrapper');
     const { bus } = fleetBus(wrap);
     if (!bus) return;
@@ -2741,7 +2900,7 @@
     refreshDirty();
   });
   // Text that no option owns goes back to the pick, and an emptied field clears it.
-  panelFleet?.addEventListener('focusout', e => {
+  vehicleHost?.addEventListener('focusout', e => {
     const input = e.target;
     if (!(input instanceof HTMLInputElement) || input.getAttribute('role') !== 'combobox') return;
     const wrap = input.closest('.rux--list-box__wrapper');
@@ -3874,8 +4033,13 @@
         : (isoOrNull(f['scheduler-f-rend'].value) ?? isoOrNull(f['scheduler-f-rstart'].value)) },
     { key: 'customer', get: f => f['scheduler-f-customer'].value.trim() || null },
     { key: 'trip_type', get: f => f['scheduler-f-type'].value || null },
-    // Any is the empty value and stores null.
-    { key: 'vehicle_type', get: f => f['scheduler-f-vehicle'].value || null },
+    // The type every vehicle on the trip wants, or null when they differ.
+    { key: 'vehicle_type', get: () => {
+        const v = fleetVehicles();
+        if (!v) return editing?.before?.vehicle_type ?? null;
+        const types = new Set(v.map(b => b.vehicleType ?? null));
+        return types.size === 1 ? [...types][0] : null;
+      } },
     // Standard is the empty value and stores null.
     { key: 'trip_bar_color', get: f => f['scheduler-f-color'].querySelector('.rux--list-box__menu-item--active')?.dataset.color || null },
     // `confirmed`, `balance_paid` and `date_paid` are derived, not edited:
@@ -3890,13 +4054,21 @@
        whose two records disagree reads one way here and another there. They go
        when nothing reads them. A column whose tag was not drawn is left as it
        was, for the same reason as above. */
-    { key: 'trip_reqs', get: () => ({
-        ...(editing?.reqs || {}),
-        ...Object.fromEntries(editableNeeds().map(r => [r.id, needPressed(r.id) === true])),
-      }) },
-    ...[['req_sleeper', 'sleeper'], ['req_ada', 'adaLift'], ['req_56pax', 'pax56'],
-        // A reminder to book a hotel, not the bus's equipment; rux-ui lists it with the needs.
-        ['need_hotel', 'hotel'], ['need_fuel_card', 'fuelCard']]
+    { key: 'trip_reqs', get: () => {
+        const out = { ...(editing?.reqs || {}) };
+        for (const r of tripNeedList()) out[r.id] = needPressed(r.id) === true;
+        const union = fleetNeedUnion();
+        if (union) {
+          for (const r of vehicleNeedList()) out[r.id] = union.has(r.id);
+          for (const id of union) out[id] = true;
+        }
+        return out;
+      } },
+    // The vehicle's three are true when any vehicle on the trip needs them.
+    ...[['req_sleeper', 'sleeper'], ['req_ada', 'adaLift'], ['req_56pax', 'pax56']]
+      .map(([key, id]) => ({ key, get: () => fleetNeedUnion()?.has(id) ?? !!editing?.before?.[key] })),
+    // A reminder to book a hotel, not the bus's equipment; rux-ui lists it with the needs.
+    ...[['need_hotel', 'hotel'], ['need_fuel_card', 'fuelCard']]
       .map(([key, id]) => ({ key, get: () => needPressed(id) ?? !!editing?.before?.[key] })),
     // Each leg's hotel: whether it is booked, and its confirmation number.
     ...['outbound', 'return'].flatMap(l => [
@@ -4401,7 +4573,7 @@
 
   function readForm() {
     const f = {};
-    for (const id of ['destination', 'customer', 'type', 'vehicle', 'notes',
+    for (const id of ['destination', 'customer', 'type', 'notes',
                       // Every id `EDITS` reads through `f` is listed, and only
                       // ids on the panel: a missing element returns null.
                       'start', 'end', 'rstart', 'rend',
@@ -5819,8 +5991,9 @@
     const [outFrom, outTo] = outLabels(trip.trip_type === SPLIT);
 
     /* Needs is a row of Carbon's selectable tags under a field label, one row
-       that wraps if the labels outgrow the panel. Sleeper, ADA lift and 56 pax
-       are asked of the bus; Hotel is a reminder that one has to be booked. */
+       that wraps if the labels outgrow the panel: the trip's own, Hotel, a
+       reminder that one has to be booked, and Fuel card. What a vehicle needs
+       is asked in its own window. */
     const flags = el('div', 'scheduler-needs');
     const needsLabel = el('div', 'rux--label', 'Needs');
     needsLabel.id = 'scheduler-f-needs-label';
@@ -5831,40 +6004,8 @@
        here: the list is theirs to grow, and a need this app did not know about
        was one the board could show and nobody could set. */
     const ticked = new Set(requirementsOf(trip));
-    needsRow.append(...editableNeeds().map(r => tagField(needFieldId(r.id), r.label, ticked.has(r.id))));
+    needsRow.append(...tripNeedList().map(r => tagField(needFieldId(r.id), r.label, ticked.has(r.id))));
     flags.append(needsLabel, needsRow);
-
-    /* The vehicle types are the fleet's own, so a new type needs no code, and
-       a trip keeps a type no active bus has any more. A tag shows for a type
-       when an active bus of that type has the equipment; Any shows every tag,
-       and Hotel always shows, since it is not the bus's. */
-    const fleet = [...(panelIndex.buses?.values() ?? [])].filter(b => b.status === 'active');
-    const vehicleTypes = [...new Set([...fleet.map(b => b.type), trip.vehicle_type].filter(Boolean))].sort();
-    // The needs a bus can be measured against, and how. Everything else the
-    // office keeps on its list is about the trip, not the vehicle, so no
-    // vehicle type hides it.
-    const EQUIPMENT = [
-      ['sleeper', b => b.sleeper],
-      ['adaLift', b => b.ada_lift],
-      ['pax56', b => b.capacity != null && b.capacity >= 56],
-    ];
-    /* A tag the type does not offer hides. On a change of type it also turns
-       off; on opening, a tag already on stays shown, so no saved need is
-       hidden. */
-    const syncNeeds = (type, clear) => {
-      for (const [id, has] of EQUIPMENT) {
-        // Absent where the office has deactivated that requirement.
-        const tag = flags.querySelector(`#${needFieldId(id)}`);
-        if (!tag) continue;
-        const offered = !type || fleet.some(b => b.type === type && has(b));
-        if (!offered && clear && pressed(tag)) {
-          tag.setAttribute('aria-pressed', 'false');
-          tag.classList.remove('rux--tag--selectable-selected');
-        }
-        tag.hidden = !offered && !pressed(tag);
-      }
-    };
-    syncNeeds(trip.vehicle_type, false);
 
     /* While Hotel is ticked, each leg the trip has shows its hotel's
        confirmation number beside a Booked box, the leg's
@@ -5942,17 +6083,11 @@
     );
     panelDetails.appendChild(section('Trip information', topFields));
 
-    /* WHAT THE TRIP NEEDS opens the Buses tab, beside the buses it is asked
-       of: the vehicle type, then the needs, then each leg's hotel while Hotel
-       is ticked. It is drawn once per opening, and `drawFleet` redraws only
-       the bus sections after it. */
+    /* WHAT THE TRIP NEEDS opens the Buses tab: the trip's own needs, then each
+       leg's hotel while Hotel is ticked. It is drawn once per opening, and
+       `drawFleet` redraws only the vehicles after it. */
     const needsStack = el('div', 'rux--stack-vertical rux--stack-scale-5');
-    needsStack.append(
-      selectField('scheduler-f-vehicle', 'Vehicle', trip.vehicle_type,
-        [['', 'Any'], ...vehicleTypes.map(t => [t, t])]),
-      flags,
-      hotelBox,
-    );
+    needsStack.append(flags, hotelBox);
     const needsSection = section('What the trip needs', needsStack);
     needsSection.dataset.fleetNeeds = '';
     needsSection.addEventListener('input', refreshDirty);
@@ -7641,11 +7776,6 @@
       returnDates.hidden = !split;
       setOutLabels(split);
       setHotelLegs(split);
-      drawFleet();
-      refreshDirty();
-    });
-    document.getElementById('scheduler-f-vehicle')?.addEventListener('change', e => {
-      syncNeeds(e.target.value, true);
       drawFleet();
       refreshDirty();
     });
@@ -12842,10 +12972,11 @@
     return_start_date: { id: 'scheduler-f-rstart', kind: 'date' },
     return_end_date: { id: 'scheduler-f-rend', kind: 'date' },
     trip_type: { id: 'scheduler-f-type', kind: 'select' },
-    vehicle_type: { id: 'scheduler-f-vehicle', kind: 'select' },
-    req_sleeper: { id: needFieldId('sleeper'), kind: 'tag' },
-    req_ada: { id: needFieldId('adaLift'), kind: 'tag' },
-    req_56pax: { id: needFieldId('pax56'), kind: 'tag' },
+    // What the vehicle is and needs goes to the trip's first vehicle.
+    vehicle_type: { kind: 'fleet' },
+    req_sleeper: { kind: 'fleet', need: 'sleeper' },
+    req_ada: { kind: 'fleet', need: 'adaLift' },
+    req_56pax: { kind: 'fleet', need: 'pax56' },
     need_hotel: { id: needFieldId('hotel'), kind: 'tag' },
     need_fuel_card: { id: needFieldId('fuelCard'), kind: 'tag' },
     quoted_price: { id: 'scheduler-f-quoted', kind: 'text' },
@@ -12908,6 +13039,17 @@
     const unpicked = [];
     for (const [key, value] of Object.entries(fields || {})) {
       const control = DRAFT_CONTROLS[key];
+      if (control?.kind === 'fleet') {
+        const first = editing?.fleet?.outbound?.[0];
+        if (!first) { missed.push([key, value]); continue; }
+        if (control.need) {
+          const next = new Set(needIds(first.needs));
+          if (value) next.add(control.need); else next.delete(control.need);
+          first.needs = needsObject(next);
+        } else first.vehicleType = value || null;
+        drawFleet();
+        continue;
+      }
       const node = control ? document.getElementById(control.id) : null;
       if (!node) { missed.push([key, value]); continue; }
       typeInto(node, control.kind, value);

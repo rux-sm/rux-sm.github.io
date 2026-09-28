@@ -404,6 +404,44 @@
 .rux--header[data-theme="geist-dark"] {
   border-block-end-color: var(--rux-border-subtle-01);
 }
+/* GEIST'S HEADER IS 64px, measured on its own site: 16px on every side of
+   32px controls, the name 24px in. Carbon's is 48px of edge-to-edge 48px
+   squares. The bar keeps Carbon's parts: its icons become 32px buttons with
+   6px corners, 8px apart, and the name starts 8px past the bar's 16px.
+   Everything Carbon places under the header -- the page's content, the side
+   nav and its overlay, the header's panels and a side panel -- moves to 4rem
+   with it. */
+[data-theme="geist-dark"] .rux--header,
+.rux--header[data-theme="geist-dark"] {
+  block-size: 4rem;
+  padding-inline: var(--rux-spacing-05);
+}
+:is([data-theme="geist-dark"] .rux--header, .rux--header[data-theme="geist-dark"]) .rux--header__global {
+  align-items: center;
+  gap: var(--rux-spacing-03);
+}
+:is([data-theme="geist-dark"] .rux--header, .rux--header[data-theme="geist-dark"]) .rux--header__action {
+  block-size: 2rem;
+  min-block-size: 2rem;
+  inline-size: 2rem;
+  min-inline-size: 2rem;
+  border-radius: 6px;
+}
+:is([data-theme="geist-dark"] .rux--header, .rux--header[data-theme="geist-dark"]) .rux--header__name {
+  padding-inline-start: var(--rux-spacing-03);
+}
+[data-theme="geist-dark"] :is(.rux--header ~ .rux--content, div:has(.rux--header) ~ .rux--content) {
+  margin-block-start: 4rem;
+}
+[data-theme="geist-dark"] :is(.rux--side-nav--ux, .rux--side-nav__overlay, .rux--header-panel, .rux--side-panel) {
+  inset-block-start: 4rem;
+}
+[data-theme="geist-dark"] :is(.rux--header ~ .rux--side-nav, .rux--side-panel) {
+  block-size: calc(100% - 4rem);
+}
+[data-theme="geist-dark"] .rux--header ~ .rux--side-nav {
+  inset-block-start: 4rem;
+}
 /* GEIST'S FIELDS ARE OUTLINED, NOT FILLED. Its control takes the container's
    own surface and a 1px ring, measured on Geist's Input page at rgba(255 255
    255 / 0.14) -- which is what border-subtle-01 already resolves to here. The
@@ -605,14 +643,15 @@
   background: var(--rux-layer-hover-01);
 }
 /* THE TOOLBAR SITS INSIDE THE BOX, as Geist's own controls sit inside a card:
-   6px from its top and bottom, 8px from its ends and 4px apart, so its 36px
-   controls make a 48px bar, as the scheduler's heads do, and the search
+   6px from every edge and 4px apart, so its 36px controls make a 48px bar, as
+   the scheduler's heads do, and their 6px corners sit concentric in the box's
+   12px, and the search
    field's ring and the buttons' corners no longer lie on the box's outline,
    doubling its line and meeting its 8px corners with their 6px ones. The
    toolbar takes the box's surface rather than a fill of its own. */
 [data-theme="geist-dark"] .rux--data-table-container .rux--table-toolbar {
   block-size: auto;
-  padding: 6px var(--rux-spacing-03);
+  padding: 6px;
   background-color: transparent;
 }
 [data-theme="geist-dark"] .rux--data-table-container .rux--toolbar-content {

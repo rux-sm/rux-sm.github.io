@@ -7796,8 +7796,18 @@
           toast('error', 'Could not copy that', 'The browser would not reach the clipboard.');
         }
       });
+      /* The quote calculator, beside the week and filled from this trip, as
+         the Calculator shortcut opens it: the lines are what it sets, so the
+         way to it sits with them, above the copy of what it made. */
+      const calcButton = el('button', 'rux--btn rux--btn--tertiary rux--layout--size-md scheduler-quickbooks', 'Open calculator');
+      calcButton.type = 'button';
+      const calcIcon = svgUse('#m-calculate', '16', '0 0 32 32');
+      calcIcon.classList.add('rux--btn__icon');
+      calcButton.appendChild(calcIcon);
+      calcButton.id = 'scheduler-f-opencalc';
+      calcButton.addEventListener('click', () => openCalculator(null));
       const linesBody = el('div', 'rux--stack-vertical rux--stack-scale-3');
-      linesBody.append(lineList.list, linesNote, qbButton);
+      linesBody.append(lineList.list, linesNote, calcButton, qbButton);
       panelBilling.appendChild(section('Quote lines', linesBody));
 
       /* QUOTE SENT: the price the customer was sent, and the day, kept for

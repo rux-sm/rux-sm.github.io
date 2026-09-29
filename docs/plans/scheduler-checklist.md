@@ -28,8 +28,9 @@ that cannot are ticked where the work is done, like right after printing a form.
   person after going back over that tab. It keeps who pressed it and when,
   enters the trip's history, and puts a check on the tab's name. The
   calculator belongs to Billing, because its work is the billing lines.
-- **Done can be pressed only when its tab is complete,** and until then the
-  button names what is missing:
+- **Done can be pressed only when its tab is complete,** never with an item
+  open, since an item a trip does not need is already left out. Until then
+  the button names what is missing:
   - **Route:** every stop has a place, no leg says Needs times or Check
     times, the drives are measured, and no stop is dated outside its leg.
   - **Buses:** every bus the trip needs is assigned, and each has what the
@@ -55,10 +56,16 @@ that cannot are ticked where the work is done, like right after printing a form.
   work left; the other groups start once the quote is sent.
 - **Nothing is blocked.** A quote can be sent, and a trip saved, with tabs
   not yet Done; the checklist only says what is left, in any order.
-- **Done needs six new columns on `trips`,** `route_done_at`,
-  `route_done_by`, `buses_done_at`, `buses_done_by`, `billing_done_at` and
-  `billing_done_by`, applied to the database as its own step before the
-  editor uses them; rux-ui ignores columns it does not know.
+- **Done needs six new columns on `trips`:** `route_done_at`,
+  `buses_done_at` and `billing_done_at` as timestamps, and `route_done_by`,
+  `buses_done_by` and `billing_done_by` as the person's name, the way
+  `trip_updates.actor_name` keeps it. They are applied to the database as its
+  own step before the editor uses them; rux-ui ignores columns it does not
+  know.
+- **Done is part of the editor's unsaved changes,** like any field: pressing
+  it checks the tab at once, Save writes it, and Reset takes it back. A change
+  on a tab clears its check, and Billing's, the moment it is made, so a tab
+  changed and then marked Done again in one sitting saves as Done.
 - **What the trip already knows ticks itself.** Customer items, buses, seats
   and equipment come from the trip. "Drivers confirmed" comes from each
   driver's status (Not sent, Pending, Confirmed), so there is no separate
@@ -100,9 +107,7 @@ that cannot are ticked where the work is done, like right after printing a form.
 
 ## Questions
 
-- **Can Done be pressed with an item still open,** for a trip that genuinely
-  has no hotel or relief line to add? The recommendation is no: an item a
-  trip does not need is already left out, so an open item is real.
+None open.
 
 ## Tasks
 

@@ -91,8 +91,8 @@ that cannot are ticked where the work is done, like right after printing a form.
   for a trip with a return, beside Details, Route, Buses, Billing and Files.
 - **The trip's card on the board says what is left,** as one line, "3 left",
   which opens the Checklist tab.
-- **The Departures list** is a panel beside the board, opened like Forms, so
-  the week stays in view. It shows the legs leaving today and the next 2 days,
+- **The Departures list** is a panel beside the board, opened from the
+  board's menu into the panel Forms uses, so the week stays in view. It shows the legs leaving today and the next 2 days,
   grouped by day, legs with items left first and Ready ones folded under them.
   Each leg lists only its open items, with their buttons.
 - **When every driver on a leg is past Not sent,** the scheduler also ticks
@@ -119,7 +119,6 @@ None open.
 ## Tasks
 
 - [ ] Keep `driver_contact_sent_<leg>` in step with the drivers' statuses.
-- [ ] Build the Departures panel.
 - [ ] Update `scheduler/docs/screen-inventory.md` and the scheduler README.
 - [ ] Check every item in Chrome on :8641 against a real trip, one with a
       return leg and a part-time driver among them.

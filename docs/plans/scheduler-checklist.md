@@ -119,6 +119,6 @@ None open.
 ## Tasks
 
 - [ ] Keep `driver_contact_sent_<leg>` in step with the drivers' statuses.
-- [ ] Update `scheduler/docs/screen-inventory.md` and the scheduler README.
-- [ ] Check every item in Chrome on :8641 against a real trip, one with a
-      return leg and a part-time driver among them.
+- [ ] Check the hours-of-service row in Chrome on :8641 once an upcoming
+      trip has a part-time driver; none has one yet, so only the sample trips
+      in the check cover it.

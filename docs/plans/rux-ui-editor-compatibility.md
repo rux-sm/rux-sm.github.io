@@ -60,9 +60,6 @@ None open.
 
 ## Tasks
 
-- [ ] rux-ui takes the spot minutes from `route-times-v1` instead of its fixed
-  15, taking a trip's opening copy again when the setting arrives after the
-  trip opened, so the setting is never read as an edit.
 - [ ] Make rux-ui read the updates log and prompt on its own saves.
 - [ ] Blank the 203 dated notes the log copied, where a note is still the text
   it copied, once both apps read the log. SQL shown to rux.

@@ -77,3 +77,7 @@ Claude Code, working in your own Chrome, can make a change in the trip editor
 and press Save itself, but only after you say yes to that change. It goes
 through the editor rather than the connector, so the save runs the same
 checks and history as yours.
+
+How it reviews and enters trips, reads the customer's emails, and the office
+rules it follows are the `trips` skill in `.claude/skills/trips/`, which it
+adds to whenever you give it a new rule.

@@ -537,9 +537,10 @@
      What a driver who is new to the company, or drives for it now and then,
      signs before a trip: the hours on duty on each of the seven days before
      it, and when the last shift ended. It prints the driver's full name, as
-     the record is under it, and the seven dates, counted back from the day
-     the leg starts, the day before it first; the hours, the signature and its
-     date and time are the driver's to write.
+     the record is under it, the seven dates in order, the oldest first and
+     the day before the leg starts last, and the leg's first day beside the
+     signature, the day it is signed; the hours, the signature and the time
+     are the driver's to write.
 
      IT TAKES THE TOP HALF OF A LETTER SHEET and leaves the rest white, which
      is the half the office kept when it printed the form two to a page. */
@@ -604,7 +605,7 @@
       const th = el('th', null, String(day));
       th.scope = 'row';
       const date = el('td');
-      date.appendChild(hosFill(`Date, day ${day}`, start ? mdy(dayShift(start, -day)) : ''));
+      date.appendChild(hosFill(`Date, day ${day}`, start ? mdy(dayShift(start, day - HOS_DAYS - 1)) : ''));
       const hours = el('td');
       hours.appendChild(hosFill(`Time on duty, day ${day}`, ''));
       tr.append(th, date, hours);
@@ -624,11 +625,11 @@
     box.appendChild(el('p', 'scheduler-hos__certify',
       'I hereby certify that the information contained herein is true to the best of my knowledge and belief.'));
 
-    // Both the driver's, written when they sign.
+    // The driver's, written when they sign, on the day the leg starts.
     const sign = el('div', 'scheduler-hos__sign');
     sign.append(
       hosField('Signature:', 'Signature', ''),
-      hosField('Date & time:', 'Date and time', ''),
+      hosField('Date & time:', 'Date and time', start ? mdy(start) : ''),
     );
     box.appendChild(sign);
     half.appendChild(box);

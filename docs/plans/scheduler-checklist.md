@@ -39,6 +39,21 @@ that cannot are ticked where the work is done, like right after printing a form.
     much, as the Billing tab already does.
 - **A placeholder shows only the Quote group,** since quoting it is the work
   left; the other groups start once the quote is sent.
+- **Nothing is blocked.** A quote can be sent, and a trip saved, with items
+  still open; the checklist only says what is left, in any order.
+- **Reviewed is a person's sign-off, not a tick the trip works out.** The
+  Quote group ends with a Reviewed button, pressed after going back over the
+  whole trip. It can be pressed only once the four Quote items pass, and
+  until then it names what is missing. It keeps who pressed it and when, and
+  enters the trip's history.
+- **A change after review clears it.** A Save that changes the route, the
+  buses, the billing lines or the quoted price takes Reviewed off, so the mark
+  always means the trip as it stands was checked.
+- **The bar shows a small check on a reviewed trip, and nothing otherwise,**
+  so a quote sent early does not make its bar look wrong.
+- **Reviewed needs two new columns on `trips`,** `reviewed_at` and
+  `reviewed_by`, applied to the database as its own step before the editor
+  uses them; rux-ui ignores columns it does not know.
 - **What the trip already knows ticks itself.** Customer items, buses, seats
   and equipment come from the trip. "Drivers confirmed" comes from each
   driver's status (Not sent, Pending, Confirmed), so there is no separate
@@ -80,10 +95,9 @@ that cannot are ticked where the work is done, like right after printing a form.
 
 ## Questions
 
-- **Does the bar show what is left?** Three choices were mocked up: nothing
-  on the bar, three dots for route, price and billing, or a "2 left" chip that
-  shows only while something is missing. The chip is the recommendation,
-  because a finished trip's bar stays as it is today.
+- **Can Reviewed be pressed with an item still open,** for a trip that
+  genuinely has no hotel or relief line to add? The recommendation is no:
+  an item a trip does not need is already left out, so an open item is real.
 
 ## Tasks
 
@@ -95,7 +109,11 @@ that cannot are ticked where the work is done, like right after printing a form.
       its number.
 - [ ] Put the Printed box back in the form panel, beside Print, for the
       envelope, itinerary and hours-of-service record.
-- [ ] Add the "left" line to the trip's card on the board.
+- [ ] Add the "left" line to the trip's card on the board, and the reviewed
+      check to its bar.
+- [ ] Add `reviewed_at` and `reviewed_by` to `trips`, shown to rux as SQL and
+      applied on a yes, then the Reviewed button, its clearing on Save, and
+      its history entry.
 - [ ] Build the Departures panel.
 - [ ] Update `scheduler/docs/screen-inventory.md` and the scheduler README.
 - [ ] Check every item in Chrome on :8641 against a real trip, one with a

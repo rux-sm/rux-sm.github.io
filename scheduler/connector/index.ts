@@ -133,14 +133,17 @@ function busNeeds(trip: { req_56pax?: boolean | null; req_ada?: boolean | null; 
 function tripWarnings(
   trip: TripLegs & { trip_bar_color?: string | null },
   buses: { leg: string; buses: unknown }[],
-  stops: { leg: string; position: number; name?: string | null; arrive_date?: string | null; spot_date?: string | null }[],
+  stops: {
+    leg: string; position: number; name?: string | null
+    arrive_date?: string | null; spot_date?: string | null; depart_prev_date?: string | null
+  }[],
 ) {
   const warnings: string[] = []
   for (const l of legsOf(trip)) {
     const assigned = buses.filter((b) => b.leg === l.leg && b.buses).length
     if (assigned < l.needed && !isPlaceholder(trip)) warnings.push(`The ${l.leg} leg needs ${l.needed} buses and has ${assigned}.`)
     for (const s of stops.filter((x) => x.leg === l.leg)) {
-      for (const day of [s.arrive_date, s.spot_date]) {
+      for (const day of [s.arrive_date, s.spot_date, s.depart_prev_date]) {
         if (day && (day < l.start || day > l.end)) {
           warnings.push(`Stop ${s.position + 1}${s.name ? ` (${s.name})` : ''} is dated ${day}, outside the ${l.leg} leg's ${l.start} to ${l.end}.`)
         }
@@ -155,7 +158,7 @@ Deno.serve(
     [withOAuthProtectedResource(), withSupabase({ auth: 'user' })],
     async (req, { supabase }) => {
       const handler = createMcpHandler(() => {
-        const server = new McpServer({ name: 'scheduler', version: '0.3.0' })
+        const server = new McpServer({ name: 'scheduler', version: '0.3.1' })
 
         server.registerTool(
           'find_trips',
@@ -209,7 +212,7 @@ Deno.serve(
               .eq('trip_id', trip.id).order('leg').order('position'))
 
             const stops = orThrow(await supabase.from('trip_stops')
-              .select('leg, position, type, label, name, address, depart_prev, arrive, spot, arrive_date, spot_date, miles, drive, dwell_status')
+              .select('leg, position, type, label, name, address, depart_prev, depart_prev_date, arrive, arrive_date, spot, spot_date, miles, drive, dwell_status')
               .eq('trip_id', trip.id).order('leg').order('position'))
 
             return answer({ trip, warnings: tripWarnings(trip, buses, stops), buses, stops })

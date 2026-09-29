@@ -60,8 +60,15 @@ that cannot are ticked where the work is done, like right after printing a form.
   `buses_done_at` and `billing_done_at` as timestamps, and `route_done_by`,
   `buses_done_by` and `billing_done_by` as the person's name, the way
   `trip_updates.actor_name` keeps it. They are applied to the database as its
-  own step before the editor uses them; rux-ui ignores columns it does not
-  know.
+  own step before the editor uses them; rux-ui writes only the columns it
+  changed, so it leaves them alone.
+- **The database clears Done, not the editor,** so a change made in rux-ui or
+  by hand clears it too. Triggers on `trips`, `trip_stops`,
+  `trip_assignments` and `trip_quote_lines` take off the Done each change
+  affects, as the table above says; reordering buses, a no-op write, and an
+  update that sets a Done itself clear nothing. The editor therefore writes
+  Done in one last update after the trip's rows, and reads `updated_at` back
+  after it, so its own save is not taken for a change made elsewhere.
 - **Done is part of the editor's unsaved changes,** like any field: pressing
   it checks the tab at once, Save writes it, and Reset takes it back. A change
   on a tab clears its check, and Billing's, the moment it is made, so a tab
@@ -121,9 +128,11 @@ None open.
       envelope, itinerary and hours-of-service record.
 - [ ] Add the "left" line to the trip's card on the board, and the check to
       its bar when all three tabs are Done.
-- [ ] Add the six Done columns to `trips`, shown to rux as SQL and applied on
-      a yes, then the three Done buttons, their clearing on Save named in the
-      update window, and their history entries.
+- [ ] Apply the six Done columns and their clearing triggers to the
+      database, shown to rux as SQL and applied on a yes; the SQL is tested
+      offline against every clearing rule.
+- [ ] Add the three Done buttons, written last on Save, their clearing named
+      in the update window, and their history entries.
 - [ ] Build the Departures panel.
 - [ ] Update `scheduler/docs/screen-inventory.md` and the scheduler README.
 - [ ] Check every item in Chrome on :8641 against a real trip, one with a

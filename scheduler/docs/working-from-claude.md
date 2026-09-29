@@ -70,3 +70,10 @@ with the changes filled in over it, and Reset takes them back out.
 - It cannot confirm a trip, mark one paid, assign a bus or a driver, or touch
   a document.
 - An unopened draft is deleted after 14 days.
+
+## Saving from Claude Code
+
+Claude Code, working in your own Chrome, can make a change in the trip editor
+and press Save itself, but only after you say yes to that change. It goes
+through the editor rather than the connector, so the save runs the same
+checks and history as yours.

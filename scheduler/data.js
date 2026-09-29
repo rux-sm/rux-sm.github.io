@@ -10662,23 +10662,6 @@
   viewerClose?.addEventListener('click', () => closeViewer());
 
   // Open itinerary, from a shortcut slot or the bar menu: the trip's newest.
-  /* THE BAR'S ENVELOPE. A bar is one bus on one leg, which is exactly what the
-     envelope binds to, so its assignment id is the whole address. The form
-     names the leg only where it is the return, because that is the only pair
-     a trip can show at once. */
-  const barHasCrew = bar => (barCrew(bar)?.crew ?? []).some(c => !c.needed);
-
-  function openEnvelope(bar) {
-    const id = bar.dataset.assignmentId;
-    if (!id) return;
-    openGenerated({
-      url: `print.html?form=envelope&assignment=${encodeURIComponent(id)}`,
-      kind: 'Driver trip envelope',
-      note: bar.dataset.leg === 'return' ? 'Return' : '',
-      opener: bar,
-    });
-  }
-
   /* The forms this trip can fill in, on print.html's own list. It takes the
      trip rather than the bar's assignment, because the list is the trip's and
      a form that wants one bus asks for it once it is chosen. */
@@ -10688,30 +10671,6 @@
     openGenerated({
       url: `print.html?trip=${encodeURIComponent(id)}`,
       kind: 'Forms',
-      note: '',
-      opener: bar,
-    });
-  }
-
-  /* The driver's itinerary for this bar's leg, and the customer's quote for
-     its trip, straight from the bar rather than through the Forms list. */
-  function openDriverItinerary(bar) {
-    const id = bar.dataset.tripId;
-    if (!id) return;
-    const leg = bar.dataset.leg === 'return' ? 'return' : 'outbound';
-    openGenerated({
-      url: `print.html?form=driver-itinerary&trip=${encodeURIComponent(id)}&leg=${leg}`,
-      kind: 'Driver trip itinerary',
-      note: leg === 'return' ? 'Return' : '',
-      opener: bar,
-    });
-  }
-  function openQuote(bar) {
-    const id = bar.dataset.tripId;
-    if (!id) return;
-    openGenerated({
-      url: `print.html?form=customer-quote&trip=${encodeURIComponent(id)}`,
-      kind: 'Customer quote',
       note: '',
       opener: bar,
     });
@@ -11343,18 +11302,10 @@
       blocked: bar => (bar.dataset.itineraryId || client ? null : 'No itinerary yet'),
       run: bar => (bar.dataset.itineraryId ? openItinerary(bar)
         : pickFile(file => uploadFrom(bar.dataset.tripId, 'Itinerary', file))) },
-    // The forms, each with the Forms page's own icon, and the list of them all.
-    { id: 'envelope', label: 'Driver envelope', icon: '#m-mail', short: 'Envelope',
-      blocked: bar => (!bar.dataset.assignmentId ? 'Not on a bus'
-        : !barHasCrew(bar) ? 'No driver on this bus' : null),
-      run: bar => openEnvelope(bar) },
-    { id: 'driver_itinerary', label: 'Driver itinerary', icon: '#m-route', short: 'Driver sheet',
-      blocked: () => null, run: bar => openDriverItinerary(bar) },
-    { id: 'quote', label: 'Customer quote', icon: '#m-request_quote', short: 'Quote',
-      blocked: () => null, run: bar => openQuote(bar) },
     { id: 'calculator', label: 'Quote calculator', icon: '#m-calculate', short: 'Calculator',
       blocked: () => null, run: bar => openCalculator(bar) },
-    { id: 'forms', label: 'All forms', icon: '#m-description', short: 'Forms',
+    // The trip's list of forms, the one way to a form from the board.
+    { id: 'forms', label: 'Forms', icon: '#m-description', short: 'Forms',
       blocked: () => null, run: bar => openForms(bar) },
     { id: 'assign', label: 'Assign driver', icon: '#m-person-fill', short: 'Driver',
       label_for: bar => (barSeat(bar)?.seat?.driver_id != null ? 'Change driver' : 'Assign driver'),
@@ -11388,11 +11339,21 @@
   /* A stored choice is a list of known actions, or None, cut or padded to the
      number of slots; anything else is the default set. The padding is what
      reads a choice saved when there were three slots. */
+  // The single forms a slot could once be set to, which Forms now stands for.
+  const FORM_SHORTCUTS = new Set(['envelope', 'driver_itinerary', 'quote']);
   const cleanShortcuts = value => {
     if (!Array.isArray(value)) return SHORTCUT_DEFAULT.slice();
     const known = new Set(SHORTCUT_ACTIONS.map(a => a.id).filter(id => id !== 'open'));
-    return Array.from({ length: SHORTCUT_SLOTS },
-      (_, i) => (known.has(value[i]) ? value[i] : null));
+    // A slot saved on a single form holds Forms, and Forms is held once.
+    let forms = false;
+    return Array.from({ length: SHORTCUT_SLOTS }, (_, i) => {
+      const id = FORM_SHORTCUTS.has(value[i]) ? 'forms' : value[i];
+      if (id === 'forms') {
+        if (forms) return null;
+        forms = true;
+      }
+      return known.has(id) ? id : null;
+    });
   };
 
   /* The docked sheet stands on the header's own surface. The header is a theme

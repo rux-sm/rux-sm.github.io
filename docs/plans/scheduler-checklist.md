@@ -43,9 +43,15 @@ that cannot are ticked where the work is done, like right after printing a form.
 - **The trip's card on the board says what is left,** as one line, "3 left",
   which opens the Checklist tab. The bar itself gains nothing, because it is
   already full.
-- **The Departures list** shows the legs leaving from today onward, grouped by
-  day, legs with items left first and Ready ones folded under them. Each leg
-  lists only its open items, with their buttons.
+- **The Departures list** is a panel beside the board, opened like Forms, so
+  the week stays in view. It shows the legs leaving today and the next 2 days,
+  grouped by day, legs with items left first and Ready ones folded under them.
+  Each leg lists only its open items, with their buttons.
+- **When every driver on a leg is past Not sent,** the scheduler also ticks
+  rux-ui's `driver_contact_sent_<leg>`, and unticks it if one goes back, so
+  rux-ui's Tasks list stays in step.
+- **Nothing after the trip for now:** the survey and incident notes stay in
+  rux-ui.
 - **The ticks are the columns rux-ui already writes,** so a tick in either app
   shows in both: `itinerary_printed_<leg>`, `hos_form_printed_<leg>`,
   `hotel_booked_<leg>` and `fuel_card_assigned_<leg>` with their numbers on
@@ -58,26 +64,19 @@ that cannot are ticked where the work is done, like right after printing a form.
 
 ## Questions
 
-- How far ahead should Departures look: today and the next 2 days, or the
-  whole week on screen?
-- Should Departures be a panel beside the board, like Forms, or its own page
-  in the side menu, like Trips?
-- Should the checklist also cover after the trip, like the survey sent and any
-  incident, as rux-ui's post-trip list does, or leave that for later?
-- rux-ui has a "Driver contact info sent" box per leg. When every driver on a
-  leg is past Not sent, should the scheduler tick that box too, so rux-ui's
-  list agrees?
+None open.
 
 ## Tasks
 
 - [ ] Write `checklist.js` with every item's rule, and a test that runs it
       against sample trips.
+- [ ] Keep `driver_contact_sent_<leg>` in step with the drivers' statuses.
 - [ ] Add the Checklist tab to the trip editor, with the fuel card box and
       its number.
 - [ ] Put the Printed box back in the form panel, beside Print, for the
       envelope, itinerary and hours-of-service record.
 - [ ] Add the "left" line to the trip's card on the board.
-- [ ] Build the Departures list where the answer to the second question puts it.
+- [ ] Build the Departures panel.
 - [ ] Update `scheduler/docs/screen-inventory.md` and the scheduler README.
 - [ ] Check every item in Chrome on :8641 against a real trip, one with a
       return leg and a part-time driver among them.

@@ -297,6 +297,14 @@
                       </div>
                     </div>
                   </div>
+                  <!-- Opened from a trip, the route's dead miles are offered
+                       rather than counted: ticked, they fill the field below. -->
+                  <div id="scheduler-quote-route-dead-item" hidden>
+                    <div class="rux--form-item rux--checkbox-wrapper">
+                      <input class="rux--checkbox" type="checkbox" id="scheduler-quote-route-dead">
+                      <label class="rux--checkbox-label" for="scheduler-quote-route-dead"><span class="rux--checkbox-label-text" id="scheduler-quote-route-dead-text">Count the route's dead miles</span></label>
+                    </div>
+                  </div>
                   <!-- Dead miles are part of the trip's miles. quote.js puts this
                        field in Carbon's warning state while there are more of
                        them than the trip has. -->

@@ -491,17 +491,29 @@
     });
 
     /* A trip's figures, from the board's Calculator shortcut: `miles` is a
-       day's miles each, comma-separated, and `dead` its dead miles. */
+       day's miles each, comma-separated, `drivers` 2 where the leg has a
+       co-driver seat on, and `dead` the route's dead miles,
+       offered by a checkbox that `deadon` ticks when the trip's rental already
+       counts them. */
     const fill = () => {
       const params = new URLSearchParams(location.search);
       const miles = (params.get('miles') || '').split(',').filter(Boolean).map(m => Math.max(0, num(m)))
         .slice(0, rates.max_days);
-      if (!miles.some(m => m > 0)) return;
-      dayCount = miles.length;
-      drawDays();
-      miles.forEach((m, i) => { $(`scheduler-quote-trip-${i + 1}`).value = String(m); });
+      if (miles.some(m => m > 0)) {
+        dayCount = miles.length;
+        drawDays();
+        miles.forEach((m, i) => { $(`scheduler-quote-trip-${i + 1}`).value = String(m); });
+      }
+      if (params.get('drivers') === '2') $('scheduler-quote-drivers').value = '2';
       const dead = num(params.get('dead'));
-      if (dead > 0) $('scheduler-quote-dead').value = count.format(dead).replace(/,/g, '');
+      if (!(dead > 0)) return;
+      const figure = count.format(dead).replace(/,/g, '');
+      const box = $('scheduler-quote-route-dead');
+      $('scheduler-quote-route-dead-item').hidden = false;
+      $('scheduler-quote-route-dead-text').textContent = `Count the route's ${figure} dead miles`;
+      box.checked = params.get('deadon') === '1';
+      if (box.checked) $('scheduler-quote-dead').value = figure;
+      box.addEventListener('change', () => { $('scheduler-quote-dead').value = box.checked ? figure : ''; });
     };
 
     /* Beside a trip in the board's editor, Add to quote lines hands the quote

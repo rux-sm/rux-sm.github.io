@@ -2836,6 +2836,8 @@
      it redraws too, since its pickers and statuses call here. */
   function drawFleet(focusId) {
     if (!editing?.fleet) return;
+    // The Route tab's Summary says whether a co-driver is still wanted.
+    routeTimesDrawn?.();
     const dups = fleetDuplicates();
     // What the trip needs stays, and keeps any focus in it; the vehicles redraw.
     for (const n of [...panelFleet.children]) if (!n.hasAttribute('data-fleet-needs')) n.remove();
@@ -4971,6 +4973,26 @@
   // A leg's co-driver seats that are on, which a second driver line counts.
   const coDrivers = leg => (editing?.fleet?.[leg === 'return' ? 'return' : 'outbound'] ?? [])
     .filter(b => b.seats?.['co-driver']?.on).length;
+  /* Turns the co-driver seat on or off on every bus of a leg, as the Buses
+     tab's seat toggle does, for Save to keep. A seat with a driver in it is
+     not turned off; the count of those comes back. */
+  function setCoDrivers(leg, on) {
+    const buses = editing?.fleet?.[leg === 'return' ? 'return' : 'outbound'] ?? [];
+    if (on && !buses.length) {
+      toast('info', 'No bus on this leg yet', 'Add one on the Buses tab, then its co-driver.');
+      return 0;
+    }
+    let kept = 0;
+    for (const b of buses) {
+      const seat = b.seats?.['co-driver'];
+      if (!seat) continue;
+      if (!on && seat.driverId) { kept++; continue; }
+      seat.on = on;
+    }
+    drawFleet();
+    refreshDirty();
+    return kept;
+  }
   const lineQty = l => (l.kind === 'rental' ? legBuses(l.leg)
     : l.kind === 'second_driver' && linesLive && coDrivers(l.leg) > 0 ? coDrivers(l.leg)
     : money(String(l.quantity ?? '')));
@@ -5037,9 +5059,11 @@
 
   // What a line is priced from, and the calculator's cost for one bus or one
   // extra driver; null where the leg has no miles or days yet.
+  /* A rental counts dead miles only once they are turned on, from the line's
+     window or the calculator: the route's, or a figure typed over them. */
   function lineBasis(l) {
     const f = legFigures(l.leg);
-    const dead = l.deadTyped ? Number(l.dead_miles) || 0 : f.dead;
+    const dead = !l.deadOn ? 0 : l.deadTyped ? Number(l.dead_miles) || 0 : f.dead;
     return { miles: f.miles, perDay: f.perDay, dead, days: f.days, rate: l.rate ?? defaultRate() };
   }
   function calcCost(l, b = lineBasis(l)) {
@@ -5146,14 +5170,16 @@
     const qty = moneyField('scheduler-f-lqty', 'Quantity', l.kind === 'rental' ? legBuses(l.leg) : (l.quantity ?? 1));
     const costField = moneyField('scheduler-f-lcost', l.kind === 'discount' ? 'Amount off' : 'Cost',
       cost === null ? null : Math.abs(cost));
-    /* A bus rental is priced at a mileage rate on its miles, with the drive
-       from the yard and back as dead miles. The rate is picked from the
-       calculator's list, and the dead miles can be typed over the route's. */
+    /* A bus rental is priced at a mileage rate on its miles. The rate is
+       picked from the calculator's list. Dead miles, the drive from the yard
+       and back, are left out until they are typed in; the route's figure is
+       the field's hint. */
     const basis = lineBasis(l);
     const rateField = selectField('scheduler-f-lrate', 'Mileage rate', String(l.rate ?? defaultRate() ?? ''),
       (quoteRates?.mileage ?? []).map(m => [String(m.rate), `$${m.rate.toFixed(2)}${m.note ? ` · ${m.note}` : ''}`]));
-    const deadField = moneyField('scheduler-f-ldead', 'Dead miles', l.deadTyped ? l.dead_miles : null);
-    deadField.querySelector('input').placeholder = `${Math.round(legFigures(l.leg).dead)} by route`;
+    const routeDead = legFigures(l.leg).dead;
+    const deadField = moneyField('scheduler-f-ldead', 'Dead miles', !l.deadOn ? null : l.deadTyped ? l.dead_miles : routeDead);
+    deadField.querySelector('input').placeholder = routeDead > 0 ? `None · ${Math.round(routeDead)} by route` : 'None';
     const costHelp = el('div', 'rux--form__helper-text scheduler-dialog-grid__wide');
     const calc = calcCost(l, basis);
     costHelp.textContent = calc === null
@@ -5226,8 +5252,10 @@
     if (kind === 'rental') {
       const rate = money(val('scheduler-f-lrate'));
       const dead = money(val('scheduler-f-ldead'));
+      const on = dead !== null && dead > 0;
       Object.assign(row, { rate: rate ?? (lineEditing === null ? null : linePending[lineEditing].rate),
-        dead_miles: dead, deadTyped: dead !== null });
+        dead_miles: on ? dead : null, deadOn: on,
+        deadTyped: on && Math.round(dead) !== Math.round(legFigures(row.leg).dead) });
     }
     // An empty dialog adds nothing, as in the other dialogs.
     if (!row.item && !row.description && row.cost === null) {
@@ -5389,7 +5417,7 @@
                    post: minutesOr(v?.post_trip_minutes, ROUTE_TIMES.post),
                    slow: minutesOr(v?.drive_slowdown_percent, ROUTE_TIMES.slow) };
   }
-  // The open Route tab's redraw, for a change to the route times.
+  // The open Route tab's redraw, for a change to the route times or the seats.
   let routeTimesDrawn = null;
 
   /* THE FUEL CARD LIMITS, the office's, kept in `settings` as `fuel-card-v1`:
@@ -6695,10 +6723,11 @@
           : { label: 'Add fuel card', run: () => setFuelCard(true) },
       ], 'Summary options'));
       const fuelBox = el('div', 'scheduler-fuel');
+      const driverBox = el('div', 'scheduler-fuel');
       const summaryLayer = el('div', 'rux--stack-vertical rux--stack-scale-4');
       const summaryTile = el('div', 'rux--layer-two');
       summaryTile.appendChild(summary);
-      summaryLayer.append(summaryTile, fuelBox);
+      summaryLayer.append(summaryTile, driverBox, fuelBox);
       /* Stops can be added to a leg with its rows, or to one with none yet,
          whose Save writes them all. A leg rux-ui left with some rows but no
          pickup or yard row has nowhere to put one. */
@@ -7154,7 +7183,8 @@
           status ?? (span == null ? '—' : hm(span)),
           status || span == null ? '—' : hm(span - rest),
         ];
-        return Object.assign(cells, { span: status ? null : span, rest, status, miles });
+        const drive = legs.length && !short ? known.reduce((n, [m]) => n + m, 0) : null;
+        return Object.assign(cells, { span: status ? null : span, rest, status, miles, drive });
       };
       function drawTotals() {
         const legs = [[r.driveOut, r.driveMiles], ...legStops().map(st => [st.drive, st.miles]),
@@ -7190,10 +7220,11 @@
         const rows = [];
         const wrong = !days && r.list.some(st => located(st) && (roomInto(st) ?? 0) < 0);
         const total = figures(legs, span, rest, wrong ? 'check' : needs);
+        let each = null;
         if (days) {
           const all = [];
           for (let d = from; d <= to && all.length < 31; d = dayAfter(d, 1)) all.push(d);
-          const each = all.map(d => dayFigures(d, all[0], all.at(-1)));
+          each = all.map(d => dayFigures(d, all[0], all.at(-1)));
           each.forEach((cells, n) => rows.push([String(n + 1), ...cells]));
           // Each day's miles, for the quote calculator the trip opens.
           r.dayMiles = each.map(c => c.miles);
@@ -7245,6 +7276,17 @@
           fuelBox.replaceChildren(notice('info', 'Fuel card', `At ${said}, this trip is past the office's fuel card limits.`,
             { label: 'Add fuel card', onClick: () => setFuelCard(true) }));
         } else fuelBox.replaceChildren();
+
+        /* A second driver, by the rule the Second driver line quotes: over
+           10 hours driving, or over 15 on duty less rest, on any day. Until a
+           co-driver seat is on for the leg, the Summary says so and offers
+           one; the Buses tab holds the seat, and the quote follows it. */
+        const over = (each ?? [total]).find(c => c.drive > 600 || (c.span != null && c.span - c.rest > 900));
+        if (over && coDrivers(r.leg) === 0) {
+          const why = over.drive > 600 ? `${hm(over.drive)} driving` : `${hm(over.span - over.rest)} on duty less rest`;
+          driverBox.replaceChildren(notice('warning', 'Second driver', `At ${why}${each ? ' in a day' : ''}, this trip needs a second driver.`,
+            { label: 'Add co-driver', onClick: () => setCoDrivers(r.leg, true) }));
+        } else driverBox.replaceChildren();
       }
 
       /* One day's figures: the legs that end that day, the yard's leg out on
@@ -7303,7 +7345,8 @@
       );
       drawStops();
       drawTimeline();
-      fillMissingDrives();
+      // Kept, so the quote calculator can wait for the Summary's last miles.
+      r.drivesFound = fillMissingDrives();
 
       document.getElementById('scheduler-f-leave')?.addEventListener('input', recalcSpot);
       document.getElementById('scheduler-f-spot')?.addEventListener('input', () => {
@@ -7584,10 +7627,12 @@
         : [];
       /* A saved line is priced on what it was saved with, so opening a trip
          reprices nothing: its basis is today's, and only a change moves it.
-         Dead miles that differ from the route's were typed. */
+         A rental saved with dead miles has them on, and dead miles that
+         differ from the route's were typed. */
       for (const l of linePending) {
         const f = legFigures(l.leg);
-        l.deadTyped = l.kind === 'rental' && l.dead_miles != null && Math.round(l.dead_miles) !== Math.round(f.dead);
+        l.deadOn = l.kind === 'rental' && Number(l.dead_miles) > 0;
+        l.deadTyped = l.deadOn && Math.round(l.dead_miles) !== Math.round(f.dead);
         l.basis = JSON.stringify(lineBasis(l));
       }
       editing.coBefore = null;
@@ -10682,17 +10727,27 @@
      the editor first, since the Summary is where its days are counted. Until
      the route has miles, typed estimated miles stand in, spread over the days
      with the remainder on the first. `bar` is null from the editor's own row. */
-  function openCalculator(bar) {
+  async function openCalculator(bar) {
     if (bar && !isEditorTrip(bar)) {
       const ref = barRef(bar);
       whenSafe(() => { openRef(ref); if (String(editing?.id) === String(ref.tripId)) openCalculator(null); });
       return;
     }
-    const f = legFigures(bar ? bar.dataset.leg : editing?.route?.leg ?? panelArgs?.ref?.leg);
+    // A trip just opened is still looking up the drives it has none for.
+    const trip = editing?.id;
+    await Promise.race([editing?.route?.drivesFound, new Promise(done => setTimeout(done, 3000))]);
+    if (editing?.id !== trip) return;
+    const leg = bar ? bar.dataset.leg : editing?.route?.leg ?? panelArgs?.ref?.leg;
+    const f = legFigures(leg);
     const params = new URLSearchParams();
-    if (f.perDay) {
-      params.set('miles', f.perDay.join(','));
-      if (f.dead > 0) params.set('dead', String(f.dead));
+    if (f.perDay) params.set('miles', f.perDay.join(','));
+    if (coDrivers(leg) > 0) params.set('drivers', '2');
+    // The route's dead miles, which the calculator offers, and whether the
+    // leg's rental already counts them.
+    if (f.dead > 0) {
+      params.set('dead', String(f.dead));
+      const legKey = splitNow() ? (leg === 'return' ? 'return' : 'outbound') : null;
+      if (linePending.some(l => l.kind === 'rental' && l.deadOn && (legKey === null || (l.leg ?? 'outbound') === legKey))) params.set('deadon', '1');
     }
     const query = params.toString();
     openGenerated({
@@ -10717,6 +10772,11 @@
       return false;
     }
     const leg = splitNow() ? (editing.route?.leg ?? 'outbound') : null;
+    // The Buses tab's co-driver seats follow the calculator's drivers.
+    const seatsBefore = coDrivers(leg);
+    let assigned = 0;
+    if (q.drivers === 2 && seatsBefore === 0) setCoDrivers(leg, true);
+    if (q.drivers === 1 && seatsBefore > 0) assigned = setCoDrivers(leg, false);
     const f = legFigures(leg);
     const same = !!f.perDay && q.miles.length === f.perDay.length && q.miles.every((m, i) => m === f.perDay[i]);
     const line = (kind, extra = {}) => ({ kind, leg, item: lineKind(kind).item || null,
@@ -10724,10 +10784,10 @@
       miles: null, dead_miles: null, rate: null, ...extra });
     const typed = cost => (same || cost == null ? {} : { cost: round2(cost), cost_typed: true });
     const dead = q.deadAsDiscount ? 0 : q.dead;
-    const made = [line('rental', { rate: q.rate || null, dead_miles: dead,
-      deadTyped: Math.round(dead) !== Math.round(f.dead),
+    const made = [line('rental', { rate: q.rate || null, dead_miles: dead, deadOn: dead > 0,
+      deadTyped: dead > 0 && Math.round(dead) !== Math.round(f.dead),
       miles: q.miles.reduce((a, b) => a + b, 0), ...typed(q.deadAsDiscount ? q.fullMileage : q.mileage) })];
-    if (q.drivers === 2) made.push(line('second_driver', typed(q.driver)));
+    if (q.drivers === 2 || assigned > 0) made.push(line('second_driver', q.drivers === 2 ? typed(q.driver) : {}));
     if (q.deadAsDiscount && q.fullMileage > q.mileage) {
       made.push(line('discount', { description: 'Dead miles discount.', quantity: legBuses(leg),
         cost: -round2(q.fullMileage - q.mileage), cost_typed: true }));
@@ -10746,7 +10806,8 @@
     refreshDirty();
     const tab = document.getElementById('scheduler-tab-billing');
     if (tab && tab.getAttribute('aria-selected') !== 'true') window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
-    toast('success', 'Quote lines set from the calculator', 'Save to keep them.');
+    if (assigned > 0) toast('warning', 'A co-driver is still assigned', 'Take them off on the Buses tab to drop the Second driver line.');
+    else toast('success', 'Quote lines set from the calculator', 'Save to keep them.');
     return true;
   }
   window.Rux.quoteLines = { ready: () => !!editing && !panelEl.hidden, set: linesFromCalculator };

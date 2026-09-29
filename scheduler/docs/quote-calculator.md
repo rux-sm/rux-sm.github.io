@@ -25,21 +25,32 @@ written here, because this repository is public.
 
 The Quote calculator shortcut opens the calculator in the board's document
 panel, without the header or the Rules tab. Its days are the Route tab
-Summary's rows, a day's miles each, and its dead miles are the drive from the
-yard and back, both from what the editor's fields say now, saved or not. A
-trip picked on the board opens in the editor first, because the Summary is
-where its days are counted. Until the route has miles, typed estimated miles
-stand in, spread over the trip's days. The Billing tab's lines price from the
-same days, so the two agree.
+Summary's rows, a day's miles each, from what the editor's fields say now,
+saved or not, once the drives a trip opens without are looked up. A trip
+picked on the board opens in the editor first, because the Summary is where
+its days are counted. Until the route has miles, typed estimated miles stand
+in, spread over the trip's days. The Billing tab's lines price from the same
+days, so the two agree.
+
+Dead miles are counted only when asked for. The calculator offers the route's,
+the drive from the yard and back, as a checkbox, ticked when the trip's rental
+already counts them; a rental line counts them once its Dead miles field has a
+figure.
+
+Drivers starts at 2 when the leg has a co-driver seat on. The Buses tab's
+co-driver seats decide the Second driver line, one a seat, and the Route tab's
+Summary warns when a leg needs one: over 10 hours driving, or over 15 on duty
+less rest, on any day, the rule the line's own words quote.
 
 Add to quote lines replaces the leg's lines, all but its hotel, with the
 calculator's quote: a Bus rental at its rate, a Second driver for two drivers,
-a Discount and an Other line for those fields. Show dead miles as a discount
-prices the rental at the full rate on every mile and adds a Dead miles
-discount line for the difference, a bus at a time. While the calculator's days
-are the route's, the rental and second driver are left to follow the route;
-days changed in the calculator are typed in as its figures. Nothing is kept
-until Save.
+a Discount and an Other line for those fields. It turns the leg's co-driver
+seats on for two drivers and off for one, except a seat with a driver in it,
+which stays with its line. Show dead miles as a discount prices the rental at
+the full rate on every mile and adds a Dead miles discount line for the
+difference, a bus at a time. While the calculator's days are the route's, the
+rental and second driver are left to follow the route; days changed in the
+calculator are typed in as its figures. Nothing is kept until Save.
 
 ## Where it follows the spreadsheet
 

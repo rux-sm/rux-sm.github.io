@@ -9536,22 +9536,7 @@
       return;
     }
 
-    if (item.id === 'scheduler-bar-menu-form-envelope') {
-      openEnvelope(bar);
-      return;
-    }
-
-    if (item.id === 'scheduler-bar-menu-form-itinerary') {
-      openDriverItinerary(bar);
-      return;
-    }
-
-    if (item.id === 'scheduler-bar-menu-form-quote') {
-      openQuote(bar);
-      return;
-    }
-
-    if (item.id === 'scheduler-bar-menu-form-all') {
+    if (item.id === 'scheduler-bar-menu-forms') {
       openForms(bar);
       return;
     }
@@ -9652,9 +9637,6 @@
     fillCrewItems(bar);
     fillAssignItems(bar);
     document.getElementById('scheduler-bar-menu-itinerary').hidden = !bar.dataset.itineraryId;
-    // Hidden where it cannot act: a slot with no bus, or a bus with no driver.
-    document.getElementById('scheduler-bar-menu-form-envelope').hidden =
-      !bar.dataset.assignmentId || !barHasCrew(bar);
     document.getElementById('scheduler-bar-menu-upload').hidden = !!bar.dataset.itineraryId || !client;
     // Mark this leg's hotel booked or not, on a trip that needs one, and not for
     // the trip open in the editor, which has its own Booked box.

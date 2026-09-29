@@ -850,38 +850,13 @@
       <ul class="rux--menu rux--menu--sm rux--menu--with-icons rux--menu--with-selectable-items" role="menu" aria-label="Drivers" tabindex="-1" id="scheduler-bar-menu-assign-list"></ul>
     </li>
     <li class="rux--menu-item-divider" role="separator"></li>
-    <!-- The forms, each opened on this bar straight away, in the document
-         panel beside the board, with the Forms page's own icons; All forms is
-         print.html's list for the trip. The envelope is hidden on a slot with
-         no bus and on a bus with nobody driving it. -->
-    <li class="rux--menu-item" role="menuitem" tabindex="-1" aria-haspopup="true" aria-expanded="false" id="scheduler-bar-menu-forms">
+    <!-- Forms opens the trip's list of forms in the document panel beside the
+         board, where each form is one row; the list is the one way in, so the
+         menu stays one item long. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-forms">
       <div class="rux--menu-item__selection-icon"></div>
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-description"/></svg></div>
       <div class="rux--menu-item__label">Forms</div>
-      <div class="rux--menu-item__shortcut"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-arrow_right"/></svg></div>
-      <ul class="rux--menu rux--menu--sm rux--menu--with-icons" role="menu" aria-label="Forms" tabindex="-1">
-          <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-form-envelope">
-            <div class="rux--menu-item__selection-icon"></div>
-            <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-mail"/></svg></div>
-            <div class="rux--menu-item__label">Driver envelope</div>
-          </li>
-          <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-form-itinerary">
-            <div class="rux--menu-item__selection-icon"></div>
-            <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-route"/></svg></div>
-            <div class="rux--menu-item__label">Driver itinerary</div>
-          </li>
-          <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-form-quote">
-            <div class="rux--menu-item__selection-icon"></div>
-            <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-request_quote"/></svg></div>
-            <div class="rux--menu-item__label">Customer quote</div>
-          </li>
-          <li class="rux--menu-item-divider" role="separator"></li>
-          <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-form-all">
-            <div class="rux--menu-item__selection-icon"></div>
-            <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-description"/></svg></div>
-            <div class="rux--menu-item__label">All forms…</div>
-          </li>
-      </ul>
     </li>
     <li class="rux--menu-item-divider" role="separator"></li>
     <!-- The trip's colour: one Color item whose submenu is Carbon's menu radio

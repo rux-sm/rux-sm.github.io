@@ -2653,8 +2653,10 @@
        the dialog printed or was cancelled and nothing tells the two apart, so
        a tick from it would mark envelopes that never came out. rux-ui does not
        guess either: its task list offers Open, or Open and mark as complete,
-       and the person chooses. This is that choice, and it unticks. */
-    const printed = !host && markOf(form, every[current.chosen]);
+       and the person chooses. This is that choice, and it unticks. In the
+       board's panel it sits beside the panel's own Print, which is where the
+       trip's checklist sends someone to tick it. */
+    const printed = markOf(form, every[current.chosen]);
     if (printed) {
       const cell = el('div', 'scheduler-print__cell');
       const box = el('div', 'rux--form-item rux--checkbox-wrapper');
@@ -2673,6 +2675,7 @@
       // ticks the box.
       cell.classList.add('scheduler-print__cell--check');
       cell.addEventListener('click', e => { if (!e.target.closest('label, input')) input.click(); });
+      if (host) cell.dataset.besidePrint = '';
       nodes.push(cell);
     }
 

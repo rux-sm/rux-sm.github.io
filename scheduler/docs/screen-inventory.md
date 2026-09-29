@@ -143,6 +143,9 @@ Three homes, and one rule for choosing.
 - **A generated form is a page, not a modal.** `print.html` draws it and the
   document viewer frames it, so nothing has to hide the board in order to
   print, and two forms on different paper never argue over one `@page`.
+  A form with a mark, the envelope, the itinerary and the hours-of-service
+  record, carries a Printed box beside the panel's Print, ticked by hand,
+  which the trip's checklist reads.
 
 ### The driver availability grid
 

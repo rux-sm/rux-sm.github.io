@@ -10887,16 +10887,27 @@
   function setFormControls(nodes) {
     if (!viewerToolbar) return;
     for (const node of formNodes) node.remove();
-    formNodes = nodes.map((node, i) => {
+    // A form's Printed box goes beside Print; its other controls start the row.
+    const beside = nodes.filter(n => n.hasAttribute?.('data-beside-print'));
+    const ahead = nodes.filter(n => !beside.includes(n));
+    const starts = ahead.map((node, i) => {
       const here = document.adoptNode(node);
       /* What the toolbar's own rules size and hold in place, and what a later
          hand-over takes back out again. The last one is named, because it is
          the one that parts these from the buttons every document gets, and
          the zoom buttons hidden between them are no use as a landmark. */
-      here.setAttribute('data-viewer-form', i === nodes.length - 1 ? 'last' : '');
+      here.setAttribute('data-viewer-form', i === ahead.length - 1 ? 'last' : '');
       return here;
     });
-    viewerToolbar.prepend(...formNodes);
+    const ends = beside.map(node => {
+      const here = document.adoptNode(node);
+      here.setAttribute('data-viewer-form', 'print');
+      return here;
+    });
+    formNodes = [...starts, ...ends];
+    viewerToolbar.prepend(...starts);
+    if (viewerPrint) viewerPrint.before(...ends);
+    else viewerToolbar.append(...ends);
   }
 
   /* The line a form has to say, in the place a stored file says when it was

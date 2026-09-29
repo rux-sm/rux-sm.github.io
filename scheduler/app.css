@@ -1393,6 +1393,9 @@ button.scheduler-row-head__num::after {
    controls of its own, its buttons still end the row rather than starting
    it, counted from the first one shown: a form hides the zooms ahead of Print. */
 .scheduler-viewer__toolbar > [data-viewer-form="last"] { margin-inline-end: auto; }
+/* A form's Printed box sits beside Print; with no layout controls ahead of it,
+   it is what starts the actions at the row's end. */
+.scheduler-viewer__toolbar:not(:has(> [data-viewer-form="last"])) > [data-viewer-form="print"] { margin-inline-start: auto; }
 
 .scheduler-viewer__toolbar:not(:has(> [data-viewer-form])) > :nth-child(1 of :not([hidden])) {
   margin-inline-start: auto;

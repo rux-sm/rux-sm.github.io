@@ -119,8 +119,6 @@ None open.
 ## Tasks
 
 - [ ] Keep `driver_contact_sent_<leg>` in step with the drivers' statuses.
-- [ ] Put the Printed box back in the form panel, beside Print, for the
-      envelope, itinerary and hours-of-service record.
 - [ ] Make Route's Done check both legs of a split trip; today it checks the
       leg on screen.
 - [ ] Build the Departures panel.

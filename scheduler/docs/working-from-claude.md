@@ -10,7 +10,7 @@ database and writes no trip: a new trip or a change comes back as a link that
 opens the trip editor already filled, and pressing Save there is what writes
 it.
 
-What the connector is, and every tool it serves, is section 5 of
+What the connector is, and every tool it serves, is section 4 of
 `database-inventory.md`.
 
 ## Connect it, once per person

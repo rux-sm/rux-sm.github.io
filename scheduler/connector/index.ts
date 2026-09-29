@@ -18,7 +18,7 @@ const SCHEDULER_URL = Deno.env.get('SCHEDULER_URL') ?? 'https://rux-sm.github.io
 const TRIP_SUMMARY = [
   'id', 'trip_ref', 'destination', 'customer', 'start_date', 'end_date',
   'departure_time', 'spot_time', 'return_time', 'bus_count', 'trip_type',
-  'vehicle_type', 'confirmed', 'cancelled_at',
+  'vehicle_type', 'confirmed', 'cancelled_at', 'booking_contact_name',
 ].join(', ')
 
 // A trip on its own: what a dispatcher reads off the editor's tabs.
@@ -28,8 +28,12 @@ const TRIP_DETAIL = [
   'driving_hours', 'on_duty_hours', 'quoted_price', 'deposit_amount',
   'balance_paid', 'date_paid', 'contract_status', 'contract_note',
   'po_received', 'po_ref', 'po_amount', 'invoiced', 'invoice_status',
-  'invoice_number', 'booking_contact_name', 'booking_contact_phone',
-  'booking_contact_email', 'req_sleeper', 'req_56pax', 'req_ada',
+  'invoice_number', 'booking_contact_phone',
+  'booking_contact_email', 'booking_contact_missive_url',
+  'trip_contact_1_name', 'trip_contact_1_phone', 'trip_contact_2_name',
+  'trip_contact_2_phone', 'trip_contact_3_name', 'trip_contact_3_phone',
+  'trip_contact_4_name', 'trip_contact_4_phone', 'trip_contact_5_name',
+  'trip_contact_5_phone', 'req_sleeper', 'req_56pax', 'req_ada',
   'need_hotel', 'need_fuel_card', 'trip_reqs', 'itinerary_confirmed',
   'is_self_organized', 'cancellation_reason', 'updated_at',
 ].join(', ')
@@ -81,23 +85,78 @@ function overlaps(row: Parameters<typeof lastDay>[0], from: string, to: string) 
   return start <= to && lastDay(row) >= from
 }
 
+type TripLegs = {
+  trip_type?: string | null; bus_count?: number | null; return_bus_count?: number | null
+  start_date?: string | null; end_date?: string | null
+  return_start_date?: string | null; return_end_date?: string | null
+}
+
+/**
+ * The legs a trip's buses are counted on, with their days and how many buses
+ * each needs. Only a drop-off and pickup has a return leg of its own, as the
+ * editor keeps it; every other trip is one outbound leg.
+ */
+function legsOf(trip: TripLegs) {
+  const start = trip.start_date ?? ''
+  const legs = [{ leg: 'outbound', start, end: trip.end_date ?? start, needed: trip.bus_count || 1 }]
+  if (trip.trip_type === 'dropoff_pickup') {
+    const rStart = trip.return_start_date ?? trip.end_date ?? start
+    legs.push({
+      leg: 'return', start: rStart, end: trip.return_end_date ?? rStart,
+      needed: trip.return_bus_count || trip.bus_count || 1,
+    })
+  }
+  return legs
+}
+
+/** What the trip needs from a bus, in words, as the editor's Buses tab asks. */
+function busNeeds(trip: { req_56pax?: boolean | null; req_ada?: boolean | null; req_sleeper?: boolean | null; vehicle_type?: string | null }) {
+  return [
+    trip.vehicle_type, trip.req_56pax && '56 seats', trip.req_ada && 'lift', trip.req_sleeper && 'sleeper',
+  ].filter(Boolean) as string[]
+}
+
+/**
+ * What a dispatcher would stop at on this trip: a leg with fewer buses than it
+ * needs, and a stop dated outside its leg's days, which is a date typed wrong.
+ */
+function tripWarnings(
+  trip: TripLegs,
+  buses: { leg: string; buses: unknown }[],
+  stops: { leg: string; position: number; name?: string | null; arrive_date?: string | null; spot_date?: string | null }[],
+) {
+  const warnings: string[] = []
+  for (const l of legsOf(trip)) {
+    const assigned = buses.filter((b) => b.leg === l.leg && b.buses).length
+    if (assigned < l.needed) warnings.push(`The ${l.leg} leg needs ${l.needed} buses and has ${assigned}.`)
+    for (const s of stops.filter((x) => x.leg === l.leg)) {
+      for (const day of [s.arrive_date, s.spot_date]) {
+        if (day && (day < l.start || day > l.end)) {
+          warnings.push(`Stop ${s.position + 1}${s.name ? ` (${s.name})` : ''} is dated ${day}, outside the ${l.leg} leg's ${l.start} to ${l.end}.`)
+        }
+      }
+    }
+  }
+  return warnings
+}
+
 Deno.serve(
   pipeline(
     [withOAuthProtectedResource(), withSupabase({ auth: 'user' })],
     async (req, { supabase }) => {
       const handler = createMcpHandler(() => {
-        const server = new McpServer({ name: 'scheduler', version: '0.1.0' })
+        const server = new McpServer({ name: 'scheduler', version: '0.2.0' })
 
         server.registerTool(
           'find_trips',
           {
             title: 'Find trips',
             description:
-              'Find trips by date, destination, customer or trip reference. Returns a short line per trip; use get_trip for one in full.',
+              'Find trips by date, destination, customer, booking contact or trip reference. Returns a short line per trip; use get_trip for one in full.',
             inputSchema: z.object({
               from: ISO_DATE.optional().describe('Include trips running on or after this day.'),
               to: ISO_DATE.optional().describe('Include trips running on or before this day.'),
-              search: z.string().max(80).optional().describe('Text to match in destination, customer or trip reference.'),
+              search: z.string().max(80).optional().describe('Text to match in destination, customer, trip reference, or the booking contact\'s name or email.'),
               include_cancelled: z.boolean().default(false),
               limit: z.number().int().min(1).max(50).default(20),
             }),
@@ -109,7 +168,7 @@ Deno.serve(
             if (to) q = q.lte('start_date', to)
             if (from) q = q.or(`end_date.gte.${from},return_end_date.gte.${from},start_date.gte.${from}`)
             const text = search ? safeSearch(search) : ''
-            if (text) q = q.or(`destination.ilike.*${text}*,customer.ilike.*${text}*,trip_ref.ilike.*${text}*`)
+            if (text) q = q.or(`destination.ilike.*${text}*,customer.ilike.*${text}*,trip_ref.ilike.*${text}*,booking_contact_name.ilike.*${text}*,booking_contact_email.ilike.*${text}*`)
             if (!include_cancelled) q = q.is('cancelled_at', null)
             return answer(orThrow(await q))
           },
@@ -119,7 +178,8 @@ Deno.serve(
           'get_trip',
           {
             title: 'Get one trip',
-            description: 'One trip in full, with the buses and drivers on it and its stops. Give either a trip id or a trip reference.',
+            description:
+              'One trip in full, with the buses and drivers on it, its stops, and warnings: a leg short of buses, or a stop dated outside its leg. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. Give either a trip id or a trip reference.',
             inputSchema: z.object({
               trip_id: z.string().uuid().optional(),
               trip_ref: z.string().max(40).optional(),
@@ -142,7 +202,7 @@ Deno.serve(
               .select('leg, position, type, label, name, address, depart_prev, arrive, spot, arrive_date, spot_date, miles, drive, dwell_status')
               .eq('trip_id', trip.id).order('leg').order('position'))
 
-            return answer({ trip, buses, stops })
+            return answer({ trip, warnings: tripWarnings(trip, buses, stops), buses, stops })
           },
         )
 
@@ -151,7 +211,7 @@ Deno.serve(
           {
             title: 'Find free buses and drivers',
             description:
-              'Which buses and drivers are free across a range of days. A bus is busy when it is on a trip or out of service; a driver is busy when they are on a trip or on time off.',
+              'Which buses and drivers are free across a range of days, and every trip running then with how many buses it needs and has. A bus is busy when it is on a trip or out of service; a driver is busy when they are on a trip or on time off. A trip still short of buses will take free ones, so buses_still_needed is subtracted from free_buses before anything more is promised.',
             inputSchema: z.object({
               from: ISO_DATE,
               to: ISO_DATE.optional().describe('Defaults to the same day as from.'),
@@ -172,17 +232,18 @@ Deno.serve(
               busQuery.then(orThrow),
               supabase.from('drivers').select('id, name, short_name, phone, priority')
                 .eq('status', 'active').order('sort_order').then(orThrow),
-              supabase.from('trips').select('id, start_date, end_date, return_end_date')
+              supabase.from('trips').select('id, trip_ref, customer, destination, trip_type, confirmed, start_date, end_date, return_start_date, return_end_date, bus_count, return_bus_count, vehicle_type, req_56pax, req_ada, req_sleeper')
                 .is('cancelled_at', null).lte('start_date', until)
                 .or(`end_date.gte.${from},return_end_date.gte.${from},start_date.gte.${from}`).then(orThrow),
               supabase.from('bus_out_of_service').select('bus_id, start_date, end_date, reason').then(orThrow),
               supabase.from('driver_time_off').select('driver_id, start_date, end_date, reason').then(orThrow),
             ])
 
-            const running = trips.filter((t) => overlaps(t, from, until)).map((t) => t.id)
+            const runningTrips = trips.filter((t) => overlaps(t, from, until))
+            const running = runningTrips.map((t) => t.id)
             const assignments = running.length
               ? orThrow(await supabase.from('trip_assignments')
-                  .select('id, bus_id, trip_id, trip_drivers(driver_id)').in('trip_id', running))
+                  .select('id, bus_id, trip_id, leg, trip_drivers(driver_id)').in('trip_id', running))
               : []
 
             const busyBuses = new Set<string>()
@@ -194,11 +255,32 @@ Deno.serve(
             for (const o of offRoad) if (overlaps(o, from, until)) busyBuses.add(o.bus_id)
             for (const o of timeOff) if (overlaps(o, from, until)) busyDrivers.add(o.driver_id)
 
+            const numberOf = new Map(buses.map((b) => [b.id, b.number]))
+            const tripLines = runningTrips.map((t) => {
+              const mine = assignments.filter((a) => a.trip_id === t.id)
+              const legs = legsOf(t).filter((l) => l.start <= until && l.end >= from).map((l) => {
+                const onLeg = mine.filter((a) => a.leg === l.leg && a.bus_id)
+                return {
+                  leg: l.leg, needed: l.needed,
+                  buses: onLeg.map((a) => numberOf.get(a.bus_id) ?? 'another type'),
+                  missing: Math.max(0, l.needed - onLeg.length),
+                  drivers: mine.filter((a) => a.leg === l.leg).reduce((n, a) => n + (a.trip_drivers ?? []).length, 0),
+                }
+              })
+              return {
+                trip_ref: t.trip_ref, customer: t.customer, destination: t.destination,
+                start_date: t.start_date, end_date: t.end_date, confirmed: t.confirmed,
+                needs: busNeeds(t), legs,
+              }
+            })
+
             return answer({
               from, to: until,
               free_buses: buses.filter((b) => !busyBuses.has(b.id)),
               free_drivers: drivers.filter((d) => !busyDrivers.has(d.id)),
+              buses_still_needed: tripLines.reduce((n, t) => n + t.legs.reduce((m, l) => m + l.missing, 0), 0),
               busy: { buses: busyBuses.size, drivers: busyDrivers.size, trips: running.length },
+              trips: tripLines,
             })
           },
         )

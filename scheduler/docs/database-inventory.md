@@ -175,11 +175,14 @@ on the caller's own session, so the same rules apply to it as to a page.
 Sign-in is Supabase's OAuth 2.1 server, whose consent screen is the site's
 own page at `/oauth/consent/`; Supabase hosts none.
 
-**Six tools read**, each on the tables above: `find_trips` and `get_trip` on
-`trips` with its assignments, drivers and stops; `find_availability`, which
+**Six tools read**, each on the tables above: `find_trips`, which also
+matches the booking contact's name and email; `get_trip`, on `trips` with its
+assignments, drivers and stops, the Email thread link, and warnings for a leg
+short of buses or a stop dated outside its leg; `find_availability`, which
 reads the trips running across a range and subtracts their buses and drivers,
-then `bus_out_of_service` and `driver_time_off`; `find_contacts`,
-`list_buses` and `list_drivers`.
+then `bus_out_of_service` and `driver_time_off`, and lists each running trip
+with the buses it needs and has, so a trip still waiting for a bus is counted
+against the free ones; `find_contacts`, `list_buses` and `list_drivers`.
 
 The fields a draft may fill are mostly `trips` columns, but the route's four
 are the Route tab's own names, because the tab writes `trip_stops` rather than

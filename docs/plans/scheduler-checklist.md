@@ -95,9 +95,8 @@ that cannot are ticked where the work is done, like right after printing a form.
   board's menu into the panel Forms uses, so the week stays in view. It shows the legs leaving today and the next 2 days,
   grouped by day, legs with items left first and Ready ones folded under them.
   Each leg lists only its open items, with their buttons.
-- **When every driver on a leg is past Not sent,** the scheduler also ticks
-  rux-ui's `driver_contact_sent_<leg>`, and unticks it if one goes back, so
-  rux-ui's Tasks list stays in step.
+- **rux-ui's Tasks list has no Driver Contact Info Sent,** since each
+  driver's status says it; the scheduler never writes `driver_contact_sent_<leg>`.
 - **Nothing after the trip for now:** the survey and incident notes stay in
   rux-ui.
 - **The ticks are the columns rux-ui already writes,** so a tick in either app
@@ -118,7 +117,6 @@ None open.
 
 ## Tasks
 
-- [ ] Keep `driver_contact_sent_<leg>` in step with the drivers' statuses.
 - [ ] Check the hours-of-service row in Chrome on :8641 once an upcoming
       trip has a part-time driver; none has one yet, so only the sample trips
       in the check cover it.

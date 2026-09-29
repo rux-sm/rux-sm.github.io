@@ -18,7 +18,8 @@ const SCHEDULER_URL = Deno.env.get('SCHEDULER_URL') ?? 'https://rux-sm.github.io
 const TRIP_SUMMARY = [
   'id', 'trip_ref', 'destination', 'customer', 'start_date', 'end_date',
   'departure_time', 'spot_time', 'return_time', 'bus_count', 'trip_type',
-  'vehicle_type', 'confirmed', 'cancelled_at', 'booking_contact_name',
+  'vehicle_type', 'confirmed', 'cancelled_at', 'trip_bar_color',
+  'booking_contact_name',
 ].join(', ')
 
 // A trip on its own: what a dispatcher reads off the editor's tabs.
@@ -85,6 +86,15 @@ function overlaps(row: Parameters<typeof lastDay>[0], from: string, to: string) 
   return start <= to && lastDay(row) >= from
 }
 
+/**
+ * A placeholder is not a trip yet: the office paints it amber (orange and
+ * yellow are its retired names, as week.js maps them) before a quote is sent,
+ * and the board asks no bus of it.
+ */
+function isPlaceholder(trip: { trip_bar_color?: string | null }) {
+  return ['amber', 'orange', 'yellow'].includes(String(trip.trip_bar_color ?? '').toLowerCase())
+}
+
 type TripLegs = {
   trip_type?: string | null; bus_count?: number | null; return_bus_count?: number | null
   start_date?: string | null; end_date?: string | null
@@ -121,14 +131,14 @@ function busNeeds(trip: { req_56pax?: boolean | null; req_ada?: boolean | null; 
  * needs, and a stop dated outside its leg's days, which is a date typed wrong.
  */
 function tripWarnings(
-  trip: TripLegs,
+  trip: TripLegs & { trip_bar_color?: string | null },
   buses: { leg: string; buses: unknown }[],
   stops: { leg: string; position: number; name?: string | null; arrive_date?: string | null; spot_date?: string | null }[],
 ) {
   const warnings: string[] = []
   for (const l of legsOf(trip)) {
     const assigned = buses.filter((b) => b.leg === l.leg && b.buses).length
-    if (assigned < l.needed) warnings.push(`The ${l.leg} leg needs ${l.needed} buses and has ${assigned}.`)
+    if (assigned < l.needed && !isPlaceholder(trip)) warnings.push(`The ${l.leg} leg needs ${l.needed} buses and has ${assigned}.`)
     for (const s of stops.filter((x) => x.leg === l.leg)) {
       for (const day of [s.arrive_date, s.spot_date]) {
         if (day && (day < l.start || day > l.end)) {
@@ -145,7 +155,7 @@ Deno.serve(
     [withOAuthProtectedResource(), withSupabase({ auth: 'user' })],
     async (req, { supabase }) => {
       const handler = createMcpHandler(() => {
-        const server = new McpServer({ name: 'scheduler', version: '0.2.0' })
+        const server = new McpServer({ name: 'scheduler', version: '0.3.0' })
 
         server.registerTool(
           'find_trips',
@@ -179,7 +189,7 @@ Deno.serve(
           {
             title: 'Get one trip',
             description:
-              'One trip in full, with the buses and drivers on it, its stops, and warnings: a leg short of buses, or a stop dated outside its leg. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. Give either a trip id or a trip reference.',
+              'One trip in full, with the buses and drivers on it, its stops, and warnings: a leg short of buses, or a stop dated outside its leg. An amber trip_bar_color (or its old names orange and yellow) is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. Give either a trip id or a trip reference.',
             inputSchema: z.object({
               trip_id: z.string().uuid().optional(),
               trip_ref: z.string().max(40).optional(),
@@ -211,7 +221,7 @@ Deno.serve(
           {
             title: 'Find free buses and drivers',
             description:
-              'Which buses and drivers are free across a range of days, and every trip running then with how many buses it needs and has. A bus is busy when it is on a trip or out of service; a driver is busy when they are on a trip or on time off. A trip still short of buses will take free ones, so buses_still_needed is subtracted from free_buses before anything more is promised.',
+              'Which buses and drivers are free across a range of days, and every trip running then with how many buses it needs and has. A bus is busy when it is on a trip or out of service; a driver is busy when they are on a trip or on time off. A trip still short of buses will take free ones, so buses_still_needed is subtracted from free_buses before anything more is promised. A placeholder (not quoted yet) is listed but asks for no bus.',
             inputSchema: z.object({
               from: ISO_DATE,
               to: ISO_DATE.optional().describe('Defaults to the same day as from.'),
@@ -232,7 +242,7 @@ Deno.serve(
               busQuery.then(orThrow),
               supabase.from('drivers').select('id, name, short_name, phone, priority')
                 .eq('status', 'active').order('sort_order').then(orThrow),
-              supabase.from('trips').select('id, trip_ref, customer, destination, trip_type, confirmed, start_date, end_date, return_start_date, return_end_date, bus_count, return_bus_count, vehicle_type, req_56pax, req_ada, req_sleeper')
+              supabase.from('trips').select('id, trip_ref, customer, destination, trip_type, confirmed, trip_bar_color, start_date, end_date, return_start_date, return_end_date, bus_count, return_bus_count, vehicle_type, req_56pax, req_ada, req_sleeper')
                 .is('cancelled_at', null).lte('start_date', until)
                 .or(`end_date.gte.${from},return_end_date.gte.${from},start_date.gte.${from}`).then(orThrow),
               supabase.from('bus_out_of_service').select('bus_id, start_date, end_date, reason').then(orThrow),
@@ -263,14 +273,14 @@ Deno.serve(
                 return {
                   leg: l.leg, needed: l.needed,
                   buses: onLeg.map((a) => numberOf.get(a.bus_id) ?? 'another type'),
-                  missing: Math.max(0, l.needed - onLeg.length),
+                  missing: isPlaceholder(t) ? 0 : Math.max(0, l.needed - onLeg.length),
                   drivers: mine.filter((a) => a.leg === l.leg).reduce((n, a) => n + (a.trip_drivers ?? []).length, 0),
                 }
               })
               return {
                 trip_ref: t.trip_ref, customer: t.customer, destination: t.destination,
                 start_date: t.start_date, end_date: t.end_date, confirmed: t.confirmed,
-                needs: busNeeds(t), legs,
+                placeholder: isPlaceholder(t), needs: busNeeds(t), legs,
               }
             })
 

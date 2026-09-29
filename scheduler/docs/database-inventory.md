@@ -182,7 +182,7 @@ short of buses or a stop dated outside its leg; `find_availability`, which
 reads the trips running across a range and subtracts their buses and drivers,
 then `bus_out_of_service` and `driver_time_off`, and lists each running trip
 with the buses it needs and has, so a trip still waiting for a bus is counted
-against the free ones; `find_contacts`, `list_buses` and `list_drivers`.
+against the free ones and a placeholder is not; `find_contacts`, `list_buses` and `list_drivers`.
 
 The fields a draft may fill are mostly `trips` columns, but the route's four
 are the Route tab's own names, because the tab writes `trip_stops` rather than

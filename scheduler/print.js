@@ -1,5 +1,5 @@
 /* THE FORMS THIS APP FILLS IN. One page renders every one of them, named by
-   `?form=`; with no form named it is the hub, a tile per form.
+   `?form=`; with no form named it is the hub, a row per form.
 
    A FORM IS A REGISTRY ENTRY, and FORMS below is the one source for the hub,
    the ?form= values and, later, the board's menu -- the way SHORTCUT_ACTIONS
@@ -1811,7 +1811,6 @@
       name: 'Driver trip envelope',
       group: 'Drivers',
       short: 'Envelope',
-      blurb: 'One per driver, per bus',
       icon: '#m-mail',
       binds: 'assignment+seat',
       /* It can also be opened on nothing: a blank envelope to fill in by hand
@@ -1854,7 +1853,6 @@
       name: 'Hours-of-service record',
       group: 'Drivers',
       short: 'Hours of service',
-      blurb: 'The last 7 days, signed',
       icon: '#m-schedule',
       /* ONE PER DRIVER, AS THE ENVELOPE IS: it is signed by one person, and the
          dates it prints count back from the day that driver's leg starts. */
@@ -1881,7 +1879,6 @@
       name: 'Driver trip itinerary',
       group: 'Drivers',
       short: 'Itinerary',
-      blurb: "The day's stops and times",
       icon: '#m-route',
       /* IT BINDS THE TRIP AND THE LEG, NOT THE BUS. The envelope binds a seat
          because it is personal, one name and one seat; the plan for the day is
@@ -1916,7 +1913,6 @@
       name: 'Customer quote',
       group: 'Customers',
       short: 'Quote',
-      blurb: 'Price and terms to sign',
       icon: '#m-request_quote',
       /* IT BINDS THE TRIP AND NOT A LEG. A quote is one price for the whole
          journey, where the itinerary is one sheet per leg and the envelope one
@@ -1953,7 +1949,6 @@
       name: 'Week schedule',
       group: 'Schedule',
       short: 'Week schedule',
-      blurb: 'Five buses a sheet, on Legal',
       icon: '#m-calendar_month',
       binds: 'week',
       // The margin is 18 CSS pixels, so the grid starts on a whole pixel.
@@ -2783,40 +2778,45 @@
       host?.setViewerHead(`Forms — ${found.destination}`);
     }
 
-    /* A tile is the form's icon, its short name and what sets it apart, under
-       the heading of who the form is for, which the short name leaves out. */
+    /* A row is the form's icon and its short name, under the heading of who
+       the form is for, which the short name leaves out. */
     const face = form => {
       const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       icon.setAttribute('class', 'scheduler-print__tile-icon');
-      icon.setAttribute('width', '32');
-      icon.setAttribute('height', '32');
+      icon.setAttribute('width', '20');
+      icon.setAttribute('height', '20');
       icon.setAttribute('fill', 'currentColor');
       icon.setAttribute('aria-hidden', 'true');
       const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
       use.setAttribute('href', form.icon);
       icon.appendChild(use);
-      return [icon,
-        el('h3', 'rux--type-productive-heading-02 scheduler-print__tile-name', form.short),
-        el('p', 'rux--type-body-compact-01 scheduler-print__tile-blurb', form.blurb)];
+      return [icon, el('h3', 'rux--type-body-compact-01 scheduler-print__tile-name', form.short)];
     };
 
-    const groups = new Map();
+    /* THE QUOTE FIRST, because it is the first thing a trip sends, then the
+       drivers' forms. A trip's list leaves out the week schedule, which is
+       the week's and not the trip's: the board's menu prints the week on
+       screen, and this page opened on no trip still lists it. */
+    const GROUP_ORDER = ['Customers', 'Drivers', 'Schedule'];
+    const groups = new Map(GROUP_ORDER.map(group => [group, []]));
     for (const form of FORMS) {
+      if (trip && form.binds === 'week') continue;
       if (!groups.has(form.group)) groups.set(form.group, []);
       groups.get(form.group).push(form);
     }
+    for (const [group, forms] of groups) if (!forms.length) groups.delete(group);
 
     const list = document.createDocumentFragment();
     for (const [group, forms] of groups) {
       const section = el('section', 'scheduler-print__group');
-      const heading = el('h2', 'rux--type-productive-heading-03 scheduler-print__group-name', group);
+      const heading = el('h2', 'rux--type-label-01 scheduler-print__group-name', group);
       heading.id = `scheduler-print-group-${group.toLowerCase()}`;
       section.setAttribute('aria-labelledby', heading.id);
       const tiles = el('div', 'scheduler-print__tiles');
       section.append(heading, tiles);
       list.appendChild(section);
       for (const form of forms) {
-        /* EVERY FORM IS ONE TILE, AND THE TILE IS THE LINK. From a trip it
+        /* EVERY FORM IS ONE ROW, AND THE ROW IS THE LINK. From a trip it
            opens that trip's copy -- the first bus, the way out -- and the
            form's own list moves to the trip's other buses and legs. A blank
            one is the Forms page's, opened on no trip. A form that cannot open

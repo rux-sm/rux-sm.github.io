@@ -1680,8 +1680,9 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 }
 
 /* ── The hub ──────────────────────────────────────────────────────────────
-   A heading per group of forms, and a tile per form under it: the form's
-   icon, its short name and one line that sets it apart. */
+   A label per group of forms, and a row per form under it: the form's icon
+   and its short name. The rows touch, a rule between each, so a group reads
+   as one list rather than as a stack of separate buttons. */
 
 /* [hidden] is a UA rule of the lowest weight, so any display here outranks it
    and the hub would stay on screen behind a form. */
@@ -1690,49 +1691,54 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-print__hub {
   display: flex;
   flex-direction: column;
-  gap: var(--rux-spacing-07);
+  gap: var(--rux-spacing-06);
   padding: var(--rux-spacing-05);
 }
 
-/* Standing alone the page already has its inset, so the tiles line up with
-   the title and the column's edges; framed, the panel has none. The title
-   stands as far off the first group as the groups stand apart. */
+/* Standing alone the page already has its inset, so the rows line up with
+   the title and the column's edges; framed, the panel has none. */
 [data-rux-standalone] .scheduler-print__hub {
   padding: 0;
   margin-block-start: var(--rux-spacing-05);
 }
 
-.scheduler-print__group-name { margin: 0 0 var(--rux-spacing-05); }
-
-/* As many tiles as fit, the same width in every group, so a group of one is
-   not a tile the width of the page beside a group of three. Tiles in a row
-   share the tallest one's height. */
-.scheduler-print__tiles {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
-  gap: var(--rux-spacing-05);
+.scheduler-print__group-name {
+  color: var(--rux-text-secondary);
+  margin: 0 0 var(--rux-spacing-03);
 }
 
-.scheduler-print__hub .rux--tile { text-decoration: none; }
+/* One column, the rule between rows a pixel of the surface showing through. */
+.scheduler-print__tiles {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1px;
+}
+
+/* Carbon's tile is a block with a 4rem floor and a 1rem inset all round;
+   a row is a line, so it sets its own. */
+.scheduler-print__hub .rux--tile {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-04);
+  min-block-size: 0;
+  padding: var(--rux-spacing-04) var(--rux-spacing-05);
+  text-decoration: none;
+}
 
 .scheduler-print__tile-icon {
+  flex: none;
   display: block;
   color: var(--rux-icon-primary);
-  margin-block-end: var(--rux-spacing-05);
 }
 
 .scheduler-print__tile-name { margin: 0; }
 
-.scheduler-print__tile-blurb {
-  color: var(--rux-text-secondary);
-  margin: var(--rux-spacing-02) 0 0;
-}
-
+/* Why a form cannot open from here, at the row's far end. */
 .scheduler-print__tile-need {
+  margin: 0 0 0 auto;
   font-size: var(--rux-helper-text-01-font-size);
   line-height: var(--rux-helper-text-01-line-height);
   color: var(--rux-text-helper);
-  margin: var(--rux-spacing-03) 0 0;
 }
 
 

@@ -106,9 +106,9 @@ cannot disagree. The week schedule is rux-ui's billing report of a week on
 Legal landscape, five buses a sheet, opened from the board's menu as Print
 week; `week.js` places its trips as it places the board's, and a trip that
 does not fit its row is named above the sheet. `print.js` holds the registry every form is an entry in; a
-new form names its group, its short name for the tile, one line under it, a
+new form names its group, its short name for the list, a
 Material icon from Design's sprite, what it binds to and its paper, and the
-page gives it the same tile, frame and fit as the rest. A form leaves as paper
+page gives it the same row, frame and fit as the rest. A form leaves as paper
 or as Save as PDF in the print dialog, which keeps its type sharp, under the
 name `file-names.js` gives every file a trip has, uploaded or printed. The page
 follows the theme the person keeps and the sheet on it carries the light one,

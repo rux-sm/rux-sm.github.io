@@ -1210,6 +1210,33 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   .scheduler-driver-itinerary__table thead { display: table-header-group; }
 }
 
+/* ── The Detailed layout ─────────────────────────────────────────────────
+   The office's copy of the itinerary: the Simple sheet with the yard at both
+   ends, each wait and what it counts as, and the leg's figures from the
+   Route tab. Rules and weight only, as the rest of the form. */
+
+/* Start, Spot and End, three across under the client and contact, in the
+   head's own voice. */
+.scheduler-driver-itinerary__times {
+  grid-template-columns: repeat(3, 1fr);
+  padding-block-start: var(--rux-spacing-04);
+}
+
+/* The yard is where the bus is, not the group, so its rows read quieter than
+   the stops between them. */
+.scheduler-driver-itinerary__yard td { color: var(--rux-text-secondary); }
+
+/* The miles and hours after the stops, the Route tab's table on paper, with
+   room above it to stand apart. */
+.scheduler-driver-itinerary__totals { margin-block-start: var(--rux-spacing-07); }
+
+/* The Total closes the days with a strong rule and weight, since a fill
+   would print as nothing. */
+.scheduler-driver-itinerary__totals .scheduler-driver-itinerary__total td {
+  border-block-start: 1px solid var(--rux-border-strong-01);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+}
+
 /* ── The customer quote ──────────────────────────────────────────────────
    The office's own QUOTE / PROPOSAL, drawn as the customer already knows it:
    a centred letterhead, boxed parties, ruled line items and the terms under

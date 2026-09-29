@@ -57,6 +57,7 @@ step('docs fixtures', process.execPath, ['tools/check-docs.test.mjs']);
 
 // THE SCHEDULER'S CHECKLIST RULES, run against sample trips.
 step('scheduler checklist', process.execPath, ['scheduler/tools/check-checklist.mjs']);
+step('scheduler route figures', process.execPath, ['scheduler/tools/check-route-figures.mjs']);
 
 // THE NAMES SWEEP, EVERY TRACKED TEXT FILE. A public repository publishes
 // every tracked file, and only those: the list comes from git, so an ignored

@@ -146,7 +146,11 @@ Three homes, and one rule for choosing.
   print, and two forms on different paper never argue over one `@page`.
   A form with a mark, the envelope, the itinerary and the hours-of-service
   record, carries a Printed box beside the panel's Print, ticked by hand,
-  which the trip's checklist reads.
+  which the trip's checklist reads. The itinerary's Layout picks Simple, the
+  driver's sheet, or Detailed, the office's, with the yard at both ends, each
+  wait marked On duty, Off duty or Sleeper berth, Start, Spot and End, and the
+  Route tab's Miles, Drive, On duty and Less rest a day and in total; Detailed
+  has no Printed box and is never offered on a blank form.
 
 ### The driver availability grid
 

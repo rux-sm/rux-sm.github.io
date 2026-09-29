@@ -265,6 +265,17 @@
       .from('settings').select('value').eq('key', REQUIREMENTS_KEY).maybeSingle();
     useRequirements(data?.value);
   }
+  /* The office's `route-times-v1`, the pre-trip and post-trip minutes the
+     Route tab adds to on duty, which the Detailed itinerary's figures add the
+     same way. A read that fails leaves both at nothing, as the Route tab does
+     before its settings answer. */
+  let routeTimes = { pre: 0, post: 0 };
+  async function readRouteTimes(client) {
+    const { data } = await client
+      .from('settings').select('value').eq('key', 'route-times-v1').maybeSingle();
+    const minutes = v => (Number.isFinite(Number(v)) && v !== null && v !== '' && Number(v) >= 0 ? Math.round(Number(v)) : 0);
+    routeTimes = { pre: minutes(data?.value?.pre_trip_minutes), post: minutes(data?.value?.post_trip_minutes) };
+  }
   // The list itself, however it was read: the driver's page has it from the
   // link's own function, since a driver cannot read `settings`.
   function useRequirements(value) {
@@ -743,11 +754,12 @@
      here rather than a fact about the place. The pickup's is the drive from
      the yard, and says so, since on a split trip's pickup leg it is the
      longest of the day. */
-  function locationCell(stop) {
+  function locationCell(stop, wait = null) {
     const td = textCell('loc', stop.name || ITINERARY_TITLE[stop.type] || '');
     const words = [milesWords(stop.miles), driveWords(stop.drive)].filter(Boolean).join(' · ');
-    const head = stop.type === 'pickup' ? 'Drive from yard' : 'Drive';
+    const head = stop.type === 'pickup' ? 'Drive from yard' : stop.type === 'return' ? 'Drive to yard' : 'Drive';
     if (words) td.appendChild(el('span', 'scheduler-driver-itinerary__leg', `${head} ${words}`));
+    if (wait) td.appendChild(el('span', 'scheduler-driver-itinerary__leg scheduler-driver-itinerary__wait', wait));
     return td;
   }
 
@@ -761,12 +773,70 @@
   }
 
   // One line of the table: when, where and the address.
-  function itineraryRow(stop, next, day = null) {
+  function itineraryRow(stop, next, day = null, wait = null) {
     const tr = el('tr');
     tr.appendChild(timeCell(itineraryTimes(stop, next, day)));
-    tr.appendChild(locationCell(stop));
+    tr.appendChild(locationCell(stop, wait));
     tr.appendChild(textCell('addr', addressLines(stop.address)));
     return tr;
+  }
+
+  /* THE YARD, AT EITHER END OF A DETAILED SHEET: when the bus leaves it and
+     when it is back, with the drive home under the name, which the sheet the
+     driver gets leaves off. The yard is named from the leg's `return` row,
+     where the Route tab keeps it. A time on another day than the row's
+     carries that day, as a stop's departure does. */
+  function yardRow(label, time, onDay, day, back) {
+    const tr = el('tr', 'scheduler-driver-itinerary__yard');
+    tr.appendChild(timeCell([[label, time, onDay && day && onDay !== day ? onDay : null]]));
+    const place = { type: label === 'Dep' ? 'yard' : 'return', name: back?.name || 'Yard',
+      miles: label === 'Dep' ? null : back?.miles, drive: label === 'Dep' ? null : back?.drive };
+    tr.appendChild(locationCell(place));
+    tr.appendChild(textCell('addr', addressLines(back?.address || COMPANY.address)));
+    return tr;
+  }
+
+  // A wait as the Route tab counts it: how long, and whether it is on duty.
+  const DWELL_WORDS = { on: 'On duty', off: 'Off duty', sleeper: 'Sleeper berth' };
+  const waitWords = (minutes, dwell) => (minutes
+    ? `Waits ${window.SchedulerRouteFigures.hm(minutes)} · ${DWELL_WORDS[dwell] || DWELL_WORDS.on}` : null);
+
+  /* THE LEG'S FIGURES, from route-figures.js, the Route tab's own sum: when
+     the bus leaves the yard, is spotted and is back, then Miles, Drive, On
+     duty and Less rest, a row a day and a Total on a leg of more than one
+     day. Nothing on the sheet is added up here. */
+  function detailedTimes(model, fig) {
+    const back = fig.backOn ? ` · ${weekdayOf(fig.backOn).slice(0, 3)}` : '';
+    const times = el('dl', 'scheduler-driver-itinerary__meta scheduler-driver-itinerary__times');
+    for (const [label, time] of [['Start', model.times.depart], ['Spot', model.times.spot], [`End${back}`, model.times.back]]) {
+      times.appendChild(headField(label, time ? clock(time) : '—'));
+    }
+    return times;
+  }
+
+  function detailedTotals(fig) {
+    const t = el('table', 'scheduler-driver-itinerary__table scheduler-driver-itinerary__totals');
+    t.appendChild(el('caption', 'rux--visually-hidden', 'Miles and hours'));
+    const heads = [...(fig.days ? ['Day'] : []), 'Miles', 'Drive', 'On duty', 'Less rest'];
+    const head = el('thead');
+    const hr = el('tr');
+    for (const label of heads) {
+      const th = el('th', null, label);
+      th.scope = 'col';
+      hr.appendChild(th);
+    }
+    head.appendChild(hr);
+    const body = el('tbody');
+    const rows = fig.days
+      ? [...fig.each.map((c, n) => [`${n + 1} · ${weekdayOf(fig.dates[n]).slice(0, 3)}`, ...c]), ['Total', ...fig.total]]
+      : [[...fig.total]];
+    rows.forEach((cells, i) => {
+      const tr = el('tr', fig.days && i === rows.length - 1 ? 'scheduler-driver-itinerary__total' : null);
+      for (const c of cells) tr.appendChild(el('td', null, c));
+      body.appendChild(tr);
+    });
+    t.append(head, body);
+    return t;
   }
 
   /* A row with nothing in it, for the Add a row button and for a blank form.
@@ -780,7 +850,7 @@
      long one keeps to one line, where the group is going. Both trip lines can
      be typed over like any other line of the form. No address or phones:
      the sheet goes to the company's own driver, who has both. */
-  function itineraryHead(subject) {
+  function itineraryHead(subject, name = 'Trip itinerary') {
     const { trip, leg } = subject;
     const start = leg === 'return' ? (trip.return_start_date || trip.end_date) : trip.start_date;
     const end = leg === 'return' ? (trip.return_end_date || trip.end_date) : trip.end_date;
@@ -798,7 +868,7 @@
     logo.alt = 'Escamilla Tour Buses';
     mark.appendChild(logo);
     brand.appendChild(mark);
-    brand.appendChild(el('h2', 'scheduler-driver-itinerary__name', 'Trip itinerary'));
+    brand.appendChild(el('h2', 'scheduler-driver-itinerary__name', name));
     head.appendChild(brand);
     head.appendChild(typed('dates', 'Date', start ? dateWords(start, end) : ''));
 
@@ -850,11 +920,24 @@
      screen when one is wanted. A BLANK ONE IS RULED TO THE FOOT OF THE SHEET,
      because a blank form is handed over and written on by hand; `ruleToFoot`
      adds its rows once the sheet is drawn and can be measured. */
-  function itinerary(subject) {
+  function itinerary(subject, layout) {
     const { trip, leg } = subject;
+    /* THE DETAILED LAYOUT IS THE OFFICE'S: the Simple sheet with the yard at
+       both ends, each wait and what it counts as, and the leg's figures. It is
+       drawn only for a trip, since every figure comes from its route. */
+    const detailed = layout === 'detailed' && !!trip?.id;
+    const model = detailed
+      ? window.SchedulerRouteFigures.fromStops(trip, leg, trip.trip_stops, routeTimes) : null;
+    const fig = model ? window.SchedulerRouteFigures.legFigures(model) : null;
+    const waitFor = stop => {
+      const entry = model?.list.find(e => e.row === stop);
+      return entry ? waitWords(window.SchedulerRouteFigures.waitOf(model, entry), entry.dwell) : null;
+    };
     const card = el('article', 'scheduler-form scheduler-driver-itinerary');
-    card.appendChild(itineraryHead(subject));
+    if (detailed) card.dataset.layout = 'detailed';
+    card.appendChild(itineraryHead(subject, detailed ? 'Detailed itinerary' : undefined));
     card.appendChild(itineraryMeta(subject));
+    if (detailed) card.appendChild(detailedTimes(model, fig));
 
     /* The run of stops alone: a day row is the old format, never a stop. The
        yard is not printed at either end: the sheet runs from the pickup's
@@ -908,15 +991,26 @@
       card.appendChild(t);
     };
     let shown = null;
+    let yardOut = detailed;
     stops.forEach((stop, i) => {
       if (stop.type === 'return') return;
       if (manyDays && dates[i] && dates[i] !== shown) {
         shown = dates[i];
         table(shown);
       } else if (!body) table(null);
-      body.appendChild(itineraryRow(stop, stops[i + 1] || null, dates[i] ?? shown));
+      if (yardOut) {
+        yardOut = false;
+        const pickup = model.rows.pickup;
+        body.appendChild(yardRow('Dep', model.times.depart, pickup?.depart_prev_date, dates[i] ?? shown, model.rows.back));
+      }
+      body.appendChild(itineraryRow(stop, stops[i + 1] || null, dates[i] ?? shown, detailed ? waitFor(stop) : null));
     });
     if (!body) table(null);
+    if (detailed && model.rows.back) {
+      const back = model.rows.back;
+      // A one-day leg back past midnight keeps no date on the row; the figures know the day.
+      body.appendChild(yardRow('Arr', model.times.back, back.arrive_date || fig.backOn, shown ?? model.from, back));
+    }
     if (!card.querySelector('.scheduler-driver-itinerary__table tbody > tr')) body.appendChild(blankRow());
 
     /* Screen only, and inside the sheet because that is where the row it adds
@@ -930,6 +1024,7 @@
       row.querySelector('[contenteditable]')?.focus();
     });
     card.appendChild(add);
+    if (detailed) card.appendChild(detailedTotals(fig));
     return card;
   }
 
@@ -1799,8 +1894,10 @@
     .filter(Boolean).join(' ');
   const envelopeFileName = subject => (subject.trip ? forTrip(subject.trip, CODES.envelope, driverCopy(subject)) : null);
   const hosFileName = subject => (subject.trip ? forTrip(subject.trip, CODES['hours-of-service'], driverCopy(subject)) : null);
-  const itineraryFileName = subject => (subject.trip
-    ? forTrip(subject.trip, CODES['driver-itinerary'], subject.leg || 'outbound') : null);
+  // The Detailed layout is the office's copy, so its file says so.
+  const itineraryFileName = (subject, layout) => (subject.trip
+    ? forTrip(subject.trip, CODES['driver-itinerary'],
+      `${subject.leg || 'outbound'}${layout === 'detailed' ? '-detailed' : ''}`) : null);
   const quoteFileName = subject => (subject.trip ? forTrip(subject.trip, CODES.quote) : null);
   const weekFileName = subject => (subject.week ? forDay(subject.week, CODES['week-schedule']) : null);
 
@@ -1888,8 +1985,16 @@
       binds: 'trip+leg',
       blank: true,
       /* The mark rux-ui already writes and its task list already reads, so a
-         sheet printed here shows as printed there. */
-      marks: { table: 'trips', column: 'itinerary_printed', by: 'leg' },
+         sheet printed here shows as printed there. It is the driver's sheet
+         that is marked, so the Detailed layout, the office's, offers no tick. */
+      marks: { table: 'trips', column: 'itinerary_printed', by: 'leg', layout: 'simple' },
+      /* SIMPLE IS THE DRIVER'S SHEET AND DETAILED THE OFFICE'S, which adds the
+         yard at both ends, each wait and the leg's miles and hours from the
+         Route tab. Detailed needs a trip's route, so a blank form is Simple. */
+      layouts: [
+        { id: 'simple', name: 'Simple' },
+        { id: 'detailed', name: 'Detailed', trip: true },
+      ],
       /* LETTER, AND NOT `exact`. The envelope must come out on one envelope;
          this runs onto as many sheets as the stops need, and the height is
          the paper's rather than a limit -- a short itinerary still draws a
@@ -2473,7 +2578,7 @@
   }
   let titlesBefore = null;
   window.addEventListener('beforeprint', () => {
-    const file = current?.form.fileName?.(current.every[current.chosen]);
+    const file = current?.form.fileName?.(current.every[current.chosen], current.layout);
     if (!file) return;
     const name = window.SchedulerFileNames.bare(file);
     titlesBefore = titled.map(doc => doc.title);
@@ -2513,8 +2618,9 @@
 
      A copy with no row to write on -- a blank form, a trip that answered
      without an id -- has no tick, and the toolbar leaves it out. */
-  function markOf(form, copy) {
+  function markOf(form, copy, layout) {
     const marks = form?.marks;
+    if (marks?.layout && layout !== marks.layout) return null;
     const row = !marks || !copy ? null
       : marks.by === 'leg' ? copy.trip : copy.seat;
     if (!row?.id) return null;
@@ -2606,12 +2712,13 @@
        own -- almost nothing else square in the system has either -- so it read
        as a different family beside a row of square controls. The copy beside it
        is already a select; this row makes its choices one way. */
-    if (form.layouts?.length > 1) {
+    const layouts = layoutsOf(form, current.blank);
+    if (layouts.length > 1) {
       nodes.push(pickCell(
         'Layout',
-        form.layouts.map(option => option.name),
-        form.layouts.findIndex(option => option.id === layout),
-        i => chooseLayout(form.layouts[i].id),
+        layouts.map(option => option.name),
+        layouts.findIndex(option => option.id === layout),
+        i => chooseLayout(layouts[i].id),
       ));
     }
 
@@ -2656,7 +2763,7 @@
        and the person chooses. This is that choice, and it unticks. In the
        board's panel it sits beside the panel's own Print, which is where the
        trip's checklist sends someone to tick it. */
-    const printed = markOf(form, every[current.chosen]);
+    const printed = markOf(form, every[current.chosen], layout);
     if (printed) {
       const cell = el('div', 'scheduler-print__cell');
       const box = el('div', 'rux--form-item rux--checkbox-wrapper');
@@ -2872,9 +2979,11 @@
     return copies.length ? copies : fallback;
   }
 
+  // The layouts a form offers: one that needs a trip is left off a blank form.
+  const layoutsOf = (form, blank) => (form.layouts || []).filter(l => !(blank && l.trip));
   // The layout the address asks for, where the form draws more than one.
-  const layoutWanted = form => (form.layouts?.some(l => l.id === params.get('layout'))
-    ? params.get('layout') : form.layouts?.[0]?.id);
+  const layoutWanted = (form, blank) => (layoutsOf(form, blank).some(l => l.id === params.get('layout'))
+    ? params.get('layout') : layoutsOf(form, blank)[0]?.id);
 
   const notConnected = () => say('warning', 'Not connected.',
     'This page reads the schedule through the account script, which a local preview leaves off. The cloud preview is http://localhost:8641/.');
@@ -2890,7 +2999,7 @@
       chosen,
       every: copies,
       blank: Boolean(blank),
-      layout: layoutWanted(form),
+      layout: layoutWanted(form, blank),
     };
     buildControls();
     draw();
@@ -2912,7 +3021,7 @@
     'trip_contact_3_name', 'trip_contact_3_phone',
     'trip_contact_4_name', 'trip_contact_4_phone',
     'trip_contact_5_name', 'trip_contact_5_phone',
-    'trip_stops(id,position,leg,type,name,address,depart_prev,depart_prev_date,arrive,arrive_date,spot,spot_date,miles,drive)',
+    'trip_stops(id,position,leg,type,name,address,depart_prev,depart_prev_date,arrive,arrive_date,spot,spot_date,miles,drive,dwell_status,lat,mapbox_id)',
   ];
 
   const tripQuery = form => [
@@ -3003,6 +3112,8 @@
       leg: asked || assignment?.leg || 'outbound',
       seat: null,
     };
+    // The Detailed layout's figures add the office's pre-trip and post-trip time.
+    if (form.layouts?.some(l => l.trip)) await readRouteTimes(client).catch(() => {});
     const copies = form.copies(subject);
     show(form, subject, copies, Math.max(0, copies.findIndex(c => c.leg === subject.leg)));
   }

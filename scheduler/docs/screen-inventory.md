@@ -190,7 +190,7 @@ shows the same slots and card, and a slot or update used there selects that
 trip first. It holds Open trip,
 then the person's own choices in the order they set them — the itinerary,
 opened or uploaded, the driver envelope, the driver itinerary, the customer
-quote, all forms, Assign driver, Color, Mark hotel booked, Take off this bus or Cancel trip —
+quote, the quote calculator, all forms, Assign driver, Color, Mark hotel booked, Take off this bus or Cancel trip —
 set from the right-click menu's Customize shortcuts and saved on their
 profile. An empty
 choice is left out, and an empty slot only pads the row up to three, the
@@ -222,7 +222,9 @@ the editor has the same slots; on its other bars the slots the panel has taken
 over stay in place and say to change it in the editor. The editor carries
 the same slots in a row above its tabs, less Open trip and the empty one;
 there Color opens Trip actions, and Mark hotel booked, Assign driver and Take
-off this bus go to the Buses tab, so the change saves with the trip. Every bar of the open
+off this bus go to the Buses tab, so the change saves with the trip. A new
+trip has the row too, every slot faint until its first Save but the quote
+calculator. Every bar of the open
 trip — the return leg, or the same leg on another bus, too — wears the
 selection's ring with a brighter arc running round it, which costs none of
 its writing; with reduced motion the ring stands still. The other bars of a

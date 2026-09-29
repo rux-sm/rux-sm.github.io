@@ -481,11 +481,26 @@
       else if (e.target.value.trim()) addDay();
     });
 
+    /* A trip's figures, from the board's Calculator shortcut: `miles` is a
+       day's miles each, comma-separated, and `dead` its dead miles. */
+    const fill = () => {
+      const params = new URLSearchParams(location.search);
+      const miles = (params.get('miles') || '').split(',').filter(Boolean).map(m => Math.max(0, num(m)))
+        .slice(0, rates.max_days);
+      if (!miles.some(m => m > 0)) return;
+      dayCount = miles.length;
+      drawDays();
+      miles.forEach((m, i) => { $(`scheduler-quote-trip-${i + 1}`).value = String(m); });
+      const dead = num(params.get('dead'));
+      if (dead > 0) $('scheduler-quote-dead').value = count.format(dead).replace(/,/g, '');
+    };
+
     return {
       app: $('scheduler-quote-tabs-wrap'),
       preview: 'This preview has no log-in, so the rates are blank until they are saved on the rates page. Open http://localhost:8641/, the cloud preview, to load the real ones.',
       start: () => {
         drawDays();
+        fill();
         drawRateSelect();
         compute();
         // Most quotes start with the first day's miles.
@@ -660,6 +675,18 @@
     : $('scheduler-quote-rates-form') ? ratesPage()
     : null;
   if (!page) return;
+
+  /* FRAMED IN THE BOARD'S VIEWER, the calculator is only the calculator: the
+     panel's head names it and the week is the page behind it, so the header,
+     the title row and the Rules tab's strip go. Taking the header out also
+     takes away the room Carbon keeps under it. The panel's toolbar has nothing
+     to print or open, so it hides. */
+  if (window.self !== window.top && $('scheduler-quote-form')) {
+    document.querySelector('.rux--header')?.remove();
+    document.querySelector('.scheduler-quote-title')?.remove();
+    document.querySelector('.scheduler-quote-tabs > .rux--tabs')?.remove();
+    try { window.parent.Rux?.viewer?.setToolbarShown(false); } catch { /* not the board's frame */ }
+  }
 
   const show = () => {
     page.app.hidden = false;

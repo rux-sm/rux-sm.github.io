@@ -21,6 +21,16 @@ written here, because this repository is public.
 - The spreadsheet's local church choice is not offered, so its rate is not on
   the rates page.
 
+## From a trip
+
+The Quote calculator shortcut opens the calculator in the board's document
+panel, without the header or the Rules tab, filled with one leg's miles a day
+and its dead miles. The trip in the editor gives what its fields say now, saved
+or not: the Route tab's miles for each day once it has counted them, otherwise
+the leg's miles spread over its days with the remainder on the first. A trip
+picked on the board gives what was saved. Estimated miles typed on a trip that
+is not split take the route's place, as they do on the Billing tab.
+
 ## Where it follows the spreadsheet
 
 The calculator's Rules tab, in `scheduler/quote.html`, lists each place it

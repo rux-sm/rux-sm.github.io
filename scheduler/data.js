@@ -5013,20 +5013,38 @@
   function legFigures(leg) {
     const l = leg === 'return' ? 'return' : 'outbound';
     const r = editing?.route;
-    const mine = r?.leg === l;
-    const stops = (editing?.stops || []).filter(st => (st.leg || 'outbound') === l);
+    return figuresOf(editing?.stops || [], l, {
+      route: r?.leg === l ? r : null,
+      est: splitNow() ? null : money(document.getElementById('scheduler-f-estmiles')?.value ?? ''),
+      from: isoOrNull(document.getElementById(l === 'return' ? 'scheduler-f-rstart' : 'scheduler-f-start')?.value ?? ''),
+      to: isoOrNull(document.getElementById(l === 'return' ? 'scheduler-f-rend' : 'scheduler-f-end')?.value ?? ''),
+    });
+  }
+  // The same figures from a trip as it was saved, for a trip not in the editor.
+  function savedLegFigures(trip, leg) {
+    const l = leg === 'return' ? 'return' : 'outbound';
+    const split = trip.trip_type === SPLIT;
+    return figuresOf(trip.trip_stops || [], l, {
+      est: split ? null : numOrNull(trip.est_miles),
+      from: l === 'return' ? trip.return_start_date ?? null : trip.start_date ?? null,
+      to: l === 'return' ? trip.return_end_date ?? null : trip.end_date ?? null,
+    });
+  }
+  // `route` is the Route tab's own leg, whose drives were looked up since the
+  // trip opened and may not be saved yet.
+  function figuresOf(allStops, l, { route = null, est = null, from = null, to = null }) {
+    const stops = allStops.filter(st => (st.leg || 'outbound') === l);
     const pickup = stops.find(st => st.type === 'pickup');
     const back = stops.filter(st => st.type === 'return').at(-1);
-    const out = mine ? r.driveMiles : numOrNull(pickup?.miles);
-    const home = mine ? r.backMiles : numOrNull(back?.miles);
+    const out = route ? route.driveMiles : numOrNull(pickup?.miles);
+    const home = route ? route.backMiles : numOrNull(back?.miles);
     const between = stops.filter(st => st !== pickup && st !== back)
       .reduce((n, st) => n + (Number(st.miles) || 0), 0);
     const routeMiles = between + (Number(out) || 0) + (Number(home) || 0);
-    const est = splitNow() ? null : money(document.getElementById('scheduler-f-estmiles')?.value ?? '');
-    const from = isoOrNull(document.getElementById(l === 'return' ? 'scheduler-f-rstart' : 'scheduler-f-start')?.value ?? '');
-    const to = isoOrNull(document.getElementById(l === 'return' ? 'scheduler-f-rend' : 'scheduler-f-end')?.value ?? '') ?? from;
-    const days = from && to ? Math.max(1, Math.round((parseISO(to) - parseISO(from)) / 86400000) + 1) : null;
-    return { miles: round2(est ?? routeMiles), dead: round2((Number(out) || 0) + (Number(home) || 0)), days };
+    const end = to ?? from;
+    const days = from && end ? Math.max(1, Math.round((parseISO(end) - parseISO(from)) / 86400000) + 1) : null;
+    return { miles: round2(est ?? routeMiles), dead: round2((Number(out) || 0) + (Number(home) || 0)), days,
+      dayMiles: est == null && route?.dayMiles?.length === days ? route.dayMiles : null };
   }
 
   // What a line is priced from, and the calculator's cost for one bus or one
@@ -7148,7 +7166,7 @@
           status ?? (span == null ? '—' : hm(span)),
           status || span == null ? '—' : hm(span - rest),
         ];
-        return Object.assign(cells, { span: status ? null : span, rest, status });
+        return Object.assign(cells, { span: status ? null : span, rest, status, miles });
       };
       function drawTotals() {
         const legs = [[r.driveOut, r.driveMiles], ...legStops().map(st => [st.drive, st.miles]),
@@ -7166,6 +7184,7 @@
         // Over more than one day the yard-to-yard span is the days', not a clock's.
         const days = !!(from && to && to > from);
         if (days) span = null;
+        r.dayMiles = null;
         const needs = !days && !(val('scheduler-f-leave') && val('scheduler-f-endtrip') && timesComplete(r.list));
         const yardOut = val('scheduler-f-depart'), spot = val('scheduler-f-spot'), yardBack = val('scheduler-f-return');
         /* The last day's weekday goes in End's label, so the time itself never
@@ -7189,6 +7208,8 @@
           for (let d = from; d <= to && all.length < 31; d = dayAfter(d, 1)) all.push(d);
           const each = all.map(d => dayFigures(d, all[0], all.at(-1)));
           each.forEach((cells, n) => rows.push([String(n + 1), ...cells]));
+          // Each day's miles, for the quote calculator the trip opens.
+          r.dayMiles = each.map(c => c.miles);
           /* The leg's on duty is its days' added up, once every day has its
              times; a day missing them, or with them out of order, says so. */
           const status = each.find(c => c.status === 'Check times')?.status ?? each.find(c => c.status)?.status;
@@ -10822,6 +10843,37 @@
     });
   }
 
+  /* The quote calculator beside the week, filled with a leg's miles, dead
+     miles and days, the figures the Billing tab's lines are priced from. The
+     trip in the editor gives what its fields say now, saved or not; any other
+     gives what was saved. `bar` is null from the editor's own row. */
+  function openCalculator(bar) {
+    const leg = bar ? bar.dataset.leg
+      : editing?.route?.leg ?? panelArgs?.ref?.leg;
+    const trip = bar && !isEditorTrip(bar) ? panelIndex.trips.get(bar.dataset.tripId) : null;
+    const f = !bar || isEditorTrip(bar) ? legFigures(leg) : trip ? savedLegFigures(trip, leg) : null;
+    /* A day's miles as the Route tab's Summary counts them, where it has
+       counted this leg; otherwise the leg's miles spread over its days, the
+       remainder on the first. The calculator prices by day, so the split can
+       change the price. */
+    const params = new URLSearchParams();
+    if (f?.miles > 0) {
+      const days = f.days || 1;
+      const whole = Math.round(f.miles);
+      const each = f.dayMiles?.map(m => Math.round(m))
+        ?? Array.from({ length: days }, (_, i) => Math.floor(whole / days) + (i ? 0 : whole % days));
+      params.set('miles', each.join(','));
+      if (f.dead > 0) params.set('dead', String(f.dead));
+    }
+    const query = params.toString();
+    openGenerated({
+      url: `quote.html${query ? `?${query}` : ''}`,
+      kind: 'Quote calculator',
+      note: '',
+      opener: bar ?? document.querySelector('#scheduler-panel-shortcuts [data-shortcut="calculator"]'),
+    });
+  }
+
   function openItinerary(bar) {
     const id = bar.dataset.itineraryId;
     if (!id) return;
@@ -11382,6 +11434,8 @@
       blocked: () => null, run: bar => openDriverItinerary(bar) },
     { id: 'quote', label: 'Customer quote', icon: '#m-request_quote', short: 'Quote',
       blocked: () => null, run: bar => openQuote(bar) },
+    { id: 'calculator', label: 'Quote calculator', icon: '#m-calculate', short: 'Calculator',
+      blocked: () => null, run: bar => openCalculator(bar) },
     { id: 'forms', label: 'All forms', icon: '#m-description', short: 'Forms',
       blocked: () => null, run: bar => openForms(bar) },
     { id: 'assign', label: 'Assign driver', icon: '#m-person-fill', short: 'Driver',
@@ -11947,16 +12001,23 @@
     },
     assign: toFleetTab,
     unassign: toFleetTab,
+    calculator: () => openCalculator(null),
   };
+  /* A new trip has the same row, so the slots keep their places, but only the
+     calculator works before the first Save: every other slot acts on a trip
+     the database holds. */
+  const ON_NEW_TRIP = new Set(['calculator']);
   function drawPanelShortcuts() {
     if (!panelShortcuts) return;
-    const ref = !panelEl.hidden && !panelArgs?.draft ? panelArgs?.ref : null;
-    panelShortcuts.hidden = !ref;
-    if (!ref) { panelShortcutsDrawn = ''; return; }
-    const bar = findBar(ref);
+    const draft = !panelEl.hidden && !!panelArgs?.draft;
+    const ref = !panelEl.hidden && !draft ? panelArgs?.ref : null;
+    panelShortcuts.hidden = !ref && !draft;
+    if (panelShortcuts.hidden) { panelShortcutsDrawn = ''; return; }
+    const bar = ref ? findBar(ref) : null;
     const slots = [...shortcutChoice.filter(Boolean), 'contacts', 'add_update'].map(id => {
       const action = FIXED_SHORTCUTS[id] ?? SHORTCUT_ACTIONS.find(a => a.id === id);
-      const why = IN_EDITOR[id] ? null : !bar ? 'This trip is not on the week shown' : action.blocked(bar);
+      const why = draft ? (ON_NEW_TRIP.has(id) ? null : 'Save the trip first')
+        : IN_EDITOR[id] ? null : !bar ? 'This trip is not on the week shown' : action.blocked(bar);
       return { id, why,
         label: why ?? (action.label_for && bar ? action.label_for(bar) : action.label),
         icon: action.icon_for && bar ? action.icon_for(bar) : action.icon,
@@ -11980,7 +12041,7 @@
   panelShortcuts?.addEventListener('click', e => {
     const btn = e.target.closest('.scheduler-bar-shortcut');
     const ref = panelArgs?.ref;
-    if (!btn || !ref || btn.getAttribute('aria-disabled') === 'true') return;
+    if (!btn || (!ref && !panelArgs?.draft) || btn.getAttribute('aria-disabled') === 'true') return;
     const id = btn.dataset.shortcut;
     if (IN_EDITOR[id]) { IN_EDITOR[id](ref); return; }
     const bar = findBar(ref);

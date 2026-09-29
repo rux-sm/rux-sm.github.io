@@ -20,7 +20,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - Every stop with a time in the customer's itinerary goes on the route; a meal or stop with no time and no place stays off until it has one.
 - Times the itinerary leaves TBD get a sensible placeholder, said so in the report, because the route needs times to give hours.
 - Add a fuel card whenever the Route tab suggests one; no need to ask.
-- When the Route tab asks for a second driver, raise it with rux before deciding, because it changes the cost and the crew.
+- When the Route tab asks for a second driver, raise it with rux before deciding, because it changes the cost and the crew. When he keeps one driver, the notes carry the rest plan the driver is told, such as hours in the sleeper at the destination and arriving early to rest before pickup and after drop-off, since the route cannot show it.
 
 ## Buses and drivers
 

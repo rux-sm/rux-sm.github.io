@@ -73,6 +73,15 @@ both totals and any co-driver seat it changes, to replace or keep. Nothing is
 kept until Save. A typed line's menu offers the calculator's price once the
 two differ.
 
+## What the customer was sent
+
+The Billing tab's Quote sent keeps the quoted price and the day it is marked,
+for Save. The Customer quote form, opened beside the trip with nothing
+unsaved, offers to mark it sent at the price it prints. When the lines move
+past it, the section says by how much, and once the contract is signed it
+names the price as the one they signed. Marking it fills the Updates box with
+Quote sent and the price, and the calculator's replace check names it.
+
 ## Where it follows the spreadsheet
 
 The calculator's Rules tab, in `scheduler/quote.html`, lists each place it

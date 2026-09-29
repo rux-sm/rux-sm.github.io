@@ -446,6 +446,8 @@
     'trip_contact_3_name', 'trip_contact_3_phone', 'trip_contact_4_name', 'trip_contact_4_phone',
     'trip_contact_5_name', 'trip_contact_5_phone',
     'quoted_price,deposit_amount,invoice_number,po_ref,po_amount',
+    // The price the customer was sent, and when, which the quote lines may move past.
+    'quote_sent_price,quote_sent_on',
     'contract_status,invoice_status,balance_paid,date_paid',
     'est_miles,actual_miles',
     // The PO and invoice switches' flags, and the contract note.
@@ -4131,6 +4133,9 @@
        `collectTrip` follows too. `invoiced` is written beside `invoice_status`
        so the two always agree. */
     { key: 'quoted_price', get: f => money(f['scheduler-f-quoted'].value) },
+    // What the customer was sent, kept by Quote sent on the Billing tab.
+    { key: 'quote_sent_price', get: () => editing?.quoteSent?.price ?? null },
+    { key: 'quote_sent_on', get: () => editing?.quoteSent?.on ?? null },
     // The route's miles, on the Route tab.
     { key: 'est_miles', get: () => money(document.getElementById('scheduler-f-estmiles')?.value) },
     { key: 'actual_miles', get: () => money(document.getElementById('scheduler-f-actmiles')?.value) },
@@ -4959,6 +4964,8 @@
 
   let linePending = [];
   let redrawLines = () => {};
+  // The Billing tab's Quote sent section, redrawn as the quoted price moves.
+  let redrawQuoteSent = () => {};
   let lineEditing = null;
   // Set once the Buses tab has drawn, so a line's bus count reads this trip's.
   let linesLive = false;
@@ -5952,6 +5959,7 @@
        while creating. It ignores the required fields: an invalid form is when
        someone most wants to back out. */
     if (panelReset) panelReset.disabled = nothingChanged;
+    redrawQuoteSent();
     tellCalculator();
   }
 
@@ -6025,6 +6033,9 @@
         { ref: trip[`hotel_itinerary_number_${l}`] ?? null, booked: !!trip[`hotel_booked_${l}`] }])),
       hotelWanted: !!trip.need_hotel,
       fuelCard: !!trip.need_fuel_card,
+      // The price the customer was sent and the day, or null before it is.
+      quoteSent: trip.quote_sent_price == null ? null
+        : { price: Number(trip.quote_sent_price), on: trip.quote_sent_on ?? null },
       before: {
       destination: trip.destination ?? null,
       customer: trip.customer ?? null,
@@ -6058,6 +6069,8 @@
       return_start_date: trip.return_start_date ?? null,
       return_end_date: trip.return_end_date ?? trip.return_start_date ?? null,
       quoted_price: trip.quoted_price ?? null,
+      quote_sent_price: trip.quote_sent_price == null ? null : Number(trip.quote_sent_price),
+      quote_sent_on: trip.quote_sent_on ?? null,
       deposit_amount: trip.deposit_amount ?? null,
       po_ref: trip.po_ref ?? null,
       po_amount: trip.po_amount ?? null,
@@ -7787,6 +7800,49 @@
       linesBody.append(lineList.list, linesNote, qbButton);
       panelBilling.appendChild(section('Quote lines', linesBody));
 
+      /* QUOTE SENT: the price the customer was sent, and the day, kept for
+         Save by one press. The quote lines can move after it, and the section
+         then says by how much, with the offer to mark the new price sent.
+         Once the contract is signed, it is the price they signed. */
+      const sentBody = el('div', 'rux--stack-vertical rux--stack-scale-4');
+      const markSent = price => {
+        editing.quoteSent = price == null ? null : { price: round2(price), on: iso(new Date()) };
+        refreshDirty();
+      };
+      const smallButton = (label, kindClass, run) => {
+        const b = el('button', `rux--btn ${kindClass} rux--btn--sm rux--layout--size-sm`, label);
+        b.type = 'button';
+        b.addEventListener('click', run);
+        return b;
+      };
+      redrawQuoteSent = () => {
+        const now = money(quotedInput.value);
+        const sent = editing?.quoteSent;
+        const signed = stepOn('contractSigned') && on(document.getElementById('scheduler-f-contract'));
+        const key = JSON.stringify([now, sent, signed]);
+        if (sentBody.dataset.drawn === key) return;
+        sentBody.dataset.drawn = key;
+        if (!sent) {
+          sentBody.replaceChildren(
+            el('p', 'rux--form__helper-text', 'Not sent yet. Marking it keeps the price the customer was sent.'),
+            smallButton(now == null ? 'Mark quote sent' : `Mark sent at ${usdCents(now)}`, 'rux--btn--tertiary', () => markSent(now)));
+          sentBody.lastChild.disabled = now == null;
+          return;
+        }
+        const said = `${signed ? 'Customer signed at' : 'Sent to customer:'} ${usdCents(sent.price)}${sent.on ? ` on ${mdy(sent.on)}` : ''}`;
+        const parts = [el('p', 'rux--type-body-compact-01', said)];
+        if (now != null && round2(now) !== round2(sent.price)) {
+          const diff = round2(now - sent.price);
+          parts.push(notice('warning', 'The quote changed',
+            `Now ${usdCents(now)}, ${usdCents(Math.abs(diff))} ${diff > 0 ? 'more' : 'less'} than the customer ${signed ? 'signed at' : 'was sent'}.`,
+            { label: `Mark ${usdCents(now)} sent`, onClick: () => markSent(now) }));
+        }
+        parts.push(smallButton('Mark not sent', 'rux--btn--ghost', () => markSent(null)));
+        sentBody.replaceChildren(...parts);
+      };
+      panelBilling.appendChild(section('Quote sent', sentBody));
+      redrawQuoteSent();
+
       /* The trip's miles, both legs together, beside the quote. The estimate
          is rux-ui's override: left blank, the stops' own miles stand, and the
          field shows their sum as its placeholder. The quote lines price from
@@ -8535,6 +8591,10 @@
     const now = k => (k in patch ? patch[k] : editing.before[k]);
     const day = d => parseISO(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
     const say = (key, text) => { keys.push(key); said.push(text); };
+    // A quote marked sent comes first, so it is the line the box is filled with.
+    if (has('quote_sent_price', 'quote_sent_on') && now('quote_sent_price') != null) {
+      say('quote_sent', `Quote sent, ${usdCents(Number(now('quote_sent_price')))}`);
+    }
     if (has('start_date', 'end_date', 'return_start_date', 'return_end_date')) {
       const from = now('start_date');
       const to = now('end_date') || from;
@@ -8633,7 +8693,8 @@
       const phrases = change.said.map(p => p.charAt(0).toLowerCase() + p.slice(1));
       what = `You ${phrases.length > 1 ? `${phrases.slice(0, -1).join(', ')} and ${phrases.at(-1)}` : phrases[0]}.`;
     } else what = 'Say what changed, or save with no update.';
-    const line = creating ? 'Quote sent' : change?.line ?? '';
+    const line = creating ? (editing?.quoteSent ? `Quote sent, ${usdCents(editing.quoteSent.price)}` : 'Quote sent')
+      : change?.line ?? '';
     updateSkip.textContent = 'Save, no update';
     updateSave.textContent = 'Save with update';
     updateClose.setAttribute('aria-label', 'Back to the trip, not saved');
@@ -10566,6 +10627,33 @@
      not always the one showing. */
   function setFormLink(url) {
     if (url) viewerNewTab.href = url;
+    offerQuoteSent(url);
+  }
+
+  /* The customer quote, opened beside the trip in the editor, offers to mark
+     the quote sent at its price, once, for Save to keep. The form prints what
+     is saved, so a price with unsaved changes asks for a Save first. */
+  function offerQuoteSent(url) {
+    let params;
+    try { params = new URL(url, location.href).searchParams; } catch { return; }
+    if (params.get('form') !== 'customer-quote' || !editing || panelEl.hidden) return;
+    if (String(params.get('trip')) !== String(editing.id)) return;
+    const price = money(document.getElementById('scheduler-f-quoted')?.value ?? '');
+    const saved = editing.before?.quoted_price == null ? null : Number(editing.before.quoted_price);
+    if (price == null) return;
+    if (price !== saved || linesPatch()?.work) {
+      toast('info', 'Save to send this price', 'The customer quote shows the saved price until the trip is saved.');
+      return;
+    }
+    if (editing.quoteSent && round2(editing.quoteSent.price) === round2(price)) return;
+    toast('info', 'Customer quote', `Mark it sent at ${usdCents(price)}?`, {
+      label: 'Mark quote sent',
+      onClick: () => {
+        editing.quoteSent = { price: round2(price), on: iso(new Date()) };
+        refreshDirty();
+        toast('success', 'Quote marked sent', 'Save to keep it.');
+      },
+    });
   }
 
   window.Rux.viewer = { setFormControls, setFormNote, setViewerHead, setToolbarShown, setViewerBack, setFormLink };
@@ -10907,7 +10995,9 @@
     const seats = plan.seatsOn ? `Turns on the co-driver seat on ${plan.buses === 1 ? 'the bus' : `all ${plan.buses} buses`} on the Buses tab.`
       : plan.seatsOff ? `Turns off the co-driver seat on the Buses tab${plan.assigned ? `, except ${plan.assigned} with a driver in it` : ''}.`
       : null;
+    const sent = editing?.quoteSent;
     body.replaceChildren(
+      ...(sent ? [el('p', 'rux--type-body-compact-01', `The customer was sent ${usdCents(sent.price)}${sent.on ? ` on ${mdy(sent.on)}` : ''}.`)] : []),
       side('Now', before, add(before)),
       side('From the calculator', after, add(after)),
       ...(seats ? [el('p', 'rux--type-body-compact-01', seats)] : []),
@@ -10995,6 +11085,8 @@
     ['contract_status', 'Contract status'],
     ['contract_note', 'Contract note'],
     ['quoted_price', 'Quoted price', 'money'],
+    ['quote_sent_price', 'Quote sent at', 'money'],
+    ['quote_sent_on', 'Quote sent on'],
     ['deposit_amount', 'Payments received', 'money'],
     ['est_miles', 'Estimated miles', 'number'],
     ['actual_miles', 'Actual miles', 'number'],

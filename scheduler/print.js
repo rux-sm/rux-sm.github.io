@@ -2455,19 +2455,25 @@
 
   /* THE TITLE A SAVED COPY IS OFFERED UNDER. Chrome's Save as PDF names the
      file after the page's title, so a form that says what its file is called
-     holds the title to that for the length of the dialog. */
-  let titleBefore = null;
+     holds the title to that for the length of the dialog. Printed from the
+     board's panel, Chrome names it after the board's title instead, so the
+     board's is held too. */
+  const titled = [document];
+  if (framed) {
+    try { titled.push(window.parent.document); } catch { /* not the board's frame */ }
+  }
+  let titlesBefore = null;
   window.addEventListener('beforeprint', () => {
     const name = current?.form.fileName?.(current.every[current.chosen]);
     if (!name) return;
-    titleBefore = document.title;
-    document.title = name;
+    titlesBefore = titled.map(doc => doc.title);
+    for (const doc of titled) doc.title = name;
   });
 
   window.addEventListener('afterprint', () => {
-    if (titleBefore != null) {
-      document.title = titleBefore;
-      titleBefore = null;
+    if (titlesBefore != null) {
+      titled.forEach((doc, i) => { doc.title = titlesBefore[i]; });
+      titlesBefore = null;
     }
     if (!printingAll) return;
     printingAll = false;

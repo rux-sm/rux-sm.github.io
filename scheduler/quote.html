@@ -60,6 +60,7 @@
 <symbol id="m-groups" viewBox="0 -960 960 960"><path d="M0-240v-53q0-38.57 41.5-62.78Q83-380 150.38-380q12.16 0 23.39.5t22.23 2.15q-8 17.35-12 35.17-4 17.81-4 37.18v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Zm540 0v-65q0-19.86-3.5-37.43T765-377.27q11-1.73 22.17-2.23 11.17-.5 22.83-.5 67.5 0 108.75 23.77T960-293v53H780Zm-480-60h360v-6q0-37-50.5-60.5T480-390q-79 0-129.5 23.5T300-305v5ZM149.57-410q-28.57 0-49.07-20.56Q80-451.13 80-480q0-29 20.56-49.5Q121.13-550 150-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T149.57-410Zm660 0q-28.57 0-49.07-20.56Q740-451.13 740-480q0-29 20.56-49.5Q781.13-550 810-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T809.57-410ZM480-480q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T600-600q0 50-34.5 85T480-480Zm.35-60Q506-540 523-557.35t17-43Q540-626 522.85-643t-42.5-17q-25.35 0-42.85 17.15t-17.5 42.5q0 25.35 17.35 42.85t43 17.5ZM480-300Zm0-300Z"/></symbol>
 <symbol id="m-visibility" viewBox="0 -960 960 960"><path d="M600.5-379.5Q650-429 650-500t-49.5-120.5Q551-670 480-670t-120.5 49.5Q310-571 310-500t49.5 120.5Q409-330 480-330t120.5-49.5Zm-200-41Q368-453 368-500t32.5-79.5Q433-612 480-612t79.5 32.5Q592-547 592-500t-32.5 79.5Q527-388 480-388t-79.5-32.5ZM216-283Q98-366 40-500q58-134 176-217t264-83q146 0 264 83t176 217q-58 134-176 217t-264 83q-146 0-264-83Zm264-217Zm222.5 174.5Q804-391 857-500q-53-109-154.5-174.5T480-740q-121 0-222.5 65.5T102-500q54 109 155.5 174.5T480-260q121 0 222.5-65.5Z"/></symbol>
 <symbol id="m-warning-fill" viewBox="0 -960 960 960"><path d="m40-120 440-760 440 760H40Zm465.5-125.68q8.5-8.67 8.5-21.5 0-12.82-8.68-21.32-8.67-8.5-21.5-8.5-12.82 0-21.32 8.68-8.5 8.67-8.5 21.5 0 12.82 8.68 21.32 8.67 8.5 21.5 8.5 12.82 0 21.32-8.68ZM454-348h60v-224h-60v224Z"/></symbol>
+<symbol id="m-report-fill" viewBox="0 -960 960 960"><path d="M480-281q14 0 24.5-10.5T515-316q0-14-10.5-24.5T480-351q-14 0-24.5 10.5T445-316q0 14 10.5 24.5T480-281Zm-30-144h60v-263h-60v263ZM330-120 120-330v-300l210-210h300l210 210v300L630-120H330Z"/></symbol>
 </svg>
 <!-- SPRITE:END -->
 
@@ -249,6 +250,27 @@
              modifiers, and the quote they add up to. Adding days grows only
              the miles tile, so nothing else moves. A tile paints layer, so
              the fields inside it step up to layer-two. -->
+        <!-- Opened from a trip: what changed on its Route or Buses tab since
+             the calculator was filled, with the offer to fill it again. A
+             plain wrapper carries `hidden`. -->
+        <div class="scheduler-quote__changed" id="scheduler-quote-changed" hidden>
+          <div class="rux--actionable-notification rux--actionable-notification--warning" role="status">
+            <div class="rux--actionable-notification__focus-wrapper">
+              <div class="rux--actionable-notification__details">
+                <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-report-fill"/></svg>
+                <div class="rux--actionable-notification__text-wrapper">
+                  <div class="rux--actionable-notification__content">
+                    <div class="rux--actionable-notification__title">The trip changed</div>
+                    <div class="rux--actionable-notification__subtitle" id="scheduler-quote-changed-text"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="rux--actionable-notification__button-wrapper">
+                <button type="button" class="rux--actionable-notification__action-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost" id="scheduler-quote-changed-update">Update calculator</button>
+              </div>
+            </div>
+          </div>
+        </div>
         <form class="scheduler-quote" id="scheduler-quote-form" novalidate>
 
           <!-- Most quotes are only miles and days, at the default rate with one

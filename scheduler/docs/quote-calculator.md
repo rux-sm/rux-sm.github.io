@@ -23,6 +23,10 @@ written here, because this repository is public.
 
 ## From a trip
 
+The trip's facts come first: the Buses tab's buses and seats and the Route
+tab's miles and days, in either order. The calculator reads them to try a
+price, and the Billing tab holds the quote Save keeps.
+
 The Quote calculator shortcut opens the calculator in the board's document
 panel, without the header or the Rules tab. Its days are the Route tab
 Summary's rows, a day's miles each, from what the editor's fields say now,
@@ -49,6 +53,10 @@ co-driver seats decide the Second driver line, one a seat, and the Route tab's
 Summary warns when a leg needs one: over 10 hours driving, or over 15 on duty
 less rest, on any day, the rule the line's own words quote.
 
+While the calculator is open, a change on the trip's Route or Buses tab that
+its fields do not already show is named in a notice, with Update calculator to
+fill them again; the editor's Reset is the way back for the trip.
+
 Add to quote lines replaces the leg's lines, all but its hotel, with the
 calculator's quote: a Bus rental at its rate, a Second driver for two drivers,
 a Relief driver line, and a Discount and an Other line for those fields.
@@ -59,7 +67,11 @@ which stays with its line. Show dead miles as a discount prices the rental at
 the full rate on every mile and adds a Dead miles discount line for the
 difference, a bus at a time. While the calculator's days are the route's, the
 rental and second driver are left to follow the route; days changed in the
-calculator are typed in as its figures. Nothing is kept until Save.
+calculator are typed in as its figures. Where the leg has lines, or a typed
+quoted price and no lines, it first shows them beside the calculator's, with
+both totals and any co-driver seat it changes, to replace or keep. Nothing is
+kept until Save. A typed line's menu offers the calculator's price once the
+two differ.
 
 ## Where it follows the spreadsheet
 

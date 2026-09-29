@@ -3118,6 +3118,9 @@ html:has(.scheduler-page[data-takeover]) {
   }
 }
 .scheduler-quote-bar { display: none; }
+/* The trip-changed notice, framed beside a trip, keeps the tiles' own gap
+   from the tiles under it. */
+.scheduler-quote__changed { margin-block-end: var(--rux-spacing-05); }
 
 /* The Rules tab: what the calculator does and where it follows the
    spreadsheet. A quirk's example is a line a trip, in figures that line up. */

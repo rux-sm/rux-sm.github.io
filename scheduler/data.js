@@ -4962,6 +4962,8 @@
   let lineEditing = null;
   // Set once the Buses tab has drawn, so a line's bus count reads this trip's.
   let linesLive = false;
+  // The trip and leg the quote calculator beside the week was filled from.
+  let calcFor = null;
 
   const round2 = n => Math.round(n * 100) / 100;
   // Money to the cent, as a quote prints it, with a true minus for a discount.
@@ -5950,6 +5952,7 @@
        while creating. It ignores the required fields: an invalid form is when
        someone most wants to back out. */
     if (panelReset) panelReset.disabled = nothingChanged;
+    tellCalculator();
   }
 
   /* New trip opens the same panel on a draft: a round trip, unconfirmed, on the
@@ -7716,6 +7719,9 @@
             edit: () => openLineDialog(i),
             items: [
               { label: 'Edit', run: () => openLineDialog(i) },
+              // A typed cost the calculator disagrees with can follow it again.
+              ...(calc !== null && calc !== cost ? [{ label: `Use calculator price, ${usdCents(calc)}`,
+                run: () => { Object.assign(linePending[i], { cost: null, cost_typed: false, basis: null }); drawLines(); refreshDirty(); } }] : []),
               { label: 'Move up', disabled: i === 0, run: () => move(-1) },
               { label: 'Move down', disabled: i === linePending.length - 1, run: () => move(1) },
               { label: 'Remove', danger: true,
@@ -10752,26 +10758,43 @@
     await Promise.race([editing?.route?.drivesFound, new Promise(done => setTimeout(done, 3000))]);
     if (editing?.id !== trip) return;
     const leg = bar ? bar.dataset.leg : editing?.route?.leg ?? panelArgs?.ref?.leg;
-    const f = legFigures(leg);
+    const facts = calcFacts(leg);
     const params = new URLSearchParams();
-    if (f.perDay) params.set('miles', f.perDay.join(','));
-    if (coDrivers(leg) > 0) params.set('drivers', '2');
-    params.set('buses', String(legBuses(leg)));
-    if (reliefSeats(leg) > 0) params.set('relief', String(reliefSeats(leg)));
+    if (facts.miles) params.set('miles', facts.miles.join(','));
+    if (facts.drivers === 2) params.set('drivers', '2');
+    params.set('buses', String(facts.buses));
+    if (facts.relief > 0) params.set('relief', String(facts.relief));
     // The route's dead miles, which the calculator offers, and whether the
     // leg's rental already counts them.
-    if (f.dead > 0) {
-      params.set('dead', String(f.dead));
+    if (facts.dead > 0) {
+      params.set('dead', String(facts.dead));
       const legKey = splitNow() ? (leg === 'return' ? 'return' : 'outbound') : null;
       if (linePending.some(l => l.kind === 'rental' && l.deadOn && (legKey === null || (l.leg ?? 'outbound') === legKey))) params.set('deadon', '1');
     }
-    const query = params.toString();
+    calcFor = { trip: editing?.id, leg };
     openGenerated({
-      url: `quote.html${query ? `?${query}` : ''}`,
+      url: `quote.html?${params}`,
       kind: 'Quote calculator',
       note: '',
       opener: bar ?? document.querySelector('#scheduler-panel-shortcuts [data-shortcut="calculator"]'),
     });
+  }
+
+  // What the calculator is filled with from a leg: the Route tab's miles a
+  // day and dead miles, and the Buses tab's drivers, buses and relief seats.
+  function calcFacts(leg) {
+    const f = legFigures(leg);
+    return { miles: f.perDay, dead: f.dead, drivers: coDrivers(leg) > 0 ? 2 : 1,
+      buses: legBuses(leg), relief: reliefSeats(leg) };
+  }
+  /* Hands the calculator the leg's figures as they are now, so it can say
+     what changed; `reset` makes them its starting point. Only while it is
+     framed beside the trip it was filled from. */
+  function tellCalculator(reset = false) {
+    if (!calcFor || !editing || String(editing.id) !== String(calcFor.trip) || viewerEl?.hidden) return;
+    let hook = null;
+    try { hook = viewerFrame?.contentWindow?.Rux?.calculatorTrip; } catch { return; }
+    hook?.changed(calcFacts(calcFor.leg), reset);
   }
 
   /* THE CALCULATOR'S QUOTE, AS THE TRIP'S LINES. Add to quote lines replaces
@@ -10788,11 +10811,15 @@
       return false;
     }
     const leg = splitNow() ? (editing.route?.leg ?? 'outbound') : null;
-    // The Buses tab's co-driver seats follow the calculator's drivers.
+    const buses = editing.fleet?.[leg === 'return' ? 'return' : 'outbound'] ?? [];
+    // The Buses tab's co-driver seats follow the calculator's drivers, but a
+    // seat with a driver in it is not turned off.
     const seatsBefore = coDrivers(leg);
-    let assigned = 0;
-    if (q.drivers === 2 && seatsBefore === 0) setCoDrivers(leg, true);
-    if (q.drivers === 1 && seatsBefore > 0) assigned = setCoDrivers(leg, false);
+    const seatsOn = q.drivers === 2 && seatsBefore === 0 && buses.length > 0;
+    const seatsOff = q.drivers === 1 && seatsBefore > 0;
+    const assigned = seatsOff ? buses.filter(b => b.seats?.['co-driver']?.on && b.seats['co-driver'].driverId).length : 0;
+    const coAfter = seatsOn ? buses.length : seatsOff ? assigned : seatsBefore;
+
     const f = legFigures(leg);
     const same = !!f.perDay && q.miles.length === f.perDay.length && q.miles.every((m, i) => m === f.perDay[i]);
     const line = (kind, extra = {}) => ({ kind, leg, item: lineKind(kind).item || null,
@@ -10815,24 +10842,86 @@
     if (q.discount > 0) made.push(line('discount', { cost: -round2(q.discount), cost_typed: true }));
     if (q.other > 0) made.push(line('other', { description: 'Other charges.', cost: round2(q.other), cost_typed: true }));
 
-    // The new lines go where the leg's first line was, the hotel kept in place.
+    // The leg's lines now, all but the hotel, which the new ones replace.
     const mine = l => l.kind !== 'hotel' && (leg === null || (l.leg ?? 'outbound') === leg);
-    const at = linePending.findIndex(mine);
-    const kept = linePending.filter(l => !mine(l));
-    kept.splice(at < 0 ? kept.length : linePending.slice(0, at).filter(l => !mine(l)).length, 0, ...made);
-    linePending.splice(0, linePending.length, ...kept);
-    if (linesLive) syncLines();
-    redrawLines();
-    refreshDirty();
-    const tab = document.getElementById('scheduler-tab-billing');
-    if (tab && tab.getAttribute('aria-selected') !== 'true') window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
-    const buses = legBuses(leg);
-    if (assigned > 0) toast('warning', 'A co-driver is still assigned', 'Take them off on the Buses tab to drop the Second driver line.');
-    else if (q.buses !== buses) toast('warning', `The Buses tab has ${buses} ${buses === 1 ? 'bus' : 'buses'}`, 'The bus rental counts those. Add or take off a bus there to match.');
-    else if (relief > 0 && q.relief !== relief) toast('warning', `The Buses tab has ${relief} relief ${relief === 1 ? 'seat' : 'seats'}`, 'The relief line counts those. Change the seats there to match.');
-    else toast('success', 'Quote lines set from the calculator', 'Save to keep them.');
+    const now = linePending.filter(mine);
+    const quoted = linePending.length ? null : money(document.getElementById('scheduler-f-quoted')?.value ?? '');
+
+    const apply = () => {
+      if (seatsOn) setCoDrivers(leg, true);
+      if (seatsOff) setCoDrivers(leg, false);
+      // The new lines go where the leg's first line was, the hotel kept in place.
+      const at = linePending.findIndex(mine);
+      const kept = linePending.filter(l => !mine(l));
+      kept.splice(at < 0 ? kept.length : linePending.slice(0, at).filter(l => !mine(l)).length, 0, ...made);
+      linePending.splice(0, linePending.length, ...kept);
+      if (linesLive) syncLines();
+      redrawLines();
+      refreshDirty();
+      tellCalculator(true);
+      const tab = document.getElementById('scheduler-tab-billing');
+      if (tab && tab.getAttribute('aria-selected') !== 'true') window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
+      const count = legBuses(leg);
+      if (assigned > 0) toast('warning', 'A co-driver is still assigned', 'Take them off on the Buses tab to drop the Second driver line.');
+      else if (q.buses !== count) toast('warning', `The Buses tab has ${count} ${count === 1 ? 'bus' : 'buses'}`, 'The bus rental counts those. Add or take off a bus there to match.');
+      else if (relief > 0 && q.relief !== relief) toast('warning', `The Buses tab has ${relief} relief ${relief === 1 ? 'seat' : 'seats'}`, 'The relief line counts those. Change the seats there to match.');
+      else toast('success', 'Quote lines set from the calculator', 'Save to keep them.');
+    };
+    // Nothing to lose goes straight in; lines or a typed price are asked about.
+    if (!now.length && !(quoted > 0)) apply();
+    else openReplace({ now, made, quoted, leg, coAfter, seatsOn, seatsOff, assigned, buses: buses.length }, apply);
     return true;
   }
+
+  /* ASKED BEFORE THE CALCULATOR REPLACES LINES: the leg's lines now beside
+     the calculator's, each with its amount, their totals, and what it turns
+     on or off on the Buses tab. The new lines are priced as they will be,
+     their counts read from the seats as they will stand. */
+  const replaceModal = document.getElementById('scheduler-replace-modal');
+  let replaceGo = null;
+  function openReplace(plan, go) {
+    const body = document.getElementById('scheduler-replace-body');
+    if (!replaceModal || !body) { go(); return; }
+    const nameOf = l => (l.kind === 'discount' && /dead miles/i.test(l.description ?? '') ? 'Dead miles discount' : lineKind(l.kind).label);
+    const qtyAfter = l => (l.kind === 'rental' ? legBuses(plan.leg)
+      : l.kind === 'second_driver' ? (plan.coAfter || 1)
+      : l.kind === 'relief' && reliefSeats(plan.leg) > 0 ? reliefSeats(plan.leg)
+      : money(String(l.quantity ?? '')) ?? 1);
+    const costOf = l => (l.cost_typed ? money(String(l.cost ?? '')) : calcCost(l));
+    const rows = (list, qty, cost) => list.map(l => {
+      const c = cost(l);
+      const n = qty(l) ?? 1;
+      return { text: `${nameOf(l)} · ${n} × ${c == null ? '—' : usdCents(c)}`, amount: c == null ? 0 : round2(n * c) };
+    });
+    const side = (title, list, total) => {
+      const box = el('div', 'rux--stack-vertical rux--stack-scale-3');
+      box.append(el('h3', 'rux--type-heading-compact-01', title),
+        ...list.map(r => el('p', 'rux--type-body-compact-01', `${r.text} = ${usdCents(r.amount)}`)),
+        el('p', 'rux--type-heading-compact-01', `Total ${usdCents(total)}`));
+      return box;
+    };
+    const before = plan.now.length ? rows(plan.now, l => lineQty(l), l => money(String(l.cost ?? '')))
+      : [{ text: 'Quoted price, typed', amount: plan.quoted }];
+    const after = rows(plan.made, qtyAfter, costOf);
+    const add = list => round2(list.reduce((n, r) => n + r.amount, 0));
+    const seats = plan.seatsOn ? `Turns on the co-driver seat on ${plan.buses === 1 ? 'the bus' : `all ${plan.buses} buses`} on the Buses tab.`
+      : plan.seatsOff ? `Turns off the co-driver seat on the Buses tab${plan.assigned ? `, except ${plan.assigned} with a driver in it` : ''}.`
+      : null;
+    body.replaceChildren(
+      side('Now', before, add(before)),
+      side('From the calculator', after, add(after)),
+      ...(seats ? [el('p', 'rux--type-body-compact-01', seats)] : []),
+      el('p', 'rux--type-helper-text-01', 'Hotel lines stay. Nothing is kept until you Save.'));
+    replaceGo = go;
+    window.Rux?.modal?.open?.(replaceModal);
+  }
+  document.getElementById('scheduler-replace-go')?.addEventListener('click', () => {
+    const go = replaceGo;
+    replaceGo = null;
+    window.Rux?.modal?.close?.(replaceModal);
+    go?.();
+  });
+  replaceModal?.addEventListener('rux:modal-closed', () => { replaceGo = null; });
   window.Rux.quoteLines = { ready: () => !!editing && !panelEl.hidden, set: linesFromCalculator };
 
   function openItinerary(bar) {

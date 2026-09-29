@@ -507,31 +507,93 @@
     /* A trip's figures, from the board's Calculator shortcut: `miles` is a
        day's miles each, comma-separated, `drivers` 2 where the leg has a
        co-driver seat on, `buses` and `relief` its buses and relief seats, and
-       `dead` the route's dead miles,
-       offered by a checkbox that `deadon` ticks when the trip's rental already
-       counts them. */
-    const fill = () => {
-      const params = new URLSearchParams(location.search);
-      const miles = (params.get('miles') || '').split(',').filter(Boolean).map(m => Math.max(0, num(m)))
-        .slice(0, rates.max_days);
+       `dead` the route's dead miles, offered by a checkbox that `deadon`
+       ticks when the trip's rental already counts them. */
+    let routeDead = 0;
+    const deadFigure = () => count.format(routeDead).replace(/,/g, '');
+    const fillFacts = facts => {
+      const miles = (facts.miles ?? []).map(m => Math.max(0, num(m))).slice(0, rates.max_days);
       if (miles.some(m => m > 0)) {
         dayCount = miles.length;
         drawDays();
         miles.forEach((m, i) => { $(`scheduler-quote-trip-${i + 1}`).value = String(m); });
       }
-      if (params.get('drivers') === '2') $('scheduler-quote-drivers').value = '2';
-      if (num(params.get('buses')) > 1) $('scheduler-quote-buses').value = String(Math.round(num(params.get('buses'))));
-      if (num(params.get('relief')) > 0) $('scheduler-quote-relief').value = String(Math.round(num(params.get('relief'))));
-      const dead = num(params.get('dead'));
-      if (!(dead > 0)) return;
-      const figure = count.format(dead).replace(/,/g, '');
+      $('scheduler-quote-drivers').value = facts.drivers === 2 ? '2' : '1';
+      $('scheduler-quote-buses').value = facts.buses > 1 ? String(facts.buses) : '';
+      $('scheduler-quote-relief').value = facts.relief > 0 ? String(facts.relief) : '';
+      routeDead = facts.dead > 0 ? facts.dead : 0;
+      $('scheduler-quote-route-dead-item').hidden = !routeDead;
+      $('scheduler-quote-route-dead-text').textContent = `Count the route's ${deadFigure()} dead miles`;
       const box = $('scheduler-quote-route-dead');
-      $('scheduler-quote-route-dead-item').hidden = false;
-      $('scheduler-quote-route-dead-text').textContent = `Count the route's ${figure} dead miles`;
-      box.checked = params.get('deadon') === '1';
-      if (box.checked) $('scheduler-quote-dead').value = figure;
-      box.addEventListener('change', () => { $('scheduler-quote-dead').value = box.checked ? figure : ''; });
+      if (!routeDead) box.checked = false;
+      if (box.checked) $('scheduler-quote-dead').value = deadFigure();
     };
+    const factsOf = params => ({
+      miles: (params.get('miles') || '').split(',').filter(Boolean).map(Number),
+      drivers: params.get('drivers') === '2' ? 2 : 1,
+      buses: Math.max(1, Math.round(num(params.get('buses'))) || 1),
+      relief: Math.max(0, Math.round(num(params.get('relief')))),
+      dead: num(params.get('dead')),
+    });
+    // What the calculator was last filled with from the trip.
+    let baseline = null;
+    const fill = () => {
+      const params = new URLSearchParams(location.search);
+      if (!params.has('buses')) return;
+      baseline = factsOf(params);
+      $('scheduler-quote-route-dead').checked = params.get('deadon') === '1';
+      fillFacts(baseline);
+      $('scheduler-quote-route-dead').addEventListener('change', e => {
+        $('scheduler-quote-dead').value = e.target.checked ? deadFigure() : '';
+      });
+    };
+
+    /* THE TRIP CHANGED. The editor tells the calculator whenever it redraws,
+       and the notice names what moved on the Route or Buses tab since the
+       calculator was filled, leaving out what its own fields already say.
+       Update calculator fills them again; the editor's Reset is the way back
+       for the trip. `reset` takes the trip as it is now without asking, as
+       after Add to quote lines. */
+    const milesSum = list => (list ?? []).reduce((a, b) => a + (Number(b) || 0), 0);
+    const sameDays = (a, b) => (a ?? []).join(',') === (b ?? []).join(',');
+    let pending = null;
+    const tripChanged = (facts, reset) => {
+      if (reset || !baseline) baseline = facts;
+      const days = column('trip').map(m => Math.round(m));
+      const was = baseline;
+      const parts = [];
+      if (!sameDays(was.miles, facts.miles) && !sameDays(days, facts.miles)) {
+        parts.push(milesSum(was.miles) !== milesSum(facts.miles)
+          ? `Miles ${count.format(milesSum(was.miles))} → ${count.format(milesSum(facts.miles))} (Route tab)`
+          : `Miles a day ${(was.miles ?? []).join(', ')} → ${(facts.miles ?? []).join(', ')} (Route tab)`);
+      }
+      if (was.dead !== facts.dead && $('scheduler-quote-route-dead').checked && num($('scheduler-quote-dead').value) !== facts.dead) {
+        parts.push(`Dead miles ${count.format(was.dead)} → ${count.format(facts.dead)} (Route tab)`);
+      }
+      const field = (id, dflt) => Math.round(num($(id).value)) || dflt;
+      if (was.buses !== facts.buses && field('scheduler-quote-buses', 1) !== facts.buses) parts.push(`Buses ${was.buses} → ${facts.buses} (Buses tab)`);
+      if (was.drivers !== facts.drivers && driversChosen() !== facts.drivers) parts.push(`Drivers ${was.drivers} → ${facts.drivers} (Buses tab)`);
+      if (was.relief !== facts.relief && field('scheduler-quote-relief', 0) !== facts.relief) parts.push(`Relief drivers ${was.relief} → ${facts.relief} (Buses tab)`);
+      pending = parts.length ? facts : null;
+      $('scheduler-quote-changed-text').textContent = parts.join(' · ');
+      $('scheduler-quote-changed').hidden = !parts.length;
+      // A changed dead-miles figure moves the checkbox's offer either way.
+      if (!parts.length && facts.dead !== routeDead) {
+        routeDead = facts.dead > 0 ? facts.dead : 0;
+        $('scheduler-quote-route-dead-item').hidden = !routeDead;
+        $('scheduler-quote-route-dead-text').textContent = `Count the route's ${deadFigure()} dead miles`;
+      }
+    };
+    $('scheduler-quote-changed-update').addEventListener('click', () => {
+      if (!pending) return;
+      fillFacts(pending);
+      baseline = pending;
+      pending = null;
+      $('scheduler-quote-changed').hidden = true;
+      compute();
+    });
+    window.Rux = window.Rux || {};
+    window.Rux.calculatorTrip = { changed: tripChanged };
 
     /* Beside a trip in the board's editor, Add to quote lines hands the quote
        to the editor, which sets that leg's lines on its Billing tab. The

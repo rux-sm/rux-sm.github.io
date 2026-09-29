@@ -1056,6 +1056,28 @@ button.scheduler-row-head__num::after {
 .scheduler-week--no-drivers .scheduler-bar__msg--dest { display: flex; margin-inline-end: var(--scheduler-day-one-end); }
 .scheduler-week--no-drivers .scheduler-bar__dest > .scheduler-bar__ref { margin-inline-end: 0; }
 .scheduler-bar__dest > .scheduler-bar__ref ~ .scheduler-bar__msg { margin-inline-start: 0; }
+/* A TRIP GONE OVER -- Route, Buses and Billing all marked done -- carries a
+   check in the bar's text colour, beside the Updates mark on the drivers row. */
+.scheduler-bar__done {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: calc(var(--scheduler-row-h) + var(--rux-spacing-03));
+  block-size: var(--scheduler-row-h);
+  margin-inline-start: auto;
+}
+.scheduler-bar__done svg { display: block; inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
+.scheduler-bar__done + .scheduler-bar__msg { margin-inline-start: 0; }
+.scheduler-bar-shortcuts__trip .scheduler-bar__done { display: none; }
+
+/* DONE at the foot of the Route, Buses and Billing tabs, and the check on a
+   tab's name while it holds. */
+.scheduler-done { display: flex; flex-direction: column; align-items: flex-start; gap: var(--rux-spacing-03); }
+.scheduler-done .rux--form__helper-text { margin: 0; }
+.scheduler-done__head { display: flex; align-items: center; gap: var(--rux-spacing-03); margin: 0; }
+.scheduler-done__head svg, .scheduler-tab-done svg { color: var(--rux-support-success); flex: none; }
+.scheduler-tab-done { display: inline-flex; align-items: center; margin-inline-start: var(--rux-spacing-02); }
 /* A BUS THAT DOES NOT FIT THIS TRIP -- the wrong type, or one that falls
    short of a need -- draws a red edge inside the bar, the shape of the
    selection ring, which takes its place while the bar is selected. The card

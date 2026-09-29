@@ -122,10 +122,9 @@ None open.
       its number.
 - [ ] Put the Printed box back in the form panel, beside Print, for the
       envelope, itinerary and hours-of-service record.
-- [ ] Add the "left" line to the trip's card on the board, and the check to
-      its bar when all three tabs are Done.
-- [ ] Add the three Done buttons, written last on Save, their clearing named
-      in the update window, and their history entries.
+- [ ] Add the "left" line to the trip's card on the board.
+- [ ] Make Route's Done check both legs of a split trip; today it checks the
+      leg on screen.
 - [ ] Build the Departures panel.
 - [ ] Update `scheduler/docs/screen-inventory.md` and the scheduler README.
 - [ ] Check every item in Chrome on :8641 against a real trip, one with a

@@ -448,6 +448,8 @@
     'quoted_price,deposit_amount,invoice_number,po_ref,po_amount',
     // The price the customer was sent, and when, which the quote lines may move past.
     'quote_sent_price,quote_sent_on',
+    // Who marked the Route, Buses and Billing tabs done, and when.
+    'route_done_at,route_done_by,buses_done_at,buses_done_by,billing_done_at,billing_done_by',
     'contract_status,invoice_status,balance_paid,date_paid',
     'est_miles,actual_miles',
     // The PO and invoice switches' flags, and the contract note.
@@ -1043,7 +1045,17 @@
     const crew = assign ? crewOf(trip, assign, driversById, statuses).filter(c => !(placeholder && c.needed)) : [];
     const crewBox = el('span', 'scheduler-bar__crew', assign || placeholder ? null : 'Needs a bus');
     crewBox.append(...crew.map(crewEl));
-    addRow(bar, 'scheduler-bar__drivers', crewBox, msg('drivers'));
+    // A check once the Route, Buses and Billing tabs are all marked done.
+    const allDone = !!(trip.route_done_at && trip.buses_done_at && trip.billing_done_at);
+    let doneMark = null;
+    if (allDone) {
+      doneMark = el('span', 'scheduler-bar__done');
+      doneMark.setAttribute('role', 'img');
+      doneMark.setAttribute('aria-label', 'Route, buses and billing done');
+      doneMark.title = 'Route, buses and billing done';
+      doneMark.appendChild(svgUse('#m-check_circle-fill', '16', '0 0 32 32'));
+    }
+    addRow(bar, 'scheduler-bar__drivers', crewBox, doneMark, msg('drivers'));
 
     /* The compact board's label. Not a row, so the full board never draws it
        and neither does the docked sheet, which draws every row. */
@@ -2858,6 +2870,9 @@
       sec.hidden = leg === 'return' && !split;
       panelFleet.appendChild(sec);
     }
+    // Done stays the tab's last section.
+    const done = doneSection('buses');
+    if (done) panelFleet.appendChild(done);
     if (vehicleEdit) drawVehicleFields(focusId);
     else if (focusId) document.getElementById(focusId)?.focus();
     // A bus added or taken off changes a rental line's quantity.
@@ -5912,11 +5927,192 @@
     const patch = patchOf();
     return routePlan().work || !!paymentsPatch()?.work
       || !!posPatch()?.work || !!invoicesPatch()?.work || !!linesPatch()?.work || fleetChanged()
-      || (!!patch && Object.keys(patch).length > 0);
+      || (!!patch && Object.keys(patch).length > 0) || doneChanged();
   }
 
   // Unsaved work is a change in an editor that is open.
   function unsavedWork() { return !panelEl.hidden && changed(); }
+
+  /* ── Done ──
+     Route, Buses and Billing each end with Done, pressed once someone has
+     gone back over that tab and it is complete. The database takes a Done off
+     when what its tab holds changes, whichever app changes it: the route or
+     the trip's dates take Route and Billing, the buses or their seats take
+     Buses and Billing, what the trip needs of a bus takes Buses, and a quote
+     line or the price takes Billing. The editor follows the same rules live,
+     so a check goes the moment its tab moves. */
+  const DONE_TABS = [
+    { tab: 'route', label: 'Route', button: 'scheduler-tab-route' },
+    { tab: 'buses', label: 'Buses', button: 'scheduler-tab-fleet' },
+    { tab: 'billing', label: 'Billing', button: 'scheduler-tab-billing' },
+  ];
+  const DONE_ROUTE_KEYS = ['start_date', 'end_date', 'return_start_date', 'return_end_date', 'trip_type'];
+  const DONE_PRICE_KEYS = ['quoted_price', 'quote_sent_price', 'quote_sent_on'];
+  // What the trip asks of a bus, from its requirements.
+  const vehicleNeedsOf = reqs => Object.keys(reqs || {}).filter(k => reqs[k] === true && isVehicleNeed(k)).sort();
+  const doneBusRows = fleet => fleetLegs().map(leg => (fleet?.[leg] ?? []).map(b => [b.busId ?? null, activeRolesValue(b)]));
+  const doneNeedRows = fleet => fleetLegs().map(leg => (fleet?.[leg] ?? []).map(b => [needIds(b.needs), b.vehicleType ?? null]));
+
+  // Which tabs hold unsaved changes that a save would take their Done off for.
+  function doneWork() {
+    const patch = patchOf() || {};
+    const has = keys => keys.some(k => k in patch);
+    const route = routePlan().work || has(DONE_ROUTE_KEYS);
+    const busList = JSON.stringify(doneBusRows(editing.fleet)) !== JSON.stringify(doneBusRows(editing.fleetBefore));
+    const needs = JSON.stringify(doneNeedRows(editing.fleet)) !== JSON.stringify(doneNeedRows(editing.fleetBefore))
+      || 'vehicle_type' in patch
+      || ('trip_reqs' in patch && !histSame(vehicleNeedsOf(patch.trip_reqs), vehicleNeedsOf(editing.before.trip_reqs)));
+    return { route, buses: busList || needs, billing: route || busList || !!linesPatch()?.work || has(DONE_PRICE_KEYS) };
+  }
+
+  // What each tab holds now, as one string, for a Done pressed in this sitting.
+  function doneKeys() {
+    const form = readForm() || {};
+    const plan = routePlan();
+    const route = JSON.stringify([DONE_ROUTE_KEYS.map(k => form[k] ?? null), plan.updates, plan.inserts]);
+    const busList = doneBusRows(editing.fleet);
+    const buses = JSON.stringify([busList, doneNeedRows(editing.fleet), form.vehicle_type ?? null, vehicleNeedsOf(form.trip_reqs)]);
+    const lines = linesLive ? linesToSave().map(({ id, ...l }) => l) : null;
+    const billing = JSON.stringify([route, busList, lines, DONE_PRICE_KEYS.map(k => form[k] ?? null)]);
+    return { route, buses, billing };
+  }
+
+  const doneOn = (d, tab, work, keys) => !!d && (d.key == null ? !work[tab] : keys[tab] === d.key);
+  function doneState() {
+    if (!editing?.done || !editing.fleet) return null;
+    const work = doneWork();
+    const keys = doneKeys();
+    return Object.fromEntries(DONE_TABS.map(({ tab }) => [tab, doneOn(editing.done[tab], tab, work, keys)]));
+  }
+
+  // Whether Save has a Done to write: one pressed here, or one taken off.
+  function doneChanged() {
+    const on = doneState();
+    return !!on && DONE_TABS.some(({ tab }) => (on[tab] && editing.done[tab].fresh) || (!on[tab] && !!editing.doneBefore[tab]));
+  }
+
+  /* The Done columns Save writes last, after the rows whose changes clear
+     them: a Done pressed here with who pressed it, and null for one taken
+     off. A saved Done that still holds is left alone. */
+  function doneRowOf(actor) {
+    const on = doneState();
+    const row = {};
+    if (!on) return row;
+    const now = new Date().toISOString();
+    for (const { tab } of DONE_TABS) {
+      if (on[tab] && editing.done[tab].fresh) Object.assign(row, { [`${tab}_done_at`]: now, [`${tab}_done_by`]: actor ?? null });
+      else if (!on[tab] && editing.doneBefore[tab]) Object.assign(row, { [`${tab}_done_at`]: null, [`${tab}_done_by`]: null });
+    }
+    return row;
+  }
+
+  // What a tab still lacks before it can be marked done, in words.
+  function doneMissing(tab) {
+    const out = [];
+    const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+    if (tab === 'route') {
+      const c = editing.route?.check;
+      if (!c) return ['a route'];
+      if (!c.pickup) out.push('a pickup place');
+      if (!c.drop) out.push('a drop-off place');
+      if (c.unlocated) out.push(`a place for ${plural(c.unlocated, 'stop', 'stops')}`);
+      if (c.status === 'Needs times') out.push('the times');
+      if (c.status === 'Check times') out.push('times in order');
+      if (c.unmeasured && c.pickup && c.drop && !c.unlocated) out.push('the drives measured');
+      return out;
+    }
+    if (tab === 'buses') {
+      for (const leg of fleetLegs()) {
+        const list = editing.fleet?.[leg] ?? [];
+        const where = fleetSplit() ? (leg === 'return' ? ' on the pickup leg' : ' on the drop-off leg') : '';
+        if (!list.length) { out.push(`a bus${where}`); continue; }
+        const open = list.filter(b => b.busId == null).length;
+        if (open) out.push(`${plural(open, 'bus', 'buses')} to assign${where}`);
+        const lacking = list.filter(b => b.busId != null && busLacks(panelIndex.buses.get(b.busId), b).length).length;
+        if (lacking) out.push(`${plural(lacking, 'bus that falls', 'buses that fall')} short of the trip's needs${where}`);
+        const clashing = list.filter(b => b.busId != null && clashText(leg, 'buses', b.busId)).length;
+        if (clashing) out.push(`${plural(clashing, 'bus', 'buses')} booked elsewhere${where}`);
+      }
+      return out;
+    }
+    if (editing.linesLoaded === false || !linesLive) return ['the quote lines'];
+    const lines = linesToSave();
+    for (const leg of fleetLegs()) {
+      const where = fleetSplit() ? (leg === 'return' ? ' for the pickup leg' : ' for the drop-off leg') : '';
+      const onLeg = kind => lines.some(l => l.kind === kind && (l.leg ?? 'outbound') === leg);
+      if (!onLeg('rental')) out.push(`a Bus rental line${where}`);
+      if (coDrivers(leg) > 0 && !onLeg('second_driver')) out.push(`a Second driver line${where}`);
+      if (reliefSeats(leg) > 0 && !onLeg('relief')) out.push(`a Relief driver line${where}`);
+    }
+    if (editing.hotelWanted && !lines.some(l => l.kind === 'hotel')) out.push('a Hotel line');
+    const quoted = money(document.getElementById('scheduler-f-quoted')?.value);
+    if (!editing.quoteSent) out.push('Quote sent marked');
+    else if (quoted != null && round2(quoted) !== round2(editing.quoteSent.price)) out.push('Quote sent at the price the lines add up to');
+    return out;
+  }
+
+  // A tab's Done area, made once per trip opened, at the foot of its panel.
+  function doneSection(tab) {
+    if (!editing) return null;
+    const box = editing.doneBoxes[tab] ??= el('div', 'scheduler-done');
+    return box.parentElement ?? section(null, box);
+  }
+
+  function markDone(tab, on) {
+    if (!editing?.done) return;
+    editing.done[tab] = on ? { at: null, by: null, key: doneKeys()[tab], fresh: true } : null;
+    refreshDirty();
+  }
+
+  // Each tab's name carries a check while its Done holds, and its Done area says why not.
+  function drawDone() {
+    const on = doneState();
+    if (!on) return;
+    for (const { tab, label, button } of DONE_TABS) {
+      const name = document.getElementById(button)?.querySelector('.rux--tabs__nav-item-label-wrapper');
+      name?.querySelector('.scheduler-tab-done')?.remove();
+      if (on[tab] && name) {
+        const mark = el('span', 'scheduler-tab-done');
+        mark.append(svgUse('#m-check_circle-fill', '16', '0 0 32 32'), el('span', 'rux--visually-hidden', ', done'));
+        name.appendChild(mark);
+      }
+      const box = editing.doneBoxes[tab];
+      if (!box) continue;
+      const focused = box.contains(document.activeElement);
+      const words = label.toLowerCase();
+      if (on[tab]) {
+        const d = editing.done[tab];
+        const head = el('p', 'scheduler-done__head');
+        head.append(svgUse('#m-check_circle-fill', '16', '0 0 32 32'), el('span', null, `${label} done`));
+        const when = d.fresh ? 'Kept when the trip is saved.'
+          : [d.by, d.at ? new Date(d.at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : null].filter(Boolean).join(', ');
+        const undo = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', 'Undo');
+        undo.type = 'button';
+        undo.addEventListener('click', () => markDone(tab, false));
+        box.replaceChildren(head, el('p', 'rux--form__helper-text', when), undo);
+      } else {
+        const missing = doneMissing(tab);
+        const mark = el('button', 'rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm', `Mark ${words} done`);
+        mark.type = 'button';
+        mark.disabled = missing.length > 0;
+        mark.addEventListener('click', () => markDone(tab, true));
+        const why = missing.length ? `Still needed: ${missing.join(', ')}.`
+          : editing.doneBefore[tab] ? `Changed since it was marked done. Go over the ${words} again, then mark it done.`
+          : `Go over the ${words}, then mark it done.`;
+        box.replaceChildren(mark, el('p', 'rux--form__helper-text', why));
+      }
+      if (focused) box.querySelector('button:not([disabled])')?.focus();
+    }
+  }
+
+  // The Done marks a save takes off, named in the update window before it saves.
+  function doneTakenOff() {
+    const on = doneState();
+    if (!on) return null;
+    const off = DONE_TABS.filter(({ tab }) => editing.doneBefore[tab] && !on[tab]).map(({ label }) => label);
+    if (!off.length) return null;
+    return `This takes the check off ${off.length > 1 ? `${off.slice(0, -1).join(', ')} and ${off.at(-1)}` : off[0]}.`;
+  }
 
   /* The title names the trip being edited, from the destination as typed, since
      the selected bar can be a different trip: the destination on one line, the
@@ -5961,6 +6157,7 @@
     if (panelReset) panelReset.disabled = nothingChanged;
     redrawQuoteSent();
     tellCalculator();
+    drawDone();
   }
 
   /* New trip opens the same panel on a draft: a round trip, unconfirmed, on the
@@ -6036,6 +6233,13 @@
       // The price the customer was sent and the day, or null before it is.
       quoteSent: trip.quote_sent_price == null ? null
         : { price: Number(trip.quote_sent_price), on: trip.quote_sent_on ?? null },
+      /* Each tab's Done as saved, and as it stands now. A saved one holds while
+         its tab has nothing unsaved; one pressed here holds while its tab is
+         as it was when pressed. */
+      doneBefore: Object.fromEntries(DONE_TABS.map(({ tab }) => [tab, trip[`${tab}_done_at`] ?? null])),
+      done: Object.fromEntries(DONE_TABS.map(({ tab }) => [tab, trip[`${tab}_done_at`]
+        ? { at: trip[`${tab}_done_at`], by: trip[`${tab}_done_by`] ?? null, key: null, fresh: false } : null])),
+      doneBoxes: {},
       before: {
       destination: trip.destination ?? null,
       customer: trip.customer ?? null,
@@ -7268,6 +7472,17 @@
            column; a one-day leg is its one row of figures, with no Day column. */
         if (days) rows.push(['Total', ...total]); else rows.push([...total]);
         if (!days) r.dayMiles = [total.miles];
+        /* What the Route tab's Done asks of this leg: every place found, the
+           times in and in order, and the drives measured. */
+        r.check = {
+          status: days ? (each.find(c => c.status === 'Check times')?.status ?? each.find(c => c.status)?.status ?? null) : total.status,
+          pickup: r.pickupPlace?.lat != null,
+          // A round trip's drop-off is its pickup, so the pickup answers for it.
+          drop: !dropCounts() || routeRound() || r.dropPlace?.lat != null,
+          unlocated: r.list.filter(st => !located(st)).length,
+          unmeasured: legs.some(([m]) => m == null),
+        };
+        drawDone();
         const table = el('table', 'rux--data-table rux--data-table--xs');
         const head = el('tr');
         for (const h of [...(days ? ['Day'] : []), 'Miles', 'Drive', 'On duty', 'Less rest']) {
@@ -7370,6 +7585,7 @@
         section('Summary', summaryLayer, summaryMenu),
         routeSection,
         routeBox,
+        doneSection('route'),
       );
       drawStops();
       drawTimeline();
@@ -7915,6 +8131,7 @@
         poWrap,
         invWrap,
         listWrap,
+        doneSection('billing'),
       );
 
       /* A switch that is off hides and disables its fields and clears them.
@@ -8692,7 +8909,7 @@
     updateText.setSelectionRange(updateText.value.length, updateText.value.length);
   }
   const tripName = t => [t?.destination, t?.customer].filter(Boolean).join(' · ') || 'New trip';
-  function askForUpdate(change, creating, trip) {
+  function askForUpdate(change, creating, trip, takesOff = null) {
     const skipped = change ? { kind: 'nothing', body: change.line, keys: change.keys } : { kind: 'none' };
     if (!updateModal || !updateText) return Promise.resolve(skipped);
     updateAlone = null;
@@ -8703,6 +8920,7 @@
       const phrases = change.said.map(p => p.charAt(0).toLowerCase() + p.slice(1));
       what = `You ${phrases.length > 1 ? `${phrases.slice(0, -1).join(', ')} and ${phrases.at(-1)}` : phrases[0]}.`;
     } else what = 'Say what changed, or save with no update.';
+    if (takesOff) what = `${what} ${takesOff}`;
     const line = creating ? (editing?.quoteSent ? `Quote sent, ${usdCents(editing.quoteSent.price)}` : 'Quote sent')
       : change?.line ?? '';
     updateSkip.textContent = 'Save, no update';
@@ -9322,8 +9540,11 @@
     const change = creating ? null : customerChange(patch);
     const named = k => (k in patch ? patch[k] : editing.before?.[k]);
     const answer = await askForUpdate(change, creating,
-      { id: savedId, destination: named('destination'), customer: named('customer') });
+      { id: savedId, destination: named('destination'), customer: named('customer') }, doneTakenOff());
     if (!answer) return false;
+    // The Done marks as they stand before anything is written, written last.
+    const doneRow = doneRowOf(await actorName()
+      ?? (await Promise.resolve(window.Rux?.account?.person?.()).catch(() => null))?.name ?? null);
     /* The trip as it stands, for the history entry to diff against. A read
        that fails leaves `historyBefore` undefined, and the save unrecorded. */
     let historyBefore;
@@ -9460,6 +9681,9 @@
       }
 
       if (fleet?.work) await saveFleet(tripId, write, fleet);
+      /* Last, because writing the trip's rows takes off the Done marks their
+         changes affect, and a Done pressed after those changes still stands. */
+      if (Object.keys(doneRow).length) await write('its Done marks', client.from('trips').update(doneRow).eq('id', tripId));
       recordThisSave(tripId);
       const updateLost = answer.kind !== 'none' && !(await writeUpdate(tripId, answer));
       // Read back rather than trusting the write, as the drag does.
@@ -11122,6 +11346,9 @@
     ['hotel_booked_return', 'Inbound hotel booked', 'boolean'],
     ['hotel_itinerary_number_outbound', 'Outbound hotel confirmation'],
     ['hotel_itinerary_number_return', 'Inbound hotel confirmation'],
+    ['route_done_by', 'Route done by'],
+    ['buses_done_by', 'Buses done by'],
+    ['billing_done_by', 'Billing done by'],
     ['po_ref', 'PO number'],
     ['po_amount', 'PO amount', 'money'],
     ['invoice_number', 'Invoice number'],

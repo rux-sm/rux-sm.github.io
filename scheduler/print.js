@@ -2051,7 +2051,7 @@
   /* A new page in the frame takes the last one's controls out of the panel.
      The panel clears them when it opens a document, but a tile on the hub
      moves the frame on its own, and a form that cannot be drawn has none. */
-  host?.setFormControls([], []);
+  host?.setFormControls([]);
   host?.setFormNote('');
   /* The tab the panel's print falls back to opens where this frame is now,
      not where the panel first pointed it: a tile on the hub moves the frame. */
@@ -2534,8 +2534,7 @@
   /* The tick, written where rux-ui keeps it so its task list agrees. It shows
      at once and goes back to what the row says if the write fails, rather than
      showing a trip as done that the database never heard about. `sync` is how
-     whatever is drawing the tick -- a box in this page's own bar, a row in the
-     panel's menu -- follows the row. */
+     the box in this page's bar follows the row. */
   async function markPrinted(mark, want, sync) {
     const { table, row, column } = mark;
     const was = Boolean(row[column]);
@@ -2549,15 +2548,9 @@
     flash(want ? 'Marked printed.' : 'No longer marked printed.');
   }
 
-  /* WHAT GOES IN THE ROW AND WHAT GOES UNDER THE OVERFLOW. The panel's toolbar
-     is 30rem wide with a document's own buttons already in it, so the two
-     controls that are read rather than reached for -- which layout, and
-     whether this copy is done -- go under its overflow menu, and the row keeps
-     what a person came to press. The menu is the panel's: a surface opened
-     from inside the frame could not draw outside it, so this page says what
-     the items are and the panel builds them. In its own tab there is no
-     overflow and no menu script, and the page has the width to show all of
-     them, so they stay in its bar. */
+  /* WHAT GOES IN THE ROW. Standing alone the page's bar holds the layout, the
+     copy, Printed, Print and Print all. In the board's panel, 30rem wide, the
+     head holds the copy and the panel holds Print, so the row is the layout. */
   /* A CELL OF THE BAND. Carbon ships no text toolbar -- the pattern is a page
      of guidance and a drawing, and the only toolbar classes it compiles are
      the table's -- so the cells that make one are this app's own, under its
@@ -2607,7 +2600,6 @@
     // buses answer, and one of them is on the sheet.
     const every = current.every;
     const nodes = [];
-    const menu = [];
 
     const chooseLayout = id => { current.layout = id; buildControls(); draw(); };
 
@@ -2636,29 +2628,9 @@
        already saying which envelope this is, so it is the thing to press to
        say which other one, the way the board's week label opens its date
        picker. That leaves the toolbar to the actions. */
-    /* STEP THROUGH THEM, where the panel's head is holding the list. One press
-       is the next envelope on the trip, which is what dispatch does with a
-       stack of them; the head still names the one on the sheet and still
-       opens the whole list. They stop at the ends rather than wrapping: a
-       list of six is not a carousel.
-
-       The panel draws them from this, rather than taking buttons built here,
-       because a drawing referred to by name does not follow its button from
-       one document into another: the reference is resolved once, against the
-       document the button was born in. */
-    const steps = host && every.length > 1 ? {
-      prev: {
-        label: `Previous ${form.name.toLowerCase()}`,
-        disabled: !every[current.chosen - 1],
-        choose: () => { current.chosen -= 1; buildControls(); draw(); },
-      },
-      next: {
-        label: `Next ${form.name.toLowerCase()}`,
-        disabled: !every[current.chosen + 1],
-        choose: () => { current.chosen += 1; buildControls(); draw(); },
-      },
-    } : null;
-
+    /* THE PANEL KEEPS TO THE LAYOUT AND PRINT. Printed and Print all are this
+       page's own, where the Forms page is open on its own; the board's panel
+       is for looking and printing one copy. */
     /* A form with one copy to a subject, like the quote, names no copy, and
        the head names the form. */
     const labelOf = copy => form.copyName?.(copy) ?? form.name;
@@ -2686,17 +2658,8 @@
        a tick from it would mark envelopes that never came out. rux-ui does not
        guess either: its task list offers Open, or Open and mark as complete,
        and the person chooses. This is that choice, and it unticks. */
-    const printed = markOf(form, every[current.chosen]);
-    if (printed && host) {
-      if (menu.length) menu.push({ kind: 'separator' });
-      menu.push({
-        id: 'printed',
-        label: 'Printed',
-        kind: 'check',
-        checked: Boolean(printed.row[printed.column]),
-        choose: () => void markPrinted(printed, !printed.row[printed.column], buildControls),
-      });
-    } else if (printed) {
+    const printed = !host && markOf(form, every[current.chosen]);
+    if (printed) {
       const cell = el('div', 'scheduler-print__cell');
       const box = el('div', 'rux--form-item rux--checkbox-wrapper');
       const input = el('input', 'rux--checkbox');
@@ -2737,29 +2700,16 @@
       actions.push(print);
     }
 
-    /* Print all covers the same list the head's own offers: every envelope on
+    /* Print all covers the same list the page's Copy offers: every envelope on
        the trip, including a bus with a single driver on a trip that has three
-       more buses. In the panel it is under the overflow, because the row
-       beside it is for what is pressed often and a whole stack is not.
+       more buses.
 
        A FORM THAT IS ALWAYS TYPED INTO DOES NOT OFFER IT. Laying the whole
        stack out draws every copy again, which takes back what was typed into
        the one on the sheet -- silently, between pressing the button and the
        dialog opening. Its copies are printed one at a time instead. */
-    const stack = every.length > 1 && !form.typed?.always && !form.oneAtATime;
-    if (host && stack) {
-      if (menu.length) menu.push({ kind: 'separator' });
-      menu.push({
-        id: 'print-all',
-        label: `Print all ${every.length}`,
-        kind: 'action',
-        choose: () => {
-          printingAll = true;
-          drawAll();
-          requestAnimationFrame(() => window.print());
-        },
-      });
-    } else if (stack) {
+    const stack = !host && every.length > 1 && !form.typed?.always && !form.oneAtATime;
+    if (stack) {
       /* A cell like the others, flush and the band's height, labelled where
          Print beside it is a bare icon: the count is the whole of what this
          button has to say, and an icon cannot say six. */
@@ -2784,7 +2734,7 @@
       nodes.push(prints);
     } else nodes.push(...actions);
 
-    if (host) host.setFormControls(nodes, menu, steps);
+    if (host) host.setFormControls(nodes);
     else controls.replaceChildren(...nodes);
   }
 

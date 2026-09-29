@@ -10266,8 +10266,6 @@
   const viewerPrint = document.getElementById('scheduler-viewer-print');
   const viewerToolbar = document.getElementById('scheduler-viewer-toolbar');
   const viewerCopies = document.getElementById('scheduler-viewer-copies');
-  const viewerMore = document.getElementById('scheduler-viewer-more');
-  const viewerMenu = document.getElementById('scheduler-viewer-menu');
   const viewerDownload = document.getElementById('scheduler-viewer-download');
   const viewerNewTab = document.getElementById('scheduler-viewer-new-tab');
   const viewerClose = document.getElementById('scheduler-viewer-close');
@@ -10398,125 +10396,31 @@
     for (const btn of viewerZooms) btn.hidden = form || noZoom;
     viewerDownload.hidden = form;
     viewerNewTab.hidden = form;
-    if (!form) setFormControls([], []);
+    if (!form) setFormControls([]);
   }
 
   /* WHAT A GENERATED FORM PUTS IN THIS TOOLBAR. print.html builds its own
      controls and hands the nodes up; this adopts them, so the listeners it
      registered keep working and there is one builder rather than two. It hands
-     them over again on every rebuild -- a copy chosen, Print all's count
-     arriving -- so the slot is replaced whole each time. */
-  /* One step through a document's own list, drawn here rather than handed over
-     built: an SVG drawing referred to by name is resolved against the document
-     its element was born in, and does not follow that element into another. */
-  function stepButton(step, icon) {
-    const btn = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md');
-    btn.type = 'button';
-    btn.title = step.label;
-    btn.setAttribute('aria-label', step.label);
-    btn.disabled = Boolean(step.disabled);
-    // The box is the one the board's own week arrows draw these in. A box that
-    // starts below the origin puts the drawing off the top of its own frame.
-    btn.appendChild(svgUse(icon, '16', '0 0 16 16'));
-    btn.addEventListener('click', () => step.choose?.());
-    return btn;
-  }
-
+     them over again on every rebuild -- a copy chosen from the head -- so the
+     slot is replaced whole each time. The head's list is the way to another
+     copy, and the panel keeps no overflow: the form's page carries Print all
+     and the Printed tick. */
   let formNodes = [];
-  function setFormControls(nodes, menu = [], steps = null) {
+  function setFormControls(nodes) {
     if (!viewerToolbar) return;
-    const all = steps
-      ? [stepButton(steps.prev, '#m-keyboard_arrow_left'),
-         stepButton(steps.next, '#m-keyboard_arrow_right'),
-         ...nodes]
-      : nodes;
     for (const node of formNodes) node.remove();
-    formNodes = all.map((node, i) => {
+    formNodes = nodes.map((node, i) => {
       const here = document.adoptNode(node);
       /* What the toolbar's own rules size and hold in place, and what a later
          hand-over takes back out again. The last one is named, because it is
          the one that parts these from the buttons every document gets, and
          the zoom buttons hidden between them are no use as a landmark. */
-      here.setAttribute('data-viewer-form', i === all.length - 1 ? 'last' : '');
+      here.setAttribute('data-viewer-form', i === nodes.length - 1 ? 'last' : '');
       return here;
     });
     viewerToolbar.prepend(...formNodes);
-    setFormMenu(menu);
   }
-
-  /* THE PANEL'S OVERFLOW, FILLED BY THE FORM IN THE FRAME. A menu opened from
-     inside that frame could not draw outside it, so the form says what its
-     items are -- which layout, whether this copy is done -- and this builds
-     them here. Each item carries its own `choose`, which runs back in the
-     form's own script. */
-  let formMenu = [];
-  const menuShape = items => items.map(i => `${i.kind}:${i.id || ''}:${i.label || ''}`).join('|');
-
-  function setFormMenu(items) {
-    if (!viewerMenu || !viewerMore) return;
-    /* A tick pressed hands the items straight back, and rebuilding the rows
-       under an open menu would take the pressed one out from under the
-       pointer. Same rows, so only what they say changes. */
-    if (menuShape(items) === menuShape(formMenu)) {
-      formMenu = items;
-      markFormMenu();
-      return;
-    }
-    formMenu = items;
-    viewerMore.hidden = !items.length;
-    if (!items.length) {
-      if (window.Rux?.menu?.isOpen?.(viewerMenu)) window.Rux.menu.close(viewerMenu);
-      viewerMenu.replaceChildren();
-      return;
-    }
-    viewerMenu.replaceChildren(...items.map((item, i) => {
-      if (item.kind === 'separator') {
-        const rule = el('li', 'rux--menu-item-divider');
-        rule.setAttribute('role', 'separator');
-        return rule;
-      }
-      const row = el('li', 'rux--menu-item');
-      // An action is pressed, not chosen, so it carries no ticked state --
-      // only the empty column that keeps its label out of the tick's place.
-      const role = { radio: 'menuitemradio', check: 'menuitemcheckbox' }[item.kind] || 'menuitem';
-      row.setAttribute('role', role);
-      row.tabIndex = 0;
-      row.dataset.formItem = String(i);
-      row.append(
-        el('div', 'rux--menu-item__selection-icon'),
-        el('div', 'rux--menu-item__icon'),
-        el('div', 'rux--menu-item__label', item.label),
-      );
-      return row;
-    }));
-    markFormMenu();
-  }
-
-  // The checkmark column, which this app fills itself because it sets no rule
-  // on a rux-- class -- the same way the board's own view menu is ticked.
-  function markFormMenu() {
-    for (const row of viewerMenu.querySelectorAll('[data-form-item]')) {
-      if (row.getAttribute('role') === 'menuitem') continue;
-      const item = formMenu[Number(row.dataset.formItem)];
-      const on = Boolean(item?.checked);
-      row.setAttribute('aria-checked', String(on));
-      const slot = row.querySelector('.rux--menu-item__selection-icon');
-      if (slot) slot.replaceChildren(...(on ? [svgUse('#m-check', '16', '0 0 20 20')] : []));
-    }
-  }
-
-  viewerMore?.addEventListener('click', () => {
-    const r = viewerMore.getBoundingClientRect();
-    popMenuAt(viewerMenu, { clientX: r.left, clientY: r.bottom });
-  });
-
-  viewerMenu?.addEventListener('click', e => {
-    const row = e.target.closest('[data-form-item]');
-    if (!row) return;
-    formMenu[Number(row.dataset.formItem)]?.choose?.();
-  });
-
-  viewerMenu?.addEventListener('rux:menu-closed', () => { viewerMenu.hidden = true; });
 
   /* The line a form has to say, in the place a stored file says when it was
      uploaded: the right-hand end of the same row. It borrows the line and
@@ -10643,7 +10547,7 @@
     setViewerMode('form');
     // The controls belong to the frame being replaced, so they go with it and
     // the page hands its own up once it has drawn.
-    setFormControls([], [], null);
+    setFormControls([]);
     setViewerHead(kind);
     viewerNote = note || '';
     setFormNote('');

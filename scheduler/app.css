@@ -1334,13 +1334,13 @@ button.scheduler-row-head__num::after {
 
 /* WHICH DOCUMENT AT ONE END, WHAT TO DO WITH IT AT THE OTHER, the way the
    board's toolbar holds its week at one end and its buttons at the other. A
-   form's own controls -- stepping through the trip's envelopes -- hold the
+   form's own controls -- its layout -- hold the
    start; the buttons every document gets end the row. Where a document has no
    controls of its own, its buttons still end the row rather than starting
-   it. */
+   it, counted from the first one shown: a form hides the zooms ahead of Print. */
 .scheduler-viewer__toolbar > [data-viewer-form="last"] { margin-inline-end: auto; }
 
-.scheduler-viewer__toolbar:not(:has(> [data-viewer-form])) > :first-child {
+.scheduler-viewer__toolbar:not(:has(> [data-viewer-form])) > :nth-child(1 of :not([hidden])) {
   margin-inline-start: auto;
 }
 /* A button's own display beats the browser's `[hidden]`, so the zoom buttons

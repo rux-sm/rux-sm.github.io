@@ -1078,6 +1078,38 @@ button.scheduler-row-head__num::after {
 .scheduler-done__head { display: flex; align-items: center; gap: var(--rux-spacing-03); margin: 0; }
 .scheduler-done__head svg, .scheduler-tab-done svg { color: var(--rux-support-success); flex: none; }
 .scheduler-tab-done { display: inline-flex; align-items: center; margin-inline-start: var(--rux-spacing-02); }
+
+/* THE CHECKLIST TAB: a summary line, then each group's items, a check or an
+   open ring beside each, what is missing under its name, and a button to go
+   and do it. Hand ticks are Carbon checkboxes in the same list. */
+.scheduler-checklist__summary { margin: 0; font-weight: 600; }
+.scheduler-checklist { list-style: none; margin: 0; padding: 0; }
+.scheduler-checklist__item {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+  min-block-size: var(--rux-spacing-08);
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+}
+.scheduler-checklist__item .rux--form-item { flex: 1 1 auto; margin: 0; }
+.scheduler-checklist__mark { display: inline-flex; flex: none; inline-size: 16px; block-size: 16px; color: var(--rux-support-success); }
+.scheduler-checklist__mark--open { border: 1px solid var(--rux-icon-secondary); border-radius: 50%; }
+.scheduler-checklist__words { display: flex; flex-direction: column; flex: 1 1 auto; min-inline-size: 0; }
+.scheduler-checklist__detail { color: var(--rux-text-secondary); font-size: 0.75rem; }
+
+/* The card's line of what the checklist has left, which opens the tab. */
+.scheduler-card__left { display: flex; align-items: center; gap: var(--rux-spacing-03); }
+.scheduler-card__left-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--rux-link-primary);
+  font: inherit;
+  cursor: pointer;
+  text-align: start;
+}
+.scheduler-card__left-button:hover { text-decoration: underline; }
+.scheduler-card__left-button:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
 /* A BUS THAT DOES NOT FIT THIS TRIP -- the wrong type, or one that falls
    short of a need -- draws a red edge inside the bar, the shape of the
    selection ring, which takes its place while the bar is selected. The card

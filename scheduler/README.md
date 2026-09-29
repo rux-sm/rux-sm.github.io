@@ -142,7 +142,7 @@ no pin to move.
 
 From the repository root, one level up:
 
-    npm run check        # Design's shared check over this app, plus the sprite and the print rule
+    npm run check        # Design's shared check, the sprite, the print rule and the checklist's sample trips
 
 Open it at http://localhost:8641/scheduler/, the always-on preview the root
 `README.md` describes; the pages link `/design/…` absolutely, so this folder is

@@ -76,7 +76,9 @@ that cannot are ticked where the work is done, like right after printing a form.
 - **Only the paperwork and the extras are ticked by hand,** and each is ticked
   where the work happens: a Printed box beside Print in the form panel, the
   hotel's Booked box the editor already has, and a new fuel card box with its
-  number, which the scheduler lacks today. The checklist can tick them too.
+  number, which the scheduler lacks today. The Checklist tab ticks the ones
+  kept on the trip; an envelope is ticked in the Forms panel, since it is one
+  per driver's seat.
 - **Every item that is not done has one button to go do it:** open the form,
   the Buses tab, the driver's status, the upload.
 - **An item a trip does not need is left out,** not shown as "not needed":
@@ -104,7 +106,9 @@ that cannot are ticked where the work is done, like right after printing a form.
   `trips`, and `envelope_printed` on each driver's seat. No database change.
 - **One rules file, `scheduler/checklist.js`,** decides every item, and the
   editor tab, the card and the Departures list all read it, the way
-  `follow-up.js` is shared today.
+  `follow-up.js` is shared today. The board hands it each leg's buses and
+  seats, which only the board can read. The Checklist tab reads the trip as
+  saved, with the editor's own Done marks and ticks laid over it.
 - **Follow-up reminders stay as they are.** They are about chasing the
   customer; the checklist is about getting the leg out the door.
 
@@ -114,15 +118,9 @@ None open.
 
 ## Tasks
 
-- [ ] Write `checklist.js` with every item's rule, the Done checks reusing
-      the Route tab's Needs times and No location checks and the Billing tab's
-      quote-sent comparison, and a test that runs it against sample trips.
 - [ ] Keep `driver_contact_sent_<leg>` in step with the drivers' statuses.
-- [ ] Add the Checklist tab to the trip editor, with the fuel card box and
-      its number.
 - [ ] Put the Printed box back in the form panel, beside Print, for the
       envelope, itinerary and hours-of-service record.
-- [ ] Add the "left" line to the trip's card on the board.
 - [ ] Make Route's Done check both legs of a split trip; today it checks the
       leg on screen.
 - [ ] Build the Departures panel.

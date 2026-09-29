@@ -584,6 +584,9 @@
             <button id="scheduler-tab-files" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-panel-files" tabindex="-1">
               <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Files</span></div>
             </button>
+            <button id="scheduler-tab-checklist" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-panel-checklist" tabindex="-1">
+              <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Checklist</span></div>
+            </button>
           </div>
           <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--next rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_right"/></svg></button>
         </div>
@@ -592,6 +595,7 @@
         <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-fleet" aria-labelledby="scheduler-tab-fleet" tabindex="0" hidden></div>
         <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-billing" aria-labelledby="scheduler-tab-billing" tabindex="0" hidden></div>
         <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-files" aria-labelledby="scheduler-tab-files" tabindex="0" hidden></div>
+        <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-checklist" aria-labelledby="scheduler-tab-checklist" tabindex="0" hidden></div>
       </div>
       <!-- The action bar, least to most committing: Cancel trip, Reset, Save.
            The row-double and md classes give each button a flex basis of 50%,
@@ -1568,6 +1572,7 @@
 <script src="vehicles.js"></script>
 <script src="billing.js"></script>
 <script src="follow-up.js"></script>
+<script src="checklist.js"></script>
 <script src="week.js"></script>
 <script src="file-names.js"></script>
 <script src="data.js"></script>

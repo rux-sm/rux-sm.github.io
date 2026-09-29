@@ -418,10 +418,13 @@
     // Each leg's hours-of-service record, printed or not, which a bus with a
     // part-time driver needs.
     'hos_form_printed_outbound', 'hos_form_printed_return',
+    // The checklist's other hand ticks, kept per leg as rux-ui keeps them.
+    'itinerary_printed_outbound', 'itinerary_printed_return',
+    'fuel_card_assigned_outbound', 'fuel_card_assigned_return', 'fuel_card_number_outbound', 'fuel_card_number_return',
     // The roles an assignment turns on, and who fills them: the drivers row.
     // The Buses tab edits each seat by its row id, with its relief swap time and
     // note, and each vehicle's own needs and type.
-    'trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,trip_drivers(id,driver_id,role,report_time,instructions))',
+    'trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed))',
     // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
     // and the itinerary panel, which frames the file at its path.
     'trip_documents(id,label,created_at,file_name,file_path,file_size)',
@@ -1610,6 +1613,7 @@
   const panelBilling = document.getElementById('scheduler-panel-billing');
   const panelRoute = document.getElementById('scheduler-panel-route');
   const panelFiles = document.getElementById('scheduler-panel-files');
+  const panelChecklist = document.getElementById('scheduler-panel-checklist');
   const panelSave = document.getElementById('scheduler-panel-save');
   const panelReset = document.getElementById('scheduler-panel-reset');
   const panelCancel = document.getElementById('scheduler-panel-cancel');
@@ -4193,6 +4197,16 @@
     ]),
   ];
 
+  /* The checklist's hand ticks, kept on the trip as rux-ui keeps them: each
+     leg's itinerary and hours-of-service record printed, and its fuel card
+     assigned with the card's number. The Checklist tab edits them, and Save
+     writes them like any field. */
+  const TICK_KEYS = ['outbound', 'return'].flatMap(leg => [`itinerary_printed_${leg}`, `hos_form_printed_${leg}`,
+    `fuel_card_assigned_${leg}`, `fuel_card_number_${leg}`]);
+  const tickValue = (key, v) => (key.startsWith('fuel_card_number') ? (String(v ?? '').trim() || null) : !!v);
+  const ticksOf = trip => Object.fromEntries(TICK_KEYS.map(k => [k, tickValue(k, trip?.[k])]));
+  EDITS.push(...TICK_KEYS.map(key => ({ key, get: () => (editing?.ticks ? editing.ticks[key] : null) })));
+
   // The id a search field resolved to, or null when the box was cleared or
   // typed freehand. `undefined` means the control is not on screen at all.
   const linkId = id => {
@@ -4634,6 +4648,7 @@
      has been quiet, whether it asks, and the reminders dismissed here. */
   const { set: setFollowUp, waitsOf, updatesOf, quietSince, asks: asksFollowUp, due: dueFollowUp, daysToGo, dismiss: dismissFollowUp,
     agoShort, WORDS: WAIT_WORDS } = window.SchedulerFollowUp;
+  const { checklist: tripChecklist, leftOf: checklistLeft, GROUPS: CHECK_GROUPS } = window.SchedulerChecklist;
 
   let editing = null;   // { id, before: {...} }
 
@@ -6105,6 +6120,114 @@
     }
   }
 
+  /* ── The checklist ──
+     checklist.js holds the rules; the board hands it what only the board can
+     read, each leg's buses and seats, and the Checklist tab draws the result
+     for the trip as it stands in the editor. */
+  function checklistFacts(trip, leg) {
+    const assigns = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === leg);
+    const busesNeeded = leg === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1);
+    const { buses: busesById, driversById, statuses } = panelIndex;
+    const facts = { busesNeeded, busesAssigned: 0, busesShort: 0, seatsOpen: 0, seats: 0, unconfirmed: 0, envelopesLeft: 0, partTime: false };
+    for (const a of assigns) {
+      if (a.bus_id == null) continue;
+      facts.busesAssigned++;
+      const bus = busesById.get(a.bus_id);
+      if (bus && (wrongType(a.vehicle_type, bus) || needsFor(trip, a).some(id => id !== 'hotel' && shortfall(id, bus)))) facts.busesShort++;
+    }
+    for (const a of assigns) {
+      for (const c of crewOf(trip, a, driversById, statuses)) {
+        if (c.needed) { facts.seatsOpen++; continue; }
+        facts.seats++;
+        if (c.status?.value !== 'confirmed') facts.unconfirmed++;
+      }
+      const roles = activeRolesOf(a);
+      for (const d of a.trip_drivers || []) {
+        if (!d.driver_id || !roles.has(d.role || 'driver')) continue;
+        if (!d.envelope_printed) facts.envelopesLeft++;
+        if (driversById.get(d.driver_id)?.employment_type === 'part-time') facts.partTime = true;
+      }
+    }
+    return facts;
+  }
+  // A saved trip's checklist, for its card and the Departures list.
+  const tripChecklistOf = trip => tripChecklist(trip, leg => checklistFacts(trip, leg), !!dayOfContact(trip));
+
+  // Where an item's button goes: an editor tab, or the Forms panel beside the board.
+  function goToChecklistItem(action) {
+    if (action === 'forms') { openForms(selectedBar()); return; }
+    const tab = document.getElementById(`scheduler-tab-${action}`);
+    if (tab) window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
+  }
+
+  // The hand ticks a checklist item stands for, by its id.
+  const TICK_OF = { 'itinerary-printed': 'itinerary_printed', hos: 'hos_form_printed', 'fuel-card': 'fuel_card_assigned' };
+
+  function checklistRow(item, leg) {
+    const li = el('li', `scheduler-checklist__item${item.done ? ' scheduler-checklist__item--done' : ''}`);
+    const kind = item.id.split(':')[0];
+    if (TICK_OF[kind]) {
+      const key = `${TICK_OF[kind]}_${leg}`;
+      const box = checkField(`scheduler-check-${kind}-${leg}`, item.label, editing.ticks[key]);
+      box.querySelector('input').addEventListener('change', e => { editing.ticks[key] = e.target.checked; refreshDirty(); });
+      li.appendChild(box);
+      if (kind === 'fuel-card') {
+        const numKey = `fuel_card_number_${leg}`;
+        const num = textField(`scheduler-check-fuelnum-${leg}`, 'Card number', editing.ticks[numKey], 'Card number');
+        num.querySelector('input').addEventListener('input', e => { editing.ticks[numKey] = tickValue(numKey, e.target.value); refreshDirty(); });
+        li.appendChild(num);
+      }
+      return li;
+    }
+    const mark = el('span', `scheduler-checklist__mark${item.done ? '' : ' scheduler-checklist__mark--open'}`);
+    if (item.done) mark.appendChild(svgUse('#m-check_circle-fill', '16', '0 0 32 32'));
+    const words = el('span', 'scheduler-checklist__words');
+    words.append(el('span', null, item.label), el('span', 'rux--visually-hidden', item.done ? ', done' : ', not done'));
+    if (item.detail) words.appendChild(el('span', 'scheduler-checklist__detail', item.detail));
+    li.append(mark, words);
+    if (!item.done && item.action) {
+      const go = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', item.action === 'forms' ? 'Forms' : 'Open');
+      go.type = 'button';
+      go.setAttribute('aria-label', `${item.action === 'forms' ? 'Open Forms for' : 'Go to'} ${item.label.toLowerCase()}`);
+      go.addEventListener('click', () => goToChecklistItem(item.action));
+      li.appendChild(go);
+    }
+    return li;
+  }
+
+  /* The Checklist tab: the trip as saved, with the editor's own Done marks and
+     hand ticks laid over it, so a tick or a Done shows here before Save. */
+  function drawChecklist() {
+    if (!editing?.trip || !panelChecklist || panelChecklist.hidden) return;
+    const on = doneState();
+    const view = { ...editing.trip, ...editing.ticks };
+    for (const { tab } of DONE_TABS) {
+      const d = on?.[tab] ? editing.done[tab] : null;
+      view[`${tab}_done_at`] = d ? (d.at || 'now') : null;
+      view[`${tab}_done_by`] = d?.by ?? null;
+    }
+    const legs = tripChecklist(view, leg => checklistFacts(editing.trip, leg), !!dayOfContact(editing.trip));
+    const active = document.activeElement;
+    const keep = panelChecklist.contains(active) ? { id: active.id, at: active.selectionStart ?? null } : null;
+    const left = checklistLeft(legs);
+    const parts = [section(null, el('p', 'scheduler-checklist__summary', left ? `${left} left` : 'Ready to go'))];
+    for (const l of legs) {
+      for (const group of CHECK_GROUPS) {
+        const items = l.items.filter(i => i.group === group);
+        if (!items.length) continue;
+        const list = el('ul', 'scheduler-checklist');
+        for (const i of items) list.appendChild(checklistRow(i, l.leg));
+        parts.push(section(legs.length > 1 ? `${group}, ${l.leg === 'return' ? 'pickup leg' : 'drop-off leg'}` : group, list));
+      }
+    }
+    panelChecklist.replaceChildren(...parts);
+    const back = keep?.id ? document.getElementById(keep.id) : null;
+    if (back) {
+      back.focus();
+      if (keep.at != null && typeof back.setSelectionRange === 'function') back.setSelectionRange(keep.at, keep.at);
+    }
+  }
+
   // The Done marks a save takes off, named in the update window before it saves.
   function doneTakenOff() {
     const on = doneState();
@@ -6158,6 +6281,7 @@
     redrawQuoteSent();
     tellCalculator();
     drawDone();
+    drawChecklist();
   }
 
   /* New trip opens the same panel on a draft: a round trip, unconfirmed, on the
@@ -6240,7 +6364,11 @@
       done: Object.fromEntries(DONE_TABS.map(({ tab }) => [tab, trip[`${tab}_done_at`]
         ? { at: trip[`${tab}_done_at`], by: trip[`${tab}_done_by`] ?? null, key: null, fresh: false } : null])),
       doneBoxes: {},
+      // The trip as saved, which the Checklist tab reads, and its hand ticks as they stand.
+      trip,
+      ticks: ticksOf(trip),
       before: {
+      ...ticksOf(trip),
       destination: trip.destination ?? null,
       customer: trip.customer ?? null,
       customer_id: trip.customer_id ?? null,
@@ -8230,6 +8358,7 @@
     /* A tabpanel is a tab stop only when nothing inside it is focusable, the
        ARIA pattern; otherwise the panel is a redundant stop with a focus ring
        round the whole tab. Decided per panel from its contents, which change. */
+    panelChecklist?.replaceChildren();
     for (const tp of [panelDetails, panelBilling, panelRoute, panelFleet, panelFiles]) {
       const focusable = tp.querySelector('input, select, textarea, button, a[href], [tabindex]:not([tabindex="-1"])');
       if (focusable) tp.removeAttribute('tabindex');
@@ -9452,6 +9581,11 @@
   panelBilling?.addEventListener('rux:toggle', refreshDirty);
   // Files has one switch.
   panelFiles?.addEventListener('rux:toggle', refreshDirty);
+  // The Checklist tab is drawn when it is shown, however it was chosen.
+  if (panelChecklist) {
+    new MutationObserver(() => { if (!panelChecklist.hidden) drawChecklist(); })
+      .observe(panelChecklist, { attributes: true, attributeFilter: ['hidden'] });
+  }
   // Route has fields and two place searches, the pickup's and the drop-off's
   // in their own dialogs, which sit outside the panel.
   for (const host of [panelRoute, document.getElementById('scheduler-pickup-modal'),
@@ -10546,6 +10680,19 @@
   unassignModal?.addEventListener('rux:modal-closed', () => { unassignAfter = null; });
 
   // Opens the bar's trip on its Buses tab, for every driver and every seat.
+  // Opens a trip in the editor at its Checklist tab, as the card's line asks.
+  function openOnChecklist(bar) {
+    const toChecklist = () => {
+      const tab = document.getElementById('scheduler-tab-checklist');
+      if (tab && tab.getAttribute('aria-selected') !== 'true') window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
+      drawChecklist();
+    };
+    if (isEditorBar(bar)) { toChecklist(); return; }
+    const ref = barRef(bar);
+    selectBar(bar);
+    whenSafe(() => { openRef(ref); requestAnimationFrame(toChecklist); });
+  }
+
   function openOnFleet(bar) {
     const toFleet = () => {
       const tab = document.getElementById('scheduler-tab-fleet');
@@ -12187,6 +12334,7 @@
      or null. The card says when there is none. */
   const dayOfContact = trip => [1, 2, 3, 4, 5].map(n => tripContact(trip, n)).find(Boolean) ?? null;
   const cardKey = trip => (trip ? JSON.stringify([trip.notes, asksFollowUp(trip), waitsOf(trip), dayOfContact(trip),
+    checklistLeft(tripChecklistOf(trip)),
     !!trip.contact_not_needed,
     (trip.trip_updates || []).map(u => u.id).sort(), agoShort(quietSince(trip) || Date.now())]) : '');
   function drawCard(trip, bar) {
@@ -12227,6 +12375,16 @@
         band.append(svgUse('#m-notifications_active-fill', '16', '0 0 32 32'), waiting, dismiss);
       }
       card.appendChild(band);
+    }
+    /* What the checklist has left, one line that opens the Checklist tab. */
+    {
+      const left = checklistLeft(tripChecklistOf(trip));
+      const line = row('scheduler-card__left');
+      const open = el('button', 'scheduler-card__left-button', left ? `${left} left on the checklist` : 'Checklist ready');
+      open.type = 'button';
+      open.addEventListener('click', () => { if (bar) openOnChecklist(bar); });
+      line.append(svgUse(left ? '#m-list' : '#m-check_circle-fill', '16', '0 0 32 32'), open);
+      card.appendChild(line);
     }
     /* On the notes row, what the trip needs, and a phone in the warning
        colour when nobody is named to call on the day and the trip is not marked

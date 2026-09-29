@@ -64,12 +64,11 @@
     return `${hr % 12 || 12}:${m} ${hr < 12 ? 'AM' : 'PM'}`;
   };
 
-  /* The vehicle line. The seats are the assigned bus's, so before a bus is
-     picked the line names the vehicle alone rather than guessing a size. */
-  function vehicle(count, seats) {
-    const buses = Math.max(count || 0, 1);
-    const what = buses > 1 ? `${buses} buses` : 'Bus';
-    return seats ? `${what} (${seats} passengers${buses > 1 ? ' each' : ''})` : what;
+  /* The vehicle line, "(52 passengers)", with no count of buses because the
+     line's Quantity carries it. The seats are the assigned bus's, so before a
+     bus is picked the line names the vehicle alone rather than guessing a size. */
+  function vehicle(seats) {
+    return seats ? `(${seats} passengers)` : 'Bus';
   }
 
   /* The block itself. A line the trip cannot answer yet is dropped, except the
@@ -81,7 +80,7 @@
     const pickup = place(trip.pickup || '');
     const drop = String(trip.destination || '').trim();
     return [
-      `${vehicle(trip.buses, trip.seats)} ${TRIP_TYPES[trip.type] || 'trip'}`,
+      `${vehicle(trip.seats)} ${TRIP_TYPES[trip.type] || 'trip'}`,
       [pickup ? `from ${pickup}` : null, drop ? `to ${drop}` : null].filter(Boolean).join(' '),
       from ? `on ${dates(from, trip.to || from)}` : null,
       `departing at ${clock(trip.leave) || 'TBD'}`,

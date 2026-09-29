@@ -46,12 +46,13 @@
      than clipping. app.js measures the corner and replaces this with pixels. */
   --scheduler-head-w: max-content;
   /* The narrowest a day column gets; past it the grid scrolls rather than
-     squeezing. It is three shortcut slots at their 40px floor plus the gaps a
-     bar keeps at either end, so a one-day trip is never narrower than the
-     narrowest shortcut bar pointing at it. Below this the week scrolls, which
-     is every board under about 1000px; a wider board is on `1fr` and never
-     sees this figure. */
-  --scheduler-day-min: calc(3 * var(--scheduler-slot-w) + var(--scheduler-gap) + var(--scheduler-gap-clear));
+     squeezing. 9rem holds a one-day bar's first driver, its "+1" and the
+     Updates mark whole. It is never less than three shortcut slots at their
+     40px floor plus the gaps a bar keeps at either end, so a one-day trip is
+     never narrower than the narrowest shortcut bar pointing at it. Below this
+     the week scrolls, which is every board under about 1050px; a wider board
+     is on `1fr` and never sees this figure. */
+  --scheduler-day-min: max(9rem, calc(3 * var(--scheduler-slot-w) + var(--scheduler-gap) + var(--scheduler-gap-clear)));
   --scheduler-day-track: minmax(var(--scheduler-day-min), 1fr);
   /* One day's width, which every bar, stripe and day rule is placed from. A
      percentage of the track by default, so the stylesheet stands alone; app.js
@@ -681,10 +682,14 @@ button.scheduler-row-head__num::after {
    what the trip does -- where it goes, when, what to know on the day and who
    drives it -- and dim is who it is for. */
 .scheduler-bar__client, .scheduler-bar__contact { opacity: .85; }
-/* THE BUS COUNT, on a trip with more than one bus: "1/3" in Carbon's outline
-   tag, its ring and number in the bar's own text colour, which overrides.css
-   draws. The tag is the row's height and centred in it, so its ring is whole. */
+/* THE BUS COUNT, on a trip with more than one bus: "1/3" in plain figures at
+   the times row's end, dim as the client is, so the destination keeps the
+   whole top row. Its copy on the destination row shows only while the times
+   row is off. */
 .scheduler-bar__ref { display: flex; align-items: center; }
+.scheduler-bar__ref--time, .scheduler-bar__ref--dest { font-weight: 400; opacity: .85; }
+.scheduler-bar__ref--dest { display: none; }
+.scheduler-week--no-time .scheduler-bar__ref--dest { display: flex; }
 /* A bar of the selected trip that is not the selected bar: its other buses
    and its other leg. It wears the selection's own ring, so the whole trip
    reads as selected; an outline inside the bar costs none of its writing. The
@@ -1026,13 +1031,13 @@ button.scheduler-row-head__num::after {
   .scheduler-bar-shortcuts[data-pop] .scheduler-card__row { animation: none; }
 }
 
-/* WHAT TRAVELS TO THE DESTINATION ROW'S END STOPS AT THE END OF THE TRIP'S
-   FIRST DAY, however many days the bar runs: the leg reference. Held to the
-   first day it sits a fixed distance from where every bar starts, so down a
-   week the references line up. The row itself is not narrowed, so the
-   destination still gives way across the whole bar. */
+/* WHAT TRAVELS TO A ROW'S END STOPS AT THE END OF THE TRIP'S FIRST DAY,
+   however many days the bar runs: the reference, on the times row or the
+   destination row. Held to the first day it sits a fixed distance from where
+   every bar starts, so down a week the references line up. The row itself is
+   not narrowed, so what comes first still gives way across the whole bar. */
 .scheduler-bar__ref { margin-inline-end: var(--scheduler-day-one-end); }
-.scheduler-bar__dest > .scheduler-bar__ref { margin-inline-start: auto; }
+.scheduler-bar__dest > .scheduler-bar__ref, .scheduler-bar__time > .scheduler-bar__ref { margin-inline-start: auto; }
 /* THE UPDATES MARK, in the bar's bottom corner at the drivers row's end, a
    step wider than a mark and as tall as the row; the crew gives way to it. A
    bell in the warning colour every other mark wears, set per theme, says the
@@ -1118,13 +1123,15 @@ button.scheduler-row-head__num::after {
 .scheduler-bar.scheduler-bar--misfit:not([aria-pressed="true"]) { box-shadow: inset 0 0 0 2px var(--rux-support-error); }
 
 /* The drivers row's crew: each driver's role icon and short name, in role
-   order. The row gives way from the end, a whole name at a time. */
+   order. The row gives way from the end, a whole name at a time, and "+1"
+   says how many it left out; `fitCrew` in data.js measures it. */
 .scheduler-bar__crew { display: flex; align-items: center; gap: var(--rux-spacing-03); min-inline-size: 0; overflow: hidden; }
+.scheduler-bar__more { flex: none; opacity: .85; }
 
 /* WHO ELSE IS ON THIS TRIP. A square notched into the bar's top right corner,
    sharing the bar's own top and right edges, so only its two inner edges are
-   ruled. It sits over the reference and the marks that corner carries, which
-   rux chose: knowing somebody else is in a trip is worth more than "1/2".
+   ruled. It sits over the end of the destination row, which rux chose:
+   knowing somebody else is in a trip is worth more than what that corner says.
    It takes no clicks, so the bar beneath still selects, opens and drags. */
 .scheduler-presence {
   position: absolute;

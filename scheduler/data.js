@@ -899,6 +899,37 @@
     return item;
   }
 
+  /* THE CREW GIVES WAY A WHOLE NAME AT A TIME, from the end, and says how
+     many it left out: "Raul +1". Only a first name that does not fit alone is
+     cut short. It is measured, so it runs again whenever the bar's width
+     changes; the bar is watched rather than the crew, whose own width is what
+     this sets. */
+  const fitCrew = crew => {
+    const items = [...crew.children].filter(n => n.classList.contains('scheduler-crew'));
+    crew.querySelector(':scope > .scheduler-bar__more')?.remove();
+    for (const item of items) item.style.removeProperty('display');
+    const cut = () => items.some(item => {
+      const name = item.style.display ? null : item.querySelector('.scheduler-crew__name');
+      return name && name.scrollWidth > name.clientWidth;
+    });
+    if (items.length < 2 || !cut()) return;
+    const more = el('span', 'scheduler-bar__more');
+    crew.appendChild(more);
+    for (let shown = items.length - 1; shown >= 1; shown--) {
+      items[shown].style.display = 'none';
+      const left = items.slice(shown);
+      more.textContent = `+${left.length}`;
+      more.title = left.map(item => item.title).join('\n');
+      if (!cut()) break;
+    }
+  };
+  const crewObserver = new ResizeObserver(entries => {
+    for (const { target } of entries) {
+      const crew = target.querySelector(':scope > .scheduler-bar__drivers > .scheduler-bar__crew');
+      if (crew) fitCrew(crew);
+    }
+  });
+
   function barEl(b, driversById, busesById, statuses) {
     const { trip, leg, assign, place, slot, nth } = b;
     const hue = hueFor(trip);
@@ -949,13 +980,9 @@
     const kind = trip.trip_type === 'one_way' ? 'one way' : !split ? null : leg.leg === 'return' ? 'pickup' : 'drop-off';
     const count = leg.count || 1;
     const ref = count > 1 ? `${nth}/${count}` : '';
-    let refTag = null;
-    if (ref) {
-      refTag = el('span', 'scheduler-bar__ref');
-      const tag = el('div', 'rux--tag rux--tag--outline rux--layout--size-sm');
-      tag.appendChild(el('span', 'rux--tag__label', ref));
-      refTag.appendChild(tag);
-    }
+    /* The count rides the times row; a copy on the destination row shows
+       only while the times row is off, as app.css does. */
+    const refTag = where => (ref ? el('span', `scheduler-bar__ref scheduler-bar__ref--${where}`, ref) : null);
 
     /* WHETHER THIS BUS FITS THIS TRIP, and what the trip needs. The bar draws
        no marks: what is still to be done is the reminder's to ask, and the
@@ -1001,7 +1028,7 @@
     barFacts.set(bar, { needs, misfits });
     bar.classList.toggle('scheduler-bar--misfit', misfits.length > 0);
 
-    addRow(bar, 'scheduler-bar__dest', el('span', null, trip.destination || 'No destination'), refTag);
+    addRow(bar, 'scheduler-bar__dest', el('span', null, trip.destination || 'No destination'), refTag('dest'));
     addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
 
     // The booking contact as the trip records it. When both do not fit, the
@@ -1031,7 +1058,7 @@
        a return says so, and a leg with neither says the times are still to come,
        rather than leaving the row empty. */
     const whenDep = el('span', 'scheduler-bar__time-dep', dep || (back ? `Ret ${back}` : 'No times'));
-    addRow(bar, 'scheduler-bar__time', when, whenDep);
+    addRow(bar, 'scheduler-bar__time', when, whenDep, refTag('time'));
 
     /* The Updates mark, in the bar's bottom corner at the drivers row's end: a
        bell in the warning colour when the trip asks for a follow-up, else a
@@ -1048,6 +1075,7 @@
     const crew = assign ? crewOf(trip, assign, driversById, statuses).filter(c => !(placeholder && c.needed)) : [];
     const crewBox = el('span', 'scheduler-bar__crew', assign || placeholder ? null : 'Needs a bus');
     crewBox.append(...crew.map(crewEl));
+    crewObserver.observe(bar);
     // A check once the Route, Buses and Billing tabs are all marked done.
     const allDone = !!(trip.route_done_at && trip.buses_done_at && trip.billing_done_at);
     let doneMark = null;
@@ -9292,11 +9320,12 @@
      `WEEK_MIN` is 17rem, the width the tight toolbar is measured to read at in
      app.css: the week never goes narrower than its own controls, which is what
      makes it a derived number rather than a chosen one. `SCHEDULE_FLOOR` is a
-     different question -- whether the board can show three readable days --
+     different question -- whether the board can show three readable days,
+     three of app.css's 9rem day floor and the bus column --
      and only the compact week asks it. A toolbar under 21rem is one `Today`
      will not fit in beside its week. */
   const WEEK_MIN = 17;
-  const SCHEDULE_FLOOR = 26;
+  const SCHEDULE_FLOOR = 30;
   const TOOLBAR_TIGHT = 21;
   const boardEl = document.querySelector('.scheduler-board');
   const frameEl = document.querySelector('.scheduler-frame');
@@ -12193,6 +12222,8 @@
       phone.replaceWith(call);
     }
     barShortcuts.prepend(head);
+    // The copy is fitted to the sheet's width, not the bar's.
+    for (const crew of head.querySelectorAll('.scheduler-bar__crew')) fitCrew(crew);
   }
 
   /* On the docked sheet a trip's note shows three lines and ends in an

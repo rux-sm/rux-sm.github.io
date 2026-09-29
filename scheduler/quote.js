@@ -40,6 +40,7 @@
       { key: 'driver_per_mile_1k_one', label: r => `${mi(r.driver_band_4)}+ miles, 1 driver`, unit: '$/mi' },
       { key: 'driver_per_mile_1k_two', label: r => `${mi(r.driver_band_4)}+ miles, 2 drivers`, unit: '$/mi' },
       { key: 'driver_meal_daily', label: 'Meal allowance', unit: '$/day' },
+      { key: 'driver_relief_flat', label: 'Relief driver, flat', unit: '$' },
     ],
   };
 
@@ -380,7 +381,13 @@
       }, rates);
       const other = num($('scheduler-quote-other').value);
       const discount = Math.abs(num($('scheduler-quote-discount').value));
-      const total = other - discount + (quote.amount ?? 0) + (driver?.amount ?? 0);
+      // The mileage and second driver are one bus's; each relief driver is
+      // the flat charge.
+      const buses = Math.max(1, Math.round(num($('scheduler-quote-buses').value)) || 1);
+      const reliefs = Math.max(0, Math.round(num($('scheduler-quote-relief').value)));
+      const perBus = (quote.amount ?? 0) + (driver?.amount ?? 0);
+      const relief = reliefs * rates.driver_relief_flat;
+      const total = other - discount + perBus * buses + relief;
 
       // The miles and days lead the quote, so the notes under the charges
       // leave them out.
@@ -420,12 +427,19 @@
         }
       }
 
+      $('scheduler-quote-buses-line').hidden = buses === 1;
+      $('scheduler-quote-buses-label').textContent = plural(buses, 'bus', 'buses');
+      $('scheduler-quote-buses-out').textContent = money.format(perBus * buses);
+      $('scheduler-quote-buses-math').textContent = `${money.format(perBus)} a bus × ${count.format(buses)}`;
+      $('scheduler-quote-relief-line').hidden = reliefs === 0;
+      $('scheduler-quote-relief-out').textContent = money.format(relief);
+      $('scheduler-quote-relief-math').textContent = times(reliefs, 'driver', 'drivers', rates.driver_relief_flat);
       $('scheduler-quote-other-line').hidden = other === 0;
       $('scheduler-quote-other-out').textContent = money.format(other);
       $('scheduler-quote-discount-line').hidden = discount === 0;
       $('scheduler-quote-discount-out').textContent = money.format(-discount);
       $('scheduler-quote-dead-discount-item').hidden = !(dead > 0);
-      last = { miles: trip, dead, rate, drivers: n, other, discount,
+      last = { miles: trip, dead, rate, drivers: n, buses, relief: reliefs, other, discount,
         mileage: quote.amount, driver: driver?.amount ?? null,
         fullMileage: dead > 0 ? tripQuote({ miles: trip, rate, dead: 0 }, rates).amount : quote.amount };
 
@@ -492,7 +506,8 @@
 
     /* A trip's figures, from the board's Calculator shortcut: `miles` is a
        day's miles each, comma-separated, `drivers` 2 where the leg has a
-       co-driver seat on, and `dead` the route's dead miles,
+       co-driver seat on, `buses` and `relief` its buses and relief seats, and
+       `dead` the route's dead miles,
        offered by a checkbox that `deadon` ticks when the trip's rental already
        counts them. */
     const fill = () => {
@@ -505,6 +520,8 @@
         miles.forEach((m, i) => { $(`scheduler-quote-trip-${i + 1}`).value = String(m); });
       }
       if (params.get('drivers') === '2') $('scheduler-quote-drivers').value = '2';
+      if (num(params.get('buses')) > 1) $('scheduler-quote-buses').value = String(Math.round(num(params.get('buses'))));
+      if (num(params.get('relief')) > 0) $('scheduler-quote-relief').value = String(Math.round(num(params.get('relief'))));
       const dead = num(params.get('dead'));
       if (!(dead > 0)) return;
       const figure = count.format(dead).replace(/,/g, '');

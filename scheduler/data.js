@@ -4861,6 +4861,7 @@
     { kind: 'rental', label: 'Bus rental', item: 'Bus Rental', description: '' },
     { kind: 'second_driver', label: 'Second driver', item: "Addt'l Driver",
       description: 'Additional driver required by law after exceeding 10 driving hrs or 15 on-duty hrs.' },
+    { kind: 'relief', label: 'Relief driver', item: "Addt'l Driver", description: 'Relief driver.' },
     { kind: 'discount', label: 'Discount', item: 'Deductions', description: 'Discount approved by manager.' },
     { kind: 'hotel', label: 'Hotel', item: 'Hotel', description: 'Hotel room for the drivers.' },
     { kind: 'other', label: 'Other', item: '', description: '' },
@@ -4993,8 +4994,13 @@
     refreshDirty();
     return kept;
   }
+  // A leg's relief seats that are on, at the start or the end, on any bus:
+  // each is a relief driver, charged on its own.
+  const reliefSeats = leg => (editing?.fleet?.[leg === 'return' ? 'return' : 'outbound'] ?? [])
+    .reduce((n, b) => n + (b.seats?.['relief-start']?.on ? 1 : 0) + (b.seats?.['relief-end']?.on ? 1 : 0), 0);
   const lineQty = l => (l.kind === 'rental' ? legBuses(l.leg)
     : l.kind === 'second_driver' && linesLive && coDrivers(l.leg) > 0 ? coDrivers(l.leg)
+    : l.kind === 'relief' && linesLive && reliefSeats(l.leg) > 0 ? reliefSeats(l.leg)
     : money(String(l.quantity ?? '')));
   const lineAmount = l => {
     const cost = money(String(l.cost ?? ''));
@@ -5067,6 +5073,8 @@
     return { miles: f.miles, perDay: f.perDay, dead, days: f.days, rate: l.rate ?? defaultRate() };
   }
   function calcCost(l, b = lineBasis(l)) {
+    // A relief driver is the rates page's flat charge, whatever the trip.
+    if (l.kind === 'relief') return Number.isFinite(quoteRates?.named.driver_relief_flat) ? quoteRates.named.driver_relief_flat : null;
     const q = window.Rux?.quote;
     if (!q || !quoteRates || !b.days || !(b.miles > 0)) return null;
     const perDay = b.perDay;
@@ -5093,29 +5101,33 @@
     let moved = false;
     if (linePending.some(l => l.kind === 'rental')) {
       const legs = splitNow() ? ['outbound', 'return'] : [null];
-      editing.coBefore ??= {};
-      for (const leg of legs) {
-        const key = leg ?? 'outbound';
-        const now = coDrivers(key);
-        const was = editing.coBefore[key] ?? now;
-        const at = linePending.findIndex(l => l.kind === 'second_driver' && (l.leg ?? null) === leg);
-        if (was !== now && now > 0 && at < 0) {
-          const kind = lineKind('second_driver');
-          const rental = linePending.findIndex(l => l.kind === 'rental' && (l.leg ?? null) === leg);
-          linePending.splice(rental < 0 ? linePending.length : rental + 1, 0, {
-            kind: 'second_driver', leg, item: kind.item, description: kind.description,
-            quantity: null, cost: null, cost_typed: false, miles: null, dead_miles: null, rate: null,
-          });
-          moved = true;
-        } else if (was > 0 && now === 0 && at >= 0) {
-          linePending.splice(at, 1);
-          moved = true;
+      // A relief line follows the relief seats as a second driver line
+      // follows the co-driver seats, and sits after it.
+      for (const [kindName, seats, store] of [['second_driver', coDrivers, 'coBefore'], ['relief', reliefSeats, 'reliefBefore']]) {
+        editing[store] ??= {};
+        for (const leg of legs) {
+          const key = leg ?? 'outbound';
+          const now = seats(key);
+          const was = editing[store][key] ?? now;
+          const at = linePending.findIndex(l => l.kind === kindName && (l.leg ?? null) === leg);
+          if (was !== now && now > 0 && at < 0) {
+            const kind = lineKind(kindName);
+            const after = linePending.findLastIndex(l => (l.kind === 'rental' || l.kind === 'second_driver') && (l.leg ?? null) === leg);
+            linePending.splice(after < 0 ? linePending.length : after + 1, 0, {
+              kind: kindName, leg, item: kind.item, description: kind.description,
+              quantity: null, cost: null, cost_typed: false, miles: null, dead_miles: null, rate: null,
+            });
+            moved = true;
+          } else if (was > 0 && now === 0 && at >= 0) {
+            linePending.splice(at, 1);
+            moved = true;
+          }
+          editing[store][key] = now;
         }
-        editing.coBefore[key] = now;
       }
     }
     for (const l of linePending) {
-      if (l.kind !== 'rental' && l.kind !== 'second_driver') continue;
+      if (l.kind !== 'rental' && l.kind !== 'second_driver' && l.kind !== 'relief') continue;
       const b = lineBasis(l);
       const key = JSON.stringify(b);
       if (l.cost_typed || (l.basis === key && l.cost != null)) continue;
@@ -5124,7 +5136,7 @@
       if (cost !== money(String(l.cost ?? ''))) moved = true;
       l.cost = cost;
       l.basis = key;
-      l.miles = b.miles;
+      if (l.kind !== 'relief') l.miles = b.miles;
       if (l.kind === 'rental') {
         l.dead_miles = b.dead;
         l.rate = b.rate;
@@ -7636,6 +7648,7 @@
         l.basis = JSON.stringify(lineBasis(l));
       }
       editing.coBefore = null;
+      editing.reliefBefore = null;
       askQuoteRates();
       linesLive = false;
       const lineList = rowList();
@@ -7667,8 +7680,9 @@
           linePending.push({ kind: 'rental', leg, item: 'Bus Rental', description: null,
             quantity: null, cost, cost_typed: cost !== null, miles: null, dead_miles: null, rate: null });
         });
-        // Co-drivers already on get their line with the first rental.
+        // Co-drivers and relief already on get their lines with the first rental.
         editing.coBefore = { outbound: 0, return: 0 };
+        editing.reliefBefore = { outbound: 0, return: 0 };
         drawLines();
         refreshDirty();
       };
@@ -10742,6 +10756,8 @@
     const params = new URLSearchParams();
     if (f.perDay) params.set('miles', f.perDay.join(','));
     if (coDrivers(leg) > 0) params.set('drivers', '2');
+    params.set('buses', String(legBuses(leg)));
+    if (reliefSeats(leg) > 0) params.set('relief', String(reliefSeats(leg)));
     // The route's dead miles, which the calculator offers, and whether the
     // leg's rental already counts them.
     if (f.dead > 0) {
@@ -10788,6 +10804,10 @@
       deadTyped: dead > 0 && Math.round(dead) !== Math.round(f.dead),
       miles: q.miles.reduce((a, b) => a + b, 0), ...typed(q.deadAsDiscount ? q.fullMileage : q.mileage) })];
     if (q.drivers === 2 || assigned > 0) made.push(line('second_driver', q.drivers === 2 ? typed(q.driver) : {}));
+    // Relief drivers are counted from the Buses tab's relief seats once any
+    // is on; before that, the calculator's count stands in.
+    const relief = reliefSeats(leg);
+    if (relief > 0 || q.relief > 0) made.push(line('relief', relief > 0 ? {} : { quantity: q.relief }));
     if (q.deadAsDiscount && q.fullMileage > q.mileage) {
       made.push(line('discount', { description: 'Dead miles discount.', quantity: legBuses(leg),
         cost: -round2(q.fullMileage - q.mileage), cost_typed: true }));
@@ -10806,7 +10826,10 @@
     refreshDirty();
     const tab = document.getElementById('scheduler-tab-billing');
     if (tab && tab.getAttribute('aria-selected') !== 'true') window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
+    const buses = legBuses(leg);
     if (assigned > 0) toast('warning', 'A co-driver is still assigned', 'Take them off on the Buses tab to drop the Second driver line.');
+    else if (q.buses !== buses) toast('warning', `The Buses tab has ${buses} ${buses === 1 ? 'bus' : 'buses'}`, 'The bus rental counts those. Add or take off a bus there to match.');
+    else if (relief > 0 && q.relief !== relief) toast('warning', `The Buses tab has ${relief} relief ${relief === 1 ? 'seat' : 'seats'}`, 'The relief line counts those. Change the seats there to match.');
     else toast('success', 'Quote lines set from the calculator', 'Save to keep them.');
     return true;
   }

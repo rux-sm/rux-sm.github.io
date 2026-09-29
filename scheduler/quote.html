@@ -297,6 +297,24 @@
                       </div>
                     </div>
                   </div>
+                  <!-- The mileage and a second driver are a bus's, times the
+                       buses; each relief driver is the flat charge. -->
+                  <div class="rux--form-item rux--text-input-wrapper">
+                    <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-quote-buses">Buses</label></div>
+                    <div class="rux--text-input__field-outer-wrapper">
+                      <div class="rux--text-input__field-wrapper">
+                        <input id="scheduler-quote-buses" class="rux--text-input" type="text" inputmode="numeric" autocomplete="off" placeholder="1">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="rux--form-item rux--text-input-wrapper">
+                    <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-quote-relief">Relief drivers</label></div>
+                    <div class="rux--text-input__field-outer-wrapper">
+                      <div class="rux--text-input__field-wrapper">
+                        <input id="scheduler-quote-relief" class="rux--text-input" type="text" inputmode="numeric" autocomplete="off" placeholder="0">
+                      </div>
+                    </div>
+                  </div>
                   <!-- Opened from a trip, the route's dead miles are offered
                        rather than counted: ticked, they fill the field below. -->
                   <div id="scheduler-quote-route-dead-item" hidden>
@@ -369,6 +387,16 @@
                   <dd class="scheduler-quote-row__note" id="scheduler-quote-driver-note"></dd>
                   <dd class="rux--type-heading-03 scheduler-quote-row__value" id="scheduler-quote-driver">—</dd>
                   <dd class="scheduler-quote-row__math" id="scheduler-quote-driver-math"></dd>
+                </div>
+                <div class="scheduler-quote-row" id="scheduler-quote-buses-line" hidden>
+                  <dt class="scheduler-quote-row__label" id="scheduler-quote-buses-label">Buses</dt>
+                  <dd class="rux--type-heading-03 scheduler-quote-row__value" id="scheduler-quote-buses-out">—</dd>
+                  <dd class="scheduler-quote-row__math" id="scheduler-quote-buses-math"></dd>
+                </div>
+                <div class="scheduler-quote-row" id="scheduler-quote-relief-line" hidden>
+                  <dt class="scheduler-quote-row__label">Relief drivers</dt>
+                  <dd class="rux--type-heading-03 scheduler-quote-row__value" id="scheduler-quote-relief-out">—</dd>
+                  <dd class="scheduler-quote-row__math" id="scheduler-quote-relief-math"></dd>
                 </div>
                 <!-- The spreadsheet's meal allowance: shown for reference and
                      added to nothing, so its figure is in the quieter colour. -->

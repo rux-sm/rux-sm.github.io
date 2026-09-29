@@ -37,6 +37,13 @@ the drive from the yard and back, as a checkbox, ticked when the trip's rental
 already counts them; a rental line counts them once its Dead miles field has a
 figure.
 
+The mileage and a second driver are one bus's, times the Buses field; each
+relief driver is the rates page's flat charge, so the total is the trip's.
+Opened from a trip, Buses is the leg's buses and Relief drivers its relief
+seats, at the start or the end on any bus, each a charge of its own. The
+Billing tab's Relief driver line, an Addt'l Driver described as a relief
+driver, counts those seats as the Second driver line counts co-drivers.
+
 Drivers starts at 2 when the leg has a co-driver seat on. The Buses tab's
 co-driver seats decide the Second driver line, one a seat, and the Route tab's
 Summary warns when a leg needs one: over 10 hours driving, or over 15 on duty
@@ -44,7 +51,9 @@ less rest, on any day, the rule the line's own words quote.
 
 Add to quote lines replaces the leg's lines, all but its hotel, with the
 calculator's quote: a Bus rental at its rate, a Second driver for two drivers,
-a Discount and an Other line for those fields. It turns the leg's co-driver
+a Relief driver line, and a Discount and an Other line for those fields.
+Buses and relief seats stay the Buses tab's to change, and a count that
+differs from the calculator's is said. It turns the leg's co-driver
 seats on for two drivers and off for one, except a seat with a driver in it,
 which stays with its line. Show dead miles as a discount prices the rental at
 the full rate on every mile and adds a Dead miles discount line for the

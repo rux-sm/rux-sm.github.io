@@ -1789,9 +1789,19 @@
     sheetEl.prepend(box);
   }
 
-  const weekFileName = subject => (subject.week ? `${subject.week}-schedule` : null);
-
-  const quoteFileName = subject => (subject.trip?.start_date ? `${subject.trip.start_date}-qt` : null);
+  /* THE NAME SAVE AS PDF OFFERS, from file-names.js, so a printed form is
+     named as an uploaded file is. A form printed once per driver names the
+     driver last, and the return leg's copy says so; the driver itinerary is
+     printed once per leg and names it. */
+  const { CODES, forTrip, forDay } = window.SchedulerFileNames;
+  const driverCopy = subject => [nameOf(subject.seat), subject.leg === 'return' ? 'return' : '']
+    .filter(Boolean).join(' ');
+  const envelopeFileName = subject => (subject.trip ? forTrip(subject.trip, CODES.envelope, driverCopy(subject)) : null);
+  const hosFileName = subject => (subject.trip ? forTrip(subject.trip, CODES['hours-of-service'], driverCopy(subject)) : null);
+  const itineraryFileName = subject => (subject.trip
+    ? forTrip(subject.trip, CODES['driver-itinerary'], subject.leg || 'outbound') : null);
+  const quoteFileName = subject => (subject.trip ? forTrip(subject.trip, CODES.quote) : null);
+  const weekFileName = subject => (subject.week ? forDay(subject.week, CODES['week-schedule']) : null);
 
   /* ── The registry ─────────────────────────────────────────────────────── */
 
@@ -1837,6 +1847,7 @@
         ],
       },
       render: envelope,
+      fileName: envelopeFileName,
     },
     {
       id: 'hours-of-service',
@@ -1863,6 +1874,7 @@
          free to stack every driver's copy on the trip. */
       typed: { fields: ['.scheduler-hos__fill'] },
       render: hoursOfService,
+      fileName: hosFileName,
     },
     {
       id: 'driver-itinerary',
@@ -1896,6 +1908,7 @@
       copyName: subject => legName(subject.leg),
       typed: { always: true, fields: ITINERARY_FIELDS },
       render: itinerary,
+      fileName: itineraryFileName,
       drawn: (card, blank) => { if (blank) ruleToFoot(card); },
     },
     {
@@ -1995,7 +2008,7 @@
      the form keeps one on the leg. */
   const assignmentQuery = form => BUS_SEATS_QUERY + ',' + [
     'trips:trip_id(' + [
-      'id', 'destination', 'trip_type',
+      'id', 'trip_ref', 'customer', 'destination', 'trip_type',
       'start_date', 'end_date', 'return_start_date', 'return_end_date',
       'departure_time', 'spot_time',
       'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'trip_reqs',
@@ -2464,8 +2477,9 @@
   }
   let titlesBefore = null;
   window.addEventListener('beforeprint', () => {
-    const name = current?.form.fileName?.(current.every[current.chosen]);
-    if (!name) return;
+    const file = current?.form.fileName?.(current.every[current.chosen]);
+    if (!file) return;
+    const name = window.SchedulerFileNames.bare(file);
     titlesBefore = titled.map(doc => doc.title);
     for (const doc of titled) doc.title = name;
   });

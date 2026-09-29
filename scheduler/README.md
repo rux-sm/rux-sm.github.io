@@ -100,8 +100,7 @@ printed. The
 customer quote is one copy per trip, on two Letter sheets: the QUOTE / PROPOSAL
 the office sends, with its estimate number, price and first line item read from the trip, lines
 typed under it that the Total adds up, and the Terms and Conditions Agreement
-Form behind it; Save as PDF names the file for the trip's first day,
-`2026-12-05-qt`. Its wording is `quote-text.js`, which the trip editor's
+Form behind it. Its wording is `quote-text.js`, which the trip editor's
 Copy for QuickBooks button reads too, so a pasted estimate and a printed quote
 cannot disagree. The week schedule is rux-ui's billing report of a week on
 Legal landscape, five buses a sheet, opened from the board's menu as Print
@@ -110,7 +109,8 @@ does not fit its row is named above the sheet. `print.js` holds the registry eve
 new form names its group, its short name for the tile, one line under it, a
 Material icon from Design's sprite, what it binds to and its paper, and the
 page gives it the same tile, frame and fit as the rest. A form leaves as paper
-or as Save as PDF in the print dialog, which keeps its type sharp. The page
+or as Save as PDF in the print dialog, which keeps its type sharp, under the
+name `file-names.js` gives every file a trip has, uploaded or printed. The page
 follows the theme the person keeps and the sheet on it carries the light one,
 so the ink drawn there is the ink that prints. After a sent quote: `docs/booking.md`.
 

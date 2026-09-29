@@ -403,7 +403,7 @@
 
   // -- reading --------------------------------------------------------------
   const TRIP_COLUMNS = [
-    'id', 'destination', 'customer', 'customer_id', 'start_date', 'end_date',
+    'id', 'trip_ref', 'destination', 'customer', 'customer_id', 'start_date', 'end_date',
     'return_start_date', 'return_end_date', 'departure_time', 'return_time',
     'trip_type', 'confirmed', 'trip_bar_color', 'bus_count', 'return_bus_count',
     'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'notes', 'updated_at',
@@ -3004,7 +3004,7 @@
       meta: [when, fileSize(doc.file_size)].filter(Boolean).join(' · '),
       title: name,
       openLabel: `Open ${name}${when ? `, uploaded ${when}` : ''}`,
-      open: e => openDocument(doc, e.currentTarget),
+      open: e => openDocument(doc, e.currentTarget, trip),
       editText: 'Replace', edit: () => replaceFrom(trip.id, doc),
       removeText: 'Delete', removeLabel: `Delete ${name}`, remove: () => openDeleteFile(trip.id, doc),
     });
@@ -10654,7 +10654,9 @@
     swapFrame(url);
   }
 
-  async function openDocument(doc, opener) {
+  /* `trip` names the file as file-names.js names every file, so a copy saved
+     or printed from here is offered under the name, whatever it was stored as. */
+  async function openDocument(doc, opener, trip) {
     if (!doc) return;
     setViewerMode('file');
     const url = await signedDocumentUrl(doc.file_path);
@@ -10702,10 +10704,12 @@
       viewerLoading = null;
       setViewerStatus(null);
       const blob = URL.createObjectURL(file);
-      viewerShown = { id: doc.id, blob, zoom: null };
+      const fileName = trip ? window.SchedulerFileNames.forUpload(trip, doc.label)
+        : doc.file_name || `${docSlug(kind, 'document')}.pdf`;
+      viewerShown = { id: doc.id, blob, zoom: null, fileName };
       viewerFrame.title = kind;
       viewerDownload.href = blob;
-      viewerDownload.download = doc.file_name || `${docSlug(kind, 'document')}.pdf`;
+      viewerDownload.download = fileName;
       setViewerReady(true);
       frameShown();
     } catch (err) {
@@ -10726,13 +10730,27 @@
       if (btn.disabled) viewerZooms.find(b => !b.disabled)?.focus();
     });
   }
-  // The frame is a blob of this page's origin, so the page may print it. A
-  // browser that refuses gets the file in a new tab, where its viewer prints.
+  /* The frame is a blob of this page's origin, so the page may print it. A
+     browser that refuses gets the file in a new tab, where its viewer prints.
+     Chrome's Save as PDF names the file after this page's title, so a stored
+     file holds the title to its name while the dialog is open: a print that
+     waits for the dialog to close gives it back at once, and one that does not
+     gives it back when the page next has the focus. A form sets the title from
+     its own page, print.js, when it prints. */
   viewerPrint?.addEventListener('click', () => {
+    const name = viewerShown?.fileName;
+    const titleBefore = document.title;
+    const giveBack = () => { document.title = titleBefore; };
     try {
+      if (name) document.title = window.SchedulerFileNames.bare(name);
+      const started = Date.now();
       viewerFrame.contentWindow.focus();
       viewerFrame.contentWindow.print();
+      if (!name) return;
+      if (Date.now() - started > 500) giveBack();
+      else window.addEventListener('focus', giveBack, { once: true });
     } catch {
+      giveBack();
       window.open(viewerNewTab.href, '_blank', 'noopener');
     }
   });
@@ -10821,7 +10839,7 @@
     if (!id) return;
     const trip = panelIndex.trips.get(bar.dataset.tripId);
     const doc = trip ? itinerariesOf(trip).find(d => String(d.id) === id) : null;
-    if (doc) openDocument(doc, bar);
+    if (doc) openDocument(doc, bar, trip);
     else window.open(documentLink(id), '_blank', 'noopener');
   }
 
@@ -10841,17 +10859,13 @@
     .normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase()
     .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || fallback;
 
-  // rux-ui's `buildDocumentFileName`, from the trip as saved, not as typed:
-  // `<start date>_<client>_<label>_<trip ref>.pdf`.
+  // The name file-names.js gives an upload, from the trip as saved, not as typed.
   async function documentName(tripId, label) {
     const { data: trip, error } = await withTimeout(client.from('trips')
-      .select('trip_ref,customer,start_date,booking_contact_name,trip_contact_1_name,trip_contact_2_name')
+      .select('id,trip_ref,customer,start_date,booking_contact_name,trip_contact_1_name,trip_contact_2_name')
       .eq('id', tripId).single().then(r => r));
     if (error) throw new Error(error.message);
-    const date = /^\d{4}-\d{2}-\d{2}$/.test(trip.start_date ?? '') ? trip.start_date : 'unknown-date';
-    const who = trip.customer || trip.booking_contact_name || trip.trip_contact_1_name || trip.trip_contact_2_name;
-    const ref = trip.trip_ref || String(tripId).slice(0, 8);
-    return `${[date, docSlug(who, 'unnamed'), docSlug(label, 'document'), docSlug(ref, 'trip')].join('_')}.pdf`;
+    return window.SchedulerFileNames.forUpload(trip, label);
   }
 
   // A PDF by its type or name, as rux-ui checks, and by its first bytes, so a
@@ -11290,7 +11304,7 @@
       if (viewerDocId === String(old.id)) {
         const trip = panelIndex.trips.get(tripId) ?? panelArgs?.trip;
         const fresh = trip && (trip.trip_documents || []).find(d => String(d.id) === String(doc.id));
-        openDocument(fresh || doc, null);
+        openDocument(fresh || doc, null, trip);
       }
       toast('success', 'The file was replaced.');
     });

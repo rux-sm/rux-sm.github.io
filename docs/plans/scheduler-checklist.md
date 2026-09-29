@@ -119,8 +119,6 @@ None open.
 ## Tasks
 
 - [ ] Keep `driver_contact_sent_<leg>` in step with the drivers' statuses.
-- [ ] Make Route's Done check both legs of a split trip; today it checks the
-      leg on screen.
 - [ ] Build the Departures panel.
 - [ ] Update `scheduler/docs/screen-inventory.md` and the scheduler README.
 - [ ] Check every item in Chrome on :8641 against a real trip, one with a

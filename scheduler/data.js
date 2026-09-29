@@ -6028,12 +6028,15 @@
     if (tab === 'route') {
       const c = editing.route?.check;
       if (!c) return ['a route'];
-      if (!c.pickup) out.push('a pickup place');
-      if (!c.drop) out.push('a drop-off place');
-      if (c.unlocated) out.push(`a place for ${plural(c.unlocated, 'stop', 'stops')}`);
-      if (c.status === 'Needs times') out.push('the times');
-      if (c.status === 'Check times') out.push('times in order');
-      if (c.unmeasured && c.pickup && c.drop && !c.unlocated) out.push('the drives measured');
+      // A split trip names the leg on screen, as it names the other.
+      const on = fleetSplit() ? ` on ${editing.route.leg === 'return' ? 'the pickup leg' : 'the drop-off leg'}` : '';
+      if (!c.pickup) out.push(`a pickup place${on}`);
+      if (!c.drop) out.push(`a drop-off place${on}`);
+      if (c.unlocated) out.push(`a place for ${plural(c.unlocated, 'stop', 'stops')}${on}`);
+      if (c.status === 'Needs times') out.push(`the times${on}`);
+      if (c.status === 'Check times') out.push(`times in order${on}`);
+      if (c.unmeasured && c.pickup && c.drop && !c.unlocated) out.push(`the drives measured${on}`);
+      if (fleetSplit()) out.push(...otherLegMissing(editing.route));
       return out;
     }
     if (tab === 'buses') {
@@ -6063,6 +6066,27 @@
     const quoted = money(document.getElementById('scheduler-f-quoted')?.value);
     if (!editing.quoteSent) out.push('Quote sent marked');
     else if (quoted != null && round2(quoted) !== round2(editing.quoteSent.price)) out.push('Quote sent at the price the lines add up to');
+    return out;
+  }
+
+  /* A split trip's other leg, the one not on the Route tab, read from its
+     saved rows by the same rules: every place found, the times in, and the
+     drives measured. */
+  function otherLegMissing(r) {
+    const name = r.leg === 'return' ? 'the drop-off leg' : 'the pickup leg';
+    const rows = r.otherStops || [];
+    if (!rows.length) return [`${name}'s route`];
+    const pickup = rows.find(x => x.type === 'pickup') ?? null;
+    const back = rows.findLast(x => x.type === 'return') ?? null;
+    const stops = rows.filter(x => x.type === 'stop');
+    const out = [];
+    if (pickup?.lat == null) out.push(`a pickup place on ${name}`);
+    const unlocated = stops.filter(x => x.lat == null).length;
+    if (!stops.length) out.push(`a drop-off place on ${name}`);
+    else if (unlocated) out.push(`a place for ${unlocated} ${unlocated === 1 ? 'stop' : 'stops'} on ${name}`);
+    if (!pickup?.spot || stops.some(x => !x.arrive) || !back?.depart_prev) out.push(`the times on ${name}`);
+    // A stop with no place is driven past, so only the placed rows carry a drive.
+    else if (rows.some(x => x.lat != null && x.drive == null)) out.push(`the drives measured on ${name}`);
     return out;
   }
 

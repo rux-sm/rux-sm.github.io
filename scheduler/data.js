@@ -5006,10 +5006,11 @@
   }
   const defaultRate = () => quoteRates?.mileage.find(m => m.is_default)?.rate ?? null;
 
-  /* A leg's miles, dead miles and days. The Route tab's own leg reads the
-     drives it has looked up since the trip opened; the other leg reads its
-     saved stops. Estimated miles override the route on a trip that is not
-     split, as they override the stops' sum on the Route tab. */
+  /* A leg's miles, dead miles and days, and its miles a day as the quote
+     calculator prices them. The Route tab's own leg reads the Summary's rows,
+     from the drives it has looked up since the trip opened; the other leg
+     reads its saved stops, spread over its days. Estimated miles stand in
+     only while the route has no miles, on a trip that is not split. */
   function legFigures(leg) {
     const l = leg === 'return' ? 'return' : 'outbound';
     const r = editing?.route;
@@ -5026,9 +5027,12 @@
     const from = isoOrNull(document.getElementById(l === 'return' ? 'scheduler-f-rstart' : 'scheduler-f-start')?.value ?? '');
     const to = isoOrNull(document.getElementById(l === 'return' ? 'scheduler-f-rend' : 'scheduler-f-end')?.value ?? '') ?? from;
     const days = from && to ? Math.max(1, Math.round((parseISO(to) - parseISO(from)) / 86400000) + 1) : null;
-    // The Route tab Summary's miles, a row a day, once it has counted any.
-    const dayMiles = mine && r.dayMiles?.some(m => m > 0) ? r.dayMiles : null;
-    return { miles: round2(est ?? routeMiles), dead: round2((Number(out) || 0) + (Number(home) || 0)), days, dayMiles };
+    const rows = mine && r.dayMiles?.some(m => m > 0) ? r.dayMiles.map(m => Math.round(m)) : null;
+    const whole = Math.round(routeMiles > 0 ? routeMiles : est ?? 0);
+    const spread = n => Array.from({ length: n }, (_, i) => Math.floor(whole / n) + (i ? 0 : whole % n));
+    const perDay = rows ?? (whole > 0 ? spread(days || 1) : null);
+    return { miles: perDay ? perDay.reduce((a, b) => a + b, 0) : 0,
+      dead: round2((Number(out) || 0) + (Number(home) || 0)), days, perDay };
   }
 
   // What a line is priced from, and the calculator's cost for one bus or one
@@ -5036,12 +5040,12 @@
   function lineBasis(l) {
     const f = legFigures(l.leg);
     const dead = l.deadTyped ? Number(l.dead_miles) || 0 : f.dead;
-    return { miles: f.miles, dead, days: f.days, rate: l.rate ?? defaultRate() };
+    return { miles: f.miles, perDay: f.perDay, dead, days: f.days, rate: l.rate ?? defaultRate() };
   }
   function calcCost(l, b = lineBasis(l)) {
     const q = window.Rux?.quote;
     if (!q || !quoteRates || !b.days || !(b.miles > 0)) return null;
-    const perDay = Array.from({ length: b.days }, () => b.miles / b.days);
+    const perDay = b.perDay;
     if (l.kind === 'rental') {
       if (b.rate == null) return null;
       const amount = q.tripQuote({ miles: perDay, rate: b.rate, dead: b.dead }, quoteRates.named).amount;
@@ -7718,10 +7722,10 @@
       linesBody.append(lineList.list, linesNote, qbButton);
       panelBilling.appendChild(section('Quote lines', linesBody));
 
-      /* The trip's miles, both legs together, beside the quote the estimate
-         feeds. The estimate is an override, as in rux-ui: left blank, the
-         stops' own miles stand, and the field shows their sum as its
-         placeholder. */
+      /* The trip's miles, both legs together, beside the quote. The estimate
+         is rux-ui's override: left blank, the stops' own miles stand, and the
+         field shows their sum as its placeholder. The quote lines price from
+         it only while the route has no miles. */
       const stopMiles = (trip.trip_stops || []).reduce((n, st) => n + (Number(st.miles) || 0), 0);
       const miles = pair(
         moneyField('scheduler-f-estmiles', 'Estimated miles', trip.est_miles),
@@ -10745,12 +10749,8 @@
     }
     const f = legFigures(bar ? bar.dataset.leg : editing?.route?.leg ?? panelArgs?.ref?.leg);
     const params = new URLSearchParams();
-    const whole = Math.round(f.miles);
-    const days = f.days || 1;
-    const each = f.dayMiles?.map(m => Math.round(m))
-      ?? (whole > 0 ? Array.from({ length: days }, (_, i) => Math.floor(whole / days) + (i ? 0 : whole % days)) : null);
-    if (each) {
-      params.set('miles', each.join(','));
+    if (f.perDay) {
+      params.set('miles', f.perDay.join(','));
       if (f.dead > 0) params.set('dead', String(f.dead));
     }
     const query = params.toString();
@@ -10761,6 +10761,54 @@
       opener: bar ?? document.querySelector('#scheduler-panel-shortcuts [data-shortcut="calculator"]'),
     });
   }
+
+  /* THE CALCULATOR'S QUOTE, AS THE TRIP'S LINES. Add to quote lines replaces
+     the leg's lines, all but its hotel, with the quote the calculator shows: a
+     Bus rental at its rate and dead miles, a Second driver for two drivers,
+     its discount and other charges. Dead miles shown as a discount price the
+     rental at the full rate on every mile and take the difference off, a bus
+     at a time. While the calculator's days are the route's, the rental and
+     second driver are left untyped, so they keep following the route; days
+     changed in the calculator are typed in as its figures. Save keeps it. */
+  function linesFromCalculator(q) {
+    if (!editing || panelEl.hidden) {
+      toast('info', 'Open the trip to add its quote lines');
+      return false;
+    }
+    const leg = splitNow() ? (editing.route?.leg ?? 'outbound') : null;
+    const f = legFigures(leg);
+    const same = !!f.perDay && q.miles.length === f.perDay.length && q.miles.every((m, i) => m === f.perDay[i]);
+    const line = (kind, extra = {}) => ({ kind, leg, item: lineKind(kind).item || null,
+      description: lineKind(kind).description || null, quantity: null, cost: null, cost_typed: false,
+      miles: null, dead_miles: null, rate: null, ...extra });
+    const typed = cost => (same || cost == null ? {} : { cost: round2(cost), cost_typed: true });
+    const dead = q.deadAsDiscount ? 0 : q.dead;
+    const made = [line('rental', { rate: q.rate || null, dead_miles: dead,
+      deadTyped: Math.round(dead) !== Math.round(f.dead),
+      miles: q.miles.reduce((a, b) => a + b, 0), ...typed(q.deadAsDiscount ? q.fullMileage : q.mileage) })];
+    if (q.drivers === 2) made.push(line('second_driver', typed(q.driver)));
+    if (q.deadAsDiscount && q.fullMileage > q.mileage) {
+      made.push(line('discount', { description: 'Dead miles discount.', quantity: legBuses(leg),
+        cost: -round2(q.fullMileage - q.mileage), cost_typed: true }));
+    }
+    if (q.discount > 0) made.push(line('discount', { cost: -round2(q.discount), cost_typed: true }));
+    if (q.other > 0) made.push(line('other', { description: 'Other charges.', cost: round2(q.other), cost_typed: true }));
+
+    // The new lines go where the leg's first line was, the hotel kept in place.
+    const mine = l => l.kind !== 'hotel' && (leg === null || (l.leg ?? 'outbound') === leg);
+    const at = linePending.findIndex(mine);
+    const kept = linePending.filter(l => !mine(l));
+    kept.splice(at < 0 ? kept.length : linePending.slice(0, at).filter(l => !mine(l)).length, 0, ...made);
+    linePending.splice(0, linePending.length, ...kept);
+    if (linesLive) syncLines();
+    redrawLines();
+    refreshDirty();
+    const tab = document.getElementById('scheduler-tab-billing');
+    if (tab && tab.getAttribute('aria-selected') !== 'true') window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
+    toast('success', 'Quote lines set from the calculator', 'Save to keep them.');
+    return true;
+  }
+  window.Rux.quoteLines = { ready: () => !!editing && !panelEl.hidden, set: linesFromCalculator };
 
   function openItinerary(bar) {
     const id = bar.dataset.itineraryId;

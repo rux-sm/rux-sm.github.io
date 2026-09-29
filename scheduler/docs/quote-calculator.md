@@ -29,7 +29,17 @@ Summary's rows, a day's miles each, and its dead miles are the drive from the
 yard and back, both from what the editor's fields say now, saved or not. A
 trip picked on the board opens in the editor first, because the Summary is
 where its days are counted. Until the route has miles, typed estimated miles
-stand in, spread over the trip's days.
+stand in, spread over the trip's days. The Billing tab's lines price from the
+same days, so the two agree.
+
+Add to quote lines replaces the leg's lines, all but its hotel, with the
+calculator's quote: a Bus rental at its rate, a Second driver for two drivers,
+a Discount and an Other line for those fields. Show dead miles as a discount
+prices the rental at the full rate on every mile and adds a Dead miles
+discount line for the difference, a bus at a time. While the calculator's days
+are the route's, the rental and second driver are left to follow the route;
+days changed in the calculator are typed in as its figures. Nothing is kept
+until Save.
 
 ## Where it follows the spreadsheet
 

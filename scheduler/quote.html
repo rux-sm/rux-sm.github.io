@@ -318,6 +318,14 @@
                       </div>
                     </div>
                   </div>
+                  <div class="rux--form-item rux--text-input-wrapper">
+                    <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-quote-discount">Discount ($)</label></div>
+                    <div class="rux--text-input__field-outer-wrapper">
+                      <div class="rux--text-input__field-wrapper">
+                        <input id="scheduler-quote-discount" class="rux--text-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00">
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </fieldset>
             </div>
@@ -366,6 +374,10 @@
                   <dt class="scheduler-quote-row__label">Other charges</dt>
                   <dd class="rux--type-heading-03 scheduler-quote-row__value" id="scheduler-quote-other-out">$0.00</dd>
                 </div>
+                <div class="scheduler-quote-row" id="scheduler-quote-discount-line" hidden>
+                  <dt class="scheduler-quote-row__label">Discount</dt>
+                  <dd class="rux--type-heading-03 scheduler-quote-row__value" id="scheduler-quote-discount-out">$0.00</dd>
+                </div>
                 <!-- The total comes straight after the rows, not at the tile's
                      foot: the tiles share the tallest's height, and a foot
                      would drop the total out of view on a long trip. -->
@@ -374,6 +386,20 @@
                   <dd class="scheduler-quote-row__value scheduler-quote-total__value scheduler-quote__total-value" id="scheduler-quote-total">$0.00</dd>
                 </div>
               </dl>
+              <!-- Framed beside a trip in the editor, the quote sets that
+                   trip's lines on its Billing tab. Plain wrappers carry
+                   `hidden`, which a Carbon class's own display would beat. -->
+              <div id="scheduler-quote-send" hidden>
+                <div class="rux--stack-vertical rux--stack-scale-5">
+                  <div id="scheduler-quote-dead-discount-item" hidden>
+                    <div class="rux--form-item rux--checkbox-wrapper">
+                      <input class="rux--checkbox" type="checkbox" id="scheduler-quote-dead-discount">
+                      <label class="rux--checkbox-label" for="scheduler-quote-dead-discount"><span class="rux--checkbox-label-text">Show dead miles as a discount</span></label>
+                    </div>
+                  </div>
+                  <button type="button" class="rux--btn rux--btn--primary rux--layout--size-md" id="scheduler-quote-send-button">Add to quote lines</button>
+                </div>
+              </div>
             </div>
           </section>
 

@@ -333,6 +333,8 @@
     let dayCount = 1;
 
     const driversChosen = () => parseInt($('scheduler-quote-drivers').value, 10) || 1;
+    // The quote as last worked out, for the trip's lines.
+    let last = null;
 
     const drawDays = () => {
       const rows = $('scheduler-quote-day-rows');
@@ -377,7 +379,8 @@
         drivers: 2,
       }, rates);
       const other = num($('scheduler-quote-other').value);
-      const total = other + (quote.amount ?? 0) + (driver?.amount ?? 0);
+      const discount = Math.abs(num($('scheduler-quote-discount').value));
+      const total = other - discount + (quote.amount ?? 0) + (driver?.amount ?? 0);
 
       // The miles and days lead the quote, so the notes under the charges
       // leave them out.
@@ -419,6 +422,12 @@
 
       $('scheduler-quote-other-line').hidden = other === 0;
       $('scheduler-quote-other-out').textContent = money.format(other);
+      $('scheduler-quote-discount-line').hidden = discount === 0;
+      $('scheduler-quote-discount-out').textContent = money.format(-discount);
+      $('scheduler-quote-dead-discount-item').hidden = !(dead > 0);
+      last = { miles: trip, dead, rate, drivers: n, other, discount,
+        mileage: quote.amount, driver: driver?.amount ?? null,
+        fullMileage: dead > 0 ? tripQuote({ miles: trip, rate, dead: 0 }, rates).amount : quote.amount };
 
       // Two totals, one showing at each width: the quote's own, and the bar's.
       $('scheduler-quote-total').textContent = money.format(total);
@@ -494,6 +503,20 @@
       const dead = num(params.get('dead'));
       if (dead > 0) $('scheduler-quote-dead').value = count.format(dead).replace(/,/g, '');
     };
+
+    /* Beside a trip in the board's editor, Add to quote lines hands the quote
+       to the editor, which sets that leg's lines on its Billing tab. The
+       parent is this origin; the guard is for a frame that is not the
+       board's. */
+    const board = (() => {
+      if (window.self === window.top) return null;
+      try { return window.parent.Rux?.quoteLines ?? null; } catch { return null; }
+    })();
+    $('scheduler-quote-send').hidden = !board?.ready();
+    $('scheduler-quote-send-button').addEventListener('click', () => {
+      if (!last) return;
+      board?.set({ ...last, deadAsDiscount: $('scheduler-quote-dead-discount').checked });
+    });
 
     return {
       app: $('scheduler-quote-tabs-wrap'),

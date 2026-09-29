@@ -24,12 +24,12 @@ written here, because this repository is public.
 ## From a trip
 
 The Quote calculator shortcut opens the calculator in the board's document
-panel, without the header or the Rules tab, filled with one leg's miles a day
-and its dead miles. The trip in the editor gives what its fields say now, saved
-or not: the Route tab's miles for each day once it has counted them, otherwise
-the leg's miles spread over its days with the remainder on the first. A trip
-picked on the board gives what was saved. Estimated miles typed on a trip that
-is not split take the route's place, as they do on the Billing tab.
+panel, without the header or the Rules tab. Its days are the Route tab
+Summary's rows, a day's miles each, and its dead miles are the drive from the
+yard and back, both from what the editor's fields say now, saved or not. A
+trip picked on the board opens in the editor first, because the Summary is
+where its days are counted. Until the route has miles, typed estimated miles
+stand in, spread over the trip's days.
 
 ## Where it follows the spreadsheet
 

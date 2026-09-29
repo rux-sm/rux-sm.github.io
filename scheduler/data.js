@@ -5013,38 +5013,22 @@
   function legFigures(leg) {
     const l = leg === 'return' ? 'return' : 'outbound';
     const r = editing?.route;
-    return figuresOf(editing?.stops || [], l, {
-      route: r?.leg === l ? r : null,
-      est: splitNow() ? null : money(document.getElementById('scheduler-f-estmiles')?.value ?? ''),
-      from: isoOrNull(document.getElementById(l === 'return' ? 'scheduler-f-rstart' : 'scheduler-f-start')?.value ?? ''),
-      to: isoOrNull(document.getElementById(l === 'return' ? 'scheduler-f-rend' : 'scheduler-f-end')?.value ?? ''),
-    });
-  }
-  // The same figures from a trip as it was saved, for a trip not in the editor.
-  function savedLegFigures(trip, leg) {
-    const l = leg === 'return' ? 'return' : 'outbound';
-    const split = trip.trip_type === SPLIT;
-    return figuresOf(trip.trip_stops || [], l, {
-      est: split ? null : numOrNull(trip.est_miles),
-      from: l === 'return' ? trip.return_start_date ?? null : trip.start_date ?? null,
-      to: l === 'return' ? trip.return_end_date ?? null : trip.end_date ?? null,
-    });
-  }
-  // `route` is the Route tab's own leg, whose drives were looked up since the
-  // trip opened and may not be saved yet.
-  function figuresOf(allStops, l, { route = null, est = null, from = null, to = null }) {
-    const stops = allStops.filter(st => (st.leg || 'outbound') === l);
+    const mine = r?.leg === l;
+    const stops = (editing?.stops || []).filter(st => (st.leg || 'outbound') === l);
     const pickup = stops.find(st => st.type === 'pickup');
     const back = stops.filter(st => st.type === 'return').at(-1);
-    const out = route ? route.driveMiles : numOrNull(pickup?.miles);
-    const home = route ? route.backMiles : numOrNull(back?.miles);
+    const out = mine ? r.driveMiles : numOrNull(pickup?.miles);
+    const home = mine ? r.backMiles : numOrNull(back?.miles);
     const between = stops.filter(st => st !== pickup && st !== back)
       .reduce((n, st) => n + (Number(st.miles) || 0), 0);
     const routeMiles = between + (Number(out) || 0) + (Number(home) || 0);
-    const end = to ?? from;
-    const days = from && end ? Math.max(1, Math.round((parseISO(end) - parseISO(from)) / 86400000) + 1) : null;
-    return { miles: round2(est ?? routeMiles), dead: round2((Number(out) || 0) + (Number(home) || 0)), days,
-      dayMiles: est == null && route?.dayMiles?.length === days ? route.dayMiles : null };
+    const est = splitNow() ? null : money(document.getElementById('scheduler-f-estmiles')?.value ?? '');
+    const from = isoOrNull(document.getElementById(l === 'return' ? 'scheduler-f-rstart' : 'scheduler-f-start')?.value ?? '');
+    const to = isoOrNull(document.getElementById(l === 'return' ? 'scheduler-f-rend' : 'scheduler-f-end')?.value ?? '') ?? from;
+    const days = from && to ? Math.max(1, Math.round((parseISO(to) - parseISO(from)) / 86400000) + 1) : null;
+    // The Route tab Summary's miles, a row a day, once it has counted any.
+    const dayMiles = mine && r.dayMiles?.some(m => m > 0) ? r.dayMiles : null;
+    return { miles: round2(est ?? routeMiles), dead: round2((Number(out) || 0) + (Number(home) || 0)), days, dayMiles };
   }
 
   // What a line is priced from, and the calculator's cost for one bus or one
@@ -7184,7 +7168,6 @@
         // Over more than one day the yard-to-yard span is the days', not a clock's.
         const days = !!(from && to && to > from);
         if (days) span = null;
-        r.dayMiles = null;
         const needs = !days && !(val('scheduler-f-leave') && val('scheduler-f-endtrip') && timesComplete(r.list));
         const yardOut = val('scheduler-f-depart'), spot = val('scheduler-f-spot'), yardBack = val('scheduler-f-return');
         /* The last day's weekday goes in End's label, so the time itself never
@@ -7221,6 +7204,7 @@
         /* A leg of more than one day has a row a day and a Total, under a Day
            column; a one-day leg is its one row of figures, with no Day column. */
         if (days) rows.push(['Total', ...total]); else rows.push([...total]);
+        if (!days) r.dayMiles = [total.miles];
         const table = el('table', 'rux--data-table rux--data-table--xs');
         const head = el('tr');
         for (const h of [...(days ? ['Day'] : []), 'Miles', 'Drive', 'On duty', 'Less rest']) {
@@ -10747,25 +10731,25 @@
     });
   }
 
-  /* The quote calculator beside the week, filled with a leg's miles, dead
-     miles and days, the figures the Billing tab's lines are priced from. The
-     trip in the editor gives what its fields say now, saved or not; any other
-     gives what was saved. `bar` is null from the editor's own row. */
+  /* The quote calculator beside the week, filled with a leg's miles a day and
+     its dead miles as the Route tab's Summary counts them, from what the
+     editor's fields say now, saved or not. A trip picked on the board opens in
+     the editor first, since the Summary is where its days are counted. Until
+     the route has miles, typed estimated miles stand in, spread over the days
+     with the remainder on the first. `bar` is null from the editor's own row. */
   function openCalculator(bar) {
-    const leg = bar ? bar.dataset.leg
-      : editing?.route?.leg ?? panelArgs?.ref?.leg;
-    const trip = bar && !isEditorTrip(bar) ? panelIndex.trips.get(bar.dataset.tripId) : null;
-    const f = !bar || isEditorTrip(bar) ? legFigures(leg) : trip ? savedLegFigures(trip, leg) : null;
-    /* A day's miles as the Route tab's Summary counts them, where it has
-       counted this leg; otherwise the leg's miles spread over its days, the
-       remainder on the first. The calculator prices by day, so the split can
-       change the price. */
+    if (bar && !isEditorTrip(bar)) {
+      const ref = barRef(bar);
+      whenSafe(() => { openRef(ref); if (String(editing?.id) === String(ref.tripId)) openCalculator(null); });
+      return;
+    }
+    const f = legFigures(bar ? bar.dataset.leg : editing?.route?.leg ?? panelArgs?.ref?.leg);
     const params = new URLSearchParams();
-    if (f?.miles > 0) {
-      const days = f.days || 1;
-      const whole = Math.round(f.miles);
-      const each = f.dayMiles?.map(m => Math.round(m))
-        ?? Array.from({ length: days }, (_, i) => Math.floor(whole / days) + (i ? 0 : whole % days));
+    const whole = Math.round(f.miles);
+    const days = f.days || 1;
+    const each = f.dayMiles?.map(m => Math.round(m))
+      ?? (whole > 0 ? Array.from({ length: days }, (_, i) => Math.floor(whole / days) + (i ? 0 : whole % days)) : null);
+    if (each) {
       params.set('miles', each.join(','));
       if (f.dead > 0) params.set('dead', String(f.dead));
     }

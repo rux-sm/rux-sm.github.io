@@ -2053,8 +2053,8 @@
      moves the frame on its own, and a form that cannot be drawn has none. */
   host?.setFormControls([], []);
   host?.setFormNote('');
-  /* The panel's Open as a page goes where this frame is now, not where the
-     panel first pointed it: a tile on the hub moves the frame on its own. */
+  /* The tab the panel's print falls back to opens where this frame is now,
+     not where the panel first pointed it: a tile on the hub moves the frame. */
   host?.setFormLink?.(location.href);
 
   const bar = document.getElementById('scheduler-print-bar');

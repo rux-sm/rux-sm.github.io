@@ -10365,31 +10365,19 @@
      frames either; what differs is only what the toolbar can offer. The zooms
      send `#zoom=` to a PDF viewer, which an HTML page ignores, and the page is
      fluid instead; there is no file to download, and the print dialog saves a
-     PDF. Print and Open in new tab stand for both, and a form adds its own
-     controls ahead of them. */
+     PDF. Print stands for both, and a form adds its own controls ahead of it.
+
+     OPEN IN NEW TAB IS A STORED FILE'S ALONE. A form opened as a page took the
+     board's place and the week with it, and everything the page offers the
+     panel already does; the link stays set, as the tab a print falls back to. */
   function setViewerMode(mode) {
     const form = mode === 'form';
     setToolbarShown(true);
     setViewerBack(null);
     for (const btn of viewerZooms) btn.hidden = form || noZoom;
     viewerDownload.hidden = form;
+    viewerNewTab.hidden = form;
     if (!form) setFormControls([], []);
-
-    /* A FORM OPENS IN THIS TAB, a stored file in another. The forms page is a
-       page of this app, with the nav to come back by, so sending it to a tab
-       of its own leaves two of the same app open. A stored file is not a page
-       of anything: it is a file for a viewer, and one in place of the board
-       would take the week away to show a PDF. */
-    const label = form ? 'Open as a page' : 'Open in new tab';
-    viewerNewTab.setAttribute('aria-label', label);
-    viewerNewTab.title = label;
-    if (form) {
-      viewerNewTab.removeAttribute('target');
-      viewerNewTab.removeAttribute('rel');
-    } else {
-      viewerNewTab.setAttribute('target', '_blank');
-      viewerNewTab.setAttribute('rel', 'noopener');
-    }
   }
 
   /* WHAT A GENERATED FORM PUTS IN THIS TOOLBAR. print.html builds its own

@@ -4670,8 +4670,8 @@
 
 
   /* The follow-up rules, `follow-up.js`: what a trip waits on, how long it
-     has been quiet, whether it asks, and the reminders dismissed here. */
-  const { set: setFollowUp, waitsOf, updatesOf, quietSince, asks: asksFollowUp, due: dueFollowUp, daysToGo, dismiss: dismissFollowUp,
+     has been quiet, and whether it asks. */
+  const { set: setFollowUp, waitsOf, updatesOf, quietSince, asks: asksFollowUp, due: dueFollowUp, daysToGo,
     agoShort, WORDS: WAIT_WORDS } = window.SchedulerFollowUp;
   const { checklist: tripChecklist, leftOf: checklistLeft, GROUPS: CHECK_GROUPS } = window.SchedulerChecklist;
 
@@ -12227,6 +12227,8 @@
     return title;
   }
 
+  // The warning a need still to be done shows, as the job to do.
+  const TODO_WORDS = { hotel: 'Book hotel', hos: 'Print hours-of-service form' };
   function drawCard(trip, bar) {
     const card = el('div', 'scheduler-card');
     card.dataset.tripId = trip.id;
@@ -12244,25 +12246,17 @@
       band.append(svgUse('#m-warning-fill', '16', '0 0 32 32'), el('strong', null, facts.misfits.join('; ')));
       card.appendChild(band);
     }
-    /* A due trip says when it leaves in place of the ✕, since only the
-       missing thing arriving clears it. */
+    /* The follow-up reminder has no dismiss: it stays while it is true, until
+       the missing thing arrives or an update is written. A due trip also
+       says when it leaves. */
     if (asksFollowUp(trip)) {
       const band = row('scheduler-card__asks');
-      const waiting = el('strong', null, `Waiting on ${waitsOf(trip).map(w => WAIT_WORDS[w]).join(', ')}`);
+      band.append(svgUse('#m-notifications_active-fill', '16', '0 0 32 32'),
+        el('strong', null, `Waiting on ${waitsOf(trip).map(w => WAIT_WORDS[w]).join(', ')}`));
       if (dueFollowUp(trip)) {
         const days = daysToGo(trip);
-        band.append(svgUse('#m-notifications_active-fill', '16', '0 0 32 32'), waiting,
-          el('span', 'scheduler-card__asks-when', days === 0 ? 'Leaves today' : days === 1 ? 'Leaves tomorrow' : `Leaves in ${days} days`));
-      } else {
-        const hours = window.SchedulerFollowUp.setting.snoozeHours;
-        const snooze = hours % 24 ? `${hours} hour${hours === 1 ? '' : 's'}` : `${hours / 24} day${hours === 24 ? '' : 's'}`;
-        const dismiss = el('button', 'scheduler-card__dismiss');
-        dismiss.type = 'button';
-        dismiss.dataset.dismiss = trip.id;
-        dismiss.title = `Dismiss for ${snooze}`;
-        dismiss.setAttribute('aria-label', `Dismiss the follow-up for ${snooze}`);
-        dismiss.appendChild(svgUse('#m-close', '16', '0 0 32 32'));
-        band.append(svgUse('#m-notifications_active-fill', '16', '0 0 32 32'), waiting, dismiss);
+        band.appendChild(el('span', 'scheduler-card__asks-when',
+          days === 0 ? 'Leaves today' : days === 1 ? 'Leaves tomorrow' : `Leaves in ${days} days`));
       }
       card.appendChild(band);
     }
@@ -12270,29 +12264,28 @@
        is a warning band under the reminder, so every warning sits together at
        the top; the Contacts shortcut reaches whoever is named. */
     if (!dayOfContact(trip) && !trip.contact_not_needed) {
-      const band = row('scheduler-card__dayof');
+      const band = row('scheduler-card__warn');
       band.append(svgUse('#m-call-fill', '16', '0 0 32 32'), el('strong', null, 'No trip contact'));
       card.appendChild(band);
     }
-    /* On the notes row, what the trip needs, each its glyph with its name
-       written beside it, a need red where this bus falls short, and its state,
-       such as Hotel not booked, on hover. */
-    const side = el('span', 'scheduler-card__facts');
+    /* A need that is still a job, the hotel to book or the hours-of-service
+       form to print, joins the warnings in plain words. A need the bus falls
+       short of is already in the red band above, and one that is met is not
+       shown: the envelope and the Buses tab list every need. */
     for (const n of facts?.needs ?? []) {
-      const need = el('span', `scheduler-card__need${n.short ? ' scheduler-card__need--short' : n.done ? '' : ' scheduler-card__need--todo'}`);
-      need.title = n.label;
-      need.append(n.href ? svgUse(n.href, '16', '0 0 32 32') : el('span', 'scheduler-card__need-letter', n.letter || '?'),
-        el('span', 'scheduler-card__fact-name', n.name));
-      side.appendChild(need);
+      if (n.done || n.short) continue;
+      const band = row('scheduler-card__warn');
+      if (n.href) band.appendChild(svgUse(n.href, '16', '0 0 32 32'));
+      band.appendChild(el('strong', null, TODO_WORDS[n.id] ?? n.label));
+      card.appendChild(band);
     }
     /* The note is a part of its own on every trip, titled Trip notes with
-       the button that edits it: its words or No notes, then the facts. */
+       the button that edits it: its words or No notes. */
     const note = row('scheduler-card__note');
     note.append(cardTitle('Trip notes', cardAction('note', '#m-edit', trip.notes ? 'Edit the note' : 'Add a note')),
       trip.notes
         ? el('span', 'scheduler-card__note-words', trip.notes)
         : el('span', 'scheduler-card__note-words scheduler-card__empty', 'No notes'));
-    if (side.childElementCount) note.appendChild(side);
     card.appendChild(note);
     /* The updates, titled with their count and the button that adds one,
        which opens the Updates window. Only the newest shows, cut to two
@@ -12419,21 +12412,6 @@
     // The docked sheet's trip is the whole bar written out, and a tap on it
     // opens the trip as the Open slot does; its phone number dials instead.
     if (e.target.closest('.scheduler-bar-shortcuts__trip') && !e.target.closest('a')) { openSelected(); return; }
-    // The reminder's ✕ acts on the trip the card shows.
-    const dismiss = e.target.closest('.scheduler-card__dismiss');
-    if (dismiss) {
-      dismissFollowUp(dismiss.dataset.dismiss);
-      for (const b of gridEl.querySelectorAll(`.scheduler-bar[data-trip-id="${CSS.escape(dismiss.dataset.dismiss)}"]`)) {
-        const talked = updatesOf(panelIndex.trips.get(b.dataset.tripId) || {}).length > 0;
-        for (const m of b.querySelectorAll('.scheduler-bar__msg--asks')) {
-          const where = m.classList.contains('scheduler-bar__msg--dest') ? 'dest' : 'drivers';
-          if (talked) m.replaceWith(updatesMark(false, where)); else m.remove();
-        }
-      }
-      shortcutsDrawn = '';
-      placeBarOpen();
-      return;
-    }
     const btn = e.target.closest('.scheduler-bar-shortcut');
     if (!btn || btn.getAttribute('aria-disabled') === 'true') return;
     const bar = selectedBar();

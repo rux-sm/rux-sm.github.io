@@ -885,11 +885,11 @@ button.scheduler-row-head__num::after {
   padding: var(--rux-spacing-02) var(--rux-spacing-04);
   border-block-start: 1px solid var(--card-rule);
 }
-/* The reminder is a band, first: the warning colour tinted across the row
-   with a 3px strip down its start, its bell in the card's ink, and its
-   dismiss at the row's end. */
+/* The reminder and the other warnings are a band, first: the warning colour
+   tinted across the row with a 3px strip down its start, each icon in the
+   card's ink. */
 .scheduler-card__asks,
-.scheduler-card__dayof {
+.scheduler-card__warn {
   display: flex;
   gap: var(--rux-spacing-03);
   align-items: center;
@@ -898,10 +898,10 @@ button.scheduler-row-head__num::after {
   padding-inline-start: calc(var(--rux-spacing-04) - 3px);
 }
 .scheduler-card__asks > svg,
-.scheduler-card__dayof > svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--card-icon); }
+.scheduler-card__warn > svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--card-icon); }
 /* A second warning under the first joins its band, with no rule between,
    so the warnings read as one list. */
-.scheduler-card__asks + .scheduler-card__dayof { border-block-start: 0; padding-block-start: 0; }
+:is(.scheduler-card__asks, .scheduler-card__warn) + .scheduler-card__warn { border-block-start: 0; padding-block-start: 0; }
 /* A bus that does not fit is a band like the reminder's, in the error colour,
    above it: a mistake on the board comes before a job still to do. */
 .scheduler-card__misfit {
@@ -914,10 +914,9 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-card__misfit > svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--card-icon); }
 .scheduler-card__misfit > strong { flex: 1; min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
-:is(.scheduler-card__asks, .scheduler-card__dayof) > strong { flex: 1; min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
-/* A due reminder names the day it leaves where the dismiss would stand. */
+:is(.scheduler-card__asks, .scheduler-card__warn) > strong { flex: 1; min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
+/* A due reminder names the day it leaves at the row's end. */
 .scheduler-card__asks-when { flex: none; }
-.scheduler-card__dismiss,
 .scheduler-card__action {
   display: flex;
   flex: none;
@@ -935,9 +934,7 @@ button.scheduler-row-head__num::after {
   color: var(--card-icon);
   cursor: pointer;
 }
-.scheduler-card__dismiss:hover,
 .scheduler-card__action:hover { background: var(--card-hover); }
-.scheduler-card__dismiss:focus-visible,
 .scheduler-card__action:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
 /* A part's title: small and quieter than its words, with the part's button
    at its end. The warnings take none; their band says what they are. */
@@ -952,8 +949,7 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-card__title > .scheduler-card__action { color: var(--card-icon); }
 /* The note, shaded a step darker than the card so it never reads as one of
-   the updates: its title, its words, and on a line of their own under the
-   words the trip's needs, each glyph with its name written out. */
+   the updates: its title and its words. */
 .scheduler-card__note {
   display: flex;
   flex-wrap: wrap;
@@ -963,23 +959,6 @@ button.scheduler-row-head__num::after {
   background: color-mix(in srgb, var(--card-ink) 6%, var(--card-surface));
 }
 .scheduler-card__note-words { flex: 1 0 100%; min-inline-size: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
-.scheduler-card__facts {
-  flex: 1 0 100%;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--rux-spacing-02) var(--rux-spacing-04);
-  margin-block-start: var(--rux-spacing-02);
-}
-.scheduler-card__need { display: inline-flex; align-items: center; gap: var(--rux-spacing-02); }
-.scheduler-card__facts svg { flex: none; inline-size: 1rem; block-size: 1rem; }
-/* A need this bus meets is quiet, one still to do is in full ink, and one
-   the bus falls short of is red. */
-.scheduler-card__need { opacity: .7; }
-.scheduler-card__need--todo,
-.scheduler-card__need--short { opacity: 1; }
-.scheduler-card__need--short { color: var(--card-error); }
-.scheduler-card__need-letter { inline-size: 1rem; text-align: center; font-weight: var(--rux-heading-compact-01-font-weight); }
 .scheduler-card__updates { padding-block: var(--rux-spacing-03); }
 /* An update: who, as Carbon's small avatar in their own colour, its words,
    and under them how long ago. Closed, only the newest shows, its words cut
@@ -2518,7 +2497,7 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-docked] .scheduler-card { display: contents; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card > * { flex: 1 0 100%; min-inline-size: 0; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__misfit { order: -4; }
-.scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__asks, .scheduler-card__dayof) { order: -3; }
+.scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__asks, .scheduler-card__warn) { order: -3; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__note {
   order: -2;
   /* The board's own layer, a step down from the sheet, so the pinned notes
@@ -2526,27 +2505,13 @@ button.scheduler-row-head__num::after {
   background: var(--rux-layer-01);
 }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__updates { order: -1; }
-.scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__misfit, .scheduler-card__asks, .scheduler-card__dayof, .scheduler-card__note) { border-block-start: 0; }
-/* The reminder's dismiss is a thumb's 48px on a phone, and the band grows to
-   hold it; it stands at the top, so only the sheet's top edge moves. */
-.scheduler-bar-shortcuts[data-docked] .scheduler-card__asks { padding-block: 0; padding-inline-end: 0; }
-.scheduler-bar-shortcuts[data-docked] .scheduler-card__asks-when {
-  display: flex;
-  align-items: center;
-  min-block-size: var(--rux-layout-size-height-lg);
-  padding-inline-end: var(--rux-spacing-05);
-}
+.scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__misfit, .scheduler-card__asks, .scheduler-card__warn, .scheduler-card__note) { border-block-start: 0; }
 /* A card button is 32px under a thumb, its margins taken back so the row
    keeps its height. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__action {
   inline-size: 2rem;
   block-size: 2rem;
   margin-block: calc(-1 * var(--rux-spacing-03));
-}
-.scheduler-bar-shortcuts[data-docked] .scheduler-card__dismiss {
-  inline-size: var(--rux-layout-size-height-lg);
-  block-size: var(--rux-layout-size-height-lg);
-  margin-block: 0;
 }
 /* The note stops at three lines on an ellipsis until it is tapped open. The
    words are cut, not the row, so the row's padding shows none of a fourth. */

@@ -7,7 +7,7 @@
    opens the schedule's cancelled-trip dialog, with its reason and Bring back.
    Needs follow-up lists the trips waiting on the customer that have gone
    quiet longer than the office's wait, longest first, by follow-up.js's
-   rules; the Follow-ups button sets the wait and the snooze.
+   rules; the Follow-ups button sets the wait.
    ========================================================================== */
 (() => {
   'use strict';
@@ -199,18 +199,15 @@
   $('scheduler-trips-prev')?.addEventListener('click', () => { pageAt -= 1; drawList(); });
   $('scheduler-trips-next')?.addEventListener('click', () => { pageAt += 1; drawList(); });
 
-  /* ── Follow-ups ── The office's wait and snooze, one settings row the
+  /* ── Follow-ups ── The office's wait, one settings row the
      board reads too. Saving redraws the list, whose Needs follow-up count
      follows the new wait at once. */
   let db = null;
   const waitSelect = $('scheduler-follow-wait');
-  const snoozeSelect = $('scheduler-follow-snooze');
   $('scheduler-follow-open')?.addEventListener('click', () => {
-    const { waitDays, snoozeHours } = FollowUp.setting;
-    for (const [select, value] of [[waitSelect, waitDays], [snoozeSelect, snoozeHours]]) {
-      if (![...select.options].some(o => Number(o.value) === value)) select.appendChild(el('option', null, String(value))).value = String(value);
-      select.value = String(value);
-    }
+    const { waitDays } = FollowUp.setting;
+    if (![...waitSelect.options].some(o => Number(o.value) === waitDays)) waitSelect.appendChild(el('option', null, String(waitDays))).value = String(waitDays);
+    waitSelect.value = String(waitDays);
     $('scheduler-follow-error').textContent = '';
     window.Rux?.modal?.open?.('scheduler-follow-modal');
   });
@@ -218,7 +215,7 @@
     const save = $('scheduler-follow-save');
     save.disabled = true;
     try {
-      await FollowUp.save(db, { waitDays: Number(waitSelect.value), snoozeHours: Number(snoozeSelect.value) });
+      await FollowUp.save(db, { waitDays: Number(waitSelect.value) });
       window.Rux?.modal?.close?.('scheduler-follow-modal');
       drawList();
       pair.say('success', 'Follow-ups saved.', '');

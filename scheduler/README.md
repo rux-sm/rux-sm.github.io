@@ -20,7 +20,7 @@ ever tried with a test record.
 sorted, filtered to upcoming, needs follow-up, past or cancelled, and paged
 fifty at a time. A row opens the trip on the board through
 `./?trip=<id>&date=<day>`, and a cancelled one opens its cancelled dialog
-there. Its Follow-ups dialog sets the office's follow-up wait and snooze;
+there. Its Follow-ups dialog sets the office's follow-up wait;
 `follow-up.js` holds the rules the list and the board share, on the billing
 rules in `billing.js`.
 

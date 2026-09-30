@@ -8,21 +8,19 @@
    be waited on, and a placeholder waits on nothing. Once its newest real
    update, or its booking where it has none, is older than the office's
    follow-up wait, it asks for a follow-up. A trip leaving within a week that
-   still waits on something is due: it asks however new its updates, and no
-   dismissal hides it. A trip waiting on nothing never asks, however old its
-   updates. A skipped prompt's `nothing` row is not an update, so it never
+   still waits on something is due: it asks however new its updates. A
+   reminder has no dismiss; it asks while it is true. A trip waiting on
+   nothing never asks, however old its updates. A skipped prompt's `nothing` row is not an update, so it never
    makes a trip look followed up.
 
-   The wait and the snooze are the office's `follow-up-v1` settings row,
-   `{ wait_days, snooze_hours }`. A dismissed reminder is each person's own,
-   kept in this browser until the snooze runs out, so one person's dismissal
-   never hides a trip from another. Needs billing.js loaded first.
+   The wait is the office's `follow-up-v1` settings row, `{ wait_days }`.
+   Needs billing.js loaded first.
    ========================================================================== */
 (() => {
   'use strict';
 
   const KEY = 'follow-up-v1';
-  const DEFAULT = { waitDays: 3, snoozeHours: 24 };
+  const DEFAULT = { waitDays: 3 };
   const BALANCE_DAYS = 14;
   const DUE_DAYS = 7;
   // How the card and the list name what a trip waits on.
@@ -31,7 +29,7 @@
 
   const num = (v, d) => (Number.isFinite(Number(v)) && Number(v) > 0 ? Number(v) : d);
   function set(value) {
-    setting = { waitDays: num(value?.wait_days, DEFAULT.waitDays), snoozeHours: num(value?.snooze_hours, DEFAULT.snoozeHours) };
+    setting = { waitDays: num(value?.wait_days, DEFAULT.waitDays) };
   }
   async function read(client) {
     if (!client) return setting;
@@ -40,7 +38,7 @@
     return setting;
   }
   async function save(client, next) {
-    const value = { wait_days: num(next.waitDays, DEFAULT.waitDays), snooze_hours: num(next.snoozeHours, DEFAULT.snoozeHours) };
+    const value = { wait_days: num(next.waitDays, DEFAULT.waitDays) };
     const { error } = await client.from('settings').upsert({ key: KEY, value }, { onConflict: 'key' });
     if (error) throw new Error(error.message);
     set(value);
@@ -76,18 +74,6 @@
     .sort((x, y) => Date.parse(y.created_at) - Date.parse(x.created_at));
   const quietSince = trip => updatesOf(trip)[0]?.created_at ?? trip.created_at ?? null;
 
-  const DISMISS_KEY = 'scheduler.follow-up-dismissed';
-  function dismissals() {
-    try { return JSON.parse(localStorage.getItem(DISMISS_KEY) || '{}') || {}; } catch { return {}; }
-  }
-  function dismiss(tripId) {
-    const all = dismissals();
-    const now = Date.now();
-    for (const [id, until] of Object.entries(all)) if (until <= now) delete all[id];
-    all[tripId] = now + setting.snoozeHours * 36e5;
-    try { localStorage.setItem(DISMISS_KEY, JSON.stringify(all)); } catch { /* kept for this page only */ }
-  }
-
   // Whole days until the trip leaves, 0 on the day, or null with no date.
   const daysToGo = trip => (trip.start_date
     ? Math.round((parseISO(trip.start_date) - parseISO(iso(new Date()))) / 864e5) : null);
@@ -100,8 +86,7 @@
     if (!waitsOf(trip).length) return false;
     if (due(trip)) return true;
     const since = quietSince(trip);
-    if (since && Date.now() - Date.parse(since) <= setting.waitDays * 864e5) return false;
-    return !(dismissals()[trip.id] > Date.now());
+    return !(since && Date.now() - Date.parse(since) <= setting.waitDays * 864e5);
   }
 
   /* "today", then "1d", "7d", the way a chat says it, so the ages line up.
@@ -114,7 +99,7 @@
   };
 
   window.SchedulerFollowUp = {
-    KEY, WORDS, set, read, save, waitsOf, updatesOf, quietSince, due, daysToGo, asks, dismiss, agoShort,
+    KEY, WORDS, set, read, save, waitsOf, updatesOf, quietSince, due, daysToGo, asks, agoShort,
     get setting() { return { ...setting }; },
   };
 })();

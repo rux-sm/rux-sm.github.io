@@ -55,7 +55,8 @@ The email that goes with the quote says:
 If the customer has not answered after the office's follow-up wait, the trip
 shows under Needs follow-up on `trips.html`, and its bar on the board wears
 the bell. A trip leaving within a week that still waits on something shows there
-too, however recent its updates, and its bell cannot be dismissed. Send a short
+too, however recent its updates. A reminder cannot be dismissed: it stays
+until the missing thing arrives or an update is written. Send a short
 check-in. It can say that we price-match and can work with their budget.
 
 ## 3. When the customer says yes

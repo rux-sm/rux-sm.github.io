@@ -743,8 +743,8 @@
      card: `{ needs, misfits }`, set as the bar is drawn. */
   const barFacts = new WeakMap();
   // The bar's Updates mark, asking for a follow-up or saying there are updates.
-  const updatesMark = (asks, where) => {
-    const m = el('span', `scheduler-bar__msg scheduler-bar__msg--${where} scheduler-bar__msg--${asks ? 'asks' : 'quiet'}`);
+  const updatesMark = asks => {
+    const m = el('span', `scheduler-bar__msg scheduler-bar__msg--${asks ? 'asks' : 'quiet'}`);
     m.setAttribute('role', 'img');
     m.setAttribute('aria-label', asks ? 'Needs a follow-up' : 'Has updates');
     m.title = asks ? 'Needs a follow-up' : 'Updates';
@@ -1028,7 +1028,23 @@
     barFacts.set(bar, { needs, misfits });
     bar.classList.toggle('scheduler-bar--misfit', misfits.length > 0);
 
-    addRow(bar, 'scheduler-bar__dest', el('span', null, trip.destination || 'No destination'), refTag('dest'));
+    /* The marks, at the destination row's end: a check once the Route, Buses
+       and Billing tabs are all marked done, then the Updates mark, a bell in
+       the warning colour when the trip asks for a follow-up, else a filled
+       bubble once it has updates, else nothing. Marks, not buttons, because
+       the bar is the button. */
+    const allDone = !!(trip.route_done_at && trip.buses_done_at && trip.billing_done_at);
+    let doneMark = null;
+    if (allDone) {
+      doneMark = el('span', 'scheduler-bar__done');
+      doneMark.setAttribute('role', 'img');
+      doneMark.setAttribute('aria-label', 'Route, buses and billing done');
+      doneMark.title = 'Route, buses and billing done';
+      doneMark.appendChild(svgUse('#m-check_circle-fill', '16', '0 0 32 32'));
+    }
+    const asks = asksFollowUp(trip);
+    const msg = asks || updatesOf(trip).length > 0 ? updatesMark(asks) : null;
+    addRow(bar, 'scheduler-bar__dest', el('span', null, trip.destination || 'No destination'), refTag('dest'), doneMark, msg);
     addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
 
     // The booking contact as the trip records it. When both do not fit, the
@@ -1060,33 +1076,12 @@
     const whenDep = el('span', 'scheduler-bar__time-dep', dep || (back ? `Ret ${back}` : 'No times'));
     addRow(bar, 'scheduler-bar__time', when, whenDep, refTag('time'));
 
-    /* The Updates mark, in the bar's bottom corner at the drivers row's end: a
-       bell in the warning colour when the trip asks for a follow-up, else a
-       filled bubble once it has updates, else nothing. A mark, not a button,
-       because the bar is the button. A copy rides the destination row, shown
-       only while the drivers row is turned off. */
-    const asks = asksFollowUp(trip);
-    const talked = updatesOf(trip).length > 0;
-    const msg = where => (asks || talked ? updatesMark(asks, where) : null);
-    const destMark = msg('dest');
-    if (destMark) bar.querySelector('.scheduler-bar__dest')?.appendChild(destMark);
-
     // The crew in role order, or what the bar needs before it can have one.
     const crew = assign ? crewOf(trip, assign, driversById, statuses).filter(c => !(placeholder && c.needed)) : [];
     const crewBox = el('span', 'scheduler-bar__crew', assign || placeholder ? null : 'Needs a bus');
     crewBox.append(...crew.map(crewEl));
     crewObserver.observe(bar);
-    // A check once the Route, Buses and Billing tabs are all marked done.
-    const allDone = !!(trip.route_done_at && trip.buses_done_at && trip.billing_done_at);
-    let doneMark = null;
-    if (allDone) {
-      doneMark = el('span', 'scheduler-bar__done');
-      doneMark.setAttribute('role', 'img');
-      doneMark.setAttribute('aria-label', 'Route, buses and billing done');
-      doneMark.title = 'Route, buses and billing done';
-      doneMark.appendChild(svgUse('#m-check_circle-fill', '16', '0 0 32 32'));
-    }
-    addRow(bar, 'scheduler-bar__drivers', crewBox, doneMark, msg('drivers'));
+    addRow(bar, 'scheduler-bar__drivers', crewBox);
 
     /* The compact board's label. Not a row, so the full board never draws it
        and neither does the docked sheet, which draws every row. */

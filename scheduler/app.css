@@ -1042,42 +1042,30 @@ button.scheduler-row-head__num::after {
    not narrowed, so what comes first still gives way across the whole bar. */
 .scheduler-bar__ref { margin-inline-end: var(--scheduler-day-one-end); }
 .scheduler-bar__dest > .scheduler-bar__ref, .scheduler-bar__time > .scheduler-bar__ref { margin-inline-start: auto; }
-/* THE UPDATES MARK, in the bar's bottom corner at the drivers row's end, a
-   step wider than a mark and as tall as the row; the crew gives way to it. A
-   bell in the warning colour every other mark wears, set per theme, says the
-   trip asks for a follow-up; a filled bubble that it has updates; a trip with
-   neither draws no mark. The destination row's copy shows
-   only while the drivers row is off, and then it holds the first day's end in
-   place of the reference or the marks beside it. */
-.scheduler-bar__msg {
+/* THE MARKS, at the destination row's end, so they are read with the trip's
+   name and stay put whatever rows the view menu turns off. Each is a step
+   wider than a mark and as tall as the row. A check in the bar's text colour
+   says Route, Buses and Billing are all marked done. The Updates mark after
+   it is a bell in the warning colour every other mark wears, set per theme,
+   when the trip asks for a follow-up, or a filled bubble when it has updates;
+   a trip with neither draws no mark. */
+.scheduler-bar__done, .scheduler-bar__msg {
   display: flex;
   flex: none;
   align-items: center;
   justify-content: center;
   inline-size: calc(var(--scheduler-row-h) + var(--rux-spacing-03));
   block-size: var(--scheduler-row-h);
-  margin-inline-start: auto;
 }
-.scheduler-bar__msg svg { display: block; inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
+.scheduler-bar__done svg, .scheduler-bar__msg svg { display: block; inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
 .scheduler-bar__msg--asks { color: var(--scheduler-mark-warning); }
-.scheduler-bar__drivers > .scheduler-bar__crew { flex: 0 1 auto; }
-.scheduler-bar__msg--dest { display: none; }
-.scheduler-week--no-drivers .scheduler-bar__msg--dest { display: flex; margin-inline-end: var(--scheduler-day-one-end); }
-.scheduler-week--no-drivers .scheduler-bar__dest > .scheduler-bar__ref { margin-inline-end: 0; }
-.scheduler-bar__dest > .scheduler-bar__ref ~ .scheduler-bar__msg { margin-inline-start: 0; }
-/* A TRIP GONE OVER -- Route, Buses and Billing all marked done -- carries a
-   check in the bar's text colour, beside the Updates mark on the drivers row. */
-.scheduler-bar__done {
-  display: flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  inline-size: calc(var(--scheduler-row-h) + var(--rux-spacing-03));
-  block-size: var(--scheduler-row-h);
-  margin-inline-start: auto;
-}
-.scheduler-bar__done svg { display: block; inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
-.scheduler-bar__done + .scheduler-bar__msg { margin-inline-start: 0; }
+/* The name takes the row's spare room, so the bus count's copy and the marks
+   sit together at the end, and the last of them holds the first day's end in
+   the reference's place. */
+.scheduler-bar__dest { justify-content: flex-start; }
+.scheduler-bar__dest > :first-child { margin-inline-end: auto; }
+.scheduler-bar__dest > .scheduler-bar__ref { margin-inline: 0; }
+.scheduler-bar__dest > :not(:first-child):last-child { margin-inline-end: var(--scheduler-day-one-end); }
 .scheduler-bar-shortcuts__trip .scheduler-bar__done { display: none; }
 
 /* DONE at the foot of the Route, Buses and Billing tabs, and the check on a

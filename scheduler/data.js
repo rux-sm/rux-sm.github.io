@@ -11945,7 +11945,8 @@
     placeBarOpen();
   }
   barShortcuts?.addEventListener('keydown', e => {
-    if (e.key !== 'Enter' && e.key !== ' ') return;
+    // A button inside the row presses itself.
+    if ((e.key !== 'Enter' && e.key !== ' ') || e.target.closest?.('button')) return;
     const note = e.target.closest?.('.scheduler-card__note[role="button"]');
     const update = e.target.closest?.('.scheduler-card__update[tabindex]');
     if (!note && !update) return;
@@ -12192,6 +12193,18 @@
   const cardKey = trip => (trip ? JSON.stringify([trip.notes, asksFollowUp(trip), waitsOf(trip), dayOfContact(trip),
     !!trip.contact_not_needed,
     (trip.trip_updates || []).map(u => u.id).sort(), agoShort(quietSince(trip) || Date.now())]) : '');
+  /* A part's own button at the end of its first row: the note's edits it,
+     the updates' adds one. An icon with its name on hover. */
+  function cardAction(action, icon, label) {
+    const btn = el('button', 'scheduler-card__action');
+    btn.type = 'button';
+    btn.dataset.cardAction = action;
+    btn.title = label;
+    btn.setAttribute('aria-label', label);
+    btn.appendChild(svgUse(icon, '16', '0 0 32 32'));
+    return btn;
+  }
+
   function drawCard(trip, bar) {
     const card = el('div', 'scheduler-card');
     card.dataset.tripId = trip.id;
@@ -12250,20 +12263,19 @@
         el('span', 'scheduler-card__fact-name', n.name));
       side.appendChild(need);
     }
-    /* The note is one row with no heading: its pin, its words, then the facts.
-       A trip with no note shows the facts alone, and with neither, no row. */
-    if (trip.notes || side.childElementCount) {
-      const note = row('scheduler-card__note');
-      if (trip.notes) {
-        const pin = svgUse('#m-keep', '16', '0 0 32 32');
-        pin.removeAttribute('aria-hidden');
-        pin.setAttribute('role', 'img');
-        pin.setAttribute('aria-label', 'Notes');
-        note.append(pin, el('span', 'scheduler-card__note-words', trip.notes));
-      }
-      if (side.childElementCount) note.appendChild(side);
-      card.appendChild(note);
-    }
+    /* The note is one row with no heading, on every trip: its pin, its words
+       or No notes, the button that edits it, then the facts. */
+    const note = row('scheduler-card__note');
+    const pin = svgUse('#m-keep', '16', '0 0 32 32');
+    pin.removeAttribute('aria-hidden');
+    pin.setAttribute('role', 'img');
+    pin.setAttribute('aria-label', 'Notes');
+    note.append(pin, trip.notes
+      ? el('span', 'scheduler-card__note-words', trip.notes)
+      : el('span', 'scheduler-card__note-words scheduler-card__empty', 'No notes'),
+    cardAction('note', '#m-edit', trip.notes ? 'Edit the note' : 'Add a note'));
+    if (side.childElementCount) note.appendChild(side);
+    card.appendChild(note);
     /* The updates take no heading: a face, words and an age say what they
        are. Only the newest shows, and a line under it counts the rest; both
        open the Updates window, which lists them all. */
@@ -12291,7 +12303,7 @@
       face.setAttribute('aria-label', who);
       const when = el('span', 'scheduler-card__when', agoShort(u.created_at));
       when.title = updateStamp(u);
-      li.append(face, el('span', 'scheduler-card__words', u.body), when);
+      li.append(face, el('span', 'scheduler-card__words', u.body), when, cardAction('update', '#m-add_comment', 'Add an update'));
       li.tabIndex = 0;
       li.title = 'Open the trip\'s updates';
       list.appendChild(li);
@@ -12307,6 +12319,7 @@
         when.title = `Booked ${new Date(trip.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
         li.appendChild(when);
       }
+      li.appendChild(cardAction('update', '#m-add_comment', 'Add an update'));
       list.appendChild(li);
     }
     if (all.length > 1) {
@@ -12326,8 +12339,31 @@
     if (bar) openUpdatesWindow(panelIndex.trips.get(bar.dataset.tripId));
   }
 
+  // The note is written in the editor, so its button opens the trip on
+  // Details with the cursor at the end of the note.
+  function editNoteFromCard() {
+    const bar = selectedBar();
+    if (!bar?.dataset.tripId) return;
+    const ref = barRef(bar);
+    whenSafe(() => {
+      openRef(ref);
+      requestAnimationFrame(() => {
+        const tab = document.getElementById('scheduler-tab-details');
+        if (tab) window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
+        const notes = document.getElementById('scheduler-f-notes');
+        notes?.focus();
+        notes?.setSelectionRange?.(notes.value.length, notes.value.length);
+      });
+    });
+  }
+
   // A slot acts on the bar it shows, and a disabled one does nothing.
   barShortcuts?.addEventListener('click', e => {
+    const action = e.target.closest('.scheduler-card__action');
+    if (action) {
+      if (action.dataset.cardAction === 'note') editNoteFromCard(); else openUpdatesFromCard();
+      return;
+    }
     const note = e.target.closest('.scheduler-card__note[role="button"]');
     if (note) { toggleNote(note); return; }
     // An update opens the trip's Updates window, to read it whole or answer.

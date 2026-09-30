@@ -918,7 +918,8 @@ button.scheduler-row-head__num::after {
 :is(.scheduler-card__asks, .scheduler-card__dayof) > strong { flex: 1; min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
 /* A due reminder names the day it leaves where the dismiss would stand. */
 .scheduler-card__asks-when { flex: none; }
-.scheduler-card__dismiss {
+.scheduler-card__dismiss,
+.scheduler-card__action {
   display: flex;
   flex: none;
   align-items: center;
@@ -935,13 +936,15 @@ button.scheduler-row-head__num::after {
   color: var(--card-icon);
   cursor: pointer;
 }
-.scheduler-card__dismiss:hover { background: var(--card-hover); }
-.scheduler-card__dismiss:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
+.scheduler-card__dismiss:hover,
+.scheduler-card__action:hover { background: var(--card-hover); }
+.scheduler-card__dismiss:focus-visible,
+.scheduler-card__action:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
 /* The note is one row with no heading, shaded a step darker than the card so
    it never reads as one of the updates: its pin in a quieter ink, its words,
-   and on a line of their own under the words, lined up with them, the trip's
-   needs, each glyph with its name written out. A trip with no note shows the
-   needs alone. */
+   its edit button at the row's end, and on a line of their own under the
+   words, lined up with them, the trip's needs, each glyph with its name
+   written out. */
 .scheduler-card__note {
   display: flex;
   flex-wrap: wrap;
@@ -951,14 +954,15 @@ button.scheduler-row-head__num::after {
   background: color-mix(in srgb, var(--card-ink) 6%, var(--card-surface));
 }
 .scheduler-card__note > svg { flex: none; inline-size: 1rem; block-size: 1rem; color: color-mix(in srgb, var(--card-ink) 70%, transparent); }
-.scheduler-card__note-words { flex: 1 1 calc(100% - 1rem - var(--rux-spacing-03)); min-inline-size: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.scheduler-card__note-words { flex: 1 1 0; min-inline-size: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .scheduler-card__facts {
+  flex: 1 0 calc(100% - 1rem - var(--rux-spacing-03));
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--rux-spacing-02) var(--rux-spacing-04);
 }
-.scheduler-card__note-words + .scheduler-card__facts { margin-inline-start: calc(1rem + var(--rux-spacing-03)); }
+.scheduler-card__note > .scheduler-card__facts { margin-inline-start: calc(1rem + var(--rux-spacing-03)); }
 .scheduler-card__need { display: inline-flex; align-items: center; gap: var(--rux-spacing-02); }
 .scheduler-card__facts svg { flex: none; inline-size: 1rem; block-size: 1rem; }
 /* A need this bus meets is quiet, one still to do is in full ink, and one
@@ -2508,6 +2512,13 @@ button.scheduler-row-head__num::after {
   align-items: center;
   min-block-size: var(--rux-layout-size-height-lg);
   padding-inline-end: var(--rux-spacing-05);
+}
+/* A card button is 32px under a thumb, its margins taken back so the row
+   keeps its height. */
+.scheduler-bar-shortcuts[data-docked] .scheduler-card__action {
+  inline-size: 2rem;
+  block-size: 2rem;
+  margin-block: calc(-1 * var(--rux-spacing-03));
 }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__dismiss {
   inline-size: var(--rux-layout-size-height-lg);

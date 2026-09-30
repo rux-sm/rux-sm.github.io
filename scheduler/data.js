@@ -11948,10 +11948,9 @@
     // A button inside the row presses itself.
     if ((e.key !== 'Enter' && e.key !== ' ') || e.target.closest?.('button')) return;
     const note = e.target.closest?.('.scheduler-card__note[role="button"]');
-    const update = e.target.closest?.('.scheduler-card__update[tabindex]');
-    if (!note && !update) return;
+    if (!note) return;
     e.preventDefault();
-    if (note) toggleNote(note); else openUpdatesFromCard();
+    toggleNote(note);
   });
 
   let shortcutsDrawn = '';
@@ -12193,8 +12192,8 @@
   const cardKey = trip => (trip ? JSON.stringify([trip.notes, asksFollowUp(trip), waitsOf(trip), dayOfContact(trip),
     !!trip.contact_not_needed,
     (trip.trip_updates || []).map(u => u.id).sort(), agoShort(quietSince(trip) || Date.now())]) : '');
-  /* A part's own button at the end of its first row: the note's edits it,
-     the updates' adds one. An icon with its name on hover. */
+  /* A part's own button, beside its title: the note's edits it, the
+     updates' adds one. An icon with its name on hover. */
   function cardAction(action, icon, label) {
     const btn = el('button', 'scheduler-card__action');
     btn.type = 'button';
@@ -12203,6 +12202,13 @@
     btn.setAttribute('aria-label', label);
     btn.appendChild(svgUse(icon, '16', '0 0 32 32'));
     return btn;
+  }
+
+  // A part's small title, with the part's own button at its end.
+  function cardTitle(words, action) {
+    const title = el('div', 'scheduler-card__title');
+    title.append(el('span', null, words), action);
+    return title;
   }
 
   function drawCard(trip, bar) {
@@ -12263,28 +12269,27 @@
         el('span', 'scheduler-card__fact-name', n.name));
       side.appendChild(need);
     }
-    /* The note is one row with no heading, on every trip: its pin, its words
-       or No notes, the button that edits it, then the facts. */
+    /* The note is a part of its own on every trip, titled Trip notes with
+       the button that edits it: its words or No notes, then the facts. */
     const note = row('scheduler-card__note');
-    const pin = svgUse('#m-keep', '16', '0 0 32 32');
-    pin.removeAttribute('aria-hidden');
-    pin.setAttribute('role', 'img');
-    pin.setAttribute('aria-label', 'Notes');
-    note.append(pin, trip.notes
-      ? el('span', 'scheduler-card__note-words', trip.notes)
-      : el('span', 'scheduler-card__note-words scheduler-card__empty', 'No notes'),
-    cardAction('note', '#m-edit', trip.notes ? 'Edit the note' : 'Add a note'));
+    note.append(cardTitle('Trip notes', cardAction('note', '#m-edit', trip.notes ? 'Edit the note' : 'Add a note')),
+      trip.notes
+        ? el('span', 'scheduler-card__note-words', trip.notes)
+        : el('span', 'scheduler-card__note-words scheduler-card__empty', 'No notes'));
     if (side.childElementCount) note.appendChild(side);
     card.appendChild(note);
-    /* The updates take no heading: a face, words and an age say what they
-       are. Only the newest shows, and a line under it counts the rest; both
-       open the Updates window, which lists them all. */
+    /* The updates, titled with their count and the button that adds one.
+       Only the newest shows, cut to two lines, with its age and a link to
+       the rest; the update, the link and the button all open the Updates
+       window, which lists them all. */
     const all = updatesOf(trip);
-    const updates = all.slice(0, 1);
-    const list = el('ol', 'scheduler-card__list');
-    list.setAttribute('aria-label', 'Updates, newest first');
-    updates.forEach((u, n) => {
-      const li = row(`scheduler-card__update${n === 0 ? ' scheduler-card__update--newest' : ''}`, 'li');
+    const part = row('scheduler-card__updates');
+    part.appendChild(cardTitle(all.length ? `Updates · ${all.length}` : 'Updates',
+      cardAction('update', '#m-add_comment', 'Add an update')));
+    const u = all[0];
+    if (u) {
+      const item = el('div', 'scheduler-card__update');
+      item.title = 'Open the trip\'s updates';
       // A line copied from the old notes with nobody named is a grey face.
       const who = u.actor_name || (u.kind === 'imported' ? 'From the old notes' : 'Someone');
       const nobody = !u.actor_name;
@@ -12303,34 +12308,21 @@
       face.setAttribute('aria-label', who);
       const when = el('span', 'scheduler-card__when', agoShort(u.created_at));
       when.title = updateStamp(u);
-      li.append(face, el('span', 'scheduler-card__words', u.body), when, cardAction('update', '#m-add_comment', 'Add an update'));
-      li.tabIndex = 0;
-      li.title = 'Open the trip\'s updates';
-      list.appendChild(li);
-    });
-    if (!updates.length) {
-      const li = row('scheduler-card__update', 'li');
-      li.appendChild(el('span', 'scheduler-card__words scheduler-card__empty', 'No updates yet'));
-      // It opens the Updates window too, where the first one is added.
-      li.tabIndex = 0;
-      li.title = 'Add an update';
-      if (trip.created_at) {
-        const when = el('span', 'scheduler-card__when', agoShort(trip.created_at));
-        when.title = `Booked ${new Date(trip.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
-        li.appendChild(when);
+      const meta = el('span', 'scheduler-card__meta');
+      meta.appendChild(when);
+      if (all.length > 1) {
+        const more = el('button', 'scheduler-card__more', `${all.length - 1} more`);
+        more.type = 'button';
+        meta.appendChild(more);
       }
-      li.appendChild(cardAction('update', '#m-add_comment', 'Add an update'));
-      list.appendChild(li);
+      const text = el('span', 'scheduler-card__update-text');
+      text.append(el('span', 'scheduler-card__words', u.body), meta);
+      item.append(face, text);
+      part.appendChild(item);
+    } else {
+      part.appendChild(el('span', 'scheduler-card__words scheduler-card__empty', 'No updates yet'));
     }
-    if (all.length > 1) {
-      const more = row('scheduler-card__update scheduler-card__more', 'li');
-      const rest = all.length - 1;
-      more.appendChild(el('span', 'scheduler-card__words', `${rest} more update${rest === 1 ? '' : 's'}`));
-      more.tabIndex = 0;
-      more.title = 'Open the trip\'s updates';
-      list.appendChild(more);
-    }
-    card.appendChild(list);
+    card.appendChild(part);
     return card;
   }
 
@@ -12366,8 +12358,8 @@
     }
     const note = e.target.closest('.scheduler-card__note[role="button"]');
     if (note) { toggleNote(note); return; }
-    // An update opens the trip's Updates window, to read it whole or answer.
-    const update = e.target.closest('.scheduler-card__update[tabindex]');
+    // An update or the count of the rest opens the trip's Updates window.
+    const update = e.target.closest('.scheduler-card__update, .scheduler-card__more');
     if (update) { openUpdatesFromCard(); return; }
     // The docked sheet's trip is the whole bar written out, and a tap on it
     // opens the trip as the Open slot does; its phone number dials instead.

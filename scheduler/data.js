@@ -1431,8 +1431,10 @@
     return false;
   }
 
+  // Timed like a read: a hung write would otherwise leave the board dimmed and
+  // silent, with no way to tell it from a move that never happened.
   async function moveToBus(assignmentId, busId) {
-    const { error } = await client.from('trip_assignments').update({ bus_id: busId }).eq('id', assignmentId);
+    const { error } = await withTimeout(client.from('trip_assignments').update({ bus_id: busId }).eq('id', assignmentId).then(r => r));
     if (error) throw new Error(error.message);
   }
 
@@ -1441,8 +1443,8 @@
      and undo takes the bus off that row, which draws the slot on the No bus row
      where it started. */
   async function fillSlot(tripId, leg, position, busId) {
-    const { data, error } = await client.from('trip_assignments')
-      .insert({ trip_id: tripId, leg, position, bus_id: busId }).select('id').single();
+    const { data, error } = await withTimeout(client.from('trip_assignments')
+      .insert({ trip_id: tripId, leg, position, bus_id: busId }).select('id').single().then(r => r));
     if (error) throw new Error(error.message);
     return data.id;
   }
@@ -1507,7 +1509,7 @@
       let moved = false, done = false, target = null, tracks = [], unassignedRow = null, hold = 0;
 
       const clear = () => {
-        for (const { track } of tracks) track.classList.remove('scheduler-track--drop', 'scheduler-track--warn');
+        for (const track of tracks) track.classList.remove('scheduler-track--drop', 'scheduler-track--warn');
       };
 
       /* While a finger carries a bar the page must not scroll under it.
@@ -1521,7 +1523,7 @@
         moved = true;
         unassignedRow = gridEl.querySelector('.scheduler-row--unassigned');
         if (unassignedRow?.hidden) { unassignedRow.hidden = false; unassignedRow.dataset.revealed = 'true'; }
-        tracks = [...gridEl.querySelectorAll('.scheduler-track')].map(t => ({ track: t, rect: t.getBoundingClientRect() }));
+        tracks = [...gridEl.querySelectorAll('.scheduler-track')];
         bar.classList.add('scheduler-bar--dragging');
         placeBarOpen();
         document.body.style.cursor = 'grabbing';
@@ -1551,6 +1553,9 @@
         // otherwise toggle selection at the end of a drag.
         bar.addEventListener('click', e => e.stopPropagation(), { capture: true, once: true });
         const toBus = target ? (target.dataset.busId ?? null) : fromBus;
+        // A lifted bar the browser cancels says so, because a drop that goes
+        // quietly missing looks like a drag that does nothing.
+        if (!release) toast('info', 'Trip not moved', 'The drag was interrupted. Try again.');
         if (!release || !target || toBus === fromBus) {
           // A read the drag held is owed now that nothing is in hand.
           if (liveHeld) setTimeout(liveRefresh, 0);
@@ -1586,8 +1591,11 @@
 
       const move = ev => {
         if (ev.pointerId !== down.pointerId) return;
-        // A mouse button let go where no pointerup reached the page.
-        if (!touch && !(ev.buttons & 1)) { finish(false); return; }
+        /* A mouse button let go before the bar lifted, where no pointerup
+           reached the page. Once the bar has lifted the pointer is captured and
+           its release always arrives, so `buttons` is not read again: a move
+           that reports no button mid-drag must not drop the trip. */
+        if (!touch && !moved && !(ev.buttons & 1)) { finish(false); return; }
         if (!moved) {
           const dx = Math.abs(ev.clientX - startX), dy = Math.abs(ev.clientY - startY);
           // A finger that travels before the hold is done means to scroll, so the
@@ -1597,8 +1605,12 @@
           lift();
         }
         ev.preventDefault();
-        const hit = tracks.find(({ rect }) => ev.clientY >= rect.top && ev.clientY <= rect.bottom);
-        const next = hit?.track ?? null;
+        // Measured on every move, so a board wheeled while a bar is carried
+        // still drops the trip on the row under the pointer.
+        const next = tracks.find(t => {
+          const rect = t.getBoundingClientRect();
+          return ev.clientY >= rect.top && ev.clientY <= rect.bottom;
+        }) ?? null;
         if (next === target) return;
         clear();
         target = next;

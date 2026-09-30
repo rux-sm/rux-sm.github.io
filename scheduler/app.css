@@ -1043,8 +1043,9 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__ref { margin-inline-end: var(--scheduler-day-one-end); }
 .scheduler-bar__dest > .scheduler-bar__ref, .scheduler-bar__time > .scheduler-bar__ref { margin-inline-start: auto; }
 /* THE MARKS, at the destination row's end, so they are read with the trip's
-   name and stay put whatever rows the view menu turns off. Each is a step
-   wider than a mark and as tall as the row. A check in the bar's text colour
+   name and stay put whatever rows the view menu turns off. Each is its
+   glyph's width, so the last meets the bus count's right edge below it,
+   and as tall as the row. A check in the bar's text colour
    says Route, Buses and Billing are all marked done. The Updates mark after
    it is a bell in the warning colour every other mark wears, set per theme,
    when the trip asks for a follow-up, or a filled bubble when it has updates;
@@ -1054,7 +1055,7 @@ button.scheduler-row-head__num::after {
   flex: none;
   align-items: center;
   justify-content: center;
-  inline-size: calc(var(--scheduler-row-h) + var(--rux-spacing-03));
+  inline-size: var(--scheduler-mark-glyph);
   block-size: var(--scheduler-row-h);
 }
 .scheduler-bar__done svg, .scheduler-bar__msg svg { display: block; inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }

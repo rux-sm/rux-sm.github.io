@@ -201,7 +201,7 @@ met are not shown.
 Then Trip notes, the words cut to two lines until pressed open, with Edit,
 which opens the trip at its Notes field, and Updates with their count, See all
 and Add, which opens the trip's Updates window. Only the newest update shows,
-its author's avatar two lines tall beside its words, cut to two lines, and its
+its author's small avatar beside its words, cut to two lines, and its
 age at the right; the name is the avatar's tooltip. A press on it or on See
 all opens every update in the card, and Show less closes them. Only the selected trip has a
 card. Every trip has the same four slots: Open trip, the itinerary,

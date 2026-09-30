@@ -12307,15 +12307,15 @@
       actions.unshift(toggle);
     }
     part.appendChild(cardTitle(all.length ? `Updates · ${all.length}` : 'Updates', ...actions));
-    /* An update is its author's avatar, two lines tall, beside its words,
-       with how long ago at the right. The name is the avatar's tooltip and
+    /* An update is its author's small avatar beside its words, with how
+       long ago at the right. The name is the avatar's tooltip and
        accessible name, and the full date the age's tooltip. */
     const updateItem = u => {
       const item = el('li', 'scheduler-card__update');
       // A line copied from the old notes with nobody named is a grey face.
       const who = u.actor_name || (u.kind === 'imported' ? 'From the old notes' : 'Someone');
       const nobody = !u.actor_name;
-      const face = el('div', `rux--user-avatar rux--user-avatar--md ${nobody ? 'rux--user-avatar--order-2-gray' : avatarColour(who)}`,
+      const face = el('div', `rux--user-avatar rux--user-avatar--sm ${nobody ? 'rux--user-avatar--order-2-gray' : avatarColour(who)}`,
         nobody ? '' : who.charAt(0).toUpperCase());
       /* A written update is drawn as its author's own avatar. An imported one
          never is: its account is whoever ran the import, not the person who
@@ -12323,7 +12323,7 @@
       const author = u.kind !== 'imported' && staffFaces.get(u.actor_id);
       if (author) {
         window.Rux?.account?.drawAvatar?.(face,
-          { id: author.id, name: u.actor_name || author.display_name, photoPath: author.photo_path, colour: author.avatar_color }, 'md');
+          { id: author.id, name: u.actor_name || author.display_name, photoPath: author.photo_path, colour: author.avatar_color }, 'sm');
       }
       face.title = who;
       face.setAttribute('role', 'img');

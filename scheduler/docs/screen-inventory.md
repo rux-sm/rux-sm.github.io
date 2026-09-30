@@ -199,11 +199,11 @@ each need still to do as its job, Book hotel or Print hours-of-service form.
 No warning has a dismiss; each stays until it is put right. Needs that are
 met are not shown.
 Then Trip notes, the words cut to two lines until pressed open, with Edit,
-which opens the trip at its Notes field, and Updates with their count and Add,
-which opens the trip's Updates window. Both start their words on one left
-edge. Only the newest update shows, cut to two lines, with a line under it of
-its author's avatar and name, its age, and See all; a press on it or on See all opens every
-update in the card, and Show less closes them. Only the selected trip has a
+which opens the trip at its Notes field, and Updates with their count, See all
+and Add, which opens the trip's Updates window. Only the newest update shows,
+its author's avatar two lines tall beside its words, cut to two lines, and its
+age at the right; the name is the avatar's tooltip. A press on it or on See
+all opens every update in the card, and Show less closes them. Only the selected trip has a
 card. Every trip has the same four slots: Open trip, the itinerary,
 opened or uploaded, Forms and Contacts; every other action is on the
 right-click menu. Contacts opens a small window of cards in three parts, the

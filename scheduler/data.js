@@ -8588,13 +8588,12 @@
      so the bar can sit outside it. It is taken away while a bar is dragged,
      because the trip it points at is moving. */
   const TIP_GAP = 4;
-  let peekBar = null;
   let poppedFor = null;
   // True while a bar's right-click menu is open, which the card waits behind.
   let menuHidesCard = false;
   // The Contacts window, while it is open: its overlay registration and slot.
   let contactsOpen = null;
-  function placeBarOpen(bar = (peekBar?.isConnected ? peekBar : null) ?? selectedBar()) {
+  function placeBarOpen(bar = selectedBar()) {
     if (!barShortcuts) return;
     const none = !bar?.dataset.tripId || isEditorBar(bar) || menuHidesCard || gridEl.querySelector('.scheduler-bar--dragging');
     barShortcuts.hidden = none;
@@ -8602,8 +8601,6 @@
     if (none && contactsOpen) closeContacts(false);
     if (none) { poppedFor = null; schEl.style.removeProperty('--scheduler-docked-h'); return; }
     if (barShortcuts.previousElementSibling !== bar) bar.after(barShortcuts);
-    // A hovered bar that is not the selected one shows the same slots and card.
-    barShortcuts.toggleAttribute('data-peek', bar !== selectedBar());
     drawShortcuts(bar);
     // And with its slot, when the slots are drawn again for another trip.
     if (contactsOpen && !contactsOpen.slot.isConnected) closeContacts(false);
@@ -8644,7 +8641,7 @@
          board only as far as that takes and not at all when it is clear. */
       const fresh = target !== poppedFor;
       pop();
-      if (fresh && !barShortcuts.hasAttribute('data-peek')) bar.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+      if (fresh) bar.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
       return;
     }
     schEl.style.removeProperty('--scheduler-docked-h');
@@ -8723,53 +8720,8 @@
     }
   }
 
-  /* HOVERING A BAR SHOWS ITS SLOTS AND CARD, after a short wait so a pointer
-     crossing the week does not light every bar, and leaving it brings them
-     back to the selected trip or takes them away. The pointer can cross onto
-     them to use a slot, scroll the card or dismiss its reminder. Only where there is hover to be had
-     and the board is not the compact one, whose bar docks instead. */
-  let peekTimer = 0;
-  let unpeekTimer = 0;
-  let peekWant = null;
-  const canPeek = () => matchMedia('(hover: hover)').matches && pageEl?.getAttribute('data-board') !== 'compact';
-  const unpeek = () => {
-    clearTimeout(peekTimer);
-    peekWant = null;
-    clearTimeout(unpeekTimer);
-    unpeekTimer = setTimeout(() => {
-      if (!peekBar) return;
-      peekBar = null;
-      placeBarOpen();
-    }, 180);
-  };
-  gridEl?.addEventListener('mouseover', e => {
-    const bar = e.target.closest('.scheduler-bar[data-trip-id]');
-    // The trip in the editor has no card to peek at; its panel is open.
-    if (!bar || !canPeek() || isEditorBar(bar)) return;
-    clearTimeout(unpeekTimer);
-    if (bar === peekWant || bar === ((peekBar?.isConnected ? peekBar : null) ?? selectedBar())) return;
-    peekWant = bar;
-    clearTimeout(peekTimer);
-    peekTimer = setTimeout(() => {
-      peekWant = null;
-      if (!bar.isConnected) return;
-      peekBar = bar === selectedBar() ? null : bar;
-      placeBarOpen();
-    }, 280);
-  });
-  gridEl?.addEventListener('mouseout', e => {
-    const bar = e.target.closest('.scheduler-bar[data-trip-id]');
-    if (!bar || bar.contains(e.relatedTarget) || barShortcuts?.contains(e.relatedTarget)) return;
-    unpeek();
-  });
-  barShortcuts?.addEventListener('mouseenter', () => clearTimeout(unpeekTimer));
-  barShortcuts?.addEventListener('mouseleave', e => {
-    if (!e.relatedTarget?.closest?.('.scheduler-bar[data-trip-id]')) unpeek();
-  });
-
   function syncSelection() {
     const bar = selectedBar();
-    peekBar = null;
     placeBarOpen(bar);
     markTripBars();
     // The roster moves to the selected trip's week, and lights its days.
@@ -12396,16 +12348,8 @@
     return card;
   }
 
-  /* The bar the slots and card are showing: the hovered one, or else the
-     selected one. Acting on it selects it first, so the roster lights its days
-     and what the action does finds it selected. */
-  function takeShownBar() {
-    const bar = (peekBar?.isConnected ? peekBar : null) ?? selectedBar();
-    if (bar && bar !== selectedBar()) selectBar(bar);
-    return bar;
-  }
   function openUpdatesFromCard() {
-    const bar = takeShownBar();
+    const bar = selectedBar();
     if (bar) openUpdatesWindow(panelIndex.trips.get(bar.dataset.tripId));
   }
 
@@ -12419,7 +12363,7 @@
     // The docked sheet's trip is the whole bar written out, and a tap on it
     // opens the trip as the Open slot does; its phone number dials instead.
     if (e.target.closest('.scheduler-bar-shortcuts__trip') && !e.target.closest('a')) { openSelected(); return; }
-    // The reminder's ✕ acts on the trip the card shows, peeked or selected.
+    // The reminder's ✕ acts on the trip the card shows.
     const dismiss = e.target.closest('.scheduler-card__dismiss');
     if (dismiss) {
       dismissFollowUp(dismiss.dataset.dismiss);
@@ -12436,7 +12380,7 @@
     }
     const btn = e.target.closest('.scheduler-bar-shortcut');
     if (!btn || btn.getAttribute('aria-disabled') === 'true') return;
-    const bar = takeShownBar();
+    const bar = selectedBar();
     if (!bar) return;
     (FIXED_SHORTCUTS[btn.dataset.shortcut] ?? SHORTCUT_ACTIONS.find(a => a.id === btn.dataset.shortcut))?.run(bar, btn);
   });

@@ -801,10 +801,10 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcut[aria-disabled="true"]:hover { background: transparent; }
 
 /* THE CARD: the trip's reminder, note and updates under the shortcut slots,
-   so only ever one thing floats over the week. Hovering a bar shows the same
-   slots and card as selecting it does (`data-peek` marks the hovered one). It
-   is 20rem wide, and the slots share it. Its ink is the surface's own, so
-   the same rules read on the floating band and on the docked sheet. */
+   so only ever one thing floats over the week. Only the selected trip has
+   one, because a card on hover covered the trips below it. It is 20rem
+   wide, and the slots share it. Its ink is the surface's own, so the same
+   rules read on the floating band and on the docked sheet. */
 .scheduler-bar-shortcuts[data-card] {
   flex-wrap: wrap;
   inline-size: min(20rem, calc(100vw - 2 * var(--rux-spacing-05)));

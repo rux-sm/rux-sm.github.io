@@ -72,7 +72,7 @@ the schedule open, and faces on a bar show who has that trip.
 | Assign driver menu | keep | Assign driver, or Change driver, on the bar's right-click menu after the itinerary: the driver on the bus now with Remove driver, which asks first when that driver has been sent the trip or has confirmed it, since removing tells them nothing, then the five free drivers the Buses tab would list first for that bus's leg, a back-to-back one marked, and More drivers, which opens the trip on its Buses tab. A pick fills the bus's Driver seat and saves at once, starting the driver at Not sent. Hidden on the trip in the editor. |
 | Suggest drivers | keep | Suggest drivers… in the week's More menu opens a modal with one row per bus on the board whose Driver seat is empty, declined or pending assignment, ticked, or not sent while a free driver of better priority exists, unticked. Each row has a select of the free drivers in the Buses tab's order, the first in the automatic order chosen, or a blank when no one is free and rested, planned earliest leg first so one driver never takes two buses on a day. Apply saves the ticked rows at once, starting each driver at Not sent; a row that fails stays with its error. Placeholder trips and the trip in the editor are left out. |
 | Driver status menu | keep | One item per driver on the bar's right-click menu, after Mark hotel booked, whose submenu sets that driver's status at once. |
-| Bar menu | keep | Every action on the bar, in four groups parted by rules: open the trip and its itinerary; Forms, which opens the trip's list of forms, and the quote calculator, which opens the trip beside it; the trip's colour, hotel and drivers' statuses; Take off this bus and Cancel trip. Each item carries the icon its shortcut carries, and what cannot act on the bar is hidden. |
+| Bar menu | keep | Every action on the bar, in four groups parted by rules: open the trip and its itinerary; Forms, which opens the trip's list of forms, the quote calculator, which opens the trip beside it, and Add update, which opens the trip's Updates window; the trip's colour, hotel and drivers' statuses; Take off this bus and Cancel trip. Each item carries the icon its shortcut carries, and what cannot act on the bar is hidden. |
 | Open email thread | keep | In the trip editor rather than on the bar: an open icon on the Booking contact title line once the trip has a thread, whose menu adds, changes or removes it through a small box. The field itself never shows. |
 | Saved record mark | keep | In the trip editor, a small Saved contact, Saved customer or Saved location link right after the label of a field picked from the saved lists, opening that record in a new tab; one typed by hand has none. Under a linked contact's phone or email that differs from the saved one, a grey line says the saved value. |
 | Realtime refresh | later | |
@@ -196,11 +196,12 @@ slots are the same on every trip however short or narrow. Each slot carries its
 word under its icon, and when the card opens above the
 trip the slots come last, next to it. The card under the slots is the trip's
 note, pinned and shaded, then its updates, a face, the words and an age each,
-with no headings; an update opens the trip's Updates window. Hovering a trip
+with no headings; an update, or No updates yet on a trip with none, opens the
+trip's Updates window, where an update is added. Hovering a trip
 shows the same slots and card, and a slot or update used there selects that
-trip first. Every trip has the same six slots: Open trip, the itinerary,
-opened or uploaded, Forms, Assign driver, Contacts and Add update; every
-other action is on the right-click menu. Contacts opens a small window of cards in three parts, the
+trip first. Every trip has the same four slots: Open trip, the itinerary,
+opened or uploaded, Forms and Contacts; every other action is on the
+right-click menu. Contacts opens a small window of cards in three parts, the
 customer's people, the crew on that bus and the crew on the trip's other
 buses for that leg, each with its role, number, and Call and Text buttons,
 Email for a booking contact who has one, and a driver's status and report
@@ -219,8 +220,7 @@ unsaved changes are lost.
 While a trip is in the panel its bars are locked on the board: they do not
 drag, and their bus, colour and hotel are the panel's to change, so each
 changes in one place. The bar the panel holds loses its shortcut bar, because
-the editor is showing that trip; on its other bars Assign driver stays in
-place and says to change it in the editor. The editor has no shortcut row:
+the editor is showing that trip. The editor has no shortcut row:
 the itinerary is on the Files tab, with Open forms under the files, and the
 quote calculator is Open calculator on the Billing tab. Every bar of the open
 trip — the return leg, or the same leg on another bus, too — wears the

@@ -9880,6 +9880,11 @@
       return;
     }
 
+    if (item.id === 'scheduler-bar-menu-update') {
+      openUpdatesWindow(panelIndex.trips.get(bar.dataset.tripId));
+      return;
+    }
+
     if (item.id === 'scheduler-bar-menu-cancel') {
       openCancelModal(bar.dataset.tripId);
       return;
@@ -11863,17 +11868,8 @@
     toast('success', 'The file was deleted.');
   });
 
-  // The Assign driver slot opens the bar menu beside it, with the driver list open.
-  function openAssignFrom(bar, slot) {
-    const box = slot.getBoundingClientRect();
-    prepareBarMenu(bar);
-    popMenuAt(barMenu, { clientX: box.right, clientY: box.top });
-    const assign = document.getElementById('scheduler-bar-menu-assign');
-    const sub = assign?.querySelector(':scope > .rux--menu');
-    if (sub) window.Rux?.menu?.open?.(sub, assign);
-  }
-
-  /* THE SELECTED TRIP'S SHORTCUTS, the same six on every trip. A slot whose
+  /* THE SELECTED TRIP'S SHORTCUTS, the same four on every trip; every other
+     action is on the right-click menu. A slot whose
      action cannot act on the trip shows disabled, with the reason as its
      label, so the slots keep their places from trip to trip. `short` is the
      word under the slot on the docked sheet, where a phone has no hover to
@@ -11892,18 +11888,9 @@
     // The trip's list of forms.
     { id: 'forms', label: 'Forms', icon: '#m-description', short: 'Forms',
       blocked: () => null, run: bar => openForms(bar) },
-    /* While a trip is in the editor, the editor owns its drivers: a write from
-       the board would move `updated_at` under the panel and turn its next
-       Save into a conflict, so the slot says where to do it instead. */
-    { id: 'assign', label: 'Assign driver', icon: '#m-person-fill', short: 'Driver',
-      label_for: bar => (barSeat(bar)?.seat?.driver_id != null ? 'Change driver' : 'Assign driver'),
-      blocked: bar => (!client ? 'Not signed in' : !barSeat(bar)?.range ? 'Not on a bus'
-        : isEditorTrip(bar) ? 'Change the driver in the editor' : null),
-      run: (bar, slot) => openAssignFrom(bar, slot) },
   ];
-  // Contacts and Add update close the row, because every trip has people to
-  // reach and updates to write.
-  const SHORTCUT_ROW = ['open', 'itinerary', 'forms', 'assign', 'contacts', 'add_update'];
+  // Contacts closes the row, because every trip has people to reach.
+  const SHORTCUT_ROW = ['open', 'itinerary', 'forms', 'contacts'];
 
   /* The docked sheet stands on the header's own surface. The header is a theme
      zone of its own in theme.js, g100 under Carbon's four whatever the page
@@ -11999,7 +11986,7 @@
       btn.type = 'button';
       btn.dataset.slot = String(i + 1);
       const action = FIXED_SHORTCUTS[id] ?? SHORTCUT_ACTIONS.find(a => a.id === id);
-      // Itinerary and Assign driver each say which way they act on this bar.
+      // Itinerary says which way it acts on this bar.
       const why = action.blocked(bar);
       const label = why ?? (action.label_for ? action.label_for(bar) : action.label);
       btn.dataset.shortcut = action.id;
@@ -12012,10 +11999,6 @@
     }), ...(carded ? [drawCard(trip, bar)] : []));
     barShortcuts.toggleAttribute('data-card', carded);
   }
-
-  // Add update opens the trip's Updates window, without opening the trip.
-  const ADD_UPDATE = { id: 'add_update', label: 'Add update', short: 'Update', icon: '#m-add_comment', blocked: () => null,
-    run: bar => openUpdatesWindow(panelIndex.trips.get(bar.dataset.tripId)) };
 
   /* Contacts opens a small window of everyone to reach about this bar, in
      three parts: the customer's people, the crew on this bus, and the crew on
@@ -12039,7 +12022,7 @@
   const contactsList = document.getElementById('scheduler-contacts-list');
   const CONTACTS = { id: 'contacts', label: 'Call or text', short: 'Contacts', icon: '#m-call', blocked: () => null,
     run: (bar, slot) => openContactsFrom(bar, slot) };
-  const FIXED_SHORTCUTS = { add_update: ADD_UPDATE, contacts: CONTACTS };
+  const FIXED_SHORTCUTS = { contacts: CONTACTS };
   const dial = phone => String(phone).replace(/[^\d+]/g, '');
   function closeContacts(restoreFocus) {
     if (!contactsOpen) return;
@@ -12337,6 +12320,9 @@
     if (!updates.length) {
       const li = row('scheduler-card__update', 'li');
       li.appendChild(el('span', 'scheduler-card__words scheduler-card__empty', 'No updates yet'));
+      // It opens the Updates window too, where the first one is added.
+      li.tabIndex = 0;
+      li.title = 'Add an update';
       if (trip.created_at) {
         const when = el('span', 'scheduler-card__when', agoShort(trip.created_at));
         when.title = `Booked ${new Date(trip.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;

@@ -823,8 +823,8 @@
   <!-- The bar's context menu, opened by right-clicking a bar. data.js places
        and opens it the same way as the board's menu. -->
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items" id="scheduler-bar-menu" role="menu" tabindex="-1" hidden>
-    <!-- Four groups, parted by rules: open, forms and the calculator, the
-         trip's settings, and taking it away. Every item carries the icon its
+    <!-- Four groups, parted by rules: open, forms, the calculator and
+         updates, the trip's settings, and taking it away. Every item carries the icon its
          shortcut carries, so the two read alike. data.js hides what cannot act on the
          bar, and a rule left with nothing between it and the next. -->
     <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-open">
@@ -870,6 +870,12 @@
       <div class="rux--menu-item__selection-icon"></div>
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calculate"/></svg></div>
       <div class="rux--menu-item__label">Quote calculator</div>
+    </li>
+    <!-- Opens the trip's Updates window, to read them or add one. -->
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-bar-menu-update">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add_comment"/></svg></div>
+      <div class="rux--menu-item__label">Add update</div>
     </li>
     <li class="rux--menu-item-divider" role="separator"></li>
     <!-- The trip's colour: one Color item whose submenu is Carbon's menu radio

@@ -203,7 +203,8 @@ which opens the trip at its Notes field, and Updates with their count, See all
 and Add, which opens the trip's Updates window. Only the newest update shows,
 its author's small avatar beside its words, cut to two lines, and its
 age at the right; the name is the avatar's tooltip. A press on it or on See
-all opens every update in the card, and Show less closes them. Only the selected trip has a
+all opens every update in the card, and Show less closes them. An empty part
+is one line, No trip notes or No updates, with Add. Only the selected trip has a
 card. Every trip has the same four slots: Open trip, the itinerary,
 opened or uploaded, Forms and Contacts; every other action is on the
 right-click menu. Contacts opens a small window of cards in three parts, the

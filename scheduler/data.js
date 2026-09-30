@@ -12172,14 +12172,10 @@
 
   /* THE CARD'S ROWS, as the shortcut bar draws them under its slots: a red
      band while this bar's bus does not fit the trip, the reminder while the
-     trip asks for a follow-up, then two parts under their
-     own headings, the pin and the bubble the bar's updates mark wears: the
-     trip's notes, shaded, or a heading that says none in one line, and
-     the updates with their count, newest first with who
-     and how long ago, three showing and the rest scrolling. With none yet the row says so, and the time at
-     its end is the booking's, so the card still says how long the trip has
-     gone without one. Each person keeps one of Carbon's avatar colours, picked
-     by their name, so a face is learnt. */
+     trip asks for a follow-up and the other warnings, then two parts under
+     their own titles: the trip's notes and its updates, each a title alone
+     that says none when it is empty. Each person keeps one of Carbon's
+     avatar colours, picked by their name, so a face is learnt. */
   // The five mid tones, each of which holds white initials at 4.5 to 1.
   const AVATAR_COLOURS = ['rux--user-avatar--order-1-cyan', 'rux--user-avatar--order-3-green',
     'rux--user-avatar--order-4-magenta', 'rux--user-avatar--order-5-purple', 'rux--user-avatar--order-6-teal'];
@@ -12273,13 +12269,16 @@
       band.appendChild(el('strong', null, TODO_WORDS[n.id] ?? n.label));
       card.appendChild(band);
     }
-    /* The note is a part of its own on every trip, titled Trip notes with
-       the button that edits it: its words or No notes. */
+    /* The note is a part of its own on every trip: titled Trip notes over
+       its words, with Edit, or with none the one line No trip notes, with
+       Add. */
     const note = row('scheduler-card__note');
-    note.append(cardTitle('Trip notes', cardAction('note', trip.notes ? 'Edit' : 'Add', trip.notes ? 'Edit the note' : 'Add a note')),
-      trip.notes
-        ? el('span', 'scheduler-card__note-words', trip.notes)
-        : el('span', 'scheduler-card__note-words scheduler-card__empty', 'No notes'));
+    if (trip.notes) {
+      note.append(cardTitle('Trip notes', cardAction('note', 'Edit', 'Edit the note')),
+        el('span', 'scheduler-card__note-words', trip.notes));
+    } else {
+      note.appendChild(cardTitle('No trip notes', cardAction('note', 'Add', 'Add a note')));
+    }
     card.appendChild(note);
     /* The updates, titled with their count, See all and the button that
        adds one, which opens the Updates window. Only the newest shows, cut to
@@ -12301,7 +12300,7 @@
       toggle.setAttribute('aria-expanded', String(open));
       actions.unshift(toggle);
     }
-    part.appendChild(cardTitle(all.length ? `Updates · ${all.length}` : 'Updates', ...actions));
+    part.appendChild(cardTitle(all.length ? `Updates · ${all.length}` : 'No updates', ...actions));
     /* An update is its author's small avatar beside its words, with how
        long ago at the right. The name is the avatar's tooltip and
        accessible name, and the full date the age's tooltip. */
@@ -12333,8 +12332,6 @@
       list.setAttribute('aria-label', 'Updates, newest first');
       list.append(...(open ? all : all.slice(0, 1)).map(updateItem));
       part.appendChild(list);
-    } else {
-      part.appendChild(el('span', 'scheduler-card__words scheduler-card__empty', 'No updates yet'));
     }
     card.appendChild(part);
     return card;

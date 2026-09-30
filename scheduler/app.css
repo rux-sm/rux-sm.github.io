@@ -951,6 +951,8 @@ button.scheduler-row-head__num::after {
   margin-block-end: var(--rux-spacing-02);
   color: color-mix(in srgb, var(--card-ink) 70%, transparent);
 }
+/* A part with nothing in it is its title alone, which says so. */
+.scheduler-card__title:last-child { margin-block-end: 0; }
 /* The note and the updates are the same kind of part on the same surface,
    each its title, then what it holds. */
 .scheduler-card__note {
@@ -994,7 +996,6 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-card__updates[data-open] .scheduler-card__words { white-space: pre-wrap; }
 .scheduler-card__when { white-space: nowrap; color: color-mix(in srgb, var(--card-ink) 70%, transparent); }
-.scheduler-card__empty { opacity: .7; }
 /* See all sits before Add in the title, pushed to the end with it, and
    goes when there is nothing more to show; the action's display beats the
    browser's own `[hidden]`. */

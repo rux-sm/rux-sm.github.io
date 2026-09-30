@@ -428,7 +428,8 @@
     // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
     // and the itinerary panel, which frames the file at its path.
     'trip_documents(id,label,created_at,file_name,file_path,file_size)',
-    // Set in the Files tab; a trip that does not need an itinerary is not marked.
+    // Set from the Checklist or the Files tab; a trip that does not need an
+    // itinerary is not marked.
     'itinerary_not_needed',
     // rux-ui's Confirm mark on the itinerary, which a save that changes the route takes off.
     'itinerary_confirmed',
@@ -1656,8 +1657,7 @@
   /* A section can carry one control on its heading line, as each billing
      switch does. The head is app markup rather than a `contained-list`
      header, because Contract holds form fields, not list rows; every billing
-     section uses it, so the switches share one right edge. A section that is
-     only its switch, as Itinerary not needed, passes no body. */
+     section uses it, so the switches share one right edge. */
   const section = (title, node, action) => {
     const wrap = el('div', 'scheduler-panel-section');
     // A titleless section still keeps the `spacing-07` above it.
@@ -3059,14 +3059,66 @@
   };
 
   let filesBody = null;
-  let filesEmpty = null;
+  let filesNote = null;
+  let filesAdd = null;
+  // The trip whose earlier itineraries are open under its newest, kept so a redraw keeps them open.
+  let earlierOpenFor = null;
+  /* Newest first, with a trip's earlier itineraries folded under its newest
+     behind one line that opens them, and Add file last, which is also the
+     empty state. */
   function drawFiles(trip) {
     if (!filesBody || !trip) return;
-    const docs = documentsOf(trip);
     const newest = latestItinerary(trip);
-    filesBody.replaceChildren(...docs.map(doc => fileRow(trip, doc,
-      String(doc.label || '').toLowerCase() === 'itinerary' && newest && doc.id !== newest.id)));
-    filesEmpty.hidden = docs.length > 0;
+    const earlier = itinerariesOf(trip).slice(1);
+    const open = earlierOpenFor === trip.id;
+    const rows = [];
+    for (const doc of documentsOf(trip)) {
+      if (earlier.includes(doc)) continue;
+      rows.push(fileRow(trip, doc, false));
+      if (doc !== newest || !earlier.length) continue;
+      const li = el('li', 'scheduler-files-earlier');
+      const btn = el('button', 'rux--link rux--link--sm', open ? 'Hide earlier versions'
+        : `${earlier.length} earlier ${earlier.length === 1 ? 'version' : 'versions'}`);
+      btn.type = 'button';
+      btn.setAttribute('aria-expanded', String(open));
+      btn.addEventListener('click', () => {
+        earlierOpenFor = open ? null : trip.id;
+        drawFiles(trip);
+        filesBody.querySelector('.scheduler-files-earlier button')?.focus();
+      });
+      li.appendChild(btn);
+      rows.push(li);
+      if (open) rows.push(...earlier.map(d => fileRow(trip, d, true)));
+    }
+    filesBody.replaceChildren(...rows, filesAdd.li);
+    drawItineraryNote(trip);
+  }
+
+  /* Under the list, only while the trip has no itinerary: that none has come
+     yet, with Not needed, or that none is needed, with Undo. Either press is
+     an edit Save writes. */
+  function drawItineraryNote(trip) {
+    if (!filesNote) return;
+    const none = !itinerariesOf(trip).length;
+    filesNote.hidden = !none;
+    if (!none) return;
+    const off = !!editing?.itineraryNotNeeded;
+    const btn = el('button', 'rux--link rux--link--sm', off ? 'Undo' : 'Not needed');
+    btn.type = 'button';
+    btn.setAttribute('aria-label', off ? 'Undo itinerary not needed' : 'Itinerary not needed');
+    btn.addEventListener('click', () => {
+      setItineraryNotNeeded(!off);
+      filesNote.querySelector('button')?.focus();
+    });
+    filesNote.replaceChildren(off ? 'Itinerary not needed.' : 'No itinerary yet.', btn);
+  }
+
+  function setItineraryNotNeeded(on) {
+    if (!editing) return;
+    editing.itineraryNotNeeded = on;
+    refreshDirty();
+    if (editing.trip) drawItineraryNote(editing.trip);
+    drawChecklist();
   }
 
   /* Carbon's file item for the file going up, from `sink/file-uploader.html`:
@@ -3165,68 +3217,49 @@
   fileTypeInput?.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); finishFileType(); } });
   fileTypeModal?.addEventListener('rux:modal-closed', () => { fileTypeDone = null; });
 
-  /* Carbon's file uploader, from `sink/file-uploader.html`: a drop zone that
-     also opens the file dialog, and the file's type asked once it is chosen.
-     Design ships no module for it, so the drop, the dialog and the item are
-     wired here. One file at a time, and the zone is disabled while one goes
-     up. */
-  function fileUploader(tripId) {
-    const item = el('div', 'rux--form-item');
-    const drop = el('button', 'rux--file__drop-container rux--file-browse-btn');
-    drop.type = 'button';
-    // Its icon before its words, centred, as the dashed add rows are.
-    const dropIcon = svgUse('#m-upload', '16', '0 0 32 32');
-    drop.append(dropIcon, el('span', null, 'Drag and drop a PDF here or click to upload'));
-    const inputLabel = el('label', 'rux--visually-hidden', 'PDF file');
-    inputLabel.htmlFor = 'scheduler-f-file';
-    const input = el('input', 'rux--file-input rux--visually-hidden');
-    input.type = 'file';
-    input.id = 'scheduler-f-file';
-    input.accept = '.pdf,application/pdf';
-    input.tabIndex = -1;
-    const zone = el('div', 'rux--file');
-    zone.append(drop, inputLabel, input);
-    const container = el('div', 'rux--file-container rux--file-container--drop');
-    /* No visible title: the section heading says Add a file, and the input
-       keeps its hidden PDF file label. */
-    item.append(zone, container);
-
-    const busy = on => {
-      drop.disabled = on;
-      drop.classList.toggle('rux--file-browse-btn--disabled', on);
-    };
+  /* Adding a file: the list's Add file row opens the file dialog, and a file
+     dropped anywhere on the tab is taken too. Its type is asked once it is
+     chosen, and Carbon's file item, from `sink/file-uploader.html`, shows it
+     going up under the list. One file at a time, and Add file is disabled
+     while one goes up. */
+  function fileAdder(tripId) {
+    const progress = el('div', 'rux--file-container');
     const start = async file => {
-      if (!file || drop.disabled) return;
+      if (!file || add.btn.disabled) return;
       // A file that is not a PDF is turned away before its type is asked.
       if (!(await isPdf(file))) {
-        fileItem(container, file.name).fail('Only PDF files can be added', 'Export the file as a PDF, then add it again.');
+        fileItem(progress, file.name).fail('Only PDF files can be added', 'Export the file as a PDF, then add it again.');
         return;
       }
       askFileType(file.name, async label => {
-        busy(true);
-        try { await uploadFrom(tripId, label, file, fileItem(container, file.name)); }
-        finally { busy(false); }
+        add.btn.disabled = true;
+        try { await uploadFrom(tripId, label, file, fileItem(progress, file.name)); }
+        finally { add.btn.disabled = false; }
       });
     };
-    drop.addEventListener('click', () => input.click());
-    input.addEventListener('change', () => {
-      const file = input.files?.[0];
-      input.value = '';
-      start(file);
-    });
-    const over = on => drop.classList.toggle('rux--file__drop-container--drag-over', on);
-    drop.addEventListener('dragover', e => { e.preventDefault(); if (!drop.disabled) over(true); });
-    drop.addEventListener('dragleave', () => over(false));
-    drop.addEventListener('drop', e => {
-      e.preventDefault();
-      over(false);
-      start(e.dataTransfer?.files?.[0]);
-    });
-
-    const wrap = el('div', 'scheduler-file-add');
-    wrap.appendChild(item);
-    return wrap;
+    const add = listAddRow({ label: 'Add file', id: 'scheduler-f-fileadd', onClick: () => pickFile(start) });
+    return { li: add.li, progress, start };
   }
+
+  /* The whole Files tab takes a dropped file, and Add file lights while one is
+     dragged over it. Only a drag carrying files is taken, so text dragged
+     inside the tab is left alone. */
+  const carriesFiles = e => [...(e.dataTransfer?.types || [])].includes('Files');
+  const dragLit = on => panelFiles?.classList.toggle('scheduler-files--drag', on);
+  panelFiles?.addEventListener('dragover', e => {
+    if (!filesAdd || !carriesFiles(e)) return;
+    e.preventDefault();
+    dragLit(true);
+  });
+  panelFiles?.addEventListener('dragleave', e => {
+    if (!panelFiles.contains(e.relatedTarget)) dragLit(false);
+  });
+  panelFiles?.addEventListener('drop', e => {
+    if (!filesAdd || !carriesFiles(e)) return;
+    e.preventDefault();
+    dragLit(false);
+    filesAdd.start(e.dataTransfer.files?.[0]);
+  });
 
   // The editor is a flex child of the board, not an animated overlay, so
   // closing it is setting `hidden`.
@@ -4243,8 +4276,8 @@
     { key: 'invoice_status', get: f => on(f['scheduler-f-invoice']) ? 'Invoiced' : 'Pending' },
     { key: 'invoiced', get: f => on(f['scheduler-f-invoice']) },
     { key: 'invoice_number', get: () => listRowsToSave('invoice')[0]?.number ?? null },
-    // Files. A trip that runs without an itinerary loses its bar's mark.
-    { key: 'itinerary_not_needed', get: f => on(f['scheduler-f-notneeded']) },
+    // A trip that runs without an itinerary loses its bar's mark.
+    { key: 'itinerary_not_needed', get: () => !!editing?.itineraryNotNeeded },
     /* The contact links are trip columns, so they diff here. They read the DOM
        rather than `f`, which keeps them out of `readForm`'s required ids; a
        getter returns undefined when its control is not on screen. */
@@ -4731,7 +4764,7 @@
                       'start', 'end', 'rstart', 'rend',
                       'quoted',
                       'contract', 'contractnote', 'poreceived', 'invoice',
-                      'color', 'notneeded']) {
+                      'color']) {
       f[`scheduler-f-${id}`] = document.getElementById(`scheduler-f-${id}`);
     }
     if (Object.values(f).some(v => !v)) return null;
@@ -6277,6 +6310,20 @@
       go.addEventListener('click', () => goToChecklistItem(item.action));
       li.appendChild(go);
     }
+    /* The itinerary can be marked not needed from its row, and a row marked
+       so takes it back; either is an edit Save writes. */
+    const skipped = kind === 'itinerary' && item.done && editing.itineraryNotNeeded && !itinerariesOf(editing.trip).length;
+    if (kind === 'itinerary' && (!item.done || skipped)) {
+      const flip = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', skipped ? 'Undo' : 'Not needed');
+      flip.type = 'button';
+      flip.id = 'scheduler-check-itinerary-needed';
+      flip.setAttribute('aria-label', skipped ? 'Undo itinerary not needed' : 'Itinerary not needed');
+      flip.addEventListener('click', () => {
+        setItineraryNotNeeded(!skipped);
+        document.getElementById('scheduler-check-itinerary-needed')?.focus();
+      });
+      li.appendChild(flip);
+    }
     return li;
   }
 
@@ -6285,7 +6332,7 @@
   function drawChecklist() {
     if (!editing?.trip || !panelChecklist || panelChecklist.hidden) return;
     const on = doneState();
-    const view = { ...editing.trip, ...editing.ticks };
+    const view = { ...editing.trip, ...editing.ticks, itinerary_not_needed: editing.itineraryNotNeeded };
     for (const { tab } of DONE_TABS) {
       const d = on?.[tab] ? editing.done[tab] : null;
       view[`${tab}_done_at`] = d ? (d.at || 'now') : null;
@@ -6439,6 +6486,8 @@
         { ref: trip[`hotel_itinerary_number_${l}`] ?? null, booked: !!trip[`hotel_booked_${l}`] }])),
       hotelWanted: !!trip.need_hotel,
       fuelCard: !!trip.need_fuel_card,
+      // Itinerary not needed, set from the Checklist's itinerary row or the Files tab.
+      itineraryNotNeeded: !!trip.itinerary_not_needed,
       // The price the customer was sent and the day, or null before it is.
       quoteSent: trip.quote_sent_price == null ? null
         : { price: Number(trip.quote_sent_price), on: trip.quote_sent_on ?? null },
@@ -8249,24 +8298,24 @@
     redrawLines();
     linesLive = true;
 
-    /* Files holds the Itinerary not needed switch, which Save writes like any
-       field, then the uploader and the trip's files, which write at once. A
-       trip not yet saved has no id to file under. */
+    /* Files is one list: the trip's files, which write at once, with Add file
+       as its last row, and under it the line a trip with no itinerary shows.
+       A trip not yet saved has no id to file under. */
     panelFiles.replaceChildren();
-    const notNeeded = section('Itinerary not needed', null,
-      toggleAction('scheduler-f-notneeded', 'Itinerary not needed', !!trip.itinerary_not_needed));
     if (creating || !client) {
       filesBody = null;
-      filesEmpty = null;
-      panelFiles.append(notNeeded, section('Files', el('p', 'rux--form__helper-text', creating
+      filesNote = null;
+      filesAdd = null;
+      panelFiles.append(section('Files', el('p', 'rux--form__helper-text', creating
         ? 'Save the trip first, then add its itinerary, contract and purchase order here.'
         : 'This preview has no connection, so files cannot be listed or added.')));
     } else {
       const { list, body } = rowList();
       filesBody = body;
-      filesEmpty = el('p', 'rux--form__helper-text', 'No files yet. A file added above is listed here.');
+      filesAdd = fileAdder(trip.id);
+      filesNote = el('p', 'rux--form__helper-text scheduler-files-note');
       const listWrap = el('div');
-      listWrap.append(list, filesEmpty);
+      listWrap.append(list, filesAdd.progress, filesNote);
       // The trip's forms, printed from what it holds, beside the files it was sent.
       const formsButton = el('button', 'rux--btn rux--btn--tertiary rux--layout--size-md scheduler-quickbooks', 'Open forms');
       formsButton.type = 'button';
@@ -8275,8 +8324,7 @@
       formsButton.appendChild(formsIcon);
       formsButton.id = 'scheduler-f-openforms';
       formsButton.addEventListener('click', () => openForms(null, trip.id, formsButton));
-      panelFiles.append(notNeeded, section('Add a file', fileUploader(trip.id)), section('Files', listWrap),
-        section('Forms', formsButton));
+      panelFiles.append(section('Files', listWrap), section('Forms', formsButton));
       drawFiles(trip);
     }
 
@@ -11854,8 +11902,7 @@
       { documentId: doc.id, fileName: doc.file_name });
   }
 
-  /* One file dialog for every entry point: the Files tab's drop zone has its
-     own input, and Replace and the bar menu's Upload itinerary use this one. */
+  // One file dialog for every entry point: Add file, Replace and the bar menu's Upload itinerary.
   const filePicker = el('input', 'rux--visually-hidden');
   filePicker.type = 'file';
   filePicker.accept = '.pdf,application/pdf';

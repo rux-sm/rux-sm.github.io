@@ -83,8 +83,9 @@ that cannot are ticked where the work is done, like right after printing a form.
   the Buses tab, the driver's status, the upload.
 - **An item a trip does not need is left out,** not shown as "not needed":
   no hotel row on a day trip, no hours-of-service row without a part-time
-  driver. The trip's existing "not needed" switches for itinerary and contact
-  keep working and remove those rows.
+  driver. The trip's contact "not needed" switch removes its row. The
+  itinerary's row has its own Not needed, and then reads Itinerary not
+  needed, done, with Undo.
 - **A leg is Ready when nothing is left.** Ready is worked out each time and
   never saved.
 - **The checklist is a Checklist tab in the trip editor,** one section per leg

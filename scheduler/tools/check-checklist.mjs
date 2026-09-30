@@ -32,10 +32,10 @@ const ready = { ...base, confirmed: true, route_done_at: 't', buses_done_at: 't'
 const readyLegs = checklist(ready, () => full, true);
 expect('a trip with everything done is ready', [readyLegs[0].ready, leftOf(readyLegs)], [true, 0]);
 
-expect('not needed switches leave their rows out',
+expect('not needed leaves the contact out and keeps the itinerary, done',
   ids(checklist({ ...ready, itinerary_not_needed: true, contact_not_needed: true, trip_documents: [] }, () => full))
     .filter(i => i.startsWith('itinerary:') || i.startsWith('contact:')),
-  []);
+  ['itinerary:outbound+']);
 
 expect('a part-time driver asks for the hours-of-service record',
   ids(checklist(ready, () => ({ ...full, partTime: true }), true)).filter(i => i.startsWith('hos')),

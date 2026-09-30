@@ -6,7 +6,8 @@
    in the order the work happens, and only the items the leg needs:
 
      Entered      the Route, Buses and Billing tabs each marked done
-     Customer     confirmed, itinerary received, a trip contact
+     Customer     confirmed, the itinerary received or not needed, a trip
+                  contact
      Buses        every bus assigned and fit for the trip, every seat
                   filled, every driver confirmed
      Paperwork    itinerary printed, each driver's envelope printed, the
@@ -52,7 +53,10 @@
 
     if (first) {
       add('Customer', 'confirmed', 'Confirmed', trip.confirmed, TABS.billing);
-      if (!trip.itinerary_not_needed) add('Customer', 'itinerary', 'Itinerary received', hasItinerary(trip), TABS.files);
+      // An itinerary marked not needed stays on the list, done, so it can be taken back.
+      const skipped = !hasItinerary(trip) && !!trip.itinerary_not_needed;
+      add('Customer', 'itinerary', skipped ? 'Itinerary not needed' : 'Itinerary received',
+        skipped || hasItinerary(trip), TABS.files);
       if (!trip.contact_not_needed) add('Customer', 'contact', 'Trip contact', tripContact, TABS.details);
     }
 

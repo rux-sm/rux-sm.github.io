@@ -1665,6 +1665,24 @@ button.scheduler-row-head__num::after {
 /* The type dialog's Name field while another type is picked; a form item's
    flex display would beat `[hidden]`. */
 #scheduler-file-type-other[hidden] { display: none; }
+/* A file dragged over the Files tab lights Add file the way a hover does,
+   because the whole tab takes the drop. */
+.scheduler-files--drag .scheduler-list-additem .scheduler-list-add {
+  border-color: var(--rux-link-primary);
+  color: var(--rux-link-primary);
+}
+/* The line that opens a trip's earlier itineraries sits under the newest,
+   indented to its words. */
+.scheduler-files-earlier { padding-inline-start: var(--rux-spacing-05); }
+/* Under the list: that no itinerary has come, and its Not needed or Undo
+   beside the words. */
+.scheduler-files-note {
+  display: flex;
+  align-items: baseline;
+  gap: var(--rux-spacing-03);
+  margin-block-start: var(--rux-spacing-05);
+}
+.scheduler-files-note[hidden] { display: none; }
 /* A list's records, hidden while its switch is off; its grid display would
    beat `[hidden]`. */
 .scheduler-list-body[hidden] { display: none; }
@@ -3861,10 +3879,12 @@ html:has(.scheduler-page[data-takeover]) {
 /* The drop-off pair a round trip does not ask for. `rux--stack-vertical` is
    `display: grid`, which outranks the bare `[hidden]` attribute. */
 .scheduler-route-drop[hidden] { display: none; }
-/* The link that opens them, and the route times' Change, is a button,
-   because it acts on this page rather than going anywhere, and Carbon's link
-   is written for an anchor. */
-.scheduler-route-open {
+/* The link that opens them, the route times' Change, and the Files tab's
+   earlier versions and Not needed are buttons, because they act on this page
+   rather than going anywhere, and Carbon's link is written for an anchor. */
+.scheduler-route-open,
+.scheduler-files-earlier > button,
+.scheduler-files-note > button {
   appearance: none;
   background: none;
   border: 0;

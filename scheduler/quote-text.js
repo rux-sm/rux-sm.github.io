@@ -17,9 +17,13 @@
   const TRIP_TYPES = { round_trip: 'round trip', one_way: 'one way', dropoff_pickup: 'drop-off and pickup' };
 
   /* State names as a quote abbreviates them: a stored address carries the name
-     in full, "Texas 78504", because that is what the map service returned. */
+     in full, "Texas 78504", when the map service returned it, and the code,
+     "TX 78504", when it was typed or saved that way. */
   const STATES = Object.fromEntries('Alabama:AL,Alaska:AK,Arizona:AZ,Arkansas:AR,California:CA,Colorado:CO,Connecticut:CT,Delaware:DE,Florida:FL,Georgia:GA,Hawaii:HI,Idaho:ID,Illinois:IL,Indiana:IN,Iowa:IA,Kansas:KS,Kentucky:KY,Louisiana:LA,Maine:ME,Maryland:MD,Massachusetts:MA,Michigan:MI,Minnesota:MN,Mississippi:MS,Missouri:MO,Montana:MT,Nebraska:NE,Nevada:NV,New Hampshire:NH,New Jersey:NJ,New Mexico:NM,New York:NY,North Carolina:NC,North Dakota:ND,Ohio:OH,Oklahoma:OK,Oregon:OR,Pennsylvania:PA,Rhode Island:RI,South Carolina:SC,South Dakota:SD,Tennessee:TN,Texas:TX,Utah:UT,Vermont:VT,Virginia:VA,Washington:WA,West Virginia:WV,Wisconsin:WI,Wyoming:WY'
-    .split(',').map(pair => pair.split(':')));
+    .split(',').flatMap(pair => {
+      const [name, code] = pair.split(':');
+      return [[name, code], [code, code]];
+    }));
 
   /* Split rather than passed to `new Date()`, which reads a bare date as UTC
      midnight and names the day before west of Greenwich. */
@@ -28,15 +32,15 @@
     return new Date(y, m - 1, d);
   };
 
-  /* A place as a quote names it, "Edinburg, TX": the part before the one
-     carrying the ZIP, and that part's state. An address shaped otherwise is
-     carried across whole, because a quote reads better with too much address
-     than with none. */
+  /* A place as a quote names it, "Edinburg, TX": the last part that is a
+     state, with or without its ZIP, and the city in the part before it. An
+     address shaped otherwise is carried across whole, because a quote reads
+     better with too much address than with none. */
+  const stateOf = part => STATES[part.replace(/\s*\d{5}(-\d{4})?$/, '')] ?? null;
   function place(text) {
     const parts = String(text || '').split(',').map(part => part.trim()).filter(Boolean);
-    const zipAt = parts.findIndex(part => /\s\d{5}(-\d{4})?$/.test(part));
-    const state = zipAt > 0 ? STATES[parts[zipAt].replace(/\s+\d{5}(-\d{4})?$/, '')] : null;
-    return state ? `${parts[zipAt - 1]}, ${state}` : parts.join(', ');
+    const at = parts.findLastIndex(stateOf);
+    return at > 0 ? `${parts[at - 1]}, ${stateOf(parts[at])}` : parts.join(', ');
   }
 
   /* A range as the office writes one: "December 11-13, 2026", the month named

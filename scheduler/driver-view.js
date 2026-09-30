@@ -20,11 +20,8 @@
 
   const TZ = 'America/Chicago';
   const MAX_LEGS = 50;
-  // Always the published site: a link goes to a driver's phone, which cannot
-  // reach a preview running on this Mac.
-  const SITE = 'https://rux-sm.github.io';
-  const PUBLIC = `${SITE}/scheduler/share/driver.html?s=`;
-  const DOC = `${SITE}/scheduler/share/document.html?id=`;
+  // The wording a driver is sent, shared with the board's reminder.
+  const { DRIVER_LINK: PUBLIC, messageDate, roleLabel, stopsForLeg, legLines } = window.SchedulerDriverText;
   const $ = id => document.getElementById(id);
   const client = window.Rux?.account?.client;
   const page = window.SchedulerDriverPage;
@@ -43,45 +40,10 @@
   const short = (d, opts) => d.toLocaleDateString('en-US', opts);
   const rangeText = (a, b) => (iso(a) === iso(b) ? short(a, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
     : `${short(a, { month: 'short', day: 'numeric' })} – ${short(b, { month: 'short', day: 'numeric', year: 'numeric' })}`);
-  const messageDate = (a, b) => {
-    const day = d => short(d, { weekday: 'short' }).toUpperCase();
-    const num = d => `${d.getMonth() + 1}/${d.getDate()}`;
-    return iso(a) === iso(b) ? `${day(a)} ${num(a)}` : `${day(a)} ${num(a)}–${day(b)} ${num(b)}`;
-  };
-  const timeText = v => {
-    const t = clean(v);
-    if (/[ap]m$/i.test(t)) return t.toUpperCase();
-    const m = /^(\d{1,2}):(\d{2})/.exec(t);
-    if (!m) return t;
-    const h = +m[1];
-    return `${h % 12 || 12}:${m[2]} ${h < 12 ? 'AM' : 'PM'}`;
-  };
-  // "Invented High School, 1 Main St, Brownsville, TX 78520" as "Brownsville".
-  const town = v => {
-    const parts = clean(v).split(',').map(p => p.trim()).filter(Boolean);
-    if (parts.length < 2) return clean(v);
-    if (/^(united states|usa|us)$/i.test(parts.at(-1))) parts.pop();
-    if (parts.length > 1 && /^(texas|tx|oklahoma|ok)(\s+\d{5}(?:-\d{4})?)?$/i.test(parts.at(-1))) parts.pop();
-    return parts.at(-1);
-  };
-  const ROLE = { 'driver': 'Driver', 'co-driver': 'Co-driver', 'relief-start': 'Relief driver', 'relief-end': 'Relief driver' };
-  const roleLabel = r => ROLE[r] || 'Driver';
-  const isRelief = r => r === 'relief-start' || r === 'relief-end';
   const nameOf = d => clean(d?.short_name || d?.name) || 'Driver';
   const activeSeats = a => {
     const roles = Array.isArray(a.active_roles) ? new Set(a.active_roles.map(e => String(e).split(':', 1)[0])) : null;
     return (a.trip_drivers || []).filter(d => d.driver_id && ((d.role || 'driver') === 'driver' || roles === null || roles.has(d.role)));
-  };
-  const stopsForLeg = (trip, leg) => {
-    const all = [...(trip.trip_stops || [])].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
-    let out = all.filter(s => (s.leg || 'outbound') !== 'return');
-    let back = all.filter(s => s.leg === 'return');
-    if (trip.trip_type === 'dropoff_pickup' && !back.length) {
-      const firstReturn = out.findIndex(s => s.type === 'return');
-      const second = out.findIndex((s, i) => i > firstReturn && s.type === 'pickup');
-      if (firstReturn >= 0 && second > firstReturn) { back = out.slice(second); out = out.slice(0, second); }
-    }
-    return leg === 'return' ? back : out;
   };
 
   // -- the driver's legs --------------------------------------------------------------
@@ -173,20 +135,8 @@
     const to = chosen.reduce((a, l) => (l.end > a ? l.end : a), chosen[0].end);
     const url = link ? PUBLIC + encodeURIComponent(link.token) : '';
     const lines = [`Hi ${first}, here are your assignments for ${rangeText(from, to)}:`];
-    for (const l of chosen) {
-      const legWord = l.trip.trip_type === 'dropoff_pickup' ? (l.leg === 'return' ? 'Inbound' : 'Outbound') : '';
-      lines.push('', [messageDate(l.start, l.end), `Bus ${l.bus}`, roleLabel(l.role), legWord].filter(Boolean).join(' • '));
-      if (isRelief(l.role)) {
-        lines.push(l.swap ? `${timeText(l.swap)} swap` : l.partner ? `Swap: coordinate with ${l.partner}` : 'Swap time not set');
-        if (l.instructions) lines.push(l.instructions);
-      } else if (l.spot) {
-        lines.push(`${timeText(l.spot)} spot`);
-      }
-      const a = town(l.from), b = town(l.to);
-      if (a || b) lines.push(`${a || 'Pickup'} → ${b || 'Destination'}`);
-      // Without a link, each trip carries its itinerary; the link carries them all.
-      if (!url && l.itinerary) lines.push(`Itinerary: ${DOC}${encodeURIComponent(l.itinerary)}`);
-    }
+    // Without a link, each trip carries its itinerary; the link carries them all.
+    for (const l of chosen) lines.push('', ...legLines(l, { itinerary: !url }));
     if (url) lines.push('', 'Trip details and itineraries:', url);
     return lines.join('\n');
   }

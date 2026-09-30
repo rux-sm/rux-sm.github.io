@@ -216,7 +216,12 @@ confirmed, the Customer part opens with Email driver details, a written email
 to the booking contact who has an address, and Copy driver details, the same
 letter on the clipboard: every bus on the trip with its confirmed drivers'
 names and numbers, each leg under its date when their crews differ. A driver's Text opens their Google
-Messages link on a computer where the Drivers page holds one. A call, text
+Messages link on a computer where the Drivers page holds one. Each driver's
+card also has Remind, a text with their reminder of the leg typed in, and a
+Copy square: "Hi Oscar, a reminder for your trip tomorrow:", then the leg in
+the Driver week info message's own lines, from `scheduler/driver-text.js`,
+and the newest itinerary's link. Where the driver's text opens Google
+Messages, Remind copies the reminder first, to paste. A call, text
 or email to the customer's people, and the driver details, offer to add it to the trip's updates,
 and writes nothing if the offer is ignored. A shortcut
 that cannot act on the trip, such as the envelope on a bus with no driver, shows faint

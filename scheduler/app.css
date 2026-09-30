@@ -2393,9 +2393,11 @@ button.scheduler-row-head__num::after {
 /* Text all drivers spans the list under its part's name. */
 .scheduler-contacts__all { inline-size: 100%; max-inline-size: none; }
 /* The driver details under Customer: Email across the row, Copy a square
-   at its end. */
+   at its end. A driver's reminder is the same, Remind across its own row
+   under Call and Text and Copy a square at its end. */
 .scheduler-contacts__letter { display: flex; gap: var(--rux-spacing-03); }
-.scheduler-contacts__letter .scheduler-contacts__copy { flex: none; }
+.scheduler-contacts__letter .scheduler-contacts__copy,
+.scheduler-contact__action.scheduler-contacts__copy { flex: none; }
 /* A driver's status in its colour, as the bar's crew marks carry it. */
 .scheduler-contact__status--success { color: var(--rux-support-success); }
 .scheduler-contact__status--warning { color: var(--rux-support-warning); }

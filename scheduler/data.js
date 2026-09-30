@@ -12215,7 +12215,9 @@
      leg. Once a driver has confirmed, the Customer part opens with the driver
      details letter, to email or copy. Text opens the phone's own messages, except a driver's on a computer,
      which opens the office's Google Messages conversation with them where the
-     Drivers page holds one.
+     Drivers page holds one. Each driver's card adds Remind and a Copy square:
+     their reminder of this leg, typed into a new text, or copied before their
+     Google Messages conversation opens, since it takes no text.
 
      A call or text to the customer's people offers, in a notice, to add it to
      the trip's updates; ignored, nothing is written. Calls to drivers offer
@@ -12325,12 +12327,42 @@
     const assigns = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === leg)
       .sort((a, b) => (String(a.id) === bar.dataset.assignmentId ? -1 : String(b.id) === bar.dataset.assignmentId ? 1
         : (a.position ?? 0) - (b.position ?? 0)));
+    /* Each driver's reminder of this leg, in the Driver week info's wording:
+       their day, bus, role and spot or swap, the leg's towns and its newest
+       itinerary. Today is the office's, in Chicago. */
+    const driverText = window.SchedulerDriverText;
+    const inbound = leg === 'return' && trip.trip_type === SPLIT;
+    const legStart = inbound ? trip.return_start_date : trip.start_date;
+    const legEnd = (inbound ? (trip.return_end_date || trip.return_start_date) : (trip.end_date || trip.start_date)) || legStart;
+    const legStops = driverText?.stopsForLeg(trip, leg) ?? [];
+    const legPickup = legStops.find(s => s.type === 'pickup') || {};
+    const legBack = [...legStops].reverse().find(s => s.type === 'return') || {};
+    const officeToday = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date());
+    const reminderOf = (a, c) => {
+      if (!driverText || !legStart) return null;
+      const seat = (a.trip_drivers || []).find(d => String(d.driver_id) === String(c.driverId) && (d.role || 'driver') === c.role);
+      const partnerSeat = (a.trip_drivers || []).find(d => d.driver_id && (d.role || 'driver') === 'driver'
+        && String(d.driver_id) !== String(c.driverId));
+      const partner = partnerSeat ? panelIndex.driversById.get(partnerSeat.driver_id) : null;
+      const number = a.bus_id != null ? panelIndex.buses.get(a.bus_id)?.number ?? null : null;
+      const first = String(c.who.short_name || c.who.name || 'there').trim().split(/\s+/)[0];
+      return driverText.reminder(first, {
+        trip, leg, role: c.role, start: parseISO(legStart), end: parseISO(legEnd),
+        bus: number != null ? String(number) : 'not set',
+        spot: legPickup.spot, swap: c.reportTime, instructions: String(seat?.instructions ?? '').trim(),
+        partner: partner ? (partner.short_name || partner.name) : '',
+        from: legPickup.address || legPickup.name,
+        to: inbound ? (legBack.address || legBack.name || 'Yard') : trip.destination,
+        itinerary: latestItinerary(trip)?.id || '',
+      }, officeToday);
+    };
     const crewOfBus = a => crewOf(trip, a, panelIndex.driversById, panelIndex.statuses)
       .filter(c => c.who)
       .map(c => ({
         name: c.who.name, role: c.label, driverId: c.driverId, phone: c.who.phone || null, texting: c.who.texting_url || null,
         status: c.status, report: c.reportTime ? hhmm(c.reportTime) : null,
         bus: a.bus_id != null ? panelIndex.buses.get(a.bus_id)?.number ?? null : null,
+        reminder: reminderOf(a, c),
       }));
     const mine = assigns.filter(a => String(a.id) === bar.dataset.assignmentId).flatMap(crewOfBus);
     const others = assigns.filter(a => String(a.id) !== bar.dataset.assignmentId).flatMap(crewOfBus);
@@ -12375,13 +12407,44 @@
         acts.appendChild(button('Text', '#m-chat', messages ? p.texting : `sms:${dial(p.phone)}`, messages, p.customer ? offer('Texted', p.name) : null));
       }
       if (p.email) acts.appendChild(button('Email', '#m-mail', `mailto:${p.email}`, false, p.customer ? offer('Emailed', p.name) : null));
+      /* A driver's reminder of this leg, on a row of its own under Call and
+         Text. Remind opens a text with it typed in; to the office's Google
+         Messages conversation, which takes no text, it copies the reminder
+         first to paste. Copy beside it copies alone. */
+      const remind = el('div', 'scheduler-contact__actions');
+      if (p.reminder) {
+        const copyReminder = async () => {
+          try { await navigator.clipboard.writeText(p.reminder); return true; } catch {
+            toast('error', 'Could not copy that', 'The browser would not reach the clipboard.');
+            return false;
+          }
+        };
+        if (messages) {
+          remind.appendChild(button('Remind', '#m-notifications_active-fill', p.texting, true, async () => {
+            if (await copyReminder()) toast('info', 'Reminder copied', `Paste it in ${p.name}'s conversation.`);
+          }));
+        } else if (p.phone) {
+          // Apple's Messages reads the body after `&`, everyone else's after `?`.
+          const apple = /Mac|iPhone|iPad/.test(navigator.userAgent);
+          remind.appendChild(button('Remind', '#m-notifications_active-fill',
+            `sms:${dial(p.phone)}${apple ? '&' : '?'}body=${encodeURIComponent(p.reminder)}`));
+        }
+        const copy = button('', '#m-content_copy', '#', false, async e => {
+          e.preventDefault();
+          if (await copyReminder()) toast('success', 'Reminder copied', `Send it to ${p.name}.`);
+        });
+        copy.classList.add('rux--btn--icon-only', 'scheduler-contacts__copy');
+        copy.setAttribute('aria-label', `Copy ${p.name}'s reminder`);
+        copy.title = 'Copy reminder';
+        remind.appendChild(copy);
+      }
       if (!p.phone && !messages) {
         const add = p.customer
           ? button('Add number', '#m-edit', '#', false, e => { e.preventDefault(); closeContacts(false); openSelected(); })
           : button('Add number', '#m-edit', `drivers.html?id=${encodeURIComponent(p.driverId)}`);
         acts.appendChild(add);
       }
-      c.append(who, acts);
+      c.append(who, acts, ...(remind.childElementCount ? [remind] : []));
       return c;
     };
     const part = (title, cards, extra) => {

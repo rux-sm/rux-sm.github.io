@@ -57,15 +57,12 @@ rux-ui keeps its own look; only how it saves changes.
 
 ## Questions
 
-- **The 14 newer dated notes: copy them to the log too?** They were written
-  into notes after the copy, so the log lacks them. Recommended: copy each as
-  an `imported` update, then blank it with the rest.
+None open.
 
 ## Tasks
 
-- [ ] Blank the dated notes the log copied, once rux-ui's Updates are
-  published: the 172 whose note is still its date and the copied words. SQL
-  shown to rux.
+- [ ] Blank the dated notes the log copied: the 186 whose note is still its
+  date and the copied words. SQL shown to rux.
 - [ ] Check in Chrome that a save in each app, then the other, leaves both
   apps' changes, on a round trip, a split trip and a trip with day rows; that
   rux-ui's save asks for an update and writes it, and links the customer; and

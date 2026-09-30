@@ -37,7 +37,8 @@ rux-ui keeps its own look; only how it saves changes.
   in rux-ui, and a Hotel line holds the hotel tag.
 - **Both apps prompt for what changed,** because a prompt in one app teaches
   people to save from the other; rux-ui writes `trip_updates` as the scheduler
-  does. The 203 dated notes the log copied are blanked once both apps read it.
+  does. A dated note the log copied is blanked once both apps read the log,
+  where it is still its date and the copied words.
 - **The customer is linked the same way:** `customer_id` set, and a customer
   made for a name newly typed, as the scheduler's `linkCustomer` does.
 - **A driver's statuses are sent only when a seat or a status changed,** as
@@ -56,19 +57,17 @@ rux-ui keeps its own look; only how it saves changes.
 
 ## Questions
 
-None open.
+- **The 14 newer dated notes: copy them to the log too?** They were written
+  into notes after the copy, so the log lacks them. Recommended: copy each as
+  an `imported` update, then blank it with the rest.
 
 ## Tasks
 
-- [ ] Make rux-ui read the updates log and prompt on its own saves.
-- [ ] Blank the 203 dated notes the log copied, where a note is still the text
-  it copied, once both apps read the log. SQL shown to rux.
-- [ ] rux-ui links the customer and the booking contact's customer as the
-  scheduler does.
-- [ ] The scheduler keeps a replaced file's row id, opens a trip whose day-of
-  contacts have a gap unchanged, takes a cancelled trip's buses and drivers
-  off, and clears `itinerary_confirmed` when a save changes the route.
-- [ ] Update `scheduler/docs/database-inventory.md` for what each table's
-  writers now do, and rux-ui's own docs as its `CLAUDE.md` asks.
+- [ ] Blank the dated notes the log copied, once rux-ui's Updates are
+  published: the 172 whose note is still its date and the copied words. SQL
+  shown to rux.
 - [ ] Check in Chrome that a save in each app, then the other, leaves both
-  apps' changes, on a round trip, a split trip and a trip with day rows.
+  apps' changes, on a round trip, a split trip and a trip with day rows; that
+  rux-ui's save asks for an update and writes it, and links the customer; and
+  that the scheduler's replace keeps a file's link, its cancel frees the buses,
+  and its route change clears rux-ui's Confirm mark.

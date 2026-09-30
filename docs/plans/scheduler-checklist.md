@@ -89,8 +89,8 @@ that cannot are ticked where the work is done, like right after printing a form.
   never saved.
 - **The checklist is a Checklist tab in the trip editor,** one section per leg
   for a trip with a return, beside Details, Route, Buses, Billing and Files.
-- **The trip's card on the board says what is left,** as one line, "3 left",
-  which opens the Checklist tab.
+- **The trip's card on the board does not show the checklist;** the card
+  keeps to its shortcuts, note and updates.
 - **The Departures list** is a panel beside the board, opened from the
   board's menu into the panel Forms uses, so the week stays in view. It shows the legs leaving today and the next 2 days,
   grouped by day, legs with items left first and Ready ones folded under them.
@@ -104,7 +104,7 @@ that cannot are ticked where the work is done, like right after printing a form.
   `hotel_booked_<leg>` and `fuel_card_assigned_<leg>` with their numbers on
   `trips`, and `envelope_printed` on each driver's seat. No database change.
 - **One rules file, `scheduler/checklist.js`,** decides every item, and the
-  editor tab, the card and the Departures list all read it, the way
+  editor tab and the Departures list both read it, the way
   `follow-up.js` is shared today. The board hands it each leg's buses and
   seats, which only the board can read. The Checklist tab reads the trip as
   saved, with the editor's own Done marks and ticks laid over it.

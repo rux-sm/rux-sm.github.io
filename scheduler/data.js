@@ -10519,19 +10519,6 @@
   unassignModal?.addEventListener('rux:modal-closed', () => { unassignAfter = null; });
 
   // Opens the bar's trip on its Buses tab, for every driver and every seat.
-  // Opens a trip in the editor at its Checklist tab, as the card's line asks.
-  function openOnChecklist(bar) {
-    const toChecklist = () => {
-      const tab = document.getElementById('scheduler-tab-checklist');
-      if (tab && tab.getAttribute('aria-selected') !== 'true') window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
-      drawChecklist();
-    };
-    if (isEditorBar(bar)) { toChecklist(); return; }
-    const ref = barRef(bar);
-    selectBar(bar);
-    whenSafe(() => { openRef(ref); requestAnimationFrame(toChecklist); });
-  }
-
   function openOnFleet(bar) {
     const toFleet = () => {
       const tab = document.getElementById('scheduler-tab-fleet');
@@ -12203,7 +12190,6 @@
      or null. The card says when there is none. */
   const dayOfContact = trip => [1, 2, 3, 4, 5].map(n => tripContact(trip, n)).find(Boolean) ?? null;
   const cardKey = trip => (trip ? JSON.stringify([trip.notes, asksFollowUp(trip), waitsOf(trip), dayOfContact(trip),
-    checklistLeft(tripChecklistOf(trip)),
     !!trip.contact_not_needed,
     (trip.trip_updates || []).map(u => u.id).sort(), agoShort(quietSince(trip) || Date.now())]) : '');
   function drawCard(trip, bar) {
@@ -12244,16 +12230,6 @@
         band.append(svgUse('#m-notifications_active-fill', '16', '0 0 32 32'), waiting, dismiss);
       }
       card.appendChild(band);
-    }
-    /* What the checklist has left, one line that opens the Checklist tab. */
-    {
-      const left = checklistLeft(tripChecklistOf(trip));
-      const line = row('scheduler-card__left');
-      const open = el('button', 'scheduler-card__left-button', left ? `${left} left on the checklist` : 'Checklist ready');
-      open.type = 'button';
-      open.addEventListener('click', () => { if (bar) openOnChecklist(bar); });
-      line.append(svgUse(left ? '#m-list' : '#m-check_circle-fill', '16', '0 0 32 32'), open);
-      card.appendChild(line);
     }
     /* On the notes row, what the trip needs, and a phone in the warning
        colour when nobody is named to call on the day and the trip is not marked

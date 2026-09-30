@@ -1408,6 +1408,28 @@
   const DRAG_THRESHOLD = 4;      // mouse: pixels of travel that mean "drag"
   const TOUCH_SLOP = 10;         // finger: how far it may wander while holding
   const TOUCH_HOLD_MS = 400;     // finger: how long it must hold to lift a bar
+  const SETTLE_MS = 400;         // the longest a carried copy is waited on to settle into a row
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* The copy of a bar that rides with the pointer while the bar itself dims
+     where it sits. It is placed by `top` alone, at the bar's own column, since
+     a drag moves between buses and never between days. It lives in the pane,
+     not the grid, so the grid dimming for the read does not dim it. */
+  function ghostOf(bar, rect) {
+    const ghost = bar.cloneNode(true);
+    ghost.classList.remove('scheduler-bar--dragging');
+    ghost.classList.add('scheduler-ghost');
+    ghost.removeAttribute('aria-pressed');
+    ghost.removeAttribute('role');
+    ghost.removeAttribute('tabindex');
+    ghost.setAttribute('aria-hidden', 'true');
+    ghost.style.left = `${rect.left}px`;
+    ghost.style.top = `${rect.top}px`;
+    ghost.style.width = `${rect.width}px`;
+    ghost.style.height = `${rect.height}px`;
+    schEl.appendChild(ghost);
+    return ghost;
+  }
 
   // Android fires `contextmenu` at about the moment a hold completes. The bar
   // menu reads this to stay out of the way of a bar the finger is carrying.
@@ -1507,6 +1529,10 @@
       const start = +bar.dataset.start, span = +bar.dataset.span;
       const fromBus = bar.dataset.busId || null;
       let moved = false, done = false, target = null, tracks = [], unassignedRow = null, hold = 0;
+      // The copy that rides with the pointer, where the bar sat when it lifted,
+      // how far below the bar's top the pointer holds it, and the bar's height
+      // above its track's top, which is where it lands in any row.
+      let ghost = null, origin = null, grip = 0, pad = 0;
 
       const clear = () => {
         for (const track of tracks) track.classList.remove('scheduler-track--drop', 'scheduler-track--warn');
@@ -1524,11 +1550,49 @@
         unassignedRow = gridEl.querySelector('.scheduler-row--unassigned');
         if (unassignedRow?.hidden) { unassignedRow.hidden = false; unassignedRow.dataset.revealed = 'true'; }
         tracks = [...gridEl.querySelectorAll('.scheduler-track')];
+        origin = bar.getBoundingClientRect();
+        grip = startY - origin.top;
+        /* The first lane's height above the track, read off the source track's
+           highest bar: this bar may sit in a lower lane, and the copy lands in
+           the first lane of the row it is over, as the bar would. */
+        const fromTop = bar.parentElement.getBoundingClientRect().top;
+        pad = Math.min(...[...bar.parentElement.querySelectorAll(':scope > .scheduler-bar')].map(b => b.getBoundingClientRect().top - fromTop));
         bar.classList.add('scheduler-bar--dragging');
+        ghost = ghostOf(bar, origin);
         placeBarOpen();
         document.body.style.cursor = 'grabbing';
         try { bar.setPointerCapture(down.pointerId); } catch { /* the pointer is already gone */ }
         if (touch) { touchDragging = true; bar.addEventListener('touchmove', eat, { passive: false }); }
+        // Lifted on the next frame, so the rise is drawn rather than arrived at.
+        if (!reducedMotion.matches) requestAnimationFrame(() => ghost?.classList.add('scheduler-ghost--lifted'));
+      };
+
+      // Where the copy sits over a row: at rest in its first lane.
+      const restIn = track => track.getBoundingClientRect().top + pad;
+
+      /* Eases the copy to `top` and waits for app.css's transition to end,
+         with SETTLE_MS as the ceiling should it never fire; a copy already
+         there, or reduced motion, waits for nothing. */
+      const settle = async top => {
+        if (!ghost) return;
+        const still = ghost.style.top === `${top}px`;
+        ghost.classList.remove('scheduler-ghost--lifted');
+        ghost.classList.add('scheduler-ghost--settling');
+        ghost.style.top = `${top}px`;
+        if (still || reducedMotion.matches) return;
+        await new Promise(r => {
+          const t = setTimeout(r, SETTLE_MS);
+          ghost.addEventListener('transitionend', e => { if (e.propertyName === 'top') { clearTimeout(t); r(); } });
+        });
+      };
+
+      // Takes the copy away and undims the bar; the card follows the selection again.
+      const putDown = () => {
+        ghost?.remove();
+        ghost = null;
+        bar.classList.remove('scheduler-bar--dragging');
+        if (unassignedRow?.dataset.revealed) { unassignedRow.hidden = true; delete unassignedRow.dataset.revealed; }
+        placeBarOpen();
       };
 
       /* Every ending comes through here, once, and only a release writes. A
@@ -1545,10 +1609,7 @@
         touchDragging = false;
         if (!moved) return;              // a press that never lifted still selects
         document.body.style.cursor = '';
-        bar.classList.remove('scheduler-bar--dragging');
-        placeBarOpen();
         clear();
-        if (unassignedRow?.dataset.revealed) { unassignedRow.hidden = true; delete unassignedRow.dataset.revealed; }
         // The browser fires a click after this; suppress the one that would
         // otherwise toggle selection at the end of a drag.
         bar.addEventListener('click', e => e.stopPropagation(), { capture: true, once: true });
@@ -1557,10 +1618,17 @@
         // quietly missing looks like a drag that does nothing.
         if (!release) toast('info', 'Trip not moved', 'The drag was interrupted. Try again.');
         if (!release || !target || toBus === fromBus) {
+          // Let go nowhere: the copy slides home and comes away.
+          await settle(origin.top);
+          putDown();
           // A read the drag held is owed now that nothing is in hand.
           if (liveHeld) setTimeout(liveRefresh, 0);
           return;
         }
+        /* The copy settles into the row and stays there, over the dimmed bar,
+           while the move is written and the week read back; it comes away once
+           the board draws the bar in its place. */
+        await settle(restIn(target));
         /* Held as values, not as elements: `show()` below replaces every bar,
            so `bar` is detached by the time the undo can be pressed. */
         let assignmentId = bar.dataset.assignmentId;
@@ -1584,6 +1652,9 @@
            board rather than the pre-move week. The board is re-read either
            way, because a move that threw may still have landed. */
         await show();   // read it back, rather than trusting the move landed
+        // A move that did not land slides the copy back over the bar drawn where it was.
+        if (failed) await settle(origin.top);
+        putDown();
         refreshEditor(assignmentId);
         if (failed) toast('error', 'Could not move that trip', failed);
         else offerUndo(assignmentId, tripId, toBus, backTo, label);
@@ -1611,10 +1682,13 @@
           const rect = t.getBoundingClientRect();
           return ev.clientY >= rect.top && ev.clientY <= rect.bottom;
         }) ?? null;
+        const sameRow = next && (next.dataset.busId ?? null) === fromBus;
+        // Over a row the copy snaps to where the bar would land; between rows
+        // it follows the pointer.
+        if (ghost) ghost.style.top = `${next ? (sameRow ? origin.top : restIn(next)) : ev.clientY - grip}px`;
         if (next === target) return;
         clear();
         target = next;
-        const sameRow = target && (target.dataset.busId ?? null) === fromBus;
         if (target && !sameRow) {
           target.classList.add(targetWarns(target, start, span) ? 'scheduler-track--warn' : 'scheduler-track--drop');
         }

@@ -429,14 +429,41 @@ button.scheduler-row-head__num::after {
   block-size: var(--scheduler-bar-h);
 }
 
-/* While a trip is dragged, the row it would land in lights up: the interactive
-   tone for a clean drop, the warning tone where the bus is already busy or out
-   of service. A warning, not a wall, because the drop still goes through. The
-   dragged bar dims where it sits, nothing follows the cursor, and on release
-   the week is read back rather than moved optimistically. */
-.scheduler-track--drop { box-shadow: inset 0 0 0 2px var(--rux-border-interactive); }
-.scheduler-track--warn { box-shadow: inset 0 0 0 2px var(--rux-support-warning); }
+/* While a trip is dragged a copy of its bar rides with the pointer, lifted a
+   little, and snaps into the row it would land in; the bar itself dims where
+   it sits. That row lights up and tints: the interactive tone for a clean
+   drop, the warning tone where the bus is already busy or out of service. A
+   warning, not a wall, because the drop still goes through. On release the
+   copy settles into the row and stays while the week is read back rather than
+   moved optimistically, then comes away over the bar drawn in its place; a
+   move that fails, or a bar let go nowhere, slides home. The copy is placed by
+   `top` alone, at the bar's own column, so the two-class selector beats the
+   bar's own insets. */
+.scheduler-track.scheduler-track--drop {
+  box-shadow: inset 0 0 0 2px var(--rux-border-interactive);
+  background-color: color-mix(in srgb, var(--rux-border-interactive) 14%, transparent);
+}
+.scheduler-track.scheduler-track--warn {
+  box-shadow: inset 0 0 0 2px var(--rux-support-warning);
+  background-color: color-mix(in srgb, var(--rux-support-warning) 14%, transparent);
+}
 .scheduler-bar--dragging { opacity: .4; cursor: grabbing; }
+.scheduler-bar.scheduler-ghost {
+  position: fixed;
+  inset: auto;
+  z-index: 1000;
+  pointer-events: none;
+  box-shadow: 0 6px 20px rgb(0 0 0 / .4);
+  transform-origin: center;
+  transition: transform 120ms ease-out, box-shadow 120ms ease-out;
+}
+.scheduler-bar.scheduler-ghost--lifted { transform: scale(1.02); box-shadow: 0 10px 28px rgb(0 0 0 / .5); }
+.scheduler-bar.scheduler-ghost--settling {
+  transition: top 180ms cubic-bezier(.2, .7, .2, 1), transform 180ms ease-out, box-shadow 180ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .scheduler-bar.scheduler-ghost { transition: none; }
+}
 
 /* Out of service: a striped span the bars sit over. */
 .scheduler-oos {

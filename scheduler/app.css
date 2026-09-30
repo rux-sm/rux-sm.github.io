@@ -33,10 +33,8 @@
   --scheduler-viewer-lg-w: 40rem;
   --scheduler-viewer-xl-w: 65rem;
   --scheduler-viewer-w: var(--scheduler-viewer-md-w);
-  /* The trip editor, Carbon's `rux--side-panel--md`, and made larger its
-     `rux--side-panel--xl`. */
-  --scheduler-editor-narrow-w: 30rem;
-  --scheduler-editor-wide-w: 65rem;
+  /* The trip editor, Carbon's `rux--side-panel--md`. */
+  --scheduler-editor-w: 30rem;
 }
 
 .scheduler-week {
@@ -1303,8 +1301,8 @@ button.scheduler-row-head__num::after {
 .scheduler-trip {
   /* Never shrinks: Carbon's panel inside has a 16rem minimum, and a wrapper
      allowed below it lets the panel overflow. The schedule gives way instead. */
-  flex: 0 0 var(--scheduler-editor-w, var(--scheduler-editor-narrow-w));
-  min-inline-size: var(--scheduler-editor-w, var(--scheduler-editor-narrow-w));
+  flex: 0 0 var(--scheduler-editor-w);
+  min-inline-size: var(--scheduler-editor-w);
   max-inline-size: 100%;
   /* A definite height, so the panel's `auto 1fr auto` rows constrain its
      scrolling content and the actions row stays at the bottom; against only a
@@ -3910,34 +3908,6 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-route-open[hidden] { display: none; }
 /* On the pickup Location's label line it ends the line. */
 .scheduler-label-row > .scheduler-route-open { margin-inline-start: auto; }
-
-/* ══ The larger trip editor ═══════════════════════════════════════════════
-   The panel's size button marks the page, and the editor takes Carbon's
-   extra-large width, always in front of the dimmed week: `placeRoom` names it
-   the panel in front whatever the board's width. Each tab's sections run down
-   two columns, a section never split between them. */
-.scheduler-page[data-editor="wide"] { --scheduler-editor-w: var(--scheduler-editor-wide-w); }
-@media (min-width: 42rem) {
-  /* A 1px rule parts the columns in place of the rules between sections:
-     those would open the second column with a line the first does not have,
-     wherever the balancing happened to start it. The sections part by 32px
-     instead, and the margin opening a column is dropped at the break, so both
-     columns start level. */
-  .scheduler-page[data-editor="wide"] #scheduler-panel-body > .rux--tab-content {
-    columns: 2;
-    column-gap: var(--rux-spacing-09);
-    column-rule: 1px solid var(--rux-border-subtle-01);
-  }
-  .scheduler-page[data-editor="wide"] #scheduler-panel-body > .rux--tab-content > * {
-    break-inside: avoid;
-  }
-  .scheduler-page[data-editor="wide"] #scheduler-panel-body .rux--tab-content > * + .scheduler-panel-section::before {
-    content: none;
-  }
-  .scheduler-page[data-editor="wide"] #scheduler-panel-body .rux--tab-content > .scheduler-panel-section:not(:first-child) {
-    margin-block-start: var(--rux-spacing-07);
-  }
-}
 
 /* ── Suggest drivers ──
    One row per bus: its checkbox naming the trip, then the driver there now

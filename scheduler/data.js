@@ -8593,9 +8593,23 @@
   let menuHidesCard = false;
   // The Contacts window, while it is open: its overlay registration and slot.
   let contactsOpen = null;
+  const barKey = bar => `${bar.dataset.tripId}|${bar.dataset.leg}|${bar.dataset.assignmentId}`;
+  /* The trip whose card was put away by picking one of its actions, so the
+     card does not stand over what the action opened. Selecting another trip,
+     or this one again after letting it go, brings the card back. */
+  let cardAwayFor = null;
+  function putCardAway(bar) {
+    cardAwayFor = barKey(bar);
+    const focused = barShortcuts?.contains(document.activeElement);
+    placeBarOpen();
+    // Focus that was on a slot goes back to the trip, until the action takes it.
+    if (focused) bar.focus();
+  }
   function placeBarOpen(bar = selectedBar()) {
     if (!barShortcuts) return;
-    const none = !bar?.dataset.tripId || isEditorBar(bar) || menuHidesCard || gridEl.querySelector('.scheduler-bar--dragging');
+    // A board set aside behind a panel in front of it has no trip to point at.
+    const none = !bar?.dataset.tripId || isEditorBar(bar) || menuHidesCard || gridEl.querySelector('.scheduler-bar--dragging')
+      || !!schEl.closest('[inert]') || barKey(bar) === cardAwayFor;
     barShortcuts.hidden = none;
     // The Contacts window goes with its trip when it is put down.
     if (none && contactsOpen) closeContacts(false);
@@ -8608,7 +8622,7 @@
        the same one through a scroll or a redraw. It starts once the bar is
        placed, because the pop's scale would shrink what the placing measures. */
     // A hovered trip that is then selected keeps the card it already shows.
-    const target = `${bar.dataset.tripId}|${bar.dataset.leg}|${bar.dataset.assignmentId}`;
+    const target = barKey(bar);
     const pop = () => {
       if (target === poppedFor) return;
       poppedFor = target;
@@ -8736,6 +8750,7 @@
 
   function syncSelection() {
     const bar = selectedBar();
+    if (!bar || barKey(bar) !== cardAwayFor) cardAwayFor = null;
     placeBarOpen(bar);
     markTripBars();
     // The roster moves to the selected trip's week, and lights its days.
@@ -9209,6 +9224,11 @@
        the week itself a different week. */
     if (board < SCHEDULE_FLOOR * rem) pageEl.setAttribute('data-board', 'compact');
     else pageEl.removeAttribute('data-board');
+
+    /* A panel opening or closing moves the board without always resizing its
+       grid, so the trip card, fixed to the window, is placed again once the
+       board has been fit to its new room. */
+    requestAnimationFrame(() => placeBarOpen());
   }
 
   /* The board is the one input watched: its width is what the window sets.
@@ -9868,6 +9888,8 @@
     // The driver list's notes, such as the driver on the bus now, are not actions.
     if (item.getAttribute('aria-disabled') === 'true') return;
     const bar = barMenuFor;
+    // Its card stays put away after the menu shuts, as after a shortcut.
+    cardAwayFor = barKey(bar);
     window.Rux?.menu?.close?.(barMenu);
     barMenu.hidden = true;
 
@@ -12507,6 +12529,8 @@
     if (!btn || btn.getAttribute('aria-disabled') === 'true') return;
     const bar = selectedBar();
     if (!bar) return;
+    // A shortcut puts the card away, except Contacts, whose window hangs from its slot.
+    if (btn.dataset.shortcut !== 'contacts') putCardAway(bar);
     (FIXED_SHORTCUTS[btn.dataset.shortcut] ?? SHORTCUT_ACTIONS.find(a => a.id === btn.dataset.shortcut))?.run(bar, btn);
   });
 

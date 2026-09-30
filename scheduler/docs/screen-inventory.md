@@ -231,7 +231,7 @@ While a trip is in the panel its bars are locked on the board: they do not
 drag, and their bus, colour and hotel are the panel's to change, so each
 changes in one place. The bar the panel holds loses its shortcut bar, because
 the editor is showing that trip. The editor has no shortcut row:
-the itinerary is on the Files tab, with Open forms under the files, and the
+the itinerary is on the Files tab, Forms is in the panel head's Trip actions menu, and the
 quote calculator is Open calculator on the Billing tab. Every bar of the open
 trip — the return leg, or the same leg on another bus, too — wears the
 selection's ring with a brighter arc running round it, which costs none of

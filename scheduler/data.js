@@ -1910,7 +1910,8 @@
   /* ── A menu of any items ──
      The row menu above has two fixed items. The Buses tab's bus and status
      menus have more, so this menu is rebuilt from its items on every open and
-     placed the way the row menu is. An item with `checked` is a radio item. */
+     placed the way the row menu is. An item with `checked` is a radio item,
+     and `{ divider: true }` is Carbon's rule between groups. */
   let itemsMenuEl = null;
   let itemsMenuTrigger = null;
   const placeMenuAt = (menu, trigger) => {
@@ -1948,9 +1949,16 @@
       : 'rux--menu rux--menu--sm rux--menu--open rux--menu--shown';
     menu.setAttribute('aria-label', label);
     menu.replaceChildren(...items.map(it => {
+      if (it.divider) {
+        const rule = el('li', 'rux--menu-item-divider');
+        rule.setAttribute('role', 'separator');
+        return rule;
+      }
       const li = el('li', it.danger ? 'rux--menu-item rux--menu-item--danger' : 'rux--menu-item');
-      li.setAttribute('role', radio ? 'menuitemradio' : 'menuitem');
-      if (radio) li.setAttribute('aria-checked', String(!!it.checked));
+      // A plain item among radio items keeps the check's column, so the labels line up.
+      const choice = radio && it.checked !== undefined;
+      li.setAttribute('role', choice ? 'menuitemradio' : 'menuitem');
+      if (choice) li.setAttribute('aria-checked', String(!!it.checked));
       li.tabIndex = -1;
       if (it.disabled) {
         li.classList.add('rux--menu-item--disabled');
@@ -8316,15 +8324,7 @@
       filesNote = el('p', 'rux--form__helper-text scheduler-files-note');
       const listWrap = el('div');
       listWrap.append(list, filesAdd.progress, filesNote);
-      // The trip's forms, printed from what it holds, beside the files it was sent.
-      const formsButton = el('button', 'rux--btn rux--btn--tertiary rux--layout--size-md scheduler-quickbooks', 'Open forms');
-      formsButton.type = 'button';
-      const formsIcon = svgUse('#m-description', '16', '0 0 32 32');
-      formsIcon.classList.add('rux--btn__icon');
-      formsButton.appendChild(formsIcon);
-      formsButton.id = 'scheduler-f-openforms';
-      formsButton.addEventListener('click', () => openForms(null, trip.id, formsButton));
-      panelFiles.append(section('Files', listWrap), section('Forms', formsButton));
+      panelFiles.append(section('Files', listWrap));
       drawFiles(trip);
     }
 
@@ -9575,20 +9575,27 @@
     if (editing?.id) openCancelModal(editing.id);
   });
 
-  /* The panel head's Trip actions: the trip bar's colour, from the field the
-     open trip drew, marked and applied as the bar's own menu does. */
+  /* The panel head's Trip actions: Forms, the trip's printed forms beside the
+     board, which a trip not yet saved has none of; then the trip bar's colour,
+     from the field the open trip drew, marked and applied as the bar's own
+     menu does. */
   let tripColorItem = null;
   const panelMenu = document.getElementById('scheduler-panel-menu');
   panelMenu?.addEventListener('click', () => {
+    if (!editing) return;
     const colorItem = tripColorItem;
-    if (!colorItem) return;
-    const now = colorItem.current();
-    openItemsMenu(panelMenu, colorItem.choices.map(c => ({
-      label: c.label,
-      checked: c.value === now,
-      icon: colorItem.chip(c.hue),
-      run: () => { colorItem.setColor(c.value); refreshDirty(); panelMenu.focus(); },
-    })), 'Trip bar color');
+    const now = colorItem?.current();
+    const formsIcon = svgUse('#m-description', '16', '0 0 32 32');
+    openItemsMenu(panelMenu, [
+      { label: 'Forms', icon: formsIcon, disabled: !editing.id || editing.creating,
+        run: () => openForms(null, editing.id, panelMenu) },
+      ...(colorItem ? [{ divider: true }, ...colorItem.choices.map(c => ({
+        label: c.label,
+        checked: c.value === now,
+        icon: colorItem.chip(c.hue),
+        run: () => { colorItem.setColor(c.value); refreshDirty(); panelMenu.focus(); },
+      }))] : []),
+    ], 'Trip actions');
   });
 
   // Save closes the editor once the week has been read back.
@@ -11292,7 +11299,7 @@
   /* The forms this trip can fill in, on print.html's own list. It takes the
      trip rather than the bar's assignment, because the list is the trip's and
      a form that wants one bus asks for it once it is chosen. */
-  // From a bar, or from the Files tab with the trip's id and its button.
+  // From a bar, or from the editor's Trip actions menu with the trip's id and its button.
   function openForms(bar, id = bar?.dataset.tripId, opener = bar) {
     if (!id) return;
     openGenerated({

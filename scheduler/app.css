@@ -835,13 +835,12 @@ button.scheduler-row-head__num::after {
   --card-warning: var(--rux-support-warning);
 }
 /* Each slot carries its word under its icon, as on the phone, because a
-   tooltip names a slot only after a second's hover. A slot starts from its
-   word's width, and over a card the slots share the card's width, so a long
-   word takes room a short one leaves over rather than being cut off. The word
+   tooltip names a slot only after a second's hover. The slots share the
+   card's width equally, so their words sit on even centres. The word
    sits straight under the icon, its own line height the only air between
    them, so the slot is still 40px high and never narrower than 40px. */
 .scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   flex-direction: column;
   inline-size: auto;
   min-inline-size: var(--scheduler-slot-w);
@@ -917,21 +916,26 @@ button.scheduler-row-head__num::after {
 :is(.scheduler-card__asks, .scheduler-card__warn) > strong { flex: 1; min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
 /* A due reminder names the day it leaves at the row's end. */
 .scheduler-card__asks-when { flex: none; }
+/* A part's Edit or Add: a word in the link colour, 24px high for the
+   pointer, its padding taken back at the row's end and above and below, so
+   its word lines up with the card's right edge and the title keeps its
+   height. */
 .scheduler-card__action {
   display: flex;
   flex: none;
   align-items: center;
-  justify-content: center;
-  inline-size: 1.5rem;
   block-size: 1.5rem;
-  margin-block: calc(-1 * var(--rux-spacing-01));
-  padding: 0;
+  margin-block: calc(-1 * var(--rux-spacing-02));
+  margin-inline-end: calc(-1 * var(--rux-spacing-02));
+  padding: 0 var(--rux-spacing-02);
   border: 0;
   /* A tile of the slots' own corner where the theme rounds them, so its hover
      is the same shape as theirs. */
   border-radius: var(--scheduler-shortcut-radius, 0);
   background: none;
-  color: var(--card-icon);
+  font: inherit;
+  letter-spacing: inherit;
+  color: var(--rux-link-primary);
   cursor: pointer;
 }
 .scheduler-card__action:hover { background: var(--card-hover); }
@@ -947,21 +951,20 @@ button.scheduler-row-head__num::after {
   margin-block-end: var(--rux-spacing-02);
   color: color-mix(in srgb, var(--card-ink) 70%, transparent);
 }
-.scheduler-card__title > .scheduler-card__action { color: var(--card-icon); }
-/* The note, shaded a step darker than the card so it never reads as one of
-   the updates: its title and its words. */
+/* The note and the updates are the same kind of part on the same surface,
+   each its title, then its words from the card's one left edge. */
 .scheduler-card__note {
   display: flex;
   flex-wrap: wrap;
   gap: 0 var(--rux-spacing-03);
   align-items: flex-start;
   padding-block: var(--rux-spacing-03);
-  background: color-mix(in srgb, var(--card-ink) 6%, var(--card-surface));
 }
 .scheduler-card__note-words { flex: 1 0 100%; min-inline-size: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .scheduler-card__updates { padding-block: var(--rux-spacing-03); }
-/* An update: who, as Carbon's small avatar in their own colour, its words,
-   and under them how long ago. Closed, only the newest shows, its words cut
+/* An update: its words, then a line of who wrote it, as Carbon's small
+   avatar in their own colour and their name, and how long ago, with See all
+   or Show less at the line's end. Closed, only the newest shows, its words cut
    to two lines; with more to show, it opens the rest on a press, so it takes
    the pointer. Open, every update shows whole, in a list that scrolls past
    16rem, or sooner where data.js finds the board has less room. */
@@ -973,10 +976,8 @@ button.scheduler-row-head__num::after {
   max-block-size: 16rem;
   overflow-y: auto;
 }
-.scheduler-card__update { display: flex; gap: var(--rux-spacing-03); align-items: flex-start; }
+.scheduler-card__update { display: flex; flex-direction: column; gap: var(--rux-spacing-02); }
 .scheduler-card__updates[data-more] .scheduler-card__update { cursor: pointer; }
-.scheduler-card__update > .rux--user-avatar { flex: none; }
-.scheduler-card__update-text { flex: 1; min-inline-size: 0; display: flex; flex-direction: column; }
 .scheduler-card__words { min-inline-size: 0; overflow-wrap: anywhere; }
 .scheduler-card__updates:not([data-open]) .scheduler-card__update .scheduler-card__words {
   display: -webkit-box;
@@ -986,8 +987,10 @@ button.scheduler-row-head__num::after {
   overflow: hidden;
 }
 .scheduler-card__updates[data-open] .scheduler-card__words { white-space: pre-wrap; }
-.scheduler-card__meta { display: flex; gap: var(--rux-spacing-03); align-items: baseline; }
-.scheduler-card__when { flex: none; opacity: .6; font-variant-numeric: tabular-nums; }
+.scheduler-card__meta { display: flex; gap: var(--rux-spacing-03); align-items: center; }
+.scheduler-card__meta > .rux--user-avatar { flex: none; }
+.scheduler-card__when { flex: 0 1 auto; min-inline-size: 0; color: color-mix(in srgb, var(--card-ink) 70%, transparent); }
+.scheduler-card__meta > .scheduler-card__more { margin-inline-start: auto; }
 .scheduler-card__empty { opacity: .7; }
 /* See all and Show less are links in the link colour. */
 .scheduler-card__more {
@@ -2498,20 +2501,16 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-docked] .scheduler-card > * { flex: 1 0 100%; min-inline-size: 0; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__misfit { order: -4; }
 .scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__asks, .scheduler-card__warn) { order: -3; }
-.scheduler-bar-shortcuts[data-docked] .scheduler-card__note {
-  order: -2;
-  /* The board's own layer, a step down from the sheet, so the pinned notes
-     read as their own panel and never as one of the updates. */
-  background: var(--rux-layer-01);
-}
+.scheduler-bar-shortcuts[data-docked] .scheduler-card__note { order: -2; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__updates { order: -1; }
 .scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__misfit, .scheduler-card__asks, .scheduler-card__warn, .scheduler-card__note) { border-block-start: 0; }
-/* A card button is 32px under a thumb, its margins taken back so the row
-   keeps its height. */
+/* A card button is 32px high under a thumb, its margins taken back so the
+   row keeps its height. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__action {
-  inline-size: 2rem;
   block-size: 2rem;
   margin-block: calc(-1 * var(--rux-spacing-03));
+  margin-inline-end: calc(-1 * var(--rux-spacing-03));
+  padding: 0 var(--rux-spacing-03);
 }
 /* The note stops at three lines on an ellipsis until it is tapped open. The
    words are cut, not the row, so the row's padding shows none of a fourth. */

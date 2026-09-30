@@ -12208,15 +12208,14 @@
   const cardKey = trip => (trip ? JSON.stringify([trip.notes, asksFollowUp(trip), waitsOf(trip), dayOfContact(trip),
     !!trip.contact_not_needed, updatesOpenFor === trip.id,
     (trip.trip_updates || []).map(u => u.id).sort(), agoShort(quietSince(trip) || Date.now())]) : '');
-  /* A part's own button, beside its title: the note's edits it, the
-     updates' adds one. An icon with its name on hover. */
-  function cardAction(action, icon, label) {
-    const btn = el('button', 'scheduler-card__action');
+  /* A part's own button, at the end of its title: the note's Edit, the
+     updates' Add. A word in the link colour, with the whole action as its
+     accessible name. */
+  function cardAction(action, words, label) {
+    const btn = el('button', 'scheduler-card__action', words);
     btn.type = 'button';
     btn.dataset.cardAction = action;
-    btn.title = label;
     btn.setAttribute('aria-label', label);
-    btn.appendChild(svgUse(icon, '16', '0 0 32 32'));
     return btn;
   }
 
@@ -12282,7 +12281,7 @@
     /* The note is a part of its own on every trip, titled Trip notes with
        the button that edits it: its words or No notes. */
     const note = row('scheduler-card__note');
-    note.append(cardTitle('Trip notes', cardAction('note', '#m-edit', trip.notes ? 'Edit the note' : 'Add a note')),
+    note.append(cardTitle('Trip notes', cardAction('note', trip.notes ? 'Edit' : 'Add', trip.notes ? 'Edit the note' : 'Add a note')),
       trip.notes
         ? el('span', 'scheduler-card__note-words', trip.notes)
         : el('span', 'scheduler-card__note-words scheduler-card__empty', 'No notes'));
@@ -12299,13 +12298,16 @@
     part.dataset.count = String(all.length);
     part.toggleAttribute('data-open', open);
     part.appendChild(cardTitle(all.length ? `Updates · ${all.length}` : 'Updates',
-      cardAction('update', '#m-add_comment', 'Add an update')));
+      cardAction('update', 'Add', 'Add an update')));
     const toggle = () => {
       const btn = el('button', 'scheduler-card__more', open ? 'Show less' : 'See all');
       btn.type = 'button';
       btn.setAttribute('aria-expanded', String(open));
       return btn;
     };
+    /* An update is its words, then a line under them: who wrote it, as
+       their avatar and name, and how long ago, with See all at the line's
+       end on the newest. */
     const updateItem = (u, withToggle) => {
       const item = el('li', 'scheduler-card__update');
       // A line copied from the old notes with nobody named is a grey face.
@@ -12324,14 +12326,12 @@
       face.title = who;
       face.setAttribute('role', 'img');
       face.setAttribute('aria-label', who);
-      const when = el('span', 'scheduler-card__when', agoShort(u.created_at));
+      const when = el('span', 'scheduler-card__when', `${who} · ${agoShort(u.created_at)}`);
       when.title = updateStamp(u);
       const meta = el('span', 'scheduler-card__meta');
-      meta.appendChild(when);
+      meta.append(face, when);
       if (withToggle) meta.appendChild(toggle());
-      const text = el('span', 'scheduler-card__update-text');
-      text.append(el('span', 'scheduler-card__words', u.body), meta);
-      item.append(face, text);
+      item.append(el('span', 'scheduler-card__words', u.body), meta);
       return item;
     };
     if (all.length) {

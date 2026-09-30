@@ -673,9 +673,9 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    file, which left the Files tab's drop zone 40px from the next section. */
 .rux--file-container:empty { display: none; }
 
-/* The Files tab's drop zone takes the tab's width, as the Type field above it
-   does, rather than Carbon's 20rem, and centres its icon and words in its
-   height, as the editor's dashed add rows centre theirs. */
+/* The Files tab's drop zone takes the tab's width rather than Carbon's
+   20rem, and centres its icon and words in its height, as the editor's
+   dashed add rows centre theirs. */
 .scheduler-file-add .rux--file-browse-btn {
   max-inline-size: none;
   align-items: center;

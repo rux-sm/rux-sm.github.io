@@ -1662,16 +1662,9 @@ button.scheduler-row-head__num::after {
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
-/* The Files tab's uploader: the Type dropdown over the drop zone, spaced as
-   the form's fields are. */
-.scheduler-file-add {
-  display: flex;
-  flex-direction: column;
-  gap: var(--rux-spacing-06);
-}
-/* The name field while another type is picked; a form item's flex display
-   would beat `[hidden]`. */
-.scheduler-file-add > [hidden] { display: none; }
+/* The type dialog's Name field while another type is picked; a form item's
+   flex display would beat `[hidden]`. */
+#scheduler-file-type-other[hidden] { display: none; }
 /* A list's records, hidden while its switch is off; its grid display would
    beat `[hidden]`. */
 .scheduler-list-body[hidden] { display: none; }

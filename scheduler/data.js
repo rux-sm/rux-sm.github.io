@@ -3011,8 +3011,8 @@
      Previous. A tile opens its file in the document panel, and its menu holds
      Replace and Delete. The list is drawn again on its own after a file
      changes, so the form's unsaved edits stay. */
-  /* The Type list: each type's stored label and the name it shows, rux-ui's
-     three first. A label is free text in `trip_documents`, and rux-ui shows
+  /* The types a file is asked for: each type's stored label and the name it
+     shows, rux-ui's three first. A label is free text in `trip_documents`, and rux-ui shows
      one it does not know by the label itself, so Something else stores the
      name typed. */
   const DOC_TYPES = [
@@ -3106,22 +3106,71 @@
     };
   }
 
-  /* Carbon's file uploader, from `sink/file-uploader.html`: a Type dropdown
-     over a drop zone that also opens the file dialog. Design ships no module
-     for it, so the drop, the dialog and the item are wired here. One file at a
-     time, and the zone is disabled while one goes up. */
+  /* What is this file? Asked once a PDF is dropped or picked: the types as
+     radio buttons, Itinerary first picked, and Something else opens a Name
+     field whose words become the file's label. Add file hands the label on;
+     Cancel or the close adds nothing. */
+  const fileTypeModal = document.getElementById('scheduler-file-type-modal');
+  const fileTypeGroup = document.getElementById('scheduler-file-type-group');
+  const fileTypeOther = document.getElementById('scheduler-file-type-other');
+  const fileTypeInput = document.getElementById('scheduler-file-type-label');
+  let fileTypeDone = null;
+  for (const [value, name] of [...DOC_TYPES, [DOC_OTHER, 'Something else']]) {
+    const id = `scheduler-file-type-${value.toLowerCase().replace(/\W+/g, '-')}`;
+    const wrap = el('div', 'rux--radio-button-wrapper');
+    const input = el('input', 'rux--radio-button');
+    input.type = 'radio';
+    input.name = 'scheduler-file-type';
+    input.id = id;
+    input.value = value;
+    const label = el('label', 'rux--radio-button__label');
+    label.htmlFor = id;
+    label.append(el('span', 'rux--radio-button__appearance'), el('span', 'rux--radio-button__label-text', name));
+    wrap.append(input, label);
+    fileTypeGroup?.appendChild(wrap);
+  }
+  if (fileTypeInput) fileTypeInput.maxLength = DOC_LABEL_MAX;
+  const pickedFileType = () => fileTypeGroup?.querySelector('input:checked')?.value ?? 'Itinerary';
+  fileTypeGroup?.addEventListener('change', () => {
+    fileTypeOther.hidden = pickedFileType() !== DOC_OTHER;
+    nameError(fileTypeInput, '');
+    if (!fileTypeOther.hidden) fileTypeInput.focus();
+  });
+  function askFileType(fileName, done) {
+    if (!fileTypeModal) { done('Itinerary'); return; }
+    fileTypeDone = done;
+    document.getElementById('scheduler-file-type-name').textContent = fileName;
+    const first = fileTypeGroup.querySelector('input');
+    first.checked = true;
+    fileTypeOther.hidden = true;
+    fileTypeInput.value = '';
+    nameError(fileTypeInput, '');
+    window.Rux?.modal?.open?.(fileTypeModal);
+    first.focus();
+  }
+  const finishFileType = () => {
+    const picked = pickedFileType();
+    const label = picked === DOC_OTHER ? docLabelFor(fileTypeInput.value) : picked;
+    if (!label) {
+      nameError(fileTypeInput, 'Type a name for the file.');
+      fileTypeInput.focus();
+      return;
+    }
+    const done = fileTypeDone;
+    fileTypeDone = null;
+    window.Rux?.modal?.close?.(fileTypeModal);
+    done?.(label);
+  };
+  document.getElementById('scheduler-file-type-add')?.addEventListener('click', finishFileType);
+  fileTypeInput?.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); finishFileType(); } });
+  fileTypeModal?.addEventListener('rux:modal-closed', () => { fileTypeDone = null; });
+
+  /* Carbon's file uploader, from `sink/file-uploader.html`: a drop zone that
+     also opens the file dialog, and the file's type asked once it is chosen.
+     Design ships no module for it, so the drop, the dialog and the item are
+     wired here. One file at a time, and the zone is disabled while one goes
+     up. */
   function fileUploader(tripId) {
-    const type = selectField('scheduler-f-filetype', 'Type', 'Itinerary',
-      [...DOC_TYPES, [DOC_OTHER, 'Something else']]);
-    // Something else asks for the file's name, which becomes its label.
-    const other = full(textField('scheduler-f-filelabel', 'Name'));
-    other.hidden = true;
-    const otherInput = other.querySelector('input');
-    otherInput.maxLength = DOC_LABEL_MAX;
-    type.querySelector('select').addEventListener('change', e => {
-      other.hidden = e.target.value !== DOC_OTHER;
-      if (!other.hidden) otherInput.focus();
-    });
     const item = el('div', 'rux--form-item');
     const drop = el('button', 'rux--file__drop-container rux--file-browse-btn');
     drop.type = 'button';
@@ -3148,16 +3197,16 @@
     };
     const start = async file => {
       if (!file || drop.disabled) return;
-      const picked = type.querySelector('select').value || 'Itinerary';
-      const label = picked === DOC_OTHER ? docLabelFor(otherInput.value) : picked;
-      if (!label) {
-        fileItem(container, file.name).fail('Name the file first', 'Type a name for it under Type, then add it again.');
-        otherInput.focus();
+      // A file that is not a PDF is turned away before its type is asked.
+      if (!(await isPdf(file))) {
+        fileItem(container, file.name).fail('Only PDF files can be added', 'Export the file as a PDF, then add it again.');
         return;
       }
-      busy(true);
-      try { await uploadFrom(tripId, label, file, fileItem(container, file.name)); }
-      finally { busy(false); }
+      askFileType(file.name, async label => {
+        busy(true);
+        try { await uploadFrom(tripId, label, file, fileItem(container, file.name)); }
+        finally { busy(false); }
+      });
     };
     drop.addEventListener('click', () => input.click());
     input.addEventListener('change', () => {
@@ -3175,7 +3224,7 @@
     });
 
     const wrap = el('div', 'scheduler-file-add');
-    wrap.append(full(type), other, item);
+    wrap.appendChild(item);
     return wrap;
   }
 

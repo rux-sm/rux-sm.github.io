@@ -1162,6 +1162,43 @@
        design/templates/wizard-page.html's cancel dialog, and modal.js supplies
        the focus trap, Escape and data-rux-close. Danger, because the trip
        leaves the board, though it can be brought back. -->
+  <!-- Asked when a file is dropped on or picked in the Files tab: which kind
+       of file it is. data.js fills the file's name and the types; Something
+       else shows the Name field, whose words become the file's label. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-file-type-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-file-type-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__label" id="scheduler-file-type-name"></h2>
+        <h2 class="rux--modal-header__heading" id="scheduler-file-type-h">What is this file?</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content rux--stack-vertical rux--stack-scale-6">
+        <fieldset class="rux--radio-button-group rux--radio-button-group--label-right rux--radio-button-group--vertical" id="scheduler-file-type-group">
+          <legend class="rux--label">Type</legend>
+        </fieldset>
+        <div class="rux--form-item rux--text-input-wrapper" id="scheduler-file-type-other" hidden>
+          <div class="rux--text-input__label-wrapper">
+            <label class="rux--label" for="scheduler-file-type-label">Name</label>
+          </div>
+          <div class="rux--text-input__field-outer-wrapper">
+            <div class="rux--text-input__field-wrapper">
+              <input id="scheduler-file-type-label" class="rux--text-input" type="text" autocomplete="off" maxlength="60">
+            </div>
+            <div class="rux--form-requirement" id="scheduler-file-type-label-error"></div>
+          </div>
+        </div>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-file-type-add">Add file</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Asked before a trip file is deleted. data.js names the file and makes
        the delete on confirm. -->
   <div class="rux--layer-one rux--modal" id="scheduler-file-delete-modal" role="presentation">

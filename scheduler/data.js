@@ -430,6 +430,8 @@
     'trip_documents(id,label,created_at,file_name,file_path,file_size)',
     // Set in the Files tab; a trip that does not need an itinerary is not marked.
     'itinerary_not_needed',
+    // rux-ui's Confirm mark on the itinerary, which a save that changes the route takes off.
+    'itinerary_confirmed',
     // Its twin for the day-of contact: a trip nobody needs to be called on is
     // not marked as missing one.
     'contact_not_needed',
@@ -6692,8 +6694,11 @@
          Whoever to reach while the trip runs, not "on-site": the person may
          travel with the group or coordinate from a desk. The trip's own contacts are drawn, or one empty
          contact when it has none, and the section's menu adds one up to the
-         schema's five or removes the last. */
-      const dayRows = creating ? [] : [1, 2, 3, 4, 5].map(i => tripContact(trip, i)).filter(Boolean);
+         schema's five or removes the last. Each stays in its own slot, up to
+         the last one filled, with an empty slot before it drawn as an empty
+         row, so a trip saved elsewhere with a gap opens unchanged. */
+      const slots = [1, 2, 3, 4, 5].map(i => tripContact(trip, i));
+      const dayRows = creating ? [] : slots.slice(0, slots.findLastIndex(Boolean) + 1);
       /* A stack, 24px between contacts, each contact one row of its name
          beside its phone. */
       const rowsHost = el('div', 'rux--stack-vertical rux--stack-scale-6');
@@ -9566,6 +9571,11 @@
       const row = creating
         ? { id: editing.newId, ...form, bus_count: 1, ...(fleet?.trip ?? {}) }
         : { ...patch, ...(fleet?.trip ?? {}) };
+      /* A save that changes the route takes off rux-ui's Confirm mark on the
+         itinerary, since a changed route needs checking again. */
+      if (!creating && editing.trip?.itinerary_confirmed && ('trip_type' in patch || routePlan().work)) {
+        row.itinerary_confirmed = false;
+      }
       /* A new trip, or a save that changes its billing, writes the confirmation
          and the paid fields the billing now gives, as rux-ui's save does. A
          save that touches no billing leaves them as they are. */
@@ -11733,11 +11743,35 @@
     return doc;
   }
 
-  // The new file is stored before the old one goes, so a failure part way
-  // leaves the trip with a file. The new file has a new id.
+  /* The new file is stored, the row is pointed at it, and only then does the
+     old stored file go, so a failure part way leaves the trip with a file. The
+     row keeps its id, as rux-ui's replace keeps it, so a link to the document
+     opens the new file. A row that fails takes the new stored file back out. */
   async function replaceDocument(tripId, old, file) {
-    const doc = await storeDocument(tripId, old.label, file);
-    await unstoreDocument(old);
+    const fileName = await documentName(tripId, old.label);
+    const path = `${tripId}/${Date.now()}/${fileName}`;
+    const bucket = client.storage.from(DOC_BUCKET);
+    const { error: upErr } = await bucket.upload(path, file, { contentType: 'application/pdf', upsert: false });
+    if (upErr) throw new Error(upErr.message);
+    let doc;
+    try {
+      const { data, error } = await withTimeout(client.from('trip_documents')
+        .update({ file_name: fileName, file_path: path, file_size: file.size }).eq('id', old.id)
+        .select('id,label,created_at,file_name,file_path,file_size').single().then(r => r));
+      if (error) throw new Error(error.message);
+      doc = data;
+    } catch (err) {
+      bucket.remove([path]).catch(() => {});
+      throw err;
+    }
+    if (old.file_path) {
+      try {
+        const { error: rmErr } = await bucket.remove([old.file_path]);
+        if (rmErr) throw new Error(rmErr.message);
+      } catch (err) {
+        console.warn(`The stored file ${old.file_path} was not removed:`, err);
+      }
+    }
     await recordFileHistory(tripId, 'document_replaced', old.label || 'Previous file', `${old.label || 'Document'} replaced`,
       { documentId: doc.id, fileName: doc.file_name });
     return doc;
@@ -11830,7 +11864,7 @@
         return;
       }
       await refreshDocuments(tripId);
-      // The panel on the old itinerary moves to the new one.
+      // The panel open on the file shows the new one.
       if (viewerDocId === String(old.id)) {
         const trip = panelIndex.trips.get(tripId) ?? panelArgs?.trip;
         const fresh = trip && (trip.trip_documents || []).find(d => String(d.id) === String(doc.id));
@@ -12412,7 +12446,9 @@
   }
 
   /* Cancel is not delete: `cancelled_at` takes the trip off the board and the
-     row stays, so a cancelled trip can still be looked up. The reason is
+     row stays, so a cancelled trip can still be looked up. Its buses and
+     drivers come off it, as rux-ui's cancel takes them off, so they are free
+     for other trips at once; the history entry says how many. The reason is
      required: Cancel trip stays disabled until the box holds some text. The
      bar menu and the editor's Cancel trip button both open the dialog
      through here. */
@@ -12445,15 +12481,37 @@
       const patch = { cancelled_at: new Date().toISOString(), cancellation_reason: reason };
       const { error } = await withTimeout(client.from('trips').update(patch).eq('id', id).then(r => r));
       if (error) throw new Error(error.message);
+      /* A bus-less slot row is not a bus, so buses count only rows with one.
+         Deleting the rows takes their drivers with them. A failure leaves the
+         trip cancelled with its rows, and says so. */
+      let buses = 0;
+      let drivers = 0;
+      let kept = false;
+      try {
+        const { data: rows, error: readErr } = await withTimeout(client.from('trip_assignments')
+          .select('id,bus_id,trip_drivers(id)').eq('trip_id', id).then(r => r));
+        if (readErr) throw new Error(readErr.message);
+        if (rows?.length) {
+          const { error: delErr } = await withTimeout(client.from('trip_assignments').delete().eq('trip_id', id).then(r => r));
+          if (delErr) throw new Error(delErr.message);
+        }
+        buses = (rows || []).filter(r => r.bus_id).length;
+        drivers = (rows || []).reduce((n, r) => n + (r.trip_drivers?.length ?? 0), 0);
+      } catch (err) {
+        kept = true;
+        console.warn('The cancelled trip\'s buses and drivers were not taken off:', err);
+      }
       recordHistory(id, 'cancelled', [{
         field: 'trip', label: 'Trip', before: 'Active', after: `Cancelled — ${reason}`,
-      }]);
+      }, ...(buses ? [{ field: 'buses', label: 'Buses', before: `${buses} assigned`, after: 'Unassigned' }] : []),
+      ...(drivers ? [{ field: 'drivers', label: 'Drivers', before: `${drivers} assigned`, after: 'Unassigned' }] : [])]);
       // The reason is what the customer was told, so it is the trip's update too.
       writeUpdate(id, { kind: 'update', body: `Cancelled: ${reason}`, keys: ['cancellation'] });
       await show();
       // A cancelled trip leaves the board, and the editor with it.
       if (editing?.id === id && !panelEl.hidden) closePanel(false);
-      toast('success', 'Trip cancelled. It is off the schedule, and search still finds it.');
+      if (kept) toast('warning', 'Trip cancelled, but its buses and drivers are still on it.', 'Bring it back from search, take them off on its Buses tab, and cancel it again.');
+      else toast('success', 'Trip cancelled. It is off the schedule, and search still finds it.');
     } catch (e) {
       toast('error', `The trip was not cancelled. ${e.message}`);
     }

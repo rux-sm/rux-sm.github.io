@@ -79,16 +79,17 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 
 | Table | Used by | Notes |
 |---|---|---|
-| `contacts` | trip editor, Customers view | `name`, `phone`, `email`, `client` |
-| `trip_payments` | trip editor Billing tab | `trip_id`, `position`, `amount`, `method`, `date`, `ref`. Old app rewrites all rows on save. |
+| `contacts` | trip editor, Customers view | `name`, `phone`, `email`, `client`, `customer_id` to `customers`. A save in either app gives the booking contact the trip's customer when they have none and carry no other organization. |
+| `customers` | trip editor Customer field, Customers and Locations pages | `name`, `usual_location_id` to `locations`, `bill_to`. A save in either app links the trip, by `customer_id`, to the customer its Customer field names, and makes one for a name typed new. |
+| `trip_payments` | trip editor Billing tab | `trip_id`, `position`, `amount`, `method`, `date`, `ref`. Both apps write it row by row by id. |
 | `trip_pos` | trip editor Billing tab | `trip_id` to `trips`, cascade; `position`, `ref`, `amount`, `date` |
 | `trip_invoices` | trip editor Billing tab | `trip_id` to `trips`, cascade; `position`, `number`, `amount`, `date` |
 | `trip_quote_lines` | trip editor Billing tab, customer quote | `trip_id` to `trips`, cascade; `position`, `kind` (rental, second_driver, relief, discount, hotel, other), `leg` (outbound, return or null), `item`, `description`, `quantity`, `cost`, `amount`, `cost_typed`, and a rental line's `miles`, `dead_miles` and `rate`. Staff only, broadcast on realtime. |
-| `trip_updates` | the board, embedded in each trip for the bar's Updates mark and card; the Updates window, which every Save opens and the Update shortcut opens on its own, and which adds, edits and deletes them | `trip_id` to `trips`, cascade; `created_at`, `actor_id` (default `auth.uid()`), `actor_name`, `body`, `kind` (update, nothing, imported), `changes` jsonb, `edited_at` (null until its words are changed). The 203 imported rows are credited to Sergio. What was said to the customer, newest first. Staff only, anon granted nothing, broadcast on realtime. |
+| `trip_updates` | the board, embedded in each trip for the bar's Updates mark and card; the Updates window, which every Save opens and the Update shortcut opens on its own, and which adds, edits and deletes them | `trip_id` to `trips`, cascade; `created_at`, `actor_id` (default `auth.uid()`), `actor_name`, `body`, `kind` (update, nothing, imported), `changes` jsonb, `edited_at` (null until its words are changed). The 203 imported rows are credited to Sergio. What was said to the customer, newest first. rux-ui's trip editor lists them on its Details tab, adds one there, and asks for one on every Save as this app does, and either app's cancel writes its reason as one. Staff only, anon granted nothing, broadcast on realtime. |
 | `trip_ticket_options` | trip editor, manifest | `trip_id`, `position`, `label`, `price` |
 | `trip_passengers` | manifest | 17 columns: `name`, `phone`, `email`, `seat`, `status`, `ticket_option_id`, `amount_owed`, `amount_paid`, `group_label`, `pickup_location` |
 | `trip_passenger_payments` | manifest | `passenger_id`, `amount`, `method`, `date`, `ref` |
-| `trip_documents` | trip editor Files, driver page, `../rux-ui/doc.html` | `trip_id`, `label`, `file_name`, `file_path`, `file_size`. Files in bucket `trip-documents`. |
+| `trip_documents` | trip editor Files, driver page, `../rux-ui/doc.html` | `trip_id`, `label`, `file_name`, `file_path`, `file_size`. Files in bucket `trip-documents`. Replacing a file points the same row at the new one in both apps, so a document link keeps working. |
 | `trip_itineraries` | Itineraries view | `trip_id` (unique when set), `document` jsonb, `status` (new, reviewed, closed), `label` |
 | `trip_history` | History tab | `trip_id`, `trip_ref`, `action` (nine values), `changes` jsonb, `metadata` jsonb. RPC only. |
 | `trip_driver_statuses` | driver page, Tasks | `trip_id`, `driver_id`, `leg`, `role`, `status` (five values), `source` (dispatcher, driver), `accepted_at`, `declined_at`, and `accepted_view`, what the driver page showed of the driver's job when they accepted, which a later change is compared with. RPC only. |
@@ -147,12 +148,14 @@ as in `screen-inventory.md`.
 
 | Table | Read by | Written by |
 |---|---|---|
-| `trips` | Schedule, Trips search, driver page | Trip editor; a save that changes billing also writes `confirmed`, `balance_paid` and `date_paid`, derived as rux-ui derives them |
-| `trip_assignments` (with `active_roles`), `trip_drivers` | Schedule, Drivers, Fleet | Trip editor's Buses tab, which updates, inserts and deletes rows by id and never writes `trip_drivers.pay`; the bus reassignment drag writes `trip_assignments.bus_id` alone, or inserts the row when the bar is an empty slot |
+| `trips` | Schedule, Trips search, driver page | Trip editor; a save that changes billing also writes `confirmed`, `balance_paid` and `date_paid`, derived as rux-ui derives them, and one that changes the route clears rux-ui's `itinerary_confirmed`; Cancel writes `cancelled_at` and `cancellation_reason` |
+| `trip_assignments` (with `active_roles`), `trip_drivers` | Schedule, Drivers, Fleet | Trip editor's Buses tab, which updates, inserts and deletes rows by id and never writes `trip_drivers.pay`; the bus reassignment drag writes `trip_assignments.bus_id` alone, or inserts the row when the bar is an empty slot; Cancel deletes the trip's rows, and their drivers with them, as rux-ui's cancel does |
 | `trip_stops` | Schedule, Trip editor Route tab, driver page | Trip editor Route tab: a leg's pickup, drop-off and return rows, added when missing |
 | `buses`, `bus_out_of_service` | Schedule, Fleet, `../rux-ui/maintenance.html` | Fleet editor |
 | `drivers`, `driver_time_off` | Schedule, Drivers | Driver editor |
 | `contacts` | Trip editor, Customers | Customer editor, trip editor |
+| `customers` | Trip editor, Customers, Locations | Customers page, trip editor |
+| `trip_updates` | Schedule, trip editor | the Updates window, from Save or on its own; Cancel |
 | `trip_payments`, `trip_pos`, `trip_invoices`, `trip_ticket_options` | Trip editor Billing | Trip editor |
 | `trip_quote_lines` | Trip editor Billing, the customer quote on the Forms page | Trip editor, which writes `quoted_price` as the lines' sum |
 | `trip_passengers`, `trip_passenger_payments` | Manifest | Manifest |

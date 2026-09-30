@@ -1078,9 +1078,24 @@ button.scheduler-row-head__num::after {
 .scheduler-done__head svg, .scheduler-tab-done svg { color: var(--rux-support-success); flex: none; }
 .scheduler-tab-done { display: inline-flex; align-items: center; margin-inline-start: var(--rux-spacing-02); }
 
-/* THE CHECKLIST TAB: a summary line, then each group's items, a check or an
-   open ring beside each, what is missing under its name, and a button to go
-   and do it. Hand ticks are Carbon checkboxes in the same list. */
+/* THE CHECKLIST: a button in the panel head, its ring or check before how
+   much is left, over Carbon's popover holding the list: a summary line, then
+   each group's items, a check or an open ring beside each, what is missing
+   under its name, and a button to go and do it. Hand ticks are Carbon
+   checkboxes in the same list. The popover lies under the button across the
+   editor's width, 16px in from each edge, where data.js measures it, and its
+   list scrolls inside it. */
+.scheduler-checklist-button { gap: var(--rux-spacing-03); padding-inline: var(--rux-spacing-04); }
+.scheduler-checklist-panel {
+  inset-block-start: calc(100% + var(--rux-spacing-02));
+  inset-inline-start: var(--scheduler-checklist-start, auto);
+  inset-inline-end: auto;
+  inline-size: var(--scheduler-checklist-width, 23rem);
+  max-inline-size: none;
+  max-block-size: min(36rem, calc(100vh - 8rem));
+  overflow-y: auto;
+  padding: var(--rux-spacing-05);
+}
 .scheduler-checklist__summary { margin: 0; font-weight: 600; }
 .scheduler-checklist { list-style: none; margin: 0; padding: 0; }
 .scheduler-checklist__item {

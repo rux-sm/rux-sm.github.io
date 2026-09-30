@@ -527,6 +527,19 @@
           <h2 class="rux--side-panel__collapsed-title-text" id="scheduler-panel-title-collapsed">&nbsp;</h2>
         </div>
         <div class="rux--side-panel__decorator-and-close">
+          <!-- The checklist: how much is left before the trip leaves, or Ready,
+               always in view whatever tab is open. It is Carbon's popover, so
+               popover.js opens it, and Escape or a press outside closes it;
+               data.js writes the words and draws the list inside. Its content
+               is the next layer up, so it stands off the panel it opens over.
+               It carries no placement class: data.js lays it under the head
+               across the editor's width, so it never leaves the editor. -->
+          <span class="rux--popover-container rux--popover--drop-shadow scheduler-checklist-pop" id="scheduler-checklist-pop">
+            <button type="button" class="rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md scheduler-checklist-button" id="scheduler-checklist-button" aria-expanded="false"></button>
+            <span class="rux--popover">
+              <span class="rux--popover-content rux--layer-two scheduler-checklist-panel" id="scheduler-panel-checklist" role="group" aria-label="Checklist"></span>
+            </span>
+          </span>
           <!-- The trip's own actions, the trip bar's colour among them, which the
                board hands to the editor while the trip is open here. data.js
                opens its menu. -->
@@ -578,9 +591,6 @@
             <button id="scheduler-tab-files" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-panel-files" tabindex="-1">
               <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Files</span></div>
             </button>
-            <button id="scheduler-tab-checklist" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-panel-checklist" tabindex="-1">
-              <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Checklist</span></div>
-            </button>
           </div>
           <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--next rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_right"/></svg></button>
         </div>
@@ -589,7 +599,6 @@
         <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-fleet" aria-labelledby="scheduler-tab-fleet" tabindex="0" hidden></div>
         <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-billing" aria-labelledby="scheduler-tab-billing" tabindex="0" hidden></div>
         <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-files" aria-labelledby="scheduler-tab-files" tabindex="0" hidden></div>
-        <div class="rux--tab-content" role="tabpanel" id="scheduler-panel-checklist" aria-labelledby="scheduler-tab-checklist" tabindex="0" hidden></div>
       </div>
       <!-- The action bar, least to most committing: Cancel trip, Reset, Save.
            The row-double and md classes give each button a flex basis of 50%,

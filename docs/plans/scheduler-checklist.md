@@ -76,7 +76,7 @@ that cannot are ticked where the work is done, like right after printing a form.
 - **Only the paperwork and the extras are ticked by hand,** and each is ticked
   where the work happens: a Printed box beside Print in the form panel, the
   hotel's Booked box the editor already has, and a new fuel card box with its
-  number, which the scheduler lacks today. The Checklist tab ticks the ones
+  number, which the scheduler lacks today. The editor's checklist ticks the ones
   kept on the trip; an envelope is ticked in the Forms panel, since it is one
   per driver's seat.
 - **Every item that is not done has one button to go do it:** open the form,
@@ -88,8 +88,10 @@ that cannot are ticked where the work is done, like right after printing a form.
   needed, done, with Undo.
 - **A leg is Ready when nothing is left.** Ready is worked out each time and
   never saved.
-- **The checklist is a Checklist tab in the trip editor,** one section per leg
-  for a trip with a return, beside Details, Route, Buses, Billing and Files.
+- **The checklist is a button in the trip editor's head,** reading how many
+  items are left or Ready whatever tab is open, over a drop-down with one
+  section per leg for a trip with a return; an item's Open closes it on the
+  tab it names.
 - **The trip's card on the board does not show the checklist;** the card
   keeps to its shortcuts, note and updates.
 - **The Departures list** is a panel beside the board, opened from the
@@ -105,9 +107,9 @@ that cannot are ticked where the work is done, like right after printing a form.
   `hotel_booked_<leg>` and `fuel_card_assigned_<leg>` with their numbers on
   `trips`, and `envelope_printed` on each driver's seat. No database change.
 - **One rules file, `scheduler/checklist.js`,** decides every item, and the
-  editor tab and the Departures list both read it, the way
+  editor's checklist and the Departures list both read it, the way
   `follow-up.js` is shared today. The board hands it each leg's buses and
-  seats, which only the board can read. The Checklist tab reads the trip as
+  seats, which only the board can read. The editor's checklist reads the trip as
   saved, with the editor's own Done marks and ticks laid over it.
 - **Follow-up reminders stay as they are.** They are about chasing the
   customer; the checklist is about getting the leg out the door.

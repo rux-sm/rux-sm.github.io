@@ -12040,7 +12040,8 @@
      person with no number stays, saying so, with a button to add one: the
      trip for the customer's people, the Drivers page for a driver. Two drivers
      or more get one Text all drivers, a group message to every driver on the
-     leg. Text opens the phone's own messages, except a driver's on a computer,
+     leg. Once a driver has confirmed, the Customer part opens with the driver
+     details letter, to email or copy. Text opens the phone's own messages, except a driver's on a computer,
      which opens the office's Google Messages conversation with them where the
      Drivers page holds one.
 
@@ -12056,6 +12057,47 @@
     run: (bar, slot) => openContactsFrom(bar, slot) };
   const FIXED_SHORTCUTS = { contacts: CONTACTS };
   const dial = phone => String(phone).replace(/[^\d+]/g, '');
+  /* The driver details letter for the customer, or null while no driver on
+     the trip has confirmed: every bus with its confirmed drivers' names and
+     numbers, and a bus with none says its driver is to be confirmed. Legs
+     with the same crew are listed once; legs that differ each go under their
+     own date. It is addressed to the booking contact, and only its subject
+     names the destination, which is sometimes a group's name, not a place. */
+  const monthDay = s => parseISO(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  function driverLetter(trip) {
+    let confirmed = 0;
+    const legs = legsOf(trip).map(l => {
+      const lines = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === l.leg)
+        .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+        .flatMap(a => {
+          const number = a.bus_id != null ? panelIndex.buses.get(a.bus_id)?.number ?? null : null;
+          const bus = number ? `Bus ${number}` : 'Bus to be confirmed';
+          const crew = crewOf(trip, a, panelIndex.driversById, panelIndex.statuses)
+            .filter(c => c.who && c.status.value === 'confirmed');
+          confirmed += crew.length;
+          if (!crew.length) return [`${bus} — Driver to be confirmed`];
+          return crew.map(c => `${bus} — ${c.who.name}${c.role === 'driver' ? '' : c.role === 'co-driver' ? ' (co-driver)' : ' (relief driver)'}`
+            + (c.who.phone ? `, ${showPhone(c.who.phone)}` : ''));
+        });
+      return { ...l, lines };
+    }).filter(l => l.lines.length);
+    if (!confirmed) return null;
+    const to = tripContact(trip, 0);
+    const first = legs[0].from;
+    const last = legs.reduce((end, l) => (l.to > end ? l.to : end), legs[0].to);
+    const when = first === last ? `on ${monthDay(first)}` : `from ${monthDay(first)} to ${monthDay(last)}`;
+    const same = legs.every(l => l.lines.join() === legs[0].lines.join());
+    const split = trip.trip_type === SPLIT;
+    const lists = same ? [legs[0].lines.join('\r\n')]
+      : legs.map(l => `${split ? (l.leg === 'return' ? 'Pickup, ' : 'Drop-off, ') : ''}${monthDay(l.from)}:\r\n${l.lines.join('\r\n')}`);
+    const body = [
+      to?.name ? `Hi ${to.name.trim().split(/\s+/)[0]},` : 'Hello,',
+      `Here are the drivers for your trip ${when}:`,
+      ...lists,
+      'Please let us know if anything changes.',
+    ].join('\r\n\r\n');
+    return { to, subject: `Driver details for ${trip.destination || trip.customer || 'your trip'} on ${monthDay(first)}`, body };
+  }
   function closeContacts(restoreFocus) {
     if (!contactsOpen) return;
     const { registration, slot } = contactsOpen;
@@ -12132,9 +12174,9 @@
       return a;
     };
     // The offer to record a call or text to the customer's people.
-    const offer = (did, name) => () => {
+    const offer = (did, name, title, subtitle) => () => {
       const body = `${did} ${name}`;
-      toast('info', body, 'Add it to the trip\'s updates?', {
+      toast('info', title ?? body, subtitle ?? 'Add it to the trip\'s updates?', {
         label: 'Add update',
         onClick: async () => {
           toast(null);
@@ -12180,10 +12222,39 @@
       ? button(`Text all drivers (${numbers.length})`, '#m-chat', `sms:/open?addresses=${numbers.join(',')}`)
       : null;
     all?.classList.add('scheduler-contacts__all');
+    // The driver details letter, emailed from here or copied for Missive.
+    const letter = driverLetter(trip);
+    let details = null;
+    if (letter) {
+      details = el('div', 'scheduler-contacts__letter');
+      const sent = ['Emailed driver details to', letter.to?.name || 'the customer'];
+      if (letter.to?.email) {
+        details.appendChild(button('Email driver details', '#m-mail',
+          `mailto:${letter.to.email}?subject=${encodeURIComponent(letter.subject)}&body=${encodeURIComponent(letter.body)}`,
+          false, offer(...sent)));
+      }
+      // Copy is a square beside Email, and has its words when it stands alone.
+      const copy = button(letter.to?.email ? '' : 'Copy driver details', '#m-content_copy', '#', false, async e => {
+        e.preventDefault();
+        try {
+          await navigator.clipboard.writeText(letter.body);
+        } catch {
+          toast('error', 'Could not copy that', 'The browser would not reach the clipboard.');
+          return;
+        }
+        offer(...sent, 'Driver details copied', 'Once it is sent, add it to the trip\'s updates?')();
+      });
+      if (letter.to?.email) {
+        copy.classList.add('rux--btn--icon-only', 'scheduler-contacts__copy');
+        copy.setAttribute('aria-label', 'Copy driver details');
+        copy.title = 'Copy driver details';
+      }
+      details.appendChild(copy);
+    }
     const own = assigns.find(a => String(a.id) === bar.dataset.assignmentId);
     const busName = own?.bus_id != null ? panelIndex.buses.get(own.bus_id)?.number ?? null : null;
     const rows = [
-      ...part('Customer', people.map(p => card(p))),
+      ...part('Customer', people.map(p => card(p)), details),
       ...part(busName ? `Bus ${busName}` : 'This bus', mine.map(p => card(p)), all),
       ...part('Other buses', others.map(p => card(p, p.bus ? `Bus ${p.bus}` : null)), mine.length ? null : all),
     ];

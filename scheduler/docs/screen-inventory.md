@@ -212,9 +212,13 @@ customer's people, the crew on that bus and the crew on the trip's other
 buses for that leg, each with its role, number, and Call and Text buttons,
 Email for a booking contact who has one, and a driver's status and report
 time. A person with no number says so, with Add number. Two drivers or more
-add Text all drivers, one group message. A driver's Text opens their Google
+add Text all drivers, one group message. Once a driver on the trip has
+confirmed, the Customer part opens with Email driver details, a written email
+to the booking contact who has an address, and Copy driver details, the same
+letter on the clipboard: every bus on the trip with its confirmed drivers'
+names and numbers, each leg under its date when their crews differ. A driver's Text opens their Google
 Messages link on a computer where the Drivers page holds one. A call, text
-or email to the customer's people offers to add it to the trip's updates,
+or email to the customer's people, and the driver details, offer to add it to the trip's updates,
 and writes nothing if the offer is ignored. A shortcut
 that cannot act on the trip, such as the envelope on a bus with no driver, shows faint
 with the reason as its label. Escape clears the selection and takes the bar

@@ -1914,7 +1914,8 @@
      The row menu above has two fixed items. The Buses tab's bus and status
      menus have more, so this menu is rebuilt from its items on every open and
      placed the way the row menu is. An item with `checked` is a radio item,
-     and `{ divider: true }` is Carbon's rule between groups. */
+     and an item with `items` holds them as a submenu of radio items, marked
+     up as the bar menu's Color is, which menu.js opens. */
   let itemsMenuEl = null;
   let itemsMenuTrigger = null;
   const placeMenuAt = (menu, trigger) => {
@@ -1946,17 +1947,12 @@
       document.body.appendChild(itemsMenuEl);
     }
     const menu = itemsMenuEl;
-    const radio = items.some(i => i.checked !== undefined);
+    const radio = items.some(i => i.checked !== undefined || i.items);
     menu.className = radio
       ? 'rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items'
       : 'rux--menu rux--menu--sm rux--menu--open rux--menu--shown';
     menu.setAttribute('aria-label', label);
-    menu.replaceChildren(...items.map(it => {
-      if (it.divider) {
-        const rule = el('li', 'rux--menu-item-divider');
-        rule.setAttribute('role', 'separator');
-        return rule;
-      }
+    const build = (it, radio) => {
       const li = el('li', it.danger ? 'rux--menu-item rux--menu-item--danger' : 'rux--menu-item');
       // A plain item among radio items keeps the check's column, so the labels line up.
       const choice = radio && it.checked !== undefined;
@@ -1978,13 +1974,34 @@
         li.appendChild(icon);
       }
       li.appendChild(el('div', 'rux--menu-item__label', it.label));
+      if (it.items) {
+        li.setAttribute('aria-haspopup', 'true');
+        li.setAttribute('aria-expanded', 'false');
+        const caret = el('div', 'rux--menu-item__shortcut');
+        caret.appendChild(svgUse('#m-arrow_right', '16', '0 0 32 32'));
+        const sub = el('ul', 'rux--menu rux--menu--sm rux--menu--with-icons rux--menu--with-selectable-items');
+        sub.setAttribute('role', 'menu');
+        sub.setAttribute('aria-label', it.label);
+        sub.tabIndex = -1;
+        const group = el('li', 'rux--menu-item-radio-group');
+        group.setAttribute('role', 'none');
+        const choices = el('ul');
+        choices.setAttribute('role', 'group');
+        choices.setAttribute('aria-label', it.label);
+        choices.append(...it.items.map(child => build(child, true)));
+        group.appendChild(choices);
+        sub.appendChild(group);
+        li.append(caret, sub);
+        return li;
+      }
       li.addEventListener('click', () => {
         if (it.disabled) return;
         window.Rux?.menu?.close?.(menu);
         it.run();
       });
       return li;
-    }));
+    };
+    menu.replaceChildren(...items.map(it => build(it, radio)));
     if (point) {
       menu.hidden = false;
       menu.style.position = 'fixed';
@@ -9602,9 +9619,9 @@
   });
 
   /* The panel head's Trip actions: Forms, the trip's printed forms beside the
-     board, which a trip not yet saved has none of; then the trip bar's colour,
-     from the field the open trip drew, marked and applied as the bar's own
-     menu does. */
+     board, which a trip not yet saved has none of; then Color, the trip bar's
+     colour in a submenu as the bar's own menu has it, its chip the colour now,
+     from the field the open trip drew. */
   let tripColorItem = null;
   const panelMenu = document.getElementById('scheduler-panel-menu');
   panelMenu?.addEventListener('click', () => {
@@ -9615,12 +9632,16 @@
     openItemsMenu(panelMenu, [
       { label: 'Forms', icon: formsIcon, disabled: !editing.id || editing.creating,
         run: () => openForms(null, editing.id, panelMenu) },
-      ...(colorItem ? [{ divider: true }, ...colorItem.choices.map(c => ({
-        label: c.label,
-        checked: c.value === now,
-        icon: colorItem.chip(c.hue),
-        run: () => { colorItem.setColor(c.value); refreshDirty(); panelMenu.focus(); },
-      }))] : []),
+      ...(colorItem ? [{
+        label: 'Color',
+        icon: colorItem.chip((colorItem.choices.find(c => c.value === now) ?? colorItem.choices[0]).hue),
+        items: colorItem.choices.map(c => ({
+          label: c.label,
+          checked: c.value === now,
+          icon: colorItem.chip(c.hue),
+          run: () => { colorItem.setColor(c.value); refreshDirty(); panelMenu.focus(); },
+        })),
+      }] : []),
     ], 'Trip actions');
   });
 

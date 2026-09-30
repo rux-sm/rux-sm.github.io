@@ -49,8 +49,8 @@ the schema to match the page.
   Scheduler is refused too.
 
 `platform.profiles` is a separate table that holds a staff member's name and
-theme across the site, and in `scheduler_shortcuts` their choice for slots 2
-to 4 of the selected bar's shortcuts, null for the default set.
+theme across the site. Its `scheduler_shortcuts` column held a choice of
+shortcuts the scheduler no longer offers, and nothing reads it.
 
 ## 2. Tables
 

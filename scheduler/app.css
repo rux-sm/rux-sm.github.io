@@ -794,9 +794,8 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut:first-child { border-start-start-radius: var(--scheduler-shortcut-radius, var(--scheduler-surface-radius, 0)); border-end-start-radius: var(--scheduler-shortcut-radius, var(--scheduler-surface-radius, 0)); }
 .scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut:last-child { border-start-end-radius: var(--scheduler-shortcut-radius, var(--scheduler-surface-radius, 0)); border-end-end-radius: var(--scheduler-shortcut-radius, var(--scheduler-surface-radius, 0)); }
 .scheduler-bar-shortcut:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
-/* An empty slot's dashed circle, and an action that cannot act on this trip,
-   are drawn faint in the bar's own icon colour, so they read on every theme. */
-.scheduler-bar-shortcut--empty svg,
+/* An action that cannot act on this trip is drawn faint in the bar's own
+   icon colour, so it reads on every theme. */
 .scheduler-bar-shortcut[aria-disabled="true"] svg { opacity: .4; }
 .scheduler-bar-shortcut[aria-disabled="true"] { cursor: default; }
 .scheduler-bar-shortcut[aria-disabled="true"]:hover { background: transparent; }
@@ -857,31 +856,7 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) .scheduler-card > :first-child,
 .scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) .scheduler-card > .scheduler-card__list:first-child > :first-child { border-block-start: 0; }
-/* THE EDITOR'S SHORTCUTS: the floating card's slots in a row above the tabs,
-   each word beside its icon and the slots sharing the row's width as the tabs
-   do. It is the day row's band, 2rem on the band surface, and sits level with
-   it, so the two read as one grey row across the screen, with the day row's
-   rules: none where the surface change separates, a hairline in geist-dark. */
-.scheduler-panel-shortcuts {
-  display: flex;
-  box-sizing: border-box;
-  block-size: 2rem;
-  background: var(--scheduler-band-surface);
-  border-block-start: var(--scheduler-band-rule);
-  border-block-end: var(--scheduler-band-rule);
-}
-.scheduler-panel-shortcuts[hidden] { display: none; }
-.scheduler-panel-shortcuts > .scheduler-bar-shortcut {
-  flex: 1 1 auto;
-  gap: var(--rux-spacing-03);
-  inline-size: auto;
-  min-inline-size: 2rem;
-  block-size: 100%;
-  padding: 0 var(--rux-spacing-03);
-}
-.scheduler-panel-shortcuts > .scheduler-bar-shortcut:not([aria-disabled="true"]):hover { background: var(--rux-layer-accent-hover-01); }
-.scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut__label,
-.scheduler-panel-shortcuts .scheduler-bar-shortcut__label {
+.scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut__label {
   display: block;
   max-inline-size: 100%;
   overflow: hidden;

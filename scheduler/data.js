@@ -1654,9 +1654,6 @@
   const pageEl = document.querySelector('.scheduler-page');
   // The selected trip's shortcut bar, placed and drawn by placeBarOpen.
   const barShortcuts = document.getElementById('scheduler-bar-shortcuts');
-  // The same shortcuts in a row above the editor's tabs, drawn by drawPanelShortcuts.
-  const panelShortcuts = document.getElementById('scheduler-panel-shortcuts');
-  let panelShortcutsDrawn = '';
   const unsavedModal = document.getElementById('scheduler-unsaved-modal');
 
   /* A section can carry one control on its heading line, as each billing
@@ -8221,7 +8218,16 @@
       filesEmpty = el('p', 'rux--form__helper-text', 'No files yet. A file added above is listed here.');
       const listWrap = el('div');
       listWrap.append(list, filesEmpty);
-      panelFiles.append(notNeeded, section('Add a file', fileUploader(trip.id)), section('Files', listWrap));
+      // The trip's forms, printed from what it holds, beside the files it was sent.
+      const formsButton = el('button', 'rux--btn rux--btn--tertiary rux--layout--size-md scheduler-quickbooks', 'Open forms');
+      formsButton.type = 'button';
+      const formsIcon = svgUse('#m-description', '16', '0 0 32 32');
+      formsIcon.classList.add('rux--btn__icon');
+      formsButton.appendChild(formsIcon);
+      formsButton.id = 'scheduler-f-openforms';
+      formsButton.addEventListener('click', () => openForms(null, trip.id, formsButton));
+      panelFiles.append(notNeeded, section('Add a file', fileUploader(trip.id)), section('Files', listWrap),
+        section('Forms', formsButton));
       drawFiles(trip);
     }
 
@@ -8573,7 +8579,7 @@
   }
 
   /* The shortcut bar follows the selection, except onto the bar the editor
-     holds, whose toolbar already carries the same slots. It is placed the way a tooltip is:
+     holds, which the editor already shows. It is placed the way a tooltip is:
      above the trip where there is room and below it where there is not, and
      slid back inside the board at either edge with its arrow still pointing at
      the trip. Nothing is taken from the trip itself, so the slots are the same
@@ -8589,7 +8595,6 @@
   // The Contacts window, while it is open: its overlay registration and slot.
   let contactsOpen = null;
   function placeBarOpen(bar = (peekBar?.isConnected ? peekBar : null) ?? selectedBar()) {
-    drawPanelShortcuts();
     if (!barShortcuts) return;
     const none = !bar?.dataset.tripId || isEditorBar(bar) || menuHidesCard || gridEl.querySelector('.scheduler-bar--dragging');
     barShortcuts.hidden = none;
@@ -9918,8 +9923,8 @@
       return;
     }
 
-    if (item.id === 'scheduler-bar-menu-shortcuts') {
-      openShortcutsModal(1);
+    if (item.id === 'scheduler-bar-menu-calculator') {
+      openCalculator(bar);
       return;
     }
 
@@ -11205,14 +11210,14 @@
   /* The forms this trip can fill in, on print.html's own list. It takes the
      trip rather than the bar's assignment, because the list is the trip's and
      a form that wants one bus asks for it once it is chosen. */
-  function openForms(bar) {
-    const id = bar.dataset.tripId;
+  // From a bar, or from the Files tab with the trip's id and its button.
+  function openForms(bar, id = bar?.dataset.tripId, opener = bar) {
     if (!id) return;
     openGenerated({
       url: `print.html?trip=${encodeURIComponent(id)}`,
       kind: 'Forms',
       note: '',
-      opener: bar,
+      opener,
     });
   }
 
@@ -11251,7 +11256,7 @@
       url: `quote.html?${params}`,
       kind: 'Quote calculator',
       note: '',
-      opener: bar ?? document.querySelector('#scheduler-panel-shortcuts [data-shortcut="calculator"]'),
+      opener: bar ?? document.getElementById('scheduler-f-opencalc'),
     });
   }
 
@@ -11906,9 +11911,7 @@
     toast('success', 'The file was deleted.');
   });
 
-  // Color from a slot opens the bar menu beside the slot, with Color's own
-  // submenu already open.
-  // The Assign driver slot opens the menu's driver list beside it, as Color does.
+  // The Assign driver slot opens the bar menu beside it, with the driver list open.
   function openAssignFrom(bar, slot) {
     const box = slot.getBoundingClientRect();
     prepareBarMenu(bar);
@@ -11918,34 +11921,11 @@
     if (sub) window.Rux?.menu?.open?.(sub, assign);
   }
 
-  function openColorFrom(bar, slot) {
-    const box = slot.getBoundingClientRect();
-    prepareBarMenu(bar);
-    popMenuAt(barMenu, { clientX: box.right, clientY: box.top });
-    const color = document.getElementById('scheduler-bar-menu-color');
-    const sub = color?.querySelector(':scope > .rux--menu');
-    if (sub) window.Rux?.menu?.open?.(sub, color);
-  }
-
-  /* THE SELECTED TRIP'S SHORTCUTS. Open trip comes first on every trip; the
-     person's own choices follow it, in the order they set, and an empty choice
-     is left out rather than drawn. One empty slot closes the row while there is
-     room for another, so Customize shortcuts is always one press away. A slot
-     whose action cannot act on the trip shows disabled, with the reason as its
-     label, so the slots keep their order from trip to trip. */
-  /* While a trip is in the editor, the editor owns its colour, its hotel and
-     its bus: a write from the board would move `updated_at` under the panel
-     and turn its next Save into a conflict. The slot stays in place and says
-     where to do it instead, so the row never changes shape. */
-  const EDITOR_HAS = {
-    color: bar => (isEditorTrip(bar) ? 'Change the color in the editor' : null),
-    hotel: bar => (isEditorTrip(bar) ? 'Mark the hotel in the editor' : null),
-    bus: bar => (isEditorTrip(bar) ? 'Change the bus in the editor' : null),
-    driver: bar => (isEditorTrip(bar) ? 'Change the driver in the editor' : null),
-  };
-
-  /* `short` is the word under the slot on the docked sheet, where a phone has
-     no hover to show the name. */
+  /* THE SELECTED TRIP'S SHORTCUTS, the same six on every trip. A slot whose
+     action cannot act on the trip shows disabled, with the reason as its
+     label, so the slots keep their places from trip to trip. `short` is the
+     word under the slot on the docked sheet, where a phone has no hover to
+     show the name. */
   const SHORTCUT_ACTIONS = [
     { id: 'open', label: 'Open trip', icon: '#m-open_in_new', short: 'Open',
       blocked: () => null, run: () => openSelected() },
@@ -11957,59 +11937,21 @@
       blocked: bar => (bar.dataset.itineraryId || client ? null : 'No itinerary yet'),
       run: bar => (bar.dataset.itineraryId ? openItinerary(bar)
         : pickFile(file => uploadFrom(bar.dataset.tripId, 'Itinerary', file))) },
-    { id: 'calculator', label: 'Quote calculator', icon: '#m-calculate', short: 'Calculator',
-      blocked: () => null, run: bar => openCalculator(bar) },
-    // The trip's list of forms, the one way to a form from the board.
+    // The trip's list of forms.
     { id: 'forms', label: 'Forms', icon: '#m-description', short: 'Forms',
       blocked: () => null, run: bar => openForms(bar) },
+    /* While a trip is in the editor, the editor owns its drivers: a write from
+       the board would move `updated_at` under the panel and turn its next
+       Save into a conflict, so the slot says where to do it instead. */
     { id: 'assign', label: 'Assign driver', icon: '#m-person-fill', short: 'Driver',
       label_for: bar => (barSeat(bar)?.seat?.driver_id != null ? 'Change driver' : 'Assign driver'),
-      blocked: bar => (!client ? 'Not signed in' : !barSeat(bar)?.range ? 'Not on a bus' : EDITOR_HAS.driver(bar)),
+      blocked: bar => (!client ? 'Not signed in' : !barSeat(bar)?.range ? 'Not on a bus'
+        : isEditorTrip(bar) ? 'Change the driver in the editor' : null),
       run: (bar, slot) => openAssignFrom(bar, slot) },
-    { id: 'color', label: 'Color', icon: '#m-palette', short: 'Color',
-      blocked: bar => EDITOR_HAS.color(bar), run: (bar, slot) => openColorFrom(bar, slot) },
-    { id: 'hotel', label: 'Mark hotel booked', icon: '#m-apartment', short: 'Hotel',
-      label_for: bar => (bar.dataset.hotelBooked ? 'Mark hotel not booked' : 'Mark hotel booked'),
-      blocked: bar => (!bar.dataset.needHotel ? 'No hotel on this trip' : EDITOR_HAS.hotel(bar)),
-      run: bar => markHotel(bar) },
-    { id: 'unassign', label: 'Take off this bus', icon: '#m-remove', short: 'Take off',
-      blocked: bar => (!bar.dataset.assignmentId || !bar.dataset.busId ? 'Not on a bus' : EDITOR_HAS.bus(bar)),
-      run: bar => takeOffBus(bar) },
-    { id: 'cancel', label: 'Cancel trip…', icon: '#m-dangerous', short: 'Cancel',
-      blocked: () => null, run: bar => openCancelModal(bar.dataset.tripId) },
   ];
-  // How many actions follow Open trip, and so how many dropdowns Customize
-  // shortcuts shows.
-  const SHORTCUT_SLOTS = 5;
-  /* The fewest slots the bar ever shows, Open trip included. Three at the md
-     slot size is 120px, which fits inside the 129px a one-day trip bar has at
-     the narrowest day column, so the bar never overhangs the trip it points
-     at when it is at its smallest. */
-  const SHORTCUT_MIN = 3;
-  const SHORTCUT_DEFAULT = ['itinerary', 'color', null, null, null];
-  // Where the choice is kept when no one is signed in, as in a local preview.
-  const SHORTCUT_KEY = 'rux.scheduler.shortcuts';
-  let shortcutChoice = SHORTCUT_DEFAULT.slice();
-
-  /* A stored choice is a list of known actions, or None, cut or padded to the
-     number of slots; anything else is the default set. The padding is what
-     reads a choice saved when there were three slots. */
-  // The single forms a slot could once be set to, which Forms now stands for.
-  const FORM_SHORTCUTS = new Set(['envelope', 'driver_itinerary', 'quote']);
-  const cleanShortcuts = value => {
-    if (!Array.isArray(value)) return SHORTCUT_DEFAULT.slice();
-    const known = new Set(SHORTCUT_ACTIONS.map(a => a.id).filter(id => id !== 'open'));
-    // A slot saved on a single form holds Forms, and Forms is held once.
-    let forms = false;
-    return Array.from({ length: SHORTCUT_SLOTS }, (_, i) => {
-      const id = FORM_SHORTCUTS.has(value[i]) ? 'forms' : value[i];
-      if (id === 'forms') {
-        if (forms) return null;
-        forms = true;
-      }
-      return known.has(id) ? id : null;
-    });
-  };
+  // Contacts and Add update close the row, because every trip has people to
+  // reach and updates to write.
+  const SHORTCUT_ROW = ['open', 'itinerary', 'forms', 'assign', 'contacts', 'add_update'];
 
   /* The docked sheet stands on the header's own surface. The header is a theme
      zone of its own in theme.js, g100 under Carbon's four whatever the page
@@ -12087,15 +12029,7 @@
 
   let shortcutsDrawn = '';
   function drawShortcuts(bar) {
-    /* Open trip, then the chosen actions with the empty choices left out. An
-       empty slot only ever pads the row up to three, so the bar is never
-       narrower than three slots and never carries a dashed circle it does not
-       need. A fourth and beyond are added from the right-click menu. */
-    const slots = ['open', ...shortcutChoice.filter(Boolean)];
-    while (slots.length < SHORTCUT_MIN) slots.push(null);
-    // Contacts and Add update are always the last two, after the person's own
-    // choices, because every trip has people to reach and updates to write.
-    slots.push('contacts', 'add_update');
+    const slots = SHORTCUT_ROW;
     const trip = panelIndex.trips.get(bar.dataset.tripId);
     const carded = !!trip;
     const key = [bar.dataset.tripId, bar.dataset.leg, bar.dataset.itineraryId,
@@ -12113,14 +12047,7 @@
       btn.type = 'button';
       btn.dataset.slot = String(i + 1);
       const action = FIXED_SHORTCUTS[id] ?? SHORTCUT_ACTIONS.find(a => a.id === id);
-      if (!action) {
-        btn.classList.add('scheduler-bar-shortcut--empty');
-        btn.setAttribute('aria-label', 'Add a shortcut');
-        btn.title = 'Add a shortcut';
-        btn.append(svgUse('#m-motion_photos_on', '16', '0 0 32 32'), el('span', 'scheduler-bar-shortcut__label', 'Add'));
-        return btn;
-      }
-      // Mark hotel booked and Assign driver each say which way they act on this bar.
+      // Itinerary and Assign driver each say which way they act on this bar.
       const why = action.blocked(bar);
       const label = why ?? (action.label_for ? action.label_for(bar) : action.label);
       btn.dataset.shortcut = action.id;
@@ -12134,8 +12061,7 @@
     barShortcuts.toggleAttribute('data-card', carded);
   }
 
-  /* Add update opens the trip's Updates window, without opening the trip. It
-     is not one of the choices, because every trip has it. */
+  // Add update opens the trip's Updates window, without opening the trip.
   const ADD_UPDATE = { id: 'add_update', label: 'Add update', short: 'Update', icon: '#m-add_comment', blocked: () => null,
     run: bar => openUpdatesWindow(panelIndex.trips.get(bar.dataset.tripId)) };
 
@@ -12483,8 +12409,7 @@
     if (bar) openUpdatesWindow(panelIndex.trips.get(bar.dataset.tripId));
   }
 
-  // A slot acts on the bar it shows. An empty slot opens Customize shortcuts at
-  // that slot, and a disabled one does nothing.
+  // A slot acts on the bar it shows, and a disabled one does nothing.
   barShortcuts?.addEventListener('click', e => {
     const note = e.target.closest('.scheduler-card__note[role="button"]');
     if (note) { toggleNote(note); return; }
@@ -12513,157 +12438,13 @@
     if (!btn || btn.getAttribute('aria-disabled') === 'true') return;
     const bar = takeShownBar();
     if (!bar) return;
-    if (!btn.dataset.shortcut) {
-      const first = shortcutChoice.findIndex(id => !id);
-      openShortcutsModal(first < 0 ? SHORTCUT_SLOTS : first + 1);
-      return;
-    }
     (FIXED_SHORTCUTS[btn.dataset.shortcut] ?? SHORTCUT_ACTIONS.find(a => a.id === btn.dataset.shortcut))?.run(bar, btn);
-  });
-
-  /* THE EDITOR'S SHORTCUTS: the floating card's slots in a row above the
-     editor's tabs, less Open trip, which the editor already is, and with no
-     empty slot, because Customize shortcuts is the bar menu's. They act on the
-     bar the editor holds, so a trip not on the week shown keeps its row faint
-     until it is. The four the board hands to the editor while the trip is
-     open go to the place in the editor that changes them instead, so the
-     change is saved with the rest of the trip. */
-  const toFleetTab = () => {
-    const tab = document.getElementById('scheduler-tab-fleet');
-    if (tab && tab.getAttribute('aria-selected') !== 'true') window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
-  };
-  const IN_EDITOR = {
-    color: () => document.getElementById('scheduler-panel-menu')?.click(),
-    // The leg's Hotel line, where its confirmation is typed; a trip with the
-    // reminder and no line is marked booked for Save to keep.
-    hotel: ref => {
-      const tab = document.getElementById('scheduler-tab-billing');
-      if (tab && tab.getAttribute('aria-selected') !== 'true') window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
-      const at = linePending.findIndex(l => l.kind === 'hotel' && hotelLeg(l) === (ref.leg || 'outbound'));
-      if (at >= 0) { openLineDialog(at); document.getElementById('scheduler-f-lhotelref')?.focus(); return; }
-      if (!editing?.hotel?.[ref.leg || 'outbound']) return;
-      editing.hotel[ref.leg || 'outbound'].booked = true;
-      refreshDirty();
-      toast('info', 'Hotel marked booked', 'Save to keep it.');
-    },
-    assign: toFleetTab,
-    unassign: toFleetTab,
-    calculator: () => openCalculator(null),
-  };
-  /* A new trip has the same row, so the slots keep their places, but only the
-     calculator works before the first Save: every other slot acts on a trip
-     the database holds. */
-  const ON_NEW_TRIP = new Set(['calculator']);
-  function drawPanelShortcuts() {
-    if (!panelShortcuts) return;
-    const draft = !panelEl.hidden && !!panelArgs?.draft;
-    const ref = !panelEl.hidden && !draft ? panelArgs?.ref : null;
-    panelShortcuts.hidden = !ref && !draft;
-    if (panelShortcuts.hidden) { panelShortcutsDrawn = ''; return; }
-    const bar = ref ? findBar(ref) : null;
-    const slots = [...shortcutChoice.filter(Boolean), 'contacts', 'add_update'].map(id => {
-      const action = FIXED_SHORTCUTS[id] ?? SHORTCUT_ACTIONS.find(a => a.id === id);
-      const why = draft ? (ON_NEW_TRIP.has(id) ? null : 'Save the trip first')
-        : IN_EDITOR[id] ? null : !bar ? 'This trip is not on the week shown' : action.blocked(bar);
-      return { id, why,
-        label: why ?? (action.label_for && bar ? action.label_for(bar) : action.label),
-        icon: action.icon_for && bar ? action.icon_for(bar) : action.icon,
-        short: action.short };
-    });
-    // The same slots are left alone, so a focused slot keeps focus.
-    const key = JSON.stringify(slots);
-    if (key === panelShortcutsDrawn) return;
-    panelShortcutsDrawn = key;
-    panelShortcuts.replaceChildren(...slots.map(s => {
-      const btn = el('button', 'scheduler-bar-shortcut');
-      btn.type = 'button';
-      btn.dataset.shortcut = s.id;
-      btn.setAttribute('aria-label', s.label);
-      btn.title = s.label;
-      if (s.why) btn.setAttribute('aria-disabled', 'true');
-      btn.append(svgUse(s.icon, '16', '0 0 32 32'), el('span', 'scheduler-bar-shortcut__label', s.short));
-      return btn;
-    }));
-  }
-  panelShortcuts?.addEventListener('click', e => {
-    const btn = e.target.closest('.scheduler-bar-shortcut');
-    const ref = panelArgs?.ref;
-    if (!btn || (!ref && !panelArgs?.draft) || btn.getAttribute('aria-disabled') === 'true') return;
-    const id = btn.dataset.shortcut;
-    if (IN_EDITOR[id]) { IN_EDITOR[id](ref); return; }
-    const bar = findBar(ref);
-    if (bar) (FIXED_SHORTCUTS[id] ?? SHORTCUT_ACTIONS.find(a => a.id === id))?.run(bar, btn);
-  });
-
-  const shortcutsModal = document.getElementById('scheduler-shortcuts-modal');
-  const shortcutSelect = n => document.getElementById(`scheduler-shortcut-${n}`);
-  /* Every dropdown is filled from the one table of actions, so an action added
-     there is offered here without the page being touched. Open trip is not
-     among them: it always comes first. */
-  for (let n = 1; n <= SHORTCUT_SLOTS; n++) {
-    const select = shortcutSelect(n);
-    if (!select) continue;
-    const none = el('option', 'rux--select-option', 'None');
-    none.value = '';
-    select.replaceChildren(none, ...SHORTCUT_ACTIONS.filter(a => a.id !== 'open').map(a => {
-      const option = el('option', 'rux--select-option', a.label);
-      option.value = a.id;
-      return option;
-    }));
-  }
-
-  // Opened at a dropdown: the slot pressed, or the first empty one when the
-  // empty slot was pressed.
-  function openShortcutsModal(slot) {
-    if (!shortcutsModal) return;
-    for (let n = 1; n <= SHORTCUT_SLOTS; n++) shortcutSelect(n).value = shortcutChoice[n - 1] ?? '';
-    window.Rux?.modal?.open?.(shortcutsModal);
-    shortcutSelect(Math.min(SHORTCUT_SLOTS, Math.max(1, slot)))?.focus();
-  }
-  document.getElementById('scheduler-shortcuts-save')?.addEventListener('click', () => {
-    window.Rux?.modal?.close?.(shortcutsModal);
-    saveShortcuts(Array.from({ length: SHORTCUT_SLOTS }, (_, i) => shortcutSelect(i + 1).value || null));
   });
 
   // The signed-in person's id, or null in a preview with no log-in.
   async function personId() {
     const session = await Promise.resolve(window.Rux?.account?.getSession?.()).catch(() => null);
     return session?.user?.id ?? null;
-  }
-
-  // The choice lives on the person's profile, so it follows them to every device.
-  async function loadShortcuts() {
-    const uid = await personId();
-    try {
-      if (uid) {
-        const { data, error } = await withTimeout(client.schema('platform').from('profiles')
-          .select('scheduler_shortcuts').eq('id', uid).maybeSingle().then(r => r));
-        if (error) throw new Error(error.message);
-        shortcutChoice = cleanShortcuts(data?.scheduler_shortcuts ?? null);
-      } else {
-        shortcutChoice = cleanShortcuts(JSON.parse(localStorage.getItem(SHORTCUT_KEY) || 'null'));
-      }
-    } catch { /* the default set stays */ }
-    placeBarOpen();
-  }
-
-  async function saveShortcuts(choice) {
-    shortcutChoice = cleanShortcuts(choice);
-    placeBarOpen();
-    const uid = await personId();
-    if (!uid) {
-      try { localStorage.setItem(SHORTCUT_KEY, JSON.stringify(shortcutChoice)); } catch { /* this visit only */ }
-      toast('success', 'Shortcuts saved in this browser.');
-      return;
-    }
-    try {
-      const { error } = await withTimeout(client.schema('platform').from('profiles')
-        .upsert({ id: uid, scheduler_shortcuts: shortcutChoice }).then(r => r));
-      if (error) throw new Error(error.message);
-      toast('success', 'Shortcuts saved.');
-    } catch (err) {
-      toast('error', `The shortcuts did not save. ${err.message}`);
-    }
   }
 
   /* Cancel is not delete: `cancelled_at` takes the trip off the board and the
@@ -14190,6 +13971,5 @@
       show();
     }
     listen();
-    loadShortcuts();
   })();
 })();

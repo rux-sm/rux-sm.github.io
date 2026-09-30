@@ -848,6 +848,12 @@ button.scheduler-row-head__num::after {
   block-size: auto;
   padding: var(--rux-spacing-02);
 }
+/* Over a card the slots stand on a strip a step off the card, so they read
+   as buttons and not as one more row. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut {
+  background: color-mix(in srgb, var(--card-ink) 10%, var(--card-surface));
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut:hover { background: var(--card-hover); }
 /* Above its trip the slots come last, so they sit against the trip the arrow
    points at, and take the rule the card's first row gives up. */
 .scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) > .scheduler-bar-shortcut {
@@ -883,7 +889,8 @@ button.scheduler-row-head__num::after {
 /* The reminder is a band, first: the warning colour tinted across the row
    with a 3px strip down its start, its bell in the card's ink, and its
    dismiss at the row's end. */
-.scheduler-card__asks {
+.scheduler-card__asks,
+.scheduler-card__dayof {
   display: flex;
   gap: var(--rux-spacing-03);
   align-items: center;
@@ -891,7 +898,11 @@ button.scheduler-row-head__num::after {
   border-inline-start: 3px solid var(--rux-support-warning);
   padding-inline-start: calc(var(--rux-spacing-04) - 3px);
 }
-.scheduler-card__asks > svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--card-icon); }
+.scheduler-card__asks > svg,
+.scheduler-card__dayof > svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--card-icon); }
+/* A second warning band under the first joins it with a thin shade, not a
+   full rule, so the warnings read as one block. */
+.scheduler-card__asks + .scheduler-card__dayof { border-block-start-color: color-mix(in srgb, var(--rux-support-warning) 22%, var(--card-rule)); }
 /* A bus that does not fit is a band like the reminder's, in the error colour,
    above it: a mistake on the board comes before a job still to do. */
 .scheduler-card__misfit {
@@ -904,7 +915,7 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-card__misfit > svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--card-icon); }
 .scheduler-card__misfit > strong { flex: 1; min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
-.scheduler-card__asks > strong { flex: 1; min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
+:is(.scheduler-card__asks, .scheduler-card__dayof) > strong { flex: 1; min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
 /* A due reminder names the day it leaves where the dismiss would stand. */
 .scheduler-card__asks-when { flex: none; }
 .scheduler-card__dismiss {
@@ -929,8 +940,8 @@ button.scheduler-row-head__num::after {
 /* The note is one row with no heading, shaded a step darker than the card so
    it never reads as one of the updates: its pin in a quieter ink, its words,
    and on a line of their own under the words, lined up with them, the trip's
-   needs and a missing day-of contact, each glyph with its name written out.
-   A trip with no note shows the facts alone. */
+   needs, each glyph with its name written out. A trip with no note shows the
+   needs alone. */
 .scheduler-card__note {
   display: flex;
   flex-wrap: wrap;
@@ -948,8 +959,7 @@ button.scheduler-row-head__num::after {
   gap: var(--rux-spacing-02) var(--rux-spacing-04);
 }
 .scheduler-card__note-words + .scheduler-card__facts { margin-inline-start: calc(1rem + var(--rux-spacing-03)); }
-.scheduler-card__need,
-.scheduler-card__dayof { display: inline-flex; align-items: center; gap: var(--rux-spacing-02); }
+.scheduler-card__need { display: inline-flex; align-items: center; gap: var(--rux-spacing-02); }
 .scheduler-card__facts svg { flex: none; inline-size: 1rem; block-size: 1rem; }
 /* A need this bus meets is quiet, one still to do is in full ink, and one
    the bus falls short of is red. */
@@ -958,17 +968,11 @@ button.scheduler-row-head__num::after {
 .scheduler-card__need--short { opacity: 1; }
 .scheduler-card__need--short { color: var(--card-error); }
 .scheduler-card__need-letter { inline-size: 1rem; text-align: center; font-weight: var(--rux-heading-compact-01-font-weight); }
-/* No day-of contact: its phone in the warning colour. */
-.scheduler-card__dayof > svg { color: var(--card-warning); }
-/* Three updates show and the rest scroll: each row is the 24px avatar with
-   4px above and below, 2rem in all; a longer update wraps and takes more. */
+/* The newest update, and a line counting the rest. */
 .scheduler-card__list {
   list-style: none;
   margin: 0;
   padding: 0;
-  max-block-size: calc(3 * 2rem + 3px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
 }
 /* An update: who, as Carbon's small avatar in their own colour, the words,
    and how long ago as a short tag at the end. The newest reads heavier. */
@@ -983,6 +987,26 @@ button.scheduler-row-head__num::after {
 .scheduler-card__when { flex: none; opacity: .6; font-variant-numeric: tabular-nums; }
 .scheduler-card__update--newest .scheduler-card__words { font-weight: var(--rux-heading-compact-01-font-weight); }
 .scheduler-card__empty { opacity: .7; }
+/* The count of the rest is a link in the card's own link colour, lined up
+   with the update's words, and takes no rule of its own. */
+.scheduler-card__more {
+  border-block-start: 0;
+  padding-block-start: 0;
+  padding-inline-start: calc(var(--rux-spacing-04) + 1.5rem + var(--rux-spacing-03));
+  color: var(--rux-link-primary);
+}
+/* Floating, the note stops at two lines on an ellipsis until it is opened.
+   The words are cut, not the row, so the row's padding shows none of a
+   third. */
+.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__note:not([data-open]) > .scheduler-card__note-words {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__note[role="button"] { cursor: pointer; }
+.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__note[role="button"]:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
 /* IT ARRIVES WITH A SMALL POP: rising 6px from the arrow's side and growing
    from 94%, on Carbon's expressive entrance curve over its moderate-02
    duration, each row following 40ms after the one above it. Reduced motion
@@ -2467,7 +2491,7 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-docked] .scheduler-card { display: contents; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card > * { flex: 1 0 100%; min-inline-size: 0; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__misfit { order: -4; }
-.scheduler-bar-shortcuts[data-docked] .scheduler-card__asks { order: -3; }
+.scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__asks, .scheduler-card__dayof) { order: -3; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__note {
   order: -2;
   /* The board's own layer, a step down from the sheet, so the pinned notes
@@ -2475,7 +2499,7 @@ button.scheduler-row-head__num::after {
   background: var(--rux-layer-01);
 }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__list { order: -1; }
-.scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__misfit, .scheduler-card__asks, .scheduler-card__note) { border-block-start: 0; }
+.scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__misfit, .scheduler-card__asks, .scheduler-card__dayof, .scheduler-card__note) { border-block-start: 0; }
 /* The reminder's dismiss is a thumb's 48px on a phone, and the band grows to
    hold it; it stands at the top, so only the sheet's top edge moves. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__asks { padding-block: 0; padding-inline-end: 0; }

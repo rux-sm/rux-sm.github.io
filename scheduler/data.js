@@ -8624,7 +8624,7 @@
        the placing below applies to a bar that is not pointing at anything. */
     const docked = pageEl?.getAttribute('data-board') === 'compact';
     barShortcuts.toggleAttribute('data-docked', docked);
-    fitNote(docked);
+    fitNote();
     if (docked) {
       drawDockedTrip(bar);
       wearShell();
@@ -11917,19 +11917,19 @@
     for (const crew of head.querySelectorAll('.scheduler-bar__crew')) fitCrew(crew);
   }
 
-  /* On the docked sheet a trip's note shows three lines and ends in an
-     ellipsis; a tap on a longer one opens it whole and a second tap closes it.
-     The trip it is open for is kept, so a redraw of the same card keeps it
-     open. Floating, the card shows the whole note and none of this applies. */
+  /* A trip's note shows two lines on the floating card and three on the
+     docked sheet, and ends in an ellipsis; a press on a longer one opens it
+     whole and a second press closes it. The trip it is open for is kept, so a
+     redraw of the same card keeps it open. */
   let noteOpenFor = null;
-  function fitNote(docked) {
+  function fitNote() {
     const note = barShortcuts.querySelector('.scheduler-card__note');
     const words = note?.querySelector('.scheduler-card__note-words');
     if (!words) return;
     const tripId = note.closest('.scheduler-card')?.dataset.tripId;
-    const open = docked && !!tripId && tripId === noteOpenFor;
+    const open = !!tripId && tripId === noteOpenFor;
     note.toggleAttribute('data-open', open);
-    const long = docked && (open || words.scrollHeight > words.clientHeight + 1);
+    const long = open || words.scrollHeight > words.clientHeight + 1;
     if (long) {
       note.setAttribute('role', 'button');
       note.tabIndex = 0;
@@ -12231,11 +12231,17 @@
       }
       card.appendChild(band);
     }
-    /* On the notes row, what the trip needs, and a phone in the warning
-       colour when nobody is named to call on the day and the trip is not marked
-       as needing no one; the Contacts shortcut reaches whoever is named. Each
-       is its glyph with its name written beside it, a need red where this bus
-       falls short, and its state, such as Hotel not booked, on hover. */
+    /* Nobody named to call on the day, on a trip not marked as needing no one,
+       is a warning band under the reminder, so every warning sits together at
+       the top; the Contacts shortcut reaches whoever is named. */
+    if (!dayOfContact(trip) && !trip.contact_not_needed) {
+      const band = row('scheduler-card__dayof');
+      band.append(svgUse('#m-call-fill', '16', '0 0 32 32'), el('strong', null, 'No trip contact'));
+      card.appendChild(band);
+    }
+    /* On the notes row, what the trip needs, each its glyph with its name
+       written beside it, a need red where this bus falls short, and its state,
+       such as Hotel not booked, on hover. */
     const side = el('span', 'scheduler-card__facts');
     for (const n of facts?.needs ?? []) {
       const need = el('span', `scheduler-card__need${n.short ? ' scheduler-card__need--short' : n.done ? '' : ' scheduler-card__need--todo'}`);
@@ -12243,12 +12249,6 @@
       need.append(n.href ? svgUse(n.href, '16', '0 0 32 32') : el('span', 'scheduler-card__need-letter', n.letter || '?'),
         el('span', 'scheduler-card__fact-name', n.name));
       side.appendChild(need);
-    }
-    if (!dayOfContact(trip) && !trip.contact_not_needed) {
-      const none = el('span', 'scheduler-card__dayof');
-      none.title = 'No trip contact';
-      none.append(svgUse('#m-call-fill', '16', '0 0 32 32'), el('span', 'scheduler-card__fact-name', 'No trip contact'));
-      side.appendChild(none);
     }
     /* The note is one row with no heading: its pin, its words, then the facts.
        A trip with no note shows the facts alone, and with neither, no row. */
@@ -12264,8 +12264,11 @@
       if (side.childElementCount) note.appendChild(side);
       card.appendChild(note);
     }
-    // The updates take no heading: a face, words and an age say what they are.
-    const updates = updatesOf(trip);
+    /* The updates take no heading: a face, words and an age say what they
+       are. Only the newest shows, and a line under it counts the rest; both
+       open the Updates window, which lists them all. */
+    const all = updatesOf(trip);
+    const updates = all.slice(0, 1);
     const list = el('ol', 'scheduler-card__list');
     list.setAttribute('aria-label', 'Updates, newest first');
     updates.forEach((u, n) => {
@@ -12305,6 +12308,14 @@
         li.appendChild(when);
       }
       list.appendChild(li);
+    }
+    if (all.length > 1) {
+      const more = row('scheduler-card__update scheduler-card__more', 'li');
+      const rest = all.length - 1;
+      more.appendChild(el('span', 'scheduler-card__words', `${rest} more update${rest === 1 ? '' : 's'}`));
+      more.tabIndex = 0;
+      more.title = 'Open the trip\'s updates';
+      list.appendChild(more);
     }
     card.appendChild(list);
     return card;

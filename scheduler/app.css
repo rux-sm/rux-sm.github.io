@@ -981,26 +981,36 @@ button.scheduler-row-head__num::after {
 .scheduler-card__need--short { color: var(--card-error); }
 .scheduler-card__need-letter { inline-size: 1rem; text-align: center; font-weight: var(--rux-heading-compact-01-font-weight); }
 .scheduler-card__updates { padding-block: var(--rux-spacing-03); }
-/* The newest update: who, as Carbon's small avatar in their own colour, its
-   words cut to two lines, and under them how long ago and the count of the
-   rest. It opens the Updates window, so it answers the pointer as the slots
-   do. */
-.scheduler-card__update { display: flex; gap: var(--rux-spacing-03); align-items: flex-start; cursor: pointer; }
+/* An update: who, as Carbon's small avatar in their own colour, its words,
+   and under them how long ago. Closed, only the newest shows, its words cut
+   to two lines; with more to show, it opens the rest on a press, so it takes
+   the pointer. Open, every update shows whole, in a list that scrolls past
+   16rem, or sooner where data.js finds the board has less room. */
+.scheduler-card__update-list { margin: 0; padding: 0; list-style: none; }
+.scheduler-card__updates[data-open] .scheduler-card__update-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rux-spacing-04);
+  max-block-size: 16rem;
+  overflow-y: auto;
+}
+.scheduler-card__update { display: flex; gap: var(--rux-spacing-03); align-items: flex-start; }
+.scheduler-card__updates[data-more] .scheduler-card__update { cursor: pointer; }
 .scheduler-card__update > .rux--user-avatar { flex: none; }
 .scheduler-card__update-text { flex: 1; min-inline-size: 0; display: flex; flex-direction: column; }
 .scheduler-card__words { min-inline-size: 0; overflow-wrap: anywhere; }
-.scheduler-card__update .scheduler-card__words {
+.scheduler-card__updates:not([data-open]) .scheduler-card__update .scheduler-card__words {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   overflow: hidden;
 }
-.scheduler-card__update:hover .scheduler-card__words { text-decoration: underline; }
+.scheduler-card__updates[data-open] .scheduler-card__words { white-space: pre-wrap; }
 .scheduler-card__meta { display: flex; gap: var(--rux-spacing-03); align-items: baseline; }
 .scheduler-card__when { flex: none; opacity: .6; font-variant-numeric: tabular-nums; }
 .scheduler-card__empty { opacity: .7; }
-/* The count of the rest is a link in the link colour. */
+/* See all and Show less are links in the link colour. */
 .scheduler-card__more {
   padding: 0;
   border: 0;

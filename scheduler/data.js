@@ -8625,6 +8625,7 @@
     const docked = pageEl?.getAttribute('data-board') === 'compact';
     barShortcuts.toggleAttribute('data-docked', docked);
     fitNote();
+    fitUpdates();
     if (docked) {
       drawDockedTrip(bar);
       wearShell();
@@ -8656,8 +8657,8 @@
     const fixed = getComputedStyle(barShortcuts).position === 'fixed';
     const host = fixed ? { top: 0, left: 0 } : barShortcuts.parentElement.getBoundingClientRect();
     const box = bar.getBoundingClientRect();
-    // Its layout size, which a pop still running does not scale.
-    const tip = { width: barShortcuts.offsetWidth, height: barShortcuts.offsetHeight };
+    // Its layout width, which a pop still running does not scale.
+    const tip = { width: barShortcuts.offsetWidth };
     const band = gridEl.querySelector('.scheduler-day')?.getBoundingClientRect();
     const column = gridEl.querySelector('.scheduler-row-head')?.getBoundingClientRect();
     const ceiling = band ? band.bottom : pane.top;
@@ -8670,10 +8671,23 @@
     const gone = box.bottom <= ceiling || box.top >= pane.bottom
       || box.right <= first - TIP_GAP || box.left >= pane.right;
     barShortcuts.toggleAttribute('data-out', gone && !barShortcuts.contains(document.activeElement));
-    const above = box.top - ceiling >= tip.height + TIP_GAP;
+    /* Above the trip where it fits, else below where it fits, else on the
+       roomier side, where a card showing all its updates shortens their list
+       to what is left, so the card never runs off the board. */
+    const roomAbove = box.top - ceiling - TIP_GAP;
+    const roomBelow = pane.bottom - box.bottom - TIP_GAP;
+    const list = barShortcuts.querySelector('.scheduler-card__updates[data-open] .scheduler-card__update-list');
+    list?.style.removeProperty('max-block-size');
+    let height = barShortcuts.offsetHeight;
+    const above = roomAbove >= height || (roomBelow < height && roomAbove > roomBelow);
+    const room = above ? roomAbove : roomBelow;
+    if (list && height > room) {
+      list.style.maxBlockSize = `min(16rem, ${Math.max(64, list.offsetHeight - (height - room))}px)`;
+      height = barShortcuts.offsetHeight;
+    }
     barShortcuts.dataset.side = above ? 'above' : 'below';
     barShortcuts.style.setProperty('--scheduler-open-top',
-      `${(above ? box.top - tip.height - TIP_GAP : box.bottom + TIP_GAP) - host.top}px`);
+      `${(above ? box.top - height - TIP_GAP : box.bottom + TIP_GAP) - host.top}px`);
     const last = pane.right - tip.width - TIP_GAP;
     const x = Math.max(first, Math.min(box.left, last));
     barShortcuts.style.setProperty('--scheduler-open-start', `${x - host.left}px`);
@@ -11922,6 +11936,8 @@
      whole and a second press closes it. The trip it is open for is kept, so a
      redraw of the same card keeps it open. */
   let noteOpenFor = null;
+  // The trip whose card shows all its updates, kept the same way.
+  let updatesOpenFor = null;
   function fitNote() {
     const note = barShortcuts.querySelector('.scheduler-card__note');
     const words = note?.querySelector('.scheduler-card__note-words');
@@ -12190,7 +12206,7 @@
      or null. The card says when there is none. */
   const dayOfContact = trip => [1, 2, 3, 4, 5].map(n => tripContact(trip, n)).find(Boolean) ?? null;
   const cardKey = trip => (trip ? JSON.stringify([trip.notes, asksFollowUp(trip), waitsOf(trip), dayOfContact(trip),
-    !!trip.contact_not_needed,
+    !!trip.contact_not_needed, updatesOpenFor === trip.id,
     (trip.trip_updates || []).map(u => u.id).sort(), agoShort(quietSince(trip) || Date.now())]) : '');
   /* A part's own button, beside its title: the note's edits it, the
      updates' adds one. An icon with its name on hover. */
@@ -12278,18 +12294,27 @@
         : el('span', 'scheduler-card__note-words scheduler-card__empty', 'No notes'));
     if (side.childElementCount) note.appendChild(side);
     card.appendChild(note);
-    /* The updates, titled with their count and the button that adds one.
-       Only the newest shows, cut to two lines, with its age and a link to
-       the rest; the update, the link and the button all open the Updates
-       window, which lists them all. */
+    /* The updates, titled with their count and the button that adds one,
+       which opens the Updates window. Only the newest shows, cut to two
+       lines, with its age and See all; a press on it or on See all opens the
+       card to every update in full, newest first, and Show less or a second
+       press closes it. A lone update that fits its two lines has nothing
+       more to show, which fitUpdates works out once it is drawn. */
     const all = updatesOf(trip);
+    const open = all.length > 0 && updatesOpenFor === trip.id;
     const part = row('scheduler-card__updates');
+    part.dataset.count = String(all.length);
+    part.toggleAttribute('data-open', open);
     part.appendChild(cardTitle(all.length ? `Updates · ${all.length}` : 'Updates',
       cardAction('update', '#m-add_comment', 'Add an update')));
-    const u = all[0];
-    if (u) {
-      const item = el('div', 'scheduler-card__update');
-      item.title = 'Open the trip\'s updates';
+    const toggle = () => {
+      const btn = el('button', 'scheduler-card__more', open ? 'Show less' : 'See all');
+      btn.type = 'button';
+      btn.setAttribute('aria-expanded', String(open));
+      return btn;
+    };
+    const updateItem = (u, withToggle) => {
+      const item = el('li', 'scheduler-card__update');
       // A line copied from the old notes with nobody named is a grey face.
       const who = u.actor_name || (u.kind === 'imported' ? 'From the old notes' : 'Someone');
       const nobody = !u.actor_name;
@@ -12310,15 +12335,22 @@
       when.title = updateStamp(u);
       const meta = el('span', 'scheduler-card__meta');
       meta.appendChild(when);
-      if (all.length > 1) {
-        const more = el('button', 'scheduler-card__more', `${all.length - 1} more`);
-        more.type = 'button';
-        meta.appendChild(more);
-      }
+      if (withToggle) meta.appendChild(toggle());
       const text = el('span', 'scheduler-card__update-text');
       text.append(el('span', 'scheduler-card__words', u.body), meta);
       item.append(face, text);
-      part.appendChild(item);
+      return item;
+    };
+    if (all.length) {
+      const list = el('ol', 'scheduler-card__update-list');
+      list.setAttribute('aria-label', 'Updates, newest first');
+      list.append(...(open ? all : all.slice(0, 1)).map(u => updateItem(u, !open)));
+      part.appendChild(list);
+      if (open) {
+        const foot = el('div', 'scheduler-card__meta');
+        foot.appendChild(toggle());
+        part.appendChild(foot);
+      }
     } else {
       part.appendChild(el('span', 'scheduler-card__words scheduler-card__empty', 'No updates yet'));
     }
@@ -12326,27 +12358,47 @@
     return card;
   }
 
+  /* Whether the card's updates have more to show than the newest's two
+     lines: another update, or words the lines cut off. See all shows only
+     then, and the update answers a press only then. */
+  function fitUpdates() {
+    const part = barShortcuts?.querySelector('.scheduler-card__updates');
+    if (!part) return;
+    const words = part.querySelector('.scheduler-card__update .scheduler-card__words');
+    const more = part.hasAttribute('data-open') || Number(part.dataset.count) > 1
+      || (!!words && words.scrollHeight > words.clientHeight + 1);
+    part.toggleAttribute('data-more', more);
+    const btn = part.querySelector('.scheduler-card__more');
+    if (btn) btn.hidden = !more;
+  }
+  function toggleUpdates(tripId, refocus) {
+    updatesOpenFor = updatesOpenFor === tripId ? null : tripId;
+    placeBarOpen();
+    if (refocus) barShortcuts.querySelector('.scheduler-card__more')?.focus();
+  }
+
   function openUpdatesFromCard() {
     const bar = selectedBar();
     if (bar) openUpdatesWindow(panelIndex.trips.get(bar.dataset.tripId));
   }
 
-  // The note is written in the editor, so its button opens the trip on
-  // Details with the cursor at the end of the note.
+  /* The note is written in the editor, so its button opens the trip on
+     Details with the cursor at the end of the note. A trip already in the
+     editor, from another of its bars, goes straight there, so an edit in
+     progress is kept rather than asked about. */
   function editNoteFromCard() {
     const bar = selectedBar();
     if (!bar?.dataset.tripId) return;
+    const toNotes = () => {
+      const tab = document.getElementById('scheduler-tab-details');
+      if (tab) window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
+      const notes = document.getElementById('scheduler-f-notes');
+      notes?.focus();
+      notes?.setSelectionRange?.(notes.value.length, notes.value.length);
+    };
+    if (isEditorTrip(bar)) { toNotes(); return; }
     const ref = barRef(bar);
-    whenSafe(() => {
-      openRef(ref);
-      requestAnimationFrame(() => {
-        const tab = document.getElementById('scheduler-tab-details');
-        if (tab) window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
-        const notes = document.getElementById('scheduler-f-notes');
-        notes?.focus();
-        notes?.setSelectionRange?.(notes.value.length, notes.value.length);
-      });
-    });
+    whenSafe(() => { openRef(ref); requestAnimationFrame(toNotes); });
   }
 
   // A slot acts on the bar it shows, and a disabled one does nothing.
@@ -12358,9 +12410,12 @@
     }
     const note = e.target.closest('.scheduler-card__note[role="button"]');
     if (note) { toggleNote(note); return; }
-    // An update or the count of the rest opens the trip's Updates window.
-    const update = e.target.closest('.scheduler-card__update, .scheduler-card__more');
-    if (update) { openUpdatesFromCard(); return; }
+    // See all, Show less, or an update with more to show opens or closes the rest.
+    const more = e.target.closest('.scheduler-card__more, .scheduler-card__updates[data-more] .scheduler-card__update');
+    if (more) {
+      toggleUpdates(more.closest('.scheduler-card')?.dataset.tripId ?? null, more.matches('button'));
+      return;
+    }
     // The docked sheet's trip is the whole bar written out, and a tap on it
     // opens the trip as the Open slot does; its phone number dials instead.
     if (e.target.closest('.scheduler-bar-shortcuts__trip') && !e.target.closest('a')) { openSelected(); return; }

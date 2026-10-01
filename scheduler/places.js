@@ -120,16 +120,27 @@
       .filter(p => p.name && p.lat != null));
   }
 
-  // The drive between two places, in whole minutes and miles to a tenth,
-  // asked once for each pair of points.
+  /* The drive between two places, in whole minutes and miles to a tenth,
+     asked once for each pair of points. Geoapify's balanced route is the one
+     it rates fastest, which can be a much longer road for a few minutes saved,
+     as between Houston and the Valley; its short route can take back roads.
+     So both are asked, and the short one is taken when it is at least 5%
+     fewer miles for at most 10% more time, the road a bus would drive and the
+     miles a quote is priced on. */
+  const SHORTER = 0.05;
+  const SLOWER = 0.10;
   const drives = new Map();
   function drive(a, b) {
     if (!key || a?.lat == null || b?.lat == null) return Promise.resolve(null);
     const pair = `${a.lat},${a.lng}|${b.lat},${b.lng}`;
     if (!drives.has(pair)) {
-      drives.set(pair, geoapify('routing', { waypoints: pair, mode: 'drive' })
-        .then(d => {
-          const p = d.features?.[0]?.properties;
+      const route = type => geoapify('routing', { waypoints: pair, mode: 'drive', type })
+        .then(d => d.features?.[0]?.properties ?? null);
+      // A short route that fails leaves the balanced one, as before.
+      drives.set(pair, Promise.all([route('balanced'), route('short').catch(() => null)])
+        .then(([fast, short]) => {
+          const p = fast && short && short.distance <= fast.distance * (1 - SHORTER)
+            && short.time <= fast.time * (1 + SLOWER) ? short : fast;
           return p ? { min: Math.round(p.time / 60), miles: Math.round(p.distance / 160.934) / 10 } : null;
         })
         .catch(e => { drives.delete(pair); throw e; }));

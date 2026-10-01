@@ -209,9 +209,10 @@
 
   /* ── THE CALCULATOR (quote.html) ──────────────────────────────────────── */
 
-  // A charge's working, a line a part: each count times its rate. A falsy
-  // part is left out, and every line after the first starts with a plus.
-  const times = (n, one, many, rate) => `${plural(n, one, many)} × ${money.format(rate)}`;
+  // A charge's working, a line a part: each count times its rate, and what
+  // that part costs. A falsy part is left out, and every line after the
+  // first starts with a plus.
+  const times = (n, one, many, rate) => `${plural(n, one, many)} × ${money.format(rate)} = ${money.format(n * rate)}`;
   const lines = parts => parts.filter(Boolean).map((p, i) => (i ? `+ ${p}` : p)).join('\n');
 
   // The second driver's pay, worked the way its band works it.

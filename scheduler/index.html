@@ -1452,10 +1452,11 @@
   </div>
 
   <!-- The Updates window: a box for a new update with its quick reasons, over
-       the trip's updates so far. Every Save opens it, with Save, no update and
-       Save with update, and its close goes back to the trip unsaved; the
-       Update shortcut opens it on its own, with Close and Add update. data.js
-       fills the label, the sentence, the buttons' words and the list. -->
+       the trip's updates so far as tiles. Every Save opens it, with Save, no
+       update and Save with update, and its close goes back to the trip
+       unsaved; the Update shortcut opens it on its own, with Add update alone
+       beside the close. data.js fills the label, the sentence, the buttons'
+       words and the list. -->
   <div class="rux--layer-one rux--modal" id="scheduler-update-modal" role="presentation">
     <div role="dialog" aria-modal="true" aria-labelledby="scheduler-update-h" aria-describedby="scheduler-update-what" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
       <div class="rux--modal-header">
@@ -1469,19 +1470,13 @@
       </div>
       <div class="rux--modal-content">
         <p class="rux--type-body-compact-01 scheduler-prompt-changes" id="scheduler-update-what"></p>
-        <div class="rux--form-item">
-          <div class="rux--text-area__label-wrapper">
-            <label class="rux--label" for="scheduler-update-text">Update</label>
-          </div>
-          <div class="rux--text-area__wrapper">
-            <textarea id="scheduler-update-text" class="rux--text-area" rows="2"></textarea>
-          </div>
+        <div class="rux--text-area__wrapper">
+          <textarea id="scheduler-update-text" class="rux--text-area" rows="1" placeholder="What happened?" aria-label="Update"></textarea>
         </div>
         <div class="scheduler-prompt-reasons" id="scheduler-update-reasons" role="group" aria-label="Quick reasons"></div>
         <p class="rux--type-helper-text-01 scheduler-updates-error" id="scheduler-update-error" role="alert" hidden></p>
         <div class="scheduler-updates-log" id="scheduler-updates-section">
-          <h3 class="rux--type-heading-compact-01 scheduler-updates-log__title">Earlier updates</h3>
-          <ol class="scheduler-updates" id="scheduler-updates-log" aria-label="Updates, newest first"></ol>
+          <ol class="rux--layer-two scheduler-updates" id="scheduler-updates-log" aria-label="Earlier updates, newest first"></ol>
           <p class="rux--type-body-compact-01 scheduler-updates-empty" id="scheduler-updates-status" hidden></p>
         </div>
       </div>

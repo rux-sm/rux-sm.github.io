@@ -4102,12 +4102,25 @@
     return [when, u.actor_name || (u.kind === 'imported' ? 'From the old notes' : 'Someone'),
       u.edited_at ? 'edited' : null].filter(Boolean).join(' · ');
   }
+  // The Updates window's shorter stamp, under a face that already names the
+  // author: the time for today's update, the day for an older one.
+  function updateDay(u) {
+    const at = new Date(u.created_at);
+    const now = new Date();
+    const opts = { month: 'short', day: 'numeric' };
+    if (at.getFullYear() !== now.getFullYear()) opts.year = 'numeric';
+    const when = u.kind !== 'imported' && at.toDateString() === now.toDateString()
+      ? at.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
+      : at.toLocaleDateString(undefined, opts);
+    return [when, u.edited_at ? 'edited' : null].filter(Boolean).join(' · ');
+  }
 
-  /* The Updates window's list: the trip's updates, newest first, each over
-     its stamp with Edit and Delete beside it. Edit turns its words into a box
-     with Cancel and Save; Delete asks on the row itself before the row goes.
-     Either writes at once, and the board reads it. It is read fresh each time
-     the window opens, for the trip `logTrip` names. */
+  /* The Updates window's list: the trip's updates, newest first, each a tile
+     of its author's face beside its words over its day, the full stamp the
+     day's tooltip. Pressing a tile turns its words into a box with Delete,
+     Cancel and Save; Delete then asks on the tile before it goes. Either
+     writes at once, and the board reads it. It is read fresh each time the
+     window opens, for the trip `logTrip` names. */
   const logEl = document.getElementById('scheduler-updates-log');
   const logStatus = document.getElementById('scheduler-updates-status');
   let logTrip = null;
@@ -4116,15 +4129,6 @@
   const smallBtn = (cls, text) => {
     const b = el('button', `rux--btn ${cls} rux--btn--sm`, text);
     b.type = 'button';
-    return b;
-  };
-  const iconBtn = (icon, label) => {
-    const b = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm');
-    b.type = 'button';
-    b.setAttribute('aria-label', label);
-    b.title = label;
-    b.appendChild(svgUse(icon, '16', '0 0 32 32'));
-    b.lastChild.setAttribute('class', 'rux--btn__icon');
     return b;
   };
   async function changeLogged(u, query, fail) {
@@ -4142,18 +4146,30 @@
     }
   }
   function logItem(u) {
-    const li = el('li', 'scheduler-updates__item');
-    const text = el('div', 'scheduler-updates__text');
-    li.appendChild(text);
-    if (logChanging?.id === u.id && logChanging.mode === 'edit') {
+    const li = el('li');
+    const text = el('span', 'scheduler-updates__text');
+    const mode = logChanging?.id === u.id ? logChanging.mode : null;
+    const tile = el(mode ? 'div' : 'button', mode ? 'rux--tile scheduler-updates__tile' : 'rux--tile rux--tile--clickable scheduler-updates__tile');
+    const face = updateFace(u, 'md');
+    face.classList.add('scheduler-updates__face');
+    tile.append(face, text);
+    li.appendChild(tile);
+    const words = () => {
+      const day = el('span', 'rux--type-label-01 scheduler-updates__meta', updateDay(u));
+      day.title = updateStamp(u);
+      text.append(el('span', 'rux--type-body-compact-01 scheduler-updates__body', u.body), day);
+    };
+    if (mode === 'edit') {
       const edit = el('textarea', 'rux--text-area');
       edit.rows = 2;
       edit.value = u.body;
       edit.setAttribute('aria-label', 'Update');
       const wrapEdit = el('div', 'rux--text-area__wrapper');
       wrapEdit.appendChild(edit);
+      const drop = smallBtn('rux--btn--danger--ghost scheduler-updates__ask', 'Delete');
       const cancel = smallBtn('rux--btn--ghost', 'Cancel');
       const keep = smallBtn('rux--btn--tertiary', 'Save');
+      drop.addEventListener('click', () => { logChanging = { id: u.id, mode: 'delete' }; drawLog(); });
       cancel.addEventListener('click', () => { logChanging = null; drawLog(); });
       edit.addEventListener('input', () => { keep.disabled = !edit.value.trim() || edit.value.trim() === u.body; });
       keep.disabled = true;
@@ -4163,14 +4179,13 @@
           .eq('id', u.id).select(UPDATE_COLUMNS).single(), 'The update was not changed.');
       });
       const actions = el('div', 'scheduler-updates__actions');
-      actions.append(cancel, keep);
+      actions.append(drop, cancel, keep);
       text.append(wrapEdit, actions);
       requestAnimationFrame(() => { edit.focus(); edit.setSelectionRange(edit.value.length, edit.value.length); });
       return li;
     }
-    text.append(el('div', 'rux--type-body-compact-01 scheduler-updates__body', u.body),
-      el('div', 'rux--type-label-01 scheduler-updates__meta', updateStamp(u)));
-    if (logChanging?.id === u.id && logChanging.mode === 'delete') {
+    words();
+    if (mode === 'delete') {
       const cancel = smallBtn('rux--btn--ghost', 'Cancel');
       const gone = smallBtn('rux--btn--danger', 'Delete');
       cancel.addEventListener('click', () => { logChanging = null; drawLog(); });
@@ -4184,15 +4199,9 @@
       requestAnimationFrame(() => cancel.focus());
       return li;
     }
-    /* Edit and Delete sit on the row rather than behind a menu, because a
-       menu opened inside a window would float over the window's own edge. */
-    const editBtn = iconBtn('#m-edit', 'Edit update');
-    const deleteBtn = iconBtn('#m-delete', 'Delete update');
-    editBtn.addEventListener('click', () => { logChanging = { id: u.id, mode: 'edit' }; drawLog(); });
-    deleteBtn.addEventListener('click', () => { logChanging = { id: u.id, mode: 'delete' }; drawLog(); });
-    const tools = el('div', 'scheduler-updates__tools');
-    tools.append(editBtn, deleteBtn);
-    li.appendChild(tools);
+    tile.type = 'button';
+    tile.setAttribute('aria-label', `Edit update: ${u.body}`);
+    tile.addEventListener('click', () => { logChanging = { id: u.id, mode: 'edit' }; drawLog(); });
     return li;
   }
   function drawLog() {
@@ -9126,7 +9135,8 @@
      trip's box comes filled with Quote sent, a customer-facing change's with
      its own line, and any other's empty.
 
-     On its own, Add update writes at once and closes it, and Close closes it. */
+     On its own, Add update writes at once and closes it, and the close at the
+     top is its only other way out. */
   const updateModal = document.getElementById('scheduler-update-modal');
   const updateText = document.getElementById('scheduler-update-text');
   const updateSave = document.getElementById('scheduler-update-save');
@@ -9144,18 +9154,14 @@
     updateWhat.hidden = !what;
     updateError.hidden = true;
     updateText.value = line;
+    // A quick reason puts its words in the box, which shows what was picked.
     const tags = reasons.map(r => {
-      const tag = el('button', 'rux--tag rux--tag--selectable rux--layout--size-md');
+      const tag = el('button', 'rux--tag rux--tag--gray rux--tag--operational rux--layout--size-md');
       tag.type = 'button';
       tag.appendChild(el('span', 'rux--tag__label', r));
-      tag.addEventListener('click', () => { updateText.value = r; pickTag(tag); updateSave.disabled = false; });
+      tag.addEventListener('click', () => { updateText.value = r; updateSave.disabled = false; updateText.focus(); });
       return tag;
     });
-    const pickTag = picked => tags.forEach(t => {
-      t.setAttribute('aria-pressed', String(t === picked));
-      t.classList.toggle('rux--tag--selectable-selected', t === picked);
-    });
-    pickTag(tags.find(t => t.textContent === line) ?? null);
     document.getElementById('scheduler-update-reasons').replaceChildren(...tags);
     updateSave.disabled = !line;
     // A new trip has nothing earlier to list.
@@ -9181,6 +9187,7 @@
     const line = creating ? (editing?.quoteSent ? `Quote sent, ${usdCents(editing.quoteSent.price)}` : 'Quote sent')
       : change?.line ?? '';
     updateSkip.textContent = 'Save, no update';
+    updateSkip.hidden = false;
     updateSave.textContent = 'Save with update';
     updateClose.setAttribute('aria-label', 'Back to the trip, not saved');
     updateClose.title = 'Back to the trip, not saved';
@@ -9199,7 +9206,7 @@
     updateSettle = null;
     updateChange = null;
     updateAlone = trip;
-    updateSkip.textContent = 'Close';
+    updateSkip.hidden = true;
     updateSave.textContent = 'Add update';
     updateClose.setAttribute('aria-label', 'Close');
     updateClose.title = 'Close';
@@ -9235,7 +9242,6 @@
     }
   });
   updateSkip?.addEventListener('click', () => {
-    if (updateAlone) { updateAlone = null; window.Rux?.modal?.close?.(updateModal); return; }
     answerUpdate(updateChange ? { kind: 'nothing', body: updateChange.line } : { kind: 'none' });
   });
   updateModal?.addEventListener('rux:modal-closed', () => { updateAlone = null; updateSettle?.(null); });
@@ -12666,6 +12672,27 @@
   client?.from('profiles').select('id,user_id,display_name,photo_path,avatar_color').then(r => {
     if (!r.error) staffFaces = new Map((r.data || []).map(p => [p.user_id, p]));
   });
+  /* An update's author as a face, on the card and in the Updates window, its
+     name the tooltip and accessible name. A line copied from the old notes
+     with nobody named is a grey face. A written update is drawn as its
+     author's own avatar. An imported one never is: its account is whoever ran
+     the import, not the person who wrote the line, so it keeps the initial of
+     the name it carries. */
+  function updateFace(u, size) {
+    const who = u.actor_name || (u.kind === 'imported' ? 'From the old notes' : 'Someone');
+    const nobody = !u.actor_name;
+    const face = el('span', `rux--user-avatar ${size === 'sm' ? 'rux--user-avatar--sm' : 'rux--user-avatar--md'} ${nobody ? 'rux--user-avatar--order-2-gray' : avatarColour(who)}`,
+      nobody ? '' : who.charAt(0).toUpperCase());
+    const author = u.kind !== 'imported' && staffFaces.get(u.actor_id);
+    if (author) {
+      window.Rux?.account?.drawAvatar?.(face,
+        { id: author.id, name: u.actor_name || author.display_name, photoPath: author.photo_path, colour: author.avatar_color }, size);
+    }
+    face.title = who;
+    face.setAttribute('role', 'img');
+    face.setAttribute('aria-label', who);
+    return face;
+  }
   /* The trip's day-of contact: the first of the five slots that holds anyone,
      or null. The card says when there is none. */
   const dayOfContact = trip => [1, 2, 3, 4, 5].map(n => tripContact(trip, n)).find(Boolean) ?? null;
@@ -12798,22 +12825,8 @@
        name, and the full date the age's tooltip. */
     const updateItem = (u, n) => {
       const item = el('li', 'scheduler-card__update');
-      // A line copied from the old notes with nobody named is a grey face.
-      const who = u.actor_name || (u.kind === 'imported' ? 'From the old notes' : 'Someone');
-      const nobody = !u.actor_name;
-      const face = el('div', `rux--user-avatar rux--user-avatar--sm scheduler-card__face ${nobody ? 'rux--user-avatar--order-2-gray' : avatarColour(who)}`,
-        nobody ? '' : who.charAt(0).toUpperCase());
-      /* A written update is drawn as its author's own avatar. An imported one
-         never is: its account is whoever ran the import, not the person who
-         wrote the line, so it keeps the initial of the name it carries. */
-      const author = u.kind !== 'imported' && staffFaces.get(u.actor_id);
-      if (author) {
-        window.Rux?.account?.drawAvatar?.(face,
-          { id: author.id, name: u.actor_name || author.display_name, photoPath: author.photo_path, colour: author.avatar_color }, 'sm');
-      }
-      face.title = who;
-      face.setAttribute('role', 'img');
-      face.setAttribute('aria-label', who);
+      const face = updateFace(u, 'sm');
+      face.classList.add('scheduler-card__face');
       const when = el('span', 'scheduler-card__when', ageShort(u.created_at));
       when.title = updateStamp(u);
       item.append(face, el('span', 'scheduler-card__words', u.body), when);

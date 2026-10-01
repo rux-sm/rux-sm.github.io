@@ -199,8 +199,9 @@ line of its own behind the bar's bell.
 No warning has a dismiss; each stays until it is put right. Needs that are
 met are not shown.
 Then the note and the updates, each a title with its button at the end,
-Trip notes and Edit, Updates and Add, which opens the trip's Updates window,
-over one line of what it holds until pressed open. The newest update is its
+Trip notes and Edit, Updates with their count (Updates · 5) and Add, which
+opens the trip's Updates window, over one line of what it holds until
+pressed open. The newest update is its
 author's 16px avatar, its words, and its age at the right, always a number
 (45m, 2h, 3d); opened, every update shows with its age in that one column.
 The name is the avatar's tooltip. A part with nothing in it is its title

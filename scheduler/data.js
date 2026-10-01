@@ -12752,7 +12752,9 @@
       : cardTitle('No notes', cardAction('note', 'Add', 'Add a note')));
     if (trip.notes) note.appendChild(el('span', 'scheduler-card__note-words', trip.notes));
     card.appendChild(note);
-    /* The updates: Updates and Add over the newest, cut to one line; a press
+    /* The updates: Updates with their count, "Updates · 5", so the one line
+       shown says how many more a press opens, and Add, over the newest, cut
+       to one line; a press
        on it opens the card to every update in full, newest first, and a
        second press closes it. A lone update that fits its line has nothing
        more to show, which fitUpdates works out once it is drawn. With none,
@@ -12790,7 +12792,7 @@
       item.append(face, el('span', 'scheduler-card__words', u.body), when);
       return item;
     };
-    part.appendChild(cardTitle(all.length ? 'Updates' : 'No updates', add));
+    part.appendChild(cardTitle(all.length ? `Updates · ${all.length}` : 'No updates', add));
     if (all.length) {
       const list = el('ol', 'scheduler-card__update-list');
       list.setAttribute('aria-label', 'Updates, newest first');

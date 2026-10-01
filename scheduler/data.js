@@ -1005,8 +1005,8 @@
     if (stripe) bar.classList.add(`scheduler-bar--stripe-${stripe}`);
     const kind = trip.trip_type === 'one_way' ? 'one way' : !split ? null : leg.leg === 'return' ? 'pickup' : 'drop-off';
     const count = leg.count || 1;
-    /* Which of the leg's buses this is, for the bar's label only: the bar
-       draws no count, since selecting a trip outlines all of its buses. */
+    /* Which of the leg's buses this is, drawn as a round badge before the
+       destination on a leg of more than one bus, so its bars can be told apart. */
     const ref = count > 1 ? `${nth}/${count}` : '';
 
     /* WHETHER THIS BUS FITS THIS TRIP, and what the trip needs. The bar draws
@@ -1062,7 +1062,9 @@
     const waits = asks ? waitsOf(trip).map(w => WAIT_WORDS[w]) : [];
     const attention = misfits.length ? attentionMark('error', [...misfits, ...waits].join(' · '))
       : asks ? attentionMark('warning', waits.join(' · ')) : null;
-    addRow(bar, 'scheduler-bar__dest', el('span', null, placeName(trip.destination) || 'No destination'), attention);
+    const dest = el('span', null, placeName(trip.destination) || 'No destination');
+    if (ref) dest.prepend(el('span', 'scheduler-bar__nth', String(nth)));
+    addRow(bar, 'scheduler-bar__dest', dest, attention);
     addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
 
     // The booking contact as the trip records it. When both do not fit, the

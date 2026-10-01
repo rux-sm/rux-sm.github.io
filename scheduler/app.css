@@ -1133,7 +1133,9 @@ button.scheduler-row-head__num::after {
 /* The drivers row's crew: each driver's role icon and short name, in role
    order. The row gives way from the end, a whole name at a time, and "+1"
    says how many it left out; `fitCrew` in data.js measures it. */
-.scheduler-bar__crew { display: flex; align-items: center; gap: var(--rux-spacing-03); min-inline-size: 0; overflow: hidden; }
+/* Six pixels between crew members, a step under the row's usual eight, so a
+   driver and a relief read as one crew rather than a list. */
+.scheduler-bar__crew { display: flex; align-items: center; gap: calc(var(--rux-spacing-02) + var(--rux-spacing-01)); min-inline-size: 0; overflow: hidden; }
 .scheduler-bar__more { flex: none; opacity: .85; }
 
 /* WHO ELSE IS ON THIS TRIP. A square notched into the bar's top right corner,
@@ -1202,6 +1204,7 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-crew { display: flex; align-items: center; gap: var(--rux-spacing-02); min-inline-size: 0; }
 .scheduler-crew__name { overflow: hidden; text-overflow: ellipsis; }
+.scheduler-crew__name--needed { color: var(--scheduler-mark-error); }
 .scheduler-crew--declined .scheduler-crew__name { text-decoration: line-through; }
 /* The role glyph alone, in its status colour: the bar's own for still to send,
    amber sent and waiting, green confirmed, red declined or nobody assigned.
@@ -1220,6 +1223,10 @@ button.scheduler-row-head__num::after {
   inline-size: var(--scheduler-mark-glyph);
   block-size: var(--scheduler-mark-glyph);
 }
+/* A driver's dot: 7px in the status colour, its box only as wide as itself
+   so the name sits close. In a menu the box keeps the menu icon's size. */
+.scheduler-crew__mark--dot { inline-size: auto; }
+.scheduler-crew__dot { inline-size: 7px; block-size: 7px; border-radius: 50%; background: currentColor; }
 .scheduler-crew__mark--success { color: var(--scheduler-mark-success); }
 .scheduler-crew__mark--error { color: var(--scheduler-mark-error); }
 .scheduler-crew__mark--warning { color: var(--scheduler-mark-warning); }

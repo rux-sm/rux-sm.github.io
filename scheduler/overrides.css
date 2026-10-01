@@ -571,6 +571,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    smallest avatar, so it is a mark beside the words, as the note's pin is,
    and not a row of its own. */
 .scheduler-card__face.rux--user-avatar { inline-size: 1rem; block-size: 1rem; font-size: .5625rem; }
+.scheduler-card__face .rux--user-avatar__photo { inline-size: 1rem; block-size: 1rem; }
 
 /* THE PRESENCE SQUARE is notched into the corner of a trip bar, sharing two of
    the bar's own edges, so Carbon's round avatar is squared off: a circle in a

@@ -200,10 +200,11 @@ No warning has a dismiss; each stays until it is put right. Needs that are
 met are not shown.
 Then the note and the updates, with no titles: the note is a pin, its words
 cut to two lines until pressed open, and Edit, which opens the trip at its
-Notes field. Only the newest update shows, its author's 16px avatar beside
-its words, cut to two lines, and at the right Add, which opens the trip's
-Updates window, over its age, always a number: 45m, 2h, 3d. The name is the
-avatar's tooltip. A press on the update opens every update in the card, and
+Notes field. Only the newest update shows, as a message does: its author's
+16px avatar, their first name and its age, always a number (45m, 2h, 3d), on
+one line with Add at its end, which opens the trip's Updates window, and its
+words under the name, cut to two lines. The full name is the avatar's
+tooltip. A press on the update opens every update in the card, and
 a second press closes them. An empty part is one line, No notes or No
 updates dimmed, with Add. Only the selected trip has a
 card. Every trip has the same four slots: Open trip, the itinerary,

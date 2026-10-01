@@ -989,9 +989,14 @@ button.scheduler-row-head__num::after {
 .scheduler-card__empty { color: color-mix(in srgb, var(--card-ink) 70%, transparent); }
 .scheduler-card__face-gap { inline-size: 1rem; }
 .scheduler-card__updates { padding-block: var(--rux-spacing-03); }
-/* An update's end: Add on the first, over its age, the two right-aligned. */
-.scheduler-card__side { display: flex; flex-direction: column; align-items: flex-end; }
-.scheduler-card__side > .scheduler-card__action { margin-block: 0; }
+/* A posted update is two lines of the grid: the face, the author and age,
+   and on the first update Add, then the words under the name. */
+.scheduler-card__update-list .scheduler-card__update { grid-template-areas: "face head side" ". words words"; row-gap: 0; }
+.scheduler-card__update-list .scheduler-card__face { grid-area: face; align-self: center; }
+.scheduler-card__update-list .scheduler-card__head { grid-area: head; display: flex; gap: var(--rux-spacing-03); align-items: baseline; min-inline-size: 0; }
+.scheduler-card__update-list .scheduler-card__action { grid-area: side; }
+.scheduler-card__update-list .scheduler-card__words { grid-area: words; }
+.scheduler-card__who { font-weight: var(--rux-heading-compact-01-font-weight); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* Closed, only the newest update shows, its words cut to two lines; with
    more to show, it opens the rest on a press, so it takes the pointer. Open,
    every update shows whole, in a list that scrolls past 16rem, or sooner

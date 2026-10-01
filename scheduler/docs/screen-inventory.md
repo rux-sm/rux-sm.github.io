@@ -201,7 +201,8 @@ met are not shown.
 Then the note and the updates, each a title with its button at the end,
 Trip notes and Edit, Updates with their count (Updates · 5) and Add, which
 opens the trip's Updates window, over one line of what it holds until
-pressed open. The newest update is its
+pressed open, the note's line led by a pin in the column an update's avatar
+stands in, so both start their words at one edge. The newest update is its
 author's 16px avatar, its words, and its age at the right, always a number
 (45m, 2h, 3d); opened, every update shows with its age in that one column.
 The name is the avatar's tooltip. A part with nothing in it is its title

@@ -12746,11 +12746,13 @@
        end, then one line of what they hold until pressed open. A part with
        nothing in it is its title alone, which says so.
 
-       The note: Trip notes and Edit over its words, or No notes and Add. */
+       The note: Trip notes and Edit over a pin and its words, the pin in the
+       column an update's face stands in, so the note's words and an update's
+       start at one edge; or No notes and Add. */
     const note = row('scheduler-card__note');
     note.appendChild(trip.notes ? cardTitle('Trip notes', cardAction('note', 'Edit', 'Edit the note'))
       : cardTitle('No notes', cardAction('note', 'Add', 'Add a note')));
-    if (trip.notes) note.appendChild(el('span', 'scheduler-card__note-words', trip.notes));
+    if (trip.notes) note.append(svgUse('#m-keep-fill', '16', '0 0 32 32'), el('span', 'scheduler-card__note-words', trip.notes));
     card.appendChild(note);
     /* The updates: Updates with their count, "Updates · 5", so the one line
        shown says how many more a press opens, and Add, over the newest, cut

@@ -903,13 +903,15 @@
   /* One crew member on the drivers row: a mark in the status's tone, then the
      short name. A driver or co-driver's mark is a small dot, and a relief
      driver's the two opposite arrows, so a relief never reads as another
-     driver while every driver costs as little width as it can. A role nobody
-     fills is its mark in the error tone and "No driver" dimmed, as "No times"
-     is, and a declined driver's name is struck through, so the colour is never
+     driver while every driver costs as little width as it can. The colours
+     are the answer and nothing else: white no status yet, amber sent and
+     waiting, green confirmed, red declined. So a role nobody fills has no
+     status either, its mark white and "No driver" dimmed, as "No times" is,
+     and a declined driver's name is struck through, so the colour is never
      the only signal. */
   const RELIEF_ROLES = new Set(['relief-start', 'relief-end']);
   function crewEl(c) {
-    const tone = c.needed ? 'error' : c.status.tone;
+    const tone = c.needed ? 'off' : c.status.tone;
     const item = el('span', c.status?.value === 'declined' ? 'scheduler-crew scheduler-crew--declined' : 'scheduler-crew');
     const dot = !RELIEF_ROLES.has(c.role);
     const mark = el('span', ['scheduler-crew__mark', tone && `scheduler-crew__mark--${tone}`, dot && 'scheduler-crew__mark--dot'].filter(Boolean).join(' '));

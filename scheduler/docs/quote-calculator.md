@@ -7,6 +7,17 @@ type: reference
 The quote calculator's details the page itself does not state. No rate is
 written here, because this repository is public.
 
+## Rounding
+
+- Each part of a charge rounds up to the next $5 on its own: the regular
+  miles, the dead miles, the extra days, the local daily rate, and each part
+  of the second driver's pay and meals. So no charge it works out has cents.
+- The working under a charge shows the exact figure and, after an arrow, the
+  $5 it was rounded up to. The relief flat charge, other charges and
+  discounts stay as entered.
+- The Billing tab prices its lines with the same formulas, so its Bus rental
+  and Second driver lines round the same way.
+
 ## Drivers and dead miles
 
 - The second driver's pay is worked out on both drivers' combined miles,

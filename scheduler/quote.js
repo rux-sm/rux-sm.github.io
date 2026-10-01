@@ -3,8 +3,9 @@
    --------------------------------------------------------------------------
    The office spreadsheet's Calculator tab, formula for formula, quirks
    included; quote.html's Rules tab lists them, with examples worked out here
-   from the saved rates. One script for two pages: quote.html works a quote
-   out, and quote-rates.html edits the rates it uses. The rates are rows in
+   from the saved rates. One rule is the office's own: each part of a
+   charge is rounded up to the next $5. One script for two pages: quote.html
+   works a quote out, and quote-rates.html edits the rates it uses. The rates are rows in
    `quote_rates` and `quote_mileage_rates`, which only a staff session can
    read or write, so no rate is written in this public file.
 
@@ -75,6 +76,13 @@
 
   const sum = list => list.reduce((a, b) => a + b, 0);
 
+  /* The office's rule, not the sheet's: each part of a charge, the regular
+     miles, the dead miles, the extra days and each part of the second
+     driver's pay, is rounded up to the next $5, so no quote carries cents.
+     The figure is cut to the cent first, so a float a hair over a multiple
+     of 5 stays on it. */
+  const up5 = n => Math.ceil(Math.round(n * 100) / 500) * 5;
+
   // P9 and AF20: the last day with more than 0 miles, or null when none has.
   const lastDay = list => {
     for (let i = list.length - 1; i >= 0; i--) if (list[i] > 0) return i + 1;
@@ -101,13 +109,13 @@
     const out = { total, days, local: total < rule(r, 'trip_local_under'), free: null, extra: null, amount: null };
     if (days === null) return out;
     if (out.local) {
-      out.amount = days * r.trip_local_daily;
+      out.amount = up5(days * r.trip_local_daily);
       return out;
     }
     out.free = tripFreeDays(total, r);
     if (out.free === null) return out;
     out.extra = Math.max(0, days - out.free);
-    out.amount = rate * (total - dead) + dead * r.trip_dead_miles + r.trip_extra_day * out.extra;
+    out.amount = up5(rate * (total - dead)) + up5(dead * r.trip_dead_miles) + up5(r.trip_extra_day * out.extra);
     return out;
   };
 
@@ -119,22 +127,22 @@
     const days = lastDay(perDay);
     const free = driverFreeDays(total, r);
     const extra = free === null || days === null ? null : Math.max(0, days - free);
-    const out = { total, days, free, extra, meal: days === null ? null : r.driver_meal_daily * days, band: null, amount: null };
+    const out = { total, days, free, extra, meal: days === null ? null : up5(r.driver_meal_daily * days), band: null, amount: null };
     if (days === null) return out;
-    if (total < rule(r, 'driver_band_2')) { out.band = 1; out.amount = r.driver_local_daily * days; return out; }
-    if (total < rule(r, 'driver_band_3')) { out.band = 2; out.amount = r.driver_short_first_day + r.driver_extra_day * (days - 1); return out; }
+    if (total < rule(r, 'driver_band_2')) { out.band = 1; out.amount = up5(r.driver_local_daily * days); return out; }
+    if (total < rule(r, 'driver_band_3')) { out.band = 2; out.amount = up5(r.driver_short_first_day) + up5(r.driver_extra_day * (days - 1)); return out; }
     if (extra === null) return out;
     const long = total >= rule(r, 'driver_band_4');
     const perMile = !long ? r.driver_per_mile
       : drivers === 2 ? r.driver_per_mile_1k_two : r.driver_per_mile_1k_one;
     out.band = long ? 4 : 3;
-    out.amount = total * perMile + r.driver_extra_day * extra;
+    out.amount = up5(total * perMile) + up5(r.driver_extra_day * extra);
     return out;
   };
 
   // The console can check a quote against the spreadsheet with these.
   window.Rux = window.Rux || {};
-  window.Rux.quote = { tripQuote, driverPay, tripFreeDays, driverFreeDays, rule };
+  window.Rux.quote = { tripQuote, driverPay, tripFreeDays, driverFreeDays, rule, up5 };
 
   /* ── SHARED BY BOTH PAGES ─────────────────────────────────────────────── */
 
@@ -209,17 +217,22 @@
 
   /* ── THE CALCULATOR (quote.html) ──────────────────────────────────────── */
 
-  // A charge's working, a line a part: each count times its rate, and what
-  // that part costs. A falsy part is left out, and every line after the
-  // first starts with a plus.
-  const times = (n, one, many, rate) => `${plural(n, one, many)} × ${money.format(rate)} = ${money.format(n * rate)}`;
+  /* A charge's working, a line a part: each count times its rate, and what
+     that part costs, with the $5 it is rounded up to after an arrow when
+     that differs. A part the formulas do not round, the relief driver's
+     flat charge, passes `round` false. A falsy part is left out, and every
+     line after the first starts with a plus. */
+  const charged = (exact, round = true) => `${money.format(exact)}${
+    round && up5(exact) * 100 !== Math.round(exact * 100) ? ` → ${money.format(up5(exact))}` : ''}`;
+  const times = (n, one, many, rate, round = true) =>
+    `${plural(n, one, many)} × ${money.format(rate)} = ${charged(n * rate, round)}`;
   const lines = parts => parts.filter(Boolean).map((p, i) => (i ? `+ ${p}` : p)).join('\n');
 
   // The second driver's pay, worked the way its band works it.
   const driverMath = d => d.amount === null ? ''
     : d.band === 1 ? times(d.days, 'day', 'days', rates.driver_local_daily)
     : d.band === 2 ? lines([
-      `${money.format(rates.driver_short_first_day)} first day`,
+      `${charged(rates.driver_short_first_day)} first day`,
       d.days > 1 && times(d.days - 1, 'day', 'days', rates.driver_extra_day),
     ])
     : lines([
@@ -434,7 +447,7 @@
       $('scheduler-quote-buses-math').textContent = `${money.format(perBus)} a bus × ${count.format(buses)}`;
       $('scheduler-quote-relief-line').hidden = reliefs === 0;
       $('scheduler-quote-relief-out').textContent = money.format(relief);
-      $('scheduler-quote-relief-math').textContent = times(reliefs, 'driver', 'drivers', rates.driver_relief_flat);
+      $('scheduler-quote-relief-math').textContent = times(reliefs, 'driver', 'drivers', rates.driver_relief_flat, false);
       $('scheduler-quote-other-line').hidden = other === 0;
       $('scheduler-quote-other-out').textContent = money.format(other);
       $('scheduler-quote-discount-line').hidden = discount === 0;

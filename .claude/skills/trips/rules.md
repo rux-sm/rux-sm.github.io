@@ -11,7 +11,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 
 - The price that counts is the latest quote the customer was sent: a revised or price-matched quote replaces the first, since it is what they agreed to.
 - A quote is entered as the lines that make it, such as a Bus rental line and a Discount line for a price match, so the quoted price is their sum and Billing can be marked Done.
-- A quote is priced from the Route tab's miles a day, entered in the quote calculator, and the total rounded up to the next $5, because those miles include the yard legs and a round number reads cleaner.
+- A quote is priced from the Route tab's miles a day, entered in the quote calculator, which rounds each charge (regular miles, dead miles, driver pay) up to the next $5, because those miles include the yard legs and a quote with no cents reads cleaner.
 - A PO fixes the price; a cost the office takes on after it, such as a second driver, goes in as its own line with an equal Discount, and the trip's notes say the decision is still open.
 - Estimated miles is set to the Route summary's total once the route is right, so the two agree.
 

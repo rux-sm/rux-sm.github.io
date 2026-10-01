@@ -12654,27 +12654,33 @@
       r.style.setProperty('--i', String(i++));
       return r;
     };
-    /* A bus that does not fit this trip leads, in red and with no dismiss: it
-       is a mistake on the board, and it goes when the bus is changed. */
+    /* EVERY ALERT IS A LINE OF ITS OWN, its icon then its two or three words,
+       so the list reads down the same way whatever kind each one is.
+
+       A bus that does not fit this trip leads, in red and with no dismiss: it
+       is a mistake on the board, and it goes when the bus is changed. Its
+       icon is the bar's red bell. */
     const facts = bar ? barFacts.get(bar) : null;
-    if (facts?.misfits.length) {
+    for (const words of facts?.misfits ?? []) {
       const band = row('scheduler-card__misfit');
-      band.append(svgUse('#m-warning-fill', '16', '0 0 32 32'), el('strong', null, facts.misfits.join(' · ')));
+      band.append(svgUse('#m-notification_important-fill', '16', '0 0 32 32'), el('strong', null, words));
       card.appendChild(band);
     }
-    /* The follow-up reminder has no dismiss: it stays while it is true, until
-       the missing thing arrives or an update is written. A due trip also
-       says when it leaves. */
+    /* The follow-up reminder, a line for each thing waited on, has no
+       dismiss: it stays while it is true, until the missing thing arrives or
+       an update is written. A due trip also says when it leaves, once, at the
+       first line's end. */
     if (asksFollowUp(trip)) {
-      const band = row('scheduler-card__asks');
-      band.append(svgUse('#m-notifications-fill', '16', '0 0 32 32'),
-        el('strong', null, waitsOf(trip).map(w => WAIT_WORDS[w]).join(' · ')));
-      if (dueFollowUp(trip)) {
-        const days = daysToGo(trip);
-        band.appendChild(el('span', 'scheduler-card__asks-when',
-          days === 0 ? 'Leaves today' : days === 1 ? 'Leaves tomorrow' : `Leaves in ${days} days`));
-      }
-      card.appendChild(band);
+      waitsOf(trip).forEach((w, n) => {
+        const band = row('scheduler-card__asks');
+        band.append(svgUse('#m-notifications-fill', '16', '0 0 32 32'), el('strong', null, WAIT_WORDS[w]));
+        if (n === 0 && dueFollowUp(trip)) {
+          const days = daysToGo(trip);
+          band.appendChild(el('span', 'scheduler-card__asks-when',
+            days === 0 ? 'Leaves today' : days === 1 ? 'Leaves tomorrow' : `Leaves in ${days} days`));
+        }
+        card.appendChild(band);
+      });
     }
     /* Nobody named to call on the day, on a trip not marked as needing no one,
        is a warning band under the reminder, so every warning sits together at

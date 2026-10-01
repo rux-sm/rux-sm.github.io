@@ -920,9 +920,10 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-card__asks > svg,
 .scheduler-card__warn > svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--card-icon); }
-/* A second warning under the first joins its band, with no rule between,
-   so the warnings read as one list. */
-:is(.scheduler-card__asks, .scheduler-card__warn) + .scheduler-card__warn { border-block-start: 0; padding-block-start: 0; }
+/* A second line under the first joins its band, with no rule between, so
+   each colour's alerts read as one list. */
+:is(.scheduler-card__asks, .scheduler-card__warn) + :is(.scheduler-card__asks, .scheduler-card__warn),
+.scheduler-card__misfit + .scheduler-card__misfit { border-block-start: 0; padding-block-start: 0; }
 /* A bus that does not fit is a band like the reminder's, in the error colour,
    above it: a mistake on the board comes before a job still to do. */
 .scheduler-card__misfit {

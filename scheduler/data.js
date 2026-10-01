@@ -12272,6 +12272,12 @@
   barShortcuts?.addEventListener('keydown', e => {
     // A button inside the row presses itself.
     if ((e.key !== 'Enter' && e.key !== ' ') || e.target.closest?.('button')) return;
+    const words = e.target.closest?.('.scheduler-card__update .scheduler-card__words[role="button"]');
+    if (words) {
+      e.preventDefault();
+      toggleUpdates(words.closest('.scheduler-card')?.dataset.tripId ?? null, true);
+      return;
+    }
     const note = e.target.closest?.('.scheduler-card__note[role="button"]');
     if (!note) return;
     e.preventDefault();
@@ -12647,7 +12653,13 @@
   const cardKey = trip => (trip ? JSON.stringify([trip.notes, asksFollowUp(trip), waitsOf(trip), dayOfContact(trip),
     !!trip.contact_not_needed, updatesOpenFor === trip.id,
     (trip.trip_updates || []).map(u => u.id).sort(), agoShort(quietSince(trip) || Date.now())]) : '');
-  /* A part's own button, at the end of its title: the note's Edit, the
+  /* How long ago an update was written, always a number: minutes in the
+     first hour, hours in the first day, then days, "45m", "2h", "3d". */
+  const ageShort = at => {
+    const mins = Math.max(1, Math.floor((Date.now() - Date.parse(at)) / 60000));
+    return mins < 60 ? `${mins}m` : mins < 1440 ? `${Math.floor(mins / 60)}h` : `${Math.floor(mins / 1440)}d`;
+  };
+  /* A part's own button, at its first line's end: the note's Edit, the
      updates' Add. A word in the link colour, with the whole action as its
      accessible name. */
   function cardAction(action, words, label) {
@@ -12656,13 +12668,6 @@
     btn.dataset.cardAction = action;
     btn.setAttribute('aria-label', label);
     return btn;
-  }
-
-  // A part's small title, with the part's own buttons at its end.
-  function cardTitle(words, ...actions) {
-    const title = el('div', 'scheduler-card__title');
-    title.append(el('span', null, words), ...actions);
-    return title;
   }
 
   /* The warning a need still to be done shows. EVERY ALERT NAMES ITS THING
@@ -12727,47 +12732,38 @@
       band.append(svgUse('#m-notifications-fill', '16', '0 0 32 32'), el('strong', null, TODO_WORDS[n.id] ?? n.label));
       card.appendChild(band);
     }
-    /* The note is a part of its own on every trip: titled Trip notes over
-       its words, with Edit, or with none the one line No trip notes, with
-       Add. */
+    /* NOTES AND UPDATES HAVE NO TITLES: each is a line led by what it is, the
+       note by a pin and an update by its author's face, with the part's
+       button at the line's end. Each shows two lines until pressed open.
+
+       The note: the pin, its words, Edit; with none, No notes dimmed, as No
+       times is, and Add. */
     const note = row('scheduler-card__note');
-    if (trip.notes) {
-      note.append(cardTitle('Trip notes', cardAction('note', 'Edit', 'Edit the note')),
-        el('span', 'scheduler-card__note-words', trip.notes));
-    } else {
-      note.appendChild(cardTitle('No trip notes', cardAction('note', 'Add', 'Add a note')));
-    }
+    note.append(svgUse('#m-keep-fill', '16', '0 0 32 32'),
+      trip.notes ? el('span', 'scheduler-card__note-words', trip.notes) : el('span', 'scheduler-card__empty', 'No notes'),
+      trip.notes ? cardAction('note', 'Edit', 'Edit the note') : cardAction('note', 'Add', 'Add a note'));
     card.appendChild(note);
-    /* The updates, titled with their count, See all and the button that
-       adds one, which opens the Updates window. Only the newest shows, cut to
-       two lines; a press on it or on See all opens the card to every update
-       in full, newest first, and Show less or a second press closes it. A
-       lone update that fits its two lines has nothing more to show, which
-       fitUpdates works out once it is drawn, and then See all is hidden. */
+    /* The updates: only the newest shows, cut to two lines; a press on it
+       opens the card to every update in full, newest first, and a second
+       press closes it. A lone update that fits its two lines has nothing more
+       to show, which fitUpdates works out once it is drawn. Add sits at the
+       first line's end, over that update's age. With none, No updates
+       dimmed and Add. */
     const all = updatesOf(trip);
     const open = all.length > 0 && updatesOpenFor === trip.id;
     const part = row('scheduler-card__updates');
     part.dataset.count = String(all.length);
     part.toggleAttribute('data-open', open);
-    /* See all is a word like Add, so it wears the part button's look; its
-       own class is what the click handler and fitUpdates find it by. */
-    const actions = [cardAction('update', 'Add', 'Add an update')];
-    if (all.length) {
-      const toggle = el('button', 'scheduler-card__action scheduler-card__more', open ? 'Show less' : 'See all');
-      toggle.type = 'button';
-      toggle.setAttribute('aria-expanded', String(open));
-      actions.unshift(toggle);
-    }
-    part.appendChild(cardTitle(all.length ? `Updates · ${all.length}` : 'No updates', ...actions));
-    /* An update is its author's small avatar beside its words, with how
-       long ago at the right. The name is the avatar's tooltip and
-       accessible name, and the full date the age's tooltip. */
-    const updateItem = u => {
+    const add = cardAction('update', 'Add', 'Add an update');
+    /* An update is its author's 16px avatar beside its words, with how long
+       ago at the right, always as a number. The name is the avatar's tooltip
+       and accessible name, and the full date the age's tooltip. */
+    const updateItem = (u, n) => {
       const item = el('li', 'scheduler-card__update');
       // A line copied from the old notes with nobody named is a grey face.
       const who = u.actor_name || (u.kind === 'imported' ? 'From the old notes' : 'Someone');
       const nobody = !u.actor_name;
-      const face = el('div', `rux--user-avatar rux--user-avatar--sm ${nobody ? 'rux--user-avatar--order-2-gray' : avatarColour(who)}`,
+      const face = el('div', `rux--user-avatar rux--user-avatar--sm scheduler-card__face ${nobody ? 'rux--user-avatar--order-2-gray' : avatarColour(who)}`,
         nobody ? '' : who.charAt(0).toUpperCase());
       /* A written update is drawn as its author's own avatar. An imported one
          never is: its account is whoever ran the import, not the person who
@@ -12780,9 +12776,12 @@
       face.title = who;
       face.setAttribute('role', 'img');
       face.setAttribute('aria-label', who);
-      const when = el('span', 'scheduler-card__when', agoShort(u.created_at));
+      const when = el('span', 'scheduler-card__when', ageShort(u.created_at));
       when.title = updateStamp(u);
-      item.append(face, el('span', 'scheduler-card__words', u.body), when);
+      const side = el('span', 'scheduler-card__side');
+      if (n === 0) side.appendChild(add);
+      side.appendChild(when);
+      item.append(face, el('span', 'scheduler-card__words', u.body), side);
       return item;
     };
     if (all.length) {
@@ -12790,6 +12789,10 @@
       list.setAttribute('aria-label', 'Updates, newest first');
       list.append(...(open ? all : all.slice(0, 1)).map(updateItem));
       part.appendChild(list);
+    } else {
+      const none = el('div', 'scheduler-card__update');
+      none.append(el('span', 'scheduler-card__face-gap'), el('span', 'scheduler-card__empty', 'No updates'), add);
+      part.appendChild(none);
     }
     card.appendChild(part);
     return card;
@@ -12805,13 +12808,22 @@
     const more = part.hasAttribute('data-open') || Number(part.dataset.count) > 1
       || (!!words && words.scrollHeight > words.clientHeight + 1);
     part.toggleAttribute('data-more', more);
-    const btn = part.querySelector('.scheduler-card__more');
-    if (btn) btn.hidden = !more;
+    /* The first update's words are the keyboard's way to open and close the
+       rest, a button only while there is more to show. */
+    if (words && more) {
+      words.setAttribute('role', 'button');
+      words.tabIndex = 0;
+      words.setAttribute('aria-expanded', String(part.hasAttribute('data-open')));
+    } else if (words) {
+      words.removeAttribute('role');
+      words.removeAttribute('tabindex');
+      words.removeAttribute('aria-expanded');
+    }
   }
   function toggleUpdates(tripId, refocus) {
     updatesOpenFor = updatesOpenFor === tripId ? null : tripId;
     placeBarOpen();
-    if (refocus) barShortcuts.querySelector('.scheduler-card__more')?.focus();
+    if (refocus) barShortcuts.querySelector('.scheduler-card__update .scheduler-card__words[role="button"]')?.focus();
   }
 
   function openUpdatesFromCard() {
@@ -12840,15 +12852,16 @@
 
   // A slot acts on the bar it shows, and a disabled one does nothing.
   barShortcuts?.addEventListener('click', e => {
-    // See all, Show less, or an update with more to show opens or closes the rest.
-    const more = e.target.closest('.scheduler-card__more, .scheduler-card__updates[data-more] .scheduler-card__update');
-    if (more) {
-      toggleUpdates(more.closest('.scheduler-card')?.dataset.tripId ?? null, more.matches('button'));
-      return;
-    }
+    // A part's button first, since Add sits inside the update it opens.
     const action = e.target.closest('.scheduler-card__action');
     if (action) {
       if (action.dataset.cardAction === 'note') editNoteFromCard(); else openUpdatesFromCard();
+      return;
+    }
+    // An update with more to show opens or closes the rest.
+    const more = e.target.closest('.scheduler-card__updates[data-more] .scheduler-card__update');
+    if (more) {
+      toggleUpdates(more.closest('.scheduler-card')?.dataset.tripId ?? null, false);
       return;
     }
     const note = e.target.closest('.scheduler-card__note[role="button"]');

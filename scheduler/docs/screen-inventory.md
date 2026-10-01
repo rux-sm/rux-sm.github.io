@@ -198,13 +198,14 @@ and each need still to do, Hotel booking pending or HOS form pending, each a
 line of its own behind the bar's bell.
 No warning has a dismiss; each stays until it is put right. Needs that are
 met are not shown.
-Then Trip notes, the words cut to two lines until pressed open, with Edit,
-which opens the trip at its Notes field, and Updates with their count, See all
-and Add, which opens the trip's Updates window. Only the newest update shows,
-its author's small avatar beside its words, cut to two lines, and its
-age at the right; the name is the avatar's tooltip. A press on it or on See
-all opens every update in the card, and Show less closes them. An empty part
-is one line, No trip notes or No updates, with Add. Only the selected trip has a
+Then the note and the updates, with no titles: the note is a pin, its words
+cut to two lines until pressed open, and Edit, which opens the trip at its
+Notes field. Only the newest update shows, its author's 16px avatar beside
+its words, cut to two lines, and at the right Add, which opens the trip's
+Updates window, over its age, always a number: 45m, 2h, 3d. The name is the
+avatar's tooltip. A press on the update opens every update in the card, and
+a second press closes them. An empty part is one line, No notes or No
+updates dimmed, with Add. Only the selected trip has a
 card. Every trip has the same four slots: Open trip, the itinerary,
 opened or uploaded, Forms and Contacts; every other action is on the
 right-click menu. Contacts opens a small window of cards in three parts, the

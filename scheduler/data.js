@@ -12758,10 +12758,10 @@
     part.dataset.count = String(all.length);
     part.toggleAttribute('data-open', open);
     const add = cardAction('update', 'Add', 'Add an update');
-    /* An update is two lines, as the note is: its author's 16px avatar with
-       how long ago under it, always as a number, beside its words, and Add at
-       the first update's end. The name is the avatar's tooltip and accessible
-       name, and the full date the age's tooltip. */
+    /* An update is two lines, as the note is: its author's 16px avatar, its
+       words, and at the end Add on the first update over how long ago, always
+       as a number. The name is the avatar's tooltip and accessible name, and
+       the full date the age's tooltip. */
     const updateItem = (u, n) => {
       const item = el('li', 'scheduler-card__update');
       // A line copied from the old notes with nobody named is a grey face.
@@ -12782,8 +12782,10 @@
       face.setAttribute('aria-label', who);
       const when = el('span', 'scheduler-card__when', ageShort(u.created_at));
       when.title = updateStamp(u);
-      item.append(face, when, el('span', 'scheduler-card__words', u.body));
-      if (n === 0) item.appendChild(add);
+      const side = el('span', 'scheduler-card__side');
+      if (n === 0) side.appendChild(add);
+      side.appendChild(when);
+      item.append(face, el('span', 'scheduler-card__words', u.body), side);
       return item;
     };
     if (all.length) {

@@ -907,9 +907,10 @@ button.scheduler-row-head__num::after {
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
 /* Every line is a row with a rule above it, as compact as it goes: 12px type
-   on a 16px line, 4px above and below. The slots' row takes the first rule. */
+   on a 16px line, 4px above and below and 8px at either side. The slots' row
+   takes the first rule. */
 .scheduler-card__row {
-  padding: var(--rux-spacing-02) var(--rux-spacing-04);
+  padding: var(--rux-spacing-02) var(--rux-spacing-03);
   border-block-start: 1px solid var(--card-rule);
 }
 /* The reminder and the other warnings are a band, first: the warning colour
@@ -918,12 +919,12 @@ button.scheduler-row-head__num::after {
 .scheduler-card__asks,
 .scheduler-card__warn {
   display: grid;
-  grid-template-columns: 1.75rem minmax(0, 1fr) auto;
+  grid-template-columns: 1rem minmax(0, 1fr) auto;
   gap: var(--rux-spacing-03);
   align-items: center;
   background: color-mix(in srgb, var(--rux-support-warning) 22%, var(--card-surface));
   border-inline-start: 3px solid var(--rux-support-warning);
-  padding-inline-start: calc(var(--rux-spacing-04) - 3px);
+  padding-inline-start: calc(var(--rux-spacing-03) - 3px);
 }
 .scheduler-card__asks > svg,
 .scheduler-card__warn > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: var(--scheduler-mark-warning); }
@@ -935,12 +936,12 @@ button.scheduler-row-head__num::after {
    above it: a mistake on the board comes before a job still to do. */
 .scheduler-card__misfit {
   display: grid;
-  grid-template-columns: 1.75rem minmax(0, 1fr) auto;
+  grid-template-columns: 1rem minmax(0, 1fr) auto;
   gap: var(--rux-spacing-03);
   align-items: center;
   background: color-mix(in srgb, var(--card-error) 22%, var(--card-surface));
   border-inline-start: 3px solid var(--card-error);
-  padding-inline-start: calc(var(--rux-spacing-04) - 3px);
+  padding-inline-start: calc(var(--rux-spacing-03) - 3px);
 }
 .scheduler-card__misfit > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: var(--scheduler-mark-error); }
 .scheduler-card__misfit > strong { min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
@@ -973,13 +974,13 @@ button.scheduler-row-head__num::after {
 .scheduler-card__action:hover { background: var(--card-hover); }
 .scheduler-card__action:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
 /* The note and the updates are the same kind of line as the alerts above
-   them: a 16px mark centred in a column wide enough for an update's age
-   under its face, the words, then the part's button, so every mark on the
-   card stands in one column and every line's words start at one edge. */
+   them: a 16px mark, the words, then the part's button, so every mark on the
+   card stands in one 16px column and every line's words start at one edge,
+   32px in. */
 .scheduler-card__note,
 .scheduler-card__update {
   display: grid;
-  grid-template-columns: 1.75rem minmax(0, 1fr) auto;
+  grid-template-columns: 1rem minmax(0, 1fr) auto;
   gap: var(--rux-spacing-03);
   align-items: start;
 }
@@ -988,15 +989,13 @@ button.scheduler-row-head__num::after {
 .scheduler-card__note-words { min-inline-size: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 /* What a part says when it holds nothing, dimmed as No times is. */
 .scheduler-card__empty { color: color-mix(in srgb, var(--card-ink) 70%, transparent); }
-.scheduler-card__face-gap { inline-size: 1.75rem; }
+.scheduler-card__face-gap { inline-size: 1rem; }
 .scheduler-card__updates { padding-block: var(--rux-spacing-03); }
-/* A posted update is two lines of the grid: the face over its age at the
-   start, the words beside them, and on the first update Add at the end. */
-.scheduler-card__update-list .scheduler-card__update { grid-template-areas: "face words side" "when words side"; row-gap: 0; }
-.scheduler-card__update-list .scheduler-card__face { grid-area: face; justify-self: center; align-self: center; }
-.scheduler-card__update-list .scheduler-card__when { grid-area: when; justify-self: center; }
-.scheduler-card__update-list .scheduler-card__action { grid-area: side; }
-.scheduler-card__update-list .scheduler-card__words { grid-area: words; }
+/* A posted update: the face, the words, and at the end Add on the first
+   update over its age, the two right-aligned, so an update is two lines as
+   the note is. */
+.scheduler-card__update-list .scheduler-card__face { justify-self: center; }
+.scheduler-card__side { display: flex; flex-direction: column; align-items: flex-end; }
 /* Closed, only the newest update shows, its words cut to two lines; with
    more to show, it opens the rest on a press, so it takes the pointer. Open,
    every update shows whole, in a list that scrolls past 16rem, or sooner

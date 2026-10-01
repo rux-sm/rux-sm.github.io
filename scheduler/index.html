@@ -1485,6 +1485,28 @@
     </div>
   </div>
 
+  <!-- The note window: the trip's note in a box, from the card's Trip notes
+       Edit or Add, with Cancel and Save, as the Updates window opened on its
+       own has. data.js fills the label and the box. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-note-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-note-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__label" id="scheduler-note-trip"></h2>
+        <h2 class="rux--modal-header__heading" id="scheduler-note-h">Trip notes</h2>
+      </div>
+      <div class="rux--modal-content">
+        <div class="rux--text-area__wrapper">
+          <textarea id="scheduler-note-text" class="rux--text-area" rows="6" placeholder="What should everyone know?" aria-label="Trip notes"></textarea>
+        </div>
+        <p class="rux--type-helper-text-01 scheduler-updates-error" id="scheduler-note-error" role="alert" hidden></p>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-note-save">Save</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Fewer buses on the Buses tab, when a bus that goes has a bus or a driver
        on it. Nothing is written until Save; keeping the buses puts the count
        back. data.js fills the sentence. -->

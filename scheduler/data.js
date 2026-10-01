@@ -12867,10 +12867,61 @@
     if (bar) openUpdatesWindow(panelIndex.trips.get(bar.dataset.tripId));
   }
 
-  /* The note is written in the editor, so its button opens the trip on
-     Details with the cursor at the end of the note. A trip already in the
-     editor, from another of its bars, goes straight there, so an edit in
-     progress is kept rather than asked about. */
+  /* THE NOTE WINDOW: the trip's note in a box with Cancel and Save, from the
+     card's Edit or Add. Save writes the one column at once, as a colour does,
+     and records it in the trip's history; an emptied box clears the note. */
+  const noteModal = document.getElementById('scheduler-note-modal');
+  const noteText = document.getElementById('scheduler-note-text');
+  const noteSave = document.getElementById('scheduler-note-save');
+  const noteError = document.getElementById('scheduler-note-error');
+  let noteTrip = null;
+  const noteNow = () => noteText.value.trim() || null;
+  function openNoteWindow(trip) {
+    if (!noteModal || !trip) return;
+    noteTrip = trip;
+    document.getElementById('scheduler-note-trip').textContent = tripName(trip);
+    noteText.value = trip.notes ?? '';
+    noteError.hidden = true;
+    noteSave.disabled = true;
+    window.Rux?.modal?.open?.(noteModal);
+    noteText.focus();
+    noteText.setSelectionRange(noteText.value.length, noteText.value.length);
+  }
+  noteText?.addEventListener('input', () => {
+    noteSave.disabled = noteNow() === (noteTrip?.notes?.trim() || null);
+  });
+  // Cmd or Ctrl with Enter saves, as in the Updates window.
+  noteText?.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && !noteSave.disabled) { e.preventDefault(); noteSave.click(); }
+  });
+  noteSave?.addEventListener('click', async () => {
+    const trip = noteTrip;
+    if (!trip) return;
+    const was = trip.notes ?? null;
+    const now = noteNow();
+    noteSave.disabled = true;
+    noteError.hidden = true;
+    try {
+      const { error } = await withTimeout(client.from('trips').update({ notes: now }).eq('id', trip.id).then(r => r));
+      if (error) throw new Error(error.message);
+      recordFieldChange(trip.id, 'notes', was, now);
+      noteTrip = null;
+      window.Rux?.modal?.close?.(noteModal);
+      await show();
+      toast('success', now ? 'Note saved' : 'Note cleared');
+    } catch (err) {
+      console.warn('The note was not saved:', err);
+      noteError.textContent = 'The note was not saved. Try again.';
+      noteError.hidden = false;
+      noteSave.disabled = false;
+    }
+  });
+  noteModal?.addEventListener('rux:modal-closed', () => { noteTrip = null; });
+
+  /* The card's Edit or Add opens the note window. A trip already in the
+     editor, from another of its bars, goes to the editor's note on Details
+     instead, so an edit in progress is kept and its save does not meet a note
+     changed under it. */
   function editNoteFromCard() {
     const bar = selectedBar();
     if (!bar?.dataset.tripId) return;
@@ -12882,8 +12933,7 @@
       notes?.setSelectionRange?.(notes.value.length, notes.value.length);
     };
     if (isEditorTrip(bar)) { toNotes(); return; }
-    const ref = barRef(bar);
-    whenSafe(() => { openRef(ref); requestAnimationFrame(toNotes); });
+    openNoteWindow(panelIndex.trips.get(bar.dataset.tripId));
   }
 
   // A slot acts on the bar it shows, and a disabled one does nothing.

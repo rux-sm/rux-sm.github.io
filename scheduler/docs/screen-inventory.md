@@ -199,8 +199,9 @@ line of its own behind the bar's bell.
 No warning has a dismiss; each stays until it is put right. Needs that are
 met are not shown.
 Then the note and the updates, each a title with its button at the end,
-Trip notes and Edit, Updates with their count (Updates · 5) and Add, which
-opens the trip's Updates window, over one line of what it holds until
+Trip notes and Edit, which opens the note in a window of its own with Cancel
+and Save, and Updates with their count (Updates · 5) and Add, which opens the
+trip's Updates window, over one line of what it holds until
 pressed open, the note's line led by a pin in the column an update's avatar
 stands in, so both start their words at one edge, and ended by how long ago
 the note last changed, in the updates' age column. The newest update is its

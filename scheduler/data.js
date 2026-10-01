@@ -745,15 +745,20 @@
   /* What each bar knows about its bus and its trip's needs, for the trip's
      card: `{ needs, misfits }`, set as the bar is drawn. */
   const barFacts = new WeakMap();
-  // The bar's Updates mark, asking for a follow-up or saying there are updates.
-  const updatesMark = asks => {
-    const m = el('span', `scheduler-bar__msg scheduler-bar__msg--${asks ? 'asks' : 'quiet'}`);
+  // The bar's follow-up mark, a bell asking for one.
+  const updatesMark = () => {
+    const m = el('span', 'scheduler-bar__msg');
     m.setAttribute('role', 'img');
-    m.setAttribute('aria-label', asks ? 'Needs a follow-up' : 'Has updates');
-    m.title = asks ? 'Needs a follow-up' : 'Updates';
-    m.appendChild(svgUse(asks ? '#m-notifications_active-fill' : '#m-chat-fill', '16', '0 0 32 32'));
+    m.setAttribute('aria-label', 'Needs a follow-up');
+    m.title = 'Needs a follow-up';
+    m.appendChild(svgUse('#m-notifications_active-fill', '16', '0 0 32 32'));
     return m;
   };
+  /* A destination as the bar shows it: the home state, ", TX" or " TX" at
+     the end, is left off, since nearly every trip is in Texas and the two
+     letters cut the place's own name short. Another state stays. What was
+     typed is untouched everywhere else. */
+  const placeName = dest => String(dest || '').replace(/,?\s+TX\s*$/i, '');
   const addRow = (bar, cls, ...parts) => {
     const r = el('div', `scheduler-bar__row ${cls}`);
     for (const p of parts) if (p != null) r.appendChild(p);
@@ -982,10 +987,9 @@
     if (stripe) bar.classList.add(`scheduler-bar--stripe-${stripe}`);
     const kind = trip.trip_type === 'one_way' ? 'one way' : !split ? null : leg.leg === 'return' ? 'pickup' : 'drop-off';
     const count = leg.count || 1;
+    /* Which of the leg's buses this is, for the bar's label only: the bar
+       draws no count, since selecting a trip outlines all of its buses. */
     const ref = count > 1 ? `${nth}/${count}` : '';
-    /* The count rides the times row; a copy on the destination row shows
-       only while the times row is off, as app.css does. */
-    const refTag = where => (ref ? el('span', `scheduler-bar__ref scheduler-bar__ref--${where}`, ref) : null);
 
     /* WHETHER THIS BUS FITS THIS TRIP, and what the trip needs. The bar draws
        no marks: what is still to be done is the reminder's to ask, and the
@@ -1031,23 +1035,12 @@
     barFacts.set(bar, { needs, misfits });
     bar.classList.toggle('scheduler-bar--misfit', misfits.length > 0);
 
-    /* The marks, at the destination row's end: a check once the Route, Buses
-       and Billing tabs are all marked done, then the Updates mark, a bell in
-       the warning colour when the trip asks for a follow-up, else a filled
-       bubble once it has updates, else nothing. Marks, not buttons, because
-       the bar is the button. */
-    const allDone = !!(trip.route_done_at && trip.buses_done_at && trip.billing_done_at);
-    let doneMark = null;
-    if (allDone) {
-      doneMark = el('span', 'scheduler-bar__done');
-      doneMark.setAttribute('role', 'img');
-      doneMark.setAttribute('aria-label', 'Route, buses and billing done');
-      doneMark.title = 'Route, buses and billing done';
-      doneMark.appendChild(svgUse('#m-check_circle-fill', '16', '0 0 32 32'));
-    }
+    /* The one mark, at the destination row's end: a bell in the warning
+       colour when the trip asks for a follow-up. A bar marks only what needs
+       doing; the checklist says what is done and the card shows the updates.
+       A mark, not a button, because the bar is the button. */
     const asks = asksFollowUp(trip);
-    const msg = asks || updatesOf(trip).length > 0 ? updatesMark(asks) : null;
-    addRow(bar, 'scheduler-bar__dest', el('span', null, trip.destination || 'No destination'), refTag('dest'), doneMark, msg);
+    addRow(bar, 'scheduler-bar__dest', el('span', null, placeName(trip.destination) || 'No destination'), asks ? updatesMark() : null);
     addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
 
     // The booking contact as the trip records it. When both do not fit, the
@@ -1063,7 +1056,9 @@
     // rendering fault. The spot time is not drawn, because two times already
     // fill the row; the editor shows it.
     const dep = hhmm(leg.depart, true), back = hhmm(leg.back, true);
-    const when = el('span', null, dep && back ? `${dep}\u2013${back}`
+    // "No times" is dimmed, quieter than a time, as app.css draws it.
+    const none = !dep && !back;
+    const when = el('span', none ? 'scheduler-bar__none' : null, dep && back ? `${dep}\u2013${back}`
       : dep ? `Dep ${dep}`
       : back ? `Ret ${back}`
       : 'No times');
@@ -1076,8 +1071,8 @@
        the one worth reading at a glance is when the bus leaves. A leg with only
        a return says so, and a leg with neither says the times are still to come,
        rather than leaving the row empty. */
-    const whenDep = el('span', 'scheduler-bar__time-dep', dep || (back ? `Ret ${back}` : 'No times'));
-    addRow(bar, 'scheduler-bar__time', when, whenDep, refTag('time'));
+    const whenDep = el('span', none ? 'scheduler-bar__time-dep scheduler-bar__none' : 'scheduler-bar__time-dep', dep || (back ? `Ret ${back}` : 'No times'));
+    addRow(bar, 'scheduler-bar__time', when, whenDep);
 
     // The crew in role order, or what the bar needs before it can have one.
     const crew = assign ? crewOf(trip, assign, driversById, statuses).filter(c => !(placeholder && c.needed)) : [];

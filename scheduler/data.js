@@ -745,13 +745,15 @@
   /* What each bar knows about its bus and its trip's needs, for the trip's
      card: `{ needs, misfits }`, set as the bar is drawn. */
   const barFacts = new WeakMap();
-  // The bar's attention mark, a bell in `tone`, saying in `words` why.
+  /* The bar's attention mark, a bell in `tone`, saying in `words` why: the
+     ringing bell for a follow-up, and the bell with an exclamation mark for
+     an error, so the two differ in shape as well as colour. */
   const attentionMark = (tone, words) => {
     const m = el('span', `scheduler-bar__msg scheduler-bar__msg--${tone}`);
     m.setAttribute('role', 'img');
     m.setAttribute('aria-label', words);
     m.title = words;
-    m.appendChild(svgUse('#m-notifications_active-fill', '16', '0 0 32 32'));
+    m.appendChild(svgUse(tone === 'error' ? '#m-notification_important-fill' : '#m-notifications_active-fill', '16', '0 0 32 32'));
     return m;
   };
   /* A destination as the bar shows it: the home state, ", TX" or " TX" at

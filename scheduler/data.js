@@ -7373,7 +7373,19 @@
       summaryMenu.lastChild.setAttribute('class', 'rux--btn__icon');
       // The fuel card is turned on and off here, and suggested under the Summary.
       const setFuelCard = on => { editing.fuelCard = on; drawTotals(); refreshDirty(); };
+      /* Every drive of the leg on screen asked again, as picking its places
+         again would: the yard's two and the list's, so a drive saved before
+         the lookup changed is measured the way a new one is. Save stores
+         whatever came out different. */
+      async function measureAgain() {
+        if (r.pickupPlace?.lat != null) await driveOutFrom(r.pickupPlace);
+        if (r.dropPlace?.lat != null) await driveBackFrom(r.dropPlace);
+        drawTimeline();
+        remeasure();
+        toast('info', 'Drives measured again', 'Save keeps the new miles and times; Reset takes them back.');
+      }
       summaryMenu.addEventListener('click', () => openItemsMenu(summaryMenu, [
+        { label: 'Measure drives again', run: measureAgain },
         { label: 'Route times', run: openRouteTimes },
         { label: 'Fuel card limits', run: openFuelLimits },
         editing.fuelCard ? { label: 'Remove fuel card', run: () => setFuelCard(false) }

@@ -51,7 +51,8 @@ rux's yes.
 - **Details:** dates, destination, type, notes, booking contact (its ⋮ menu
   has Add email thread), trip contacts.
 - **Route:** the Summary (Start, Spot, End; Miles, Drive, On duty, Less rest,
-  a row a day), the fuel card and second-driver notices, the stops with their
+  a row a day), its menu's Measure drives again for a leg saved with old
+  drives, the fuel card and second-driver notices, the stops with their
   waits, Mark route done.
 - **Buses:** each bus, its driver and co-driver or relief seats, Mark buses done.
 - **Billing:** confirmed or not; the quoted price, which is the sum of the

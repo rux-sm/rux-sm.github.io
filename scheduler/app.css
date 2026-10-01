@@ -1204,7 +1204,6 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-crew { display: flex; align-items: center; gap: var(--rux-spacing-02); min-inline-size: 0; }
 .scheduler-crew__name { overflow: hidden; text-overflow: ellipsis; }
-.scheduler-crew__name--needed { color: var(--scheduler-mark-error); }
 .scheduler-crew--declined .scheduler-crew__name { text-decoration: line-through; }
 /* The role glyph alone, in its status colour: the bar's own for still to send,
    amber sent and waiting, green confirmed, red declined or nobody assigned.

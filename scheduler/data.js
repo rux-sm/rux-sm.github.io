@@ -904,9 +904,9 @@
      short name. A driver or co-driver's mark is a small dot, and a relief
      driver's the two opposite arrows, so a relief never reads as another
      driver while every driver costs as little width as it can. A role nobody
-     fills says so in words, "Driver needed", in the error tone, and a
-     declined driver's name is struck through, so the colour is never the only
-     signal. */
+     fills is its mark in the error tone and "No driver" dimmed, as "No times"
+     is, and a declined driver's name is struck through, so the colour is never
+     the only signal. */
   const RELIEF_ROLES = new Set(['relief-start', 'relief-end']);
   function crewEl(c) {
     const tone = c.needed ? 'error' : c.status.tone;
@@ -915,8 +915,8 @@
     const mark = el('span', ['scheduler-crew__mark', tone && `scheduler-crew__mark--${tone}`, dot && 'scheduler-crew__mark--dot'].filter(Boolean).join(' '));
     mark.appendChild(dot ? el('span', 'scheduler-crew__dot') : svgUse(c.icon, '16', c.box));
     item.appendChild(mark);
-    item.appendChild(el('span', c.needed ? 'scheduler-crew__name scheduler-crew__name--needed' : 'scheduler-crew__name',
-      c.needed ? `${c.label} needed` : crewName(c)));
+    item.appendChild(el('span', c.needed ? 'scheduler-crew__name scheduler-bar__none' : 'scheduler-crew__name',
+      c.needed ? (dot ? `No ${c.label.toLowerCase()}` : 'No relief') : crewName(c)));
     item.title = crewText(c);
     return item;
   }

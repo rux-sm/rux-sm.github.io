@@ -1865,7 +1865,7 @@ button.scheduler-row-head__num::after {
   color: var(--rux-text-primary);
   margin-block-end: var(--rux-spacing-05);
 }
-/* The Updates window's list, under the box and its reasons: each update a
+/* The Updates window's list, under the box: each update a
    tile on the raised layer, its author's face beside its words over its day.
    A tile is a button that opens it for editing; the one being edited or
    deleted is a plain tile holding its box or its ask. */
@@ -1901,9 +1901,8 @@ button.scheduler-row-head__num::after {
    under what comes before it rather than the list's own 8px, across the
    section's width as the add rows above them are. */
 .scheduler-quickbooks { margin-block-start: var(--rux-spacing-03); inline-size: 100%; max-inline-size: none; }
-/* The Updates window's head: what changed, the box, then the quick reasons in a row. */
+/* The Updates window's head: what changed, over the box. */
 .scheduler-prompt-changes { color: var(--rux-text-secondary); margin-block-end: var(--rux-spacing-05); }
-.scheduler-prompt-reasons { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); margin-block-start: var(--rux-spacing-04); }
 
 /* A section that follows anything on its tab opens with a 1px rule, 24px under
    what precedes it and 16px over its heading. Carbon has no rule for rules in a

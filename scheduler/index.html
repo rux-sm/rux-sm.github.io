@@ -1451,18 +1451,17 @@
     </div>
   </div>
 
-  <!-- The Updates window: a box for a new update with its quick reasons, over
-       the trip's updates so far as tiles. Every Save opens it, with Save, no
-       update and Save with update, and its close goes back to the trip
-       unsaved; the Update shortcut opens it on its own, with Add update alone
-       beside the close. data.js fills the label, the sentence, the buttons'
-       words and the list. -->
+  <!-- The Updates window: a box for a new update over the trip's updates so
+       far as tiles. Every Save opens it, with Save, no update and Save with
+       update, and its close goes back to the trip unsaved; the Update shortcut
+       opens it on its own, with Cancel and Add update and no close. data.js
+       fills the label, the sentence, the buttons' words and the list. -->
   <div class="rux--layer-one rux--modal" id="scheduler-update-modal" role="presentation">
     <div role="dialog" aria-modal="true" aria-labelledby="scheduler-update-h" aria-describedby="scheduler-update-what" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
       <div class="rux--modal-header">
         <h2 class="rux--modal-header__label" id="scheduler-update-trip"></h2>
         <h2 class="rux--modal-header__heading" id="scheduler-update-h">Updates</h2>
-        <div class="rux--modal-close-button">
+        <div class="rux--modal-close-button" id="scheduler-update-close-wrap">
           <button type="button" class="rux--modal-close" id="scheduler-update-close" aria-label="Close" title="Close" data-rux-close>
             <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
           </button>
@@ -1471,9 +1470,8 @@
       <div class="rux--modal-content">
         <p class="rux--type-body-compact-01 scheduler-prompt-changes" id="scheduler-update-what"></p>
         <div class="rux--text-area__wrapper">
-          <textarea id="scheduler-update-text" class="rux--text-area" rows="1" placeholder="What happened?" aria-label="Update"></textarea>
+          <textarea id="scheduler-update-text" class="rux--text-area" rows="4" placeholder="What happened?" aria-label="Update"></textarea>
         </div>
-        <div class="scheduler-prompt-reasons" id="scheduler-update-reasons" role="group" aria-label="Quick reasons"></div>
         <p class="rux--type-helper-text-01 scheduler-updates-error" id="scheduler-update-error" role="alert" hidden></p>
         <div class="scheduler-updates-log" id="scheduler-updates-section">
           <ol class="rux--layer-two scheduler-updates" id="scheduler-updates-log" aria-label="Earlier updates, newest first"></ol>

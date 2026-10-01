@@ -9122,8 +9122,8 @@
     return said.length ? { said, keys, line: said[0] } : null;
   }
 
-  /* THE UPDATES WINDOW: a box for a new update and its quick reasons, over
-     the trip's updates so far. Every Save opens it, so each change is told or
+  /* THE UPDATES WINDOW: a box for a new update, over the trip's updates so
+     far. Every Save opens it, so each change is told or
      skipped on purpose, and the Update shortcut opens it on its own.
 
      From Save it is a step Save waits on, and resolves `{ kind, body }`:
@@ -9135,34 +9135,25 @@
      trip's box comes filled with Quote sent, a customer-facing change's with
      its own line, and any other's empty.
 
-     On its own, Add update writes at once and closes it, and the close at the
-     top is its only other way out. */
+     On its own it has Cancel and Add update and no close at the top: Add
+     update writes at once and closes it, and Cancel closes it. */
   const updateModal = document.getElementById('scheduler-update-modal');
   const updateText = document.getElementById('scheduler-update-text');
   const updateSave = document.getElementById('scheduler-update-save');
   const updateSkip = document.getElementById('scheduler-update-skip');
   const updateClose = document.getElementById('scheduler-update-close');
+  const updateCloseWrap = document.getElementById('scheduler-update-close-wrap');
   const updateError = document.getElementById('scheduler-update-error');
   const updateWhat = document.getElementById('scheduler-update-what');
-  const UPDATE_REASONS = ['Follow-up email sent', 'Called the customer', 'Quote sent', 'Waiting on a PO', 'Customer confirmed'];
   let updateSettle = null;   // Save's step, while Save opened the window
   let updateAlone = null;    // the trip, while the window stands on its own
   let updateChange = null;
-  function fillUpdateWindow({ trip, what, line, reasons, tripId }) {
+  function fillUpdateWindow({ trip, what, line, tripId }) {
     document.getElementById('scheduler-update-trip').textContent = trip;
     updateWhat.textContent = what;
     updateWhat.hidden = !what;
     updateError.hidden = true;
     updateText.value = line;
-    // A quick reason puts its words in the box, which shows what was picked.
-    const tags = reasons.map(r => {
-      const tag = el('button', 'rux--tag rux--tag--gray rux--tag--operational rux--layout--size-md');
-      tag.type = 'button';
-      tag.appendChild(el('span', 'rux--tag__label', r));
-      tag.addEventListener('click', () => { updateText.value = r; updateSave.disabled = false; updateText.focus(); });
-      return tag;
-    });
-    document.getElementById('scheduler-update-reasons').replaceChildren(...tags);
     updateSave.disabled = !line;
     // A new trip has nothing earlier to list.
     document.getElementById('scheduler-updates-section').hidden = !tripId;
@@ -9187,7 +9178,7 @@
     const line = creating ? (editing?.quoteSent ? `Quote sent, ${usdCents(editing.quoteSent.price)}` : 'Quote sent')
       : change?.line ?? '';
     updateSkip.textContent = 'Save, no update';
-    updateSkip.hidden = false;
+    updateCloseWrap.hidden = false;
     updateSave.textContent = 'Save with update';
     updateClose.setAttribute('aria-label', 'Back to the trip, not saved');
     updateClose.title = 'Back to the trip, not saved';
@@ -9195,7 +9186,6 @@
       updateSettle = answer => { updateSettle = null; resolve(answer && { ...answer, keys: change?.keys ?? null }); };
       fillUpdateWindow({
         trip: tripName(trip), what, line,
-        reasons: change ? [change.line, ...UPDATE_REASONS.filter(r => r !== change.line)] : UPDATE_REASONS,
         tripId: creating ? null : trip?.id,
       });
     });
@@ -9206,11 +9196,10 @@
     updateSettle = null;
     updateChange = null;
     updateAlone = trip;
-    updateSkip.hidden = true;
+    updateSkip.textContent = 'Cancel';
+    updateCloseWrap.hidden = true;
     updateSave.textContent = 'Add update';
-    updateClose.setAttribute('aria-label', 'Close');
-    updateClose.title = 'Close';
-    fillUpdateWindow({ trip: tripName(trip), what: '', line: '', reasons: UPDATE_REASONS, tripId: trip.id });
+    fillUpdateWindow({ trip: tripName(trip), what: '', line: '', tripId: trip.id });
   }
   const answerUpdate = answer => {
     const settle = updateSettle;
@@ -9242,6 +9231,7 @@
     }
   });
   updateSkip?.addEventListener('click', () => {
+    if (updateAlone) { updateAlone = null; window.Rux?.modal?.close?.(updateModal); return; }
     answerUpdate(updateChange ? { kind: 'nothing', body: updateChange.line } : { kind: 'none' });
   });
   updateModal?.addEventListener('rux:modal-closed', () => { updateAlone = null; updateSettle?.(null); });

@@ -12657,8 +12657,11 @@
     return title;
   }
 
-  // The warning a need still to be done shows, as the job to do.
-  const TODO_WORDS = { hotel: 'Book hotel', hos: 'Print hours-of-service form' };
+  /* The warning a need still to be done shows. EVERY ALERT NAMES ITS THING
+     FIRST AND ITS STATE AFTER, in one of a few words: needed, what the bus
+     lacks; missing, what the trip has not got; pending, what is still to be
+     done; due, money owed. */
+  const TODO_WORDS = { hotel: 'Hotel booking pending', hos: 'HOS form pending' };
   function drawCard(trip, bar) {
     const card = el('div', 'scheduler-card');
     card.dataset.tripId = trip.id;
@@ -12668,8 +12671,10 @@
       r.style.setProperty('--i', String(i++));
       return r;
     };
-    /* EVERY ALERT IS A LINE OF ITS OWN, its icon then its two or three words,
-       so the list reads down the same way whatever kind each one is.
+    /* EVERY ALERT IS A LINE OF ITS OWN, the bar's bell then its two or three
+       words, so the list reads down the same way whatever kind each one is:
+       the red bell with its mark for a bus that does not fit, the plain bell
+       in the warning band for the rest. The words say which.
 
        A bus that does not fit this trip leads, in red and with no dismiss: it
        is a mistake on the board, and it goes when the bus is changed. Its
@@ -12701,7 +12706,7 @@
        the top; the Contacts shortcut reaches whoever is named. */
     if (!dayOfContact(trip) && !trip.contact_not_needed) {
       const band = row('scheduler-card__warn');
-      band.append(svgUse('#m-call-fill', '16', '0 0 32 32'), el('strong', null, 'No trip contact'));
+      band.append(svgUse('#m-notifications-fill', '16', '0 0 32 32'), el('strong', null, 'Trip contact missing'));
       card.appendChild(band);
     }
     /* A need that is still a job, the hotel to book or the hours-of-service
@@ -12711,8 +12716,7 @@
     for (const n of facts?.needs ?? []) {
       if (n.done || n.short) continue;
       const band = row('scheduler-card__warn');
-      if (n.href) band.appendChild(svgUse(n.href, '16', '0 0 32 32'));
-      band.appendChild(el('strong', null, TODO_WORDS[n.id] ?? n.label));
+      band.append(svgUse('#m-notifications-fill', '16', '0 0 32 32'), el('strong', null, TODO_WORDS[n.id] ?? n.label));
       card.appendChild(band);
     }
     /* The note is a part of its own on every trip: titled Trip notes over

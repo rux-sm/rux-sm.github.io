@@ -24,8 +24,9 @@
   const BALANCE_DAYS = 14;
   const DUE_DAYS = 7;
   // How the card and the list name what a trip waits on.
-  // Each wait as the card, the bar's bell and the trip list name it.
-  const WORDS = { confirmation: 'Unconfirmed', po: 'PO missing', itinerary: 'Itinerary missing', balance: 'Balance due' };
+  /* Each wait as the card, the bar's bell and the trip list name it: the
+     thing first, then its state, in the words every alert uses. */
+  const WORDS = { confirmation: 'Trip unconfirmed', po: 'PO/payment pending', itinerary: 'Itinerary missing', balance: 'Balance due' };
   let setting = { ...DEFAULT };
 
   const num = (v, d) => (Number.isFinite(Number(v)) && Number(v) > 0 ? Number(v) : d);

@@ -63,7 +63,7 @@ the schedule open, and faces on a bar show who has that trip.
 | Tasks, History | later | Pages (§7). |
 | Pending marks on the bar | drop | A missing itinerary, purchase order or balance is what the follow-up reminder waits on, so the reminder asks for it; drawn on the bar as well, the itinerary and trip contact marks sat on four in five upcoming trips and said nothing. |
 | Bus fit | keep | A bar whose bus is the wrong type for its vehicle, or falls short of a need its vehicle carries, including equipment the Fleet page records, has its bell in red, the follow-up bell's place, red winning when both apply; its card says what is wrong in a red band above the reminder. |
-| Needs and trip contact | keep | On the card's warning band, only what needs doing: a need the bus falls short of in the red band, and a need still to do as its job, Book hotel or Print hours-of-service form; a met need is not shown. Hours of service is a need on a bus with a part-time driver in any seat, done once the Forms page marks that leg's hours-of-service record printed, and printed among the requirements on that driver's own envelope. A trip with no trip contact, and not marked as needing none, says No trip contact in the card's warning band. |
+| Needs and trip contact | keep | On the card's warning band, only what needs doing: a need the bus falls short of in the red band, and a need still to do, Hotel booking pending or HOS form pending; a met need is not shown. Hours of service is a need on a bus with a part-time driver in any seat, done once the Forms page marks that leg's hours-of-service record printed, and printed among the requirements on that driver's own envelope. A trip with no trip contact, and not marked as needing none, says Trip contact missing in the card's warning band. |
 | Placeholder bar | keep | Amber is the office's placeholder, a trip not yet quoted, named Placeholder in the colour menu. Its bar is a yellow tint beside the others in a light theme and the warning colour in a dark one, and is never marked as the wrong bus, and draws no empty seat and no Needs a bus; a driver someone has named still shows. |
 | Upload itinerary | keep | On the bar's right-click menu, in place of Open itinerary on a trip without one. |
 | Driver status marks | keep | The drivers row lists the crew in role order: a person icon for a driver or co-driver and two opposite arrows for relief, then the short name. The icon sits on a disc in the status's colour, one step of the run each: grey Not sent, amber pending response, green confirmed, red pending assignment or declined. A declined name is struck through, and a role that is on with nobody in it is its red icon alone. When the names do not all fit, the row keeps the first and counts the rest, "Raul +1". The tooltip names the role, the status, who set it and when. |
@@ -193,8 +193,9 @@ its arrow still pointing at the trip. Nothing is taken from the trip, so the
 slots are the same on every trip however short or narrow. Each slot carries its
 word under its icon, and when the card opens above the
 trip the slots come last, next to it. The card opens with its warnings in one
-band: a bus that does not fit, the follow-up reminder, No trip contact, and
-each need still to do as its job, Book hotel or Print hours-of-service form.
+band: a bus that does not fit, the follow-up reminder, Trip contact missing,
+and each need still to do, Hotel booking pending or HOS form pending, each a
+line of its own behind the bar's bell.
 No warning has a dismiss; each stays until it is put right. Needs that are
 met are not shown.
 Then Trip notes, the words cut to two lines until pressed open, with Edit,

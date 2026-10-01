@@ -8863,6 +8863,9 @@
     if (none && contactsOpen) closeContacts(false);
     if (none) { poppedFor = null; schEl.style.removeProperty('--scheduler-docked-h'); return; }
     if (barShortcuts.previousElementSibling !== bar) bar.after(barShortcuts);
+    // A card that comes to a trip afresh starts compact, its note and updates
+    // closed, however they were left the last time it showed.
+    if (barKey(bar) !== poppedFor) { noteOpenFor = null; updatesOpenFor = null; }
     drawShortcuts(bar);
     // And with its slot, when the slots are drawn again for another trip.
     if (contactsOpen && !contactsOpen.slot.isConnected) closeContacts(false);
@@ -12243,7 +12246,7 @@
   /* A trip's note shows two lines on the floating card and three on the
      docked sheet, and ends in an ellipsis; a press on a longer one opens it
      whole and a second press closes it. The trip it is open for is kept, so a
-     redraw of the same card keeps it open. */
+     redraw of the same card keeps it open, until the card leaves the trip. */
   let noteOpenFor = null;
   // The trip whose card shows all its updates, kept the same way.
   let updatesOpenFor = null;

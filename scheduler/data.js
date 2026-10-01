@@ -1570,19 +1570,19 @@
       // Where the copy sits over a row: at rest in its first lane.
       const restIn = track => track.getBoundingClientRect().top + pad;
 
-      /* Eases the copy to `top` and waits for app.css's transition to end,
-         with SETTLE_MS as the ceiling should it never fire; a copy already
-         there, or reduced motion, waits for nothing. */
+      /* Eases the copy to `top`, flat again, and waits for app.css's
+         transition to end, with SETTLE_MS as the ceiling should it never fire.
+         A copy already there and flat, or reduced motion, waits for nothing. */
       const settle = async top => {
         if (!ghost) return;
-        const still = ghost.style.top === `${top}px`;
+        const moving = ghost.style.top !== `${top}px` || ghost.classList.contains('scheduler-ghost--lifted');
         ghost.classList.remove('scheduler-ghost--lifted');
         ghost.classList.add('scheduler-ghost--settling');
         ghost.style.top = `${top}px`;
-        if (still || reducedMotion.matches) return;
+        if (!moving || reducedMotion.matches) return;
         await new Promise(r => {
           const t = setTimeout(r, SETTLE_MS);
-          ghost.addEventListener('transitionend', e => { if (e.propertyName === 'top') { clearTimeout(t); r(); } });
+          ghost.addEventListener('transitionend', () => { clearTimeout(t); r(); }, { once: true });
         });
       };
 
@@ -1609,7 +1609,6 @@
         touchDragging = false;
         if (!moved) return;              // a press that never lifted still selects
         document.body.style.cursor = '';
-        clear();
         // The browser fires a click after this; suppress the one that would
         // otherwise toggle selection at the end of a drag.
         bar.addEventListener('click', e => e.stopPropagation(), { capture: true, once: true });
@@ -1619,15 +1618,16 @@
         if (!release) toast('info', 'Trip not moved', 'The drag was interrupted. Try again.');
         if (!release || !target || toBus === fromBus) {
           // Let go nowhere: the copy slides home and comes away.
+          clear();
           await settle(origin.top);
           putDown();
           // A read the drag held is owed now that nothing is in hand.
           if (liveHeld) setTimeout(liveRefresh, 0);
           return;
         }
-        /* The copy settles into the row and stays there, over the dimmed bar,
-           while the move is written and the week read back; it comes away once
-           the board draws the bar in its place. */
+        /* The copy settles into the row, which stays lit, and both hold over
+           the dimmed bar while the move is written and the week read back; the
+           copy comes away once the board draws the bar in its place. */
         await settle(restIn(target));
         /* Held as values, not as elements: `show()` below replaces every bar,
            so `bar` is detached by the time the undo can be pressed. */
@@ -1652,6 +1652,8 @@
            board rather than the pre-move week. The board is re-read either
            way, because a move that threw may still have landed. */
         await show();   // read it back, rather than trusting the move landed
+        // The lit row is cleared by name: a read that found nothing changed draws nothing.
+        clear();
         // A move that did not land slides the copy back over the bar drawn where it was.
         if (failed) await settle(origin.top);
         putDown();

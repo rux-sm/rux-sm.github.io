@@ -399,9 +399,11 @@ button.scheduler-row-head__num::after {
   -webkit-user-select: none;
   user-select: none;
 }
-/* The day rule is `border-subtle-01`, the token the row rules already use on
-   every row, the Unassigned tint included. */
-.scheduler-track { --scheduler-day-rule: var(--rux-border-subtle-01); }
+/* The day rule is `border-subtle-01`, the token the row rules use, at half
+   its strength: each bus reads as one row, and the days are still there to
+   find where a trip starts. Mixed toward transparent rather than to another
+   token, so it is half as strong in every theme and on the Unassigned tint. */
+.scheduler-track { --scheduler-day-rule: color-mix(in srgb, var(--rux-border-subtle-01) 50%, transparent); }
 
 /* The loading skeleton. index.html ships it inside the grid and render()
    replaces it, so it uses the real row, head and track rules and the week

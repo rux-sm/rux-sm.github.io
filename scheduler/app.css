@@ -912,20 +912,22 @@ button.scheduler-row-head__num::after {
   padding: var(--rux-spacing-02) var(--rux-spacing-04);
   border-block-start: 1px solid var(--card-rule);
 }
-/* The reminder and the other warnings are a band, first: the warning colour
-   tinted across the row with a 3px strip down its start, each icon in the
-   card's ink. */
+/* The reminder and the other warnings are a band, first, drawn as Carbon's
+   inline notification: the theme's warning notification background, which is
+   neutral in Carbon's own themes and a tint in those that tint, a 3px strip
+   of the warning colour down its start, and each bell in the bar's own
+   warning ink, so the colour is in the marks and the band stays quiet. */
 .scheduler-card__asks,
 .scheduler-card__warn {
   display: flex;
   gap: var(--rux-spacing-03);
   align-items: center;
-  background: color-mix(in srgb, var(--rux-support-warning) 22%, var(--card-surface));
+  background: var(--rux-notification-background-warning);
   border-inline-start: 3px solid var(--rux-support-warning);
   padding-inline-start: calc(var(--rux-spacing-04) - 3px);
 }
 .scheduler-card__asks > svg,
-.scheduler-card__warn > svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--card-icon); }
+.scheduler-card__warn > svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--scheduler-mark-warning); }
 /* A second line under the first joins its band, with no rule between, so
    each colour's alerts read as one list. */
 :is(.scheduler-card__asks, .scheduler-card__warn) + :is(.scheduler-card__asks, .scheduler-card__warn),
@@ -936,15 +938,16 @@ button.scheduler-row-head__num::after {
   display: flex;
   gap: var(--rux-spacing-03);
   align-items: center;
-  background: color-mix(in srgb, var(--card-error) 22%, var(--card-surface));
+  background: var(--rux-notification-background-error);
   border-inline-start: 3px solid var(--card-error);
   padding-inline-start: calc(var(--rux-spacing-04) - 3px);
 }
-.scheduler-card__misfit > svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--card-icon); }
+.scheduler-card__misfit > svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--scheduler-mark-error); }
 .scheduler-card__misfit > strong { flex: 1; min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
 :is(.scheduler-card__asks, .scheduler-card__warn) > strong { flex: 1; min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
-/* A due reminder names the day it leaves at the row's end. */
-.scheduler-card__asks-when { flex: none; }
+/* A due reminder names the day it leaves at the row's end, quieter than the
+   alerts it times. */
+.scheduler-card__asks-when { flex: none; color: var(--rux-text-secondary); }
 /* A part's Edit or Add: a word in the link colour, 24px high for the
    pointer, its padding taken back at the row's end and above and below, so
    its word lines up with the card's right edge and the title keeps its

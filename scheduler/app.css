@@ -912,17 +912,15 @@ button.scheduler-row-head__num::after {
   padding: var(--rux-spacing-02) var(--rux-spacing-04);
   border-block-start: 1px solid var(--card-rule);
 }
-/* The reminder and the other warnings are a band, first, drawn as Carbon's
-   inline notification: the theme's warning notification background, which is
-   neutral in Carbon's own themes and a tint in those that tint, a 3px strip
-   of the warning colour down its start, and each bell in the bar's own
-   warning ink, so the colour is in the marks and the band stays quiet. */
+/* The reminder and the other warnings are a band, first: the warning colour
+   tinted across the row, so the band stands off the card, with a 3px strip of
+   it down its start, and each bell in the bar's own warning ink. */
 .scheduler-card__asks,
 .scheduler-card__warn {
   display: flex;
   gap: var(--rux-spacing-03);
   align-items: center;
-  background: var(--rux-notification-background-warning);
+  background: color-mix(in srgb, var(--rux-support-warning) 22%, var(--card-surface));
   border-inline-start: 3px solid var(--rux-support-warning);
   padding-inline-start: calc(var(--rux-spacing-04) - 3px);
 }
@@ -938,7 +936,7 @@ button.scheduler-row-head__num::after {
   display: flex;
   gap: var(--rux-spacing-03);
   align-items: center;
-  background: var(--rux-notification-background-error);
+  background: color-mix(in srgb, var(--card-error) 22%, var(--card-surface));
   border-inline-start: 3px solid var(--card-error);
   padding-inline-start: calc(var(--rux-spacing-04) - 3px);
 }

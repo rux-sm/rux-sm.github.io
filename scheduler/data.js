@@ -12662,7 +12662,7 @@
     const mins = Math.max(1, Math.floor((Date.now() - Date.parse(at)) / 60000));
     return mins < 60 ? `${mins}m` : mins < 1440 ? `${Math.floor(mins / 60)}h` : `${Math.floor(mins / 1440)}d`;
   };
-  /* A part's own button, at its first line's end: the note's Edit, the
+  /* A part's own button, at its title's end: the note's Edit or Add, the
      updates' Add. A word in the link colour, with the whole action as its
      accessible name. */
   function cardAction(action, words, label) {
@@ -12671,6 +12671,13 @@
     btn.dataset.cardAction = action;
     btn.setAttribute('aria-label', label);
     return btn;
+  }
+
+  // A part's small title, with the part's own button at its end.
+  function cardTitle(words, action) {
+    const title = el('div', 'scheduler-card__title');
+    title.append(el('span', null, words), action);
+    return title;
   }
 
   /* The warning a need still to be done shows. EVERY ALERT NAMES ITS THING
@@ -12735,34 +12742,31 @@
       band.append(svgUse('#m-notifications-fill', '16', '0 0 32 32'), el('strong', null, TODO_WORDS[n.id] ?? n.label));
       card.appendChild(band);
     }
-    /* NOTES AND UPDATES HAVE NO TITLES: each is a line led by what it is, the
-       note by a pin and an update by its author's face, with the part's
-       button at the line's end. Each shows two lines until pressed open.
+    /* THE NOTE AND THE UPDATES EACH HAVE A TITLE with the part's button at its
+       end, then one line of what they hold until pressed open. A part with
+       nothing in it is its title alone, which says so.
 
-       The note: the pin, its words, Edit; with none, No notes dimmed, as No
-       times is, and Add. */
+       The note: Trip notes and Edit over its words, or No notes and Add. */
     const note = row('scheduler-card__note');
-    note.append(svgUse('#m-keep-fill', '16', '0 0 32 32'),
-      trip.notes ? el('span', 'scheduler-card__note-words', trip.notes) : el('span', 'scheduler-card__empty', 'No notes'),
-      trip.notes ? cardAction('note', 'Edit', 'Edit the note') : cardAction('note', 'Add', 'Add a note'));
+    note.appendChild(trip.notes ? cardTitle('Trip notes', cardAction('note', 'Edit', 'Edit the note'))
+      : cardTitle('No notes', cardAction('note', 'Add', 'Add a note')));
+    if (trip.notes) note.appendChild(el('span', 'scheduler-card__note-words', trip.notes));
     card.appendChild(note);
-    /* The updates: only the newest shows, cut to two lines; a press on it
-       opens the card to every update in full, newest first, and a second
-       press closes it. A lone update that fits its two lines has nothing more
-       to show, which fitUpdates works out once it is drawn. Add sits at the
-       first line's end, over that update's age. With none, No updates
-       dimmed and Add. */
+    /* The updates: Updates and Add over the newest, cut to one line; a press
+       on it opens the card to every update in full, newest first, and a
+       second press closes it. A lone update that fits its line has nothing
+       more to show, which fitUpdates works out once it is drawn. With none,
+       No updates and Add. */
     const all = updatesOf(trip);
     const open = all.length > 0 && updatesOpenFor === trip.id;
     const part = row('scheduler-card__updates');
     part.dataset.count = String(all.length);
     part.toggleAttribute('data-open', open);
     const add = cardAction('update', 'Add', 'Add an update');
-    /* An update is two lines, as the note is: its author's 16px avatar, its
-       words, and on its first line's end how long ago, always as a number, so
-       every update's age stands in one column; the first update has Add just
-       before its age. The name is the avatar's tooltip and accessible name,
-       and the full date the age's tooltip. */
+    /* An update is its author's 16px avatar, its words, and on its first
+       line's end how long ago, always as a number, so every update's age
+       stands in one column. The name is the avatar's tooltip and accessible
+       name, and the full date the age's tooltip. */
     const updateItem = (u, n) => {
       const item = el('li', 'scheduler-card__update');
       // A line copied from the old notes with nobody named is a grey face.
@@ -12783,29 +12787,23 @@
       face.setAttribute('aria-label', who);
       const when = el('span', 'scheduler-card__when', ageShort(u.created_at));
       when.title = updateStamp(u);
-      const side = el('span', 'scheduler-card__side');
-      if (n === 0) side.appendChild(add);
-      side.appendChild(when);
-      item.append(face, el('span', 'scheduler-card__words', u.body), side);
+      item.append(face, el('span', 'scheduler-card__words', u.body), when);
       return item;
     };
+    part.appendChild(cardTitle(all.length ? 'Updates' : 'No updates', add));
     if (all.length) {
       const list = el('ol', 'scheduler-card__update-list');
       list.setAttribute('aria-label', 'Updates, newest first');
       list.append(...(open ? all : all.slice(0, 1)).map(updateItem));
       part.appendChild(list);
-    } else {
-      const none = el('div', 'scheduler-card__update');
-      none.append(el('span', 'scheduler-card__face-gap'), el('span', 'scheduler-card__empty', 'No updates'), add);
-      part.appendChild(none);
     }
     card.appendChild(part);
     return card;
   }
 
-  /* Whether the card's updates have more to show than the newest's two
-     lines: another update, or words the lines cut off. See all shows only
-     then, and the update answers a press only then. */
+  /* Whether the card's updates have more to show than the newest's line:
+     another update, or words the line cuts off. The update answers a press
+     only then. */
   function fitUpdates() {
     const part = barShortcuts?.querySelector('.scheduler-card__updates');
     if (!part) return;

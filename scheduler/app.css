@@ -973,29 +973,31 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-card__action:hover { background: var(--card-hover); }
 .scheduler-card__action:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
-/* The note and the updates are the same kind of line as the alerts above
-   them: a 16px mark, the words, then the part's button, so every mark on the
-   card stands in one 16px column and every line's words start at one edge,
-   32px in. */
+/* A part's title: small and quieter than its words, with the part's button
+   at its end. The warnings take none; their band says what they are. */
+.scheduler-card__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--rux-spacing-03);
+  margin-block-end: var(--rux-spacing-02);
+  color: color-mix(in srgb, var(--card-ink) 70%, transparent);
+}
+/* A part with nothing in it is its title alone, which says so. */
+.scheduler-card__title:last-child { margin-block-end: 0; }
 .scheduler-card__note,
+.scheduler-card__updates { padding-block: var(--rux-spacing-03); }
+.scheduler-card__note-words { display: block; min-inline-size: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+/* An update: its author's 16px face in the column the alerts' marks stand
+   in, its words, and its age at the right of its first line, so every age
+   stands in one column. */
 .scheduler-card__update {
   display: grid;
   grid-template-columns: 1rem minmax(0, 1fr) auto;
   gap: var(--rux-spacing-03);
   align-items: start;
 }
-.scheduler-card__note { padding-block: var(--rux-spacing-03); }
-.scheduler-card__note > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: color-mix(in srgb, var(--card-ink) 70%, transparent); }
-.scheduler-card__note-words { min-inline-size: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
-/* What a part says when it holds nothing, dimmed as No times is. */
-.scheduler-card__empty { color: color-mix(in srgb, var(--card-ink) 70%, transparent); }
-.scheduler-card__face-gap { inline-size: 1rem; }
-.scheduler-card__updates { padding-block: var(--rux-spacing-03); }
-/* A posted update: the face, the words, and on the first line's end its
-   age, with Add before it on the first update, so every age stands in one
-   column at the right edge. */
 .scheduler-card__update-list .scheduler-card__face { justify-self: center; }
-.scheduler-card__side { display: flex; gap: var(--rux-spacing-03); align-items: center; }
 /* Closed, only the newest update shows, its words cut to two lines; with
    more to show, it opens the rest on a press, so it takes the pointer. Open,
    every update shows whole, in a list that scrolls past 16rem, or sooner
@@ -1014,20 +1016,20 @@ button.scheduler-row-head__num::after {
 .scheduler-card__updates:not([data-open]) .scheduler-card__update .scheduler-card__words {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
   overflow: hidden;
 }
 .scheduler-card__updates[data-open] .scheduler-card__words { white-space: pre-wrap; }
 .scheduler-card__when { white-space: nowrap; color: color-mix(in srgb, var(--card-ink) 70%, transparent); }
-/* Floating, the note stops at two lines on an ellipsis until it is opened.
-   The words are cut, not the row, so the row's padding shows none of a
-   third. */
+/* Floating, the note stops at one line on an ellipsis under its title until
+   it is opened, as the newest update does. The words are cut, not the row, so
+   the row's padding shows none of a second. */
 .scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__note:not([data-open]) > .scheduler-card__note-words {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
   overflow: hidden;
 }
 .scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__note[role="button"] { cursor: pointer; }
@@ -2538,20 +2540,20 @@ button.scheduler-row-head__num::after {
   margin-inline-end: calc(-1 * var(--rux-spacing-03));
   padding: 0 var(--rux-spacing-03);
 }
-/* The note stops at three lines on an ellipsis until it is tapped open. The
-   words are cut, not the row, so the row's padding shows none of a fourth. */
+/* The note stops at one line on an ellipsis until it is tapped open, as on
+   the floating card. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__note:not([data-open]) > .scheduler-card__note-words {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
   overflow: hidden;
 }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__note[role="button"] { cursor: pointer; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__note[role="button"]:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
-/* The updates hold the newest's two lines however many there are, so the
-   sheet is the same height with none, one or twenty, on the raised layer the
-   sheet itself no longer paints. */
+/* The updates hold their title and the newest's line however many there
+   are, so the sheet is the same height with none, one or twenty, on the
+   raised layer the sheet itself no longer paints. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__updates {
   min-block-size: calc(2rem + 2 * var(--rux-spacing-03));
   background: var(--rux-layer-02);

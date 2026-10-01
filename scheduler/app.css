@@ -692,6 +692,10 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__row > :first-child { flex: 0 1 auto; min-inline-size: 0; }
 .scheduler-bar__dest { font-weight: 600; }
 .scheduler-bar__phone { font-variant-numeric: tabular-nums; }
+/* Times in figures of one width, so down the board they line up; the a or
+   p after each is smaller and dimmer, so the figures are what reads. */
+.scheduler-bar__time { font-variant-numeric: tabular-nums; }
+.scheduler-bar__ampm { font-size: .85em; opacity: .75; }
 /* The departure-only form is the compact board's; the full board hides it. */
 .scheduler-bar__time > .scheduler-bar__time-dep { display: none; }
 .scheduler-bar__phone { flex: none; }

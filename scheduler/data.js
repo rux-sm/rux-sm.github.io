@@ -772,6 +772,15 @@
     if (!Number.isFinite(hr) || m === undefined) return String(t).slice(0, 5);
     return `${hr % 12 || 12}:${m}${hr < 12 ? 'a' : 'p'}${short ? '' : 'm'}`;
   };
+  /* A short time as the bar draws it: the figures, then the a or p in a
+     span app.css sets smaller and dimmer, so the figures are what reads. */
+  const clockEl = short => {
+    const f = document.createDocumentFragment();
+    // A time `hhmm` could not read comes back as typed, with nothing to split.
+    if (/[ap]$/.test(short)) f.append(short.slice(0, -1), el('span', 'scheduler-bar__ampm', short.slice(-1)));
+    else f.append(short);
+    return f;
+  };
 
   // The trip's documents labelled Itinerary, newest first. The first is the one
   // rux-ui picks: a re-uploaded itinerary replaces the one before.
@@ -1061,10 +1070,12 @@
     const dep = hhmm(leg.depart, true), back = hhmm(leg.back, true);
     // "No times" is dimmed, quieter than a time, as app.css draws it.
     const none = !dep && !back;
-    const when = el('span', none ? 'scheduler-bar__none' : null, dep && back ? `${dep}\u2013${back}`
-      : dep ? `Dep ${dep}`
-      : back ? `Ret ${back}`
-      : 'No times');
+    // Thin spaces either side of the dash, so the two times read as two.
+    const when = el('span', none ? 'scheduler-bar__none' : null);
+    if (dep && back) when.append(clockEl(dep), '\u2009\u2013\u2009', clockEl(back));
+    else if (dep) when.append('Dep ', clockEl(dep));
+    else if (back) when.append('Ret ', clockEl(back));
+    else when.append('No times');
     if (daysBack(leg)) {
       const mark = el('sup', 'scheduler-bar__next-day', `+${daysBack(leg)}`);
       mark.title = daysBack(leg) > 1 ? `Returns ${daysBack(leg)} days later` : 'Returns the next day';
@@ -1074,7 +1085,10 @@
        the one worth reading at a glance is when the bus leaves. A leg with only
        a return says so, and a leg with neither says the times are still to come,
        rather than leaving the row empty. */
-    const whenDep = el('span', none ? 'scheduler-bar__time-dep scheduler-bar__none' : 'scheduler-bar__time-dep', dep || (back ? `Ret ${back}` : 'No times'));
+    const whenDep = el('span', none ? 'scheduler-bar__time-dep scheduler-bar__none' : 'scheduler-bar__time-dep');
+    if (dep) whenDep.append(clockEl(dep));
+    else if (back) whenDep.append('Ret ', clockEl(back));
+    else whenDep.append('No times');
     addRow(bar, 'scheduler-bar__time', when, whenDep);
 
     // The crew in role order, or what the bar needs before it can have one.

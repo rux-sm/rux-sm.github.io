@@ -917,7 +917,8 @@ button.scheduler-row-head__num::after {
    it down its start, and each bell in the bar's own warning ink. */
 .scheduler-card__asks,
 .scheduler-card__warn {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1.75rem minmax(0, 1fr) auto;
   gap: var(--rux-spacing-03);
   align-items: center;
   background: color-mix(in srgb, var(--rux-support-warning) 22%, var(--card-surface));
@@ -925,7 +926,7 @@ button.scheduler-row-head__num::after {
   padding-inline-start: calc(var(--rux-spacing-04) - 3px);
 }
 .scheduler-card__asks > svg,
-.scheduler-card__warn > svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--scheduler-mark-warning); }
+.scheduler-card__warn > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: var(--scheduler-mark-warning); }
 /* A second line under the first joins its band, with no rule between, so
    each colour's alerts read as one list. */
 :is(.scheduler-card__asks, .scheduler-card__warn) + :is(.scheduler-card__asks, .scheduler-card__warn),
@@ -933,16 +934,17 @@ button.scheduler-row-head__num::after {
 /* A bus that does not fit is a band like the reminder's, in the error colour,
    above it: a mistake on the board comes before a job still to do. */
 .scheduler-card__misfit {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1.75rem minmax(0, 1fr) auto;
   gap: var(--rux-spacing-03);
   align-items: center;
   background: color-mix(in srgb, var(--card-error) 22%, var(--card-surface));
   border-inline-start: 3px solid var(--card-error);
   padding-inline-start: calc(var(--rux-spacing-04) - 3px);
 }
-.scheduler-card__misfit > svg { flex: none; inline-size: 1rem; block-size: 1rem; color: var(--scheduler-mark-error); }
-.scheduler-card__misfit > strong { flex: 1; min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
-:is(.scheduler-card__asks, .scheduler-card__warn) > strong { flex: 1; min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
+.scheduler-card__misfit > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: var(--scheduler-mark-error); }
+.scheduler-card__misfit > strong { min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
+:is(.scheduler-card__asks, .scheduler-card__warn) > strong { min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
 /* A due reminder names the day it leaves at the row's end, quieter than the
    alerts it times. */
 .scheduler-card__asks-when { flex: none; color: var(--rux-text-secondary); }
@@ -970,9 +972,10 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-card__action:hover { background: var(--card-hover); }
 .scheduler-card__action:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
-/* The note and the updates are the same kind of line on the same surface:
-   a 16px mark in a column wide enough for an update's age under its face,
-   the words, then the part's button, so the words of both start at one edge. */
+/* The note and the updates are the same kind of line as the alerts above
+   them: a 16px mark centred in a column wide enough for an update's age
+   under its face, the words, then the part's button, so every mark on the
+   card stands in one column and every line's words start at one edge. */
 .scheduler-card__note,
 .scheduler-card__update {
   display: grid;

@@ -12759,9 +12759,10 @@
     part.toggleAttribute('data-open', open);
     const add = cardAction('update', 'Add', 'Add an update');
     /* An update is two lines, as the note is: its author's 16px avatar, its
-       words, and at the end Add on the first update over how long ago, always
-       as a number. The name is the avatar's tooltip and accessible name, and
-       the full date the age's tooltip. */
+       words, and on its first line's end how long ago, always as a number, so
+       every update's age stands in one column; the first update has Add just
+       before its age. The name is the avatar's tooltip and accessible name,
+       and the full date the age's tooltip. */
     const updateItem = (u, n) => {
       const item = el('li', 'scheduler-card__update');
       // A line copied from the old notes with nobody named is a grey face.

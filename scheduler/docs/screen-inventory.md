@@ -201,8 +201,9 @@ met are not shown.
 Then the note and the updates, with no titles: the note is a pin, its words
 cut to two lines until pressed open, and Edit, which opens the trip at its
 Notes field. Only the newest update shows, two lines as the note is: its
-author's 16px avatar, its words, and at the end Add, which opens the trip's
-Updates window, over its age, always a number (45m, 2h, 3d). The name is the
+author's 16px avatar, its words, and at its first line's end its age,
+always a number (45m, 2h, 3d), with Add before it, which opens the trip's
+Updates window; opened, every update's age stands in that one column. The name is the
 avatar's tooltip. Every line's mark stands in one 16px column, 8px in. A press on the update opens every update in the card, and
 a second press closes them. An empty part is one line, No notes or No
 updates dimmed, with Add. Only the selected trip has a

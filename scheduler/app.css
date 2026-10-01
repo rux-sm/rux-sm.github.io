@@ -991,11 +991,11 @@ button.scheduler-row-head__num::after {
 .scheduler-card__empty { color: color-mix(in srgb, var(--card-ink) 70%, transparent); }
 .scheduler-card__face-gap { inline-size: 1rem; }
 .scheduler-card__updates { padding-block: var(--rux-spacing-03); }
-/* A posted update: the face, the words, and at the end Add on the first
-   update over its age, the two right-aligned, so an update is two lines as
-   the note is. */
+/* A posted update: the face, the words, and on the first line's end its
+   age, with Add before it on the first update, so every age stands in one
+   column at the right edge. */
 .scheduler-card__update-list .scheduler-card__face { justify-self: center; }
-.scheduler-card__side { display: flex; flex-direction: column; align-items: flex-end; }
+.scheduler-card__side { display: flex; gap: var(--rux-spacing-03); align-items: center; }
 /* Closed, only the newest update shows, its words cut to two lines; with
    more to show, it opens the rest on a press, so it takes the pointer. Open,
    every update shows whole, in a list that scrolls past 16rem, or sooner

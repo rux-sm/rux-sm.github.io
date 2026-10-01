@@ -495,7 +495,7 @@ button.scheduler-row-head__num::after {
   --scheduler-pad-start: var(--rux-spacing-03);
   --scheduler-pad-end: var(--rux-spacing-03);
   padding: var(--rux-spacing-02) var(--scheduler-pad-end) var(--rux-spacing-02) var(--scheduler-pad-start);
-  /* WHAT DAY ONE LEAVES, for the follow-up mark at a bar's end. A bar is
+  /* WHAT DAY ONE LEAVES, for the attention mark at a bar's end. A bar is
      `span` days wide less the clear space and the gap, so one day inside it
      is that width plus what was taken off, divided by the span; day one's
      edge is then that, less the clear space and the padding this side.
@@ -1058,14 +1058,14 @@ button.scheduler-row-head__num::after {
   .scheduler-bar-shortcuts[data-pop] .scheduler-card__row { animation: none; }
 }
 
-/* THE FOLLOW-UP MARK, at the destination row's end, so it is read with the
+/* THE ATTENTION MARK, at the destination row's end, so it is read with the
    trip's name and stays put whatever rows the view menu turns off: a bell in
-   the warning colour every other mark wears, set per theme, its glyph's
-   width and as tall as the row. It stops at the end of the trip's first day,
+   the warning colour for a follow-up and the error colour for a bus that
+   does not fit, the inks every other mark wears, set per theme so each reads
+   on every trip colour, its glyph's width and as tall as the row. It stops at the end of the trip's first day,
    however many days the bar runs, so down a week the bells line up; the row
    itself is not narrowed, so the name still gives way across the whole bar. */
 .scheduler-bar__msg {
-  color: var(--scheduler-mark-warning);
   display: flex;
   flex: none;
   align-items: center;
@@ -1074,6 +1074,8 @@ button.scheduler-row-head__num::after {
   block-size: var(--scheduler-row-h);
 }
 .scheduler-bar__msg svg { display: block; inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
+.scheduler-bar__msg--warning { color: var(--scheduler-mark-warning); }
+.scheduler-bar__msg--error { color: var(--scheduler-mark-error); }
 /* The name takes the row's spare room, so the bell sits at the end. */
 .scheduler-bar__dest { justify-content: flex-start; }
 .scheduler-bar__dest > :first-child { margin-inline-end: auto; }
@@ -1120,12 +1122,6 @@ button.scheduler-row-head__num::after {
 .scheduler-checklist__words { display: flex; flex-direction: column; flex: 1 1 auto; min-inline-size: 0; }
 .scheduler-checklist__detail { color: var(--rux-text-secondary); font-size: 0.75rem; }
 
-/* A BUS THAT DOES NOT FIT THIS TRIP -- the wrong type, or one that falls
-   short of a need -- draws a red edge inside the bar, the shape of the
-   selection ring, which takes its place while the bar is selected. The card
-   says what is wrong. The docked sheet's copy of the bar carries the class
-   and not the edge. */
-.scheduler-bar.scheduler-bar--misfit:not([aria-pressed="true"]) { box-shadow: inset 0 0 0 2px var(--rux-support-error); }
 
 /* The drivers row's crew: each driver's role icon and short name, in role
    order. The row gives way from the end, a whole name at a time, and "+1"

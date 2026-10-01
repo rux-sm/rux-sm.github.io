@@ -745,12 +745,12 @@
   /* What each bar knows about its bus and its trip's needs, for the trip's
      card: `{ needs, misfits }`, set as the bar is drawn. */
   const barFacts = new WeakMap();
-  // The bar's follow-up mark, a bell asking for one.
-  const updatesMark = () => {
-    const m = el('span', 'scheduler-bar__msg');
+  // The bar's attention mark, a bell in `tone`, saying in `words` why.
+  const attentionMark = (tone, words) => {
+    const m = el('span', `scheduler-bar__msg scheduler-bar__msg--${tone}`);
     m.setAttribute('role', 'img');
-    m.setAttribute('aria-label', 'Needs a follow-up');
-    m.title = 'Needs a follow-up';
+    m.setAttribute('aria-label', words);
+    m.title = words;
     m.appendChild(svgUse('#m-notifications_active-fill', '16', '0 0 32 32'));
     return m;
   };
@@ -994,7 +994,7 @@
     /* WHETHER THIS BUS FITS THIS TRIP, and what the trip needs. The bar draws
        no marks: what is still to be done is the reminder's to ask, and the
        needs are read on the trip's card, which `barFacts` hands them to. Only a
-       bus that does not fit shows on the bar itself, as a red edge, since that
+       bus that does not fit shows on the bar itself, as the bell in red, since that
        is a mistake to put right rather than a job still to come: the wrong type
        of bus, or one that falls short of a need. A placeholder has neither. */
     const bus = assign?.bus_id != null ? busesById.get(assign.bus_id) : null;
@@ -1033,14 +1033,17 @@
     }
     const misfits = placeholder ? [] : [wrong, ...needs.filter(n => n.short).map(n => n.label)].filter(Boolean);
     barFacts.set(bar, { needs, misfits });
-    bar.classList.toggle('scheduler-bar--misfit', misfits.length > 0);
 
-    /* The one mark, at the destination row's end: a bell in the warning
-       colour when the trip asks for a follow-up. A bar marks only what needs
-       doing; the checklist says what is done and the card shows the updates.
-       A mark, not a button, because the bar is the button. */
+    /* The one mark, at the destination row's end: a bell saying the trip
+       needs looking at, its colour how badly. Red is a bus that does not fit,
+       a mistake on the board; the warning colour is a follow-up to chase. A
+       trip with both shows red, and its card lists both. A bar marks only what
+       needs doing; the checklist says what is done and the card shows the
+       updates. A mark, not a button, because the bar is the button. */
     const asks = asksFollowUp(trip);
-    addRow(bar, 'scheduler-bar__dest', el('span', null, placeName(trip.destination) || 'No destination'), asks ? updatesMark() : null);
+    const attention = misfits.length ? attentionMark('error', [...misfits, asks ? 'Needs a follow-up' : null].filter(Boolean).join('; '))
+      : asks ? attentionMark('warning', 'Needs a follow-up') : null;
+    addRow(bar, 'scheduler-bar__dest', el('span', null, placeName(trip.destination) || 'No destination'), attention);
     addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
 
     // The booking contact as the trip records it. When both do not fit, the

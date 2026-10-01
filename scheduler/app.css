@@ -988,8 +988,8 @@ button.scheduler-row-head__num::after {
 .scheduler-card__note,
 .scheduler-card__updates { padding-block: var(--rux-spacing-03); }
 /* The note: its title across, then a pin in the 16px column an update's face
-   stands in, and its words where an update's start. */
-.scheduler-card__note { display: grid; grid-template-columns: 1rem minmax(0, 1fr); column-gap: var(--rux-spacing-03); align-items: start; }
+   stands in, its words where an update's start, and its age at the right. */
+.scheduler-card__note { display: grid; grid-template-columns: 1rem minmax(0, 1fr) auto; column-gap: var(--rux-spacing-03); align-items: start; }
 .scheduler-card__note > .scheduler-card__title { grid-column: 1 / -1; }
 .scheduler-card__note > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: color-mix(in srgb, var(--card-ink) 70%, transparent); }
 .scheduler-card__note-words { display: block; min-inline-size: 0; white-space: pre-wrap; overflow-wrap: anywhere; }

@@ -431,6 +431,8 @@
     // Set from the Checklist or the Files tab; a trip that does not need an
     // itinerary is not marked.
     'itinerary_not_needed',
+    // When the note last changed, set by the database, for the card's note age.
+    'notes_updated_at',
     // rux-ui's Confirm mark on the itinerary, which a save that changes the route takes off.
     'itinerary_confirmed',
     // Its twin for the day-of contact: a trip nobody needs to be called on is
@@ -12748,11 +12750,20 @@
 
        The note: Trip notes and Edit over a pin and its words, the pin in the
        column an update's face stands in, so the note's words and an update's
-       start at one edge; or No notes and Add. */
+       start at one edge, and how long ago it last changed at the right, in
+       the column the updates' ages stand in; or No notes and Add. A note the
+       database has no date for shows no age. */
     const note = row('scheduler-card__note');
     note.appendChild(trip.notes ? cardTitle('Trip notes', cardAction('note', 'Edit', 'Edit the note'))
       : cardTitle('No notes', cardAction('note', 'Add', 'Add a note')));
-    if (trip.notes) note.append(svgUse('#m-keep-fill', '16', '0 0 32 32'), el('span', 'scheduler-card__note-words', trip.notes));
+    if (trip.notes) {
+      note.append(svgUse('#m-keep-fill', '16', '0 0 32 32'), el('span', 'scheduler-card__note-words', trip.notes));
+      if (trip.notes_updated_at) {
+        const when = el('span', 'scheduler-card__when', ageShort(trip.notes_updated_at));
+        when.title = new Date(trip.notes_updated_at).toLocaleString();
+        note.appendChild(when);
+      }
+    }
     card.appendChild(note);
     /* The updates: Updates with their count, "Updates · 5", so the one line
        shown says how many more a press opens, and Add, over the newest, cut

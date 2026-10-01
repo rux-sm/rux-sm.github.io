@@ -9168,13 +9168,14 @@
     if (!updateModal || !updateText) return Promise.resolve(skipped);
     updateAlone = null;
     updateChange = change;
-    let what;
+    // A save that names no change says nothing above the box, unless a check comes off.
+    let what = '';
     if (creating) what = 'You created the trip. Say what the customer has been sent.';
     else if (change) {
       const phrases = change.said.map(p => p.charAt(0).toLowerCase() + p.slice(1));
       what = `You ${phrases.length > 1 ? `${phrases.slice(0, -1).join(', ')} and ${phrases.at(-1)}` : phrases[0]}.`;
-    } else what = 'Say what changed, or save with no update.';
-    if (takesOff) what = `${what} ${takesOff}`;
+    }
+    if (takesOff) what = [what, takesOff].filter(Boolean).join(' ');
     const line = creating ? (editing?.quoteSent ? `Quote sent, ${usdCents(editing.quoteSent.price)}` : 'Quote sent')
       : change?.line ?? '';
     updateSkip.textContent = 'Save, no update';

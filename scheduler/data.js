@@ -710,14 +710,12 @@
      not a shortfall. */
   function shortfall(id, bus) {
     if (!bus) return null;
-    if (id === 'sleeper' && !bus.sleeper) return `Needs a sleeper, bus ${bus.number} has none`;
-    if (id === 'adaLift' && !bus.ada_lift) return `Needs an ADA lift, bus ${bus.number} has none`;
-    if (id === 'pax56' && bus.capacity != null && bus.capacity < 56) {
-      return `Needs 56 seats, bus ${bus.number} has ${bus.capacity}`;
-    }
+    if (id === 'sleeper' && !bus.sleeper) return 'Sleeper needed';
+    if (id === 'adaLift' && !bus.ada_lift) return 'ADA lift needed';
+    if (id === 'pax56' && bus.capacity != null && bus.capacity < 56) return '56 seats needed';
     // Any other equipment is the unit's `equipment`, set on the Fleet page.
     if (!VEHICLE_FALLBACK.has(id) && isVehicleNeed(id) && !bus.equipment?.[id]) {
-      return `Needs ${requirementLabel(id)}, bus ${bus.number} has none`;
+      return `${requirementLabel(id)} needed`;
     }
     return null;
   }
@@ -737,8 +735,7 @@
      with no type takes any bus, and a bus with no type is not a mismatch. */
   function wrongType(type, bus) {
     if (!type || !bus?.type || bus.type === type) return null;
-    const a = t => (/^[aeiou]/i.test(t) ? `an ${t}` : `a ${t}`);
-    return `Needs ${a(type)}, bus ${bus.number} is ${a(bus.type)}`;
+    return `${type} needed`;
   }
 
   // -- drawing --------------------------------------------------------------
@@ -1043,8 +1040,9 @@
        needs doing; the checklist says what is done and the card shows the
        updates. A mark, not a button, because the bar is the button. */
     const asks = asksFollowUp(trip);
-    const attention = misfits.length ? attentionMark('error', [...misfits, asks ? 'Needs a follow-up' : null].filter(Boolean).join('; '))
-      : asks ? attentionMark('warning', 'Needs a follow-up') : null;
+    const waits = asks ? waitsOf(trip).map(w => WAIT_WORDS[w]) : [];
+    const attention = misfits.length ? attentionMark('error', [...misfits, ...waits].join(' · '))
+      : asks ? attentionMark('warning', waits.join(' · ')) : null;
     addRow(bar, 'scheduler-bar__dest', el('span', null, placeName(trip.destination) || 'No destination'), attention);
     addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
 
@@ -12661,7 +12659,7 @@
     const facts = bar ? barFacts.get(bar) : null;
     if (facts?.misfits.length) {
       const band = row('scheduler-card__misfit');
-      band.append(svgUse('#m-warning-fill', '16', '0 0 32 32'), el('strong', null, facts.misfits.join('; ')));
+      band.append(svgUse('#m-warning-fill', '16', '0 0 32 32'), el('strong', null, facts.misfits.join(' · ')));
       card.appendChild(band);
     }
     /* The follow-up reminder has no dismiss: it stays while it is true, until
@@ -12670,7 +12668,7 @@
     if (asksFollowUp(trip)) {
       const band = row('scheduler-card__asks');
       band.append(svgUse('#m-notifications-fill', '16', '0 0 32 32'),
-        el('strong', null, `Waiting on ${waitsOf(trip).map(w => WAIT_WORDS[w]).join(', ')}`));
+        el('strong', null, waitsOf(trip).map(w => WAIT_WORDS[w]).join(' · ')));
       if (dueFollowUp(trip)) {
         const days = daysToGo(trip);
         band.appendChild(el('span', 'scheduler-card__asks-when',

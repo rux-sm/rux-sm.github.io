@@ -158,7 +158,7 @@
       if (FollowUp.asks(t)) {
         const since = FollowUp.quietSince(t);
         tagLines.appendChild(el('span', 'scheduler-pair-cell__detail scheduler-trips-follow',
-          `Waiting on ${FollowUp.waitsOf(t).map(w => FollowUp.WORDS[w]).join(', ')}${since ? ` · ${FollowUp.agoShort(since)}` : ''}`));
+          [...FollowUp.waitsOf(t).map(w => FollowUp.WORDS[w]), since ? FollowUp.agoShort(since) : null].filter(Boolean).join(' · ')));
       }
       state.appendChild(tagLines);
 

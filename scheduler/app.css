@@ -7,6 +7,10 @@
    A bar's type is label-01 and its row height is that role's line height, so a
    bar is its row count times that plus its block padding. */
 
+/* The lift a trip held in a drag wears, and the selected trip and its card
+   wear too, so what is picked up stands over the week the same way. */
+:root { --scheduler-lift: 0 10px 28px rgb(0 0 0 / .5); }
+
 /* The phone's safe areas: the home bar under the page, and the camera cutout
    beside it in landscape. Zero everywhere else. */
 :root {
@@ -150,7 +154,7 @@
 .scheduler-day {
   position: sticky;
   inset-block-start: 0;
-  z-index: 3;
+  z-index: 4;
   background: var(--scheduler-band-surface);
   border-block-start: var(--scheduler-band-rule);
   border-block-end: var(--scheduler-band-rule);
@@ -177,7 +181,7 @@
    centred over the bus numbers. */
 .scheduler-corner {
   inset-inline-start: 0;
-  z-index: 4;
+  z-index: 5;
   padding-inline: var(--rux-spacing-02);
   /* The column's floor, set on both its cells. The track stays `max-content`,
      so a wider bus number still widens the column; the floor only keeps it from
@@ -209,7 +213,7 @@
 .scheduler-row-head {
   position: sticky;
   inset-inline-start: 0;
-  z-index: 2;
+  z-index: 3;
   /* The pane's own surface, not the header band's accent, which down a column
      the height of the fleet would read as a slab. Opaque, because bars scroll
      under it. */
@@ -459,7 +463,7 @@ button.scheduler-row-head__num::after {
   transform-origin: center;
   transition: transform 120ms ease-out, box-shadow 120ms ease-out;
 }
-.scheduler-bar.scheduler-ghost--lifted { transform: scale(1.02); box-shadow: 0 10px 28px rgb(0 0 0 / .5); }
+.scheduler-bar.scheduler-ghost--lifted { transform: scale(1.02); box-shadow: var(--scheduler-lift); }
 .scheduler-bar.scheduler-ghost--settling {
   transition: top 180ms cubic-bezier(.2, .7, .2, 1), transform 180ms ease-out, box-shadow 180ms ease-out;
 }
@@ -531,8 +535,14 @@ button.scheduler-row-head__num::after {
 .scheduler-bar:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 /* The selection ring is `layer-selected-inverse`, which reads on every tag
    tint, blue included. Focus keeps the focus token; the two are different
-   signals. */
-.scheduler-bar[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--rux-layer-selected-inverse); }
+   signals. Every bar of the selected trip is lifted as a dragged one is, a
+   layer over the other bars so its shadow falls on them, and under the bus
+   column and day header it scrolls beneath. */
+.scheduler-bar[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--rux-layer-selected-inverse), var(--scheduler-lift); }
+.scheduler-bar[aria-pressed="true"],
+.scheduler-bar.scheduler-bar--same-trip,
+.scheduler-bar.scheduler-bar--open { z-index: 2; }
+.scheduler-bar.scheduler-bar--same-trip { box-shadow: var(--scheduler-lift); }
 .scheduler-bar[aria-pressed="true"]:hover { background: var(--scheduler-bg); }
 
 .scheduler-bar--gray      { --scheduler-bg: var(--rux-tag-background-gray);      --scheduler-fg: var(--rux-tag-color-gray);      --scheduler-hover: var(--rux-tag-hover-gray);      --scheduler-border: var(--rux-tag-border-gray); }
@@ -550,6 +560,7 @@ button.scheduler-row-head__num::after {
    dark theme shows on hover in place of a hover step. */
 .scheduler-bar--amber     { --scheduler-bg: var(--scheduler-amber-bg);           --scheduler-fg: var(--scheduler-amber-fg);       --scheduler-hover: var(--scheduler-amber-hover);   --scheduler-border: var(--scheduler-amber-border); }
 .scheduler-bar.scheduler-bar--amber:hover:not([aria-pressed="true"]) { box-shadow: var(--scheduler-amber-hover-ring); }
+.scheduler-bar.scheduler-bar--amber.scheduler-bar--same-trip:hover { box-shadow: var(--scheduler-amber-hover-ring), var(--scheduler-lift); }
 
 /* A trip colour chip, in the editor's colour field and the bar menu. It wears
    a `scheduler-bar--*` hue class for its custom properties, so it shows the
@@ -754,7 +765,7 @@ button.scheduler-row-head__num::after {
    wears, because this one is yours. */
 @keyframes scheduler-open-tail { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -100; } }
 @keyframes scheduler-open-head { from { stroke-dashoffset: -16; } to { stroke-dashoffset: -116; } }
-.scheduler-bar.scheduler-bar--open { box-shadow: none; }
+.scheduler-bar.scheduler-bar--open { box-shadow: var(--scheduler-lift); }
 .scheduler-bar__open-ring {
   position: absolute;
   inset: 0;
@@ -786,7 +797,7 @@ button.scheduler-row-head__num::after {
    the trip rather than laid out with it. */
 .scheduler-bar-shortcuts {
   position: absolute;
-  z-index: 5;
+  z-index: 6;
   inset-block-start: var(--scheduler-open-top, 0px);
   inset-inline-start: var(--scheduler-open-start, 0px);
   display: flex;
@@ -868,7 +879,7 @@ button.scheduler-row-head__num::after {
    card below the last bus is not cut by the pane's edge. No ancestor of the
    track makes a containing block, as the docked sheet relies on too. Over the
    week's sticky bands and under the trip panel. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) { position: fixed; z-index: 996; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) { position: fixed; z-index: 996; box-shadow: var(--scheduler-lift); }
 .scheduler-bar-shortcuts[data-card][data-docked] {
   inline-size: auto;
   --card-ink: var(--rux-text-primary);

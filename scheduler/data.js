@@ -7658,7 +7658,7 @@
           : r.list[index];
         let picked = st.place;
         document.getElementById('scheduler-stop-h').textContent = index === null ? 'Add stop' : 'Edit stop';
-        const grid = el('div', 'scheduler-dialog-grid');
+        const grid = el('div', 'scheduler-dialog-grid scheduler-dialog-grid--pairs');
         // One place search, as the pickup is, and a Name for a new place.
         const name = textField('scheduler-f-stopname', 'Name', st.place?.name);
         name.classList.add('scheduler-dialog-grid__wide');

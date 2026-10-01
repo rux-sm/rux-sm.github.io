@@ -14,6 +14,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - A quote is priced from the Route tab's miles a day, entered in the quote calculator, which rounds each charge (regular miles, dead miles, driver pay) up to the next $5, because those miles include the yard legs and a quote with no cents reads cleaner.
 - A PO fixes the price; a cost the office takes on after it, such as a second driver, goes in as its own line with an equal Discount, and the trip's notes say the decision is still open.
 - Estimated miles is set to the Route summary's total once the route is right, so the two agree.
+- A quote can go out with a leg's times as TBD, because the times are settled with the customer later and never hold a quote back.
 
 ## Route
 

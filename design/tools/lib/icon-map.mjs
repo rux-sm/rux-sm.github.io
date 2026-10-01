@@ -124,6 +124,7 @@ export const ICONS = {
   'minimize': { material: 'close_fullscreen', rux: null },
   'notification': { material: 'notifications', rux: null },
   'notification--new': { material: 'notifications_active', rux: null },
+  'notification--important': { material: 'notification_important', rux: null },  // Carbon draws no bell with a warning; Material's carries an exclamation mark.
   'overflow-menu--horizontal': { material: 'more_horiz', rux: null },
   'overflow-menu--vertical': { material: 'more_vert', rux: null },
   'pause--outline--filled': { material: 'pause_circle-fill', rux: null },  // A solid disc with the bars cut out; `pause--filled` is the bare bars.

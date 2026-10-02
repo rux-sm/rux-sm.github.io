@@ -169,9 +169,11 @@ it is a companion view, not panel content, and it stays on until turned off.
 
 The grid and the panel can both be open. Only the panel is one at a time.
 
-A driver's name is a toggle: pressed, every bar but that driver's dims on the
-board and their name is set in semibold on their own bars; the same name
-again, Escape, or hiding the grid puts the board back. A busy day selects its
+A driver's name is a toggle: pressed, it puts down the selected trip and its
+card, every bar but that driver's dims on the board, and their name is set in
+semibold on their own bars. Selecting one of their trips keeps them picked;
+selecting a dimmed trip, the same name again, Escape, or hiding the grid puts
+the board back. A busy day selects its
 trip, the next one each click on a day of two. A busy day after a trip the day
 before shows the hours off between them, from the earlier trip's return to the
 yard to the later one's departure: "15h", in the warning tone under 10 hours,

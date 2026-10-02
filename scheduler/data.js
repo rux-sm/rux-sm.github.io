@@ -8641,8 +8641,13 @@
     }
   }
 
+  /* Picking a driver puts down the selected trip, and with it its card and
+     its days in the roster: the question is now this driver's week, and the
+     card would stand over it. A trip selected after the pick, from the board
+     or a busy day, is selected as ever. */
   function pickDriver(id) {
     focusDriver = id != null && id !== focusDriver ? id : null;
+    if (focusDriver != null) clearSelection();
     markDriverTrips();
   }
 
@@ -9169,6 +9174,10 @@
     if (!bar || barKey(bar) !== cardAwayFor) cardAwayFor = null;
     placeBarOpen(bar);
     markTripBars();
+    /* Selecting one of the picked driver's own trips keeps them picked, to
+       read their week a trip at a time. Selecting a dimmed trip moves on from
+       that driver, so the board comes back up around it. */
+    if (bar && focusDriver != null && !bar.classList.contains('scheduler-bar--driver')) pickDriver(null);
     // The roster moves to the selected trip's week, and lights its days.
     drawRoster();
     // What this tab is on has changed, so everyone else's board says so.

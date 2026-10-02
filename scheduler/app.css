@@ -3582,10 +3582,8 @@ html:has(.scheduler-page[data-takeover]) {
 @media (max-width: 41.98rem) {
   #scheduler-drivers-list th:nth-child(2),
   #scheduler-drivers-list th:nth-child(3),
-  #scheduler-drivers-list th:nth-child(4),
   #scheduler-drivers-rows td:nth-child(2),
-  #scheduler-drivers-rows td:nth-child(3),
-  #scheduler-drivers-rows td:nth-child(4) { display: none; }
+  #scheduler-drivers-rows td:nth-child(3) { display: none; }
 }
 .scheduler-driver-photo {
   display: flex;

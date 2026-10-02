@@ -154,16 +154,18 @@
     return digits.length >= 3 && String(d.phone || '').replace(/\D/g, '').includes(digits);
   };
 
-  // rux-ui's order, used while no column is sorted: employment, priority, name.
-  const standing = (a, b) =>
-    (EMPLOYMENT_ORDER.indexOf(a.employment_type) - EMPLOYMENT_ORDER.indexOf(b.employment_type))
-    || ((a.priority ?? 9) - (b.priority ?? 9))
-    || String(a.name || '').localeCompare(String(b.name || ''));
+  const byPriority = (a, b) => (a.priority ?? 9) - (b.priority ?? 9);
+  const byEmployment = (a, b) =>
+    EMPLOYMENT_ORDER.indexOf(a.employment_type) - EMPLOYMENT_ORDER.indexOf(b.employment_type);
+  const byName = (a, b) => String(a.name || '').localeCompare(String(b.name || ''));
+
+  // The order used while no column is sorted: priority, the order the office
+  // calls drivers in, then employment, then name.
+  const standing = (a, b) => byPriority(a, b) || byEmployment(a, b) || byName(a, b);
 
   const SORTS = {
-    name: (a, b) => String(a.name || '').localeCompare(String(b.name || '')),
-    cdl: (a, b) => String(a.cdl_class || 'Z').localeCompare(String(b.cdl_class || 'Z')),
-    employment: standing,
+    name: byName,
+    employment: (a, b) => byEmployment(a, b) || byPriority(a, b) || byName(a, b),
     compliance: (a, b) => compliance(a).rank - compliance(b).rank,
   };
 
@@ -198,7 +200,7 @@
     if (!shown.length) {
       const tr = el('tr');
       const td = el('td', null, query ? `No drivers match “${query}”.` : 'No drivers here.');
-      td.colSpan = 5;
+      td.colSpan = 4;
       tr.appendChild(td);
       body.appendChild(tr);
       return;
@@ -221,19 +223,18 @@
       who.appendChild(cell);
 
       const phone = el('td', null, showPhone(d.phone) || '—');
-      const cdl = el('td', null, d.cdl_class || '—');
       const job = el('td', null, [EMPLOYMENT[d.employment_type] || 'Not set', d.priority ? `Priority ${d.priority}` : null]
         .filter(Boolean).join(' · '));
       const lic = el('td');
       lic.appendChild(indicator(compliance(d)));
 
-      tr.append(who, phone, cdl, job, lic);
+      tr.append(who, phone, job, lic);
       body.appendChild(tr);
     }
   }
 
   // Search, sort and a row's click, which opens its driver.
-  const view = pair.table({ sortKey: 'compliance', draw: drawList });
+  const view = pair.table({ sortKey: null, sortDir: 'none', draw: drawList });
 
   // The Show choice picks which drivers the table holds.
   $('scheduler-drivers-filter')?.addEventListener('change', e => {

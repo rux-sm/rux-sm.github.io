@@ -27,6 +27,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 ## Buses and drivers
 
 - Drivers are sent the trip only once it is confirmed, so an unconfirmed trip's drivers not confirming is expected, not a problem.
+- A new driver goes out first as co-driver beside an experienced driver, never alone on a bus, so they learn the work before they drive a trip of their own.
 - Need hotel is on only when the office books the driver's room; when the customer provides it, as they usually do, it stays off.
 
 ## Customers and confirmation

@@ -1290,7 +1290,7 @@ button.scheduler-row-head__num::after {
   border: var(--scheduler-region-edge, 0 solid transparent);
   border-radius: var(--scheduler-surface-radius, 0);
 }
-/* The schedule gives way to the panels beside it, down to 17rem: the width the
+/* The schedule gives way to the panels beside it, down to 19.5rem: the width the
    tight toolbar below is measured to read at, so the week never goes narrower
    than its own controls. It spends its days to get there and scrolls to fewer
    of them; a week that cannot keep even this is one the panels no longer sit
@@ -1302,7 +1302,7 @@ button.scheduler-row-head__num::after {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
-  min-inline-size: min(17rem, var(--scheduler-room, 0px));
+  min-inline-size: min(19.5rem, var(--scheduler-room, 0px));
 }
 /* The roster: its head, then the grid filling the height app.js gives it. */
 .scheduler-aside { display: flex; flex-direction: column; }
@@ -1594,11 +1594,12 @@ button.scheduler-row-head__num::after {
   text-overflow: ellipsis;
 }
 .scheduler-weekbtn__months { display: none; }
-/* 25rem is where the room runs out: the five controls take 200px and the full
-   week takes 194px, so it fits above 400px and not below. The toolbar is asked,
+/* 32.5rem is where the room runs out: the arrows, Today and four icons take
+   311px, and the full week with its insets the rest, measured to fit above
+   520px and not below. The toolbar is asked,
    not the window, because the roster and the editor beside the schedule are
    what take the room and a window's width cannot see them. */
-@container scheduler-toolbar (max-width: 25rem) {
+@container scheduler-toolbar (max-width: 32.5rem) {
   .scheduler-weekbtn__months { display: block; }
   .scheduler-weekbtn__week {
     position: absolute;
@@ -2644,7 +2645,7 @@ button.scheduler-row-head__num::after {
 @media (min-width: 42rem) {
   body:has(.scheduler-page:not([data-room="tight"])) .scheduler-menu-item--sm-only { display: none; }
 }
-.scheduler-page[data-room="tight"] .scheduler-toolbar__lg-only { display: none; }
+.scheduler-page[data-room="tight"]:not([data-board="compact"]) .scheduler-toolbar__lg-only { display: none; }
 /* On the compact board a swipe changes the week, so the two chevrons come off
    and `Today` takes their place: a gesture replaces a step, and nothing
    replaces a jump home. The two chevrons are 40px each and the `Today` button
@@ -2658,12 +2659,12 @@ body:has(.scheduler-page[data-board="compact"]) .scheduler-menu-item--sm-only { 
 .scheduler-page[data-room="tight"] .scheduler-toolbar__new,
 .scheduler-page[data-board="compact"] .scheduler-toolbar__new { display: none; }
 body:has(.scheduler-page:not([data-room="tight"]):not([data-board="compact"])) .scheduler-menu-item--new { display: none; }
-/* In the same state the week's own button gives up two steps of inset, which
-   is the last 24px "Sep 2026" needs to read whole rather than as "Sep …": at a
-   272px schedule the four controls take 160px, and the 112px left holds the
-   70px label only once the insets come down from 16px to 8px and the caret's
-   gap from 12px to 4px. */
-.scheduler-page[data-room="tight"] .scheduler-weekbtn {
+/* In the same state, and on the compact board, the week's own button gives up
+   two steps of inset: 24px, as the insets come down from 16px to 8px and the
+   caret's gap from 12px to 4px. That is what the label needs to read whole
+   rather than end in "…": "Sep 2026" at a 312px schedule beside its five
+   icons, and "Sep – Oct 2026" on a 402px phone beside Today and three. */
+.scheduler-page:is([data-room="tight"], [data-board="compact"]) .scheduler-weekbtn {
   padding-inline: var(--rux-spacing-03);
   gap: var(--rux-spacing-02);
 }
@@ -2830,59 +2831,17 @@ html:has(.scheduler-page[data-takeover]) {
   overflow: hidden;
 }
 
-/* ── Toolbar search ─────────────────────────────────────────────────────────
-   Carbon's persistent table-toolbar search, as the Trips page has, between the
-   week and the controls. The wrapper takes the free width, as
-   `.scheduler-toolbar__spacer` does where there is no search, and anchors the
-   results. Carbon's search is 100% wide, so it fills the wrapper. */
-.scheduler-toolbar__search {
-  flex: 1 1 0;
-  min-inline-size: 0;
-  position: relative;
-  align-self: stretch;
-  display: flex;
-}
-/* On a phone the controls leave the field about 75px, room for the magnifier
-   and no query, so the search takes a full-width row under the week and the
-   controls, and the week's own margin pushes the controls right. Only the
-   search wraps: it comes last and takes the whole row, and the first row is
-   the months label and at most four buttons, which fit at 320px. */
-@media (max-width: 41.98rem) {
-  .scheduler-toolbar { flex-wrap: wrap; }
-  .scheduler-toolbar__weekrow { margin-inline-end: auto; }
-  .scheduler-toolbar__search {
-    order: 1;
-    flex-basis: 100%;
-    border-block-start: 1px solid var(--rux-border-subtle);
-  }
-}
-
 /* ── Search results ─────────────────────────────────────────────────────────
-   A menu attached to the field: pinned to the wrapper's inline edges so it
-   takes the field's width, on `--rux-layer` with `.rux--menu`'s shadow. It
-   stays between 20rem and 40rem, so a phone's narrow field still gets a
-   readable list and a desktop's wide one does not cover the board, and it
-   hangs from the field's start so it stays on screen. */
+   Under the field in the search window, taking the rest of its height. Only
+   the list scrolls; `min-block-size: 0` because a flex item will not shrink
+   below its content without it. */
 .scheduler-search__results {
-  position: absolute;
-  inset-inline-start: 0;
-  inline-size: 100%;
-  min-inline-size: min(20rem, 100vw - 2rem);
-  max-inline-size: 40rem;
-  inset-block-start: 100%;
-  z-index: 8100;
-  background: var(--rux-layer);
-  box-shadow: 0 2px 6px var(--rux-shadow, rgba(0, 0, 0, 0.3));
-  /* As tall as its results, capped at 60vh. Only the list scrolls, so the
-     count above it and the note below stay in view while the arrow keys walk
-     the list. */
+  margin-block-start: var(--rux-spacing-03);
   display: flex;
   flex-direction: column;
-  max-block-size: 60vh;
-  overflow: hidden;
+  min-block-size: 0;
 }
-/* The one scrolling child. `min-block-size: 0` because a flex item will not
-   shrink below its content, and without it the list pushes the box past 60vh. */
+.scheduler-search__results[hidden] { display: none; }
 .scheduler-search__results .rux--contained-list {
   overflow-y: auto;
   min-block-size: 0;

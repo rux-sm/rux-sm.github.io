@@ -43,7 +43,7 @@ Dropped: Documents, Game, the Samsara and Gallery links.
 | Customer editor | keep | The Contacts page's record: name, organization, phone and email (§7). |
 | Itinerary editor | later | App component, with the Itineraries view. |
 | Trip manifest | later | Passengers as a `table-page` section under the trip, edit in a modal. |
-| Trip finder results page | keep | `trips.html`, every trip in a data table with search, a Show choice and pagination; a row opens its trip on the board. Results in a data table on a page. The schedule's toolbar search, always open, and Cmd-K exist. It finds cancelled trips too, tagged Cancelled; one opens a dialog with the date and reason and a Bring back button. Cancelling needs a typed reason. |
+| Trip finder results page | keep | `trips.html`, every trip in a data table with search, a Show choice and pagination; a row opens its trip on the board. Results in a data table on a page. The schedule's toolbar has a search button, and Cmd-K, that open a Search trips window. It finds cancelled trips too, tagged Cancelled; one opens a dialog with the date and reason and a Bring back button. Cancelling needs a typed reason. |
 | Contact info, Driver week info | later | Modals with a text area and the copy button module. Sending marks each sent driver Pending response unless already confirmed or declined, as rux-ui does. |
 | Print schedule | later | An entry in `print.html`'s registry beside the driver envelope's, the driver itinerary's and the customer quote's, naming what it binds to and the paper it takes. |
 | Requirements editor | keep | Settings section; a contained list with an add row. Icons come from the rux sprite by a fixed name. |
@@ -133,7 +133,7 @@ Three homes, and one rule for choosing.
   panel, because it is read while the trip is edited. Any file opens there,
   with its type above the destination, and so does a form `print.html` draws.
 - **A panel is beside the week or in front of it, never over it.** Every open
-  panel sits beside the week while the board holds them and the week's 17rem
+  panel sits beside the week while the board holds them and the week's 19.5rem
   minimum; past that the newest comes in front of the board, dimming what it
   covers, and the rest wait beside the week behind it. Nothing closes itself
   and nothing is refused. A panel in front sits 16px in from the header and

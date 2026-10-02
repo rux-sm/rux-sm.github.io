@@ -397,8 +397,24 @@
 .rux--modal .rux--text-input,
 .rux--modal .rux--text-area,
 .rux--modal .rux--select-input,
-.rux--modal .rux--date-picker__input {
+.rux--modal .rux--date-picker__input,
+.rux--modal .rux--search-input {
   background-color: var(--rux-field-02);
+}
+
+/* The search window hangs from near the top instead of centring, so it grows
+   downward as results arrive rather than jumping. Below md Carbon's modal is
+   already full height from the top. */
+@media (min-width: 42rem) {
+  .scheduler-modal--search { align-items: flex-start; }
+  .scheduler-modal--search .rux--modal-container { margin-block-start: 10vh; }
+}
+/* Only the results list scrolls, so the field and the count stay in view
+   while the arrow keys walk the list. Carbon scrolls the whole content. */
+.scheduler-modal--search .rux--modal-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 /* A Fleet bus is a tile on layer two, which is `field-02`'s own colour, so its

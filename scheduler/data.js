@@ -9391,16 +9391,16 @@
      one of them closes, while the schedule's width is this decision's own
      outcome and reading it back would flip-flop.
 
-     `WEEK_MIN` is 17rem, the width the tight toolbar is measured to read at in
+     `WEEK_MIN` is 19.5rem, the width the tight toolbar is measured to read at in
      app.css: the week never goes narrower than its own controls, which is what
      makes it a derived number rather than a chosen one. `SCHEDULE_FLOOR` is a
      different question -- whether the board can show three readable days,
      three of app.css's 9rem day floor and the bus column --
-     and only the compact week asks it. A toolbar under 21rem is one `Today`
-     will not fit in beside its week. */
-  const WEEK_MIN = 17;
+     and only the compact week asks it. A toolbar under 30rem is one `Today`
+     will not fit in beside its week's months, measured in app.css's terms. */
+  const WEEK_MIN = 19.5;
   const SCHEDULE_FLOOR = 30;
-  const TOOLBAR_TIGHT = 21;
+  const TOOLBAR_TIGHT = 30;
   const boardEl = document.querySelector('.scheduler-board');
   const frameEl = document.querySelector('.scheduler-frame');
   /* The panels open, oldest first, so the newest is the one that comes in
@@ -13194,12 +13194,12 @@
   document.getElementById('scheduler-scrim')?.addEventListener('click', () => leaveFront());
   /* Escape acts where focus is. Inside the itinerary panel it closes that
      panel; inside the editor it closes the editor; on the board it clears a
-     selection first. An open dialog, or the search while it has focus, keeps
-     the key for itself, and so does anything that already took it -- a list or date
-     picker closing, a combo box clearing -- so one press does one thing. */
+     selection first. An open dialog keeps the key for itself, and so does
+     anything that already took it -- a list or date picker closing, a combo
+     box clearing -- so one press does one thing. */
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape' || e.defaultPrevented) return;
-    if (document.querySelector('.rux--modal.is-visible') || searchWrap?.contains(document.activeElement)) return;
+    if (document.querySelector('.rux--modal.is-visible')) return;
     /* A panel in front of the board is the only thing on screen, so Escape
        leaves it wherever focus is: the board behind it is inert and has
        nothing to take the key for. */
@@ -13215,11 +13215,13 @@
   });
 
   /* ── Searching trips ──────────────────────────────────────────────────────
-     The board toolbar's search finds trips by destination, organization or
-     booking contact across every trip, not only the week on screen, and a
-     result opens its trip on its own week. The field is always open; Design
-     ships no search module, so the results list and its keys are wired here. */
-  const searchWrap = document.querySelector('.scheduler-toolbar__search');
+     The toolbar's search button opens a window that finds trips by
+     destination, organization or booking contact across every trip, not only
+     the week on screen, and a result closes the window and opens its trip on
+     its own week. Design ships no search module, so the results list and its
+     keys are wired here; Design's modal opens, traps and closes the window. */
+  const searchModal = document.getElementById('scheduler-search-modal');
+  const searchOpen = document.getElementById('scheduler-search-open');
   const searchInput = document.getElementById('scheduler-search-input');
   const searchResults = document.getElementById('scheduler-search-results');
   const searchList = document.getElementById('scheduler-search-list');
@@ -13227,39 +13229,21 @@
   const searchNoteEl = document.getElementById('scheduler-search-note');
   const searchClear = document.getElementById('scheduler-search-clear');
 
-  // Emptying the field closes the results too, so a picked trip or an Escape
-  // leaves a clean field for the next search.
+  // A picked trip empties the field, so the window opens clean next time.
   function clearSearch() {
     if (searchInput) searchInput.value = '';
     searchClear?.classList.add('rux--search-close--hidden');
     showResults(false);
   }
 
-  /* A press outside closes the results and keeps the query, as a combobox's
-     list closes without losing what was typed. The test is the wrapper, not
-     `#scheduler-search`, because the results panel is its sibling and a press
-     on the list must not close it. */
-  document.addEventListener('pointerdown', e => {
-    if (searchResults.hidden || searchWrap.contains(e.target)) return;
-    showResults(false);
-  });
-
-  /* Tabbing away closes them too. The options are `tabindex=-1` in an
-     activedescendant listbox, so Tab leaves the widget rather than walking it.
-     `relatedTarget` covers a Tab; the deferred check covers focus leaving for
-     the window or a non-focusable press, without closing on the way to the
-     clear button. */
-  searchWrap?.addEventListener('focusout', e => {
-    const to = e.relatedTarget;
-    if (to && searchWrap.contains(to)) return;
-    setTimeout(() => {
-      if (!searchResults.hidden && !searchWrap.contains(document.activeElement)) showResults(false);
-    }, 0);
-  });
-
-  // Back in a field that still holds a query, the results come back.
-  searchInput?.addEventListener('focus', () => {
-    if (searchInput.value.trim() && searchResults.hidden) runSearch();
+  /* A window closed without a pick keeps its query and results, and opening
+     it again selects the query so typing replaces it, with the list back at
+     its top and nothing highlighted. The modal has already put the cursor in
+     the field, which carries `autofocus`. */
+  searchModal?.addEventListener('rux:modal-opened', () => {
+    searchInput?.select();
+    setActive(-1);
+    if (searchList) searchList.scrollTop = 0;
   });
 
   /* Every trip is searched, cancelled ones included, in three plain columns
@@ -13483,7 +13467,7 @@
       );
       btn.addEventListener('click', () => {
         clearSearch();
-        searchInput.blur();
+        window.Rux?.modal?.close(searchModal);
         if (trip.cancelled_at) openCancelledModal(trip);
         else goToTrip(trip.id, trip.start_date);
       });
@@ -13503,10 +13487,9 @@
   searchClear?.addEventListener('click', () => { searchInput.value = ''; runSearch(); searchInput.focus(); });
 
   /* The arrows, Home and End walk the results, and Enter takes the highlighted
-     row or else the first. Escape is two-stage, because Carbon's escape leaves
-     the menu, not the search: with the list open it closes the list and keeps
-     the query, and with it closed it empties the field. These listen on the
-     field, so they cannot take a key the editor or the board wants. */
+     row or else the first. Escape is the modal's, and closes the window. These
+     listen on the field, so they cannot take a key the editor or the board
+     wants. */
   searchInput?.addEventListener('keydown', e => {
     const open = !searchResults.hidden && searchOptions().length > 0;
     switch (e.key) {
@@ -13521,10 +13504,6 @@
         (opts[activeAt] ?? opts[0])?.click();
         break;
       }
-      case 'Escape':
-        if (!searchResults.hidden) { e.preventDefault(); e.stopPropagation(); showResults(false); }
-        else if (searchInput.value) { e.preventDefault(); e.stopPropagation(); clearSearch(); }
-        break;
     }
   });
 
@@ -13537,13 +13516,13 @@
     if (at !== -1 && at !== activeAt) setActive(at);
   });
 
-  // Cmd-K or Ctrl-K puts the cursor in the search, with any old query selected
-  // so typing replaces it.
+  // Cmd-K or Ctrl-K opens the search window, or with it open puts the cursor
+  // back in the field with the query selected.
   document.addEventListener('keydown', e => {
     if ((e.metaKey || e.ctrlKey) && !e.altKey && (e.key === 'k' || e.key === 'K')) {
       e.preventDefault();
-      searchInput?.focus();
-      searchInput?.select();
+      if (searchModal?.classList.contains('is-visible')) { searchInput?.focus(); searchInput?.select(); }
+      else window.Rux?.modal?.open(searchModal, searchOpen);
     }
   });
   // A click on empty board space puts the selection down. A click on a bar is

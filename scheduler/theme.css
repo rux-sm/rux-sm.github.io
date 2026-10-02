@@ -93,24 +93,19 @@
 }
 
 /* THE THREE HEADS HOLD GEIST'S DEFAULT CONTROLS: the toolbar, the roster's
-   head and the trip editor's head each hold the 36px buttons and, in the
-   toolbar, the 36px search field that Design sizes every geist-dark control
-   at, 6px from every edge of a 48px bar, so their 6px corners sit concentric
-   in the card's 12px. Nothing fills its bar edge to edge, so the field's ring
-   stays clear of the card's outline and the day band's rule, the three heads
+   head and the trip editor's head each hold the 36px buttons that Design
+   sizes every geist-dark control at, 6px from every edge of a 48px bar, so
+   their 6px corners sit concentric in the card's 12px. Nothing fills its bar
+   edge to edge, so the three heads
    and the rows under them line up across the board, and every button takes
    Geist's 6px corners rather than staying square with the last one following
    the card's curve. The editor's close button fixes its own 40px, so it is
    named. The roster's head keeps its full height where the grid under it wants
-   more room than the pane has. On a phone the controls fill the first row with
-   no room to spare, so there only the search's own row is inset. */
+   more room than the pane has. */
 @media (min-width: 42rem) {
   [data-theme="geist-dark"] .scheduler-toolbar {
     padding: 6px;
     gap: var(--rux-spacing-02);
-  }
-  [data-theme="geist-dark"] .scheduler-toolbar__search {
-    align-self: center;
   }
   [data-theme="geist-dark"] .scheduler-aside__head {
     flex: none;
@@ -138,12 +133,6 @@
     padding-inline: var(--rux-spacing-06);
   }
 }
-@media (max-width: 41.98rem) {
-  [data-theme="geist-dark"] .scheduler-toolbar__search {
-    padding: var(--rux-spacing-05);
-  }
-}
-
 /* Geist's header is 64px, not the shell's 48 (Design's rux-overrides.css), so
    what the board places under it -- a panel brought in front, its scrim and
    the quote's pinned total -- sits 4rem down rather than 3rem. */

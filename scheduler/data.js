@@ -5070,20 +5070,35 @@
 
   /* The PO dialog: a date, a reference and an amount. Date leads for the
      reason it leads in the payment dialog: its calendar needs the room below
-     it. The fields keep real labels, because a modal headed "Add purchase
-     order" has the room. */
+     it, and a new PO starts on today, as a new payment does. The fields keep
+     real labels, because a modal headed "Add purchase order" has the room. */
   function openPoDialog(index) {
     const host = document.getElementById('scheduler-po-fields');
     if (!host) return;
     poEditing = index;
-    const p = index === null ? {} : poPending[index];
+    const p = index === null ? { date: iso(new Date()) } : poPending[index];
     document.getElementById('scheduler-po-h').textContent =
       index === null ? 'Add purchase order' : 'Edit purchase order';
     const grid = el('div', 'scheduler-dialog-grid');
+    const amount = moneyField('scheduler-f-oamount', 'Amount', p.amount);
+    /* THE AMOUNT IS TYPED FROM THE PO, NEVER FILLED IN: a PO short of the
+       balance is what puts the trip on PO partial, and a filled-in quote
+       left standing would hide it. What the PO should cover is shown under
+       the field instead: the quote less the payments and the trip's other
+       POs. */
+    const { price, paid } = billingNow();
+    if (price > 0) {
+      const others = poPending.reduce((n, o, i) => n + (i === index ? 0 : Number(o.amount) || 0), 0);
+      const open = round2(Math.max(0, price - paid - others));
+      amount.querySelector('.rux--text-input__field-outer-wrapper').appendChild(el('div', 'rux--form__helper-text',
+        open === price ? `The quote is ${usdCents(price)}.`
+          : open > 0 ? `The quote is ${usdCents(price)}; ${usdCents(open)} is uncovered by payments and POs.`
+            : `The quote is ${usdCents(price)}, all covered by payments and POs.`));
+    }
     grid.append(
       dateOne('scheduler-f-odate', 'Date', p.date),
       textField('scheduler-f-oref', 'Reference', p.ref),
-      moneyField('scheduler-f-oamount', 'Amount', p.amount),
+      amount,
     );
     host.replaceChildren(grid);
     window.Rux?.datePicker?.init?.(host);
@@ -5095,8 +5110,9 @@
     const row = { ref: val('scheduler-f-oref') || null, amount: money(val('scheduler-f-oamount')),
                   date: isoOrNull(val('scheduler-f-odate')) };
     // An empty dialog adds nothing, as in the payment dialog: the switch alone
-    // already says a PO is expected.
-    if (row.ref === null && row.amount === null && row.date === null) {
+    // already says a PO is expected. The date is not counted, since it starts
+    // filled in.
+    if (row.ref === null && row.amount === null) {
       window.Rux?.modal?.close?.('scheduler-po-modal');
       return;
     }
@@ -5107,14 +5123,14 @@
     refreshDirty();
   });
 
-  /* The invoice dialog: a date and the invoice number. An invoice's amount
-     feeds no total, so it is not asked for, and an amount rux-ui saved on the
-     row is kept as it is. */
+  /* The invoice dialog: a date, today on a new one, and the invoice number.
+     An invoice's amount feeds no total, so it is not asked for, and an amount
+     rux-ui saved on the row is kept as it is. */
   function openInvoiceDialog(index) {
     const host = document.getElementById('scheduler-inv-fields');
     if (!host) return;
     invEditing = index;
-    const v = index === null ? {} : invPending[index];
+    const v = index === null ? { date: iso(new Date()) } : invPending[index];
     document.getElementById('scheduler-inv-h').textContent =
       index === null ? 'Add invoice' : 'Edit invoice';
     const grid = el('div', 'scheduler-dialog-grid');
@@ -5130,8 +5146,9 @@
   document.getElementById('scheduler-inv-done')?.addEventListener('click', () => {
     const val = id => document.getElementById(id)?.value.trim() ?? '';
     const row = { number: val('scheduler-f-inum') || null, date: isoOrNull(val('scheduler-f-idate')) };
-    // An empty dialog adds nothing, the rule the other two dialogs follow.
-    if (row.number === null && row.date === null) {
+    // An empty dialog adds nothing, the rule the other two dialogs follow;
+    // the date starts filled in, so only the number counts.
+    if (row.number === null) {
       window.Rux?.modal?.close?.('scheduler-inv-modal');
       return;
     }

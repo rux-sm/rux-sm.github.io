@@ -13494,7 +13494,7 @@
         clearSearch();
         window.Rux?.modal?.close(searchModal);
         if (trip.cancelled_at) openCancelledModal(trip);
-        else goToTrip(trip.id, trip.start_date);
+        else goToTrip(trip.id, trip.start_date, { open: false });
       });
       row.appendChild(btn);
       list.appendChild(row);
@@ -14206,7 +14206,9 @@
     draftNotice(row.notes, applyDraft(row.fields));
   }
 
-  async function goToTrip(id, day) {
+  /* Shows a trip's week with its bar selected and in view, and opens the
+     trip unless `open` is false, as a pick from Search trips asks. */
+  async function goToTrip(id, day, { open = true } = {}) {
     if (!id || !/^\d{4}-\d{2}-\d{2}$/.test(day ?? '')) { show(); return; }
     cursor = mondayOf(parseISO(day));
     await show();
@@ -14223,7 +14225,7 @@
     bar.scrollIntoView({ block: 'center', inline: 'center' });
     const ref = barRef(bar);
     selectBar(bar);
-    if (!isEditorBar(bar)) whenSafe(() => openRef(ref));
+    if (open && !isEditorBar(bar)) whenSafe(() => openRef(ref));
   }
 
   /* Changing the week drops the toast. An undo for a move on the old week

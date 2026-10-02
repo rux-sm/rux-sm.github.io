@@ -87,7 +87,9 @@
 
    OURS, NOT CARBON'S: an option may carry `data-rux-text`, the text a pick writes into the
    field -- React's `itemToString`, for an option that renders more than its name.
-   Filtering reads the option's whole text, so a second line is searchable too. The clear
+   Filtering reads the option's whole text, so a second line is searchable too. Reopening a
+   field that still shows its pick lists every option rather than only the pick, so a pick
+   can be changed without clearing the field first. The clear
    button returns focus to the field; where Carbon's focus lands after it was not read.
    Home and End stay the input's and move the caret.
    ========================================================================== */
@@ -203,7 +205,11 @@
     if (isCombo(root)) {
       icon?.setAttribute('aria-expanded', 'true');
       icon?.setAttribute('aria-label', 'Close');
-      filter(root);
+      // A field still showing its pick lists every option, so the pick can be
+      // changed without clearing it first. Typed text filters.
+      const picked = selectedOf(root);
+      if (picked && textOf(picked) === fieldOf(root).value) unfilter(root);
+      else filter(root);
     } else {
       root.classList.add('rux--dropdown--open');
     }
@@ -254,6 +260,11 @@
     field.classList.toggle('rux--text-input--empty', empty);
     const clear = clearOf(root);
     if (clear) clear.hidden = empty;
+  }
+
+  // Shows every option again.
+  function unfilter(root) {
+    for (const o of root.querySelectorAll('.rux--list-box__menu-item[role="option"]')) o.hidden = false;
   }
 
   // Hides every option whose text does not contain the field's, case aside.

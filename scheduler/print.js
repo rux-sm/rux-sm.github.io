@@ -813,22 +813,27 @@
     ? `Waits ${window.SchedulerRouteFigures.hm(minutes)} · ${DWELL_WORDS[dwell] || DWELL_WORDS.on}` : null);
 
   /* THE LEG'S FIGURES, from route-figures.js, the Route tab's own sum: when
-     the bus leaves the yard, is spotted and is back, then Miles, Drive, On
-     duty and Less rest, a row a day and a Total on a leg of more than one
-     day. Nothing on the sheet is added up here. */
-  function detailedTimes(model, fig) {
-    const back = fig.backOn ? ` · ${weekdayOf(fig.backOn).slice(0, 3)}` : '';
-    const times = el('dl', 'scheduler-driver-itinerary__meta scheduler-driver-itinerary__times');
-    for (const [label, time] of [['Start', model.times.depart], ['Spot', model.times.spot], [`End${back}`, model.times.back]]) {
-      times.appendChild(headField(label, time ? clock(time) : '—'));
-    }
-    return times;
+     the bus leaves the yard, is spotted and is back, which the yard and
+     pickup rows carry, then Miles, Drive, On duty and Less rest, one row on a
+     one-day leg; on a longer leg each day's
+     on its own heading, and the Total alone after the last day. Nothing on
+     the sheet is added up here. */
+  function dayWords(fig, day) {
+    const c = fig?.days ? fig.each[fig.dates.indexOf(day)] : null;
+    if (!c) return '';
+    const [miles, drive, onDuty, lessRest] = c;
+    return [
+      c.miles ? `${miles} mi` : null,
+      drive !== '—' ? `${drive} drive` : null,
+      c.status ? `on duty ${c.status.toLowerCase()}` : onDuty !== '—' ? `${onDuty} on duty` : null,
+      !c.status && lessRest !== '—' && lessRest !== onDuty ? `${lessRest} less rest` : null,
+    ].filter(Boolean).join(' · ');
   }
 
   function detailedTotals(fig) {
     const t = el('table', 'scheduler-driver-itinerary__table scheduler-driver-itinerary__totals');
     t.appendChild(el('caption', 'rux--visually-hidden', 'Miles and hours'));
-    const heads = [...(fig.days ? ['Day'] : []), 'Miles', 'Drive', 'On duty', 'Less rest'];
+    const heads = [...(fig.days ? [''] : []), 'Miles', 'Drive', 'On duty', 'Less rest'];
     const head = el('thead');
     const hr = el('tr');
     for (const label of heads) {
@@ -838,11 +843,9 @@
     }
     head.appendChild(hr);
     const body = el('tbody');
-    const rows = fig.days
-      ? [...fig.each.map((c, n) => [`${n + 1} · ${weekdayOf(fig.dates[n]).slice(0, 3)}`, ...c]), ['Total', ...fig.total]]
-      : [[...fig.total]];
-    rows.forEach((cells, i) => {
-      const tr = el('tr', fig.days && i === rows.length - 1 ? 'scheduler-driver-itinerary__total' : null);
+    const rows = fig.days ? [['Total', ...fig.total]] : [[...fig.total]];
+    rows.forEach(cells => {
+      const tr = el('tr', fig.days ? 'scheduler-driver-itinerary__total' : null);
       for (const c of cells) tr.appendChild(el('td', null, c));
       body.appendChild(tr);
     });
@@ -945,12 +948,6 @@
     const total = lines.length ? Math.round(sum * 100) / 100 : quoted;
     row(split ? `${legName(leg)} total` : 'Total', '', '', null, usd(total), 'scheduler-driver-itinerary__total');
     if (split && quoted !== null && quoted !== total) row('Trip total', '', '', null, usd(quoted), 'scheduler-driver-itinerary__total');
-    const sent = num(trip.quote_sent_price);
-    if (sent !== null) {
-      const differs = sent !== quoted;
-      row('Quote sent', trip.quote_sent_on ? mdy(trip.quote_sent_on) : '',
-        differs ? `The lines now add up to ${usd(quoted ?? total)}` : '', null, usd(sent));
-    }
     t.append(head, body);
     return t;
   }
@@ -966,7 +963,7 @@
      long one keeps to one line, where the group is going. Both trip lines can
      be typed over like any other line of the form. No address or phones:
      the sheet goes to the company's own driver, who has both. */
-  function itineraryHead(subject, name = 'Trip itinerary') {
+  function itineraryHead(subject, name = 'Trip itinerary', detailed = false) {
     const { trip, leg } = subject;
     const start = leg === 'return' ? (trip.return_start_date || trip.end_date) : trip.start_date;
     const end = leg === 'return' ? (trip.return_end_date || trip.end_date) : trip.end_date;
@@ -987,21 +984,26 @@
     brand.appendChild(el('h2', 'scheduler-driver-itinerary__name', name));
     head.appendChild(brand);
     head.appendChild(typed('dates', 'Date', start ? dateWords(start, end) : ''));
+    // The Detailed layout names the destination beside the client instead.
+    if (detailed) return head;
 
-    /* A note the office wrote in brackets after the place, "(Fiesta Texas)",
-       is printed smaller, so the place is what the eye lands on. */
     const where = el('div', 'scheduler-driver-itinerary__where');
-    const destination = typed('destination', 'Destination', '');
-    const text = String(trip.destination || '').trim();
-    const note = /^(.*?\S)\s*(\(.*\))$/.exec(text);
-    if (note) {
-      destination.append(`${note[1]} `);
-      destination.appendChild(el('span', 'scheduler-driver-itinerary__note', note[2]));
-    } else destination.textContent = text;
-    where.appendChild(destination);
+    where.appendChild(destinationWords(typed('destination', 'Destination', ''), trip));
     const frag = document.createDocumentFragment();
     frag.append(head, where);
     return frag;
+  }
+
+  /* A note the office wrote in brackets after the place, "(Fiesta Texas)",
+     is printed smaller, so the place is what the eye lands on. */
+  function destinationWords(node, trip) {
+    const text = String(trip.destination || '').trim();
+    const note = /^(.*?\S)\s*(\(.*\))$/.exec(text);
+    if (note) {
+      node.append(`${note[1]} `);
+      node.appendChild(el('span', 'scheduler-driver-itinerary__note', note[2]));
+    } else node.textContent = text;
+    return node;
   }
 
 
@@ -1015,11 +1017,18 @@
 
   /* WHO: the client and who to call on the day. No crew, no bus and no leg,
      because the envelope this sheet goes in names all three, and naming them
-     twice is one fact with two homes. */
-  function itineraryMeta(subject) {
+     twice is one fact with two homes. The Detailed layout, read at a desk,
+     puts where the group is going on the same line, in the same type. */
+  function itineraryMeta(subject, detailed = false) {
     const { trip } = subject;
     const contact = contactOf(trip);
     const meta = el('dl', 'scheduler-driver-itinerary__meta');
+    if (detailed) {
+      meta.classList.add('scheduler-driver-itinerary__meta--three');
+      const where = headField('Destination', '');
+      destinationWords(where.querySelector('dd'), trip);
+      meta.appendChild(where);
+    }
     meta.appendChild(headField('Client', trip.customer || ''));
     meta.appendChild(headField('Contact',
       [contact.name, contact.phone].filter(Boolean).join(' · ')));
@@ -1051,9 +1060,8 @@
     };
     const card = el('article', 'scheduler-form scheduler-driver-itinerary');
     if (detailed) card.dataset.layout = 'detailed';
-    card.appendChild(itineraryHead(subject, detailed ? 'Detailed itinerary' : undefined));
-    card.appendChild(itineraryMeta(subject));
-    if (detailed) card.appendChild(detailedTimes(model, fig));
+    card.appendChild(itineraryHead(subject, detailed ? 'Detailed itinerary' : undefined, detailed));
+    card.appendChild(itineraryMeta(subject, detailed));
 
     /* The run of stops alone: a day row is the old format, never a stop. The
        yard is not printed at either end: the sheet runs from the pickup's
@@ -1095,9 +1103,15 @@
       }
       if (day) {
         const row = el('tr', 'scheduler-driver-itinerary__day');
-        const th = el('th', 'scheduler-driver-itinerary__typed', dayName(day));
+        const th = el('th');
         th.scope = 'colgroup';
         th.colSpan = COLUMNS.length;
+        const name = el('span', 'scheduler-driver-itinerary__typed', dayName(day));
+        name.dataset.name = 'Day';
+        th.appendChild(name);
+        // On the Detailed layout the day's own figures share its line.
+        const figures = detailed ? dayWords(fig, day) : '';
+        if (figures) th.appendChild(el('span', 'scheduler-driver-itinerary__day-figures', figures));
         row.appendChild(th);
         head.appendChild(row);
       }
@@ -1140,9 +1154,16 @@
       row.querySelector('[contenteditable]')?.focus();
     });
     card.appendChild(add);
-    if (detailed) card.appendChild(detailedTotals(fig));
-    const price = detailed ? detailedPrice(subject, fig) : null;
-    if (price) card.appendChild(price);
+    /* THE SUMMARY IS ONE BLOCK, the miles and hours and the price, kept
+       whole: a fold through it would leave its total on another sheet from
+       its lines, so it moves to the next sheet entire. */
+    if (detailed) {
+      const summary = el('div', 'scheduler-driver-itinerary__summary');
+      summary.appendChild(detailedTotals(fig));
+      const price = detailedPrice(subject, fig);
+      if (price) summary.appendChild(price);
+      card.appendChild(summary);
+    }
     return card;
   }
 
@@ -2113,10 +2134,9 @@
         { id: 'simple', name: 'Simple' },
         { id: 'detailed', name: 'Detailed', trip: true },
       ],
-      // The Detailed layout's price: the Billing tab's lines as saved, and
-      // the price the customer was sent.
+      // The Detailed layout's price: the Billing tab's lines as saved.
       columns: [
-        'quoted_price', 'quote_sent_price', 'quote_sent_on',
+        'quoted_price',
         'trip_quote_lines(position,kind,leg,item,description,quantity,cost,amount,cost_typed,miles,dead_miles,rate)',
       ],
       /* LETTER, AND NOT `exact`. The envelope must come out on one envelope;

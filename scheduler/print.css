@@ -1215,20 +1215,33 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    ends, each wait and what it counts as, and the leg's figures from the
    Route tab. Rules and weight only, as the rest of the form. */
 
-/* Start, Spot and End, three across under the client and contact, in the
-   head's own voice. */
-.scheduler-driver-itinerary__times {
-  grid-template-columns: repeat(3, 1fr);
-  padding-block-start: var(--rux-spacing-04);
-}
+/* Destination, Client and Contact on one line under the bar, Contact still
+   over the Address column. */
+.scheduler-driver-itinerary__meta--three { grid-template-columns: 30% 28% 42%; }
+.scheduler-driver-itinerary__meta--three .scheduler-driver-itinerary__field { padding-inline-end: var(--rux-spacing-05); }
 
 /* The yard is where the bus is, not the group, so its rows read quieter than
    the stops between them. */
 .scheduler-driver-itinerary__yard td { color: var(--rux-text-secondary); }
 
-/* The miles and hours after the stops, the Route tab's table on paper, with
-   room above it to stand apart. */
-.scheduler-driver-itinerary__totals { margin-block-start: var(--rux-spacing-07); }
+/* A day's own miles, drive and on duty, at the trailing end of its heading
+   and quieter than the day's name. */
+.scheduler-driver-itinerary__day-figures {
+  float: inline-end;
+  font-weight: var(--rux-body-compact-01-font-weight);
+  font-variant-numeric: tabular-nums;
+  color: var(--rux-text-secondary);
+}
+
+/* The summary after the stops, the miles and hours and the price, with room
+   above it to stand apart. It moves to the next sheet whole rather than be
+   cut, on screen too, where the preview reads it to place its folds. */
+.scheduler-driver-itinerary__summary {
+  margin-block-start: var(--rux-spacing-07);
+  break-inside: avoid;
+}
+
+.scheduler-driver-itinerary__summary > .scheduler-driver-itinerary__totals { margin-block-start: 0; }
 
 /* The Total closes the days with a strong rule and weight, since a fill
    would print as nothing. */
@@ -1238,9 +1251,19 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   font-weight: var(--rux-heading-compact-01-font-weight);
 }
 
-/* The price after the miles and hours, on the stops' three columns so its
-   amounts stand under the addresses; the room above parts it from them. */
+/* The price after the miles and hours, with room above to part it from them.
+   What it was priced on takes the width, so a rental's line keeps to one,
+   and the amounts read to the trailing edge, as money on a bill does. */
 .scheduler-driver-itinerary__table.scheduler-driver-itinerary__price { margin-block-start: var(--rux-spacing-07); }
+.scheduler-driver-itinerary__price col:nth-child(1) { inline-size: 20%; }
+.scheduler-driver-itinerary__price col:nth-child(2) { inline-size: 60%; }
+.scheduler-driver-itinerary__price col:nth-child(3) { inline-size: 20%; }
+.scheduler-driver-itinerary__price th:last-child,
+.scheduler-driver-itinerary__price td:last-child {
+  padding-inline-end: 0;
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
 
 /* ── The customer quote ──────────────────────────────────────────────────
    The office's own QUOTE / PROPOSAL, drawn as the customer already knows it:
@@ -1685,6 +1708,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   /* The requirements box already has a border all the way round, so it says
      it is writable by taking the focus ring like the rest and nothing more. */
   .scheduler-envelope__reqs[data-typed] { border: 1px solid var(--rux-border-strong-01); }
+
+  /* An itinerary's day name sits on its heading's rule, which a dotted one
+     under it would only double. */
+  .scheduler-driver-itinerary__day [data-typed] { border-block-end: 0; }
 
   [data-typed]:focus {
     outline: 2px solid var(--rux-focus);

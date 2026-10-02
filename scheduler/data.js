@@ -9516,6 +9516,9 @@
     // rux.css styles nothing on `aria-pressed`; `rux--btn--selected` is
     // Carbon's pressed look.
     availToggle.classList.toggle('rux--btn--selected', shown);
+    // The glyph says it too: an outlined person while the roster is shut, a
+    // filled one while it shows, as a filled glyph reads as on.
+    availToggle.querySelector('use')?.setAttribute('href', shown ? '#m-person-fill' : '#m-person');
     /* The room is measured again here: opening the roster is not a resize, so
        nothing else would ask, and the board would lay out for a panel it no
        longer has room for. */

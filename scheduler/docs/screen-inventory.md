@@ -188,6 +188,17 @@ trip starts in, or with nothing selected the week holding today, else the
 first. Its head's days button shows both weeks, widening the pane from 20rem to
 40rem so each day keeps its size, and the browser keeps that choice.
 
+### Time at the yard
+
+A view option in the board's overflow menu, off until turned on and kept by
+the browser. On, a card the trips' own height sits between two trips of one
+bus on days side by side, and the two trips pull their facing ends back to make
+room: a clock, the hours from the earlier trip's return to the yard to the
+later one's departure, and "yard", for cleaning and fuel. Under 4 hours, "?"
+until both trips have times, or "!" where they overlap, the card takes the
+warning tone. A day or more at the yard draws no card. The compact board's
+days are too narrow to give up room, so it shows none.
+
 ### The trip bar does not expand
 
 A bar growing on click re-stacks the lanes beside it. Its information is the

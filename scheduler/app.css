@@ -471,6 +471,61 @@ button.scheduler-row-head__num::after {
   .scheduler-bar.scheduler-ghost { transition: none; }
 }
 
+/* ── Time at the yard ───────────────────────────────────────────────────
+   A card the bar's own height, centred on the day line between two trips of
+   one bus, with the hours from the earlier trip's return to the later one's
+   departure. Drawn on every week and shown only while the view option is on,
+   when the two bars give up their facing ends to it: the later bar half the
+   card, the earlier half the card less the rule its gap already counts, so
+   each keeps its clear space to the card. The compact board's days are too
+   narrow to give anything up, so it keeps the bars whole and shows none. A
+   clock over the hours over "yard", centred, so a short bar keeps the hours
+   and loses the clock and the word first. Under four hours, unknown, or
+   overlapping, it takes the warning tone the driver grid's short rest uses. */
+/* 2.25rem holds "21h" at the bar's own 12px with room either side, so the
+   bars give up as little as they can. */
+.scheduler-week { --scheduler-yard-w: 2.25rem; }
+.scheduler-yard {
+  display: none;
+  position: absolute;
+  inset-block-start: calc(var(--scheduler-gap-clear) + var(--scheduler-lane, 0) * (var(--scheduler-bar-h) + var(--scheduler-lane-gap)));
+  inset-inline-start: calc(var(--scheduler-start) * var(--scheduler-day-w) - var(--scheduler-yard-w) / 2);
+  inline-size: var(--scheduler-yard-w);
+  block-size: var(--scheduler-bar-h);
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  overflow: hidden;
+  border: 1px solid var(--rux-border-strong-01);
+  border-radius: var(--scheduler-bar-radius, 0);
+  background: var(--rux-layer-01);
+  color: var(--rux-text-secondary);
+  font-size: var(--scheduler-fs);
+  letter-spacing: var(--scheduler-ls);
+  line-height: var(--scheduler-row-h);
+  z-index: 1;
+}
+.scheduler-yard__icon { display: inline-flex; }
+.scheduler-yard__hours {
+  color: var(--rux-text-primary);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  font-variant-numeric: tabular-nums;
+}
+.scheduler-yard--short {
+  border-color: var(--rux-support-warning);
+  background-color: color-mix(in srgb, var(--rux-support-warning) 40%, var(--rux-layer-01));
+  color: var(--rux-text-primary);
+}
+.scheduler-week--yard .scheduler-yard { display: flex; }
+.scheduler-week--yard .scheduler-bar--yard-start { --scheduler-cut-start: calc(var(--scheduler-yard-w) / 2); }
+.scheduler-week--yard .scheduler-bar--yard-end {
+  --scheduler-cut-end: calc(var(--scheduler-yard-w) / 2 + var(--scheduler-gap-clear) - var(--scheduler-gap));
+}
+.scheduler-page[data-board="compact"] .scheduler-yard { display: none; }
+.scheduler-page[data-board="compact"] .scheduler-bar { --scheduler-cut-start: 0px; --scheduler-cut-end: 0px; }
+
 /* Out of service: a striped span the bars sit over. */
 .scheduler-oos {
   position: absolute;
@@ -492,8 +547,11 @@ button.scheduler-row-head__num::after {
   --scheduler-border: var(--rux-tag-border-gray);
   position: absolute;
   inset-block-start: calc(var(--scheduler-gap-clear) + var(--scheduler-lane, 0) * (var(--scheduler-bar-h) + var(--scheduler-lane-gap)));
-  inset-inline-start: calc(var(--scheduler-start) * var(--scheduler-day-w) + var(--scheduler-gap-clear));
-  inline-size: calc(var(--scheduler-span) * var(--scheduler-day-w) - var(--scheduler-gap) - var(--scheduler-gap-clear));
+  /* `--scheduler-cut-start` and `--scheduler-cut-end` are what an end gives
+     up to a yard card beside it; nothing otherwise. */
+  inset-inline-start: calc(var(--scheduler-start) * var(--scheduler-day-w) + var(--scheduler-gap-clear) + var(--scheduler-cut-start, 0px));
+  inline-size: calc(var(--scheduler-span) * var(--scheduler-day-w) - var(--scheduler-gap) - var(--scheduler-gap-clear)
+    - var(--scheduler-cut-start, 0px) - var(--scheduler-cut-end, 0px));
   block-size: var(--scheduler-bar-h);
   box-sizing: border-box;
   /* Each side's padding is its own property, so a striped end can widen its
@@ -509,8 +567,9 @@ button.scheduler-row-head__num::after {
      itself and the arithmetic would push the mark out into the gap. */
   --scheduler-day-one-end: max(0px, calc(100% + var(--scheduler-pad-start) - (100%
     + var(--scheduler-pad-start) + var(--scheduler-pad-end)
-    + var(--scheduler-gap) + var(--scheduler-gap-clear))
-    / var(--scheduler-span) + var(--scheduler-gap-clear)));
+    + var(--scheduler-gap) + var(--scheduler-gap-clear)
+    + var(--scheduler-cut-start, 0px) + var(--scheduler-cut-end, 0px))
+    / var(--scheduler-span) + var(--scheduler-gap-clear) - var(--scheduler-cut-start, 0px)));
   /* Square unless the theme rounds its controls, as ant-dark does. */
   border-radius: var(--scheduler-bar-radius, 0);
   background: var(--scheduler-bg);

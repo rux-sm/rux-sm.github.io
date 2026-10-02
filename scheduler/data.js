@@ -958,6 +958,48 @@
     }
   });
 
+  /* ── Time at the yard ──────────────────────────────────────────────────────
+     A bus's time at the yard between two trips on days side by side, from the
+     earlier trip's return to the later one's departure, for cleaning and
+     fuel. `restBetween` measures it, as it measures a driver's rest. A card
+     sits between the two bars, which pull their facing ends back to make room
+     while the view option is on. Only bars in one lane, end to end, have a
+     between; a day or more at the yard needs no card. Unknown until both
+     trips have times, and an overlap is a mistake on the board. */
+  const YARD_SHORT_HOURS = 4;
+  function yardGaps(bars) {
+    const gaps = [];
+    for (const after of bars) {
+      if (after.place.toNext) continue;
+      const before = bars.find(b => b !== after && b.lane === after.lane
+        && b.place.start === after.place.start + after.place.span);
+      if (!before) continue;
+      const hours = restBetween(after.leg, before.leg);
+      if (hours != null && hours >= 24) continue;
+      gaps.push({ after, before, hours });
+    }
+    return gaps;
+  }
+
+  function yardEl({ after, before, hours }) {
+    const short = hours == null || hours < YARD_SHORT_HOURS;
+    const card = el('div', `scheduler-yard${short ? ' scheduler-yard--short' : ''}`);
+    card.style.setProperty('--scheduler-start', before.place.start);
+    card.style.setProperty('--scheduler-lane', before.lane);
+    const shown = hours == null ? '?' : hours < 0 ? '!' : `${Math.floor(hours)}h`;
+    const mark = el('span', 'scheduler-yard__icon');
+    mark.appendChild(svgUse('#m-schedule', '16', '0 0 960 960'));
+    card.append(mark, el('span', 'scheduler-yard__hours', shown), el('span', 'scheduler-yard__word', 'yard'));
+    const back = hhmm(after.leg.back, true), leaves = hhmm(before.leg.depart, true);
+    const said = hours == null ? 'Time at the yard unknown until both trips have times'
+      : hours < 0 ? `Overlaps: back ${back}, leaves ${leaves}`
+      : `Back ${back}, leaves ${leaves} · ${Math.floor(hours)}h ${String(Math.floor((hours * 60) % 60)).padStart(2, '0')}m at the yard`;
+    card.title = said;
+    card.setAttribute('role', 'img');
+    card.setAttribute('aria-label', said);
+    return card;
+  }
+
   function barEl(b, driversById, busesById, statuses) {
     const { trip, leg, assign, place, slot, nth } = b;
     const hue = hueFor(trip);
@@ -1344,7 +1386,16 @@
         span.setAttribute('aria-label', `Out of service, ${w.reason || 'no reason given'}`);
         track.appendChild(span);
       }
-      for (const b of bars) { const el = barEl(b, driversById, busesById, statuses); installDrag(el); track.appendChild(el); }
+      const yards = r.bus ? yardGaps(bars) : [];
+      for (const b of bars) {
+        const el = barEl(b, driversById, busesById, statuses);
+        // The ends that give way to a yard card, while the view option is on.
+        if (yards.some(y => y.after === b)) el.classList.add('scheduler-bar--yard-end');
+        if (yards.some(y => y.before === b)) el.classList.add('scheduler-bar--yard-start');
+        installDrag(el);
+        track.appendChild(el);
+      }
+      for (const y of yards) track.appendChild(yardEl(y));
 
       rowEl.append(head, track);
       into.appendChild(rowEl);
@@ -9776,7 +9827,8 @@
 
   /* ── View options ─────────────────────────────────────────────────────────
      Start on Sunday, two weeks at a time, equipment under the bus numbers,
-     which a bus's tip switches too, and the bar-row toggles. Turning a row off removes it
+     which a bus's tip switches too, time at the yard between trips, and the
+     bar-row toggles. Turning a row off removes it
      rather than blanking it: `--scheduler-bar-rows` is the count, so the bar
      shrinks and more buses fit. Saved in `localStorage` and read with a
      try-catch, so a browser that refuses storage gets the defaults. */
@@ -9788,12 +9840,12 @@
     time: 'scheduler-week--no-time',
     drivers: 'scheduler-week--no-drivers',
   };
-  const view = { client: true, contact: true, time: true, drivers: true, sunday: false, equipment: false, twoWeeks: false };
+  const view = { client: true, contact: true, time: true, drivers: true, sunday: false, equipment: false, twoWeeks: false, yard: false };
   const VIEW_KEY = 'scheduler.view';
 
   try {
     const saved = JSON.parse(localStorage.getItem(VIEW_KEY) || '{}');
-    for (const k of [...VIEW_ROWS, 'sunday', 'equipment', 'twoWeeks']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
+    for (const k of [...VIEW_ROWS, 'sunday', 'equipment', 'twoWeeks', 'yard']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
   } catch { /* no storage, or nothing worth reading: the defaults stand */ }
   // Set before the first read for the reason Sunday is: it sizes the range.
   twoWeeks = view.twoWeeks;
@@ -9812,6 +9864,8 @@
     // saying so.
     showEquipment = view.equipment;
     schEl.classList.toggle('scheduler-week--equipment', showEquipment);
+    // Time at the yard: the cards between trips, and the bar ends that part for them.
+    schEl.classList.toggle('scheduler-week--yard', view.yard);
     for (const btn of schEl.querySelectorAll('.scheduler-bus-tip__switch .rux--toggle__button')) {
       btn.setAttribute('aria-checked', String(showEquipment));
       btn.parentElement.querySelector('.rux--toggle__switch')?.classList.toggle('rux--toggle__switch--checked', showEquipment);

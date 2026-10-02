@@ -799,12 +799,6 @@
     </li>
   </ul>
 
-  <!-- The selected trip's shortcuts: a small bar that floats clear of the trip,
-       placed the way a tooltip is, so a selected trip loses none of its width
-       or height. data.js moves it into the board's scroll pane, draws its
-       slots and places it above or below the trip. It lives here until then. -->
-  <div class="scheduler-bar-shortcuts" id="scheduler-bar-shortcuts" role="group" aria-label="Trip shortcuts" hidden></div>
-
   <!-- A driver's menu, opened by right-clicking or holding a name in Driver
        availability. data.js places and opens it as the bar's menu, hides
        Call and Text for a driver with no number, and names Pick out trips
@@ -834,6 +828,12 @@
       <div class="rux--menu-item__label">Pick out trips</div>
     </li>
   </ul>
+
+  <!-- The selected trip's shortcuts: a small bar that floats clear of the trip,
+       placed the way a tooltip is, so a selected trip loses none of its width
+       or height. data.js moves it into the board's scroll pane, draws its
+       slots and places it above or below the trip. It lives here until then. -->
+  <div class="scheduler-bar-shortcuts" id="scheduler-bar-shortcuts" role="group" aria-label="Trip shortcuts" hidden></div>
 
   <!-- The bar's context menu, opened by right-clicking a bar. data.js places
        and opens it the same way as the board's menu. -->

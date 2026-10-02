@@ -8734,57 +8734,6 @@
     else if (e.key === 'Escape' && focusDriver != null) { e.stopPropagation(); pickDriver(null); }
   });
 
-  /* WITH TWO WEEKS ON THE BOARD the roster shows one of them: the week the
-     selected trip starts in, or with nothing selected the week holding today,
-     else the first. A trip crossing into the second week shows its first, and
-     the days button shows both, widening the pane to Carbon's lg. The choice is
-     this browser's, as the editor's size is. */
-  const ROSTER_DAYS_KEY = 'rux.scheduler.roster-days';
-  const availDaysBtn = document.getElementById('scheduler-avail-days');
-  let rosterBoth = false;
-  try { rosterBoth = localStorage.getItem(ROSTER_DAYS_KEY) === '14'; } catch { /* one week */ }
-
-  function rosterSlice() {
-    const { weekStart, days } = availAll;
-    if (days <= 7 || rosterBoth) return { first: 0, count: days };
-    const on = currentTripDay();
-    const midnight = new Date();
-    midnight.setHours(0, 0, 0, 0);
-    const at = on ? on.start : daysBetween(weekStart, midnight);
-    return { first: at >= 7 && at < days ? 7 : 0, count: 7 };
-  }
-
-  // Draws the roster when the days it shows have changed, or when `force`
-  // says the rows have, then lights the selected trip's days.
-  function drawRoster(force) {
-    if (!availAll) return;
-    const { first, count } = rosterSlice();
-    const slice = `${first}:${count}`;
-    if (force || slice !== availSlice) {
-      availSlice = slice;
-      drawAvailability(availAll.rows, availAll.weekStart, first, count, availAll.days);
-    }
-    const on = currentTripDay();
-    markAvailDays(on ? on.start : null, on ? on.span : 1);
-    markDriverTrips();
-  }
-
-  availDaysBtn?.addEventListener('click', () => {
-    rosterBoth = !rosterBoth;
-    try { localStorage.setItem(ROSTER_DAYS_KEY, rosterBoth ? '14' : '7'); } catch { /* kept for this visit */ }
-    drawRoster();
-    // The pane changed width, so the board lays out again around it.
-    placeRoom();
-    window.Rux?.schedule?.fit?.();
-  });
-
-  function availabilityRows({ trips, drivers, timeOff, weekStart, weekEnd }) {
-    const length = daysBetween(weekStart, weekEnd) + 1;
-    const rows = (drivers || [])
-      /* Active drivers only. The roster answers who can take a trip, and an
-         inactive driver cannot, so their week is noise. A driver with no
-         status counts as active, as the Buses tab's picker reads it. */
-      .filter(d => !d.status || d.status === 'active')
   /* A NAME'S MENU, from a right-click, the menu key or a finger's hold: Send
      trips opens the Driver view and Open driver the driver's record, each in
      a new tab so the board stays as it is; Call and Text reach the driver as
@@ -8869,6 +8818,57 @@
   });
   driverMenu?.addEventListener('rux:menu-closed', e => { if (e.target === driverMenu) driverMenu.hidden = true; });
 
+  /* WITH TWO WEEKS ON THE BOARD the roster shows one of them: the week the
+     selected trip starts in, or with nothing selected the week holding today,
+     else the first. A trip crossing into the second week shows its first, and
+     the days button shows both, widening the pane to Carbon's lg. The choice is
+     this browser's, as the editor's size is. */
+  const ROSTER_DAYS_KEY = 'rux.scheduler.roster-days';
+  const availDaysBtn = document.getElementById('scheduler-avail-days');
+  let rosterBoth = false;
+  try { rosterBoth = localStorage.getItem(ROSTER_DAYS_KEY) === '14'; } catch { /* one week */ }
+
+  function rosterSlice() {
+    const { weekStart, days } = availAll;
+    if (days <= 7 || rosterBoth) return { first: 0, count: days };
+    const on = currentTripDay();
+    const midnight = new Date();
+    midnight.setHours(0, 0, 0, 0);
+    const at = on ? on.start : daysBetween(weekStart, midnight);
+    return { first: at >= 7 && at < days ? 7 : 0, count: 7 };
+  }
+
+  // Draws the roster when the days it shows have changed, or when `force`
+  // says the rows have, then lights the selected trip's days.
+  function drawRoster(force) {
+    if (!availAll) return;
+    const { first, count } = rosterSlice();
+    const slice = `${first}:${count}`;
+    if (force || slice !== availSlice) {
+      availSlice = slice;
+      drawAvailability(availAll.rows, availAll.weekStart, first, count, availAll.days);
+    }
+    const on = currentTripDay();
+    markAvailDays(on ? on.start : null, on ? on.span : 1);
+    markDriverTrips();
+  }
+
+  availDaysBtn?.addEventListener('click', () => {
+    rosterBoth = !rosterBoth;
+    try { localStorage.setItem(ROSTER_DAYS_KEY, rosterBoth ? '14' : '7'); } catch { /* kept for this visit */ }
+    drawRoster();
+    // The pane changed width, so the board lays out again around it.
+    placeRoom();
+    window.Rux?.schedule?.fit?.();
+  });
+
+  function availabilityRows({ trips, drivers, timeOff, weekStart, weekEnd }) {
+    const length = daysBetween(weekStart, weekEnd) + 1;
+    const rows = (drivers || [])
+      /* Active drivers only. The roster answers who can take a trip, and an
+         inactive driver cannot, so their week is noise. A driver with no
+         status counts as active, as the Buses tab's picker reads it. */
+      .filter(d => !d.status || d.status === 'active')
       /* Priority first, the order the office calls drivers in, so the top of
          the roster is who to ask next. 1 to 5; a driver with none sorts below
          5, and names settle a tie. */

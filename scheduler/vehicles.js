@@ -39,14 +39,12 @@
 
   const typeOf = name => types.find(t => t.name.toLowerCase() === String(name || '').trim().toLowerCase()) ?? null;
 
-  /* "Coach 218", "Van 12", and "Unit 218" with no type. A number that is the
-     type's own name, as the van's is until it gets one, is said once. */
+  /* "218": the office knows a vehicle by its number, and the type is said
+     beside it where it matters. With no number, the type, or "Unit". */
   function label(vehicle) {
     const type = String(vehicle?.type || '').trim();
     const number = String(vehicle?.number ?? '').trim();
-    if (!type) return number ? `Unit ${number}` : 'Unit';
-    if (!number || number.toLowerCase() === type.toLowerCase()) return type;
-    return `${type} ${number}`;
+    return number || type || 'Unit';
   }
 
   // The drawing for a type, or null where it has none.

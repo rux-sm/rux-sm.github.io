@@ -102,7 +102,7 @@
   const UNASSIGNED = ' unassigned';
 
   // A vehicle as every screen names it, "Coach 218" or "Van 12"; vehicles.js.
-  const vehicleName = bus => window.SchedulerVehicles?.label(bus) ?? `Unit ${bus?.number ?? ''}`.trim();
+  const vehicleName = bus => window.SchedulerVehicles?.label(bus) ?? (String(bus?.number ?? '').trim() || 'Unit');
   const client = window.Rux?.account?.client
     ?? (window.supabase ? window.supabase.createClient(PROJECT, PUBLISHABLE, { auth: { persistSession: false } }) : null);
 
@@ -3100,12 +3100,15 @@
   };
   vehicleHost?.addEventListener('change', fleetTyped);
   vehicleHost?.addEventListener('input', fleetTyped);
-  // A pick sets the bus or the driver; a new driver starts at Not sent.
+  /* A pick sets the bus or the driver; a new driver starts at Not sent.
+     Typing over a pick drops it with no option, and that is left to focusout
+     below: redrawing here would replace the field under the first key typed. */
   vehicleHost?.addEventListener('rux:listbox-selected', e => {
     const wrap = e.target.closest?.('.rux--list-box__wrapper');
     const { bus } = fleetBus(wrap);
     if (!bus) return;
     const picked = e.detail?.option?.dataset.fleetId ?? null;
+    if (picked == null) return;
     const input = wrap.querySelector('input[role="combobox"]');
     const role = wrap.dataset.fleetSeat;
     const find = (map, id) => (id == null ? null : [...map.keys()].find(k => String(k) === String(id)) ?? null);
@@ -3132,12 +3135,14 @@
     const { bus } = fleetBus(wrap);
     if (!bus) return;
     if (input.value === input.dataset.fleetText) return;
-    if (input.value.trim()) { input.value = input.dataset.fleetText; return; }
-    const role = wrap.dataset.fleetSeat;
-    if (role) Object.assign(bus.seats[role], { driverId: null, status: 'off', statusDirty: false });
-    else bus.busId = null;
-    refreshDirty();
-    // Redrawn once focus has landed, so its warning and status button follow.
+    if (!input.value.trim()) {
+      const role = wrap.dataset.fleetSeat;
+      if (role) Object.assign(bus.seats[role], { driverId: null, status: 'off', statusDirty: false });
+      else bus.busId = null;
+      refreshDirty();
+    }
+    // Redrawn once focus has landed, so the pick's tick, its warning and its
+    // status button follow what the field now holds.
     setTimeout(() => drawFleet(document.activeElement?.id), 0);
   });
   // The dates may have moved on Details, so choosing the tab reads the clashes again.

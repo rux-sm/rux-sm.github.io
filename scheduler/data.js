@@ -518,8 +518,9 @@
         .gte('start_date', lo).lte('start_date', hi).order('start_date').then(unwrap),
       // `status`, so the Buses tab offers active drivers; `priority`, so the
       // roster lists them in the order they are called on; `employment_type`,
-      // because a part-time driver needs an hours-of-service record.
-      client.from('drivers').select('id,name,short_name,status,priority,phone,texting_url,employment_type').then(unwrap),
+      // because a part-time driver needs an hours-of-service record; the
+      // licence and medical card dates, so the bar menu flags an expired one.
+      client.from('drivers').select('id,name,short_name,status,priority,phone,texting_url,employment_type,license_exp,med_card_expiry').then(unwrap),
       // Every contact, read once with the week for the contact search rather
       // than on each keystroke.
       client.from('contacts').select('id,name,phone,email,client,customer_id').order('name').then(unwrap),
@@ -10430,11 +10431,10 @@
 
   /* ── Assign driver, from the bar ──
      The bar is one bus on one leg, so its menu fills that bus's Driver seat
-     with a pick from the free drivers ranked as the Buses tab ranks them. The
+     with a pick from every active driver ranked as the Buses tab ranks them. The
      trips around the leg are read when the menu opens, since the board holds
      only its own weeks, and kept a minute, so the shortcut and the menu share
      one read. Co-drivers and relief stay in the Buses tab. */
-  const ASSIGN_SHOWN = 5;
   let assignRead = null;
   let assignSeq = 0;
 
@@ -10449,6 +10449,24 @@
     return { trip, assign, leg, range: range ? { from: range.from, to: range.to, depart: range.depart, back: range.back, backDays: range.backDays } : null, seat };
   }
 
+  /* What runs out before the leg ends, the licence or the medical card, in
+     words, or '' when both last the trip. A date not on file says nothing. */
+  const cardDay = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  function cardLapse(d, range) {
+    return [['Licence', d.license_exp], ['Medical card', d.med_card_expiry]]
+      .map(([what, v]) => [what, String(v ?? '').slice(0, 10)])
+      .filter(([, day]) => /^\d{4}-\d{2}-\d{2}$/.test(day) && day < range.to)
+      .map(([what, day]) => `${what} ${day < range.from ? 'expired' : 'expires'} ${cardDay.format(parseISO(day))}`)
+      .join(' · ');
+  }
+
+  // The red alert a lapsed card wears in the menu, coloured as a declined status.
+  function lapseIcon() {
+    const svg = svgUse('#m-error-fill', '16', '0 0 32 32');
+    svg.setAttribute('class', 'rux--icon-indicator--failed scheduler-status-icon');
+    return svg;
+  }
+
   function assignItem(label, { id, icon, note, title, checked, disabled } = {}) {
     const item = el('li', disabled ? 'rux--menu-item rux--menu-item--disabled' : 'rux--menu-item');
     item.setAttribute('role', 'menuitem');
@@ -10459,16 +10477,18 @@
     const check = el('div', 'rux--menu-item__selection-icon');
     if (checked) check.appendChild(svgUse('#m-check', '16', '0 0 20 20'));
     const mark = el('div', 'rux--menu-item__icon');
-    if (icon) mark.appendChild(svgUse(icon, '16', '0 0 32 32'));
+    if (icon) mark.appendChild(typeof icon === 'string' ? svgUse(icon, '16', '0 0 32 32') : icon);
     item.append(check, mark, el('div', 'rux--menu-item__label', label));
     if (note) item.appendChild(el('div', 'rux--menu-item__shortcut', note));
     return item;
   }
 
   /* Fills the Assign driver submenu: the driver on the bus now, checked, then
-     the first free drivers in rank order, a back-to-back one marked with a
-     warning, then More drivers. The list says it is looking while the trips
-     around the leg are read. */
+     every free driver in rank order, one whose licence or medical card runs
+     out before the leg ends marked with a red alert and a back-to-back one
+     with a warning, then the busy ones, greyed with what they are on, then
+     More drivers. The list says it is looking while the trips around the leg
+     are read. */
   async function fillAssignItems(bar) {
     const parent = document.getElementById('scheduler-bar-menu-assign');
     const list = document.getElementById('scheduler-bar-menu-assign-list');
@@ -10509,17 +10529,25 @@
     const fit = fitFor(nearby, range, { assignmentId: assign.id });
     // Anyone already in a seat on this bus is left out, so one driver never takes two.
     const onBus = new Set((assign.trip_drivers || []).map(d => String(d.driver_id)));
-    const free = rankDrivers([...panelIndex.driversById.values()]
-      .filter(d => (!d.status || d.status === 'active') && !onBus.has(String(d.id))), fit)
-      .filter(r => !r.busy).slice(0, ASSIGN_SHOWN);
-    const picks = free.length
-      ? free.map(r => assignItem(r.d.name || r.d.short_name || 'Unnamed driver', {
-          id: String(r.d.id),
-          icon: r.near ? '#m-warning-fill' : '#m-person-fill',
-          note: [r.d.priority != null ? `P${r.d.priority}` : '', `${r.days}d`].filter(Boolean).join(' · '),
-          title: [r.detail, r.near].filter(Boolean).join(' · '),
-        }))
-      : [assignItem('No free drivers', { disabled: true })];
+    const ranked = rankDrivers([...panelIndex.driversById.values()]
+      .filter(d => (!d.status || d.status === 'active') && !onBus.has(String(d.id))), fit);
+    // A busy driver is shown but cannot be picked, so the menu never double-books.
+    const pick = r => {
+      const lapse = cardLapse(r.d, range);
+      return assignItem(r.d.name || r.d.short_name || 'Unnamed driver', {
+        id: r.busy ? null : String(r.d.id),
+        icon: r.busy ? '#m-do_not_disturb_on-fill' : lapse ? lapseIcon() : r.near ? '#m-warning-fill' : '#m-person-fill',
+        note: [r.d.priority != null ? `P${r.d.priority}` : '', `${r.days}d`].filter(Boolean).join(' · '),
+        title: [r.busy, lapse, r.detail, r.near].filter(Boolean).join(' · '),
+        disabled: !!r.busy,
+      });
+    };
+    const free = ranked.filter(r => !r.busy).map(pick);
+    const busy = ranked.filter(r => r.busy).map(pick);
+    const picks = [
+      ...(free.length ? free : [assignItem('No free drivers', { disabled: true })]),
+      ...(busy.length ? [rule(), ...busy] : []),
+    ];
     list.replaceChildren(...current, ...picks, rule(), more);
   }
 

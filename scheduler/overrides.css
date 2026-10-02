@@ -648,6 +648,14 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   max-inline-size: var(--scheduler-viewer-w, 30rem);
 }
 
+/* The bar menu's driver list holds every active driver, longer than a short
+   window, so it stops at the window's height and scrolls inside, where
+   Carbon's open menu lets a list run off the screen. */
+#scheduler-bar-menu-assign-list {
+  max-block-size: 100dvh;
+  overflow-y: auto;
+}
+
 /* Carbon keeps 4rem at the end of a labelled button for an icon it may carry.
    The document toolbar's buttons carry none, and in a 30rem panel that space
    is the difference between one row and two, so they end where the label

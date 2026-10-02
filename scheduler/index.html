@@ -799,6 +799,36 @@
        slots and places it above or below the trip. It lives here until then. -->
   <div class="scheduler-bar-shortcuts" id="scheduler-bar-shortcuts" role="group" aria-label="Trip shortcuts" hidden></div>
 
+  <!-- A driver's menu, opened by right-clicking or holding a name in Driver
+       availability. data.js places and opens it as the bar's menu, hides
+       Call and Text for a driver with no number, and names Pick out trips
+       Show every trip while that driver is picked. -->
+  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons" id="scheduler-driver-menu" role="menu" tabindex="-1" hidden>
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-driver-menu-send">
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg></div>
+      <div class="rux--menu-item__label">Send trips</div>
+    </li>
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-driver-menu-open">
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-person"/></svg></div>
+      <div class="rux--menu-item__label">Open driver</div>
+    </li>
+    <li class="rux--menu-item-divider" role="separator" id="scheduler-driver-menu-reach"></li>
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-driver-menu-call">
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-call"/></svg></div>
+      <div class="rux--menu-item__label">Call</div>
+      <div class="rux--menu-item__shortcut" id="scheduler-driver-menu-phone"></div>
+    </li>
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-driver-menu-text">
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-chat"/></svg></div>
+      <div class="rux--menu-item__label">Text</div>
+    </li>
+    <li class="rux--menu-item-divider" role="separator"></li>
+    <li class="rux--menu-item" role="menuitem" tabindex="-1" id="scheduler-driver-menu-pick">
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-visibility"/></svg></div>
+      <div class="rux--menu-item__label">Pick out trips</div>
+    </li>
+  </ul>
+
   <!-- The bar's context menu, opened by right-clicking a bar. data.js places
        and opens it the same way as the board's menu. -->
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items" id="scheduler-bar-menu" role="menu" tabindex="-1" hidden>

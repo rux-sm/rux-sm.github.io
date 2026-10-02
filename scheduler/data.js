@@ -8667,7 +8667,12 @@
 
   availGrid?.addEventListener('click', e => {
     const name = e.target.closest('.scheduler-avail__name[data-driver-id]');
-    if (name) { pickDriver(name.dataset.driverId); return; }
+    if (name) {
+      // The tap that ends a hold opened the name's menu, and picks no one.
+      if (heldName) { heldName = false; return; }
+      pickDriver(name.dataset.driverId);
+      return;
+    }
     const cell = e.target.closest('.scheduler-avail__cell');
     if (cell) selectDayTrip(cell);
   });
@@ -8729,6 +8734,90 @@
          inactive driver cannot, so their week is noise. A driver with no
          status counts as active, as the Buses tab's picker reads it. */
       .filter(d => !d.status || d.status === 'active')
+  /* A NAME'S MENU, from a right-click, the menu key or a finger's hold: Send
+     trips opens the Driver view and Open driver the driver's record, each in
+     a new tab so the board stays as it is; Call and Text reach the driver as
+     a trip's Contacts do, shown only with a number; Pick out trips is the
+     name's own press. Placed and opened as the bar's menu is. */
+  const driverMenu = document.getElementById('scheduler-driver-menu');
+  let driverMenuFor = null;
+  let heldName = false;
+
+  // Follows a link as a press on it would, so a call or a text never
+  // navigates the board away.
+  const follow = (href, away) => {
+    const a = Object.assign(document.createElement('a'), { href });
+    if (away) { a.target = '_blank'; a.rel = 'noopener'; }
+    a.click();
+  };
+  // Google Messages takes the text on a computer; a phone's own app does on
+  // the compact board, as the trip's Contacts read it.
+  const textsInMessages = driver => !!driver.texting_url && pageEl?.getAttribute('data-board') !== 'compact';
+
+  function openDriverMenu(name, e) {
+    const id = name.dataset.driverId;
+    const driver = availAll?.rows.find(r => String(r.driver.id) === id)?.driver;
+    if (!driver || !driverMenu) return;
+    driverMenuFor = { id, driver };
+    const call = document.getElementById('scheduler-driver-menu-call');
+    const text = document.getElementById('scheduler-driver-menu-text');
+    call.hidden = !driver.phone;
+    text.hidden = !driver.phone && !textsInMessages(driver);
+    document.getElementById('scheduler-driver-menu-reach').hidden = call.hidden && text.hidden;
+    document.getElementById('scheduler-driver-menu-phone').textContent = driver.phone ? showPhone(driver.phone) : '';
+    document.querySelector('#scheduler-driver-menu-pick .rux--menu-item__label').textContent =
+      focusDriver === id ? 'Show every trip' : 'Pick out trips';
+    popMenuAt(driverMenu, e);
+  }
+
+  availGrid?.addEventListener('contextmenu', e => {
+    const name = e.target.closest('.scheduler-avail__name[data-driver-id]');
+    if (!name) return;
+    e.preventDefault();
+    openDriverMenu(name, e);
+  });
+
+  /* A finger holding still on a name opens its menu, timed and bounded as
+     the board's cell hold is; travel past the slop is a scroll and ends it. */
+  availGrid?.addEventListener('pointerdown', down => {
+    heldName = false;
+    if (down.pointerType !== 'touch' || !down.isPrimary) return;
+    const name = down.target.closest('.scheduler-avail__name[data-driver-id]');
+    if (!name) return;
+    const mine = e => e.pointerId === down.pointerId;
+    const move = e => {
+      if (mine(e) && Math.hypot(e.clientX - down.clientX, e.clientY - down.clientY) > TOUCH_SLOP) end();
+    };
+    const up = e => { if (mine(e)) end(); };
+    const end = () => {
+      clearTimeout(hold);
+      availGrid.removeEventListener('pointermove', move);
+      availGrid.removeEventListener('pointerup', up);
+      availGrid.removeEventListener('pointercancel', up);
+    };
+    const hold = setTimeout(() => { end(); heldName = true; openDriverMenu(name, down); }, TOUCH_HOLD_MS);
+    availGrid.addEventListener('pointermove', move);
+    availGrid.addEventListener('pointerup', up);
+    availGrid.addEventListener('pointercancel', up);
+  });
+
+  driverMenu?.addEventListener('click', e => {
+    const item = e.target.closest('.rux--menu-item');
+    if (!item || !driverMenuFor) return;
+    const { id, driver } = driverMenuFor;
+    window.Rux?.menu?.close?.(driverMenu);
+    driverMenu.hidden = true;
+    const ref = encodeURIComponent(driver.id);
+    if (item.id === 'scheduler-driver-menu-send') follow(`driver-view.html?driver=${ref}`, true);
+    else if (item.id === 'scheduler-driver-menu-open') follow(`drivers.html?id=${ref}`, true);
+    else if (item.id === 'scheduler-driver-menu-call') follow(`tel:${dial(driver.phone)}`);
+    else if (item.id === 'scheduler-driver-menu-text') {
+      if (textsInMessages(driver)) follow(driver.texting_url, true);
+      else follow(`sms:${dial(driver.phone)}`);
+    } else if (item.id === 'scheduler-driver-menu-pick') pickDriver(id);
+  });
+  driverMenu?.addEventListener('rux:menu-closed', e => { if (e.target === driverMenu) driverMenu.hidden = true; });
+
       /* Priority first, the order the office calls drivers in, so the top of
          the roster is who to ask next. 1 to 5; a driver with none sorts below
          5, and names settle a tie. */

@@ -2237,7 +2237,14 @@ button.scheduler-row-head__num::after {
    inside its own edge, where the pane does not clip it. Pressed, it reads
    in primary text at semibold. A busy day selects its trip, so it shows the
    hand. */
-.scheduler-avail__name { cursor: pointer; }
+/* A finger holding a name opens its menu, so the browser's own callout and
+   text selection are off there, as on the board's cells. */
+.scheduler-avail__name {
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
 .scheduler-avail__name:hover { background: var(--rux-layer-hover); }
 .scheduler-avail__name[aria-pressed="true"] {
   background: var(--rux-layer-selected);

@@ -287,6 +287,11 @@
   --scheduler-avail-fill: oklch(27% 0.1084 19.02);
   --scheduler-avail-edge: oklch(69.96% 0.2136 22.03);
 }
+/* A rest under 10 hours is Geist's amber badge, after busy, which it also is. */
+[data-theme="geist-dark"] .scheduler-avail__cell--tight {
+  --scheduler-avail-fill: oklch(27% 0.07 75);
+  --scheduler-avail-edge: oklch(81.87% 0.1584 76.5);
+}
 
 /* The roster's column header and its priority headings are one band drawn
    twice. Carbon separates a header from its rows with a change of surface, so

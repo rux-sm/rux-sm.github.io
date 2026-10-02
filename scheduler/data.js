@@ -923,6 +923,7 @@
     item.appendChild(el('span', c.needed ? 'scheduler-crew__name scheduler-bar__none' : 'scheduler-crew__name',
       c.needed ? (dot ? `No ${c.label.toLowerCase()}` : 'No relief') : crewName(c)));
     item.title = crewText(c);
+    if (c.driverId != null) item.dataset.driverId = c.driverId;
     return item;
   }
 
@@ -1108,6 +1109,8 @@
     const crew = assign ? crewOf(trip, assign, driversById, statuses).filter(c => !(placeholder && c.needed)) : [];
     const crewBox = el('span', 'scheduler-bar__crew', assign || placeholder ? null : 'Needs a bus');
     crewBox.append(...crew.map(crewEl));
+    // Who drives this bar, for the driver grid to pick out.
+    bar.dataset.drivers = crew.filter(c => c.driverId != null).map(c => c.driverId).join(' ');
     crewObserver.observe(bar);
     addRow(bar, 'scheduler-bar__drivers', crewBox);
 
@@ -8615,6 +8618,61 @@
   let availAll = null;
   let availSlice = '';
 
+  /* PICKING A DRIVER OUT: a press on a name dims every bar but that driver's,
+     in any seat, and sets their name in bold on their own bars, so their week
+     reads straight off the board. The same name again, Escape in the roster,
+     or hiding the roster puts the board back. Kept by id, because every
+     render replaces the bars and the names. */
+  let focusDriver = null;
+  // The trips each busy day is made of, which a click on the day selects.
+  let availRefs = new WeakMap();
+
+  function markDriverTrips() {
+    const id = focusDriver;
+    gridEl.classList.toggle('scheduler-grid--driver', id != null);
+    for (const bar of gridEl.querySelectorAll('.scheduler-bar[data-trip-id]')) {
+      bar.classList.toggle('scheduler-bar--driver', id != null && (bar.dataset.drivers || '').split(' ').includes(id));
+    }
+    for (const c of gridEl.querySelectorAll('.scheduler-crew[data-driver-id]')) {
+      c.classList.toggle('scheduler-crew--focus', c.dataset.driverId === id);
+    }
+    for (const n of availGrid.querySelectorAll('.scheduler-avail__name[data-driver-id]')) {
+      n.setAttribute('aria-pressed', String(n.dataset.driverId === id));
+    }
+  }
+
+  function pickDriver(id) {
+    focusDriver = id != null && id !== focusDriver ? id : null;
+    markDriverTrips();
+  }
+
+  /* A busy day selects its trip's bar and brings it into view; a day of two
+     trips selects the next one each time. The board's own selection does the
+     rest, lighting the trip's days and showing its shortcut bar. */
+  function selectDayTrip(cell) {
+    const refs = availRefs.get(cell);
+    if (!refs?.length) return;
+    const bars = refs.map(findBar).filter(Boolean);
+    if (!bars.length) return;
+    const at = bars.indexOf(selectedBar());
+    const bar = bars[(at + 1) % bars.length];
+    selectBar(bar);
+    bar.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }
+
+  availGrid?.addEventListener('click', e => {
+    const name = e.target.closest('.scheduler-avail__name[data-driver-id]');
+    if (name) { pickDriver(name.dataset.driverId); return; }
+    const cell = e.target.closest('.scheduler-avail__cell');
+    if (cell) selectDayTrip(cell);
+  });
+  availGrid?.addEventListener('keydown', e => {
+    const name = e.target.closest?.('.scheduler-avail__name[data-driver-id]');
+    if (!name) return;
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickDriver(name.dataset.driverId); }
+    else if (e.key === 'Escape' && focusDriver != null) { e.stopPropagation(); pickDriver(null); }
+  });
+
   /* WITH TWO WEEKS ON THE BOARD the roster shows one of them: the week the
      selected trip starts in, or with nothing selected the week holding today,
      else the first. A trip crossing into the second week shows its first, and
@@ -8647,6 +8705,7 @@
     }
     const on = currentTripDay();
     markAvailDays(on ? on.start : null, on ? on.span : 1);
+    markDriverTrips();
   }
 
   availDaysBtn?.addEventListener('click', () => {
@@ -8670,7 +8729,10 @@
          5, and names settle a tie. */
       .sort((a, b) => ((a.priority ?? 9) - (b.priority ?? 9))
         || (a.short_name || a.name || '').localeCompare(b.short_name || b.name || ''))
-      .map(d => ({ driver: d, days: Array.from({ length }, () => ({ off: null, trips: [] })) }));
+      .map(d => ({
+        driver: d, legs: [],
+        days: Array.from({ length }, () => ({ off: null, trips: [], refs: [], rest: null })),
+      }));
     const byId = new Map(rows.map(r => [r.driver.id, r]));
 
     for (const trip of trips || []) {
@@ -8679,15 +8741,48 @@
         if (!place) continue;
         for (const a of trip.trip_assignments || []) {
           if ((a.leg || 'outbound') !== leg.leg) continue;
+          // Only the roles that are on, as the bar's crew counts them, so the
+          // grid and the bar agree on who is driving.
+          const on = activeRolesOf(a);
           for (const td of a.trip_drivers || []) {
             const row = byId.get(td.driver_id);
-            if (!row) continue;
+            if (!row || !on.has(td.role || 'driver')) continue;
             const what = trip.destination || 'Trip';
+            // The bar a busy day selects, by the values `findBar` reads.
+            const ref = { tripId: String(trip.id), leg: leg.leg, assignmentId: a.id != null ? String(a.id) : null };
             for (let i = 0; i < place.span; i++) {
               const day = row.days[place.start + i];
-              if (day && !day.trips.includes(what)) day.trips.push(what);
+              if (!day) continue;
+              if (!day.trips.includes(what)) day.trips.push(what);
+              if (!day.refs.some(r => r.tripId === ref.tripId && r.leg === ref.leg)) day.refs.push(ref);
             }
+            if (!row.legs.some(l => l.tripId === ref.tripId && l.leg === ref.leg)) row.legs.push({ ...leg, tripId: ref.tripId, what });
           }
+        }
+      }
+    }
+
+    /* THE REST BETWEEN BACK-TO-BACK DAYS, on the later trip's first day: from
+       the earlier trip's return to the yard to the later one's departure, by
+       the same `restBetween` the driver picker ranks with. Unknown when either
+       leg has no times, which reads as a question rather than as enough. One
+       trip over several days is one trip, so it has no rest inside it. Where
+       a day follows two trips, the worst rest is the one shown: a short one,
+       then an unknown one, then the shortest of the rest. */
+    const worse = (a, b) => {
+      const rank = r => (r.hours == null ? 1 : r.hours < REST_HOURS ? 0 : 2);
+      return rank(a) - rank(b) || (a.hours ?? 0) - (b.hours ?? 0);
+    };
+    for (const row of rows) {
+      for (const later of row.legs) {
+        const before = iso(addDays(parseISO(later.from), -1));
+        const at = daysBetween(weekStart, parseISO(later.from));
+        const day = row.days[at];
+        if (!day) continue;
+        for (const earlier of row.legs) {
+          if (earlier === later || earlier.to !== before) continue;
+          const rest = { hours: restBetween(earlier, later), after: earlier.what, before: later.what };
+          if (!day.rest || worse(rest, day.rest) < 0) day.rest = rest;
         }
       }
     }
@@ -8774,17 +8869,39 @@
       const shown = row.driver.short_name || row.driver.name || 'Driver';
       const nameEl = el('div', 'scheduler-avail__name', shown);
       if (row.driver.name) nameEl.title = row.driver.name;
+      // A press picks out the driver's trips on the board; see `markDriverTrips`.
+      nameEl.setAttribute('role', 'button');
+      nameEl.tabIndex = 0;
+      nameEl.setAttribute('aria-pressed', String(row.driver.id === focusDriver));
+      nameEl.dataset.driverId = row.driver.id;
       r.appendChild(nameEl);
       row.days.slice(first, first + count).forEach((day, j) => {
         const i = first + j;
         const busy = day.trips.length > 0;
+        /* A busy day after a trip the day before shows the hours between
+           them: under REST_HOURS, or overlapping, in the warning tone, and
+           unknown as a question mark until both trips have times. Time off
+           beats it, as it beats busy. */
+        const rest = !day.off && busy ? day.rest : null;
+        const tight = rest?.hours != null && rest.hours < REST_HOURS;
         const cls = day.off ? 'scheduler-avail__cell scheduler-avail__cell--off'
           : busy ? 'scheduler-avail__cell scheduler-avail__cell--busy'
           : 'scheduler-avail__cell';
         const cell = el('div', cls);
         cell.dataset.day = String(i);
-        cell.appendChild(el('span', null, day.off || day.trips.join(' · ')));
-        if (day.off || busy) cell.title = `${row.driver.name || ''} — ${day.off || day.trips.join(' · ')}`;
+        if (rest) cell.classList.add('scheduler-avail__cell--rest');
+        if (tight) cell.classList.add('scheduler-avail__cell--tight');
+        // Whole hours, rounded down, so a rest is never shown longer than it is.
+        const restText = !rest ? null : rest.hours == null ? '?' : rest.hours < 0 ? '!' : `${Math.floor(rest.hours)}h`;
+        const restWords = !rest ? null
+          : rest.hours == null ? `rest after ${rest.after} unknown until both trips have times`
+          : rest.hours < 0 ? `overlaps ${rest.after}`
+          : `${Math.floor(rest.hours)}h rest after ${rest.after}${tight ? `, under ${REST_HOURS}` : ''}`;
+        cell.appendChild(el('span', null, restText ?? (day.off || day.trips.join(' · '))));
+        if (day.off || busy) {
+          cell.title = `${row.driver.name || ''} — ${day.off || day.trips.join(' · ')}${restWords ? ` · ${restWords}` : ''}`;
+        }
+        if (!day.off && day.refs.length) availRefs.set(cell, day.refs);
         r.appendChild(cell);
       });
       availGrid.appendChild(r);
@@ -9529,6 +9646,9 @@
        the week or in front of it -- is `placeRoom`'s, and either way the toggle
        reads as pressed, because either way the roster is there. */
     const shown = availOn;
+    // A driver picked out from a roster that has gone would dim the board
+    // with nothing on screen to say why, or to undo it.
+    if (!shown && focusDriver != null) pickDriver(null);
     if (asideSlot) {
       asideSlot.hidden = !shown;
       if (shown) asideSlot.appendChild(availEl);

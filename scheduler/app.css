@@ -2212,6 +2212,47 @@ button.scheduler-row-head__num::after {
    question there is free or not. */
 .scheduler-avail__cell > span { visibility: hidden; }
 
+/* THE REST BETWEEN BACK-TO-BACK DAYS is the one word a square carries: the
+   hours off before that day's trip, "15h", or "?" until both trips have
+   times. Centred, in tabular figures so a column of them lines up, and over
+   Geist's painted square. Under 10 hours the square turns the warning tone,
+   the one the board's drop warning uses, mixed into the surface so the
+   primary text reads on it in every theme; it comes after `--busy` to take
+   that cell's colours. */
+.scheduler-avail__cell--rest { justify-content: center; }
+.scheduler-avail__cell--rest > span {
+  visibility: visible;
+  position: relative;
+  z-index: 1;
+  inline-size: auto;
+  font-variant-numeric: tabular-nums;
+}
+.scheduler-avail__cell--tight {
+  background-color: color-mix(in srgb, var(--rux-support-warning) 40%, transparent);
+  color: var(--rux-text-primary);
+}
+
+/* A driver's name is a toggle that picks out their trips, so it takes the
+   hover and pressed surfaces of Carbon's selectable rows and the focus ring
+   inside its own edge, where the pane does not clip it. Pressed, it reads
+   in primary text at semibold. A busy day selects its trip, so it shows the
+   hand. */
+.scheduler-avail__name { cursor: pointer; }
+.scheduler-avail__name:hover { background: var(--rux-layer-hover); }
+.scheduler-avail__name[aria-pressed="true"] {
+  background: var(--rux-layer-selected);
+  color: var(--rux-text-primary);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+}
+.scheduler-avail__name:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
+.scheduler-avail__cell--busy { cursor: pointer; }
+
+/* On the board, every bar but the picked driver's steps back, so theirs stand
+   out by contrast rather than by a shadow Carbon keeps for floating things,
+   and their own name on each of their bars is set in semibold. */
+.scheduler-grid--driver .scheduler-bar:not(.scheduler-bar--driver) { opacity: .3; }
+.scheduler-crew--focus .scheduler-crew__name { font-weight: var(--rux-heading-compact-01-font-weight); }
+
 /* Weekend day letters take regular weight, as the board's weekend day names
    do. Two classes, to beat the band's weight on
    `.scheduler-avail__days > .scheduler-avail__day`. */

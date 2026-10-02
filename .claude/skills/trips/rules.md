@@ -30,6 +30,8 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - A new driver goes out first as co-driver beside an experienced driver, never alone on a bus, so they learn the work before they drive a trip of their own.
 - A driver gets trips on two days in a row only when the rest between them is clearly enough, at least 10 hours from one trip's return to the yard to the next trip's departure, such as an evening trip back by 19:30 before a 10:30 departure, so the driver's hours reset. A trip spanning several days counts as one trip.
 - The owners drive only when no other driver is free, and then on the shortest trips of the day, because they run the company the rest of the time.
+- A trip's equipment needs pick its bus first, such as a sleeper for a long one-driver day, an ADA lift or 56 seats; among the buses that meet them, the farthest trips take the newest, as the board lists the buses newest first, because the newest are the most comfortable and reliable over distance.
+- A bus gets as long at the yard between trips as the week allows, so it can be cleaned and fuelled: a bus back late at night goes out on a later departure the next day rather than an early one.
 - Need hotel is on only when the office books the driver's room; when the customer provides it, as they usually do, it stays off.
 
 ## Customers and confirmation

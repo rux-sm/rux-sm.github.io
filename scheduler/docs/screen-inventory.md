@@ -147,7 +147,10 @@ Three homes, and one rule for choosing.
   which the trip's checklist reads. The itinerary's Layout picks Simple, the
   driver's sheet, or Detailed, the office's, with the yard at both ends, each
   wait marked On duty, Off duty or Sleeper berth, Start, Spot and End, and the
-  Route tab's Miles, Drive, On duty and Less rest a day and in total; Detailed
+  Route tab's Miles, Drive, On duty and Less rest a day and in total, then the
+  Billing tab's saved quote lines: the rental's miles, mileage rate and dead
+  miles, flagged when the route's miles have moved since, each second driver,
+  relief, hotel and discount line, the total and the price sent; Detailed
   has no Printed box and is never offered on a blank form.
 
 ### The driver availability grid

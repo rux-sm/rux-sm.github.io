@@ -276,6 +276,17 @@
     const minutes = v => (Number.isFinite(Number(v)) && v !== null && v !== '' && Number(v) >= 0 ? Math.round(Number(v)) : 0);
     routeTimes = { pre: minutes(data?.value?.pre_trip_minutes), post: minutes(data?.value?.post_trip_minutes) };
   }
+  /* THE ONE QUOTE RULE THE DETAILED PRICE READS: a rental under these miles
+     is priced at the local day rate, not by the mile. quote.js's `rule`
+     answers it as the calculator does, its default while none is saved;
+     unread, no rental is called local. */
+  let quoteRules = { localUnder: null };
+  async function readQuoteRules(client) {
+    const { data, error } = await client.from('quote_rates').select('value').eq('key', 'trip_local_under').maybeSingle();
+    if (error || !window.Rux?.quote) return;
+    const n = Number(data?.value);
+    quoteRules = { localUnder: window.Rux.quote.rule(data && Number.isFinite(n) ? { trip_local_under: n } : {}, 'trip_local_under') };
+  }
   // The list itself, however it was read: the driver's page has it from the
   // link's own function, since a driver cannot read `settings`.
   function useRequirements(value) {
@@ -839,6 +850,111 @@
     return t;
   }
 
+  /* THE LEG'S PRICE, the Billing tab's quote lines as they were saved: the
+     bus rental with the miles, mileage rate and dead miles it was priced on,
+     then each line added to it, a second driver, a relief driver, the hotel,
+     a discount, and the total. A drop-off and pickup prints the leg's lines
+     and the lines of the whole trip, with the trip's total under its own.
+     Nothing is priced here. A rental priced on other miles than the route
+     has now says so, since the price moves with the itinerary. */
+  const LINE_NAMES = { rental: 'Bus rental', second_driver: 'Second driver', relief: 'Relief driver',
+    discount: 'Discount', hotel: 'Hotel', other: 'Other' };
+  const usd = n => `${n < 0 ? '−' : ''}$${Math.abs(n).toLocaleString('en-US',
+    { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const num = v => (v === null || v === undefined || v === '' || !Number.isFinite(Number(v)) ? null : Number(v));
+  const miles = n => `${Math.round(n).toLocaleString('en-US')} mi`;
+
+  function detailedPrice(subject, fig) {
+    const { trip, leg } = subject;
+    const split = trip.trip_type === 'dropoff_pickup';
+    const saved = (trip.trip_quote_lines || []).slice().sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+    const lines = split ? saved.filter(l => !l.leg || l.leg === leg) : saved;
+    const quoted = num(trip.quoted_price);
+    if (!lines.length && !quoted) return null;
+
+    const t = el('table', 'scheduler-driver-itinerary__table scheduler-driver-itinerary__price');
+    t.appendChild(el('caption', 'rux--visually-hidden', 'Price'));
+    const cols = el('colgroup');
+    for (let i = 0; i < 3; i += 1) cols.appendChild(el('col'));
+    t.appendChild(cols);
+    const head = el('thead');
+    const hr = el('tr');
+    for (const label of ['Price', 'Priced on', 'Amount']) {
+      const th = el('th', null, label);
+      th.scope = 'col';
+      hr.appendChild(th);
+    }
+    head.appendChild(hr);
+    const body = el('tbody');
+    // A cell of a line over a quieter one, as a stop's name sits over its drive.
+    const twoLines = (top, under) => {
+      const td = el('td', null, top || '');
+      if (under) td.appendChild(el('span', 'scheduler-driver-itinerary__leg', under));
+      return td;
+    };
+    const row = (name, note, basis, count, amount, cls) => {
+      const tr = el('tr', cls || null);
+      tr.append(twoLines(name, note), twoLines(basis, count), el('td', null, amount));
+      body.appendChild(tr);
+    };
+
+    const routeMiles = num(fig?.total?.miles);
+    const oneLeg = !split || legsOf(trip).length === 1;
+    /* The days a rental is priced on, the leg's on a drop-off and pickup and
+       the trip's otherwise, as the calculator counts them: a long trip's
+       extra days are part of its price beside the miles. */
+    const from = split && leg === 'return' ? trip.return_start_date : trip.start_date;
+    const to = (split && leg === 'return' ? trip.return_end_date : trip.end_date) || from;
+    const dayCount = from && to ? Math.max(1, Math.round((Date.parse(to) - Date.parse(from)) / 86400000) + 1) : null;
+    for (const l of lines) {
+      const qty = num(l.quantity);
+      const cost = num(l.cost);
+      const amount = num(l.amount) ?? (cost === null ? null : (qty ?? 1) * cost);
+      const kind = LINE_NAMES[l.kind] ? l.kind : 'other';
+      const deadDiscount = kind === 'discount' && /dead miles/i.test(l.description || '');
+      const name = deadDiscount ? 'Dead miles discount' : kind === 'other' ? (l.item || LINE_NAMES.other) : LINE_NAMES[kind];
+      const note = split && !l.leg ? 'Whole trip' : kind === 'other' ? l.description || '' : '';
+      let basis = '';
+      if (kind === 'rental') {
+        const m = num(l.miles);
+        const rate = num(l.rate);
+        const dead = num(l.dead_miles) ?? 0;
+        // A typed price came from neither rate, so it names neither.
+        const local = m !== null && quoteRules.localUnder !== null && m < quoteRules.localUnder;
+        basis = [
+          m === null ? null : miles(m),
+          m === null || dayCount === null ? null : `${dayCount} ${dayCount === 1 ? 'day' : 'days'}`,
+          l.cost_typed ? null : local ? 'local day rate'
+            : rate === null ? null : `at $${rate.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/mi`,
+          m === null ? null : dead > 0 ? `${miles(dead)} dead` : 'no dead miles',
+          l.cost_typed ? 'price typed' : null,
+          m !== null && routeMiles !== null && oneLeg && Math.round(m) !== Math.round(routeMiles)
+            ? `route now ${miles(routeMiles)}` : null,
+        ].filter(Boolean).join(' · ') || 'Price typed';
+      }
+      const unit = kind === 'rental' ? (qty === 1 ? 'bus' : 'buses')
+        : kind === 'second_driver' || kind === 'relief' ? (qty === 1 ? 'driver' : 'drivers') : null;
+      const count = cost === null ? 'No cost yet'
+        : qty !== null && (qty !== 1 || unit) ? `${qty}${unit ? ` ${unit}` : ''} × ${usd(cost)}` : null;
+      row(name, note, basis || count, basis ? count : null, amount === null ? '—' : usd(amount));
+    }
+    if (!lines.length) row('Quoted price', 'No quote lines', '', null, usd(quoted));
+
+    // The total of the lines printed; on a split leg, the trip's too.
+    const sum = lines.reduce((n, l) => n + (num(l.amount) ?? (num(l.cost) ?? 0) * (num(l.quantity) ?? 1)), 0);
+    const total = lines.length ? Math.round(sum * 100) / 100 : quoted;
+    row(split ? `${legName(leg)} total` : 'Total', '', '', null, usd(total), 'scheduler-driver-itinerary__total');
+    if (split && quoted !== null && quoted !== total) row('Trip total', '', '', null, usd(quoted), 'scheduler-driver-itinerary__total');
+    const sent = num(trip.quote_sent_price);
+    if (sent !== null) {
+      const differs = sent !== quoted;
+      row('Quote sent', trip.quote_sent_on ? mdy(trip.quote_sent_on) : '',
+        differs ? `The lines now add up to ${usd(quoted ?? total)}` : '', null, usd(sent));
+    }
+    t.append(head, body);
+    return t;
+  }
+
   /* A row with nothing in it, for the Add a row button and for a blank form.
      It has no type either, so the Location column stays empty rather than
      naming what the row would have been. */
@@ -1025,6 +1141,8 @@
     });
     card.appendChild(add);
     if (detailed) card.appendChild(detailedTotals(fig));
+    const price = detailed ? detailedPrice(subject, fig) : null;
+    if (price) card.appendChild(price);
     return card;
   }
 
@@ -1994,6 +2112,12 @@
       layouts: [
         { id: 'simple', name: 'Simple' },
         { id: 'detailed', name: 'Detailed', trip: true },
+      ],
+      // The Detailed layout's price: the Billing tab's lines as saved, and
+      // the price the customer was sent.
+      columns: [
+        'quoted_price', 'quote_sent_price', 'quote_sent_on',
+        'trip_quote_lines(position,kind,leg,item,description,quantity,cost,amount,cost_typed,miles,dead_miles,rate)',
       ],
       /* LETTER, AND NOT `exact`. The envelope must come out on one envelope;
          this runs onto as many sheets as the stops need, and the height is
@@ -3112,8 +3236,11 @@
       leg: asked || assignment?.leg || 'outbound',
       seat: null,
     };
-    // The Detailed layout's figures add the office's pre-trip and post-trip time.
-    if (form.layouts?.some(l => l.trip)) await readRouteTimes(client).catch(() => {});
+    // The Detailed layout's figures add the office's pre-trip and post-trip
+    // time, and its price says which rentals were priced as local.
+    if (form.layouts?.some(l => l.trip)) {
+      await Promise.all([readRouteTimes(client).catch(() => {}), readQuoteRules(client).catch(() => {})]);
+    }
     const copies = form.copies(subject);
     show(form, subject, copies, Math.max(0, copies.findIndex(c => c.leg === subject.leg)));
   }

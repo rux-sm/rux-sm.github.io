@@ -1232,10 +1232,15 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 /* The Total closes the days with a strong rule and weight, since a fill
    would print as nothing. */
-.scheduler-driver-itinerary__totals .scheduler-driver-itinerary__total td {
+.scheduler-driver-itinerary__totals .scheduler-driver-itinerary__total td,
+.scheduler-driver-itinerary__price .scheduler-driver-itinerary__total td {
   border-block-start: 1px solid var(--rux-border-strong-01);
   font-weight: var(--rux-heading-compact-01-font-weight);
 }
+
+/* The price after the miles and hours, on the stops' three columns so its
+   amounts stand under the addresses; the room above parts it from them. */
+.scheduler-driver-itinerary__table.scheduler-driver-itinerary__price { margin-block-start: var(--rux-spacing-07); }
 
 /* ── The customer quote ──────────────────────────────────────────────────
    The office's own QUOTE / PROPOSAL, drawn as the customer already knows it:

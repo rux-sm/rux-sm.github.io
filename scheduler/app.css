@@ -1230,9 +1230,10 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__row { padding-inline: var(--rux-spacing-05); }
 /* The updates' title is a row of its own, Updates with their count and Add
    at its end, 16px under the card's rule and 8px over the first update's
-   own 7px. The last update's 7px and 8px more finish the foot. */
+   own 7px. The last update's 7px and 9px more make the foot 16px, as the
+   top is. */
 .scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__updates { padding-block: var(--rux-spacing-05); }
-.scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__updates:has(> .scheduler-card__update-list) { padding-block-end: var(--rux-spacing-03); }
+.scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__updates:has(> .scheduler-card__update-list) { padding-block-end: calc(var(--rux-spacing-05) - (var(--rux-layout-size-height-sm) - 1.125rem) / 2); }
 .scheduler-bar-shortcuts[data-card] .scheduler-card__title { margin-block-end: var(--rux-spacing-03); }
 .scheduler-bar-shortcuts[data-card] .scheduler-card__title:last-child { margin-block-end: 0; }
 /* A warning's words are bold. The rule over the first takes a pixel of its

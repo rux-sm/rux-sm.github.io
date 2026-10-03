@@ -401,6 +401,13 @@
 .rux--modal .rux--search-input {
   background-color: var(--rux-field-02);
 }
+/* A field inside a raised tile in a modal, as an update's edit box in the
+   Updates window, takes the next field up, `field-03`, since `field-02` is the
+   tile's own surface. The layer class says so, one class more than the rule
+   above. */
+.rux--modal .rux--layer-three .rux--text-area {
+  background-color: var(--rux-field-03);
+}
 
 /* The search window hangs from near the top instead of centring, so it grows
    downward as results arrive rather than jumping. Below md Carbon's modal is

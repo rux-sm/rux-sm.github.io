@@ -4188,7 +4188,7 @@
     }
   }
   function logItem(u) {
-    const li = el('li');
+    const li = el('li', 'scheduler-updates__item');
     const text = el('span', 'scheduler-updates__text');
     const mode = logChanging?.id === u.id ? logChanging.mode : null;
     const tile = el(mode ? 'div' : 'button', mode ? 'rux--tile scheduler-updates__tile' : 'rux--tile rux--tile--clickable scheduler-updates__tile');
@@ -4207,13 +4207,12 @@
       edit.rows = 2;
       edit.value = u.body;
       edit.setAttribute('aria-label', 'Update');
-      const wrapEdit = el('div', 'rux--text-area__wrapper');
+      // The box is a layer up from the tile it sits on, so it reads as a field.
+      const wrapEdit = el('div', 'rux--text-area__wrapper rux--layer-three');
       wrapEdit.appendChild(edit);
-      const pin = smallBtn('rux--btn--ghost scheduler-updates__ask', u.pinned_at ? 'Unpin' : 'Pin');
-      pin.addEventListener('click', () => { pin.disabled = true; pinLogged(u, !u.pinned_at); });
-      const drop = smallBtn('rux--btn--danger--ghost', 'Delete');
+      const drop = smallBtn('rux--btn--danger--ghost scheduler-updates__ask', 'Delete');
       const cancel = smallBtn('rux--btn--ghost', 'Cancel');
-      const keep = smallBtn('rux--btn--tertiary', 'Save');
+      const keep = smallBtn('rux--btn--primary', 'Save');
       drop.addEventListener('click', () => { logChanging = { id: u.id, mode: 'delete' }; drawLog(); });
       cancel.addEventListener('click', () => { logChanging = null; drawLog(); });
       edit.addEventListener('input', () => { keep.disabled = !edit.value.trim() || edit.value.trim() === u.body; });
@@ -4224,7 +4223,7 @@
           .eq('id', u.id).select(UPDATE_COLUMNS).single(), 'The update was not changed.');
       });
       const actions = el('div', 'scheduler-updates__actions');
-      actions.append(pin, drop, cancel, keep);
+      actions.append(drop, cancel, keep);
       text.append(wrapEdit, actions);
       requestAnimationFrame(() => { edit.focus(); edit.setSelectionRange(edit.value.length, edit.value.length); });
       return li;
@@ -4247,6 +4246,19 @@
     tile.type = 'button';
     tile.setAttribute('aria-label', `Edit update: ${u.body}`);
     tile.addEventListener('click', () => { logChanging = { id: u.id, mode: 'edit' }; drawLog(); });
+    /* Its pin, as on the trip card: an icon button at the tile's corner,
+       beside the tile rather than inside it, showing on hover, and always on
+       the pinned update, in the link colour. */
+    const pin = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm scheduler-updates__pin');
+    pin.type = 'button';
+    pin.setAttribute('aria-pressed', String(!!u.pinned_at));
+    pin.setAttribute('aria-label', u.pinned_at ? 'Unpin update' : 'Pin update');
+    pin.title = u.pinned_at ? 'Unpin' : 'Pin';
+    const pinIcon = svgUse('#m-keep-fill', '16', '0 0 32 32');
+    pinIcon.setAttribute('class', 'rux--btn__icon');
+    pin.appendChild(pinIcon);
+    pin.addEventListener('click', () => { pin.disabled = true; pinLogged(u, !u.pinned_at); });
+    li.appendChild(pin);
     return li;
   }
   function drawLog() {
@@ -9477,6 +9489,7 @@
     updateError.hidden = true;
     updateText.value = line;
     updateSave.disabled = !line;
+    requestAnimationFrame(fitUpdateText);
     // A new trip has nothing earlier to list.
     document.getElementById('scheduler-updates-section').hidden = !tripId;
     if (tripId) loadLog(tripId, editId);
@@ -9520,7 +9533,7 @@
     updateSettle = null;
     updateChange = null;
     updateAlone = trip;
-    updateSkip.textContent = 'Cancel';
+    updateSkip.textContent = 'Close';
     updateCloseWrap.hidden = true;
     updateSave.textContent = 'Add update';
     fillUpdateWindow({ trip: tripName(trip), what: '', line: '', tripId: trip.id, editId });
@@ -9531,7 +9544,14 @@
     window.Rux?.modal?.close?.(updateModal);
     settle?.(answer);
   };
-  updateText?.addEventListener('input', () => { updateSave.disabled = !updateText.value.trim(); });
+  /* The new update's box starts two lines tall and grows with what is
+     typed, so an empty window shows more of the trip's updates. */
+  function fitUpdateText() {
+    if (!updateText) return;
+    updateText.style.blockSize = 'auto';
+    updateText.style.blockSize = `${updateText.scrollHeight + updateText.offsetHeight - updateText.clientHeight}px`;
+  }
+  updateText?.addEventListener('input', () => { updateSave.disabled = !updateText.value.trim(); fitUpdateText(); });
   // Cmd or Ctrl with Enter presses the main button, as a chat box sends.
   updateText?.addEventListener('keydown', e => {
     if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && !updateSave.disabled) { e.preventDefault(); updateSave.click(); }

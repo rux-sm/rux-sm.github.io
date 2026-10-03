@@ -2150,6 +2150,22 @@ button.scheduler-row-head__num::after {
   text-align: start;
 }
 .scheduler-updates__face { flex: none; }
+/* An update's pin stands at its tile's top corner, beside the tile's button,
+   with room kept for it at the tile's end. It shows while the tile is hovered
+   or holds focus, always where nothing hovers, and always on the pinned
+   update, in the link colour. */
+.scheduler-updates__item { position: relative; }
+.scheduler-updates__item:has(> .scheduler-updates__pin) > .scheduler-updates__tile { padding-inline-end: calc(var(--rux-spacing-04) + var(--rux-layout-size-height-sm)); }
+.scheduler-updates__pin {
+  position: absolute;
+  inset-block-start: var(--rux-spacing-03);
+  inset-inline-end: var(--rux-spacing-03);
+}
+@media (hover: hover) {
+  .scheduler-updates__item:not(:hover, :focus-within) > .scheduler-updates__pin[aria-pressed="false"] { visibility: hidden; }
+}
+.scheduler-updates__pin[aria-pressed="true"] { color: var(--rux-link-primary); }
+.scheduler-updates__pin[aria-pressed="true"] .rux--btn__icon { fill: var(--rux-link-primary); }
 .scheduler-updates__text { flex: 1; min-inline-size: 0; }
 /* An update's Edit box, or the ask before it goes: Delete or the question at
    the left, the other buttons at the right. */

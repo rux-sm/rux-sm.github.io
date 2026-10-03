@@ -476,6 +476,13 @@
 :is([data-theme="geist-dark"] .rux--header, .rux--header[data-theme="geist-dark"]) .rux--header__name {
   padding-inline-start: var(--rux-spacing-03);
 }
+/* The menu toggle is set to the header's top, above, so that in Carbon's bar
+   it spans the full 48px its neighbours do. Here it is a 32px button in a
+   64px bar, and the top is 16px above the row the name and the other buttons
+   sit on, so it takes that row's centre. */
+:is([data-theme="geist-dark"] .rux--header, .rux--header[data-theme="geist-dark"]) .rux--header__menu-toggle {
+  align-self: center;
+}
 [data-theme="geist-dark"] :is(.rux--header ~ .rux--content, div:has(.rux--header) ~ .rux--content) {
   margin-block-start: 4rem;
 }
@@ -608,6 +615,33 @@
 }
 [data-theme="geist-dark"] .rux--data-table th:first-child > .rux--table-sort {
   padding-inline-start: 16px;
+}
+/* - A row is 40px and the header row 36px, measured on Geist's Table page,
+     where Carbon's default is 48px for both. Geist gets its 40px from 10px
+     above and below one line, so a cell of two lines makes a 54px row
+     rather than crowding 40. This is Carbon's default size, named `lg` or
+     not; a table that names another size keeps it. In a sortable table
+     Carbon holds every header cell and each sort button at 48px itself, so
+     both are named too. */
+[data-theme="geist-dark"] .rux--data-table:not(.rux--data-table--xs, .rux--data-table--sm, .rux--data-table--md, .rux--data-table--xl) tbody tr {
+  block-size: 2.5rem;
+}
+[data-theme="geist-dark"] .rux--data-table:not(.rux--data-table--xs, .rux--data-table--sm, .rux--data-table--md, .rux--data-table--xl) tbody :is(td, th) {
+  padding-block: 10px;
+}
+[data-theme="geist-dark"] .rux--data-table:not(.rux--data-table--xs, .rux--data-table--sm, .rux--data-table--md, .rux--data-table--xl) thead tr {
+  block-size: 2.25rem;
+}
+[data-theme="geist-dark"] .rux--data-table:not(.rux--data-table--xs, .rux--data-table--sm, .rux--data-table--md, .rux--data-table--xl) thead th {
+  block-size: 2.25rem;
+}
+[data-theme="geist-dark"] .rux--data-table:not(.rux--data-table--xs, .rux--data-table--sm, .rux--data-table--md, .rux--data-table--xl) th .rux--table-sort__flex {
+  min-block-size: 2.25rem;
+}
+/* - The small tag is 20px, Geist's small badge, where Carbon's is 18px. The
+     24px default is already Geist's. */
+[data-theme="geist-dark"] :is(.rux--tag--sm, .rux--tag.rux--layout--size-sm) {
+  min-block-size: 1.25rem;
 }
 /* - A menu's items are 36px at every menu size, with their text 8px in, so
      inside the menu's 6px they start 14px from its edge, as on Geist's Menu

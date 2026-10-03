@@ -2,266 +2,162 @@
 type: plan
 ---
 
-# Plan: Notes, a map you play through
+# Plan: Notes, three ways to one tile
 
 ## Goal
 
-One tool rux uses to learn Infor LN, from any device.
+One simple tool for learning Infor LN and for getting a task done in it.
 
-**A simple, clean, minimal experience is the first requirement, not a finish
-applied at the end.** Where a decision trades simplicity against completeness,
+**Notes is rebuilt from an empty folder.** It reads what atlas exports and
+shows it three ways. It collects nothing and asks nothing of the reader.
+
+**Simple wins.** Where a decision trades simplicity against completeness,
 simplicity wins and this plan says what was left out.
 
-**The path is the way in, and a tile is a level.** Everything a learner does
-starts from a tile: reading the steps, walking them in LN, the homework check,
-and the quests. Every tile can be opened and attempted, however well the
-library knows it. There is one verb — open a tile and work through it.
-
-**Build everything the library can show now, and let the gaps be quests.** A
-missing step, screen or answer never holds a tile back; it shows as a quest in
-place, and the tile fills in as walks, captures and reviews arrive.
-
-**Working through a tile can produce evidence or feedback for atlas.** Verified
-contributions improve its content; reading and practice require no submission.
-Finding nothing new, contradicting what is written, and being rejected are all
-valid outcomes rather than failures. What the tool collects is evidence
-arriving, never knowledge verified.
+**The library stays the source.** Atlas keeps collecting, mining and indexing
+LN's documentation. This plan changes atlas only where the tool needs a screen
+or a scenario to be complete, and where a new area of LN must be easy to add.
 
 ## Decisions
 
-### The path is the way in
+### One object
 
-- **Home is the path: the overview's 26 tiles as one column, top to bottom,**
-  live on the site. The numbered tiles run in walk order under their stage, the
-  setup tiles come first under "Before you start", and each unnumbered tile and
-  each task that varies a step sits indented under the tile it belongs to. It reads the same on a phone, and the
-  order is the overview's own numbering, so there is no hand-made syllabus.
+- **The tile is the only object.** A tile is one screen in LN doing one job:
+  its name, its menu route, its session code and its steps.
 
-- **The diagram stays one link away**, for seeing how the modules connect.
+- **Three ways reach a tile: Do, Understand and Look up.** They are the side
+  nav, and nothing else is in it.
 
-- **A line above the path says where to start**, changed whenever rux wants.
+- **A scenario is one of atlas's walkthroughs, and its tiles are that
+  walkthrough's phases.** Nothing is authored on the site, so there is no second
+  list to keep in step.
 
-- **A tile is a level: self-contained and not gated by another.**
+### Do
 
-- **The path answers "where am I", not "tell me about horizons".** A subject
-  cutting across tiles arrives through search or the glossary instead, and opens
-  the screen or concept that owns it.
+- **Do is the front page.** It lists the scenarios by name. Picking one draws
+  its tiles as a numbered line, left to right, and as a column on a phone.
 
-- **The side nav is Path, Map and Concepts**, with Quests for the owner, and
-  a search box above the path keeps the tiles whose steps, screens or quests
-  match. Meeting summaries stay listed until their pages become the sources a
-  page cites. The glossary is part of Concepts: its terms are generated from the
-  concepts' own frontmatter, each with exactly one owner.
+- **One tile is open at a time**, in place under the line. It shows the route,
+  the session code and the steps as atlas wrote them.
 
-- **Walkthroughs are the steps a tile opens, and concepts are the detail.** A
-  walkthrough stays atlas's source for the steps; its page leaves the nav. A
-  concept answers "what does this mean" from a word in a step, and a screen
-  answers "what is on this screen" from the step that names it.
+- **Tapping the session code copies it**, because typing it into LN is the
+  fastest way to the screen.
 
-### Tasks beside the path
+- **Two quiet links sit under the steps:** why this step, which is the phase's
+  own "what LN is doing" paragraph, and the screen's card in Look up.
 
-- **A task that changes what happens at a step sits beneath that step**, such
-  as cancelling a production order under Production Orders. **A task that
-  stands on its own is an Other task**, such as a cycle count, shown behind a
-  Path | Other tasks switch and grouped by module.
+- **Nothing is ticked, saved or counted.** The open tile is in the address, so
+  a reload or a shared link returns to it.
 
-- **Tasks live in atlas's `maps/tasks.md`**, tiles like the overview's; a task
-  names the tile it varies with Under. A task with no written steps carries a
-  gap, which is its quest.
+### Understand
 
-- **Quality is in, and its quests decide whether it stays.** Invoicing and
-  finance are out.
+- **Understand is the map of one chain**, drawn from the lanes, stages and
+  tiles atlas already exports for the overview.
 
-- **rux names a new task and it is added as an empty tile** with its menu
-  route from the navigation extract.
+- **Picking a scenario lights its route and dims the rest.** The route comes
+  from the link atlas records between a map tile and the phases it opens, never
+  from a list on the site.
 
-### A tile, closed and open
+- **A lit tile carries its number on the line, and lines are drawn only along
+  the lit route**, so the map stays quiet until a scenario is chosen.
 
-- **A closed tile is its number, its name, one line of what it does, and a quest
-  count when it has quests.** The whole tile is one target.
+- **Every tile has one look.** Lit or dim is the only signal.
 
-- **An open tile is the same tile grown into one card, in place:** a short
-  "Before starting" list, what LN is doing, the steps of the phases it opens,
-  how to move on, and its quests. There is no stage page and no new address.
+- **Tapping a lit tile opens that tile in Do.** Tapping a dim one opens its
+  screen card.
 
-- **"Before starting" lists the steps this tile's steps point back at**, as
-  atlas emits them, each linking to the tile that does it. Original step numbers
-  are kept, so 4.5 still points at the cluster and site from 0.4.
+### Look up
 
-- **A screen opens inside the card, under the first step that names it**: its
-  route and purpose from atlas's screen reference, so a reader mid-task never
-  loses their place. A page of its own waits until a screen has more to show.
+- **One search box over screens, scenarios and tiles**, matching a name, a
+  session code or a word in a step.
 
-- **Three ways a tile moves on.** A **question** the learner answers, like node
-  2's *"Does on-hand cover it?"* A **fork decided elsewhere**, like supply
-  source purchase or job shop, which the item chooses and the learner looks up.
-  And a **single way on**. Answering opens the next tile and greys what it
-  skips.
+- **A screen card has fixed parts:** name and code, route, what it is for, and
+  the scenarios that use it. "Used in" is worked out from the scenarios at
+  build time.
 
-- **Homework is not a destination.** A tile names the sittings that test it
-  with atlas's Check field, and they close the open tile; a sitting that spans
-  tiles sits on the tile where it starts. Preparation and report-back sections
-  stay on the experiment page.
+- **Search runs in the page**, from one index file the build writes, so it
+  needs no server.
 
-- **Walking happens in the tile.** An open tile has Walk this, which records
-  what happened at each step and its screenshots into the same walk tables, so
-  the pull is unchanged. The walk page's address is a landing that points to
-  it, and the private preview has no walk form.
+### What a page never shows
 
-### What a tile knows
+- **No gaps, quests, counts or states.** An open question about LN stays in
+  atlas's issue list, where the work on it happens.
 
-- **Three states, computed and never typed.** **No procedure** — no phase is
-  associated; the tile shows its screens and reference, and its quest is to find
-  something to do. **Not verified** — phases exist, but a step is missing, a
-  relevant gap is open, or the walk evidence is absent; run what exists, with
-  the holes shown in place. **Verified** — every associated phase has a
-  covering walk file and the relevant gaps are closed.
+- **No form, upload, notepad or review box.** Notes is read-only.
 
-- **An association is authored, and a session code only suggests.** Which
-  phases a node opens is recorded in atlas; matching a code finds candidates and
-  never decides, because one session appears in several procedures. A node with
-  no association yet is a No procedure tile, not a missing one.
+- **Meeting reviews, summaries and experiments are not pages.** They are
+  sources a scenario rests on, and they stay in atlas.
 
-- **A tile shows current counts, each with its unit**, and every one may fall as
-  well as rise: screens documented, steps written, phases walked, quests open.
-  **No percentage, ever**, because a bar falling when rux finds a gap would
-  punish the thing this tool encourages.
+### The library
 
-- **One procedure type, and the outliers are left odd**, because a process
-  passes state through the ERP rather than through its prose.
+- **Every screen file says what it is for.** The purpose line is what a screen
+  card shows, and a screen without one has no card.
 
-- **A concept shows once rux has attested to it**, which is what OI-274 asks;
-  the glossary grows with the attestations.
+- **A new area of LN is one map file and its walkthroughs.** When atlas exports
+  a second map, Understand gains a switch between maps and Do groups the
+  scenarios by map. Nothing else on the site changes.
 
-- **A phase walked in LN carries its own date**, which is what OI-275 asks.
+- **A walk is recorded in atlas, with atlas's own command.** The walk form
+  leaves Notes, so atlas's pull from Notes is removed.
 
-### Quests
+- **Atlas's evidence, screen files, concepts and checks are untouched.**
 
-- **A quest is an open gap written as something to do**, shown on every tile the
-  gap is relevant to, with one identity however many tiles show it.
+### Built from Design
 
-- **A quest says which kind of work closes it:** capture it in LN, mine the help,
-  resolve a disagreement, or verify a claim. The kind is authored in the fifth
-  column of atlas's `issues.md`, because a keyword pass over the open gaps
-  classified fewer than half. An untagged issue's quest shows as Untagged.
+- **Every control is Carbon:** the search box, links, the scenario picker and
+  the copy button.
 
-- **The overview's placeholders are quests already.** Its four shortage
-  checkpoints show as tiles with their quest; its two lookups stay detours with
-  no dependency.
+- **The tile, the line and the map are Notes' own**, under the `notes-` prefix,
+  with every colour a `--rux-*` token.
 
-- **A quest closes on evidence, never on effort.** Finishing one sends a record
-  into the intake; atlas decides whether it settles anything.
+- **The page starts from a Design template**, and the site's log-in and app
+  switcher are unchanged.
 
-- **One quests page for the owner**, every quest in the order the path shows
-  its tile, marked by the kind of work that closes it.
+### Left out, on purpose
 
-### The tools column
-
-- **A tools column sits on the right of the path**, following the open tile:
-  a notepad, screenshot upload and document upload first, with room for more
-  tools later. On a phone it drops below the path.
-
-- **Notes and uploads are saved to the account**, like a walk's screenshots, so
-  every device sees them. **Each has a Send for review button**; nothing reaches
-  atlas until rux presses it. This is also how a desk investigation or a tile
-  with no procedure submits anything.
-
-- **An upload stays private.** A screenshot is never published from here
-  until rux clears it.
-
-- **Clearing a screenshot is rux's own attestation, separate from
-  `transcribed`:** rux has checked the whole image, its values, title bar and
-  notifications included, and nothing in it identifies a person, an
-  environment, a client or a vendor document. Only rux clears one, rux can
-  withdraw it at any time, and a withdrawn screenshot leaves the site with the
-  next publish.
-
-### One intake, and what feeds it
-
-- **One process, whatever the source:** a question, the source that can settle
-  it, a proposed correction, rux's review, the owning document changes, then
-  everything citing it is checked.
-
-- **Walking is one feed, not the engine.** Mining help, resolving contradictory
-  sources and reviewing a recording are the others, and they need no
-  environment time.
-
-- **Applied means the owning document changed**, and the page links the revision
-  that carried it. A review enters the intake rather than editing anything.
-
-- **A confirmation quest is raised only where a change leaves something
-  specific unverified**, such as revised steps, which are rerun; confirming is
-  an offer, never a debt.
-
-- **How affected documents are found is decided per intake kind.** `fanout.py`
-  answers for a capture and not for a corrected meaning.
-
-- **The label publishes; the errand does not**, because the export tier is
-  unchanged.
-
-### Saying where a fact came from
-
-- **Labels come after the path, not before it.** A page first says which sources
-  it rests on, as `sources` already allows, and a label per statement follows.
-
-- **Three labels, each covering only what its source shows:** *Seen in LN* for
-  a walk, a capture or the screen in a recording, which establishes what was
-  visible and not every sentence citing it; *From help* for how LN is meant to
-  work, a configuration claim included; and *Said in a meeting* for speech,
-  including a recording's, which is unchecked.
-
-- **A label names what kind of fact a statement is, never how much to trust
-  it**, and a disagreement between the environment and the help shows both.
-
-- **Field tables differ and the renderer must not assume**: Transfer Order
-  Planning carries a Source column per row, Item Order Plan two columns under
-  one section-level citation.
-
-### What retires
-
-- **A retired page keeps its address and becomes a short landing** saying what
-  it was and linking to what now holds its content. Nothing 404s.
-
-- **Meeting reviews and summaries stop being pages**, becoming the sources a page
-  cites.
-
-- **The session map retires** once its four silent-failure notes are confirmed.
-
-- **Walkthrough and experiment pages are out of the nav** and
-  reached from their tiles; each becomes a landing once its tiles hold
-  everything it shows.
-
-### Signing in, reviewing, walking
-
-The owner's tools, their eight tables, the two private buckets and the pull
-command are built; `notes/docs/owner-tools.md` describes them. What this plan changes:
-
-- **A review records Approve, or Request changes with feedback**, and says what
-  was last sent and whether atlas has it.
-
-- **A walk continues only on the build it started on**, so its answers always
-  match the steps it pinned; `notes/docs/owner-tools.md` describes it.
-
-### Accepted with keyboard and phone in mind
-
-- Focus returns from a closed card to its tile, long field tables stay readable,
-  back returns to where a screen was opened, and nothing depends on telling
-  grey from highlighted.
+- A narrow one-step-at-a-time view to sit beside the LN window.
+- Lighting two scenarios at once to compare them.
+- Old page addresses. The pages are deleted, not kept as landings.
 
 ## Questions
 
-None open.
+- **Where do field meanings and concepts show?** They come from Infor's own
+  help, so they cannot sit in this public repository. Today they show only in
+  the private preview on the Mac. The other choice is to hold them in the
+  database behind the log-in, so any device sees them, at the cost of a second
+  build and of Infor's text living in the database. Recommended: the Mac
+  preview first, and decide again once the three views are in use.
+
+- **Does anyone but rux open Notes?** If so, deleted addresses need a landing
+  page that points to Do.
+
+- **What happens to what the owner's tools saved?** Reviews, answers, tile
+  notes and uploaded files sit in eight tables and two private buckets.
+  Recommended: pull once more into atlas, then drop them.
 
 ## Tasks
 
-- [ ] Carry each phase's walked date in the data (OI-275), so a tile can say
-      Verified.
-- [ ] rux attests to `order-planning` and `planned-order`, and the glossary shows
-      their terms.
-- [ ] Simplify `run-order-planning-for-one-item` before it is walked: keep its
-      essential warnings with the steps and move only optional detail out.
-- [ ] Take one quest from a tile through Walk this, the pull, the intake and a
-      verified correction, and time it against what the same correction costs
-      today.
-- [ ] Turn walkthrough, experiment and meeting pages into landings, and retire
-      the session map when its condition above is met.
+- [ ] Build one specimen page from invented content: a scenario line with an
+      open tile, the map with a route lit, and a screen card. Read it at
+      desktop and phone widths in light and dark.
+- [ ] Rewrite `notes/tools/build.mjs` to emit only the three views and the
+      search index from `notes/data/atlas/`.
+- [ ] Remove `notes/js/experiment.js`, `notes/js/quests.js`,
+      `notes/js/tile-owner.js`, `notes/js/tile-walk.js`, `notes/js/online.js`,
+      `notes/specimen-tile.html`, and the generated pages the new build does not
+      write.
+- [ ] Rewrite `notes/docs/diagram.md` for the one-look map, delete
+      `notes/docs/owner-tools.md`, and bring Notes' checks down to what the new
+      pages need.
+- [ ] In atlas, write the purpose line for each screen file that lacks one, from
+      its help, and add the check that refuses a screen file without it.
+- [ ] In atlas, stop exporting reviews, summaries and experiments, and correct
+      `standards/export-json.md` to match.
+- [ ] In atlas, link every phase of every walkthrough to a map tile, or say in
+      the map which phases sit off it, so a lit route has no hole.
+- [ ] In atlas, remove `tools/pull.py` and correct `docs/plans/overview-walks.md`
+      and `docs/handoff.md` so a walk is started with `tools/newwalk.py`.
+- [ ] Count what the eight tables and two buckets hold, then apply the answer to
+      the third question as its own database step.
+- [ ] Open every scenario, every lit route and a search for a name, a code and a
+      step word on the preview, at desktop and phone widths.

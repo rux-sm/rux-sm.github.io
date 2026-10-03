@@ -2828,15 +2828,15 @@ function pathTile(dg, n, cat, ctx, task = false) {
               <div class="notes-path-row"><button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" data-notes-tile-walk-start>Walk this</button><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm" data-notes-tile-walk-change hidden>Change company or user</button></div>
               <form class="notes-path-walk-form" data-notes-tile-walk-form hidden>
                 <div class="rux--form-item rux--text-input-wrapper">
-                  <div class="rux--text-input__label-wrapper"><label class="rux--label" for="tw-company-${esc(n.id)}">Company</label></div>
+                  <div class="rux--text-input__label-wrapper"><label class="rux--label" for="tw-company-${esc(n.id)}-${esc(w.id)}">Company</label></div>
                   <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-                    <input id="tw-company-${esc(n.id)}" class="rux--text-input" type="text" required autocomplete="off" autocapitalize="off" inputmode="numeric" data-notes-tile-walk-company>
+                    <input id="tw-company-${esc(n.id)}-${esc(w.id)}" class="rux--text-input" type="text" required autocomplete="off" autocapitalize="off" inputmode="numeric" data-notes-tile-walk-company>
                   </div></div>
                 </div>
                 <div class="rux--form-item rux--text-input-wrapper">
-                  <div class="rux--text-input__label-wrapper"><label class="rux--label" for="tw-user-${esc(n.id)}">User</label></div>
+                  <div class="rux--text-input__label-wrapper"><label class="rux--label" for="tw-user-${esc(n.id)}-${esc(w.id)}">User</label></div>
                   <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-                    <input id="tw-user-${esc(n.id)}" class="rux--text-input" type="text" required autocomplete="off" autocapitalize="off" data-notes-tile-walk-user>
+                    <input id="tw-user-${esc(n.id)}-${esc(w.id)}" class="rux--text-input" type="text" required autocomplete="off" autocapitalize="off" data-notes-tile-walk-user>
                   </div></div>
                 </div>
                 <div><button type="submit" class="rux--btn rux--btn--primary rux--btn--sm">Start the walk</button></div>

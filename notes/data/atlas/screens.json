@@ -213,7 +213,9 @@
     },
     {
       "code": "tdpur0143m000",
-      "name": "Procurement User Profiles"
+      "name": "Procurement User Profiles",
+      "purpose": "Holds each logon code's procurement defaults, among them the purchase office, site, warehouse and purchase order type its orders start from.",
+      "route": "Procurement ➔ Master Data ➔ General ➔ User Profiles"
     },
     {
       "code": "tdpur4100m900",

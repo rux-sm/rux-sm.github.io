@@ -1,9 +1,9 @@
-commit   86a690aad78e65506899f4ac396fee2b593d1db9
-date     2026-09-24T15:49:54Z
-subject  docs(atp): Explain the flat ATP by its period
+commit   f9906e595031e15dd5bd1c21c77c994d8611c3e7
+date     2026-10-03T23:06:49Z
+subject  docs(overview): Map Ship from stock's two ends
 contract 13 
 tier     export
-sha256   623a0d69e6d2af0969249885f585f119cfe50ea5437822fd7ca8fc5f0d2a9d7a
+sha256   027c61a2039a92c98a08058502014ff1593125afe2704180e569e30fe88a7405
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

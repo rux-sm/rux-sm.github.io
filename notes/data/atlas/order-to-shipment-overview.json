@@ -4,7 +4,7 @@
   "kind": "reference",
   "id": "order-to-shipment-overview",
   "title": "Demand to shipment",
-  "updated": "2026-09-17",
+  "updated": "2026-10-03",
   "status": "draft",
   "sources": [
     "cppat1210m000",
@@ -2199,10 +2199,19 @@
                 },
                 {
                   "t": "text",
-                  "v": " phases 0, 1"
+                  "v": " phases 0, 1; "
+                },
+                {
+                  "t": "link",
+                  "v": "Ship from stock",
+                  "href": "ship-from-stock.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phases 0, 6"
                 }
               ],
-              "text": "Opens — Check an item's inventory phases 0, 1"
+              "text": "Opens — Check an item's inventory phases 0, 1; Ship from stock phases 0, 6"
             }
           ]
         },
@@ -4864,6 +4873,13 @@
             "phases": [
               0,
               1
+            ]
+          },
+          {
+            "walkthrough": "ship-from-stock",
+            "phases": [
+              0,
+              6
             ]
           }
         ],

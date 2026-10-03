@@ -169,6 +169,22 @@
   border-inline-start: 1px solid var(--rux-border-subtle);
 }
 
+/* AN OPEN HEADER BUTTON AND ITS PANEL ARE ONE SURFACE. Carbon draws the open
+   button as a tab: its layer, a line down each side and, below it, the
+   header's own bottom line, so the button and the panel it opened read as
+   two pieces. The side lines go -- the panel is wider than its button, so
+   each ran into the panel's top as a stray divider -- and the button covers
+   the header's line beneath it with its own layer, through the transparent
+   bottom border Carbon already gives it. The global actions already span
+   the header's full 48px; the menu toggle is centred in the 47px above the
+   line and so stopped half a pixel short, and is set to the header's top as
+   they are. Carbon's selectors, so its specificity. */
+.rux--header__action--active {
+  border-inline-end-color: transparent;
+  border-inline-start-color: transparent;
+}
+.rux--header__menu-toggle { align-self: flex-start; }
+
 /* A FILTERED LIST'S FIRST ROW DRAWS A LINE ABOVE ITSELF. Carbon separates
    options with a line on each one's top edge and takes it off
    `:first-of-type`, but js/list-box.js filters by marking an option `hidden`

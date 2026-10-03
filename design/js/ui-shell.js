@@ -125,17 +125,25 @@
   // UI-shell-left-panel/accessibility.mdx — "The hamburger button's icon
   // becomes an X, and must be activated to close the left panel."
   //
-  // ONLY THE KNOWN PAIR IS SWAPPED. A trigger pointing at anything else is a
-  // product's own icon and is left alone; swapping it would be this module
-  // deciding what a page's chrome looks like, which is not its job.
-  const GLYPH = { closed: '#i-menu', open: '#i-close' };
+  // ONLY DESIGN'S OWN PAIRS ARE SWAPPED, one for each icon family its sprite
+  // ships: Carbon's `#i-` and Material's `#m-`, so a page drawing its chrome
+  // from either gets the X. A trigger pointing at anything else is a product's
+  // own icon and is left alone; swapping it would be this module deciding what
+  // a page's chrome looks like, which is not its job. Each name is written
+  // whole, so tools/lib/icon-scan.mjs puts both halves of a pair in the sprite
+  // of every page that loads this module.
+  const GLYPHS = [
+    { closed: '#i-menu', open: '#i-close' },
+    { closed: '#m-menu', open: '#m-close' },
+  ];
   function setTriggerGlyph(trigger, open) {
     const use = trigger?.querySelector('svg use');
     if (!use) return;
     const attr = use.hasAttribute('href') ? 'href' : 'xlink:href';
     const now = use.getAttribute(attr);
-    if (now !== GLYPH.closed && now !== GLYPH.open) return;
-    use.setAttribute(attr, open ? GLYPH.open : GLYPH.closed);
+    const pair = GLYPHS.find(g => now === g.closed || now === g.open);
+    if (!pair) return;
+    use.setAttribute(attr, open ? pair.open : pair.closed);
   }
 
   // THE NAME HAS TO MOVE WITH THE GLYPH, and it did not until 2026-08-29.

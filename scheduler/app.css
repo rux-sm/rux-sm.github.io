@@ -962,8 +962,8 @@ button.scheduler-row-head__num::after {
   --card-warning: var(--rux-support-warning);
 }
 /* Each slot carries its word beside its icon, because a tooltip names a slot
-   only after a second's hover, and side by side the four make one 32px row
-   rather than a 40px strip. The slots share the card's width equally, each
+   only after a second's hover, and side by side the four make one row at
+   Carbon's xs button height, 24px, rather than a 40px strip. The slots share the card's width equally, each
    parted from the next by a rule, so they read as buttons and not as one
    more row. */
 .scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut {
@@ -971,7 +971,7 @@ button.scheduler-row-head__num::after {
   gap: var(--rux-spacing-02);
   inline-size: auto;
   min-inline-size: var(--scheduler-slot-w);
-  block-size: 2rem;
+  block-size: var(--rux-layout-size-height-xs);
   padding: 0 var(--rux-spacing-02);
 }
 .scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut > svg { flex: none; }
@@ -1123,14 +1123,21 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-card__updates[data-open] .scheduler-card__words { white-space: pre-wrap; }
 .scheduler-card__when { white-space: nowrap; color: color-mix(in srgb, var(--card-ink) 70%, transparent); }
-/* Floating, the note stops at two lines on an ellipsis until it is opened.
-   The words are cut, not the row, so the row's padding shows none of a
-   third. */
+/* Floating, every row is 24px, the slots' own height: one 16px line with
+   4px above and below, the rule above it taking a pixel of the 4. A row
+   with no rule, the first under the card's edge or the next line of a
+   band, keeps the whole 4. The note stops at that one line on an ellipsis
+   until it is opened, as the newest update does. The words are cut, not
+   the row, so the row's padding shows none of a second. */
+.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card > .scheduler-card__row { padding-block: calc(var(--rux-spacing-02) - 1px) var(--rux-spacing-02); }
+.scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) .scheduler-card > .scheduler-card__row:first-child,
+.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn) + :is(.scheduler-card__asks, .scheduler-card__warn),
+.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card > .scheduler-card__misfit + .scheduler-card__misfit { padding-block-start: var(--rux-spacing-02); }
 .scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__note:not([data-open]) > .scheduler-card__note-words {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
   overflow: hidden;
 }
 /* Floating, a part with something in it shows no title: the pin and the

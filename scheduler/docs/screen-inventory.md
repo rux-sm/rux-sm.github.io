@@ -223,7 +223,7 @@ its arrow still pointing at the trip. Nothing is taken from the trip, so the
 slots are the same on every trip however short or narrow. The card is a raised
 surface a step lighter than the board inside a hairline, so it stands off the
 week on a dark theme as well as a light one. Each slot carries its word beside
-its icon, the four in one row, and when the card opens above the
+its icon, the four in one 24px row, every row of the card as tall, and when the card opens above the
 trip the slots come last, next to it. The card opens with its warnings in one
 band: a bus that does not fit, the follow-up reminder, Trip contact missing,
 and each need still to do, Hotel booking pending or HOS form pending, each a
@@ -231,7 +231,7 @@ line of its own behind the bar's bell.
 No warning has a dismiss; each stays until it is put right. Needs that are
 met are not shown.
 Then the note and the updates, with no titles on the floating card: the
-note's two lines, led by a pin in the column an update's avatar stands in,
+note's one line, led by a pin in the column an update's avatar stands in,
 so both start their words at one edge, then how long ago the note last
 changed, in the updates' age column, and Edit, which opens the note in a
 window of its own with Cancel and Save; then the newest update's one line and

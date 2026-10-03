@@ -966,8 +966,10 @@ button.scheduler-row-head__num::after {
   --card-surface: var(--rux-layer-02);
   --card-hover: var(--rux-layer-hover-02);
   --card-rule: var(--rux-border-subtle-02);
+  --card-edge: var(--rux-border-subtle-02);
   background: var(--card-surface);
-  box-shadow: 0 0 0 1px var(--rux-border-subtle-02), 0 6px 20px rgb(0 0 0 / .18);
+  /* The selected trip's own lift, so the card stands as high as the trip. */
+  box-shadow: 0 0 0 1px var(--card-edge), var(--scheduler-lift);
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card {
   display: flex;
@@ -977,10 +979,50 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > * { flex: none; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates { display: flex; flex-direction: column; flex: 0 1 auto; min-block-size: 0; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list { flex: 0 1 auto; min-block-size: 0; max-block-size: none; overflow-y: auto; }
-.scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="above"]::after { border-block-start-color: var(--card-surface); }
-.scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="below"]::after { border-block-end-color: var(--card-surface); }
-.scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="right"]::after { border-inline-end-color: var(--card-surface); }
-.scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="left"]::after { border-inline-start-color: var(--card-surface); }
+/* THE CARD'S ARROW is a 14px square of the card's surface turned 45deg and
+   centred on the edge facing the trip, so it stands about 10px out and its
+   point comes to within a few pixels of the trip. It is ruled with the card's
+   hairline on its two outer sides, so the edge runs out along the arrow and
+   back. Behind the card's content and over its hairline, so the edge opens
+   where the arrow joins it. The point is the arrow's middle, which data.js
+   writes as `--scheduler-open-tip`: along the side beside the trip, and for
+   a card above or below, 6px in from the left edge it gives. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked])::after {
+  z-index: -1;
+  box-sizing: border-box;
+  inline-size: 14px;
+  block-size: 14px;
+  inset: auto;
+  border: 0 solid var(--card-edge);
+  background: var(--card-surface);
+  transform: rotate(45deg);
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked]):is([data-side="right"], [data-side="left"])::after {
+  inset-block-start: calc(var(--scheduler-open-tip, 50%) - 7px);
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="right"]::after {
+  inset-inline-start: -7px;
+  border-inline-start-width: 1px;
+  border-block-end-width: 1px;
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="left"]::after {
+  inset-inline-start: calc(100% - 7px);
+  border-inline-end-width: 1px;
+  border-block-start-width: 1px;
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked]):is([data-side="above"], [data-side="below"])::after {
+  inset-inline-start: calc(var(--scheduler-open-tip, var(--rux-spacing-05)) - 1px);
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="above"]::after {
+  inset-block-start: calc(100% - 7px);
+  border-inline-end-width: 1px;
+  border-block-end-width: 1px;
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="below"]::after {
+  inset-block-start: -7px;
+  border-inline-start-width: 1px;
+  border-block-start-width: 1px;
+}
 .scheduler-bar-shortcuts[data-card][data-docked] {
   inline-size: auto;
   --card-ink: var(--rux-text-primary);

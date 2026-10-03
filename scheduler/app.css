@@ -952,16 +952,31 @@ button.scheduler-row-head__num::after {
    track makes a containing block, as the docked sheet relies on too. Over the
    week's sticky bands and under the trip panel. It is a raised card a step
    lighter than the board inside a hairline, so it stands off the week on a
-   dark theme, where a shadow does not show, as well as on a light one. */
+   dark theme, where a shadow does not show, as well as on a light one.
+   data.js sizes it to the week, two days wide and between two and three
+   buses tall; the updates take what height is left and scroll past it. */
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
   position: fixed;
   z-index: 996;
+  box-sizing: border-box;
+  inline-size: var(--scheduler-card-w, min(20rem, calc(100vw - 2 * var(--rux-spacing-05))));
+  min-block-size: var(--scheduler-card-min-h, 0);
+  max-block-size: var(--scheduler-card-max-h, none);
+  align-content: flex-start;
   --card-surface: var(--rux-layer-02);
   --card-hover: var(--rux-layer-hover-02);
   --card-rule: var(--rux-border-subtle-02);
   background: var(--card-surface);
   box-shadow: 0 0 0 1px var(--rux-border-subtle-02), 0 6px 20px rgb(0 0 0 / .18);
 }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card {
+  display: flex;
+  flex-direction: column;
+  max-block-size: calc(var(--scheduler-card-max-h, 100vh) - 2.5rem - 2 * var(--scheduler-shortcut-pad, 0px));
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > * { flex: none; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates { display: flex; flex-direction: column; flex: 0 1 auto; min-block-size: 0; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list { flex: 0 1 auto; min-block-size: 0; max-block-size: none; overflow-y: auto; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="above"]::after { border-block-start-color: var(--card-surface); }
 .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="below"]::after { border-block-end-color: var(--card-surface); }
 .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="right"]::after { border-inline-end-color: var(--card-surface); }
@@ -976,17 +991,17 @@ button.scheduler-row-head__num::after {
   --card-error: var(--rux-support-error);
   --card-warning: var(--rux-support-warning);
 }
-/* Each slot carries its word beside its icon, because a tooltip names a slot
-   only after a second's hover, and side by side the four make one row at
-   Carbon's xs button height, 24px, rather than a 40px strip. The slots share the card's width equally, each
-   parted from the next by a rule, so they read as buttons and not as one
-   more row. */
+/* Each slot carries its word under its icon, because a tooltip names a slot
+   only after a second's hover, and stacked the words fit a card two days
+   wide on a narrow week. The four make one 40px row, sharing the card's
+   width equally, each parted from the next by a rule, so they read as
+   buttons and not as one more row. */
 .scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut {
   flex: 1 1 0;
-  gap: var(--rux-spacing-02);
+  flex-direction: column;
   inline-size: auto;
   min-inline-size: var(--scheduler-slot-w);
-  block-size: var(--rux-layout-size-height-xs);
+  block-size: 2.5rem;
   padding: 0 var(--rux-spacing-02);
 }
 .scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut > svg { flex: none; }

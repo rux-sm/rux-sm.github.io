@@ -9223,30 +9223,39 @@
     const gone = box.bottom <= ceiling || box.top >= pane.bottom
       || box.right <= first - TIP_GAP || box.left >= pane.right;
     barShortcuts.toggleAttribute('data-out', gone && !barShortcuts.contains(document.activeElement));
+    /* THE CARD IS SIZED TO THE WEEK: two days wide and between two and three
+       buses tall, 16px inside the cells it covers, so it lines up with the
+       day lines and covers about half the trips above and below. Never so
+       narrow that the slots' words are cut, nor taller than the board. */
+    const INSET = 16;
+    const days = [...gridEl.querySelectorAll('.scheduler-day')].map(d => d.getBoundingClientRect());
+    const rowH = bar.parentElement.getBoundingClientRect().height;
+    const dayW = days[0]?.width ?? 0;
+    const roomH = pane.bottom - ceiling - 2 * TIP_GAP;
+    barShortcuts.style.setProperty('--scheduler-card-w', `${Math.max(256, 2 * dayW - 2 * INSET)}px`);
+    barShortcuts.style.setProperty('--scheduler-card-min-h', `${Math.min(2 * rowH, roomH)}px`);
+    barShortcuts.style.setProperty('--scheduler-card-max-h', `${Math.min(3 * rowH - 2 * INSET, roomH)}px`);
     const list = barShortcuts.querySelector('.scheduler-card__updates[data-open] .scheduler-card__update-list');
     list?.style.removeProperty('max-block-size');
+    tip.width = barShortcuts.offsetWidth;
     let height = barShortcuts.offsetHeight;
     // Shortens a card showing all its updates to the room it has, so it never
     // runs off the board.
     const fitTo = room => {
       if (list && height > room) {
-        list.style.maxBlockSize = `min(var(--card-updates-open), ${Math.max(40, list.offsetHeight - (height - room))}px)`;
+        list.style.maxBlockSize = `${Math.max(40, list.offsetHeight - (height - room))}px`;
         height = barShortcuts.offsetHeight;
       }
     };
-    /* Beside the first day: its right edge is the bar's, less the days after
-       it. The arrow stands out 6px past the gap. */
-    const ARROW = 6;
-    const span = Math.max(1, Number(bar.dataset.span) || 1);
-    const firstEnd = Math.max(box.left, box.right - (span - 1) * (band?.width ?? 0));
-    const right = firstEnd + TIP_GAP + ARROW;
-    const left = box.left - TIP_GAP - ARROW - tip.width;
-    const side = right + tip.width <= pane.right - TIP_GAP ? 'right' : left >= first ? 'left' : null;
-    if (side) {
-      fitTo(pane.bottom - ceiling - 2 * TIP_GAP);
+    /* Beside the first day: over the two days after it, 16px in from their
+       first edge, or over the two days before it where the week has no two
+       days after. */
+    const start = Math.max(0, Math.min(days.length - 1, Number(bar.dataset.start) || 0));
+    const side = start + 2 < days.length ? 'right' : start >= 2 ? 'left' : null;
+    if (side && days.length) {
       const middle = Math.max(box.top, ceiling) / 2 + Math.min(box.bottom, pane.bottom) / 2;
       const y = Math.max(ceiling + TIP_GAP, Math.min(middle - height / 2, pane.bottom - TIP_GAP - height));
-      const x = side === 'right' ? right : left;
+      const x = side === 'right' ? days[start + 1].left + INSET : days[start - 1].right - INSET - tip.width;
       barShortcuts.dataset.side = side;
       barShortcuts.style.setProperty('--scheduler-open-top', `${y - host.top}px`);
       barShortcuts.style.setProperty('--scheduler-open-start', `${x - host.left}px`);
@@ -12972,7 +12981,7 @@
   /* The trip's day-of contact: the first of the five slots that holds anyone,
      or null. The card says when there is none. */
   const dayOfContact = trip => [1, 2, 3, 4, 5].map(n => tripContact(trip, n)).find(Boolean) ?? null;
-  const cardKey = trip => (trip ? JSON.stringify([pinnedOf(trip)?.id ?? null, asksFollowUp(trip), waitsOf(trip), dayOfContact(trip),
+  const cardKey = trip => (trip ? JSON.stringify([pageEl?.getAttribute('data-board'), pinnedOf(trip)?.id ?? null, asksFollowUp(trip), waitsOf(trip), dayOfContact(trip),
     !!trip.contact_not_needed, updatesOpenFor === trip.id,
     (trip.trip_updates || []).map(u => u.id).sort(), agoShort(quietSince(trip) || Date.now())]) : '');
   /* How long ago an update was written, always a number: minutes in the
@@ -13062,18 +13071,19 @@
       card.appendChild(band);
     }
     /* THE UPDATES: Updates with their count, "Updates · 5", and Add, over
-       two lines: the pinned update, then the newest of the rest, each cut to
-       one line. The whole section is one press: it opens to every update in
-       full, the pinned one first and the rest newest first, two lines taller
-       and scrolling past that, and a second press closes it. Add is its own
-       button. Two updates that fit their lines have nothing more to show,
-       which fitUpdates works out once they are drawn. With none, No updates
-       and Add. */
+       the updates, the pinned one first and the rest newest first. Floating,
+       the card has the room to show every update in full, scrolling past the
+       card's height. Docked, two lines show, each cut to one line, and the
+       whole section is one press that opens every update in full and a
+       second press closes; Add is its own button. Two updates that fit their
+       lines have nothing more to show, which fitUpdates works out once they
+       are drawn. With none, No updates and Add. */
     const all = updatesOf(trip);
     const pinned = pinnedOf(trip);
     const rest = all.filter(u => u !== pinned);
-    const open = all.length > 0 && updatesOpenFor === trip.id;
-    const shown = [...(pinned ? [pinned] : []), ...(open ? rest : rest.slice(0, 1))];
+    const floating = pageEl?.getAttribute('data-board') !== 'compact';
+    const open = all.length > 0 && (floating || updatesOpenFor === trip.id);
+    const shown = open ? [...(pinned ? [pinned] : []), ...rest] : [...(pinned ? [pinned] : []), ...rest].slice(0, 2);
     const part = row('scheduler-card__updates');
     part.dataset.count = String(all.length);
     part.dataset.shown = String(shown.length);
@@ -13103,11 +13113,11 @@
       item.append(face, el('span', 'scheduler-card__words', u.body), when);
       return item;
     };
-    /* With any updates, the title's words are the section's toggle, a real
-       button with an arrow, so a keyboard and a screen reader reach what a
-       press anywhere on the section does. */
+    /* Docked, with any updates, the title's words are the section's toggle, a
+       real button with an arrow, so a keyboard and a screen reader reach what
+       a press anywhere on the section does. */
     const title = cardTitle(all.length ? `Updates · ${all.length}` : 'No updates', add);
-    if (all.length) {
+    if (all.length && !floating) {
       const toggle = el('button', 'scheduler-card__toggle');
       toggle.type = 'button';
       toggle.setAttribute('aria-expanded', String(open));
@@ -13131,6 +13141,8 @@
   function fitUpdates() {
     const part = barShortcuts?.querySelector('.scheduler-card__updates');
     if (!part) return;
+    // Floating, every update already shows in full, so there is nothing to open.
+    if (!barShortcuts.hasAttribute('data-docked')) { part.removeAttribute('data-more'); return; }
     const words = [...part.querySelectorAll('.scheduler-card__update .scheduler-card__words')];
     const more = part.hasAttribute('data-open') || Number(part.dataset.count) > Number(part.dataset.shown)
       || words.some(w => w.scrollHeight > w.clientHeight + 1);

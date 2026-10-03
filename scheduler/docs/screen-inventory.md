@@ -218,15 +218,18 @@ last one was on. New trip is a + in the toolbar, and a row of its overflow
 menu where the toolbar has no room; it puts down the selected trip and opens
 on Details. The shortcut bar floats clear of the
 trip, placed the way a calendar's event popover is: beside the trip's first
-day, where everything the trip says is written, over the trip's own later days
-or the board after it, with its arrow at that day's middle; on the first day's
-left where the right has no room, as for a trip that starts at the week's end;
+day, where everything the trip says is written, over the two days after it,
+the trip's own or the board's, with its arrow at that day's middle; over the
+two days before it where the week has no two days after;
 and above or below the trip only where neither side has room, slid back inside
 the board at either edge with its arrow still pointing at the trip. Nothing is taken from the trip, so the
 slots are the same on every trip however short or narrow. The card is a raised
 surface a step lighter than the board inside a hairline, so it stands off the
-week on a dark theme as well as a light one. Each slot carries its word beside
-its icon, the four in one 24px row, every row of the card as tall, and when the card opens above the
+week on a dark theme as well as a light one. It is sized to the week: two
+days wide and between two and three buses tall, 16px inside the cells it
+covers, centred on the trip, so it covers about half the trips above and below
+it. Each slot carries its word under its icon, the four in one 40px row, and
+every other row of the card is 24px. When the card opens above the
 trip the slots come last, next to it. The card opens with its warnings in one
 band: a bus that does not fit, the follow-up reminder, Trip contact missing,
 and each need still to do, Hotel booking pending or HOS form pending, each a
@@ -234,13 +237,14 @@ line of its own behind the bar's bell.
 No warning has a dismiss; each stays until it is put right. Needs that are
 met are not shown.
 Then the updates: their title, Updates with their count (Updates · 5) and
-Add at its end, which opens the trip's Updates window, over the pinned
-update's line, led by a pin where an update's avatar stands, then the newest
-of the rest, each a line of its own with its age at the right, always a
-number (45m, 2h, 3d). The whole section is one press, lit on hover, and its
-title is the button a keyboard reaches, with an arrow that turns over when
-open: it opens to every update in full, the pinned one first and the rest
-newest first, two lines taller and scrolling past that. Add is its own button. An update's author is its
+Add at its end, which opens the trip's Updates window, over every update in
+full, the pinned one first, led by a pin where an update's avatar stands, and
+the rest newest first, each with its age at the right, always a number (45m,
+2h, 3d), scrolling past the card's height. On the docked sheet two lines
+show, the pinned update and the newest, or the two newest, each cut to one
+line; the whole section is one press, lit on hover, whose title is the button
+a keyboard reaches, with an arrow that turns over when open, and it opens to
+every update in full. Add is its own button. An update's author is its
 avatar's tooltip. With none, the title alone says No updates, with Add.
 In the Updates window, pressing an update gives Pin, or Unpin, beside Delete;
 a trip has one pinned update, and pinning another lets the first go. The trip

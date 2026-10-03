@@ -19,30 +19,6 @@
   padding-block: var(--rux-spacing-07) 0;
 }
 
-/* Carbon outlines `.rux--tab-content:focus`, and each tab panel has
-   `tabindex="0"`, so a click inside one would ring the whole panel. Only a
-   click's focus loses the ring; keyboard focus keeps it. */
-.rux--tab-content:focus:not(:focus-visible) { outline: none; }
-
-/* The toolbar's buttons, the regions' close buttons, a window's close,
-   header and overflow menu buttons and items, and every menu's items ring
-   only for keyboard focus, as the tab panels above do.
-   Carbon rings a button on any focus, so a clicked toggle kept a ring beside
-   its selected fill and read as a stronger state than it is, and a window or
-   menu opened by a tap showed a ring on what it focuses first. Each selector
-   matches or beats Carbon's focus rule for that button, and comes later. */
-.scheduler-toolbar .rux--btn:focus:not(:focus-visible),
-.rux--side-panel .rux--btn.rux--side-panel__close-button:focus:not(:focus-visible),
-#scheduler-avail-close:focus:not(:focus-visible),
-.rux--modal-close:focus:not(:focus-visible),
-.rux--modal-header .rux--btn:focus:not(:focus-visible) {
-  border-color: transparent;
-  box-shadow: none;
-}
-.rux--modal .rux--overflow-menu:focus:not(:focus-visible),
-.rux--modal .rux--overflow-menu-options__btn:focus:not(:focus-visible),
-.rux--menu-item:focus:not(:focus-visible) { outline: none; }
-
 /* `.rux--text-area` sets no width, so inside its flex wrapper it sits at the
    browser's default `cols` width; in a panel or a modal it grows to fill the
    wrapper, which is `inline-size: 100%`. */
@@ -615,7 +591,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    with a 2px outline, which draws outside, and flush against the top of the
    shell header there is no room for it; the header's other actions ring with
    a border, inside. */
-.rux--search--expandable .rux--search-magnifier:focus {
+.rux--search--expandable .rux--search-magnifier:focus-visible {
   outline-offset: -2px;
 }
 

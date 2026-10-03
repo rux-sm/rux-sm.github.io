@@ -124,7 +124,7 @@ Three homes, and one rule for choosing.
   it is consulted, not worked in.
 - **View options go in the toolbar's overflow menu.** Start on Sunday and the
   bar-row toggles are there; time-aligned and two weeks join when the grid can
-  draw them.
+  draw them. It hangs under its ⋮ and opens attached to it, one surface.
 - **The week label is the date-picker trigger.** A permanent mini calendar
   spends standing space on an occasional action. On a phone the label is the
   week's months and year, "Sep – Oct 2026", so Driver availability fits beside

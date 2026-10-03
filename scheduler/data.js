@@ -9944,10 +9944,22 @@
     window.Rux?.schedule?.fit?.();
   }
 
+  /* The menu hangs under its ⋮ and, opened there, is attached to it as
+     Carbon's overflow menu is to its trigger: the ⋮ takes the menu's layer and
+     shadow, and a strip the ⋮'s width in the menu's layer covers the menu's
+     shadow where the two meet. Where it had to open elsewhere it floats. */
   viewTrigger?.addEventListener('click', () => {
     if (!viewMenu) return;
     const r = viewTrigger.getBoundingClientRect();
     popMenuAt(viewMenu, { clientX: r.left, clientY: r.bottom }, viewTrigger);
+    viewTrigger.setAttribute('aria-expanded', 'true');
+    const m = viewMenu.getBoundingClientRect();
+    if (Math.abs(m.top - r.bottom) < 1) {
+      viewMenu.style.setProperty('--scheduler-attach-x', `${Math.round(r.left - m.left)}px`);
+      viewMenu.style.setProperty('--scheduler-attach-w', `${Math.round(r.width)}px`);
+      viewMenu.dataset.attached = '';
+      viewTrigger.dataset.attached = '';
+    }
   });
 
   viewMenu?.addEventListener('click', e => {
@@ -9963,7 +9975,12 @@
     // Two weeks reads a longer range from the same first day.
     if (key === 'twoWeeks') show();
   });
-  viewMenu?.addEventListener('rux:menu-closed', () => { viewMenu.hidden = true; });
+  viewMenu?.addEventListener('rux:menu-closed', () => {
+    viewMenu.hidden = true;
+    viewTrigger?.setAttribute('aria-expanded', 'false');
+    delete viewMenu.dataset.attached;
+    if (viewTrigger) delete viewTrigger.dataset.attached;
+  });
 
   // Crossing md changes how many days two weeks shows, so the board redraws.
   phoneQuery.addEventListener('change', () => { if (twoWeeks) show(); });

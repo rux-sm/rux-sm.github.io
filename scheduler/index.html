@@ -383,7 +383,7 @@
             <!-- The overflow menu (#scheduler-view-menu): New trip where its
                  toolbar button hides, Today below md, then the options for how
                  the board draws. -->
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-view-trigger" aria-label="More" aria-haspopup="menu" aria-expanded="false"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-more_vert"/></svg></button>
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__more" id="scheduler-view-trigger" aria-label="More" aria-haspopup="menu" aria-expanded="false"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-more_vert"/></svg></button>
           </div>
             <!-- The loading skeleton: the corner, seven day cells and ten rows of
                  grey placeholders in the real grid's classes, so the first paint
@@ -687,7 +687,7 @@
        framed form says it has: every envelope on the trip, one of them ticked. -->
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items" id="scheduler-viewer-copies" role="menu" tabindex="-1" hidden></ul>
 
-  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items" id="scheduler-view-menu" role="menu" tabindex="-1" hidden>
+  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items scheduler-view-menu" id="scheduler-view-menu" role="menu" tabindex="-1" hidden>
     <!-- New trip opens a blank editor. Right-clicking or holding an empty cell
          prefills the bus and the day, but the Unassigned row hides when it is
          empty, so this item stays wherever the toolbar's button does not. -->

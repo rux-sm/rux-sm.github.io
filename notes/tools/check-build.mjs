@@ -34,12 +34,13 @@ import { execFileSync } from 'node:child_process';
 
 try {
   execFileSync(process.execPath, ['tools/build.mjs'], { stdio: 'inherit' });
+  execFileSync(process.execPath, ['tools/build-views.mjs'], { stdio: 'inherit' });
 } catch {
-  console.log('\n  FAIL  build.mjs did not run to completion');
+  console.log('\n  FAIL  a build did not run to completion');
   process.exit(1);
 }
 
-const diff = execFileSync('git', ['diff', '--name-only', '--', 'pages', 'index.html'], { encoding: 'utf8' }).trim();
+const diff = execFileSync('git', ['diff', '--name-only', '--', 'pages', 'index.html', 'do.html', 'understand.html', 'lookup.html'], { encoding: 'utf8' }).trim();
 if (diff) {
   console.log('\n  FAIL  the committed pages were stale -- rebuilding just changed:');
   for (const line of diff.split('\n')) console.log(`          M  ${line}`);
@@ -48,4 +49,4 @@ if (diff) {
   console.log('  push cannot be the first place it is caught.');
   process.exit(1);
 }
-console.log('  build is current: rebuilding left nothing unstaged under pages/ or index.html');
+console.log('  build is current: rebuilding left nothing unstaged under pages/, index.html or the three views');

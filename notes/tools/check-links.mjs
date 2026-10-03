@@ -84,7 +84,8 @@ for (const path of files) {
     if (external(href)) continue;
     if (rootAbsolute(href)) { root++; continue; }
     // The fragment is dropped: this answers whether the FILE is there.
-    const file = href.split('#')[0];
+    // A fragment or a query names a place or a state inside the file, not the file.
+    const file = href.split('#')[0].split('?')[0];
     if (!file) continue;
     checked++;
     const target = normalize(join(dirname(path), file));

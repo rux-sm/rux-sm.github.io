@@ -110,23 +110,21 @@ scenario to be complete, and where a new area of LN must be easy to add.
   way to run a scenario.** It is drawn from the lanes, stages and tiles atlas
   exports for the overview.
 
-- **Picking a scenario lights its route and dims the rest.** Atlas states each
-  scenario's route in full: the map tiles it passes in order, its decisions
-  included, and the task each one stands for.
+- **Picking a scenario lights its route and dims the rest.** The route is the
+  tiles atlas links to the scenario's tasks, in task order, with the decisions
+  the map puts between two of them, found by following the map's own lines.
 
-- **The route is the one link between the map and the tasks.** It replaces the
-  map tile's list of phases it opens, so the two can never disagree.
+- **Where the map has no line between two tasks, the route jumps**, drawn
+  dashed.
 
 - **A lit tile carries its number on the line, and lines are drawn only along
   the lit route**, so the map stays quiet until a scenario is chosen.
 
 - **Every tile has one look.** Lit or dim is the only signal.
 
-- **What a tap does depends on what the tile is.** A tile that stands for one
-  task opens it in Do. A tile that stands for several offers the choice. A
-  decision shows its question and answers in place, and an outcome its short
-  explanation. A dim tile with
-  a screen opens that screen's card, and a dim tile without one does nothing.
+- **A tap opens the tile's own short account, the same way for every tile:**
+  what it does, its screen, the tasks it stands for and a decision's answers.
+  It stays at the foot of the window, because the map is taller than one.
 
 ### Look up
 
@@ -192,10 +190,9 @@ scenario to be complete, and where a new area of LN must be easy to add.
   scenario**, and the real pages are judged on it. `notes/specimen-tool.html`
   shows the three views on invented content, and the build follows its shape.
 
-- **A scenario is ready when every screen its steps name has a card and every
-  task is on its route.** The build lists a scenario that is not ready, with
-  what is missing, and leaves it out of Do. A screen no ready scenario names
-  can wait.
+- **A scenario is ready when every one of its tasks is on a map tile.** The
+  build lists a scenario that is not, with the tasks that are missing, and
+  leaves it out of Do. A screen with no card is named without a link.
 
 - **The old pages stay until Ship from stock works in the new Notes.** The new
   views are built beside them, and the old pages and scripts go in one step
@@ -247,6 +244,10 @@ compare them; and landings for old page addresses, which are deleted.
 
 ## Tasks
 
+- [ ] In atlas, record the setup Ship from stock needs, and link it to the map's
+      setup tiles.
+- [ ] In atlas, file the help for Warehousing Order Types and write its screen
+      file, the one screen Ship from stock names that has none.
 - [ ] In atlas, record the setting that decides each of the seven branches,
       from the configuration files and the screen files, or record it as
       unknown.
@@ -263,15 +264,6 @@ compare them; and landings for old page addresses, which are deleted.
       it on the map's stock-promise tile in the three parts above.
 - [ ] In atlas, export each concept's short explanation, and show it as a card
       in Look up.
-- [ ] In atlas, state Ship from stock's route on the map, with its first and
-      last tasks, its decisions and the setup it needs, and export it.
-- [ ] In atlas, write the purpose line for the one screen Ship from stock names
-      that lacks it.
-- [ ] Write the new build beside the old one: the three views, the search index
-      and the readiness check, from `notes/data/atlas/`.
-- [ ] Open Ship from stock on the preview through all three views, at desktop
-      and phone widths: every task, every screen link, the lit route, each kind
-      of map tile, and a search for a name, a code and a step word.
 - [ ] Remove the old pages, `notes/js/experiment.js`, `notes/js/quests.js`,
       `notes/js/tile-owner.js`, `notes/js/tile-walk.js`, `notes/js/online.js`,
       `notes/specimen-tile.html`, `notes/specimen-map.html` and
@@ -279,12 +271,9 @@ compare them; and landings for old page addresses, which are deleted.
       new pages need.
 - [ ] Rewrite `notes/docs/diagram.md` for the one-look map and delete
       `notes/docs/owner-tools.md`.
-- [ ] In atlas, state the route and the setup of each other scenario, rewrite
+- [ ] In atlas, link every task of each other scenario to a map tile, rewrite
       its questions into the one shape, and write the purpose line of each
-      screen it names, one scenario at a time, until the build accepts all
-      eight.
-- [ ] In atlas, replace the map tiles' lists of phases with the routes, and
-      correct `standards/export-json.md` to match.
+      screen it names, one scenario at a time, until Do shows all eight.
 - [ ] In atlas, stop exporting reviews, summaries and experiments.
 - [ ] Lay out the three choices for field meanings and concepts on one page,
       each with a working sample, what it costs to keep, and what leaves the

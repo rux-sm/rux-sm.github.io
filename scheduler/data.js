@@ -12755,7 +12755,15 @@
       setTimeout(() => {
         const field = WARN_SPOT[spot]?.();
         if (!field) return;
-        field.scrollIntoView({ block: 'center' });
+        /* The editor's own scroll box brings the field to its middle; the page
+           itself is never scrolled, which slid the whole board up under the
+           header. */
+        let box = field.parentElement;
+        while (box && box !== document.body && !(/(auto|scroll)/.test(getComputedStyle(box).overflowY) && box.scrollHeight > box.clientHeight)) box = box.parentElement;
+        if (box && box !== document.body) {
+          const at = field.getBoundingClientRect().top - box.getBoundingClientRect().top;
+          box.scrollTop += at - box.clientHeight / 2;
+        }
         field.focus({ preventScroll: true });
       }, 0);
     });

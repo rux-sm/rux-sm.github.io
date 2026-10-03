@@ -230,12 +230,14 @@
               </span>
             </div>
             <!-- The list is the trigger's sibling, as design/js/menu.js expects,
-                 inside a wrapper that is its containing block. -->
+                 inside a wrapper that is its containing block. Carbon's
+                 direction and flip lay the strip that hides the shadow where
+                 the list meets its trigger. -->
             <div class="scheduler-maintenance-menu">
               <button type="button" class="rux--overflow-menu" id="scheduler-maintenance-menu-trigger" aria-expanded="false" aria-haspopup="true" aria-label="Public link actions">
                 <svg class="rux--overflow-menu__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-more_vert"/></svg>
               </button>
-              <ul class="rux--overflow-menu-options" role="menu" aria-label="Public link actions">
+              <ul class="rux--overflow-menu-options rux--overflow-menu--flip" data-floating-menu-direction="bottom" role="menu" aria-label="Public link actions">
                 <li class="rux--overflow-menu-options__option" role="none">
                   <button type="button" class="rux--overflow-menu-options__btn" role="menuitem" tabindex="0" id="scheduler-maintenance-open-public">
                     <div class="rux--overflow-menu-options__option-content">Open public page</div>

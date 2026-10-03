@@ -801,12 +801,14 @@
       </div>
       <!-- Carbon's overflow menu beside the close button, outside the header,
            whose own scrolling would clip the list. The list is the trigger's
-           sibling, as design/js/menu.js expects; data.js fills it. -->
+           sibling, as design/js/menu.js expects; data.js fills it. Carbon's
+           direction and flip mark the list as below its trigger's right edge,
+           which lays the strip that hides the shadow where the two meet. -->
       <div class="scheduler-contacts__menu" id="scheduler-contacts-menu" hidden>
         <button type="button" class="rux--overflow-menu rux--layout--size-lg" id="scheduler-contacts-more" aria-expanded="false" aria-haspopup="true" aria-label="More for this trip's contacts" title="More">
           <svg class="rux--overflow-menu__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-more_vert"/></svg>
         </button>
-        <ul class="rux--overflow-menu-options" role="menu" aria-label="More for this trip's contacts" id="scheduler-contacts-options"></ul>
+        <ul class="rux--overflow-menu-options rux--overflow-menu--flip rux--layout--size-lg" data-floating-menu-direction="bottom" role="menu" aria-label="More for this trip's contacts" id="scheduler-contacts-options"></ul>
       </div>
     </div>
   </div>

@@ -16,7 +16,13 @@ from the newest examples, and every app looks as it should afterwards.
 - **The target is Carbon's newest release at the time of building:**
   `@carbon/styles` 1.116.0, with `@carbon/elements`, `@carbon/colors`,
   `@carbon/icons` and `sass` moved to their newest too, and the references
-  harvested from the live examples at `@carbon/react` 1.117.0.
+  harvested from both live example sites: `@carbon/react` 1.117.0 and IBM
+  Products 2.100.0, whose references are refreshed in this same work.
+- **Everything new comes in.** Carbon 1.116 adds Tag overflow, Tearsheet,
+  Guide banner and Notifications panel; Design compiles all four and shows
+  each in the kitchen sink, built from the markup IBM Products' own examples
+  render. One with no behaviour module yet is a static specimen in its open
+  state, as the slider is.
 - **Carbon's new look is taken as it comes.** Where the newest Carbon draws a
   component differently, Design follows it. A trial build measured the size of
   that: about 1,000 changed lines in 33,000, six classes added, three removed,
@@ -43,12 +49,7 @@ from the newest examples, and every app looks as it should afterwards.
 
 ## Questions
 
-- **Carbon 1.116 adds four components Design has never had:** Tag overflow,
-  Tearsheet, Guide banner and Notifications panel. Design's inventory has to
-  say yes or no to each. Leave all four out for now, or take any of them in?
-- **Some of Design's components come from IBM's second example site,** IBM
-  Products, whose references are older still. Refresh those in this same piece
-  of work, or leave them for a plan of their own?
+None open.
 
 ## Tasks
 
@@ -60,12 +61,16 @@ from the newest examples, and every app looks as it should afterwards.
   verification passes.
 - [ ] Take the token snapshot again and read `check-token-values`' report of
   every value that moved.
-- [ ] Harvest `carbon-react-dom.json` and `carbon-react-states.json` again
-  from the live examples, then correct each kitchen-sink fragment the tag,
-  ancestry, slot and co-class checks report as no longer Carbon's markup.
+- [ ] Harvest the markup and state references again from both example sites
+  (`carbon-react-dom.json`, `carbon-react-states.json`,
+  `carbon-ibm-products-dom.json`, `carbon-ibm-products-states.json`), then
+  correct each kitchen-sink fragment the tag, ancestry, slot and co-class
+  checks report as no longer Carbon's markup.
 - [ ] Rebuild the icon sprite and its glyph snapshot from the newest
   `@carbon/icons`.
-- [ ] Record each new component's decision in Design's inventory.
+- [ ] Add Tag overflow, Tearsheet, Guide banner and Notifications panel:
+  compile each, write its kitchen-sink fragment from the captured markup, and
+  record it in Design's inventory, coverage and component index.
 - [ ] Go through `design/css/rux-overrides.css` and every app's
   `overrides.css` against the rules that changed, keeping, correcting or
   deleting each.

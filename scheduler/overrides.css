@@ -741,7 +741,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 /* New trip where the toolbar is too narrow for its words, in app.css's terms:
    Carbon's icon-only button, a square of the bar's height with the icon in
    the flow, set here because the width decides it and a class cannot. */
-@container scheduler-toolbar (max-width: 41rem) {
+@container scheduler-toolbar (max-width: 45rem) {
   .scheduler-page .scheduler-toolbar .rux--btn--primary {
     justify-content: center;
     padding-inline: 0;

@@ -1,64 +1,36 @@
 #!/usr/bin/env node
 //
 // Is the right glyph in this SLOT? — the half of the icon question check-glyphs
-// says is not its job, and the half every icon defect this project shipped was.
+// says is not its job, and the half every icon defect this project shipped was:
+// a chevron rotated from the wrong base glyph, a sort arrow built from
+// arrow--down where Carbon draws ArrowUp, form `__invalid-icon`s drawing a
+// cross where Carbon draws an exclamation. Each was a CORRECT symbol in the
+// WRONG slot. check-icons asks whether a `<use>` resolves and check-glyphs
+// whether the symbol draws what its name says; both answer yes to all of them.
 //
-// FOUR HAVE SHIPPED, all past all sixteen other gates: two chevrons rotated from
-// the wrong base glyph; a table sort arrow built from arrow--down where Carbon
-// draws ArrowUp, so both sort states pointed the wrong way; and seven form
-// `__invalid-icon`s drawing error--filled — a circle with a cross — where Carbon
-// draws warning--filled, a circle with an exclamation. The last of those was
-// found by this file's own reference on the day it was written.
+// THE REFERENCE is data/carbon-slots.json, and it is two hops from Carbon.
+// Carbon's React inlines its icons, so the DOM has a path and no name. The
+// icons mode of tools/extract/react-dom.js records slot → drawing across every
+// story and its ICON_STATES recipes, and tools/build-slots.mjs resolves each
+// drawing to a name against @carbon/icons.
 //
-// Every one was a CORRECT symbol referenced from the WRONG slot. check-icons
-// asks whether a `<use>` resolves; check-glyphs asks whether the symbol draws
-// what its name says. Both answer yes for all four.
+// THE CORROBORATION BAR IS THE DIFFERENCE BETWEEN A RULE AND A STORY, and it is
+// cleared two ways — see `enforced` below. One story describes that story; so
+// does one component. A slot is enforced when Carbon draws one glyph there
+// across three or more stories, or when three or more SIBLING slots agree: six
+// components drawing one glyph in their `__invalid-icon` is corroboration of
+// the same kind as one component in six stories, and it is the only form the
+// evidence takes for invalid and warn states, which no default story renders.
+// Everything under the bar is recorded and reported, never failed.
 //
-// THE REFERENCE, and why it is two hops. Carbon's React inlines its icons, so
-// the DOM has a path and no name — there is nothing to compare a `<use href>`
-// against directly. data/carbon-slots.json closes that: the icons mode of
-// tools/extract/react-dom.js records slot → drawing across all 505 stories, and
-// the drawing is resolved to a NAME against @carbon/icons, whose 2,828 files
-// hash to 2,823 distinct size+geometry keys. All 69 drawings in our slots
-// resolved; the five collisions in the package are aliases.
-//
-// THE CORROBORATION BAR IS THE WHOLE DIFFERENCE BETWEEN A RULE AND A STORY, and
-// it is cleared two ways — see `enforced` below. 33 of the 51 slots our markup
-// shares with Carbon are enforced; six are declined in the reference WITH
-// REASONS because their glyph is the consumer's and not the component's, and the
-// rest are recorded under the bar and reported, never failed.
-//
-// IT TOOK BOTH A CAPTURE AND A RULE, and the first draft claimed otherwise. That
-// draft enforced 19 slots on story-count alone, and REVERTING THE INVALID-ICON
-// DEFECT LEFT IT GREEN: no default story renders an invalid field, so
-// list-box__invalid-icon had one capture and text-input__invalid-icon two, both
-// under a 3-story bar. Its header said `states` recipes would fix that and a
-// rule change would not. Half right. The 20 ICON_STATES rows supplied the
-// captures, and every one still had a single story behind it — what made them
-// evidence was noticing that SIX INDEPENDENT COMPONENTS agree on one glyph,
-// which is corroboration of the same kind as one component in six stories.
-// With both, the seven-site defect that this file's own reference found by hand
-// is now caught by the file.
-//
-// COVERAGE IS NOT ENFORCEMENT, and the second round moved only the first.
-// Adding twelve more configured captures and a subset match took UNCOVERED from
-// 13 slots to 4 — we now know what Carbon draws in the pagination arrows, the
-// open list-box chevron, the side-nav submenu chevron, inline loading's error
-// and number's warn, and ours agrees in every case. The enforced count did not
-// move off 33, because each of those rests on a SINGLE story and has no
-// siblings to vouch for it. Knowing more and checking more are different
-// things, and only the first happened.
+// A slot whose glyph is the consumer's and not the component's is declined
+// below, with its reason.
 //
 // WHAT IT CANNOT SEE, stated because a green run is otherwise easy to over-read:
-//   * 4 slots have no Carbon capture that can answer, and are reported
-//     UNCOVERED, never as passing: an ACTIVE header action, which no story
-//     renders; a bare `pagination__button`, which sits under both the forward
-//     and backward captures and so matches neither; and the password visibility
-//     toggle, where Carbon puts the class on the svg and we put it on the
-//     button, so there is no shared key to compare.
-//   * 25 more are captured and recorded but under the bar.
-//   * a slot Carbon fills from a prop, where there is no right answer to know.
-//   * whether the icon is the right SIZE, or positioned correctly, or visible.
+//   * a slot no Carbon capture renders, reported UNCOVERED and never as passing
+//   * a slot that is captured but under the bar
+//   * a slot Carbon fills from a prop, where there is no right answer to know
+//   * whether the icon is the right SIZE, or positioned correctly, or visible
 //
 //   node tools/check-slots.mjs           gate
 //   node tools/check-slots.mjs --all     show uncovered and unenforced slots too
@@ -66,8 +38,26 @@
 import { readFileSync } from 'node:fs';
 import { markupFiles } from './lib/sources.mjs';
 
-const REF = JSON.parse(readFileSync('data/carbon-slots.json', 'utf8'));
-const { slots, _declined: DECLINED } = REF;
+const { slots } = JSON.parse(readFileSync('data/carbon-slots.json', 'utf8'));
+
+// Slots whose glyph is not Carbon's to decide. Each is left out of enforcement
+// and out of the sibling tally, with the reason.
+const DECLINED = {
+  'side-nav__icon': 'the consumer chooses their nav icons; Carbon\u2019s stories happen to use '
+    + '`fade` throughout, which is a fact about the stories',
+  'tag__custom-icon': 'the class says custom; the glyph is the consumer\u2019s by definition',
+  'tile__checkmark.tile__checkmark--persistent': 'Carbon\u2019s captures show `checkbox` here, but '
+    + 'the selectable tile\u2019s mark is a variant of the same control and the sink demos the '
+    + 'filled checkmark',
+  'toast-notification__icon': 'a variant slot. Carbon\u2019s stories render only the error toast, '
+    + 'so the capture sees one glyph where the component has four: success, error, warning, info',
+  'content-switcher-btn.content-switcher--selected.btn.btn--md.layout--size-md.btn--primary.btn--icon-only':
+    'an icon-only switch holds the glyph its option means. Carbon\u2019s one story gives all '
+    + 'three options the same glyph, which is a fact about the story',
+  'visually-hidden': 'a utility class, not an icon slot; it happens to wrap a close icon in '
+    + 'the tabs stories',
+  'visually-hidden.tabs__nav-item--close-icon--selected': 'as visually-hidden',
+};
 const showAll = process.argv.includes('--all');
 
 // THE ROLE IS THE CLASS WITH ITS COMPONENT NAME STRIPPED, so that

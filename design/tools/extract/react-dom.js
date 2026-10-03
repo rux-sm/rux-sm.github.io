@@ -1,11 +1,10 @@
 //
 // REACT DOM QUARRY — paste into the console at https://react.carbondesignsystem.com
 //
-// Companion to tools/extract/index.html, which quarries the WEB COMPONENTS. This
-// one quarries @carbon/react, and both exist because for light-DOM
-// class placement React is authoritative, because @carbon/styles is the CSS React
-// consumes. The web components render into shadow DOM with different structure —
-// cds-tab emits an <a> and never emits --nav-item at all.
+// It quarries @carbon/react, because for light-DOM class placement React is
+// authoritative: @carbon/styles is the CSS React consumes. Carbon's web
+// components render into shadow DOM with a different structure — cds-tab emits
+// an <a> and never emits --nav-item at all — so they are not a reference here.
 //
 // Why a browser tool and not Node: the same reason as check-rendered.js. Reading
 // the rendered DOM is the whole point — JSX has conditionals, and reasoning
@@ -608,7 +607,8 @@
   };
 
   const grab = (story, { maxMs = SETTLE_MAX_MS } = {}) => new Promise(resolve => {
-    const id = typeof story === 'string' ? story : story.id;
+    // A catalogue entry names its story `id`; an ICON_STATES row names it `story`.
+    const id = typeof story === 'string' ? story : (story.id ?? story.story);
     // ARGS AND A SEPARATE KEY, so a configured capture can sit beside a bare one.
     // The bare harvest passes neither and behaves exactly as before; ICON_STATES
     // rows pass both, and the key is what keeps `story@invalid` from overwriting
@@ -868,8 +868,11 @@
   if (retryable.length) {
     console.log(`retrying ${retryable.length} one at a time…`);
     let recovered = 0;
+    // Retried as it was first asked for: an ICON_STATES row is its story AND
+    // its args, and its key alone is not a story id.
+    const asked = new Map(harvest.map(s => [(typeof s === 'object' && s.key) || s.id, s]));
     for (const id of retryable) {
-      const [, lines] = await grab(id, { maxMs: SETTLE_MAX_MS * 2 });
+      const [, lines] = await grab(asked.get(id) ?? id, { maxMs: SETTLE_MAX_MS * 2 });
       if (!verdictOf(lines)) { out[id] = lines; recovered++; }
       else out[id] = lines;   // keep the retry's verdict; it may have resolved to (missing)
     }

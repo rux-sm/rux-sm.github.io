@@ -21,6 +21,7 @@
     "@carbon/colors": "^11.59.0",
     "@carbon/elements": "^11.98.0",
     "@carbon/styles": "^1.116.0",
+    "@material-symbols/svg-400": "0.47.4",
     "sass": "^1.105.1"
   }
 }

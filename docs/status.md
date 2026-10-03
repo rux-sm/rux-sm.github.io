@@ -9,12 +9,9 @@ done and how.
 - **Screen-reader pass.** Toggle, modal and popover are not heard yet, two
   problems are open, and five controls need hearing again. The list is in
   `design/docs/screen-reader-pass.md`.
-- **Two references are older than the rest.** `design/data/carbon-react-spacing.json`
-  was captured in a background tab, and `design/data/carbon-slots.json` predates
-  Carbon 1.116. Each needs taking again.
-- **Material icons are not a declared dependency.** `design/package.json` does not
-  list `@material-symbols/svg-400`, so `npm install` removes it and the icon
-  build fails until it is put back.
+- **The spacing reference needs taking again.** `design/data/carbon-react-spacing.json`
+  was captured in a background tab, where a component that measures itself is
+  recorded half built.
 
 ## Scheduler
 

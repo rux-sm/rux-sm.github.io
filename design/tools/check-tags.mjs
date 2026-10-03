@@ -136,8 +136,7 @@ const TAGS = new Map();
 let stories = 0;
 // `_`-PREFIXED KEYS ARE METADATA, NOT STORIES. The capture files carry a `_meta`
 // recording which Carbon they came from. Every reader of a
-// capture skips them, the same convention carbon-slots.json and
-// carbon-co-classes.json have always used.
+// capture skips them, the same convention carbon-slots.json uses.
 const refs = REF_PATHS.flatMap(p => Object.entries(JSON.parse(readFileSync(p, 'utf8')))
   .filter(([id]) => !id.startsWith('_')).map(([, lines]) => lines));
 for (const lines of refs) {

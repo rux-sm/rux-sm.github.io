@@ -48,7 +48,8 @@ rewrites the committed stylesheet from the old Carbon and still exits 0.
 | `npm run generate` | rebuilds every generated page and file: the kitchen sink, portal, README figures, builder, Theme Creator and shell |
 | `npm run icons` | quarries `assets/icons.svg` from `@carbon/icons` and `@material-symbols/svg-400`, and picks up `assets/icons-rux/` |
 | `npm run inventory` | per-component classes and size → `data/inventory.json` |
-| `tools/extract/` | quarries Carbon's rendered markup → `data/carbon-co-classes.json`, `data/carbon-*-dom.json`, and — via the state recipes in `react-dom.js` — `data/carbon-react-states.json`. Its `spacing` mode captures COMPUTED box properties instead, folded into a signature table — the one question the markup captures cannot answer |
+| `tools/extract/` | quarries Carbon's rendered markup → `data/carbon-*-dom.json`, and — via the state recipes in `react-dom.js` — `data/carbon-react-states.json`. Its `spacing` mode captures COMPUTED box properties instead, folded into a signature table — the one question the markup captures cannot answer |
+| `tools/build-slots.mjs <file>` | names each drawing in an icons-mode capture against `@carbon/icons` → `data/carbon-slots.json`, which `check-slots` reads |
 | `tools/check-icons.mjs --unused` | the sprite's symbols nothing in the shipped sink references; `--deferred` is the ones `sink/deferred/` would need back |
 | `tools/check-provenance.mjs --inferred` | the fragments whose markup was never diffed against a reference |
 | `tools/diff-fragment.mjs <name> --omissions` | where a fragment's nesting disagrees with Carbon, and what Carbon renders that it omits |
@@ -68,7 +69,7 @@ The table is generated on every `npm run verify`. Do not edit it by hand.
 | Class coverage | **1,060 / 1,520 (70%)** — ratcheted in `data/coverage.json` |
 | Spacing scale | 13 `--rux-spacing-*` tokens, demoed in the `spacing` section |
 | Markup provenance | **81 `rendered-dom` · 6 `source` · 0 `inferred`** across 87 files |
-| Icons | 248 symbols in a 75.1 KB sprite — 55 referenced, 193 nothing points at |
+| Icons | 248 symbols in a 75.1 KB sprite — 56 referenced, 192 nothing points at |
 | Size | 1107.4 KB raw · 996.7 KB min · **102 KB gzipped** |
 | Behaviour JS | **18** modules · **68 KB gzipped** · 223.7 KB raw, 61% of it comment · 87.3 KB of code |
 

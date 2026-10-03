@@ -193,27 +193,16 @@ export const GATES = [
     catches: 'the WRONG GLYPH in a slot — the half of the icon question every one '
       + 'of this project\'s four shipped icon defects was, and which check-icons and '
       + 'check-glyphs both pass',
-    // THE BAR IS WHY THIS IS HONEST AND ALSO WHY IT IS NARROW. A slot is only
-    // enforced where Carbon drew one glyph in 3+ distinct stories. That excludes
-    // the `__invalid-icon` family, which Carbon renders once or twice in the
-    // default stories — so the seven-site invalid-icon defect fixed on
-    // 2026-08-29 was found by READING data/carbon-slots.json, not by this gate,
-    // and reverting it does NOT turn this red. `states` recipes for the invalid
-    // and warning states would raise those slots over the bar; until then the
-    // reference is worth more than the check.
-    blindTo: '4 slots have no Carbon capture that can answer and are reported '
-      + 'UNCOVERED rather than passed · 25 more are captured and recorded but under '
-      + 'the corroboration bar, each resting on a single story · a slot Carbon fills '
-      + 'from a prop, where there is no right answer · size, position and visibility',
+    blindTo: 'a slot no Carbon capture renders, reported UNCOVERED rather than passed · '
+      + 'a slot captured but under the corroboration bar · a slot Carbon fills from a '
+      + 'prop, where there is no right answer · size, position and visibility',
     reads: 'per-file',
     fileTargets: ROOTS,
     inputs: [...ROOTS, 'data/carbon-slots.json'],
-    redRun: 'point `table-sort__icon` at `#i-arrow--down` (4 findings), '
-      + '`accordion__arrow` at `#i-chevron--down` (3), or revert the invalid-icon '
-      + 'fix to `#i-error--filled` (7) — all verified 2026-08-29. That last one did '
-      + 'NOT fire before ICON_STATES and the sibling rule, which is why both exist.',
+    redRun: 'point `table-sort__icon` at `#i-arrow--down`, `accordion__arrow` at '
+      + '`#i-chevron--down`, or an `__invalid-icon` at `#i-error--filled`',
     sideEffects: null,
-    baseline: '33 enforced slots · 104 icon sites checked · 0 wrong glyph · 4 uncovered · 25 under the bar',
+    baseline: '53 enforced slots · 203 icon sites checked · 0 wrong glyph · 32 uncovered · 63 under the bar',
   },
   {
     id: 'check-co-classes',
@@ -221,16 +210,16 @@ export const GATES = [
     kind: 'node',
     inVerify: true,
     catches: 'a modifier used without the base class that styles it',
-    blindTo: 'a base class Carbon never pairs',
+    blindTo: 'a pairing the class names do not show and the tool\'s ALSO list does not '
+      + 'name · a modifier fewer than three stories render',
     reads: 'assembled',
     fileTargets: pageFiles(),
-    inputs: [...pageFiles(), 'data/carbon-co-classes.json'],
+    inputs: [...pageFiles(), 'css/rux.css', 'data/carbon-react-dom.json',
+      'data/carbon-ibm-products-dom.json', 'data/carbon-react-states.json',
+      'data/carbon-ibm-products-states.json'],
     redRun: 'use a modifier without its base class in any fragment',
-    // Recorded as a gap, not a style note: a finding on a template cannot be
-    // located, because the violation block prints the class attribute and no path.
     sideEffects: null,
-    baseline: '10 required rules · 28 ignored as sample artifacts · 0 violations',
-    knownGap: 'prints no file path with a violation (check-co-classes.mjs:39-41)',
+    baseline: '190 modifier-needs-base rules read from the captures · 4 named pairs · 0 violations',
   },
   {
     id: 'check-compound',

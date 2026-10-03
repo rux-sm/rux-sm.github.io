@@ -209,9 +209,9 @@ same size selected or not.
 
 ### Selecting is not opening
 
-A click selects a trip bar: its outline, and its days in the driver grid. A
-right-click selects the bar too, and its shortcut bar waits until the menu
-shuts. The Open trip slot on the selected bar's shortcut bar, a double-click,
+A click selects a trip bar, its outline and its days in the driver grid, kept
+through any read of the same week, such as a save or a live change. A
+right-click selects it too, its card waiting until the menu shuts. The Open trip slot on the selected bar's shortcut bar, a double-click,
 Enter or the bar's right-click menu loads it into the panel, and the board
 scrolls across to show that trip whole beside it. A trip opens on the tab the
 last one was on. New trip is a + in the toolbar, and a row of its overflow

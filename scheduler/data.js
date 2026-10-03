@@ -1177,8 +1177,14 @@
      read, so the board's index, its label, its roster, its notices and its
      scroll all still belong to the week on screen. Without one it draws into
      the board's own grid and everything that follows a week change follows. */
+  /* The week the board last drew. A read of that same week -- a save, a live
+     change from someone else, a pin -- keeps the selected trip selected, so
+     its card stays open; moving to another week starts with nothing picked. */
+  let renderedWeek = null;
   function render(data, target) {
     const { buses, trips, drivers, contacts, customers, locations, oos, timeOff, statuses, weekStart, weekEnd } = data;
+    const kept = !target && renderedWeek === iso(weekStart) ? selectedBar() : null;
+    const keepRef = kept ? barRef(kept) : null;
     // One week or two, from the range asked for. The board's columns follow
     // it; a spare week inherits the count from the pane.
     const days = Math.round((weekEnd - weekStart) / DAY) + 1;
@@ -1427,6 +1433,10 @@
     // The editor keeps its trip across a render. Its opener becomes the new bar
     // for that trip when this week has one, so focus can go back to it.
     if (!panelEl.hidden && panelArgs?.ref) panelOpener = findBar(panelArgs.ref);
+    if (!target) {
+      if (keepRef) findBar(keepRef)?.setAttribute('aria-pressed', 'true');
+      renderedWeek = iso(weekStart);
+    }
 
     schEl.hidden = false;
     // The roster reads the board's whole range and draws the part it shows.
@@ -12610,19 +12620,15 @@
   });
   /* Pins or unpins an update from the card, as the Updates window's Pin does;
      the database lets the trip's other pin go, and the board reads it again.
-     A read draws every bar afresh, unselected, so the trip is selected again
-     and its card comes back with the pin moved. */
+     The read keeps the trip selected, so its card stays open with the pin
+     moved. */
   async function pinFromCard(id, on) {
     if (!id) return;
-    const bar = selectedBar();
-    const ref = bar ? barRef(bar) : null;
     try {
       const { error } = await withTimeout(client.from('trip_updates')
         .update({ pinned_at: on ? new Date().toISOString() : null }).eq('id', id).then(r => r));
       if (error) throw new Error(error.message);
       await show();
-      const again = ref && findBar(ref);
-      if (again) { selectBar(again); syncSelection(); }
     } catch (err) {
       const fail = on ? 'The update was not pinned.' : 'The update was not unpinned.';
       console.warn(fail, err);

@@ -234,8 +234,10 @@ Then the updates: their title, Updates with their count (Updates · 5) and
 Add at its end, which opens the trip's Updates window, over the pinned
 update's line, led by a pin where an update's avatar stands, then the newest
 of the rest, each a line of its own with its age at the right, always a
-number (45m, 2h, 3d). A press on either opens every update in full, the
-pinned one first and the rest newest first. An update's author is its
+number (45m, 2h, 3d). The whole section is one press, lit on hover, and its
+title is the button a keyboard reaches, with an arrow that turns over when
+open: it opens to every update in full, the pinned one first and the rest
+newest first, two lines taller and scrolling past that. Add is its own button. An update's author is its
 avatar's tooltip. With none, the title alone says No updates, with Add.
 In the Updates window, pressing an update gives Pin, or Unpin, beside Delete;
 a trip has one pinned update, and pinning another lets the first go. The trip

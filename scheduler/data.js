@@ -9231,7 +9231,7 @@
     const above = roomAbove >= height || (roomBelow < height && roomAbove > roomBelow);
     const room = above ? roomAbove : roomBelow;
     if (list && height > room) {
-      list.style.maxBlockSize = `min(16rem, ${Math.max(64, list.offsetHeight - (height - room))}px)`;
+      list.style.maxBlockSize = `min(var(--card-updates-open), ${Math.max(40, list.offsetHeight - (height - room))}px)`;
       height = barShortcuts.offsetHeight;
     }
     barShortcuts.dataset.side = above ? 'above' : 'below';
@@ -12557,15 +12557,6 @@
 
   // The trip whose card shows all its updates, kept until the card leaves it.
   let updatesOpenFor = null;
-  barShortcuts?.addEventListener('keydown', e => {
-    // A button inside the row presses itself.
-    if ((e.key !== 'Enter' && e.key !== ' ') || e.target.closest?.('button')) return;
-    const words = e.target.closest?.('.scheduler-card__update .scheduler-card__words[role="button"]');
-    if (words) {
-      e.preventDefault();
-      toggleUpdates(words.closest('.scheduler-card')?.dataset.tripId ?? null, true);
-    }
-  });
 
   let shortcutsDrawn = '';
   function drawShortcuts(bar) {
@@ -13045,9 +13036,10 @@
     }
     /* THE UPDATES: Updates with their count, "Updates · 5", and Add, over
        two lines: the pinned update, then the newest of the rest, each cut to
-       one line. A press on either opens the card to every update in full,
-       the pinned one first and the rest newest first, and a second press
-       closes it. Two updates that fit their lines have nothing more to show,
+       one line. The whole section is one press: it opens to every update in
+       full, the pinned one first and the rest newest first, two lines taller
+       and scrolling past that, and a second press closes it. Add is its own
+       button. Two updates that fit their lines have nothing more to show,
        which fitUpdates works out once they are drawn. With none, No updates
        and Add. */
     const all = updatesOf(trip);
@@ -13084,7 +13076,18 @@
       item.append(face, el('span', 'scheduler-card__words', u.body), when);
       return item;
     };
-    part.appendChild(cardTitle(all.length ? `Updates · ${all.length}` : 'No updates', add));
+    /* With any updates, the title's words are the section's toggle, a real
+       button with an arrow, so a keyboard and a screen reader reach what a
+       press anywhere on the section does. */
+    const title = cardTitle(all.length ? `Updates · ${all.length}` : 'No updates', add);
+    if (all.length) {
+      const toggle = el('button', 'scheduler-card__toggle');
+      toggle.type = 'button';
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.append(el('span', null, `Updates · ${all.length}`), svgUse('#m-keyboard_arrow_down', '16', '0 0 16 16'));
+      title.firstChild.replaceWith(toggle);
+    }
+    part.appendChild(title);
     if (all.length) {
       const list = el('ol', 'scheduler-card__update-list');
       list.setAttribute('aria-label', pinned ? 'Updates, the pinned one first, then newest first' : 'Updates, newest first');
@@ -13105,24 +13108,14 @@
     const more = part.hasAttribute('data-open') || Number(part.dataset.count) > Number(part.dataset.shown)
       || words.some(w => w.scrollHeight > w.clientHeight + 1);
     part.toggleAttribute('data-more', more);
-    /* The first update's words are the keyboard's way to open and close the
-       rest, a button only while there is more to show. */
-    words.forEach((w, n) => {
-      if (n === 0 && more) {
-        w.setAttribute('role', 'button');
-        w.tabIndex = 0;
-        w.setAttribute('aria-expanded', String(part.hasAttribute('data-open')));
-      } else {
-        w.removeAttribute('role');
-        w.removeAttribute('tabindex');
-        w.removeAttribute('aria-expanded');
-      }
-    });
+    // With nothing more to show, the toggle has nothing to do.
+    const toggle = part.querySelector('.scheduler-card__toggle');
+    if (toggle) toggle.disabled = !more;
   }
   function toggleUpdates(tripId, refocus) {
     updatesOpenFor = updatesOpenFor === tripId ? null : tripId;
     placeBarOpen();
-    if (refocus) barShortcuts.querySelector('.scheduler-card__update .scheduler-card__words[role="button"]')?.focus();
+    if (refocus) barShortcuts.querySelector('.scheduler-card__toggle')?.focus();
   }
 
   function openUpdatesFromCard() {
@@ -13138,10 +13131,11 @@
       openUpdatesFromCard();
       return;
     }
-    // An update with more to show opens or closes the rest.
-    const more = e.target.closest('.scheduler-card__updates[data-more] .scheduler-card__update');
+    // A press anywhere on updates with more to show opens or closes them, and
+    // the toggle keeps focus when a key pressed it.
+    const more = e.target.closest('.scheduler-card__updates[data-more]');
     if (more) {
-      toggleUpdates(more.closest('.scheduler-card')?.dataset.tripId ?? null, false);
+      toggleUpdates(more.closest('.scheduler-card')?.dataset.tripId ?? null, e.detail === 0);
       return;
     }
     // The docked sheet's trip is the whole bar written out, and a tap on it

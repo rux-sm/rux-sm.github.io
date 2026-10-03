@@ -1095,10 +1095,9 @@ button.scheduler-row-head__num::after {
 /* The pinned update's pin stands where a face does, in the card's quieter ink. */
 .scheduler-card__update[data-pinned] > svg { inline-size: 1rem; block-size: 1rem; color: color-mix(in srgb, var(--card-ink) 70%, transparent); }
 /* Closed, the pinned update and the newest of the rest show, each cut to one
-   line, 8px apart so each line is a 24px row; with more to show, a press opens
-   the rest, so they take the pointer. Open, every update shows whole, in a
-   list that scrolls past 16rem, or sooner where data.js finds the board has
-   less room. */
+   line, 8px apart so each line is a 24px row. Open, every update shows whole,
+   in a list two rows taller that scrolls past four lines, or sooner where
+   data.js finds the board has less room. */
 .scheduler-card__update-list {
   display: flex;
   flex-direction: column;
@@ -1107,12 +1106,34 @@ button.scheduler-row-head__num::after {
   padding: 0;
   list-style: none;
 }
+.scheduler-card__updates { --card-updates-open: calc(4 * 1rem + 3 * var(--rux-spacing-03)); }
 .scheduler-card__updates[data-open] .scheduler-card__update-list {
-  max-block-size: 16rem;
+  max-block-size: var(--card-updates-open);
   overflow-y: auto;
 }
-.scheduler-card__updates[data-more] .scheduler-card__update { cursor: pointer; }
-.scheduler-card__update .scheduler-card__words[role="button"]:focus-visible { outline: 2px solid var(--card-focus); outline-offset: 2px; }
+/* While there is more to show the whole section is one press, so it takes
+   the pointer and the slots' hover; Add keeps its own. */
+.scheduler-card__updates[data-more] { cursor: pointer; }
+.scheduler-card__updates[data-more]:hover { background: var(--card-hover); }
+/* The toggle is the title's words in the title's ink with an arrow after
+   them that turns over when the section is open. With nothing more to show
+   it is plain words and no arrow. */
+.scheduler-card__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rux-spacing-02);
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  cursor: inherit;
+}
+.scheduler-card__toggle > svg { inline-size: 1rem; block-size: 1rem; fill: currentColor; transition: transform 110ms cubic-bezier(.2, 0, .38, .9); }
+.scheduler-card__toggle[aria-expanded="true"] > svg { transform: rotate(180deg); }
+.scheduler-card__toggle:disabled > svg { display: none; }
+.scheduler-card__toggle:focus-visible { outline: 2px solid var(--card-focus); outline-offset: 2px; }
 .scheduler-card__words { min-inline-size: 0; overflow-wrap: anywhere; }
 .scheduler-card__updates:not([data-open]) .scheduler-card__update .scheduler-card__words {
   display: -webkit-box;

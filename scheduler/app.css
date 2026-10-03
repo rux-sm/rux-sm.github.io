@@ -1802,16 +1802,12 @@ button.scheduler-row-head__num::after {
   background-color: var(--rux-layer);
 }
 .scheduler-toolbar__weekrow {
-  /* One width for every week, so stepping through them moves nothing: 14rem
-     holds the widest week of a year, "May 28 – Jun 10, 2028", with the
-     button's insets and caret. Only a week across New Year, which writes both
-     years, is wider, and it takes that from `.scheduler-toolbar__spacer`. The
-     narrow toolbar below gives the width up with the full week. */
+  /* One width for every week, so stepping through them moves nothing: 14.25rem
+     holds the widest week data.js writes, "May 28 – Jun 10, 2028", with the
+     button's insets and caret. The narrow toolbar below gives the width up
+     with the full week. */
   flex: 0 1 auto;
-  min-inline-size: 14rem;
-  /* The rule that parts the week from the free width beside it, the same one
-     overrides.css draws between the toolbar's buttons. */
-  border-inline-end: 1px solid var(--rux-border-subtle-01);
+  min-inline-size: 14.25rem;
   /* Its minimum follows the toolbar's size token, or it would hold the row
      taller than the controls. */
   min-block-size: var(--rux-layout-size-height-md);
@@ -1885,15 +1881,15 @@ button.scheduler-row-head__num::after {
   text-overflow: ellipsis;
 }
 .scheduler-weekbtn__months { display: none; }
-/* 33.5rem is where the room runs out: the arrows, Today and four icons take
-   311px, and the week's fixed 14rem and its rule the other 225px. Below it
-   the week is as wide as its months, and its rule goes: the buttons after it
-   stand against it there, and the first of them draws the same line. The
+/* 34.75rem is where the room runs out: the arrows, Today and four icons take
+   311px, the week's fixed 14.25rem another 228px, and the spacer keeps 1rem
+   so the rule it draws never stands against the next button's. Below it the
+   week is as wide as its months. The
    toolbar is asked,
    not the window, because the roster and the editor beside the schedule are
    what take the room and a window's width cannot see them. */
-@container scheduler-toolbar (max-width: 33.5rem) {
-  .scheduler-toolbar__weekrow { min-inline-size: 0; border-inline-end: 0; }
+@container scheduler-toolbar (max-width: 34.75rem) {
+  .scheduler-toolbar__weekrow { min-inline-size: 0; }
   .scheduler-weekbtn__months { display: block; }
   .scheduler-weekbtn__week {
     position: absolute;
@@ -1903,13 +1899,27 @@ button.scheduler-row-head__num::after {
     white-space: nowrap;
   }
 }
-/* Everything before this sits left, everything after it right. */
-.scheduler-toolbar__spacer { flex: 1; }
-/* 42.5rem is where New trip's words stop fitting: Today, the arrows and three
-   icons take 270px, the week 225px and the labelled button 135px, and the 50px
-   over is what a week across New Year needs. Below it the button is its +
-   alone, sized in overrides.css, and its words stay its name. */
-@container scheduler-toolbar (max-width: 42.5rem) {
+/* Everything before this sits left, everything after it right. It is the
+   bar's full height so it can draw the rule that closes the week's controls,
+   the same one overrides.css draws at the start of each button after the
+   week. */
+.scheduler-toolbar__spacer {
+  flex: 1;
+  align-self: stretch;
+  border-inline-start: 1px solid var(--rux-border-subtle-01);
+}
+/* Under the narrow toolbar above, what is left of the spacer may be no width
+   at all, and its rule would stand against the next button's, so it draws
+   none. */
+@container scheduler-toolbar (max-width: 34.75rem) {
+  .scheduler-toolbar__spacer { border-inline-start: 0; }
+}
+/* 41rem is where New trip's words stop fitting: Today, the arrows and three
+   icons take 270px, the week 228px and the labelled button 135px, and the
+   23px over is the least the spacer keeps between the two groups. Below it
+   the button is its + alone, sized in overrides.css, and its words stay its
+   name. */
+@container scheduler-toolbar (max-width: 41rem) {
   .scheduler-toolbar__new-label {
     position: absolute;
     inline-size: 1px;

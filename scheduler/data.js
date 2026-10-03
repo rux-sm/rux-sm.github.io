@@ -565,13 +565,14 @@
 
   function setRange(weekStart, weekEnd) {
     if (!rangeEl) return;
-    /* `formatRange`, because only it writes a week inside one month the way the
-       locale does, such as "Sep 7 – 13, 2026". The month is short so the widest
-       thing in the toolbar does not wrap its row. */
-    const fmt = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
-    rangeTextEl.textContent = typeof fmt.formatRange === 'function'
-      ? fmt.formatRange(weekStart, weekEnd)
-      : `${fmt.format(weekStart)} - ${fmt.format(weekEnd)}`;
+    /* One pattern for every week, "Sep 7 – Sep 13, 2026": both months and the
+       year the week ends in, so the label reads the same way and takes nearly
+       the same width whichever week it is. `formatRange` drops the second
+       month inside one month and writes both years across New Year, which is
+       three shapes and twice the width between them. The month is short so
+       the widest thing in the toolbar does not wrap its row. */
+    const fmt = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short' });
+    rangeTextEl.textContent = `${fmt.format(weekStart)} – ${fmt.format(weekEnd)}, ${weekEnd.getFullYear()}`;
     /* Below md the label is the week's months and year, "Sep – Oct 2026",
        because the day header under it numbers the days and a phone's toolbar
        has no more room beside its four buttons. `formatRange` writes a week

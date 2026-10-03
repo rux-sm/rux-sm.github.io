@@ -725,12 +725,12 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 .scheduler-aside__head > .rux--btn:last-child { border-start-end-radius: var(--scheduler-surface-radius, 0); }
 
 /* A rule between the board toolbar's buttons, as Carbon's pagination divides
-   its arrows. The buttons before the week draw it on their trailing edge and
-   the ones after it on their leading edge, so both ends of the bar and the
-   free width beside the week stay clear whichever buttons a narrow board
-   hides. It colours the 1px border a ghost button already carries, so nothing
-   moves, and it gives way to the focus ring, which is that same border. */
-.scheduler-toolbar > .rux--btn:has(~ .scheduler-toolbar__weekrow):not(:focus-visible) { border-inline-end-color: var(--rux-border-subtle-01); }
+   its arrows. The week leads the bar and every ghost button after it draws
+   the rule on its leading edge, so the bar's two ends stay clear whichever
+   buttons a narrow board hides; app.css's spacer draws the one that closes
+   the week's controls. It colours the 1px border a ghost button already
+   carries, so nothing moves, and it gives way to the focus ring, which is
+   that same border. */
 .scheduler-toolbar__weekrow ~ .rux--btn--ghost:not(:focus-visible) { border-inline-start-color: var(--rux-border-subtle-01); }
 
 /* Today is the toolbar's one worded ghost button, and Carbon writes a ghost
@@ -741,7 +741,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 /* New trip where the toolbar is too narrow for its words, in app.css's terms:
    Carbon's icon-only button, a square of the bar's height with the icon in
    the flow, set here because the width decides it and a class cannot. */
-@container scheduler-toolbar (max-width: 42.5rem) {
+@container scheduler-toolbar (max-width: 41rem) {
   .scheduler-page .scheduler-toolbar .rux--btn--primary {
     justify-content: center;
     padding-inline: 0;

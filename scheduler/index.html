@@ -341,21 +341,10 @@
              driver grid has its own head. -->
           <div class="scheduler-frame">
           <div class="scheduler-toolbar">
-            <!-- Moving through weeks reads first: Today, then the two steps
-                 side by side so going back and forth is one place for the
-                 pointer, then the week they land on. Today gives way to a
-                 menu row where the toolbar is too narrow, and the arrows to a
-                 swipe on the compact board, both in app.css. -->
-            <button type="button" class="rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md scheduler-toolbar__lg-only" id="scheduler-today">Today</button>
-            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__step" id="scheduler-prev" aria-label="Previous week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_left"/></svg></button>
-            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__step" id="scheduler-next" aria-label="Next week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_right"/></svg></button>
-            <!-- Every other control sits right. The spacer takes the free
-                 width, so a wider week does not move the buttons, and DOM
-                 order is reading order. -->
-            <!-- The week is its own control: the week picker's trigger. data.js
-                 builds the picker, appends it to this row and sets
-                 data-rux-open on the button, so the markup names no id that
-                 only script creates. -->
+            <!-- The week leads, as the board's title, and is its own control:
+                 the week picker's trigger. data.js builds the picker, appends
+                 it to this row and sets data-rux-open on the button, so the
+                 markup names no id that only script creates. -->
             <div class="scheduler-toolbar__weekrow" id="scheduler-weekrow">
               <h2 class="scheduler-toolbar__range rux--type-heading-compact-02">
                 <!-- A heading that is also a trigger, which Carbon has no
@@ -368,6 +357,17 @@
               </h2>
               <div id="scheduler-week-loading" class="scheduler-week-loading" role="status" aria-live="polite"></div>
             </div>
+            <!-- Moving through weeks comes straight after the week it changes:
+                 Today, then the two steps side by side so going back and forth
+                 is one place for the pointer. Today gives way to a menu row
+                 where the toolbar is too narrow, and the arrows to a swipe on
+                 the compact board, both in app.css. -->
+            <button type="button" class="rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md scheduler-toolbar__lg-only" id="scheduler-today">Today</button>
+            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__step" id="scheduler-prev" aria-label="Previous week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_left"/></svg></button>
+            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__step" id="scheduler-next" aria-label="Next week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_right"/></svg></button>
+            <!-- Every other control sits right. The spacer takes the free
+                 width, so a wider week does not move the buttons, and DOM
+                 order is reading order. -->
             <div class="scheduler-toolbar__spacer"></div>
             <!-- Search is a button that opens its own window, so the toolbar
                  keeps one row at every width. Cmd-K opens it too. -->

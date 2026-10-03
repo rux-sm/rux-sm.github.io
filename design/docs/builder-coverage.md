@@ -169,7 +169,7 @@ one. **Its three CONTAINED specimens cannot be marked** — lines 151, 219
   of those three."
 
 <!-- COVERAGE:BEGIN -->
-_68 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 285 candidate regions in the 47 unmarked._
+_68 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 286 candidate regions in the 47 unmarked._
 
 | fragment | components | blocks | candidates | text | variants | behaviour | in the builder |
 |---|---|---|---|---|---|---|---|
@@ -224,7 +224,7 @@ _68 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 2
 | `shape-indicator` | shape-indicator | — | 13 | — | — | — | no |
 | `side-panel` | action-set, ai-label, button, popover, side-panel, toggletip, tooltip | — | 1 | — | — | copy-button, overlay, popover | no |
 | `skeleton` | breadcrumb, button, link, skeleton-styles | — | 13 | — | — | — | no |
-| `slider` | form, slider, text-input | — | 5 | — | — | list-box | no |
+| `slider` | form, slider, text-input | — | 6 | — | — | list-box | no |
 | `spacing` | — | — | 0 | — | — | — | no |
 | `stack` | button, stack, tile | — | 3 | — | — | tile | no |
 | `structured-list` | structured-list | 2 | 2 | 12 | 0 | form-controls | yes |

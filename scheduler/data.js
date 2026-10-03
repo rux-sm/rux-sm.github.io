@@ -9251,10 +9251,11 @@
       }
     };
     /* Beside the first day: over the two days after it, 16px in from their
-       first edge, or over the two days before it where the week has no two
-       days after. */
+       first edge, or over the two days before it where the two after are not
+       both on screen, as at the week's end or on a board scrolled sideways. */
     const start = Math.max(0, Math.min(days.length - 1, Number(bar.dataset.start) || 0));
-    const side = start + 2 < days.length ? 'right' : start >= 2 ? 'left' : null;
+    const shown = (a, b) => !!days[a] && !!days[b] && days[a].left + INSET >= first && days[b].right - INSET <= pane.right;
+    const side = shown(start + 1, start + 2) ? 'right' : shown(start - 2, start - 1) ? 'left' : null;
     if (side && days.length) {
       const middle = Math.max(box.top, ceiling) / 2 + Math.min(box.bottom, pane.bottom) / 2;
       const y = Math.max(ceiling + TIP_GAP, Math.min(middle - height / 2, pane.bottom - TIP_GAP - height));

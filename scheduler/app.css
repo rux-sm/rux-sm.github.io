@@ -1237,13 +1237,13 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__asks-when { margin-inline-start: var(--rux-spacing-02); }
 /* An update is a press that opens it in the Updates window: its row lights
    on hover as the slots do, across the card's whole width like a menu's
-   row, and 8px above and below its words, so the rows meet and the updates'
-   words stand 16px apart. */
+   row, and the rows meet. A one-line update is Carbon's small row, 32px:
+   its 18px line with 7px above and below. */
 /* The list runs out to the card's sides itself, because a list that scrolls
    cuts off a row reaching past it. */
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list { gap: 0; margin-inline: calc(-1 * var(--rux-spacing-05)); }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update[data-update-id] {
-  padding: var(--rux-spacing-03) var(--rux-spacing-05);
+  padding: calc((var(--rux-layout-size-height-sm) - 1.125rem) / 2) var(--rux-spacing-05);
   border-radius: var(--scheduler-shortcut-radius, 0);
   cursor: pointer;
 }

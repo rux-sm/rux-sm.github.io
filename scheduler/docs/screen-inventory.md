@@ -220,7 +220,8 @@ on Details. The shortcut bar floats clear of the
 trip, placed the way a calendar's event popover is: beside the trip's first
 day, where everything the trip says is written, over the two days after it,
 the trip's own or the board's, with its arrow at that day's middle; over the
-two days before it where the week has no two days after;
+two days before it where the two after are not both on screen, as at the
+week's end or on a board scrolled sideways;
 and above or below the trip only where neither side has room, slid back inside
 the board at either edge with its arrow still pointing at the trip. Nothing is taken from the trip, so the
 slots are the same on every trip however short or narrow. The card is a raised

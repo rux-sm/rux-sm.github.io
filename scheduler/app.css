@@ -849,9 +849,10 @@ button.scheduler-row-head__num::after {
 /* The selected trip's shortcuts: a row of square slots floating clear of the
    trip, so a selected trip loses none of its writing. data.js places it inside
    the board's scroll pane and writes `--scheduler-open-top` and
-   `--scheduler-open-start` in that pane's coordinates, above the trip where
-   there is room and below it where there is not; `--scheduler-open-tip` keeps
-   the arrow pointing at the trip after the bar slides back inside an edge.
+   `--scheduler-open-start` in that pane's coordinates, beside the trip's
+   first day, or above or below the trip where neither side has room;
+   `--scheduler-open-tip` keeps the arrow pointing at the trip, along the
+   card's top or bottom edge or down its side.
    Over the sticky bus column and the day header, because it is placed against
    the trip rather than laid out with it. */
 .scheduler-bar-shortcuts {
@@ -885,6 +886,16 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar-shortcuts[data-side="above"]::after { inset-block-start: 100%; border-block-start: 6px solid var(--scheduler-band-surface); }
 .scheduler-bar-shortcuts[data-side="below"]::after { inset-block-end: 100%; border-block-end: 6px solid var(--scheduler-band-surface); }
+/* Beside the trip the arrow stands on the card's near side, at the first
+   day's middle. */
+.scheduler-bar-shortcuts:is([data-side="right"], [data-side="left"])::after {
+  inset-inline-start: auto;
+  inset-block-start: calc(var(--scheduler-open-tip, 50%) - 6px);
+  border-inline: 0;
+  border-block: 6px solid transparent;
+}
+.scheduler-bar-shortcuts[data-side="right"]::after { inset-inline-end: 100%; border-inline-end: 6px solid var(--scheduler-band-surface); }
+.scheduler-bar-shortcuts[data-side="left"]::after { inset-inline-start: 100%; border-inline-start: 6px solid var(--scheduler-band-surface); }
 .scheduler-bar-shortcut {
   display: flex;
   align-items: center;
@@ -934,6 +945,8 @@ button.scheduler-row-head__num::after {
   transform-origin: var(--scheduler-open-tip, 2rem) 100%;
 }
 .scheduler-bar-shortcuts[data-card][data-side="below"] { transform-origin: var(--scheduler-open-tip, 2rem) 0; }
+.scheduler-bar-shortcuts[data-card][data-side="right"] { transform-origin: 0 var(--scheduler-open-tip, 50%); --card-rise: 0px; }
+.scheduler-bar-shortcuts[data-card][data-side="left"] { transform-origin: 100% var(--scheduler-open-tip, 50%); --card-rise: 0px; }
 /* Floating, it is fixed to the window rather than laid out in the pane, so a
    card below the last bus is not cut by the pane's edge. No ancestor of the
    track makes a containing block, as the docked sheet relies on too. Over the
@@ -951,6 +964,8 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="above"]::after { border-block-start-color: var(--card-surface); }
 .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="below"]::after { border-block-end-color: var(--card-surface); }
+.scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="right"]::after { border-inline-end-color: var(--card-surface); }
+.scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="left"]::after { border-inline-start-color: var(--card-surface); }
 .scheduler-bar-shortcuts[data-card][data-docked] {
   inline-size: auto;
   --card-ink: var(--rux-text-primary);

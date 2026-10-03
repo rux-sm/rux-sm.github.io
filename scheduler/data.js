@@ -9112,11 +9112,14 @@
   }
 
   /* The shortcut bar follows the selection, except onto the bar the editor
-     holds, which the editor already shows. It is placed the way a tooltip is:
-     above the trip where there is room and below it where there is not, and
-     slid back inside the board at either edge with its arrow still pointing at
-     the trip. Nothing is taken from the trip itself, so the slots are the same
-     on every trip. It goes straight after its bar, inside that bar's own track,
+     holds, which the editor already shows. It is placed the way a calendar's
+     event popover is: beside the trip's first day, where everything the trip
+     says is written, over the trip's own later days or the board after it,
+     with its arrow at the first day's middle; on the first day's left where
+     the right has no room. Where neither side has room it goes above or below
+     the trip, slid back inside the board at either edge with its arrow still
+     pointing at the trip. Nothing is taken from the trip itself, so the slots
+     are the same on every trip. It goes straight after its bar, inside that bar's own track,
      so Tab reaches the slots from the selected trip; the track does not clip,
      so the bar can sit outside it. It is taken away while a bar is dragged,
      because the trip it points at is moving. */
@@ -9220,20 +9223,44 @@
     const gone = box.bottom <= ceiling || box.top >= pane.bottom
       || box.right <= first - TIP_GAP || box.left >= pane.right;
     barShortcuts.toggleAttribute('data-out', gone && !barShortcuts.contains(document.activeElement));
-    /* Above the trip where it fits, else below where it fits, else on the
-       roomier side, where a card showing all its updates shortens their list
-       to what is left, so the card never runs off the board. */
-    const roomAbove = box.top - ceiling - TIP_GAP;
-    const roomBelow = pane.bottom - box.bottom - TIP_GAP;
     const list = barShortcuts.querySelector('.scheduler-card__updates[data-open] .scheduler-card__update-list');
     list?.style.removeProperty('max-block-size');
     let height = barShortcuts.offsetHeight;
-    const above = roomAbove >= height || (roomBelow < height && roomAbove > roomBelow);
-    const room = above ? roomAbove : roomBelow;
-    if (list && height > room) {
-      list.style.maxBlockSize = `min(var(--card-updates-open), ${Math.max(40, list.offsetHeight - (height - room))}px)`;
-      height = barShortcuts.offsetHeight;
+    // Shortens a card showing all its updates to the room it has, so it never
+    // runs off the board.
+    const fitTo = room => {
+      if (list && height > room) {
+        list.style.maxBlockSize = `min(var(--card-updates-open), ${Math.max(40, list.offsetHeight - (height - room))}px)`;
+        height = barShortcuts.offsetHeight;
+      }
+    };
+    /* Beside the first day: its right edge is the bar's, less the days after
+       it. The arrow stands out 6px past the gap. */
+    const ARROW = 6;
+    const span = Math.max(1, Number(bar.dataset.span) || 1);
+    const firstEnd = Math.max(box.left, box.right - (span - 1) * (band?.width ?? 0));
+    const right = firstEnd + TIP_GAP + ARROW;
+    const left = box.left - TIP_GAP - ARROW - tip.width;
+    const side = right + tip.width <= pane.right - TIP_GAP ? 'right' : left >= first ? 'left' : null;
+    if (side) {
+      fitTo(pane.bottom - ceiling - 2 * TIP_GAP);
+      const middle = Math.max(box.top, ceiling) / 2 + Math.min(box.bottom, pane.bottom) / 2;
+      const y = Math.max(ceiling + TIP_GAP, Math.min(middle - height / 2, pane.bottom - TIP_GAP - height));
+      const x = side === 'right' ? right : left;
+      barShortcuts.dataset.side = side;
+      barShortcuts.style.setProperty('--scheduler-open-top', `${y - host.top}px`);
+      barShortcuts.style.setProperty('--scheduler-open-start', `${x - host.left}px`);
+      // The arrow at the first day's middle, at least 12px in from a corner.
+      barShortcuts.style.setProperty('--scheduler-open-tip', `${Math.max(12, Math.min(height - 12, middle - y))}px`);
+      pop();
+      return;
     }
+    /* Above the trip where it fits, else below where it fits, else on the
+       roomier side. */
+    const roomAbove = box.top - ceiling - TIP_GAP;
+    const roomBelow = pane.bottom - box.bottom - TIP_GAP;
+    const above = roomAbove >= height || (roomBelow < height && roomAbove > roomBelow);
+    fitTo(above ? roomAbove : roomBelow);
     barShortcuts.dataset.side = above ? 'above' : 'below';
     barShortcuts.style.setProperty('--scheduler-open-top',
       `${(above ? box.top - height - TIP_GAP : box.bottom + TIP_GAP) - host.top}px`);

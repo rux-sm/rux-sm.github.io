@@ -192,6 +192,23 @@
   border-inline-start-width: 1px;
   border-block-start-width: 1px;
 }
+/* Beside the trip the square sits on the card's near side at the arrow's
+   height, ruled on the two sides that face the trip. */
+[data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked]):is([data-side="right"], [data-side="left"])::after {
+  inset-block-start: calc(var(--scheduler-open-tip, 50%) - 4.5px);
+  inset-inline-end: auto;
+  transform: rotate(45deg);
+}
+[data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked])[data-side="right"]::after {
+  inset-inline-start: -4.5px;
+  border-inline-start-width: 1px;
+  border-block-end-width: 1px;
+}
+[data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked])[data-side="left"]::after {
+  inset-inline-start: calc(100% - 4.5px);
+  border-inline-end-width: 1px;
+  border-block-start-width: 1px;
+}
 [data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut { color: var(--rux-icon-primary); }
 [data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut:hover { background: var(--rux-layer-hover-02); }
 [data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut[aria-disabled="true"]:hover { background: transparent; }

@@ -217,9 +217,12 @@ scrolls across to show that trip whole beside it. A trip opens on the tab the
 last one was on. New trip is a + in the toolbar, and a row of its overflow
 menu where the toolbar has no room; it puts down the selected trip and opens
 on Details. The shortcut bar floats clear of the
-trip, placed the way a tooltip is: above it where there is room, below it where
-the day band is in the way, and slid back inside the board at either edge with
-its arrow still pointing at the trip. Nothing is taken from the trip, so the
+trip, placed the way a calendar's event popover is: beside the trip's first
+day, where everything the trip says is written, over the trip's own later days
+or the board after it, with its arrow at that day's middle; on the first day's
+left where the right has no room, as for a trip that starts at the week's end;
+and above or below the trip only where neither side has room, slid back inside
+the board at either edge with its arrow still pointing at the trip. Nothing is taken from the trip, so the
 slots are the same on every trip however short or narrow. The card is a raised
 surface a step lighter than the board inside a hairline, so it stands off the
 week on a dark theme as well as a light one. Each slot carries its word beside

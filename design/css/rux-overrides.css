@@ -499,6 +499,14 @@
   justify-content: center;
   text-align: center;
 }
+/* The icon is in the flow after its label. Carbon places it absolutely in the
+   trailing padding the rule above takes back, so left there it sits on the
+   words. */
+[data-theme="geist-dark"] .rux--btn:not(.rux--btn--icon-only) .rux--btn__icon {
+  position: static;
+  margin-block-start: 0;
+  margin-inline-start: var(--rux-spacing-03);
+}
 /* - A field starts its text 12px in, and a mark at its end -- a select's or a
      dropdown's arrow, a date field's calendar -- sits 12px from that end. A
      combo box's field only frames its input, which takes the 12px itself, so

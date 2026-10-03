@@ -1805,7 +1805,7 @@ button.scheduler-row-head__num::after {
   /* One width for every week, so stepping through them moves nothing: 18rem,
      the width Carbon gives the open calendar, so the week picker hangs under
      its trigger edge to edge. The widest week data.js writes, "May 28 – Jun
-     10, 2028", needs 14.25rem of it with the button's insets and caret. The
+     10, 2028", needs 14.25rem of it with the button's insets and icon. The
      narrow toolbar below gives the width up with the full week. */
   flex: 0 1 auto;
   min-inline-size: 18rem;
@@ -1851,8 +1851,8 @@ button.scheduler-row-head__num::after {
   font: inherit;
   letter-spacing: inherit;
   cursor: pointer;
-  /* It fills the row's fixed width with its caret at the far end, as a
-     dropdown's is, so the caret holds still while the week beside it changes. */
+  /* It fills the row's fixed width with its icon at the far end, as a date
+     field's is, so the icon holds still while the week beside it changes. */
   justify-content: space-between;
   inline-size: 100%;
   overflow: hidden;
@@ -1867,10 +1867,22 @@ button.scheduler-row-head__num::after {
   outline: 2px solid var(--rux-focus);
   outline-offset: -2px;
 }
-/* A caret, not a calendar: `Today` already carries a calendar glyph and means
-   something else. It is a `<use>` from the inlined sprite, like every glyph
-   here. */
-.scheduler-weekbtn__caret { flex: 0 0 auto; }
+/* While its calendar is open the week is the calendar's own surface, as the
+   board's ⋮ is its menu's: the calendar hangs from the row's foot at the same
+   width, so the two read as one panel. `--rux-layer-02` is what the
+   calendar paints, one layer up through `rux--layer-two` in data.js. After
+   the hover rule, so the pointer still resting on it does not take the
+   surface back, and above the calendar, whose shadow would otherwise fall
+   across the week's foot. */
+.scheduler-weekbtn[aria-expanded="true"] {
+  position: relative;
+  z-index: 100000;
+  background: var(--rux-layer-02);
+}
+/* The calendar the trip editor's date fields carry, because a calendar is
+   what the press opens. It is a `<use>` from the inlined sprite, like every
+   glyph here. */
+.scheduler-weekbtn__icon { flex: 0 0 auto; }
 /* The week's two labels: the full week, and its months and year. Either ends
    in an ellipsis rather than being cut off. Where the toolbar is too narrow
    the months show, and the week stays for a screen reader, which the months
@@ -2993,7 +3005,7 @@ body:has(.scheduler-page[data-board="compact"]) .scheduler-menu-item--sm-only { 
 body:has(.scheduler-page:not([data-room="tight"]):not([data-board="compact"])) .scheduler-menu-item--new { display: none; }
 /* In the same state, and on the compact board, the week's own button gives up
    two steps of inset: 24px, as the insets come down from 16px to 8px and the
-   caret's gap from 12px to 4px. That is what the label needs to read whole
+   icon's gap from 12px to 4px. That is what the label needs to read whole
    rather than end in "…": "Sep 2026" at a 312px schedule beside its five
    icons, and "Sep – Oct 2026" on a 402px phone beside Today and three. */
 .scheduler-page:is([data-room="tight"], [data-board="compact"]) .scheduler-weekbtn {

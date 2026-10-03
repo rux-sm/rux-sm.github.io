@@ -68,7 +68,6 @@
 <symbol id="m-calculate" viewBox="0 -960 960 960"><path d="M314-228h50v-88h88v-50h-88v-88h-50v88h-88v50h88v88Zm215-35h201v-49H529v49Zm0-107h201v-50H529v50ZM241-605h196v-50H241v50ZM120-120v-720h720v720H120Zm60-60h600v-600H180v600Zm0 0v-600 600Zm386-353 61-61 61 61 36-36-61-61 61-61-36-36-61 61-61-61-36 36 61 61-61 61 36 36Z"/></symbol>
 <symbol id="m-directions_car-fill" viewBox="0 -960 960 960"><path d="M200-204v84h-80v-354l95-286h530l95 286v354h-81v-84H200Zm3-330h554l-55-166H258l-55 166Zm82.76 220q23.24 0 38.74-15.75Q340-345.5 340-368q0-23.33-15.75-39.67Q308.5-424 286-424q-23.33 0-39.67 16.26Q230-391.47 230-368.24q0 23.24 16.26 38.74 16.27 15.5 39.5 15.5ZM675-314q23.33 0 39.67-15.75Q731-345.5 731-368q0-23.33-16.26-39.67Q698.47-424 675.24-424q-23.24 0-38.74 16.26-15.5 16.27-15.5 39.5 0 23.24 15.75 38.74Q652.5-314 675-314Z"/></symbol>
 <symbol id="m-calendar_month" viewBox="0 -960 960 960"><path d="M440-400v-80h80v80h-80Zm-160 0v-80h80v80h-80Zm320 0v-80h80v80h-80ZM440-240v-80h80v80h-80Zm-160 0v-80h80v80h-80Zm320 0v-80h80v80h-80ZM120-80v-740h125v-60h65v60h340v-60h65v60h125v740H120Zm60-60h600v-430H180v430Zm0-490h600v-130H180v130Zm0 0v-130 130Z"/></symbol>
-<symbol id="m-arrow_drop_down" viewBox="0 -960 960 960"><path d="M480-360 280-559h400L480-360Z"/></symbol>
 <symbol id="m-arrow_right" viewBox="0 -960 960 960"><path d="M400-280v-400l200 200-200 200Z"/></symbol>
 <symbol id="m-swap_horiz-fill" viewBox="0 -960 960 960"><path d="M273-160 80-353l193-193 42 42-121 121h316v60H194l121 121-42 42Zm414-254-42-42 121-121H450v-60h316L645-758l42-42 193 193-193 193Z"/></symbol>
 <symbol id="m-chat" viewBox="0 -960 960 960"><path d="M80-80v-800h800v640H240L80-80Zm134-220h606v-520H140v600l74-80Zm-74 0v-520 520Zm100-99h313v-60H240v60Zm0-130h480v-60H240v60Zm0-130h480v-60H240v60Z"/></symbol>
@@ -353,7 +352,7 @@
                      js/date-picker.js needs the trigger to carry the value its
                      hidden input holds. Below md it shows the week's months and
                      year instead, and the week stays its name. -->
-                <button type="button" class="scheduler-weekbtn" id="scheduler-range" aria-haspopup="dialog" aria-expanded="false"><span class="scheduler-weekbtn__week" id="scheduler-range-text">&nbsp;</span><span class="scheduler-weekbtn__months" id="scheduler-range-months" aria-hidden="true"></span><svg class="scheduler-weekbtn__caret" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-arrow_drop_down"/></svg></button>
+                <button type="button" class="scheduler-weekbtn" id="scheduler-range" aria-haspopup="dialog" aria-expanded="false"><span class="scheduler-weekbtn__week" id="scheduler-range-text">&nbsp;</span><span class="scheduler-weekbtn__months" id="scheduler-range-months" aria-hidden="true"></span><svg class="scheduler-weekbtn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calendar_month"/></svg></button>
               </h2>
               <div id="scheduler-week-loading" class="scheduler-week-loading" role="status" aria-live="polite"></div>
             </div>

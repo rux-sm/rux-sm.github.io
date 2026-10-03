@@ -230,13 +230,12 @@ and each need still to do, Hotel booking pending or HOS form pending, each a
 line of its own behind the bar's bell.
 No warning has a dismiss; each stays until it is put right. Needs that are
 met are not shown.
-Then the updates, with no title on the floating card: the pinned update's
-line, led by a pin where an update's avatar stands, then the newest of the
-rest, each a line of its own with its age at the right, always a number
-(45m, 2h, 3d), and Add at the end of the first, which opens the trip's
-Updates window. A press on either opens every update in full, the pinned one
-first and the rest newest first. The docked sheet keeps the title, Updates
-with their count (Updates · 5), over its lines. An update's author is its
+Then the updates: their title, Updates with their count (Updates · 5) and
+Add at its end, which opens the trip's Updates window, over the pinned
+update's line, led by a pin where an update's avatar stands, then the newest
+of the rest, each a line of its own with its age at the right, always a
+number (45m, 2h, 3d). A press on either opens every update in full, the
+pinned one first and the rest newest first. An update's author is its
 avatar's tooltip. With none, the title alone says No updates, with Add.
 In the Updates window, pressing an update gives Pin, or Unpin, beside Delete;
 a trip has one pinned update, and pinning another lets the first go. The trip

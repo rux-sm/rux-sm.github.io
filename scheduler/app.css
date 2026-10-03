@@ -1131,27 +1131,11 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) .scheduler-card > .scheduler-card__row:first-child,
 .scheduler-bar-shortcuts:not([data-docked]) .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn) + :is(.scheduler-card__asks, .scheduler-card__warn),
 .scheduler-bar-shortcuts:not([data-docked]) .scheduler-card > .scheduler-card__misfit + .scheduler-card__misfit { padding-block-start: var(--rux-spacing-02); }
-/* Floating, the updates show no title when there are any: the pin and the
-   faces say what each line is, and the card is a row shorter. The title's
-   words stay for a screen reader, and its Add stands at the end of the first
-   line. With none, the title stays, No updates, which is all it says. */
-.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__updates:has(> .scheduler-card__update-list) {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  column-gap: var(--rux-spacing-03);
-  align-items: start;
-}
-.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__updates:has(> .scheduler-card__update-list) > .scheduler-card__title { grid-column: 2; grid-row: 1; margin: 0; }
-.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__updates > .scheduler-card__update-list { grid-column: 1; grid-row: 1; }
-.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__updates:has(> .scheduler-card__update-list) > .scheduler-card__title > span {
-  position: absolute;
-  overflow: hidden;
-  margin: -1px;
-  block-size: 1px;
-  inline-size: 1px;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-}
+/* Floating, the updates' title is a 24px row of its own like each update
+   under it, Updates with their count and Add at its end, so Add is plainly
+   the updates' and the count says how many a press opens. */
+.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__title { margin-block-end: var(--rux-spacing-03); }
+.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__title:last-child { margin-block-end: 0; }
 /* IT ARRIVES WITH A SMALL POP: rising 6px from the arrow's side and growing
    from 94%, on Carbon's expressive entrance curve over its moderate-02
    duration, each row following 40ms after the one above it. Reduced motion

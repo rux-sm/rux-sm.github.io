@@ -9166,7 +9166,14 @@
     if (barShortcuts.previousElementSibling !== bar) bar.after(barShortcuts);
     // A card that comes to a trip afresh starts compact, its note and updates
     // closed, however they were left the last time it showed.
-    if (barKey(bar) !== poppedFor) updatesOpenFor = null;
+    // A card drawn again for the trip it already shows does not pop again,
+    // so its rows do not fade back in under the pointer.
+    if (barKey(bar) === poppedFor) barShortcuts.removeAttribute('data-pop');
+    if (barKey(bar) !== poppedFor) {
+      updatesOpenFor = null;
+      // The quick update's box stays only with the trip it holds words for.
+      if (!(quickDraft.tripId === bar.dataset.tripId && quickDraft.text)) quickOpenFor = null;
+    }
     drawShortcuts(bar);
     // And with its slot, when the slots are drawn again for another trip.
     if (contactsOpen && !contactsOpen.slot.isConnected) closeContacts(false);
@@ -12612,20 +12619,43 @@
   let updatesOpenFor = null;
   // What is typed in the card's quick update, and for which trip.
   let quickDraft = { tripId: null, text: '' };
+  // The trip whose card has its quick update's box open.
+  let quickOpenFor = null;
+  function openQuick(tripId) {
+    if (!tripId) return;
+    quickOpenFor = tripId;
+    placeBarOpen();
+    barShortcuts.querySelector('.scheduler-card__quick input')?.focus();
+  }
+  // Closes the box, handing focus back to Add when the box held it.
+  function closeQuick(refocus) {
+    quickOpenFor = null;
+    quickDraft = { tripId: null, text: '' };
+    placeBarOpen();
+    if (refocus) barShortcuts.querySelector('.scheduler-card__action')?.focus();
+  }
+  // Leaving the box with nothing typed closes it; a redraw that rebuilt it
+  // is not leaving.
+  barShortcuts?.addEventListener('focusout', e => {
+    const input = e.target.closest?.('.scheduler-card__quick input');
+    if (!input || input.value.trim()) return;
+    setTimeout(() => {
+      if (input.isConnected && document.activeElement !== input && quickOpenFor === input.dataset.tripId) closeQuick(false);
+    }, 0);
+  });
   barShortcuts?.addEventListener('input', e => {
     const input = e.target.closest?.('.scheduler-card__quick input');
     if (input) quickDraft = { tripId: input.dataset.tripId, text: input.value };
   });
   /* The quick update keeps its keys from the board: Enter adds it, Escape
-     clears what is typed, and an Escape with nothing typed puts the card
-     away as it does anywhere else. */
+     clears what is typed, and an Escape with nothing typed closes the box. */
   barShortcuts?.addEventListener('keydown', e => {
     const input = e.target.closest?.('.scheduler-card__quick input');
     if (!input) return;
     if (e.key === 'Escape') {
-      if (!input.value) return;
       e.preventDefault();
       e.stopPropagation();
+      if (!input.value) { closeQuick(true); return; }
       input.value = '';
       quickDraft = { tripId: null, text: '' };
       return;
@@ -12641,8 +12671,9 @@
     input.disabled = true;
     if (await writeUpdate(input.dataset.tripId, { kind: 'update', body, keys: null })) {
       quickDraft = { tripId: null, text: '' };
+      quickOpenFor = null;
       await show();
-      barShortcuts.querySelector('.scheduler-card__quick input')?.focus();
+      barShortcuts.querySelector('.scheduler-card__action')?.focus();
       toast('success', 'Update added');
     } else {
       input.disabled = false;
@@ -13127,7 +13158,7 @@
   /* The trip's day-of contact: the first of the five slots that holds anyone,
      or null. The card says when there is none. */
   const dayOfContact = trip => [1, 2, 3, 4, 5].map(n => tripContact(trip, n)).find(Boolean) ?? null;
-  const cardKey = trip => (trip ? JSON.stringify([pageEl?.getAttribute('data-board'), pinnedOf(trip)?.id ?? null, asksFollowUp(trip), waitsOf(trip), dayOfContact(trip),
+  const cardKey = trip => (trip ? JSON.stringify([pageEl?.getAttribute('data-board'), quickOpenFor === trip.id, pinnedOf(trip)?.id ?? null, asksFollowUp(trip), waitsOf(trip), dayOfContact(trip),
     !!trip.contact_not_needed, updatesOpenFor === trip.id,
     (trip.trip_updates || []).map(u => u.id).sort(), agoShort(quietSince(trip) || Date.now())]) : '');
   /* How long ago an update was written: minutes in the first hour, hours in
@@ -13305,24 +13336,27 @@
       title.firstChild.replaceWith(toggle);
     }
     part.appendChild(title);
+    /* A quick update is typed into the card itself, in a box that Add opens
+       under the title: Enter adds it to the trip at once, as the Updates
+       window's Add update does, and Escape clears it, or with nothing typed
+       closes the box. It stays open, with what is typed, across a redraw. */
+    if (quickOpenFor === trip.id || (quickDraft.tripId === trip.id && quickDraft.text)) {
+      const quick = el('div', 'rux--text-input__field-wrapper rux--layout--size-sm scheduler-card__quick');
+      const quickInput = el('input', 'rux--text-input');
+      quickInput.type = 'text';
+      quickInput.placeholder = 'Add an update…';
+      quickInput.setAttribute('aria-label', 'Add an update');
+      quickInput.dataset.tripId = trip.id;
+      if (quickDraft.tripId === trip.id) quickInput.value = quickDraft.text;
+      quick.appendChild(quickInput);
+      part.appendChild(quick);
+    }
     if (all.length) {
       const list = el('ol', 'scheduler-card__update-list');
       list.setAttribute('aria-label', pinned ? 'Updates, the pinned one first, then newest first' : 'Updates, newest first');
       list.append(...shown.map(updateItem));
       part.appendChild(list);
     }
-    /* A quick update is typed into the card itself: Enter adds it to the
-       trip at once, as the Updates window's Add update does, and Escape
-       clears it. What is typed is kept for the trip across a redraw. */
-    const quick = el('div', 'rux--text-input__field-wrapper rux--layout--size-sm scheduler-card__quick');
-    const quickInput = el('input', 'rux--text-input');
-    quickInput.type = 'text';
-    quickInput.placeholder = 'Add an update…';
-    quickInput.setAttribute('aria-label', 'Add an update');
-    quickInput.dataset.tripId = trip.id;
-    if (quickDraft.tripId === trip.id) quickInput.value = quickDraft.text;
-    quick.appendChild(quickInput);
-    part.appendChild(quick);
     card.appendChild(part);
     return card;
   }
@@ -13369,10 +13403,10 @@
   barShortcuts?.addEventListener('click', e => {
     // The quick update's box takes its own clicks.
     if (e.target.closest('.scheduler-card__quick')) return;
-    // A part's button first, since Add sits inside the update it opens.
+    // Add opens the quick update's box under the title.
     const action = e.target.closest('.scheduler-card__action');
     if (action) {
-      openUpdatesFromCard();
+      openQuick(action.closest('.scheduler-card')?.dataset.tripId ?? null);
       return;
     }
     // An update's pin pins or unpins it in place.

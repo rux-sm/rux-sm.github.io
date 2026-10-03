@@ -242,8 +242,8 @@ fix: the Itinerary slot, Forms, or the editor on Buses, Details or Billing
 with the cursor in the field it names.
 No warning has a dismiss; each stays until it is put right. Needs that are
 met are not shown.
-Then the updates: their title, Updates with their count (Updates · 5) and
-Add at its end, over every update in
+Then the updates: Updates in Carbon's 14px heading, its count in a grey tag,
+and + Add, a ghost button, at its end, over every update in
 full, the pinned one first, led by a pin where an update's avatar stands, and
 the rest newest first, each with its age at the right (45m, 2h, 3d, or its
 date, Sep 22, past a week), scrolling past the card's height and fading at its

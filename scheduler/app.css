@@ -1111,40 +1111,34 @@ button.scheduler-row-head__num::after {
 /* A due reminder names the day it leaves at the row's end, quieter than the
    alerts it times. */
 .scheduler-card__asks-when { flex: none; white-space: nowrap; color: var(--rux-text-secondary); }
-/* A part's Edit or Add: a word in the link colour, 24px high for the
-   pointer, its padding taken back at the row's end and above and below, so
-   its word lines up with the card's right edge and the title keeps its
-   height. */
+/* A part's Add: Carbon's small ghost button, 32px, its height taken back
+   above and below so the title keeps its 18px line, and its padding taken
+   back at the end so its words end where the ages do. */
 .scheduler-card__action {
-  display: flex;
   flex: none;
-  align-items: center;
-  block-size: 1.5rem;
-  margin-block: calc(-1 * var(--rux-spacing-02));
-  margin-inline-end: calc(-1 * var(--rux-spacing-02));
-  padding: 0 var(--rux-spacing-02);
-  border: 0;
-  /* A tile of the slots' own corner where the theme rounds them, so its hover
-     is the same shape as theirs. */
-  border-radius: var(--scheduler-shortcut-radius, 0);
-  background: none;
-  font: inherit;
-  letter-spacing: inherit;
-  color: var(--rux-link-primary);
-  cursor: pointer;
+  margin-block: calc((1.125rem - var(--rux-layout-size-height-sm)) / 2);
+  margin-inline-end: calc(-1 * var(--rux-spacing-05));
 }
-.scheduler-card__action:hover { background: var(--card-hover); }
-.scheduler-card__action:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
-/* A part's title: small and quieter than its words, with the part's button
-   at its end. The warnings take none; their band says what they are. */
+/* A part's title: Carbon's 14px heading in the card's own ink, its count a
+   small grey tag beside it, and the part's button at its end. */
 .scheduler-card__title {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--rux-spacing-03);
   margin-block-end: var(--rux-spacing-02);
-  color: color-mix(in srgb, var(--card-ink) 70%, transparent);
+  color: var(--card-ink);
 }
+.scheduler-card__heading {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--rux-heading-compact-01-line-height);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+}
+.scheduler-card__count { margin: 0; }
 /* A part with nothing in it is its title alone, which says so. */
 .scheduler-card__title:last-child { margin-block-end: 0; }
 .scheduler-card__updates { padding-block: var(--rux-spacing-03); }
@@ -1343,27 +1337,23 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list[data-below] {
   mask-image: linear-gradient(to bottom, #000 calc(100% - 2rem), transparent);
 }
-/* IT ARRIVES WITH A SMALL POP: rising 6px from the arrow's side and growing
-   from 94%, on Carbon's expressive entrance curve over its moderate-02
-   duration, each row following 40ms after the one above it. Reduced motion
-   keeps a fade. Docked, it only fades, because a sheet does not grow out of a
-   trip. */
+/* IT ARRIVES WITH CARBON'S PRODUCTIVE MOTION, as a popover does: a fade
+   with a 4px slide out of the trip's side, over fast-02, 110ms, on the
+   productive entrance curve, the card whole rather than row by row. Reduced
+   motion keeps the fade alone. Docked, it only fades, because a sheet does
+   not come out of a trip. */
 @keyframes scheduler-card-in {
-  from { opacity: 0; transform: translateY(var(--card-rise, 6px)) scale(.94); }
+  from { opacity: 0; transform: translate(var(--card-rise-x, 0), var(--card-rise, 4px)); }
   to { opacity: 1; transform: none; }
 }
-@keyframes scheduler-card-row-in { from { opacity: 0; transform: translateY(4px); } }
 @keyframes scheduler-card-fade { from { opacity: 0; } }
-.scheduler-bar-shortcuts[data-card][data-side="below"] { --card-rise: -6px; }
-.scheduler-bar-shortcuts[data-pop] { animation: scheduler-card-in 240ms cubic-bezier(0, 0, .3, 1) both; }
-.scheduler-bar-shortcuts[data-pop] .scheduler-card__row {
-  animation: scheduler-card-row-in 200ms cubic-bezier(0, 0, .3, 1) both;
-  animation-delay: calc(80ms + var(--i, 0) * 40ms);
-}
+.scheduler-bar-shortcuts[data-card][data-side="below"] { --card-rise: -4px; }
+.scheduler-bar-shortcuts[data-card][data-side="right"] { --card-rise-x: -4px; }
+.scheduler-bar-shortcuts[data-card][data-side="left"] { --card-rise-x: 4px; }
+.scheduler-bar-shortcuts[data-pop] { animation: scheduler-card-in 110ms cubic-bezier(0, 0, .38, .9) both; }
 .scheduler-bar-shortcuts[data-pop][data-docked] { animation-name: scheduler-card-fade; }
 @media (prefers-reduced-motion: reduce) {
   .scheduler-bar-shortcuts[data-pop] { animation: scheduler-card-fade 110ms linear both; }
-  .scheduler-bar-shortcuts[data-pop] .scheduler-card__row { animation: none; }
 }
 
 /* THE ATTENTION MARK, at the destination row's end, so it is read with the
@@ -2893,14 +2883,7 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__asks, .scheduler-card__warn) { order: -3; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__updates { order: -1; }
 .scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__misfit, .scheduler-card__asks, .scheduler-card__warn) { border-block-start: 0; }
-/* A card button is 32px high under a thumb, its margins taken back so the
-   row keeps its height. */
-.scheduler-bar-shortcuts[data-docked] .scheduler-card__action {
-  block-size: 2rem;
-  margin-block: calc(-1 * var(--rux-spacing-03));
-  margin-inline-end: calc(-1 * var(--rux-spacing-03));
-  padding: 0 var(--rux-spacing-03);
-}
+
 /* The updates hold at least their title and one line however many there
    are, so the sheet is the same height with none, one or twenty, and one line
    taller with a pinned update, on the raised layer the sheet itself no

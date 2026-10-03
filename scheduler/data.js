@@ -13177,17 +13177,26 @@
      updates' Add. A word in the link colour, with the whole action as its
      accessible name. */
   function cardAction(action, words, label) {
-    const btn = el('button', 'scheduler-card__action', words);
+    /* Carbon's small ghost button with its icon before its words, as a
+       section's own action is everywhere else in the app. */
+    const btn = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm scheduler-card__action');
     btn.type = 'button';
     btn.dataset.cardAction = action;
     btn.setAttribute('aria-label', label);
+    const icon = svgUse('#m-add', '16', '0 0 32 32');
+    icon.setAttribute('class', 'rux--btn__icon');
+    btn.append(icon, words);
     return btn;
   }
 
-  // A part's small title, with the part's own button at its end.
-  function cardTitle(words, action) {
+  /* A part's title, Carbon's way of heading a list: its name in the 14px
+     heading type, its count in a small grey tag beside it, and the part's
+     button at its end. */
+  function cardTitle(name, count, action) {
     const title = el('div', 'scheduler-card__title');
-    title.append(el('span', null, words), action);
+    const heading = el('span', 'scheduler-card__heading', name);
+    if (count) heading.appendChild(el('span', 'rux--tag rux--tag--gray rux--layout--size-sm scheduler-card__count', String(count)));
+    title.append(heading, action);
     return title;
   }
 
@@ -13199,12 +13208,7 @@
   function drawCard(trip, bar) {
     const card = el('div', 'scheduler-card');
     card.dataset.tripId = trip.id;
-    let i = 0;
-    const row = (cls, tag = 'div') => {
-      const r = el(tag, `scheduler-card__row ${cls}`);
-      r.style.setProperty('--i', String(i++));
-      return r;
-    };
+    const row = (cls, tag = 'div') => el(tag, `scheduler-card__row ${cls}`);
     /* A warning is a press that goes where it is put right: an editor tab,
        the Forms panel, or the itinerary slot's own upload. */
     const WARN_GO = { fleet: 'Buses', billing: 'Billing', details: 'Details', forms: 'Forms', itinerary: 'Itinerary' };
@@ -13327,13 +13331,14 @@
     /* Docked, with any updates, the title's words are the section's toggle, a
        real button with an arrow, so a keyboard and a screen reader reach what
        a press anywhere on the section does. */
-    const title = cardTitle(all.length ? `Updates · ${all.length}` : 'No updates', add);
+    const title = cardTitle(all.length ? 'Updates' : 'No updates', all.length, add);
     if (all.length && !floating) {
       const toggle = el('button', 'scheduler-card__toggle');
       toggle.type = 'button';
       toggle.setAttribute('aria-expanded', String(open));
-      toggle.append(el('span', null, `Updates · ${all.length}`), svgUse('#m-keyboard_arrow_down', '16', '0 0 16 16'));
-      title.firstChild.replaceWith(toggle);
+      const heading = title.firstChild;
+      heading.replaceWith(toggle);
+      toggle.append(heading, svgUse('#m-keyboard_arrow_down', '16', '0 0 16 16'));
     }
     part.appendChild(title);
     /* A quick update is typed into the card itself, in a box that Add opens

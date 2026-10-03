@@ -9946,10 +9946,8 @@
 
   viewTrigger?.addEventListener('click', () => {
     if (!viewMenu) return;
-    // Placed like the context menus, with the button's bottom-left corner as
-    // the point.
     const r = viewTrigger.getBoundingClientRect();
-    popMenuAt(viewMenu, { clientX: r.left, clientY: r.bottom });
+    popMenuAt(viewMenu, { clientX: r.left, clientY: r.bottom }, viewTrigger);
   });
 
   viewMenu?.addEventListener('click', e => {
@@ -10412,9 +10410,12 @@
      it stays under the pointer. Its box is read after `hidden` comes off and
      after the append, when it has its real size. A menu opened from the
      keyboard has no pointer, so it opens from the lower start corner of what
-     was pressed. */
+     was pressed. A menu dropped from a button, `from`, hangs under it lined
+     up with one of its edges, as Carbon's menu button's does: its start edge
+     where the menu fits, else its end edge, so near the window's right side
+     it sits under the button rather than beside it. */
   const MENU_SPACING = 8;
-  function popMenuAt(menu, e) {
+  function popMenuAt(menu, e, from) {
     const page = pageEl?.getBoundingClientRect() ?? { top: 0, left: 0 };
     menu.hidden = false;
     menu.style.position = 'absolute';
@@ -10429,8 +10430,15 @@
     const fit = (at, size, max) => (at + size <= max - MENU_SPACING ? at
       : at - size >= 0 ? at - size
       : Math.max(0, max - MENU_SPACING - size));
-    const x = fit(px, width, document.documentElement.clientWidth);
-    const y = fit(py, height, document.documentElement.clientHeight);
+    const vw = document.documentElement.clientWidth;
+    const vh = document.documentElement.clientHeight;
+    let x = fit(px, width, vw);
+    let y = fit(py, height, vh);
+    if (from) {
+      const r = from.getBoundingClientRect();
+      x = r.left + width <= vw - MENU_SPACING ? r.left : Math.max(0, r.right - width);
+      y = r.bottom + height <= vh - MENU_SPACING ? r.bottom : Math.max(0, r.top - height);
+    }
     menu.style.insetInlineStart = `${x - page.left}px`;
     menu.style.insetBlockStart = `${y - page.top}px`;
     window.Rux?.menu?.open?.(menu, null);
@@ -11510,7 +11518,7 @@
     if (viewerPick.length < 2) return;
     drawCopies();
     const r = viewerTitle.getBoundingClientRect();
-    popMenuAt(viewerCopies, { clientX: r.left, clientY: r.bottom });
+    popMenuAt(viewerCopies, { clientX: r.left, clientY: r.bottom }, viewerTitle);
   });
 
   viewerTitle?.addEventListener('keydown', e => {

@@ -245,16 +245,16 @@ met are not shown.
 Then the updates: their title, Updates with their count (Updates · 5) and
 Add at its end, which opens the trip's Updates window, over every update in
 full, the pinned one first, led by a pin where an update's avatar stands, and
-the rest newest first, each with its age at the right, always a number (45m,
-2h, 3d), scrolling past the card's height and fading at its foot while there
-is more below; a line from the old notes, with no author, shows a note icon. An update is a press, lit on
-hover, that opens it in the Updates window ready to change, pin or delete;
-its pin at the row's end, shown over the age on hover, pins or unpins it.
-The docked sheet has the same rows
-and presses but shows two updates, the pinned and the newest, cut to one line;
-a press elsewhere on the section, or its title's arrow, opens every update in
-full. Add is its own button. An update's author is its
-avatar's tooltip. With none, the title alone says No updates, with Add.
+the rest newest first, each with its age at the right (45m, 2h, 3d, or its
+date, Sep 22, past a week), scrolling past the card's height and fading at its
+foot while there is more below; a line from the old notes shows a note icon.
+An update is a press that opens it in the Updates window; its pin, over the
+age on hover, pins or unpins it, with Undo in the toast. Under them, Add an
+update… adds a typed line to the trip on Enter; Escape clears it.
+The docked sheet has the same rows and presses but shows two updates, the
+pinned and the newest, cut to one line; a press elsewhere on the section, or
+its title's arrow, opens every update in full. Add is its own button. An
+update's author is its avatar's tooltip. With none, the title says No updates.
 In the Updates window, pressing an update gives Pin, or Unpin, beside Delete;
 a trip has one pinned update, and pinning another lets the first go. The trip
 has no notes of its own: a note saved in rux-ui becomes the pinned update.

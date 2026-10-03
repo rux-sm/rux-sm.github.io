@@ -12610,6 +12610,45 @@
 
   // The trip whose card shows all its updates, kept until the card leaves it.
   let updatesOpenFor = null;
+  // What is typed in the card's quick update, and for which trip.
+  let quickDraft = { tripId: null, text: '' };
+  barShortcuts?.addEventListener('input', e => {
+    const input = e.target.closest?.('.scheduler-card__quick input');
+    if (input) quickDraft = { tripId: input.dataset.tripId, text: input.value };
+  });
+  /* The quick update keeps its keys from the board: Enter adds it, Escape
+     clears what is typed, and an Escape with nothing typed puts the card
+     away as it does anywhere else. */
+  barShortcuts?.addEventListener('keydown', e => {
+    const input = e.target.closest?.('.scheduler-card__quick input');
+    if (!input) return;
+    if (e.key === 'Escape') {
+      if (!input.value) return;
+      e.preventDefault();
+      e.stopPropagation();
+      input.value = '';
+      quickDraft = { tripId: null, text: '' };
+      return;
+    }
+    e.stopPropagation();
+    if (e.key !== 'Enter' || e.isComposing) return;
+    e.preventDefault();
+    quickAdd(input);
+  });
+  async function quickAdd(input) {
+    const body = input.value.trim();
+    if (!body) return;
+    input.disabled = true;
+    if (await writeUpdate(input.dataset.tripId, { kind: 'update', body, keys: null })) {
+      quickDraft = { tripId: null, text: '' };
+      await show();
+      barShortcuts.querySelector('.scheduler-card__quick input')?.focus();
+      toast('success', 'Update added');
+    } else {
+      input.disabled = false;
+      toast('error', 'The update was not added.', 'Try again.');
+    }
+  }
   // A warning is a press that takes Enter and Space, as a button does.
   barShortcuts?.addEventListener('keydown', e => {
     if (e.key !== 'Enter' && e.key !== ' ') return;
@@ -12619,16 +12658,35 @@
     goToWarning(press.dataset.go, press.dataset.spot);
   });
   /* Pins or unpins an update from the card, as the Updates window's Pin does;
-     the database lets the trip's other pin go, and the board reads it again.
-     The read keeps the trip selected, so its card stays open with the pin
-     moved. */
-  async function pinFromCard(id, on) {
+     the database lets the trip's other pin go, and the board reads it again,
+     which keeps the trip selected, so its card stays open with the pin moved.
+     A pin is one small press, so the toast offers it back: undoing a pin puts
+     the pin back where it was, `was`, or takes it off; undoing an unpin pins
+     the update again. */
+  const setPin = async (id, on) => {
+    const { error } = await withTimeout(client.from('trip_updates')
+      .update({ pinned_at: on ? new Date().toISOString() : null }).eq('id', id).then(r => r));
+    if (error) throw new Error(error.message);
+  };
+  async function pinFromCard(id, on, was = null) {
     if (!id) return;
     try {
-      const { error } = await withTimeout(client.from('trip_updates')
-        .update({ pinned_at: on ? new Date().toISOString() : null }).eq('id', id).then(r => r));
-      if (error) throw new Error(error.message);
+      await setPin(id, on);
       await show();
+      toast('success', on ? 'Pinned' : 'Unpinned', on ? 'It stays at the top of the trip\'s updates.' : 'It goes back among the updates by date.', {
+        label: 'Undo',
+        onClick: async () => {
+          try {
+            if (!on) await setPin(id, true);
+            else if (was && was !== id) await setPin(was, true);
+            else await setPin(id, false);
+            await show();
+            toast('success', on ? 'Pin undone' : 'Unpin undone');
+          } catch (err) {
+            toast('error', 'That was not undone.', String(err?.message ?? err));
+          }
+        },
+      });
     } catch (err) {
       const fail = on ? 'The update was not pinned.' : 'The update was not unpinned.';
       console.warn(fail, err);
@@ -13072,11 +13130,17 @@
   const cardKey = trip => (trip ? JSON.stringify([pageEl?.getAttribute('data-board'), pinnedOf(trip)?.id ?? null, asksFollowUp(trip), waitsOf(trip), dayOfContact(trip),
     !!trip.contact_not_needed, updatesOpenFor === trip.id,
     (trip.trip_updates || []).map(u => u.id).sort(), agoShort(quietSince(trip) || Date.now())]) : '');
-  /* How long ago an update was written, always a number: minutes in the
-     first hour, hours in the first day, then days, "45m", "2h", "3d". */
+  /* How long ago an update was written: minutes in the first hour, hours in
+     the first day, then days for a week, "45m", "2h", "3d"; an older one
+     shows its date, "Sep 22", which reads quicker than "45d". */
   const ageShort = at => {
     const mins = Math.max(1, Math.floor((Date.now() - Date.parse(at)) / 60000));
-    return mins < 60 ? `${mins}m` : mins < 1440 ? `${Math.floor(mins / 60)}h` : `${Math.floor(mins / 1440)}d`;
+    if (mins < 60) return `${mins}m`;
+    if (mins < 1440) return `${Math.floor(mins / 60)}h`;
+    if (mins < 7 * 1440) return `${Math.floor(mins / 1440)}d`;
+    const day = new Date(at);
+    return day.toLocaleDateString(undefined, day.getFullYear() === new Date().getFullYear()
+      ? { month: 'short', day: 'numeric' } : { month: 'short', day: 'numeric', year: 'numeric' });
   };
   /* A part's own button, at its title's end: the note's Edit or Add, the
      updates' Add. A word in the link colour, with the whole action as its
@@ -13146,7 +13210,7 @@
         if (n === 0 && dueFollowUp(trip)) {
           const days = daysToGo(trip);
           band.appendChild(el('span', 'scheduler-card__asks-when',
-            days === 0 ? 'Leaves today' : days === 1 ? 'Leaves tomorrow' : `Leaves in ${days} days`));
+            days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : `In ${days} days`));
         }
         card.appendChild(band);
       });
@@ -13247,6 +13311,18 @@
       list.append(...shown.map(updateItem));
       part.appendChild(list);
     }
+    /* A quick update is typed into the card itself: Enter adds it to the
+       trip at once, as the Updates window's Add update does, and Escape
+       clears it. What is typed is kept for the trip across a redraw. */
+    const quick = el('div', 'rux--text-input__field-wrapper rux--layout--size-sm scheduler-card__quick');
+    const quickInput = el('input', 'rux--text-input');
+    quickInput.type = 'text';
+    quickInput.placeholder = 'Add an update…';
+    quickInput.setAttribute('aria-label', 'Add an update');
+    quickInput.dataset.tripId = trip.id;
+    if (quickDraft.tripId === trip.id) quickInput.value = quickDraft.text;
+    quick.appendChild(quickInput);
+    part.appendChild(quick);
     card.appendChild(part);
     return card;
   }
@@ -13291,6 +13367,8 @@
 
   // A slot acts on the bar it shows, and a disabled one does nothing.
   barShortcuts?.addEventListener('click', e => {
+    // The quick update's box takes its own clicks.
+    if (e.target.closest('.scheduler-card__quick')) return;
     // A part's button first, since Add sits inside the update it opens.
     const action = e.target.closest('.scheduler-card__action');
     if (action) {
@@ -13299,7 +13377,11 @@
     }
     // An update's pin pins or unpins it in place.
     const pin = e.target.closest('.scheduler-card__pin');
-    if (pin) { pinFromCard(pin.closest('.scheduler-card__update')?.dataset.updateId, pin.dataset.pin === 'on'); return; }
+    if (pin) {
+      const was = barShortcuts.querySelector('.scheduler-card__update[data-pinned]')?.dataset.updateId ?? null;
+      pinFromCard(pin.closest('.scheduler-card__update')?.dataset.updateId, pin.dataset.pin === 'on', was);
+      return;
+    }
     // A warning goes where it is put right.
     const warning = e.target.closest('.scheduler-card__row[data-go]');
     if (warning) { goToWarning(warning.dataset.go, warning.dataset.spot); return; }

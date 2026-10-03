@@ -1331,6 +1331,11 @@ button.scheduler-row-head__num::after {
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
 .scheduler-bar-shortcuts[data-card] .scheduler-card__update > :is(.scheduler-card__face, .scheduler-card__when) { margin-block-start: 1px; }
+/* The quick update: Carbon's small text field across the card under the
+   updates, a step off the card's own layer, kept in view while the updates
+   scroll above it. */
+.scheduler-card__quick { flex: none; margin-block-start: var(--rux-spacing-03); }
+.scheduler-card__quick .rux--text-input { inline-size: 100%; background: var(--rux-field-02, var(--rux-field)); }
 /* Floating, more below than the card shows: the list's last 32px fade out,
    so a row cut by the card's foot reads as going on rather than ending.
    data.js keeps the mark only while there is more to scroll to. */

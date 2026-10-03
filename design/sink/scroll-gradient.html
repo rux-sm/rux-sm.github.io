@@ -18,12 +18,14 @@
 
     --x-none and --y-none appear in the capture and have no compiled rule, so
     §4.1.12 leaves them unwritten.
+    The content is padded 16px, as the story's own content is: the utility adds
+    no padding, and without it the text ran against the box's edge.
   -->
   <div class="rux--scroll-gradient rux--scroll-gradient--y-scrollable ks-layer" role="presentation" style="block-size:12rem;max-inline-size:32rem">
     <div class="rux--scroll-gradient__content">
       <span></span><span></span>
       <div class="rux--scroll-gradient__content-children">
-        <div class="ks-stack">
+        <div class="ks-stack ks-pad">
           <p>Deployment created</p><p>Validation started</p><p>Assets compiled</p>
           <p>Checks completed</p><p>Review requested</p><p>Deployment approved</p>
           <p>Release published</p><p>Monitoring active</p><p>Health checked</p>

@@ -692,6 +692,7 @@
   -->
   <div class="ks-row" style="gap:4rem;padding-block:2rem;align-items:center">
 
+    <div class="rux--layout-constraint--size__default-md rux--layout-constraint--size__max-lg">
     <span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast">
       <div class="rux--tooltip-trigger__wrapper">
         <button type="button"
@@ -706,6 +707,7 @@
         <span class="rux--popover-caret"></span>
       </span>
     </span>
+    </div>
 
     <!-- COPYING ANOTHER ELEMENT'S TEXT, which is the shape a code block wants:
          `data-rux-copy-from` names the id whose textContent is copied.
@@ -714,8 +716,14 @@
          them, the button and its `<code>` read as two unrelated things and the
          section looked like it was missing a third button — it was reported
          exactly that way, twice. A copy button is always adjacent to its
-         subject, so the pair is its own inline group. -->
-    <span style="display:inline-flex;align-items:center;gap:.75rem">
+         subject, so the pair is its own inline group.
+
+         EACH BUTTON SITS IN CARBON'S SIZE CONSTRAINT, `layout-constraint--size__
+         default-md` and `__max-lg`, as components-copybutton--default renders
+         it around the tooltip. Without it the button took the large default
+         and drew 48px square where Carbon's is 40. -->
+    <div style="display:inline-flex;align-items:center;gap:.75rem">
+    <div class="rux--layout-constraint--size__default-md rux--layout-constraint--size__max-lg">
     <span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast">
       <div class="rux--tooltip-trigger__wrapper">
         <button type="button"
@@ -730,8 +738,9 @@
         <span class="rux--popover-caret"></span>
       </span>
     </span>
+    </div>
     <code id="ks-copy-source">cl-7f3a-9d21</code>
-    </span>
+    </div>
 
   </div>
 </section>
@@ -7808,12 +7817,14 @@
 
     --x-none and --y-none appear in the capture and have no compiled rule, so
     §4.1.12 leaves them unwritten.
+    The content is padded 16px, as the story's own content is: the utility adds
+    no padding, and without it the text ran against the box's edge.
   -->
   <div class="rux--scroll-gradient rux--scroll-gradient--y-scrollable ks-layer" role="presentation" style="block-size:12rem;max-inline-size:32rem">
     <div class="rux--scroll-gradient__content">
       <span></span><span></span>
       <div class="rux--scroll-gradient__content-children">
-        <div class="ks-stack">
+        <div class="ks-stack ks-pad">
           <p>Deployment created</p><p>Validation started</p><p>Assets compiled</p>
           <p>Checks completed</p><p>Review requested</p><p>Deployment approved</p>
           <p>Release published</p><p>Monitoring active</p><p>Health checked</p>

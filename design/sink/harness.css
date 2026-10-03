@@ -148,6 +148,9 @@ body { min-height: 100vh; background: var(--rux-background);
    rule about the component: ks- classes are the harness's, and check-classes
    ignores them the way it ignores bld- and thc-. 2026-09-11. */
 .ks-layer { background: var(--rux-layer-01); }
+/* Content inside a specimen's box, 16px from its edges, as Carbon's stories
+   pad theirs. */
+.ks-pad { padding: var(--rux-spacing-05); }
 
 /* Carbon components set `display` on their own class, which outranks the UA
    `[hidden] { display: none }` rule on specificity. The harness needs `hidden` to

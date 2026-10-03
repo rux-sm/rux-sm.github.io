@@ -2715,67 +2715,64 @@ button.scheduler-row-head__num::after {
 }
 
 /* ── The Contacts window ────────────────────────────────────────────────────
-   A Carbon modal from the Contacts slot: a card for each person to reach about
-   the trip, their name over their role and number, their buttons in a row
-   below, the cards 8px apart on the modal's raised layer. The modal's content
-   scrolls. */
-.scheduler-contacts__list { display: grid; gap: var(--rux-spacing-03); }
+   A Carbon modal from the Contacts slot: three parts, each a head with its
+   name and its group action, over a tile for each person, 2px apart as the
+   Updates window's tiles are. The modal's content scrolls. */
 .scheduler-contacts__empty { margin: 0; color: var(--rux-text-secondary); }
-/* Each part's name, Customer, the bus and Other buses, in label type over its
-   cards; the space above it parts the groups. */
-.scheduler-contacts__part {
-  margin: var(--rux-spacing-03) 0 0;
-  padding-inline: var(--rux-spacing-02);
-  color: var(--rux-text-secondary);
-  font-size: var(--rux-label-01-font-size);
-  font-weight: var(--rux-heading-compact-01-font-weight);
-  line-height: var(--rux-label-01-line-height);
-  letter-spacing: var(--rux-label-01-letter-spacing);
+/* A part's head: its name in secondary heading type at the left, its group
+   action at the right; 24px parts one part from the last. */
+.scheduler-contacts__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--rux-spacing-02) var(--rux-spacing-03);
+  min-block-size: var(--rux-layout-size-height-sm);
+  margin: var(--rux-spacing-06) 0 var(--rux-spacing-03);
 }
-.scheduler-contacts__part:first-child { margin-block-start: 0; }
-/* Text all drivers spans the list under its part's name. */
-.scheduler-contacts__all { inline-size: 100%; max-inline-size: none; }
-/* The driver details under Customer: Email across the row, Copy a square
-   at its end. A driver's reminder is the same, Remind across its own row
-   under Call and Text and Copy a square at its end. */
-.scheduler-contacts__letter { display: flex; gap: var(--rux-spacing-03); }
-.scheduler-contacts__letter .scheduler-contacts__copy,
-.scheduler-contact__action.scheduler-contacts__copy { flex: none; }
+.scheduler-contacts__head:first-child { margin-block-start: 0; }
+.scheduler-contacts__part {
+  margin: 0;
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--rux-heading-compact-01-line-height);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+}
+.scheduler-contacts__letter { display: flex; }
+.scheduler-contacts__group { display: grid; gap: 2px; }
 /* A driver's status in its colour, as the bar's crew marks carry it. */
 .scheduler-contact__status--success { color: var(--rux-support-success); }
 .scheduler-contact__status--warning { color: var(--rux-support-warning); }
 .scheduler-contact__status--error { color: var(--rux-support-error); }
-/* A card: the person, then their buttons in a row across the card. */
+/* A tile: the person at the left, their buttons at the right; on a window
+   too narrow for both the buttons wrap under the person. */
 .scheduler-contact {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--rux-spacing-03) var(--rux-spacing-04);
-  padding: var(--rux-spacing-04);
+  gap: var(--rux-spacing-02) var(--rux-spacing-03);
+  padding: var(--rux-spacing-04) var(--rux-spacing-03) var(--rux-spacing-04) var(--rux-spacing-05);
   background: var(--rux-layer-02);
   border-radius: var(--scheduler-shortcut-radius, var(--scheduler-surface-radius, 0));
 }
-.scheduler-contact__who { display: grid; flex: 1 1 10rem; min-inline-size: 0; }
-.scheduler-contact__name,
-.scheduler-contact__meta { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scheduler-contact__who { display: grid; flex: 1 1 12rem; min-inline-size: 0; }
 .scheduler-contact__name {
-  font-size: var(--rux-body-compact-02-font-size);
+  font-size: var(--rux-heading-compact-01-font-size);
   font-weight: var(--rux-heading-compact-01-font-weight);
-  line-height: var(--rux-body-compact-02-line-height);
+  line-height: var(--rux-heading-compact-01-line-height);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
 }
+/* Grey lines under the name: role, status and report time, then the number. */
 .scheduler-contact__meta {
   color: var(--rux-text-secondary);
-  font-size: var(--rux-label-01-font-size);
-  line-height: var(--rux-label-01-line-height);
-  letter-spacing: var(--rux-label-01-letter-spacing);
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
   font-variant-numeric: tabular-nums;
 }
-/* The buttons share the row evenly, a third each for Call, Text and Email and
-   a half each for two; 26rem is what fits three, and on a window too narrow
-   for that the last one wraps to a line of its own rather than clip. */
-.scheduler-contact__actions { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); flex: 1 1 100%; }
-.scheduler-contact__action { flex: 1 1 0; max-inline-size: none; }
+.scheduler-contact__actions { display: flex; flex: none; align-items: center; margin-inline-start: auto; }
 
 /* ── The docked shortcut bar ────────────────────────────────────────────────
    A block one slot wide has nothing for the shortcut bar to float beside, so

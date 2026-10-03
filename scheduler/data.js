@@ -12956,11 +12956,14 @@
     const mine = assigns.filter(a => String(a.id) === bar.dataset.assignmentId).flatMap(crewOfBus);
     const others = assigns.filter(a => String(a.id) !== bar.dataset.assignmentId).flatMap(crewOfBus);
 
-    const button = (words, icon, href, away, onTap) => {
-      const a = el('a', 'rux--btn rux--btn--secondary rux--layout--size-md scheduler-contact__action', words);
+    /* Carbon's ghost button, its words before its icon; an icon-only one
+       carries its words as its name and tooltip. */
+    const button = (words, icon, href, away, onTap, iconOnly = false, small = false) => {
+      const a = el('a', `rux--btn rux--btn--ghost ${small ? 'rux--layout--size-sm' : 'rux--layout--size-md'} scheduler-contact__action${iconOnly ? ' rux--btn--icon-only' : ''}`, iconOnly ? '' : words);
       a.href = href;
       if (away) { a.target = '_blank'; a.rel = 'noopener'; }
       if (onTap) a.addEventListener('click', onTap);
+      if (iconOnly) { a.setAttribute('aria-label', words); a.title = words; }
       const glyph = svgUse(icon, '16', '0 0 32 32');
       glyph.classList.add('rux--btn__icon');
       a.appendChild(glyph);
@@ -12978,29 +12981,32 @@
         },
       });
     };
+    /* A person is a tile: their name over a line of who they are and their
+       status and a line with their number, and at the tile's end Call and
+       Text in words, Email as an icon, and for a driver a menu holding the
+       reminder. */
     const card = (p, where) => {
       const c = el('div', 'scheduler-contact');
       const who = el('div', 'scheduler-contact__who');
       who.appendChild(el('strong', 'scheduler-contact__name', p.name));
-      const role = el('span', 'scheduler-contact__meta');
-      role.append([where, p.role].filter(Boolean).join(' · '));
+      const meta = el('span', 'scheduler-contact__meta');
+      meta.append([where, p.role].filter(Boolean).join(' · '));
       if (p.status) {
-        role.append(' · ', el('span', `scheduler-contact__status scheduler-contact__status--${p.status.tone}`, p.status.label));
+        meta.append(' · ', el('span', `scheduler-contact__status scheduler-contact__status--${p.status.tone}`, p.status.label));
       }
-      if (p.report) role.append(` · reports ${p.report}`);
-      who.append(role, el('span', 'scheduler-contact__meta', p.phone ? showPhone(p.phone) : 'No number'));
+      if (p.report) meta.append(` · reports ${p.report}`);
+      who.append(meta, el('span', 'scheduler-contact__meta', p.phone ? showPhone(p.phone) : 'No number'));
       const acts = el('div', 'scheduler-contact__actions');
       if (p.phone) acts.appendChild(button('Call', '#m-call', `tel:${dial(p.phone)}`, false, p.customer ? offer('Called', p.name) : null));
       const messages = p.texting && !docked;
       if (messages || p.phone) {
         acts.appendChild(button('Text', '#m-chat', messages ? p.texting : `sms:${dial(p.phone)}`, messages, p.customer ? offer('Texted', p.name) : null));
       }
-      if (p.email) acts.appendChild(button('Email', '#m-mail', `mailto:${p.email}`, false, p.customer ? offer('Emailed', p.name) : null));
-      /* A driver's reminder of this leg, on a row of its own under Call and
-         Text. Remind opens a text with it typed in; to the office's Google
-         Messages conversation, which takes no text, it copies the reminder
-         first to paste. Copy beside it copies alone. */
-      const remind = el('div', 'scheduler-contact__actions');
+      if (p.email) acts.appendChild(button('Email', '#m-mail', `mailto:${p.email}`, false, p.customer ? offer('Emailed', p.name) : null, true));
+      /* A driver's reminder of this leg, in the menu at the tile's end. Remind
+         opens a text with it typed in; to the office's Google Messages
+         conversation, which takes no text, it copies the reminder first to
+         paste. Copy reminder copies alone. */
       if (p.reminder) {
         const copyReminder = async () => {
           try { await navigator.clipboard.writeText(p.reminder); return true; } catch {
@@ -13008,44 +13014,56 @@
             return false;
           }
         };
-        if (messages) {
-          remind.appendChild(button('Remind', '#m-notifications_active-fill', p.texting, true, async () => {
-            if (await copyReminder()) toast('info', 'Reminder copied', `Paste it in ${p.name}'s conversation.`);
-          }));
-        } else if (p.phone) {
-          // Apple's Messages reads the body after `&`, everyone else's after `?`.
-          const apple = /Mac|iPhone|iPad/.test(navigator.userAgent);
-          remind.appendChild(button('Remind', '#m-notifications_active-fill',
-            `sms:${dial(p.phone)}${apple ? '&' : '?'}body=${encodeURIComponent(p.reminder)}`));
-        }
-        const copy = button('', '#m-content_copy', '#', false, async e => {
-          e.preventDefault();
-          if (await copyReminder()) toast('success', 'Reminder copied', `Send it to ${p.name}.`);
-        });
-        copy.classList.add('rux--btn--icon-only', 'scheduler-contacts__copy');
-        copy.setAttribute('aria-label', `Copy ${p.name}'s reminder`);
-        copy.title = 'Copy reminder';
-        remind.appendChild(copy);
+        // Apple's Messages reads the body after `&`, everyone else's after `?`.
+        const apple = /Mac|iPhone|iPad/.test(navigator.userAgent);
+        const remindHref = messages ? p.texting
+          : p.phone ? `sms:${dial(p.phone)}${apple ? '&' : '?'}body=${encodeURIComponent(p.reminder)}` : null;
+        const items = [
+          ...(remindHref ? [{ label: 'Remind', run: async () => {
+            if (messages) {
+              if (await copyReminder()) toast('info', 'Reminder copied', `Paste it in ${p.name}'s conversation.`);
+              window.open(remindHref, '_blank', 'noopener');
+            } else window.location.href = remindHref;
+          } }] : []),
+          { label: 'Copy reminder', run: async () => {
+            if (await copyReminder()) toast('success', 'Reminder copied', `Send it to ${p.name}.`);
+          } },
+        ];
+        const more = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-contact__more');
+        more.type = 'button';
+        more.setAttribute('aria-label', `More for ${p.name}`);
+        more.title = 'More';
+        more.setAttribute('aria-haspopup', 'menu');
+        const dots = svgUse('#m-more_vert', '16', '0 0 32 32');
+        dots.classList.add('rux--btn__icon');
+        more.appendChild(dots);
+        more.addEventListener('click', () => openItemsMenu(more, items, `More for ${p.name}`));
+        acts.appendChild(more);
       }
       if (!p.phone && !messages) {
         const add = p.customer
-          ? button('Add number', '#m-edit', '#', false, e => { e.preventDefault(); closeContacts(false); openSelected(); })
+          ? button('Add number', '#m-edit', '#', false, e => { e.preventDefault(); closeContacts(); openSelected(); })
           : button('Add number', '#m-edit', `drivers.html?id=${encodeURIComponent(p.driverId)}`);
         acts.appendChild(add);
       }
-      c.append(who, acts, ...(remind.childElementCount ? [remind] : []));
+      c.append(who, acts);
       return c;
     };
+    /* A part is its name with its group action at the head's end, then its
+       people's tiles, 2px apart as the Updates window's are. */
     const part = (title, cards, extra) => {
       if (!cards.length) return [];
-      return [el('h3', 'scheduler-contacts__part', title), ...(extra ? [extra] : []), ...cards];
+      const head = el('div', 'scheduler-contacts__head');
+      head.append(el('h3', 'scheduler-contacts__part', title), ...(extra ? [extra] : []));
+      const group = el('div', 'scheduler-contacts__group');
+      group.append(...cards);
+      return [head, group];
     };
     // Every driver on the leg in one group message, from two drivers up.
     const numbers = [...new Set([...mine, ...others].map(d => d.phone && dial(d.phone)).filter(Boolean))];
     const all = numbers.length > 1
-      ? button(`Text all drivers (${numbers.length})`, '#m-chat', `sms:/open?addresses=${numbers.join(',')}`)
+      ? button(`Text all drivers (${numbers.length})`, '#m-chat', `sms:/open?addresses=${numbers.join(',')}`, false, null, false, true)
       : null;
-    all?.classList.add('scheduler-contacts__all');
     // The driver details letter, emailed from here or copied for Missive.
     const letter = driverLetter(trip);
     let details = null;
@@ -13055,10 +13073,10 @@
       if (letter.to?.email) {
         details.appendChild(button('Email driver details', '#m-mail',
           `mailto:${letter.to.email}?subject=${encodeURIComponent(letter.subject)}&body=${encodeURIComponent(letter.body)}`,
-          false, offer(...sent)));
+          false, offer(...sent), false, true));
       }
-      // Copy is a square beside Email, and has its words when it stands alone.
-      const copy = button(letter.to?.email ? '' : 'Copy driver details', '#m-content_copy', '#', false, async e => {
+      // Copy is an icon beside Email, and has its words when it stands alone.
+      const copy = button('Copy driver details', '#m-content_copy', '#', false, async e => {
         e.preventDefault();
         try {
           await navigator.clipboard.writeText(letter.body);
@@ -13067,12 +13085,7 @@
           return;
         }
         offer(...sent, 'Driver details copied', 'Once it is sent, add it to the trip\'s updates?')();
-      });
-      if (letter.to?.email) {
-        copy.classList.add('rux--btn--icon-only', 'scheduler-contacts__copy');
-        copy.setAttribute('aria-label', 'Copy driver details');
-        copy.title = 'Copy driver details';
-      }
+      }, !!letter.to?.email, true);
       details.appendChild(copy);
     }
     const own = assigns.find(a => String(a.id) === bar.dataset.assignmentId);

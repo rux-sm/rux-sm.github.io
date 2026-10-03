@@ -261,19 +261,19 @@ has no notes of its own: a note saved in rux-ui becomes the pinned update.
 Only the selected trip has a
 card. Every trip has the same four slots: Open trip, the itinerary,
 opened or uploaded, Forms and Contacts; every other action is on the
-right-click menu. Contacts opens a centred window, as Updates does, of cards in three parts, the
+right-click menu. Contacts opens a centred window, as Updates does, of tiles in three parts, the
 customer's people, the crew on that bus and the crew on the trip's other
 buses for that leg, each with its role, number, and Call and Text buttons,
-Email for a booking contact who has one, and a driver's status and report
+an Email icon for a booking contact who has one, and a driver's status and report
 time. A person with no number says so, with Add number. Two drivers or more
-add Text all drivers, one group message. Once a driver on the trip has
-confirmed, the Customer part opens with Email driver details, a written email
+add Text all drivers, one group message, at the bus part's head. Once a driver on the trip has
+confirmed, the Customer part's head has Email driver details, a written email
 to the booking contact who has an address, and Copy driver details, the same
 letter on the clipboard: every bus on the trip with its confirmed drivers'
 names and numbers, each leg under its date when their crews differ. A driver's Text opens their Google
 Messages link on a computer where the Drivers page holds one. Each driver's
-card also has Remind, a text with their reminder of the leg typed in, and a
-Copy square: "Hi Oscar, a reminder for your trip tomorrow:", then the leg in
+tile has a menu of Remind, a text with their reminder of the leg typed in, and
+Copy reminder: "Hi Oscar, a reminder for your trip tomorrow:", then the leg in
 the Driver week info message's own lines, from `scheduler/driver-text.js`,
 and the newest itinerary's link. Where the driver's text opens Google
 Messages, Remind copies the reminder first, to paste. A call, text

@@ -2178,7 +2178,17 @@
       return li;
     };
     menu.replaceChildren(...items.map(it => build(it, radio)));
-    if (point) {
+    /* A menu opened from inside a window names its trigger, so the overlay
+       stack keeps the window open under it rather than taking the press on
+       the menu as a press outside the window, and Design places it against
+       that trigger, then and on every scroll or resize; placing it here too
+       made it jump from one place to the other. Elsewhere it is placed here,
+       at the pointer or under its trigger, and opened on its own. */
+    const inWindow = !!trigger.closest?.('.rux--modal');
+    if (inWindow) {
+      menu.hidden = false;
+      menu.style.position = 'fixed';
+    } else if (point) {
       menu.hidden = false;
       menu.style.position = 'fixed';
       const { width, height } = menu.getBoundingClientRect();
@@ -2188,11 +2198,7 @@
     } else {
       placeMenuAt(menu, trigger);
     }
-    /* A menu opened from inside a window names its trigger, so the overlay
-       stack keeps the window open under it rather than taking the press on
-       the menu as a press outside the window. Elsewhere it is placed above
-       and opened on its own. */
-    window.Rux?.menu?.open?.(menu, trigger.closest?.('.rux--modal') ? trigger : null);
+    window.Rux?.menu?.open?.(menu, inWindow ? trigger : null);
     trigger.setAttribute('aria-expanded', 'true');
     itemsMenuTrigger = trigger;
   };
@@ -12843,7 +12849,8 @@
      which Design closes on Escape, a press outside or its close button. */
   const contactsModal = document.getElementById('scheduler-contacts-modal');
   const contactsList = document.getElementById('scheduler-contacts-list');
-  const contactsMore = document.getElementById('scheduler-contacts-more');
+  const contactsMenu = document.getElementById('scheduler-contacts-menu');
+  const contactsOptions = document.getElementById('scheduler-contacts-options');
   const CONTACTS = { id: 'contacts', label: 'Call or text', short: 'Contacts', icon: '#m-call', blocked: () => null,
     run: (bar, slot) => openContactsFrom(bar, slot) };
   const FIXED_SHORTCUTS = { contacts: CONTACTS };
@@ -13029,30 +13036,32 @@
     ul.append(...everyone.map(card));
     list.appendChild(ul);
 
-    /* Everything but Call and Text is in the one menu in the window's header:
-       a group text to every driver on the leg, from two drivers up; the
-       driver details letter to the booking contact, emailed or copied for
-       Missive; an email to a contact who has an address; each driver's
-       reminder of the leg; and Add number for a person with none. */
-    const items = [];
+    /* Everything but Call and Text is in the overflow menu beside the close
+       button, in groups parted by Carbon's divider: a group text to every
+       driver on the leg, from two drivers up; the driver details letter to
+       the booking contact, emailed or copied for Missive; an email to a
+       contact who has an address; each driver's reminder of the leg; and Add
+       number for a person with none. */
+    const groups = [[], [], [], [], []];
+    const [toAll, toLetter, toEmail, toRemind, toAdd] = groups;
     const numbers = [...new Set(drivers.map(d => d.phone && dial(d.phone)).filter(Boolean))];
     if (numbers.length > 1) {
-      items.push({ label: `Text all drivers (${numbers.length})`, run: go(`sms:/open?addresses=${numbers.join(',')}`) });
+      toAll.push({ label: `Text all drivers (${numbers.length})`, run: go(`sms:/open?addresses=${numbers.join(',')}`) });
     }
     const letter = driverLetter(trip);
     if (letter) {
       const sent = ['Emailed driver details to', letter.to?.name || 'the customer'];
       if (letter.to?.email) {
-        items.push({ label: 'Email driver details', run: go(
+        toLetter.push({ label: 'Email driver details', run: go(
           `mailto:${letter.to.email}?subject=${encodeURIComponent(letter.subject)}&body=${encodeURIComponent(letter.body)}`,
           offer(...sent)) });
       }
-      items.push({ label: 'Copy driver details', run: async () => {
+      toLetter.push({ label: 'Copy driver details', run: async () => {
         if (await copyText(letter.body)) offer(...sent, 'Driver details copied', 'Once it is sent, add it to the trip\'s updates?')();
       } });
     }
     for (const p of people) {
-      if (p.email) items.push({ label: `Email ${p.name}`, run: go(`mailto:${p.email}`, offer('Emailed', p.name)) });
+      if (p.email) toEmail.push({ label: `Email ${p.name}`, run: go(`mailto:${p.email}`, offer('Emailed', p.name)) });
     }
     /* Remind opens a text to the driver with their reminder typed in; to the
        office's Google Messages conversation, which takes no text, it copies
@@ -13060,23 +13069,35 @@
     for (const p of drivers) {
       if (!p.reminder) continue;
       if (p.texting && !docked) {
-        items.push({ label: `Remind ${p.name}`, run: async () => {
+        toRemind.push({ label: `Remind ${p.name}`, run: async () => {
           if (await copyText(p.reminder)) toast('info', 'Reminder copied', `Paste it in ${p.name}'s conversation.`);
           closeContacts();
           window.open(p.texting, '_blank', 'noopener');
         } });
       } else if (p.phone) {
-        items.push({ label: `Remind ${p.name}`, run: go(`sms:${dial(p.phone)}${apple ? '&' : '?'}body=${encodeURIComponent(p.reminder)}`) });
+        toRemind.push({ label: `Remind ${p.name}`, run: go(`sms:${dial(p.phone)}${apple ? '&' : '?'}body=${encodeURIComponent(p.reminder)}`) });
       }
     }
     for (const p of everyone) {
       if (p.phone || (p.texting && !docked)) continue;
-      items.push({ label: `Add number for ${p.name}`, run: p.customer
+      toAdd.push({ label: `Add number for ${p.name}`, run: p.customer
         ? () => { closeContacts(); openSelected(); }
         : go(`drivers.html?id=${encodeURIComponent(p.driverId)}`) });
     }
-    contactsMore.hidden = !items.length;
-    contactsMore.onclick = () => openItemsMenu(contactsMore, items, 'More for this trip\'s contacts');
+    const options = groups.filter(g => g.length).flatMap((g, i) => g.map((it, j) => {
+      const li = el('li', i && !j ? 'rux--overflow-menu-options__option rux--overflow-menu--divider' : 'rux--overflow-menu-options__option');
+      li.setAttribute('role', 'none');
+      const b = el('button', 'rux--overflow-menu-options__btn');
+      b.type = 'button';
+      b.setAttribute('role', 'menuitem');
+      b.tabIndex = -1;
+      b.appendChild(el('div', 'rux--overflow-menu-options__option-content', it.label));
+      b.addEventListener('click', it.run);
+      li.appendChild(b);
+      return li;
+    }));
+    contactsOptions.replaceChildren(...options);
+    contactsMenu.hidden = !options.length;
     const rows = everyone.length ? [list] : [];
     contactsList.replaceChildren(...(rows.length ? rows : [el('p', 'scheduler-contacts__empty', 'Nobody to reach on this trip yet.')]));
     document.getElementById('scheduler-contacts-trip').textContent = tripName(trip);

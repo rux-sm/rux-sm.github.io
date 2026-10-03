@@ -2719,8 +2719,16 @@ button.scheduler-row-head__num::after {
    booking contact, the trip contacts, then the drivers, a row each with Call
    and Text. Its padding and the line under its header are in overrides.css.
    The modal's content scrolls. */
-/* The window's menu sits beside the close button, the same 48px square. */
-.scheduler-contacts__more { position: absolute; inset-block-start: 0; inset-inline-end: 3rem; }
+/* The window's overflow menu sits beside the close button, the same 48px
+   square, its list under it against its right edge and as wide as its
+   longest item, as the maintenance page's is. */
+.scheduler-contacts__menu { position: absolute; inset-block-start: 0; inset-inline-end: 3rem; }
+.scheduler-contacts__menu .rux--overflow-menu-options {
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+  inline-size: max-content;
+  min-inline-size: 10rem;
+}
 .scheduler-contacts__empty { margin: 0; color: var(--rux-text-secondary); }
 /* A row: who they are to the trip, their name and number at the left, their
    buttons at the right; on a window too narrow for both the buttons wrap

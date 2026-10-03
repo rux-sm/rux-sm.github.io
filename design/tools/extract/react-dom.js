@@ -482,6 +482,22 @@
     return '';
   };
 
+  // THE VARIANT IS RECORDED BECAUSE THE PARENT IS NOT ENOUGH. A fluid field's
+  // label sits in the same label wrapper a plain one does; what makes it fluid is
+  // `text-input--fluid` further out, and a vertical progress step's parent is the
+  // same list a horizontal one has. Every ancestor's MODIFIER classes -- a second
+  // `--` after the prefix, as `text-input--fluid`, `progress--vertical` and
+  // `file__selected-file--invalid` have -- sorted into one string, are the
+  // variant the values were measured in. check-spacing compares a rendering only
+  // with values measured in a variant that holds all of its own modifiers.
+  const MODIFIER = /^(?:cds|c4p)--.+--/;
+  const modifierSig = el => {
+    const mods = new Set();
+    for (let n = el.parentElement; n; n = n.parentElement)
+      for (const c of n.classList) if (MODIFIER.test(c)) mods.add(c);
+    return [...mods].sort().join('.');
+  };
+
   const spacingCapture = doc => {
     const win = doc.defaultView;
     const out = [];
@@ -493,7 +509,8 @@
       for (const prop of SPACING_PROPS)
         if (c[prop] && c[prop] !== DEFAULTS[prop] && c[prop] !== ALSO_DEFAULT[prop])
           values[prop] = c[prop];
-      if (Object.keys(values).length) out.push({ sig, parent: parentSig(el), values });
+      if (Object.keys(values).length)
+        out.push({ sig, parent: parentSig(el), modifiers: modifierSig(el), values });
     }
     return out;
   };
@@ -870,10 +887,14 @@
     const table = {};
     for (const [story, records] of Object.entries(out)) {
       if (verdictOf(records)) continue;
-      for (const { sig, parent, values } of records) {
+      for (const { sig, parent, modifiers, values } of records) {
         const key = JSON.stringify(values);
         const entry = (table[sig] ??= {});
-        (entry[key] ??= { values, parents: [], seen: [] });
+        (entry[key] ??= { values, parents: [], modifiers: [], seen: [] });
+        // Every distinct variant is kept, the plain one ('') included: a cap could
+        // drop the one variant a rendering needs, and the comparison would then
+        // read a missing measurement as a disagreement.
+        if (!entry[key].modifiers.includes(modifiers)) entry[key].modifiers.push(modifiers);
         // Parents are capped like `seen`: this is a lookup, not a census. Five is
         // enough to tell "always this context" from "anywhere".
         if (parent && entry[key].parents.length < 5 && !entry[key].parents.includes(parent))

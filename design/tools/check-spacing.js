@@ -7,7 +7,7 @@
 // wrappers are there. None of them can see a gap that is missing, because the
 // markup captures record structure and drop everything else on purpose.
 //
-// It reads `data/carbon-react-spacing.json` — 800 class signatures harvested from
+// It reads `data/carbon-react-spacing.json` — 780 class signatures harvested from
 // react.carbondesignsystem.com — and for every classed element on this page asks
 // whether our computed box properties match what Carbon computed for the same
 // class set.
@@ -19,7 +19,7 @@
 // container's rendered width, and `min-block-size: 0px` is treated as a default
 // because it is Carbon's reset rather than a fact about a component.
 //
-// THREE VERDICTS, and only the first is a defect.
+// FOUR VERDICTS, and only the first is a defect.
 //
 //   DIVERGES      the signature is in the reference and our values match NONE of
 //                 its recorded variants. The per-property difference is printed,
@@ -41,6 +41,13 @@
 //                 triaged on one page it held 9 near-misses of which 1 was real,
 //                 and the noise is the reference's own story sampling, not our
 //                 markup. A rule that needs that allow-list measures the list.
+//
+//   NOT COMPARABLE  Carbon measured the class set, but never in the variant we
+//                 render it in: a condensed list, a vertical progress
+//                 indicator, a fluid field. The variant is the modifier
+//                 classes on the element's ancestors, and `modifiersOf` below
+//                 says how the two sides are held to it. Each row names the
+//                 modifiers Carbon's measurements lack.
 //
 //   MATCHES       our values equal one of the recorded variants. Counted only.
 //
@@ -251,6 +258,26 @@
     return '';
   };
 
+  // LIKE WITH LIKE. The reference records, for each set of values, every variant
+  // it was measured in: the modifier classes on the element's ancestors, as
+  // tools/extract/react-dom.js reads them. A rendering is compared only with
+  // values measured in a variant that holds every modifier of its own, so a
+  // fluid label is held to a fluid label and a vertical step to a vertical step.
+  // The rule runs one way on purpose. A modifier Carbon has and we lack still
+  // compares, because that is how a missing wrapper shows -- the copy button's
+  // absent `layout-constraint--size__default-md` read 48px against 40 -- while
+  // a modifier we have and Carbon never measured means there is nothing to
+  // compare with, and the row says so under NOT COMPARABLE instead of diverging.
+  const MODIFIER = /^rux--.+--/;
+  const modifiersOf = el => {
+    const mods = new Set();
+    for (let n = el.parentElement; n; n = n.parentElement)
+      for (const c of n.classList) if (MODIFIER.test(c)) mods.add(toCarbon(c));
+    return mods;
+  };
+  const measuredIn = (v, mods) => !v.modifiers
+    || v.modifiers.some(m => { const held = new Set(m.split('.')); return [...mods].every(c => held.has(c)); });
+
   // THREE KINDS OF DIFFERENCE THAT ARE NOT DISAGREEMENTS, and the first run
   // reported all three as findings before this existed.
   //
@@ -336,8 +363,6 @@ const GRID_MARGIN = 'the sink own inline style="margin-block-end:1.5rem" on the 
 // sink/date-picker.html records that `cds--date-picker__calendar` matches ZERO
 // cds rules and styles nothing. Comparing our --next calendar against it compares
 // two different components that happen to share a class name.
-const DP_CLASSIC = 'reference is the CLASSIC flatpickr picker (components-datepicker--default) '
-  + 'and this fragment is --next; those calendar classes style nothing there';
 
 // Values derived from the TEXT BESIDE THEM, so they can only agree if the
 // specimen carries Carbon story copy word for word. The close button margin is an
@@ -371,20 +396,7 @@ const LAST_OF_TYPE = 'the page measured its :last-of-type wrapper against a reco
 
 // BATCH 1 OF §4.9, 2026-09-01. Four sampling shapes, each named against the
 // Carbon rule that produces our value.
-const XS_TREE = 'the --xs tree: `.tree--xs .tree-node__label` sets min-block-size 1.5rem and '
-  + 'padding 0 on a leaf, and the spacing harvest sampled no xs tree (sink/treeview.html)';
-const ICON_PARENT = "Carbon's own `.tree-node--with-icon .tree-node { margin-inline-start: .5rem }`; "
-  + 'the one sampled nested selected node sits under a parent with no icon';
-const NOT_LAST_ITEM = '`.file__selected-file { margin-block-end: .5rem }` with `:last-child { 0 }`; the '
-  + 'item story mounts one item, so its only sample is a last child, and the key cannot '
-  + 'express position';
-const INVALID_ITEM = "`.file__selected-file .file-filename-container-wrap-invalid .file-filename-tooltip "
-  + "{ padding-inline-start: 1rem }` -- the INVALID item's rule; only the plain item was "
-  + 'harvested for spacing';
 // BATCH 3 OF §4.9, 2026-09-01.
-const CONDENSED_LIST = 'the --condensed structured list: `.structured-list--condensed .structured-list-td, '
-  + '.structured-list-th { padding: .5rem }`, and the harvest sampled no condensed list '
-  + '(sink/structured-list.html)';
 // BATCH 5 OF §4.9, 2026-09-01.
 const SANDBOX = 'the dialog is `inset: 0; margin: auto`, so its margins are whatever centres it in '
   + 'its containing block; the sink mounts it in a 22rem sandbox and the story mounts it in '
@@ -396,34 +408,16 @@ const KNOWN = {
   'rux--dialog|marginBlockEnd': SANDBOX,
   'rux--dialog|marginInlineStart': SANDBOX,
   'rux--dialog|marginInlineEnd': SANDBOX,
-  'rux--btn.rux--btn--ghost.rux--btn--sm.rux--layout--size-sm.rux--btn--icon-only|display': BLOCKIFIED,
   'rux--btn.rux--btn--ghost.rux--btn--icon-only|display': BLOCKIFIED,
   'rux--chat-btn.rux--btn.rux--btn--sm.rux--layout--size-sm.rux--btn--primary|display': BLOCKIFIED,
   'rux--chat-btn.rux--btn.rux--btn--sm.rux--layout--size-sm.rux--btn--primary|marginInlineEnd': STORY_GAP,
 
-  'rux--structured-list-th|paddingBlockStart': CONDENSED_LIST,
-  'rux--structured-list-td|paddingBlockStart': CONDENSED_LIST,
-  'rux--structured-list-td|paddingBlockEnd': CONDENSED_LIST,
-  'rux--structured-list-td|paddingInlineStart': CONDENSED_LIST,
-  'rux--structured-list-td|paddingInlineEnd': CONDENSED_LIST,
-  'rux--structured-list-td.rux--structured-list-content--nowrap|paddingBlockStart': CONDENSED_LIST,
-  'rux--structured-list-td.rux--structured-list-content--nowrap|paddingBlockEnd': CONDENSED_LIST,
 
-  'rux--tree-node__label|minBlockSize': XS_TREE,
-  'rux--tree-node__label|paddingBlockStart': XS_TREE,
-  'rux--tree-node__label|paddingBlockEnd': XS_TREE,
-  'rux--tree-node__label|paddingInlineEnd': XS_TREE,
-  'rux--tree-node.rux--tree-leaf-node.rux--tree-node--selected|marginInlineStart': ICON_PARENT,
-  'rux--file__selected-file.rux--file__selected-file--md|marginBlockEnd': NOT_LAST_ITEM,
-  'rux--popover-container.rux--popover--caret.rux--popover--high-contrast.rux--popover--bottom.rux--tooltip.rux--file-filename-tooltip|paddingInlineStart': INVALID_ITEM,
 
   'rux--btn.rux--btn--danger--tertiary|display': BLOCKIFIED,
   'rux--btn.rux--btn--danger--ghost|display': BLOCKIFIED,
-  'rux--btn.rux--btn--md.rux--layout--size-md.rux--btn--primary|display': BLOCKIFIED,
-  'rux--btn.rux--btn--sm.rux--layout--size-sm.rux--btn--primary|display': BLOCKIFIED,
   'rux--link.rux--link--disabled|display': BLOCKIFIED,
   'rux--btn.rux--btn--sm.rux--layout--size-sm.rux--btn--ghost.rux--btn--icon-only|display': BLOCKIFIED,
-  'rux--btn.rux--btn--tertiary.rux--btn--sm.rux--layout--size-sm|display': BLOCKIFIED,
   'rux--stack-horizontal.rux--stack-scale-6|display': BLOCKIFIED,
 
   'rux--css-grid|marginBlockEnd': GRID_MARGIN,
@@ -438,21 +432,9 @@ const KNOWN = {
   'rux--css-grid-column.rux--col-span-8|paddingBlockStart': GRID_DEMO,
   'rux--css-grid-column.rux--col-span-8|paddingInlineEnd': GRID_DEMO,
   'rux--css-grid-column.rux--col-span-8|paddingInlineStart': GRID_DEMO,
-  'rux--css-grid-column.rux--col-span-8|marginInlineEnd': GRID_DEMO,
-  'rux--css-grid-column.rux--col-span-8|marginInlineStart': GRID_DEMO,
 
-  'rux--date-picker__month|marginBlockEnd': DP_CLASSIC,
-  'rux--date-picker__weekdays|columnGap': DP_CLASSIC,
-  'rux--date-picker__weekdays|display': DP_CLASSIC,
-  'rux--date-picker__weekdays|marginBlockEnd': DP_CLASSIC,
-  'rux--date-picker__weekdays|rowGap': DP_CLASSIC,
-  'rux--date-picker__day|paddingBlockEnd': DP_CLASSIC,
-  'rux--date-picker__day|paddingBlockStart': DP_CLASSIC,
-  'rux--date-picker__day|paddingInlineEnd': DP_CLASSIC,
-  'rux--date-picker__day|paddingInlineStart': DP_CLASSIC,
 
   'rux--toast-notification__close-button|marginInlineStart': CONTENT,
-  'rux--modal-header__heading|paddingInlineEnd': CONTENT,
 
   'rux--content|paddingInlineStart': SELF_INDENT,
   'rux--form-item.rux--checkbox-wrapper|marginBlockEnd': LAST_OF_TYPE,
@@ -481,10 +463,19 @@ const KNOWN = {
       notComparable.push({ class: sig, why: hiddenHere ? 'display:none here' : 'display:none in Carbon' });
       continue;
     }
+    const mods = modifiersOf(el);
+    const alike = variants.filter(v => measuredIn(v, mods));
+    if (!alike.length) {
+      const held = new Set(variants.flatMap(v => (v.modifiers ?? []).flatMap(m => m.split('.'))));
+      notComparable.push({ class: sig, where: el.closest('.ks-sec')?.id ?? '(page)',
+        why: 'Carbon measured it only outside this variant: '
+          + ([...mods].filter(c => !held.has(c)).join(' ') || [...mods].join(' ')) });
+      continue;
+    }
     checked++;
     const mine = parentSig(el);
-    const inContext = variants.filter(v => (v.parents ?? []).some(p => sortSig(p) === mine));
-    const compare = inContext.length ? inContext : variants;
+    const inContext = alike.filter(v => (v.parents ?? []).some(p => sortSig(p) === mine));
+    const compare = inContext.length ? inContext : alike;
     if (compare.some(v => diffOf(ours, v.values).length === 0)) { matched++; continue; }
     // A PROPERTY DIVERGES ONLY IF IT DIFFERS FROM EVERY VARIANT. Reporting the
     // closest variant's diff was wrong and said so out loud: radio-button__appearance

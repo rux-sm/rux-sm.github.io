@@ -1081,14 +1081,7 @@ button.scheduler-row-head__num::after {
 }
 /* A part with nothing in it is its title alone, which says so. */
 .scheduler-card__title:last-child { margin-block-end: 0; }
-.scheduler-card__note,
 .scheduler-card__updates { padding-block: var(--rux-spacing-03); }
-/* The note: its title across, then a pin in the 16px column an update's face
-   stands in, its words where an update's start, and its age at the right. */
-.scheduler-card__note { display: grid; grid-template-columns: 1rem minmax(0, 1fr) auto; column-gap: var(--rux-spacing-03); align-items: start; }
-.scheduler-card__note > .scheduler-card__title { grid-column: 1 / -1; }
-.scheduler-card__note > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: color-mix(in srgb, var(--card-ink) 70%, transparent); }
-.scheduler-card__note-words { display: block; min-inline-size: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 /* An update: its author's 16px face in the column the alerts' marks stand
    in, its words, and its age at the right of its first line, so every age
    stands in one column. */
@@ -1099,15 +1092,22 @@ button.scheduler-row-head__num::after {
   align-items: start;
 }
 .scheduler-card__update-list .scheduler-card__face { justify-self: center; }
-/* Closed, only the newest update shows, its words cut to two lines; with
-   more to show, it opens the rest on a press, so it takes the pointer. Open,
-   every update shows whole, in a list that scrolls past 16rem, or sooner
-   where data.js finds the board has less room. */
-.scheduler-card__update-list { margin: 0; padding: 0; list-style: none; }
-.scheduler-card__updates[data-open] .scheduler-card__update-list {
+/* The pinned update's pin stands where a face does, in the card's quieter ink. */
+.scheduler-card__update[data-pinned] > svg { inline-size: 1rem; block-size: 1rem; color: color-mix(in srgb, var(--card-ink) 70%, transparent); }
+/* Closed, the pinned update and the newest of the rest show, each cut to one
+   line, 8px apart so each line is a 24px row; with more to show, a press opens
+   the rest, so they take the pointer. Open, every update shows whole, in a
+   list that scrolls past 16rem, or sooner where data.js finds the board has
+   less room. */
+.scheduler-card__update-list {
   display: flex;
   flex-direction: column;
   gap: var(--rux-spacing-03);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.scheduler-card__updates[data-open] .scheduler-card__update-list {
   max-block-size: 16rem;
   overflow-y: auto;
 }
@@ -1126,27 +1126,15 @@ button.scheduler-row-head__num::after {
 /* Floating, every row is 24px, the slots' own height: one 16px line with
    4px above and below, the rule above it taking a pixel of the 4. A row
    with no rule, the first under the card's edge or the next line of a
-   band, keeps the whole 4. The note stops at that one line on an ellipsis
-   until it is opened, as the newest update does. The words are cut, not
-   the row, so the row's padding shows none of a second. */
+   band, keeps the whole 4. */
 .scheduler-bar-shortcuts:not([data-docked]) .scheduler-card > .scheduler-card__row { padding-block: calc(var(--rux-spacing-02) - 1px) var(--rux-spacing-02); }
 .scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) .scheduler-card > .scheduler-card__row:first-child,
 .scheduler-bar-shortcuts:not([data-docked]) .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn) + :is(.scheduler-card__asks, .scheduler-card__warn),
 .scheduler-bar-shortcuts:not([data-docked]) .scheduler-card > .scheduler-card__misfit + .scheduler-card__misfit { padding-block-start: var(--rux-spacing-02); }
-.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__note:not([data-open]) > .scheduler-card__note-words {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  line-clamp: 1;
-  overflow: hidden;
-}
-/* Floating, a part with something in it shows no title: the pin and the
-   face say which line is which, and the card is a row shorter for each.
-   The title's words stay for a screen reader, and its Edit or Add stands
-   at the end of the part's first line. An empty part keeps its title,
-   No notes or No updates, which is all it says. */
-.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__note:has(> .scheduler-card__note-words) { grid-template-columns: 1rem minmax(0, 1fr) auto auto; }
-.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__note:has(> .scheduler-card__note-words) > .scheduler-card__title { grid-column: 4; grid-row: 1; margin: 0; }
+/* Floating, the updates show no title when there are any: the pin and the
+   faces say what each line is, and the card is a row shorter. The title's
+   words stay for a screen reader, and its Add stands at the end of the first
+   line. With none, the title stays, No updates, which is all it says. */
 .scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__updates:has(> .scheduler-card__update-list) {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -1155,7 +1143,7 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__updates:has(> .scheduler-card__update-list) > .scheduler-card__title { grid-column: 2; grid-row: 1; margin: 0; }
 .scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__updates > .scheduler-card__update-list { grid-column: 1; grid-row: 1; }
-.scheduler-bar-shortcuts:not([data-docked]) :is(.scheduler-card__note:has(> .scheduler-card__note-words), .scheduler-card__updates:has(> .scheduler-card__update-list)) > .scheduler-card__title > span {
+.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__updates:has(> .scheduler-card__update-list) > .scheduler-card__title > span {
   position: absolute;
   overflow: hidden;
   margin: -1px;
@@ -1164,8 +1152,6 @@ button.scheduler-row-head__num::after {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
 }
-.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__note[role="button"] { cursor: pointer; }
-.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__note[role="button"]:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
 /* IT ARRIVES WITH A SMALL POP: rising 6px from the arrow's side and growing
    from 94%, on Carbon's expressive entrance curve over its moderate-02
    duration, each row following 40ms after the one above it. Reduced motion
@@ -2707,17 +2693,15 @@ button.scheduler-row-head__num::after {
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
 /* The card's rows join the sheet's own flow and stand above the trip: the
-   reminder, the notes, then the updates. What changes size from trip to trip
-   is all up there, so the sheet grows upward and the trip and its slots keep
-   one place at the foot on every trip. The reminder at the top and the notes
-   under it need no rule above them. */
+   reminder, then the updates. What changes size from trip to trip is all up
+   there, so the sheet grows upward and the trip and its slots keep one place
+   at the foot on every trip. The reminder at the top needs no rule above it. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-card { display: contents; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card > * { flex: 1 0 100%; min-inline-size: 0; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__misfit { order: -4; }
 .scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__asks, .scheduler-card__warn) { order: -3; }
-.scheduler-bar-shortcuts[data-docked] .scheduler-card__note { order: -2; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__updates { order: -1; }
-.scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__misfit, .scheduler-card__asks, .scheduler-card__warn, .scheduler-card__note) { border-block-start: 0; }
+.scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__misfit, .scheduler-card__asks, .scheduler-card__warn) { border-block-start: 0; }
 /* A card button is 32px high under a thumb, its margins taken back so the
    row keeps its height. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__action {
@@ -2726,20 +2710,10 @@ button.scheduler-row-head__num::after {
   margin-inline-end: calc(-1 * var(--rux-spacing-03));
   padding: 0 var(--rux-spacing-03);
 }
-/* The note stops at one line on an ellipsis until it is tapped open, as on
-   the floating card. */
-.scheduler-bar-shortcuts[data-docked] .scheduler-card__note:not([data-open]) > .scheduler-card__note-words {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  line-clamp: 1;
-  overflow: hidden;
-}
-.scheduler-bar-shortcuts[data-docked] .scheduler-card__note[role="button"] { cursor: pointer; }
-.scheduler-bar-shortcuts[data-docked] .scheduler-card__note[role="button"]:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
-/* The updates hold their title and the newest's line however many there
-   are, so the sheet is the same height with none, one or twenty, on the
-   raised layer the sheet itself no longer paints. */
+/* The updates hold at least their title and one line however many there
+   are, so the sheet is the same height with none, one or twenty, and one line
+   taller with a pinned update, on the raised layer the sheet itself no
+   longer paints. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__updates {
   min-block-size: calc(2rem + 2 * var(--rux-spacing-03));
   background: var(--rux-layer-02);

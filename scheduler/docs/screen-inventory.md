@@ -230,18 +230,18 @@ and each need still to do, Hotel booking pending or HOS form pending, each a
 line of its own behind the bar's bell.
 No warning has a dismiss; each stays until it is put right. Needs that are
 met are not shown.
-Then the note and the updates, with no titles on the floating card: the
-note's one line, led by a pin in the column an update's avatar stands in,
-so both start their words at one edge, then how long ago the note last
-changed, in the updates' age column, and Edit, which opens the note in a
-window of its own with Cancel and Save; then the newest update's one line and
-Add, which opens the trip's Updates window. Each opens whole when pressed.
-The docked sheet keeps each part's title, Trip notes, and Updates with their
-count (Updates · 5), over its line. The newest update is its
-author's 16px avatar, its words, and its age at the right, always a number
-(45m, 2h, 3d); opened, every update shows with its age in that one column.
-The name is the avatar's tooltip. A part with nothing in it is its title
-alone, No notes or No updates, with Add. Only the selected trip has a
+Then the updates, with no title on the floating card: the pinned update's
+line, led by a pin where an update's avatar stands, then the newest of the
+rest, each a line of its own with its age at the right, always a number
+(45m, 2h, 3d), and Add at the end of the first, which opens the trip's
+Updates window. A press on either opens every update in full, the pinned one
+first and the rest newest first. The docked sheet keeps the title, Updates
+with their count (Updates · 5), over its lines. An update's author is its
+avatar's tooltip. With none, the title alone says No updates, with Add.
+In the Updates window, pressing an update gives Pin, or Unpin, beside Delete;
+a trip has one pinned update, and pinning another lets the first go. The trip
+has no notes of its own: a note saved in rux-ui becomes the pinned update.
+Only the selected trip has a
 card. Every trip has the same four slots: Open trip, the itinerary,
 opened or uploaded, Forms and Contacts; every other action is on the
 right-click menu. Contacts opens a small window of cards in three parts, the

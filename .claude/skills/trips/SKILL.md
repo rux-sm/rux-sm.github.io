@@ -1,6 +1,6 @@
 ---
 name: trips
-description: Review, enter or update charter trips in the scheduler with rux. Read the customer's email thread in Missive for the quote, itinerary, PO and requests, check the trip's Route, Buses, Billing, Files and checklist against it, make the changes in rux's Chrome and save on his yes. Use for any request to review a trip or a week's trips, enter a trip from an itinerary or email, fix a trip's price, stops, contacts or notes, or draft a customer email about a trip. rux's office rules are in rules.md beside this file, and every new rule he gives is added there.
+description: Review, enter or update charter trips in the scheduler with rux. Read the customer's email thread in Missive for the quote, itinerary, PO and requests, check the trip's Route, Buses, Billing, Files and checklist against it, make the changes in rux's Chrome and save on his yes. Use for any request to review a trip or a week's trips, enter a trip from an itinerary or email, fix a trip's price, stops, contacts or pinned update, or draft a customer email about a trip. rux's office rules are in rules.md beside this file, and every new rule he gives is added there.
 ---
 
 # Working trips with rux
@@ -33,7 +33,7 @@ written. `scheduler/docs/booking.md` is what each booking step must say, and
 4. List what disagrees: stops and times against the itinerary, the route's
    miles against Estimated miles, the quote lines against the quote sent,
    Quote sent marked or not, Route's notices (second driver, fuel card),
-   contacts, notes, the email thread linked or not.
+   contacts, the pinned update, the email thread linked or not.
 5. Report before changing anything: what the emails say, what you would
    change, and only the questions `rules.md` does not already answer.
 6. On rux's go, make the changes, press each tab's Done once it is reviewed,
@@ -48,8 +48,11 @@ rux's yes.
 
 ## Where each fact is in the editor
 
-- **Details:** dates, destination, type, notes, booking contact (its ⋮ menu
+- **Details:** dates, destination, type, booking contact (its ⋮ menu
   has Add email thread), trip contacts.
+- **Pinned update:** the trip has no notes; what everyone should know is the
+  update pinned to the top of its card, `pinned_update` in `get_trip`. Write
+  it in the Updates window and press it, then Pin; pinning one unpins the last.
 - **Route:** the Summary (Start, Spot, End; Miles, Drive, On duty, Less rest,
   a row a day), its menu's Measure drives again for a leg saved with old
   drives, the fuel card and second-driver notices, the stops with their

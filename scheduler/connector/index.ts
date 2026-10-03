@@ -24,7 +24,7 @@ const TRIP_SUMMARY = [
 
 // A trip on its own: what a dispatcher reads off the editor's tabs.
 const TRIP_DETAIL = [
-  TRIP_SUMMARY, 'notes', 'return_start_date', 'return_end_date',
+  TRIP_SUMMARY, 'return_start_date', 'return_end_date',
   'return_bus_count', 'pickup_address', 'est_miles', 'actual_miles',
   'driving_hours', 'on_duty_hours', 'quoted_price', 'deposit_amount',
   'balance_paid', 'date_paid', 'contract_status', 'contract_note',
@@ -42,7 +42,7 @@ const TRIP_DETAIL = [
 // The only trip fields a draft may fill. Anything else is refused, so a draft
 // can never carry a field the editor does not know how to show and mark.
 const DRAFT_FIELDS = new Set([
-  'destination', 'customer', 'notes',
+  'destination', 'customer',
   'start_date', 'end_date', 'return_start_date', 'return_end_date',
   // The route, as the scheduler's tab asks for it: two places, each a name
   // and an address, and the two times the group moves. The bus's own times
@@ -192,7 +192,7 @@ Deno.serve(
           {
             title: 'Get one trip',
             description:
-              'One trip in full, with the buses and drivers on it, its stops, and warnings: a leg short of buses, or a stop dated outside its leg. An amber trip_bar_color (or its old names orange and yellow) is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. Give either a trip id or a trip reference.',
+              'One trip in full, with the buses and drivers on it, its stops, and warnings: a leg short of buses, or a stop dated outside its leg. An amber trip_bar_color (or its old names orange and yellow) is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. pinned_update, when there is one, is what everyone should know about the trip, the update pinned to the top of its card. Give either a trip id or a trip reference.',
             inputSchema: z.object({
               trip_id: z.string().uuid().optional(),
               trip_ref: z.string().max(40).optional(),
@@ -215,7 +215,12 @@ Deno.serve(
               .select('leg, position, type, label, name, address, depart_prev, depart_prev_date, arrive, arrive_date, spot, spot_date, miles, drive, dwell_status')
               .eq('trip_id', trip.id).order('leg').order('position'))
 
-            return answer({ trip, warnings: tripWarnings(trip, buses, stops), buses, stops })
+            // The one update pinned to the top of the trip's card.
+            const pinned_update = orThrow(await supabase.from('trip_updates')
+              .select('body, created_at, actor_name')
+              .eq('trip_id', trip.id).not('pinned_at', 'is', null).maybeSingle())
+
+            return answer({ trip, pinned_update, warnings: tripWarnings(trip, buses, stops), buses, stops })
           },
         )
 

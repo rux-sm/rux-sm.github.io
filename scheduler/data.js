@@ -406,7 +406,7 @@
     'id', 'trip_ref', 'destination', 'customer', 'customer_id', 'start_date', 'end_date',
     'return_start_date', 'return_end_date', 'departure_time', 'return_time',
     'trip_type', 'confirmed', 'trip_bar_color', 'bus_count', 'return_bus_count',
-    'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'notes', 'updated_at',
+    'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'updated_at',
     // What the trip needs, for its card and the bus fit: the list the office keeps,
     // with the older columns behind it for a trip saved before it existed.
     'trip_reqs', 'need_fuel_card',
@@ -431,8 +431,6 @@
     // Set from the Checklist or the Files tab; a trip that does not need an
     // itinerary is not marked.
     'itinerary_not_needed',
-    // When the note last changed, set by the database, for the card's note age.
-    'notes_updated_at',
     // rux-ui's Confirm mark on the itinerary, which a save that changes the route takes off.
     'itinerary_confirmed',
     // Its twin for the day-of contact: a trip nobody needs to be called on is
@@ -473,8 +471,9 @@
     // what the Route tab edits on a leg's pickup, drop-off and return rows.
     'trip_stops(id,position,leg,type,label,name,address,lat,lng,mapbox_id,depart_prev,arrive,spot,'
       + 'depart_prev_date,arrive_date,spot_date,miles,drive,miles_source,drive_source,dwell_status)',
-    // What was said to the customer, for the bar's follow-up mark and its card.
-    'trip_updates(id,created_at,actor_id,actor_name,body,kind,edited_at)',
+    // What was said to the customer, for the bar's follow-up mark and its card,
+    // with the one update pinned to the card's top.
+    'trip_updates(id,created_at,actor_id,actor_name,body,kind,edited_at,pinned_at)',
   ].join(',');
 
   /* A hung connection never rejects, so a request races this timeout and the
@@ -4097,54 +4096,6 @@
     return item;
   }
 
-  /* Notes grows to fit its text from one row, so a long note is read whole
-     rather than scrolled inside the box, and its handle drags it taller, a
-     height it then keeps as its least. The height is measured, so it is set
-     on every edit and whenever the box's width changes, which covers the tab
-     opening from hidden and the text rewrapping; a drag changes only the
-     height, so it is left alone. The panel's scroll is kept, because the box
-     collapses for a moment while it is measured. */
-  const fitNotes = (ta, edited) => {
-    if (!ta.clientWidth) return;
-    if (!edited && ta.dataset.fitWidth === String(ta.clientWidth)) return;
-    ta.dataset.fitWidth = String(ta.clientWidth);
-    const body = ta.closest('#scheduler-panel-body');
-    const top = body?.scrollTop;
-    ta.style.blockSize = 'auto';
-    const fit = ta.scrollHeight + ta.offsetHeight - ta.clientHeight;
-    const height = Math.max(fit, Number(ta.dataset.dragged) || 0);
-    ta.style.blockSize = `${height}px`;
-    ta.dataset.fitHeight = String(height);
-    if (body) body.scrollTop = top;
-  };
-  // One observer for the one Notes box: a rebuilt panel's old box is let go
-  // before the new one is watched.
-  const notesObserver = new ResizeObserver(([entry]) => fitNotes(entry.target));
-
-  function notesField(id, label, value) {
-    const item = el('div', 'rux--form-item');
-    const lw = el('div', 'rux--text-area__label-wrapper');
-    const lab = el('label', 'rux--label', label);
-    lab.setAttribute('for', id);
-    lw.appendChild(lab);
-    const wrap = el('div', 'rux--text-area__wrapper');
-    const ta = el('textarea', 'rux--text-area');
-    ta.id = id;
-    ta.rows = 1;
-    ta.value = value ?? '';
-    ta.addEventListener('input', () => fitNotes(ta, true));
-    // A height the handle leaves that the fitting did not set is the person's.
-    ta.addEventListener('pointerup', () => {
-      if (ta.dataset.fitHeight && ta.offsetHeight !== Number(ta.dataset.fitHeight)) ta.dataset.dragged = String(ta.offsetHeight);
-    });
-    notesObserver.disconnect();
-    notesObserver.observe(ta);
-    wrap.append(ta, el('span', 'rux--text-area__counter-alert'));
-    wrap.lastChild.setAttribute('role', 'alert');
-    item.append(lw, wrap);
-    return item;
-  }
-
   /* ── Updates ── What was said to or heard from the customer, newest first,
      each stamped with who wrote it and when. Add update writes straight to
      `trip_updates` without saving the trip, so an update never waits on the
@@ -4152,7 +4103,7 @@
      saved. A `nothing` row marks a skipped prompt and is not drawn; an
      `imported` row was copied out of the old notes, so it has a date and no
      time. An update whose words were changed says so. */
-  const UPDATE_COLUMNS = 'id,created_at,actor_id,actor_name,body,kind,edited_at';
+  const UPDATE_COLUMNS = 'id,created_at,actor_id,actor_name,body,kind,edited_at,pinned_at';
   function updateStamp(u) {
     const at = new Date(u.created_at);
     const opts = { month: 'short', day: 'numeric' };
@@ -4175,12 +4126,14 @@
     return [when, u.edited_at ? 'edited' : null].filter(Boolean).join(' · ');
   }
 
-  /* The Updates window's list: the trip's updates, newest first, each a tile
-     of its author's face beside its words over its day, the full stamp the
-     day's tooltip. Pressing a tile turns its words into a box with Delete,
-     Cancel and Save; Delete then asks on the tile before it goes. Either
-     writes at once, and the board reads it. It is read fresh each time the
-     window opens, for the trip `logTrip` names. */
+  /* The Updates window's list: the trip's updates, the pinned one first and
+     the rest newest first, each a tile of its author's face beside its words
+     over its day, the full stamp the day's tooltip, and Pinned beside the
+     pinned one's day. Pressing a tile turns its words into a box with Pin or
+     Unpin, Delete, Cancel and Save; Delete then asks on the tile before it
+     goes. Each writes at once, and the board reads it. Pinning one unpins
+     the trip's other, in the database. It is read fresh each time the window
+     opens, for the trip `logTrip` names. */
   const logEl = document.getElementById('scheduler-updates-log');
   const logStatus = document.getElementById('scheduler-updates-status');
   let logTrip = null;
@@ -4205,6 +4158,25 @@
       drawLog();
     }
   }
+  /* Pins or unpins one update. The database lets the trip's other pin go, so
+     every other row here is unpinned to match. */
+  async function pinLogged(u, on) {
+    try {
+      const { data, error: failed } = await withTimeout(client.from('trip_updates')
+        .update({ pinned_at: on ? new Date().toISOString() : null })
+        .eq('id', u.id).select(UPDATE_COLUMNS).single().then(r => r));
+      if (failed) throw new Error(failed.message);
+      logRows = logRows.map(r => (r.id === u.id ? data : on ? { ...r, pinned_at: null } : r));
+      logChanging = null;
+      drawLog();
+      show();
+    } catch (err) {
+      const fail = on ? 'The update was not pinned.' : 'The update was not unpinned.';
+      console.warn(fail, err);
+      toast('error', fail, String(err?.message ?? err));
+      drawLog();
+    }
+  }
   function logItem(u) {
     const li = el('li');
     const text = el('span', 'scheduler-updates__text');
@@ -4215,7 +4187,8 @@
     tile.append(face, text);
     li.appendChild(tile);
     const words = () => {
-      const day = el('span', 'rux--type-label-01 scheduler-updates__meta', updateDay(u));
+      const day = el('span', 'rux--type-label-01 scheduler-updates__meta',
+        [u.pinned_at ? 'Pinned' : null, updateDay(u)].filter(Boolean).join(' · '));
       day.title = updateStamp(u);
       text.append(el('span', 'rux--type-body-compact-01 scheduler-updates__body', u.body), day);
     };
@@ -4226,7 +4199,9 @@
       edit.setAttribute('aria-label', 'Update');
       const wrapEdit = el('div', 'rux--text-area__wrapper');
       wrapEdit.appendChild(edit);
-      const drop = smallBtn('rux--btn--danger--ghost scheduler-updates__ask', 'Delete');
+      const pin = smallBtn('rux--btn--ghost scheduler-updates__ask', u.pinned_at ? 'Unpin' : 'Pin');
+      pin.addEventListener('click', () => { pin.disabled = true; pinLogged(u, !u.pinned_at); });
+      const drop = smallBtn('rux--btn--danger--ghost', 'Delete');
       const cancel = smallBtn('rux--btn--ghost', 'Cancel');
       const keep = smallBtn('rux--btn--tertiary', 'Save');
       drop.addEventListener('click', () => { logChanging = { id: u.id, mode: 'delete' }; drawLog(); });
@@ -4239,7 +4214,7 @@
           .eq('id', u.id).select(UPDATE_COLUMNS).single(), 'The update was not changed.');
       });
       const actions = el('div', 'scheduler-updates__actions');
-      actions.append(drop, cancel, keep);
+      actions.append(pin, drop, cancel, keep);
       text.append(wrapEdit, actions);
       requestAnimationFrame(() => { edit.focus(); edit.setSelectionRange(edit.value.length, edit.value.length); });
       return li;
@@ -4266,7 +4241,8 @@
   }
   function drawLog() {
     if (!logEl) return;
-    logEl.replaceChildren(...logRows.filter(u => u.kind !== 'nothing').map(logItem));
+    logEl.replaceChildren(...logRows.filter(u => u.kind !== 'nothing')
+      .sort((x, y) => !!y.pinned_at - !!x.pinned_at).map(logItem));
     logStatus.hidden = logEl.childElementCount > 0;
     logStatus.textContent = 'No updates yet.';
   }
@@ -4456,7 +4432,6 @@
       { key: `hotel_booked_${l}`, get: () => !!editing?.hotel?.[l]?.booked },
       { key: `hotel_itinerary_number_${l}`, get: () => editing?.hotel?.[l]?.ref ?? null },
     ]),
-    { key: 'notes', get: f => f['scheduler-f-notes'].value.trim() || null },
     /* Billing. Money goes to the column as a number or null, never NaN, which
        Postgres rejects with an error that does not name the field. The two
        statuses are text columns holding "Pending"/"Signed" and
@@ -4962,13 +4937,15 @@
      has been quiet, and whether it asks. */
   const { set: setFollowUp, waitsOf, updatesOf, quietSince, asks: asksFollowUp, due: dueFollowUp, daysToGo,
     agoShort, WORDS: WAIT_WORDS } = window.SchedulerFollowUp;
+  // The one update pinned to the top of the trip's card, or null.
+  const pinnedOf = trip => updatesOf(trip).find(u => u.pinned_at) ?? null;
   const { checklist: tripChecklist, leftOf: checklistLeft, GROUPS: CHECK_GROUPS } = window.SchedulerChecklist;
 
   let editing = null;   // { id, before: {...} }
 
   function readForm() {
     const f = {};
-    for (const id of ['destination', 'customer', 'type', 'notes',
+    for (const id of ['destination', 'customer', 'type',
                       // Every id `EDITS` reads through `f` is listed, and only
                       // ids on the panel: a missing element returns null.
                       'start', 'end', 'rstart', 'rend',
@@ -6777,7 +6754,6 @@
       hotel_booked_return: !!trip.hotel_booked_return,
       hotel_itinerary_number_outbound: trip.hotel_itinerary_number_outbound ?? null,
       hotel_itinerary_number_return: trip.hotel_itinerary_number_return ?? null,
-      notes: trip.notes ?? null,
       start_date: trip.start_date ?? null,
       end_date: trip.end_date ?? trip.start_date ?? null,
       return_start_date: trip.return_start_date ?? null,
@@ -6943,7 +6919,6 @@
         ]),
       ),
       colorBox,
-      notesField('scheduler-f-notes', 'Notes', trip.notes),
     );
     panelDetails.appendChild(section('Trip information', topFields));
 
@@ -9175,7 +9150,7 @@
     if (barShortcuts.previousElementSibling !== bar) bar.after(barShortcuts);
     // A card that comes to a trip afresh starts compact, its note and updates
     // closed, however they were left the last time it showed.
-    if (barKey(bar) !== poppedFor) { noteOpenFor = null; updatesOpenFor = null; }
+    if (barKey(bar) !== poppedFor) updatesOpenFor = null;
     drawShortcuts(bar);
     // And with its slot, when the slots are drawn again for another trip.
     if (contactsOpen && !contactsOpen.slot.isConnected) closeContacts(false);
@@ -9199,7 +9174,6 @@
        the placing below applies to a bar that is not pointing at anything. */
     const docked = pageEl?.getAttribute('data-board') === 'compact';
     barShortcuts.toggleAttribute('data-docked', docked);
-    fitNote();
     fitUpdates();
     if (docked) {
       drawDockedTrip(bar);
@@ -12581,35 +12555,8 @@
     for (const crew of head.querySelectorAll('.scheduler-bar__crew')) fitCrew(crew);
   }
 
-  /* A trip's note shows one line on the floating card and on the docked
-     sheet, and ends in an ellipsis; a press on a longer one opens it
-     whole and a second press closes it. The trip it is open for is kept, so a
-     redraw of the same card keeps it open, until the card leaves the trip. */
-  let noteOpenFor = null;
-  // The trip whose card shows all its updates, kept the same way.
+  // The trip whose card shows all its updates, kept until the card leaves it.
   let updatesOpenFor = null;
-  function fitNote() {
-    const note = barShortcuts.querySelector('.scheduler-card__note');
-    const words = note?.querySelector('.scheduler-card__note-words');
-    if (!words) return;
-    const tripId = note.closest('.scheduler-card')?.dataset.tripId;
-    const open = !!tripId && tripId === noteOpenFor;
-    note.toggleAttribute('data-open', open);
-    const long = open || words.scrollHeight > words.clientHeight + 1;
-    if (long) {
-      note.setAttribute('role', 'button');
-      note.tabIndex = 0;
-      note.setAttribute('aria-expanded', String(open));
-    } else {
-      note.removeAttribute('role');
-      note.removeAttribute('tabindex');
-      note.removeAttribute('aria-expanded');
-    }
-  }
-  function toggleNote(note) {
-    noteOpenFor = note.hasAttribute('data-open') ? null : note.closest('.scheduler-card')?.dataset.tripId ?? null;
-    placeBarOpen();
-  }
   barShortcuts?.addEventListener('keydown', e => {
     // A button inside the row presses itself.
     if ((e.key !== 'Enter' && e.key !== ' ') || e.target.closest?.('button')) return;
@@ -12617,12 +12564,7 @@
     if (words) {
       e.preventDefault();
       toggleUpdates(words.closest('.scheduler-card')?.dataset.tripId ?? null, true);
-      return;
     }
-    const note = e.target.closest?.('.scheduler-card__note[role="button"]');
-    if (!note) return;
-    e.preventDefault();
-    toggleNote(note);
   });
 
   let shortcutsDrawn = '';
@@ -13012,7 +12954,7 @@
   /* The trip's day-of contact: the first of the five slots that holds anyone,
      or null. The card says when there is none. */
   const dayOfContact = trip => [1, 2, 3, 4, 5].map(n => tripContact(trip, n)).find(Boolean) ?? null;
-  const cardKey = trip => (trip ? JSON.stringify([trip.notes, asksFollowUp(trip), waitsOf(trip), dayOfContact(trip),
+  const cardKey = trip => (trip ? JSON.stringify([pinnedOf(trip)?.id ?? null, asksFollowUp(trip), waitsOf(trip), dayOfContact(trip),
     !!trip.contact_not_needed, updatesOpenFor === trip.id,
     (trip.trip_updates || []).map(u => u.id).sort(), agoShort(quietSince(trip) || Date.now())]) : '');
   /* How long ago an update was written, always a number: minutes in the
@@ -13101,47 +13043,41 @@
       band.append(svgUse('#m-notifications-fill', '16', '0 0 32 32'), el('strong', null, TODO_WORDS[n.id] ?? n.label));
       card.appendChild(band);
     }
-    /* THE NOTE AND THE UPDATES EACH HAVE A TITLE with the part's button at its
-       end, then one line of what they hold until pressed open. A part with
-       nothing in it is its title alone, which says so.
-
-       The note: Trip notes and Edit over a pin and its words, the pin in the
-       column an update's face stands in, so the note's words and an update's
-       start at one edge, and how long ago it last changed at the right, in
-       the column the updates' ages stand in; or No notes and Add. A note the
-       database has no date for shows no age. */
-    const note = row('scheduler-card__note');
-    note.appendChild(trip.notes ? cardTitle('Trip notes', cardAction('note', 'Edit', 'Edit the note'))
-      : cardTitle('No notes', cardAction('note', 'Add', 'Add a note')));
-    if (trip.notes) {
-      note.append(svgUse('#m-keep-fill', '16', '0 0 32 32'), el('span', 'scheduler-card__note-words', trip.notes));
-      if (trip.notes_updated_at) {
-        const when = el('span', 'scheduler-card__when', ageShort(trip.notes_updated_at));
-        when.title = new Date(trip.notes_updated_at).toLocaleString();
-        note.appendChild(when);
-      }
-    }
-    card.appendChild(note);
-    /* The updates: Updates with their count, "Updates · 5", so the one line
-       shown says how many more a press opens, and Add, over the newest, cut
-       to one line; a press
-       on it opens the card to every update in full, newest first, and a
-       second press closes it. A lone update that fits its line has nothing
-       more to show, which fitUpdates works out once it is drawn. With none,
-       No updates and Add. */
+    /* THE UPDATES: Updates with their count, "Updates · 5", and Add, over
+       two lines: the pinned update, then the newest of the rest, each cut to
+       one line. A press on either opens the card to every update in full,
+       the pinned one first and the rest newest first, and a second press
+       closes it. Two updates that fit their lines have nothing more to show,
+       which fitUpdates works out once they are drawn. With none, No updates
+       and Add. */
     const all = updatesOf(trip);
+    const pinned = pinnedOf(trip);
+    const rest = all.filter(u => u !== pinned);
     const open = all.length > 0 && updatesOpenFor === trip.id;
+    const shown = [...(pinned ? [pinned] : []), ...(open ? rest : rest.slice(0, 1))];
     const part = row('scheduler-card__updates');
     part.dataset.count = String(all.length);
+    part.dataset.shown = String(shown.length);
     part.toggleAttribute('data-open', open);
     const add = cardAction('update', 'Add', 'Add an update');
     /* An update is its author's 16px avatar, its words, and on its first
        line's end how long ago, always as a number, so every update's age
-       stands in one column. The name is the avatar's tooltip and accessible
+       stands in one column. The pinned update has a pin where the avatar
+       stands. The name is the avatar's or the pin's tooltip and accessible
        name, and the full date the age's tooltip. */
-    const updateItem = (u, n) => {
+    const updateItem = u => {
       const item = el('li', 'scheduler-card__update');
-      const face = updateFace(u, 'sm');
+      let face;
+      if (u === pinned) {
+        item.dataset.pinned = '';
+        face = svgUse('#m-keep-fill', '16', '0 0 32 32');
+        const who = `Pinned · ${updateStamp(u)}`;
+        face.setAttribute('role', 'img');
+        face.setAttribute('aria-label', who);
+        face.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'title')).textContent = who;
+      } else {
+        face = updateFace(u, 'sm');
+      }
       face.classList.add('scheduler-card__face');
       const when = el('span', 'scheduler-card__when', ageShort(u.created_at));
       when.title = updateStamp(u);
@@ -13151,8 +13087,8 @@
     part.appendChild(cardTitle(all.length ? `Updates · ${all.length}` : 'No updates', add));
     if (all.length) {
       const list = el('ol', 'scheduler-card__update-list');
-      list.setAttribute('aria-label', 'Updates, newest first');
-      list.append(...(open ? all : all.slice(0, 1)).map(updateItem));
+      list.setAttribute('aria-label', pinned ? 'Updates, the pinned one first, then newest first' : 'Updates, newest first');
+      list.append(...shown.map(updateItem));
       part.appendChild(list);
     }
     card.appendChild(part);
@@ -13165,21 +13101,23 @@
   function fitUpdates() {
     const part = barShortcuts?.querySelector('.scheduler-card__updates');
     if (!part) return;
-    const words = part.querySelector('.scheduler-card__update .scheduler-card__words');
-    const more = part.hasAttribute('data-open') || Number(part.dataset.count) > 1
-      || (!!words && words.scrollHeight > words.clientHeight + 1);
+    const words = [...part.querySelectorAll('.scheduler-card__update .scheduler-card__words')];
+    const more = part.hasAttribute('data-open') || Number(part.dataset.count) > Number(part.dataset.shown)
+      || words.some(w => w.scrollHeight > w.clientHeight + 1);
     part.toggleAttribute('data-more', more);
     /* The first update's words are the keyboard's way to open and close the
        rest, a button only while there is more to show. */
-    if (words && more) {
-      words.setAttribute('role', 'button');
-      words.tabIndex = 0;
-      words.setAttribute('aria-expanded', String(part.hasAttribute('data-open')));
-    } else if (words) {
-      words.removeAttribute('role');
-      words.removeAttribute('tabindex');
-      words.removeAttribute('aria-expanded');
-    }
+    words.forEach((w, n) => {
+      if (n === 0 && more) {
+        w.setAttribute('role', 'button');
+        w.tabIndex = 0;
+        w.setAttribute('aria-expanded', String(part.hasAttribute('data-open')));
+      } else {
+        w.removeAttribute('role');
+        w.removeAttribute('tabindex');
+        w.removeAttribute('aria-expanded');
+      }
+    });
   }
   function toggleUpdates(tripId, refocus) {
     updatesOpenFor = updatesOpenFor === tripId ? null : tripId;
@@ -13192,81 +13130,12 @@
     if (bar) openUpdatesWindow(panelIndex.trips.get(bar.dataset.tripId));
   }
 
-  /* THE NOTE WINDOW: the trip's note in a box with Cancel and Save, from the
-     card's Edit or Add. Save writes the one column at once, as a colour does,
-     and records it in the trip's history; an emptied box clears the note. */
-  const noteModal = document.getElementById('scheduler-note-modal');
-  const noteText = document.getElementById('scheduler-note-text');
-  const noteSave = document.getElementById('scheduler-note-save');
-  const noteError = document.getElementById('scheduler-note-error');
-  let noteTrip = null;
-  const noteNow = () => noteText.value.trim() || null;
-  function openNoteWindow(trip) {
-    if (!noteModal || !trip) return;
-    noteTrip = trip;
-    document.getElementById('scheduler-note-trip').textContent = tripName(trip);
-    noteText.value = trip.notes ?? '';
-    noteError.hidden = true;
-    noteSave.disabled = true;
-    window.Rux?.modal?.open?.(noteModal);
-    noteText.focus();
-    noteText.setSelectionRange(noteText.value.length, noteText.value.length);
-  }
-  noteText?.addEventListener('input', () => {
-    noteSave.disabled = noteNow() === (noteTrip?.notes?.trim() || null);
-  });
-  // Cmd or Ctrl with Enter saves, as in the Updates window.
-  noteText?.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && !noteSave.disabled) { e.preventDefault(); noteSave.click(); }
-  });
-  noteSave?.addEventListener('click', async () => {
-    const trip = noteTrip;
-    if (!trip) return;
-    const was = trip.notes ?? null;
-    const now = noteNow();
-    noteSave.disabled = true;
-    noteError.hidden = true;
-    try {
-      const { error } = await withTimeout(client.from('trips').update({ notes: now }).eq('id', trip.id).then(r => r));
-      if (error) throw new Error(error.message);
-      recordFieldChange(trip.id, 'notes', was, now);
-      noteTrip = null;
-      window.Rux?.modal?.close?.(noteModal);
-      await show();
-      toast('success', now ? 'Note saved' : 'Note cleared');
-    } catch (err) {
-      console.warn('The note was not saved:', err);
-      noteError.textContent = 'The note was not saved. Try again.';
-      noteError.hidden = false;
-      noteSave.disabled = false;
-    }
-  });
-  noteModal?.addEventListener('rux:modal-closed', () => { noteTrip = null; });
-
-  /* The card's Edit or Add opens the note window. A trip already in the
-     editor, from another of its bars, goes to the editor's note on Details
-     instead, so an edit in progress is kept and its save does not meet a note
-     changed under it. */
-  function editNoteFromCard() {
-    const bar = selectedBar();
-    if (!bar?.dataset.tripId) return;
-    const toNotes = () => {
-      const tab = document.getElementById('scheduler-tab-details');
-      if (tab) window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
-      const notes = document.getElementById('scheduler-f-notes');
-      notes?.focus();
-      notes?.setSelectionRange?.(notes.value.length, notes.value.length);
-    };
-    if (isEditorTrip(bar)) { toNotes(); return; }
-    openNoteWindow(panelIndex.trips.get(bar.dataset.tripId));
-  }
-
   // A slot acts on the bar it shows, and a disabled one does nothing.
   barShortcuts?.addEventListener('click', e => {
     // A part's button first, since Add sits inside the update it opens.
     const action = e.target.closest('.scheduler-card__action');
     if (action) {
-      if (action.dataset.cardAction === 'note') editNoteFromCard(); else openUpdatesFromCard();
+      openUpdatesFromCard();
       return;
     }
     // An update with more to show opens or closes the rest.
@@ -13275,8 +13144,6 @@
       toggleUpdates(more.closest('.scheduler-card')?.dataset.tripId ?? null, false);
       return;
     }
-    const note = e.target.closest('.scheduler-card__note[role="button"]');
-    if (note) { toggleNote(note); return; }
     // The docked sheet's trip is the whole bar written out, and a tap on it
     // opens the trip as the Open slot does; its phone number dials instead.
     if (e.target.closest('.scheduler-bar-shortcuts__trip') && !e.target.closest('a')) { openSelected(); return; }
@@ -14309,7 +14176,6 @@
   const DRAFT_CONTROLS = {
     destination: { id: 'scheduler-f-destination', kind: 'text' },
     customer: { id: 'scheduler-f-customer', kind: 'text' },
-    notes: { id: 'scheduler-f-notes', kind: 'text' },
     start_date: { id: 'scheduler-f-start', kind: 'date' },
     end_date: { id: 'scheduler-f-end', kind: 'date' },
     return_start_date: { id: 'scheduler-f-rstart', kind: 'date' },

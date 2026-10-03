@@ -228,8 +228,9 @@ surface a step lighter than the board inside a hairline, so it stands off the
 week on a dark theme as well as a light one. It is sized to the week: two
 days wide and between two and three buses tall, 16px inside the cells it
 covers, centred on the trip, so it covers about half the trips above and below
-it. Each slot carries its word under its icon, the four in one 40px row, and
-every other row of the card is 24px. When the card opens above the
+it. Each slot carries its word under its icon, the four in one 40px row; each
+warning is a 24px row, and the updates are in 14px type, 16px apart and 16px
+in from the card's sides, as a Carbon popover's content is. When the card opens above the
 trip the slots come last, next to it. The card opens with its warnings in one
 band: a bus that does not fit, the follow-up reminder, Trip contact missing,
 and each need still to do, Hotel booking pending or HOS form pending, each a

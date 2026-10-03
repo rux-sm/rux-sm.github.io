@@ -1116,7 +1116,7 @@ button.scheduler-row-head__num::after {
 :is(.scheduler-card__asks, .scheduler-card__warn) > strong { min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
 /* A due reminder names the day it leaves at the row's end, quieter than the
    alerts it times. */
-.scheduler-card__asks-when { flex: none; color: var(--rux-text-secondary); }
+.scheduler-card__asks-when { flex: none; white-space: nowrap; color: var(--rux-text-secondary); }
 /* A part's Edit or Add: a word in the link colour, 24px high for the
    pointer, its padding taken back at the row's end and above and below, so
    its word lines up with the card's right edge and the title keeps its
@@ -1229,6 +1229,25 @@ button.scheduler-row-head__num::after {
    the updates' and the count says how many a press opens. */
 .scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__title { margin-block-end: var(--rux-spacing-03); }
 .scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__title:last-child { margin-block-end: 0; }
+/* Floating, the card has the room to read by: 16px in from its sides, as a
+   Carbon popover is, and the updates in Carbon's 14px reading size on an
+   18px line, 16px apart, under a title with 16px above it. The warnings keep
+   their 24px rows and start their words where the updates do. The face, the
+   pin and the age sit on the first line. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__row { padding-inline: var(--rux-spacing-05); }
+/* A warning keeps its words on one line beside when the trip leaves, so its
+   band takes back 8px on the right, where nothing lines up with it. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) {
+  padding-inline: calc(var(--rux-spacing-05) - 3px) var(--rux-spacing-03);
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates { padding-block: var(--rux-spacing-05); }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list { gap: var(--rux-spacing-05); }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__words {
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update > :is(.scheduler-card__face, .scheduler-card__when) { margin-block-start: 1px; }
 /* IT ARRIVES WITH A SMALL POP: rising 6px from the arrow's side and growing
    from 94%, on Carbon's expressive entrance curve over its moderate-02
    duration, each row following 40ms after the one above it. Reduced motion

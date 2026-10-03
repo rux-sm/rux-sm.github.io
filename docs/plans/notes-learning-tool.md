@@ -70,19 +70,36 @@ scenario to be complete, and where a new area of LN must be easy to add.
 
 ### Questions on a tile
 
-- **Every decision on a route is asked as a question, in the tile where it
-  comes up**, such as "Does on-hand cover it?" after the stock is read.
+- **A scenario is the simplest way through, and every other possibility hangs
+  off the tile where it turns.** The line shows one path; the questions on its
+  tiles reach all the rest.
+
+- **Every question that can come up is asked on the tile where it comes up.**
+  There are five kinds, and atlas holds each today in a different shape:
+
+  | Kind | Example | Where atlas holds it |
+  | :--- | :--- | :--- |
+  | A decision | Does on-hand cover it? | the map's decisions and branches |
+  | Something went wrong | The status is stuck on Free | a walkthrough's troubleshooting rows |
+  | A different case | Shipping less than ordered | a walkthrough's variants, and the side tasks under a step |
+  | A setting | Is the date inside the order horizon? | the configuration and screen files |
+  | What next | The order is shipped, now what? | a walkthrough's next-walkthrough rows |
 
 - **A question offers every answer the reader could have.** Each outcome opens
-  the next tile on its branch. "I don't know" opens the screen where the answer
-  is read and returns to the same question. Where a setting decides the
-  outcome, "Check or change it" opens the screen that holds the setting.
+  where it leads: the next tile, a tile on another branch, another scenario, or
+  the fix. "I don't know" opens the screen where the answer is read and returns
+  to the same question. Where a setting decides the outcome, "Check or change
+  it" opens the screen that holds the setting.
 
-- **A question about a setting says so**, as "Is the delivery date inside the
-  order horizon?" offers the item's planning data, where the horizon is set.
+- **Questions stay closed until wanted.** An open tile lists them by name under
+  its steps, and one opens at a time, so a tile with many stays short.
 
-- **The question, its answers and both screens come from atlas**, stated on the
-  decision itself. A decision missing a part shows the parts it has.
+- **An answer that leads somewhere atlas has not written says so plainly**, and
+  offers nothing to do about it.
+
+- **Atlas states every question one way:** the task it comes up in, the
+  question, its answers, and where each answer leads. The five shapes above
+  are rewritten into it, so a question is found in one place.
 
 - **An answer moves the reader and saves nothing.** The chosen branch is in the
   address, like the open tile.
@@ -139,9 +156,9 @@ scenario to be complete, and where a new area of LN must be easy to add.
   draws atlas's export as it stands: what leads to what, the branches, the
   setup, and what the export does not yet say.
 
-- **Three things are written into atlas before the build:** each scenario's
-  route, the setup each scenario needs, and the setting that decides each
-  branch. A setting nobody can name yet is recorded as unknown, not left out.
+- **Four things are written into atlas before the build:** each scenario's
+  route, the setup each scenario needs, the setting that decides each branch,
+  and every question on the tile where it comes up. A setting nobody can name yet is recorded as unknown, not left out.
 
 - **A decision is recorded in three parts:** the setting that switches it on,
   the tile where the check runs, and the screen where its figure is read.
@@ -238,6 +255,11 @@ scenario to be complete, and where a new area of LN must be easy to add.
 - [ ] In atlas, give each decision on the map its question, its answers, the
       screen where the answer is read and the screen where its setting is
       changed.
+- [ ] In atlas, set the one shape for a question in `standards/`, with its
+      check, and rewrite Ship from stock's troubleshooting rows, variants,
+      conditional steps and next-walkthrough rows into it, each on its task.
+- [ ] Add to `notes/specimen-map.html` every question the export holds, listed
+      under the tile it comes up on, and the ones that have no tile yet.
 - [ ] In atlas, write available to promise and capable to promise as a concept
       of their own, moved out of the item order plan's screen file, and name
       it on the map's stock-promise tile in the three parts above.
@@ -258,9 +280,10 @@ scenario to be complete, and where a new area of LN must be easy to add.
       new pages need.
 - [ ] Rewrite `notes/docs/diagram.md` for the one-look map and delete
       `notes/docs/owner-tools.md`.
-- [ ] In atlas, state the route and the setup of each other scenario and write
-      the purpose line of each screen it names, one scenario at a time, until
-      the build accepts all eight.
+- [ ] In atlas, state the route and the setup of each other scenario, rewrite
+      its questions into the one shape, and write the purpose line of each
+      screen it names, one scenario at a time, until the build accepts all
+      eight.
 - [ ] In atlas, replace the map tiles' lists of phases with the routes, and
       correct `standards/export-json.md` to match.
 - [ ] In atlas, stop exporting reviews, summaries and experiments.

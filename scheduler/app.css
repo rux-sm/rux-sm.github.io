@@ -1277,7 +1277,54 @@ button.scheduler-row-head__num::after {
   cursor: pointer;
 }
 .scheduler-bar-shortcuts[data-card] .scheduler-card__update[data-update-id]:hover { background: var(--card-hover); }
-.scheduler-bar-shortcuts[data-card] .scheduler-card__update[data-update-id]:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
+/* The press is a button laid over the whole row, under the pin, with the
+   row's ring when a key reaches it. */
+.scheduler-bar-shortcuts[data-card] .scheduler-card__update[data-update-id] { position: relative; }
+.scheduler-card__open {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  cursor: pointer;
+}
+.scheduler-card__open:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
+/* THE PIN: a 24px button at the row's end that pins the update, or unpins
+   the pinned one, in the link colour while it is pinned. Floating, it stands
+   over the age while the row is hovered or holds focus, so the ages keep
+   their one column; docked, where a thumb has no hover, it always shows
+   after the age. */
+.scheduler-card__pin {
+  position: relative;
+  z-index: 2;
+  grid-row: 1;
+  grid-column: 3;
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--rux-layout-size-height-xs);
+  block-size: var(--rux-layout-size-height-xs);
+  margin-block: calc((1.125rem - var(--rux-layout-size-height-xs)) / 2);
+  padding: 0;
+  border: 0;
+  border-radius: var(--scheduler-shortcut-radius, 0);
+  background: none;
+  color: color-mix(in srgb, var(--card-ink) 70%, transparent);
+  cursor: pointer;
+}
+/* The age keeps its cell on the first line, which the pin shares. */
+.scheduler-card__update > .scheduler-card__when { grid-row: 1; grid-column: 3; }
+.scheduler-card__pin > svg { inline-size: 1rem; block-size: 1rem; fill: currentColor; }
+.scheduler-card__pin:hover { color: var(--card-ink); background: var(--card-hover); }
+.scheduler-card__pin[aria-pressed="true"] { color: var(--rux-link-primary); }
+.scheduler-card__pin:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update:not(:hover, :focus-within) > .scheduler-card__pin { visibility: hidden; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update:is(:hover, :focus-within) > .scheduler-card__when { visibility: hidden; }
+.scheduler-bar-shortcuts[data-card][data-docked] .scheduler-card__update { grid-template-columns: 1rem minmax(0, 1fr) auto auto; }
+.scheduler-bar-shortcuts[data-card][data-docked] .scheduler-card__pin { grid-column: 4; }
 .scheduler-bar-shortcuts[data-card] .scheduler-card__words {
   font-size: var(--rux-body-compact-01-font-size);
   line-height: var(--rux-body-compact-01-line-height);

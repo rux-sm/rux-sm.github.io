@@ -238,7 +238,8 @@ rows on the card's own surface with no tint: a bus that does not fit behind a
 red bell, then the follow-up reminder, Trip contact missing, and each need
 still to do, Hotel booking pending or HOS form pending, each a line of its own
 in bold behind the bar's yellow bell. A warning is a press that goes to its
-fix: the Itinerary slot, Forms, or the editor on Buses, Details or Billing.
+fix: the Itinerary slot, Forms, or the editor on Buses, Details or Billing
+with the cursor in the field it names.
 No warning has a dismiss; each stays until it is put right. Needs that are
 met are not shown.
 Then the updates: their title, Updates with their count (Updates · 5) and
@@ -247,7 +248,8 @@ full, the pinned one first, led by a pin where an update's avatar stands, and
 the rest newest first, each with its age at the right, always a number (45m,
 2h, 3d), scrolling past the card's height and fading at its foot while there
 is more below; a line from the old notes, with no author, shows a note icon. An update is a press, lit on
-hover, that opens it in the Updates window ready to change, pin or delete.
+hover, that opens it in the Updates window ready to change, pin or delete;
+its pin at the row's end, shown over the age on hover, pins or unpins it.
 The docked sheet has the same rows
 and presses but shows two updates, the pinned and the newest, cut to one line;
 a press elsewhere on the section, or its title's arrow, opens every update in

@@ -12600,20 +12600,52 @@
 
   // The trip whose card shows all its updates, kept until the card leaves it.
   let updatesOpenFor = null;
-  // A warning or an update that is a press takes Enter and Space, as a button does.
+  // A warning is a press that takes Enter and Space, as a button does.
   barShortcuts?.addEventListener('keydown', e => {
     if (e.key !== 'Enter' && e.key !== ' ') return;
-    const press = e.target.closest?.('.scheduler-card__update[data-update-id], .scheduler-card__row[data-go]');
+    const press = e.target.closest?.('.scheduler-card__row[data-go]');
     if (!press || e.target !== press) return;
     e.preventDefault();
-    if (press.dataset.go) goToWarning(press.dataset.go);
-    else openUpdatesFromCard(press.dataset.updateId);
+    goToWarning(press.dataset.go, press.dataset.spot);
   });
+  /* Pins or unpins an update from the card, as the Updates window's Pin does;
+     the database lets the trip's other pin go, and the board reads it again.
+     A read draws every bar afresh, unselected, so the trip is selected again
+     and its card comes back with the pin moved. */
+  async function pinFromCard(id, on) {
+    if (!id) return;
+    const bar = selectedBar();
+    const ref = bar ? barRef(bar) : null;
+    try {
+      const { error } = await withTimeout(client.from('trip_updates')
+        .update({ pinned_at: on ? new Date().toISOString() : null }).eq('id', id).then(r => r));
+      if (error) throw new Error(error.message);
+      await show();
+      const again = ref && findBar(ref);
+      if (again) { selectBar(again); syncSelection(); }
+    } catch (err) {
+      const fail = on ? 'The update was not pinned.' : 'The update was not unpinned.';
+      console.warn(fail, err);
+      toast('error', fail, String(err?.message ?? err));
+    }
+  }
+  /* The field a warning's fix starts in, on the tab it opens: the first trip
+     contact, the Contract signed switch an unconfirmed trip waits on, the PO
+     switch, Payments for a balance, the quote lines for a hotel. */
+  const sectionTitled = title => [...document.querySelectorAll('.scheduler-panel-section__title')]
+    .find(h => h.textContent.trim() === title)?.closest('.scheduler-panel-section') ?? null;
+  const WARN_SPOT = {
+    contact: () => document.querySelector('[aria-labelledby="scheduler-f-dgroup"] :is(input, button)'),
+    confirmation: () => document.getElementById('scheduler-f-contract'),
+    po: () => document.getElementById('scheduler-f-poreceived'),
+    balance: () => sectionTitled('Payments')?.querySelector('button, input'),
+    hotel: () => sectionTitled('Quote lines')?.querySelector('button, input'),
+  };
   /* Where a warning is put right. The itinerary slot uploads or opens the
      itinerary as its own press does, Forms opens the trip's forms, and the
      rest open the trip on the tab that holds the fix, asking first about
      unsaved work in another trip. */
-  function goToWarning(go) {
+  function goToWarning(go, spot) {
     const bar = selectedBar();
     if (!bar?.dataset.tripId) return;
     if (go === 'itinerary') { barShortcuts.querySelector('.scheduler-bar-shortcut[data-shortcut="itinerary"]')?.click(); return; }
@@ -12624,6 +12656,13 @@
       openRef(ref);
       const tab = document.getElementById(`scheduler-tab-${go}`);
       if (tab) window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
+      // Once the tab has drawn, its field comes into view with the cursor in it.
+      setTimeout(() => {
+        const field = WARN_SPOT[spot]?.();
+        if (!field) return;
+        field.scrollIntoView({ block: 'center' });
+        field.focus({ preventScroll: true });
+      }, 0);
     });
   }
 
@@ -13096,6 +13135,7 @@
     if (asksFollowUp(trip)) {
       waitsOf(trip).forEach((w, n) => {
         const band = goes(row('scheduler-card__asks'), w === 'itinerary' ? 'itinerary' : 'billing', WAIT_WORDS[w]);
+        band.dataset.spot = w;
         band.append(svgUse('#m-notifications-fill', '16', '0 0 32 32'), el('strong', null, WAIT_WORDS[w]));
         if (n === 0 && dueFollowUp(trip)) {
           const days = daysToGo(trip);
@@ -13110,6 +13150,7 @@
        the top; the Contacts shortcut reaches whoever is named. */
     if (!dayOfContact(trip) && !trip.contact_not_needed) {
       const band = goes(row('scheduler-card__warn'), 'details', 'Trip contact missing');
+      band.dataset.spot = 'contact';
       band.append(svgUse('#m-notifications-fill', '16', '0 0 32 32'), el('strong', null, 'Trip contact missing'));
       card.appendChild(band);
     }
@@ -13120,6 +13161,7 @@
     for (const n of facts?.needs ?? []) {
       if (n.done || n.short) continue;
       const band = goes(row('scheduler-card__warn'), n.id === 'hos' ? 'forms' : 'billing', TODO_WORDS[n.id] ?? n.label);
+      band.dataset.spot = n.id;
       band.append(svgUse('#m-notifications-fill', '16', '0 0 32 32'), el('strong', null, TODO_WORDS[n.id] ?? n.label));
       card.appendChild(band);
     }
@@ -13163,12 +13205,22 @@
       face.classList.add('scheduler-card__face');
       const when = el('span', 'scheduler-card__when', ageShort(u.created_at));
       when.title = updateStamp(u);
-      item.append(face, el('span', 'scheduler-card__words', u.body), when);
-      // An update is a press that opens it in the Updates window.
+      /* An update is a press that opens it in the Updates window: a button
+         laid over the whole row, so a pointer can press anywhere on it and
+         Tab reaches it, with the pin button standing over it rather than
+         inside it, since a button holds no other. */
       item.dataset.updateId = u.id;
-      item.tabIndex = 0;
-      item.setAttribute('role', 'button');
-      item.setAttribute('aria-label', `Edit update: ${u.body}`);
+      const open = el('button', 'scheduler-card__open');
+      open.type = 'button';
+      open.setAttribute('aria-label', `Edit update: ${u.body}`);
+      const pin = el('button', 'scheduler-card__pin');
+      pin.type = 'button';
+      pin.dataset.pin = u === pinned ? 'off' : 'on';
+      pin.setAttribute('aria-pressed', String(u === pinned));
+      pin.setAttribute('aria-label', u === pinned ? 'Unpin update' : 'Pin update');
+      pin.title = u === pinned ? 'Unpin' : 'Pin';
+      pin.appendChild(svgUse('#m-keep-fill', '16', '0 0 32 32'));
+      item.append(open, face, el('span', 'scheduler-card__words', u.body), when, pin);
       return item;
     };
     /* Docked, with any updates, the title's words are the section's toggle, a
@@ -13239,9 +13291,12 @@
       openUpdatesFromCard();
       return;
     }
+    // An update's pin pins or unpins it in place.
+    const pin = e.target.closest('.scheduler-card__pin');
+    if (pin) { pinFromCard(pin.closest('.scheduler-card__update')?.dataset.updateId, pin.dataset.pin === 'on'); return; }
     // A warning goes where it is put right.
     const warning = e.target.closest('.scheduler-card__row[data-go]');
-    if (warning) { goToWarning(warning.dataset.go); return; }
+    if (warning) { goToWarning(warning.dataset.go, warning.dataset.spot); return; }
     // An update opens in the Updates window, ready to change.
     const update = e.target.closest('.scheduler-card__update[data-update-id]');
     if (update) { openUpdatesFromCard(update.dataset.updateId); return; }

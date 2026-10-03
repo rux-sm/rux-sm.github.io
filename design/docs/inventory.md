@@ -17,15 +17,15 @@ The rules that hold it together:
   DEFER are a commented one. A component with no line can be neither kept nor cut, so
   the check fails on it too.
 - **A component is admitted when a Carbon capture renders it.** DEFER means the
-  capture is missing or does not match the classes `@carbon/styles` ships. CUT gives
-  its own reason in the row.
-- **Cost decides no disposition.** Every component measured adds under 3.5 KB gzipped
+  capture is missing, does not match the classes `@carbon/styles` ships, or has no
+  fragment written from it yet. CUT gives its own reason in the row.
+- **Cost decides no disposition.** Every component measured adds under 5 KB gzipped
   to the shipped set.
 - **An evidence reason can expire.** Nothing re-reads a row's ground when Carbon
   changes, so a CUT row is re-checked when a Carbon upgrade lands.
 
-Four directories are PascalCase — `EditInPlace`, `FullPageError`,
-`InterstitialScreen`, `OptionsTile` — so a name pattern must admit capitals.
+Two directories are PascalCase — `TagOverflow` and `Tearsheet` — so a name
+pattern must admit capitals.
 
 ---
 
@@ -40,14 +40,13 @@ times. `tools/measure.mjs` prices a real subset by compiling it.
 | Foundation only (reset, type, grid, layout, tokens) — 1 theme | 51 KB | **6.6 KB** | — |
 | Foundation only — 2 themes | 71 KB | **7.9 KB** | — |
 | Lean — 22 components, 2 themes | 375 KB | **~39 KB** | see note |
-| **Shipped — 36 components / 39 modules, 2 themes** | 586 KB | **59.4 KB** | 1,237 |
-| Shipped set — 4 themes | 631 KB | **60.2 KB** | 1,237 |
-| Full Carbon — 83 components / 87 modules, 4 themes | 939 KB | **94.0 KB** | 1,862 |
+| **Shipped — 81 components / 84 modules, 4 themes** | 990 KB | **100.8 KB** | 1,927 |
+| Shipped set — 1 theme | 923 KB | **98.5 KB** | 1,927 |
+| Full Carbon — 87 components / 91 modules, 4 themes | 1,009 KB | **102.6 KB** | 1,991 |
 
-> The Shipped and Full Carbon rows were measured on 2026-08-31, before the admissions
-> of 2026-09-01, so the shipped set is now larger than this row. Run
-> `node tools/measure.mjs` for a current figure. The Shipped row matches
-> `css/rux.min.css` apart from the 599-byte attribution banner `build.mjs` prepends.
+> The Shipped and Full Carbon rows are `node tools/measure.mjs` against
+> `@carbon/styles` 1.116.0. The Shipped row matches `css/rux.min.css` apart from the
+> attribution banner `build.mjs` prepends.
 >
 > The Foundation rows are older and understated by roughly the cost of
 > `type.type-classes`; `measure.mjs` has no zero-component mode to re-measure them.
@@ -183,20 +182,26 @@ has one height, 64px, so there are no size variants to demo.
 
 ## Components absorbed from ibm-products
 
-These arrived in `@carbon/styles` 1.114. `data/carbon-react-dom.json` renders none of
-them; their markup comes from the ibm-products captures, and the status indicators'
-from the React preview. Marginal is the cost compiled on top of the shipped set.
+`@carbon/styles` took these in from ibm-products. `data/carbon-react-dom.json` renders
+none of them; their markup comes from the ibm-products captures, and the status
+indicators' from the React preview. ibm-products prefixes its classes `c4p--` and names
+a rewritten component `…__next…`; `tools/lib/capture-names.mjs` maps both to the names
+`@carbon/styles` ships. Marginal is the cost compiled on top of the shipped set.
 
 | Component | Disposition | KB | Classes | Marginal | Reason / evidence |
 |---|---|---|---|---|---|
 | `big-number` | **KEEP** | 4 | 19 | +0.3 KB | an ibm-products capture renders it. The captured `figure`/`figcaption`, second row at `role=math` and value span ship as a fragment; the uncaptured size, percentage, trend, tooltip and skeleton variants are not written |
-| `coachmark` | **DEFER** | 6 | 31 | +0.9 KB | **a class mismatch, not a decision.** The captures render `coachmark__next--*`, `coachmark-beacon` and `coachmark-tagline` from ibm-products 2.97; `@carbon/styles` 1.114 ships `coachmark--*` without the `__next` generation. A fragment would either fail check-classes or match no capture. Admit on the Carbon upgrade that aligns the two |
-| `EditInPlace` | **KEEP** | 3 | 27 | +0.5 KB | four ibm-products captures render it |
-| `FullPageError` | **KEEP** | 2 | 10 | +0.2 KB | three ibm-products captures render it |
-| `InterstitialScreen` | **CUT** | 4 | 21 | +0.4 KB | no template shape, and **incomplete**: it styles `cds--carousel`, and `@carbon/styles` 1.114.0 has no `carousel` component, so part of it can never resolve |
-| `OptionsTile` | **KEEP** | 5 | 37 | +0.6 KB | two ibm-products captures render the expandable and static markup |
+| `coachmark` | **DEFER** | 6 | 31 | +0.9 KB | **no fragment yet.** Five ibm-products captures render `coachmark__next--*`, `coachmark-beacon` and `coachmark-tagline`, and `@carbon/styles` 1.116 ships all three under the plain names, so the captures match. Admit when a fragment is written from them |
+| `edit-in-place` | **KEEP** | 3 | 27 | +0.5 KB | four ibm-products captures render it |
+| `full-page-error` | **KEEP** | 2 | 10 | +0.2 KB | three ibm-products captures render it |
+| `guidebanner` | **KEEP** | 27 | 37 | +4.7 KB | three ibm-products captures render it. Carbon sets its own dark theme on the banner, which is most of its size and means its colours do not follow the page's theme. ibm-products renders the scrolling row with a separate `carousel` block; `@carbon/styles` ships those rules inside this component as `guidebanner__carousel*` and `guidebanner__item`, and the fragment writes the compiled names. **No module**: a static specimen, expanded |
+| `interstitial-screen` | **CUT** | 4 | 21 | +0.4 KB | no template shape, and **incomplete**: it styles `cds--carousel`, and `@carbon/styles` 1.116.0 has no `carousel` component, so part of it can never resolve |
+| `notifications-panel` | **KEEP** | 13 | 60 | +1.3 KB | one ibm-products capture renders it. **No module**: a static specimen, open, in a box that stands in for the viewport Carbon fixes the panel against |
+| `options-tile` | **KEEP** | 5 | 37 | +0.6 KB | two ibm-products captures render the expandable and static markup |
 | `scroll-gradient` | **KEEP** | 2 | 9 | +0.2 KB | two ibm-products captures render the structure |
-| `user-avatar` | **KEEP** | 5 | 28 | +0.5 KB | initials or a photo, four sizes, and twelve `--order-N-*` colours meant to be hashed from a name. The shell's `user--avatar` icon answers "where is my account", not "who is this". **No module.** **Its only captures render `c4p--`**, not `cds--`; five of six captured classes resolve after a prefix swap, and the sixth, `user-avatar__tooltip`, is ibm-products' hover chrome and is declined. The `__photo` family is unexercised, because it needs an `<img>` the sink does not carry. +0.68 KB gzipped |
+| `TagOverflow` | **KEEP** | 4 | 39 | +0.5 KB | eight ibm-products captures render it. The row, the count and its popover ship as a fragment. **No module** measures the row, so the split is written by hand as the story shows it; the "all tags" modal is not written |
+| `Tearsheet` | **KEEP** | 72 | 151 | +2.8 KB | ten ibm-products captures render the rewritten tearsheet. Wide and narrow ship, opened by the modal module; the influencer, tabs, steps and stacking variants are not written. The footer is the captured action set: `@carbon/styles` also ships a `tearsheet__footer-button-set` no capture renders yet |
+| `user-avatar` | **KEEP** | 5 | 28 | +0.5 KB | initials or a photo, four sizes, and twelve `--order-N-*` colours meant to be hashed from a name. The shell's `user--avatar` icon answers "where is my account", not "who is this". **No module.** **Its only captures render `c4p--`**, not `cds--`, and all six captured classes resolve after the prefix swap. `user-avatar__tooltip`, the hover tooltip that names the person, is not written: the sink declines icon tooltips throughout. The `__photo` family is unexercised, because it needs an `<img>` the sink does not carry. +0.68 KB gzipped |
 
 ---
 

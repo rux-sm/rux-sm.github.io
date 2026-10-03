@@ -169,7 +169,7 @@ one. **Its three CONTAINED specimens cannot be marked** — lines 151, 219
   of those three."
 
 <!-- COVERAGE:BEGIN -->
-_68 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 286 candidate regions in the 47 unmarked._
+_72 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 293 candidate regions in the 51 unmarked._
 
 | fragment | components | blocks | candidates | text | variants | behaviour | in the builder |
 |---|---|---|---|---|---|---|---|
@@ -193,11 +193,12 @@ _68 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 2
 | `date-picker` | button, date-picker, form | — | 9 | — | — | date-picker | no |
 | `dialog` | button, dialog | — | 2 | — | — | — | no |
 | `dropdown` | dropdown, form, list-box | — | 8 | — | — | form-controls, list-box | no |
-| `edit-in-place` | EditInPlace, button, popover, text-input, tooltip | — | 3 | — | — | copy-button, form-controls, list-box, popover | no |
+| `edit-in-place` | button, edit-in-place, popover, text-input, tooltip | — | 3 | — | — | copy-button, form-controls, list-box, popover | no |
 | `file-uploader` | file-uploader, form, popover, tooltip | — | 2 | — | — | copy-button, popover | no |
 | `fluid` | checkbox, combo-box, date-picker, dropdown, form, list-box, multiselect, number-input, search, select, text-area, text-input, time-picker | — | 18 | — | — | date-picker, form-controls, list-box | no |
-| `full-page-error` | FullPageError, link | 1 | 1 | 3 | 0 | — | yes |
+| `full-page-error` | full-page-error, link | 1 | 1 | 3 | 0 | — | yes |
 | `grid` | — | — | 5 | — | — | — | no |
+| `guidebanner` | button, guidebanner, link | — | 1 | — | — | — | no |
 | `icon-indicator` | icon-indicator | — | 16 | — | — | — | no |
 | `inline-loading` | inline-loading, loading | — | 3 | — | — | — | no |
 | `links` | link | — | 7 | — | — | — | no |
@@ -209,8 +210,9 @@ _68 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 2
 | `modal` | button, data-table, modal | — | 12 | — | — | data-table, menu, modal, overlay | no |
 | `multiselect` | checkbox, combo-box, form, list-box, multiselect, tag, text-input | — | 3 | — | — | dismiss, form-controls, list-box | no |
 | `notification` | button, notification | 1 | 15 | 2 | 0 | dismiss | yes |
+| `notifications-panel` | button, notifications-panel, toggle | — | 1 | — | — | form-controls | no |
 | `number` | form, number-input | — | 4 | — | — | form-controls | no |
-| `options-tile` | OptionsTile, toggle | 1 | 2 | 3 | 0 | form-controls | yes |
+| `options-tile` | options-tile, toggle | 1 | 2 | 3 | 0 | form-controls | yes |
 | `overflow-menu` | overflow-menu | — | 2 | — | — | menu | no |
 | `pagination` | form, pagination, select | — | 2 | — | — | form-controls | no |
 | `pagination-nav` | button, pagination-nav | 1 | 2 | 11 | 0 | — | yes |
@@ -230,7 +232,9 @@ _68 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 2
 | `structured-list` | structured-list | 2 | 2 | 12 | 0 | form-controls | yes |
 | `table` | button, checkbox, data-table, overflow-menu, radio-button, search, tag | 1 | 6 | 9 | 1 | data-table, dismiss, form-controls, menu, overlay, profile | yes |
 | `tabs` | popover, tabs, tooltip | 1 | 11 | 8 | 0 | copy-button, popover, tabs | yes |
+| `tag-overflow` | TagOverflow, popover, tag | — | 1 | — | — | copy-button, dismiss, popover | no |
 | `tags` | tag | — | 24 | — | — | dismiss | no |
+| `tearsheet` | Tearsheet, action-set, button, form, modal, text-input | — | 4 | — | — | list-box, menu, modal | no |
 | `text-input` | button, form, popover, text-input, toggle, tooltip | — | 10 | — | — | copy-button, form-controls, list-box, popover | no |
 | `textarea` | form, text-area | — | 5 | — | — | — | no |
 | `tile` | button, link, stack, tile | 2 | 9 | 2 | 0 | tile | yes |

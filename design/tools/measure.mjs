@@ -113,7 +113,7 @@ function build(comps, themeCount) {
   ].join('\n');
   const f = join(work, 'in.scss'), out = join(work, 'out.css');
   writeFileSync(f, src);
-  execFileSync('npx', ['sass', '--load-path=node_modules', '--no-source-map',
+  execFileSync('npx', ['sass', '--load-path=node_modules', '--no-source-map', '--quiet-deps',
     '--style=compressed', f, out], { stdio: ['ignore', 'pipe', 'pipe'] });
   // The same changes build.mjs makes after Sass. Without them this tool
   // measures a file the project never ships.

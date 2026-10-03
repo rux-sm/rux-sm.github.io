@@ -65,7 +65,8 @@
 //
 import { readFileSync } from 'node:fs';
 import { markupFiles } from './lib/sources.mjs';
-import { owner, compiled } from './lib/ownership.mjs';
+import { owner, compiled, classNames } from './lib/ownership.mjs';
+import { captureName } from './lib/capture-names.mjs';
 
 const REF_PATHS = [
   'data/carbon-react-dom.json',
@@ -73,7 +74,6 @@ const REF_PATHS = [
   'data/carbon-react-states.json',
   'data/carbon-ibm-products-states.json',
 ];
-const PREFIX = /^(?:cds|c4p)--/;
 const CHROME = /^(layout|layout-constraint--.*|sb-.*)$/;
 const VOID = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
   'link', 'meta', 'param', 'source', 'track', 'wbr',
@@ -109,11 +109,16 @@ const CARD_GRID_REASON = 'the story layout, not the component. All 17 card stori
   + 'the card in a css-grid column, so the intersection keeps the grid above every card '
   + 'class; nothing in css/rux.css scopes one to it. Same shape as links:link--disabled.';
 
+const TEARSHEET_FOOTER = ['layer-one', 'modal', 'tearsheet', 'modal-container',
+  'modal-container--full-width', 'tearsheet__container', 'modal-container-body',
+  'modal-content', 'tearsheet__body-layout', 'tearsheet__footer',
+  'tearsheet__footer--three-actions'];
+
+const ACTION_SET_REASON = 'the mount, not the component: the set is captured only inside '
+  + 'the side panel or tearsheet that uses it, and the fragment demos it alone.';
+
 const KNOWN = {
-  // BATCH 1 OF §4.9, 2026-09-01 — the seven admissions below share two reasons
-  // that this list already records elsewhere: a story's own grid is not the
-  // component, and a class every capture renders but no rule styles is not
-  // written (§4.1.12).
+  // A story's own grid is not the component.
   'aspect-ratio:aspect-ratio': [['css-grid', 'css-grid-column'],
     "the story's layout: every aspect-ratio story mounts its boxes in a css-grid "
     + 'column to show several at once. The ratio box is the component; the fragment '
@@ -121,25 +126,20 @@ const KNOWN = {
   'aspect-ratio:aspect-ratio--16x9': [['css-grid', 'sm:col-span-4', 'md:col-span-4', 'lg:col-span-4', 'css-grid-column', 'card'],
     'the same story layout, intersected with the five card stories that put a 16x9 '
     + 'image box inside a card column. Nothing in the CSS scopes the ratio to a card.'],
-  'file-uploader:file__state-container': [['file-container-item'],
-    'attested in every item capture and styled by no rule in @carbon/styles, so on '
-    + 'the §4.1.12 precedent the wrapper div is present and the class is not written. '
-    + 'check-classes rejected it on the first run.'],
-  'file-uploader:file-close': [['file-container-item'],
-    'the same unstyled wrapper as file__state-container above.'],
   // BATCH 5 OF §4.9, 2026-09-01.
   //
-  // action-set is captured ONLY inside an open side panel, mounted in the
-  // story's `.content` shell; the standalone fragment demos the component
-  // alone and sink/side-panel.html shows it in place. Same shape as the
-  // aspect-ratio declines: the story's mount is not the component.
-  'action-set:action-set': [['content', 'side-panel', 'side-panel--open'],
-    'every capture mounts the set in an open side panel inside the story shell; the '
-    + 'fragment demos the set alone, and side-panel.html carries it in place.'],
-  'action-set:action-set--row-single': [['content', 'side-panel', 'side-panel--open'], 'as action-set above.'],
-  'action-set:action-set--md': [['content', 'side-panel', 'side-panel--md', 'side-panel--open'], 'as action-set above.'],
-  'action-set:action-set__action-button': [['content', 'side-panel', 'side-panel--open', 'side-panel__actions-container'], 'as action-set above.'],
-  'action-set:action-set__action-button--expressive': [['content', 'side-panel', 'side-panel--open', 'side-panel__actions-container'], 'as action-set above.'],
+  // An action set is captured only where it is used: the one- and two-button
+  // rows in an open side panel, the three-button row and the ghost button in a
+  // tearsheet's footer. The standalone fragment demos the set alone, and
+  // sink/side-panel.html and sink/tearsheet.html carry it in place. Same shape
+  // as the aspect-ratio declines: the story's mount is not the component.
+  'action-set:action-set--row-single': [['content', 'side-panel', 'side-panel--open'], ACTION_SET_REASON],
+  'action-set:action-set--md': [['content', 'side-panel', 'side-panel--md', 'side-panel--open'], ACTION_SET_REASON],
+  'action-set:action-set--row-triple': [TEARSHEET_FOOTER, ACTION_SET_REASON],
+  'action-set:action-set__action-button--ghost': [TEARSHEET_FOOTER, ACTION_SET_REASON],
+  'tearsheet:modal-close': [TOOLTIP_CHROME, 'the icon-tooltip the sink declines throughout'],
+  'tearsheet:modal-close__icon': [TOOLTIP_CHROME, 'the icon-tooltip the sink declines throughout'],
+  'tearsheet:tearsheet__header--no-close-icon': [TOOLTIP_CHROME, 'the icon-tooltip the sink declines throughout'],
   // The AI label's popover is `auto-align` in every capture: floating-ui
   // placement this system has no JS for. The fragment fixes `--bottom` instead,
   // the call sink/ai-label.html and the side-panel decorator already record.
@@ -193,13 +193,10 @@ const KNOWN = {
     'already recorded in the fragment: NO story renders `btn--loading` at all, so '
     + 'there is no sampled composition to match. The pairing follows the CSS, which '
     + 'scopes btn--loading to `.rux--btn-set .rux--btn.rux--btn--loading`.'],
-  'dropdown:list-box__invalid-icon': [['dropdown__wrapper'],
-    '@carbon/styles defines `dropdown__wrapper` only in its --inline form, so outside '
-    + 'that variant it styles nothing; `list-box__wrapper` is the styled wrapper and is '
-    + 'present. Recorded in the fragment.'],
   'list-box:list-box__invalid-icon': [['dropdown__wrapper', 'dropdown'],
-    'same as dropdown: the wrapper class is unstyled outside --inline, and this '
-    + 'fragment demos the list-box on its own rather than as a dropdown.'],
+    '@carbon/styles defines `dropdown__wrapper` only in its --inline form, so outside '
+    + 'that variant it styles nothing, and this fragment demos the list-box on its own '
+    + 'rather than as a dropdown.'],
   'links:link--disabled': [['data-table-container', 'data-table-content', 'data-table'],
     'a sampling artifact rather than a rule. Every capture that disables a link '
     + 'happens to be a table cell, so the intersection keeps the table above it — but '
@@ -218,11 +215,6 @@ const KNOWN = {
   'combo-button:combo-button__trigger': [TOOLTIP_CHROME,
     'the icon-tooltip the sink declines throughout. The trigger is the component; the '
     + 'hover hint is the story. sink/tooltip.html records the standing call.'],
-  'fluid:number-input__divider': [['number--helpertext'],
-    '`number--helpertext` is the one ancestor class not written, and it is the §4.1.12 call '
-    + 'sink/number.html already records: the reference puts it on the root when helper text is '
-    + 'present, @carbon/styles defines NO rule for it, so check-classes would reject it. The two '
-    + 'ancestors that DO carry rules, `number` and `number--md`, are both present.'],
   'pagination:pagination__button': [TOOLTIP_CHROME,
     'the icon-tooltip the sink declines throughout. `pagination__control-buttons`, the '
     + 'STYLED wrapper the same note used to omit, is present as of 2026-08-28.'],
@@ -315,6 +307,7 @@ const KNOWN = {
 };
 
 const COMPILED = compiled();
+const DEFINED = classNames(readFileSync('css/rux.css', 'utf8'));
 
 // --- reference: class -> intersection of its classed-ancestor sets -----------
 // LOWERING THIS TO 2 WAS TRIED AND REJECTED, 2026-09-01. It admits 148 more
@@ -370,7 +363,7 @@ for (const path of REF_PATHS) {
       const depth = (line.match(/^ */)[0].length) / 2;
       const body = line.trim().replace(/\[role=[^\]]*\]/, '').replace(/\{[^}]*\}/, '');
       const classes = body.split('.').slice(1).filter(Boolean)
-        .map(c => c.replace(PREFIX, '')).filter(c => !CHROME.test(c));
+        .map(captureName).filter(c => !CHROME.test(c));
 
       // Full chain: every class on every shallower open element.
       const chain = new Set();
@@ -440,6 +433,16 @@ function occurrences(html) {
 // decline instead of being adjudicated on its own. That is the trade -- the
 // judgement is genuinely about the class, and restating it per file was
 // producing drift, not rigour.
+const TAG_OVERFLOW_REASON = 'the story\'s theme, not the component. All eight tag-overflow '
+  + 'stories mount the row in a light theme zone, which is one element carrying both classes.';
+
+// ibm-products wraps every avatar it demos in its own hover tooltip, which
+// names the person. The avatar is the component; the name is carried by the
+// markup around it here, as it is for every icon button.
+const AVATAR_TOOLTIP = [...TOOLTIP_CHROME, 'user-avatar__tooltip', 'tooltip-trigger'];
+const AVATAR_REASON = 'the hover tooltip that names the person. The sink shows the avatar '
+  + 'without it, as it shows every icon button without its icon-tooltip.';
+
 const CLASS_DECLINES = {
   'card': [CARD_STORY_GRID, CARD_GRID_REASON],
   'card--productive': [CARD_STORY_GRID, CARD_GRID_REASON],
@@ -460,6 +463,14 @@ const CLASS_DECLINES = {
   'badge-indicator--count': [TOOLTIP_CHROME, TOOLTIP_REASON],
   'combo-button__trigger': [TOOLTIP_CHROME, TOOLTIP_REASON],
   'badge-indicator': [TOOLTIP_CHROME, TOOLTIP_REASON],
+  ...Object.fromEntries(['tag-overflow', 'tag-overflow__visible-tags', 'tag-overflow__item--tag',
+    'tag-overflow__indicator', 'tag-overflow-popover', 'tag-overflow-popover__el',
+    'tag-overflow-popover__trigger', 'tag-overflow-popover__tag-list',
+    'tag-overflow-popover__tag-item', 'tag-overflow-popover__tag-item--default',
+  ].map(c => [c, [['g10', 'layer-one'], TAG_OVERFLOW_REASON]])),
+  'user-avatar': [AVATAR_TOOLTIP, AVATAR_REASON],
+  'user-avatar--md': [AVATAR_TOOLTIP, AVATAR_REASON],
+  'user-avatar--order-1-cyan': [AVATAR_TOOLTIP, AVATAR_REASON],
 };
 
 const showAll = process.argv.includes('--all');
@@ -505,6 +516,9 @@ for (const file of markupFiles(roots.length ? roots : undefined)) {
       // Unsatisfiable: the ancestor belongs to a component we do not compile.
       const own = owner(`rux--${a}`);
       if (own && !COMPILED.has(own)) continue;
+      // Unsatisfiable the same way: no rule in css/rux.css names the class, so
+      // check-classes would reject it. The element can be there; its class cannot.
+      if (!DEFINED.has(`rux--${a}`)) continue;
       if (!seen.has(cls)) seen.set(cls, new Set());
       seen.get(cls).add(a);
     }
@@ -531,9 +545,17 @@ if (showAll) for (const a of accepted) {
   console.log(`         ${a.reason}`);
 }
 
+// A decline that no longer declines anything is a note about markup that has
+// since changed. It is counted so the table cannot keep entries nobody needs.
+const fired = new Set(accepted.flatMap(a => [`${a.name}:${a.cls}`, a.cls]));
+const stale = roots.length ? [] : [...Object.keys(KNOWN), ...Object.keys(CLASS_DECLINES)]
+  .filter(k => !fired.has(k));
+if (showAll) for (const k of stale) console.log(`\n  STALE DECLINE  ${k}`);
+
 const trusted = [...required].filter(([c, r]) => r?.size && (seenIn.get(c)?.size ?? 0) >= MIN_STORIES).length;
 console.log(`\n  ${stories} stories · ${trusted} classes with a corroborated required ancestry`
-  + ` · ${accepted.length} declined · ${findings.length} missing`);
+  + ` · ${accepted.length} declined · ${findings.length} missing`
+  + (stale.length ? ` · ${stale.length} stale declines, \`--all\` lists them` : ''));
 if (findings.length) console.log(
   '  a wrapper Carbon never omits is absent here — add it, or record it in KNOWN with a reason\n');
 else console.log();

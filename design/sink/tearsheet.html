@@ -1,0 +1,142 @@
+<section class="ks-sec" id="tearsheet">
+  <h2>Tearsheet</h2><p>a full-width sheet for a longer task · wide and narrow</p>
+  <!-- PROVENANCE: rendered-dom · preview-tearsheet--default and
+       preview-tearsheet--narrow-tearsheet on the ibm-products origin, 2026-10-03 -->
+  <!--
+    A tearsheet is a modal, so js/modal.js opens and closes it:
+    `data-rux-open` on the button, `data-rux-close` on anything inside.
+
+    ibm-products names these classes `tearsheet__next…`; @carbon/styles ships
+    the same component as `tearsheet…`, and tools/lib/capture-names.mjs maps
+    one to the other for the checks.
+
+    Carbon's modal header draws its own close button and the tearsheet hides
+    it with `tearsheet__header--no-close-icon`, drawing another inside
+    `tearsheet__close-button`. Both are in the capture and both are here.
+
+    In the capture with no compiled rule, and so not written (§4.1.12):
+    `tearsheet__header--with-close-icon`, `tearsheet__header-action-item`,
+    `tearsheet__content__title` and `tearsheet__footer--three-actions`. The
+    title's truncating wrapper is `truncated-text`, which Design does not
+    compile; the title is plain text. The hidden overflow menu-button in the
+    header actions and the icon-tooltips round the close buttons are left out.
+  -->
+  <div class="ks-row">
+    <button type="button" class="rux--btn rux--btn--primary" data-rux-open="tearsheet-wide">Open tearsheet</button>
+    <button type="button" class="rux--btn rux--btn--secondary" data-rux-open="tearsheet-narrow">Open narrow tearsheet</button>
+  </div>
+
+  <div class="rux--layer-one rux--modal rux--tearsheet rux--tearsheet--wide" id="tearsheet-wide" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="tearsheet-wide-h" tabindex="-1" class="rux--modal-container rux--modal-container--full-width rux--tearsheet__container">
+      <div class="rux--modal-container-body">
+        <div class="rux--modal-header rux--tearsheet__header">
+          <div class="rux--tearsheet__header-content-wrapper">
+            <div class="rux--tearsheet__header-actions">
+              <div class="rux--tearsheet__content__header-actions">
+                <div><button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--tertiary">Duplicate</button></div>
+                <div><button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--tertiary">Export</button></div>
+              </div>
+            </div>
+            <div class="rux--tearsheet__close-button rux--modal-close-button">
+              <button type="button" class="rux--modal-close rux--btn rux--btn--primary rux--btn--icon-only" aria-label="Close" data-rux-close>
+                <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+              </button>
+            </div>
+            <div class="rux--tearsheet__header-content">
+              <div class="rux--tearsheet__header-label">Workspace</div>
+              <div class="rux--tearsheet__content__title-wrapper">
+                <h2 class="rux--tearsheet__header-title" id="tearsheet-wide-h">Create a project</h2>
+              </div>
+              <div class="rux--tearsheet__header-description">Name the project and choose who can open it.</div>
+            </div>
+          </div>
+          <div class="rux--modal-close-button">
+            <button type="button" class="rux--modal-close rux--tearsheet__header--no-close-icon rux--btn rux--btn--primary rux--btn--icon-only" aria-label="Close" data-rux-close>
+              <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="rux--layer-one rux--modal-content rux--tearsheet__body-layout">
+          <div class="rux--tearsheet__body">
+            <div class="rux--tearsheet__main-content">
+              <div class="ks-stack ks-pad">
+                <div class="rux--form-item rux--text-input-wrapper">
+                  <div class="rux--text-input__label-wrapper"><label for="tearsheet-wide-name" class="rux--label">Project name</label></div>
+                  <div class="rux--text-input__field-outer-wrapper">
+                    <div class="rux--text-input__field-wrapper">
+                      <input id="tearsheet-wide-name" type="text" class="rux--text-input" placeholder="Spring campaign">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="rux--tearsheet__summary-content">
+              <aside aria-label="Summary panel" class="ks-pad">
+                <h3>Summary</h3>
+                <p>One project · 3 members</p>
+              </aside>
+            </div>
+          </div>
+          <div class="rux--tearsheet__footer">
+            <div class="rux--action-set rux--action-set--row-triple rux--action-set--2xl rux--btn-set" role="presentation">
+              <button type="button" class="rux--action-set__action-button rux--action-set__action-button--ghost rux--action-set__action-button--expressive rux--btn rux--layout--size-2xl rux--btn--ghost rux--btn--expressive" data-rux-close>Cancel</button>
+              <button type="button" class="rux--action-set__action-button rux--action-set__action-button--expressive rux--btn rux--layout--size-2xl rux--btn--secondary rux--btn--expressive" data-rux-close>Back</button>
+              <button type="button" class="rux--action-set__action-button rux--action-set__action-button--expressive rux--btn rux--layout--size-2xl rux--btn--primary rux--btn--expressive" data-rux-close>Create</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rux--layer-one rux--modal rux--tearsheet rux--tearsheet--narrow" id="tearsheet-narrow" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="tearsheet-narrow-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm rux--modal-container--full-width rux--tearsheet__container">
+      <div class="rux--modal-container-body">
+        <div class="rux--modal-header rux--tearsheet__header">
+          <div class="rux--tearsheet__header-content-wrapper">
+            <div class="rux--tearsheet__close-button rux--modal-close-button">
+              <button type="button" class="rux--modal-close rux--btn rux--btn--primary rux--btn--icon-only" aria-label="Close" data-rux-close>
+                <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+              </button>
+            </div>
+            <div class="rux--tearsheet__header-content">
+              <div class="rux--tearsheet__header-label">Workspace</div>
+              <div class="rux--tearsheet__content__title-wrapper">
+                <h2 class="rux--tearsheet__header-title" id="tearsheet-narrow-h">Rename the project</h2>
+              </div>
+              <div class="rux--tearsheet__header-description">The new name shows everywhere at once.</div>
+            </div>
+          </div>
+          <div class="rux--modal-close-button">
+            <button type="button" class="rux--modal-close rux--tearsheet__header--no-close-icon rux--btn rux--btn--primary rux--btn--icon-only" aria-label="Close" data-rux-close>
+              <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="rux--layer-one rux--modal-content rux--tearsheet__body-layout">
+          <div class="rux--tearsheet__body">
+            <div class="rux--tearsheet__main-content">
+              <div class="ks-stack ks-pad">
+                <div class="rux--form-item rux--text-input-wrapper">
+                  <div class="rux--text-input__label-wrapper"><label for="tearsheet-narrow-name" class="rux--label">Project name</label></div>
+                  <div class="rux--text-input__field-outer-wrapper">
+                    <div class="rux--text-input__field-wrapper">
+                      <input id="tearsheet-narrow-name" type="text" class="rux--text-input" value="Spring campaign">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="rux--tearsheet__footer">
+            <div class="rux--action-set rux--action-set--row-triple rux--action-set--lg rux--btn-set" role="presentation">
+              <button type="button" class="rux--action-set__action-button rux--action-set__action-button--ghost rux--action-set__action-button--expressive rux--btn rux--layout--size-xl rux--btn--ghost rux--btn--expressive" data-rux-close>Discard</button>
+              <button type="button" class="rux--action-set__action-button rux--action-set__action-button--expressive rux--btn rux--layout--size-xl rux--btn--secondary rux--btn--expressive" data-rux-close>Cancel</button>
+              <button type="button" class="rux--action-set__action-button rux--action-set__action-button--expressive rux--btn rux--layout--size-xl rux--btn--primary rux--btn--expressive" data-rux-close>Rename</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

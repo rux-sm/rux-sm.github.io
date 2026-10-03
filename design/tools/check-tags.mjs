@@ -52,6 +52,7 @@
 //
 import { readFileSync } from 'node:fs';
 import { markupFiles } from './lib/sources.mjs';
+import { captureName } from './lib/capture-names.mjs';
 
 // Entries whose fragment moved to sink/deferred/ in the Phase 3 strip are kept
 // rather than deleted: the adjudication behind them is still true, and deleting
@@ -86,7 +87,6 @@ const REF_PATHS = [
   'data/carbon-react-states.json',        // configured states, from the RECIPES harvest
   'data/carbon-ibm-products-states.json', // same, run against the ibm-products origin
 ];
-const PREFIX = /^(?:cds|c4p)--/;
 
 // Void and self-closing elements never open a scope. The SVG members matter:
 // fragments are full of <use/> and <path/>, and treating them as containers
@@ -123,7 +123,7 @@ function refElements(lines) {
   return lines.map(l => {
     const body = l.trim().replace(/\[role=[^\]]*\]/, '').replace(/\{[^}]*\}/, '');
     const [tag, ...cls] = body.split('.');
-    return { tag, classes: cls.filter(Boolean).map(c => c.replace(PREFIX, '')) };
+    return { tag, classes: cls.filter(Boolean).map(captureName) };
   });
 }
 

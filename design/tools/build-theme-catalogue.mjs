@@ -188,36 +188,24 @@ for (const name of names) {
 // file is nested (ai.aura.end) and the CSS custom property is flat
 // (ai-aura-end), so the tree is flattened to the same shape before merging.
 //
-// ALL FOUR THEME FILES ARE READ, and the first draft of this script read
-// only g100 behind an assertion that the four agreed. They do not: 129 of
-// the 188 descriptions differ between white and g100, and the difference is
-// not a nuance — white's ai-aura-end says "AI aura end", g100's says "End
-// color for AI aura gradient effect. Creates a fade-to-transparent effect at
-// the edge of AI-enhanced elements." Carbon wrote prose into one file and
-// left the token name restated in the others. The assertion fired on the
-// first run and is what turned a silent half-empty column into this: take
-// the longest description any of the four carries, and record which file it
-// came from.
+// ONE FILE HOLDS ALL FOUR THEMES, `themes.json`: each token carries one
+// `$description` and its per-theme values under `$extensions`, and a token
+// can hold further tokens beneath it (`background` and `background-active`),
+// so a node is recorded where it has a description and walked either way.
 function flattenDtcg(json) {
   const out = {};
   (function walk(node, path) {
     for (const [k, v] of Object.entries(node)) {
-      if (k.startsWith('$')) continue;
-      if (v && typeof v === 'object' && v.$value !== undefined) out[[...path, k].join('-')] = v.$description ?? '';
-      else if (v && typeof v === 'object') walk(v, [...path, k]);
+      if (k.startsWith('$') || !v || typeof v !== 'object') continue;
+      if (typeof v.$description === 'string') out[[...path, k].join('-')] = v.$description;
+      walk(v, [...path, k]);
     }
   })(json, []);
   return out;
 }
-const described = {};
-const describedFrom = {};
-for (const themeName of ['white', 'g10', 'g90', 'g100']) {
-  const flat = flattenDtcg(JSON.parse(readFileSync(`node_modules/@carbon/themes/src/dtcg/${themeName}.json`, 'utf8')));
-  for (const [k, v] of Object.entries(flat)) {
-    if (!v) continue;
-    if (described[k] === undefined || v.length > described[k].length) { described[k] = v; describedFrom[k] = themeName; }
-  }
-}
+const DTCG = 'node_modules/@carbon/themes/src/dtcg/themes.json';
+const described = flattenDtcg(JSON.parse(readFileSync(DTCG, 'utf8')));
+const describedFrom = Object.fromEntries(Object.keys(described).map(k => [k, 'themes']));
 if (!Object.keys(described).length) throw new Error('@carbon/themes/src/dtcg carries no $description at all — the flatten is wrong, not the package');
 
 // FILLER, MEASURED NOT GUESSED. 91 of the 117 non-syntax descriptions match

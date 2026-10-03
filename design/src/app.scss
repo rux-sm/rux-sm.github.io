@@ -29,14 +29,9 @@
 // restoring a component, because no Carbon file is edited (§1.1). The set here
 // and the PROPOSED list in tools/measure.mjs are the same list.
 //
-// EIGHT LINES ADDED 2026-08-31, all commented, all emitting nothing. Carbon
-// 1.114 took the component set from 75 to 83 -- big-number, coachmark,
-// EditInPlace, FullPageError, InterstitialScreen, OptionsTile, scroll-gradient
-// and user-avatar, absorbed out of ibm-products -- and this file listed none of
-// them. That is worse than it sounds: THIS FILE IS THE CENSUS, and a component
-// it does not name can be neither kept nor cut, because commenting the line is
-// the whole of cutting one. Eight components were outside the strip entirely
-// and no gate could see it, since every other check reads the built CSS and an
+// THIS FILE IS THE CENSUS. A component it does not name can be neither kept
+// nor cut, because commenting the line is the whole of cutting one, and no
+// other gate would see it: every other check reads the built CSS, and an
 // undecided component is absent from it exactly like a cut one.
 //
 // tools/check-inventory.mjs now holds the three sources together: Carbon's own
@@ -81,7 +76,7 @@
 @use "@carbon/styles/scss/components/date-picker";
 @use "@carbon/styles/scss/components/dialog";
 @use "@carbon/styles/scss/components/dropdown";
-@use "@carbon/styles/scss/components/EditInPlace";
+@use "@carbon/styles/scss/components/edit-in-place";
 @use "@carbon/styles/scss/components/file-uploader";
 @use "@carbon/styles/scss/components/fluid-combo-box";
 @use "@carbon/styles/scss/components/fluid-date-picker";
@@ -95,10 +90,11 @@
 @use "@carbon/styles/scss/components/fluid-text-input";
 @use "@carbon/styles/scss/components/fluid-time-picker";
 @use "@carbon/styles/scss/components/form";
-@use "@carbon/styles/scss/components/FullPageError";
+@use "@carbon/styles/scss/components/full-page-error";
+@use "@carbon/styles/scss/components/guidebanner";
 @use "@carbon/styles/scss/components/icon-indicator";
 @use "@carbon/styles/scss/components/inline-loading";
-// @use "@carbon/styles/scss/components/InterstitialScreen";
+// @use "@carbon/styles/scss/components/interstitial-screen";
 @use "@carbon/styles/scss/components/link";
 @use "@carbon/styles/scss/components/list";
 @use "@carbon/styles/scss/components/list-box";
@@ -108,8 +104,9 @@
 @use "@carbon/styles/scss/components/modal";
 @use "@carbon/styles/scss/components/multiselect";
 @use "@carbon/styles/scss/components/notification";
+@use "@carbon/styles/scss/components/notifications-panel";
 @use "@carbon/styles/scss/components/number-input";
-@use "@carbon/styles/scss/components/OptionsTile";
+@use "@carbon/styles/scss/components/options-tile";
 @use "@carbon/styles/scss/components/overflow-menu";
 // @use "@carbon/styles/scss/components/page-header";
 @use "@carbon/styles/scss/components/pagination";
@@ -147,6 +144,8 @@
 @use "@carbon/styles/scss/components/structured-list";
 @use "@carbon/styles/scss/components/tabs";
 @use "@carbon/styles/scss/components/tag";
+@use "@carbon/styles/scss/components/TagOverflow";
+@use "@carbon/styles/scss/components/Tearsheet";
 @use "@carbon/styles/scss/components/text-area";
 @use "@carbon/styles/scss/components/text-input";
 @use "@carbon/styles/scss/components/tile";

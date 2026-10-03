@@ -38,9 +38,10 @@ export const ALIAS = {
   'copy-button': ['copy-btn', 'copy'], 'multiselect': ['multi-select'],
   // These partial directories use ibm-products' PascalCase names while their
   // absorbed Carbon classes use kebab-case stems.
-  'EditInPlace': ['edit-in-place'],
-  'FullPageError': ['full-page-error'],
-  'OptionsTile': ['options-tile'],
+  'TagOverflow': ['tag-overflow'],
+  'Tearsheet': ['tearsheet'],
+  // The panel's partial also carries the empty state it shows with nothing in it.
+  'notifications-panel': ['notifications-panel', 'empty-state'],
 };
 
 export function stems(name) { return ALIAS[name] ?? [name]; }

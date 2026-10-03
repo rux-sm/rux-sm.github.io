@@ -59,7 +59,8 @@ body { min-height: 100vh; background: var(--rux-background);
    modal is the one thing that must win: left in the root stacking context at
    9000 it outranks every isolated section, whatever their DOM order. Anything
    added later that must cover the whole page belongs outside this rule too. */
-.ks-sec:not(#modal):not(#date-picker):not(#combo-button) { isolation: isolate; }
+.ks-sec:not(#modal):not(#tearsheet):not(#date-picker):not(#combo-button) { isolation: isolate; }
+/* #tearsheet is a modal too and is exempt for the same reason. */
 /* #date-picker AND #combo-button JOIN #modal OUTSIDE THE RULE, on the sentence above: its
    calendar must cover what follows it. Unlike the permanently-open specimens
    this rule was written for, the calendar OPENS ON A PRESS and is absent from
@@ -151,6 +152,11 @@ body { min-height: 100vh; background: var(--rux-background);
 /* Content inside a specimen's box, 16px from its edges, as Carbon's stories
    pad theirs. */
 .ks-pad { padding: var(--rux-spacing-05); }
+/* A box for a component Carbon fixes against the viewport. The transform makes
+   the box the containing block for position:fixed, so the component sits in
+   the page instead of over it. */
+.ks-fixed-stage { position: relative; transform: translateZ(0); overflow: hidden;
+  block-size: 42rem; max-inline-size: 26rem; border: 1px dashed var(--rux-border-subtle-01); }
 
 /* Carbon components set `display` on their own class, which outranks the UA
    `[hidden] { display: none }` rule on specificity. The harness needs `hidden` to

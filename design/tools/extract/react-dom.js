@@ -15,6 +15,12 @@
 // Storybook serves every story from its own origin, so an iframe per story is
 // same-origin and readable. No CORS, no headless browser, no dependency.
 //
+// RUN IT IN THE FRONT TAB OF A WINDOW THAT IS ON SCREEN. A background tab draws
+// no frames, and a component that measures itself before it finishes rendering
+// is then captured half-built while the run reports no failure: tag overflow
+// shows no tags, the code snippet has no expand button, truncated text never
+// gains its tooltip trigger. The script refuses to start in a hidden tab.
+//
 // TWO MODES, because a story capture only shows the component's DEFAULT
 // configuration. 'stories' harvests every story as it renders and downloads
 // carbon-react-dom.json — move it to docs/ and it becomes the reference every
@@ -80,6 +86,10 @@
                                          // 'states'  → carbon-react-states.json
                                          // 'spacing' → carbon-react-spacing.json
                                          // 'icons'   → carbon-react-icons.json
+  if (document.visibilityState !== 'visible') {
+    throw new Error('this tab is hidden, so stories would be captured before they finish '
+      + 'rendering. Bring the tab to the front of a window that is on screen and run again.');
+  }
   // FILTER is a convenience for re-harvesting one component, NOT a correctness
   // filter, and it used to be both. As /^components-/ it dropped 87 of 505
   // stories, and the 15 fragments with no `components-` story of their own —

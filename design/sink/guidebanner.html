@@ -1,0 +1,79 @@
+<section class="ks-sec" id="guidebanner">
+  <h2>Guide banner</h2><p>a title · a row of insights · collapse, back, next and close</p>
+  <!-- PROVENANCE: rendered-dom · preview-candidate-onboarding-guidebanner--many-insights
+       and --few-insights on the ibm-products origin, 2026-10-03 -->
+  <!--
+    A static specimen, expanded: no module scrolls the row or collapses the
+    banner. Carbon draws it on its own dark gradient in every theme, so its
+    colours do not follow the page's theme.
+
+    ibm-products renders the scrolling row with a separate `carousel` block.
+    @carbon/styles ships the same rules inside this component, renamed:
+    `carousel` is `guidebanner__carousel`, `carousel__elements-container` is
+    `guidebanner__carousel-elements-container`, `carousel__elements` is
+    `guidebanner__carousel-elements` and `carousel__item` is `guidebanner__item`.
+    The fragment writes the names that compile.
+
+    `guidebanner__collapsible`, `guidebanner__element-buttons`,
+    `guidebanner__element-button` and `guidebanner__back-button--disabled` are
+    in the capture with no compiled rule and are not written (§4.1.12). The
+    icon buttons sit in icon-tooltips there, which the sink declines throughout.
+  -->
+  <div class="rux--guidebanner">
+    <svg class="rux--guidebanner__icon-idea" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-idea"/></svg>
+    <div class="rux--guidebanner__title">Get started with your workspace</div>
+    <div class="rux--guidebanner__carousel" tabindex="-1">
+      <div class="rux--guidebanner__carousel-elements-container">
+        <div class="rux--guidebanner__carousel-elements">
+          <div class="rux--guidebanner__item">
+            <div class="rux--guidebanner__element">
+              <h2 class="rux--guidebanner__element-title">Invite your team</h2>
+              <p class="rux--guidebanner__element-content">Add the people who will work here, and choose what each of them can change.</p>
+              <div>
+                <button type="button" class="rux--btn rux--btn--md rux--layout--size-md rux--btn--tertiary">
+                  Invite
+                  <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="rux--guidebanner__item">
+            <div class="rux--guidebanner__element">
+              <h2 class="rux--guidebanner__element-title">Connect a data source</h2>
+              <p class="rux--guidebanner__element-content">Bring in the records you already keep, so nothing is typed twice.</p>
+              <div>
+                <a href="#guidebanner" class="rux--link rux--guidebanner__element-link">Read the guide</a>
+              </div>
+            </div>
+          </div>
+          <div class="rux--guidebanner__item">
+            <div class="rux--guidebanner__element">
+              <h2 class="rux--guidebanner__element-title">Set your working hours</h2>
+              <p class="rux--guidebanner__element-content">Reminders arrive only inside the hours you set.</p>
+            </div>
+          </div>
+        </div>
+        <div class="rux--guidebanner__carousel-elements-container--scrolled"></div>
+        <div class="rux--guidebanner__carousel-elements-container--scroll-max"></div>
+      </div>
+    </div>
+    <div class="rux--guidebanner__navigation">
+      <button type="button" class="rux--guidebanner__toggle-button rux--btn rux--btn--md rux--layout--size-md rux--btn--ghost" aria-expanded="true">Read less</button>
+      <span class="rux--guidebanner__back-button">
+        <button type="button" class="rux--btn rux--btn--md rux--layout--size-md rux--btn--ghost rux--btn--disabled rux--btn--icon-only" aria-label="Back" disabled>
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>
+        </button>
+      </span>
+      <span class="rux--guidebanner__next-button">
+        <button type="button" class="rux--btn rux--btn--md rux--layout--size-md rux--btn--ghost rux--btn--icon-only" aria-label="Next">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+        </button>
+      </span>
+    </div>
+    <span class="rux--guidebanner__close-button">
+      <button type="button" class="rux--btn rux--btn--md rux--layout--size-md rux--btn--ghost rux--btn--icon-only" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </span>
+  </div>
+</section>

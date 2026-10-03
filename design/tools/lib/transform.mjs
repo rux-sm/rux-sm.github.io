@@ -11,6 +11,15 @@
 // @carbon/styles; tools/build.mjs re-proves that on every build.
 const GRID_TOKEN = /--cds-grid-/g;
 
+// A component can hardcode the prefix the same way in a REFERENCE: Tearsheet's
+// AI border gradient reads `var(--cds-layer)`, `var(--cds-ai-border-start)` and
+// `var(--cds-ai-border-end)` as literals (Tearsheet/_tearsheet.scss:139-147),
+// which under another prefix name tokens nobody declares, so the gradient
+// would draw nothing. Each such reference is renamed, and `undeclared` lists
+// any whose token the stylesheet does not declare under our prefix, which
+// tools/build.mjs fails on rather than ship a reference to nothing.
+const HARD_REFERENCE = /var\(--cds-([a-z0-9-]+)/g;
+
 // Carbon styles a focused control with `:focus`, which matches however focus
 // arrived, so a click or a tap leaves a ring on what it pressed, and a dialog
 // or menu that moves focus on opening rings the control it lands on. Browsers
@@ -24,9 +33,14 @@ const FOCUS = /:focus(?![-\w])/g;
 
 export function transform(css) {
   const focus = (css.match(FOCUS) ?? []).length;
+  const gridded = css.replace(GRID_TOKEN, '--rux-grid-');
+  const references = [...new Set([...gridded.matchAll(HARD_REFERENCE)].map(m => m[1]))];
+  const out = gridded.replace(HARD_REFERENCE, 'var(--rux-$1').replace(FOCUS, ':focus-visible');
   return {
-    css: css.replace(GRID_TOKEN, '--rux-grid-').replace(FOCUS, ':focus-visible'),
+    css: out,
     focus,
+    references,
+    undeclared: references.filter(name => !out.includes(`--rux-${name}:`)),
   };
 }
 

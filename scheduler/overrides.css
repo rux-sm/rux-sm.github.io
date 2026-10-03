@@ -587,14 +587,6 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   padding-inline: var(--scheduler-safe-left) var(--scheduler-safe-right);
 }
 
-/* The expandable search's focus ring is drawn inside its box. Carbon rings it
-   with a 2px outline, which draws outside, and flush against the top of the
-   shell header there is no room for it; the header's other actions ring with
-   a border, inside. */
-.rux--search--expandable .rux--search-magnifier:focus-visible {
-  outline-offset: -2px;
-}
-
 /* A bus number's toggletip opens from anywhere in the row head, so the head,
    not the container, is the positioned box. The surface then covers only the
    number's line, the head's top padding down, so the tip still points at the

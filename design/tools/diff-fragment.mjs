@@ -66,6 +66,7 @@
 //   node tools/diff-fragment.mjs radio --omissions  what Carbon renders and we do not
 //
 import { readFileSync, readdirSync } from 'node:fs';
+import { captureName } from './lib/capture-names.mjs';
 
 const REF_PATHS = [
   'data/carbon-react-dom.json',
@@ -73,7 +74,6 @@ const REF_PATHS = [
   'data/carbon-react-states.json',
   'data/carbon-ibm-products-states.json',
 ];
-const PREFIX = /^(?:cds|c4p)--/;
 // Storybook's own wrapper, present in every capture and meaningless to us.
 const CHROME = /^(layout|layout-constraint--.*|sb-.*)$/;
 const VOID = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
@@ -119,7 +119,7 @@ for (const path of REF_PATHS) {
     for (const line of lines) {
       const depth = (line.match(/^ */)[0].length) / 2;
       const body = line.trim().replace(/\[role=[^\]]*\]/, '').replace(/\{[^}]*\}/, '');
-      const classes = body.split('.').slice(1).filter(Boolean).map(c => c.replace(PREFIX, ''));
+      const classes = body.split('.').slice(1).filter(Boolean).map(captureName);
       // nearest classed ancestor = the closest shallower entry that had classes
       let parent = null;
       for (let d = depth - 1; d >= 0; d--) if (openAt[d]) { parent = openAt[d]; break; }

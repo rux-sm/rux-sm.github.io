@@ -1,4 +1,39 @@
 {
+ "_meta": {
+  "ibmProducts": "2.99.0",
+  "ibmProductsStyles": "^2.95.0",
+  "carbonReact": "^1.115.0",
+  "carbonStyles": "^1.114.0",
+  "storybook": "10.3.6",
+  "storybookBuilt": "2026-09-29",
+  "captured": "2026-10-03",
+  "url": "https://ibm-products.carbondesignsystem.com",
+  "mode": "states",
+  "filter": "RECIPE_FILTER default /./ -- all 118 recipes run; FILTER does not apply in states mode. 8 usable, 110 (no-story) because those recipes address the react origin.",
+  "versionNote": "This origin has no single Carbon version, so carbonVersion is not written. @carbon/ibm-products 2.99.0 is the release the Storybook welcome page names; the rest are read from /project.json on the same origin (knownPackages.uiLibraryPackages). They are ranges, because that is what ibm-products declares, and carbonStyles ^1.114.0 is below the 1.116.0 this repository compiles, so a cds-- difference between this file and carbon-react-*.json can be Carbon moving.",
+  "ariaRecorded": [
+   "aria-expanded",
+   "aria-selected",
+   "aria-invalid",
+   "aria-disabled",
+   "aria-label",
+   "aria-labelledby",
+   "aria-describedby",
+   "aria-hidden",
+   "aria-current",
+   "aria-sort",
+   "aria-haspopup",
+   "aria-modal",
+   "tabindex"
+  ],
+  "settle": "SETTLE_MAX_MS 15000 and CONCURRENCY 2, as carbon-ibm-products-dom.json records."
+ },
+ "preview-preview-datepicker--single-with-calendar@open": [
+  "(no-story)"
+ ],
+ "preview-preview-datepicker--range-with-calendar@open": [
+  "(no-story)"
+ ],
  "components-dropdown--default@open": [
   "(no-story)"
  ],
@@ -1305,34 +1340,5 @@
   "        div.c4p--action-set.c4p--side-panel__actions-container.c4p--action-set--row-double.c4p--action-set--md.cds--btn-set[role=presentation]",
   "          button.c4p--action-set__action-button.c4p--action-set__action-button--expressive.cds--btn.cds--btn--secondary.cds--btn--expressive",
   "          button.c4p--action-set__action-button.c4p--action-set__action-button--expressive.cds--btn.cds--btn--primary.cds--btn--expressive"
- ],
- "_meta": {
-  "ibmProducts": "2.97.0",
-  "ibmProductsStyles": "^2.93.0",
-  "carbonReact": "^1.111.1",
-  "carbonStyles": "^1.110.1",
-  "storybook": "10.3.6",
-  "storybookBuilt": "2026-08-21",
-  "captured": "2026-08-31",
-  "url": "https://ibm-products.carbondesignsystem.com",
-  "mode": "states",
-  "filter": "RECIPE_FILTER default /./ -- all 116 recipes run; FILTER does not apply in states mode. 8 usable, 108 (no-story) because those recipes address the react origin.",
-  "versionNote": "This origin has no single \"Carbon version\" and carbonVersion is therefore NOT written -- the same decision carbon-react-*.json made when it replaced that field with named ones. @carbon/ibm-products 2.97.0 is the release the Storybook welcome page names; the rest are READ FROM /project.json on the same origin (knownPackages.uiLibraryPackages), not assumed. They are RANGES, because that is what ibm-products declares -- the cds-- classes here are attributable only to a range, never to one @carbon/react build. Note carbonStyles ^1.110.1 is BELOW the 1.114.0 this repo compiles, so a cds-- divergence between these captures and carbon-react-*.json (which record 1.115.0 / 1.114.0) can be Carbon moving rather than a fault here.",
-  "settle": "THESE STORIES PAINT RIGHT AT THE EXTRACTOR SETTLE CEILING. Measured 2026-08-31, one iframe at a time and unhurried: components-sidepanel--slide-over first paints a classed element at 4.4s, preview-pageheader--default at 6.0s. SETTLE_MAX_MS is 6000 and CONCURRENCY is 3, so a first pass files ALL of them (empty) -- 21/21 on this capture -- and it is the sequential retry at SETTLE_MAX_MS*2 that recovers them (20/21 here; the last was re-harvested alone with FILTER narrowed to it). An (empty) on this origin is therefore a TIMING result and not the chromatic/isChromatic module error, which is a different fault and hits the stories the FILTER already excludes. Do not read a first-pass (empty) here as a broken story.",
-  "ariaRecorded": [
-   "aria-expanded",
-   "aria-selected",
-   "aria-invalid",
-   "aria-disabled",
-   "aria-label",
-   "aria-labelledby",
-   "aria-describedby",
-   "aria-hidden",
-   "aria-current",
-   "aria-sort",
-   "aria-haspopup",
-   "aria-modal",
-   "tabindex"
-  ]
- }
+ ]
 }

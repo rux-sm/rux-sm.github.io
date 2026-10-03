@@ -58,10 +58,10 @@ const COMP_DIR = 'node_modules/@carbon/styles/scss/components';
 // it being carried indefinitely.
 const DECIDED = ['KEEP', 'DEFER', 'CUT'];
 
-// Carbon ships four PascalCase directories as of 1.114 — EditInPlace,
-// FullPageError, InterstitialScreen, OptionsTile — ibm-products' own convention
-// surviving the move into @carbon/styles. The character class has to admit
-// them, so it cannot be [a-z-] however much the other 79 look like it.
+// Carbon ships two PascalCase directories, TagOverflow and Tearsheet:
+// ibm-products' own convention surviving the move into @carbon/styles. The
+// character class has to admit them, so it cannot be [a-z-] however much the
+// other 85 look like it.
 const shipped = readdirSync(COMP_DIR)
   .filter(d => !d.startsWith('_') && !d.startsWith('__')).sort();
 

@@ -1,30 +1,23 @@
 {
   "_meta": {
-    "generated": "2026-09-02",
+    "generated": "2026-10-03",
     "from": "carbon-website/src/data/nav-items.yaml, carbon-website/src/pages/components/, and data/carbon-*.json",
     "pagesInNav": 42,
     "note": "Generated where the quarry is and committed, because carbon-website/ is gitignored and no gate reads it. Re-run tools/build-component-docs.mjs after a carbon-website pull."
   },
   "components": {
-    "EditInPlace": {
+    "TagOverflow": {
       "kind": "story",
       "site": "ibm-products",
-      "story": "components-editinplace--default",
-      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=components-editinplace--default",
+      "story": "utilities-tagoverflow--multiline-tags",
+      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=utilities-tagoverflow--multiline-tags",
       "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
     },
-    "FullPageError": {
+    "Tearsheet": {
       "kind": "story",
       "site": "ibm-products",
-      "story": "components-fullpageerror--full-page-error",
-      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=components-fullpageerror--full-page-error",
-      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
-    },
-    "OptionsTile": {
-      "kind": "story",
-      "site": "ibm-products",
-      "story": "components-optionstile--options-tile",
-      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=components-optionstile--options-tile",
+      "story": "preview-tearsheet--default",
+      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=preview-tearsheet--default",
       "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
     },
     "accordion": {
@@ -179,6 +172,13 @@
       "style": "https://carbondesignsystem.com/components/dropdown/style/",
       "accessibility": "https://carbondesignsystem.com/components/dropdown/accessibility/"
     },
+    "edit-in-place": {
+      "kind": "story",
+      "site": "ibm-products",
+      "story": "components-editinplace--default",
+      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=components-editinplace--default",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
+    },
     "file-uploader": {
       "kind": "page",
       "title": "File uploader",
@@ -292,6 +292,20 @@
       "style": "https://carbondesignsystem.com/components/form/style/",
       "accessibility": "https://carbondesignsystem.com/components/form/accessibility/"
     },
+    "full-page-error": {
+      "kind": "story",
+      "site": "ibm-products",
+      "story": "components-fullpageerror--full-page-error",
+      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=components-fullpageerror--full-page-error",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
+    },
+    "guidebanner": {
+      "kind": "story",
+      "site": "ibm-products",
+      "story": "preview-candidate-onboarding-guidebanner--collapsible",
+      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=preview-candidate-onboarding-guidebanner--collapsible",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
+    },
     "icon-indicator": {
       "kind": "story",
       "site": "react",
@@ -375,12 +389,26 @@
       "style": "https://carbondesignsystem.com/components/notification/style/",
       "accessibility": "https://carbondesignsystem.com/components/notification/accessibility/"
     },
+    "notifications-panel": {
+      "kind": "story",
+      "site": "ibm-products",
+      "story": "components-notificationspanel--default",
+      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=components-notificationspanel--default",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
+    },
     "number-input": {
       "kind": "page",
       "title": "Number input",
       "usage": "https://carbondesignsystem.com/components/number-input/usage/",
       "style": "https://carbondesignsystem.com/components/number-input/style/",
       "accessibility": "https://carbondesignsystem.com/components/number-input/accessibility/"
+    },
+    "options-tile": {
+      "kind": "story",
+      "site": "ibm-products",
+      "story": "components-optionstile--options-tile",
+      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=components-optionstile--options-tile",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
     },
     "overflow-menu": {
       "kind": "story",
@@ -482,8 +510,8 @@
     "stack": {
       "kind": "story",
       "site": "ibm-products",
-      "story": "patterns-coachmark-stacked--coachmark-stack",
-      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=patterns-coachmark-stacked--coachmark-stack",
+      "story": "preview-tearsheet--stacking-tearsheet",
+      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=preview-tearsheet--stacking-tearsheet",
       "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
     },
     "structured-list": {

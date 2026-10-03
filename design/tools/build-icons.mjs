@@ -82,6 +82,10 @@ const ICONS = [
   // A PERSON: `user`, one figure, where `user--avatar` would mean the account
   // that is signed in.
   'user',
+  // the guide banner's mark, the one glyph that component draws itself
+  'idea',
+  // the notifications panel's settings button
+  'settings',
 ];
 
 const symbols = [], missing = [], from = {};

@@ -1,0 +1,49 @@
+<section class="ks-sec" id="tag-overflow">
+  <h2>Tag overflow</h2><p>the tags that fit · a count of the rest · the rest in a popover</p>
+  <!-- PROVENANCE: rendered-dom · utilities-tagoverflow--tags-with-overflow-count
+       on the ibm-products origin, 2026-10-03 -->
+  <!--
+    Carbon's component measures the row and decides how many tags fit. No
+    module does that here, so the split is written by hand: three tags shown
+    and two behind the count, as the story renders them at 250px.
+
+    Each visible tag sits in a div the capture names `tag-overflow__tag-container`,
+    and the list sits in one it names `tag-overflow-popover__content`. Neither
+    has a compiled rule, nor has `tag-overflow--align-start`, so §4.1.12 keeps
+    the divs and leaves the classes off. The "all tags" modal the story mounts
+    beside the row is not shown.
+  -->
+  <div class="rux--tag-overflow">
+    <div class="rux--tag-overflow__visible-tags">
+      <div>
+        <div class="rux--tag rux--layout--size-md rux--tag-overflow__item--tag"><span class="rux--tag__label">Billing</span></div>
+      </div>
+      <div>
+        <div class="rux--tag rux--layout--size-md rux--tag-overflow__item--tag"><span class="rux--tag__label">Urgent</span></div>
+      </div>
+      <div>
+        <div class="rux--tag rux--layout--size-md rux--tag-overflow__item--tag"><span class="rux--tag__label">Europe</span></div>
+      </div>
+      <div class="rux--tag-overflow__indicator">
+        <span class="rux--tag-overflow-popover" aria-hidden="false">
+          <span class="rux--popover-container rux--popover--caret rux--popover--drop-shadow rux--popover--high-contrast rux--popover--bottom rux--tag-overflow-popover__el">
+            <button type="button" class="rux--tag rux--tag--operational rux--tag-overflow-popover__trigger rux--tag--gray" aria-expanded="false" aria-controls="ks-tag-overflow-rest">
+              <span><span class="rux--tag__label">+2</span></span>
+            </button>
+            <span class="rux--popover" id="ks-tag-overflow-rest" aria-hidden="true">
+              <span class="rux--popover-content">
+                <div>
+                  <ul class="rux--tag-overflow-popover__tag-list">
+                    <li class="rux--tag-overflow-popover__tag-item rux--tag-overflow-popover__tag-item--default">Renewal</li>
+                    <li class="rux--tag-overflow-popover__tag-item rux--tag-overflow-popover__tag-item--default">Reviewed</li>
+                  </ul>
+                </div>
+              </span>
+              <span class="rux--popover-caret"></span>
+            </span>
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>

@@ -17,8 +17,10 @@ const SRC = 'src/app.scss';
 const OUT = 'css/rux.css';
 const MIN = 'css/rux.min.css';
 
+// `--quiet-deps` because the deprecation warnings are Carbon's own Sass, loaded
+// from node_modules, and nothing here can answer them; ours would still print.
 function sass(out, extra = []) {
-  execFileSync('npx', ['sass', '--load-path=node_modules', '--no-source-map', ...extra, SRC, out],
+  execFileSync('npx', ['sass', '--load-path=node_modules', '--no-source-map', '--quiet-deps', ...extra, SRC, out],
     { stdio: ['ignore', 'inherit', 'inherit'] });
 }
 
@@ -75,11 +77,16 @@ function brand(css) {
 
 function kb(n) { return `${(n / 1024).toFixed(0)} KB`; }
 
-let focusRules = 0;
+let focusRules = 0, hardReferences = [];
 for (const [out, extra] of [[OUT, []], [MIN, ['--style=compressed']]]) {
   sass(out, extra);
   const done = transform(readFileSync(out, 'utf8'));
-  if (out === OUT) focusRules = done.focus;
+  if (out === OUT) { focusRules = done.focus; hardReferences = done.references; }
+  if (done.undeclared.length) {
+    console.error(`\n  FAIL (${out}): Carbon hardcodes a reference to a token this build does not declare: `
+      + done.undeclared.map(n => `--rux-${n}`).join(', '));
+    process.exit(1);
+  }
   const css = brand(done.css);
   writeFileSync(out, css);
   // Scans the banner too, deliberately: a notice that named the old prefix would be a
@@ -127,11 +134,11 @@ const JS_TRIPWIRE_KB = 70;
 // covered. Admitting the fluid family took the stylesheet from 66.4 to 70.5 KB
 // and NOTHING would have stopped it at 75.
 //
-// RAISED FROM 85 TO 96 KB on 2026-09-01 for the completeness decision. Measured
-// in memory against the CURRENT @carbon/styles: all 83 components and all four
-// themes are 93.955 KB gzipped; batch 5 and four themes are 92.423 KB. 96 is one
-// clear integer step above the full-Carbon ceiling without the unsupported room
-// 100 would add.
+// IT SITS ONE STEP ABOVE FULL CARBON. Measured with tools/measure.mjs against
+// the installed @carbon/styles 1.116.0: all 87 components and all four themes
+// are 102.6 KB gzipped, and the shipped set is 100.8 KB before the build's
+// `:focus-visible` rewrite adds its bytes. 105 is one clear step above that
+// ceiling without room nothing accounts for.
 //
 // THIS CHANGES WHAT THE ALARM MEANS. It no longer notices the full component set
 // being re-enabled; completeness makes that a legitimate state. It notices this
@@ -141,7 +148,7 @@ const JS_TRIPWIRE_KB = 70;
 // IF THIS TRIPS, re-measure full Carbon on the pinned dependency before touching
 // the number. A Carbon bump may move the ceiling; a build above that ceiling is
 // still a fault.
-const CSS_TRIPWIRE_KB = 96;
+const CSS_TRIPWIRE_KB = 105;
 const jsFiles = readdirSync('js').filter(f => f.endsWith('.js')).sort();
 const jsRaw = jsFiles.map(f => readFileSync(join('js', f)));
 const jsGzip = gzipSync(Buffer.concat(jsRaw), { level: 9 }).length / 1024;
@@ -154,6 +161,7 @@ console.log(`
   classes      ${classes} unique .rux--*
   cds leakage  none
   focus        ${focusRules} :focus → :focus-visible
+  hardcoded    ${hardReferences.length} --cds- reference(s) renamed: ${hardReferences.join(', ') || 'none'}
   attribution  banner + NOTICE
 
   unminified   ${kb(statSync(OUT).size)}

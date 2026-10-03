@@ -13,9 +13,9 @@
       "hit": 4,
       "own": 10
     },
-    "tooltip": {
-      "hit": 5,
-      "own": 12
+    "TagOverflow": {
+      "hit": 10,
+      "own": 22
     },
     "popover": {
       "hit": 16,
@@ -33,15 +33,27 @@
       "hit": 3,
       "own": 6
     },
-    "EditInPlace": {
+    "edit-in-place": {
       "hit": 8,
       "own": 16
     },
+    "tooltip": {
+      "hit": 5,
+      "own": 10
+    },
+    "notifications-panel": {
+      "hit": 25,
+      "own": 47
+    },
+    "Tearsheet": {
+      "hit": 20,
+      "own": 37
+    },
     "data-table": {
-      "hit": 41,
+      "hit": 45,
       "own": 80
     },
-    "OptionsTile": {
+    "options-tile": {
       "hit": 14,
       "own": 25
     },
@@ -95,19 +107,19 @@
     },
     "text-input": {
       "hit": 17,
-      "own": 27
+      "own": 26
     },
     "tile": {
       "hit": 17,
       "own": 26
     },
-    "list-box": {
-      "hit": 23,
-      "own": 35
-    },
     "accordion": {
       "hit": 10,
       "own": 15
+    },
+    "list-box": {
+      "hit": 24,
+      "own": 36
     },
     "select": {
       "hit": 16,
@@ -117,25 +129,25 @@
       "hit": 17,
       "own": 25
     },
-    "list": {
-      "hit": 28,
-      "own": 41
-    },
     "modal": {
       "hit": 17,
       "own": 25
     },
-    "user-avatar": {
-      "hit": 17,
-      "own": 24
+    "list": {
+      "hit": 29,
+      "own": 42
     },
-    "notification": {
-      "hit": 39,
-      "own": 54
+    "tag": {
+      "hit": 35,
+      "own": 49
     },
     "card": {
       "hit": 25,
       "own": 34
+    },
+    "notification": {
+      "hit": 40,
+      "own": 54
     },
     "form": {
       "hit": 6,
@@ -173,10 +185,6 @@
       "hit": 13,
       "own": 16
     },
-    "tag": {
-      "hit": 22,
-      "own": 27
-    },
     "ai-label": {
       "hit": 14,
       "own": 17
@@ -185,10 +193,6 @@
       "hit": 23,
       "own": 28
     },
-    "ui-shell": {
-      "hit": 46,
-      "own": 56
-    },
     "breadcrumb": {
       "hit": 5,
       "own": 6
@@ -196,6 +200,10 @@
     "toggletip": {
       "hit": 5,
       "own": 6
+    },
+    "ui-shell": {
+      "hit": 47,
+      "own": 56
     },
     "action-set": {
       "hit": 12,
@@ -217,11 +225,19 @@
       "hit": 17,
       "own": 19
     },
+    "guidebanner": {
+      "hit": 18,
+      "own": 20
+    },
     "dialog": {
       "hit": 12,
       "own": 13
     },
     "menu": {
+      "hit": 22,
+      "own": 24
+    },
+    "user-avatar": {
       "hit": 22,
       "own": 24
     },
@@ -289,7 +305,7 @@
       "hit": 1,
       "own": 1
     },
-    "FullPageError": {
+    "full-page-error": {
       "hit": 10,
       "own": 10
     },

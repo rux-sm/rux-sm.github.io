@@ -111,6 +111,7 @@ export const ICONS = {
   'folder': { material: 'folder', rux: null },
   'grid': { material: 'grid_view', rux: null },
   'hotel': { material: 'airline_seat_flat', rux: null },  // Carbon's hotel is a bed, which is what a sleeper coach is.
+  'idea': { material: 'lightbulb', rux: null },
   'in-progress': { material: 'progress_activity', rux: null },  // `pending` is taken by pending--filled.
   'incomplete': { material: 'incomplete_circle', rux: null },
   'information': { material: 'info', rux: null },
@@ -142,6 +143,7 @@ export const ICONS = {
   'save': { material: 'save', rux: null },
   'search': { material: 'search', rux: null },
   'shuttle': { material: 'airport_shuttle', rux: null },
+  'settings': { material: 'settings', rux: null },
   'subtract': { material: 'remove', rux: null },
   'time': { material: 'schedule', rux: null },
   'trash-can': { material: 'delete', rux: null },

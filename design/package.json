@@ -18,9 +18,9 @@
     "watch": "sass --load-path=node_modules --no-source-map --watch src/app.scss css/rux.css"
   },
   "devDependencies": {
-    "@carbon/colors": "^11.57.0",
-    "@carbon/elements": "^11.95.0",
-    "@carbon/styles": "^1.114.0",
-    "sass": "^1.103.1"
+    "@carbon/colors": "^11.59.0",
+    "@carbon/elements": "^11.98.0",
+    "@carbon/styles": "^1.116.0",
+    "sass": "^1.105.1"
   }
 }

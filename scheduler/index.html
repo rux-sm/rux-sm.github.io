@@ -780,15 +780,15 @@
        places it at the pointer and opens it through Rux.menu.open, which
        supplies Escape, outside press and focus return. The module repositions
        only position: fixed surfaces, so this absolute one keeps its place. -->
-  <!-- The Contacts window: a card for the booking contact, each trip contact
+  <!-- The Contacts window: a row for the booking contact, each trip contact
        and the crew on the trip's buses, each with Call and Text, in a Carbon
        modal centred on the screen as the Updates window is. It has no footer:
-       each card carries its own buttons. data.js fills the label and the list. -->
-  <div class="rux--layer-one rux--modal" id="scheduler-contacts-modal" role="presentation">
+       each row carries its own buttons. data.js fills the label and the list. -->
+  <div class="rux--layer-one rux--modal scheduler-modal--contacts" id="scheduler-contacts-modal" role="presentation">
     <div role="dialog" aria-modal="true" aria-labelledby="scheduler-contacts-title" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
       <div class="rux--modal-header">
         <h2 class="rux--modal-header__label" id="scheduler-contacts-trip"></h2>
-        <h2 class="rux--modal-header__heading" id="scheduler-contacts-title">Contacts</h2>
+        <h2 class="rux--modal-header__heading" id="scheduler-contacts-title">Contact list</h2>
         <div class="rux--modal-close-button">
           <button type="button" class="rux--modal-close" aria-label="Close" title="Close" data-rux-close>
             <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>

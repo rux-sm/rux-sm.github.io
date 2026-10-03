@@ -12949,16 +12949,15 @@
       .filter(c => c.who)
       .map(c => ({
         name: c.who.name, role: c.label, driverId: c.driverId, phone: c.who.phone || null, texting: c.who.texting_url || null,
-        status: c.status, report: c.reportTime ? hhmm(c.reportTime) : null,
         bus: a.bus_id != null ? panelIndex.buses.get(a.bus_id)?.number ?? null : null,
         reminder: reminderOf(a, c),
       }));
     const mine = assigns.filter(a => String(a.id) === bar.dataset.assignmentId).flatMap(crewOfBus);
     const others = assigns.filter(a => String(a.id) !== bar.dataset.assignmentId).flatMap(crewOfBus);
 
-    // Carbon's ghost button, its words before its icon.
+    // Carbon's secondary button, its words before its icon.
     const button = (words, icon, href, away, onTap) => {
-      const a = el('a', 'rux--btn rux--btn--ghost rux--layout--size-md scheduler-contact__action', words);
+      const a = el('a', 'rux--btn rux--btn--secondary rux--layout--size-md scheduler-contact__action', words);
       a.href = href;
       if (away) { a.target = '_blank'; a.rel = 'noopener'; }
       if (onTap) a.addEventListener('click', onTap);
@@ -13017,23 +13016,17 @@
       } });
     }
     const letterHome = letter && people.find(p => p.role !== 'Trip contact');
-    /* A person is a tile: their name, for a driver a line of bus, role,
-       status and report time, and their number; at the tile's end Call and
-       Text in words and a menu of everything else. */
+    /* A person is a row of Carbon's contained list: who they are to the trip,
+       a driver's bus before their role, over their name and number; at the
+       row's end Call and Text and a menu of everything else. */
     const card = p => {
-      const c = el('div', 'scheduler-contact');
+      const li = el('li', 'rux--contained-list-item');
+      const c = el('div', 'rux--contained-list-item__content scheduler-contact');
       const who = el('div', 'scheduler-contact__who');
-      who.appendChild(el('strong', 'scheduler-contact__name', p.name));
-      if (!p.customer) {
-        const meta = el('span', 'scheduler-contact__meta');
-        meta.append([p.bus != null ? `Bus ${p.bus}` : null, p.role].filter(Boolean).join(' · '));
-        if (p.status) {
-          meta.append(' · ', el('span', `scheduler-contact__status scheduler-contact__status--${p.status.tone}`, p.status.label));
-        }
-        if (p.report) meta.append(` · reports ${p.report}`);
-        who.appendChild(meta);
-      }
-      who.appendChild(el('span', 'scheduler-contact__meta', p.phone ? showPhone(p.phone) : 'No number'));
+      who.append(
+        el('span', 'scheduler-contact__role', p.bus != null ? `Bus ${p.bus} ${p.role}` : p.role),
+        el('strong', 'scheduler-contact__name', p.name),
+        el('span', 'scheduler-contact__meta', p.phone ? showPhone(p.phone) : 'No number'));
       const acts = el('div', 'scheduler-contact__actions');
       const messages = p.texting && !docked;
       if (p.phone) {
@@ -13049,6 +13042,7 @@
       const items = [];
       if (p.email) items.push({ label: 'Email', run: go(`mailto:${p.email}`, offer('Emailed', p.name)) });
       if (p === letterHome) items.push(...letterItems);
+      if (!p.customer) items.push(...driverItems);
       /* A driver's reminder of this leg. Remind opens a text with it typed
          in; to the office's Google Messages conversation, which takes no
          text, it copies the reminder first to paste. */
@@ -13075,33 +13069,30 @@
       }
       acts.appendChild(moreMenu(`More for ${p.name}`, items));
       c.append(who, acts);
-      return c;
+      li.appendChild(c);
+      return li;
     };
-    /* A part is its name, with a menu at the head's end when it has one,
-       over its people's tiles, 2px apart as the Updates window's are. */
-    const part = (title, list, items = []) => {
-      if (!list.length) return [];
-      const head = el('div', 'scheduler-contacts__head');
-      head.appendChild(el('h3', 'scheduler-contacts__part', title));
-      if (items.length) head.appendChild(moreMenu(`More for ${title.toLowerCase()}`, items));
-      const group = el('div', 'scheduler-contacts__group');
-      group.append(...list.map(card));
-      return [head, group];
-    };
-    // Every driver on the leg in one group message, from two drivers up.
+    /* Every driver on the leg in one group message, from two drivers up, in
+       each driver's menu, with the driver details while no booking contact
+       holds them. */
     const drivers = [...mine, ...others];
     const numbers = [...new Set(drivers.map(d => d.phone && dial(d.phone)).filter(Boolean))];
     const driverItems = [
       ...(numbers.length > 1 ? [{ label: `Text all drivers (${numbers.length})`, run: go(`sms:/open?addresses=${numbers.join(',')}`) }] : []),
       ...(letterHome ? [] : letterItems),
     ];
-    const trippers = people.filter(p => p.role === 'Trip contact');
-    const rows = [
-      ...part('Booking contact', people.filter(p => p.role === 'Booking contact')),
-      ...part('Booking and trip contact', people.filter(p => p.role === 'Booking and trip contact')),
-      ...part(trippers.length > 1 ? 'Trip contacts' : 'Trip contact', trippers),
-      ...part(drivers.length > 1 ? 'Drivers' : 'Driver', drivers, driverItems),
+    // The booking contact, the trip contacts, then the drivers, this bar's bus first.
+    const everyone = [
+      ...people.filter(p => p.role !== 'Trip contact'),
+      ...people.filter(p => p.role === 'Trip contact'),
+      ...drivers,
     ];
+    const list = el('div', 'rux--contained-list rux--layout--size-lg');
+    const ul = el('ul');
+    ul.setAttribute('role', 'list');
+    ul.append(...everyone.map(card));
+    list.appendChild(ul);
+    const rows = everyone.length ? [list] : [];
     contactsList.replaceChildren(...(rows.length ? rows : [el('p', 'scheduler-contacts__empty', 'Nobody to reach on this trip yet.')]));
     document.getElementById('scheduler-contacts-trip').textContent = tripName(trip);
     contactsOpen = { slot };

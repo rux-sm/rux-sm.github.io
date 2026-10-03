@@ -1173,10 +1173,10 @@ button.scheduler-row-head__num::after {
 .scheduler-note-face > svg { inline-size: 1rem; block-size: 1rem; fill: currentColor; }
 .scheduler-note-face--md > svg { inline-size: 1.25rem; block-size: 1.25rem; }
 .scheduler-card__update[data-pinned] > svg { inline-size: 1rem; block-size: 1rem; color: color-mix(in srgb, var(--card-ink) 70%, transparent); }
-/* Closed, the pinned update and the newest of the rest show, each cut to one
-   line, 8px apart so each line is a 24px row. Open, every update shows whole,
-   in a list two rows taller that scrolls past four lines, or sooner where
-   data.js finds the board has less room. */
+/* Docked and closed, the pinned update and the newest of the rest show, each
+   cut to one line. Open, every update shows whole, in a list that scrolls
+   past four rows. Floating, every update shows whole and the card's height
+   is the limit. */
 .scheduler-card__update-list {
   display: flex;
   flex-direction: column;
@@ -1185,7 +1185,7 @@ button.scheduler-row-head__num::after {
   padding: 0;
   list-style: none;
 }
-.scheduler-card__updates { --card-updates-open: calc(4 * 1rem + 3 * var(--rux-spacing-03)); }
+.scheduler-card__updates { --card-updates-open: calc(4 * var(--rux-layout-size-height-sm)); }
 .scheduler-card__updates[data-open] .scheduler-card__update-list {
   max-block-size: var(--card-updates-open);
   overflow-y: auto;
@@ -1223,86 +1223,73 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-card__updates[data-open] .scheduler-card__words { white-space: pre-wrap; }
 .scheduler-card__when { white-space: nowrap; color: color-mix(in srgb, var(--card-ink) 70%, transparent); }
-/* Floating, every row is 24px, the slots' own height: one 16px line with
-   4px above and below, the rule above it taking a pixel of the 4. A row
-   with no rule, the first under the card's edge or the next line of a
-   band, keeps the whole 4. */
-.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card > .scheduler-card__row { padding-block: calc(var(--rux-spacing-02) - 1px) var(--rux-spacing-02); }
-.scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) .scheduler-card > .scheduler-card__row:first-child,
-.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn) + :is(.scheduler-card__asks, .scheduler-card__warn),
-.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card > .scheduler-card__misfit + .scheduler-card__misfit { padding-block-start: var(--rux-spacing-02); }
-/* Floating, the updates' title is a 24px row of its own like each update
-   under it, Updates with their count and Add at its end, so Add is plainly
-   the updates' and the count says how many a press opens. */
-.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__title { margin-block-end: var(--rux-spacing-03); }
-.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__title:last-child { margin-block-end: 0; }
-/* Floating, the card has the room to read by: 16px in from its sides, as a
-   Carbon popover is, and the updates in Carbon's 14px reading size on an
-   18px line, 16px apart, under a title with 16px above it. The warnings keep
-   their 24px rows and start their words where the updates do. The face, the
-   pin and the age sit on the first line. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__row { padding-inline: var(--rux-spacing-05); }
-/* Floating, a warning is a row like an update: Carbon's small row, 32px, its
-   words bold in the updates' 14px on an 18px line, 7px above and below, the
-   rule over the first taking a pixel of its 7. The bell and the words start
-   where the updates' face and words do, and the day it leaves ends where
-   their ages do, in their 12px. Where the words and the day do not fit one
-   line, the day drops under them. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) {
+/* THE CARD'S ROWS, floating or docked on a phone: 16px in from the card's
+   sides, as a Carbon popover's content is, each warning and each one-line
+   update Carbon's small row, 32px, in its 14px reading size on an 18px line
+   with 7px above and below. */
+.scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__row { padding-inline: var(--rux-spacing-05); }
+/* The updates' title is a row of its own, Updates with their count and Add
+   at its end, 16px under the card's rule and 8px over the first update's
+   own 7px. The last update's 7px and 8px more finish the foot. */
+.scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__updates { padding-block: var(--rux-spacing-05); }
+.scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__updates:has(> .scheduler-card__update-list) { padding-block-end: var(--rux-spacing-03); }
+.scheduler-bar-shortcuts[data-card] .scheduler-card__title { margin-block-end: var(--rux-spacing-03); }
+.scheduler-bar-shortcuts[data-card] .scheduler-card__title:last-child { margin-block-end: 0; }
+/* A warning's words are bold. The rule over the first takes a pixel of its
+   7. The bell and the words start where an update's face and words do, and
+   the day it leaves ends where their ages do, in their 12px; where the words
+   and the day do not fit one line, the day drops under them. */
+.scheduler-bar-shortcuts[data-card] .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 0;
   padding-block: calc((var(--rux-layout-size-height-sm) - 1.125rem) / 2 - 1px) calc((var(--rux-layout-size-height-sm) - 1.125rem) / 2);
 }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn) + :is(.scheduler-card__asks, .scheduler-card__warn),
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__misfit + .scheduler-card__misfit,
-.scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) .scheduler-card > .scheduler-card__row:first-child:is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) {
+.scheduler-bar-shortcuts[data-card] .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn) + :is(.scheduler-card__asks, .scheduler-card__warn),
+.scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__misfit + .scheduler-card__misfit,
+.scheduler-bar-shortcuts[data-card][data-side="above"] .scheduler-card > .scheduler-card__row:first-child:is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit),
+.scheduler-bar-shortcuts[data-docked] .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) {
   padding-block-start: calc((var(--rux-layout-size-height-sm) - 1.125rem) / 2);
 }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) > svg { flex: none; margin-block-start: 1px; }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) > strong {
+.scheduler-bar-shortcuts[data-card] .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) > svg { flex: none; margin-block-start: 1px; }
+.scheduler-bar-shortcuts[data-card] .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) > strong {
   flex: 0 1 auto;
   margin-inline: var(--rux-spacing-03) var(--rux-spacing-02);
   font-size: var(--rux-body-compact-01-font-size);
   line-height: var(--rux-body-compact-01-line-height);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__asks-when { margin-inline-start: auto; margin-block-start: 1px; }
+.scheduler-bar-shortcuts[data-card] .scheduler-card__asks-when { margin-inline-start: auto; margin-block-start: 1px; }
 /* A warning is a press that goes where it is put right, lit on hover across
    the card's width as an update is. */
 .scheduler-card > .scheduler-card__row[data-go] { cursor: pointer; }
 .scheduler-card > .scheduler-card__row[data-go]:hover { background: var(--card-hover); }
 .scheduler-card > .scheduler-card__row[data-go]:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
-/* An update is a press that opens it in the Updates window: its row lights
-   on hover as the slots do, across the card's whole width like a menu's
-   row, and the rows meet. A one-line update is Carbon's small row, 32px:
-   its 18px line with 7px above and below. */
-/* The list runs out to the card's sides itself, because a list that scrolls
+/* An update is a press that opens it in the Updates window, its row lit on
+   hover across the card's whole width like a menu's row, and the rows meet.
+   The list runs out to the card's sides itself, because a list that scrolls
    cuts off a row reaching past it. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list { gap: 0; margin-inline: calc(-1 * var(--rux-spacing-05)); }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update[data-update-id] {
+.scheduler-bar-shortcuts[data-card] .scheduler-card__update-list { gap: 0; margin-inline: calc(-1 * var(--rux-spacing-05)); }
+.scheduler-bar-shortcuts[data-card] .scheduler-card__update[data-update-id] {
   padding: calc((var(--rux-layout-size-height-sm) - 1.125rem) / 2) var(--rux-spacing-05);
   border-radius: var(--scheduler-shortcut-radius, 0);
   cursor: pointer;
 }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update[data-update-id]:hover { background: var(--card-hover); }
-/* More below than the card shows: the list's last 32px fade out, so a row cut
-   by the card's foot reads as going on rather than ending. data.js keeps the
-   mark only while there is more to scroll to. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list[data-below] {
-  mask-image: linear-gradient(to bottom, #000 calc(100% - 2rem), transparent);
-}
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update[data-update-id]:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
-/* The last row's own 8px finishes the 16px at the foot. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates { padding-block: var(--rux-spacing-05); }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates:has(> .scheduler-card__update-list) { padding-block-end: var(--rux-spacing-03); }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__words {
+.scheduler-bar-shortcuts[data-card] .scheduler-card__update[data-update-id]:hover { background: var(--card-hover); }
+.scheduler-bar-shortcuts[data-card] .scheduler-card__update[data-update-id]:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
+.scheduler-bar-shortcuts[data-card] .scheduler-card__words {
   font-size: var(--rux-body-compact-01-font-size);
   line-height: var(--rux-body-compact-01-line-height);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update > :is(.scheduler-card__face, .scheduler-card__when) { margin-block-start: 1px; }
+.scheduler-bar-shortcuts[data-card] .scheduler-card__update > :is(.scheduler-card__face, .scheduler-card__when) { margin-block-start: 1px; }
+/* Floating, more below than the card shows: the list's last 32px fade out,
+   so a row cut by the card's foot reads as going on rather than ending.
+   data.js keeps the mark only while there is more to scroll to. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list[data-below] {
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 2rem), transparent);
+}
 /* IT ARRIVES WITH A SMALL POP: rising 6px from the arrow's side and growing
    from 94%, on Carbon's expressive entrance curve over its moderate-02
    duration, each row following 40ms after the one above it. Reduced motion
@@ -2869,6 +2856,9 @@ button.scheduler-row-head__num::after {
   min-block-size: calc(2rem + 2 * var(--rux-spacing-03));
   background: var(--rux-layer-02);
 }
+/* The warnings stand on the same raised layer, since the sheet under them
+   is the header's. */
+.scheduler-bar-shortcuts[data-docked] .scheduler-card > :is(.scheduler-card__misfit, .scheduler-card__asks, .scheduler-card__warn) { background: var(--rux-layer-02); }
 /* The trip, above its slots: the bar's own rows, cloned, so they keep
    one builder and one set of rules. The trip's colour comes with them as the
    bar's colour class, and the head paints its fill and ink, so it reads as

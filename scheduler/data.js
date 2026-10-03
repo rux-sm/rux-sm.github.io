@@ -13164,13 +13164,11 @@
       const when = el('span', 'scheduler-card__when', ageShort(u.created_at));
       when.title = updateStamp(u);
       item.append(face, el('span', 'scheduler-card__words', u.body), when);
-      // Floating, an update is a press that opens it in the Updates window.
-      if (floating) {
-        item.dataset.updateId = u.id;
-        item.tabIndex = 0;
-        item.setAttribute('role', 'button');
-        item.setAttribute('aria-label', `Edit update: ${u.body}`);
-      }
+      // An update is a press that opens it in the Updates window.
+      item.dataset.updateId = u.id;
+      item.tabIndex = 0;
+      item.setAttribute('role', 'button');
+      item.setAttribute('aria-label', `Edit update: ${u.body}`);
       return item;
     };
     /* Docked, with any updates, the title's words are the section's toggle, a
@@ -13244,7 +13242,7 @@
     // A warning goes where it is put right.
     const warning = e.target.closest('.scheduler-card__row[data-go]');
     if (warning) { goToWarning(warning.dataset.go); return; }
-    // An update on the floating card opens in the Updates window, ready to change.
+    // An update opens in the Updates window, ready to change.
     const update = e.target.closest('.scheduler-card__update[data-update-id]');
     if (update) { openUpdatesFromCard(update.dataset.updateId); return; }
     // A press anywhere on updates with more to show opens or closes them, and

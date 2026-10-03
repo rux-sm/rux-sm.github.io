@@ -157,6 +157,10 @@
       "hit": 6,
       "own": 8
     },
+    "coachmark": {
+      "hit": 13,
+      "own": 17
+    },
     "tabs": {
       "hit": 28,
       "own": 37

@@ -1,0 +1,71 @@
+<section class="ks-sec" id="coachmark">
+  <h2>Coachmark</h2><p>a beacon that opens a short hint · the tagline that offers one</p>
+  <!-- PROVENANCE: rendered-dom · preview-onboarding-coachmark--tooltip and
+       patterns-coachmark-fixed--coachmark-fixed on the ibm-products origin, 2026-10-03 -->
+  <!--
+    The hint is a popover, so js/popover.js opens and closes it from the beacon.
+    It is written open, as the story renders it. The beacon's ring is one
+    circle, r 1 at 38 38, which Carbon's rules animate while the hint is shut.
+
+    ibm-products names these classes `coachmark__next…`; @carbon/styles ships
+    the same component as `coachmark…`, and tools/lib/capture-names.mjs maps
+    one to the other for the checks.
+
+    `coachmark--content-header--close-button` is in the capture with no
+    compiled rule and is not written (§4.1.12). The close buttons sit in
+    icon-tooltips there, which the sink declines throughout.
+
+    The body's content is the consumer's. The story sizes its heading and
+    text and sets its button to the right with its own stylesheet; the type
+    classes and `ks-coachmark-done` do the same here.
+
+    The tagline is captured only while its hint is open, when
+    `coachmark-tagline--is-open` hides it. It is shown here shut, which is the
+    base class alone. Carbon fixes it to the foot of the viewport;
+    `ks-fixed-stage` gives it a box to be fixed against instead.
+  -->
+  <div class="ks-label">beacon</div>
+  <div class="ks-coachmark-room">
+    <div class="rux--coachmark">
+      <span class="rux--popover-container rux--popover--caret rux--popover--drop-shadow rux--popover--high-contrast rux--popover--open rux--popover--bottom">
+        <div class="rux--coachmark-beacon rux--coachmark-beacon-default">
+          <button type="button" class="rux--coachmark-beacon__target" aria-label="Show information" aria-expanded="true">
+            <svg class="rux--coachmark-beacon__center" aria-hidden="true" focusable="false"><circle r="1" cx="38" cy="38"></circle></svg>
+          </button>
+        </div>
+        <span class="rux--popover" role="region" aria-label="Coachmark content">
+          <span class="rux--popover-content rux--coachmark--coachmark-content">
+            <div class="rux--coachmark--content-header">
+              <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Close">
+                <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+              </button>
+            </div>
+            <div class="rux--coachmark--content-body">
+              <h2 class="rux--type-heading-compact-01">Filters moved</h2>
+              <p class="rux--type-body-compact-01">They now sit above the table.</p>
+              <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--primary ks-coachmark-done">Done</button>
+            </div>
+          </span>
+          <span class="rux--popover-caret"></span>
+        </span>
+      </span>
+    </div>
+  </div>
+
+  <div class="ks-label" style="margin-block-start:1.5rem">tagline</div>
+  <div class="ks-fixed-stage" style="block-size:5rem">
+    <div class="rux--coachmark-tagline">
+      <button type="button" class="rux--coachmark-tagline__cta" aria-label="What changed in this release?">
+        <div class="rux--coachmark-tagline__idea" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-idea"/></svg>
+        </div>
+        <div>What changed in this release?</div>
+      </button>
+      <div class="rux--coachmark-tagline--close-btn-container">
+        <button type="button" class="rux--coachmark-tagline--close-btn rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

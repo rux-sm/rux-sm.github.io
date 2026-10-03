@@ -169,7 +169,7 @@ one. **Its three CONTAINED specimens cannot be marked** — lines 151, 219
   of those three."
 
 <!-- COVERAGE:BEGIN -->
-_72 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 293 candidate regions in the 51 unmarked._
+_73 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 295 candidate regions in the 52 unmarked._
 
 | fragment | components | blocks | candidates | text | variants | behaviour | in the builder |
 |---|---|---|---|---|---|---|---|
@@ -184,6 +184,7 @@ _72 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 2
 | `card` | button, card | 2 | 11 | 8 | 1 | — | yes |
 | `chat-button` | button, chat-button | — | 4 | — | — | — | no |
 | `checkbox` | checkbox, form | 1 | 5 | 6 | 0 | — | yes |
+| `coachmark` | button, coachmark, popover | — | 2 | — | — | copy-button, popover | no |
 | `code-snippet` | button, code-snippet, copy-button | 2 | 4 | 4 | 1 | copy-button | yes |
 | `combo-box` | combo-box, list-box, text-input | — | 2 | — | — | form-controls, list-box | no |
 | `combo-button` | button, combo-button, menu | — | 4 | — | — | menu | no |

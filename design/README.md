@@ -61,16 +61,16 @@ The table is generated on every `npm run verify`. Do not edit it by hand.
 <!-- STATS:BEGIN -->
 | | |
 |---|---|
-| Components | **81 / 87 compiled** in 84 `@use` lines — `data-table` is four of them — and `docs/inventory.md` decides all 87, which `check-inventory` fails if it stops |
+| Components | **82 / 87 compiled** in 85 `@use` lines — `data-table` is four of them — and `docs/inventory.md` decides all 87, which `check-inventory` fails if it stops |
 | Themes | 4 — white, g10, g90, g100 — plus `geist-dark`, `ant-dark` and `spotify-dark`, token override blocks in `css/rux-theme.css`, not a compile |
-| Tokens · classes | **628** `--rux-*` defined, 9 more read through a fallback · **1,927** `.rux--*` |
-| Kitchen sink | **72** sections · **1,078** classes with `templates/` and `js/` |
-| Class coverage | **1,047 / 1,503 (70%)** — ratcheted in `data/coverage.json` |
+| Tokens · classes | **628** `--rux-*` defined, 9 more read through a fallback · **1,944** `.rux--*` |
+| Kitchen sink | **73** sections · **1,092** classes with `templates/` and `js/` |
+| Class coverage | **1,060 / 1,520 (70%)** — ratcheted in `data/coverage.json` |
 | Spacing scale | 13 `--rux-spacing-*` tokens, demoed in the `spacing` section |
-| Markup provenance | **80 `rendered-dom` · 6 `source` · 0 `inferred`** across 86 files |
+| Markup provenance | **81 `rendered-dom` · 6 `source` · 0 `inferred`** across 87 files |
 | Icons | 248 symbols in a 75.1 KB sprite — 55 referenced, 193 nothing points at |
-| Size | 1100.8 KB raw · 991.0 KB min · **101 KB gzipped** |
-| Behaviour JS | **18** modules · **68 KB gzipped** · 223.3 KB raw, 61% of it comment · 87.2 KB of code |
+| Size | 1107.4 KB raw · 996.7 KB min · **102 KB gzipped** |
+| Behaviour JS | **18** modules · **68 KB gzipped** · 223.7 KB raw, 61% of it comment · 87.3 KB of code |
 
 **Every figure above is generated** by `tools/build-readme.mjs` from
 `tools/lib/stats.mjs`, rewritten on every `npm run verify`, and CI fails if the

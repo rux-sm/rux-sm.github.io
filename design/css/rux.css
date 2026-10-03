@@ -7212,6 +7212,252 @@ fieldset[disabled] .rux--form__helper-text {
   margin-block-start: 0;
 }
 
+/* stylelint-disable declaration-no-important */
+.rux--coachmark--floating span:has(> div > .rux--coachmark--content-header--drag-icon) {
+  margin-inline-end: auto;
+}
+.rux--coachmark .rux--coachmark--content-header--is-dragging {
+  border-radius: 0;
+  box-shadow: 0 0 0 0.25rem var(--rux-icon-inverse, #ffffff);
+  outline: 0.125rem solid var(--rux-background-inverse, #393939);
+}
+.rux--coachmark .rux--coachmark--coachmark-content .rux--coachmark--content-header {
+  display: flex;
+  justify-content: flex-end;
+}
+.rux--coachmark .rux--coachmark--coachmark-content .rux--coachmark--content-header--drag-icon,
+.rux--coachmark .rux--coachmark--coachmark-content .rux--coachmark--content-header .rux--btn {
+  color: var(--rux-icon-inverse, #ffffff);
+}
+.rux--coachmark .rux--coachmark--coachmark-content .rux--coachmark--content-header--drag-icon .rux--btn__icon,
+.rux--coachmark .rux--coachmark--coachmark-content .rux--coachmark--content-header--drag-icon svg,
+.rux--coachmark .rux--coachmark--coachmark-content .rux--coachmark--content-header .rux--btn .rux--btn__icon,
+.rux--coachmark .rux--coachmark--coachmark-content .rux--coachmark--content-header .rux--btn svg {
+  color: var(--rux-icon-inverse, #ffffff);
+  fill: var(--rux-icon-inverse, #ffffff);
+}
+.rux--coachmark .rux--coachmark--coachmark-content .rux--coachmark--content-body {
+  display: flex;
+  flex-direction: column;
+  padding: 0.125rem 1rem 0;
+}
+
+.rux--coachmark-beacon {
+  position: relative;
+}
+.rux--coachmark-beacon-default .rux--coachmark-beacon__target::before {
+  display: none;
+}
+.rux--coachmark-beacon-default .rux--coachmark-beacon__target::after {
+  position: absolute;
+  border-radius: 50%;
+  background-color: #4589ff;
+  block-size: 0.75rem;
+  content: "";
+  inline-size: 0.75rem;
+  inset-block-start: 0.625rem;
+  inset-inline-start: 0.625rem;
+}
+.rux--coachmark-beacon-default .rux--coachmark-beacon__target:focus-visible {
+  outline: transparent;
+}
+.rux--coachmark-beacon-default .rux--coachmark-beacon__target:focus-visible::before {
+  position: absolute;
+  display: block;
+  border-radius: 100%;
+  block-size: 18px;
+  content: "";
+  inline-size: 18px;
+  inset-block-start: 7px;
+  inset-inline-start: 7px;
+  outline: 0.125rem var(--rux-focus, #0f62fe) solid;
+}
+.rux--coachmark-beacon .rux--coachmark-beacon__target {
+  display: flex;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: transparent;
+  block-size: 2rem;
+  cursor: pointer;
+  inline-size: 2rem;
+}
+.rux--coachmark-beacon .rux--coachmark-beacon__target[aria-expanded=true] circle {
+  animation: none;
+}
+.rux--coachmark-beacon__center {
+  position: absolute;
+  z-index: 6900;
+  block-size: 5rem;
+  inline-size: 5rem;
+  inset-block-start: -1.375rem;
+  inset-inline-start: -1.375rem;
+  pointer-events: none;
+}
+.rux--coachmark-beacon__center circle {
+  animation: ripple 2s infinite;
+  fill: var(--rux-support-info, #0043ce);
+  fill-opacity: 0;
+  -webkit-mask-image: none;
+  mask-image: none;
+  stroke: var(--rux-support-info, #0043ce);
+  stroke-opacity: 0;
+  stroke-width: 1px;
+  transition-timing-function: cubic-bezier(0.2, 0, 1, 0.9);
+}
+@media (prefers-reduced-motion) {
+  .rux--coachmark-beacon__center circle {
+    animation: none;
+  }
+}
+
+@keyframes ripple {
+  0% {
+    fill-opacity: 0;
+    r: 1px;
+    stroke-opacity: 0;
+    transition-timing-function: cubic-bezier(0, 0, 0.38, 0.9);
+  }
+  31% {
+    fill-opacity: 0.2;
+    stroke-opacity: 1;
+  }
+  62% {
+    fill-opacity: 0;
+    r: 32px;
+    stroke-opacity: 0;
+  }
+  100% {
+    fill-opacity: 0;
+    r: 32px;
+    stroke-opacity: 0;
+  }
+}
+@keyframes ring-ripple {
+  0% {
+    fill-opacity: 0;
+    r: 12px;
+    stroke-opacity: 0;
+    transition-timing-function: cubic-bezier(0, 0, 0.38, 0.9);
+  }
+  31% {
+    fill-opacity: 0.2;
+    stroke-opacity: 1;
+  }
+  62% {
+    fill-opacity: 0;
+    r: 32px;
+    stroke-opacity: 0;
+  }
+  100% {
+    fill-opacity: 0;
+    r: 32px;
+    stroke-opacity: 0;
+  }
+}
+.rux--coachmark-tagline {
+  position: fixed;
+  z-index: 1000;
+  display: grid;
+  overflow: hidden;
+  border-radius: 0.125rem 0.125rem 0 0;
+  background: #6929c4;
+  background-image: linear-gradient(90deg, #001d6c 0%, #6929c4 100%);
+  color: #ffffff !important;
+  grid-template-columns: [cta-col] auto [close-btn-col] 2.5rem;
+  inline-size: 18rem;
+  inset-block-end: 0;
+  inset-inline-end: 1rem;
+  opacity: 1;
+  transition: opacity 240ms cubic-bezier(0.2, 0, 1, 0.9) 300ms;
+  transition-delay: 240ms;
+}
+@media (prefers-reduced-motion) {
+  .rux--coachmark-tagline {
+    transition: none;
+  }
+}
+.rux--coachmark-tagline::before {
+  position: absolute;
+  z-index: -1;
+  background: linear-gradient(90deg, #0043ce 0%, #6929c4 100%);
+  content: "";
+  inset: 0;
+  opacity: 0;
+  transition: opacity 240ms cubic-bezier(0.2, 0, 1, 0.9);
+}
+@media (prefers-reduced-motion) {
+  .rux--coachmark-tagline::before {
+    transition: none;
+  }
+}
+.rux--coachmark-tagline:hover::before {
+  opacity: 1;
+}
+.rux--coachmark-tagline--is-open {
+  background: #ffffff;
+  opacity: 0;
+}
+.rux--coachmark-tagline--is-open rux--coachmark-tagline__cta {
+  opacity: 0;
+}
+.rux--coachmark-tagline--is-open rux--coachmark-tagline--close-btn {
+  display: none;
+}
+.rux--coachmark-tagline--is-open::before {
+  background: #ffffff;
+}
+.rux--coachmark-tagline__cta {
+  display: grid;
+  padding: 0.5rem 0;
+  border: none;
+  background: transparent;
+  color: #ffffff !important;
+  grid-template-columns: [icon-col] 2rem [body-col] auto;
+  text-align: start;
+  font-size: var(--rux-body-short-01-font-size, 0.875rem);
+  font-weight: var(--rux-body-short-01-font-weight, 400);
+  line-height: var(--rux-body-short-01-line-height, 1.28572);
+  letter-spacing: var(--rux-body-short-01-letter-spacing, 0.16px);
+}
+.rux--coachmark-tagline__cta:focus-visible {
+  box-shadow: inset 0 0 0 3px #6929c4, inset 0 0 0 0.25rem #ffffff;
+  outline: 1px solid transparent;
+}
+.rux--coachmark-tagline__cta:hover {
+  cursor: pointer !important;
+}
+.rux--coachmark-tagline__cta .rux--coachmark-tagline__idea {
+  justify-self: center;
+}
+.rux--coachmark-tagline--close-btn-container {
+  block-size: 2rem;
+  inline-size: 2rem;
+  margin-inline-start: auto;
+}
+.rux--coachmark-tagline--close-btn {
+  border-color: transparent !important;
+  border-radius: 0;
+  block-size: 2rem;
+  color: #ffffff;
+  inline-size: 2rem;
+  margin-inline-start: auto !important;
+  outline: 1px solid transparent;
+}
+.rux--coachmark-tagline--close-btn:active {
+  background-color: var(--rux-button-secondary-active, #6f6f6f);
+}
+.rux--coachmark-tagline--close-btn:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--rux-background-inverse, #393939), inset 0 0 0 0.125rem #ffffff !important;
+}
+.rux--coachmark-tagline--close-btn svg > path {
+  margin: 0;
+  fill: #ffffff !important;
+}
+.rux--coachmark-tagline--close-btn:hover {
+  background-color: #7c3dd6 !important;
+}
+
 .rux--copy-btn html {
   font-size: 100%;
 }

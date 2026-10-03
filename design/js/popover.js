@@ -81,7 +81,10 @@
 
   const isTooltip = c => c.classList.contains('rux--tooltip');
   const surfaceOf = c => c.querySelector(':scope > .rux--popover');
-  const triggerOf = c => c.querySelector(':scope > button, :scope > [tabindex]');
+  // The trigger is the container's own button, or the button inside the one
+  // element Carbon wraps it in: a tooltip's trigger wrapper, a coachmark's beacon.
+  const triggerOf = c => c.querySelector(':scope > button, :scope > [tabindex]')
+    ?? c.querySelector(':scope > :not(.rux--popover) button');
 
   const live = new Map();   // container -> { registration, timer }
 
@@ -148,6 +151,9 @@
     // the popover unusable for anything interactive.
     if (!trigger || !trigger.contains(event.target)) return;
     event.preventDefault();
+    // A popover written open in the markup is taken over first, so the press
+    // closes it instead of opening what is already open.
+    if (container.classList.contains(OPEN)) open(container);
     live.has(container) ? close(container, { restoreFocus: true }) : open(container);
   });
 

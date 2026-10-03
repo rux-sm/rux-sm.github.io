@@ -158,6 +158,11 @@ body { min-height: 100vh; background: var(--rux-background);
 .ks-fixed-stage { position: relative; transform: translateZ(0); overflow: hidden;
   block-size: 42rem; max-inline-size: 26rem; border: 1px dashed var(--rux-border-subtle-01); }
 
+/* Room under the coachmark's beacon for the hint it opens, which hangs below
+   and would otherwise cover the next label. */
+.ks-coachmark-room { padding-block-end: 11rem; padding-inline-start: 8rem; }
+.ks-coachmark-done { align-self: flex-end; margin-block: var(--rux-spacing-05); }
+
 /* Carbon components set `display` on their own class, which outranks the UA
    `[hidden] { display: none }` rule on specificity. The harness needs `hidden` to
    actually hide, to stand in for the mount/unmount Carbon's web components do. */

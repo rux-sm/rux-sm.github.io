@@ -9,9 +9,6 @@ done and how.
 - **Screen-reader pass.** Toggle, modal and popover are not heard yet, two
   problems are open, and five controls need hearing again. The list is in
   `design/docs/screen-reader-pass.md`.
-- **Coachmark can come in.** Carbon 1.116 ships the classes its captures
-  render, so it only needs a fragment written from them. Its row is in
-  `design/docs/inventory.md`.
 - **Three references are older than the rest.** `design/data/carbon-react-spacing.json`
   was captured in a background tab, and `design/data/carbon-slots.json` and
   `design/data/carbon-co-classes.json` predate Carbon 1.116. Each needs taking again.

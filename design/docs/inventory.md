@@ -17,8 +17,8 @@ The rules that hold it together:
   DEFER are a commented one. A component with no line can be neither kept nor cut, so
   the check fails on it too.
 - **A component is admitted when a Carbon capture renders it.** DEFER means the
-  capture is missing, does not match the classes `@carbon/styles` ships, or has no
-  fragment written from it yet. CUT gives its own reason in the row.
+  capture is missing or does not match the classes `@carbon/styles` ships. CUT gives
+  its own reason in the row.
 - **Cost decides no disposition.** Every component measured adds under 5 KB gzipped
   to the shipped set.
 - **An evidence reason can expire.** Nothing re-reads a row's ground when Carbon
@@ -40,8 +40,8 @@ times. `tools/measure.mjs` prices a real subset by compiling it.
 | Foundation only (reset, type, grid, layout, tokens) — 1 theme | 51 KB | **6.6 KB** | — |
 | Foundation only — 2 themes | 71 KB | **7.9 KB** | — |
 | Lean — 22 components, 2 themes | 375 KB | **~39 KB** | see note |
-| **Shipped — 81 components / 84 modules, 4 themes** | 990 KB | **100.8 KB** | 1,927 |
-| Shipped set — 1 theme | 923 KB | **98.5 KB** | 1,927 |
+| **Shipped — 82 components / 85 modules, 4 themes** | 996 KB | **101.8 KB** | 1,944 |
+| Shipped set — 1 theme | 928 KB | **99.4 KB** | 1,944 |
 | Full Carbon — 87 components / 91 modules, 4 themes | 1,009 KB | **102.6 KB** | 1,991 |
 
 > The Shipped and Full Carbon rows are `node tools/measure.mjs` against
@@ -191,7 +191,7 @@ a rewritten component `…__next…`; `tools/lib/capture-names.mjs` maps both to
 | Component | Disposition | KB | Classes | Marginal | Reason / evidence |
 |---|---|---|---|---|---|
 | `big-number` | **KEEP** | 4 | 19 | +0.3 KB | an ibm-products capture renders it. The captured `figure`/`figcaption`, second row at `role=math` and value span ship as a fragment; the uncaptured size, percentage, trend, tooltip and skeleton variants are not written |
-| `coachmark` | **DEFER** | 6 | 31 | +0.9 KB | **no fragment yet.** Five ibm-products captures render `coachmark__next--*`, `coachmark-beacon` and `coachmark-tagline`, and `@carbon/styles` 1.116 ships all three under the plain names, so the captures match. Admit when a fragment is written from them |
+| `coachmark` | **KEEP** | 6 | 31 | +1.0 KB | five ibm-products captures render it. The beacon and its hint ship as a fragment the popover module opens and closes; the tagline is shown shut, which no capture renders, because open it is hidden. The floating, draggable and stacked variants are not written |
 | `edit-in-place` | **KEEP** | 3 | 27 | +0.5 KB | four ibm-products captures render it |
 | `full-page-error` | **KEEP** | 2 | 10 | +0.2 KB | three ibm-products captures render it |
 | `guidebanner` | **KEEP** | 27 | 37 | +4.7 KB | three ibm-products captures render it. Carbon sets its own dark theme on the banner, which is most of its size and means its colours do not follow the page's theme. ibm-products renders the scrolling row with a separate `carousel` block; `@carbon/styles` ships those rules inside this component as `guidebanner__carousel*` and `guidebanner__item`, and the fragment writes the compiled names. **No module**: a static specimen, expanded |

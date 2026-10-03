@@ -75,6 +75,7 @@ const REF_PATHS = [
   'data/carbon-ibm-products-states.json',
 ];
 const CHROME = /^(layout|layout-constraint--.*|sb-.*)$/;
+const ZONE = /^(white|g10|g90|g100)$/;
 const VOID = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
   'link', 'meta', 'param', 'source', 'track', 'wbr',
   'use', 'path', 'circle', 'rect', 'polygon', 'stop', 'ellipse', 'line']);
@@ -362,8 +363,12 @@ for (const path of REF_PATHS) {
     for (const line of Object.values(lines)) {
       const depth = (line.match(/^ */)[0].length) / 2;
       const body = line.trim().replace(/\[role=[^\]]*\]/, '').replace(/\{[^}]*\}/, '');
-      const classes = body.split('.').slice(1).filter(Boolean)
+      const named = body.split('.').slice(1).filter(Boolean)
         .map(captureName).filter(c => !CHROME.test(c));
+      // A theme zone is the story's choice of theme, never a component's
+      // wrapper. Storybook's Theme renders it as one element that also carries
+      // a layer class, so the whole element is left out of the chain.
+      const classes = named.some(c => ZONE.test(c)) ? [] : named;
 
       // Full chain: every class on every shallower open element.
       const chain = new Set();
@@ -433,9 +438,6 @@ function occurrences(html) {
 // decline instead of being adjudicated on its own. That is the trade -- the
 // judgement is genuinely about the class, and restating it per file was
 // producing drift, not rigour.
-const TAG_OVERFLOW_REASON = 'the story\'s theme, not the component. All eight tag-overflow '
-  + 'stories mount the row in a light theme zone, which is one element carrying both classes.';
-
 // ibm-products wraps every avatar it demos in its own hover tooltip, which
 // names the person. The avatar is the component; the name is carried by the
 // markup around it here, as it is for every icon button.
@@ -463,11 +465,6 @@ const CLASS_DECLINES = {
   'badge-indicator--count': [TOOLTIP_CHROME, TOOLTIP_REASON],
   'combo-button__trigger': [TOOLTIP_CHROME, TOOLTIP_REASON],
   'badge-indicator': [TOOLTIP_CHROME, TOOLTIP_REASON],
-  ...Object.fromEntries(['tag-overflow', 'tag-overflow__visible-tags', 'tag-overflow__item--tag',
-    'tag-overflow__indicator', 'tag-overflow-popover', 'tag-overflow-popover__el',
-    'tag-overflow-popover__trigger', 'tag-overflow-popover__tag-list',
-    'tag-overflow-popover__tag-item', 'tag-overflow-popover__tag-item--default',
-  ].map(c => [c, [['g10', 'layer-one'], TAG_OVERFLOW_REASON]])),
   'user-avatar': [AVATAR_TOOLTIP, AVATAR_REASON],
   'user-avatar--md': [AVATAR_TOOLTIP, AVATAR_REASON],
   'user-avatar--order-1-cyan': [AVATAR_TOOLTIP, AVATAR_REASON],

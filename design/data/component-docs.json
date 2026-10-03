@@ -94,6 +94,13 @@
       "style": "https://carbondesignsystem.com/components/checkbox/style/",
       "accessibility": "https://carbondesignsystem.com/components/checkbox/accessibility/"
     },
+    "coachmark": {
+      "kind": "story",
+      "site": "ibm-products",
+      "story": "preview-onboarding-coachmark--tooltip",
+      "specimen": "https://ibm-products.carbondesignsystem.com/iframe.html?id=preview-onboarding-coachmark--tooltip",
+      "why": "no page on carbondesignsystem.com; a captured specimen, not usage guidance"
+    },
     "code-snippet": {
       "kind": "page",
       "title": "Code snippet",

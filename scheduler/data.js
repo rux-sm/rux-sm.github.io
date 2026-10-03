@@ -9265,6 +9265,7 @@
       barShortcuts.style.setProperty('--scheduler-open-start', `${x - host.left}px`);
       // The arrow at the first day's middle, at least 12px in from a corner.
       barShortcuts.style.setProperty('--scheduler-open-tip', `${Math.max(12, Math.min(height - 12, middle - y))}px`);
+      fadeUpdates();
       pop();
       return;
     }
@@ -9283,6 +9284,7 @@
     // Half a slot in from the trip's own start edge, wherever the bar ended up.
     barShortcuts.style.setProperty('--scheduler-open-tip',
       `${Math.max(8, Math.min(tip.width - 20, box.left - x + 16))}px`);
+    fadeUpdates();
     pop();
   }
 
@@ -12995,6 +12997,16 @@
      the import, not the person who wrote the line, so it keeps the initial of
      the name it carries. */
   function updateFace(u, size) {
+    /* A line copied from the old notes has no author to show, so it stands
+       behind a note rather than an empty face. */
+    if (u.kind === 'imported' && !u.actor_name) {
+      const note = el('span', `scheduler-note-face scheduler-note-face--${size === 'sm' ? 'sm' : 'md'}`);
+      note.appendChild(svgUse('#m-sticky_note_2', '16', '0 0 32 32'));
+      note.title = 'From the old notes';
+      note.setAttribute('role', 'img');
+      note.setAttribute('aria-label', 'From the old notes');
+      return note;
+    }
     const who = u.actor_name || (u.kind === 'imported' ? 'From the old notes' : 'Someone');
     const nobody = !u.actor_name;
     const face = el('span', `rux--user-avatar ${size === 'sm' ? 'rux--user-avatar--sm' : 'rux--user-avatar--md'} ${nobody ? 'rux--user-avatar--order-2-gray' : avatarColour(who)}`,
@@ -13199,6 +13211,17 @@
     const toggle = part.querySelector('.scheduler-card__toggle');
     if (toggle) toggle.disabled = !more;
   }
+  /* Floating, a list of updates taller than the card fades at its foot while
+     there is more below, because a Mac hides the scroll bar until it is used. */
+  function fadeUpdates() {
+    const list = barShortcuts?.querySelector('.scheduler-card__update-list');
+    if (!list) return;
+    list.toggleAttribute('data-below', !barShortcuts.hasAttribute('data-docked')
+      && list.scrollTop + list.clientHeight < list.scrollHeight - 1);
+  }
+  barShortcuts?.addEventListener('scroll', e => {
+    if (e.target.classList?.contains('scheduler-card__update-list')) fadeUpdates();
+  }, true);
   function toggleUpdates(tripId, refocus) {
     updatesOpenFor = updatesOpenFor === tripId ? null : tripId;
     placeBarOpen();

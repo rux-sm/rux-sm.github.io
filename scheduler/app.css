@@ -1236,18 +1236,22 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) > strong { margin-inline-start: var(--rux-spacing-03); }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__asks-when { margin-inline-start: var(--rux-spacing-02); }
 /* An update is a press that opens it in the Updates window: its row lights
-   on hover as the slots do, the light reaching 8px past its words and 4px
-   above and below, so the updates' words stand 16px apart. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list { gap: var(--rux-spacing-03); }
+   on hover as the slots do, across the card's whole width like a menu's
+   row, and 8px above and below its words, so the rows meet and the updates'
+   words stand 16px apart. */
+/* The list runs out to the card's sides itself, because a list that scrolls
+   cuts off a row reaching past it. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list { gap: 0; margin-inline: calc(-1 * var(--rux-spacing-05)); }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update[data-update-id] {
-  margin-inline: calc(-1 * var(--rux-spacing-03));
-  padding: var(--rux-spacing-02) var(--rux-spacing-03);
+  padding: var(--rux-spacing-03) var(--rux-spacing-05);
   border-radius: var(--scheduler-shortcut-radius, 0);
   cursor: pointer;
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update[data-update-id]:hover { background: var(--card-hover); }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update[data-update-id]:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
+/* The last row's own 8px finishes the 16px at the foot. */
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates { padding-block: var(--rux-spacing-05); }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates:has(> .scheduler-card__update-list) { padding-block-end: var(--rux-spacing-03); }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__words {
   font-size: var(--rux-body-compact-01-font-size);
   line-height: var(--rux-body-compact-01-line-height);

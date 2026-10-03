@@ -189,8 +189,8 @@ scenario to be complete, and where a new area of LN must be easy to add.
 ### One scenario first
 
 - **Ship from stock is built through all three views before any other
-  scenario**, and the real pages are judged on it. The specimen before it uses
-  invented content, because Design holds nothing from atlas.
+  scenario**, and the real pages are judged on it. `notes/specimen-tool.html`
+  shows the three views on invented content, and the build follows its shape.
 
 - **A scenario is ready when every screen its steps name has a card and every
   task is on its route.** The build lists a scenario that is not ready, with
@@ -247,11 +247,6 @@ compare them; and landings for old page addresses, which are deleted.
 
 ## Tasks
 
-- [ ] Build one specimen page from invented content: a scenario's start and
-      result, its line with an open tile, a question with each kind of answer,
-      the map with a route lit and a decision opened, a screen card and a
-      concept card. Read it at desktop and phone widths
-      in light and dark.
 - [ ] In atlas, record the setting that decides each of the seven branches,
       from the configuration files and the screen files, or record it as
       unknown.
@@ -279,7 +274,8 @@ compare them; and landings for old page addresses, which are deleted.
       of map tile, and a search for a name, a code and a step word.
 - [ ] Remove the old pages, `notes/js/experiment.js`, `notes/js/quests.js`,
       `notes/js/tile-owner.js`, `notes/js/tile-walk.js`, `notes/js/online.js`,
-      `notes/specimen-tile.html` and `notes/specimen-map.html`, and bring Notes' checks down to what the
+      `notes/specimen-tile.html`, `notes/specimen-map.html` and
+      `notes/specimen-tool.html`, and bring Notes' checks down to what the
       new pages need.
 - [ ] Rewrite `notes/docs/diagram.md` for the one-look map and delete
       `notes/docs/owner-tools.md`.

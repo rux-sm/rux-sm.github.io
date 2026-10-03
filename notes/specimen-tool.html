@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en" data-theme="white"><head>
+<script src="/funnel.js"></script>
+<style>html:not([data-rux-unlocked]){visibility:hidden}</style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tool specimen — Notes</title>
+<link rel="stylesheet" href="/design/assets/fonts/plex.css">
+<link rel="stylesheet" href="/design/css/rux.css">
+<link rel="stylesheet" href="/design/css/rux-theme.css">
+<link rel="stylesheet" href="/design/css/rux-overrides.css">
+<link rel="stylesheet" href="theme.css"><link rel="stylesheet" href="overrides.css">
+<script src="/design/js/custom-themes.js"></script>
+<script src="/design/js/theme.js"></script>
+<style>
+/* Scaffolding for the three views (docs/plans/notes-learning-tool.md), on
+   invented content. The rules move into the build, and this page is deleted. */
+body { background: var(--rux-background); color: var(--rux-text-primary); }
+.notes-spec { max-inline-size: 64rem; margin: auto; padding: 3rem 1rem 6rem; }
+.notes-spec__view { margin-block: 0 4rem; }
+.notes-spec__label { margin-block: 0 1.5rem; padding-block-end: .5rem; border-block-end: 1px solid var(--rux-border-subtle-01); font-size: .75rem; color: var(--rux-text-secondary); }
+.notes-spec .rux--form-item { max-inline-size: 20rem; }
+.notes-frame { display: grid; gap: .25rem; margin-block: 1.5rem; font-size: .875rem; color: var(--rux-text-secondary); }
+.notes-frame b { font-weight: 400; color: var(--rux-text-primary); }
+
+.notes-line { display: flex; gap: 1.5rem; margin: 0 0 1rem; padding: 0; list-style: none; }
+.notes-line li { position: relative; flex: 1 1 0; min-inline-size: 0; }
+.notes-line li + li::before { content: ""; position: absolute; inset-block-start: 50%; inset-inline-start: -1.5rem; inline-size: 1.5rem; border-block-start: 1px solid var(--rux-border-strong-01); }
+.notes-line__tile { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: .5rem; inline-size: 100%; min-block-size: 3rem; padding: .5rem .75rem; border: 1px solid var(--rux-border-strong-01); background: var(--rux-background); color: var(--rux-text-primary); font: inherit; font-size: .875rem; text-align: start; cursor: pointer; }
+.notes-line__tile:hover { background: var(--rux-layer-hover-01); }
+.notes-line__tile:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
+.notes-line__tile[aria-current] { border: 2px solid var(--rux-border-interactive); }
+.notes-line__n { display: grid; place-items: center; inline-size: 1.5rem; block-size: 1.5rem; border-radius: 50%; background: var(--rux-layer-01); font-size: .75rem; }
+.notes-line__tile[aria-current] .notes-line__n { background: var(--rux-background-inverse); color: var(--rux-text-inverse); }
+
+.notes-task { padding: 1.5rem; border: 1px solid var(--rux-border-subtle-01); background: var(--rux-layer-01); }
+.notes-task__route { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .75rem; margin-block: .25rem 1rem; font-size: .875rem; color: var(--rux-text-secondary); }
+.notes-task__code { font-family: 'IBM Plex Mono', monospace; }
+.notes-task__why { max-inline-size: 40rem; margin-block: 0 1.5rem; line-height: 1.5; }
+.notes-task__label { margin-block: 1.5rem .5rem; font-size: .75rem; color: var(--rux-text-secondary); }
+.notes-answers { display: flex; flex-wrap: wrap; gap: .5rem; margin-block-start: .75rem; }
+.notes-unknown { color: var(--rux-text-secondary); }
+
+.notes-mini { position: relative; display: grid; grid-template-columns: 6rem repeat(4, minmax(8rem, 1fr)); border: 1px solid var(--rux-border-subtle-01); min-inline-size: 44rem; }
+.notes-mini__scroll { overflow-x: auto; }
+.notes-mini__head, .notes-mini__lane { padding: .5rem .75rem; font-size: .75rem; color: var(--rux-text-secondary); background: var(--rux-layer-01); }
+.notes-mini__lane, .notes-mini__cell { border-block-start: 1px solid var(--rux-border-subtle-01); }
+.notes-mini__cell { display: flex; flex-direction: column; gap: .75rem; padding: 1rem; min-block-size: 4rem; }
+.notes-mini__tile { position: relative; z-index: 1; display: flex; align-items: center; gap: .5rem; padding: .375rem .5rem; border: 1px solid var(--rux-border-subtle-01); background: var(--rux-background); color: var(--rux-text-disabled); font: inherit; font-size: .75rem; text-align: start; }
+.notes-mini__tile[data-lit] { border: 2px solid var(--rux-border-interactive); color: var(--rux-text-primary); cursor: pointer; }
+.notes-mini__tile[data-screen="no"] { border-style: dashed; }
+.notes-mini__lines { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; pointer-events: none; }
+.notes-mini__lines path { fill: none; stroke: var(--rux-border-interactive); stroke-width: 2; }
+.notes-mini__lines marker path { fill: var(--rux-border-interactive); stroke: none; }
+.notes-decision { margin-block-start: 1rem; padding: 1rem 1.5rem; border: 1px solid var(--rux-border-subtle-01); background: var(--rux-layer-01); }
+
+.notes-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1rem; margin-block-start: 1.5rem; }
+.notes-card__kind { margin-block: 0 .25rem; font-size: .75rem; color: var(--rux-text-secondary); }
+.notes-card p { margin-block: .5rem 1rem; line-height: 1.5; }
+
+@media (max-width: 41.98rem) {
+  .notes-line { flex-direction: column; gap: 1rem; }
+  .notes-line li + li::before { inset-block-start: -1rem; inset-inline-start: 1.5rem; inline-size: 0; block-size: 1rem; border-block-start: 0; border-inline-start: 1px solid var(--rux-border-strong-01); }
+  .notes-task { padding: 1rem; }
+}
+</style></head><body><!-- SPRITE:BEGIN -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+<!-- Generated by tools/build-icons.mjs. Do not edit by hand.
+     i- path data: Carbon Design System, Copyright IBM Corp. 2015, 2026.
+     m- path data: Material Symbols, Copyright Google LLC.
+     Both licensed under the Apache License, Version 2.0. r- is drawn here.
+     The sprite wrapper and the symbol naming are Design. See NOTICE. -->
+<symbol id="i-chevron--down" viewBox="0 0 16 16"><path d="M8 11 3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"/></symbol>
+<symbol id="i-chevron--right" viewBox="0 0 16 16"><path d="M11 8 6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"/></symbol>
+<symbol id="i-close" viewBox="0 0 32 32"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></symbol>
+<symbol id="i-search" viewBox="0 0 16 16"><path d="M15,14.3L10.7,10c1.9-2.3,1.6-5.8-0.7-7.7S4.2,0.7,2.3,3S0.7,8.8,3,10.7c2,1.7,5,1.7,7,0l4.3,4.3L15,14.3z M2,6.5	C2,4,4,2,6.5,2S11,4,11,6.5S9,11,6.5,11S2,9,2,6.5z"/></symbol>
+</svg>
+<!-- SPRITE:END --><main class="notes-spec" id="main">
+
+<section class="notes-spec__view" aria-labelledby="v-do">
+<p class="notes-spec__label" id="v-do">Do</p>
+<div class="rux--form-item">
+  <div class="rux--select rux--layout--size-md">
+    <label class="rux--label" for="scenario">Scenario</label>
+    <div class="rux--select-input__wrapper">
+      <select id="scenario" class="rux--select-input">
+        <option class="rux--select-option" value="a">Send a parcel</option>
+        <option class="rux--select-option" value="b">Order more stock</option>
+        <option class="rux--select-option" value="c">Take a return</option>
+      </select>
+      <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+    </div>
+  </div>
+</div>
+<p class="notes-frame"><span><b>Needs</b> · an item on the shelf and a customer on file</span><span><b>Ends in</b> · a parcel handed over, and the shelf count down by one</span></p>
+
+<ol class="notes-line">
+  <li><button type="button" class="notes-line__tile"><span class="notes-line__n">1</span>Take the order</button></li>
+  <li><button type="button" class="notes-line__tile" aria-current="step"><span class="notes-line__n">2</span>Check the shelf</button></li>
+  <li><button type="button" class="notes-line__tile"><span class="notes-line__n">3</span>Pack</button></li>
+  <li><button type="button" class="notes-line__tile"><span class="notes-line__n">4</span>Hand over</button></li>
+</ol>
+
+<article class="notes-task">
+  <h2 class="rux--type-productive-heading-03">2 Check the shelf</h2>
+  <p class="notes-task__route"><span>Stock ➔ Shelves ➔ Shelf view</span>
+    <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm notes-task__code" data-copy="demo2100m000" aria-label="Copy the code demo2100m000">demo2100m000</button></p>
+  <p class="notes-task__why">The shelf view shows what is on the shelf and how much of it is already promised to other orders.<span hidden> Only the part that is not promised can go into this parcel, so the two numbers are read together and never one alone.</span>
+    <a class="rux--link" href="#main" role="button" data-more>Show more</a></p>
+
+  <div class="rux--data-table-content">
+    <table class="rux--data-table rux--data-table--sm">
+    <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
+    <tbody>
+      <tr><td>2.1</td><td>Enter the item and run the filter</td><td>One row per shelf</td></tr>
+      <tr><td>2.2</td><td>Tick the row and open Shelf detail</td><td>On shelf and Promised, side by side</td></tr>
+      <tr><td>2.3</td><td>Read On shelf less Promised</td><td>The count that is free for this order</td></tr>
+    </tbody>
+    </table>
+  </div>
+
+  <p class="notes-task__label">Questions here</p>
+  <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
+    <li class="rux--accordion__item rux--accordion__item--active">
+      <button type="button" class="rux--accordion__heading" aria-expanded="true">
+        <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+        <div class="rux--accordion__title">Is there enough on the shelf?</div>
+      </button>
+      <div class="rux--accordion__wrapper"><div class="rux--accordion__content">
+        <p>Decided by the free count from step 2.3 against the order.</p>
+        <div class="notes-answers">
+          <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">Yes · go to Pack</button>
+          <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">No · go to Order more stock</button>
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm">I don't know · open Shelf view</button>
+        </div>
+      </div></div>
+    </li>
+    <li class="rux--accordion__item">
+      <button type="button" class="rux--accordion__heading" aria-expanded="false">
+        <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+        <div class="rux--accordion__title">Is the order inside the packing window?</div>
+      </button>
+      <div class="rux--accordion__wrapper"><div class="rux--accordion__content">
+        <p>A setting decides this. An order dated past the window is not offered for packing.</p>
+        <div class="notes-answers">
+          <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">Yes · carry on</button>
+          <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">No · change the order date</button>
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm">I don't know · open Order dates</button>
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm">Check or change it · open Packing settings</button>
+        </div>
+      </div></div>
+    </li>
+    <li class="rux--accordion__item">
+      <button type="button" class="rux--accordion__heading" aria-expanded="false">
+        <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+        <div class="rux--accordion__title">The shelf shows enough, but the order will not fill</div>
+      </button>
+      <div class="rux--accordion__wrapper"><div class="rux--accordion__content">
+        <p>Read Promised. Much of what is on the shelf may belong to other orders. See step 2.3.</p>
+      </div></div>
+    </li>
+    <li class="rux--accordion__item">
+      <button type="button" class="rux--accordion__heading" aria-expanded="false">
+        <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+        <div class="rux--accordion__title">What if only part of the order is on the shelf?</div>
+      </button>
+      <div class="rux--accordion__wrapper"><div class="rux--accordion__content">
+        <p class="notes-unknown">Not written yet.</p>
+      </div></div>
+    </li>
+  </ul>
+</article>
+</section>
+
+<section class="notes-spec__view" aria-labelledby="v-understand">
+<p class="notes-spec__label" id="v-understand">Understand</p>
+<div class="notes-mini__scroll"><div class="notes-mini" id="mini">
+  <div class="notes-mini__head"></div><div class="notes-mini__head">1 · Set up</div><div class="notes-mini__head">2 · Order</div><div class="notes-mini__head">3 · Supply</div><div class="notes-mini__head">4 · Send</div>
+  <div class="notes-mini__lane">Desk</div>
+  <div class="notes-mini__cell"><span class="notes-mini__tile">Customers</span></div>
+  <div class="notes-mini__cell"><button type="button" class="notes-mini__tile" data-id="a" data-lit><span class="notes-line__n">1</span>Take the order</button></div>
+  <div class="notes-mini__cell"></div>
+  <div class="notes-mini__cell"><button type="button" class="notes-mini__tile" data-id="e" data-lit><span class="notes-line__n">4</span>Hand over</button></div>
+  <div class="notes-mini__lane">Stock</div>
+  <div class="notes-mini__cell"><span class="notes-mini__tile">Items</span></div>
+  <div class="notes-mini__cell"><button type="button" class="notes-mini__tile" data-id="b" data-lit><span class="notes-line__n">2</span>Check the shelf</button>
+    <button type="button" class="notes-mini__tile" data-id="c" data-lit data-screen="no" aria-expanded="true" aria-controls="decision">Is there enough?</button></div>
+  <div class="notes-mini__cell"><span class="notes-mini__tile">Order more stock</span><span class="notes-mini__tile">Receive</span></div>
+  <div class="notes-mini__cell"><button type="button" class="notes-mini__tile" data-id="d" data-lit><span class="notes-line__n">3</span>Pack</button></div>
+</div></div>
+<div class="notes-decision" id="decision">
+  <h2 class="rux--type-productive-heading-02">Is there enough on the shelf?</h2>
+  <div class="notes-answers">
+    <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">Yes · go to Pack</button>
+    <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">No · go to Order more stock</button>
+    <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm">I don't know · open Shelf view</button>
+  </div>
+</div>
+</section>
+
+<section class="notes-spec__view" aria-labelledby="v-lookup">
+<p class="notes-spec__label" id="v-lookup">Look up</p>
+<div class="rux--search rux--layout--size-lg">
+  <div class="rux--search-magnifier"><svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg></div>
+  <label class="rux--label" for="lookup">Search</label>
+  <input id="lookup" class="rux--search-input" type="text" role="searchbox" placeholder="A screen, a code or a word" value="shelf">
+  <button type="button" class="rux--search-close" aria-label="Clear">
+    <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+  </button>
+</div>
+<div class="notes-cards">
+  <div class="rux--tile notes-card">
+    <p class="notes-card__kind">Screen</p>
+    <h2 class="rux--type-productive-heading-03">Shelf view</h2>
+    <p>Shows what each shelf holds of one item, and how much is already promised.</p>
+    <div class="rux--structured-list rux--structured-list--condensed" role="table">
+      <div class="rux--structured-list-tbody" role="rowgroup">
+        <div class="rux--structured-list-row" role="row"><div class="rux--structured-list-td rux--structured-list-content--nowrap" role="cell">Code</div><div class="rux--structured-list-td" role="cell">demo2100m000</div></div>
+        <div class="rux--structured-list-row" role="row"><div class="rux--structured-list-td rux--structured-list-content--nowrap" role="cell">Route</div><div class="rux--structured-list-td" role="cell">Stock ➔ Shelves ➔ Shelf view</div></div>
+        <div class="rux--structured-list-row" role="row"><div class="rux--structured-list-td rux--structured-list-content--nowrap" role="cell">Used in</div><div class="rux--structured-list-td" role="cell"><a class="rux--link" href="#main">Send a parcel · 2 Check the shelf</a></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rux--tile notes-card">
+    <p class="notes-card__kind">Concept</p>
+    <h2 class="rux--type-productive-heading-03">Free stock</h2>
+    <p>What is on the shelf less what is promised. It is the only count an order can draw on.</p>
+    <div class="rux--structured-list rux--structured-list--condensed" role="table">
+      <div class="rux--structured-list-tbody" role="rowgroup">
+        <div class="rux--structured-list-row" role="row"><div class="rux--structured-list-td rux--structured-list-content--nowrap" role="cell">Switched on</div><div class="rux--structured-list-td" role="cell"><a class="rux--link" href="#main">Packing settings</a></div></div>
+        <div class="rux--structured-list-row" role="row"><div class="rux--structured-list-td rux--structured-list-content--nowrap" role="cell">Checked at</div><div class="rux--structured-list-td" role="cell"><a class="rux--link" href="#main">Send a parcel · 2 Check the shelf</a></div></div>
+        <div class="rux--structured-list-row" role="row"><div class="rux--structured-list-td rux--structured-list-content--nowrap" role="cell">Read on</div><div class="rux--structured-list-td" role="cell"><a class="rux--link" href="#main">Shelf view</a></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+</main>
+<script src="/design/js/overlay.js"></script>
+<script src="/design/js/accordion.js"></script>
+<script>
+// The specimen's own behaviour: copy a code, show the rest of an explanation,
+// and draw the lit route's lines between the tiles it passes.
+(function () {
+  for (const b of document.querySelectorAll('[data-copy]')) b.addEventListener('click', () => navigator.clipboard?.writeText(b.dataset.copy));
+  for (const b of document.querySelectorAll('[data-more]')) b.addEventListener('click', (event) => {
+    event.preventDefault();
+    const rest = b.previousElementSibling;
+    rest.hidden = !rest.hidden;
+    b.textContent = rest.hidden ? 'Show more' : 'Show less';
+  });
+  const mini = document.getElementById('mini');
+  const SVG = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(SVG, 'svg');
+  svg.setAttribute('class', 'notes-mini__lines');
+  svg.setAttribute('aria-hidden', 'true');
+  mini.append(svg);
+  const ROUTE = [['a', 'b'], ['b', 'c'], ['c', 'd'], ['d', 'e']];
+  function draw() {
+    const box = mini.getBoundingClientRect();
+    const at = (id) => {
+      const r = mini.querySelector(`[data-id="${id}"]`).getBoundingClientRect();
+      return { l: r.left - box.left, r: r.right - box.left, t: r.top - box.top, b: r.bottom - box.top, cx: r.left - box.left + r.width / 2, cy: r.top - box.top + r.height / 2 };
+    };
+    svg.innerHTML = '<defs><marker id="notes-mini-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8z"/></marker></defs>';
+    for (const [from, to] of ROUTE) {
+      const a = at(from), b = at(to);
+      const d = b.l >= a.r ? `M${a.r} ${a.cy}H${b.l - 10}V${b.cy}H${b.l}`
+        : b.t >= a.b ? `M${a.cx} ${a.b}V${b.t}` : `M${a.cx} ${a.t}V${b.b}`;
+      const path = document.createElementNS(SVG, 'path');
+      path.setAttribute('d', d);
+      path.setAttribute('marker-end', 'url(#notes-mini-arrow)');
+      svg.append(path);
+    }
+  }
+  new ResizeObserver(draw).observe(mini);
+  draw();
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
+<script src="/account.js"></script>
+</body></html>

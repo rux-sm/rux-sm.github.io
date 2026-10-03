@@ -1,4 +1,4 @@
-<section class="ks-sec" id="date-picker">
+<section class="ks-sec ks-calendar-room" id="date-picker">
   <h2>Date picker</h2><p>simple · single with calendar · range with calendar</p>
   <!-- PROVENANCE: rendered-dom · preview-preview-datepicker--simple,
        --single-with-calendar and --range-with-calendar, the last two captured
@@ -84,16 +84,19 @@
          WHAT WAS DROPPED, AND WHY. The stub's `date-picker-container--invalid`
          and `date-picker-container--short` are rendered by NONE of the 669
          captures; they have rules in css/rux.css and that is not the same as
-         being markup Carbon writes. And `__icon--invalid` / `__icon--warn` are
-         attested only on the CLASSIC picker, which renders the icon as an
-         <svg>; `--next` simple has no icon at all, so placing one here would be
-         inventing the combination. Four classes left unexercised on purpose. -->
+         being markup Carbon writes. Two classes left unexercised on purpose.
+
+         THE ICON IS CARBON'S. `components-datepicker--simple@invalid` and
+         `@warn` render `svg.date-picker__icon` with `--invalid` or `--warn`
+         after the input, inside the same span, and without it the field said
+         nothing was wrong but the message under it. -->
     <div class="rux--date-picker rux--date-picker--next rux--date-picker--simple">
       <div class="rux--date-picker-container rux--date-picker-container--simple">
         <label class="rux--label" for="dp-invalid">Expiry (mm/dd/yyyy)</label>
         <div class="rux--date-picker-input__wrapper rux--date-picker-input__wrapper--invalid">
           <span>
             <input id="dp-invalid" class="rux--date-picker__input rux--date-picker__input--invalid" type="text" value="31/31/2026" aria-invalid="true" aria-describedby="dp-invalid-msg">
+            <svg class="rux--date-picker__icon rux--date-picker__icon--invalid" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
           </span>
         </div>
         <div id="dp-invalid-msg" class="rux--form-requirement">Not a valid date</div>
@@ -106,6 +109,7 @@
         <div class="rux--date-picker-input__wrapper rux--date-picker-input__wrapper--warn">
           <span>
             <input id="dp-warn" class="rux--date-picker__input rux--date-picker__input--warn" type="text" value="01/01/2020" aria-describedby="dp-warn-msg">
+            <svg class="rux--date-picker__icon rux--date-picker__icon--warn" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--alt--filled"/></svg>
           </span>
         </div>
         <div id="dp-warn-msg" class="rux--form-requirement">That date is in the past</div>

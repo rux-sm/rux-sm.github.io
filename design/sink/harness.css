@@ -86,11 +86,16 @@ body { min-height: 100vh; background: var(--rux-background);
    7.5rem is the menu's own height, so the section reserves exactly what the
    open state needs. */
 .ks-overlay-room { padding-block-end: 7.5rem; }
+/* The date picker ships one calendar open at rest, 348px tall below its
+   field, which ran over the Checkbox section's heading. The section reserves
+   the calendar's height and 20px under it. */
+.ks-calendar-room { padding-block-end: 22rem; }
 .ks-sec > h2 { font-size: 1.25rem; margin-block-end: .25rem; }
 .ks-sec > p  { font-size: .75rem; color: var(--rux-text-secondary); margin-block-end: 1.25rem; }
 .ks-row { display: flex; flex-wrap: wrap; gap: .75rem; align-items: flex-start;
           margin-block-end: 1rem; }
 .ks-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+.ks-grid--single { grid-template-columns: 1fr; }
 .ks-label { font-size: .6875rem; letter-spacing: .32px; text-transform: uppercase;
             color: var(--rux-text-secondary); margin-block-end: .5rem; }
 .ks-box { padding: 1rem; background: var(--rux-layer-01); }

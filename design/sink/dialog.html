@@ -29,7 +29,11 @@
     `layer-two` and the footer `btn-set`, both as captured. No module drives
     `showModal()` yet; these are open, non-modal specimens.
   -->
-  <div class="ks-grid">
+  <!-- ONE SPECIMEN A ROW. Carbon caps a dialog at a share of the viewport
+       (48% from 82rem); here the share is of each sandbox, and two sandboxes
+       side by side left a dialog narrower than its own footer, so the buttons
+       ran out past its edge. -->
+  <div class="ks-grid ks-grid--single">
     <div style="position:relative;height:22rem;border:1px solid var(--rux-border-subtle);overflow:hidden">
     <dialog class="rux--dialog" open style="position:absolute" aria-labelledby="dlg-1-heading">
     <div class="rux--dialog-container">

@@ -1335,7 +1335,7 @@
   </div>
 </section>
 
-<section class="ks-sec" id="date-picker">
+<section class="ks-sec ks-calendar-room" id="date-picker">
   <h2>Date picker</h2><p>simple · single with calendar · range with calendar</p>
   <!-- PROVENANCE: rendered-dom · preview-preview-datepicker--simple,
        --single-with-calendar and --range-with-calendar, the last two captured
@@ -1421,16 +1421,19 @@
          WHAT WAS DROPPED, AND WHY. The stub's `date-picker-container--invalid`
          and `date-picker-container--short` are rendered by NONE of the 669
          captures; they have rules in css/rux.css and that is not the same as
-         being markup Carbon writes. And `__icon--invalid` / `__icon--warn` are
-         attested only on the CLASSIC picker, which renders the icon as an
-         <svg>; `--next` simple has no icon at all, so placing one here would be
-         inventing the combination. Four classes left unexercised on purpose. -->
+         being markup Carbon writes. Two classes left unexercised on purpose.
+
+         THE ICON IS CARBON'S. `components-datepicker--simple@invalid` and
+         `@warn` render `svg.date-picker__icon` with `--invalid` or `--warn`
+         after the input, inside the same span, and without it the field said
+         nothing was wrong but the message under it. -->
     <div class="rux--date-picker rux--date-picker--next rux--date-picker--simple">
       <div class="rux--date-picker-container rux--date-picker-container--simple">
         <label class="rux--label" for="dp-invalid">Expiry (mm/dd/yyyy)</label>
         <div class="rux--date-picker-input__wrapper rux--date-picker-input__wrapper--invalid">
           <span>
             <input id="dp-invalid" class="rux--date-picker__input rux--date-picker__input--invalid" type="text" value="31/31/2026" aria-invalid="true" aria-describedby="dp-invalid-msg">
+            <svg class="rux--date-picker__icon rux--date-picker__icon--invalid" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
           </span>
         </div>
         <div id="dp-invalid-msg" class="rux--form-requirement">Not a valid date</div>
@@ -1443,6 +1446,7 @@
         <div class="rux--date-picker-input__wrapper rux--date-picker-input__wrapper--warn">
           <span>
             <input id="dp-warn" class="rux--date-picker__input rux--date-picker__input--warn" type="text" value="01/01/2020" aria-describedby="dp-warn-msg">
+            <svg class="rux--date-picker__icon rux--date-picker__icon--warn" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--alt--filled"/></svg>
           </span>
         </div>
         <div id="dp-warn-msg" class="rux--form-requirement">That date is in the past</div>
@@ -2619,13 +2623,16 @@
 
     <!-- NUMBER INPUT, invalid and disabled. The state sits on the form-item;
          the capture also renders `number__invalid` beside the input and the
-         requirement after the divider. -->
+         requirement after the divider. `data-invalid` on the number and its
+         input is what shows the requirement, as on number.html's invalid
+         field; the capture records no data attributes, and without it the
+         message stayed hidden and its icon sat alone below the field. -->
     <div>
     <div class="rux--form-item rux--number-input--fluid rux--number-input--fluid--invalid">
-      <div class="rux--number rux--number--md">
+      <div class="rux--number rux--number--md" data-invalid>
         <label class="rux--label" for="fl-number-inv">Replicas</label>
         <div class="rux--number__input-wrapper">
-          <input id="fl-number-inv" type="number" value="99" min="1" max="12" aria-invalid="true" aria-describedby="fl-number-inv-msg">
+          <input id="fl-number-inv" type="number" value="99" min="1" max="12" data-invalid aria-invalid="true" aria-describedby="fl-number-inv-msg">
           <svg class="rux--number__invalid" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
           <div class="rux--number__controls">
             <button type="button" class="rux--number__control-btn down-icon" aria-label="Decrement">
@@ -6123,7 +6130,7 @@
       </nav>
       <div class="rux--header__global">
         <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Notifications"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-notification"/></svg></button>
-        <button type="button" class="rux--header__action rux--header__action--active rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="ks-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>
+        <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="ks-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>
         <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="App switcher" aria-expanded="false" aria-controls="ks-switcher-panel"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-grid"/></svg></button>
       </div>
       <!-- THE SWITCHER PANEL: a sibling of __global, collapsed until the grid button
@@ -6830,6 +6837,16 @@
     The validation ICON goes in that wrapper too, beside the input — not inside
     `__validation-msg`, which holds only the text. This fragment had it in the
     message, where the rule that positions it against the field cannot work.
+    A warning's message carries no `--invalid`: Carbon's `@warn` recipe renders
+    it plain, and with it the warning read as an error in red.
+
+    THE TWO-HANDLE THUMBS ARE CARBON'S OWN DRAWINGS, inline as React renders
+    them: the lower and upper handle and their focus forms, 16 by 24, which are
+    in no icon package, so they are copied path for path from
+    components-slider--two-handle-slider-with-hidden-inputs. Caret icons stood
+    in for them and read as a broken track. The filled track is placed as that
+    story places it, `translate(lower%, -50%) scaleX(upper - lower)`, and each
+    thumb wrapper takes only its `inset-inline-start`.
   -->
   <div style="max-width:28rem;display:grid;gap:2rem">
     <div class="rux--form-item">
@@ -6853,12 +6870,12 @@
         <span class="rux--slider__range-label">0</span>
         <div class="rux--slider">
           <div class="rux--slider__track"></div>
-          <div class="rux--slider__filled-track" style="transform:translate(0,-50%) scaleX(0.4)"></div>
-          <div class="rux--slider__thumb-wrapper rux--slider__thumb-wrapper--lower" style="inset-inline-start:25%;inset-block-start:50%">
-            <div class="rux--slider__thumb rux--slider__thumb--lower" tabindex="0" role="slider"><svg class="rux--slider__thumb-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--left"/></svg><svg class="rux--slider__thumb-icon rux--slider__thumb-icon--focus" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--left"/></svg></div>
+          <div class="rux--slider__filled-track" style="transform:translate(25%,-50%) scaleX(0.4)"></div>
+          <div class="rux--slider__thumb-wrapper rux--slider__thumb-wrapper--lower" style="inset-inline-start:25%">
+            <div class="rux--slider__thumb rux--slider__thumb--lower" tabindex="0" role="slider" aria-label="Lower bound"><svg class="rux--slider__thumb-icon" viewBox="0 0 16 24" aria-hidden="true"><path d="M15.08 6.46H16v11.08h-.92zM4.46 17.54c-.25 0-.46-.21-.46-.46V6.92a.465.465 0 0 1 .69-.4l8.77 5.08a.46.46 0 0 1 0 .8l-8.77 5.08c-.07.04-.15.06-.23.06Z"/><path d="M-4 0h24v24H-4z" fill="none"/></svg><svg class="rux--slider__thumb-icon rux--slider__thumb-icon--focus" viewBox="0 0 16 24" aria-hidden="true"><path d="M15.08 6.46H16v11.08h-.92zM4.46 17.54c-.25 0-.46-.21-.46-.46V6.92a.465.465 0 0 1 .69-.4l8.77 5.08a.46.46 0 0 1 0 .8l-8.77 5.08c-.07.04-.15.06-.23.06Z"/><path d="M-4 0h24v24H-4z" fill="none"/><path d="M15.08 0H16v6.46h-.92z"/><path d="M0 0h.92v24H0zM15.08 0H16v24h-.92z"/><path d="M0 .92V0h16v.92zM0 24v-.92h16V24z"/></svg></div>
           </div>
-          <div class="rux--slider__thumb-wrapper rux--slider__thumb-wrapper--upper" style="inset-inline-start:65%;inset-block-start:50%">
-            <div class="rux--slider__thumb rux--slider__thumb--upper" tabindex="0" role="slider"><svg class="rux--slider__thumb-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--right"/></svg><svg class="rux--slider__thumb-icon rux--slider__thumb-icon--focus" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-caret--right"/></svg></div>
+          <div class="rux--slider__thumb-wrapper rux--slider__thumb-wrapper--upper" style="inset-inline-start:65%">
+            <div class="rux--slider__thumb rux--slider__thumb--upper" tabindex="0" role="slider" aria-label="Upper bound"><svg class="rux--slider__thumb-icon" viewBox="0 0 16 24" aria-hidden="true"><path d="M0 6.46h.92v11.08H0zM11.54 6.46c.25 0 .46.21.46.46v10.15a.465.465 0 0 1-.69.4L2.54 12.4a.46.46 0 0 1 0-.8l8.77-5.08c.07-.04.15-.06.23-.06Z"/><path d="M-4 0h24v24H-4z" fill="none"/></svg><svg class="rux--slider__thumb-icon rux--slider__thumb-icon--focus" viewBox="0 0 16 24" aria-hidden="true"><path d="M0 6.46h.92v11.08H0zM11.54 6.46c.25 0 .46.21.46.46v10.15a.465.465 0 0 1-.69.4L2.54 12.4a.46.46 0 0 1 0-.8l8.77-5.08c.07-.04.15-.06.23-.06Z"/><path d="M-4 0h24v24H-4z" fill="none"/><path d="M.92 24H0v-6.46h.92z"/><path d="M16 24h-.92V0H16zM.92 24H0V0h.92z"/><path d="M16 23.08V24H0v-.92zM16 0v.92H0V0z"/></svg></div>
           </div>
           <input id="sl-2" class="rux--slider__input" type="hidden" min="0" max="100" value="65">
         </div>
@@ -6893,13 +6910,41 @@
           </div>
           <input id="sl-5" class="rux--slider__input" type="hidden" min="0" max="100" value="90">
         </div>
+        <span class="rux--slider__range-label">100</span>
         <div class="rux--text-input-wrapper rux--slider-text-input-wrapper">
           <input class="rux--text-input rux--slider-text-input rux--slider-text-input--warn" type="number" value="90" aria-label="Value">
           <svg class="rux--slider__invalid-icon rux--slider__invalid-icon--warning" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--alt--filled"/></svg>
         </div>
       </div>
-      <div class="rux--slider__validation-msg rux--slider__validation-msg--invalid rux--form-requirement">
+      <div class="rux--slider__validation-msg rux--form-requirement">
         Above the recommended range
+      </div>
+    </div>
+
+    <!-- INVALID, as `components-slider--default@invalid` renders it: the
+         field takes `text-input--invalid`, the icon is the plain invalid one,
+         and the message keeps `validation-msg--invalid`, which the warning
+         above does not. -->
+    <div class="rux--form-item">
+      <label class="rux--label" for="sl-6">Invalid</label>
+      <div class="rux--slider-container">
+        <span class="rux--slider__range-label">0</span>
+        <div class="rux--slider">
+          <div class="rux--slider__track"></div>
+          <div class="rux--slider__filled-track" style="transform:translate(0,-50%) scaleX(0.05)"></div>
+          <div class="rux--slider__thumb-wrapper" style="inset-inline-start:5%;inset-block-start:50%">
+            <div class="rux--slider__thumb" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="5" aria-invalid="true"></div>
+          </div>
+          <input id="sl-6" class="rux--slider__input" type="hidden" min="0" max="100" value="5">
+        </div>
+        <span class="rux--slider__range-label">100</span>
+        <div class="rux--text-input-wrapper rux--slider-text-input-wrapper">
+          <input class="rux--text-input rux--slider-text-input rux--text-input--invalid" type="number" value="5" aria-label="Value" aria-invalid="true" aria-describedby="sl-6-msg">
+          <svg class="rux--slider__invalid-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+        </div>
+      </div>
+      <div id="sl-6-msg" class="rux--slider__validation-msg rux--slider__validation-msg--invalid rux--form-requirement">
+        Below the minimum of 10
       </div>
     </div>
 
@@ -7626,7 +7671,7 @@
       <div class="rux--edit-in-place__toolbar">
         <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--top rux--tooltip rux--icon-tooltip">
           <div class="rux--tooltip-trigger__wrapper">
-            <button class="rux--edit-in-place__btn-edit rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" type="button" aria-labelledby="eip-tip-default"><svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-edit"/></svg></button>
+            <button class="rux--edit-in-place__btn-edit rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" type="button" aria-labelledby="eip-tip-default"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-edit"/></svg></button>
           </div>
           <span class="rux--popover" role="tooltip" aria-hidden="true"><span class="rux--popover-content rux--tooltip-content" id="eip-tip-default">Edit project name</span><span class="rux--popover-caret"></span></span>
         </span>
@@ -7637,10 +7682,10 @@
       <div class="rux--edit-in-place rux--edit-in-place--sm rux--edit-in-place--invalid">
         <input class="rux--edit-in-place__text-input rux--text-input" aria-invalid="true" aria-describedby="eip-warning" aria-label="Project code" value="">
         <div class="rux--edit-in-place__toolbar">
-          <svg class="rux--edit-in-place__warning-icon" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+          <svg class="rux--edit-in-place__warning-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
           <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--top rux--tooltip rux--icon-tooltip">
             <div class="rux--tooltip-trigger__wrapper">
-              <button class="rux--edit-in-place__btn-edit rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" type="button" aria-labelledby="eip-tip-invalid"><svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-edit"/></svg></button>
+              <button class="rux--edit-in-place__btn-edit rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" type="button" aria-labelledby="eip-tip-invalid"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-edit"/></svg></button>
             </div>
             <span class="rux--popover" role="tooltip" aria-hidden="true"><span class="rux--popover-content rux--tooltip-content" id="eip-tip-invalid">Edit project code</span><span class="rux--popover-caret"></span></span>
           </span>
@@ -7815,7 +7860,11 @@
     `layer-two` and the footer `btn-set`, both as captured. No module drives
     `showModal()` yet; these are open, non-modal specimens.
   -->
-  <div class="ks-grid">
+  <!-- ONE SPECIMEN A ROW. Carbon caps a dialog at a share of the viewport
+       (48% from 82rem); here the share is of each sandbox, and two sandboxes
+       side by side left a dialog narrower than its own footer, so the buttons
+       ran out past its edge. -->
+  <div class="ks-grid ks-grid--single">
     <div style="position:relative;height:22rem;border:1px solid var(--rux-border-subtle);overflow:hidden">
     <dialog class="rux--dialog" open style="position:absolute" aria-labelledby="dlg-1-heading">
     <div class="rux--dialog-container">
@@ -8420,7 +8469,7 @@
   -->
   <div class="ks-row">
     <button type="button" class="rux--chat-btn rux--btn rux--btn--sm rux--layout--size-sm rux--btn--primary">Send</button>
-    <button type="button" class="rux--chat-btn rux--chat-btn--with-icon rux--btn rux--btn--md rux--layout--size-md rux--btn--tertiary">With icon</button>
+    <button type="button" class="rux--chat-btn rux--chat-btn--with-icon rux--btn rux--btn--md rux--layout--size-md rux--btn--tertiary">With icon<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg></button>
     <button type="button" class="rux--chat-btn rux--chat-btn--quick-action rux--btn rux--btn--md rux--layout--size-md rux--btn--ghost">Quick action</button>
     <button type="button" class="rux--chat-btn rux--chat-btn--quick-action rux--chat-btn--quick-action--selected rux--btn rux--btn--md rux--layout--size-md rux--btn--ghost">Selected</button>
   </div>

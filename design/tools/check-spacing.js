@@ -170,13 +170,19 @@
 // behind an interaction: this reads the page as it settled.
 //
 (() => {
-  const REFERENCE = '/data/carbon-react-spacing.json';
+  // THE DATA SITS BESIDE THE STYLESHEET, wherever Design is served from: at
+  // the root under Design's own server, under /design/ inside the website. Every
+  // Design page links css/rux.css, so its address finds data/ whichever it is.
+  const sheet = document.querySelector('link[rel="stylesheet"][href*="css/rux.css"]');
+  const REFERENCE = sheet
+    ? new URL('../data/carbon-react-spacing.json', sheet.href).pathname
+    : '/data/carbon-react-spacing.json';
   const request = new XMLHttpRequest();
   request.open('GET', REFERENCE + '?v=' + Date.now(), false);
   request.send();
   if (request.status !== 200) {
     console.error(`  check-spacing — cannot read ${REFERENCE} (${request.status}).`
-      + ' Run this from a page served by `npm run serve`.');
+      + ' Run this from a Design page served over http.');
     return { error: request.status };
   }
   const rawReference = JSON.parse(request.responseText);

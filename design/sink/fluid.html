@@ -471,13 +471,16 @@
 
     <!-- NUMBER INPUT, invalid and disabled. The state sits on the form-item;
          the capture also renders `number__invalid` beside the input and the
-         requirement after the divider. -->
+         requirement after the divider. `data-invalid` on the number and its
+         input is what shows the requirement, as on number.html's invalid
+         field; the capture records no data attributes, and without it the
+         message stayed hidden and its icon sat alone below the field. -->
     <div>
     <div class="rux--form-item rux--number-input--fluid rux--number-input--fluid--invalid">
-      <div class="rux--number rux--number--md">
+      <div class="rux--number rux--number--md" data-invalid>
         <label class="rux--label" for="fl-number-inv">Replicas</label>
         <div class="rux--number__input-wrapper">
-          <input id="fl-number-inv" type="number" value="99" min="1" max="12" aria-invalid="true" aria-describedby="fl-number-inv-msg">
+          <input id="fl-number-inv" type="number" value="99" min="1" max="12" data-invalid aria-invalid="true" aria-describedby="fl-number-inv-msg">
           <svg class="rux--number__invalid" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
           <div class="rux--number__controls">
             <button type="button" class="rux--number__control-btn down-icon" aria-label="Decrement">

@@ -345,7 +345,10 @@
         // and keeps the default.
         dismissOthers: !adopting
       }).release;
-      calendar.focus();
+      // A calendar the markup declared open is adopted, not opened by anyone,
+      // so it leaves focus where it is: taking it would pull a page that just
+      // loaded to the calendar and start the keyboard there.
+      if (!adopting) calendar.focus();
     }
 
     function hide(opts) {

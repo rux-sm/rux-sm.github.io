@@ -1,5 +1,5 @@
 {
-  "contract": 13,
+  "contract": 14,
   "tier": "export",
   "kind": "reference",
   "id": "order-to-shipment-overview",
@@ -8,6 +8,7 @@
   "status": "draft",
   "sources": [
     "cppat1210m000",
+    "cprpd1100m000",
     "cprrp0520m000",
     "cprrp1220m000",
     "tcibd0501m100",
@@ -15,9 +16,12 @@
     "tdpur4100m900",
     "tdsls4501m140",
     "tdsls4601m200",
+    "tisfc0204m000",
     "tisfc0501m000",
+    "whinh0100m000",
     "whinh2100m100",
     "whinh3512m000",
+    "whinh4131m000",
     "whinh4525m100",
     "whinh4630m000",
     "whwmd4300m000"
@@ -989,10 +993,28 @@
                 },
                 {
                   "t": "text",
+                  "v": " phase 1; "
+                },
+                {
+                  "t": "link",
+                  "v": "Run order planning",
+                  "href": "run-order-planning-for-one-item.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 1; "
+                },
+                {
+                  "t": "link",
+                  "v": "Plan to shipment",
+                  "href": "demand-to-shipment-via-planning.md"
+                },
+                {
+                  "t": "text",
                   "v": " phase 1"
                 }
               ],
-              "text": "Opens — Ship from stock phase 1"
+              "text": "Opens — Ship from stock phase 1; Run order planning phase 1; Plan to shipment phase 1"
             }
           ]
         },
@@ -1026,6 +1048,32 @@
                 }
               ],
               "text": "Does — decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Read"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "session",
+                  "code": "whwmd4300m000",
+                  "name": "Inventory 360"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Inventory 360"
+                }
+              ],
+              "text": "Read — Inventory 360 (whwmd4300m000), Warehousing ➔ Inventory 360"
             },
             {
               "tokens": [
@@ -1077,7 +1125,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " — decide silently how much of on-hand is free for this order. The figure decision 2 really tests is "
+                  "v": " — decide silently how much of on-hand is free for this order, which is the available-to-promise check. The figure decision 2 really tests is "
                 },
                 {
                   "t": "strong",
@@ -1100,7 +1148,67 @@
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Does — decide silently how much of on-hand is free for this order. The figure decision 2 really tests is projected inventory, time-phased, not the on-hand total — Item Order Plan §2.1. Not documented for this release."
+              "text": "Does — decide silently how much of on-hand is free for this order, which is the available-to-promise check. The figure decision 2 really tests is projected inventory, time-phased, not the on-hand total — Item Order Plan §2.1. Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Read"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp0520m000",
+                  "name": "Item Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Order Planning ➔ Item Order Plan"
+                }
+              ],
+              "text": "Read — Item Order Plan (cprrp0520m000), Planning ➔ Order Planning ➔ Item Order Plan"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Setting"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "em",
+                  "v": "CTP Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "session",
+                  "code": "cprpd1100m000",
+                  "name": "Items - Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Master Data ➔ Items ➔ Items - Planning"
+                }
+              ],
+              "text": "Setting — CTP Horizon in Items - Planning (cprpd1100m000), Planning ➔ Master Data ➔ Items ➔ Items - Planning"
             }
           ]
         },
@@ -1229,10 +1337,19 @@
                 },
                 {
                   "t": "text",
-                  "v": " phase 2"
+                  "v": " phase 2; "
+                },
+                {
+                  "t": "link",
+                  "v": "Plan to shipment",
+                  "href": "demand-to-shipment-via-planning.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 6"
                 }
               ],
-              "text": "Opens — Ship from stock phase 2"
+              "text": "Opens — Ship from stock phase 2; Plan to shipment phase 6"
             }
           ]
         },
@@ -1273,6 +1390,79 @@
                 }
               ],
               "text": "Does — decide silently whether planning can see the item and every component beneath it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Read"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "session",
+                  "code": "cprpd1100m000",
+                  "name": "Items - Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Master Data ➔ Items ➔ Items - Planning"
+                }
+              ],
+              "text": "Read — Items - Planning (cprpd1100m000), Planning ➔ Master Data ➔ Items ➔ Items - Planning"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Setting"
+                },
+                {
+                  "t": "text",
+                  "v": " — the "
+                },
+                {
+                  "t": "strong",
+                  "v": "Clusters"
+                },
+                {
+                  "t": "text",
+                  "v": " tab of "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd0501m100",
+                  "name": "Item"
+                },
+                {
+                  "t": "text",
+                  "v": ", no menu entry; tick a row in "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd0501m000",
+                  "name": "Items"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Master Data ➔ Items ➔ Items"
+                },
+                {
+                  "t": "text",
+                  "v": ", and drill in"
+                }
+              ],
+              "text": "Setting — the Clusters tab of Item (tcibd0501m100), no menu entry; tick a row in Items (tcibd0501m000), Master Data ➔ Items ➔ Items, and drill in"
             },
             {
               "tokens": [
@@ -1350,6 +1540,66 @@
                 }
               ],
               "text": "Does — decide silently whether the delivery date is near enough to plan. Counted in workdays"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Read"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp0520m000",
+                  "name": "Item Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Order Planning ➔ Item Order Plan"
+                }
+              ],
+              "text": "Read — Item Order Plan (cprrp0520m000), Planning ➔ Order Planning ➔ Item Order Plan"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Setting"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "em",
+                  "v": "Order Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "session",
+                  "code": "cprpd1100m000",
+                  "name": "Items - Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Master Data ➔ Items ➔ Items - Planning"
+                }
+              ],
+              "text": "Setting — Order Horizon in Items - Planning (cprpd1100m000), Planning ➔ Master Data ➔ Items ➔ Items - Planning"
             },
             {
               "tokens": [
@@ -1557,10 +1807,19 @@
                 },
                 {
                   "t": "text",
-                  "v": " phases 3, 4, 5"
+                  "v": " phases 3, 4, 5; "
+                },
+                {
+                  "t": "link",
+                  "v": "Plan to shipment",
+                  "href": "demand-to-shipment-via-planning.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 2"
                 }
               ],
-              "text": "Opens — Run order planning phases 3, 4, 5"
+              "text": "Opens — Run order planning phases 3, 4, 5; Plan to shipment phase 2"
             },
             {
               "tokens": [
@@ -1948,10 +2207,19 @@
                 },
                 {
                   "t": "text",
-                  "v": " phase 5"
+                  "v": " phase 5; "
+                },
+                {
+                  "t": "link",
+                  "v": "Production order",
+                  "href": "manual-production-order-existing-master-data.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phases 1, 2, 3, 4, 5"
                 }
               ],
-              "text": "Opens — Plan to shipment phase 5"
+              "text": "Opens — Plan to shipment phase 5; Production order phases 1, 2, 3, 4, 5"
             }
           ]
         },
@@ -1989,6 +2257,40 @@
                 }
               ],
               "text": "Does — decide whether a production order releases while a component is short. Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Setting"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "em",
+                  "v": "Check Shortages"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0204m000",
+                  "name": "Release Production Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Release Production Orders"
+                }
+              ],
+              "text": "Setting — Check Shortages in Release Production Orders (tisfc0204m000), Manufacturing ➔ Job Shop ➔ Production Control ➔ Release Production Orders"
             }
           ]
         },
@@ -2082,10 +2384,19 @@
                 },
                 {
                   "t": "text",
-                  "v": " phases 3, 4"
+                  "v": " phases 3, 4; "
+                },
+                {
+                  "t": "link",
+                  "v": "Plan to shipment",
+                  "href": "demand-to-shipment-via-planning.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 4"
                 }
               ],
-              "text": "Opens — Purchase to receipt phases 3, 4"
+              "text": "Opens — Purchase to receipt phases 3, 4; Plan to shipment phase 4"
             }
           ]
         },
@@ -2208,10 +2519,46 @@
                 },
                 {
                   "t": "text",
+                  "v": " phases 0, 6; "
+                },
+                {
+                  "t": "link",
+                  "v": "Plan to shipment",
+                  "href": "demand-to-shipment-via-planning.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 0; "
+                },
+                {
+                  "t": "link",
+                  "v": "Production order",
+                  "href": "manual-production-order-existing-master-data.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 0; "
+                },
+                {
+                  "t": "link",
+                  "v": "Purchase to receipt",
+                  "href": "purchase-order-to-warehouse-receipt.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phases 0, 5; "
+                },
+                {
+                  "t": "link",
+                  "v": "Warehouse transfer",
+                  "href": "transfer-item-between-warehouses.md"
+                },
+                {
+                  "t": "text",
                   "v": " phases 0, 6"
                 }
               ],
-              "text": "Opens — Check an item's inventory phases 0, 1; Ship from stock phases 0, 6"
+              "text": "Opens — Check an item's inventory phases 0, 1; Ship from stock phases 0, 6; Plan to shipment phase 0; Production order phase 0; Purchase to receipt phases 0, 5; Warehouse transfer phases 0, 6"
             }
           ]
         },
@@ -2368,10 +2715,19 @@
                 },
                 {
                   "t": "text",
-                  "v": " phase 3"
+                  "v": " phase 3; "
+                },
+                {
+                  "t": "link",
+                  "v": "Plan to shipment",
+                  "href": "demand-to-shipment-via-planning.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 6"
                 }
               ],
-              "text": "Opens — Ship from stock phase 3"
+              "text": "Opens — Ship from stock phase 3; Plan to shipment phase 6"
             }
           ]
         },
@@ -2409,6 +2765,40 @@
                 }
               ],
               "text": "Does — decide whether outbound advice is generated when stock is short. Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Setting"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "em",
+                  "v": "Create Outbound Advice Despite Inventory Shortage"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh0100m000",
+                  "name": "Inventory Handling Parameters"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Parameters ➔ Inventory Handling Parameters"
+                }
+              ],
+              "text": "Setting — Create Outbound Advice Despite Inventory Shortage in Inventory Handling Parameters (whinh0100m000), Warehousing ➔ Parameters ➔ Inventory Handling Parameters"
             }
           ]
         },
@@ -2503,10 +2893,19 @@
                 },
                 {
                   "t": "text",
-                  "v": " phase 4"
+                  "v": " phase 4; "
+                },
+                {
+                  "t": "link",
+                  "v": "Plan to shipment",
+                  "href": "demand-to-shipment-via-planning.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 6"
                 }
               ],
-              "text": "Opens — Ship from stock phase 4"
+              "text": "Opens — Ship from stock phase 4; Plan to shipment phase 6"
             }
           ]
         },
@@ -2614,10 +3013,19 @@
                 },
                 {
                   "t": "text",
-                  "v": " phase 5"
+                  "v": " phase 5; "
+                },
+                {
+                  "t": "link",
+                  "v": "Plan to shipment",
+                  "href": "demand-to-shipment-via-planning.md"
+                },
+                {
+                  "t": "text",
+                  "v": " phase 6"
                 }
               ],
-              "text": "Opens — Ship from stock phase 5"
+              "text": "Opens — Ship from stock phase 5; Plan to shipment phase 6"
             }
           ]
         },
@@ -2663,6 +3071,41 @@
                 }
               ],
               "text": "Does — ship less than was picked; the rest becomes Not Shipped Quantity on the shipment line. Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Read"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh4131m000",
+                  "name": "Shipment Lines"
+                },
+                {
+                  "t": "text",
+                  "v": ", no menu entry; drill in from "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh4130m000",
+                  "name": "Shipments"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Shipments ➔ Shipments"
+                }
+              ],
+              "text": "Read — Shipment Lines (whinh4131m000), no menu entry; drill in from Shipments (whinh4130m000), Warehousing ➔ Shipments ➔ Shipments"
             }
           ]
         }
@@ -4122,6 +4565,18 @@
             "phases": [
               1
             ]
+          },
+          {
+            "walkthrough": "run-order-planning-for-one-item",
+            "phases": [
+              1
+            ]
+          },
+          {
+            "walkthrough": "demand-to-shipment-via-planning",
+            "phases": [
+              1
+            ]
           }
         ],
         "do": {
@@ -4150,6 +4605,24 @@
           ],
           "text": "decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer"
         },
+        "read": {
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whwmd4300m000",
+              "name": "Inventory 360"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Inventory 360"
+            }
+          ],
+          "text": "Inventory 360 (whwmd4300m000), Warehousing ➔ Inventory 360"
+        },
         "checks": [
           {
             "experiment": "enterprise-planning-foundations",
@@ -4169,7 +4642,7 @@
           "tokens": [
             {
               "t": "text",
-              "v": "decide silently how much of on-hand is free for this order. The figure decision 2 really tests is "
+              "v": "decide silently how much of on-hand is free for this order, which is the available-to-promise check. The figure decision 2 really tests is "
             },
             {
               "t": "strong",
@@ -4192,7 +4665,51 @@
               "v": "Not documented for this release."
             }
           ],
-          "text": "decide silently how much of on-hand is free for this order. The figure decision 2 really tests is projected inventory, time-phased, not the on-hand total — Item Order Plan §2.1. Not documented for this release."
+          "text": "decide silently how much of on-hand is free for this order, which is the available-to-promise check. The figure decision 2 really tests is projected inventory, time-phased, not the on-hand total — Item Order Plan §2.1. Not documented for this release."
+        },
+        "read": {
+          "tokens": [
+            {
+              "t": "session",
+              "code": "cprrp0520m000",
+              "name": "Item Order Plan"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Planning ➔ Order Planning ➔ Item Order Plan"
+            }
+          ],
+          "text": "Item Order Plan (cprrp0520m000), Planning ➔ Order Planning ➔ Item Order Plan"
+        },
+        "setting": {
+          "tokens": [
+            {
+              "t": "em",
+              "v": "CTP Horizon"
+            },
+            {
+              "t": "text",
+              "v": " in "
+            },
+            {
+              "t": "session",
+              "code": "cprpd1100m000",
+              "name": "Items - Planning"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Planning ➔ Master Data ➔ Items ➔ Items - Planning"
+            }
+          ],
+          "text": "CTP Horizon in Items - Planning (cprpd1100m000), Planning ➔ Master Data ➔ Items ➔ Items - Planning"
         }
       },
       {
@@ -4284,6 +4801,12 @@
             "phases": [
               2
             ]
+          },
+          {
+            "walkthrough": "demand-to-shipment-via-planning",
+            "phases": [
+              6
+            ]
           }
         ],
         "do": {
@@ -4328,6 +4851,67 @@
           ],
           "text": "decide silently whether planning can see the item and every component beneath it"
         },
+        "read": {
+          "tokens": [
+            {
+              "t": "session",
+              "code": "cprpd1100m000",
+              "name": "Items - Planning"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Planning ➔ Master Data ➔ Items ➔ Items - Planning"
+            }
+          ],
+          "text": "Items - Planning (cprpd1100m000), Planning ➔ Master Data ➔ Items ➔ Items - Planning"
+        },
+        "setting": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "the "
+            },
+            {
+              "t": "strong",
+              "v": "Clusters"
+            },
+            {
+              "t": "text",
+              "v": " tab of "
+            },
+            {
+              "t": "session",
+              "code": "tcibd0501m100",
+              "name": "Item"
+            },
+            {
+              "t": "text",
+              "v": ", no menu entry; tick a row in "
+            },
+            {
+              "t": "session",
+              "code": "tcibd0501m000",
+              "name": "Items"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Master Data ➔ Items ➔ Items"
+            },
+            {
+              "t": "text",
+              "v": ", and drill in"
+            }
+          ],
+          "text": "the Clusters tab of Item (tcibd0501m100), no menu entry; tick a row in Items (tcibd0501m000), Master Data ➔ Items ➔ Items, and drill in"
+        },
         "opens": [
           {
             "walkthrough": "run-order-planning-for-one-item",
@@ -4360,6 +4944,50 @@
             }
           ],
           "text": "decide silently whether the delivery date is near enough to plan. Counted in workdays"
+        },
+        "read": {
+          "tokens": [
+            {
+              "t": "session",
+              "code": "cprrp0520m000",
+              "name": "Item Order Plan"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Planning ➔ Order Planning ➔ Item Order Plan"
+            }
+          ],
+          "text": "Item Order Plan (cprrp0520m000), Planning ➔ Order Planning ➔ Item Order Plan"
+        },
+        "setting": {
+          "tokens": [
+            {
+              "t": "em",
+              "v": "Order Horizon"
+            },
+            {
+              "t": "text",
+              "v": " in "
+            },
+            {
+              "t": "session",
+              "code": "cprpd1100m000",
+              "name": "Items - Planning"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Planning ➔ Master Data ➔ Items ➔ Items - Planning"
+            }
+          ],
+          "text": "Order Horizon in Items - Planning (cprpd1100m000), Planning ➔ Master Data ➔ Items ➔ Items - Planning"
         },
         "opens": [
           {
@@ -4486,6 +5114,12 @@
               3,
               4,
               5
+            ]
+          },
+          {
+            "walkthrough": "demand-to-shipment-via-planning",
+            "phases": [
+              2
             ]
           }
         ],
@@ -4716,6 +5350,16 @@
             "phases": [
               5
             ]
+          },
+          {
+            "walkthrough": "manual-production-order-existing-master-data",
+            "phases": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
           }
         ],
         "do": {
@@ -4746,6 +5390,32 @@
             }
           ],
           "text": "decide whether a production order releases while a component is short. Not documented for this release."
+        },
+        "setting": {
+          "tokens": [
+            {
+              "t": "em",
+              "v": "Check Shortages"
+            },
+            {
+              "t": "text",
+              "v": " in "
+            },
+            {
+              "t": "session",
+              "code": "tisfc0204m000",
+              "name": "Release Production Orders"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Release Production Orders"
+            }
+          ],
+          "text": "Check Shortages in Release Production Orders (tisfc0204m000), Manufacturing ➔ Job Shop ➔ Production Control ➔ Release Production Orders"
         }
       },
       {
@@ -4798,6 +5468,12 @@
             "walkthrough": "purchase-order-to-warehouse-receipt",
             "phases": [
               3,
+              4
+            ]
+          },
+          {
+            "walkthrough": "demand-to-shipment-via-planning",
+            "phases": [
               4
             ]
           }
@@ -4877,6 +5553,32 @@
           },
           {
             "walkthrough": "ship-from-stock",
+            "phases": [
+              0,
+              6
+            ]
+          },
+          {
+            "walkthrough": "demand-to-shipment-via-planning",
+            "phases": [
+              0
+            ]
+          },
+          {
+            "walkthrough": "manual-production-order-existing-master-data",
+            "phases": [
+              0
+            ]
+          },
+          {
+            "walkthrough": "purchase-order-to-warehouse-receipt",
+            "phases": [
+              0,
+              5
+            ]
+          },
+          {
+            "walkthrough": "transfer-item-between-warehouses",
             "phases": [
               0,
               6
@@ -4997,6 +5699,12 @@
             "phases": [
               3
             ]
+          },
+          {
+            "walkthrough": "demand-to-shipment-via-planning",
+            "phases": [
+              6
+            ]
           }
         ],
         "do": {
@@ -5059,6 +5767,32 @@
             }
           ],
           "text": "decide whether outbound advice is generated when stock is short. Not documented for this release."
+        },
+        "setting": {
+          "tokens": [
+            {
+              "t": "em",
+              "v": "Create Outbound Advice Despite Inventory Shortage"
+            },
+            {
+              "t": "text",
+              "v": " in "
+            },
+            {
+              "t": "session",
+              "code": "whinh0100m000",
+              "name": "Inventory Handling Parameters"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Parameters ➔ Inventory Handling Parameters"
+            }
+          ],
+          "text": "Create Outbound Advice Despite Inventory Shortage in Inventory Handling Parameters (whinh0100m000), Warehousing ➔ Parameters ➔ Inventory Handling Parameters"
         }
       },
       {
@@ -5115,6 +5849,12 @@
             "walkthrough": "ship-from-stock",
             "phases": [
               4
+            ]
+          },
+          {
+            "walkthrough": "demand-to-shipment-via-planning",
+            "phases": [
+              6
             ]
           }
         ],
@@ -5200,6 +5940,12 @@
             "phases": [
               5
             ]
+          },
+          {
+            "walkthrough": "demand-to-shipment-via-planning",
+            "phases": [
+              6
+            ]
           }
         ],
         "do": {
@@ -5250,6 +5996,33 @@
             }
           ],
           "text": "ship less than was picked; the rest becomes Not Shipped Quantity on the shipment line. Not documented for this release."
+        },
+        "read": {
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whinh4131m000",
+              "name": "Shipment Lines"
+            },
+            {
+              "t": "text",
+              "v": ", no menu entry; drill in from "
+            },
+            {
+              "t": "session",
+              "code": "whinh4130m000",
+              "name": "Shipments"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Shipments ➔ Shipments"
+            }
+          ],
+          "text": "Shipment Lines (whinh4131m000), no menu entry; drill in from Shipments (whinh4130m000), Warehousing ➔ Shipments ➔ Shipments"
         }
       }
     ],

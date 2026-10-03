@@ -3290,14 +3290,16 @@ const allDocs = readdirSync(DATA)
 // THE SCREEN REFERENCE IS DATA, NOT A PAGE: code, name, purpose and route for
 // each screen the walkthroughs cite. The path shows it under a step.
 const SCREENS = new Map((allDocs.find(d => d.kind === 'screens')?.entries ?? []).map(e => [e.code, e]));
-const docs = allDocs.filter(d => d.kind !== 'screens');
+// The glossary is data for the three views tools/build-views.mjs writes, and
+// these pages draw nothing from it.
+const docs = allDocs.filter(d => d.kind !== 'screens' && d.kind !== 'glossary');
 
 // THE CONTRACT IS PINNED HERE, NOT ONLY REPORTED. sync-export.sh prints the
 // contract set and enforces nothing, so a renderer written for one shape could
 // silently consume the next. Bump this constant when this file is updated for
-// a new contract, and not before. Contracts 11 to 13 only add optional fields,
-// so this reads 10 to 13 alike.
-const CONTRACTS = [10, 11, 12, 13];
+// a new contract, and not before. Contracts 11 to 14 only add optional fields
+// and the glossary, so this reads 10 to 14 alike.
+const CONTRACTS = [10, 11, 12, 13, 14];
 for (const d of allDocs) if (!CONTRACTS.includes(Number(d.contract)))
   throw new Error(`${d.id ?? '?'}: contract ${d.contract}, this renderer reads ${CONTRACTS.join(' and ')} -- update build.mjs for it, then this constant`);
 

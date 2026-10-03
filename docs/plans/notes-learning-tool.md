@@ -91,6 +91,9 @@ scenario to be complete, and where a new area of LN must be easy to add.
   to the same question. Where a setting decides the outcome, "Check or change
   it" opens the screen that holds the setting.
 
+- **A different case that names no step belongs to the whole scenario**, and
+  sits under whichever task is open, apart from that task's own questions.
+
 - **Questions stay closed until wanted.** An open tile lists them by name under
   its steps, and one opens at a time, so a tile with many stays short.
 
@@ -190,9 +193,9 @@ scenario to be complete, and where a new area of LN must be easy to add.
   scenario**, and the real pages are judged on it. `notes/specimen-tool.html`
   shows the three views on invented content, and the build follows its shape.
 
-- **A scenario is ready when every one of its tasks is on a map tile.** The
-  build lists a scenario that is not, with the tasks that are missing, and
-  leaves it out of Do. A screen with no card is named without a link.
+- **Every scenario is in Do, whether or not the map holds it.** A task on no
+  map tile is listed by the build, and the map lights the tiles it can. A
+  screen with no card is named without a link.
 
 - **The old pages stay until Ship from stock works in the new Notes.** The new
   views are built beside them, and the old pages and scripts go in one step
@@ -248,22 +251,21 @@ compare them; and landings for old page addresses, which are deleted.
       setup tiles.
 - [ ] In atlas, file the help for Warehousing Order Types and write its screen
       file, the one screen Ship from stock names that has none.
-- [ ] In atlas, record the setting that decides each of the seven branches,
-      from the configuration files and the screen files, or record it as
-      unknown.
-- [ ] In atlas, give each decision on the map its question, its answers, the
-      screen where the answer is read and the screen where its setting is
-      changed.
+- [ ] In atlas, record what decides the supply-source turn at Transfer Order
+      Planning, the one branch that names no setting.
+- [ ] In atlas, write the purpose line of each other concept, so the glossary
+      carries all thirteen.
+- [ ] In atlas, give Warehouse transfer and Create test items a map of their
+      own, since most of their tasks are not on this chain.
+- [ ] In atlas, write the purpose line of each screen a scenario names that has
+      none, and rewrite each scenario's questions into the one shape.
+- [ ] Keep the open question in the address, so coming back from a screen card
+      returns to it.
 - [ ] In atlas, set the one shape for a question in `standards/`, with its
       check, and rewrite Ship from stock's troubleshooting rows, variants,
       conditional steps and next-walkthrough rows into it, each on its task.
 - [ ] Add to `notes/specimen-map.html` every question the export holds, listed
       under the tile it comes up on, and the ones that have no tile yet.
-- [ ] In atlas, write available to promise and capable to promise as a concept
-      of their own, moved out of the item order plan's screen file, and name
-      it on the map's stock-promise tile in the three parts above.
-- [ ] In atlas, export each concept's short explanation, and show it as a card
-      in Look up.
 - [ ] Remove the old pages, `notes/js/experiment.js`, `notes/js/quests.js`,
       `notes/js/tile-owner.js`, `notes/js/tile-walk.js`, `notes/js/online.js`,
       `notes/specimen-tile.html`, `notes/specimen-map.html` and
@@ -271,9 +273,6 @@ compare them; and landings for old page addresses, which are deleted.
       new pages need.
 - [ ] Rewrite `notes/docs/diagram.md` for the one-look map and delete
       `notes/docs/owner-tools.md`.
-- [ ] In atlas, link every task of each other scenario to a map tile, rewrite
-      its questions into the one shape, and write the purpose line of each
-      screen it names, one scenario at a time, until Do shows all eight.
 - [ ] In atlas, stop exporting reviews, summaries and experiments.
 - [ ] Lay out the three choices for field meanings and concepts on one page,
       each with a working sample, what it costs to keep, and what leaves the

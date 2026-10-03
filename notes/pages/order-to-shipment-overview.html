@@ -1118,7 +1118,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-notes-page="order-to-shipment-overview" data-notes-commit="f9906e595031e15dd5bd1c21c77c994d8611c3e7">
+<main id="main-content" class="rux--content" data-notes-page="order-to-shipment-overview" data-notes-commit="d8b6c05e94aa56d1a2f853b46e2d3abb3b21751e">
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-7">
@@ -1264,7 +1264,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                     <span class="notes-dg-kind">Checkpoint</span><span class="notes-dg-kind-fine">gate</span></p>
                   
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>decide silently how much of on-hand is free for this order. The figure decision 2 really tests is <strong>projected inventory</strong>, time-phased, not the on-hand total — Item Order Plan §2.1. <strong>Not documented for this release.</strong></p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>decide silently how much of on-hand is free for this order, which is the available-to-promise check. The figure decision 2 really tests is <strong>projected inventory</strong>, time-phased, not the on-hand total — Item Order Plan §2.1. <strong>Not documented for this release.</strong></p>
                   </div>
                   
                   
@@ -1711,34 +1711,41 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — create the demand the rest of the chain answers</li>
           <li class="rux--list__item"><strong>Do</strong> - enter the order and approve it</li>
-          <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="ship-from-stock.html">Ship from stock</a> phase 1</li>
+          <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="ship-from-stock.html">Ship from stock</a> phase 1; <a class="rux--link" href="run-order-planning-for-one-item.html">Run order planning</a> phase 1; <a class="rux--link" href="demand-to-shipment-via-planning.html">Plan to shipment</a> phase 1</li>
         </ul>
           <p class="notes-prose-measure"><strong>2 · Does on-hand cover it?</strong> · stage 2 · decision</p>
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Does</strong> — decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer</li>
+          <li class="rux--list__item"><strong>Read</strong> — <span class="notes-t-named">Inventory 360</span> <span class="notes-t-exact">whwmd4300m000</span>, <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span></li>
           <li class="rux--list__item"><strong>Check</strong> — <a class="rux--link" href="enterprise-planning-foundations.html">Planning foundations</a> section 7</li>
         </ul>
           <p class="notes-prose-measure"><strong>allocated · Stock promised to other orders</strong> · stage 2 · gate</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Does</strong> — decide silently how much of on-hand is free for this order. The figure decision 2 really tests is <strong>projected inventory</strong>, time-phased, not the on-hand total — Item Order Plan §2.1. <strong>Not documented for this release.</strong></li>
+          <li class="rux--list__item"><strong>Does</strong> — decide silently how much of on-hand is free for this order, which is the available-to-promise check. The figure decision 2 really tests is <strong>projected inventory</strong>, time-phased, not the on-hand total — Item Order Plan §2.1. <strong>Not documented for this release.</strong></li>
+          <li class="rux--list__item"><strong>Read</strong> — <span class="notes-t-named">Item Order Plan</span> <span class="notes-t-exact">cprrp0520m000</span>, <span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Item Order Plan</span></span></li>
+          <li class="rux--list__item"><strong>Setting</strong> — <em>CTP Horizon</em> in <span class="notes-t-named">Items - Planning</span> <span class="notes-t-exact">cprpd1100m000</span>, <span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span class="dest">Items - Planning</span></span></li>
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">10 · Release Sales Order Lines to Warehousing</span> <span class="notes-t-exact">tdsls4501m140</span> · stage 6 · step</p>
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Route</strong> — no menu entry; the <strong>Release to Warehousing</strong> tab of <span class="notes-t-named">Sales Order</span> <span class="notes-t-exact">tdsls4100m900</span>, opened from <span class="notes-t-named">Sales Order Intake Workbench</span> <span class="notes-t-exact">tdsls4601m200</span>, <span class="notes-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — hand the approved lines to Warehousing, which creates a warehousing order carrying the sales order number</li>
           <li class="rux--list__item"><strong>Do</strong> - <strong>Actions ➔ Release ➔ Release to Warehousing…</strong>, set <em>Upto Release Date</em> on or after the line&#39;s release date, then <span class="notes-t-press">RELEASE</span></li>
-          <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="ship-from-stock.html">Ship from stock</a> phase 2</li>
+          <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="ship-from-stock.html">Ship from stock</a> phase 2; <a class="rux--link" href="demand-to-shipment-via-planning.html">Plan to shipment</a> phase 6</li>
         </ul>
           <h3>4.3 Enterprise Planning</h3>
           <p class="notes-prose-measure"><strong>3 · Planning data exists</strong> · stage 3 · gate</p>
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Does</strong> — decide silently whether planning can see the item and every component beneath it</li>
+          <li class="rux--list__item"><strong>Read</strong> — <span class="notes-t-named">Items - Planning</span> <span class="notes-t-exact">cprpd1100m000</span>, <span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span class="dest">Items - Planning</span></span></li>
+          <li class="rux--list__item"><strong>Setting</strong> — the <strong>Clusters</strong> tab of <span class="notes-t-named">Item</span> <span class="notes-t-exact">tcibd0501m100</span>, no menu entry; tick a row in <span class="notes-t-named">Items</span> <span class="notes-t-exact">tcibd0501m000</span>, <span class="notes-t-route"><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span class="dest">Items</span></span>, and drill in</li>
           <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="run-order-planning-for-one-item.html">Run order planning</a> phase 0</li>
           <li class="rux--list__item"><strong>Check</strong> — <a class="rux--link" href="enterprise-planning-foundations.html">Planning foundations</a> section 3</li>
         </ul>
           <p class="notes-prose-measure"><strong>4 · Inside the order horizon</strong> · stage 3 · gate</p>
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Does</strong> — decide silently whether the delivery date is near enough to plan. Counted in workdays</li>
+          <li class="rux--list__item"><strong>Read</strong> — <span class="notes-t-named">Item Order Plan</span> <span class="notes-t-exact">cprrp0520m000</span>, <span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Item Order Plan</span></span></li>
+          <li class="rux--list__item"><strong>Setting</strong> — <em>Order Horizon</em> in <span class="notes-t-named">Items - Planning</span> <span class="notes-t-exact">cprpd1100m000</span>, <span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span class="dest">Items - Planning</span></span></li>
           <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="run-order-planning-for-one-item.html">Run order planning</a> phase 2</li>
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">— · Item Order Plan</span> <span class="notes-t-exact">cprrp0520m000</span> · stage 3 · read</p>
@@ -1754,7 +1761,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>Route</strong> — no menu entry; reached by drilling in. <strong>Not documented for this release.</strong></li>
           <li class="rux--list__item"><strong>Does</strong> — net demand against stock and explode the bill of material</li>
           <li class="rux--list__item"><strong>Do</strong> - run it with <em>Include Child Items</em></li>
-          <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="run-order-planning-for-one-item.html">Run order planning</a> phases 3, 4, 5</li>
+          <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="run-order-planning-for-one-item.html">Run order planning</a> phases 3, 4, 5; <a class="rux--link" href="demand-to-shipment-via-planning.html">Plan to shipment</a> phase 2</li>
           <li class="rux--list__item"><strong>Check</strong> — <a class="rux--link" href="enterprise-planning-foundations.html">Planning foundations</a> sections 4, 5</li>
         </ul>
           <p class="notes-prose-measure"><strong>planned-prod · Planned production order</strong> · stage 3 · planned</p>
@@ -1787,11 +1794,12 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — build the item: release, issue the components, report complete</li>
           <li class="rux--list__item"><strong>Do</strong> - open the order the transfer created and release it</li>
-          <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="demand-to-shipment-via-planning.html">Plan to shipment</a> phase 5</li>
+          <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="demand-to-shipment-via-planning.html">Plan to shipment</a> phase 5; <a class="rux--link" href="manual-production-order-existing-master-data.html">Production order</a> phases 1, 2, 3, 4, 5</li>
         </ul>
           <p class="notes-prose-measure"><strong>short-release · Components short at release</strong> · stage 5 · gate</p>
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Does</strong> — decide whether a production order releases while a component is short. <strong>Not documented for this release.</strong></li>
+          <li class="rux--list__item"><strong>Setting</strong> — <em>Check Shortages</em> in <span class="notes-t-named">Release Production Orders</span> <span class="notes-t-exact">tisfc0204m000</span>, <span class="notes-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Control</span><span class="sep">➔</span><span class="dest">Release Production Orders</span></span></li>
         </ul>
           <h3>4.6 Warehousing</h3>
           <p class="notes-prose-measure"><span class="notes-t-named">8 · Warehouse Receipt</span> <span class="notes-t-exact">whinh3512m000</span> · stage 5 · step</p>
@@ -1799,7 +1807,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>Route</strong> — no menu entry; opens from <strong>Actions ➔ Receive</strong> on the inbound order</li>
           <li class="rux--list__item"><strong>Does</strong> — book the bought components into stock</li>
           <li class="rux--list__item"><strong>Do</strong> - enter the packing-slip reference per line and confirm</li>
-          <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="purchase-order-to-warehouse-receipt.html">Purchase to receipt</a> phases 3, 4</li>
+          <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="purchase-order-to-warehouse-receipt.html">Purchase to receipt</a> phases 3, 4; <a class="rux--link" href="demand-to-shipment-via-planning.html">Plan to shipment</a> phase 4</li>
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">— · Inventory 360</span> <span class="notes-t-exact">whwmd4300m000</span> · stage 2 · read</p>
           <ul class="rux--list--unordered">
@@ -1808,7 +1816,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>Do</strong> - read on-hand at the shipping warehouse before the order is entered, and write the figure down</li>
           <li class="rux--list__item"><strong>Walkthrough</strong> — <a class="rux--link" href="check-item-inventory.html">Check an item&#39;s inventory</a></li>
           <li class="rux--list__item"><strong>Leaves</strong> — nothing. It is a detour for information, and the only way to know which branch the route will take before it takes it</li>
-          <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="check-item-inventory.html">Check an item&#39;s inventory</a> phases 0, 1; <a class="rux--link" href="ship-from-stock.html">Ship from stock</a> phases 0, 6</li>
+          <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="check-item-inventory.html">Check an item&#39;s inventory</a> phases 0, 1; <a class="rux--link" href="ship-from-stock.html">Ship from stock</a> phases 0, 6; <a class="rux--link" href="demand-to-shipment-via-planning.html">Plan to shipment</a> phase 0; <a class="rux--link" href="manual-production-order-existing-master-data.html">Production order</a> phase 0; <a class="rux--link" href="purchase-order-to-warehouse-receipt.html">Purchase to receipt</a> phases 0, 5; <a class="rux--link" href="transfer-item-between-warehouses.html">Warehouse transfer</a> phases 0, 6</li>
         </ul>
           <p class="notes-prose-measure"><strong>stock · Finished item into stock</strong> · stage 5 · outcome</p>
           <ul class="rux--list--unordered">
@@ -1819,29 +1827,31 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>Route</strong> — no menu entry; drill in from <span class="notes-t-named">Warehouse Manager Dashboard</span> <span class="notes-t-exact">whinh2300m000</span>, <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Manager Dashboard</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — advise the outbound line, so there is stock to pick</li>
           <li class="rux--list__item"><strong>Do</strong> - on the <strong>Outbound Lines</strong> toolbar, <strong>Actions ➔ Advice ➔ Generate Advice</strong>. <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Advised</span></span> and <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span> both fill</li>
-          <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="ship-from-stock.html">Ship from stock</a> phase 3</li>
+          <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="ship-from-stock.html">Ship from stock</a> phase 3; <a class="rux--link" href="demand-to-shipment-via-planning.html">Plan to shipment</a> phase 6</li>
         </ul>
           <p class="notes-prose-measure"><strong>short-advice · Stock short at advice</strong> · stage 6 · gate</p>
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Does</strong> — decide whether outbound advice is generated when stock is short. <strong>Not documented for this release.</strong></li>
+          <li class="rux--list__item"><strong>Setting</strong> — <em>Create Outbound Advice Despite Inventory Shortage</em> in <span class="notes-t-named">Inventory Handling Parameters</span> <span class="notes-t-exact">whinh0100m000</span>, <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Parameters</span><span class="sep">➔</span><span class="dest">Inventory Handling Parameters</span></span></li>
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">12 · Picking List</span> <span class="notes-t-exact">whinh4525m100</span> · stage 6 · step</p>
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Route</strong> — <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Outbound/Inspections</span><span class="sep">➔</span><span class="dest">Picking List</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — confirm the advised quantity as picked. The line reaches <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Staged</span></span> and a shipment is created</li>
           <li class="rux--list__item"><strong>Do</strong> - tick the line, then <strong>Actions ➔ Pick Run</strong></li>
-          <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="ship-from-stock.html">Ship from stock</a> phase 4</li>
+          <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="ship-from-stock.html">Ship from stock</a> phase 4; <a class="rux--link" href="demand-to-shipment-via-planning.html">Plan to shipment</a> phase 6</li>
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">13 · Shipment</span> <span class="notes-t-exact">whinh4630m000</span> · stage 6 · terminal</p>
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Route</strong> — no menu entry; drill in from <span class="notes-t-named">Shipments</span> <span class="notes-t-exact">whinh4130m000</span>, <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Shipments</span><span class="sep">➔</span><span class="dest">Shipments</span></span></li>
           <li class="rux--list__item"><strong>Does</strong> — freeze and confirm the shipment, which is where inventory leaves. On-hand drops by the shipped quantity</li>
           <li class="rux--list__item"><strong>Do</strong> - <strong>Actions ➔ Freeze</strong>, then <strong>Actions ➔ Confirm</strong>. Confirming cannot be undone; a correction needs a return shipment</li>
-          <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="ship-from-stock.html">Ship from stock</a> phase 5</li>
+          <li class="rux--list__item"><strong>Opens</strong> — <a class="rux--link" href="ship-from-stock.html">Ship from stock</a> phase 5; <a class="rux--link" href="demand-to-shipment-via-planning.html">Plan to shipment</a> phase 6</li>
         </ul>
           <p class="notes-prose-measure"><strong>ship-short · Shipped less than picked</strong> · stage 6 · decision</p>
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Does</strong> — ship less than was picked; the rest becomes <em>Not Shipped Quantity</em> on the shipment line. <strong>Not documented for this release.</strong></li>
+          <li class="rux--list__item"><strong>Read</strong> — <span class="notes-t-named">Shipment Lines</span> <span class="notes-t-exact">whinh4131m000</span>, no menu entry; drill in from <span class="notes-t-named">Shipments</span> <span class="notes-t-exact">whinh4130m000</span>, <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Shipments</span><span class="sep">➔</span><span class="dest">Shipments</span></span></li>
         </ul>
         </section>
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="t-5">
@@ -1935,7 +1945,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           </form>
         </section>
         </div>
-<p class="rux--type-caption-01 notes-revision">Built from atlas f9906e5 · contract 13</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas d8b6c05 · contract 14</p>
       </div>
     </div>
   </div>

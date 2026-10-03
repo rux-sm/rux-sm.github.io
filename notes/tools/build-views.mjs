@@ -9,10 +9,9 @@
 // page comes from the export; nothing is placed or linked by hand here, so a
 // correction is made in atlas and the next run redraws it.
 //
-// THE BUILD SAYS WHAT IT COULD NOT PLACE and still builds: a scenario with a
-// task that is on no map tile is left out of Do and named, and a question with
-// no task, a decision with no screen to read its answer on, and a screen with
-// no card are each listed at the end of the run.
+// THE BUILD SAYS WHAT IT COULD NOT PLACE and still builds: a task on no map
+// tile, a question with no task, a decision with no screen to read its answer
+// on, and a screen with no card are each listed at the end of the run.
 //
 //   node tools/build-views.mjs
 
@@ -33,11 +32,15 @@ const { diagram } = read(MAP + '.json');
 const mapTitle = read(MAP + '.json').title;
 const cards = new Map(read('screens.json').entries.filter((e) => e.purpose).map((e) => [e.code, e]));
 const noCard = read('screens.json').entries.filter((e) => !e.purpose);
+const concepts = files.includes('glossary.json') ? read('glossary.json').entries : [];
 const commit = /commit\s+([0-9a-f]{40})/.exec(readFileSync(join(DATA, 'PIN'), 'utf8'))?.[1];
 if (!commit) throw new Error('data/atlas/PIN names no commit -- run sh tools/sync-export.sh');
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+// A tile's account is a phrase atlas ends without a full stop, unless its last
+// sentence is one the export wrote in place of a gap.
+const sentence = (html) => cap(html).replace(/\.?(<\/strong>)?$/, (m, close) => (close ? '.' + close : '.'));
 const report = [];
 
 // ---- text ----------------------------------------------------------------
@@ -54,7 +57,7 @@ const exact = (v) => `<span class="notes-t-exact">${esc(v)}</span>`;
 const screenLink = (code, text) => cards.has(code)
   ? `<a class="rux--link" href="lookup.html?q=${esc(code)}">${text}</a>` : text;
 
-let ready = new Set();
+const ready = new Set(scenarios.map((s) => s.id));
 function token(t) {
   switch (t.t) {
     case 'text': return esc(t.v);
@@ -89,9 +92,13 @@ const plain = (list) => list.map((t) => t.v ?? t.label ?? t.route ?? t.name ?? t
 
 const node = new Map(diagram.nodes.map((n) => [n.id, n]));
 const out = (id) => diagram.edges.filter((e) => e.from === id && e.kind !== 'feed');
+// One task can sit on several tiles, as one phase that releases, advises, picks
+// and ships does; they are taken in the order the map numbers its walk.
+const order = new Map(diagram.nodes.map((n, i) => [n.id, (n.n ?? 100) * 100 + i]));
 const tilesOf = (s) => {
   const by = new Map();
-  for (const n of diagram.nodes) for (const o of n.opens ?? []) if (o.walkthrough === s.id) for (const p of o.phases) by.set(p, n.id);
+  for (const n of diagram.nodes) for (const o of n.opens ?? []) if (o.walkthrough === s.id) for (const p of o.phases) (by.get(p) ?? by.set(p, []).get(p)).push(n.id);
+  for (const ids of by.values()) ids.sort((a, b) => order.get(a) - order.get(b));
   return by;
 };
 function between(from, to, taken) {
@@ -110,36 +117,34 @@ function between(from, to, taken) {
 }
 function routeOf(s) {
   const tile = tilesOf(s);
-  const taken = new Set(tile.values());
+  const taken = new Set([...tile.values()].flat());
   const stops = [];   // { id, tasks: [n] } in the order the route passes them
   const lines = [];   // { from, to, jump } between two stops
-  const after = new Map();   // task n -> the decisions the route passes straight after it
+  const after = new Map();   // task n -> the tiles the route passes straight after it
   let last = null;
-  for (const p of s.phases) {
-    const id = tile.get(p.n);
-    if (!id) continue;
+  for (const p of s.phases) for (const id of tile.get(p.n) ?? []) {
     if (last && last.id !== id) {
       const path = between(last.id, id, taken);
       if (path) {
         for (let i = 1; i < path.length - 1; i++) stops.push({ id: path[i], tasks: [] });
         for (let i = 1; i < path.length; i++) lines.push({ from: path[i - 1], to: path[i] });
-        after.set(last.n, path.slice(1, -1));
+        if (path.length > 2) after.set(last.n, [...(after.get(last.n) ?? []), ...path.slice(1, -1)]);
       } else lines.push({ from: last.id, to: id, jump: true });
     }
     const stop = stops.find((x) => x.id === id);
-    if (stop) stop.tasks.push(p.n); else stops.push({ id, tasks: [p.n] });
+    if (!stop) stops.push({ id, tasks: [p.n] }); else if (!stop.tasks.includes(p.n)) stop.tasks.push(p.n);
     last = { id, n: p.n };
   }
-  return { tile, stops, lines, after };
+  const taskAt = (id) => [...tile].find(([, ids]) => ids.includes(id))?.[0];
+  return { tile, stops, lines, after, taskAt };
 }
 
 const routes = new Map(scenarios.map((s) => [s.id, routeOf(s)]));
 for (const s of scenarios) {
   const off = s.phases.filter((p) => !routes.get(s.id).tile.has(p.n));
-  if (off.length) report.push(`not in Do   ${s.title}: ${off.length} of ${s.phases.length} tasks are on no map tile (${off.map((p) => p.n).join(', ')})`);
-  else ready.add(s.id);
+  if (off.length) report.push(`off the map ${s.title}: ${off.length} of ${s.phases.length} tasks are on no map tile (${off.map((p) => p.n).join(', ')})`);
 }
-const shown = scenarios.filter((s) => ready.has(s.id));
+const shown = scenarios;
 
 // ---- questions -------------------------------------------------------------
 // Atlas holds a task's questions in four shapes today, and each is read where
@@ -148,20 +153,42 @@ const shown = scenarios.filter((s) => ready.has(s.id));
 // steps, and the next-walkthrough rows, which belong to the last task.
 
 const section = (s, kind) => s.sections.find((x) => x.kind === kind)?.rows ?? [];
+const decides = (n) => n.kind === 'decision' || n.kind === 'gate';
+// The first screen a field cites is the one to open; the sentence around it
+// says what to look at there.
+const firstScreen = (field) => field?.tokens.find((t) => t.t === 'session');
+const opener = (label, field) => {
+  const screen = firstScreen(field);
+  return screen ? [`<li>${label}${ARROW}${screenLink(screen.code, esc(screen.name ?? screen.code))}</li>`] : [];
+};
+// A decision as a question: what it decides, each way it can go, the screen to
+// read the answer on, and the screen that holds the setting behind it.
+function decision(n, link) {
+  const answers = diagram.edges.filter((e) => e.from === n.id && e.kind === 'branch')
+    .map((e) => `<li>${link(e.to, `${esc(cap(e.label?.text ?? ''))}${ARROW}${esc(node.get(e.to).session)}`)}</li>`);
+  const all = [...answers, ...opener("I don't know", n.read), ...opener('Check or change it', n.setting)];
+  return `<p>${sentence(tokens(n.does.tokens))}</p>${all.length ? `<ul class="notes-answers">${all.join('')}</ul>` : ''}`;
+}
 function questionsOf(s, p) {
   const r = routes.get(s.id);
   const list = [];
-  for (const id of r.after.get(p.n) ?? []) {
+  const link = (to, text) => {
+    const task = r.taskAt(to);
+    return `<a class="rux--link" href="${task != null ? `do.html?s=${esc(s.id)}&amp;t=${task}` : `understand.html?n=${esc(to)}`}">${text}</a>`;
+  };
+  // The decisions the route passes after this task, what feeds each of them,
+  // and the turns that leave this task's own tiles.
+  const asked = new Set();
+  const ask = (id) => {
     const n = node.get(id);
-    if (n.kind !== 'decision' && n.kind !== 'gate') continue;
-    const answers = diagram.edges.filter((e) => e.from === id && e.kind === 'branch').map((e) => {
-      const task = [...r.tile].find(([, tileId]) => tileId === e.to)?.[0];
-      const href = task != null ? `do.html?s=${esc(s.id)}&t=${task}` : `understand.html?n=${esc(e.to)}`;
-      return `<li><a class="rux--link" href="${href}">${esc(cap(e.label?.text ?? ''))}${ARROW}${esc(node.get(e.to).session)}</a></li>`;
-    });
-    report.push(`no screen   ${s.title} · ${p.n}: "${n.session}" names no screen to read its answer on, and no setting`);
-    list.push({ title: esc(n.session), body: `<p>${cap(tokens(n.does.tokens))}.</p>${answers.length ? `<ul class="notes-answers">${answers.join('')}</ul>` : ''}` });
-  }
+    if (!decides(n) || asked.has(id)) return;
+    asked.add(id);
+    if (n.kind === 'decision' && !firstScreen(n.read)) report.push(`no screen   ${s.title} · ${p.n}: "${n.session}" names no screen to read its answer on`);
+    list.push({ title: esc(n.session), body: decision(n, link) });
+    for (const e of diagram.edges) if (e.to === id && e.kind === 'feed') ask(e.from);
+  };
+  for (const id of r.after.get(p.n) ?? []) ask(id);
+  for (const id of r.tile.get(p.n) ?? []) for (const e of diagram.edges) if (e.from === id && e.kind === 'branch') ask(e.to);
   for (const row of section(s, 'troubleshooting')) if (Number(row.cells[0].text) === p.n)
     list.push({ title: tokens(row.cells[1].tokens), body: `<p>${tokens(row.cells[2].tokens)}</p>` });
   for (const row of section(s, 'variants')) {
@@ -172,10 +199,23 @@ function questionsOf(s, p) {
     list.push({ title: tokens(row.cells[0].tokens), body: `<p>${tokens(row.cells[1].tokens)}</p>` });
   return list;
 }
-for (const s of shown) for (const row of section(s, 'variants'))
-  if (!/\b\d+\.\d+\b/.test(row.cells[1].text)) report.push(`no task     ${s.title}: the variant "${row.cells[0].text}" names no step, so it is on no task`);
+for (const s of shown) {
+  const n = section(s, 'variants').filter((row) => !/\b\d+\.\d+\b/.test(row.cells[1].text)).length;
+  if (n) report.push(`no task     ${s.title}: ${n} variants name no step, so they sit under the scenario and not on a task`);
+}
 
-const accordion = (list) => list.length ? `
+// A variant that names no step belongs to the scenario as a whole, so it sits
+// under whichever task is open, apart from that task's own questions.
+const loose = (s) => {
+  const list = section(s, 'variants').filter((row) => !/\b\d+\.\d+\b/.test(row.cells[1].text))
+    .map((row) => ({ title: tokens(row.cells[0].tokens), body: `<p>${tokens(row.cells[1].tokens)}</p>` }));
+  return list.length ? `
+    <div class="notes-loose">
+      <h2 class="notes-loose__label">Different cases</h2>${accordion(list)}
+    </div>` : '';
+};
+
+function accordion(list) { return list.length ? `
       <ul class="rux--accordion rux--accordion--end rux--layout--size-md">${list.map((q) => `
         <li class="rux--accordion__item">
           <button type="button" class="rux--accordion__heading" aria-expanded="false">
@@ -184,7 +224,7 @@ const accordion = (list) => list.length ? `
           </button>
           <div class="rux--accordion__wrapper"><div class="rux--accordion__content">${q.body}</div></div>
         </li>`).join('')}
-      </ul>` : '';
+      </ul>` : ''; }
 
 // ---- Do --------------------------------------------------------------------
 
@@ -223,8 +263,8 @@ function task(s, p) {
   return `
     <article class="notes-task" data-scenario="${esc(s.id)}" data-task="${p.n}" hidden>
       <h2 class="rux--visually-hidden">${p.n} ${esc(p.title)}</h2>
-      <p class="notes-task__route">${screenLink(p.sessionCode, route(p.route))}
-        <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm notes-task__code" data-copy="${esc(p.sessionCode)}" aria-label="Copy the code ${esc(p.sessionCode)}">${esc(p.sessionCode)}</button></p>
+      ${p.route ? `<p class="notes-task__route">${screenLink(p.sessionCode, route(p.route))}${p.sessionCode ? `
+        <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm notes-task__code" data-copy="${esc(p.sessionCode)}" aria-label="Copy the code ${esc(p.sessionCode)}">${esc(p.sessionCode)}</button>` : ''}</p>` : ''}
       ${prose.length ? why(prose[0]) : ''}${p.blocks.filter((b) => b.kind === 'steps').map(steps).join('')}
       ${prose.slice(1).map((b) => `<p class="notes-task__why">${tokens(b.tokens)}</p>`).join('')}${accordion(questionsOf(s, p))}
     </article>`;
@@ -243,7 +283,7 @@ function scenario(s) {
     <p class="notes-frame"><span>${esc(cap(s.summary))}</span>${need.map((n) => `<span><b>Needs</b> · ${n}</span>`).join('')}</p>
     <ol class="notes-line">${s.phases.map((p) => `
       <li><a class="notes-line__tile" href="do.html?s=${esc(s.id)}&amp;t=${p.n}" data-task="${p.n}"><span class="notes-line__n">${p.n}</span>${esc(p.title)}</a></li>`).join('')}
-    </ol>${s.phases.map((p) => task(s, p)).join('')}
+    </ol>${s.phases.map((p) => task(s, p)).join('')}${loose(s)}
   </section>`;
 }
 
@@ -268,16 +308,15 @@ const doBody = () => `${picker('')}${shown.map(scenario).join('')}`;
 // what it does, its screen, the tasks it stands for, and a decision's answers.
 
 function detail(n) {
-  const opens = shown.flatMap((s) => [...routes.get(s.id).tile].filter(([, id]) => id === n.id)
-    .map(([t]) => `<li><a class="rux--link" href="do.html?s=${esc(s.id)}&amp;t=${t}">${esc(s.title)} · ${t} ${esc(s.phases.find((p) => p.n === t).title)}</a></li>`));
-  const answers = diagram.edges.filter((e) => e.from === n.id && e.kind === 'branch')
-    .map((e) => `<li><a class="rux--link" href="understand.html?n=${esc(e.to)}" data-node="${esc(e.to)}">${esc(cap(e.label?.text ?? ''))}${ARROW}${esc(node.get(e.to).session)}</a></li>`);
+  const opens = shown.flatMap((s) => s.phases.filter((p) => routes.get(s.id).tile.get(p.n)?.includes(n.id))
+    .map((p) => `<li><a class="rux--link" href="do.html?s=${esc(s.id)}&amp;t=${p.n}">${esc(s.title)} · ${p.n} ${esc(p.title)}</a></li>`));
+  const here = (to, text) => `<a class="rux--link" href="understand.html?n=${esc(to)}" data-node="${esc(to)}">${text}</a>`;
   return `
     <div class="notes-detail" data-detail="${esc(n.id)}" hidden>
       <h2 class="rux--type-productive-heading-03">${esc(n.session)}</h2>
-      <p>${cap(tokens(n.does.tokens))}.</p>${n.code ? `
-      <p class="notes-task__route"><span>${tokens(n.route.tokens)}</span> ${screenLink(n.code, exact(n.code))}</p>` : ''}${[...opens, ...answers].length ? `
-      <ul class="notes-answers">${[...opens, ...answers].join('')}</ul>` : ''}
+      ${decides(n) ? decision(n, here) : `<p>${sentence(tokens(n.does.tokens))}</p>`}${n.code ? `
+      <p class="notes-task__route"><span>${tokens(n.route.tokens)}</span> ${screenLink(n.code, exact(n.code))}</p>` : ''}${opens.length ? `
+      <ul class="notes-answers">${opens.join('')}</ul>` : ''}
     </div>`;
 }
 
@@ -304,7 +343,7 @@ const understandBody = () => `
 
 const usedIn = new Map();
 for (const s of shown) for (const p of s.phases) {
-  const codes = new Set([p.sessionCode]);
+  const codes = new Set(p.sessionCode ? [p.sessionCode] : []);
   (function walk(x) {
     if (Array.isArray(x)) x.forEach(walk);
     else if (x && typeof x === 'object') { if (x.t === 'session') codes.add(x.code); Object.values(x).forEach(walk); }
@@ -323,7 +362,7 @@ const lookupBody = () => `
     </button>
   </div>
   <div class="notes-cards" id="results">${shown.flatMap((s) => s.phases.map((p) => `
-    <div class="rux--tile notes-card" data-text="${esc(`${s.title} ${p.title} ${p.session} ${p.sessionCode} ${p.blocks.filter((b) => b.kind === 'steps').flatMap((b) => b.rows.map((r) => r.cells.map((c) => c.text).join(' '))).join(' ')}`.toLowerCase())}" hidden>
+    <div class="rux--tile notes-card" data-text="${esc(`${s.title} ${p.title} ${p.session ?? ''} ${p.sessionCode ?? ''} ${p.blocks.filter((b) => b.kind === 'steps').flatMap((b) => b.rows.map((r) => r.cells.map((c) => c.text).join(' '))).join(' ')}`.toLowerCase())}" hidden>
       <p class="notes-card__kind">Task</p>
       <h2 class="rux--type-productive-heading-03"><a class="rux--link" href="do.html?s=${esc(s.id)}&amp;t=${p.n}">${p.n} ${esc(p.title)}</a></h2>
       <p>${esc(s.title)}</p>
@@ -333,6 +372,12 @@ const lookupBody = () => `
       <h2 class="rux--type-productive-heading-03">${esc(c.name)}</h2>
       <p>${esc(c.purpose)}</p>
       <dl class="notes-card__facts">${fact('Code', exact(c.code))}${c.route ? fact('Route', route(c.route)) : ''}${usedIn.has(c.code) ? fact('Used in', usedIn.get(c.code).join('<br>')) : ''}</dl>
+    </div>`).join('')}${concepts.map((c) => `
+    <div class="rux--tile notes-card" data-text="${esc(`${c.name} ${c.terms.join(' ')} ${c.purpose}`.toLowerCase())}" hidden>
+      <p class="notes-card__kind">Concept</p>
+      <h2 class="rux--type-productive-heading-03">${esc(c.name)}</h2>
+      <p>${esc(c.purpose)}</p>
+      <dl class="notes-card__facts">${fact('Also called', esc(c.terms.filter((t) => t !== c.name.toLowerCase()).join(', ')))}${fact('Screens', c.sources.map((code) => screenLink(code, esc(cards.get(code)?.name ?? code))).join('<br>'))}</dl>
     </div>`).join('')}
   </div>`;
 
@@ -398,6 +443,6 @@ const written = VIEWS.map(([file, name, body]) => {
 execFileSync(process.execPath, [join(ROOT, '..', 'tools', 'inline-sprite.mjs'), ...written], { stdio: 'ignore' });
 
 if (noCard.length) report.push(`no card     ${noCard.length} of ${noCard.length + cards.size} screens have no purpose line, so Look up cannot show them`);
-console.log(`  built ${written.length} views: ${shown.length} of ${scenarios.length} scenarios in Do, ${diagram.nodes.length} tiles, ${cards.size} screen cards`);
+console.log(`  built ${written.length} views: ${shown.length} scenarios, ${diagram.nodes.length} tiles, ${cards.size} screen cards, ${concepts.length} concept cards`);
 console.log(`\n  what the export does not yet say (${new Set(report).size}):`);
 for (const line of new Set(report)) console.log(`    ${line}`);

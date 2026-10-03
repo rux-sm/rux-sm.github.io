@@ -1,0 +1,23 @@
+{
+  "contract": 14,
+  "tier": "export",
+  "kind": "glossary",
+  "entries": [
+    {
+      "id": "available-to-promise",
+      "name": "Available to promise",
+      "terms": [
+        "available to promise",
+        "atp",
+        "capable to promise",
+        "ctp"
+      ],
+      "purpose": "The stock LN will still promise to a new order, worked out over time, and the second check on components and capacity that follows when that stock falls short.",
+      "sources": [
+        "cprrp0520m000",
+        "cprpd1100m000",
+        "whwmd4300m000"
+      ]
+    }
+  ]
+}

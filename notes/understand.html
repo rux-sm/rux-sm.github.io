@@ -140,7 +140,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-notes-commit="f9906e595031e15dd5bd1c21c77c994d8611c3e7">
+<main id="main-content" class="rux--content" data-notes-commit="d8b6c05e94aa56d1a2f853b46e2d3abb3b21751e">
 <div class="notes-view">
   <h1 class="rux--type-productive-heading-05">Demand to shipment</h1>
   <div class="rux--form-item notes-picker">
@@ -149,8 +149,14 @@
       <div class="rux--select-input__wrapper">
         <select id="scenario" class="rux--select-input">
           <option class="rux--select-option" value="">Whole map</option>
+          <option class="rux--select-option" value="create-basic-test-items-and-defaults">Create test items</option>
+          <option class="rux--select-option" value="run-order-planning-for-one-item">Run order planning</option>
           <option class="rux--select-option" value="check-item-inventory">Check an item's inventory</option>
+          <option class="rux--select-option" value="purchase-order-to-warehouse-receipt">Purchase to receipt</option>
+          <option class="rux--select-option" value="manual-production-order-existing-master-data">Production order</option>
+          <option class="rux--select-option" value="transfer-item-between-warehouses">Warehouse transfer</option>
           <option class="rux--select-option" value="ship-from-stock">Ship from stock</option>
+          <option class="rux--select-option" value="demand-to-shipment-via-planning">Plan to shipment</option>
         </select>
         <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
       </div>
@@ -268,6 +274,7 @@
       <h2 class="rux--type-productive-heading-03">Items and groups</h2>
       <p>Hold the item every other lane reads.</p>
       <p class="notes-task__route"><span>no menu entry; tick a row in <a class="rux--link" href="lookup.html?q=tcibd0501m000"><span class="notes-t-named">Items</span></a> <span class="notes-t-exact">tcibd0501m000</span>, <span class="notes-t-route"><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span class="dest">Items</span></span>, and drill in</span> <a class="rux--link" href="lookup.html?q=tcibd0501m100"><span class="notes-t-exact">tcibd0501m100</span></a></p>
+      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=create-basic-test-items-and-defaults&amp;t=5">Create test items · 5 Create the three items</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="buyfrom" hidden>
       <h2 class="rux--type-productive-heading-03">Item - Purchase</h2>
@@ -277,39 +284,42 @@
     <div class="notes-detail" data-detail="bom" hidden>
       <h2 class="rux--type-productive-heading-03">Bill of material and routing</h2>
       <p>Define what a made item is built from and how, both Approved.</p>
+      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=create-basic-test-items-and-defaults&amp;t=6">Create test items · 6 Build the job shop bill of material</a></li><li><a class="rux--link" href="do.html?s=create-basic-test-items-and-defaults&amp;t=7">Create test items · 7 Build the job shop routing</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="cluster" hidden>
       <h2 class="rux--type-productive-heading-03">Planning cluster row on the item</h2>
       <p>Make the item visible to order planning. Without it the item is absent from the plan rather than refused.</p>
+      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=run-order-planning-for-one-item&amp;t=0">Run order planning · 0 Make the item visible to planning</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="1" hidden>
       <h2 class="rux--type-productive-heading-03">Sales Order Intake Workbench</h2>
       <p>Create the demand the rest of the chain answers.</p>
       <p class="notes-task__route"><span><span class="notes-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></span> <a class="rux--link" href="lookup.html?q=tdsls4601m200"><span class="notes-t-exact">tdsls4601m200</span></a></p>
-      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=ship-from-stock&amp;t=1">Ship from stock · 1 Create and approve the sales order</a></li></ul>
+      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=run-order-planning-for-one-item&amp;t=1">Run order planning · 1 Create demand</a></li><li><a class="rux--link" href="do.html?s=ship-from-stock&amp;t=1">Ship from stock · 1 Create and approve the sales order</a></li><li><a class="rux--link" href="do.html?s=demand-to-shipment-via-planning&amp;t=1">Plan to shipment · 1 Create the demand</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="2" hidden>
       <h2 class="rux--type-productive-heading-03">Does on-hand cover it?</h2>
-      <p>Decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer.</p>
-      <ul class="notes-answers"><li><a class="rux--link" href="understand.html?n=10" data-node="10">YES, and no planned order is generated ➔ Release Sales Order Lines to Warehousing</a></li><li><a class="rux--link" href="understand.html?n=3" data-node="3">NO ➔ Planning data exists</a></li></ul>
+      <p>Decide the whole route. On-hand plus on-order against the demand, and nothing announces the answer.</p><ul class="notes-answers"><li><a class="rux--link" href="understand.html?n=10" data-node="10">YES, and no planned order is generated ➔ Release Sales Order Lines to Warehousing</a></li><li><a class="rux--link" href="understand.html?n=3" data-node="3">NO ➔ Planning data exists</a></li><li>I don't know ➔ <a class="rux--link" href="lookup.html?q=whwmd4300m000">Inventory 360</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="allocated" hidden>
       <h2 class="rux--type-productive-heading-03">Stock promised to other orders</h2>
-      <p>Decide silently how much of on-hand is free for this order. The figure decision 2 really tests is <strong>projected inventory</strong>, time-phased, not the on-hand total — Item Order Plan §2.1. <strong>Not documented for this release.</strong>.</p>
+      <p>Decide silently how much of on-hand is free for this order, which is the available-to-promise check. The figure decision 2 really tests is <strong>projected inventory</strong>, time-phased, not the on-hand total — Item Order Plan §2.1. <strong>Not documented for this release.</strong></p><ul class="notes-answers"><li>I don't know ➔ <a class="rux--link" href="lookup.html?q=cprrp0520m000">Item Order Plan</a></li><li>Check or change it ➔ <a class="rux--link" href="lookup.html?q=cprpd1100m000">Items - Planning</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="10" hidden>
       <h2 class="rux--type-productive-heading-03">Release Sales Order Lines to Warehousing</h2>
       <p>Hand the approved lines to Warehousing, which creates a warehousing order carrying the sales order number.</p>
       <p class="notes-task__route"><span>no menu entry; the <strong>Release to Warehousing</strong> tab of <span class="notes-t-named">Sales Order</span> <span class="notes-t-exact">tdsls4100m900</span>, opened from <a class="rux--link" href="lookup.html?q=tdsls4601m200"><span class="notes-t-named">Sales Order Intake Workbench</span></a> <span class="notes-t-exact">tdsls4601m200</span>, <span class="notes-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></span> <a class="rux--link" href="lookup.html?q=tdsls4501m140"><span class="notes-t-exact">tdsls4501m140</span></a></p>
-      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=ship-from-stock&amp;t=2">Ship from stock · 2 Release to warehousing</a></li></ul>
+      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=ship-from-stock&amp;t=2">Ship from stock · 2 Release to warehousing</a></li><li><a class="rux--link" href="do.html?s=demand-to-shipment-via-planning&amp;t=6">Plan to shipment · 6 Ship</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="3" hidden>
       <h2 class="rux--type-productive-heading-03">Planning data exists</h2>
-      <p>Decide silently whether planning can see the item and every component beneath it.</p>
+      <p>Decide silently whether planning can see the item and every component beneath it.</p><ul class="notes-answers"><li>I don't know ➔ <a class="rux--link" href="lookup.html?q=cprpd1100m000">Items - Planning</a></li><li>Check or change it ➔ <a class="rux--link" href="lookup.html?q=tcibd0501m100">Item</a></li></ul>
+      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=run-order-planning-for-one-item&amp;t=0">Run order planning · 0 Make the item visible to planning</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="4" hidden>
       <h2 class="rux--type-productive-heading-03">Inside the order horizon</h2>
-      <p>Decide silently whether the delivery date is near enough to plan. Counted in workdays.</p>
+      <p>Decide silently whether the delivery date is near enough to plan. Counted in workdays.</p><ul class="notes-answers"><li>I don't know ➔ <a class="rux--link" href="lookup.html?q=cprrp0520m000">Item Order Plan</a></li><li>Check or change it ➔ <a class="rux--link" href="lookup.html?q=cprpd1100m000">Items - Planning</a></li></ul>
+      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=run-order-planning-for-one-item&amp;t=2">Run order planning · 2 Put the demand inside the horizon</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="read-cprrp0520m000" hidden>
       <h2 class="rux--type-productive-heading-03">Item Order Plan</h2>
@@ -320,6 +330,7 @@
       <h2 class="rux--type-productive-heading-03">Generate Order Planning (Item)</h2>
       <p>Net demand against stock and explode the bill of material.</p>
       <p class="notes-task__route"><span>no menu entry; reached by drilling in. <strong>Not documented for this release.</strong></span> <a class="rux--link" href="lookup.html?q=cprrp1220m000"><span class="notes-t-exact">cprrp1220m000</span></a></p>
+      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=run-order-planning-for-one-item&amp;t=3">Run order planning · 3 Run MRP</a></li><li><a class="rux--link" href="do.html?s=run-order-planning-for-one-item&amp;t=4">Run order planning · 4 Review the result</a></li><li><a class="rux--link" href="do.html?s=run-order-planning-for-one-item&amp;t=5">Run order planning · 5 Read the pegging tree</a></li><li><a class="rux--link" href="do.html?s=demand-to-shipment-via-planning&amp;t=2">Plan to shipment · 2 Run MRP</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="planned-prod" hidden>
       <h2 class="rux--type-productive-heading-03">Planned production order</h2>
@@ -331,35 +342,37 @@
     </div>
     <div class="notes-detail" data-detail="6" hidden>
       <h2 class="rux--type-productive-heading-03">Transfer Order Planning</h2>
-      <p>Translate a proposal into a real order in its owning module. <strong>Planning ends here</strong>.</p>
+      <p>Translate a proposal into a real order in its owning module. <strong>Planning ends here.</strong></p>
       <p class="notes-task__route"><span><span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Plan Transfer</span><span class="sep">➔</span><span class="dest">Transfer Order Planning</span></span></span> <a class="rux--link" href="lookup.html?q=cppat1210m000"><span class="notes-t-exact">cppat1210m000</span></a></p>
-      <ul class="notes-answers"><li><a class="rux--link" href="understand.html?n=7" data-node="7">Supply source Purchase ➔ Purchase Order</a></li><li><a class="rux--link" href="understand.html?n=9" data-node="9">Supply source Job Shop ➔ Production Orders</a></li></ul>
+      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=demand-to-shipment-via-planning&amp;t=3">Plan to shipment · 3 Cross the boundary</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="7" hidden>
       <h2 class="rux--type-productive-heading-03">Purchase Order</h2>
       <p>Buy the components, and raise the inbound warehousing order on its own.</p>
       <p class="notes-task__route"><span>no menu entry; drill in from the purchase order list</span> <a class="rux--link" href="lookup.html?q=tdpur4100m900"><span class="notes-t-exact">tdpur4100m900</span></a></p>
+      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=purchase-order-to-warehouse-receipt&amp;t=1">Purchase to receipt · 1 Create the purchase order</a></li><li><a class="rux--link" href="do.html?s=purchase-order-to-warehouse-receipt&amp;t=2">Purchase to receipt · 2 Book the lines</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="9" hidden>
       <h2 class="rux--type-productive-heading-03">Production Orders</h2>
       <p>Build the item: release, issue the components, report complete.</p>
       <p class="notes-task__route"><span><span class="notes-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span></span> <a class="rux--link" href="lookup.html?q=tisfc0501m000"><span class="notes-t-exact">tisfc0501m000</span></a></p>
-      <ul class="notes-answers"><li><a class="rux--link" href="understand.html?n=short-release" data-node="short-release">A component is short ➔ Components short at release</a></li></ul>
+      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=manual-production-order-existing-master-data&amp;t=1">Production order · 1 Create the production order</a></li><li><a class="rux--link" href="do.html?s=manual-production-order-existing-master-data&amp;t=2">Production order · 2 Verify the generated foundation</a></li><li><a class="rux--link" href="do.html?s=manual-production-order-existing-master-data&amp;t=3">Production order · 3 Release the order</a></li><li><a class="rux--link" href="do.html?s=manual-production-order-existing-master-data&amp;t=4">Production order · 4 Issue material to the job shop</a></li><li><a class="rux--link" href="do.html?s=manual-production-order-existing-master-data&amp;t=5">Production order · 5 Report the operation complete and confirm warehouse receipt</a></li><li><a class="rux--link" href="do.html?s=demand-to-shipment-via-planning&amp;t=5">Plan to shipment · 5 Build the pairs</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="short-release" hidden>
       <h2 class="rux--type-productive-heading-03">Components short at release</h2>
-      <p>Decide whether a production order releases while a component is short. <strong>Not documented for this release.</strong>.</p>
+      <p>Decide whether a production order releases while a component is short. <strong>Not documented for this release.</strong></p><ul class="notes-answers"><li>Check or change it ➔ <a class="rux--link" href="lookup.html?q=tisfc0204m000">Release Production Orders</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="8" hidden>
       <h2 class="rux--type-productive-heading-03">Warehouse Receipt</h2>
       <p>Book the bought components into stock.</p>
       <p class="notes-task__route"><span>no menu entry; opens from <strong>Actions ➔ Receive</strong> on the inbound order</span> <a class="rux--link" href="lookup.html?q=whinh3512m000"><span class="notes-t-exact">whinh3512m000</span></a></p>
+      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=purchase-order-to-warehouse-receipt&amp;t=3">Purchase to receipt · 3 Receive against the order</a></li><li><a class="rux--link" href="do.html?s=purchase-order-to-warehouse-receipt&amp;t=4">Purchase to receipt · 4 Confirm the receipt</a></li><li><a class="rux--link" href="do.html?s=demand-to-shipment-via-planning&amp;t=4">Plan to shipment · 4 Receive the components</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="read-whwmd4300m000" hidden>
       <h2 class="rux--type-productive-heading-03">Inventory 360</h2>
       <p>Answer the question the decision beside it asks. On-hand plus on-order for the item, which nothing in the sales order announces.</p>
       <p class="notes-task__route"><span><span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span></span> <a class="rux--link" href="lookup.html?q=whwmd4300m000"><span class="notes-t-exact">whwmd4300m000</span></a></p>
-      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=check-item-inventory&amp;t=0">Check an item's inventory · 0 Find the item</a></li><li><a class="rux--link" href="do.html?s=check-item-inventory&amp;t=1">Check an item's inventory · 1 Read the stock by warehouse</a></li><li><a class="rux--link" href="do.html?s=ship-from-stock&amp;t=0">Ship from stock · 0 Confirm there is stock</a></li><li><a class="rux--link" href="do.html?s=ship-from-stock&amp;t=6">Ship from stock · 6 Verify it worked</a></li></ul>
+      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=check-item-inventory&amp;t=0">Check an item's inventory · 0 Find the item</a></li><li><a class="rux--link" href="do.html?s=check-item-inventory&amp;t=1">Check an item's inventory · 1 Read the stock by warehouse</a></li><li><a class="rux--link" href="do.html?s=purchase-order-to-warehouse-receipt&amp;t=0">Purchase to receipt · 0 Read the baseline</a></li><li><a class="rux--link" href="do.html?s=purchase-order-to-warehouse-receipt&amp;t=5">Purchase to receipt · 5 Verify the inventory increase</a></li><li><a class="rux--link" href="do.html?s=manual-production-order-existing-master-data&amp;t=0">Production order · 0 Confirm the existing foundation</a></li><li><a class="rux--link" href="do.html?s=transfer-item-between-warehouses&amp;t=0">Warehouse transfer · 0 Confirm stock, destination, and expected order type</a></li><li><a class="rux--link" href="do.html?s=transfer-item-between-warehouses&amp;t=6">Warehouse transfer · 6 Verify it worked</a></li><li><a class="rux--link" href="do.html?s=ship-from-stock&amp;t=0">Ship from stock · 0 Confirm there is stock</a></li><li><a class="rux--link" href="do.html?s=ship-from-stock&amp;t=6">Ship from stock · 6 Verify it worked</a></li><li><a class="rux--link" href="do.html?s=demand-to-shipment-via-planning&amp;t=0">Plan to shipment · 0 Preflight</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="stock" hidden>
       <h2 class="rux--type-productive-heading-03">Finished item into stock</h2>
@@ -369,30 +382,30 @@
       <h2 class="rux--type-productive-heading-03">Warehousing Order</h2>
       <p>Advise the outbound line, so there is stock to pick.</p>
       <p class="notes-task__route"><span>no menu entry; drill in from <a class="rux--link" href="lookup.html?q=whinh2300m000"><span class="notes-t-named">Warehouse Manager Dashboard</span></a> <span class="notes-t-exact">whinh2300m000</span>, <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Manager Dashboard</span></span></span> <a class="rux--link" href="lookup.html?q=whinh2100m100"><span class="notes-t-exact">whinh2100m100</span></a></p>
-      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=ship-from-stock&amp;t=3">Ship from stock · 3 Generate outbound advice</a></li><li><a class="rux--link" href="understand.html?n=short-advice" data-node="short-advice">Stock is short ➔ Stock short at advice</a></li></ul>
+      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=ship-from-stock&amp;t=3">Ship from stock · 3 Generate outbound advice</a></li><li><a class="rux--link" href="do.html?s=demand-to-shipment-via-planning&amp;t=6">Plan to shipment · 6 Ship</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="short-advice" hidden>
       <h2 class="rux--type-productive-heading-03">Stock short at advice</h2>
-      <p>Decide whether outbound advice is generated when stock is short. <strong>Not documented for this release.</strong>.</p>
+      <p>Decide whether outbound advice is generated when stock is short. <strong>Not documented for this release.</strong></p><ul class="notes-answers"><li>Check or change it ➔ <a class="rux--link" href="lookup.html?q=whinh0100m000">Inventory Handling Parameters</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="12" hidden>
       <h2 class="rux--type-productive-heading-03">Picking List</h2>
       <p>Confirm the advised quantity as picked. The line reaches <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Staged</span></span> and a shipment is created.</p>
       <p class="notes-task__route"><span><span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Outbound/Inspections</span><span class="sep">➔</span><span class="dest">Picking List</span></span></span> <a class="rux--link" href="lookup.html?q=whinh4525m100"><span class="notes-t-exact">whinh4525m100</span></a></p>
-      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=ship-from-stock&amp;t=4">Ship from stock · 4 Pick the goods</a></li></ul>
+      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=ship-from-stock&amp;t=4">Ship from stock · 4 Pick the goods</a></li><li><a class="rux--link" href="do.html?s=demand-to-shipment-via-planning&amp;t=6">Plan to shipment · 6 Ship</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="13" hidden>
       <h2 class="rux--type-productive-heading-03">Shipment</h2>
       <p>Freeze and confirm the shipment, which is where inventory leaves. On-hand drops by the shipped quantity.</p>
       <p class="notes-task__route"><span>no menu entry; drill in from <a class="rux--link" href="lookup.html?q=whinh4130m000"><span class="notes-t-named">Shipments</span></a> <span class="notes-t-exact">whinh4130m000</span>, <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Shipments</span><span class="sep">➔</span><span class="dest">Shipments</span></span></span> <a class="rux--link" href="lookup.html?q=whinh4630m000"><span class="notes-t-exact">whinh4630m000</span></a></p>
-      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=ship-from-stock&amp;t=5">Ship from stock · 5 Ship</a></li><li><a class="rux--link" href="understand.html?n=ship-short" data-node="ship-short">Ships less than picked ➔ Shipped less than picked</a></li></ul>
+      <ul class="notes-answers"><li><a class="rux--link" href="do.html?s=ship-from-stock&amp;t=5">Ship from stock · 5 Ship</a></li><li><a class="rux--link" href="do.html?s=demand-to-shipment-via-planning&amp;t=6">Plan to shipment · 6 Ship</a></li></ul>
     </div>
     <div class="notes-detail" data-detail="ship-short" hidden>
       <h2 class="rux--type-productive-heading-03">Shipped less than picked</h2>
-      <p>Ship less than was picked; the rest becomes <em>Not Shipped Quantity</em> on the shipment line. <strong>Not documented for this release.</strong>.</p>
+      <p>Ship less than was picked; the rest becomes <em>Not Shipped Quantity</em> on the shipment line. <strong>Not documented for this release.</strong></p><ul class="notes-answers"><li>I don't know ➔ <a class="rux--link" href="lookup.html?q=whinh4131m000">Shipment Lines</a></li></ul>
     </div>
   </div>
-  <script type="application/json" id="routes">{"check-item-inventory":{"stops":[{"id":"read-whwmd4300m000","tasks":[0,1]}],"lines":[]},"ship-from-stock":{"stops":[{"id":"read-whwmd4300m000","tasks":[0,6]},{"id":"1","tasks":[1]},{"id":"2","tasks":[]},{"id":"10","tasks":[2]},{"id":"11","tasks":[3]},{"id":"12","tasks":[4]},{"id":"13","tasks":[5]}],"lines":[{"from":"read-whwmd4300m000","to":"1","jump":true},{"from":"1","to":"2"},{"from":"2","to":"10"},{"from":"10","to":"11"},{"from":"11","to":"12"},{"from":"12","to":"13"},{"from":"13","to":"read-whwmd4300m000","jump":true}]}}</script>
+  <script type="application/json" id="routes">{"create-basic-test-items-and-defaults":{"stops":[{"id":"items","tasks":[5]},{"id":"bom","tasks":[6,7]}],"lines":[{"from":"items","to":"bom","jump":true}]},"run-order-planning-for-one-item":{"stops":[{"id":"3","tasks":[0]},{"id":"cluster","tasks":[0]},{"id":"1","tasks":[1]},{"id":"4","tasks":[2]},{"id":"5","tasks":[3,4,5]}],"lines":[{"from":"3","to":"cluster","jump":true},{"from":"cluster","to":"1","jump":true},{"from":"1","to":"4","jump":true},{"from":"4","to":"5"}]},"check-item-inventory":{"stops":[{"id":"read-whwmd4300m000","tasks":[0,1]}],"lines":[]},"purchase-order-to-warehouse-receipt":{"stops":[{"id":"read-whwmd4300m000","tasks":[0,5]},{"id":"7","tasks":[1,2]},{"id":"8","tasks":[3,4]}],"lines":[{"from":"read-whwmd4300m000","to":"7","jump":true},{"from":"7","to":"8"},{"from":"8","to":"read-whwmd4300m000","jump":true}]},"manual-production-order-existing-master-data":{"stops":[{"id":"read-whwmd4300m000","tasks":[0]},{"id":"9","tasks":[1,2,3,4,5]}],"lines":[{"from":"read-whwmd4300m000","to":"9","jump":true}]},"transfer-item-between-warehouses":{"stops":[{"id":"read-whwmd4300m000","tasks":[0,6]}],"lines":[]},"ship-from-stock":{"stops":[{"id":"read-whwmd4300m000","tasks":[0,6]},{"id":"1","tasks":[1]},{"id":"2","tasks":[]},{"id":"10","tasks":[2]},{"id":"11","tasks":[3]},{"id":"12","tasks":[4]},{"id":"13","tasks":[5]}],"lines":[{"from":"read-whwmd4300m000","to":"1","jump":true},{"from":"1","to":"2"},{"from":"2","to":"10"},{"from":"10","to":"11"},{"from":"11","to":"12"},{"from":"12","to":"13"},{"from":"13","to":"read-whwmd4300m000","jump":true}]},"demand-to-shipment-via-planning":{"stops":[{"id":"read-whwmd4300m000","tasks":[0]},{"id":"1","tasks":[1]},{"id":"2","tasks":[]},{"id":"3","tasks":[]},{"id":"4","tasks":[]},{"id":"5","tasks":[2]},{"id":"planned-prod","tasks":[]},{"id":"6","tasks":[3]},{"id":"7","tasks":[]},{"id":"8","tasks":[4]},{"id":"9","tasks":[5]},{"id":"stock","tasks":[]},{"id":"10","tasks":[6]},{"id":"11","tasks":[6]},{"id":"12","tasks":[6]},{"id":"13","tasks":[6]}],"lines":[{"from":"read-whwmd4300m000","to":"1","jump":true},{"from":"1","to":"2"},{"from":"2","to":"3"},{"from":"3","to":"4"},{"from":"4","to":"5"},{"from":"5","to":"planned-prod"},{"from":"planned-prod","to":"6"},{"from":"6","to":"7"},{"from":"7","to":"8"},{"from":"8","to":"9","jump":true},{"from":"9","to":"stock"},{"from":"stock","to":"10"},{"from":"10","to":"11"},{"from":"11","to":"12"},{"from":"12","to":"13"}]}}</script>
 </div>
 </main>
 <script src="/design/js/overlay.js"></script>

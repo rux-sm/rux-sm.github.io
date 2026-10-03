@@ -11,6 +11,10 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 ATLAS="${ATLAS:-$ROOT/../atlas}"
 [ -d "$ATLAS/.git" ] || { echo "no atlas at $ATLAS -- clone it beside this repository, or set ATLAS=<dir>"; exit 1; }
 cd "$ROOT/notes" && ATLAS="$ATLAS" sh tools/sync-export.sh
-cd "$ROOT" && node tools/build.mjs && node tools/check.mjs
+# One command a line: in a chain joined by &&, sh does not stop the script when
+# a middle command fails, and a failed build went on to say it had exported.
+cd "$ROOT"
+node tools/build.mjs
+node tools/check.mjs
 echo
 echo "  exported from atlas $(git -C "$ATLAS" rev-parse --short HEAD). Commit and push to publish."

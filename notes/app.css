@@ -42,7 +42,9 @@
 .notes-task .rux--data-table td { vertical-align: top; line-height: 1.45; }
 .notes-task .rux--data-table + .notes-task__why, .notes-task .rux--data-table-content + .notes-task__why { margin-block-start: 1.5rem; }
 .notes-task .rux--accordion { margin-block-start: 2rem; }
-.notes-answers { display: grid; gap: .5rem; margin: .75rem 0 0; padding: 0; list-style: none; }
+.notes-loose { margin-block-start: 3rem; }
+.notes-loose__label { margin: 0 0 .5rem; font-size: .75rem; font-weight: 400; color: var(--rux-text-secondary); }
+.notes-answers { display: grid; gap: .5rem; margin: .75rem 0 0; padding: 0; list-style: none; font-size: .875rem; }
 
 /* ---- Understand ---------------------------------------------------------- */
 .notes-map__scroll { overflow-x: auto; margin-block-start: 1.5rem; border: 1px solid var(--rux-border-subtle-01); }

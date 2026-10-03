@@ -1113,17 +1113,12 @@ button.scheduler-row-head__num::after {
 .scheduler-card__asks-when { flex: none; white-space: nowrap; color: var(--rux-text-secondary); }
 /* A part's Add: Carbon's small ghost button, 32px, its height taken back
    above and below so the title keeps its 18px line, and its padding taken
-   back at the end so its words end where the ages do. Its icon comes before
-   its words, where Carbon expects it after and spaces it on its leading
-   side, so the 8px goes between the two instead, as `.scheduler-list-add`
-   has it. */
+   back at the end so its words end where the ages do. */
 .scheduler-card__action {
   flex: none;
-  gap: var(--rux-spacing-03);
   margin-block: calc((1.125rem - var(--rux-layout-size-height-sm)) / 2);
   margin-inline-end: calc(-1 * var(--rux-spacing-05));
 }
-.scheduler-card__action .rux--btn__icon { margin: 0; }
 /* A part's title: Carbon's 14px heading in the card's own ink, its count a
    small grey tag beside it, and the part's button at its end. */
 .scheduler-card__title {

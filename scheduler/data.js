@@ -13209,15 +13209,13 @@
      updates' Add. A word in the link colour, with the whole action as its
      accessible name. */
   function cardAction(action, words, label) {
-    /* Carbon's small ghost button with its icon before its words, as a
-       section's own action is everywhere else in the app. */
+    /* Carbon's small ghost button, its word alone: on a card this small the
+       word says the whole action, and an icon beside it is a second colour. */
     const btn = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm scheduler-card__action');
     btn.type = 'button';
     btn.dataset.cardAction = action;
     btn.setAttribute('aria-label', label);
-    const icon = svgUse('#m-add', '16', '0 0 32 32');
-    icon.setAttribute('class', 'rux--btn__icon');
-    btn.append(icon, words);
+    btn.append(words);
     return btn;
   }
 

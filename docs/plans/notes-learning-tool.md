@@ -108,6 +108,23 @@ scenario to be complete, and where a new area of LN must be easy to add.
 - **Meeting reviews, summaries and experiments are not pages.** They are
   sources a scenario rests on, and they stay in atlas.
 
+### The map comes first
+
+- **The chain is mapped before any view is built.** `notes/specimen-map.html`
+  draws atlas's export as it stands: what leads to what, the branches, the
+  setup, and what the export does not yet say.
+
+- **Three things are written into atlas before the build:** each scenario's
+  route, the setup each scenario needs, and the setting that decides each
+  branch. A setting nobody can name yet is recorded as unknown, not left out.
+
+- **A branch nobody has walked stays marked on the map.** Its steps come from a
+  run in LN, which atlas's walking plan owns, and it does not hold the build
+  back.
+
+- **The specimen is the first draft of Understand**, and it is deleted once the
+  build draws the map.
+
 ### One scenario first
 
 - **Ship from stock is built through all three views before any other
@@ -169,6 +186,10 @@ scenario to be complete, and where a new area of LN must be easy to add.
   build and of Infor's text living in the database. Recommended: the Mac
   preview first, and decide again once the three views are in use.
 
+- **What on the map is wrong or missing?** `notes/specimen-map.html` shows
+  every link, branch and setup tile atlas holds for the chain, and lists the
+  tasks that sit off it.
+
 - **Does anyone but rux open Notes?** If so, deleted addresses need a landing
   page that points to Do.
 
@@ -178,8 +199,12 @@ scenario to be complete, and where a new area of LN must be easy to add.
       result, its line with an open tile, the map with a route lit and a
       decision opened, and a screen card. Read it at desktop and phone widths
       in light and dark.
+- [ ] In atlas, correct the map from the answer to the first question.
+- [ ] In atlas, record the setting that decides each of the seven branches,
+      from the configuration files and the screen files, or record it as
+      unknown.
 - [ ] In atlas, state Ship from stock's route on the map, with its first and
-      last tasks and its decisions, and export it.
+      last tasks, its decisions and the setup it needs, and export it.
 - [ ] In atlas, write the purpose line for the one screen Ship from stock names
       that lacks it.
 - [ ] Write the new build beside the old one: the three views, the search index
@@ -188,14 +213,14 @@ scenario to be complete, and where a new area of LN must be easy to add.
       and phone widths: every task, every screen link, the lit route, each kind
       of map tile, and a search for a name, a code and a step word.
 - [ ] Remove the old pages, `notes/js/experiment.js`, `notes/js/quests.js`,
-      `notes/js/tile-owner.js`, `notes/js/tile-walk.js`, `notes/js/online.js`
-      and `notes/specimen-tile.html`, and bring Notes' checks down to what the
+      `notes/js/tile-owner.js`, `notes/js/tile-walk.js`, `notes/js/online.js`,
+      `notes/specimen-tile.html` and `notes/specimen-map.html`, and bring Notes' checks down to what the
       new pages need.
 - [ ] Rewrite `notes/docs/diagram.md` for the one-look map and delete
       `notes/docs/owner-tools.md`.
-- [ ] In atlas, state the route of each other scenario and write the purpose
-      line of each screen it names, one scenario at a time, until the build
-      accepts all eight.
+- [ ] In atlas, state the route and the setup of each other scenario and write
+      the purpose line of each screen it names, one scenario at a time, until
+      the build accepts all eight.
 - [ ] In atlas, replace the map tiles' lists of phases with the routes, and
       correct `standards/export-json.md` to match.
 - [ ] In atlas, stop exporting reviews, summaries and experiments.

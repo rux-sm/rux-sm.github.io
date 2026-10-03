@@ -341,12 +341,13 @@
              driver grid has its own head. -->
           <div class="scheduler-frame">
           <div class="scheduler-toolbar">
-            <!-- Moving through weeks reads first, as < Today >, with the week
-                 it lands on beside it. Today gives way to a menu row where the
-                 toolbar is too narrow, and the arrows to a swipe on the compact
-                 board, both in app.css. -->
-            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__step" id="scheduler-prev" aria-label="Previous week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_left"/></svg></button>
+            <!-- Moving through weeks reads first: Today, then the two steps
+                 side by side so going back and forth is one place for the
+                 pointer, then the week they land on. Today gives way to a
+                 menu row where the toolbar is too narrow, and the arrows to a
+                 swipe on the compact board, both in app.css. -->
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md scheduler-toolbar__lg-only" id="scheduler-today">Today</button>
+            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__step" id="scheduler-prev" aria-label="Previous week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_left"/></svg></button>
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__step" id="scheduler-next" aria-label="Next week"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_right"/></svg></button>
             <!-- Every other control sits right. The spacer takes the free
                  width, so a wider week does not move the buttons, and DOM
@@ -377,13 +378,15 @@
                search, the other way to look, and its person is outlined while
                the pane is shut and filled while it shows, set by data.js. -->
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-avail-toggle" aria-pressed="false" aria-label="Driver availability"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-person"/></svg></button>
-          <!-- New trip is a toolbar button where the toolbar has room for it,
-               and the overflow menu's first row where it has not. -->
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__new" id="scheduler-new-trip" aria-label="New trip" title="New trip"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg></button>
             <!-- The overflow menu (#scheduler-view-menu): New trip where its
                  toolbar button hides, Today below md, then the options for how
                  the board draws. -->
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__more" id="scheduler-view-trigger" aria-label="More" aria-haspopup="menu" aria-expanded="false"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-more_vert"/></svg></button>
+          <!-- New trip is the page's one primary button, last in the bar as
+               Carbon's table toolbar ends on its own. Where the bar is too
+               narrow for its words it is the + alone, in overrides.css, and
+               the overflow menu's first row where even that has no room. -->
+          <button type="button" class="rux--btn rux--btn--primary rux--btn--md rux--layout--size-md scheduler-toolbar__new" id="scheduler-new-trip" title="New trip"><span class="scheduler-toolbar__new-label">New trip</span><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg></button>
           </div>
             <!-- The loading skeleton: the corner, seven day cells and ten rows of
                  grey placeholders in the real grid's classes, so the first paint

@@ -1802,11 +1802,16 @@ button.scheduler-row-head__num::after {
   background-color: var(--rux-layer);
 }
 .scheduler-toolbar__weekrow {
-  /* Content-sized, so a longer week takes room from `.scheduler-toolbar__spacer`
-     and the controls stay pinned right. `min-inline-size: 0` lets it shrink
-     below its text on a short row; a truncated week still says which week. */
+  /* One width for every week, so stepping through them moves nothing: 14rem
+     holds the widest week of a year, "May 28 – Jun 10, 2028", with the
+     button's insets and caret. Only a week across New Year, which writes both
+     years, is wider, and it takes that from `.scheduler-toolbar__spacer`. The
+     narrow toolbar below gives the width up with the full week. */
   flex: 0 1 auto;
-  min-inline-size: 0;
+  min-inline-size: 14rem;
+  /* The rule that parts the week from the free width beside it, the same one
+     overrides.css draws between the toolbar's buttons. */
+  border-inline-end: 1px solid var(--rux-border-subtle-01);
   /* Its minimum follows the toolbar's size token, or it would hold the row
      taller than the controls. */
   min-block-size: var(--rux-layout-size-height-md);
@@ -1849,7 +1854,10 @@ button.scheduler-row-head__num::after {
   font: inherit;
   letter-spacing: inherit;
   cursor: pointer;
-  max-inline-size: 100%;
+  /* It fills the row's fixed width with its caret at the far end, as a
+     dropdown's is, so the caret holds still while the week beside it changes. */
+  justify-content: space-between;
+  inline-size: 100%;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -1877,12 +1885,15 @@ button.scheduler-row-head__num::after {
   text-overflow: ellipsis;
 }
 .scheduler-weekbtn__months { display: none; }
-/* 32.5rem is where the room runs out: the arrows, Today and four icons take
-   311px, and the full week with its insets the rest, measured to fit above
-   520px and not below. The toolbar is asked,
+/* 33.5rem is where the room runs out: the arrows, Today and four icons take
+   311px, and the week's fixed 14rem and its rule the other 225px. Below it
+   the week is as wide as its months, and its rule goes: the buttons after it
+   stand against it there, and the first of them draws the same line. The
+   toolbar is asked,
    not the window, because the roster and the editor beside the schedule are
    what take the room and a window's width cannot see them. */
-@container scheduler-toolbar (max-width: 32.5rem) {
+@container scheduler-toolbar (max-width: 33.5rem) {
+  .scheduler-toolbar__weekrow { min-inline-size: 0; border-inline-end: 0; }
   .scheduler-weekbtn__months { display: block; }
   .scheduler-weekbtn__week {
     position: absolute;
@@ -1894,6 +1905,22 @@ button.scheduler-row-head__num::after {
 }
 /* Everything before this sits left, everything after it right. */
 .scheduler-toolbar__spacer { flex: 1; }
+/* 42.5rem is where New trip's words stop fitting: Today, the arrows and three
+   icons take 270px, the week 225px and the labelled button 135px, and the 50px
+   over is what a week across New Year needs. Below it the button is its +
+   alone, sized in overrides.css, and its words stay its name. */
+@container scheduler-toolbar (max-width: 42.5rem) {
+  .scheduler-toolbar__new-label {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    /* Hidden as well as clipped, or the words still widen what the page can
+       scroll to past the bar's end. */
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
 
 /* 40px region heads on a desktop, Carbon's md token as the toolbar and the
    driver panel's head and their controls ask for it, a step over the 32px day
@@ -2946,11 +2973,12 @@ button.scheduler-row-head__num::after {
    place rather than two, and the menu row that stood in for it goes. */
 .scheduler-page[data-board="compact"] .scheduler-toolbar__step { display: none; }
 body:has(.scheduler-page[data-board="compact"]) .scheduler-menu-item--sm-only { display: none; }
-/* New trip is a toolbar button beside the week's controls, and the menu's
-   first row on a phone's compact board and under the tight width, where the
-   week label needs the 40px. */
+/* New trip is the toolbar's last button, and the menu's first row on a
+   phone's compact board and under the tight width, where the week label needs
+   the 40px. The ⋮ is then the last one showing, and takes the corner. */
 .scheduler-page[data-room="tight"] .scheduler-toolbar__new,
 .scheduler-page[data-board="compact"] .scheduler-toolbar__new { display: none; }
+.scheduler-page:is([data-room="tight"], [data-board="compact"]) .scheduler-toolbar .scheduler-toolbar__more { border-start-end-radius: var(--scheduler-surface-radius, 0); }
 body:has(.scheduler-page:not([data-room="tight"]):not([data-board="compact"])) .scheduler-menu-item--new { display: none; }
 /* In the same state, and on the compact board, the week's own button gives up
    two steps of inset: 24px, as the insets come down from 16px to 8px and the

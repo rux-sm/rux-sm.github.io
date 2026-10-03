@@ -214,8 +214,8 @@ through any read of the same week, such as a save or a live change. A
 right-click selects it too, its card waiting until the menu shuts. The Open trip slot on the selected bar's shortcut bar, a double-click,
 Enter or the bar's right-click menu loads it into the panel, and the board
 scrolls across to show that trip whole beside it. A trip opens on the tab the
-last one was on. New trip is a + in the toolbar, and a row of its overflow
-menu where the toolbar has no room; it puts down the selected trip and opens
+last one was on. New trip is the toolbar's last button, its + alone where the
+words do not fit, and a row of the overflow menu where the toolbar has no room; it puts down the selected trip and opens
 on Details. The shortcut bar floats clear of the
 trip, placed the way a calendar's event popover is: beside the trip's first
 day, where everything the trip says is written, over the two days after it,

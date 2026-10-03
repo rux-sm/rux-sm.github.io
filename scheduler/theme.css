@@ -122,10 +122,12 @@
     border-radius: 6px;
   }
   /* Buttons that stand apart by a gap take no rule between them: on a 6px
-     corner the toolbar's dividing rule bends into a bracket. */
-  [data-theme="geist-dark"] .scheduler-page .scheduler-toolbar > .rux--btn:not(:focus-visible) {
+     corner the toolbar's dividing rule bends into a bracket. The week's own
+     rule goes with them. */
+  [data-theme="geist-dark"] .scheduler-page .scheduler-toolbar > .rux--btn--ghost:not(:focus-visible) {
     border-inline-color: transparent;
   }
+  [data-theme="geist-dark"] .scheduler-toolbar__weekrow { border-inline-end-color: transparent; }
   [data-theme="geist-dark"] .scheduler-trip .rux--side-panel .rux--btn--md.rux--side-panel__close-button {
     block-size: 2.25rem;
     inline-size: 2.25rem;

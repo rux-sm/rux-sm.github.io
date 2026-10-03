@@ -38,8 +38,8 @@ scenario to be complete, and where a new area of LN must be easy to add.
 
 - **An idea that cuts across screens has one concept card**, such as available
   to promise. It shows a short explanation atlas writes in its own words; the
-  fuller account drawn from Infor's help follows the answer to the first
-  question.
+  fuller account drawn from Infor's help follows the answer to the question
+  below.
 
 - **Three ways in: Do, Understand and Look up.** They are the side nav, and
   nothing else is in it.
@@ -137,9 +137,6 @@ scenario to be complete, and where a new area of LN must be easy to add.
   the tasks that use it. "Used in" is worked out from the scenarios at build
   time.
 
-- **Search runs in the page**, from one index file the build writes, so it
-  needs no server.
-
 ### What a page never shows
 
 - **No gaps, quests, counts or states.** An open question about LN stays in
@@ -150,15 +147,14 @@ scenario to be complete, and where a new area of LN must be easy to add.
 - **Meeting reviews, summaries and experiments are not pages.** They are
   sources a scenario rests on, and they stay in atlas.
 
-### The map comes first
+### The map
 
-- **The chain is mapped before any view is built.** `notes/specimen-map.html`
-  draws atlas's export as it stands: what leads to what, the branches, the
-  setup, and what the export does not yet say.
+- **`notes/specimen-map.html` draws atlas's export as it stands:** what leads to
+  what, the branches, the setup, and what the export does not yet say.
 
-- **Four things are written into atlas before the build:** each scenario's
-  route, the setup each scenario needs, the setting that decides each branch,
-  and every question on the tile where it comes up. A setting nobody can name yet is recorded as unknown, not left out.
+- **Four things are written into atlas for a scenario before it is built:** its
+  route, the setup it needs, the setting that decides each of its branches, and
+  every question on the tile where it comes up. A setting nobody can name yet is recorded as unknown, not left out.
 
 - **A decision is recorded in three parts:** the setting that switches it on,
   the tile where the check runs, and the screen where its figure is read.
@@ -170,8 +166,25 @@ scenario to be complete, and where a new area of LN must be easy to add.
   run in LN, which atlas's walking plan owns, and it does not hold the build
   back.
 
-- **The specimen is the first draft of Understand**, and it is deleted once the
-  build draws the map.
+### Version one, then constant change
+
+- **Version one is Ship from stock through the three views, with its
+  questions, built on the map as atlas holds it.** The map is corrected as it
+  is used, not before.
+
+- **Everything on a page is generated from atlas.** No tile is placed, no line
+  drawn and no link written by hand on the site, so a correction is made once
+  in atlas and the next export redraws every page it touches.
+
+- **An error found in use becomes a row in atlas's issue list**, added in a
+  session. Notes has no form for it.
+
+- **The build says what it could not place:** a question with no tile, an
+  answer that leads nowhere, a route with a hole. It lists them and still
+  builds, because a page with a known hole is more use than no page.
+
+- **rux is the only reader.** A later reader is an account with Notes ticked on
+  the site's Access page, and Notes itself does not change.
 
 ### One scenario first
 
@@ -180,8 +193,9 @@ scenario to be complete, and where a new area of LN must be easy to add.
   invented content, because Design holds nothing from atlas.
 
 - **A scenario is ready when every screen its steps name has a card and every
-  task is on its route.** The build refuses a scenario that is not, and names
-  what is missing. A screen no ready scenario names can wait.
+  task is on its route.** The build lists a scenario that is not ready, with
+  what is missing, and leaves it out of Do. A screen no ready scenario names
+  can wait.
 
 - **The old pages stay until Ship from stock works in the new Notes.** The new
   views are built beside them, and the old pages and scripts go in one step
@@ -211,35 +225,25 @@ scenario to be complete, and where a new area of LN must be easy to add.
 ### Built from Design
 
 - **Every control is Carbon:** the search box, links, the scenario picker, the
-  show-more and the copy button.
-
-- **The tile, the line and the map are Notes' own**, under the `notes-` prefix,
-  with every colour a `--rux-*` token.
+  show-more and the copy button. **The tile, the line and the map are Notes'
+  own**, under the `notes-` prefix, with every colour a `--rux-*` token.
 
 - **The page starts from a Design template**, and the site's log-in and app
   switcher are unchanged.
 
 ### Left out, on purpose
 
-- A narrow one-step-at-a-time view to sit beside the LN window.
-- Lighting two scenarios at once to compare them.
-- Old page addresses. The pages are deleted, not kept as landings.
+A one-step-at-a-time view beside the LN window; lighting two scenarios to
+compare them; and landings for old page addresses, which are deleted.
 
 ## Questions
 
 - **Where do field meanings and concepts show?** They come from Infor's own
-  help, so they cannot sit in this public repository. Today they show only in
-  the private preview on the Mac. The other choice is to hold them in the
-  database behind the log-in, so any device sees them, at the cost of a second
-  build and of Infor's text living in the database. Recommended: the Mac
-  preview first, and decide again once the three views are in use.
-
-- **What on the map is wrong or missing?** `notes/specimen-map.html` shows
-  every link, branch and setup tile atlas holds for the chain, and lists the
-  tasks that sit off it.
-
-- **Does anyone but rux open Notes?** If so, deleted addresses need a landing
-  page that points to Do.
+  help, so they cannot sit in this public repository. Version one shows only
+  what atlas exports and does not wait for this. The choices to compare: the
+  private preview on the Mac, as today; the database behind the log-in, so any
+  device and any later reader sees them; or atlas rewriting each meaning in its
+  own words so it can publish.
 
 ## Tasks
 
@@ -248,7 +252,6 @@ scenario to be complete, and where a new area of LN must be easy to add.
       the map with a route lit and a decision opened, a screen card and a
       concept card. Read it at desktop and phone widths
       in light and dark.
-- [ ] In atlas, correct the map from the answer to the first question.
 - [ ] In atlas, record the setting that decides each of the seven branches,
       from the configuration files and the screen files, or record it as
       unknown.
@@ -287,6 +290,9 @@ scenario to be complete, and where a new area of LN must be easy to add.
 - [ ] In atlas, replace the map tiles' lists of phases with the routes, and
       correct `standards/export-json.md` to match.
 - [ ] In atlas, stop exporting reviews, summaries and experiments.
+- [ ] Lay out the three choices for field meanings and concepts on one page,
+      each with a working sample, what it costs to keep, and what leaves the
+      Mac.
 - [ ] Pull what the eight tables and two buckets hold into atlas, and read each
       record and file back from where it landed against the database.
 - [ ] In atlas, remove `tools/pull.py` and correct `docs/plans/overview-walks.md`

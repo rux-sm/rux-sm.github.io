@@ -1081,35 +1081,29 @@ button.scheduler-row-head__num::after {
   padding: var(--rux-spacing-02) var(--rux-spacing-03);
   border-block-start: 1px solid var(--card-rule);
 }
-/* The reminder and the other warnings are a band, first: the warning colour
-   tinted across the row, so the band stands off the card, with a 3px strip of
-   it down its start, and each bell in the bar's own warning ink. */
+/* The reminder and the other warnings come first, each a plain row of the
+   card's own surface: the bell in the bar's own warning ink and the words in
+   bold say what it is, with no tint, which turned muddy on a dark card. */
 .scheduler-card__asks,
 .scheduler-card__warn {
   display: grid;
   grid-template-columns: 1rem minmax(0, 1fr) auto;
   gap: var(--rux-spacing-03);
   align-items: center;
-  background: color-mix(in srgb, var(--rux-support-warning) 22%, var(--card-surface));
-  border-inline-start: 3px solid var(--rux-support-warning);
-  padding-inline-start: calc(var(--rux-spacing-03) - 3px);
 }
 .scheduler-card__asks > svg,
 .scheduler-card__warn > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: var(--scheduler-mark-warning); }
-/* A second line under the first joins its band, with no rule between, so
-   each colour's alerts read as one list. */
+/* A second warning under the first takes no rule between, so the warnings
+   read as one list. */
 :is(.scheduler-card__asks, .scheduler-card__warn) + :is(.scheduler-card__asks, .scheduler-card__warn),
 .scheduler-card__misfit + .scheduler-card__misfit { border-block-start: 0; padding-block-start: 0; }
-/* A bus that does not fit is a band like the reminder's, in the error colour,
+/* A bus that does not fit is a row like the reminder's with the red bell,
    above it: a mistake on the board comes before a job still to do. */
 .scheduler-card__misfit {
   display: grid;
   grid-template-columns: 1rem minmax(0, 1fr) auto;
   gap: var(--rux-spacing-03);
   align-items: center;
-  background: color-mix(in srgb, var(--card-error) 22%, var(--card-surface));
-  border-inline-start: 3px solid var(--card-error);
-  padding-inline-start: calc(var(--rux-spacing-03) - 3px);
 }
 .scheduler-card__misfit > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: var(--scheduler-mark-error); }
 .scheduler-card__misfit > strong { min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
@@ -1235,13 +1229,25 @@ button.scheduler-row-head__num::after {
    their 24px rows and start their words where the updates do. The face, the
    pin and the age sit on the first line. */
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__row { padding-inline: var(--rux-spacing-05); }
-/* A warning keeps its words on one line beside when the trip leaves, so its
-   band takes back 8px on the right, where nothing lines up with it. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) {
-  padding-inline: calc(var(--rux-spacing-05) - 3px) var(--rux-spacing-03);
+/* A warning keeps its words on one line beside when the trip leaves, on a
+   card two days wide: the bell keeps its 8px and the day sits 4px after the
+   words, so both end where the updates' ages do. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) { column-gap: 0; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) > strong { margin-inline-start: var(--rux-spacing-03); }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__asks-when { margin-inline-start: var(--rux-spacing-02); }
+/* An update is a press that opens it in the Updates window: its row lights
+   on hover as the slots do, the light reaching 8px past its words and 4px
+   above and below, so the updates' words stand 16px apart. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list { gap: var(--rux-spacing-03); }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update[data-update-id] {
+  margin-inline: calc(-1 * var(--rux-spacing-03));
+  padding: var(--rux-spacing-02) var(--rux-spacing-03);
+  border-radius: var(--scheduler-shortcut-radius, 0);
+  cursor: pointer;
 }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update[data-update-id]:hover { background: var(--card-hover); }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update[data-update-id]:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates { padding-block: var(--rux-spacing-05); }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list { gap: var(--rux-spacing-05); }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__words {
   font-size: var(--rux-body-compact-01-font-size);
   line-height: var(--rux-body-compact-01-line-height);

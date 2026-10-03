@@ -4246,7 +4246,8 @@
     logStatus.hidden = logEl.childElementCount > 0;
     logStatus.textContent = 'No updates yet.';
   }
-  async function loadLog(tripId) {
+  // `editId` opens that update straight into its box, as pressing it would.
+  async function loadLog(tripId, editId = null) {
     if (!logEl) return;
     logTrip = tripId;
     logRows = [];
@@ -4261,7 +4262,9 @@
       if (failed) throw new Error(failed.message);
       if (logTrip !== tripId) return;
       logRows = data || [];
+      if (editId && logRows.some(r => r.id === editId)) logChanging = { id: editId, mode: 'edit' };
       drawLog();
+      if (logChanging) logEl.querySelector('.rux--text-area')?.scrollIntoView({ block: 'nearest' });
     } catch (err) {
       console.warn('The updates were not read:', err);
       if (logTrip === tripId) logStatus.textContent = 'The updates could not be read.';
@@ -9447,7 +9450,7 @@
   let updateSettle = null;   // Save's step, while Save opened the window
   let updateAlone = null;    // the trip, while the window stands on its own
   let updateChange = null;
-  function fillUpdateWindow({ trip, what, line, tripId }) {
+  function fillUpdateWindow({ trip, what, line, tripId, editId = null }) {
     document.getElementById('scheduler-update-trip').textContent = trip;
     updateWhat.textContent = what;
     updateWhat.hidden = !what;
@@ -9456,7 +9459,7 @@
     updateSave.disabled = !line;
     // A new trip has nothing earlier to list.
     document.getElementById('scheduler-updates-section').hidden = !tripId;
-    if (tripId) loadLog(tripId);
+    if (tripId) loadLog(tripId, editId);
     window.Rux?.modal?.open?.(updateModal);
     updateText.focus();
     updateText.setSelectionRange(updateText.value.length, updateText.value.length);
@@ -9491,7 +9494,8 @@
     });
   }
   // The window on its own, for a trip on the board.
-  function openUpdatesWindow(trip) {
+  // With `editId`, that update opens in its box ready to change, pin or delete.
+  function openUpdatesWindow(trip, editId = null) {
     if (!updateModal || !trip) return;
     updateSettle = null;
     updateChange = null;
@@ -9499,7 +9503,7 @@
     updateSkip.textContent = 'Cancel';
     updateCloseWrap.hidden = true;
     updateSave.textContent = 'Add update';
-    fillUpdateWindow({ trip: tripName(trip), what: '', line: '', tripId: trip.id });
+    fillUpdateWindow({ trip: tripName(trip), what: '', line: '', tripId: trip.id, editId });
   }
   const answerUpdate = answer => {
     const settle = updateSettle;
@@ -12593,6 +12597,14 @@
 
   // The trip whose card shows all its updates, kept until the card leaves it.
   let updatesOpenFor = null;
+  // An update that is a press takes Enter and Space, as a button does.
+  barShortcuts?.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const update = e.target.closest?.('.scheduler-card__update[data-update-id]');
+    if (!update || e.target !== update) return;
+    e.preventDefault();
+    openUpdatesFromCard(update.dataset.updateId);
+  });
 
   let shortcutsDrawn = '';
   function drawShortcuts(bar) {
@@ -13111,6 +13123,13 @@
       const when = el('span', 'scheduler-card__when', ageShort(u.created_at));
       when.title = updateStamp(u);
       item.append(face, el('span', 'scheduler-card__words', u.body), when);
+      // Floating, an update is a press that opens it in the Updates window.
+      if (floating) {
+        item.dataset.updateId = u.id;
+        item.tabIndex = 0;
+        item.setAttribute('role', 'button');
+        item.setAttribute('aria-label', `Edit update: ${u.body}`);
+      }
       return item;
     };
     /* Docked, with any updates, the title's words are the section's toggle, a
@@ -13157,9 +13176,9 @@
     if (refocus) barShortcuts.querySelector('.scheduler-card__toggle')?.focus();
   }
 
-  function openUpdatesFromCard() {
+  function openUpdatesFromCard(editId = null) {
     const bar = selectedBar();
-    if (bar) openUpdatesWindow(panelIndex.trips.get(bar.dataset.tripId));
+    if (bar) openUpdatesWindow(panelIndex.trips.get(bar.dataset.tripId), editId);
   }
 
   // A slot acts on the bar it shows, and a disabled one does nothing.
@@ -13172,6 +13191,9 @@
     }
     // A press anywhere on updates with more to show opens or closes them, and
     // the toggle keeps focus when a key pressed it.
+    // An update on the floating card opens in the Updates window, ready to change.
+    const update = e.target.closest('.scheduler-card__update[data-update-id]');
+    if (update) { openUpdatesFromCard(update.dataset.updateId); return; }
     const more = e.target.closest('.scheduler-card__updates[data-more]');
     if (more) {
       toggleUpdates(more.closest('.scheduler-card')?.dataset.tripId ?? null, e.detail === 0);

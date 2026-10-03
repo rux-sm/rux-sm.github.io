@@ -231,17 +231,20 @@ covers, centred on the trip, so it covers about half the trips above and below
 it. Each slot carries its word under its icon, the four in one 40px row; each
 warning is a 24px row, and the updates are in 14px type, 16px apart and 16px
 in from the card's sides, as a Carbon popover's content is. When the card opens above the
-trip the slots come last, next to it. The card opens with its warnings in one
-band: a bus that does not fit, the follow-up reminder, Trip contact missing,
-and each need still to do, Hotel booking pending or HOS form pending, each a
-line of its own behind the bar's bell.
+trip the slots come last, next to it. The card opens with its warnings, plain
+rows on the card's own surface with no tint: a bus that does not fit behind a
+red bell, then the follow-up reminder, Trip contact missing, and each need
+still to do, Hotel booking pending or HOS form pending, each a line of its own
+in bold behind the bar's yellow bell.
 No warning has a dismiss; each stays until it is put right. Needs that are
 met are not shown.
 Then the updates: their title, Updates with their count (Updates · 5) and
 Add at its end, which opens the trip's Updates window, over every update in
 full, the pinned one first, led by a pin where an update's avatar stands, and
 the rest newest first, each with its age at the right, always a number (45m,
-2h, 3d), scrolling past the card's height. On the docked sheet two lines
+2h, 3d), scrolling past the card's height. An update is a press, lit on
+hover, that opens it in the Updates window ready to change, pin or delete.
+On the docked sheet two lines
 show, the pinned update and the newest, or the two newest, each cut to one
 line; the whole section is one press, lit on hover, whose title is the button
 a keyboard reaches, with an arrow that turns over when open, and it opens to

@@ -190,17 +190,6 @@
   --card-rule: var(--rux-border-subtle-01);
   --card-focus: var(--rux-focus);
 }
-/* The follow-up is a Geist note rather than Carbon's notification strip: a
-   tile of the slots' corner, edged all round in the warning colour and its
-   bell in it too. The edge stands in for the rules above and below. */
-[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__asks {
-  border: 1px solid color-mix(in srgb, var(--rux-support-warning) 45%, transparent);
-  border-radius: var(--scheduler-shortcut-radius);
-  padding-inline-start: calc(var(--rux-spacing-04) - 1px);
-}
-[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__asks > svg { color: var(--rux-support-warning); }
-[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__asks + .scheduler-card__row,
-[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__asks + .scheduler-card__list > :first-child { border-block-start: 0; }
 /* The rule between two updates steps down to the faintest border, as Design's
    Geist table rows do, so a wrapped update still reads as one row. */
 [data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update { border-block-start-color: var(--rux-border-subtle-00); }

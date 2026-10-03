@@ -327,6 +327,29 @@
 [data-theme="geist-dark"] .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled) {
   border-color: var(--rux-border-subtle-02, #e0e0e0);
 }
+/* THE TERTIARY BUTTON IS THAT SAME OUTLINE. Carbon rings it in the brand
+   colour and fills it with the brand on hover, focus and press; the brand
+   here is #ededed, so it was the brightest outline on the page. Geist has one
+   outlined button, its secondary -- the page behind a #2e2e2e ring, labelled
+   in the page's own text, measured on its Button page -- so the tertiary
+   takes the secondary's ring, label and fills in every state. Focus keeps
+   Carbon's inset ring and gives up its fill, which would put the label's own
+   colour behind it. */
+[data-theme="geist-dark"] .rux--btn--tertiary:not(:disabled):not(.rux--btn--disabled) {
+  border-color: var(--rux-border-subtle-02, #e0e0e0);
+  color: var(--rux-text-primary, #161616);
+}
+[data-theme="geist-dark"] .rux--btn--tertiary:not(:disabled):not(.rux--btn--disabled):hover {
+  background-color: var(--rux-button-secondary-hover);
+}
+[data-theme="geist-dark"] .rux--btn--tertiary:not(:disabled):not(.rux--btn--disabled):focus-visible {
+  border-color: var(--rux-button-focus-color, var(--rux-focus));
+  background-color: transparent;
+}
+[data-theme="geist-dark"] .rux--btn--tertiary:not(:disabled):not(.rux--btn--disabled):active {
+  border-color: var(--rux-border-subtle-02, #e0e0e0);
+  background-color: var(--rux-button-secondary-active);
+}
 
 /* A SELECTABLE TAG RINGS LIKE THE OUTLINE BUTTON. Carbon draws it with
    `border-inverse`, the brightest line the theme has, so the trip editor's
@@ -399,7 +422,14 @@
    5.19. Only this rule pairs those two tokens, so only it moves. */
 [data-theme="ant-dark"] .rux--date-picker--next .rux--date-picker__day.selected {
   color: var(--rux-text-on-color);
-}/* ANT-DARK'S TABLE IS THE OTHER ANSWER, and it was measured too, on Ant's own
+}
+/* Geist's Calendar page rounds each day's box 4px, so the picked day is a
+   rounded square and not a block. The days between a range's two ends keep
+   their square band, which the two ends close. */
+[data-theme="geist-dark"] .rux--date-picker--next .rux--date-picker__day:not(.inRange) {
+  border-radius: 4px;
+}
+/* ANT-DARK'S TABLE IS THE OTHER ANSWER, and it was measured too, on Ant's own
    Table page in its dark mode: the table takes the raised layer as a fill and
    NO border, rounds only its top two corners, and keeps both the filled header
    and the rule under every row. Ours already keeps those two, so only the fill
@@ -550,6 +580,12 @@
 }
 [data-theme="geist-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-link:not(.rux--tabs__nav-item--selected, :hover) {
   border-block-end-color: transparent;
+}
+/*   The chosen tab is told apart by its line and its ink, not its weight:
+     Geist's Tabs page sets every tab at 400, the chosen one in #ededed over
+     the others' #a1a1a1, so choosing one never changes its width. */
+[data-theme="geist-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-item--selected {
+  font-weight: 400;
 }
 /* - A table's cells are 8px from each side, 16px between two columns; the
      first and last keep 16px to the box's edge, where the title and the
@@ -808,8 +844,9 @@
   fill: color-mix(in srgb, var(--rux-support-warning) 60%, var(--rux-text-primary));
 }
 /* THE ROUNDED THEMES' NOTIFICATIONS. Both draw an alert as a tint of its own
-   hue inside a 1px border of it, with the text in the page's own ink, whether
-   or not it carries an action. Carbon draws one as an inverse slab with a 3px
+   hue inside a 1px border, whether or not it carries an action: Ant's as
+   these rules have it, the border in the hue and the text in the page's own
+   ink, and Geist's quieter, in the rules after them. Carbon draws one as an inverse slab with a 3px
    bar down one side, which on a dark page is the brightest thing on screen. The four tints are the
    notification-background tokens, set per theme in rux-theme.css; the borders
    and the glyphs are the support colours each theme already carries. */
@@ -894,6 +931,45 @@
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification--warning-alt :is(.rux--inline-notification__icon, .rux--toast-notification__icon, .rux--actionable-notification__icon) {
   fill: var(--rux-support-warning);
 }
+/* GEIST'S NOTE IS QUIETER THAN ANT'S ALERT, measured on its Note page: 6px
+   corners, a border that is a dark step of the note's own hue -- #5b3000
+   round a warning whose words are #ff9300 -- and the words in the hue rather
+   than the page's ink. 30% of the support colour over the tint lands within
+   a shade of each of Geist's borders, and the support colour reads on its
+   tint at 4.72 to 1 at worst, the error's. A toast's and an actionable
+   notification's subtitle and caption name their own ink, so they are named
+   here too. */
+[data-theme="geist-dark"] :is(.rux--inline-notification, .rux--toast-notification, .rux--actionable-notification) {
+  border-radius: 6px;
+}
+[data-theme="geist-dark"] :is(.rux--inline-notification--error, .rux--toast-notification--error, .rux--actionable-notification--error) {
+  border-color: color-mix(in srgb, var(--rux-support-error) 30%, var(--rux-notification-background-error));
+}
+[data-theme="geist-dark"] :is(.rux--inline-notification--error, .rux--toast-notification--error, .rux--actionable-notification--error),
+[data-theme="geist-dark"] :is(.rux--toast-notification--error, .rux--actionable-notification--error) :is(.rux--toast-notification__subtitle, .rux--toast-notification__caption, .rux--actionable-notification__subtitle, .rux--actionable-notification__caption) {
+  color: var(--rux-support-error);
+}
+[data-theme="geist-dark"] :is(.rux--inline-notification--success, .rux--toast-notification--success, .rux--actionable-notification--success) {
+  border-color: color-mix(in srgb, var(--rux-support-success) 30%, var(--rux-notification-background-success));
+}
+[data-theme="geist-dark"] :is(.rux--inline-notification--success, .rux--toast-notification--success, .rux--actionable-notification--success),
+[data-theme="geist-dark"] :is(.rux--toast-notification--success, .rux--actionable-notification--success) :is(.rux--toast-notification__subtitle, .rux--toast-notification__caption, .rux--actionable-notification__subtitle, .rux--actionable-notification__caption) {
+  color: var(--rux-support-success);
+}
+[data-theme="geist-dark"] :is(.rux--inline-notification--info, .rux--inline-notification--info-square, .rux--toast-notification--info, .rux--toast-notification--info-square, .rux--actionable-notification--info, .rux--actionable-notification--info-square) {
+  border-color: color-mix(in srgb, var(--rux-support-info) 30%, var(--rux-notification-background-info));
+}
+[data-theme="geist-dark"] :is(.rux--inline-notification--info, .rux--inline-notification--info-square, .rux--toast-notification--info, .rux--toast-notification--info-square, .rux--actionable-notification--info, .rux--actionable-notification--info-square),
+[data-theme="geist-dark"] :is(.rux--toast-notification--info, .rux--toast-notification--info-square, .rux--actionable-notification--info, .rux--actionable-notification--info-square) :is(.rux--toast-notification__subtitle, .rux--toast-notification__caption, .rux--actionable-notification__subtitle, .rux--actionable-notification__caption) {
+  color: var(--rux-support-info);
+}
+[data-theme="geist-dark"] :is(.rux--inline-notification--warning, .rux--inline-notification--warning-alt, .rux--toast-notification--warning, .rux--toast-notification--warning-alt, .rux--actionable-notification--warning, .rux--actionable-notification--warning-alt) {
+  border-color: color-mix(in srgb, var(--rux-support-warning) 30%, var(--rux-notification-background-warning));
+}
+[data-theme="geist-dark"] :is(.rux--inline-notification--warning, .rux--inline-notification--warning-alt, .rux--toast-notification--warning, .rux--toast-notification--warning-alt, .rux--actionable-notification--warning, .rux--actionable-notification--warning-alt),
+[data-theme="geist-dark"] :is(.rux--toast-notification--warning, .rux--toast-notification--warning-alt, .rux--actionable-notification--warning, .rux--actionable-notification--warning-alt) :is(.rux--toast-notification__subtitle, .rux--toast-notification__caption, .rux--actionable-notification__subtitle, .rux--actionable-notification__caption) {
+  color: var(--rux-support-warning);
+}
 /* A notification's action is each system's own small button, not Carbon's
    link-coloured text. Geist's Note page puts a small solid button in the
    note, its primary fill under dark text; Ant's Alert page puts a small text
@@ -904,6 +980,13 @@
 [data-theme="geist-dark"] .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:not(:disabled):not(.rux--btn--disabled) {
   background-color: var(--rux-button-primary);
   color: var(--rux-text-on-color);
+}
+/* Carbon sets its text action against the notification's end, where a word
+   needs no room. A solid button there touches the border, so it stands in
+   from the end by the 8px it already keeps above and below. A toast lays its
+   button under its words and keeps Carbon's own. */
+[data-theme="geist-dark"] .rux--actionable-notification:not(.rux--actionable-notification--toast) .rux--actionable-notification__action-button.rux--btn--ghost {
+  margin-inline-end: var(--rux-spacing-03);
 }
 [data-theme="geist-dark"] .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:not(:disabled):not(.rux--btn--disabled):hover {
   background-color: var(--rux-button-primary-hover);

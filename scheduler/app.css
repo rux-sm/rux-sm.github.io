@@ -2715,20 +2715,22 @@ button.scheduler-row-head__num::after {
 }
 
 /* ── The Contacts window ────────────────────────────────────────────────────
-   A Carbon modal from the Contacts slot: three parts, each a head with its
-   name and its group action, over a tile for each person, 2px apart as the
-   Updates window's tiles are. The modal's content scrolls. */
+   A Carbon modal from the Contacts slot: parts for the booking contact, the
+   trip contacts and the drivers, each a head with its name over a tile for
+   each person, 2px apart as the Updates window's tiles are. The modal's
+   content scrolls. */
 .scheduler-contacts__empty { margin: 0; color: var(--rux-text-secondary); }
-/* A part's head: its name in secondary heading type at the left, its group
-   action at the right; 24px parts one part from the last. */
+/* A part's head: its name in secondary heading type at the left, its menu
+   at the right, over the tiles' own menus; 24px parts one part from the last. */
 .scheduler-contacts__head {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--rux-spacing-02) var(--rux-spacing-03);
-  min-block-size: var(--rux-layout-size-height-sm);
-  margin: var(--rux-spacing-06) 0 var(--rux-spacing-03);
+  min-block-size: var(--rux-layout-size-height-md);
+  padding-inline-end: var(--rux-spacing-03);
+  margin: var(--rux-spacing-06) 0 var(--rux-spacing-02);
 }
 .scheduler-contacts__head:first-child { margin-block-start: 0; }
 .scheduler-contacts__part {
@@ -2739,7 +2741,6 @@ button.scheduler-row-head__num::after {
   line-height: var(--rux-heading-compact-01-line-height);
   letter-spacing: var(--rux-heading-compact-01-letter-spacing);
 }
-.scheduler-contacts__letter { display: flex; }
 .scheduler-contacts__group { display: grid; gap: 2px; }
 /* A driver's status in its colour, as the bar's crew marks carry it. */
 .scheduler-contact__status--success { color: var(--rux-support-success); }
@@ -2772,7 +2773,18 @@ button.scheduler-row-head__num::after {
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
   font-variant-numeric: tabular-nums;
 }
-.scheduler-contact__actions { display: flex; flex: none; align-items: center; margin-inline-start: auto; }
+/* Call, Text and the menu each keep their column, so they line up from tile
+   to tile whichever a person lacks. */
+.scheduler-contact__actions {
+  display: grid;
+  grid-template-columns: auto auto var(--rux-layout-size-height-md);
+  flex: none;
+  align-items: center;
+  margin-inline-start: auto;
+}
+.scheduler-contact__call { grid-column: 1; }
+.scheduler-contact__text { grid-column: 2; }
+.scheduler-contact__more { grid-column: 3; }
 
 /* ── The docked shortcut bar ────────────────────────────────────────────────
    A block one slot wide has nothing for the shortcut bar to float beside, so

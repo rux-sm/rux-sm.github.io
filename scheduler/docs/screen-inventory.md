@@ -261,22 +261,20 @@ has no notes of its own: a note saved in rux-ui becomes the pinned update.
 Only the selected trip has a
 card. Every trip has the same four slots: Open trip, the itinerary,
 opened or uploaded, Forms and Contacts; every other action is on the
-right-click menu. Contacts opens a centred window, as Updates does, of tiles in three parts, the
-customer's people, the crew on that bus and the crew on the trip's other
-buses for that leg, each with its role, number, and Call and Text buttons,
-an Email icon for a booking contact who has one, and a driver's status and report
-time. A person with no number says so, with Add number. Two drivers or more
-add Text all drivers, one group message, at the bus part's head. Once a driver on the trip has
-confirmed, the Customer part's head has Email driver details, a written email
-to the booking contact who has an address, and Copy driver details, the same
-letter on the clipboard: every bus on the trip with its confirmed drivers'
-names and numbers, each leg under its date when their crews differ. A driver's Text opens their Google
-Messages link on a computer where the Drivers page holds one. Each driver's
-tile has a menu of Remind, a text with their reminder of the leg typed in, and
+right-click menu. Contacts opens a centred window, as Updates does, of tiles under
+Booking contact, Trip contact and Drivers (one person who is both contacts
+is under Booking and trip contact), every driver on the leg with their bus,
+this bar's bus first, role, status and report time. Each tile has Call and
+Text and a ⋮ menu of the rest: Email, Add number for a person with no number,
+and a driver's Remind, a text with their reminder of the leg typed in, and
 Copy reminder: "Hi Oscar, a reminder for your trip tomorrow:", then the leg in
 the Driver week info message's own lines, from `scheduler/driver-text.js`,
-and the newest itinerary's link. Where the driver's text opens Google
-Messages, Remind copies the reminder first, to paste. A call, text
+and the newest itinerary's link. Once a driver has confirmed, the booking
+contact's menu has Email driver details and Copy driver details, the letter
+of every bus with its confirmed drivers' names and numbers, each leg under its
+date when their crews differ. The Drivers heading's menu has Text all drivers,
+one group message, from two drivers up. A driver's Text opens their Google
+Messages link on a computer where the Drivers page holds one; there, Remind copies the reminder first, to paste. A call, text
 or email to the customer's people, and the driver details, offer to add it to the trip's updates,
 and writes nothing if the offer is ignored. A shortcut
 that cannot act on the trip, such as the envelope on a bus with no driver, shows faint

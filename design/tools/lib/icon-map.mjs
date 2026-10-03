@@ -122,6 +122,7 @@ export const ICONS = {
   'maximize': { material: 'open_in_full', rux: null },
   'menu': { material: 'menu', rux: null },
   'minimize': { material: 'close_fullscreen', rux: null },
+  'notebook': { material: 'sticky_note_2', rux: null },  // A written note; Material's notebook is a bound book.
   'notification': { material: 'notifications', rux: null },
   'notification--new': { material: 'notifications_active', rux: null },
   'notification--important': { material: 'notification_important', rux: null },  // Carbon draws no bell with a warning; Material's carries an exclamation mark.

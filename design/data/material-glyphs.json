@@ -906,6 +906,22 @@
         "path|d=m122-80-42-42 298-298H160v-60h320v320h-60v-218L122-80Zm358-400v-320h60v218l298-298 42 42-298 298h218v60H480Z"
       ]
     },
+    "sticky_note_2@960": {
+      "name": "sticky_note_2",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/sticky_note_2.svg",
+      "geometry": [
+        "path|d=M180-180h400v-200h200v-400H180v600Zm-60 60v-720h720v480L600-120H120Zm180-300v-60h170v60H300Zm0-160v-60h360v60H300ZM180-180v-600 600Z"
+      ]
+    },
+    "sticky_note_2-fill@960": {
+      "name": "sticky_note_2-fill",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/sticky_note_2-fill.svg",
+      "geometry": [
+        "path|d=M780-380H580v200l200-200ZM120-120v-720h720v480L600-120H120Zm180-300h170v-60H300v60Zm0-160h360v-60H300v60Z"
+      ]
+    },
     "notifications@960": {
       "name": "notifications",
       "size": "960",

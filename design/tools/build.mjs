@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 //
-// Design build. Compiles src/app.scss, then applies the one transform Carbon's
-// own configuration cannot: see NOTE below.
+// Design build. Compiles src/app.scss, then applies the changes Carbon's own
+// configuration cannot make, which tools/lib/transform.mjs holds and explains.
 //
 // Written in Node rather than sed deliberately. `sed -i` needs `-i ''` on BSD and
 // `-i` with the suffix attached on GNU, and neither parses the other's form.
@@ -11,28 +11,24 @@ import { readFileSync, writeFileSync, statSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { classNames, compiled } from './lib/ownership.mjs';
+import { transform, leftoverFocus } from './lib/transform.mjs';
 
 const SRC = 'src/app.scss';
 const OUT = 'css/rux.css';
 const MIN = 'css/rux.min.css';
-
-// NOTE — the one unavoidable post-transform.
-// @carbon/grid hardcodes its custom properties as literal `--cds-grid-*` strings
-// (node_modules/@carbon/grid/scss/_css-grid.scss:43 and following). $prefix governs
-// grid's class names but never these, so configuration alone cannot fix it.
-//
-// Safe because the tokens are self-contained: declared and consumed only within
-// grid's own rules, referenced by no component in @carbon/styles. Verified
-// 2026-08-26 — 8 names, 125 declarations, 20 var() references, zero component hits.
-// verify() below re-proves the containment on every build rather than trusting this.
-const GRID_TOKEN = /--cds-grid-/g;
 
 function sass(out, extra = []) {
   execFileSync('npx', ['sass', '--load-path=node_modules', '--no-source-map', ...extra, SRC, out],
     { stdio: ['ignore', 'inherit', 'inherit'] });
 }
 
+// verify() re-proves on every build that the grid rename left no `cds` behind
+// and that no `:focus` survived the change to `:focus-visible`.
 function verify(css, label) {
+  if (leftoverFocus(css)) {
+    console.error(`\n  FAIL (${label}): ${leftoverFocus(css)} ':focus' selectors survived.`);
+    process.exit(1);
+  }
   const leaks = css.match(/cds/g);
   if (leaks) {
     console.error(`\n  FAIL (${label}): ${leaks.length} 'cds' occurrences survived.`);
@@ -79,9 +75,12 @@ function brand(css) {
 
 function kb(n) { return `${(n / 1024).toFixed(0)} KB`; }
 
+let focusRules = 0;
 for (const [out, extra] of [[OUT, []], [MIN, ['--style=compressed']]]) {
   sass(out, extra);
-  const css = brand(readFileSync(out, 'utf8').replace(GRID_TOKEN, '--rux-grid-'));
+  const done = transform(readFileSync(out, 'utf8'));
+  if (out === OUT) focusRules = done.focus;
+  const css = brand(done.css);
   writeFileSync(out, css);
   // Scans the banner too, deliberately: a notice that named the old prefix would be a
   // build failure rather than a comment nobody reads.
@@ -154,6 +153,7 @@ console.log(`
   tokens       ${tokens} unique --rux-*
   classes      ${classes} unique .rux--*
   cds leakage  none
+  focus        ${focusRules} :focus → :focus-visible
   attribution  banner + NOTICE
 
   unminified   ${kb(statSync(OUT).size)}

@@ -135,7 +135,7 @@
    away along the switch's flat top and bottom at a browser zoom under 100%,
    and the ring reads as cut off there while its ends still show the gap.
    Carbon's two selectors, so its specificity. */
-.rux--toggle__button:focus + .rux--toggle__label .rux--toggle__switch::after,
+.rux--toggle__button:focus-visible + .rux--toggle__label .rux--toggle__switch::after,
 .rux--toggle:not(.rux--toggle--disabled):active .rux--toggle__switch::after {
   outline-offset: 2px;
 }
@@ -287,12 +287,12 @@
    four things that are right. */
 [data-theme="geist-dark"] .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled),
 [data-theme="geist-dark"] .rux--btn--secondary:hover:not(:disabled):not(.rux--btn--disabled),
-[data-theme="geist-dark"] .rux--btn--secondary:focus:not(:disabled):not(.rux--btn--disabled) {
+[data-theme="geist-dark"] .rux--btn--secondary:focus-visible:not(:disabled):not(.rux--btn--disabled) {
   color: var(--rux-text-primary, #161616);
 }
 [data-theme="geist-dark"] .rux--btn--danger:not(:disabled):not(.rux--btn--disabled),
 [data-theme="geist-dark"] .rux--btn--danger:hover:not(:disabled):not(.rux--btn--disabled),
-[data-theme="geist-dark"] .rux--menu-item--danger:not(.rux--menu-item--disabled):is(:hover, :focus) {
+[data-theme="geist-dark"] .rux--menu-item--danger:not(.rux--menu-item--disabled):is(:hover, :focus-visible) {
   color: #ffffff;
 }
 /* Spotify's text-on-color is black for the same reason, a light green brand,
@@ -300,7 +300,7 @@
    page's own text as well. */
 [data-theme="spotify-dark"] .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled),
 [data-theme="spotify-dark"] .rux--btn--secondary:hover:not(:disabled):not(.rux--btn--disabled),
-[data-theme="spotify-dark"] .rux--btn--secondary:focus:not(:disabled):not(.rux--btn--disabled) {
+[data-theme="spotify-dark"] .rux--btn--secondary:focus-visible:not(:disabled):not(.rux--btn--disabled) {
   color: var(--rux-text-primary, #161616);
 }
 /* The ring that makes the outline. Carbon already draws a 1px border on the
@@ -896,7 +896,7 @@
 [data-theme="ant-dark"] .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:not(:disabled):not(.rux--btn--disabled):active {
   background-color: var(--rux-background-active);
 }
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:focus {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:focus-visible {
   outline-color: var(--rux-focus);
 }
 /* A button that fills its bar edge to edge is that bar's edge, so it stays

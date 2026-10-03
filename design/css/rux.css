@@ -2079,7 +2079,7 @@ em {
     outline: none;
   }
 }
-.rux--accordion__heading:focus {
+.rux--accordion__heading:focus-visible {
   position: relative;
   z-index: 2;
   box-shadow: 0 -1px 0 0 var(--rux-focus, #0f62fe), inset 0 1px 0 0 var(--rux-focus, #0f62fe), inset 2px 0 0 0 var(--rux-focus, #0f62fe), 0 1px 0 0 var(--rux-focus, #0f62fe), inset 0 -1px 0 0 var(--rux-focus, #0f62fe), inset -2px 0 0 0 var(--rux-focus, #0f62fe);
@@ -2087,7 +2087,7 @@ em {
 }
 
 @media screen and (-ms-high-contrast: active), (forced-colors: active) {
-  .rux--accordion__heading:focus {
+  .rux--accordion__heading:focus-visible {
     outline: 2px solid Highlight;
   }
 }
@@ -2285,7 +2285,7 @@ li.rux--accordion__item--disabled:last-of-type {
   .rux--accordion--flush .rux--accordion__heading:hover::after {
     inset-block-end: -1px;
   }
-  .rux--accordion--flush .rux--accordion__heading:hover:focus::after, .rux--accordion--flush .rux--accordion__heading:hover:focus::before {
+  .rux--accordion--flush .rux--accordion__heading:hover:focus-visible::after, .rux--accordion--flush .rux--accordion__heading:hover:focus-visible::before {
     background: none;
   }
 }
@@ -2299,7 +2299,7 @@ li.rux--accordion__item--disabled:last-of-type {
   fill: var(--rux-icon-primary, #161616);
   pointer-events: none;
 }
-.rux--accordion.rux--skeleton .rux--accordion__arrow:focus, .rux--accordion.rux--skeleton .rux--accordion__arrow:active {
+.rux--accordion.rux--skeleton .rux--accordion__arrow:focus-visible, .rux--accordion.rux--skeleton .rux--accordion__arrow:active {
   border: none;
   cursor: default;
   outline: none;
@@ -2322,7 +2322,7 @@ li.rux--accordion__item--disabled:last-of-type {
   margin-inline-start: 1rem;
 }
 
-.rux--skeleton .rux--accordion__heading:focus .rux--accordion__arrow {
+.rux--skeleton .rux--accordion__heading:focus-visible .rux--accordion__arrow {
   border: none;
   cursor: default;
   outline: none;
@@ -3279,12 +3279,12 @@ li.rux--accordion__item--disabled:last-of-type {
   block-size: 2rem;
   inline-size: 2rem;
 }
-.rux--popover--tab-tip__button:focus {
+.rux--popover--tab-tip__button:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--popover--tab-tip__button:focus {
+  .rux--popover--tab-tip__button:focus-visible {
     outline-style: dotted;
   }
 }
@@ -3302,7 +3302,7 @@ li.rux--accordion__item--disabled:last-of-type {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
 }
 
-.rux--popover--tab-tip.rux--popover--open .rux--popover--tab-tip__button:not(:focus)::after {
+.rux--popover--tab-tip.rux--popover--open .rux--popover--tab-tip__button:not(:focus-visible)::after {
   position: absolute;
   z-index: 6001;
   background: var(--rux-layer);
@@ -3375,15 +3375,15 @@ li.rux--accordion__item--disabled:last-of-type {
   color: var(--rux-text-primary, #161616);
 }
 
-.rux--definition-term:focus {
+.rux--definition-term:focus-visible {
   outline: 1px solid var(--rux-focus, #0f62fe);
 }
 @media screen and (prefers-contrast) {
-  .rux--definition-term:focus {
+  .rux--definition-term:focus-visible {
     outline-style: dotted;
   }
 }
-.rux--definition-term:focus {
+.rux--definition-term:focus-visible {
   border-block-end-color: var(--rux-border-interactive, #0f62fe);
 }
 
@@ -3451,7 +3451,7 @@ li.rux--accordion__item--disabled:last-of-type {
   transition: background 70ms cubic-bezier(0, 0, 0.38, 0.9), box-shadow 70ms cubic-bezier(0, 0, 0.38, 0.9), border-color 70ms cubic-bezier(0, 0, 0.38, 0.9), outline 70ms cubic-bezier(0, 0, 0.38, 0.9);
   vertical-align: top;
 }
-.rux--btn:disabled, .rux--btn:hover:disabled, .rux--btn:focus:disabled, .rux--btn.rux--btn--disabled, .rux--btn.rux--btn--disabled:hover, .rux--btn.rux--btn--disabled:focus {
+.rux--btn:disabled, .rux--btn:hover:disabled, .rux--btn:focus-visible:disabled, .rux--btn.rux--btn--disabled, .rux--btn.rux--btn--disabled:hover, .rux--btn.rux--btn--disabled:focus-visible {
   border-color: var(--rux-button-disabled, #c6c6c6);
   background: var(--rux-button-disabled, #c6c6c6);
   box-shadow: none;
@@ -3485,7 +3485,7 @@ li.rux--accordion__item--disabled:last-of-type {
     background-color: var(--rux-button-primary-hover, #0050e6);
   }
 }
-.rux--btn--primary:focus {
+.rux--btn--primary:focus-visible {
   border-color: var(--rux-button-focus-color, var(--rux-focus, #0f62fe));
   box-shadow: inset 0 0 0 1px var(--rux-button-focus-color, var(--rux-focus, #0f62fe)), inset 0 0 0 2px var(--rux-background, #ffffff);
 }
@@ -3512,7 +3512,7 @@ li.rux--accordion__item--disabled:last-of-type {
     background-color: var(--rux-button-secondary-hover, #474747);
   }
 }
-.rux--btn--secondary:focus {
+.rux--btn--secondary:focus-visible {
   border-color: var(--rux-button-focus-color, var(--rux-focus, #0f62fe));
   box-shadow: inset 0 0 0 1px var(--rux-button-focus-color, var(--rux-focus, #0f62fe)), inset 0 0 0 2px var(--rux-background, #ffffff);
 }
@@ -3523,7 +3523,7 @@ li.rux--accordion__item--disabled:last-of-type {
 .rux--btn--secondary .rux--btn__icon path:not([data-icon-path]):not([fill=none]) {
   fill: currentColor;
 }
-.rux--btn--secondary:hover, .rux--btn--secondary:focus {
+.rux--btn--secondary:hover, .rux--btn--secondary:focus-visible {
   color: var(--rux-text-on-color, #ffffff);
 }
 
@@ -3539,7 +3539,7 @@ li.rux--accordion__item--disabled:last-of-type {
     background-color: var(--rux-button-tertiary-hover, #0050e6);
   }
 }
-.rux--btn--tertiary:focus {
+.rux--btn--tertiary:focus-visible {
   border-color: var(--rux-button-focus-color, var(--rux-focus, #0f62fe));
   box-shadow: inset 0 0 0 1px var(--rux-button-focus-color, var(--rux-focus, #0f62fe)), inset 0 0 0 2px var(--rux-background, #ffffff);
 }
@@ -3555,7 +3555,7 @@ li.rux--accordion__item--disabled:last-of-type {
     color: var(--rux-text-inverse, #ffffff);
   }
 }
-.rux--btn--tertiary:focus {
+.rux--btn--tertiary:focus-visible {
   background-color: var(--rux-button-tertiary, #0f62fe);
   color: var(--rux-text-inverse, #ffffff);
 }
@@ -3564,7 +3564,7 @@ li.rux--accordion__item--disabled:last-of-type {
   background-color: var(--rux-button-tertiary-active, #002d9c);
   color: var(--rux-text-inverse, #ffffff);
 }
-.rux--btn--tertiary:disabled, .rux--btn--tertiary:hover:disabled, .rux--btn--tertiary:focus:disabled, .rux--btn--tertiary.rux--btn--disabled, .rux--btn--tertiary.rux--btn--disabled:hover, .rux--btn--tertiary.rux--btn--disabled:focus {
+.rux--btn--tertiary:disabled, .rux--btn--tertiary:hover:disabled, .rux--btn--tertiary:focus-visible:disabled, .rux--btn--tertiary.rux--btn--disabled, .rux--btn--tertiary.rux--btn--disabled:hover, .rux--btn--tertiary.rux--btn--disabled:focus-visible {
   background: transparent;
   color: var(--rux-text-disabled, rgba(22, 22, 22, 0.25));
   outline: none;
@@ -3582,7 +3582,7 @@ li.rux--accordion__item--disabled:last-of-type {
     background-color: var(--rux-background-hover, rgba(141, 141, 141, 0.12));
   }
 }
-.rux--btn--ghost:focus {
+.rux--btn--ghost:focus-visible {
   border-color: var(--rux-button-focus-color, var(--rux-focus, #0f62fe));
   box-shadow: inset 0 0 0 1px var(--rux-button-focus-color, var(--rux-focus, #0f62fe)), inset 0 0 0 2px var(--rux-background, #ffffff);
 }
@@ -3610,7 +3610,7 @@ li.rux--accordion__item--disabled:last-of-type {
   background-color: var(--rux-background-active, rgba(141, 141, 141, 0.5));
   color: var(--rux-link-primary-hover, #0043ce);
 }
-.rux--btn--ghost:disabled, .rux--btn--ghost:hover:disabled, .rux--btn--ghost:focus:disabled, .rux--btn--ghost.rux--btn--disabled, .rux--btn--ghost.rux--btn--disabled:hover, .rux--btn--ghost.rux--btn--disabled:focus {
+.rux--btn--ghost:disabled, .rux--btn--ghost:hover:disabled, .rux--btn--ghost:focus-visible:disabled, .rux--btn--ghost.rux--btn--disabled, .rux--btn--ghost.rux--btn--disabled:hover, .rux--btn--ghost.rux--btn--disabled:focus-visible {
   border-color: transparent;
   background: transparent;
   color: var(--rux-text-disabled, rgba(22, 22, 22, 0.25));
@@ -3634,7 +3634,7 @@ li.rux--accordion__item--disabled:last-of-type {
 .rux--btn--icon-only .rux--btn__icon {
   position: static;
 }
-.rux--btn--icon-only.rux--btn--ghost:focus {
+.rux--btn--icon-only.rux--btn--ghost:focus-visible {
   box-shadow: inset 0 0 0 1px var(--rux-button-focus-color, var(--rux-focus, #0f62fe));
 }
 .rux--btn--icon-only.rux--btn--ghost .rux--btn__icon, .rux--btn--icon-only.rux--btn--danger--ghost .rux--btn__icon {
@@ -3697,7 +3697,7 @@ li.rux--accordion__item--disabled:last-of-type {
     background-color: var(--rux-button-danger-hover, #b81921);
   }
 }
-.rux--btn--danger:focus {
+.rux--btn--danger:focus-visible {
   border-color: var(--rux-button-focus-color, var(--rux-focus, #0f62fe));
   box-shadow: inset 0 0 0 1px var(--rux-button-focus-color, var(--rux-focus, #0f62fe)), inset 0 0 0 2px var(--rux-background, #ffffff);
 }
@@ -3723,7 +3723,7 @@ li.rux--accordion__item--disabled:last-of-type {
     background-color: var(--rux-button-danger-hover, #b81921);
   }
 }
-.rux--btn--danger--tertiary:focus {
+.rux--btn--danger--tertiary:focus-visible {
   border-color: var(--rux-button-focus-color, var(--rux-focus, #0f62fe));
   box-shadow: inset 0 0 0 1px var(--rux-button-focus-color, var(--rux-focus, #0f62fe)), inset 0 0 0 2px var(--rux-background, #ffffff);
 }
@@ -3740,7 +3740,7 @@ li.rux--accordion__item--disabled:last-of-type {
     color: var(--rux-text-on-color, #ffffff);
   }
 }
-.rux--btn--danger--tertiary:focus {
+.rux--btn--danger--tertiary:focus-visible {
   background-color: var(--rux-button-danger-primary, #da1e28);
   color: var(--rux-text-on-color, #ffffff);
 }
@@ -3749,7 +3749,7 @@ li.rux--accordion__item--disabled:last-of-type {
   background-color: var(--rux-button-danger-active, #750e13);
   color: var(--rux-text-on-color, #ffffff);
 }
-.rux--btn--danger--tertiary:disabled, .rux--btn--danger--tertiary:hover:disabled, .rux--btn--danger--tertiary:focus:disabled, .rux--btn--danger--tertiary.rux--btn--disabled, .rux--btn--danger--tertiary.rux--btn--disabled:hover, .rux--btn--danger--tertiary.rux--btn--disabled:focus {
+.rux--btn--danger--tertiary:disabled, .rux--btn--danger--tertiary:hover:disabled, .rux--btn--danger--tertiary:focus-visible:disabled, .rux--btn--danger--tertiary.rux--btn--disabled, .rux--btn--danger--tertiary.rux--btn--disabled:hover, .rux--btn--danger--tertiary.rux--btn--disabled:focus-visible {
   background: transparent;
   color: var(--rux-text-disabled, rgba(22, 22, 22, 0.25));
   outline: none;
@@ -3766,7 +3766,7 @@ li.rux--accordion__item--disabled:last-of-type {
     background-color: var(--rux-button-danger-hover, #b81921);
   }
 }
-.rux--btn--danger--ghost:focus {
+.rux--btn--danger--ghost:focus-visible {
   border-color: var(--rux-button-focus-color, var(--rux-focus, #0f62fe));
   box-shadow: inset 0 0 0 1px var(--rux-button-focus-color, var(--rux-focus, #0f62fe)), inset 0 0 0 2px var(--rux-background, #ffffff);
 }
@@ -3792,7 +3792,7 @@ li.rux--accordion__item--disabled:last-of-type {
 .rux--btn--danger--ghost:active {
   color: var(--rux-text-on-color, #ffffff);
 }
-.rux--btn--danger--ghost:disabled, .rux--btn--danger--ghost:hover:disabled, .rux--btn--danger--ghost:focus:disabled, .rux--btn--danger--ghost.rux--btn--disabled, .rux--btn--danger--ghost.rux--btn--disabled:hover, .rux--btn--danger--ghost.rux--btn--disabled:focus {
+.rux--btn--danger--ghost:disabled, .rux--btn--danger--ghost:hover:disabled, .rux--btn--danger--ghost:focus-visible:disabled, .rux--btn--danger--ghost.rux--btn--disabled, .rux--btn--danger--ghost.rux--btn--disabled:hover, .rux--btn--danger--ghost.rux--btn--disabled:focus-visible {
   border-color: transparent;
   background: transparent;
   color: var(--rux-text-disabled, rgba(22, 22, 22, 0.25));
@@ -3828,7 +3828,7 @@ li.rux--accordion__item--disabled:last-of-type {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--btn.rux--skeleton:hover, .rux--btn.rux--skeleton:focus, .rux--btn.rux--skeleton:active {
+.rux--btn.rux--skeleton:hover, .rux--btn.rux--skeleton:focus-visible, .rux--btn.rux--skeleton:active {
   border: none;
   cursor: default;
   outline: none;
@@ -3873,22 +3873,22 @@ li.rux--accordion__item--disabled:last-of-type {
   inline-size: 100%;
   max-inline-size: 12.25rem;
 }
-.rux--btn-set .rux--btn:not(:focus) {
+.rux--btn-set .rux--btn:not(:focus-visible) {
   box-shadow: -0.0625rem 0 0 0 var(--rux-button-separator, #e0e0e0);
 }
-.rux--btn-set .rux--btn:first-of-type:not(:focus) {
+.rux--btn-set .rux--btn:first-of-type:not(:focus-visible) {
   box-shadow: inherit;
 }
 
-.rux--btn-set .rux--btn:focus + .rux--btn {
+.rux--btn-set .rux--btn:focus-visible + .rux--btn {
   box-shadow: inherit;
 }
 
-.rux--btn-set--stacked .rux--btn:not(:focus) {
+.rux--btn-set--stacked .rux--btn:not(:focus-visible) {
   box-shadow: 0 -0.0625rem 0 0 var(--rux-button-separator, #e0e0e0);
 }
 
-.rux--btn-set--stacked .rux--btn:first-of-type:not(:focus) {
+.rux--btn-set--stacked .rux--btn:first-of-type:not(:focus-visible) {
   box-shadow: inherit;
 }
 
@@ -3918,13 +3918,13 @@ li.rux--accordion__item--disabled:last-of-type {
 }
 
 @media screen and (-ms-high-contrast: active), (forced-colors: active) {
-  .rux--btn:focus {
+  .rux--btn:focus-visible {
     color: Highlight;
     outline: 1px solid Highlight;
   }
 }
 
-[dir=rtl] .rux--btn-set .rux--btn:not(:focus) {
+[dir=rtl] .rux--btn-set .rux--btn:not(:focus-visible) {
   box-shadow: 0.0625rem 0 0 0 var(--rux-button-separator, #e0e0e0);
 }
 
@@ -4078,11 +4078,11 @@ li.rux--accordion__item--disabled:last-of-type {
     fill: Highlight;
   }
 }
-.rux--toggletip-button:focus {
+.rux--toggletip-button:focus-visible {
   outline: 1px solid var(--rux-focus, #0f62fe);
 }
 @media screen and (prefers-contrast) {
-  .rux--toggletip-button:focus {
+  .rux--toggletip-button:focus-visible {
     outline-style: dotted;
   }
 }
@@ -4205,8 +4205,8 @@ li.rux--accordion__item--disabled:last-of-type {
   inline-size: 24px;
 }
 
-.rux--ai-label .rux--ai-label__button:focus,
-.rux--slug .rux--slug__button:focus {
+.rux--ai-label .rux--ai-label__button:focus-visible,
+.rux--slug .rux--slug__button:focus-visible {
   border: 1px solid var(--rux-focus, #0f62fe);
   box-shadow: inset 0 0 0 1px var(--rux-focus, #0f62fe);
 }
@@ -4253,8 +4253,8 @@ li.rux--accordion__item--disabled:last-of-type {
   display: none;
 }
 
-.rux--ai-label .rux--ai-label__button--inline:focus,
-.rux--slug .rux--slug__button--inline:focus {
+.rux--ai-label .rux--ai-label__button--inline:focus-visible,
+.rux--slug .rux--slug__button--inline:focus-visible {
   border-color: var(--rux-focus, #0f62fe);
   box-shadow: none;
 }
@@ -4269,8 +4269,8 @@ li.rux--accordion__item--disabled:last-of-type {
     box-shadow: none;
     color: var(--rux-text-secondary, #525252);
   }
-  .rux--ai-label .rux--ai-label__button--inline:focus:hover,
-  .rux--slug .rux--slug__button--inline:focus:hover {
+  .rux--ai-label .rux--ai-label__button--inline:focus-visible:hover,
+  .rux--slug .rux--slug__button--inline:focus-visible:hover {
     border-color: var(--rux-focus, #0f62fe);
   }
   .rux--ai-label .rux--ai-label__button--inline:hover .rux--ai-label__text::before,
@@ -4360,14 +4360,14 @@ li.rux--accordion__item--disabled:last-of-type {
   font-size: 0.875rem;
 }
 
-.rux--ai-label .rux--ai-label__button--inline-with-content:focus,
-.rux--slug .rux--slug__button--inline-with-content:focus {
+.rux--ai-label .rux--ai-label__button--inline-with-content:focus-visible,
+.rux--slug .rux--slug__button--inline-with-content:focus-visible {
   box-shadow: inset 0 0 0 1px var(--rux-focus, #0f62fe);
 }
 
 @media (any-hover: hover) {
-  .rux--ai-label .rux--ai-label__button--inline-with-content:hover:focus,
-  .rux--slug .rux--slug__button--inline-with-content:hover:focus {
+  .rux--ai-label .rux--ai-label__button--inline-with-content:hover:focus-visible,
+  .rux--slug .rux--slug__button--inline-with-content:hover:focus-visible {
     box-shadow: inset 0 0 0 1px var(--rux-focus, #0f62fe);
   }
 }
@@ -4921,8 +4921,8 @@ li.rux--accordion__item--disabled:last-of-type {
   inset-inline-end: 0;
 }
 
-.rux--ai-label .rux--ai-label-actions .rux--btn:focus,
-.rux--slug .rux--slug-actions .rux--btn:focus {
+.rux--ai-label .rux--ai-label-actions .rux--btn:focus-visible,
+.rux--slug .rux--slug-actions .rux--btn:focus-visible {
   border-color: var(--rux-focus, #0f62fe);
   box-shadow: inset 0 0 0 1px var(--rux-focus, #0f62fe), inset 0 0 0 2px var(--rux-background, #ffffff);
 }
@@ -5145,7 +5145,7 @@ li.rux--accordion__item--disabled:last-of-type {
   cursor: pointer;
   vertical-align: top;
 }
-.rux--big-number .rux--big-number__tooltip-trigger:focus {
+.rux--big-number .rux--big-number__tooltip-trigger:focus-visible {
   outline: 1px solid var(--rux-focus, #0f62fe);
 }
 
@@ -5253,14 +5253,14 @@ li.rux--accordion__item--disabled:last-of-type {
   min-block-size: var(--rux-layout-size-height-local);
   transition: outline 110ms cubic-bezier(0, 0, 0.38, 0.9), background-color 110ms cubic-bezier(0, 0, 0.38, 0.9);
 }
-.rux--overflow-menu:focus,
-.rux--overflow-menu__trigger:focus {
+.rux--overflow-menu:focus-visible,
+.rux--overflow-menu__trigger:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--overflow-menu:focus,
-  .rux--overflow-menu__trigger:focus {
+  .rux--overflow-menu:focus-visible,
+  .rux--overflow-menu__trigger:focus-visible {
     outline-style: dotted;
   }
 }
@@ -5275,16 +5275,16 @@ li.rux--accordion__item--disabled:last-of-type {
   margin-block-start: 0;
 }
 
-.rux--overflow-menu__trigger.rux--tooltip--a11y.rux--tooltip__trigger:focus {
+.rux--overflow-menu__trigger.rux--tooltip--a11y.rux--tooltip__trigger:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--overflow-menu__trigger.rux--tooltip--a11y.rux--tooltip__trigger:focus {
+  .rux--overflow-menu__trigger.rux--tooltip--a11y.rux--tooltip__trigger:focus-visible {
     outline-style: dotted;
   }
 }
-.rux--overflow-menu__trigger.rux--tooltip--a11y.rux--tooltip__trigger:focus svg {
+.rux--overflow-menu__trigger.rux--tooltip--a11y.rux--tooltip__trigger:focus-visible svg {
   outline: none;
 }
 
@@ -5478,12 +5478,12 @@ a.rux--overflow-menu-options__btn::before {
 .rux--overflow-menu-options__btn:hover {
   color: var(--rux-text-primary, #161616);
 }
-.rux--overflow-menu-options__btn:focus {
+.rux--overflow-menu-options__btn:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--overflow-menu-options__btn:focus {
+  .rux--overflow-menu-options__btn:focus-visible {
     outline-style: dotted;
   }
 }
@@ -5510,16 +5510,16 @@ a.rux--overflow-menu-options__btn::before {
 }
 
 .rux--overflow-menu-options__option--danger .rux--overflow-menu-options__btn:hover,
-.rux--overflow-menu-options__option--danger .rux--overflow-menu-options__btn:focus {
+.rux--overflow-menu-options__option--danger .rux--overflow-menu-options__btn:focus-visible {
   background-color: var(--rux-button-danger-primary, #da1e28);
   color: var(--rux-text-on-color, #ffffff);
 }
 .rux--overflow-menu-options__option--danger .rux--overflow-menu-options__btn:hover svg,
-.rux--overflow-menu-options__option--danger .rux--overflow-menu-options__btn:focus svg {
+.rux--overflow-menu-options__option--danger .rux--overflow-menu-options__btn:focus-visible svg {
   fill: currentColor;
 }
 
-.rux--overflow-menu-options__option--danger .rux--overflow-menu-options__btn:focus {
+.rux--overflow-menu-options__option--danger .rux--overflow-menu-options__btn:focus-visible {
   box-shadow: inset 0 0 0 0.1875rem var(--rux-background, #ffffff);
 }
 
@@ -5532,7 +5532,7 @@ a.rux--overflow-menu-options__btn::before {
   color: var(--rux-text-disabled, rgba(22, 22, 22, 0.25));
   cursor: not-allowed;
 }
-.rux--overflow-menu-options__option--disabled .rux--overflow-menu-options__btn:hover, .rux--overflow-menu-options__option--disabled .rux--overflow-menu-options__btn:active, .rux--overflow-menu-options__option--disabled .rux--overflow-menu-options__btn:focus {
+.rux--overflow-menu-options__option--disabled .rux--overflow-menu-options__btn:hover, .rux--overflow-menu-options__option--disabled .rux--overflow-menu-options__btn:active, .rux--overflow-menu-options__option--disabled .rux--overflow-menu-options__btn:focus-visible {
   outline: 2px solid transparent;
   outline-offset: -2px;
   background-color: var(--rux-layer);
@@ -5552,8 +5552,8 @@ a.rux--overflow-menu-options__btn::before {
 
 /* stylelint-disable */
 @media screen and (-ms-high-contrast: active), (forced-colors: active) {
-  .rux--overflow-menu:focus,
-  .rux--overflow-menu-options__btn:focus {
+  .rux--overflow-menu:focus-visible,
+  .rux--overflow-menu-options__btn:focus-visible {
     color: Highlight;
     outline: 1px solid Highlight;
   }
@@ -5673,7 +5673,7 @@ a.rux--overflow-menu-options__btn::before {
   block-size: 1.125rem;
   inline-size: 1rem;
 }
-.rux--breadcrumb-item .rux--overflow-menu:focus {
+.rux--breadcrumb-item .rux--overflow-menu:focus-visible {
   border: none;
   box-shadow: none;
   outline: 1px solid var(--rux-focus, #0f62fe);
@@ -5688,7 +5688,7 @@ a.rux--overflow-menu-options__btn::before {
 .rux--breadcrumb-item .rux--overflow-menu:active::after {
   background: var(--rux-text-primary, #161616);
 }
-.rux--breadcrumb-item .rux--overflow-menu:focus::after, .rux--breadcrumb-item .rux--overflow-menu:hover::after {
+.rux--breadcrumb-item .rux--overflow-menu:focus-visible::after, .rux--breadcrumb-item .rux--overflow-menu:hover::after {
   opacity: 1;
 }
 .rux--breadcrumb-item .rux--overflow-menu::after {
@@ -5726,7 +5726,7 @@ a.rux--overflow-menu-options__btn::before {
   fill: var(--rux-icon-primary, #161616);
 }
 
-.rux--breadcrumb-menu-options:focus {
+.rux--breadcrumb-menu-options:focus-visible {
   outline: none;
 }
 
@@ -5769,7 +5769,7 @@ a.rux--overflow-menu-options__btn::before {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--breadcrumb.rux--skeleton .rux--link:hover, .rux--breadcrumb.rux--skeleton .rux--link:focus, .rux--breadcrumb.rux--skeleton .rux--link:active {
+.rux--breadcrumb.rux--skeleton .rux--link:hover, .rux--breadcrumb.rux--skeleton .rux--link:focus-visible, .rux--breadcrumb.rux--skeleton .rux--link:active {
   border: none;
   cursor: default;
   outline: none;
@@ -5845,15 +5845,15 @@ a.rux--overflow-menu-options__btn::before {
   outline-color: var(--rux-link-focus-text-color, var(--rux-focus, #0f62fe));
   text-decoration: underline;
 }
-.rux--link:focus:not(.rux--link--disabled) {
+.rux--link:focus-visible:not(.rux--link--disabled) {
   outline: 1px solid var(--rux-focus, #0f62fe);
 }
 @media screen and (prefers-contrast) {
-  .rux--link:focus:not(.rux--link--disabled) {
+  .rux--link:focus-visible:not(.rux--link--disabled) {
     outline-style: dotted;
   }
 }
-.rux--link:focus:not(.rux--link--disabled) {
+.rux--link:focus-visible:not(.rux--link--disabled) {
   outline-color: var(--rux-link-focus-text-color, var(--rux-focus, #0f62fe));
   text-decoration: underline;
 }
@@ -5964,16 +5964,16 @@ a.rux--overflow-menu-options__btn::before {
 .rux--card--clickable:hover {
   background-color: var(--rux-layer-hover);
 }
-.rux--card--clickable:focus {
+.rux--card--clickable:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--card--clickable:focus {
+  .rux--card--clickable:focus-visible {
     outline-style: dotted;
   }
 }
-.rux--card--clickable:focus {
+.rux--card--clickable:focus-visible {
   outline-offset: 0;
 }
 .rux--card--clickable:active {
@@ -6394,12 +6394,12 @@ a.rux--overflow-menu-options__btn::before {
   color: var(--rux-chat-button-text-hover, #0043ce);
 }
 
-.rux--chat-btn--quick-action.rux--btn--ghost:focus {
+.rux--chat-btn--quick-action.rux--btn--ghost:focus-visible {
   border-color: var(--rux-focus, #0f62fe);
   box-shadow: inset 0 0 0 1px var(--rux-focus, #0f62fe);
 }
 
-.rux--chat-btn--quick-action.rux--btn--ghost:hover:focus {
+.rux--chat-btn--quick-action.rux--btn--ghost:hover:focus-visible {
   border-color: var(--rux-focus, #0f62fe);
   box-shadow: inset 0 0 0 1px var(--rux-focus-inset, #ffffff);
 }
@@ -6429,10 +6429,10 @@ a.rux--overflow-menu-options__btn::before {
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
+input:-webkit-autofill:focus-visible,
 textarea:-webkit-autofill,
 textarea:-webkit-autofill:hover,
-textarea:-webkit-autofill:focus {
+textarea:-webkit-autofill:focus-visible {
   box-shadow: 0 0 0 1000px var(--rux-field) inset;
   -webkit-text-fill-color: var(--rux-text-primary, #161616);
 }
@@ -6544,7 +6544,7 @@ textarea:-webkit-autofill:focus {
   letter-spacing: var(--rux-label-01-letter-spacing, 0.32px);
 }
 
-.rux--label + .rux--tooltip .rux--tooltip__trigger:focus {
+.rux--label + .rux--tooltip .rux--tooltip__trigger:focus-visible {
   outline: 1px solid var(--rux-focus, #0f62fe);
 }
 
@@ -6569,7 +6569,7 @@ textarea:-webkit-autofill:focus {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--label.rux--skeleton:hover, .rux--label.rux--skeleton:focus, .rux--label.rux--skeleton:active {
+.rux--label.rux--skeleton:hover, .rux--label.rux--skeleton:focus-visible, .rux--label.rux--skeleton:active {
   border: none;
   cursor: default;
   outline: none;
@@ -6608,28 +6608,28 @@ input[type=text].rux--number {
   font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
 }
 
-input[data-invalid]:not(:focus),
-.rux--number[data-invalid] input[type=number]:not(:focus),
-.rux--number[data-invalid] input[type=text]:not(:focus),
-.rux--text-input__field-wrapper[data-invalid] > .rux--text-input--invalid:not(:focus),
-.rux--text-area__wrapper[data-invalid] > .rux--text-area--invalid:not(:focus),
-.rux--select-input__wrapper[data-invalid] .rux--select-input:not(:focus),
+input[data-invalid]:not(:focus-visible),
+.rux--number[data-invalid] input[type=number]:not(:focus-visible),
+.rux--number[data-invalid] input[type=text]:not(:focus-visible),
+.rux--text-input__field-wrapper[data-invalid] > .rux--text-input--invalid:not(:focus-visible),
+.rux--text-area__wrapper[data-invalid] > .rux--text-area--invalid:not(:focus-visible),
+.rux--select-input__wrapper[data-invalid] .rux--select-input:not(:focus-visible),
 .rux--list-box[data-invalid]:not(.rux--multi-select--invalid--focused,
 .rux--combo-box--invalid--focused),
-.rux--combo-box[data-invalid]:not(.rux--multi-select--selected) .rux--text-input:not(:focus) {
+.rux--combo-box[data-invalid]:not(.rux--multi-select--selected) .rux--text-input:not(:focus-visible) {
   outline: 2px solid var(--rux-support-error, #da1e28);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  input[data-invalid]:not(:focus),
-  .rux--number[data-invalid] input[type=number]:not(:focus),
-  .rux--number[data-invalid] input[type=text]:not(:focus),
-  .rux--text-input__field-wrapper[data-invalid] > .rux--text-input--invalid:not(:focus),
-  .rux--text-area__wrapper[data-invalid] > .rux--text-area--invalid:not(:focus),
-  .rux--select-input__wrapper[data-invalid] .rux--select-input:not(:focus),
+  input[data-invalid]:not(:focus-visible),
+  .rux--number[data-invalid] input[type=number]:not(:focus-visible),
+  .rux--number[data-invalid] input[type=text]:not(:focus-visible),
+  .rux--text-input__field-wrapper[data-invalid] > .rux--text-input--invalid:not(:focus-visible),
+  .rux--text-area__wrapper[data-invalid] > .rux--text-area--invalid:not(:focus-visible),
+  .rux--select-input__wrapper[data-invalid] .rux--select-input:not(:focus-visible),
   .rux--list-box[data-invalid]:not(.rux--multi-select--invalid--focused,
   .rux--combo-box--invalid--focused),
-  .rux--combo-box[data-invalid]:not(.rux--multi-select--selected) .rux--text-input:not(:focus) {
+  .rux--combo-box[data-invalid]:not(.rux--multi-select--selected) .rux--text-input:not(:focus-visible) {
     outline-style: dotted;
   }
 }
@@ -6911,11 +6911,11 @@ fieldset[disabled] .rux--form__helper-text {
   transform: scale(1) rotate(0deg);
 }
 
-.rux--checkbox:focus + .rux--checkbox-label::before,
+.rux--checkbox:focus-visible + .rux--checkbox-label::before,
 .rux--checkbox-label__focus::before,
-.rux--checkbox:checked:focus + .rux--checkbox-label::before,
+.rux--checkbox:checked:focus-visible + .rux--checkbox-label::before,
 .rux--checkbox-label[data-contained-checkbox-state=true].rux--checkbox-label__focus::before,
-.rux--checkbox:indeterminate:focus + .rux--checkbox-label::before {
+.rux--checkbox:indeterminate:focus-visible + .rux--checkbox-label::before {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: 1px;
 }
@@ -7044,7 +7044,7 @@ fieldset[disabled] .rux--form__helper-text {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--checkbox-label-text.rux--skeleton:hover, .rux--checkbox-label-text.rux--skeleton:focus, .rux--checkbox-label-text.rux--skeleton:active {
+.rux--checkbox-label-text.rux--skeleton:hover, .rux--checkbox-label-text.rux--skeleton:focus-visible, .rux--checkbox-label-text.rux--skeleton:active {
   border: none;
   cursor: default;
   outline: none;
@@ -7237,16 +7237,16 @@ fieldset[disabled] .rux--form__helper-text {
   margin: auto;
   clip: auto;
 }
-.rux--copy-btn:focus {
+.rux--copy-btn:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--copy-btn:focus {
+  .rux--copy-btn:focus-visible {
     outline-style: dotted;
   }
 }
-.rux--copy-btn:focus {
+.rux--copy-btn:focus-visible {
   outline-color: var(--rux-focus, #0f62fe);
 }
 .rux--copy-btn.rux--copy-btn--animating::before, .rux--copy-btn.rux--copy-btn--animating .rux--copy-btn__feedback {
@@ -7354,7 +7354,7 @@ fieldset[disabled] .rux--form__helper-text {
 .rux--snippet--inline:active {
   background-color: var(--rux-layer-active);
 }
-.rux--snippet--inline:focus {
+.rux--snippet--inline:focus-visible {
   border: 1px solid var(--rux-focus, #0f62fe);
   outline: none;
 }
@@ -7483,12 +7483,12 @@ fieldset[disabled] .rux--form__helper-text {
   overflow-x: auto;
   padding-inline-start: 1rem;
 }
-.rux--snippet--single .rux--snippet-container:focus {
+.rux--snippet--single .rux--snippet-container:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--snippet--single .rux--snippet-container:focus {
+  .rux--snippet--single .rux--snippet-container:focus-visible {
     outline-style: dotted;
   }
 }
@@ -7530,16 +7530,16 @@ fieldset[disabled] .rux--form__helper-text {
   overflow-y: auto;
   transition: max-height 150ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
-.rux--snippet--multi .rux--snippet-container:focus {
+.rux--snippet--multi .rux--snippet-container:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--snippet--multi .rux--snippet-container:focus {
+  .rux--snippet--multi .rux--snippet-container:focus-visible {
     outline-style: dotted;
   }
 }
-.rux--snippet--multi .rux--snippet-container:focus {
+.rux--snippet--multi .rux--snippet-container:focus-visible {
   outline-offset: 0;
 }
 
@@ -7609,16 +7609,16 @@ fieldset[disabled] .rux--form__helper-text {
   cursor: pointer;
   outline: none;
 }
-.rux--copy-btn:focus {
+.rux--copy-btn:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--copy-btn:focus {
+  .rux--copy-btn:focus-visible {
     outline-style: dotted;
   }
 }
-.rux--copy-btn:focus {
+.rux--copy-btn:focus-visible {
   outline-color: var(--rux-focus, #0f62fe);
 }
 
@@ -7696,16 +7696,16 @@ fieldset[disabled] .rux--form__helper-text {
   background-color: var(--rux-layer-active);
 }
 
-.rux--snippet-btn--expand:focus {
+.rux--snippet-btn--expand:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--snippet-btn--expand:focus {
+  .rux--snippet-btn--expand:focus-visible {
     outline-style: dotted;
   }
 }
-.rux--snippet-btn--expand:focus {
+.rux--snippet-btn--expand:focus-visible {
   border-color: transparent;
 }
 
@@ -7806,7 +7806,7 @@ fieldset[disabled] .rux--form__helper-text {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--snippet.rux--skeleton span:hover, .rux--snippet.rux--skeleton span:focus, .rux--snippet.rux--skeleton span:active {
+.rux--snippet.rux--skeleton span:hover, .rux--snippet.rux--skeleton span:focus-visible, .rux--snippet.rux--skeleton span:active {
   border: none;
   cursor: default;
   outline: none;
@@ -7856,7 +7856,7 @@ fieldset[disabled] .rux--form__helper-text {
 }
 
 @media screen and (-ms-high-contrast: active), (forced-colors: active) {
-  .rux--snippet--inline:focus {
+  .rux--snippet--inline:focus-visible {
     color: Highlight;
     outline: 1px solid Highlight;
   }
@@ -7902,12 +7902,12 @@ fieldset[disabled] .rux--form__helper-text {
   inline-size: 100%;
   transition: background-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9), outline 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
-.rux--text-input:focus, .rux--text-input:active {
+.rux--text-input:focus-visible, .rux--text-input:active {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--text-input:focus, .rux--text-input:active {
+  .rux--text-input:focus-visible, .rux--text-input:active {
     outline-style: dotted;
   }
 }
@@ -7957,25 +7957,25 @@ fieldset[disabled] .rux--form__helper-text {
   overflow: visible;
   align-items: center;
 }
-.rux--text-input--password__visibility:focus {
+.rux--text-input--password__visibility:focus-visible {
   outline: 1px solid var(--rux-focus, #0f62fe);
 }
 @media screen and (prefers-contrast) {
-  .rux--text-input--password__visibility:focus {
+  .rux--text-input--password__visibility:focus-visible {
     outline-style: dotted;
   }
 }
 .rux--text-input--password__visibility {
   cursor: pointer;
 }
-.rux--text-input--password__visibility:focus {
+.rux--text-input--password__visibility:focus-visible {
   outline: 1px solid transparent;
 }
-.rux--text-input--password__visibility:focus svg {
+.rux--text-input--password__visibility:focus-visible svg {
   outline: 1px solid var(--rux-focus, #0f62fe);
 }
 @media screen and (prefers-contrast) {
-  .rux--text-input--password__visibility:focus svg {
+  .rux--text-input--password__visibility:focus-visible svg {
     outline-style: dotted;
   }
 }
@@ -8076,7 +8076,7 @@ fieldset[disabled] .rux--form__helper-text {
 .rux--text-input--password__visibility.rux--tooltip--a11y::after {
   content: none;
 }
-.rux--text-input--password__visibility.rux--tooltip--visible::before, .rux--text-input--password__visibility.rux--tooltip--visible::after, .rux--text-input--password__visibility:hover::before, .rux--text-input--password__visibility:hover::after, .rux--text-input--password__visibility:focus::before, .rux--text-input--password__visibility:focus::after {
+.rux--text-input--password__visibility.rux--tooltip--visible::before, .rux--text-input--password__visibility.rux--tooltip--visible::after, .rux--text-input--password__visibility:hover::before, .rux--text-input--password__visibility:hover::after, .rux--text-input--password__visibility:focus-visible::before, .rux--text-input--password__visibility:focus-visible::after {
   opacity: 1;
 }
 @keyframes rux--tooltip-fade {
@@ -8089,16 +8089,16 @@ fieldset[disabled] .rux--form__helper-text {
 }
 .rux--text-input--password__visibility.rux--tooltip--visible .rux--assistive-text,
 .rux--text-input--password__visibility.rux--tooltip--visible + .rux--assistive-text, .rux--text-input--password__visibility:hover .rux--assistive-text,
-.rux--text-input--password__visibility:hover + .rux--assistive-text, .rux--text-input--password__visibility:focus .rux--assistive-text,
-.rux--text-input--password__visibility:focus + .rux--assistive-text {
+.rux--text-input--password__visibility:hover + .rux--assistive-text, .rux--text-input--password__visibility:focus-visible .rux--assistive-text,
+.rux--text-input--password__visibility:focus-visible + .rux--assistive-text {
   overflow: visible;
   margin: auto;
   clip: auto;
 }
 .rux--text-input--password__visibility.rux--tooltip--visible .rux--assistive-text,
 .rux--text-input--password__visibility.rux--tooltip--visible + .rux--assistive-text, .rux--text-input--password__visibility.rux--tooltip--visible.rux--tooltip--a11y::before, .rux--text-input--password__visibility:hover .rux--assistive-text,
-.rux--text-input--password__visibility:hover + .rux--assistive-text, .rux--text-input--password__visibility:hover.rux--tooltip--a11y::before, .rux--text-input--password__visibility:focus .rux--assistive-text,
-.rux--text-input--password__visibility:focus + .rux--assistive-text, .rux--text-input--password__visibility:focus.rux--tooltip--a11y::before {
+.rux--text-input--password__visibility:hover + .rux--assistive-text, .rux--text-input--password__visibility:hover.rux--tooltip--a11y::before, .rux--text-input--password__visibility:focus-visible .rux--assistive-text,
+.rux--text-input--password__visibility:focus-visible + .rux--assistive-text, .rux--text-input--password__visibility:focus-visible.rux--tooltip--a11y::before {
   animation: rux--tooltip-fade 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
 .rux--text-input--password__visibility.rux--tooltip--hidden .rux--assistive-text, .rux--text-input--password__visibility.rux--tooltip--hidden + .rux--assistive-text {
@@ -8170,12 +8170,12 @@ fieldset[disabled] .rux--form__helper-text {
   fill: var(--rux-icon-primary, #161616);
 }
 
-.rux--btn.rux--text-input--password__visibility__toggle.rux--tooltip__trigger:focus {
+.rux--btn.rux--text-input--password__visibility__toggle.rux--tooltip__trigger:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--btn.rux--text-input--password__visibility__toggle.rux--tooltip__trigger:focus {
+  .rux--btn.rux--text-input--password__visibility__toggle.rux--tooltip__trigger:focus-visible {
     outline-style: dotted;
   }
 }
@@ -8274,7 +8274,7 @@ fieldset[disabled] .rux--form__helper-text {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--skeleton.rux--text-input:hover, .rux--skeleton.rux--text-input:focus, .rux--skeleton.rux--text-input:active {
+.rux--skeleton.rux--text-input:hover, .rux--skeleton.rux--text-input:focus-visible, .rux--skeleton.rux--text-input:active {
   border: none;
   cursor: default;
   outline: none;
@@ -8362,12 +8362,12 @@ fieldset[disabled] .rux--form__helper-text {
   border-block-end: 1px solid var(--rux-border-strong);
 }
 
-.rux--form--fluid .rux--text-input__field-wrapper[data-invalid]:not(:focus) {
+.rux--form--fluid .rux--text-input__field-wrapper[data-invalid]:not(:focus-visible) {
   outline: 2px solid var(--rux-support-error, #da1e28);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--form--fluid .rux--text-input__field-wrapper[data-invalid]:not(:focus) {
+  .rux--form--fluid .rux--text-input__field-wrapper[data-invalid]:not(:focus-visible) {
     outline-style: dotted;
   }
 }
@@ -8384,8 +8384,8 @@ fieldset[disabled] .rux--form__helper-text {
   }
 }
 
-.rux--form--fluid .rux--text-input__field-wrapper[data-invalid] > .rux--text-input--invalid:focus,
-.rux--form--fluid .rux--text-input__field-wrapper--warning > .rux--text-input--warning:focus {
+.rux--form--fluid .rux--text-input__field-wrapper[data-invalid] > .rux--text-input--invalid:focus-visible,
+.rux--form--fluid .rux--text-input__field-wrapper--warning > .rux--text-input--warning:focus-visible {
   outline: none;
 }
 
@@ -8605,7 +8605,7 @@ fieldset[disabled] .rux--form__helper-text {
   white-space: nowrap;
 }
 
-.rux--tag--interactive:focus {
+.rux--tag--interactive:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: 1px;
 }
@@ -8632,7 +8632,7 @@ fieldset[disabled] .rux--form__helper-text {
     outline: none;
   }
 }
-.rux--tag--selectable:focus {
+.rux--tag--selectable:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: 1px;
 }
@@ -8659,7 +8659,7 @@ fieldset[disabled] .rux--form__helper-text {
     outline: none;
   }
 }
-.rux--tag--operational:focus {
+.rux--tag--operational:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: 1px;
 }
@@ -9033,14 +9033,14 @@ fieldset[disabled] .rux--form__helper-text {
   cursor: not-allowed;
 }
 
-.rux--tag__close-icon:focus {
+.rux--tag__close-icon:focus-visible {
   z-index: 99999;
   border-radius: 50%;
   box-shadow: inset 0 0 0 1px var(--rux-focus, #0f62fe);
   outline: none;
 }
 
-.rux--tag--high-contrast .rux--tag__close-icon:focus {
+.rux--tag--high-contrast .rux--tag__close-icon:focus-visible {
   box-shadow: inset 0 0 0 1px var(--rux-focus-inverse, #ffffff);
 }
 
@@ -9069,7 +9069,7 @@ fieldset[disabled] .rux--form__helper-text {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--tag.rux--skeleton:hover, .rux--tag.rux--skeleton:focus, .rux--tag.rux--skeleton:active {
+.rux--tag.rux--skeleton:hover, .rux--tag.rux--skeleton:focus-visible, .rux--tag.rux--skeleton:active {
   border: none;
   cursor: default;
   outline: none;
@@ -9163,7 +9163,7 @@ fieldset[disabled] .rux--form__helper-text {
 }
 
 @media screen and (-ms-high-contrast: active), (forced-colors: active) {
-  .rux--tag__close-icon:focus {
+  .rux--tag__close-icon:focus-visible {
     color: Highlight;
     outline: 1px solid Highlight;
   }
@@ -9357,7 +9357,7 @@ fieldset[disabled] .rux--form__helper-text {
 
 .rux--list-box--disabled,
 .rux--list-box--disabled .rux--list-box__field,
-.rux--list-box--disabled .rux--list-box__field:focus {
+.rux--list-box--disabled .rux--list-box__field:focus-visible {
   border-block-end-color: transparent;
   outline: none;
 }
@@ -9487,12 +9487,12 @@ fieldset[disabled] .rux--form__helper-text {
   white-space: nowrap;
 }
 
-.rux--list-box__field:focus {
+.rux--list-box__field:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--list-box__field:focus {
+  .rux--list-box__field:focus-visible {
     outline-style: dotted;
   }
 }
@@ -9628,21 +9628,21 @@ fieldset[disabled] .rux--form__helper-text {
   transition: background-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
   user-select: none;
 }
-.rux--list-box__selection:focus {
+.rux--list-box__selection:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--list-box__selection:focus {
+  .rux--list-box__selection:focus-visible {
     outline-style: dotted;
   }
 }
-.rux--list-box__selection:focus:hover {
+.rux--list-box__selection:focus-visible:hover {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--list-box__selection:focus:hover {
+  .rux--list-box__selection:focus-visible:hover {
     outline-style: dotted;
   }
 }
@@ -9651,7 +9651,7 @@ fieldset[disabled] .rux--form__helper-text {
   fill: var(--rux-icon-primary, #161616);
 }
 
-.rux--list-box--disabled .rux--list-box__selection:focus {
+.rux--list-box--disabled .rux--list-box__selection:focus-visible {
   outline: none;
 }
 
@@ -9731,11 +9731,11 @@ fieldset[disabled] .rux--form__helper-text {
   overflow-y: auto;
   transition: max-height 110ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
-.rux--list-box__menu:focus {
+.rux--list-box__menu:focus-visible {
   outline: 1px solid var(--rux-focus, #0f62fe);
 }
 @media screen and (prefers-contrast) {
-  .rux--list-box__menu:focus {
+  .rux--list-box__menu:focus-visible {
     outline-style: dotted;
   }
 }
@@ -9860,16 +9860,16 @@ fieldset[disabled] .rux--form__helper-text {
   transition: border-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9), color 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
   white-space: nowrap;
 }
-.rux--list-box__menu-item__option:focus {
+.rux--list-box__menu-item__option:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--list-box__menu-item__option:focus {
+  .rux--list-box__menu-item__option:focus-visible {
     outline-style: dotted;
   }
 }
-.rux--list-box__menu-item__option:focus {
+.rux--list-box__menu-item__option:focus-visible {
   padding: calc((var(--rux-layout-size-height-local) - 1rem) / 2) 1rem;
   border-color: transparent;
   margin: 0;
@@ -9924,7 +9924,7 @@ fieldset[disabled] .rux--form__helper-text {
 .rux--list-box.rux--list-box--inline .rux--list-box__menu-item__option {
   margin: 0 0.5rem;
 }
-.rux--list-box.rux--list-box--inline .rux--list-box__menu-item__option:focus {
+.rux--list-box.rux--list-box--inline .rux--list-box__menu-item__option:focus-visible {
   margin: 0;
   padding-inline: 0.5rem 0.5rem;
 }
@@ -10157,8 +10157,8 @@ fieldset[disabled] .rux--form__helper-text {
 }
 
 @media screen and (-ms-high-contrast: active), (forced-colors: active) {
-  .rux--list-box__field:focus,
-  .rux--multi-select .rux--tag__close-icon:focus,
+  .rux--list-box__field:focus-visible,
+  .rux--multi-select .rux--tag__close-icon:focus-visible,
   .rux--list-box__menu-item--highlighted .rux--list-box__menu-item__option {
     color: Highlight;
     outline: 1px solid Highlight;
@@ -10308,11 +10308,11 @@ fieldset[disabled] .rux--form__helper-text {
 .rux--menu--open {
   visibility: visible;
 }
-.rux--menu--open:focus {
+.rux--menu--open:focus-visible {
   outline: 1px solid var(--rux-focus, #0f62fe);
 }
 @media screen and (prefers-contrast) {
-  .rux--menu--open:focus {
+  .rux--menu--open:focus-visible {
     outline-style: dotted;
   }
 }
@@ -10341,12 +10341,12 @@ fieldset[disabled] .rux--form__helper-text {
   padding-inline: 1rem;
   transition: background-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
-.rux--menu-item:focus {
+.rux--menu-item:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--menu-item:focus {
+  .rux--menu-item:focus-visible {
     outline-style: dotted;
   }
 }
@@ -10441,13 +10441,13 @@ fieldset[disabled] .rux--form__helper-text {
   color: var(--rux-text-disabled, rgba(22, 22, 22, 0.25));
 }
 
-.rux--menu-item--danger:focus,
+.rux--menu-item--danger:focus-visible,
 .rux--menu-item--danger:hover {
   background-color: var(--rux-button-danger-primary, #da1e28);
   color: var(--rux-text-on-color, #ffffff);
 }
 
-.rux--menu-item--danger:focus {
+.rux--menu-item--danger:focus-visible {
   box-shadow: inset 0 0 0 0.1875rem var(--rux-background, #ffffff);
 }
 
@@ -10589,12 +10589,12 @@ fieldset[disabled] .rux--form__helper-text {
   border-inline-end: 2px solid transparent;
   outline: none;
 }
-.rux--contained-list .rux--search .rux--search-close:focus {
+.rux--contained-list .rux--search .rux--search-close:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--contained-list .rux--search .rux--search-close:focus {
+  .rux--contained-list .rux--search .rux--search-close:focus-visible {
     outline-style: dotted;
   }
 }
@@ -10603,7 +10603,7 @@ fieldset[disabled] .rux--form__helper-text {
   border-block-end: 1px solid transparent;
 }
 
-.rux--contained-list .rux--search .rux--search-input:focus ~ .rux--search-close:hover {
+.rux--contained-list .rux--search .rux--search-input:focus-visible ~ .rux--search-close:hover {
   border: 2px solid var(--rux-focus, #0f62fe);
   border-inline-start: 0;
   outline: none;
@@ -10726,20 +10726,20 @@ fieldset[disabled] .rux--form__helper-text {
   cursor: not-allowed;
 }
 
-.rux--contained-list-item--clickable .rux--contained-list-item__content:focus {
+.rux--contained-list-item--clickable .rux--contained-list-item__content:focus-visible {
   outline: none;
 }
 
-.rux--contained-list-item--clickable .rux--contained-list-item__content:focus::after {
+.rux--contained-list-item--clickable .rux--contained-list-item__content:focus-visible::after {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--contained-list-item--clickable .rux--contained-list-item__content:focus::after {
+  .rux--contained-list-item--clickable .rux--contained-list-item__content:focus-visible::after {
     outline-style: dotted;
   }
 }
-.rux--contained-list-item--clickable .rux--contained-list-item__content:focus::after {
+.rux--contained-list-item--clickable .rux--contained-list-item__content:focus-visible::after {
   position: absolute;
   content: "";
   inset: 0;
@@ -10844,10 +10844,10 @@ fieldset[disabled] .rux--form__helper-text {
 .rux--content-switcher-btn:disabled::after {
   display: none;
 }
-.rux--content-switcher-btn:focus {
+.rux--content-switcher-btn:focus-visible {
   border: 0;
 }
-.rux--content-switcher-btn:focus::after {
+.rux--content-switcher-btn:focus-visible::after {
   border-radius: 0.25rem;
   box-shadow: inset 0 0 0 2px var(--rux-focus, #0f62fe), inset 0 0 0 3px var(--rux-focus-inset, #ffffff);
 }
@@ -10875,7 +10875,7 @@ fieldset[disabled] .rux--form__helper-text {
   }
 }
 
-.rux--content-switcher-btn:not(.rux--content-switcher--selected):focus::before {
+.rux--content-switcher-btn:not(.rux--content-switcher--selected):focus-visible::before {
   display: block;
   border-radius: 0.25rem;
   block-size: 100%;
@@ -10883,12 +10883,12 @@ fieldset[disabled] .rux--form__helper-text {
   content: "";
   inline-size: 100%;
 }
-.rux--content-switcher-btn:not(.rux--content-switcher--selected):focus::after {
+.rux--content-switcher-btn:not(.rux--content-switcher--selected):focus-visible::after {
   background-color: var(--rux-focus-inset, #ffffff);
   transform: scaleY(1);
 }
 @media (any-hover: hover) {
-  .rux--content-switcher-btn:not(.rux--content-switcher--selected):focus:hover::after {
+  .rux--content-switcher-btn:not(.rux--content-switcher--selected):focus-visible:hover::after {
     border-radius: 0;
     background-color: var(--rux-layer-hover);
     border-block-end: 0.0625rem solid var(--rux-border-inverse, #161616);
@@ -10947,8 +10947,8 @@ fieldset[disabled] .rux--form__helper-text {
   background-color: transparent;
 }
 
-.rux--content-switcher-btn:focus::before,
-.rux--content-switcher-btn:focus + .rux--content-switcher-btn::before,
+.rux--content-switcher-btn:focus-visible::before,
+.rux--content-switcher-btn:focus-visible + .rux--content-switcher-btn::before,
 .rux--content-switcher--selected::before,
 .rux--content-switcher--selected + .rux--content-switcher-btn::before {
   background-color: transparent;
@@ -10994,7 +10994,7 @@ fieldset[disabled] .rux--form__helper-text {
   white-space: nowrap;
 }
 
-.rux--content-switcher-btn:focus .rux--content-switcher__icon {
+.rux--content-switcher-btn:focus-visible .rux--content-switcher__icon {
   fill: var(--rux-icon-primary, #161616);
 }
 
@@ -11004,8 +11004,8 @@ fieldset[disabled] .rux--form__helper-text {
   }
 }
 @media (any-hover: hover) {
-  .rux--content-switcher-btn:focus:has(+ .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover)::before,
-  .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover + .rux--content-switcher-btn:focus::before,
+  .rux--content-switcher-btn:focus-visible:has(+ .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover)::before,
+  .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover + .rux--content-switcher-btn:focus-visible::before,
   .rux--content-switcher-btn:hover + .rux--content-switcher-btn.rux--content-switcher--selected::before,
   .rux--content-switcher-btn.rux--content-switcher--selected:has(+ .rux--content-switcher-btn:hover)::before {
     z-index: 0;
@@ -11017,8 +11017,8 @@ fieldset[disabled] .rux--form__helper-text {
     content: "";
     inline-size: 100%;
   }
-  .rux--content-switcher-btn:focus:has(+ .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover):not(.rux--content-switcher--selected)::after,
-  .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover + .rux--content-switcher-btn:focus:not(.rux--content-switcher--selected)::after,
+  .rux--content-switcher-btn:focus-visible:has(+ .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover):not(.rux--content-switcher--selected)::after,
+  .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover + .rux--content-switcher-btn:focus-visible:not(.rux--content-switcher--selected)::after,
   .rux--content-switcher-btn:hover + .rux--content-switcher-btn.rux--content-switcher--selected:not(.rux--content-switcher--selected)::after,
   .rux--content-switcher-btn.rux--content-switcher--selected:has(+ .rux--content-switcher-btn:hover):not(.rux--content-switcher--selected)::after {
     background-color: var(--rux-focus-inset, #ffffff);
@@ -11048,7 +11048,7 @@ fieldset[disabled] .rux--form__helper-text {
 }
 
 @media screen and (-ms-high-contrast: active), (forced-colors: active) {
-  .rux--content-switcher-btn:focus {
+  .rux--content-switcher-btn:focus-visible {
     color: Highlight;
     outline: 1px solid Highlight;
   }
@@ -11064,7 +11064,7 @@ fieldset[disabled] .rux--form__helper-text {
   padding: 0;
   transition: none;
 }
-.rux--content-switcher--icon-only .rux--content-switcher-btn:focus {
+.rux--content-switcher--icon-only .rux--content-switcher-btn:focus-visible {
   box-shadow: none;
 }
 
@@ -11112,7 +11112,7 @@ fieldset[disabled] .rux--form__helper-text {
   block-size: 2rem;
 }
 
-.rux--content-switcher-btn:focus::before,
+.rux--content-switcher-btn:focus-visible::before,
 .rux--content-switcher-popover__wrapper:focus-within + .rux--content-switcher-popover__wrapper .rux--content-switcher-btn::before,
 .rux--content-switcher--selected::before,
 .rux--content-switcher-popover--selected + .rux--content-switcher-popover__wrapper .rux--content-switcher-btn::before {
@@ -11120,7 +11120,7 @@ fieldset[disabled] .rux--form__helper-text {
 }
 
 @media (any-hover: hover) {
-  .rux--content-switcher-popover__wrapper:not(.rux--content-switcher-popover--disabled):hover + .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:not(.rux--content-switcher--selected):not(:focus)::before {
+  .rux--content-switcher-popover__wrapper:not(.rux--content-switcher-popover--disabled):hover + .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:not(.rux--content-switcher--selected):not(:focus-visible)::before {
     background-color: transparent;
   }
 }
@@ -11136,8 +11136,8 @@ fieldset[disabled] .rux--form__helper-text {
   .rux--content-switcher--icon-only .rux--content-switcher-btn[disabled]:hover::before {
     background-color: var(--rux-border-subtle);
   }
-  .rux--content-switcher-popover__wrapper:has(+ .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover) .rux--content-switcher-btn:focus::before,
-  .rux--content-switcher-popover__wrapper:not(.rux--content-switcher-popover--selected):hover + .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:focus::before,
+  .rux--content-switcher-popover__wrapper:has(+ .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover) .rux--content-switcher-btn:focus-visible::before,
+  .rux--content-switcher-popover__wrapper:not(.rux--content-switcher-popover--selected):hover + .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:focus-visible::before,
   .rux--content-switcher-popover__wrapper:hover + .rux--content-switcher-popover__wrapper .rux--content-switcher--selected::before,
   .rux--content-switcher-popover--selected:has(+ .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:hover) .rux--content-switcher-btn::before {
     z-index: 0;
@@ -11149,8 +11149,8 @@ fieldset[disabled] .rux--form__helper-text {
     content: "";
     inline-size: 100%;
   }
-  .rux--content-switcher-popover__wrapper:has(+ .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover) .rux--content-switcher-btn:focus:not(.rux--content-switcher--selected)::after,
-  .rux--content-switcher-popover__wrapper:not(.rux--content-switcher-popover--selected):hover + .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:focus:not(.rux--content-switcher--selected)::after,
+  .rux--content-switcher-popover__wrapper:has(+ .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover) .rux--content-switcher-btn:focus-visible:not(.rux--content-switcher--selected)::after,
+  .rux--content-switcher-popover__wrapper:not(.rux--content-switcher-popover--selected):hover + .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:focus-visible:not(.rux--content-switcher--selected)::after,
   .rux--content-switcher-popover__wrapper:hover + .rux--content-switcher-popover__wrapper .rux--content-switcher--selected:not(.rux--content-switcher--selected)::after,
   .rux--content-switcher-popover--selected:has(+ .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:hover) .rux--content-switcher-btn:not(.rux--content-switcher--selected)::after {
     background-color: var(--rux-focus-inset, #ffffff);
@@ -11190,15 +11190,15 @@ fieldset[disabled] .rux--form__helper-text {
   }
 }
 
-.rux--content-switcher--low-contrast .rux--content-switcher-btn:not(.rux--content-switcher--selected):focus::before {
+.rux--content-switcher--low-contrast .rux--content-switcher-btn:not(.rux--content-switcher--selected):focus-visible::before {
   background: transparent;
 }
-.rux--content-switcher--low-contrast .rux--content-switcher-btn:not(.rux--content-switcher--selected):focus::after {
+.rux--content-switcher--low-contrast .rux--content-switcher-btn:not(.rux--content-switcher--selected):focus-visible::after {
   background-color: var(--rux-content-switcher-background, #e0e0e0);
   box-shadow: inset 0 0 0 0.125rem var(--rux-focus, #0f62fe);
 }
 @media (any-hover: hover) {
-  .rux--content-switcher--low-contrast .rux--content-switcher-btn:not(.rux--content-switcher--selected):focus:hover::after {
+  .rux--content-switcher--low-contrast .rux--content-switcher-btn:not(.rux--content-switcher--selected):focus-visible:hover::after {
     border-color: var(--rux-border-strong);
     background-color: var(--rux-content-switcher-background-hover, #d1d1d1);
     box-shadow: none;
@@ -11214,15 +11214,15 @@ fieldset[disabled] .rux--form__helper-text {
 }
 
 @media (any-hover: hover) {
-  .rux--content-switcher--low-contrast .rux--content-switcher-btn:focus:has(+ .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover)::before,
-  .rux--content-switcher--low-contrast .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover + .rux--content-switcher-btn:focus::before,
+  .rux--content-switcher--low-contrast .rux--content-switcher-btn:focus-visible:has(+ .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover)::before,
+  .rux--content-switcher--low-contrast .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover + .rux--content-switcher-btn:focus-visible::before,
   .rux--content-switcher--low-contrast .rux--content-switcher-btn:hover + .rux--content-switcher-btn.rux--content-switcher--selected::before,
   .rux--content-switcher--low-contrast .rux--content-switcher-btn.rux--content-switcher--selected:has(+ .rux--content-switcher-btn:hover)::before {
     border-color: var(--rux-border-strong);
     box-shadow: inset 0 0 0 0.0625rem var(--rux-content-switcher-background-hover, #d1d1d1);
   }
-  .rux--content-switcher--low-contrast .rux--content-switcher-btn:focus:has(+ .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover):not(.rux--content-switcher--selected)::after,
-  .rux--content-switcher--low-contrast .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover + .rux--content-switcher-btn:focus:not(.rux--content-switcher--selected)::after,
+  .rux--content-switcher--low-contrast .rux--content-switcher-btn:focus-visible:has(+ .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover):not(.rux--content-switcher--selected)::after,
+  .rux--content-switcher--low-contrast .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover + .rux--content-switcher-btn:focus-visible:not(.rux--content-switcher--selected)::after,
   .rux--content-switcher--low-contrast .rux--content-switcher-btn:hover + .rux--content-switcher-btn.rux--content-switcher--selected:not(.rux--content-switcher--selected)::after,
   .rux--content-switcher--low-contrast .rux--content-switcher-btn.rux--content-switcher--selected:has(+ .rux--content-switcher-btn:hover):not(.rux--content-switcher--selected)::after {
     background-color: var(--rux-content-switcher-background, #e0e0e0);
@@ -11246,7 +11246,7 @@ fieldset[disabled] .rux--form__helper-text {
   background-color: var(--rux-content-switcher-selected, #ffffff);
   box-shadow: inset 0 0 0 0.0625rem var(--rux-border-inverse, #161616);
 }
-.rux--content-switcher--low-contrast .rux--content-switcher-btn.rux--content-switcher--selected:focus::after {
+.rux--content-switcher--low-contrast .rux--content-switcher-btn.rux--content-switcher--selected:focus-visible::after {
   box-shadow: inset 0 0 0 0.125rem var(--rux-focus, #0f62fe);
 }
 .rux--content-switcher--low-contrast .rux--content-switcher-btn.rux--content-switcher--selected:disabled {
@@ -11259,8 +11259,8 @@ fieldset[disabled] .rux--form__helper-text {
   background-color: transparent;
 }
 
-.rux--content-switcher--low-contrast .rux--content-switcher-btn:focus::before,
-.rux--content-switcher--low-contrast .rux--content-switcher-btn:focus + .rux--content-switcher-btn::before,
+.rux--content-switcher--low-contrast .rux--content-switcher-btn:focus-visible::before,
+.rux--content-switcher--low-contrast .rux--content-switcher-btn:focus-visible + .rux--content-switcher-btn::before,
 .rux--content-switcher--low-contrast .rux--content-switcher--selected::before,
 .rux--content-switcher--low-contrast .rux--content-switcher--selected + .rux--content-switcher-btn::before {
   background-color: transparent;
@@ -11324,7 +11324,7 @@ fieldset[disabled] .rux--form__helper-text {
   border-color: var(--rux-border-disabled, #c6c6c6);
 }
 
-.rux--content-switcher--low-contrast .rux--content-switcher-btn:not(.rux--content-switcher__selected-hovered):focus::before,
+.rux--content-switcher--low-contrast .rux--content-switcher-btn:not(.rux--content-switcher__selected-hovered):focus-visible::before,
 .rux--content-switcher--low-contrast .rux--content-switcher-popover__wrapper:focus-within + .rux--content-switcher-popover__wrapper .rux--content-switcher-btn::before,
 .rux--content-switcher--low-contrast .rux--content-switcher--selected:not(.rux--content-switcher__selected-hovered)::before,
 .rux--content-switcher--low-contrast .rux--content-switcher-popover--selected + .rux--content-switcher-popover__wrapper .rux--content-switcher-btn::before {
@@ -11337,15 +11337,15 @@ fieldset[disabled] .rux--form__helper-text {
   }
 }
 @media (any-hover: hover) {
-  .rux--content-switcher--low-contrast .rux--content-switcher-popover__wrapper:has(+ .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover) .rux--content-switcher-btn:focus::before,
-  .rux--content-switcher--low-contrast .rux--content-switcher-popover__wrapper:not(.rux--content-switcher-popover--selected):hover + .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:focus::before,
+  .rux--content-switcher--low-contrast .rux--content-switcher-popover__wrapper:has(+ .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover) .rux--content-switcher-btn:focus-visible::before,
+  .rux--content-switcher--low-contrast .rux--content-switcher-popover__wrapper:not(.rux--content-switcher-popover--selected):hover + .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:focus-visible::before,
   .rux--content-switcher--low-contrast .rux--content-switcher-popover__wrapper:hover + .rux--content-switcher-popover__wrapper .rux--content-switcher--selected::before,
   .rux--content-switcher--low-contrast .rux--content-switcher-popover--selected:has(+ .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:hover) .rux--content-switcher-btn::before {
     border-color: var(--rux-border-strong);
     box-shadow: inset 0 0 0 0.0625rem var(--rux-content-switcher-background-hover, #d1d1d1);
   }
-  .rux--content-switcher--low-contrast .rux--content-switcher-popover__wrapper:has(+ .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover) .rux--content-switcher-btn:focus:not(.rux--content-switcher--selected)::after,
-  .rux--content-switcher--low-contrast .rux--content-switcher-popover__wrapper:not(.rux--content-switcher-popover--selected):hover + .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:focus:not(.rux--content-switcher--selected)::after,
+  .rux--content-switcher--low-contrast .rux--content-switcher-popover__wrapper:has(+ .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:not(.rux--content-switcher--selected):hover) .rux--content-switcher-btn:focus-visible:not(.rux--content-switcher--selected)::after,
+  .rux--content-switcher--low-contrast .rux--content-switcher-popover__wrapper:not(.rux--content-switcher-popover--selected):hover + .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:focus-visible:not(.rux--content-switcher--selected)::after,
   .rux--content-switcher--low-contrast .rux--content-switcher-popover__wrapper:hover + .rux--content-switcher-popover__wrapper .rux--content-switcher--selected:not(.rux--content-switcher--selected)::after,
   .rux--content-switcher--low-contrast .rux--content-switcher-popover--selected:has(+ .rux--content-switcher-popover__wrapper .rux--content-switcher-btn:hover) .rux--content-switcher-btn:not(.rux--content-switcher--selected)::after {
     background-color: var(--rux-content-switcher-background, #e0e0e0);
@@ -11549,7 +11549,7 @@ fieldset[disabled] .rux--form__helper-text {
   margin-block-start: 0.375rem;
 }
 
-.rux--radio-button:focus + .rux--radio-button__label .rux--radio-button__appearance {
+.rux--radio-button:focus-visible + .rux--radio-button__label .rux--radio-button__appearance {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: 1.5px;
 }
@@ -11562,7 +11562,7 @@ fieldset[disabled] .rux--form__helper-text {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--radio-button__label.rux--skeleton:hover, .rux--radio-button__label.rux--skeleton:focus, .rux--radio-button__label.rux--skeleton:active {
+.rux--radio-button__label.rux--skeleton:hover, .rux--radio-button__label.rux--skeleton:focus-visible, .rux--radio-button__label.rux--skeleton:active {
   border: none;
   cursor: default;
   outline: none;
@@ -11668,12 +11668,12 @@ fieldset[disabled] .rux--form__helper-text {
   overflow-x: auto;
 }
 
-.rux--data-table-content:focus {
+.rux--data-table-content:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--data-table-content:focus {
+  .rux--data-table-content:focus-visible {
     outline-style: dotted;
   }
 }
@@ -11900,17 +11900,17 @@ fieldset[disabled] .rux--form__helper-text {
   background-color: var(--rux-field-02, #ffffff);
 }
 
-.rux--data-table td.rux--table-column-menu .rux--overflow-menu[aria-expanded=false]:focus {
+.rux--data-table td.rux--table-column-menu .rux--overflow-menu[aria-expanded=false]:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--data-table td.rux--table-column-menu .rux--overflow-menu[aria-expanded=false]:focus {
+  .rux--data-table td.rux--table-column-menu .rux--overflow-menu[aria-expanded=false]:focus-visible {
     outline-style: dotted;
   }
 }
 
-.rux--data-table td.rux--table-column-menu .rux--overflow-menu[aria-expanded=true]:focus {
+.rux--data-table td.rux--table-column-menu .rux--overflow-menu[aria-expanded=true]:focus-visible {
   outline: none;
 }
 
@@ -11925,7 +11925,7 @@ fieldset[disabled] .rux--form__helper-text {
 
 .rux--data-table.rux--data-table--visible-overflow-menu td.rux--table-column-menu .rux--overflow-menu .rux--overflow-menu__icon,
 .rux--data-table td.rux--table-column-menu .rux--overflow-menu:hover .rux--overflow-menu__icon,
-.rux--data-table td.rux--table-column-menu .rux--overflow-menu:focus .rux--overflow-menu__icon {
+.rux--data-table td.rux--table-column-menu .rux--overflow-menu:focus-visible .rux--overflow-menu__icon {
   opacity: 1;
 }
 
@@ -12603,12 +12603,12 @@ tr.rux--parent-row:not(.rux--expandable-row):not(:first-of-type) td.rux--table-c
   transition: background-color 70ms cubic-bezier(0, 0, 0.38, 0.9), outline 70ms cubic-bezier(0, 0, 0.38, 0.9);
 }
 
-.rux--table-sort:focus {
+.rux--table-sort:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--table-sort:focus {
+  .rux--table-sort:focus-visible {
     outline-style: dotted;
   }
 }
@@ -12617,7 +12617,7 @@ tr.rux--parent-row:not(.rux--expandable-row):not(:first-of-type) td.rux--table-c
   background: var(--rux-layer-selected-hover);
 }
 
-.rux--table-sort:focus svg,
+.rux--table-sort:focus-visible svg,
 .rux--table-sort:hover svg {
   opacity: 1;
 }
@@ -12841,12 +12841,12 @@ th .rux--table-sort__flex {
   text-overflow: ellipsis;
   transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9), outline 110ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
-.rux--search-input:focus {
+.rux--search-input:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--search-input:focus {
+  .rux--search-input:focus-visible {
     outline-style: dotted;
   }
 }
@@ -12979,14 +12979,14 @@ th .rux--table-sort__flex {
 .rux--search-button:hover {
   background-color: var(--rux-field-hover);
 }
-.rux--search-close:focus,
-.rux--search-button:focus {
+.rux--search-close:focus-visible,
+.rux--search-button:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--search-close:focus,
-  .rux--search-button:focus {
+  .rux--search-close:focus-visible,
+  .rux--search-button:focus-visible {
     outline-style: dotted;
   }
 }
@@ -13006,12 +13006,12 @@ th .rux--table-sort__flex {
   background-color: var(--rux-background-selected, rgba(141, 141, 141, 0.2));
 }
 
-.rux--search-input:focus ~ .rux--search-close:hover {
+.rux--search-input:focus-visible ~ .rux--search-close:hover {
   background-color: transparent;
   border-block-end-color: transparent;
   outline: none;
 }
-.rux--search-input:focus ~ .rux--search-close:hover::after {
+.rux--search-input:focus-visible ~ .rux--search-close:hover::after {
   position: absolute;
   background-color: var(--rux-field-hover);
   content: "";
@@ -13052,7 +13052,7 @@ th .rux--table-sort__flex {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--skeleton .rux--search-input:hover, .rux--skeleton .rux--search-input:focus, .rux--skeleton .rux--search-input:active {
+.rux--skeleton .rux--search-input:hover, .rux--skeleton .rux--search-input:focus-visible, .rux--skeleton .rux--search-input:active {
   border: none;
   cursor: default;
   outline: none;
@@ -13124,7 +13124,7 @@ th .rux--table-sort__flex {
   position: absolute;
   cursor: pointer;
 }
-.rux--search--expandable .rux--search-magnifier:focus {
+.rux--search--expandable .rux--search-magnifier:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
 }
 
@@ -13231,7 +13231,7 @@ th .rux--table-sort__flex {
   transition: background-color none;
 }
 
-.rux--toolbar-search-container-active .rux--search-magnifier-icon:focus,
+.rux--toolbar-search-container-active .rux--search-magnifier-icon:focus-visible,
 .rux--toolbar-search-container-active .rux--search-magnifier-icon:active,
 .rux--toolbar-search-container-active .rux--search-magnifier-icon:hover {
   border: none;
@@ -13253,7 +13253,7 @@ th .rux--table-sort__flex {
   cursor: text;
 }
 
-.rux--toolbar-search-container-active .rux--search-input:focus + .rux--search-close {
+.rux--toolbar-search-container-active .rux--search-input:focus-visible + .rux--search-close {
   border: none;
   box-shadow: none;
   outline: none;
@@ -13361,18 +13361,18 @@ th .rux--table-sort__flex {
   fill: var(--rux-icon-disabled, rgba(22, 22, 22, 0.25));
 }
 
-.rux--toolbar-action:focus:not([disabled]),
+.rux--toolbar-action:focus-visible:not([disabled]),
 .rux--toolbar-action:active:not([disabled]) {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--toolbar-action:focus:not([disabled]),
+  .rux--toolbar-action:focus-visible:not([disabled]),
   .rux--toolbar-action:active:not([disabled]) {
     outline-style: dotted;
   }
 }
-.rux--toolbar-action:focus:not([disabled]).rux--toolbar-search-container-expandable,
+.rux--toolbar-action:focus-visible:not([disabled]).rux--toolbar-search-container-expandable,
 .rux--toolbar-action:active:not([disabled]).rux--toolbar-search-container-expandable {
   outline: none;
 }
@@ -13418,12 +13418,12 @@ th .rux--table-sort__flex {
   border: none;
 }
 
-.rux--toolbar-search-container-persistent .rux--search-input:focus:not([disabled]) {
+.rux--toolbar-search-container-persistent .rux--search-input:focus-visible:not([disabled]) {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--toolbar-search-container-persistent .rux--search-input:focus:not([disabled]) {
+  .rux--toolbar-search-container-persistent .rux--search-input:focus-visible:not([disabled]) {
     outline-style: dotted;
   }
 }
@@ -13460,11 +13460,11 @@ th .rux--table-sort__flex {
   will-change: transform;
 }
 
-.rux--batch-actions:focus {
+.rux--batch-actions:focus-visible {
   outline: 1px solid var(--rux-focus, #0f62fe);
 }
 @media screen and (prefers-contrast) {
-  .rux--batch-actions:focus {
+  .rux--batch-actions:focus-visible {
     outline-style: dotted;
   }
 }
@@ -13510,21 +13510,21 @@ th .rux--table-sort__flex {
   padding: 0.0625rem;
 }
 
-.rux--action-list .rux--btn--primary:focus::before,
+.rux--action-list .rux--btn--primary:focus-visible::before,
 .rux--action-list .rux--btn--primary::before,
-.rux--action-list .rux--btn--primary:focus::after,
+.rux--action-list .rux--btn--primary:focus-visible::after,
 .rux--action-list .rux--btn--primary::after {
   display: none;
 }
 
-.rux--action-list .rux--btn--primary:focus,
-.rux--batch-summary .rux--btn--primary:focus {
+.rux--action-list .rux--btn--primary:focus-visible,
+.rux--batch-summary .rux--btn--primary:focus-visible {
   outline: 2px solid var(--rux-layer);
   outline-offset: -0.125rem;
 }
 
 .rux--action-list .rux--btn--primary:nth-child(3):hover + .rux--btn--primary.rux--batch-summary__cancel::before,
-.rux--action-list .rux--btn--primary:nth-child(3):focus + .rux--btn--primary.rux--batch-summary__cancel::before {
+.rux--action-list .rux--btn--primary:nth-child(3):focus-visible + .rux--btn--primary.rux--batch-summary__cancel::before {
   opacity: 0;
 }
 
@@ -13813,7 +13813,7 @@ tr.rux--parent-row.rux--expandable-row.rux--expandable-row--hover td:first-of-ty
   padding-block-start: 0.5rem;
 }
 
-.rux--table-expand__button:focus {
+.rux--table-expand__button:focus-visible {
   box-shadow: inset 0 0 0 2px var(--rux-focus, #0f62fe);
   outline: none;
 }
@@ -13959,7 +13959,7 @@ tr.rux--parent-row.rux--data-table--selected.rux--expandable-row--hover + tr[dat
   }
 }
 @media screen and (-ms-high-contrast: active), (forced-colors: active) {
-  .rux--table-expand__button:focus .rux--table-expand__svg {
+  .rux--table-expand__button:focus-visible .rux--table-expand__svg {
     color: Highlight;
     outline: 1px solid Highlight;
   }
@@ -14084,11 +14084,11 @@ tr.rux--parent-row.rux--data-table--selected.rux--expandable-row--hover + tr[dat
   inline-size: 18rem;
   margin-block-start: -0.125rem;
 }
-.flatpickr-calendar.open:focus {
+.flatpickr-calendar.open:focus-visible {
   outline: 1px solid var(--rux-focus, #0f62fe);
 }
 @media screen and (prefers-contrast) {
-  .flatpickr-calendar.open:focus {
+  .flatpickr-calendar.open:focus-visible {
     outline-style: dotted;
   }
 }
@@ -14151,7 +14151,7 @@ tr.rux--parent-row.rux--data-table--selected.rux--expandable-row--hover + tr[dat
   block-size: auto;
 }
 
-.flatpickr-calendar:focus {
+.flatpickr-calendar:focus-visible {
   outline: 0;
 }
 
@@ -14266,11 +14266,11 @@ tr.rux--parent-row.rux--data-table--selected.rux--expandable-row--hover + tr[dat
   margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
   -webkit-appearance: none;
 }
-.numInputWrapper .numInput:focus {
+.numInputWrapper .numInput:focus-visible {
   outline: 1px solid var(--rux-focus, #0f62fe);
 }
 @media screen and (prefers-contrast) {
-  .numInputWrapper .numInput:focus {
+  .numInputWrapper .numInput:focus-visible {
     outline-style: dotted;
   }
 }
@@ -14368,7 +14368,7 @@ tr.rux--parent-row.rux--data-table--selected.rux--expandable-row--hover + tr[dat
   cursor: default;
 }
 
-.flatpickr-days:focus {
+.flatpickr-days:focus-visible {
   outline: 0;
 }
 
@@ -14413,16 +14413,16 @@ tr.rux--parent-row.rux--data-table--selected.rux--expandable-row--hover + tr[dat
     background: var(--rux-layer-hover);
   }
 }
-.flatpickr-day:focus {
+.flatpickr-day:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .flatpickr-day:focus {
+  .flatpickr-day:focus-visible {
     outline-style: dotted;
   }
 }
-.flatpickr-day:focus {
+.flatpickr-day:focus-visible {
   outline-color: var(--rux-button-primary, #0f62fe);
 }
 
@@ -14481,7 +14481,7 @@ tr.rux--parent-row.rux--data-table--selected.rux--expandable-row--hover + tr[dat
     outline-style: dotted;
   }
 }
-.flatpickr-day.selected:focus {
+.flatpickr-day.selected:focus-visible {
   outline: 0.0625rem solid var(--rux-layer-02, #ffffff);
   outline-offset: -0.1875rem;
 }
@@ -14635,12 +14635,12 @@ tr.rux--parent-row.rux--data-table--selected.rux--expandable-row--hover + tr[dat
   color: var(--rux-text-primary, #161616);
   transition: 70ms cubic-bezier(0.2, 0, 0.38, 0.9) all;
 }
-.rux--date-picker__input:focus, .rux--date-picker__input.rux--focused {
+.rux--date-picker__input:focus-visible, .rux--date-picker__input.rux--focused {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--date-picker__input:focus, .rux--date-picker__input.rux--focused {
+  .rux--date-picker__input:focus-visible, .rux--date-picker__input.rux--focused {
     outline-style: dotted;
   }
 }
@@ -14757,9 +14757,9 @@ tr.rux--parent-row.rux--data-table--selected.rux--expandable-row--hover + tr[dat
   box-shadow: none;
   pointer-events: none;
 }
-.rux--date-picker.rux--skeleton input:hover, .rux--date-picker.rux--skeleton input:focus, .rux--date-picker.rux--skeleton input:active,
+.rux--date-picker.rux--skeleton input:hover, .rux--date-picker.rux--skeleton input:focus-visible, .rux--date-picker.rux--skeleton input:active,
 .rux--date-picker__input.rux--skeleton:hover,
-.rux--date-picker__input.rux--skeleton:focus,
+.rux--date-picker__input.rux--skeleton:focus-visible,
 .rux--date-picker__input.rux--skeleton:active {
   border: none;
   cursor: default;
@@ -14810,7 +14810,7 @@ tr.rux--parent-row.rux--data-table--selected.rux--expandable-row--hover + tr[dat
   box-shadow: none;
   pointer-events: none;
 }
-.rux--date-picker.rux--skeleton .rux--label:hover, .rux--date-picker.rux--skeleton .rux--label:focus, .rux--date-picker.rux--skeleton .rux--label:active {
+.rux--date-picker.rux--skeleton .rux--label:hover, .rux--date-picker.rux--skeleton .rux--label:focus-visible, .rux--date-picker.rux--skeleton .rux--label:active {
   border: none;
   cursor: default;
   outline: none;
@@ -14866,7 +14866,7 @@ tr.rux--parent-row.rux--data-table--selected.rux--expandable-row--hover + tr[dat
   pointer-events: auto;
   transform: translateY(-50%);
 }
-.rux--date-picker--next .rux--date-picker__icon:focus {
+.rux--date-picker--next .rux--date-picker__icon:focus-visible {
   border: none;
   background: transparent;
   outline: none;
@@ -14883,7 +14883,7 @@ tr.rux--parent-row.rux--data-table--selected.rux--expandable-row--hover + tr[dat
   margin: 0;
   background: transparent;
 }
-.rux--date-picker--next .rux--date-picker__calendar-popover:focus {
+.rux--date-picker--next .rux--date-picker__calendar-popover:focus-visible {
   outline: none;
 }
 .rux--date-picker--next .rux--date-picker__calendar-popover {
@@ -14964,7 +14964,7 @@ tr.rux--parent-row.rux--data-table--selected.rux--expandable-row--hover + tr[dat
   box-shadow: none;
   pointer-events: none;
 }
-.rux--date-picker--next .rux--date-picker-input-skeleton .rux--label:hover, .rux--date-picker--next .rux--date-picker-input-skeleton .rux--label:focus, .rux--date-picker--next .rux--date-picker-input-skeleton .rux--label:active {
+.rux--date-picker--next .rux--date-picker-input-skeleton .rux--label:hover, .rux--date-picker--next .rux--date-picker-input-skeleton .rux--label:focus-visible, .rux--date-picker--next .rux--date-picker-input-skeleton .rux--label:active {
   border: none;
   cursor: default;
   outline: none;
@@ -15014,7 +15014,7 @@ tr.rux--parent-row.rux--data-table--selected.rux--expandable-row--hover + tr[dat
   box-shadow: none;
   pointer-events: none;
 }
-.rux--date-picker--next .rux--date-picker.rux--skeleton .rux--date-picker__input.rux--skeleton:hover, .rux--date-picker--next .rux--date-picker.rux--skeleton .rux--date-picker__input.rux--skeleton:focus, .rux--date-picker--next .rux--date-picker.rux--skeleton .rux--date-picker__input.rux--skeleton:active {
+.rux--date-picker--next .rux--date-picker.rux--skeleton .rux--date-picker__input.rux--skeleton:hover, .rux--date-picker--next .rux--date-picker.rux--skeleton .rux--date-picker__input.rux--skeleton:focus-visible, .rux--date-picker--next .rux--date-picker.rux--skeleton .rux--date-picker__input.rux--skeleton:active {
   border: none;
   cursor: default;
   outline: none;
@@ -15065,7 +15065,7 @@ tr.rux--parent-row.rux--data-table--selected.rux--expandable-row--hover + tr[dat
   max-inline-size: 18rem;
   outline: none;
 }
-.rux--date-picker--next .rux--date-picker__calendar:focus {
+.rux--date-picker--next .rux--date-picker__calendar:focus-visible {
   outline: none;
 }
 .rux--date-picker--next .rux--date-picker__month {
@@ -15087,7 +15087,7 @@ tr.rux--parent-row.rux--data-table--selected.rux--expandable-row--hover + tr[dat
 .rux--date-picker--next .rux--date-picker__month-nav:hover {
   background-color: var(--rux-layer-hover);
 }
-.rux--date-picker--next .rux--date-picker__month-nav:focus {
+.rux--date-picker--next .rux--date-picker__month-nav:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
@@ -15135,7 +15135,7 @@ tr.rux--parent-row.rux--data-table--selected.rux--expandable-row--hover + tr[dat
 .rux--date-picker--next .rux--date-picker__day:hover:not(:disabled, .selected) {
   background-color: var(--rux-layer-hover);
 }
-.rux--date-picker--next .rux--date-picker__day:focus {
+.rux--date-picker--next .rux--date-picker__day:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
@@ -15373,12 +15373,12 @@ because the nesting selector cannot represent pseudo-elements. */
   padding-block: 0.5rem 3rem;
   padding-inline: 1rem 1rem;
 }
-.rux--dialog-content:focus {
+.rux--dialog-content:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--dialog-content:focus {
+  .rux--dialog-content:focus-visible {
     outline-style: dotted;
   }
 }
@@ -15454,7 +15454,7 @@ because the nesting selector cannot represent pseudo-elements. */
 .rux--dialog__close:hover {
   background-color: var(--rux-layer-hover);
 }
-.rux--dialog__close:focus {
+.rux--dialog__close:focus-visible {
   border-color: var(--rux-focus, #0f62fe);
   outline: none;
 }
@@ -15589,7 +15589,7 @@ because the nesting selector cannot represent pseudo-elements. */
   background-color: var(--rux-field);
 }
 
-.rux--dropdown--open:focus {
+.rux--dropdown--open:focus-visible {
   outline: 1px solid transparent;
 }
 
@@ -15627,12 +15627,12 @@ button.rux--dropdown-text {
   inline-size: 100%;
   text-align: start;
 }
-button.rux--dropdown-text:focus {
+button.rux--dropdown-text:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  button.rux--dropdown-text:focus {
+  button.rux--dropdown-text:focus-visible {
     outline-style: dotted;
   }
 }
@@ -15749,38 +15749,38 @@ button.rux--dropdown-text:focus {
 }
 
 .rux--dropdown--focused,
-.rux--dropdown-link:focus {
+.rux--dropdown-link:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
   .rux--dropdown--focused,
-  .rux--dropdown-link:focus {
+  .rux--dropdown-link:focus-visible {
     outline-style: dotted;
   }
 }
 .rux--dropdown--focused,
-.rux--dropdown-link:focus {
+.rux--dropdown-link:focus-visible {
   padding: 0.6875rem 1rem;
   margin: 0;
 }
 
-.rux--dropdown-list[aria-activedescendant] .rux--dropdown-link:focus {
+.rux--dropdown-list[aria-activedescendant] .rux--dropdown-link:focus-visible {
   padding: 0.6875rem 0;
   margin: 0 1rem;
   outline: none;
 }
 
-.rux--dropdown-list[aria-activedescendant] .rux--dropdown--focused:focus {
+.rux--dropdown-list[aria-activedescendant] .rux--dropdown--focused:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--dropdown-list[aria-activedescendant] .rux--dropdown--focused:focus {
+  .rux--dropdown-list[aria-activedescendant] .rux--dropdown--focused:focus-visible {
     outline-style: dotted;
   }
 }
-.rux--dropdown-list[aria-activedescendant] .rux--dropdown--focused:focus {
+.rux--dropdown-list[aria-activedescendant] .rux--dropdown--focused:focus-visible {
   padding: 0.6875rem 1rem;
   margin: 0;
 }
@@ -15811,7 +15811,7 @@ button.rux--dropdown-text:focus {
 .rux--dropdown--disabled:hover {
   background-color: var(--rux-field);
 }
-.rux--dropdown--disabled:focus {
+.rux--dropdown--disabled:focus-visible {
   outline: none;
 }
 .rux--dropdown--disabled .rux--dropdown-text,
@@ -15871,7 +15871,7 @@ button.rux--dropdown-text:focus {
   color: var(--rux-text-disabled, rgba(22, 22, 22, 0.25));
 }
 
-.rux--dropdown--inline.rux--dropdown--disabled:focus .rux--dropdown-text {
+.rux--dropdown--inline.rux--dropdown--disabled:focus-visible .rux--dropdown-text {
   outline: 0;
 }
 
@@ -15883,7 +15883,7 @@ button.rux--dropdown-text:focus {
   padding-inline-end: 3.5rem;
 }
 
-.rux--dropdown--inline.rux--dropdown--open:focus .rux--dropdown-list {
+.rux--dropdown--inline.rux--dropdown--open:focus-visible .rux--dropdown-list {
   box-shadow: 0 2px 6px var(--rux-shadow, rgba(0, 0, 0, 0.3));
 }
 
@@ -15918,9 +15918,9 @@ button.rux--dropdown-text:focus {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--dropdown-v2.rux--skeleton:hover, .rux--dropdown-v2.rux--skeleton:focus, .rux--dropdown-v2.rux--skeleton:active,
+.rux--dropdown-v2.rux--skeleton:hover, .rux--dropdown-v2.rux--skeleton:focus-visible, .rux--dropdown-v2.rux--skeleton:active,
 .rux--dropdown.rux--skeleton:hover,
-.rux--dropdown.rux--skeleton:focus,
+.rux--dropdown.rux--skeleton:focus-visible,
 .rux--dropdown.rux--skeleton:active {
   border: none;
   cursor: default;
@@ -16037,7 +16037,7 @@ button.rux--dropdown-text:focus {
   background: var(--rux-field-01, #f4f4f4);
 }
 
-.rux--edit-in-place--focused:has(.rux--edit-in-place__text-input:focus) {
+.rux--edit-in-place--focused:has(.rux--edit-in-place__text-input:focus-visible) {
   outline: 2px solid var(--rux-focus, #0f62fe);
 }
 
@@ -16083,7 +16083,7 @@ button.rux--dropdown-text:focus {
   outline: none;
 }
 
-.rux--edit-in-place:not(.rux--edit-in-place--focused) .rux--edit-in-place__text-input.rux--text-input:focus,
+.rux--edit-in-place:not(.rux--edit-in-place--focused) .rux--edit-in-place__text-input.rux--text-input:focus-visible,
 .rux--edit-in-place:not(.rux--edit-in-place--focused) .rux--edit-in-place__text-input.rux--text-input:active {
   outline: none;
 }
@@ -16358,7 +16358,7 @@ button.rux--dropdown-text:focus {
     text-decoration: underline;
   }
 }
-.rux--file-browse-btn:focus {
+.rux--file-browse-btn:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   text-decoration: underline;
 }
@@ -16382,7 +16382,7 @@ button.rux--dropdown-text:focus {
     text-decoration: none;
   }
 }
-.rux--file-browse-btn--disabled:focus {
+.rux--file-browse-btn--disabled:focus-visible {
   color: var(--rux-text-disabled, rgba(22, 22, 22, 0.25));
   outline: none;
   text-decoration: none;
@@ -16529,7 +16529,7 @@ button.rux--dropdown-text:focus {
     inline-size: -moz-available;
   }
 }
-.rux--file__selected-file .rux--file-filename-button:focus {
+.rux--file__selected-file .rux--file-filename-button:focus-visible {
   outline: revert;
 }
 
@@ -16657,11 +16657,11 @@ button.rux--dropdown-text:focus {
   fill: var(--rux-interactive, #0f62fe);
   inline-size: 1.5rem;
 }
-.rux--file__state-container .rux--file-complete:focus {
+.rux--file__state-container .rux--file-complete:focus-visible {
   outline: 1px solid var(--rux-focus, #0f62fe);
 }
 @media screen and (prefers-contrast) {
-  .rux--file__state-container .rux--file-complete:focus {
+  .rux--file__state-container .rux--file-complete:focus-visible {
     outline-style: dotted;
   }
 }
@@ -16696,12 +16696,12 @@ button.rux--dropdown-text:focus {
 .rux--file__state-container .rux--file-close[disabled] svg {
   fill: var(--rux-icon-disabled, rgba(22, 22, 22, 0.25));
 }
-.rux--file__state-container .rux--file-close:focus {
+.rux--file__state-container .rux--file-close:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--file__state-container .rux--file-close:focus {
+  .rux--file__state-container .rux--file-close:focus-visible {
     outline-style: dotted;
   }
 }
@@ -16853,7 +16853,7 @@ button.rux--dropdown-text:focus {
   outline-width: 0.0625rem;
 }
 
-.rux--list-box__wrapper--fluid--focus .rux--list-box__field:focus {
+.rux--list-box__wrapper--fluid--focus .rux--list-box__field:focus-visible {
   outline: none;
   outline-offset: 0;
 }
@@ -16880,7 +16880,7 @@ button.rux--dropdown-text:focus {
 }
 
 .rux--list-box__wrapper--fluid.rux--list-box__wrapper--fluid--invalid .rux--list-box,
-.rux--list-box__wrapper--fluid.rux--list-box__wrapper--fluid--invalid .rux--list-box__field:focus,
+.rux--list-box__wrapper--fluid.rux--list-box__wrapper--fluid--invalid .rux--list-box__field:focus-visible,
 .rux--list-box__wrapper--fluid.rux--list-box__wrapper--fluid--invalid .rux--combo-box[data-invalid] .rux--text-input {
   outline: none;
   outline-offset: 0;
@@ -16960,7 +16960,7 @@ button.rux--dropdown-text:focus {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--list-box__wrapper--fluid .rux--skeleton .rux--list-box__field:hover, .rux--list-box__wrapper--fluid .rux--skeleton .rux--list-box__field:focus, .rux--list-box__wrapper--fluid .rux--skeleton .rux--list-box__field:active {
+.rux--list-box__wrapper--fluid .rux--skeleton .rux--list-box__field:hover, .rux--list-box__wrapper--fluid .rux--skeleton .rux--list-box__field:focus-visible, .rux--list-box__wrapper--fluid .rux--skeleton .rux--list-box__field:active {
   border: none;
   cursor: default;
   outline: none;
@@ -17006,7 +17006,7 @@ button.rux--dropdown-text:focus {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--list-box__wrapper--fluid .rux--skeleton .rux--list-box__label:hover, .rux--list-box__wrapper--fluid .rux--skeleton .rux--list-box__label:focus, .rux--list-box__wrapper--fluid .rux--skeleton .rux--list-box__label:active {
+.rux--list-box__wrapper--fluid .rux--skeleton .rux--list-box__label:hover, .rux--list-box__wrapper--fluid .rux--skeleton .rux--list-box__label:focus-visible, .rux--list-box__wrapper--fluid .rux--skeleton .rux--list-box__label:active {
   border: none;
   cursor: default;
   outline: none;
@@ -17324,12 +17324,12 @@ button.rux--dropdown-text:focus {
   display: block;
 }
 
-.rux--date-picker-container.rux--date-picker--fluid--invalid .rux--date-picker__input:focus {
+.rux--date-picker-container.rux--date-picker--fluid--invalid .rux--date-picker__input:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--date-picker-container.rux--date-picker--fluid--invalid .rux--date-picker__input:focus {
+  .rux--date-picker-container.rux--date-picker--fluid--invalid .rux--date-picker__input:focus-visible {
     outline-style: dotted;
   }
 }
@@ -17463,7 +17463,7 @@ button.rux--dropdown-text:focus {
   block-size: 100%;
 }
 
-.rux--multi-select .rux--list-box__field:focus {
+.rux--multi-select .rux--list-box__field:focus-visible {
   outline: 2px solid transparent;
   outline-offset: -2px;
 }
@@ -17718,14 +17718,14 @@ button.rux--dropdown-text:focus {
   padding-inline: 1rem 6rem;
   transition: background-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9), outline 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
-.rux--number input[type=number]:focus,
-.rux--number input[type=text]:focus {
+.rux--number input[type=number]:focus-visible,
+.rux--number input[type=text]:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--number input[type=number]:focus,
-  .rux--number input[type=text]:focus {
+  .rux--number input[type=number]:focus-visible,
+  .rux--number input[type=text]:focus-visible {
     outline-style: dotted;
   }
 }
@@ -17855,15 +17855,15 @@ button.rux--dropdown-text:focus {
 .rux--number__control-btn svg {
   fill: currentColor;
 }
-.rux--number__control-btn:focus {
+.rux--number__control-btn:focus-visible {
   outline: 1px solid var(--rux-focus, #0f62fe);
 }
 @media screen and (prefers-contrast) {
-  .rux--number__control-btn:focus {
+  .rux--number__control-btn:focus-visible {
     outline-style: dotted;
   }
 }
-.rux--number__control-btn:focus {
+.rux--number__control-btn:focus-visible {
   color: var(--rux-icon-primary, #161616);
   outline-offset: -2px;
   outline-width: 2px;
@@ -17893,8 +17893,8 @@ button.rux--dropdown-text:focus {
   border-block-end-color: var(--rux-support-error, #da1e28);
 }
 
-.rux--number input[type=number]:focus ~ .rux--number__controls .rux--number__control-btn,
-.rux--number input[type=text]:focus ~ .rux--number__controls .rux--number__control-btn {
+.rux--number input[type=number]:focus-visible ~ .rux--number__controls .rux--number__control-btn,
+.rux--number input[type=text]:focus-visible ~ .rux--number__controls .rux--number__control-btn {
   border-width: 2px 0;
   border-style: solid;
   border-color: var(--rux-focus, #0f62fe);
@@ -17902,18 +17902,18 @@ button.rux--dropdown-text:focus {
   outline-offset: -2px;
 }
 
-.rux--number input[type=number]:focus ~ .rux--number__controls .rux--number__control-btn:last-of-type:hover,
-.rux--number input[type=text]:focus ~ .rux--number__controls .rux--number__control-btn:last-of-type:hover {
+.rux--number input[type=number]:focus-visible ~ .rux--number__controls .rux--number__control-btn:last-of-type:hover,
+.rux--number input[type=text]:focus-visible ~ .rux--number__controls .rux--number__control-btn:last-of-type:hover {
   box-shadow: -4px 0 0 -2px var(--rux-focus, #0f62fe) inset;
 }
 
-.rux--number input[type=number][data-invalid]:not(:focus) ~ .rux--number__controls .rux--number__control-btn:last-of-type:hover,
-.rux--number input[type=text][data-invalid]:not(:focus) ~ .rux--number__controls .rux--number__control-btn:last-of-type:hover {
+.rux--number input[type=number][data-invalid]:not(:focus-visible) ~ .rux--number__controls .rux--number__control-btn:last-of-type:hover,
+.rux--number input[type=text][data-invalid]:not(:focus-visible) ~ .rux--number__controls .rux--number__control-btn:last-of-type:hover {
   box-shadow: -4px 0 0 -2px var(--rux-support-error, #da1e28) inset;
 }
 
-.rux--number input[type=number][data-invalid]:not(:focus) ~ .rux--number__controls .rux--number__control-btn:hover,
-.rux--number input[type=text][data-invalid]:not(:focus) ~ .rux--number__controls .rux--number__control-btn:hover {
+.rux--number input[type=number][data-invalid]:not(:focus-visible) ~ .rux--number__controls .rux--number__control-btn:hover,
+.rux--number input[type=text][data-invalid]:not(:focus-visible) ~ .rux--number__controls .rux--number__control-btn:hover {
   border-width: 2px 0;
   border-style: solid;
   border-color: var(--rux-support-error, #da1e28);
@@ -17921,14 +17921,14 @@ button.rux--dropdown-text:focus {
   outline-offset: -2px;
 }
 
-.rux--number input[type=number][data-invalid]:not(:focus) ~ .rux--number__controls .rux--number__control-btn:focus:hover,
-.rux--number input[type=text][data-invalid]:not(:focus) ~ .rux--number__controls .rux--number__control-btn:focus:hover {
+.rux--number input[type=number][data-invalid]:not(:focus-visible) ~ .rux--number__controls .rux--number__control-btn:focus-visible:hover,
+.rux--number input[type=text][data-invalid]:not(:focus-visible) ~ .rux--number__controls .rux--number__control-btn:focus-visible:hover {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--number input[type=number][data-invalid]:not(:focus) ~ .rux--number__controls .rux--number__control-btn:focus:hover,
-  .rux--number input[type=text][data-invalid]:not(:focus) ~ .rux--number__controls .rux--number__control-btn:focus:hover {
+  .rux--number input[type=number][data-invalid]:not(:focus-visible) ~ .rux--number__controls .rux--number__control-btn:focus-visible:hover,
+  .rux--number input[type=text][data-invalid]:not(:focus-visible) ~ .rux--number__controls .rux--number__control-btn:focus-visible:hover {
     outline-style: dotted;
   }
 }
@@ -17968,7 +17968,7 @@ button.rux--dropdown-text:focus {
   background-color: var(--rux-icon-disabled, rgba(22, 22, 22, 0.25));
 }
 
-.rux--number__control-btn:focus ~ .rux--number__rule-divider {
+.rux--number__control-btn:focus-visible ~ .rux--number__rule-divider {
   background-color: transparent;
 }
 
@@ -18001,8 +18001,8 @@ button.rux--dropdown-text:focus {
 
 .rux--number__control-btn.down-icon:hover ~ .rux--number__rule-divider,
 .rux--number__control-btn.up-icon:hover + .rux--number__rule-divider,
-.rux--number__control-btn.down-icon:focus ~ .rux--number__rule-divider,
-.rux--number__control-btn.up-icon:focus + .rux--number__rule-divider {
+.rux--number__control-btn.down-icon:focus-visible ~ .rux--number__rule-divider,
+.rux--number__control-btn.up-icon:focus-visible + .rux--number__rule-divider {
   background-color: transparent;
 }
 
@@ -18076,8 +18076,8 @@ button.rux--dropdown-text:focus {
   cursor: pointer;
 }
 
-.rux--number--readonly input[type=number]:focus ~ .rux--number__controls .rux--number__control-btn:hover,
-.rux--number--readonly input[type=text]:focus ~ .rux--number__controls .rux--number__control-btn:hover {
+.rux--number--readonly input[type=number]:focus-visible ~ .rux--number__controls .rux--number__control-btn:hover,
+.rux--number--readonly input[type=text]:focus-visible ~ .rux--number__controls .rux--number__control-btn:hover {
   outline: none;
 }
 
@@ -18137,8 +18137,8 @@ button.rux--dropdown-text:focus {
   inset-inline-end: 2.5rem;
 }
 
-.rux--number__input-wrapper--decorator .rux--number__control-btn:focus::before,
-.rux--number__input-wrapper--slug .rux--number__control-btn:focus::before {
+.rux--number__input-wrapper--decorator .rux--number__control-btn:focus-visible::before,
+.rux--number__input-wrapper--slug .rux--number__control-btn:focus-visible::before {
   display: none;
 }
 
@@ -18198,7 +18198,7 @@ button.rux--dropdown-text:focus {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--number.rux--skeleton:hover, .rux--number.rux--skeleton:focus, .rux--number.rux--skeleton:active {
+.rux--number.rux--skeleton:hover, .rux--number.rux--skeleton:focus-visible, .rux--number.rux--skeleton:active {
   border: none;
   cursor: default;
   outline: none;
@@ -18249,7 +18249,7 @@ button.rux--dropdown-text:focus {
 
 @media screen and (-ms-high-contrast: active), (forced-colors: active) {
   .rux--number__control-btn:hover,
-  .rux--number__control-btn:focus {
+  .rux--number__control-btn:focus-visible {
     color: Highlight;
     outline: 1px solid Highlight;
   }
@@ -18310,39 +18310,39 @@ button.rux--dropdown-text:focus {
   transform: translate(0);
 }
 
-.rux--number-input--fluid input[type=number]:focus ~ .rux--number__controls .rux--number__control-btn,
-.rux--number-input--fluid input[type=text]:focus ~ .rux--number__controls .rux--number__control-btn {
+.rux--number-input--fluid input[type=number]:focus-visible ~ .rux--number__controls .rux--number__control-btn,
+.rux--number-input--fluid input[type=text]:focus-visible ~ .rux--number__controls .rux--number__control-btn {
   border-block-end-color: var(--rux-focus, #0f62fe);
   box-shadow: inset 0 -1px var(--rux-focus, #0f62fe);
 }
 
-.rux--number-input--fluid input[type=number]:focus ~ .rux--number__controls .rux--number__control-btn:last-of-type,
-.rux--number-input--fluid input[type=text]:focus ~ .rux--number__controls .rux--number__control-btn:last-of-type {
+.rux--number-input--fluid input[type=number]:focus-visible ~ .rux--number__controls .rux--number__control-btn:last-of-type,
+.rux--number-input--fluid input[type=text]:focus-visible ~ .rux--number__controls .rux--number__control-btn:last-of-type {
   box-shadow: inset 0 -1px var(--rux-focus, #0f62fe), inset -2px 0 var(--rux-focus, #0f62fe);
 }
 
-.rux--number-input--fluid .rux--number__input-wrapper--warning input[type=number]:focus ~ .rux--number__controls .rux--number__control-btn,
-.rux--number-input--fluid--invalid input[type=number]:focus ~ .rux--number__controls .rux--number__control-btn,
-.rux--number-input--fluid .rux--number__input-wrapper--warning input[type=text]:focus ~ .rux--number__controls .rux--number__control-btn,
-.rux--number-input--fluid--invalid input[type=text]:focus ~ .rux--number__controls .rux--number__control-btn {
+.rux--number-input--fluid .rux--number__input-wrapper--warning input[type=number]:focus-visible ~ .rux--number__controls .rux--number__control-btn,
+.rux--number-input--fluid--invalid input[type=number]:focus-visible ~ .rux--number__controls .rux--number__control-btn,
+.rux--number-input--fluid .rux--number__input-wrapper--warning input[type=text]:focus-visible ~ .rux--number__controls .rux--number__control-btn,
+.rux--number-input--fluid--invalid input[type=text]:focus-visible ~ .rux--number__controls .rux--number__control-btn {
   border-block-end-color: transparent;
   box-shadow: none;
 }
 
-.rux--number-input--fluid .rux--number__input-wrapper--warning input[type=number]:focus ~ .rux--number__controls .rux--number__control-btn:last-of-type,
-.rux--number-input--fluid--invalid input[type=number][data-invalid]:focus ~ .rux--number__controls .rux--number__control-btn:last-of-type,
-.rux--number-input--fluid .rux--number__input-wrapper--warning input[type=text]:focus ~ .rux--number__controls .rux--number__control-btn:last-of-type,
-.rux--number-input--fluid--invalid input[type=text][data-invalid]:focus ~ .rux--number__controls .rux--number__control-btn:last-of-type {
+.rux--number-input--fluid .rux--number__input-wrapper--warning input[type=number]:focus-visible ~ .rux--number__controls .rux--number__control-btn:last-of-type,
+.rux--number-input--fluid--invalid input[type=number][data-invalid]:focus-visible ~ .rux--number__controls .rux--number__control-btn:last-of-type,
+.rux--number-input--fluid .rux--number__input-wrapper--warning input[type=text]:focus-visible ~ .rux--number__controls .rux--number__control-btn:last-of-type,
+.rux--number-input--fluid--invalid input[type=text][data-invalid]:focus-visible ~ .rux--number__controls .rux--number__control-btn:last-of-type {
   box-shadow: inset -2px 0 var(--rux-focus, #0f62fe);
 }
 
-.rux--number-input--fluid--invalid input[type=number][data-invalid]:not(:focus) ~ .rux--number__controls .rux--number__control-btn:last-of-type:hover,
-.rux--number-input--fluid--invalid input[type=text][data-invalid]:not(:focus) ~ .rux--number__controls .rux--number__control-btn:last-of-type:hover {
+.rux--number-input--fluid--invalid input[type=number][data-invalid]:not(:focus-visible) ~ .rux--number__controls .rux--number__control-btn:last-of-type:hover,
+.rux--number-input--fluid--invalid input[type=text][data-invalid]:not(:focus-visible) ~ .rux--number__controls .rux--number__control-btn:last-of-type:hover {
   box-shadow: inset -2px 0 var(--rux-support-error, #da1e28);
 }
 
-.rux--number-input--fluid--invalid input[type=number][data-invalid]:not(:focus) ~ .rux--number__controls .rux--number__control-btn:hover,
-.rux--number-input--fluid--invalid input[type=text][data-invalid]:not(:focus) ~ .rux--number__controls .rux--number__control-btn:hover {
+.rux--number-input--fluid--invalid input[type=number][data-invalid]:not(:focus-visible) ~ .rux--number__controls .rux--number__control-btn:hover,
+.rux--number-input--fluid--invalid input[type=text][data-invalid]:not(:focus-visible) ~ .rux--number__controls .rux--number__control-btn:hover {
   box-shadow: none;
 }
 
@@ -18356,24 +18356,24 @@ button.rux--dropdown-text:focus {
   }
 }
 
-.rux--number-input--fluid:not(.rux--number-input--fluid--invalid) .rux--number-input-wrapper:not(.rux--number-input-wrapper__warning) input[type=number]:focus ~ .rux--number__controls .rux--number__control-btn:hover,
-.rux--number-input--fluid:not(.rux--number-input--fluid--invalid) .rux--number-input-wrapper:not(.rux--number-input-wrapper__warning) input[type=text]:focus ~ .rux--number__controls .rux--number__control-btn:hover {
+.rux--number-input--fluid:not(.rux--number-input--fluid--invalid) .rux--number-input-wrapper:not(.rux--number-input-wrapper__warning) input[type=number]:focus-visible ~ .rux--number__controls .rux--number__control-btn:hover,
+.rux--number-input--fluid:not(.rux--number-input--fluid--invalid) .rux--number-input-wrapper:not(.rux--number-input-wrapper__warning) input[type=text]:focus-visible ~ .rux--number__controls .rux--number__control-btn:hover {
   border-block-end: 1px solid var(--rux-focus, #0f62fe);
   outline: none;
 }
 
-.rux--number-input--fluid--invalid input[type=number][data-invalid] ~ .rux--number__controls .rux--number__control-btn:focus,
-.rux--number-input--fluid--invalid .rux--number input[type=number][data-invalid] ~ .rux--number__controls .rux--number__control-btn:focus:hover,
-.rux--number-input--fluid--invalid input[type=text][data-invalid] ~ .rux--number__controls .rux--number__control-btn:focus,
-.rux--number-input--fluid--invalid .rux--number input[type=text][data-invalid] ~ .rux--number__controls .rux--number__control-btn:focus:hover {
+.rux--number-input--fluid--invalid input[type=number][data-invalid] ~ .rux--number__controls .rux--number__control-btn:focus-visible,
+.rux--number-input--fluid--invalid .rux--number input[type=number][data-invalid] ~ .rux--number__controls .rux--number__control-btn:focus-visible:hover,
+.rux--number-input--fluid--invalid input[type=text][data-invalid] ~ .rux--number__controls .rux--number__control-btn:focus-visible,
+.rux--number-input--fluid--invalid .rux--number input[type=text][data-invalid] ~ .rux--number__controls .rux--number__control-btn:focus-visible:hover {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--number-input--fluid--invalid input[type=number][data-invalid] ~ .rux--number__controls .rux--number__control-btn:focus,
-  .rux--number-input--fluid--invalid .rux--number input[type=number][data-invalid] ~ .rux--number__controls .rux--number__control-btn:focus:hover,
-  .rux--number-input--fluid--invalid input[type=text][data-invalid] ~ .rux--number__controls .rux--number__control-btn:focus,
-  .rux--number-input--fluid--invalid .rux--number input[type=text][data-invalid] ~ .rux--number__controls .rux--number__control-btn:focus:hover {
+  .rux--number-input--fluid--invalid input[type=number][data-invalid] ~ .rux--number__controls .rux--number__control-btn:focus-visible,
+  .rux--number-input--fluid--invalid .rux--number input[type=number][data-invalid] ~ .rux--number__controls .rux--number__control-btn:focus-visible:hover,
+  .rux--number-input--fluid--invalid input[type=text][data-invalid] ~ .rux--number__controls .rux--number__control-btn:focus-visible,
+  .rux--number-input--fluid--invalid .rux--number input[type=text][data-invalid] ~ .rux--number__controls .rux--number__control-btn:focus-visible:hover {
     outline-style: dotted;
   }
 }
@@ -18397,8 +18397,8 @@ button.rux--dropdown-text:focus {
   border-block-end: 1px solid transparent;
 }
 
-.rux--number-input--fluid .rux--number__input-wrapper--warning input[type=number]:focus,
-.rux--number-input--fluid .rux--number__input-wrapper--warning input[type=text]:focus {
+.rux--number-input--fluid .rux--number__input-wrapper--warning input[type=number]:focus-visible,
+.rux--number-input--fluid .rux--number__input-wrapper--warning input[type=text]:focus-visible {
   outline: none;
 }
 
@@ -18436,10 +18436,10 @@ button.rux--dropdown-text:focus {
 
 .rux--number-input--fluid--invalid .rux--number[data-invalid] input[type=number],
 .rux--number-input--fluid--invalid .rux--number input[type=number][data-invalid] ~ .rux--number__controls .rux--number__control-btn:hover,
-.rux--number-input--fluid .rux--number__input-wrapper--warning input[type=number] ~ .rux--number__controls .rux--number__control-btn:hover:not(:focus),
+.rux--number-input--fluid .rux--number__input-wrapper--warning input[type=number] ~ .rux--number__controls .rux--number__control-btn:hover:not(:focus-visible),
 .rux--number-input--fluid--invalid .rux--number[data-invalid] input[type=text],
 .rux--number-input--fluid--invalid .rux--number input[type=text][data-invalid] ~ .rux--number__controls .rux--number__control-btn:hover,
-.rux--number-input--fluid .rux--number__input-wrapper--warning input[type=text] ~ .rux--number__controls .rux--number__control-btn:hover:not(:focus) {
+.rux--number-input--fluid .rux--number__input-wrapper--warning input[type=text] ~ .rux--number__controls .rux--number__control-btn:hover:not(:focus-visible) {
   outline: none;
 }
 
@@ -18555,7 +18555,7 @@ button.rux--dropdown-text:focus {
   transition: background-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
 
-.rux--search--fluid .rux--search-input:focus ~ .rux--search-close:hover {
+.rux--search--fluid .rux--search-input:focus-visible ~ .rux--search-close:hover {
   outline: none;
 }
 
@@ -18569,11 +18569,11 @@ button.rux--dropdown-text:focus {
   inset-inline-start: 0;
 }
 
-.rux--search--fluid .rux--search-input:focus ~ .rux--search-close::after {
+.rux--search--fluid .rux--search-input:focus-visible ~ .rux--search-close::after {
   background: var(--rux-focus, #0f62fe);
 }
 
-.rux--search--fluid .rux--search-input:not(:focus) ~ .rux--search-close:not([disabled])::after {
+.rux--search--fluid .rux--search-input:not(:focus-visible) ~ .rux--search-close:not([disabled])::after {
   background: var(--rux-border-strong);
   block-size: 0.0625rem;
 }
@@ -18670,16 +18670,16 @@ button.rux--dropdown-text:focus {
     text-shadow: 0 0 0 #000000;
   }
 }
-.rux--select-input:focus {
+.rux--select-input:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--select-input:focus {
+  .rux--select-input:focus-visible {
     outline-style: dotted;
   }
 }
-.rux--select-input:focus {
+.rux--select-input:focus-visible {
   color: var(--rux-text-primary, #161616);
 }
 .rux--select-input:disabled, .rux--select-input:hover:disabled {
@@ -18788,14 +18788,14 @@ optgroup.rux--select-optgroup:disabled,
   background-color: var(--rux-field-hover);
 }
 
-.rux--select--inline .rux--select-input:focus,
-.rux--select--inline .rux--select-input:focus option,
-.rux--select--inline .rux--select-input:focus optgroup {
+.rux--select--inline .rux--select-input:focus-visible,
+.rux--select--inline .rux--select-input:focus-visible option,
+.rux--select--inline .rux--select-input:focus-visible optgroup {
   background-color: var(--rux-background, #ffffff);
 }
-.rux--select--inline .rux--select-input:focus:hover,
-.rux--select--inline .rux--select-input:focus option:hover,
-.rux--select--inline .rux--select-input:focus optgroup:hover {
+.rux--select--inline .rux--select-input:focus-visible:hover,
+.rux--select--inline .rux--select-input:focus-visible option:hover,
+.rux--select--inline .rux--select-input:focus-visible optgroup:hover {
   background-color: var(--rux-field-hover);
 }
 
@@ -18847,7 +18847,7 @@ optgroup.rux--select-optgroup:disabled,
   box-shadow: none;
   pointer-events: none;
 }
-.rux--select.rux--skeleton:hover, .rux--select.rux--skeleton:focus, .rux--select.rux--skeleton:active {
+.rux--select.rux--skeleton:hover, .rux--select.rux--skeleton:focus-visible, .rux--select.rux--skeleton:active {
   border: none;
   cursor: default;
   outline: none;
@@ -19057,8 +19057,8 @@ optgroup.rux--select-optgroup:disabled,
   display: block;
 }
 
-.rux--select--fluid .rux--select-input__wrapper[data-invalid] .rux--select-input:not(:focus),
-.rux--select--fluid .rux--select--warning .rux--select-input:not(:focus) {
+.rux--select--fluid .rux--select-input__wrapper[data-invalid] .rux--select-input:not(:focus-visible),
+.rux--select--fluid .rux--select--warning .rux--select-input:not(:focus-visible) {
   outline: none;
 }
 
@@ -19192,13 +19192,13 @@ optgroup.rux--select-optgroup:disabled,
   transition: background-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9), outline 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
 
-.rux--text-area:focus,
+.rux--text-area:focus-visible,
 .rux--text-area:active {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--text-area:focus,
+  .rux--text-area:focus-visible,
   .rux--text-area:active {
     outline-style: dotted;
   }
@@ -19342,7 +19342,7 @@ optgroup.rux--select-optgroup:disabled,
   box-shadow: none;
   pointer-events: none;
 }
-.rux--text-area.rux--skeleton:hover, .rux--text-area.rux--skeleton:focus, .rux--text-area.rux--skeleton:active {
+.rux--text-area.rux--skeleton:hover, .rux--text-area.rux--skeleton:focus-visible, .rux--text-area.rux--skeleton:active {
   border: none;
   cursor: default;
   outline: none;
@@ -19458,7 +19458,7 @@ optgroup.rux--select-optgroup:disabled,
 }
 
 .rux--text-area--fluid .rux--text-area--invalid,
-.rux--text-area--fluid .rux--text-area:focus {
+.rux--text-area--fluid .rux--text-area:focus-visible {
   border-block-end: 1px solid transparent;
 }
 
@@ -19519,7 +19519,7 @@ optgroup.rux--select-optgroup:disabled,
   inset-block-start: 0.5rem;
 }
 
-.rux--text-area--fluid .rux--text-area__wrapper[data-invalid]:not(:focus) {
+.rux--text-area--fluid .rux--text-area__wrapper[data-invalid]:not(:focus-visible) {
   border: 2px solid var(--rux-support-error, #da1e28);
 }
 
@@ -19535,8 +19535,8 @@ optgroup.rux--select-optgroup:disabled,
   }
 }
 
-.rux--text-area--fluid .rux--text-area__wrapper[data-invalid] > .rux--text-area--invalid:focus,
-.rux--text-area--fluid .rux--text-area__wrapper > .rux--text-area:focus,
+.rux--text-area--fluid .rux--text-area__wrapper[data-invalid] > .rux--text-area--invalid:focus-visible,
+.rux--text-area--fluid .rux--text-area__wrapper > .rux--text-area:focus-visible,
 .rux--text-area--fluid .rux--text-area__wrapper > .rux--text-area:active,
 .rux--text-area--fluid .rux--text-area__wrapper[data-invalid] > .rux--text-area--invalid {
   outline: none;
@@ -19683,12 +19683,12 @@ optgroup.rux--select-optgroup:disabled,
   border-block-end: 1px solid var(--rux-border-strong);
 }
 
-.rux--text-input--fluid .rux--text-input__field-wrapper[data-invalid]:not(:focus) {
+.rux--text-input--fluid .rux--text-input__field-wrapper[data-invalid]:not(:focus-visible) {
   outline: 2px solid var(--rux-support-error, #da1e28);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--text-input--fluid .rux--text-input__field-wrapper[data-invalid]:not(:focus) {
+  .rux--text-input--fluid .rux--text-input__field-wrapper[data-invalid]:not(:focus-visible) {
     outline-style: dotted;
   }
 }
@@ -19705,8 +19705,8 @@ optgroup.rux--select-optgroup:disabled,
   }
 }
 
-.rux--text-input--fluid .rux--text-input__field-wrapper[data-invalid] > .rux--text-input--invalid:focus,
-.rux--text-input--fluid .rux--text-input__field-wrapper--warning > .rux--text-input--warning:focus {
+.rux--text-input--fluid .rux--text-input__field-wrapper[data-invalid] > .rux--text-input--invalid:focus-visible,
+.rux--text-input--fluid .rux--text-input__field-wrapper--warning > .rux--text-input--warning:focus-visible {
   outline: none;
 }
 
@@ -20191,11 +20191,11 @@ optgroup.rux--select-optgroup:disabled,
 .rux--icon-indicator__button {
   display: flex;
 }
-.rux--icon-indicator__button:focus {
+.rux--icon-indicator__button:focus-visible {
   outline: 1px solid var(--rux-focus, #0f62fe);
 }
 @media screen and (prefers-contrast) {
-  .rux--icon-indicator__button:focus {
+  .rux--icon-indicator__button:focus-visible {
     outline-style: dotted;
   }
 }
@@ -20497,8 +20497,8 @@ optgroup.rux--select-optgroup:disabled,
 .rux--modal .rux--number-input--fluid .rux--number__control-btn:hover::after {
   background-color: var(--rux-field-hover);
 }
-.rux--modal .rux--number-input--fluid .rux--number__control-btn:focus::before,
-.rux--modal .rux--number-input--fluid .rux--number__control-btn:focus::after {
+.rux--modal .rux--number-input--fluid .rux--number__control-btn:focus-visible::before,
+.rux--modal .rux--number-input--fluid .rux--number__control-btn:focus-visible::after {
   border-inline-start: 2px solid var(--rux-focus, #0f62fe);
 }
 
@@ -20594,12 +20594,12 @@ optgroup.rux--select-optgroup:disabled,
   padding-block: 0.5rem 3rem;
   padding-inline: 1rem 1rem;
 }
-.rux--modal-content:focus {
+.rux--modal-content:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--modal-content:focus {
+  .rux--modal-content:focus-visible {
     outline-style: dotted;
   }
 }
@@ -20808,7 +20808,7 @@ optgroup.rux--select-optgroup:disabled,
 .rux--modal-close:hover {
   background-color: var(--rux-layer-hover);
 }
-.rux--modal-close:focus {
+.rux--modal-close:focus-visible {
   border-color: var(--rux-focus, #0f62fe);
   outline: none;
 }
@@ -20890,7 +20890,7 @@ optgroup.rux--select-optgroup:disabled,
 }
 
 @media screen and (-ms-high-contrast: active), (forced-colors: active) {
-  .rux--modal-close:focus {
+  .rux--modal-close:focus-visible {
     color: Highlight;
     outline: 1px solid Highlight;
   }
@@ -20952,15 +20952,15 @@ optgroup.rux--select-optgroup:disabled,
   text-decoration: underline;
 }
 
-.rux--inline-notification a:focus {
+.rux--inline-notification a:focus-visible {
   outline: 1px solid var(--rux-link-inverse, #78a9ff);
 }
 
-.rux--inline-notification.rux--inline-notification--low-contrast a:focus {
+.rux--inline-notification.rux--inline-notification--low-contrast a:focus-visible {
   outline: 1px solid var(--rux-focus, #0f62fe);
 }
 @media screen and (prefers-contrast) {
-  .rux--inline-notification.rux--inline-notification--low-contrast a:focus {
+  .rux--inline-notification.rux--inline-notification--low-contrast a:focus-visible {
     outline-style: dotted;
   }
 }
@@ -20968,12 +20968,12 @@ optgroup.rux--select-optgroup:disabled,
 .rux--inline-notification--low-contrast {
   color: var(--rux-text-primary, #161616);
 }
-.rux--inline-notification--low-contrast .rux--inline-notification__close-button:focus {
+.rux--inline-notification--low-contrast .rux--inline-notification__close-button:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--inline-notification--low-contrast .rux--inline-notification__close-button:focus {
+  .rux--inline-notification--low-contrast .rux--inline-notification__close-button:focus-visible {
     outline-style: dotted;
   }
 }
@@ -21182,14 +21182,14 @@ optgroup.rux--select-optgroup:disabled,
     background-color: var(--rux-notification-action-hover, #ffffff);
   }
 }
-.rux--inline-notification__action-button.rux--btn--ghost:focus {
+.rux--inline-notification__action-button.rux--btn--ghost:focus-visible {
   border-color: transparent;
   box-shadow: none;
   outline: 2px solid var(--rux-focus-inverse, #ffffff);
   outline-offset: -2px;
 }
 
-.rux--inline-notification--low-contrast .rux--inline-notification__action-button.rux--btn--ghost:focus {
+.rux--inline-notification--low-contrast .rux--inline-notification__action-button.rux--btn--ghost:focus-visible {
   outline-color: var(--rux-focus, #0f62fe);
 }
 
@@ -21217,7 +21217,7 @@ optgroup.rux--select-optgroup:disabled,
   min-inline-size: 3rem;
   transition: outline 110ms cubic-bezier(0.2, 0, 0.38, 0.9), background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
-.rux--inline-notification__close-button:focus {
+.rux--inline-notification__close-button:focus-visible {
   outline: 2px solid var(--rux-focus-inverse, #ffffff);
   outline-offset: -2px;
 }
@@ -21237,8 +21237,8 @@ optgroup.rux--select-optgroup:disabled,
 }
 
 @media screen and (-ms-high-contrast: active), (forced-colors: active) {
-  .rux--inline-notification__close-button:focus,
-  .rux--btn.rux--btn--ghost.rux--inline-notification__action-button:focus {
+  .rux--inline-notification__close-button:focus-visible,
+  .rux--btn.rux--btn--ghost.rux--inline-notification__action-button:focus-visible {
     color: Highlight;
     outline: 1px solid Highlight;
   }
@@ -21286,15 +21286,15 @@ optgroup.rux--select-optgroup:disabled,
   text-decoration: underline;
 }
 
-.rux--toast-notification a:focus {
+.rux--toast-notification a:focus-visible {
   outline: 1px solid var(--rux-link-inverse, #78a9ff);
 }
 
-.rux--toast-notification.rux--toast-notification--low-contrast a:focus {
+.rux--toast-notification.rux--toast-notification--low-contrast a:focus-visible {
   outline: 1px solid var(--rux-focus, #0f62fe);
 }
 @media screen and (prefers-contrast) {
-  .rux--toast-notification.rux--toast-notification--low-contrast a:focus {
+  .rux--toast-notification.rux--toast-notification--low-contrast a:focus-visible {
     outline-style: dotted;
   }
 }
@@ -21309,12 +21309,12 @@ optgroup.rux--select-optgroup:disabled,
 .rux--toast-notification--low-contrast .rux--toast-notification__close-button .rux--toast-notification__close-icon {
   fill: var(--rux-icon-primary, #161616);
 }
-.rux--toast-notification--low-contrast .rux--toast-notification__close-button:focus {
+.rux--toast-notification--low-contrast .rux--toast-notification__close-button:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--toast-notification--low-contrast .rux--toast-notification__close-button:focus {
+  .rux--toast-notification--low-contrast .rux--toast-notification__close-button:focus-visible {
     outline-style: dotted;
   }
 }
@@ -21450,7 +21450,7 @@ optgroup.rux--select-optgroup:disabled,
   min-inline-size: 3rem;
   transition: outline 250ms, background-color 250ms;
 }
-.rux--toast-notification__close-button:focus {
+.rux--toast-notification__close-button:focus-visible {
   outline: 2px solid var(--rux-focus-inverse, #ffffff);
   outline-offset: -2px;
 }
@@ -21494,7 +21494,7 @@ optgroup.rux--select-optgroup:disabled,
 }
 
 @media screen and (-ms-high-contrast: active), (forced-colors: active) {
-  .rux--toast-notification__close-button:focus {
+  .rux--toast-notification__close-button:focus-visible {
     color: Highlight;
     outline: 1px solid Highlight;
   }
@@ -21563,15 +21563,15 @@ optgroup.rux--select-optgroup:disabled,
   text-decoration: underline;
 }
 
-.rux--actionable-notification a:focus {
+.rux--actionable-notification a:focus-visible {
   outline: 1px solid var(--rux-focus-inverse, #ffffff);
 }
 
-.rux--actionable-notification.rux--actionable-notification--low-contrast a:focus {
+.rux--actionable-notification.rux--actionable-notification--low-contrast a:focus-visible {
   outline: 1px solid var(--rux-focus, #0f62fe);
 }
 @media screen and (prefers-contrast) {
-  .rux--actionable-notification.rux--actionable-notification--low-contrast a:focus {
+  .rux--actionable-notification.rux--actionable-notification--low-contrast a:focus-visible {
     outline-style: dotted;
   }
 }
@@ -21846,14 +21846,14 @@ optgroup.rux--select-optgroup:disabled,
     background-color: var(--rux-notification-action-hover, #ffffff);
   }
 }
-.rux--actionable-notification__action-button.rux--btn--ghost:focus {
+.rux--actionable-notification__action-button.rux--btn--ghost:focus-visible {
   border-color: transparent;
   box-shadow: none;
   outline: 2px solid var(--rux-focus-inverse, #ffffff);
   outline-offset: -2px;
 }
 
-.rux--actionable-notification--low-contrast .rux--actionable-notification__action-button.rux--btn--ghost:focus {
+.rux--actionable-notification--low-contrast .rux--actionable-notification__action-button.rux--btn--ghost:focus-visible {
   outline-color: var(--rux-focus, #0f62fe);
 }
 
@@ -21880,7 +21880,7 @@ optgroup.rux--select-optgroup:disabled,
     background-color: var(--rux-notification-action-tertiary-inverse-hover, #f4f4f4);
   }
 }
-.rux--actionable-notification:not(.rux--actionable-notification--low-contrast) .rux--actionable-notification__action-button.rux--btn--tertiary:focus {
+.rux--actionable-notification:not(.rux--actionable-notification--low-contrast) .rux--actionable-notification__action-button.rux--btn--tertiary:focus-visible {
   border-color: var(--rux-button-focus-color, var(--rux-focus, #0f62fe));
   box-shadow: inset 0 0 0 1px var(--rux-button-focus-color, var(--rux-focus, #0f62fe)), inset 0 0 0 2px var(--rux-background, #ffffff);
 }
@@ -21897,7 +21897,7 @@ optgroup.rux--select-optgroup:disabled,
     color: var(--rux-notification-action-tertiary-inverse-text, #161616);
   }
 }
-.rux--actionable-notification:not(.rux--actionable-notification--low-contrast) .rux--actionable-notification__action-button.rux--btn--tertiary:focus {
+.rux--actionable-notification:not(.rux--actionable-notification--low-contrast) .rux--actionable-notification__action-button.rux--btn--tertiary:focus-visible {
   border-color: var(--rux-focus-inverse, #ffffff);
   background-color: var(--rux-notification-action-tertiary-inverse, #ffffff);
   box-shadow: inset 0 0 0 1px var(--rux-focus-inverse, #ffffff), inset 0 0 0 2px var(--rux-background-inverse, #393939);
@@ -21911,9 +21911,9 @@ optgroup.rux--select-optgroup:disabled,
 }
 
 .rux--actionable-notification:not(.rux--actionable-notification--low-contrast) .rux--actionable-notification__action-button.rux--btn--tertiary:disabled,
-.rux--actionable-notification:not(.rux--actionable-notification--low-contrast) .rux--actionable-notification__action-button.rux--btn--tertiary:focus:disabled,
+.rux--actionable-notification:not(.rux--actionable-notification--low-contrast) .rux--actionable-notification__action-button.rux--btn--tertiary:focus-visible:disabled,
 .rux--actionable-notification:not(.rux--actionable-notification--low-contrast) .rux--actionable-notification__action-button.rux--btn--tertiary.rux--btn--disabled,
-.rux--actionable-notification:not(.rux--actionable-notification--low-contrast) .rux--actionable-notification__action-button.rux--btn--tertiary.rux--btn--disabled:focus {
+.rux--actionable-notification:not(.rux--actionable-notification--low-contrast) .rux--actionable-notification__action-button.rux--btn--tertiary.rux--btn--disabled:focus-visible {
   background: transparent;
   color: var(--rux-notification-action-tertiary-inverse-text-on-color-disabled, rgba(255, 255, 255, 0.25));
   outline: none;
@@ -21951,7 +21951,7 @@ optgroup.rux--select-optgroup:disabled,
   min-inline-size: 3rem;
   transition: outline 110ms cubic-bezier(0.2, 0, 0.38, 0.9), background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
-.rux--actionable-notification__close-button:focus {
+.rux--actionable-notification__close-button:focus-visible {
   outline: 2px solid var(--rux-focus-inverse, #ffffff);
   outline-offset: -2px;
 }
@@ -21970,12 +21970,12 @@ optgroup.rux--select-optgroup:disabled,
   }
 }
 
-.rux--actionable-notification--low-contrast .rux--actionable-notification__close-button:focus {
+.rux--actionable-notification--low-contrast .rux--actionable-notification__close-button:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--actionable-notification--low-contrast .rux--actionable-notification__close-button:focus {
+  .rux--actionable-notification--low-contrast .rux--actionable-notification__close-button:focus-visible {
     outline-style: dotted;
   }
 }
@@ -21987,8 +21987,8 @@ optgroup.rux--select-optgroup:disabled,
 }
 
 @media screen and (-ms-high-contrast: active), (forced-colors: active) {
-  .rux--actionable-notification__close-button:focus,
-  .rux--btn.rux--btn--ghost.rux--actionable-notification__action-button:focus {
+  .rux--actionable-notification__close-button:focus-visible,
+  .rux--btn.rux--btn--ghost.rux--actionable-notification__action-button:focus-visible {
     color: Highlight;
     outline: 1px solid Highlight;
   }
@@ -22073,12 +22073,12 @@ optgroup.rux--select-optgroup:disabled,
   background-color: transparent;
 }
 
-.rux--options-tile__header:focus {
+.rux--options-tile__header:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--options-tile__header:focus {
+  .rux--options-tile__header:focus-visible {
     outline-style: dotted;
   }
 }
@@ -22305,9 +22305,9 @@ optgroup.rux--select-optgroup:disabled,
     background: var(--rux-layer-hover);
   }
 }
-.rux--pagination .rux--select--inline .rux--select-input:focus,
-.rux--pagination .rux--select--inline .rux--select-input:focus option,
-.rux--pagination .rux--select--inline .rux--select-input:focus optgroup {
+.rux--pagination .rux--select--inline .rux--select-input:focus-visible,
+.rux--pagination .rux--select--inline .rux--select-input:focus-visible option,
+.rux--pagination .rux--select--inline .rux--select-input:focus-visible optgroup {
   background-color: var(--rux-layer);
 }
 
@@ -22441,19 +22441,19 @@ span.rux--pagination__text.rux--pagination__items-count {
   transform: rotate(0.5turn);
 }
 
-.rux--pagination__button:focus,
-.rux--btn--ghost:focus.rux--pagination__button {
+.rux--pagination__button:focus-visible,
+.rux--btn--ghost:focus-visible.rux--pagination__button {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--pagination__button:focus,
-  .rux--btn--ghost:focus.rux--pagination__button {
+  .rux--pagination__button:focus-visible,
+  .rux--btn--ghost:focus-visible.rux--pagination__button {
     outline-style: dotted;
   }
 }
-.rux--pagination__button:focus,
-.rux--btn--ghost:focus.rux--pagination__button {
+.rux--pagination__button:focus-visible,
+.rux--btn--ghost:focus-visible.rux--pagination__button {
   border-inline-start: 0;
 }
 
@@ -22606,12 +22606,12 @@ span.rux--pagination__text.rux--pagination__items-count {
   inline-size: initial;
 }
 
-.rux--unstable-pagination__button.rux--btn--icon-only.rux--tooltip__trigger:focus {
+.rux--unstable-pagination__button.rux--btn--icon-only.rux--tooltip__trigger:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--unstable-pagination__button.rux--btn--icon-only.rux--tooltip__trigger:focus {
+  .rux--unstable-pagination__button.rux--btn--icon-only.rux--tooltip__trigger:focus-visible {
     outline-style: dotted;
   }
 }
@@ -22782,12 +22782,12 @@ span.rux--pagination__text.rux--pagination__items-count {
     color: var(--rux-text-primary, #161616);
   }
 }
-.rux--pagination-nav__page:focus {
+.rux--pagination-nav__page:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--pagination-nav__page:focus {
+  .rux--pagination-nav__page:focus-visible {
     outline-style: dotted;
   }
 }
@@ -23196,7 +23196,7 @@ span.rux--pagination__text.rux--pagination__items-count {
   max-inline-size: 100%;
 }
 
-.rux--progress-step-button:focus {
+.rux--progress-step-button:focus-visible {
   outline: none;
 }
 .rux--progress-step-button:focus-visible .rux--progress-label {
@@ -23210,7 +23210,7 @@ span.rux--pagination__text.rux--pagination__items-count {
 }
 
 .rux--progress-label-overflow:hover ~ .rux--tooltip,
-.rux--progress-label-overflow:focus ~ .rux--tooltip {
+.rux--progress-label-overflow:focus-visible ~ .rux--tooltip {
   visibility: inherit;
 }
 
@@ -23365,7 +23365,7 @@ span.rux--pagination__text.rux--pagination__items-count {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--progress.rux--skeleton .rux--progress-label:hover, .rux--progress.rux--skeleton .rux--progress-label:focus, .rux--progress.rux--skeleton .rux--progress-label:active {
+.rux--progress.rux--skeleton .rux--progress-label:hover, .rux--progress.rux--skeleton .rux--progress-label:focus-visible, .rux--progress.rux--skeleton .rux--progress-label:active {
   border: none;
   cursor: default;
   outline: none;
@@ -23642,11 +23642,11 @@ span.rux--pagination__text.rux--pagination__items-count {
 .rux--shape-indicator__button {
   display: flex;
 }
-.rux--shape-indicator__button:focus {
+.rux--shape-indicator__button:focus-visible {
   outline: 1px solid var(--rux-focus, #0f62fe);
 }
 @media screen and (prefers-contrast) {
-  .rux--shape-indicator__button:focus {
+  .rux--shape-indicator__button:focus-visible {
     outline-style: dotted;
   }
 }
@@ -23900,7 +23900,7 @@ span.rux--pagination__text.rux--pagination__items-count {
   inline-size: 0.5rem;
   inset-inline-start: -0.125rem;
 }
-.rux--side-panel .rux--resizer:hover, .rux--side-panel .rux--resizer:focus {
+.rux--side-panel .rux--resizer:hover, .rux--side-panel .rux--resizer:focus-visible {
   background-color: var(--rux-border-interactive, #0f62fe);
 }
 .rux--side-panel .rux--side-panel__header {
@@ -24212,7 +24212,7 @@ span.rux--pagination__text.rux--pagination__items-count {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--icon--skeleton:hover, .rux--icon--skeleton:focus, .rux--icon--skeleton:active {
+.rux--icon--skeleton:hover, .rux--icon--skeleton:focus-visible, .rux--icon--skeleton:active {
   border: none;
   cursor: default;
   outline: none;
@@ -24255,7 +24255,7 @@ span.rux--pagination__text.rux--pagination__items-count {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--skeleton__placeholder:hover, .rux--skeleton__placeholder:focus, .rux--skeleton__placeholder:active {
+.rux--skeleton__placeholder:hover, .rux--skeleton__placeholder:focus-visible, .rux--skeleton__placeholder:active {
   border: none;
   cursor: default;
   outline: none;
@@ -24297,7 +24297,7 @@ span.rux--pagination__text.rux--pagination__items-count {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--skeleton__text:hover, .rux--skeleton__text:focus, .rux--skeleton__text:active {
+.rux--skeleton__text:hover, .rux--skeleton__text:focus-visible, .rux--skeleton__text:active {
   border: none;
   cursor: default;
   outline: none;
@@ -24514,7 +24514,7 @@ span.rux--pagination__text.rux--pagination__items-count {
     transform: scale(1.4286);
   }
 }
-.rux--slider__thumb:focus {
+.rux--slider__thumb:focus-visible {
   background-color: var(--rux-interactive, #0f62fe);
   box-shadow: inset 0 0 0 2px var(--rux-interactive, #0f62fe), inset 0 0 0 3px var(--rux-layer);
   transform: scale(1.4286);
@@ -24569,24 +24569,24 @@ span.rux--pagination__text.rux--pagination__items-count {
   box-shadow: none;
   transform: none;
 }
-.rux--slider__thumb--lower:focus,
-.rux--slider__thumb--upper:focus {
+.rux--slider__thumb--lower:focus-visible,
+.rux--slider__thumb--upper:focus-visible {
   background-color: transparent;
   box-shadow: none;
   transform: none;
 }
-.rux--slider__thumb--lower:focus .rux--slider__thumb-icon,
-.rux--slider__thumb--upper:focus .rux--slider__thumb-icon {
+.rux--slider__thumb--lower:focus-visible .rux--slider__thumb-icon,
+.rux--slider__thumb--upper:focus-visible .rux--slider__thumb-icon {
   display: none;
   fill: var(--rux-interactive, #0f62fe);
 }
-.rux--slider__thumb--lower:focus .rux--slider__thumb-icon--focus,
-.rux--slider__thumb--upper:focus .rux--slider__thumb-icon--focus {
+.rux--slider__thumb--lower:focus-visible .rux--slider__thumb-icon--focus,
+.rux--slider__thumb--upper:focus-visible .rux--slider__thumb-icon--focus {
   display: block;
 }
 
-.rux--slider__thumb--lower:focus::before,
-.rux--slider__thumb--upper:focus::before {
+.rux--slider__thumb--lower:focus-visible::before,
+.rux--slider__thumb--upper:focus-visible::before {
   inline-size: 100%;
 }
 
@@ -24596,7 +24596,7 @@ span.rux--pagination__text.rux--pagination__items-count {
 .rux--slider__thumb--upper::before {
   inset-inline: 0 auto;
 }
-.rux--slider__thumb--upper:active, .rux--slider__thumb--upper:focus {
+.rux--slider__thumb--upper:active, .rux--slider__thumb--upper:focus-visible {
   transform: none;
 }
 @media (any-hover: hover) {
@@ -24630,7 +24630,7 @@ span.rux--pagination__text.rux--pagination__items-count {
   display: none;
 }
 
-.rux--slider__thumb:focus ~ .rux--slider__filled-track,
+.rux--slider__thumb:focus-visible ~ .rux--slider__filled-track,
 .rux--slider__thumb-wrapper:focus-within ~ .rux--slider__filled-track {
   background-color: var(--rux-border-interactive, #0f62fe);
 }
@@ -24685,7 +24685,7 @@ span.rux--pagination__text.rux--pagination__items-count {
     transform: none;
   }
 }
-.rux--slider--disabled .rux--slider__thumb:focus {
+.rux--slider--disabled .rux--slider__thumb:focus-visible {
   background-color: var(--rux-border-disabled, #c6c6c6);
   box-shadow: none;
   outline: none;
@@ -24701,9 +24701,9 @@ span.rux--pagination__text.rux--pagination__items-count {
 .rux--slider--disabled .rux--slider__thumb--upper {
   background-color: transparent;
 }
-.rux--slider--disabled .rux--slider__thumb--lower:active, .rux--slider--disabled .rux--slider__thumb--lower:focus,
+.rux--slider--disabled .rux--slider__thumb--lower:active, .rux--slider--disabled .rux--slider__thumb--lower:focus-visible,
 .rux--slider--disabled .rux--slider__thumb--upper:active,
-.rux--slider--disabled .rux--slider__thumb--upper:focus {
+.rux--slider--disabled .rux--slider__thumb--upper:focus-visible {
   background-color: transparent;
   transform: none;
 }
@@ -24721,7 +24721,7 @@ span.rux--pagination__text.rux--pagination__items-count {
 
 .rux--slider--disabled .rux--slider__track,
 .rux--slider--disabled .rux--slider__filled-track,
-.rux--slider--disabled .rux--slider__thumb:focus ~ .rux--slider__filled-track {
+.rux--slider--disabled .rux--slider__thumb:focus-visible ~ .rux--slider__filled-track {
   background-color: var(--rux-border-disabled, #c6c6c6);
 }
 
@@ -24733,9 +24733,9 @@ span.rux--pagination__text.rux--pagination__items-count {
   cursor: not-allowed;
   transition: none;
 }
-.rux--slider--disabled ~ .rux--form-item .rux--slider-text-input:active, .rux--slider--disabled ~ .rux--form-item .rux--slider-text-input:focus,
+.rux--slider--disabled ~ .rux--form-item .rux--slider-text-input:active, .rux--slider--disabled ~ .rux--form-item .rux--slider-text-input:focus-visible,
 .rux--slider--disabled ~ .rux--slider-text-input:active,
-.rux--slider--disabled ~ .rux--slider-text-input:focus {
+.rux--slider--disabled ~ .rux--slider-text-input:focus-visible {
   color: var(--rux-text-disabled, rgba(22, 22, 22, 0.25));
   outline: none;
 }
@@ -24777,7 +24777,7 @@ span.rux--pagination__text.rux--pagination__items-count {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--slider-container.rux--skeleton .rux--slider__range-label:hover, .rux--slider-container.rux--skeleton .rux--slider__range-label:focus, .rux--slider-container.rux--skeleton .rux--slider__range-label:active {
+.rux--slider-container.rux--skeleton .rux--slider__range-label:hover, .rux--slider-container.rux--skeleton .rux--slider__range-label:focus-visible, .rux--slider-container.rux--skeleton .rux--slider__range-label:active {
   border: none;
   cursor: default;
   outline: none;
@@ -24841,7 +24841,7 @@ span.rux--pagination__text.rux--pagination__items-count {
 }
 
 @media screen and (-ms-high-contrast: active), (forced-colors: active) {
-  .rux--slider__thumb:focus {
+  .rux--slider__thumb:focus-visible {
     color: Highlight;
     outline: 1px solid Highlight;
   }
@@ -25131,7 +25131,7 @@ span.rux--pagination__text.rux--pagination__items-count {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--structured-list.rux--skeleton span:hover, .rux--structured-list.rux--skeleton span:focus, .rux--structured-list.rux--skeleton span:active {
+.rux--structured-list.rux--skeleton span:hover, .rux--structured-list.rux--skeleton span:focus-visible, .rux--structured-list.rux--skeleton span:active {
   border: none;
   cursor: default;
   outline: none;
@@ -25356,12 +25356,12 @@ span.rux--pagination__text.rux--pagination__items-count {
   background-color: var(--rux-background, #ffffff);
   inline-size: 2.5rem;
 }
-.rux--tabs .rux--tab--overflow-nav-button:focus {
+.rux--tabs .rux--tab--overflow-nav-button:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--tabs .rux--tab--overflow-nav-button:focus {
+  .rux--tabs .rux--tab--overflow-nav-button:focus-visible {
     outline-style: dotted;
   }
 }
@@ -25579,12 +25579,12 @@ span.rux--pagination__text.rux--pagination__items-count {
 .rux--tabs .rux--tabs__nav-item--close-icon:hover {
   background-color: var(--rux-layer-hover);
 }
-.rux--tabs .rux--tabs__nav-item--close-icon:focus, .rux--tabs .rux--tabs__nav-item--close-icon:active {
+.rux--tabs .rux--tabs__nav-item--close-icon:focus-visible, .rux--tabs .rux--tabs__nav-item--close-icon:active {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--tabs .rux--tabs__nav-item--close-icon:focus, .rux--tabs .rux--tabs__nav-item--close-icon:active {
+  .rux--tabs .rux--tabs__nav-item--close-icon:focus-visible, .rux--tabs .rux--tabs__nav-item--close-icon:active {
     outline-style: dotted;
   }
 }
@@ -25605,10 +25605,10 @@ span.rux--pagination__text.rux--pagination__items-count {
 .rux--tabs .rux--tabs__nav-item--close-icon--disabled:hover svg {
   fill: var(--rux-icon-disabled, rgba(22, 22, 22, 0.25));
 }
-.rux--tabs .rux--tabs__nav-item:hover + .rux--tabs__nav-item--close .rux--tabs__nav-item--close-icon--disabled:focus, .rux--tabs .rux--tabs__nav-item:hover + .rux--tabs__nav-item--close .rux--tabs__nav-item--close-icon--disabled:active,
-.rux--tabs .rux--tabs__nav-item--close-icon--disabled:focus,
+.rux--tabs .rux--tabs__nav-item:hover + .rux--tabs__nav-item--close .rux--tabs__nav-item--close-icon--disabled:focus-visible, .rux--tabs .rux--tabs__nav-item:hover + .rux--tabs__nav-item--close .rux--tabs__nav-item--close-icon--disabled:active,
+.rux--tabs .rux--tabs__nav-item--close-icon--disabled:focus-visible,
 .rux--tabs .rux--tabs__nav-item--close-icon--disabled:active,
-.rux--tabs .rux--tabs__nav-item--close-icon--disabled:hover:focus,
+.rux--tabs .rux--tabs__nav-item--close-icon--disabled:hover:focus-visible,
 .rux--tabs .rux--tabs__nav-item--close-icon--disabled:hover:active {
   outline: 2px solid transparent;
   outline-offset: -2px;
@@ -25668,12 +25668,12 @@ span.rux--pagination__text.rux--pagination__items-count {
   transition: border 70ms cubic-bezier(0.2, 0, 0.38, 0.9), outline 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
   white-space: nowrap;
 }
-.rux--tabs .rux--tabs__nav-link:focus, .rux--tabs .rux--tabs__nav-link:active {
+.rux--tabs .rux--tabs__nav-link:focus-visible, .rux--tabs .rux--tabs__nav-link:active {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--tabs .rux--tabs__nav-link:focus, .rux--tabs .rux--tabs__nav-link:active {
+  .rux--tabs .rux--tabs__nav-link:focus-visible, .rux--tabs .rux--tabs__nav-link:active {
     outline-style: dotted;
   }
 }
@@ -25742,7 +25742,7 @@ span.rux--pagination__text.rux--pagination__items-count {
 }
 .rux--tabs.rux--tabs--contained .rux--tabs__nav-item--selected,
 .rux--tabs .rux--tabs__nav-item--selected,
-.rux--tabs .rux--tabs__nav-item--selected:focus .rux--tabs__nav-link:focus,
+.rux--tabs .rux--tabs__nav-item--selected:focus-visible .rux--tabs__nav-link:focus-visible,
 .rux--tabs .rux--tabs__nav-item--selected:active .rux--tabs__nav-link:active {
   font-size: var(--rux-heading-compact-01-font-size, 0.875rem);
   font-weight: var(--rux-heading-compact-01-font-weight, 600);
@@ -25756,8 +25756,8 @@ span.rux--pagination__text.rux--pagination__items-count {
 .rux--tabs.rux--tabs--contained .rux--tabs__nav-item--selected, .rux--tabs.rux--tabs--contained .rux--tabs__nav-item--selected:hover {
   background-color: var(--rux-layer);
 }
-.rux--tabs.rux--tabs--contained .rux--tabs__nav-item--selected .rux--tabs__nav-link:focus,
-.rux--tabs.rux--tabs--contained .rux--tabs__nav-item--selected .rux--tabs__nav-link:active, .rux--tabs.rux--tabs--contained .rux--tabs__nav-item--selected:hover .rux--tabs__nav-link:focus,
+.rux--tabs.rux--tabs--contained .rux--tabs__nav-item--selected .rux--tabs__nav-link:focus-visible,
+.rux--tabs.rux--tabs--contained .rux--tabs__nav-item--selected .rux--tabs__nav-link:active, .rux--tabs.rux--tabs--contained .rux--tabs__nav-item--selected:hover .rux--tabs__nav-link:focus-visible,
 .rux--tabs.rux--tabs--contained .rux--tabs__nav-item--selected:hover .rux--tabs__nav-link:active {
   box-shadow: none;
 }
@@ -25782,7 +25782,7 @@ span.rux--pagination__text.rux--pagination__items-count {
   background-color: var(--rux-layer);
   border-block-end: 1px solid var(--rux-border-subtle);
 }
-.rux--tabs .rux--tabs__nav-item--disabled:focus,
+.rux--tabs .rux--tabs__nav-item--disabled:focus-visible,
 .rux--tabs .rux--tabs__nav-item--disabled:active {
   border-block-end: 2px solid var(--rux-border-subtle);
   outline: none;
@@ -25794,7 +25794,7 @@ span.rux--pagination__text.rux--pagination__items-count {
 .rux--tabs .rux--tabs--light .rux--tabs__nav-item--disabled:hover .rux--tabs__nav-link {
   border-block-end-color: var(--rux-border-subtle);
 }
-.rux--tabs .rux--tabs--light .rux--tabs__nav-item--disabled .rux--tabs__nav-link:focus,
+.rux--tabs .rux--tabs--light .rux--tabs__nav-item--disabled .rux--tabs__nav-link:focus-visible,
 .rux--tabs .rux--tabs--light .rux--tabs__nav-item--disabled .rux--tabs__nav-link:active {
   border-block-end-color: var(--rux-border-subtle);
 }
@@ -25806,12 +25806,12 @@ span.rux--pagination__text.rux--pagination__items-count {
 .rux--tab-content {
   padding: var(--rux-layout-density-padding-inline-local);
 }
-.rux--tab-content:focus {
+.rux--tab-content:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--tab-content:focus {
+  .rux--tab-content:focus-visible {
     outline-style: dotted;
   }
 }
@@ -25851,8 +25851,8 @@ span.rux--pagination__text.rux--pagination__items-count {
 .rux--tabs--vertical ~ .rux--tab-content .rux--number-input--fluid .rux--number__control-btn:hover::after {
   background-color: var(--rux-field-hover);
 }
-.rux--tabs--vertical ~ .rux--tab-content .rux--number-input--fluid .rux--number__control-btn:focus::before,
-.rux--tabs--vertical ~ .rux--tab-content .rux--number-input--fluid .rux--number__control-btn:focus::after {
+.rux--tabs--vertical ~ .rux--tab-content .rux--number-input--fluid .rux--number__control-btn:focus-visible::before,
+.rux--tabs--vertical ~ .rux--tab-content .rux--number-input--fluid .rux--number__control-btn:focus-visible::after {
   border-inline-start: 2px solid var(--rux-focus, #0f62fe);
 }
 .rux--tabs--vertical ~ .rux--tab-content {
@@ -25890,7 +25890,7 @@ span.rux--pagination__text.rux--pagination__items-count {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--tabs.rux--skeleton .rux--tabs__nav-link span:hover, .rux--tabs.rux--skeleton .rux--tabs__nav-link span:focus, .rux--tabs.rux--skeleton .rux--tabs__nav-link span:active {
+.rux--tabs.rux--skeleton .rux--tabs__nav-link span:hover, .rux--tabs.rux--skeleton .rux--tabs__nav-link span:focus-visible, .rux--tabs.rux--skeleton .rux--tabs__nav-link span:active {
   border: none;
   cursor: default;
   outline: none;
@@ -25973,12 +25973,12 @@ span.rux--pagination__text.rux--pagination__items-count {
   outline: 2px solid transparent;
   outline-offset: -2px;
 }
-.rux--tile:focus {
+.rux--tile:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--tile:focus {
+  .rux--tile:focus-visible {
     outline-style: dotted;
   }
 }
@@ -26024,19 +26024,19 @@ span.rux--pagination__text.rux--pagination__items-count {
   color: var(--rux-text-primary, #161616);
   text-decoration: none;
 }
-.rux--tile--clickable:focus {
+.rux--tile--clickable:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--tile--clickable:focus {
+  .rux--tile--clickable:focus-visible {
     outline-style: dotted;
   }
 }
-.rux--tile--clickable:focus {
+.rux--tile--clickable:focus-visible {
   text-decoration: none;
 }
-.rux--tile--clickable:hover .rux--tile__checkmark, .rux--tile--clickable:focus .rux--tile__checkmark {
+.rux--tile--clickable:hover .rux--tile__checkmark, .rux--tile--clickable:focus-visible .rux--tile__checkmark {
   opacity: 1;
 }
 
@@ -26101,12 +26101,12 @@ span.rux--pagination__text.rux--pagination__items-count {
   border-radius: 50%;
   fill: var(--rux-icon-secondary, #525252);
 }
-.rux--tile__checkmark:focus {
+.rux--tile__checkmark:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--tile__checkmark:focus {
+  .rux--tile__checkmark:focus-visible {
     outline-style: dotted;
   }
 }
@@ -26171,7 +26171,7 @@ span.rux--pagination__text.rux--pagination__items-count {
   inset-block-end: 0;
   inset-inline-end: 0;
 }
-.rux--tile__chevron--interactive:focus {
+.rux--tile__chevron--interactive:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
@@ -26208,16 +26208,16 @@ span.rux--pagination__text.rux--pagination__items-count {
 .rux--tile--expandable.rux--tile--expandable--interactive:hover {
   background-color: var(--rux-layer);
 }
-.rux--tile--expandable.rux--tile--expandable--interactive:focus {
+.rux--tile--expandable.rux--tile--expandable--interactive:focus-visible {
   outline: none;
 }
 
-.rux--tile--expandable--interactive:focus {
+.rux--tile--expandable--interactive:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--tile--expandable--interactive:focus {
+  .rux--tile--expandable--interactive:focus-visible {
     outline-style: dotted;
   }
 }
@@ -26277,12 +26277,12 @@ span.rux--pagination__text.rux--pagination__items-count {
   white-space: nowrap;
 }
 
-.rux--tile-input:focus + .rux--tile {
+.rux--tile-input:focus-visible + .rux--tile {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--tile-input:focus + .rux--tile {
+  .rux--tile-input:focus-visible + .rux--tile {
     outline-style: dotted;
   }
 }
@@ -26389,12 +26389,12 @@ span.rux--pagination__text.rux--pagination__items-count {
   opacity: 1;
 }
 
-.rux--tile--decorator.rux--tile--selectable:focus,
-.rux--tile--decorator.rux--tile--clickable:focus,
-.rux--tile-input:focus + .rux--tile--decorator.rux--tile,
-.rux--tile--slug.rux--tile--selectable:focus,
-.rux--tile--slug.rux--tile--clickable:focus,
-.rux--tile-input:focus + .rux--tile--slug.rux--tile {
+.rux--tile--decorator.rux--tile--selectable:focus-visible,
+.rux--tile--decorator.rux--tile--clickable:focus-visible,
+.rux--tile-input:focus-visible + .rux--tile--decorator.rux--tile,
+.rux--tile--slug.rux--tile--selectable:focus-visible,
+.rux--tile--slug.rux--tile--clickable:focus-visible,
+.rux--tile-input:focus-visible + .rux--tile--slug.rux--tile {
   outline-offset: -1px;
 }
 
@@ -26611,7 +26611,7 @@ span.rux--pagination__text.rux--pagination__items-count {
   visibility: inherit;
   white-space: nowrap;
 }
-.rux--toggle__button:focus {
+.rux--toggle__button:focus-visible {
   outline: none;
 }
 
@@ -26648,7 +26648,7 @@ span.rux--pagination__text.rux--pagination__items-count {
   }
 }
 
-.rux--toggle__button:focus + .rux--toggle__label .rux--toggle__switch::after,
+.rux--toggle__button:focus-visible + .rux--toggle__label .rux--toggle__switch::after,
 .rux--toggle:not(.rux--toggle--disabled):active .rux--toggle__switch::after {
   display: block;
   border-radius: 1rem;
@@ -26758,7 +26758,7 @@ span.rux--pagination__text.rux--pagination__items-count {
 }
 
 @media screen and (-ms-high-contrast: active), (forced-colors: active) {
-  .rux--toggle__button:focus + .rux--toggle__label .rux--toggle__switch,
+  .rux--toggle__button:focus-visible + .rux--toggle__label .rux--toggle__switch,
   .rux--toggle:not(.rux--toggle--disabled):active .rux--toggle__switch {
     color: Highlight;
     outline: 1px solid Highlight;
@@ -26813,7 +26813,7 @@ span.rux--pagination__text.rux--pagination__items-count {
   box-shadow: none;
   pointer-events: none;
 }
-.rux--toggle--skeleton .rux--toggle__skeleton-rectangle:hover, .rux--toggle--skeleton .rux--toggle__skeleton-rectangle:focus, .rux--toggle--skeleton .rux--toggle__skeleton-rectangle:active {
+.rux--toggle--skeleton .rux--toggle__skeleton-rectangle:hover, .rux--toggle--skeleton .rux--toggle__skeleton-rectangle:focus-visible, .rux--toggle--skeleton .rux--toggle__skeleton-rectangle:active {
   border: none;
   cursor: default;
   outline: none;
@@ -26879,7 +26879,7 @@ span.rux--pagination__text.rux--pagination__items-count {
   color: var(--rux-text-secondary, #525252);
   padding-inline-start: 1rem;
 }
-.rux--tree-node:focus {
+.rux--tree-node:focus-visible {
   outline: none;
 }
 @media (any-hover: hover) {
@@ -26914,12 +26914,12 @@ span.rux--pagination__text.rux--pagination__items-count {
   margin-inline-start: 0.5rem;
 }
 
-.rux--tree-node:focus > .rux--tree-node__label {
+.rux--tree-node:focus-visible > .rux--tree-node__label {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--tree-node:focus > .rux--tree-node__label {
+  .rux--tree-node:focus-visible > .rux--tree-node__label {
     outline-style: dotted;
   }
 }
@@ -26928,7 +26928,7 @@ span.rux--pagination__text.rux--pagination__items-count {
   inline-size: auto;
 }
 
-.rux--tree-node--disabled:focus > .rux--tree-node__label {
+.rux--tree-node--disabled:focus-visible > .rux--tree-node__label {
   outline: none;
 }
 
@@ -27044,7 +27044,7 @@ li.rux--tree-node-link-parent > .rux--tree-node__children {
     cursor: pointer;
   }
 }
-.rux--tree-parent-node__toggle:focus {
+.rux--tree-parent-node__toggle:focus-visible {
   outline: none;
 }
 
@@ -27150,7 +27150,7 @@ li.rux--tree-node-link-parent > .rux--tree-node__children {
   inline-size: 100%;
 }
 
-.rux--tree .rux--tree-node__label .rux--tooltip-trigger__wrapper .rux--btn--ghost:focus {
+.rux--tree .rux--tree-node__label .rux--tooltip-trigger__wrapper .rux--btn--ghost:focus-visible {
   box-shadow: none;
   outline: 2px solid var(--rux-focus, #0f62fe);
 }
@@ -27271,7 +27271,7 @@ div:has(.rux--header) ~ .rux--content {
   fill: var(--rux-icon-primary, #161616);
 }
 
-.rux--header__action:focus {
+.rux--header__action:focus-visible {
   border-color: var(--rux-focus, #0f62fe);
   outline: none;
 }
@@ -27344,7 +27344,7 @@ a.rux--header__name {
   }
 }
 
-a.rux--header__name:focus {
+a.rux--header__name:focus-visible {
   border-color: var(--rux-focus, #0f62fe);
 }
 
@@ -27440,7 +27440,7 @@ a.rux--header__menu-item:active {
   color: var(--rux-text-primary, #161616);
 }
 
-a.rux--header__menu-item:focus {
+a.rux--header__menu-item:focus-visible {
   border-color: var(--rux-focus, #0f62fe);
   outline: none;
 }
@@ -27470,8 +27470,8 @@ a.rux--header__menu-item[aria-current=page]::after,
   inset-inline-start: -2px;
 }
 
-a.rux--header__menu-item[aria-current=page]:focus::after,
-.rux--header__menu-item--current:focus::after {
+a.rux--header__menu-item[aria-current=page]:focus-visible::after,
+.rux--header__menu-item--current:focus-visible::after {
   border: 0;
 }
 
@@ -27483,8 +27483,8 @@ a.rux--header__menu-item[aria-current=page]:focus::after,
   inset-block-start: -2px;
   inset-inline-start: -2px;
 }
-.rux--header__submenu .rux--header__menu a.rux--header__menu-item[aria-current=page]:focus::after,
-.rux--header__submenu .rux--header__menu .rux--header__menu-item--current:focus::after {
+.rux--header__submenu .rux--header__menu a.rux--header__menu-item[aria-current=page]:focus-visible::after,
+.rux--header__submenu .rux--header__menu .rux--header__menu-item--current:focus-visible::after {
   background-color: var(--rux-border-interactive, #0f62fe);
   block-size: calc(100% + 4px);
   inline-size: 5px;
@@ -27492,8 +27492,8 @@ a.rux--header__menu-item[aria-current=page]:focus::after,
   inset-inline-start: -2px;
 }
 
-a.rux--header__menu-item[aria-current=page]:focus,
-a.rux--header__menu-item.rux--header__menu-item--current:focus {
+a.rux--header__menu-item[aria-current=page]:focus-visible,
+a.rux--header__menu-item.rux--header__menu-item--current:focus-visible {
   border: 2px solid var(--rux-focus, #0f62fe);
 }
 
@@ -27589,7 +27589,7 @@ a.rux--header__menu-item.rux--header__menu-item--current:focus {
   white-space: nowrap;
 }
 
-.rux--skip-to-content:focus {
+.rux--skip-to-content:focus-visible {
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -27818,12 +27818,12 @@ a.rux--header__menu-item.rux--header__menu-item--current:focus {
     color: var(--rux-text-primary, #161616);
   }
 }
-.rux--side-nav__submenu:focus {
+.rux--side-nav__submenu:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--side-nav__submenu:focus {
+  .rux--side-nav__submenu:focus-visible {
     outline-style: dotted;
   }
 }
@@ -27970,14 +27970,14 @@ a.rux--side-nav__link > .rux--side-nav__link-text,
   user-select: none;
 }
 
-a.rux--side-nav__link:focus,
-.rux--side-nav a.rux--header__menu-item:focus {
+a.rux--side-nav__link:focus-visible,
+.rux--side-nav a.rux--header__menu-item:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  a.rux--side-nav__link:focus,
-  .rux--side-nav a.rux--header__menu-item:focus {
+  a.rux--side-nav__link:focus-visible,
+  .rux--side-nav a.rux--header__menu-item:focus-visible {
     outline-style: dotted;
   }
 }
@@ -28126,7 +28126,7 @@ a.rux--side-nav__link--current::before {
   block-size: inherit;
 }
 
-.rux--side-nav a.rux--header__menu-item:focus .rux--header__menu-arrow,
+.rux--side-nav a.rux--header__menu-item:focus-visible .rux--header__menu-arrow,
 .rux--side-nav .rux--header__menu-arrow {
   fill: var(--rux-icon-secondary, #525252);
 }
@@ -28194,7 +28194,7 @@ a.rux--side-nav__link--current::before {
     cursor: pointer;
   }
 }
-.rux--switcher__item-link:focus {
+.rux--switcher__item-link:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
@@ -28324,7 +28324,7 @@ div:has(.rux--header) ~ .rux--content {
   fill: var(--rux-icon-primary, #161616);
 }
 
-.rux--header__action:focus {
+.rux--header__action:focus-visible {
   border-color: var(--rux-focus, #0f62fe);
   outline: none;
 }
@@ -28397,7 +28397,7 @@ a.rux--header__name {
   }
 }
 
-a.rux--header__name:focus {
+a.rux--header__name:focus-visible {
   border-color: var(--rux-focus, #0f62fe);
 }
 
@@ -28493,7 +28493,7 @@ a.rux--header__menu-item:active {
   color: var(--rux-text-primary, #161616);
 }
 
-a.rux--header__menu-item:focus {
+a.rux--header__menu-item:focus-visible {
   border-color: var(--rux-focus, #0f62fe);
   outline: none;
 }
@@ -28523,8 +28523,8 @@ a.rux--header__menu-item[aria-current=page]::after,
   inset-inline-start: -2px;
 }
 
-a.rux--header__menu-item[aria-current=page]:focus::after,
-.rux--header__menu-item--current:focus::after {
+a.rux--header__menu-item[aria-current=page]:focus-visible::after,
+.rux--header__menu-item--current:focus-visible::after {
   border: 0;
 }
 
@@ -28536,8 +28536,8 @@ a.rux--header__menu-item[aria-current=page]:focus::after,
   inset-block-start: -2px;
   inset-inline-start: -2px;
 }
-.rux--header__submenu .rux--header__menu a.rux--header__menu-item[aria-current=page]:focus::after,
-.rux--header__submenu .rux--header__menu .rux--header__menu-item--current:focus::after {
+.rux--header__submenu .rux--header__menu a.rux--header__menu-item[aria-current=page]:focus-visible::after,
+.rux--header__submenu .rux--header__menu .rux--header__menu-item--current:focus-visible::after {
   background-color: var(--rux-border-interactive, #0f62fe);
   block-size: calc(100% + 4px);
   inline-size: 5px;
@@ -28545,8 +28545,8 @@ a.rux--header__menu-item[aria-current=page]:focus::after,
   inset-inline-start: -2px;
 }
 
-a.rux--header__menu-item[aria-current=page]:focus,
-a.rux--header__menu-item.rux--header__menu-item--current:focus {
+a.rux--header__menu-item[aria-current=page]:focus-visible,
+a.rux--header__menu-item.rux--header__menu-item--current:focus-visible {
   border: 2px solid var(--rux-focus, #0f62fe);
 }
 
@@ -28642,7 +28642,7 @@ a.rux--header__menu-item.rux--header__menu-item--current:focus {
   white-space: nowrap;
 }
 
-.rux--skip-to-content:focus {
+.rux--skip-to-content:focus-visible {
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -28871,12 +28871,12 @@ a.rux--header__menu-item.rux--header__menu-item--current:focus {
     color: var(--rux-text-primary, #161616);
   }
 }
-.rux--side-nav__submenu:focus {
+.rux--side-nav__submenu:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  .rux--side-nav__submenu:focus {
+  .rux--side-nav__submenu:focus-visible {
     outline-style: dotted;
   }
 }
@@ -29023,14 +29023,14 @@ a.rux--side-nav__link > .rux--side-nav__link-text,
   user-select: none;
 }
 
-a.rux--side-nav__link:focus,
-.rux--side-nav a.rux--header__menu-item:focus {
+a.rux--side-nav__link:focus-visible,
+.rux--side-nav a.rux--header__menu-item:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }
 @media screen and (prefers-contrast) {
-  a.rux--side-nav__link:focus,
-  .rux--side-nav a.rux--header__menu-item:focus {
+  a.rux--side-nav__link:focus-visible,
+  .rux--side-nav a.rux--header__menu-item:focus-visible {
     outline-style: dotted;
   }
 }
@@ -29179,7 +29179,7 @@ a.rux--side-nav__link--current::before {
   block-size: inherit;
 }
 
-.rux--side-nav a.rux--header__menu-item:focus .rux--header__menu-arrow,
+.rux--side-nav a.rux--header__menu-item:focus-visible .rux--header__menu-arrow,
 .rux--side-nav .rux--header__menu-arrow {
   fill: var(--rux-icon-secondary, #525252);
 }
@@ -29247,7 +29247,7 @@ a.rux--side-nav__link--current::before {
     cursor: pointer;
   }
 }
-.rux--switcher__item-link:focus {
+.rux--switcher__item-link:focus-visible {
   outline: 2px solid var(--rux-focus, #0f62fe);
   outline-offset: -2px;
 }

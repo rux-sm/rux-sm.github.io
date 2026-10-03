@@ -28,6 +28,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { classNames, compiledModules } from './lib/ownership.mjs';
+import { transform } from './lib/transform.mjs';
 
 // "ALL" IS CARBON'S OWN LIST, NOT A DIRECTORY LISTING. Reading the directory
 // gives `data-table` and misses `data-table/sort`, `/expandable` and `/action`,
@@ -114,10 +115,9 @@ function build(comps, themeCount) {
   writeFileSync(f, src);
   execFileSync('npx', ['sass', '--load-path=node_modules', '--no-source-map',
     '--style=compressed', f, out], { stdio: ['ignore', 'pipe', 'pipe'] });
-  // The same post-transform build.mjs applies — @carbon/grid hardcodes literal
-  // `--cds-grid-*` names that $prefix cannot reach. Without it this tool measures
-  // a file the project never ships.
-  const css = readFileSync(out, 'utf8').replace(/--cds-grid-/g, '--rux-grid-');
+  // The same changes build.mjs makes after Sass. Without them this tool
+  // measures a file the project never ships.
+  const { css } = transform(readFileSync(out, 'utf8'));
   return { min: Buffer.byteLength(css), gzip: gzipSync(Buffer.from(css), { level: 9 }).length,
            classes: classNames(css).size };
 }

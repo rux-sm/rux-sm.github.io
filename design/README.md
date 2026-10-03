@@ -69,7 +69,7 @@ The table is generated on every `npm run verify`. Do not edit it by hand.
 | Spacing scale | 13 `--rux-spacing-*` tokens, demoed in the `spacing` section |
 | Markup provenance | **76 `rendered-dom` · 6 `source` · 0 `inferred`** across 82 files |
 | Icons | 242 symbols in a 71.8 KB sprite — 53 referenced, 189 nothing points at |
-| Size | 1023.9 KB raw · 920.9 KB min · **91 KB gzipped** |
+| Size | 1028.3 KB raw · 925.3 KB min · **91 KB gzipped** |
 | Behaviour JS | **18** modules · **68 KB gzipped** · 222.7 KB raw, 61% of it comment · 87.1 KB of code |
 
 **Every figure above is generated** by `tools/build-readme.mjs` from
@@ -113,8 +113,10 @@ than measurements and live with their reasoning in `tools/build.mjs`.
 
 **No Carbon file is ever edited.** Customisation is `$prefix`, Carbon's own config
 flags, which components and themes compile, and the two files above the build.
-One documented exception, enforced on every build: `tools/build.mjs` renames
-`--cds-grid-*`, which Carbon hardcodes past `$prefix`.
+Two documented exceptions, in `tools/lib/transform.mjs` and enforced on every
+build: `--cds-grid-*`, which Carbon hardcodes past `$prefix`, is renamed, and
+every `:focus` becomes `:focus-visible`, so a focus ring shows for the keyboard
+and not for a click or a tap.
 
 ## Gates
 

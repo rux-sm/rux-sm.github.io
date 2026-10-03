@@ -237,7 +237,10 @@ trip the slots come last, next to it. The card opens with its warnings, plain
 rows on the card's own surface with no tint: a bus that does not fit behind a
 red bell, then the follow-up reminder, Trip contact missing, and each need
 still to do, Hotel booking pending or HOS form pending, each a line of its own
-in bold behind the bar's yellow bell.
+in bold behind the bar's yellow bell. Each warning is a press, lit on hover,
+that goes where it is put right: Itinerary missing to the Itinerary slot's
+upload, the hours-of-service form to Forms, a bus that does not fit to the
+Buses tab, Trip contact missing to Details, and the rest to Billing.
 No warning has a dismiss; each stays until it is put right. Needs that are
 met are not shown.
 Then the updates: their title, Updates with their count (Updates · 5) and

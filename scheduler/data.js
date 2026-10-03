@@ -12598,14 +12598,32 @@
 
   // The trip whose card shows all its updates, kept until the card leaves it.
   let updatesOpenFor = null;
-  // An update that is a press takes Enter and Space, as a button does.
+  // A warning or an update that is a press takes Enter and Space, as a button does.
   barShortcuts?.addEventListener('keydown', e => {
     if (e.key !== 'Enter' && e.key !== ' ') return;
-    const update = e.target.closest?.('.scheduler-card__update[data-update-id]');
-    if (!update || e.target !== update) return;
+    const press = e.target.closest?.('.scheduler-card__update[data-update-id], .scheduler-card__row[data-go]');
+    if (!press || e.target !== press) return;
     e.preventDefault();
-    openUpdatesFromCard(update.dataset.updateId);
+    if (press.dataset.go) goToWarning(press.dataset.go);
+    else openUpdatesFromCard(press.dataset.updateId);
   });
+  /* Where a warning is put right. The itinerary slot uploads or opens the
+     itinerary as its own press does, Forms opens the trip's forms, and the
+     rest open the trip on the tab that holds the fix, asking first about
+     unsaved work in another trip. */
+  function goToWarning(go) {
+    const bar = selectedBar();
+    if (!bar?.dataset.tripId) return;
+    if (go === 'itinerary') { barShortcuts.querySelector('.scheduler-bar-shortcut[data-shortcut="itinerary"]')?.click(); return; }
+    putCardAway(bar);
+    if (go === 'forms') { openForms(bar); return; }
+    const ref = barRef(bar);
+    whenSafe(() => {
+      openRef(ref);
+      const tab = document.getElementById(`scheduler-tab-${go}`);
+      if (tab) window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
+    });
+  }
 
   let shortcutsDrawn = '';
   function drawShortcuts(bar) {
@@ -13035,6 +13053,16 @@
       r.style.setProperty('--i', String(i++));
       return r;
     };
+    /* A warning is a press that goes where it is put right: an editor tab,
+       the Forms panel, or the itinerary slot's own upload. */
+    const WARN_GO = { fleet: 'Buses', billing: 'Billing', details: 'Details', forms: 'Forms', itinerary: 'Itinerary' };
+    const goes = (band, go, words) => {
+      band.dataset.go = go;
+      band.tabIndex = 0;
+      band.setAttribute('role', 'button');
+      band.setAttribute('aria-label', `${words}: open ${WARN_GO[go]}`);
+      return band;
+    };
     /* EVERY ALERT IS A LINE OF ITS OWN, the bar's bell then its two or three
        words, so the list reads down the same way whatever kind each one is:
        the red bell with its mark for a bus that does not fit, the plain bell
@@ -13045,7 +13073,7 @@
        icon is the bar's red bell. */
     const facts = bar ? barFacts.get(bar) : null;
     for (const words of facts?.misfits ?? []) {
-      const band = row('scheduler-card__misfit');
+      const band = goes(row('scheduler-card__misfit'), 'fleet', words);
       band.append(svgUse('#m-notification_important-fill', '16', '0 0 32 32'), el('strong', null, words));
       card.appendChild(band);
     }
@@ -13055,7 +13083,7 @@
        first line's end. */
     if (asksFollowUp(trip)) {
       waitsOf(trip).forEach((w, n) => {
-        const band = row('scheduler-card__asks');
+        const band = goes(row('scheduler-card__asks'), w === 'itinerary' ? 'itinerary' : 'billing', WAIT_WORDS[w]);
         band.append(svgUse('#m-notifications-fill', '16', '0 0 32 32'), el('strong', null, WAIT_WORDS[w]));
         if (n === 0 && dueFollowUp(trip)) {
           const days = daysToGo(trip);
@@ -13069,7 +13097,7 @@
        is a warning band under the reminder, so every warning sits together at
        the top; the Contacts shortcut reaches whoever is named. */
     if (!dayOfContact(trip) && !trip.contact_not_needed) {
-      const band = row('scheduler-card__warn');
+      const band = goes(row('scheduler-card__warn'), 'details', 'Trip contact missing');
       band.append(svgUse('#m-notifications-fill', '16', '0 0 32 32'), el('strong', null, 'Trip contact missing'));
       card.appendChild(band);
     }
@@ -13079,7 +13107,7 @@
        shown: the envelope and the Buses tab list every need. */
     for (const n of facts?.needs ?? []) {
       if (n.done || n.short) continue;
-      const band = row('scheduler-card__warn');
+      const band = goes(row('scheduler-card__warn'), n.id === 'hos' ? 'forms' : 'billing', TODO_WORDS[n.id] ?? n.label);
       band.append(svgUse('#m-notifications-fill', '16', '0 0 32 32'), el('strong', null, TODO_WORDS[n.id] ?? n.label));
       card.appendChild(band);
     }
@@ -13190,11 +13218,14 @@
       openUpdatesFromCard();
       return;
     }
-    // A press anywhere on updates with more to show opens or closes them, and
-    // the toggle keeps focus when a key pressed it.
+    // A warning goes where it is put right.
+    const warning = e.target.closest('.scheduler-card__row[data-go]');
+    if (warning) { goToWarning(warning.dataset.go); return; }
     // An update on the floating card opens in the Updates window, ready to change.
     const update = e.target.closest('.scheduler-card__update[data-update-id]');
     if (update) { openUpdatesFromCard(update.dataset.updateId); return; }
+    // A press anywhere on updates with more to show opens or closes them, and
+    // the toggle keeps focus when a key pressed it.
     const more = e.target.closest('.scheduler-card__updates[data-more]');
     if (more) {
       toggleUpdates(more.closest('.scheduler-card')?.dataset.tripId ?? null, e.detail === 0);

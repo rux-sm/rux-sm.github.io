@@ -1256,6 +1256,11 @@ button.scheduler-row-head__num::after {
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__asks-when { margin-inline-start: auto; margin-block-start: 1px; }
+/* A warning is a press that goes where it is put right, lit on hover across
+   the card's width as an update is. */
+.scheduler-card > .scheduler-card__row[data-go] { cursor: pointer; }
+.scheduler-card > .scheduler-card__row[data-go]:hover { background: var(--card-hover); }
+.scheduler-card > .scheduler-card__row[data-go]:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
 /* An update is a press that opens it in the Updates window: its row lights
    on hover as the slots do, across the card's whole width like a menu's
    row, and the rows meet. A one-line update is Carbon's small row, 32px:

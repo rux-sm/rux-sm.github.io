@@ -1310,8 +1310,10 @@ button.scheduler-row-head__num::after {
   color: color-mix(in srgb, var(--card-ink) 70%, transparent);
   cursor: pointer;
 }
-/* The age keeps its cell on the first line, which the pin shares. */
-.scheduler-card__update > .scheduler-card__when { grid-row: 1; grid-column: 3; }
+/* The age keeps its cell on the first line, which the pin shares, and ends at
+   the cell's end: the cell is the pin's 24px, wider than an age, and Add's
+   word above ends on that same line. */
+.scheduler-card__update > .scheduler-card__when { grid-row: 1; grid-column: 3; justify-self: end; }
 .scheduler-card__pin > svg { inline-size: 1rem; block-size: 1rem; fill: currentColor; }
 .scheduler-card__pin:hover { color: var(--card-ink); background: var(--card-hover); }
 .scheduler-card__pin[aria-pressed="true"] { color: var(--rux-link-primary); }

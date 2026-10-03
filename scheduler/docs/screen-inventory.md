@@ -230,8 +230,9 @@ week on a dark theme as well as a light one. It is sized to the week: two
 days wide and between two and three buses tall, 16px inside the cells it
 covers, centred on the trip, so it covers about half the trips above and below
 it. Each slot carries its word under its icon, the four in one 40px row; each
-warning is a 24px row, and the updates are in 14px type, 16px apart and 16px
-in from the card's sides, as a Carbon popover's content is. When the card opens above the
+warning and each one-line update is a 32px row in 14px type, the warnings
+bold, 16px in from the card's sides, as a Carbon popover's content is; a
+warning's leave day drops under its words where both do not fit one line. When the card opens above the
 trip the slots come last, next to it. The card opens with its warnings, plain
 rows on the card's own surface with no tint: a bus that does not fit behind a
 red bell, then the follow-up reminder, Trip contact missing, and each need

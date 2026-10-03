@@ -1229,12 +1229,33 @@ button.scheduler-row-head__num::after {
    their 24px rows and start their words where the updates do. The face, the
    pin and the age sit on the first line. */
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__row { padding-inline: var(--rux-spacing-05); }
-/* A warning keeps its words on one line beside when the trip leaves, on a
-   card two days wide: the bell keeps its 8px and the day sits 4px after the
-   words, so both end where the updates' ages do. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) { column-gap: 0; }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) > strong { margin-inline-start: var(--rux-spacing-03); }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__asks-when { margin-inline-start: var(--rux-spacing-02); }
+/* Floating, a warning is a row like an update: Carbon's small row, 32px, its
+   words bold in the updates' 14px on an 18px line, 7px above and below, the
+   rule over the first taking a pixel of its 7. The bell and the words start
+   where the updates' face and words do, and the day it leaves ends where
+   their ages do, in their 12px. Where the words and the day do not fit one
+   line, the day drops under them. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0;
+  padding-block: calc((var(--rux-layout-size-height-sm) - 1.125rem) / 2 - 1px) calc((var(--rux-layout-size-height-sm) - 1.125rem) / 2);
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn) + :is(.scheduler-card__asks, .scheduler-card__warn),
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__misfit + .scheduler-card__misfit,
+.scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) .scheduler-card > .scheduler-card__row:first-child:is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) {
+  padding-block-start: calc((var(--rux-layout-size-height-sm) - 1.125rem) / 2);
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) > svg { flex: none; margin-block-start: 1px; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) > strong {
+  flex: 0 1 auto;
+  margin-inline: var(--rux-spacing-03) var(--rux-spacing-02);
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__asks-when { margin-inline-start: auto; margin-block-start: 1px; }
 /* An update is a press that opens it in the Updates window: its row lights
    on hover as the slots do, across the card's whole width like a menu's
    row, and the rows meet. A one-line update is Carbon's small row, 32px:

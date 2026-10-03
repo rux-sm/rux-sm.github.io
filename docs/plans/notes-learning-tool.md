@@ -36,6 +36,11 @@ scenario to be complete, and where a new area of LN must be easy to add.
 
 - **Each screen has one reference card**, however many tasks use it.
 
+- **An idea that cuts across screens has one concept card**, such as available
+  to promise. It shows a short explanation atlas writes in its own words; the
+  fuller account drawn from Infor's help follows the answer to the first
+  question.
+
 - **Three ways in: Do, Understand and Look up.** They are the side nav, and
   nothing else is in it.
 
@@ -63,6 +68,25 @@ scenario to be complete, and where a new area of LN must be easy to add.
 - **Nothing is ticked, saved or counted.** The open tile is in the address, so
   a reload or a shared link returns to it.
 
+### Questions on a tile
+
+- **Every decision on a route is asked as a question, in the tile where it
+  comes up**, such as "Does on-hand cover it?" after the stock is read.
+
+- **A question offers every answer the reader could have.** Each outcome opens
+  the next tile on its branch. "I don't know" opens the screen where the answer
+  is read and returns to the same question. Where a setting decides the
+  outcome, "Check or change it" opens the screen that holds the setting.
+
+- **A question about a setting says so**, as "Is the delivery date inside the
+  order horizon?" offers the item's planning data, where the horizon is set.
+
+- **The question, its answers and both screens come from atlas**, stated on the
+  decision itself. A decision missing a part shows the parts it has.
+
+- **An answer moves the reader and saves nothing.** The chosen branch is in the
+  address, like the open tile.
+
 ### Understand
 
 - **Understand is the map of one chain, and it explains; it is not a second
@@ -83,13 +107,14 @@ scenario to be complete, and where a new area of LN must be easy to add.
 
 - **What a tap does depends on what the tile is.** A tile that stands for one
   task opens it in Do. A tile that stands for several offers the choice. A
-  decision or an outcome shows its short explanation in place. A dim tile with
+  decision shows its question and answers in place, and an outcome its short
+  explanation. A dim tile with
   a screen opens that screen's card, and a dim tile without one does nothing.
 
 ### Look up
 
-- **One search box over screens, scenarios and tasks**, matching a name, a
-  session code or a word in a step.
+- **One search box over screens, concepts, scenarios and tasks**, matching a
+  name, a session code or a word in a step.
 
 - **A screen card has fixed parts:** name and code, route, what it is for, and
   the tasks that use it. "Used in" is worked out from the scenarios at build
@@ -117,6 +142,12 @@ scenario to be complete, and where a new area of LN must be easy to add.
 - **Three things are written into atlas before the build:** each scenario's
   route, the setup each scenario needs, and the setting that decides each
   branch. A setting nobody can name yet is recorded as unknown, not left out.
+
+- **A decision is recorded in three parts:** the setting that switches it on,
+  the tile where the check runs, and the screen where its figure is read.
+  Available to promise is the first written this way: switched on in the
+  planning setup, checked when the sales order is entered, and read on the
+  item's order plan.
 
 - **A branch nobody has walked stays marked on the map.** Its steps come from a
   run in LN, which atlas's walking plan owns, and it does not hold the build
@@ -196,13 +227,22 @@ scenario to be complete, and where a new area of LN must be easy to add.
 ## Tasks
 
 - [ ] Build one specimen page from invented content: a scenario's start and
-      result, its line with an open tile, the map with a route lit and a
-      decision opened, and a screen card. Read it at desktop and phone widths
+      result, its line with an open tile, a question with each kind of answer,
+      the map with a route lit and a decision opened, a screen card and a
+      concept card. Read it at desktop and phone widths
       in light and dark.
 - [ ] In atlas, correct the map from the answer to the first question.
 - [ ] In atlas, record the setting that decides each of the seven branches,
       from the configuration files and the screen files, or record it as
       unknown.
+- [ ] In atlas, give each decision on the map its question, its answers, the
+      screen where the answer is read and the screen where its setting is
+      changed.
+- [ ] In atlas, write available to promise and capable to promise as a concept
+      of their own, moved out of the item order plan's screen file, and name
+      it on the map's stock-promise tile in the three parts above.
+- [ ] In atlas, export each concept's short explanation, and show it as a card
+      in Look up.
 - [ ] In atlas, state Ship from stock's route on the map, with its first and
       last tasks, its decisions and the setup it needs, and export it.
 - [ ] In atlas, write the purpose line for the one screen Ship from stock names

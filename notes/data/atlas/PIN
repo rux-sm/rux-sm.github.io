@@ -1,9 +1,9 @@
-commit   ca9e89bff854dffe837e93baac446b7fe6bd9cd2
-date     2026-10-03T23:50:51Z
-subject  docs(issues): Say which gaps need LN, not a file
+commit   d76c695b100e80cd89d1c9c83c388b5d82835997
+date     2026-10-03T23:55:31Z
+subject  docs(sessions): Write five screens from guides
 contract 14 
 tier     export
-sha256   86422f842baa56445e9f61955350b8e4fc44bb7755bbcabe404b9b678e81600a
+sha256   cdad467d7d91e885b2d43c4549b471a32768ed784b5296a927538c1bdb1c479b
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

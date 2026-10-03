@@ -11,7 +11,9 @@
     },
     {
       "code": "cprpd0100m000",
-      "name": "Planning Parameters"
+      "name": "Planning Parameters",
+      "purpose": "Company-wide planning settings, among them the CTP check for sales, the pegging horizon and how many plan revisions are kept.",
+      "route": "Planning ➔ Parameters ➔ Planning"
     },
     {
       "code": "cprpd1100m000",
@@ -51,7 +53,9 @@
     },
     {
       "code": "cprrp1200m000",
-      "name": "Confirm Order Planning"
+      "name": "Confirm Order Planning",
+      "purpose": "Confirms a range of planned orders in one run, and can take only those inside their order lead time.",
+      "route": "Planning ➔ Order Planning ➔ Confirm Order Planning"
     },
     {
       "code": "cprrp1210m000",
@@ -415,7 +419,9 @@
     },
     {
       "code": "tisfc0110m000",
-      "name": "Production Planning"
+      "name": "Production Planning",
+      "purpose": "Shows a production order's operations, where an operation's dates, its next operation and task, and its scrap or yield are changed, and count points are marked.",
+      "route": "Manufacturing ➔ Job Shop ➔ Production Planning ➔ Production Order Planning"
     },
     {
       "code": "tisfc0120s000",
@@ -459,7 +465,9 @@
     },
     {
       "code": "whinh0110m000",
-      "name": "Warehousing Order Types"
+      "name": "Warehousing Order Types",
+      "purpose": "Holds the settings a warehousing order type gives its orders, among them its inventory transaction type and how its shipments and loads are built.",
+      "route": "Warehousing ➔ Master Data ➔ Order Procedures ➔ Order Types"
     },
     {
       "code": "whinh0120m000",
@@ -515,7 +523,9 @@
     },
     {
       "code": "whinh3201m000",
-      "name": "Generate Inbound Advice"
+      "name": "Generate Inbound Advice",
+      "purpose": "The activity that generates inbound advice for received goods. It is not available in a warehouse without locations.",
+      "route": "Warehousing ➔ Inbound ➔ Generate Inbound Advice"
     },
     {
       "code": "whinh3512m000",

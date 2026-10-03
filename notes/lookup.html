@@ -140,7 +140,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-notes-commit="ca9e89bff854dffe837e93baac446b7fe6bd9cd2">
+<main id="main-content" class="rux--content" data-notes-commit="d76c695b100e80cd89d1c9c83c388b5d82835997">
 <div class="notes-view">
   <h1 class="rux--visually-hidden">Look up</h1>
   <div class="rux--search rux--layout--size-lg">
@@ -418,6 +418,12 @@
       <p>Converts a planned order into a real order in its owning module — production, purchase, warehouse, or cost-peg transfer.</p>
       <dl class="notes-card__facts"><dt>Code</dt><dd><span class="notes-t-exact">cppat1210m000</span></dd><dt>Route</dt><dd><span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Plan Transfer</span><span class="sep">➔</span><span class="dest">Transfer Order Planning</span></span></dd><dt>Used in</dt><dd><a class="rux--link" href="do.html?s=demand-to-shipment-via-planning&amp;t=3">Plan to shipment · 3 Cross the boundary</a></dd></dl>
     </div>
+    <div class="rux--tile notes-card" data-code="cprpd0100m000" data-text="planning parameters cprpd0100m000 planning ➔ parameters ➔ planning company-wide planning settings, among them the ctp check for sales, the pegging horizon and how many plan revisions are kept." hidden>
+      <p class="notes-card__kind">Screen</p>
+      <h2 class="rux--type-productive-heading-03">Planning Parameters</h2>
+      <p>Company-wide planning settings, among them the CTP check for sales, the pegging horizon and how many plan revisions are kept.</p>
+      <dl class="notes-card__facts"><dt>Code</dt><dd><span class="notes-t-exact">cprpd0100m000</span></dd><dt>Route</dt><dd><span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Parameters</span><span class="sep">➔</span><span class="dest">Planning</span></span></dd></dl>
+    </div>
     <div class="rux--tile notes-card" data-code="cprpd1100m000" data-text="items - planning cprpd1100m000 planning ➔ master data ➔ items ➔ items - planning holds the order horizon, planning horizon and time fence that decide whether and how far ahead an item is planned." hidden>
       <p class="notes-card__kind">Screen</p>
       <h2 class="rux--type-productive-heading-03">Items - Planning</h2>
@@ -441,6 +447,12 @@
       <h2 class="rux--type-productive-heading-03">Planned Orders</h2>
       <p>Lists the planned orders MRP produced, for review and selection before they are transferred to execution.</p>
       <dl class="notes-card__facts"><dt>Code</dt><dd><span class="notes-t-exact">cprrp1100m000</span></dd><dt>Route</dt><dd><span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Planned Orders</span></span></dd><dt>Used in</dt><dd><a class="rux--link" href="do.html?s=run-order-planning-for-one-item&amp;t=4">Run order planning · 4 Review the result</a><br><a class="rux--link" href="do.html?s=demand-to-shipment-via-planning&amp;t=2">Plan to shipment · 2 Run MRP</a></dd></dl>
+    </div>
+    <div class="rux--tile notes-card" data-code="cprrp1200m000" data-text="confirm order planning cprrp1200m000 planning ➔ order planning ➔ confirm order planning confirms a range of planned orders in one run, and can take only those inside their order lead time." hidden>
+      <p class="notes-card__kind">Screen</p>
+      <h2 class="rux--type-productive-heading-03">Confirm Order Planning</h2>
+      <p>Confirms a range of planned orders in one run, and can take only those inside their order lead time.</p>
+      <dl class="notes-card__facts"><dt>Code</dt><dd><span class="notes-t-exact">cprrp1200m000</span></dd><dt>Route</dt><dd><span class="notes-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Confirm Order Planning</span></span></dd><dt>Used in</dt><dd><a class="rux--link" href="do.html?s=demand-to-shipment-via-planning&amp;t=3">Plan to shipment · 3 Cross the boundary</a></dd></dl>
     </div>
     <div class="rux--tile notes-card" data-code="cprrp1210m000" data-text="generate order planning cprrp1210m000 planning ➔ order planning ➔ generate order planning runs the range-based order-planning process that turns demand into planned orders." hidden>
       <p class="notes-card__kind">Screen</p>
@@ -730,6 +742,12 @@
       <p>Views and maintains one production order, covering both its materials and its operations.</p>
       <dl class="notes-card__facts"><dt>Code</dt><dd><span class="notes-t-exact">tisfc0101m100</span></dd><dt>Route</dt><dd><span class="notes-t-route"><span class="dest">double-click a row in Production Orders (tisfc0501m000)</span></span></dd></dl>
     </div>
+    <div class="rux--tile notes-card" data-code="tisfc0110m000" data-text="production planning tisfc0110m000 manufacturing ➔ job shop ➔ production planning ➔ production order planning shows a production order's operations, where an operation's dates, its next operation and task, and its scrap or yield are changed, and count points are marked." hidden>
+      <p class="notes-card__kind">Screen</p>
+      <h2 class="rux--type-productive-heading-03">Production Planning</h2>
+      <p>Shows a production order's operations, where an operation's dates, its next operation and task, and its scrap or yield are changed, and count points are marked.</p>
+      <dl class="notes-card__facts"><dt>Code</dt><dd><span class="notes-t-exact">tisfc0110m000</span></dd><dt>Route</dt><dd><span class="notes-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Planning</span><span class="sep">➔</span><span class="dest">Production Order Planning</span></span></dd></dl>
+    </div>
     <div class="rux--tile notes-card" data-code="tisfc0120s000" data-text="report orders completed tisfc0120s000 from the production order; the range-based variant is a separate session an order-level view of production orders that must be, or have been, reported complete." hidden>
       <p class="notes-card__kind">Screen</p>
       <h2 class="rux--type-productive-heading-03">Report Orders Completed</h2>
@@ -765,6 +783,12 @@
       <h2 class="rux--type-productive-heading-03">Inventory Handling Parameters</h2>
       <p>Company-wide picking and shipping parameters, held as a dated history with one current set.</p>
       <dl class="notes-card__facts"><dt>Code</dt><dd><span class="notes-t-exact">whinh0100m000</span></dd><dt>Route</dt><dd><span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Parameters</span><span class="sep">➔</span><span class="dest">Inventory Handling Parameters</span></span></dd></dl>
+    </div>
+    <div class="rux--tile notes-card" data-code="whinh0110m000" data-text="warehousing order types whinh0110m000 warehousing ➔ master data ➔ order procedures ➔ order types holds the settings a warehousing order type gives its orders, among them its inventory transaction type and how its shipments and loads are built." hidden>
+      <p class="notes-card__kind">Screen</p>
+      <h2 class="rux--type-productive-heading-03">Warehousing Order Types</h2>
+      <p>Holds the settings a warehousing order type gives its orders, among them its inventory transaction type and how its shipments and loads are built.</p>
+      <dl class="notes-card__facts"><dt>Code</dt><dd><span class="notes-t-exact">whinh0110m000</span></dd><dt>Route</dt><dd><span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Order Procedures</span><span class="sep">➔</span><span class="dest">Order Types</span></span></dd></dl>
     </div>
     <div class="rux--tile notes-card" data-code="whinh0120m000" data-text="default order types by origin whinh0120m000 warehousing ➔ master data ➔ order procedures ➔ default order types by origin links a warehousing order type to an order origin, so orders generated from that origin default to that type and its procedure." hidden>
       <p class="notes-card__kind">Screen</p>
@@ -813,6 +837,12 @@
       <h2 class="rux--type-productive-heading-03">Warehouse Inspections Overview</h2>
       <p>Where inbound and outbound inspections are viewed and maintained — the step that can hold a receipt.</p>
       <dl class="notes-card__facts"><dt>Code</dt><dd><span class="notes-t-exact">whinh3122m000</span></dd><dt>Route</dt><dd><span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Receipts/Inspections</span><span class="sep">➔</span><span class="dest">Inspections Overview</span></span></dd></dl>
+    </div>
+    <div class="rux--tile notes-card" data-code="whinh3201m000" data-text="generate inbound advice whinh3201m000 warehousing ➔ inbound ➔ generate inbound advice the activity that generates inbound advice for received goods. it is not available in a warehouse without locations." hidden>
+      <p class="notes-card__kind">Screen</p>
+      <h2 class="rux--type-productive-heading-03">Generate Inbound Advice</h2>
+      <p>The activity that generates inbound advice for received goods. It is not available in a warehouse without locations.</p>
+      <dl class="notes-card__facts"><dt>Code</dt><dd><span class="notes-t-exact">whinh3201m000</span></dd><dt>Route</dt><dd><span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inbound</span><span class="sep">➔</span><span class="dest">Generate Inbound Advice</span></span></dd></dl>
     </div>
     <div class="rux--tile notes-card" data-code="whinh3512m000" data-text="warehouse receipt whinh3512m000 actions - receive from the inbound order line, or drill in from the receipt list creates and confirms receipts — where inbound goods become inventory." hidden>
       <p class="notes-card__kind">Screen</p>
@@ -890,7 +920,79 @@
       <p class="notes-card__kind">Concept</p>
       <h2 class="rux--type-productive-heading-03">Available to promise</h2>
       <p>The stock LN will still promise to a new order, worked out over time, and the second check on components and capacity that follows when that stock falls short.</p>
-      <dl class="notes-card__facts"><dt>Also called</dt><dd>atp, capable to promise, ctp</dd><dt>Screens</dt><dd><a class="rux--link" href="lookup.html?q=cprrp0520m000">Item Order Plan</a><br><a class="rux--link" href="lookup.html?q=cprpd1100m000">Items - Planning</a><br><a class="rux--link" href="lookup.html?q=whwmd4300m000">Inventory 360</a></dd></dl>
+      <dl class="notes-card__facts"><dt>Also called</dt><dd>atp, capable to promise, ctp</dd><dt>Screens</dt><dd><a class="rux--link" href="lookup.html?q=cprrp0520m000">Item Order Plan</a><br><a class="rux--link" href="lookup.html?q=cprpd0100m000">Planning Parameters</a><br><a class="rux--link" href="lookup.html?q=cprpd1100m000">Items - Planning</a><br><a class="rux--link" href="lookup.html?q=whwmd4300m000">Inventory 360</a></dd></dl>
+    </div>
+    <div class="rux--tile notes-card" data-text="business partner business partner business partner role sold-to business partner buy-from business partner ship-to business partner ship-from business partner internal business partner any party you trade with, where customer and supplier are two roles on one partner and not two separate records." hidden>
+      <p class="notes-card__kind">Concept</p>
+      <h2 class="rux--type-productive-heading-03">Business partner</h2>
+      <p>Any party you trade with, where customer and supplier are two roles on one partner and not two separate records.</p>
+      <dl class="notes-card__facts"><dt>Also called</dt><dd>business partner role, sold-to business partner, buy-from business partner, ship-to business partner, ship-from business partner, internal business partner</dd><dt>Screens</dt><dd><a class="rux--link" href="lookup.html?q=tccom4520m000">Buy-from Business Partners</a><br><a class="rux--link" href="lookup.html?q=tdsls4601m200">Sales Order Intake Workbench</a><br><a class="rux--link" href="lookup.html?q=tdpur4100m900">Purchase Order</a><br><a class="rux--link" href="lookup.html?q=tdipu0601m000">Item - Purchase</a><br><a class="rux--link" href="lookup.html?q=cppat1210m000">Transfer Order Planning</a></dd></dl>
+    </div>
+    <div class="rux--tile notes-card" data-text="contract deliverable contract deliverable project contract a second way to raise demand on an item, beside a sales order, which planning ignores until it is switched on and whose supply stays tied to its project." hidden>
+      <p class="notes-card__kind">Concept</p>
+      <h2 class="rux--type-productive-heading-03">Contract deliverable</h2>
+      <p>A second way to raise demand on an item, beside a sales order, which planning ignores until it is switched on and whose supply stays tied to its project.</p>
+      <dl class="notes-card__facts"><dt>Also called</dt><dd>project contract</dd><dt>Screens</dt><dd><a class="rux--link" href="lookup.html?q=cprrp0520m000">Item Order Plan</a><br><a class="rux--link" href="lookup.html?q=whinh2100m000">Warehousing Orders</a><br><a class="rux--link" href="lookup.html?q=whinh2300m000">Warehouse Manager Dashboard</a></dd></dl>
+    </div>
+    <div class="rux--tile notes-card" data-text="order planning mrp order planning master planning enterprise planning ln's name for what most people call mrp. it lives in the package called enterprise planning, beside master planning, which is ln's name for mps." hidden>
+      <p class="notes-card__kind">Concept</p>
+      <h2 class="rux--type-productive-heading-03">Order planning</h2>
+      <p>LN's name for what most people call MRP. It lives in the package called Enterprise Planning, beside master planning, which is LN's name for MPS.</p>
+      <dl class="notes-card__facts"><dt>Also called</dt><dd>mrp, master planning, enterprise planning</dd><dt>Screens</dt><dd><a class="rux--link" href="lookup.html?q=cprrp1220m000">Generate Order Planning (Item)</a><br><a class="rux--link" href="lookup.html?q=cprrp1210m000">Generate Order Planning</a><br><a class="rux--link" href="lookup.html?q=cprrp0520m000">Item Order Plan</a><br><a class="rux--link" href="lookup.html?q=cprrp1100m000">Planned Orders</a><br><a class="rux--link" href="lookup.html?q=cprpd1100m000">Items - Planning</a></dd></dl>
+    </div>
+    <div class="rux--tile notes-card" data-text="order type order type warehousing order type sales order type purchase order type a code on an order that carries the procedure the order will follow, so changing it changes how the same order behaves." hidden>
+      <p class="notes-card__kind">Concept</p>
+      <h2 class="rux--type-productive-heading-03">Order type</h2>
+      <p>A code on an order that carries the procedure the order will follow, so changing it changes how the same order behaves.</p>
+      <dl class="notes-card__facts"><dt>Also called</dt><dd>warehousing order type, sales order type, purchase order type</dd><dt>Screens</dt><dd><a class="rux--link" href="lookup.html?q=whinh0120m000">Default Order Types by Origin</a><br><a class="rux--link" href="lookup.html?q=whinh2100m100">Warehousing Order</a><br><a class="rux--link" href="lookup.html?q=whinh2129m000">Outbound Line Status Overview</a><br><a class="rux--link" href="lookup.html?q=tdsls4534s000">Sales Order Line Status</a><br><a class="rux--link" href="lookup.html?q=tdpur4100m900">Purchase Order</a><br><a class="rux--link" href="lookup.html?q=tccom4520m000">Buy-from Business Partners</a></dd></dl>
+    </div>
+    <div class="rux--tile notes-card" data-text="planned order planned order firm planned order confirmed planned order transfer to execution level planning's proposal to buy or make something, which becomes a real order only when it is transferred and can be thrown away until then." hidden>
+      <p class="notes-card__kind">Concept</p>
+      <h2 class="rux--type-productive-heading-03">Planned order</h2>
+      <p>Planning's proposal to buy or make something, which becomes a real order only when it is transferred and can be thrown away until then.</p>
+      <dl class="notes-card__facts"><dt>Also called</dt><dd>firm planned order, confirmed planned order, transfer to execution level</dd><dt>Screens</dt><dd><a class="rux--link" href="lookup.html?q=cprrp1100m000">Planned Orders</a><br><a class="rux--link" href="lookup.html?q=cprrp1200m000">Confirm Order Planning</a><br><a class="rux--link" href="lookup.html?q=cprrp1220m000">Generate Order Planning (Item)</a><br><a class="rux--link" href="lookup.html?q=cppat1210m000">Transfer Order Planning</a><br><a class="rux--link" href="lookup.html?q=cprrp0520m000">Item Order Plan</a></dd></dl>
+    </div>
+    <div class="rux--tile notes-card" data-text="release release release to warehousing release outbound advice released ln's verb for handing an order from one module to the next. it changes a status and unblocks the next step, and it moves no goods." hidden>
+      <p class="notes-card__kind">Concept</p>
+      <h2 class="rux--type-productive-heading-03">Release</h2>
+      <p>LN's verb for handing an order from one module to the next. It changes a status and unblocks the next step, and it moves no goods.</p>
+      <dl class="notes-card__facts"><dt>Also called</dt><dd>release to warehousing, release outbound advice, released</dd><dt>Screens</dt><dd><a class="rux--link" href="lookup.html?q=tdsls4246m000">Release Sales Orders to Warehousing</a><br><a class="rux--link" href="lookup.html?q=tdsls4501m140">Release Sales Order Lines to Warehousing</a><br><a class="rux--link" href="lookup.html?q=tisfc0204m000">Release Production Orders</a><br><a class="rux--link" href="lookup.html?q=whinh2120m000">Outbound Order Lines</a><br>tdisa0501m000</dd></dl>
+    </div>
+    <div class="rux--tile notes-card" data-text="scenario scenario actual scenario one complete planning answer. every planning screen is scoped by one, and only the actual scenario is real." hidden>
+      <p class="notes-card__kind">Concept</p>
+      <h2 class="rux--type-productive-heading-03">Scenario</h2>
+      <p>One complete planning answer. Every planning screen is scoped by one, and only the actual scenario is real.</p>
+      <dl class="notes-card__facts"><dt>Also called</dt><dd>actual scenario</dd><dt>Screens</dt><dd><a class="rux--link" href="lookup.html?q=cprpd4100m000">Scenarios</a><br><a class="rux--link" href="lookup.html?q=cppat1210m000">Transfer Order Planning</a><br><a class="rux--link" href="lookup.html?q=cprrp1220m000">Generate Order Planning (Item)</a><br><a class="rux--link" href="lookup.html?q=cprrp1100m000">Planned Orders</a></dd></dl>
+    </div>
+    <div class="rux--tile notes-card" data-text="session session session code infor's word for a screen. each has a code, shown in the status bar, that names it exactly." hidden>
+      <p class="notes-card__kind">Concept</p>
+      <h2 class="rux--type-productive-heading-03">Session</h2>
+      <p>Infor's word for a screen. Each has a code, shown in the status bar, that names it exactly.</p>
+      <dl class="notes-card__facts"><dt>Also called</dt><dd>session code</dd><dt>Screens</dt><dd>ttadv3475m000<br><a class="rux--link" href="lookup.html?q=tcibd0501m000">Items</a><br><a class="rux--link" href="lookup.html?q=tcibd0501m100">Item</a><br><a class="rux--link" href="lookup.html?q=tisfc0100s000">Production Order Parameters</a></dd></dl>
+    </div>
+    <div class="rux--tile notes-card" data-text="site and warehouse site warehouse enterprise unit planning cluster four things often heard as one: a warehouse is where goods are, a site where a business is, an enterprise unit who accounts for it, and a planning cluster what plans it." hidden>
+      <p class="notes-card__kind">Concept</p>
+      <h2 class="rux--type-productive-heading-03">Site and warehouse</h2>
+      <p>Four things often heard as one: a warehouse is where goods are, a site where a business is, an enterprise unit who accounts for it, and a planning cluster what plans it.</p>
+      <dl class="notes-card__facts"><dt>Also called</dt><dd>site, warehouse, enterprise unit, planning cluster</dd><dt>Screens</dt><dd><a class="rux--link" href="lookup.html?q=tcibd1550m000">Items by Site</a><br><a class="rux--link" href="lookup.html?q=tcibd0501m100">Item</a><br><a class="rux--link" href="lookup.html?q=whwmd2500m000">Warehouses</a><br><a class="rux--link" href="lookup.html?q=cprrp1100m000">Planned Orders</a><br><a class="rux--link" href="lookup.html?q=tccom0500m000">Implemented Software Components</a></dd></dl>
+    </div>
+    <div class="rux--tile notes-card" data-text="warehousing order warehousing order order origin inventory transaction type warehouse transfer the order that controls every movement of goods in a warehouse. most are generated by sales, purchase and production orders, and a transfer is entered by hand." hidden>
+      <p class="notes-card__kind">Concept</p>
+      <h2 class="rux--type-productive-heading-03">Warehousing order</h2>
+      <p>The order that controls every movement of goods in a warehouse. Most are generated by sales, purchase and production orders, and a transfer is entered by hand.</p>
+      <dl class="notes-card__facts"><dt>Also called</dt><dd>order origin, inventory transaction type, warehouse transfer</dd><dt>Screens</dt><dd><a class="rux--link" href="lookup.html?q=whinh2100m100">Warehousing Order</a><br><a class="rux--link" href="lookup.html?q=whinh2100m000">Warehousing Orders</a><br><a class="rux--link" href="lookup.html?q=whinh0120m000">Default Order Types by Origin</a><br><a class="rux--link" href="lookup.html?q=whinh0100m000">Inventory Handling Parameters</a><br><a class="rux--link" href="lookup.html?q=whinh2300m000">Warehouse Manager Dashboard</a></dd></dl>
+    </div>
+    <div class="rux--tile notes-card" data-text="warehousing procedure warehousing procedure activity automatic activity outbound advice advice picking list freeze frozen confirm the list of steps an order takes through the warehouse, each one run by ln or left to you, which is why advice, pick, freeze and confirm do not always apply." hidden>
+      <p class="notes-card__kind">Concept</p>
+      <h2 class="rux--type-productive-heading-03">Warehousing procedure</h2>
+      <p>The list of steps an order takes through the warehouse, each one run by LN or left to you, which is why advice, pick, freeze and confirm do not always apply.</p>
+      <dl class="notes-card__facts"><dt>Also called</dt><dd>activity, automatic activity, outbound advice, advice, picking list, freeze, frozen, confirm</dd><dt>Screens</dt><dd><a class="rux--link" href="lookup.html?q=whinh2129m000">Outbound Line Status Overview</a><br><a class="rux--link" href="lookup.html?q=whinh2120m000">Outbound Order Lines</a><br><a class="rux--link" href="lookup.html?q=whinh4525m100">Picking List</a><br><a class="rux--link" href="lookup.html?q=whinh4130m000">Shipments</a><br><a class="rux--link" href="lookup.html?q=whinh4630m000">Shipment</a><br><a class="rux--link" href="lookup.html?q=whinh4131m000">Shipment Lines</a><br><a class="rux--link" href="lookup.html?q=whinh0100m000">Inventory Handling Parameters</a></dd></dl>
+    </div>
+    <div class="rux--tile notes-card" data-text="wip wip work in process wip transaction wip transfer active the value a production order has taken in and not yet delivered. issuing material or posting hours books it, and the first booking makes the order active." hidden>
+      <p class="notes-card__kind">Concept</p>
+      <h2 class="rux--type-productive-heading-03">WIP</h2>
+      <p>The value a production order has taken in and not yet delivered. Issuing material or posting hours books it, and the first booking makes the order Active.</p>
+      <dl class="notes-card__facts"><dt>Also called</dt><dd>work in process, wip transaction, wip transfer, active</dd><dt>Screens</dt><dd><a class="rux--link" href="lookup.html?q=tisfc0501m000">Production Orders</a><br><a class="rux--link" href="lookup.html?q=tisfc0101m100">Production Order</a><br><a class="rux--link" href="lookup.html?q=ticst0101m100">Material to Issue for Production Orders</a><br><a class="rux--link" href="lookup.html?q=ticst0210m000">Calculate Estimated End Item Unit Costs</a><br><a class="rux--link" href="lookup.html?q=tisfc0100s000">Production Order Parameters</a></dd></dl>
     </div>
   </div>
 </div>

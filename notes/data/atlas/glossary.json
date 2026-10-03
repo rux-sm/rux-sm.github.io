@@ -15,8 +15,227 @@
       "purpose": "The stock LN will still promise to a new order, worked out over time, and the second check on components and capacity that follows when that stock falls short.",
       "sources": [
         "cprrp0520m000",
+        "cprpd0100m000",
         "cprpd1100m000",
         "whwmd4300m000"
+      ]
+    },
+    {
+      "id": "business-partner",
+      "name": "Business partner",
+      "terms": [
+        "business partner",
+        "business partner role",
+        "sold-to business partner",
+        "buy-from business partner",
+        "ship-to business partner",
+        "ship-from business partner",
+        "internal business partner"
+      ],
+      "purpose": "Any party you trade with, where customer and supplier are two roles on one partner and not two separate records.",
+      "sources": [
+        "tccom4520m000",
+        "tdsls4601m200",
+        "tdpur4100m900",
+        "tdipu0601m000",
+        "cppat1210m000"
+      ]
+    },
+    {
+      "id": "contract-deliverable",
+      "name": "Contract deliverable",
+      "terms": [
+        "contract deliverable",
+        "project contract"
+      ],
+      "purpose": "A second way to raise demand on an item, beside a sales order, which planning ignores until it is switched on and whose supply stays tied to its project.",
+      "sources": [
+        "cprrp0520m000",
+        "whinh2100m000",
+        "whinh2300m000"
+      ]
+    },
+    {
+      "id": "order-planning",
+      "name": "Order planning",
+      "terms": [
+        "mrp",
+        "order planning",
+        "master planning",
+        "enterprise planning"
+      ],
+      "purpose": "LN's name for what most people call MRP. It lives in the package called Enterprise Planning, beside master planning, which is LN's name for MPS.",
+      "sources": [
+        "cprrp1220m000",
+        "cprrp1210m000",
+        "cprrp0520m000",
+        "cprrp1100m000",
+        "cprpd1100m000"
+      ]
+    },
+    {
+      "id": "order-type",
+      "name": "Order type",
+      "terms": [
+        "order type",
+        "warehousing order type",
+        "sales order type",
+        "purchase order type"
+      ],
+      "purpose": "A code on an order that carries the procedure the order will follow, so changing it changes how the same order behaves.",
+      "sources": [
+        "whinh0120m000",
+        "whinh2100m100",
+        "whinh2129m000",
+        "tdsls4534s000",
+        "tdpur4100m900",
+        "tccom4520m000"
+      ]
+    },
+    {
+      "id": "planned-order",
+      "name": "Planned order",
+      "terms": [
+        "planned order",
+        "firm planned order",
+        "confirmed planned order",
+        "transfer to execution level"
+      ],
+      "purpose": "Planning's proposal to buy or make something, which becomes a real order only when it is transferred and can be thrown away until then.",
+      "sources": [
+        "cprrp1100m000",
+        "cprrp1200m000",
+        "cprrp1220m000",
+        "cppat1210m000",
+        "cprrp0520m000"
+      ]
+    },
+    {
+      "id": "release",
+      "name": "Release",
+      "terms": [
+        "release",
+        "release to warehousing",
+        "release outbound advice",
+        "released"
+      ],
+      "purpose": "LN's verb for handing an order from one module to the next. It changes a status and unblocks the next step, and it moves no goods.",
+      "sources": [
+        "tdsls4246m000",
+        "tdsls4501m140",
+        "tisfc0204m000",
+        "whinh2120m000",
+        "tdisa0501m000"
+      ]
+    },
+    {
+      "id": "scenario",
+      "name": "Scenario",
+      "terms": [
+        "scenario",
+        "actual scenario"
+      ],
+      "purpose": "One complete planning answer. Every planning screen is scoped by one, and only the actual scenario is real.",
+      "sources": [
+        "cprpd4100m000",
+        "cppat1210m000",
+        "cprrp1220m000",
+        "cprrp1100m000"
+      ]
+    },
+    {
+      "id": "session",
+      "name": "Session",
+      "terms": [
+        "session",
+        "session code"
+      ],
+      "purpose": "Infor's word for a screen. Each has a code, shown in the status bar, that names it exactly.",
+      "sources": [
+        "ttadv3475m000",
+        "tcibd0501m000",
+        "tcibd0501m100",
+        "tisfc0100s000"
+      ]
+    },
+    {
+      "id": "site-and-warehouse",
+      "name": "Site and warehouse",
+      "terms": [
+        "site",
+        "warehouse",
+        "enterprise unit",
+        "planning cluster"
+      ],
+      "purpose": "Four things often heard as one: a warehouse is where goods are, a site where a business is, an enterprise unit who accounts for it, and a planning cluster what plans it.",
+      "sources": [
+        "tcibd1550m000",
+        "tcibd0501m100",
+        "whwmd2500m000",
+        "cprrp1100m000",
+        "tccom0500m000"
+      ]
+    },
+    {
+      "id": "warehousing-order",
+      "name": "Warehousing order",
+      "terms": [
+        "warehousing order",
+        "order origin",
+        "inventory transaction type",
+        "warehouse transfer"
+      ],
+      "purpose": "The order that controls every movement of goods in a warehouse. Most are generated by sales, purchase and production orders, and a transfer is entered by hand.",
+      "sources": [
+        "whinh2100m100",
+        "whinh2100m000",
+        "whinh0120m000",
+        "whinh0100m000",
+        "whinh2300m000"
+      ]
+    },
+    {
+      "id": "warehousing-procedure",
+      "name": "Warehousing procedure",
+      "terms": [
+        "warehousing procedure",
+        "activity",
+        "automatic activity",
+        "outbound advice",
+        "advice",
+        "picking list",
+        "freeze",
+        "frozen",
+        "confirm"
+      ],
+      "purpose": "The list of steps an order takes through the warehouse, each one run by LN or left to you, which is why advice, pick, freeze and confirm do not always apply.",
+      "sources": [
+        "whinh2129m000",
+        "whinh2120m000",
+        "whinh4525m100",
+        "whinh4130m000",
+        "whinh4630m000",
+        "whinh4131m000",
+        "whinh0100m000"
+      ]
+    },
+    {
+      "id": "wip",
+      "name": "WIP",
+      "terms": [
+        "wip",
+        "work in process",
+        "wip transaction",
+        "wip transfer",
+        "active"
+      ],
+      "purpose": "The value a production order has taken in and not yet delivered. Issuing material or posting hours books it, and the first booking makes the order Active.",
+      "sources": [
+        "tisfc0501m000",
+        "tisfc0101m100",
+        "ticst0101m100",
+        "ticst0210m000",
+        "tisfc0100s000"
       ]
     }
   ]

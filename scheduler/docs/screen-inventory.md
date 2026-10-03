@@ -220,21 +220,24 @@ on Details. The shortcut bar floats clear of the
 trip, placed the way a tooltip is: above it where there is room, below it where
 the day band is in the way, and slid back inside the board at either edge with
 its arrow still pointing at the trip. Nothing is taken from the trip, so the
-slots are the same on every trip however short or narrow. Each slot carries its
-word under its icon, and when the card opens above the
+slots are the same on every trip however short or narrow. The card is a raised
+surface a step lighter than the board inside a hairline, so it stands off the
+week on a dark theme as well as a light one. Each slot carries its word beside
+its icon, the four in one row, and when the card opens above the
 trip the slots come last, next to it. The card opens with its warnings in one
 band: a bus that does not fit, the follow-up reminder, Trip contact missing,
 and each need still to do, Hotel booking pending or HOS form pending, each a
 line of its own behind the bar's bell.
 No warning has a dismiss; each stays until it is put right. Needs that are
 met are not shown.
-Then the note and the updates, each a title with its button at the end,
-Trip notes and Edit, which opens the note in a window of its own with Cancel
-and Save, and Updates with their count (Updates · 5) and Add, which opens the
-trip's Updates window, over one line of what it holds until
-pressed open, the note's line led by a pin in the column an update's avatar
-stands in, so both start their words at one edge, and ended by how long ago
-the note last changed, in the updates' age column. The newest update is its
+Then the note and the updates, with no titles on the floating card: the
+note's two lines, led by a pin in the column an update's avatar stands in,
+so both start their words at one edge, then how long ago the note last
+changed, in the updates' age column, and Edit, which opens the note in a
+window of its own with Cancel and Save; then the newest update's one line and
+Add, which opens the trip's Updates window. Each opens whole when pressed.
+The docked sheet keeps each part's title, Trip notes, and Updates with their
+count (Updates · 5), over its line. The newest update is its
 author's 16px avatar, its words, and its age at the right, always a number
 (45m, 2h, 3d); opened, every update shows with its age in that one column.
 The name is the avatar's tooltip. A part with nothing in it is its title

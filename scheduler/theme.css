@@ -196,6 +196,11 @@
 [data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut:hover { background: var(--rux-layer-hover-02); }
 [data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut[aria-disabled="true"]:hover { background: transparent; }
 [data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut:focus-visible { outline-color: var(--rux-focus); }
+/* Its slots are tiles held off the edge, which their hover already parts, so
+   they take no rule between them, and give their padding to the words so
+   every word fits inside the 6px inset. */
+[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut { padding-inline: 0; }
+[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut + .scheduler-bar-shortcut { border-inline-start: 0; }
 /* The card inside it takes the same raised surface's ink, and parts its rows
    with the hairline that edges the menu, as a Geist menu parts its groups. */
 [data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) {

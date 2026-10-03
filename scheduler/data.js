@@ -12581,7 +12581,7 @@
     for (const crew of head.querySelectorAll('.scheduler-bar__crew')) fitCrew(crew);
   }
 
-  /* A trip's note shows two lines on the floating card and three on the
+  /* A trip's note shows two lines on the floating card and one on the
      docked sheet, and ends in an ellipsis; a press on a longer one opens it
      whole and a second press closes it. The trip it is open for is kept, so a
      redraw of the same card keeps it open, until the card leaves the trip. */

@@ -937,8 +937,20 @@ button.scheduler-row-head__num::after {
 /* Floating, it is fixed to the window rather than laid out in the pane, so a
    card below the last bus is not cut by the pane's edge. No ancestor of the
    track makes a containing block, as the docked sheet relies on too. Over the
-   week's sticky bands and under the trip panel. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) { position: fixed; z-index: 996; box-shadow: var(--scheduler-lift); }
+   week's sticky bands and under the trip panel. It is a raised card a step
+   lighter than the board inside a hairline, so it stands off the week on a
+   dark theme, where a shadow does not show, as well as on a light one. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) {
+  position: fixed;
+  z-index: 996;
+  --card-surface: var(--rux-layer-02);
+  --card-hover: var(--rux-layer-hover-02);
+  --card-rule: var(--rux-border-subtle-02);
+  background: var(--card-surface);
+  box-shadow: 0 0 0 1px var(--rux-border-subtle-02), 0 6px 20px rgb(0 0 0 / .18);
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="above"]::after { border-block-start-color: var(--card-surface); }
+.scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="below"]::after { border-block-end-color: var(--card-surface); }
 .scheduler-bar-shortcuts[data-card][data-docked] {
   inline-size: auto;
   --card-ink: var(--rux-text-primary);
@@ -949,24 +961,21 @@ button.scheduler-row-head__num::after {
   --card-error: var(--rux-support-error);
   --card-warning: var(--rux-support-warning);
 }
-/* Each slot carries its word under its icon, as on the phone, because a
-   tooltip names a slot only after a second's hover. The slots share the
-   card's width equally, so their words sit on even centres. The word
-   sits straight under the icon, its own line height the only air between
-   them, so the slot is still 40px high and never narrower than 40px. */
+/* Each slot carries its word beside its icon, because a tooltip names a slot
+   only after a second's hover, and side by side the four make one 32px row
+   rather than a 40px strip. The slots share the card's width equally, each
+   parted from the next by a rule, so they read as buttons and not as one
+   more row. */
 .scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut {
   flex: 1 1 0;
-  flex-direction: column;
+  gap: var(--rux-spacing-02);
   inline-size: auto;
   min-inline-size: var(--scheduler-slot-w);
-  block-size: auto;
-  padding: var(--rux-spacing-02);
+  block-size: 2rem;
+  padding: 0 var(--rux-spacing-02);
 }
-/* Over a card the slots stand on a strip a step off the card, so they read
-   as buttons and not as one more row. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut {
-  background: color-mix(in srgb, var(--card-ink) 10%, var(--card-surface));
-}
+.scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut > svg { flex: none; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut + .scheduler-bar-shortcut { border-inline-start: 1px solid var(--card-rule); }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut:hover { background: var(--card-hover); }
 /* Above its trip the slots come last, so they sit against the trip the arrow
    points at, and take the rule the card's first row gives up. */
@@ -1114,15 +1123,39 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-card__updates[data-open] .scheduler-card__words { white-space: pre-wrap; }
 .scheduler-card__when { white-space: nowrap; color: color-mix(in srgb, var(--card-ink) 70%, transparent); }
-/* Floating, the note stops at one line on an ellipsis under its title until
-   it is opened, as the newest update does. The words are cut, not the row, so
-   the row's padding shows none of a second. */
+/* Floating, the note stops at two lines on an ellipsis until it is opened.
+   The words are cut, not the row, so the row's padding shows none of a
+   third. */
 .scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__note:not([data-open]) > .scheduler-card__note-words {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  line-clamp: 1;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   overflow: hidden;
+}
+/* Floating, a part with something in it shows no title: the pin and the
+   face say which line is which, and the card is a row shorter for each.
+   The title's words stay for a screen reader, and its Edit or Add stands
+   at the end of the part's first line. An empty part keeps its title,
+   No notes or No updates, which is all it says. */
+.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__note:has(> .scheduler-card__note-words) { grid-template-columns: 1rem minmax(0, 1fr) auto auto; }
+.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__note:has(> .scheduler-card__note-words) > .scheduler-card__title { grid-column: 4; grid-row: 1; margin: 0; }
+.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__updates:has(> .scheduler-card__update-list) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--rux-spacing-03);
+  align-items: start;
+}
+.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__updates:has(> .scheduler-card__update-list) > .scheduler-card__title { grid-column: 2; grid-row: 1; margin: 0; }
+.scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__updates > .scheduler-card__update-list { grid-column: 1; grid-row: 1; }
+.scheduler-bar-shortcuts:not([data-docked]) :is(.scheduler-card__note:has(> .scheduler-card__note-words), .scheduler-card__updates:has(> .scheduler-card__update-list)) > .scheduler-card__title > span {
+  position: absolute;
+  overflow: hidden;
+  margin: -1px;
+  block-size: 1px;
+  inline-size: 1px;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
 }
 .scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__note[role="button"] { cursor: pointer; }
 .scheduler-bar-shortcuts:not([data-docked]) .scheduler-card__note[role="button"]:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }

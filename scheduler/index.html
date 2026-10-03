@@ -783,12 +783,16 @@
   <!-- The Contacts window: a row for the booking contact, each trip contact
        and the crew on the trip's buses, each with Call and Text, in a Carbon
        modal centred on the screen as the Updates window is. It has no footer:
-       each row carries its own buttons. data.js fills the label and the list. -->
+       each row carries its own buttons, and the ⋮ beside the close button holds
+       the rest. data.js fills the label, the list and the menu. -->
   <div class="rux--layer-one rux--modal scheduler-modal--contacts" id="scheduler-contacts-modal" role="presentation">
     <div role="dialog" aria-modal="true" aria-labelledby="scheduler-contacts-title" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
       <div class="rux--modal-header">
         <h2 class="rux--modal-header__label" id="scheduler-contacts-trip"></h2>
         <h2 class="rux--modal-header__heading" id="scheduler-contacts-title">Contact list</h2>
+        <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-lg scheduler-contacts__more" id="scheduler-contacts-more" aria-label="More for this trip's contacts" title="More" aria-haspopup="menu" hidden>
+          <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-more_vert"/></svg>
+        </button>
         <div class="rux--modal-close-button">
           <button type="button" class="rux--modal-close" aria-label="Close" title="Close" data-rux-close>
             <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>

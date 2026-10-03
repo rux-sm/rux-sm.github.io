@@ -266,15 +266,15 @@ of one Carbon contained list: the booking contact, the trip contacts, then
 every driver on the leg, this bar's bus first. Each row names who they are
 to the trip ("Booking contact", "Trip contact", "Booking and trip contact" for
 one person who is both, "Bus 218 Driver") over their name and number, with
-Call and Text and a ⋮ menu of the rest: Email, Add number for a person with
-no number, and for a driver Text all drivers, one group message from two
-drivers up, Remind, a text with their reminder of the leg typed in, and
-Copy reminder: "Hi Oscar, a reminder for your trip tomorrow:", then the leg in
-the Driver week info message's own lines, from `scheduler/driver-text.js`,
-and the newest itinerary's link. Once a driver has confirmed, the booking
-contact's menu has Email driver details and Copy driver details, the letter
-of every bus with its confirmed drivers' names and numbers, each leg under its
-date when their crews differ. A driver's Text opens their Google
+Call and Text. A ⋮ beside the close button holds the rest: Text all drivers,
+one group message from two drivers up; once a driver has confirmed, Email
+driver details and Copy driver details, the letter to the booking contact of
+every bus with its confirmed drivers' names and numbers, each leg under its
+date when their crews differ; Email for a contact who has an address; Remind
+for each driver, a text with their reminder of the leg typed in: "Hi Oscar,
+a reminder for your trip tomorrow:", then the leg in the Driver week info
+message's own lines, from `scheduler/driver-text.js`, and the newest
+itinerary's link; and Add number for a person with none. A driver's Text opens their Google
 Messages link on a computer where the Drivers page holds one; there, Remind copies the reminder first, to paste. A call, text
 or email to the customer's people, and the driver details, offer to add it to the trip's updates,
 and writes nothing if the offer is ignored. A shortcut

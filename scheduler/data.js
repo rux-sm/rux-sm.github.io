@@ -12843,6 +12843,7 @@
      which Design closes on Escape, a press outside or its close button. */
   const contactsModal = document.getElementById('scheduler-contacts-modal');
   const contactsList = document.getElementById('scheduler-contacts-list');
+  const contactsMore = document.getElementById('scheduler-contacts-more');
   const CONTACTS = { id: 'contacts', label: 'Call or text', short: 'Contacts', icon: '#m-call', blocked: () => null,
     run: (bar, slot) => openContactsFrom(bar, slot) };
   const FIXED_SHORTCUTS = { contacts: CONTACTS };
@@ -12984,41 +12985,13 @@
         return false;
       }
     };
-    // A ⋮ that opens a menu of the items; its column is kept when there are none.
-    const moreMenu = (label, items) => {
-      if (!items.length) return el('span', 'scheduler-contact__more');
-      const more = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-contact__more');
-      more.type = 'button';
-      more.setAttribute('aria-label', label);
-      more.title = 'More';
-      more.setAttribute('aria-haspopup', 'menu');
-      const dots = svgUse('#m-more_vert', '16', '0 0 32 32');
-      dots.classList.add('rux--btn__icon');
-      more.appendChild(dots);
-      more.addEventListener('click', () => openItemsMenu(more, items, label));
-      return more;
-    };
     // A menu item that leaves for a link, putting the window away.
     const go = (href, then) => () => { closeContacts(); then?.(); window.location.href = href; };
-    /* The driver details letter, emailed or copied for Missive, from the
-       booking contact's menu, or the drivers' while there is no such tile. */
-    const letter = driverLetter(trip);
-    const letterItems = [];
-    if (letter) {
-      const sent = ['Emailed driver details to', letter.to?.name || 'the customer'];
-      if (letter.to?.email) {
-        letterItems.push({ label: 'Email driver details', run: go(
-          `mailto:${letter.to.email}?subject=${encodeURIComponent(letter.subject)}&body=${encodeURIComponent(letter.body)}`,
-          offer(...sent)) });
-      }
-      letterItems.push({ label: 'Copy driver details', run: async () => {
-        if (await copyText(letter.body)) offer(...sent, 'Driver details copied', 'Once it is sent, add it to the trip\'s updates?')();
-      } });
-    }
-    const letterHome = letter && people.find(p => p.role !== 'Trip contact');
+    // Apple's Messages reads the body after `&`, everyone else's after `?`.
+    const apple = /Mac|iPhone|iPad/.test(navigator.userAgent);
     /* A person is a row of Carbon's contained list: who they are to the trip,
-       a driver's bus before their role, over their name and number; at the
-       row's end Call and Text and a menu of everything else. */
+       a driver's bus before their role, over their name and number, with
+       Call and Text at the row's end. */
     const card = p => {
       const li = el('li', 'rux--contained-list-item');
       const c = el('div', 'rux--contained-list-item__content scheduler-contact');
@@ -13028,60 +13001,23 @@
         el('strong', 'scheduler-contact__name', p.name),
         el('span', 'scheduler-contact__meta', p.phone ? showPhone(p.phone) : 'No number'));
       const acts = el('div', 'scheduler-contact__actions');
-      const messages = p.texting && !docked;
       if (p.phone) {
         const call = button('Call', '#m-call', `tel:${dial(p.phone)}`, false, p.customer ? offer('Called', p.name) : null);
         call.classList.add('scheduler-contact__call');
         acts.appendChild(call);
       }
+      const messages = p.texting && !docked;
       if (messages || p.phone) {
         const text = button('Text', '#m-chat', messages ? p.texting : `sms:${dial(p.phone)}`, messages, p.customer ? offer('Texted', p.name) : null);
         text.classList.add('scheduler-contact__text');
         acts.appendChild(text);
       }
-      const items = [];
-      if (p.email) items.push({ label: 'Email', run: go(`mailto:${p.email}`, offer('Emailed', p.name)) });
-      if (p === letterHome) items.push(...letterItems);
-      if (!p.customer) items.push(...driverItems);
-      /* A driver's reminder of this leg. Remind opens a text with it typed
-         in; to the office's Google Messages conversation, which takes no
-         text, it copies the reminder first to paste. */
-      if (p.reminder) {
-        // Apple's Messages reads the body after `&`, everyone else's after `?`.
-        const apple = /Mac|iPhone|iPad/.test(navigator.userAgent);
-        if (messages) {
-          items.push({ label: 'Remind', run: async () => {
-            if (await copyText(p.reminder)) toast('info', 'Reminder copied', `Paste it in ${p.name}'s conversation.`);
-            closeContacts();
-            window.open(p.texting, '_blank', 'noopener');
-          } });
-        } else if (p.phone) {
-          items.push({ label: 'Remind', run: go(`sms:${dial(p.phone)}${apple ? '&' : '?'}body=${encodeURIComponent(p.reminder)}`) });
-        }
-        items.push({ label: 'Copy reminder', run: async () => {
-          if (await copyText(p.reminder)) toast('success', 'Reminder copied', `Send it to ${p.name}.`);
-        } });
-      }
-      if (!p.phone && !messages) {
-        items.push({ label: 'Add number', run: p.customer
-          ? () => { closeContacts(); openSelected(); }
-          : go(`drivers.html?id=${encodeURIComponent(p.driverId)}`) });
-      }
-      acts.appendChild(moreMenu(`More for ${p.name}`, items));
       c.append(who, acts);
       li.appendChild(c);
       return li;
     };
-    /* Every driver on the leg in one group message, from two drivers up, in
-       each driver's menu, with the driver details while no booking contact
-       holds them. */
-    const drivers = [...mine, ...others];
-    const numbers = [...new Set(drivers.map(d => d.phone && dial(d.phone)).filter(Boolean))];
-    const driverItems = [
-      ...(numbers.length > 1 ? [{ label: `Text all drivers (${numbers.length})`, run: go(`sms:/open?addresses=${numbers.join(',')}`) }] : []),
-      ...(letterHome ? [] : letterItems),
-    ];
     // The booking contact, the trip contacts, then the drivers, this bar's bus first.
+    const drivers = [...mine, ...others];
     const everyone = [
       ...people.filter(p => p.role !== 'Trip contact'),
       ...people.filter(p => p.role === 'Trip contact'),
@@ -13092,6 +13028,55 @@
     ul.setAttribute('role', 'list');
     ul.append(...everyone.map(card));
     list.appendChild(ul);
+
+    /* Everything but Call and Text is in the one menu in the window's header:
+       a group text to every driver on the leg, from two drivers up; the
+       driver details letter to the booking contact, emailed or copied for
+       Missive; an email to a contact who has an address; each driver's
+       reminder of the leg; and Add number for a person with none. */
+    const items = [];
+    const numbers = [...new Set(drivers.map(d => d.phone && dial(d.phone)).filter(Boolean))];
+    if (numbers.length > 1) {
+      items.push({ label: `Text all drivers (${numbers.length})`, run: go(`sms:/open?addresses=${numbers.join(',')}`) });
+    }
+    const letter = driverLetter(trip);
+    if (letter) {
+      const sent = ['Emailed driver details to', letter.to?.name || 'the customer'];
+      if (letter.to?.email) {
+        items.push({ label: 'Email driver details', run: go(
+          `mailto:${letter.to.email}?subject=${encodeURIComponent(letter.subject)}&body=${encodeURIComponent(letter.body)}`,
+          offer(...sent)) });
+      }
+      items.push({ label: 'Copy driver details', run: async () => {
+        if (await copyText(letter.body)) offer(...sent, 'Driver details copied', 'Once it is sent, add it to the trip\'s updates?')();
+      } });
+    }
+    for (const p of people) {
+      if (p.email) items.push({ label: `Email ${p.name}`, run: go(`mailto:${p.email}`, offer('Emailed', p.name)) });
+    }
+    /* Remind opens a text to the driver with their reminder typed in; to the
+       office's Google Messages conversation, which takes no text, it copies
+       the reminder first to paste. */
+    for (const p of drivers) {
+      if (!p.reminder) continue;
+      if (p.texting && !docked) {
+        items.push({ label: `Remind ${p.name}`, run: async () => {
+          if (await copyText(p.reminder)) toast('info', 'Reminder copied', `Paste it in ${p.name}'s conversation.`);
+          closeContacts();
+          window.open(p.texting, '_blank', 'noopener');
+        } });
+      } else if (p.phone) {
+        items.push({ label: `Remind ${p.name}`, run: go(`sms:${dial(p.phone)}${apple ? '&' : '?'}body=${encodeURIComponent(p.reminder)}`) });
+      }
+    }
+    for (const p of everyone) {
+      if (p.phone || (p.texting && !docked)) continue;
+      items.push({ label: `Add number for ${p.name}`, run: p.customer
+        ? () => { closeContacts(); openSelected(); }
+        : go(`drivers.html?id=${encodeURIComponent(p.driverId)}`) });
+    }
+    contactsMore.hidden = !items.length;
+    contactsMore.onclick = () => openItemsMenu(contactsMore, items, 'More for this trip\'s contacts');
     const rows = everyone.length ? [list] : [];
     contactsList.replaceChildren(...(rows.length ? rows : [el('p', 'scheduler-contacts__empty', 'Nobody to reach on this trip yet.')]));
     document.getElementById('scheduler-contacts-trip').textContent = tripName(trip);

@@ -2716,9 +2716,11 @@ button.scheduler-row-head__num::after {
 
 /* ── The Contacts window ────────────────────────────────────────────────────
    A Carbon modal from the Contacts slot holding one contained list: the
-   booking contact, the trip contacts, then the drivers, a row each. Its
-   padding and the line under its header are in overrides.css. The modal's
-   content scrolls. */
+   booking contact, the trip contacts, then the drivers, a row each with Call
+   and Text. Its padding and the line under its header are in overrides.css.
+   The modal's content scrolls. */
+/* The window's menu sits beside the close button, the same 48px square. */
+.scheduler-contacts__more { position: absolute; inset-block-start: 0; inset-inline-end: 3rem; }
 .scheduler-contacts__empty { margin: 0; color: var(--rux-text-secondary); }
 /* A row: who they are to the trip, their name and number at the left, their
    buttons at the right; on a window too narrow for both the buttons wrap
@@ -2750,19 +2752,18 @@ button.scheduler-row-head__num::after {
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
   font-variant-numeric: tabular-nums;
 }
-/* Call, Text and the menu each keep their column, 8px apart, so they line up
-   from row to row whichever a person lacks. */
+/* Call and Text are one pair, 1px apart as Carbon's button set is, and each
+   keeps its column so they line up from row to row whichever a person lacks. */
 .scheduler-contact__actions {
   display: grid;
-  grid-template-columns: auto auto var(--rux-layout-size-height-md);
-  column-gap: var(--rux-spacing-03);
+  grid-template-columns: auto auto;
+  column-gap: 1px;
   flex: none;
   align-items: center;
   margin-inline-start: auto;
 }
 .scheduler-contact__call { grid-column: 1; }
 .scheduler-contact__text { grid-column: 2; }
-.scheduler-contact__more { grid-column: 3; }
 
 /* ── The docked shortcut bar ────────────────────────────────────────────────
    A block one slot wide has nothing for the shortcut bar to float beside, so

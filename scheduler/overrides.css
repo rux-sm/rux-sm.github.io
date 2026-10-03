@@ -460,15 +460,20 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   .scheduler-copy .rux--btn:hover { background-color: var(--rux-field-hover-02); }
 }
 
-/* The Contacts window's header is ruled off from its list, and the list's
-   rows line up with the header's text rather than inset 16px from it. */
+/* The Contacts window's header is ruled off from its list and leaves room
+   for its menu beside the close button. The list's rows line up with the
+   header's text rather than inset 16px from it, 24px above and below each
+   person; with no footer to clear, the content ends 8px under the last row
+   as it starts 8px over the first. */
 .scheduler-modal--contacts .rux--modal-header {
   margin-block-end: 0;
   padding-block-end: var(--rux-spacing-05);
+  padding-inline-end: 6rem;
   border-block-end: 1px solid var(--rux-border-subtle);
 }
+.scheduler-modal--contacts .rux--modal-content { padding-block-end: var(--rux-spacing-03); }
 .scheduler-modal--contacts .rux--contained-list-item__content {
-  padding: var(--rux-spacing-05) 0;
+  padding: var(--rux-spacing-06) 0;
 }
 
 /* A dialog with a date picker does not scroll, so the calendar can open past

@@ -139,6 +139,39 @@
   [data-theme="geist-dark"] #scheduler-panel .rux--action-set {
     padding-inline: var(--rux-spacing-06);
   }
+  /* The editor and the viewer are columns of the board here, not the panel
+     Design floats under the header, which geist-dark shortens by its 4rem
+     header; a column keeps the board's whole height, so its foot meets the
+     week's. */
+  [data-theme="geist-dark"] .scheduler-page .rux--side-panel {
+    block-size: 100%;
+  }
+}
+/* GEIST'S TABS ARE AS WIDE AS THEIR WORDS AND 24px APART, which is Design's
+   rule for this theme, and the editor's five fit that way, so they give up
+   the equal shares and the 8px insets overrides.css deals them. The first
+   word starts where the fields under it do, 24px in: the list's inset and
+   the tab's own 2px. */
+[data-theme="geist-dark"] #scheduler-panel-body .rux--tabs__nav-item {
+  flex: none;
+}
+[data-theme="geist-dark"] #scheduler-panel-body .rux--tabs__nav-link {
+  padding-inline: 2px;
+}
+[data-theme="geist-dark"] #scheduler-panel-body .rux--tab--list {
+  padding-inline-start: calc(var(--rux-spacing-06) - 2px);
+}
+/* Design draws this theme's tile with a 1px ring inside its edge, and the
+   Summary's table runs flush to the tile's sides and foot, over the ring. It
+   stops a pixel short of each, so the ring closes round it. */
+[data-theme="geist-dark"] .scheduler-summary__table {
+  margin-inline: calc(1px - var(--rux-layout-density-padding-inline-local));
+  margin-block-end: calc(1px - var(--rux-layout-density-padding-inline-local));
+}
+/* A button's inset is 9px and its border here, where Carbon's is 15px, so
+   the card's Add takes back 10px and its word still ends where the ages do. */
+[data-theme="geist-dark"] .scheduler-card__action {
+  margin-inline-end: -10px;
 }
 /* Geist's header is 64px, not the shell's 48 (Design's rux-overrides.css), so
    what the board places under it -- a panel brought in front, its scrim and

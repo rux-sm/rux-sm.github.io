@@ -32,17 +32,17 @@ body { background: var(--rux-background); color: var(--rux-text-primary); }
 .notes-line__n { display: grid; place-items: center; inline-size: 1.5rem; block-size: 1.5rem; border-radius: 50%; background: var(--rux-layer-01); font-size: .75rem; }
 .notes-line__tile[aria-current] .notes-line__n { background: var(--rux-background-inverse); color: var(--rux-text-inverse); }
 
-.notes-task { padding: 1.5rem; border: 1px solid var(--rux-border-subtle-01); background: var(--rux-layer-01); }
+.notes-task { padding-block-start: 1rem; }
 .notes-task__route { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .75rem; margin-block: .25rem 1rem; font-size: .875rem; color: var(--rux-text-secondary); }
 .notes-task__code { font-family: 'IBM Plex Mono', monospace; }
 .notes-task__why { max-inline-size: 40rem; margin-block: 0 1.5rem; line-height: 1.5; }
-.notes-task__label { margin-block: 1.5rem .5rem; font-size: .75rem; color: var(--rux-text-secondary); }
-.notes-answers { display: flex; flex-wrap: wrap; gap: .5rem; margin-block-start: .75rem; }
+.notes-task .rux--accordion { margin-block-start: 2rem; }
+.notes-answers { display: grid; gap: .5rem; margin: .75rem 0 0; padding: 0; list-style: none; }
 .notes-unknown { color: var(--rux-text-secondary); }
 
 .notes-mini { position: relative; display: grid; grid-template-columns: 6rem repeat(4, minmax(8rem, 1fr)); border: 1px solid var(--rux-border-subtle-01); min-inline-size: 44rem; }
 .notes-mini__scroll { overflow-x: auto; }
-.notes-mini__head, .notes-mini__lane { padding: .5rem .75rem; font-size: .75rem; color: var(--rux-text-secondary); background: var(--rux-layer-01); }
+.notes-mini__head, .notes-mini__lane { padding: .5rem .75rem; font-size: .75rem; color: var(--rux-text-secondary); }
 .notes-mini__lane, .notes-mini__cell { border-block-start: 1px solid var(--rux-border-subtle-01); }
 .notes-mini__cell { display: flex; flex-direction: column; gap: .75rem; padding: 1rem; min-block-size: 4rem; }
 .notes-mini__tile { position: relative; z-index: 1; display: flex; align-items: center; gap: .5rem; padding: .375rem .5rem; border: 1px solid var(--rux-border-subtle-01); background: var(--rux-background); color: var(--rux-text-disabled); font: inherit; font-size: .75rem; text-align: start; }
@@ -51,7 +51,7 @@ body { background: var(--rux-background); color: var(--rux-text-primary); }
 .notes-mini__lines { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; pointer-events: none; }
 .notes-mini__lines path { fill: none; stroke: var(--rux-border-interactive); stroke-width: 2; }
 .notes-mini__lines marker path { fill: var(--rux-border-interactive); stroke: none; }
-.notes-decision { margin-block-start: 1rem; padding: 1rem 1.5rem; border: 1px solid var(--rux-border-subtle-01); background: var(--rux-layer-01); }
+.notes-decision { margin-block-start: 1.5rem; }
 
 .notes-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1rem; margin-block-start: 1.5rem; }
 .notes-card__kind { margin-block: 0 .25rem; font-size: .75rem; color: var(--rux-text-secondary); }
@@ -60,7 +60,6 @@ body { background: var(--rux-background); color: var(--rux-text-primary); }
 @media (max-width: 41.98rem) {
   .notes-line { flex-direction: column; gap: 1rem; }
   .notes-line li + li::before { inset-block-start: -1rem; inset-inline-start: 1.5rem; inline-size: 0; block-size: 1rem; border-block-start: 0; border-inline-start: 1px solid var(--rux-border-strong-01); }
-  .notes-task { padding: 1rem; }
 }
 </style></head><body><!-- SPRITE:BEGIN -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
@@ -101,7 +100,7 @@ body { background: var(--rux-background); color: var(--rux-text-primary); }
 </ol>
 
 <article class="notes-task">
-  <h2 class="rux--type-productive-heading-03">2 Check the shelf</h2>
+  <h2 class="rux--visually-hidden">2 Check the shelf</h2>
   <p class="notes-task__route"><span>Stock ➔ Shelves ➔ Shelf view</span>
     <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm notes-task__code" data-copy="demo2100m000" aria-label="Copy the code demo2100m000">demo2100m000</button></p>
   <p class="notes-task__why">The shelf view shows what is on the shelf and how much of it is already promised to other orders.<span hidden> Only the part that is not promised can go into this parcel, so the two numbers are read together and never one alone.</span>
@@ -109,7 +108,7 @@ body { background: var(--rux-background); color: var(--rux-text-primary); }
 
   <div class="rux--data-table-content">
     <table class="rux--data-table rux--data-table--sm">
-    <thead><tr><th scope="col"><div class="rux--table-header-label">#</div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
+    <thead><tr><th scope="col"><div class="rux--table-header-label"><span class="rux--visually-hidden">Step</span></div></th><th scope="col"><div class="rux--table-header-label">Do this</div></th><th scope="col"><div class="rux--table-header-label">You should see</div></th></tr></thead>
     <tbody>
       <tr><td>2.1</td><td>Enter the item and run the filter</td><td>One row per shelf</td></tr>
       <tr><td>2.2</td><td>Tick the row and open Shelf detail</td><td>On shelf and Promised, side by side</td></tr>
@@ -118,7 +117,6 @@ body { background: var(--rux-background); color: var(--rux-text-primary); }
     </table>
   </div>
 
-  <p class="notes-task__label">Questions here</p>
   <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
     <li class="rux--accordion__item rux--accordion__item--active">
       <button type="button" class="rux--accordion__heading" aria-expanded="true">
@@ -127,11 +125,11 @@ body { background: var(--rux-background); color: var(--rux-text-primary); }
       </button>
       <div class="rux--accordion__wrapper"><div class="rux--accordion__content">
         <p>Decided by the free count from step 2.3 against the order.</p>
-        <div class="notes-answers">
-          <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">Yes · go to Pack</button>
-          <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">No · go to Order more stock</button>
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm">I don't know · open Shelf view</button>
-        </div>
+        <ul class="notes-answers">
+          <li><a class="rux--link" href="#main">Yes ➔ Pack</a></li>
+          <li><a class="rux--link" href="#main">No ➔ Order more stock</a></li>
+          <li><a class="rux--link" href="#main">I don't know ➔ Shelf view</a></li>
+        </ul>
       </div></div>
     </li>
     <li class="rux--accordion__item">
@@ -140,13 +138,13 @@ body { background: var(--rux-background); color: var(--rux-text-primary); }
         <div class="rux--accordion__title">Is the order inside the packing window?</div>
       </button>
       <div class="rux--accordion__wrapper"><div class="rux--accordion__content">
-        <p>A setting decides this. An order dated past the window is not offered for packing.</p>
-        <div class="notes-answers">
-          <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">Yes · carry on</button>
-          <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">No · change the order date</button>
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm">I don't know · open Order dates</button>
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm">Check or change it · open Packing settings</button>
-        </div>
+        <p>An order dated past the window is not offered for packing.</p>
+        <ul class="notes-answers">
+          <li><a class="rux--link" href="#main">Yes ➔ carry on</a></li>
+          <li><a class="rux--link" href="#main">No ➔ change the order date</a></li>
+          <li><a class="rux--link" href="#main">I don't know ➔ Order dates</a></li>
+          <li><a class="rux--link" href="#main">Check or change it ➔ Packing settings</a></li>
+        </ul>
       </div></div>
     </li>
     <li class="rux--accordion__item">
@@ -189,11 +187,11 @@ body { background: var(--rux-background); color: var(--rux-text-primary); }
 </div></div>
 <div class="notes-decision" id="decision">
   <h2 class="rux--type-productive-heading-02">Is there enough on the shelf?</h2>
-  <div class="notes-answers">
-    <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">Yes · go to Pack</button>
-    <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">No · go to Order more stock</button>
-    <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm">I don't know · open Shelf view</button>
-  </div>
+  <ul class="notes-answers">
+          <li><a class="rux--link" href="#main">Yes ➔ Pack</a></li>
+          <li><a class="rux--link" href="#main">No ➔ Order more stock</a></li>
+          <li><a class="rux--link" href="#main">I don't know ➔ Shelf view</a></li>
+        </ul>
 </div>
 </section>
 

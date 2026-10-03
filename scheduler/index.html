@@ -783,15 +783,25 @@
        places it at the pointer and opens it through Rux.menu.open, which
        supplies Escape, outside press and focus return. The module repositions
        only position: fixed surfaces, so this absolute one keeps its place. -->
-  <!-- The Contacts shortcut's window: a card for the booking contact, each
-       trip contact and the crew on the selected bar's bus, each with Call
-       and Text. data.js fills and places it. -->
-  <div class="scheduler-contacts" id="scheduler-contacts" role="dialog" aria-labelledby="scheduler-contacts-title" tabindex="-1" hidden>
-    <div class="scheduler-contacts__head">
-      <h2 class="scheduler-contacts__title" id="scheduler-contacts-title">Contacts</h2>
-      <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-contacts-close" aria-label="Close"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg></button>
+  <!-- The Contacts window: a card for the booking contact, each trip contact
+       and the crew on the trip's buses, each with Call and Text, in a Carbon
+       modal centred on the screen as the Updates window is. It has no footer:
+       each card carries its own buttons. data.js fills the label and the list. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-contacts-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-contacts-title" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__label" id="scheduler-contacts-trip"></h2>
+        <h2 class="rux--modal-header__heading" id="scheduler-contacts-title">Contacts</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" title="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <div class="scheduler-contacts__list" id="scheduler-contacts-list"></div>
+      </div>
     </div>
-    <div class="scheduler-contacts__list" id="scheduler-contacts-list"></div>
   </div>
 
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown" id="scheduler-cell-menu" role="menu" tabindex="-1" hidden>

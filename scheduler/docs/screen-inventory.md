@@ -261,7 +261,7 @@ has no notes of its own: a note saved in rux-ui becomes the pinned update.
 Only the selected trip has a
 card. Every trip has the same four slots: Open trip, the itinerary,
 opened or uploaded, Forms and Contacts; every other action is on the
-right-click menu. Contacts opens a small window of cards in three parts, the
+right-click menu. Contacts opens a centred window, as Updates does, of cards in three parts, the
 customer's people, the crew on that bus and the crew on the trip's other
 buses for that leg, each with its role, number, and Call and Text buttons,
 Email for a booking contact who has one, and a driver's status and report

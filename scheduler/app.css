@@ -2715,50 +2715,12 @@ button.scheduler-row-head__num::after {
 }
 
 /* ── The Contacts window ────────────────────────────────────────────────────
-   Opened from the Contacts slot: a card for each person to reach about the
-   trip, their name over their role and number, their buttons in a row below.
-   It is fixed to the window, on the raised layer menus use, with their shadow
-   and above the sheet and the trip panel; data.js places it by the slot, or
-   across the phone just above the docked slots, and caps its height to the
-   room there, the list scrolling inside it. */
-.scheduler-contacts {
-  position: fixed;
-  z-index: 9000;
-  inline-size: min(26rem, calc(100vw - 2 * var(--rux-spacing-03)));
-  display: flex;
-  flex-direction: column;
-  background: var(--rux-layer-01);
-  color: var(--rux-text-primary);
-  border: 1px solid var(--rux-border-subtle-01);
-  border-radius: var(--scheduler-surface-radius, 0);
-  box-shadow: 0 2px 6px var(--rux-shadow, rgba(0, 0, 0, 0.3));
-  overflow: hidden;
-}
-.scheduler-contacts[hidden] { display: none; }
-/* Docked, it runs across the phone with the gutter at either side. */
-.scheduler-contacts[data-docked] { inset-inline: var(--rux-spacing-03); inline-size: auto; }
-.scheduler-contacts__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-inline-start: var(--rux-spacing-05);
-  border-block-end: 1px solid var(--rux-border-subtle-01);
-}
-.scheduler-contacts__title {
-  margin: 0;
-  font-size: var(--rux-heading-compact-01-font-size);
-  font-weight: var(--rux-heading-compact-01-font-weight);
-  line-height: var(--rux-heading-compact-01-line-height);
-  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
-}
-.scheduler-contacts__list {
-  display: grid;
-  gap: var(--rux-spacing-03);
-  padding: var(--rux-spacing-03);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-.scheduler-contacts__empty { margin: 0; padding: var(--rux-spacing-03); color: var(--rux-text-secondary); }
+   A Carbon modal from the Contacts slot: a card for each person to reach about
+   the trip, their name over their role and number, their buttons in a row
+   below, the cards 8px apart on the modal's raised layer. The modal's content
+   scrolls. */
+.scheduler-contacts__list { display: grid; gap: var(--rux-spacing-03); }
+.scheduler-contacts__empty { margin: 0; color: var(--rux-text-secondary); }
 /* Each part's name, Customer, the bus and Other buses, in label type over its
    cards; the space above it parts the groups. */
 .scheduler-contacts__part {
@@ -2814,7 +2776,6 @@ button.scheduler-row-head__num::after {
    for that the last one wraps to a line of its own rather than clip. */
 .scheduler-contact__actions { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); flex: 1 1 100%; }
 .scheduler-contact__action { flex: 1 1 0; max-inline-size: none; }
-.scheduler-contacts:focus { outline: none; }
 
 /* ── The docked shortcut bar ────────────────────────────────────────────────
    A block one slot wide has nothing for the shortcut bar to float beside, so

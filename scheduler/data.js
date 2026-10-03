@@ -9173,7 +9173,6 @@
       || !!schEl.closest('[inert]') || barKey(bar) === cardAwayFor;
     barShortcuts.hidden = none;
     // The Contacts window goes with its trip when it is put down.
-    if (none && contactsOpen) closeContacts(false);
     if (none) { poppedFor = null; schEl.style.removeProperty('--scheduler-docked-h'); return; }
     if (barShortcuts.previousElementSibling !== bar) bar.after(barShortcuts);
     // A card that comes to a trip afresh starts compact, its note and updates
@@ -9187,8 +9186,6 @@
       if (!(quickDraft.tripId === bar.dataset.tripId && quickDraft.text)) quickOpenFor = null;
     }
     drawShortcuts(bar);
-    // And with its slot, when the slots are drawn again for another trip.
-    if (contactsOpen && !contactsOpen.slot.isConnected) closeContacts(false);
     /* The card pops each time it comes to a trip, and not while it follows
        the same one through a scroll or a redraw. It starts once the bar is
        placed, because the pop's scale would shrink what the placing measures. */
@@ -12842,9 +12839,9 @@
      the trip's updates; ignored, nothing is written. Calls to drivers offer
      nothing, because updates are what was said to the customer.
 
-     It stands above the slots on the docked sheet and beside the slot on a
-     wide board, and Design's overlay closes it on Escape or a press outside. */
-  const contactsBox = document.getElementById('scheduler-contacts');
+     It is a Carbon modal centred on the screen, as the Updates window is,
+     which Design closes on Escape, a press outside or its close button. */
+  const contactsModal = document.getElementById('scheduler-contacts-modal');
   const contactsList = document.getElementById('scheduler-contacts-list');
   const CONTACTS = { id: 'contacts', label: 'Call or text', short: 'Contacts', icon: '#m-call', blocked: () => null,
     run: (bar, slot) => openContactsFrom(bar, slot) };
@@ -12891,44 +12888,17 @@
     ].join('\r\n\r\n');
     return { to, subject: `Driver details for ${trip.destination || trip.customer || 'your trip'} on ${monthDay(first)}`, body };
   }
-  function closeContacts(restoreFocus) {
+  // Closing hands focus back to the Contacts slot, as Design's modal does.
+  function closeContacts() {
     if (!contactsOpen) return;
-    const { registration, slot } = contactsOpen;
     contactsOpen = null;
-    registration?.release();
-    contactsBox.hidden = true;
-    if (restoreFocus && slot?.isConnected) slot.focus();
+    window.Rux?.modal?.close?.(contactsModal);
   }
-  function placeContacts(slot) {
-    const gap = 8;
-    const box = slot.getBoundingClientRect();
-    contactsBox.style.removeProperty('inset-block-start');
-    contactsBox.style.removeProperty('inset-block-end');
-    contactsBox.style.removeProperty('inset-inline-start');
-    const docked = barShortcuts.hasAttribute('data-docked');
-    contactsBox.toggleAttribute('data-docked', docked);
-    if (docked) {
-      // Across the phone, just above the slots, with the room above them to scroll in.
-      contactsBox.style.insetBlockEnd = `${Math.round(window.innerHeight - box.top + gap)}px`;
-      contactsBox.style.maxBlockSize = `${Math.round(box.top - 2 * gap)}px`;
-      return;
-    }
-    const width = contactsBox.offsetWidth;
-    const left = Math.max(gap, Math.min(box.left, document.documentElement.clientWidth - width - gap));
-    contactsBox.style.insetInlineStart = `${Math.round(left)}px`;
-    const below = window.innerHeight - box.bottom - 2 * gap;
-    if (below >= Math.min(contactsBox.scrollHeight, 320) || below >= box.top) {
-      contactsBox.style.insetBlockStart = `${Math.round(box.bottom + gap)}px`;
-      contactsBox.style.maxBlockSize = `${Math.round(below)}px`;
-    } else {
-      contactsBox.style.insetBlockEnd = `${Math.round(window.innerHeight - box.top + gap)}px`;
-      contactsBox.style.maxBlockSize = `${Math.round(box.top - 2 * gap)}px`;
-    }
-  }
+  contactsModal?.addEventListener('rux:modal-closed', () => { contactsOpen = null; });
   function openContactsFrom(bar, slot) {
     const trip = panelIndex.trips.get(bar.dataset.tripId);
-    if (!contactsBox || !trip) return;
-    closeContacts(false);
+    if (!contactsModal || !trip) return;
+    closeContacts();
     const docked = barShortcuts.hasAttribute('data-docked');
 
     /* The customer's side, one card per person: the booking contact who is
@@ -13113,21 +13083,12 @@
       ...part('Other buses', others.map(p => card(p, p.bus ? `Bus ${p.bus}` : null)), mine.length ? null : all),
     ];
     contactsList.replaceChildren(...(rows.length ? rows : [el('p', 'scheduler-contacts__empty', 'Nobody to reach on this trip yet.')]));
-    contactsBox.hidden = false;
-    placeContacts(slot);
-    const registration = window.Rux?.overlay?.register?.({
-      element: contactsBox, anchor: slot,
-      close: opts => closeContacts(!!opts?.restoreFocus),
-      reposition: () => { if (contactsOpen?.slot.isConnected) placeContacts(contactsOpen.slot); else closeContacts(false); },
-    });
-    contactsOpen = { registration, slot };
-    // The window takes focus itself, so Tab starts at its first button and a
-    // tap shows no ring on one.
-    contactsBox.focus();
+    document.getElementById('scheduler-contacts-trip').textContent = tripName(trip);
+    contactsOpen = { slot };
+    window.Rux?.modal?.open?.(contactsModal, slot);
   }
-  document.getElementById('scheduler-contacts-close')?.addEventListener('click', () => closeContacts(true));
   // A tap on Call or Text follows its link and puts the window away.
-  contactsList?.addEventListener('click', e => { if (e.target.closest('.scheduler-contact__action')) closeContacts(false); });
+  contactsList?.addEventListener('click', e => { if (e.target.closest('.scheduler-contact__action')) closeContacts(); });
 
   /* THE CARD'S ROWS, as the shortcut bar draws them under its slots: a red
      band while this bar's bus does not fit the trip, the reminder while the
@@ -13469,7 +13430,8 @@
     if (!btn || btn.getAttribute('aria-disabled') === 'true') return;
     const bar = selectedBar();
     if (!bar) return;
-    // A shortcut puts the card away, except Contacts, whose window hangs from its slot.
+    // A shortcut puts the card away, except Contacts, whose window opens over it
+    // and hands focus back to its slot on closing.
     if (btn.dataset.shortcut !== 'contacts') putCardAway(bar);
     (FIXED_SHORTCUTS[btn.dataset.shortcut] ?? SHORTCUT_ACTIONS.find(a => a.id === btn.dataset.shortcut))?.run(bar, btn);
   });

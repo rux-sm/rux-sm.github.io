@@ -1,9 +1,9 @@
-commit   d8b6c05e94aa56d1a2f853b46e2d3abb3b21751e
-date     2026-10-03T23:29:05Z
-subject  docs(atp): Give available to promise a concept
+commit   ca9e89bff854dffe837e93baac446b7fe6bd9cd2
+date     2026-10-03T23:50:51Z
+subject  docs(issues): Say which gaps need LN, not a file
 contract 14 
 tier     export
-sha256   4659eb08b963c9534ec741bbca8381f9b5131d0d771c97af6b0273ca22195512
+sha256   86422f842baa56445e9f61955350b8e4fc44bb7755bbcabe404b9b678e81600a
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

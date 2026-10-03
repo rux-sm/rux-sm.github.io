@@ -8,7 +8,7 @@
     "Sales",
     "Warehousing"
   ],
-  "updated": "2026-09-17",
+  "updated": "2026-10-03",
   "status": "approved",
   "summary": "take a sales order for an item already in stock through to a confirmed shipment, then verify that inventory decreased by the shipped quantity.",
   "order": 6,
@@ -4061,14 +4061,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Narrower scopes than Pick Run. "
-                },
-                {
-                  "t": "strong",
-                  "v": "Not documented for this release."
+                  "v": "Narrower scopes than Pick Run: one picking mission, or one advice line. See 4.5"
                 }
               ],
-              "text": "Narrower scopes than Pick Run. Not documented for this release."
+              "text": "Narrower scopes than Pick Run: one picking mission, or one advice line. See 4.5"
             }
           ]
         },
@@ -4289,5 +4285,5 @@
     }
   ],
   "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
-  "openIssues": 6
+  "openIssues": 5
 }

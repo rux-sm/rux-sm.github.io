@@ -4,7 +4,7 @@
   "kind": "reference",
   "id": "tasks",
   "title": "Tasks",
-  "updated": "2026-09-16",
+  "updated": "2026-10-03",
   "status": "draft",
   "sources": [
     "cpdsp1210m000",
@@ -1433,14 +1433,31 @@
                 },
                 {
                   "t": "text",
-                  "v": " - "
+                  "v": " - set up a return order type in "
+                },
+                {
+                  "t": "session",
+                  "code": "tdsls0594m000",
+                  "name": "Order Types"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Sales ➔ Master Data ➔ Orders ➔ Order Types"
+                },
+                {
+                  "t": "text",
+                  "v": ", as Return Inventory or Return Rejects, with a warehousing order type that receives - create a sales order of that type, and give it the original document and a return reason - copy the lines from the original document; they arrive with a negative quantity and amount - approve the order and release it to warehousing, which receives the goods - release it to invoicing, then process it - "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Do - Not documented for this release."
+              "text": "Do - set up a return order type in Order Types (tdsls0594m000), Sales ➔ Master Data ➔ Orders ➔ Order Types, as Return Inventory or Return Rejects, with a warehousing order type that receives - create a sales order of that type, and give it the original document and a return reason - copy the lines from the original document; they arrive with a negative quantity and amount - approve the order and release it to warehousing, which receives the goods - release it to invoicing, then process it - Not documented for this release."
             }
           ]
         },
@@ -5059,6 +5076,68 @@
           {
             "tokens": [
               {
+                "t": "text",
+                "v": "set up a return order type in "
+              },
+              {
+                "t": "session",
+                "code": "tdsls0594m000",
+                "name": "Order Types"
+              },
+              {
+                "t": "text",
+                "v": ", "
+              },
+              {
+                "t": "path",
+                "route": "Sales ➔ Master Data ➔ Orders ➔ Order Types"
+              },
+              {
+                "t": "text",
+                "v": ", as Return Inventory or Return Rejects, with a warehousing order type that receives"
+              }
+            ],
+            "text": "set up a return order type in Order Types (tdsls0594m000), Sales ➔ Master Data ➔ Orders ➔ Order Types, as Return Inventory or Return Rejects, with a warehousing order type that receives"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "create a sales order of that type, and give it the original document and a return reason"
+              }
+            ],
+            "text": "create a sales order of that type, and give it the original document and a return reason"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "copy the lines from the original document; they arrive with a negative quantity and amount"
+              }
+            ],
+            "text": "copy the lines from the original document; they arrive with a negative quantity and amount"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "approve the order and release it to warehousing, which receives the goods"
+              }
+            ],
+            "text": "approve the order and release it to warehousing, which receives the goods"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "release it to invoicing, then process it"
+              }
+            ],
+            "text": "release it to invoicing, then process it"
+          },
+          {
+            "tokens": [
+              {
                 "t": "strong",
                 "v": "Not documented for this release."
               }
@@ -5069,11 +5148,32 @@
         "do": {
           "tokens": [
             {
+              "t": "text",
+              "v": "set up a return order type in "
+            },
+            {
+              "t": "session",
+              "code": "tdsls0594m000",
+              "name": "Order Types"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Sales ➔ Master Data ➔ Orders ➔ Order Types"
+            },
+            {
+              "t": "text",
+              "v": ", as Return Inventory or Return Rejects, with a warehousing order type that receives. create a sales order of that type, and give it the original document and a return reason. copy the lines from the original document; they arrive with a negative quantity and amount. approve the order and release it to warehousing, which receives the goods. release it to invoicing, then process it. "
+            },
+            {
               "t": "strong",
               "v": "Not documented for this release."
             }
           ],
-          "text": "Not documented for this release."
+          "text": "set up a return order type in Order Types (tdsls0594m000), Sales ➔ Master Data ➔ Orders ➔ Order Types, as Return Inventory or Return Rejects, with a warehousing order type that receives. create a sales order of that type, and give it the original document and a return reason. copy the lines from the original document; they arrive with a negative quantity and amount. approve the order and release it to warehousing, which receives the goods. release it to invoicing, then process it. Not documented for this release."
         }
       },
       {

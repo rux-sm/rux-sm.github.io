@@ -1118,7 +1118,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-notes-page="tasks" data-notes-commit="d8b6c05e94aa56d1a2f853b46e2d3abb3b21751e">
+<main id="main-content" class="rux--content" data-notes-page="tasks" data-notes-commit="ca9e89bff854dffe837e93baac446b7fe6bd9cd2">
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-7">
@@ -1127,7 +1127,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <div class="notes-tag-row">
             <span class="rux--tag rux--tag--gray"><span class="rux--tag__label">Reference</span></span>
             <span class="rux--tag rux--tag--teal"><span class="rux--tag__label">Draft</span></span>
-            <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated 2026-09-16</span></span>
+            <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated 2026-10-03</span></span>
             <span class="rux--tag rux--tag--magenta" title="44 open issues recorded against this document"><span class="rux--tag__label">44 open</span></span>
           </div>
           <p class="notes-prose-measure"><strong>Everything a learner does that is not a numbered step on the </strong><a class="rux--link" href="order-to-shipment-overview.html">overview</a><strong>.</strong> A task that changes what happens at a step names that step under <strong>Under</strong>, and Notes shows it beneath it on the path. A task with no Under stands on its own. A task whose steps are not written carries a gap, and the gap is the quest that fills it in.</p>
@@ -1360,6 +1360,11 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>take goods back from a customer</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
                     <ol class="rux--list--ordered notes-dg-steps">
+                      <li class="rux--list__item">set up a return order type in <span class="notes-t-named">Order Types</span> <span class="notes-t-exact">tdsls0594m000</span>, <span class="notes-t-route"><span>Sales</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Types</span></span>, as Return Inventory or Return Rejects, with a warehousing order type that receives</li>
+                      <li class="rux--list__item">create a sales order of that type, and give it the original document and a return reason</li>
+                      <li class="rux--list__item">copy the lines from the original document; they arrive with a negative quantity and amount</li>
+                      <li class="rux--list__item">approve the order and release it to warehousing, which receives the goods</li>
+                      <li class="rux--list__item">release it to invoicing, then process it</li>
                       <li class="rux--list__item"><strong>Not documented for this release.</strong></li>
                     </ol>
                   </div>
@@ -2237,7 +2242,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <p class="notes-prose-measure"><strong>returns · Sales returns</strong> · stage 7 · step</p>
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Does</strong> — take goods back from a customer</li>
-          <li class="rux--list__item"><strong>Do</strong> - <strong>Not documented for this release.</strong></li>
+          <li class="rux--list__item"><strong>Do</strong> - set up a return order type in <span class="notes-t-named">Order Types</span> <span class="notes-t-exact">tdsls0594m000</span>, <span class="notes-t-route"><span>Sales</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Types</span></span>, as Return Inventory or Return Rejects, with a warehousing order type that receives - create a sales order of that type, and give it the original document and a return reason - copy the lines from the original document; they arrive with a negative quantity and amount - approve the order and release it to warehousing, which receives the goods - release it to invoicing, then process it - <strong>Not documented for this release.</strong></li>
         </ul>
           <p class="notes-prose-measure"><span class="notes-t-named">quotations · Quotes</span> <span class="notes-t-exact">tdsls8310m000</span> · stage 7 · step</p>
           <ul class="rux--list--unordered">
@@ -2550,7 +2555,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           </form>
         </section>
         </div>
-<p class="rux--type-caption-01 notes-revision">Built from atlas d8b6c05 · contract 14</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas ca9e89b · contract 14</p>
       </div>
     </div>
   </div>

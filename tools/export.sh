@@ -15,6 +15,10 @@ cd "$ROOT/notes" && ATLAS="$ATLAS" sh tools/sync-export.sh
 # a middle command fails, and a failed build went on to say it had exported.
 cd "$ROOT"
 node tools/build.mjs
+# The check fails when a rebuild leaves generated pages changed and unstaged,
+# which is right before a commit and is always the case straight after an
+# export. So what the export wrote is staged first, and only that.
+git add notes/data/atlas notes/pages notes/index.html notes/do.html notes/understand.html notes/lookup.html
 node tools/check.mjs
 echo
 echo "  exported from atlas $(git -C "$ATLAS" rev-parse --short HEAD). Commit and push to publish."

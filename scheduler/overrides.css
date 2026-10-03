@@ -24,14 +24,17 @@
    click's focus loses the ring; keyboard focus keeps it. */
 .rux--tab-content:focus:not(:focus-visible) { outline: none; }
 
-/* The toolbar's buttons and the regions' close buttons ring only for keyboard
-   focus, as the tab panels above do. Carbon rings a button on any focus, so a
-   clicked toggle kept a ring beside its selected fill and read as a stronger
-   state than it is. Each selector matches or beats Carbon's focus rule for
-   that button, and comes later. */
+/* The toolbar's buttons, the regions' close buttons and a window's close and
+   header buttons ring only for keyboard focus, as the tab panels above do.
+   Carbon rings a button on any focus, so a clicked toggle kept a ring beside
+   its selected fill and read as a stronger state than it is, and a window
+   opened by a tap showed a ring on the button it focuses first. Each selector
+   matches or beats Carbon's focus rule for that button, and comes later. */
 .scheduler-toolbar .rux--btn:focus:not(:focus-visible),
 .rux--side-panel .rux--btn.rux--side-panel__close-button:focus:not(:focus-visible),
-#scheduler-avail-close:focus:not(:focus-visible) {
+#scheduler-avail-close:focus:not(:focus-visible),
+.rux--modal-close:focus:not(:focus-visible),
+.rux--modal-header .rux--btn:focus:not(:focus-visible) {
   border-color: transparent;
   box-shadow: none;
 }
@@ -458,6 +461,13 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 .scheduler-copy .rux--btn { background-color: transparent; }
 @media (any-hover: hover) {
   .scheduler-copy .rux--btn:hover { background-color: var(--rux-field-hover-02); }
+}
+
+/* On a phone every window fills the screen, as an iPhone sheet does, rather
+   than ending where its content ends over the dimmed board. Carbon gives the
+   container the screen's width there and leaves its height to its content. */
+@media (max-width: 41.98rem) {
+  .rux--modal-container { block-size: 100%; }
 }
 
 /* The Contacts window's header is ruled off from its list and leaves room

@@ -651,6 +651,14 @@
   block-size: 2.25rem;
   padding-inline: 8px;
 }
+/*   An item rests in the page's own text, #ededed on Geist's Menu page,
+     where Carbon rests it in the secondary grey and lifts it on hover; the
+     hover pill is what marks the pointed one here. Only Carbon's menu was
+     measured, so only it moves. One class under the danger item's hover
+     rule, which keeps its white on red. */
+[data-theme="geist-dark"] .rux--menu-item:not(.rux--menu-item--disabled) {
+  color: var(--rux-text-primary);
+}
 [data-theme="geist-dark"] :is(.rux--list-box__menu-item, .rux--overflow-menu-options__option) {
   --rux-layout-size-height-local: 2.25rem;
 }

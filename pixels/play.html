@@ -142,7 +142,8 @@
 <main id="main-content" class="rux--content pixels-main">
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
-      <div class="pixels-game" id="pixels-game">
+      <!-- Drawn only once play.js has built the board, so the keys are never seen where the board will be. -->
+      <div class="pixels-game is-loading" id="pixels-game">
         <div id="pixels-error" hidden>
         <div class="rux--inline-notification rux--inline-notification--error" role="alert">
           <div class="rux--inline-notification__details">

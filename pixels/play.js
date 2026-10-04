@@ -389,5 +389,6 @@
 
     tick();
     draw();
+    game.classList.remove('is-loading');
   })();
 })();

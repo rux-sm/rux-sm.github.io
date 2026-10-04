@@ -229,6 +229,11 @@
 @media (max-width: 28rem) {
   .pixels-game { --gutter: 1rem; inline-size: auto; max-inline-size: none; margin: -1rem -2.5rem 0; }
 }
+/* LOADING. The puzzle comes from the database, and until its board is built
+   the keys under it would sit at the top of the page for a moment and then
+   jump down. Nothing but an error is drawn until play.js says it is ready. */
+.pixels-game.is-loading > :not(#pixels-error) { visibility: hidden; }
+
 /* THE COVER. Until Start is tapped the board keeps its place and shows only
    its corner, and the button sits in the middle of where it will be. */
 .pixels-stage { position: relative; }

@@ -1,17 +1,21 @@
 /* ==========================================================================
-   play.js — one puzzle, by the rules of Picross DS
+   play.js — one puzzle
    --------------------------------------------------------------------------
    Fill a square or cross it out with X. Filling a square that is not in the
-   picture is a mistake: it is crossed out in red and time is added to the
-   clock, more for each mistake. A line's numbers grey out once its filled
-   squares are right, and the puzzle is solved when every square of the
-   picture is filled.
+   picture is a mistake: it is crossed out in red and costs a star. A number
+   greys out once its run of squares is filled, a line that is finished
+   crosses out its own empty squares, and the puzzle is solved when every
+   square of the picture is filled.
 
-   Free mode, the DS's other way to play, points out nothing: a wrong square
-   fills like a right one and costs no time, Fill on a filled square empties
-   it, the numbers never grey, and the puzzle is solved when the filled
-   squares are exactly the picture. The choice is kept in this browser under
-   `pixels-mode`, and changing it starts the puzzle over.
+   THREE STARS to start. A mistake or a hint costs one, and the last is never
+   lost. Hint points at a wrong X if there is one, and otherwise at the line
+   where the numbers decide the most squares from what is on the board.
+
+   Free mode points out nothing: a wrong square fills like a right one, Fill
+   on a filled square empties it, the numbers never grey, there is no hint,
+   and the puzzle is solved when the filled squares are exactly the picture.
+   The choice is kept in this browser under `pixels-mode`, and changing it
+   starts the puzzle over.
 
    A game in progress is kept in this browser under `pixels-progress`, so a
    phone that reloads the page picks up where it was. It is dropped once the
@@ -20,14 +24,15 @@
 (() => {
   'use strict';
 
-  const { data, SIZE, grid, board, highlight, drag, picture, time, title, switcher } = window.Pixels;
+  const { data, SIZE, grid, column, clues, solveLine, board, paint, highlight, drag, stars, buzz, time, title, switcher } = window.Pixels;
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock');
 
-  // Minutes added for the first, second and every later mistake.
-  const PENALTY = [2, 4, 8];
   const PROGRESS = 'pixels-progress';
   const MODE = 'pixels-mode';
+  // How long the finished picture takes to fill in before the name shows.
+  const REVEAL = 1100;
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const say = (heading, detail) => {
     const box = $('pixels-error');
@@ -65,22 +70,32 @@
     let state = fresh ? kept.state : blank();
     let seconds = fresh ? kept.seconds : 0;
     let mistakes = fresh ? kept.mistakes : 0;
+    let hints = fresh ? kept.hints || 0 : 0;
     let free = fresh ? !!kept.free : (() => { try { return localStorage.getItem(MODE) === 'free'; } catch { return false; } })();
     // No square is marked until a finger, the mouse or an arrow key picks one.
-    let tool = 'fill', action = null, cursor = [], solved = false, el;
+    let tool = 'fill', action = null, cursor = [], solved = false;
 
     $('pixels-title').textContent = title(puzzle, index, results.has(puzzle.id));
     document.title = `${title(puzzle, index, results.has(puzzle.id))} — Pixels`;
     $('pixels-edit').href = `make.html?id=${encodeURIComponent(puzzle.id)}`;
 
-    const keep = () => saveProgress(puzzle.id, { squares: puzzle.squares, state, seconds, mistakes, free });
+    const score = () => (free ? 3 : Math.max(1, 3 - mistakes - hints));
+    const keep = () => saveProgress(puzzle.id, { squares: puzzle.squares, state, seconds, mistakes, hints, free });
+    const el = board(boardHost, answer, state, { done: !free, label: 'Puzzle' });
     const draw = () => {
-      el = board(boardHost, answer, state, { done: !free, label: 'Puzzle' });
+      paint(el, answer, state, { done: !free });
+      el.querySelectorAll('.is-hint').forEach(e => e.classList.remove('is-hint'));
       highlight(el, ...cursor);
+      stars($('pixels-stars'), score());
+      $('pixels-hint').hidden = free;
     };
     const tick = () => { clock.textContent = time(seconds); };
+    const tell = (text, error) => {
+      status.textContent = text;
+      if (error) status.dataset.error = ''; else delete status.dataset.error;
+    };
 
-    // The clock runs only while the page is in front, as the DS pauses.
+    // The clock runs only while the page is in front.
     setInterval(() => {
       if (solved || document.hidden) return;
       seconds++;
@@ -91,14 +106,23 @@
     const finish = async () => {
       solved = true;
       saveProgress(puzzle.id, null);
-      let best = { best: seconds, isNew: true };
-      try { best = await data.record(puzzle.id, seconds); } catch {
-        status.textContent = 'Solved, but the time was not saved.';
-      }
-      picture($('pixels-picture'), puzzle.squares);
+      highlight(el);
+      buzz(60);
+      // The squares fill in as the picture while the time is saved.
+      el.classList.add('is-solved');
+      const earned = score();
+      let best = { best: seconds, stars: earned, isNew: true }, lost = false;
+      const [saved] = await Promise.allSettled([
+        data.record(puzzle.id, seconds, earned),
+        new Promise(done => setTimeout(done, still ? 0 : REVEAL)),
+      ]);
+      if (saved.status === 'fulfilled') best = saved.value; else lost = true;
+
       $('pixels-solved-name').textContent = puzzle.name;
-      const parts = [time(seconds), free ? 'free mode' : `${mistakes} mistake${mistakes === 1 ? '' : 's'}`];
-      if (!best.isNew) parts.push(`best ${time(best.best)}`);
+      stars($('pixels-solved-stars'), earned);
+      const parts = [time(seconds)];
+      if (lost) parts.push('not saved');
+      else if (!best.isNew) parts.push(`best ${time(best.best)}`);
       else if (results.has(puzzle.id)) parts.push('a new best');
       $('pixels-solved-time').textContent = parts.join(' · ');
       document.title = `${puzzle.name} — Pixels`;
@@ -107,8 +131,16 @@
       const next = order.find(p => !results.has(p.id) && p.id !== puzzle.id);
       if (next) $('pixels-next').href = `play.html?id=${encodeURIComponent(next.id)}`;
       else $('pixels-next').remove();
-      game.hidden = true;
+      // The numbers and the controls leave, and the picture slides from
+      // where the board had it to the middle.
+      const first = el.querySelector('.pixels-cell'), from = first.getBoundingClientRect();
+      game.classList.add('is-done');
       $('pixels-solved').hidden = false;
+      const to = first.getBoundingClientRect();
+      if (!still) el.animate([
+        { transformOrigin: '0 0', transform: `translate(${from.x - to.x}px, ${from.y - to.y}px) scale(${from.width / to.width})` },
+        { transformOrigin: '0 0', transform: 'none' },
+      ], { duration: 400, easing: 'ease-out' });
     };
 
     // Free mode is solved by the filled squares being the picture exactly;
@@ -117,19 +149,32 @@
     const isSolved = () => answer.every((r, y) => r.every((c, x) =>
       free ? !!c === (state[y][x] === 1) : !c || state[y][x] === 1));
 
+    // A line whose picture squares are all filled crosses out what is left,
+    // and says whether the square at (y, x) finished one.
+    const closeLines = (y, x) => {
+      const row = answer[y].every((c, i) => !c || state[y][i] === 1);
+      const col = answer.every((r, i) => !r[x] || state[i][x] === 1);
+      for (let i = 0; i < SIZE; i++) {
+        if (row && state[y][i] === 0) state[y][i] = 2;
+        if (col && state[i][x] === 0) state[i][x] = 2;
+      }
+      return row || col;
+    };
+
     const act = (y, x) => {
       if (solved) return;
       const v = state[y][x];
       if (action === 'fill' && v === 0) {
-        if (free || answer[y][x]) state[y][x] = 1;
-        else {
+        if (free || answer[y][x]) {
+          state[y][x] = 1;
+          buzz(!free && closeLines(y, x) ? 30 : 10);
+          tell('');
+        } else {
+          const before = score();
           state[y][x] = 3;
           mistakes++;
-          const minutes = PENALTY[Math.min(mistakes, PENALTY.length) - 1];
-          seconds += minutes * 60;
-          tick();
-          status.dataset.error = '';
-          status.textContent = `Not in the picture · +${minutes}:00`;
+          buzz([40, 60, 40]);
+          tell(score() < before ? 'Not in the picture · a star lost' : 'Not in the picture', true);
         }
       } else if (action === 'unfill' && v === 1) state[y][x] = 0;
       else if (action === 'x' && v === 0) state[y][x] = 2;
@@ -148,6 +193,44 @@
       act(y, x);
     };
 
+    /* A HINT. What the board shows for certain is every filled square and
+       every X that is right; a wrong X is pointed at first, because the
+       numbers cannot be reasoned from it. Otherwise each line is solved from
+       what is certain, and the one that decides the most squares to fill, or
+       failing that the most to cross out, is lit. */
+    const hint = () => {
+      if (solved || free) return;
+      const wrong = [];
+      state.forEach((r, y) => r.forEach((v, x) => { if (v === 2 && answer[y][x]) wrong.push([y, x]); }));
+      let text, lit;
+      if (wrong.length) {
+        cursor = wrong[0];
+        text = 'This X is on a square of the picture';
+      } else {
+        const known = state.map((r, y) => r.map((v, x) => (v === 1 ? 1 : v && !answer[y][x] ? 0 : -1)));
+        let top = null;
+        const weigh = (kind, n, want, have) => {
+          const agreed = solveLine(clues(want), have) || [];
+          const fills = agreed.filter((v, k) => v === 1 && have[k] === -1).length;
+          const crosses = agreed.filter((v, k) => v === 0 && have[k] === -1).length;
+          const worth = fills * 100 + crosses;
+          if (worth && (!top || worth > top.worth)) top = { kind, n, worth, fills };
+        };
+        for (let y = 0; y < SIZE; y++) weigh('row', y, answer[y], known[y]);
+        for (let x = 0; x < SIZE; x++) weigh('col', x, column(answer, x), column(known, x));
+        if (!top) return;
+        lit = `.pixels-cell[data-${top.kind === 'row' ? 'y' : 'x'}="${top.n}"], .pixels-clue[data-${top.kind}="${top.n}"]`;
+        text = `${top.kind === 'row' ? 'Row' : 'Column'} ${top.n + 1} has squares to ${top.fills ? 'fill' : 'cross out'}`;
+      }
+      hints++;
+      draw();
+      if (lit) el.querySelectorAll(lit).forEach(e => e.classList.add('is-hint'));
+      tell(text);
+      buzz();
+      keep();
+    };
+    $('pixels-hint').addEventListener('click', hint);
+
     drag(boardHost, {
       start: (y, x) => begin(y, x),
       paint: act,
@@ -155,7 +238,8 @@
     });
     switcher($('pixels-tool'), b => { tool = b.dataset.tool; });
 
-    // Arrows move, Z or Space fills and X crosses out, whichever tool is chosen.
+    // Arrows move, Z or Space fills, X crosses out and H hints, whichever
+    // tool is chosen.
     addEventListener('keydown', e => {
       if (solved || e.target.closest('input, textarea, select, .rux--header, .rux--side-nav')) return;
       const move = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[e.key];
@@ -167,6 +251,7 @@
         return;
       }
       const key = e.key.toLowerCase();
+      if (key === 'h') { hint(); return; }
       if (!cursor.length) return;
       if (key === 'z' || key === ' ') { e.preventDefault(); begin(...cursor, 'fill'); }
       else if (key === 'x') begin(...cursor, 'x');
@@ -176,8 +261,8 @@
       state = blank();
       seconds = 0;
       mistakes = 0;
-      status.textContent = '';
-      delete status.dataset.error;
+      hints = 0;
+      tell('');
       saveProgress(puzzle.id, null);
       tick();
       draw();
@@ -191,7 +276,7 @@
       free = e.detail.on;
       try { localStorage.setItem(MODE, free ? 'free' : 'classic'); } catch { /* the choice lasts this page */ }
       restart();
-      status.textContent = free ? 'Free mode · mistakes are not pointed out' : '';
+      tell(free ? 'Free mode · mistakes are not pointed out' : '');
     });
 
     tick();

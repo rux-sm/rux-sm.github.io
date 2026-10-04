@@ -20,8 +20,3 @@ done and how.
   driver itinerary and the customer quote. A passenger roster is still named
   for it, after the printed schedule.
 
-## Pixels
-
-- A solved puzzle shows in black and white. The DS reveals a colour picture;
-  that needs a colour step in the maker.
-

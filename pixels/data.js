@@ -2,8 +2,10 @@
    data.js — where puzzles and best times are kept
    --------------------------------------------------------------------------
    Two tables: pixels_puzzles, every puzzle, shared by every account that can
-   open Pixels, and pixels_results, each account's best time on each puzzle
-   it has solved. The client is the account's, from /account.js.
+   open Pixels, and pixels_results, each account's best time and most stars
+   on each puzzle it has solved. `results` gives a Map of puzzle id to
+   { seconds, stars }, and `record` keeps the better of each. The client is
+   the account's, from /account.js.
 
    THE LOCAL PREVIEW, `npm run serve` on :8640, has no log-in, so there the
    same calls read and write this browser's storage instead, starting from
@@ -47,7 +49,10 @@
   const write = db => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch { /* preview only */ } };
   const preview = {
     async list() { return read().puzzles; },
-    async results() { return new Map(Object.entries(read().results)); },
+    // A result kept before stars were is a bare time.
+    async results() {
+      return new Map(Object.entries(read().results).map(([id, r]) => [id, typeof r === 'number' ? { seconds: r, stars: 1 } : r]));
+    },
     async save({ id, name, squares }) {
       const db = read();
       if (id) {
@@ -68,13 +73,12 @@
       delete db.results[id];
       write(db);
     },
-    async record(id, seconds) {
+    async record(id, seconds, stars) {
       const db = read();
-      const best = db.results[id];
-      if (best != null && best <= seconds) return { best, isNew: false };
-      db.results[id] = seconds;
+      const was = typeof db.results[id] === 'number' ? { seconds: db.results[id], stars: 1 } : db.results[id];
+      db.results[id] = { seconds: Math.min(seconds, was?.seconds ?? seconds), stars: Math.max(stars, was?.stars ?? stars) };
       write(db);
-      return { best: seconds, isNew: true };
+      return { best: db.results[id].seconds, stars: db.results[id].stars, isNew: !was || seconds < was.seconds };
     },
   };
 
@@ -88,9 +92,9 @@
       return data;
     },
     async results() {
-      const { data, error } = await client.from('pixels_results').select('puzzle_id, best_seconds');
+      const { data, error } = await client.from('pixels_results').select('puzzle_id, best_seconds, stars');
       fail(error);
-      return new Map(data.map(r => [r.puzzle_id, r.best_seconds]));
+      return new Map(data.map(r => [r.puzzle_id, { seconds: r.best_seconds, stars: r.stars }]));
     },
     async save({ id, name, squares }) {
       if (id) {
@@ -110,16 +114,18 @@
     async remove(id) {
       fail((await client.from('pixels_puzzles').delete().eq('id', id)).error);
     },
-    async record(id, seconds) {
-      const { data: row, error } = await client.from('pixels_results')
-        .select('best_seconds').eq('puzzle_id', id).maybeSingle();
+    async record(id, seconds, stars) {
+      const { data: was, error } = await client.from('pixels_results')
+        .select('best_seconds, stars').eq('puzzle_id', id).maybeSingle();
       fail(error);
-      if (row && row.best_seconds <= seconds) return { best: row.best_seconds, isNew: false };
-      const { data: { session } } = await client.auth.getSession();
-      fail((await client.from('pixels_results').upsert({
-        user_id: session.user.id, puzzle_id: id, best_seconds: seconds, solved_at: new Date().toISOString(),
-      })).error);
-      return { best: seconds, isNew: true };
+      const best = Math.min(seconds, was?.best_seconds ?? seconds), most = Math.max(stars, was?.stars ?? stars);
+      if (!was || best !== was.best_seconds || most !== was.stars) {
+        const { data: { session } } = await client.auth.getSession();
+        fail((await client.from('pixels_results').upsert({
+          user_id: session.user.id, puzzle_id: id, best_seconds: best, stars: most, solved_at: new Date().toISOString(),
+        })).error);
+      }
+      return { best, stars: most, isNew: !was || seconds < was.best_seconds };
     },
   };
 

@@ -21,7 +21,7 @@
 <script src="/design/js/theme.js"></script>
 </head>
 <body>
-<!-- One puzzle, played by Picross DS rules, driven by play.js. The address names it: play.html?id=. The shell is the scheduler's: the menu button opens the side
+<!-- One puzzle, driven by play.js. The address names it: play.html?id=. The shell is the scheduler's: the menu button opens the side
      nav at every width. -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run build` rewrites this
@@ -142,39 +142,46 @@
         </div>
         <div class="pixels-top">
           <h1 class="rux--type-productive-heading-03" id="pixels-title">Puzzle</h1>
+          <span id="pixels-stars"></span>
           <span class="pixels-clock" id="pixels-clock" role="timer" aria-label="Time">00:00</span>
         </div>
         <div id="pixels-board"></div>
-        <div class="pixels-status" id="pixels-status" aria-live="polite"></div>
-        <div class="rux--content-switcher rux--content-switcher--lg rux--layout--size-lg" role="tablist" aria-label="Tool" id="pixels-tool">
-          <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-tool="fill"><span class="rux--content-switcher__label">Fill</span></button>
-          <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-tool="x"><span class="rux--content-switcher__label">X</span></button>
-        </div>
-        <div class="pixels-actions">
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="pixels-restart">Start over</button>
-          <a class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="pixels-edit" href="make.html">Edit</a>
-        </div>
-        <!-- play.js sets it from the saved choice; changing it starts over. -->
-        <div class="rux--toggle" id="pixels-free">
-          <button id="pixels-free-button" class="rux--toggle__button" role="switch" type="button" aria-checked="false" aria-labelledby="pixels-free-label"></button>
-          <label class="rux--toggle__label" for="pixels-free-button" id="pixels-free-label">
-            <span class="rux--toggle__label-text">Free mode</span>
-            <div class="rux--toggle__appearance">
-              <div class="rux--toggle__switch"></div>
-              <span class="rux--toggle__text" aria-hidden="true">Off</span>
+        <div class="pixels-controls">
+          <div class="pixels-status" id="pixels-status" aria-live="polite"></div>
+          <div class="pixels-tools">
+            <div class="rux--content-switcher rux--content-switcher--lg rux--layout--size-lg" role="tablist" aria-label="Tool" id="pixels-tool">
+              <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-tool="fill"><span class="rux--content-switcher__label">Fill</span></button>
+              <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-tool="x"><span class="rux--content-switcher__label">X</span></button>
             </div>
-          </label>
+            <button type="button" class="rux--btn rux--btn--tertiary rux--layout--size-lg" id="pixels-hint">Hint</button>
+          </div>
+          <div class="pixels-actions">
+            <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="pixels-restart">Start over</button>
+            <a class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="pixels-edit" href="make.html">Edit</a>
+          </div>
+          <!-- play.js sets it from the saved choice; changing it starts over. -->
+          <div class="rux--toggle" id="pixels-free">
+            <button id="pixels-free-button" class="rux--toggle__button" role="switch" type="button" aria-checked="false" aria-labelledby="pixels-free-label"></button>
+            <label class="rux--toggle__label" for="pixels-free-button" id="pixels-free-label">
+              <span class="rux--toggle__label-text">Free mode</span>
+              <div class="rux--toggle__appearance">
+                <div class="rux--toggle__switch"></div>
+                <span class="rux--toggle__text" aria-hidden="true">Off</span>
+              </div>
+            </label>
+          </div>
         </div>
-      </div>
-      <div class="pixels-solved" id="pixels-solved" hidden>
-        <div class="pixels-picture" id="pixels-picture"></div>
-        <div>
-          <h1 class="rux--type-productive-heading-04" id="pixels-solved-name"></h1>
-          <p class="pixels-meta" id="pixels-solved-time"></p>
-        </div>
-        <div class="pixels-actions">
-          <a class="rux--btn rux--btn--primary" id="pixels-next" href="./">Next puzzle</a>
-          <a class="rux--btn rux--btn--ghost" href="./">Puzzles</a>
+        <!-- Shown under the finished picture, which is the board itself. -->
+        <div class="pixels-solved" id="pixels-solved" hidden>
+          <div>
+            <h1 class="rux--type-productive-heading-04" id="pixels-solved-name"></h1>
+            <span id="pixels-solved-stars"></span>
+            <p class="pixels-meta" id="pixels-solved-time"></p>
+          </div>
+          <div class="pixels-actions">
+            <a class="rux--btn rux--btn--primary" id="pixels-next" href="./">Next puzzle</a>
+            <a class="rux--btn rux--btn--ghost" href="./">Puzzles</a>
+          </div>
         </div>
       </div>
     </div>

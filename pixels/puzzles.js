@@ -2,13 +2,13 @@
    puzzles.js — the front page: every puzzle, ten to a level
    --------------------------------------------------------------------------
    Levels fill in the order puzzles were made, and none is locked. A solved
-   puzzle shows its picture, name and best time; an unsolved one its number
-   and a question mark, as on the DS.
+   puzzle shows its picture, name, stars and best time; an unsolved one its
+   number, a question mark and how hard it is.
    ========================================================================== */
 (() => {
   'use strict';
 
-  const { data, picture, time, title } = window.Pixels;
+  const { data, grid, rounds, grade, picture, stars, time, title } = window.Pixels;
   const host = document.getElementById('pixels-levels');
   const PER_LEVEL = 10;
 
@@ -42,7 +42,12 @@
     if (solved) {
       const meta = document.createElement('p');
       meta.className = 'pixels-meta';
-      meta.textContent = time(best);
+      meta.textContent = time(best.seconds);
+      text.append(stars(document.createElement('span'), best.stars), meta);
+    } else {
+      const meta = document.createElement('p');
+      meta.className = 'pixels-meta';
+      meta.textContent = grade(rounds(grid(puzzle.squares)));
       text.appendChild(meta);
     }
     a.append(art, text);

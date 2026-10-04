@@ -3,8 +3,9 @@
    --------------------------------------------------------------------------
    Tap a square to fill or empty it, or drag to draw. The numbers update as
    the picture changes, and the check below says whether a player can solve
-   it by logic alone; squares that would need a guess are outlined. Save
-   stays off until the picture is solvable and named.
+   it by logic alone, and then how hard that is; squares that would need a
+   guess are outlined. Save stays off until the picture is solvable and
+   named. docs/making-puzzles.md is the guide to a good one.
 
    make.html?id= edits a saved puzzle. A new picture not yet saved is kept in
    this browser under `pixels-draft`, so a reload does not lose it.
@@ -12,7 +13,7 @@
 (() => {
   'use strict';
 
-  const { data, SIZE, grid, squaresOf, unreached, board, drag } = window.Pixels;
+  const { data, SIZE, grid, squaresOf, unreached, rounds, grade, board, drag } = window.Pixels;
   const $ = id => document.getElementById(id);
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), save = $('pixels-save');
   const DRAFT = 'pixels-draft';
@@ -54,7 +55,7 @@
     board(host, draft, draft, { unknown, label: 'Picture' });
     if (empty) tag('rux--tag--gray', 'Draw a picture');
     else if (guesses) tag('rux--tag--red', `${guesses} square${guesses === 1 ? '' : 's'} need a guess`);
-    else tag('rux--tag--green', 'Solvable');
+    else tag('rux--tag--green', `Solvable · ${grade(rounds(draft))}`);
     solvable = !empty && !guesses;
     save.disabled = !solvable || !name.value.trim();
   };

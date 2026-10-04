@@ -3,10 +3,12 @@
    --------------------------------------------------------------------------
    window.Pixels holds the puzzle rules and the board: a puzzle's squares are
    a string of 0s and 1s, row by row. `clues` gives a line's numbers,
-   `unreached` says which squares logic alone cannot decide, `board` draws a
-   board with its clues, `drag` paints along it, and `picture` draws the
-   finished picture. The pages add their own behaviour in puzzles.js,
-   play.js and make.js.
+   `unreached` says which squares logic alone cannot decide and `rounds` how
+   hard the rest is, `board` draws a
+   board with its clues and `paint` keeps it in step with the game, `drag`
+   paints along it, `picture` draws the finished picture, `stars` a score
+   and `buzz` ticks the phone. The pages add their own behaviour in
+   puzzles.js, play.js and make.js.
    ========================================================================== */
 (() => {
   'use strict';
@@ -28,6 +30,16 @@
     }
     if (n) runs.push(n);
     return runs.length ? runs : [0];
+  };
+  // The same runs as [first square, length], so a number knows its squares.
+  const runsOf = line => {
+    const runs = [];
+    line.forEach((c, i) => {
+      if (c !== 1) return;
+      if (i && line[i - 1] === 1) runs[runs.length - 1][1]++;
+      else runs.push([i, 1]);
+    });
+    return runs;
   };
 
   /* THE LINE SOLVER. It tries every way a line's runs fit what is already
@@ -61,46 +73,57 @@
     return agree;
   };
 
-  /* WHICH SQUARES NEED A GUESS. Solves row and column in turn until no line
-     can decide another square; what is still undecided is true of the
-     picture's clues, not of how clever the player is, because this is the
-     reasoning a player does one line at a time. */
-  const unreached = g => {
+  /* SOLVING BY LINES. Each round solves every row and column from what the
+     round before knew, until a round decides nothing; this is the reasoning
+     a player does one line at a time. `unreached` is the squares still
+     undecided, which is true of the picture's clues and not of how clever
+     the player is. `rounds` is how many times round the board it took, and
+     `grade` names that: the measure of how hard a puzzle is. */
+  const solve = g => {
     const rows = g.map(clues), cols = g[0].map((_, x) => clues(column(g, x)));
-    const known = g.map(r => r.map(() => -1));
-    for (let changed = true; changed;) {
-      changed = false;
-      for (let y = 0; y < SIZE; y++) solveLine(rows[y], known[y]).forEach((v, x) => {
-        if (v !== -1 && known[y][x] === -1) { known[y][x] = v; changed = true; }
-      });
-      for (let x = 0; x < SIZE; x++) solveLine(cols[x], column(known, x)).forEach((v, y) => {
-        if (v !== -1 && known[y][x] === -1) { known[y][x] = v; changed = true; }
-      });
+    let known = g.map(r => r.map(() => -1)), rounds = 0;
+    for (;;) {
+      const next = known.map(r => r.slice());
+      let changed = false;
+      const decide = (y, x, v) => { if (v !== -1 && next[y][x] === -1) { next[y][x] = v; changed = true; } };
+      for (let y = 0; y < SIZE; y++) solveLine(rows[y], known[y]).forEach((v, x) => decide(y, x, v));
+      for (let x = 0; x < SIZE; x++) solveLine(cols[x], column(known, x)).forEach((v, y) => decide(y, x, v));
+      if (!changed) return { known, rounds };
+      known = next;
+      rounds++;
     }
-    return known.map(r => r.map(v => v === -1));
   };
+  const unreached = g => solve(g).known.map(r => r.map(v => v === -1));
+  const rounds = g => solve(g).rounds;
+  const grade = n => (n <= 3 ? 'easy' : n <= 5 ? 'medium' : 'hard');
 
   /* A BOARD. `state[y][x]` is 0 empty, 1 filled, 2 X, 3 a mistake's X.
-     `options.done` greys a line's numbers once its filled squares match the
-     answer's; `options.unknown` outlines squares that need a guess. */
+     `options.done` greys a number once its run of squares is filled, and the
+     whole line's numbers once every run is; `options.unknown` outlines
+     squares that need a guess. `board` builds the squares and numbers once
+     and `paint` changes only what the state changed, so a square animates
+     when it is filled and not on every move after. */
   const board = (host, answer, state, options = {}) => {
     const el = document.createElement('div');
     el.className = 'pixels-board';
+    el.style.setProperty('--size', SIZE);
     el.setAttribute('role', 'grid');
     el.setAttribute('aria-label', options.label || 'Puzzle');
     el.appendChild(document.createElement('div'));
-    const matches = (line, want) => line.every((v, i) => (v === 1) === (want[i] === 1));
-    const numbers = (target, line) => clues(line).forEach(n => {
-      const span = document.createElement('span');
-      span.textContent = n;
-      target.appendChild(span);
-    });
+    const numbers = (target, line) => {
+      const runs = runsOf(line);
+      clues(line).forEach((n, i) => {
+        const span = document.createElement('span');
+        span.textContent = n;
+        if (runs[i]) [span.dataset.from, span.dataset.length] = runs[i];
+        target.appendChild(span);
+      });
+    };
     for (let x = 0; x < SIZE; x++) {
       const c = document.createElement('div');
       c.className = 'pixels-clue pixels-clue--col';
       c.dataset.col = x;
       numbers(c, column(answer, x));
-      if (options.done && matches(column(state, x), column(answer, x))) c.classList.add('is-done');
       el.appendChild(c);
     }
     for (let y = 0; y < SIZE; y++) {
@@ -108,22 +131,49 @@
       c.className = 'pixels-clue';
       c.dataset.row = y;
       numbers(c, answer[y]);
-      if (options.done && matches(state[y], answer[y])) c.classList.add('is-done');
       el.appendChild(c);
       for (let x = 0; x < SIZE; x++) {
         const s = document.createElement('div');
-        const v = state[y][x];
-        s.className = 'pixels-cell' + ({ 1: ' is-fill', 2: ' is-x', 3: ' is-x is-miss' }[v] || '')
-          + (options.unknown?.[y][x] ? ' is-unknown' : '');
+        s.className = 'pixels-cell';
         s.dataset.x = x;
         s.dataset.y = y;
+        // The finished picture fills in along its diagonals.
+        s.style.setProperty('--wave', x + y);
         s.setAttribute('role', 'gridcell');
-        s.setAttribute('aria-label', `Row ${y + 1}, column ${x + 1}, ${['empty', 'filled', 'crossed out', 'mistake'][v]}`);
         el.appendChild(s);
       }
     }
+    paint(el, answer, state, options);
     host.replaceChildren(el);
+    // The row numbers' width, which app.css takes off the room for squares;
+    // measured again once the font is in, which can change it.
+    const measure = () => host.style.setProperty('--clues', `${Math.ceil(el.firstElementChild.getBoundingClientRect().width)}px`);
+    measure();
+    document.fonts?.ready.then(measure);
     return el;
+  };
+
+  const paint = (el, answer, state, options = {}) => {
+    el.querySelectorAll('.pixels-cell').forEach(s => {
+      const y = +s.dataset.y, x = +s.dataset.x, v = state[y][x];
+      s.classList.toggle('is-fill', v === 1);
+      s.classList.toggle('is-x', v === 2 || v === 3);
+      s.classList.toggle('is-miss', v === 3);
+      s.classList.toggle('is-unknown', !!options.unknown?.[y][x]);
+      s.setAttribute('aria-label', `Row ${y + 1}, column ${x + 1}, ${['empty', 'filled', 'crossed out', 'mistake'][v]}`);
+    });
+    el.querySelectorAll('.pixels-clue').forEach(c => {
+      const line = c.dataset.row != null ? state[+c.dataset.row] : column(state, +c.dataset.col);
+      let all = !!options.done;
+      c.querySelectorAll('span').forEach(span => {
+        const from = +span.dataset.from, length = +span.dataset.length || 0;
+        let filled = !!options.done;
+        for (let k = from; k < from + length; k++) if (line[k] !== 1) filled = false;
+        span.classList.toggle('is-done', filled);
+        if (!filled) all = false;
+      });
+      c.classList.toggle('is-done', all);
+    });
   };
 
   // Marks the row and column through one square, and the square itself.
@@ -183,6 +233,38 @@
     return el;
   };
 
+  // Three stars, the lost ones dimmed.
+  const stars = (el, n) => {
+    el.classList.add('pixels-stars');
+    el.setAttribute('role', 'img');
+    el.setAttribute('aria-label', `${n} of 3 stars`);
+    el.replaceChildren(...[1, 2, 3].map(i => {
+      const s = document.createElement('span');
+      s.textContent = '★';
+      if (i <= n) s.dataset.on = '';
+      return s;
+    }));
+    return el;
+  };
+
+  /* A TICK IN THE HAND. Android vibrates for `ms`. An iPhone has no vibration
+     for a web page, but it ticks when a switch is flipped, so a hidden one is
+     flipped through its label; that is one light tick, whatever `ms` says. */
+  const touch = matchMedia('(pointer: coarse)').matches;
+  const buzz = (ms = 10) => {
+    if (!touch) return;
+    if (navigator.vibrate) { navigator.vibrate(ms); return; }
+    const label = document.createElement('label');
+    label.hidden = true;
+    const flip = document.createElement('input');
+    flip.type = 'checkbox';
+    flip.setAttribute('switch', '');
+    label.appendChild(flip);
+    document.head.appendChild(label);
+    label.click();
+    label.remove();
+  };
+
   const time = seconds => `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
 
   // A puzzle keeps its name hidden until it is solved, as on the DS.
@@ -202,6 +284,6 @@
   });
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    SIZE, grid, squaresOf, clues, unreached, board, highlight, drag, picture, time, title, switcher,
+    SIZE, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, board, paint, highlight, drag, picture, stars, buzz, time, title, switcher,
   });
 })();

@@ -26,7 +26,8 @@
    and fires `rux:coachmark-closed`, as js/dismiss.js removes a notification.
 
    THE FLOATING COACHMARK, read against CoachmarkContentHeader.js and
-   makeDraggable.js, and driven here in Chrome, not on Carbon's page:
+   makeDraggable.js, and driven here in Chrome and, by a finger, in Safari on
+   the iPhone simulator, not on Carbon's page:
      · a press on the header drags the hint, and it stays where it is let go
      · Enter or Space on the handle starts drag mode and ends it; in it an
        arrow key moves the hint 8px, or 32px with Shift
@@ -92,8 +93,11 @@
   const at = new WeakMap();        // layer -> [x, y], where it has been moved to
   const moves = new WeakMap();     // header -> how many moves it has announced
   const layerOf = header => header.closest('.rux--popover');
+  // `will-change` gives the layer a surface of its own. Without it Safari on
+  // an iPhone leaves a faint trail of the hint's shadow where it has been.
   const move = (layer, x, y) => {
     at.set(layer, [x, y]);
+    layer.style.willChange = 'transform';
     layer.style.transform = `translate(${x}px, ${y}px)`;
   };
 

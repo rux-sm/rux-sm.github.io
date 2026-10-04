@@ -61,11 +61,9 @@
     check.replaceChildren(span);
   };
 
-  // The size chosen, shown on its switcher; the board keeps room for the
-  // most numbers a line of that side can hold.
+  // The size chosen, shown on its switcher.
   const setSide = to => {
     side = to;
-    host.parentElement.style.setProperty('--most', Math.ceil(side / 2));
     $('pixels-size').querySelectorAll('button').forEach(b => {
       const selected = +b.dataset.size === side;
       b.classList.toggle('rux--content-switcher--selected', selected);
@@ -87,7 +85,10 @@
     const unknown = unreached(draft);
     const guesses = unknown.flat().filter(Boolean).length;
     const empty = draft.every(r => r.every(c => !c));
-    board(host, draft, draft, step === 'colour' ? { inks: colours, label: 'Picture' } : { unknown, label: 'Picture' });
+    // Room for the most numbers a line of this side can hold, so the squares
+    // never move under a finger as the numbers change.
+    const most = Math.ceil(side / 2);
+    board(host, draft, draft, step === 'colour' ? { inks: colours, most, label: 'Picture' } : { unknown, most, label: 'Picture' });
     if (empty) tag('rux--tag--gray', 'Draw a picture');
     else if (guesses) tag('rux--tag--red', `${guesses} square${guesses === 1 ? '' : 's'} need a guess`);
     else tag('rux--tag--green', `Solvable · ${grade(rounds(draft))}`);

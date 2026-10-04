@@ -162,7 +162,13 @@
      It is four parts: a corner, the column numbers, the row numbers and the
      squares. Each of the last three is a window onto a strip that slides
      behind it, so a zoomed board moves its squares both ways while the
-     numbers move one way each and stay in view. */
+     numbers move one way each and stay in view.
+
+     The numbers keep one space whatever the puzzle, so a board of one size
+     sits in one place: room for RESERVE numbers, more only if this puzzle
+     has a longer line, or for `options.most`, which the maker gives so its
+     board never shifts as the picture changes. app.css sizes it from
+     `--across` and `--down`. */
   const board = (host, answer, state, options = {}) => {
     const H = answer.length, W = answer[0].length;
     const part = (name, parent) => {
@@ -175,6 +181,10 @@
     el.className = `pixels-board${W <= 5 ? ' pixels-board--small' : ''}`;
     el.style.setProperty('--cols', W);
     el.style.setProperty('--rows', H);
+    const reserve = W <= 5 ? 3 : W <= 10 ? 5 : 6;
+    const longest = lines => Math.max(...lines.map(l => clues(l).length));
+    el.style.setProperty('--across', options.most ?? Math.max(reserve, longest(answer)));
+    el.style.setProperty('--down', options.most ?? Math.max(reserve, longest(answer[0].map((_, x) => column(answer, x)))));
     el.setAttribute('role', 'grid');
     el.setAttribute('aria-label', options.label || 'Puzzle');
     part('pixels-corner', el);
@@ -211,11 +221,6 @@
     }
     paint(el, answer, state, options);
     host.replaceChildren(el);
-    // The row numbers' width, which app.css takes off the room for squares;
-    // measured again once the font is in, which can change it.
-    const measure = () => host.style.setProperty('--clues', `${Math.ceil(rows.parentElement.getBoundingClientRect().width)}px`);
-    measure();
-    document.fonts?.ready.then(measure);
     return el;
   };
 

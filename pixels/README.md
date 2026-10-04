@@ -25,8 +25,10 @@ crosses out its own empty squares. A puzzle starts with three stars: filling
 a square not in the picture is a mistake, crossed out in red, and it costs a
 star, as does a hint; the last star is never lost. Hint, or H, lights the line
 where the numbers decide the most. Undo, or U, takes back the last tap or
-drag, but never a mistake. The arrow beside the puzzle's name goes back to
-the list. When the picture is complete the squares
+drag, and Redo, or R, puts it back, but neither touches a mistake. Restart
+empties the board, and Undo straight after brings it back. The puzzle's
+name, the clock and the stars sit in the board's corner, and the numbers
+keep the same space on every puzzle of a size. When the picture is complete the squares
 fill in as the picture, in its colours if it has them, and its name shows.
 Each move plays a tone, which the Sound switch turns off and an iPhone's
 silent switch does not, and a phone ticks

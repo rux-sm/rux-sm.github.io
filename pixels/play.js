@@ -18,8 +18,10 @@
    tap, never from a drag, and a puzzle is usually begun with a drag.
 
    UNDO takes back the last tap or drag, with the squares a finished line
-   crossed out for it, as far back as the puzzle's start. It does not take
-   back a mistake: the red X stays and so does the lost star.
+   crossed out for it, as far back as the puzzle's start, and REDO puts it
+   back until a new move is made. Neither touches a mistake: the red X stays
+   and so does the lost star. Restart empties the board and zeroes the clock,
+   and Undo straight after it brings everything back.
 
    Free mode points out nothing: a wrong square fills like a right one, Fill
    on a filled square empties it, the numbers never grey, there is no hint,
@@ -44,7 +46,7 @@
 (() => {
   'use strict';
 
-  const { data, grid, column, clues, solveLine, order, daily, today, streak, board, paint, highlight, drag, stars, buzz, sound, sounds, listen, time, title, switcher } = window.Pixels;
+  const { data, grid, column, clues, solveLine, order, daily, today, streak, board, paint, highlight, drag, stars, buzz, sound, sounds, listen, time, title } = window.Pixels;
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock');
 
@@ -105,7 +107,8 @@
     let started = false, settling = false;
     // The board before each tap or drag that changed it, and the board as a
     // tap or drag began, kept only once that one changes something.
-    let past = [], held = null;
+    // `ahead` is the boards Undo left, for Redo, until a new move is made.
+    let past = [], held = null, ahead = [];
 
     $('pixels-title').textContent = heading;
     document.title = `${heading} — Pixels`;
@@ -115,13 +118,17 @@
     const score = () => (free ? 3 : Math.max(1, 3 - mistakes - hints));
     const keep = () => saveProgress(puzzle.id, { squares: puzzle.squares, state, seconds, mistakes, hints, free });
     const el = board(boardHost, answer, state, { done: !free, label: 'Puzzle' });
+    // The name, the clock and the stars sit in the board's corner.
+    el.querySelector('.pixels-corner').appendChild($('pixels-info'));
+    $('pixels-info').hidden = false;
     const draw = () => {
       paint(el, answer, state, { done: !free });
       el.querySelectorAll('.is-hint').forEach(e => e.classList.remove('is-hint'));
       highlight(el, ...cursor);
       stars($('pixels-stars'), score());
-      $('pixels-hint').hidden = free;
+      $('pixels-hint').disabled = free;
       $('pixels-undo').disabled = !past.length;
+      $('pixels-redo').disabled = !ahead.length;
     };
     const tick = () => { clock.textContent = time(seconds); };
     const tell = (text, error) => {
@@ -225,7 +232,7 @@
       else if (action === 'x' && v === 0) { state[y][x] = 2; sound('x'); }
       else if (action === 'unx' && v === 2) { state[y][x] = 0; sound('pop'); }
       else return;
-      if (held) { past.push(held); held = null; }
+      if (held) { past.push(held); held = null; ahead = []; }
       cursor = [y, x];
       draw();
       keep();
@@ -243,19 +250,44 @@
 
     const undo = () => {
       if (!started || solved || !past.length) return;
-      // A mistake stays as it is, so a move that was only a mistake has
-      // nothing to take back and the one before it is taken instead.
+      const now = state.map(r => r.slice());
       const same = to => to.every((r, y) => r.every((v, x) => v === state[y][x]));
-      let was;
-      do was = past.pop().map((r, y) => r.map((v, x) => (state[y][x] === 3 ? 3 : v)));
-      while (past.length && same(was));
-      state = was;
+      let was = null;
+      for (;;) {
+        const entry = past.pop();
+        // A Restart taken back: the board, the clock and the stars as they were.
+        if (!Array.isArray(entry)) {
+          ({ state, seconds, mistakes, hints, past } = entry);
+          ahead = [];
+          tick();
+          break;
+        }
+        // A mistake stays as it is, so a move that was only a mistake has
+        // nothing to take back and the one before it is taken instead.
+        was = entry.map((r, y) => r.map((v, x) => (state[y][x] === 3 ? 3 : v)));
+        if (!past.length || !same(was)) break;
+      }
+      if (was) {
+        if (!same(was)) ahead.push(now);
+        state = was;
+      }
       cursor = [];
       tell('');
       sound('pop');
       draw();
       keep();
     };
+    const redo = () => {
+      if (!started || solved || !ahead.length) return;
+      past.push(state.map(r => r.slice()));
+      state = ahead.pop().map((r, y) => r.map((v, x) => (state[y][x] === 3 ? 3 : v)));
+      cursor = [];
+      tell('');
+      sound('fill');
+      draw();
+      keep();
+    };
+    $('pixels-redo').addEventListener('click', redo);
     $('pixels-undo').addEventListener('click', undo);
 
     /* A HINT. What the board shows for certain is every filled square and
@@ -304,10 +336,15 @@
       hover: (y, x) => { cursor = [y, x]; highlight(el, y, x); },
       zoom: () => W > 10,
     });
-    switcher($('pixels-tool'), b => { tool = b.dataset.tool; });
+    $('pixels-tool').addEventListener('click', e => {
+      const picked = e.target.closest('button');
+      if (!picked) return;
+      tool = picked.dataset.tool;
+      $('pixels-tool').querySelectorAll('button').forEach(b => b.setAttribute('aria-checked', b === picked));
+    });
 
-    // Arrows move, Z or Space fills, X crosses out, U undoes and H hints,
-    // whichever tool is chosen.
+    // Arrows move, Z or Space fills, X crosses out, U undoes, R redoes and
+    // H hints, whichever tool is chosen.
     addEventListener('keydown', e => {
       if (!started || solved || e.target.closest('input, textarea, select, .rux--header, .rux--side-nav')) return;
       const move = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[e.key];
@@ -321,14 +358,17 @@
       const key = e.key.toLowerCase();
       if (key === 'h') { hint(); return; }
       if (key === 'u') { undo(); return; }
+      if (key === 'r') { redo(); return; }
       if (!cursor.length) return;
       if (key === 'z' || key === ' ') { e.preventDefault(); begin(...cursor, 'fill'); }
       else if (key === 'x') begin(...cursor, 'x');
     });
 
+    // Restart is one tap among the keys, so Undo takes it back whole.
     const restart = () => {
+      past = [{ state, seconds, mistakes, hints, past }];
+      ahead = [];
       state = blank();
-      past = [];
       seconds = 0;
       mistakes = 0;
       hints = 0;
@@ -337,7 +377,7 @@
       tick();
       draw();
     };
-    $('pixels-restart').addEventListener('click', restart);
+    $('pixels-restart').addEventListener('click', () => { if (started && !solved) restart(); });
 
     const freeToggle = $('pixels-free');
     window.Rux.formControls?.toggle(freeToggle, free);
@@ -346,6 +386,9 @@
       free = e.detail.on;
       try { localStorage.setItem(MODE, free ? 'free' : 'classic'); } catch { /* the choice lasts this page */ }
       restart();
+      // A board from the other way of playing is not one to go back to.
+      past = [];
+      draw();
       tell(free ? 'Free mode · mistakes are not pointed out' : '');
     });
 

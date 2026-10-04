@@ -9,12 +9,18 @@
 
    A square is as wide as the screen allows, and a whole number of pixels so
    that filled squares meet with no seam: `--base` is the screen's width, less
-   the page's `--gutter` and the row numbers' own width, which app.js measures
-   into `--clues`, shared among the squares, from 16px up to 40px, or 56px on
-   a board of five. `--cell` is that times `--zoom`, which with `--tx` and
-   `--ty` app.js sets as two fingers pinch and slide. */
+   the page's `--gutter` and the row numbers' width, shared among the
+   squares, from 16px up to 40px, or 56px on a board of five. `--cell` is
+   that times `--zoom`, which with `--tx` and `--ty` app.js sets as two
+   fingers pinch and slide.
+
+   The numbers keep one space whatever the puzzle: `--clue-w` and `--clue-h`
+   hold `--across` and `--down` numbers, which app.js sets from the board's
+   size, and never less than the corner's tile needs. */
 .pixels-board {
-  --base: round(down, clamp(1rem, (100vw - var(--gutter, 6rem) - var(--clues, 3rem)) / var(--cols, 10), var(--cell-max, 2.5rem)), 1px);
+  --clue-w: max(4.5rem, calc(var(--across, 5) * .75rem + .75rem));
+  --clue-h: max(5.75rem, calc(var(--down, 5) * 1.03rem + .5rem));
+  --base: round(down, clamp(1rem, (100vw - var(--gutter, 6rem) - var(--clue-w)) / var(--cols, 10), var(--cell-max, 2.5rem)), 1px);
   --cell: round(calc(var(--base) * var(--zoom, 1)), 1px);
   --line: var(--rux-border-subtle-01);
   --guide: var(--rux-border-strong-01);
@@ -31,6 +37,8 @@
 .pixels-cols, .pixels-rows, .pixels-squares { overflow: hidden; }
 .pixels-cols, .pixels-squares { inline-size: calc(var(--cols) * var(--base)); }
 .pixels-rows, .pixels-squares { block-size: calc(var(--rows) * var(--base)); }
+.pixels-rows { inline-size: var(--clue-w); }
+.pixels-cols { block-size: var(--clue-h); }
 .pixels-slide { display: grid; inline-size: max-content; min-inline-size: 100%; }
 .pixels-cols > .pixels-slide {
   grid-template-columns: repeat(var(--cols), var(--cell));
@@ -79,15 +87,15 @@
 
 .pixels-clue {
   display: flex;
-  gap: .5em;
+  gap: .3em;
   justify-content: end;
   align-items: center;
-  padding-inline: .5rem;
-  font-size: .875rem;
+  padding-inline: .375rem;
+  font-size: .8125rem;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
-.pixels-clue--col { flex-direction: column; gap: .15em; padding: .5rem 0 .375rem; }
+.pixels-clue--col { flex-direction: column; gap: 0; padding: .25rem 0; line-height: 1.2; }
 .pixels-clue.is-line { background: var(--rux-layer-hover-01); }
 .pixels-clue > .is-done { color: var(--rux-text-disabled); }
 
@@ -98,9 +106,8 @@
 .pixels-board.is-solved .pixels-cell.is-x::before,
 .pixels-board.is-solved .pixels-cell.is-x::after { opacity: 0; }
 .pixels-board.is-solved .pixels-cell { border-color: transparent; }
-.pixels-game.is-done .pixels-board { --clues: 0px; }
+.pixels-game.is-done .pixels-board { --clue-w: 0px; }
 .pixels-game.is-done .pixels-board > :not(.pixels-squares),
-.pixels-game.is-done .pixels-top,
 .pixels-game.is-done .pixels-controls { display: none; }
 
 /* MOVEMENT, for those who have not asked for less of it. */
@@ -180,51 +187,119 @@
 .pixels-maker input { user-select: text; -webkit-user-select: text; }
 .pixels-game { display: grid; gap: 1rem; inline-size: max-content; max-inline-size: 100%; margin-inline: auto; touch-action: manipulation; }
 /* The page keeps 3rem clear each side; on a phone the game takes all but
-   .5rem of it back. */
+   .5rem of it back, and 1rem from the top, so a board of fifteen and
+   everything under it fit above the home bar. */
 @media (max-width: 28rem) {
-  .pixels-game { --gutter: 1rem; inline-size: auto; max-inline-size: none; margin-inline: -2.5rem; }
+  .pixels-game { --gutter: 1rem; inline-size: auto; max-inline-size: none; margin: -1rem -2.5rem 0; }
 }
-.pixels-top { display: flex; align-items: center; gap: 1rem; }
-/* THE COVER. Until Start is tapped the board keeps its place and shows
-   nothing, and the button sits in the middle of where it will be. */
+/* THE COVER. Until Start is tapped the board keeps its place and shows only
+   its corner, and the button sits in the middle of where it will be. */
 .pixels-stage { position: relative; }
-.pixels-game.is-waiting .pixels-stage { background: var(--rux-layer-01); }
 .pixels-game.is-waiting .pixels-board { visibility: hidden; }
+.pixels-game.is-waiting .pixels-corner { visibility: visible; }
 .pixels-start { position: absolute; inset-block-start: 50%; inset-inline-start: 50%; translate: -50% -50%; }
-.pixels-top > h1 { flex: 1; }
-.pixels-clock { font-family: 'IBM Plex Mono', monospace; font-size: 1.25rem; font-variant-numeric: tabular-nums; }
-.pixels-controls { display: grid; gap: 1rem; }
+
+/* THE CORNER'S TILE: the puzzle's name, the clock and the stars, in the
+   space the numbers leave above and beside them. */
+.pixels-corner { min-inline-size: 0; }
+.pixels-info {
+  display: grid;
+  align-content: center;
+  gap: .125rem;
+  block-size: calc(100% - .25rem);
+  margin-inline-end: .25rem;
+  padding: .375rem;
+  background: var(--rux-layer-01);
+}
+.pixels-info-name {
+  margin: 0;
+  font-size: .6875rem;
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--rux-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pixels-clock { font-family: 'IBM Plex Mono', monospace; font-size: 1rem; font-variant-numeric: tabular-nums; }
+.pixels-info .pixels-stars { font-size: .8125rem; letter-spacing: 0; }
+
+.pixels-controls { display: grid; gap: .75rem; }
 .pixels-status { min-block-size: 1.25rem; color: var(--rux-text-secondary); }
 .pixels-status[data-error] { color: var(--rux-text-error); }
-.pixels-tools { display: flex; gap: .5rem; }
-.pixels-tools > .rux--content-switcher { flex: 1; }
+
+/* FILL AND X, two large keys, each with the mark it leaves on a square. The
+   chosen one is drawn in the page's opposite colours. */
+.pixels-pick { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+.pixels-pick > button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .75rem;
+  block-size: 4rem;
+  padding: 0;
+  border: 2px solid var(--rux-border-strong-01);
+  background: var(--rux-layer-01);
+  color: var(--rux-text-primary);
+  font: inherit;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.pixels-pick > [aria-checked="true"] {
+  border-color: var(--rux-background-inverse);
+  background: var(--rux-background-inverse);
+  color: var(--rux-text-inverse);
+}
+.pixels-pick > button:focus-visible, .pixels-key:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+.pixels-mark { position: relative; flex: none; inline-size: 1.5rem; block-size: 1.5rem; }
+.pixels-mark--fill { background: currentColor; }
+.pixels-mark--x::before,
+.pixels-mark--x::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: calc(50% - 1.5px);
+  block-size: 3px;
+  background: currentColor;
+  transform: rotate(45deg);
+}
+.pixels-mark--x::after { transform: rotate(-45deg); }
+
+/* THE ROW OF KEYS under them: back, restart, hint, undo and redo. */
+.pixels-keys { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .25rem; }
+.pixels-key {
+  display: grid;
+  place-items: center;
+  block-size: 3rem;
+  padding: 0;
+  border: 1px solid var(--rux-border-strong-01);
+  background: none;
+  color: var(--rux-text-primary);
+  font: inherit;
+  font-size: .875rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+.pixels-key:disabled { border-color: var(--rux-border-disabled); color: var(--rux-text-disabled); cursor: default; }
+
 .pixels-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
 .pixels-switches { display: flex; gap: 2rem; }
 /* Each view's display would outrank the hidden attribute. */
-.pixels-game[hidden], .pixels-solved[hidden], .pixels-controls[hidden], .pixels-top[hidden] { display: none; }
+.pixels-game[hidden], .pixels-solved[hidden], .pixels-controls[hidden], .pixels-info[hidden] { display: none; }
 .pixels-solved { display: grid; gap: 1.5rem; justify-items: center; text-align: center; padding-block: 1rem; }
 .pixels-solved .pixels-stars { font-size: 2rem; }
 
 /* THE MAKER. The board, then the check, name and buttons beside it on a
    wide screen and under it on a phone. */
 .pixels-maker { display: flex; flex-wrap: wrap; gap: 2rem; align-items: start; justify-content: center; }
-/* The clues change as the picture does, so the maker keeps room for the most
-   a line can hold, `--most` numbers, half the board's side, and the squares
-   never move under a finger. */
-.pixels-maker {
-  --clue-w: calc(var(--most, 5) * 1rem + .75rem);
-  --clue-h: calc(var(--most, 5) * 1.22rem + .9rem);
-}
-.pixels-maker .pixels-board {
-  --base: round(down, clamp(1rem, (100vw - 4rem - var(--clue-w)) / var(--cols, 10), var(--cell-max, 2.5rem)), 1px);
-  margin-inline: 0;
-}
-.pixels-maker .pixels-rows { inline-size: var(--clue-w); }
-.pixels-maker .pixels-cols { block-size: var(--clue-h); }
+/* app.js gives the maker's board room for the most numbers a line can hold,
+   so the squares never move under a finger as the numbers change. */
+.pixels-maker { --gutter: 4rem; }
+.pixels-maker .pixels-board { margin-inline: 0; }
 /* On a phone the maker takes the page's clear edges back, as the game does. */
 @media (max-width: 28rem) {
-  .pixels-maker { margin-inline: -2.5rem; }
-  .pixels-maker .pixels-board { --base: round(down, clamp(1rem, (100vw - 1rem - var(--clue-w)) / var(--cols, 10), var(--cell-max, 2.5rem)), 1px); }
+  .pixels-maker { --gutter: 1rem; margin-inline: -2.5rem; }
 }
 .pixels-maker-side { display: grid; gap: 1.5rem; align-content: start; inline-size: 18rem; max-inline-size: 100%; }
 /* The eight inks to paint with, the chosen one ringed. */

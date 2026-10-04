@@ -2,280 +2,182 @@
 type: plan
 ---
 
-# Plan: Notes, three ways into a scenario
+# Plan: Notes, pick up and go
 
 ## Goal
 
-One simple tool for learning Infor LN and for getting a task done in it.
+One place to open while working in Infor LN. Pick a scenario, a task or a
+problem, and be walking it within seconds.
 
-**Notes is rebuilt from an empty folder.** It reads what atlas exports and
-shows it three ways. It collects nothing and asks nothing of the reader.
+**It is simple, quick to pick up and pleasant to use.** The reader has ADHD and
+dyslexia, so every screen shows one thing, in short lines and large type, with
+one obvious next move and nothing to hunt for.
 
-**The task is the centre.** A reader is doing one task in one scenario; the
-screens it uses and the map it sits on are there to explain it.
+**Where the library is missing something, the tool says so and makes it easy to
+fill.** Confirming a step or reporting that it differed takes one tap, in the
+place the reader already is.
 
-**Simple wins.** Where a decision trades simplicity against completeness,
-simplicity wins and this plan says what was left out.
-
-**The library stays the source.** Atlas keeps collecting, mining and indexing
-LN's documentation. This plan changes atlas only where the tool needs a
-scenario to be complete, and where a new area of LN must be easy to add.
+**Atlas stays the source.** Everything on a screen is generated from what atlas
+exports, so a correction is made once and every screen redraws.
 
 ## Decisions
 
-### Scenario, task and screen
+### The flow
 
-- **A scenario is one of atlas's walkthroughs.** Nothing is authored on the
-  site, so there is no second list to keep in step.
+- **Home asks one question, "What are you doing?"**, with a search box, a Carry
+  on card for the last place the reader stopped, and a card for each scenario.
 
-- **A scenario holds ordered task tiles, and a tile is one of its phases.** A
-  task is one thing to get done, such as releasing an order to the warehouse.
+- **A scenario is a path down the page.** Each task is a stop on it, and a
+  decision is a fork drawn between the two tasks it separates.
 
-- **A task can use several screens, and two tasks can share one.** A tile names
-  the screen it starts on and links every other screen its steps name.
+- **A task is walked one step at a time.** A step shows where the reader is,
+  what to do, the screen's code to copy, and what they should see. Back and
+  Next move through it, and so do the arrow keys.
 
-- **Each screen has one reference card**, however many tasks use it.
+- **A decision is a screen of its own**, with every answer as a button: each
+  outcome, and "I'm not sure", which opens the screen where the answer is read.
+  A setting behind the decision is offered the same way.
 
-- **An idea that cuts across screens has one concept card**, such as available
-  to promise. It shows a short explanation atlas writes in its own words; the
-  fuller account drawn from Infor's help follows the answer to the question
-  below.
+- **Help waits until it is asked for.** Under a step sit three quiet links: why
+  this step, something went wrong, and read it to me. Nothing else is on the
+  screen.
 
-- **Three ways in: Do, Understand and Look up.** They are the side nav, and
-  nothing else is in it.
+- **Three tabs stay at the foot of the window: Do, Map and Search.**
 
-### Do
+### Easy to read
 
-- **Do is the front page.** It lists the scenarios by name. Picking one draws
-  its tiles as a numbered line, left to right, and as a column on a phone.
+- **One idea on a screen**, a column no wider than a comfortable line, the step
+  in large type, and no italics. Names the reader must find on the LN screen are
+  in bold.
 
-- **A scenario opens with what it needs and what it ends in:** atlas's
-  prerequisites and objective for that walkthrough, above the line.
+- **Read it to me speaks the step** with the browser's own voice, so nothing is
+  sent anywhere.
 
-- **One tile is open at a time**, in place under the line.
+- **Progress is shown and never scored.** A bar says how far through the task
+  the reader is, and the path marks what is done.
 
-- **An open tile reads top to bottom: the route and session code, one short
-  explanation, then the steps.** The explanation is the phase's own "what LN is
-  doing" paragraph, cut to its opening sentences with the rest behind a
-  show-more.
+- **Where the reader stopped is remembered in that browser only.** Home offers
+  it back as Carry on.
 
-- **Each step shows what to do and what you should see**, side by side, as
-  atlas writes them.
+### Map
 
-- **Tapping the session code copies it**, because typing it into LN is the
-  fastest way to the screen.
+- **The map shows the chosen scenario's route and nothing else**, as the same
+  path with each stop's lane named. The whole grid is one button away.
 
-- **Nothing is ticked, saved or counted.** The open tile is in the address, so
-  a reload or a shared link returns to it.
+### Search
 
-### Questions on a tile
+- **One search over tasks, screens, ideas and problems.** A problem is one of
+  atlas's "something went wrong" rows, so typing a symptom finds its fix.
 
-- **A scenario is the simplest way through, and every other possibility hangs
-  off the tile where it turns.** The line shows one path; the questions on its
-  tiles reach all the rest.
+- **Each result says what kind it is**, and opens where it lives.
 
-- **Every question that can come up is asked on the tile where it comes up.**
-  There are five kinds, and atlas holds each today in a different shape:
+### Gaps, confirmed in place
 
-  | Kind | Example | Where atlas holds it |
-  | :--- | :--- | :--- |
-  | A decision | Does on-hand cover it? | the map's decisions and branches |
-  | Something went wrong | The status is stuck on Free | a walkthrough's troubleshooting rows |
-  | A different case | Shipping less than ordered | a walkthrough's variants, and the side tasks under a step |
-  | A setting | Is the date inside the order horizon? | the configuration and screen files |
-  | What next | The order is shipped, now what? | a walkthrough's next-walkthrough rows |
+- **A step nobody has confirmed in LN says so**, with two buttons: it matched,
+  and it was different. The second asks for one line and takes a screenshot.
 
-- **A question offers every answer the reader could have.** Each outcome opens
-  where it leads: the next tile, a tile on another branch, another scenario, or
-  the fix. "I don't know" opens the screen where the answer is read and returns
-  to the same question. Where a setting decides the outcome, "Check or change
-  it" opens the screen that holds the setting.
+- **Home ends with one quiet card for what is still unconfirmed**, listing the
+  steps and questions that wait, each opening where it belongs. It has no score
+  and no streak.
 
-- **A different case that names no step belongs to the whole scenario**, and
-  sits under whichever task is open, apart from that task's own questions.
+- **What the reader sends is evidence, not a change.** It is saved to the
+  reader's account and brought into atlas, where a session reads it and decides.
 
-- **Questions stay closed until wanted.** An open tile lists them by name under
-  its steps, and one opens at a time, so a tile with many stays short.
+- **One table holds it, in place of the eight the old tools used.** The table
+  and its private bucket are a database change shown to rux and applied on a
+  yes.
 
-- **An answer that leads somewhere atlas has not written says so plainly**, and
-  offers nothing to do about it.
+### Questions on a task
+
+- **Every question is asked where it comes up**, and atlas holds five kinds:
+  a decision, something went wrong, a different case, a setting, and what next.
+
+- **A decision is asked between tasks, on the path.** The other four are reached
+  from the step, behind "something went wrong" or from Search.
 
 - **Atlas states every question one way:** the task it comes up in, the
-  question, its answers, and where each answer leads. The five shapes above
-  are rewritten into it, so a question is found in one place.
-
-- **An answer moves the reader and saves nothing.** The chosen branch is in the
-  address, like the open tile.
-
-### Understand
-
-- **Understand is the map of one chain, and it explains; it is not a second
-  way to run a scenario.** It is drawn from the lanes, stages and tiles atlas
-  exports for the overview.
-
-- **Picking a scenario lights its route and dims the rest.** The route is the
-  tiles atlas links to the scenario's tasks, in task order, with the decisions
-  the map puts between two of them, found by following the map's own lines.
-
-- **Where the map has no line between two tasks, the route jumps**, drawn
-  dashed.
-
-- **A lit tile carries its number on the line, and lines are drawn only along
-  the lit route**, so the map stays quiet until a scenario is chosen.
-
-- **Every tile has one look.** Lit or dim is the only signal.
-
-- **A tap opens the tile's own short account, the same way for every tile:**
-  what it does, its screen, the tasks it stands for and a decision's answers.
-  It stays at the foot of the window, because the map is taller than one.
-
-### Look up
-
-- **One search box over screens, concepts, scenarios and tasks**, matching a
-  name, a session code or a word in a step.
-
-- **A screen card has fixed parts:** name and code, route, what it is for, and
-  the tasks that use it. "Used in" is worked out from the scenarios at build
-  time.
-
-### What a page never shows
-
-- **No gaps, quests, counts or states.** An open question about LN stays in
-  atlas's issue list, where the work on it happens.
-
-- **No form, upload, notepad, quiz or review box.** Notes is read-only.
-
-- **Meeting reviews, summaries and experiments are not pages.** They are
-  sources a scenario rests on, and they stay in atlas.
-
-### The map
-
-- **`notes/specimen-map.html` draws atlas's export as it stands:** what leads to
-  what, the branches, the setup, and what the export does not yet say.
-
-- **Four things are written into atlas for a scenario before it is built:** its
-  route, the setup it needs, the setting that decides each of its branches, and
-  every question on the tile where it comes up. A setting nobody can name yet is recorded as unknown, not left out.
-
-- **A decision is recorded in three parts:** the setting that switches it on,
-  the tile where the check runs, and the screen where its figure is read.
-  Available to promise is the first written this way: switched on in the
-  planning setup, checked when the sales order is entered, and read on the
-  item's order plan.
-
-- **A branch nobody has walked stays marked on the map.** Its steps come from a
-  run in LN, which atlas's walking plan owns, and it does not hold the build
-  back.
-
-### Version one, then constant change
-
-- **Version one is Ship from stock through the three views, with its
-  questions, built on the map as atlas holds it.** The map is corrected as it
-  is used, not before.
-
-- **Everything on a page is generated from atlas.** No tile is placed, no line
-  drawn and no link written by hand on the site, so a correction is made once
-  in atlas and the next export redraws every page it touches.
-
-- **An error found in use becomes a row in atlas's issue list**, added in a
-  session. Notes has no form for it.
-
-- **The build says what it could not place:** a question with no tile, an
-  answer that leads nowhere, a route with a hole. It lists them and still
-  builds, because a page with a known hole is more use than no page.
-
-- **rux is the only reader.** A later reader is an account with Notes ticked on
-  the site's Access page, and Notes itself does not change.
-
-### One scenario first
-
-- **Ship from stock is built through all three views before any other
-  scenario**, and the real pages are judged on it. `notes/specimen-tool.html`
-  shows the three views on invented content, and the build follows its shape.
-
-- **Every scenario is in Do, whether or not the map holds it.** A task on no
-  map tile is listed by the build, and the map lights the tiles it can. A
-  screen with no card is named without a link.
-
-- **The old pages stay until Ship from stock works in the new Notes.** The new
-  views are built beside them, and the old pages and scripts go in one step
-  after.
-
-### The library
-
-- **A new area of LN is one map file and its walkthroughs.** When atlas exports
-  a second map, Understand gains a switch between maps and Do groups the
-  scenarios by map. Nothing else on the site changes.
-
-- **A walk is recorded in atlas, with atlas's own command.** The walk form
-  leaves Notes, so atlas's pull from Notes is removed once the saved data is
-  home.
-
-- **Atlas's evidence, screen files, concepts and checks are untouched.**
-
-### Retiring what the old tools saved
-
-- **Retiring and deleting are two steps.** Reviews, answers, tile notes and
-  uploaded files are first brought into atlas and read back from there, record
-  by record and file by file. A matching count is not proof.
-
-- **The database is cleaned only after the new Notes is in use**, as its own
-  step, on rux's yes.
+  question, its answers, and where each answer leads.
 
 ### Built from Design
 
-- **Every control is Carbon:** the search box, links, the scenario picker, the
-  show-more and the copy button. **The tile, the line and the map are Notes'
-  own**, under the `notes-` prefix, with every colour a `--rux-*` token.
+- **Every control is Carbon:** the search box, buttons, tiles and links. **The
+  path, the step and the tab bar are Notes' own**, under the `notes-` prefix,
+  with every colour a `--rux-*` token.
 
-- **The page starts from a Design template**, and the site's log-in and app
-  switcher are unchanged.
+- **`notes/specimen-tool.html` shows the flow on invented content**, and the
+  build follows its shape.
+
+- **Design's button set runs off a phone**, because each button keeps a fixed
+  width. Until Design has a set that fits, the two rules that size Back, Next
+  and a choice live in `notes/overrides.css`.
+
+### What carries over
+
+- **The export, the build that reads it, and its list of what it could not
+  place.** `notes/do.html`, `notes/understand.html` and `notes/lookup.html` are
+  replaced by the flow, and the questions, cards and routes they show move into
+  it.
+
+- **The old pages stay until the flow works for Ship from stock**, and go in one
+  step after.
+
+### The library
+
+- **A new area of LN is one map file and its walkthroughs.**
+
+- **A walk is recorded in atlas, with atlas's own command.** The old pull from
+  Notes is replaced by the one that reads the single table.
 
 ### Left out, on purpose
 
-A one-step-at-a-time view beside the LN window; lighting two scenarios to
-compare them; and landings for old page addresses, which are deleted.
+Scores, streaks and quests; lighting two scenarios to compare them; and
+landings for old page addresses, which are deleted.
 
 ## Questions
 
-- **Where do field meanings and concepts show?** They come from Infor's own
-  help, so they cannot sit in this public repository. Version one shows only
-  what atlas exports and does not wait for this. The choices to compare: the
-  private preview on the Mac, as today; the database behind the log-in, so any
-  device and any later reader sees them; or atlas rewriting each meaning in its
-  own words so it can publish.
+- **Is the goal above the right one?** It is set with rux after the specimen
+  has been looked at.
+
+- **Where do field meanings and full concepts show?** They come from Infor's
+  help, so they cannot sit in this public repository. The choices: the private
+  preview on the Mac, the database behind the log-in, or atlas rewriting each
+  in its own words so it can publish.
 
 ## Tasks
 
-- [ ] In atlas, record the setup Ship from stock needs, and link it to the map's
-      setup tiles.
+- [ ] Rewrite `notes/tools/build-views.mjs` to write the flow from atlas's
+      data: home, path, step, decision, map and search, for every scenario.
+- [ ] Add atlas's "something went wrong" rows and its side tasks to Search, each
+      labelled by kind.
+- [ ] In atlas, export each phase's walked date and each side task's, so a step
+      can say whether anyone has confirmed it.
+- [ ] Write the one table and its bucket as SQL, show it to rux, and build the
+      two buttons and the unconfirmed card on it.
+- [ ] In atlas, write the pull that reads the table into the inbox, and correct
+      `docs/plans/overview-walks.md` and `docs/handoff.md` to match.
+- [ ] Move the two button rules into `notes/overrides.css`, and raise the
+      button set's fixed width with Design.
+- [ ] In atlas, set the one shape for a question in `standards/`, with its
+      check, and rewrite each scenario's questions into it.
+- [ ] In atlas, give a short form to each step whose wording runs past two
+      lines on a phone.
 - [ ] In atlas, record what decides the supply-source turn at Transfer Order
       Planning, the one branch that names no setting.
 - [ ] In atlas, give Warehouse transfer and Create test items a map of their
       own, since most of their tasks are not on this chain.
 - [ ] In atlas, write a screen file for the four screens still without one, once
-      a source says how each is opened, and rewrite each scenario's questions
-      into the one shape.
-- [ ] Keep the open question in the address, so coming back from a screen card
-      returns to it.
-- [ ] In atlas, set the one shape for a question in `standards/`, with its
-      check, and rewrite Ship from stock's troubleshooting rows, variants,
-      conditional steps and next-walkthrough rows into it, each on its task.
-- [ ] Add to `notes/specimen-map.html` every question the export holds, listed
-      under the tile it comes up on, and the ones that have no tile yet.
+      a source says how each is opened.
 - [ ] Remove the old pages, `notes/js/experiment.js`, `notes/js/quests.js`,
       `notes/js/tile-owner.js`, `notes/js/tile-walk.js`, `notes/js/online.js`,
       `notes/specimen-tile.html`, `notes/specimen-map.html` and
       `notes/specimen-tool.html`, and bring Notes' checks down to what the
-      new pages need.
-- [ ] Rewrite `notes/docs/diagram.md` for the one-look map and delete
+      flow needs.
+- [ ] Rewrite `notes/docs/diagram.md` for the path and delete
       `notes/docs/owner-tools.md`.
 - [ ] In atlas, stop exporting reviews, summaries and experiments.
 - [ ] Lay out the three choices for field meanings and concepts on one page,
       each with a working sample, what it costs to keep, and what leaves the
       Mac.
-- [ ] Pull what the eight tables and two buckets hold into atlas, and read each
-      record and file back from where it landed against the database.
-- [ ] In atlas, remove `tools/pull.py` and correct `docs/plans/overview-walks.md`
-      and `docs/handoff.md` so a walk is started with `tools/newwalk.py`.
-- [ ] Drop the eight tables and two buckets, as a database step shown to rux.
+- [ ] Pull what the eight old tables and two buckets hold into atlas, read each
+      record and file back from where it landed, then drop them as a database
+      step shown to rux.

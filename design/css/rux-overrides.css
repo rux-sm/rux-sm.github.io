@@ -519,10 +519,22 @@
 [data-theme="geist-dark"] :is(.rux--popover-content, .rux--table-toolbar) {
   --rux-layout-size-height-md: 2.25rem;
 }
-[data-theme="geist-dark"] .rux--btn:not([class*="rux--layout--size-"]):not([class*="rux--layout--size-"] *) {
+/* ANT'S DEFAULT CONTROL IS 32px, measured on its Button, Input and DatePicker
+   pages, between a 24px small and a 40px large. It takes the same three
+   scopes, and the two rules after it serve both themes. Carbon's small size
+   is 32px too and keeps it: the scheduler's card rows are sized from it.
+   From 42rem up only: 32px is a pointer's size, and on a phone a field and a
+   footer button keep Carbon's 40px for a finger. */
+@media (min-width: 42rem) {
+  [data-theme="ant-dark"],
+  [data-theme="ant-dark"] :is(.rux--popover-content, .rux--table-toolbar) {
+    --rux-layout-size-height-md: 2rem;
+  }
+}
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--btn:not([class*="rux--layout--size-"]):not([class*="rux--layout--size-"] *) {
   --rux-layout-size-height: var(--rux-layout-size-height-md);
 }
-[data-theme="geist-dark"] .rux--date-picker__input:not(.rux--date-picker__input--lg, .rux--date-picker__input--sm) {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--date-picker__input:not(.rux--date-picker__input--lg, .rux--date-picker__input--sm) {
   block-size: var(--rux-layout-size-height-md);
 }
 /* GEIST'S SPACING INSIDE A CONTROL, measured on its own pages. Carbon's
@@ -549,13 +561,12 @@
    on its Button page: 15px inside its border on each side and 8px between
    the two. Carbon sets the label at the start and the icon against the end,
    in 64px kept for it whether or not there is one, so a wide button read as
-   a row with a stray mark. A footer's buttons are still Carbon's
-   edge-to-edge band in this theme and keep Carbon's layout. */
-[data-theme="ant-dark"] .rux--btn:not(.rux--btn--icon-only, .rux--action-set *, .rux--modal-footer *) {
+   a row with a stray mark. */
+[data-theme="ant-dark"] .rux--btn:not(.rux--btn--icon-only) {
   padding-inline: 15px;
   justify-content: center;
 }
-[data-theme="ant-dark"] .rux--btn:not(.rux--btn--icon-only, .rux--action-set *, .rux--modal-footer *) .rux--btn__icon {
+[data-theme="ant-dark"] .rux--btn:not(.rux--btn--icon-only) .rux--btn__icon {
   position: static;
   margin-block-start: 0;
   margin-inline-start: var(--rux-spacing-03);
@@ -563,12 +574,14 @@
 /* - A field starts its text 12px in, and a mark at its end -- a select's or a
      dropdown's arrow, a date field's calendar -- sits 12px from that end. A
      combo box's field only frames its input, which takes the 12px itself, so
-     it keeps Carbon's 0; `:where` keeps the rule at the specificity it had. */
-[data-theme="geist-dark"] :is(.rux--text-input, .rux--text-area, .rux--select-input, .rux--date-picker__input, .rux--list-box__field:not(:where(.rux--combo-box) *)),
-[data-theme="geist-dark"] .rux--number :is(input[type=number], input[type=text]) {
+     it keeps Carbon's 0; `:where` keeps the rule at the specificity it had.
+     Ant's Input page gives the same 12px, 11px inside a 1px border, so
+     ant-dark shares the rule. */
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) :is(.rux--text-input, .rux--text-area, .rux--select-input, .rux--date-picker__input, .rux--list-box__field:not(:where(.rux--combo-box) *)),
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--number :is(input[type=number], input[type=text]) {
   padding-inline-start: 12px;
 }
-[data-theme="geist-dark"] :is(.rux--select__arrow, .rux--date-picker__icon) {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) :is(.rux--select__arrow, .rux--date-picker__icon) {
   inset-inline-end: 12px;
 }
 /* - Tabs sit 24px apart, each only as wide as its label, so the line under
@@ -615,9 +628,13 @@
    not, the chosen one in the primary colour over a 2px bar of it and the
    rest in the page's own text. The colour is link-primary, #4096ff: the
    step of Ant's blue this theme already takes where #1668dc misses 4.5 to 1
-   on its surfaces. The pointed tab takes it too, as Ant's does. The
-   spacers, the one hairline under the row and the first label's 16px are
-   as geist-dark has them above. */
+   on its surfaces. The pointed tab takes it too, as Ant's does. A tab is
+   46px, 12px above and below its label, where the theme's 32px control
+   would make it 32. The spacers, the one hairline under the row and the
+   first label's 16px are as geist-dark has them above. */
+[data-theme="ant-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) {
+  --rux-layout-size-height: 2.875rem;
+}
 [data-theme="ant-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tab--list {
   padding-inline-start: 16px;
   box-shadow: inset 0 -1px 0 var(--rux-border-subtle-01);
@@ -1148,13 +1165,15 @@
   border-end-end-radius: 12px;
 }
 
-/* GEIST ENDS A SURFACE WITH BUTTONS, NOT WITH A BAND. Carbon fills the last
-   64px of a side panel or a modal with its buttons, edge to edge and divided
-   between them by a flex basis, which is why the rules above make them square
-   and lend them the surface's corner. Geist puts ordinary buttons inside the
-   surface and gathers them at the end -- measured on its Modal and Sheet, both
-   right aligned over a transparent footer with 6px corners. Only `geist-dark`
-   leaves; every other theme keeps the band, so the rules above stand and the
+/* GEIST AND ANT END A SURFACE WITH BUTTONS, NOT WITH A BAND. Carbon fills the
+   last 64px of a side panel or a modal with its buttons, edge to edge and
+   divided between them by a flex basis, which is why the rules above make them
+   square and lend them the surface's corner. Geist puts ordinary buttons
+   inside the surface and gathers them at the end -- measured on its Modal and
+   Sheet, both right aligned over a transparent footer with 6px corners -- and
+   Ant's Modal page does the same: its buttons at the end of a transparent
+   footer, 8px apart, at the control's own height. The two rounded themes
+   leave; every other theme keeps the band, so the rules above stand and the
    corner is taken back here rather than the selector list being written twice.
 
    A GRID, SO NO FLEX BASIS HAS TO BE OUTWEIGHED. Carbon divides the bar with
@@ -1163,8 +1182,8 @@
    the footer out as a grid instead leaves every one of them inert, because
    `flex` means nothing to a grid item, and a column track takes its button's
    own width. */
-[data-theme="geist-dark"] .rux--action-set,
-[data-theme="geist-dark"] .rux--modal-footer {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer {
   display: grid;
   grid-auto-flow: column;
   align-items: center;
@@ -1175,14 +1194,14 @@
   block-size: auto;
 }
 /* The height is `md`, read through Carbon's own size variable rather than a
-   number, because 40px is the height of every field, toolbar button and menu
+   number, because it is the height of every field, toolbar button and menu
    row in these apps and a footer is no reason for a third size. Carbon pads a
    footer button's block to push its label to the top of a 64px block. A side
    panel names its own button twice to set that height, so this names the panel
    to meet it rather than doubling a class. */
-[data-theme="geist-dark"] .rux--action-set .rux--action-set__action-button,
-[data-theme="geist-dark"] .rux--side-panel .rux--side-panel__actions-container .rux--action-set__action-button,
-[data-theme="geist-dark"] .rux--modal-footer .rux--btn {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set .rux--action-set__action-button,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--side-panel .rux--side-panel__actions-container .rux--action-set__action-button,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer .rux--btn {
   align-items: center;
   /* `btn-set` hands a button the whole bar, which is the band's idea of a
      button; in a column that takes the free space it would fill that too. */
@@ -1193,26 +1212,26 @@
 }
 /* The corner comes back on the two buttons the rules above lend the surface's
    own, which name a child and so outrank a plain radius here. */
-[data-theme="geist-dark"] .rux--action-set .rux--action-set__action-button,
-[data-theme="geist-dark"] .rux--action-set .rux--action-set__action-button:first-child,
-[data-theme="geist-dark"] .rux--action-set .rux--action-set__action-button:last-child,
-[data-theme="geist-dark"] .rux--modal-footer .rux--btn,
-[data-theme="geist-dark"] .rux--modal-footer .rux--btn:first-child,
-[data-theme="geist-dark"] .rux--modal-footer .rux--btn:last-child {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set .rux--action-set__action-button,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set .rux--action-set__action-button:first-child,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set .rux--action-set__action-button:last-child,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer .rux--btn,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer .rux--btn:first-child,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer .rux--btn:last-child {
   border-radius: 6px;
 }
 /* Carbon pads a footer button's trailing edge for an icon and its leading edge
    for a ghost; at its own width either reads as a label pushed off centre. */
-[data-theme="geist-dark"] .rux--action-set .rux--action-set__action-button,
-[data-theme="geist-dark"] .rux--action-set .rux--action-set__action-button--ghost,
-[data-theme="geist-dark"] .rux--modal-footer .rux--btn:not(.rux--skeleton) {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set .rux--action-set__action-button,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set .rux--action-set__action-button--ghost,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer .rux--btn:not(.rux--skeleton) {
   padding-inline: var(--rux-spacing-05);
 }
 /* An icon in a footer button follows its label rather than covering it.
    Carbon places the icon absolutely in the trailing padding the rule above
    takes back, so at the button's own width it would sit on the words. */
-[data-theme="geist-dark"] .rux--action-set .rux--action-set__action-button .rux--btn__icon,
-[data-theme="geist-dark"] .rux--modal-footer .rux--btn .rux--btn__icon {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set .rux--action-set__action-button .rux--btn__icon,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer .rux--btn .rux--btn__icon {
   position: static;
   margin-block-start: 0;
   margin-inline-start: var(--rux-spacing-03);
@@ -1222,13 +1241,13 @@
    reach for Save never crosses it. Two sit together at the end. The first
    column takes the free space and its button sits at the column's start,
    because a grid packed to the end leaves no space for an auto margin. */
-[data-theme="geist-dark"] .rux--action-set:has(> :nth-child(3)),
-[data-theme="geist-dark"] .rux--modal-footer:has(> :nth-child(3)) {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set:has(> :nth-child(3)),
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer:has(> :nth-child(3)) {
   grid-template-columns: 1fr;
   grid-auto-columns: max-content;
 }
-[data-theme="geist-dark"] .rux--action-set:has(> :nth-child(3)) > :first-child,
-[data-theme="geist-dark"] .rux--modal-footer:has(> :nth-child(3)) > :first-child {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set:has(> :nth-child(3)) > :first-child,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer:has(> :nth-child(3)) > :first-child {
   justify-self: start;
 }
 

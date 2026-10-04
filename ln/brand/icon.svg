@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+<!-- The app tile icon: a page with a folded corner and four lines of text cut
+     out of it, one run of squares per row on the 16 grid the other apps'
+     marks use. It is a CSS mask over the tile's text colour, so this file's
+     own colours are discarded and only its alpha is read; that is why it
+     carries no fill and no title. brand/favicon.svg is the site's mark, not
+     this drawing. -->
+<path d="M2 1L11 1L11 2L2 2ZM2 2L12 2L12 3L2 3ZM2 3L13 3L13 4L2 4ZM2 4L14 4L14 5L2 5ZM2 5L14 5L14 6L2 6ZM2 6L4 6L4 7L2 7ZM12 6L14 6L14 7L12 7ZM2 7L14 7L14 8L2 8ZM2 8L4 8L4 9L2 9ZM12 8L14 8L14 9L12 9ZM2 9L14 9L14 10L2 10ZM2 10L4 10L4 11L2 11ZM12 10L14 10L14 11L12 11ZM2 11L14 11L14 12L2 12ZM2 12L4 12L4 13L2 13ZM10 12L14 12L14 13L10 13ZM2 13L14 13L14 14L2 14ZM2 14L14 14L14 15L2 15Z"/>
+</svg>

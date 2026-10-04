@@ -33,38 +33,18 @@
   // The PANEL keeps that entry, marked aria-current: there it is how you know
   // where you are, which is the opposite job. Filtering by current() rather
   // than by path means any site that grows a grid gets the same rule.
-  // THE TILE: an icon, the name, and a description of three or four words.
-  // The placeholder is a FILLED swatch, not an outline: an empty box on a
-  // page this bare reads as an unchecked control or an image that failed,
-  // which is what the outline did. layer-accent-01 rather than layer-02
-  // because it is the one that moves in BOTH themes - #e0e0e0 on the white
-  // theme's #f4f4f4 tile, #393939 on g100's #262626, where layer-02 is
-  // #ffffff on white and all but invisible.
+  // THE TILE: the app's icon, its name, and a description of three or four
+  // words. Every tile is built by the one template below, so no two differ in
+  // construction.
   //
-  // TWO KINDS OF ICON, AND NEITHER IS AN <img>. currentColor does not reach
-  // inside an <img>, and a tile is #f4f4f4 in two themes and #262626 in the
-  // other two, so a baked colourway would be wrong in half of them.
-  //
-  //   "icon": "#i-document"            a Carbon glyph from the sprite THIS PAGE
-  //                                    already inlines -- <use> inherits the
-  //                                    tile's own text colour, no file, no mask
-  //   "icon": "/design/brand/icon.svg" the app's own drawn mark, masked over
-  //                                    that same colour
-  //
-  // A sprite id only works where that symbol is inlined, which is why a path is
-  // the general answer and an id is the shortcut for the hub's own grid. If the
-  // symbol is not on the page the tile falls back to the swatch rather than
-  // rendering an empty box. The header logo stays an <img>: that header is
-  // #161616 in all four themes and has one colour to carry.
-  const swatch = `<span style="display:block;height:32px;width:32px;background:var(--rux-layer-accent-01)"></span>`;
-  const icon = a => {
-    if (a.icon && a.icon.startsWith('#')) {
-      if (!document.querySelector('svg symbol' + a.icon.replace(/[^#\w-]/g, ''))) return swatch;
-      return `<svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" style="display:block"><use href="${esc(a.icon)}"/></svg>`;
-    }
-    if (a.icon) return `<span style="display:block;height:32px;width:32px;background:currentColor;-webkit-mask:url(${esc(a.icon)}) center/contain no-repeat;mask:url(${esc(a.icon)}) center/contain no-repeat"></span>`;
-    return swatch;
-  };
+  // THE ICON IS A MASK, NOT AN <img>. currentColor does not reach inside an
+  // <img>, and a tile's colour changes with the theme, so a baked colourway
+  // would be wrong in some of them. The app's own drawn mark, its
+  // brand/icon.svg, is masked over the tile's text colour, and only the
+  // file's alpha is read. docs/app-icons.md is how one is drawn, and the
+  // check fails an app that has none. The header logo stays an <img>: the
+  // header has one colour to carry.
+  const icon = a => `<span style="display:block;height:32px;width:32px;background:currentColor;-webkit-mask:url(${esc(a.icon)}) center/contain no-repeat;mask:url(${esc(a.icon)}) center/contain no-repeat"></span>`;
   const grid = document.getElementById('apps-grid');
   if (grid) grid.innerHTML = apps.filter(a => !current(a)).map(a =>
     `<div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="${esc(a.path)}"><span class="rux--stack-vertical rux--stack-scale-3">${icon(a)}<span class="rux--type-productive-heading-03">${esc(a.name)}</span><span class="rux--type-body-01">${esc(a.description)}</span></span></a></div>`).join('');

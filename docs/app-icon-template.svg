@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+<!-- The board an app icon is drawn on; docs/app-icons.md holds the rules. One
+     unit is one square. The guides are strokes only and carry no fill, and
+     the drawing goes in the empty group after them. The guides group is
+     deleted before the drawing is saved, because the home page reads every
+     painted pixel of an icon file as part of the icon. -->
+<g id="guides" fill="none" stroke="#da1e28">
+  <!-- every square -->
+  <path stroke-width="0.02" stroke-opacity="0.4" d="M1 0V16M2 0V16M3 0V16M4 0V16M5 0V16M6 0V16M7 0V16M8 0V16M9 0V16M10 0V16M11 0V16M12 0V16M13 0V16M14 0V16M15 0V16M0 1H16M0 2H16M0 3H16M0 4H16M0 5H16M0 6H16M0 7H16M0 8H16M0 9H16M0 10H16M0 11H16M0 12H16M0 13H16M0 14H16M0 15H16"/>
+  <!-- the board's edge -->
+  <rect x="0" y="0" width="16" height="16" stroke-width="0.04"/>
+  <!-- the drawing area: one empty square on every side -->
+  <rect x="1" y="1" width="14" height="14" stroke-width="0.08"/>
+  <!-- the centre -->
+  <path stroke-width="0.04" stroke-dasharray="0.25 0.25" d="M8 0V16M0 8H16"/>
+</g>
+<g id="icon"></g>
+</svg>

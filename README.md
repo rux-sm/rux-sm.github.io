@@ -13,7 +13,7 @@ https://rux-sm.github.io/. The folders are the site:
 | `sevens/` | `/sevens/` | an online card game by the rules of Flip 7 |
 | `coins/` | `/coins/` | the household's money: income, spending, accounts, debts and bills |
 | `tools/` | — | the commands below |
-| `docs/` | — | `docs/status.md`, what is unfinished, `docs/database-access.md`, who may read the database, and `docs/plans/`, changes being decided or built |
+| `docs/` | — | `docs/status.md`, what is unfinished, `docs/database-access.md`, who may read the database, `docs/app-icons.md`, how an app icon is drawn, and `docs/plans/`, changes being decided or built |
 
 `AGENTS.md` is the policy, including how documents are kept.
 

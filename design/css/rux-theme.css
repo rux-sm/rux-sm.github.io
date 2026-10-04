@@ -381,7 +381,7 @@
   --rux-shadow: rgba(0, 0, 0, 0.8);
   --rux-skeleton-background: #1a1a1a;
   --rux-skeleton-element: #2e2e2e;
-  --rux-toggle-off: #525252;
+  --rux-toggle-off: #2e2e2e;
 
   /* button (component tokens — derived, see header) */
   --rux-button-primary: #ededed;

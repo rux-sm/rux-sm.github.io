@@ -557,6 +557,54 @@
 [data-theme="geist-dark"] :is(.rux--list-box--disabled, .rux--dropdown--disabled) .rux--list-box__label {
   color: var(--rux-text-on-color-disabled);
 }
+/* GEIST'S CHECKBOX AND RADIO REST IN A GREY RING AND FILL WHEN CHOSEN,
+   measured on its Checkbox and Radio pages: a 16px box with 4px corners and a
+   16px circle, each ringed #8f8f8f at rest, and #ededed with a black tick or
+   an #ededed dot when chosen. Carbon rings both in the text colour at rest, so
+   an empty box was as bright as a ticked one, squares its box at 2px and draws
+   the radio at 18px. border-strong-03 is the nearest line this theme has. The
+   theme's name adds no weight here, so Carbon's own chosen, disabled, invalid
+   and read-only rules still outrank these, as they outrank its resting rule. */
+:where([data-theme="geist-dark"]) .rux--checkbox-label::before {
+  border-color: var(--rux-border-strong-03);
+  border-radius: 4px;
+}
+:where([data-theme="geist-dark"]) .rux--radio-button__appearance {
+  border-color: var(--rux-border-strong-03);
+  block-size: 1rem;
+  inline-size: 1rem;
+}
+/* GEIST'S TOGGLE IS BLUE WHEN ON, WITH A LIGHT THUMB, measured on its Toggle
+   page: a #2e2e2e track that turns #0070f3, and an #ededed thumb in both.
+   Carbon's is green with a thumb in the on-colour text, which this theme sets
+   to black. The off track is the toggle-off token in rux-theme.css; the small
+   toggle's tick takes the track's blue. The size stays Carbon's 48px by 24px,
+   where Geist's is 28px by 14px, too small a target for a thumb on a phone.
+   Carbon's disabled and read-only rules outrank all three, as above. */
+:where([data-theme="geist-dark"]) .rux--toggle__switch--checked {
+  background-color: var(--rux-support-info-inverse);
+}
+:where([data-theme="geist-dark"]) .rux--toggle__switch::before {
+  background-color: var(--rux-icon-primary);
+}
+:where([data-theme="geist-dark"]) .rux--toggle__check {
+  fill: var(--rux-support-info-inverse);
+}
+/* GEIST'S BREADCRUMB IS GREY, NOT A ROW OF LINKS, measured on its Breadcrumbs
+   page: each step and the mark between them #a1a1a1, which is text-secondary
+   here. A step lifts to the text colour under the pointer, and the current
+   page keeps the text colour Carbon gives it. */
+[data-theme="geist-dark"] .rux--breadcrumb-item:not(.rux--breadcrumb-item--current) .rux--link,
+[data-theme="geist-dark"] .rux--breadcrumb-item:not(.rux--breadcrumb-item--current) .rux--link:visited {
+  color: var(--rux-text-secondary);
+}
+[data-theme="geist-dark"] .rux--breadcrumb-item:not(.rux--breadcrumb-item--current) .rux--link:hover,
+[data-theme="geist-dark"] .rux--breadcrumb-item:not(.rux--breadcrumb-item--current) .rux--link:visited:hover {
+  color: var(--rux-text-primary);
+}
+[data-theme="geist-dark"] .rux--breadcrumb-item::after {
+  color: var(--rux-text-secondary);
+}
 /* GEIST'S DEFAULT CONTROL IS 36px, measured on its Button and Input pages:
    the default button and the default field are both 36px with 6px corners,
    between a 32px small and a 40px large. Carbon's md size is 40, and three

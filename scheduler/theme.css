@@ -149,10 +149,11 @@
     inline-size: var(--rux-layout-size-height-md);
     border-radius: 6px;
   }
-  /* These themes' footer buttons are ordinary buttons rather than a band, so
-     they line up with the fields above them, 24px in (overrides.css), where
-     Design's footer holds them at 16. */
-  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) #scheduler-panel .rux--action-set {
+  /* Ant's footer buttons are ordinary buttons rather than a band, so they
+     line up with the fields above them, 24px in (overrides.css), where
+     Design's footer holds them at 16. geist-dark keeps Design's 12px on
+     every side, its one inset for a bar of buttons. */
+  [data-theme="ant-dark"] #scheduler-panel .rux--action-set {
     padding-inline: var(--rux-spacing-06);
   }
   /* The editor and the viewer are columns of the board here, not the panel

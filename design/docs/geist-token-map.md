@@ -9,8 +9,8 @@ best matches it. Geist's values are read from its own published Colors page
 in dark mode and converted to sRGB; ours are read from `css/rux-theme.css`.
 A link on the light inverse surface takes Geist's light mode, and its row says so.
 
-**201 colours. 80 land on a Geist token exactly, 63 sit within a
-shade of one, and 58 have no Geist colour near them** -- the third column
+**201 colours. 81 land on a Geist token exactly, 63 sit within a
+shade of one, and 57 have no Geist colour near them** -- the third column
 then names the closest there is, which is a starting point and not a match.
 
 A transparent value is only ever matched against a transparent Geist token, so
@@ -128,7 +128,7 @@ Nothing in these apps draws them.
 | `--rux-interactive` | `#ededed` | `--ds-gray-1000 #ededed` | exact |
 | `--rux-highlight` | `#102a43` | `--ds-blue-200 #022248` | nearest |
 | `--rux-shadow` | `rgba(0, 0, 0, 0.8)` | `--ds-gray-alpha-1000 #ffffff/0.92` | nearest |
-| `--rux-toggle-off` | `#525252` | `--ds-gray-500 #454545` | nearest |
+| `--rux-toggle-off` | `#2e2e2e` | `--ds-gray-400 #2e2e2e` | exact |
 | `--rux-button-primary` | `#ededed` | `--ds-gray-1000 #ededed` | exact |
 | `--rux-button-primary-hover` | `#d4d4d4` | `--ds-gray-1000 #ededed` | nearest |
 | `--rux-button-primary-active` | `#a1a1a1` | `--ds-gray-900 #a1a1a1` | exact |

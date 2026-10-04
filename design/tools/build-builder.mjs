@@ -118,7 +118,7 @@ const PURPOSES = Object.entries(guide.templates).map(([name, t]) => `           
 // step CLICKABLE — no --unclickable — so the reader can go back and forth.
 const STEPPER = STEPS.map(([label], i) => `                  <li class="rux--progress-step rux--progress-step--${i === 0 ? 'current' : 'incomplete'}">
                     <button type="button" class="rux--progress-step-button" data-step="${i + 1}">
-                      <svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><use href="#${i === 0 ? 'i-incomplete' : 'i-circle-dash'}"/></svg>
+                      <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#${i === 0 ? 'i-incomplete' : 'i-circle-dash'}"/></svg>
                       <div class="rux--progress-text"><span class="rux--progress-label">${label}</span></div>
                       <span class="rux--assistive-text">${i === 0 ? 'Current' : 'Not started'}</span>
                       <span class="rux--progress-line"></span>

@@ -21,6 +21,10 @@
 //   external    a <use> pointing outside this document, which the committed
 //               sprite exists specifically to avoid needing
 //   malformed   a <use> carrying no href at all
+//   no fill     a sprite icon whose <svg> names no `fill`. The symbols carry
+//               none of their own, so the icon paints black in every theme
+//               unless a rule happens to colour it. Carbon's icons always
+//               write `fill="currentColor"`.
 //   stale       assets/icons.svg disagreeing with build-icons.mjs's ICONS list — a
 //               name added or removed without re-running the quarry, which
 //               leaves the committed sprite lying about what it holds
@@ -88,7 +92,10 @@ function usesIn(path) {
   for (const m of text.matchAll(/<use\b[^>]*>/g)) {
     const line = text.slice(0, m.index).split('\n').length;
     const href = m[0].match(/\b(?:xlink:)?href\s*=\s*"([^"]*)"/);
-    found.push({ path, line, tag: m[0], href: href?.[1] ?? null });
+    // The <svg> the <use> sits in, for its `fill`.
+    const at = text.lastIndexOf('<svg', m.index);
+    const svg = at === -1 ? '' : text.slice(at, text.indexOf('>', at) + 1);
+    found.push({ path, line, tag: m[0], href: href?.[1] ?? null, filled: /\bfill\s*=/.test(svg) });
   }
   return found;
 }
@@ -210,6 +217,10 @@ for (const f of sources) {
     if (!own.has(id)) {
       faults.push(['UNRESOLVED', where, `#${id} — nothing on this page defines it.` +
         ` Valid SVG, paints nothing.` + advise(id)]);
+    }
+    if (!u.filled) {
+      faults.push(['NO FILL', where, `#${id} — its <svg> names no fill, so it paints black` +
+        ` in every theme. Write fill="currentColor"`]);
     }
   }
 }

@@ -870,6 +870,18 @@
 [data-theme="geist-dark"] .rux--batch-actions .rux--btn--primary:hover {
   background-color: var(--rux-layer-selected-hover-01);
 }
+/* Their icons follow the words. Carbon fills them with the on-colour icon,
+   for a brand bar; here that is black, on a bar that is no longer the brand. */
+[data-theme="geist-dark"] .rux--batch-actions .rux--action-list .rux--btn .rux--btn__icon {
+  fill: currentColor;
+}
+/* A DISABLED SEARCH KEEPS ITS MAGNIFIER. Carbon fills it with the disabled
+   on-colour icon, which in these two themes is a faint black, for their light
+   brand; the field it sits on is dark, so it takes the disabled icon colour
+   every other disabled field's icon has. */
+:is([data-theme="geist-dark"], [data-theme="spotify-dark"]) .rux--search--disabled svg {
+  fill: var(--rux-icon-disabled);
+}
 /* GEIST OUTLINES A TABLE. Measured on Geist's own Table page: the table
    carries no border and no corners, and a wrapper around it does — 1px at 14%
    white, 8px, over the raised layer. `data-table-content` is our equivalent
@@ -978,6 +990,25 @@
 [data-theme="geist-dark"] .rux--content-switcher-btn.rux--content-switcher--selected::after {
   border-radius: 4px;
   background-color: var(--rux-layer-hover-01);
+}
+/* An icon-only option keeps Carbon's square size and loses the same lines: the
+   group's ring is already drawn by the box. */
+[data-theme="geist-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn,
+[data-theme="geist-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn:first-child,
+[data-theme="geist-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn:last-child {
+  border-block: 0;
+  border-radius: 4px;
+  box-shadow: none;
+}
+/* An icon-only option is the same two greys as a worded one. Carbon fills the
+   chosen icon with the inverse colour, for the inverse slab it draws under it;
+   on this theme's grey pill that is a black icon on near-black. */
+[data-theme="geist-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn:not([disabled]) svg {
+  fill: var(--rux-icon-secondary);
+}
+[data-theme="geist-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn:not([disabled]):hover svg,
+[data-theme="geist-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn.rux--content-switcher--selected:not([disabled]) svg {
+  fill: var(--rux-icon-primary);
 }
 /* GEIST'S RAISED SURFACES TAKE AN EDGE. Geist is flat by design: every layer
    above the page is within 1.05 of what it sits on, so a surface is told apart

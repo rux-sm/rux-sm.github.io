@@ -11,7 +11,9 @@
 
     The capture's root also carries a bare `notifications-panel` class, which
     has no compiled rule and is not written (§4.1.12). Each dismiss button sits
-    in an icon-tooltip there, which the sink declines throughout.
+    in an icon-tooltip there, which the sink declines throughout. Carbon names
+    every one of them "Dismiss"; here each also names its notification, as a
+    notification's own close button does in sink/notification.html.
 
     The empty state is in the markup, `hidden`, for the module to show. IBM's
     illustration is its own drawing and is not copied: the picture here is the
@@ -54,7 +56,7 @@
                 <p class="rux--notifications-panel__notification-description rux--notifications-panel__notification-short-description">The nightly backup stopped before it finished.</p>
               </div>
             </div>
-            <button type="button" class="rux--notifications-panel__dismiss-single-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Dismiss">
+            <button type="button" class="rux--notifications-panel__dismiss-single-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Dismiss: Backup failed">
               <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
             </button>
           </div>
@@ -72,7 +74,7 @@
                 </button>
               </div>
             </div>
-            <button type="button" class="rux--notifications-panel__dismiss-single-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Dismiss">
+            <button type="button" class="rux--notifications-panel__dismiss-single-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Dismiss: Storage almost full">
               <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
             </button>
           </div>
@@ -85,7 +87,7 @@
                 <p class="rux--notifications-panel__notification-description rux--notifications-panel__notification-short-description">Version 4.2 is live for every workspace.</p>
               </div>
             </div>
-            <button type="button" class="rux--notifications-panel__dismiss-single-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Dismiss">
+            <button type="button" class="rux--notifications-panel__dismiss-single-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Dismiss: Release published">
               <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
             </button>
           </div>

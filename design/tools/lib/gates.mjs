@@ -25,8 +25,7 @@
 // below says why patching it would be worse than leaving it.
 //
 // GATE IS NOT THE SAME WORD AS TOOL, and four documents disagreed because of
-// it: `build.mjs` and `build-portal.mjs` each carry a gate and no check-*
-// file of its own. THIS HEADER STATES NO
+// it: `build.mjs` carries a gate and no check-* file of its own. THIS HEADER STATES NO
 // COUNTS; the registry below is the only one.
 //
 // TWO KINDS OF FIGURE, and only one of them may ever be auto-verified.
@@ -59,26 +58,6 @@ export const GATES = [
     baseline: 'cds leakage: none',
   },
   {
-    // REGISTERED 2026-08-31. It was real, ran in npm run verify, and
-    // sat outside the registry for three re-numberings of its own open question --
-    // fifteenth, then eighteenth, then nineteenth. Same shape as build-namespace
-    // above: a gate carried by a build tool with no check-* file of its own.
-    // It caught #i-katex on its first run, a glyph nothing defines, which is the
-    // silent-blank-icon failure check-icons exists for.
-    id: 'build-portal-icons',
-    tool: 'tools/build-portal.mjs',
-    kind: 'node',
-    inVerify: true,
-    catches: 'a `#i-name` emitted into portal.html that the committed sprite has no `<symbol>` for',
-    blindTo: 'every page it does not generate — its unit is portal.html alone',
-    reads: 'the emitted portal markup against assets/icons.svg',
-    fileTargets: ['tools/build-portal.mjs'],
-    inputs: ['assets/icons.svg', 'data/inventory.json', 'data/coverage.json'],
-    redRun: '#i-katex on its first run — a symbol name nothing defines',
-    sideEffects: 'writes portal.html',
-    baseline: '0 unresolved sprite references',
-  },
-  {
     id: 'check-classes',
     tool: 'tools/check-classes.mjs',
     kind: 'node',
@@ -87,11 +66,9 @@ export const GATES = [
     blindTo: 'a class that resolves but renders wrong',
     reads: 'assembled',
     // ROOT PAGES DISCOVERED, as pageTargets() does. This gate and five below
-    // read every *.html at the root since 2026-08-31 (sources.mjs pageFiles),
-    // and their rows here still said kitchen-sink.html and portal.html by hand
-    // until 2026-09-05 -- so builder.html was read by all six and named by
-    // none. Stage 2 of §4.12 left it open; the guided-mode plan's stage 0
-    // closes it. pageFiles() is the root pages plus templates/.
+    // read every *.html at the root (sources.mjs pageFiles), and their rows
+    // here name what that returns rather than a list typed by hand.
+    // pageFiles() is the root pages plus templates/.
     fileTargets: [...pageFiles(), 'js', 'css/rux-theme.css', 'css/rux-overrides.css'],
     inputs: ['css/rux.css', ...pageFiles(), 'js'],
     redRun: 'add a `rux--nonesuch` class to any fragment',
@@ -310,8 +287,7 @@ export const GATES = [
     // unit is the FILE rather than an occurrence. table-page.html shipped with
     // no h1-h6 at all and passed all seventeen gates that existed; a person
     // walking the tab order found it. Its first run found the label/value
-    // heading defect a THIRD and FOURTH time, in wizard-page.html and in the
-    // portal generator.
+    // heading defect again, in wizard-page.html.
     id: 'check-headings',
     tool: 'tools/check-headings.mjs',
     kind: 'node',
@@ -321,7 +297,7 @@ export const GATES = [
     reads: 'every page — templates/ and the generated root pages, comments stripped',
     fileTargets: pageFiles(),
     inputs: ['templates', 'sink'],
-    redRun: 'wizard-page h1->h3 and portal h1->h3 / h2->h4, on its first run',
+    redRun: 'wizard-page h1->h3, on its first run',
     sideEffects: null,
     baseline: '11 pages · 0 findings',
   },
@@ -401,7 +377,7 @@ export const GATES = [
     baseline: '0 unresolved sprite references',
   },
   {
-    // The same shape as build-portal-icons: a gate carried by a build tool. The
+    // A gate carried by a build tool. The
     // generator inlines assets/icons.svg and refuses to write a page that uses
     // a glyph the sprite lacks, because a <use> at a missing symbol paints
     // nothing, silently.

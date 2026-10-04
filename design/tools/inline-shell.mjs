@@ -2,7 +2,7 @@
 //
 // SPLICES THE SHARED SHELL INTO A HAND-WRITTEN PAGE.
 //
-// tools/lib/shell.mjs emits one shell and the four generated pages call it
+// tools/lib/shell.mjs emits one shell and the three generated pages call it
 // directly. index.html is not generated — it is hand-written, it carries prose
 // and a tile grid nobody wants to express in a template literal, and it was
 // therefore the one page left with a shell of its own. Pasting the shared one

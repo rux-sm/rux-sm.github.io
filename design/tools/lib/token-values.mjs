@@ -3,8 +3,7 @@
 // data/token-values.json and by the gate that checks it. They must never
 // disagree: a baseline written by one parser and checked by another is a gate
 // that reports on a file it did not read, which is the drift tools/lib/
-// staleness.mjs was extracted to end after portal.html and npm run gates
-// contradicted each other in the same working tree.
+// staleness.mjs was extracted to end.
 //
 // The reasoning for the snapshot itself -- what it pins, what it cannot see,
 // and why the context is part of the key -- is in tools/build-token-values.mjs.

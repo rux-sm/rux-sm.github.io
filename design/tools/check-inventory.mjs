@@ -37,7 +37,7 @@
 //              ships, so two files answer for one component and one is dead
 //   stale      data/inventory.json was compiled from a Carbon that is not the
 //              one installed, or says nothing about which. Added 2026-09-02:
-//              ownership.mjs, check-coverage, build-portal and stats all read
+//              ownership.mjs, check-coverage and stats all read
 //              that file, nothing in verify regenerates it, and until now it
 //              could not say which Carbon it came from.
 //

@@ -1,17 +1,11 @@
 //
 // ONE SHELL, EMITTED ONCE, FOR EVERY PAGE THIS REPOSITORY PUBLISHES.
 //
-// Written 2026-09-11 because the five pages had five different shells and
-// nobody had noticed. Counted before this file existed: portal carried a
-// persistent side nav and no account panel, builder and theme-creator carried
-// a header menu bar and neither a nav nor a panel, index carried the panel and
-// no nav, and kitchen-sink had just been given a collapsible nav and a panel.
-// Every one of them was hand-kept in its own generator, so they drifted the
-// way four copies of anything drift. A design system's own pages disagreeing
-// about the design system's own shell is the specific embarrassment this
-// removes.
+// A shell hand-kept in each page's own generator drifts the way four copies
+// of anything drift, and a design system's own pages disagreeing about the
+// design system's own shell is the specific embarrassment this removes.
 //
-// FOUR PAGES CALL shell() DIRECTLY FROM THEIR GENERATORS. index.html is
+// THREE PAGES CALL shell() DIRECTLY FROM THEIR GENERATORS. index.html is
 // hand-written -- prose and a tile grid nobody wants inside a template literal
 // -- so tools/inline-shell.mjs splices the same output between two markers in
 // it, the way tools/build-icons.mjs splices the sprite into templates/. Same bytes,
@@ -29,9 +23,8 @@
 //   THE NAV HOLDS PAGES. IBM's UI shell guidance puts the header at the
 //   highest level of navigation and the left panel one tier below it, and says
 //   content beneath that tier belongs in tabs within the page rather than in
-//   the nav. kitchen-sink.html had its 68 section links in here for an
-//   afternoon and portal.html had four anchors into its own page for longer
-//   than that; both were the wrong tier. A page's own sections are the page's.
+//   the nav. kitchen-sink.html's section links are the wrong tier for it. A
+//   page's own sections are the page's.
 //
 //   NO HEADER MENU BAR. The same four links in a bar above the panel that
 //   holds them is duplication, and the bar is the part that goes: the panel is
@@ -53,13 +46,10 @@
 //
 
 // THE SHELL'S OWN SCRIPTS, because a panel nobody wired is an affordance that
-// lies — the rule js/ states about itself, and one this file broke the day it
-// was written. It put an account panel with eight theme radios on the portal,
-// the builder and the theme creator; none of the three loaded js/profile.js,
-// which is what listens to those radios, and the PORTAL loaded none of the
-// three scripts at all. Measured 2026-09-12 on the served pages: clicking
-// Gray 100 on the portal checked the radio and moved nothing, and a stored
-// theme of "spotify-dark" rendered white because nothing applied it.
+// lies — the rule js/ states about itself. The account panel carries theme
+// radios, and js/profile.js is what listens to them: a page with the panel
+// and without the script checks the radio and moves nothing, and a stored
+// theme renders white because nothing applies it.
 //
 // TWO PLACES, AND THE SPLIT IS NOT COSMETIC. The first pair goes in <head>,
 // BEFORE the stylesheets paint, because js/theme.js puts the stored theme on
@@ -73,10 +63,10 @@ export const shellHead = () => `<script src="js/custom-themes.js"></script>
 export const shellScripts = () => `<script src="js/profile.js"></script>
 <script src="/switcher.js"></script>`;
 
-// The five pages, in nav order. Order is deliberate and not alphabetical:
-// home is the front door, portal the status board, the sink the reference, and
-// the two tools follow. `file` is what every page links to — these all sit at
-// the root together, so no prefix is needed and none is offered.
+// The four pages, in nav order. Order is deliberate and not alphabetical:
+// home is the front door, the sink the reference, and the two tools follow.
+// `file` is what every page links to — these all sit at the root together, so
+// no prefix is needed and none is offered.
 export const PAGES = [
   // HOME IS index.html AND IT IS NOT THE SWITCHER'S HOME. The switcher's Home
   // is the ACCOUNT root, another product entirely; this is Design's own front
@@ -85,7 +75,6 @@ export const PAGES = [
   // was reachable only through the switcher's "Design System" entry, which is
   // the app-switcher tier reaching sideways at its own app.
   { id: 'index', file: 'index.html', label: 'Home' },
-  { id: 'portal', file: 'portal.html', label: 'Components' },
   { id: 'kitchen-sink', file: 'kitchen-sink.html', label: 'Kitchen sink' },
   { id: 'builder', file: 'builder.html', label: 'Page builder' },
   { id: 'theme-creator', file: 'theme-creator.html', label: 'Theme creator' },
@@ -126,7 +115,7 @@ export function shell(current) {
   return `<header class="rux--header" data-theme="g100" aria-label="Rux Design">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
   <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
-  <a class="rux--header__name" href="portal.html"><img src="brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;Design</a>
+  <a class="rux--header__name" href="./"><img src="brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;Design</a>
   <div class="rux--header__global">
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="App switcher" aria-expanded="false" aria-controls="rux-switcher-panel"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-grid"/></svg></button>

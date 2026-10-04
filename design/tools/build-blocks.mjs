@@ -21,8 +21,7 @@
 //
 // WHY GENERATED AND COMMITTED. builder.html fetches this at runtime, and a
 // catalogue typed by hand would drift the first time a fragment is renamed —
-// the same reason kitchen-sink.html derives its nav and portal.html derives
-// its every figure. builder/ is read by no gate: pageFiles() lists the root
+// the same reason kitchen-sink.html derives its index. builder/ is read by no gate: pageFiles() lists the root
 // non-recursively and markupFiles() reads sink and templates, so nothing here
 // is accidentally claimed as covered. check-blocks is what covers it.
 //

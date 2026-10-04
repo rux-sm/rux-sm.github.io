@@ -7,18 +7,14 @@
 // admissions of 2026-08-31 moved all of them at once and nothing said so, for
 // eleven commits.
 //
-// That is not a new failure. tools/build-portal.mjs opens with the same
-// argument and cites the same history -- "a hand-written status page would be a
-// SECOND copy" -- and CI already fails when css/, kitchen-sink.html or
-// portal.html is not regenerated. The mechanism was built, proved, and pointed
-// at three files. README was not one of them.
+// CI already fails when css/ or kitchen-sink.html is not regenerated, and
+// README is under the same contract.
 //
 // AND GENERATION ALONE IS NOT ENOUGH, which this file exists to fix properly.
-// portal.html is generated, gated by CI, and STILL said "12 modules, 127.4 KB"
-// on 2026-09-01 -- because the count was a literal in a template string and the
-// byte total summed a hardcoded twelve-name array that copy-button and
-// date-picker were never added to. A generator with a hand-written list inside
-// it is a hand-written document that takes longer to update. Every figure below
+// A count typed as a literal in a template string, or a byte total summed over
+// a hardcoded list of names, goes stale inside a generated page. A generator
+// with a hand-written list inside it is a hand-written document that takes
+// longer to update. Every figure below
 // is read from the filesystem or from a file a gate already owns; none is a
 // literal, and adding a module or a component changes them with no edit here.
 //
@@ -29,8 +25,7 @@
 // fill a table cell would be the trade this repository keeps declining.
 //
 // GZIP SIZE IS ENVIRONMENT-SENSITIVE, AND IT BROKE THE BUILD ONCE. Level 9 is
-// pinned here because level 6 already produced a disagreeing figure (build-
-// portal records that one), but the LEVEL is not the whole problem: the zlib
+// pinned here because level 6 produces a disagreeing figure, but the LEVEL is not the whole problem: the zlib
 // the running Node bundles decides the last hundred bytes. Measured 2026-09-01,
 // on byte-identical css/rux.min.css: Node 26.7 reads 70.4 KB where Node 22
 // reads 70.5. CI pins 22 (.github/workflows/gates.yml), regenerates, and diffs
@@ -104,11 +99,8 @@ export function stats() {
   //
   // THE FILE SET IS THE ASSEMBLED PAGES, NOT sink/*.html, and the difference is
   // one class. check-classes reads pageFiles() -- every *.html at the root plus
-  // templates/ -- so kitchen-sink.html and portal.html are in and the fragments
-  // they were assembled from are not. Counting the fragments instead reads 653
-  // against the gate's 654, because portal.html carries a class no fragment does.
-  // An off-by-one between a published figure and the gate that owns it is the
-  // whole failure this file exists to end.
+  // templates/ -- so kitchen-sink.html is in and the fragments it was assembled
+  // from are not. A published figure counts what the gate that owns it counts.
   const used = new Set();
   const walkHtml = root => (root.endsWith('.html') ? [root]
     : htmlIn(root).map(f => join(root, f)));

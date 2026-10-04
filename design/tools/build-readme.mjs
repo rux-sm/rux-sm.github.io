@@ -13,14 +13,10 @@
 // on the page, so a reader could not tell which had gone stale. Now one kind
 // cannot.
 //
-// WHAT GATES IT. The same thing that gates css/, kitchen-sink.html and
-// portal.html: .github/workflows/gates.yml re-runs the build and fails if the
+// WHAT GATES IT. The same thing that gates css/ and kitchen-sink.html: .github/workflows/gates.yml re-runs the build and fails if the
 // committed copy differs. Regenerating is `npm run verify`.
 //
-// THE FIGURES ARE NOT COMPUTED HERE. tools/lib/stats.mjs owns them, and
-// build-portal.mjs reads the same module, so the status page and the README
-// cannot disagree -- which they did on 2026-09-01, portal saying 50/83 while
-// README said 37/83.
+// THE FIGURES ARE NOT COMPUTED HERE. tools/lib/stats.mjs owns them.
 //
 import { readFileSync, writeFileSync } from 'node:fs';
 import { stats } from './lib/stats.mjs';
@@ -70,8 +66,8 @@ const note = [
   '',
   '**Every figure above is generated** by `tools/build-readme.mjs` from',
   '`tools/lib/stats.mjs`, rewritten on every `npm run verify`, and CI fails if the',
-  'committed copy is stale — the same contract `css/`, `kitchen-sink.html` and',
-  '`portal.html` are already under. Do not edit the table by hand; the next build',
+  'committed copy is stale — the same contract `css/` and `kitchen-sink.html`',
+  'are already under. Do not edit the table by hand; the next build',
   'overwrites it. The gzipped figures are whole KB on purpose: they are read at',
   'level 9 and the last hundred bytes still depend on the zlib the running Node',
   'bundles, so an exact figure makes the build fail on whichever machine did not',

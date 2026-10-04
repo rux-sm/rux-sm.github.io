@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "node tools/build.mjs",
-    "generate": "node tools/build-sink.mjs && node tools/build-portal.mjs && node tools/build-readme.mjs && node tools/build-blocks.mjs && node tools/build-builder.mjs && node tools/build-theme-families.mjs && node tools/build-theme-catalogue.mjs && node tools/build-theme-creator.mjs && node tools/inline-shell.mjs",
+    "generate": "node tools/build-sink.mjs && node tools/build-readme.mjs && node tools/build-blocks.mjs && node tools/build-builder.mjs && node tools/build-theme-families.mjs && node tools/build-theme-catalogue.mjs && node tools/build-theme-creator.mjs && node tools/inline-shell.mjs",
     "verify": "npm run build && npm run generate && node tools/check-app.mjs --self-test && node tools/check-classes.mjs && node tools/check-tokens.mjs && node tools/check-token-values.mjs && node tools/check-icons.mjs && node tools/check-glyphs.mjs && node tools/check-slots.mjs && node tools/check-co-classes.mjs && node tools/check-compound.mjs && node tools/check-tags.mjs && node tools/check-ancestry.mjs && node tools/check-coverage.mjs && node tools/check-inventory.mjs && node tools/check-headings.mjs && node tools/check-aria-roles.mjs && node tools/check-provenance.mjs && node tools/check-blocks.mjs",
     "icons": "node tools/build-icons.mjs",
     "inventory": "node tools/build-inventory.mjs",

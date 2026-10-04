@@ -524,7 +524,7 @@
       "follows": null,
       "deps": [],
       "frameDeps": [],
-      "line": 649,
+      "line": 648,
       "provenance": "PROVENANCE: rendered-dom · components-ui-shell-header--header-w-navigation-actions-and-side-nav, --header-w-side-nav and --side-nav-rail-w-header, 2026-08-28",
       "grid": "rux--css-grid",
       "column": "rux--col-span-100 rux--css-grid-column",
@@ -1346,9 +1346,9 @@
       "slots": [
         {
           "name": "body",
-          "line": 648,
-          "start": 107167,
-          "end": 107349,
+          "line": 647,
+          "start": 107052,
+          "end": 107234,
           "container": {
             "grid": "rux--css-grid",
             "column": "rux--col-span-100 rux--css-grid-column",

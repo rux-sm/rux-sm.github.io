@@ -6,7 +6,7 @@ https://rux-sm.github.io/design/ and listed in the app switcher as "Design
 System".
 
 The repository's `AGENTS.md` is the policy. Open work is in the site's
-`docs/status.md`, and counts live in `portal.html`.
+`docs/status.md`, and counts live in the generated table below.
 
 ## Picking this up
 
@@ -27,7 +27,7 @@ The full routine, with what to look at afterwards, is `docs/verbs.md`.
 
 | Task | Command | Then |
 |---|---|---|
-| Run | `npm run serve` from the repository root, then `http://localhost:8640/design/` | open the sink, the portal, a template |
+| Run | `npm run serve` from the repository root, then `http://localhost:8640/design/` | open the sink, a template |
 | Edit a page | skill `design-page`: copy the nearest `templates/*.html` | `node tools/diff-fragment.mjs <name>` against the captures |
 | Edit a colour or token value | `css/rux-theme.css`, inside a `[data-theme]` block | |
 | Edit how a component looks | `css/rux-overrides.css`, at Carbon's own specificity | |
@@ -45,7 +45,7 @@ rewrites the committed stylesheet from the old Carbon and still exits 0.
 | | |
 |---|---|
 | `npm run build` | `src/app.scss` → `css/rux.css` + `.min.css`, verifies zero `cds` |
-| `npm run generate` | rebuilds every generated page and file: the kitchen sink, portal, README figures, builder, Theme Creator and shell |
+| `npm run generate` | rebuilds every generated page and file: the kitchen sink, README figures, builder, Theme Creator and shell |
 | `npm run icons` | quarries `assets/icons.svg` from `@carbon/icons` and `@material-symbols/svg-400`, and picks up `assets/icons-rux/` |
 | `npm run inventory` | per-component classes and size → `data/inventory.json` |
 | `tools/extract/` | quarries Carbon's rendered markup → `data/carbon-*-dom.json`, and — via the state recipes in `react-dom.js` — `data/carbon-react-states.json`. Its `spacing` mode captures COMPUTED box properties instead, folded into a signature table — the one question the markup captures cannot answer |
@@ -65,7 +65,7 @@ The table is generated on every `npm run verify`. Do not edit it by hand.
 | Components | **82 / 87 compiled** in 85 `@use` lines — `data-table` is four of them — and `docs/inventory.md` decides all 87, which `check-inventory` fails if it stops |
 | Themes | 4 — white, g10, g90, g100 — plus `geist-dark`, `ant-dark` and `spotify-dark`, token override blocks in `css/rux-theme.css`, not a compile |
 | Tokens · classes | **631** `--rux-*` defined, 9 more read through a fallback · **1,944** `.rux--*` |
-| Kitchen sink | **73** sections · **1,118** classes with `templates/` and `js/` |
+| Kitchen sink | **73** sections · **1,117** classes with `templates/` and `js/` |
 | Class coverage | **1,066 / 1,520 (70%)** — ratcheted in `data/coverage.json` |
 | Spacing scale | 13 `--rux-spacing-*` tokens, demoed in the `spacing` section |
 | Markup provenance | **81 `rendered-dom` · 6 `source` · 0 `inferred`** across 87 files |
@@ -75,8 +75,8 @@ The table is generated on every `npm run verify`. Do not edit it by hand.
 
 **Every figure above is generated** by `tools/build-readme.mjs` from
 `tools/lib/stats.mjs`, rewritten on every `npm run verify`, and CI fails if the
-committed copy is stale — the same contract `css/`, `kitchen-sink.html` and
-`portal.html` are already under. Do not edit the table by hand; the next build
+committed copy is stale — the same contract `css/` and `kitchen-sink.html`
+are already under. Do not edit the table by hand; the next build
 overwrites it. The gzipped figures are whole KB on purpose: they are read at
 level 9 and the last hundred bytes still depend on the zlib the running Node
 bundles, so an exact figure makes the build fail on whichever machine did not
@@ -95,7 +95,7 @@ than measurements and live with their reasoning in `tools/build.mjs`.
 | `js/` | the behaviour layer; `overlay.js` is the kernel and loads first. |
 | `templates/` | complete pages, shell included; copy the nearest one. |
 | `sink/` | one markup fragment per component, plus `ORDER`, `harness.css`, `harness.js` |
-| `kitchen-sink.html` · `portal.html` · `builder.html` · `theme-creator.html` | generated — edit `sink/`, `data/component-docs.json`, `builder/` or `theme-creator/` and rebuild |
+| `kitchen-sink.html` · `builder.html` · `theme-creator.html` | generated — edit `sink/`, `builder/` or `theme-creator/` and rebuild; `data/component-docs.json` is where each sink section's IBM guidance link comes from |
 | `index.html` | the site's home page, hand-authored — the only root page that is not generated |
 | `builder/` | the page builder's behaviour and data; `rewrites.mjs` is the one place a template becomes a page. |
 | `theme-creator/` | the Theme Creator's behaviour, contrast maths and hue families. |
@@ -104,7 +104,7 @@ than measurements and live with their reasoning in `tools/build.mjs`.
 | `assets/fonts/` | IBM Plex, self-hosted and opt-in via `plex.css`, and Geist Sans and Mono, which `js/theme.js` loads for geist-dark alone; all OFL-1.1, Geist's licence in `LICENSE-Geist.txt` |
 | `brand/` | `logo.svg` and `logo-dark.svg`, the mark in gray 10 and gray 100, `favicon.svg`, and `icon.svg`, the app tile icon; swap a file and every page follows |
 | `tools/` | every build and check script; `serve.mjs` serves, and from the repository root serves the whole site |
-| `tools/lib/gates.mjs` | the gate registry: what each gate catches and is blind to, rendered into `portal.html` |
+| `tools/lib/gates.mjs` | the gate registry: what each gate catches and is blind to |
 | `docs/*.md` | `verbs.md` the routine · `choices.md` what an app may choose · `verifying-templates.md` · `composing-pages.md` how to assemble a page · `checking-a-page.md` how to check the one you built · `carbon-website.md` what IBM's pattern guidance is good for · `screen-reader-pass.md` · `inventory.md` every component's disposition · `builder-coverage.md` the builder's catalogue · `agent-tooling.md` the maintenance instruments · `geist-token-map.md` geist-dark's colours beside Geist's own |
 | `data/*.json` | the Carbon captures and expected results the gates compare against — `carbon-*.json`, `coverage.json`, `inventory.json`, `token-values.json`. Written by `tools/extract/` and the build; controls, never hand-edited |
 | `LICENSE` · `NOTICE` | Apache-2.0; `NOTICE` names each artefact carrying Carbon-derived material |
@@ -123,6 +123,6 @@ not for a click or a tap; and a rule that colours an icon's `path`s also names
 ## Gates
 
 `tools/lib/gates.mjs` is the gate registry: what each gate catches and what it
-is blind to, shown on `portal.html`. None is sufficient alone, and **none
+is blind to. None is sufficient alone, and **none
 catches a component that compiles, resolves and still renders wrong.** Only
 looking does, which is why every change ends by opening the kitchen sink.

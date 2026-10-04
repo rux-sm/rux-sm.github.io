@@ -29,10 +29,9 @@ export const ROOTS = ['sink', 'templates'];
 // ---------------------------------------------------------------------------
 // The ASSEMBLED targets — the other notion named at the top of this file.
 //
-// WHY THIS IS DISCOVERED AND NOT A LIST. Four gates carried
-// `['kitchen-sink.html', 'portal.html', 'templates']` as a literal, so a page
-// at the repository root that nobody had typed into four files was read by
-// none of them. `npm run verify` exited 0 and said NOTHING about it.
+// WHY THIS IS DISCOVERED AND NOT A LIST. A list of pages typed into each gate
+// misses the page nobody typed: it is read by none of them, and `npm run
+// verify` exits 0 and says NOTHING about it.
 //
 // That is this project's own recorded defect arriving from a new direction:
 // a check never run against a target is indistinguishable from a check that
@@ -61,10 +60,9 @@ export function pageFiles(extra = []) {
 // and for check-icons to check for drift.
 //
 // A PAGE OPTS IN BY CARRYING THE MARKERS, and that is not a convenience — it is
-// what keeps the GENERATED pages out. kitchen-sink.html and portal.html have no
-// SPRITE:BEGIN block at all: build-sink and build-portal inline assets/icons.svg
-// directly as they assemble, so those pages cannot drift and nothing else may
-// write to them. A hand-authored consumer page is the opposite case — copied
+// what keeps the GENERATED pages out. kitchen-sink.html has no SPRITE:BEGIN
+// block at all: build-sink inlines assets/icons.svg directly as it assembles,
+// so that page cannot drift and nothing else may write to it. A hand-authored consumer page is the opposite case — copied
 // rather than assembled, so it carries a frozen copy that goes stale silently.
 //
 // THAT SILENCE IS THE WHOLE POINT. `npm run icons` rewrote templates/*.html and

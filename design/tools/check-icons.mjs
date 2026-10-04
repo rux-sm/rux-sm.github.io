@@ -150,9 +150,9 @@ for (const name of symbols) if (!listed.includes(name)) {
 // own symbols exactly as a template does.
 //
 // Selected by their markers, so the GENERATED pages stay out. kitchen-sink.html
-// and portal.html have no block and would otherwise earn a NO SPRITE fault for
-// doing the right thing — build-sink and build-portal inline the sprite as they
-// assemble, and a page with no block is a page that wants none.
+// has no block and would otherwise earn a NO SPRITE fault for doing the right
+// thing — build-sink inlines the sprite as it assembles, and a page with no
+// block is a page that wants none.
 const sources = [...markupFiles(), ...spritePages()];
 const used = new Set();
 

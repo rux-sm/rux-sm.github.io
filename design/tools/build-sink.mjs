@@ -26,7 +26,26 @@ const seq = [...known, ...extra];
 const titleOf = html => (html.match(/<h2>([^<]+)<\/h2>/) ?? [, '?'])[1];
 const idOf = html => (html.match(/id="([^"]+)"/) ?? [, '?'])[1];
 
-const sections = seq.map(n => readFileSync(`sink/${n}.html`, 'utf8').trim());
+// IBM'S OWN GUIDANCE, LINKED FROM EACH SECTION'S FIRST LINE. data/component-
+// docs.json holds, for each compiled component, the page on
+// carbondesignsystem.com that says how to use it. A component with no page of
+// its own, or only a captured specimen, gets no link: a specimen is not
+// guidance. A fragment is named for its section and the data for the
+// component, and these are the few that differ.
+const docs = JSON.parse(readFileSync('data/component-docs.json', 'utf8')).components;
+const DOC_OF = { buttons: 'button', links: 'link', tags: 'tag', textarea: 'text-area',
+  radio: 'radio-button', number: 'number-input', table: 'data-table' };
+const guidance = name => {
+  const d = docs[DOC_OF[name] ?? name];
+  return d && (d.kind === 'page' || d.kind === 'alias') ? d.usage : null;
+};
+const withGuidance = (name, html) => {
+  const url = guidance(name);
+  return url ? html.replace(/(<h2>[^<]+<\/h2><p>[^<]*)(<\/p>)/,
+    (_, open, close) => `${open} · <a class="rux--link" href="${url}">IBM guidance</a>${close}`) : html;
+};
+
+const sections = seq.map(n => withGuidance(n, readFileSync(`sink/${n}.html`, 'utf8').trim()));
 const sprite = existsSync('assets/icons.svg')
   ? readFileSync('assets/icons.svg', 'utf8').trim()
   : '<!-- no assets/icons.svg; run tools/build-icons.mjs -->';

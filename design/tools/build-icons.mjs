@@ -209,9 +209,9 @@ const END = '<!-- SPRITE:END -->';
 // artefact Phase 6 exists to make possible -- carried a sprite frozen at the day
 // someone spliced it by hand. dashboard.html shipped that way and §4.6's fifth
 // exit attempt had to splice its own. `spritePages()` finds them by their
-// markers, which keeps the GENERATED pages out: kitchen-sink.html and
-// portal.html have no block, because build-sink and build-portal inline the
-// sprite as they assemble and must stay the only writers.
+// markers, which keeps the GENERATED pages out: kitchen-sink.html has no
+// block, because build-sink inlines the sprite as it assembles and must stay
+// the only writer.
 /* A TEMPLATE KEEPS THE WHOLE SPRITE and a page carries what it names. A
    template is a starting point to copy, so the next icon someone adds to their
    copy should already be there; a page that ships has no use for 78 symbols

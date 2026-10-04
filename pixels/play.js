@@ -37,7 +37,7 @@
 (() => {
   'use strict';
 
-  const { data, grid, column, clues, solveLine, order, daily, today, streak, board, paint, highlight, drag, stars, buzz, sound, sounds, time, title, switcher } = window.Pixels;
+  const { data, grid, column, clues, solveLine, order, daily, today, streak, board, paint, highlight, drag, stars, buzz, sound, sounds, listen, time, title, switcher } = window.Pixels;
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock');
 
@@ -338,6 +338,7 @@
       tell(free ? 'Free mode · mistakes are not pointed out' : '');
     });
 
+    listen();
     const soundToggle = $('pixels-sound');
     window.Rux.formControls?.toggle(soundToggle, sounds());
     soundToggle.addEventListener('rux:toggle', e => { if (sounds(e.detail.on)) sound('fill'); });

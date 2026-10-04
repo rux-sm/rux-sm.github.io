@@ -287,6 +287,9 @@
     };
     const begin = p => { from = last = p; axis = null; start(...p); };
 
+    // An iPhone starts selecting text under a finger that rests or moves
+    // slowly; stopping the touch's own default is what prevents it.
+    host.addEventListener('touchstart', e => { if (e.cancelable) e.preventDefault(); }, { passive: false });
     host.addEventListener('pointerdown', e => {
       const p = at(e);
       if (!p || e.button > 0) return;
@@ -393,7 +396,14 @@
   /* A TONE. Made in the browser, so there is no file to fetch: each kind is a
      few notes of [pitch in Hz, seconds]. `step` raises the pitch a semitone
      at a time, so a drag of fills climbs. `pixels-sound` set to off in this
-     browser silences it, and so does an iPhone's silent switch. */
+     browser silences it, and so does an iPhone's silent switch.
+
+     A phone keeps sound stopped until a touch, takes a moment to start it,
+     and stops it again after a call or a trip to the home screen. A tone
+     asked for while it is stopped would be scheduled on a clock that is not
+     running and never heard, so `sound` holds the latest one and `wake`,
+     which `listen` runs on every touch and key, starts the sound and plays
+     it if it is still fresh. */
   const TONES = {
     fill: [[523, .06]],
     x: [[196, .05]],
@@ -402,20 +412,17 @@
     hint: [[440, .07], [554, .1]],
     solved: [[523, .1], [659, .1], [784, .1], [1047, .25]],
   };
-  const SOUND = 'pixels-sound';
+  const SOUND = 'pixels-sound', FRESH = 400;
   const sounds = on => {
     try {
       if (on != null) localStorage.setItem(SOUND, on ? 'on' : 'off');
       return localStorage.getItem(SOUND) !== 'off';
     } catch { return true; }
   };
-  let audio;
-  const sound = (kind, step = 0) => {
-    const Context = window.AudioContext || window.webkitAudioContext;
-    if (!Context || !sounds()) return;
-    audio ??= new Context();
-    if (audio.state === 'suspended') audio.resume();
-    let at = audio.currentTime;
+  let audio, held = null;
+  const play = (kind, step) => {
+    // A little ahead of now, so the first note is not cut short.
+    let at = audio.currentTime + .01;
     for (const [pitch, length] of TONES[kind]) {
       const tone = audio.createOscillator(), level = audio.createGain();
       tone.type = kind === 'miss' ? 'sawtooth' : 'triangle';
@@ -427,6 +434,25 @@
       tone.stop(at + length);
       at += length * .8;
     }
+  };
+  const wake = () => {
+    const Context = window.AudioContext || window.webkitAudioContext;
+    if (!Context || !sounds() || document.hidden) return;
+    audio ??= new Context();
+    if (audio.state === 'running') return;
+    audio.resume().then(() => {
+      if (held && performance.now() - held.at < FRESH) play(held.kind, held.step);
+      held = null;
+    }).catch(() => { /* still stopped; the next touch tries again */ });
+  };
+  const listen = () => {
+    for (const type of ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown']) addEventListener(type, wake, { capture: true, passive: true });
+    document.addEventListener('visibilitychange', wake);
+  };
+  const sound = (kind, step = 0) => {
+    if (!sounds()) return;
+    if (audio?.state === 'running') play(kind, step);
+    else { held = { kind, step, at: performance.now() }; wake(); }
   };
 
   const time = seconds => `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
@@ -449,6 +475,6 @@
 
   window.Pixels = Object.assign(window.Pixels || {}, {
     SIZES, INKS: 8, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, daily, today, streak,
-    board, paint, highlight, drag, picture, stars, buzz, sound, sounds, time, title, switcher,
+    board, paint, highlight, drag, picture, stars, buzz, sound, sounds, listen, time, title, switcher,
   });
 })();

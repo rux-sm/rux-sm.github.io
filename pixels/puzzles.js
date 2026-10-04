@@ -3,7 +3,8 @@
    --------------------------------------------------------------------------
    Today's puzzle is first, with the days solved in a row beside it. Then a
    section for each level the maker gave, its puzzles easy to hard, and none
-   locked. A solved puzzle shows its picture, name, stars and best time; an
+   locked: the 5×5 levels are called Quick, the 15×15 ones Long, and they
+   stand before and after the 10×10 levels. A solved puzzle shows its picture, name, stars and best time; an
    unsolved one its number, a question mark and how hard it is.
    ========================================================================== */
 (() => {
@@ -45,7 +46,7 @@
       meta.textContent = time(best.seconds);
       text.append(stars(document.createElement('span'), best.stars), meta);
     } else {
-      meta.textContent = grade(rounds(grid(puzzle.squares)));
+      meta.textContent = grade(rounds(grid(puzzle.squares, puzzle.width)));
       text.appendChild(meta);
     }
     a.append(art, text);
@@ -107,16 +108,17 @@
 
     // "Puzzle 7" counts through every level, in playing order.
     const ordered = order(puzzles);
-    for (const level of [...new Set(ordered.map(p => p.level))]) {
+    const kind = p => `${p.width < 10 ? 'Quick' : p.width > 10 ? 'Long' : 'Level'} ${p.level}`;
+    for (const heading of [...new Set(ordered.map(kind))]) {
       const tiles = [];
       let solved = 0;
       ordered.forEach((p, i) => {
-        if (p.level !== level) return;
+        if (kind(p) !== heading) return;
         const best = results.get(p.id);
         if (best) solved++;
         tiles.push(tile(p, title(p, i, !!best), `play.html?id=${encodeURIComponent(p.id)}`, best));
       });
-      host.appendChild(section(`Level ${level}`, `${solved} of ${tiles.length} solved`, tiles));
+      host.appendChild(section(heading, `${solved} of ${tiles.length} solved`, tiles));
     }
   })();
 })();

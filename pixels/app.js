@@ -2,7 +2,8 @@
    app.js — what every Pixels page shares
    --------------------------------------------------------------------------
    window.Pixels holds the puzzle rules and the board: a puzzle's squares are
-   a string of 0s and 1s, row by row. `clues` gives a line's numbers,
+   a string of 0s and 1s, row by row, and a puzzle is square, 5, 10 or 15 a
+   side. `clues` gives a line's numbers,
    `unreached` says which squares logic alone cannot decide and `rounds` how
    hard the rest is, `board` draws a
    board with its clues and `paint` keeps it in step with the game, `drag`
@@ -14,9 +15,12 @@
 (() => {
   'use strict';
 
-  const SIZE = 10;
+  // The sides a puzzle may have, and the side of the puzzle of the day.
+  const SIZES = [5, 10, 15], DAY = 10;
 
-  const grid = squares => Array.from({ length: SIZE }, (_, y) => [...squares.slice(y * SIZE, y * SIZE + SIZE)].map(Number));
+  // Rows of numbers from a string of them; a square puzzle unless told its width.
+  const grid = (squares, width = Math.sqrt(squares.length)) =>
+    Array.from({ length: squares.length / width }, (_, y) => [...squares.slice(y * width, y * width + width)].map(Number));
   const squaresOf = g => g.flat().join('');
   const column = (g, x) => g.map(r => r[x]);
 
@@ -87,8 +91,8 @@
       const next = known.map(r => r.slice());
       let changed = false;
       const decide = (y, x, v) => { if (v !== -1 && next[y][x] === -1) { next[y][x] = v; changed = true; } };
-      for (let y = 0; y < SIZE; y++) solveLine(rows[y], known[y]).forEach((v, x) => decide(y, x, v));
-      for (let x = 0; x < SIZE; x++) solveLine(cols[x], column(known, x)).forEach((v, y) => decide(y, x, v));
+      for (let y = 0; y < g.length; y++) solveLine(rows[y], known[y]).forEach((v, x) => decide(y, x, v));
+      for (let x = 0; x < g[0].length; x++) solveLine(cols[x], column(known, x)).forEach((v, y) => decide(y, x, v));
       if (!changed) return { known, rounds };
       known = next;
       rounds++;
@@ -98,10 +102,11 @@
   const rounds = g => solve(g).rounds;
   const grade = n => (n <= 3 ? 'easy' : n <= 5 ? 'medium' : 'hard');
 
-  // Playing order: by level, easy to hard within one, then as they were made.
+  // Playing order: small boards first, then by level, easy to hard within
+  // one, then as they were made.
   const order = puzzles => {
-    puzzles.forEach(p => { p.rounds ??= rounds(grid(p.squares)); });
-    return [...puzzles].sort((a, b) => a.level - b.level || a.rounds - b.rounds
+    puzzles.forEach(p => { p.rounds ??= rounds(grid(p.squares, p.width)); });
+    return [...puzzles].sort((a, b) => a.width - b.width || a.level - b.level || a.rounds - b.rounds
       || String(a.created_at).localeCompare(String(b.created_at)));
   };
 
@@ -120,18 +125,18 @@
       return ((t ^ t >>> 14) >>> 0) / 4294967296;
     };
     for (;;) {
-      const noise = Array.from({ length: SIZE }, () => Array.from({ length: SIZE }, () => (random() < .5 ? 1 : 0)));
+      const noise = Array.from({ length: DAY }, () => Array.from({ length: DAY }, () => (random() < .5 ? 1 : 0)));
       const near = (y, x) => {
         let n = 0;
         for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) n += noise[y + dy]?.[x + dx] || 0;
         return n;
       };
       const half = noise.map((r, y) => r.map((_, x) => (near(y, x) >= 5 ? 1 : 0)));
-      const g = half.map(r => r.map((_, x) => r[x < SIZE / 2 ? x : SIZE - 1 - x]));
+      const g = half.map(r => r.map((_, x) => r[x < DAY / 2 ? x : DAY - 1 - x]));
       const filled = g.flat().filter(Boolean).length;
       if (filled >= 30 && filled <= 70 && !unreached(g).flat().some(Boolean)) {
         const name = new Date(`${day}T12:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'long' });
-        return { id: `daily-${day}`, day, name, squares: squaresOf(g), level: 0 };
+        return { id: `daily-${day}`, day, name, squares: squaresOf(g), width: DAY, height: DAY, level: 0 };
       }
     }
   };
@@ -152,14 +157,30 @@
      squares that need a guess; `options.inks[y][x]` paints each square its
      colour of the picture. `board` builds the squares and numbers once
      and `paint` changes only what the state changed, so a square animates
-     when it is filled and not on every move after. */
+     when it is filled and not on every move after.
+
+     It is four parts: a corner, the column numbers, the row numbers and the
+     squares. Each of the last three is a window onto a strip that slides
+     behind it, so a zoomed board moves its squares both ways while the
+     numbers move one way each and stay in view. */
   const board = (host, answer, state, options = {}) => {
+    const H = answer.length, W = answer[0].length;
+    const part = (name, parent) => {
+      const d = document.createElement('div');
+      d.className = name;
+      parent.appendChild(d);
+      return d;
+    };
     const el = document.createElement('div');
-    el.className = 'pixels-board';
-    el.style.setProperty('--size', SIZE);
+    el.className = `pixels-board${W <= 5 ? ' pixels-board--small' : ''}`;
+    el.style.setProperty('--cols', W);
+    el.style.setProperty('--rows', H);
     el.setAttribute('role', 'grid');
     el.setAttribute('aria-label', options.label || 'Puzzle');
-    el.appendChild(document.createElement('div'));
+    part('pixels-corner', el);
+    const cols = part('pixels-slide', part('pixels-cols', el));
+    const rows = part('pixels-slide', part('pixels-rows', el));
+    const squares = part('pixels-slide', part('pixels-squares', el));
     const numbers = (target, line) => {
       const runs = runsOf(line);
       clues(line).forEach((n, i) => {
@@ -169,35 +190,30 @@
         target.appendChild(span);
       });
     };
-    for (let x = 0; x < SIZE; x++) {
-      const c = document.createElement('div');
-      c.className = 'pixels-clue pixels-clue--col';
+    for (let x = 0; x < W; x++) {
+      const c = part('pixels-clue pixels-clue--col', cols);
       c.dataset.col = x;
       numbers(c, column(answer, x));
-      el.appendChild(c);
     }
-    for (let y = 0; y < SIZE; y++) {
-      const c = document.createElement('div');
-      c.className = 'pixels-clue';
+    for (let y = 0; y < H; y++) {
+      const c = part('pixels-clue', rows);
       c.dataset.row = y;
       numbers(c, answer[y]);
-      el.appendChild(c);
-      for (let x = 0; x < SIZE; x++) {
-        const s = document.createElement('div');
-        s.className = 'pixels-cell';
+      for (let x = 0; x < W; x++) {
+        // A stronger line round the edge and after every fifth square.
+        const s = part(`pixels-cell${x ? '' : ' is-west'}${y ? '' : ' is-north'}${(x + 1) % 5 ? '' : ' is-east'}${(y + 1) % 5 ? '' : ' is-south'}`, squares);
         s.dataset.x = x;
         s.dataset.y = y;
         // The finished picture fills in along its diagonals.
         s.style.setProperty('--wave', x + y);
         s.setAttribute('role', 'gridcell');
-        el.appendChild(s);
       }
     }
     paint(el, answer, state, options);
     host.replaceChildren(el);
     // The row numbers' width, which app.css takes off the room for squares;
     // measured again once the font is in, which can change it.
-    const measure = () => host.style.setProperty('--clues', `${Math.ceil(el.firstElementChild.getBoundingClientRect().width)}px`);
+    const measure = () => host.style.setProperty('--clues', `${Math.ceil(rows.parentElement.getBoundingClientRect().width)}px`);
     measure();
     document.fonts?.ready.then(measure);
     return el;
@@ -238,25 +254,73 @@
 
   /* PAINTING BY DRAG. `start(y, x)` runs on the first square, then
      `paint(y, x)` on each square the finger crosses. In the game the drag
-     keeps to the first row or column it moves along, as on the DS; `free`
-     lets the maker draw in any direction. A mouse moving with no button down
-     calls `hover(y, x)`. Listeners sit on the host, which outlives redraws. */
-  const drag = (host, { start, paint, hover, free = false }) => {
+     keeps to the first row or column it moves along; `free` lets the maker
+     draw in any direction. A mouse moving with no button down calls
+     `hover(y, x)`. Listeners sit on the host, which outlives redraws.
+
+     ZOOM. Where `zoom()` says the board is too fine for a finger, two
+     fingers pinch it larger and slide it, up to squares 48px wide. The
+     square the pinch began over stays under the fingers. There a touch
+     fills when it lifts or crosses into a second square, not when it lands,
+     so the first finger of a pinch leaves no stray fill; and after a pinch
+     nothing fills until every finger is up. `--zoom`, `--tx` and `--ty` on
+     the host are what app.css sizes and slides the board by. `reset()`
+     takes the board back to its whole. */
+  const drag = (host, { start, paint, hover, free = false, zoom = () => false }) => {
     let from = null, axis = null, last = null;
+    const fingers = new Map();
+    let waiting = null, pinch = null, spent = false, z = 1, tx = 0, ty = 0;
     const at = e => {
       const el = document.elementFromPoint(e.clientX, e.clientY)?.closest('.pixels-cell');
       return el && host.contains(el) ? [+el.dataset.y, +el.dataset.x] : null;
     };
+    const apply = () => {
+      host.style.setProperty('--zoom', z);
+      host.style.setProperty('--tx', `${tx}px`);
+      host.style.setProperty('--ty', `${ty}px`);
+    };
+    const square = () => host.querySelector('.pixels-cell').getBoundingClientRect().width;
+    // Two fingers: how far apart, and the point between them.
+    const span = () => {
+      const [a, b] = [...fingers.values()];
+      return { gap: Math.hypot(a.x - b.x, a.y - b.y), x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+    };
+    const begin = p => { from = last = p; axis = null; start(...p); };
+
     host.addEventListener('pointerdown', e => {
       const p = at(e);
       if (!p || e.button > 0) return;
       e.preventDefault();
-      from = last = p;
-      axis = null;
-      start(...p);
+      if (e.pointerType !== 'touch' || !zoom()) { begin(p); return; }
+      fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (fingers.size === 2) {
+        const view = host.querySelector('.pixels-squares').getBoundingClientRect(), now = span(), size = square();
+        pinch = { gap: now.gap, z, x: (now.x - view.x - tx) / size, y: (now.y - view.y - ty) / size };
+        waiting = from = null;
+      } else if (fingers.size === 1 && !spent) waiting = p;
     });
     host.addEventListener('pointermove', e => {
+      if (fingers.has(e.pointerId)) fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pinch) {
+        if (fingers.size < 2) return;
+        const el = host.querySelector('.pixels-board'), box = host.querySelector('.pixels-squares').getBoundingClientRect(), now = span();
+        const cols = +el.style.getPropertyValue('--cols'), rows = +el.style.getPropertyValue('--rows');
+        z = Math.min(Math.max(1, 48 * cols / box.width), Math.max(1, pinch.z * now.gap / pinch.gap));
+        apply();
+        // The strips are as long as the zoomed squares; slide them no further
+        // than their ends.
+        const size = square();
+        tx = Math.min(0, Math.max(box.width - size * cols, now.x - box.x - pinch.x * size));
+        ty = Math.min(0, Math.max(box.height - size * rows, now.y - box.y - pinch.y * size));
+        apply();
+        return;
+      }
       const p = at(e);
+      if (waiting) {
+        if (!p || (p[0] === waiting[0] && p[1] === waiting[1])) return;
+        begin(waiting);
+        waiting = null;
+      }
       if (!from) { if (p && e.pointerType === 'mouse') hover?.(...p); return; }
       if (!p || (p[0] === last[0] && p[1] === last[1])) return;
       if (free) { last = p; paint(...p); return; }
@@ -269,14 +333,22 @@
       }
       last = axis === 'row' ? [from[0], to] : [to, from[1]];
     });
-    const end = () => { from = null; };
+    const end = e => {
+      fingers.delete(e.pointerId);
+      if (pinch) { pinch = null; spent = true; }
+      // A tap: the finger lifted on the square it landed on.
+      if (waiting && e.type === 'pointerup') start(...waiting);
+      waiting = from = null;
+      if (!fingers.size) spent = false;
+    };
     addEventListener('pointerup', end);
     addEventListener('pointercancel', end);
+    return { reset() { z = 1; tx = ty = 0; apply(); } };
   };
 
   // `colours`, a digit a square, paints the picture in its inks.
   const picture = (el, squares, colours) => {
-    el.style.setProperty('--size', SIZE);
+    el.style.setProperty('--size', Math.sqrt(squares.length));
     el.replaceChildren(...[...squares].map((c, i) => {
       const s = document.createElement('span');
       if (c === '1') s.dataset.on = '';
@@ -376,7 +448,7 @@
   });
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    SIZE, INKS: 8, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, daily, today, streak,
+    SIZES, INKS: 8, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, daily, today, streak,
     board, paint, highlight, drag, picture, stars, buzz, sound, sounds, time, title, switcher,
   });
 })();

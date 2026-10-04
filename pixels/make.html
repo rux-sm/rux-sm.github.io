@@ -158,6 +158,14 @@
           <div id="pixels-board"></div>
           <form class="pixels-maker-side" id="pixels-form" novalidate>
             <div id="pixels-check" aria-live="polite"></div>
+            <!-- Choosing a size starts a blank board of it. make.js hides this for a saved puzzle. -->
+            <div id="pixels-size-row">
+              <div class="rux--content-switcher rux--content-switcher--lg rux--layout--size-lg" role="tablist" aria-label="Size" id="pixels-size">
+                <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-size="5"><span class="rux--content-switcher__label">5×5</span></button>
+                <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-size="10"><span class="rux--content-switcher__label">10×10</span></button>
+                <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-size="15"><span class="rux--content-switcher__label">15×15</span></button>
+              </div>
+            </div>
             <!-- Draw the puzzle, then paint the picture it finishes as. -->
             <div class="rux--content-switcher rux--content-switcher--lg rux--layout--size-lg" role="tablist" aria-label="Step" id="pixels-step">
               <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-step="draw"><span class="rux--content-switcher__label">Draw</span></button>

@@ -17,6 +17,9 @@
    The choice is kept in this browser under `pixels-mode`, and changing it
    starts the puzzle over.
 
+   A board wider than ten squares zooms under two fingers; app.js's `drag`
+   says how.
+
    play.html?daily plays the puzzle of the day, which app.js makes from the
    date; its result is kept by day, and solving it shows the days in a row.
 
@@ -30,7 +33,7 @@
 (() => {
   'use strict';
 
-  const { data, SIZE, grid, column, clues, solveLine, order, daily, today, streak, board, paint, highlight, drag, stars, buzz, sound, sounds, time, title, switcher } = window.Pixels;
+  const { data, grid, column, clues, solveLine, order, daily, today, streak, board, paint, highlight, drag, stars, buzz, sound, sounds, time, title, switcher } = window.Pixels;
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock');
 
@@ -72,7 +75,7 @@
     // What a result is kept under: the day, or the puzzle's id.
     const key = isDaily ? puzzle.day : puzzle.id;
     const heading = isDaily ? puzzle.name : title(puzzle, index, results.has(key));
-    const answer = grid(puzzle.squares);
+    const answer = grid(puzzle.squares, puzzle.width), H = answer.length, W = answer[0].length;
     const blank = () => answer.map(r => r.map(() => 0));
 
     const kept = loadProgress()[puzzle.id];
@@ -119,6 +122,7 @@
       solved = true;
       saveProgress(puzzle.id, null);
       highlight(el);
+      pad.reset();
       buzz(60);
       sound('solved');
       // The squares fill in as the picture while the time is saved.
@@ -175,10 +179,8 @@
     const closeLines = (y, x) => {
       const row = answer[y].every((c, i) => !c || state[y][i] === 1);
       const col = answer.every((r, i) => !r[x] || state[i][x] === 1);
-      for (let i = 0; i < SIZE; i++) {
-        if (row && state[y][i] === 0) state[y][i] = 2;
-        if (col && state[i][x] === 0) state[i][x] = 2;
-      }
+      for (let i = 0; i < W; i++) if (row && state[y][i] === 0) state[y][i] = 2;
+      for (let i = 0; i < H; i++) if (col && state[i][x] === 0) state[i][x] = 2;
       return row || col;
     };
 
@@ -241,8 +243,8 @@
           const worth = fills * 100 + crosses;
           if (worth && (!top || worth > top.worth)) top = { kind, n, worth, fills };
         };
-        for (let y = 0; y < SIZE; y++) weigh('row', y, answer[y], known[y]);
-        for (let x = 0; x < SIZE; x++) weigh('col', x, column(answer, x), column(known, x));
+        for (let y = 0; y < H; y++) weigh('row', y, answer[y], known[y]);
+        for (let x = 0; x < W; x++) weigh('col', x, column(answer, x), column(known, x));
         if (!top) return;
         lit = `.pixels-cell[data-${top.kind === 'row' ? 'y' : 'x'}="${top.n}"], .pixels-clue[data-${top.kind}="${top.n}"]`;
         text = `${top.kind === 'row' ? 'Row' : 'Column'} ${top.n + 1} has squares to ${top.fills ? 'fill' : 'cross out'}`;
@@ -257,10 +259,12 @@
     };
     $('pixels-hint').addEventListener('click', hint);
 
-    drag(boardHost, {
+    // A board over ten squares wide is too fine for a finger, so it zooms.
+    const pad = drag(boardHost, {
       start: (y, x) => begin(y, x),
       paint: act,
       hover: (y, x) => { cursor = [y, x]; highlight(el, y, x); },
+      zoom: () => W > 10,
     });
     switcher($('pixels-tool'), b => { tool = b.dataset.tool; });
 
@@ -272,7 +276,7 @@
       if (move) {
         e.preventDefault();
         const [y = 0, x = 0] = cursor;
-        cursor = [(y + move[0] + SIZE) % SIZE, (x + move[1] + SIZE) % SIZE];
+        cursor = [(y + move[0] + H) % H, (x + move[1] + W) % W];
         highlight(el, ...cursor);
         return;
       }

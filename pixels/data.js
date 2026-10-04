@@ -44,7 +44,7 @@
     } catch { /* storage refused; start fresh */ }
     const t = Date.now();
     return {
-      puzzles: STARTERS.map((p, i) => ({ id: `p-${i + 1}`, ...p, level: 1, colours: null, created_at: new Date(t + i * 1000).toISOString() })),
+      puzzles: STARTERS.map((p, i) => ({ id: `p-${i + 1}`, ...p, width: 10, height: 10, level: 1, colours: null, created_at: new Date(t + i * 1000).toISOString() })),
       results: {},
       days: {},
     };
@@ -55,8 +55,8 @@
   });
   const write = db => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch { /* preview only */ } };
   const preview = {
-    // A puzzle kept before levels were is in level 1.
-    async list() { return read().puzzles.map(p => ({ level: 1, colours: null, ...p })); },
+    // A puzzle kept before levels and sizes were is ten a side, in level 1.
+    async list() { return read().puzzles.map(p => ({ width: 10, height: 10, level: 1, colours: null, ...p })); },
     async days() { return new Map(Object.entries(read().days || {})); },
     async recordDay(day, seconds, stars) {
       const db = read();
@@ -70,16 +70,16 @@
     async results() {
       return new Map(Object.entries(read().results).map(([id, r]) => [id, typeof r === 'number' ? { seconds: r, stars: 1 } : r]));
     },
-    async save({ id, name, squares, level, colours }) {
+    async save({ id, name, squares, width, height, level, colours }) {
       const db = read();
       if (id) {
         const p = db.puzzles.find(q => q.id === id);
         if (p.squares !== squares) delete db.results[id];
-        Object.assign(p, { name, squares, level, colours });
+        Object.assign(p, { name, squares, width, height, level, colours });
         write(db);
         return p;
       }
-      const p = { id: `p-${Date.now()}`, name, squares, level, colours, created_at: new Date().toISOString() };
+      const p = { id: `p-${Date.now()}`, name, squares, width, height, level, colours, created_at: new Date().toISOString() };
       db.puzzles.push(p);
       write(db);
       return p;
@@ -104,7 +104,7 @@
   const cloud = client && {
     async list() {
       const { data, error } = await client.from('pixels_puzzles')
-        .select('id, name, squares, level, colours, created_at').order('created_at').order('id');
+        .select('id, name, squares, width, height, level, colours, created_at').order('created_at').order('id');
       fail(error);
       return data;
     },
@@ -131,18 +131,18 @@
       }
       return { best: now.seconds, stars: now.stars, isNew: !was || seconds < was.seconds };
     },
-    async save({ id, name, squares, level, colours }) {
+    async save({ id, name, squares, width, height, level, colours }) {
       if (id) {
         const { data: before, error: readError } = await client.from('pixels_puzzles').select('squares').eq('id', id).single();
         fail(readError);
         const { data, error } = await client.from('pixels_puzzles')
-          .update({ name, squares, level, colours, updated_at: new Date().toISOString() }).eq('id', id).select().single();
+          .update({ name, squares, width, height, level, colours, updated_at: new Date().toISOString() }).eq('id', id).select().single();
         fail(error);
         // A redrawn picture is a new puzzle, so its old best time goes.
         if (before.squares !== squares) fail((await client.from('pixels_results').delete().eq('puzzle_id', id)).error);
         return data;
       }
-      const { data, error } = await client.from('pixels_puzzles').insert({ name, squares, level, colours }).select().single();
+      const { data, error } = await client.from('pixels_puzzles').insert({ name, squares, width, height, level, colours }).select().single();
       fail(error);
       return data;
     },

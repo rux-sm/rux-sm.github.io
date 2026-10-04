@@ -2,25 +2,46 @@
    --rux-* token so each theme draws them from its own values. Design's
    components are used as they are and never restyled here. */
 
-/* THE BOARD. The clues sit in the first row and column of the same grid as
-   the squares, so a row's numbers and its squares always line up. A square is
-   as wide as the screen allows, between 24px and 40px, and a whole number of
-   pixels so that filled squares meet with no seam: the screen's width, less
+/* THE BOARD. Four parts in a two by two grid: a corner, the column numbers,
+   the row numbers and the squares. Each of the last three is a window onto a
+   strip, so a row's numbers and its squares always line up and a zoomed board
+   slides behind its windows.
+
+   A square is as wide as the screen allows, and a whole number of pixels so
+   that filled squares meet with no seam: `--base` is the screen's width, less
    the page's `--gutter` and the row numbers' own width, which app.js measures
-   into `--clues`, shared among the squares. */
+   into `--clues`, shared among the squares, from 16px up to 40px, or 56px on
+   a board of five. `--cell` is that times `--zoom`, which with `--tx` and
+   `--ty` app.js sets as two fingers pinch and slide. */
 .pixels-board {
-  --cell: round(down, clamp(1.5rem, (100vw - var(--gutter, 6rem) - var(--clues, 3rem)) / var(--size, 10), 2.5rem), 1px);
+  --base: round(down, clamp(1rem, (100vw - var(--gutter, 6rem) - var(--clues, 3rem)) / var(--cols, 10), var(--cell-max, 2.5rem)), 1px);
+  --cell: round(calc(var(--base) * var(--zoom, 1)), 1px);
   --line: var(--rux-border-subtle-01);
   --guide: var(--rux-border-strong-01);
   display: grid;
-  grid-template-columns: auto repeat(var(--size, 10), var(--cell));
-  grid-template-rows: auto repeat(var(--size, 10), var(--cell));
+  grid-template-columns: auto auto;
   inline-size: max-content;
   margin-inline: auto;
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   touch-action: none;
+}
+.pixels-board--small { --cell-max: 3.5rem; }
+.pixels-cols, .pixels-rows, .pixels-squares { overflow: hidden; }
+.pixels-cols, .pixels-squares { inline-size: calc(var(--cols) * var(--base)); }
+.pixels-rows, .pixels-squares { block-size: calc(var(--rows) * var(--base)); }
+.pixels-slide { display: grid; inline-size: max-content; min-inline-size: 100%; }
+.pixels-cols > .pixels-slide {
+  grid-template-columns: repeat(var(--cols), var(--cell));
+  block-size: 100%;
+  translate: var(--tx, 0px) 0;
+}
+.pixels-rows > .pixels-slide { grid-auto-rows: var(--cell); translate: 0 var(--ty, 0px); }
+.pixels-squares > .pixels-slide {
+  grid-template-columns: repeat(var(--cols), var(--cell));
+  grid-auto-rows: var(--cell);
+  translate: var(--tx, 0px) var(--ty, 0px);
 }
 .pixels-cell {
   position: relative;
@@ -29,11 +50,11 @@
   border-block-end: 1px solid var(--line);
   cursor: pointer;
 }
-/* A stronger line every five squares, and round the edge. */
-.pixels-cell[data-x="0"] { border-inline-start: 1px solid var(--guide); }
-.pixels-cell[data-y="0"] { border-block-start: 1px solid var(--guide); }
-.pixels-cell[data-x="4"], .pixels-cell[data-x="9"] { border-inline-end-color: var(--guide); }
-.pixels-cell[data-y="4"], .pixels-cell[data-y="9"] { border-block-end-color: var(--guide); }
+/* A stronger line round the edge and after every fifth square. */
+.pixels-cell.is-west { border-inline-start: 1px solid var(--guide); }
+.pixels-cell.is-north { border-block-start: 1px solid var(--guide); }
+.pixels-cell.is-east { border-inline-end-color: var(--guide); }
+.pixels-cell.is-south { border-block-end-color: var(--guide); }
 /* The row and column under the finger or the keyboard cursor. */
 .pixels-cell.is-line { background: var(--rux-layer-hover-01); }
 .pixels-cell.is-cursor { outline: 2px solid var(--rux-focus); outline-offset: -2px; z-index: 1; }
@@ -77,12 +98,8 @@
 .pixels-board.is-solved .pixels-cell.is-x::before,
 .pixels-board.is-solved .pixels-cell.is-x::after { opacity: 0; }
 .pixels-board.is-solved .pixels-cell { border-color: transparent; }
-.pixels-game.is-done .pixels-board {
-  --clues: 0px;
-  grid-template-columns: repeat(var(--size, 10), var(--cell));
-  grid-template-rows: repeat(var(--size, 10), var(--cell));
-}
-.pixels-game.is-done .pixels-board > :not(.pixels-cell),
+.pixels-game.is-done .pixels-board { --clues: 0px; }
+.pixels-game.is-done .pixels-board > :not(.pixels-squares),
 .pixels-game.is-done .pixels-top,
 .pixels-game.is-done .pixels-controls { display: none; }
 
@@ -136,7 +153,8 @@
 }
 .pixels-picture > [data-on] { background: var(--rux-text-primary); }
 .pixels-picture > [data-ink] { background: var(--ink); }
-.pixels-picture--sm { --px: .5rem; }
+/* On a tile every picture is 5rem across, whatever its puzzle's size. */
+.pixels-picture--sm { --px: round(down, calc(5rem / var(--size, 10)), 1px); }
 
 /* THE PUZZLE LIST, a level at a time. */
 .pixels-level-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
@@ -181,17 +199,22 @@
    wide screen and under it on a phone. */
 .pixels-maker { display: flex; flex-wrap: wrap; gap: 2rem; align-items: start; justify-content: center; }
 /* The clues change as the picture does, so the maker keeps room for the most
-   a line can hold, five numbers, and the squares never move under a finger. */
+   a line can hold, `--most` numbers, half the board's side, and the squares
+   never move under a finger. */
+.pixels-maker {
+  --clue-w: calc(var(--most, 5) * 1rem + .75rem);
+  --clue-h: calc(var(--most, 5) * 1.22rem + .9rem);
+}
 .pixels-maker .pixels-board {
-  --cell: round(down, clamp(1.5rem, (100vw - 9.5rem) / 10, 2.5rem), 1px);
-  grid-template-columns: 5.5rem repeat(var(--size, 10), var(--cell));
-  grid-template-rows: 7rem repeat(var(--size, 10), var(--cell));
+  --base: round(down, clamp(1rem, (100vw - 4rem - var(--clue-w)) / var(--cols, 10), var(--cell-max, 2.5rem)), 1px);
   margin-inline: 0;
 }
+.pixels-maker .pixels-rows { inline-size: var(--clue-w); }
+.pixels-maker .pixels-cols { block-size: var(--clue-h); }
 /* On a phone the maker takes the page's clear edges back, as the game does. */
 @media (max-width: 28rem) {
   .pixels-maker { margin-inline: -2.5rem; }
-  .pixels-maker .pixels-board { --cell: round(down, (100vw - 6.5rem) / 10, 1px); }
+  .pixels-maker .pixels-board { --base: round(down, clamp(1rem, (100vw - 1rem - var(--clue-w)) / var(--cols, 10), var(--cell-max, 2.5rem)), 1px); }
 }
 .pixels-maker-side { display: grid; gap: 1.5rem; align-content: start; inline-size: 18rem; max-inline-size: 100%; }
 /* The eight inks to paint with, the chosen one ringed. */

@@ -6,8 +6,9 @@
    alone, and then how hard that is; squares that would need a guess are
    outlined. COLOUR: pick one of the eight inks and paint any square, filled
    or not; that is the picture the puzzle finishes as. A picture never
-   coloured finishes in black and white. Level is where the puzzle sits on
-   the front page. Save stays off until the picture is solvable and named.
+   coloured finishes in black and white. Size starts a blank board of 5, 10
+   or 15 squares a side, and a saved puzzle keeps the size it has. Level is
+   where the puzzle sits on the front page, among those of its size. Save stays off until the picture is solvable and named.
    docs/making-puzzles.md is the guide to a good one.
 
    make.html?id= edits a saved puzzle. A new picture not yet saved is kept in
@@ -16,7 +17,7 @@
 (() => {
   'use strict';
 
-  const { data, SIZE, grid, squaresOf, unreached, rounds, grade, board, drag, switcher } = window.Pixels;
+  const { data, SIZES, grid, squaresOf, unreached, rounds, grade, board, drag, switcher } = window.Pixels;
   const $ = id => document.getElementById(id);
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
   const inks = $('pixels-inks');
@@ -36,7 +37,8 @@
     box.hidden = false;
   };
 
-  const blank = () => Array.from({ length: SIZE }, () => new Array(SIZE).fill(0));
+  let side = 10, puzzles = [];
+  const blank = () => Array.from({ length: side }, () => new Array(side).fill(0));
   // `colours` is an ink for every square, or null until the picture is coloured.
   let draft = blank(), colours = null, editing = null, filling = 1, step = 'draw', ink = 2;
 
@@ -57,6 +59,27 @@
     span.className = `rux--tag rux--layout--size-md ${kind}`;
     span.textContent = text;
     check.replaceChildren(span);
+  };
+
+  // The size chosen, shown on its switcher; the board keeps room for the
+  // most numbers a line of that side can hold.
+  const setSide = to => {
+    side = to;
+    host.parentElement.style.setProperty('--most', Math.ceil(side / 2));
+    $('pixels-size').querySelectorAll('button').forEach(b => {
+      const selected = +b.dataset.size === side;
+      b.classList.toggle('rux--content-switcher--selected', selected);
+      b.setAttribute('aria-selected', selected);
+      b.tabIndex = selected ? 0 : -1;
+    });
+  };
+  // The first level with room for a tenth puzzle of this size.
+  const openLevel = () => {
+    const count = {};
+    puzzles.forEach(p => { if (p.width === side) count[p.level] = (count[p.level] || 0) + 1; });
+    let open = 1;
+    while (count[open] >= PER_LEVEL) open++;
+    return open;
   };
 
   let solvable = false;
@@ -106,10 +129,19 @@
     render();
     keepDraft();
   };
-  drag(host, {
+  const pad = drag(host, {
     free: true,
     start: (y, x) => { filling = draft[y][x] ? 0 : 1; $('pixels-saved').hidden = true; stroke(y, x); },
     paint: stroke,
+    zoom: () => side > 10,
+  });
+  switcher($('pixels-size'), b => {
+    setSide(+b.dataset.size);
+    pad.reset();
+    level.value = openLevel();
+    $('pixels-saved').hidden = true;
+    clear();
+    keepDraft();
   });
   name.addEventListener('input', () => { save.disabled = !solvable || !name.value.trim(); keepDraft(); });
   level.addEventListener('input', keepDraft);
@@ -131,7 +163,7 @@
     if (save.disabled || !data) return;
     save.disabled = true;
     const puzzle = {
-      id: editing?.id, name: name.value.trim(), squares: squaresOf(draft),
+      id: editing?.id, name: name.value.trim(), squares: squaresOf(draft), width: side, height: side,
       level: levelOf(), colours: colours && squaresOf(colours),
     };
     try {
@@ -164,7 +196,6 @@
   (async () => {
     if (!data) { say('Pixels could not connect', 'Reload the page to try again.'); return; }
     const id = new URLSearchParams(location.search).get('id');
-    let puzzles = [];
     try {
       puzzles = await data.list();
     } catch {
@@ -173,8 +204,10 @@
     if (id) {
       editing = puzzles.find(p => String(p.id) === id) || null;
       if (editing) {
-        draft = grid(editing.squares);
-        colours = editing.colours ? grid(editing.colours) : null;
+        setSide(editing.width);
+        $('pixels-size-row').hidden = true;
+        draft = grid(editing.squares, editing.width);
+        colours = editing.colours ? grid(editing.colours, editing.width) : null;
         name.value = editing.name;
         level.value = editing.level;
         $('pixels-heading').textContent = `Edit ${editing.name}`;
@@ -183,13 +216,11 @@
       } else say('This puzzle is not here', 'It may have been deleted. The board is ready for a new one.');
     }
     if (!editing) {
-      const count = {};
-      puzzles.forEach(p => { count[p.level] = (count[p.level] || 0) + 1; });
-      let open = 1;
-      while (count[open] >= PER_LEVEL) open++;
-      level.value = open;
       const kept = readDraft();
-      if (!id && kept?.squares?.length === SIZE * SIZE) {
+      const keptSide = Math.sqrt(kept?.squares?.length || 0);
+      setSide(!id && SIZES.includes(keptSide) ? keptSide : 10);
+      level.value = openLevel();
+      if (!id && SIZES.includes(keptSide)) {
         draft = grid(kept.squares);
         colours = kept.colours ? grid(kept.colours) : null;
         name.value = kept.name || '';

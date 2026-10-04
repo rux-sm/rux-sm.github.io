@@ -7,6 +7,20 @@ type: how-to
 How to draw a picture in `make.html` that is fun to solve, and how to put ten
 of them in an order that gets harder.
 
+## Three sizes
+
+Size starts a blank board. A saved puzzle keeps its size.
+
+| Size | On the front page | What it is for |
+| :--- | :--- | :--- |
+| 5×5 | Quick | a ten-second puzzle; a symbol, a letter, a face |
+| 10×10 | Level | the main game; one thing drawn as a shape |
+| 15×15 | Long | room for detail; a few minutes each, zoomed with two fingers on a phone |
+
+The rules below are written for 10×10. On 5×5 nearly every picture is easy,
+so aim for a shape worth guessing. On 15×15 keep the same share of filled
+squares and let the extra room go to detail, not to a bigger blob.
+
 ## What the maker holds you to
 
 - **One answer.** Save stays off until the tag is green. A square outlined in
@@ -18,8 +32,9 @@ of them in an order that gets harder.
 
 1. **Draw one thing, as a shape.** Ten squares across shows an outline, not a
    scene. If it reads as the thing with your eyes half shut, it works.
-2. **Fill a third to two thirds of the board.** Fewer than 30 squares leaves
-   the numbers too little to say; more than 70 and the picture is a block.
+2. **Fill a third to two thirds of the board.** On 10×10, fewer than 30
+   squares leaves the numbers too little to say; more than 70 and the picture
+   is a block.
 3. **Use the whole board.** An empty row or column is a free line. One or two
    is fine, four makes it a smaller puzzle.
 4. **Give it one or two holes**, an eye or a window. They make the picture
@@ -58,8 +73,8 @@ look at every row and every column, filling in what each can now decide.
 
 ## A level
 
-A level is ten puzzles. The maker's Level field says which level a puzzle is
-in, and offers the first level that still has room. The front page lists a
+A level is ten puzzles of one size. The maker's Level field says which level
+a puzzle is in, and offers the first level of its size that still has room. The front page lists a
 level easy to hard by the tag, so the order they were drawn in does not
 matter, and a puzzle moves level by editing that field.
 

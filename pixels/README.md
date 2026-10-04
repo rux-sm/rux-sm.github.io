@@ -8,13 +8,17 @@ lists what is unfinished here.
 ## What it is
 
 `index.html` shows today's puzzle and the days solved in a row, then every
-puzzle by the level its maker gave it, easy to hard, with nothing locked. A
+puzzle by the level its maker gave it, easy to hard, with nothing locked.
+The 5×5 levels are called Quick and come first, the 15×15 ones Long and come
+last. A
 solved puzzle shows its picture, name, stars and best time; an unsolved one a
 question mark and how hard it is, and its name stays hidden until it is
 solved.
 
-`play.html?id=` plays one 10×10 puzzle. Fill a square or cross it out with X,
-by tap, by dragging along a row or column, or with the arrow keys, Z and X.
+`play.html?id=` plays one puzzle, 5, 10 or 15 squares a side. Fill a square
+or cross it out with X, by tap, by dragging along a row or column, or with
+the arrow keys, Z and X. On a phone a 15×15 board zooms under two fingers,
+its numbers staying in view, and there a touch fills as it lifts.
 A number greys out when its run of squares is filled, and a finished line
 crosses out its own empty squares. A puzzle starts with three stars: filling
 a square not in the picture is a mistake, crossed out in red, and it costs a
@@ -33,7 +37,8 @@ the date, the same for everyone. Only it counts toward the days in a row.
 `make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits
 or deletes one. It checks as you draw whether the numbers alone can solve the
 picture and how hard that is, outlines each square that would need a guess,
-and saves only a picture with one answer. Its Colour step paints the picture
+and saves only a picture with one answer. Size starts a blank board of 5,
+10 or 15 a side. Its Colour step paints the picture
 the puzzle finishes as, from eight inks, and Level places it on the front
 page. `docs/making-puzzles.md` is the guide to a good picture and a good
 level.
@@ -42,7 +47,7 @@ level.
 
 | | |
 | :--- | :--- |
-| `app.js` | the rules and the board every page shares: the numbers, the line solver, the puzzle of the day, drawing and dragging, stars, tones and the phone's tick |
+| `app.js` | the rules and the board every page shares: the numbers, the line solver, the puzzle of the day, drawing, dragging and zooming, stars, tones and the phone's tick |
 | `data.js` | where puzzles, best times, stars and solved days are kept |
 | `puzzles.js`, `play.js`, `make.js` | each page's own behaviour |
 | `app.css` | the board, the picture and the puzzle list, under `pixels-` |

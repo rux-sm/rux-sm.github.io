@@ -21,7 +21,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, SIZES, grid, squaresOf, unreached, rounds, grade, board, drag, switcher } = window.Pixels;
+  const { data, owner, SIZES, grid, squaresOf, unreached, rounds, grade, board, drag, switcher, chosen } = window.Pixels;
   const $ = id => document.getElementById(id);
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
   const day = $('pixels-day');
@@ -70,12 +70,7 @@
   // The size chosen, shown on its switcher.
   const setSide = to => {
     side = to;
-    $('pixels-size').querySelectorAll('button').forEach(b => {
-      const selected = +b.dataset.size === side;
-      b.classList.toggle('rux--content-switcher--selected', selected);
-      b.setAttribute('aria-selected', selected);
-      b.tabIndex = selected ? 0 : -1;
-    });
+    chosen($('pixels-size'), $('pixels-size').querySelector(`[data-size="${side}"]`));
   };
   // The first level with room for another puzzle of this size.
   const openLevel = () => {
@@ -107,12 +102,7 @@
     step = to;
     if (step === 'colour' && !colours) colours = draft.map(r => r.map(c => (c ? 0 : 1)));
     inks.hidden = step !== 'colour';
-    $('pixels-step').querySelectorAll('button').forEach(b => {
-      const selected = b.dataset.step === step;
-      b.classList.toggle('rux--content-switcher--selected', selected);
-      b.setAttribute('aria-selected', selected);
-      b.tabIndex = selected ? 0 : -1;
-    });
+    chosen($('pixels-step'), $('pixels-step').querySelector(`[data-step="${step}"]`));
     render();
   };
   switcher($('pixels-step'), b => setStep(b.dataset.step));

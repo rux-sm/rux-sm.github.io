@@ -177,16 +177,31 @@
     $('coins-groups').replaceChildren(...out);
   }
 
+  // The four views, written once. Design's content-switcher script moves the
+  // selection and reports it; a redraw only rewrites the counts in the labels,
+  // so the option with focus is never replaced under an arrow key.
   function viewSwitch(v) {
     const box = $('coins-view');
-    box.replaceChildren(...VIEWS.map(([key, label]) => {
-      const b = el('button', 'rux--content-switcher-btn' + (key === v ? ' rux--content-switcher--selected' : ''));
-      b.type = 'button'; b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', String(key === v)); b.tabIndex = key === v ? 0 : -1;
+    if (!box.children.length) {
+      box.replaceChildren(...VIEWS.map(([key]) => {
+        const b = el('button', 'rux--content-switcher-btn' + (key === v ? ' rux--content-switcher--selected' : ''));
+        b.type = 'button'; b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', String(key === v)); b.tabIndex = key === v ? 0 : -1;
+        b.dataset.view = key;
+        b.append(el('span', 'rux--content-switcher__label'));
+        return b;
+      }));
+      box.addEventListener('rux:content-switcher-selected', e => {
+        const key = e.detail.option.dataset.view;
+        C.setParam('view', key === 'month' ? null : key);
+        draw();
+      });
+    }
+    for (const [key, label] of VIEWS) {
+      const b = [...box.children].find(x => x.dataset.view === key);
       const n = key === 'decide' ? bills.filter(x => x.decision === 'undecided').length : key === 'check' ? bills.filter(toCheck).length : 0;
-      b.append(el('span', 'rux--content-switcher__label', n ? `${label} (${n})` : label));
-      b.addEventListener('click', () => { C.setParam('view', key === 'month' ? null : key); draw(); });
-      return b;
-    }));
+      b.firstElementChild.textContent = n ? `${label} (${n})` : label;
+    }
+    window.Rux.contentSwitcher.select(box, [...box.children].find(x => x.dataset.view === v), { focus: false, silent: true });
   }
 
   // The suggestions list, opened from the notice.

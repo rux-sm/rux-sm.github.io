@@ -45,23 +45,36 @@
   // accounts that are theirs alone, so a joint account counts only under Both.
   const accountsFor = (whoId, accounts) => whoId === 'both' ? accounts : accounts.filter(a => a.person_id === whoId);
 
+  // Design's content-switcher script moves the selection, by click or arrow
+  // key, and reports it; this writes the options and hears the report. The
+  // options are written again only when the people change, so the option with
+  // focus is never replaced under an arrow key.
+  const heard = new WeakMap();
   const whoSwitch = (el, people, selected, onChange) => {
     const options = [{ id: 'both', name: 'Both' }, ...people];
-    el.innerHTML = '';
-    for (const p of options) {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'rux--content-switcher-btn' + (p.id === selected ? ' rux--content-switcher--selected' : '');
-      b.setAttribute('role', 'tab');
-      b.setAttribute('aria-selected', String(p.id === selected));
-      b.tabIndex = p.id === selected ? 0 : -1;
-      const label = document.createElement('span');
-      label.className = 'rux--content-switcher__label';
-      label.textContent = p.name;
-      b.append(label);
-      b.addEventListener('click', () => onChange(p.id));
-      el.append(b);
+    if (!heard.has(el)) el.addEventListener('rux:content-switcher-selected', e => heard.get(el)(e.detail.option.dataset.who));
+    heard.set(el, onChange);
+    const written = [...el.children].map(b => `${b.dataset.who}\n${b.textContent}`).join('\n');
+    if (written !== options.map(p => `${p.id}\n${p.name}`).join('\n')) {
+      el.innerHTML = '';
+      for (const p of options) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'rux--content-switcher-btn' + (p.id === selected ? ' rux--content-switcher--selected' : '');
+        b.setAttribute('role', 'tab');
+        b.setAttribute('aria-selected', String(p.id === selected));
+        b.tabIndex = p.id === selected ? 0 : -1;
+        b.dataset.who = p.id;
+        const label = document.createElement('span');
+        label.className = 'rux--content-switcher__label';
+        label.textContent = p.name;
+        b.append(label);
+        el.append(b);
+      }
+      return;
     }
+    const chosen = [...el.children].find(b => b.dataset.who === String(selected));
+    window.Rux.contentSwitcher.select(el, chosen, { focus: false, silent: true });
   };
 
   // What a set of lines adds up to. Only bought-or-earned lines and fees are

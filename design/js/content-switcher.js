@@ -28,6 +28,10 @@
    switcher with the option, its index and its text, which is what Carbon's
    onChange hands a consumer. It fires when the selection changes, not when
    the selected option is pressed again.
+
+   A PAGE SETS THE SELECTION TOO, when it loads saved state. `select()` takes
+   `focus: false` so that does not pull focus to the switcher, and
+   `silent: true` so the page is not told about a change it made itself.
    ========================================================================== */
 
 /* BEHAVIOUR: verified-live · driven 2026-10-04 on
@@ -82,7 +86,7 @@
     const changed = !option.classList.contains(SELECTED);
     paint(switcher, option);
     if (options.focus !== false) option.focus();
-    if (changed) switcher.dispatchEvent(new CustomEvent('rux:content-switcher-selected', {
+    if (changed && !options.silent) switcher.dispatchEvent(new CustomEvent('rux:content-switcher-selected', {
       bubbles: true,
       detail: { option, index: all.indexOf(option), text: option.textContent.trim() || option.getAttribute('aria-label') || '' },
     }));
@@ -122,5 +126,5 @@
   }
 
   window.Rux = window.Rux || {};
-  window.Rux.contentSwitcher = { select: (switcher, option) => select(switcher, option) };
+  window.Rux.contentSwitcher = { select: (switcher, option, options) => select(switcher, option, options) };
 })();

@@ -271,6 +271,13 @@
     click(other);
     record('content-switcher', 'the event fires when the selection changes, and only then',
       heard === 1, `heard ${heard} event(s) after two clicks on one option`);
+    // A page sets the selection too, from saved state. That must neither pull
+    // focus to the switcher nor tell the page about its own change.
+    document.activeElement?.blur();
+    window.Rux.contentSwitcher.select(sw, first, { focus: false, silent: true });
+    record('content-switcher', 'a quiet select moves the selection with no event and no focus',
+      first.classList.contains(SEL) && heard === 1 && !sw.contains(document.activeElement),
+      `options=[${state()}], heard ${heard}, focus ${sw.contains(document.activeElement) ? 'inside' : 'outside'} the switcher`);
     sw.removeEventListener('rux:content-switcher-selected', hear);
 
     // THE ARROWS WRAP, which is the difference from a combobox and the same as

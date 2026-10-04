@@ -487,21 +487,14 @@
   // A puzzle keeps its name hidden until it is solved, as on the DS.
   const title = (puzzle, index, solved) => (solved ? puzzle.name : `Puzzle ${index + 1}`);
 
-  // A Design content switcher: selects the pressed button and reports it.
-  const switcher = (el, on) => el.addEventListener('click', e => {
-    const pressed = e.target.closest('button');
-    if (!pressed) return;
-    el.querySelectorAll('button').forEach(b => {
-      const selected = b === pressed;
-      b.classList.toggle('rux--content-switcher--selected', selected);
-      b.setAttribute('aria-selected', selected);
-      b.tabIndex = selected ? 0 : -1;
-    });
-    on(pressed);
-  });
+  // A Design content switcher. Design's own script moves the selection, by
+  // click or arrow key; this hears which option was picked. `chosen` shows a
+  // selection the page made itself, without telling the page about it.
+  const switcher = (el, on) => el.addEventListener('rux:content-switcher-selected', e => on(e.detail.option));
+  const chosen = (el, option) => window.Rux.contentSwitcher.select(el, option, { focus: false, silent: true });
 
   window.Pixels = Object.assign(window.Pixels || {}, {
     SIZES, INKS: 8, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, daily, today, streak,
-    board, paint, highlight, drag, picture, stars, buzz, sound, sounds, listen, time, title, switcher,
+    board, paint, highlight, drag, picture, stars, buzz, sound, sounds, listen, time, title, switcher, chosen,
   });
 })();

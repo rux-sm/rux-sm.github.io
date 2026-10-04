@@ -162,7 +162,7 @@
 }
 .pixels-picture > [data-on] { background: var(--rux-text-primary); }
 .pixels-picture > [data-ink] { background: var(--ink); }
-/* On a tile every picture is 5rem across, whatever its puzzle's size. */
+/* A small picture is about 5rem across, whatever its puzzle's size. */
 .pixels-picture--sm { --px: round(down, calc(5rem / var(--size, 10)), 1px); }
 
 /* A GUEST HAS NO ACCOUNT, so no header is drawn and the page starts at the
@@ -197,12 +197,70 @@
 .pixels-invite[hidden] { display: none; }
 .pixels-invite > p { grid-column: 1 / -1; margin: 0; overflow-wrap: anywhere; }
 
-/* THE PUZZLE LIST, a level at a time. */
+/* THE FRONT PAGE. The page keeps 3rem clear each side; on a phone it takes
+   2rem of that back. The tabs' panels start where the page does. */
+@media (max-width: 28rem) {
+  .pixels-page { margin: -1rem -2rem 0; }
+}
+.pixels-tabs[hidden] { display: none; }
+.pixels-panel { padding: 1.5rem 0 0; }
+
+/* TODAY'S PUZZLE, one card across: the picture, the words, and an arrow. */
+.pixels-today {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  max-inline-size: 32rem;
+  padding: 1rem;
+  background: var(--rux-layer-01);
+  color: var(--rux-text-primary);
+  text-decoration: none;
+}
+.pixels-today:hover { background: var(--rux-layer-hover-01); }
+.pixels-today:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+.pixels-today-text { display: grid; gap: .125rem; }
+.pixels-today-name { font-size: 1.125rem; font-weight: 600; }
+.pixels-today-go { display: grid; place-items: center; inline-size: 2.5rem; block-size: 2.5rem; background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: 1.25rem; }
+.pixels-today > .pixels-picture--sm { --px: round(down, calc(4rem / var(--size, 10)), 1px); }
+.pixels-today > .pixels-blank { inline-size: 4rem; block-size: 4rem; }
+
+/* A LEVEL: three tiles across on a phone, so a level of nine is three rows
+   of three, and nine across where there is room. Each tile is a square,
+   whatever it holds, and its picture is half as wide as it is. */
 .pixels-level-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
-.pixels-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); gap: 1rem; }
-.pixels-list .rux--tile { display: grid; gap: .75rem; align-content: start; justify-items: center; text-align: center; }
+.pixels-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; max-inline-size: 32rem; }
+@media (min-width: 66rem) {
+  .pixels-list { grid-template-columns: repeat(9, minmax(0, 1fr)); max-inline-size: none; }
+}
+.pixels-list .pixels-puzzle {
+  container-type: inline-size;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  justify-items: center;
+  align-items: center;
+  gap: .125rem;
+  aspect-ratio: 1;
+  inline-size: auto;
+  min-inline-size: 0;
+  min-block-size: 0;
+  padding: .5rem .25rem;
+  text-align: center;
+}
+.pixels-puzzle > .pixels-picture--sm { --px: round(down, calc(50cqi / var(--size, 10)), 1px); }
+.pixels-puzzle > .pixels-blank { inline-size: 50cqi; block-size: 50cqi; }
+.pixels-puzzle-name {
+  max-inline-size: 100%;
+  font-size: .8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pixels-puzzle > .pixels-meta, .pixels-puzzle > .pixels-stars { font-size: .75rem; line-height: 1.2; }
 /* For the owner a tile carries the way to edit its puzzle under it. */
-.pixels-tile { display: grid; grid-template-rows: 1fr auto; gap: .25rem; }
+.pixels-tile { display: grid; grid-template-rows: auto auto; gap: .25rem; min-inline-size: 0; }
 .pixels-tile-edit { justify-self: center; font-size: .75rem; }
 .pixels-blank {
   display: grid;

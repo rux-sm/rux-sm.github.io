@@ -24,8 +24,9 @@
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
   const inks = $('pixels-inks');
   const DRAFT = 'pixels-draft';
-  // A level holds ten, so a new puzzle is offered the first with room.
-  const PER_LEVEL = 10;
+  // A level holds nine, three rows of three on a phone, so a new puzzle is
+  // offered the first level with room.
+  const PER_LEVEL = 9;
 
   const say = (heading, detail) => {
     const box = $('pixels-error');
@@ -73,7 +74,7 @@
       b.tabIndex = selected ? 0 : -1;
     });
   };
-  // The first level with room for a tenth puzzle of this size.
+  // The first level with room for another puzzle of this size.
   const openLevel = () => {
     const count = {};
     puzzles.forEach(p => { if (p.width === side) count[p.level] = (count[p.level] || 0) + 1; });

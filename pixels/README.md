@@ -12,15 +12,15 @@ account who opens an invite link, `/pixels/?join=` and the invite word, and
 types a name. A guest gets no header, and their browser keeps a key that is
 who they are from then on.
 
-`index.html` shows today's puzzle and the days solved in a row, the
-leaderboard, today's ranking by stars then time and the all-time one by every
-star earned, then every
-puzzle by the level its maker gave it, easy to hard, with nothing locked.
-The 5×5 levels are called Quick and come first, the 15×15 ones Long and come
-last. A
-solved puzzle shows its picture, name, stars and best time; an unsolved one a
-question mark and how hard it is, and its name stays hidden until it is
-solved.
+`index.html` has two tabs. Puzzles: today's puzzle on one card with the days
+solved in a row, then every puzzle by the level its maker gave it, easy to
+hard, with nothing locked, each tile a square, three across on a phone and
+nine on a wide screen, so a level of nine fills its rows. The 5×5 levels are
+called Quick and come first, the 15×15 ones Long and come last. A solved
+puzzle shows its picture, name and stars; an unsolved one a question mark and
+how hard it is, and its name stays hidden until it is solved. Leaderboard:
+today's ranking by stars then time, and the all-time one by every star
+earned.
 
 `play.html?id=` plays one puzzle, 5, 10 or 15 squares a side. The board
 waits behind Tap to start, and the clock runs from that tap. Fill a square

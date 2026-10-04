@@ -1,21 +1,27 @@
 /* ==========================================================================
-   puzzles.js — the front page: today's puzzle, the leaderboard, every level
+   puzzles.js — the front page: two tabs, the puzzles and the leaderboard
    --------------------------------------------------------------------------
    A guest with no player yet gets the name form first; data.js's `enter`
-   draws it. Then: today's puzzle with the days solved in a row beside it;
-   the leaderboard, today's ranking by stars then time and the all-time one
-   by stars, the player's own row marked; and a section for each level the
-   maker gave, its puzzles easy to hard, none locked: the 5×5 levels are
-   called Quick, the 15×15 ones Long, and they stand before and after the
-   10×10 levels. A solved puzzle shows its picture, name, stars and best
-   time; an unsolved one its number, a question mark and how hard it is. The
-   owner has an Edit link under each.
+   draws it.
+
+   PUZZLES. Today's puzzle is one card across the page: its picture once
+   solved, the date, the stars and time or how hard it is, and the days
+   solved in a row. Then a section for each level the maker gave, a bar for
+   how much of it is solved, and its puzzles easy to hard, three across on a
+   phone, each tile a square, none locked: the 5×5 levels are called Quick,
+   the 15×15 ones Long, and they stand before and after the 10×10 levels. A
+   solved tile shows its picture, name and stars; an unsolved one its number,
+   a question mark and how hard it is. The owner has an Edit link under each.
+
+   LEADERBOARD. Two rankings behind one switch: today's puzzle, by stars then
+   time, and all time, by every star earned, with puzzles solved and days in
+   a row. The player's own row is marked.
    ========================================================================== */
 (() => {
   'use strict';
 
   const { data, owner, guest, enter, grid, rounds, grade, order, daily, today, streak, picture, stars, time, title, switcher } = window.Pixels;
-  const host = document.getElementById('pixels-levels');
+  const host = document.getElementById('pixels-levels'), leader = document.getElementById('pixels-leader');
 
   const say = (heading, detail) => {
     const box = document.getElementById('pixels-error');
@@ -24,36 +30,53 @@
     box.hidden = false;
   };
 
-  // `name` is what the tile is called, `href` where it goes.
+  // The picture of a solved puzzle, or the question mark of one that is not.
+  const art = (puzzle, solved) => {
+    const el = document.createElement('div');
+    if (solved) {
+      el.className = 'pixels-picture pixels-picture--sm';
+      picture(el, puzzle.squares, puzzle.colours);
+    } else {
+      el.className = 'pixels-blank';
+      el.textContent = '?';
+    }
+    el.setAttribute('aria-hidden', 'true');
+    return el;
+  };
+  const words = (cls, text) => {
+    const el = document.createElement('span');
+    el.className = cls;
+    el.textContent = text;
+    return el;
+  };
+
+  // A square tile: `name` is what it is called, `href` where it goes.
   const tile = (puzzle, name, href, best) => {
-    const solved = best != null;
     const a = document.createElement('a');
-    a.className = 'rux--link rux--tile rux--tile--clickable';
+    a.className = 'rux--link rux--tile rux--tile--clickable pixels-puzzle';
     a.href = href;
-    const art = document.createElement('div');
-    if (solved) {
-      art.className = 'pixels-picture pixels-picture--sm';
-      picture(art, puzzle.squares, puzzle.colours);
-    } else {
-      art.className = 'pixels-blank';
-      art.textContent = '?';
-    }
-    art.setAttribute('aria-hidden', 'true');
+    a.append(art(puzzle, best != null), words('pixels-puzzle-name', name),
+      best != null ? stars(document.createElement('span'), best.stars) : words('pixels-meta', grade(rounds(grid(puzzle.squares, puzzle.width)))));
+    return a;
+  };
+
+  // Today's puzzle, one card across the page.
+  const todayCard = (puzzle, best, row) => {
+    const a = document.createElement('a');
+    a.className = 'pixels-today';
+    a.href = 'play.html?daily';
     const text = document.createElement('div');
-    const label = document.createElement('p');
-    label.className = 'rux--type-productive-heading-02';
-    label.textContent = name;
-    text.appendChild(label);
-    const meta = document.createElement('p');
-    meta.className = 'pixels-meta';
-    if (solved) {
-      meta.textContent = time(best.seconds);
-      text.append(stars(document.createElement('span'), best.stars), meta);
-    } else {
-      meta.textContent = grade(rounds(grid(puzzle.squares, puzzle.width)));
-      text.appendChild(meta);
-    }
-    a.append(art, text);
+    text.className = 'pixels-today-text';
+    text.append(words('pixels-meta', row ? `Today · ${row} day${row === 1 ? '' : 's'} in a row` : 'Today'), words('pixels-today-name', puzzle.name));
+    const line = document.createElement('span');
+    if (best) line.append(stars(document.createElement('span'), best.stars), words('pixels-meta', ` ${time(best.seconds)}`));
+    else line.append(words('pixels-meta', grade(rounds(grid(puzzle.squares, puzzle.width)))));
+    text.append(line);
+    const go = document.createElement('span');
+    go.className = 'pixels-today-go';
+    go.setAttribute('aria-hidden', 'true');
+    go.textContent = '›';
+    a.append(art(puzzle, !!best), text, go);
     return a;
   };
 
@@ -98,12 +121,6 @@
       li.append(n, name, ...detail);
       return li;
     };
-    const words = (cls, text) => {
-      const span = document.createElement('span');
-      span.className = cls;
-      span.textContent = text;
-      return span;
-    };
     const show = which => {
       const rows = which === 'today'
         ? ranks.today.map((r, i) => row(i + 1, r, [stars(document.createElement('span'), r.stars), words('pixels-rank-value', time(r.seconds))]))
@@ -131,10 +148,10 @@
     return el;
   };
 
-  // A heading, a note at its far end, and the tiles under them.
-  const section = (heading, note, tiles) => {
+  // A level: its name, how many are solved, a bar of that, and its tiles.
+  const section = (heading, solved, tiles) => {
     const el = document.createElement('section');
-    el.className = 'rux--stack-vertical rux--stack-scale-5';
+    el.className = 'rux--stack-vertical rux--stack-scale-4';
     const head = document.createElement('div');
     head.className = 'pixels-level-head';
     const h2 = document.createElement('h2');
@@ -142,14 +159,20 @@
     h2.textContent = heading;
     h2.id = `pixels-${heading.toLowerCase().replace(/\s+/g, '-')}`;
     el.setAttribute('aria-labelledby', h2.id);
-    const aside = document.createElement('span');
-    aside.className = 'pixels-meta';
-    aside.textContent = note;
-    head.append(h2, aside);
+    head.append(h2, words('pixels-meta', `${solved} of ${tiles.length} solved`));
+    const bar = document.createElement('div');
+    bar.className = 'rux--progress-bar rux--progress-bar--small';
+    const track = document.createElement('div');
+    track.className = 'rux--progress-bar__track';
+    const fill = document.createElement('div');
+    fill.className = 'rux--progress-bar__bar';
+    fill.style.transform = `scaleX(${tiles.length ? solved / tiles.length : 0})`;
+    track.appendChild(fill);
+    bar.appendChild(track);
     const list = document.createElement('div');
     list.className = 'pixels-list';
     list.append(...tiles);
-    el.append(head, list);
+    el.append(head, bar, list);
     return el;
   };
 
@@ -185,10 +208,10 @@
       document.getElementById('pixels-player').textContent = me.name;
       document.getElementById('pixels-guestbar').hidden = false;
     }
-    const now = daily(today()), row = streak(new Set(days.keys()));
-    host.appendChild(section('Today', row ? `${row} day${row === 1 ? '' : 's'} in a row` : '',
-      [tile(now, now.name, 'play.html?daily', days.get(now.day))]));
-    if (ranks) host.appendChild(leaderboard(ranks));
+    document.getElementById('pixels-tabs').hidden = false;
+    const now = daily(today());
+    host.appendChild(todayCard(now, days.get(now.day), streak(new Set(days.keys()))));
+    if (ranks) leader.appendChild(leaderboard(ranks));
     if (!puzzles.length) { host.appendChild(empty()); return; }
 
     // "Puzzle 7" counts through every level, in playing order.
@@ -204,7 +227,7 @@
         const link = tile(p, title(p, i, !!best), `play.html?id=${encodeURIComponent(p.id)}`, best);
         tiles.push(owner ? editable(link, p) : link);
       });
-      host.appendChild(section(heading, `${solved} of ${tiles.length} solved`, tiles));
+      host.appendChild(section(heading, solved, tiles));
     }
   })();
 })();

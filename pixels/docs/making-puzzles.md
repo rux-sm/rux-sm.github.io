@@ -4,8 +4,8 @@ type: how-to
 
 # Making a puzzle, and a level of them
 
-How to draw a picture in `make.html` that is fun to solve, and how to put ten
-of them in an order that gets harder.
+How to draw a picture in `make.html` that is fun to solve, and how to put
+nine of them in a level that gets harder.
 
 ## Three sizes
 
@@ -73,17 +73,18 @@ look at every row and every column, filling in what each can now decide.
 
 ## A level
 
-A level is ten puzzles of one size. The maker's Level field says which level
+A level is nine puzzles of one size: three rows of three on a phone, one row
+of nine on a wide screen. The maker's Level field says which level
 a puzzle is in, and offers the first level of its size that still has room. The front page lists a
 level easy to hard by the tag, so the order they were drawn in does not
 matter, and a puzzle moves level by editing that field.
 
 | Level | easy | medium | hard |
 | :--- | :--- | :--- | :--- |
-| 1 | 7 | 3 | 0 |
-| 2 | 4 | 5 | 1 |
-| 3 | 2 | 5 | 3 |
-| 4 and on | 1 | 4 | 5 |
+| 1 | 6 | 3 | 0 |
+| 2 | 4 | 4 | 1 |
+| 3 | 2 | 4 | 3 |
+| 4 and on | 1 | 3 | 5 |
 
 - **Give the level a subject**, such as animals, food or things at home. The
   player guesses the picture sooner, and the guess is half the fun.

@@ -32,6 +32,8 @@
      m- path data: Material Symbols, Copyright Google LLC.
      Both licensed under the Apache License, Version 2.0. r- is drawn here.
      The sprite wrapper and the symbol naming are Design. See NOTICE. -->
+<symbol id="i-chevron--left" viewBox="0 0 16 16"><path d="M5 8 10 3 10.7 3.7 6.4 8 10.7 12.3 10 13z" style="fill:var(--rux-icon-path-1)"/></symbol>
+<symbol id="i-chevron--right" viewBox="0 0 16 16"><path d="M11 8 6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-close" viewBox="0 0 32 32"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2 12H14V13H2z" style="fill:var(--rux-icon-path-1)"/><path d="M2 9H14V10H2z" style="fill:var(--rux-icon-path-2)"/><path d="M2 6H14V7H2z"/><path d="M2 3H14V4H2z"/></symbol>
 <symbol id="m-close" viewBox="0 -960 960 960"><path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></symbol>
@@ -135,12 +137,39 @@
 <main id="main-content" class="rux--content pixels-main">
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
+      <div class="pixels-page">
       <!-- A guest has no header, so this line says where they are and who they are. puzzles.js fills it. -->
       <div class="pixels-guestbar" id="pixels-guestbar" hidden>
         <span class="rux--type-productive-heading-03">Pixels</span>
         <span class="pixels-meta" id="pixels-player"></span>
       </div>
-      <div class="rux--stack-vertical rux--stack-scale-7" id="pixels-levels">
+      <!-- Two tabs, shown once there is a player: the puzzles, and the leaderboard. -->
+      <div class="pixels-tabs" id="pixels-tabs" hidden>
+      <div class="rux--tabs">
+        <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--previous rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
+      <div class="rux--tab--list" role="tablist" aria-label="Pixels">
+        <button id="pixels-tab-puzzles" class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true" aria-controls="pixels-panel-puzzles" tabindex="0">
+          <div class="rux--tabs__nav-item-label-wrapper">
+            <span class="rux--tabs__nav-item-label">Puzzles</span>
+          </div>
+        </button>
+        <div class="rux--tabs__nav-item--close--hidden">
+          <button type="button" class="rux--visually-hidden" tabindex="-1" aria-label="Close tab"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button>
+        </div>
+        <button id="pixels-tab-board" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="pixels-panel-board" tabindex="-1">
+          <div class="rux--tabs__nav-item-label-wrapper">
+            <span class="rux--tabs__nav-item-label">Leaderboard</span>
+          </div>
+        </button>
+        <div class="rux--tabs__nav-item--close--hidden">
+          <button type="button" class="rux--visually-hidden" tabindex="-1" aria-label="Close tab"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button>
+        </div>
+      </div>
+        <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--next rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg></button>
+      </div>
+      </div>
+      <div class="rux--tab-content pixels-panel" role="tabpanel" id="pixels-panel-puzzles" aria-labelledby="pixels-tab-puzzles" tabindex="0">
+      <div class="rux--stack-vertical rux--stack-scale-6" id="pixels-levels">
         <h1 class="rux--visually-hidden">Puzzles</h1>
         <div id="pixels-error" hidden>
         <div class="rux--inline-notification rux--inline-notification--error" role="alert">
@@ -153,7 +182,13 @@
           </div>
         </div>
         </div>
-        <!-- puzzles.js writes one section per level of ten here. -->
+        <!-- puzzles.js writes today's card and a section a level here. -->
+      </div>
+      </div>
+      <div class="rux--tab-content pixels-panel" role="tabpanel" id="pixels-panel-board" aria-labelledby="pixels-tab-board" tabindex="0" hidden>
+        <!-- puzzles.js writes the two rankings here. -->
+        <div id="pixels-leader"></div>
+      </div>
       </div>
     </div>
   </div>
@@ -166,6 +201,7 @@
 <script src="/design/js/ui-shell.js"></script>
 <script src="/design/js/dismiss.js"></script>
 <script src="/design/js/modal.js"></script>
+<script src="/design/js/tabs.js"></script>
 <script src="/design/js/profile.js"></script>
 <script src="/switcher.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>

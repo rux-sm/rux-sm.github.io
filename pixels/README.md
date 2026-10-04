@@ -28,7 +28,8 @@ where the numbers decide the most. Undo, or U, takes back the last tap or
 drag, but never a mistake. The arrow beside the puzzle's name goes back to
 the list. When the picture is complete the squares
 fill in as the picture, in its colours if it has them, and its name shows.
-Each move plays a tone, which the Sound switch turns off, and a phone ticks
+Each move plays a tone, which the Sound switch turns off and an iPhone's
+silent switch does not, and a phone ticks
 on each fill where the browser allows it. Free mode points out nothing: a wrong square fills
 like a right one, Fill empties a filled square, there is no hint, and the
 puzzle is solved when the filled squares are exactly the picture. A game in

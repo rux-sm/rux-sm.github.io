@@ -397,7 +397,7 @@
      few notes of [pitch in Hz, seconds], and a third number is the pitch the
      note slides to, which is how `pop` falls. `step` raises the pitch a
      semitone at a time, so a drag of fills climbs. `pixels-sound` set to off in this
-     browser silences it, and so does an iPhone's silent switch.
+     browser silences it.
 
      A phone keeps sound stopped until a touch, takes a moment to start it,
      and stops it again after a call or a trip to the home screen. A tone
@@ -423,6 +423,16 @@
     } catch { return true; }
   };
   let audio, held = null;
+  /* An iPhone plays a page's tones as ambient sound, which its silent switch
+     mutes; asked for the playback kind, the kind music apps use, it plays
+     them whatever the switch says, and the game's own Sound switch is then
+     the way to quiet it. It has to be asked before the sound is made. */
+  const make = () => {
+    const Context = window.AudioContext || window.webkitAudioContext;
+    if (!Context || !sounds()) return;
+    if (!audio && navigator.audioSession) navigator.audioSession.type = 'playback';
+    audio ??= new Context();
+  };
   const play = (kind, step) => {
     // A little ahead of now, so the first note is not cut short.
     let at = audio.currentTime + .01;
@@ -440,10 +450,9 @@
     }
   };
   const wake = () => {
-    const Context = window.AudioContext || window.webkitAudioContext;
-    if (!Context || !sounds() || document.hidden) return;
-    audio ??= new Context();
-    if (audio.state === 'running') return;
+    if (document.hidden) return;
+    make();
+    if (!audio || audio.state === 'running') return;
     audio.resume().then(() => {
       if (held && performance.now() - held.at < FRESH) play(held.kind, held.step);
       held = null;
@@ -451,8 +460,7 @@
   };
   const listen = () => {
     // Made now, while the page loads, so the first touch only has to start it.
-    const Context = window.AudioContext || window.webkitAudioContext;
-    if (Context && sounds()) audio ??= new Context();
+    make();
     for (const type of ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown']) addEventListener(type, wake, { capture: true, passive: true });
     document.addEventListener('visibilitychange', wake);
   };

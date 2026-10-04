@@ -130,8 +130,17 @@
   // derived structurally — the label that owns the control, and what is inside
   // it — and never from a list of component names: an allow-list would measure
   // the list instead of the rule.
+  // A WRAPPER IS A SURFACE TOO. Carbon rings the box around a fluid field, a
+  // multiselect, a number input, an edit-in-place and a selectable list row,
+  // through a class the behaviour layer adds while the control inside has
+  // focus. Four levels reaches every one of those hosts from its control.
+  const WRAPPER_DEPTH = 4;
   const surfaces = el => {
     const out = [el];
+    for (let n = el.parentElement, i = 0; n && n !== root && i < WRAPPER_DEPTH; n = n.parentElement, i++) out.push(n);
+    // And so is what the control holds: a progress step rings its label and a
+    // tree node the row inside it.
+    out.push(...el.querySelectorAll('*'));
     const label = (el.id && document.querySelector(`label[for="${CSS.escape(el.id)}"]`))
       || el.closest('label')
       // Carbon's hidden-control pattern is `input + label`, so the sibling is
@@ -232,46 +241,21 @@
   const by = findings.reduce((m, f) => (m[f.rule] = (m[f.rule] || 0) + 1, m), {});
   // ADJUDICATED FINDINGS ARE SEPARATED FROM NEW ONES, AND NOT SUPPRESSED.
   //
-  // Added 2026-08-31. By 2026-08-31 every one of the 13 findings this tool
-  // reports across all 12 pages was a KNOWN false positive: 8 progress-step
-  // buttons and 1 fluid list box on the sink, 4 progress steps on wizard-page.
-  // A fourteenth, real finding would have arrived as "10 findings" instead of
-  // "9" and been indistinguishable. That nearly happened: three genuine fluid
-  // focus defects were found only because every finding was read one at a time.
+  // A few controls show focus in a way this tool cannot read: a ring the
+  // browser draws, an icon swapped for another, a label it has no way to
+  // reach. Each is still reported and still counted. This list only says which
+  // findings have been argued about, so a new one is on the first line instead
+  // of lost among the known ones.
   //
-  // THIS IS NOT AN ALLOW-LIST, and the distinction is the whole point. An
-  // allow-list makes a red gate green, which this repository refuses -- the
-  // rule is that a check needing entries to pass is measuring the entries.
-  // Nothing here is removed, hidden, or subtracted from the count. The tool
-  // still reports every finding and still says 13; it just says which 13 have
-  // already been argued about, so a NEW one is visible on the first line
-  // instead of on the fourteenth.
+  // THIS IS NOT AN ALLOW-LIST. An allow-list makes a red gate green, and a
+  // check that needs entries to pass is measuring the entries. Nothing here is
+  // removed, hidden or subtracted from the count.
   //
-  // AN ENTRY EARNS ITS PLACE BY A MEASUREMENT, recorded where the adjudication
-  // happened -- README's gate section for progress-step-button, and
-  // the fluid list box, whose ring was measured
-  // moving from `outline: none` to `rgb(15,98,254) solid 2px` on the WRAPPER,
-  // where this tool cannot look. If an entry cannot name that measurement it
-  // does not belong here.
+  // AN ENTRY EARNS ITS PLACE BY A MEASUREMENT, written in its `why`. A ring
+  // this tool can be taught to see is a change to `surfaces`, never an entry.
   const ADJUDICATED = [
-    { rule: 'no visible focus change', what: 'rux--progress-step-button',
-      why: 'Carbon draws the ring on :focus-visible on the LABEL and sets outline:none on plain :focus; a real Tab press shows it. README, gates section.' },
-    { rule: 'no visible focus change', what: 'rux--list-box__field', where: 'fluid',
-      why: 'the fluid list box rings its WRAPPER and Carbon sets outline:none on the field. Measured: wrapper outline none -> rgb(15,98,254) solid 2px on focus.' },
-    { rule: 'no visible focus change', what: 'rux--tree-node', where: 'treeview',
-      why: 'Carbon rings the CHILD div, `.tree-node:focus > .tree-node__label`, and sets outline:none on the li. Measured 2026-09-01: label outline none -> rgb(15,98,254) solid 2px; the li unchanged.' },
     { rule: 'no visible focus change', what: 'rux--file-filename-button', where: 'file-uploader',
       why: 'Carbon writes `outline: revert` on this button, the one place the stylesheet hands focus back to the UA ring. Measured 2026-09-01: outline none 1.5px -> auto 1px, which this tool discounts by rule.' },
-    { rule: 'no visible focus change', what: 'rux--list-box__field', where: 'multiselect',
-      why: 'as the fluid list box: Carbon sets `.multi-select .list-box__field:focus { outline: 2px solid transparent }` and js/list-box.js rings the WRAPPER by class, as React does. Measured 2026-09-01: wrapper outline none -> rgb(15,98,254) solid 2px on focus, back on blur.' },
-    { rule: 'no visible focus change', what: 'rux--text-input', where: 'multiselect',
-      why: 'the filterable form rings the ROOT: js/list-box.js adds `multi-select--filterable--input-focused` on focus, as React does. Measured 2026-09-01: root outline none -> rgb(15,98,254) solid 2px.' },
-    { rule: 'no visible focus change', what: 'rux--text-input rux--text-input--empty', where: 'fluid',
-      why: 'the fluid filterable multiselect rings its ROOT and its WRAPPER through the class js/list-box.js adds, as React does. Measured 2026-09-01: root and wrapper outline none -> rgb(15,98,254) solid 2px on focus; the input itself none. The fluid combo box beside it rings its own input and is not matched here.' },
-    { rule: 'no visible focus change', what: 'rux--structured-list-input', where: 'structured-list',
-      why: 'Carbon rings the ROW: js/form-controls.js adds `structured-list-row--focused-within` while the visually-hidden radio has focus, as React does. Measured 2026-09-01: row outline none -> rgb(15,98,254) solid 2px, back on blur; the radio itself is visually hidden.' },
-    { rule: 'no visible focus change', what: 'rux--edit-in-place__text-input', where: 'edit-in-place',
-      why: 'Carbon rings the ROOT: js adds `edit-in-place--focused` while the input has focus, as React does. Measured 2026-09-01: root outline none -> rgb(15,98,254) solid 2px; the input itself none.' },
     { rule: 'no visible focus change', what: 'rux--toggle__button', where: 'options-tile',
       why: 'the same ring the plain toggle draws on `toggle__switch::after` (measured none -> rgb(15,98,254) solid 2px on focus, identical in sink/toggle.html) -- but the tile labels its toggle by aria-labelledby with a DIV `toggle__label` and no id, exactly as the capture does, so this tool cannot reach the switch through a label[for].' },
     { rule: 'no visible focus change', what: 'rux--slider__thumb--', where: 'slider',

@@ -544,12 +544,7 @@ export const GATES = [
     fileTargets: [],
     redRun: '.rux--checkbox:focus + .rux--checkbox-label::before { outline: none !important } — expect 12 findings',
     sideEffects: 'moves focus and restores it; injects and removes a transition:none style',
-    // CORRECTED 2026-09-05. This read 0 findings while the ledger had recorded
-    // 29 since 2026-09-04 -- the adjudicated set plus the standing date-picker
-    // calendar -- so the registry and the ledger disagreed about the same page
-    // for two days. baseline is a record and asserts nothing, which is why
-    // nothing failed; it is also why nothing caught it. Re-read at d8fd169.
-    baseline: 'kitchen-sink 29 findings · 6 notes · focusRingChecked true — 28 adjudicated plus the date-picker calendar',
+    baseline: 'kitchen-sink 6 findings · 6 notes · focusRingChecked true — all 6 adjudicated',
     // Refuses its focus-ring check when document.hasFocus() is false, and says
     // so in the result. A 0 with focusRingChecked:false is not a pass.
     precondition: 'document.hasFocus() must be true or the focus-ring half does not run',

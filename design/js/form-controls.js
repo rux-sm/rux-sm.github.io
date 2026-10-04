@@ -156,10 +156,22 @@
     }
   }
 
+  // A RING CLASS STANDS IN FOR `:focus-visible`, SO IT FOLLOWS IT. The build
+  // turns every `:focus` Carbon writes into `:focus-visible`; a class added on
+  // any focus would ring the wrapper on a click all the same. `followRing` adds
+  // the class only while the focused control matches `:focus-visible`, and
+  // reads it again on a key, because the browser starts matching it when a key
+  // is pressed in a control a click focused.
+  //
   // focusin/focusout, not focus/blur: those do not bubble, and the control that
   // takes focus is nested several levels inside the element the class goes on.
-  document.addEventListener('focusin', e => fluidFocus(e.target, true));
-  document.addEventListener('focusout', e => fluidFocus(e.target, false));
+  const ringed = el => !!el.matches?.(':focus-visible');
+  const followRing = apply => {
+    document.addEventListener('focusin', e => apply(e.target, ringed(e.target)));
+    document.addEventListener('focusout', e => apply(e.target, false));
+    document.addEventListener('keyup', e => apply(e.target, ringed(e.target)));
+  };
+  followRing(fluidFocus);
 
   /* ── edit in place focus ──────────────────────────────────────────────── */
   // Carbon suppresses the input's own outline and draws the ring from the
@@ -189,8 +201,7 @@
     if (!target.matches?.('.rux--structured-list-input')) return;
     listRow(target)?.classList.toggle('rux--structured-list-row--focused-within', on);
   };
-  document.addEventListener('focusin', e => listFocus(e.target, true));
-  document.addEventListener('focusout', e => listFocus(e.target, false));
+  followRing(listFocus);
   document.addEventListener('change', e => {
     const input = e.target;
     if (!input.matches?.('.rux--structured-list-input') || !input.checked) return;

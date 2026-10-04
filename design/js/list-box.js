@@ -50,6 +50,10 @@
    leaves focus on the field. Typeahead exists and accumulates -- `o` then `p` holds the
    same option rather than jumping.
 
+   ONE DIFFERENCE FROM CARBON, on purpose: Carbon rings the cursor however the
+   list was opened. Here a list opened with a click has its cursor and no ring,
+   and the first key draws it -- the rule every focus ring in this system keeps.
+
    ADDED 2026-09-01, not driven live: the two focus classes React toggles on a
    multiselect (see the handler below). NOT reimplemented: multiselect selection
    itself, the selection-count tag, and filtering -- the field opens and the
@@ -123,12 +127,16 @@
   const selectedOf = r => r.querySelector('.rux--list-box__menu-item--active');
   const textOf = o => o.dataset.ruxText ?? o.textContent.trim();
 
-  function setCursor(root, option) {
+  // THE CURSOR'S RING IS A FOCUS RING, so it shows for the keyboard only, as
+  // every other ring here does. `--highlighted` is the outline; a list opened
+  // with a click keeps its cursor in `aria-activedescendant` without the class,
+  // and the first key that moves the cursor draws it.
+  function setCursor(root, option, ring = true) {
     const field = fieldOf(root);
     for (const o of root.querySelectorAll('.rux--list-box__menu-item--highlighted'))
       o.classList.remove('rux--list-box__menu-item--highlighted');
     if (!option) { field?.removeAttribute('aria-activedescendant'); return; }
-    option.classList.add('rux--list-box__menu-item--highlighted');
+    option.classList.toggle('rux--list-box__menu-item--highlighted', ring);
     field?.setAttribute('aria-activedescendant', overlay.autoId(option, 'rux-option'));
     // The list scrolls; the cursor must stay in it.
     option.scrollIntoView?.({ block: 'nearest' });
@@ -183,7 +191,7 @@
     root.dispatchEvent(new CustomEvent('rux:listbox-closed', { bubbles: true }));
   }
 
-  function open(root) {
+  function open(root, byKey = false) {
     if (live.has(root) || isDisabled(root)) return;
     const field = fieldOf(root), menu = menuOf(root);
     if (!field || !menu) return;
@@ -227,7 +235,7 @@
     const selected = selectedOf(root);
     setCursor(root, isCombo(root)
       ? (selected && !selected.hidden ? selected : null)
-      : (selected || optionsOf(root)[0] || null));
+      : (selected || optionsOf(root)[0] || null), byKey);
     // After the filter and the unhide, so the menu is measured at the height it
     // actually has.
     place(root);
@@ -328,8 +336,12 @@
       ms.classList.toggle('rux--multi-select--filterable--input-focused', on);
     }
   };
-  document.addEventListener('focusin',  e => e.target instanceof Element && focusClass(e.target, true));
+  // The class stands in for `:focus-visible` and follows it, as the fluid
+  // classes in form-controls.js do: none on a click, and read again on a key.
+  const ringed = el => el.matches(':focus-visible');
+  document.addEventListener('focusin',  e => e.target instanceof Element && focusClass(e.target, ringed(e.target)));
   document.addEventListener('focusout', e => e.target instanceof Element && focusClass(e.target, false));
+  document.addEventListener('keyup',    e => e.target instanceof Element && focusClass(e.target, ringed(e.target)));
 
   /* ── pointer ──────────────────────────────────────────────────────────── */
   // A press on a combo box's list or its buttons keeps focus in the input, so
@@ -364,7 +376,8 @@
       // fieldOf() is the interactive test; a specimen's <div> field is not ours.
       if (!root || isDisabled(root) || fieldOf(root) !== field) return;
       event.preventDefault();
-      live.has(root) ? close(root) : open(root);
+      // A click with no press behind it is a key on the button.
+      live.has(root) ? close(root) : open(root, event.detail === 0);
       return;
     }
     const option = event.target.closest('.rux--list-box__menu-item[role="option"]');
@@ -385,7 +398,7 @@
       case 'ArrowUp':
         event.preventDefault();
         if (!isOpen) {
-          open(root);
+          open(root, true);
           if (!live.get(root)?.cursor) setCursor(root, optionsOf(root)[0] ?? null);
           return;
         }
@@ -418,7 +431,7 @@
     if (selected && textOf(selected) !== field.value) deselect(root);
     sync(root);
     filter(root);
-    open(root);
+    open(root, true);
     setCursor(root, field.value.trim() ? optionsOf(root)[0] ?? null : null);
   });
 
@@ -439,7 +452,7 @@
         // Closed, an arrow OPENS and stops: open() has already put the cursor on
         // the selection, which is where the pattern wants it. Moving as well
         // would skip the option the field is showing.
-        if (!isOpen) { open(root); return; }
+        if (!isOpen) { open(root, true); return; }
         setCursor(root, step(list, cursor, event.key === 'ArrowDown' ? 1 : -1));
         break;
       case 'Home':
@@ -462,7 +475,7 @@
       // who wants it can bind it.
       case 'Enter':
         event.preventDefault();
-        isOpen ? choose(root, cursor) : open(root);
+        isOpen ? choose(root, cursor) : open(root, true);
         break;
       case 'Escape':
         // The kernel closes it; this stops a form submitting under us and marks
@@ -482,7 +495,7 @@
         // Carbon, so it is inert here; the case above says what that costs.
         if (event.key === ' ') return;
         if (event.key.length !== 1 || event.metaKey || event.ctrlKey || event.altKey) return;
-        if (!isOpen) open(root);
+        if (!isOpen) open(root, true);
         clearTimeout(typedTimer);
         typed += event.key.toLowerCase();
         typedTimer = setTimeout(() => { typed = ''; }, TYPEAHEAD_MS);

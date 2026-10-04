@@ -10,8 +10,12 @@
    - no login, or an account with no access: to /login/?next=<this address>;
    - a page of an app the account lacks: to Home, or to its one app;
    - otherwise the page opens.
-   /login/ and /scheduler/share/ open without a login. A local preview has no
-   lock, except the cloud preview on port 8641, as account.js behaves.
+   /login/ and /scheduler/share/ open without a login. So do Pixels' list and
+   its puzzle, for a guest its link invites: with no login, or a login that
+   lacks Pixels, they open with `data-rux-guest` on <html>, which tells the
+   page it has no account to draw a header for. Pixels' other pages stay
+   locked. A local preview has no lock, except the cloud preview on port
+   8641, as account.js behaves.
 
    ACCESS, SHARED. window.Rux.access holds these rules for the log-in page too.
    Access is the owner switch and the ticked apps in the account's
@@ -42,10 +46,15 @@
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null')?.user ?? null; }
     catch { return null; }
   };
+  const guestPage = path => /^\/pixels\/(index\.html|play\.html)?$/.test(String(path).split(/[?#]/)[0]);
   window.Rux = window.Rux || {};
-  window.Rux.access = { accessOf, appOf, canEnter, allows, landing, storedUser };
+  window.Rux.access = { accessOf, appOf, canEnter, allows, landing, storedUser, guestPage };
 
   const open = () => document.documentElement.setAttribute('data-rux-unlocked', '');
+  const openAsGuest = () => {
+    document.documentElement.setAttribute('data-rux-guest', '');
+    open();
+  };
   const path = location.pathname;
   const local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)
     && location.port !== '8641';
@@ -58,10 +67,12 @@
   const user = storedUser();
   const granted = accessOf(user);
   if (!user || user.is_anonymous || !canEnter(granted)) {
+    if (guestPage(path)) { openAsGuest(); return; }
     location.replace(`/login/?next=${encodeURIComponent(path + location.search + location.hash)}`);
     return;
   }
   if (!allows(granted, path)) {
+    if (guestPage(path)) { openAsGuest(); return; }
     location.replace(landing(granted));
     return;
   }

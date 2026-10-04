@@ -42,7 +42,7 @@ rebuilt with Design here and open without a login.
   everywhere returns to it.
 - **`funnel.js` is the gate**, the first script on every page. It reads the
   stored login and redirects before the page draws, with no network. It lets
-  through `/login/` and the link pages. The check keeps requiring it first on
+  through `/login/`, the link pages, and Pixels' list and puzzle for a guest. The check keeps requiring it first on
   every full page, with no exceptions.
 - **Every page starts hidden** by a style in its head, and `funnel.js` shows it
   only once the login passes, so a browser with scripts off draws nothing.

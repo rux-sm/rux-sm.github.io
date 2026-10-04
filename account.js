@@ -364,10 +364,11 @@
      with no answer, as when offline, changes nothing. A login that ends while
      the page is open, as by Log out in another tab, goes to the log-in page
      too. /login/ and /scheduler/share/ need no login, so they are not
-     checked. */
+     checked, and nor is a page /funnel.js opened for a guest. */
   const access = window.Rux?.access;
   const path = location.pathname;
-  if (access && !path.startsWith('/login/') && !path.startsWith('/scheduler/share/')) {
+  const guest = document.documentElement.hasAttribute('data-rux-guest');
+  if (access && !guest && !path.startsWith('/login/') && !path.startsWith('/scheduler/share/')) {
     const loginAddress = () => `/login/?next=${encodeURIComponent(path + location.search + location.hash)}`;
     const toLogin = async () => {
       await sb.auth.signOut({ scope: 'local' }).catch(() => {});

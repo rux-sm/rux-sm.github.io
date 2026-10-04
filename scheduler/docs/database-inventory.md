@@ -44,9 +44,10 @@ the schema to match the page.
   `record_driver_accepted_view`, `confirm_trip_assignment` and
   `decline_trip_assignment`; and the maintenance page's
   `get_maintenance_schedule` and `get_maintenance_schedule_changes`. Each takes
-  the link's token. Every other function is closed to the key, and the ones a
-  staff page calls check `is_staff` first, so an account signed in without the
-  Scheduler is refused too.
+  the link's token. Every other function of the scheduler's is closed to the
+  key, and the ones a staff page calls check `is_staff` first, so an account
+  signed in without the Scheduler is refused too. The key can also run
+  Pixels' eight, which `pixels/README.md` lists; each takes a guest's key.
 
 `platform.profiles` is a separate table that holds a staff member's name and
 theme across the site. Its `scheduler_shortcuts` column held a choice of

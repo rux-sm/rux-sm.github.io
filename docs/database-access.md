@@ -29,6 +29,12 @@ ask `is_owner()` in `owner_read` and `owner_all`, and so does their private
 bucket `ln-confirmations`: a screen's whole text rests on Infor's help, so no
 other account reads it.
 
+The Pixels tables ask `is_owner()` in `owner_all`, and `pixels_puzzles` adds
+`staff_read`: only the owner makes puzzles and sees the players. A player,
+whether an account or a guest with no account, reaches them only through
+Pixels' eight functions, which find the player first, from the log-in or
+from the hash of a key the guest's browser keeps.
+
 **No rule may name `anon` or `public`.** The publishable key in `account.js`
 and `data.js` is not a secret and belongs to the `anon` role, so a rule naming
 it is a rule open to the internet. `anon` holds no table grants either.
@@ -37,7 +43,9 @@ it is a rule open to the internet. `anon` holds no table grants either.
 driver share and the maintenance share each call a `SECURITY DEFINER`
 function with a token, which runs as its owner and never
 consults these rules; a trip document goes through the `trip-document-link`
-Edge Function. Copy that pattern; never grant to `anon`.
+Edge Function. Pixels' list and puzzle pages open to a guest the same way,
+through functions that take the guest's key. Copy that pattern; never grant
+a table to `anon`.
 
 **The key can call only those functions.** Every other function is revoked
 from `anon` and `public`, and one a staff page calls checks for staff first.

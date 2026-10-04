@@ -545,6 +545,21 @@
   margin-block-start: 0;
   margin-inline-start: var(--rux-spacing-03);
 }
+/* ANT'S BUTTON HOLDS ITS LABEL AND ITS ICON TOGETHER IN THE MIDDLE, measured
+   on its Button page: 15px inside its border on each side and 8px between
+   the two. Carbon sets the label at the start and the icon against the end,
+   in 64px kept for it whether or not there is one, so a wide button read as
+   a row with a stray mark. A footer's buttons are still Carbon's
+   edge-to-edge band in this theme and keep Carbon's layout. */
+[data-theme="ant-dark"] .rux--btn:not(.rux--btn--icon-only, .rux--action-set *, .rux--modal-footer *) {
+  padding-inline: 15px;
+  justify-content: center;
+}
+[data-theme="ant-dark"] .rux--btn:not(.rux--btn--icon-only, .rux--action-set *, .rux--modal-footer *) .rux--btn__icon {
+  position: static;
+  margin-block-start: 0;
+  margin-inline-start: var(--rux-spacing-03);
+}
 /* - A field starts its text 12px in, and a mark at its end -- a select's or a
      dropdown's arrow, a date field's calendar -- sits 12px from that end. A
      combo box's field only frames its input, which takes the 12px itself, so
@@ -593,6 +608,43 @@
      Geist's Tabs page sets every tab at 400, the chosen one in #ededed over
      the others' #a1a1a1, so choosing one never changes its width. */
 [data-theme="geist-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-item--selected {
+  font-weight: 400;
+}
+/* ANT'S TABS, measured on its Tabs page: each as wide as its label with no
+   inset of its own and 32px from the next, 14px at 400 whether chosen or
+   not, the chosen one in the primary colour over a 2px bar of it and the
+   rest in the page's own text. The colour is link-primary, #4096ff: the
+   step of Ant's blue this theme already takes where #1668dc misses 4.5 to 1
+   on its surfaces. The pointed tab takes it too, as Ant's does. The
+   spacers, the one hairline under the row and the first label's 16px are
+   as geist-dark has them above. */
+[data-theme="ant-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tab--list {
+  padding-inline-start: 16px;
+  box-shadow: inset 0 -1px 0 var(--rux-border-subtle-01);
+}
+[data-theme="ant-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-item--close--hidden {
+  display: none;
+}
+[data-theme="ant-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-link {
+  flex: none;
+  padding-inline-start: 0;
+}
+[data-theme="ant-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-link:not(:has(+ .rux--tabs__nav-item--close)) {
+  padding-inline-end: 0;
+}
+[data-theme="ant-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-link:not(:first-child) {
+  margin-inline-start: 32px;
+}
+[data-theme="ant-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-link:not(.rux--tabs__nav-item--selected, :hover) {
+  border-block-end-color: transparent;
+}
+[data-theme="ant-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-link:not(.rux--tabs__nav-item--disabled) {
+  color: var(--rux-text-primary);
+}
+[data-theme="ant-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-link:is(.rux--tabs__nav-item--selected, :hover):not(.rux--tabs__nav-item--disabled) {
+  color: var(--rux-link-primary);
+}
+[data-theme="ant-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-item--selected {
   font-weight: 400;
 }
 /* - A table's cells are 8px from each side, 16px between two columns; the

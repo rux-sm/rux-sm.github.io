@@ -1,6 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
 <!-- The board an app icon is drawn on; docs/app-icons.md holds the rules. One
-     unit is one square. Three layers, bottom to top: a white board, so the
+     unit is one square, and the size is written out so a drawing app opens it
+     as a 16 by 16 artboard. Three layers, bottom to top: a white board, so the
      page reads the same on any canvas; the empty group the drawing goes in;
      and the guides, which sit over the drawing so its squares stay countable.
      The board and the guides are deleted before the drawing is saved, because

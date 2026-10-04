@@ -11,13 +11,22 @@ none.
 
 ## The board
 
-Open `docs/app-icon-template.svg` in a drawing app. It is 16 squares wide and
-16 tall, and one unit is one square. Turn on snap to grid, or snap to pixels,
-so every shape lands on whole squares.
+Icons are drawn in Linearity Curve on the iPad. Open
+`docs/app-icon-template.svg` there. It is an artboard 16 wide and 16 tall, and
+one unit is one square.
 
 The template has three layers. `board` is a white square at the bottom.
 `icon` is empty, and the drawing goes in it. `guides` sits on top and shows
-every square, the drawing area, and the centre.
+every square, the drawing area, and the centre. Lock `board` and `guides` so a
+tap cannot move them.
+
+Set Curve to land every shape on whole squares:
+
+1. Open Artboard & Grid and turn on Show Grid.
+2. Choose the Perpendicular grid and set Spacing to 1.
+3. In the Snapping tab, turn on snapping to the grid.
+
+Draw with rectangles, filled black with no stroke.
 
 ## The rules
 
@@ -43,8 +52,13 @@ every square, the drawing area, and the centre.
 ## Save it
 
 1. Delete the `board` and `guides` layers, so only the drawing is left.
-2. Export as SVG, 16 by 16, to `icon.svg` in the app's `brand/` folder.
-3. For a new app, add `"icon": "/name/brand/icon.svg"` to its entry in
+2. Tap Export, choose SVG and the artboard, and save the file to iCloud Drive.
+3. On the Mac, save it as `icon.svg` in the app's `brand/` folder.
+4. For a new app, add `"icon": "/name/brand/icon.svg"` to its entry in
    `switcher.json`.
-4. Run `npm run check`, then look at the tile on the home page in a light
+5. Run `npm run check`, then look at the tile on the home page in a light
    theme and a dark one.
+
+Curve writes each shape as its own black path under a layer group, at the
+artboard's size. The home page reads only the shape, so the file works as
+Curve wrote it.

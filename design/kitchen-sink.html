@@ -2029,6 +2029,7 @@
     and text are replaced by two shapes the skeleton rules size directly
     (_toggle.scss:223 and :231).
   -->
+  <div class="ks-label">Skeleton</div>
   <div class="ks-row">
     <div class="rux--toggle rux--toggle--skeleton">
       <div class="rux--toggle__skeleton-circle"></div>
@@ -4687,75 +4688,6 @@
     </div>
 
     <div class="rux--list-box__wrapper">
-      <label class="rux--label" id="dd-2-label">Expanded</label>
-      <div class="rux--dropdown rux--list-box rux--dropdown--lg rux--layout--size-lg rux--dropdown--open rux--list-box--expanded">
-        <button type="button" class="rux--list-box__field" role="combobox" aria-labelledby="dd-2-label" aria-expanded="true" aria-haspopup="listbox" aria-controls="dd-2-menu">
-          <span class="rux--list-box__label">Option A</span>
-          <div class="rux--list-box__menu-icon rux--list-box__menu-icon--open">
-            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
-          </div>
-        </button>
-        <ul id="dd-2-menu" class="rux--list-box__menu" role="listbox">
-          <li class="rux--list-box__menu-item rux--list-box__menu-item--highlighted rux--list-box__menu-item--active" role="option" aria-selected="true">
-            <div class="rux--list-box__menu-item__option">Option A</div>
-          </li>
-          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
-            <div class="rux--list-box__menu-item__option">Option B</div>
-          </li>
-          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
-            <div class="rux--list-box__menu-item__option">Option C</div>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- OPENS UPWARD · --list-box--up, from
-         components-dropdown--experimental-auto-align, where it sits on the
-         dropdown root beside list-box. The story pairs it with `autoalign`,
-         which is floating-ui deciding the direction at runtime; the modifier
-         alone is pure CSS and flips the menu above the field, so it is shown
-         open here and the autoalign class is left off — the same call the
-         popover fragment makes about --auto-align, and for the same reason.
-
-         WHAT THIS SPECIMEN CANNOT SHOW, and it is not particular to --up.
-         js/list-box.js adopts a list box shipped `--expanded` so the first click
-         closes rather than re-opens it, and by the time the page settles the
-         root has lost `--open` and `--expanded` and the menu is `hidden`. Both
-         expanded dropdowns here read 0px tall at rest. The classes are in the
-         static markup, so check-coverage counts them, but a reader never sees
-         the state — press the field to open it. That gap belongs to the
-         specimen and the module together and is recorded, not fixed here.
-
-         FIXED 2026-08-28 in js/ui-shell.js: adopting the sink's declared-open
-         nav ran register()'s default dismissAbove() and closed both of these
-         before the page settled. Adoption now dismisses nothing; a hamburger
-         PRESS still does. The margin below is for the same specimen — a menu
-         that opens upward is absolutely positioned over whatever sits above it,
-         and without the room it covered the closed dropdown in the row above.
-         Its own LABEL is still covered, and that is not a defect to fix: the
-         menu is positioned above the FIELD, and the label sits there. A real
-         page reaches this state only when there is no room below. -->
-    <div class="rux--list-box__wrapper" style="margin-block-start:7rem">
-      <label class="rux--label" id="dd-8-label">Expanded upward</label>
-      <div class="rux--dropdown rux--list-box rux--list-box--up rux--dropdown--lg rux--layout--size-lg rux--dropdown--open rux--list-box--expanded">
-        <button type="button" class="rux--list-box__field" role="combobox" aria-labelledby="dd-8-label" aria-expanded="true" aria-haspopup="listbox" aria-controls="dd-8-menu">
-          <span class="rux--list-box__label">Option A</span>
-          <div class="rux--list-box__menu-icon rux--list-box__menu-icon--open">
-            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
-          </div>
-        </button>
-        <ul id="dd-8-menu" class="rux--list-box__menu" role="listbox">
-          <li class="rux--list-box__menu-item rux--list-box__menu-item--active" role="option" aria-selected="true">
-            <div class="rux--list-box__menu-item__option">Option A</div>
-          </li>
-          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
-            <div class="rux--list-box__menu-item__option">Option B</div>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="rux--list-box__wrapper">
       <label class="rux--label" id="dd-3-label">Invalid</label>
       <div class="rux--dropdown rux--list-box rux--dropdown--lg rux--layout--size-lg rux--dropdown--invalid rux--list-box--invalid" data-invalid>
         <svg class="rux--list-box__invalid-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
@@ -4829,6 +4761,67 @@
             <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
           </div>
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- The two written open stand apart from the rest, with room under them,
+       because an open menu lies over whatever follows it. -->
+  <div class="ks-label">Open at rest</div>
+  <div class="ks-grid" style="padding-block-end:7rem">
+    <div class="rux--list-box__wrapper">
+      <label class="rux--label" id="dd-2-label">Expanded</label>
+      <div class="rux--dropdown rux--list-box rux--dropdown--lg rux--layout--size-lg rux--dropdown--open rux--list-box--expanded">
+        <button type="button" class="rux--list-box__field" role="combobox" aria-labelledby="dd-2-label" aria-expanded="true" aria-haspopup="listbox" aria-controls="dd-2-menu">
+          <span class="rux--list-box__label">Option A</span>
+          <div class="rux--list-box__menu-icon rux--list-box__menu-icon--open">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </div>
+        </button>
+        <ul id="dd-2-menu" class="rux--list-box__menu" role="listbox">
+          <li class="rux--list-box__menu-item rux--list-box__menu-item--highlighted rux--list-box__menu-item--active" role="option" aria-selected="true">
+            <div class="rux--list-box__menu-item__option">Option A</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Option B</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Option C</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- OPENS UPWARD · --list-box--up, from
+         components-dropdown--experimental-auto-align, where it sits on the
+         dropdown root beside list-box. The story pairs it with `autoalign`,
+         which is floating-ui deciding the direction at runtime; the modifier
+         alone is pure CSS and flips the menu above the field, so it is shown
+         open here and the autoalign class is left off — the same call the
+         popover fragment makes about --auto-align, and for the same reason.
+
+         The margin above is for the menu: one that opens upward is
+         absolutely positioned over whatever sits above it. Its own LABEL is
+         still covered, and that is not a defect to fix: the menu is positioned
+         above the FIELD, and the label sits there. A real page reaches this
+         state only when there is no room below. -->
+    <div class="rux--list-box__wrapper" style="margin-block-start:7rem">
+      <label class="rux--label" id="dd-8-label">Expanded upward</label>
+      <div class="rux--dropdown rux--list-box rux--list-box--up rux--dropdown--lg rux--layout--size-lg rux--dropdown--open rux--list-box--expanded">
+        <button type="button" class="rux--list-box__field" role="combobox" aria-labelledby="dd-8-label" aria-expanded="true" aria-haspopup="listbox" aria-controls="dd-8-menu">
+          <span class="rux--list-box__label">Option A</span>
+          <div class="rux--list-box__menu-icon rux--list-box__menu-icon--open">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </div>
+        </button>
+        <ul id="dd-8-menu" class="rux--list-box__menu" role="listbox">
+          <li class="rux--list-box__menu-item rux--list-box__menu-item--active" role="option" aria-selected="true">
+            <div class="rux--list-box__menu-item__option">Option A</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Option B</div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -5319,7 +5312,7 @@
     This was the SECOND such defect in two fragments restored the same day --
     sink/time-picker.html carried a wrong glyph for the same reason.
   -->
-  <div class="ks-row" style="padding:3rem 0 6rem 8rem">
+  <div class="ks-row" style="gap:4rem;padding:3rem 0 6rem 8rem">
     <span class="rux--toggletip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast">
       <button type="button" class="rux--toggletip-button" aria-expanded="false">More information</button>
       <span class="rux--popover">
@@ -6740,8 +6733,10 @@
   <!--
     ADMITTED 2026-09-01, and rebuilt against the item captures on the way. The
     stub wrote a bare `p.file-filename` and put the state container straight
-    inside the selected-file span; Carbon renders the filename as a tooltip
-    trigger — `file-filename-container-wrap` (or `-invalid`) around the popover
+    inside the selected-file span; Carbon renders a filename too long for its
+    item as a tooltip trigger, and the names here are that long, since the
+    trigger fills the item and centres a name that fits. It is
+    `file-filename-container-wrap` (or `-invalid`) around the popover
     chrome around `button.file-filename-button > p.file-filename-button` — and
     wraps the state container in a div that carries `file-container-item` — a
     class every capture renders and no rule in @carbon/styles styles, so on the
@@ -6778,9 +6773,9 @@
           <div class="rux--file-filename-container-wrap">
             <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--tooltip rux--file-filename-tooltip">
               <div class="rux--tooltip-trigger__wrapper">
-                <button type="button" class="rux--file-filename-button" aria-labelledby="fu-item-1-tip"><p class="rux--file-filename-button">report-q3.pdf</p></button>
+                <button type="button" class="rux--file-filename-button" aria-labelledby="fu-item-1-tip"><p class="rux--file-filename-button">quarterly-report-2026-q3-reviewed-by-finance.pdf</p></button>
               </div>
-              <span class="rux--popover" role="tooltip" id="fu-item-1-tip" aria-hidden="true"><span class="rux--popover-content rux--tooltip-content">report-q3.pdf</span><span class="rux--popover-caret"></span></span>
+              <span class="rux--popover" role="tooltip" id="fu-item-1-tip" aria-hidden="true"><span class="rux--popover-content rux--tooltip-content">quarterly-report-2026-q3-reviewed-by-finance.pdf</span><span class="rux--popover-caret"></span></span>
             </span>
           </div>
           <div>
@@ -6791,13 +6786,13 @@
           <div class="rux--file-filename-container-wrap-invalid">
             <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--tooltip rux--file-filename-tooltip">
               <div class="rux--tooltip-trigger__wrapper">
-                <button type="button" class="rux--file-filename-button" aria-labelledby="fu-item-2-tip"><p class="rux--file-filename-button">too-large.zip</p></button>
+                <button type="button" class="rux--file-filename-button" aria-labelledby="fu-item-2-tip"><p class="rux--file-filename-button">every-export-since-the-workspace-opened.zip</p></button>
               </div>
-              <span class="rux--popover" role="tooltip" id="fu-item-2-tip" aria-hidden="true"><span class="rux--popover-content rux--tooltip-content">too-large.zip</span><span class="rux--popover-caret"></span></span>
+              <span class="rux--popover" role="tooltip" id="fu-item-2-tip" aria-hidden="true"><span class="rux--popover-content rux--tooltip-content">every-export-since-the-workspace-opened.zip</span><span class="rux--popover-caret"></span></span>
             </span>
           </div>
           <div>
-            <span class="rux--file__state-container"><svg class="rux--file-invalid" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg><button type="button" class="rux--file-close" aria-label="Delete file - too-large.zip" aria-describedby="fu-item-2-error"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button></span>
+            <span class="rux--file__state-container"><svg class="rux--file-invalid" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg><button type="button" class="rux--file-close" aria-label="Delete file - every-export-since-the-workspace-opened.zip" aria-describedby="fu-item-2-error"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button></span>
           </div>
           <div class="rux--form-requirement" role="alert" id="fu-item-2-error">
             <div class="rux--form-requirement__title">File exceeds 500 KB</div>
@@ -6820,13 +6815,13 @@
           <div class="rux--file-filename-container-wrap">
             <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--tooltip rux--file-filename-tooltip">
               <div class="rux--tooltip-trigger__wrapper">
-                <button type="button" class="rux--file-filename-button" aria-labelledby="fu-item-3-tip"><p class="rux--file-filename-button">archive-2019.tar</p></button>
+                <button type="button" class="rux--file-filename-button" aria-labelledby="fu-item-3-tip"><p class="rux--file-filename-button">archive-of-every-upload-made-in-2019.tar</p></button>
               </div>
-              <span class="rux--popover" role="tooltip" id="fu-item-3-tip" aria-hidden="true"><span class="rux--popover-content rux--tooltip-content">archive-2019.tar</span><span class="rux--popover-caret"></span></span>
+              <span class="rux--popover" role="tooltip" id="fu-item-3-tip" aria-hidden="true"><span class="rux--popover-content rux--tooltip-content">archive-of-every-upload-made-in-2019.tar</span><span class="rux--popover-caret"></span></span>
             </span>
           </div>
           <div>
-            <span class="rux--file__state-container"><button type="button" class="rux--file-close" aria-label="Delete file - archive-2019.tar"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button></span>
+            <span class="rux--file__state-container"><button type="button" class="rux--file-close" aria-label="Delete file - archive-of-every-upload-made-in-2019.tar"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button></span>
           </div>
         </span>
       </div>
@@ -7049,7 +7044,7 @@
     </li>
   </ul>
 
-  <div class="ks-label">--tree--xs · the compact density</div>
+  <div class="ks-label">Extra small · the compact density</div>
   <ul class="rux--tree rux--tree--xs" role="tree">
     <li class="rux--tree-node rux--tree-leaf-node" role="treeitem" tabindex="0">
       <div class="rux--tree-node__label" style="padding-inline-start:2.5rem;margin-inline-start:-2.5rem"><span class="rux--tree-node__label__details"><span class="rux--tree-node__label__text">Compact node</span></span></div>
@@ -8420,7 +8415,7 @@
     @carbon/styles and no story renders them; kept as the file-uploader states
     are, and named here so the next diff does not rediscover them.
   -->
-  <div class="ks-row" style="padding-block:1rem">
+  <div class="ks-row ks-row--end" style="padding-block:1rem">
     <div class="rux--ai-label">
       <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--toggletip">
         <button type="button" class="rux--ai-label__button rux--ai-label__button--xs rux--toggletip-button" aria-label="AI information">AI</button>

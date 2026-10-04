@@ -48,75 +48,6 @@
     </div>
 
     <div class="rux--list-box__wrapper">
-      <label class="rux--label" id="dd-2-label">Expanded</label>
-      <div class="rux--dropdown rux--list-box rux--dropdown--lg rux--layout--size-lg rux--dropdown--open rux--list-box--expanded">
-        <button type="button" class="rux--list-box__field" role="combobox" aria-labelledby="dd-2-label" aria-expanded="true" aria-haspopup="listbox" aria-controls="dd-2-menu">
-          <span class="rux--list-box__label">Option A</span>
-          <div class="rux--list-box__menu-icon rux--list-box__menu-icon--open">
-            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
-          </div>
-        </button>
-        <ul id="dd-2-menu" class="rux--list-box__menu" role="listbox">
-          <li class="rux--list-box__menu-item rux--list-box__menu-item--highlighted rux--list-box__menu-item--active" role="option" aria-selected="true">
-            <div class="rux--list-box__menu-item__option">Option A</div>
-          </li>
-          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
-            <div class="rux--list-box__menu-item__option">Option B</div>
-          </li>
-          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
-            <div class="rux--list-box__menu-item__option">Option C</div>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- OPENS UPWARD · --list-box--up, from
-         components-dropdown--experimental-auto-align, where it sits on the
-         dropdown root beside list-box. The story pairs it with `autoalign`,
-         which is floating-ui deciding the direction at runtime; the modifier
-         alone is pure CSS and flips the menu above the field, so it is shown
-         open here and the autoalign class is left off — the same call the
-         popover fragment makes about --auto-align, and for the same reason.
-
-         WHAT THIS SPECIMEN CANNOT SHOW, and it is not particular to --up.
-         js/list-box.js adopts a list box shipped `--expanded` so the first click
-         closes rather than re-opens it, and by the time the page settles the
-         root has lost `--open` and `--expanded` and the menu is `hidden`. Both
-         expanded dropdowns here read 0px tall at rest. The classes are in the
-         static markup, so check-coverage counts them, but a reader never sees
-         the state — press the field to open it. That gap belongs to the
-         specimen and the module together and is recorded, not fixed here.
-
-         FIXED 2026-08-28 in js/ui-shell.js: adopting the sink's declared-open
-         nav ran register()'s default dismissAbove() and closed both of these
-         before the page settled. Adoption now dismisses nothing; a hamburger
-         PRESS still does. The margin below is for the same specimen — a menu
-         that opens upward is absolutely positioned over whatever sits above it,
-         and without the room it covered the closed dropdown in the row above.
-         Its own LABEL is still covered, and that is not a defect to fix: the
-         menu is positioned above the FIELD, and the label sits there. A real
-         page reaches this state only when there is no room below. -->
-    <div class="rux--list-box__wrapper" style="margin-block-start:7rem">
-      <label class="rux--label" id="dd-8-label">Expanded upward</label>
-      <div class="rux--dropdown rux--list-box rux--list-box--up rux--dropdown--lg rux--layout--size-lg rux--dropdown--open rux--list-box--expanded">
-        <button type="button" class="rux--list-box__field" role="combobox" aria-labelledby="dd-8-label" aria-expanded="true" aria-haspopup="listbox" aria-controls="dd-8-menu">
-          <span class="rux--list-box__label">Option A</span>
-          <div class="rux--list-box__menu-icon rux--list-box__menu-icon--open">
-            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
-          </div>
-        </button>
-        <ul id="dd-8-menu" class="rux--list-box__menu" role="listbox">
-          <li class="rux--list-box__menu-item rux--list-box__menu-item--active" role="option" aria-selected="true">
-            <div class="rux--list-box__menu-item__option">Option A</div>
-          </li>
-          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
-            <div class="rux--list-box__menu-item__option">Option B</div>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="rux--list-box__wrapper">
       <label class="rux--label" id="dd-3-label">Invalid</label>
       <div class="rux--dropdown rux--list-box rux--dropdown--lg rux--layout--size-lg rux--dropdown--invalid rux--list-box--invalid" data-invalid>
         <svg class="rux--list-box__invalid-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
@@ -190,6 +121,67 @@
             <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
           </div>
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- The two written open stand apart from the rest, with room under them,
+       because an open menu lies over whatever follows it. -->
+  <div class="ks-label">Open at rest</div>
+  <div class="ks-grid" style="padding-block-end:7rem">
+    <div class="rux--list-box__wrapper">
+      <label class="rux--label" id="dd-2-label">Expanded</label>
+      <div class="rux--dropdown rux--list-box rux--dropdown--lg rux--layout--size-lg rux--dropdown--open rux--list-box--expanded">
+        <button type="button" class="rux--list-box__field" role="combobox" aria-labelledby="dd-2-label" aria-expanded="true" aria-haspopup="listbox" aria-controls="dd-2-menu">
+          <span class="rux--list-box__label">Option A</span>
+          <div class="rux--list-box__menu-icon rux--list-box__menu-icon--open">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </div>
+        </button>
+        <ul id="dd-2-menu" class="rux--list-box__menu" role="listbox">
+          <li class="rux--list-box__menu-item rux--list-box__menu-item--highlighted rux--list-box__menu-item--active" role="option" aria-selected="true">
+            <div class="rux--list-box__menu-item__option">Option A</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Option B</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Option C</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- OPENS UPWARD · --list-box--up, from
+         components-dropdown--experimental-auto-align, where it sits on the
+         dropdown root beside list-box. The story pairs it with `autoalign`,
+         which is floating-ui deciding the direction at runtime; the modifier
+         alone is pure CSS and flips the menu above the field, so it is shown
+         open here and the autoalign class is left off — the same call the
+         popover fragment makes about --auto-align, and for the same reason.
+
+         The margin above is for the menu: one that opens upward is
+         absolutely positioned over whatever sits above it. Its own LABEL is
+         still covered, and that is not a defect to fix: the menu is positioned
+         above the FIELD, and the label sits there. A real page reaches this
+         state only when there is no room below. -->
+    <div class="rux--list-box__wrapper" style="margin-block-start:7rem">
+      <label class="rux--label" id="dd-8-label">Expanded upward</label>
+      <div class="rux--dropdown rux--list-box rux--list-box--up rux--dropdown--lg rux--layout--size-lg rux--dropdown--open rux--list-box--expanded">
+        <button type="button" class="rux--list-box__field" role="combobox" aria-labelledby="dd-8-label" aria-expanded="true" aria-haspopup="listbox" aria-controls="dd-8-menu">
+          <span class="rux--list-box__label">Option A</span>
+          <div class="rux--list-box__menu-icon rux--list-box__menu-icon--open">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+          </div>
+        </button>
+        <ul id="dd-8-menu" class="rux--list-box__menu" role="listbox">
+          <li class="rux--list-box__menu-item rux--list-box__menu-item--active" role="option" aria-selected="true">
+            <div class="rux--list-box__menu-item__option">Option A</div>
+          </li>
+          <li class="rux--list-box__menu-item" role="option" aria-selected="false">
+            <div class="rux--list-box__menu-item__option">Option B</div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>

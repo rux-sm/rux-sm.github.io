@@ -12,8 +12,10 @@
   <!--
     ADMITTED 2026-09-01, and rebuilt against the item captures on the way. The
     stub wrote a bare `p.file-filename` and put the state container straight
-    inside the selected-file span; Carbon renders the filename as a tooltip
-    trigger — `file-filename-container-wrap` (or `-invalid`) around the popover
+    inside the selected-file span; Carbon renders a filename too long for its
+    item as a tooltip trigger, and the names here are that long, since the
+    trigger fills the item and centres a name that fits. It is
+    `file-filename-container-wrap` (or `-invalid`) around the popover
     chrome around `button.file-filename-button > p.file-filename-button` — and
     wraps the state container in a div that carries `file-container-item` — a
     class every capture renders and no rule in @carbon/styles styles, so on the
@@ -50,9 +52,9 @@
           <div class="rux--file-filename-container-wrap">
             <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--tooltip rux--file-filename-tooltip">
               <div class="rux--tooltip-trigger__wrapper">
-                <button type="button" class="rux--file-filename-button" aria-labelledby="fu-item-1-tip"><p class="rux--file-filename-button">report-q3.pdf</p></button>
+                <button type="button" class="rux--file-filename-button" aria-labelledby="fu-item-1-tip"><p class="rux--file-filename-button">quarterly-report-2026-q3-reviewed-by-finance.pdf</p></button>
               </div>
-              <span class="rux--popover" role="tooltip" id="fu-item-1-tip" aria-hidden="true"><span class="rux--popover-content rux--tooltip-content">report-q3.pdf</span><span class="rux--popover-caret"></span></span>
+              <span class="rux--popover" role="tooltip" id="fu-item-1-tip" aria-hidden="true"><span class="rux--popover-content rux--tooltip-content">quarterly-report-2026-q3-reviewed-by-finance.pdf</span><span class="rux--popover-caret"></span></span>
             </span>
           </div>
           <div>
@@ -63,13 +65,13 @@
           <div class="rux--file-filename-container-wrap-invalid">
             <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--tooltip rux--file-filename-tooltip">
               <div class="rux--tooltip-trigger__wrapper">
-                <button type="button" class="rux--file-filename-button" aria-labelledby="fu-item-2-tip"><p class="rux--file-filename-button">too-large.zip</p></button>
+                <button type="button" class="rux--file-filename-button" aria-labelledby="fu-item-2-tip"><p class="rux--file-filename-button">every-export-since-the-workspace-opened.zip</p></button>
               </div>
-              <span class="rux--popover" role="tooltip" id="fu-item-2-tip" aria-hidden="true"><span class="rux--popover-content rux--tooltip-content">too-large.zip</span><span class="rux--popover-caret"></span></span>
+              <span class="rux--popover" role="tooltip" id="fu-item-2-tip" aria-hidden="true"><span class="rux--popover-content rux--tooltip-content">every-export-since-the-workspace-opened.zip</span><span class="rux--popover-caret"></span></span>
             </span>
           </div>
           <div>
-            <span class="rux--file__state-container"><svg class="rux--file-invalid" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg><button type="button" class="rux--file-close" aria-label="Delete file - too-large.zip" aria-describedby="fu-item-2-error"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button></span>
+            <span class="rux--file__state-container"><svg class="rux--file-invalid" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg><button type="button" class="rux--file-close" aria-label="Delete file - every-export-since-the-workspace-opened.zip" aria-describedby="fu-item-2-error"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button></span>
           </div>
           <div class="rux--form-requirement" role="alert" id="fu-item-2-error">
             <div class="rux--form-requirement__title">File exceeds 500 KB</div>
@@ -92,13 +94,13 @@
           <div class="rux--file-filename-container-wrap">
             <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--tooltip rux--file-filename-tooltip">
               <div class="rux--tooltip-trigger__wrapper">
-                <button type="button" class="rux--file-filename-button" aria-labelledby="fu-item-3-tip"><p class="rux--file-filename-button">archive-2019.tar</p></button>
+                <button type="button" class="rux--file-filename-button" aria-labelledby="fu-item-3-tip"><p class="rux--file-filename-button">archive-of-every-upload-made-in-2019.tar</p></button>
               </div>
-              <span class="rux--popover" role="tooltip" id="fu-item-3-tip" aria-hidden="true"><span class="rux--popover-content rux--tooltip-content">archive-2019.tar</span><span class="rux--popover-caret"></span></span>
+              <span class="rux--popover" role="tooltip" id="fu-item-3-tip" aria-hidden="true"><span class="rux--popover-content rux--tooltip-content">archive-of-every-upload-made-in-2019.tar</span><span class="rux--popover-caret"></span></span>
             </span>
           </div>
           <div>
-            <span class="rux--file__state-container"><button type="button" class="rux--file-close" aria-label="Delete file - archive-2019.tar"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button></span>
+            <span class="rux--file__state-container"><button type="button" class="rux--file-close" aria-label="Delete file - archive-of-every-upload-made-in-2019.tar"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button></span>
           </div>
         </span>
       </div>

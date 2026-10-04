@@ -1202,26 +1202,6 @@
   display: flex;
   flex-wrap: wrap;
 }
-/* A NOTIFICATION'S WARNING GLYPH, wherever it lands on a pale ground. Carbon
-   draws it in the support yellow, which is a light colour: on the inverse slab
-   the dark themes give a notification it reads 1.5 to 2.7 against its own
-   background, and on the pale tint the light themes give the low-contrast
-   variant, 1.5. A mark needs 3. Ant-dark and geist-dark are not here: their
-   notification is a dark tint, where the light yellow is already right. Mixing the theme's own yellow 60% into its own
-   dark ink keeps the hue and clears it everywhere, 3.46 at worst, and invents
-   no colour. The ink differs by theme only because it is whichever of
-   text-inverse and text-primary is the dark one there. The variants left out
-   already pass: their ground is dark, and the light yellow is right on it. */
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"])
-  :is(.rux--inline-notification, .rux--toast-notification):not(.rux--inline-notification--low-contrast, .rux--toast-notification--low-contrast):is(.rux--inline-notification--warning, .rux--inline-notification--warning-alt, .rux--toast-notification--warning, .rux--toast-notification--warning-alt)
-  :is(.rux--inline-notification__icon, .rux--toast-notification__icon) {
-  fill: color-mix(in srgb, var(--rux-support-warning) 60%, var(--rux-text-inverse));
-}
-:is([data-theme="white"], [data-theme="g10"])
-  :is(.rux--inline-notification--low-contrast, .rux--toast-notification--low-contrast):is(.rux--inline-notification--warning, .rux--inline-notification--warning-alt, .rux--toast-notification--warning, .rux--toast-notification--warning-alt)
-  :is(.rux--inline-notification__icon, .rux--toast-notification__icon) {
-  fill: color-mix(in srgb, var(--rux-support-warning) 60%, var(--rux-text-primary));
-}
 /* THE ROUNDED THEMES' NOTIFICATIONS. Both draw an alert as a tint of its own
    hue inside a 1px border, whether or not it carries an action: Ant's as
    these rules have it, the border in the hue and the text in the page's own

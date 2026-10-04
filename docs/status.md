@@ -9,6 +9,8 @@ done and how.
 - **Screen-reader pass.** Toggle, modal and popover are not heard yet, two
   problems are open, and five controls need hearing again. The list is in
   `design/docs/screen-reader-pass.md`.
+- **ant-dark's menu is not compared with Ant's.** Its Dropdown and Menu pages
+  have not been measured; every other ant-dark shape is read from Ant's own.
 
 ## Scheduler
 

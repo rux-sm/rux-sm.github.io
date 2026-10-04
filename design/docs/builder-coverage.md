@@ -189,7 +189,7 @@ _73 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 2
 | `combo-box` | combo-box, list-box, text-input | — | 2 | — | — | form-controls, list-box | no |
 | `combo-button` | button, combo-button, menu | — | 4 | — | — | guidebanner, menu | no |
 | `contained-list` | button, contained-list | 1 | 2 | 5 | 1 | guidebanner | yes |
-| `content-switcher` | button, content-switcher | 1 | 4 | 3 | 0 | guidebanner | yes |
+| `content-switcher` | button, content-switcher | 1 | 4 | 3 | 0 | content-switcher, guidebanner | yes |
 | `copy-button` | button, copy-button, popover, tooltip | — | 2 | — | — | coachmark, copy-button, guidebanner, popover, tag-overflow | no |
 | `date-picker` | button, date-picker, form | — | 9 | — | — | date-picker, guidebanner | no |
 | `dialog` | button, dialog | — | 2 | — | — | guidebanner | no |

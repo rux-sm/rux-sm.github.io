@@ -243,6 +243,81 @@
     click(first);
   })();
 
+  // ── content switcher: a tablist with no panels, where selection follows focus
+  (() => {
+    const root = q('#content-switcher');
+    const SEL = 'rux--content-switcher--selected';
+    const all = root ? [...root.querySelectorAll('.rux--content-switcher[role="tablist"]')] : [];
+    const enabled = sw => [...sw.querySelectorAll('.rux--content-switcher-btn')].filter(o => !o.disabled);
+    const sw = all.find(s => !s.matches('.rux--content-switcher--icon-only') && enabled(s).length > 1);
+    if (!sw) return skip('content-switcher', 'selecting an option deselects the previous one',
+      'no content switcher with two enabled options on this page');
+    const opts = enabled(sw);
+    const first = opts.find(o => o.classList.contains(SEL)) || opts[0];
+    const other = opts.find(o => o !== first);
+    const state = () => opts.map(o => `${o.getAttribute('aria-selected')}/${o.tabIndex}${o.classList.contains(SEL) ? '/sel' : ''}`);
+
+    let heard = 0;
+    const hear = () => { heard += 1; };
+    sw.addEventListener('rux:content-switcher-selected', hear);
+    click(other);
+    record('content-switcher', 'selecting an option deselects the previous one',
+      other.classList.contains(SEL) && other.getAttribute('aria-selected') === 'true'
+        && !first.classList.contains(SEL) && first.getAttribute('aria-selected') === 'false',
+      `options=[${state()}]`);
+    record('content-switcher', 'exactly one option is in the tab order',
+      opts.filter(o => o.tabIndex === 0).length === 1 && other.tabIndex === 0,
+      `options=[${state()}]`);
+    click(other);
+    record('content-switcher', 'the event fires when the selection changes, and only then',
+      heard === 1, `heard ${heard} event(s) after two clicks on one option`);
+    sw.removeEventListener('rux:content-switcher-selected', hear);
+
+    // THE ARROWS WRAP, which is the difference from a combobox and the same as
+    // the tabs: ArrowRight on the last option lands on the first.
+    const last = opts[opts.length - 1];
+    click(last);
+    key(last, 'ArrowRight');
+    record('content-switcher', 'ArrowRight on the last option wraps to the first',
+      opts[0].classList.contains(SEL) && document.activeElement === opts[0],
+      `options=[${state()}], focus on option ${opts.indexOf(document.activeElement)}`);
+    key(opts[0], 'ArrowLeft');
+    record('content-switcher', 'ArrowLeft on the first option wraps to the last',
+      last.classList.contains(SEL) && document.activeElement === last,
+      `options=[${state()}], focus on option ${opts.indexOf(document.activeElement)}`);
+    // Carbon's switcher does not answer Home, which its tabs do.
+    key(last, 'Home');
+    record('content-switcher', 'Home moves nothing', last.classList.contains(SEL), `options=[${state()}]`);
+    click(first);
+
+    // The icon-only variant: the wrapper carries the state Carbon's divider
+    // rules read, so it has to move with the option.
+    const W = 'rux--content-switcher-popover--selected';
+    const icon = all.find(s => s.matches('.rux--content-switcher--icon-only') && enabled(s).length > 1);
+    if (!icon) {
+      skip('content-switcher', "an icon-only option's wrapper follows the selection", 'no icon-only switcher with two enabled options on this page');
+    } else {
+      const io = enabled(icon);
+      const was = io.find(o => o.classList.contains(SEL)) || io[0];
+      const next = io.find(o => o !== was);
+      click(next);
+      const wraps = io.map(o => o.closest('.rux--content-switcher-popover__wrapper'));
+      record('content-switcher', "an icon-only option's wrapper follows the selection",
+        wraps.every(Boolean) && wraps.filter(w => w.classList.contains(W)).length === 1
+          && next.closest('.rux--content-switcher-popover__wrapper').classList.contains(W),
+        `wrappers selected=[${wraps.map(w => w?.classList.contains(W))}]`);
+      click(was);
+    }
+
+    // A switcher whose options are all disabled offers no tab stop.
+    const dead = all.find(s => enabled(s).length === 0);
+    if (!dead) skip('content-switcher', 'a disabled switcher has no tab stop', 'no fully disabled switcher on this page');
+    else {
+      const stops = [...dead.querySelectorAll('.rux--content-switcher-btn')].map(o => o.tabIndex);
+      record('content-switcher', 'a disabled switcher has no tab stop', stops.every(t => t === -1), `tabindex=[${stops}]`);
+    }
+  })();
+
   // ── accordion: the attribute and the class move together ──────────────────
   (() => {
     const root = fixture('#accordion');
@@ -925,7 +1000,9 @@
     for (const mark of marks) {
       const container = mark.querySelector('.rux--popover-container');
       const tagline = mark.querySelector('.rux--coachmark-tagline');
-      const closer = mark.querySelector('.rux--coachmark--content-header button');
+      // The floating hint's header opens with its drag handle, which is a
+      // button too and closes nothing.
+      const closer = mark.querySelector('.rux--coachmark--content-header button:not(.rux--coachmark--content-header--drag-icon)');
       if (!container || !closer) continue;
       const wasOpen = has(container, 'rux--popover--open');
       if (!wasOpen) window.Rux.popover.open(container);

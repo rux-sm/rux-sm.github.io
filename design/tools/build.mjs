@@ -126,11 +126,11 @@ const comps = compiled().size;
 // comment on purpose; a rule whose only route to compliance is deleting the
 // reasoning is a rule working against itself.
 //
-// 80 KB against today's ~75 leaves room for modules that make Carbon's
-// components work, which is what the last four were. What reaches it is
+// 90 KB against today's ~81 leaves room for modules that make Carbon's
+// components work, which is what every module here is. What reaches it is
 // somebody vendoring a library into js/, which is the one growth the scope
 // rule would not already have caught.
-const JS_TRIPWIRE_KB = 80;
+const JS_TRIPWIRE_KB = 90;
 
 // THE CSS TRIPWIRE, 2.1's, AND IT IS ENFORCED HERE FROM 2026-08-31. It read
 // 75 KB and lived in PROSE ONLY -- nothing computed it, which is the exact

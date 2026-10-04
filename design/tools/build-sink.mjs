@@ -119,6 +119,7 @@ ${sections.join('\n\n')}
 <script src="js/date-picker.js"></script>
 <script src="js/copy-button.js"></script>
 <script src="js/tabs.js"></script>
+<script src="js/content-switcher.js"></script>
 <script src="js/accordion.js"></script>
 <script src="js/data-table.js"></script>
 <script src="js/form-controls.js"></script>

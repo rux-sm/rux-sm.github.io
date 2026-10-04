@@ -152,7 +152,7 @@ A cut only reclaims weight when **everything** above a component goes with it.
 | `fluid-dropdown` | **KEEP** | 107 | 307 | 0 | fluid style (see below). **Compiled and not demoed:** its fluid form is the default markup plus the fluid wrapper, so a specimen would repeat a section the sink already carries |
 | `ai-label` | **KEEP** | 99 | 242 | 0 | a capture renders it |
 | `slug` | **DEFER** | 99 | 242 | 1 | compiles as `ai-label`'s paired selectors, but no story renders the `slug` classes themselves. A missing capture, not a rejection |
-| `content-switcher` | **KEEP** | 93 | 220 | 0 | a capture renders it; +1.7 KB gzipped |
+| `content-switcher` | **KEEP** | 93 | 220 | 0 | a capture renders it; +1.7 KB gzipped. `js/content-switcher.js` moves the selection on a click or an arrow and says so with `rux:content-switcher-selected`; it switches no content, which stays the page's own, as Carbon leaves it to `onChange` |
 | `code-snippet` | **KEEP** | 86 | 211 | 0 | a capture renders it |
 | `contained-list` | **KEEP** | 86 | 232 | 0 | a capture renders it |
 | `dialog` | **KEEP** | 76 | 185 | 0 | a capture renders it |

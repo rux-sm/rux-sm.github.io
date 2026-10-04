@@ -201,7 +201,7 @@
       "follows": null,
       "deps": [],
       "frameDeps": [],
-      "line": 26,
+      "line": 30,
       "provenance": "PROVENANCE: rendered-dom · components-contentswitcher--default, --icon-only, --low-contrast and the sm/lg recipes, 2026-08-28",
       "grid": null,
       "column": null,

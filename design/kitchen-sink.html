@@ -7305,6 +7305,10 @@
       other tab -1, a roving tabindex check-a11y read as "3 of 3 tab stops"
       before it was written.
 
+      js/content-switcher.js makes these work: a click or an arrow moves the
+      selection, and the switcher announces it with an event. It switches no
+      content, because Carbon's does not; what shows is the page's own.
+
       EVERY nesting finding here is one decision, reported once per class. The
       reference wraps this component's trigger in an icon-tooltip, so its buttons
       sit inside `tooltip-trigger__wrapper`; the sink declines that chrome on the
@@ -9302,6 +9306,7 @@
 <script src="js/date-picker.js"></script>
 <script src="js/copy-button.js"></script>
 <script src="js/tabs.js"></script>
+<script src="js/content-switcher.js"></script>
 <script src="js/accordion.js"></script>
 <script src="js/data-table.js"></script>
 <script src="js/form-controls.js"></script>

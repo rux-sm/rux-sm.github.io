@@ -1,9 +1,9 @@
-commit   4de84ce94f300c103cf86a0de420b10692bd9915
-date     2026-10-04T18:56:56Z
-subject  docs(outbound): Write cancelling a shipment
+commit   71c89d7880170cef052690a34056bbc25c93ee5b
+date     2026-10-04T19:06:43Z
+subject  docs(warehousing): Read blocking and HU guides
 contract 15 
 tier     export
-sha256   65c3b97508d1c12016eb33302e6e64da5d0c04fe9c65fa7914849e318d3512a9
+sha256   d5ad483ecb93aa46ee74982f7a82977f3ae14ab3559ce93d327b542908727361
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

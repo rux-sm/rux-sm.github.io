@@ -4,7 +4,7 @@
   "kind": "reference",
   "id": "order-to-shipment-overview",
   "title": "Demand to shipment",
-  "updated": "2026-10-03",
+  "updated": "2026-10-04",
   "status": "draft",
   "sources": [
     "cppat1210m000",
@@ -1976,6 +1976,40 @@
                 }
               ],
               "text": "Do - confirm the planned orders first, then run it once per supply source"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Setting"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "em",
+                  "v": "Default Supply Source"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd1550m000",
+                  "name": "Items by Site"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Master Data ➔ Items ➔ Items by Site"
+                }
+              ],
+              "text": "Setting — Default Supply Source in Items by Site (tcibd1550m000), Master Data ➔ Items ➔ Items by Site"
             },
             {
               "tokens": [
@@ -5249,6 +5283,32 @@
             "text": "confirm the planned orders first, then run it once per supply source"
           }
         ],
+        "setting": {
+          "tokens": [
+            {
+              "t": "em",
+              "v": "Default Supply Source"
+            },
+            {
+              "t": "text",
+              "v": " in "
+            },
+            {
+              "t": "session",
+              "code": "tcibd1550m000",
+              "name": "Items by Site"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Master Data ➔ Items ➔ Items by Site"
+            }
+          ],
+          "text": "Default Supply Source in Items by Site (tcibd1550m000), Master Data ➔ Items ➔ Items by Site"
+        },
         "opens": [
           {
             "walkthrough": "demand-to-shipment-via-planning",

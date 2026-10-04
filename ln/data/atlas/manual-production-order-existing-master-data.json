@@ -8,7 +8,7 @@
     "Manufacturing",
     "Warehousing"
   ],
-  "updated": "2026-09-02",
+  "updated": "2026-10-04",
   "status": "draft",
   "summary": "create a quantity-one manual production order from an existing finished item, existing components, an existing BOM, and an existing routing; verify the generated operations and estimated materials; release the order; issue material to the job shop; report the operation(s) complete; and confirm the finished item is received into the warehouse.",
   "order": 4,
@@ -3138,6 +3138,45 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "The issue stops short and a shortage report prints"
+                }
+              ],
+              "text": "The issue stops short and a shortage report prints"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A component's stock is short and negative inventory is not allowed. The quantity waits in "
+                },
+                {
+                  "t": "field",
+                  "v": "To Issue by Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": "; restock, then process the warehousing order by hand — Infor LN User Guide for Manufacturing, p. 89"
+                }
+              ],
+              "text": "A component's stock is short and negative inventory is not allowed. The quantity waits in To Issue by Warehouse; restock, then process the warehousing order by hand — Infor LN User Guide for Manufacturing, p. 89"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "Generate/Release Outbound Advice are missing or already actioned"
                 }
               ],
@@ -3168,6 +3207,46 @@
                 }
               ],
               "text": "Do not assume a fault. Direct Process Warehouse Order Line may be automatic for this material — confirm in Activities by Warehousing Order (whinh2104m000) before troubleshooting further"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order cannot be reported completed"
+                }
+              ],
+              "text": "The order cannot be reported completed"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An earlier operation is not completed, an operation is blocked, or an inspection order is still open — Infor LN User Guide for Manufacturing, pp. 20 and 23; "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0130m000",
+                  "name": "Report Operations Completed"
+                },
+                {
+                  "t": "text",
+                  "v": " §4 has each rule"
+                }
+              ],
+              "text": "An earlier operation is not completed, an operation is blocked, or an inspection order is still open — Infor LN User Guide for Manufacturing, pp. 20 and 23; Report Operations Completed (tisfc0130m000) §4 has each rule"
             }
           ]
         },

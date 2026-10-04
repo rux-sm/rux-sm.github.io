@@ -924,6 +924,12 @@
       "route": "Warehousing ➔ Inventory 360"
     },
     {
+      "code": "whwmd4300m200",
+      "name": "Inventory 360 - Graphical View",
+      "purpose": "Inventory 360 with a graph and four exception tiles, which count the items heading for trouble and filter the list to them.",
+      "route": "Warehousing ➔ Inventory 360 - Graphical View"
+    },
+    {
       "code": "whwmd4600m000",
       "name": "Item - Warehousing",
       "purpose": "The warehousing detail behind one item — location control, inventory-variance handling, and supply settings.",

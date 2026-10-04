@@ -3926,6 +3926,41 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "Shipment will not confirm, and a validation message shows"
+                }
+              ],
+              "text": "Shipment will not confirm, and a validation message shows"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Where the order type validates shipments, a message marked Blocking has to be corrected first, and reopening a frozen shipment means it is validated again — Infor LN Warehousing User Guide for the Outbound and Shipment Goods Flows, p. 146. "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Where the order type validates shipments, a message marked Blocking has to be corrected first, and reopening a frozen shipment means it is validated again — Infor LN Warehousing User Guide for the Outbound and Shipment Goods Flows, p. 146. Not documented for this release."
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "Shipment will not confirm, handling units involved"
                 }
               ],
@@ -3943,10 +3978,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " is set on a linked line, the handling units must be confirmed first"
+                  "v": " is set on a linked line, the handling units must be confirmed first. Whether the line then confirms by itself is an order-type setting, Confirm Shipment Lines when confirming Handling Units; with it cleared the line waits, Frozen, to be confirmed by hand — Infor LN Warehousing User Guide for Handling Units, p. 34"
                 }
               ],
-              "text": "If Handling Unit Based Confirmation is set on a linked line, the handling units must be confirmed first"
+              "text": "If Handling Unit Based Confirmation is set on a linked line, the handling units must be confirmed first. Whether the line then confirms by itself is an order-type setting, Confirm Shipment Lines when confirming Handling Units; with it cleared the line waits, Frozen, to be confirmed by hand — Infor LN Warehousing User Guide for Handling Units, p. 34"
             }
           ]
         }
@@ -4398,5 +4433,5 @@
     }
   ],
   "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
-  "openIssues": 6
+  "openIssues": 7
 }

@@ -144,7 +144,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-ln-commit="4de84ce94f300c103cf86a0de420b10692bd9915">
+<main id="main-content" class="rux--content" data-ln-commit="71c89d7880170cef052690a34056bbc25c93ee5b">
 <div class="ln-app">
   <section class="ln-screen" data-screen="home">
     <h1 class="ln-ask">What are you doing?</h1>
@@ -166,7 +166,7 @@
       <a class="rux--tile rux--tile--clickable" href="./?s=transfer-item-between-warehouses"><b>Warehouse transfer</b><span class="ln-quiet">7 tasks</span></a>
       <a class="rux--tile rux--tile--clickable" href="./?s=ship-from-stock"><b>Ship from stock</b><span class="ln-quiet">7 tasks</span></a>
       <a class="rux--tile rux--tile--clickable" href="./?s=demand-to-shipment-via-planning"><b>Plan to shipment</b><span class="ln-quiet">7 tasks</span></a>
-      <a class="rux--tile rux--tile--clickable ln-waiting" href="./?v=confirm"><b>Still to confirm</b><span class="ln-quiet" data-waiting="36">36 tasks</span></a>
+      <a class="rux--tile rux--tile--clickable ln-waiting" href="./?v=confirm"><b>Still to confirm</b><span class="ln-quiet" data-waiting="41">41 tasks</span></a>
     </div>
   </section>
   <section class="ln-screen" data-screen="path" data-s="create-basic-test-items-and-defaults" hidden>
@@ -1172,7 +1172,7 @@
     </ul>
     <ul class="ln-list" data-panel="cases" hidden>
       <li><b>Change or cancel an order line</b><p>Change or cancel a sales order line after it is entered.</p>
-        <ol class="ln-side"><li>change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed</li><li>if the change is allowed, the outbound line follows it, and its advice and picking list are deleted</li><li>if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order</li><li>a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
+        <ol class="ln-side"><li>change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed</li><li>if the change is allowed, the outbound line follows it, and its advice and picking list are deleted</li><li>if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order</li><li>a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment</li><li>cancelling a line that is already advised asks whether its advice is deleted; on yes the line ends as Shipped with a shipped quantity of 0</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
       <li><b>Change a line's date or quantity</b><p>Move a sales order line's delivery date, or change its quantity, once the line is split into delivery lines.</p>
         <ol class="ln-side"><li>with no delivery lines linked, change the planned delivery date or the ordered quantity on the order line</li><li>with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning</li><li>changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead</li><li>where the CTP check for sales is on, LN refuses a new date the item is not available on</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
       <li><b>Rush an order</b><p>Give a sales order, or one line of it, the highest priority through the warehouse.</p>
@@ -1286,6 +1286,7 @@
     <div class="ln-step__more">
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
+      <a class="rux--link" href="#main-content" data-open="cases">A different case</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>The run reads every demand inside the horizon, nets it against stock and existing supply, and generates planned orders for the shortfall, multi-level through the BOM when child items are included. With pegging relations updated it also records which demand each planned order exists to serve, which is what <a class="rux--link" href="./?s=run-order-planning-for-one-item&amp;t=5">task 6</a> reads.</p></div>
@@ -1293,6 +1294,12 @@
       <li><b>The run plans the parent but not a component</b><p>The component has no planning data of its own. Step <a class="rux--link" href="./?s=run-order-planning-for-one-item&amp;t=0&amp;k=6">task 1, step 6</a> — MRP skips it silently</p></li>
       <li><b>The run produces nothing at all, or nothing propagates to the parent</b><p>Check which item you launched the generation on. Running it from a component does not traverse upward — re-run from the top-level (finished) item, per step <a class="rux--link" href="./?s=run-order-planning-for-one-item&amp;t=3&amp;k=1">task 4, step 1</a></p></li>
       <li><b>A component was given planning data and still does not appear</b><p>It may be correctly absent — planning proposes supply only for what stock does not cover. Read the component's own <span class="ln-t-named">Item Order Plan</span> and its on-hand before assuming the fix failed. Observed unexplained on 2026-08-25 </p></li>
+    </ul>
+    <ul class="ln-list" data-panel="cases" hidden>
+      <li><b>Generate Master Planning</b><p>Work out a supply plan per period for the items planned by a master plan.</p>
+        <ol class="ln-side"><li>run it for a range of plan items; a supply plan is made only inside each item's master-planning horizon</li><li>production and purchase count as sources only where the item's Production Plan or Purchase Plan is set to Generate or Always Update</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
+      <li><b>Exception Messages by Planner</b><p>List what planning says about the orders that already exist.</p>
+        <ol class="ln-side"><li>planning compares the receipts that exist with what is needed, and raises a message where they differ</li><li>a reschedule message asks for a receipt earlier or later, and a cancel message marks a receipt nothing needs</li><li>a tolerance in days, set per message type, keeps small shifts quiet</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
     </ul>
     <div class="ln-nav">
       <a class="rux--btn rux--btn--secondary" href="./" data-prev>Back</a>
@@ -1348,12 +1355,19 @@
     <div class="ln-step__more">
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
+      <a class="rux--link" href="#main-content" data-open="cases">A different case</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>One planned order plays two roles: it is supply on the parent's plan and demand on the component's, and the component's own plan has already answered it. Planned quantities equal the raw shortfall only when the item's ordering data imposes no lot-size rule; a minimum or a multiple changes the number before you see it.</p></div>
     <ul class="ln-list" data-panel="wrong" hidden>
       <li><b>A planned quantity does not equal the raw shortfall</b><p>Order-quantity rules in <a class="rux--link" href="./?c=tcibd2100m000"><span class="ln-t-named">Items - Ordering</span></a> <span class="ln-t-exact">tcibd2100m000</span> round it — &quot;Lot sizing&quot;, <span class="ln-t-exact">cpordplanug</span> p. 21</p></li>
       <li><b>An expected planned purchase order is missing entirely</b><p>If the item is a purchase schedule item, supply transfers straight to Purchase Control and no planned purchase order is created — <a class="rux--link" href="./?c=cprrp1100m000"><span class="ln-t-exact">cprrp1100m000</span></a> help</p></li>
+    </ul>
+    <ul class="ln-list" data-panel="cases" hidden>
+      <li><b>Generate Master Planning</b><p>Work out a supply plan per period for the items planned by a master plan.</p>
+        <ol class="ln-side"><li>run it for a range of plan items; a supply plan is made only inside each item's master-planning horizon</li><li>production and purchase count as sources only where the item's Production Plan or Purchase Plan is set to Generate or Always Update</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
+      <li><b>Exception Messages by Planner</b><p>List what planning says about the orders that already exist.</p>
+        <ol class="ln-side"><li>planning compares the receipts that exist with what is needed, and raises a message where they differ</li><li>a reschedule message asks for a receipt earlier or later, and a cancel message marks a receipt nothing needs</li><li>a tolerance in days, set per message type, keeps small shifts quiet</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
     </ul>
     <div class="ln-nav">
       <a class="rux--btn rux--btn--secondary" href="./" data-prev>Back</a>
@@ -1404,11 +1418,18 @@
     <div class="ln-step__more">
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
+      <a class="rux--link" href="#main-content" data-open="cases">A different case</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>The pegging tree walks the relations the run recorded: upstream, what will supply this demand; downstream, what demand caused this order. The tree exists only if pegging relations were generated, which in this environment happens on every run because the option is locked on.</p></div>
     <ul class="ln-list" data-panel="wrong" hidden>
       <li><b>The pegging tree is empty</b><p>Pegging relations were not generated, or the demand lies beyond the <a class="rux--link" href="./?c=cprpd0100m000"><span class="ln-t-named">Pegging Horizon</span></a> <span class="ln-t-exact">cprpd0100m000</span>. See the <a class="rux--link" href="./?s=run-order-planning-for-one-item&amp;t=5">task 6</a> Prerequisite</p></li>
+    </ul>
+    <ul class="ln-list" data-panel="cases" hidden>
+      <li><b>Generate Master Planning</b><p>Work out a supply plan per period for the items planned by a master plan.</p>
+        <ol class="ln-side"><li>run it for a range of plan items; a supply plan is made only inside each item's master-planning horizon</li><li>production and purchase count as sources only where the item's Production Plan or Purchase Plan is set to Generate or Always Update</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
+      <li><b>Exception Messages by Planner</b><p>List what planning says about the orders that already exist.</p>
+        <ol class="ln-side"><li>planning compares the receipts that exist with what is needed, and raises a message where they differ</li><li>a reschedule message asks for a receipt earlier or later, and a cancel message marks a receipt nothing needs</li><li>a tolerance in days, set per message type, keeps small shifts quiet</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
     </ul>
     <div class="ln-nav">
       <a class="rux--btn rux--btn--secondary" href="./" data-prev>Back</a>
@@ -1990,6 +2011,8 @@
         <ol class="ln-side"><li>create the production order</li><li>release it</li></ol></li>
       <li><b>Report Operations</b><p>Issue the material and report the work done.</p>
         <ol class="ln-side"><li>issue the material</li><li>report the operations and the order completed</li></ol></li>
+      <li><b>Backflush Materials and Hours</b><p>Let LN issue the material by itself, as the work is reported.</p>
+        <ol class="ln-side"><li>a backflushed material is issued when a quantity of the end product is reported completed or rejected</li><li>only the materials linked to the operations reported are issued; on an order with no operations, all of them are</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
     </ul>
     <div class="ln-nav">
       <a class="rux--btn rux--btn--secondary" href="./" data-prev>Back</a>
@@ -2049,6 +2072,8 @@
         <ol class="ln-side"><li>create the production order</li><li>release it</li></ol></li>
       <li><b>Report Operations</b><p>Issue the material and report the work done.</p>
         <ol class="ln-side"><li>issue the material</li><li>report the operations and the order completed</li></ol></li>
+      <li><b>Backflush Materials and Hours</b><p>Let LN issue the material by itself, as the work is reported.</p>
+        <ol class="ln-side"><li>a backflushed material is issued when a quantity of the end product is reported completed or rejected</li><li>only the materials linked to the operations reported are issued; on an order with no operations, all of them are</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
     </ul>
     <div class="ln-nav">
       <a class="rux--btn rux--btn--secondary" href="./" data-prev>Back</a>
@@ -2102,6 +2127,8 @@
         <ol class="ln-side"><li>create the production order</li><li>release it</li></ol></li>
       <li><b>Report Operations</b><p>Issue the material and report the work done.</p>
         <ol class="ln-side"><li>issue the material</li><li>report the operations and the order completed</li></ol></li>
+      <li><b>Backflush Materials and Hours</b><p>Let LN issue the material by itself, as the work is reported.</p>
+        <ol class="ln-side"><li>a backflushed material is issued when a quantity of the end product is reported completed or rejected</li><li>only the materials linked to the operations reported are issued; on an order with no operations, all of them are</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
     </ul>
     <div class="ln-nav">
       <a class="rux--btn rux--btn--secondary" href="./" data-prev>Back</a>
@@ -2158,6 +2185,7 @@
     <div class="ln-why" data-panel="why" hidden><p>Material issue turns the estimated quantities into an outbound warehousing order from the raw-material warehouse to the work center, and each issued quantity books a WIP transaction. That first WIP transaction is what moves the order to <strong>Active</strong>; release alone does not. How much of the outbound procedure LN runs for you depends on two check boxes on the material line.</p></div>
     <ul class="ln-list" data-panel="wrong" hidden>
       <li><b>The material line stays blocked / <span class="ln-t-named">To Issue by Warehouse</span> never appears</b><p>Run <a class="rux--link" href="./?c=tisfc0207m000"><span class="ln-t-named">Initiate Inventory Issue</span></a> <span class="ln-t-exact">tisfc0207m000</span> manually; if still blocked, stop and record what was observed </p></li>
+      <li><b>The issue stops short and a shortage report prints</b><p>A component's stock is short and negative inventory is not allowed. The quantity waits in <span class="ln-t-named">To Issue by Warehouse</span>; restock, then process the warehousing order by hand — Infor LN User Guide for Manufacturing, p. 89</p></li>
       <li><b>Generate/Release Outbound Advice are missing or already actioned</b><p>Do not assume a fault. <span class="ln-t-named">Direct Process Warehouse Order Line</span> may be automatic for this material — confirm in <a class="rux--link" href="./?c=whinh2104m000"><span class="ln-t-named">Activities by Warehousing Order</span></a> <span class="ln-t-exact">whinh2104m000</span> before troubleshooting further</p></li>
     </ul>
     <ul class="ln-list" data-panel="cases" hidden>
@@ -2166,6 +2194,8 @@
         <ol class="ln-side"><li>create the production order</li><li>release it</li></ol></li>
       <li><b>Report Operations</b><p>Issue the material and report the work done.</p>
         <ol class="ln-side"><li>issue the material</li><li>report the operations and the order completed</li></ol></li>
+      <li><b>Backflush Materials and Hours</b><p>Let LN issue the material by itself, as the work is reported.</p>
+        <ol class="ln-side"><li>a backflushed material is issued when a quantity of the end product is reported completed or rejected</li><li>only the materials linked to the operations reported are issued; on an order with no operations, all of them are</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
       <li><b><span class="ln-t-named">Fully automatic material issue</span></b><p>If <span class="ln-t-named">Direct Initiate Inventory Issue</span> and <span class="ln-t-named">Direct Process Warehouse Order Line</span> are both selected for the material, steps <a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=4&amp;k=3">task 5, step 3</a>–<a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=4&amp;k=7">task 5, step 7</a> complete themselves once the order is released; the phase structure does not change</p></li>
     </ul>
     <div class="ln-nav">
@@ -2224,6 +2254,7 @@
     </div>
     <div class="ln-why" data-panel="why" hidden><p>Reporting the last operation complete records the quantity produced and, depending on a parameter, posts it to inventory silently, not at all, or after asking. The order becomes <strong>Production Completed</strong> when reported and <strong>Completed</strong> only when Warehousing finishes the inbound receipt, so the two statuses are a handoff, not a failure. The phase ends with an inventory read because the Manufacturing-side status alone does not prove the stock arrived.</p></div>
     <ul class="ln-list" data-panel="wrong" hidden>
+      <li><b>The order cannot be reported completed</b><p>An earlier operation is not completed, an operation is blocked, or an inspection order is still open — Infor LN User Guide for Manufacturing, pp. 20 and 23; <a class="rux--link" href="./?c=tisfc0130m000"><span class="ln-t-named">Report Operations Completed</span></a> <span class="ln-t-exact">tisfc0130m000</span> §4 has each rule</p></li>
       <li><b><span class="ln-t-named">Report Orders Completed</span> does not open after the last operation</b><p>Stop and record the operation's status and any message; this dialog's trigger condition is not documented </p></li>
       <li><b><span class="ln-t-named">Quantity Delivered</span> stays at 0 or finished-item on-hand does not increase</b><p>The production receipt warehousing order may need manual processing, like <a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=4">task 5</a>'s issue order. Check <a class="rux--link" href="./?c=whinh2100m000"><span class="ln-t-named">Warehousing Orders</span></a> <span class="ln-t-exact">whinh2100m000</span> for an open receipt order before assuming an error </p></li>
     </ul>
@@ -2233,6 +2264,8 @@
         <ol class="ln-side"><li>create the production order</li><li>release it</li></ol></li>
       <li><b>Report Operations</b><p>Issue the material and report the work done.</p>
         <ol class="ln-side"><li>issue the material</li><li>report the operations and the order completed</li></ol></li>
+      <li><b>Backflush Materials and Hours</b><p>Let LN issue the material by itself, as the work is reported.</p>
+        <ol class="ln-side"><li>a backflushed material is issued when a quantity of the end product is reported completed or rejected</li><li>only the materials linked to the operations reported are issued; on an order with no operations, all of them are</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
       <li><b><span class="ln-t-named">More than one operation</span></b><p>Confirm every expected operation in routing sequence in <a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=2">task 3</a>; report each one complete in <a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=5">task 6</a> (step <a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=5&amp;k=4">task 6, step 4</a>); the phase structure does not change</p></li>
     </ul>
     <div class="ln-nav">
@@ -2771,7 +2804,7 @@
     <ul class="ln-list" data-panel="cases" hidden>
       <li><b>Stock promised to other orders</b><p>Decide silently how much of on-hand is free for this order, which is the available-to-promise check. The figure decision 2 really tests is <strong>projected inventory</strong>, time-phased, not the on-hand total — Item Order Plan §<a class="rux--link" href="./?s=ship-from-stock&amp;t=2&amp;k=1">task 3, step 1</a>. <strong>Not documented for this release.</strong></p><p>Read it on: <a class="rux--link" href="./?c=cprrp0520m000">Item Order Plan</a></p><p>Set in: <a class="rux--link" href="./?c=cprpd1100m000">Items - Planning</a></p></li>
       <li><b>Change or cancel an order line</b><p>Change or cancel a sales order line after it is entered.</p>
-        <ol class="ln-side"><li>change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed</li><li>if the change is allowed, the outbound line follows it, and its advice and picking list are deleted</li><li>if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order</li><li>a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
+        <ol class="ln-side"><li>change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed</li><li>if the change is allowed, the outbound line follows it, and its advice and picking list are deleted</li><li>if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order</li><li>a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment</li><li>cancelling a line that is already advised asks whether its advice is deleted; on yes the line ends as Shipped with a shipped quantity of 0</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
       <li><b>Change a line's date or quantity</b><p>Move a sales order line's delivery date, or change its quantity, once the line is split into delivery lines.</p>
         <ol class="ln-side"><li>with no delivery lines linked, change the planned delivery date or the ordered quantity on the order line</li><li>with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning</li><li>changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead</li><li>where the CTP check for sales is on, LN refuses a new date the item is not available on</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
       <li><b>Rush an order</b><p>Give a sales order, or one line of it, the highest priority through the warehouse.</p>
@@ -3008,7 +3041,8 @@
     <div class="ln-why" data-panel="why" hidden><p>Freezing fixes the shipment's contents and confirming relieves inventory; the status is always derived from those two actions, never set by hand. Freezing is mandatory here, carried from the warehousing order type, and confirming is a one-way door: a correction from there needs a return shipment.</p></div>
     <ul class="ln-list" data-panel="wrong" hidden>
       <li><b>Shipment will not confirm</b><p>The line was never picked. Check the <span class="ln-t-named">Picked</span> column on Outbound Lines, then run <a class="rux--link" href="./?s=ship-from-stock&amp;t=4">task 5</a></p></li>
-      <li><b>Shipment will not confirm, handling units involved</b><p>If <span class="ln-t-named">Handling Unit Based Confirmation</span> is set on a linked line, the handling units must be confirmed first</p></li>
+      <li><b>Shipment will not confirm, and a validation message shows</b><p>Where the order type validates shipments, a message marked Blocking has to be corrected first, and reopening a frozen shipment means it is validated again — Infor LN Warehousing User Guide for the Outbound and Shipment Goods Flows, p. 146. <strong>Not documented for this release.</strong></p></li>
+      <li><b>Shipment will not confirm, handling units involved</b><p>If <span class="ln-t-named">Handling Unit Based Confirmation</span> is set on a linked line, the handling units must be confirmed first. Whether the line then confirms by itself is an order-type setting, Confirm Shipment Lines when confirming Handling Units; with it cleared the line waits, Frozen, to be confirmed by hand — Infor LN Warehousing User Guide for Handling Units, p. 34</p></li>
     </ul>
     <ul class="ln-list" data-panel="cases" hidden>
       <li><b>Shipped less than picked</b><p>Ship less than was picked; the rest becomes <em>Not Shipped Quantity</em> on the shipment line, and a backorder follows once the shipment is confirmed. <strong>Not documented for this release.</strong></p><p>Read it on: <a class="rux--link" href="./?c=whinh4131m000">Shipment Lines</a></p><p>Set in: Sales Order Parameters</p></li>
@@ -3189,7 +3223,7 @@
       <li><b>Planning data exists</b><p>Decide silently whether planning can see the item and every component beneath it.</p><p>Read it on: <a class="rux--link" href="./?c=cprpd1100m000">Items - Planning</a></p><p>Set in: <a class="rux--link" href="./?c=tcibd0501m100">Item</a></p></li>
       <li><b>Inside the order horizon</b><p>Decide silently whether the delivery date is near enough to plan. Counted in workdays.</p><p>Read it on: <a class="rux--link" href="./?c=cprrp0520m000">Item Order Plan</a></p><p>Set in: <a class="rux--link" href="./?c=cprpd1100m000">Items - Planning</a></p></li>
       <li><b>Change or cancel an order line</b><p>Change or cancel a sales order line after it is entered.</p>
-        <ol class="ln-side"><li>change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed</li><li>if the change is allowed, the outbound line follows it, and its advice and picking list are deleted</li><li>if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order</li><li>a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
+        <ol class="ln-side"><li>change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed</li><li>if the change is allowed, the outbound line follows it, and its advice and picking list are deleted</li><li>if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order</li><li>a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment</li><li>cancelling a line that is already advised asks whether its advice is deleted; on yes the line ends as Shipped with a shipped quantity of 0</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
       <li><b>Change a line's date or quantity</b><p>Move a sales order line's delivery date, or change its quantity, once the line is split into delivery lines.</p>
         <ol class="ln-side"><li>with no delivery lines linked, change the planned delivery date or the ordered quantity on the order line</li><li>with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning</li><li>changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead</li><li>where the CTP check for sales is on, LN refuses a new date the item is not available on</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
       <li><b>Rush an order</b><p>Give a sales order, or one line of it, the highest priority through the warehouse.</p>
@@ -3264,6 +3298,7 @@
     <div class="ln-step__more">
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
+      <a class="rux--link" href="#main-content" data-open="cases">A different case</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>MRP nets the demand against stock and generates a planned production order for the pairs, then, through the BOM, planned purchase orders for the rods the pairs need. The arithmetic in the pegging tree is the test that it did so correctly.</p></div>
@@ -3271,6 +3306,12 @@
       <li><b>The run plans the pair but not a component</b><p>The component has no planning data of its own. Step <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=0&amp;k=4">task 1, step 4</a> — MRP skips it silently</p></li>
       <li><b>A component has plan data and still produces nothing</b><p>It may be correctly absent — planning proposes supply only for what stock does not cover. Read its own Item Order Plan and on-hand </p></li>
       <li><b>The pegging tree is empty</b><p>Pegging relations were not generated, or the demand is beyond the Pegging Horizon in <a class="rux--link" href="./?c=cprpd0100m000"><span class="ln-t-named">Planning Parameters</span></a> <span class="ln-t-exact">cprpd0100m000</span></p></li>
+    </ul>
+    <ul class="ln-list" data-panel="cases" hidden>
+      <li><b>Generate Master Planning</b><p>Work out a supply plan per period for the items planned by a master plan.</p>
+        <ol class="ln-side"><li>run it for a range of plan items; a supply plan is made only inside each item's master-planning horizon</li><li>production and purchase count as sources only where the item's Production Plan or Purchase Plan is set to Generate or Always Update</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
+      <li><b>Exception Messages by Planner</b><p>List what planning says about the orders that already exist.</p>
+        <ol class="ln-side"><li>planning compares the receipts that exist with what is needed, and raises a message where they differ</li><li>a reschedule message asks for a receipt earlier or later, and a cancel message marks a receipt nothing needs</li><li>a tolerance in days, set per message type, keeps small shifts quiet</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
     </ul>
     <div class="ln-nav">
       <a class="rux--btn rux--btn--secondary" href="./" data-prev>Back</a>
@@ -3489,6 +3530,8 @@
         <ol class="ln-side"><li>create the production order</li><li>release it</li></ol></li>
       <li><b>Report Operations</b><p>Issue the material and report the work done.</p>
         <ol class="ln-side"><li>issue the material</li><li>report the operations and the order completed</li></ol></li>
+      <li><b>Backflush Materials and Hours</b><p>Let LN issue the material by itself, as the work is reported.</p>
+        <ol class="ln-side"><li>a backflushed material is issued when a quantity of the end product is reported completed or rejected</li><li>only the materials linked to the operations reported are issued; on an order with no operations, all of them are</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
     </ul>
     <div class="ln-nav">
       <a class="rux--btn rux--btn--secondary" href="./" data-prev>Back</a>
@@ -3622,11 +3665,16 @@
       <li data-wait="tasks" data-steps="cross-docking"><a class="rux--link" href="./?x=cross-docking"><span>Cross-docking</span></a><span class="ln-quiet" data-answered></span></li>
       <li data-wait="tasks" data-steps="release-block"><a class="rux--link" href="./?x=release-block"><span>Blocked release</span></a><span class="ln-quiet" data-answered></span></li>
       <li data-wait="tasks" data-steps="returns"><a class="rux--link" href="./?x=returns"><span>Sales returns</span></a><span class="ln-quiet" data-answered></span></li>
+      <li data-wait="tasks" data-steps="master-planning"><a class="rux--link" href="./?x=master-planning"><span>Generate Master Planning</span></a><span class="ln-quiet" data-answered></span></li>
+      <li data-wait="tasks" data-steps="exception-messages"><a class="rux--link" href="./?x=exception-messages"><span>Exception Messages by Planner</span></a><span class="ln-quiet" data-answered></span></li>
       <li data-wait="tasks" data-steps="confirm-planned"><a class="rux--link" href="./?x=confirm-planned"><span>Confirm Order Planning</span></a><span class="ln-quiet" data-answered></span></li>
       <li data-wait="tasks" data-steps="manual-production"><a class="rux--link" href="./?x=manual-production"><span>Manual production order</span></a><span class="ln-quiet" data-answered></span></li>
       <li data-wait="tasks" data-steps="report-completed"><a class="rux--link" href="./?x=report-completed"><span>Report Operations</span></a><span class="ln-quiet" data-answered></span></li>
+      <li data-wait="tasks" data-steps="backflush"><a class="rux--link" href="./?x=backflush"><span>Backflush Materials and Hours</span></a><span class="ln-quiet" data-answered></span></li>
       <li data-wait="tasks" data-steps="cancel-shipment"><a class="rux--link" href="./?x=cancel-shipment"><span>Cancel Shipments</span></a><span class="ln-quiet" data-answered></span></li>
       <li data-wait="tasks" data-steps="warehouse-transfer"><a class="rux--link" href="./?x=warehouse-transfer"><span>Warehouse transfer</span></a><span class="ln-quiet" data-answered></span></li>
+      <li data-wait="tasks" data-steps="inventory-blocking"><a class="rux--link" href="./?x=inventory-blocking"><span>Inventory Blocking by Zone/Location</span></a><span class="ln-quiet" data-answered></span></li>
+      <li data-wait="tasks" data-steps="assembly-orders"><a class="rux--link" href="./?x=assembly-orders"><span>Assembly Orders</span></a><span class="ln-quiet" data-answered></span></li>
     </ul>
   </section>
   <section class="ln-screen" data-screen="map" hidden>
@@ -3764,7 +3812,7 @@
       <h2 class="rux--type-productive-heading-03">Generate Order Planning (Item)</h2>
       <p>Net demand against stock and explode the bill of material.</p>
       <p class="ln-task__route"><span>no menu entry; reached by drilling in. <strong>Not documented for this release.</strong></span> <a class="rux--link" href="./?c=cprrp1220m000"><span class="ln-t-exact">cprrp1220m000</span></a></p>
-      <ul class="ln-answers"><li><a class="rux--link" href="./?s=run-order-planning-for-one-item&amp;t=3">Run order planning · 4 Run MRP</a></li><li><a class="rux--link" href="./?s=run-order-planning-for-one-item&amp;t=4">Run order planning · 5 Review the result</a></li><li><a class="rux--link" href="./?s=run-order-planning-for-one-item&amp;t=5">Run order planning · 6 Read the pegging tree</a></li><li><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=2">Plan to shipment · 3 Run MRP</a></li></ul>
+      <ul class="ln-answers"><li><a class="rux--link" href="./?s=run-order-planning-for-one-item&amp;t=3">Run order planning · 4 Run MRP</a></li><li><a class="rux--link" href="./?s=run-order-planning-for-one-item&amp;t=4">Run order planning · 5 Review the result</a></li><li><a class="rux--link" href="./?s=run-order-planning-for-one-item&amp;t=5">Run order planning · 6 Read the pegging tree</a></li><li><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=2">Plan to shipment · 3 Run MRP</a></li><li><a class="rux--link" href="./?x=master-planning">Generate Master Planning</a></li><li><a class="rux--link" href="./?x=exception-messages">Exception Messages by Planner</a></li></ul>
     </div>
     <div class="ln-detail" data-detail="planned-prod" hidden>
       <h2 class="rux--type-productive-heading-03">Planned production order</h2>
@@ -3776,7 +3824,7 @@
     </div>
     <div class="ln-detail" data-detail="6" hidden>
       <h2 class="rux--type-productive-heading-03">Transfer Order Planning</h2>
-      <p>Translate a proposal into a real order in its owning module. <strong>Planning ends here.</strong></p>
+      <p>Translate a proposal into a real order in its owning module. <strong>Planning ends here.</strong></p><p>Set in: <a class="rux--link" href="./?c=tcibd1550m000">Items by Site</a></p>
       <p class="ln-task__route"><span><span class="ln-t-route"><span>Planning</span><span class="sep">➔</span><span>Plan Transfer</span><span class="sep">➔</span><span class="dest">Transfer Order Planning</span></span></span> <a class="rux--link" href="./?c=cppat1210m000"><span class="ln-t-exact">cppat1210m000</span></a></p>
       <ul class="ln-answers"><li><a class="rux--link" href="./?v=map&amp;n=7" data-node="7">Supply source Purchase ➔ Purchase Order</a></li><li><a class="rux--link" href="./?v=map&amp;n=9" data-node="9">Supply source Job Shop ➔ Production Orders</a></li><li><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=3">Plan to shipment · 4 Cross the boundary</a></li><li><a class="rux--link" href="./?x=confirm-planned">Confirm Order Planning</a></li></ul>
     </div>
@@ -3790,7 +3838,7 @@
       <h2 class="rux--type-productive-heading-03">Production Orders</h2>
       <p>Build the item: release, issue the components, report complete.</p>
       <p class="ln-task__route"><span><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span></span> <a class="rux--link" href="./?c=tisfc0501m000"><span class="ln-t-exact">tisfc0501m000</span></a></p>
-      <ul class="ln-answers"><li><a class="rux--link" href="./?v=map&amp;n=short-release" data-node="short-release">A component is short ➔ Components short at release</a></li><li><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=1">Production order · 2 Create the production order</a></li><li><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=2">Production order · 3 Verify the generated foundation</a></li><li><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=3">Production order · 4 Release the order</a></li><li><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=4">Production order · 5 Issue material to the job shop</a></li><li><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=5">Production order · 6 Report the operation complete and confirm warehouse receipt</a></li><li><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=5">Plan to shipment · 6 Build the pairs</a></li><li><a class="rux--link" href="./?x=manual-production">Manual production order</a></li><li><a class="rux--link" href="./?x=report-completed">Report Operations</a></li></ul>
+      <ul class="ln-answers"><li><a class="rux--link" href="./?v=map&amp;n=short-release" data-node="short-release">A component is short ➔ Components short at release</a></li><li><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=1">Production order · 2 Create the production order</a></li><li><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=2">Production order · 3 Verify the generated foundation</a></li><li><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=3">Production order · 4 Release the order</a></li><li><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=4">Production order · 5 Issue material to the job shop</a></li><li><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=5">Production order · 6 Report the operation complete and confirm warehouse receipt</a></li><li><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=5">Plan to shipment · 6 Build the pairs</a></li><li><a class="rux--link" href="./?x=manual-production">Manual production order</a></li><li><a class="rux--link" href="./?x=report-completed">Report Operations</a></li><li><a class="rux--link" href="./?x=backflush">Backflush Materials and Hours</a></li></ul>
     </div>
     <div class="ln-detail" data-detail="short-release" hidden>
       <h2 class="rux--type-productive-heading-03">Components short at release</h2>
@@ -4011,7 +4059,9 @@
       <li data-text="expected operation or component is absent leave the order at created and return it to the master-data owner for diagnosis" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=2"><span>Expected operation or component is absent</span></a></b><p>Leave the order at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span> and return it to the master-data owner for diagnosis</p></li>
       <li data-text="the order does not reach released record the message; the release options this walkthrough does not exercise (shortages, quality, printing) may be blocking it — check them against production order parameters (tisfc0100s000) before assuming a fault" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=3"><span>The order does not reach <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></span></a></b><p>Record the message; the release options this walkthrough does not exercise (shortages, quality, printing) may be blocking it — check them against <a class="rux--link" href="./?c=tisfc0100s000"><span class="ln-t-named">Production Order Parameters</span></a> <span class="ln-t-exact">tisfc0100s000</span> before assuming a fault </p></li>
       <li data-text="the material line stays blocked / to issue by warehouse never appears run initiate inventory issue (tisfc0207m000) manually; if still blocked, stop and record what was observed" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=4"><span>The material line stays blocked / <span class="ln-t-named">To Issue by Warehouse</span> never appears</span></a></b><p>Run <a class="rux--link" href="./?c=tisfc0207m000"><span class="ln-t-named">Initiate Inventory Issue</span></a> <span class="ln-t-exact">tisfc0207m000</span> manually; if still blocked, stop and record what was observed </p></li>
+      <li data-text="the issue stops short and a shortage report prints a component's stock is short and negative inventory is not allowed. the quantity waits in to issue by warehouse; restock, then process the warehousing order by hand — infor ln user guide for manufacturing, p. 89" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=4"><span>The issue stops short and a shortage report prints</span></a></b><p>A component's stock is short and negative inventory is not allowed. The quantity waits in <span class="ln-t-named">To Issue by Warehouse</span>; restock, then process the warehousing order by hand — Infor LN User Guide for Manufacturing, p. 89</p></li>
       <li data-text="generate/release outbound advice are missing or already actioned do not assume a fault. direct process warehouse order line may be automatic for this material — confirm in activities by warehousing order (whinh2104m000) before troubleshooting further" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=4"><span>Generate/Release Outbound Advice are missing or already actioned</span></a></b><p>Do not assume a fault. <span class="ln-t-named">Direct Process Warehouse Order Line</span> may be automatic for this material — confirm in <a class="rux--link" href="./?c=whinh2104m000"><span class="ln-t-named">Activities by Warehousing Order</span></a> <span class="ln-t-exact">whinh2104m000</span> before troubleshooting further</p></li>
+      <li data-text="the order cannot be reported completed an earlier operation is not completed, an operation is blocked, or an inspection order is still open — infor ln user guide for manufacturing, pp. 20 and 23; report operations completed (tisfc0130m000) §4 has each rule" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=5"><span>The order cannot be reported completed</span></a></b><p>An earlier operation is not completed, an operation is blocked, or an inspection order is still open — Infor LN User Guide for Manufacturing, pp. 20 and 23; <a class="rux--link" href="./?c=tisfc0130m000"><span class="ln-t-named">Report Operations Completed</span></a> <span class="ln-t-exact">tisfc0130m000</span> §4 has each rule</p></li>
       <li data-text="report orders completed does not open after the last operation stop and record the operation's status and any message; this dialog's trigger condition is not documented" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=5"><span><span class="ln-t-named">Report Orders Completed</span> does not open after the last operation</span></a></b><p>Stop and record the operation's status and any message; this dialog's trigger condition is not documented </p></li>
       <li data-text="quantity delivered stays at 0 or finished-item on-hand does not increase the production receipt warehousing order may need manual processing, like phase 4's issue order. check warehousing orders (whinh2100m000) for an open receipt order before assuming an error" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=5"><span><span class="ln-t-named">Quantity Delivered</span> stays at 0 or finished-item on-hand does not increase</span></a></b><p>The production receipt warehousing order may need manual processing, like <a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=4">task 5</a>'s issue order. Check <a class="rux--link" href="./?c=whinh2100m000"><span class="ln-t-named">Warehousing Orders</span></a> <span class="ln-t-exact">whinh2100m000</span> for an open receipt order before assuming an error </p></li>
       <li data-text="no order number appears header not saved, or a required field is still blank — recheck 1.3–1.6" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=transfer-item-between-warehouses&amp;t=1"><span>No order number appears</span></a></b><p>Header not saved, or a required field is still blank — recheck <a class="rux--link" href="./?s=transfer-item-between-warehouses&amp;t=1&amp;k=3">task 2, step 3</a>–<a class="rux--link" href="./?s=transfer-item-between-warehouses&amp;t=1&amp;k=6">task 2, step 6</a></p></li>
@@ -4042,7 +4092,8 @@
       <li data-text="goods still need picking after release advice expected. released and picked are separate. run phase 4" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=ship-from-stock&amp;t=4"><span>Goods still need picking after Release Advice</span></a></b><p>Expected. <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span> and <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Picked</span></span> are separate. Run <a class="rux--link" href="./?s=ship-from-stock&amp;t=4">task 5</a></p></li>
       <li data-text="run empty on the picking list advice was never generated, so nothing was released. return to 3.5" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=ship-from-stock&amp;t=4"><span><span class="ln-t-named">Run</span> empty on the Picking List</span></a></b><p>Advice was never generated, so nothing was released. Return to <a class="rux--link" href="./?s=ship-from-stock&amp;t=3&amp;k=5">task 4, step 5</a></p></li>
       <li data-text="shipment will not confirm the line was never picked. check the picked column on outbound lines, then run phase 4" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=ship-from-stock&amp;t=5"><span>Shipment will not confirm</span></a></b><p>The line was never picked. Check the <span class="ln-t-named">Picked</span> column on Outbound Lines, then run <a class="rux--link" href="./?s=ship-from-stock&amp;t=4">task 5</a></p></li>
-      <li data-text="shipment will not confirm, handling units involved if handling unit based confirmation is set on a linked line, the handling units must be confirmed first" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=ship-from-stock&amp;t=5"><span>Shipment will not confirm, handling units involved</span></a></b><p>If <span class="ln-t-named">Handling Unit Based Confirmation</span> is set on a linked line, the handling units must be confirmed first</p></li>
+      <li data-text="shipment will not confirm, and a validation message shows where the order type validates shipments, a message marked blocking has to be corrected first, and reopening a frozen shipment means it is validated again — infor ln warehousing user guide for the outbound and shipment goods flows, p. 146. not documented for this release." hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=ship-from-stock&amp;t=5"><span>Shipment will not confirm, and a validation message shows</span></a></b><p>Where the order type validates shipments, a message marked Blocking has to be corrected first, and reopening a frozen shipment means it is validated again — Infor LN Warehousing User Guide for the Outbound and Shipment Goods Flows, p. 146. <strong>Not documented for this release.</strong></p></li>
+      <li data-text="shipment will not confirm, handling units involved if handling unit based confirmation is set on a linked line, the handling units must be confirmed first. whether the line then confirms by itself is an order-type setting, confirm shipment lines when confirming handling units; with it cleared the line waits, frozen, to be confirmed by hand — infor ln warehousing user guide for handling units, p. 34" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=ship-from-stock&amp;t=5"><span>Shipment will not confirm, handling units involved</span></a></b><p>If <span class="ln-t-named">Handling Unit Based Confirmation</span> is set on a linked line, the handling units must be confirmed first. Whether the line then confirms by itself is an order-type setting, Confirm Shipment Lines when confirming Handling Units; with it cleared the line waits, Frozen, to be confirmed by hand — Infor LN Warehousing User Guide for Handling Units, p. 34</p></li>
       <li data-text="an item is absent from the item order plan it has no cluster row. step 0.5. not an error state; nothing will tell you" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=0"><span>An item is absent from the Item Order Plan</span></a></b><p>It has no cluster row. Step <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=0&amp;k=5">task 1, step 5</a>. Not an error state; nothing will tell you</p></li>
       <li data-text="ln refuses the item on the sales order no row for the order's sales office on the sales offices tab of item (tcibd0501m100). add it, then close and reopen the order session" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=1"><span>LN refuses the item on the sales order</span></a></b><p>No row for the order's sales office on the <span class="ln-t-named">Sales Offices</span> tab of <a class="rux--link" href="./?c=tcibd0501m100"><span class="ln-t-named">Item</span></a> <span class="ln-t-exact">tcibd0501m100</span>. Add it, then close and reopen the order session</p></li>
       <li data-text="the demand does not appear in the item order plan the delivery date is beyond the order horizon date. step 1.5 — and the date is not today plus your days" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=1"><span>The demand does not appear in the Item Order Plan</span></a></b><p>The delivery date is beyond the <span class="ln-t-named">Order Horizon</span> date. Step <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=1&amp;k=5">task 2, step 5</a> — and the date is not today plus your days </p></li>
@@ -4113,18 +4164,23 @@
       <li data-text="plan to shipment receive the components warehousing orders whinh2100m000 4.1 open warehousing orders (whinh2100m000) and find the inbound order ln raised from the purchase order at 3.5, then drill in order type pui &quot;purchase receipts&quot;, ship-to adna02 4.2 select the inbound lines and run actions ➔ receive warehouse receipt (whinh3512m000) opens 4.3 enter the packing-slip reference for each line the lines carry their references 4.4 confirm the receipt warehouse receipt number; status = confirmed, all lines final and all lines complete both set 4.5 read errors logged, then re-read bam-rod on-hand at adna02 in inventory 360 rod on-hand after receipt — up by exactly the quantity received" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=4"><span>5 Receive the components</span></a></b>Plan to shipment</li>
       <li data-text="plan to shipment build the pairs production orders tisfc0501m000 5.1 open the production order from 3.6 and check its bom, routing and estimated materials bom jb0000242 rev 000002, routing 0 rev 000001, operation 10, rods and sleeves listed 5.2 select the order and run actions ➔ release orders release production orders (tisfc0204m000) opens 5.3 run the release for this order only order status = released; warehousing issue and receipt orders now exist 5.4 open material to issue for production orders (ticst0101m100) at manufacturing ➔ job shop ➔ production materials ➔ material to issue for production orders, and issue the materials per production order steps 4.2–4.7 actual quantity = the estimated quantity; order status = active 5.5 open report operations (tisfc0130m000) at manufacturing ➔ job shop ➔ production control ➔ report operations, enter the built quantity in completed, and save ln may ask whether to confirm the receipt automatically — record which way you answer 5.6 return to production orders and read order status production order status after reporting — production completed or completed 5.7 read bam-chop-pair on-hand at adna01 in inventory 360 pair on-hand after build — up by the built quantity over 0.2" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=5"><span>6 Build the pairs</span></a></b>Plan to shipment</li>
       <li data-text="plan to shipment ship warehouse manager dashboard whinh2300m000 6.1 in the sales order, actions ➔ release ➔ release to warehousing… per ship from stock steps 2.2–2.5 log report prints; a warehousing order exists under your sales order number 6.2 in warehouse manager dashboard (whinh2300m000), filter on your sales order number and drill in warehousing order (whinh2100m100), origin sales, type 20- so/sc out 6.3 on the outbound lines tab, tick the line and run actions ➔ advice ➔ generate advice advised and released both fill; picking list by location prints 6.4 in picking list (whinh4525m100), tick the line and run actions ➔ pick run, then read shipment on the order's shipment lines tab line status staged — shipment number 6.5 in shipments (whinh4130m000), find the shipment and drill in, then actions ➔ freeze status = frozen; confirm becomes available 6.6 actions ➔ confirm shipped quantity; status = confirmed, inventory relieved 6.7 re-read bam-chop-pair on-hand at the warehouse from 0.2 pair on-hand after shipping — down by exactly the shipped quantity" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=6"><span>7 Ship</span></a></b>Plan to shipment</li>
-      <li data-text="change or cancel an order line  change or cancel a sales order line after it is entered change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed if the change is allowed, the outbound line follows it, and its advice and picking list are deleted if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order a line that already has a shipment cancels only after allow changes to shipment is cleared on that shipment not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=change-order-line"><span>Change or cancel an order line</span></a></b>Change or cancel a sales order line after it is entered.</li>
+      <li data-text="change or cancel an order line  change or cancel a sales order line after it is entered change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed if the change is allowed, the outbound line follows it, and its advice and picking list are deleted if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order a line that already has a shipment cancels only after allow changes to shipment is cleared on that shipment cancelling a line that is already advised asks whether its advice is deleted; on yes the line ends as shipped with a shipped quantity of 0 not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=change-order-line"><span>Change or cancel an order line</span></a></b>Change or cancel a sales order line after it is entered.</li>
       <li data-text="change a line's date or quantity  move a sales order line's delivery date, or change its quantity, once the line is split into delivery lines with no delivery lines linked, change the planned delivery date or the ordered quantity on the order line with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead where the ctp check for sales is on, ln refuses a new date the item is not available on not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=change-line-date"><span>Change a line's date or quantity</span></a></b>Move a sales order line's delivery date, or change its quantity, once the line is split into delivery lines.</li>
       <li data-text="rush an order  give a sales order, or one line of it, the highest priority through the warehouse choose rush order on the sales order, or rush order line on one line; the order's priority becomes 1 release it to warehousing, where its outbound lines are advised and processed before any others not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=rush-order"><span>Rush an order</span></a></b>Give a sales order, or one line of it, the highest priority through the warehouse.</li>
       <li data-text="direct delivery  have the supplier deliver straight to the customer, so that warehousing is not involved set the line's delivery type to direct delivery, by hand or from the shortage menu that appears when stock is short generate the purchase order for the line, from a purchase order advice or directly record the supplier's receipt in procurement and send the delivery back to the sales order not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=direct-delivery"><span>Direct delivery</span></a></b>Have the supplier deliver straight to the customer, so that Warehousing is not involved.</li>
       <li data-text="cross-docking  fill a sales order that has no stock by taking inbound goods straight from receipt to the staging location set the line's delivery type to cross-docking, by hand or from the shortage menu that appears when stock is short generate the purchase order for the line, from a purchase order advice or directly release the purchase order and the sales order to warehousing not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=cross-docking"><span>Cross-docking</span></a></b>Fill a sales order that has no stock by taking inbound goods straight from receipt to the staging location.</li>
       <li data-text="blocked release  stop a sales order line from releasing read why it is blocked: an order over the credit limit, overdue invoices, a margin exceeded, a failed export or letter-of-credit check, or a reason someone set by hand release it in blocked sales order (lines) (tdsls4520m000), a session in neither menu extract a user can release only the kinds of hold their profile allows, set in user profiles (tdsls0139m000), sales ➔ master data ➔ general ➔ user profiles not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=release-block"><span>Blocked release</span></a></b>Stop a sales order line from releasing.</li>
       <li data-text="sales returns  take goods back from a customer set up a return order type in order types (tdsls0594m000), sales ➔ master data ➔ orders ➔ order types, as return inventory or return rejects, with a warehousing order type that receives create a sales order of that type, and give it the original document and a return reason copy the lines from the original document; they arrive with a negative quantity and amount approve the order and release it to warehousing, which receives the goods release it to invoicing, then process it not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=returns"><span>Sales returns</span></a></b>Take goods back from a customer.</li>
+      <li data-text="generate master planning cprmp1202m000 work out a supply plan per period for the items planned by a master plan run it for a range of plan items; a supply plan is made only inside each item's master-planning horizon production and purchase count as sources only where the item's production plan or purchase plan is set to generate or always update not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=master-planning"><span>Generate Master Planning</span></a></b>Work out a supply plan per period for the items planned by a master plan.</li>
+      <li data-text="exception messages by planner cprao1120m000 list what planning says about the orders that already exist planning compares the receipts that exist with what is needed, and raises a message where they differ a reschedule message asks for a receipt earlier or later, and a cancel message marks a receipt nothing needs a tolerance in days, set per message type, keeps small shifts quiet not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=exception-messages"><span>Exception Messages by Planner</span></a></b>List what planning says about the orders that already exist.</li>
       <li data-text="confirm order planning cprrp1200m000 confirm planned orders before they are transferred confirm the planned orders, then transfer them" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=confirm-planned"><span>Confirm Order Planning</span></a></b>Confirm planned orders before they are transferred.</li>
       <li data-text="manual production order tisfc0501m000 make an item on a production order entered by hand create the production order release it" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=manual-production"><span>Manual production order</span></a></b>Make an item on a production order entered by hand.</li>
       <li data-text="report operations tisfc0130m000 issue the material and report the work done issue the material report the operations and the order completed" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=report-completed"><span>Report Operations</span></a></b>Issue the material and report the work done.</li>
+      <li data-text="backflush materials and hours tisfc0220m000 let ln issue the material by itself, as the work is reported a backflushed material is issued when a quantity of the end product is reported completed or rejected only the materials linked to the operations reported are issued; on an order with no operations, all of them are not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=backflush"><span>Backflush Materials and Hours</span></a></b>Let LN issue the material by itself, as the work is reported.</li>
       <li data-text="cancel shipments whinh4230m500 cancel a shipment before it leaves, as when the truck did not come or the customer changed the order check it can be cancelled: not confirmed, and no not-shipped quantity on it; a frozen shipment is reopened first select the shipment, one of its lines or its load, and choose cancel on the actions menu in the dialog, choose whether the goods go back to stock and whether the order line is finalized, then continue a finalized order line reads shipped, so shipping it later needs a new order line; left open, the same line gets a new shipment not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=cancel-shipment"><span>Cancel Shipments</span></a></b>Cancel a shipment before it leaves, as when the truck did not come or the customer changed the order.</li>
       <li data-text="warehouse transfer whinh2100m000 move stock from one warehouse to another create the transfer order advise, pick and ship it receive it at the destination" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=warehouse-transfer"><span>Warehouse transfer</span></a></b>Move stock from one warehouse to another.</li>
+      <li data-text="inventory blocking by zone/location whwmd6110m000 put stock on hold, for a whole zone or location, or for one lot or stock point block a zone or a location here; a lot and a single stock point each have their own session beside it on the menu choose the reason: one kind tells planning to go on counting the stock, for a short check, and the other tells planning the stock is gone a block on stock raises the item's inventory on hold; blocking only a kind of transaction does not not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=inventory-blocking"><span>Inventory Blocking by Zone/Location</span></a></b>Put stock on hold, for a whole zone or location, or for one lot or stock point.</li>
+      <li data-text="assembly orders whinh2101m000 pick a kit's components and put them together into one item that stays in the warehouse create the assembly order by hand for the item to be assembled; its components come from the item's list of components ln makes an outbound line for each component and one inbound line for the assembled item receive the inbound line to say the assembly is done, and put the item away like any receipt the order cannot be changed once a component line is past open, or deleted while it has component lines not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=assembly-orders"><span>Assembly Orders</span></a></b>Pick a kit's components and put them together into one item that stays in the warehouse.</li>
       <li data-text="transfer order planning cppat1210m000 planning ➔ plan transfer ➔ transfer order planning converts a planned order into a real order in its owning module — production, purchase, warehouse, or cost-peg transfer." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=cppat1210m000"><span>Transfer Order Planning</span></a></b>Converts a planned order into a real order in its owning module — production, purchase, warehouse, or cost-peg transfer.</li>
       <li data-text="planning parameters cprpd0100m000 planning ➔ parameters ➔ planning company-wide planning settings, among them the ctp check for sales, the pegging horizon and how many plan revisions are kept." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=cprpd0100m000"><span>Planning Parameters</span></a></b>Company-wide planning settings, among them the CTP check for sales, the pegging horizon and how many plan revisions are kept.</li>
       <li data-text="items - planning cprpd1100m000 planning ➔ master data ➔ items ➔ items - planning holds the order horizon, planning horizon and time fence that decide whether and how far ahead an item is planned." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=cprpd1100m000"><span>Items - Planning</span></a></b>Holds the order horizon, planning horizon and time fence that decide whether and how far ahead an item is planned.</li>
@@ -4275,6 +4331,7 @@
       <li data-text="warehouse - item inventory whwmd2515m000 warehousing ➔ inventory reporting ➔ inventory position ➔ warehouse - item inventory one row per warehouse holding or expecting an item — where a warehouse to ship from is chosen." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whwmd2515m000"><span>Warehouse - Item Inventory</span></a></b>One row per warehouse holding or expecting an item — where a warehouse to ship from is chosen.</li>
       <li data-text="item - warehousing defaults whwmd4101s000 the blue [warehousing] link on item defaults (tcibd0502m000) holds the default warehousing data — lot, serial, ownership and cross-docking behaviour — for an item type and item group combination." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whwmd4101s000"><span>Item - Warehousing Defaults</span></a></b>Holds the default warehousing data — lot, serial, ownership and cross-docking behaviour — for an item type and item group combination.</li>
       <li data-text="inventory 360 whwmd4300m000 warehousing ➔ inventory 360 the starting point for any question about where an item's stock is and what state it is in." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whwmd4300m000"><span>Inventory 360</span></a></b>The starting point for any question about where an item's stock is and what state it is in.</li>
+      <li data-text="inventory 360 - graphical view whwmd4300m200 warehousing ➔ inventory 360 - graphical view inventory 360 with a graph and four exception tiles, which count the items heading for trouble and filter the list to them." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whwmd4300m200"><span>Inventory 360 - Graphical View</span></a></b>Inventory 360 with a graph and four exception tiles, which count the items heading for trouble and filter the list to them.</li>
       <li data-text="item - warehousing whwmd4600m000 drill-in from item (tcibd0501m100); it opens as a dialog over that session the warehousing detail behind one item — location control, inventory-variance handling, and supply settings." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whwmd4600m000"><span>Item - Warehousing</span></a></b>The warehousing detail behind one item — location control, inventory-variance handling, and supply settings.</li>
       <li data-text="available to promise available to promise atp capable to promise ctp the stock ln will still promise to a new order, worked out over time, and the second check on components and capacity that follows when that stock falls short." hidden><span class="ln-quiet">Idea</span><b><a class="rux--link" href="./?i=available-to-promise"><span>Available to promise</span></a></b>The stock LN will still promise to a new order, worked out over time, and the second check on components and capacity that follows when that stock falls short.</li>
       <li data-text="backorder backorder back order hold back quantity the part of a sales order line that the final delivery did not ship, which waits to be confirmed and then becomes a new line to deliver." hidden><span class="ln-quiet">Idea</span><b><a class="rux--link" href="./?i=backorder"><span>Backorder</span></a></b>The part of a sales order line that the final delivery did not ship, which waits to be confirmed and then becomes a new line to deliver.</li>
@@ -5493,6 +5550,14 @@
     <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="whwmd4300m000" aria-label="Copy the code whwmd4300m000">whwmd4300m000</button></dd><dt>Route</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span></dd><dt>Used in</dt><dd><a class="rux--link" href="./?s=create-basic-test-items-and-defaults&amp;t=9">Create test items · 10 Stock the components</a><br><a class="rux--link" href="./?s=run-order-planning-for-one-item&amp;t=1">Run order planning · 2 Create demand</a><br><a class="rux--link" href="./?s=check-item-inventory&amp;t=0">Check an item's inventory · 1 Find the item</a><br><a class="rux--link" href="./?s=check-item-inventory&amp;t=1">Check an item's inventory · 2 Read the stock by warehouse</a><br><a class="rux--link" href="./?s=purchase-order-to-warehouse-receipt&amp;t=0">Purchase to receipt · 1 Read the baseline</a><br><a class="rux--link" href="./?s=purchase-order-to-warehouse-receipt&amp;t=5">Purchase to receipt · 6 Verify the inventory increase</a><br><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=0">Production order · 1 Confirm the existing foundation</a><br><a class="rux--link" href="./?s=manual-production-order-existing-master-data&amp;t=5">Production order · 6 Report the operation complete and confirm warehouse receipt</a><br><a class="rux--link" href="./?s=transfer-item-between-warehouses&amp;t=0">Warehouse transfer · 1 Confirm stock, destination, and expected order type</a><br><a class="rux--link" href="./?s=transfer-item-between-warehouses&amp;t=6">Warehouse transfer · 7 Verify it worked</a><br><a class="rux--link" href="./?s=ship-from-stock&amp;t=0">Ship from stock · 1 Confirm there is stock</a><br><a class="rux--link" href="./?s=ship-from-stock&amp;t=6">Ship from stock · 7 Verify it worked</a><br><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=0">Plan to shipment · 1 Preflight</a></dd></dl>
     <div class="ln-full" data-full hidden></div>
   </section>
+  <section class="ln-screen" data-screen="card" data-c="whwmd4300m200" hidden>
+    <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
+    <p class="ln-quiet">Screen</p>
+    <h1 class="ln-ask">Inventory 360 - Graphical View</h1>
+    <p>Inventory 360 with a graph and four exception tiles, which count the items heading for trouble and filter the list to them.</p>
+    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="whwmd4300m200" aria-label="Copy the code whwmd4300m200">whwmd4300m200</button></dd><dt>Route</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360 - Graphical View</span></span></dd></dl>
+    <div class="ln-full" data-full hidden></div>
+  </section>
   <section class="ln-screen" data-screen="card" data-c="whwmd4600m000" hidden>
     <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
     <p class="ln-quiet">Screen</p>
@@ -5625,7 +5690,7 @@
     <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
     <p class="ln-quiet">Task</p>
     <h1 class="ln-ask">Change or cancel an order line</h1>
-    <p>Change or cancel a sales order line after it is entered.</p><ol class="ln-side"><li>change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed</li><li>if the change is allowed, the outbound line follows it, and its advice and picking list are deleted</li><li>if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order</li><li>a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment</li><li class="ln-side__note">Not documented for this release.</li></ol>
+    <p>Change or cancel a sales order line after it is entered.</p><ol class="ln-side"><li>change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed</li><li>if the change is allowed, the outbound line follows it, and its advice and picking list are deleted</li><li>if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order</li><li>a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment</li><li>cancelling a line that is already advised asks whether its advice is deleted; on yes the line ends as Shipped with a shipped quantity of 0</li><li class="ln-side__note">Not documented for this release.</li></ol>
     <div class="ln-confirm" data-confirm="tasks" data-step="change-order-line">
       <p class="ln-quiet" data-said>Nobody has confirmed this task in LN yet.</p>
       <div class="ln-confirm__ask" data-owner hidden>
@@ -5782,6 +5847,52 @@
       </form>
     </div>
   </section>
+  <section class="ln-screen" data-screen="card" data-x="master-planning" hidden>
+    <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
+    <p class="ln-quiet">Task</p>
+    <h1 class="ln-ask">Generate Master Planning</h1>
+    <p>Work out a supply plan per period for the items planned by a master plan.</p><ol class="ln-side"><li>run it for a range of plan items; a supply plan is made only inside each item's master-planning horizon</li><li>production and purchase count as sources only where the item's Production Plan or Purchase Plan is set to Generate or Always Update</li><li class="ln-side__note">Not documented for this release.</li></ol>
+    <div class="ln-confirm" data-confirm="tasks" data-step="master-planning">
+      <p class="ln-quiet" data-said>Nobody has confirmed this task in LN yet.</p>
+      <div class="ln-confirm__ask" data-owner hidden>
+        <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" data-say="matched">It matched</button>
+        <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-say="different">It was different</button>
+      </div>
+      <form class="ln-confirm__form" data-different hidden>
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-32">What was different?</label></div>
+          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+            <input id="diff-tasks-task-32" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+          </div></div>
+        </div>
+        <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
+        <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Send</button>
+      </form>
+    </div>
+  </section>
+  <section class="ln-screen" data-screen="card" data-x="exception-messages" hidden>
+    <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
+    <p class="ln-quiet">Task</p>
+    <h1 class="ln-ask">Exception Messages by Planner</h1>
+    <p>List what planning says about the orders that already exist.</p><ol class="ln-side"><li>planning compares the receipts that exist with what is needed, and raises a message where they differ</li><li>a reschedule message asks for a receipt earlier or later, and a cancel message marks a receipt nothing needs</li><li>a tolerance in days, set per message type, keeps small shifts quiet</li><li class="ln-side__note">Not documented for this release.</li></ol>
+    <div class="ln-confirm" data-confirm="tasks" data-step="exception-messages">
+      <p class="ln-quiet" data-said>Nobody has confirmed this task in LN yet.</p>
+      <div class="ln-confirm__ask" data-owner hidden>
+        <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" data-say="matched">It matched</button>
+        <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-say="different">It was different</button>
+      </div>
+      <form class="ln-confirm__form" data-different hidden>
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-33">What was different?</label></div>
+          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+            <input id="diff-tasks-task-33" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+          </div></div>
+        </div>
+        <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
+        <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Send</button>
+      </form>
+    </div>
+  </section>
   <section class="ln-screen" data-screen="card" data-x="confirm-planned" hidden>
     <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
     <p class="ln-quiet">Task</p>
@@ -5795,9 +5906,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-32">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-34">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-32" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-34" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -5818,9 +5929,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-33">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-35">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-33" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-35" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -5841,9 +5952,32 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-34">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-36">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-34" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-36" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+          </div></div>
+        </div>
+        <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
+        <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Send</button>
+      </form>
+    </div>
+  </section>
+  <section class="ln-screen" data-screen="card" data-x="backflush" hidden>
+    <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
+    <p class="ln-quiet">Task</p>
+    <h1 class="ln-ask">Backflush Materials and Hours</h1>
+    <p>Let LN issue the material by itself, as the work is reported.</p><ol class="ln-side"><li>a backflushed material is issued when a quantity of the end product is reported completed or rejected</li><li>only the materials linked to the operations reported are issued; on an order with no operations, all of them are</li><li class="ln-side__note">Not documented for this release.</li></ol>
+    <div class="ln-confirm" data-confirm="tasks" data-step="backflush">
+      <p class="ln-quiet" data-said>Nobody has confirmed this task in LN yet.</p>
+      <div class="ln-confirm__ask" data-owner hidden>
+        <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" data-say="matched">It matched</button>
+        <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-say="different">It was different</button>
+      </div>
+      <form class="ln-confirm__form" data-different hidden>
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-37">What was different?</label></div>
+          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+            <input id="diff-tasks-task-37" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -5864,9 +5998,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-35">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-38">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-35" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-38" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -5887,9 +6021,55 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-36">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-39">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-36" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-39" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+          </div></div>
+        </div>
+        <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
+        <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Send</button>
+      </form>
+    </div>
+  </section>
+  <section class="ln-screen" data-screen="card" data-x="inventory-blocking" hidden>
+    <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
+    <p class="ln-quiet">Task</p>
+    <h1 class="ln-ask">Inventory Blocking by Zone/Location</h1>
+    <p>Put stock on hold, for a whole zone or location, or for one lot or stock point.</p><ol class="ln-side"><li>block a zone or a location here; a lot and a single stock point each have their own session beside it on the menu</li><li>choose the reason: one kind tells planning to go on counting the stock, for a short check, and the other tells planning the stock is gone</li><li>a block on stock raises the item's inventory on hold; blocking only a kind of transaction does not</li><li class="ln-side__note">Not documented for this release.</li></ol>
+    <div class="ln-confirm" data-confirm="tasks" data-step="inventory-blocking">
+      <p class="ln-quiet" data-said>Nobody has confirmed this task in LN yet.</p>
+      <div class="ln-confirm__ask" data-owner hidden>
+        <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" data-say="matched">It matched</button>
+        <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-say="different">It was different</button>
+      </div>
+      <form class="ln-confirm__form" data-different hidden>
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-40">What was different?</label></div>
+          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+            <input id="diff-tasks-task-40" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+          </div></div>
+        </div>
+        <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
+        <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Send</button>
+      </form>
+    </div>
+  </section>
+  <section class="ln-screen" data-screen="card" data-x="assembly-orders" hidden>
+    <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
+    <p class="ln-quiet">Task</p>
+    <h1 class="ln-ask">Assembly Orders</h1>
+    <p>Pick a kit's components and put them together into one item that stays in the warehouse.</p><ol class="ln-side"><li>create the assembly order by hand for the item to be assembled; its components come from the item's list of components</li><li>LN makes an outbound line for each component and one inbound line for the assembled item</li><li>receive the inbound line to say the assembly is done, and put the item away like any receipt</li><li>the order cannot be changed once a component line is past Open, or deleted while it has component lines</li><li class="ln-side__note">Not documented for this release.</li></ol>
+    <div class="ln-confirm" data-confirm="tasks" data-step="assembly-orders">
+      <p class="ln-quiet" data-said>Nobody has confirmed this task in LN yet.</p>
+      <div class="ln-confirm__ask" data-owner hidden>
+        <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" data-say="matched">It matched</button>
+        <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-say="different">It was different</button>
+      </div>
+      <form class="ln-confirm__form" data-different hidden>
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-41">What was different?</label></div>
+          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+            <input id="diff-tasks-task-41" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>

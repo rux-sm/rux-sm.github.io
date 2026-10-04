@@ -1289,14 +1289,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " - change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed - if the change is allowed, the outbound line follows it, and its advice and picking list are deleted - if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order - a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment - "
+                  "v": " - change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed - if the change is allowed, the outbound line follows it, and its advice and picking list are deleted - if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order - a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment - cancelling a line that is already advised asks whether its advice is deleted; on yes the line ends as Shipped with a shipped quantity of 0 - "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Do - change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed - if the change is allowed, the outbound line follows it, and its advice and picking list are deleted - if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order - a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment - Not documented for this release."
+              "text": "Do - change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed - if the change is allowed, the outbound line follows it, and its advice and picking list are deleted - if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order - a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment - cancelling a line that is already advised asks whether its advice is deleted; on yes the line ends as Shipped with a shipped quantity of 0 - Not documented for this release."
             },
             {
               "tokens": [
@@ -2475,10 +2475,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " — generate master planning"
+                  "v": " — work out a supply plan per period for the items planned by a master plan"
                 }
               ],
-              "text": "Does — generate master planning"
+              "text": "Does — work out a supply plan per period for the items planned by a master plan"
             },
             {
               "tokens": [
@@ -2488,14 +2488,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " - "
+                  "v": " - run it for a range of plan items; a supply plan is made only inside each item's master-planning horizon - production and purchase count as sources only where the item's Production Plan or Purchase Plan is set to Generate or Always Update - "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Do - Not documented for this release."
+              "text": "Do - run it for a range of plan items; a supply plan is made only inside each item's master-planning horizon - production and purchase count as sources only where the item's Production Plan or Purchase Plan is set to Generate or Always Update - Not documented for this release."
             },
             {
               "tokens": [
@@ -2565,10 +2565,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " — list the exception messages planning raised"
+                  "v": " — list what planning says about the orders that already exist"
                 }
               ],
-              "text": "Does — list the exception messages planning raised"
+              "text": "Does — list what planning says about the orders that already exist"
             },
             {
               "tokens": [
@@ -2578,14 +2578,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " - "
+                  "v": " - planning compares the receipts that exist with what is needed, and raises a message where they differ - a reschedule message asks for a receipt earlier or later, and a cancel message marks a receipt nothing needs - a tolerance in days, set per message type, keeps small shifts quiet - "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Do - Not documented for this release."
+              "text": "Do - planning compares the receipts that exist with what is needed, and raises a message where they differ - a reschedule message asks for a receipt earlier or later, and a cancel message marks a receipt nothing needs - a tolerance in days, set per message type, keeps small shifts quiet - Not documented for this release."
             },
             {
               "tokens": [
@@ -3418,10 +3418,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " — backflush materials and hours"
+                  "v": " — let LN issue the material by itself, as the work is reported"
                 }
               ],
-              "text": "Does — backflush materials and hours"
+              "text": "Does — let LN issue the material by itself, as the work is reported"
             },
             {
               "tokens": [
@@ -3431,14 +3431,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " - "
+                  "v": " - a backflushed material is issued when a quantity of the end product is reported completed or rejected - only the materials linked to the operations reported are issued; on an order with no operations, all of them are - "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Do - Not documented for this release."
+              "text": "Do - a backflushed material is issued when a quantity of the end product is reported completed or rejected - only the materials linked to the operations reported are issued; on an order with no operations, all of them are - Not documented for this release."
             },
             {
               "tokens": [
@@ -4237,10 +4237,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " — block inventory by zone or location"
+                  "v": " — put stock on hold, for a whole zone or location, or for one lot or stock point"
                 }
               ],
-              "text": "Does — block inventory by zone or location"
+              "text": "Does — put stock on hold, for a whole zone or location, or for one lot or stock point"
             },
             {
               "tokens": [
@@ -4250,14 +4250,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " - "
+                  "v": " - block a zone or a location here; a lot and a single stock point each have their own session beside it on the menu - choose the reason: one kind tells planning to go on counting the stock, for a short check, and the other tells planning the stock is gone - a block on stock raises the item's inventory on hold; blocking only a kind of transaction does not - "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Do - Not documented for this release."
+              "text": "Do - block a zone or a location here; a lot and a single stock point each have their own session beside it on the menu - choose the reason: one kind tells planning to go on counting the stock, for a short check, and the other tells planning the stock is gone - a block on stock raises the item's inventory on hold; blocking only a kind of transaction does not - Not documented for this release."
             }
           ]
         },
@@ -4577,10 +4577,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " — assemble items on an assembly order"
+                  "v": " — pick a kit's components and put them together into one item that stays in the warehouse"
                 }
               ],
-              "text": "Does — assemble items on an assembly order"
+              "text": "Does — pick a kit's components and put them together into one item that stays in the warehouse"
             },
             {
               "tokens": [
@@ -4590,14 +4590,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " - "
+                  "v": " - create the assembly order by hand for the item to be assembled; its components come from the item's list of components - LN makes an outbound line for each component and one inbound line for the assembled item - receive the inbound line to say the assembly is done, and put the item away like any receipt - the order cannot be changed once a component line is past Open, or deleted while it has component lines - "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Do - Not documented for this release."
+              "text": "Do - create the assembly order by hand for the item to be assembled; its components come from the item's list of components - LN makes an outbound line for each component and one inbound line for the assembled item - receive the inbound line to say the assembly is done, and put the item away like any receipt - the order cannot be changed once a component line is past Open, or deleted while it has component lines - Not documented for this release."
             }
           ]
         },
@@ -5346,6 +5346,15 @@
           {
             "tokens": [
               {
+                "t": "text",
+                "v": "cancelling a line that is already advised asks whether its advice is deleted; on yes the line ends as Shipped with a shipped quantity of 0"
+              }
+            ],
+            "text": "cancelling a line that is already advised asks whether its advice is deleted; on yes the line ends as Shipped with a shipped quantity of 0"
+          },
+          {
+            "tokens": [
+              {
                 "t": "strong",
                 "v": "Not documented for this release."
               }
@@ -5361,14 +5370,14 @@
           "tokens": [
             {
               "t": "text",
-              "v": "change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed. if the change is allowed, the outbound line follows it, and its advice and picking list are deleted. if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order. a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment. "
+              "v": "change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed. if the change is allowed, the outbound line follows it, and its advice and picking list are deleted. if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order. a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment. cancelling a line that is already advised asks whether its advice is deleted; on yes the line ends as Shipped with a shipped quantity of 0. "
             },
             {
               "t": "strong",
               "v": "Not documented for this release."
             }
           ],
-          "text": "change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed. if the change is allowed, the outbound line follows it, and its advice and picking list are deleted. if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order. a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment. Not documented for this release."
+          "text": "change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed. if the change is allowed, the outbound line follows it, and its advice and picking list are deleted. if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order. a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment. cancelling a line that is already advised asks whether its advice is deleted; on yes the line ends as Shipped with a shipped quantity of 0. Not documented for this release."
         }
       },
       {
@@ -6319,12 +6328,30 @@
           "tokens": [
             {
               "t": "text",
-              "v": "generate master planning"
+              "v": "work out a supply plan per period for the items planned by a master plan"
             }
           ],
-          "text": "generate master planning"
+          "text": "work out a supply plan per period for the items planned by a master plan"
         },
         "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "run it for a range of plan items; a supply plan is made only inside each item's master-planning horizon"
+              }
+            ],
+            "text": "run it for a range of plan items; a supply plan is made only inside each item's master-planning horizon"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "production and purchase count as sources only where the item's Production Plan or Purchase Plan is set to Generate or Always Update"
+              }
+            ],
+            "text": "production and purchase count as sources only where the item's Production Plan or Purchase Plan is set to Generate or Always Update"
+          },
           {
             "tokens": [
               {
@@ -6342,11 +6369,15 @@
         "do": {
           "tokens": [
             {
+              "t": "text",
+              "v": "run it for a range of plan items; a supply plan is made only inside each item's master-planning horizon. production and purchase count as sources only where the item's Production Plan or Purchase Plan is set to Generate or Always Update. "
+            },
+            {
               "t": "strong",
               "v": "Not documented for this release."
             }
           ],
-          "text": "Not documented for this release."
+          "text": "run it for a range of plan items; a supply plan is made only inside each item's master-planning horizon. production and purchase count as sources only where the item's Production Plan or Purchase Plan is set to Generate or Always Update. Not documented for this release."
         }
       },
       {
@@ -6369,12 +6400,39 @@
           "tokens": [
             {
               "t": "text",
-              "v": "list the exception messages planning raised"
+              "v": "list what planning says about the orders that already exist"
             }
           ],
-          "text": "list the exception messages planning raised"
+          "text": "list what planning says about the orders that already exist"
         },
         "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "planning compares the receipts that exist with what is needed, and raises a message where they differ"
+              }
+            ],
+            "text": "planning compares the receipts that exist with what is needed, and raises a message where they differ"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "a reschedule message asks for a receipt earlier or later, and a cancel message marks a receipt nothing needs"
+              }
+            ],
+            "text": "a reschedule message asks for a receipt earlier or later, and a cancel message marks a receipt nothing needs"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "a tolerance in days, set per message type, keeps small shifts quiet"
+              }
+            ],
+            "text": "a tolerance in days, set per message type, keeps small shifts quiet"
+          },
           {
             "tokens": [
               {
@@ -6392,11 +6450,15 @@
         "do": {
           "tokens": [
             {
+              "t": "text",
+              "v": "planning compares the receipts that exist with what is needed, and raises a message where they differ. a reschedule message asks for a receipt earlier or later, and a cancel message marks a receipt nothing needs. a tolerance in days, set per message type, keeps small shifts quiet. "
+            },
+            {
               "t": "strong",
               "v": "Not documented for this release."
             }
           ],
-          "text": "Not documented for this release."
+          "text": "planning compares the receipts that exist with what is needed, and raises a message where they differ. a reschedule message asks for a receipt earlier or later, and a cancel message marks a receipt nothing needs. a tolerance in days, set per message type, keeps small shifts quiet. Not documented for this release."
         }
       },
       {
@@ -6863,12 +6925,30 @@
           "tokens": [
             {
               "t": "text",
-              "v": "backflush materials and hours"
+              "v": "let LN issue the material by itself, as the work is reported"
             }
           ],
-          "text": "backflush materials and hours"
+          "text": "let LN issue the material by itself, as the work is reported"
         },
         "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "a backflushed material is issued when a quantity of the end product is reported completed or rejected"
+              }
+            ],
+            "text": "a backflushed material is issued when a quantity of the end product is reported completed or rejected"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "only the materials linked to the operations reported are issued; on an order with no operations, all of them are"
+              }
+            ],
+            "text": "only the materials linked to the operations reported are issued; on an order with no operations, all of them are"
+          },
           {
             "tokens": [
               {
@@ -6886,11 +6966,15 @@
         "do": {
           "tokens": [
             {
+              "t": "text",
+              "v": "a backflushed material is issued when a quantity of the end product is reported completed or rejected. only the materials linked to the operations reported are issued; on an order with no operations, all of them are. "
+            },
+            {
               "t": "strong",
               "v": "Not documented for this release."
             }
           ],
-          "text": "Not documented for this release."
+          "text": "a backflushed material is issued when a quantity of the end product is reported completed or rejected. only the materials linked to the operations reported are issued; on an order with no operations, all of them are. Not documented for this release."
         }
       },
       {
@@ -7409,12 +7493,39 @@
           "tokens": [
             {
               "t": "text",
-              "v": "block inventory by zone or location"
+              "v": "put stock on hold, for a whole zone or location, or for one lot or stock point"
             }
           ],
-          "text": "block inventory by zone or location"
+          "text": "put stock on hold, for a whole zone or location, or for one lot or stock point"
         },
         "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "block a zone or a location here; a lot and a single stock point each have their own session beside it on the menu"
+              }
+            ],
+            "text": "block a zone or a location here; a lot and a single stock point each have their own session beside it on the menu"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "choose the reason: one kind tells planning to go on counting the stock, for a short check, and the other tells planning the stock is gone"
+              }
+            ],
+            "text": "choose the reason: one kind tells planning to go on counting the stock, for a short check, and the other tells planning the stock is gone"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "a block on stock raises the item's inventory on hold; blocking only a kind of transaction does not"
+              }
+            ],
+            "text": "a block on stock raises the item's inventory on hold; blocking only a kind of transaction does not"
+          },
           {
             "tokens": [
               {
@@ -7428,11 +7539,15 @@
         "do": {
           "tokens": [
             {
+              "t": "text",
+              "v": "block a zone or a location here; a lot and a single stock point each have their own session beside it on the menu. choose the reason: one kind tells planning to go on counting the stock, for a short check, and the other tells planning the stock is gone. a block on stock raises the item's inventory on hold; blocking only a kind of transaction does not. "
+            },
+            {
               "t": "strong",
               "v": "Not documented for this release."
             }
           ],
-          "text": "Not documented for this release."
+          "text": "block a zone or a location here; a lot and a single stock point each have their own session beside it on the menu. choose the reason: one kind tells planning to go on counting the stock, for a short check, and the other tells planning the stock is gone. a block on stock raises the item's inventory on hold; blocking only a kind of transaction does not. Not documented for this release."
         }
       },
       {
@@ -7639,12 +7754,48 @@
           "tokens": [
             {
               "t": "text",
-              "v": "assemble items on an assembly order"
+              "v": "pick a kit's components and put them together into one item that stays in the warehouse"
             }
           ],
-          "text": "assemble items on an assembly order"
+          "text": "pick a kit's components and put them together into one item that stays in the warehouse"
         },
         "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "create the assembly order by hand for the item to be assembled; its components come from the item's list of components"
+              }
+            ],
+            "text": "create the assembly order by hand for the item to be assembled; its components come from the item's list of components"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "LN makes an outbound line for each component and one inbound line for the assembled item"
+              }
+            ],
+            "text": "LN makes an outbound line for each component and one inbound line for the assembled item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "receive the inbound line to say the assembly is done, and put the item away like any receipt"
+              }
+            ],
+            "text": "receive the inbound line to say the assembly is done, and put the item away like any receipt"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "the order cannot be changed once a component line is past Open, or deleted while it has component lines"
+              }
+            ],
+            "text": "the order cannot be changed once a component line is past Open, or deleted while it has component lines"
+          },
           {
             "tokens": [
               {
@@ -7658,11 +7809,15 @@
         "do": {
           "tokens": [
             {
+              "t": "text",
+              "v": "create the assembly order by hand for the item to be assembled; its components come from the item's list of components. LN makes an outbound line for each component and one inbound line for the assembled item. receive the inbound line to say the assembly is done, and put the item away like any receipt. the order cannot be changed once a component line is past Open, or deleted while it has component lines. "
+            },
+            {
               "t": "strong",
               "v": "Not documented for this release."
             }
           ],
-          "text": "Not documented for this release."
+          "text": "create the assembly order by hand for the item to be assembled; its components come from the item's list of components. LN makes an outbound line for each component and one inbound line for the assembled item. receive the inbound line to say the assembly is done, and put the item away like any receipt. the order cannot be changed once a component line is past Open, or deleted while it has component lines. Not documented for this release."
         }
       },
       {

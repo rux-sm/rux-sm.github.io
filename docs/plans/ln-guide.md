@@ -143,8 +143,6 @@ landings for old page addresses, which are deleted.
       check, and rewrite each scenario's questions into it.
 - [ ] In atlas, give a short form to each step whose wording runs past two
       lines on a phone.
-- [ ] In atlas, record what decides the supply-source turn at Transfer Order
-      Planning, the one branch that names no setting.
 - [ ] In atlas, give Warehouse transfer and Create test items a map of their
       own, since most of their tasks are not on this chain.
 - [ ] In atlas, write a screen file for the four screens still without one, once

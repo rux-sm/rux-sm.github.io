@@ -13,6 +13,8 @@
    same calls read and write this browser's storage instead, starting from
    STARTERS. Only that address does: anywhere else, no client is an error.
 
+   `owner` says whether this account may make and edit puzzles.
+
    Every value from the database is written with textContent by the pages.
    ========================================================================== */
 (() => {
@@ -166,8 +168,16 @@
 
   const store = cloud || (local ? preview : null);
 
+  /* MAKING AND EDITING PUZZLES IS THE OWNER'S. The database refuses anyone
+     else's write; this only keeps the way in out of their sight. The local
+     preview has no log-in and is whoever runs it. */
+  const access = window.Rux?.access;
+  const owner = (!cloud && local) || !!access?.accessOf(access.storedUser()).owner;
+  if (!owner) document.querySelectorAll('.rux--side-nav a[href="make.html"]').forEach(a => a.closest('li')?.remove());
+
   window.Pixels = Object.assign(window.Pixels || {}, {
     data: store,
     preview: !cloud && local,
+    owner,
   });
 })();

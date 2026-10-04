@@ -45,6 +45,8 @@
 <symbol id="m-restart_alt" viewBox="0 -960 960 960"><path d="M451-122q-123-10-207-101t-84-216q0-77 35.5-145T295-695l43 43q-56 33-87 90.5T220-439q0 100 66 173t165 84v60Zm60 0v-60q100-12 165-84.5T741-439q0-109-75.5-184.5T481-699h-20l60 60-43 43-133-133 133-133 43 43-60 60h20q134 0 227 93.5T801-439q0 125-83.5 216T511-122Z"/></symbol>
 <symbol id="m-undo" viewBox="0 -960 960 960"><path d="M259-200v-60h310q70 0 120.5-46.5T740-422q0-69-50.5-115.5T569-584H274l114 114-42 42-186-186 186-186 42 42-114 114h294q95 0 163.5 64T800-422q0 94-68.5 158T568-200H259Z"/></symbol>
 <symbol id="m-account_circle" viewBox="0 -960 960 960"><path d="M222-255q63-44 125-67.5T480-346q71 0 133.5 23.5T739-255q44-54 62.5-109T820-480q0-145-97.5-242.5T480-820q-145 0-242.5 97.5T140-480q0 61 19 116t63 109Zm160.5-234.5Q343-529 343-587t39.5-97.5Q422-724 480-724t97.5 39.5Q617-645 617-587t-39.5 97.5Q538-450 480-450t-97.5-39.5ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-155.5t86-127Q252-817 325-848.5T480-880q83 0 155.5 31.5t127 86q54.5 54.5 86 127T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480-80Zm107.5-76Q640-172 691-212q-51-36-104-55t-107-19q-54 0-107 19t-104 55q51 40 103.5 56T480-140q55 0 107.5-16Zm-52-375.5Q557-553 557-587t-21.5-55.5Q514-664 480-664t-55.5 21.5Q403-621 403-587t21.5 55.5Q446-510 480-510t55.5-21.5ZM480-587Zm0 374Z"/></symbol>
+<symbol id="m-volume_off" viewBox="0 -960 960 960"><path d="M813-56 681-188q-28 20-60.5 34.5T553-131v-62q23-7 44.5-15.5T638-231L473-397v237L273-360H113v-240h156L49-820l43-43 764 763-43 44Zm-36-232-43-43q20-34 29.5-71.92Q773-440.85 773-481q0-103.32-60-184.66T553-769v-62q124 28 202 125.5T833-481q0 51-14 100t-42 93ZM643-422l-90-90v-130q47 22 73.5 66t26.5 96q0 15-2.5 29.5T643-422ZM473-592 369-696l104-104v208Zm-60 286v-150l-84-84H173v120h126l114 114Zm-42-192Z"/></symbol>
+<symbol id="m-volume_up" viewBox="0 -960 960 960"><path d="M560-131v-62q97-28 158.5-107.5T780-481q0-101-61-181T560-769v-62q124 28 202 125.5T840-481q0 127-78 224.5T560-131ZM120-360v-240h160l200-200v640L280-360H120Zm420 48v-337q55 17 87.5 64T660-480q0 57-33 104t-87 64ZM420-648 307-540H180v120h127l113 109v-337Zm-94 168Z"/></symbol>
 </svg>
 <!-- SPRITE:END -->
 
@@ -168,19 +170,8 @@
             <button type="button" class="pixels-key" id="pixels-hint"><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-lightbulb"/></svg>Hint</button>
             <button type="button" class="pixels-key" id="pixels-undo" disabled><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-undo"/></svg>Undo</button>
             <button type="button" class="pixels-key" id="pixels-redo" disabled><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-redo"/></svg>Redo</button>
-          </div>
-          <!-- play.js sets it from the saved choice. -->
-          <div class="pixels-foot">
-            <div class="rux--toggle" id="pixels-sound">
-              <button id="pixels-sound-button" class="rux--toggle__button" role="switch" type="button" aria-checked="true" aria-labelledby="pixels-sound-label"></button>
-              <label class="rux--toggle__label" for="pixels-sound-button" id="pixels-sound-label">
-                <span class="rux--toggle__label-text">Sound</span>
-                <div class="rux--toggle__appearance">
-                  <div class="rux--toggle__switch"></div>
-                  <span class="rux--toggle__text" aria-hidden="true">On</span>
-                </div>
-              </label>
-            </div>
+            <!-- play.js sets it from the saved choice; pressed is on. -->
+            <button type="button" class="pixels-key" id="pixels-sound" aria-pressed="true"><svg class="pixels-key-icon pixels-sound-on" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-volume_up"/></svg><svg class="pixels-key-icon pixels-sound-off" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-volume_off"/></svg>Sound</button>
           </div>
         </div>
         <!-- Shown under the finished picture, which is the board itself. -->

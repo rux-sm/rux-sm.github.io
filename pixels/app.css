@@ -169,6 +169,9 @@
 .pixels-level-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
 .pixels-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); gap: 1rem; }
 .pixels-list .rux--tile { display: grid; gap: .75rem; align-content: start; justify-items: center; text-align: center; }
+/* For the owner a tile carries the way to edit its puzzle under it. */
+.pixels-tile { display: grid; grid-template-rows: 1fr auto; gap: .25rem; }
+.pixels-tile-edit { justify-self: center; font-size: .75rem; }
 .pixels-blank {
   display: grid;
   place-items: center;
@@ -272,9 +275,13 @@
 }
 .pixels-mark--x::after { transform: rotate(-45deg); }
 
-/* THE ROW OF KEYS under them: back, restart, hint, undo and redo, each its
-   icon over its word. */
-.pixels-keys { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .25rem; }
+/* THE ROW OF KEYS under them: back, restart, hint, undo, redo and sound,
+   each its icon over its word. Sound is a key that stays pressed while on,
+   and shows the speaker crossed out, dimmed, while off. */
+.pixels-keys { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .25rem; }
+.pixels-key[aria-pressed="true"] > .pixels-sound-off,
+.pixels-key[aria-pressed="false"] > .pixels-sound-on { display: none; }
+.pixels-key[aria-pressed="false"] { color: var(--rux-text-secondary); }
 .pixels-key {
   display: grid;
   justify-items: center;
@@ -293,10 +300,8 @@
 .pixels-key:disabled { border-color: var(--rux-border-disabled); color: var(--rux-text-disabled); cursor: default; }
 
 .pixels-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
-/* THE FOOT: the Sound switch, in the middle. */
-.pixels-foot { display: flex; justify-content: center; }
 /* Each view's display would outrank the hidden attribute. */
-.pixels-game[hidden], .pixels-solved[hidden], .pixels-controls[hidden], .pixels-info[hidden] { display: none; }
+.pixels-game[hidden], .pixels-solved[hidden], .pixels-controls[hidden], .pixels-info[hidden], .pixels-maker[hidden] { display: none; }
 .pixels-solved { display: grid; gap: 1.5rem; justify-items: center; text-align: center; padding-block: 1rem; }
 .pixels-solved .pixels-stars { font-size: 2rem; }
 

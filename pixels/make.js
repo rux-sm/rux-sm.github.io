@@ -11,13 +11,15 @@
    where the puzzle sits on the front page, among those of its size. Save stays off until the picture is solvable and named.
    docs/making-puzzles.md is the guide to a good one.
 
+   Only the owner's account makes and edits; any other is told so.
+
    make.html?id= edits a saved puzzle. A new picture not yet saved is kept in
    this browser under `pixels-draft`, so a reload does not lose it.
    ========================================================================== */
 (() => {
   'use strict';
 
-  const { data, SIZES, grid, squaresOf, unreached, rounds, grade, board, drag, switcher } = window.Pixels;
+  const { data, owner, SIZES, grid, squaresOf, unreached, rounds, grade, board, drag, switcher } = window.Pixels;
   const $ = id => document.getElementById(id);
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
   const inks = $('pixels-inks');
@@ -196,6 +198,11 @@
 
   (async () => {
     if (!data) { say('Pixels could not connect', 'Reload the page to try again.'); return; }
+    if (!owner) {
+      say('Only the owner makes puzzles', 'This account can play them.');
+      document.querySelector('.pixels-maker').hidden = true;
+      return;
+    }
     const id = new URLSearchParams(location.search).get('id');
     try {
       puzzles = await data.list();

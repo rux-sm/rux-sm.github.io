@@ -30,7 +30,7 @@ empties the board, and Undo straight after brings it back. The puzzle's
 name, the clock and the stars sit in the board's corner, and the numbers
 keep the same space on every puzzle of a size. When the picture is complete the squares
 fill in as the picture, in its colours if it has them, and its name shows.
-Each move plays a tone, which the Sound switch turns off and an iPhone's
+Each move plays a tone, which the Sound key turns off and an iPhone's
 silent switch does not, and a phone ticks
 on each fill where the browser allows it. A game in
 progress is kept in the browser, so a reload picks it up.
@@ -39,7 +39,9 @@ progress is kept in the browser, so a reload picks it up.
 the date, the same for everyone. Only it counts toward the days in a row.
 
 `make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits
-or deletes one. It checks as you draw whether the numbers alone can solve the
+or deletes one. Only the owner's account makes and edits: it alone sees Make
+in the menu and an Edit link under each tile, and the database refuses a
+puzzle written by anyone else. It checks as you draw whether the numbers alone can solve the
 picture and how hard that is, outlines each square that would need a guess,
 and saves only a picture with one answer. Size starts a blank board of 5,
 10 or 15 a side. Its Colour step paints the picture

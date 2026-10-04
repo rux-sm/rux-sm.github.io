@@ -5,12 +5,13 @@
    section for each level the maker gave, its puzzles easy to hard, and none
    locked: the 5×5 levels are called Quick, the 15×15 ones Long, and they
    stand before and after the 10×10 levels. A solved puzzle shows its picture, name, stars and best time; an
-   unsolved one its number, a question mark and how hard it is.
+   unsolved one its number, a question mark and how hard it is. The owner
+   has an Edit link under each.
    ========================================================================== */
 (() => {
   'use strict';
 
-  const { data, grid, rounds, grade, order, daily, today, streak, picture, stars, time, title } = window.Pixels;
+  const { data, owner, grid, rounds, grade, order, daily, today, streak, picture, stars, time, title } = window.Pixels;
   const host = document.getElementById('pixels-levels');
 
   const say = (heading, detail) => {
@@ -51,6 +52,18 @@
     }
     a.append(art, text);
     return a;
+  };
+
+  // For the owner: the tile, and under it the way to its puzzle in the maker.
+  const editable = (link, puzzle) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'pixels-tile';
+    const edit = document.createElement('a');
+    edit.className = 'rux--link pixels-tile-edit';
+    edit.href = `make.html?id=${encodeURIComponent(puzzle.id)}`;
+    edit.textContent = 'Edit';
+    wrap.append(link, edit);
+    return wrap;
   };
 
   // A heading, a note at its far end, and the tiles under them.
@@ -116,7 +129,8 @@
         if (kind(p) !== heading) return;
         const best = results.get(p.id);
         if (best) solved++;
-        tiles.push(tile(p, title(p, i, !!best), `play.html?id=${encodeURIComponent(p.id)}`, best));
+        const link = tile(p, title(p, i, !!best), `play.html?id=${encodeURIComponent(p.id)}`, best);
+        tiles.push(owner ? editable(link, p) : link);
       });
       host.appendChild(section(heading, `${solved} of ${tiles.length} solved`, tiles));
     }

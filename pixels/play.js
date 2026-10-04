@@ -31,7 +31,7 @@
 
    Each fill, X, finished line, mistake, hint and solve plays a tone and
    ticks the phone, and an X taken off or a move undone plays a falling
-   one. The Sound switch keeps its choice in this browser.
+   one. The Sound key keeps its choice in this browser.
 
    A game in progress is kept in this browser under `pixels-progress`, so a
    phone that reloads the page picks up where it was. It is dropped once the
@@ -378,9 +378,12 @@
       sound('fill');
     });
     cover.focus({ preventScroll: true });
-    const soundToggle = $('pixels-sound');
-    window.Rux.formControls?.toggle(soundToggle, sounds());
-    soundToggle.addEventListener('rux:toggle', e => { if (sounds(e.detail.on)) sound('fill'); });
+    const soundKey = $('pixels-sound');
+    soundKey.setAttribute('aria-pressed', sounds());
+    soundKey.addEventListener('click', () => {
+      soundKey.setAttribute('aria-pressed', sounds(!sounds()));
+      sound('fill');
+    });
 
     tick();
     draw();

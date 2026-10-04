@@ -525,7 +525,7 @@
       -->
       <a class="rux--btn rux--btn--ghost rux--btn--disabled" aria-disabled="true">Disabled ghost link</a>
     </div>
-    <div class="ks-row">
+    <div class="ks-row ks-scroll">
       <div class="rux--btn-set">
         <button type="button" class="rux--btn rux--btn--secondary">Cancel</button>
         <button type="button" class="rux--btn rux--btn--primary">Submit</button>
@@ -536,7 +536,7 @@
       `.rux--btn-set .rux--btn.rux--btn--loading` (_button.scss:514). Outside a
       btn-set the class does nothing, so the set is where it has to be shown.
     -->
-    <div class="ks-row">
+    <div class="ks-row ks-scroll">
       <div class="rux--btn-set">
         <button type="button" class="rux--btn rux--btn--secondary" disabled>Cancel</button>
         <button type="button" class="rux--btn rux--btn--primary rux--btn--loading" disabled>
@@ -3709,8 +3709,10 @@
          glyph. This fragment had the svg directly in the button. -->
     <div class="ks-label">icon only · lg · 20px glyph</div>
     <!-- Set in from the column's edge: each tab's tooltip is centred under it,
-         and the first one's ran 32px past the edge, off the page. -->
-    <div class="rux--tabs rux--tabs__icon--lg" style="margin-inline-start:2.5rem">
+         and the first one's ran 32px past the edge, off the page. The width
+         gives the inset back, or the full-width tab bar ends 40px past the
+         column. -->
+    <div class="rux--tabs rux--tabs__icon--lg" style="margin-inline-start:2.5rem;inline-size:calc(100% - 2.5rem)">
       <div class="rux--tab--list" role="tablist" aria-label="Icon tabs">
         <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--tooltip rux--icon-tooltip">
           <div class="rux--tooltip-trigger__wrapper">
@@ -3954,7 +3956,7 @@
         </div>
       </div>
       <section class="rux--table-toolbar" role="group" aria-label="Table actions">
-        <div class="rux--batch-actions rux--batch-actions--active" aria-hidden="false">
+        <div class="rux--batch-actions rux--batch-actions--active ks-scroll" aria-hidden="false">
           <div class="rux--batch-summary">
             <p class="rux--batch-summary__para"><span>1 item selected</span></p>
           </div>
@@ -5148,7 +5150,7 @@
     what makes the trigger visible in the sink. Every nesting finding here is
     that one choice, reported once per button.
   -->
-  <div class="ks-row" style="gap:6rem;padding:3rem 0 5rem 8rem">
+  <div class="ks-row ks-scroll" style="gap:6rem;padding:3rem 0 5rem 8rem">
     <span class="rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--drop-shadow">
       <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">Bottom</button>
       <span class="rux--popover">
@@ -5181,7 +5183,7 @@
        Bottom end is last in the row: its popover hangs from the trigger's end
        edge back towards the start, so it needs the row's width before it. -->
   <div class="ks-label">PLACEMENTS · CLICK A TRIGGER</div>
-  <div class="ks-row" style="gap:6rem;padding:3rem 0 5rem 8rem">
+  <div class="ks-row ks-scroll" style="gap:6rem;padding:3rem 0 5rem 8rem">
     <span class="rux--popover-container rux--popover--left rux--popover--caret rux--popover--drop-shadow">
       <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">Left</button>
       <span class="rux--popover">
@@ -5219,7 +5221,7 @@
        demonstrable statically, and rendering it broken to move a coverage
        number is worse than leaving the number where it is. -->
   <div class="ks-label">OPEN · TAB TIP</div>
-  <div class="ks-row" style="padding:1rem 0 5rem 12rem">
+  <div class="ks-row ks-scroll" style="padding:1rem 0 6rem 12rem">
     <span class="rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--drop-shadow rux--popover--open">
       <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" aria-expanded="true">Open</button>
       <span class="rux--popover">
@@ -5233,7 +5235,7 @@
        row could not hold a 368px panel centred at 8rem beside a 359px one
        without either escaping the column on the left or running off it on the
        right below about 1000px. Two rows have no such width to trade. -->
-  <div class="ks-row" style="padding:0 0 9rem 2rem">
+  <div class="ks-row ks-scroll" style="padding:0 0 9rem 2rem">
     <span class="rux--popover-container rux--popover--bottom-start rux--popover--tab-tip rux--popover--drop-shadow rux--popover--open">
       <button type="button" class="rux--popover--tab-tip__button" aria-expanded="true" aria-label="Tab tip">
         <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-list"/></svg>
@@ -5747,7 +5749,9 @@
   -->
   <div style="display:grid;gap:2.5rem">
 
-    <div>
+    <!-- Room under the row for the "Optional" line, which hangs below its
+         step and would otherwise scroll inside the box on a phone. -->
+    <div class="ks-scroll" style="padding-block-end:1rem">
       <div class="ks-label">horizontal — complete · current · incomplete · disabled</div>
       <!-- BLOCK:BEGIN name=default label="Progress indicator" -->
       <ul class="rux--progress">
@@ -5790,7 +5794,7 @@
       <!-- BLOCK:END default -->
     </div>
 
-    <div>
+    <div class="ks-scroll">
       <!-- Clickable: the interactive story drops `--unclickable` from the steps
            that navigate and keeps it on the CURRENT one, which is where you
            already are. -->
@@ -5815,7 +5819,7 @@
       </ul>
     </div>
 
-    <div>
+    <div class="ks-scroll">
       <div class="ks-label">vertical — the variant a narrow column wants</div>
       <!-- BLOCK:BEGIN name=vertical label="Progress indicator, vertical" -->
       <ul class="rux--progress rux--progress--vertical">
@@ -6875,7 +6879,7 @@
     story places it, `translate(lower%, -50%) scaleX(upper - lower)`, and each
     thumb wrapper takes only its `inset-inline-start`.
   -->
-  <div style="max-width:28rem;display:grid;gap:2rem">
+  <div class="ks-scroll" style="max-width:28rem;display:grid;gap:2rem">
     <div class="rux--form-item">
       <label class="rux--label" for="sl-1">Volume</label>
       <div class="rux--slider-container">
@@ -7482,6 +7486,7 @@
     every capture. Not written. No module drives this yet; the page buttons
     are static.
   -->
+  <div class="ks-scroll">
   <!-- BLOCK:BEGIN name=default label="Pagination nav" -->
   <nav class="rux--pagination-nav rux--layout--size-lg" aria-label="Pagination">
     <ul class="rux--pagination-nav__list">
@@ -7529,6 +7534,7 @@
     <div class="rux--pagination-nav__accessibility-label" aria-live="polite">Page 1 of 10</div>
   </nav>
   <!-- BLOCK:END default -->
+  </div>
 
   <div class="ks-label">current page inside the overflow — `--active` on the select AND its icon wrapper</div>
   <!-- check-compound asked for this one: Carbon writes
@@ -7539,6 +7545,7 @@
        the one capture has it on a button only, because no story puts the
        current page inside the overflow; the CSS rule is the evidence. The
        select itself stays as captured, without the modifier. -->
+  <div class="ks-scroll">
   <nav class="rux--pagination-nav rux--layout--size-lg" aria-label="Pagination, page 7">
     <ul class="rux--pagination-nav__list">
       <li class="rux--pagination-nav__list-item">
@@ -7572,6 +7579,7 @@
     </ul>
     <div class="rux--pagination-nav__accessibility-label" aria-live="polite">Page 7 of 10</div>
   </nav>
+  </div>
 </section>
 
 <section class="ks-sec" id="menu-button">

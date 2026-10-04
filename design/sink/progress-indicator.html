@@ -37,7 +37,9 @@
   -->
   <div style="display:grid;gap:2.5rem">
 
-    <div>
+    <!-- Room under the row for the "Optional" line, which hangs below its
+         step and would otherwise scroll inside the box on a phone. -->
+    <div class="ks-scroll" style="padding-block-end:1rem">
       <div class="ks-label">horizontal — complete · current · incomplete · disabled</div>
       <!-- BLOCK:BEGIN name=default label="Progress indicator" -->
       <ul class="rux--progress">
@@ -80,7 +82,7 @@
       <!-- BLOCK:END default -->
     </div>
 
-    <div>
+    <div class="ks-scroll">
       <!-- Clickable: the interactive story drops `--unclickable` from the steps
            that navigate and keeps it on the CURRENT one, which is where you
            already are. -->
@@ -105,7 +107,7 @@
       </ul>
     </div>
 
-    <div>
+    <div class="ks-scroll">
       <div class="ks-label">vertical — the variant a narrow column wants</div>
       <!-- BLOCK:BEGIN name=vertical label="Progress indicator, vertical" -->
       <ul class="rux--progress rux--progress--vertical">

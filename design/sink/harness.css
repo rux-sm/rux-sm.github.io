@@ -195,3 +195,14 @@ body { min-height: 100vh; background: var(--rux-background);
    `[hidden] { display: none }` rule on specificity. The harness needs `hidden` to
    actually hide, to stand in for the mount/unmount Carbon's web components do. */
 [hidden] { display: none !important; }
+
+/* A SPECIMEN WIDER THAN A PHONE SCROLLS IN ITS OWN BOX, so the page itself
+   never scrolls sideways. Under Carbon's md breakpoint only: a box that
+   scrolls one way clips the other, and above it nothing here is too wide.
+   Last in the file, so its narrower spacing table follows the table's own rule. */
+@media (max-width: 41.98rem) {
+  .ks-scroll, .ks-scale { overflow-x: auto; max-inline-size: 100%; min-inline-size: 0; }
+  /* The spacing table's first three columns shrink to their words, so the
+     swatches they describe are on the screen and not only behind a scroll. */
+  .ks-scale { grid-template-columns: 8rem 2.5rem 2rem 1fr; gap: .5rem .75rem; }
+}

@@ -183,8 +183,10 @@
          glyph. This fragment had the svg directly in the button. -->
     <div class="ks-label">icon only · lg · 20px glyph</div>
     <!-- Set in from the column's edge: each tab's tooltip is centred under it,
-         and the first one's ran 32px past the edge, off the page. -->
-    <div class="rux--tabs rux--tabs__icon--lg" style="margin-inline-start:2.5rem">
+         and the first one's ran 32px past the edge, off the page. The width
+         gives the inset back, or the full-width tab bar ends 40px past the
+         column. -->
+    <div class="rux--tabs rux--tabs__icon--lg" style="margin-inline-start:2.5rem;inline-size:calc(100% - 2.5rem)">
       <div class="rux--tab--list" role="tablist" aria-label="Icon tabs">
         <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--tooltip rux--icon-tooltip">
           <div class="rux--tooltip-trigger__wrapper">

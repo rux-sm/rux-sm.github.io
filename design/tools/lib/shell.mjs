@@ -85,7 +85,7 @@ export const PAGES = [
   // was reachable only through the switcher's "Design System" entry, which is
   // the app-switcher tier reaching sideways at its own app.
   { id: 'index', file: 'index.html', label: 'Home' },
-  { id: 'portal', file: 'portal.html', label: 'Portal' },
+  { id: 'portal', file: 'portal.html', label: 'Components' },
   { id: 'kitchen-sink', file: 'kitchen-sink.html', label: 'Kitchen sink' },
   { id: 'builder', file: 'builder.html', label: 'Page builder' },
   { id: 'theme-creator', file: 'theme-creator.html', label: 'Theme creator' },

@@ -1584,3 +1584,12 @@
 .rux--table-toolbar .rux--form-item:has(> .rux--select--inline) {
   flex: none;
 }
+
+/* A CLICKABLE TILE'S SECOND LINE IS SECONDARY TEXT. A tile that names a place
+   and says a few words about it sets both lines in the primary colour, so only
+   size parts a 20px name from its 14px line; supporting copy is secondary text
+   in Carbon's own convention, and it costs no weight and no space. The site's
+   home page and Design's draw their tiles this way. */
+.rux--tile--clickable .rux--type-body-01 {
+  color: var(--rux-text-secondary);
+}

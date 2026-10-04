@@ -26,8 +26,8 @@
   kitchen-sink.html, builder.html and theme-creator.html are each written by a
   tools/build-*.mjs because their content is data — a component index, a
   fragment assembly, a block catalogue, a token table. This page's content is
-  four links, ten links and a sentence, so a generator would have nothing to
-  read and one more file to keep honest. It is hand-authored on purpose.
+  four links and fourteen links, so a generator would have nothing to read and
+  one more file to keep honest. It is hand-authored on purpose.
 
   IT IS THEREFORE THE ONE ROOT PAGE THAT CARRIES A SPRITE MARKER BLOCK.
   tools/lib/sources.mjs spritePages() opts a page in by the marker, and it
@@ -76,8 +76,10 @@
 <symbol id="i-close" viewBox="0 0 32 32"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2 12H14V13H2z" style="fill:var(--rux-icon-path-1)"/><path d="M2 9H14V10H2z" style="fill:var(--rux-icon-path-2)"/><path d="M2 6H14V7H2z"/><path d="M2 3H14V4H2z"/></symbol>
 <symbol id="i-user--avatar" viewBox="0 0 16 16"><path d="M8,1C4.1,1,1,4.1,1,8s3.1,7,7,7s7-3.1,7-7S11.9,1,8,1z M5,13.2v-1.5c0-0.9,0.6-1.6,1.5-1.7h3c0.9,0.1,1.5,0.8,1.5,1.7v1.5	C9.1,14.3,6.9,14.3,5,13.2L5,13.2z M12,12l0-0.8c0-0.9-1.1-2.1-2.5-2.2h-3C5.1,9.1,4,10.3,4,11.7l0,0.5v0.3c-2.5-2.2-2.7-6-0.5-8.5	s6-2.7,8.5-0.5s2.7,6,0.5,8.5c-0.1,0.2-0.3,0.3-0.5,0.5V12z" style="fill:var(--rux-icon-path-1)"/><path d="M8,3C6.6,3,5.5,4.1,5.5,5.5S6.6,8,8,8s2.5-1.1,2.5-2.5S9.4,3,8,3z M8,7C7.2,7,6.5,6.3,6.5,5.5S7.2,4,8,4s1.5,0.7,1.5,1.5	S8.8,7,8,7z" style="fill:var(--rux-icon-path-2)"/></symbol>
-<symbol id="i-arrow--right" viewBox="0 0 16 16"><path d="M9.3 3.7 13.1 7.5 1 7.5 1 8.5 13.1 8.5 9.3 12.3 10 13 15 8 10 3z" style="fill:var(--rux-icon-path-1)"/></symbol>
+<symbol id="i-edit" viewBox="0 0 32 32"><path d="M2 26H30V28H2z" style="fill:var(--rux-icon-path-1)"/><path d="M25.4,9c0.8-0.8,0.8-2,0-2.8c0,0,0,0,0,0l-3.6-3.6c-0.8-0.8-2-0.8-2.8,0c0,0,0,0,0,0l-15,15V24h6.4L25.4,9z M20.4,4L24,7.6	l-3,3L17.4,7L20.4,4z M6,22v-3.6l10-10l3.6,3.6l-10,10H6z" style="fill:var(--rux-icon-path-2)"/></symbol>
+<symbol id="i-list" viewBox="0 0 32 32"><path d="M10 6H28V8H10z" style="fill:var(--rux-icon-path-1)"/><path d="M10 24H28V26H10z" style="fill:var(--rux-icon-path-2)"/><path d="M10 15H28V17H10z"/><path d="M4 15H6V17H4z"/><path d="M4 6H6V8H4z"/><path d="M4 24H6V26H4z"/></symbol>
 <symbol id="i-grid" viewBox="0 0 32 32"><path d="M12,4H6A2,2,0,0,0,4,6v6a2,2,0,0,0,2,2h6a2,2,0,0,0,2-2V6A2,2,0,0,0,12,4Zm0,8H6V6h6Z" style="fill:var(--rux-icon-path-1)"/><path d="M26,4H20a2,2,0,0,0-2,2v6a2,2,0,0,0,2,2h6a2,2,0,0,0,2-2V6A2,2,0,0,0,26,4Zm0,8H20V6h6Z" style="fill:var(--rux-icon-path-2)"/><path d="M12,18H6a2,2,0,0,0-2,2v6a2,2,0,0,0,2,2h6a2,2,0,0,0,2-2V20A2,2,0,0,0,12,18Zm0,8H6V20h6Z"/><path d="M26,18H20a2,2,0,0,0-2,2v6a2,2,0,0,0,2,2h6a2,2,0,0,0,2-2V20A2,2,0,0,0,26,18Zm0,8H20V20h6Z"/></symbol>
+<symbol id="i-color-palette" viewBox="0 0 32 32"><circle cx="10" cy="12" r="2"/><circle cx="16" cy="9" r="2"/><circle cx="22" cy="12" r="2"/><circle cx="23" cy="18" r="2"/><circle cx="19" cy="23" r="2"/><path d="M16.54,2A14,14,0,0,0,2,16a4.82,4.82,0,0,0,6.09,4.65l1.12-.31A3,3,0,0,1,13,23.24V27a3,3,0,0,0,3,3A14,14,0,0,0,30,15.46,14.05,14.05,0,0,0,16.54,2Zm8.11,22.31A11.93,11.93,0,0,1,16,28a1,1,0,0,1-1-1V23.24a5,5,0,0,0-5-5,5.07,5.07,0,0,0-1.33.18l-1.12.31A2.82,2.82,0,0,1,4,16,12,12,0,0,1,16.47,4,12.18,12.18,0,0,1,28,15.53,11.89,11.89,0,0,1,24.65,24.32Z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="m-close" viewBox="0 -960 960 960"><path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></symbol>
 <symbol id="m-menu" viewBox="0 -960 960 960"><path d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"/></symbol>
 </svg>
@@ -189,7 +191,7 @@
   <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux rux--side-nav--hidden" aria-label="Pages">
     <ul class="rux--side-nav__items">
       <li class="rux--side-nav__item rux--side-nav__item--active"><a class="rux--side-nav__link" href="index.html" aria-current="page"><span class="rux--side-nav__link-text">Home</span></a></li>
-      <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="portal.html"><span class="rux--side-nav__link-text">Portal</span></a></li>
+      <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="portal.html"><span class="rux--side-nav__link-text">Components</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="kitchen-sink.html"><span class="rux--side-nav__link-text">Kitchen sink</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="builder.html"><span class="rux--side-nav__link-text">Page builder</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="theme-creator.html"><span class="rux--side-nav__link-text">Theme creator</span></a></li>
@@ -204,65 +206,49 @@
       <!-- KEEP THIS WRAPPER. Carbon components carry no margin — the spacing
            overview has them delegate positioning to a parent — so without a
            stack every child of this column measures gapToNext 0 and sits
-           flush against its neighbour. portal.html shipped that way and
-           passed all seventeen gates at the time. -->
-      <div class="rux--stack-vertical rux--stack-scale-7">
+           flush against its neighbour. -->
+      <div class="rux--stack-vertical rux--stack-scale-9">
+        <h1 class="rux--visually-hidden">Rux Design</h1>
 
-        <div class="rux--stack-vertical rux--stack-scale-5">
-          <h1>Rux DS</h1>
-          <p>A framework-free UI kit built from Carbon v11, compiled under the <code>rux</code> prefix and vendored as static CSS, HTML and JS. No build step, no runtime dependency, no framework. This is the system running: the same four tools and eleven page templates a project starts from.</p>
-        </div>
-
-        <!-- THE HEADING AND ITS TILES ARE ONE SECTION. Kept as one because
-             splitting them across two .rux--css-grid siblings puts the
-             stack's gap outside the pair and lands the tiles at exactly 0px
-             under the heading — measured on rux-sm.github.io, fixed there
-             2026-09-03. A nested grid is a SUBGRID: it inherits this page
-             grid's columns rather than starting its own, and --with-row-gap
-             is what separates rows once there are more than three. -->
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="tools">
-          <h2 id="tools">Tools</h2>
+        <!-- THE FOUR TOOLS, as the site's home page draws an app: an icon at
+             32px, the name, and three or four words. A nested grid is a
+             SUBGRID: it inherits this page grid's columns rather than starting
+             its own. -->
+        <section aria-label="Tools">
           <div class="rux--subgrid rux--subgrid--wide rux--subgrid--with-row-gap">
-            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="portal.html"><p><strong>Portal</strong></p><p>The component index: every compiled component, what it is for, and the link to IBM's own usage, style and accessibility guidance.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="kitchen-sink.html"><p><strong>Kitchen sink</strong></p><p>Every component rendered on one page, in every state that was captured. The markup reference: copy from here.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="builder.html"><p><strong>Builder</strong></p><p>Compose a page from a template and a catalogue of blocks, edit its content in place, and take the result away as a file or a command.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="theme-creator.html"><p><strong>Theme creator</strong></p><p>Build a theme from one colour, see every token it moves against a live page, and check the contrast before you keep it.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
+            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="portal.html"><span class="rux--stack-vertical rux--stack-scale-3"><svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-list"/></svg><span class="rux--type-productive-heading-03">Components</span><span class="rux--type-body-01">Every component, explained</span></span></a></div>
+            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="kitchen-sink.html"><span class="rux--stack-vertical rux--stack-scale-3"><svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-grid"/></svg><span class="rux--type-productive-heading-03">Kitchen sink</span><span class="rux--type-body-01">Every component, live</span></span></a></div>
+            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="builder.html"><span class="rux--stack-vertical rux--stack-scale-3"><svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-edit"/></svg><span class="rux--type-productive-heading-03">Page builder</span><span class="rux--type-body-01">Start from a template</span></span></a></div>
+            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="theme-creator.html"><span class="rux--stack-vertical rux--stack-scale-3"><svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-color-palette"/></svg><span class="rux--type-productive-heading-03">Theme creator</span><span class="rux--type-body-01">Start from one colour</span></span></a></div>
           </div>
         </section>
 
-        <!-- THE TEMPLATES, LINKED DIRECTLY. Each is a complete page, shell
-             included, and the one thing this site can show that a repository
-             listing cannot: what the template looks like before you copy it.
-             The one-line purposes are the routing table from the design-page
-             skill, which is where a page author reads them. -->
+        <!-- THE TEMPLATES, LINKED DIRECTLY, one tile each and its name alone.
+             Each is a complete page, shell included, and the one thing this
+             site can show that a repository listing cannot: what the template
+             looks like before it is copied. The order is the design-page
+             skill's routing table. THE HEADING AND ITS TILES ARE ONE SECTION,
+             because splitting them across two .rux--css-grid siblings puts the
+             stack's gap outside the pair and lands the tiles 0px under the
+             heading. -->
         <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="templates">
-          <h2 id="templates">Templates</h2>
-          <p>Twelve page shapes, each a complete page with the shell already in it. A page here starts by copying the nearest one — never from scratch.</p>
+          <h2 id="templates" class="rux--type-productive-heading-03">Templates</h2>
           <div class="rux--subgrid rux--subgrid--wide rux--subgrid--with-row-gap">
-            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="templates/app-shell.html"><p><strong>App shell</strong></p><p>Nav and header, nothing else. The frame the others are built on.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="templates/table-page.html"><p><strong>Table page</strong></p><p>A list of records, sortable and selectable.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="templates/form-page.html"><p><strong>Form page</strong></p><p>Create or edit one record.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="templates/detail-page.html"><p><strong>Detail page</strong></p><p>View one record, seen several ways through tabs.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="templates/document-page.html"><p><strong>Document page</strong></p><p>Read one record top to bottom, in order.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="templates/search-results-page.html"><p><strong>Search results page</strong></p><p>A query, facets that narrow it, and what came back.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="templates/dashboard-page.html"><p><strong>Dashboard page</strong></p><p>An overview of many things at once.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="templates/settings-page.html"><p><strong>Settings page</strong></p><p>Grouped preferences, each group a fieldset.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="templates/wizard-page.html"><p><strong>Wizard page</strong></p><p>One step of a multi-step flow.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="templates/schedule-page.html"><p><strong>Schedule page</strong></p><p>Dates and times.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="templates/empty-state.html"><p><strong>Empty state</strong></p><p>Nothing to show yet.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
-            <div class="rux--css-grid-column rux--col-span-4"><a class="rux--link rux--tile rux--tile--clickable" href="templates/error-state.html"><p><strong>Error state</strong></p><p>Something went wrong.</p><svg class="rux--tile--icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a></div>
+            <div class="rux--css-grid-column rux--col-span-2"><a class="rux--link rux--tile rux--tile--clickable" href="templates/app-shell.html"><span class="rux--type-body-compact-01">App shell</span></a></div>
+            <div class="rux--css-grid-column rux--col-span-2"><a class="rux--link rux--tile rux--tile--clickable" href="templates/table-page.html"><span class="rux--type-body-compact-01">Table</span></a></div>
+            <div class="rux--css-grid-column rux--col-span-2"><a class="rux--link rux--tile rux--tile--clickable" href="templates/form-page.html"><span class="rux--type-body-compact-01">Form</span></a></div>
+            <div class="rux--css-grid-column rux--col-span-2"><a class="rux--link rux--tile rux--tile--clickable" href="templates/list-page.html"><span class="rux--type-body-compact-01">List</span></a></div>
+            <div class="rux--css-grid-column rux--col-span-2"><a class="rux--link rux--tile rux--tile--clickable" href="templates/record-page.html"><span class="rux--type-body-compact-01">Record</span></a></div>
+            <div class="rux--css-grid-column rux--col-span-2"><a class="rux--link rux--tile rux--tile--clickable" href="templates/detail-page.html"><span class="rux--type-body-compact-01">Detail</span></a></div>
+            <div class="rux--css-grid-column rux--col-span-2"><a class="rux--link rux--tile rux--tile--clickable" href="templates/document-page.html"><span class="rux--type-body-compact-01">Document</span></a></div>
+            <div class="rux--css-grid-column rux--col-span-2"><a class="rux--link rux--tile rux--tile--clickable" href="templates/search-results-page.html"><span class="rux--type-body-compact-01">Search results</span></a></div>
+            <div class="rux--css-grid-column rux--col-span-2"><a class="rux--link rux--tile rux--tile--clickable" href="templates/empty-state.html"><span class="rux--type-body-compact-01">Empty state</span></a></div>
+            <div class="rux--css-grid-column rux--col-span-2"><a class="rux--link rux--tile rux--tile--clickable" href="templates/wizard-page.html"><span class="rux--type-body-compact-01">Wizard</span></a></div>
+            <div class="rux--css-grid-column rux--col-span-2"><a class="rux--link rux--tile rux--tile--clickable" href="templates/dashboard-page.html"><span class="rux--type-body-compact-01">Dashboard</span></a></div>
+            <div class="rux--css-grid-column rux--col-span-2"><a class="rux--link rux--tile rux--tile--clickable" href="templates/settings-page.html"><span class="rux--type-body-compact-01">Settings</span></a></div>
+            <div class="rux--css-grid-column rux--col-span-2"><a class="rux--link rux--tile rux--tile--clickable" href="templates/schedule-page.html"><span class="rux--type-body-compact-01">Schedule</span></a></div>
+            <div class="rux--css-grid-column rux--col-span-2"><a class="rux--link rux--tile rux--tile--clickable" href="templates/error-state.html"><span class="rux--type-body-compact-01">Error state</span></a></div>
           </div>
-        </section>
-
-        <!-- THE QUIET LINKS OUT go to the repository on purpose: the site
-             README's "A new app" is the recipe, and IBM's own documentation is
-             the component documentation, so there is no docs site here.
-             Inline, because a bare link on its own line reads as a call to
-             action and these are footnotes. -->
-        <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="start">
-          <h2 id="start">Starting a project</h2>
-          <p>A new app is a folder in the site repository, named for its URL: an <code>index.html</code> started from a template or the builder's download, and one entry in <code>switcher.json</code>.</p>
-          <p><a class="rux--link rux--link--inline" href="https://github.com/rux-sm/rux-sm.github.io/blob/main/README.md#a-new-app">Starting a project</a> is the recipe. <a class="rux--link rux--link--inline" href="https://github.com/rux-sm/rux-sm.github.io/tree/main/design">The repository</a> holds the source and the gates.</p>
         </section>
 
       </div>

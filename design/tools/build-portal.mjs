@@ -205,7 +205,7 @@ const page = `<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Portal — Design</title>
+<title>Components — Design</title>
 <script src="/funnel.js"></script>
 <style>html:not([data-rux-unlocked]){visibility:hidden}</style>
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">

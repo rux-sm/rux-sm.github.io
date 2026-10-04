@@ -65,7 +65,7 @@ The table is generated on every `npm run verify`. Do not edit it by hand.
 | Components | **82 / 87 compiled** in 85 `@use` lines — `data-table` is four of them — and `docs/inventory.md` decides all 87, which `check-inventory` fails if it stops |
 | Themes | 4 — white, g10, g90, g100 — plus `geist-dark`, `ant-dark` and `spotify-dark`, token override blocks in `css/rux-theme.css`, not a compile |
 | Tokens · classes | **631** `--rux-*` defined, 9 more read through a fallback · **1,944** `.rux--*` |
-| Kitchen sink | **73** sections · **1,117** classes with `templates/` and `js/` |
+| Kitchen sink | **73** sections · **1,118** classes with `templates/` and `js/` |
 | Class coverage | **1,066 / 1,520 (70%)** — ratcheted in `data/coverage.json` |
 | Spacing scale | 13 `--rux-spacing-*` tokens, demoed in the `spacing` section |
 | Markup provenance | **81 `rendered-dom` · 6 `source` · 0 `inferred`** across 87 files |

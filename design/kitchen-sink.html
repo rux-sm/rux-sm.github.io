@@ -496,7 +496,7 @@
       <button type="button" class="rux--btn rux--btn--danger--tertiary">Danger tertiary</button>
       <button type="button" class="rux--btn rux--btn--danger--ghost">Danger ghost</button>
     </div>
-    <div class="ks-row">
+    <div class="ks-row ks-row--end">
       <button type="button" class="rux--btn rux--btn--primary rux--btn--xs rux--layout--size-xs">xs</button>
       <button type="button" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">sm</button>
       <button type="button" class="rux--btn rux--btn--primary rux--btn--md rux--layout--size-md">md</button>
@@ -591,7 +591,7 @@
     the component, not the story's hover hint, and `check-ancestry` carries the
     decline with its reason.
   -->
-  <div class="ks-row" style="gap:2rem">
+  <div class="ks-row ks-row--end" style="gap:2rem">
 
     <div class="rux--combo-button__container rux--combo-button__container--lg">
       <div class="rux--combo-button__primary-action">
@@ -770,7 +770,7 @@
       <a class="rux--link rux--link--disabled" href="#links" aria-disabled="true">Disabled link</a>
       <a class="rux--link rux--link--visited" href="#links">Visited</a>
     </div>
-    <div class="ks-row">
+    <div class="ks-row ks-row--end">
       <a class="rux--link rux--link--sm" href="#links">Small link</a>
       <a class="rux--link" href="#links">Default link</a>
       <a class="rux--link rux--link--lg" href="#links">Large link</a>
@@ -815,14 +815,14 @@
       <div class="rux--tag rux--layout--size-md rux--tag--high-contrast"><span class="rux--tag__label">High contrast</span></div>
       <div class="rux--tag rux--layout--size-md rux--tag--outline"><span class="rux--tag__label">Outline</span></div>
     </div>
-    <div class="ks-row">
+    <div class="ks-row ks-row--end">
       <div class="rux--tag rux--layout--size-sm rux--tag--blue rux--tag--sm"><span class="rux--tag__label">Small</span></div>
       <div class="rux--tag rux--layout--size-md rux--tag--blue"><span class="rux--tag__label">Medium</span></div>
       <div class="rux--tag rux--layout--size-lg rux--tag--blue rux--tag--lg"><span class="rux--tag__label">Large</span></div>
       <div class="rux--tag rux--layout--size-md rux--tag--gray rux--tag--disabled"><span class="rux--tag__label">Disabled</span></div>
     </div>
 
-    <div class="ks-label" style="margin-block-start:1.5rem">operational</div>
+    <div class="ks-label">operational</div>
     <div class="ks-row" role="group">
       <button type="button" class="rux--tag rux--tag--operational rux--layout--size-md rux--tag--red">
         <div class="rux--tag__custom-icon">
@@ -835,7 +835,7 @@
       </button>
     </div>
 
-    <div class="ks-label" style="margin-block-start:1.5rem">selectable</div>
+    <div class="ks-label">selectable</div>
     <!--
       components-tag--selectable. A BUTTON carrying `tag--selectable` alone —
       the story passes no size, so Carbon emits no size class and the tag takes
@@ -870,7 +870,7 @@
       </button>
     </div>
 
-    <div class="ks-label" style="margin-block-start:1.5rem">interactive</div>
+    <div class="ks-label">interactive</div>
     <!--
       SOURCE, not rendered-dom: `tag--interactive` appears in none of the 669
       captured stories, because Carbon adds it from a measurement taken after
@@ -892,7 +892,7 @@
       </button>
     </div>
 
-    <div class="ks-label" style="margin-block-start:1.5rem">dismissible (filter)</div>
+    <div class="ks-label">dismissible (filter)</div>
     <!--
       components-tag--dismissible. The section subtitle has said "filter" since
       this fragment was written and there was never a filter tag in it; the tag
@@ -1417,7 +1417,7 @@
     <!-- SIMPLE. Input only. No __icon, no calendar-container, no module. -->
     <div class="rux--date-picker rux--date-picker--next rux--date-picker--simple">
       <div class="rux--date-picker-container rux--date-picker-container--simple">
-        <label class="rux--label" for="dp-simple">Date of birth (mm/dd/yyyy)</label>
+        <label class="rux--label" for="dp-simple">Date of birth</label>
         <div class="rux--date-picker-input__wrapper">
           <span>
             <input id="dp-simple" class="rux--date-picker__input" type="text" value="03/02/1994">
@@ -1452,7 +1452,7 @@
          nothing was wrong but the message under it. -->
     <div class="rux--date-picker rux--date-picker--next rux--date-picker--simple">
       <div class="rux--date-picker-container rux--date-picker-container--simple">
-        <label class="rux--label" for="dp-invalid">Expiry (mm/dd/yyyy)</label>
+        <label class="rux--label" for="dp-invalid">Expiry</label>
         <div class="rux--date-picker-input__wrapper rux--date-picker-input__wrapper--invalid">
           <span>
             <input id="dp-invalid" class="rux--date-picker__input rux--date-picker__input--invalid" type="text" value="31/31/2026" aria-invalid="true" aria-describedby="dp-invalid-msg">
@@ -1465,7 +1465,7 @@
 
     <div class="rux--date-picker rux--date-picker--next rux--date-picker--simple">
       <div class="rux--date-picker-container rux--date-picker-container--simple">
-        <label class="rux--label" for="dp-warn">Renewal (mm/dd/yyyy)</label>
+        <label class="rux--label" for="dp-warn">Renewal</label>
         <div class="rux--date-picker-input__wrapper rux--date-picker-input__wrapper--warn">
           <span>
             <input id="dp-warn" class="rux--date-picker__input rux--date-picker__input--warn" type="text" value="01/01/2020" aria-describedby="dp-warn-msg">
@@ -1587,7 +1587,7 @@
          way the consuming app's week label already does. Focus returns to the
          button on close, because a display:none input cannot take it and
          .focus() on one fails silently. -->
-    <div style="display:flex;align-items:flex-start;gap:.5rem">
+    <div style="display:flex;align-items:flex-start;gap:.5rem;margin-block-start:1.5rem">
       <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only"
               data-rux-open="dp-owned" aria-label="Change date — 2026-09-21">
         <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg>
@@ -2322,7 +2322,7 @@
 
   </div>
 
-  <div class="ks-label" style="margin-block-start:1.5rem">compound controls</div>
+  <div class="ks-label">compound controls</div>
   <!--
     EACH CONTROL SITS IN A PLAIN WRAPPER, and that is load-bearing for the
     same reason the number input's is: `.rux--form-item` computes
@@ -2820,7 +2820,7 @@
       </div>
     </div>
 
-    <div class="ks-label" style="margin-block-start:1.5rem">clickable with a trailing icon</div>
+    <div class="ks-label">clickable with a trailing icon</div>
     <!-- components-tile--clickable-with-custom-icon renders the icon as a direct
          child of the anchor, which also carries `link`. -->
     <div class="ks-grid">
@@ -2830,7 +2830,7 @@
       </a>
     </div>
 
-    <div class="ks-label" style="margin-block-start:1.5rem">selectable, persistent checkmark</div>
+    <div class="ks-label">selectable, persistent checkmark</div>
     <!-- components-tile--multi-select. The checkmark is `persistent` here and not
          in the classic selectable tile above: multi-select shows it always, the
          single selectable tile only once checked. The content is a <label>. -->
@@ -2845,7 +2845,7 @@
       </div>
     </div>
 
-    <div class="ks-label" style="margin-block-start:1.5rem">radio group</div>
+    <div class="ks-label">radio group</div>
     <!-- components-tile--radio. The group is a <fieldset> with a legend.--label,
          each tile a <label> following its own input.--tile-input inside one
          div, and the selected one carries --tile--is-selected. Carbon names
@@ -2871,7 +2871,7 @@
       </div>
     </fieldset>
 
-    <div class="ks-label" style="margin-block-start:1.5rem">expandable</div>
+    <div class="ks-label">expandable</div>
     <!-- components-tile--expandable. The tile is a <button> holding ONE div that
          wraps two `tile-content` blocks with the chevron between them; the
          below-the-fold block is the half the chevron reveals.
@@ -2903,7 +2903,7 @@
       </button>
     </div>
 
-    <div class="ks-label" style="margin-block-start:1.5rem">expandable with interactive content</div>
+    <div class="ks-label">expandable with interactive content</div>
     <!-- components-tile--expandable-with-interactive. The tile becomes a <div>
          and the CHEVRON becomes the button, because the fold now contains its
          own controls and a button cannot nest inside a button.
@@ -3642,7 +3642,7 @@
       `.rux--tabs__nav-item:hover + .rux--tabs__nav-item--close`, so nesting it
       inside the button would put it out of the selector's reach entirely.
     -->
-    <div class="ks-label" style="margin-block-start:1.5rem">dismissible</div>
+    <div class="ks-label">dismissible</div>
     <div class="rux--tabs rux--tabs--dismissable">
       <div class="rux--tab--list" role="tablist" aria-label="Dismissible tabs">
         <button class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true">
@@ -3673,7 +3673,7 @@
       `.rux--tabs.rux--tabs--contained.rux--tabs--tall`, or the `:not(--tall)`
       form, so contained is a prerequisite rather than a companion.
     -->
-    <div class="ks-label" style="margin-block-start:1.5rem">contained · tall</div>
+    <div class="ks-label">contained · tall</div>
     <div class="rux--tabs rux--tabs--contained rux--tabs--tall">
       <div class="rux--tab--list" role="tablist" aria-label="Tall contained tabs">
         <!--
@@ -3707,7 +3707,7 @@
          __nav-item-label-wrapper > __nav-item-label, the same wrapper a text tab
          uses, and the button carries --icon-only with --icon-only__20 for a 20px
          glyph. This fragment had the svg directly in the button. -->
-    <div class="ks-label" style="margin-block-start:1.5rem">icon only · lg · 20px glyph</div>
+    <div class="ks-label">icon only · lg · 20px glyph</div>
     <div class="rux--tabs rux--tabs__icon--lg">
       <div class="rux--tab--list" role="tablist" aria-label="Icon tabs">
         <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--tooltip rux--icon-tooltip">
@@ -3741,7 +3741,7 @@
 
     <!-- CONTAINED WITH ICONS · components-tabs--contained-with-icons puts
          __nav-item--icon as a DIV inside the label wrapper, after the label. -->
-    <div class="ks-label" style="margin-block-start:1.5rem">contained · with icons</div>
+    <div class="ks-label">contained · with icons</div>
     <div class="rux--tabs rux--tabs--contained rux--layout--size-lg">
       <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--previous rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
       <div class="rux--tab--list" role="tablist" aria-label="Contained tabs with icons">
@@ -3763,7 +3763,7 @@
 
     <!-- FULL WIDTH · components-tabs--contained-full-width. Carbon renders it
          inside a css-grid column; the modifier itself is on the tabs root. -->
-    <div class="ks-label" style="margin-block-start:1.5rem">contained · full width</div>
+    <div class="ks-label">contained · full width</div>
     <div class="rux--tabs rux--tabs--contained rux--tabs--full-width rux--layout--size-lg">
       <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--previous rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg></button>
       <div class="rux--tab--list" role="tablist" aria-label="Full width tabs">
@@ -3788,7 +3788,7 @@
 
     <!-- VERTICAL · components-tabs--vertical, which is always --contained too
          and renders no overflow nav buttons: the list scrolls down, not across. -->
-    <div class="ks-label" style="margin-block-start:1.5rem">vertical</div>
+    <div class="ks-label">vertical</div>
     <div class="rux--tabs rux--tabs--vertical rux--tabs--contained rux--layout--size-lg">
       <div class="rux--tab--list" role="tablist" aria-label="Vertical tabs">
         <button class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true">
@@ -3849,7 +3849,7 @@
     </div>
     <!-- BLOCK:END basic -->
 
-    <div class="ks-label" style="margin-block-start:1.5rem">the five row densities</div>
+    <div class="ks-label">the five row densities</div>
     <div class="rux--data-table-container" style="display:grid;gap:1.5rem">
       <div class="rux--data-table-content">
         <table class="rux--data-table rux--data-table--xs">
@@ -3889,7 +3889,7 @@
          field that is always open — on the same search structure. It is a
          toolbar on its own here rather than a second whole table: one modifier
          does not need forty rows behind it to be shown. -->
-    <div class="ks-label" style="margin-block-start:1.5rem">toolbar · persistent search</div>
+    <div class="ks-label">toolbar · persistent search</div>
     <section class="rux--data-table-container">
       <section class="rux--table-toolbar" role="group" aria-label="Persistent search toolbar">
       <div class="rux--toolbar-content">
@@ -3905,7 +3905,7 @@
       </section>
     </section>
 
-    <div class="ks-label" style="margin-block-start:1.5rem">header, toolbar, batch actions, sorting and row actions</div>
+    <div class="ks-label">header, toolbar, batch actions, sorting and row actions</div>
     <!--
       `data-table-header__content` is NOT copied. React wraps the title and
       description in it, but @carbon/styles defines no rule for the class, so
@@ -4058,7 +4058,7 @@
       </div>
     </section>
 
-    <div class="ks-label" style="margin-block-start:1.5rem">expandable rows</div>
+    <div class="ks-label">expandable rows</div>
     <!--
       components-datatable-expansion--default. The parent row carries
       `parent-row`, the child that follows it `expandable-row`. The child also
@@ -4118,7 +4118,7 @@
       </div>
     </div>
 
-    <div class="ks-label" style="margin-block-start:1.5rem">single-select rows</div>
+    <div class="ks-label">single-select rows</div>
     <!-- components-datatable-selection--with-radio-selection. The radio cell keeps
          `table-column-checkbox` and adds `table-column-radio` — the base class is
          what sizes the column, the modifier only swaps the control. -->
@@ -4320,7 +4320,7 @@
        reported it at once -- marginBlockEnd ours 24px, Carbon none -- because
        Carbon components carry no margin and the gate reads that rule. Demo
        spacing is the sink's business, so it sits on sink chrome. -->
-  <div class="ks-label" style="margin-block-start:1.5rem">full width — the 99rem cap lifted; identical here, where the page is narrower than the cap</div>
+  <div class="ks-label">full width — the 99rem cap lifted; identical here, where the page is narrower than the cap</div>
   <div class="rux--css-grid rux--css-grid--full-width">
     <div class="rux--css-grid-column rux--col-span-8 ks-box" style="padding:1rem">8</div>
     <div class="rux--css-grid-column rux--col-span-8 ks-box" style="padding:1rem">8</div>
@@ -4453,7 +4453,7 @@
        — data-table's --ai-label-row, modal's --decorator, the table header
        label variants — are hooks for the ai-label and slug components, and both
        are CUT in src/app.scss, so those stay unexercised on purpose. -->
-  <div class="ks-label" style="margin-block-start:1.5rem">ai variants</div>
+  <div class="ks-label">ai variants</div>
   <div class="ks-grid">
     <div>
       <p class="rux--skeleton__text rux--skeleton__text--ai"></p>
@@ -4472,7 +4472,7 @@
        puts it on the breadcrumb root. It is not a shape of its own — it turns a
        real component into its own placeholder, which is why it lives here on
        borrowed hosts rather than on a bare div. -->
-  <div class="ks-label" style="margin-block-start:1.5rem">a component as its own placeholder</div>
+  <div class="ks-label">a component as its own placeholder</div>
   <div class="ks-row">
     <div class="rux--skeleton rux--btn rux--layout--size-lg"></div>
     <div class="rux--breadcrumb rux--skeleton">
@@ -4556,13 +4556,13 @@
     <div class="rux--tile"><p>Third</p></div>
   </div>
 
-  <div class="ks-label" style="margin-block-start:1.5rem">HORIZONTAL · SCALE 5</div>
+  <div class="ks-label">HORIZONTAL · SCALE 5</div>
   <div class="rux--stack-horizontal rux--stack-scale-5">
     <button type="button" class="rux--btn rux--btn--secondary">Cancel</button>
     <button type="button" class="rux--btn rux--btn--primary">Save</button>
   </div>
 
-  <div class="ks-label" style="margin-block-start:1.5rem">THE SCALE, 1 TO 13</div>
+  <div class="ks-label">THE SCALE, 1 TO 13</div>
   <div class="rux--stack-vertical rux--stack-scale-3">
     <div class="ks-strip-row">
       <div class="ks-label">Step</div>
@@ -5183,7 +5183,7 @@
        ships CSS for — bottom-left, bottom-right, left-top, left-bottom,
        right-top, right-bottom, top-left, top-right — appear in NO capture and
        are not demoed. --border and --background-token__background likewise. -->
-  <p class="ks-note">PLACEMENTS · CLICK A TRIGGER</p>
+  <div class="ks-label">PLACEMENTS · CLICK A TRIGGER</div>
   <div class="ks-row" style="gap:6rem;padding:3rem 0 5rem 8rem">
     <span class="rux--popover-container rux--popover--bottom-end rux--popover--caret rux--popover--drop-shadow">
       <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">Bottom end</button>
@@ -5221,7 +5221,7 @@
        Phase 3 kept none. A class that needs behaviour we do not have is not
        demonstrable statically, and rendering it broken to move a coverage
        number is worse than leaving the number where it is. -->
-  <p class="ks-note">OPEN · TAB TIP</p>
+  <div class="ks-label">OPEN · TAB TIP</div>
   <div class="ks-row" style="padding:1rem 0 5rem 8rem">
     <span class="rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--drop-shadow rux--popover--open">
       <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" aria-expanded="true">Open</button>
@@ -6034,7 +6034,7 @@
     <div class="rux--user-avatar rux--user-avatar--order-1-cyan rux--user-avatar--sm">RS</div>
   </div>
 
-  <div class="ks-label" style="margin-block-start:1.5rem">colour orders</div>
+  <div class="ks-label">colour orders</div>
   <div class="ks-row" style="align-items:center;gap:.75rem">
     <div class="rux--user-avatar rux--user-avatar--order-1-cyan rux--user-avatar--md">A1</div>
     <div class="rux--user-avatar rux--user-avatar--order-2-gray rux--user-avatar--md">B2</div>
@@ -6050,7 +6050,7 @@
     <div class="rux--user-avatar rux--user-avatar--order-12-teal rux--user-avatar--md">L12</div>
   </div>
 
-  <div class="ks-label" style="margin-block-start:1.5rem">photo</div>
+  <div class="ks-label">photo</div>
   <div class="ks-row" style="align-items:center;gap:1rem">
     <div class="rux--user-avatar rux--user-avatar--order-1-cyan rux--user-avatar--xl"><img class="rux--user-avatar__photo rux--user-avatar__photo--xl" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%238a3ffc'/%3E%3Ccircle cx='24' cy='19' r='9' fill='%23d4bbff'/%3E%3Cpath d='M8 48c2-11 9-16 16-16s14 5 16 16z' fill='%23d4bbff'/%3E%3C/svg%3E"></div>
     <div class="rux--user-avatar rux--user-avatar--order-1-cyan rux--user-avatar--lg"><img class="rux--user-avatar__photo rux--user-avatar__photo--lg" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%238a3ffc'/%3E%3Ccircle cx='24' cy='19' r='9' fill='%23d4bbff'/%3E%3Cpath d='M8 48c2-11 9-16 16-16s14 5 16 16z' fill='%23d4bbff'/%3E%3C/svg%3E"></div>
@@ -6339,7 +6339,7 @@
        switcher__item--divider is an <hr> inside a plain li, NOT a modifier on
        an item: the divider is a sibling of the links, so it sits in an li of
        its own with no __item class. -->
-  <div class="ks-label" style="margin-block-start:1.5rem">header panel · switcher, expanded</div>
+  <div class="ks-label">header panel · switcher, expanded</div>
   <div data-theme="g100" style="position:relative;height:20rem;border:1px solid var(--rux-border-subtle);overflow:hidden;background:var(--rux-background)">
     <header class="rux--header" style="position:absolute" aria-label="Rux DS switcher">
       <a class="rux--header__name" href="#ui-shell"><img src="brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;Design</a>
@@ -6371,7 +6371,7 @@
        specimen is static; in a running page it ships hidden until js/profile.js
        is handed a sign-in. Shown open, taller than the switcher's sandbox so the
        five radios fit; the demo ids keep it out of js/profile.js's way. -->
-  <div class="ks-label" style="margin-block-start:1.5rem">header panel · account, expanded</div>
+  <div class="ks-label">header panel · account, expanded</div>
   <div data-theme="g100" style="position:relative;height:30rem;border:1px solid var(--rux-border-subtle);overflow:hidden;background:var(--rux-background)">
     <header class="rux--header" style="position:absolute" aria-label="Rux DS account">
       <a class="rux--header__name" href="#ui-shell"><img src="brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;Design</a>
@@ -6459,7 +6459,7 @@
        is a div inside the button, as Carbon's own capture nests it in the
        tooltip trigger.
        The picture is invented, drawn inline. -->
-  <div class="ks-label" style="margin-block-start:1.5rem">header action · a person's avatar, initials and photo</div>
+  <div class="ks-label">header action · a person's avatar, initials and photo</div>
   <div data-theme="g100" style="position:relative;height:3rem;border:1px solid var(--rux-border-subtle);overflow:hidden;background:var(--rux-background)">
     <header class="rux--header" style="position:absolute" aria-label="Rux DS avatar">
       <a class="rux--header__name" href="#ui-shell"><img src="brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;Design</a>
@@ -7049,7 +7049,7 @@
     </li>
   </ul>
 
-  <div class="ks-label" style="margin-block-start:1.5rem">--tree--xs · the compact density</div>
+  <div class="ks-label">--tree--xs · the compact density</div>
   <ul class="rux--tree rux--tree--xs" role="tree">
     <li class="rux--tree-node rux--tree-leaf-node" role="treeitem" tabindex="0">
       <div class="rux--tree-node__label" style="padding-inline-start:2.5rem;margin-inline-start:-2.5rem"><span class="rux--tree-node__label__details"><span class="rux--tree-node__label__text">Compact node</span></span></div>
@@ -7241,7 +7241,7 @@
   </div>
   <!-- BLOCK:END condensed -->
 
-  <div class="ks-label" style="margin-block-start:1.5rem">selection</div>
+  <div class="ks-label">selection</div>
   <!-- BLOCK:BEGIN name=selection label="Structured list, selectable" -->
   <div class="rux--structured-list rux--structured-list--selection" role="table">
     <div class="rux--structured-list-thead" role="rowgroup">
@@ -7502,7 +7502,7 @@
   </nav>
   <!-- BLOCK:END default -->
 
-  <div class="ks-label" style="margin-block-start:1.5rem">current page inside the overflow — `--active` on the select AND its icon wrapper</div>
+  <div class="ks-label">current page inside the overflow — `--active` on the select AND its icon wrapper</div>
   <!-- check-compound asked for this one: Carbon writes
        `.pagination-nav__select-icon-wrapper.pagination-nav__page--active`, the
        state React produces when the current page is one the select holds.
@@ -9169,7 +9169,7 @@
     </div>
   </div>
 
-  <div class="ks-label" style="margin-block-start:1.5rem">floating · drag it by its header, or press the handle and use the arrow keys</div>
+  <div class="ks-label">floating · drag it by its header, or press the handle and use the arrow keys</div>
   <div class="ks-coachmark-room">
     <div class="rux--coachmark rux--coachmark--floating">
       <span class="rux--popover-container rux--popover--drop-shadow rux--popover--high-contrast rux--popover--open rux--popover--bottom">
@@ -9206,7 +9206,7 @@
     </div>
   </div>
 
-  <div class="ks-label" style="margin-block-start:1.5rem">tagline</div>
+  <div class="ks-label">tagline</div>
   <div class="ks-fixed-stage" style="block-size:17rem">
     <div class="rux--coachmark ks-coachmark-fixed">
       <span class="rux--popover-container rux--popover--drop-shadow rux--popover--high-contrast rux--popover--top">
@@ -9241,6 +9241,10 @@
   </div>
 </section>
 </main>
+
+<a class="ks-top rux--btn rux--btn--secondary rux--btn--icon-only" href="#top" aria-label="Back to the top" hidden>
+  <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--up"/></svg>
+</a>
 
 <!-- Phase 5 behaviour layer. The kernel loads FIRST; modules delegate to it.
      These are the system's, not the sink's — a page from templates/ loads the

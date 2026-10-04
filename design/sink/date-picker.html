@@ -57,7 +57,7 @@
     <!-- SIMPLE. Input only. No __icon, no calendar-container, no module. -->
     <div class="rux--date-picker rux--date-picker--next rux--date-picker--simple">
       <div class="rux--date-picker-container rux--date-picker-container--simple">
-        <label class="rux--label" for="dp-simple">Date of birth (mm/dd/yyyy)</label>
+        <label class="rux--label" for="dp-simple">Date of birth</label>
         <div class="rux--date-picker-input__wrapper">
           <span>
             <input id="dp-simple" class="rux--date-picker__input" type="text" value="03/02/1994">
@@ -92,7 +92,7 @@
          nothing was wrong but the message under it. -->
     <div class="rux--date-picker rux--date-picker--next rux--date-picker--simple">
       <div class="rux--date-picker-container rux--date-picker-container--simple">
-        <label class="rux--label" for="dp-invalid">Expiry (mm/dd/yyyy)</label>
+        <label class="rux--label" for="dp-invalid">Expiry</label>
         <div class="rux--date-picker-input__wrapper rux--date-picker-input__wrapper--invalid">
           <span>
             <input id="dp-invalid" class="rux--date-picker__input rux--date-picker__input--invalid" type="text" value="31/31/2026" aria-invalid="true" aria-describedby="dp-invalid-msg">
@@ -105,7 +105,7 @@
 
     <div class="rux--date-picker rux--date-picker--next rux--date-picker--simple">
       <div class="rux--date-picker-container rux--date-picker-container--simple">
-        <label class="rux--label" for="dp-warn">Renewal (mm/dd/yyyy)</label>
+        <label class="rux--label" for="dp-warn">Renewal</label>
         <div class="rux--date-picker-input__wrapper rux--date-picker-input__wrapper--warn">
           <span>
             <input id="dp-warn" class="rux--date-picker__input rux--date-picker__input--warn" type="text" value="01/01/2020" aria-describedby="dp-warn-msg">
@@ -227,7 +227,7 @@
          way the consuming app's week label already does. Focus returns to the
          button on close, because a display:none input cannot take it and
          .focus() on one fails silently. -->
-    <div style="display:flex;align-items:flex-start;gap:.5rem">
+    <div style="display:flex;align-items:flex-start;gap:.5rem;margin-block-start:1.5rem">
       <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only"
               data-rux-open="dp-owned" aria-label="Change date — 2026-09-21">
         <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-calendar"/></svg>

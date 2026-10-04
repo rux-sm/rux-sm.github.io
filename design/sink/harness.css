@@ -20,19 +20,23 @@ body { min-height: 100vh; background: var(--rux-background);
    an unknown one. Fitting the markup to the adjudication is the cheap side of
    that; widening the adjudication is a control change. 2026-09-11. */
 .ks-main { max-width: 66rem; }
+/* The page's title, at the size the templates' page titles take. */
+.ks-main > h1 { font-size: var(--rux-productive-heading-05-font-size, 2rem);
+                line-height: 1.25; font-weight: 400; }
 
 /* THE SECTION INDEX, in the page. It was the left column until 2026-09-11,
    then the shell's side nav for an afternoon, and neither was right: IBM puts
    pages in the left panel and page content in the page. Dense on purpose --
-   19px rows against Carbon's 32px side-nav link, so 68 entries read as an
-   index rather than a second navigation. Columns rather than one tall list,
+   24px rows against Carbon's 32px side-nav link, so the entries read as an
+   index rather than a second navigation. One rule above it; the first
+   section's own rule closes it. Columns rather than one tall list,
    because a 1292px column pushes every section below the fold. */
-.ks-index { columns: 11rem; column-gap: 1.5rem; margin-block-end: 2.5rem;
-            padding-block: 1rem; border-block: 1px solid var(--rux-border-subtle); }
-.ks-index a { display: block; padding-block: .0625rem; break-inside: avoid; }
-.ks-index a { font-size: .8125rem; color: var(--rux-text-secondary);
-              text-decoration: none; }
-.ks-index a:hover { color: var(--rux-link-primary); text-decoration: underline; }
+.ks-index { columns: 10rem; column-gap: 1.5rem; padding-block: 1.5rem;
+            border-block-start: 1px solid var(--rux-border-subtle); }
+.ks-index a { display: block; padding-block: .125rem; break-inside: avoid;
+              font-size: .875rem; line-height: 1.25rem;
+              color: var(--rux-text-secondary); text-decoration: none; }
+.ks-index a:hover { color: var(--rux-text-primary); text-decoration: underline; }
 /* A REAL FOCUS RING, because 68 links with only the browser's own is a defect
    and check-a11y counts it as one. It reported 68 findings the moment this
    index moved into the page -- all of them "no visible focus change" on an
@@ -41,9 +45,17 @@ body { min-height: 100vh; background: var(--rux-background);
    token, inset so it does not shift the row. */
 .ks-index a:focus-visible { outline: 2px solid var(--rux-focus);
                             outline-offset: -2px; }
-.ks-count { font-size: .75rem; color: var(--rux-text-helper);
-            margin-block: .25rem 2rem; }
-.ks-sec { padding-block: 2rem; border-block-start: 1px solid var(--rux-border-subtle); }
+.ks-count { font-size: .875rem; color: var(--rux-text-secondary);
+            margin-block: .5rem 2rem; }
+/* A section lands under the fixed header when the index jumps to it, so it
+   stops 3rem short, the header's own height. Whatever a section ends with,
+   its foot is the section's padding and nothing more. */
+.ks-sec { padding-block: 2.5rem; border-block-start: 1px solid var(--rux-border-subtle);
+          scroll-margin-block-start: 3rem; }
+.ks-sec > :last-child { margin-block-end: 0; }
+/* BACK TO THE INDEX. The page is some forty screens long and its index is at
+   the top. harness.js shows this once the index has scrolled away. */
+.ks-top { position: fixed; z-index: 100; inset-block-end: 1.5rem; inset-inline-end: 1.5rem; }
 /* EVERY SECTION IS ITS OWN STACKING CONTEXT, AND THE MODAL SECTION IS NOT.
    The sink shows overlay components in their OPEN state statically — a page
    does not normally have a dropdown, a menu and an overflow menu all open at
@@ -94,14 +106,21 @@ body { min-height: 100vh; background: var(--rux-background);
    field, which ran over the Checkbox section's heading. The section reserves
    the calendar's height and 20px under it. */
 .ks-calendar-room { padding-block-end: 22rem; }
-.ks-sec > h2 { font-size: 1.25rem; margin-block-end: .25rem; }
-.ks-sec > p  { font-size: .75rem; color: var(--rux-text-secondary); margin-block-end: 1.25rem; }
+.ks-sec > h2 { font-size: 1.25rem; line-height: 1.4; margin-block-end: .25rem; }
+.ks-sec > p  { font-size: .875rem; line-height: 1.25rem; color: var(--rux-text-secondary);
+               margin-block-end: 1.5rem; }
 .ks-row { display: flex; flex-wrap: wrap; gap: .75rem; align-items: flex-start;
           margin-block-end: 1rem; }
+/* A row that sets sizes side by side stands them on one line, not hung from one. */
+.ks-row--end { align-items: flex-end; }
 .ks-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
 .ks-grid--single { grid-template-columns: 1fr; }
-.ks-label { font-size: .6875rem; letter-spacing: .32px; text-transform: uppercase;
-            color: var(--rux-text-secondary); margin-block-end: .5rem; }
+/* A label names the specimen under it, so it stands off the one above: 24px
+   over, 8px under. The first thing in its box has nothing to stand off. */
+.ks-label { font-size: .75rem; line-height: 1rem; letter-spacing: .32px; text-transform: uppercase;
+            color: var(--rux-text-secondary); margin-block: 1.5rem .5rem; }
+.ks-label:first-child, .ks-sec > p + .ks-label { margin-block-start: 0; }
+.ks-strip-row > .ks-label { margin-block: 0; }
 .ks-box { padding: 1rem; background: var(--rux-layer-01); }
 /* The stack scale strip measures itself, so its tracks must not absorb the
    sink column's leftover width. `stack-horizontal` is a grid of `auto` tracks,
@@ -137,7 +156,7 @@ body { min-height: 100vh; background: var(--rux-background);
    token in prose or write a real one. */
 .ks-scale { display: grid; grid-template-columns: 10rem 4rem 3rem 1fr;
             gap: .5rem 1rem; align-items: center; font-size: .8125rem; }
-.ks-scale > .ks-label { margin-block-end: 0; }
+.ks-scale > .ks-label { margin-block: 0; }
 .ks-scale code { font-size: .75rem; color: var(--rux-text-secondary); }
 .ks-swatch { inline-size: var(--ks-swatch); block-size: var(--ks-swatch);
              background: var(--rux-interactive); }

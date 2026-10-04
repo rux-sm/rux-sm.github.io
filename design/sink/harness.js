@@ -48,11 +48,18 @@
   //
   // But the sink is ONE page, so `href="#tile"` resolves to the tile section
   // and the browser scrolls there — which reads as "clicking the tile threw me
-  // up the page". Cancel navigation inside .ks-main only; the left nav's links
-  // are the one place a hash jump is the intended behaviour.
+  // up the page". Cancel navigation inside a section only; the section index
+  // above them is the one place a hash jump is the intended behaviour.
   document.addEventListener('click', e => {
-    if (e.target.closest('.ks-main a[href^="#"]')) e.preventDefault();
+    if (e.target.closest('.ks-sec a[href^="#"]')) e.preventDefault();
   });
+
+  // ---- back to the top ---------------------------------------------------
+  // Shown once the index has scrolled out of sight, and not before.
+  const top = document.querySelector('.ks-top');
+  const index = document.querySelector('.ks-index');
+  if (top && index && 'IntersectionObserver' in window)
+    new IntersectionObserver(([entry]) => { top.hidden = entry.isIntersecting; }).observe(index);
 
   // ---- theme -------------------------------------------------------------
   $$('[data-set-theme]').forEach(b =>

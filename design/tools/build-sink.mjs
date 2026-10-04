@@ -85,6 +85,10 @@ ${nav}
 ${sections.join('\n\n')}
 </main>
 
+<a class="ks-top rux--btn rux--btn--secondary rux--btn--icon-only" href="#top" aria-label="Back to the top" hidden>
+  <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--up"/></svg>
+</a>
+
 <!-- Phase 5 behaviour layer. The kernel loads FIRST; modules delegate to it.
      These are the system's, not the sink's — a page from templates/ loads the
      same two files. sink/harness.js is scaffolding for whatever Phase 5 has

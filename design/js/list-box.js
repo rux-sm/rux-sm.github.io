@@ -138,8 +138,15 @@
     if (!option) { field?.removeAttribute('aria-activedescendant'); return; }
     option.classList.toggle('rux--list-box__menu-item--highlighted', ring);
     field?.setAttribute('aria-activedescendant', overlay.autoId(option, 'rux-option'));
-    // The list scrolls; the cursor must stay in it.
-    option.scrollIntoView?.({ block: 'nearest' });
+    // The list scrolls; the cursor must stay in it. Only the list is moved:
+    // `scrollIntoView` scrolls every box above it too, the page included, so
+    // a list written open sent a page to wherever it sat as the page loaded.
+    const menu = menuOf(root);
+    if (menu) {
+      const box = menu.getBoundingClientRect(), row = option.getBoundingClientRect();
+      if (row.top < box.top) menu.scrollTop -= box.top - row.top;
+      else if (row.bottom > box.bottom) menu.scrollTop += row.bottom - box.bottom;
+    }
     const state = live.get(root);
     if (state) state.cursor = option;
   }

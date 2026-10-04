@@ -1,18 +1,27 @@
 <section class="ks-sec" id="notifications-panel">
-  <h2>Notifications panel</h2><p>header · do not disturb · notifications grouped by day</p>
+  <h2>Notifications panel</h2><p>opens from its button · dismiss one or all · the empty state</p>
   <!-- PROVENANCE: rendered-dom · components-notificationspanel--default on the
        ibm-products origin, 2026-10-03 -->
   <!--
-    A static specimen, open: no module opens or dismisses it. Carbon fixes the
-    panel under the shell header, against the viewport; `ks-fixed-stage` gives
-    it a box to be fixed against instead, so it sits in the page.
+    js/notifications-panel.js opens and closes it from the button, removes a
+    notification from its close button, clears them with "Dismiss all" and
+    then shows the empty state. Carbon fixes the panel under the shell header,
+    against the viewport; `ks-fixed-stage` gives it a box to be fixed against
+    instead, so it sits in the page. It is written open, as the story is.
 
     The capture's root also carries a bare `notifications-panel` class, which
     has no compiled rule and is not written (§4.1.12). Each dismiss button sits
     in an icon-tooltip there, which the sink declines throughout.
+
+    The empty state is in the markup, `hidden`, for the module to show. Its
+    illustration is IBM's drawing and is not copied; the capture of the panel
+    holds no empty state, so that markup is read off the running component.
   -->
+  <div class="ks-row">
+    <button type="button" class="rux--btn rux--btn--tertiary" aria-controls="ks-notifications" aria-expanded="true">Notifications</button>
+  </div>
   <div class="ks-fixed-stage">
-    <div class="rux--notifications-panel__container rux--notifications-panel__entrance" role="dialog" aria-labelledby="ks-notifications-h">
+    <div class="rux--notifications-panel__container rux--notifications-panel__entrance" id="ks-notifications" role="dialog" aria-labelledby="ks-notifications-h">
       <div>
         <div class="rux--notifications-panel__header-container">
           <div class="rux--notifications-panel__header-flex">
@@ -49,12 +58,16 @@
           </div>
           <h3 class="rux--notifications-panel__time-section-label">Previous</h3>
           <div class="rux--notifications-panel__notification rux--notifications-panel__notification-previous" role="button" tabindex="0">
-            <svg class="rux--notifications-panel__notification-status-icon rux--notifications-panel__notification-status-icon-warning" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+            <svg class="rux--notifications-panel__notification-status-icon rux--notifications-panel__notification-status-icon-warning" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--alt--filled"/></svg>
             <div class="rux--notifications-panel__notification-content">
               <p class="rux--notifications-panel__notification-time-label">2 days ago</p>
               <h4 class="rux--notifications-panel__notification-title">Storage almost full</h4>
               <div>
-                <p class="rux--notifications-panel__notification-description rux--notifications-panel__notification-short-description">Nine tenths of the plan's storage is in use.</p>
+                <p class="rux--notifications-panel__notification-description rux--notifications-panel__notification-short-description">Nine tenths of the plan's storage is in use. Uploads stop when it is full, so remove what is no longer needed or move to a larger plan before the end of the month.</p>
+                <button type="button" class="rux--notifications-panel__notification-read-more-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost" data-rux-alt-label="Read less">
+                  Read more
+                  <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+                </button>
               </div>
             </div>
             <button type="button" class="rux--notifications-panel__dismiss-single-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Dismiss">
@@ -73,6 +86,12 @@
             <button type="button" class="rux--notifications-panel__dismiss-single-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Dismiss">
               <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
             </button>
+          </div>
+          <div class="rux--empty-state rux--empty-state-position--top" hidden>
+            <section class="rux--empty-state__content">
+              <h4 class="rux--empty-state__header"></h4>
+              <div class="rux--empty-state__subtitle">You do not have any notifications</div>
+            </section>
           </div>
         </section>
         <div class="rux--notifications-panel__bottom-actions">

@@ -103,6 +103,10 @@ ${sections.join('\n\n')}
 <script src="js/dismiss.js"></script>
 <script src="js/tile.js"></script>
 <script src="js/scroll-gradient.js"></script>
+<script src="js/guidebanner.js"></script>
+<script src="js/tag-overflow.js"></script>
+<script src="js/notifications-panel.js"></script>
+<script src="js/coachmark.js"></script>
 <script src="js/modal.js"></script>
 ${shellScripts()}
 <script src="sink/harness.js"></script>

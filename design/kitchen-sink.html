@@ -8573,21 +8573,23 @@
 </section>
 
 <section class="ks-sec" id="tag-overflow">
-  <h2>Tag overflow</h2><p>the tags that fit · a count of the rest · the rest in a popover</p>
+  <h2>Tag overflow</h2><p>the tags that fit · a count of the rest · the rest in a popover · narrow the window to see it refit</p>
   <!-- PROVENANCE: rendered-dom · utilities-tagoverflow--tags-with-overflow-count
        on the ibm-products origin, 2026-10-03 -->
   <!--
-    Carbon's component measures the row and decides how many tags fit. No
-    module does that here, so the split is written by hand: three tags shown
-    and two behind the count, as the story renders them at 250px.
+    Every tag is written into the row. js/tag-overflow.js measures it, hides
+    the tags that do not fit, counts them and lists them in the popover, which
+    js/popover.js opens from the count. The row is held to 250px, the story's
+    width, where five tags show three and "+2", and the markup is written in
+    that state so the page reads the same before the module runs.
 
-    Each visible tag sits in a div the capture names `tag-overflow__tag-container`,
+    Each tag sits in a div the capture names `tag-overflow__tag-container`,
     and the list sits in one it names `tag-overflow-popover__content`. Neither
     has a compiled rule, nor has `tag-overflow--align-start`, so §4.1.12 keeps
     the divs and leaves the classes off. The "all tags" modal the story mounts
-    beside the row is not shown.
+    beside the row is not written.
   -->
-  <div class="rux--tag-overflow">
+  <div class="rux--tag-overflow" style="max-inline-size:15.625rem">
     <div class="rux--tag-overflow__visible-tags">
       <div>
         <div class="rux--tag rux--layout--size-md rux--tag-overflow__item--tag"><span class="rux--tag__label">Billing</span></div>
@@ -8597,6 +8599,12 @@
       </div>
       <div>
         <div class="rux--tag rux--layout--size-md rux--tag-overflow__item--tag"><span class="rux--tag__label">Europe</span></div>
+      </div>
+      <div hidden>
+        <div class="rux--tag rux--layout--size-md rux--tag-overflow__item--tag"><span class="rux--tag__label">Renewal</span></div>
+      </div>
+      <div hidden>
+        <div class="rux--tag rux--layout--size-md rux--tag-overflow__item--tag"><span class="rux--tag__label">Reviewed</span></div>
       </div>
       <div class="rux--tag-overflow__indicator">
         <span class="rux--tag-overflow-popover" aria-hidden="false">
@@ -8766,13 +8774,13 @@
 </section>
 
 <section class="ks-sec" id="guidebanner">
-  <h2>Guide banner</h2><p>a title · a row of insights · collapse, back, next and close</p>
+  <h2>Guide banner</h2><p>a title · a row of insights · collapse, page and close</p>
   <!-- PROVENANCE: rendered-dom · preview-candidate-onboarding-guidebanner--many-insights
        and --few-insights on the ibm-products origin, 2026-10-03 -->
   <!--
-    A static specimen, expanded: no module scrolls the row or collapses the
-    banner. Carbon draws it on its own dark gradient in every theme, so its
-    colours do not follow the page's theme.
+    js/guidebanner.js collapses and expands it, pages the row, fades its edges
+    and removes it on close. Carbon draws the banner on its own dark gradient
+    in every theme, so its colours do not follow the page's theme.
 
     ibm-products renders the scrolling row with a separate `carousel` block.
     @carbon/styles ships the same rules inside this component, renamed:
@@ -8825,7 +8833,7 @@
       </div>
     </div>
     <div class="rux--guidebanner__navigation">
-      <button type="button" class="rux--guidebanner__toggle-button rux--btn rux--btn--md rux--layout--size-md rux--btn--ghost" aria-expanded="true">Read less</button>
+      <button type="button" class="rux--guidebanner__toggle-button rux--btn rux--btn--md rux--layout--size-md rux--btn--ghost" aria-expanded="true" data-rux-alt-label="Read more">Read less</button>
       <span class="rux--guidebanner__back-button">
         <button type="button" class="rux--btn rux--btn--md rux--layout--size-md rux--btn--ghost rux--btn--disabled rux--btn--icon-only" aria-label="Back" disabled>
           <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>
@@ -8846,20 +8854,29 @@
 </section>
 
 <section class="ks-sec" id="notifications-panel">
-  <h2>Notifications panel</h2><p>header · do not disturb · notifications grouped by day</p>
+  <h2>Notifications panel</h2><p>opens from its button · dismiss one or all · the empty state</p>
   <!-- PROVENANCE: rendered-dom · components-notificationspanel--default on the
        ibm-products origin, 2026-10-03 -->
   <!--
-    A static specimen, open: no module opens or dismisses it. Carbon fixes the
-    panel under the shell header, against the viewport; `ks-fixed-stage` gives
-    it a box to be fixed against instead, so it sits in the page.
+    js/notifications-panel.js opens and closes it from the button, removes a
+    notification from its close button, clears them with "Dismiss all" and
+    then shows the empty state. Carbon fixes the panel under the shell header,
+    against the viewport; `ks-fixed-stage` gives it a box to be fixed against
+    instead, so it sits in the page. It is written open, as the story is.
 
     The capture's root also carries a bare `notifications-panel` class, which
     has no compiled rule and is not written (§4.1.12). Each dismiss button sits
     in an icon-tooltip there, which the sink declines throughout.
+
+    The empty state is in the markup, `hidden`, for the module to show. Its
+    illustration is IBM's drawing and is not copied; the capture of the panel
+    holds no empty state, so that markup is read off the running component.
   -->
+  <div class="ks-row">
+    <button type="button" class="rux--btn rux--btn--tertiary" aria-controls="ks-notifications" aria-expanded="true">Notifications</button>
+  </div>
   <div class="ks-fixed-stage">
-    <div class="rux--notifications-panel__container rux--notifications-panel__entrance" role="dialog" aria-labelledby="ks-notifications-h">
+    <div class="rux--notifications-panel__container rux--notifications-panel__entrance" id="ks-notifications" role="dialog" aria-labelledby="ks-notifications-h">
       <div>
         <div class="rux--notifications-panel__header-container">
           <div class="rux--notifications-panel__header-flex">
@@ -8896,12 +8913,16 @@
           </div>
           <h3 class="rux--notifications-panel__time-section-label">Previous</h3>
           <div class="rux--notifications-panel__notification rux--notifications-panel__notification-previous" role="button" tabindex="0">
-            <svg class="rux--notifications-panel__notification-status-icon rux--notifications-panel__notification-status-icon-warning" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+            <svg class="rux--notifications-panel__notification-status-icon rux--notifications-panel__notification-status-icon-warning" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--alt--filled"/></svg>
             <div class="rux--notifications-panel__notification-content">
               <p class="rux--notifications-panel__notification-time-label">2 days ago</p>
               <h4 class="rux--notifications-panel__notification-title">Storage almost full</h4>
               <div>
-                <p class="rux--notifications-panel__notification-description rux--notifications-panel__notification-short-description">Nine tenths of the plan's storage is in use.</p>
+                <p class="rux--notifications-panel__notification-description rux--notifications-panel__notification-short-description">Nine tenths of the plan's storage is in use. Uploads stop when it is full, so remove what is no longer needed or move to a larger plan before the end of the month.</p>
+                <button type="button" class="rux--notifications-panel__notification-read-more-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost" data-rux-alt-label="Read less">
+                  Read more
+                  <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+                </button>
               </div>
             </div>
             <button type="button" class="rux--notifications-panel__dismiss-single-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Dismiss">
@@ -8921,6 +8942,12 @@
               <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
             </button>
           </div>
+          <div class="rux--empty-state rux--empty-state-position--top" hidden>
+            <section class="rux--empty-state__content">
+              <h4 class="rux--empty-state__header"></h4>
+              <div class="rux--empty-state__subtitle">You do not have any notifications</div>
+            </section>
+          </div>
         </section>
         <div class="rux--notifications-panel__bottom-actions">
           <button type="button" class="rux--notifications-panel__view-all-button rux--btn rux--btn--ghost">View all (3)</button>
@@ -8938,7 +8965,8 @@
   <!-- PROVENANCE: rendered-dom · preview-onboarding-coachmark--tooltip and
        patterns-coachmark-fixed--coachmark-fixed on the ibm-products origin, 2026-10-03 -->
   <!--
-    The hint is a popover, so js/popover.js opens and closes it from the beacon.
+    The hint is a popover, so js/popover.js opens and closes it from the beacon
+    and from the tagline.
     It is written open, as the story renders it. The beacon's ring is one
     circle, r 1 at 38 38, which Carbon's rules animate while the hint is shut.
 
@@ -8954,10 +8982,15 @@
     text and sets its button to the right with its own stylesheet; the type
     classes and `ks-coachmark-done` do the same here.
 
-    The tagline is captured only while its hint is open, when
-    `coachmark-tagline--is-open` hides it. It is shown here shut, which is the
-    base class alone. Carbon fixes it to the foot of the viewport;
-    `ks-fixed-stage` gives it a box to be fixed against instead.
+    js/coachmark.js closes a hint from its header's close button, hides a
+    tagline while its hint is open, and removes the coachmark from the
+    tagline's own close button.
+
+    The tagline is written shut, which is the base class alone; the capture
+    holds it open, with `coachmark-tagline--is-open`. Carbon fixes it to the
+    foot of the viewport and the story fixes the coachmark there too, with a
+    stylesheet of its own. `ks-fixed-stage` gives both a box to be fixed
+    against, and `ks-coachmark-fixed` puts the coachmark over the tagline.
   -->
   <div class="ks-label">beacon</div>
   <div class="ks-coachmark-room">
@@ -8988,19 +9021,36 @@
   </div>
 
   <div class="ks-label" style="margin-block-start:1.5rem">tagline</div>
-  <div class="ks-fixed-stage" style="block-size:5rem">
-    <div class="rux--coachmark-tagline">
-      <button type="button" class="rux--coachmark-tagline__cta" aria-label="What changed in this release?">
-        <div class="rux--coachmark-tagline__idea" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-idea"/></svg>
+  <div class="ks-fixed-stage" style="block-size:17rem">
+    <div class="rux--coachmark ks-coachmark-fixed">
+      <span class="rux--popover-container rux--popover--drop-shadow rux--popover--high-contrast rux--popover--top">
+        <div class="rux--coachmark-tagline">
+          <button type="button" class="rux--coachmark-tagline__cta" aria-label="What changed in this release?">
+            <div class="rux--coachmark-tagline__idea" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-idea"/></svg>
+            </div>
+            <div>What changed in this release?</div>
+          </button>
+          <div class="rux--coachmark-tagline--close-btn-container">
+            <button type="button" class="rux--coachmark-tagline--close-btn rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Close">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+            </button>
+          </div>
         </div>
-        <div>What changed in this release?</div>
-      </button>
-      <div class="rux--coachmark-tagline--close-btn-container">
-        <button type="button" class="rux--coachmark-tagline--close-btn rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Close">
-          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
-        </button>
-      </div>
+        <span class="rux--popover" role="region" aria-label="Coachmark content">
+          <span class="rux--popover-content rux--coachmark--coachmark-content">
+            <div class="rux--coachmark--content-header">
+              <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Close">
+                <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+              </button>
+            </div>
+            <div class="rux--coachmark--content-body">
+              <h2 class="rux--type-heading-compact-01">Two new views</h2>
+              <p class="rux--type-body-compact-01">The board now has a week view and a list view.</p>
+            </div>
+          </span>
+        </span>
+      </span>
     </div>
   </div>
 </section>
@@ -9024,6 +9074,10 @@
 <script src="js/dismiss.js"></script>
 <script src="js/tile.js"></script>
 <script src="js/scroll-gradient.js"></script>
+<script src="js/guidebanner.js"></script>
+<script src="js/tag-overflow.js"></script>
+<script src="js/notifications-panel.js"></script>
+<script src="js/coachmark.js"></script>
 <script src="js/modal.js"></script>
 <script src="js/profile.js"></script>
 <script src="/switcher.js"></script>

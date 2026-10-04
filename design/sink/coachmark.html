@@ -3,7 +3,8 @@
   <!-- PROVENANCE: rendered-dom · preview-onboarding-coachmark--tooltip and
        patterns-coachmark-fixed--coachmark-fixed on the ibm-products origin, 2026-10-03 -->
   <!--
-    The hint is a popover, so js/popover.js opens and closes it from the beacon.
+    The hint is a popover, so js/popover.js opens and closes it from the beacon
+    and from the tagline.
     It is written open, as the story renders it. The beacon's ring is one
     circle, r 1 at 38 38, which Carbon's rules animate while the hint is shut.
 
@@ -19,10 +20,15 @@
     text and sets its button to the right with its own stylesheet; the type
     classes and `ks-coachmark-done` do the same here.
 
-    The tagline is captured only while its hint is open, when
-    `coachmark-tagline--is-open` hides it. It is shown here shut, which is the
-    base class alone. Carbon fixes it to the foot of the viewport;
-    `ks-fixed-stage` gives it a box to be fixed against instead.
+    js/coachmark.js closes a hint from its header's close button, hides a
+    tagline while its hint is open, and removes the coachmark from the
+    tagline's own close button.
+
+    The tagline is written shut, which is the base class alone; the capture
+    holds it open, with `coachmark-tagline--is-open`. Carbon fixes it to the
+    foot of the viewport and the story fixes the coachmark there too, with a
+    stylesheet of its own. `ks-fixed-stage` gives both a box to be fixed
+    against, and `ks-coachmark-fixed` puts the coachmark over the tagline.
   -->
   <div class="ks-label">beacon</div>
   <div class="ks-coachmark-room">
@@ -53,19 +59,36 @@
   </div>
 
   <div class="ks-label" style="margin-block-start:1.5rem">tagline</div>
-  <div class="ks-fixed-stage" style="block-size:5rem">
-    <div class="rux--coachmark-tagline">
-      <button type="button" class="rux--coachmark-tagline__cta" aria-label="What changed in this release?">
-        <div class="rux--coachmark-tagline__idea" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-idea"/></svg>
+  <div class="ks-fixed-stage" style="block-size:17rem">
+    <div class="rux--coachmark ks-coachmark-fixed">
+      <span class="rux--popover-container rux--popover--drop-shadow rux--popover--high-contrast rux--popover--top">
+        <div class="rux--coachmark-tagline">
+          <button type="button" class="rux--coachmark-tagline__cta" aria-label="What changed in this release?">
+            <div class="rux--coachmark-tagline__idea" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-idea"/></svg>
+            </div>
+            <div>What changed in this release?</div>
+          </button>
+          <div class="rux--coachmark-tagline--close-btn-container">
+            <button type="button" class="rux--coachmark-tagline--close-btn rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Close">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+            </button>
+          </div>
         </div>
-        <div>What changed in this release?</div>
-      </button>
-      <div class="rux--coachmark-tagline--close-btn-container">
-        <button type="button" class="rux--coachmark-tagline--close-btn rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Close">
-          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
-        </button>
-      </div>
+        <span class="rux--popover" role="region" aria-label="Coachmark content">
+          <span class="rux--popover-content rux--coachmark--coachmark-content">
+            <div class="rux--coachmark--content-header">
+              <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Close">
+                <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+              </button>
+            </div>
+            <div class="rux--coachmark--content-body">
+              <h2 class="rux--type-heading-compact-01">Two new views</h2>
+              <p class="rux--type-body-compact-01">The board now has a week view and a list view.</p>
+            </div>
+          </span>
+        </span>
+      </span>
     </div>
   </div>
 </section>

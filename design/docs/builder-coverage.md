@@ -169,55 +169,55 @@ one. **Its three CONTAINED specimens cannot be marked** — lines 151, 219
   of those three."
 
 <!-- COVERAGE:BEGIN -->
-_73 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 295 candidate regions in the 52 unmarked._
+_73 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 296 candidate regions in the 52 unmarked._
 
 | fragment | components | blocks | candidates | text | variants | behaviour | in the builder |
 |---|---|---|---|---|---|---|---|
 | `accordion` | accordion | 1 | 1 | 6 | 0 | accordion | yes |
-| `action-set` | action-set, button | 1 | 7 | 2 | 1 | — | yes |
-| `ai-label` | ai-label, button, link, popover, toggletip | — | 7 | — | — | copy-button, popover | no |
+| `action-set` | action-set, button | 1 | 7 | 2 | 1 | guidebanner | yes |
+| `ai-label` | ai-label, button, link, popover, toggletip | — | 7 | — | — | coachmark, copy-button, guidebanner, popover, tag-overflow | no |
 | `aspect-ratio` | aspect-ratio | — | 5 | — | — | — | no |
-| `badge-indicator` | badge-indicator, button | — | 2 | — | — | — | no |
+| `badge-indicator` | badge-indicator, button | — | 2 | — | — | guidebanner | no |
 | `big-number` | big-number | 1 | 1 | 2 | 0 | — | yes |
 | `breadcrumb` | breadcrumb, link | 1 | 3 | 3 | 0 | — | yes |
-| `buttons` | button, inline-loading, loading | — | 18 | — | — | — | no |
-| `card` | button, card | 2 | 11 | 8 | 1 | — | yes |
-| `chat-button` | button, chat-button | — | 4 | — | — | — | no |
+| `buttons` | button, inline-loading, loading | — | 18 | — | — | guidebanner | no |
+| `card` | button, card | 2 | 11 | 8 | 1 | guidebanner | yes |
+| `chat-button` | button, chat-button | — | 4 | — | — | guidebanner | no |
 | `checkbox` | checkbox, form | 1 | 5 | 6 | 0 | — | yes |
-| `coachmark` | button, coachmark, popover | — | 2 | — | — | copy-button, popover | no |
-| `code-snippet` | button, code-snippet, copy-button | 2 | 4 | 4 | 1 | copy-button | yes |
+| `coachmark` | button, coachmark, popover | — | 2 | — | — | coachmark, copy-button, guidebanner, popover, tag-overflow | no |
+| `code-snippet` | button, code-snippet, copy-button | 2 | 4 | 4 | 1 | copy-button, guidebanner | yes |
 | `combo-box` | combo-box, list-box, text-input | — | 2 | — | — | form-controls, list-box | no |
-| `combo-button` | button, combo-button, menu | — | 4 | — | — | menu | no |
-| `contained-list` | button, contained-list | 1 | 2 | 5 | 1 | — | yes |
-| `content-switcher` | button, content-switcher | 1 | 3 | 3 | 0 | — | yes |
-| `copy-button` | button, copy-button, popover, tooltip | — | 2 | — | — | copy-button, popover | no |
-| `date-picker` | button, date-picker, form | — | 9 | — | — | date-picker | no |
-| `dialog` | button, dialog | — | 2 | — | — | — | no |
+| `combo-button` | button, combo-button, menu | — | 4 | — | — | guidebanner, menu | no |
+| `contained-list` | button, contained-list | 1 | 2 | 5 | 1 | guidebanner | yes |
+| `content-switcher` | button, content-switcher | 1 | 3 | 3 | 0 | guidebanner | yes |
+| `copy-button` | button, copy-button, popover, tooltip | — | 2 | — | — | coachmark, copy-button, guidebanner, popover, tag-overflow | no |
+| `date-picker` | button, date-picker, form | — | 9 | — | — | date-picker, guidebanner | no |
+| `dialog` | button, dialog | — | 2 | — | — | guidebanner | no |
 | `dropdown` | dropdown, form, list-box | — | 8 | — | — | form-controls, list-box | no |
-| `edit-in-place` | button, edit-in-place, popover, text-input, tooltip | — | 3 | — | — | copy-button, form-controls, list-box, popover | no |
-| `file-uploader` | file-uploader, form, popover, tooltip | — | 2 | — | — | copy-button, popover | no |
+| `edit-in-place` | button, edit-in-place, popover, text-input, tooltip | — | 3 | — | — | coachmark, copy-button, form-controls, guidebanner, list-box, popover, tag-overflow | no |
+| `file-uploader` | file-uploader, form, popover, tooltip | — | 2 | — | — | coachmark, copy-button, popover, tag-overflow | no |
 | `fluid` | checkbox, combo-box, date-picker, dropdown, form, list-box, multiselect, number-input, search, select, text-area, text-input, time-picker | — | 18 | — | — | date-picker, form-controls, list-box | no |
 | `full-page-error` | full-page-error, link | 1 | 1 | 3 | 0 | — | yes |
 | `grid` | — | — | 5 | — | — | — | no |
-| `guidebanner` | button, guidebanner, link | — | 1 | — | — | — | no |
+| `guidebanner` | button, guidebanner, link | — | 1 | — | — | guidebanner | no |
 | `icon-indicator` | icon-indicator | — | 16 | — | — | — | no |
 | `inline-loading` | inline-loading, loading | — | 3 | — | — | — | no |
 | `links` | link | — | 7 | — | — | — | no |
 | `list` | list | 2 | 3 | 5 | 0 | — | yes |
 | `list-box` | list-box | — | 2 | — | — | form-controls, list-box | no |
 | `loading` | loading | — | 2 | — | — | — | no |
-| `menu` | button, menu | — | 6 | — | — | menu | no |
-| `menu-button` | button, menu-button | — | 2 | — | — | — | no |
-| `modal` | button, data-table, modal | — | 12 | — | — | data-table, menu, modal, overlay | no |
-| `multiselect` | checkbox, combo-box, form, list-box, multiselect, tag, text-input | — | 3 | — | — | dismiss, form-controls, list-box | no |
-| `notification` | button, notification | 1 | 15 | 2 | 0 | dismiss | yes |
-| `notifications-panel` | button, notifications-panel, toggle | — | 1 | — | — | form-controls | no |
+| `menu` | button, menu | — | 6 | — | — | guidebanner, menu | no |
+| `menu-button` | button, menu-button | — | 2 | — | — | guidebanner | no |
+| `modal` | button, data-table, modal | — | 12 | — | — | data-table, guidebanner, menu, modal, overlay | no |
+| `multiselect` | checkbox, combo-box, form, list-box, multiselect, tag, text-input | — | 3 | — | — | dismiss, form-controls, list-box, tag-overflow | no |
+| `notification` | button, notification | 1 | 15 | 2 | 0 | dismiss, guidebanner | yes |
+| `notifications-panel` | button, notifications-panel, toggle | — | 2 | — | — | form-controls, guidebanner, notifications-panel | no |
 | `number` | form, number-input | — | 4 | — | — | form-controls | no |
 | `options-tile` | options-tile, toggle | 1 | 2 | 3 | 0 | form-controls | yes |
 | `overflow-menu` | overflow-menu | — | 2 | — | — | menu | no |
 | `pagination` | form, pagination, select | — | 2 | — | — | form-controls | no |
-| `pagination-nav` | button, pagination-nav | 1 | 2 | 11 | 0 | — | yes |
-| `popover` | button, popover | — | 7 | — | — | copy-button, popover | no |
+| `pagination-nav` | button, pagination-nav | 1 | 2 | 11 | 0 | guidebanner | yes |
+| `popover` | button, popover | — | 7 | — | — | coachmark, copy-button, guidebanner, popover, tag-overflow | no |
 | `progress-bar` | progress-bar | — | 4 | — | — | — | no |
 | `progress-indicator` | progress-indicator | 2 | 3 | 8 | 0 | — | yes |
 | `radio` | form, radio-button | 1 | 5 | 4 | 0 | profile | yes |
@@ -225,25 +225,25 @@ _73 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 2
 | `search` | search | 1 | 3 | 1 | 0 | form-controls | yes |
 | `select` | form, select | — | 5 | — | — | form-controls | no |
 | `shape-indicator` | shape-indicator | — | 13 | — | — | — | no |
-| `side-panel` | action-set, ai-label, button, popover, side-panel, toggletip, tooltip | — | 1 | — | — | copy-button, overlay, popover | no |
-| `skeleton` | breadcrumb, button, link, skeleton-styles | — | 13 | — | — | — | no |
+| `side-panel` | action-set, ai-label, button, popover, side-panel, toggletip, tooltip | — | 1 | — | — | coachmark, copy-button, guidebanner, overlay, popover, tag-overflow | no |
+| `skeleton` | breadcrumb, button, link, skeleton-styles | — | 13 | — | — | guidebanner | no |
 | `slider` | form, slider, text-input | — | 6 | — | — | list-box | no |
 | `spacing` | — | — | 0 | — | — | — | no |
-| `stack` | button, stack, tile | — | 3 | — | — | tile | no |
+| `stack` | button, stack, tile | — | 3 | — | — | guidebanner, tile | no |
 | `structured-list` | structured-list | 2 | 2 | 12 | 0 | form-controls | yes |
-| `table` | button, checkbox, data-table, overflow-menu, radio-button, search, tag | 1 | 6 | 9 | 1 | data-table, dismiss, form-controls, menu, overlay, profile | yes |
-| `tabs` | popover, tabs, tooltip | 1 | 11 | 8 | 0 | copy-button, popover, tabs | yes |
-| `tag-overflow` | TagOverflow, popover, tag | — | 1 | — | — | copy-button, dismiss, popover | no |
-| `tags` | tag | — | 24 | — | — | dismiss | no |
-| `tearsheet` | Tearsheet, action-set, button, form, modal, text-input | — | 4 | — | — | list-box, menu, modal | no |
-| `text-input` | button, form, popover, text-input, toggle, tooltip | — | 10 | — | — | copy-button, form-controls, list-box, popover | no |
+| `table` | button, checkbox, data-table, overflow-menu, radio-button, search, tag | 1 | 6 | 9 | 1 | data-table, dismiss, form-controls, guidebanner, menu, overlay, profile, tag-overflow | yes |
+| `tabs` | popover, tabs, tooltip | 1 | 11 | 8 | 0 | coachmark, copy-button, popover, tabs, tag-overflow | yes |
+| `tag-overflow` | TagOverflow, popover, tag | — | 1 | — | — | coachmark, copy-button, dismiss, popover, tag-overflow | no |
+| `tags` | tag | — | 24 | — | — | dismiss, tag-overflow | no |
+| `tearsheet` | Tearsheet, action-set, button, form, modal, text-input | — | 4 | — | — | guidebanner, list-box, menu, modal | no |
+| `text-input` | button, form, popover, text-input, toggle, tooltip | — | 10 | — | — | coachmark, copy-button, form-controls, guidebanner, list-box, popover, tag-overflow | no |
 | `textarea` | form, text-area | — | 5 | — | — | — | no |
-| `tile` | button, link, stack, tile | 2 | 9 | 2 | 0 | tile | yes |
+| `tile` | button, link, stack, tile | 2 | 9 | 2 | 0 | guidebanner, tile | yes |
 | `time-picker` | checkbox, form, select, text-input, time-picker | — | 4 | — | — | form-controls, list-box | no |
 | `toggle` | toggle | — | 7 | — | — | form-controls | no |
-| `toggletip` | dropdown, link, list-box, popover, toggletip | — | 2 | — | — | copy-button, form-controls, list-box, popover | no |
-| `tooltip` | button, popover, tooltip | — | 3 | — | — | copy-button, popover | no |
+| `toggletip` | dropdown, link, list-box, popover, toggletip | — | 2 | — | — | coachmark, copy-button, form-controls, list-box, popover, tag-overflow | no |
+| `tooltip` | button, popover, tooltip | — | 3 | — | — | coachmark, copy-button, guidebanner, popover, tag-overflow | no |
 | `treeview` | treeview | — | 2 | — | — | — | no |
-| `ui-shell` | button, form, radio-button, stack, text-input, ui-shell, user-avatar | — | 4 | — | — | list-box, profile, theme, ui-shell | no |
+| `ui-shell` | button, form, radio-button, stack, text-input, ui-shell, user-avatar | — | 4 | — | — | guidebanner, list-box, notifications-panel, profile, theme, ui-shell | no |
 | `user-avatar` | user-avatar | — | 20 | — | — | — | no |
 <!-- COVERAGE:END -->

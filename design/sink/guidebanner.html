@@ -1,11 +1,11 @@
 <section class="ks-sec" id="guidebanner">
-  <h2>Guide banner</h2><p>a title · a row of insights · collapse, back, next and close</p>
+  <h2>Guide banner</h2><p>a title · a row of insights · collapse, page and close</p>
   <!-- PROVENANCE: rendered-dom · preview-candidate-onboarding-guidebanner--many-insights
        and --few-insights on the ibm-products origin, 2026-10-03 -->
   <!--
-    A static specimen, expanded: no module scrolls the row or collapses the
-    banner. Carbon draws it on its own dark gradient in every theme, so its
-    colours do not follow the page's theme.
+    js/guidebanner.js collapses and expands it, pages the row, fades its edges
+    and removes it on close. Carbon draws the banner on its own dark gradient
+    in every theme, so its colours do not follow the page's theme.
 
     ibm-products renders the scrolling row with a separate `carousel` block.
     @carbon/styles ships the same rules inside this component, renamed:
@@ -58,7 +58,7 @@
       </div>
     </div>
     <div class="rux--guidebanner__navigation">
-      <button type="button" class="rux--guidebanner__toggle-button rux--btn rux--btn--md rux--layout--size-md rux--btn--ghost" aria-expanded="true">Read less</button>
+      <button type="button" class="rux--guidebanner__toggle-button rux--btn rux--btn--md rux--layout--size-md rux--btn--ghost" aria-expanded="true" data-rux-alt-label="Read more">Read less</button>
       <span class="rux--guidebanner__back-button">
         <button type="button" class="rux--btn rux--btn--md rux--layout--size-md rux--btn--ghost rux--btn--disabled rux--btn--icon-only" aria-label="Back" disabled>
           <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>

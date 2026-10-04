@@ -527,15 +527,11 @@ export const GATES = [
     // beside the other browser gates. It still runs AFTER check-runtime-classes,
     // which needs a page nobody has touched.
     sideEffects: 'clicks through every component and restores each; leaves the page as it found it',
-    // CORRECTED 2026-09-05: this read 18 and is 47, across fourteen modules --
-    // data-table, menu, tabs, accordion, modal, ui-shell, profile, theme, tile,
-    // popover, dismiss, form-controls, list-box and overlay. The gate grew with
-    // every module admitted since; the record never moved with it, and nothing
-    // reads baseline, so nothing said so.
+    // Nothing reads baseline, so it is corrected by hand when cases are added.
     // Read passed/ran, not passed/total: `total` counts every case defined and
     // `ran` only those with a fixture, so the two agree on the sink and part
     // company anywhere else.
-    baseline: '47 of 47 ran on the sink, 0 skipped, 0 failed, across 14 modules',
+    baseline: '75 of 75 ran on the sink, 0 skipped, 0 failed, across 18 modules',
   },
   {
     id: 'check-a11y',

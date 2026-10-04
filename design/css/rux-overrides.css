@@ -79,6 +79,13 @@
    declaration the attribute loses to. */
 .rux--list-box__selection[hidden] { display: none; }
 
+/* The same rule for two things a module hides and Carbon gives a `display`:
+   a tag overflow's count while every tag fits (js/tag-overflow.js), and a
+   notifications panel's empty state while it holds notifications
+   (js/notifications-panel.js). */
+.rux--tag-overflow__indicator[hidden],
+.rux--empty-state[hidden] { display: none; }
+
 /* A HIDDEN MENU ITEM OR RULE MUST NOT RENDER, the same rule again. An app
    hides the items that cannot act on what the menu was opened on, and the
    rule left between two empty groups, and Carbon's `.rux--menu-item

@@ -162,6 +162,12 @@ body { min-height: 100vh; background: var(--rux-background);
    and would otherwise cover the next label. */
 .ks-coachmark-room { padding-block-end: 11rem; padding-inline-start: 8rem; }
 .ks-coachmark-done { align-self: flex-end; margin-block: var(--rux-spacing-05); }
+/* The coachmark that owns a tagline, placed where the story's own stylesheet
+   places it: at the foot of the box, centred over the 18rem tagline, so the
+   hint opens above it. */
+.ks-coachmark-fixed { position: absolute; inset-block-end: 3.25rem; inset-inline-end: 10rem; }
+.ks-coachmark-fixed .rux--popover-content { inline-size: 18rem; white-space: normal; }
+.ks-coachmark-fixed .rux--coachmark--content-body { padding-block-end: var(--rux-spacing-05); }
 
 /* Carbon components set `display` on their own class, which outranks the UA
    `[hidden] { display: none }` rule on specificity. The harness needs `hidden` to

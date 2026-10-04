@@ -41,10 +41,6 @@
       "hit": 5,
       "own": 10
     },
-    "notifications-panel": {
-      "hit": 25,
-      "own": 47
-    },
     "Tearsheet": {
       "hit": 20,
       "own": 37
@@ -112,6 +108,10 @@
     "tile": {
       "hit": 17,
       "own": 26
+    },
+    "notifications-panel": {
+      "hit": 31,
+      "own": 47
     },
     "accordion": {
       "hit": 10,

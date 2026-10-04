@@ -794,6 +794,164 @@
     input.blur();
   })();
 
+  // ── guide banner: collapse, the ends of the row, and close ──────────────
+  // Paging itself is not asserted: the row scrolls smoothly, and a synchronous
+  // tool reads the position before it has moved.
+  (() => {
+    const banner = fixture('#guidebanner').querySelector('.rux--guidebanner');
+    if (!banner) return skip('guidebanner', 'collapse', 'no guide banner on this page');
+    const toggle = banner.querySelector('.rux--guidebanner__toggle-button');
+    if (!toggle) return record('guidebanner', 'collapse', false, 'no toggle in the banner');
+    const collapsed = () => has(banner, 'rux--guidebanner__collapsible-collapsed');
+    const was = collapsed(), label = toggle.textContent.trim();
+
+    click(toggle);
+    record('guidebanner', 'the toggle flips the collapsed class, aria-expanded and its label together',
+      collapsed() === !was && toggle.getAttribute('aria-expanded') === String(was)
+      && toggle.textContent.trim() !== label,
+      `collapsed=${collapsed()}, aria-expanded=${toggle.getAttribute('aria-expanded')}, `
+      + `label="${toggle.textContent.trim()}"`);
+    click(toggle);
+    record('guidebanner', 'a second press puts all three back',
+      collapsed() === was && toggle.textContent.trim() === label,
+      `collapsed=${collapsed()}, label="${toggle.textContent.trim()}"`);
+
+    const back = banner.querySelector('.rux--guidebanner__back-button button');
+    const next = banner.querySelector('.rux--guidebanner__next-button button');
+    const row = banner.querySelector('.rux--guidebanner__carousel-elements');
+    if (row && row.scrollWidth > row.clientWidth && row.scrollLeft === 0)
+      record('guidebanner', 'at the start of a row that scrolls, Back is disabled and Next is not',
+        back?.disabled === true && next?.disabled === false,
+        `back.disabled=${back?.disabled}, next.disabled=${next?.disabled}`);
+
+    const edge = banner.querySelector('.rux--guidebanner__carousel-elements-container--scrolled');
+    record('guidebanner', 'the row\'s edges carry their fade inline',
+      /linear-gradient/.test(edge?.style.background ?? ''), `background="${edge?.style.background}"`);
+
+    const close = banner.querySelector('.rux--guidebanner__close-button button');
+    if (close) {
+      const parent = banner.parentNode, after = banner.nextSibling;
+      click(close);
+      record('guidebanner', 'close takes the banner out of the DOM', !banner.isConnected,
+        banner.isConnected ? 'still connected' : '');
+      if (!banner.isConnected) parent.insertBefore(banner, after);
+    }
+  })();
+
+  // ── tag overflow: what does not fit is counted and listed ───────────────
+  (() => {
+    const root = fixture('#tag-overflow').querySelector('.rux--tag-overflow');
+    if (!root) return skip('tag-overflow', 'fit', 'no tag overflow on this page');
+    const row = root.querySelector('.rux--tag-overflow__visible-tags');
+    const indicator = row?.querySelector('.rux--tag-overflow__indicator');
+    if (!indicator) return record('tag-overflow', 'fit', false, 'no count in the row');
+    const holders = () => [...row.children].filter(el => el !== indicator);
+    const hidden = () => holders().filter(el => el.hidden);
+    const listed = () => [...root.querySelectorAll('.rux--tag-overflow-popover__tag-item')]
+      .map(li => li.textContent.trim());
+    const count = () => root.querySelector('.rux--tag-overflow-popover__trigger')?.textContent.trim();
+    const width = root.style.maxInlineSize;
+
+    root.style.maxInlineSize = '8rem';
+    window.Rux.tagOverflow.fit(root);
+    const cut = hidden();
+    record('tag-overflow', 'in a narrow row the count and the list both name the hidden tags',
+      cut.length > 0 && count() === `+${cut.length}`
+      && listed().join('|') === cut.map(el => el.textContent.trim()).join('|'),
+      `hidden=${cut.length}, count="${count()}", listed=${listed().length}`);
+
+    root.style.maxInlineSize = '200rem';
+    window.Rux.tagOverflow.fit(root);
+    record('tag-overflow', 'in a row with room every tag shows and the count is gone',
+      hidden().length === 0 && indicator.hidden, `hidden=${hidden().length}, count hidden=${indicator.hidden}`);
+
+    root.style.maxInlineSize = width;
+    window.Rux.tagOverflow.fit(root);
+  })();
+
+  // ── notifications panel: its button, a dismissal, and the empty state ───
+  (() => {
+    const panel = fixture('#notifications-panel').querySelector('.rux--notifications-panel__container');
+    if (!panel) return skip('notifications-panel', 'dismissal', 'no notifications panel on this page');
+    const trigger = panel.id && document.querySelector(`[aria-controls="${panel.id}"]`);
+    const notes = () => panel.querySelectorAll('.rux--notifications-panel__notification');
+    const before = panel.innerHTML, wasHidden = panel.hidden;
+    const main = panel.querySelector('.rux--notifications-panel__main-section');
+
+    if (trigger) {
+      if (panel.hidden || has(panel, 'rux--notifications-panel__exit')) click(trigger);
+      click(trigger);
+      record('notifications-panel', 'its button closes it: the exit class, and aria-expanded false',
+        has(panel, 'rux--notifications-panel__exit') && trigger.getAttribute('aria-expanded') === 'false',
+        `exit=${has(panel, 'rux--notifications-panel__exit')}, aria-expanded=${trigger.getAttribute('aria-expanded')}`);
+      click(trigger);
+      record('notifications-panel', 'and opens it: shown, the entrance class, and aria-expanded true',
+        !panel.hidden && has(panel, 'rux--notifications-panel__entrance')
+        && trigger.getAttribute('aria-expanded') === 'true',
+        `hidden=${panel.hidden}, aria-expanded=${trigger.getAttribute('aria-expanded')}`);
+      window.Rux.notificationsPanel.close(panel);
+      panel.hidden = wasHidden;
+      panel.classList.remove('rux--notifications-panel__exit');
+      if (!wasHidden) panel.classList.add('rux--notifications-panel__entrance');
+      trigger.setAttribute('aria-expanded', String(!wasHidden));
+    }
+
+    const had = notes().length;
+    const one = panel.querySelector('.rux--notifications-panel__dismiss-single-button');
+    if (had && one) {
+      click(one);
+      record('notifications-panel', 'dismissing one takes it out of the DOM',
+        notes().length === had - 1, `${had} before, ${notes().length} after`);
+    }
+    const all = panel.querySelector('.rux--notifications-panel__dismiss-button');
+    if (all) {
+      click(all);
+      const empty = main?.querySelector('.rux--empty-state');
+      record('notifications-panel', 'dismissing all leaves the empty state and no bottom actions',
+        notes().length === 0 && has(main, 'rux--notifications-panel__main-section-empty')
+        && (!empty || !empty.hidden)
+        && !panel.querySelector('.rux--notifications-panel__bottom-actions'),
+        `left=${notes().length}, empty class=${has(main, 'rux--notifications-panel__main-section-empty')}`);
+    }
+    panel.innerHTML = before;
+  })();
+
+  // ── coachmark: the header closes the hint, the tagline follows it ───────
+  (() => {
+    const section = fixture('#coachmark');
+    const marks = [...section.querySelectorAll('.rux--coachmark')];
+    if (!marks.length) return skip('coachmark', 'hint', 'no coachmark on this page');
+
+    for (const mark of marks) {
+      const container = mark.querySelector('.rux--popover-container');
+      const tagline = mark.querySelector('.rux--coachmark-tagline');
+      const closer = mark.querySelector('.rux--coachmark--content-header button');
+      if (!container || !closer) continue;
+      const wasOpen = has(container, 'rux--popover--open');
+      if (!wasOpen) window.Rux.popover.open(container);
+
+      if (tagline) record('coachmark', 'a tagline hides while its hint is open',
+        has(tagline, 'rux--coachmark-tagline--is-open'), 'the tagline has no --is-open');
+      click(closer);
+      record('coachmark', tagline ? 'the header\'s close shuts the hint and brings the tagline back'
+        : 'the header\'s close shuts the hint',
+        !has(container, 'rux--popover--open') && !(tagline && has(tagline, 'rux--coachmark-tagline--is-open')),
+        `open=${has(container, 'rux--popover--open')}`);
+
+      if (wasOpen) window.Rux.popover.open(container);
+    }
+
+    const dismiss = section.querySelector('.rux--coachmark-tagline--close-btn');
+    const owner = dismiss?.closest('.rux--coachmark');
+    if (owner) {
+      const parent = owner.parentNode, after = owner.nextSibling;
+      click(dismiss);
+      record('coachmark', 'the tagline\'s close takes the coachmark out of the DOM',
+        !owner.isConnected, owner.isConnected ? 'still connected' : '');
+      if (!owner.isConnected) parent.insertBefore(owner, after);
+    }
+  })();
+
   // ── the kernel's stack: one open surface at a time ────────────────────────
   // js/overlay.js exists because two surfaces otherwise disagree about who owns
   // a press. Opening a second dismissible surface must close the first.

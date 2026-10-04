@@ -102,5 +102,6 @@ matter, and a puzzle moves level by editing that field.
 | 3 | 2 | 4 | 3 |
 | 4 and on | 1 | 3 | 5 |
 
-- **Give the level a subject**, such as animals, food or things at home. The
-  player guesses the picture sooner, and the guess is half the fun.
+- **Give the level a theme**, such as Fruit, Animals or At home, in the
+  maker's Level theme field. It shows in the level's heading, the player
+  guesses the picture sooner, and the guess is half the fun.

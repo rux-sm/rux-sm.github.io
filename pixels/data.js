@@ -19,7 +19,8 @@
    and where there is not it draws the name form, or says the link is needed.
 
    THE OWNER makes and edits puzzles and sees the players, by the tables'
-   own rules: `save`, `remove`, `players`, `setWord` and `removePlayer`.
+   own rules: `save`, `remove`, `setTheme`, `players`, `setWord`, `renamePlayer` and
+   `removePlayer`.
 
    THE LOCAL PREVIEW, `npm run serve` on :8640, has no log-in, so there the
    same calls read and write this browser's storage instead, starting from
@@ -161,12 +162,17 @@
     },
     // A player is sent the levels and the day's puzzle; the owner reads the
     // table, which holds the days to come too.
+    // Each puzzle comes with its level's theme, if the level has one.
     async list() {
       if (!owner) return call('pixels_puzzles', { p_key: key() });
-      const { data, error } = await client.from('pixels_puzzles')
-        .select('id, name, squares, width, height, level, colours, created_at, day').order('created_at').order('id');
-      fail(error);
-      return data;
+      const [puzzles, levels] = await Promise.all([
+        client.from('pixels_puzzles').select('id, name, squares, width, height, level, colours, created_at, day').order('created_at').order('id'),
+        client.from('pixels_levels').select('width, level, name'),
+      ]);
+      fail(puzzles.error);
+      fail(levels.error);
+      const theme = p => levels.data.find(l => l.width === p.width && l.level === p.level)?.name ?? null;
+      return puzzles.data.map(p => ({ ...p, theme: theme(p) }));
     },
     async results() {
       return new Map((await call('pixels_results', { p_key: key() })).map(r => [r.puzzle_id, { seconds: r.best_seconds, stars: r.stars }]));
@@ -200,6 +206,13 @@
     },
     async remove(id) {
       fail((await client.from('pixels_puzzles').delete().eq('id', id)).error);
+    },
+    // A level's theme, for boards of one size; an empty name takes it away.
+    async setTheme(width, level, name) {
+      const set = name
+        ? client.from('pixels_levels').upsert({ width, level, name })
+        : client.from('pixels_levels').delete().eq('width', width).eq('level', level);
+      fail((await set).error);
     },
     // Every player with their results and days, and the invite word.
     async players() {

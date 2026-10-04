@@ -9,7 +9,8 @@
    solved in a row. Then a section for each level the maker gave, a bar for
    how much of it is solved, and its puzzles easy to hard, three across on a
    phone, each tile a square, none locked: the 5×5 levels are called Quick,
-   the 15×15 ones Long, and they stand before and after the 10×10 levels. A
+   the 15×15 ones Long, and they stand before and after the 10×10 levels; a
+   level with a theme carries it in its name. A
    solved tile shows its picture, name and stars; an unsolved one its number,
    a question mark and how hard it is. The owner has an Edit link under each,
    and a section of the days' puzzles he has drawn, by date.
@@ -159,7 +160,7 @@
     const h2 = document.createElement('h2');
     h2.className = 'rux--type-productive-heading-03';
     h2.textContent = heading;
-    h2.id = `pixels-${heading.toLowerCase().replace(/\s+/g, '-')}`;
+    h2.id = `pixels-${heading.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
     el.setAttribute('aria-labelledby', h2.id);
     head.append(h2, words('pixels-meta', `${solved} of ${tiles.length} solved`));
     const bar = document.createElement('div');
@@ -232,7 +233,8 @@
 
     // "Puzzle 7" counts through every level, in playing order.
     const ordered = order(puzzles);
-    const kind = p => `${p.width < 10 ? 'Quick' : p.width > 10 ? 'Long' : 'Level'} ${p.level}`;
+    // A level is named for its size and number, and its theme if it has one.
+    const kind = p => `${p.width < 10 ? 'Quick' : p.width > 10 ? 'Long' : 'Level'} ${p.level}${p.theme ? ` · ${p.theme}` : ''}`;
     for (const heading of [...new Set(ordered.map(kind))]) {
       const tiles = [];
       let solved = 0;

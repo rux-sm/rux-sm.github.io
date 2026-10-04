@@ -10,7 +10,9 @@
    or 15 squares a side, and a saved puzzle keeps the size it has. Level is
    where the puzzle sits on the front page, among those of its size. A
    puzzle given a day is that day's puzzle instead and sits in no level; a
-   day takes one puzzle, and after one is saved the field moves on a day. Save stays off until the picture is solvable and named.
+   day takes one puzzle, and after one is saved the field moves on a day.
+   Level theme names the level the Level field says, for boards of this
+   size, and is saved with the puzzle. Save stays off until the picture is solvable and named.
    docs/making-puzzles.md is the guide to a good one.
 
    Only the owner's account makes and edits; any other is told so.
@@ -24,7 +26,7 @@
   const { data, owner, SIZES, grid, squaresOf, unreached, rounds, grade, board, drag, switcher, chosen } = window.Pixels;
   const $ = id => document.getElementById(id);
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
-  const day = $('pixels-day');
+  const day = $('pixels-day'), theme = $('pixels-theme');
   const inks = $('pixels-inks');
   const DRAFT = 'pixels-draft';
   // A level holds nine, three rows of three on a phone, so a new puzzle is
@@ -72,6 +74,9 @@
     side = to;
     chosen($('pixels-size'), $('pixels-size').querySelector(`[data-size="${side}"]`));
   };
+  // The theme of the level the fields name, among boards of this size.
+  const themeOf = () => puzzles.find(p => p.width === side && p.level === levelOf() && !p.day)?.theme || '';
+  const showTheme = () => { theme.value = themeOf(); };
   // The first level with room for another puzzle of this size.
   const openLevel = () => {
     const count = {};
@@ -136,15 +141,16 @@
     setSide(+b.dataset.size);
     pad.reset();
     level.value = openLevel();
+    showTheme();
     $('pixels-saved').hidden = true;
     clear();
     keepDraft();
   });
   name.addEventListener('input', () => { save.disabled = !solvable || !name.value.trim(); keepDraft(); });
-  level.addEventListener('input', keepDraft);
-  level.addEventListener('change', keepDraft);
-  // A day's puzzle is in no level, so Level has nothing to say.
-  const showDay = () => { level.disabled = !!day.value; };
+  level.addEventListener('input', () => { showTheme(); keepDraft(); });
+  level.addEventListener('change', () => { showTheme(); keepDraft(); });
+  // A day's puzzle is in no level, so Level and its theme have nothing to say.
+  const showDay = () => { level.disabled = theme.disabled = !!day.value; };
   day.addEventListener('change', () => { showDay(); keepDraft(); });
 
   const clear = () => {
@@ -168,6 +174,13 @@
     };
     try {
       const row = await data.save(puzzle);
+      // The level's theme goes with it, if it was changed.
+      const named = theme.value.trim();
+      if (!puzzle.day && named !== themeOf()) {
+        await data.setTheme?.(side, puzzle.level, named);
+        puzzles.forEach(p => { if (p.width === side && p.level === puzzle.level) p.theme = named || null; });
+      }
+      if (!editing) puzzles.push({ ...row, theme: named || null });
       if (editing) {
         editing = row;
         saved(`Saved “${row.name}”`);
@@ -243,6 +256,7 @@
       }
     }
     showDay();
+    showTheme();
     render();
   })();
 })();

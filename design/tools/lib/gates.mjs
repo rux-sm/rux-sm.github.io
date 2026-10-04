@@ -496,7 +496,7 @@ export const GATES = [
     // READ THE noReference LIST. Pagination's real defect sat in that bucket
     // reading as "unmeasured" — the tool's own header says a set Carbon never
     // emits may be one we invented.
-    baseline: 'kitchen-sink at 1497 wide, in white: checked 345 · matched 320 · known 25 · unknown 0 · not comparable 161 · noReference 387',
+    baseline: 'kitchen-sink at 1497 wide, in white: checked 345 · matched 320 · known 25 · unknown 0 · not comparable 162 · noReference 396',
     status: 'self-declassified to a diagnostic a person reads, not a verify gate (check-spacing.js:88)',
   },
   {

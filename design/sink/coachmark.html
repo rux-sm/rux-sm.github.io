@@ -1,6 +1,7 @@
 <section class="ks-sec" id="coachmark">
-  <h2>Coachmark</h2><p>a beacon that opens a short hint · the tagline that offers one</p>
-  <!-- PROVENANCE: rendered-dom · preview-onboarding-coachmark--tooltip and
+  <h2>Coachmark</h2><p>a beacon that opens a short hint · a hint that can be dragged · the tagline that offers one</p>
+  <!-- PROVENANCE: rendered-dom · preview-onboarding-coachmark--tooltip,
+       preview-onboarding-coachmark--floating and
        patterns-coachmark-fixed--coachmark-fixed on the ibm-products origin, 2026-10-03 -->
   <!--
     The hint is a popover, so js/popover.js opens and closes it from the beacon
@@ -23,6 +24,13 @@
     js/coachmark.js closes a hint from its header's close button, hides a
     tagline while its hint is open, and removes the coachmark from the
     tagline's own close button.
+
+    The floating coachmark is preview-onboarding-coachmark--floating: a
+    button opens it, it has no caret, and js/coachmark.js drags it by its
+    header or moves it from the handle with the arrow keys. The handle sits in
+    an icon-tooltip in the capture, and Carbon's rule that sets it to the left
+    selects the tooltip's two wrappers, so the wrappers are written and the
+    tooltip's classes are left off.
 
     The tagline is written shut, which is the base class alone; the capture
     holds it open, with `coachmark-tagline--is-open`. Carbon fixes it to the
@@ -49,6 +57,43 @@
             <div class="rux--coachmark--content-body">
               <h2 class="rux--type-heading-compact-01">Filters moved</h2>
               <p class="rux--type-body-compact-01">They now sit above the table.</p>
+              <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--primary ks-coachmark-done">Done</button>
+            </div>
+          </span>
+          <span class="rux--popover-caret"></span>
+        </span>
+      </span>
+    </div>
+  </div>
+
+  <div class="ks-label" style="margin-block-start:1.5rem">floating · drag it by its header, or press the handle and use the arrow keys</div>
+  <div class="ks-coachmark-room">
+    <div class="rux--coachmark rux--coachmark--floating">
+      <span class="rux--popover-container rux--popover--drop-shadow rux--popover--high-contrast rux--popover--open rux--popover--bottom">
+        <button type="button" class="rux--btn rux--btn--md rux--layout--size-md rux--btn--tertiary" aria-expanded="true">
+          Show the tip
+          <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-idea"/></svg>
+        </button>
+        <span class="rux--popover" role="region" aria-label="Coachmark content">
+          <span class="rux--popover-content rux--coachmark--coachmark-content">
+            <div class="rux--coachmark--content-header">
+              <span class="rux--visually-hidden" id="ks-coachmark-drag-how">Press Enter or Space to activate drag mode.</span>
+              <div class="rux--visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+              <div class="rux--visually-hidden" role="status" aria-live="assertive" aria-atomic="true"></div>
+              <span>
+                <div>
+                  <button type="button" class="rux--coachmark--content-header--drag-icon rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Drag" aria-describedby="ks-coachmark-drag-how" aria-pressed="false">
+                    <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-draggable"/></svg>
+                  </button>
+                </div>
+              </span>
+              <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost rux--btn--icon-only" aria-label="Close">
+                <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+              </button>
+            </div>
+            <div class="rux--coachmark--content-body">
+              <h2 class="rux--type-heading-compact-01">Move this out of the way</h2>
+              <p class="rux--type-body-compact-01">It stays where you leave it.</p>
               <button type="button" class="rux--btn rux--btn--sm rux--layout--size-sm rux--btn--primary ks-coachmark-done">Done</button>
             </div>
           </span>

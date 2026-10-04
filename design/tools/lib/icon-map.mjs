@@ -104,6 +104,7 @@ export const ICONS = {
   'diamond-fill': { material: 'diamond-fill', rux: null },  // Material draws the diamond; `square` is low-severity's.
   'document': { material: 'description', rux: null },
   'download': { material: 'download', rux: null },
+  'draggable': { material: 'drag_indicator', rux: null },
   'edit': { material: 'edit', rux: null },
   'email': { material: 'mail', rux: null },
   'error--filled': { material: 'error-fill', rux: null },

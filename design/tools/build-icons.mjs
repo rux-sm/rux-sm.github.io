@@ -86,6 +86,8 @@ const ICONS = [
   'idea',
   // the notifications panel's settings button
   'settings',
+  // the floating coachmark's drag handle
+  'draggable',
 ];
 
 const symbols = [], missing = [], from = {};

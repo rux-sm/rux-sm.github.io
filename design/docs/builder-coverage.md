@@ -169,7 +169,7 @@ one. **Its three CONTAINED specimens cannot be marked** — lines 151, 219
   of those three."
 
 <!-- COVERAGE:BEGIN -->
-_73 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 298 candidate regions in the 52 unmarked._
+_73 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 299 candidate regions in the 52 unmarked._
 
 | fragment | components | blocks | candidates | text | variants | behaviour | in the builder |
 |---|---|---|---|---|---|---|---|
@@ -184,7 +184,7 @@ _73 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 2
 | `card` | button, card | 2 | 11 | 8 | 1 | guidebanner | yes |
 | `chat-button` | button, chat-button | — | 4 | — | — | guidebanner | no |
 | `checkbox` | checkbox, form | 1 | 5 | 6 | 0 | — | yes |
-| `coachmark` | button, coachmark, popover | — | 2 | — | — | coachmark, copy-button, guidebanner, popover, tag-overflow | no |
+| `coachmark` | button, coachmark, popover | — | 3 | — | — | coachmark, copy-button, guidebanner, popover, tag-overflow | no |
 | `code-snippet` | button, code-snippet, copy-button | 2 | 4 | 4 | 1 | copy-button, guidebanner | yes |
 | `combo-box` | combo-box, list-box, text-input | — | 2 | — | — | form-controls, list-box | no |
 | `combo-button` | button, combo-button, menu | — | 4 | — | — | guidebanner, menu | no |

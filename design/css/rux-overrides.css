@@ -612,6 +612,22 @@
   padding: 6px var(--rux-spacing-03);
   font-size: 0.8125rem;
 }
+/* GEIST'S POP-OVER CARD IS ITS MENU'S SURFACE, measured on its Materials page:
+   the menu material, #0a0a0a inside a thin ring with 12px corners. The fill
+   and the ring were already so; the corner was the 8px every rounded surface
+   shares, where this theme's menus are 12px. A tooltip is the smaller
+   material and keeps 8px, and a tab tip keeps the square corners that join it
+   to its tab. */
+[data-theme="geist-dark"] .rux--popover-container:not(.rux--popover--tab-tip) .rux--popover-content:not(.rux--tooltip-content) {
+  border-radius: 12px;
+}
+/* GEIST'S SPINNER IS GREY, measured on its Spinner page at #8f8f8f, where
+   Carbon draws its ring in the brand colour, here the page's brightest.
+   icon-secondary is the nearest this theme has. Geist's is a ring of twelve
+   fading bars; Carbon's turning arc is kept. */
+[data-theme="geist-dark"] .rux--loading__stroke {
+  stroke: var(--rux-icon-secondary);
+}
 /* GEIST'S DEFAULT CONTROL IS 36px, measured on its Button and Input pages:
    the default button and the default field are both 36px with 6px corners,
    between a 32px small and a 40px large. Carbon's md size is 40, and three

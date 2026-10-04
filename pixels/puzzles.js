@@ -1,17 +1,20 @@
 /* ==========================================================================
-   puzzles.js — the front page: today's puzzle, then every puzzle by level
+   puzzles.js — the front page: today's puzzle, the leaderboard, every level
    --------------------------------------------------------------------------
-   Today's puzzle is first, with the days solved in a row beside it. Then a
-   section for each level the maker gave, its puzzles easy to hard, and none
-   locked: the 5×5 levels are called Quick, the 15×15 ones Long, and they
-   stand before and after the 10×10 levels. A solved puzzle shows its picture, name, stars and best time; an
-   unsolved one its number, a question mark and how hard it is. The owner
-   has an Edit link under each.
+   A guest with no player yet gets the name form first; data.js's `enter`
+   draws it. Then: today's puzzle with the days solved in a row beside it;
+   the leaderboard, today's ranking by stars then time and the all-time one
+   by stars, the player's own row marked; and a section for each level the
+   maker gave, its puzzles easy to hard, none locked: the 5×5 levels are
+   called Quick, the 15×15 ones Long, and they stand before and after the
+   10×10 levels. A solved puzzle shows its picture, name, stars and best
+   time; an unsolved one its number, a question mark and how hard it is. The
+   owner has an Edit link under each.
    ========================================================================== */
 (() => {
   'use strict';
 
-  const { data, owner, grid, rounds, grade, order, daily, today, streak, picture, stars, time, title } = window.Pixels;
+  const { data, owner, guest, enter, grid, rounds, grade, order, daily, today, streak, picture, stars, time, title, switcher } = window.Pixels;
   const host = document.getElementById('pixels-levels');
 
   const say = (heading, detail) => {
@@ -66,6 +69,68 @@
     return wrap;
   };
 
+  /* THE LEADERBOARD. Two rankings behind one switch: today's puzzle, by
+     stars then time, and all time, by every star earned, with puzzles solved
+     and days in a row. The player's own row is marked. */
+  const leaderboard = ranks => {
+    const el = document.createElement('section');
+    el.className = 'rux--stack-vertical rux--stack-scale-5 pixels-leader';
+    el.setAttribute('aria-labelledby', 'pixels-leaderboard');
+    const h2 = document.createElement('h2');
+    h2.className = 'rux--type-productive-heading-03';
+    h2.id = 'pixels-leaderboard';
+    h2.textContent = 'Leaderboard';
+    const pick = document.createElement('div');
+    pick.className = 'rux--content-switcher rux--content-switcher--lg rux--layout--size-lg';
+    pick.setAttribute('role', 'tablist');
+    pick.setAttribute('aria-label', 'Ranking');
+    const list = document.createElement('ol');
+    list.className = 'pixels-ranks';
+    const row = (place, r, detail) => {
+      const li = document.createElement('li');
+      li.className = `pixels-rank${r.me ? ' is-me' : ''}`;
+      const n = document.createElement('span');
+      n.className = 'pixels-rank-place';
+      n.textContent = place;
+      const name = document.createElement('span');
+      name.className = 'pixels-rank-name';
+      name.textContent = r.name;
+      li.append(n, name, ...detail);
+      return li;
+    };
+    const words = (cls, text) => {
+      const span = document.createElement('span');
+      span.className = cls;
+      span.textContent = text;
+      return span;
+    };
+    const show = which => {
+      const rows = which === 'today'
+        ? ranks.today.map((r, i) => row(i + 1, r, [stars(document.createElement('span'), r.stars), words('pixels-rank-value', time(r.seconds))]))
+        : ranks.all.map((r, i) => row(i + 1, r, [
+          words('pixels-meta', `${r.solved} solved · ${r.days} day${r.days === 1 ? '' : 's'}`),
+          words('pixels-rank-value', `${r.stars} ★`),
+        ]));
+      if (rows.length) list.replaceChildren(...rows);
+      else list.replaceChildren(words('pixels-meta', "Nobody has finished today's puzzle yet."));
+    };
+    [['today', 'Today'], ['all', 'All time']].forEach(([which, label], i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = `rux--content-switcher-btn${i ? '' : ' rux--content-switcher--selected'}`;
+      b.setAttribute('role', 'tab');
+      b.setAttribute('aria-selected', !i);
+      b.tabIndex = i ? -1 : 0;
+      b.dataset.rank = which;
+      b.appendChild(words('rux--content-switcher__label', label));
+      pick.appendChild(b);
+    });
+    switcher(pick, b => show(b.dataset.rank));
+    show('today');
+    el.append(h2, pick, list);
+    return el;
+  };
+
   // A heading, a note at its far end, and the tiles under them.
   const section = (heading, note, tiles) => {
     const el = document.createElement('section');
@@ -107,16 +172,23 @@
       say('Pixels could not connect', 'Reload the page to try again.');
       return;
     }
-    let puzzles, results, days;
+    let me, puzzles, results, days, ranks;
     try {
-      [puzzles, results, days] = await Promise.all([data.list(), data.results(), data.days()]);
+      me = await enter(host);
+      if (!me) return;
+      [puzzles, results, days, ranks] = await Promise.all([data.list(), data.results(), data.days(), data.board(today())]);
     } catch {
       say('The puzzles did not load', 'Reload the page to try again.');
       return;
     }
+    if (guest) {
+      document.getElementById('pixels-player').textContent = me.name;
+      document.getElementById('pixels-guestbar').hidden = false;
+    }
     const now = daily(today()), row = streak(new Set(days.keys()));
     host.appendChild(section('Today', row ? `${row} day${row === 1 ? '' : 's'} in a row` : '',
       [tile(now, now.name, 'play.html?daily', days.get(now.day))]));
+    if (ranks) host.appendChild(leaderboard(ranks));
     if (!puzzles.length) { host.appendChild(empty()); return; }
 
     // "Puzzle 7" counts through every level, in playing order.

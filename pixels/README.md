@@ -7,7 +7,14 @@ lists what is unfinished here.
 
 ## What it is
 
-`index.html` shows today's puzzle and the days solved in a row, then every
+A player is an account that can open Pixels, or a guest: someone with no
+account who opens an invite link, `/pixels/?join=` and the invite word, and
+types a name. A guest gets no header, and their browser keeps a key that is
+who they are from then on.
+
+`index.html` shows today's puzzle and the days solved in a row, the
+leaderboard, today's ranking by stars then time and the all-time one by every
+star earned, then every
 puzzle by the level its maker gave it, easy to hard, with nothing locked.
 The 5×5 levels are called Quick and come first, the 15×15 ones Long and come
 last. A
@@ -54,18 +61,32 @@ level.
 | | |
 | :--- | :--- |
 | `app.js` | the rules and the board every page shares: the numbers, the line solver, the puzzle of the day, drawing, dragging and zooming, stars, tones and the phone's tick |
-| `data.js` | where puzzles, best times, stars and solved days are kept |
-| `puzzles.js`, `play.js`, `make.js` | each page's own behaviour |
+| `data.js` | who is playing, the name form a guest meets, and where puzzles and results are kept |
+| `puzzles.js`, `play.js`, `make.js`, `players.js` | each page's own behaviour |
 | `app.css` | the board, the picture and the puzzle list, under `pixels-` |
 | `theme.css` | the eight inks a colour picture is painted from |
 
 ## Data
 
-Three tables in the site's database: `pixels_puzzles`, every puzzle, shared;
-`pixels_results`, each account's best time and most stars on each puzzle; and
-`pixels_daily`, the same for each puzzle of the day it solved. All are staff
-only, and an account reads and writes only its own results.
-`docs/database-access.md` is the rule they follow.
+Five tables in the site's database, which only the owner's account reads
+directly: `pixels_puzzles`, every puzzle, which a staff account may read too;
+`pixels_players`, each player's name with the account or the hash of the
+guest's key; `pixels_player_results` and `pixels_player_days`, each player's
+best time and most stars on a puzzle and on a puzzle of the day; and
+`pixels_settings`, the invite word. `docs/database-access.md` is the rule
+they follow.
+
+A player's page calls eight functions, which the publishable key may run and
+which first find the player from the log-in or the key: `pixels_join`,
+`pixels_me`, `pixels_puzzles`, `pixels_results`, `pixels_days`,
+`pixels_record`, `pixels_record_day` and `pixels_board`. A time is the
+player's own browser's word: the database refuses only what cannot be, a
+time under two seconds, a puzzle that does not exist, a day more than one
+from today.
+
+`players.html` is the owner's: every player with today's puzzle, days in a
+row, puzzles solved, stars and when they last played, the invite word, whose
+change closes the old link to anyone new, and Remove for a guest.
 
 The local preview, `npm run serve` on :8640, has no log-in, so there Pixels
 keeps its puzzles and times in the browser instead, starting from the ten in

@@ -20,3 +20,9 @@ done and how.
   driver itinerary and the customer quote. A passenger roster is still named
   for it, after the printed schedule.
 
+## Pixels
+
+- `pixels_results` and `pixels_daily` hold a copy of what `pixels_player_results`
+  and `pixels_player_days` now keep, and nothing reads them. They are dropped
+  once no browser still runs the pages that wrote them.
+

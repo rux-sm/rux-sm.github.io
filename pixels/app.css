@@ -165,6 +165,38 @@
 /* On a tile every picture is 5rem across, whatever its puzzle's size. */
 .pixels-picture--sm { --px: round(down, calc(5rem / var(--size, 10)), 1px); }
 
+/* A GUEST HAS NO ACCOUNT, so no header is drawn and the page starts at the
+   top. /funnel.js marks the page for one; both of its marks are named so
+   that this outranks a theme's own rule for the space under the header. */
+[data-rux-guest] .pixels-shell { display: none; }
+[data-rux-guest][data-rux-unlocked] .pixels-main { margin-block-start: 0; }
+.pixels-guestbar { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-block-end: 1.5rem; }
+.pixels-guestbar[hidden] { display: none; }
+/* The name form a guest meets first. */
+.pixels-join { max-inline-size: 20rem; margin-inline: auto; padding-block-start: 2rem; }
+.pixels-join-note { min-block-size: 1.25rem; margin: 0; color: var(--rux-text-error); }
+
+/* THE LEADERBOARD: a place, a name, and what earned it. */
+.pixels-leader { max-inline-size: 32rem; }
+.pixels-ranks { display: grid; margin: 0; padding: 0; list-style: none; }
+.pixels-rank {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr) auto auto;
+  gap: .75rem;
+  align-items: baseline;
+  padding: .625rem .5rem;
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+}
+.pixels-rank.is-me { background: var(--rux-layer-01); font-weight: 600; }
+.pixels-rank-place { color: var(--rux-text-secondary); font-variant-numeric: tabular-nums; }
+.pixels-rank-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pixels-rank-value { min-inline-size: 3.5rem; text-align: end; font-variant-numeric: tabular-nums; }
+
+/* THE OWNER'S PAGE: the invite word beside its button, the link under them. */
+.pixels-invite { display: grid; grid-template-columns: minmax(0, 16rem) auto; gap: .75rem 1rem; align-items: end; }
+.pixels-invite[hidden] { display: none; }
+.pixels-invite > p { grid-column: 1 / -1; margin: 0; overflow-wrap: anywhere; }
+
 /* THE PUZZLE LIST, a level at a time. */
 .pixels-level-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
 .pixels-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); gap: 1rem; }

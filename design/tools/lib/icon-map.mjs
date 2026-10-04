@@ -158,6 +158,8 @@ export const ICONS = {
   'user--multiple': { material: 'groups', rux: null },
   'view': { material: 'visibility', rux: null },
   'view--off': { material: 'visibility_off', rux: null },
+  'volume--mute': { material: 'volume_off', rux: null },
+  'volume--up': { material: 'volume_up', rux: null },
   'warning--alt--filled': { material: 'warning-fill', rux: null },
   'warning--alt-inverted--filled': { material: 'do_not_disturb_on-fill', rux: null },  // The inverted triangle, kept distinct from the upright.
   'warning--filled': { material: 'report-fill', rux: null },  // The filled octagon; `error` is taken.

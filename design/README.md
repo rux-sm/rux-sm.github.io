@@ -69,7 +69,7 @@ The table is generated on every `npm run verify`. Do not edit it by hand.
 | Class coverage | **1,066 / 1,520 (70%)** — ratcheted in `data/coverage.json` |
 | Spacing scale | 13 `--rux-spacing-*` tokens, demoed in the `spacing` section |
 | Markup provenance | **81 `rendered-dom` · 6 `source` · 0 `inferred`** across 87 files |
-| Icons | 255 symbols in a 82.0 KB sprite — 57 referenced, 198 nothing points at |
+| Icons | 259 symbols in a 83.4 KB sprite — 57 referenced, 202 nothing points at |
 | Size | 1110.8 KB raw · 999.8 KB min · **102 KB gzipped** |
 | Behaviour JS | **22** modules · **79 KB gzipped** · 260.8 KB raw, 58% of it comment · 108.6 KB of code |
 

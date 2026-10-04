@@ -164,6 +164,12 @@
     block-size: 100%;
   }
 }
+/* The Fleet list's type and equipment marks are 20px in a cell that fits an
+   18px line, so in geist-dark each gives up 1px above and below and the row
+   stays Design's 40px, as Design's rule does for a tag in a cell. */
+[data-theme="geist-dark"] .rux--data-table td :is(.scheduler-bus-type, .scheduler-bus-equipment-marks) {
+  margin-block: -1px;
+}
 /* Ant's tab is 46px (Design's rux-overrides.css), so the editor's sticky
    strip, which overrides.css sizes from the control height, takes the tab's
    height in its place. */

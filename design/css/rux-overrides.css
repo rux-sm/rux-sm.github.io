@@ -861,17 +861,18 @@
   font-weight: 400;
 }
 /* - A table's cells are 8px from each side, 16px between two columns; the
-     first and last keep 16px to the box's edge, where the title and the
-     toolbar above them start. A sortable header's button carries the
-     padding in place of its cell. */
+     first and last keep 12px to the box's edge, the toolbar's own inset, so
+     a column's words start under the search field's edge and end under the
+     last button's. A sortable header's button carries the padding in place
+     of its cell. */
 [data-theme="geist-dark"] .rux--data-table :is(td, th) {
   padding-inline: 8px;
 }
 [data-theme="geist-dark"] .rux--data-table :is(td, th):first-child {
-  padding-inline-start: 16px;
+  padding-inline-start: var(--rux-spacing-04);
 }
 [data-theme="geist-dark"] .rux--data-table :is(td, th):last-child {
-  padding-inline-end: 16px;
+  padding-inline-end: var(--rux-spacing-04);
 }
 [data-theme="geist-dark"] .rux--data-table th:has(> .rux--table-sort) {
   padding-inline: 0;
@@ -880,7 +881,10 @@
   padding-inline: 8px;
 }
 [data-theme="geist-dark"] .rux--data-table th:first-child > .rux--table-sort {
-  padding-inline-start: 16px;
+  padding-inline-start: var(--rux-spacing-04);
+}
+[data-theme="geist-dark"] .rux--data-table th:last-child > .rux--table-sort {
+  padding-inline-end: var(--rux-spacing-04);
 }
 /* - A row is 40px and the header row 36px, measured on Geist's Table page,
      where Carbon's default is 48px for both. Geist gets its 40px from 10px
@@ -903,6 +907,19 @@
 }
 [data-theme="geist-dark"] .rux--data-table:not(.rux--data-table--xs, .rux--data-table--sm, .rux--data-table--md, .rux--data-table--xl) th .rux--table-sort__flex {
   min-block-size: 2.25rem;
+}
+/*   A tag or a small avatar in a cell takes one line's room, so a row that
+     holds one stays 40px: the cell's 10px above and below fit an 18px line,
+     and a 24px tag made the row 45px. Each gives up what it stands over the
+     line, 3px above and below, and the 20px small tag 1px. It sits at the
+     line's top rather than on its baseline, where the room under a baseline
+     made the line 20px and the row a third of a pixel over. */
+[data-theme="geist-dark"] .rux--data-table td :is(.rux--tag, .rux--user-avatar--sm) {
+  margin-block: -3px;
+  vertical-align: top;
+}
+[data-theme="geist-dark"] .rux--data-table td :is(.rux--tag--sm, .rux--tag.rux--layout--size-sm) {
+  margin-block: -1px;
 }
 /* - The small tag is 20px, Geist's small badge, where Carbon's is 18px. The
      24px default is already Geist's. */

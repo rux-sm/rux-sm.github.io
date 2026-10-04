@@ -23,7 +23,7 @@
    and so does the lost star. Restart empties the board and zeroes the clock,
    and Undo straight after it brings everything back.
 
-   Free mode points out nothing: a wrong square fills like a right one, Fill
+   Free mode, under More with the way to the maker, points out nothing: a wrong square fills like a right one, Fill
    on a filled square empties it, the numbers never grey, there is no hint,
    and the puzzle is solved when the filled squares are exactly the picture.
    The choice is kept in this browser under `pixels-mode`, and changing it

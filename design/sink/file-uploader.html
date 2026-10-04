@@ -40,8 +40,9 @@
   -->
   <!-- Set in from the column's edge: a name's tooltip is centred under it,
        and the invalid item's, whose name button is the narrower, ran 20px
-       past the edge. -->
-  <div style="max-width:32rem;margin-inline-start:1.5rem">
+       past the edge. The inset is padding, so it stays inside the box when
+       the box scrolls on a narrow phone. -->
+  <div class="ks-scroll" style="max-width:33.5rem;padding-inline-start:1.5rem">
     <div class="rux--form-item">
       <p class="rux--file--label">Upload files</p>
       <p class="rux--label-description">Max 500 KB each</p>

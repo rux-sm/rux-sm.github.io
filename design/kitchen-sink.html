@@ -4567,7 +4567,7 @@
   </div>
 
   <div class="ks-label">THE SCALE, 1 TO 13</div>
-  <div class="rux--stack-vertical rux--stack-scale-3">
+  <div class="rux--stack-vertical rux--stack-scale-3 ks-scroll">
     <div class="ks-strip-row">
       <div class="ks-label">Step</div>
       <div class="ks-label">Gap</div>
@@ -6769,8 +6769,9 @@
   -->
   <!-- Set in from the column's edge: a name's tooltip is centred under it,
        and the invalid item's, whose name button is the narrower, ran 20px
-       past the edge. -->
-  <div style="max-width:32rem;margin-inline-start:1.5rem">
+       past the edge. The inset is padding, so it stays inside the box when
+       the box scrolls on a narrow phone. -->
+  <div class="ks-scroll" style="max-width:33.5rem;padding-inline-start:1.5rem">
     <div class="rux--form-item">
       <p class="rux--file--label">Upload files</p>
       <p class="rux--label-description">Max 500 KB each</p>
@@ -8564,7 +8565,7 @@
     implements it, only a `:not(.rux--action-set--stacking)` negation. Carbon's React
     ActionSet computes the stacked layout in JS, so the class is inert in light DOM.
   -->
-  <div style="display:grid;gap:1rem">
+  <div class="ks-scroll" style="display:grid;gap:1rem">
     <div class="rux--action-set rux--btn-set rux--action-set--row-single rux--action-set--lg">
       <button type="button" class="rux--btn rux--btn--primary rux--action-set__action-button">Save</button>
     </div>

@@ -205,4 +205,8 @@ body { min-height: 100vh; background: var(--rux-background);
   /* The spacing table's first three columns shrink to their words, so the
      swatches they describe are on the screen and not only behind a scroll. */
   .ks-scale { grid-template-columns: 8rem 2.5rem 2rem 1fr; gap: .5rem .75rem; }
+  /* The floating coachmark is dragged, so it cannot sit in a box that scrolls.
+     It opens to its own end and needs none of the room's inset, which is for
+     the beacon's coachmark, centred under its beacon. */
+  .ks-coachmark-room:has(.rux--coachmark--floating) { padding-inline-start: 2rem; }
 }

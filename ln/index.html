@@ -144,7 +144,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-ln-commit="804f0d0899069a5a64d5688decfb21b4bced21f1">
+<main id="main-content" class="rux--content" data-ln-commit="f23c263a3c04ba2e3b42b13ba8de63fb3e657226">
 <div class="ln-app">
   <section class="ln-screen" data-screen="home">
     <h1 class="ln-ask">What are you doing?</h1>
@@ -166,7 +166,7 @@
       <a class="rux--tile rux--tile--clickable" href="./?s=transfer-item-between-warehouses"><b>Warehouse transfer</b><span class="ln-quiet">7 tasks</span></a>
       <a class="rux--tile rux--tile--clickable" href="./?s=ship-from-stock"><b>Ship from stock</b><span class="ln-quiet">7 tasks</span></a>
       <a class="rux--tile rux--tile--clickable" href="./?s=demand-to-shipment-via-planning"><b>Plan to shipment</b><span class="ln-quiet">7 tasks</span></a>
-      <a class="rux--tile rux--tile--clickable ln-waiting" href="./?v=confirm"><b>Still to confirm</b><span class="ln-quiet" data-waiting="34">34 tasks</span></a>
+      <a class="rux--tile rux--tile--clickable ln-waiting" href="./?v=confirm"><b>Still to confirm</b><span class="ln-quiet" data-waiting="35">35 tasks</span></a>
     </div>
   </section>
   <section class="ln-screen" data-screen="path" data-s="create-basic-test-items-and-defaults" hidden>
@@ -1173,6 +1173,8 @@
     <ul class="ln-list" data-panel="cases" hidden>
       <li><b>Change or cancel an order line</b><p>Change or cancel a sales order line after it is entered.</p>
         <ol class="ln-side"><li>change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed</li><li>if the change is allowed, the outbound line follows it, and its advice and picking list are deleted</li><li>if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
+      <li><b>Change a line's date or quantity</b><p>Move a sales order line's delivery date, or change its quantity, once the line is split into delivery lines.</p>
+        <ol class="ln-side"><li>with no delivery lines linked, change the planned delivery date or the ordered quantity on the order line</li><li>with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning</li><li>changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead</li><li>where the CTP check for sales is on, LN refuses a new date the item is not available on</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
       <li><b>Rush an order</b><p>Give a sales order, or one line of it, the highest priority through the warehouse.</p>
         <ol class="ln-side"><li>choose Rush Order on the sales order, or Rush Order Line on one line; the order's priority becomes 1</li><li>release it to warehousing, where its outbound lines are advised and processed before any others</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
     </ul>
@@ -2763,12 +2765,15 @@
     <div class="ln-why" data-panel="why" hidden><p>Approving the order is what makes its lines eligible for warehousing: LN releases only approved lines, and an unapproved order fails at the next phase with no obvious reason. The Order Acknowledgement that prints carries the sales order number, which the warehousing order will inherit.</p></div>
     <ul class="ln-list" data-panel="wrong" hidden>
       <li><b><span class="ln-t-named">Status</span> stuck on <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Free</span></span></b><p>Not approved — <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Approve</span></span></p></li>
+      <li><b>The order cannot be approved yet</b><p>Where <span class="ln-t-named">Use Confirmation</span> is selected on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first — Infor LN Sales User Guide for Sales Orders, p. 8. <strong>Not documented for this release.</strong></p></li>
       <li><b>On-hand looks sufficient but the order will not fill</b><p>Check <span class="ln-t-named">Allocated</span> — much of the on-hand may be committed elsewhere. See <a class="rux--link" href="./?s=ship-from-stock&amp;t=0&amp;k=4">task 1, step 4</a></p></li>
     </ul>
     <ul class="ln-list" data-panel="cases" hidden>
       <li><b>Stock promised to other orders</b><p>Decide silently how much of on-hand is free for this order, which is the available-to-promise check. The figure decision 2 really tests is <strong>projected inventory</strong>, time-phased, not the on-hand total — Item Order Plan §<a class="rux--link" href="./?s=ship-from-stock&amp;t=2&amp;k=1">task 3, step 1</a>. <strong>Not documented for this release.</strong></p><p>Read it on: <a class="rux--link" href="./?c=cprrp0520m000">Item Order Plan</a></p><p>Set in: <a class="rux--link" href="./?c=cprpd1100m000">Items - Planning</a></p></li>
       <li><b>Change or cancel an order line</b><p>Change or cancel a sales order line after it is entered.</p>
         <ol class="ln-side"><li>change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed</li><li>if the change is allowed, the outbound line follows it, and its advice and picking list are deleted</li><li>if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
+      <li><b>Change a line's date or quantity</b><p>Move a sales order line's delivery date, or change its quantity, once the line is split into delivery lines.</p>
+        <ol class="ln-side"><li>with no delivery lines linked, change the planned delivery date or the ordered quantity on the order line</li><li>with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning</li><li>changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead</li><li>where the CTP check for sales is on, LN refuses a new date the item is not available on</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
       <li><b>Rush an order</b><p>Give a sales order, or one line of it, the highest priority through the warehouse.</p>
         <ol class="ln-side"><li>choose Rush Order on the sales order, or Rush Order Line on one line; the order's priority becomes 1</li><li>release it to warehousing, where its outbound lines are advised and processed before any others</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
       <li><b>Direct delivery</b><p>Have the supplier deliver straight to the customer, so that Warehousing is not involved.</p>
@@ -3182,6 +3187,8 @@
       <li><b>Inside the order horizon</b><p>Decide silently whether the delivery date is near enough to plan. Counted in workdays.</p><p>Read it on: <a class="rux--link" href="./?c=cprrp0520m000">Item Order Plan</a></p><p>Set in: <a class="rux--link" href="./?c=cprpd1100m000">Items - Planning</a></p></li>
       <li><b>Change or cancel an order line</b><p>Change or cancel a sales order line after it is entered.</p>
         <ol class="ln-side"><li>change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed</li><li>if the change is allowed, the outbound line follows it, and its advice and picking list are deleted</li><li>if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
+      <li><b>Change a line's date or quantity</b><p>Move a sales order line's delivery date, or change its quantity, once the line is split into delivery lines.</p>
+        <ol class="ln-side"><li>with no delivery lines linked, change the planned delivery date or the ordered quantity on the order line</li><li>with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning</li><li>changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead</li><li>where the CTP check for sales is on, LN refuses a new date the item is not available on</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
       <li><b>Rush an order</b><p>Give a sales order, or one line of it, the highest priority through the warehouse.</p>
         <ol class="ln-side"><li>choose Rush Order on the sales order, or Rush Order Line on one line; the order's priority becomes 1</li><li>release it to warehousing, where its outbound lines are advised and processed before any others</li><li class="ln-side__note">Not documented for this release.</li></ol></li>
       <li><b>Direct delivery</b><p>Have the supplier deliver straight to the customer, so that Warehousing is not involved.</p>
@@ -3604,6 +3611,7 @@
     <h2 class="rux--type-productive-heading-02">Other tasks</h2>
     <ul class="ln-list">
       <li data-wait="tasks" data-steps="change-order-line"><a class="rux--link" href="./?x=change-order-line"><span>Change or cancel an order line</span></a><span class="ln-quiet" data-answered></span></li>
+      <li data-wait="tasks" data-steps="change-line-date"><a class="rux--link" href="./?x=change-line-date"><span>Change a line's date or quantity</span></a><span class="ln-quiet" data-answered></span></li>
       <li data-wait="tasks" data-steps="rush-order"><a class="rux--link" href="./?x=rush-order"><span>Rush an order</span></a><span class="ln-quiet" data-answered></span></li>
       <li data-wait="tasks" data-steps="direct-delivery"><a class="rux--link" href="./?x=direct-delivery"><span>Direct delivery</span></a><span class="ln-quiet" data-answered></span></li>
       <li data-wait="tasks" data-steps="cross-docking"><a class="rux--link" href="./?x=cross-docking"><span>Cross-docking</span></a><span class="ln-quiet" data-answered></span></li>
@@ -3714,7 +3722,7 @@
       <h2 class="rux--type-productive-heading-03">Sales Order Intake Workbench</h2>
       <p>Create the demand the rest of the chain answers.</p>
       <p class="ln-task__route"><span><span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></span> <a class="rux--link" href="./?c=tdsls4601m200"><span class="ln-t-exact">tdsls4601m200</span></a></p>
-      <ul class="ln-answers"><li><a class="rux--link" href="./?s=run-order-planning-for-one-item&amp;t=1">Run order planning · 2 Create demand</a></li><li><a class="rux--link" href="./?s=ship-from-stock&amp;t=1">Ship from stock · 2 Create and approve the sales order</a></li><li><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=1">Plan to shipment · 2 Create the demand</a></li><li><a class="rux--link" href="./?x=change-order-line">Change or cancel an order line</a></li><li><a class="rux--link" href="./?x=rush-order">Rush an order</a></li></ul>
+      <ul class="ln-answers"><li><a class="rux--link" href="./?s=run-order-planning-for-one-item&amp;t=1">Run order planning · 2 Create demand</a></li><li><a class="rux--link" href="./?s=ship-from-stock&amp;t=1">Ship from stock · 2 Create and approve the sales order</a></li><li><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=1">Plan to shipment · 2 Create the demand</a></li><li><a class="rux--link" href="./?x=change-order-line">Change or cancel an order line</a></li><li><a class="rux--link" href="./?x=change-line-date">Change a line's date or quantity</a></li><li><a class="rux--link" href="./?x=rush-order">Rush an order</a></li></ul>
     </div>
     <div class="ln-detail" data-detail="2" hidden>
       <h2 class="rux--type-productive-heading-03">Does on-hand cover it?</h2>
@@ -4008,6 +4016,7 @@
       <li data-text="destination on-hand did not rise the receipt in phase 5 was not confirmed — return to the inbound line and warehouse receipt" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=transfer-item-between-warehouses&amp;t=6"><span>Destination on-hand did not rise</span></a></b><p>The receipt in <a class="rux--link" href="./?s=transfer-item-between-warehouses&amp;t=5">task 6</a> was not confirmed — return to the inbound line and Warehouse Receipt</p></li>
       <li data-text="source and destination changes do not both equal the transfer quantity do not approve the run. recheck the phase 0 values and investigate unrelated inventory activity" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=transfer-item-between-warehouses&amp;t=6"><span>Source and destination changes do not both equal the transfer quantity</span></a></b><p>Do not approve the run. Recheck the <a class="rux--link" href="./?s=transfer-item-between-warehouses&amp;t=0">task 1</a> values and investigate unrelated inventory activity </p></li>
       <li data-text="status stuck on free not approved — actions ➔ approve" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=ship-from-stock&amp;t=1"><span><span class="ln-t-named">Status</span> stuck on <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Free</span></span></span></a></b><p>Not approved — <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Approve</span></span></p></li>
+      <li data-text="the order cannot be approved yet where use confirmation is selected on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first — infor ln sales user guide for sales orders, p. 8. not documented for this release." hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=ship-from-stock&amp;t=1"><span>The order cannot be approved yet</span></a></b><p>Where <span class="ln-t-named">Use Confirmation</span> is selected on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first — Infor LN Sales User Guide for Sales Orders, p. 8. <strong>Not documented for this release.</strong></p></li>
       <li data-text="on-hand looks sufficient but the order will not fill check allocated — much of the on-hand may be committed elsewhere. see 0.4" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=ship-from-stock&amp;t=1"><span>On-hand looks sufficient but the order will not fill</span></a></b><p>Check <span class="ln-t-named">Allocated</span> — much of the on-hand may be committed elsewhere. See <a class="rux--link" href="./?s=ship-from-stock&amp;t=0&amp;k=4">task 1, step 4</a></p></li>
       <li data-text="clicking release to warehousing in lines ready for does nothing that panel counts lines; it does not act. use actions ➔ release" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=ship-from-stock&amp;t=2"><span>Clicking <span class="ln-t-named">RELEASE TO WAREHOUSING</span> in <span class="ln-t-named">Lines ready for</span> does nothing</span></a></b><p>That panel counts lines; it does not act. Use <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Release</span></span></p></li>
       <li data-text="order absent from the release selection upto release date is earlier than the order line's release date (planned delivery date minus outbound lead time)" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=ship-from-stock&amp;t=2"><span>Order absent from the release selection</span></a></b><p><span class="ln-t-named">Upto Release Date</span> is earlier than the order line's <span class="ln-t-named">Release Date</span> (planned delivery date minus outbound lead time)</p></li>
@@ -4098,6 +4107,7 @@
       <li data-text="plan to shipment build the pairs production orders tisfc0501m000 5.1 open the production order from 3.6 and check its bom, routing and estimated materials bom jb0000242 rev 000002, routing 0 rev 000001, operation 10, rods and sleeves listed 5.2 select the order and run actions ➔ release orders release production orders (tisfc0204m000) opens 5.3 run the release for this order only order status = released; warehousing issue and receipt orders now exist 5.4 open material to issue for production orders (ticst0101m100) at manufacturing ➔ job shop ➔ production materials ➔ material to issue for production orders, and issue the materials per production order steps 4.2–4.7 actual quantity = the estimated quantity; order status = active 5.5 open report operations (tisfc0130m000) at manufacturing ➔ job shop ➔ production control ➔ report operations, enter the built quantity in completed, and save ln may ask whether to confirm the receipt automatically — record which way you answer 5.6 return to production orders and read order status production order status after reporting — production completed or completed 5.7 read bam-chop-pair on-hand at adna01 in inventory 360 pair on-hand after build — up by the built quantity over 0.2" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=5"><span>6 Build the pairs</span></a></b>Plan to shipment</li>
       <li data-text="plan to shipment ship warehouse manager dashboard whinh2300m000 6.1 in the sales order, actions ➔ release ➔ release to warehousing… per ship from stock steps 2.2–2.5 log report prints; a warehousing order exists under your sales order number 6.2 in warehouse manager dashboard (whinh2300m000), filter on your sales order number and drill in warehousing order (whinh2100m100), origin sales, type 20- so/sc out 6.3 on the outbound lines tab, tick the line and run actions ➔ advice ➔ generate advice advised and released both fill; picking list by location prints 6.4 in picking list (whinh4525m100), tick the line and run actions ➔ pick run, then read shipment on the order's shipment lines tab line status staged — shipment number 6.5 in shipments (whinh4130m000), find the shipment and drill in, then actions ➔ freeze status = frozen; confirm becomes available 6.6 actions ➔ confirm shipped quantity; status = confirmed, inventory relieved 6.7 re-read bam-chop-pair on-hand at the warehouse from 0.2 pair on-hand after shipping — down by exactly the shipped quantity" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=6"><span>7 Ship</span></a></b>Plan to shipment</li>
       <li data-text="change or cancel an order line  change or cancel a sales order line after it is entered change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed if the change is allowed, the outbound line follows it, and its advice and picking list are deleted if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=change-order-line"><span>Change or cancel an order line</span></a></b>Change or cancel a sales order line after it is entered.</li>
+      <li data-text="change a line's date or quantity  move a sales order line's delivery date, or change its quantity, once the line is split into delivery lines with no delivery lines linked, change the planned delivery date or the ordered quantity on the order line with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead where the ctp check for sales is on, ln refuses a new date the item is not available on not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=change-line-date"><span>Change a line's date or quantity</span></a></b>Move a sales order line's delivery date, or change its quantity, once the line is split into delivery lines.</li>
       <li data-text="rush an order  give a sales order, or one line of it, the highest priority through the warehouse choose rush order on the sales order, or rush order line on one line; the order's priority becomes 1 release it to warehousing, where its outbound lines are advised and processed before any others not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=rush-order"><span>Rush an order</span></a></b>Give a sales order, or one line of it, the highest priority through the warehouse.</li>
       <li data-text="direct delivery  have the supplier deliver straight to the customer, so that warehousing is not involved set the line's delivery type to direct delivery, by hand or from the shortage menu that appears when stock is short generate the purchase order for the line, from a purchase order advice or directly record the supplier's receipt in procurement and send the delivery back to the sales order not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=direct-delivery"><span>Direct delivery</span></a></b>Have the supplier deliver straight to the customer, so that Warehousing is not involved.</li>
       <li data-text="cross-docking  fill a sales order that has no stock by taking inbound goods straight from receipt to the staging location set the line's delivery type to cross-docking, by hand or from the shortage menu that appears when stock is short generate the purchase order for the line, from a purchase order advice or directly release the purchase order and the sales order to warehousing not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=cross-docking"><span>Cross-docking</span></a></b>Fill a sales order that has no stock by taking inbound goods straight from receipt to the staging location.</li>
@@ -5185,6 +5195,29 @@
       </form>
     </div>
   </section>
+  <section class="ln-screen" data-screen="card" data-x="change-line-date" hidden>
+    <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
+    <p class="ln-quiet">Task</p>
+    <h1 class="ln-ask">Change a line's date or quantity</h1>
+    <p>Move a sales order line's delivery date, or change its quantity, once the line is split into delivery lines.</p><ol class="ln-side"><li>with no delivery lines linked, change the planned delivery date or the ordered quantity on the order line</li><li>with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning</li><li>changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead</li><li>where the CTP check for sales is on, LN refuses a new date the item is not available on</li><li class="ln-side__note">Not documented for this release.</li></ol>
+    <div class="ln-confirm" data-confirm="tasks" data-step="change-line-date">
+      <p class="ln-quiet" data-said>Nobody has confirmed this task in LN yet.</p>
+      <div class="ln-confirm__ask" data-owner hidden>
+        <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" data-say="matched">It matched</button>
+        <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-say="different">It was different</button>
+      </div>
+      <form class="ln-confirm__form" data-different hidden>
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-26">What was different?</label></div>
+          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+            <input id="diff-tasks-task-26" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+          </div></div>
+        </div>
+        <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
+        <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Send</button>
+      </form>
+    </div>
+  </section>
   <section class="ln-screen" data-screen="card" data-x="rush-order" hidden>
     <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
     <p class="ln-quiet">Task</p>
@@ -5198,9 +5231,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-26">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-27">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-26" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-27" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -5221,9 +5254,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-27">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-28">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-27" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-28" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -5244,9 +5277,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-28">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-29">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-28" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-29" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -5267,9 +5300,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-29">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-30">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-29" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-30" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -5290,9 +5323,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-30">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-31">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-30" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-31" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -5313,9 +5346,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-31">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-32">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-31" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-32" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -5336,9 +5369,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-32">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-33">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-32" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-33" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -5359,9 +5392,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-33">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-34">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-33" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-34" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -5382,9 +5415,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-34">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-35">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-34" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-35" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>

@@ -1,9 +1,9 @@
-commit   804f0d0899069a5a64d5688decfb21b4bced21f1
-date     2026-10-04T18:33:48Z
-subject  feat(tools): Send the private shelf to LN Guide
+commit   f23c263a3c04ba2e3b42b13ba8de63fb3e657226
+date     2026-10-04T18:40:56Z
+subject  docs(sales): Read order procedure and line sync
 contract 15 
 tier     export
-sha256   18fe7ecacb4da49eef45bb4dad5f942315908cbdb517cd91f4b0aaf082990c4a
+sha256   c9e7b49b78fa6cd02c51c99bbaeb0f68d6d7d1c1899704efdee2e13f87ee71a0
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

@@ -4,7 +4,7 @@
   "kind": "reference",
   "id": "tasks",
   "title": "Tasks",
-  "updated": "2026-10-03",
+  "updated": "2026-10-04",
   "status": "draft",
   "sources": [
     "cpdsp1210m000",
@@ -1297,6 +1297,78 @@
                 }
               ],
               "text": "Do - change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed - if the change is allowed, the outbound line follows it, and its advice and picking list are deleted - if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 1"
+                }
+              ],
+              "text": "Under — Demand to shipment 1"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "change-line-date · Change a line's date or quantity"
+            },
+            {
+              "t": "text",
+              "v": " · stage 2 · step"
+            }
+          ],
+          "text": "change-line-date · Change a line's date or quantity · stage 2 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — move a sales order line's delivery date, or change its quantity, once the line is split into delivery lines"
+                }
+              ],
+              "text": "Does — move a sales order line's delivery date, or change its quantity, once the line is split into delivery lines"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - with no delivery lines linked, change the planned delivery date or the ordered quantity on the order line - with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning - changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead - where the CTP check for sales is on, LN refuses a new date the item is not available on - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - with no delivery lines linked, change the planned delivery date or the ordered quantity on the order line - with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning - changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead - where the CTP check for sales is on, LN refuses a new date the item is not available on - Not documented for this release."
             },
             {
               "tokens": [
@@ -5291,6 +5363,86 @@
         }
       },
       {
+        "id": "change-line-date",
+        "session": "Change a line's date or quantity",
+        "lane": "Sales",
+        "stage": 2,
+        "kind": "step",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "move a sales order line's delivery date, or change its quantity, once the line is split into delivery lines"
+            }
+          ],
+          "text": "move a sales order line's delivery date, or change its quantity, once the line is split into delivery lines"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "with no delivery lines linked, change the planned delivery date or the ordered quantity on the order line"
+              }
+            ],
+            "text": "with no delivery lines linked, change the planned delivery date or the ordered quantity on the order line"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning"
+              }
+            ],
+            "text": "with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead"
+              }
+            ],
+            "text": "changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "where the CTP check for sales is on, LN refuses a new date the item is not available on"
+              }
+            ],
+            "text": "where the CTP check for sales is on, LN refuses a new date the item is not available on"
+          },
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "1"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "with no delivery lines linked, change the planned delivery date or the ordered quantity on the order line. with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning. changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead. where the CTP check for sales is on, LN refuses a new date the item is not available on. "
+            },
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "with no delivery lines linked, change the planned delivery date or the ordered quantity on the order line. with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning. changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead. where the CTP check for sales is on, LN refuses a new date the item is not available on. Not documented for this release."
+        }
+      },
+      {
         "id": "rush-order",
         "session": "Rush an order",
         "lane": "Sales",
@@ -7608,5 +7760,5 @@
       "session": 44
     }
   },
-  "openIssues": 47
+  "openIssues": 48
 }

@@ -8,7 +8,7 @@
     "Sales",
     "Warehousing"
   ],
-  "updated": "2026-10-03",
+  "updated": "2026-10-04",
   "status": "approved",
   "summary": "take a sales order for an item already in stock through to a confirmed shipment, then verify that inventory decreased by the shipped quantity.",
   "order": 6,
@@ -3074,6 +3074,49 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "The order cannot be approved yet"
+                }
+              ],
+              "text": "The order cannot be approved yet"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Where "
+                },
+                {
+                  "t": "chip",
+                  "v": "Use Confirmation"
+                },
+                {
+                  "t": "text",
+                  "v": " is selected on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first — Infor LN Sales User Guide for Sales Orders, p. 8. "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Where Use Confirmation is selected on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first — Infor LN Sales User Guide for Sales Orders, p. 8. Not documented for this release."
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "On-hand looks sufficient but the order will not fill"
                 }
               ],
@@ -4300,5 +4343,5 @@
     }
   ],
   "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
-  "openIssues": 4
+  "openIssues": 5
 }

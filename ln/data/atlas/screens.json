@@ -34,6 +34,12 @@
       "route": "Planning ➔ Master Data ➔ Scenarios ➔ Scenarios"
     },
     {
+      "code": "cprpd7110m000",
+      "name": "Sourcing Strategy",
+      "purpose": "Says how an item's demand is split over making, buying and distributing, and it wins over the item's own default supply source.",
+      "route": "Planning ➔ Master Data ➔ Sourcing ➔ Sourcing Strategy"
+    },
+    {
       "code": "cprrp0240m000",
       "name": "Generate Pegging Relations",
       "purpose": "Runs the generation of pegging relations, in full or as a net-change update.",
@@ -866,6 +872,12 @@
       "route": "drill-in from Shipments (whinh4130m000)"
     },
     {
+      "code": "whinh4135m000",
+      "name": "Delivery Notes",
+      "purpose": "Lists the delivery notes LN makes for shipments, the paper that travels with the goods.",
+      "route": "Warehousing ➔ Shipments ➔ Documents ➔ Delivery Notes"
+    },
+    {
       "code": "whinh4279m000",
       "name": "Process Pro Forma Invoices",
       "purpose": "Creates pro forma invoices for frozen or confirmed shipments, to review before invoicing.",
@@ -894,6 +906,18 @@
       "name": "Approve Adjustment Order Variances",
       "purpose": "Approves adjustment-order lines that require approval — the second stage, not the booking.",
       "route": "unstated in the help; the Cycle Counting/Adjustment Orders node is on the menu"
+    },
+    {
+      "code": "whinh8361m000",
+      "name": "Shipment Execution Workbench",
+      "purpose": "Runs a shipment's outbound steps from one screen, from generating advice to confirming.",
+      "route": "Warehousing ➔ Shipments ➔ Shipment Execution Workbench"
+    },
+    {
+      "code": "whinp1300m000",
+      "name": "Planned Inventory Transactions - Graphical View",
+      "purpose": "One item's planned receipts and issues as a graph, with tiles for what is on hand, overdue, and due in or out today.",
+      "route": "Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Planned Inventory Transactions - Graphical View"
     },
     {
       "code": "whwmd1140s000",
@@ -934,6 +958,12 @@
       "name": "Item - Warehousing",
       "purpose": "The warehousing detail behind one item — location control, inventory-variance handling, and supply settings.",
       "route": "drill-in from Item (tcibd0501m100); it opens as a dialog over that session"
+    },
+    {
+      "code": "whwmd6130m000",
+      "name": "Stock Point Blocking",
+      "purpose": "Blocks one stock point, in full or for a quantity, so that the stock is held and not issued.",
+      "route": "Warehousing ➔ Blocking ➔ Inventory Blocking ➔ by Stock Point"
     }
   ]
 }

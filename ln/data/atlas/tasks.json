@@ -4182,14 +4182,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " - "
+                  "v": " - for a serialized item, open the line's stock point details, where its serial numbers are kept - counted more than LN holds: add the serial numbers - counted fewer: leave the adjusted quantity at 0 and enter a negative variance for each missing serial - "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Do - Not documented for this release."
+              "text": "Do - for a serialized item, open the line's stock point details, where its serial numbers are kept - counted more than LN holds: add the serial numbers - counted fewer: leave the adjusted quantity at 0 and enter a negative variance for each missing serial - Not documented for this release."
             }
           ]
         },
@@ -4373,10 +4373,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " — keep stock in handling units"
+                  "v": " — keep stock in handling units, the labelled packages LN tracks as one thing"
                 }
               ],
-              "text": "Does — keep stock in handling units"
+              "text": "Does — keep stock in handling units, the labelled packages LN tracks as one thing"
             },
             {
               "tokens": [
@@ -4386,14 +4386,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " - "
+                  "v": " - LN can make them by itself: at the pick, where the stock had none, and from a shipment notice where the warehouse or item says so - a handling unit is received only while it is Open, or In Transit on a transfer, and advised only once it is Received or Approved - its lot and serial numbers must match its order line, or confirming fails - most statuses can be worked on; a unit that is Quarantine, Frozen, Shipped or In Transit cannot - "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Do - Not documented for this release."
+              "text": "Do - LN can make them by itself: at the pick, where the stock had none, and from a shipment notice where the warehouse or item says so - a handling unit is received only while it is Open, or In Transit on a transfer, and advised only once it is Received or Approved - its lot and serial numbers must match its order line, or confirming fails - most statuses can be worked on; a unit that is Quarantine, Frozen, Shipped or In Transit cannot - Not documented for this release."
             }
           ]
         },
@@ -4606,6 +4606,74 @@
           "tokens": [
             {
               "t": "session",
+              "code": "whwmd3405m000",
+              "name": "replenish-pick · Print Replenishment List"
+            },
+            {
+              "t": "text",
+              "v": " · stage 7 · step"
+            }
+          ],
+          "text": "replenish-pick · Print Replenishment List (whwmd3405m000) · stage 7 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Print Replenishment List"
+                }
+              ],
+              "text": "Route — Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Print Replenishment List"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — refill pick locations from bulk locations"
+                }
+              ],
+              "text": "Does — refill pick locations from bulk locations"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - give the item a fixed pick location, with a minimum inventory and a minimum replenishment quantity; only fixed pick locations are refilled - link bulk locations to pick locations in the replenishment matrix - run this session to start the refill; it can create the transfer orders and process them - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - give the item a fixed pick location, with a minimum inventory and a minimum replenishment quantity; only fixed pick locations are refilled - link bulk locations to pick locations in the replenishment matrix - run this session to start the refill; it can create the transfer orders and process them - Not documented for this release."
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
               "code": "whwmd2500m000",
               "name": "warehouse-setup · Warehouses"
             },
@@ -4645,10 +4713,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " — define a warehouse"
+                  "v": " — define a warehouse, and turn locations on in one that already holds stock"
                 }
               ],
-              "text": "Does — define a warehouse"
+              "text": "Does — define a warehouse, and turn locations on in one that already holds stock"
             },
             {
               "tokens": [
@@ -4658,14 +4726,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " - "
+                  "v": " - before turning locations on, clear what is in flight: unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders - block the warehouse for inbound and for outbound - run Change Location System for the warehouse, then give each stock its location in Assign Locations - "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Do - Not documented for this release."
+              "text": "Do - before turning locations on, clear what is in flight: unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders - block the warehouse for inbound and for outbound - run Change Location System for the warehouse, then give each stock its location in Assign Locations - Not documented for this release."
             }
           ]
         },
@@ -7456,6 +7524,33 @@
           {
             "tokens": [
               {
+                "t": "text",
+                "v": "for a serialized item, open the line's stock point details, where its serial numbers are kept"
+              }
+            ],
+            "text": "for a serialized item, open the line's stock point details, where its serial numbers are kept"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "counted more than LN holds: add the serial numbers"
+              }
+            ],
+            "text": "counted more than LN holds: add the serial numbers"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "counted fewer: leave the adjusted quantity at 0 and enter a negative variance for each missing serial"
+              }
+            ],
+            "text": "counted fewer: leave the adjusted quantity at 0 and enter a negative variance for each missing serial"
+          },
+          {
+            "tokens": [
+              {
                 "t": "strong",
                 "v": "Not documented for this release."
               }
@@ -7466,11 +7561,15 @@
         "do": {
           "tokens": [
             {
+              "t": "text",
+              "v": "for a serialized item, open the line's stock point details, where its serial numbers are kept. counted more than LN holds: add the serial numbers. counted fewer: leave the adjusted quantity at 0 and enter a negative variance for each missing serial. "
+            },
+            {
               "t": "strong",
               "v": "Not documented for this release."
             }
           ],
-          "text": "Not documented for this release."
+          "text": "for a serialized item, open the line's stock point details, where its serial numbers are kept. counted more than LN holds: add the serial numbers. counted fewer: leave the adjusted quantity at 0 and enter a negative variance for each missing serial. Not documented for this release."
         }
       },
       {
@@ -7616,12 +7715,48 @@
           "tokens": [
             {
               "t": "text",
-              "v": "keep stock in handling units"
+              "v": "keep stock in handling units, the labelled packages LN tracks as one thing"
             }
           ],
-          "text": "keep stock in handling units"
+          "text": "keep stock in handling units, the labelled packages LN tracks as one thing"
         },
         "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "LN can make them by itself: at the pick, where the stock had none, and from a shipment notice where the warehouse or item says so"
+              }
+            ],
+            "text": "LN can make them by itself: at the pick, where the stock had none, and from a shipment notice where the warehouse or item says so"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "a handling unit is received only while it is Open, or In Transit on a transfer, and advised only once it is Received or Approved"
+              }
+            ],
+            "text": "a handling unit is received only while it is Open, or In Transit on a transfer, and advised only once it is Received or Approved"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "its lot and serial numbers must match its order line, or confirming fails"
+              }
+            ],
+            "text": "its lot and serial numbers must match its order line, or confirming fails"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "most statuses can be worked on; a unit that is Quarantine, Frozen, Shipped or In Transit cannot"
+              }
+            ],
+            "text": "most statuses can be worked on; a unit that is Quarantine, Frozen, Shipped or In Transit cannot"
+          },
           {
             "tokens": [
               {
@@ -7635,11 +7770,15 @@
         "do": {
           "tokens": [
             {
+              "t": "text",
+              "v": "LN can make them by itself: at the pick, where the stock had none, and from a shipment notice where the warehouse or item says so. a handling unit is received only while it is Open, or In Transit on a transfer, and advised only once it is Received or Approved. its lot and serial numbers must match its order line, or confirming fails. most statuses can be worked on; a unit that is Quarantine, Frozen, Shipped or In Transit cannot. "
+            },
+            {
               "t": "strong",
               "v": "Not documented for this release."
             }
           ],
-          "text": "Not documented for this release."
+          "text": "LN can make them by itself: at the pick, where the stock had none, and from a shipment notice where the warehouse or item says so. a handling unit is received only while it is Open, or In Transit on a transfer, and advised only once it is Received or Approved. its lot and serial numbers must match its order line, or confirming fails. most statuses can be worked on; a unit that is Quarantine, Frozen, Shipped or In Transit cannot. Not documented for this release."
         }
       },
       {
@@ -7821,6 +7960,83 @@
         }
       },
       {
+        "id": "replenish-pick",
+        "session": "Print Replenishment List",
+        "lane": "Warehousing",
+        "stage": 7,
+        "kind": "step",
+        "code": "whwmd3405m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Print Replenishment List"
+            }
+          ],
+          "text": "Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Print Replenishment List"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "refill pick locations from bulk locations"
+            }
+          ],
+          "text": "refill pick locations from bulk locations"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "give the item a fixed pick location, with a minimum inventory and a minimum replenishment quantity; only fixed pick locations are refilled"
+              }
+            ],
+            "text": "give the item a fixed pick location, with a minimum inventory and a minimum replenishment quantity; only fixed pick locations are refilled"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "link bulk locations to pick locations in the replenishment matrix"
+              }
+            ],
+            "text": "link bulk locations to pick locations in the replenishment matrix"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "run this session to start the refill; it can create the transfer orders and process them"
+              }
+            ],
+            "text": "run this session to start the refill; it can create the transfer orders and process them"
+          },
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "give the item a fixed pick location, with a minimum inventory and a minimum replenishment quantity; only fixed pick locations are refilled. link bulk locations to pick locations in the replenishment matrix. run this session to start the refill; it can create the transfer orders and process them. "
+            },
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "give the item a fixed pick location, with a minimum inventory and a minimum replenishment quantity; only fixed pick locations are refilled. link bulk locations to pick locations in the replenishment matrix. run this session to start the refill; it can create the transfer orders and process them. Not documented for this release."
+        }
+      },
+      {
         "id": "warehouse-setup",
         "session": "Warehouses",
         "lane": "Warehousing",
@@ -7840,12 +8056,39 @@
           "tokens": [
             {
               "t": "text",
-              "v": "define a warehouse"
+              "v": "define a warehouse, and turn locations on in one that already holds stock"
             }
           ],
-          "text": "define a warehouse"
+          "text": "define a warehouse, and turn locations on in one that already holds stock"
         },
         "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "before turning locations on, clear what is in flight: unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders"
+              }
+            ],
+            "text": "before turning locations on, clear what is in flight: unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "block the warehouse for inbound and for outbound"
+              }
+            ],
+            "text": "block the warehouse for inbound and for outbound"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "run Change Location System for the warehouse, then give each stock its location in Assign Locations"
+              }
+            ],
+            "text": "run Change Location System for the warehouse, then give each stock its location in Assign Locations"
+          },
           {
             "tokens": [
               {
@@ -7859,11 +8102,15 @@
         "do": {
           "tokens": [
             {
+              "t": "text",
+              "v": "before turning locations on, clear what is in flight: unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders. block the warehouse for inbound and for outbound. run Change Location System for the warehouse, then give each stock its location in Assign Locations. "
+            },
+            {
               "t": "strong",
               "v": "Not documented for this release."
             }
           ],
-          "text": "Not documented for this release."
+          "text": "before turning locations on, clear what is in flight: unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders. block the warehouse for inbound and for outbound. run Change Location System for the warehouse, then give each stock its location in Assign Locations. Not documented for this release."
         }
       },
       {
@@ -7964,5 +8211,5 @@
       "session": 44
     }
   },
-  "openIssues": 48
+  "openIssues": 49
 }

@@ -144,7 +144,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-ln-commit="71c89d7880170cef052690a34056bbc25c93ee5b">
+<main id="main-content" class="rux--content" data-ln-commit="3f3cd5b6fa0f74732ca77c46cc793e32dcee968a">
 <div class="ln-app">
   <section class="ln-screen" data-screen="home">
     <h1 class="ln-ask">What are you doing?</h1>
@@ -166,7 +166,7 @@
       <a class="rux--tile rux--tile--clickable" href="./?s=transfer-item-between-warehouses"><b>Warehouse transfer</b><span class="ln-quiet">7 tasks</span></a>
       <a class="rux--tile rux--tile--clickable" href="./?s=ship-from-stock"><b>Ship from stock</b><span class="ln-quiet">7 tasks</span></a>
       <a class="rux--tile rux--tile--clickable" href="./?s=demand-to-shipment-via-planning"><b>Plan to shipment</b><span class="ln-quiet">7 tasks</span></a>
-      <a class="rux--tile rux--tile--clickable ln-waiting" href="./?v=confirm"><b>Still to confirm</b><span class="ln-quiet" data-waiting="41">41 tasks</span></a>
+      <a class="rux--tile rux--tile--clickable ln-waiting" href="./?v=confirm"><b>Still to confirm</b><span class="ln-quiet" data-waiting="45">45 tasks</span></a>
     </div>
   </section>
   <section class="ln-screen" data-screen="path" data-s="create-basic-test-items-and-defaults" hidden>
@@ -3673,8 +3673,12 @@
       <li data-wait="tasks" data-steps="backflush"><a class="rux--link" href="./?x=backflush"><span>Backflush Materials and Hours</span></a><span class="ln-quiet" data-answered></span></li>
       <li data-wait="tasks" data-steps="cancel-shipment"><a class="rux--link" href="./?x=cancel-shipment"><span>Cancel Shipments</span></a><span class="ln-quiet" data-answered></span></li>
       <li data-wait="tasks" data-steps="warehouse-transfer"><a class="rux--link" href="./?x=warehouse-transfer"><span>Warehouse transfer</span></a><span class="ln-quiet" data-answered></span></li>
+      <li data-wait="tasks" data-steps="adjustment"><a class="rux--link" href="./?x=adjustment"><span>Adjustment Orders</span></a><span class="ln-quiet" data-answered></span></li>
       <li data-wait="tasks" data-steps="inventory-blocking"><a class="rux--link" href="./?x=inventory-blocking"><span>Inventory Blocking by Zone/Location</span></a><span class="ln-quiet" data-answered></span></li>
+      <li data-wait="tasks" data-steps="handling-units"><a class="rux--link" href="./?x=handling-units"><span>Handling Units</span></a><span class="ln-quiet" data-answered></span></li>
       <li data-wait="tasks" data-steps="assembly-orders"><a class="rux--link" href="./?x=assembly-orders"><span>Assembly Orders</span></a><span class="ln-quiet" data-answered></span></li>
+      <li data-wait="tasks" data-steps="replenish-pick"><a class="rux--link" href="./?x=replenish-pick"><span>Print Replenishment List</span></a><span class="ln-quiet" data-answered></span></li>
+      <li data-wait="tasks" data-steps="warehouse-setup"><a class="rux--link" href="./?x=warehouse-setup"><span>Warehouses</span></a><span class="ln-quiet" data-answered></span></li>
     </ul>
   </section>
   <section class="ln-screen" data-screen="map" hidden>
@@ -4179,13 +4183,18 @@
       <li data-text="backflush materials and hours tisfc0220m000 let ln issue the material by itself, as the work is reported a backflushed material is issued when a quantity of the end product is reported completed or rejected only the materials linked to the operations reported are issued; on an order with no operations, all of them are not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=backflush"><span>Backflush Materials and Hours</span></a></b>Let LN issue the material by itself, as the work is reported.</li>
       <li data-text="cancel shipments whinh4230m500 cancel a shipment before it leaves, as when the truck did not come or the customer changed the order check it can be cancelled: not confirmed, and no not-shipped quantity on it; a frozen shipment is reopened first select the shipment, one of its lines or its load, and choose cancel on the actions menu in the dialog, choose whether the goods go back to stock and whether the order line is finalized, then continue a finalized order line reads shipped, so shipping it later needs a new order line; left open, the same line gets a new shipment not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=cancel-shipment"><span>Cancel Shipments</span></a></b>Cancel a shipment before it leaves, as when the truck did not come or the customer changed the order.</li>
       <li data-text="warehouse transfer whinh2100m000 move stock from one warehouse to another create the transfer order advise, pick and ship it receive it at the destination" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=warehouse-transfer"><span>Warehouse transfer</span></a></b>Move stock from one warehouse to another.</li>
+      <li data-text="adjustment orders whinh5120m000 adjust stock with an adjustment order for a serialized item, open the line's stock point details, where its serial numbers are kept counted more than ln holds: add the serial numbers counted fewer: leave the adjusted quantity at 0 and enter a negative variance for each missing serial not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=adjustment"><span>Adjustment Orders</span></a></b>Adjust stock with an adjustment order.</li>
       <li data-text="inventory blocking by zone/location whwmd6110m000 put stock on hold, for a whole zone or location, or for one lot or stock point block a zone or a location here; a lot and a single stock point each have their own session beside it on the menu choose the reason: one kind tells planning to go on counting the stock, for a short check, and the other tells planning the stock is gone a block on stock raises the item's inventory on hold; blocking only a kind of transaction does not not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=inventory-blocking"><span>Inventory Blocking by Zone/Location</span></a></b>Put stock on hold, for a whole zone or location, or for one lot or stock point.</li>
+      <li data-text="handling units whwmd5130m000 keep stock in handling units, the labelled packages ln tracks as one thing ln can make them by itself: at the pick, where the stock had none, and from a shipment notice where the warehouse or item says so a handling unit is received only while it is open, or in transit on a transfer, and advised only once it is received or approved its lot and serial numbers must match its order line, or confirming fails most statuses can be worked on; a unit that is quarantine, frozen, shipped or in transit cannot not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=handling-units"><span>Handling Units</span></a></b>Keep stock in handling units, the labelled packages LN tracks as one thing.</li>
       <li data-text="assembly orders whinh2101m000 pick a kit's components and put them together into one item that stays in the warehouse create the assembly order by hand for the item to be assembled; its components come from the item's list of components ln makes an outbound line for each component and one inbound line for the assembled item receive the inbound line to say the assembly is done, and put the item away like any receipt the order cannot be changed once a component line is past open, or deleted while it has component lines not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=assembly-orders"><span>Assembly Orders</span></a></b>Pick a kit's components and put them together into one item that stays in the warehouse.</li>
+      <li data-text="print replenishment list whwmd3405m000 refill pick locations from bulk locations give the item a fixed pick location, with a minimum inventory and a minimum replenishment quantity; only fixed pick locations are refilled link bulk locations to pick locations in the replenishment matrix run this session to start the refill; it can create the transfer orders and process them not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=replenish-pick"><span>Print Replenishment List</span></a></b>Refill pick locations from bulk locations.</li>
+      <li data-text="warehouses whwmd2500m000 define a warehouse, and turn locations on in one that already holds stock before turning locations on, clear what is in flight: unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders block the warehouse for inbound and for outbound run change location system for the warehouse, then give each stock its location in assign locations not documented for this release." hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?x=warehouse-setup"><span>Warehouses</span></a></b>Define a warehouse, and turn locations on in one that already holds stock.</li>
       <li data-text="transfer order planning cppat1210m000 planning ➔ plan transfer ➔ transfer order planning converts a planned order into a real order in its owning module — production, purchase, warehouse, or cost-peg transfer." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=cppat1210m000"><span>Transfer Order Planning</span></a></b>Converts a planned order into a real order in its owning module — production, purchase, warehouse, or cost-peg transfer.</li>
       <li data-text="planning parameters cprpd0100m000 planning ➔ parameters ➔ planning company-wide planning settings, among them the ctp check for sales, the pegging horizon and how many plan revisions are kept." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=cprpd0100m000"><span>Planning Parameters</span></a></b>Company-wide planning settings, among them the CTP check for sales, the pegging horizon and how many plan revisions are kept.</li>
       <li data-text="items - planning cprpd1100m000 planning ➔ master data ➔ items ➔ items - planning holds the order horizon, planning horizon and time fence that decide whether and how far ahead an item is planned." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=cprpd1100m000"><span>Items - Planning</span></a></b>Holds the order horizon, planning horizon and time fence that decide whether and how far ahead an item is planned.</li>
       <li data-text="check horizons cprpd1200m000 the appropriate menu in items - planning (cprpd1100m000) calculates a plan item's cumulative order lead time, and checks and brings into line the order horizons of the items in a bill of material." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=cprpd1200m000"><span>Check Horizons</span></a></b>Calculates a plan item's cumulative order lead time, and checks and brings into line the order horizons of the items in a bill of material.</li>
       <li data-text="scenarios cprpd4100m000 planning ➔ master data ➔ scenarios ➔ scenarios defines the scenario a planning run executes in — the horizon, whether the plan rolls, and whether the run is a net change or a full regeneration." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=cprpd4100m000"><span>Scenarios</span></a></b>Defines the scenario a planning run executes in — the horizon, whether the plan rolls, and whether the run is a net change or a full regeneration.</li>
+      <li data-text="sourcing strategy cprpd7110m000 planning ➔ master data ➔ sourcing ➔ sourcing strategy says how an item's demand is split over making, buying and distributing, and it wins over the item's own default supply source." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=cprpd7110m000"><span>Sourcing Strategy</span></a></b>Says how an item's demand is split over making, buying and distributing, and it wins over the item's own default supply source.</li>
       <li data-text="generate pegging relations cprrp0240m000 planning ➔ plan analysis ➔ generate pegging relations runs the generation of pegging relations, in full or as a net-change update." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=cprrp0240m000"><span>Generate Pegging Relations</span></a></b>Runs the generation of pegging relations, in full or as a net-change update.</li>
       <li data-text="item order plan cprrp0520m000 planning ➔ order planning ➔ item order plan a time-phased view of one item's order planning: demand and forecast against scheduled receipts and planned supply." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=cprrp0520m000"><span>Item Order Plan</span></a></b>A time-phased view of one item's order planning: demand and forecast against scheduled receipts and planned supply.</li>
       <li data-text="item order plan - find cprrp0521s000 the find command on item order plan (cprrp0520m000); it opens as a dialog over it the search box that picks which item's order plan to open." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=cprrp0521s000"><span>Item Order Plan - Find</span></a></b>The search box that picks which item's order plan to open.</li>
@@ -4322,17 +4331,21 @@
       <li data-text="receipt message log whinh3530m000 the message log tab in the lines pane of warehouse receipt (whinh3512m000), or opened from it logs the error and information messages raised by actions on a receipt line, kept readable after the dialog is dismissed." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whinh3530m000"><span>Receipt Message Log</span></a></b>Logs the error and information messages raised by actions on a receipt line, kept readable after the dialog is dismissed.</li>
       <li data-text="shipments whinh4130m000 warehousing ➔ shipments ➔ shipments views, maintains and confirms shipments." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whinh4130m000"><span>Shipments</span></a></b>Views, maintains and confirms shipments.</li>
       <li data-text="shipment lines whinh4131m000 drill-in from shipments (whinh4130m000) the only place a shipped quantity can be changed, before the shipment line is confirmed." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whinh4131m000"><span>Shipment Lines</span></a></b>The only place a shipped quantity can be changed, before the shipment line is confirmed.</li>
+      <li data-text="delivery notes whinh4135m000 warehousing ➔ shipments ➔ documents ➔ delivery notes lists the delivery notes ln makes for shipments, the paper that travels with the goods." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whinh4135m000"><span>Delivery Notes</span></a></b>Lists the delivery notes LN makes for shipments, the paper that travels with the goods.</li>
       <li data-text="process pro forma invoices whinh4279m000 warehousing ➔ shipments ➔ documents ➔ process pro forma invoices creates pro forma invoices for frozen or confirmed shipments, to review before invoicing." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whinh4279m000"><span>Process Pro Forma Invoices</span></a></b>Creates pro forma invoices for frozen or confirmed shipments, to review before invoicing.</li>
       <li data-text="process invoices whinh4279m100 unstated in the help; its pro forma twin whinh4279m000 is on the menu under shipments - documents creates the definitive invoice for confirmed shipments." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whinh4279m100"><span>Process Invoices</span></a></b>Creates the definitive invoice for confirmed shipments.</li>
       <li data-text="picking list whinh4525m100 warehousing ➔ outbound/inspections ➔ picking list confirms an advised quantity as picked, where picking is an activity in the warehousing procedure." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whinh4525m100"><span>Picking List</span></a></b>Confirms an advised quantity as picked, where picking is an activity in the warehousing procedure.</li>
       <li data-text="shipment whinh4630m000 drill into a row on shipments (whinh4130m000) views and maintains shipments — where a shipment is frozen and confirmed and inventory finally leaves." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whinh4630m000"><span>Shipment</span></a></b>Views and maintains shipments — where a shipment is frozen and confirmed and inventory finally leaves.</li>
       <li data-text="approve adjustment order variances whinh5821m000 unstated in the help; the cycle counting/adjustment orders node is on the menu approves adjustment-order lines that require approval — the second stage, not the booking." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whinh5821m000"><span>Approve Adjustment Order Variances</span></a></b>Approves adjustment-order lines that require approval — the second stage, not the booking.</li>
+      <li data-text="shipment execution workbench whinh8361m000 warehousing ➔ shipments ➔ shipment execution workbench runs a shipment's outbound steps from one screen, from generating advice to confirming." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whinh8361m000"><span>Shipment Execution Workbench</span></a></b>Runs a shipment's outbound steps from one screen, from generating advice to confirming.</li>
+      <li data-text="planned inventory transactions - graphical view whinp1300m000 warehousing ➔ inventory planning &amp; analysis ➔ planning ➔ planned inventory transactions - graphical view one item's planned receipts and issues as a graph, with tiles for what is on hand, overdue, and due in or out today." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whinp1300m000"><span>Planned Inventory Transactions - Graphical View</span></a></b>One item's planned receipts and issues as a graph, with tiles for what is on hand, overdue, and due in or out today.</li>
       <li data-text="warehouses whwmd2500m000 warehousing ➔ master data ➔ warehouses ➔ warehouses lists the warehouses defined for the current logistics company." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whwmd2500m000"><span>Warehouses</span></a></b>Lists the warehouses defined for the current logistics company.</li>
       <li data-text="warehouse - item inventory whwmd2515m000 warehousing ➔ inventory reporting ➔ inventory position ➔ warehouse - item inventory one row per warehouse holding or expecting an item — where a warehouse to ship from is chosen." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whwmd2515m000"><span>Warehouse - Item Inventory</span></a></b>One row per warehouse holding or expecting an item — where a warehouse to ship from is chosen.</li>
       <li data-text="item - warehousing defaults whwmd4101s000 the blue [warehousing] link on item defaults (tcibd0502m000) holds the default warehousing data — lot, serial, ownership and cross-docking behaviour — for an item type and item group combination." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whwmd4101s000"><span>Item - Warehousing Defaults</span></a></b>Holds the default warehousing data — lot, serial, ownership and cross-docking behaviour — for an item type and item group combination.</li>
       <li data-text="inventory 360 whwmd4300m000 warehousing ➔ inventory 360 the starting point for any question about where an item's stock is and what state it is in." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whwmd4300m000"><span>Inventory 360</span></a></b>The starting point for any question about where an item's stock is and what state it is in.</li>
       <li data-text="inventory 360 - graphical view whwmd4300m200 warehousing ➔ inventory 360 - graphical view inventory 360 with a graph and four exception tiles, which count the items heading for trouble and filter the list to them." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whwmd4300m200"><span>Inventory 360 - Graphical View</span></a></b>Inventory 360 with a graph and four exception tiles, which count the items heading for trouble and filter the list to them.</li>
       <li data-text="item - warehousing whwmd4600m000 drill-in from item (tcibd0501m100); it opens as a dialog over that session the warehousing detail behind one item — location control, inventory-variance handling, and supply settings." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whwmd4600m000"><span>Item - Warehousing</span></a></b>The warehousing detail behind one item — location control, inventory-variance handling, and supply settings.</li>
+      <li data-text="stock point blocking whwmd6130m000 warehousing ➔ blocking ➔ inventory blocking ➔ by stock point blocks one stock point, in full or for a quantity, so that the stock is held and not issued." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=whwmd6130m000"><span>Stock Point Blocking</span></a></b>Blocks one stock point, in full or for a quantity, so that the stock is held and not issued.</li>
       <li data-text="available to promise available to promise atp capable to promise ctp the stock ln will still promise to a new order, worked out over time, and the second check on components and capacity that follows when that stock falls short." hidden><span class="ln-quiet">Idea</span><b><a class="rux--link" href="./?i=available-to-promise"><span>Available to promise</span></a></b>The stock LN will still promise to a new order, worked out over time, and the second check on components and capacity that follows when that stock falls short.</li>
       <li data-text="backorder backorder back order hold back quantity the part of a sales order line that the final delivery did not ship, which waits to be confirmed and then becomes a new line to deliver." hidden><span class="ln-quiet">Idea</span><b><a class="rux--link" href="./?i=backorder"><span>Backorder</span></a></b>The part of a sales order line that the final delivery did not ship, which waits to be confirmed and then becomes a new line to deliver.</li>
       <li data-text="business partner business partner business partner role sold-to business partner buy-from business partner ship-to business partner ship-from business partner internal business partner any party you trade with, where customer and supplier are two roles on one partner and not two separate records." hidden><span class="ln-quiet">Idea</span><b><a class="rux--link" href="./?i=business-partner"><span>Business partner</span></a></b>Any party you trade with, where customer and supplier are two roles on one partner and not two separate records.</li>
@@ -4388,6 +4401,14 @@
     <h1 class="ln-ask">Scenarios</h1>
     <p>Defines the scenario a planning run executes in — the horizon, whether the plan rolls, and whether the run is a net change or a full regeneration.</p>
     <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="cprpd4100m000" aria-label="Copy the code cprpd4100m000">cprpd4100m000</button></dd><dt>Route</dt><dd><span class="ln-t-route"><span>Planning</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Scenarios</span><span class="sep">➔</span><span class="dest">Scenarios</span></span></dd></dl>
+    <div class="ln-full" data-full hidden></div>
+  </section>
+  <section class="ln-screen" data-screen="card" data-c="cprpd7110m000" hidden>
+    <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
+    <p class="ln-quiet">Screen</p>
+    <h1 class="ln-ask">Sourcing Strategy</h1>
+    <p>Says how an item's demand is split over making, buying and distributing, and it wins over the item's own default supply source.</p>
+    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="cprpd7110m000" aria-label="Copy the code cprpd7110m000">cprpd7110m000</button></dd><dt>Route</dt><dd><span class="ln-t-route"><span>Planning</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Sourcing</span><span class="sep">➔</span><span class="dest">Sourcing Strategy</span></span></dd></dl>
     <div class="ln-full" data-full hidden></div>
   </section>
   <section class="ln-screen" data-screen="card" data-c="cprrp0240m000" hidden>
@@ -5478,6 +5499,14 @@
     <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="whinh4131m000" aria-label="Copy the code whinh4131m000">whinh4131m000</button></dd><dt>Reached</dt><dd>drill-in from Shipments (whinh4130m000)</dd><dt>Used in</dt><dd><a class="rux--link" href="./?s=ship-from-stock&amp;t=5">Ship from stock · 6 Ship</a></dd></dl>
     <div class="ln-full" data-full hidden></div>
   </section>
+  <section class="ln-screen" data-screen="card" data-c="whinh4135m000" hidden>
+    <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
+    <p class="ln-quiet">Screen</p>
+    <h1 class="ln-ask">Delivery Notes</h1>
+    <p>Lists the delivery notes LN makes for shipments, the paper that travels with the goods.</p>
+    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="whinh4135m000" aria-label="Copy the code whinh4135m000">whinh4135m000</button></dd><dt>Route</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Shipments</span><span class="sep">➔</span><span>Documents</span><span class="sep">➔</span><span class="dest">Delivery Notes</span></span></dd></dl>
+    <div class="ln-full" data-full hidden></div>
+  </section>
   <section class="ln-screen" data-screen="card" data-c="whinh4279m000" hidden>
     <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
     <p class="ln-quiet">Screen</p>
@@ -5516,6 +5545,22 @@
     <h1 class="ln-ask">Approve Adjustment Order Variances</h1>
     <p>Approves adjustment-order lines that require approval — the second stage, not the booking.</p>
     <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="whinh5821m000" aria-label="Copy the code whinh5821m000">whinh5821m000</button></dd><dt>Reached</dt><dd>unstated in the help; the Cycle Counting/Adjustment Orders node is on the menu</dd></dl>
+    <div class="ln-full" data-full hidden></div>
+  </section>
+  <section class="ln-screen" data-screen="card" data-c="whinh8361m000" hidden>
+    <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
+    <p class="ln-quiet">Screen</p>
+    <h1 class="ln-ask">Shipment Execution Workbench</h1>
+    <p>Runs a shipment's outbound steps from one screen, from generating advice to confirming.</p>
+    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="whinh8361m000" aria-label="Copy the code whinh8361m000">whinh8361m000</button></dd><dt>Route</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Shipments</span><span class="sep">➔</span><span class="dest">Shipment Execution Workbench</span></span></dd></dl>
+    <div class="ln-full" data-full hidden></div>
+  </section>
+  <section class="ln-screen" data-screen="card" data-c="whinp1300m000" hidden>
+    <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
+    <p class="ln-quiet">Screen</p>
+    <h1 class="ln-ask">Planned Inventory Transactions - Graphical View</h1>
+    <p>One item's planned receipts and issues as a graph, with tiles for what is on hand, overdue, and due in or out today.</p>
+    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="whinp1300m000" aria-label="Copy the code whinp1300m000">whinp1300m000</button></dd><dt>Route</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Planning &amp; Analysis</span><span class="sep">➔</span><span>Planning</span><span class="sep">➔</span><span class="dest">Planned Inventory Transactions - Graphical View</span></span></dd></dl>
     <div class="ln-full" data-full hidden></div>
   </section>
   <section class="ln-screen" data-screen="card" data-c="whwmd2500m000" hidden>
@@ -5564,6 +5609,14 @@
     <h1 class="ln-ask">Item - Warehousing</h1>
     <p>The warehousing detail behind one item — location control, inventory-variance handling, and supply settings.</p>
     <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="whwmd4600m000" aria-label="Copy the code whwmd4600m000">whwmd4600m000</button></dd><dt>Reached</dt><dd>drill-in from Item (tcibd0501m100); it opens as a dialog over that session</dd></dl>
+    <div class="ln-full" data-full hidden></div>
+  </section>
+  <section class="ln-screen" data-screen="card" data-c="whwmd6130m000" hidden>
+    <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
+    <p class="ln-quiet">Screen</p>
+    <h1 class="ln-ask">Stock Point Blocking</h1>
+    <p>Blocks one stock point, in full or for a quantity, so that the stock is held and not issued.</p>
+    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="whwmd6130m000" aria-label="Copy the code whwmd6130m000">whwmd6130m000</button></dd><dt>Route</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Blocking</span><span class="sep">➔</span><span>Inventory Blocking</span><span class="sep">➔</span><span class="dest">by Stock Point</span></span></dd></dl>
     <div class="ln-full" data-full hidden></div>
   </section>
   <section class="ln-screen" data-screen="card" data-i="available-to-promise" hidden>
@@ -6031,6 +6084,29 @@
       </form>
     </div>
   </section>
+  <section class="ln-screen" data-screen="card" data-x="adjustment" hidden>
+    <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
+    <p class="ln-quiet">Task</p>
+    <h1 class="ln-ask">Adjustment Orders</h1>
+    <p>Adjust stock with an adjustment order.</p><ol class="ln-side"><li>for a serialized item, open the line's stock point details, where its serial numbers are kept</li><li>counted more than LN holds: add the serial numbers</li><li>counted fewer: leave the adjusted quantity at 0 and enter a negative variance for each missing serial</li><li class="ln-side__note">Not documented for this release.</li></ol>
+    <div class="ln-confirm" data-confirm="tasks" data-step="adjustment">
+      <p class="ln-quiet" data-said>Nobody has confirmed this task in LN yet.</p>
+      <div class="ln-confirm__ask" data-owner hidden>
+        <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" data-say="matched">It matched</button>
+        <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-say="different">It was different</button>
+      </div>
+      <form class="ln-confirm__form" data-different hidden>
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-40">What was different?</label></div>
+          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+            <input id="diff-tasks-task-40" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+          </div></div>
+        </div>
+        <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
+        <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Send</button>
+      </form>
+    </div>
+  </section>
   <section class="ln-screen" data-screen="card" data-x="inventory-blocking" hidden>
     <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
     <p class="ln-quiet">Task</p>
@@ -6044,9 +6120,32 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-40">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-41">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-40" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-41" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+          </div></div>
+        </div>
+        <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
+        <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Send</button>
+      </form>
+    </div>
+  </section>
+  <section class="ln-screen" data-screen="card" data-x="handling-units" hidden>
+    <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
+    <p class="ln-quiet">Task</p>
+    <h1 class="ln-ask">Handling Units</h1>
+    <p>Keep stock in handling units, the labelled packages LN tracks as one thing.</p><ol class="ln-side"><li>LN can make them by itself: at the pick, where the stock had none, and from a shipment notice where the warehouse or item says so</li><li>a handling unit is received only while it is Open, or In Transit on a transfer, and advised only once it is Received or Approved</li><li>its lot and serial numbers must match its order line, or confirming fails</li><li>most statuses can be worked on; a unit that is Quarantine, Frozen, Shipped or In Transit cannot</li><li class="ln-side__note">Not documented for this release.</li></ol>
+    <div class="ln-confirm" data-confirm="tasks" data-step="handling-units">
+      <p class="ln-quiet" data-said>Nobody has confirmed this task in LN yet.</p>
+      <div class="ln-confirm__ask" data-owner hidden>
+        <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" data-say="matched">It matched</button>
+        <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-say="different">It was different</button>
+      </div>
+      <form class="ln-confirm__form" data-different hidden>
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-42">What was different?</label></div>
+          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+            <input id="diff-tasks-task-42" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6067,9 +6166,55 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-41">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-43">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-41" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-43" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+          </div></div>
+        </div>
+        <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
+        <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Send</button>
+      </form>
+    </div>
+  </section>
+  <section class="ln-screen" data-screen="card" data-x="replenish-pick" hidden>
+    <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
+    <p class="ln-quiet">Task</p>
+    <h1 class="ln-ask">Print Replenishment List</h1>
+    <p>Refill pick locations from bulk locations.</p><ol class="ln-side"><li>give the item a fixed pick location, with a minimum inventory and a minimum replenishment quantity; only fixed pick locations are refilled</li><li>link bulk locations to pick locations in the replenishment matrix</li><li>run this session to start the refill; it can create the transfer orders and process them</li><li class="ln-side__note">Not documented for this release.</li></ol>
+    <div class="ln-confirm" data-confirm="tasks" data-step="replenish-pick">
+      <p class="ln-quiet" data-said>Nobody has confirmed this task in LN yet.</p>
+      <div class="ln-confirm__ask" data-owner hidden>
+        <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" data-say="matched">It matched</button>
+        <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-say="different">It was different</button>
+      </div>
+      <form class="ln-confirm__form" data-different hidden>
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-44">What was different?</label></div>
+          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+            <input id="diff-tasks-task-44" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+          </div></div>
+        </div>
+        <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
+        <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Send</button>
+      </form>
+    </div>
+  </section>
+  <section class="ln-screen" data-screen="card" data-x="warehouse-setup" hidden>
+    <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
+    <p class="ln-quiet">Task</p>
+    <h1 class="ln-ask">Warehouses</h1>
+    <p>Define a warehouse, and turn locations on in one that already holds stock.</p><ol class="ln-side"><li>before turning locations on, clear what is in flight: unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders</li><li>block the warehouse for inbound and for outbound</li><li>run Change Location System for the warehouse, then give each stock its location in Assign Locations</li><li class="ln-side__note">Not documented for this release.</li></ol>
+    <div class="ln-confirm" data-confirm="tasks" data-step="warehouse-setup">
+      <p class="ln-quiet" data-said>Nobody has confirmed this task in LN yet.</p>
+      <div class="ln-confirm__ask" data-owner hidden>
+        <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" data-say="matched">It matched</button>
+        <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-say="different">It was different</button>
+      </div>
+      <form class="ln-confirm__form" data-different hidden>
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-45">What was different?</label></div>
+          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+            <input id="diff-tasks-task-45" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>

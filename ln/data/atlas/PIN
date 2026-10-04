@@ -1,9 +1,9 @@
-commit   71c89d7880170cef052690a34056bbc25c93ee5b
-date     2026-10-04T19:06:43Z
-subject  docs(warehousing): Read blocking and HU guides
+commit   3f3cd5b6fa0f74732ca77c46cc793e32dcee968a
+date     2026-10-04T19:17:42Z
+subject  docs(guides): File the rest of the first read
 contract 15 
 tier     export
-sha256   d5ad483ecb93aa46ee74982f7a82977f3ae14ab3559ce93d327b542908727361
+sha256   35bf9ab74d60d849e5f981616fa298ad57098a6d088d8c7a20e9d7e68a498207
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

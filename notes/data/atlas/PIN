@@ -1,9 +1,9 @@
-commit   cdd8e06eaeaab30d4cd156158ec3c0b2611438d5
-date     2026-10-04T01:51:10Z
-subject  docs(outbound): Source changing a released line
+commit   d8b45bcae69303f8a7b9c4cf05731c1c42c51dab
+date     2026-10-04T03:28:56Z
+subject  docs(sessions): Write 19 screens from sources
 contract 14 
 tier     export
-sha256   38914388c8a77d6278723731b36692ceaf53c60bacbf27b2efd29f1b8f91bd7a
+sha256   38776b77bcfe8da0b1bf23f15e34d2e75165dfb77decd00f1d3223ebe1471e7c
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

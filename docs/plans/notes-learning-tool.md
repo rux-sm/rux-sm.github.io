@@ -253,9 +253,9 @@ compare them; and landings for old page addresses, which are deleted.
       Planning, the one branch that names no setting.
 - [ ] In atlas, give Warehouse transfer and Create test items a map of their
       own, since most of their tasks are not on this chain.
-- [ ] In atlas, write a screen file for each of the 24 screens that have none,
-      from the guides where they say enough and from exported help where they
-      do not, and rewrite each scenario's questions into the one shape.
+- [ ] In atlas, write a screen file for the four screens still without one, once
+      a source says how each is opened, and rewrite each scenario's questions
+      into the one shape.
 - [ ] Keep the open question in the address, so coming back from a screen card
       returns to it.
 - [ ] In atlas, set the one shape for a question in `standards/`, with its

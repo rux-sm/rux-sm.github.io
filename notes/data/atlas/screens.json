@@ -23,7 +23,9 @@
     },
     {
       "code": "cprpd1200m000",
-      "name": "Check Horizons"
+      "name": "Check Horizons",
+      "purpose": "Calculates a plan item's cumulative order lead time, and checks and brings into line the order horizons of the items in a bill of material.",
+      "route": "the appropriate menu in Items - Planning (cprpd1100m000)"
     },
     {
       "code": "cprpd4100m000",
@@ -33,7 +35,9 @@
     },
     {
       "code": "cprrp0240m000",
-      "name": "Generate Pegging Relations"
+      "name": "Generate Pegging Relations",
+      "purpose": "Runs the generation of pegging relations, in full or as a net-change update.",
+      "route": "Planning ➔ Plan Analysis ➔ Generate Pegging Relations"
     },
     {
       "code": "cprrp0520m000",
@@ -43,7 +47,9 @@
     },
     {
       "code": "cprrp0740m200",
-      "name": "Order Pegging"
+      "name": "Order Pegging",
+      "purpose": "Shows the pegging relations between orders as a tree, one branch for each order.",
+      "route": "the Browse option in Select for Order Pegging (cprrp0740m000)"
     },
     {
       "code": "cprrp1100m000",
@@ -71,7 +77,9 @@
     },
     {
       "code": "cprrp1600m000",
-      "name": "Planned Order"
+      "name": "Planned Order",
+      "purpose": "One planned order in detail: its order lines, which can be changed here, and the demand each was generated for.",
+      "route": "double-click a planned order in Planned Orders (cprrp1100m000)"
     },
     {
       "code": "tccom0100s000",
@@ -85,7 +93,9 @@
     },
     {
       "code": "tccom4120s000",
-      "name": "Buy-from Business Partner"
+      "name": "Buy-from Business Partner",
+      "purpose": "The details screen where one buy-from business partner is entered or maintained.",
+      "route": "double-click a record, or New, in Buy-from Business Partners (tccom4520m000)"
     },
     {
       "code": "tccom4520m000",
@@ -95,7 +105,9 @@
     },
     {
       "code": "tcemm1170m000",
-      "name": "tcemm1170m000"
+      "name": "Companies",
+      "purpose": "Holds each company's own settings, among them its calendar and its currency system.",
+      "route": "Master Data ➔ Enterprise Model ➔ Enterprise Structure ➔ Companies"
     },
     {
       "code": "tcemm4600m000",
@@ -111,7 +123,9 @@
     },
     {
       "code": "tcibd0500m000",
-      "name": "Item Code Segmentation"
+      "name": "Item Code Segmentation",
+      "purpose": "Defines the segments an item code is made of.",
+      "route": "Master Data ➔ Master Data Parameters ➔ Item Code Segmentation"
     },
     {
       "code": "tcibd0501m000",
@@ -181,7 +195,9 @@
     },
     {
       "code": "tcmcs0565m000",
-      "name": "Departments"
+      "name": "Departments",
+      "purpose": "Defines departments. A work center needs one first, and its calendar can be set here.",
+      "route": "Master Data ➔ Enterprise Model ➔ Entities ➔ Departments"
     },
     {
       "code": "tdipu0102m000",
@@ -191,7 +207,9 @@
     },
     {
       "code": "tdipu0182m000",
-      "name": "Item Purchase Defaults by Site"
+      "name": "Item Purchase Defaults by Site",
+      "purpose": "The default purchase data that items take at one site.",
+      "route": "a button in Item Control and Defaults by Site (tcibd1552m000)"
     },
     {
       "code": "tdipu0601m000",
@@ -213,7 +231,9 @@
     },
     {
       "code": "tdisa0601m000",
-      "name": "Item - Sales"
+      "name": "Item - Sales",
+      "purpose": "One item's sales data.",
+      "route": "a button in Items (tcibd0501m000)"
     },
     {
       "code": "tdpur0143m000",
@@ -229,19 +249,27 @@
     },
     {
       "code": "tdpur4101m000",
-      "name": "Purchase Order Lines"
+      "name": "Purchase Order Lines",
+      "purpose": "One purchase order line in detail, including the warehouse it is received into.",
+      "route": "double-click a line in Purchase Order Intake Workbench (tdpur4601m200)"
     },
     {
       "code": "tdpur4106m000",
-      "name": "tdpur4106m000"
+      "name": "Purchase Receipts",
+      "purpose": "The receipts booked against a purchase order. Receipts for a direct delivery are entered here by hand.",
+      "route": "the Receipts tab of Purchase Order (tdpur4100m900)"
     },
     {
       "code": "tdpur4501m140",
-      "name": "Purchase Order - Lines to be Released"
+      "name": "Purchase Order - Lines to be Released",
+      "purpose": "A purchase order's lines that are waiting to be released to warehousing.",
+      "route": "the Release to Warehousing tab of Purchase Order (tdpur4100m900)"
     },
     {
       "code": "tdpur4534m000",
-      "name": "Purchase Order Line Status"
+      "name": "Purchase Order Line Status",
+      "purpose": "Shows which activity a purchase order line is waiting on.",
+      "route": "Purchase Order Line Status on the appropriate menu of the Order Lines tab of Purchase Order (tdpur4100m900)"
     },
     {
       "code": "tdpur4601m200",
@@ -317,7 +345,9 @@
     },
     {
       "code": "ticst0101m000",
-      "name": "Estimated Materials"
+      "name": "Estimated Materials",
+      "purpose": "The materials a production order is expected to use and the warehouse each is allocated from. It locks once the estimated costs are frozen.",
+      "route": "one of the sessions Production Order (tisfc0101m100) is composed of"
     },
     {
       "code": "ticst0101m100",
@@ -355,7 +385,9 @@
     },
     {
       "code": "timfc0100m000",
-      "name": "Product Engineering Parameters"
+      "name": "Product Engineering Parameters",
+      "purpose": "Parameters for product engineering, among them whether change notes are active.",
+      "route": "Manufacturing ➔ Parameters ➔ Product Engineering"
     },
     {
       "code": "tirou0100m000",
@@ -371,11 +403,15 @@
     },
     {
       "code": "tirou0101s000",
-      "name": "tirou0101s000"
+      "name": "Work Center",
+      "purpose": "One work center in detail, used where the Job Shop by Site concept is inactive.",
+      "route": "from Work Centers (tirou0101m000), where Job Shop by Site is Inactive"
     },
     {
       "code": "tirou0601m000",
-      "name": "Work Center"
+      "name": "Work Center",
+      "purpose": "One work center in detail, used where the Job Shop by Site concept is active.",
+      "route": "from Work Centers (tirou0101m000), where Job Shop by Site is Active"
     },
     {
       "code": "tirou1102m000",
@@ -415,7 +451,9 @@
     },
     {
       "code": "tisfc0105m000",
-      "name": "Production Order Distribution"
+      "name": "Production Order Distribution",
+      "purpose": "How a production order's quantity is distributed, which can give more than one production warehouse order.",
+      "route": "the Production Order Distribution tab of Production Orders (tisfc0501m000)"
     },
     {
       "code": "tisfc0110m000",

@@ -6764,7 +6764,10 @@
     beside it. This fragment nested the container inside .rux--file, where the
     drop variant's own rule cannot reach it.
   -->
-  <div style="max-width:32rem">
+  <!-- Set in from the column's edge: a name's tooltip is centred under it,
+       and the invalid item's, whose name button is the narrower, ran 20px
+       past the edge. -->
+  <div style="max-width:32rem;margin-inline-start:1.5rem">
     <div class="rux--form-item">
       <p class="rux--file--label">Upload files</p>
       <p class="rux--label-description">Max 500 KB each</p>

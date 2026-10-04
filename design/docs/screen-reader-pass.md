@@ -8,19 +8,20 @@ type: how-to
 automated substitutes for it. Tab order, arrow keys inside composites and focus rings
 are checked separately; this pass is about what is announced.
 
-Three controls are still to be heard: **toggle**, **modal** and **popover**. Do not
+Eight are still to be heard: **toggle**, **modal**, **popover**, **tearsheet**,
+**guide banner**, **notifications panel**, **coachmark** and **tag overflow**. Do not
 rush, and write down what was actually said — the wording is the result. A blank row is
 not a pass.
 
 ## Setup
 
-1. From the repository root, `npm run serve`, then open
-   <http://localhost:8640/design/kitchen-sink.html> in **Safari**. VoiceOver and Safari
-   are the pairing Apple tests; Chrome produces findings that are Chrome's.
+1. Open <http://localhost:8641/design/kitchen-sink.html> in **Safari**. VoiceOver and
+   Safari are the pairing Apple tests; Chrome produces findings that are Chrome's.
 2. Start VoiceOver with **⌘F5**. Turn it off the same way.
 3. Click the page once, so the window has real focus.
 
-The sections are `#toggle`, `#modal` and `#popover`.
+The sections are `#toggle`, `#modal`, `#popover`, `#tearsheet`, `#guidebanner`,
+`#notifications-panel`, `#coachmark` and `#tag-overflow`.
 
 |                      |                                                       |
 |----------------------|-------------------------------------------------------|
@@ -42,13 +43,18 @@ State must be announced when it **changes**, not only on first landing. A contro
 says its state on arrival and stays silent when you change it has failed, even when the
 attribute is correct. That is the gap `check-a11y` cannot see.
 
-## The three checks
+## The checks
 
 | Section | Do this   | Should hear                                              | Heard |
 |---------|-----------|----------------------------------------------------------|-------|
 | toggle  | Tab, Space | the name once, "switch" not "checkbox", and the new state on each flip |       |
 | modal   | Open it   | "dialog" and the title on open; focus inside; page behind silent |       |
 | popover | Open it   | content read on open, not before                         |       |
+| tearsheet | Open either one | "dialog" and the title on open; focus inside; page behind silent |       |
+| guide banner | Tab to "Read less", Space | "expanded" or "collapsed" on each press, and the new label |       |
+| notifications panel | Dismiss one, then all | each close button names its notification; "You do not have any notifications" is reachable after the last |       |
+| coachmark | Open the floating one, Tab to "Drag", Enter, an arrow, Enter | the instruction after "Drag, button"; "Drag mode active."; "Moved right 8 pixels"; "Drag mode ended." |       |
+| tag overflow | Open "+13", then "View all tags" | the ten tags as a list on open, not before; then "dialog", and the search field with its name |       |
 
 **Toggle.** All six toggles are `role="switch"`. Their `toggle__text` span is
 `aria-hidden`, which is what stops the name being read twice. If you hear "On On, on,
@@ -62,8 +68,6 @@ sink's sections, `aria-hidden` or `inert` is not doing its job. That is a real f
 - **Six specimens have no trigger and no tab stop**, because they demonstrate CSS: four
   `menu` density demos, `overflow-menu`'s open options list and `list-box`'s expanded
   menu. `check-a11y` reports them as notes.
-- **`progress-indicator`'s step button reports "no visible focus change".** Carbon draws
-  that ring on `:focus-visible` on the label, so this is a false positive.
 - **A notification in the page at load is not announced.** Live regions only fire on
   change, and the sink cannot show one added later.
 

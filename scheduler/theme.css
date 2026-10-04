@@ -94,15 +94,17 @@
 
 /* THE THREE HEADS HOLD EACH ROUNDED THEME'S DEFAULT CONTROLS: the toolbar,
    the roster's head and the trip editor's head each hold the buttons Design
-   sizes that theme's controls at, inset from every edge of a 48px bar:
-   geist-dark's 36px buttons 6px in and 4px apart, ant-dark's 32px ones 8px
-   in and 8px apart. Nothing fills its bar edge to edge, so the three heads
+   sizes that theme's controls at, inset from every edge of its bar:
+   geist-dark's 36px buttons 12px in and 8px apart in a 60px bar, the 12px
+   Geist's own Modal and Fieldset footers hold their buttons at, and
+   ant-dark's 32px ones 8px in and 8px apart in a 48px bar. Nothing fills
+   its bar edge to edge, so the three heads
    and the rows under them line up across the board, and every button takes
    the theme's 6px corners rather than staying square with the last one
    following the card's curve. The editor's close button fixes its own 40px,
    so it is named. The roster's head keeps its full height where the grid
    under it wants more room than the pane has. */
-[data-theme="geist-dark"] { --scheduler-head-inset: 6px; --scheduler-head-gap: var(--rux-spacing-02); }
+[data-theme="geist-dark"] { --scheduler-head-inset: var(--rux-spacing-04); --scheduler-head-gap: var(--rux-spacing-03); }
 [data-theme="ant-dark"] { --scheduler-head-inset: 8px; --scheduler-head-gap: var(--rux-spacing-03); }
 @media (min-width: 42rem) {
   :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-toolbar {
@@ -130,6 +132,13 @@
     border-inline-color: transparent;
   }
   :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-toolbar__spacer { border-inline-start-color: transparent; }
+  /* Geist's bar buttons are its outlined button: the quiet ring Design gives
+     the secondary button, on the 1px border a ghost button already carries,
+     so each one reads as a button apart from the week's name. It gives way
+     to the focus ring, which is that same border. */
+  [data-theme="geist-dark"] .scheduler-page .scheduler-toolbar > .rux--btn--ghost:not(:focus-visible) {
+    border-color: var(--rux-border-subtle-02);
+  }
   :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-trip .rux--side-panel .rux--btn--md.rux--side-panel__close-button {
     block-size: var(--rux-layout-size-height-md);
     inline-size: var(--rux-layout-size-height-md);

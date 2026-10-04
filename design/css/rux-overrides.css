@@ -919,19 +919,26 @@
   background: var(--rux-layer-hover-01);
 }
 /* THE TOOLBAR SITS INSIDE THE BOX, as Geist's own controls sit inside a card:
-   6px from every edge and 4px apart, so its 36px controls make a 48px bar, as
-   the scheduler's heads do, and their 6px corners sit concentric in the box's
-   12px, and the search
-   field's ring and the buttons' corners no longer lie on the box's outline,
-   doubling its line and meeting its 8px corners with their 6px ones. The
-   toolbar takes the box's surface rather than a fill of its own. */
+   12px from every edge and 8px apart, so its 36px controls make a 60px bar.
+   12px is what Geist's Modal and Fieldset footers hold their buttons at, and
+   it is this theme's one inset for a bar of buttons, a footer's included. The
+   search field's ring and the buttons' corners no longer lie on the box's
+   outline, doubling its line and meeting its 8px corners with their 6px
+   ones. The toolbar takes the box's surface rather than a fill of its own. */
 [data-theme="geist-dark"] .rux--data-table-container .rux--table-toolbar {
   block-size: auto;
-  padding: 6px;
+  padding: var(--rux-spacing-04);
   background-color: transparent;
 }
 [data-theme="geist-dark"] .rux--data-table-container .rux--toolbar-content {
-  gap: var(--rux-spacing-02);
+  gap: var(--rux-spacing-03);
+}
+/* A ghost button in the bar is Geist's outlined button: the secondary's quiet
+   ring on the 1px border a ghost button already carries, as Geist's Modal
+   footer rings Cancel and Previous beside its filled Submit. Under keyboard
+   focus that border is the focus ring's, so the rule steps aside. */
+[data-theme="geist-dark"] .rux--table-toolbar .rux--btn--ghost:not(:disabled):not(.rux--btn--disabled):not(:focus-visible) {
+  border-color: var(--rux-border-subtle-02);
 }
 /* GEIST'S SEGMENTED CONTROL, measured on its Switch page: a box on the
    surface inside a 1px ring, 6px corners and 4px of padding, holding 28px
@@ -1271,10 +1278,12 @@
    last 64px of a side panel or a modal with its buttons, edge to edge and
    divided between them by a flex basis, which is why the rules above make them
    square and lend them the surface's corner. Geist puts ordinary buttons
-   inside the surface and gathers them at the end -- measured on its Modal and
-   Sheet, both right aligned over a transparent footer with 6px corners -- and
-   Ant's Modal page does the same: its buttons at the end of a transparent
-   footer, 8px apart, at the control's own height. The two rounded themes
+   with 6px corners inside the surface, over a transparent footer: its Sheet
+   gathers them at the end 8px apart, and its Modal sends Cancel to the start
+   and the action to the end, 12px from every edge. Ant's Modal page gathers
+   its buttons at the end of a transparent footer, 8px apart, at the control's
+   own height. Both themes take the gathered arrangement for every surface,
+   and geist-dark Geist's 12px. The two rounded themes
    leave; every other theme keeps the band, so the rules above stand and the
    corner is taken back here rather than the selector list being written twice.
    The Dialog primitive's footer is the same band under another name and ends
@@ -1297,6 +1306,11 @@
   padding: var(--rux-spacing-05);
   background-color: transparent;
   block-size: auto;
+}
+[data-theme="geist-dark"] .rux--action-set,
+[data-theme="geist-dark"] .rux--modal-footer,
+[data-theme="geist-dark"] .rux--dialog-footer {
+  padding: var(--rux-spacing-04);
 }
 /* The height is `md`, read through Carbon's own size variable rather than a
    number, because it is the height of every field, toolbar button and menu

@@ -605,6 +605,13 @@
 [data-theme="geist-dark"] .rux--breadcrumb-item::after {
   color: var(--rux-text-secondary);
 }
+/* GEIST'S TOOLTIP IS A SMALL LIGHT LABEL, measured on its Tooltip page: 13px
+   text with 6px above and below and 8px at the sides. Carbon sets 14px text
+   in 2px and 16px. The light fill and the 8px corners were already Geist's. */
+[data-theme="geist-dark"] .rux--tooltip-content {
+  padding: 6px var(--rux-spacing-03);
+  font-size: 0.8125rem;
+}
 /* GEIST'S DEFAULT CONTROL IS 36px, measured on its Button and Input pages:
    the default button and the default field are both 36px with 6px corners,
    between a 32px small and a 40px large. Carbon's md size is 40, and three

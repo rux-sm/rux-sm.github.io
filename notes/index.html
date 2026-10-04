@@ -1176,7 +1176,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-notes-commit="7ffa2577de9e6c4b4c02eef8ee259106605533c2">
+<main id="main-content" class="rux--content" data-notes-commit="977512c8e0eff7789296167c95fd10639891d199">
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-7">
@@ -1790,6 +1790,26 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
               </ul>
             </div>
           </div>
+        </details>
+        <details class="notes-path-tile notes-path-tile--step" id="tile-rush-order" name="notes-path" data-notes-path-tile="rush-order">
+          <summary class="notes-path-summary">
+            <span class="notes-path-head"><span class="notes-path-name">Rush an order</span></span>
+            <span class="notes-path-does">give a sales order, or one line of it, the highest priority through the warehouse</span>
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
+          </summary>
+          <div class="notes-path-card rux--layer-two">
+            <p class="notes-path-meta">No procedure</p>
+            
+            
+            <ol class="rux--list--ordered"><li class="rux--list__item">choose Rush Order on the sales order, or Rush Order Line on one line; the order&#39;s priority becomes 1</li><li class="rux--list__item">release it to warehousing, where its outbound lines are advised and processed before any others</li><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
+            <p class="rux--type-body-01">No procedure yet.</p>
+            
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
+          </div>
         </details></div>
           <details class="notes-path-tile notes-path-tile--check" id="tile-2" name="notes-path" data-notes-path-tile="2">
           <summary class="notes-path-summary">
@@ -2199,6 +2219,46 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             </div>
             <h3 class="rux--type-productive-heading-02">Next</h3>
             <p class="rux--type-body-02">The walk ends here.</p>
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
+          </div>
+        </details>
+        <details class="notes-path-tile notes-path-tile--step" id="tile-direct-delivery" name="notes-path" data-notes-path-tile="direct-delivery">
+          <summary class="notes-path-summary">
+            <span class="notes-path-head"><span class="notes-path-name">Direct delivery</span></span>
+            <span class="notes-path-does">have the supplier deliver straight to the customer, so that Warehousing is not involved</span>
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
+          </summary>
+          <div class="notes-path-card rux--layer-two">
+            <p class="notes-path-meta">No procedure</p>
+            
+            
+            <ol class="rux--list--ordered"><li class="rux--list__item">set the line&#39;s delivery type to Direct Delivery, by hand or from the shortage menu that appears when stock is short</li><li class="rux--list__item">generate the purchase order for the line, from a purchase order advice or directly</li><li class="rux--list__item">record the supplier&#39;s receipt in Procurement and send the delivery back to the sales order</li><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
+            <p class="rux--type-body-01">No procedure yet.</p>
+            
+            <div class="notes-path-questbox" data-notes-path-quests hidden>
+              <h3 class="rux--type-productive-heading-02">Quests</h3>
+              <ul class="notes-path-quests">
+              </ul>
+            </div>
+          </div>
+        </details>
+        <details class="notes-path-tile notes-path-tile--step" id="tile-cross-docking" name="notes-path" data-notes-path-tile="cross-docking">
+          <summary class="notes-path-summary">
+            <span class="notes-path-head"><span class="notes-path-name">Cross-docking</span></span>
+            <span class="notes-path-does">fill a sales order that has no stock by taking inbound goods straight from receipt to the staging location</span>
+            <span class="rux--tag rux--tag--purple rux--layout--size-sm" data-notes-path-questcount hidden><span class="rux--tag__label">0 quests</span></span>
+          </summary>
+          <div class="notes-path-card rux--layer-two">
+            <p class="notes-path-meta">No procedure</p>
+            
+            
+            <ol class="rux--list--ordered"><li class="rux--list__item">set the line&#39;s delivery type to Cross-docking, by hand or from the shortage menu that appears when stock is short</li><li class="rux--list__item">generate the purchase order for the line, from a purchase order advice or directly</li><li class="rux--list__item">release the purchase order and the sales order to warehousing</li><li class="rux--list__item"><strong>Not documented for this release.</strong></li></ol>
+            <p class="rux--type-body-01">No procedure yet.</p>
+            
             <div class="notes-path-questbox" data-notes-path-quests hidden>
               <h3 class="rux--type-productive-heading-02">Quests</h3>
               <ul class="notes-path-quests">
@@ -4860,7 +4920,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
       </div>
 
 
-<p class="rux--type-caption-01 notes-revision">Built from atlas 7ffa257 · contract 14</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 977512c · contract 14</p>
       </div>
     </div>
   </div>

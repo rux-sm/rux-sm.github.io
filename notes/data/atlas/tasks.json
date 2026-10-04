@@ -1327,6 +1327,222 @@
           "tokens": [
             {
               "t": "strong",
+              "v": "rush-order · Rush an order"
+            },
+            {
+              "t": "text",
+              "v": " · stage 2 · step"
+            }
+          ],
+          "text": "rush-order · Rush an order · stage 2 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — give a sales order, or one line of it, the highest priority through the warehouse"
+                }
+              ],
+              "text": "Does — give a sales order, or one line of it, the highest priority through the warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - choose Rush Order on the sales order, or Rush Order Line on one line; the order's priority becomes 1 - release it to warehousing, where its outbound lines are advised and processed before any others - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - choose Rush Order on the sales order, or Rush Order Line on one line; the order's priority becomes 1 - release it to warehousing, where its outbound lines are advised and processed before any others - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 1"
+                }
+              ],
+              "text": "Under — Demand to shipment 1"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "direct-delivery · Direct delivery"
+            },
+            {
+              "t": "text",
+              "v": " · stage 2 · step"
+            }
+          ],
+          "text": "direct-delivery · Direct delivery · stage 2 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — have the supplier deliver straight to the customer, so that Warehousing is not involved"
+                }
+              ],
+              "text": "Does — have the supplier deliver straight to the customer, so that Warehousing is not involved"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - set the line's delivery type to Direct Delivery, by hand or from the shortage menu that appears when stock is short - generate the purchase order for the line, from a purchase order advice or directly - record the supplier's receipt in Procurement and send the delivery back to the sales order - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - set the line's delivery type to Direct Delivery, by hand or from the shortage menu that appears when stock is short - generate the purchase order for the line, from a purchase order advice or directly - record the supplier's receipt in Procurement and send the delivery back to the sales order - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 2"
+                }
+              ],
+              "text": "Under — Demand to shipment 2"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "cross-docking · Cross-docking"
+            },
+            {
+              "t": "text",
+              "v": " · stage 2 · step"
+            }
+          ],
+          "text": "cross-docking · Cross-docking · stage 2 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — fill a sales order that has no stock by taking inbound goods straight from receipt to the staging location"
+                }
+              ],
+              "text": "Does — fill a sales order that has no stock by taking inbound goods straight from receipt to the staging location"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - set the line's delivery type to Cross-docking, by hand or from the shortage menu that appears when stock is short - generate the purchase order for the line, from a purchase order advice or directly - release the purchase order and the sales order to warehousing - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - set the line's delivery type to Cross-docking, by hand or from the shortage menu that appears when stock is short - generate the purchase order for the line, from a purchase order advice or directly - release the purchase order and the sales order to warehousing - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 2"
+                }
+              ],
+              "text": "Under — Demand to shipment 2"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
               "v": "release-block · Blocked release"
             },
             {
@@ -5044,6 +5260,210 @@
         }
       },
       {
+        "id": "rush-order",
+        "session": "Rush an order",
+        "lane": "Sales",
+        "stage": 2,
+        "kind": "step",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "give a sales order, or one line of it, the highest priority through the warehouse"
+            }
+          ],
+          "text": "give a sales order, or one line of it, the highest priority through the warehouse"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "choose Rush Order on the sales order, or Rush Order Line on one line; the order's priority becomes 1"
+              }
+            ],
+            "text": "choose Rush Order on the sales order, or Rush Order Line on one line; the order's priority becomes 1"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "release it to warehousing, where its outbound lines are advised and processed before any others"
+              }
+            ],
+            "text": "release it to warehousing, where its outbound lines are advised and processed before any others"
+          },
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "1"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "choose Rush Order on the sales order, or Rush Order Line on one line; the order's priority becomes 1. release it to warehousing, where its outbound lines are advised and processed before any others. "
+            },
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "choose Rush Order on the sales order, or Rush Order Line on one line; the order's priority becomes 1. release it to warehousing, where its outbound lines are advised and processed before any others. Not documented for this release."
+        }
+      },
+      {
+        "id": "direct-delivery",
+        "session": "Direct delivery",
+        "lane": "Sales",
+        "stage": 2,
+        "kind": "step",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "have the supplier deliver straight to the customer, so that Warehousing is not involved"
+            }
+          ],
+          "text": "have the supplier deliver straight to the customer, so that Warehousing is not involved"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "set the line's delivery type to Direct Delivery, by hand or from the shortage menu that appears when stock is short"
+              }
+            ],
+            "text": "set the line's delivery type to Direct Delivery, by hand or from the shortage menu that appears when stock is short"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "generate the purchase order for the line, from a purchase order advice or directly"
+              }
+            ],
+            "text": "generate the purchase order for the line, from a purchase order advice or directly"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "record the supplier's receipt in Procurement and send the delivery back to the sales order"
+              }
+            ],
+            "text": "record the supplier's receipt in Procurement and send the delivery back to the sales order"
+          },
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "2"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "set the line's delivery type to Direct Delivery, by hand or from the shortage menu that appears when stock is short. generate the purchase order for the line, from a purchase order advice or directly. record the supplier's receipt in Procurement and send the delivery back to the sales order. "
+            },
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "set the line's delivery type to Direct Delivery, by hand or from the shortage menu that appears when stock is short. generate the purchase order for the line, from a purchase order advice or directly. record the supplier's receipt in Procurement and send the delivery back to the sales order. Not documented for this release."
+        }
+      },
+      {
+        "id": "cross-docking",
+        "session": "Cross-docking",
+        "lane": "Sales",
+        "stage": 2,
+        "kind": "step",
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "fill a sales order that has no stock by taking inbound goods straight from receipt to the staging location"
+            }
+          ],
+          "text": "fill a sales order that has no stock by taking inbound goods straight from receipt to the staging location"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "set the line's delivery type to Cross-docking, by hand or from the shortage menu that appears when stock is short"
+              }
+            ],
+            "text": "set the line's delivery type to Cross-docking, by hand or from the shortage menu that appears when stock is short"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "generate the purchase order for the line, from a purchase order advice or directly"
+              }
+            ],
+            "text": "generate the purchase order for the line, from a purchase order advice or directly"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "release the purchase order and the sales order to warehousing"
+              }
+            ],
+            "text": "release the purchase order and the sales order to warehousing"
+          },
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "2"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "set the line's delivery type to Cross-docking, by hand or from the shortage menu that appears when stock is short. generate the purchase order for the line, from a purchase order advice or directly. release the purchase order and the sales order to warehousing. "
+            },
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "set the line's delivery type to Cross-docking, by hand or from the shortage menu that appears when stock is short. generate the purchase order for the line, from a purchase order advice or directly. release the purchase order and the sales order to warehousing. Not documented for this release."
+        }
+      },
+      {
         "id": "release-block",
         "session": "Blocked release",
         "lane": "Sales",
@@ -7157,5 +7577,5 @@
       "session": 44
     }
   },
-  "openIssues": 44
+  "openIssues": 47
 }

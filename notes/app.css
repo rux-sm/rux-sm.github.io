@@ -42,6 +42,8 @@
 .notes-task .rux--data-table td { vertical-align: top; line-height: 1.45; }
 .notes-task .rux--data-table + .notes-task__why, .notes-task .rux--data-table-content + .notes-task__why { margin-block-start: 1.5rem; }
 .notes-task .rux--accordion { margin-block-start: 2rem; }
+.notes-side { margin: .75rem 0 0; padding-inline-start: 1.5rem; display: grid; gap: .375rem; font-size: .875rem; line-height: 1.45; list-style: decimal; }
+.notes-side__note { list-style: none; margin-inline-start: -1.5rem; color: var(--rux-text-secondary); }
 .notes-loose { margin-block-start: 3rem; }
 .notes-loose__label { margin: 0 0 .5rem; font-size: .75rem; font-weight: 400; color: var(--rux-text-secondary); }
 .notes-answers { display: grid; gap: .5rem; margin: .75rem 0 0; padding: 0; list-style: none; font-size: .875rem; }

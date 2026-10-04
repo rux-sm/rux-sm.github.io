@@ -140,7 +140,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-notes-commit="7ffa2577de9e6c4b4c02eef8ee259106605533c2">
+<main id="main-content" class="rux--content" data-notes-commit="977512c8e0eff7789296167c95fd10639891d199">
 <div class="notes-view">
   <h1 class="rux--visually-hidden">Look up</h1>
   <div class="rux--search rux--layout--size-lg">
@@ -411,6 +411,60 @@
       <p class="notes-card__kind">Task</p>
       <h2 class="rux--type-productive-heading-03"><a class="rux--link" href="do.html?s=demand-to-shipment-via-planning&amp;t=6">6 Ship</a></h2>
       <p>Plan to shipment</p>
+    </div>
+    <div class="rux--tile notes-card" data-text="rush an order  give a sales order, or one line of it, the highest priority through the warehouse choose rush order on the sales order, or rush order line on one line; the order's priority becomes 1 release it to warehousing, where its outbound lines are advised and processed before any others not documented for this release." hidden>
+      <p class="notes-card__kind">Task</p>
+      <h2 class="rux--type-productive-heading-03">Rush an order</h2>
+      <p>Give a sales order, or one line of it, the highest priority through the warehouse.</p>
+          <ol class="notes-side"><li>choose Rush Order on the sales order, or Rush Order Line on one line; the order's priority becomes 1</li><li>release it to warehousing, where its outbound lines are advised and processed before any others</li><li class="notes-side__note">Not documented for this release.</li></ol>
+    </div>
+    <div class="rux--tile notes-card" data-text="direct delivery  have the supplier deliver straight to the customer, so that warehousing is not involved set the line's delivery type to direct delivery, by hand or from the shortage menu that appears when stock is short generate the purchase order for the line, from a purchase order advice or directly record the supplier's receipt in procurement and send the delivery back to the sales order not documented for this release." hidden>
+      <p class="notes-card__kind">Task</p>
+      <h2 class="rux--type-productive-heading-03">Direct delivery</h2>
+      <p>Have the supplier deliver straight to the customer, so that Warehousing is not involved.</p>
+          <ol class="notes-side"><li>set the line's delivery type to Direct Delivery, by hand or from the shortage menu that appears when stock is short</li><li>generate the purchase order for the line, from a purchase order advice or directly</li><li>record the supplier's receipt in Procurement and send the delivery back to the sales order</li><li class="notes-side__note">Not documented for this release.</li></ol>
+    </div>
+    <div class="rux--tile notes-card" data-text="cross-docking  fill a sales order that has no stock by taking inbound goods straight from receipt to the staging location set the line's delivery type to cross-docking, by hand or from the shortage menu that appears when stock is short generate the purchase order for the line, from a purchase order advice or directly release the purchase order and the sales order to warehousing not documented for this release." hidden>
+      <p class="notes-card__kind">Task</p>
+      <h2 class="rux--type-productive-heading-03">Cross-docking</h2>
+      <p>Fill a sales order that has no stock by taking inbound goods straight from receipt to the staging location.</p>
+          <ol class="notes-side"><li>set the line's delivery type to Cross-docking, by hand or from the shortage menu that appears when stock is short</li><li>generate the purchase order for the line, from a purchase order advice or directly</li><li>release the purchase order and the sales order to warehousing</li><li class="notes-side__note">Not documented for this release.</li></ol>
+    </div>
+    <div class="rux--tile notes-card" data-text="blocked release  stop a sales order line from releasing read why it is blocked: an order over the credit limit, overdue invoices, a margin exceeded, a failed export or letter-of-credit check, or a reason someone set by hand release it in blocked sales order (lines) (tdsls4520m000), a session in neither menu extract a user can release only the kinds of hold their profile allows, set in user profiles (tdsls0139m000), sales ➔ master data ➔ general ➔ user profiles not documented for this release." hidden>
+      <p class="notes-card__kind">Task</p>
+      <h2 class="rux--type-productive-heading-03">Blocked release</h2>
+      <p>Stop a sales order line from releasing.</p>
+          <ol class="notes-side"><li>read why it is blocked: an order over the credit limit, overdue invoices, a margin exceeded, a failed export or letter-of-credit check, or a reason someone set by hand</li><li>release it in <span class="notes-t-named">Blocked Sales Order (Lines)</span> <span class="notes-t-exact">tdsls4520m000</span>, a session in neither menu extract</li><li>a user can release only the kinds of hold their profile allows, set in <span class="notes-t-named">User Profiles</span> <span class="notes-t-exact">tdsls0139m000</span>, <span class="notes-t-route"><span>Sales</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>General</span><span class="sep">➔</span><span class="dest">User Profiles</span></span></li><li class="notes-side__note">Not documented for this release.</li></ol>
+    </div>
+    <div class="rux--tile notes-card" data-text="sales returns  take goods back from a customer set up a return order type in order types (tdsls0594m000), sales ➔ master data ➔ orders ➔ order types, as return inventory or return rejects, with a warehousing order type that receives create a sales order of that type, and give it the original document and a return reason copy the lines from the original document; they arrive with a negative quantity and amount approve the order and release it to warehousing, which receives the goods release it to invoicing, then process it not documented for this release." hidden>
+      <p class="notes-card__kind">Task</p>
+      <h2 class="rux--type-productive-heading-03">Sales returns</h2>
+      <p>Take goods back from a customer.</p>
+          <ol class="notes-side"><li>set up a return order type in <span class="notes-t-named">Order Types</span> <span class="notes-t-exact">tdsls0594m000</span>, <span class="notes-t-route"><span>Sales</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Types</span></span>, as Return Inventory or Return Rejects, with a warehousing order type that receives</li><li>create a sales order of that type, and give it the original document and a return reason</li><li>copy the lines from the original document; they arrive with a negative quantity and amount</li><li>approve the order and release it to warehousing, which receives the goods</li><li>release it to invoicing, then process it</li><li class="notes-side__note">Not documented for this release.</li></ol>
+    </div>
+    <div class="rux--tile notes-card" data-text="confirm order planning cprrp1200m000 confirm planned orders before they are transferred confirm the planned orders, then transfer them" hidden>
+      <p class="notes-card__kind">Task</p>
+      <h2 class="rux--type-productive-heading-03">Confirm Order Planning</h2>
+      <p>Confirm planned orders before they are transferred.</p>
+          <ol class="notes-side"><li>confirm the planned orders, then transfer them</li></ol>
+    </div>
+    <div class="rux--tile notes-card" data-text="manual production order tisfc0501m000 make an item on a production order entered by hand create the production order release it" hidden>
+      <p class="notes-card__kind">Task</p>
+      <h2 class="rux--type-productive-heading-03">Manual production order</h2>
+      <p>Make an item on a production order entered by hand.</p>
+          <ol class="notes-side"><li>create the production order</li><li>release it</li></ol>
+    </div>
+    <div class="rux--tile notes-card" data-text="report operations tisfc0130m000 issue the material and report the work done issue the material report the operations and the order completed" hidden>
+      <p class="notes-card__kind">Task</p>
+      <h2 class="rux--type-productive-heading-03">Report Operations</h2>
+      <p>Issue the material and report the work done.</p>
+          <ol class="notes-side"><li>issue the material</li><li>report the operations and the order completed</li></ol>
+    </div>
+    <div class="rux--tile notes-card" data-text="warehouse transfer whinh2100m000 move stock from one warehouse to another create the transfer order advise, pick and ship it receive it at the destination" hidden>
+      <p class="notes-card__kind">Task</p>
+      <h2 class="rux--type-productive-heading-03">Warehouse transfer</h2>
+      <p>Move stock from one warehouse to another.</p>
+          <ol class="notes-side"><li>create the transfer order</li><li>advise, pick and ship it</li><li>receive it at the destination</li></ol>
     </div>
     <div class="rux--tile notes-card" data-code="cppat1210m000" data-text="transfer order planning cppat1210m000 planning ➔ plan transfer ➔ transfer order planning converts a planned order into a real order in its owning module — production, purchase, warehouse, or cost-peg transfer." hidden>
       <p class="notes-card__kind">Screen</p>

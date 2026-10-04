@@ -33,6 +33,11 @@ const mapTitle = read(MAP + '.json').title;
 const cards = new Map(read('screens.json').entries.filter((e) => e.purpose).map((e) => [e.code, e]));
 const noCard = read('screens.json').entries.filter((e) => !e.purpose);
 const concepts = files.includes('glossary.json') ? read('glossary.json').entries : [];
+// Side tasks: things done beside the chain, each a tile in atlas's task map.
+// One with a written step is shown; one that is only a gap waits in atlas.
+const GAP = 'Not documented for this release.';
+const allSide = files.includes('tasks.json') ? read('tasks.json').diagram.nodes : [];
+const side = allSide.filter((n) => (n.steps ?? []).some((x) => x.text.trim() !== GAP));
 const commit = /commit\s+([0-9a-f]{40})/.exec(readFileSync(join(DATA, 'PIN'), 'utf8'))?.[1];
 if (!commit) throw new Error('data/atlas/PIN names no commit -- run sh tools/sync-export.sh');
 
@@ -189,6 +194,7 @@ function questionsOf(s, p) {
   };
   for (const id of r.after.get(p.n) ?? []) ask(id);
   for (const id of r.tile.get(p.n) ?? []) for (const e of diagram.edges) if (e.from === id && e.kind === 'branch') ask(e.to);
+  for (const n of sideUnder([...(r.tile.get(p.n) ?? []), ...asked])) list.push({ title: esc(n.session), body: sideBody(n) });
   for (const row of section(s, 'troubleshooting')) if (Number(row.cells[0].text) === p.n)
     list.push({ title: tokens(row.cells[1].tokens), body: `<p>${tokens(row.cells[2].tokens)}</p>` });
   for (const row of section(s, 'variants')) {
@@ -214,6 +220,13 @@ const loose = (s) => {
       <h2 class="notes-loose__label">Different cases</h2>${accordion(list)}
     </div>` : '';
 };
+
+// A side task as it reads wherever it is shown: what it does, then its steps,
+// with the line the export wrote in place of a gap set apart as a note.
+const sideBody = (n) => `<p>${sentence(tokens(n.does.tokens))}</p>
+          <ol class="notes-side">${n.steps.map((x) => x.text.trim() === GAP
+    ? `<li class="notes-side__note">${GAP}</li>` : `<li>${tokens(x.tokens)}</li>`).join('')}</ol>`;
+const sideUnder = (ids) => side.filter((n) => n.under?.map === MAP && ids.includes(n.under.node));
 
 function accordion(list) { return list.length ? `
       <ul class="rux--accordion rux--accordion--end rux--layout--size-md">${list.map((q) => `
@@ -311,12 +324,13 @@ function detail(n) {
   const opens = shown.flatMap((s) => s.phases.filter((p) => routes.get(s.id).tile.get(p.n)?.includes(n.id))
     .map((p) => `<li><a class="rux--link" href="do.html?s=${esc(s.id)}&amp;t=${p.n}">${esc(s.title)} · ${p.n} ${esc(p.title)}</a></li>`));
   const here = (to, text) => `<a class="rux--link" href="understand.html?n=${esc(to)}" data-node="${esc(to)}">${text}</a>`;
+  const cases = sideUnder([n.id]).map((t) => `<li><a class="rux--link" href="lookup.html?q=${encodeURIComponent(t.session)}">${esc(t.session)}</a></li>`);
   return `
     <div class="notes-detail" data-detail="${esc(n.id)}" hidden>
       <h2 class="rux--type-productive-heading-03">${esc(n.session)}</h2>
       ${decides(n) ? decision(n, here) : `<p>${sentence(tokens(n.does.tokens))}</p>`}${n.code ? `
-      <p class="notes-task__route"><span>${tokens(n.route.tokens)}</span> ${screenLink(n.code, exact(n.code))}</p>` : ''}${opens.length ? `
-      <ul class="notes-answers">${opens.join('')}</ul>` : ''}
+      <p class="notes-task__route"><span>${tokens(n.route.tokens)}</span> ${screenLink(n.code, exact(n.code))}</p>` : ''}${[...opens, ...cases].length ? `
+      <ul class="notes-answers">${[...opens, ...cases].join('')}</ul>` : ''}
     </div>`;
 }
 
@@ -366,7 +380,12 @@ const lookupBody = () => `
       <p class="notes-card__kind">Task</p>
       <h2 class="rux--type-productive-heading-03"><a class="rux--link" href="do.html?s=${esc(s.id)}&amp;t=${p.n}">${p.n} ${esc(p.title)}</a></h2>
       <p>${esc(s.title)}</p>
-    </div>`)).join('')}${[...cards.values()].map((c) => `
+    </div>`)).join('')}${side.map((n) => `
+    <div class="rux--tile notes-card" data-text="${esc(`${n.session} ${n.code ?? ''} ${n.does.text} ${n.steps.map((x) => x.text).join(' ')}`.toLowerCase())}" hidden>
+      <p class="notes-card__kind">Task</p>
+      <h2 class="rux--type-productive-heading-03">${esc(n.session)}</h2>
+      ${sideBody(n)}
+    </div>`).join('')}${[...cards.values()].map((c) => `
     <div class="rux--tile notes-card" data-code="${esc(c.code)}" data-text="${esc(`${c.name} ${c.code} ${c.route} ${c.purpose}`.toLowerCase())}" hidden>
       <p class="notes-card__kind">Screen</p>
       <h2 class="rux--type-productive-heading-03">${esc(c.name)}</h2>
@@ -442,6 +461,7 @@ const written = VIEWS.map(([file, name, body]) => {
 });
 execFileSync(process.execPath, [join(ROOT, '..', 'tools', 'inline-sprite.mjs'), ...written], { stdio: 'ignore' });
 
+if (allSide.length > side.length) report.push(`no steps    ${allSide.length - side.length} of ${allSide.length} side tasks have no written step, so they are not shown`);
 if (noCard.length) report.push(`no card     ${noCard.length} of ${noCard.length + cards.size} screens have no purpose line, so Look up cannot show them`);
 console.log(`  built ${written.length} views: ${shown.length} scenarios, ${diagram.nodes.length} tiles, ${cards.size} screen cards, ${concepts.length} concept cards`);
 console.log(`\n  what the export does not yet say (${new Set(report).size}):`);

@@ -1118,7 +1118,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-notes-page="tasks" data-notes-commit="7ffa2577de9e6c4b4c02eef8ee259106605533c2">
+<main id="main-content" class="rux--content" data-notes-page="tasks" data-notes-commit="977512c8e0eff7789296167c95fd10639891d199">
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-7">
@@ -1128,7 +1128,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
             <span class="rux--tag rux--tag--gray"><span class="rux--tag__label">Reference</span></span>
             <span class="rux--tag rux--tag--teal"><span class="rux--tag__label">Draft</span></span>
             <span class="rux--tag rux--tag--outline"><span class="rux--tag__label">Updated 2026-10-03</span></span>
-            <span class="rux--tag rux--tag--magenta" title="44 open issues recorded against this document"><span class="rux--tag__label">44 open</span></span>
+            <span class="rux--tag rux--tag--magenta" title="47 open issues recorded against this document"><span class="rux--tag__label">47 open</span></span>
           </div>
           <p class="notes-prose-measure"><strong>Everything a learner does that is not a numbered step on the </strong><a class="rux--link" href="order-to-shipment-overview.html">overview</a><strong>.</strong> A task that changes what happens at a step names that step under <strong>Under</strong>, and Notes shows it beneath it on the path. A task with no Under stands on its own. A task whose steps are not written carries a gap, and the gap is the quest that fills it in.</p>
         </div>
@@ -1322,6 +1322,65 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>change or cancel a sales order line after it is entered</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
                     <ol class="rux--list--ordered notes-dg-steps">
+                      <li class="rux--list__item"><strong>Not documented for this release.</strong></li>
+                    </ol>
+                  </div>
+                  </div>
+                  
+                  
+                </div>
+              </details>
+              <details class="notes-dg-node notes-dg-node--step notes-dg-cat--config" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">Setup</span><span class="notes-dg-node-name">Rush an order</span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n"></span><span class="notes-dg-detail-name">Rush an order</span>
+                    <span class="notes-dg-kind">Setup</span><span class="notes-dg-kind-fine">step</span></p>
+                  
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>give a sales order, or one line of it, the highest priority through the warehouse</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
+                    <ol class="rux--list--ordered notes-dg-steps">
+                      <li class="rux--list__item">choose Rush Order on the sales order, or Rush Order Line on one line; the order&#39;s priority becomes 1</li>
+                      <li class="rux--list__item">release it to warehousing, where its outbound lines are advised and processed before any others</li>
+                      <li class="rux--list__item"><strong>Not documented for this release.</strong></li>
+                    </ol>
+                  </div>
+                  </div>
+                  
+                  
+                </div>
+              </details>
+              <details class="notes-dg-node notes-dg-node--step notes-dg-cat--config" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">Setup</span><span class="notes-dg-node-name">Direct delivery</span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n"></span><span class="notes-dg-detail-name">Direct delivery</span>
+                    <span class="notes-dg-kind">Setup</span><span class="notes-dg-kind-fine">step</span></p>
+                  
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>have the supplier deliver straight to the customer, so that Warehousing is not involved</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
+                    <ol class="rux--list--ordered notes-dg-steps">
+                      <li class="rux--list__item">set the line&#39;s delivery type to Direct Delivery, by hand or from the shortage menu that appears when stock is short</li>
+                      <li class="rux--list__item">generate the purchase order for the line, from a purchase order advice or directly</li>
+                      <li class="rux--list__item">record the supplier&#39;s receipt in Procurement and send the delivery back to the sales order</li>
+                      <li class="rux--list__item"><strong>Not documented for this release.</strong></li>
+                    </ol>
+                  </div>
+                  </div>
+                  
+                  
+                </div>
+              </details>
+              <details class="notes-dg-node notes-dg-node--step notes-dg-cat--config" name="notes-dg-node">
+                <summary><span class="notes-dg-node-n">Setup</span><span class="notes-dg-node-name">Cross-docking</span></summary>
+                <div class="notes-dg-detail">
+                  <p class="notes-dg-detail-head"><span class="notes-dg-detail-n"></span><span class="notes-dg-detail-name">Cross-docking</span>
+                    <span class="notes-dg-kind">Setup</span><span class="notes-dg-kind-fine">step</span></p>
+                  
+                  <div class="notes-dg-zone">
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>fill a sales order that has no stock by taking inbound goods straight from receipt to the staging location</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
+                    <ol class="rux--list--ordered notes-dg-steps">
+                      <li class="rux--list__item">set the line&#39;s delivery type to Cross-docking, by hand or from the shortage menu that appears when stock is short</li>
+                      <li class="rux--list__item">generate the purchase order for the line, from a purchase order advice or directly</li>
+                      <li class="rux--list__item">release the purchase order and the sales order to warehousing</li>
                       <li class="rux--list__item"><strong>Not documented for this release.</strong></li>
                     </ol>
                   </div>
@@ -2236,6 +2295,24 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <li class="rux--list__item"><strong>Do</strong> - <strong>Not documented for this release.</strong></li>
           <li class="rux--list__item"><strong>Under</strong> — <a class="rux--link" href="order-to-shipment-overview.html">Demand to shipment</a> 1</li>
         </ul>
+          <p class="notes-prose-measure"><strong>rush-order · Rush an order</strong> · stage 2 · step</p>
+          <ul class="rux--list--unordered">
+          <li class="rux--list__item"><strong>Does</strong> — give a sales order, or one line of it, the highest priority through the warehouse</li>
+          <li class="rux--list__item"><strong>Do</strong> - choose Rush Order on the sales order, or Rush Order Line on one line; the order&#39;s priority becomes 1 - release it to warehousing, where its outbound lines are advised and processed before any others - <strong>Not documented for this release.</strong></li>
+          <li class="rux--list__item"><strong>Under</strong> — <a class="rux--link" href="order-to-shipment-overview.html">Demand to shipment</a> 1</li>
+        </ul>
+          <p class="notes-prose-measure"><strong>direct-delivery · Direct delivery</strong> · stage 2 · step</p>
+          <ul class="rux--list--unordered">
+          <li class="rux--list__item"><strong>Does</strong> — have the supplier deliver straight to the customer, so that Warehousing is not involved</li>
+          <li class="rux--list__item"><strong>Do</strong> - set the line&#39;s delivery type to Direct Delivery, by hand or from the shortage menu that appears when stock is short - generate the purchase order for the line, from a purchase order advice or directly - record the supplier&#39;s receipt in Procurement and send the delivery back to the sales order - <strong>Not documented for this release.</strong></li>
+          <li class="rux--list__item"><strong>Under</strong> — <a class="rux--link" href="order-to-shipment-overview.html">Demand to shipment</a> 2</li>
+        </ul>
+          <p class="notes-prose-measure"><strong>cross-docking · Cross-docking</strong> · stage 2 · step</p>
+          <ul class="rux--list--unordered">
+          <li class="rux--list__item"><strong>Does</strong> — fill a sales order that has no stock by taking inbound goods straight from receipt to the staging location</li>
+          <li class="rux--list__item"><strong>Do</strong> - set the line&#39;s delivery type to Cross-docking, by hand or from the shortage menu that appears when stock is short - generate the purchase order for the line, from a purchase order advice or directly - release the purchase order and the sales order to warehousing - <strong>Not documented for this release.</strong></li>
+          <li class="rux--list__item"><strong>Under</strong> — <a class="rux--link" href="order-to-shipment-overview.html">Demand to shipment</a> 2</li>
+        </ul>
           <p class="notes-prose-measure"><strong>release-block · Blocked release</strong> · stage 6 · gate</p>
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Does</strong> — stop a sales order line from releasing</li>
@@ -2558,7 +2635,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           </form>
         </section>
         </div>
-<p class="rux--type-caption-01 notes-revision">Built from atlas 7ffa257 · contract 14</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 977512c · contract 14</p>
       </div>
     </div>
   </div>

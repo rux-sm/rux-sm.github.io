@@ -3993,14 +3993,22 @@
                 },
                 {
                   "t": "text",
-                  "v": "; see 5.2. "
+                  "v": "; see 5.2. Once the shipment is confirmed a backorder is generated, and it becomes a new line only after it is confirmed in Sales — "
+                },
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                },
+                {
+                  "t": "text",
+                  "v": ". "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Reduce Shipped Quantity on Shipment Lines (whinh4131m000); see 5.2. Not documented for this release."
+              "text": "Reduce Shipped Quantity on Shipment Lines (whinh4131m000); see 5.2. Once the shipment is confirmed a backorder is generated, and it becomes a new line only after it is confirmed in Sales — the source on file. Not documented for this release."
             }
           ]
         },

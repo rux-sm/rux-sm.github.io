@@ -21,6 +21,20 @@
       ]
     },
     {
+      "id": "backorder",
+      "name": "Backorder",
+      "terms": [
+        "backorder",
+        "back order",
+        "hold back quantity"
+      ],
+      "purpose": "The part of a sales order line that the final delivery did not ship, which waits to be confirmed and then becomes a new line to deliver.",
+      "sources": [
+        "tdsls4101m000",
+        "whinh4131m000"
+      ]
+    },
+    {
       "id": "business-partner",
       "name": "Business partner",
       "terms": [

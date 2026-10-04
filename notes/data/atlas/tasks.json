@@ -1361,6 +1361,32 @@
                 },
                 {
                   "t": "text",
+                  "v": " - read why it is blocked: an order over the credit limit, overdue invoices, a margin exceeded, a failed export or letter-of-credit check, or a reason someone set by hand - release it in "
+                },
+                {
+                  "t": "session",
+                  "code": "tdsls4520m000",
+                  "name": "Blocked Sales Order (Lines)"
+                },
+                {
+                  "t": "text",
+                  "v": ", a session in neither menu extract - a user can release only the kinds of hold their profile allows, set in "
+                },
+                {
+                  "t": "session",
+                  "code": "tdsls0139m000",
+                  "name": "User Profiles"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Sales ➔ Master Data ➔ General ➔ User Profiles"
+                },
+                {
+                  "t": "text",
                   "v": " - "
                 },
                 {
@@ -1368,7 +1394,7 @@
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Do - Not documented for this release."
+              "text": "Do - read why it is blocked: an order over the credit limit, overdue invoices, a margin exceeded, a failed export or letter-of-credit check, or a reason someone set by hand - release it in Blocked Sales Order (Lines) (tdsls4520m000), a session in neither menu extract - a user can release only the kinds of hold their profile allows, set in User Profiles (tdsls0139m000), Sales ➔ Master Data ➔ General ➔ User Profiles - Not documented for this release."
             },
             {
               "tokens": [
@@ -5036,6 +5062,55 @@
           {
             "tokens": [
               {
+                "t": "text",
+                "v": "read why it is blocked: an order over the credit limit, overdue invoices, a margin exceeded, a failed export or letter-of-credit check, or a reason someone set by hand"
+              }
+            ],
+            "text": "read why it is blocked: an order over the credit limit, overdue invoices, a margin exceeded, a failed export or letter-of-credit check, or a reason someone set by hand"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "release it in "
+              },
+              {
+                "t": "session",
+                "code": "tdsls4520m000",
+                "name": "Blocked Sales Order (Lines)"
+              },
+              {
+                "t": "text",
+                "v": ", a session in neither menu extract"
+              }
+            ],
+            "text": "release it in Blocked Sales Order (Lines) (tdsls4520m000), a session in neither menu extract"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "a user can release only the kinds of hold their profile allows, set in "
+              },
+              {
+                "t": "session",
+                "code": "tdsls0139m000",
+                "name": "User Profiles"
+              },
+              {
+                "t": "text",
+                "v": ", "
+              },
+              {
+                "t": "path",
+                "route": "Sales ➔ Master Data ➔ General ➔ User Profiles"
+              }
+            ],
+            "text": "a user can release only the kinds of hold their profile allows, set in User Profiles (tdsls0139m000), Sales ➔ Master Data ➔ General ➔ User Profiles"
+          },
+          {
+            "tokens": [
+              {
                 "t": "strong",
                 "v": "Not documented for this release."
               }
@@ -5050,11 +5125,41 @@
         "do": {
           "tokens": [
             {
+              "t": "text",
+              "v": "read why it is blocked: an order over the credit limit, overdue invoices, a margin exceeded, a failed export or letter-of-credit check, or a reason someone set by hand. release it in "
+            },
+            {
+              "t": "session",
+              "code": "tdsls4520m000",
+              "name": "Blocked Sales Order (Lines)"
+            },
+            {
+              "t": "text",
+              "v": ", a session in neither menu extract. a user can release only the kinds of hold their profile allows, set in "
+            },
+            {
+              "t": "session",
+              "code": "tdsls0139m000",
+              "name": "User Profiles"
+            },
+            {
+              "t": "text",
+              "v": ", "
+            },
+            {
+              "t": "path",
+              "route": "Sales ➔ Master Data ➔ General ➔ User Profiles"
+            },
+            {
+              "t": "text",
+              "v": ". "
+            },
+            {
               "t": "strong",
               "v": "Not documented for this release."
             }
           ],
-          "text": "Not documented for this release."
+          "text": "read why it is blocked: an order over the credit limit, overdue invoices, a margin exceeded, a failed export or letter-of-credit check, or a reason someone set by hand. release it in Blocked Sales Order (Lines) (tdsls4520m000), a session in neither menu extract. a user can release only the kinds of hold their profile allows, set in User Profiles (tdsls0139m000), Sales ➔ Master Data ➔ General ➔ User Profiles. Not documented for this release."
         }
       },
       {

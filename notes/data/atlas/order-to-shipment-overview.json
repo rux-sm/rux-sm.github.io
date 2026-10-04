@@ -3063,14 +3063,44 @@
                 },
                 {
                   "t": "text",
-                  "v": " on the shipment line. "
+                  "v": " on the shipment line, and a backorder follows once the shipment is confirmed. "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Does — ship less than was picked; the rest becomes Not Shipped Quantity on the shipment line. Not documented for this release."
+              "text": "Does — ship less than was picked; the rest becomes Not Shipped Quantity on the shipment line, and a backorder follows once the shipment is confirmed. Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Setting"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "em",
+                  "v": "Confirm Back Orders automatically"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "session",
+                  "code": "tdsls0100s400",
+                  "name": "Sales Order Parameters"
+                },
+                {
+                  "t": "text",
+                  "v": ", a session in neither menu extract"
+                }
+              ],
+              "text": "Setting — Confirm Back Orders automatically in Sales Order Parameters (tdsls0100s400), a session in neither menu extract"
             },
             {
               "tokens": [
@@ -5988,14 +6018,36 @@
             },
             {
               "t": "text",
-              "v": " on the shipment line. "
+              "v": " on the shipment line, and a backorder follows once the shipment is confirmed. "
             },
             {
               "t": "strong",
               "v": "Not documented for this release."
             }
           ],
-          "text": "ship less than was picked; the rest becomes Not Shipped Quantity on the shipment line. Not documented for this release."
+          "text": "ship less than was picked; the rest becomes Not Shipped Quantity on the shipment line, and a backorder follows once the shipment is confirmed. Not documented for this release."
+        },
+        "setting": {
+          "tokens": [
+            {
+              "t": "em",
+              "v": "Confirm Back Orders automatically"
+            },
+            {
+              "t": "text",
+              "v": " in "
+            },
+            {
+              "t": "session",
+              "code": "tdsls0100s400",
+              "name": "Sales Order Parameters"
+            },
+            {
+              "t": "text",
+              "v": ", a session in neither menu extract"
+            }
+          ],
+          "text": "Confirm Back Orders automatically in Sales Order Parameters (tdsls0100s400), a session in neither menu extract"
         },
         "read": {
           "tokens": [

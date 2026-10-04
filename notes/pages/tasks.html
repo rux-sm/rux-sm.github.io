@@ -1118,7 +1118,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-notes-page="tasks" data-notes-commit="d76c695b100e80cd89d1c9c83c388b5d82835997">
+<main id="main-content" class="rux--content" data-notes-page="tasks" data-notes-commit="7ffa2577de9e6c4b4c02eef8ee259106605533c2">
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-7">
@@ -1341,6 +1341,9 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>stop a sales order line from releasing</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
                     <ol class="rux--list--ordered notes-dg-steps">
+                      <li class="rux--list__item">read why it is blocked: an order over the credit limit, overdue invoices, a margin exceeded, a failed export or letter-of-credit check, or a reason someone set by hand</li>
+                      <li class="rux--list__item">release it in <span class="notes-t-named">Blocked Sales Order (Lines)</span> <span class="notes-t-exact">tdsls4520m000</span>, a session in neither menu extract</li>
+                      <li class="rux--list__item">a user can release only the kinds of hold their profile allows, set in <span class="notes-t-named">User Profiles</span> <span class="notes-t-exact">tdsls0139m000</span>, <span class="notes-t-route"><span>Sales</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>General</span><span class="sep">➔</span><span class="dest">User Profiles</span></span></li>
                       <li class="rux--list__item"><strong>Not documented for this release.</strong></li>
                     </ol>
                   </div>
@@ -2236,7 +2239,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <p class="notes-prose-measure"><strong>release-block · Blocked release</strong> · stage 6 · gate</p>
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Does</strong> — stop a sales order line from releasing</li>
-          <li class="rux--list__item"><strong>Do</strong> - <strong>Not documented for this release.</strong></li>
+          <li class="rux--list__item"><strong>Do</strong> - read why it is blocked: an order over the credit limit, overdue invoices, a margin exceeded, a failed export or letter-of-credit check, or a reason someone set by hand - release it in <span class="notes-t-named">Blocked Sales Order (Lines)</span> <span class="notes-t-exact">tdsls4520m000</span>, a session in neither menu extract - a user can release only the kinds of hold their profile allows, set in <span class="notes-t-named">User Profiles</span> <span class="notes-t-exact">tdsls0139m000</span>, <span class="notes-t-route"><span>Sales</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>General</span><span class="sep">➔</span><span class="dest">User Profiles</span></span> - <strong>Not documented for this release.</strong></li>
           <li class="rux--list__item"><strong>Under</strong> — <a class="rux--link" href="order-to-shipment-overview.html">Demand to shipment</a> 10</li>
         </ul>
           <p class="notes-prose-measure"><strong>returns · Sales returns</strong> · stage 7 · step</p>
@@ -2555,7 +2558,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           </form>
         </section>
         </div>
-<p class="rux--type-caption-01 notes-revision">Built from atlas d76c695 · contract 14</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 7ffa257 · contract 14</p>
       </div>
     </div>
   </div>

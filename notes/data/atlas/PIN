@@ -1,9 +1,9 @@
-commit   d76c695b100e80cd89d1c9c83c388b5d82835997
-date     2026-10-03T23:55:31Z
-subject  docs(sessions): Write five screens from guides
+commit   7ffa2577de9e6c4b4c02eef8ee259106605533c2
+date     2026-10-04T00:08:36Z
+subject  docs(shipping): Source goods picked, not shipped
 contract 14 
 tier     export
-sha256   cdad467d7d91e885b2d43c4549b471a32768ed784b5296a927538c1bdb1c479b
+sha256   b6a565245ba9a9896ab31a39160ad945d65d4efc3511a64e2a8bfda8d9580bbd
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

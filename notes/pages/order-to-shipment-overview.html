@@ -1118,7 +1118,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-notes-page="order-to-shipment-overview" data-notes-commit="d76c695b100e80cd89d1c9c83c388b5d82835997">
+<main id="main-content" class="rux--content" data-notes-page="order-to-shipment-overview" data-notes-commit="7ffa2577de9e6c4b4c02eef8ee259106605533c2">
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-7">
@@ -1611,7 +1611,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                     <span class="notes-dg-kind">Checkpoint</span><span class="notes-dg-kind-fine">decision</span></p>
                   
                   <div class="notes-dg-zone">
-                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>ship less than was picked; the rest becomes <em>Not Shipped Quantity</em> on the shipment line. <strong>Not documented for this release.</strong></p>
+                  <p class="notes-dg-field"><span class="notes-dg-key">Does</span>ship less than was picked; the rest becomes <em>Not Shipped Quantity</em> on the shipment line, and a backorder follows once the shipment is confirmed. <strong>Not documented for this release.</strong></p>
                   </div>
                   
                   
@@ -1850,7 +1850,8 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
         </ul>
           <p class="notes-prose-measure"><strong>ship-short · Shipped less than picked</strong> · stage 6 · decision</p>
           <ul class="rux--list--unordered">
-          <li class="rux--list__item"><strong>Does</strong> — ship less than was picked; the rest becomes <em>Not Shipped Quantity</em> on the shipment line. <strong>Not documented for this release.</strong></li>
+          <li class="rux--list__item"><strong>Does</strong> — ship less than was picked; the rest becomes <em>Not Shipped Quantity</em> on the shipment line, and a backorder follows once the shipment is confirmed. <strong>Not documented for this release.</strong></li>
+          <li class="rux--list__item"><strong>Setting</strong> — <em>Confirm Back Orders automatically</em> in <span class="notes-t-named">Sales Order Parameters</span> <span class="notes-t-exact">tdsls0100s400</span>, a session in neither menu extract</li>
           <li class="rux--list__item"><strong>Read</strong> — <span class="notes-t-named">Shipment Lines</span> <span class="notes-t-exact">whinh4131m000</span>, no menu entry; drill in from <span class="notes-t-named">Shipments</span> <span class="notes-t-exact">whinh4130m000</span>, <span class="notes-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Shipments</span><span class="sep">➔</span><span class="dest">Shipments</span></span></li>
         </ul>
         </section>
@@ -1945,7 +1946,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           </form>
         </section>
         </div>
-<p class="rux--type-caption-01 notes-revision">Built from atlas d76c695 · contract 14</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas 7ffa257 · contract 14</p>
       </div>
     </div>
   </div>

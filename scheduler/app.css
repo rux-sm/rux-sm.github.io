@@ -1223,12 +1223,14 @@ button.scheduler-row-head__num::after {
    with 7px above and below. */
 .scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__row { padding-inline: var(--rux-spacing-05); }
 /* The updates' title is a row of its own, Updates with their count and Add
-   at its end, 16px under the card's rule and 8px over the first update's
-   own 7px. The last update's 7px and 9px more make the foot 16px, as the
-   top is. */
+   at its end, 16px under the card's rule and 16px over the first update.
+   Add is 32px on the title's 18px line, so it stands 7px past the line above
+   and below: 16px leaves it 9px clear of the rule over it and of the first
+   update under it, where 8px left 1px and the two read as touching. The last
+   update's 7px and 9px more make the foot 16px, as the top is. */
 .scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__updates { padding-block: var(--rux-spacing-05); }
 .scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__updates:has(> .scheduler-card__update-list) { padding-block-end: calc(var(--rux-spacing-05) - (var(--rux-layout-size-height-sm) - 1.125rem) / 2); }
-.scheduler-bar-shortcuts[data-card] .scheduler-card__title { margin-block-end: var(--rux-spacing-03); }
+.scheduler-bar-shortcuts[data-card] .scheduler-card__title { margin-block-end: var(--rux-spacing-05); }
 .scheduler-bar-shortcuts[data-card] .scheduler-card__title:last-child { margin-block-end: 0; }
 /* A warning's words are bold. The rule over the first takes a pixel of its
    7. The bell and the words start where an update's face and words do, and

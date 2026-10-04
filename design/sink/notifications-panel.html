@@ -13,9 +13,11 @@
     has no compiled rule and is not written (§4.1.12). Each dismiss button sits
     in an icon-tooltip there, which the sink declines throughout.
 
-    The empty state is in the markup, `hidden`, for the module to show. Its
-    illustration is IBM's drawing and is not copied; the capture of the panel
-    holds no empty state, so that markup is read off the running component.
+    The empty state is in the markup, `hidden`, for the module to show. IBM's
+    illustration is its own drawing and is not copied: the picture here is the
+    sheet's `notification` glyph in the illustration's box, which Carbon's
+    empty state takes any image in. The capture of the panel holds no empty
+    state, so that markup is read off the running component.
   -->
   <div class="ks-row">
     <button type="button" class="rux--btn rux--btn--tertiary" aria-controls="ks-notifications" aria-expanded="true">Notifications</button>
@@ -88,6 +90,7 @@
             </button>
           </div>
           <div class="rux--empty-state rux--empty-state-position--top" hidden>
+            <svg class="rux--empty-state__illustration rux--empty-state__illustration--lg" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" style="color:var(--rux-icon-secondary)"><use href="#i-notification"/></svg>
             <section class="rux--empty-state__content">
               <h4 class="rux--empty-state__header"></h4>
               <div class="rux--empty-state__subtitle">You do not have any notifications</div>

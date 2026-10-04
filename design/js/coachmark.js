@@ -37,8 +37,8 @@
    A SECOND DIFFERENCE, deliberate: Carbon drags on mouse events. Pointer
    events are used here, so a finger drags it too.
 
-   NOT WRITTEN: the stacked and overlay patterns, which are compositions of
-   their own. */
+   NOT WRITTEN: the stacked and overlay patterns. Their captures hold no
+   class of their own; the stories lay them out with their own stylesheet. */
 (() => {
   'use strict';
   const popover = window.Rux?.popover;

@@ -1137,6 +1137,14 @@
 [data-theme="geist-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn.rux--content-switcher--selected:not([disabled]) svg {
   fill: var(--rux-icon-primary);
 }
+/* ANT DARK KEEPS CARBON'S SWITCHER, and an icon-only option is a button by
+   class, so the rounded themes' 6px button radius reaches it and scallops the
+   lines between the options. An option is a segment of one outlined group:
+   square, with Carbon's own 4px on the group's two outer ends, which its
+   first-child and last-child rules still set over this. */
+[data-theme="ant-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn {
+  border-radius: 0;
+}
 /* GEIST'S RAISED SURFACES TAKE AN EDGE. Geist is flat by design: every layer
    above the page is within 1.05 of what it sits on, so a surface is told apart
    by its border, not its fill. The theme already does this for the modal, which

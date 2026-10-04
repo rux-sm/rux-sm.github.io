@@ -1,5 +1,5 @@
 <section class="ks-sec" id="content-switcher">
-  <h2>Content switcher</h2><p>sizes · selected state</p>
+  <h2>Content switcher</h2><p>sizes · selected state · disabled</p>
   <!-- PROVENANCE: rendered-dom · components-contentswitcher--default,
        --icon-only, --low-contrast and the sm/lg recipes, 2026-08-28 -->
   <!--
@@ -69,6 +69,32 @@
       </span>
       <span class="rux--content-switcher-popover__wrapper">
         <button type="button" class="rux--content-switcher-btn rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" role="tab" aria-selected="false" aria-label="Grid view" tabindex="-1">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-grid"/></svg>
+        </button>
+      </span>
+      <span class="rux--content-switcher-popover__wrapper">
+        <button type="button" class="rux--content-switcher-btn rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" role="tab" aria-selected="false" aria-label="Map view" tabindex="-1">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-location"/></svg>
+        </button>
+      </span>
+    </div>
+  </div>
+  <!--
+    DISABLED IS THE WHOLE SWITCHER, in a row of its own. Carbon turns the
+    switcher's outline to the disabled grey as soon as one button is disabled
+    and leaves each enabled button its own bright top and bottom line, so one
+    disabled button among enabled ones draws a broken outline. All three
+    disabled is the state Carbon draws whole.
+  -->
+  <div class="ks-row">
+    <div class="rux--content-switcher rux--layout--size-md rux--content-switcher--icon-only rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg" role="tablist">
+      <span class="rux--content-switcher-popover__wrapper rux--content-switcher-popover--selected rux--content-switcher-popover--disabled">
+        <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" role="tab" aria-selected="true" aria-label="List view" disabled tabindex="-1">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-list"/></svg>
+        </button>
+      </span>
+      <span class="rux--content-switcher-popover__wrapper rux--content-switcher-popover--disabled">
+        <button type="button" class="rux--content-switcher-btn rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" role="tab" aria-selected="false" aria-label="Grid view" disabled tabindex="-1">
           <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-grid"/></svg>
         </button>
       </span>

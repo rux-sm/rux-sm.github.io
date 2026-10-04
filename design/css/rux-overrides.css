@@ -1445,6 +1445,22 @@
   --rux-layout-size-height-local: clamp(max(var(--rux-layout-size-height-min), var(--rux-layout-size-height-xs)), var(--rux-layout-size-height, var(--rux-layout-size-height-md)), min(var(--rux-layout-size-height-max), var(--rux-layout-size-height-lg)));
 }
 
+/* What sits in the bar takes the bar's size. A button's own default is large,
+   so the batch actions stood 48px in a 40px bar and hung 4px past it above
+   and below. The bar's two boxes hand its size down as the size chosen above,
+   which a layout class on a button inside still overrides. */
+.rux--table-toolbar > :is(.rux--batch-actions, .rux--toolbar-content) {
+  --rux-layout-size-height: var(--rux-layout-size-height-local);
+}
+/* A ROW'S ACTIONS ARE A COLUMN AS WIDE AS THEIR BUTTON. Carbon leaves the
+   column to the table's own arithmetic, which shares spare width with it, so
+   in a table of two or three columns the button stood in the middle of an
+   empty band a quarter of the table wide. No width means the least the cell
+   can be: the button and Carbon's 16px either side, at the table's end. */
+.rux--data-table td.rux--table-column-menu {
+  inline-size: 0;
+}
+
 /* AN INLINE SELECT IN A TABLE TOOLBAR STARTS ITS TEXT 16px IN, as the
    persistent search's magnifier and a button's label do, so the band keeps one
    inset. Carbon's inline select starts at 8px, which suits the pagination bar

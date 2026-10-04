@@ -146,20 +146,21 @@
   [data-theme="geist-dark"] .scheduler-page .rux--side-panel {
     block-size: 100%;
   }
+  /* The first tab's word starts where the fields under it do, which is 24px
+     in at this width: the list's inset and the tab's own 2px. Below it the
+     fields are 16px in, where Design's inset already puts the word. */
+  [data-theme="geist-dark"] #scheduler-panel-body .rux--tab--list {
+    padding-inline-start: calc(var(--rux-spacing-06) - 2px);
+  }
 }
 /* GEIST'S TABS ARE AS WIDE AS THEIR WORDS AND 24px APART, which is Design's
    rule for this theme, and the editor's five fit that way, so they give up
-   the equal shares and the 8px insets overrides.css deals them. The first
-   word starts where the fields under it do, 24px in: the list's inset and
-   the tab's own 2px. */
+   the equal shares and the 8px insets overrides.css deals them. */
 [data-theme="geist-dark"] #scheduler-panel-body .rux--tabs__nav-item {
   flex: none;
 }
 [data-theme="geist-dark"] #scheduler-panel-body .rux--tabs__nav-link {
   padding-inline: 2px;
-}
-[data-theme="geist-dark"] #scheduler-panel-body .rux--tab--list {
-  padding-inline-start: calc(var(--rux-spacing-06) - 2px);
 }
 /* Design draws this theme's tile with a 1px ring inside its edge, and the
    Summary's table runs flush to the tile's sides and foot, over the ring. It

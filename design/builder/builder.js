@@ -459,8 +459,10 @@ function fillOutline() {
 // "Keep recommended settings", or "Keep attested settings" while the map's
 // recommendation for a group is unreviewed: an unreviewed draft never speaks
 // as a recommendation (stage 11). One button for the unit: it puts every
-// variant group of the selected block at what the map recommends, which is
-// as-attested for every group today, so it drops the overrides.
+// variant group of the selected block at what the map recommends. That is
+// as-attested for most groups and the block's own shipped size for the rest,
+// and a recommendation the block already ships at needs no override, so the
+// button drops the overrides.
 function targetsFor(key) {
   const e = entryOf(key);
   if (!e) return [];
@@ -468,7 +470,7 @@ function targetsFor(key) {
   return groups.map((g, i) => {
     const rec = recommendationFor(guide, e.id, i);
     const reviewed = rec?.reviewed === true;
-    const value = rec && rec.recommended !== 'as-attested' && g.values.includes(rec.recommended) ? rec.recommended : '';
+    const value = rec && rec.recommended !== 'as-attested' && rec.recommended !== g.current && g.values.includes(rec.recommended) ? rec.recommended : '';
     return { i, value, reviewed };
   });
 }

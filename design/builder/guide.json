@@ -331,63 +331,63 @@
     },
     "templates/document-page/at-a-glance#0": {
       "recommended": "sm",
-      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
-      "reviewed": false
+      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. Marked reviewed by rux 2026-10-04.",
+      "reviewed": true
     },
     "templates/document-page/section-plain#0": {
       "recommended": "sm",
-      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
-      "reviewed": false
+      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. Marked reviewed by rux 2026-10-04.",
+      "reviewed": true
     },
     "templates/document-page/section-note#0": {
       "recommended": "sm",
-      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
-      "reviewed": false
+      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. Marked reviewed by rux 2026-10-04.",
+      "reviewed": true
     },
     "templates/document-page/section-warning#0": {
       "recommended": "sm",
-      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
-      "reviewed": false
+      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. Marked reviewed by rux 2026-10-04.",
+      "reviewed": true
     },
     "templates/document-page/run-record#0": {
       "recommended": "sm",
-      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
-      "reviewed": false
+      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. Marked reviewed by rux 2026-10-04.",
+      "reviewed": true
     },
     "templates/document-page/troubleshooting#0": {
       "recommended": "sm",
-      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
-      "reviewed": false
+      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. Marked reviewed by rux 2026-10-04.",
+      "reviewed": true
     },
     "templates/document-page/downstream#0": {
       "recommended": "sm",
-      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. NOT YET READ BY RUX.",
-      "reviewed": false
+      "reason": "A document is a reference: eleven tables read down one column, and sm keeps the rows tight enough that a reader scanning for their step is not scrolling past whitespace. This is the block\u2019s own attested size, so recommending it splices nothing. Marked reviewed by rux 2026-10-04.",
+      "reviewed": true
     },
     "templates/search-results-page/filters#0": {
       "recommended": "as-attested",
-      "reason": "Bare, which is lg. The same reading rux made on 2026-09-06 for every other button here: the sm guidance in docs/choices.md is for tables and toolbars, and a filter column is neither. This block shipped sm for one draft and was put back. NOT YET READ BY RUX.",
-      "reviewed": false
+      "reason": "Bare, which is lg. The same reading rux made on 2026-09-06 for every other button here: the sm guidance in docs/choices.md is for tables and toolbars, and a filter column is neither. This block shipped sm for one draft and was put back. Marked reviewed by rux 2026-10-04.",
+      "reviewed": true
     },
     "templates/list-page/title#0": {
       "recommended": "as-attested",
-      "reason": "Not yet read by rux; the block ships at the size it was attested at, as every other template button does.",
-      "reviewed": false
+      "reason": "The block ships at the size it was attested at, as every other template button does. Marked reviewed by rux 2026-10-04.",
+      "reviewed": true
     },
     "templates/list-page/table#0": {
       "recommended": "as-attested",
-      "reason": "Not yet read by rux; the block ships at the size it was attested at, as every other template button does.",
-      "reviewed": false
+      "reason": "The block ships at the size it was attested at, as every other template button does. Marked reviewed by rux 2026-10-04.",
+      "reviewed": true
     },
     "templates/list-page/table#1": {
       "recommended": "as-attested",
-      "reason": "Not yet read by rux; the block ships at the size it was attested at, as every other template button does.",
-      "reviewed": false
+      "reason": "The block ships at the size it was attested at, as every other template button does. Marked reviewed by rux 2026-10-04.",
+      "reviewed": true
     },
     "templates/record-page/form#0": {
       "recommended": "as-attested",
-      "reason": "Not yet read by rux; the block ships at the size it was attested at, as every other template button does.",
-      "reviewed": false
+      "reason": "The block ships at the size it was attested at, as every other template button does. Marked reviewed by rux 2026-10-04.",
+      "reviewed": true
     }
   }
 }

@@ -518,6 +518,24 @@
 [data-theme="geist-dark"] .rux--number :is(input[type=number], input[type=text]) {
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle-01);
 }
+/* A DISABLED FIELD IS THE ONE THAT LIFTS OFF ITS SURFACE: #1a1a1a with its
+   value in #8f8f8f inside the same ring, measured on Geist's Input, Select
+   and Textarea pages. Carbon keeps the enabled fill and dims the value to a
+   quarter, which here left a disabled field looking like an empty one. The
+   two colours are the disabled button's, so the theme has one disabled look;
+   an empty one's placeholder keeps Carbon's dimmer text, as Geist's does. */
+[data-theme="geist-dark"] :is(.rux--text-input, .rux--text-area, .rux--select-input, .rux--date-picker__input):disabled,
+[data-theme="geist-dark"] .rux--search-input[disabled],
+[data-theme="geist-dark"] .rux--number :is(input[type=number], input[type=text]):disabled,
+[data-theme="geist-dark"] :is(.rux--list-box--disabled, .rux--dropdown--disabled),
+[data-theme="geist-dark"] :is(.rux--list-box--disabled, .rux--dropdown--disabled):hover {
+  background-color: var(--rux-button-disabled);
+  color: var(--rux-text-on-color-disabled);
+  -webkit-text-fill-color: var(--rux-text-on-color-disabled);
+}
+[data-theme="geist-dark"] :is(.rux--list-box--disabled, .rux--dropdown--disabled) .rux--list-box__label {
+  color: var(--rux-text-on-color-disabled);
+}
 /* GEIST'S DEFAULT CONTROL IS 36px, measured on its Button and Input pages:
    the default button and the default field are both 36px with 6px corners,
    between a 32px small and a 40px large. Carbon's md size is 40, and three

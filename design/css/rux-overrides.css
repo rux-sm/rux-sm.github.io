@@ -334,6 +334,12 @@
 [data-theme="geist-dark"] .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled) {
   border-color: var(--rux-border-subtle-02, #e0e0e0);
 }
+/* Under keyboard focus the border is the focus colour again, as Carbon has it:
+   the border is the outer half of its 2px ring, and the rule above outranks
+   Carbon's own, which left this button a 1px ring beside every other's 2px. */
+[data-theme="geist-dark"] .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled):focus-visible {
+  border-color: var(--rux-button-focus-color, var(--rux-focus));
+}
 /* THE TERTIARY BUTTON IS THAT SAME OUTLINE. Carbon rings it in the brand
    colour and fills it with the brand on hover, focus and press; the brand
    here is #ededed, so it was the brightest outline on the page. Geist has one
@@ -1271,6 +1277,8 @@
    footer, 8px apart, at the control's own height. The two rounded themes
    leave; every other theme keeps the band, so the rules above stand and the
    corner is taken back here rather than the selector list being written twice.
+   The Dialog primitive's footer is the same band under another name and ends
+   the same way; its buttons were never squared, so only the layout names it.
 
    A GRID, SO NO FLEX BASIS HAS TO BE OUTWEIGHED. Carbon divides the bar with
    ten flex-basis rules, one per button count and size, the heaviest naming six
@@ -1279,7 +1287,8 @@
    `flex` means nothing to a grid item, and a column track takes its button's
    own width. */
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--dialog-footer {
   display: grid;
   grid-auto-flow: column;
   align-items: center;
@@ -1297,7 +1306,8 @@
    to meet it rather than doubling a class. */
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set .rux--action-set__action-button,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--side-panel .rux--side-panel__actions-container .rux--action-set__action-button,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer .rux--btn {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer .rux--btn,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--dialog-footer .rux--btn {
   align-items: center;
   /* `btn-set` hands a button the whole bar, which is the band's idea of a
      button; in a column that takes the free space it would fill that too. */
@@ -1320,14 +1330,16 @@
    for a ghost; at its own width either reads as a label pushed off centre. */
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set .rux--action-set__action-button,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set .rux--action-set__action-button--ghost,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer .rux--btn:not(.rux--skeleton) {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer .rux--btn:not(.rux--skeleton),
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--dialog-footer .rux--btn:not(.rux--skeleton) {
   padding-inline: var(--rux-spacing-05);
 }
 /* An icon in a footer button follows its label rather than covering it.
    Carbon places the icon absolutely in the trailing padding the rule above
    takes back, so at the button's own width it would sit on the words. */
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set .rux--action-set__action-button .rux--btn__icon,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer .rux--btn .rux--btn__icon {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer .rux--btn .rux--btn__icon,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--dialog-footer .rux--btn .rux--btn__icon {
   position: static;
   margin-block-start: 0;
   margin-inline-start: var(--rux-spacing-03);
@@ -1338,13 +1350,25 @@
    column takes the free space and its button sits at the column's start,
    because a grid packed to the end leaves no space for an auto margin. */
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set:has(> :nth-child(3)),
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer:has(> :nth-child(3)) {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer:has(> :nth-child(3)),
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--dialog-footer:has(> :nth-child(3)) {
   grid-template-columns: 1fr;
   grid-auto-columns: max-content;
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--action-set:has(> :nth-child(3)) > :first-child,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer:has(> :nth-child(3)) > :first-child {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--modal-footer:has(> :nth-child(3)) > :first-child,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--dialog-footer:has(> :nth-child(3)) > :first-child {
   justify-self: start;
+}
+/* A button set on a page is the same buttons, the same 8px apart. Carbon
+   joins a set edge to edge and rules a 1px line between two square buttons;
+   rounded ones touching read as one broken shape, and the line has nothing
+   left to divide. Stacked on a phone the gap runs down instead. */
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--btn-set {
+  gap: var(--rux-spacing-03);
+}
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--btn-set .rux--btn:not(:focus-visible) {
+  box-shadow: none;
 }
 
 /* A TABLE TOOLBAR IS 40px. Carbon draws it at 48 -- its default is large,

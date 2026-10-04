@@ -4,3 +4,18 @@
    (theme.css), or component rules at Carbon's own specificity with no
    !important (overrides.css). Empty is the normal state. Design
    AGENTS.md, "Where a change goes". */
+
+/* THE PICTURES' OWN INKS. A puzzle's colour picture is painted from these
+   eight. They sit on :root and in no [data-theme] block because a picture is
+   the same colours whatever theme the person keeps; they are the colours of
+   a thing, not of the interface. */
+:root {
+  --pixels-ink-0: #161616;
+  --pixels-ink-1: #ffffff;
+  --pixels-ink-2: #da1e28;
+  --pixels-ink-3: #ff832b;
+  --pixels-ink-4: #f1c21b;
+  --pixels-ink-5: #24a148;
+  --pixels-ink-6: #0f62fe;
+  --pixels-ink-7: #8a5a2b;
+}

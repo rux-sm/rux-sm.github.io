@@ -6,9 +6,10 @@
    `unreached` says which squares logic alone cannot decide and `rounds` how
    hard the rest is, `board` draws a
    board with its clues and `paint` keeps it in step with the game, `drag`
-   paints along it, `picture` draws the finished picture, `stars` a score
-   and `buzz` ticks the phone. The pages add their own behaviour in
-   puzzles.js, play.js and make.js.
+   paints along it, `picture` draws the finished picture, `stars` a score,
+   `buzz` ticks the phone and `sound` plays a tone. `order` puts puzzles in
+   playing order and `daily` makes the puzzle of a day. The pages add their
+   own behaviour in puzzles.js, play.js and make.js.
    ========================================================================== */
 (() => {
   'use strict';
@@ -97,10 +98,59 @@
   const rounds = g => solve(g).rounds;
   const grade = n => (n <= 3 ? 'easy' : n <= 5 ? 'medium' : 'hard');
 
+  // Playing order: by level, easy to hard within one, then as they were made.
+  const order = puzzles => {
+    puzzles.forEach(p => { p.rounds ??= rounds(grid(p.squares)); });
+    return [...puzzles].sort((a, b) => a.level - b.level || a.rounds - b.rounds
+      || String(a.created_at).localeCompare(String(b.created_at)));
+  };
+
+  /* THE PUZZLE OF A DAY, made from its date so every browser draws the same
+     one and nobody has to. Random squares are smoothed once, each following
+     the majority of itself and its neighbours, and mirrored left to right,
+     which gives a shape and not noise; the first try that fills 30 to 70
+     squares and needs no guess is the puzzle. A year of days took at most
+     8 tries. `day` is YYYY-MM-DD. */
+  const daily = day => {
+    let seed = +day.replace(/-/g, '') * 31;
+    const random = () => {
+      seed = seed + 0x6D2B79F5 | 0;
+      let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+    for (;;) {
+      const noise = Array.from({ length: SIZE }, () => Array.from({ length: SIZE }, () => (random() < .5 ? 1 : 0)));
+      const near = (y, x) => {
+        let n = 0;
+        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) n += noise[y + dy]?.[x + dx] || 0;
+        return n;
+      };
+      const half = noise.map((r, y) => r.map((_, x) => (near(y, x) >= 5 ? 1 : 0)));
+      const g = half.map(r => r.map((_, x) => r[x < SIZE / 2 ? x : SIZE - 1 - x]));
+      const filled = g.flat().filter(Boolean).length;
+      if (filled >= 30 && filled <= 70 && !unreached(g).flat().some(Boolean)) {
+        const name = new Date(`${day}T12:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'long' });
+        return { id: `daily-${day}`, day, name, squares: squaresOf(g), level: 0 };
+      }
+    }
+  };
+  // Today and the day before a day, as YYYY-MM-DD by this browser's clock.
+  const stamp = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const today = () => stamp(new Date());
+  const before = day => { const d = new Date(`${day}T12:00`); d.setDate(d.getDate() - 1); return stamp(d); };
+  // Days solved in a row, ending today, or yesterday while today is unsolved.
+  const streak = days => {
+    let day = days.has(today()) ? today() : before(today()), n = 0;
+    while (days.has(day)) { n++; day = before(day); }
+    return n;
+  };
+
   /* A BOARD. `state[y][x]` is 0 empty, 1 filled, 2 X, 3 a mistake's X.
      `options.done` greys a number once its run of squares is filled, and the
      whole line's numbers once every run is; `options.unknown` outlines
-     squares that need a guess. `board` builds the squares and numbers once
+     squares that need a guess; `options.inks[y][x]` paints each square its
+     colour of the picture. `board` builds the squares and numbers once
      and `paint` changes only what the state changed, so a square animates
      when it is filled and not on every move after. */
   const board = (host, answer, state, options = {}) => {
@@ -160,6 +210,7 @@
       s.classList.toggle('is-x', v === 2 || v === 3);
       s.classList.toggle('is-miss', v === 3);
       s.classList.toggle('is-unknown', !!options.unknown?.[y][x]);
+      if (options.inks) s.dataset.ink = options.inks[y][x]; else delete s.dataset.ink;
       s.setAttribute('aria-label', `Row ${y + 1}, column ${x + 1}, ${['empty', 'filled', 'crossed out', 'mistake'][v]}`);
     });
     el.querySelectorAll('.pixels-clue').forEach(c => {
@@ -223,11 +274,13 @@
     addEventListener('pointercancel', end);
   };
 
-  const picture = (el, squares) => {
+  // `colours`, a digit a square, paints the picture in its inks.
+  const picture = (el, squares, colours) => {
     el.style.setProperty('--size', SIZE);
-    el.replaceChildren(...[...squares].map(c => {
+    el.replaceChildren(...[...squares].map((c, i) => {
       const s = document.createElement('span');
       if (c === '1') s.dataset.on = '';
+      if (colours) s.dataset.ink = colours[i];
       return s;
     }));
     return el;
@@ -265,6 +318,45 @@
     label.remove();
   };
 
+  /* A TONE. Made in the browser, so there is no file to fetch: each kind is a
+     few notes of [pitch in Hz, seconds]. `step` raises the pitch a semitone
+     at a time, so a drag of fills climbs. `pixels-sound` set to off in this
+     browser silences it, and so does an iPhone's silent switch. */
+  const TONES = {
+    fill: [[523, .06]],
+    x: [[196, .05]],
+    line: [[659, .07], [880, .1]],
+    miss: [[147, .2]],
+    hint: [[440, .07], [554, .1]],
+    solved: [[523, .1], [659, .1], [784, .1], [1047, .25]],
+  };
+  const SOUND = 'pixels-sound';
+  const sounds = on => {
+    try {
+      if (on != null) localStorage.setItem(SOUND, on ? 'on' : 'off');
+      return localStorage.getItem(SOUND) !== 'off';
+    } catch { return true; }
+  };
+  let audio;
+  const sound = (kind, step = 0) => {
+    const Context = window.AudioContext || window.webkitAudioContext;
+    if (!Context || !sounds()) return;
+    audio ??= new Context();
+    if (audio.state === 'suspended') audio.resume();
+    let at = audio.currentTime;
+    for (const [pitch, length] of TONES[kind]) {
+      const tone = audio.createOscillator(), level = audio.createGain();
+      tone.type = kind === 'miss' ? 'sawtooth' : 'triangle';
+      tone.frequency.value = pitch * 2 ** (Math.min(step, 12) / 12);
+      level.gain.setValueAtTime(.15, at);
+      level.gain.exponentialRampToValueAtTime(.001, at + length);
+      tone.connect(level).connect(audio.destination);
+      tone.start(at);
+      tone.stop(at + length);
+      at += length * .8;
+    }
+  };
+
   const time = seconds => `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
 
   // A puzzle keeps its name hidden until it is solved, as on the DS.
@@ -284,6 +376,7 @@
   });
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    SIZE, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, board, paint, highlight, drag, picture, stars, buzz, time, title, switcher,
+    SIZE, INKS: 8, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, daily, today, streak,
+    board, paint, highlight, drag, picture, stars, buzz, sound, sounds, time, title, switcher,
   });
 })();

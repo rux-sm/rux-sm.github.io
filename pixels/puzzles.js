@@ -1,16 +1,16 @@
 /* ==========================================================================
-   puzzles.js — the front page: every puzzle, ten to a level
+   puzzles.js — the front page: today's puzzle, then every puzzle by level
    --------------------------------------------------------------------------
-   Levels fill in the order puzzles were made, and none is locked. A solved
-   puzzle shows its picture, name, stars and best time; an unsolved one its
-   number, a question mark and how hard it is.
+   Today's puzzle is first, with the days solved in a row beside it. Then a
+   section for each level the maker gave, its puzzles easy to hard, and none
+   locked. A solved puzzle shows its picture, name, stars and best time; an
+   unsolved one its number, a question mark and how hard it is.
    ========================================================================== */
 (() => {
   'use strict';
 
-  const { data, grid, rounds, grade, picture, stars, time, title } = window.Pixels;
+  const { data, grid, rounds, grade, order, daily, today, streak, picture, stars, time, title } = window.Pixels;
   const host = document.getElementById('pixels-levels');
-  const PER_LEVEL = 10;
 
   const say = (heading, detail) => {
     const box = document.getElementById('pixels-error');
@@ -19,39 +19,59 @@
     box.hidden = false;
   };
 
-  const tile = (puzzle, index, best) => {
+  // `name` is what the tile is called, `href` where it goes.
+  const tile = (puzzle, name, href, best) => {
     const solved = best != null;
     const a = document.createElement('a');
     a.className = 'rux--link rux--tile rux--tile--clickable';
-    a.href = `play.html?id=${encodeURIComponent(puzzle.id)}`;
+    a.href = href;
     const art = document.createElement('div');
     if (solved) {
       art.className = 'pixels-picture pixels-picture--sm';
-      picture(art, puzzle.squares);
-      art.setAttribute('aria-hidden', 'true');
+      picture(art, puzzle.squares, puzzle.colours);
     } else {
       art.className = 'pixels-blank';
       art.textContent = '?';
-      art.setAttribute('aria-hidden', 'true');
     }
+    art.setAttribute('aria-hidden', 'true');
     const text = document.createElement('div');
-    const name = document.createElement('p');
-    name.className = 'rux--type-productive-heading-02';
-    name.textContent = title(puzzle, index, solved);
-    text.appendChild(name);
+    const label = document.createElement('p');
+    label.className = 'rux--type-productive-heading-02';
+    label.textContent = name;
+    text.appendChild(label);
+    const meta = document.createElement('p');
+    meta.className = 'pixels-meta';
     if (solved) {
-      const meta = document.createElement('p');
-      meta.className = 'pixels-meta';
       meta.textContent = time(best.seconds);
       text.append(stars(document.createElement('span'), best.stars), meta);
     } else {
-      const meta = document.createElement('p');
-      meta.className = 'pixels-meta';
       meta.textContent = grade(rounds(grid(puzzle.squares)));
       text.appendChild(meta);
     }
     a.append(art, text);
     return a;
+  };
+
+  // A heading, a note at its far end, and the tiles under them.
+  const section = (heading, note, tiles) => {
+    const el = document.createElement('section');
+    el.className = 'rux--stack-vertical rux--stack-scale-5';
+    const head = document.createElement('div');
+    head.className = 'pixels-level-head';
+    const h2 = document.createElement('h2');
+    h2.className = 'rux--type-productive-heading-03';
+    h2.textContent = heading;
+    h2.id = `pixels-${heading.toLowerCase().replace(/\s+/g, '-')}`;
+    el.setAttribute('aria-labelledby', h2.id);
+    const aside = document.createElement('span');
+    aside.className = 'pixels-meta';
+    aside.textContent = note;
+    head.append(h2, aside);
+    const list = document.createElement('div');
+    list.className = 'pixels-list';
+    list.append(...tiles);
+    el.append(head, list);
+    return el;
   };
 
   const empty = () => {
@@ -73,36 +93,30 @@
       say('Pixels could not connect', 'Reload the page to try again.');
       return;
     }
-    let puzzles, results;
+    let puzzles, results, days;
     try {
-      [puzzles, results] = await Promise.all([data.list(), data.results()]);
+      [puzzles, results, days] = await Promise.all([data.list(), data.results(), data.days()]);
     } catch {
       say('The puzzles did not load', 'Reload the page to try again.');
       return;
     }
+    const now = daily(today()), row = streak(new Set(days.keys()));
+    host.appendChild(section('Today', row ? `${row} day${row === 1 ? '' : 's'} in a row` : '',
+      [tile(now, now.name, 'play.html?daily', days.get(now.day))]));
     if (!puzzles.length) { host.appendChild(empty()); return; }
 
-    for (let start = 0; start < puzzles.length; start += PER_LEVEL) {
-      const level = puzzles.slice(start, start + PER_LEVEL);
-      const solved = level.filter(p => results.has(p.id)).length;
-      const section = document.createElement('section');
-      section.className = 'rux--stack-vertical rux--stack-scale-5';
-      const head = document.createElement('div');
-      head.className = 'pixels-level-head';
-      const h2 = document.createElement('h2');
-      h2.className = 'rux--type-productive-heading-03';
-      h2.textContent = `Level ${start / PER_LEVEL + 1}`;
-      h2.id = `pixels-level-${start / PER_LEVEL + 1}`;
-      section.setAttribute('aria-labelledby', h2.id);
-      const count = document.createElement('span');
-      count.className = 'pixels-meta';
-      count.textContent = `${solved} of ${level.length} solved`;
-      head.append(h2, count);
-      const list = document.createElement('div');
-      list.className = 'pixels-list';
-      level.forEach((p, i) => list.appendChild(tile(p, start + i, results.get(p.id))));
-      section.append(head, list);
-      host.appendChild(section);
+    // "Puzzle 7" counts through every level, in playing order.
+    const ordered = order(puzzles);
+    for (const level of [...new Set(ordered.map(p => p.level))]) {
+      const tiles = [];
+      let solved = 0;
+      ordered.forEach((p, i) => {
+        if (p.level !== level) return;
+        const best = results.get(p.id);
+        if (best) solved++;
+        tiles.push(tile(p, title(p, i, !!best), `play.html?id=${encodeURIComponent(p.id)}`, best));
+      });
+      host.appendChild(section(`Level ${level}`, `${solved} of ${tiles.length} solved`, tiles));
     }
   })();
 })();

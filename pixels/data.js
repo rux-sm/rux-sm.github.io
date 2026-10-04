@@ -1,11 +1,13 @@
 /* ==========================================================================
    data.js — where puzzles and best times are kept
    --------------------------------------------------------------------------
-   Two tables: pixels_puzzles, every puzzle, shared by every account that can
-   open Pixels, and pixels_results, each account's best time and most stars
-   on each puzzle it has solved. `results` gives a Map of puzzle id to
-   { seconds, stars }, and `record` keeps the better of each. The client is
-   the account's, from /account.js.
+   Three tables: pixels_puzzles, every puzzle, shared by every account that
+   can open Pixels; pixels_results, each account's best time and most stars
+   on each puzzle it has solved; and pixels_daily, the same for each puzzle
+   of the day it has solved. `results` gives a Map of puzzle id to
+   { seconds, stars } and `days` a Map of day to the same; `record` and
+   `recordDay` keep the better of each. The client is the account's, from
+   /account.js.
 
    THE LOCAL PREVIEW, `npm run serve` on :8640, has no log-in, so there the
    same calls read and write this browser's storage instead, starting from
@@ -42,27 +44,42 @@
     } catch { /* storage refused; start fresh */ }
     const t = Date.now();
     return {
-      puzzles: STARTERS.map((p, i) => ({ id: `p-${i + 1}`, ...p, created_at: new Date(t + i * 1000).toISOString() })),
+      puzzles: STARTERS.map((p, i) => ({ id: `p-${i + 1}`, ...p, level: 1, colours: null, created_at: new Date(t + i * 1000).toISOString() })),
       results: {},
+      days: {},
     };
   };
+  // The better of two results: the shorter time and the most stars.
+  const better = (was, seconds, stars) => ({
+    seconds: Math.min(seconds, was?.seconds ?? seconds), stars: Math.max(stars, was?.stars ?? stars),
+  });
   const write = db => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch { /* preview only */ } };
   const preview = {
-    async list() { return read().puzzles; },
+    // A puzzle kept before levels were is in level 1.
+    async list() { return read().puzzles.map(p => ({ level: 1, colours: null, ...p })); },
+    async days() { return new Map(Object.entries(read().days || {})); },
+    async recordDay(day, seconds, stars) {
+      const db = read();
+      db.days ||= {};
+      const was = db.days[day];
+      db.days[day] = better(was, seconds, stars);
+      write(db);
+      return { best: db.days[day].seconds, stars: db.days[day].stars, isNew: !was || seconds < was.seconds };
+    },
     // A result kept before stars were is a bare time.
     async results() {
       return new Map(Object.entries(read().results).map(([id, r]) => [id, typeof r === 'number' ? { seconds: r, stars: 1 } : r]));
     },
-    async save({ id, name, squares }) {
+    async save({ id, name, squares, level, colours }) {
       const db = read();
       if (id) {
         const p = db.puzzles.find(q => q.id === id);
         if (p.squares !== squares) delete db.results[id];
-        Object.assign(p, { name, squares });
+        Object.assign(p, { name, squares, level, colours });
         write(db);
         return p;
       }
-      const p = { id: `p-${Date.now()}`, name, squares, created_at: new Date().toISOString() };
+      const p = { id: `p-${Date.now()}`, name, squares, level, colours, created_at: new Date().toISOString() };
       db.puzzles.push(p);
       write(db);
       return p;
@@ -76,7 +93,7 @@
     async record(id, seconds, stars) {
       const db = read();
       const was = typeof db.results[id] === 'number' ? { seconds: db.results[id], stars: 1 } : db.results[id];
-      db.results[id] = { seconds: Math.min(seconds, was?.seconds ?? seconds), stars: Math.max(stars, was?.stars ?? stars) };
+      db.results[id] = better(was, seconds, stars);
       write(db);
       return { best: db.results[id].seconds, stars: db.results[id].stars, isNew: !was || seconds < was.seconds };
     },
@@ -87,7 +104,7 @@
   const cloud = client && {
     async list() {
       const { data, error } = await client.from('pixels_puzzles')
-        .select('id, name, squares, created_at').order('created_at').order('id');
+        .select('id, name, squares, level, colours, created_at').order('created_at').order('id');
       fail(error);
       return data;
     },
@@ -96,18 +113,36 @@
       fail(error);
       return new Map(data.map(r => [r.puzzle_id, { seconds: r.best_seconds, stars: r.stars }]));
     },
-    async save({ id, name, squares }) {
+    async days() {
+      const { data, error } = await client.from('pixels_daily').select('day, seconds, stars');
+      fail(error);
+      return new Map(data.map(r => [r.day, { seconds: r.seconds, stars: r.stars }]));
+    },
+    async recordDay(day, seconds, stars) {
+      const { data: was, error } = await client.from('pixels_daily')
+        .select('seconds, stars').eq('day', day).maybeSingle();
+      fail(error);
+      const now = better(was, seconds, stars);
+      if (!was || now.seconds !== was.seconds || now.stars !== was.stars) {
+        const { data: { session } } = await client.auth.getSession();
+        fail((await client.from('pixels_daily').upsert({
+          user_id: session.user.id, day, ...now, solved_at: new Date().toISOString(),
+        })).error);
+      }
+      return { best: now.seconds, stars: now.stars, isNew: !was || seconds < was.seconds };
+    },
+    async save({ id, name, squares, level, colours }) {
       if (id) {
         const { data: before, error: readError } = await client.from('pixels_puzzles').select('squares').eq('id', id).single();
         fail(readError);
         const { data, error } = await client.from('pixels_puzzles')
-          .update({ name, squares, updated_at: new Date().toISOString() }).eq('id', id).select().single();
+          .update({ name, squares, level, colours, updated_at: new Date().toISOString() }).eq('id', id).select().single();
         fail(error);
         // A redrawn picture is a new puzzle, so its old best time goes.
         if (before.squares !== squares) fail((await client.from('pixels_results').delete().eq('puzzle_id', id)).error);
         return data;
       }
-      const { data, error } = await client.from('pixels_puzzles').insert({ name, squares }).select().single();
+      const { data, error } = await client.from('pixels_puzzles').insert({ name, squares, level, colours }).select().single();
       fail(error);
       return data;
     },

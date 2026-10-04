@@ -88,9 +88,10 @@
 
 /* MOVEMENT, for those who have not asked for less of it. */
 @media (prefers-reduced-motion: no-preference) {
-  .pixels-cell.is-fill { animation: pixels-pop .12s ease-out; }
-  .pixels-cell.is-x::before, .pixels-cell.is-x::after { animation: pixels-appear .15s ease-out; }
-  .pixels-cell.is-miss { animation: pixels-shake .3s; }
+  /* In the game only: the maker redraws its board on every stroke. */
+  .pixels-game .pixels-cell.is-fill { animation: pixels-pop .12s ease-out; }
+  .pixels-game .pixels-cell.is-x::before, .pixels-game .pixels-cell.is-x::after { animation: pixels-appear .15s ease-out; }
+  .pixels-game .pixels-cell.is-miss { animation: pixels-shake .3s; }
   .pixels-board.is-solved .pixels-clue,
   .pixels-board.is-solved .pixels-cell.is-x::before,
   .pixels-board.is-solved .pixels-cell.is-x::after { transition: opacity .3s; }
@@ -99,12 +100,27 @@
     animation: pixels-reveal .5s ease-out both;
     animation-delay: calc(var(--wave) * 30ms);
   }
+  .pixels-game.is-done .pixels-cell { transition: background-color .6s; }
   .pixels-solved { animation: pixels-appear .4s ease-out; }
 }
 @keyframes pixels-pop { from { transform: scale(.6); } }
 @keyframes pixels-appear { from { opacity: 0; } }
 @keyframes pixels-shake { 25% { translate: -3px 0; } 75% { translate: 3px 0; } }
 @keyframes pixels-reveal { 40% { transform: scale(.35); background: var(--rux-interactive); } }
+
+/* A COLOUR PICTURE. `data-ink` names one of the eight inks in theme.css; it
+   paints a square of the finished board, of a small picture, and of the
+   maker's board and palette in its colour step. */
+[data-ink="0"] { --ink: var(--pixels-ink-0); }
+[data-ink="1"] { --ink: var(--pixels-ink-1); }
+[data-ink="2"] { --ink: var(--pixels-ink-2); }
+[data-ink="3"] { --ink: var(--pixels-ink-3); }
+[data-ink="4"] { --ink: var(--pixels-ink-4); }
+[data-ink="5"] { --ink: var(--pixels-ink-5); }
+[data-ink="6"] { --ink: var(--pixels-ink-6); }
+[data-ink="7"] { --ink: var(--pixels-ink-7); }
+.pixels-game.is-done .pixels-cell[data-ink],
+.pixels-maker .pixels-cell[data-ink] { background: var(--ink); }
 
 /* THREE STARS, the lost ones dimmed. */
 .pixels-stars { color: var(--rux-text-disabled); letter-spacing: .1em; white-space: nowrap; }
@@ -119,6 +135,7 @@
   background: var(--rux-layer-01);
 }
 .pixels-picture > [data-on] { background: var(--rux-text-primary); }
+.pixels-picture > [data-ink] { background: var(--ink); }
 .pixels-picture--sm { --px: .5rem; }
 
 /* THE PUZZLE LIST, a level at a time. */
@@ -154,6 +171,7 @@
 .pixels-tools { display: flex; gap: .5rem; }
 .pixels-tools > .rux--content-switcher { flex: 1; }
 .pixels-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.pixels-switches { display: flex; gap: 2rem; }
 /* Each view's display would outrank the hidden attribute. */
 .pixels-game[hidden], .pixels-solved[hidden], .pixels-controls[hidden], .pixels-top[hidden] { display: none; }
 .pixels-solved { display: grid; gap: 1.5rem; justify-items: center; text-align: center; padding-block: 1rem; }
@@ -170,4 +188,21 @@
   grid-template-rows: 7rem repeat(var(--size, 10), var(--cell));
   margin-inline: 0;
 }
+/* On a phone the maker takes the page's clear edges back, as the game does. */
+@media (max-width: 28rem) {
+  .pixels-maker { margin-inline: -2.5rem; }
+  .pixels-maker .pixels-board { --cell: round(down, (100vw - 6.5rem) / 10, 1px); }
+}
 .pixels-maker-side { display: grid; gap: 1.5rem; align-content: start; inline-size: 18rem; max-inline-size: 100%; }
+/* The eight inks to paint with, the chosen one ringed. */
+.pixels-inks { display: flex; flex-wrap: wrap; gap: .5rem; }
+.pixels-inks[hidden] { display: none; }
+.pixels-ink {
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  padding: 0;
+  border: 1px solid var(--rux-border-strong-01);
+  background: var(--ink);
+  cursor: pointer;
+}
+.pixels-ink[aria-checked="true"] { outline: 2px solid var(--rux-focus); outline-offset: 2px; }

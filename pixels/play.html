@@ -159,7 +159,8 @@
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="pixels-restart">Start over</button>
             <a class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="pixels-edit" href="make.html">Edit</a>
           </div>
-          <!-- play.js sets it from the saved choice; changing it starts over. -->
+          <div class="pixels-switches">
+          <!-- play.js sets each from the saved choice; changing Free mode starts over. -->
           <div class="rux--toggle" id="pixels-free">
             <button id="pixels-free-button" class="rux--toggle__button" role="switch" type="button" aria-checked="false" aria-labelledby="pixels-free-label"></button>
             <label class="rux--toggle__label" for="pixels-free-button" id="pixels-free-label">
@@ -169,6 +170,17 @@
                 <span class="rux--toggle__text" aria-hidden="true">Off</span>
               </div>
             </label>
+          </div>
+          <div class="rux--toggle" id="pixels-sound">
+            <button id="pixels-sound-button" class="rux--toggle__button" role="switch" type="button" aria-checked="true" aria-labelledby="pixels-sound-label"></button>
+            <label class="rux--toggle__label" for="pixels-sound-button" id="pixels-sound-label">
+              <span class="rux--toggle__label-text">Sound</span>
+              <div class="rux--toggle__appearance">
+                <div class="rux--toggle__switch"></div>
+                <span class="rux--toggle__text" aria-hidden="true">On</span>
+              </div>
+            </label>
+          </div>
           </div>
         </div>
         <!-- Shown under the finished picture, which is the board itself. -->

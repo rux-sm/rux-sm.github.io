@@ -29,6 +29,17 @@ of them in an order that gets harder.
 6. **No lone squares scattered about.** A row that reads 1 1 1 tells the
    player almost nothing, and three of them make a guessing game.
 
+## The colour picture
+
+Once the tag is green, the Colour step paints the picture the player sees at
+the finish. Pick one of the eight inks and paint any square, filled or empty.
+
+- **Colour the background too.** A blue sky or a green field behind the shape
+  is what makes the finish feel like a reward.
+- **Two or three inks are enough.** Keep the shape one colour and use a second
+  for its detail, such as a red apple with a green leaf.
+- A picture never coloured finishes in black and white.
+
 ## How hard it is
 
 The green tag ends in easy, medium or hard. It counts rounds: one round is one
@@ -47,9 +58,10 @@ look at every row and every column, filling in what each can now decide.
 
 ## A level
 
-A level is ten puzzles, and the list starts a new level every ten, in the
-order the puzzles were made. So draw a level's puzzles in the order they
-should be played.
+A level is ten puzzles. The maker's Level field says which level a puzzle is
+in, and offers the first level that still has room. The front page lists a
+level easy to hard by the tag, so the order they were drawn in does not
+matter, and a puzzle moves level by editing that field.
 
 | Level | easy | medium | hard |
 | :--- | :--- | :--- | :--- |
@@ -58,9 +70,5 @@ should be played.
 | 3 | 2 | 5 | 3 |
 | 4 and on | 1 | 4 | 5 |
 
-- **Open easy, close hard.** The first puzzle of a level is always easy, and
-  the last is its hardest.
-- **Never two hard ones in a row** before level 4. Follow a hard puzzle with
-  an easier one.
 - **Give the level a subject**, such as animals, food or things at home. The
   player guesses the picture sooner, and the guess is half the fun.

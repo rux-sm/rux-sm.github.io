@@ -17,6 +17,12 @@
    The choice is kept in this browser under `pixels-mode`, and changing it
    starts the puzzle over.
 
+   play.html?daily plays the puzzle of the day, which app.js makes from the
+   date; its result is kept by day, and solving it shows the days in a row.
+
+   Each fill, X, finished line, mistake, hint and solve plays a tone and
+   ticks the phone. The Sound switch keeps its choice in this browser.
+
    A game in progress is kept in this browser under `pixels-progress`, so a
    phone that reloads the page picks up where it was. It is dropped once the
    puzzle is solved or started over.
@@ -24,7 +30,7 @@
 (() => {
   'use strict';
 
-  const { data, SIZE, grid, column, clues, solveLine, board, paint, highlight, drag, stars, buzz, time, title, switcher } = window.Pixels;
+  const { data, SIZE, grid, column, clues, solveLine, order, daily, today, streak, board, paint, highlight, drag, stars, buzz, sound, sounds, time, title, switcher } = window.Pixels;
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock');
 
@@ -50,18 +56,22 @@
   };
 
   (async () => {
-    const id = new URLSearchParams(location.search).get('id');
+    const query = new URLSearchParams(location.search), id = query.get('id'), isDaily = query.has('daily');
     if (!data) { say('Pixels could not connect', 'Reload the page to try again.'); return; }
     let puzzles, results;
     try {
-      [puzzles, results] = await Promise.all([data.list(), data.results()]);
+      [puzzles, results] = await Promise.all([data.list(), isDaily ? data.days() : data.results()]);
     } catch {
       say('The puzzle did not load', 'Reload the page to try again.');
       return;
     }
+    puzzles = order(puzzles);
     const index = puzzles.findIndex(p => String(p.id) === id);
-    if (index < 0) { say('This puzzle is not here', 'It may have been deleted. Pick another from Puzzles.'); return; }
-    const puzzle = puzzles[index];
+    if (!isDaily && index < 0) { say('This puzzle is not here', 'It may have been deleted. Pick another from Puzzles.'); return; }
+    const puzzle = isDaily ? daily(today()) : puzzles[index];
+    // What a result is kept under: the day, or the puzzle's id.
+    const key = isDaily ? puzzle.day : puzzle.id;
+    const heading = isDaily ? puzzle.name : title(puzzle, index, results.has(key));
     const answer = grid(puzzle.squares);
     const blank = () => answer.map(r => r.map(() => 0));
 
@@ -73,11 +83,13 @@
     let hints = fresh ? kept.hints || 0 : 0;
     let free = fresh ? !!kept.free : (() => { try { return localStorage.getItem(MODE) === 'free'; } catch { return false; } })();
     // No square is marked until a finger, the mouse or an arrow key picks one.
-    let tool = 'fill', action = null, cursor = [], solved = false;
+    // `climb` counts the fills of one drag, so each sounds a step higher.
+    let tool = 'fill', action = null, cursor = [], solved = false, climb = 0;
 
-    $('pixels-title').textContent = title(puzzle, index, results.has(puzzle.id));
-    document.title = `${title(puzzle, index, results.has(puzzle.id))} — Pixels`;
-    $('pixels-edit').href = `make.html?id=${encodeURIComponent(puzzle.id)}`;
+    $('pixels-title').textContent = heading;
+    document.title = `${heading} — Pixels`;
+    if (isDaily) $('pixels-edit').remove();
+    else $('pixels-edit').href = `make.html?id=${encodeURIComponent(puzzle.id)}`;
 
     const score = () => (free ? 3 : Math.max(1, 3 - mistakes - hints));
     const keep = () => saveProgress(puzzle.id, { squares: puzzle.squares, state, seconds, mistakes, hints, free });
@@ -108,12 +120,13 @@
       saveProgress(puzzle.id, null);
       highlight(el);
       buzz(60);
+      sound('solved');
       // The squares fill in as the picture while the time is saved.
       el.classList.add('is-solved');
       const earned = score();
       let best = { best: seconds, stars: earned, isNew: true }, lost = false;
       const [saved] = await Promise.allSettled([
-        data.record(puzzle.id, seconds, earned),
+        isDaily ? data.recordDay(key, seconds, earned) : data.record(key, seconds, earned),
         new Promise(done => setTimeout(done, still ? 0 : REVEAL)),
       ]);
       if (saved.status === 'fulfilled') best = saved.value; else lost = true;
@@ -123,12 +136,18 @@
       const parts = [time(seconds)];
       if (lost) parts.push('not saved');
       else if (!best.isNew) parts.push(`best ${time(best.best)}`);
-      else if (results.has(puzzle.id)) parts.push('a new best');
+      else if (results.has(key)) parts.push('a new best');
+      if (isDaily && !lost) {
+        const row = streak(new Set([...results.keys(), key]));
+        parts.push(`${row} day${row === 1 ? '' : 's'} in a row`);
+      }
       $('pixels-solved-time').textContent = parts.join(' · ');
       document.title = `${puzzle.name} — Pixels`;
-      // The next puzzle not yet solved, after this one and then from the start.
-      const order = [...puzzles.slice(index + 1), ...puzzles.slice(0, index)];
-      const next = order.find(p => !results.has(p.id) && p.id !== puzzle.id);
+      // The next puzzle not yet solved, after this one and then from the
+      // start; after the puzzle of the day, the first not yet solved.
+      const rest = isDaily ? puzzles : [...puzzles.slice(index + 1), ...puzzles.slice(0, index)];
+      const done = isDaily ? await data.results().catch(() => new Map()) : results;
+      const next = rest.find(p => !done.has(p.id));
       if (next) $('pixels-next').href = `play.html?id=${encodeURIComponent(next.id)}`;
       else $('pixels-next').remove();
       // The numbers and the controls leave, and the picture slides from
@@ -136,6 +155,8 @@
       const first = el.querySelector('.pixels-cell'), from = first.getBoundingClientRect();
       game.classList.add('is-done');
       $('pixels-solved').hidden = false;
+      // A picture drawn in colour takes its colours now.
+      if (puzzle.colours) el.querySelectorAll('.pixels-cell').forEach((c, i) => { c.dataset.ink = puzzle.colours[i]; });
       const to = first.getBoundingClientRect();
       if (!still) el.animate([
         { transformOrigin: '0 0', transform: `translate(${from.x - to.x}px, ${from.y - to.y}px) scale(${from.width / to.width})` },
@@ -167,17 +188,20 @@
       if (action === 'fill' && v === 0) {
         if (free || answer[y][x]) {
           state[y][x] = 1;
-          buzz(!free && closeLines(y, x) ? 30 : 10);
+          const closed = !free && closeLines(y, x);
+          buzz(closed ? 30 : 10);
+          sound(closed ? 'line' : 'fill', closed ? 0 : climb++);
           tell('');
         } else {
           const before = score();
           state[y][x] = 3;
           mistakes++;
           buzz([40, 60, 40]);
+          sound('miss');
           tell(score() < before ? 'Not in the picture · a star lost' : 'Not in the picture', true);
         }
       } else if (action === 'unfill' && v === 1) state[y][x] = 0;
-      else if (action === 'x' && v === 0) state[y][x] = 2;
+      else if (action === 'x' && v === 0) { state[y][x] = 2; sound('x'); }
       else if (action === 'unx' && v === 2) state[y][x] = 0;
       else return;
       cursor = [y, x];
@@ -190,6 +214,7 @@
     const begin = (y, x, which = tool) => {
       action = which === 'fill' ? (free && state[y][x] === 1 ? 'unfill' : 'fill')
         : state[y][x] === 2 ? 'unx' : 'x';
+      climb = 0;
       act(y, x);
     };
 
@@ -227,6 +252,7 @@
       if (lit) el.querySelectorAll(lit).forEach(e => e.classList.add('is-hint'));
       tell(text);
       buzz();
+      sound('hint');
       keep();
     };
     $('pixels-hint').addEventListener('click', hint);
@@ -278,6 +304,10 @@
       restart();
       tell(free ? 'Free mode · mistakes are not pointed out' : '');
     });
+
+    const soundToggle = $('pixels-sound');
+    window.Rux.formControls?.toggle(soundToggle, sounds());
+    soundToggle.addEventListener('rux:toggle', e => { if (sounds(e.detail.on)) sound('fill'); });
 
     tick();
     draw();

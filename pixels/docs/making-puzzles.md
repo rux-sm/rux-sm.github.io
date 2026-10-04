@@ -90,18 +90,64 @@ look at every row and every column, filling in what each can now decide.
 ## A level
 
 A level is nine puzzles of one size: three rows of three on a phone, one row
-of nine on a wide screen. The maker's Level field says which level
-a puzzle is in, and offers the first level of its size that still has room. The front page lists a
-level easy to hard by the tag, so the order they were drawn in does not
-matter, and a puzzle moves level by editing that field.
-
-| Level | easy | medium | hard |
-| :--- | :--- | :--- | :--- |
-| 1 | 6 | 3 | 0 |
-| 2 | 4 | 4 | 1 |
-| 3 | 2 | 4 | 3 |
-| 4 and on | 1 | 3 | 5 |
+of nine on a wide screen. The maker's Level field says which level a puzzle
+is in, and offers the first level of its size that still has room. The front
+page lists a level easy to hard by the tag, so the order they were drawn in
+does not matter, and a puzzle moves level by editing that field.
 
 - **Give the level a theme**, such as Fruit, Animals or At home, in the
   maker's Level theme field. It shows in the level's heading, the player
   guesses the picture sooner, and the guess is half the fun.
+- **Watch the line under the tag.** It counts the level's easy, medium and
+  hard puzzles with the one being drawn, beside what the level aims for.
+
+## Each level
+
+What a level aims for, out of nine, and how to draw for it. The numbers are
+from the 47 puzzles in the game: an easy one decides about 60 of its 100
+squares on the first look and has a run of six or more on about 8 of its 20
+lines; a hard one decides about 27 and has about 4.
+
+| Level | easy | medium | hard | The player is learning |
+| :--- | :--- | :--- | :--- | :--- |
+| 1 | 6 | 3 | 0 | that a long run fills its own middle |
+| 2 | 4 | 4 | 1 | to finish a line from what its neighbours gave |
+| 3 | 2 | 4 | 3 | to work round holes and separate parts |
+| 4 and on | 1 | 3 | 5 | to cross out as much as fill |
+
+**Level 1: big solid shapes.**
+
+- One thing, filled in: a bottle, a bell, a table.
+- Most lines carry one number. No line carries more than two.
+- Runs of six or more on at least eight lines. A full row or two is welcome.
+- No holes. One or two empty lines are fine.
+
+**Level 2: a shape with one detail.**
+
+- The same solid shapes with one thing cut out or stuck on: a leaf, a
+  window, a handle.
+- Up to three numbers on a line, on a few lines only.
+- One full row at most.
+- The one hard puzzle is the level's last.
+
+**Level 3: a shape with parts.**
+
+- Two or three details: eyes, ears, legs, wheels.
+- Three or four numbers on several lines.
+- Runs of six or more on about five lines, not eight.
+- No empty lines: use the edges.
+
+**Level 4 and on: thin and broken.**
+
+- Outlines, stalks, curves and gaps in place of filled blocks: a crescent, a
+  cactus, a note of music.
+- Many short runs, and few lines with a run of six or more.
+- No full rows.
+- It must still be green. A thin picture is where yellow squares come from,
+  so thicken one stroke at a time until they go.
+
+**Quick, the 5×5 levels**, are nearly always easy whatever is drawn, so the
+mix does not apply: aim for nine shapes worth guessing.
+
+**Long, the 15×15 levels**, follow the same four steps, with more room for
+detail at each.

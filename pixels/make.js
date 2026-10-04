@@ -12,7 +12,8 @@
    puzzle given a day is that day's puzzle instead and sits in no level; a
    day takes one puzzle, and after one is saved the field moves on a day.
    Level theme names the level the Level field says, for boards of this
-   size, and is saved with the puzzle. Save stays off until the picture is solvable and named.
+   size, and is saved with the puzzle. Under the check, a line says how the
+   level stands with this picture in it against what it aims for. Save stays off until the picture is solvable and named.
    docs/making-puzzles.md is the guide to a good one.
 
    Only the owner's account makes and edits; any other is told so.
@@ -23,7 +24,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, SIZES, grid, squaresOf, unreached, rounds, grade, board, drag, switcher, chosen } = window.Pixels;
+  const { data, owner, SIZES, grid, squaresOf, unreached, rounds, grade, mix, board, drag, switcher, chosen } = window.Pixels;
   const $ = id => document.getElementById(id);
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
   const day = $('pixels-day'), theme = $('pixels-theme');
@@ -86,6 +87,24 @@
     return open;
   };
 
+  /* HOW THE LEVEL STANDS. The level's other puzzles of this size, and this
+     picture once it is solvable, counted as easy, medium and hard beside
+     what a level of that number aims for. A puzzle of the day is in no
+     level, and a board of five is nearly always easy, so neither is told. */
+  const showMix = now => {
+    const line = $('pixels-mix');
+    if (day.value || side < 10) { line.textContent = ''; return; }
+    const count = { easy: 0, medium: 0, hard: 0 };
+    puzzles.forEach(p => {
+      if (p.width !== side || p.level !== levelOf() || p.day || p.id === editing?.id) return;
+      p.rounds ??= rounds(grid(p.squares, p.width));
+      count[grade(p.rounds)]++;
+    });
+    if (now) count[now]++;
+    const [easy, medium, hard] = mix(levelOf());
+    line.textContent = `Level ${levelOf()}${now ? ' with this one' : ''}: ${count.easy} easy, ${count.medium} medium, ${count.hard} hard. Aim for ${easy}, ${medium}, ${hard}.`;
+  };
+
   let solvable = false;
   const render = () => {
     const unknown = unreached(draft);
@@ -100,6 +119,7 @@
     else tag('rux--tag--green', `Solvable · ${grade(rounds(draft))}`);
     solvable = !empty && !guesses;
     save.disabled = !solvable || !name.value.trim();
+    showMix(solvable ? grade(rounds(draft)) : null);
   };
 
   // Colour starts as the picture is seen while solving: dark on light.
@@ -147,11 +167,11 @@
     keepDraft();
   });
   name.addEventListener('input', () => { save.disabled = !solvable || !name.value.trim(); keepDraft(); });
-  level.addEventListener('input', () => { showTheme(); keepDraft(); });
-  level.addEventListener('change', () => { showTheme(); keepDraft(); });
+  level.addEventListener('input', () => { showTheme(); keepDraft(); render(); });
+  level.addEventListener('change', () => { showTheme(); keepDraft(); render(); });
   // A day's puzzle is in no level, so Level and its theme have nothing to say.
   const showDay = () => { level.disabled = theme.disabled = !!day.value; };
-  day.addEventListener('change', () => { showDay(); keepDraft(); });
+  day.addEventListener('change', () => { showDay(); keepDraft(); render(); });
 
   const clear = () => {
     draft = blank();

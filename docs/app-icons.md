@@ -15,8 +15,9 @@ Open `docs/app-icon-template.svg` in a drawing app. It is 16 squares wide and
 16 tall, and one unit is one square. Turn on snap to grid, or snap to pixels,
 so every shape lands on whole squares.
 
-The template shows three guides: every square, the drawing area, and the
-centre.
+The template has three layers. `board` is a white square at the bottom.
+`icon` is empty, and the drawing goes in it. `guides` sits on top and shows
+every square, the drawing area, and the centre.
 
 ## The rules
 
@@ -41,7 +42,7 @@ centre.
 
 ## Save it
 
-1. Delete the `guides` layer, so only the drawing is left.
+1. Delete the `board` and `guides` layers, so only the drawing is left.
 2. Export as SVG, 16 by 16, to `icon.svg` in the app's `brand/` folder.
 3. For a new app, add `"icon": "/name/brand/icon.svg"` to its entry in
    `switcher.json`.

@@ -11,21 +11,25 @@
    same file and must keep its normal top-left flow, so neither rule may touch
    `.rux--content` unqualified.
 
-   HORIZONTAL. Design does not compile Carbon's grid offset classes (checked:
-   zero `.rux--offset-*` in rux.css), so the tiles are centred by moving the
-   FIRST one's column start; the rest follow it. The count is read in the
-   selector rather than written into the markup — with three span-4 tiles on
-   a 16-column grid the block starts at column 3, with two at 5, with one at
-   7, and with four it fills the grid and no rule matches. Five or more wrap
-   and stay left, which is the honest limit of doing this in CSS.
+   HORIZONTAL. Design does not compile Carbon's grid offset classes, so a row
+   that is not full is centred by moving its FIRST tile's column start; the
+   rest of the row follows it. Only the last row can be short, and the count
+   is read in the selector rather than written into the markup: the tile that
+   opens a row and has two, one or no tiles after it. The list follows the
+   account's access, so any count can arrive.
 
-   Only at lg and up (66rem, Carbon's own breakpoint), where the grid has its
-   16 columns. Below that the grid is 8 or 4 columns wide, a span-4 tile is
-   half or all of it, and there is nothing to centre. */
+   At lg and up (66rem, Carbon's own breakpoint) the grid has 16 columns and
+   a row holds four span-4 tiles: a last row of three starts at column 3, of
+   two at 5, of one at 7. From md (42rem) the grid has 8 columns and a row
+   holds two, so a last tile alone starts at column 3. Below md a tile is the
+   whole row and there is nothing to centre. */
+@media (min-width: 42rem) and (max-width: 65.98rem) {
+  #apps-grid > :nth-child(2n+1):nth-last-child(1) { grid-column-start: 3; }
+}
 @media (min-width: 66rem) {
-  #apps-grid > :first-child:nth-last-child(3) { grid-column-start: 3; }
-  #apps-grid > :first-child:nth-last-child(2) { grid-column-start: 5; }
-  #apps-grid > :first-child:nth-last-child(1) { grid-column-start: 7; }
+  #apps-grid > :nth-child(4n+1):nth-last-child(3) { grid-column-start: 3; }
+  #apps-grid > :nth-child(4n+1):nth-last-child(2) { grid-column-start: 5; }
+  #apps-grid > :nth-child(4n+1):nth-last-child(1) { grid-column-start: 7; }
 }
 
 /* VERTICAL. The page holds one row of tiles and nothing else, so left at the

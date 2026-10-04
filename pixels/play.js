@@ -41,7 +41,7 @@
 (() => {
   'use strict';
 
-  const { data, enter, grid, column, clues, solveLine, order, daily, today, streak, board, paint, highlight, drag, stars, buzz, sound, sounds, listen, time, title } = window.Pixels;
+  const { data, enter, DAILY, grid, column, clues, solveLine, order, daily, today, streak, board, paint, highlight, drag, stars, buzz, sound, sounds, listen, time, title } = window.Pixels;
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock');
 
@@ -68,6 +68,7 @@
   (async () => {
     const query = new URLSearchParams(location.search), id = query.get('id'), isDaily = query.has('daily');
     if (!data) { say('Pixels could not connect', 'Reload the page to try again.'); return; }
+    if (isDaily && !DAILY) { say('The puzzle of the day is off for now', 'Pick a puzzle from the list.'); game.classList.remove('is-loading'); return; }
     let puzzles, results;
     try {
       // A guest with no player yet is asked for a name first.

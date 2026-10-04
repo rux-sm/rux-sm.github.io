@@ -4,6 +4,9 @@
    A guest with no player yet gets the name form first; data.js's `enter`
    draws it.
 
+   While app.js's DAILY is false the puzzle of the day is not shown: no card
+   for it, and one ranking, all time, with no days in a row.
+
    PUZZLES. Today's puzzle is one card across the page: its picture once
    solved, the date, the stars and time or how hard it is, and the days
    solved in a row. Then a section for each level the maker gave, a bar for
@@ -22,7 +25,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, guest, enter, grid, rounds, grade, order, daily, today, streak, picture, stars, time, title, switcher } = window.Pixels;
+  const { data, owner, guest, enter, DAILY, grid, rounds, grade, order, daily, today, streak, picture, stars, time, title, switcher } = window.Pixels;
   const host = document.getElementById('pixels-levels'), leader = document.getElementById('pixels-leader');
 
   const say = (heading, detail) => {
@@ -128,12 +131,18 @@
       const rows = which === 'today'
         ? ranks.today.map((r, i) => row(i + 1, r, [stars(document.createElement('span'), r.stars), words('pixels-rank-value', time(r.seconds))]))
         : ranks.all.map((r, i) => row(i + 1, r, [
-          words('pixels-meta', `${r.solved} solved · ${r.days} day${r.days === 1 ? '' : 's'}`),
+          words('pixels-meta', DAILY ? `${r.solved} solved · ${r.days} day${r.days === 1 ? '' : 's'}` : `${r.solved} solved`),
           words('pixels-rank-value', `${r.stars} ★`),
         ]));
       if (rows.length) list.replaceChildren(...rows);
-      else list.replaceChildren(words('pixels-meta', "Nobody has finished today's puzzle yet."));
+      else list.replaceChildren(words('pixels-meta', which === 'today' ? "Nobody has finished today's puzzle yet." : 'Nobody has solved a puzzle yet.'));
     };
+    // With the puzzle of the day off there is one ranking and nothing to switch.
+    if (!DAILY) {
+      show('all');
+      el.append(h2, list);
+      return el;
+    }
     [['today', 'Today'], ['all', 'All time']].forEach(([which, label], i) => {
       const b = document.createElement('button');
       b.type = 'button';
@@ -212,8 +221,10 @@
       document.getElementById('pixels-guestbar').hidden = false;
     }
     document.getElementById('pixels-tabs').hidden = false;
-    const now = daily(today(), puzzles);
-    host.appendChild(todayCard(now, days.get(now.day), streak(new Set(days.keys()))));
+    if (DAILY) {
+      const now = daily(today(), puzzles);
+      host.appendChild(todayCard(now, days.get(now.day), streak(new Set(days.keys()))));
+    }
     if (ranks) leader.appendChild(leaderboard(ranks));
     // The owner sees every day's puzzle he has drawn, soonest first, each
     // opening in the maker.

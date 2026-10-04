@@ -43,7 +43,9 @@ silent switch does not, and a phone ticks
 on each fill where the browser allows it. A game in
 progress is kept in the browser, so a reload picks it up.
 
-`play.html?daily` plays the puzzle of the day: the one the owner drew for
+The puzzle of the day is switched off by `DAILY` in `app.js`: no page shows
+it, the leaderboard ranks all time only, and the maker still dates puzzles so
+they can be drawn ahead. With it on, `play.html?daily` plays the puzzle of the day: the one the owner drew for
 that day, with its name and colours, or where there is none, one the browser
 makes from the date, the same for everyone. Only it counts toward the days
 in a row. A player is never sent a day's puzzle before its day.

@@ -18,6 +18,13 @@
   // The sides a puzzle may have, and the side of the puzzle of the day.
   const SIZES = [5, 10, 15], DAY = 10;
 
+  /* THE PUZZLE OF THE DAY IS OFF. While this is false no page shows it: the
+     front page has no Today card, the leaderboard ranks all time only, the
+     owner's page drops its two columns for it, and play.html?daily says it
+     is off. The maker still gives a puzzle its day and the owner still sees
+     the days drawn, so they can be made ahead of turning it on. */
+  const DAILY = false;
+
   // Rows of numbers from a string of them; a square puzzle unless told its width.
   const grid = (squares, width = Math.sqrt(squares.length)) =>
     Array.from({ length: squares.length / width }, (_, y) => [...squares.slice(y * width, y * width + width)].map(Number));
@@ -494,7 +501,7 @@
   const chosen = (el, option) => window.Rux.contentSwitcher.select(el, option, { focus: false, silent: true });
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    SIZES, INKS: 8, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, daily, today, streak,
+    SIZES, DAILY, INKS: 8, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, daily, today, streak,
     board, paint, highlight, drag, picture, stars, buzz, sound, sounds, listen, time, title, switcher, chosen,
   });
 })();

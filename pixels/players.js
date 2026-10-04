@@ -16,7 +16,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, today, streak, time } = window.Pixels;
+  const { data, owner, DAILY, today, streak, time } = window.Pixels;
   const $ = id => document.getElementById(id);
 
   const say = (heading, detail) => {
@@ -84,7 +84,8 @@
       field.addEventListener('change', rename);
       field.addEventListener('keydown', e => { if (e.key === 'Enter') field.blur(); });
       named.appendChild(field);
-      tr.append(named, cell(p.today || 'Not yet'), cell(p.days), cell(p.solved), cell(p.stars), cell(when(p.last_played_at)));
+      // The two columns for the puzzle of the day go when it is off.
+      tr.append(named, ...(DAILY ? [cell(p.today || 'Not yet'), cell(p.days)] : []), cell(p.solved), cell(p.stars), cell(when(p.last_played_at)));
       const last = document.createElement('td');
       const remove = document.createElement('button');
       remove.type = 'button';
@@ -106,6 +107,7 @@
       tr.appendChild(last);
       return tr;
     }));
+    document.querySelectorAll('[data-daily]').forEach(th => { th.hidden = !DAILY; });
     $('pixels-table').hidden = false;
   };
 

@@ -9,8 +9,8 @@ best matches it. Geist's values are read from its own published Colors page
 in dark mode and converted to sRGB; ours are read from `css/rux-theme.css`.
 A link on the light inverse surface takes Geist's light mode, and its row says so.
 
-**201 colours. 70 land on a Geist token exactly, 51 sit within a
-shade of one, and 80 have no Geist colour near them** -- the third column
+**201 colours. 80 land on a Geist token exactly, 63 sit within a
+shade of one, and 58 have no Geist colour near them** -- the third column
 then names the closest there is, which is a starting point and not a match.
 
 A transparent value is only ever matched against a transparent Geist token, so
@@ -186,30 +186,30 @@ Nothing in these apps draws them.
 
 | Token | This theme | Nearest Geist token | |
 | :--- | :--- | :--- | :--- |
-| `--rux-tag-background-red` | `#a2191f` | `--ds-red-500 #88151f` | nearest |
-| `--rux-tag-color-red` | `#ffd7d9` | `--ds-red-1000 #ffe9ed` | nearest |
-| `--rux-tag-hover-red` | `#c21e25` | `--ds-red-800 #e2162a` | nearest |
-| `--rux-tag-background-magenta` | `#9f1853` | `--ds-pink-600 #ba0056` | nearest |
-| `--rux-tag-color-magenta` | `#ffd6e8` | `--ds-red-1000 #ffe9ed` | nearest |
-| `--rux-tag-hover-magenta` | `#bf1d63` | `--ds-pink-600 #ba0056` | nearest |
-| `--rux-tag-background-purple` | `#6929c4` | `--ds-purple-800 #7d2bba` | nearest |
-| `--rux-tag-color-purple` | `#e8daff` | `--ds-purple-1000 #fbecff` | nearest |
-| `--rux-tag-hover-purple` | `#7c3dd6` | `--ds-purple-600 #9440d5` | nearest |
-| `--rux-tag-background-blue` | `#0043ce` | `--ds-blue-800 #005be7` | nearest |
-| `--rux-tag-color-blue` | `#d0e2ff` | `--ds-teal-1000 #cbfff5` | nearest |
-| `--rux-tag-hover-blue` | `#0053ff` | `--ds-blue-800 #005be7` | nearest |
-| `--rux-tag-background-cyan` | `#00539a` | `--ds-blue-500 #00418c` | nearest |
-| `--rux-tag-color-cyan` | `#bae6ff` | `--ds-teal-1000 #cbfff5` | nearest |
-| `--rux-tag-hover-cyan` | `#0066bd` | `--ds-blue-800 #005be7` | nearest |
-| `--rux-tag-background-teal` | `#005d5d` | `--ds-teal-500 #006354` | close |
-| `--rux-tag-color-teal` | `#9ef0f0` | `--ds-teal-1000 #cbfff5` | nearest |
-| `--rux-tag-hover-teal` | `#007070` | `--ds-teal-500 #006354` | nearest |
-| `--rux-tag-background-green` | `#0e6027` | `--ds-green-500 #006717` | nearest |
-| `--rux-tag-color-green` | `#a7f0ba` | `--ds-green-1000 #d8ffe4` | nearest |
-| `--rux-tag-hover-green` | `#11742f` | `--ds-green-500 #006717` | nearest |
-| `--rux-tag-background-gray` | `#525252` | `--ds-gray-500 #454545` | nearest |
-| `--rux-tag-color-gray` | `#f4f4f4` | `--ds-gray-1000 #ededed` | close |
-| `--rux-tag-hover-gray` | `#636363` | `--ds-gray-800 #7d7d7d` | nearest |
+| `--rux-tag-background-red` | `#4f000f` | `--ds-red-200 #440d13` | close |
+| `--rux-tag-color-red` | `#ff565f` | `--ds-red-900 #ff565f` | exact |
+| `--rux-tag-hover-red` | `#550614` | `--ds-red-200 #440d13` | nearest |
+| `--rux-tag-background-magenta` | `#530029` | `--ds-pink-300 #571032` | close |
+| `--rux-tag-color-magenta` | `#ff4d8d` | `--ds-pink-900 #ff4d8d` | exact |
+| `--rux-tag-hover-magenta` | `#59002e` | `--ds-pink-300 #571032` | close |
+| `--rux-tag-background-purple` | `#3b084d` | `--ds-purple-200 #341142` | close |
+| `--rux-tag-color-purple` | `#c472fb` | `--ds-purple-900 #c472fb` | exact |
+| `--rux-tag-hover-purple` | `#400f53` | `--ds-purple-200 #341142` | nearest |
+| `--rux-tag-background-blue` | `#002458` | `--ds-blue-200 #022248` | close |
+| `--rux-tag-color-blue` | `#47a8ff` | `--ds-blue-900 #47a8ff` | exact |
+| `--rux-tag-hover-blue` | `#00295e` | `--ds-blue-200 #022248` | nearest |
+| `--rux-tag-background-cyan` | `#002458` | `--ds-blue-200 #022248` | close |
+| `--rux-tag-color-cyan` | `#47a8ff` | `--ds-blue-900 #47a8ff` | exact |
+| `--rux-tag-hover-cyan` | `#00295e` | `--ds-blue-200 #022248` | nearest |
+| `--rux-tag-background-teal` | `#003429` | `--ds-teal-300 #003d34` | close |
+| `--rux-tag-color-teal` | `#00cfb7` | `--ds-teal-900 #00cfb7` | exact |
+| `--rux-tag-hover-teal` | `#003a2e` | `--ds-teal-300 #003d34` | close |
+| `--rux-tag-background-green` | `#003400` | `--ds-green-200 #00320b` | close |
+| `--rux-tag-color-green` | `#00ca50` | `--ds-green-900 #00ca50` | exact |
+| `--rux-tag-hover-green` | `#003902` | `--ds-green-200 #00320b` | close |
+| `--rux-tag-background-gray` | `#262626` | `--ds-gray-300 #292929` | close |
+| `--rux-tag-color-gray` | `#ededed` | `--ds-gray-1000 #ededed` | exact |
+| `--rux-tag-hover-gray` | `#2b2b2b` | `--ds-gray-300 #292929` | close |
 | `--rux-tag-border-red` | `#fa4d56` | `--ds-red-900 #ff565f` | close |
 | `--rux-tag-border-blue` | `#4589ff` | `--ds-blue-900 #47a8ff` | nearest |
 | `--rux-tag-border-cyan` | `#1192e8` | `--ds-blue-600 #0090ff` | nearest |
@@ -220,12 +220,12 @@ Nothing in these apps draws them.
 | `--rux-tag-border-gray` | `#8d8d8d` | `--ds-gray-700 #8f8f8f` | close |
 | `--rux-tag-border-cool-gray` | `#878d96` | `--ds-gray-700 #8f8f8f` | close |
 | `--rux-tag-border-warm-gray` | `#8f8b8b` | `--ds-gray-700 #8f8f8f` | close |
-| `--rux-tag-background-cool-gray` | `#4d5358` | `--ds-gray-500 #454545` | nearest |
-| `--rux-tag-color-cool-gray` | `#f2f4f8` | `--ds-blue-1000 #eaf6ff` | close |
-| `--rux-tag-hover-cool-gray` | `#5d646a` | `--ds-gray-800 #7d7d7d` | nearest |
-| `--rux-tag-background-warm-gray` | `#565151` | `--ds-gray-500 #454545` | nearest |
-| `--rux-tag-color-warm-gray` | `#f7f3f2` | `--ds-gray-1000 #ededed` | close |
-| `--rux-tag-hover-warm-gray` | `#696363` | `--ds-gray-800 #7d7d7d` | nearest |
+| `--rux-tag-background-cool-gray` | `#262626` | `--ds-gray-300 #292929` | close |
+| `--rux-tag-color-cool-gray` | `#ededed` | `--ds-gray-1000 #ededed` | exact |
+| `--rux-tag-hover-cool-gray` | `#2b2b2b` | `--ds-gray-300 #292929` | close |
+| `--rux-tag-background-warm-gray` | `#262626` | `--ds-gray-300 #292929` | close |
+| `--rux-tag-color-warm-gray` | `#ededed` | `--ds-gray-1000 #ededed` | exact |
+| `--rux-tag-hover-warm-gray` | `#2b2b2b` | `--ds-gray-300 #292929` | close |
 
 ## Chat
 

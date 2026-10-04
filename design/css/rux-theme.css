@@ -57,6 +57,11 @@
   other for all 62, and g90 and g100 are identical for 58 — so a dark
   theme has one set to take, not a palette to invent. Measured from
   `css/rux.css`, not assumed.
+  GEIST-DARK'S TAGS ARE THE EXCEPTION. Their fill, hover and ink are Geist's
+  quiet badge as the scheduler's trips already wear it: the hue's 200 step
+  (300 for pink and teal) at 27% lightness with its chroma raised by 30%,
+  29% on hover, under the hue's 900 step, 4.57 to 1 at worst. Carbon's cyan
+  is Geist's blue, its magenta Geist's pink, and its three greys Geist's one.
 
   THE FOUR THAT ARE NOT COPIED are the only place a choice existed.
   `notification-background-error`, `-success`, `-info` and `-warning` are
@@ -400,30 +405,30 @@
   --rux-button-disabled: #1a1a1a;
 
   /* tag (component tokens — Carbon's own dark set, see header) */
-  --rux-tag-background-red: #a2191f;
-  --rux-tag-color-red: #ffd7d9;
-  --rux-tag-hover-red: #c21e25;
-  --rux-tag-background-magenta: #9f1853;
-  --rux-tag-color-magenta: #ffd6e8;
-  --rux-tag-hover-magenta: #bf1d63;
-  --rux-tag-background-purple: #6929c4;
-  --rux-tag-color-purple: #e8daff;
-  --rux-tag-hover-purple: #7c3dd6;
-  --rux-tag-background-blue: #0043ce;
-  --rux-tag-color-blue: #d0e2ff;
-  --rux-tag-hover-blue: #0053ff;
-  --rux-tag-background-cyan: #00539a;
-  --rux-tag-color-cyan: #bae6ff;
-  --rux-tag-hover-cyan: #0066bd;
-  --rux-tag-background-teal: #005d5d;
-  --rux-tag-color-teal: #9ef0f0;
-  --rux-tag-hover-teal: #007070;
-  --rux-tag-background-green: #0e6027;
-  --rux-tag-color-green: #a7f0ba;
-  --rux-tag-hover-green: #11742f;
-  --rux-tag-background-gray: #525252;
-  --rux-tag-color-gray: #f4f4f4;
-  --rux-tag-hover-gray: #636363;
+  --rux-tag-background-red: #4f000f;
+  --rux-tag-color-red: #ff565f;
+  --rux-tag-hover-red: #550614;
+  --rux-tag-background-magenta: #530029;
+  --rux-tag-color-magenta: #ff4d8d;
+  --rux-tag-hover-magenta: #59002e;
+  --rux-tag-background-purple: #3b084d;
+  --rux-tag-color-purple: #c472fb;
+  --rux-tag-hover-purple: #400f53;
+  --rux-tag-background-blue: #002458;
+  --rux-tag-color-blue: #47a8ff;
+  --rux-tag-hover-blue: #00295e;
+  --rux-tag-background-cyan: #002458;
+  --rux-tag-color-cyan: #47a8ff;
+  --rux-tag-hover-cyan: #00295e;
+  --rux-tag-background-teal: #003429;
+  --rux-tag-color-teal: #00cfb7;
+  --rux-tag-hover-teal: #003a2e;
+  --rux-tag-background-green: #003400;
+  --rux-tag-color-green: #00ca50;
+  --rux-tag-hover-green: #003902;
+  --rux-tag-background-gray: #262626;
+  --rux-tag-color-gray: #ededed;
+  --rux-tag-hover-gray: #2b2b2b;
   --rux-tag-border-red: #fa4d56;
   --rux-tag-border-blue: #4589ff;
   --rux-tag-border-cyan: #1192e8;
@@ -434,12 +439,12 @@
   --rux-tag-border-gray: #8d8d8d;
   --rux-tag-border-cool-gray: #878d96;
   --rux-tag-border-warm-gray: #8f8b8b;
-  --rux-tag-background-cool-gray: #4d5358;
-  --rux-tag-color-cool-gray: #f2f4f8;
-  --rux-tag-hover-cool-gray: #5d646a;
-  --rux-tag-background-warm-gray: #565151;
-  --rux-tag-color-warm-gray: #f7f3f2;
-  --rux-tag-hover-warm-gray: #696363;
+  --rux-tag-background-cool-gray: #262626;
+  --rux-tag-color-cool-gray: #ededed;
+  --rux-tag-hover-cool-gray: #2b2b2b;
+  --rux-tag-background-warm-gray: #262626;
+  --rux-tag-color-warm-gray: #ededed;
+  --rux-tag-hover-warm-gray: #2b2b2b;
 
   /* notification (component tokens — Carbon's own dark set;
      the four surface backgrounds take THIS theme's layer-01) */

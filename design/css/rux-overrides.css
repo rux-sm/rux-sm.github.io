@@ -1137,13 +1137,78 @@
 [data-theme="geist-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn.rux--content-switcher--selected:not([disabled]) svg {
   fill: var(--rux-icon-primary);
 }
-/* ANT DARK KEEPS CARBON'S SWITCHER, and an icon-only option is a button by
-   class, so the rounded themes' 6px button radius reaches it and scallops the
-   lines between the options. An option is a segment of one outlined group:
-   square, with Carbon's own 4px on the group's two outer ends, which its
-   first-child and last-child rules still set over this. */
-[data-theme="ant-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn {
-  border-radius: 0;
+/* ANT'S SEGMENTED CONTROL, measured on its Segmented page in dark: a track
+   with 2px of padding and 6px corners, holding options with 4px corners, 11px
+   sides and no dividers. An option is secondary text; hover lays Ant's
+   secondary fill under it, and the chosen one is primary text on a pill. A
+   disabled option is disabled text, and a disabled chosen one keeps its pill.
+   The large size is 8px and 6px. Ant draws the track in its layout black on a
+   #141414 surface and the pill in #1f1f1f. This theme's page is that black
+   already, where such a track has no edge, so both sit one step up: the track
+   on the surface grey and the pill on #303030, which is also what Ant's hover
+   fill comes to on that track, as its own hover matches its own pill.
+   Carbon's switcher instead draws an inverse outline round the group and
+   fills the chosen option with the inverse colour. The heights stay this
+   theme's own. */
+[data-theme="ant-dark"] .rux--content-switcher {
+  padding: 2px;
+  border-radius: 6px;
+  background-color: var(--rux-layer-01);
+  outline: 0;
+}
+[data-theme="ant-dark"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn,
+[data-theme="ant-dark"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:first-child,
+[data-theme="ant-dark"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:last-child {
+  padding-block: 0;
+  padding-inline: 11px;
+  border-block: 0;
+  border-radius: 4px;
+  box-shadow: none;
+}
+[data-theme="ant-dark"] .rux--content-switcher-btn::before {
+  display: none;
+}
+@media (any-hover: hover) {
+  [data-theme="ant-dark"] .rux--content-switcher-btn:hover:not(.rux--content-switcher--selected, :disabled) {
+    background-color: rgba(255, 255, 255, 0.12);
+  }
+}
+[data-theme="ant-dark"] .rux--content-switcher-btn:active:not(.rux--content-switcher--selected, :disabled) {
+  background-color: var(--rux-background-active);
+}
+[data-theme="ant-dark"] .rux--content-switcher .rux--content-switcher-btn.rux--content-switcher--selected:not(:disabled) {
+  color: var(--rux-text-primary);
+}
+[data-theme="ant-dark"] .rux--content-switcher-btn.rux--content-switcher--selected::after,
+[data-theme="ant-dark"] .rux--content-switcher .rux--content-switcher-btn.rux--content-switcher--selected:disabled {
+  background-color: var(--rux-layer-active-01);
+}
+/* An icon-only option is a button by class, so it is sized and rounded as one.
+   Here it is an option like the worded ones: as tall as the track allows, and
+   Ant's 36px wide. Its icon is the same two greys as the words. */
+[data-theme="ant-dark"] .rux--content-switcher--icon-only .rux--content-switcher-popover__wrapper .rux--content-switcher-btn {
+  border-block: 0;
+  border-radius: 4px;
+  box-shadow: none;
+  block-size: 100%;
+  min-block-size: 0;
+  inline-size: 2.25rem;
+}
+[data-theme="ant-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn:not([disabled]) svg {
+  fill: var(--rux-icon-secondary);
+}
+[data-theme="ant-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn:not([disabled]):hover svg,
+[data-theme="ant-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn.rux--content-switcher--selected:not([disabled]) svg {
+  fill: var(--rux-icon-primary);
+}
+[data-theme="ant-dark"] .rux--content-switcher--lg {
+  border-radius: 8px;
+}
+[data-theme="ant-dark"] .rux--content-switcher--lg .rux--content-switcher-btn,
+[data-theme="ant-dark"] .rux--content-switcher--lg .rux--content-switcher-btn:first-child,
+[data-theme="ant-dark"] .rux--content-switcher--lg .rux--content-switcher-btn:last-child,
+[data-theme="ant-dark"] .rux--content-switcher--lg .rux--content-switcher-btn::after {
+  border-radius: 6px;
 }
 /* GEIST'S RAISED SURFACES TAKE AN EDGE. Geist is flat by design: every layer
    above the page is within 1.05 of what it sits on, so a surface is told apart

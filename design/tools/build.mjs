@@ -77,11 +77,11 @@ function brand(css) {
 
 function kb(n) { return `${(n / 1024).toFixed(0)} KB`; }
 
-let focusRules = 0, hardReferences = [];
+let focusRules = 0, iconTwins = 0, hardReferences = [];
 for (const [out, extra] of [[OUT, []], [MIN, ['--style=compressed']]]) {
   sass(out, extra);
   const done = transform(readFileSync(out, 'utf8'));
-  if (out === OUT) { focusRules = done.focus; hardReferences = done.references; }
+  if (out === OUT) { focusRules = done.focus; iconTwins = done.twins; hardReferences = done.references; }
   if (done.undeclared.length) {
     console.error(`\n  FAIL (${out}): Carbon hardcodes a reference to a token this build does not declare: `
       + done.undeclared.map(n => `--rux-${n}`).join(', '));
@@ -161,6 +161,7 @@ console.log(`
   classes      ${classes} unique .rux--*
   cds leakage  none
   focus        ${focusRules} :focus → :focus-visible
+  icons        ${iconTwins} path selectors also name use
   hardcoded    ${hardReferences.length} --cds- reference(s) renamed: ${hardReferences.join(', ') || 'none'}
   attribution  banner + NOTICE
 

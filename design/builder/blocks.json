@@ -220,13 +220,13 @@
       "follows": null,
       "deps": [],
       "frameDeps": [],
-      "line": 26,
+      "line": 27,
       "provenance": "PROVENANCE: rendered-dom · components-fullpageerror--full-page-error on the ibm-products origin, 2026-08-31",
       "grid": null,
       "column": null,
       "stack": null,
       "open": "  <!-- BLOCK:BEGIN name=default label=\"Full-page error\" -->\n",
-      "html": "  <div class=\"rux--full-page-error\">\n    <div class=\"rux--full-page-error__container\">\n      <div class=\"rux--full-page-error__grid rux--css-grid\">\n        <div class=\"rux--full-page-error__column rux--sm:col-span-4 rux--md:col-span-3 rux--lg:col-span-6 rux--css-grid-column\">\n          <h2 class=\"rux--full-page-error__title\"><span class=\"rux--full-page-error__label\">404</span>Page not found</h2>\n          <p class=\"rux--full-page-error__description\">The address may have changed or the page may no longer exist.</p>\n          <div class=\"rux--full-page-error__body\"><a class=\"rux--link rux--link--lg\" href=\"#full-page-error\">Return to the component index</a></div>\n        </div>\n        <div class=\"rux--sm:col-span-4 rux--md:col-span-5 rux--lg:col-span-10 rux--css-grid-column\">\n          <div class=\"rux--full-page-error__svg-container\">\n            <svg class=\"rux--full-page-error__svg\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#i-warning--filled\"/></svg>\n          </div>\n        </div>\n      </div>\n    </div>\n  </div>\n",
+      "html": "  <div class=\"rux--full-page-error\">\n    <div class=\"rux--full-page-error__container\">\n      <div class=\"rux--full-page-error__grid rux--css-grid\">\n        <div class=\"rux--full-page-error__column rux--sm:col-span-4 rux--md:col-span-3 rux--lg:col-span-6 rux--css-grid-column\">\n          <h2 class=\"rux--full-page-error__title\"><span class=\"rux--full-page-error__label\">404</span>Page not found</h2>\n          <p class=\"rux--full-page-error__description\">The address may have changed or the page may no longer exist.</p>\n          <div class=\"rux--full-page-error__body\"><a class=\"rux--link rux--link--lg\" href=\"#full-page-error\">Return to the component index</a></div>\n        </div>\n        <div class=\"rux--sm:col-span-4 rux--md:col-span-5 rux--lg:col-span-10 rux--css-grid-column\">\n          <div class=\"rux--full-page-error__svg-container\">\n            <svg class=\"rux--full-page-error__svg\" viewBox=\"0 0 32 32\" fill=\"currentColor\" stroke-width=\"0.25\" aria-hidden=\"true\"><use href=\"#i-warning--filled\"/></svg>\n          </div>\n        </div>\n      </div>\n    </div>\n  </div>\n",
       "close": "  <!-- BLOCK:END default -->\n"
     },
     {

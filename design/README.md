@@ -70,7 +70,7 @@ The table is generated on every `npm run verify`. Do not edit it by hand.
 | Spacing scale | 13 `--rux-spacing-*` tokens, demoed in the `spacing` section |
 | Markup provenance | **81 `rendered-dom` · 6 `source` · 0 `inferred`** across 87 files |
 | Icons | 251 symbols in a 77.2 KB sprite — 57 referenced, 194 nothing points at |
-| Size | 1107.4 KB raw · 996.7 KB min · **102 KB gzipped** |
+| Size | 1108.6 KB raw · 997.8 KB min · **102 KB gzipped** |
 | Behaviour JS | **22** modules · **78 KB gzipped** · 259.6 KB raw, 58% of it comment · 108.4 KB of code |
 
 **Every figure above is generated** by `tools/build-readme.mjs` from
@@ -114,10 +114,11 @@ than measurements and live with their reasoning in `tools/build.mjs`.
 
 **No Carbon file is ever edited.** Customisation is `$prefix`, Carbon's own config
 flags, which components and themes compile, and the two files above the build.
-Two documented exceptions, in `tools/lib/transform.mjs` and enforced on every
-build: `--cds-grid-*`, which Carbon hardcodes past `$prefix`, is renamed, and
-every `:focus` becomes `:focus-visible`, so a focus ring shows for the keyboard
-and not for a click or a tap.
+Three documented exceptions, in `tools/lib/transform.mjs` and enforced on every
+build: `--cds-grid-*`, which Carbon hardcodes past `$prefix`, is renamed; every
+`:focus` becomes `:focus-visible`, so a focus ring shows for the keyboard and
+not for a click or a tap; and a rule that colours all of an icon's `path`s also
+names `use`, so it reaches an icon drawn from the sprite.
 
 ## Gates
 

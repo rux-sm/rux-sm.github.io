@@ -3500,7 +3500,8 @@ li.rux--accordion__item--disabled:last-of-type {
   background-color: var(--rux-button-primary-active, #002d9c);
 }
 .rux--btn--primary .rux--btn__icon,
-.rux--btn--primary .rux--btn__icon path:not([data-icon-path]):not([fill=none]) {
+.rux--btn--primary .rux--btn__icon path:not([data-icon-path]):not([fill=none]),
+.rux--btn--primary .rux--btn__icon use {
   fill: currentColor;
 }
 .rux--btn--primary:hover {
@@ -3527,7 +3528,8 @@ li.rux--accordion__item--disabled:last-of-type {
   background-color: var(--rux-button-secondary-active, #6f6f6f);
 }
 .rux--btn--secondary .rux--btn__icon,
-.rux--btn--secondary .rux--btn__icon path:not([data-icon-path]):not([fill=none]) {
+.rux--btn--secondary .rux--btn__icon path:not([data-icon-path]):not([fill=none]),
+.rux--btn--secondary .rux--btn__icon use {
   fill: currentColor;
 }
 .rux--btn--secondary:hover, .rux--btn--secondary:focus-visible {
@@ -3554,7 +3556,8 @@ li.rux--accordion__item--disabled:last-of-type {
   background-color: var(--rux-button-tertiary-active, #002d9c);
 }
 .rux--btn--tertiary .rux--btn__icon,
-.rux--btn--tertiary .rux--btn__icon path:not([data-icon-path]):not([fill=none]) {
+.rux--btn--tertiary .rux--btn__icon path:not([data-icon-path]):not([fill=none]),
+.rux--btn--tertiary .rux--btn__icon use {
   fill: currentColor;
 }
 @media (any-hover: hover) {
@@ -3597,7 +3600,8 @@ li.rux--accordion__item--disabled:last-of-type {
   background-color: var(--rux-background-active, rgba(141, 141, 141, 0.5));
 }
 .rux--btn--ghost .rux--btn__icon,
-.rux--btn--ghost .rux--btn__icon path:not([data-icon-path]):not([fill=none]) {
+.rux--btn--ghost .rux--btn__icon path:not([data-icon-path]):not([fill=none]),
+.rux--btn--ghost .rux--btn__icon use {
   fill: currentColor;
 }
 .rux--btn--ghost {
@@ -3670,11 +3674,13 @@ li.rux--accordion__item--disabled:last-of-type {
 }
 
 .rux--btn--ghost.rux--btn--icon-only .rux--btn__icon path:not([data-icon-path]):not([fill=none]),
+.rux--btn--ghost.rux--btn--icon-only .rux--btn__icon use,
 .rux--btn--ghost.rux--btn--icon-only .rux--btn__icon {
   fill: var(--rux-icon-primary, #161616);
 }
 
 .rux--btn--ghost.rux--btn--icon-only[disabled] .rux--btn__icon path:not([data-icon-path]):not([fill=none]),
+.rux--btn--ghost.rux--btn--icon-only[disabled] .rux--btn__icon use,
 .rux--btn--ghost.rux--btn--icon-only[disabled] .rux--btn__icon,
 .rux--btn.rux--btn--icon-only.rux--btn--ghost[disabled]:hover .rux--btn__icon {
   fill: var(--rux-icon-on-color-disabled, #8d8d8d);
@@ -3712,7 +3718,8 @@ li.rux--accordion__item--disabled:last-of-type {
   background-color: var(--rux-button-danger-active, #750e13);
 }
 .rux--btn--danger .rux--btn__icon,
-.rux--btn--danger .rux--btn__icon path:not([data-icon-path]):not([fill=none]) {
+.rux--btn--danger .rux--btn__icon path:not([data-icon-path]):not([fill=none]),
+.rux--btn--danger .rux--btn__icon use {
   fill: currentColor;
 }
 .rux--btn--danger:hover {
@@ -3738,7 +3745,8 @@ li.rux--accordion__item--disabled:last-of-type {
   background-color: var(--rux-button-danger-active, #750e13);
 }
 .rux--btn--danger--tertiary .rux--btn__icon,
-.rux--btn--danger--tertiary .rux--btn__icon path:not([data-icon-path]):not([fill=none]) {
+.rux--btn--danger--tertiary .rux--btn__icon path:not([data-icon-path]):not([fill=none]),
+.rux--btn--danger--tertiary .rux--btn__icon use {
   fill: currentColor;
 }
 @media (hover: hover) {
@@ -3781,7 +3789,8 @@ li.rux--accordion__item--disabled:last-of-type {
   background-color: var(--rux-button-danger-active, #750e13);
 }
 .rux--btn--danger--ghost .rux--btn__icon,
-.rux--btn--danger--ghost .rux--btn__icon path:not([data-icon-path]):not([fill=none]) {
+.rux--btn--danger--ghost .rux--btn__icon path:not([data-icon-path]):not([fill=none]),
+.rux--btn--danger--ghost .rux--btn__icon use {
   fill: currentColor;
 }
 .rux--btn--danger--ghost {
@@ -7450,7 +7459,8 @@ fieldset[disabled] .rux--form__helper-text {
 .rux--coachmark-tagline--close-btn:focus-visible {
   box-shadow: inset 0 0 0 1px var(--rux-background-inverse, #393939), inset 0 0 0 0.125rem #ffffff !important;
 }
-.rux--coachmark-tagline--close-btn svg > path {
+.rux--coachmark-tagline--close-btn svg > path,
+.rux--coachmark-tagline--close-btn svg > use {
   margin: 0;
   fill: #ffffff !important;
 }
@@ -18947,7 +18957,8 @@ button.rux--dropdown-text:focus-visible {
   pointer-events: none;
 }
 @media screen and (-ms-high-contrast: active), screen and (prefers-contrast) {
-  .rux--select__arrow path {
+  .rux--select__arrow path,
+  .rux--select__arrow use {
     fill: ButtonText;
   }
 }
@@ -20300,7 +20311,8 @@ optgroup.rux--select-optgroup:disabled,
   inline-size: 100%;
 }
 
-.rux--full-page-error__svg-container svg.rux--full-page-error__svg path {
+.rux--full-page-error__svg-container svg.rux--full-page-error__svg path,
+.rux--full-page-error__svg-container svg.rux--full-page-error__svg use {
   fill: var(--rux-background, #ffffff);
   stroke: var(--rux-border-inverse, #161616);
 }
@@ -20990,7 +21002,8 @@ optgroup.rux--select-optgroup:disabled,
 .rux--guidebanner__close-button button:active, .rux--guidebanner__close-button button:hover {
   background-color: #7433e3;
 }
-.rux--guidebanner__close-button button path {
+.rux--guidebanner__close-button button path,
+.rux--guidebanner__close-button button use {
   fill: #ffffff;
 }
 
@@ -21109,11 +21122,15 @@ optgroup.rux--select-optgroup:disabled,
   background-color: #7433e3;
 }
 .rux--guidebanner__navigation .rux--guidebanner__back-button button path,
-.rux--guidebanner__navigation .rux--guidebanner__next-button button path {
+.rux--guidebanner__navigation .rux--guidebanner__back-button button use,
+.rux--guidebanner__navigation .rux--guidebanner__next-button button path,
+.rux--guidebanner__navigation .rux--guidebanner__next-button button use {
   fill: #ffffff;
 }
 .rux--guidebanner__navigation .rux--guidebanner__back-button button[disabled] path,
-.rux--guidebanner__navigation .rux--guidebanner__next-button button[disabled] path {
+.rux--guidebanner__navigation .rux--guidebanner__back-button button[disabled] use,
+.rux--guidebanner__navigation .rux--guidebanner__next-button button[disabled] path,
+.rux--guidebanner__navigation .rux--guidebanner__next-button button[disabled] use {
   fill: #9b63ff;
 }
 
@@ -22941,7 +22958,8 @@ optgroup.rux--select-optgroup:disabled,
   background-color: var(--rux-notification-action-tertiary-inverse-active, #c6c6c6);
 }
 .rux--actionable-notification:not(.rux--actionable-notification--low-contrast) .rux--actionable-notification__action-button.rux--btn--tertiary .rux--btn__icon,
-.rux--actionable-notification:not(.rux--actionable-notification--low-contrast) .rux--actionable-notification__action-button.rux--btn--tertiary .rux--btn__icon path:not([data-icon-path]):not([fill=none]) {
+.rux--actionable-notification:not(.rux--actionable-notification--low-contrast) .rux--actionable-notification__action-button.rux--btn--tertiary .rux--btn__icon path:not([data-icon-path]):not([fill=none]),
+.rux--actionable-notification:not(.rux--actionable-notification--low-contrast) .rux--actionable-notification__action-button.rux--btn--tertiary .rux--btn__icon use {
   fill: currentColor;
 }
 
@@ -28767,7 +28785,8 @@ span.rux--pagination__text.rux--pagination__items-count {
   stroke: var(--rux-icon-primary, #161616);
 }
 
-.rux--tile--clickable .rux--tile--ai-label-icon path {
+.rux--tile--clickable .rux--tile--ai-label-icon path,
+.rux--tile--clickable .rux--tile--ai-label-icon use {
   fill: var(--rux-icon-primary, #161616);
 }
 

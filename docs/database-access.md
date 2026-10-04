@@ -24,6 +24,10 @@ The Coins tables ask `coins_is_member()` in `member_all` and `member_read`:
 the account can open Coins and is linked to a person in that household, so no
 staff member reaches a household's money. Only the owner adds a household or a
 person, in `owner_all`, because linking a login is what grants access.
+The LN Guide tables, `platform.ln_private` and `platform.ln_confirmations`,
+ask `is_owner()` in `owner_read` and `owner_all`, and so does their private
+bucket `ln-confirmations`: a screen's whole text rests on Infor's help, so no
+other account reads it.
 
 **No rule may name `anon` or `public`.** The publishable key in `account.js`
 and `data.js` is not a secret and belongs to the `anon` role, so a rule naming

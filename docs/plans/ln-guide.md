@@ -73,19 +73,23 @@ exports, so a correction is made once and every screen redraws.
 
 ### Gaps, confirmed in place
 
-- **A step nobody has confirmed in LN says so**, with two buttons: it matched,
-  and it was different. The second asks for one line and takes a screenshot.
+- **A task nobody has walked in LN says so on each step**, with two buttons for
+  the owner: it matched, and it was different. The second asks for one line and
+  takes a screenshot.
 
-- **Home ends with one quiet card for what is still unconfirmed**, listing the
-  steps and questions that wait, each opening where it belongs. It has no score
-  and no streak.
+- **Home ends with one quiet card, Still to confirm**, which opens the list of
+  tasks that wait, each opening where it belongs. It has no score and no streak.
 
-- **What the reader sends is evidence, not a change.** It is saved to the
-  reader's account and brought into atlas, where a session reads it and decides.
+- **What the owner sends is evidence, not a change.** It is saved to the
+  owner's account and brought into atlas, where a session reads it and decides.
 
-- **One table holds it, in place of the eight the old tools used.** The table
-  and its private bucket are a database change shown to rux and applied on a
-  yes.
+### Private detail
+
+- **A screen's fields and an idea's full account show on its card after
+  log-in**, for the owner alone. They rest on Infor's help, so they are read
+  from the database and never built into the public page.
+
+- **The opening lines show, and each section waits behind its heading.**
 
 ### Questions on a task
 
@@ -114,16 +118,12 @@ exports, so a correction is made once and every screen redraws.
   place.** The app is one page, `ln/index.html`, and the address says which
   screen of it shows, so Back, a reload and a shared link all work.
 
-- **The old renderer stays for the private preview only.** `ln/tools/build.mjs`
-  and `ln/js/` draw atlas's internal tier on the Mac, which is one of the three
-  choices in the question below, and nothing they write is published.
-
 ### The library
 
 - **A new area of LN is one map file and its walkthroughs.**
 
-- **A walk is recorded in atlas, with atlas's own command.** The old pull from
-  the site is replaced by the one that reads the single table.
+- **A walk is recorded in atlas, with atlas's own command.** Atlas's sync
+  sends the private detail and brings home what was confirmed.
 
 ### Left out, on purpose
 
@@ -135,19 +135,8 @@ landings for old page addresses, which are deleted.
 - **Is the goal above the right one?** It is set with rux after the specimen
   has been looked at.
 
-- **Where do field meanings and full concepts show?** They come from Infor's
-  help, so they cannot sit in this public repository. The choices: the private
-  preview on the Mac, the database behind the log-in, or atlas rewriting each
-  in its own words so it can publish.
-
 ## Tasks
 
-- [ ] In atlas, export each phase's walked date and each side task's, so a step
-      can say whether anyone has confirmed it.
-- [ ] Write the one table and its bucket as SQL, show it to rux, and build the
-      two buttons and the unconfirmed card on it.
-- [ ] In atlas, write the pull that reads the table into the inbox, and correct
-      `docs/plans/overview-walks.md` and `docs/handoff.md` to match.
 - [ ] Give Design a button set that fits a phone, and take the two rules out of
       `ln/overrides.css`.
 - [ ] In atlas, set the one shape for a question in `standards/`, with its
@@ -160,16 +149,8 @@ landings for old page addresses, which are deleted.
       own, since most of their tasks are not on this chain.
 - [ ] In atlas, write a screen file for the four screens still without one, once
       a source says how each is opened.
-- [ ] Once the question of private detail is answered, remove
-      `ln/tools/build.mjs`, its two helpers, `ln/js/` and
-      `ln/tools/sync-internal.sh`, or keep only what the answer needs, and bring
-      the checks' comments down to the one page.
-- [ ] Rewrite `ln/docs/owner-tools.md` as what the eight tables hold, and
-      delete it with them.
 - [ ] In atlas, stop exporting reviews, summaries and experiments.
-- [ ] Lay out the three choices for field meanings and concepts on one page,
-      each with a working sample, what it costs to keep, and what leaves the
-      Mac.
-- [ ] Pull what the eight old tables and two buckets hold into atlas, read each
-      record and file back from where it landed, then drop them as a database
-      step shown to rux.
+- [ ] In atlas, give a field's name its own token where it sits inside bold or
+      quoted words, and take the underscore tidy out of `ln/app.js`.
+- [ ] Show a screen's card for the 47 screens that have private detail and no
+      purpose line, which today have no card to hang it on.

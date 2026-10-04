@@ -19,7 +19,7 @@
 // THE HASH IS DETERMINISTIC OVER PATHS AND BYTES: sha256 of the lines
 // "<sha256 of file>  <path>\n", one per file under data/atlas/ except PIN,
 // sorted by path in byte order. Nothing but sync-export.sh writes it, and
-// ordinary tooling (build.mjs, measure.mjs, the hook) never touches the PIN.
+// the build and the hook never touch the PIN.
 //
 //   node tools/check-data.mjs          # compare, exit 1 on mismatch or no record
 //   node tools/check-data.mjs --hash   # print the hash of the tree, for the sync

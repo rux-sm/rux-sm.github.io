@@ -1,5 +1,5 @@
 {
-  "contract": 14,
+  "contract": 15,
   "tier": "export",
   "id": "demand-to-shipment-via-planning",
   "title": "Plan to shipment",
@@ -385,7 +385,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": null
     },
     {
       "n": 1,
@@ -794,7 +795,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": "2026-08-09"
     },
     {
       "n": 2,
@@ -1171,7 +1173,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": null
     },
     {
       "n": 3,
@@ -1598,7 +1601,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": null
     },
     {
       "n": 4,
@@ -1921,7 +1925,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": null
     },
     {
       "n": 5,
@@ -2405,7 +2410,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": null
     },
     {
       "n": 6,
@@ -2891,7 +2897,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": "2026-08-09"
     }
   ],
   "sections": [

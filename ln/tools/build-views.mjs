@@ -255,9 +255,54 @@ const home = () => `
     <h1 class="ln-ask">What are you doing?</h1>${search('ask')}
     <div class="ln-cards">
       <a class="rux--tile rux--tile--clickable ln-resume" href="./" data-resume hidden><span class="ln-quiet">Carry on</span><b></b></a>${scenarios.map((s) => `
-      <a class="rux--tile rux--tile--clickable" href="${here(`s=${esc(s.id)}`)}"><b>${esc(s.title)}</b><span class="ln-quiet">${s.phases.length} tasks</span></a>`).join('')}
+      <a class="rux--tile rux--tile--clickable" href="${here(`s=${esc(s.id)}`)}"><b>${esc(s.title)}</b><span class="ln-quiet">${s.phases.length} tasks</span></a>`).join('')}${waiting.length ? `
+      <a class="rux--tile rux--tile--clickable ln-waiting" href="./?v=confirm"><b>Still to confirm</b><span class="ln-quiet" data-waiting="${waiting.length}">${waiting.length} tasks</span></a>` : ''}
     </div>
   </section>`;
+
+// ---- what nobody has confirmed -----------------------------------------------
+// A task atlas has no walked date for says so, and the owner can answer on the
+// spot: it matched, or it was different, with a line and a screenshot. The
+// answer is evidence for atlas and changes nothing here.
+
+const waiting = [
+  ...scenarios.flatMap((s) => s.phases.filter((p) => !p.walked).map((p) => ({
+    group: s.title, scenario: s.id, steps: rowsOf(p).map((r) => r.id), href: taskHref(s, p.n), title: `${p.n + 1} ${esc(p.title)}` }))),
+  ...side.map((n) => ({ group: 'Other tasks', scenario: 'tasks', steps: [n.id], href: here(`x=${esc(n.id)}`), title: esc(n.session) })),
+];
+const confirmBox = (scenario, what) => `
+    <div class="ln-confirm" data-confirm="${esc(scenario)}">
+      <p class="ln-quiet" data-said>Nobody has confirmed this ${what} in LN yet.</p>
+      <div class="ln-confirm__ask" data-owner hidden>
+        <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" data-say="matched">It matched</button>
+        <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-say="different">It was different</button>
+      </div>
+      <form class="ln-confirm__form" data-different hidden>
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-${esc(scenario)}-${what}-${++boxes}">What was different?</label></div>
+          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+            <input id="diff-${esc(scenario)}-${what}-${boxes}" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+          </div></div>
+        </div>
+        <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
+        <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Send</button>
+      </form>
+    </div>`;
+let boxes = 0;
+
+const confirm = () => {
+  const groups = [...new Set(waiting.map((w) => w.group))];
+  return `
+  <section class="ln-screen" data-screen="confirm" hidden>
+    ${back('./', 'Scenarios')}
+    <h1 class="ln-ask">Still to confirm</h1>
+    <p class="ln-quiet">Nobody has checked these in LN yet. Open one, do it in LN, and say whether it matched.</p>${groups.map((g) => `
+    <h2 class="rux--type-productive-heading-02">${esc(g)}</h2>
+    <ul class="ln-list">${waiting.filter((w) => w.group === g).map((w) => `
+      <li data-wait="${esc(w.scenario)}" data-steps="${esc(w.steps.join(' '))}"><a class="rux--link" href="${w.href}"><span>${w.title}</span></a><span class="ln-quiet" data-answered></span></li>`).join('')}
+    </ul>`).join('')}
+  </section>`;
+};
 
 // A prerequisite arrives as a callout: "> ", the word Prerequisite, " > " and
 // then the sentence. The path carries its own label, so only the sentence shows.
@@ -306,13 +351,14 @@ function task(s, p, i) {
       <div class="rux--progress-bar__track"><div class="rux--progress-bar__bar" data-bar></div></div>
     </div>
     <ol class="ln-steps">${rows.map((r, k) => `
-      <li data-k="${k + 1}" hidden>
+      <li data-k="${k + 1}" data-ref="${esc(r.id)}" hidden>
         <h1 class="ln-step__do">${tokens(r.cells[1].tokens)}</h1>${r.cells[2].text.trim() === '\u2014' ? '' : `
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>${tokens(r.cells[2].tokens)}</p></div>`}
       </li>`).join('')}
     </ol>${p.route ? `
     <p class="ln-task__route">${screenLink(p.sessionCode, route(p.route))}${p.sessionCode ? `
       <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="${esc(p.sessionCode)}" aria-label="Copy the code ${esc(p.sessionCode)}">${esc(p.sessionCode)}</button>` : ''}</p>` : ''}
+${p.walked ? '' : confirmBox(s.id, 'step')}
     <div class="ln-step__more">${reason ? `
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>` : ''}${wrong.length ? `
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>` : ''}${cases.length ? `
@@ -448,13 +494,16 @@ const find = () => `
   </section>`;
 
 const fact = (k, v) => `<dt>${k}</dt><dd>${v}</dd>`;
+// A screen's and an idea's whole text is the owner's, read from the database
+// when the card opens, and app.js draws it into the empty box.
 const card = (attr, kind, name, text, facts, extra = '') => `
   <section class="ln-screen" data-screen="card" ${attr} hidden>
     ${back('./?v=search', 'Search')}
     <p class="ln-quiet">${kind}</p>
     <h1 class="ln-ask">${name}</h1>
     <p>${text}</p>${extra}${facts ? `
-    <dl class="ln-card__facts">${facts}</dl>` : ''}
+    <dl class="ln-card__facts">${facts}</dl>` : ''}${kind === 'Task' ? '' : `
+    <div class="ln-full" data-full hidden></div>`}
   </section>`;
 const cardsOut = () => [
   ...[...cards.values()].map((c) => card(`data-c="${esc(c.code)}"`, 'Screen', esc(c.name), esc(c.purpose),
@@ -462,7 +511,7 @@ const cardsOut = () => [
   ...concepts.map((c) => card(`data-i="${esc(c.id)}"`, 'Idea', esc(c.name), esc(c.purpose),
     `${fact('Also called', esc(c.terms.filter((t) => t !== c.name.toLowerCase()).join(', ')))}${fact('Screens', c.sources.map((code) => screenLink(code, esc(cards.get(code)?.name ?? code))).join('<br>'))}`)),
   ...side.map((n) => card(`data-x="${esc(n.id)}"`, 'Task', esc(n.session), sentence(tokens(n.does.tokens)), '',
-    `<ol class="ln-side">${n.steps.map((x) => x.text.trim() === GAP ? `<li class="ln-side__note">${GAP}</li>` : `<li>${tokens(x.tokens)}</li>`).join('')}</ol>`)),
+    `<ol class="ln-side">${n.steps.map((x) => x.text.trim() === GAP ? `<li class="ln-side__note">${GAP}</li>` : `<li>${tokens(x.tokens)}</li>`).join('')}</ol>${confirmBox('tasks', 'task').replace('data-confirm="tasks"', `data-confirm="tasks" data-step="${esc(n.id)}"`)}`)),
 ].join('');
 
 // ---- the page ----------------------------------------------------------------
@@ -503,7 +552,7 @@ const page = () => `<!doctype html>
 <!-- SPRITE:END -->
 ${shell.replace('{{nav}}', nav)}
 <main id="main-content" class="rux--content" data-ln-commit="${commit}">
-<div class="ln-app">${home()}${scenarios.map((s) => drawing(s, () => path(s) + s.phases.map((p, i) => task(s, p, i)).join('') + done(s))).join('')}${map()}${find()}${cardsOut()}
+<div class="ln-app">${home()}${scenarios.map((s) => drawing(s, () => path(s) + s.phases.map((p, i) => task(s, p, i)).join('') + done(s))).join('')}${confirm()}${map()}${find()}${cardsOut()}
 </div>
 <nav class="ln-tabs" aria-label="LN Guide">${TABS.map(([id, href, name]) => `
   <a href="${href}" data-tab="${id}">${name}</a>`).join('')}
@@ -517,6 +566,8 @@ ${shell.replace('{{nav}}', nav)}
 <script src="/switcher.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
+<script src="/design/js/accordion.js"></script>
+<script src="data.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

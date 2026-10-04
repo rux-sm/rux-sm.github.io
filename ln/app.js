@@ -2,7 +2,9 @@
 // tools/build-views.mjs wrote it; this shows the one the address asks for and
 // keeps the address in step, so Back, a reload and a shared link all work.
 // Where the reader stopped, and which tasks they finished, is kept in this
-// browser only.
+// browser only. For the owner, logged in, data.js adds two things from the
+// database: a card's whole text, and the answers given where a step is
+// unconfirmed.
 
 (function () {
   const app = document.querySelector('.ln-app');
@@ -27,6 +29,7 @@
     if (p.get('x')) return by(`[data-screen="card"][data-x="${q(p.get('x'))}"]`);
     if (p.get('v') === 'search') return by('[data-screen="search"]');
     if (p.get('v') === 'map') return by('[data-screen="map"]');
+    if (p.get('v') === 'confirm') return by('[data-screen="confirm"]');
     const s = p.get('s');
     if (s && p.get('done')) return by(`[data-screen="done"][data-s="${q(s)}"]`);
     if (s && p.get('f')) return by(`[data-screen="fork"][data-s="${q(s)}"][data-t="${q(p.get('t'))}"][data-f="${q(p.get('f'))}"]`);
@@ -48,6 +51,9 @@
     if (kind === 'done') remember({ last: null });
     if (kind === 'map') map(screen, p);
     if (kind === 'search') find(screen, p);
+    if (kind === 'card') full(screen);
+    if (kind === 'confirm') waiting(screen);
+    box(screen);
     for (const panel of screen.querySelectorAll('[data-panel]')) panel.hidden = true;
     window.scrollTo(0, 0);
   }
@@ -57,6 +63,8 @@
   function home(screen) {
     const at = recall().last, card = screen.querySelector('[data-resume]'), there = at && taskOf(at.s, at.t);
     card.hidden = !there;
+    const count = screen.querySelector('[data-waiting]');
+    if (count) { const n = owner ? left() : Number(count.dataset.waiting); count.textContent = n === 1 ? '1 task' : `${n} tasks`; count.closest('a').hidden = n === 0; }
     if (!there) return;
     card.href = hrefOf(at);
     card.querySelector('b').textContent = `${one(`[data-screen="path"][data-s="${q(at.s)}"] h1`).textContent} · ${there.dataset.title} · step ${at.k} of ${there.querySelectorAll('.ln-steps li').length}`;
@@ -99,6 +107,109 @@
     const s = screen.dataset.s, done = recall().done ?? {};
     done[s] = [...new Set([...(done[s] ?? []), screen.dataset.t])];
     remember({ done, last: null });
+  }
+
+  // ---- The owner: what was confirmed ----------------------------------------
+  // A task nobody has walked carries a box. The owner answers for the step in
+  // view, and the last answer given for a step is the one shown.
+  const ln = window.Rux?.ln;
+  const commit = document.getElementById('main-content').dataset.lnCommit;
+  let owner = false;
+  const said = new Map();
+  const NONE = new WeakMap();
+  const stepOf = (el) => el.dataset.step ?? el.closest('.ln-screen').querySelector('.ln-steps li:not([hidden])')?.dataset.ref;
+  function box(screen) {
+    const el = screen.querySelector('[data-confirm]');
+    if (!el) return;
+    const line = el.querySelector('[data-said]');
+    if (!NONE.has(el)) NONE.set(el, line.textContent);
+    const answer = said.get(`${el.dataset.confirm} ${stepOf(el)}`);
+    line.textContent = answer === 'matched' ? 'You said it matched.' : answer === 'different' ? 'You said it was different.' : NONE.get(el);
+    el.querySelector('[data-owner]').hidden = !owner;
+    el.querySelector('[data-different]').hidden = true;
+  }
+  async function say(el, outcome, form) {
+    const step = stepOf(el), line = el.querySelector('[data-said]');
+    const buttons = [...el.querySelectorAll('button')];
+    for (const b of buttons) b.disabled = true;
+    try {
+      await ln.say({ scenario: el.dataset.confirm, step, outcome, commit,
+        note: form?.elements.note.value.trim(), file: form?.elements.shot.files[0] });
+      said.set(`${el.dataset.confirm} ${step}`, outcome);
+      if (form) { form.reset(); form.querySelector('[data-file-name]').textContent = 'Add a screenshot'; }
+      box(el.closest('.ln-screen'));
+    } catch (e) {
+      line.textContent = 'That did not save. Try again.';
+    }
+    for (const b of buttons) b.disabled = false;
+  }
+  // How many steps of one waiting task have an answer, and how many tasks wait.
+  const answered = (li) => li.dataset.steps.split(' ').filter((id) => said.has(`${li.dataset.wait} ${id}`)).length;
+  const left = () => [...app.querySelectorAll('[data-wait]')].filter((li) => answered(li) < li.dataset.steps.split(' ').length).length;
+  function waiting(screen) {
+    for (const li of screen.querySelectorAll('[data-wait]')) {
+      const all = li.dataset.steps.split(' ').length, n = owner ? answered(li) : 0;
+      li.querySelector('[data-answered]').textContent = n === 0 ? '' : n === all ? 'You answered it' : `${n} of ${all} steps answered`;
+    }
+  }
+
+  // ---- The owner: a card's whole text ----------------------------------------
+  // Atlas sends a screen's or an idea's text as typed blocks. The opening lines
+  // show, and each section waits behind its heading.
+  const esc = (v) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const cardHref = (id) => one(`[data-screen="card"][data-c="${q(id)}"]`) ? `./?c=${encodeURIComponent(id)}`
+    : one(`[data-screen="card"][data-i="${q(id)}"]`) ? `./?i=${encodeURIComponent(id)}`
+    : one(`[data-screen="path"][data-s="${q(id)}"]`) ? `./?s=${encodeURIComponent(id)}` : null;
+  const linked = (id, html) => cardHref(id) ? `<a class="rux--link" href="${cardHref(id)}">${html}</a>` : html;
+  // Atlas marks a field's name with underscores, and leaves them in where the
+  // name sits inside bold or quoted words.
+  const bare = (v) => esc(v).replace(/(^|[\s(])_([^_]+)_(?=$|[\s).,;:])/g, '$1$2');
+  const token = (t) => {
+    switch (t.t) {
+      case 'text': return esc(t.v);
+      case 'strong': case 'field': case 'chip': return `<span class="ln-t-named">${bare(t.v)}</span>`;
+      case 'em': case 'quote': return `<span class="ln-t-said">${bare(t.v)}</span>`;
+      case 'literal': case 'status': return `<span class="ln-t-exact">${esc(t.v)}</span>`;
+      case 'button': return `<span class="ln-t-press">${esc(t.label)}</span>`;
+      case 'path': return `<span class="ln-t-route">${t.route.split(' \u2794 ').map((x, i, all) => (i ? '<span class="sep">\u2794</span>' : '') + `<span${i === all.length - 1 ? ' class="dest"' : ''}>${esc(x)}</span>`).join('')}</span>`;
+      case 'session': return `${linked(t.code, `<span class="ln-t-named">${esc(t.name || t.code)}</span>`)}${t.name ? ` <span class="ln-t-exact">${esc(t.code)}</span>` : ''}`;
+      case 'link': return linked(t.href.split('/').pop().replace(/\.md$/, ''), `<span>${esc(t.v)}</span>`);
+      case 'gap': return '<span class="ln-t-gap">Not known yet:</span> ';
+      default: return esc(t.v ?? '');
+    }
+  };
+  const tokens = (list) => (list ?? []).map(token).join('');
+  const LABEL = { note: 'Note', warning: 'Watch out', prerequisite: 'First' };
+  const block = (b) => {
+    switch (b.kind) {
+      case 'prose': case 'source': return `<p${b.kind === 'source' ? ' class="ln-quiet"' : ''}>${tokens(b.tokens)}</p>`;
+      case 'list': return `<${b.ordered ? 'ol' : 'ul'} class="ln-full__list">${b.items.map((i) => `<li>${tokens(i.tokens)}</li>`).join('')}</${b.ordered ? 'ol' : 'ul'}>`;
+      case 'callout': return `<div class="ln-full__note"><span class="ln-quiet">${LABEL[b.variant] ?? 'Note'}</span>${b.blocks.map(block).join('')}</div>`;
+      case 'code': return `<pre class="ln-full__code">${esc(b.text)}</pre>`;
+      // A table is read down a phone: each row leads with its first cell, and
+      // every other cell sits under its column's name.
+      case 'table': return `<div class="ln-full__rows">${b.rows.map((r) => `<div><b>${tokens(r.cells[0].tokens)}</b>${r.cells.slice(1).map((c, i) =>
+        c.text.trim() && c.text.trim() !== '\u2014' ? `<p>${b.columns.length > 2 ? `<span class="ln-quiet">${esc(b.columns[i + 1])}</span> ` : ''}${tokens(c.tokens)}</p>` : '').join('')}</div>`).join('')}</div>`;
+      default: return '';
+    }
+  };
+  const ARROW = '<svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>';
+  async function full(screen) {
+    const el = screen.querySelector('[data-full]');
+    if (!el || !owner || el.dataset.drawn) return;
+    el.dataset.drawn = 'yes';
+    try {
+      const body = await ln.detail(screen.dataset.c ?? screen.dataset.i);
+      if (!body) return;
+      el.innerHTML = body.intro.map(block).join('') + `<ul class="rux--accordion rux--accordion--end rux--layout--size-md">${body.topics.map((t) => `
+        <li class="rux--accordion__item">
+          <button type="button" class="rux--accordion__heading" aria-expanded="false">${ARROW}<div class="rux--accordion__title">${esc(t.title)}</div></button>
+          <div class="rux--accordion__wrapper"><div class="rux--accordion__content">${t.blocks.map(block).join('')}</div></div>
+        </li>`).join('')}</ul>`;
+      el.hidden = false;
+    } catch (e) {
+      delete el.dataset.drawn;
+    }
   }
 
   // ---- Map: the chosen route as a path, the whole grid behind its button ----
@@ -168,6 +279,13 @@
     const el = event.target.closest('a, button');
     if (!el) return;
     if (el.matches('[data-copy]')) return void navigator.clipboard?.writeText(el.dataset.copy);
+    if (el.matches('[data-say]')) {
+      const confirm = el.closest('[data-confirm]');
+      if (el.dataset.say === 'matched') return void say(confirm, 'matched');
+      const form = confirm.querySelector('[data-different]');
+      form.hidden = false;
+      return void form.elements.note.focus();
+    }
     if (el.matches('[data-open]')) {
       event.preventDefault();
       const screen = el.closest('.ln-screen'), panel = screen.querySelector(`[data-panel="${el.dataset.open}"]`), was = panel.hidden;
@@ -211,7 +329,13 @@
     const input = one('[data-screen="search"] [data-search]');
     if (document.activeElement !== input) { input.focus(); input.setSelectionRange(text.length, text.length); }
   });
+  document.addEventListener('submit', (event) => {
+    if (!event.target.matches('[data-different]')) return;
+    event.preventDefault();
+    say(event.target.closest('[data-confirm]'), 'different', event.target);
+  });
   document.addEventListener('change', (event) => {
+    if (event.target.name === 'shot') event.target.closest('label').querySelector('[data-file-name]').textContent = event.target.files[0]?.name ?? 'Add a screenshot';
     if (event.target.id === 'scenario') go(`./?v=map&s=${encodeURIComponent(event.target.value)}`, true);
   });
   document.addEventListener('keydown', (event) => {
@@ -235,4 +359,16 @@
   window.addEventListener('popstate', show);
   if (grid) new ResizeObserver(() => draw(routes[grid.dataset.lit])).observe(grid);
   show();
+  // The owner's answers and the private shelf arrive after the page shows, and
+  // the screen in view is drawn again once they are here.
+  ln?.owner().then(async (yes) => {
+    if (!yes) return;
+    for (const row of await ln.said()) said.set(`${row.scenario} ${row.step}`, row.outcome);
+    owner = true;
+    const screen = one('.ln-screen:not([hidden])');
+    box(screen);
+    if (screen.dataset.screen === 'home') home(screen);
+    if (screen.dataset.screen === 'card') full(screen);
+    if (screen.dataset.screen === 'confirm') waiting(screen);
+  }).catch(() => { /* without the database the page is as it was built */ });
 })();

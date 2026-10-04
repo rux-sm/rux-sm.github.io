@@ -1,4 +1,4 @@
-/* Notes' own rules for the flow tools/build-views.mjs writes. Every control
+/* LN Guide's own rules for the flow tools/build-views.mjs writes. Every control
    on it is Design's; what is here is what Carbon has no component for: the
    path, the step, the tab bar, the map and a card's facts. Every colour is a
    Design token, so each theme carries the page with it. */
@@ -98,6 +98,29 @@
 .ln-card__facts { display: grid; grid-template-columns: auto 1fr; gap: .75rem 1rem; margin: 0; padding-block-start: 1rem; border-block-start: 1px solid var(--rux-border-subtle-01); line-height: 1.45; }
 .ln-card__facts dt { color: var(--rux-text-secondary); font-size: .875rem; padding-block-start: .1rem; }
 .ln-card__facts dd { margin: 0; min-inline-size: 0; overflow-wrap: anywhere; }
+
+/* ---- What nobody has confirmed: a quiet line, and two answers -------------- */
+.ln-confirm { display: grid; gap: .5rem; padding-block-start: 1rem; border-block-start: 1px solid var(--rux-border-subtle-01); }
+.ln-confirm__ask { display: flex; flex-wrap: wrap; gap: .5rem; }
+.ln-confirm__form { display: grid; gap: .75rem; justify-items: start; }
+.ln-confirm__form .rux--form-item { inline-size: 100%; }
+.ln-waiting b { font-weight: 400; }
+.ln-list [data-answered] { display: block; }
+
+/* ---- A card's whole text, for the owner ----------------------------------- */
+.ln-t-said { color: var(--rux-text-secondary); }
+.ln-t-gap { font-weight: 600; color: var(--rux-text-primary); }
+.ln-full { display: grid; gap: 1rem; line-height: 1.5; }
+.ln-full p { margin: 0; }
+.ln-full .rux--accordion__content { display: grid; gap: .875rem; padding-inline-end: 1rem; }
+.ln-full__list { margin: 0; padding-inline-start: 1.25rem; display: grid; gap: .5rem; }
+ul.ln-full__list { list-style: disc; }
+ol.ln-full__list { list-style: decimal; }
+.ln-full__note { display: grid; gap: .5rem; padding: .75rem 1rem; background: var(--rux-layer-01); border-inline-start: 3px solid var(--rux-border-strong-01); }
+.ln-full__code { margin: 0; padding: .75rem 1rem; background: var(--rux-layer-01); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .8125rem; overflow-x: auto; }
+.ln-full__rows { display: grid; }
+.ln-full__rows > div { display: grid; gap: .25rem; padding-block: .625rem; border-block-end: 1px solid var(--rux-border-subtle-01); }
+.ln-full__rows b { font-weight: 600; }
 
 /* Carbon's reset, and the rules above, give several elements a display of their
    own, which beats the browser's rule for the hidden attribute. This puts it

@@ -11,12 +11,8 @@
 //                                 log-in and live data, a fixed address to
 //                                 bookmark; account.js and funnel.js know it by
 //                                 its port
-//   npm run serve -- --private    render Atlas's internal tier into
-//                                 ln/build/ (git-ignored) and serve
-//                                 it on :8644, beside the public one
 //
-import { spawnSync, spawn } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { spawn } from 'node:child_process';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -24,19 +20,7 @@ const ROOT = resolve(fileURLToPath(import.meta.url), '..', '..');
 const SERVER = join(ROOT, 'design', 'tools', 'serve.mjs');
 const env = { ...process.env, HOST: process.env.HOST ?? 'localhost' };
 
-if (process.argv.includes('--private')) {
-  const notes = join(ROOT, 'ln');
-  const atlas = process.env.ATLAS ?? resolve(ROOT, '..', 'atlas');
-  if (!existsSync(join(atlas, 'tools', 'emit.py'))) {
-    console.error(`  no atlas at ${atlas} -- clone it beside this repository, or set ATLAS=<dir>`);
-    process.exit(1);
-  }
-  const sync = spawnSync('sh', ['tools/sync-internal.sh'], { cwd: notes, stdio: 'inherit', env: { ...env, ATLAS: atlas, DS: join(ROOT, 'design') } });
-  if (sync.status !== 0) process.exit(sync.status ?? 1);
-  const site = join(notes, 'build', 'internal', 'site');
-  console.log(`  private preview: http://localhost:${env.PORT ?? 8644}/  (never published)`);
-  spawn(process.execPath, [SERVER], { cwd: site, stdio: 'inherit', env: { ...env, PORT: env.PORT ?? '8644' } });
-} else if (process.argv.includes('--cloud')) {
+if (process.argv.includes('--cloud')) {
   // Always 8641, whatever PORT says: the pages decide by this port alone.
   console.log('  cloud preview: http://localhost:8641/  (live log-in and data)');
   spawn(process.execPath, [SERVER], { cwd: ROOT, stdio: 'inherit', env: { ...env, PORT: '8641' } });

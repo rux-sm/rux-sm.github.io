@@ -1,5 +1,5 @@
 {
-  "contract": 14,
+  "contract": 15,
   "tier": "export",
   "id": "ship-from-stock",
   "title": "Ship from stock",
@@ -417,7 +417,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": "2026-08-09"
     },
     {
       "n": 1,
@@ -989,7 +990,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": "2026-08-09"
     },
     {
       "n": 2,
@@ -1379,7 +1381,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": "2026-08-08"
     },
     {
       "n": 3,
@@ -1768,7 +1771,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": "2026-08-09"
     },
     {
       "n": 4,
@@ -2162,7 +2166,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": "2026-08-09"
     },
     {
       "n": 5,
@@ -2450,7 +2455,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": "2026-08-09"
     },
     {
       "n": 6,
@@ -2561,7 +2567,8 @@
           ],
           "text": "On-hand before − on-hand after must equal the shipped quantity. If it does not, the shipment was not confirmed. The walkthrough is complete when the shipment is Confirmed and this inventory check passes."
         }
-      ]
+      ],
+      "walked": "2026-08-09"
     }
   ],
   "sections": [

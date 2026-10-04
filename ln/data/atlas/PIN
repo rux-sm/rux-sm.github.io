@@ -1,9 +1,9 @@
-commit   b031252ffd1bdfc7ed595e8bc2e9e0b39b98f8e0
-date     2026-10-04T18:00:47Z
-subject  docs(site): Rename Notes to LN Guide at ln
-contract 14 
+commit   804f0d0899069a5a64d5688decfb21b4bced21f1
+date     2026-10-04T18:33:48Z
+subject  feat(tools): Send the private shelf to LN Guide
+contract 15 
 tier     export
-sha256   2394e56cc2446f1aa9692f1bbc40c5dd2d55d7781fe2cf0b7d424fda4e75dd6e
+sha256   18fe7ecacb4da49eef45bb4dad5f942315908cbdb517cd91f4b0aaf082990c4a
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

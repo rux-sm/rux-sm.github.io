@@ -46,15 +46,8 @@ const defined = new Set(
     .map(m => m[1].replace(/\\/g, ''))
 );
 
-// EVERY PAGE, NOT EVERY PAGE AT THE ROOT. This walked `readdirSync(ROOT)` and
-// stopped there until 2026-08-31, when tools/build.mjs started writing seven
-// generated walkthroughs into `pages/`. The no-argument form would have reported a
-// clean run over one file having never opened the other seven, and printed a
-// count that looked like coverage.
-//
-// Design found the identical bug on its own side and fixed it: `pageTargets()`
-// carried a hardcoded page list, so a consumer page could never become a sweep
-// cell and `npm run gates` showed a full green matrix without naming it.
+// EVERY PAGE, NOT EVERY PAGE AT THE ROOT. The folder is walked, so a page in
+// a subfolder is swept like any other and the count printed is real coverage.
 //
 // `build/` is skipped because it is gitignored scratch, and `vendor/` because
 // those pages are Design's and are gated there.

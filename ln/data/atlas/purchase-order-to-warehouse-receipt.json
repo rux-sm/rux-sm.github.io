@@ -1,5 +1,5 @@
 {
-  "contract": 14,
+  "contract": 15,
   "tier": "export",
   "id": "purchase-order-to-warehouse-receipt",
   "title": "Purchase to receipt",
@@ -304,7 +304,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": null
     },
     {
       "n": 1,
@@ -653,7 +654,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": "2026-08-18"
     },
     {
       "n": 2,
@@ -948,7 +950,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": "2026-08-18"
     },
     {
       "n": 3,
@@ -1191,7 +1194,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": "2026-08-18"
     },
     {
       "n": 4,
@@ -1532,7 +1536,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": "2026-08-18"
     },
     {
       "n": 5,
@@ -1706,7 +1711,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": null
     }
   ],
   "sections": [

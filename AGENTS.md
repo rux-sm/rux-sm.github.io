@@ -43,7 +43,6 @@ deliberate step, never by a website deploy.
 
     npm run serve               the site at http://localhost:8640/, loopback only, offline
     npm run serve -- --cloud    the same at http://localhost:8641/, with log-in and live data
-    npm run serve -- --private  atlas's internal tier, rendered and served on :8644, never published
     npm run build               regenerate what is committed but derived
     npm run check               every app through the shared check, LN Guide's gates, the names sweep, the print rule
     npm run check -- --full     the same plus Design's own verify; what CI runs

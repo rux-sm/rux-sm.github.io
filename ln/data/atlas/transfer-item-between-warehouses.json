@@ -1,5 +1,5 @@
 {
-  "contract": 14,
+  "contract": 15,
   "tier": "export",
   "id": "transfer-item-between-warehouses",
   "title": "Warehouse transfer",
@@ -362,7 +362,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": "2026-08-15"
     },
     {
       "n": 1,
@@ -798,7 +799,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": "2026-08-15"
     },
     {
       "n": 2,
@@ -1208,7 +1210,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": "2026-08-15"
     },
     {
       "n": 3,
@@ -1466,7 +1469,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": null
     },
     {
       "n": 4,
@@ -1707,7 +1711,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": null
     },
     {
       "n": 5,
@@ -1863,7 +1868,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": null
     },
     {
       "n": 6,
@@ -1988,7 +1994,8 @@
           ],
           "text": "> Warning > The 2026-08-15 run did not pass this proof: source decreased by 412 while destination increased by 500. That can result from an inaccurate starting value or other inventory activity during the walk, but the evidence does not establish which. Repeat phase 0 immediately before the next transfer and capture both warehouse rows in one screenshot; then repeat phase 6 in the same view. Not documented for this release."
         }
-      ]
+      ],
+      "walked": null
     }
   ],
   "sections": [

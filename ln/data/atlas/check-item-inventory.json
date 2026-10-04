@@ -1,5 +1,5 @@
 {
-  "contract": 14,
+  "contract": 15,
   "tier": "export",
   "id": "check-item-inventory",
   "title": "Check an item's inventory",
@@ -237,7 +237,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": null
     },
     {
       "n": 1,
@@ -533,7 +534,8 @@
             }
           ]
         }
-      ]
+      ],
+      "walked": null
     }
   ],
   "sections": [

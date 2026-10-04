@@ -44,7 +44,6 @@ Database work needs no checkout; `AGENTS.md` says how.
 ```sh
 npm run serve                  # http://localhost:8640/ — the whole site, loopback only, offline
 npm run serve -- --cloud       # http://localhost:8641/ — the same, with log-in and live data
-npm run serve -- --private     # atlas's internal tier on :8644, never published
 npm run build                  # regenerate what is committed but derived
 npm run check                  # every app, LN Guide's gates, the names sweep, the print rule; --full adds Design verify
 npm test                       # the same check, under the name every tool expects

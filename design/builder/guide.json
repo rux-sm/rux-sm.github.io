@@ -49,7 +49,7 @@
           "reason": "A single tile carries one figure that does not belong in the metric row.",
           "unless": "It would sit inside anything painting layer \u2014 \u00a73.1: a tile on layer-two is invisible on a plain page.",
           "evidence": "The dashboard grid is its own layout and no block outside this template matches it. Placement here is unverified in both directions.",
-          "reviewed": false
+          "reviewed": true
         }
       ]
     },
@@ -129,7 +129,7 @@
           "reason": "Settings nobody changes belong behind a disclosure rather than on the page.",
           "unless": null,
           "evidence": "No template places an accordion in a page body. Its own margins against a stack are unverified. \u00a73.10.",
-          "reviewed": false
+          "reviewed": true
         }
       ]
     },
@@ -228,7 +228,7 @@
           "reason": "A search that returns nothing still has to say so and offer a way on. IBM's search pattern calls it avoiding a dead end, and the count line is the only part of this page that survives zero results.",
           "unless": "The page already handles the empty case inside the results column.",
           "evidence": "The empty state was measured in a col-span-100 body; this page has three columns and no block of its own spans them. Whether it lands in the results column or replaces all three is unverified, and so is its spacing against the filter column beside it. \u00a73.10.",
-          "reviewed": false
+          "reviewed": true
         }
       ]
     },

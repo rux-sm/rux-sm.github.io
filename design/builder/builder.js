@@ -995,8 +995,8 @@ function frameNote() {
 
 // THE MAP'S SUGGESTIONS. PROMOTED IS reviewed === true AND NOTHING ELSE --
 // rux's review: visual priority is authority whatever a badge says, so a draft
-// never takes the top of the list. Everything ships unreviewed, so this section
-// is a closed "not reviewed" disclosure today and that is the intended state.
+// never takes the top of the list. An entry not yet read sits in a closed
+// "not reviewed" disclosure under the promoted ones.
 function renderSuggestions() {
   const box = $('#bld-suggestions');
   box.textContent = '';

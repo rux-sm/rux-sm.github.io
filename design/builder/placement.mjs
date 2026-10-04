@@ -95,8 +95,8 @@ export function offerFor(manifest, template, slot) {
 // The map's entries for one template, split by whether rux has read them.
 // PROMOTED IS reviewed === true AND NOTHING ELSE. rux's review: visual priority
 // is authority regardless of a badge, so a draft never takes the top of the
-// list. Everything ships unreviewed, so at the commit this landed `promoted` is
-// empty for every template and that is the intended state, not a bug.
+// list. A new entry is written with reviewed false and stays a draft until rux
+// has read it.
 export function suggestionsFor(guide, templateName) {
   const entry = guide?.templates?.[templateName];
   const all = entry?.suggestions ?? [];

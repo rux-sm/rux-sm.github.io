@@ -70,6 +70,9 @@
 (() => {
   'use strict';
   const KEY = 'rux.profile';
+  // Where this file was loaded from, read while it runs: the fonts below are
+  // found from it, so a page at any depth asks for the same two files.
+  const HERE = document.currentScript?.src;
   const NAME = /^[a-z][a-z0-9-]*$/;
   // Carbon's four compiled themes, then the three css/rux-theme.css adds.
   const CARBON = new Set(['white', 'g10', 'g90', 'g100']);
@@ -170,7 +173,37 @@
     dressMark(el);
   };
 
-  const apply = () => {
+  // GEIST'S OWN FACES, FOR THE ONE THEME THAT WEARS THEM. geist-dark sets its
+  // words in Geist Sans (css/rux-overrides.css names the family), and no page
+  // links a stylesheet for it: this file already runs in the head of every
+  // page before the first paint and already knows the theme, so it writes the
+  // two faces and preloads the one every page uses. Another theme asks for
+  // nothing. The face is `swap`, where Plex's is `optional`: someone who
+  // picks this theme in the account panel sees it arrive on that page, and
+  // the preload keeps every later page from painting in Plex first. Geist
+  // Sans is one variable file covering the 400, 500 and 600 the theme uses.
+  const FACES = [
+    ['Geist', '100 900', 'Geist-Variable.woff2'],
+    ['Geist Mono', '400', 'GeistMono-Regular.woff2'],
+  ];
+  const dressFaces = () => {
+    if (!HERE || document.documentElement.dataset.theme !== 'geist-dark') return;
+    if (document.getElementById('rux-geist-faces')) return;
+    const url = file => new URL(`../assets/fonts/${file}`, HERE).href;
+    const preload = document.createElement('link');
+    preload.rel = 'preload';
+    preload.as = 'font';
+    preload.type = 'font/woff2';
+    preload.crossOrigin = 'anonymous';
+    preload.href = url(FACES[0][2]);
+    const style = document.createElement('style');
+    style.id = 'rux-geist-faces';
+    style.textContent = FACES.map(([family, weight, file]) =>
+      `@font-face{font-family:'${family}';font-style:normal;font-weight:${weight};font-display:swap;src:url('${url(file)}') format('woff2')}`).join('');
+    document.head.append(preload, style);
+  };
+
+  const resolve = () => {
     const html = document.documentElement;
     const shells = document.querySelectorAll(SHELL);
     const t = read()?.theme;
@@ -203,6 +236,11 @@
     wear(html, 'white');
     for (const el of shells) dressShell(el, 'g100');
     return 'white';
+  };
+  const apply = () => {
+    const name = resolve();
+    dressFaces();
+    return name;
   };
 
   // The header arrives while the parser is still running. Watching for it

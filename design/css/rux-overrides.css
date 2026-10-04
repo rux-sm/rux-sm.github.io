@@ -544,6 +544,92 @@
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--date-picker__input:not(.rux--date-picker__input--lg, .rux--date-picker__input--sm) {
   block-size: var(--rux-layout-size-height-md);
 }
+/* GEIST'S TYPE, measured on its Typography page in dark mode. The face is
+   Geist Sans, which js/theme.js loads for this theme alone; Plex stays in the
+   stack for the moment before it arrives and for a page that runs no script.
+   Carbon names Plex on `body` and on a handful of controls and lets
+   everything else inherit, so those are the selectors named here. Its code
+   face becomes Geist Mono through Carbon's own two tokens.
+   - Body, label and button text has no tracking in Geist; Carbon's 0.16px and
+     0.32px are optical corrections for Plex, so they go.
+   - A heading is 600 at every size with tracking that tightens as it grows:
+     -0.28px at 14, -0.32px at 16, -0.4px at 20, -0.96px at 24, -1.28px at 32.
+     Carbon's 28px step is not one of Geist's, so heading-04 -- the page
+     title -- takes Geist's 24 on a 32px line. Its 42px and 54px steps keep
+     their size and take the weight and the -0.06em of Geist's 40 and above.
+   - Line heights stay Carbon's: the apps size rows from them.
+   - A button, a tag and a table's header are 500, and the header is the
+     secondary grey, as on Geist's Button, Badge and Table pages.
+   - A date or a time is set in the sans with its figures all one width, as
+     Geist's own date field is, where Carbon sets them in the code face. */
+[data-theme="geist-dark"] {
+  font-family: 'Geist', 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+  --rux-body-01-letter-spacing: 0;
+  --rux-body-compact-01-letter-spacing: 0;
+  --rux-body-long-01-letter-spacing: 0;
+  --rux-body-short-01-letter-spacing: 0;
+  --rux-caption-01-letter-spacing: 0;
+  --rux-caption-02-letter-spacing: 0;
+  --rux-code-01-letter-spacing: 0;
+  --rux-code-02-letter-spacing: 0;
+  --rux-helper-text-01-letter-spacing: 0;
+  --rux-helper-text-02-letter-spacing: 0;
+  --rux-label-01-letter-spacing: 0;
+  --rux-label-02-letter-spacing: 0;
+  --rux-legal-01-letter-spacing: 0;
+  --rux-legal-02-letter-spacing: 0;
+  --rux-heading-01-letter-spacing: -0.28px;
+  --rux-heading-compact-01-letter-spacing: -0.28px;
+  --rux-productive-heading-01-letter-spacing: -0.28px;
+  --rux-expressive-heading-01-letter-spacing: -0.28px;
+  --rux-heading-02-letter-spacing: -0.32px;
+  --rux-heading-compact-02-letter-spacing: -0.32px;
+  --rux-productive-heading-02-letter-spacing: -0.32px;
+  --rux-expressive-heading-02-letter-spacing: -0.32px;
+  --rux-heading-03-font-weight: 600;
+  --rux-heading-03-letter-spacing: -0.4px;
+  --rux-productive-heading-03-font-weight: 600;
+  --rux-productive-heading-03-letter-spacing: -0.4px;
+  --rux-heading-04-font-size: 1.5rem;
+  --rux-heading-04-line-height: 1.33333;
+  --rux-heading-04-font-weight: 600;
+  --rux-heading-04-letter-spacing: -0.96px;
+  --rux-productive-heading-04-font-size: 1.5rem;
+  --rux-productive-heading-04-line-height: 1.33333;
+  --rux-productive-heading-04-font-weight: 600;
+  --rux-productive-heading-04-letter-spacing: -0.96px;
+  --rux-heading-05-font-weight: 600;
+  --rux-heading-05-letter-spacing: -1.28px;
+  --rux-productive-heading-05-font-weight: 600;
+  --rux-productive-heading-05-letter-spacing: -1.28px;
+  --rux-heading-06-font-weight: 600;
+  --rux-heading-06-letter-spacing: -0.06em;
+  --rux-productive-heading-06-font-weight: 600;
+  --rux-productive-heading-06-letter-spacing: -0.06em;
+  --rux-heading-07-font-weight: 600;
+  --rux-heading-07-letter-spacing: -0.06em;
+  --rux-productive-heading-07-font-weight: 600;
+  --rux-productive-heading-07-letter-spacing: -0.06em;
+  --rux-code-01-font-family: 'Geist Mono', 'IBM Plex Mono', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', monospace;
+  --rux-code-02-font-family: 'Geist Mono', 'IBM Plex Mono', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', monospace;
+}
+[data-theme="geist-dark"] body,
+[data-theme="geist-dark"] :is(input[type=number], input[type=text].rux--number, .rux--number input, .rux--content-switcher-btn, .rux--snippet .rux--popover-container, .rux--snippet-btn--expand, .rux--type-sans) {
+  font-family: 'Geist', 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+}
+[data-theme="geist-dark"] :is(code, .rux--type-mono) {
+  font-family: 'Geist Mono', 'IBM Plex Mono', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', monospace;
+}
+[data-theme="geist-dark"] :is(.rux--date-picker__input, .rux--time-picker__input-field) {
+  font-family: 'Geist', 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+[data-theme="geist-dark"] :is(.rux--btn, .rux--tag, .rux--data-table thead) {
+  font-weight: 500;
+}
+[data-theme="geist-dark"] .rux--data-table :is(th, .rux--table-sort) {
+  color: var(--rux-text-secondary);
+}
 /* GEIST'S SPACING INSIDE A CONTROL, measured on its own pages. Carbon's
    spacing stays everywhere else, including cards and menus, which are not
    measured yet.
@@ -626,9 +712,12 @@
 }
 /*   The chosen tab is told apart by its line and its ink, not its weight:
      Geist's Tabs page sets every tab at 400, the chosen one in #ededed over
-     the others' #a1a1a1, so choosing one never changes its width. */
+     the others' #a1a1a1, so choosing one never changes its width. Carbon
+     sets the chosen tab in its heading type, whose tracking this theme
+     tightens, so the tracking is the body's too. */
 [data-theme="geist-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-item--selected {
   font-weight: 400;
+  letter-spacing: 0;
 }
 /* ANT'S TABS, measured on its Tabs page: each as wide as its label with no
    inset of its own and 32px from the next, 14px at 400 whether chosen or

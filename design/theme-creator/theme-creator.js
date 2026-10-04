@@ -701,7 +701,20 @@ async function buildPreview() {
   }
   html = rebase(html);
   html = html.replace(/<html\b([^>]*)\sdata-theme="[^"]*"/, `<html$1 data-theme="${dataTheme}"${dataSurface ? ` data-rux-surface="${dataSurface}"` : ''}`);
-  html = html.replace(/(<script[^>]*\ssrc="js\/theme\.js")/, `${PROFILE_SHIM}\n$1`);
+  // rebase() has made every address absolute by now, so the script is found
+  // by the end of its address. Matched on the bare `js/theme.js` it was never
+  // found, the shim was never written, and the preview wore the theme saved
+  // in the account panel and not the one being made.
+  html = html.replace(/(<script[^>]*\ssrc="[^"]*js\/theme\.js")/, `${PROFILE_SHIM}\n$1`);
+  // The preview is opened by a page that has passed the site's lock. Run in a
+  // blob: document the lock reads the blob's own address as an app's, and
+  // sends an account that is not the owner away.
+  html = html.replace(/<script src="[^"]*\/funnel\.js"><\/script>/, `<script>/* preview only — not in the export */document.documentElement.setAttribute('data-rux-unlocked','');</script>`);
+  // The account script and the library it needs are left out. It reads the
+  // theme saved with the account and puts it on the page, over the theme
+  // being made, and it saves a theme picked in the preview's own panel back
+  // to the account.
+  html = html.replace(/<script src="[^"]*supabase-js[^"]*"[^>]*><\/script>\s*/, '').replace(/<script src="[^"]*\/account\.js"><\/script>\s*/, '');
   // js/theme.js's clearOverrides() removes data-rux-surface the moment it
   // runs — right on a real page, where it is switching away from a custom
   // theme, and fatal here, because it strips the attribute written on the

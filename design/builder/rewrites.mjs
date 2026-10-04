@@ -98,6 +98,12 @@ export function exportPage(templateHtml, answers = {}) {
 // intercepted; everything else the page might store behaves as it would.
 const SHIM = `<script>/* preview only — not in the export */(()=>{const K='rux.profile',m=new Map(),P=Storage.prototype,g=P.getItem,s=P.setItem,r=P.removeItem;P.getItem=function(k){return k===K?(m.has(K)?m.get(K):null):g.call(this,k)};P.setItem=function(k,v){k===K?m.set(K,String(v)):s.call(this,k,v)};P.removeItem=function(k){k===K?m.delete(K):r.call(this,k)}})();</script>`;
 
+// The two script lines a preview leaves out: the account's, and supabase-js.
+const ACCOUNT = /<script src="(?:\/account\.js|[^"]*supabase-js[^"]*)"/;
+
+// The page lock's one effect, for a preview that cannot load the lock.
+const UNLOCK = `<script>/* preview only — not in the export */document.documentElement.setAttribute('data-rux-unlocked','');</script>`;
+
 // The same page, served from this repository, for the preview iframe.
 // `root` is '' for a srcdoc preview (relative to builder.html's own URL) or an
 // absolute URL prefix for a Blob-URL one.
@@ -110,8 +116,22 @@ export function previewPage(templateHtml, answers = {}, root = '') {
   lines = everywhere(lines, '"../assets/', `"${root}assets/`);
   lines = everywhere(lines, '"../js/', `"${root}js/`);
   lines = content(lines, answers);
+  // A blob: document has no site of its own, so a path from the site's root
+  // resolves to nothing there. The page lock is one: unloaded, it left the
+  // page hidden and the preview blank. The preview is opened by a page that
+  // has already passed the lock, so it opens itself, and the switcher script
+  // is pointed at the site.
+  //
+  // The account script and the library it needs are left out. It reads the
+  // theme saved with the account and puts it on the page, over the one being
+  // previewed, and it saves a theme picked in the preview's own panel back to
+  // the account.
+  const site = root ? new URL('/', root).href : '/';
   const out = [];
-  for (const l of lines) {
+  for (let l of lines) {
+    if (ACCOUNT.test(l)) continue;
+    if (l.includes('<script src="/funnel.js"></script>')) l = l.replace('<script src="/funnel.js"></script>', () => UNLOCK);
+    l = l.replace(/((?:href|src)=")\/(?!\/)/g, (_, attr) => attr + site);
     if (l.includes(`src="${root}js/theme.js"`)) out.push(SHIM);
     out.push(l);
   }

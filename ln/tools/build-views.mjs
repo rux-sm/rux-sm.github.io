@@ -62,9 +62,35 @@ const screenLink = (code, text) => cards.has(code)
   ? `<a class="rux--link" href="./?c=${esc(code)}">${text}</a>` : text;
 
 const ready = new Set(scenarios.map((s) => s.id));
+
+// ATLAS NUMBERS FROM 0 AND THE READER COUNTS FROM 1. A task is shown as its
+// phase number plus one, and atlas's own text points at steps by id, "see 2.6",
+// and at tasks as "phase 2". While a scenario is being drawn, each of those is
+// rewritten to the number the reader sees and, outside a link, made a link to
+// the step or task it names.
+let ctx = null;        // the scenario being drawn: { s, ids: step id -> [phase, step] }
+let linking = true;    // false while the text sits inside a link
+const drawing = (s, fn) => {
+  const ids = new Map(s.phases.flatMap((p) => p.blocks.filter((b) => b.kind === 'steps').flatMap((b) => b.rows).map((r, k) => [r.id, [p.n, k + 1]])));
+  ctx = { s, ids, phases: new Set(s.phases.map((p) => p.n)) };
+  try { return fn(); } finally { ctx = null; }
+};
+const plainly = (fn) => { linking = false; try { return fn(); } finally { linking = true; } };
+const refs = (html) => !ctx ? html : html.replace(/\b(\d+)\.(\d+)\b|\b([Pp])hase (\d+)\b/g, (m, a, b, cased, n) => {
+  if (a != null) {
+    const at = ctx.ids.get(`${a}.${b}`);
+    if (!at) return m;
+    const text = `task ${at[0] + 1}, step ${at[1]}`;
+    return linking ? `<a class="rux--link" href="./?s=${esc(ctx.s.id)}&amp;t=${at[0]}&amp;k=${at[1]}">${text}</a>` : text;
+  }
+  if (!ctx.phases.has(Number(n))) return m;
+  const text = `${cased === 'P' ? 'Task' : 'task'} ${Number(n) + 1}`;
+  return linking ? `<a class="rux--link" href="./?s=${esc(ctx.s.id)}&amp;t=${n}">${text}</a>` : text;
+});
+
 function token(t) {
   switch (t.t) {
-    case 'text': return esc(t.v);
+    case 'text': return refs(esc(t.v));
     case 'strong': return `<strong>${esc(t.v)}</strong>`;
     case 'em': return `<em>${esc(t.v)}</em>`;
     case 'chip': case 'field': return named(t.v);
@@ -192,7 +218,7 @@ function extrasOf(s, p) {
   const forks = asked.filter((n) => passed.includes(n.id) && branches(n.id).length);
   for (const n of forks) if (!firstScreen(n.read)) report.push(`no screen   ${s.title} · ${p.n}: "${n.session}" names no screen to read its answer on`);
   const wrong = section(s, 'troubleshooting').filter((row) => Number(row.cells[0].text) === p.n)
-    .map((row) => ({ title: tokens(row.cells[1].tokens), text: row.cells[1].text, body: `<p>${tokens(row.cells[2].tokens)}</p>`, plain: row.cells[2].text }));
+    .map((row) => ({ title: tokens(row.cells[1].tokens), linked: plainly(() => tokens(row.cells[1].tokens)), text: row.cells[1].text, body: `<p>${tokens(row.cells[2].tokens)}</p>`, plain: row.cells[2].text }));
   const cases = [
     ...asked.filter((n) => !forks.includes(n)).map((n) => ({ title: esc(n.session),
       body: `<p>${sentence(tokens(n.does.tokens))}</p>${opener('Read it on', n.read)}${opener('Set in', n.setting)}` })),
@@ -258,7 +284,7 @@ function path(s) {
     <h1 class="ln-ask">${esc(s.title)}</h1>
     <p class="ln-quiet">${esc(cap(s.summary))}${need.map((n) => `<br>Needs: ${n}`).join('')}</p>
     <ol class="ln-path">${s.phases.map((p) => `
-      <li data-t="${p.n}"><a class="ln-path__stop" href="${taskHref(s, p.n)}"><span class="ln-path__dot">${p.n}</span><b>${esc(p.title)}<small>${rowsOf(p).length === 1 ? '1 step' : `${rowsOf(p).length} steps`}</small></b></a></li>${extrasOf(s, p).forks.map((n) => `
+      <li data-t="${p.n}" data-n="${p.n + 1}"><a class="ln-path__stop" href="${taskHref(s, p.n)}"><span class="ln-path__dot">${p.n + 1}</span><b>${esc(p.title)}<small>${rowsOf(p).length === 1 ? '1 step' : `${rowsOf(p).length} steps`}</small></b></a></li>${extrasOf(s, p).forks.map((n) => `
       <li data-kind="fork"><a class="ln-path__stop" href="${here(`s=${esc(s.id)}&amp;t=${p.n}&amp;f=${esc(n.id)}`)}"><span class="ln-path__dot"></span><b>${esc(n.session)}</b></a></li>`).join('')}`).join('')}
     </ol>
     <a class="rux--btn rux--btn--primary" href="${taskHref(s, s.phases[0].n)}" data-start>Start</a>${loose.length ? `
@@ -275,8 +301,10 @@ function task(s, p, i) {
   return `
   <section class="ln-screen" data-screen="task" data-s="${esc(s.id)}" data-t="${p.n}" data-title="${esc(p.title)}" data-after="${afterTask(s, i, forks)}" hidden>
     ${back(here(`s=${esc(s.id)}`), esc(s.title))}
-    <div class="ln-bar" aria-hidden="true">${rows.map(() => '<i></i>').join('')}</div>
-    <p class="ln-quiet" data-where></p>
+    <div class="rux--progress-bar rux--progress-bar--small">
+      <div class="rux--progress-bar__label"><span class="rux--progress-bar__label-text" data-where></span></div>
+      <div class="rux--progress-bar__track"><div class="rux--progress-bar__bar" data-bar></div></div>
+    </div>
     <ol class="ln-steps">${rows.map((r, k) => `
       <li data-k="${k + 1}" hidden>
         <h1 class="ln-step__do">${tokens(r.cells[1].tokens)}</h1>${r.cells[2].text.trim() === '\u2014' ? '' : `
@@ -336,7 +364,7 @@ const done = (s) => `
 
 function detail(n) {
   const opens = scenarios.flatMap((s) => s.phases.filter((p) => routes.get(s.id).tile.get(p.n)?.includes(n.id))
-    .map((p) => `<li><a class="rux--link" href="${taskHref(s, p.n)}">${esc(s.title)} · ${p.n} ${esc(p.title)}</a></li>`));
+    .map((p) => `<li><a class="rux--link" href="${taskHref(s, p.n)}">${esc(s.title)} · ${p.n + 1} ${esc(p.title)}</a></li>`));
   const turns = branches(n.id).map((e) => `<li><a class="rux--link" href="${here(`v=map&amp;n=${esc(e.to)}`)}" data-node="${esc(e.to)}">${esc(cap(e.label?.text ?? ''))}${ARROW}${esc(node.get(e.to).session)}</a></li>`);
   const cases = sideUnder([n.id]).map((t) => `<li><a class="rux--link" href="${here(`x=${esc(t.id)}`)}">${esc(t.session)}</a></li>`);
   const all = [...turns, ...opens, ...cases];
@@ -364,7 +392,7 @@ const map = () => `
       </div>
     </div>${scenarios.map((s) => `
     <ol class="ln-path" data-route="${esc(s.id)}" hidden>${routes.get(s.id).stops.map((x) => `
-      <li${x.tasks.length ? '' : ' data-kind="fork"'}><a class="ln-path__stop" href="${here(`v=map&amp;s=${esc(s.id)}&amp;n=${esc(x.id)}`)}" data-node="${esc(x.id)}"><span class="ln-path__dot">${x.tasks.join(', ')}</span><b>${esc(node.get(x.id).session)}<small>${esc(node.get(x.id).lane)}</small></b></a></li>`).join('')}
+      <li${x.tasks.length ? '' : ' data-kind="fork"'}><a class="ln-path__stop" href="${here(`v=map&amp;s=${esc(s.id)}&amp;n=${esc(x.id)}`)}" data-node="${esc(x.id)}"><span class="ln-path__dot">${x.tasks.map((n) => n + 1).join(', ')}</span><b>${esc(node.get(x.id).session)}<small>${esc(node.get(x.id).lane)}</small></b></a></li>`).join('')}
     </ol>`).join('')}
     <div class="ln-details">${diagram.nodes.map(detail).join('')}
     </div>
@@ -378,7 +406,7 @@ const map = () => `
     </div></div>
     <script type="application/json" id="routes">${JSON.stringify(Object.fromEntries(scenarios.map((s) => {
       const r = routes.get(s.id);
-      return [s.id, { stops: r.stops, lines: r.lines }];
+      return [s.id, { stops: r.stops.map((x) => ({ id: x.id, tasks: x.tasks.map((n) => n + 1) })), lines: r.lines }];
     }))).replace(/</g, '\\u003c')}</script>
   </section>`;
 
@@ -394,18 +422,18 @@ for (const s of scenarios) for (const p of s.phases) {
     if (Array.isArray(x)) x.forEach(walk);
     else if (x && typeof x === 'object') { if (x.t === 'session') codes.add(x.code); Object.values(x).forEach(walk); }
   })(p.blocks);
-  for (const c of codes) (usedIn.get(c) ?? usedIn.set(c, []).get(c)).push(`<a class="rux--link" href="${taskHref(s, p.n)}">${esc(s.title)} · ${p.n} ${esc(p.title)}</a>`);
+  for (const c of codes) (usedIn.get(c) ?? usedIn.set(c, []).get(c)).push(`<a class="rux--link" href="${taskHref(s, p.n)}">${esc(s.title)} · ${p.n + 1} ${esc(p.title)}</a>`);
 }
 // The title sits in one span, because Carbon's link is a flex box and a space
 // between two things inside one collapses.
 const hit = (kind, text, href, title, rest) => `
       <li data-text="${esc(text.toLowerCase())}" hidden><span class="ln-quiet">${kind}</span><b><a class="rux--link" href="${href}"><span>${title}</span></a></b>${rest}</li>`;
 const results = () => [
-  ...scenarios.flatMap((s) => s.phases.flatMap((p) => extrasOf(s, p).wrong.map((q) =>
-    hit('Problem', `${q.text} ${q.plain}`, taskHref(s, p.n), q.title, q.body)))),
+  ...scenarios.flatMap((s) => drawing(s, () => s.phases.flatMap((p) => extrasOf(s, p).wrong.map((q) =>
+    hit('Problem', `${q.text} ${q.plain}`, taskHref(s, p.n), q.linked, q.body))))),
   ...scenarios.flatMap((s) => s.phases.map((p) =>
     hit('Task', `${s.title} ${p.title} ${p.session ?? ''} ${p.sessionCode ?? ''} ${rowsOf(p).map((r) => r.cells.map((c) => c.text).join(' ')).join(' ')}`,
-      taskHref(s, p.n), `${p.n} ${esc(p.title)}`, esc(s.title)))),
+      taskHref(s, p.n), `${p.n + 1} ${esc(p.title)}`, esc(s.title)))),
   ...side.map((n) => hit('Task', `${n.session} ${n.code ?? ''} ${n.does.text} ${n.steps.map((x) => x.text).join(' ')}`,
     here(`x=${esc(n.id)}`), esc(n.session), sentence(tokens(n.does.tokens)))),
   ...[...cards.values()].map((c) => hit('Screen', `${c.name} ${c.code} ${c.route ?? ''} ${c.purpose}`, here(`c=${esc(c.code)}`), esc(c.name), esc(c.purpose))),
@@ -475,7 +503,7 @@ const page = () => `<!doctype html>
 <!-- SPRITE:END -->
 ${shell.replace('{{nav}}', nav)}
 <main id="main-content" class="rux--content" data-ln-commit="${commit}">
-<div class="ln-app">${home()}${scenarios.map((s) => path(s) + s.phases.map((p, i) => task(s, p, i)).join('') + done(s)).join('')}${map()}${find()}${cardsOut()}
+<div class="ln-app">${home()}${scenarios.map((s) => drawing(s, () => path(s) + s.phases.map((p, i) => task(s, p, i)).join('') + done(s))).join('')}${map()}${find()}${cardsOut()}
 </div>
 <nav class="ln-tabs" aria-label="LN Guide">${TABS.map(([id, href, name]) => `
   <a href="${href}" data-tab="${id}">${name}</a>`).join('')}

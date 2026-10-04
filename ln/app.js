@@ -13,8 +13,8 @@
   const q = (v) => CSS.escape(v);
 
   // ---- what is remembered -------------------------------------------------
-  const KEY = 'notes-progress';
-  const recall = () => { try { return JSON.parse(localStorage.getItem(KEY)) ?? {}; } catch (e) { return {}; } };
+  const KEY = 'ln-progress';
+  const recall = () => { try { return JSON.parse(localStorage.getItem(KEY) ?? localStorage.getItem('notes-progress')) ?? {}; } catch (e) { return {}; } };
   const remember = (change) => { try { localStorage.setItem(KEY, JSON.stringify({ ...recall(), ...change })); } catch (e) { /* a private window keeps nothing */ } };
   const taskOf = (s, t) => one(`[data-screen="task"][data-s="${q(s)}"][data-t="${q(t)}"]`);
   const hrefOf = (at) => `./?s=${encodeURIComponent(at.s)}&t=${at.t}&k=${at.k}`;
@@ -72,7 +72,7 @@
       const t = li.dataset.t, dot = li.querySelector('.ln-path__dot');
       const state = done.includes(t) && t !== now ? 'done' : t === now ? 'now' : '';
       if (state) li.dataset.state = state; else delete li.dataset.state;
-      dot.innerHTML = state === 'done' ? '<svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="Done"><use href="#i-checkmark"/></svg>' : t;
+      dot.innerHTML = state === 'done' ? '<svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="Done"><use href="#i-checkmark"/></svg>' : li.dataset.n;
     }
     const start = screen.querySelector('[data-start]');
     start.textContent = at || done.length ? 'Carry on' : 'Start';
@@ -85,8 +85,8 @@
     const steps = [...screen.querySelectorAll('.ln-steps li')];
     const k = Math.min(Math.max(Number(p.get('k')) || 1, 1), steps.length);
     for (const li of steps) li.hidden = Number(li.dataset.k) !== k;
-    screen.querySelectorAll('.ln-bar i').forEach((i, n) => i.toggleAttribute('data-on', n < k));
-    screen.querySelector('[data-where]').textContent = `${screen.dataset.title} · step ${k} of ${steps.length}`;
+    screen.querySelector('[data-bar]').style.transform = `scaleX(${k / steps.length})`;
+    screen.querySelector('[data-where]').textContent = `${screen.dataset.title} · ${k} of ${steps.length}`;
     const base = `./?s=${encodeURIComponent(s)}&t=${t}`;
     screen.querySelector('[data-prev]').href = k > 1 ? `${base}&k=${k - 1}` : `./?s=${encodeURIComponent(s)}`;
     const next = screen.querySelector('[data-next]');
@@ -219,6 +219,18 @@
     if (!screen || event.target.matches('input, select, textarea') || event.metaKey || event.ctrlKey || event.altKey) return;
     if (event.key === 'ArrowRight') screen.querySelector('[data-next]').click();
     if (event.key === 'ArrowLeft') screen.querySelector('[data-prev]').click();
+  });
+  // A swipe across a step moves through the task: left for the next step, right
+  // for the one before. A mostly vertical drag is a scroll and is left alone.
+  let from = null;
+  app.addEventListener('touchstart', (event) => { const t = event.touches[0]; from = event.touches.length === 1 ? [t.clientX, t.clientY] : null; }, { passive: true });
+  app.addEventListener('touchend', (event) => {
+    const screen = one('[data-screen="task"]:not([hidden])');
+    if (!from || !screen) return;
+    const t = event.changedTouches[0], dx = t.clientX - from[0], dy = t.clientY - from[1];
+    from = null;
+    if (Math.abs(dx) < 60 || Math.abs(dx) < 2 * Math.abs(dy)) return;
+    screen.querySelector(dx < 0 ? '[data-next]' : '[data-prev]').click();
   });
   window.addEventListener('popstate', show);
   if (grid) new ResizeObserver(() => draw(routes[grid.dataset.lit])).observe(grid);

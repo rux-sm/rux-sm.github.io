@@ -60,7 +60,7 @@ migration does.
 
 ## Files
 
-**Five buckets.** Notes' two are private and their rules ask for the owner.
+**Five buckets.** LN Guide's two are private and their rules ask for the owner.
 `trip-documents` and `driver-photos` are private: staff read them through
 links signed for ten minutes, and the link pages through the
 `trip-document-link` Edge Function, which signs one for a document's id. Only

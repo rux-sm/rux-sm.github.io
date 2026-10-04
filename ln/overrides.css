@@ -1,0 +1,18 @@
+/* overrides.css -- this project's own, linked after /design/css/rux-overrides.css, served from
+   Design's own repository and never copied here. Only what THIS project
+   changes goes here: token values inside a [data-theme] block
+   (theme.css), or
+   component rules at Carbon's own specificity with no !important
+   (overrides.css). Empty is the normal state. Design AGENTS.md, "Where a
+   change goes". */
+
+/* A stack's children may be narrower than their content. A stack is a grid
+   whose one column otherwise grows to its widest child, so a step table in its
+   own scrolling box widened a whole page past a phone's screen. */
+.rux--stack-vertical > * { min-inline-size: 0; }
+
+/* Back and Next share a row, and a choice fills the column. Carbon sizes a
+   button to its label and caps its width, and its button set holds each button
+   at a fixed width that runs off a phone. */
+.ln-nav .rux--btn,
+.ln-choices .rux--btn { inline-size: 100%; max-inline-size: none; justify-content: center; padding-inline: 1rem; }

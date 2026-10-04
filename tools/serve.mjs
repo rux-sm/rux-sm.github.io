@@ -12,7 +12,7 @@
 //                                 bookmark; account.js and funnel.js know it by
 //                                 its port
 //   npm run serve -- --private    render Atlas's internal tier into
-//                                 notes/build/ (git-ignored) and serve
+//                                 ln/build/ (git-ignored) and serve
 //                                 it on :8644, beside the public one
 //
 import { spawnSync, spawn } from 'node:child_process';
@@ -25,7 +25,7 @@ const SERVER = join(ROOT, 'design', 'tools', 'serve.mjs');
 const env = { ...process.env, HOST: process.env.HOST ?? 'localhost' };
 
 if (process.argv.includes('--private')) {
-  const notes = join(ROOT, 'notes');
+  const notes = join(ROOT, 'ln');
   const atlas = process.env.ATLAS ?? resolve(ROOT, '..', 'atlas');
   if (!existsSync(join(atlas, 'tools', 'emit.py'))) {
     console.error(`  no atlas at ${atlas} -- clone it beside this repository, or set ATLAS=<dir>`);

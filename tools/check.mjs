@@ -2,7 +2,7 @@
 //
 // The one check. Reads switcher.json -- the one list of apps -- and runs
 // Design's shared check on every app except Design, which has its own; an app
-// with a tools/check.mjs of its own (Notes) runs that instead, and it includes
+// with a tools/check.mjs of its own (LN Guide) runs that instead, and it includes
 // the shared check. Then the sprite currency rule for the pages that paste the
 // sprite by hand, the names sweep over every text file in the repository, the
 // switcher rule, the lock rule and the print rule. `--full` adds Design's
@@ -63,7 +63,7 @@ step('scheduler route figures', process.execPath, ['scheduler/tools/check-route-
 // every tracked file, and only those: the list comes from git, so an ignored
 // quarry or working folder under design/ is not swept (walking the tree
 // swept 949 files where git tracks 372, the day the quarry moved in). The
-// rule and the private list it reads live with Notes; this passes it
+// rule and the private list it reads live with LN Guide; this passes it
 // everything. Measured 2026-09-12: 12 entries, 0.08 s over the whole family.
 const EXT = new Set(['.html', '.md', '.js', '.mjs', '.json', '.css', '.svg', '.yml', '.yaml', '.toml', '.sh', '.txt']);
 const tracked = spawnSync('git', ['ls-files', '-z'], { cwd: ROOT, encoding: 'utf8' }).stdout ?? '';
@@ -74,7 +74,7 @@ const tracked = spawnSync('git', ['ls-files', '-z'], { cwd: ROOT, encoding: 'utf
 // say so when one of those is missing.
 const text = tracked.split('\0')
   .filter(p => p && EXT.has(extname(p)) && existsSync(join(ROOT, p)));
-step(`names (${text.length} text files)`, process.execPath, ['notes/tools/check-publishable.mjs', ...text]);
+step(`names (${text.length} text files)`, process.execPath, ['ln/tools/check-publishable.mjs', ...text]);
 
 // THE SWITCHER RULE. Two things can go wrong and both are quiet: a list that
 // does not parse, and a path no site can have.

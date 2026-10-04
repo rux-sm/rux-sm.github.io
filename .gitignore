@@ -10,7 +10,7 @@ design/.brand/
 
 # Private preview of Atlas's internal tier, rendered by `npm run serve -- --private`.
 # Never committed, never uploaded: the deploy job uploads a fresh checkout.
-notes/build/
+ln/build/
 
 # Claude Code's per-machine permission allowlist and agent worktrees.
 .claude/settings.local.json

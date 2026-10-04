@@ -6,9 +6,9 @@
       "description": "The front door"
     },
     {
-      "name": "Notes",
-      "path": "/notes/",
-      "description": "Step-by-step walkthroughs",
+      "name": "LN Guide",
+      "path": "/ln/",
+      "description": "Follow a task, step by step",
       "icon": "#i-document"
     },
     {

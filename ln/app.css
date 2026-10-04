@@ -1,0 +1,106 @@
+/* Notes' own rules for the flow tools/build-views.mjs writes. Every control
+   on it is Design's; what is here is what Carbon has no component for: the
+   path, the step, the tab bar, the map and a card's facts. Every colour is a
+   Design token, so each theme carries the page with it. */
+
+/* One readable column, clear of the tab bar at the foot of the window. */
+.ln-app { max-inline-size: 36rem; margin-inline: auto; padding-block: .5rem 6rem; }
+.ln-screen { display: flex; flex-direction: column; gap: 1.5rem; }
+.ln-screen > p { margin: 0; line-height: 1.5; max-inline-size: 34rem; }
+.ln-screen > .ln-back { align-self: start; display: inline-flex; align-items: center; gap: .25rem; margin-block-end: -.5rem; }
+.ln-ask { font-size: 1.75rem; line-height: 1.2; font-weight: 400; margin: 0; }
+.ln-quiet { font-size: .875rem; line-height: 1.45; color: var(--rux-text-secondary); margin: 0; }
+.ln-picker { max-inline-size: 20rem; }
+
+/* ---- text registers ------------------------------------------------------
+   Shape and family carry the meaning: a control you press is boxed, a name on
+   the screen is weighted, a string to type or match is mono, and a route keeps
+   its own arrow with the last stop weighted. */
+.ln-t-press { font-weight: 600; border: 1px solid var(--rux-border-strong-01); border-radius: 2px; padding: .05em .4em; white-space: nowrap; }
+.ln-t-named { font-weight: 600; color: var(--rux-text-primary); }
+.ln-t-exact { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .875em; color: var(--rux-text-primary); overflow-wrap: anywhere; }
+.ln-t-route .sep { color: var(--rux-text-placeholder); padding: 0 .3em; }
+.ln-t-route .dest { font-weight: 600; color: var(--rux-text-primary); }
+.rux--link .ln-t-route .dest, .rux--link .ln-t-exact, .rux--link .ln-t-named { color: inherit; }
+.ln-pencil { vertical-align: -.15em; color: var(--rux-text-secondary); }
+
+/* ---- Home: what to carry on with, then what there is --------------------- */
+.ln-cards { display: grid; gap: .75rem; }
+.ln-cards .rux--tile { display: grid; gap: .25rem; }
+.ln-cards b { font-weight: 600; font-size: 1.0625rem; line-height: 1.3; }
+.ln-resume { border-inline-start: 3px solid var(--rux-interactive); }
+
+/* ---- The path: a task is a stop, a decision a fork between two stops ------ */
+.ln-path { margin: 0; padding: 0; list-style: none; }
+.ln-path li { position: relative; padding-block-end: 1.25rem; }
+.ln-path li:not(:last-child)::before { content: ""; position: absolute; inset-block: 2rem 0; inset-inline-start: 1rem; border-inline-start: 1px solid var(--rux-border-strong-01); }
+.ln-path__stop { display: grid; grid-template-columns: 2rem 1fr; gap: .75rem; color: var(--rux-text-primary); text-decoration: none; font-size: 1.0625rem; line-height: 1.35; }
+.ln-path__stop:hover b { text-decoration: underline; }
+.ln-path__stop:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+.ln-path__dot { position: relative; display: grid; place-items: center; inline-size: 2rem; block-size: 2rem; border-radius: 50%; border: 1px solid var(--rux-border-strong-01); font-size: .8125rem; background: var(--rux-background); }
+.ln-path li[data-state="done"] .ln-path__dot { background: var(--rux-support-success); border-color: transparent; color: var(--rux-text-on-color); }
+.ln-path li[data-state="now"] .ln-path__dot { background: var(--rux-interactive); border-color: transparent; color: var(--rux-text-on-color); }
+.ln-path li[data-state="now"] b { font-weight: 600; }
+.ln-path li[data-kind="fork"] .ln-path__stop { color: var(--rux-text-secondary); font-size: .9375rem; }
+.ln-path li[data-kind="fork"] .ln-path__dot { border-style: dashed; }
+.ln-path b { font-weight: 400; padding-block-start: .3rem; display: block; }
+.ln-path small { display: block; font-size: .8125rem; color: var(--rux-text-secondary); }
+
+/* ---- One step: where you are, what to do, what you should see, then on ---- */
+.ln-bar { display: flex; gap: .25rem; }
+.ln-bar i { flex: 1; block-size: .25rem; background: var(--rux-border-subtle-01); }
+.ln-bar i[data-on] { background: var(--rux-interactive); }
+.ln-steps { margin: 0; padding: 0; list-style: none; }
+.ln-steps li { display: grid; gap: 1.5rem; }
+.ln-step__do { font-size: 1.5rem; line-height: 1.35; font-weight: 400; margin: 0; }
+.ln-step__see { padding: 1rem 1.25rem; background: var(--rux-layer-01); }
+.ln-step__see p { margin: .25rem 0 0; font-size: 1.0625rem; line-height: 1.5; }
+.ln-task__route { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .75rem; font-size: .875rem; color: var(--rux-text-secondary); }
+.ln-task__code { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
+.ln-step__more { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; }
+.ln-why p { margin: 0 0 .75rem; line-height: 1.5; }
+.ln-nav { display: grid; grid-template-columns: 1fr 2fr; gap: .5rem; }
+.ln-choices { display: grid; gap: .5rem; }
+.ln-list { margin: 0; padding: 0; list-style: none; display: grid; gap: .75rem; }
+.ln-list > li { padding-block-end: .75rem; border-block-end: 1px solid var(--rux-border-subtle-01); line-height: 1.5; }
+.ln-list > li > b { display: block; font-weight: 600; }
+.ln-list p { margin: .25rem 0 0; }
+.ln-side { margin: .5rem 0 0; padding-inline-start: 1.5rem; display: grid; gap: .375rem; line-height: 1.45; list-style: decimal; }
+.ln-side__note { list-style: none; margin-inline-start: -1.5rem; color: var(--rux-text-secondary); }
+.ln-answers { display: grid; gap: .5rem; margin: .75rem 0 0; padding: 0; list-style: none; font-size: .9375rem; }
+
+/* ---- The tabs stay in reach at the foot of the window --------------------- */
+.ln-tabs { position: fixed; inset-inline: 0; inset-block-end: 0; z-index: 3; display: flex; justify-content: center; background: var(--rux-layer-01); border-block-start: 1px solid var(--rux-border-subtle-01); }
+.ln-tabs a { flex: 0 1 8rem; padding: .875rem .5rem; text-align: center; color: var(--rux-text-secondary); font-size: .875rem; text-decoration: none; border-block-start: 2px solid transparent; margin-block-start: -1px; }
+.ln-tabs a[aria-current] { color: var(--rux-text-primary); border-block-start-color: var(--rux-interactive); font-weight: 600; }
+.ln-tabs a:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
+
+/* ---- Map: the whole grid, behind its button ------------------------------- */
+.ln-map__scroll { overflow-x: auto; border: 1px solid var(--rux-border-subtle-01); }
+.ln-map { position: relative; display: grid; grid-template-columns: 6.5rem repeat(6, minmax(9rem, 1fr)); min-inline-size: 62rem; }
+.ln-map__head, .ln-map__lane { padding: .5rem .75rem; font-size: .75rem; color: var(--rux-text-secondary); }
+.ln-map__lane, .ln-map__cell { border-block-start: 1px solid var(--rux-border-subtle-01); }
+.ln-map__cell { display: flex; flex-direction: column; gap: .75rem; padding: .75rem; min-block-size: 3.5rem; }
+.ln-map__tile { position: relative; z-index: 1; display: flex; align-items: center; gap: .375rem; padding: .375rem .5rem; border: 1px solid var(--rux-border-strong-01); background: var(--rux-background); color: var(--rux-text-primary); font: inherit; font-size: .75rem; line-height: 1.3; text-align: start; cursor: pointer; }
+.ln-map__tile[data-screen="no"] { border-style: dashed; }
+.ln-map__tile:hover { background: var(--rux-layer-hover-01); }
+.ln-map__tile:focus-visible, .ln-map__tile[aria-expanded="true"] { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
+.ln-map[data-lit] .ln-map__tile:not([data-lit]) { color: var(--rux-text-disabled); border-color: var(--rux-border-subtle-01); }
+.ln-map__tile[data-lit] { border: 2px solid var(--rux-border-interactive); }
+.ln-map__n { flex: none; font-size: .6875rem; color: var(--rux-text-secondary); }
+.ln-map__lines { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; pointer-events: none; }
+.ln-map__lines path { fill: none; stroke: var(--rux-border-interactive); stroke-width: 2; }
+.ln-map__lines path[data-jump] { stroke-dasharray: 5 5; }
+.ln-map__lines marker path { fill: var(--rux-border-interactive); stroke: none; }
+.ln-detail { padding: 1rem 1.25rem; background: var(--rux-layer-01); }
+.ln-detail p { margin-block: .5rem; line-height: 1.5; }
+
+/* ---- A card's facts ------------------------------------------------------- */
+.ln-card__facts { display: grid; grid-template-columns: auto 1fr; gap: .75rem 1rem; margin: 0; padding-block-start: 1rem; border-block-start: 1px solid var(--rux-border-subtle-01); line-height: 1.45; }
+.ln-card__facts dt { color: var(--rux-text-secondary); font-size: .875rem; padding-block-start: .1rem; }
+.ln-card__facts dd { margin: 0; min-inline-size: 0; overflow-wrap: anywhere; }
+
+/* Carbon's reset, and the rules above, give several elements a display of their
+   own, which beats the browser's rule for the hidden attribute. This puts it
+   back, and is last so that it wins. */
+.ln-app [hidden] { display: none; }

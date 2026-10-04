@@ -8,7 +8,7 @@ https://rux-sm.github.io/. The folders are the site:
 | `index.html`, `account/`, `login/`, `switcher.json`, `switcher.js`, `account.js`, `funnel.js`, `robots.txt` | `/` | the hub: the front door, the account panel, the log-in page and the page lock |
 | `design/` | `/design/` | the design system: Carbon v11 compiled under the `rux` prefix, its kitchen sink, templates, page builder and theme creator |
 | `scheduler/` | `/scheduler/` | fleet scheduling and dispatch |
-| `notes/` | `/notes/` | Infor LN walkthroughs, rendered from the private `atlas` |
+| `ln/` | `/ln/` | LN Guide: Infor LN tasks to follow step by step, generated from the private `atlas` |
 | `pixels/` | `/pixels/` | picture logic puzzles and a maker to draw them |
 | `sevens/` | `/sevens/` | an online card game by the rules of Flip 7 |
 | `coins/` | `/coins/` | the household's money: income, spending, accounts, debts and bills |
@@ -30,7 +30,7 @@ git clone --depth 1 https://github.com/carbon-design-system/carbon-website.git d
 `design/carbon-website/` is gitignored and named by a document, so the docs
 check fails without it.
 
-Notes work also needs the private library cloned beside this repository, under
+LN Guide work also needs the private library cloned beside this repository, under
 the name every tool looks for:
 
 ```sh
@@ -46,9 +46,9 @@ npm run serve                  # http://localhost:8640/ — the whole site, loop
 npm run serve -- --cloud       # http://localhost:8641/ — the same, with log-in and live data
 npm run serve -- --private     # atlas's internal tier on :8644, never published
 npm run build                  # regenerate what is committed but derived
-npm run check                  # every app, Notes' gates, the names sweep, the print rule; --full adds Design verify
+npm run check                  # every app, LN Guide's gates, the names sweep, the print rule; --full adds Design verify
 npm test                       # the same check, under the name every tool expects
-npm run export                 # pull atlas's export tier into Notes, rebuild, check
+npm run export                 # pull atlas's export tier into LN Guide, rebuild, check
 git push                       # publishes, after CI runs the full check
 ```
 

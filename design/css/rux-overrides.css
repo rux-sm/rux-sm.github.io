@@ -56,6 +56,27 @@
    carries titles of uneven length and shows the same condition. */
 .rux--tile--clickable { block-size: 100%; }
 
+/* A CLICKABLE TILE IS ONE SURFACE, PRESSED AND FOCUSED AS WELL AS AT REST.
+   The tile is an <a> carrying `rux--link` too, as Carbon's ClickableTile
+   does. Carbon's tile rules keep the text primary and plain on hover and on
+   visited, but its link rules for :active and :focus-visible carry a
+   `:not(.rux--link--disabled)` the tile's do not, so they outrank the tile's
+   and the text turns link blue and underlined with a 1px outline, which
+   reads as three links inside a box. Each selector here is the link's own
+   with the tile's class in its place, so it ties and wins on order. Focus
+   is the tile's 2px inset outline; a press draws none. */
+.rux--tile--clickable:active:not(.rux--link--disabled),
+.rux--tile--clickable:active:not(.rux--link--disabled):visited:hover {
+  color: var(--rux-text-primary);
+  outline: none;
+  text-decoration: none;
+}
+.rux--tile--clickable:focus-visible:not(.rux--link--disabled) {
+  color: var(--rux-text-primary);
+  outline: 2px solid var(--rux-focus);
+  text-decoration: none;
+}
+
 /* A HIDDEN DATE-PICKER INPUT MUST NOT RENDER, and this is the `.rux--btn`
    rule above one component over. Asked for by Scheduler 2026-09-11, whose
    week picker reads its value rather than showing it: `hidden` on

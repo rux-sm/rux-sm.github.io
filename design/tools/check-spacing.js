@@ -331,9 +331,6 @@
 // NOTHING IS SUPPRESSED. Known rows stay counted and stay in the return value;
 // they are only kept out of the printed table, so the short list is the one
 // worth reading -- which the header above argues is this tool's whole value.
-//
-// THIRTEEN ROWS ARE STILL UNKNOWN and print. That is the honest state after one
-// pass, not a finished job: check-tags took fifty findings to triage.
 
 // Blockification, verified 2026-09-01. The sink lays specimens out in `.ks-row`
 // and `.ks-grid`, and a flex or grid ITEM is blockified -- `inline-flex` computes
@@ -403,7 +400,58 @@ const SANDBOX = 'the dialog is `inset: 0; margin: auto`, so its margins are what
   + 'the viewport (sink/dialog.html)';
 const STORY_GAP = "the chat-button story spaces its siblings with a margin the component does not own; "
   + 'the sink lays its row out with a gap (sink/chat-button.html)';
+// Carbon's own rule for a state, and the capture was taken in the other state.
+// `.header__menu-toggle:not(.__hidden) ~ .header__name` is 0.5rem and the sink
+// shows the hamburger; `:checked + label .radio-button__appearance` is flex and
+// the table's first radio is the picked one.
+const STATE = "Carbon's own rule for a state the capture was not in: the header's menu "
+  + 'button showing, the radio checked. Stylesheets agree';
+
+// Carbon's own rule, keyed on an ancestor the reference was not taken under.
+// `.guidebanner__close-button button` is 2rem with 6px above, against a plain
+// md icon button; `.notifications-panel__do-not-disturb-toggle
+// .toggle__label-text` hides the label, against a toggle that shows it.
+const ANCESTOR = "Carbon's own rule for this class under an ancestor the reference was not "
+  + 'taken under: the guide banner close button, the notifications panel toggle';
+
+// The other side of BLOCKIFIED. Carbon sampled the button as a flex or grid
+// item, where inline-flex computes flex; here it sits in a plain block.
+const NOT_BLOCKIFIED = 'the reference was taken with the button a flex or grid item, '
+  + 'where inline-flex computes flex; here its parent is a plain block. Stylesheets agree';
+
+// css/rux-overrides.css sets the table toolbar's md to 2.5rem and makes md its
+// default, where Carbon's bar is 3rem. The bar and its buttons follow.
+const TOOLBAR_40 = "Design's own choice: css/rux-overrides.css draws the table toolbar and "
+  + "its buttons at 40px, where Carbon's default is 48px";
+
+// sink/table.html lays two tables out side by side with an inline
+// `display:grid;gap:1.5rem` on their container.
+const TABLE_DEMO = 'the sink own inline style="display:grid;gap:1.5rem" on the specimen '
+  + '(sink/table.html)';
+
+// `padding-inline-end: calc(20% - 3rem)` of the dialog's width, and the sink's
+// dialog is not the story's width.
+const DIALOG_WIDTH = "a percentage of the dialog's own width, and the sink's dialog is narrower "
+  + "than the story's";
+
 const KNOWN = {
+  'rux--header__name|paddingInlineStart': STATE,
+  'rux--radio-button__appearance|display': STATE,
+  'rux--btn.rux--btn--md.rux--layout--size-md.rux--btn--ghost.rux--btn--icon-only|minBlockSize': ANCESTOR,
+  'rux--btn.rux--btn--md.rux--layout--size-md.rux--btn--ghost.rux--btn--icon-only|paddingBlockStart': ANCESTOR,
+  'rux--toggle__label-text|marginBlockStart': ANCESTOR,
+  'rux--toggle__label-text|marginBlockEnd': ANCESTOR,
+  'rux--toggle__label-text|marginInlineStart': ANCESTOR,
+  'rux--toggle__label-text|marginInlineEnd': ANCESTOR,
+  'rux--btn.rux--btn--primary|display': NOT_BLOCKIFIED,
+  'rux--btn.rux--btn--md.rux--layout--size-md.rux--btn--tertiary|display': NOT_BLOCKIFIED,
+  'rux--table-toolbar|minBlockSize': TOOLBAR_40,
+  'rux--toolbar-action.rux--overflow-menu.rux--btn.rux--btn--ghost.rux--btn--icon-only|minBlockSize': TOOLBAR_40,
+  'rux--data-table-container|display': TABLE_DEMO,
+  'rux--data-table-container|columnGap': TABLE_DEMO,
+  'rux--data-table-container|rowGap': TABLE_DEMO,
+  'rux--dialog-header__heading|paddingInlineEnd': DIALOG_WIDTH,
+
   'rux--dialog|marginBlockStart': SANDBOX,
   'rux--dialog|marginBlockEnd': SANDBOX,
   'rux--dialog|marginInlineStart': SANDBOX,
@@ -452,14 +500,17 @@ const KNOWN = {
     const key = sig + '|' + JSON.stringify(ours);
     if (seen.has(key)) continue;            // one report per distinct rendering
     seen.add(key);
-    const variants = reference[sortSig(toCarbon(sig))];
-    if (!variants) {
+    const recorded = reference[sortSig(toCarbon(sig))];
+    // A variant Carbon recorded hidden measures no box, so a visible element
+    // is never compared with one.
+    const variants = recorded?.filter(v => v.values.display !== 'none');
+    if (!recorded) {
       noReference.set(sig, (noReference.get(sig) ?? 0) + 1);
       continue;
     }
     // Hidden on either side: skip, and say so.
     const hiddenHere = ours.display === 'none';
-    if (hiddenHere || variants.every(v => v.values.display === 'none')) {
+    if (hiddenHere || !variants.length) {
       notComparable.push({ class: sig, why: hiddenHere ? 'display:none here' : 'display:none in Carbon' });
       continue;
     }

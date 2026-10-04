@@ -1289,14 +1289,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " - change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed - if the change is allowed, the outbound line follows it, and its advice and picking list are deleted - if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order - "
+                  "v": " - change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed - if the change is allowed, the outbound line follows it, and its advice and picking list are deleted - if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order - a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment - "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Do - change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed - if the change is allowed, the outbound line follows it, and its advice and picking list are deleted - if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order - Not documented for this release."
+              "text": "Do - change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed - if the change is allowed, the outbound line follows it, and its advice and picking list are deleted - if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order - a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment - Not documented for this release."
             },
             {
               "tokens": [
@@ -3925,10 +3925,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " — cancel shipments"
+                  "v": " — cancel a shipment before it leaves, as when the truck did not come or the customer changed the order"
                 }
               ],
-              "text": "Does — cancel shipments"
+              "text": "Does — cancel a shipment before it leaves, as when the truck did not come or the customer changed the order"
             },
             {
               "tokens": [
@@ -3938,14 +3938,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " - "
+                  "v": " - check it can be cancelled: not confirmed, and no not-shipped quantity on it; a frozen shipment is reopened first - select the shipment, one of its lines or its load, and choose Cancel on the Actions menu - in the dialog, choose whether the goods go back to stock and whether the order line is finalized, then continue - a finalized order line reads Shipped, so shipping it later needs a new order line; left open, the same line gets a new shipment - "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Do - Not documented for this release."
+              "text": "Do - check it can be cancelled: not confirmed, and no not-shipped quantity on it; a frozen shipment is reopened first - select the shipment, one of its lines or its load, and choose Cancel on the Actions menu - in the dialog, choose whether the goods go back to stock and whether the order line is finalized, then continue - a finalized order line reads Shipped, so shipping it later needs a new order line; left open, the same line gets a new shipment - Not documented for this release."
             },
             {
               "tokens": [
@@ -5337,6 +5337,15 @@
           {
             "tokens": [
               {
+                "t": "text",
+                "v": "a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment"
+              }
+            ],
+            "text": "a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment"
+          },
+          {
+            "tokens": [
+              {
                 "t": "strong",
                 "v": "Not documented for this release."
               }
@@ -5352,14 +5361,14 @@
           "tokens": [
             {
               "t": "text",
-              "v": "change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed. if the change is allowed, the outbound line follows it, and its advice and picking list are deleted. if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order. "
+              "v": "change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed. if the change is allowed, the outbound line follows it, and its advice and picking list are deleted. if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order. a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment. "
             },
             {
               "t": "strong",
               "v": "Not documented for this release."
             }
           ],
-          "text": "change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed. if the change is allowed, the outbound line follows it, and its advice and picking list are deleted. if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order. Not documented for this release."
+          "text": "change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed. if the change is allowed, the outbound line follows it, and its advice and picking list are deleted. if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order. a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment. Not documented for this release."
         }
       },
       {
@@ -7140,12 +7149,48 @@
           "tokens": [
             {
               "t": "text",
-              "v": "cancel shipments"
+              "v": "cancel a shipment before it leaves, as when the truck did not come or the customer changed the order"
             }
           ],
-          "text": "cancel shipments"
+          "text": "cancel a shipment before it leaves, as when the truck did not come or the customer changed the order"
         },
         "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "check it can be cancelled: not confirmed, and no not-shipped quantity on it; a frozen shipment is reopened first"
+              }
+            ],
+            "text": "check it can be cancelled: not confirmed, and no not-shipped quantity on it; a frozen shipment is reopened first"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "select the shipment, one of its lines or its load, and choose Cancel on the Actions menu"
+              }
+            ],
+            "text": "select the shipment, one of its lines or its load, and choose Cancel on the Actions menu"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "in the dialog, choose whether the goods go back to stock and whether the order line is finalized, then continue"
+              }
+            ],
+            "text": "in the dialog, choose whether the goods go back to stock and whether the order line is finalized, then continue"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "a finalized order line reads Shipped, so shipping it later needs a new order line; left open, the same line gets a new shipment"
+              }
+            ],
+            "text": "a finalized order line reads Shipped, so shipping it later needs a new order line; left open, the same line gets a new shipment"
+          },
           {
             "tokens": [
               {
@@ -7163,11 +7208,15 @@
         "do": {
           "tokens": [
             {
+              "t": "text",
+              "v": "check it can be cancelled: not confirmed, and no not-shipped quantity on it; a frozen shipment is reopened first. select the shipment, one of its lines or its load, and choose Cancel on the Actions menu. in the dialog, choose whether the goods go back to stock and whether the order line is finalized, then continue. a finalized order line reads Shipped, so shipping it later needs a new order line; left open, the same line gets a new shipment. "
+            },
+            {
               "t": "strong",
               "v": "Not documented for this release."
             }
           ],
-          "text": "Not documented for this release."
+          "text": "check it can be cancelled: not confirmed, and no not-shipped quantity on it; a frozen shipment is reopened first. select the shipment, one of its lines or its load, and choose Cancel on the Actions menu. in the dialog, choose whether the goods go back to stock and whether the order line is finalized, then continue. a finalized order line reads Shipped, so shipping it later needs a new order line; left open, the same line gets a new shipment. Not documented for this release."
         }
       },
       {

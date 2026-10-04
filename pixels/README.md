@@ -23,7 +23,9 @@ A number greys out when its run of squares is filled, and a finished line
 crosses out its own empty squares. A puzzle starts with three stars: filling
 a square not in the picture is a mistake, crossed out in red, and it costs a
 star, as does a hint; the last star is never lost. Hint, or H, lights the line
-where the numbers decide the most. When the picture is complete the squares
+where the numbers decide the most. Undo, or U, takes back the last tap or
+drag, but never a mistake. The arrow beside the puzzle's name goes back to
+the list. When the picture is complete the squares
 fill in as the picture, in its colours if it has them, and its name shows.
 Each move plays a tone, which the Sound switch turns off, and a phone ticks
 on each fill where the browser allows it. Free mode points out nothing: a wrong square fills

@@ -11,6 +11,10 @@
    lost. Hint points at a wrong X if there is one, and otherwise at the line
    where the numbers decide the most squares from what is on the board.
 
+   UNDO takes back the last tap or drag, with the squares a finished line
+   crossed out for it, as far back as the puzzle's start. It does not take
+   back a mistake: the red X stays and so does the lost star.
+
    Free mode points out nothing: a wrong square fills like a right one, Fill
    on a filled square empties it, the numbers never grey, there is no hint,
    and the puzzle is solved when the filled squares are exactly the picture.
@@ -88,6 +92,9 @@
     // No square is marked until a finger, the mouse or an arrow key picks one.
     // `climb` counts the fills of one drag, so each sounds a step higher.
     let tool = 'fill', action = null, cursor = [], solved = false, climb = 0;
+    // The board before each tap or drag that changed it, and the board as a
+    // tap or drag began, kept only once that one changes something.
+    let past = [], held = null;
 
     $('pixels-title').textContent = heading;
     document.title = `${heading} — Pixels`;
@@ -103,6 +110,7 @@
       highlight(el, ...cursor);
       stars($('pixels-stars'), score());
       $('pixels-hint').hidden = free;
+      $('pixels-undo').disabled = !past.length;
     };
     const tick = () => { clock.textContent = time(seconds); };
     const tell = (text, error) => {
@@ -206,6 +214,7 @@
       else if (action === 'x' && v === 0) { state[y][x] = 2; sound('x'); }
       else if (action === 'unx' && v === 2) state[y][x] = 0;
       else return;
+      if (held) { past.push(held); held = null; }
       cursor = [y, x];
       draw();
       keep();
@@ -217,8 +226,26 @@
       action = which === 'fill' ? (free && state[y][x] === 1 ? 'unfill' : 'fill')
         : state[y][x] === 2 ? 'unx' : 'x';
       climb = 0;
+      held = state.map(r => r.slice());
       act(y, x);
     };
+
+    const undo = () => {
+      if (solved || !past.length) return;
+      // A mistake stays as it is, so a move that was only a mistake has
+      // nothing to take back and the one before it is taken instead.
+      const same = to => to.every((r, y) => r.every((v, x) => v === state[y][x]));
+      let was;
+      do was = past.pop().map((r, y) => r.map((v, x) => (state[y][x] === 3 ? 3 : v)));
+      while (past.length && same(was));
+      state = was;
+      cursor = [];
+      tell('');
+      sound('x');
+      draw();
+      keep();
+    };
+    $('pixels-undo').addEventListener('click', undo);
 
     /* A HINT. What the board shows for certain is every filled square and
        every X that is right; a wrong X is pointed at first, because the
@@ -268,8 +295,8 @@
     });
     switcher($('pixels-tool'), b => { tool = b.dataset.tool; });
 
-    // Arrows move, Z or Space fills, X crosses out and H hints, whichever
-    // tool is chosen.
+    // Arrows move, Z or Space fills, X crosses out, U undoes and H hints,
+    // whichever tool is chosen.
     addEventListener('keydown', e => {
       if (solved || e.target.closest('input, textarea, select, .rux--header, .rux--side-nav')) return;
       const move = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[e.key];
@@ -282,6 +309,7 @@
       }
       const key = e.key.toLowerCase();
       if (key === 'h') { hint(); return; }
+      if (key === 'u') { undo(); return; }
       if (!cursor.length) return;
       if (key === 'z' || key === ' ') { e.preventDefault(); begin(...cursor, 'fill'); }
       else if (key === 'x') begin(...cursor, 'x');
@@ -289,6 +317,7 @@
 
     const restart = () => {
       state = blank();
+      past = [];
       seconds = 0;
       mistakes = 0;
       hints = 0;

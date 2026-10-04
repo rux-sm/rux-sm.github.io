@@ -2,11 +2,11 @@
  "_meta": {
   "carbonReact": "1.117.0",
   "carbonStyles": "1.116.0",
-  "captured": "2026-10-03",
+  "captured": "2026-10-04",
   "url": "https://react.carbondesignsystem.com/",
   "mode": "spacing",
-  "settle": "paint + record count unchanged for one 100ms poll",
-  "versionNote": "carbonReact rendered these stories and depends on @carbon/styles ^1.116.0, the latest release; this repository compiles @carbon/styles 1.114.0, so a difference may be Carbon having moved since. Both confirmed from npm.",
+  "settle": "paint, then the record count unchanged for one 100ms poll, sampled no sooner than 4 s after load. Taken in a tab Chrome reported hidden, with frames forced by screenshots every 2 s; cds--snippet-btn--expand, which a code snippet renders only after measuring itself, is among the signatures.",
+  "versionNote": "carbonReact rendered these stories and depends on @carbon/styles ^1.116.0, the release this repository compiles.",
   "modifiers": "each value set lists every variant it was measured in: the sorted modifier classes on the element's ancestors, '' for none"
  },
  "cds--accordion__arrow": [
@@ -5391,8 +5391,7 @@
    ],
    "modifiers": [
     "cds--dialog--modal.cds--popover--caret.cds--popover--high-contrast.cds--popover--left",
-    "cds--popover--caret.cds--popover--high-contrast.cds--popover--left.cds--popover--open",
-    "cds--dialog--modal.cds--popover--caret.cds--popover--high-contrast.cds--popover--left.cds--popover--open"
+    "cds--popover--caret.cds--popover--high-contrast.cds--popover--left"
    ],
    "seen": [
     "preview-preview-dialog--danger-dialog",
@@ -6961,6 +6960,23 @@
    ],
    "seen": [
     "components-skeleton-skeletonicon--default"
+   ]
+  }
+ ],
+ "cds--icon-chevron--down.cds--snippet__icon": [
+  {
+   "values": {
+    "marginInlineStart": "8px"
+   },
+   "parents": [
+    "cds--snippet-btn--expand.cds--btn.cds--btn--sm.cds--layout--size-sm.cds--btn--ghost"
+   ],
+   "modifiers": [
+    "cds--btn--ghost.cds--btn--sm.cds--layout--size-sm.cds--snippet--multi.cds--snippet-btn--expand"
+   ],
+   "seen": [
+    "components-codesnippet--multiline",
+    "components-codesnippet--multiline-with-layer"
    ]
   }
  ],
@@ -9498,6 +9514,7 @@
    "modifiers": [
     "cds--layout--size-lg.cds--pagination--lg.cds--popover--caret.cds--popover--high-contrast.cds--popover--top",
     "cds--layout--size-md.cds--pagination--md.cds--popover--caret.cds--popover--high-contrast.cds--popover--top",
+    "cds--layout--size-md.cds--pagination--md.cds--popover--caret.cds--popover--high-contrast.cds--popover--open.cds--popover--top",
     "cds--layout--size-md.cds--pagination--md.cds--pagination__right--no-content.cds--popover--caret.cds--popover--high-contrast.cds--popover--top"
    ],
    "seen": [
@@ -10011,6 +10028,7 @@
     "cds--popover--auto-align.cds--popover--bottom.cds--popover--caret.cds--popover--high-contrast.cds--popover--top.cds--tile--decorator.cds--tile--expandable.cds--tile--expandable--interactive.cds--tile--inner-decorator",
     "cds--popover--auto-align.cds--popover--bottom.cds--popover--caret.cds--popover--high-contrast.cds--popover--top.cds--selectable-tile__wrapper--decorator.cds--tile--inner-decorator",
     "cds--popover--auto-align.cds--popover--bottom.cds--popover--caret.cds--popover--high-contrast.cds--popover--top.cds--radio-tile__wrapper--decorator.cds--tile--inner-decorator",
+    "cds--popover--bottom.cds--popover--caret.cds--popover--high-contrast.cds--tree--sm",
     "cds--popover--bottom-end.cds--popover--caret.cds--popover--high-contrast",
     "cds--icon-tooltip--disabled.cds--popover--caret.cds--popover--high-contrast.cds--popover--top",
     "cds--popover--caret.cds--popover--high-contrast.cds--popover--top-end",
@@ -10318,18 +10336,14 @@
     "display": "inline-block"
    },
    "parents": [
-    "cds--modal-close-button",
-    "cds--dialog__header-controls"
+    "cds--modal-close-button"
    ],
    "modifiers": [
-    "cds--body--with-modal-open",
-    "",
-    "cds--dialog--modal"
+    "cds--body--with-modal-open"
    ],
    "seen": [
     "components-composedmodal--passive-modal",
-    "components-modal--passive-modal",
-    "preview-preview-dialog--non-modal"
+    "components-modal--passive-modal"
    ]
   }
  ],
@@ -10766,10 +10780,9 @@
    "modifiers": [
     "cds--body--with-modal-open.cds--popover--caret.cds--popover--high-contrast.cds--popover--left.cds--popover--open",
     "cds--popover--bottom.cds--popover--caret.cds--popover--high-contrast.cds--popover--open",
+    "cds--layout--size-md.cds--pagination--md.cds--popover--caret.cds--popover--high-contrast.cds--popover--open.cds--popover--top",
     "cds--layout--size-lg.cds--popover--bottom.cds--popover--caret.cds--popover--high-contrast.cds--popover--open.cds--tab--list.cds--tabs__icon--lg",
-    "cds--popover--bottom.cds--popover--caret.cds--popover--high-contrast.cds--popover--open.cds--tab--list.cds--tabs__icon--default",
-    "cds--popover--caret.cds--popover--high-contrast.cds--popover--left.cds--popover--open",
-    "cds--dialog--modal.cds--popover--caret.cds--popover--high-contrast.cds--popover--left.cds--popover--open"
+    "cds--popover--bottom.cds--popover--caret.cds--popover--high-contrast.cds--popover--open.cds--tab--list.cds--tabs__icon--default"
    ],
    "seen": [
     "components-composedmodal--passive-modal",
@@ -10793,7 +10806,8 @@
     "cds--layout--size-xl.cds--popover--auto-align.cds--popover--caret.cds--popover--high-contrast.cds--popover--top.cds--tab--list.cds--tabs--contained.cds--tabs--vertical",
     "cds--popover--auto-align.cds--popover--caret.cds--popover--high-contrast.cds--popover--top",
     "cds--popover--bottom-start.cds--popover--caret.cds--popover--high-contrast",
-    "cds--popover--auto-align.cds--popover--bottom.cds--popover--high-contrast"
+    "cds--popover--auto-align.cds--popover--bottom.cds--popover--high-contrast",
+    "cds--popover--bottom.cds--popover--caret.cds--popover--high-contrast.cds--tree--sm"
    ],
    "seen": [
     "components-fileuploader--file-uploader-item",
@@ -13879,6 +13893,28 @@
    "seen": [
     "elements-grid--grid-start-end",
     "elements-grid--offset"
+   ]
+  }
+ ],
+ "cds--snippet-btn--expand.cds--btn.cds--btn--sm.cds--layout--size-sm.cds--btn--ghost": [
+  {
+   "values": {
+    "display": "flex",
+    "paddingBlockStart": "8px",
+    "paddingBlockEnd": "8px",
+    "paddingInlineStart": "16px",
+    "paddingInlineEnd": "16px",
+    "minBlockSize": "32px"
+   },
+   "parents": [
+    "cds--snippet.cds--snippet--multi"
+   ],
+   "modifiers": [
+    "cds--snippet--multi"
+   ],
+   "seen": [
+    "components-codesnippet--multiline",
+    "components-codesnippet--multiline-with-layer"
    ]
   }
  ],
@@ -19904,9 +19940,11 @@
     "paddingInlineStart": "4px"
    },
    "parents": [
+    "cds--tree-node__label__text-button.cds--btn.cds--btn--ghost.cds--btn--icon-only",
     "cds--tree-node__label__details"
    ],
    "modifiers": [
+    "cds--btn--ghost.cds--btn--icon-only.cds--popover--bottom.cds--popover--caret.cds--popover--high-contrast.cds--tree--sm",
     "cds--tree--sm",
     "cds--tree--sm.cds--tree-node--hidden",
     "cds--tree--sm.cds--tree-node--disabled",
@@ -19920,6 +19958,22 @@
     "components-treeview--default",
     "components-treeview--with-complex-nesting",
     "components-treeview--with-controlled-expansion"
+   ]
+  }
+ ],
+ "cds--tree-node__label__text-button.cds--btn.cds--btn--ghost.cds--btn--icon-only": [
+  {
+   "values": {
+    "display": "inline-flex"
+   },
+   "parents": [
+    "cds--tooltip-trigger__wrapper"
+   ],
+   "modifiers": [
+    "cds--popover--bottom.cds--popover--caret.cds--popover--high-contrast.cds--tree--sm"
+   ],
+   "seen": [
+    "components-treeview--default"
    ]
   }
  ],

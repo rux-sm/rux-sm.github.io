@@ -85,7 +85,13 @@
                                          // 'states'  → carbon-react-states.json
                                          // 'spacing' → carbon-react-spacing.json
                                          // 'icons'   → carbon-react-icons.json
-  if (document.visibilityState !== 'visible') {
+  // A hidden tab is refused, with one way round it: something outside the page
+  // forcing frames while the harvest runs, such as a screenshot every two
+  // seconds, with SETTLE_MIN_MS raised to 4000 so each story sees one before it
+  // is sampled. Then check the result holds a signature only a measured story
+  // has, like cds--snippet-btn--expand, before trusting it.
+  const FRAMES_ARE_FORCED = false;
+  if (document.visibilityState !== 'visible' && !FRAMES_ARE_FORCED) {
     throw new Error('this tab is hidden, so stories would be captured before they finish '
       + 'rendering. Bring the tab to the front of a window that is on screen and run again.');
   }

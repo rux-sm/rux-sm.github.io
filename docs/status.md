@@ -9,9 +9,6 @@ done and how.
 - **Screen-reader pass.** Toggle, modal and popover are not heard yet, two
   problems are open, and five controls need hearing again. The list is in
   `design/docs/screen-reader-pass.md`.
-- **The spacing reference needs taking again.** `design/data/carbon-react-spacing.json`
-  was captured in a background tab, where a component that measures itself is
-  recorded half built.
 
 ## Scheduler
 

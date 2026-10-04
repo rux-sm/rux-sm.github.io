@@ -8,7 +8,9 @@
    or not; that is the picture the puzzle finishes as. A picture never
    coloured finishes in black and white. Size starts a blank board of 5, 10
    or 15 squares a side, and a saved puzzle keeps the size it has. Level is
-   where the puzzle sits on the front page, among those of its size. Save stays off until the picture is solvable and named.
+   where the puzzle sits on the front page, among those of its size. A
+   puzzle given a day is that day's puzzle instead and sits in no level; a
+   day takes one puzzle, and after one is saved the field moves on a day. Save stays off until the picture is solvable and named.
    docs/making-puzzles.md is the guide to a good one.
 
    Only the owner's account makes and edits; any other is told so.
@@ -22,6 +24,7 @@
   const { data, owner, SIZES, grid, squaresOf, unreached, rounds, grade, board, drag, switcher } = window.Pixels;
   const $ = id => document.getElementById(id);
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
+  const day = $('pixels-day');
   const inks = $('pixels-inks');
   const DRAFT = 'pixels-draft';
   // A level holds nine, three rows of three on a phone, so a new puzzle is
@@ -51,7 +54,7 @@
     if (editing) return;
     try {
       localStorage.setItem(DRAFT, JSON.stringify({
-        squares: squaresOf(draft), name: name.value, level: levelOf(), colours: colours && squaresOf(colours),
+        squares: squaresOf(draft), name: name.value, level: levelOf(), day: day.value, colours: colours && squaresOf(colours),
       }));
     } catch { /* a convenience */ }
   };
@@ -150,6 +153,9 @@
   name.addEventListener('input', () => { save.disabled = !solvable || !name.value.trim(); keepDraft(); });
   level.addEventListener('input', keepDraft);
   level.addEventListener('change', keepDraft);
+  // A day's puzzle is in no level, so Level has nothing to say.
+  const showDay = () => { level.disabled = !!day.value; };
+  day.addEventListener('change', () => { showDay(); keepDraft(); });
 
   const clear = () => {
     draft = blank();
@@ -168,7 +174,7 @@
     save.disabled = true;
     const puzzle = {
       id: editing?.id, name: name.value.trim(), squares: squaresOf(draft), width: side, height: side,
-      level: levelOf(), colours: colours && squaresOf(colours),
+      level: levelOf(), day: day.value || null, colours: colours && squaresOf(colours),
     };
     try {
       const row = await data.save(puzzle);
@@ -179,11 +185,19 @@
         try { localStorage.removeItem(DRAFT); } catch { /* nothing kept */ }
         name.value = '';
         clear();
-        saved(`Saved “${row.name}”. It is in level ${row.level}.`);
+        if (row.day) {
+          const when = new Date(`${row.day}T12:00`);
+          saved(`Saved “${row.name}”. It is the puzzle for ${when.toLocaleDateString(undefined, { day: 'numeric', month: 'long' })}.`);
+          // On to the next day, for a run of them.
+          when.setDate(when.getDate() + 1);
+          day.value = `${when.getFullYear()}-${String(when.getMonth() + 1).padStart(2, '0')}-${String(when.getDate()).padStart(2, '0')}`;
+        } else saved(`Saved “${row.name}”. It is in level ${row.level}.`);
       }
       $('pixels-error').hidden = true;
-    } catch {
-      say('The puzzle was not saved', 'Try again.');
+    } catch (error) {
+      // The database lets a day have one puzzle.
+      if (error?.code === '23505') say('That day already has a puzzle', 'Pick another day, or edit the one it has.');
+      else say('The puzzle was not saved', 'Try again.');
     }
     render();
   });
@@ -219,6 +233,7 @@
         colours = editing.colours ? grid(editing.colours, editing.width) : null;
         name.value = editing.name;
         level.value = editing.level;
+        day.value = editing.day || '';
         $('pixels-heading').textContent = `Edit ${editing.name}`;
         document.title = `Edit ${editing.name} — Pixels`;
         $('pixels-delete').hidden = false;
@@ -234,8 +249,10 @@
         colours = kept.colours ? grid(kept.colours) : null;
         name.value = kept.name || '';
         if (kept.level) level.value = kept.level;
+        day.value = kept.day || '';
       }
     }
+    showDay();
     render();
   })();
 })();

@@ -3,8 +3,9 @@
    --------------------------------------------------------------------------
    A row a player: whether they have done today's puzzle and in what time,
    their days in a row, how many puzzles they have solved, their stars, and
-   when they last played. A guest's row has Remove, which takes their results
-   with them; an account's player goes when its account does.
+   when they last played. The name is a field, and a new one is the name the
+   leaderboard shows. Remove takes a player off the leaderboard with all
+   their results; an account that plays again starts a new player.
 
    The invite word is what a guest's link must carry to join. Saving a new
    one closes the old link to anyone new; those already in keep playing.
@@ -63,27 +64,45 @@
 
     $('pixels-rows').replaceChildren(...rows.map(p => {
       const tr = document.createElement('tr');
-      tr.append(cell(p.name), cell(p.today || 'Not yet'), cell(p.days), cell(p.solved), cell(p.stars), cell(when(p.last_played_at)));
+      // The name is a field: Enter or leaving it saves a new one.
+      const named = document.createElement('td');
+      const field = document.createElement('input');
+      Object.assign(field, { className: 'rux--text-input rux--layout--size-sm pixels-player-name', type: 'text', maxLength: 20, value: p.name });
+      field.setAttribute('aria-label', `Name of ${p.name}`);
+      const rename = async () => {
+        const to = field.value.trim();
+        if (!to || to === p.name) { field.value = p.name; return; }
+        try {
+          await data.renamePlayer(p.id, to);
+          $('pixels-error').hidden = true;
+        } catch (error) {
+          if (error?.code === '23505') say('That name is taken', 'Another player has it.');
+          else say('The name was not saved', 'Try again.');
+        }
+        draw();
+      };
+      field.addEventListener('change', rename);
+      field.addEventListener('keydown', e => { if (e.key === 'Enter') field.blur(); });
+      named.appendChild(field);
+      tr.append(named, cell(p.today || 'Not yet'), cell(p.days), cell(p.solved), cell(p.stars), cell(when(p.last_played_at)));
       const last = document.createElement('td');
-      if (!p.user_id) {
-        const remove = document.createElement('button');
-        remove.type = 'button';
-        remove.className = 'rux--btn rux--btn--danger--ghost rux--btn--sm rux--layout--size-sm';
-        remove.textContent = 'Remove';
-        // A second press within a few seconds does it; the first only asks.
-        remove.addEventListener('click', async () => {
-          if (remove.dataset.sure == null) {
-            remove.dataset.sure = '';
-            remove.textContent = `Remove ${p.name}?`;
-            setTimeout(() => { delete remove.dataset.sure; remove.textContent = 'Remove'; }, 4000);
-            return;
-          }
-          remove.disabled = true;
-          try { await data.removePlayer(p.id); } catch { say('The player was not removed', 'Try again.'); }
-          draw();
-        });
-        last.appendChild(remove);
-      }
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'rux--btn rux--btn--danger--ghost rux--btn--sm rux--layout--size-sm';
+      remove.textContent = 'Remove';
+      // A second press within a few seconds does it; the first only asks.
+      remove.addEventListener('click', async () => {
+        if (remove.dataset.sure == null) {
+          remove.dataset.sure = '';
+          remove.textContent = `Remove ${p.name}?`;
+          setTimeout(() => { delete remove.dataset.sure; remove.textContent = 'Remove'; }, 4000);
+          return;
+        }
+        remove.disabled = true;
+        try { await data.removePlayer(p.id); } catch { say('The player was not removed', 'Try again.'); }
+        draw();
+      });
+      last.appendChild(remove);
       tr.appendChild(last);
       return tr;
     }));

@@ -189,13 +189,18 @@
 }
 .pixels-rank.is-me { background: var(--rux-layer-01); font-weight: 600; }
 .pixels-rank-place { color: var(--rux-text-secondary); font-variant-numeric: tabular-nums; }
-.pixels-rank-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* A name is cut short with an ellipsis, never through the tail of a g. */
+.pixels-rank-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.5; }
 .pixels-rank-value { min-inline-size: 3.5rem; text-align: end; font-variant-numeric: tabular-nums; }
 
 /* THE OWNER'S PAGE: the invite word beside its button, the link under them. */
 .pixels-invite { display: grid; grid-template-columns: minmax(0, 16rem) auto; gap: .75rem 1rem; align-items: end; }
 .pixels-invite[hidden] { display: none; }
 .pixels-invite > p { grid-column: 1 / -1; margin: 0; overflow-wrap: anywhere; }
+/* A name stays wide enough to read and type in; on a phone the table slides. */
+.pixels-player-name { min-inline-size: 8rem; max-inline-size: 14rem; }
+.pixels-scroll { overflow-x: auto; }
+.pixels-scroll[hidden] { display: none; }
 
 /* THE FRONT PAGE. The page keeps 3rem clear each side; on a phone it takes
    2rem of that back. The tabs' panels start where the page does. */
@@ -253,7 +258,7 @@
   max-inline-size: 100%;
   font-size: .8125rem;
   font-weight: 600;
-  line-height: 1.2;
+  line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

@@ -42,8 +42,10 @@ silent switch does not, and a phone ticks
 on each fill where the browser allows it. A game in
 progress is kept in the browser, so a reload picks it up.
 
-`play.html?daily` plays the puzzle of the day, which the browser makes from
-the date, the same for everyone. Only it counts toward the days in a row.
+`play.html?daily` plays the puzzle of the day: the one the owner drew for
+that day, with its name and colours, or where there is none, one the browser
+makes from the date, the same for everyone. Only it counts toward the days
+in a row. A player is never sent a day's puzzle before its day.
 
 `make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits
 or deletes one. Only the owner's account makes and edits: it alone sees Make
@@ -53,7 +55,8 @@ picture and how hard that is, outlines each square that would need a guess,
 and saves only a picture with one answer. Size starts a blank board of 5,
 10 or 15 a side. Its Colour step paints the picture
 the puzzle finishes as, from eight inks, and Level places it on the front
-page. `docs/making-puzzles.md` is the guide to a good picture and a good
+page. A puzzle given a day is that day's puzzle and sits in no level; a day
+takes one. `docs/making-puzzles.md` is the guide to a good picture and a good
 level.
 
 ## Files
@@ -85,8 +88,9 @@ time under two seconds, a puzzle that does not exist, a day more than one
 from today.
 
 `players.html` is the owner's: every player with today's puzzle, days in a
-row, puzzles solved, stars and when they last played, the invite word, whose
-change closes the old link to anyone new, and Remove for a guest.
+row, puzzles solved, stars and when they last played; the name, which can be
+typed over; the invite word, whose change closes the old link to anyone new;
+and Remove, which takes a player and their results off the leaderboard.
 
 The local preview, `npm run serve` on :8640, has no log-in, so there Pixels
 keeps its puzzles and times in the browser instead, starting from the ten in

@@ -26,8 +26,9 @@
    A board wider than ten squares zooms under two fingers; app.js's `drag`
    says how.
 
-   play.html?daily plays the puzzle of the day, which app.js makes from the
-   date; its result is kept by day, and solving it shows the days in a row.
+   play.html?daily plays the puzzle of the day, the one the owner drew for
+   today or else the one app.js makes from the date; its result is kept by
+   day, and solving it shows the days in a row.
 
    Each fill, X, finished line, mistake, hint and solve plays a tone and
    ticks the phone, and an X taken off or a move undone plays a falling
@@ -76,13 +77,16 @@
       say('The puzzle did not load', 'Reload the page to try again.');
       return;
     }
+    // Today's puzzle is the one drawn for today, if there is one.
+    const puzzle0 = isDaily ? daily(today(), puzzles) : null;
     puzzles = order(puzzles);
     const index = puzzles.findIndex(p => String(p.id) === id);
     if (!isDaily && index < 0) { say('This puzzle is not here', 'It may have been deleted. Pick another from Puzzles.'); return; }
-    const puzzle = isDaily ? daily(today()) : puzzles[index];
+    const puzzle = isDaily ? puzzle0 : puzzles[index];
     // What a result is kept under: the day, or the puzzle's id.
     const key = isDaily ? puzzle.day : puzzle.id;
-    const heading = isDaily ? puzzle.name : title(puzzle, index, results.has(key));
+    // A name stays hidden until its puzzle is solved; the day's shows its date.
+    const heading = isDaily ? (results.has(key) ? puzzle.name : puzzle.date) : title(puzzle, index, results.has(key));
     const answer = grid(puzzle.squares, puzzle.width), H = answer.length, W = answer[0].length;
     const blank = () => answer.map(r => r.map(() => 0));
 

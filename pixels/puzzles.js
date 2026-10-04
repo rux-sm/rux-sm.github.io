@@ -11,7 +11,8 @@
    phone, each tile a square, none locked: the 5×5 levels are called Quick,
    the 15×15 ones Long, and they stand before and after the 10×10 levels. A
    solved tile shows its picture, name and stars; an unsolved one its number,
-   a question mark and how hard it is. The owner has an Edit link under each.
+   a question mark and how hard it is. The owner has an Edit link under each,
+   and a section of the days' puzzles he has drawn, by date.
 
    LEADERBOARD. Two rankings behind one switch: today's puzzle, by stars then
    time, and all time, by every star earned, with puzzles solved and days in
@@ -67,7 +68,8 @@
     a.href = 'play.html?daily';
     const text = document.createElement('div');
     text.className = 'pixels-today-text';
-    text.append(words('pixels-meta', row ? `Today · ${row} day${row === 1 ? '' : 's'} in a row` : 'Today'), words('pixels-today-name', puzzle.name));
+    // Its name, if it has one, waits until it is solved.
+    text.append(words('pixels-meta', row ? `Today · ${row} day${row === 1 ? '' : 's'} in a row` : 'Today'), words('pixels-today-name', best ? puzzle.name : puzzle.date));
     const line = document.createElement('span');
     if (best) line.append(stars(document.createElement('span'), best.stars), words('pixels-meta', ` ${time(best.seconds)}`));
     else line.append(words('pixels-meta', grade(rounds(grid(puzzle.squares, puzzle.width)))));
@@ -209,10 +211,24 @@
       document.getElementById('pixels-guestbar').hidden = false;
     }
     document.getElementById('pixels-tabs').hidden = false;
-    const now = daily(today());
+    const now = daily(today(), puzzles);
     host.appendChild(todayCard(now, days.get(now.day), streak(new Set(days.keys()))));
     if (ranks) leader.appendChild(leaderboard(ranks));
-    if (!puzzles.length) { host.appendChild(empty()); return; }
+    // The owner sees every day's puzzle he has drawn, soonest first, each
+    // opening in the maker.
+    const dated = puzzles.filter(p => p.day).sort((a, b) => a.day.localeCompare(b.day));
+    if (owner && dated.length) {
+      const drawn = section('Dailies', 0, dated.map(p => {
+        const when = new Date(`${p.day}T12:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+        const a = tile(p, when, `make.html?id=${encodeURIComponent(p.id)}`, { stars: 3 });
+        a.lastElementChild.replaceWith(words('pixels-meta', p.name));
+        return a;
+      }));
+      drawn.querySelector('.pixels-level-head > .pixels-meta').textContent = `${dated.length} drawn`;
+      drawn.querySelector('.rux--progress-bar').remove();
+      host.appendChild(drawn);
+    }
+    if (!order(puzzles).length) { host.appendChild(empty()); return; }
 
     // "Puzzle 7" counts through every level, in playing order.
     const ordered = order(puzzles);

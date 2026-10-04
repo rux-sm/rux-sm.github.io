@@ -103,20 +103,28 @@
   const grade = n => (n <= 3 ? 'easy' : n <= 5 ? 'medium' : 'hard');
 
   // Playing order: small boards first, then by level, easy to hard within
-  // one, then as they were made.
+  // one, then as they were made. A puzzle drawn for a day is in no level.
   const order = puzzles => {
+    puzzles = puzzles.filter(p => !p.day);
     puzzles.forEach(p => { p.rounds ??= rounds(grid(p.squares, p.width)); });
     return [...puzzles].sort((a, b) => a.width - b.width || a.level - b.level || a.rounds - b.rounds
       || String(a.created_at).localeCompare(String(b.created_at)));
   };
 
-  /* THE PUZZLE OF A DAY, made from its date so every browser draws the same
-     one and nobody has to. Random squares are smoothed once, each following
-     the majority of itself and its neighbours, and mirrored left to right,
-     which gives a shape and not noise; the first try that fills 30 to 70
-     squares and needs no guess is the puzzle. A year of days took at most
-     8 tries. `day` is YYYY-MM-DD. */
-  const daily = day => {
+  /* THE PUZZLE OF A DAY. `day` is YYYY-MM-DD. If the owner drew one for the
+     day, among `puzzles`, that is it, with its name and its colours. If not,
+     one is made from the date, so every browser draws the same and no day
+     goes without: random squares are smoothed once, each following the
+     majority of itself and its neighbours, and mirrored left to right, which
+     gives a shape and not noise; the first try that fills 30 to 70 squares
+     and needs no guess is the puzzle. A year of days took at most 8 tries.
+
+     Either way it is kept under the day, not under a puzzle's id, `date` is
+     the day in words, and a made one has no name but that. */
+  const daily = (day, puzzles = []) => {
+    const date = new Date(`${day}T12:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'long' });
+    const drawn = puzzles.find(p => p.day === day);
+    if (drawn) return { ...drawn, id: `daily-${day}`, date, level: 0 };
     let seed = +day.replace(/-/g, '') * 31;
     const random = () => {
       seed = seed + 0x6D2B79F5 | 0;
@@ -135,8 +143,7 @@
       const g = half.map(r => r.map((_, x) => r[x < DAY / 2 ? x : DAY - 1 - x]));
       const filled = g.flat().filter(Boolean).length;
       if (filled >= 30 && filled <= 70 && !unreached(g).flat().some(Boolean)) {
-        const name = new Date(`${day}T12:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'long' });
-        return { id: `daily-${day}`, day, name, squares: squaresOf(g), width: DAY, height: DAY, level: 0 };
+        return { id: `daily-${day}`, day, date, name: date, squares: squaresOf(g), width: DAY, height: DAY, level: 0 };
       }
     }
   };

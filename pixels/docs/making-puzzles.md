@@ -55,6 +55,22 @@ the finish. Pick one of the eight inks and paint any square, filled or empty.
   for its detail, such as a red apple with a green leaf.
 - A picture never coloured finishes in black and white.
 
+## The puzzle of the day
+
+Give a puzzle a day in "Puzzle of the day for" and it is that day's puzzle,
+in no level. A day takes one puzzle, and after a save the field moves on a
+day, so a week of them is drawn in one sitting. A day with none gets a shape
+the game makes itself, which has no name but its date.
+
+- **Draw ahead.** Nobody is sent a day's puzzle before its day, so next
+  week's are safe to save now.
+- **Colour it.** Everyone solves the same one on the same day, so its finish
+  is the one picture all of them see.
+- **Keep it easy or medium.** It is the puzzle people do every day, on a
+  phone, often in a spare minute.
+- The front page lists every day drawn, by date, for the owner only; a tile
+  opens it in the maker.
+
 ## How hard it is
 
 The green tag ends in easy, medium or hard. It counts rounds: one round is one

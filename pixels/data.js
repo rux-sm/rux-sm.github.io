@@ -82,16 +82,16 @@
     async results() {
       return new Map(Object.entries(read().results).map(([id, r]) => [id, typeof r === 'number' ? { seconds: r, stars: 1 } : r]));
     },
-    async save({ id, name, squares, width, height, level, colours }) {
+    async save({ id, name, squares, width, height, level, colours, day }) {
       const db = read();
       if (id) {
         const p = db.puzzles.find(q => q.id === id);
         if (p.squares !== squares) delete db.results[id];
-        Object.assign(p, { name, squares, width, height, level, colours });
+        Object.assign(p, { name, squares, width, height, level, colours, day });
         write(db);
         return p;
       }
-      const p = { id: `p-${Date.now()}`, name, squares, width, height, level, colours, created_at: new Date().toISOString() };
+      const p = { id: `p-${Date.now()}`, name, squares, width, height, level, colours, day, created_at: new Date().toISOString() };
       db.puzzles.push(p);
       write(db);
       return p;
@@ -140,6 +140,9 @@
     } catch { return given || ''; }
   };
 
+  // The owner: the local preview is whoever runs it.
+  const owner = (!client && local) || (member && !!granted?.owner);
+
   // -- the database -----------------------------------------------------------
   const fail = error => { if (error) throw error; };
   const call = async (name, args) => {
@@ -156,7 +159,15 @@
       if (!player.error) localStorage.setItem(GUEST, JSON.stringify({ key: made, name: player.name }));
       return player;
     },
-    async list() { return call('pixels_puzzles', { p_key: key() }); },
+    // A player is sent the levels and the day's puzzle; the owner reads the
+    // table, which holds the days to come too.
+    async list() {
+      if (!owner) return call('pixels_puzzles', { p_key: key() });
+      const { data, error } = await client.from('pixels_puzzles')
+        .select('id, name, squares, width, height, level, colours, created_at, day').order('created_at').order('id');
+      fail(error);
+      return data;
+    },
     async results() {
       return new Map((await call('pixels_results', { p_key: key() })).map(r => [r.puzzle_id, { seconds: r.best_seconds, stars: r.stars }]));
     },
@@ -172,18 +183,18 @@
     async board(day) { return call('pixels_board', { p_key: key(), p_day: day }); },
 
     // The owner's, straight to the tables.
-    async save({ id, name, squares, width, height, level, colours }) {
+    async save({ id, name, squares, width, height, level, colours, day }) {
       if (id) {
         const { data: before, error: readError } = await client.from('pixels_puzzles').select('squares').eq('id', id).single();
         fail(readError);
         const { data, error } = await client.from('pixels_puzzles')
-          .update({ name, squares, width, height, level, colours, updated_at: new Date().toISOString() }).eq('id', id).select().single();
+          .update({ name, squares, width, height, level, colours, day, updated_at: new Date().toISOString() }).eq('id', id).select().single();
         fail(error);
         // A redrawn picture is a new puzzle, so everyone's results on it go.
         if (before.squares !== squares) fail((await client.from('pixels_player_results').delete().eq('puzzle_id', id)).error);
         return data;
       }
-      const { data, error } = await client.from('pixels_puzzles').insert({ name, squares, width, height, level, colours }).select().single();
+      const { data, error } = await client.from('pixels_puzzles').insert({ name, squares, width, height, level, colours, day }).select().single();
       fail(error);
       return data;
     },
@@ -207,6 +218,9 @@
     async removePlayer(id) {
       fail((await client.from('pixels_players').delete().eq('id', id)).error);
     },
+    async renamePlayer(id, name) {
+      fail((await client.from('pixels_players').update({ name }).eq('id', id)).error);
+    },
   };
 
   const store = cloud || (local ? preview : null);
@@ -215,7 +229,6 @@
   /* MAKING, EDITING AND THE PLAYERS ARE THE OWNER'S. The database refuses
      anyone else; this only keeps the ways in out of their sight. The local
      preview has no log-in and is whoever runs it. */
-  const owner = (!cloud && local) || (member && !!granted?.owner);
   if (!owner) {
     document.querySelectorAll('.rux--side-nav a[href="make.html"], .rux--side-nav a[href="players.html"]')
       .forEach(a => a.closest('li')?.remove());

@@ -215,12 +215,12 @@
     },
     "document-page": {
       "purpose": "Read one document top to bottom, in order.",
-      "reviewed": false,
+      "reviewed": true,
       "suggestions": []
     },
     "search-results-page": {
       "purpose": "A query, facets that narrow it, and what came back.",
-      "reviewed": false,
+      "reviewed": true,
       "suggestions": [
         {
           "block": "templates/empty-state/empty-state",
@@ -234,12 +234,12 @@
     },
     "list-page": {
       "purpose": "A list of records where a row opens one \u2014 the table half of the pair, centred.",
-      "reviewed": false,
+      "reviewed": true,
       "suggestions": []
     },
     "record-page": {
       "purpose": "One record, opened from a list and saved back to it \u2014 the record half of the pair, centred.",
-      "reviewed": false,
+      "reviewed": true,
       "suggestions": []
     }
   },

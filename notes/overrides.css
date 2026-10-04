@@ -10,3 +10,9 @@
    whose one column otherwise grows to its widest child, so a step table in its
    own scrolling box widened a whole page past a phone's screen. */
 .rux--stack-vertical > * { min-inline-size: 0; }
+
+/* Back and Next share a row, and a choice fills the column. Carbon sizes a
+   button to its label and caps its width, and its button set holds each button
+   at a fixed width that runs off a phone. */
+.notes-nav .rux--btn,
+.notes-choices .rux--btn { inline-size: 100%; max-inline-size: none; justify-content: center; padding-inline: 1rem; }

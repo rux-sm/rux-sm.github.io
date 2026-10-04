@@ -114,12 +114,10 @@ exports, so a correction is made once and every screen redraws.
 ### What carries over
 
 - **The export, the build that reads it, and its list of what it could not
-  place.** `notes/do.html`, `notes/understand.html` and `notes/lookup.html` are
-  replaced by the flow, and the questions, cards and routes they show move into
-  it.
+  place.** The flow is one page, `notes/do.html`, and the address says which
+  screen of it shows, so Back, a reload and a shared link all work.
 
-- **The old pages stay until the flow works for Ship from stock**, and go in one
-  step after.
+- **The old pages stay beside the flow**, and go in one step.
 
 ### The library
 
@@ -145,18 +143,14 @@ landings for old page addresses, which are deleted.
 
 ## Tasks
 
-- [ ] Rewrite `notes/tools/build-views.mjs` to write the flow from atlas's
-      data: home, path, step, decision, map and search, for every scenario.
-- [ ] Add atlas's "something went wrong" rows and its side tasks to Search, each
-      labelled by kind.
 - [ ] In atlas, export each phase's walked date and each side task's, so a step
       can say whether anyone has confirmed it.
 - [ ] Write the one table and its bucket as SQL, show it to rux, and build the
       two buttons and the unconfirmed card on it.
 - [ ] In atlas, write the pull that reads the table into the inbox, and correct
       `docs/plans/overview-walks.md` and `docs/handoff.md` to match.
-- [ ] Move the two button rules into `notes/overrides.css`, and raise the
-      button set's fixed width with Design.
+- [ ] Give Design a button set that fits a phone, and take the two rules out of
+      `notes/overrides.css`.
 - [ ] In atlas, set the one shape for a question in `standards/`, with its
       check, and rewrite each scenario's questions into it.
 - [ ] In atlas, give a short form to each step whose wording runs past two

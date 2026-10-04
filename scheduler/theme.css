@@ -270,14 +270,17 @@
    the outlined button's quiet ring. So they take no rule between them, and
    give their padding and their fixed width to the words, which all still
    fit. The ring is an inset shadow, because a slot has no border of its own.
-   Above its trip the slots come last and app.css rules each one's top; here
-   the card's foot carries that one rule instead, so it does not double a ring.
+   They keep 40px, this theme's bar, where app.css makes the card's slots
+   48px, and the rule app.css takes off the card's first row stays here, to
+   part the ringed row from the card; above its trip, where the slots come
+   last, the card's foot carries that rule.
    data.js never sets the card narrower than 256px, which fits four slots edge
    to edge; held apart they need 288px for the longest word to stand clear of
    its ring, so that is the floor here. data.js places the card by the width
    it measures, so the wider floor needs nothing from it. */
 [data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
   --scheduler-shortcut-pad: var(--rux-spacing-04);
+  --scheduler-slot-h: 2.5rem;
   column-gap: var(--rux-spacing-03);
   row-gap: var(--rux-spacing-04);
   inline-size: min(max(var(--scheduler-card-w, 18rem), 18rem), calc(100vw - 2 * var(--rux-spacing-05)));
@@ -287,8 +290,7 @@
   padding-inline: 0;
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
 }
-[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut + .scheduler-bar-shortcut { border-inline-start: 0; }
-[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) > .scheduler-bar-shortcut { border-block-start: 0; }
+[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked], [data-side="above"]) .scheduler-card > :first-child { border-block-start: 1px solid var(--card-rule); }
 [data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) > .scheduler-card { border-block-end: 1px solid var(--card-rule); }
 /* What is under the slots starts and ends where they do. A row gives up its
    16px sides, so its words stand on the slots' edge; a row that lights under

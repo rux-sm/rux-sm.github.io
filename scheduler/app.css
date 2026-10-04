@@ -974,7 +974,7 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card {
   display: flex;
   flex-direction: column;
-  max-block-size: calc(var(--scheduler-card-max-h, 100vh) - 2.5rem - 2 * var(--scheduler-shortcut-pad, 0px));
+  max-block-size: calc(var(--scheduler-card-max-h, 100vh) - var(--scheduler-slot-h, 2.5rem) - 2 * var(--scheduler-shortcut-pad, 0px));
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > * { flex: none; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates { display: flex; flex-direction: column; flex: 0 1 auto; min-block-size: 0; }
@@ -1035,27 +1035,26 @@ button.scheduler-row-head__num::after {
 }
 /* Each slot carries its word under its icon, because a tooltip names a slot
    only after a second's hover, and stacked the words fit a card two days
-   wide on a narrow week. The four make one 40px row, sharing the card's
-   width equally, each parted from the next by a rule, so they read as
-   buttons and not as one more row. */
+   wide on a narrow week. The four make one row, sharing the card's width
+   equally: 40px on the strip, and 48px on the card, Carbon's large control.
+   No rule parts one from the next or the row from the card under it: each
+   slot's icon and word mark it out, the pointer lights the whole of the one
+   it is on, and the card's first row stands 16px clear. */
 .scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut {
   flex: 1 1 0;
   flex-direction: column;
   inline-size: auto;
   min-inline-size: var(--scheduler-slot-w);
-  block-size: 2.5rem;
+  block-size: var(--scheduler-slot-h, 2.5rem);
   padding: 0 var(--rux-spacing-02);
 }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) { --scheduler-slot-h: 3rem; }
 .scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut > svg { flex: none; }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut + .scheduler-bar-shortcut { border-inline-start: 1px solid var(--card-rule); }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut:hover { background: var(--card-hover); }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > :first-child { border-block-start: 0; }
 /* Above its trip the slots come last, so they sit against the trip the arrow
-   points at, and take the rule the card's first row gives up. */
-.scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) > .scheduler-bar-shortcut {
-  order: 1;
-  border-block-start: 1px solid var(--card-rule);
-}
-.scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) .scheduler-card > :first-child { border-block-start: 0; }
+   points at. */
+.scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) > .scheduler-bar-shortcut { order: 1; }
 .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut__label {
   display: block;
   max-inline-size: 100%;
@@ -1075,8 +1074,8 @@ button.scheduler-row-head__num::after {
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
 /* Every line is a row with a rule above it, as compact as it goes: 12px type
-   on a 16px line, 4px above and below and 8px at either side. The slots' row
-   takes the first rule. */
+   on a 16px line, 4px above and below and 8px at either side. Under the
+   floating card's slots the first row gives its rule up, above. */
 .scheduler-card__row {
   padding: var(--rux-spacing-02) var(--rux-spacing-03);
   border-block-start: 1px solid var(--card-rule);

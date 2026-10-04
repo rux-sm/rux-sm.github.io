@@ -43,7 +43,8 @@ silent switch does not, and a phone ticks
 on each fill where the browser allows it. A game in
 progress is kept in the browser, so a reload picks it up.
 
-The puzzle of the day is switched off by `DAILY` in `app.js`: no page shows
+The leaderboard is switched off by `BOARD` in `app.js`: the front page has
+no tabs and no ranking, and results are saved as ever. The puzzle of the day is switched off by `DAILY` in `app.js`: no page shows
 it, the leaderboard ranks all time only, and the maker still dates puzzles so
 they can be drawn ahead. With it on, `play.html?daily` plays the puzzle of the day: the one the owner drew for
 that day, with its name and colours, or where there is none, one the browser

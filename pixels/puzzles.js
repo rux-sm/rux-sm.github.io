@@ -5,7 +5,8 @@
    draws it.
 
    While app.js's DAILY is false the puzzle of the day is not shown: no card
-   for it, and one ranking, all time, with no days in a row.
+   for it, and one ranking, all time, with no days in a row. While its BOARD
+   is false there is no leaderboard and no tabs, only the puzzles.
 
    PUZZLES. Today's puzzle is one card across the page: its picture once
    solved, the date, the stars and time or how hard it is, and the days
@@ -25,7 +26,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, guest, enter, DAILY, grid, rounds, grade, order, daily, today, streak, picture, stars, time, title, switcher } = window.Pixels;
+  const { data, owner, guest, enter, DAILY, BOARD, grid, rounds, grade, order, daily, today, streak, picture, stars, time, title, switcher } = window.Pixels;
   const host = document.getElementById('pixels-levels'), leader = document.getElementById('pixels-leader');
 
   const say = (heading, detail) => {
@@ -211,7 +212,7 @@
     try {
       me = await enter(host);
       if (!me) return;
-      [puzzles, results, days, ranks] = await Promise.all([data.list(), data.results(), data.days(), data.board(today())]);
+      [puzzles, results, days, ranks] = await Promise.all([data.list(), data.results(), data.days(), BOARD ? data.board(today()) : null]);
     } catch {
       say('The puzzles did not load', 'Reload the page to try again.');
       return;
@@ -220,7 +221,8 @@
       document.getElementById('pixels-player').textContent = me.name;
       document.getElementById('pixels-guestbar').hidden = false;
     }
-    document.getElementById('pixels-tabs').hidden = false;
+    // With no leaderboard there is one panel and nothing to switch between.
+    document.getElementById('pixels-tabs').hidden = !BOARD;
     if (DAILY) {
       const now = daily(today(), puzzles);
       host.appendChild(todayCard(now, days.get(now.day), streak(new Set(days.keys()))));

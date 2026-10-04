@@ -25,6 +25,11 @@
      the days drawn, so they can be made ahead of turning it on. */
   const DAILY = false;
 
+  /* THE LEADERBOARD IS OFF. While this is false the front page has no tabs
+     and no ranking, only the puzzles, and does not ask the database for one.
+     Results are saved as ever, so a ranking is there to show when it is on. */
+  const BOARD = false;
+
   // Rows of numbers from a string of them; a square puzzle unless told its width.
   const grid = (squares, width = Math.sqrt(squares.length)) =>
     Array.from({ length: squares.length / width }, (_, y) => [...squares.slice(y * width, y * width + width)].map(Number));
@@ -501,7 +506,7 @@
   const chosen = (el, option) => window.Rux.contentSwitcher.select(el, option, { focus: false, silent: true });
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    SIZES, DAILY, INKS: 8, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, daily, today, streak,
+    SIZES, DAILY, BOARD, INKS: 8, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, daily, today, streak,
     board, paint, highlight, drag, picture, stars, buzz, sound, sounds, listen, time, title, switcher, chosen,
   });
 })();

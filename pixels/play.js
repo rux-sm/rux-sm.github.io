@@ -28,7 +28,8 @@
    date; its result is kept by day, and solving it shows the days in a row.
 
    Each fill, X, finished line, mistake, hint and solve plays a tone and
-   ticks the phone. The Sound switch keeps its choice in this browser.
+   ticks the phone, and a square emptied, an X taken off or a move undone
+   plays a falling one. The Sound switch keeps its choice in this browser.
 
    A game in progress is kept in this browser under `pixels-progress`, so a
    phone that reloads the page picks up where it was. It is dropped once the
@@ -210,9 +211,9 @@
           sound('miss');
           tell(score() < before ? 'Not in the picture · a star lost' : 'Not in the picture', true);
         }
-      } else if (action === 'unfill' && v === 1) state[y][x] = 0;
+      } else if (action === 'unfill' && v === 1) { state[y][x] = 0; sound('pop'); }
       else if (action === 'x' && v === 0) { state[y][x] = 2; sound('x'); }
-      else if (action === 'unx' && v === 2) state[y][x] = 0;
+      else if (action === 'unx' && v === 2) { state[y][x] = 0; sound('pop'); }
       else return;
       if (held) { past.push(held); held = null; }
       cursor = [y, x];
@@ -241,7 +242,7 @@
       state = was;
       cursor = [];
       tell('');
-      sound('x');
+      sound('pop');
       draw();
       keep();
     };

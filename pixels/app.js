@@ -394,8 +394,9 @@
   };
 
   /* A TONE. Made in the browser, so there is no file to fetch: each kind is a
-     few notes of [pitch in Hz, seconds]. `step` raises the pitch a semitone
-     at a time, so a drag of fills climbs. `pixels-sound` set to off in this
+     few notes of [pitch in Hz, seconds], and a third number is the pitch the
+     note slides to, which is how `pop` falls. `step` raises the pitch a
+     semitone at a time, so a drag of fills climbs. `pixels-sound` set to off in this
      browser silences it, and so does an iPhone's silent switch.
 
      A phone keeps sound stopped until a touch, takes a moment to start it,
@@ -406,6 +407,7 @@
      it if it is still fresh. */
   const TONES = {
     fill: [[523, .06]],
+    pop: [[440, .09, 220]],
     x: [[196, .05]],
     line: [[659, .07], [880, .1]],
     miss: [[147, .2]],
@@ -423,10 +425,11 @@
   const play = (kind, step) => {
     // A little ahead of now, so the first note is not cut short.
     let at = audio.currentTime + .01;
-    for (const [pitch, length] of TONES[kind]) {
+    for (const [pitch, length, slide] of TONES[kind]) {
       const tone = audio.createOscillator(), level = audio.createGain();
       tone.type = kind === 'miss' ? 'sawtooth' : 'triangle';
-      tone.frequency.value = pitch * 2 ** (Math.min(step, 12) / 12);
+      tone.frequency.setValueAtTime(pitch * 2 ** (Math.min(step, 12) / 12), at);
+      if (slide) tone.frequency.exponentialRampToValueAtTime(slide, at + length);
       level.gain.setValueAtTime(.15, at);
       level.gain.exponentialRampToValueAtTime(.001, at + length);
       tone.connect(level).connect(audio.destination);

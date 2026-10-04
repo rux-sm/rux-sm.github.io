@@ -138,8 +138,6 @@ const KNOWN = {
   'action-set:action-set--md': [['content', 'side-panel', 'side-panel--md', 'side-panel--open'], ACTION_SET_REASON],
   'action-set:action-set--row-triple': [TEARSHEET_FOOTER, ACTION_SET_REASON],
   'action-set:action-set__action-button--ghost': [TEARSHEET_FOOTER, ACTION_SET_REASON],
-  'tearsheet:modal-close': [TOOLTIP_CHROME, 'the icon-tooltip the sink declines throughout'],
-  'tearsheet:modal-close__icon': [TOOLTIP_CHROME, 'the icon-tooltip the sink declines throughout'],
   'tearsheet:tearsheet__header--no-close-icon': [TOOLTIP_CHROME, 'the icon-tooltip the sink declines throughout'],
   // The AI label's popover is `auto-align` in every capture: floating-ui
   // placement this system has no JS for. The fragment fixes `--bottom` instead,
@@ -434,7 +432,7 @@ function occurrences(html) {
 // record that the load-bearing wrapper IS present, which is the distinction
 // this gate exists to make and is not a property of the class.
 //
-// WHAT THIS GIVES UP: a new fragment using one of these 21 classes inherits the
+// WHAT THIS GIVES UP: a new fragment using one of these 24 classes inherits the
 // decline instead of being adjudicated on its own. That is the trade -- the
 // judgement is genuinely about the class, and restating it per file was
 // producing drift, not rigour.
@@ -461,6 +459,8 @@ const CLASS_DECLINES = {
   'card__action': [CARD_STORY_GRID, CARD_GRID_REASON],
   'card__header-media': [CARD_STORY_GRID, CARD_GRID_REASON],
   'btn--icon-only': [TOOLTIP_CHROME, TOOLTIP_REASON],
+  'modal-close': [TOOLTIP_CHROME, TOOLTIP_REASON],
+  'modal-close__icon': [TOOLTIP_CHROME, TOOLTIP_REASON],
   'overflow-menu': [TOOLTIP_CHROME, TOOLTIP_REASON],
   'badge-indicator--count': [TOOLTIP_CHROME, TOOLTIP_REASON],
   'combo-button__trigger': [TOOLTIP_CHROME, TOOLTIP_REASON],

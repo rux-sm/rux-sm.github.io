@@ -169,7 +169,7 @@ one. **Its three CONTAINED specimens cannot be marked** — lines 151, 219
   of those three."
 
 <!-- COVERAGE:BEGIN -->
-_73 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 296 candidate regions in the 52 unmarked._
+_73 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 298 candidate regions in the 52 unmarked._
 
 | fragment | components | blocks | candidates | text | variants | behaviour | in the builder |
 |---|---|---|---|---|---|---|---|
@@ -196,7 +196,7 @@ _73 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 2
 | `dropdown` | dropdown, form, list-box | — | 8 | — | — | form-controls, list-box | no |
 | `edit-in-place` | button, edit-in-place, popover, text-input, tooltip | — | 3 | — | — | coachmark, copy-button, form-controls, guidebanner, list-box, popover, tag-overflow | no |
 | `file-uploader` | file-uploader, form, popover, tooltip | — | 2 | — | — | coachmark, copy-button, popover, tag-overflow | no |
-| `fluid` | checkbox, combo-box, date-picker, dropdown, form, list-box, multiselect, number-input, search, select, text-area, text-input, time-picker | — | 18 | — | — | date-picker, form-controls, list-box | no |
+| `fluid` | checkbox, combo-box, date-picker, dropdown, form, list-box, multiselect, number-input, search, select, text-area, text-input, time-picker | — | 18 | — | — | date-picker, form-controls, list-box, tag-overflow | no |
 | `full-page-error` | full-page-error, link | 1 | 1 | 3 | 0 | — | yes |
 | `grid` | — | — | 5 | — | — | — | no |
 | `guidebanner` | button, guidebanner, link | — | 1 | — | — | guidebanner | no |
@@ -222,7 +222,7 @@ _73 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 2
 | `progress-indicator` | progress-indicator | 2 | 3 | 8 | 0 | — | yes |
 | `radio` | form, radio-button | 1 | 5 | 4 | 0 | profile | yes |
 | `scroll-gradient` | scroll-gradient | — | 1 | — | — | scroll-gradient | no |
-| `search` | search | 1 | 3 | 1 | 0 | form-controls | yes |
+| `search` | search | 1 | 3 | 1 | 0 | form-controls, tag-overflow | yes |
 | `select` | form, select | — | 5 | — | — | form-controls | no |
 | `shape-indicator` | shape-indicator | — | 13 | — | — | — | no |
 | `side-panel` | action-set, ai-label, button, popover, side-panel, toggletip, tooltip | — | 1 | — | — | coachmark, copy-button, guidebanner, overlay, popover, tag-overflow | no |
@@ -233,7 +233,7 @@ _73 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 2
 | `structured-list` | structured-list | 2 | 2 | 12 | 0 | form-controls | yes |
 | `table` | button, checkbox, data-table, overflow-menu, radio-button, search, tag | 1 | 6 | 9 | 1 | data-table, dismiss, form-controls, guidebanner, menu, overlay, profile, tag-overflow | yes |
 | `tabs` | popover, tabs, tooltip | 1 | 11 | 8 | 0 | coachmark, copy-button, popover, tabs, tag-overflow | yes |
-| `tag-overflow` | TagOverflow, popover, tag | — | 1 | — | — | coachmark, copy-button, dismiss, popover, tag-overflow | no |
+| `tag-overflow` | TagOverflow, button, link, modal, popover, search, tag | — | 3 | — | — | coachmark, copy-button, dismiss, form-controls, guidebanner, menu, modal, popover, tag-overflow | no |
 | `tags` | tag | — | 24 | — | — | dismiss, tag-overflow | no |
 | `tearsheet` | Tearsheet, action-set, button, form, modal, text-input | — | 4 | — | — | guidebanner, list-box, menu, modal | no |
 | `text-input` | button, form, popover, text-input, toggle, tooltip | — | 10 | — | — | coachmark, copy-button, form-controls, guidebanner, list-box, popover, tag-overflow | no |

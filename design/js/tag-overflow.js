@@ -2,7 +2,8 @@
    Design — TAG OVERFLOW
    --------------------------------------------------------------------------
    Requires js/overlay.js for the namespace and js/popover.js, which opens and
-   closes the list of hidden tags from the count.
+   closes the list of hidden tags from the count. A row with a "view all" link
+   also needs js/modal.js, which opens and closes the modal of every tag.
 
    WHAT IT DOES. Every tag is written into the row. This module measures the
    row, hides the tags that do not fit, counts them on the "+N" tag and lists
@@ -29,10 +30,17 @@
    order while they fit in the row less the count's own width; otherwise every
    tag shows and there is no count. The popover lists at most ten labels.
 
-   NOT WRITTEN: the "view all" link Carbon adds past ten hidden tags and the
-   searchable modal it opens; `maxVisible`; the multiline variant, which wraps
-   and so never overflows. With no count to show, Carbon unmounts it; here its
-   holder is `hidden`. */
+   PAST TEN HIDDEN TAGS, read against TagOverflowPopover.js and
+   TagOverflowModal.js: the popover lists the first ten and shows its "view
+   all" link; the link closes the popover and opens a modal holding every tag
+   of the row, shown or not; the modal's search keeps the tags whose label
+   contains what is typed, whatever its case. The link names the modal with
+   `aria-controls`, and js/modal.js opens and closes it. Driven here in
+   Chrome, not on Carbon's page.
+
+   NOT WRITTEN: `maxVisible`; the multiline variant, which wraps and so never
+   overflows; dismissible tags in the popover and the modal. With no count to
+   show, Carbon unmounts it; here its holder is `hidden`. */
 (() => {
   'use strict';
   if (!window.Rux?.overlay) return; // js/overlay.js must load first
@@ -82,7 +90,50 @@
       const container = indicator.querySelector('.rux--popover-container');
       if (container) window.Rux.popover?.close(container);
     }
+
+    const link = indicator.querySelector(LINK);
+    if (link) {
+      link.hidden = hidden.length <= LISTED;
+      const body = modalOf(link)?.querySelector('.rux--tag-overflow-modal__body');
+      body?.replaceChildren(...holders.map(holder => {
+        const tag = document.createElement('div');
+        tag.className = 'rux--tag rux--layout--size-md';
+        const text = document.createElement('span');
+        text.className = 'rux--tag__label';
+        text.textContent = holder.textContent.trim();
+        tag.append(text);
+        return tag;
+      }));
+    }
   }
+
+  /* ── every tag, in a modal ────────────────────────────────────────────── */
+  const LINK = '.rux--tag-overflow-popover__show-all-tags-link';
+  const modalOf = link => {
+    const modal = document.getElementById(link.getAttribute('aria-controls') || '');
+    return modal?.classList.contains('rux--tag-overflow-modal') ? modal : null;
+  };
+
+  // The count is the modal's trigger, so focus returns to something that is
+  // still on the page: the link goes when its popover shuts.
+  document.addEventListener('click', event => {
+    const link = event.target instanceof Element && event.target.closest(LINK);
+    if (!link) return;
+    event.preventDefault();
+    const container = link.closest('.rux--popover-container');
+    const modal = modalOf(link);
+    if (container) window.Rux.popover?.close(container);
+    if (modal) window.Rux.modal?.open(modal, container?.querySelector('.rux--tag-overflow-popover__trigger'));
+  });
+
+  document.addEventListener('input', event => {
+    const search = event.target instanceof Element
+      && event.target.closest('.rux--tag-overflow-modal__search .rux--search-input');
+    if (!search) return;
+    const text = search.value.toLocaleLowerCase();
+    const tags = search.closest('.rux--tag-overflow-modal').querySelectorAll('.rux--tag-overflow-modal__body > .rux--tag');
+    for (const tag of tags) tag.hidden = !tag.textContent.toLocaleLowerCase().includes(text);
+  });
 
   const fitAll = () => document.querySelectorAll(ROOT).forEach(fit);
 

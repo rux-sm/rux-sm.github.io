@@ -88,12 +88,19 @@
 
   const live = new Map();   // container -> { registration, timer }
 
+  // A surface written with `aria-hidden` keeps it in step with the open
+  // class, as Carbon's does; one written without it is left without.
+  const hide = (surface, hidden) => {
+    if (surface?.hasAttribute('aria-hidden')) surface.setAttribute('aria-hidden', String(hidden));
+  };
+
   function close(container, options = {}) {
     const state = live.get(container);
     if (!state) return;
     clearTimeout(state.timer);
     live.delete(container);
     container.classList.remove(OPEN);
+    hide(surfaceOf(container), true);
     state.registration?.release();
     const trigger = triggerOf(container);
     if (trigger && !isTooltip(container)) {
@@ -128,6 +135,7 @@
     });
 
     container.classList.add(OPEN);
+    hide(surface, false);
     live.set(container, { registration, timer: 0 });
     container.dispatchEvent(new CustomEvent('rux:popover-opened', { bubbles: true }));
   }

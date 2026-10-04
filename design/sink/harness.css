@@ -59,8 +59,11 @@ body { min-height: 100vh; background: var(--rux-background);
    modal is the one thing that must win: left in the root stacking context at
    9000 it outranks every isolated section, whatever their DOM order. Anything
    added later that must cover the whole page belongs outside this rule too. */
-.ks-sec:not(#modal):not(#tearsheet):not(#date-picker):not(#combo-button) { isolation: isolate; }
+.ks-sec:not(#modal):not(#tearsheet):not(#tag-overflow):not(#date-picker):not(#combo-button) { isolation: isolate; }
 /* #tearsheet is a modal too and is exempt for the same reason. */
+/* #tag-overflow holds a modal as well, the one that lists every tag, and its
+   popover opens on a press and hangs past the section's foot, over the
+   buttons of the section below. */
 /* #date-picker AND #combo-button JOIN #modal OUTSIDE THE RULE, on the sentence above: its
    calendar must cover what follows it. Unlike the permanently-open specimens
    this rule was written for, the calendar OPENS ON A PRESS and is absent from

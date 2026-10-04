@@ -46,6 +46,12 @@
       "route": "Planning ➔ Order Planning ➔ Item Order Plan"
     },
     {
+      "code": "cprrp0521s000",
+      "name": "Item Order Plan - Find",
+      "purpose": "The search box that picks which item's order plan to open.",
+      "route": "the Find command on Item Order Plan (cprrp0520m000); it opens as a dialog over it"
+    },
+    {
       "code": "cprrp0740m200",
       "name": "Order Pegging",
       "purpose": "Shows the pegging relations between orders as a tree, one branch for each order.",
@@ -122,6 +128,36 @@
       "route": "Master Data ➔ Items ➔ Defaults ➔ Item Defaults"
     },
     {
+      "code": "tcibd0106m000",
+      "name": "Item Code Systems",
+      "purpose": "Defines the outside numbering schemes, such as a customer's or a manufacturer's part numbers, that an item can also be known by.",
+      "route": "Master Data ➔ Items ➔ Item Classification ➔ Item Code Systems"
+    },
+    {
+      "code": "tcibd0150m000",
+      "name": "Item Engineering Revisions",
+      "purpose": "Holds the revisions of an engineering item, where engineering revisions are switched on.",
+      "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Item Engineering Revisions"
+    },
+    {
+      "code": "tcibd0201m200",
+      "name": "Update Indicative Item Value",
+      "purpose": "Sets an item's indicative value, an estimated cost for planning, quoting and comparing, and not a costing figure.",
+      "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Update Indicative Item Value"
+    },
+    {
+      "code": "tcibd0204m000",
+      "name": "Mass Change Item Assignments",
+      "purpose": "Reassigns the buyer, planner, shop floor planner or routing group of many items in one run.",
+      "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Mass Change Item Assignments"
+    },
+    {
+      "code": "tcibd0206m000",
+      "name": "Delete Item Data",
+      "purpose": "Deletes a range of items or item groups, together with the data that hangs on them.",
+      "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Delete Item Data"
+    },
+    {
       "code": "tcibd0500m000",
       "name": "Item Code Segmentation",
       "purpose": "Defines the segments an item code is made of.",
@@ -144,6 +180,18 @@
       "name": "Item Defaults",
       "purpose": "The detail form behind Item Defaults, holding the default item data for one item type and item group combination.",
       "route": "from Item Defaults (tcibd0102m000), by specifying or modifying a global item default"
+    },
+    {
+      "code": "tcibd0505m000",
+      "name": "Alternative Items",
+      "purpose": "Lists the items that may stand in for an item.",
+      "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Alternative Items ➔ Alternative Items"
+    },
+    {
+      "code": "tcibd0505m100",
+      "name": "Items by Alternative Item",
+      "purpose": "Lists the items a given alternative can stand in for, the same link read from the other side.",
+      "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Alternative Items ➔ Items by Alternative Item"
     },
     {
       "code": "tcibd1550m000",
@@ -176,10 +224,88 @@
       "route": "the blue [Ordering] link on Item Defaults (tcibd0502m000)"
     },
     {
+      "code": "tcibd2150m000",
+      "name": "Item - Ordering by Site",
+      "purpose": "Holds an item's ordering data for one site, where a site departs from the company's defaults.",
+      "route": "unstated in the help; no filed source gives a route"
+    },
+    {
       "code": "tcibd2600m000",
       "name": "Item - Ordering",
       "purpose": "The global item ordering record — lot-size limits, intervals and safety settings that the site and warehouse levels inherit from.",
       "route": "drill-in from Items - Ordering (tcibd2100m000) by double-clicking a record, or stand-alone"
+    },
+    {
+      "code": "tcibd3100m000",
+      "name": "List Components",
+      "purpose": "Holds what is inside a list item, a set of components sold or bought together, by list group.",
+      "route": "Master Data ➔ Items ➔ Miscellaneous ➔ List Components"
+    },
+    {
+      "code": "tcibd3101m000",
+      "name": "List Groups",
+      "purpose": "Defines list groups, which keep lists for different uses apart, such as sales lists and purchase lists.",
+      "route": "Master Data ➔ Items ➔ Item Classification ➔ List Groups"
+    },
+    {
+      "code": "tcibd4101m000",
+      "name": "Product Serial Numbers",
+      "purpose": "Lists and maintains the serial numbers of products, tools, equipment, service items and generic items.",
+      "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Product Serial Numbers"
+    },
+    {
+      "code": "tcibd4101m100",
+      "name": "Rental Serial Numbers",
+      "purpose": "Shows the serial numbers LN creates for rental products, which cannot be edited.",
+      "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Rental Serial Numbers"
+    },
+    {
+      "code": "tcibd4102m000",
+      "name": "Masks",
+      "purpose": "Defines a mask, the template LN builds a serial number or a lot code from.",
+      "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Masks ➔ Masks"
+    },
+    {
+      "code": "tcibd4106m000",
+      "name": "Values by Translation Table",
+      "purpose": "Holds the rows of a translation table, each value and the code that replaces it in a generated number.",
+      "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Masks ➔ Values by Translation Table"
+    },
+    {
+      "code": "tcibd4503m000",
+      "name": "Mask Segments",
+      "purpose": "Lists the segments a mask is built from.",
+      "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Masks ➔ Mask Segments"
+    },
+    {
+      "code": "tcibd4504m000",
+      "name": "Translation Tables",
+      "purpose": "Defines translation tables, which swap a value such as a year for a short code inside a generated number.",
+      "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Masks ➔ Translation Tables"
+    },
+    {
+      "code": "tcibd4505m100",
+      "name": "Mask by Item/Item Group/Site",
+      "purpose": "Links a mask to an item, an item group or a site, so its serial numbers and lot codes are generated from it.",
+      "route": "Master Data ➔ Items ➔ Miscellaneous ➔ Masks ➔ Mask by Item/Item Group"
+    },
+    {
+      "code": "tcmcs0115m000",
+      "name": "Product Types",
+      "purpose": "Defines product types, one of the codes items are classified by.",
+      "route": "Master Data ➔ Items ➔ Item Classification ➔ Product Types"
+    },
+    {
+      "code": "tcmcs0118m000",
+      "name": "Item Signals",
+      "purpose": "Defines item signals, each of which blocks an item or warns about it in the areas it is set for.",
+      "route": "Master Data ➔ Items ➔ Item Classification ➔ Item Signals"
+    },
+    {
+      "code": "tcmcs0122m000",
+      "name": "Selection Codes",
+      "purpose": "Defines selection codes, one of the codes items are classified by.",
+      "route": "Master Data ➔ Code Definitions ➔ Logistic Codes ➔ Selection Codes"
     },
     {
       "code": "tcmcs0123m000",
@@ -188,16 +314,64 @@
       "route": "Master Data ➔ Items ➔ Item Classification ➔ Item Groups"
     },
     {
+      "code": "tcmcs0125m000",
+      "name": "Product Groups",
+      "purpose": "Defines product groups, a classification code that is kept per site.",
+      "route": "Master Data ➔ Items ➔ Item Classification ➔ Product Groups"
+    },
+    {
+      "code": "tcmcs0128m000",
+      "name": "Harmonized System Codes",
+      "purpose": "Holds the harmonized system codes that items are reported under on the Intrastat declaration.",
+      "route": "Master Data ➔ Items ➔ Item Classification ➔ Harmonized System Codes"
+    },
+    {
+      "code": "tcmcs0144m000",
+      "name": "Statistical Groups",
+      "purpose": "Defines statistical groups, one of the codes items are classified by.",
+      "route": "Master Data ➔ Code Definitions ➔ Logistic Codes ➔ Statistical Groups"
+    },
+    {
       "code": "tcmcs0152s000",
       "name": "General Projects",
       "purpose": "Records a general project as a code; the plan itself lives in whichever package claims it.",
       "route": "the Project lookup on the Item identifier, per the item walkthrough's 2026-08-16 walk"
     },
     {
+      "code": "tcmcs0160m000",
+      "name": "Manufacturers",
+      "purpose": "Defines manufacturers, to group items by who makes them or to buy one item from alternative makers.",
+      "route": "Master Data ➔ Code Definitions ➔ Business Partner Classification ➔ Manufacturers"
+    },
+    {
+      "code": "tcmcs0161m000",
+      "name": "Product Lines",
+      "purpose": "Defines product lines, one of the codes items are classified by.",
+      "route": "Master Data ➔ Items ➔ Item Classification ➔ Product Lines"
+    },
+    {
+      "code": "tcmcs0162m000",
+      "name": "Product Classes",
+      "purpose": "Defines product classes, one of the codes items are classified by.",
+      "route": "Master Data ➔ Items ➔ Item Classification ➔ Product Classes"
+    },
+    {
       "code": "tcmcs0565m000",
       "name": "Departments",
       "purpose": "Defines departments. A work center needs one first, and its calendar can be set here.",
       "route": "Master Data ➔ Enterprise Model ➔ Entities ➔ Departments"
+    },
+    {
+      "code": "tcmcs1145m000",
+      "name": "Routing Groups",
+      "purpose": "Defines routing groups, which job shop control uses to manage workload.",
+      "route": "Master Data ➔ Items ➔ Item Classification ➔ Routing Groups"
+    },
+    {
+      "code": "tdipu0101m000",
+      "name": "Items - Purchase",
+      "purpose": "Lists the purchase data of items, the overview that one item's purchase detail opens from.",
+      "route": "Procurement ➔ Master Data ➔ Items ➔ Items - Purchase"
     },
     {
       "code": "tdipu0102m000",
@@ -230,16 +404,40 @@
       "route": "starts automatically from Item - Sales Defaults (tdisa0102s000) on answering Yes to the global update question"
     },
     {
+      "code": "tdisa0501m000",
+      "name": "Items - Sales",
+      "purpose": "Holds one item's sales data, including whether its order lines are released to warehousing.",
+      "route": "Sales ➔ Master Data ➔ Items ➔ Items - Sales"
+    },
+    {
+      "code": "tdisa0510m000",
+      "name": "Items - Sales Business Partner",
+      "purpose": "Holds sales data for one item and one business partner together, with the dates it applies from and to.",
+      "route": "unstated in the help; no filed source gives a route"
+    },
+    {
       "code": "tdisa0601m000",
       "name": "Item - Sales",
       "purpose": "One item's sales data.",
       "route": "a button in Items (tcibd0501m000)"
     },
     {
+      "code": "tdpcg0611m000",
+      "name": "Price Book",
+      "purpose": "Shows one price book and its effective records.",
+      "route": "drill-in from Price Books; the plural list is at Common - Pricing - Prices - Price Books"
+    },
+    {
       "code": "tdpur0143m000",
       "name": "Procurement User Profiles",
       "purpose": "Holds each logon code's procurement defaults, among them the purchase office, site, warehouse and purchase order type its orders start from.",
       "route": "Procurement ➔ Master Data ➔ General ➔ User Profiles"
+    },
+    {
+      "code": "tdpur0694m000",
+      "name": "Purchase Order Type",
+      "purpose": "Holds one purchase order type's controls, number series, warehousing order type and the activities its orders run.",
+      "route": "drill-in from Order Types (tdpur0194m000), whose list opens each type in this detail session"
     },
     {
       "code": "tdpur4100m900",
@@ -278,10 +476,46 @@
       "route": "Procurement ➔ Orders ➔ Order Intake Workbench"
     },
     {
+      "code": "tdsls4100m100",
+      "name": "Sales Orders Intake (Personalization)",
+      "purpose": "The editor that chooses which columns the sales order intake list shows.",
+      "route": "the personalization editor for the Sales Orders Intake view, opened from Sales Order Intake Workbench (tdsls4601m200)"
+    },
+    {
+      "code": "tdsls4100m900",
+      "name": "Sales Order",
+      "purpose": "The sales order itself, header and lines, opened from the intake workbench.",
+      "route": "drill-in from Order Intake Workbench (tdsls4601m200)"
+    },
+    {
+      "code": "tdsls4101m000",
+      "name": "Sales Order Lines",
+      "purpose": "The lines of a sales order, with each line's warehouse, dates and inventory figures.",
+      "route": "the Order Lines tab of Sales Order (tdsls4100m900)"
+    },
+    {
+      "code": "tdsls4106m100",
+      "name": "Sales Order Invoice Lines",
+      "purpose": "Holds a sales order's invoice lines, which exist once a delivery is made, and releases them to invoicing.",
+      "route": "unstated in the help; lines exist only where deliveries have been executed for a sales order line"
+    },
+    {
+      "code": "tdsls4140m000",
+      "name": "Inventory Consumptions",
+      "purpose": "Holds what was received, consumed and invoiced of stock that is kept at the customer's site.",
+      "route": "Sales ➔ Orders ➔ Inventory Consumptions"
+    },
+    {
       "code": "tdsls4246m000",
       "name": "Release Sales Orders to Warehousing",
       "purpose": "Releases a range of sales order lines to Warehousing, turning them into warehousing orders.",
       "route": "Release Sales Orders to Warehousing on the appropriate menu of tdsls4501m140"
+    },
+    {
+      "code": "tdsls4247m000",
+      "name": "Release Sales Orders/Schedules to Invoicing",
+      "purpose": "Releases delivered sales orders and schedules to invoicing.",
+      "route": "Actions - Release - Release to Invoicing on Sales Order Intake Workbench (tdsls4601m200)"
     },
     {
       "code": "tdsls4501m140",
@@ -296,10 +530,28 @@
       "route": "Status on the appropriate menu of the Lines tab of Sales Order (tdsls4100m900)"
     },
     {
+      "code": "tdsls4601m000",
+      "name": "Sales Order Lines - Components",
+      "purpose": "Holds the component lines linked to one sales order line.",
+      "route": "Order Line - BOM Components on the appropriate menu of the Lines tab of Sales Order (tdsls4100m900)"
+    },
+    {
+      "code": "tdsls4601m100",
+      "name": "Sales Order Fulfillment Workbench",
+      "purpose": "A work queue of sales order lines still to deliver, the ones nearly due and the ones already late.",
+      "route": "Sales ➔ Orders ➔ Order Fulfillment Workbench"
+    },
+    {
       "code": "tdsls4601m200",
       "name": "Sales Order Intake Workbench",
       "purpose": "A dashboard of sales-order activity awaiting attention.",
       "route": "Sales ➔ Orders ➔ Order Intake Workbench"
+    },
+    {
+      "code": "tdsmi1500m000",
+      "name": "Customer 360",
+      "purpose": "A dashboard of one customer, with links into the data kept about it.",
+      "route": "CRM ➔ Customer 360"
     },
     {
       "code": "tibom3100m000",
@@ -388,6 +640,12 @@
       "name": "Product Engineering Parameters",
       "purpose": "Parameters for product engineering, among them whether change notes are active.",
       "route": "Manufacturing ➔ Parameters ➔ Product Engineering"
+    },
+    {
+      "code": "timfc0101m000",
+      "name": "Production Warehouse Orders",
+      "purpose": "Lists the warehouse orders of one production order, to issue, return or cancel material in detail.",
+      "route": "unstated in the help; it lists the production warehouse orders for a specific production order"
     },
     {
       "code": "tirou0100m000",
@@ -486,6 +744,12 @@
       "route": "Manufacturing ➔ Job Shop ➔ Production Materials ➔ Initiate Inventory Issue"
     },
     {
+      "code": "tisfc0500m000",
+      "name": "Production Order Parameters",
+      "purpose": "Lists the dated sets of job shop control parameters; the settings themselves are inside each set.",
+      "route": "Manufacturing ➔ Parameters ➔ Production Orders"
+    },
+    {
       "code": "tisfc0501m000",
       "name": "Production Orders",
       "purpose": "An overview of production orders — identity, item, dates, status, warehouse and key quantities.",
@@ -496,10 +760,22 @@
       "name": "Inventory by Production Order"
     },
     {
+      "code": "ttadv3475m000",
+      "name": "Print Menu Structure",
+      "purpose": "Prints the menu tree, which is where the route to a screen can be looked up.",
+      "route": "Tools ➔ Application Customization ➔ Menus ➔ Print Menu Structure"
+    },
+    {
       "code": "whinh0100m000",
       "name": "Inventory Handling Parameters",
       "purpose": "Company-wide picking and shipping parameters, held as a dated history with one current set.",
       "route": "Warehousing ➔ Parameters ➔ Inventory Handling Parameters"
+    },
+    {
+      "code": "whinh0106m000",
+      "name": "Activities by Procedure",
+      "purpose": "Sets which activities a warehousing procedure has, and which of them run automatically.",
+      "route": "unstated in the help; the parent Procedures (whinh0105m000) is on the menu"
     },
     {
       "code": "whinh0110m000",
@@ -588,6 +864,18 @@
       "name": "Shipment Lines",
       "purpose": "The only place a shipped quantity can be changed, before the shipment line is confirmed.",
       "route": "drill-in from Shipments (whinh4130m000)"
+    },
+    {
+      "code": "whinh4279m000",
+      "name": "Process Pro Forma Invoices",
+      "purpose": "Creates pro forma invoices for frozen or confirmed shipments, to review before invoicing.",
+      "route": "Warehousing ➔ Shipments ➔ Documents ➔ Process Pro Forma Invoices"
+    },
+    {
+      "code": "whinh4279m100",
+      "name": "Process Invoices",
+      "purpose": "Creates the definitive invoice for confirmed shipments.",
+      "route": "unstated in the help; its pro forma twin whinh4279m000 is on the menu under Shipments - Documents"
     },
     {
       "code": "whinh4525m100",

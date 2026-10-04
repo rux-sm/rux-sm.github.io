@@ -152,5 +152,3 @@ landings for old page addresses, which are deleted.
 - [ ] In atlas, stop exporting reviews, summaries and experiments.
 - [ ] In atlas, give a field's name its own token where it sits inside bold or
       quoted words, and take the underscore tidy out of `ln/app.js`.
-- [ ] Give a card to each screen that has private detail and is named by no
-      scenario, which today has no card to hang it on.

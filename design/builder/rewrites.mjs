@@ -52,13 +52,13 @@ const everywhere = (lines, from, to) => lines.map(l => l.split(from).join(to));
 // element text and in an attribute value. builder.html warns,
 // and the decision is rux's.
 function content(lines, a) {
-  const P = a.prefix ?? 'Rux', N = a.name ?? 'DS', T = a.title ?? `${P} ${N}`, theme = a.theme ?? 'white';
+  const P = a.prefix ?? 'Rux', N = a.name ?? 'Design', T = a.title ?? `${P} ${N}`, theme = a.theme ?? 'white';
   const gc = a.grid === 'full' ? ' rux--css-grid--full-width' : '';
   return lines.map(l => {
     if (l.startsWith('<html lang="en" data-theme="white">')) l = l.replace('<html lang="en" data-theme="white">', () => `<html lang="en" data-theme="${theme}">`);
     l = l.replace(/<title>[^<]*<\/title>/, () => `<title>${T}</title>`);
     l = l.replace('name--prefix">Rux</span>&nbsp;Design', () => `name--prefix">${P}</span>&nbsp;${N}`);
-    l = l.split('aria-label="Rux DS"').join(`aria-label="${P} ${N}"`);
+    l = l.split('aria-label="Rux Design"').join(`aria-label="${P} ${N}"`);
     // The grid's width. Anchored on the two-space indent every template's
     // outer grid opens at, so a nested `rux--css-grid-column` is never touched;
     // the optional group keeps wizard-page's `--with-row-gap`. With `gc` empty

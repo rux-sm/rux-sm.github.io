@@ -25,7 +25,7 @@
 // as class swaps whose spellings Carbon and this repository already attest.
 // Then the GUIDED MODE (stage 12): the same controls, grouped into five
 // sections — Purpose, Sections and content, Add sections, Review, Take it
-// away — shown one at a time behind a vertical progress indicator, or all at
+// away — shown one at a time under a progress indicator across the top, or all at
 // once in the free mode. ONE SET OF DOM NODES, TWO WAYS OF SHOWING THEM: the
 // modes share every control, the draft, the model and the history, and a
 // mode is where the reader is standing, never a change.
@@ -42,7 +42,7 @@
 // override's own pattern, at the builder's own class.
 //
 // THE STEPPER'S GLYPHS ARE SWAPPED AT RUNTIME, and the third one is asserted
-// by name. Carbon draws the vertical indicator's svg at display:inline-block
+// by name. Carbon draws the indicator's svg at display:inline-block
 // on the button, which beats [hidden], so builder.js changes the <use> rather
 // than toggling three svgs. The file ships step 1 current and four not
 // started, so #i-checkmark--outline never appears in the markup; RUNTIME_GLYPHS
@@ -113,8 +113,11 @@ const PURPOSES = Object.entries(guide.templates).map(([name, t]) => `           
                       <span class="rux--radio-button__label-text">${name} — ${esc(t.purpose)}${t.reviewed ? '' : ' (not reviewed)'}</span>
                     </label>
                   </div>`).join('\n');
-// The stepper, sink/progress-indicator.html's vertical specimen with every
-// step CLICKABLE — no --unclickable — so the reader can go back and forth.
+// The stepper, sink/progress-indicator.html's horizontal specimen with every
+// step CLICKABLE — no --unclickable — so the reader can go back and forth. It
+// runs ACROSS THE TOP rather than down the left column, so the first step's
+// own controls are on the screen when the page opens, and it carries Carbon's
+// --space-equal so five steps fill the row and no label is cut at 8rem.
 const STEPPER = STEPS.map(([label], i) => `                  <li class="rux--progress-step rux--progress-step--${i === 0 ? 'current' : 'incomplete'}">
                     <button type="button" class="rux--progress-step-button" data-step="${i + 1}">
                       <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#${i === 0 ? 'i-incomplete' : 'i-circle-dash'}"/></svg>
@@ -143,7 +146,7 @@ const page = `<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Builder — Design</title>
+<title>Page builder — Design</title>
 <script src="/funnel.js"></script>
 <style>html:not([data-rux-unlocked]){visibility:hidden}</style>
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
@@ -162,6 +165,14 @@ ${shellHead()}
 .bld-frame-wrap { transform-origin: top left; }
 .bld-frame { display: block; inline-size: 100%; block-size: 48rem; border: 0; background: var(--rux-background); }
 .bld-widths, .bld-row { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); }
+/* Mode at the start and history at the end of one row. The stepper under it
+   is five steps of at least 8rem, wider than a phone, so it scrolls inside its own box
+   and the page never does. */
+.bld-bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--rux-spacing-05); }
+.bld-steps { overflow-x: auto; }
+/* A stack's children are grid items, which refuse to be narrower than their
+   content; without this the step row widens the page instead of scrolling. */
+.bld-top, .bld-top > * { min-inline-size: 0; }
 .bld-status { color: var(--rux-text-secondary); }
 /* A warning about the page being composed, not about the builder. Tokens only:
    --rux-support-error is the theme's own, so it follows a theme change like
@@ -199,28 +210,33 @@ ${shell('builder')}
       <div class="rux--stack-vertical rux--stack-scale-7">
         <div class="rux--stack-vertical rux--stack-scale-5">
           <h1>Page builder</h1>
-          <p>Start from a template and see the page it makes. The preview is the real page in a frame of its own; what it cannot promise is the composition — every part is attested, the arrangement is yours, and <code>docs/composing-pages.md</code> §3.10 says what that means.</p>
+          <p>Pick a template, change its words, and download the page.</p>
         </div>
         <div id="bld-notice"></div>
+        <div class="rux--stack-vertical rux--stack-scale-5 bld-top">
+          <div class="bld-bar">
+            <div class="bld-row" role="group" aria-label="Mode">
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-mode="guided" aria-pressed="true">Guided</button>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-mode="free" aria-pressed="false">Free</button>
+            </div>
+            <div class="bld-row" role="group" aria-label="History">
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="bld-undo" disabled>Undo</button>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="bld-redo" disabled>Redo</button>
+              <button type="button" class="rux--btn rux--btn--danger--ghost rux--btn--sm rux--layout--size-sm" id="bld-start-over">Start over</button>
+            </div>
+          </div>
+          <div id="bld-stepper">
+            <div class="bld-steps">
+              <ul class="rux--progress rux--progress--space-equal" aria-label="Steps">
+${STEPPER}
+              </ul>
+            </div>
+          </div>
+        </div>
         <div class="rux--subgrid rux--subgrid--wide rux--subgrid--with-row-gap">
 
           <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-5">
             <div class="rux--stack-vertical rux--stack-scale-7">
-              <div class="bld-row" role="group" aria-label="History">
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="bld-undo" disabled>Undo</button>
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="bld-redo" disabled>Redo</button>
-                <button type="button" class="rux--btn rux--btn--danger--ghost rux--btn--sm rux--layout--size-sm" id="bld-start-over">Start over</button>
-              </div>
-              <div class="bld-row" role="group" aria-label="Mode">
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-mode="guided" aria-pressed="true">Guided</button>
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-mode="free" aria-pressed="false">Free</button>
-              </div>
-              <div id="bld-stepper">
-                <ul class="rux--progress rux--progress--vertical" aria-label="Steps">
-${STEPPER}
-                </ul>
-              </div>
-
               <section class="bld-step" data-step="1" aria-labelledby="bld-h-1">
                 <div class="rux--stack-vertical rux--stack-scale-7">
                   <h2 id="bld-h-1" tabindex="-1">Purpose</h2>
@@ -230,7 +246,7 @@ ${STEPPER}
                         <legend class="rux--label">What is this page for?</legend>
 ${PURPOSES}
                       </fieldset>
-                      <div class="rux--form__helper-text">The ten shapes in <code>templates/</code>, each a complete page. Pick the nearest job; every part can be changed after.</div>
+                      <div class="rux--form__helper-text">Pick the nearest job. Every part can be changed after.</div>
                     </div>
                   </div>
                   <div id="bld-template-free">
@@ -241,7 +257,7 @@ ${PURPOSES}
                           <select id="bld-template" class="rux--select-input"></select>
                           <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
                         </div>
-                        <div class="rux--form__helper-text">One of the ten in <code>templates/</code>.</div>
+                        <div class="rux--form__helper-text">Each is a complete page in <code>templates/</code>.</div>
                       </div>
                     </div>
                   </div>
@@ -270,7 +286,7 @@ ${GRIDS.map(([v, l]) => `                      <div class="rux--radio-button-wra
                       </div>`).join('\n')}
                     </fieldset>
                     <div class="rux--form__helper-text">Capped is Carbon's reading width, centred, and right for prose and forms. Full width is Carbon's own modifier for a page that is scanned rather than read &mdash; a board, a wide table &mdash; and only shows above 99rem.</div>
-                  </div>${textInput('bld-prefix', 'Product prefix', 'Rux', 'The lighter-weight half of the header name.')}${textInput('bld-name', 'Product name', 'DS', 'The header name and its aria-label.')}${textInput('bld-title', 'Browser tab title', 'Prefix and name', 'Defaults to the prefix and the name, as the script does.')}
+                  </div>${textInput('bld-prefix', 'Product prefix', 'Rux', 'The lighter-weight half of the header name.')}${textInput('bld-name', 'Product name', 'Design', 'The header name and its aria-label.')}${textInput('bld-title', 'Browser tab title', 'Prefix and name', 'Defaults to the prefix and the name.')}
                 </div>
               </section>
 
@@ -418,7 +434,7 @@ ${WIDTHS.map(([v, l]) => `                      <button type="button" class="rux
                     </div>
                     <div class="rux--stack-vertical rux--stack-scale-3">
                       <h3 class="rux--type-heading-compact-01">A new app</h3>
-                      <div class="rux--form__helper-text">Make a folder named for its URL beside <code>design/</code> in the site repository, save the download there as <code>index.html</code>, and add one entry to <code>switcher.json</code>. The next push publishes it. Nothing else to run: the scaffold script that used to do this left on 2026-09-12.</div>
+                      <div class="rux--form__helper-text">Make a folder named for its URL beside <code>design/</code> in the site repository, save the download there as <code>index.html</code>, and add one entry to <code>switcher.json</code>. The next push publishes it.</div>
                     </div>
                   </div>
                 </div>
@@ -437,7 +453,7 @@ ${WIDTHS.map(([v, l]) => `                      <button type="button" class="rux
             <div class="rux--stack-vertical rux--stack-scale-5">
               <h2>Preview</h2>
               <p class="bld-status" id="bld-status">Loading the catalogue…</p>
-              <p class="bld-status" id="bld-integrity" hidden></p>
+              <p class="bld-warn" id="bld-integrity" hidden></p>
               <div class="bld-preview">
                 <div class="bld-frame-wrap" id="bld-frame-wrap">
                   <iframe class="bld-frame" id="bld-frame" title="Preview of the composed page"></iframe>

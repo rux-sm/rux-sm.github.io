@@ -457,7 +457,7 @@ function renderExport() {
   const problem = nameProblem(state.name);
   $('thc-name-helper').textContent = problem
     ? `Not usable as a theme name yet: ${problem}.`
-    : 'Lowercase letters, digits and hyphens; not white, g10, g90, g100, geist-dark, ant-dark or spotify-dark — those are the shipped themes, not a name you can save over.';
+    : 'Lowercase letters, digits and hyphens. Not the name of a shipped theme.';
 }
 
 // ── draft ───────────────────────────────────────────────────────────────
@@ -646,18 +646,16 @@ async function buildPreview() {
     styleBlock = savedCssBlock(t);
     label = `saved theme "${t.id}"`;
   } else {
-    // Never pauses. An unusable name stands in as a placeholder and the
-    // status line says so, rather than withholding the preview someone is
-    // editing colours to see.
-    const problem = nameProblem(state.name);
+    // Never pauses. An unusable name stands in as a placeholder, rather than
+    // withholding the preview someone is editing colours to see; the name
+    // field's own hint is what says the name is not usable.
     const name = previewName();
     dataTheme = state.base;
     dataSurface = name;
     styleBlock = cssBlock();
-    label = `"${name}" on ${state.base}`;
-    if (problem) label += ` — placeholder name, ${problem}`;
+    label = `${name} on ${state.base}`;
   }
-  const setStatus = () => { status.textContent = `Previewing ${target} — ${label}.`; };
+  const setStatus = () => { status.textContent = label; };
 
   // A KEYSTROKE MUST NOT RELOAD THE FRAME. Every edit used to refetch the
   // target (kitchen-sink.html is ~490 KB, and cache: 'no-store' meant the
@@ -858,9 +856,9 @@ function init() {
   }
 
   const LEVEL_HELP = {
-    simple: 'The twenty that set an accent. These are the only rows with a contrast check against a recorded pairing.',
-    detailed: 'Everything a page built from the compiled components actually shows — surfaces, text, borders, fields, buttons, status.',
-    full: 'Adds tags, the AI label, the chat shell and code-snippet colours. Every token the build declares.',
+    simple: 'The twenty that set an accent.',
+    detailed: 'Surfaces, text, borders, fields, buttons and status.',
+    full: 'Every colour, with tags, the AI label, chat and code snippets.',
   };
   for (const r of document.querySelectorAll('input[name="thc-level"]')) {
     r.addEventListener('change', e => {

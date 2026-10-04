@@ -217,9 +217,9 @@ const rowData = NAMES.map(name => {
 });
 
 const LEVELS = [
-  ['simple', 'Simple', 'The twenty that set an accent. These are the only rows with a contrast check against a recorded pairing.'],
-  ['detailed', 'Detailed', 'Everything a page built from the compiled components actually shows — surfaces, text, borders, fields, buttons, status.'],
-  ['full', 'Full', 'Adds tags, the AI label, the chat shell and code-snippet colours. Every token the build declares.'],
+  ['simple', 'Simple', 'The twenty that set an accent.'],
+  ['detailed', 'Detailed', 'Surfaces, text, borders, fields, buttons and status.'],
+  ['full', 'Full', 'Every colour, with tags, the AI label, chat and code snippets.'],
 ];
 const levelCount = level => {
   const order = ['simple', 'detailed', 'full'];
@@ -449,8 +449,7 @@ ${shell('theme-creator')}
       <div class="rux--stack-vertical rux--stack-scale-7">
         <div class="rux--stack-vertical rux--stack-scale-5">
           <h1>Theme creator</h1>
-          <p>Every colour the build declares — ${rowData.length} of them — on one list. Pick a base theme, change what you want, watch a real page re-render beside you. <strong>Detail level</strong> decides how many rows are showing; it hides rows, it never discards a value you set. Save keeps one theme in this browser and adds it to every Design app's account panel here; Download writes the same theme to a file, so clearing the browser is not the end of it.</p>
-          <p class="thc-status">The contrast readout is advisory and never blocks. It covers <strong>${withBadge} of the ${rowData.length} rows</strong> — the tokens with a pairing recorded in <code>theme-creator/scenarios.json</code> or in the generator's own surface table. A row with no badge has not been checked, which is not the same as having passed.</p>
+          <p>Start from a base theme, change the colours you want, and save or download the result.</p>
         </div>
         <div id="thc-notice"></div>
         <div class="rux--subgrid rux--subgrid--wide rux--subgrid--with-row-gap">
@@ -472,7 +471,7 @@ ${shell('theme-creator')}
                     <input id="thc-name" class="rux--text-input" type="text" value="" placeholder="your-theme">
                   </div>
                 </div>
-                <div class="rux--form__helper-text" id="thc-name-helper">Lowercase letters, digits and hyphens; not white, g10, g90, g100, geist-dark, ant-dark or spotify-dark — those are the shipped themes, not a name you can save over.</div>
+                <div class="rux--form__helper-text" id="thc-name-helper">Lowercase letters, digits and hyphens. Not the name of a shipped theme.</div>
               </div>
 
               <div class="rux--form-item">
@@ -480,7 +479,7 @@ ${shell('theme-creator')}
                   <legend class="rux--label">Base theme</legend>
 ${baseOptions}
                 </fieldset>
-                <div class="rux--form__helper-text">One of Carbon's four compiled themes. Everything you do not change stays exactly what this base already gets right. Picking one reseeds every field below.</div>
+                <div class="rux--form__helper-text">Picking another resets every field below.</div>
               </div>
 
               <div class="rux--form-item">
@@ -502,6 +501,7 @@ ${levelOptions}
 
               <h2 class="rux--type-heading-compact-01">Tokens</h2>
               <p class="thc-count" id="thc-showing" role="status">Loading…</p>
+              <p class="thc-count">A contrast badge is advice and never blocks. A row with no badge has not been checked.</p>
               <div id="thc-rows"></div>
               <p class="thc-status" id="thc-no-matches" hidden>Nothing matches that. Clear the search, or move the detail level up.</p>
 
@@ -527,7 +527,6 @@ ${targetOptions}
                     </select>
                     <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
                   </div>
-                  <div class="rux--form__helper-text">The real page, in a frame of its own; its own account panel still opens, but its theme radios are sandboxed to this preview and never touch your actual profile.</div>
                 </div>
               </div>
               <div class="thc-widths" role="group" aria-label="Preview width">
@@ -545,7 +544,7 @@ ${WIDTHS.map(([v, l]) => `                <button type="button" class="rux--btn 
           <div class="rux--css-grid-column rux--col-span-100">
             <div class="rux--stack-vertical rux--stack-scale-7">
               <h2 class="rux--type-heading-compact-01">Your theme</h2>
-              <p>One saved theme, kept in this browser and offered in every Design app's account panel on this origin — <code>js/custom-themes.js</code> is what every app shares, the same way the profile already is. Saving again replaces it.</p>
+              <p>One theme, kept in this browser and offered in every app's account panel. Saving again replaces it.</p>
               <div class="thc-row-group">
                 <button type="button" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm" id="thc-save">Save theme</button>
                 <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="thc-download-file">Download theme file</button>
@@ -556,7 +555,7 @@ ${WIDTHS.map(([v, l]) => `                <button type="button" class="rux--btn 
               <ul class="thc-saved-list" id="thc-saved-list" role="list"></ul>
 
               <h2 class="rux--type-heading-compact-01">Load a theme</h2>
-              <p>A file this page wrote, or a Carbon theme map pasted in. Loading fills the fields; nothing is saved until you press Save above.</p>
+              <p>Loading fills the fields. Nothing is saved until you press Save theme.</p>
               <div class="rux--form-item">
                 <p class="rux--file--label">Theme file</p>
                 <p class="rux--label-description">A <code>.json</code> file downloaded from this page.</p>
@@ -571,7 +570,7 @@ ${WIDTHS.map(([v, l]) => `                <button type="button" class="rux--btn 
                   <label class="rux--label" for="thc-paste">Or paste a theme</label>
                 </div>
                 <textarea id="thc-paste" class="rux--text-area" rows="6" placeholder="\$my-theme: (&#10;  background: #121212,&#10;  layer-01: #181818,&#10;);"></textarea>
-                <div class="rux--form__helper-text">A Carbon Sass map, or a block of <code>--rux-*</code> declarations. Only names this build declares and values that are colours are read; anything else is listed and ignored.</div>
+                <div class="rux--form__helper-text">A Carbon Sass map, or <code>--rux-*</code> declarations. Anything that is not a colour this build names is listed and ignored.</div>
               </div>
               <div class="thc-row-group">
                 <button type="button" class="rux--btn rux--btn--secondary rux--btn--sm rux--layout--size-sm" id="thc-paste-apply">Read the pasted theme</button>
@@ -579,7 +578,7 @@ ${WIDTHS.map(([v, l]) => `                <button type="button" class="rux--btn 
               <p class="thc-status" id="thc-load-status" role="status"></p>
 
               <h2 class="rux--type-heading-compact-01">Take it away</h2>
-              <p>Paste this into a project's own <code>css/rux-theme.css</code> — never written for you; this tool only ever offers text to copy. Only the tokens you actually changed are in it.</p>
+              <p>Paste this into a project's <code>css/rux-theme.css</code>. Only the tokens you changed are in it.</p>
               <code class="thc-command" id="thc-export"></code>
               <div class="thc-row-group">
                 <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="thc-copy">Copy the CSS block</button>

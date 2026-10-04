@@ -7,8 +7,8 @@
    app links it from Design directly. This file belongs to one page in this
    repository.
 
-   WHAT IT DOES, this stage: fetches builder/blocks.json, offers the ten
-   templates and their answers, and keeps ONE PAGE MODEL
+   WHAT IT DOES: fetches builder/blocks.json, offers the templates and
+   their answers, and keeps ONE PAGE MODEL
    PER TEMPLATE (builder/page.mjs) — the template's own blocks to begin with,
    then whatever the reader adds from the catalogue, moves or removes. The
    model is composed into the page by composePage, which puts every instance
@@ -52,7 +52,7 @@
    Both left with the consolidation; the builder is the one page-writer now.
 
    TWO MODES, ONE PAGE (stage 12). The guided mode shows the five sections
-   one at a time behind a vertical progress indicator, with Back and Next;
+   one at a time under a progress indicator across the top, with Back and Next;
    the free mode shows all five at once. Both share every control, the
    draft, the model and the history. A mode and a step are WHERE THE READER
    IS STANDING, like the template and the width: not in history, not in the
@@ -62,8 +62,8 @@
    beside the template select, an outline beside the block select — and both
    write the same state through the same handler.
 
-   NOT YET: escaping the answers as HTML — neither this nor the script does,
-   and both say so rather than pretending otherwise.
+   NOT YET: escaping the answers as HTML, and the page says so rather than
+   pretending otherwise.
    ========================================================================== */
 import { compose, previewPage, exportPage, bodyOnly, textFieldsOf, linksOf, variantsOf, applyTextEdits, integrity } from './rewrites.mjs';
 import { newPage, add, move, remove, unitOf, entriesOf, composePage } from './page.mjs';
@@ -109,7 +109,7 @@ const blocks = new Map();        // id → manifest block
 
 const answers = () => {
   const prefix = state.prefix.trim() || 'Rux';
-  const name = state.name.trim() || 'DS';
+  const name = state.name.trim() || 'Design';
   return { theme: state.theme, grid: state.grid, prefix, name, title: state.title.trim() || `${prefix} ${name}` };
 };
 
@@ -1152,31 +1152,21 @@ async function render() {
     const url = URL.createObjectURL(new Blob([doc], { type: 'text/html' }));
     frame.addEventListener('load', () => { URL.revokeObjectURL(url); highlighted = []; highlight(); }, { once: true });
     frame.src = url;
-    const t = templateOf(state.template);
     const es = entries();
-    const natives = t.slots.reduce((n, s) => n + s.blocks.length, 0);
-    const kept = es.filter(e => isNative(e, t)).length;
-    const arranged = [es.length - kept ? `${es.length - kept} added` : '', natives - kept ? `${natives - kept} removed` : ''].filter(Boolean).join(', ');
     const edits = editCount();
-    status.textContent = [
-      `${state.template} · ${plural(t.slots.length, 'slot')}, ${plural(es.length, 'block')}${arranged ? ` (${arranged})` : ''}`,
-      `round trip ${roundTrip ? 'identical' : 'DIFFERS'}`,
-      ig.duplicateIds.length ? `${plural(ig.duplicateIds.length, 'id')} DUPLICATED` : 'ids unique',
-      ig.unresolved.length ? `${plural(ig.unresolved.length, 'reference')} unresolved` : 'references resolved',
-      state.width === 'fit' ? 'fit to pane' : `${state.width}px`,
-      edits ? `${plural(edits, 'field')} edited` : '',
-    ].filter(Boolean).join(' · ');
+    // THE LINE ABOVE THE FRAME NAMES THE TEMPLATE AND NOTHING ELSE. A check
+    // that passed has nothing to say; the line under it speaks only when one
+    // did not.
+    status.textContent = state.template;
     const named = new Map();
     for (const id of ig.duplicateIds) named.set(`id="${id}" twice or more`, 1);
     for (const r of ig.unresolved) { const k = `${r.attr}="${r.attr === 'href' || r.attr === 'xlink:href' ? '#' : ''}${r.id}"`; named.set(k, (named.get(k) ?? 0) + 1); }
-    integrityLine.textContent = named.size ? `On this page: ${[...named].map(([k, n]) => n > 1 ? `${k} ×${n}` : k).join(' · ')}` : '';
-    integrityLine.hidden = !named.size;
-    // THE SAME READINGS IN PLAIN WORDS, for the Review step. The status line
-    // above keeps the gate vocabulary; this says what it means.
     const problems = [];
     if (ig.duplicateIds.length) problems.push(`${plural(ig.duplicateIds.length, 'id')} used more than once, so a label or a link can land on the wrong element`);
     if (ig.unresolved.length) problems.push(`${plural(ig.unresolved.length, 'reference')} pointing at something not on this page`);
     if (!roundTrip) problems.push('the builder could not reproduce the untouched template byte for byte, which is a builder fault and not yours');
+    integrityLine.textContent = problems.length ? `Not yet whole: ${problems.join('; ')}.` : '';
+    integrityLine.hidden = !problems.length;
     $('#bld-review').textContent = problems.length
       ? `Not yet whole: ${problems.join('; ')}. ${named.size ? `On this page: ${[...named].map(([k, n]) => n > 1 ? `${k} ×${n}` : k).join(' · ')}.` : ''} Remove or repoint the part that does it, or take the page as it is knowing that.`
       : `Holds together: ${plural(es.length, 'section')}, every id unique, every reference resolved${edits ? `, ${plural(edits, 'field')} edited` : ''}. What no check reads is the arrangement — docs/composing-pages.md §3.10.`;

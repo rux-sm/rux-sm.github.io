@@ -182,9 +182,22 @@
   // picks this theme in the account panel sees it arrive on that page, and
   // the preload keeps every later page from painting in Plex first. Geist
   // Sans is one variable file covering the 400, 500 and 600 the theme uses.
+  //
+  // WHERE THE FILES COME FROM. Vercel's own, github.com/vercel/geist-font at
+  // 10dc7658, `Geist[wght].woff2` and `GeistMono-Regular.woff2`, each cut to
+  // Plex's Latin-1 range (assets/fonts/plex.css) plus the arrows and the two
+  // comparison signs these pages write, with fontTools:
+  //   pyftsubset <file> --unicodes=<the range> --layout-features+=tnum,pnum
+  //     --name-IDs='*' --flavor=woff2
+  // Every kept character has the outline, the width and the kerning of the
+  // published file at every weight; what went is the other alphabets and the
+  // stylistic sets no page asks for. A character outside the range falls
+  // through to Plex and then the machine's own face, as it does in Plex.
+  // Geist is OFL-1.1 and names no reserved font name, so a cut file keeps the
+  // name; LICENSE-Geist.txt sits beside them.
   const FACES = [
-    ['Geist', '100 900', 'Geist-Variable.woff2'],
-    ['Geist Mono', '400', 'GeistMono-Regular.woff2'],
+    ['Geist', '100 900', 'Geist-Variable-Latin1.woff2'],
+    ['Geist Mono', '400', 'GeistMono-Regular-Latin1.woff2'],
   ];
   const dressFaces = () => {
     if (!HERE || document.documentElement.dataset.theme !== 'geist-dark') return;

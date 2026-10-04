@@ -423,10 +423,11 @@
 [data-theme="ant-dark"] .rux--date-picker--next .rux--date-picker__day.selected {
   color: var(--rux-text-on-color);
 }
-/* Geist's Calendar page rounds each day's box 4px, so the picked day is a
-   rounded square and not a block. The days between a range's two ends keep
-   their square band, which the two ends close. */
-[data-theme="geist-dark"] .rux--date-picker--next .rux--date-picker__day:not(.inRange) {
+/* Geist's Calendar page and Ant's DatePicker page both round each day's box
+   4px, so the picked day is a rounded square and not a block. The days
+   between a range's two ends keep their square band, which the two ends
+   close. */
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--date-picker--next .rux--date-picker__day:not(.inRange) {
   border-radius: 4px;
 }
 /* ANT-DARK'S TABLE IS THE OTHER ANSWER, and it was measured too, on Ant's own

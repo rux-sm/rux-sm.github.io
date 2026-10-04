@@ -68,25 +68,37 @@ const ready = new Set(scenarios.map((s) => s.id));
 // and at tasks as "phase 2". While a scenario is being drawn, each of those is
 // rewritten to the number the reader sees and, outside a link, made a link to
 // the step or task it names.
-let ctx = null;        // the scenario being drawn: { s, ids: step id -> [phase, step] }
+let ctx = null;        // the scenario being drawn: { s, ids: step id -> [phase, step], now: the task being drawn }
 let linking = true;    // false while the text sits inside a link
 const drawing = (s, fn) => {
-  const ids = new Map(s.phases.flatMap((p) => p.blocks.filter((b) => b.kind === 'steps').flatMap((b) => b.rows).map((r, k) => [r.id, [p.n, k + 1]])));
-  ctx = { s, ids, phases: new Set(s.phases.map((p) => p.n)) };
+  ctx = { s, ids: idsOf(s), phases: new Set(s.phases.map((p) => p.n)), now: null };
   try { return fn(); } finally { ctx = null; }
 };
 const plainly = (fn) => { linking = false; try { return fn(); } finally { linking = true; } };
-const refs = (html) => !ctx ? html : html.replace(/\b(\d+)\.(\d+)\b|\b([Pp])hase (\d+)\b/g, (m, a, b, cased, n) => {
-  if (a != null) {
-    const at = ctx.ids.get(`${a}.${b}`);
-    if (!at) return m;
-    const text = `task ${at[0] + 1}, step ${at[1]}`;
-    return linking ? `<a class="rux--link" href="./?s=${esc(ctx.s.id)}&amp;t=${at[0]}&amp;k=${at[1]}">${text}</a>` : text;
-  }
-  if (!ctx.phases.has(Number(n))) return m;
-  const text = `${cased === 'P' ? 'Task' : 'task'} ${Number(n) + 1}`;
-  return linking ? `<a class="rux--link" href="./?s=${esc(ctx.s.id)}&amp;t=${n}">${text}</a>` : text;
-});
+const idsOf = (s) => new Map(s.phases.flatMap((p) => p.blocks.filter((b) => b.kind === 'steps').flatMap((b) => b.rows).map((r, k) => [r.id, [p.n, k + 1]])));
+// A step in the task being read is "step 5"; one in another task is "task 2
+// step 5"; a run of steps in one task is "steps 2–7". `to` is another scenario
+// the text points into, named by the link just before it.
+const refs = (html, to) => {
+  if (!ctx) return html;
+  const s = to ?? ctx.s, ids = to ? idsOf(to) : ctx.ids;
+  const link = (href, text) => (linking ? `<a class="rux--link" href="${href}">${text}</a>` : text);
+  const where = (n) => (!to && n === ctx.now ? '' : `task ${n + 1} `);
+  const at = (x) => `./?s=${esc(s.id)}&amp;t=${x[0]}&amp;k=${x[1]}`;
+  return html
+    .replace(/(?:\bsteps? )?\b(\d+)\.(\d+)[–-](\d+)\.(\d+)\b/g, (m, a, b, c, d) => {
+      const from = ids.get(`${a}.${b}`), upto = ids.get(`${c}.${d}`);
+      return from && upto && from[0] === upto[0] ? link(at(from), `${where(from[0])}steps ${from[1]}–${upto[1]}`) : m;
+    })
+    .replace(/(?:\bstep )?\b(\d+)\.(\d+)\b|\b([Pp])hase (\d+)\b/g, (m, a, b, cased, n) => {
+      if (a != null) {
+        const x = ids.get(`${a}.${b}`);
+        return x ? link(at(x), `${where(x[0])}step ${x[1]}`) : m;
+      }
+      if (to || !ctx.phases.has(Number(n))) return m;
+      return link(`./?s=${esc(s.id)}&amp;t=${n}`, `${cased === 'P' ? 'Task' : 'task'} ${Number(n) + 1}`);
+    });
+};
 
 function token(t) {
   switch (t.t) {
@@ -100,7 +112,10 @@ function token(t) {
     case 'command': case 'path': return route(t.route);
     // The link wraps the name alone: Carbon's link is a flex box, and a space
     // between two things inside one collapses.
-    case 'session': return t.name ? `${screenLink(t.code, named(t.name))} ${exact(t.code)}` : screenLink(t.code, exact(t.code));
+    // In a step's headline a screen is its name alone where it has a card,
+    // because the card holds the code and the route.
+    case 'session': return t.name ? `${screenLink(t.code, named(t.name))}${t.bare && cards.has(t.code) ? '' : ` ${exact(t.code)}`}` : screenLink(t.code, exact(t.code));
+    case 'dest': return named(t.v);
     case 'pencil': return '<svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg>';
     // A link names another atlas document. One that is a ready scenario opens
     // it in Do; any other keeps its words and has nowhere to go yet.
@@ -111,7 +126,50 @@ function token(t) {
     default: throw new Error(`no rendering for token type "${t.t}": ${JSON.stringify(t)}`);
   }
 }
-const tokens = (list) => list.map(token).join('');
+// Step numbers written straight after a link to another scenario are that
+// scenario's, so they are counted and linked there.
+const tokens = (list) => list.map((t, i) => {
+  const other = t.t === 'text' && list[i - 1]?.t === 'link' && scenarios.find((s) => `${s.id}.md` === list[i - 1].href);
+  return other ? refs(esc(t.v), other) : token(t);
+}).join('');
+
+// ---- a step's headline ---------------------------------------------------------
+// A step is read at a glance, so its headline carries the action and nothing
+// else. Three things atlas writes inline move out of it: a menu route, which
+// goes on a quiet line of its own unless it is the task's; a screen's code,
+// which is on the screen's card; and a second sentence, or what follows a
+// dash or a semicolon, which goes underneath in ordinary type.
+function headline(list, p) {
+  const routes = [], out = [];
+  for (let i = 0; i < list.length; i++) {
+    const t = list[i];
+    if (t.t === 'session' && t.name) { out.push({ ...t, bare: true }); continue; }
+    if (t.t !== 'command' && t.t !== 'path') { out.push(t); continue; }
+    if (t.route !== p.route) routes.push(t.route);
+    const dest = t.route.split(ARROW).at(-1), last = out.at(-1), before = out.at(-2);
+    // "Open Name code at Route": the route names the screen already said.
+    if (before?.t === 'session' && before.name === dest && last?.t === 'text' && last.v.trim() === 'at') { out.pop(); continue; }
+    // "Route (code)": the code names the route's last stop, so it becomes a screen.
+    const [open, code, close] = list.slice(i + 1, i + 4);
+    if (open?.t === 'text' && /^\s*\(\s*$/.test(open.v) && code?.t === 'session' && !code.name && close?.t === 'text' && /^\s*\)/.test(close.v)) {
+      out.push({ t: 'session', code: code.code, name: dest, bare: true }, { ...close, v: close.v.replace(/^\s*\)/, '') });
+      i += 3;
+    } else out.push({ t: 'dest', v: dest });
+  }
+  // Where the action ends: a full stop before a new sentence, a dash, or a
+  // semicolon.
+  const cut = out.findIndex((t) => t.t === 'text' && /\. (?=[A-Z])| [\u2014\u2013] |; /.test(t.v));
+  let head = out, note = [];
+  if (cut >= 0) {
+    const m = /\. (?=[A-Z])| [\u2014\u2013] |; /.exec(out[cut].v);
+    head = [...out.slice(0, cut), { t: 'text', v: out[cut].v.slice(0, m.index) }];
+    note = [{ t: 'text', v: cap(out[cut].v.slice(m.index + m[0].length)) }, ...out.slice(cut + 1)];
+  }
+  if (head[0]?.t === 'text') head[0] = { ...head[0], v: cap(head[0].v.trimStart()) };
+  return `<h1 class="ln-step__do">${tokens(head)}</h1>${note.length ? `
+          <p class="ln-step__note">${tokens(note)}</p>` : ''}${[...new Set(routes)].map((r) => `
+          <p class="ln-step__route">${route(r)}</p>`).join('')}`;
+}
 const plain = (list) => list.map((t) => t.v ?? t.label ?? t.route ?? t.name ?? t.code ?? '').join('');
 
 // ---- routes ----------------------------------------------------------------
@@ -338,6 +396,10 @@ function path(s) {
 }
 
 function task(s, p, i) {
+  ctx.now = p.n;
+  try { return drawTask(s, p, i); } finally { ctx.now = null; }
+}
+function drawTask(s, p, i) {
   for (const b of p.blocks) if (b.kind !== 'prose' && b.kind !== 'steps') throw new Error(`no rendering for a "${b.kind}" block in ${s.id} phase ${p.n}`);
   if (p.sessionCode && !cards.has(p.sessionCode)) report.push(`no card     ${s.title} · ${p.n}: ${p.session} (${p.sessionCode}) has no purpose line`);
   const rows = rowsOf(p);
@@ -352,7 +414,7 @@ function task(s, p, i) {
     </div>
     <ol class="ln-steps">${rows.map((r, k) => `
       <li data-k="${k + 1}" data-ref="${esc(r.id)}" hidden>
-        <h1 class="ln-step__do">${tokens(r.cells[1].tokens)}</h1>${r.cells[2].text.trim() === '\u2014' ? '' : `
+        <div class="ln-step__main">${headline(r.cells[1].tokens, p)}</div>${r.cells[2].text.trim() === '\u2014' ? '' : `
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>${tokens(r.cells[2].tokens)}</p></div>`}
       </li>`).join('')}
     </ol>${p.route ? `

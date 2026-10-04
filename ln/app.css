@@ -50,6 +50,12 @@
 .ln-steps { margin: 0; padding: 0; list-style: none; }
 .ln-steps li { display: grid; gap: 1.5rem; }
 .ln-step__do { font-size: 1.5rem; line-height: 1.35; font-weight: 400; margin: 0; }
+/* On a phone the column is narrow, so the headline steps down one size and
+   stays the largest thing on the screen. */
+@media (max-width: 30rem) { .ln-step__do { font-size: 1.25rem; } }
+.ln-step__main { display: grid; gap: .625rem; }
+.ln-step__note { margin: 0; font-size: 1.0625rem; line-height: 1.5; }
+.ln-step__route { margin: 0; font-size: .875rem; line-height: 1.45; color: var(--rux-text-secondary); }
 .ln-step__see { padding: 1rem 1.25rem; background: var(--rux-layer-01); }
 .ln-step__see p { margin: .25rem 0 0; font-size: 1.0625rem; line-height: 1.5; }
 .ln-task__route { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .75rem; font-size: .875rem; color: var(--rux-text-secondary); }

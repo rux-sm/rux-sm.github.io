@@ -16,3 +16,10 @@
    at a fixed width that runs off a phone. */
 .ln-nav .rux--btn,
 .ln-choices .rux--btn { inline-size: 100%; max-inline-size: none; justify-content: center; padding-inline: 1rem; }
+
+/* A link inside a step is part of the sentence, so it takes the sentence's
+   size and breaks across lines with it. Carbon's link carries its own size and
+   is a box that moves to the next line whole. */
+.ln-step__do .rux--link,
+.ln-step__note .rux--link,
+.ln-step__see .rux--link { display: inline; font-size: inherit; line-height: inherit; letter-spacing: inherit; }

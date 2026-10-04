@@ -34,6 +34,10 @@ exports, so a correction is made once and every screen redraws.
   what to do, the screen's code to copy, and what they should see. Back and
   Next move through it, and so do the arrow keys.
 
+- **A step's headline is the action alone.** A menu route, a screen's code and
+  a second sentence are moved beneath it by the build, so the library's wording
+  stays as it was walked.
+
 - **A decision is a screen of its own**, with every answer as a button: each
   outcome, and "I'm not sure", which opens the screen where the answer is read.
   A setting behind the decision is offered the same way.
@@ -141,8 +145,9 @@ landings for old page addresses, which are deleted.
       `ln/overrides.css`.
 - [ ] In atlas, set the one shape for a question in `standards/`, with its
       check, and rewrite each scenario's questions into it.
-- [ ] In atlas, give a short form to each step whose wording runs past two
-      lines on a phone.
+- [ ] In atlas, split each step that still runs past three lines on a phone,
+      which is one that sets several things at once, when its task is next
+      walked.
 - [ ] In atlas, give Warehouse transfer and Create test items a map of their
       own, since most of their tasks are not on this chain.
 - [ ] In atlas, write a screen file for the four screens still without one, once

@@ -64,11 +64,11 @@ Nothing in these apps draws them.
 | `--rux-layer-selected-hover-03` | `#3f3f3f` | `--ds-gray-500 #454545` | close |
 | `--rux-layer-selected-inverse` | `#ededed` | `--ds-gray-1000 #ededed` | exact |
 | `--rux-field-01` | `#0a0a0a` | `--ds-background-100 #0a0a0a` | exact |
-| `--rux-field-02` | `#111111` | `--ds-background-100 #0a0a0a` | close |
-| `--rux-field-03` | `#1a1a1a` | `--ds-gray-100 #1a1a1a` | exact |
+| `--rux-field-02` | `#0a0a0a` | `--ds-background-100 #0a0a0a` | exact |
+| `--rux-field-03` | `#111111` | `--ds-background-100 #0a0a0a` | close |
 | `--rux-field-hover-01` | `#1a1a1a` | `--ds-gray-100 #1a1a1a` | exact |
-| `--rux-field-hover-02` | `#242424` | `--ds-gray-200 #1f1f1f` | close |
-| `--rux-field-hover-03` | `#2e2e2e` | `--ds-gray-400 #2e2e2e` | exact |
+| `--rux-field-hover-02` | `#1a1a1a` | `--ds-gray-100 #1a1a1a` | exact |
+| `--rux-field-hover-03` | `#242424` | `--ds-gray-200 #1f1f1f` | close |
 | `--rux-overlay` | `rgba(0, 0, 0, 0.72)` | `--ds-gray-alpha-900 #ffffff/0.61` | nearest |
 | `--rux-skeleton-background` | `#1a1a1a` | `--ds-gray-100 #1a1a1a` | exact |
 | `--rux-skeleton-element` | `#2e2e2e` | `--ds-gray-400 #2e2e2e` | exact |

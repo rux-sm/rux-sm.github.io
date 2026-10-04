@@ -3613,6 +3613,61 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "The outbound line's status reads "
+                },
+                {
+                  "t": "chip",
+                  "v": "Planned"
+                }
+              ],
+              "text": "The outbound line's status reads Planned"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A planned line cannot be advised. Activate the warehousing order with "
+                },
+                {
+                  "t": "chip",
+                  "v": "Activate"
+                },
+                {
+                  "t": "text",
+                  "v": ", and the line becomes "
+                },
+                {
+                  "t": "chip",
+                  "v": "Open"
+                },
+                {
+                  "t": "text",
+                  "v": " — Infor LN Warehousing User Guide for the Outbound and Shipment Goods Flows, pp. 13–15. "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "A planned line cannot be advised. Activate the warehousing order with Activate, and the line becomes Open — Infor LN Warehousing User Guide for the Outbound and Shipment Goods Flows, pp. 13–15. Not documented for this release."
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "Order will not advise"
                 }
               ],
@@ -4343,5 +4398,5 @@
     }
   ],
   "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
-  "openIssues": 5
+  "openIssues": 6
 }

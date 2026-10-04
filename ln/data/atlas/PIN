@@ -1,9 +1,9 @@
-commit   b1d07f0923635b2b87a7c6fe859a11ebb298bf96
-date     2026-10-04T18:51:36Z
-subject  feat(sessions): Give every screen a purpose line
+commit   f60d9a734a6f0a104476441a6d6c82237d7028e6
+date     2026-10-04T18:54:38Z
+subject  docs(outbound): Read setup, shipments and loads
 contract 15 
 tier     export
-sha256   59e3fcae28a74e6921e922adba70f5ff5c8bcce58ef5a74d3b346fb468425ccc
+sha256   35531c2d64cffe317fb87cc712d3d11c32e8db9e3cbe2a21fa6040aa852121ca
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

@@ -173,6 +173,24 @@
       ]
     },
     {
+      "id": "shipment-and-load",
+      "name": "Shipment and load",
+      "terms": [
+        "shipment",
+        "shipment line",
+        "load",
+        "projected shipment"
+      ],
+      "purpose": "What leaves the warehouse together. LN groups picked lines into a shipment and shipments into a load by itself, and reads each one's status from the lines under it.",
+      "sources": [
+        "whinh4130m000",
+        "whinh4131m000",
+        "whinh4630m000",
+        "whinh0100m000",
+        "whinh0110m000"
+      ]
+    },
+    {
       "id": "site-and-warehouse",
       "name": "Site and warehouse",
       "terms": [

@@ -182,7 +182,9 @@
          uses, and the button carries --icon-only with --icon-only__20 for a 20px
          glyph. This fragment had the svg directly in the button. -->
     <div class="ks-label">icon only · lg · 20px glyph</div>
-    <div class="rux--tabs rux--tabs__icon--lg">
+    <!-- Set in from the column's edge: each tab's tooltip is centred under it,
+         and the first one's ran 32px past the edge, off the page. -->
+    <div class="rux--tabs rux--tabs__icon--lg" style="margin-inline-start:2.5rem">
       <div class="rux--tab--list" role="tablist" aria-label="Icon tabs">
         <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--tooltip rux--icon-tooltip">
           <div class="rux--tooltip-trigger__wrapper">

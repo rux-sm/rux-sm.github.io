@@ -704,7 +704,7 @@
     beside a code block is usually ghost; the reference renders primary, and a
     fragment follows the reference.
   -->
-  <div class="ks-row" style="gap:4rem;padding-block:2rem;align-items:center">
+  <div class="ks-row" style="gap:4rem;padding-block:2rem;padding-inline-start:2rem;align-items:center">
 
     <div class="rux--layout-constraint--size__default-md rux--layout-constraint--size__max-lg">
     <span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast">
@@ -3709,7 +3709,9 @@
          uses, and the button carries --icon-only with --icon-only__20 for a 20px
          glyph. This fragment had the svg directly in the button. -->
     <div class="ks-label">icon only · lg · 20px glyph</div>
-    <div class="rux--tabs rux--tabs__icon--lg">
+    <!-- Set in from the column's edge: each tab's tooltip is centred under it,
+         and the first one's ran 32px past the edge, off the page. -->
+    <div class="rux--tabs rux--tabs__icon--lg" style="margin-inline-start:2.5rem">
       <div class="rux--tab--list" role="tablist" aria-label="Icon tabs">
         <span class="rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--bottom rux--tooltip rux--icon-tooltip">
           <div class="rux--tooltip-trigger__wrapper">
@@ -5175,16 +5177,12 @@
        move a number. The v10 corner names Carbon still
        ships CSS for — bottom-left, bottom-right, left-top, left-bottom,
        right-top, right-bottom, top-left, top-right — appear in NO capture and
-       are not demoed. --border and --background-token__background likewise. -->
+       are not demoed. --border and --background-token__background likewise.
+
+       Bottom end is last in the row: its popover hangs from the trigger's end
+       edge back towards the start, so it needs the row's width before it. -->
   <div class="ks-label">PLACEMENTS · CLICK A TRIGGER</div>
   <div class="ks-row" style="gap:6rem;padding:3rem 0 5rem 8rem">
-    <span class="rux--popover-container rux--popover--bottom-end rux--popover--caret rux--popover--drop-shadow">
-      <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">Bottom end</button>
-      <span class="rux--popover">
-        <span class="rux--popover-content ks-pad"><p>Aligned to the trigger's end edge.</p></span>
-        <span class="rux--popover-caret"></span>
-      </span>
-    </span>
     <span class="rux--popover-container rux--popover--left rux--popover--caret rux--popover--drop-shadow">
       <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">Left</button>
       <span class="rux--popover">
@@ -5196,6 +5194,13 @@
       <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">Right</button>
       <span class="rux--popover">
         <span class="rux--popover-content ks-pad"><p>To the right.</p></span>
+        <span class="rux--popover-caret"></span>
+      </span>
+    </span>
+    <span class="rux--popover-container rux--popover--bottom-end rux--popover--caret rux--popover--drop-shadow">
+      <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">Bottom end</button>
+      <span class="rux--popover">
+        <span class="rux--popover-content ks-pad"><p>Aligned to the trigger's end edge.</p></span>
         <span class="rux--popover-caret"></span>
       </span>
     </span>
@@ -5215,7 +5220,7 @@
        demonstrable statically, and rendering it broken to move a coverage
        number is worse than leaving the number where it is. -->
   <div class="ks-label">OPEN · TAB TIP</div>
-  <div class="ks-row" style="padding:1rem 0 5rem 8rem">
+  <div class="ks-row" style="padding:1rem 0 5rem 12rem">
     <span class="rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--drop-shadow rux--popover--open">
       <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" aria-expanded="true">Open</button>
       <span class="rux--popover">

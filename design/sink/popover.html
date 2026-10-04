@@ -44,16 +44,12 @@
        move a number. The v10 corner names Carbon still
        ships CSS for — bottom-left, bottom-right, left-top, left-bottom,
        right-top, right-bottom, top-left, top-right — appear in NO capture and
-       are not demoed. --border and --background-token__background likewise. -->
+       are not demoed. --border and --background-token__background likewise.
+
+       Bottom end is last in the row: its popover hangs from the trigger's end
+       edge back towards the start, so it needs the row's width before it. -->
   <div class="ks-label">PLACEMENTS · CLICK A TRIGGER</div>
   <div class="ks-row" style="gap:6rem;padding:3rem 0 5rem 8rem">
-    <span class="rux--popover-container rux--popover--bottom-end rux--popover--caret rux--popover--drop-shadow">
-      <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">Bottom end</button>
-      <span class="rux--popover">
-        <span class="rux--popover-content ks-pad"><p>Aligned to the trigger's end edge.</p></span>
-        <span class="rux--popover-caret"></span>
-      </span>
-    </span>
     <span class="rux--popover-container rux--popover--left rux--popover--caret rux--popover--drop-shadow">
       <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">Left</button>
       <span class="rux--popover">
@@ -65,6 +61,13 @@
       <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">Right</button>
       <span class="rux--popover">
         <span class="rux--popover-content ks-pad"><p>To the right.</p></span>
+        <span class="rux--popover-caret"></span>
+      </span>
+    </span>
+    <span class="rux--popover-container rux--popover--bottom-end rux--popover--caret rux--popover--drop-shadow">
+      <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm">Bottom end</button>
+      <span class="rux--popover">
+        <span class="rux--popover-content ks-pad"><p>Aligned to the trigger's end edge.</p></span>
         <span class="rux--popover-caret"></span>
       </span>
     </span>
@@ -84,7 +87,7 @@
        demonstrable statically, and rendering it broken to move a coverage
        number is worse than leaving the number where it is. -->
   <div class="ks-label">OPEN · TAB TIP</div>
-  <div class="ks-row" style="padding:1rem 0 5rem 8rem">
+  <div class="ks-row" style="padding:1rem 0 5rem 12rem">
     <span class="rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--drop-shadow rux--popover--open">
       <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" aria-expanded="true">Open</button>
       <span class="rux--popover">

@@ -138,6 +138,7 @@ export const ICONS = {
   'printer': { material: 'print', rux: null },
   'purchase': { material: 'credit_card', rux: null },  // Carbon's purchase is a credit card.
   'radio-button': { material: 'radio_button_unchecked', rux: null },
+  'redo': { material: 'redo', rux: null },
   'request-quote': { material: 'request_quote', rux: null },
   'reset': { material: 'restart_alt', rux: null },
   'route': { material: 'route', rux: null },  // Carbon draws no route; Material's is a path between two pins.
@@ -149,6 +150,7 @@ export const ICONS = {
   'time': { material: 'schedule', rux: null },
   'trash-can': { material: 'delete', rux: null },
   'undefined--filled': { material: 'quiz-fill', rux: null },  // `help` is taken by unknown--filled.
+  'undo': { material: 'undo', rux: null },
   'unknown--filled': { material: 'help-fill', rux: null },
   'upload': { material: 'upload', rux: null },
   'user': { material: 'person', rux: null },

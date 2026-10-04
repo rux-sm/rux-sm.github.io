@@ -92,51 +92,53 @@
   --scheduler-amber-hover-ring: inset 0 0 0 1px var(--scheduler-on-warning);
 }
 
-/* THE THREE HEADS HOLD GEIST'S DEFAULT CONTROLS: the toolbar, the roster's
-   head and the trip editor's head each hold the 36px buttons that Design
-   sizes every geist-dark control at, 6px from every edge of a 48px bar, so
-   their 6px corners sit concentric in the card's 12px. Nothing fills its bar
-   edge to edge, so the three heads
+/* THE THREE HEADS HOLD EACH ROUNDED THEME'S DEFAULT CONTROLS: the toolbar,
+   the roster's head and the trip editor's head each hold the buttons Design
+   sizes that theme's controls at, inset from every edge of a 48px bar:
+   geist-dark's 36px buttons 6px in and 4px apart, ant-dark's 32px ones 8px
+   in and 8px apart. Nothing fills its bar edge to edge, so the three heads
    and the rows under them line up across the board, and every button takes
-   Geist's 6px corners rather than staying square with the last one following
-   the card's curve. The editor's close button fixes its own 40px, so it is
-   named. The roster's head keeps its full height where the grid under it wants
-   more room than the pane has. */
+   the theme's 6px corners rather than staying square with the last one
+   following the card's curve. The editor's close button fixes its own 40px,
+   so it is named. The roster's head keeps its full height where the grid
+   under it wants more room than the pane has. */
+[data-theme="geist-dark"] { --scheduler-head-inset: 6px; --scheduler-head-gap: var(--rux-spacing-02); }
+[data-theme="ant-dark"] { --scheduler-head-inset: 8px; --scheduler-head-gap: var(--rux-spacing-03); }
 @media (min-width: 42rem) {
-  [data-theme="geist-dark"] .scheduler-toolbar {
-    padding: 6px;
-    gap: var(--rux-spacing-02);
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-toolbar {
+    padding: var(--scheduler-head-inset);
+    gap: var(--scheduler-head-gap);
   }
-  [data-theme="geist-dark"] .scheduler-aside__head {
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-aside__head {
     flex: none;
-    padding-block: 6px;
-    padding-inline-end: 6px;
+    padding-block: var(--scheduler-head-inset);
+    padding-inline-end: var(--scheduler-head-inset);
   }
-  [data-theme="geist-dark"] .rux--side-panel .rux--side-panel__header.rux--side-panel__header--has-title {
-    padding-block: 6px;
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .rux--side-panel .rux--side-panel__header.rux--side-panel__header--has-title {
+    padding-block: var(--scheduler-head-inset);
   }
-  [data-theme="geist-dark"] .scheduler-trip .rux--side-panel .rux--side-panel__decorator-and-close {
-    margin-inline-end: calc(6px - var(--rux-spacing-05));
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-trip .rux--side-panel .rux--side-panel__decorator-and-close {
+    margin-inline-end: calc(var(--scheduler-head-inset) - var(--rux-spacing-05));
   }
-  [data-theme="geist-dark"] .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) :is(.rux--btn, .scheduler-weekbtn) {
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) :is(.rux--btn, .scheduler-weekbtn) {
     border-radius: 6px;
   }
   /* Buttons that stand apart by a gap take no rule between them: on a 6px
      corner the toolbar's dividing rule bends into a bracket. The spacer's
      rule goes with them. */
-  [data-theme="geist-dark"] .scheduler-page .scheduler-toolbar > .rux--btn--ghost:not(:focus-visible) {
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-page .scheduler-toolbar > .rux--btn--ghost:not(:focus-visible) {
     border-inline-color: transparent;
   }
-  [data-theme="geist-dark"] .scheduler-toolbar__spacer { border-inline-start-color: transparent; }
-  [data-theme="geist-dark"] .scheduler-trip .rux--side-panel .rux--btn--md.rux--side-panel__close-button {
-    block-size: 2.25rem;
-    inline-size: 2.25rem;
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-toolbar__spacer { border-inline-start-color: transparent; }
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-trip .rux--side-panel .rux--btn--md.rux--side-panel__close-button {
+    block-size: var(--rux-layout-size-height-md);
+    inline-size: var(--rux-layout-size-height-md);
     border-radius: 6px;
   }
-  /* Geist's footer buttons are ordinary buttons rather than a band, so they
-     line up with the fields above them, 24px in (overrides.css), where
+  /* These themes' footer buttons are ordinary buttons rather than a band, so
+     they line up with the fields above them, 24px in (overrides.css), where
      Design's footer holds them at 16. */
-  [data-theme="geist-dark"] #scheduler-panel .rux--action-set {
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) #scheduler-panel .rux--action-set {
     padding-inline: var(--rux-spacing-06);
   }
   /* The editor and the viewer are columns of the board here, not the panel
@@ -146,6 +148,12 @@
   [data-theme="geist-dark"] .scheduler-page .rux--side-panel {
     block-size: 100%;
   }
+}
+/* Ant's tab is 46px (Design's rux-overrides.css), so the editor's sticky
+   strip, which overrides.css sizes from the control height, takes the tab's
+   height in its place. */
+[data-theme="ant-dark"] #scheduler-panel-body .rux--tabs {
+  block-size: calc(2.875rem + var(--rux-spacing-03));
 }
 /* GEIST'S AND ANT'S TABS ARE AS WIDE AS THEIR WORDS, 24px and 32px apart,
    which is Design's rule for each theme. Beside the week the editor's five

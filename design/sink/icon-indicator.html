@@ -3,17 +3,15 @@
   <!-- PROVENANCE: rendered-dom · react.carbondesignsystem.com
      preview-statusindicators-preview-iconindicator--default and --default-with-size-20, 2026-08-27
      · status modifier sits on the SVG, base and --20 on the wrapper div, per the reference.
-     · icons go through the sprite rather than inline paths, so Carbon's
-       `--caution-major path:first-of-type { fill: #000 }` cannot reach them. -->
+     · icons go through the sprite rather than inline paths. -->
   <!--
-    THE SPRITE MAKES CARBON'S PER-PATH RULES INERT. Carbon colours multi-path
-    status icons with descendant rules — `--caution-major path:first-of-type
-    { fill: #000 }` is the black glyph inside the orange triangle. Our icons are
-    <use href="#symbol">, and outer-document CSS does not cross into a <use>
-    shadow tree, so those rules match nothing. Measured in the sink: of 35 such
-    rules across the system, 2 match any element. Every one-path status renders
-    correctly; the multi-path ones lose their inner colour. Not specific to this
-    fragment, and not fixable inside it.
+    CARBON'S PER-PATH RULES REACH A SPRITE ICON THROUGH A CUSTOM PROPERTY.
+    Carbon colours multi-path status icons with descendant rules:
+    `--caution-major path:first-of-type { fill: #000 }` is the black glyph
+    inside the orange triangle. Our icons are <use href="#symbol">, and
+    outer-document CSS does not cross into a <use> shadow tree, but a custom
+    property does. tools/build-icons.mjs has each such path read its fill from
+    one, and tools/lib/transform.mjs writes the rule that sets it.
   -->
   <!-- Icon per status from web-components/icon-indicator.js:50-97. -->
   <div class="ks-row">

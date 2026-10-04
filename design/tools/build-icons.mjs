@@ -90,6 +90,36 @@ const ICONS = [
   'draggable',
 ];
 
+/* CARBON COLOURS ONE PATH OF AN ICON, AND A SYMBOL'S PATHS ARE OUT OF REACH.
+   A warning's "!" is a path of its own, drawn with no fill, and Carbon
+   blackens it where the icon is a warning: `path:first-of-type { fill: #000 }`,
+   `path[opacity="0"]`, `path[fill]`. No selector outside a symbol reaches
+   inside it, but a custom property set on the <use> is inherited there. So
+   each path Carbon's rules can single out reads its fill from one:
+
+     --rux-icon-path-1, --rux-icon-path-2   the first and second path
+     --rux-icon-inner                        the path Carbon marks inner-path
+
+   and tools/lib/transform.mjs writes the rules that set them. Unset, an inner
+   path has no fill, as Carbon draws it, and any other path takes the fill it
+   inherits. `opacity: 1` answers the `opacity="0"` some inner paths carry,
+   which Carbon's rules lift together with the fill.
+
+   Carbon's family only: the order of the paths is Carbon's, and a rule that
+   means "the mark inside" would blacken the whole of another family's glyph. */
+const hooked = body => {
+  let n = 0;
+  return body.replace(/<path\b([^>]*?)(\/?)>/g, (tag, attrs, close) => {
+    n++;
+    const nth = n <= 2 ? `--rux-icon-path-${n}` : null;
+    const inner = /data-icon-path="inner-path"/.test(attrs);
+    if (!inner && !nth) return tag;
+    const fill = !inner ? `var(${nth})`
+      : nth ? `var(${nth},var(--rux-icon-inner,none))` : 'var(--rux-icon-inner,none)';
+    return `<path${attrs} style="fill:${fill}${inner ? ';opacity:1' : ''}"${close}>`;
+  });
+};
+
 const symbols = [], missing = [], from = {};
 for (const name of ICONS) {
   const size = SIZES.find(s => existsSync(s ? `${SRC}/${s}/${name}.svg` : `${SRC}/${name}.svg`));
@@ -97,7 +127,7 @@ for (const name of ICONS) {
   const raw = readFileSync(size ? `${SRC}/${size}/${name}.svg` : `${SRC}/${name}.svg`, 'utf8');
   const viewBox = (raw.match(/viewBox="([^"]+)"/) ?? [, '0 0 32 32'])[1];
   const body = raw.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '').trim();
-  symbols.push(`<symbol id="i-${name}" viewBox="${viewBox}">${body}</symbol>`);
+  symbols.push(`<symbol id="i-${name}" viewBox="${viewBox}">${hooked(body)}</symbol>`);
   from[size || 'root'] = (from[size || 'root'] ?? 0) + 1;
 }
 

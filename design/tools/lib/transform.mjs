@@ -38,9 +38,8 @@ const FOCUS = /:focus(?![-\w])/g;
 // kept the colour of the text around it. A <use> hands its fill down to the
 // symbol it draws, so every selector that ends at ALL of an icon's paths gets
 // a twin ending at `use`. A selector that picks ONE path of several, by
-// position or by attribute, is left alone: a <use> is the whole drawing.
+// position or by attribute, is answered below.
 const ALL_PATHS = /(^|[\s>+~])path(?::not\(\[data-icon-path\]\):not\(\[fill=none\]\))?(\s*)$/;
-const RULE_HEAD = /([^{}]*)\{/g;
 
 // One selector list, split at the commas that are not inside brackets.
 function selectors(list) {
@@ -56,16 +55,43 @@ function selectors(list) {
   return parts;
 }
 
+// A selector that picks ONE path sets a custom property on the `use` instead,
+// which the symbol's path reads: tools/build-icons.mjs writes that half and
+// names the three properties. `:first-of-type` and `:nth-of-type(2)` are the
+// path's place; every other form Carbon uses names the path it marks
+// `inner-path`, which alone carries a `fill` or an `opacity` attribute.
+const ONE_PATH = /(^|[\s>+~])path(:first-of-type|:nth-of-type\(2\)|\[data-icon-path=inner-path\]|\[opacity="0"\]|\[fill\]|\[fill=none\])\s*$/;
+const HOOK = {
+  ':first-of-type': '--rux-icon-path-1',
+  ':nth-of-type(2)': '--rux-icon-path-2',
+};
+const hookOf = pick => HOOK[pick] ?? '--rux-icon-inner';
+// Any other way of ending at a path is one this file has no answer for.
+const SOME_PATH = /(^|[\s>+~])path(?![\w-])[^\s>+~]*\s*$/;
+const RULE = /([^{}]*)\{([^{}]*)\}/g;
+
 function twinIconPaths(css) {
-  let twins = 0;
-  const out = css.replace(RULE_HEAD, (whole, head) => {
+  let twins = 0, hooks = 0;
+  const unread = [];
+  const out = css.replace(RULE, (whole, head, body) => {
     if (!head.includes('path')) return whole;
     // A comment may sit before the selectors; only what follows it is a list.
     const at = head.includes('*/') ? head.lastIndexOf('*/') + 2 : 0;
     const list = head.slice(at);
     if (list.trimStart().startsWith('@')) return whole;
+    const fill = body.match(/(?:^|;)\s*fill:\s*([^;]+?)\s*(?:;|$)/)?.[1];
+    const spread = body.includes('\n');
+    const set = {};   // custom property -> the selectors that set it
     const parts = selectors(list).map(part => {
-      if (!ALL_PATHS.test(part)) return part;
+      const one = part.match(ONE_PATH);
+      if (one) {
+        if (fill) (set[hookOf(one[2])] ??= []).push(part.trim().replace(ONE_PATH, '$1use'));
+        return part;
+      }
+      if (!ALL_PATHS.test(part)) {
+        if (SOME_PATH.test(part)) unread.push(part.trim());
+        return part;
+      }
       twins++;
       // The twin goes on a line of its own at the selector's indent, without
       // the blank line that parts one rule from the last.
@@ -73,9 +99,16 @@ function twinIconPaths(css) {
       const lead = space.includes('\n') ? '\n' + space.split('\n').pop() : space;
       return part.replace(/\s*$/, '') + ',' + lead + part.trim().replace(ALL_PATHS, '$1use') + part.match(/\s*$/)[0];
     });
-    return head.slice(0, at) + parts.join(',') + '{';
+    const indent = spread ? list.match(/^\s*/)[0].split('\n').pop() : '';
+    const rules = Object.entries(set).map(([property, sels]) => {
+      hooks += sels.length;
+      return spread
+        ? `\n${indent}${sels.join(`,\n${indent}`)} {\n${indent}  ${property}: ${fill};\n${indent}}`
+        : `${sels.join(',')}{${property}:${fill}}`;
+    });
+    return head.slice(0, at) + parts.join(',') + '{' + body + '}' + rules.join('');
   });
-  return { css: out, twins };
+  return { css: out, twins, hooks, unread };
 }
 
 export function transform(css) {
@@ -83,11 +116,13 @@ export function transform(css) {
   const gridded = css.replace(GRID_TOKEN, '--rux-grid-');
   const references = [...new Set([...gridded.matchAll(HARD_REFERENCE)].map(m => m[1]))];
   const renamed = gridded.replace(HARD_REFERENCE, 'var(--rux-$1').replace(FOCUS, ':focus-visible');
-  const { css: out, twins } = twinIconPaths(renamed);
+  const { css: out, twins, hooks, unread } = twinIconPaths(renamed);
   return {
     css: out,
     focus,
     twins,
+    hooks,
+    unread,
     references,
     undeclared: references.filter(name => !out.includes(`--rux-${name}:`)),
   };

@@ -3672,6 +3672,9 @@ li.rux--accordion__item--disabled:last-of-type {
 .rux--btn path[data-icon-path=inner-path] {
   fill: none;
 }
+.rux--btn use {
+  --rux-icon-inner: none;
+}
 
 .rux--btn--ghost.rux--btn--icon-only .rux--btn__icon path:not([data-icon-path]):not([fill=none]),
 .rux--btn--ghost.rux--btn--icon-only .rux--btn__icon use,
@@ -7011,6 +7014,9 @@ fieldset[disabled] .rux--form__helper-text {
 .rux--checkbox__invalid-icon--warning path:first-of-type {
   fill: #000000;
 }
+.rux--checkbox__invalid-icon--warning use {
+  --rux-icon-path-1: #000000;
+}
 
 .rux--checkbox-group--invalid .rux--checkbox-group__validation-msg,
 .rux--checkbox-group--warning .rux--checkbox-group__validation-msg,
@@ -8271,6 +8277,9 @@ fieldset[disabled] .rux--form__helper-text {
   fill: #000000;
   opacity: 1;
 }
+.rux--text-input__invalid-icon--warning use {
+  --rux-icon-path-1: #000000;
+}
 
 .rux--password-input-wrapper:not(.rux--text-input--fluid) .rux--toggle-password-tooltip {
   position: absolute;
@@ -9361,6 +9370,9 @@ fieldset[disabled] .rux--form__helper-text {
 .rux--list-box__invalid-icon--warning path[fill] {
   fill: #000000;
   opacity: 1;
+}
+.rux--list-box__invalid-icon--warning use {
+  --rux-icon-inner: #000000;
 }
 
 .rux--list-box[data-invalid] .rux--list-box__field,
@@ -11583,6 +11595,9 @@ fieldset[disabled] .rux--form__helper-text {
 
 .rux--radio-button__invalid-icon--warning path:first-of-type {
   fill: #000000;
+}
+.rux--radio-button__invalid-icon--warning use {
+  --rux-icon-path-1: #000000;
 }
 
 .rux--radio-button-group--invalid + .rux--radio-button__validation-msg,
@@ -14903,6 +14918,9 @@ tr.rux--parent-row.rux--data-table--selected.rux--expandable-row--hover + tr[dat
 .rux--date-picker__icon--warn path:first-of-type {
   fill: #000000;
   opacity: 1;
+}
+.rux--date-picker__icon--warn use {
+  --rux-icon-path-1: #000000;
 }
 
 .rux--date-picker__icon--invalid {
@@ -18238,6 +18256,9 @@ button.rux--dropdown-text:focus-visible {
   fill: #000000;
   opacity: 1;
 }
+.rux--number__invalid--warning use {
+  --rux-icon-path-1: #000000;
+}
 
 .rux--number--lg input[type=number],
 .rux--number--lg input[type=text] {
@@ -18984,6 +19005,9 @@ button.rux--dropdown-text:focus-visible {
   fill: #000000;
   opacity: 1;
 }
+.rux--select__invalid-icon--warning use {
+  --rux-icon-inner: #000000;
+}
 
 optgroup.rux--select-optgroup,
 .rux--select-option {
@@ -19477,6 +19501,9 @@ optgroup.rux--select-optgroup:disabled,
 .rux--text-area__invalid-icon--warning path[fill] {
   fill: #000000;
   opacity: 1;
+}
+.rux--text-area__invalid-icon--warning use {
+  --rux-icon-inner: #000000;
 }
 
 .rux--text-area__counter-alert {
@@ -20145,6 +20172,9 @@ optgroup.rux--select-optgroup:disabled,
 
 .rux--time-picker--fluid--warning .rux--time-picker__icon path:first-of-type {
   fill: var(--rux-icon-primary, #161616);
+}
+.rux--time-picker--fluid--warning .rux--time-picker__icon use {
+  --rux-icon-path-1: var(--rux-icon-primary, #161616);
 }
 
 .rux--time-picker--fluid--invalid .rux--form-requirement,
@@ -21188,12 +21218,18 @@ optgroup.rux--select-optgroup:disabled,
 .rux--icon-indicator--caution-major path:first-of-type {
   fill: #000000;
 }
+.rux--icon-indicator--caution-major use {
+  --rux-icon-path-1: #000000;
+}
 
 .rux--icon-indicator--caution-minor {
   fill: var(--rux-status-yellow, #f1c21b);
 }
 .rux--icon-indicator--caution-minor path:first-of-type {
   fill: #000000;
+}
+.rux--icon-indicator--caution-minor use {
+  --rux-icon-path-1: #000000;
 }
 
 .rux--icon-indicator--undefined {
@@ -22179,6 +22215,12 @@ optgroup.rux--select-optgroup:disabled,
   fill: #000000;
   opacity: 1;
 }
+.rux--inline-notification--warning .rux--inline-notification__icon use {
+  --rux-icon-inner: #000000;
+}
+.rux--inline-notification--warning-alt .rux--inline-notification__icon use {
+  --rux-icon-path-1: #000000;
+}
 
 .rux--inline-notification__details {
   display: flex;
@@ -22490,6 +22532,12 @@ optgroup.rux--select-optgroup:disabled,
   fill: #000000;
   opacity: 1;
 }
+.rux--toast-notification--warning .rux--toast-notification__icon use {
+  --rux-icon-inner: #000000;
+}
+.rux--toast-notification--warning-alt .rux--toast-notification__icon use {
+  --rux-icon-path-1: #000000;
+}
 
 .rux--toast-notification__icon {
   flex-shrink: 0;
@@ -22786,11 +22834,23 @@ optgroup.rux--select-optgroup:disabled,
   fill: #000000;
   opacity: 1;
 }
+.rux--actionable-notification--warning .rux--toast-notification__icon use {
+  --rux-icon-inner: #000000;
+}
+.rux--actionable-notification--warning-alt .rux--toast-notification__icon use {
+  --rux-icon-path-1: #000000;
+}
 
 .rux--actionable-notification--warning .rux--inline-notification__icon path[opacity="0"],
 .rux--actionable-notification--warning-alt .rux--inline-notification__icon path:first-of-type {
   fill: #000000;
   opacity: 1;
+}
+.rux--actionable-notification--warning .rux--inline-notification__icon use {
+  --rux-icon-inner: #000000;
+}
+.rux--actionable-notification--warning-alt .rux--inline-notification__icon use {
+  --rux-icon-path-1: #000000;
 }
 
 .rux--actionable-notification__details {
@@ -23609,6 +23669,9 @@ optgroup.rux--select-optgroup:disabled,
 
 .rux--options-tile__summary--warn svg path[fill=none] {
   fill: #000000;
+}
+.rux--options-tile__summary--warn svg use {
+  --rux-icon-inner: #000000;
 }
 
 .rux--options-tile__summary-text {
@@ -25059,6 +25122,9 @@ span.rux--pagination__text.rux--pagination__items-count {
 .rux--shape-indicator--medium path:first-of-type {
   fill: var(--rux-status-orange-outline, #ba4e00);
 }
+.rux--shape-indicator--medium use {
+  --rux-icon-path-1: var(--rux-status-orange-outline, #ba4e00);
+}
 
 .rux--shape-indicator--low {
   fill: var(--rux-status-yellow, #f1c21b);
@@ -25066,12 +25132,18 @@ span.rux--pagination__text.rux--pagination__items-count {
 .rux--shape-indicator--low path:nth-of-type(2) {
   fill: var(--rux-status-yellow-outline, #8e6a00);
 }
+.rux--shape-indicator--low use {
+  --rux-icon-path-2: var(--rux-status-yellow-outline, #8e6a00);
+}
 
 .rux--shape-indicator--cautious {
   fill: var(--rux-status-yellow, #f1c21b);
 }
 .rux--shape-indicator--cautious path:first-of-type {
   fill: var(--rux-status-yellow-outline, #8e6a00);
+}
+.rux--shape-indicator--cautious use {
+  --rux-icon-path-1: var(--rux-status-yellow-outline, #8e6a00);
 }
 
 .rux--shape-indicator--undefined {
@@ -25088,6 +25160,9 @@ span.rux--pagination__text.rux--pagination__items-count {
 
 .rux--shape-indicator--incomplete path:nth-of-type(2) {
   fill: var(--rux-status-blue, #0043ce);
+}
+.rux--shape-indicator--incomplete use {
+  --rux-icon-path-2: var(--rux-status-blue, #0043ce);
 }
 
 .rux--shape-indicator--draft {
@@ -26145,6 +26220,9 @@ span.rux--pagination__text.rux--pagination__items-count {
 .rux--slider__invalid-icon--warning path:first-of-type {
   fill: #000000;
   opacity: 1;
+}
+.rux--slider__invalid-icon--warning use {
+  --rux-icon-path-1: #000000;
 }
 
 .rux--label--disabled ~ .rux--slider-container > .rux--slider__range-label {

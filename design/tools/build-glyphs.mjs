@@ -77,7 +77,9 @@ export function geometry(svg) {
   for (const [, tag, attrs] of svg.matchAll(GEOMETRY)) {
     const pairs = [...attrs.matchAll(/([a-zA-Z-]+)="([^"]*)"/g)]
       .map(([, k, v]) => [k, v.replace(/\s+/g, ' ').trim()])
-      .filter(([k]) => k !== 'xmlns')
+      // `style` is the hook build-icons writes for Carbon's one-path rules,
+      // not part of the drawing, and no publisher's file carries one.
+      .filter(([k]) => k !== 'xmlns' && k !== 'style')
       .sort(([a], [b]) => a.localeCompare(b));
     out.push(tag + '|' + pairs.map(([k, v]) => `${k}=${v}`).join(' '));
   }

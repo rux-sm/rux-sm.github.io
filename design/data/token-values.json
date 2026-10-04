@@ -2,8 +2,8 @@
   "_meta": {
     "generated": "2026-10-04",
     "source": "css/rux.css",
-    "contexts": 233,
-    "declarations": 3341,
+    "contexts": 259,
+    "declarations": 3367,
     "note": "Declared values only. A value that changes through the cascade is invisible here; see the gate's blindTo.",
     "duplicatesFound": 15
   },
@@ -11,6 +11,18 @@
     ".rux--accordion": {
       "--rux-layout-density-padding-inline-local": "clamp(var(--rux-layout-density-padding-inline-min), var(--rux-layout-density-padding-inline, var(--rux-layout-density-padding-inline-normal)), var(--rux-layout-density-padding-inline-max))",
       "--rux-layout-size-height-local": "clamp(max(var(--rux-layout-size-height-min), var(--rux-layout-size-height-sm)), var(--rux-layout-size-height, var(--rux-layout-size-height-md)), min(var(--rux-layout-size-height-max), var(--rux-layout-size-height-lg)))"
+    },
+    ".rux--actionable-notification--warning .rux--inline-notification__icon use": {
+      "--rux-icon-inner": "#000000"
+    },
+    ".rux--actionable-notification--warning .rux--toast-notification__icon use": {
+      "--rux-icon-inner": "#000000"
+    },
+    ".rux--actionable-notification--warning-alt .rux--inline-notification__icon use": {
+      "--rux-icon-path-1": "#000000"
+    },
+    ".rux--actionable-notification--warning-alt .rux--toast-notification__icon use": {
+      "--rux-icon-path-1": "#000000"
     },
     ".rux--ai-label .rux--toggletip-content, .rux--slug .rux--toggletip-content": {
       "--rux-button-focus-color": "initial",
@@ -22,6 +34,12 @@
     ".rux--btn": {
       "--rux-layout-density-padding-inline-local": "clamp(var(--rux-layout-density-padding-inline-min), var(--rux-layout-density-padding-inline, var(--rux-layout-density-padding-inline-normal)), var(--rux-layout-density-padding-inline-max))",
       "--rux-layout-size-height-local": "clamp(max(var(--rux-layout-size-height-min), var(--rux-layout-size-height-xs)), var(--rux-layout-size-height, var(--rux-layout-size-height-lg)), min(var(--rux-layout-size-height-max), var(--rux-layout-size-height-2xl)))"
+    },
+    ".rux--btn use": {
+      "--rux-icon-inner": "none"
+    },
+    ".rux--checkbox__invalid-icon--warning use": {
+      "--rux-icon-path-1": "#000000"
     },
     ".rux--col-span-1": {
       "--rux-grid-columns": "1"
@@ -126,6 +144,9 @@
     ".rux--css-grid-column": {
       "--rux-grid-mode-end": "var(--rux-grid-gutter-end)",
       "--rux-grid-mode-start": "var(--rux-grid-gutter-start)"
+    },
+    ".rux--date-picker__icon--warn use": {
+      "--rux-icon-path-1": "#000000"
     },
     ".rux--definition-tooltip": {
       "--rux-popover-border-radius": "2px"
@@ -707,11 +728,23 @@
       "--rux-toggle-off": "#6f6f6f",
       "--rux-true": ""
     },
+    ".rux--icon-indicator--caution-major use": {
+      "--rux-icon-path-1": "#000000"
+    },
+    ".rux--icon-indicator--caution-minor use": {
+      "--rux-icon-path-1": "#000000"
+    },
     ".rux--icon-tooltip": {
       "--rux-popover-caret-height": "0.25rem",
       "--rux-popover-caret-width": "0.5rem",
       "--rux-popover-offset": "0.5rem",
       "--rux-tooltip-padding-block": "0.125rem"
+    },
+    ".rux--inline-notification--warning .rux--inline-notification__icon use": {
+      "--rux-icon-inner": "#000000"
+    },
+    ".rux--inline-notification--warning-alt .rux--inline-notification__icon use": {
+      "--rux-icon-path-1": "#000000"
     },
     ".rux--layer-one": {
       "--rux-border-strong": "var(--rux-border-strong-01, #8d8d8d)",
@@ -871,6 +904,15 @@
     ".rux--list-box": {
       "--rux-layout-size-height-local": "clamp(max(var(--rux-layout-size-height-min), var(--rux-layout-size-height-xs)), var(--rux-layout-size-height, var(--rux-layout-size-height-md)), min(var(--rux-layout-size-height-max), var(--rux-layout-size-height-lg)))"
     },
+    ".rux--list-box__invalid-icon--warning use": {
+      "--rux-icon-inner": "#000000"
+    },
+    ".rux--number__invalid--warning use": {
+      "--rux-icon-path-1": "#000000"
+    },
+    ".rux--options-tile__summary--warn svg use": {
+      "--rux-icon-inner": "#000000"
+    },
     ".rux--overflow-menu, .rux--overflow-menu__trigger": {
       "--rux-layout-size-height-local": "clamp(max(var(--rux-layout-size-height-min), var(--rux-layout-size-height-xs)), var(--rux-layout-size-height, var(--rux-layout-size-height-md)), min(var(--rux-layout-size-height-max), var(--rux-layout-size-height-lg)))"
     },
@@ -911,6 +953,9 @@
     ".rux--progress-bar": {
       "--rux-layout-density-padding-inline-local": "clamp(var(--rux-layout-density-padding-inline-min), var(--rux-layout-density-padding-inline, var(--rux-layout-density-padding-inline-normal)), var(--rux-layout-density-padding-inline-max))"
     },
+    ".rux--radio-button__invalid-icon--warning use": {
+      "--rux-icon-path-1": "#000000"
+    },
     ".rux--search": {
       "--rux-layout-size-height-local": "clamp(max(var(--rux-layout-size-height-min), var(--rux-layout-size-height-xs)), var(--rux-layout-size-height, var(--rux-layout-size-height-md)), min(var(--rux-layout-size-height-max), var(--rux-layout-size-height-lg)))"
     },
@@ -930,6 +975,21 @@
     ".rux--select-input": {
       "--rux-layout-density-padding-inline-local": "clamp(var(--rux-layout-density-padding-inline-min), var(--rux-layout-density-padding-inline, var(--rux-layout-density-padding-inline-normal)), var(--rux-layout-density-padding-inline-max))",
       "--rux-layout-size-height-local": "clamp(max(var(--rux-layout-size-height-min), var(--rux-layout-size-height-xs)), var(--rux-layout-size-height, var(--rux-layout-size-height-md)), min(var(--rux-layout-size-height-max), var(--rux-layout-size-height-lg)))"
+    },
+    ".rux--select__invalid-icon--warning use": {
+      "--rux-icon-inner": "#000000"
+    },
+    ".rux--shape-indicator--cautious use": {
+      "--rux-icon-path-1": "var(--rux-status-yellow-outline, #8e6a00)"
+    },
+    ".rux--shape-indicator--incomplete use": {
+      "--rux-icon-path-2": "var(--rux-status-blue, #0043ce)"
+    },
+    ".rux--shape-indicator--low use": {
+      "--rux-icon-path-2": "var(--rux-status-yellow-outline, #8e6a00)"
+    },
+    ".rux--shape-indicator--medium use": {
+      "--rux-icon-path-1": "var(--rux-status-orange-outline, #ba4e00)"
     },
     ".rux--side-panel": {
       "--rux--side-panel--actions-height": "4rem",
@@ -951,6 +1011,9 @@
     },
     ".rux--side-panel.rux--side-panel:has(.rux--side-panel__action-toolbar).rux--side-panel--has-slug, .rux--side-panel.rux--side-panel:has(.rux--side-panel__action-toolbar).rux--side-panel--has-ai-label, .rux--side-panel.rux--side-panel:has(.rux--side-panel__action-toolbar).rux--side-panel--has-decorator, .rux--side-panel.rux--side-panel--has-action-toolbar.rux--side-panel--has-slug, .rux--side-panel.rux--side-panel--has-action-toolbar.rux--side-panel--has-ai-label, .rux--side-panel.rux--side-panel--has-action-toolbar.rux--side-panel--has-decorator": {
       "--rux--side-panel--title-padding-right": "5rem"
+    },
+    ".rux--slider__invalid-icon--warning use": {
+      "--rux-icon-path-1": "#000000"
     },
     ".rux--slider__thumb-wrapper": {
       "--rux-popover-offset": "0.5rem",
@@ -1086,6 +1149,9 @@
     ".rux--tag.rux--layout--size-xs, .rux--layout--size-xs :where(.rux--tag)": {
       "--rux-layout-size-height": "var(--rux-layout-size-height-xs)"
     },
+    ".rux--text-area__invalid-icon--warning use": {
+      "--rux-icon-inner": "#000000"
+    },
     ".rux--text-area__wrapper": {
       "--rux-layout-density-padding-inline-local": "clamp(var(--rux-layout-density-padding-inline-min), var(--rux-layout-density-padding-inline, var(--rux-layout-density-padding-inline-normal)), var(--rux-layout-density-padding-inline-max))"
     },
@@ -1093,8 +1159,20 @@
       "--rux-layout-density-padding-inline-local": "clamp(var(--rux-layout-density-padding-inline-min), var(--rux-layout-density-padding-inline, var(--rux-layout-density-padding-inline-normal)), var(--rux-layout-density-padding-inline-max))",
       "--rux-layout-size-height-local": "clamp(max(var(--rux-layout-size-height-min), var(--rux-layout-size-height-xs)), var(--rux-layout-size-height, var(--rux-layout-size-height-md)), min(var(--rux-layout-size-height-max), var(--rux-layout-size-height-lg)))"
     },
+    ".rux--text-input__invalid-icon--warning use": {
+      "--rux-icon-path-1": "#000000"
+    },
     ".rux--tile": {
       "--rux-layout-density-padding-inline-local": "clamp(var(--rux-layout-density-padding-inline-min), var(--rux-layout-density-padding-inline, var(--rux-layout-density-padding-inline-normal)), var(--rux-layout-density-padding-inline-max))"
+    },
+    ".rux--time-picker--fluid--warning .rux--time-picker__icon use": {
+      "--rux-icon-path-1": "var(--rux-icon-primary, #161616)"
+    },
+    ".rux--toast-notification--warning .rux--toast-notification__icon use": {
+      "--rux-icon-inner": "#000000"
+    },
+    ".rux--toast-notification--warning-alt .rux--toast-notification__icon use": {
+      "--rux-icon-path-1": "#000000"
     },
     ".rux--toggletip": {
       "--rux-popover-border-radius": "2px",

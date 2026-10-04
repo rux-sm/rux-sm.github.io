@@ -64,13 +64,13 @@ The table is generated on every `npm run verify`. Do not edit it by hand.
 |---|---|
 | Components | **82 / 87 compiled** in 85 `@use` lines — `data-table` is four of them — and `docs/inventory.md` decides all 87, which `check-inventory` fails if it stops |
 | Themes | 4 — white, g10, g90, g100 — plus `geist-dark`, `ant-dark` and `spotify-dark`, token override blocks in `css/rux-theme.css`, not a compile |
-| Tokens · classes | **628** `--rux-*` defined, 9 more read through a fallback · **1,944** `.rux--*` |
+| Tokens · classes | **631** `--rux-*` defined, 9 more read through a fallback · **1,944** `.rux--*` |
 | Kitchen sink | **73** sections · **1,117** classes with `templates/` and `js/` |
 | Class coverage | **1,066 / 1,520 (70%)** — ratcheted in `data/coverage.json` |
 | Spacing scale | 13 `--rux-spacing-*` tokens, demoed in the `spacing` section |
 | Markup provenance | **81 `rendered-dom` · 6 `source` · 0 `inferred`** across 87 files |
-| Icons | 251 symbols in a 77.2 KB sprite — 57 referenced, 194 nothing points at |
-| Size | 1108.6 KB raw · 997.8 KB min · **102 KB gzipped** |
+| Icons | 251 symbols in a 81.1 KB sprite — 57 referenced, 194 nothing points at |
+| Size | 1110.8 KB raw · 999.8 KB min · **102 KB gzipped** |
 | Behaviour JS | **22** modules · **78 KB gzipped** · 259.6 KB raw, 58% of it comment · 108.4 KB of code |
 
 **Every figure above is generated** by `tools/build-readme.mjs` from
@@ -117,8 +117,8 @@ flags, which components and themes compile, and the two files above the build.
 Three documented exceptions, in `tools/lib/transform.mjs` and enforced on every
 build: `--cds-grid-*`, which Carbon hardcodes past `$prefix`, is renamed; every
 `:focus` becomes `:focus-visible`, so a focus ring shows for the keyboard and
-not for a click or a tap; and a rule that colours all of an icon's `path`s also
-names `use`, so it reaches an icon drawn from the sprite.
+not for a click or a tap; and a rule that colours an icon's `path`s also names
+`use`, or sets a property the sprite's path reads, so it reaches a sprite icon.
 
 ## Gates
 

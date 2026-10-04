@@ -11,6 +11,12 @@
    lost. Hint points at a wrong X if there is one, and otherwise at the line
    where the numbers decide the most squares from what is on the board.
 
+   THE BOARD WAITS BEHIND "TAP TO START", or "Tap to continue" for a game
+   in progress. The numbers show and the clock runs from that tap, so a best
+   time does not count the page loading or being read. It is also what lets
+   a phone play the sounds at all: a phone starts a page's sound only from a
+   tap, never from a drag, and a puzzle is usually begun with a drag.
+
    UNDO takes back the last tap or drag, with the squares a finished line
    crossed out for it, as far back as the puzzle's start. It does not take
    back a mistake: the red X stays and so does the lost star.
@@ -93,6 +99,10 @@
     // No square is marked until a finger, the mouse or an arrow key picks one.
     // `climb` counts the fills of one drag, so each sounds a step higher.
     let tool = 'fill', action = null, cursor = [], solved = false, climb = 0;
+    // Nothing moves, and the clock stands, until the cover is tapped; and
+    // the board takes no touch for a moment after, so a second tap meant for
+    // the cover cannot land on the square that was under it.
+    let started = false, settling = false;
     // The board before each tap or drag that changed it, and the board as a
     // tap or drag began, kept only once that one changes something.
     let past = [], held = null;
@@ -121,7 +131,7 @@
 
     // The clock runs only while the page is in front.
     setInterval(() => {
-      if (solved || document.hidden) return;
+      if (!started || solved || document.hidden) return;
       seconds++;
       tick();
       if (seconds % 5 === 0) keep();
@@ -194,7 +204,7 @@
     };
 
     const act = (y, x) => {
-      if (solved) return;
+      if (!started || settling || solved) return;
       const v = state[y][x];
       if (action === 'fill' && v === 0) {
         if (free || answer[y][x]) {
@@ -232,7 +242,7 @@
     };
 
     const undo = () => {
-      if (solved || !past.length) return;
+      if (!started || solved || !past.length) return;
       // A mistake stays as it is, so a move that was only a mistake has
       // nothing to take back and the one before it is taken instead.
       const same = to => to.every((r, y) => r.every((v, x) => v === state[y][x]));
@@ -254,7 +264,7 @@
        what is certain, and the one that decides the most squares to fill, or
        failing that the most to cross out, is lit. */
     const hint = () => {
-      if (solved || free) return;
+      if (!started || solved || free) return;
       const wrong = [];
       state.forEach((r, y) => r.forEach((v, x) => { if (v === 2 && answer[y][x]) wrong.push([y, x]); }));
       let text, lit;
@@ -299,7 +309,7 @@
     // Arrows move, Z or Space fills, X crosses out, U undoes and H hints,
     // whichever tool is chosen.
     addEventListener('keydown', e => {
-      if (solved || e.target.closest('input, textarea, select, .rux--header, .rux--side-nav')) return;
+      if (!started || solved || e.target.closest('input, textarea, select, .rux--header, .rux--side-nav')) return;
       const move = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[e.key];
       if (move) {
         e.preventDefault();
@@ -340,6 +350,17 @@
     });
 
     listen();
+    const cover = $('pixels-start');
+    if (fresh) cover.textContent = 'Tap to continue';
+    game.classList.add('is-waiting');
+    cover.addEventListener('click', () => {
+      started = settling = true;
+      setTimeout(() => { settling = false; }, 350);
+      game.classList.remove('is-waiting');
+      cover.remove();
+      sound('fill');
+    });
+    cover.focus({ preventScroll: true });
     const soundToggle = $('pixels-sound');
     window.Rux.formControls?.toggle(soundToggle, sounds());
     soundToggle.addEventListener('rux:toggle', e => { if (sounds(e.detail.on)) sound('fill'); });

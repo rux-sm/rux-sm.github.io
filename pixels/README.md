@@ -15,7 +15,8 @@ solved puzzle shows its picture, name, stars and best time; an unsolved one a
 question mark and how hard it is, and its name stays hidden until it is
 solved.
 
-`play.html?id=` plays one puzzle, 5, 10 or 15 squares a side. Fill a square
+`play.html?id=` plays one puzzle, 5, 10 or 15 squares a side. The board
+waits behind Tap to start, and the clock runs from that tap. Fill a square
 or cross it out with X, by tap, by dragging along a row or column, or with
 the arrow keys, Z and X. On a phone a 15×15 board zooms under two fingers,
 its numbers staying in view, and there a touch fills as it lifts.

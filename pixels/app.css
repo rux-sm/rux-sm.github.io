@@ -185,6 +185,12 @@
   .pixels-game { --gutter: 1rem; inline-size: auto; max-inline-size: none; margin-inline: -2.5rem; }
 }
 .pixels-top { display: flex; align-items: center; gap: 1rem; }
+/* THE COVER. Until Start is tapped the board keeps its place and shows
+   nothing, and the button sits in the middle of where it will be. */
+.pixels-stage { position: relative; }
+.pixels-game.is-waiting .pixels-stage { background: var(--rux-layer-01); }
+.pixels-game.is-waiting .pixels-board { visibility: hidden; }
+.pixels-start { position: absolute; inset-block-start: 50%; inset-inline-start: 50%; translate: -50% -50%; }
 .pixels-top > h1 { flex: 1; }
 .pixels-clock { font-family: 'IBM Plex Mono', monospace; font-size: 1.25rem; font-variant-numeric: tabular-nums; }
 .pixels-controls { display: grid; gap: 1rem; }

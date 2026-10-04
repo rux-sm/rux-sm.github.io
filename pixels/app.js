@@ -404,7 +404,8 @@
      asked for while it is stopped would be scheduled on a clock that is not
      running and never heard, so `sound` holds the latest one and `wake`,
      which `listen` runs on every touch and key, starts the sound and plays
-     it if it is still fresh. */
+     it if it is still fresh. Only a tap starts it, never a drag, which is
+     why play.js opens each puzzle behind a button. */
   const TONES = {
     fill: [[523, .06]],
     pop: [[440, .09, 220]],
@@ -449,6 +450,9 @@
     }).catch(() => { /* still stopped; the next touch tries again */ });
   };
   const listen = () => {
+    // Made now, while the page loads, so the first touch only has to start it.
+    const Context = window.AudioContext || window.webkitAudioContext;
+    if (Context && sounds()) audio ??= new Context();
     for (const type of ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown']) addEventListener(type, wake, { capture: true, passive: true });
     document.addEventListener('visibilitychange', wake);
   };

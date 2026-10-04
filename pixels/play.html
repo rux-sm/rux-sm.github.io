@@ -147,7 +147,11 @@
           <span id="pixels-stars"></span>
           <span class="pixels-clock" id="pixels-clock" role="timer" aria-label="Time">00:00</span>
         </div>
-        <div id="pixels-board"></div>
+        <!-- The board waits behind Start: play.js shows it, and starts the clock, on the tap. -->
+        <div class="pixels-stage">
+          <div id="pixels-board"></div>
+          <button type="button" class="rux--btn rux--btn--primary pixels-start" id="pixels-start">Tap to start</button>
+        </div>
         <div class="pixels-controls">
           <div class="pixels-status" id="pixels-status" aria-live="polite"></div>
           <div class="pixels-tools">

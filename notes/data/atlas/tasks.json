@@ -1289,14 +1289,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " - "
+                  "v": " - change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed - if the change is allowed, the outbound line follows it, and its advice and picking list are deleted - if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order - "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Do - Not documented for this release."
+              "text": "Do - change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed - if the change is allowed, the outbound line follows it, and its advice and picking list are deleted - if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order - Not documented for this release."
             },
             {
               "tokens": [
@@ -5238,6 +5238,33 @@
           {
             "tokens": [
               {
+                "t": "text",
+                "v": "change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed"
+              }
+            ],
+            "text": "change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "if the change is allowed, the outbound line follows it, and its advice and picking list are deleted"
+              }
+            ],
+            "text": "if the change is allowed, the outbound line follows it, and its advice and picking list are deleted"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order"
+              }
+            ],
+            "text": "if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order"
+          },
+          {
+            "tokens": [
+              {
                 "t": "strong",
                 "v": "Not documented for this release."
               }
@@ -5252,11 +5279,15 @@
         "do": {
           "tokens": [
             {
+              "t": "text",
+              "v": "change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed. if the change is allowed, the outbound line follows it, and its advice and picking list are deleted. if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order. "
+            },
+            {
               "t": "strong",
               "v": "Not documented for this release."
             }
           ],
-          "text": "Not documented for this release."
+          "text": "change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed. if the change is allowed, the outbound line follows it, and its advice and picking list are deleted. if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order. Not documented for this release."
         }
       },
       {

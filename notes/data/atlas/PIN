@@ -1,9 +1,9 @@
-commit   977512c8e0eff7789296167c95fd10639891d199
-date     2026-10-04T01:49:21Z
-subject  docs(order-types): Source the sales order type
+commit   cdd8e06eaeaab30d4cd156158ec3c0b2611438d5
+date     2026-10-04T01:51:10Z
+subject  docs(outbound): Source changing a released line
 contract 14 
 tier     export
-sha256   1d3ea6132b09929c2e722a516221485f183a4693b1e7c7c050527d4ee0b4cad1
+sha256   38914388c8a77d6278723731b36692ceaf53c60bacbf27b2efd29f1b8f91bd7a
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

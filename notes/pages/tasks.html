@@ -1118,7 +1118,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-notes-page="tasks" data-notes-commit="977512c8e0eff7789296167c95fd10639891d199">
+<main id="main-content" class="rux--content" data-notes-page="tasks" data-notes-commit="cdd8e06eaeaab30d4cd156158ec3c0b2611438d5">
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-7">
@@ -1322,6 +1322,9 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
                   <div class="notes-dg-zone">
                   <p class="notes-dg-field"><span class="notes-dg-key">Does</span>change or cancel a sales order line after it is entered</p><div class="notes-dg-field"><span class="notes-dg-key">Do</span>
                     <ol class="rux--list--ordered notes-dg-steps">
+                      <li class="rux--list__item">change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed</li>
+                      <li class="rux--list__item">if the change is allowed, the outbound line follows it, and its advice and picking list are deleted</li>
+                      <li class="rux--list__item">if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order</li>
                       <li class="rux--list__item"><strong>Not documented for this release.</strong></li>
                     </ol>
                   </div>
@@ -2292,7 +2295,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           <p class="notes-prose-measure"><strong>change-order-line · Change or cancel an order line</strong> · stage 2 · step</p>
           <ul class="rux--list--unordered">
           <li class="rux--list__item"><strong>Does</strong> — change or cancel a sales order line after it is entered</li>
-          <li class="rux--list__item"><strong>Do</strong> - <strong>Not documented for this release.</strong></li>
+          <li class="rux--list__item"><strong>Do</strong> - change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed - if the change is allowed, the outbound line follows it, and its advice and picking list are deleted - if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order - <strong>Not documented for this release.</strong></li>
           <li class="rux--list__item"><strong>Under</strong> — <a class="rux--link" href="order-to-shipment-overview.html">Demand to shipment</a> 1</li>
         </ul>
           <p class="notes-prose-measure"><strong>rush-order · Rush an order</strong> · stage 2 · step</p>
@@ -2635,7 +2638,7 @@ h1, h2, h3 { scroll-margin-block-start: 4rem; }
           </form>
         </section>
         </div>
-<p class="rux--type-caption-01 notes-revision">Built from atlas 977512c · contract 14</p>
+<p class="rux--type-caption-01 notes-revision">Built from atlas cdd8e06 · contract 14</p>
       </div>
     </div>
   </div>

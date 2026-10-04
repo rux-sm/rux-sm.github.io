@@ -293,10 +293,8 @@
 .pixels-key:disabled { border-color: var(--rux-border-disabled); color: var(--rux-text-disabled); cursor: default; }
 
 .pixels-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
-/* THE FOOT: the Sound switch, and under More what is seldom wanted. */
-.pixels-foot { display: flex; justify-content: space-between; align-items: start; gap: 1rem; }
-.pixels-more > summary { padding-block: .25rem; color: var(--rux-text-secondary); font-size: .875rem; text-align: end; cursor: pointer; }
-.pixels-more-body { display: grid; gap: .75rem; justify-items: end; padding-block-start: .5rem; }
+/* THE FOOT: the Sound switch, in the middle. */
+.pixels-foot { display: flex; justify-content: center; }
 /* Each view's display would outrank the hidden attribute. */
 .pixels-game[hidden], .pixels-solved[hidden], .pixels-controls[hidden], .pixels-info[hidden] { display: none; }
 .pixels-solved { display: grid; gap: 1.5rem; justify-items: center; text-align: center; padding-block: 1rem; }

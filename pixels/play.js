@@ -23,12 +23,6 @@
    and so does the lost star. Restart empties the board and zeroes the clock,
    and Undo straight after it brings everything back.
 
-   Free mode, under More with the way to the maker, points out nothing: a wrong square fills like a right one, Fill
-   on a filled square empties it, the numbers never grey, there is no hint,
-   and the puzzle is solved when the filled squares are exactly the picture.
-   The choice is kept in this browser under `pixels-mode`, and changing it
-   starts the puzzle over.
-
    A board wider than ten squares zooms under two fingers; app.js's `drag`
    says how.
 
@@ -36,8 +30,8 @@
    date; its result is kept by day, and solving it shows the days in a row.
 
    Each fill, X, finished line, mistake, hint and solve plays a tone and
-   ticks the phone, and a square emptied, an X taken off or a move undone
-   plays a falling one. The Sound switch keeps its choice in this browser.
+   ticks the phone, and an X taken off or a move undone plays a falling
+   one. The Sound switch keeps its choice in this browser.
 
    A game in progress is kept in this browser under `pixels-progress`, so a
    phone that reloads the page picks up where it was. It is dropped once the
@@ -51,7 +45,6 @@
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock');
 
   const PROGRESS = 'pixels-progress';
-  const MODE = 'pixels-mode';
   // How long the finished picture takes to fill in before the name shows.
   const REVEAL = 1100;
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -92,12 +85,13 @@
     const blank = () => answer.map(r => r.map(() => 0));
 
     const kept = loadProgress()[puzzle.id];
-    const fresh = kept && kept.squares === puzzle.squares;
+    // A kept game marked `free` may hold wrong fills, which this game never
+    // has, so it is not picked up.
+    const fresh = kept && kept.squares === puzzle.squares && !kept.free;
     let state = fresh ? kept.state : blank();
     let seconds = fresh ? kept.seconds : 0;
     let mistakes = fresh ? kept.mistakes : 0;
     let hints = fresh ? kept.hints || 0 : 0;
-    let free = fresh ? !!kept.free : (() => { try { return localStorage.getItem(MODE) === 'free'; } catch { return false; } })();
     // No square is marked until a finger, the mouse or an arrow key picks one.
     // `climb` counts the fills of one drag, so each sounds a step higher.
     let tool = 'fill', action = null, cursor = [], solved = false, climb = 0;
@@ -112,21 +106,18 @@
 
     $('pixels-title').textContent = heading;
     document.title = `${heading} — Pixels`;
-    if (isDaily) $('pixels-edit').remove();
-    else $('pixels-edit').href = `make.html?id=${encodeURIComponent(puzzle.id)}`;
 
-    const score = () => (free ? 3 : Math.max(1, 3 - mistakes - hints));
-    const keep = () => saveProgress(puzzle.id, { squares: puzzle.squares, state, seconds, mistakes, hints, free });
-    const el = board(boardHost, answer, state, { done: !free, label: 'Puzzle' });
+    const score = () => Math.max(1, 3 - mistakes - hints);
+    const keep = () => saveProgress(puzzle.id, { squares: puzzle.squares, state, seconds, mistakes, hints });
+    const el = board(boardHost, answer, state, { done: true, label: 'Puzzle' });
     // The name, the clock and the stars sit in the board's corner.
     el.querySelector('.pixels-corner').appendChild($('pixels-info'));
     $('pixels-info').hidden = false;
     const draw = () => {
-      paint(el, answer, state, { done: !free });
+      paint(el, answer, state, { done: true });
       el.querySelectorAll('.is-hint').forEach(e => e.classList.remove('is-hint'));
       highlight(el, ...cursor);
       stars($('pixels-stars'), score());
-      $('pixels-hint').disabled = free;
       $('pixels-undo').disabled = !past.length;
       $('pixels-redo').disabled = !ahead.length;
     };
@@ -194,11 +185,9 @@
       ], { duration: 400, easing: 'ease-out' });
     };
 
-    // Free mode is solved by the filled squares being the picture exactly;
-    // the classic game by every square of the picture being filled, since a
-    // wrong fill there is crossed out instead.
-    const isSolved = () => answer.every((r, y) => r.every((c, x) =>
-      free ? !!c === (state[y][x] === 1) : !c || state[y][x] === 1));
+    // Solved when every square of the picture is filled; a wrong fill is
+    // crossed out, so nothing else can be.
+    const isSolved = () => answer.every((r, y) => r.every((c, x) => !c || state[y][x] === 1));
 
     // A line whose picture squares are all filled crosses out what is left,
     // and says whether the square at (y, x) finished one.
@@ -214,9 +203,9 @@
       if (!started || settling || solved) return;
       const v = state[y][x];
       if (action === 'fill' && v === 0) {
-        if (free || answer[y][x]) {
+        if (answer[y][x]) {
           state[y][x] = 1;
-          const closed = !free && closeLines(y, x);
+          const closed = closeLines(y, x);
           buzz(closed ? 30 : 10);
           sound(closed ? 'line' : 'fill', closed ? 0 : climb++);
           tell('');
@@ -228,8 +217,7 @@
           sound('miss');
           tell(score() < before ? 'Not in the picture · a star lost' : 'Not in the picture', true);
         }
-      } else if (action === 'unfill' && v === 1) { state[y][x] = 0; sound('pop'); }
-      else if (action === 'x' && v === 0) { state[y][x] = 2; sound('x'); }
+      } else if (action === 'x' && v === 0) { state[y][x] = 2; sound('x'); }
       else if (action === 'unx' && v === 2) { state[y][x] = 0; sound('pop'); }
       else return;
       if (held) { past.push(held); held = null; ahead = []; }
@@ -238,11 +226,10 @@
       keep();
       if (isSolved()) finish();
     };
-    // A drag keeps doing what its first square did, so Fill that starts on a
-    // filled square in free mode empties along the drag.
+    // A drag keeps doing what its first square did, so X that starts on an X
+    // takes them off along the drag.
     const begin = (y, x, which = tool) => {
-      action = which === 'fill' ? (free && state[y][x] === 1 ? 'unfill' : 'fill')
-        : state[y][x] === 2 ? 'unx' : 'x';
+      action = which === 'fill' ? 'fill' : state[y][x] === 2 ? 'unx' : 'x';
       climb = 0;
       held = state.map(r => r.slice());
       act(y, x);
@@ -296,7 +283,7 @@
        what is certain, and the one that decides the most squares to fill, or
        failing that the most to cross out, is lit. */
     const hint = () => {
-      if (!started || solved || free) return;
+      if (!started || solved) return;
       const wrong = [];
       state.forEach((r, y) => r.forEach((v, x) => { if (v === 2 && answer[y][x]) wrong.push([y, x]); }));
       let text, lit;
@@ -378,19 +365,6 @@
       draw();
     };
     $('pixels-restart').addEventListener('click', () => { if (started && !solved) restart(); });
-
-    const freeToggle = $('pixels-free');
-    window.Rux.formControls?.toggle(freeToggle, free);
-    freeToggle.addEventListener('rux:toggle', e => {
-      if (e.detail.on === free) return;
-      free = e.detail.on;
-      try { localStorage.setItem(MODE, free ? 'free' : 'classic'); } catch { /* the choice lasts this page */ }
-      restart();
-      // A board from the other way of playing is not one to go back to.
-      past = [];
-      draw();
-      tell(free ? 'Free mode · mistakes are not pointed out' : '');
-    });
 
     listen();
     const cover = $('pixels-start');

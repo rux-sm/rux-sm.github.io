@@ -169,7 +169,7 @@
             <button type="button" class="pixels-key" id="pixels-undo" disabled><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-undo"/></svg>Undo</button>
             <button type="button" class="pixels-key" id="pixels-redo" disabled><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-redo"/></svg>Redo</button>
           </div>
-          <!-- play.js sets each switch from the saved choice. What is seldom wanted waits under More; changing Free mode starts over. -->
+          <!-- play.js sets it from the saved choice. -->
           <div class="pixels-foot">
             <div class="rux--toggle" id="pixels-sound">
               <button id="pixels-sound-button" class="rux--toggle__button" role="switch" type="button" aria-checked="true" aria-labelledby="pixels-sound-label"></button>
@@ -181,22 +181,6 @@
                 </div>
               </label>
             </div>
-            <details class="pixels-more">
-              <summary>More</summary>
-              <div class="pixels-more-body">
-                <div class="rux--toggle" id="pixels-free">
-                  <button id="pixels-free-button" class="rux--toggle__button" role="switch" type="button" aria-checked="false" aria-labelledby="pixels-free-label"></button>
-                  <label class="rux--toggle__label" for="pixels-free-button" id="pixels-free-label">
-                    <span class="rux--toggle__label-text">Free mode</span>
-                    <div class="rux--toggle__appearance">
-                      <div class="rux--toggle__switch"></div>
-                      <span class="rux--toggle__text" aria-hidden="true">Off</span>
-                    </div>
-                  </label>
-                </div>
-                <a class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="pixels-edit" href="make.html">Edit this puzzle</a>
-              </div>
-            </details>
           </div>
         </div>
         <!-- Shown under the finished picture, which is the board itself. -->

@@ -5,8 +5,13 @@
    picture changes, and the check says whether a player can solve it by logic
    alone, and then how hard that is; squares that would need a guess are
    outlined. COLOUR: pick one of the thirty-six inks and paint any square, filled
-   or not; that is the picture the puzzle finishes as. A picture never
-   coloured finishes in black and white. Size starts a blank board of 5, 10
+   or not; that is the picture the puzzle finishes as. Paint colours the
+   squares tapped or dragged over, Fill every square joined to the one
+   tapped through its own ink, and Pick takes the tapped square's ink and
+   hands back to the tool before it. A picture never coloured finishes in
+   black and white. UNDO takes back the last tap, drag, fill or Clear, in
+   either step, and Redo puts it back; Cmd or Ctrl with Z undoes, and with
+   Shift and Z, or Y, redoes. Size starts a blank board of 5, 10
    or 15 squares a side, and a saved puzzle keeps the size it has. Category
    is where the puzzle sits on the front page, among those of its size: it
    lists the categories by name, and New category starts one after them,
@@ -35,7 +40,8 @@
   const $ = id => document.getElementById(id);
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
   const day = $('pixels-day'), theme = $('pixels-theme');
-  const inks = $('pixels-inks');
+  const inks = $('pixels-inks'), paintBox = $('pixels-paint'), tools = $('pixels-tool');
+  const undoKey = $('pixels-undo'), redoKey = $('pixels-redo');
   const DRAFT = 'pixels-draft';
   // The inks as the palette lays them out, in two sets of eighteen, six to a
   // row: a colour to a column, light above dark, and the greys in the second
@@ -148,7 +154,7 @@
   const setStep = to => {
     step = to;
     if (step === 'colour' && !colours) colours = draft.map(r => r.map(c => (c ? 0 : 1)));
-    inks.hidden = step !== 'colour';
+    paintBox.hidden = step !== 'colour';
     chosen($('pixels-step'), $('pixels-step').querySelector(`[data-step="${step}"]`));
     render();
   };
@@ -170,11 +176,68 @@
     div.append(...set.map(swatch));
     return div;
   }));
+  const setInk = to => {
+    ink = to;
+    inks.querySelectorAll('.pixels-ink').forEach(b => b.setAttribute('aria-checked', parseInt(b.dataset.ink, 36) === ink));
+  };
   inks.addEventListener('click', e => {
     const picked = e.target.closest('.pixels-ink');
-    if (!picked) return;
-    ink = parseInt(picked.dataset.ink, 36);
-    inks.querySelectorAll('.pixels-ink').forEach(b => b.setAttribute('aria-checked', b === picked));
+    if (picked) setInk(parseInt(picked.dataset.ink, 36));
+  });
+  // The tool the colour step paints with. Pick is for one tap, and `back`
+  // is the tool it hands back to.
+  let tool = 'paint', back = 'paint';
+  const setTool = to => {
+    if (tool !== 'pick') back = tool;
+    tool = to;
+    tools.querySelectorAll('[data-tool]').forEach(b => b.setAttribute('aria-checked', b.dataset.tool === tool));
+  };
+  tools.addEventListener('click', e => {
+    const picked = e.target.closest('[data-tool]');
+    if (picked) setTool(picked.dataset.tool);
+  });
+
+  // UNDO AND REDO. A step is the picture as it stood, its squares and its
+  // colours as the strings a puzzle is saved in. `mark` keeps how the
+  // picture stands as a tap or drag begins, and the first square that then
+  // changes puts that on the pile, so a tap that changes nothing leaves no
+  // step. A new size, and a new puzzle after a save, start the pile again.
+  const STEPS = 200;
+  let past = [], ahead = [], before = null;
+  const snap = () => ({ squares: squaresOf(draft), colours: colours && squaresOf(colours) });
+  const showMoves = () => { undoKey.disabled = !past.length; redoKey.disabled = !ahead.length; };
+  const mark = () => { before = snap(); };
+  const changing = () => {
+    if (!before) return;
+    past.push(before);
+    if (past.length > STEPS) past.shift();
+    ahead = [];
+    before = null;
+    showMoves();
+  };
+  const forget = () => { past = []; ahead = []; before = null; showMoves(); };
+  // Takes the top of one pile as the picture and puts the picture it
+  // replaces on the other. A picture with no colours has nothing for the
+  // colour step to show, so that step gives way to Draw.
+  const move = (from, to) => {
+    if (!from.length) return;
+    to.push(snap());
+    const now = from.pop();
+    draft = grid(now.squares, side);
+    colours = now.colours ? grid(now.colours, side) : null;
+    $('pixels-saved').hidden = true;
+    if (step === 'colour' && !colours) setStep('draw'); else render();
+    keepDraft();
+    showMoves();
+  };
+  undoKey.addEventListener('click', () => move(past, ahead));
+  redoKey.addEventListener('click', () => move(ahead, past));
+  // A field keeps its own undo for what is typed in it.
+  addEventListener('keydown', e => {
+    const key = e.key.toLowerCase();
+    if (!(e.metaKey || e.ctrlKey) || e.altKey || (key !== 'z' && key !== 'y') || e.target.closest?.('input, select, textarea')) return;
+    e.preventDefault();
+    if (key === 'y' || e.shiftKey) move(ahead, past); else move(past, ahead);
   });
 
   // One square of a tap or a drag: painted in the colour step, and in the
@@ -182,18 +245,45 @@
   const stroke = (y, x) => {
     if (step === 'colour') {
       if (colours[y][x] === ink) return;
+      changing();
       colours[y][x] = ink;
     } else {
       if (draft[y][x] === filling) return;
+      changing();
       draft[y][x] = filling;
     }
     render();
     keepDraft();
   };
+  // Every square joined to this one, side to side, through its own ink.
+  const flood = (y, x) => {
+    const was = colours[y][x];
+    if (was === ink) return;
+    changing();
+    const todo = [[y, x]];
+    while (todo.length) {
+      const [r, c] = todo.pop();
+      if (colours[r]?.[c] !== was) continue;
+      colours[r][c] = ink;
+      todo.push([r + 1, c], [r - 1, c], [r, c + 1], [r, c - 1]);
+    }
+    render();
+    keepDraft();
+  };
+  // Only Paint and the draw step go on under a drag; Fill and Pick are a tap.
+  let dragging = false;
   const pad = drag(host, {
     free: true,
-    start: (y, x) => { filling = draft[y][x] ? 0 : 1; $('pixels-saved').hidden = true; stroke(y, x); },
-    paint: stroke,
+    start: (y, x) => {
+      $('pixels-saved').hidden = true;
+      dragging = step !== 'colour' || tool === 'paint';
+      if (step === 'colour' && tool === 'pick') { setInk(colours[y][x]); setTool(back); return; }
+      mark();
+      if (step === 'colour' && tool === 'fill') { flood(y, x); return; }
+      filling = draft[y][x] ? 0 : 1;
+      stroke(y, x);
+    },
+    paint: (y, x) => { if (dragging) stroke(y, x); },
     zoom: () => side > 10,
   });
   switcher($('pixels-size'), b => {
@@ -203,6 +293,7 @@
     showTheme();
     $('pixels-saved').hidden = true;
     clear();
+    forget();
     keepDraft();
   });
   name.addEventListener('input', () => { save.disabled = !solvable || !name.value.trim(); keepDraft(); });
@@ -220,8 +311,11 @@
     colours = null;
     setStep('draw');
   };
+  // Clear is a step too, unless the board was blank already.
   $('pixels-clear').addEventListener('click', () => {
     $('pixels-saved').hidden = true;
+    mark();
+    if (colours || draft.some(r => r.some(Boolean))) changing();
     clear();
     keepDraft();
   });
@@ -265,6 +359,7 @@
         try { localStorage.removeItem(DRAFT); } catch { /* nothing kept */ }
         name.value = '';
         clear();
+        forget();
         if (row.day) {
           const when = new Date(`${row.day}T12:00`);
           saved(`Saved “${row.name}”. It is the puzzle for ${when.toLocaleDateString(undefined, { day: 'numeric', month: 'long' })}.`);

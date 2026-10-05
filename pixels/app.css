@@ -531,9 +531,10 @@
 
 /* THE MAKER. Its board is the game's, to 450px of squares, set in by a
    whole number of pixels as the game is. On a narrow frame it is one column:
-   the board, the check, the step, the inks, then the fields, which is the
-   order the numbers below give its two halves' children. Where the frame has
-   room for both, the board is on one side with the inks under its squares,
+   the board, the check with undo and redo, the step, the tools and inks,
+   then the fields, which is the order the numbers below give its two
+   halves' children. Where the frame has room for both, the board is on one
+   side with the tools under its row numbers and the inks under its squares,
    and the check, the step and the fields are beside it. There `--chrome`
    counts the inks and `--beside` the fields, so the board takes what the
    window leaves both ways and the whole maker is in view without scrolling.
@@ -551,15 +552,34 @@
 .pixels-maker-main, .pixels-maker-side { display: contents; }
 #pixels-saved { order: 0; }
 #pixels-board { order: 1; }
-#pixels-check { order: 2; }
+.pixels-maker-top { order: 2; display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-block-size: 2rem; }
 #pixels-step { order: 3; }
-.pixels-inks { order: 4; }
+.pixels-paint { order: 4; display: grid; gap: .5rem; align-self: start; }
+.pixels-paint[hidden] { display: none; }
 .pixels-maker-form { order: 5; display: grid; gap: 1rem; align-content: start; inline-size: 18rem; max-inline-size: 100%; }
+/* PAINT, FILL AND PICK, the colour step's tools, the chosen one drawn in the
+   page's opposite colours as the game's two keys are. */
+.pixels-tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
+.pixels-tools > button {
+  block-size: 2.5rem;
+  padding: 0;
+  border: 1px solid var(--rux-border-strong-01);
+  background: var(--rux-layer-01);
+  color: var(--rux-text-primary);
+  font: inherit;
+  font-size: .875rem;
+  cursor: pointer;
+}
+.pixels-tools > [aria-checked="true"] {
+  border-color: var(--rux-background-inverse);
+  background: var(--rux-background-inverse);
+  color: var(--rux-text-inverse);
+}
+.pixels-tools > button:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 /* The inks to paint with, the chosen one ringed, in two sets of six to a
    row: a colour to a column, light above dark, and the greys in the second
    set's last two columns. */
 .pixels-inks { display: grid; gap: .5rem; }
-.pixels-inks[hidden] { display: none; }
 .pixels-inks-set { display: grid; grid-template-columns: repeat(6, minmax(0, 2.5rem)); gap: .5rem; }
 .pixels-ink {
   aspect-ratio: 1;
@@ -570,11 +590,16 @@
 }
 .pixels-ink[aria-checked="true"] { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 @container (min-width: 740px) {
-  .pixels-maker { --chrome: 240px; --beside: 20rem; --wide: calc(var(--foot) + 20rem); flex-direction: row; align-items: start; gap: 2rem; }
+  .pixels-maker { --chrome: 244px; --beside: 20rem; --wide: calc(var(--foot) + 20rem); flex-direction: row; align-items: start; gap: 2rem; }
   .pixels-maker-main { display: grid; gap: 1.5rem; }
   .pixels-maker-side { display: grid; gap: 1rem; align-content: start; inline-size: 18rem; }
-  /* The sets side by side under the squares: twelve across, three down. */
-  .pixels-inks { grid-template-columns: 1fr 1fr; gap: .375rem; inline-size: var(--side); margin-inline-start: var(--pixels-corner); }
+  /* The tools in a column under the row numbers, a tool to a row of inks,
+     and the two sets of inks side by side under the squares: twelve across,
+     three down. */
+  .pixels-paint { grid-template-columns: calc(var(--pixels-corner) - .75rem) var(--side); gap: .75rem; }
+  .pixels-tools { grid-template-columns: 1fr; gap: .375rem; }
+  .pixels-tools > button { block-size: 2rem; }
+  .pixels-inks { grid-template-columns: 1fr 1fr; gap: .375rem; }
   .pixels-inks-set { grid-template-columns: repeat(6, 1fr); gap: .375rem; }
   .pixels-ink { aspect-ratio: auto; block-size: 2rem; }
 }

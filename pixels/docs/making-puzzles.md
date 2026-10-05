@@ -51,6 +51,13 @@ the finish. Pick one of the thirty-six inks and paint any square, filled or
 empty. The palette is ten colours, each light, middle and dark down its
 column, and six greys from white to black.
 
+- **Paint, Fill and Pick** are the three tools beside the inks. Paint colours
+  the squares you tap or drag over. Fill colours every square joined to the
+  one you tap that has its colour. Pick takes the colour of the square you
+  tap, then hands back to the tool you had.
+- **Undo and Redo** are the two arrows beside the tag, in both steps. They
+  take back a tap, a drag, a fill or Clear. Cmd+Z undoes and Shift+Cmd+Z
+  redoes.
 - **Colour the background too.** A blue sky or a green field behind the shape
   is what makes the finish feel like a reward.
 - **Two or three colours are enough.** Keep the shape one colour and use a

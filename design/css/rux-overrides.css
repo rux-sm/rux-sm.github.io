@@ -1374,28 +1374,28 @@
 [data-theme="geist-dark"] :is(.rux--inline-notification, .rux--toast-notification, .rux--actionable-notification) {
   border-radius: 6px;
 }
-[data-theme="geist-dark"] :is(.rux--inline-notification--error, .rux--toast-notification--error, .rux--actionable-notification--error) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) :is(.rux--inline-notification--error, .rux--toast-notification--error, .rux--actionable-notification--error) {
   border-color: color-mix(in srgb, var(--rux-support-error) 30%, var(--rux-notification-background-error));
 }
 [data-theme="geist-dark"] :is(.rux--inline-notification--error, .rux--toast-notification--error, .rux--actionable-notification--error),
 [data-theme="geist-dark"] :is(.rux--toast-notification--error, .rux--actionable-notification--error) :is(.rux--toast-notification__subtitle, .rux--toast-notification__caption, .rux--actionable-notification__subtitle, .rux--actionable-notification__caption) {
   color: var(--rux-support-error);
 }
-[data-theme="geist-dark"] :is(.rux--inline-notification--success, .rux--toast-notification--success, .rux--actionable-notification--success) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) :is(.rux--inline-notification--success, .rux--toast-notification--success, .rux--actionable-notification--success) {
   border-color: color-mix(in srgb, var(--rux-support-success) 30%, var(--rux-notification-background-success));
 }
 [data-theme="geist-dark"] :is(.rux--inline-notification--success, .rux--toast-notification--success, .rux--actionable-notification--success),
 [data-theme="geist-dark"] :is(.rux--toast-notification--success, .rux--actionable-notification--success) :is(.rux--toast-notification__subtitle, .rux--toast-notification__caption, .rux--actionable-notification__subtitle, .rux--actionable-notification__caption) {
   color: var(--rux-support-success);
 }
-[data-theme="geist-dark"] :is(.rux--inline-notification--info, .rux--inline-notification--info-square, .rux--toast-notification--info, .rux--toast-notification--info-square, .rux--actionable-notification--info, .rux--actionable-notification--info-square) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) :is(.rux--inline-notification--info, .rux--inline-notification--info-square, .rux--toast-notification--info, .rux--toast-notification--info-square, .rux--actionable-notification--info, .rux--actionable-notification--info-square) {
   border-color: color-mix(in srgb, var(--rux-support-info) 30%, var(--rux-notification-background-info));
 }
 [data-theme="geist-dark"] :is(.rux--inline-notification--info, .rux--inline-notification--info-square, .rux--toast-notification--info, .rux--toast-notification--info-square, .rux--actionable-notification--info, .rux--actionable-notification--info-square),
 [data-theme="geist-dark"] :is(.rux--toast-notification--info, .rux--toast-notification--info-square, .rux--actionable-notification--info, .rux--actionable-notification--info-square) :is(.rux--toast-notification__subtitle, .rux--toast-notification__caption, .rux--actionable-notification__subtitle, .rux--actionable-notification__caption) {
   color: var(--rux-support-info);
 }
-[data-theme="geist-dark"] :is(.rux--inline-notification--warning, .rux--inline-notification--warning-alt, .rux--toast-notification--warning, .rux--toast-notification--warning-alt, .rux--actionable-notification--warning, .rux--actionable-notification--warning-alt) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) :is(.rux--inline-notification--warning, .rux--inline-notification--warning-alt, .rux--toast-notification--warning, .rux--toast-notification--warning-alt, .rux--actionable-notification--warning, .rux--actionable-notification--warning-alt) {
   border-color: color-mix(in srgb, var(--rux-support-warning) 30%, var(--rux-notification-background-warning));
 }
 [data-theme="geist-dark"] :is(.rux--inline-notification--warning, .rux--inline-notification--warning-alt, .rux--toast-notification--warning, .rux--toast-notification--warning-alt, .rux--actionable-notification--warning, .rux--actionable-notification--warning-alt),
@@ -1717,6 +1717,16 @@
   padding-inline: 17px;
   justify-content: center;
   text-align: center;
+}
+/* A footer's buttons are capsules too. The rounded themes' shared rules give
+   the first and the last a 6px corner by name, so they are named here. */
+[data-theme="apple-light"] .rux--action-set .rux--action-set__action-button,
+[data-theme="apple-light"] .rux--action-set .rux--action-set__action-button:first-child,
+[data-theme="apple-light"] .rux--action-set .rux--action-set__action-button:last-child,
+[data-theme="apple-light"] .rux--modal-footer .rux--btn,
+[data-theme="apple-light"] .rux--modal-footer .rux--btn:first-child,
+[data-theme="apple-light"] .rux--modal-footer .rux--btn:last-child {
+  border-radius: 999px;
 }
 /* A plain button in a table's bar is the grey push button, where geist-dark
    rings it. */

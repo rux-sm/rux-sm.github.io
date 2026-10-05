@@ -440,6 +440,14 @@
   background-size: 3px 100%;
   background-repeat: no-repeat;
 }
+/* A button that fills its bar edge to edge is that bar's edge, so it stays
+   square under Design's capsule rule: the document viewer's bar at every
+   width, and on a phone the toolbar and the roster's head, which overrides.css
+   squares for every theme but which Design's rule for this one outweighs. */
+[data-theme="apple-light"] .scheduler-viewer__toolbar .rux--btn { border-radius: 0; }
+@media (max-width: 41.98rem) {
+  [data-theme="apple-light"] .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) .rux--btn { border-radius: 0; }
+}
 /* The card's slots are grey push buttons here, where geist-dark rings them. */
 [data-theme="apple-light"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut {
   box-shadow: none;

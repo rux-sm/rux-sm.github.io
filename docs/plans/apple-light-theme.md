@@ -36,6 +36,9 @@ and Design's contrast measurement reads no text in it under 4.5 to 1.
 - **It stays out of the account panel until it is whole.** `js/theme.js`
   knows the name, so a session can put it on a page, and nobody can pick it
   half built.
+- **The header bar and a notification keep the rounded themes' shapes.**
+  Apple's toolbar and alert are not measured, and both already take this
+  theme's colours.
 - **Light only.** A dark companion is its own plan.
 - **It is named `apple-light`,** shown as "Apple light" in the account panel.
 - **Apple's current shapes, with solid fills.** Capsule buttons and the
@@ -59,12 +62,9 @@ None open.
   `design/css/rux-theme.css` beside its source row in
   `design/docs/apple-token-map.md`, and mark the hover and active steps Apple
   does not name as derived.
-- [ ] Give the inline notification, the toast and the header bar Apple's
-  shapes. They still draw as Carbon's.
 - [ ] Set Apple's type sizes and weights.
-- [ ] Finish the scheduler in `scheduler/theme.css`: the roster and its
-  availability cells, the document viewer, the trip card docked on a phone,
-  and the phone's own toolbar.
+- [ ] Look at the scheduler's document viewer, quote page, forms and lists
+  in the theme, and fix what still reads as another theme's.
 - [ ] Give every other app's `theme.css` its `apple-light` block where the
   app sets colours by theme.
 - [ ] Run Design's contrast measurement in each app and the full check, and

@@ -226,8 +226,9 @@
   the striped end of a one-way trip, a drop-off and a pickup, two trips on one
   bus and one day in two lanes, an unconfirmed trip in red, a placeholder in
   amber with no times and no crew, a crew mark in each status with a relief
-  driver's arrows and a declined name struck through, a seat nobody fills, a
-  crew cut to "+1", and an out-of-service stripe with its row icon.
+  driver's arrows and a declined name struck through, a seat nobody fills,
+  dim and in the warning colour on a leg that is due, a crew cut to "+1", and
+  an out-of-service stripe with its row icon.
   Each bus number is the toggletip trigger the board's row loop in data.js
   builds, and js/popover.js opens its tip. The first board has the tip's
   equipment switch on, so the lift and sleeper marks show under the numbers;
@@ -314,13 +315,13 @@
                       <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Ortiz · Confirmed by the driver · Sep 3, 4:10 PM"><span class="scheduler-crew__mark scheduler-crew__mark--success scheduler-crew__mark--dot"><span class="scheduler-crew__dot"></span></span><span class="scheduler-crew__name">Ortiz</span></span><span class="scheduler-crew" title="Co-driver · Nguyen · Pending response, set by dispatch"><span class="scheduler-crew__mark scheduler-crew__mark--warning scheduler-crew__mark--dot"><span class="scheduler-crew__dot"></span></span><span class="scheduler-crew__name">Nguyen</span></span></span></div>
                       <span class="scheduler-bar__code">BOS</span>
                     </article>
-                    <article class="scheduler-bar scheduler-bar--teal" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:3;--scheduler-span:1;--scheduler-lane:0" aria-label="Foxwoods, Riverside Seniors, Driver · Ortiz · Confirmed by the driver">
+                    <article class="scheduler-bar scheduler-bar--teal" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:3;--scheduler-span:1;--scheduler-lane:0" aria-label="Foxwoods, Riverside Seniors, Driver · Ortiz · Confirmed by the driver, Co-driver needed">
                       <div class="scheduler-bar__row scheduler-bar__dest"><span>Foxwoods</span></div>
                       <div class="scheduler-bar__row scheduler-bar__client"><span>Riverside Seniors</span></div>
                       <div class="scheduler-bar__row scheduler-bar__contact"><span title="M. Chen · 555-0187">M. Chen</span><span class="scheduler-bar__phone">555-0187</span></div>
                       <div class="scheduler-bar__row scheduler-bar__time"><span>8:00<span class="scheduler-bar__ampm">a</span>&thinsp;–&thinsp;1:30<span class="scheduler-bar__ampm">a</span><sup class="scheduler-bar__next-day" title="Returns the next day">+1</sup></span><span class="scheduler-bar__time-dep">8:00<span class="scheduler-bar__ampm">a</span></span></div>
                       <div class="scheduler-bar__row scheduler-bar__update"><span></span></div>
-                      <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Ortiz · Confirmed by the driver"><span class="scheduler-crew__mark scheduler-crew__mark--success scheduler-crew__mark--dot"><span class="scheduler-crew__dot"></span></span><span class="scheduler-crew__name">Ortiz</span></span></span></div>
+                      <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Ortiz · Confirmed by the driver"><span class="scheduler-crew__mark scheduler-crew__mark--success scheduler-crew__mark--dot"><span class="scheduler-crew__dot"></span></span><span class="scheduler-crew__name">Ortiz</span></span><span class="scheduler-crew scheduler-crew--due" title="Co-driver needed"><span class="scheduler-crew__mark scheduler-crew__mark--off scheduler-crew__mark--dot"><span class="scheduler-crew__dot"></span></span><span class="scheduler-crew__name scheduler-bar__none">No co-driver</span></span></span></div>
                       <span class="scheduler-bar__code">FOX</span>
                     </article>
                     <article class="scheduler-bar scheduler-bar--purple" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:3;--scheduler-span:2;--scheduler-lane:1" aria-label="Newport, RI, Harbor Rotary, Driver needed">
@@ -674,13 +675,13 @@
                         <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Ortiz · Confirmed by the driver · Sep 3, 4:10 PM"><span class="scheduler-crew__mark scheduler-crew__mark--success scheduler-crew__mark--dot"><span class="scheduler-crew__dot"></span></span><span class="scheduler-crew__name">Ortiz</span></span><span class="scheduler-crew" title="Co-driver · Nguyen · Pending response, set by dispatch"><span class="scheduler-crew__mark scheduler-crew__mark--warning scheduler-crew__mark--dot"><span class="scheduler-crew__dot"></span></span><span class="scheduler-crew__name">Nguyen</span></span></span></div>
                         <span class="scheduler-bar__code">BOS</span>
                       </article>
-                      <article class="scheduler-bar scheduler-bar--teal" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:3;--scheduler-span:1;--scheduler-lane:0" aria-label="Foxwoods, Riverside Seniors, Driver · Ortiz · Confirmed by the driver">
+                      <article class="scheduler-bar scheduler-bar--teal" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:3;--scheduler-span:1;--scheduler-lane:0" aria-label="Foxwoods, Riverside Seniors, Driver · Ortiz · Confirmed by the driver, Co-driver needed">
                         <div class="scheduler-bar__row scheduler-bar__dest"><span>Foxwoods</span></div>
                         <div class="scheduler-bar__row scheduler-bar__client"><span>Riverside Seniors</span></div>
                         <div class="scheduler-bar__row scheduler-bar__contact"><span title="M. Chen · 555-0187">M. Chen</span><span class="scheduler-bar__phone">555-0187</span></div>
                         <div class="scheduler-bar__row scheduler-bar__time"><span>8:00<span class="scheduler-bar__ampm">a</span>&thinsp;–&thinsp;1:30<span class="scheduler-bar__ampm">a</span><sup class="scheduler-bar__next-day" title="Returns the next day">+1</sup></span><span class="scheduler-bar__time-dep">8:00<span class="scheduler-bar__ampm">a</span></span></div>
                         <div class="scheduler-bar__row scheduler-bar__update"><span></span></div>
-                        <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Ortiz · Confirmed by the driver"><span class="scheduler-crew__mark scheduler-crew__mark--success scheduler-crew__mark--dot"><span class="scheduler-crew__dot"></span></span><span class="scheduler-crew__name">Ortiz</span></span></span></div>
+                        <div class="scheduler-bar__row scheduler-bar__drivers"><span class="scheduler-bar__crew"><span class="scheduler-crew" title="Driver · Ortiz · Confirmed by the driver"><span class="scheduler-crew__mark scheduler-crew__mark--success scheduler-crew__mark--dot"><span class="scheduler-crew__dot"></span></span><span class="scheduler-crew__name">Ortiz</span></span><span class="scheduler-crew scheduler-crew--due" title="Co-driver needed"><span class="scheduler-crew__mark scheduler-crew__mark--off scheduler-crew__mark--dot"><span class="scheduler-crew__dot"></span></span><span class="scheduler-crew__name scheduler-bar__none">No co-driver</span></span></span></div>
                         <span class="scheduler-bar__code">FOX</span>
                       </article>
                       <article class="scheduler-bar scheduler-bar--purple" role="button" tabindex="0" aria-pressed="false" style="--scheduler-start:3;--scheduler-span:2;--scheduler-lane:1" aria-label="Newport, RI, Harbor Rotary, Driver needed">

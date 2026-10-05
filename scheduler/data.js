@@ -911,11 +911,14 @@
      waiting, green confirmed, red declined. So a role nobody fills has no
      status either, its mark white and "No driver" dimmed, as "No times" is,
      and a declined driver's name is struck through, so the colour is never
-     the only signal. */
+     the only signal. An empty seat on a leg that is due takes the warning
+     colour instead, mark and words, because it is the one that needs filling
+     now. */
   const RELIEF_ROLES = new Set(['relief-start', 'relief-end']);
-  function crewEl(c) {
+  function crewEl(c, due) {
     const tone = c.needed ? 'off' : c.status.tone;
-    const item = el('span', c.status?.value === 'declined' ? 'scheduler-crew scheduler-crew--declined' : 'scheduler-crew');
+    const item = el('span', ['scheduler-crew', c.status?.value === 'declined' && 'scheduler-crew--declined',
+      c.needed && due && 'scheduler-crew--due'].filter(Boolean).join(' '));
     const dot = !RELIEF_ROLES.has(c.role);
     const mark = el('span', ['scheduler-crew__mark', tone && `scheduler-crew__mark--${tone}`, dot && 'scheduler-crew__mark--dot'].filter(Boolean).join(' '));
     mark.appendChild(dot ? el('span', 'scheduler-crew__dot') : svgUse(c.icon, '16', c.box));
@@ -926,6 +929,13 @@
     if (c.driverId != null) item.dataset.driverId = c.driverId;
     return item;
   }
+
+  /* A leg is due from today to the end of next week, the stretch the office
+     staffs: it has not finished, and it starts before the week after next. */
+  const legDue = leg => {
+    const now = new Date();
+    return leg.to >= iso(now) && leg.from < iso(addDays(mondayOf(now), 14));
+  };
 
   /* THE CREW GIVES WAY A WHOLE NAME AT A TIME, from the end, and says how
      many it left out: "Raul +1". Only a first name that does not fit alone is
@@ -1177,7 +1187,8 @@
     // The crew in role order, or what the bar needs before it can have one.
     const crew = assign ? crewOf(trip, assign, driversById, statuses).filter(c => !(placeholder && c.needed)) : [];
     const crewBox = el('span', 'scheduler-bar__crew', assign || placeholder ? null : 'Needs a bus');
-    crewBox.append(...crew.map(crewEl));
+    const due = legDue(leg);
+    crewBox.append(...crew.map(c => crewEl(c, due)));
     // Who drives this bar, for the driver grid to pick out.
     bar.dataset.drivers = crew.filter(c => c.driverId != null).map(c => c.driverId).join(' ');
     crewObserver.observe(bar);

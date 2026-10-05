@@ -1497,8 +1497,15 @@ button.scheduler-row-head__num::after {
 .scheduler-crew { display: flex; align-items: center; gap: var(--rux-spacing-02); min-inline-size: 0; }
 .scheduler-crew__name { overflow: hidden; text-overflow: ellipsis; }
 .scheduler-crew--declined .scheduler-crew__name { text-decoration: line-through; }
+/* An empty seat on a leg from today to the end of next week: the words at
+   full strength in the warning text step an update's first week takes, and
+   the mark in the warning colour. The amber bar keeps its own ink, as its
+   update does. */
+.scheduler-crew--due .scheduler-crew__name { color: var(--scheduler-age-week); opacity: 1; }
+.scheduler-crew--due .scheduler-crew__mark { color: var(--scheduler-mark-warning); }
+.scheduler-bar--amber .scheduler-crew--due :is(.scheduler-crew__name, .scheduler-crew__mark) { color: inherit; }
 /* The role glyph alone, in its status colour: the bar's own for still to send,
-   amber sent and waiting, green confirmed, red declined or nobody assigned.
+   amber sent and waiting, green confirmed, red declined.
    The disc each sat on is gone, as every block on this bar is -- see the
    contrast note above, which is the same trade and the same choice. */
 .scheduler-crew__mark {

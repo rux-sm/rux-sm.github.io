@@ -35,31 +35,25 @@
 
 /* THE MARKS ON A TRIP BAR, ONE PALETTE: warning while something is still to be
    done, error for a problem, success for what is settled, and done for a met
-   requirement or a driver not yet sent. Each is the theme's own colour at the
-   step that clears 3 to 1 on every bar fill it draws; a theme that sets no
-   done colour draws it in the bar's own text colour.
+   requirement or a driver not yet sent. Each is the support colour the theme's
+   notification draws its icon in; a theme that sets no done colour draws it in
+   the bar's own text colour.
 
-   The warning colour is a fill, and as a glyph on a light bar's fill it reaches
-   only 1.3 to 1, so a light theme draws it in Carbon's orange 60, which clears
-   3.8 against every tint. */
+   White and g10 draw the warning in Carbon's yellow, which a bare glyph holds
+   at only 1.3 to 1.5 against a light bar's fill; the mark keeps the
+   notification's colour over the contrast. */
 :root,
 [data-theme="white"],
-[data-theme="g10"] {
-  --scheduler-mark-warning: #ba4e00;
-  --scheduler-mark-error: var(--rux-support-error);
-  --scheduler-mark-success: var(--rux-support-success);
-}
+[data-theme="g10"],
 [data-theme="g90"],
 [data-theme="g100"],
 [data-theme="ant-dark"],
-[data-theme="spotify-dark"] {
+[data-theme="spotify-dark"],
+[data-theme="apple-light"] {
   --scheduler-mark-warning: var(--rux-support-warning);
   --scheduler-mark-error: var(--rux-support-error);
   --scheduler-mark-success: var(--rux-support-success);
 }
-/* apple-light's own warning is an orange that clears 3.8 on every bar fill, so
-   its marks take it, as its notification's icon does. */
-[data-theme="apple-light"] { --scheduler-mark-warning: var(--rux-support-warning); }
 /* Geist draws a badge's text and icons in the hue's 900 step, and the bars are
    its subtle badges, so the marks take the 900 steps of amber, red and green,
    and done takes the primary text. The lowest is red on the red bar, 4.5 to 1. */

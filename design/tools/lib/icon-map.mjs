@@ -138,6 +138,7 @@ export const ICONS = {
   'printer': { material: 'print', rux: null },
   'purchase': { material: 'credit_card', rux: null },  // Carbon's purchase is a credit card.
   'radio-button': { material: 'radio_button_unchecked', rux: null },
+  'recently-viewed': { material: 'history', rux: null },
   'redo': { material: 'redo', rux: null },
   'request-quote': { material: 'request_quote', rux: null },
   'reset': { material: 'restart_alt', rux: null },

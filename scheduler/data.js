@@ -10582,6 +10582,13 @@
       return;
     }
 
+    // The History page, narrowed to this trip, once unsaved work is settled.
+    if (item.id === 'scheduler-bar-menu-history') {
+      const href = `history.html?trip=${encodeURIComponent(bar.dataset.tripId)}`;
+      whenSafe(() => { window.location.href = href; });
+      return;
+    }
+
     if (item.id === 'scheduler-bar-menu-cancel') {
       openCancelModal(bar.dataset.tripId);
       return;

@@ -11,10 +11,9 @@ lists what is unfinished here.
 A week board: buses down the side, days across, one bar per assignment, behind
 a staff log-in. It reads and writes the Supabase tables the `rux-ui` app also
 writes — trips and their stops, bus and driver assignments, contacts, payments, POs and
-invoices — and runs beside it; rux-ui stays in use.
-
-That database is production and shared with `rux-ui`, so nothing here is
-ever tried with a test record.
+invoices — and runs beside it; rux-ui stays in use. That database is
+production and shared with `rux-ui`, so nothing here is ever tried with a
+test record.
 
 `trips.html` lists every trip, cancelled ones with their reason, searched,
 sorted, filtered to upcoming, needs follow-up, past or cancelled, and paged
@@ -23,6 +22,9 @@ fifty at a time. A row opens the trip on the board through
 there. Its Follow-ups dialog sets the office's follow-up wait;
 `follow-up.js` holds the rules the list and the board share, on the billing
 rules in `billing.js`.
+
+`history.html` lists what changed on trips and who changed it, newest first;
+`docs/screen-inventory.md` says what it shows and where it opens from.
 
 `fleet.html` lists every unit, a coach, van or any vehicle, by its type and
 then its model year, and edits one at `fleet.html?id=`. Its Vehicle types
@@ -135,8 +137,7 @@ The link pages open a trip document through the other Edge Function,
 `trip-document-link/`, which hands back a ten-minute link to the file.
 
 The schedule grid and the trip bar are this app's own; Carbon has neither.
-Everything else is Design's, linked live at `/design/…` with no copy here and
-no pin to move.
+Everything else is Design's, linked live at `/design/…` with no copy here.
 
 ## Run and check it
 
@@ -146,5 +147,4 @@ From the repository root, one level up:
 
 Open it at http://localhost:8641/scheduler/, the always-on preview the root
 `README.md` describes; the pages link `/design/…` absolutely, so this folder is
-never served alone. The check cannot see whether the page looks right. A push to
-`main` publishes it, as the root `AGENTS.md` says.
+never served alone. The check cannot see whether the page looks right.

@@ -60,7 +60,8 @@ the schedule open, and faces on a bar show who has that trip.
 |---|---|---|
 | Time-aligned mode | later | The grid places by day. |
 | Two-week view | decide | The grid fetches one week. |
-| Tasks, History | later | Pages (§7). |
+| Tasks | later | A page (§7). |
+| History | keep | `history.html`, every trip change in a data table, newest first, fifty at a time with Show older for the next fifty. Two choices narrow it to one person and to today, yesterday or the last 7 or 30 days, and `history.html?trip=<id>`, which the bar menu's History opens, to one trip. A row opens its trip on the board; an entry whose trip was deleted opens nothing. The database does the narrowing, in `search_trip_history`. |
 | Pending marks on the bar | drop | A missing itinerary, purchase order or balance is what the follow-up reminder waits on, so the reminder asks for it; drawn on the bar as well, the itinerary and trip contact marks sat on four in five upcoming trips and said nothing. |
 | Bus fit | keep | A bar whose bus is the wrong type for its vehicle, or falls short of a need its vehicle carries, including equipment the Fleet page records, has its bell in red, the follow-up bell's place, red winning when both apply; its card says what is wrong in a red band above the reminder. |
 | Needs and trip contact | keep | On the card's warning band, only what needs doing: a need the bus falls short of in the red band, and a need still to do, Hotel booking pending or HOS form pending; a met need is not shown. Hours of service is a need on a bus with a part-time driver in any seat, done once the Forms page marks that leg's hours-of-service record printed, and printed among the requirements on that driver's own envelope. A trip with no trip contact, and not marked as needing none, says Trip contact missing in the card's warning band. |
@@ -120,7 +121,7 @@ Three homes, and one rule for choosing.
   Design's `list-page.html` and `record-page.html` templates are the shape they
   all take, and `scheduler/pair.js` what they do alike.
 - **Tasks and History are pages.** Neither is the detail of anything, and as
-  panels they would hold the panel open. History sits below Settings in the nav:
+  panels they would hold the panel open. History is last in the nav:
   it is consulted, not worked in.
 - **View options go in the toolbar's overflow menu.** Start on Sunday and the
   bar-row toggles are there; time-aligned and two weeks join when the grid can

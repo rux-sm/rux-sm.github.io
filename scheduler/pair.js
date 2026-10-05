@@ -2,8 +2,9 @@
    pair.js — WHAT EVERY PAGE PAIR DOES THE SAME WAY
    --------------------------------------------------------------------------
    Buses, Drivers, Contacts, Customers and Locations are each a list and one
-   record in one file, and Trips is a list alone. What they do alike lives here, so a fix reaches all
-   five; each page's own script keeps only what its record has.
+   record in one file, and Trips and History are each a list alone. What they
+   do alike lives here, so a fix reaches them all; each page's own script
+   keeps only what its record has.
 
    SAVING. A page pair writes a record and the rows that hang off it, such as
    a bus's days out or a driver's time off. Each write here hands back what

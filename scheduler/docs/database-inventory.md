@@ -92,7 +92,7 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 | `trip_passenger_payments` | manifest | `passenger_id`, `amount`, `method`, `date`, `ref` |
 | `trip_documents` | trip editor Files, driver page, `../rux-ui/doc.html` | `trip_id`, `label`, `file_name`, `file_path`, `file_size`. Files in bucket `trip-documents`. Replacing a file points the same row at the new one in both apps, so a document link keeps working. |
 | `trip_itineraries` | Itineraries view | `trip_id` (unique when set), `document` jsonb, `status` (new, reviewed, closed), `label` |
-| `trip_history` | History tab | `trip_id`, `trip_ref`, `action` (nine values), `changes` jsonb, `metadata` jsonb. RPC only. |
+| `trip_history` | History page, rux-ui's History tab | `trip_id`, `trip_ref`, `action` (ten values), `changes` jsonb, `metadata` jsonb, `actor_name`, the name the browser sends, and `actor_id`, the signed-in account, which is empty on a driver's entry, made from a link with no log-in. RPC only. |
 | `trip_driver_statuses` | driver page, Tasks | `trip_id`, `driver_id`, `leg`, `role`, `status` (five values), `source` (dispatcher, driver), `accepted_at`, `declined_at`, and `accepted_view`, what the driver page showed of the driver's job when they accepted, which a later change is compared with. RPC only. |
 | `trip_driver_confirmations` | legacy | superseded by `trip_driver_statuses`; still written by the confirm and decline RPCs |
 | `driver_schedule_shares` | driver editor, `../rux-ui/driver.html` | `token`, `driver_id`, `trip_legs` jsonb, `range_start`, `range_end`, `expires_at`, `revoked_at`. RPC only. |
@@ -122,7 +122,7 @@ buses or quote lines do. The RPCs a screen calls:
 | Driver acceptance | `confirm_trip_assignment`, `decline_trip_assignment`, `get_trip_driver_statuses`, `sync_trip_driver_statuses`, `get_driver_assignment_statuses`, `get_driver_confirmations`, `record_driver_accepted_view`, `get_driver_accepted_views` |
 | Maintenance link | `create_maintenance_schedule_share`, `get_maintenance_schedule_share`, `get_maintenance_schedule`, `get_maintenance_schedule_changes`, `revoke_maintenance_schedule_share`; `replace_maintenance_schedule_share`, staff only, gives the link a new token or makes the first one |
 | Document links | the `trip-document-link` Edge Function (§5), for this app's and rux-ui's document link pages; `get_trip_document` is staff only and nothing calls it |
-| History | `record_trip_history`, `get_trip_history` |
+| History | `record_trip_history`, which both apps write through; `search_trip_history` and `trip_history_people`, the History page's read and its names; `get_trip_history`, rux-ui's read. All staff only. |
 | Access, owner only, on the Account page | `is_owner`, `list_accounts`, `set_account_apps`; not callable without a log-in |
 
 ### Storage buckets
@@ -161,7 +161,7 @@ as in `screen-inventory.md`.
 | `trip_quote_lines` | Trip editor Billing, the customer quote on the Forms page | Trip editor, which writes `quoted_price` as the lines' sum |
 | `trip_passengers`, `trip_passenger_payments` | Manifest | Manifest |
 | `trip_documents` + bucket | Trip editor Files, driver page, `../rux-ui/doc.html` | Trip editor Files and the bar menu's Upload itinerary, each change with a `trip_history` entry |
-| `trip_history` (RPC) | History | every save in the trip editor |
+| `trip_history` (RPC) | History page | every save in the trip editor |
 | `trip_driver_statuses` (RPC) | Schedule, Tasks, Drivers | driver page accepts and declines; the bar menu's driver status items |
 | `driver_schedule_shares` (RPC) | Driver editor | Driver editor |
 | `settings` | Settings, trip editor defaults, the Billing tab's `billing-workflow-v1`, the Route tab's and Locations page's `yard-location-v1`, `geoapify-key-v1` and `route-times-v1`, and rux-ui's `mapbox-token-v1` | Settings |

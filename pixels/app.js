@@ -179,7 +179,8 @@
      when it is filled and not on every move after.
 
      It is four parts: a corner, the column numbers, the row numbers and the
-     squares. Each of the last three is a window onto a strip that slides
+     squares. Every other line's numbers sit on a band that runs out from its
+     squares and fades. Each of the last three is a window onto a strip that slides
      behind it, so a zoomed board moves its squares both ways while the
      numbers move one way each and stay in view.
 
@@ -219,13 +220,15 @@
         target.appendChild(span);
       });
     };
+    // Every other line's numbers sit on a band, so the eye keeps to its line.
+    const band = n => (n % 2 ? '' : ' is-band');
     for (let x = 0; x < W; x++) {
-      const c = part('pixels-clue pixels-clue--col', cols);
+      const c = part(`pixels-clue pixels-clue--col${band(x)}`, cols);
       c.dataset.col = x;
       numbers(c, column(answer, x));
     }
     for (let y = 0; y < H; y++) {
-      const c = part('pixels-clue', rows);
+      const c = part(`pixels-clue${band(y)}`, rows);
       c.dataset.row = y;
       numbers(c, answer[y]);
       for (let x = 0; x < W; x++) {

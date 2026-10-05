@@ -87,6 +87,9 @@
 /* In the maker, a square the clues cannot decide without a guess. */
 .pixels-cell.is-unknown { box-shadow: inset 0 0 0 3px var(--rux-support-warning); }
 
+/* A LINE'S NUMBERS. Every other line's sit on a band, strongest at the
+   squares and fading out to the edge of the room the numbers keep, the way
+   Picross draws them, so the eye keeps to its line. */
 .pixels-clue {
   display: flex;
   gap: .3em;
@@ -98,6 +101,8 @@
   font-variant-numeric: tabular-nums;
 }
 .pixels-clue--col { flex-direction: column; gap: 0; padding: .25rem 0; line-height: 1.15; }
+.pixels-clue.is-band { background: linear-gradient(to left, var(--rux-layer-accent-01), transparent); }
+.pixels-clue--col.is-band { background: linear-gradient(to top, var(--rux-layer-accent-01), transparent); }
 .pixels-clue.is-line { background: var(--rux-layer-hover-01); }
 .pixels-clue > .is-done { color: var(--rux-text-disabled); }
 

@@ -1518,20 +1518,6 @@ button.scheduler-row-head__num::after {
 /* In the bar menu the disc is the size of a menu icon. */
 .rux--menu-item__icon .scheduler-crew__mark { inline-size: var(--rux-spacing-05); block-size: var(--rux-spacing-05); }
 
-/* A double booking: a strip over the last row, in the error tokens, with the
-   ink the marks already take on this same fill -- white in a light theme and
-   dark in a dark theme, where white does not read on it. */
-.scheduler-bar__conflict {
-  position: absolute; inset-inline: 0; inset-block-end: 0;
-  block-size: var(--scheduler-row-h);
-  padding-inline: var(--rux-spacing-03);
-  background: var(--rux-support-error);
-  color: var(--rux-text-inverse);
-  display: flex; align-items: center; gap: var(--rux-spacing-02);
-  white-space: nowrap; overflow: hidden;
-}
-.scheduler-bar__conflict svg { flex: none; }
-
 /* ── Frame and toolbar ──────────────────────────────────────────────────────
    `.scheduler-frame` is the schedule's column: the toolbar sits directly on the
    grid, on the same `--rux-layer` surface, as Carbon's table toolbar sits on
@@ -2690,7 +2676,7 @@ button.scheduler-row-head__num::after {
    narrow each of them was a cut word -- "San ...", "Cor...", "Lare..." down a
    whole week -- and the departure under them was the same 7:30a on nearly
    every trip, so two lines were spent saying less than one. The colour is
-   still the trip's own, red for unconfirmed, and a double booking still shows.
+   still the trip's own, red for unconfirmed.
 
    `--scheduler-bar-rows` is left alone, as ever: compact is the board's state
    and must not be overridden by, or write over, what was chosen in
@@ -2716,14 +2702,6 @@ button.scheduler-row-head__num::after {
 /* The code stays centred in what the stripe leaves. */
 .scheduler-page[data-board="compact"] .scheduler-bar--stripe-start > .scheduler-bar__code { inset-inline-start: var(--scheduler-stripe); }
 .scheduler-page[data-board="compact"] .scheduler-bar--stripe-end > .scheduler-bar__code { inset-inline-end: var(--scheduler-stripe); }
-/* A double booking becomes a band across the block's foot rather than a strip
-   with words in it: the block holds its code and no line beside it, and the
-   error colour is what carries the warning. The bar's own label still says it. */
-.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-bar__conflict {
-  block-size: var(--rux-spacing-02);
-  padding: 0;
-  font-size: 0;
-}
 
 /* The foot of the board clears the docked sheet, which stands over it. The
    spacer is the sheet's own height and nothing else, so the last bus scrolls
@@ -2957,12 +2935,6 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__phone--call { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 /* A trip the sheet comes up over scrolls clear of it by the sheet's height. */
 .scheduler-page[data-board="compact"] .scheduler-bar { scroll-margin-block-end: calc(var(--scheduler-docked-h, 0px) + var(--rux-spacing-03)); }
-/* Up here the double-booked strip is a row like the others, not a band pinned
-   to the bottom of a block. */
-.scheduler-bar-shortcuts__trip .scheduler-bar__conflict {
-  position: static;
-  margin-block-start: var(--rux-spacing-02);
-}
 
 /* ══ Below Carbon's md, 41.98rem ═══════════════════════════════════════════
    42rem is Carbon's md, where `.rux--side-panel` turns on its 75vw limit. Below

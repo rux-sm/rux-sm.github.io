@@ -1654,6 +1654,9 @@
    - The face is the device's own system face, San Francisco on a Mac and an
      iPhone, so no file is fetched. Carbon's 0.16px and 0.32px of tracking
      are Plex's optical corrections and go.
+   - Apple's emphasis is bold and nothing of Apple's is light: its Headline
+     style is the body size in bold, and every title is regular. So each
+     style Carbon sets at 600 is 700 here, and each it sets at 300 is 400.
    - A control 28px tall or more is a capsule on a Mac, and every button here
      is 32px or more, so a button's corner is half its height.
    - A field is white inside a 1px line, 217 217 217, which is
@@ -1663,6 +1666,32 @@
      where Carbon writes a filled button's in white. */
 [data-theme="apple-light"] {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+  --rux-display-02-font-weight: 700;
+  --rux-expressive-heading-01-font-weight: 700;
+  --rux-expressive-heading-02-font-weight: 700;
+  --rux-expressive-heading-06-font-weight: 700;
+  --rux-fluid-display-02-font-weight: 700;
+  --rux-fluid-heading-06-font-weight: 700;
+  --rux-heading-01-font-weight: 700;
+  --rux-heading-02-font-weight: 700;
+  --rux-heading-compact-01-font-weight: 700;
+  --rux-heading-compact-02-font-weight: 700;
+  --rux-productive-heading-01-font-weight: 700;
+  --rux-productive-heading-02-font-weight: 700;
+  --rux-display-01-font-weight: 400;
+  --rux-display-03-font-weight: 400;
+  --rux-display-04-font-weight: 400;
+  --rux-expressive-paragraph-01-font-weight: 400;
+  --rux-fluid-display-01-font-weight: 400;
+  --rux-fluid-display-03-font-weight: 400;
+  --rux-fluid-display-04-font-weight: 400;
+  --rux-fluid-paragraph-01-font-weight: 400;
+  --rux-fluid-quotation-02-font-weight: 400;
+  --rux-heading-06-font-weight: 400;
+  --rux-heading-07-font-weight: 400;
+  --rux-productive-heading-06-font-weight: 400;
+  --rux-productive-heading-07-font-weight: 400;
+  --rux-quotation-02-font-weight: 400;
   --rux-body-01-letter-spacing: 0;
   --rux-body-compact-01-letter-spacing: 0;
   --rux-body-long-01-letter-spacing: 0;

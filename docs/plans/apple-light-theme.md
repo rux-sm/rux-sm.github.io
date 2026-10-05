@@ -60,14 +60,6 @@ None open.
   apps on screen under the light appearance. This Mac is set to dark, so the
   iOS Simulator's stock apps are where a light Calendar event and a sheet can
   be read.
-- [ ] Write each token of the `apple-light` block in
-  `design/css/rux-theme.css` beside its source row in
-  `design/docs/apple-token-map.md`, and mark the hover and active steps Apple
-  does not name as derived.
-- [ ] Set Apple's type weights at the site's sizes.
-- [ ] Look at what is not yet seen in the theme and fix what reads as
-  another theme's: the trip editor's Route, Buses, Billing and Files tabs, a
-  pop-up, the document viewer, the quote page and the forms.
 - [ ] List the theme in the account panel through
   `design/tools/lib/shell.mjs`, `design/tools/build-builder.mjs` and
   `design/tools/build-readme.mjs`, and rebuild the pages.

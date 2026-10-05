@@ -317,12 +317,15 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    person's theme wears and its lines broke in different places. Helvetica is
    the face of the estimate the office sends out of QuickBooks, which the
    quote stands in for, and one face makes the five forms one set. Carbon's
-   tracking is Plex's optical correction and goes with Plex. */
+   tracking is Plex's optical correction and goes with Plex. A theme may set a
+   type token on the page, and a token is inherited as a face is, so the one
+   weight a theme moves that the forms read is named here too. */
 .scheduler-form {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --rux-label-01-letter-spacing: 0;
   --rux-body-compact-01-letter-spacing: 0;
   --rux-heading-compact-01-letter-spacing: 0;
+  --rux-heading-compact-01-font-weight: 600;
   inline-size: var(--scheduler-paper-width, 100%);
   margin-inline: auto;
   /* The page marks are laid over it, so they take no room in what prints. */

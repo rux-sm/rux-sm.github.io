@@ -122,10 +122,9 @@
     const unknown = unreached(draft);
     const guesses = unknown.flat().filter(Boolean).length;
     const empty = draft.every(r => r.every(c => !c));
-    // Room for the most numbers a line of this side can hold, so the squares
+    // The board keeps the room for numbers a player's has, so the squares
     // never move under a finger as the numbers change.
-    const most = Math.ceil(side / 2);
-    board(host, draft, draft, step === 'colour' ? { inks: colours, most, label: 'Picture' } : { unknown, most, label: 'Picture' });
+    board(host, draft, draft, step === 'colour' ? { inks: colours, label: 'Picture' } : { unknown, label: 'Picture' });
     if (empty) tag('rux--tag--gray', 'Draw a picture');
     else if (guesses) tag('rux--tag--red', `${guesses} square${guesses === 1 ? '' : 's'} need a guess`);
     else tag('rux--tag--green', `Solvable · ${grade(rounds(draft))}`);

@@ -185,10 +185,12 @@
      numbers move one way each and stay in view.
 
      The numbers keep one space whatever the puzzle, so a board of one size
-     sits in one place: room for RESERVE numbers, more only if this puzzle
-     has a longer line, or for `options.most`, which the maker gives so its
-     board never shifts as the picture changes. app.css sizes it from
-     `--across` and `--down`. */
+     sits in one place: room for three numbers on a board of five, five on
+     one of ten and six on one of fifteen, or for `options.most`, which How
+     to play gives its small boards. That is the most a line of five or ten
+     can hold. A line of fifteen can hold eight, and one with seven or eight
+     is marked `is-tight`, which app.css draws smaller so they fit the room
+     for six. app.css sizes the room from `--across` and `--down`. */
   const board = (host, answer, state, options = {}) => {
     const H = answer.length, W = answer[0].length;
     const part = (name, parent) => {
@@ -201,10 +203,9 @@
     el.className = `pixels-board${W <= 5 ? ' pixels-board--small' : ''}`;
     el.style.setProperty('--cols', W);
     el.style.setProperty('--rows', H);
-    const reserve = W <= 5 ? 3 : W <= 10 ? 5 : 6;
-    const longest = lines => Math.max(...lines.map(l => clues(l).length));
-    el.style.setProperty('--across', options.most ?? Math.max(reserve, longest(answer)));
-    el.style.setProperty('--down', options.most ?? Math.max(reserve, longest(answer[0].map((_, x) => column(answer, x)))));
+    const room = options.most ?? (W <= 5 ? 3 : W <= 10 ? 5 : 6);
+    el.style.setProperty('--across', room);
+    el.style.setProperty('--down', room);
     el.setAttribute('role', 'grid');
     el.setAttribute('aria-label', options.label || 'Puzzle');
     part('pixels-corner', el);
@@ -213,6 +214,7 @@
     const squares = part('pixels-slide', part('pixels-squares', el));
     const numbers = (target, line) => {
       const runs = runsOf(line);
+      if (runs.length > room) target.classList.add('is-tight');
       clues(line).forEach((n, i) => {
         const span = document.createElement('span');
         span.textContent = n;

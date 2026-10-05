@@ -48,7 +48,9 @@ tap that was only a mistake is no move to take back. Restart
 empties the board, and Undo straight after brings it back. The puzzle's
 name and the clock sit in the board's corner, and the numbers
 keep the same space on every puzzle of a size, every other line's on a band
-that runs out from its squares and fades. When the picture is complete the squares
+that runs out from its squares and fades. That space holds the most numbers
+a line of five or ten can have, and six on a line of fifteen, where a line
+with seven or eight is drawn smaller to fit. When the picture is complete the squares
 fill in as the picture, in its colours if it has them, and its name shows
 with the time, the mistakes and hints, and what they added.
 How to play is three steps in a modal, each with a small board: what the

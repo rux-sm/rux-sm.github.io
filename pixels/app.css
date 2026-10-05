@@ -16,7 +16,7 @@
 
    The numbers keep one space whatever the puzzle: `--clue-w` and `--clue-h`
    hold `--across` and `--down` numbers, which app.js sets from the board's
-   size, and never less than `--tile`, the side of the square tile in the
+   size alone, and never less than `--tile`, the side of the square tile in the
    corner, which is one size on every board. */
 .pixels-board {
   --tile: 5.25rem;
@@ -103,6 +103,10 @@
 .pixels-clue--col { flex-direction: column; gap: 0; padding: .25rem 0; line-height: 1.15; }
 .pixels-clue.is-band { background: linear-gradient(to left, var(--rux-layer-accent-01), transparent); }
 .pixels-clue--col.is-band { background: linear-gradient(to top, var(--rux-layer-accent-01), transparent); }
+/* A line of fifteen with seven or eight numbers, which are all ones and twos:
+   smaller and closer, so they fit the room six keep and the board stays put. */
+.pixels-clue.is-tight { gap: .2em; font-size: .6875rem; }
+.pixels-clue--col.is-tight { gap: 0; line-height: 1; }
 .pixels-clue.is-line { background: var(--rux-layer-hover-01); }
 .pixels-clue > .is-done { color: var(--rux-text-disabled); }
 
@@ -432,8 +436,6 @@
 /* THE MAKER. The board, then the check, name and buttons beside it on a
    wide screen and under it on a phone. */
 .pixels-maker { display: flex; flex-wrap: wrap; gap: 2rem; align-items: start; justify-content: center; }
-/* app.js gives the maker's board room for the most numbers a line can hold,
-   so the squares never move under a finger as the numbers change. */
 .pixels-maker { --gutter: 4rem; }
 .pixels-maker .pixels-board { margin-inline: 0; }
 /* On a phone the maker takes the page's clear edges back, as the game does. */

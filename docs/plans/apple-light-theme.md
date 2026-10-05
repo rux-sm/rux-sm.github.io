@@ -59,12 +59,12 @@ None open.
   `design/css/rux-theme.css` beside its source row in
   `design/docs/apple-token-map.md`, and mark the hover and active steps Apple
   does not name as derived.
-- [ ] Write the rest of Apple's differences in `design/css/rux-overrides.css`
-  from the measurements: control heights, the segmented control, the switch,
-  checkbox, radio, menu, tooltip, tag and table, and a button's centred label.
+- [ ] Give the inline notification, the toast and the header bar Apple's
+  shapes. They still draw as Carbon's.
 - [ ] Set Apple's type sizes and weights.
-- [ ] Colour the scheduler in `scheduler/theme.css`: the trip bars with their
-  leading edge, the three heads, the trip card and the roster.
+- [ ] Finish the scheduler in `scheduler/theme.css`: the roster and its
+  availability cells, the document viewer, the trip card docked on a phone,
+  and the phone's own toolbar.
 - [ ] Give every other app's `theme.css` its `apple-light` block where the
   app sets colours by theme.
 - [ ] Run Design's contrast measurement in each app and the full check, and

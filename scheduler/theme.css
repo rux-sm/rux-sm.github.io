@@ -106,7 +106,7 @@
    under it wants more room than the pane has. */
 [data-theme="geist-dark"] { --scheduler-head-inset: var(--rux-spacing-04); --scheduler-head-gap: var(--rux-spacing-03); }
 [data-theme="ant-dark"] { --scheduler-head-inset: 8px; --scheduler-head-gap: var(--rux-spacing-03); }
-[data-theme="apple-light"] { --scheduler-head-inset: 6px; --scheduler-head-gap: var(--rux-spacing-03); }
+[data-theme="apple-light"] { --scheduler-head-inset: var(--rux-spacing-04); --scheduler-head-gap: var(--rux-spacing-03); }
 @media (min-width: 42rem) {
   :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .scheduler-toolbar {
     padding: var(--scheduler-head-inset);
@@ -145,6 +145,19 @@
   [data-theme="geist-dark"] .scheduler-page .scheduler-toolbar .scheduler-weekbtn {
     box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
   }
+  /* apple-light's bar buttons are a Mac's push buttons: the grey fill under
+     the label colour, each a capsule, the week's name with them. */
+  [data-theme="apple-light"] .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) :is(.rux--btn, .scheduler-weekbtn) {
+    border-radius: 999px;
+  }
+  [data-theme="apple-light"] .scheduler-page .scheduler-toolbar > .rux--btn--ghost:not(:focus-visible),
+  [data-theme="apple-light"] .scheduler-page .scheduler-toolbar .scheduler-weekbtn {
+    background-color: var(--rux-button-secondary);
+  }
+  [data-theme="apple-light"] .scheduler-page .scheduler-toolbar > .rux--btn--ghost:not(:focus-visible):hover,
+  [data-theme="apple-light"] .scheduler-page .scheduler-toolbar .scheduler-weekbtn:hover {
+    background-color: var(--rux-button-secondary-hover);
+  }
   :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .scheduler-trip .rux--side-panel .rux--btn--md.rux--side-panel__close-button {
     block-size: var(--rux-layout-size-height-md);
     inline-size: var(--rux-layout-size-height-md);
@@ -168,7 +181,7 @@
 /* The Fleet list's type and equipment marks are 20px in a cell that fits an
    18px line, so in geist-dark each gives up 1px above and below and the row
    stays Design's 40px, as Design's rule does for a tag in a cell. */
-[data-theme="geist-dark"] .rux--data-table td :is(.scheduler-bus-type, .scheduler-bus-equipment-marks) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table td :is(.scheduler-bus-type, .scheduler-bus-equipment-marks) {
   margin-block: -1px;
 }
 /* Ant's tab is 46px (Design's rux-overrides.css), so the editor's sticky
@@ -186,13 +199,13 @@
   :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) #scheduler-panel-body .rux--tabs__nav-item {
     flex: none;
   }
-  [data-theme="geist-dark"] #scheduler-panel-body .rux--tabs__nav-link {
+  :is([data-theme="geist-dark"], [data-theme="apple-light"]) #scheduler-panel-body .rux--tabs__nav-link {
     padding-inline: 2px;
   }
   [data-theme="ant-dark"] #scheduler-panel-body .rux--tabs__nav-link {
     padding-inline: 0;
   }
-  [data-theme="geist-dark"] #scheduler-panel-body .rux--tab--list {
+  :is([data-theme="geist-dark"], [data-theme="apple-light"]) #scheduler-panel-body .rux--tab--list {
     padding-inline-start: calc(var(--rux-spacing-06) - 2px);
   }
   [data-theme="ant-dark"] #scheduler-panel-body .rux--tab--list {
@@ -214,7 +227,7 @@
 /* Design draws this theme's tile with a 1px ring inside its edge, and the
    Summary's table runs flush to the tile's sides and foot, over the ring. It
    stops a pixel short of each, so the ring closes round it. */
-[data-theme="geist-dark"] .scheduler-summary__table {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-summary__table {
   margin-inline: calc(1px - var(--rux-layout-density-padding-inline-local));
   margin-block-end: calc(1px - var(--rux-layout-density-padding-inline-local));
 }
@@ -257,15 +270,15 @@
    icons, so
    the brightest thing on the board is the ring on the trip it belongs to.
    The hairline is Geist's own border, and the arrow carries it too. */
-[data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked]) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-bar-shortcuts:not([data-docked]) {
   --card-edge: var(--rux-border-subtle-01);
   background: var(--rux-layer-02);
   box-shadow: 0 0 0 1px var(--card-edge), var(--scheduler-lift);
 }
-[data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut { color: var(--rux-icon-primary); }
-[data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut:hover { background: var(--rux-layer-hover-02); }
-[data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut[aria-disabled="true"]:hover { background: transparent; }
-[data-theme="geist-dark"] .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut:focus-visible { outline-color: var(--rux-focus); }
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut { color: var(--rux-icon-primary); }
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut:hover { background: var(--rux-layer-hover-02); }
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut[aria-disabled="true"]:hover { background: transparent; }
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut:focus-visible { outline-color: var(--rux-focus); }
 /* THE CARD'S FOUR SLOTS ARE A BAR OF BUTTONS, held as Design holds every bar
    of buttons in this theme: 12px from the card's edge, 8px apart, each in
    the outlined button's quiet ring. So they take no rule between them, and
@@ -279,37 +292,37 @@
    to edge; held apart they need 288px for the longest word to stand clear of
    its ring, so that is the floor here. data.js places the card by the width
    it measures, so the wider floor needs nothing from it. */
-[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
   --scheduler-shortcut-pad: var(--rux-spacing-04);
   --scheduler-slot-h: 2.5rem;
   column-gap: var(--rux-spacing-03);
   row-gap: var(--rux-spacing-04);
   inline-size: min(max(var(--scheduler-card-w, 18rem), 18rem), calc(100vw - 2 * var(--rux-spacing-05)));
 }
-[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut {
   min-inline-size: 0;
   padding-inline: 0;
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
 }
-[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked], [data-side="above"]) .scheduler-card > :first-child { border-block-start: 1px solid var(--card-rule); }
-[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) > .scheduler-card { border-block-end: 1px solid var(--card-rule); }
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-bar-shortcuts[data-card]:not([data-docked], [data-side="above"]) .scheduler-card > :first-child { border-block-start: 1px solid var(--card-rule); }
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) > .scheduler-card { border-block-end: 1px solid var(--card-rule); }
 /* What is under the slots starts and ends where they do. A row gives up its
    16px sides, so its words stand on the slots' edge; a row that lights under
    the pointer carries the light 6px past each side, where the row itself
    used to reach. The updates' list runs 6px out and each update comes 6px
    back in, so an update's own light keeps that reach too. Add is the
    outlined button as well, its edge where the ages end. */
-[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__row { padding-inline: 0; }
-[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__row:is([data-go], [data-more]):hover {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__row { padding-inline: 0; }
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__row:is([data-go], [data-more]):hover {
   box-shadow: -6px 0 0 var(--card-hover), 6px 0 0 var(--card-hover);
 }
-[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list { margin-inline: -6px; }
-[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update[data-update-id] { padding-inline: 6px; }
-[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__action { margin-inline-end: 0; }
-[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__action:not(:focus-visible) { border-color: var(--rux-border-subtle-02); }
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list { margin-inline: -6px; }
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update[data-update-id] { padding-inline: 6px; }
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__action { margin-inline-end: 0; }
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__action:not(:focus-visible) { border-color: var(--rux-border-subtle-02); }
 /* The card inside it takes the same raised surface's ink, and parts its rows
    with the hairline that edges the menu, as a Geist menu parts its groups. */
-[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
   --card-ink: var(--rux-text-primary);
   --card-surface: var(--rux-layer-02);
   --card-icon: var(--rux-icon-primary);
@@ -319,7 +332,7 @@
 }
 /* The rule between two updates steps down to the faintest border, as Design's
    Geist table rows do, so a wrapped update still reads as one row. */
-[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update { border-block-start-color: var(--rux-border-subtle-00); }
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update { border-block-start-color: var(--rux-border-subtle-00); }
 [data-theme="geist-dark"] .scheduler-bar--red {
   --scheduler-bg: oklch(27% 0.1084 19.02); --scheduler-hover: oklch(29% 0.1084 19.02);
   --scheduler-fg: oklch(69.96% 0.2136 22.03); --scheduler-border: oklch(69.96% 0.2136 22.03);
@@ -405,6 +418,41 @@
      width, the page keeping 16px around the board throughout. */
   --scheduler-region-edge: 1px solid var(--rux-border-subtle-01);
 }
+/* apple-light's regions are white on the grey page, so each is told apart by
+   its fill and a soft lift takes the place of the dark themes' hard shadow.
+   Its day band is the region's own surface over a rule, as geist-dark's is. */
+[data-theme="apple-light"] {
+  --scheduler-band-surface: var(--rux-layer);
+  --scheduler-band-rule: 1px solid var(--rux-border-subtle-01);
+  --scheduler-lift: 0 8px 24px rgb(0 0 0 / .16);
+  --scheduler-shortcut-pad: 6px;
+  --scheduler-shortcut-radius: 8px;
+}
+/* A TRIP IS AN APPLE CALENDAR EVENT: the tag's pale tint and darker words,
+   which app.css already gives a bar, and a solid edge of the hue down its
+   leading side. The edge is a painted strip, so the bar's border and shadow
+   stay free for the week's run-on marks and the selection ring. A bar that
+   runs on from last week has no start here and takes none. The hover form is
+   named because app.css repaints a hovered bar and comes after this file. */
+[data-theme="apple-light"] .scheduler-bar:not(.scheduler-bar--from-prev),
+[data-theme="apple-light"] .scheduler-bar:not(.scheduler-bar--from-prev):hover {
+  background-image: linear-gradient(var(--scheduler-border), var(--scheduler-border));
+  background-size: 3px 100%;
+  background-repeat: no-repeat;
+}
+/* The card's slots are grey push buttons here, where geist-dark rings them. */
+[data-theme="apple-light"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut {
+  box-shadow: none;
+  background-color: var(--rux-button-secondary);
+}
+[data-theme="apple-light"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut:hover {
+  background-color: var(--rux-button-secondary-hover);
+}
+[data-theme="apple-light"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__action:not(:focus-visible) {
+  border-color: transparent;
+  background-color: var(--rux-button-secondary);
+}
+
 /* Design draws a box around every side panel in this theme, and overrides.css
    takes one side off a left-placed one -- Carbon's own edge, which parts a
    panel floating over a page from what it covers. That left the document
@@ -422,7 +470,8 @@
    three, which is why one block serves both. Every other theme leaves them
    square, as Carbon draws them. */
 [data-theme="ant-dark"],
-[data-theme="geist-dark"] {
+[data-theme="geist-dark"],
+[data-theme="apple-light"] {
   --scheduler-bar-radius: 6px;
   --scheduler-surface-radius: 12px;
   --scheduler-mark-radius: 4px;

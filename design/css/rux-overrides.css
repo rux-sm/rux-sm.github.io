@@ -594,21 +594,21 @@
    page: each step and the mark between them #a1a1a1, which is text-secondary
    here. A step lifts to the text colour under the pointer, and the current
    page keeps the text colour Carbon gives it. */
-[data-theme="geist-dark"] .rux--breadcrumb-item:not(.rux--breadcrumb-item--current) .rux--link,
-[data-theme="geist-dark"] .rux--breadcrumb-item:not(.rux--breadcrumb-item--current) .rux--link:visited {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--breadcrumb-item:not(.rux--breadcrumb-item--current) .rux--link,
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--breadcrumb-item:not(.rux--breadcrumb-item--current) .rux--link:visited {
   color: var(--rux-text-secondary);
 }
-[data-theme="geist-dark"] .rux--breadcrumb-item:not(.rux--breadcrumb-item--current) .rux--link:hover,
-[data-theme="geist-dark"] .rux--breadcrumb-item:not(.rux--breadcrumb-item--current) .rux--link:visited:hover {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--breadcrumb-item:not(.rux--breadcrumb-item--current) .rux--link:hover,
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--breadcrumb-item:not(.rux--breadcrumb-item--current) .rux--link:visited:hover {
   color: var(--rux-text-primary);
 }
-[data-theme="geist-dark"] .rux--breadcrumb-item::after {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--breadcrumb-item::after {
   color: var(--rux-text-secondary);
 }
 /* GEIST'S TOOLTIP IS A SMALL LIGHT LABEL, measured on its Tooltip page: 13px
    text with 6px above and below and 8px at the sides. Carbon sets 14px text
    in 2px and 16px. The light fill and the 8px corners were already Geist's. */
-[data-theme="geist-dark"] .rux--tooltip-content {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--tooltip-content {
   padding: 6px var(--rux-spacing-03);
   font-size: 0.8125rem;
 }
@@ -618,14 +618,14 @@
    shares, where this theme's menus are 12px. A tooltip is the smaller
    material and keeps 8px, and a tab tip keeps the square corners that join it
    to its tab. */
-[data-theme="geist-dark"] .rux--popover-container:not(.rux--popover--tab-tip) .rux--popover-content:not(.rux--tooltip-content) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--popover-container:not(.rux--popover--tab-tip) .rux--popover-content:not(.rux--tooltip-content) {
   border-radius: 12px;
 }
 /* GEIST'S SPINNER IS GREY, measured on its Spinner page at #8f8f8f, where
    Carbon draws its ring in the brand colour, here the page's brightest.
    icon-secondary is the nearest this theme has. Geist's is a ring of twelve
    fading bars; Carbon's turning arc is kept. */
-[data-theme="geist-dark"] .rux--loading__stroke {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--loading__stroke {
   stroke: var(--rux-icon-secondary);
 }
 /* GEIST'S DEFAULT CONTROL IS 36px, measured on its Button and Input pages:
@@ -638,8 +638,8 @@
    picker's field fixes its own 40 and takes the md size with the fields beside
    it. Buttons that set their own height keep it: the header's actions, the
    page-number buttons of the pagination nav and the dialog's 64px footer. */
-[data-theme="geist-dark"],
-[data-theme="geist-dark"] :is(.rux--popover-content, .rux--table-toolbar) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]),
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) :is(.rux--popover-content, .rux--table-toolbar) {
   --rux-layout-size-height-md: 2.25rem;
 }
 /* ANT'S DEFAULT CONTROL IS 32px, measured on its Button, Input and DatePicker
@@ -743,7 +743,7 @@
 [data-theme="geist-dark"] :is(.rux--btn, .rux--tag, .rux--data-table thead) {
   font-weight: 500;
 }
-[data-theme="geist-dark"] .rux--data-table :is(th, .rux--table-sort) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table :is(th, .rux--table-sort) {
   color: var(--rux-text-secondary);
 }
 /* GEIST'S SPACING INSIDE A CONTROL, measured on its own pages. Carbon's
@@ -761,7 +761,7 @@
 /* The icon is in the flow after its label. Carbon places it absolutely in the
    trailing padding the rule above takes back, so left there it sits on the
    words. */
-[data-theme="geist-dark"] .rux--btn:not(.rux--btn--icon-only) .rux--btn__icon {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--btn:not(.rux--btn--icon-only) .rux--btn__icon {
   position: static;
   margin-block-start: 0;
   margin-inline-start: var(--rux-spacing-03);
@@ -801,29 +801,29 @@
      padding, which the button sits in. The list is inset so the first label
      stays where Carbon's 16px padding put it. Contained and vertical tabs are
      boxes and keep Carbon's spacing. */
-[data-theme="geist-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tab--list {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tab--list {
   padding-inline-start: 14px;
 }
-[data-theme="geist-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-item--close--hidden {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-item--close--hidden {
   display: none;
 }
-[data-theme="geist-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-link {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-link {
   flex: none;
   padding-inline-start: 2px;
 }
-[data-theme="geist-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-link:not(:has(+ .rux--tabs__nav-item--close)) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-link:not(:has(+ .rux--tabs__nav-item--close)) {
   padding-inline-end: 2px;
 }
-[data-theme="geist-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-link:not(:first-child) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-link:not(:first-child) {
   margin-inline-start: 24px;
 }
 /*   The row takes one hairline under all its tabs, as Geist's does, and a tab
      draws its own line only when chosen, or hovered, so the rule is not
      broken into a grey stroke under each label. */
-[data-theme="geist-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tab--list {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tab--list {
   box-shadow: inset 0 -1px 0 var(--rux-border-subtle-01);
 }
-[data-theme="geist-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-link:not(.rux--tabs__nav-item--selected, :hover) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-link:not(.rux--tabs__nav-item--selected, :hover) {
   border-block-end-color: transparent;
 }
 /*   The chosen tab is told apart by its line and its ink, not its weight:
@@ -831,7 +831,7 @@
      the others' #a1a1a1, so choosing one never changes its width. Carbon
      sets the chosen tab in its heading type, whose tracking this theme
      tightens, so the tracking is the body's too. */
-[data-theme="geist-dark"] .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-item--selected {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--tabs:not(.rux--tabs--contained, .rux--tabs--vertical) .rux--tabs__nav-item--selected {
   font-weight: 400;
   letter-spacing: 0;
 }
@@ -881,25 +881,25 @@
      a column's words start under the search field's edge and end under the
      last button's. A sortable header's button carries the padding in place
      of its cell. */
-[data-theme="geist-dark"] .rux--data-table :is(td, th) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table :is(td, th) {
   padding-inline: 8px;
 }
-[data-theme="geist-dark"] .rux--data-table :is(td, th):first-child {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table :is(td, th):first-child {
   padding-inline-start: var(--rux-spacing-04);
 }
-[data-theme="geist-dark"] .rux--data-table :is(td, th):last-child {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table :is(td, th):last-child {
   padding-inline-end: var(--rux-spacing-04);
 }
-[data-theme="geist-dark"] .rux--data-table th:has(> .rux--table-sort) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table th:has(> .rux--table-sort) {
   padding-inline: 0;
 }
-[data-theme="geist-dark"] .rux--data-table .rux--table-sort {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table .rux--table-sort {
   padding-inline: 8px;
 }
-[data-theme="geist-dark"] .rux--data-table th:first-child > .rux--table-sort {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table th:first-child > .rux--table-sort {
   padding-inline-start: var(--rux-spacing-04);
 }
-[data-theme="geist-dark"] .rux--data-table th:last-child > .rux--table-sort {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table th:last-child > .rux--table-sort {
   padding-inline-end: var(--rux-spacing-04);
 }
 /* - A row is 40px and the header row 36px, measured on Geist's Table page,
@@ -909,19 +909,19 @@
      not; a table that names another size keeps it. In a sortable table
      Carbon holds every header cell and each sort button at 48px itself, so
      both are named too. */
-[data-theme="geist-dark"] .rux--data-table:not(.rux--data-table--xs, .rux--data-table--sm, .rux--data-table--md, .rux--data-table--xl) tbody tr {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table:not(.rux--data-table--xs, .rux--data-table--sm, .rux--data-table--md, .rux--data-table--xl) tbody tr {
   block-size: 2.5rem;
 }
-[data-theme="geist-dark"] .rux--data-table:not(.rux--data-table--xs, .rux--data-table--sm, .rux--data-table--md, .rux--data-table--xl) tbody :is(td, th) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table:not(.rux--data-table--xs, .rux--data-table--sm, .rux--data-table--md, .rux--data-table--xl) tbody :is(td, th) {
   padding-block: 10px;
 }
-[data-theme="geist-dark"] .rux--data-table:not(.rux--data-table--xs, .rux--data-table--sm, .rux--data-table--md, .rux--data-table--xl) thead tr {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table:not(.rux--data-table--xs, .rux--data-table--sm, .rux--data-table--md, .rux--data-table--xl) thead tr {
   block-size: 2.25rem;
 }
-[data-theme="geist-dark"] .rux--data-table:not(.rux--data-table--xs, .rux--data-table--sm, .rux--data-table--md, .rux--data-table--xl) thead th {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table:not(.rux--data-table--xs, .rux--data-table--sm, .rux--data-table--md, .rux--data-table--xl) thead th {
   block-size: 2.25rem;
 }
-[data-theme="geist-dark"] .rux--data-table:not(.rux--data-table--xs, .rux--data-table--sm, .rux--data-table--md, .rux--data-table--xl) th .rux--table-sort__flex {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table:not(.rux--data-table--xs, .rux--data-table--sm, .rux--data-table--md, .rux--data-table--xl) th .rux--table-sort__flex {
   min-block-size: 2.25rem;
 }
 /*   A tag or a small avatar in a cell takes one line's room, so a row that
@@ -930,23 +930,23 @@
      line, 3px above and below, and the 20px small tag 1px. It sits at the
      line's top rather than on its baseline, where the room under a baseline
      made the line 20px and the row a third of a pixel over. */
-[data-theme="geist-dark"] .rux--data-table td :is(.rux--tag, .rux--user-avatar--sm) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table td :is(.rux--tag, .rux--user-avatar--sm) {
   margin-block: -3px;
   vertical-align: top;
 }
-[data-theme="geist-dark"] .rux--data-table td :is(.rux--tag--sm, .rux--tag.rux--layout--size-sm) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table td :is(.rux--tag--sm, .rux--tag.rux--layout--size-sm) {
   margin-block: -1px;
 }
 /* - The small tag is 20px, Geist's small badge, where Carbon's is 18px. The
      24px default is already Geist's. */
-[data-theme="geist-dark"] :is(.rux--tag--sm, .rux--tag.rux--layout--size-sm) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) :is(.rux--tag--sm, .rux--tag.rux--layout--size-sm) {
   min-block-size: 1.25rem;
 }
 /* - A menu's items are 36px at every menu size, with their text 8px in, so
      inside the menu's 6px they start 14px from its edge, as on Geist's Menu
      page. That covers Carbon's menu, a dropdown's or combo box's options and
      the overflow menu. */
-[data-theme="geist-dark"] .rux--menu .rux--menu-item {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--menu .rux--menu-item {
   block-size: 2.25rem;
   padding-inline: 8px;
 }
@@ -955,25 +955,25 @@
      hover pill is what marks the pointed one here. Only Carbon's menu was
      measured, so only it moves. One class under the danger item's hover
      rule, which keeps its white on red. */
-[data-theme="geist-dark"] .rux--menu-item:not(.rux--menu-item--disabled) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--menu-item:not(.rux--menu-item--disabled) {
   color: var(--rux-text-primary);
 }
-[data-theme="geist-dark"] :is(.rux--list-box__menu-item, .rux--overflow-menu-options__option) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) :is(.rux--list-box__menu-item, .rux--overflow-menu-options__option) {
   --rux-layout-size-height-local: 2.25rem;
 }
-[data-theme="geist-dark"] .rux--list-box__menu-item__option {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--list-box__menu-item__option {
   margin-inline: 8px;
 }
-[data-theme="geist-dark"] .rux--overflow-menu-options__btn {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--overflow-menu-options__btn {
   padding-inline: 8px;
 }
 /* - A dialog's title and body sit 20px from its edges. The header keeps
      Carbon's 48px at the end for the close button. */
-[data-theme="geist-dark"] .rux--modal-header {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--modal-header {
   padding-block-start: 20px;
   padding-inline-start: 20px;
 }
-[data-theme="geist-dark"] .rux--modal-content {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--modal-content {
   padding: 20px;
 }
 /* GEIST'S SELECTION BAR IS NOT A BRAND SLAB. Every other theme fills this bar
@@ -1019,7 +1019,7 @@
    and its toolbar are the container's other children: on the content the box
    started below them and they floated loose above the line. The container
    clips, so a filled toolbar takes the corners with it. */
-[data-theme="geist-dark"] .rux--data-table-container {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table-container {
   background: var(--rux-layer-01);
   border: 1px solid var(--rux-border-subtle-01);
   border-radius: 8px;
@@ -1034,15 +1034,15 @@
    row. Both were drawn and looked at. It steps down to the faintest border
    instead -- present enough to track a row, quiet enough to leave the box the
    only edge anyone reads. */
-[data-theme="geist-dark"] .rux--data-table thead,
-[data-theme="geist-dark"] .rux--data-table th {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table thead,
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table th {
   background-color: transparent;
 }
-[data-theme="geist-dark"] .rux--data-table thead tr {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table thead tr {
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
-[data-theme="geist-dark"] .rux--data-table td,
-[data-theme="geist-dark"] .rux--data-table tbody th {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table td,
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table tbody th {
   border-block-end-color: var(--rux-border-subtle-00);
 }
 /* A sortable header is a button, and Carbon fills the button rather than the
@@ -1050,11 +1050,11 @@
    sortable column and a lighter one behind the sorted column, beside plain
    columns in the box's own surface. The buttons take no fill either; a hovered
    one lifts to the hover layer, and the arrow alone says which column sorts. */
-[data-theme="geist-dark"] .rux--table-sort,
-[data-theme="geist-dark"] .rux--table-sort.rux--table-sort--active {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--table-sort,
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--table-sort.rux--table-sort--active {
   background: transparent;
 }
-[data-theme="geist-dark"] .rux--table-sort:hover {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--table-sort:hover {
   background: var(--rux-layer-hover-01);
 }
 /* THE TOOLBAR SITS INSIDE THE BOX, as Geist's own controls sit inside a card:
@@ -1064,12 +1064,12 @@
    search field's ring and the buttons' corners no longer lie on the box's
    outline, doubling its line and meeting its 8px corners with their 6px
    ones. The toolbar takes the box's surface rather than a fill of its own. */
-[data-theme="geist-dark"] .rux--data-table-container .rux--table-toolbar {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table-container .rux--table-toolbar {
   block-size: auto;
   padding: var(--rux-spacing-04);
   background-color: transparent;
 }
-[data-theme="geist-dark"] .rux--data-table-container .rux--toolbar-content {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table-container .rux--toolbar-content {
   gap: var(--rux-spacing-03);
 }
 /* A ghost button in the bar is Geist's outlined button: the secondary's quiet
@@ -1086,16 +1086,16 @@
    switcher instead draws an inverse outline round the group and fills the
    chosen option with the inverse colour, which in this theme is a white frame
    with a white slab in it. */
-[data-theme="geist-dark"] .rux--content-switcher {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--content-switcher {
   block-size: auto;
   padding: var(--rux-spacing-02);
   border-radius: 6px;
   outline: 0;
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle-01);
 }
-[data-theme="geist-dark"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn,
-[data-theme="geist-dark"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:first-child,
-[data-theme="geist-dark"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:last-child {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn,
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:first-child,
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:last-child {
   block-size: 28px;
   padding-block: 0;
   padding-inline: var(--rux-spacing-04);
@@ -1104,25 +1104,25 @@
   box-shadow: none;
   color: var(--rux-text-secondary);
 }
-[data-theme="geist-dark"] .rux--content-switcher-btn::before {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--content-switcher-btn::before {
   display: none;
 }
-[data-theme="geist-dark"] .rux--content-switcher-btn:hover:not(.rux--content-switcher--selected) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--content-switcher-btn:hover:not(.rux--content-switcher--selected) {
   background-color: transparent;
   color: var(--rux-text-primary);
 }
-[data-theme="geist-dark"] .rux--content-switcher .rux--content-switcher-btn.rux--content-switcher--selected {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--content-switcher .rux--content-switcher-btn.rux--content-switcher--selected {
   color: var(--rux-text-primary);
 }
-[data-theme="geist-dark"] .rux--content-switcher-btn.rux--content-switcher--selected::after {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--content-switcher-btn.rux--content-switcher--selected::after {
   border-radius: 4px;
   background-color: var(--rux-layer-hover-01);
 }
 /* An icon-only option keeps Carbon's square size and loses the same lines: the
    group's ring is already drawn by the box. */
-[data-theme="geist-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn,
-[data-theme="geist-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn:first-child,
-[data-theme="geist-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn:last-child {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--content-switcher--icon-only .rux--content-switcher-btn,
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--content-switcher--icon-only .rux--content-switcher-btn:first-child,
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--content-switcher--icon-only .rux--content-switcher-btn:last-child {
   border-block: 0;
   border-radius: 4px;
   box-shadow: none;
@@ -1130,11 +1130,11 @@
 /* An icon-only option is the same two greys as a worded one. Carbon fills the
    chosen icon with the inverse colour, for the inverse slab it draws under it;
    on this theme's grey pill that is a black icon on near-black. */
-[data-theme="geist-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn:not([disabled]) svg {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--content-switcher--icon-only .rux--content-switcher-btn:not([disabled]) svg {
   fill: var(--rux-icon-secondary);
 }
-[data-theme="geist-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn:not([disabled]):hover svg,
-[data-theme="geist-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn.rux--content-switcher--selected:not([disabled]) svg {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--content-switcher--icon-only .rux--content-switcher-btn:not([disabled]):hover svg,
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--content-switcher--icon-only .rux--content-switcher-btn.rux--content-switcher--selected:not([disabled]) svg {
   fill: var(--rux-icon-primary);
 }
 /* ANT'S SEGMENTED CONTROL, measured on its Segmented page in dark: a track
@@ -1218,7 +1218,7 @@
    editor's bus tile was reported invisible. They take the modal's own
    treatment, at the border level that matches the layer they sit on, as an
    inset ring so nothing moves. */
-[data-theme="geist-dark"] :is(.rux--tile, .rux--popover-content, .rux--list-box__menu, .rux--menu, .rux--overflow-menu-options, .rux--date-picker__calendar) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) :is(.rux--tile, .rux--popover-content, .rux--list-box__menu, .rux--menu, .rux--overflow-menu-options, .rux--date-picker__calendar) {
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
 }
 /* GEIST'S MENU HOLDS ITS ITEMS OFF ITS EDGE, measured on its Menu page: 6px of
@@ -1227,25 +1227,25 @@
    item's fill over the ring on both sides and squared the focus outline against
    the rounded box. The outline follows the item's corner. The overflow menu is
    the same surface and takes the same answer. */
-[data-theme="geist-dark"] :is(.rux--menu, .rux--overflow-menu-options) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) :is(.rux--menu, .rux--overflow-menu-options) {
   padding: 6px;
   border-radius: 12px;
 }
-[data-theme="geist-dark"] :is(.rux--menu-item, .rux--overflow-menu-options__option, .rux--overflow-menu-options__btn) {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) :is(.rux--menu-item, .rux--overflow-menu-options__option, .rux--overflow-menu-options__btn) {
   border-radius: 6px;
 }
 /* A dropdown's or combo box's list is the same surface and takes the same
    answer. Its options also carry Carbon's rule between them, which Geist's
    lists do not draw; the pill a hovered or chosen option takes is what parts
    them. */
-[data-theme="geist-dark"] .rux--list-box__menu {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--list-box__menu {
   padding: 6px;
   border-radius: 12px;
 }
-[data-theme="geist-dark"] .rux--list-box__menu-item {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--list-box__menu-item {
   border-radius: 6px;
 }
-[data-theme="geist-dark"] .rux--list-box__menu-item__option {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--list-box__menu-item__option {
   border-block-start-color: transparent;
 }
 /* The side panel takes a real border rather than that ring, because its own
@@ -1253,7 +1253,7 @@
    would cover one. Carbon sizes every box from its border, so the 1px comes
    out of the panel's width and nothing moves. The modal already carries the
    same border in this theme. */
-[data-theme="geist-dark"] .rux--side-panel {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--side-panel {
   border: 1px solid var(--rux-border-subtle-01);
 }
 /* And a rule under its title. Carbon draws its header's divider only as the
@@ -1518,9 +1518,9 @@
   background-color: transparent;
   block-size: auto;
 }
-[data-theme="geist-dark"] .rux--action-set,
-[data-theme="geist-dark"] .rux--modal-footer,
-[data-theme="geist-dark"] .rux--dialog-footer {
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--action-set,
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--modal-footer,
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--dialog-footer {
   padding: var(--rux-spacing-04);
 }
 /* The height is `md`, read through Carbon's own size variable rather than a
@@ -1708,4 +1708,85 @@
 }
 [data-theme="apple-light"] .rux--btn--tertiary:not(:disabled):not(.rux--btn--disabled):hover {
   background-color: var(--rux-button-secondary-hover);
+}
+/* A button holds its label in the middle, 18px from each side at this
+   height: a 36px push button on a Mac measures 78px round "Cancel". Carbon
+   sets the label at the start and keeps 64px at the end for an icon. Its 1px
+   border is inside the padding, so each side is a pixel less. */
+[data-theme="apple-light"] .rux--btn:not(.rux--btn--icon-only) {
+  padding-inline: 17px;
+  justify-content: center;
+  text-align: center;
+}
+/* A plain button in a table's bar is the grey push button, where geist-dark
+   rings it. */
+[data-theme="apple-light"] .rux--table-toolbar .rux--btn--ghost:not(:disabled):not(.rux--btn--disabled):not(:focus-visible) {
+  background-color: var(--rux-button-secondary);
+  color: var(--rux-text-primary);
+}
+/* A field's corner is 10px at this height, measured on the Mac's text field
+   at its largest size, and the search field is a capsule. */
+[data-theme="apple-light"] :is(.rux--text-input, .rux--text-area, .rux--select-input, .rux--date-picker__input, .rux--list-box, .rux--dropdown),
+[data-theme="apple-light"] .rux--number :is(input[type=number], input[type=text]) {
+  border-radius: 10px;
+}
+[data-theme="apple-light"] :is(.rux--search-input, .rux--search) {
+  border-radius: 999px;
+}
+/* A CHECKBOX AND A RADIO REST AS A GREY FILL WITH NO RING, measured on the
+   Mac's own: 16px, a 5.5px corner on the box, 230 230 230 at rest, which is
+   the fill colour on white. Chosen, each fills with the button's blue under
+   a white mark. The theme's name adds no weight to the resting rules, so
+   Carbon's disabled, invalid and read-only rules still outrank them. */
+:where([data-theme="apple-light"]) .rux--checkbox-label::before {
+  border-color: transparent;
+  border-radius: 5.5px;
+  background-color: var(--rux-layer-accent-03);
+}
+:where([data-theme="apple-light"]) .rux--radio-button__appearance {
+  border-color: transparent;
+  background-color: var(--rux-layer-accent-03);
+  block-size: 1rem;
+  inline-size: 1rem;
+}
+[data-theme="apple-light"] :is(.rux--checkbox:checked, .rux--checkbox:indeterminate):not(:disabled) + .rux--checkbox-label::before {
+  background-color: var(--rux-button-primary);
+}
+[data-theme="apple-light"] .rux--radio-button:checked:not(:disabled) + .rux--radio-button__label .rux--radio-button__appearance {
+  border-color: transparent;
+  background-color: var(--rux-button-primary);
+}
+[data-theme="apple-light"] .rux--radio-button:checked:not(:disabled) + .rux--radio-button__label .rux--radio-button__appearance::before {
+  background-color: var(--rux-icon-on-color);
+}
+/* A switch is the button's blue when on, with a white thumb in both states.
+   Carbon's is green. The Mac's resting track reads 230 230 230. */
+:where([data-theme="apple-light"]) .rux--toggle__switch {
+  background-color: var(--rux-layer-accent-03);
+}
+:where([data-theme="apple-light"]) .rux--toggle__switch--checked {
+  background-color: var(--rux-button-primary);
+}
+:where([data-theme="apple-light"]) .rux--toggle__switch::before {
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.2);
+}
+:where([data-theme="apple-light"]) .rux--toggle__check {
+  fill: var(--rux-button-primary);
+}
+/* The segmented control is a grey capsule with no ring, and its chosen
+   option a white capsule inside it. */
+[data-theme="apple-light"] .rux--content-switcher {
+  border-radius: 999px;
+  box-shadow: none;
+  background-color: var(--rux-layer-accent-02);
+}
+[data-theme="apple-light"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn,
+[data-theme="apple-light"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:first-child,
+[data-theme="apple-light"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:last-child,
+[data-theme="apple-light"] .rux--content-switcher-btn.rux--content-switcher--selected::after {
+  border-radius: 999px;
+}
+[data-theme="apple-light"] .rux--content-switcher-btn.rux--content-switcher--selected::after {
+  background-color: var(--rux-content-switcher-selected);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.16);
 }

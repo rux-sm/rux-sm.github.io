@@ -27,7 +27,8 @@ and Design's contrast measurement reads no text in it under 4.5 to 1.
 - **The system font, with no file.** The theme names the device's own system
   face, which is San Francisco on a Mac and an iPhone, so it downloads nothing.
 - **A trip is an Apple Calendar event.** A pale tint of the trip's colour,
-  text in a darker step of it, and a solid bar of it down the leading edge.
+  text in a darker step of it, and Calendar's strip of it inside the leading
+  edge.
 - **Solid surfaces.** Cards, menus and panels are opaque. The board is dense,
   and a blurred surface over it costs reading.
 - **Contrast decides.** Where one of Apple's colours makes less than 4.5 to 1
@@ -54,10 +55,6 @@ None open.
 
 ## Tasks
 
-- [ ] Measure a Calendar event, a sheet and a menu, which
-  `design/docs/apple-token-map.md` lists as not measured. No AppKit view
-  draws them off screen, and this Mac is set to dark, so the iOS Simulator's
-  stock apps are where a light one can be read.
 - [ ] List the theme in the account panel through
   `design/tools/lib/shell.mjs`, `design/tools/build-builder.mjs` and
   `design/tools/build-readme.mjs`, and rebuild the pages.

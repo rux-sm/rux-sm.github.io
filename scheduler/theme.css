@@ -495,6 +495,25 @@
   background-size: 3px 100%;
   background-repeat: no-repeat;
 }
+/* ON A WIDE SCREEN THE EDGE IS CALENDAR'S OWN, as it reads on an iPad: a strip
+   3 wide with round ends, 4 in from the bar's start, top and bottom, and the
+   words 5 clear of it. Every bar takes the inset, the ones that run on from
+   last week too, so the words of a row line up. The compact board draws a bar
+   with no inset at all, and a phone keeps this app's own layout, so both keep
+   the strip on the edge. */
+@media (min-width: 42rem) {
+  [data-theme="apple-light"] .scheduler-page:not([data-board="compact"]) .scheduler-bar {
+    padding-inline-start: 12px;
+  }
+  [data-theme="apple-light"] .scheduler-page:not([data-board="compact"]) .scheduler-bar:not(.scheduler-bar--from-prev) {
+    background-image:
+      radial-gradient(circle, var(--scheduler-border) 1.2px, transparent 1.7px),
+      radial-gradient(circle, var(--scheduler-border) 1.2px, transparent 1.7px),
+      linear-gradient(var(--scheduler-border), var(--scheduler-border));
+    background-size: 3px 3px, 3px 3px, 3px calc(100% - 11px);
+    background-position: 4px 4px, 4px calc(100% - 4px), 4px 5.5px;
+  }
+}
 /* A button that fills its bar edge to edge is that bar's edge, so it stays
    square under Design's capsule rule: the document viewer's bar at every
    width, and on a phone the toolbar and the roster's head, which overrides.css

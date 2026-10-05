@@ -19,8 +19,9 @@ What Apple's own software says, read from Apple and not from memory. The
   one, so a chosen control shows the accent colour. Height is the frame, and
   a corner is the first drawn point on its diagonal.
 
-A Calendar event, a sheet and a menu are not measured. An app or the window
-server draws each, and no view of AppKit's does.
+- **A Calendar event, a sheet, an alert and a menu on an iPad:** the iOS
+  Simulator's own Calendar on an iPad Pro 11-inch under iPadOS 27, light,
+  read from its screenshots at two pixels a point.
 
 ## System colours
 
@@ -168,6 +169,30 @@ so white words on it make 4.5 to 1.
 260 wide, with everything 20 in from its sides. The title is 13pt bold and
 the message 13pt regular. Its buttons are the large size, 28 high, side by
 side at one width, 8 apart and 16 from the edge.
+
+## A Calendar event
+
+| Part | Measure |
+| :--- | :--- |
+| Fill | 225, 242, 255, its calendar's colour at 12% on white |
+| Strip | 0, 157, 255, 3 wide with round ends, 4 in from the event's start, top and bottom |
+| Title | 0, 88, 147, semibold, 12 in from the event's start |
+| Time | 0, 124, 203 |
+| Corner | 5 |
+| Chosen | 0, 158, 255 all over, under white words |
+
+This theme draws a trip with that strip, inset and corner. Its fill and
+words stay the tag tint and ink of the trip's own colour, which make 4.5 to
+1 where Calendar's time does not, and a chosen trip keeps this app's ring,
+because a bar carries coloured marks a solid fill would hide.
+
+## A sheet, an alert and a menu on an iPad
+
+| Part | Measure |
+| :--- | :--- |
+| Sheet | 254, 254, 254, its fields grouped on 242, 242, 242 with capsule ends |
+| Alert | two buttons side by side and three stacked, each a grey capsule |
+| Menu | a white capsule, 253, 253, 253, its items parted by a line of 234, 234, 234, a destructive item in red |
 
 ## This theme's tokens
 

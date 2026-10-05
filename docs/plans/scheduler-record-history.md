@@ -39,10 +39,8 @@ now.
   When: All, Trips, Drivers, Buses, Customers, Contacts and Locations. All
   is where it opens.
 - **One read for the page, `search_history`,** returns trip entries and
-  record entries together, newest first. It replaces `search_trip_history`,
-  and `history_people` replaces `trip_history_people`. The two replaced
-  functions are dropped in a second migration once the new page is
-  published, so the published page never calls a function that is gone.
+  record entries together, newest first, and `history_people` returns the
+  names for the Person choice.
 - **A row opens the record's own page,** such as `drivers.html?id=` or
   `fleet.html?id=`. A deleted record's row opens nothing.
 - **Each record page gets a History button** that opens the History page on
@@ -62,8 +60,6 @@ None open.
 
 ## Tasks
 
-- [ ] Drop `search_trip_history` and `trip_history_people` on a yes, once
-      the new page is published.
 - [ ] Read the first real entries on the History page after someone saves a
       driver, a bus or a customer, since only a real save proves the
       triggers on production.

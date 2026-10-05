@@ -2,7 +2,7 @@
    players.js — the owner's page: who has played, and how far
    --------------------------------------------------------------------------
    A row a player: whether they have done today's puzzle and in what time,
-   their days in a row, how many puzzles they have solved, their stars, and
+   their days in a row, how many puzzles they have solved, and
    when they last played. The name is a field, and a new one is the name the
    leaderboard shows. Remove takes a player off the leaderboard with all
    their results; an account that plays again starts a new player.
@@ -58,7 +58,6 @@
         today: done ? time(done.seconds) : '',
         days: streak(new Set(days.map(d => d.day))),
         solved: results.length,
-        stars: [...results, ...days].reduce((n, r) => n + r.stars, 0),
       };
     }).sort((a, b) => String(b.last_played_at || '').localeCompare(String(a.last_played_at || '')));
 
@@ -85,7 +84,7 @@
       field.addEventListener('keydown', e => { if (e.key === 'Enter') field.blur(); });
       named.appendChild(field);
       // The two columns for the puzzle of the day go when it is off.
-      tr.append(named, ...(DAILY ? [cell(p.today || 'Not yet'), cell(p.days)] : []), cell(p.solved), cell(p.stars), cell(when(p.last_played_at)));
+      tr.append(named, ...(DAILY ? [cell(p.today || 'Not yet'), cell(p.days)] : []), cell(p.solved), cell(when(p.last_played_at)));
       const last = document.createElement('td');
       const remove = document.createElement('button');
       remove.type = 'button';

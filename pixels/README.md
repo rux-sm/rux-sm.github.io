@@ -23,26 +23,39 @@ player, and arrows that move it up or down. Under each tile the owner has a
 switch that sends that puzzle to no player when off; a category has at most
 nine on. Player view, a switch at the top of the owner's page, draws the page
 as a player is sent it, with nothing of the owner's. A solved
-puzzle shows its picture, name and stars; an unsolved one a question mark and
+puzzle shows its picture, name and best time; an unsolved one a question mark and
 how hard it is, and its name stays hidden until it is solved. Leaderboard:
-today's ranking by stars then time, and the all-time one by every star
-earned.
+today's ranking with each player's time, and the all-time one with puzzles
+solved.
 
 `play.html?id=` plays one puzzle, 5, 10 or 15 squares a side. The board
-waits behind Tap to start, and the clock runs from that tap. Fill a square
-or cross it out with X, by tap, by dragging along a row or column, or with
+waits behind Tap to start, which with a mouse says Start, and the clock runs
+from that tap. Fill a square
+or cross it out with X, by tap, by dragging along a row or column, with a
+mouse's right button, which always crosses out, or with
 the arrow keys, Z and X. On a phone a 15×15 board zooms under two fingers,
 its numbers staying in view, and there a touch fills as it lifts.
-A number greys out when its run of squares is filled, and a finished line
-crosses out its own empty squares. A puzzle starts with three stars: filling
-a square not in the picture is a mistake, crossed out in red, and it costs a
-star, as does a hint; the last star is never lost. Hint, or H, lights the line
-where the numbers decide the most. Undo, or U, takes back the last tap or
-drag, and Redo, or R, puts it back, but neither touches a mistake. Restart
+A number greys out when its run of squares is filled, a line with no square
+of the picture starts crossed out, and a finished line
+crosses out its own empty squares. The clock is the score, as in Picross:
+filling a square not in the picture is a mistake, crossed out in red, and it
+adds time, 15 seconds for a puzzle's first, 30 for its second and a minute
+for each one after; a hint adds 30 seconds. What was added shows under the
+clock until the next move, and the best time on a puzzle is the one kept.
+Hint, or H, lights the line where the numbers decide the most. Undo, or U, takes back the last tap or
+drag, and Redo, or R, puts it back, but neither touches a mistake, and a
+tap that was only a mistake is no move to take back. Restart
 empties the board, and Undo straight after brings it back. The puzzle's
-name, the clock and the stars sit in the board's corner, and the numbers
+name and the clock sit in the board's corner, and the numbers
 keep the same space on every puzzle of a size. When the picture is complete the squares
-fill in as the picture, in its colours if it has them, and its name shows.
+fill in as the picture, in its colours if it has them, and its name shows
+with the time, the mistakes and hints, and what they added.
+How to play is three steps in a modal, each with a small board: what the
+numbers mean, filling and crossing out, and what a mistake costs. It opens from the
+menu on every page and from the button under Start, and by itself on the
+first puzzle of a player who has solved none and has not closed it in this
+browser. A guest has no menu, so the front page has a button for it under
+their puzzles. The clock stands while it is open.
 Each move plays a tone, which the Sound key turns off and an iPhone's
 silent switch does not, and a phone ticks
 on each fill where the browser allows it. A game in
@@ -74,7 +87,7 @@ category.
 
 | | |
 | :--- | :--- |
-| `app.js` | the rules and the board every page shares: the numbers, the line solver, the puzzle of the day, drawing, dragging and zooming, stars, tones and the phone's tick |
+| `app.js` | the rules and the board every page shares: the numbers, the line solver, the puzzle of the day, drawing, dragging and zooming, what a mistake costs, tones and the phone's tick |
 | `data.js` | who is playing, the name form a guest meets, and where puzzles and results are kept |
 | `puzzles.js`, `play.js`, `make.js`, `players.js` | each page's own behaviour |
 | `app.css` | the board, the picture and the puzzle list, under `pixels-` |
@@ -86,7 +99,7 @@ Six tables in the site's database, which only the owner's account reads
 directly: `pixels_puzzles`, every puzzle, which a staff account may read too;
 `pixels_players`, each player's name with the account or the hash of the
 guest's key; `pixels_player_results` and `pixels_player_days`, each player's
-best time and most stars on a puzzle and on a puzzle of the day; and
+best time on a puzzle and on a puzzle of the day, with a number of stars no page shows; and
 `pixels_settings`, the invite word; and `pixels_levels`, each category's name and whether it is hidden. `docs/database-access.md` is the rule
 they follow.
 
@@ -104,7 +117,7 @@ renumbers the categories of one size in one step, so a move cannot stop
 half done.
 
 `players.html` is the owner's: every player with today's puzzle, days in a
-row, puzzles solved, stars and when they last played; the name, which can be
+row, puzzles solved and when they last played; the name, which can be
 typed over; the invite word, whose change closes the old link to anyone new;
 and Remove, which takes a player and their results off the leaderboard.
 

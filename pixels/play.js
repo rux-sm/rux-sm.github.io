@@ -1,26 +1,37 @@
 /* ==========================================================================
    play.js — one puzzle
    --------------------------------------------------------------------------
-   Fill a square or cross it out with X. Filling a square that is not in the
-   picture is a mistake: it is crossed out in red and costs a star. A number
-   greys out once its run of squares is filled, a line that is finished
-   crosses out its own empty squares, and the puzzle is solved when every
-   square of the picture is filled.
+   Fill a square or cross it out with X; a mouse's right button crosses out
+   whichever is chosen. Filling a square that is not in the picture is a
+   mistake: it is crossed out in red and adds time. A number greys out
+   once its run of squares is filled, a line with no square of the picture
+   starts crossed out, a line that is finished crosses out its own empty
+   squares, and the puzzle is solved when every square of the picture is
+   filled.
 
-   THREE STARS to start. A mistake or a hint costs one, and the last is never
-   lost. Hint points at a wrong X if there is one, and otherwise at the line
-   where the numbers decide the most squares from what is on the board.
+   THE CLOCK IS THE SCORE. A mistake adds time to it, more each time, and a
+   hint adds some too; app.js's `penalty` and HINT say how much. What was
+   added shows under the clock until the next move. The best time on a
+   puzzle is the one kept. Hint points at a wrong X if there is one, and
+   otherwise at the line where the numbers decide the most squares from what
+   is on the board.
 
    THE BOARD WAITS BEHIND "TAP TO START", or "Tap to continue" for a game
-   in progress. The numbers show and the clock runs from that tap, so a best
+   in progress; with a mouse the button says Start or Continue. The numbers show and the clock runs from that tap, so a best
    time does not count the page loading or being read. It is also what lets
    a phone play the sounds at all: a phone starts a page's sound only from a
    tap, never from a drag, and a puzzle is usually begun with a drag.
 
+   HOW TO PLAY opens from the menu and from the button under Start, and by
+   itself over the cover for a player with no puzzle solved who has never
+   closed it in this browser. The clock stands while it is open. app.js's
+   `how` builds it.
+
    UNDO takes back the last tap or drag, with the squares a finished line
    crossed out for it, as far back as the puzzle's start, and REDO puts it
    back until a new move is made. Neither touches a mistake: the red X stays
-   and so does the lost star. Restart empties the board and zeroes the clock,
+   and so does the time it added, and a tap that was only a mistake is no move
+   to take back. Restart empties the board and zeroes the clock,
    and Undo straight after it brings everything back.
 
    A board wider than ten squares zooms under two fingers where its squares
@@ -41,7 +52,7 @@
 (() => {
   'use strict';
 
-  const { data, enter, DAILY, grid, column, clues, solveLine, order, daily, today, streak, board, paint, highlight, drag, stars, buzz, sound, sounds, listen, time, title } = window.Pixels;
+  const { data, enter, DAILY, grid, column, clues, solveLine, order, daily, today, streak, board, paint, highlight, drag, penalty, HINT, added, buzz, sound, sounds, listen, time, title, how } = window.Pixels;
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock');
 
@@ -89,7 +100,9 @@
     // A name stays hidden until its puzzle is solved; the day's shows its date.
     const heading = isDaily ? (results.has(key) ? puzzle.name : puzzle.date) : title(puzzle, index, results.has(key));
     const answer = grid(puzzle.squares, puzzle.width), H = answer.length, W = answer[0].length;
-    const blank = () => answer.map(r => r.map(() => 0));
+    // An empty board: a line with no square of the picture starts crossed out.
+    const bare = { rows: answer.map(r => !r.includes(1)), cols: answer[0].map((_, x) => !column(answer, x).includes(1)) };
+    const blank = () => answer.map((r, y) => r.map((_, x) => (bare.rows[y] || bare.cols[x] ? 2 : 0)));
 
     const kept = loadProgress()[puzzle.id];
     // A kept game marked `free` may hold wrong fills, which this game never
@@ -107,36 +120,45 @@
     // the cover cannot land on the square that was under it.
     let started = false, settling = false;
     // The board before each tap or drag that changed it, and the board as a
-    // tap or drag began, kept only once that one changes something.
+    // tap or drag began, kept only once that one changes something other
+    // than by a mistake.
     // `ahead` is the boards Undo left, for Redo, until a new move is made.
     let past = [], held = null, ahead = [];
 
     $('pixels-title').textContent = heading;
     document.title = `${heading} — Pixels`;
 
-    const score = () => Math.max(1, 3 - mistakes - hints);
     const keep = () => saveProgress(puzzle.id, { squares: puzzle.squares, state, seconds, mistakes, hints });
     const el = board(boardHost, answer, state, { done: true, label: 'Puzzle' });
-    // The name, the clock and the stars sit in the board's corner.
+    // The name and the clock sit in the board's corner.
     el.querySelector('.pixels-corner').appendChild($('pixels-info'));
     $('pixels-info').hidden = false;
     const draw = () => {
       paint(el, answer, state, { done: true });
       el.querySelectorAll('.is-hint').forEach(e => e.classList.remove('is-hint'));
       highlight(el, ...cursor);
-      stars($('pixels-stars'), score());
       $('pixels-undo').disabled = !past.length;
       $('pixels-redo').disabled = !ahead.length;
     };
     const tick = () => { clock.textContent = time(seconds); };
+    // With nothing to say, what the last mistake or hint added goes too.
     const tell = (text, error) => {
       status.textContent = text;
+      if (!text) $('pixels-penalty').textContent = '';
       if (error) status.dataset.error = ''; else delete status.dataset.error;
     };
 
-    // The clock runs only while the page is in front.
+    // A mistake or a hint puts `cost` seconds on the clock, and says so under it.
+    const charge = cost => {
+      seconds += cost;
+      tick();
+      $('pixels-penalty').textContent = added(cost);
+    };
+
+    // The clock runs only while the page is in front and How to play is shut.
+    const guide = how();
     setInterval(() => {
-      if (!started || solved || document.hidden) return;
+      if (!started || solved || document.hidden || guide.classList.contains('is-visible')) return;
       seconds++;
       tick();
       if (seconds % 5 === 0) keep();
@@ -151,17 +173,22 @@
       sound('solved');
       // The squares fill in as the picture while the time is saved.
       el.classList.add('is-solved');
-      const earned = score();
-      let best = { best: seconds, stars: earned, isNew: true }, lost = false;
+      let best = { best: seconds, isNew: true }, lost = false;
       const [saved] = await Promise.allSettled([
-        isDaily ? data.recordDay(key, seconds, earned) : data.record(key, seconds, earned),
+        isDaily ? data.recordDay(key, seconds) : data.record(key, seconds),
         new Promise(done => setTimeout(done, still ? 0 : REVEAL)),
       ]);
       if (saved.status === 'fulfilled') best = saved.value; else lost = true;
 
       $('pixels-solved-name').textContent = puzzle.name;
-      stars($('pixels-solved-stars'), earned);
-      const parts = [time(seconds)];
+      $('pixels-solved-clock').textContent = time(seconds);
+      // What went wrong and what it added, then how the time stands.
+      const count = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
+      const parts = [mistakes ? count(mistakes, 'mistake') : 'No mistakes'];
+      if (hints) parts.push(count(hints, 'hint'));
+      let extra = hints * HINT;
+      for (let n = 1; n <= mistakes; n++) extra += penalty(n);
+      if (extra) parts.push(added(extra));
       if (lost) parts.push('not saved');
       else if (!best.isNew) parts.push(`best ${time(best.best)}`);
       else if (results.has(key)) parts.push('a new best');
@@ -209,6 +236,7 @@
     const act = (y, x) => {
       if (!started || settling || solved) return;
       const v = state[y][x];
+      let missed = false;
       if (action === 'fill' && v === 0) {
         if (answer[y][x]) {
           state[y][x] = 1;
@@ -217,17 +245,20 @@
           sound(closed ? 'line' : 'fill', closed ? 0 : climb++);
           tell('');
         } else {
-          const before = score();
           state[y][x] = 3;
           mistakes++;
+          const cost = penalty(mistakes);
+          charge(cost);
           buzz([40, 60, 40]);
           sound('miss');
-          tell(score() < before ? 'Not in the picture · a star lost' : 'Not in the picture', true);
+          tell(`Not in the picture · ${added(cost)}`, true);
+          missed = true;
         }
       } else if (action === 'x' && v === 0) { state[y][x] = 2; sound('x'); }
       else if (action === 'unx' && v === 2) { state[y][x] = 0; sound('pop'); }
       else return;
-      if (held) { past.push(held); held = null; ahead = []; }
+      // A mistake is not a move: Undo has nothing of it to take back.
+      if (held && !missed) { past.push(held); held = null; ahead = []; }
       cursor = [y, x];
       draw();
       keep();
@@ -244,26 +275,16 @@
 
     const undo = () => {
       if (!started || solved || !past.length) return;
-      const now = state.map(r => r.slice());
-      const same = to => to.every((r, y) => r.every((v, x) => v === state[y][x]));
-      let was = null;
-      for (;;) {
-        const entry = past.pop();
-        // A Restart taken back: the board, the clock and the stars as they were.
-        if (!Array.isArray(entry)) {
-          ({ state, seconds, mistakes, hints, past } = entry);
-          ahead = [];
-          tick();
-          break;
-        }
-        // A mistake stays as it is, so a move that was only a mistake has
-        // nothing to take back and the one before it is taken instead.
-        was = entry.map((r, y) => r.map((v, x) => (state[y][x] === 3 ? 3 : v)));
-        if (!past.length || !same(was)) break;
-      }
-      if (was) {
-        if (!same(was)) ahead.push(now);
-        state = was;
+      const entry = past.pop();
+      // A Restart taken back: the board, the clock and its mistakes as they were.
+      if (!Array.isArray(entry)) {
+        ({ state, seconds, mistakes, hints, past } = entry);
+        ahead = [];
+        tick();
+      } else {
+        ahead.push(state.map(r => r.slice()));
+        // A mistake made since stays as it is.
+        state = entry.map((r, y) => r.map((v, x) => (state[y][x] === 3 ? 3 : v)));
       }
       cursor = [];
       tell('');
@@ -314,9 +335,10 @@
         text = `${top.kind === 'row' ? 'Row' : 'Column'} ${top.n + 1} has squares to ${top.fills ? 'fill' : 'cross out'}`;
       }
       hints++;
+      charge(HINT);
       draw();
       if (lit) el.querySelectorAll(lit).forEach(e => e.classList.add('is-hint'));
-      tell(text);
+      tell(`${text} · ${added(HINT)}`);
       buzz();
       sound('hint');
       keep();
@@ -325,9 +347,10 @@
 
     // A board over ten squares wide may be too fine for a finger, so it zooms where it is.
     const pad = drag(boardHost, {
-      start: (y, x) => begin(y, x),
+      start: (y, x, other) => begin(y, x, other ? 'x' : tool),
       paint: act,
       hover: (y, x) => { cursor = [y, x]; highlight(el, y, x); },
+      right: true,
       zoom: () => W > 10,
     });
     $('pixels-tool').addEventListener('click', e => {
@@ -375,16 +398,19 @@
 
     listen();
     const cover = $('pixels-start');
-    if (fresh) cover.textContent = 'Tap to continue';
+    // A finger taps; a mouse is not told to.
+    const tap = matchMedia('(pointer: coarse)').matches;
+    cover.textContent = fresh ? (tap ? 'Tap to continue' : 'Continue') : (tap ? 'Tap to start' : 'Start');
     game.classList.add('is-waiting');
     cover.addEventListener('click', () => {
       started = settling = true;
       setTimeout(() => { settling = false; }, 350);
       game.classList.remove('is-waiting');
-      cover.remove();
+      $('pixels-cover').remove();
       sound('fill');
     });
     cover.focus({ preventScroll: true });
+    if (!results.size && !how.seen()) window.Rux.modal.open(guide, $('pixels-how-open'));
     const soundKey = $('pixels-sound');
     soundKey.setAttribute('aria-pressed', sounds());
     soundKey.addEventListener('click', () => {

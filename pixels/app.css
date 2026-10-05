@@ -148,9 +148,8 @@
 .pixels-game.is-done .pixels-cell[data-ink],
 .pixels-maker .pixels-cell[data-ink] { background: var(--ink); }
 
-/* THREE STARS, the lost ones dimmed. */
-.pixels-stars { color: var(--rux-text-disabled); letter-spacing: .1em; white-space: nowrap; }
-.pixels-stars > [data-on] { color: var(--rux-support-warning); }
+/* WHAT A MISTAKE OR A HINT ADDED TO THE CLOCK, written as +0:15. */
+.pixels-penalty { color: var(--rux-text-error); font-weight: 600; font-variant-numeric: tabular-nums; }
 
 /* THE FINISHED PICTURE: the squares alone, no lines and no clues. */
 .pixels-picture {
@@ -208,6 +207,8 @@
   .pixels-page { margin: -1rem -2rem 0; }
 }
 .pixels-tabs[hidden] { display: none; }
+/* A guest's way to How to play, its words in line with the tiles above it. */
+.pixels-foot { margin: 2rem 0 0 -1rem; }
 .pixels-panel { padding: 1.5rem 0 0; }
 
 /* TODAY'S PUZZLE, one card across: the picture, the words, and an arrow. */
@@ -266,7 +267,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.pixels-puzzle > .pixels-meta, .pixels-puzzle > .pixels-stars { font-size: .75rem; line-height: 1.2; }
+.pixels-puzzle > .pixels-meta { font-size: .75rem; line-height: 1.2; }
 /* For the owner a tile carries the way to edit its puzzle under it, and the
    switch that sends it to the players. One switched off is drawn faint. */
 .pixels-tile { display: grid; grid-template-rows: auto auto; gap: .25rem; min-inline-size: 0; }
@@ -304,13 +305,25 @@
 .pixels-game.is-loading > :not(#pixels-error) { visibility: hidden; }
 
 /* THE COVER. Until Start is tapped the board keeps its place and shows only
-   its corner, and the button sits in the middle of where it will be. */
+   its corner, and the button sits in the middle of where it will be, with
+   the way to How to play under it. */
 .pixels-stage { position: relative; }
 .pixels-game.is-waiting .pixels-board { visibility: hidden; }
 .pixels-game.is-waiting .pixels-corner { visibility: visible; }
-.pixels-start { position: absolute; inset-block-start: 50%; inset-inline-start: 50%; translate: -50% -50%; }
+.pixels-start { position: absolute; inset-block-start: 50%; inset-inline-start: 50%; translate: -50% -50%; display: grid; gap: .5rem; }
 
-/* THE CORNER'S TILE: the puzzle's name on a strip, the clock and the stars.
+/* HOW TO PLAY. Three steps down the modal, each a small board beside its
+   words. The boards are the game's own at 20px a square, with no corner
+   tile to make room for, and nothing on them takes a touch. */
+.pixels-how { display: grid; gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
+.pixels-how-step { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1rem; align-items: start; }
+.pixels-how-step p { margin: .25rem 0 0; }
+.pixels-how-art { display: grid; justify-items: end; gap: .375rem; }
+.pixels-how .pixels-board { --tile: 0rem; --cell-max: 1.25rem; margin: 0; pointer-events: none; }
+.pixels-how-keys { margin: 1.5rem 0 0; color: var(--rux-text-secondary); }
+
+/* THE CORNER'S TILE: the puzzle's name on a strip, the clock, and under it
+   what the last mistake or hint added, which keeps its line when empty.
    A square of one size on every board; the numbers fit round it. */
 .pixels-corner { min-inline-size: 0; }
 .pixels-info {
@@ -337,7 +350,7 @@
   white-space: nowrap;
 }
 .pixels-clock { align-self: center; font-family: 'IBM Plex Mono', monospace; font-size: 1.25rem; font-variant-numeric: tabular-nums; }
-.pixels-info .pixels-stars { padding-block-end: .375rem; font-size: .875rem; letter-spacing: 0; }
+.pixels-info .pixels-penalty { min-block-size: 1.125rem; padding-block-end: .25rem; font-size: .8125rem; line-height: 1.125rem; }
 
 .pixels-controls { display: grid; gap: .75rem; }
 .pixels-status { min-block-size: 1.25rem; color: var(--rux-text-secondary); }
@@ -409,7 +422,7 @@
 /* Each view's display would outrank the hidden attribute. */
 .pixels-game[hidden], .pixels-solved[hidden], .pixels-controls[hidden], .pixels-info[hidden], .pixels-maker[hidden] { display: none; }
 .pixels-solved { display: grid; gap: 1.5rem; justify-items: center; text-align: center; padding-block: 1rem; }
-.pixels-solved .pixels-stars { font-size: 2rem; }
+.pixels-solved-clock { display: block; font-size: 2rem; }
 
 /* THE MAKER. The board, then the check, name and buttons beside it on a
    wide screen and under it on a phone. */

@@ -7,10 +7,10 @@
    `unreached` says which squares logic alone cannot decide and `rounds` how
    hard the rest is, `board` draws a
    board with its clues and `paint` keeps it in step with the game, `drag`
-   paints along it, `picture` draws the finished picture, `stars` a score,
+   paints along it, `picture` draws the finished picture, `penalty` is what a mistake costs,
    `buzz` ticks the phone and `sound` plays a tone. `order` puts puzzles in
-   playing order and `daily` makes the puzzle of a day. The pages add their
-   own behaviour in puzzles.js, play.js and make.js.
+   playing order and `daily` makes the puzzle of a day. `how` builds How to
+   play. The pages add their own behaviour in puzzles.js, play.js and make.js.
    ========================================================================== */
 (() => {
   'use strict';
@@ -280,7 +280,9 @@
      `paint(y, x)` on each square the finger crosses. In the game the drag
      keeps to the first row or column it moves along; `free` lets the maker
      draw in any direction. A mouse moving with no button down calls
-     `hover(y, x)`. Listeners sit on the host, which outlives redraws.
+     `hover(y, x)`. Where `right` is set a mouse's right button drags too,
+     with no menu, and `start` is told so by a third argument. Listeners sit
+     on the host, which outlives redraws.
 
      ONE FINGER DRAWS, the last to land. A touch already on the board, such
      as the hand resting beside it, neither paints as it shifts nor ends
@@ -295,7 +297,7 @@
      nothing fills until every finger is up. `--zoom`, `--tx` and `--ty` on
      the host are what app.css sizes and slides the board by. `reset()`
      takes the board back to its whole. */
-  const drag = (host, { start, paint, hover, free = false, zoom = () => false }) => {
+  const drag = (host, { start, paint, hover, free = false, right = false, zoom = () => false }) => {
     let from = null, axis = null, last = null, pen = null;
     const FINE = 32;
     const fingers = new Map();
@@ -315,7 +317,7 @@
       const [a, b] = [...fingers.values()];
       return { gap: Math.hypot(a.x - b.x, a.y - b.y), x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
     };
-    const begin = p => { from = last = p; axis = null; start(...p); };
+    const begin = (p, other = false) => { from = last = p; axis = null; start(...p, other); };
     // Too fine for a finger: measured without the zoom, which a board whose
     // squares have since grown, on a turned screen, is taken out of.
     const fine = () => {
@@ -330,11 +332,11 @@
     host.addEventListener('touchstart', e => { if (e.cancelable) e.preventDefault(); }, { passive: false });
     host.addEventListener('pointerdown', e => {
       const p = at(e);
-      if (!p || e.button > 0) return;
+      if (!p || (e.button > 0 && !(right && e.button === 2))) return;
       e.preventDefault();
       if (e.pointerType !== 'touch' || !fine()) {
         pen = e.pointerId;
-        begin(p);
+        begin(p, e.button === 2);
         return;
       }
       fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
@@ -344,6 +346,7 @@
         waiting = from = null;
       } else if (fingers.size === 1 && !spent) { waiting = p; pen = e.pointerId; }
     });
+    host.addEventListener('contextmenu', e => { if (right && at(e)) e.preventDefault(); });
     host.addEventListener('pointermove', e => {
       if (fingers.has(e.pointerId)) fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
       if (pinch) {
@@ -406,19 +409,13 @@
     return el;
   };
 
-  // Three stars, the lost ones dimmed.
-  const stars = (el, n) => {
-    el.classList.add('pixels-stars');
-    el.setAttribute('role', 'img');
-    el.setAttribute('aria-label', `${n} of 3 stars`);
-    el.replaceChildren(...[1, 2, 3].map(i => {
-      const s = document.createElement('span');
-      s.textContent = '★';
-      if (i <= n) s.dataset.on = '';
-      return s;
-    }));
-    return el;
-  };
+  /* WHAT A MISTAKE COSTS is time on the clock, more each time, the way
+     Picross charges it. `penalty(n)` is the seconds a puzzle's nth mistake
+     adds: 15, then 30, then a minute for each one after. HINT is what a hint
+     adds. `added` writes such a cost as the clock would, +0:15. */
+  const PENALTY = [15, 30, 60], HINT = 30;
+  const penalty = n => PENALTY[Math.min(n, PENALTY.length) - 1];
+  const added = seconds => `+${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
 
   /* A TICK IN THE HAND. Android vibrates for `ms`. An iPhone has no vibration
      for a web page, but it ticks when a switch is flipped, so a hidden one is
@@ -520,6 +517,78 @@
   // A puzzle keeps its name hidden until it is solved, as on the DS.
   const title = (puzzle, index, solved) => (solved ? puzzle.name : `Puzzle ${index + 1}`);
 
+  /* HOW TO PLAY. A modal of three steps, each a small board beside its
+     words: what the numbers mean, filling and crossing out, and what a
+     mistake costs.
+     The boards are the game's own, drawn by `board` from one picture of five
+     squares a side, so they look as the puzzle does in every theme. Each
+     page carries the empty modal, `pixels-how`, which is filled as the page
+     loads; `how()` returns it. Anything carrying data-rux-open="pixels-how"
+     opens it, as the entry in each page's menu does, and Design's script
+     closes it.
+     Closing it is kept in this browser under `pixels-how`, and `how.seen()`
+     says so, which is how play.js opens it unasked only for someone who has
+     never read it. */
+  const HOW = 'pixels-how';
+  const how = () => {
+    const modal = document.getElementById(HOW);
+    if (!modal || modal.firstElementChild) return modal;
+    const step = (heading, words) => `
+          <li class="pixels-how-step">
+            <div class="pixels-how-art" aria-hidden="true"></div>
+            <div>
+              <h3 class="rux--type-productive-heading-02">${heading}</h3>
+              <p>${words}</p>
+            </div>
+          </li>`;
+    modal.innerHTML = `
+      <div role="dialog" aria-modal="true" aria-labelledby="${HOW}-heading" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+        <div class="rux--modal-header">
+          <h2 class="rux--modal-header__heading" id="${HOW}-heading">How to play</h2>
+          <div class="rux--modal-close-button">
+            <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+              <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="rux--modal-content">
+          <ol class="pixels-how">${step('Read the numbers', 'Every number is a run of filled squares in its row or column, in order. 5 is five in a row. 1 1 is two single squares with a gap between them.')}${step('Fill what is certain', `A 5 in a row of five fills the whole row, so start with the biggest numbers. Mark a square that must be empty with X. ${touch ? 'Tap a square, or drag along a row or column.' : 'Click a square, or drag along a row or column; the right button marks an X.'}`)}${step('Mind the clock', `Filling a square that is not in the picture adds time: ${penalty(1)} seconds for the first mistake, ${penalty(2)} for the second and ${penalty(3)} for each one after. A hint adds ${HINT} seconds. Your best time on a puzzle is the one kept.`)}
+          </ol>${touch ? '' : `
+          <p class="pixels-how-keys">Keys: the arrows move, Z fills, X crosses out, H hints, U undoes and R redoes.</p>`}
+        </div>
+        <div class="rux--modal-footer">
+          <button type="button" class="rux--btn rux--btn--primary" data-rux-close autofocus>Got it</button>
+        </div>
+      </div>`;
+    // One picture, a heart, at three moments: solved, with its two rows of
+    // five filled and the lines they finished crossed out, and after a mistake.
+    const answer = grid('0101011111111110111000100');
+    const begun = answer.map((r, y) => r.map((_, x) => (y === 1 || y === 2 ? 1 : x % 4 ? 0 : 2)));
+    const missed = begun.map((r, y) => r.map((v, x) => (y === 4 && x === 1 ? 3 : v)));
+    const [numbers, filling, mistake] = modal.querySelectorAll('.pixels-how-art');
+    board(numbers, answer, answer, { most: 2 });
+    board(filling, answer, begun, { most: 2, done: true });
+    board(mistake, answer, missed, { most: 2, done: true });
+    const cost = document.createElement('span');
+    cost.className = 'pixels-penalty';
+    cost.textContent = added(penalty(1));
+    mistake.appendChild(cost);
+    modal.addEventListener('rux:modal-closed', () => { try { localStorage.setItem(HOW, 'seen'); } catch { /* shown again next time */ } });
+    // Opened from the menu, it shuts the menu, so closing it shows the page,
+    // and the focus goes to the menu's button, not to a link out of sight.
+    let menu = null;
+    modal.addEventListener('rux:modal-opened', () => {
+      const nav = document.querySelector('.rux--side-nav--expanded');
+      if (!nav) return;
+      window.Rux.uiShell.closeNav(nav);
+      menu = document.querySelector('.rux--header__menu-toggle');
+    });
+    modal.addEventListener('rux:modal-closed', () => { menu?.focus(); menu = null; });
+    return modal;
+  };
+  how.seen = () => { try { return localStorage.getItem(HOW) === 'seen'; } catch { return true; } };
+  how();
+
   // A Design content switcher. Design's own script moves the selection, by
   // click or arrow key; this hears which option was picked. `chosen` shows a
   // selection the page made itself, without telling the page about it.
@@ -528,6 +597,6 @@
 
   window.Pixels = Object.assign(window.Pixels || {}, {
     SIZES, DAILY, BOARD, INKS: 8, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, daily, today, streak,
-    board, paint, highlight, drag, picture, stars, buzz, sound, sounds, listen, time, title, switcher, chosen,
+    board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title, how, switcher, chosen,
   });
 })();

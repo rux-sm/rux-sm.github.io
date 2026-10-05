@@ -40,6 +40,7 @@
 <symbol id="m-error-fill" viewBox="0 -960 960 960"><path d="M503.5-289.48q9.5-9.48 9.5-23.5t-9.48-23.52q-9.48-9.5-23.5-9.5t-23.52 9.48q-9.5 9.48-9.5 23.5t9.48 23.52q9.48 9.5 23.5 9.5t23.52-9.48ZM453-433h60v-253h-60v253Zm27.27 353q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Z"/></symbol>
 <symbol id="m-grid_view" viewBox="0 -960 960 960"><path d="M120-510v-330h330v330H120Zm0 390v-330h330v330H120Zm390-390v-330h330v330H510Zm0 390v-330h330v330H510ZM180-570h210v-210H180v210Zm390 0h210v-210H570v210Zm0 390h210v-210H570v210Zm-390 0h210v-210H180v210Zm390-390Zm0 180Zm-180 0Zm0-180Z"/></symbol>
 <symbol id="m-lightbulb" viewBox="0 -960 960 960"><path d="M422.5-103.5Q399-127 399-161h162q0 34-23.5 57.5T480-80q-34 0-57.5-23.5ZM318-223v-60h324v60H318Zm5-121q-66-43-104.5-107.5T180-597q0-122 89-211t211-89q122 0 211 89t89 211q0 81-38 145.5T637-344H323Zm22-60h271q48-32 76-83t28-110q0-99-70.5-169.5T480-837q-99 0-169.5 70.5T240-597q0 59 28 110t77 83Zm135 0Z"/></symbol>
+<symbol id="m-info" viewBox="0 -960 960 960"><path d="M453-280h60v-240h-60v240Zm50.5-323.2q9.5-9.2 9.5-22.8 0-14.45-9.48-24.22-9.48-9.78-23.5-9.78t-23.52 9.78Q447-640.45 447-626q0 13.6 9.48 22.8 9.48 9.2 23.5 9.2t23.52-9.2ZM480.27-80q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Zm.23-60Q622-140 721-239.5t99-241Q820-622 721.19-721T480-820q-141 0-240.5 98.81T140-480q0 141 99.5 240.5t241 99.5Zm-.5-340Z"/></symbol>
 <symbol id="m-menu" viewBox="0 -960 960 960"><path d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"/></symbol>
 <symbol id="m-redo" viewBox="0 -960 960 960"><path d="M392-200q-95 0-163.5-64T160-422q0-94 68.5-158T392-644h294L572-758l42-42 186 186-186 186-42-42 114-114H391q-70 0-120.5 46.5T220-422q0 69 50.5 115.5T391-260h310v60H392Z"/></symbol>
 <symbol id="m-restart_alt" viewBox="0 -960 960 960"><path d="M451-122q-123-10-207-101t-84-216q0-77 35.5-145T295-695l43 43q-56 33-87 90.5T220-439q0 100 66 173t165 84v60Zm60 0v-60q100-12 165-84.5T741-439q0-109-75.5-184.5T481-699h-20l60 60-43 43-133-133 133-133 43 43-60 60h20q134 0 227 93.5T801-439q0 125-83.5 216T511-122Z"/></symbol>
@@ -128,6 +129,12 @@
         </a>
       </li>
       <li class="rux--side-nav__item rux--side-nav__item--large">
+        <a class="rux--side-nav__link" href="#pixels-how" data-rux-open="pixels-how">
+          <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-info"/></svg></div>
+          <span class="rux--side-nav__link-text">How to play</span>
+        </a>
+      </li>
+      <li class="rux--side-nav__item rux--side-nav__item--large">
         <a class="rux--side-nav__link" href="make.html">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-edit"/></svg></div>
           <span class="rux--side-nav__link-text">Make</span>
@@ -159,16 +166,19 @@
           </div>
         </div>
         </div>
-        <!-- play.js moves this into the board's corner: the puzzle's name, the clock and the stars. -->
+        <!-- play.js moves this into the board's corner: the puzzle's name, the clock, and what a mistake or hint last added to it. -->
         <div class="pixels-info" id="pixels-info" hidden>
           <h1 class="pixels-info-name" id="pixels-title">Puzzle</h1>
           <span class="pixels-clock" id="pixels-clock" role="timer" aria-label="Time">00:00</span>
-          <span id="pixels-stars"></span>
+          <span class="pixels-penalty" id="pixels-penalty" aria-hidden="true"></span>
         </div>
         <!-- The board waits behind Start: play.js shows it, and starts the clock, on the tap. -->
         <div class="pixels-stage">
           <div id="pixels-board"></div>
-          <button type="button" class="rux--btn rux--btn--primary pixels-start" id="pixels-start">Tap to start</button>
+          <div class="pixels-start" id="pixels-cover">
+            <button type="button" class="rux--btn rux--btn--primary" id="pixels-start">Tap to start</button>
+            <button type="button" class="rux--btn rux--btn--ghost" id="pixels-how-open" data-rux-open="pixels-how">How to play</button>
+          </div>
         </div>
         <div class="pixels-controls">
           <div class="pixels-status" id="pixels-status" aria-live="polite"></div>
@@ -190,7 +200,7 @@
         <div class="pixels-solved" id="pixels-solved" hidden>
           <div>
             <h1 class="rux--type-productive-heading-04" id="pixels-solved-name"></h1>
-            <span id="pixels-solved-stars"></span>
+            <span class="pixels-clock pixels-solved-clock" id="pixels-solved-clock"></span>
             <p class="pixels-meta" id="pixels-solved-time"></p>
           </div>
           <div class="pixels-actions">
@@ -201,6 +211,8 @@
       </div>
     </div>
   </div>
+  <!-- How to play. app.js fills it; the menu's entry opens it. -->
+  <div class="rux--layer-one rux--modal" id="pixels-how" role="presentation"></div>
 </main>
 
 <script src="/design/js/overlay.js"></script>

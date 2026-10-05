@@ -9,13 +9,13 @@
    is false there is no leaderboard and no tabs, only the puzzles.
 
    PUZZLES. Today's puzzle is one card across the page: its picture once
-   solved, the date, the stars and time or how hard it is, and the days
+   solved, the date, the best time or how hard it is, and the days
    solved in a row. Then a section for each category the maker gave, headed
    by its name, a bar for how much of it is solved, and its puzzles easy to
    hard, three across on a phone, each tile a square, none locked. A category
    with no name is headed More. The 5×5 ones say Quick before the name and
    the 15×15 ones Long, and they stand before and after the 10×10 ones. A
-   solved tile shows its picture, name and stars; an unsolved one its number,
+   solved tile shows its picture, name and best time; an unsolved one its number,
    a question mark and how hard it is. The owner has an Edit link and a switch
    under each, which sends the puzzle to no player when off, and a category
    has at most nine on; a Published switch on each category, which hides it
@@ -24,14 +24,16 @@
    drawn, by date; and Player view, a switch above them all that draws the
    page as a player is sent it, with none of these.
 
-   LEADERBOARD. Two rankings behind one switch: today's puzzle, by stars then
-   time, and all time, by every star earned, with puzzles solved and days in
-   a row. The player's own row is marked.
+   A guest has no menu, so under the puzzles is their way to How to play.
+
+   LEADERBOARD. Two rankings behind one switch: today's puzzle, with each
+   player's time, and all time, with puzzles solved and days in a row, in
+   the order the database sends them. The player's own row is marked.
    ========================================================================== */
 (() => {
   'use strict';
 
-  const { data, owner, guest, enter, DAILY, BOARD, grid, rounds, grade, order, daily, today, streak, picture, stars, time, title, switcher } = window.Pixels;
+  const { data, owner, guest, enter, DAILY, BOARD, grid, rounds, grade, order, daily, today, streak, picture, time, title, switcher } = window.Pixels;
   const host = document.getElementById('pixels-levels'), leader = document.getElementById('pixels-leader');
   // A category shows nine; the owner's others in it are switched off.
   const PER_LEVEL = 9;
@@ -73,7 +75,7 @@
     a.className = 'rux--link rux--tile rux--tile--clickable pixels-puzzle';
     a.href = href;
     a.append(art(puzzle, best != null), words('pixels-puzzle-name', name),
-      best != null ? stars(document.createElement('span'), best.stars) : words('pixels-meta', grade(rounds(grid(puzzle.squares, puzzle.width)))));
+      words('pixels-meta', best != null ? time(best.seconds) : grade(rounds(grid(puzzle.squares, puzzle.width)))));
     return a;
   };
 
@@ -86,10 +88,7 @@
     text.className = 'pixels-today-text';
     // Its name, if it has one, waits until it is solved.
     text.append(words('pixels-meta', row ? `Today · ${row} day${row === 1 ? '' : 's'} in a row` : 'Today'), words('pixels-today-name', best ? puzzle.name : puzzle.date));
-    const line = document.createElement('span');
-    if (best) line.append(stars(document.createElement('span'), best.stars), words('pixels-meta', ` ${time(best.seconds)}`));
-    else line.append(words('pixels-meta', grade(rounds(grid(puzzle.squares, puzzle.width)))));
-    text.append(line);
+    text.append(words('pixels-meta', best ? time(best.seconds) : grade(rounds(grid(puzzle.squares, puzzle.width)))));
     const go = document.createElement('span');
     go.className = 'pixels-today-go';
     go.setAttribute('aria-hidden', 'true');
@@ -164,9 +163,9 @@
     return wrap;
   };
 
-  /* THE LEADERBOARD. Two rankings behind one switch: today's puzzle, by
-     stars then time, and all time, by every star earned, with puzzles solved
-     and days in a row. The player's own row is marked. */
+  /* THE LEADERBOARD. Two rankings behind one switch: today's puzzle, with
+     each player's time, and all time, with puzzles solved and days in a row.
+     The player's own row is marked. */
   const leaderboard = ranks => {
     const el = document.createElement('section');
     el.className = 'rux--stack-vertical rux--stack-scale-5 pixels-leader';
@@ -195,10 +194,10 @@
     };
     const show = which => {
       const rows = which === 'today'
-        ? ranks.today.map((r, i) => row(i + 1, r, [stars(document.createElement('span'), r.stars), words('pixels-rank-value', time(r.seconds))]))
+        ? ranks.today.map((r, i) => row(i + 1, r, [words('pixels-rank-value', time(r.seconds))]))
         : ranks.all.map((r, i) => row(i + 1, r, [
-          words('pixels-meta', DAILY ? `${r.solved} solved · ${r.days} day${r.days === 1 ? '' : 's'}` : `${r.solved} solved`),
-          words('pixels-rank-value', `${r.stars} ★`),
+          ...(DAILY ? [words('pixels-meta', `${r.days} day${r.days === 1 ? '' : 's'}`)] : []),
+          words('pixels-rank-value', `${r.solved} solved`),
         ]));
       if (rows.length) list.replaceChildren(...rows);
       else list.replaceChildren(words('pixels-meta', which === 'today' ? "Nobody has finished today's puzzle yet." : 'Nobody has solved a puzzle yet.'));
@@ -321,6 +320,7 @@
     if (guest) {
       document.getElementById('pixels-player').textContent = me.name;
       document.getElementById('pixels-guestbar').hidden = false;
+      document.getElementById('pixels-foot').hidden = false;
     }
     // With no leaderboard there is one panel and nothing to switch between.
     document.getElementById('pixels-tabs').hidden = !BOARD;
@@ -349,7 +349,7 @@
     if (owner && dated.length) {
       drawn = section('Dailies', 0, dated.map(p => {
         const when = new Date(`${p.day}T12:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
-        const a = tile(p, when, `make.html?id=${encodeURIComponent(p.id)}`, { stars: 3 });
+        const a = tile(p, when, `make.html?id=${encodeURIComponent(p.id)}`, { seconds: 0 });
         a.lastElementChild.replaceWith(words('pixels-meta', p.name));
         return a;
       }));

@@ -10,8 +10,8 @@
    database functions that first find the player, from the log-in or from the
    key: `pixels_puzzles`, `pixels_results`, `pixels_days`, `pixels_record`,
    `pixels_record_day`, `pixels_board`, `pixels_me` and `pixels_join`.
-   `results` gives a Map of puzzle id to { seconds, stars } and `days` a Map
-   of day to the same; `record` and `recordDay` keep the better of each, and
+   `results` gives a Map of puzzle id to { seconds } and `days` a Map
+   of day to the same; `record` and `recordDay` keep the shorter time, and
    `board` gives a day's ranking and the all-time one. The client is
    /account.js's, with a log-in or without.
 
@@ -61,26 +61,25 @@
       days: {},
     };
   };
-  // The better of two results: the shorter time and the most stars.
-  const better = (was, seconds, stars) => ({
-    seconds: Math.min(seconds, was?.seconds ?? seconds), stars: Math.max(stars, was?.stars ?? stars),
-  });
+  // A result as the pages hold it; one in storage may be a bare time.
+  const kept = r => (r == null ? null : { seconds: typeof r === 'number' ? r : r.seconds });
+  // The better of two results: the shorter time.
+  const better = (was, seconds) => ({ seconds: Math.min(seconds, was?.seconds ?? seconds) });
   const write = db => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch { /* preview only */ } };
   const preview = {
     // A puzzle kept before levels and sizes were is ten a side, in level 1.
     async list() { return read().puzzles.map(p => ({ width: 10, height: 10, level: 1, colours: null, ...p })); },
     async days() { return new Map(Object.entries(read().days || {})); },
-    async recordDay(day, seconds, stars) {
+    async recordDay(day, seconds) {
       const db = read();
       db.days ||= {};
-      const was = db.days[day];
-      db.days[day] = better(was, seconds, stars);
+      const was = kept(db.days[day]);
+      db.days[day] = better(was, seconds);
       write(db);
-      return { best: db.days[day].seconds, stars: db.days[day].stars, isNew: !was || seconds < was.seconds };
+      return { best: db.days[day].seconds, isNew: !was || seconds < was.seconds };
     },
-    // A result kept before stars were is a bare time.
     async results() {
-      return new Map(Object.entries(read().results).map(([id, r]) => [id, typeof r === 'number' ? { seconds: r, stars: 1 } : r]));
+      return new Map(Object.entries(read().results).map(([id, r]) => [id, kept(r)]));
     },
     async save({ id, name, squares, width, height, level, colours, day }) {
       const db = read();
@@ -102,22 +101,21 @@
       delete db.results[id];
       write(db);
     },
-    async record(id, seconds, stars) {
+    async record(id, seconds) {
       const db = read();
-      const was = typeof db.results[id] === 'number' ? { seconds: db.results[id], stars: 1 } : db.results[id];
-      db.results[id] = better(was, seconds, stars);
+      const was = kept(db.results[id]);
+      db.results[id] = better(was, seconds);
       write(db);
-      return { best: db.results[id].seconds, stars: db.results[id].stars, isNew: !was || seconds < was.seconds };
+      return { best: db.results[id].seconds, isNew: !was || seconds < was.seconds };
     },
     // The preview has one player, so its boards hold one row.
     async me() { return { id: 'preview', name: 'Preview' }; },
     async board(day) {
       const db = read(), mine = Object.values(db.results), days = Object.values(db.days || {});
-      const stars = [...mine, ...days].reduce((n, r) => n + (r.stars || 1), 0);
-      const today = (db.days || {})[day];
+      const today = kept((db.days || {})[day]);
       return {
-        today: today ? [{ name: 'Preview', seconds: today.seconds, stars: today.stars, me: true }] : [],
-        all: [{ name: 'Preview', stars, solved: mine.length, days: days.length, me: true }],
+        today: today ? [{ name: 'Preview', seconds: today.seconds, me: true }] : [],
+        all: [{ name: 'Preview', solved: mine.length, days: days.length, me: true }],
       };
     },
   };
@@ -181,16 +179,18 @@
       return puzzles.data.map(p => ({ ...own(p), theme: of(p)?.name ?? null, hidden: !!of(p)?.hidden }));
     },
     async results() {
-      return new Map((await call('pixels_results', { p_key: key() })).map(r => [r.puzzle_id, { seconds: r.best_seconds, stars: r.stars }]));
+      return new Map((await call('pixels_results', { p_key: key() })).map(r => [r.puzzle_id, { seconds: r.best_seconds }]));
     },
     async days() {
-      return new Map((await call('pixels_days', { p_key: key() })).map(r => [r.day, { seconds: r.seconds, stars: r.stars }]));
+      return new Map((await call('pixels_days', { p_key: key() })).map(r => [r.day, { seconds: r.seconds }]));
     },
-    async record(id, seconds, stars) {
-      return call('pixels_record', { p_key: key(), p_puzzle: id, p_seconds: seconds, p_stars: stars });
+    // The database's two functions still take a number of stars, 1 to 3,
+    // which no page shows; every solve sends 3.
+    async record(id, seconds) {
+      return call('pixels_record', { p_key: key(), p_puzzle: id, p_seconds: seconds, p_stars: 3 });
     },
-    async recordDay(day, seconds, stars) {
-      return call('pixels_record_day', { p_key: key(), p_day: day, p_seconds: seconds, p_stars: stars });
+    async recordDay(day, seconds) {
+      return call('pixels_record_day', { p_key: key(), p_day: day, p_seconds: seconds, p_stars: 3 });
     },
     async board(day) { return call('pixels_board', { p_key: key(), p_day: day }); },
 
@@ -236,8 +236,8 @@
     async players() {
       const [players, results, days, settings] = await Promise.all([
         client.from('pixels_players').select('id, name, user_id, created_at, last_played_at').order('created_at'),
-        client.from('pixels_player_results').select('player_id, puzzle_id, best_seconds, stars'),
-        client.from('pixels_player_days').select('player_id, day, seconds, stars'),
+        client.from('pixels_player_results').select('player_id, puzzle_id, best_seconds'),
+        client.from('pixels_player_days').select('player_id, day, seconds'),
         client.from('pixels_settings').select('invite_word').single(),
       ]);
       [players, results, days, settings].forEach(r => fail(r.error));

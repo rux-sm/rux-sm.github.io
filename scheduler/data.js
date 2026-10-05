@@ -4171,11 +4171,12 @@
   /* The Updates window's list: the trip's updates, the pinned one first and
      the rest newest first, each a tile of its author's face beside its words
      over its day, the full stamp the day's tooltip, and Pinned beside the
-     pinned one's day. Pressing a tile turns its words into a box with Pin or
-     Unpin, Delete, Cancel and Save; Delete then asks on the tile before it
-     goes. Each writes at once, and the board reads it. Pinning one unpins
-     the trip's other, in the database. It is read fresh each time the window
-     opens, for the trip `logTrip` names. */
+     pinned one's day. Pressing a tile turns its words into a box with Delete,
+     Cancel and Save; Delete then asks on the tile before it goes. The pin is
+     a button at the tile's corner, outside the box. Each writes at once, and
+     the board reads it. Pinning one unpins the trip's other, in the database.
+     It is read fresh each time the window opens, for the trip `logTrip`
+     names. */
   const logEl = document.getElementById('scheduler-updates-log');
   const logStatus = document.getElementById('scheduler-updates-status');
   let logTrip = null;

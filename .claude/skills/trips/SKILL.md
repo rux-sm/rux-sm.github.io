@@ -52,7 +52,9 @@ rux's yes.
   has Add email thread), trip contacts.
 - **Pinned update:** the trip has no notes; what everyone should know is the
   update pinned to the top of its card, `pinned_update` in `get_trip`. Write
-  it in the Updates window and press it, then Pin; pinning one unpins the last.
+  it in the Updates window, opened from the bar's menu with Add update, then
+  press the pin at its tile's corner, which shows on hover; pressing the tile
+  itself opens its editor. Pinning one unpins the last.
 - **Route:** the Summary (Start, Spot, End; Miles, Drive, On duty, Less rest,
   a row a day), its menu's Measure drives again for a leg saved with old
   drives, the fuel card and second-driver notices, the stops with their

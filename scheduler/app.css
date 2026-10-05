@@ -941,7 +941,7 @@ button.scheduler-row-head__num::after {
    week's sticky bands and under the trip panel. It is a raised card a step
    lighter than the board inside a hairline, so it stands off the week on a
    dark theme, where a shadow does not show, as well as on a light one.
-   data.js sizes it to the week, two days wide and between two and three
+   data.js sizes it to the week, two days wide and between two and five
    buses tall; the updates take what height is left and scroll past it. */
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
   position: fixed;

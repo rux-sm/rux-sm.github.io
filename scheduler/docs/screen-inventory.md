@@ -222,13 +222,12 @@ trip, placed the way a calendar's event popover is: beside the trip's first
 day, where everything the trip says is written, over the two days after it,
 the trip's own or the board's, with its arrow at that day's middle; over the
 two days before it where the two after are not both on screen, as at the
-week's end or on a board scrolled sideways;
-and above or below the trip only where neither side has room, slid back inside
+week's end or on a board scrolled sideways; and above or below the trip only where neither side has room, slid back inside
 the board at either edge with its arrow still pointing at the trip. Nothing is taken from the trip, so the
 slots are the same on every trip however short or narrow. The card is a raised
 surface a step lighter than the board inside a hairline, so it stands off the
 week on a dark theme as well as a light one. It is sized to the week: two
-days wide and between two and three buses tall, 16px inside the cells it
+days wide and two buses tall, or up to five where the trip's updates need the room, 16px inside the cells it
 covers, centred on the trip, so it covers about half the trips above and below
 it. Each slot carries its word under its icon, the four in one 40px row; each
 warning and each one-line update is a 32px row in 14px type, the warnings

@@ -14,13 +14,13 @@ What Apple's own software says, read from Apple and not from memory. The
   contrast, and the dark increased-contrast step of each colour.
 - **Labels, fills, backgrounds, accent, link and text styles:** AppKit's own
   colours and fonts, asked of macOS 27.0.1 under the light appearance.
-- **Controls:** AppKit's controls drawn off screen under the light appearance
-  at eight times size, then measured: the frame for height, the first drawn
-  point on the corner's diagonal for the corner.
+- **Controls, a list and an alert:** AppKit's own, drawn off screen under the
+  light appearance at eight times size in a window that answers as the front
+  one, so a chosen control shows the accent colour. Height is the frame, and
+  a corner is the first drawn point on its diagonal.
 
-A control drawn off screen is in a window that is not the front one, so it
-shows its resting grey and not the accent colour. The accent-filled states,
-a Calendar event, a sheet, an alert, a menu and a list row are not measured.
+A Calendar event, a sheet and a menu are not measured. An app or the window
+server draws each, and no view of AppKit's does.
 
 ## System colours
 
@@ -138,6 +138,37 @@ which is the secondary fill on white.
 
 Every control's text is 13pt at every size.
 
+## Chosen controls
+
+The accent is the Mac's own setting, here at its default blue.
+
+| Control | Fill | On it |
+| :--- | :--- | :--- |
+| Default button | 0, 123, 255 | a white label |
+| Chosen segment | 0, 120, 249 | a white label, on the control's own corner |
+| Switch, on | 0, 120, 249 | a white thumb |
+| Switch, off | 230, 230, 230 | a white thumb |
+| Checkbox, ticked | 0, 120, 249 | a white tick |
+| Checkbox, empty | 230, 230, 230 | nothing |
+| Radio, chosen | 0, 120, 249 | a white dot |
+
+This theme fills each with its own button blue, the increased-contrast one,
+so white words on it make 4.5 to 1.
+
+## A list
+
+| Part | Measure |
+| :--- | :--- |
+| Row | 24 high |
+| Header | 28 high, 11pt regular |
+| Chosen row | 0, 100, 225, the selected-content blue, 10 in from each side of the list, corner 8 |
+
+## An alert
+
+260 wide, with everything 20 in from its sides. The title is 13pt bold and
+the message 13pt regular. Its buttons are the large size, 28 high, side by
+side at one width, 8 apart and 16 from the edge.
+
 ## This theme's tokens
 
 Every value `[data-theme="apple-light"]` sets in `css/rux-theme.css`, beside
@@ -150,12 +181,12 @@ pressed step, no tint, and no ink for a tint; the last column says which.
 | `light` | The light appearance | read | `color-scheme` |
 | `#f6f6f6` | Under-page background | read | `background`, `layer-03`, `layer-background-03` |
 | `#dcdcdc` | Selected content, unemphasized | read | `background-active`, `background-selected-hover`, `layer-accent-active-02`, `layer-accent-hover-03`, `layer-active-03`, `layer-selected-hover-03`, `button-secondary-active` |
-| `#1e6ef4` | Blue, increased contrast | read | `background-brand`, `border-interactive`, `icon-interactive`, `support-info`, `interactive`, `button-primary`, `status-blue` |
+| `#1e6ef4` | Blue, increased contrast | read | `background-brand`, `border-interactive`, `icon-interactive`, `support-info`, `interactive`, `button-primary`, `status-blue`, `content-switcher-selected` |
 | `#ededed` | Black at 7% on white, between the two fills | derived | `background-hover` |
 | `#272727` | Label on white | read | `background-inverse`, `layer-selected-inverse`, `border-inverse`, `text-primary`, `icon-primary`, `notification-action-tertiary-inverse-text` |
 | `#3a3a3a` | The label on white, lightened for hover | derived | `background-inverse-hover` |
 | `#e6e6e6` | Separator and fill on white | read | `background-selected`, `layer-accent-03`, `layer-accent-active-01`, `layer-accent-hover-02`, `layer-active-01`, `layer-active-02`, `layer-selected-03`, `layer-selected-hover-01`, `layer-selected-hover-02`, `border-disabled`, `border-subtle-00`, `border-subtle-01`, `border-tile-01`, `skeleton-element`, `button-secondary-hover`, `content-switcher-background-hover` |
-| `#ffffff` | Window and control background | read | `layer-01`, `layer-02`, `layer-background-01`, `layer-background-02`, `field-01`, `field-02`, `field-03`, `text-inverse`, `text-on-color`, `link-inverse-active`, `icon-inverse`, `icon-on-color`, `focus-inset`, `focus-inverse`, `notification-action-tertiary-inverse`, `content-switcher-selected` |
+| `#ffffff` | Window and control background | read | `layer-01`, `layer-02`, `layer-background-01`, `layer-background-02`, `field-01`, `field-02`, `field-03`, `text-inverse`, `text-on-color`, `link-inverse-active`, `icon-inverse`, `icon-on-color`, `focus-inset`, `focus-inverse`, `notification-action-tertiary-inverse` |
 | `#f3f3f3` | Tertiary fill on white | read | `layer-accent-01`, `layer-hover-01`, `layer-hover-02`, `field-hover-03`, `skeleton-background`, `button-disabled`, `notification-action-hover`, `notification-action-tertiary-inverse-hover` |
 | `#ebebeb` | Secondary fill on white | read | `layer-accent-02`, `layer-accent-hover-01`, `layer-hover-03`, `layer-selected-01`, `layer-selected-02`, `button-secondary`, `content-switcher-background` |
 | `#c7c7cc` | Gray 3 | read | `layer-accent-active-03`, `border-strong-01`, `border-subtle-selected-03`, `notification-action-tertiary-inverse-active` |

@@ -19,16 +19,17 @@
 // HOW IT READS A COLOUR. Every computed colour is painted into a 1px canvas
 // and read back, so oklch(), color-mix() and color(srgb …) all come out as
 // the same four numbers. A see-through colour is laid over what is behind it,
-// walking up the parents to the first solid fill.
+// walking up the parents to the first solid fill, and a parent's fill is its
+// own or the one its ::before or ::after lays across it.
 //
 // TRANSITIONS ARE TURNED OFF FIRST. In a tab that is not in front, a
 // transition does not advance, so without this a colour read after switching
 // the theme is still the old theme's.
 //
 // BLIND TO:
-//   - a fill painted by ::before or ::after, such as the content switcher's
-//     selected option: the walk up the parents misses it and reports a false
-//     failure. A screenshot settles it.
+//   - a fill painted by ::before or ::after over less than half its box, or
+//     by one that is not absolutely placed: the walk up the parents misses it
+//     and reports a false failure. A screenshot settles it.
 //   - hover, focus and pressed states: it reads the page as it stands. Hover a
 //     real pointer over the element and run it again.
 //   - text over a background image or a gradient.
@@ -59,15 +60,35 @@
     const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x);
     return +((hi + 0.05) / (lo + 0.05)).toFixed(2);
   };
+  // A fill ::before or ::after paints across most of its box stands for the
+  // box's own, as the content switcher's chosen option is painted. One scaled
+  // or faded to nothing is not drawn, so it is passed over.
+  const pseudoFill = e => {
+    const box = e.getBoundingClientRect();
+    for (const which of ['::after', '::before']) {
+      const cs = getComputedStyle(e, which);
+      if (cs.content === 'none' || cs.display === 'none' || cs.visibility === 'hidden') continue;
+      if (cs.position !== 'absolute' || +cs.opacity === 0) continue;
+      const m = cs.transform.match(/^matrix\(([^)]+)\)$/)?.[1].split(',').map(Number);
+      if (m && (m[0] === 0 || m[3] === 0)) continue;
+      const c = parse(cs.backgroundColor);
+      if (c[3] <= 0.02) continue;
+      if (parseFloat(cs.width) >= box.width / 2 && parseFloat(cs.height) >= box.height / 2) return c;
+    }
+    return null;
+  };
   const surface = el => {
     for (let e = el; e && e.nodeType === 1; e = e.parentElement) {
-      const c = parse(getComputedStyle(e).backgroundColor);
+      const c = pseudoFill(e) || parse(getComputedStyle(e).backgroundColor);
       if (c[3] > 0.02) return c[3] < 1 ? over(c, surface(e.parentElement)) : c;
     }
     return [255, 255, 255, 1];
   };
   const exempt = el => el.closest('[disabled], [aria-disabled="true"], [class*="disabled"], [class*="skeleton"], '
-    + '[hidden], .rux--visually-hidden, .rux--assistive-text') || el.closest('label')?.control?.disabled;
+    + '[hidden], .rux--visually-hidden, .rux--assistive-text') || el.closest('label')?.control?.disabled
+    // A slider's two range labels sit beside it, and Carbon marks a disabled
+    // slider on the slider alone.
+    || el.parentElement?.querySelector(':scope > .rux--slider--disabled');
   const label = el => (typeof el.className === 'string' && el.className.split(' ').filter(Boolean).slice(0, 2).join('.'))
     || el.tagName.toLowerCase();
 

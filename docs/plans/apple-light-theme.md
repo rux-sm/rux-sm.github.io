@@ -37,8 +37,8 @@ and Design's contrast measurement reads no text in it under 4.5 to 1.
   knows the name, so a session can put it on a page, and nobody can pick it
   half built.
 - **The header bar and a notification keep the rounded themes' shapes.**
-  Apple's toolbar and alert are not measured, and both already take this
-  theme's colours.
+  Apple has no banner like either, and both already take this theme's
+  colours.
 - **Light only.** A dark companion is its own plan.
 - **It is named `apple-light`,** shown as "Apple light" in the account panel.
 - **Apple's current shapes, with solid fills.** Capsule buttons and the
@@ -54,12 +54,10 @@ None open.
 
 ## Tasks
 
-- [ ] Measure what `design/docs/apple-token-map.md` lists as not measured:
-  the accent-filled states of a button, switch, checkbox and segment, a
-  Calendar event, a sheet, an alert, a menu and a list row. They need Apple's
-  apps on screen under the light appearance. This Mac is set to dark, so the
-  iOS Simulator's stock apps are where a light Calendar event and a sheet can
-  be read.
+- [ ] Measure a Calendar event, a sheet and a menu, which
+  `design/docs/apple-token-map.md` lists as not measured. No AppKit view
+  draws them off screen, and this Mac is set to dark, so the iOS Simulator's
+  stock apps are where a light one can be read.
 - [ ] List the theme in the account panel through
   `design/tools/lib/shell.mjs`, `design/tools/build-builder.mjs` and
   `design/tools/build-readme.mjs`, and rebuild the pages.

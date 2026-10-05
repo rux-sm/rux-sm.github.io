@@ -1813,7 +1813,8 @@
   fill: var(--rux-button-primary);
 }
 /* The segmented control is a grey capsule with no ring, and its chosen
-   option a white capsule inside it. */
+   option the accent colour under white words, as AppKit draws one in the
+   front window. */
 [data-theme="apple-light"] .rux--content-switcher {
   border-radius: 999px;
   box-shadow: none;
@@ -1832,9 +1833,14 @@
 [data-theme="apple-light"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:last-child {
   color: var(--rux-text-primary);
 }
+[data-theme="apple-light"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn.rux--content-switcher--selected:is(:first-child, :last-child, :nth-child(n)) {
+  color: var(--rux-text-on-color);
+}
 [data-theme="apple-light"] .rux--content-switcher-btn.rux--content-switcher--selected::after {
   background-color: var(--rux-content-switcher-selected);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.16);
+}
+[data-theme="apple-light"] .rux--content-switcher--icon-only .rux--content-switcher-btn.rux--content-switcher--selected:not([disabled]) svg {
+  fill: var(--rux-icon-on-color);
 }
 /* A notification here is a pale tint, so its action is the link colour.
    Carbon writes it in the inverse link colour, for the dark slab it draws a

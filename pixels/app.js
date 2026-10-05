@@ -234,8 +234,10 @@
       c.dataset.row = y;
       numbers(c, answer[y]);
       for (let x = 0; x < W; x++) {
-        // A stronger line round the edge and after every fifth square.
-        const s = part(`pixels-cell${x ? '' : ' is-west'}${y ? '' : ' is-north'}${(x + 1) % 5 ? '' : ' is-east'}${(y + 1) % 5 ? '' : ' is-south'}`, squares);
+        // A stronger line round the edge, and a warm one after every fifth
+        // square inside it.
+        const side = (n, last, first, end) => (n === last ? ` ${end}` : `${n ? '' : ` ${first}`}${(n + 1) % 5 ? '' : ` is-fifth-${end.slice(3)}`}`);
+        const s = part(`pixels-cell${side(x, W - 1, 'is-west', 'is-east')}${side(y, H - 1, 'is-north', 'is-south')}`, squares);
         s.dataset.x = x;
         s.dataset.y = y;
         // The finished picture fills in along its diagonals.

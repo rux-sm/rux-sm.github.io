@@ -16,16 +16,18 @@
 
    The numbers keep one space whatever the puzzle: `--clue-w` and `--clue-h`
    hold `--across` and `--down` numbers, which app.js sets from the board's
-   size alone, and never less than `--tile`, the side of the square tile in the
-   corner, which is one size on every board. */
+   size alone, and never less than `--tile`, the least the tile in the corner
+   needs. Both are whole pixels, so the corner's tile and the numbers' bands
+   meet the squares with no seam. */
 .pixels-board {
   --tile: 5.25rem;
-  --clue-w: max(var(--tile), calc(var(--across, 5) * .75rem + .75rem));
-  --clue-h: max(var(--tile), calc(var(--down, 5) * .95rem + .5rem));
+  --clue-w: round(down, max(var(--tile), calc(var(--across, 5) * .75rem + .75rem)), 1px);
+  --clue-h: round(down, max(var(--tile), calc(var(--down, 5) * .95rem + .5rem)), 1px);
   --base: round(down, clamp(1rem, (100vw - var(--gutter, 6rem) - var(--clue-w)) / var(--cols, 10), var(--cell-max, 2.5rem)), 1px);
   --cell: round(calc(var(--base) * var(--zoom, 1)), 1px);
   --line: var(--rux-border-subtle-01);
   --guide: var(--rux-border-strong-01);
+  --fifth: var(--rux-support-caution-major);
   display: grid;
   grid-template-columns: auto auto;
   inline-size: max-content;
@@ -60,11 +62,14 @@
   border-block-end: 1px solid var(--line);
   cursor: pointer;
 }
-/* A stronger line round the edge and after every fifth square. */
+/* A stronger line round the edge, and inside it a warm one after every fifth
+   square, as Picross rules its boards, so squares are counted in fives. */
 .pixels-cell.is-west { border-inline-start: 1px solid var(--guide); }
 .pixels-cell.is-north { border-block-start: 1px solid var(--guide); }
 .pixels-cell.is-east { border-inline-end-color: var(--guide); }
 .pixels-cell.is-south { border-block-end-color: var(--guide); }
+.pixels-cell.is-fifth-east { border-inline-end-color: var(--fifth); }
+.pixels-cell.is-fifth-south { border-block-end-color: var(--fifth); }
 /* The row and column under the finger or the keyboard cursor. */
 .pixels-cell.is-line { background: var(--rux-layer-hover-01); }
 .pixels-cell.is-cursor { outline: 2px solid var(--rux-focus); outline-offset: -2px; z-index: 1; }
@@ -157,7 +162,7 @@
 .pixels-game.is-done .pixels-cell[data-ink],
 .pixels-maker .pixels-cell[data-ink] { background: var(--ink); }
 
-/* WHAT A MISTAKE OR A HINT ADDED TO THE CLOCK, written as +0:15. */
+/* WHAT A MISTAKE ADDS TO THE CLOCK, written as +0:15 in How to play. */
 .pixels-penalty { color: var(--rux-text-error); font-weight: 600; font-variant-numeric: tabular-nums; }
 
 /* THE FINISHED PICTURE: the squares alone, no lines and no clues. */
@@ -331,35 +336,43 @@
 .pixels-how .pixels-board { --tile: 0rem; --cell-max: 1.25rem; margin: 0; pointer-events: none; }
 .pixels-how-keys { margin: 1.5rem 0 0; color: var(--rux-text-secondary); }
 
-/* THE CORNER'S TILE: the puzzle's name on a strip, the clock, and under it
-   what the last mistake or hint added, which keeps its line when empty.
-   A square of one size on every board; the numbers fit round it. */
+/* THE CORNER'S TILE fills the corner exactly, edge to edge with the numbers'
+   bands: the puzzle's name on a strip 1.25rem deep, the clock on a line
+   1.5rem deep, which is red from a mistake or a hint until the next move,
+   and between them the picture so far, small. That picture is as large as
+   whole pixels a square allow with .3125rem clear above and below it, so it
+   grows with the corner, and its empty squares are the page's colour so it
+   shows on the tile. */
 .pixels-corner { min-inline-size: 0; }
 .pixels-info {
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: 1.25rem 1fr 1.5rem;
   justify-items: center;
-  inline-size: calc(var(--tile) - .25rem);
-  block-size: calc(var(--tile) - .25rem);
+  align-items: center;
+  inline-size: var(--clue-w);
+  block-size: var(--clue-h);
   background: var(--rux-layer-01);
   text-align: center;
 }
 .pixels-info-name {
   box-sizing: border-box;
   inline-size: 100%;
+  block-size: 100%;
   margin: 0;
-  padding: .1875rem .25rem;
+  padding: 0 .25rem;
   background: var(--rux-layer-accent-01);
   color: var(--rux-text-secondary);
   font-size: .6875rem;
   font-weight: 400;
-  line-height: 1.3;
+  line-height: 1.25rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .pixels-clock { align-self: center; font-family: 'IBM Plex Mono', monospace; font-size: 1.25rem; font-variant-numeric: tabular-nums; }
-.pixels-info .pixels-penalty { min-block-size: 1.125rem; padding-block-end: .25rem; font-size: .8125rem; line-height: 1.125rem; }
+.pixels-info .pixels-clock { font-size: 1rem; line-height: 1.5rem; }
+.pixels-clock[data-charged] { color: var(--rux-text-error); }
+.pixels-thumb { --px: round(down, calc((var(--clue-h) - 3.375rem) / var(--size, 10)), 1px); background: var(--rux-background); }
 
 .pixels-controls { display: grid; gap: .75rem; }
 .pixels-status { min-block-size: 1.25rem; color: var(--rux-text-secondary); }

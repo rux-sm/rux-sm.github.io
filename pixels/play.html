@@ -166,11 +166,11 @@
           </div>
         </div>
         </div>
-        <!-- play.js moves this into the board's corner: the puzzle's name, the clock, and what a mistake or hint last added to it. -->
+        <!-- play.js moves this into the board's corner: the puzzle's name, the picture so far, and the clock. -->
         <div class="pixels-info" id="pixels-info" hidden>
           <h1 class="pixels-info-name" id="pixels-title">Puzzle</h1>
+          <div class="pixels-picture pixels-thumb" id="pixels-thumb" aria-hidden="true"></div>
           <span class="pixels-clock" id="pixels-clock" role="timer" aria-label="Time">00:00</span>
-          <span class="pixels-penalty" id="pixels-penalty" aria-hidden="true"></span>
         </div>
         <!-- The board waits behind Start: play.js shows it, and starts the clock, on the tap. -->
         <div class="pixels-stage">

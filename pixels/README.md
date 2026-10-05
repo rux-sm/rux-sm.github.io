@@ -40,13 +40,14 @@ of the picture starts crossed out, and a finished line
 crosses out its own empty squares. The clock is the score, as in Picross:
 filling a square not in the picture is a mistake, crossed out in red, and it
 adds time, 15 seconds for a puzzle's first, 30 for its second and a minute
-for each one after; a hint adds 30 seconds. What was added shows under the
-clock until the next move, and the best time on a puzzle is the one kept.
+for each one after; a hint adds 30 seconds. The clock is red until the next
+move, and the best time on a puzzle is the one kept.
 Hint, or H, lights the line where the numbers decide the most. Undo, or U, takes back the last tap or
 drag, and Redo, or R, puts it back, but neither touches a mistake, and a
 tap that was only a mistake is no move to take back. Restart
 empties the board, and Undo straight after brings it back. The puzzle's
-name and the clock sit in the board's corner, and the numbers
+name, the picture so far, drawn small, and the clock sit on a tile that fills
+the board's corner, a warm line rules off every fifth square, and the numbers
 keep the same space on every puzzle of a size, every other line's on a band
 that runs out from its squares and fades. That space holds the most numbers
 a line of five or ten can have, and six on a line of fifteen, where a line

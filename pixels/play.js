@@ -10,8 +10,8 @@
    filled.
 
    THE CLOCK IS THE SCORE. A mistake adds time to it, more each time, and a
-   hint adds some too; app.js's `penalty` and HINT say how much. What was
-   added shows under the clock until the next move. The best time on a
+   hint adds some too; app.js's `penalty` and HINT say how much. The clock
+   is red from then until the next move. The best time on a
    puzzle is the one kept. Hint points at a wrong X if there is one, and
    otherwise at the line where the numbers decide the most squares from what
    is on the board.
@@ -45,6 +45,9 @@
    ticks the phone, and an X taken off or a move undone plays a falling
    one. The Sound key keeps its choice in this browser.
 
+   THE PICTURE SO FAR is drawn small in the board's corner, over the clock:
+   the filled squares only, as they are filled.
+
    A game in progress is kept in this browser under `pixels-progress`, so a
    phone that reloads the page picks up where it was. It is dropped once the
    puzzle is solved or started over.
@@ -52,7 +55,7 @@
 (() => {
   'use strict';
 
-  const { data, enter, DAILY, grid, column, clues, solveLine, order, daily, today, streak, board, paint, highlight, drag, penalty, HINT, added, buzz, sound, sounds, listen, time, title, how } = window.Pixels;
+  const { data, enter, DAILY, grid, column, clues, solveLine, order, daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title, how } = window.Pixels;
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock');
 
@@ -130,29 +133,31 @@
 
     const keep = () => saveProgress(puzzle.id, { squares: puzzle.squares, state, seconds, mistakes, hints });
     const el = board(boardHost, answer, state, { done: true, label: 'Puzzle' });
-    // The name and the clock sit in the board's corner.
+    // The name, the picture so far and the clock sit in the board's corner.
     el.querySelector('.pixels-corner').appendChild($('pixels-info'));
     $('pixels-info').hidden = false;
+    const thumb = picture($('pixels-thumb'), '0'.repeat(W * H));
     const draw = () => {
       paint(el, answer, state, { done: true });
+      [...thumb.children].forEach((s, i) => s.toggleAttribute('data-on', state[Math.floor(i / W)][i % W] === 1));
       el.querySelectorAll('.is-hint').forEach(e => e.classList.remove('is-hint'));
       highlight(el, ...cursor);
       $('pixels-undo').disabled = !past.length;
       $('pixels-redo').disabled = !ahead.length;
     };
     const tick = () => { clock.textContent = time(seconds); };
-    // With nothing to say, what the last mistake or hint added goes too.
+    // With nothing to say, the clock is no longer red.
     const tell = (text, error) => {
       status.textContent = text;
-      if (!text) $('pixels-penalty').textContent = '';
+      if (!text) delete clock.dataset.charged;
       if (error) status.dataset.error = ''; else delete status.dataset.error;
     };
 
-    // A mistake or a hint puts `cost` seconds on the clock, and says so under it.
+    // A mistake or a hint puts `cost` seconds on the clock and turns it red.
     const charge = cost => {
       seconds += cost;
       tick();
-      $('pixels-penalty').textContent = added(cost);
+      clock.dataset.charged = '';
     };
 
     // The clock runs only while the page is in front and How to play is shut.

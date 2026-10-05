@@ -42,6 +42,11 @@ span of days or one trip.
   exists. A second, `trip_history_people`, returns the names for the filter.
   Both ask `is_staff()`, are granted to signed-in accounts by name and to
   nobody else.
+- **Each new entry also saves the account that made it,** in a new
+  `actor_id` column that `record_trip_history` fills from the log-in, so a
+  name can be checked against an account. An entry made before the column,
+  or by a driver from a link with no log-in, has the name only. The page
+  shows and filters by the name.
 - **`get_trip_history` is left alone,** because the old trips app reads it
   and is still in use.
 - **Every staff member sees the page,** as every staff member already sees
@@ -53,22 +58,14 @@ span of days or one trip.
 
 ## Questions
 
-- **Should the database save which account made each change, from now on?**
-  Today the name on an entry is the one the browser sends, so it is only as
-  right as the profile name. Saving the account beside it is a small
-  addition to `record_trip_history`, which both apps call, and it changes
-  nothing the old app sees. Old entries keep their name only. Recommended:
-  yes.
-- **Should changes to drivers, buses, customers, contacts and locations be
-  recorded too?** Nothing records them now, so this is new recording in
-  five places, not just a page. Recommended: not in this plan; a plan of its
-  own if rux wants it.
+None open.
 
 ## Tasks
 
-- [ ] Write the SQL for `search_trip_history` and `trip_history_people`,
-      try it offline against a copy of the table's shape, show it to rux and
-      apply it on a yes as one named migration.
+- [ ] Write the SQL for the `actor_id` column, `record_trip_history` filling
+      it, `search_trip_history` and `trip_history_people`, try it offline
+      against a copy of the table's shape, show it to rux and apply it on a
+      yes as one named migration.
 - [ ] Confirm the grants afterwards by `docs/database-access.md`'s check:
       `anon` can run neither function.
 - [ ] Give Design a history icon if it has none, with its glyph snapshot.

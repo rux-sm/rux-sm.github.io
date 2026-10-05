@@ -19,6 +19,9 @@ done and how.
 - The forms page draws the driver envelope, the hours-of-service record, the
   driver itinerary and the customer quote. A passenger roster is still named
   for it, after the printed schedule.
+- A change to a driver, a bus, a customer, a contact or a location records
+  no name, so only trip changes have a history. Recording them needs a plan
+  of its own.
 
 ## Pixels
 

@@ -1001,7 +1001,7 @@
   }
 
   function barEl(b, driversById, busesById, statuses) {
-    const { trip, leg, assign, place, slot, nth } = b;
+    const { trip, leg, assign, place, slot } = b;
     const hue = hueFor(trip);
     const bar = el('article', `scheduler-bar scheduler-bar--${hue}`);
     // The bar menu reads both to check the trip's colour and paint Standard.
@@ -1048,10 +1048,10 @@
       : split ? 'start' : null;
     if (stripe) bar.classList.add(`scheduler-bar--stripe-${stripe}`);
     const kind = trip.trip_type === 'one_way' ? 'one way' : !split ? null : leg.leg === 'return' ? 'pickup' : 'drop-off';
+    /* How many buses the leg takes, written after the destination on a leg of
+       more than one: `×3`. Which of them a bar is goes unsaid, because its row
+       is the bus. */
     const count = leg.count || 1;
-    /* Which of the leg's buses this is, drawn as a round badge before the
-       destination on a leg of more than one bus, so its bars can be told apart. */
-    const ref = count > 1 ? `${nth}/${count}` : '';
 
     /* WHETHER THIS BUS FITS THIS TRIP, and what the trip needs. The bar draws
        no marks: what is still to be done is the reminder's to ask, and the
@@ -1106,8 +1106,9 @@
     const waits = asks ? waitsOf(trip).map(w => WAIT_WORDS[w]) : [];
     const attention = misfits.length ? attentionMark('error', [...misfits, ...waits].join(' · '))
       : asks ? attentionMark('warning', waits.join(' · ')) : null;
-    const dest = el('span', null, placeName(trip.destination) || 'No destination');
-    if (ref) dest.prepend(el('span', 'scheduler-bar__nth', String(nth)));
+    const destName = el('span', null, placeName(trip.destination) || 'No destination');
+    const dest = count > 1 ? el('span', 'scheduler-bar__multi') : destName;
+    if (count > 1) dest.append(destName, el('span', 'scheduler-bar__count', `×${count}`));
     addRow(bar, 'scheduler-bar__dest', dest, attention);
     addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
 
@@ -1162,7 +1163,7 @@
     if (code) bar.appendChild(el('span', 'scheduler-bar__code', code));
 
     bar.setAttribute('aria-label', [
-      trip.destination || 'No destination', trip.customer, kind, ref ? `bus ${nth} of ${count}` : null,
+      trip.destination || 'No destination', trip.customer, kind, count > 1 ? `${count} buses` : null,
       place.fromPrev ? 'continues from the previous week' : null,
       place.toNext ? 'continues into the next week' : null,
       trip.confirmed === false ? 'unconfirmed' : null,
@@ -1209,10 +1210,8 @@
         const assigns = (trip.trip_assignments || [])
           .filter(a => (a.leg || 'outbound') === leg.leg)
           .sort((x, y) => (x.position ?? 0) - (y.position ?? 0));
-        // `nth` counts the leg's buses from 1; the stored position can run on
-        // from the other leg's, so it is not the number shown.
-        assigns.forEach((a, i) => push(a.bus_id ?? UNASSIGNED, { trip, leg, assign: a, place, slot: a.position ?? 0, nth: i + 1 }));
-        for (let i = assigns.length; i < (leg.count || 1); i++) push(UNASSIGNED, { trip, leg, assign: null, place, slot: i, nth: i + 1 });
+        assigns.forEach(a => push(a.bus_id ?? UNASSIGNED, { trip, leg, assign: a, place, slot: a.position ?? 0 }));
+        for (let i = assigns.length; i < (leg.count || 1); i++) push(UNASSIGNED, { trip, leg, assign: null, place, slot: i });
       }
     }
 

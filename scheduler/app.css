@@ -763,23 +763,11 @@ button.scheduler-row-head__num::after {
 /* The first part of a row gives way; whatever sits right of it keeps its width. */
 .scheduler-bar__row > :first-child { flex: 0 1 auto; min-inline-size: 0; }
 .scheduler-bar__dest { font-weight: 600; }
-/* Which of a trip's buses this is: its number in a ring of the bar's own ink,
-   as tall as the row, before the destination. */
-.scheduler-bar__nth {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  inline-size: var(--scheduler-row-h);
-  block-size: var(--scheduler-row-h);
-  margin-inline-end: var(--rux-spacing-02);
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  vertical-align: top;
-  font-size: .75em;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
+/* How many buses a trip takes, after its destination: plain weight and dim,
+   as the client is. The name gives way and the count is never cut short. */
+.scheduler-bar__multi { display: flex; align-items: baseline; gap: var(--rux-spacing-02); }
+.scheduler-bar__multi > :first-child { overflow: hidden; text-overflow: ellipsis; min-inline-size: 0; }
+.scheduler-bar__count { flex: none; font-weight: 400; opacity: .85; }
 .scheduler-bar__phone { font-variant-numeric: tabular-nums; }
 /* Times in figures of one width, so down the board they line up; the a or
    p after each is smaller and dimmer, so the figures are what reads. */

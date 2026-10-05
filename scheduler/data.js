@@ -1148,6 +1148,35 @@
     else whenDep.append('No times');
     addRow(bar, 'scheduler-bar__time', when, whenDep);
 
+    /* The newest update's words on one line, the last thing anyone said
+       about the trip, whichever update is pinned: the card leads with the
+       pinned one, and the bar says what is new. A pin in outline leads it,
+       where the card's pinned update wears the solid one. While
+       the trip has anything open, mark and words take the colour of the
+       update's age, so down a week the eye finds the trips still in play
+       and how lately each was touched: green while the card's age reads in
+       minutes, hours or 1d, amber for the rest of its first week, and red
+       once the card shows a date. Open is anything the card would warn of
+       or the office still waits on: a bus that does not fit, a need still
+       to do, nobody to call on the day, or a confirmation, PO, itinerary or
+       balance not in. A settled trip's update stays in the bar's ink, since
+       its age asks for nothing. A trip with none leaves the row empty, so
+       every bar on the board is one height. */
+    const latest = updatesOf(trip)[0] ?? null;
+    const news = el('span', null, latest?.body || '');
+    let age = null, tone = '';
+    if (latest) {
+      news.title = latest.body;
+      const open = waitsOf(trip).length > 0 || misfits.length > 0 || needs.some(n => !n.done)
+        || (!dayOfContact(trip) && !trip.contact_not_needed);
+      const days = (Date.now() - Date.parse(latest.created_at)) / 864e5;
+      if (open) tone = ` scheduler-bar__update--${days < 2 ? 'new' : days < 7 ? 'week' : 'old'}`;
+      age = el('span', 'scheduler-bar__age');
+      age.title = updateStamp(latest);
+      age.appendChild(svgUse('#m-keep', '16', '0 0 32 32'));
+    }
+    addRow(bar, `scheduler-bar__update${tone}`, age, news);
+
     // The crew in role order, or what the bar needs before it can have one.
     const crew = assign ? crewOf(trip, assign, driversById, statuses).filter(c => !(placeholder && c.needed)) : [];
     const crewBox = el('span', 'scheduler-bar__crew', assign || placeholder ? null : 'Needs a bus');
@@ -9891,15 +9920,16 @@
      rather than blanking it: `--scheduler-bar-rows` is the count, so the bar
      shrinks and more buses fit. Saved in `localStorage` and read with a
      try-catch, so a browser that refuses storage gets the defaults. */
-  const VIEW_ROWS = ['client', 'contact', 'time', 'drivers'];
+  const VIEW_ROWS = ['client', 'contact', 'time', 'update', 'drivers'];
   // The class that hides each row, written out in full so the check can read it.
   const HIDE_ROW = {
     client: 'scheduler-week--no-client',
     contact: 'scheduler-week--no-contact',
     time: 'scheduler-week--no-time',
+    update: 'scheduler-week--no-update',
     drivers: 'scheduler-week--no-drivers',
   };
-  const view = { client: true, contact: true, time: true, drivers: true, sunday: false, equipment: false, twoWeeks: false, yard: false };
+  const view = { client: true, contact: true, time: true, update: true, drivers: true, sunday: false, equipment: false, twoWeeks: false, yard: false };
   const VIEW_KEY = 'scheduler.view';
 
   try {

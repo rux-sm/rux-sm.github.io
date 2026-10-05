@@ -62,7 +62,7 @@
      percentage of seven lands on Blink's 1/64px and paints a bar edge across
      two device pixels. */
   --scheduler-day-w: calc(100% / var(--scheduler-days));
-  --scheduler-bar-rows: 5;
+  --scheduler-bar-rows: 6;
   /* The one line that draws the rule round a bar somebody else is in and the
      two inner edges of the square in its corner. A width, not a theme choice,
      so every theme draws it the same. */
@@ -756,6 +756,7 @@ button.scheduler-row-head__num::after {
 .scheduler-week--no-client .scheduler-bar__client,
 .scheduler-week--no-contact .scheduler-bar__contact,
 .scheduler-week--no-time .scheduler-bar__time,
+.scheduler-week--no-update .scheduler-bar__update,
 .scheduler-week--no-drivers .scheduler-bar__drivers { display: none; }
 
 .scheduler-bar__row { display: flex; justify-content: space-between; gap: var(--rux-spacing-03); block-size: var(--scheduler-row-h); white-space: nowrap; overflow: hidden; }
@@ -781,6 +782,34 @@ button.scheduler-row-head__num::after {
    the name drops to the hidden second line; a name too long for the row alone
    still gives way. */
 .scheduler-bar__contact { justify-content: flex-start; flex-wrap: wrap; align-content: flex-start; }
+/* THE UPDATE ROW leads with a pin in outline, and mark and words take the
+   colour of the update's age: success while it is new, warning through its
+   first week and error after. The mark wears the inks the bell and the
+   crew's marks wear, and the words the text steps theme.css sets beside
+   them. A settled trip's row has no age and keeps the bar's ink. The mark
+   keeps its width and the words give way. */
+.scheduler-bar__update { justify-content: flex-start; gap: var(--rux-spacing-02); }
+.scheduler-bar__update > .scheduler-bar__age {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--scheduler-mark-glyph);
+  block-size: var(--scheduler-row-h);
+  overflow: visible;
+}
+.scheduler-bar__age svg { display: block; inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
+.scheduler-bar__update > .scheduler-bar__age + span { flex: 0 1 auto; min-inline-size: 0; }
+.scheduler-bar__update--new { color: var(--scheduler-age-new); }
+.scheduler-bar__update--week { color: var(--scheduler-age-week); }
+.scheduler-bar__update--old { color: var(--scheduler-age-old); }
+.scheduler-bar__update--new > .scheduler-bar__age { color: var(--scheduler-mark-success); }
+.scheduler-bar__update--week > .scheduler-bar__age { color: var(--scheduler-mark-warning); }
+.scheduler-bar__update--old > .scheduler-bar__age { color: var(--scheduler-mark-error); }
+/* The amber bar is the warning colour itself in a dark theme, and none of
+   the inks reads on it, so its update keeps the bar's own, mark and words. */
+.scheduler-bar--amber .scheduler-bar__update,
+.scheduler-bar--amber .scheduler-bar__update > .scheduler-bar__age { color: inherit; }
 /* The return-after-midnight mark, small and raised so the row keeps its height. */
 .scheduler-bar__next-day { font-size: .75em; line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
 /* Two levels of brightness, and the split is what the row is for: bright is
@@ -2929,8 +2958,10 @@ button.scheduler-row-head__num::after {
    board. Those toggles buy height among the bars; this is where the writing a
    block gave up is read, so hiding a row here would leave it nowhere. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcuts__trip .scheduler-bar__row { display: flex; }
-/* The bar's updates mark is left off: the updates are read just above it. */
+/* The bar's updates mark is left off: the updates are read just above it,
+   and so is its newest update's row. */
 .scheduler-bar-shortcuts__trip .scheduler-bar__msg { display: none; }
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcuts__trip .scheduler-bar__update { display: none; }
 /* The phone number dials, drawn as a link in the trip's own ink. */
 .scheduler-bar__phone--call { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 /* A trip the sheet comes up over scrolls clear of it by the sheet's height. */

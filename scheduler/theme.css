@@ -64,6 +64,51 @@
   --scheduler-mark-done: var(--rux-text-primary);
 }
 
+/* THE WORDS OF A BAR'S NEWEST UPDATE take the colour of its age: new, in its
+   first week, or older. They are 12px text, which needs 4.5 to 1 where a
+   glyph gets by on 3, so each theme sets them a step past its marks, away
+   from the bar's fill, and the pin beside them keeps the mark's own
+   colour. A theme that sets none leaves the words in the bar's ink.
+
+   White and g10 take Carbon's 70 steps, the ink their bars are written in,
+   5.8 to 1 at the least. The Carbon dark themes and spotify-dark, whose bars
+   are Carbon's too, take green 30, the warning itself and red 30, 4.5 to 1 on
+   every bar. apple-light darkens its own three support colours to 4.9 to 1.
+   Geist's green and amber marks are already its text steps, and its red is
+   lifted a tenth toward white to clear the teal bar. Ant's bars are bright
+   enough that white itself holds only 4.5 to 5.2 on four of them, so its
+   words take the palest tints that still show a hue, 3.7 to 1 at the least,
+   on the green bar. */
+:root,
+[data-theme="white"],
+[data-theme="g10"] {
+  --scheduler-age-new: #0e6027;
+  --scheduler-age-week: #684e00;
+  --scheduler-age-old: #a2191f;
+}
+[data-theme="g90"],
+[data-theme="g100"],
+[data-theme="spotify-dark"] {
+  --scheduler-age-new: #6fdc8c;
+  --scheduler-age-week: var(--rux-support-warning);
+  --scheduler-age-old: #ffb3b8;
+}
+[data-theme="apple-light"] {
+  --scheduler-age-new: color-mix(in srgb, var(--rux-support-success) 80%, #000);
+  --scheduler-age-week: color-mix(in srgb, var(--rux-support-warning) 85%, #000);
+  --scheduler-age-old: color-mix(in srgb, var(--rux-support-error) 88%, #000);
+}
+[data-theme="geist-dark"] {
+  --scheduler-age-new: var(--scheduler-mark-success);
+  --scheduler-age-week: var(--scheduler-mark-warning);
+  --scheduler-age-old: color-mix(in srgb, var(--scheduler-mark-error) 90%, #fff);
+}
+[data-theme="ant-dark"] {
+  --scheduler-age-new: #d9f7be;
+  --scheduler-age-week: #fff1b8;
+  --scheduler-age-old: #ffe1de;
+}
+
 /* The amber trip bar. A light theme fills it as it fills a warning
    notification, like the other bars below: a hover step at the red, blue and
    purple tag tints' lightness and strength, and Carbon's yellow 70 ink and

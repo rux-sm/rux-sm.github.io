@@ -2,12 +2,13 @@
 type: plan
 ---
 
-# Plan: History for drivers, buses and customers
+# Plan: History for drivers, buses, customers, contacts and locations
 
 ## Goal
 
-The History page also shows what changed on a driver, a bus or a customer
-and who changed it, beside the trip changes it shows now.
+The History page also shows what changed on a driver, a bus, a customer, a
+contact or a location and who changed it, beside the trip changes it shows
+now.
 
 ## Decisions
 
@@ -32,15 +33,18 @@ and who changed it, beside the trip changes it shows now.
 - **The values are kept as they are,** a licence number and a date of birth
   included, because every staff member already reads them on the Drivers
   page.
+- **A failure in the recording never stops a save.** It is a warning in the
+  database's log, and the driver, bus or customer saves as before.
 - **The History page stays one list,** with a third choice beside Person and
-  When: Everything, Trips, Drivers, Buses and Customers. Everything is where
-  it opens.
+  When: Everything, Trips, Drivers, Buses, Customers, Contacts and Locations.
+  Everything is where it opens.
 - **One read for the page, `search_history`,** returns trip entries and
   record entries together, newest first. It replaces `search_trip_history`,
-  and `history_people` replaces `trip_history_people`; the two replaced
-  functions are dropped, since only this page calls them.
-- **A row opens the record's own page,** `drivers.html?id=`, `fleet.html?id=`
-  or `customers.html?id=`. A deleted record's row opens nothing.
+  and `history_people` replaces `trip_history_people`. The two replaced
+  functions are dropped in a second migration once the new page is
+  published, so the published page never calls a function that is gone.
+- **A row opens the record's own page,** such as `drivers.html?id=` or
+  `fleet.html?id=`. A deleted record's row opens nothing.
 - **Each record page gets a History button** that opens the History page on
   that one record, as the bar menu does for a trip.
 - **The page turns a column's name into the office's words,** such as
@@ -54,21 +58,23 @@ and who changed it, beside the trip changes it shows now.
 
 ## Questions
 
-- **Contacts and locations too?** The same trigger covers them at no extra
-  cost, and the page would gain two more choices. Recommended: yes.
+None open.
 
 ## Tasks
 
-- [ ] Write the SQL for `record_history`, the trigger function and its
-      triggers, `search_history` and `history_people`, and the drop of the
-      two replaced functions. Try it offline against a copy of the tables'
-      shape, show it to rux and apply it on a yes as one named migration.
+- [ ] Show rux the SQL for `record_history`, the trigger functions and their
+      triggers, `search_history` and `history_people`, tried offline against
+      a copy of the tables' shape, and apply it on a yes as one named
+      migration.
 - [ ] Confirm the grants afterwards by `docs/database-access.md`'s check:
       `anon` can run neither function and reads nothing from the table.
 - [ ] Move `history.js` to `search_history` and `history_people`, add the
       third choice, the record rows and their links, and the words for each
       column.
-- [ ] Add the History button to the driver, bus and customer pages.
+- [ ] Add the History button to the driver, bus, customer, contact and
+      location pages.
+- [ ] Drop `search_trip_history` and `trip_history_people` once the new page
+      is published.
 - [ ] Update `scheduler/docs/screen-inventory.md` and
       `scheduler/docs/database-inventory.md` in the same commits.
 - [ ] Check it in Chrome on :8641: trip entries read as before, each choice

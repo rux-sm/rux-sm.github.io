@@ -2,29 +2,52 @@
    --rux-* token so each theme draws them from its own values. Design's
    components are used as they are and never restyled here. */
 
+/* ONE GRID OF 6PX. Every size below is chosen so that what is divided comes
+   out in whole pixels with nothing rounded: the corner is 84px on a phone and
+   120px on a wide screen, the small picture in it 30px and 60px, the squares
+   together a multiple of 30px, and the keys' gaps 6px. They are pixels and
+   not rems because they are a drawing's measures, not text's. */
+:root { --pixels-corner: 84px; --pixels-thumb: 30px; }
+@media (min-width: 48rem) {
+  :root { --pixels-corner: 120px; --pixels-thumb: 60px; }
+}
+
+/* THE FRAME is what the game or the maker sits in, and the width its sizes
+   are worked out from, as 100cqi. On a phone it takes back all but .5rem of
+   the 3rem the page keeps clear each side, and 1rem from the top. */
+.pixels-frame { container-type: inline-size; }
+@media (max-width: 28rem) {
+  .pixels-frame { margin: -1rem -2.5rem 0; }
+}
+
 /* THE BOARD. Four parts in a two by two grid: a corner, the column numbers,
    the row numbers and the squares. Each of the last three is a window onto a
    strip, so a row's numbers and its squares always line up and a zoomed board
    slides behind its windows.
 
-   A square is as wide as the screen allows, and a whole number of pixels so
-   that filled squares meet with no seam: `--base` is the screen's width, less
-   the page's `--gutter` and the row numbers' width, shared among the
-   squares, from 16px up to 40px, or 56px on a board of five. `--cell` is
-   that times `--zoom`, which with `--tx` and `--ty` app.js sets as two
-   fingers pinch and slide.
+   EVERY BOARD HAS ONE FOOTPRINT. The squares together are `--side` across,
+   whatever the puzzle's size: the most the frame's width and the window's
+   height leave beside the corner, from 150px up to `--most`, taken down to a
+   multiple of 30px, which fives, tens and fifteens all divide. `--base`, a
+   square, is that shared out, so it is whole pixels by itself. `--chrome` is
+   the height the page uses above and below a board. `--cell` is `--base`
+   times `--zoom`, which with `--tx` and `--ty` app.js sets as two fingers
+   pinch and slide.
 
-   The numbers keep one space whatever the puzzle: `--clue-w` and `--clue-h`
-   hold `--across` and `--down` numbers, which app.js sets from the board's
-   size alone, and never less than `--tile`, the least the tile in the corner
-   needs. Both are whole pixels, so the corner's tile and the numbers' bands
-   meet the squares with no seam. */
+   The numbers keep the corner's measure both ways, `--clue-w` and
+   `--clue-h`, so the corner is a square of one size on every board. `--num`
+   is the size a number is drawn, larger on larger squares; a line with more
+   numbers than fit at that size draws them smaller, below. */
+.pixels-game, .pixels-maker {
+  --side: round(down, clamp(150px, min(100cqi - var(--pixels-corner), 100dvh - var(--chrome) - var(--pixels-corner)), var(--most)), 30px);
+  --foot: calc(var(--side) + var(--pixels-corner));
+}
 .pixels-board {
-  --tile: 5.25rem;
-  --clue-w: round(down, max(var(--tile), calc(var(--across, 5) * .75rem + .75rem)), 1px);
-  --clue-h: round(down, max(var(--tile), calc(var(--down, 5) * .95rem + .5rem)), 1px);
-  --base: round(down, clamp(1rem, (100vw - var(--gutter, 6rem) - var(--clue-w)) / var(--cols, 10), var(--cell-max, 2.5rem)), 1px);
+  --clue-w: var(--pixels-corner);
+  --clue-h: var(--pixels-corner);
+  --base: calc(var(--side) / var(--cols, 10));
   --cell: round(calc(var(--base) * var(--zoom, 1)), 1px);
+  --num: clamp(13px, round(down, calc(var(--base) * .45), 1px), 20px);
   --line: var(--rux-border-subtle-01);
   --guide: var(--rux-border-strong-01);
   --fifth: var(--rux-support-caution-major);
@@ -37,7 +60,6 @@
   -webkit-touch-callout: none;
   touch-action: none;
 }
-.pixels-board--small { --cell-max: 3.5rem; }
 .pixels-cols, .pixels-rows, .pixels-squares { overflow: hidden; }
 .pixels-cols, .pixels-squares { inline-size: calc(var(--cols) * var(--base)); }
 .pixels-rows, .pixels-squares { block-size: calc(var(--rows) * var(--base)); }
@@ -94,24 +116,32 @@
 
 /* A LINE'S NUMBERS. Every other line's sit on a band, strongest at the
    squares and fading out to the edge of the room the numbers keep, the way
-   Picross draws them, so the eye keeps to its line. */
+   Picross draws them, so the eye keeps to its line.
+
+   THEY ALWAYS FIT. app.js gives a line `--units`, how wide its numbers are
+   in ems, a digit being .6 and a gap .3, and `--count`, how many it has. A
+   row's are drawn at `--num` or at the size that fits them in the room
+   across, whichever is less, and a column's the same in the room down, a
+   whole number of pixels either way. */
 .pixels-clue {
   display: flex;
   gap: .3em;
   justify-content: end;
   align-items: center;
-  padding-inline: .375rem;
-  font-size: .8125rem;
+  padding-inline: 2px 6px;
+  font-size: round(down, min(var(--num), calc((var(--clue-w) - 8px) / var(--units, 1))), 1px);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
-.pixels-clue--col { flex-direction: column; gap: 0; padding: .25rem 0; line-height: 1.15; }
+.pixels-clue--col {
+  flex-direction: column;
+  gap: 0;
+  padding: 2px 0;
+  font-size: round(down, min(var(--num), calc((var(--clue-h) - 4px) / var(--count, 1))), 1px);
+}
 .pixels-clue.is-band { background: linear-gradient(to left, var(--rux-layer-accent-01), transparent); }
 .pixels-clue--col.is-band { background: linear-gradient(to top, var(--rux-layer-accent-01), transparent); }
-/* A line of fifteen with seven or eight numbers, which are all ones and twos:
-   smaller and closer, so they fit the room six keep and the board stays put. */
-.pixels-clue.is-tight { gap: .2em; font-size: .6875rem; }
-.pixels-clue--col.is-tight { gap: 0; line-height: 1; }
 .pixels-clue.is-line { background: var(--rux-layer-hover-01); }
 .pixels-clue > .is-done { color: var(--rux-text-disabled); }
 
@@ -300,18 +330,21 @@
 }
 .pixels-meta { color: var(--rux-text-secondary); font-variant-numeric: tabular-nums; }
 
-/* THE GAME. One column as wide as the board, centred. On a phone it runs to
-   the edges of the screen, so the squares are as big as they can be. */
+/* THE GAME. One column exactly as wide as the board, so the keys under it
+   end where it does, set in from the frame's edge by a whole number of
+   pixels: centred, or a pixel left of it where the room over is odd. */
 /* Nothing in the game or the maker is text to select: a slow drag on a phone
    otherwise selects the words beside the board. */
 .pixels-game, .pixels-maker { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 .pixels-maker input { user-select: text; -webkit-user-select: text; }
-.pixels-game { display: grid; gap: 1rem; inline-size: max-content; max-inline-size: 100%; margin-inline: auto; touch-action: manipulation; }
-/* The page keeps 3rem clear each side; on a phone the game takes all but
-   .5rem of it back, and 1rem from the top, so a board of fifteen and
-   everything under it fit above the home bar. */
-@media (max-width: 28rem) {
-  .pixels-game { --gutter: 1rem; inline-size: auto; max-inline-size: none; margin: -1rem -2.5rem 0; }
+.pixels-game {
+  --most: 600px;
+  --chrome: 276px;
+  display: grid;
+  gap: 1rem;
+  inline-size: var(--foot);
+  margin-inline-start: round(down, calc((100cqi - var(--foot)) / 2), 1px);
+  touch-action: manipulation;
 }
 /* LOADING. The puzzle comes from the database, and until its board is built
    the keys under it would sit at the top of the page for a moment and then
@@ -327,26 +360,27 @@
 .pixels-start { position: absolute; inset-block-start: 50%; inset-inline-start: 50%; translate: -50% -50%; display: grid; gap: .5rem; }
 
 /* HOW TO PLAY. Three steps down the modal, each a small board beside its
-   words. The boards are the game's own at 20px a square, with no corner
-   tile to make room for, and nothing on them takes a touch. */
+   words. The boards are the game's own at 20px a square, with 36px for
+   their numbers, and nothing on them takes a touch. */
 .pixels-how { display: grid; gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
 .pixels-how-step { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1rem; align-items: start; }
 .pixels-how-step p { margin: .25rem 0 0; }
 .pixels-how-art { display: grid; justify-items: end; gap: .375rem; }
-.pixels-how .pixels-board { --tile: 0rem; --cell-max: 1.25rem; margin: 0; pointer-events: none; }
+.pixels-how .pixels-board { --clue-w: 36px; --clue-h: 36px; --base: 20px; --num: 13px; margin: 0; pointer-events: none; }
 .pixels-how-keys { margin: 1.5rem 0 0; color: var(--rux-text-secondary); }
 
 /* THE CORNER'S TILE fills the corner exactly, edge to edge with the numbers'
-   bands: the puzzle's name on a strip 1.25rem deep, the clock on a line
-   1.5rem deep, which is red from a mistake or a hint until the next move,
-   and between them the picture so far, small. That picture is as large as
-   whole pixels a square allow with .3125rem clear above and below it, so it
-   grows with the corner, and its empty squares are the page's colour so it
+   bands, a square of one size on every board: the puzzle's name on a strip
+   20px deep, the clock on a line 24px deep, or 28px on a wide screen, which
+   is red from a mistake or a hint until the next move, and between them the
+   picture so far, small. That picture is `--pixels-thumb` across on every
+   board, which fives, tens and fifteens all divide, and it sits in the
+   middle on whole pixels. Its empty squares are the page's colour so it
    shows on the tile. */
 .pixels-corner { min-inline-size: 0; }
 .pixels-info {
   display: grid;
-  grid-template-rows: 1.25rem 1fr 1.5rem;
+  grid-template-rows: 20px 1fr 24px;
   justify-items: center;
   align-items: center;
   inline-size: var(--clue-w);
@@ -364,15 +398,19 @@
   color: var(--rux-text-secondary);
   font-size: .6875rem;
   font-weight: 400;
-  line-height: 1.25rem;
+  line-height: 20px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .pixels-clock { align-self: center; font-family: 'IBM Plex Mono', monospace; font-size: 1.25rem; font-variant-numeric: tabular-nums; }
-.pixels-info .pixels-clock { font-size: 1rem; line-height: 1.5rem; }
+.pixels-info .pixels-clock { font-size: 16px; line-height: 24px; }
+@media (min-width: 48rem) {
+  .pixels-info { grid-template-rows: 20px 1fr 28px; }
+  .pixels-info .pixels-clock { font-size: 20px; line-height: 28px; }
+}
 .pixels-clock[data-charged] { color: var(--rux-text-error); }
-.pixels-thumb { --px: round(down, calc((var(--clue-h) - 3.375rem) / var(--size, 10)), 1px); background: var(--rux-background); }
+.pixels-thumb { --px: calc(var(--pixels-thumb) / var(--size, 10)); background: var(--rux-background); }
 
 .pixels-controls { display: grid; gap: .75rem; }
 .pixels-status { min-block-size: 1.25rem; color: var(--rux-text-secondary); }
@@ -380,7 +418,7 @@
 
 /* FILL AND X, two large keys, each showing only the mark it leaves on a
    square. The chosen one is drawn in the page's opposite colours. */
-.pixels-pick { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+.pixels-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 .pixels-pick > button {
   display: flex;
   align-items: center;
@@ -419,7 +457,7 @@
 /* THE ROW OF KEYS under them: back, restart, hint, undo, redo and sound,
    each its icon over its word. Sound is a key that stays pressed while on,
    and shows the speaker crossed out, dimmed, while off. */
-.pixels-keys { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .25rem; }
+.pixels-keys { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
 .pixels-key[aria-pressed="true"] > .pixels-sound-off,
 .pixels-key[aria-pressed="false"] > .pixels-sound-on { display: none; }
 .pixels-key[aria-pressed="false"] { color: var(--rux-text-secondary); }
@@ -446,14 +484,21 @@
 .pixels-solved { display: grid; gap: 1.5rem; justify-items: center; text-align: center; padding-block: 1rem; }
 .pixels-solved-clock { display: block; font-size: 2rem; }
 
-/* THE MAKER. The board, then the check, name and buttons beside it on a
-   wide screen and under it on a phone. */
-.pixels-maker { display: flex; flex-wrap: wrap; gap: 2rem; align-items: start; justify-content: center; }
-.pixels-maker { --gutter: 4rem; }
-.pixels-maker .pixels-board { margin-inline: 0; }
-/* On a phone the maker takes the page's clear edges back, as the game does. */
-@media (max-width: 28rem) {
-  .pixels-maker { --gutter: 1rem; margin-inline: -2.5rem; }
+/* THE MAKER. The board, then the check, name and buttons under it, or
+   beside it where the frame has room for both. Its board is the game's, to
+   450px of squares, set in by a whole number of pixels as the game is. */
+.pixels-maker {
+  --most: 450px;
+  --chrome: 96px;
+  --wide: var(--foot);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  inline-size: var(--wide);
+  margin-inline-start: round(down, calc((100cqi - var(--wide)) / 2), 1px);
+}
+@container (min-width: 890px) {
+  .pixels-maker { --wide: calc(var(--foot) + 20rem); flex-direction: row; align-items: start; }
 }
 .pixels-maker-side { display: grid; gap: 1.5rem; align-content: start; inline-size: 18rem; max-inline-size: 100%; }
 /* The eight inks to paint with, the chosen one ringed. */

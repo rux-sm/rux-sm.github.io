@@ -184,13 +184,12 @@
      behind it, so a zoomed board moves its squares both ways while the
      numbers move one way each and stay in view.
 
-     The numbers keep one space whatever the puzzle, so a board of one size
-     sits in one place: room for three numbers on a board of five, five on
-     one of ten and six on one of fifteen, or for `options.most`, which How
-     to play gives its small boards. That is the most a line of five or ten
-     can hold. A line of fifteen can hold eight, and one with seven or eight
-     is marked `is-tight`, which app.css draws smaller so they fit the room
-     for six. app.css sizes the room from `--across` and `--down`. */
+     Every board has one footprint, which app.css sizes: the squares
+     together are one width whatever the puzzle, and the numbers keep one
+     room. A line is told how wide its numbers are, as `--units`, in ems, a
+     digit being .6 and the gap between two numbers .3, and how many it
+     has, as `--count`, and app.css draws them smaller where they would not
+     fit that room. */
   const board = (host, answer, state, options = {}) => {
     const H = answer.length, W = answer[0].length;
     const part = (name, parent) => {
@@ -200,12 +199,9 @@
       return d;
     };
     const el = document.createElement('div');
-    el.className = `pixels-board${W <= 5 ? ' pixels-board--small' : ''}`;
+    el.className = 'pixels-board';
     el.style.setProperty('--cols', W);
     el.style.setProperty('--rows', H);
-    const room = options.most ?? (W <= 5 ? 3 : W <= 10 ? 5 : 6);
-    el.style.setProperty('--across', room);
-    el.style.setProperty('--down', room);
     el.setAttribute('role', 'grid');
     el.setAttribute('aria-label', options.label || 'Puzzle');
     part('pixels-corner', el);
@@ -213,9 +209,10 @@
     const rows = part('pixels-slide', part('pixels-rows', el));
     const squares = part('pixels-slide', part('pixels-squares', el));
     const numbers = (target, line) => {
-      const runs = runsOf(line);
-      if (runs.length > room) target.classList.add('is-tight');
-      clues(line).forEach((n, i) => {
+      const runs = runsOf(line), all = clues(line);
+      target.style.setProperty('--units', (all.join('').length * .6 + (all.length - 1) * .3).toFixed(1));
+      target.style.setProperty('--count', all.length);
+      all.forEach((n, i) => {
         const span = document.createElement('span');
         span.textContent = n;
         if (runs[i]) [span.dataset.from, span.dataset.length] = runs[i];
@@ -573,9 +570,9 @@
     const begun = answer.map((r, y) => r.map((_, x) => (y === 1 || y === 2 ? 1 : x % 4 ? 0 : 2)));
     const missed = begun.map((r, y) => r.map((v, x) => (y === 4 && x === 1 ? 3 : v)));
     const [numbers, filling, mistake] = modal.querySelectorAll('.pixels-how-art');
-    board(numbers, answer, answer, { most: 2 });
-    board(filling, answer, begun, { most: 2, done: true });
-    board(mistake, answer, missed, { most: 2, done: true });
+    board(numbers, answer, answer);
+    board(filling, answer, begun, { done: true });
+    board(mistake, answer, missed, { done: true });
     const cost = document.createElement('span');
     cost.className = 'pixels-penalty';
     cost.textContent = added(penalty(1));

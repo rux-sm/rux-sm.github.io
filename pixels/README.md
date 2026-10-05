@@ -45,13 +45,17 @@ move, and the best time on a puzzle is the one kept.
 Hint, or H, lights the line where the numbers decide the most. Undo, or U, takes back the last tap or
 drag, and Redo, or R, puts it back, but neither touches a mistake, and a
 tap that was only a mistake is no move to take back. Restart
-empties the board, and Undo straight after brings it back. The puzzle's
-name, the picture so far, drawn small, and the clock sit on a tile that fills
-the board's corner, a warm line rules off every fifth square, and the numbers
-keep the same space on every puzzle of a size, every other line's on a band
-that runs out from its squares and fades. That space holds the most numbers
-a line of five or ten can have, and six on a line of fifteen, where a line
-with seven or eight is drawn smaller to fit. When the picture is complete the squares
+empties the board, and Undo straight after brings it back. Every board has
+one footprint, whatever its puzzle's size: the squares together are as wide
+as the window's width and height allow, to 600px, and always a multiple of
+30px, so a square is whole pixels on a board of five, ten or fifteen. The
+corner is a square of one size, 84px on a phone and 120px on a wide screen,
+and a tile fills it: the puzzle's name, the picture so far, drawn small, and
+the clock. The keys under the board end where it does. A warm line rules off
+every fifth square. Every other line's numbers sit on a band that runs out
+from its squares and fades, larger on larger squares, and a line with more
+numbers than its room holds draws them smaller to fit.
+When the picture is complete the squares
 fill in as the picture, in its colours if it has them, and its name shows
 with the time, the mistakes and hints, and what they added.
 How to play is three steps in a modal, each with a small board: what the

@@ -154,6 +154,8 @@
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <!-- Drawn only once play.js has built the board, so the keys are never seen where the board will be. -->
+      <!-- The frame is the width the board's size is worked out from. -->
+      <div class="pixels-frame">
       <div class="pixels-game is-loading" id="pixels-game">
         <div id="pixels-error" hidden>
         <div class="rux--inline-notification rux--inline-notification--error" role="alert">
@@ -208,6 +210,7 @@
             <a class="rux--btn rux--btn--ghost" href="./">Puzzles</a>
           </div>
         </div>
+      </div>
       </div>
     </div>
   </div>

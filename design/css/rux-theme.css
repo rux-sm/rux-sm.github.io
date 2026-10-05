@@ -1002,6 +1002,9 @@
      Apple set at 4.5 to 1 on white.
    - A tag is its hue's default at 14% on white, and its words the
      increased-contrast step darkened until they make 4.5 to 1 on that tint.
+   - Red words take the red tag's ink, because the increased-contrast red
+     makes 4.22 to 1 on the grey page: an error under a field, and the
+     words of a danger button that has no fill.
    - A field is white inside a line, so the three field steps are one. */
 [data-theme="apple-light"] {
   --rux-color-scheme: light;
@@ -1075,7 +1078,7 @@
 
   /* text */
   --rux-text-disabled: rgba(0, 0, 0, 0.247);
-  --rux-text-error: #e9152d;
+  --rux-text-error: #cd1228;
   --rux-text-helper: #6c6c70;
   --rux-text-inverse: #ffffff;
   --rux-text-on-color: #ffffff;
@@ -1141,7 +1144,7 @@
   --rux-button-secondary-hover: #e6e6e6;
   --rux-button-secondary-active: #dcdcdc;
   --rux-button-danger-primary: #e9152d;
-  --rux-button-danger-secondary: #e9152d;
+  --rux-button-danger-secondary: #cd1228;
   --rux-button-danger-hover: #cd1228;
   --rux-button-danger-active: #b11022;
   --rux-button-separator: #d9d9d9;

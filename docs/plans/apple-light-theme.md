@@ -63,15 +63,9 @@ None open.
   `design/docs/apple-token-map.md`, and mark the hover and active steps Apple
   does not name as derived.
 - [ ] Set Apple's type sizes and weights.
-- [ ] Look at the scheduler's document viewer, quote page, forms and lists
-  in the theme, and fix what still reads as another theme's.
-- [ ] Give every other app's `theme.css` its `apple-light` block where the
-  app sets colours by theme.
-- [ ] Run Design's contrast measurement in each app and the full check, and
-  fix each failure with Apple's increased-contrast variant.
-- [ ] Check in Chrome on :8641 at desk and phone width against the
-  measurements: the board, the trip editor's five tabs, the lists, a pop-up,
-  the trip card and Design's kitchen sink.
+- [ ] Look at what is not yet seen in the theme and fix what reads as
+  another theme's: the trip editor's Route, Buses, Billing and Files tabs, a
+  pop-up, the document viewer, the quote page and the forms.
 - [ ] List the theme in the account panel through
   `design/tools/lib/shell.mjs`, `design/tools/build-builder.mjs` and
   `design/tools/build-readme.mjs`, and rebuild the pages.

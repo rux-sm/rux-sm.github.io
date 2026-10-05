@@ -1796,7 +1796,25 @@
 [data-theme="apple-light"] .rux--content-switcher-btn.rux--content-switcher--selected::after {
   border-radius: 999px;
 }
+/* An option's words are the text colour chosen or not, as a Mac's are: the
+   secondary grey makes 4.39 to 1 on the capsule's fill. */
+[data-theme="apple-light"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn,
+[data-theme="apple-light"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:first-child,
+[data-theme="apple-light"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:last-child {
+  color: var(--rux-text-primary);
+}
 [data-theme="apple-light"] .rux--content-switcher-btn.rux--content-switcher--selected::after {
   background-color: var(--rux-content-switcher-selected);
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.16);
+}
+/* A notification here is a pale tint, so its action is the link colour.
+   Carbon writes it in the inverse link colour, for the dark slab it draws a
+   notification on, which made 1.9 to 1 on the tint. */
+[data-theme="apple-light"] .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:not(:disabled):not(.rux--btn--disabled) {
+  color: var(--rux-link-primary);
+}
+/* Edit-in-place writes its warning in the status red, which is for a mark;
+   words take the red that reads on the page. */
+[data-theme="apple-light"] .rux--edit-in-place__warning-text {
+  color: var(--rux-text-error);
 }

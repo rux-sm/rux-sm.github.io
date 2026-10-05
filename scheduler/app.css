@@ -590,7 +590,7 @@ button.scheduler-row-head__num::after {
   -webkit-user-select: none;
   user-select: none;
 }
-.scheduler-bar:hover { background: var(--scheduler-hover); }
+.scheduler-bar:hover { background-color: var(--scheduler-hover); }
 .scheduler-bar:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 /* The selection ring is `layer-selected-inverse`, which reads on every tag
    tint, blue included. Focus keeps the focus token; the two are different
@@ -602,7 +602,7 @@ button.scheduler-row-head__num::after {
 .scheduler-bar.scheduler-bar--same-trip,
 .scheduler-bar.scheduler-bar--open { z-index: 2; }
 .scheduler-bar.scheduler-bar--same-trip { box-shadow: var(--scheduler-lift); }
-.scheduler-bar[aria-pressed="true"]:hover { background: var(--scheduler-bg); }
+.scheduler-bar[aria-pressed="true"]:hover { background-color: var(--scheduler-bg); }
 
 .scheduler-bar--gray      { --scheduler-bg: var(--rux-tag-background-gray);      --scheduler-fg: var(--rux-tag-color-gray);      --scheduler-hover: var(--rux-tag-hover-gray);      --scheduler-border: var(--rux-tag-border-gray); }
 .scheduler-bar--blue      { --scheduler-bg: var(--rux-tag-background-blue);      --scheduler-fg: var(--rux-tag-color-blue);      --scheduler-hover: var(--rux-tag-hover-blue);      --scheduler-border: var(--rux-tag-border-blue); }
@@ -615,7 +615,7 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--cool-gray { --scheduler-bg: var(--rux-tag-background-cool-gray); --scheduler-fg: var(--rux-tag-color-cool-gray); --scheduler-hover: var(--rux-tag-hover-cool-gray); --scheduler-border: var(--rux-tag-border-cool-gray); }
 /* Amber is the placeholder colour, a trip not yet quoted. Carbon's tags have
    no yellow, so theme.css sets its colours per theme: a tint beside the other
-   tags in a light theme, the warning fill in a dark one, with the inner ring a
+   bars in a light theme, the warning fill in a dark one, with the inner ring a
    dark theme shows on hover in place of a hover step. */
 .scheduler-bar--amber     { --scheduler-bg: var(--scheduler-amber-bg);           --scheduler-fg: var(--scheduler-amber-fg);       --scheduler-hover: var(--scheduler-amber-hover);   --scheduler-border: var(--scheduler-amber-border); }
 .scheduler-bar.scheduler-bar--amber:hover:not([aria-pressed="true"]) { box-shadow: var(--scheduler-amber-hover-ring); }
@@ -3276,7 +3276,7 @@ html:has(.scheduler-page[data-takeover]) {
    full height and hands the wheel on to the page. The schedule's own pane caps
    its height and keeps the wheel, because there the board fills the window. */
 .scheduler-week--static { max-block-size: none; overscroll-behavior-y: auto; }
-.scheduler-week--static .scheduler-bar:hover { background: var(--scheduler-bg); }
+.scheduler-week--static .scheduler-bar:hover { background-color: var(--scheduler-bg); }
 .scheduler-week--static .scheduler-bar.scheduler-bar--amber:hover { box-shadow: none; }
 /* A list wider than a phone scrolls sideways inside its own box. */
 .scheduler-share-scroll { overflow-x: auto; }

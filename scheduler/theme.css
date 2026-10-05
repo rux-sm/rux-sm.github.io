@@ -39,7 +39,7 @@
    step that clears 3 to 1 on every bar fill it draws; a theme that sets no
    done colour draws it in the bar's own text colour.
 
-   The warning colour is a fill, and as a glyph on a light tag tint it reaches
+   The warning colour is a fill, and as a glyph on a light bar's fill it reaches
    only 1.3 to 1, so a light theme draws it in Carbon's orange 60, which clears
    3.8 against every tint. */
 :root,
@@ -57,6 +57,9 @@
   --scheduler-mark-error: var(--rux-support-error);
   --scheduler-mark-success: var(--rux-support-success);
 }
+/* apple-light's own warning is an orange that clears 3.8 on every bar fill, so
+   its marks take it, as its notification's icon does. */
+[data-theme="apple-light"] { --scheduler-mark-warning: var(--rux-support-warning); }
 /* Geist draws a badge's text and icons in the hue's 900 step, and the bars are
    its subtle badges, so the marks take the 900 steps of amber, red and green,
    and done takes the primary text. The lowest is red on the red bar, 4.5 to 1. */
@@ -67,17 +70,18 @@
   --scheduler-mark-done: var(--rux-text-primary);
 }
 
-/* The amber trip bar. A light theme tints it like the other tags: a fill at
-   the red, blue and purple tints' lightness and strength, a hover step three
-   points darker, and Carbon's yellow 70 ink and yellow 40 edge, the steps its
-   own light tags use. A dark theme keeps the warning fill, with no hover step,
-   so a hovered bar there shows an inner ring instead. */
+/* The amber trip bar. A light theme fills it as it fills a warning
+   notification, like the other bars below: a hover step at the red, blue and
+   purple tag tints' lightness and strength, and Carbon's yellow 70 ink and
+   yellow 40 edge, the steps its own light tags use. A dark theme keeps the
+   warning fill, with no hover step, so a hovered bar there shows an inner ring
+   instead. */
 :root,
 [data-theme="white"],
 [data-theme="g10"] {
-  --scheduler-amber-bg: oklch(92% 0.07 95);
+  --scheduler-amber-bg: var(--rux-notification-background-warning);
   --scheduler-amber-fg: #684e00;
-  --scheduler-amber-hover: oklch(89% 0.09 95);
+  --scheduler-amber-hover: oklch(92% 0.07 95);
   --scheduler-amber-border: #d2a106;
   --scheduler-amber-hover-ring: none;
 }
@@ -91,6 +95,66 @@
   --scheduler-amber-border: var(--scheduler-on-warning);
   --scheduler-amber-hover-ring: inset 0 0 0 1px var(--scheduler-on-warning);
 }
+/* apple-light's warning is orange and its fill sits beside the red bar's, so
+   the placeholder keeps its yellow there, lightened as that theme's other
+   bars without a notification are. */
+[data-theme="apple-light"] { --scheduler-amber-bg: color-mix(in srgb, oklch(92% 0.07 95) 70%, #fff); }
+
+/* A LIGHT THEME'S TRIP BAR IS ITS LOW-CONTRAST NOTIFICATION: the notification's
+   pale fill in place of the tag's stronger one, which becomes the hover step.
+   Red, blue and green take the error, info and success fills, and amber the
+   warning one, above. A hue no notification has takes the same step of its own
+   colour: Carbon's 10 in white and g10, and in apple-light the tag tint
+   lightened as far as its red and blue fills are. The greys keep the tag fill,
+   because their paler step is the board's own colour. */
+:is([data-theme="white"], [data-theme="g10"], [data-theme="apple-light"]) .scheduler-bar--red {
+  --scheduler-bg: var(--rux-notification-background-error); --scheduler-hover: var(--rux-tag-background-red);
+}
+:is([data-theme="white"], [data-theme="g10"], [data-theme="apple-light"]) .scheduler-bar--blue {
+  --scheduler-bg: var(--rux-notification-background-info); --scheduler-hover: var(--rux-tag-background-blue);
+}
+:is([data-theme="white"], [data-theme="g10"], [data-theme="apple-light"]) .scheduler-bar--green {
+  --scheduler-bg: var(--rux-notification-background-success); --scheduler-hover: var(--rux-tag-background-green);
+}
+:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--teal {
+  --scheduler-bg: #d9fbfb; --scheduler-hover: var(--rux-tag-background-teal);
+}
+:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--cyan {
+  --scheduler-bg: #e5f6ff; --scheduler-hover: var(--rux-tag-background-cyan);
+}
+:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--purple {
+  --scheduler-bg: #f6f2ff; --scheduler-hover: var(--rux-tag-background-purple);
+}
+:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--magenta {
+  --scheduler-bg: #fff0f7; --scheduler-hover: var(--rux-tag-background-magenta);
+}
+[data-theme="apple-light"] .scheduler-bar--teal {
+  --scheduler-bg: color-mix(in srgb, var(--rux-tag-background-teal) 70%, #fff); --scheduler-hover: var(--rux-tag-background-teal);
+}
+[data-theme="apple-light"] .scheduler-bar--cyan {
+  --scheduler-bg: color-mix(in srgb, var(--rux-tag-background-cyan) 70%, #fff); --scheduler-hover: var(--rux-tag-background-cyan);
+}
+[data-theme="apple-light"] .scheduler-bar--purple {
+  --scheduler-bg: color-mix(in srgb, var(--rux-tag-background-purple) 70%, #fff); --scheduler-hover: var(--rux-tag-background-purple);
+}
+[data-theme="apple-light"] .scheduler-bar--magenta {
+  --scheduler-bg: color-mix(in srgb, var(--rux-tag-background-magenta) 70%, #fff); --scheduler-hover: var(--rux-tag-background-magenta);
+}
+/* Carbon's notification holds that fill inside a 1px edge of its colour at
+   30%, and so does the bar, in its own ink, because the fill alone is as light
+   as the board. The edge is four painted strips, so the bar's border and
+   shadow stay free for the week's run-on marks and the selection ring. An end
+   that runs into another week has no edge of its own. */
+:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar {
+  --scheduler-edge: color-mix(in srgb, var(--scheduler-fg) 30%, transparent);
+  background-image: linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge)),
+    linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge));
+  background-size: 100% 1px, 100% 1px, var(--scheduler-edge-start, 1px) 100%, var(--scheduler-edge-end, 1px) 100%;
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  background-repeat: no-repeat;
+}
+:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--from-prev { --scheduler-edge-start: 0px; }
+:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--to-next { --scheduler-edge-end: 0px; }
 
 /* THE THREE HEADS HOLD EACH ROUNDED THEME'S DEFAULT CONTROLS: the toolbar,
    the roster's head and the trip editor's head each hold the buttons Design
@@ -428,14 +492,11 @@
   --scheduler-shortcut-pad: 6px;
   --scheduler-shortcut-radius: 8px;
 }
-/* A TRIP IS AN APPLE CALENDAR EVENT: the tag's pale tint and darker words,
-   which app.css already gives a bar, and a solid edge of the hue down its
-   leading side. The edge is a painted strip, so the bar's border and shadow
+/* A TRIP IS AN APPLE CALENDAR EVENT: the pale fill and darker words every
+   light theme gives a bar, and a solid edge of the hue down its leading side. The edge is a painted strip, so the bar's border and shadow
    stay free for the week's run-on marks and the selection ring. A bar that
-   runs on from last week has no start here and takes none. The hover form is
-   named because app.css repaints a hovered bar and comes after this file. */
-[data-theme="apple-light"] .scheduler-bar:not(.scheduler-bar--from-prev),
-[data-theme="apple-light"] .scheduler-bar:not(.scheduler-bar--from-prev):hover {
+   runs on from last week has no start here and takes none. */
+[data-theme="apple-light"] .scheduler-bar:not(.scheduler-bar--from-prev) {
   background-image: linear-gradient(var(--scheduler-border), var(--scheduler-border));
   background-size: 3px 100%;
   background-repeat: no-repeat;

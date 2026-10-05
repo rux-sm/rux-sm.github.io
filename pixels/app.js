@@ -113,10 +113,6 @@
   const unreached = g => solve(g).known.map(r => r.map(v => v === -1));
   const rounds = g => solve(g).rounds;
   const grade = n => (n <= 3 ? 'easy' : n <= 5 ? 'medium' : 'hard');
-  // How many easy, medium and hard puzzles a level of nine aims for: level
-  // 1 is nearly all easy, and from level 4 on most are hard.
-  const MIX = [[6, 3, 0], [4, 4, 1], [2, 4, 3], [1, 3, 5]];
-  const mix = level => MIX[Math.min(Math.max(level, 1), MIX.length) - 1];
 
   // Playing order: small boards first, then by level, easy to hard within
   // one, then as they were made. A puzzle drawn for a day is in no level.
@@ -531,7 +527,7 @@
   const chosen = (el, option) => window.Rux.contentSwitcher.select(el, option, { focus: false, silent: true });
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    SIZES, DAILY, BOARD, INKS: 8, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, mix, order, daily, today, streak,
+    SIZES, DAILY, BOARD, INKS: 8, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, daily, today, streak,
     board, paint, highlight, drag, picture, stars, buzz, sound, sounds, listen, time, title, switcher, chosen,
   });
 })();

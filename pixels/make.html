@@ -168,8 +168,6 @@
           <div id="pixels-board"></div>
           <form class="pixels-maker-side" id="pixels-form" novalidate>
             <div id="pixels-check" aria-live="polite"></div>
-            <!-- How the category stands with this picture in it, against what docs/making-puzzles.md aims for. -->
-            <p class="pixels-meta" id="pixels-mix"></p>
             <!-- Choosing a size starts a blank board of it. make.js hides this for a saved puzzle. -->
             <div id="pixels-size-row">
               <div class="rux--content-switcher rux--content-switcher--lg rux--layout--size-lg" role="tablist" aria-label="Size" id="pixels-size">
@@ -199,7 +197,7 @@
                 <div class="rux--text-input__field-wrapper"><input id="pixels-name" class="rux--text-input" type="text" maxlength="40" autocomplete="off" required></div>
               </div>
             </div>
-            <!-- The category the puzzle sits in on the front page; make.js fills it with those of this size, and New category. -->
+            <!-- The category the puzzle sits in on the front page; make.js fills it with those of this size, each with how many of its nine it holds, and New category. -->
             <div class="rux--form-item">
               <div class="rux--select">
                 <label class="rux--label" for="pixels-level">Category</label>

@@ -5,7 +5,7 @@ type: how-to
 # Making a puzzle, and a category of them
 
 How to draw a picture in `make.html` that is fun to solve, and how to put
-nine of them in a category that gets harder.
+nine of them in a category.
 
 ## Three sizes
 
@@ -89,13 +89,14 @@ look at every row and every column, filling in what each can now decide.
 
 ## A category
 
-A category is nine puzzles of one size about one thing, such as Fruit: three
-rows of three on a phone, one row of nine on a wide screen. Its name is its
-heading on the front page, and one with no name is headed More. The maker's
-Category field says which one a puzzle is in, and offers the first of its
-size that still has room. The front page lists a category easy to hard by the
-tag, so the order they were drawn in does not matter, and a puzzle moves
-category by editing that field.
+A category is up to nine puzzles of one size about one thing, such as Fruit:
+three rows of three on a phone, one row of nine on a wide screen. Its name is
+its heading on the front page, and one with no name is headed More. The
+maker's Category field says which one a puzzle is in, counts each category's
+puzzles, such as Fruit · 7 of 9, and offers the first of its size that still
+has room. The front page lists a category easy to hard by the tag, so the
+order they were drawn in does not matter, and a puzzle moves category by
+editing that field.
 
 - **Name it for what is in it**, such as Fruit, Animals or At home, in the
   maker's Category name field. The player guesses the picture sooner, and the
@@ -103,61 +104,12 @@ category by editing that field.
 - **New category**, the last choice in the Category field, starts one. It
   stands after the others and starts hidden, so only the owner sees it while
   its nine are drawn.
+- **A full category cannot be picked.** To put a tenth picture in, move one
+  of its nine to another category first, or delete one.
+- **Keep spares in a hidden category.** A category left unpublished holds
+  pictures no player is sent, ready to swap into a published one.
 - **Publish it on the front page.** Beside each category's name the owner has
   a switch: on, every player is sent the category; off, only the owner is.
 - **Move it with the arrows** beside the switch, up or down among the
-  categories of its size.
-- **Watch the line under the tag.** It counts the category's easy, medium and
-  hard puzzles with the one being drawn, beside what the category aims for.
-
-## Each category
-
-Categories get harder down the front page. What each aims for, out of nine,
-by its place there, and how to draw for it. The numbers are
-from the 47 puzzles in the game: an easy one decides about 60 of its 100
-squares on the first look and has a run of six or more on about 8 of its 20
-lines; a hard one decides about 27 and has about 4.
-
-| Place | easy | medium | hard | The player is learning |
-| :--- | :--- | :--- | :--- | :--- |
-| first | 6 | 3 | 0 | that a long run fills its own middle |
-| second | 4 | 4 | 1 | to finish a line from what its neighbours gave |
-| third | 2 | 4 | 3 | to work round holes and separate parts |
-| fourth and on | 1 | 3 | 5 | to cross out as much as fill |
-
-**The first: big solid shapes.**
-
-- One thing, filled in: a bottle, a bell, a table.
-- Most lines carry one number. No line carries more than two.
-- Runs of six or more on at least eight lines. A full row or two is welcome.
-- No holes. One or two empty lines are fine.
-
-**The second: a shape with one detail.**
-
-- The same solid shapes with one thing cut out or stuck on: a leaf, a
-  window, a handle.
-- Up to three numbers on a line, on a few lines only.
-- One full row at most.
-- The one hard puzzle is the category's last.
-
-**The third: a shape with parts.**
-
-- Two or three details: eyes, ears, legs, wheels.
-- Three or four numbers on several lines.
-- Runs of six or more on about five lines, not eight.
-- No empty lines: use the edges.
-
-**The fourth and on: thin and broken.**
-
-- Outlines, stalks, curves and gaps in place of filled blocks: a crescent, a
-  cactus, a note of music.
-- Many short runs, and few lines with a run of six or more.
-- No full rows.
-- It must still be green. A thin picture is where yellow squares come from,
-  so thicken one stroke at a time until they go.
-
-**Quick, the 5×5 categories**, are nearly always easy whatever is drawn, so the
-mix does not apply: aim for nine shapes worth guessing.
-
-**Long, the 15×15 categories**, follow the same four steps, with more room for
-detail at each.
+  categories of its size. The order is the owner's choice and means nothing
+  about how hard a category is.

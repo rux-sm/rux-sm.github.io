@@ -61,7 +61,8 @@ picture and how hard that is, outlines each square that would need a guess,
 and saves only a picture with one answer. Size starts a blank board of 5,
 10 or 15 a side. Its Colour step paints the picture
 the puzzle finishes as, from eight inks, and Category places it on the front
-page, with Category name naming that category; a category just started is
+page, with Category name naming that category; a category holds nine, the
+list counts each one's, and a full one cannot be picked. A category just started is
 hidden until the front page's switch publishes it. A puzzle given a day is that
 day's puzzle and sits in no category; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good
 category.
@@ -104,7 +105,7 @@ typed over; the invite word, whose change closes the old link to anyone new;
 and Remove, which takes a player and their results off the leaderboard.
 
 The local preview, `npm run serve` on :8640, has no log-in, so there Pixels
-keeps its puzzles and times in the browser instead, starting from the ten in
+keeps its puzzles and times in the browser instead, starting from the nine in
 `data.js`. The cloud preview on :8641 uses the database.
 
 ## Check

@@ -14,9 +14,9 @@
    puzzle given a day is that day's puzzle instead and sits in no category;
    a day takes one puzzle, and after one is saved the field moves on a day.
    Category name names the category chosen, for boards of this size, and is
-   saved with the puzzle. Under the check, a line says how the category
-   stands with this picture in it against what it aims for. Save stays off
-   until the picture is solvable and named.
+   saved with the puzzle. A category holds nine: the Category field counts
+   each one's puzzles, and a full one cannot be picked. Save stays off until
+   the picture is solvable and named.
 
    The data calls a category a level: `level` is its number, which is its
    place on the front page and is never shown, and `theme` is its name.
@@ -30,14 +30,13 @@
 (() => {
   'use strict';
 
-  const { data, owner, SIZES, grid, squaresOf, unreached, rounds, grade, mix, board, drag, switcher, chosen } = window.Pixels;
+  const { data, owner, SIZES, grid, squaresOf, unreached, rounds, grade, board, drag, switcher, chosen } = window.Pixels;
   const $ = id => document.getElementById(id);
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
   const day = $('pixels-day'), theme = $('pixels-theme');
   const inks = $('pixels-inks');
   const DRAFT = 'pixels-draft';
-  // A category holds nine, three rows of three on a phone, so a new puzzle
-  // is offered the first one with room.
+  // A category holds nine, three rows of three on a phone.
   const PER_LEVEL = 9;
 
   const say = (heading, detail) => {
@@ -84,42 +83,40 @@
   // The name of the category chosen, among boards of this size.
   const themeOf = () => puzzles.find(p => p.width === side && p.level === levelOf() && !p.day)?.theme || '';
   const showTheme = () => { theme.value = themeOf(); };
+  // How many puzzles of this size each category holds, and how many of them
+  // are not the one being edited: nine of those leave it no room.
+  const held = () => {
+    const all = {}, others = {};
+    puzzles.forEach(p => {
+      if (p.width !== side || p.day) return;
+      all[p.level] = (all[p.level] || 0) + 1;
+      if (p.id !== editing?.id) others[p.level] = (others[p.level] || 0) + 1;
+    });
+    return { all, full: n => (others[n] || 0) >= PER_LEVEL };
+  };
   // The first category with room for another puzzle of this size.
   const openLevel = () => {
-    const count = {};
-    puzzles.forEach(p => { if (p.width === side && !p.day) count[p.level] = (count[p.level] || 0) + 1; });
+    const { full } = held();
     let open = 1;
-    while (count[open] >= PER_LEVEL) open++;
+    while (full(open)) open++;
     return open;
   };
-  // The Category field: this size's categories by name, in their order, then
-  // one for a new category, numbered to stand after them. `pick` is the one
-  // to choose, and one that is not there chooses the new category.
+  // The Category field: this size's categories by name with how many of
+  // their nine they hold, in their order, then one for a new category,
+  // numbered to stand after them. A full one cannot be picked. `pick` is the
+  // one to choose; a full one gives way to the first with room, and one that
+  // is not there to the new category.
   const showLevels = pick => {
-    const names = new Map();
+    const names = new Map(), { all, full } = held();
     puzzles.forEach(p => { if (p.width === side && !p.day) names.set(p.level, p.theme || 'More'); });
     const next = Math.max(0, ...names.keys()) + 1;
-    level.replaceChildren(...[...names].sort((a, b) => a[0] - b[0]).concat([[next, 'New category']]).map(([n, text]) => new Option(text, n)));
-    level.value = names.has(pick) ? pick : next;
-  };
-
-  /* HOW THE CATEGORY STANDS. The category's other puzzles of this size, and
-     this picture once it is solvable, counted as easy, medium and hard
-     beside what a category in that place aims for. A puzzle of the day is in
-     no category, and a board of five is nearly always easy, so neither is
-     told. */
-  const showMix = now => {
-    const line = $('pixels-mix');
-    if (day.value || side < 10) { line.textContent = ''; return; }
-    const count = { easy: 0, medium: 0, hard: 0 };
-    puzzles.forEach(p => {
-      if (p.width !== side || p.level !== levelOf() || p.day || p.id === editing?.id) return;
-      p.rounds ??= rounds(grid(p.squares, p.width));
-      count[grade(p.rounds)]++;
-    });
-    if (now) count[now]++;
-    const [easy, medium, hard] = mix(levelOf());
-    line.textContent = `${level.selectedOptions[0]?.text || 'This category'}${now ? ' with this one' : ''}: ${count.easy} easy, ${count.medium} medium, ${count.hard} hard. Aim for ${easy}, ${medium}, ${hard}.`;
+    level.replaceChildren(...[...names].sort((a, b) => a[0] - b[0]).map(([n, text]) => {
+      const option = new Option(`${text} · ${all[n]} of ${PER_LEVEL}`, n);
+      option.disabled = full(n);
+      return option;
+    }), new Option('New category', next));
+    const to = names.has(pick) && !full(pick) ? pick : openLevel();
+    level.value = names.has(to) ? to : next;
   };
 
   let solvable = false;
@@ -136,7 +133,6 @@
     else tag('rux--tag--green', `Solvable · ${grade(rounds(draft))}`);
     solvable = !empty && !guesses;
     save.disabled = !solvable || !name.value.trim();
-    showMix(solvable ? grade(rounds(draft)) : null);
   };
 
   // Colour starts as the picture is seen while solving: dark on light.
@@ -226,8 +222,8 @@
       }
       // The list this page holds takes the puzzle as saved, so the Category
       // field lists a category just started, by its name.
-      const held = puzzles.find(p => p.id === row.id);
-      if (held) { Object.assign(held, row, { theme: named || null }); delete held.rounds; }
+      const listed = puzzles.find(p => p.id === row.id);
+      if (listed) { Object.assign(listed, row, { theme: named || null }); delete listed.rounds; }
       else puzzles.push({ ...row, theme: named || null });
       if (!puzzle.day) showLevels(puzzle.level);
       if (editing) {

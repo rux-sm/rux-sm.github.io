@@ -7,13 +7,18 @@
    outlined. COLOUR: pick one of the eight inks and paint any square, filled
    or not; that is the picture the puzzle finishes as. A picture never
    coloured finishes in black and white. Size starts a blank board of 5, 10
-   or 15 squares a side, and a saved puzzle keeps the size it has. Level is
-   where the puzzle sits on the front page, among those of its size. A
-   puzzle given a day is that day's puzzle instead and sits in no level; a
-   day takes one puzzle, and after one is saved the field moves on a day.
-   Level theme names the level the Level field says, for boards of this
-   size, and is saved with the puzzle. Under the check, a line says how the
-   level stands with this picture in it against what it aims for. Save stays off until the picture is solvable and named.
+   or 15 squares a side, and a saved puzzle keeps the size it has. Category
+   is where the puzzle sits on the front page, among those of its size: it
+   lists the categories by name, and New category starts one after them. A
+   puzzle given a day is that day's puzzle instead and sits in no category;
+   a day takes one puzzle, and after one is saved the field moves on a day.
+   Category name names the category chosen, for boards of this size, and is
+   saved with the puzzle. Under the check, a line says how the category
+   stands with this picture in it against what it aims for. Save stays off
+   until the picture is solvable and named.
+
+   The data calls a category a level: `level` is its number, which is its
+   place on the front page and is never shown, and `theme` is its name.
    docs/making-puzzles.md is the guide to a good one.
 
    Only the owner's account makes and edits; any other is told so.
@@ -30,8 +35,8 @@
   const day = $('pixels-day'), theme = $('pixels-theme');
   const inks = $('pixels-inks');
   const DRAFT = 'pixels-draft';
-  // A level holds nine, three rows of three on a phone, so a new puzzle is
-  // offered the first level with room.
+  // A category holds nine, three rows of three on a phone, so a new puzzle
+  // is offered the first one with room.
   const PER_LEVEL = 9;
 
   const say = (heading, detail) => {
@@ -75,22 +80,33 @@
     side = to;
     chosen($('pixels-size'), $('pixels-size').querySelector(`[data-size="${side}"]`));
   };
-  // The theme of the level the fields name, among boards of this size.
+  // The name of the category chosen, among boards of this size.
   const themeOf = () => puzzles.find(p => p.width === side && p.level === levelOf() && !p.day)?.theme || '';
   const showTheme = () => { theme.value = themeOf(); };
-  // The first level with room for another puzzle of this size.
+  // The first category with room for another puzzle of this size.
   const openLevel = () => {
     const count = {};
-    puzzles.forEach(p => { if (p.width === side) count[p.level] = (count[p.level] || 0) + 1; });
+    puzzles.forEach(p => { if (p.width === side && !p.day) count[p.level] = (count[p.level] || 0) + 1; });
     let open = 1;
     while (count[open] >= PER_LEVEL) open++;
     return open;
   };
+  // The Category field: this size's categories by name, in their order, then
+  // one for a new category, numbered to stand after them. `pick` is the one
+  // to choose, and one that is not there chooses the new category.
+  const showLevels = pick => {
+    const names = new Map();
+    puzzles.forEach(p => { if (p.width === side && !p.day) names.set(p.level, p.theme || 'More'); });
+    const next = Math.max(0, ...names.keys()) + 1;
+    level.replaceChildren(...[...names].sort((a, b) => a[0] - b[0]).concat([[next, 'New category']]).map(([n, text]) => new Option(text, n)));
+    level.value = names.has(pick) ? pick : next;
+  };
 
-  /* HOW THE LEVEL STANDS. The level's other puzzles of this size, and this
-     picture once it is solvable, counted as easy, medium and hard beside
-     what a level of that number aims for. A puzzle of the day is in no
-     level, and a board of five is nearly always easy, so neither is told. */
+  /* HOW THE CATEGORY STANDS. The category's other puzzles of this size, and
+     this picture once it is solvable, counted as easy, medium and hard
+     beside what a category in that place aims for. A puzzle of the day is in
+     no category, and a board of five is nearly always easy, so neither is
+     told. */
   const showMix = now => {
     const line = $('pixels-mix');
     if (day.value || side < 10) { line.textContent = ''; return; }
@@ -102,7 +118,7 @@
     });
     if (now) count[now]++;
     const [easy, medium, hard] = mix(levelOf());
-    line.textContent = `Level ${levelOf()}${now ? ' with this one' : ''}: ${count.easy} easy, ${count.medium} medium, ${count.hard} hard. Aim for ${easy}, ${medium}, ${hard}.`;
+    line.textContent = `${level.selectedOptions[0]?.text || 'This category'}${now ? ' with this one' : ''}: ${count.easy} easy, ${count.medium} medium, ${count.hard} hard. Aim for ${easy}, ${medium}, ${hard}.`;
   };
 
   let solvable = false;
@@ -160,7 +176,7 @@
   switcher($('pixels-size'), b => {
     setSide(+b.dataset.size);
     pad.reset();
-    level.value = openLevel();
+    showLevels(openLevel());
     showTheme();
     $('pixels-saved').hidden = true;
     clear();
@@ -169,8 +185,11 @@
   name.addEventListener('input', () => { save.disabled = !solvable || !name.value.trim(); keepDraft(); });
   level.addEventListener('input', () => { showTheme(); keepDraft(); render(); });
   level.addEventListener('change', () => { showTheme(); keepDraft(); render(); });
-  // A day's puzzle is in no level, so Level and its theme have nothing to say.
-  const showDay = () => { level.disabled = theme.disabled = !!day.value; };
+  // A day's puzzle is in no category, so Category and its name have nothing to say.
+  const showDay = () => {
+    level.disabled = theme.disabled = !!day.value;
+    level.closest('.rux--select').classList.toggle('rux--select--disabled', !!day.value);
+  };
   day.addEventListener('change', () => { showDay(); keepDraft(); render(); });
 
   const clear = () => {
@@ -194,13 +213,18 @@
     };
     try {
       const row = await data.save(puzzle);
-      // The level's theme goes with it, if it was changed.
+      // The category's name goes with it, if it was changed.
       const named = theme.value.trim();
       if (!puzzle.day && named !== themeOf()) {
         await data.setTheme?.(side, puzzle.level, named);
         puzzles.forEach(p => { if (p.width === side && p.level === puzzle.level) p.theme = named || null; });
       }
-      if (!editing) puzzles.push({ ...row, theme: named || null });
+      // The list this page holds takes the puzzle as saved, so the Category
+      // field lists a category just started, by its name.
+      const held = puzzles.find(p => p.id === row.id);
+      if (held) { Object.assign(held, row, { theme: named || null }); delete held.rounds; }
+      else puzzles.push({ ...row, theme: named || null });
+      if (!puzzle.day) showLevels(puzzle.level);
       if (editing) {
         editing = row;
         saved(`Saved “${row.name}”`);
@@ -214,7 +238,7 @@
           // On to the next day, for a run of them.
           when.setDate(when.getDate() + 1);
           day.value = `${when.getFullYear()}-${String(when.getMonth() + 1).padStart(2, '0')}-${String(when.getDate()).padStart(2, '0')}`;
-        } else saved(`Saved “${row.name}”. It is in level ${row.level}.`);
+        } else saved(`Saved “${row.name}”. It is in ${named || 'More'}.`);
       }
       $('pixels-error').hidden = true;
     } catch (error) {
@@ -255,7 +279,7 @@
         draft = grid(editing.squares, editing.width);
         colours = editing.colours ? grid(editing.colours, editing.width) : null;
         name.value = editing.name;
-        level.value = editing.level;
+        showLevels(editing.level);
         day.value = editing.day || '';
         $('pixels-heading').textContent = `Edit ${editing.name}`;
         document.title = `Edit ${editing.name} — Pixels`;
@@ -266,12 +290,12 @@
       const kept = readDraft();
       const keptSide = Math.sqrt(kept?.squares?.length || 0);
       setSide(!id && SIZES.includes(keptSide) ? keptSide : 10);
-      level.value = openLevel();
+      showLevels(openLevel());
       if (!id && SIZES.includes(keptSide)) {
         draft = grid(kept.squares);
         colours = kept.colours ? grid(kept.colours) : null;
         name.value = kept.name || '';
-        if (kept.level) level.value = kept.level;
+        if (kept.level) showLevels(kept.level);
         day.value = kept.day || '';
       }
     }

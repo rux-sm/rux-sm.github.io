@@ -10,11 +10,11 @@
 
    PUZZLES. Today's puzzle is one card across the page: its picture once
    solved, the date, the stars and time or how hard it is, and the days
-   solved in a row. Then a section for each level the maker gave, a bar for
-   how much of it is solved, and its puzzles easy to hard, three across on a
-   phone, each tile a square, none locked: the 5×5 levels are called Quick,
-   the 15×15 ones Long, and they stand before and after the 10×10 levels; a
-   level with a theme carries it in its name. A
+   solved in a row. Then a section for each category the maker gave, headed
+   by its name, a bar for how much of it is solved, and its puzzles easy to
+   hard, three across on a phone, each tile a square, none locked. A category
+   with no name is headed More. The 5×5 ones say Quick before the name and
+   the 15×15 ones Long, and they stand before and after the 10×10 ones. A
    solved tile shows its picture, name and stars; an unsolved one its number,
    a question mark and how hard it is. The owner has an Edit link under each,
    and a section of the days' puzzles he has drawn, by date.
@@ -161,7 +161,7 @@
     return el;
   };
 
-  // A level: its name, how many are solved, a bar of that, and its tiles.
+  // A category: its name, how many are solved, a bar of that, and its tiles.
   const section = (heading, solved, tiles) => {
     const el = document.createElement('section');
     el.className = 'rux--stack-vertical rux--stack-scale-4';
@@ -244,10 +244,15 @@
     }
     if (!order(puzzles).length) { host.appendChild(empty()); return; }
 
-    // "Puzzle 7" counts through every level, in playing order.
+    // "Puzzle 7" counts through every category, in playing order.
     const ordered = order(puzzles);
-    // A level is named for its size and number, and its theme if it has one.
-    const kind = p => `${p.width < 10 ? 'Quick' : p.width > 10 ? 'Long' : 'Level'} ${p.level}${p.theme ? ` · ${p.theme}` : ''}`;
+    // A section is headed by its category's name, which the data calls the
+    // level's theme, and the small and large boards say which they are
+    // first. The level's number only orders the sections and is never shown.
+    const kind = p => {
+      const size = p.width < 10 ? 'Quick' : p.width > 10 ? 'Long' : '';
+      return size ? (p.theme ? `${size} · ${p.theme}` : size) : p.theme || 'More';
+    };
     for (const heading of [...new Set(ordered.map(kind))]) {
       const tiles = [];
       let solved = 0;

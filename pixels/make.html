@@ -32,9 +32,8 @@
      m- path data: Material Symbols, Copyright Google LLC.
      Both licensed under the Apache License, Version 2.0. r- is drawn here.
      The sprite wrapper and the symbol naming are Design. See NOTICE. -->
+<symbol id="i-chevron--down" viewBox="0 0 16 16"><path d="M8 11 3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-close" viewBox="0 0 32 32"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z" style="fill:var(--rux-icon-path-1)"/></symbol>
-<symbol id="i-add" viewBox="0 0 32 32"><path d="M17 15 17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z" style="fill:var(--rux-icon-path-1)"/></symbol>
-<symbol id="i-subtract" viewBox="0 0 32 32"><path d="M8 15H24V17H8z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2 12H14V13H2z" style="fill:var(--rux-icon-path-1)"/><path d="M2 9H14V10H2z" style="fill:var(--rux-icon-path-2)"/><path d="M2 6H14V7H2z"/><path d="M2 3H14V4H2z"/></symbol>
 <symbol id="m-check_circle-fill" viewBox="0 -960 960 960"><path d="m421-298 283-283-46-45-237 237-120-120-45 45 165 166Zm59 218q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z"/></symbol>
 <symbol id="m-close" viewBox="0 -960 960 960"><path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></symbol>
@@ -165,7 +164,7 @@
           <div id="pixels-board"></div>
           <form class="pixels-maker-side" id="pixels-form" novalidate>
             <div id="pixels-check" aria-live="polite"></div>
-            <!-- How the level stands with this picture in it, against what docs/making-puzzles.md aims for. -->
+            <!-- How the category stands with this picture in it, against what docs/making-puzzles.md aims for. -->
             <p class="pixels-meta" id="pixels-mix"></p>
             <!-- Choosing a size starts a blank board of it. make.js hides this for a saved puzzle. -->
             <div id="pixels-size-row">
@@ -196,38 +195,30 @@
                 <div class="rux--text-input__field-wrapper"><input id="pixels-name" class="rux--text-input" type="text" maxlength="40" autocomplete="off" required></div>
               </div>
             </div>
+            <!-- The category the puzzle sits in on the front page; make.js fills it with those of this size, and New category. -->
             <div class="rux--form-item">
-              <div class="rux--number rux--number--md">
-                <label class="rux--label" for="pixels-level">Level</label>
-                <div class="rux--number__input-wrapper">
-                  <input id="pixels-level" type="number" value="1" min="1" max="99" step="1">
-                  <div class="rux--number__controls">
-                    <button type="button" class="rux--number__control-btn down-icon" aria-label="Decrement">
-                      <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-subtract"/></svg>
-                    </button>
-                    <div class="rux--number__rule-divider"></div>
-                    <button type="button" class="rux--number__control-btn up-icon" aria-label="Increment">
-                      <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-add"/></svg>
-                    </button>
-                    <div class="rux--number__rule-divider"></div>
-                  </div>
+              <div class="rux--select">
+                <label class="rux--label" for="pixels-level">Category</label>
+                <div class="rux--select-input__wrapper">
+                  <select id="pixels-level" class="rux--select-input" autocomplete="off"></select>
+                  <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
                 </div>
               </div>
             </div>
-            <!-- The theme of the level above, shown in its heading on the front page. Saving a puzzle saves it. -->
+            <!-- The name of the category above, which is its heading on the front page. Saving a puzzle saves it. -->
             <div class="rux--form-item rux--text-input-wrapper">
-              <div class="rux--text-input__label-wrapper"><label class="rux--label" for="pixels-theme">Level theme</label></div>
+              <div class="rux--text-input__label-wrapper"><label class="rux--label" for="pixels-theme">Category name</label></div>
               <div class="rux--text-input__field-outer-wrapper">
                 <div class="rux--text-input__field-wrapper"><input id="pixels-theme" class="rux--text-input" type="text" maxlength="30" autocomplete="off"></div>
               </div>
             </div>
-            <!-- A puzzle given a day is that day's puzzle, in no level. -->
+            <!-- A puzzle given a day is that day's puzzle, in no category. -->
             <div class="rux--form-item rux--text-input-wrapper">
               <div class="rux--text-input__label-wrapper"><label class="rux--label" for="pixels-day">Puzzle of the day for</label></div>
               <div class="rux--text-input__field-outer-wrapper">
                 <div class="rux--text-input__field-wrapper"><input id="pixels-day" class="rux--text-input" type="date"></div>
               </div>
-              <div class="rux--form__helper-text">Leave empty for a puzzle in a level.</div>
+              <div class="rux--form__helper-text">Leave empty for a puzzle in a category.</div>
             </div>
             <div class="pixels-actions">
               <button type="submit" class="rux--btn rux--btn--primary" id="pixels-save" disabled>Save</button>

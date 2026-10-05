@@ -13,11 +13,11 @@ types a name. A guest gets no header, and their browser keeps a key that is
 who they are from then on.
 
 `index.html` has two tabs. Puzzles: today's puzzle on one card with the days
-solved in a row, then every puzzle by the level its maker gave it, easy to
+solved in a row, then every puzzle by the category its maker gave it, easy to
 hard, with nothing locked, each tile a square, three across on a phone and
-nine on a wide screen, so a level of nine fills its rows. The 5×5 levels are
-called Quick and come first, the 15×15 ones Long and come last, and a level
-with a theme, such as Fruit, carries it in its heading. A solved
+nine on a wide screen, so a category of nine fills its rows. A category is
+headed by its name, such as Fruit, and one with no name by More. The 5×5 ones
+say Quick first and come first, the 15×15 ones say Long and come last. A solved
 puzzle shows its picture, name and stars; an unsolved one a question mark and
 how hard it is, and its name stays hidden until it is solved. Leaderboard:
 today's ranking by stars then time, and the all-time one by every star
@@ -58,10 +58,10 @@ puzzle written by anyone else. It checks as you draw whether the numbers alone c
 picture and how hard that is, outlines each square that would need a guess,
 and saves only a picture with one answer. Size starts a blank board of 5,
 10 or 15 a side. Its Colour step paints the picture
-the puzzle finishes as, from eight inks, and Level places it on the front
-page, with Level theme naming that level. A puzzle given a day is that
-day's puzzle and sits in no level; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good
-level.
+the puzzle finishes as, from eight inks, and Category places it on the front
+page, with Category name naming that category. A puzzle given a day is that
+day's puzzle and sits in no category; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good
+category.
 
 ## Files
 
@@ -80,7 +80,7 @@ directly: `pixels_puzzles`, every puzzle, which a staff account may read too;
 `pixels_players`, each player's name with the account or the hash of the
 guest's key; `pixels_player_results` and `pixels_player_days`, each player's
 best time and most stars on a puzzle and on a puzzle of the day; and
-`pixels_settings`, the invite word; and `pixels_levels`, each level's theme. `docs/database-access.md` is the rule
+`pixels_settings`, the invite word; and `pixels_levels`, each category's name. `docs/database-access.md` is the rule
 they follow.
 
 A player's page calls eight functions, which the publishable key may run and

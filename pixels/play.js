@@ -17,7 +17,8 @@
    is on the board.
 
    THE BOARD WAITS BEHIND "TAP TO START", or "Tap to continue" for a game
-   in progress; with a mouse the button says Start or Continue. The numbers show and the clock runs from that tap, so a best
+   in progress; with a mouse the button says Start or Continue. Until then
+   app.css draws the board bare, with no number and no mark. The numbers show and the clock runs from that tap, so a best
    time does not count the page loading or being read. It is also what lets
    a phone play the sounds at all: a phone starts a page's sound only from a
    tap, never from a drag, and a puzzle is usually begun with a drag.

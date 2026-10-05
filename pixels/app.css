@@ -351,13 +351,29 @@
    jump down. Nothing but an error is drawn until play.js says it is ready. */
 .pixels-game.is-loading > :not(#pixels-error) { visibility: hidden; }
 
-/* THE COVER. Until Start is tapped the board keeps its place and shows only
-   its corner, and the button sits in the middle of where it will be, with
-   the way to How to play under it. */
+/* THE COVER. Until Start is tapped the board is drawn bare: its squares,
+   its lines and the numbers' bands, with no number and no mark, so nothing
+   is read before the clock runs and nothing moves when it does. Start and
+   the way to How to play sit on a panel in the middle of the squares. The
+   panel is 180px by 126px, two keys of 3rem and their spacing, and set by
+   those measures, so it lands on whole pixels on every board. */
 .pixels-stage { position: relative; }
-.pixels-game.is-waiting .pixels-board { visibility: hidden; }
-.pixels-game.is-waiting .pixels-corner { visibility: visible; }
-.pixels-start { position: absolute; inset-block-start: 50%; inset-inline-start: 50%; translate: -50% -50%; display: grid; gap: .5rem; }
+.pixels-game.is-waiting .pixels-clue > span { visibility: hidden; }
+.pixels-game.is-waiting .pixels-cell { background: var(--rux-layer-01); }
+.pixels-game.is-waiting .pixels-cell::before,
+.pixels-game.is-waiting .pixels-cell::after { content: none; }
+.pixels-start {
+  position: absolute;
+  inset-block-start: calc(var(--pixels-corner) + (var(--side) - 126px) / 2);
+  inset-inline-start: calc(var(--pixels-corner) + (var(--side) - 180px) / 2);
+  display: grid;
+  gap: 6px;
+  inline-size: 180px;
+  padding: 12px;
+  background: var(--rux-background);
+}
+/* Each of its two keys is as wide as the panel inside its padding. */
+.pixels-start-key { inline-size: 100%; }
 
 /* HOW TO PLAY. Three steps down the modal, each a small board beside its
    words. The boards are the game's own at 20px a square, with 36px for

@@ -29,8 +29,8 @@ today's ranking with each player's time, and the all-time one with puzzles
 solved.
 
 `play.html?id=` plays one puzzle, 5, 10 or 15 squares a side. The board
-waits behind Tap to start, which with a mouse says Start, and the clock runs
-from that tap. Fill a square
+waits behind Tap to start, which with a mouse says Start, drawn bare until
+then, with no number and no mark, and the clock runs from that tap. Fill a square
 or cross it out with X, by tap, by dragging along a row or column, with a
 mouse's right button, which always crosses out, or with
 the arrow keys, Z and X. On a phone a 15×15 board zooms under two fingers,

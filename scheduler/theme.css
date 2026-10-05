@@ -498,3 +498,18 @@
   --scheduler-shortcut-pad: 6px;
   --scheduler-shortcut-radius: 6px;
 }
+
+/* CALL, TEXT AND MAP WEAR THE SECONDARY BUTTON'S COLOURS (app.css), and three
+   themes label that button in the page's own text where Carbon uses
+   text-on-color: Geist and Spotify set text-on-color to black for a light
+   brand, and apple-light's secondary fill is a pale grey. Geist's secondary
+   fill is the page behind a ring, so the square takes that ring. The rounded
+   themes give it their corner, as they give every other button. */
+:is([data-theme="geist-dark"], [data-theme="spotify-dark"], [data-theme="apple-light"]) .scheduler-call-button {
+  color: var(--rux-text-primary);
+}
+[data-theme="geist-dark"] .scheduler-call-button:not(:focus-visible) {
+  box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
+}
+:is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-call-button { border-radius: 6px; }
+[data-theme="apple-light"] .scheduler-call-button { border-radius: 10px; }

@@ -45,6 +45,8 @@ and Design's contrast measurement reads no text in it under 4.5 to 1.
   larger corners of Apple's current look, without its glass.
 - **Mac sizes on a wide screen.** A phone keeps each app's own phone layout.
 - **The accent is Apple's blue,** for the main button and for links.
+- **Text keeps the site's 14px.** Apple's 13px body would turn every size
+  measured from the root into a fraction of a pixel.
 
 ## Questions
 
@@ -62,7 +64,7 @@ None open.
   `design/css/rux-theme.css` beside its source row in
   `design/docs/apple-token-map.md`, and mark the hover and active steps Apple
   does not name as derived.
-- [ ] Set Apple's type sizes and weights.
+- [ ] Set Apple's type weights at the site's sizes.
 - [ ] Look at what is not yet seen in the theme and fix what reads as
   another theme's: the trip editor's Route, Buses, Billing and Files tabs, a
   pop-up, the document viewer, the quote page and the forms.

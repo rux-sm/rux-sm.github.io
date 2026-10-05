@@ -14,6 +14,13 @@
 
 /* ── The page itself ──────────────────────────────────────────────────── */
 
+/* THE PAPER'S MEASURES ARE FIXED. Carbon's type and spacing tokens are rem, so
+   every size on a form follows the root's text size, and the root follows a
+   theme that sets one and the browser's own text-size setting. Pinned here, a
+   form is the same size on paper whatever the person keeps. It is important
+   because a theme's rule on the root outweighs this one. */
+html { font-size: 16px !important; }
+
 /* The page is the page. The desk -- a step darker, so a sheet's edges show --
    is only where a sheet lies, because a bare rux--tile is layer's own colour
    and the hub's tiles would disappear into a desk that ran the whole way. */
@@ -287,8 +294,16 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    that names no paper is fluid and takes the column it is in.
 
    On paper the page size comes from @page and the margins from the box model,
-   because a print driver does not reliably honour an @page margin. */
+   because a print driver does not reliably honour an @page margin.
+
+   THE PAPER NAMES ITS OWN FACE, as it names its own colours. A theme sets its
+   typeface on the page, and a face is inherited, so without this a form came
+   out of the printer in whichever face the person's theme wears and its lines
+   broke in different places. Plex is the face the forms are measured in and
+   the one file every device is served. The quote names another below, to
+   match the estimate the office sends. */
 .scheduler-form {
+  font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
   inline-size: var(--scheduler-paper-width, 100%);
   margin-inline: auto;
   /* The page marks are laid over it, so they take no room in what prints. */

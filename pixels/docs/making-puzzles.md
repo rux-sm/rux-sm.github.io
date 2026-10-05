@@ -47,12 +47,16 @@ squares and let the extra room go to detail, not to a bigger blob.
 ## The colour picture
 
 Once the tag is green, the Colour step paints the picture the player sees at
-the finish. Pick one of the eight inks and paint any square, filled or empty.
+the finish. Pick one of the thirty-six inks and paint any square, filled or
+empty. The palette is ten colours, each light, middle and dark down its
+column, and six greys from white to black.
 
 - **Colour the background too.** A blue sky or a green field behind the shape
   is what makes the finish feel like a reward.
-- **Two or three inks are enough.** Keep the shape one colour and use a second
-  for its detail, such as a red apple with a green leaf.
+- **Two or three colours are enough.** Keep the shape one colour and use a
+  second for its detail, such as a red apple with a green leaf.
+- **Shade with the same column.** A dark red down one side of the apple and a
+  light red spot near the top make it round.
 - A picture never coloured finishes in black and white.
 
 ## The puzzle of the day

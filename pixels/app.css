@@ -178,7 +178,7 @@
 @keyframes pixels-shake { 25% { translate: -3px 0; } 75% { translate: 3px 0; } }
 @keyframes pixels-reveal { 40% { transform: scale(.35); background: var(--rux-interactive); } }
 
-/* A COLOUR PICTURE. `data-ink` names one of the eight inks in theme.css; it
+/* A COLOUR PICTURE. `data-ink` names one of the inks in theme.css; it
    paints a square of the finished board, of a small picture, and of the
    maker's board and palette in its colour step. */
 [data-ink="0"] { --ink: var(--pixels-ink-0); }
@@ -189,6 +189,34 @@
 [data-ink="5"] { --ink: var(--pixels-ink-5); }
 [data-ink="6"] { --ink: var(--pixels-ink-6); }
 [data-ink="7"] { --ink: var(--pixels-ink-7); }
+[data-ink="8"] { --ink: var(--pixels-ink-8); }
+[data-ink="9"] { --ink: var(--pixels-ink-9); }
+[data-ink="a"] { --ink: var(--pixels-ink-a); }
+[data-ink="b"] { --ink: var(--pixels-ink-b); }
+[data-ink="c"] { --ink: var(--pixels-ink-c); }
+[data-ink="d"] { --ink: var(--pixels-ink-d); }
+[data-ink="e"] { --ink: var(--pixels-ink-e); }
+[data-ink="f"] { --ink: var(--pixels-ink-f); }
+[data-ink="g"] { --ink: var(--pixels-ink-g); }
+[data-ink="h"] { --ink: var(--pixels-ink-h); }
+[data-ink="i"] { --ink: var(--pixels-ink-i); }
+[data-ink="j"] { --ink: var(--pixels-ink-j); }
+[data-ink="k"] { --ink: var(--pixels-ink-k); }
+[data-ink="l"] { --ink: var(--pixels-ink-l); }
+[data-ink="m"] { --ink: var(--pixels-ink-m); }
+[data-ink="n"] { --ink: var(--pixels-ink-n); }
+[data-ink="o"] { --ink: var(--pixels-ink-o); }
+[data-ink="p"] { --ink: var(--pixels-ink-p); }
+[data-ink="q"] { --ink: var(--pixels-ink-q); }
+[data-ink="r"] { --ink: var(--pixels-ink-r); }
+[data-ink="s"] { --ink: var(--pixels-ink-s); }
+[data-ink="t"] { --ink: var(--pixels-ink-t); }
+[data-ink="u"] { --ink: var(--pixels-ink-u); }
+[data-ink="v"] { --ink: var(--pixels-ink-v); }
+[data-ink="w"] { --ink: var(--pixels-ink-w); }
+[data-ink="x"] { --ink: var(--pixels-ink-x); }
+[data-ink="y"] { --ink: var(--pixels-ink-y); }
+[data-ink="z"] { --ink: var(--pixels-ink-z); }
 .pixels-game.is-done .pixels-cell[data-ink],
 .pixels-maker .pixels-cell[data-ink] { background: var(--ink); }
 
@@ -517,12 +545,12 @@
   .pixels-maker { --wide: calc(var(--foot) + 20rem); flex-direction: row; align-items: start; }
 }
 .pixels-maker-side { display: grid; gap: 1.5rem; align-content: start; inline-size: 18rem; max-inline-size: 100%; }
-/* The eight inks to paint with, the chosen one ringed. */
-.pixels-inks { display: flex; flex-wrap: wrap; gap: .5rem; }
+/* The inks to paint with, the chosen one ringed: six to a row, a colour to
+   a column, light above dark, and the greys in the last two columns. */
+.pixels-inks { display: grid; grid-template-columns: repeat(6, minmax(0, 2.5rem)); gap: .5rem; }
 .pixels-inks[hidden] { display: none; }
 .pixels-ink {
-  inline-size: 2.5rem;
-  block-size: 2.5rem;
+  aspect-ratio: 1;
   padding: 0;
   border: 1px solid var(--rux-border-strong-01);
   background: var(--ink);

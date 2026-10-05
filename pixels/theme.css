@@ -6,9 +6,13 @@
    AGENTS.md, "Where a change goes". */
 
 /* THE PICTURES' OWN INKS. A puzzle's colour picture is painted from these
-   eight. They sit on :root and in no [data-theme] block because a picture is
-   the same colours whatever theme the person keeps; they are the colours of
-   a thing, not of the interface. */
+   thirty-six: ten colours, each in a light, a middle and a dark shade, and
+   six greys from white to black. A picture stores one character a square,
+   0 to 9 then a to z, and each names its ink here. Saved pictures hold
+   these characters, so one never changes its colour. They sit on
+   :root and in no [data-theme] block because a picture is the same colours
+   whatever theme the person keeps; they are the colours of a thing, not of
+   the interface. */
 :root {
   --pixels-ink-0: #161616;
   --pixels-ink-1: #ffffff;
@@ -18,4 +22,32 @@
   --pixels-ink-5: #24a148;
   --pixels-ink-6: #0f62fe;
   --pixels-ink-7: #8a5a2b;
+  --pixels-ink-8: #ee5396;
+  --pixels-ink-9: #8a3ffc;
+  --pixels-ink-a: #009d9a;
+  --pixels-ink-b: #33b1ff;
+  --pixels-ink-c: #ff8389;
+  --pixels-ink-d: #ffb784;
+  --pixels-ink-e: #fddc69;
+  --pixels-ink-f: #6fdc8c;
+  --pixels-ink-g: #78a9ff;
+  --pixels-ink-h: #d9b38c;
+  --pixels-ink-i: #ffafd2;
+  --pixels-ink-j: #be95ff;
+  --pixels-ink-k: #3ddbd9;
+  --pixels-ink-l: #bae6ff;
+  --pixels-ink-m: #750e13;
+  --pixels-ink-n: #ba4e00;
+  --pixels-ink-o: #b28600;
+  --pixels-ink-p: #0e6027;
+  --pixels-ink-q: #002d9c;
+  --pixels-ink-r: #553517;
+  --pixels-ink-s: #9f1853;
+  --pixels-ink-t: #491d8b;
+  --pixels-ink-u: #005d5d;
+  --pixels-ink-v: #0072c3;
+  --pixels-ink-w: #e0e0e0;
+  --pixels-ink-x: #a8a8a8;
+  --pixels-ink-y: #6f6f6f;
+  --pixels-ink-z: #393939;
 }

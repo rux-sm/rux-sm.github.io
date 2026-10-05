@@ -4,7 +4,7 @@
    DRAW: tap a square to fill or empty it, or drag. The numbers update as the
    picture changes, and the check says whether a player can solve it by logic
    alone, and then how hard that is; squares that would need a guess are
-   outlined. COLOUR: pick one of the eight inks and paint any square, filled
+   outlined. COLOUR: pick one of the thirty-six inks and paint any square, filled
    or not; that is the picture the puzzle finishes as. A picture never
    coloured finishes in black and white. Size starts a blank board of 5, 10
    or 15 squares a side, and a saved puzzle keeps the size it has. Category
@@ -37,6 +37,17 @@
   const day = $('pixels-day'), theme = $('pixels-theme');
   const inks = $('pixels-inks');
   const DRAFT = 'pixels-draft';
+  // The inks as the palette lays them out, six to a row: a colour to a
+  // column, light above dark, and the greys in the last two columns. Each is
+  // the character a picture stores, then its name.
+  const INKS = [
+    ['c', 'Light red'], ['d', 'Light orange'], ['e', 'Light yellow'], ['f', 'Light green'], ['g', 'Light blue'], ['j', 'Light purple'],
+    ['2', 'Red'], ['3', 'Orange'], ['4', 'Yellow'], ['5', 'Green'], ['6', 'Blue'], ['9', 'Purple'],
+    ['m', 'Dark red'], ['n', 'Dark orange'], ['o', 'Dark yellow'], ['p', 'Dark green'], ['q', 'Dark blue'], ['t', 'Dark purple'],
+    ['i', 'Light pink'], ['h', 'Light brown'], ['k', 'Light teal'], ['l', 'Light sky blue'], ['1', 'White'], ['y', 'Grey'],
+    ['8', 'Pink'], ['7', 'Brown'], ['a', 'Teal'], ['b', 'Sky blue'], ['w', 'Pale grey'], ['z', 'Dark grey'],
+    ['s', 'Dark pink'], ['r', 'Dark brown'], ['u', 'Dark teal'], ['v', 'Dark sky blue'], ['x', 'Light grey'], ['0', 'Black'],
+  ];
   // A category shows nine, three rows of three on a phone; any more are off.
   const PER_LEVEL = 9;
 
@@ -141,10 +152,21 @@
     render();
   };
   switcher($('pixels-step'), b => setStep(b.dataset.step));
+  inks.replaceChildren(...INKS.map(([id, label]) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'pixels-ink';
+    b.setAttribute('role', 'radio');
+    b.setAttribute('aria-checked', parseInt(id, 36) === ink);
+    b.setAttribute('aria-label', label);
+    b.title = label;
+    b.dataset.ink = id;
+    return b;
+  }));
   inks.addEventListener('click', e => {
     const picked = e.target.closest('.pixels-ink');
     if (!picked) return;
-    ink = +picked.dataset.ink;
+    ink = parseInt(picked.dataset.ink, 36);
     inks.querySelectorAll('.pixels-ink').forEach(b => b.setAttribute('aria-checked', b === picked));
   });
 

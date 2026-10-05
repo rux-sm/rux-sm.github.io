@@ -3067,11 +3067,13 @@
 
   /* ASSIGN BEST fills a leg's empty seats in the automatic order: Driver
      seats on every bus before co-drivers and relief, each the first of
-     `autoPicks` not already in a seat on the leg. It only fills the form,
-     so Save or Reset decides. It waits for the read of who is free, since a
-     ranking without it would offer a driver who is away. */
-  const emptySeats = leg => ROLES.flatMap(r => (editing?.fleet?.[leg] ?? [])
-    .filter(b => (r.role === 'driver' || b.seats[r.role].on) && !b.seats[r.role].driverId)
+     `autoPicks` not already in a seat on the leg. A vehicle with no bus yet
+     is left alone, since a driver is chosen for a bus. It only fills the
+     form, so Save or Reset decides. It waits for the read of who is free,
+     since a ranking without it would offer a driver who is away. */
+  const emptySeats = (leg, withBus = true) => ROLES.flatMap(r => (editing?.fleet?.[leg] ?? [])
+    .filter(b => (b.busId != null) === withBus
+      && (r.role === 'driver' || b.seats[r.role].on) && !b.seats[r.role].driverId)
     .map(b => b.seats[r.role]));
 
   function assignBestButton(leg) {
@@ -3079,8 +3081,9 @@
     btn.type = 'button';
     btn.id = `scheduler-fleet-${leg}-best`;
     btn.dataset.fleetBest = leg;
-    const why = !emptySeats(leg).length ? 'Every seat has a driver'
-      : !fleetClashes ? 'Checking who is free…' : null;
+    const why = emptySeats(leg).length ? (fleetClashes ? null : 'Checking who is free…')
+      : emptySeats(leg, false).length ? 'Choose a vehicle first: the empty seats have no bus yet'
+      : 'Every seat has a driver';
     if (why) btn.disabled = true;
     btn.title = why ?? 'Fill the empty seats with the top free drivers';
     return btn;
@@ -11040,8 +11043,9 @@
      Every bus whose Driver seat wants a driver is a row: empty, declined and
      pending assignment ticked; not sent unticked, and listed only while a free
      driver of better priority exists. Pending response and confirmed are left
-     alone, as are a placeholder trip, which is not booked yet, and the trip in
-     the editor, which holds its drivers unsaved. The rows are planned earliest
+     alone, as are a vehicle with no bus yet, since a driver is chosen for a
+     bus, a placeholder trip, which is not booked yet, and the trip in the
+     editor, which holds its drivers unsaved. The rows are planned earliest
      leg first, each ticked suggestion standing in its seat for the rows after
      it, so no driver is suggested for two buses on one day and the days it
      adds count. A tick or a pick plans again. Apply saves a trip at a time. */
@@ -11062,7 +11066,7 @@
       for (const l of legs) {
         if (!datesOverlap(range, l)) continue;
         for (const assign of trip.trip_assignments || []) {
-          if ((assign.leg || 'outbound') !== l.leg) continue;
+          if ((assign.leg || 'outbound') !== l.leg || assign.bus_id == null) continue;
           const now = crewOf(trip, assign, panelIndex.driversById, panelIndex.statuses)
             .find(c => c.role === 'driver' && !c.needed) ?? null;
           const state = now ? now.status.value : 'empty';
@@ -11116,7 +11120,7 @@
       const li = el('li', 'scheduler-suggest__row');
       const where = [
         row.split ? (row.leg.leg === 'return' ? 'Pickup' : 'Drop-off') : null,
-        row.assign.bus_id ? histBusName(row.assign.bus_id) : 'No bus yet',
+        histBusName(row.assign.bus_id),
       ].filter(Boolean).join(' · ');
       const check = checkField(id, `${row.trip.destination || 'Trip'} · ${suggestDates(row.leg)} · ${where}`, row.ticked && !!row.pick);
       const box = check.querySelector('input');

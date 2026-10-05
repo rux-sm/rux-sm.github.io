@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-<!-- The app tile icon, the same drawing as brand/favicon.svg: a pixel heart,
+<!-- The app tile icon, the same drawing as brand/favicon.svg: a pixel star,
      one run of squares per row on the 16 grid the other apps' marks use. It
      is a CSS mask over the tile's text colour, so this file's own colours are
      discarded and only its alpha is read; that is why it carries no fill and
      no title. -->
-<path d="M2 3L6 3L6 4L2 4ZM10 3L14 3L14 4L10 4ZM1 4L7 4L7 5L1 5ZM9 4L15 4L15 5L9 5ZM1 5L15 5L15 6L1 6ZM1 6L15 6L15 7L1 7ZM1 7L15 7L15 8L1 8ZM2 8L14 8L14 9L2 9ZM3 9L13 9L13 10L3 10ZM4 10L12 10L12 11L4 11ZM5 11L11 11L11 12L5 12ZM6 12L10 12L10 13L6 13ZM7 13L9 13L9 14L7 14Z"/>
+<path d="M7 1L9 1L9 2L7 2ZM7 2L9 2L9 3L7 3ZM6 3L10 3L10 4L6 4ZM6 4L10 4L10 5L6 5ZM1 5L15 5L15 6L1 6ZM2 6L14 6L14 7L2 7ZM3 7L13 7L13 8L3 8ZM4 8L12 8L12 9L4 9ZM4 9L12 9L12 10L4 10ZM3 10L13 10L13 11L3 11ZM3 11L7 11L7 12L3 12ZM9 11L13 11L13 12L9 12ZM2 12L5 12L5 13L2 13ZM11 12L14 12L14 13L11 13ZM2 13L4 13L4 14L2 14ZM12 13L14 13L14 14L12 14Z"/>
 </svg>

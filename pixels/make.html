@@ -161,22 +161,35 @@
           </div>
         </div>
         </div>
-        <div id="pixels-saved" hidden>
-        <div class="rux--inline-notification rux--inline-notification--success" role="status">
-          <div class="rux--inline-notification__details">
-            <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-check_circle-fill"/></svg>
-            <div class="rux--inline-notification__text-wrapper">
-              <div class="rux--inline-notification__title"></div>
-            </div>
-          </div>
-        </div>
-        </div>
         <!-- The frame is the width the board's size is worked out from. -->
         <div class="pixels-frame">
         <div class="pixels-maker">
-          <div id="pixels-board"></div>
-          <form class="pixels-maker-side" id="pixels-form" novalidate>
+          <!-- The board with the inks under it, then the check, the step and the
+               fields: beside the board on a wide window, and on a narrow one in
+               a single column, the step and the inks straight under the board. -->
+          <div class="pixels-maker-main">
+            <div id="pixels-board"></div>
+            <!-- make.js fills this with the inks, in two sets of eighteen. -->
+            <div class="pixels-inks" id="pixels-inks" role="radiogroup" aria-label="Colour" hidden></div>
+          </div>
+          <div class="pixels-maker-side">
+            <div id="pixels-saved" hidden>
+            <div class="rux--inline-notification rux--inline-notification--success" role="status">
+              <div class="rux--inline-notification__details">
+                <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-check_circle-fill"/></svg>
+                <div class="rux--inline-notification__text-wrapper">
+                  <div class="rux--inline-notification__title"></div>
+                </div>
+              </div>
+            </div>
+            </div>
             <div id="pixels-check" aria-live="polite"></div>
+            <!-- Draw the puzzle, then paint the picture it finishes as. -->
+            <div class="rux--content-switcher rux--content-switcher--lg rux--layout--size-lg" role="tablist" aria-label="Step" id="pixels-step">
+              <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-step="draw"><span class="rux--content-switcher__label">Draw</span></button>
+              <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-step="colour"><span class="rux--content-switcher__label">Colour</span></button>
+            </div>
+          <form class="pixels-maker-form" id="pixels-form" novalidate>
             <!-- Choosing a size starts a blank board of it. make.js hides this for a saved puzzle. -->
             <div id="pixels-size-row">
               <div class="rux--content-switcher rux--content-switcher--lg rux--layout--size-lg" role="tablist" aria-label="Size" id="pixels-size">
@@ -185,13 +198,6 @@
                 <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-size="15"><span class="rux--content-switcher__label">15×15</span></button>
               </div>
             </div>
-            <!-- Draw the puzzle, then paint the picture it finishes as. -->
-            <div class="rux--content-switcher rux--content-switcher--lg rux--layout--size-lg" role="tablist" aria-label="Step" id="pixels-step">
-              <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-step="draw"><span class="rux--content-switcher__label">Draw</span></button>
-              <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-step="colour"><span class="rux--content-switcher__label">Colour</span></button>
-            </div>
-            <!-- make.js fills this with the inks. -->
-            <div class="pixels-inks" id="pixels-inks" role="radiogroup" aria-label="Colour" hidden></div>
             <div class="rux--form-item rux--text-input-wrapper">
               <div class="rux--text-input__label-wrapper"><label class="rux--label" for="pixels-name">Name</label></div>
               <div class="rux--text-input__field-outer-wrapper">
@@ -229,6 +235,7 @@
               <button type="button" class="rux--btn rux--btn--danger--ghost" id="pixels-delete" data-rux-open="pixels-delete-modal" hidden>Delete</button>
             </div>
           </form>
+          </div>
         </div>
         </div>
       </div>

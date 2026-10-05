@@ -30,7 +30,8 @@
    height leave beside the corner, from 150px up to `--most`, taken down to a
    multiple of 30px, which fives, tens and fifteens all divide. `--base`, a
    square, is that shared out, so it is whole pixels by itself. `--chrome` is
-   the height the page uses above and below a board. `--cell` is `--base`
+   the height the page uses above and below a board, and `--beside` the width
+   it uses beside one, which only the maker does. `--cell` is `--base`
    times `--zoom`, which with `--tx` and `--ty` app.js sets as two fingers
    pinch and slide.
 
@@ -39,7 +40,7 @@
    is the size a number is drawn, larger on larger squares; a line with more
    numbers than fit at that size draws them smaller, below. */
 .pixels-game, .pixels-maker {
-  --side: round(down, clamp(150px, min(100cqi - var(--pixels-corner), 100dvh - var(--chrome) - var(--pixels-corner)), var(--most)), 30px);
+  --side: round(down, clamp(150px, min(100cqi - var(--beside, 0px) - var(--pixels-corner), 100dvh - var(--chrome) - var(--pixels-corner)), var(--most)), 30px);
   --foot: calc(var(--side) + var(--pixels-corner));
 }
 .pixels-board {
@@ -528,27 +529,38 @@
 .pixels-solved { display: grid; gap: 1.5rem; justify-items: center; text-align: center; padding-block: 1rem; }
 .pixels-solved-clock { display: block; font-size: 2rem; }
 
-/* THE MAKER. The board, then the check, name and buttons under it, or
-   beside it where the frame has room for both. Its board is the game's, to
-   450px of squares, set in by a whole number of pixels as the game is. */
+/* THE MAKER. Its board is the game's, to 450px of squares, set in by a
+   whole number of pixels as the game is. On a narrow frame it is one column:
+   the board, the check, the step, the inks, then the fields, which is the
+   order the numbers below give its two halves' children. Where the frame has
+   room for both, the board is on one side with the inks under its squares,
+   and the check, the step and the fields are beside it. There `--chrome`
+   counts the inks and `--beside` the fields, so the board takes what the
+   window leaves both ways and the whole maker is in view without scrolling.
+   That starts at 740px, where the squares beside the fields are 300px. */
 .pixels-maker {
   --most: 450px;
   --chrome: 96px;
   --wide: var(--foot);
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
   inline-size: var(--wide);
   margin-inline-start: round(down, calc((100cqi - var(--wide)) / 2), 1px);
 }
-@container (min-width: 890px) {
-  .pixels-maker { --wide: calc(var(--foot) + 20rem); flex-direction: row; align-items: start; }
-}
-.pixels-maker-side { display: grid; gap: 1.5rem; align-content: start; inline-size: 18rem; max-inline-size: 100%; }
-/* The inks to paint with, the chosen one ringed: six to a row, a colour to
-   a column, light above dark, and the greys in the last two columns. */
-.pixels-inks { display: grid; grid-template-columns: repeat(6, minmax(0, 2.5rem)); gap: .5rem; }
+.pixels-maker-main, .pixels-maker-side { display: contents; }
+#pixels-saved { order: 0; }
+#pixels-board { order: 1; }
+#pixels-check { order: 2; }
+#pixels-step { order: 3; }
+.pixels-inks { order: 4; }
+.pixels-maker-form { order: 5; display: grid; gap: 1rem; align-content: start; inline-size: 18rem; max-inline-size: 100%; }
+/* The inks to paint with, the chosen one ringed, in two sets of six to a
+   row: a colour to a column, light above dark, and the greys in the second
+   set's last two columns. */
+.pixels-inks { display: grid; gap: .5rem; }
 .pixels-inks[hidden] { display: none; }
+.pixels-inks-set { display: grid; grid-template-columns: repeat(6, minmax(0, 2.5rem)); gap: .5rem; }
 .pixels-ink {
   aspect-ratio: 1;
   padding: 0;
@@ -557,3 +569,12 @@
   cursor: pointer;
 }
 .pixels-ink[aria-checked="true"] { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+@container (min-width: 740px) {
+  .pixels-maker { --chrome: 240px; --beside: 20rem; --wide: calc(var(--foot) + 20rem); flex-direction: row; align-items: start; gap: 2rem; }
+  .pixels-maker-main { display: grid; gap: 1.5rem; }
+  .pixels-maker-side { display: grid; gap: 1rem; align-content: start; inline-size: 18rem; }
+  /* The sets side by side under the squares: twelve across, three down. */
+  .pixels-inks { grid-template-columns: 1fr 1fr; gap: .375rem; inline-size: var(--side); margin-inline-start: var(--pixels-corner); }
+  .pixels-inks-set { grid-template-columns: repeat(6, 1fr); gap: .375rem; }
+  .pixels-ink { aspect-ratio: auto; block-size: 2rem; }
+}

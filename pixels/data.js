@@ -19,7 +19,7 @@
    and where there is not it draws the name form, or says the link is needed.
 
    THE OWNER makes and edits puzzles and sees the players, by the tables'
-   own rules: `save`, `remove`, `setTheme`, `players`, `setWord`, `renamePlayer` and
+   own rules: `save`, `remove`, `setTheme`, `setHidden`, `orderLevels`, `players`, `setWord`, `renamePlayer` and
    `removePlayer`.
 
    THE LOCAL PREVIEW, `npm run serve` on :8640, has no log-in, so there the
@@ -160,19 +160,21 @@
       if (!player.error) localStorage.setItem(GUEST, JSON.stringify({ key: made, name: player.name }));
       return player;
     },
-    // A player is sent the levels and the day's puzzle; the owner reads the
-    // table, which holds the days to come too.
-    // Each puzzle comes with its level's theme, if the level has one.
+    // A player is sent the levels the owner has not hidden and the day's
+    // puzzle; the owner reads the table, which holds the hidden levels and
+    // the days to come too.
+    // Each puzzle comes with its level's theme, if the level has one, and
+    // for the owner with whether the level is hidden.
     async list() {
       if (!owner) return call('pixels_puzzles', { p_key: key() });
       const [puzzles, levels] = await Promise.all([
         client.from('pixels_puzzles').select('id, name, squares, width, height, level, colours, created_at, day').order('created_at').order('id'),
-        client.from('pixels_levels').select('width, level, name'),
+        client.from('pixels_levels').select('width, level, name, hidden'),
       ]);
       fail(puzzles.error);
       fail(levels.error);
-      const theme = p => levels.data.find(l => l.width === p.width && l.level === p.level)?.name ?? null;
-      return puzzles.data.map(p => ({ ...p, theme: theme(p) }));
+      const of = p => levels.data.find(l => l.width === p.width && l.level === p.level);
+      return puzzles.data.map(p => ({ ...p, theme: of(p)?.name ?? null, hidden: !!of(p)?.hidden }));
     },
     async results() {
       return new Map((await call('pixels_results', { p_key: key() })).map(r => [r.puzzle_id, { seconds: r.best_seconds, stars: r.stars }]));
@@ -208,11 +210,18 @@
       fail((await client.from('pixels_puzzles').delete().eq('id', id)).error);
     },
     // A level's theme, for boards of one size; an empty name takes it away.
+    // Only the name is written, so a hidden level stays hidden.
     async setTheme(width, level, name) {
-      const set = name
-        ? client.from('pixels_levels').upsert({ width, level, name })
-        : client.from('pixels_levels').delete().eq('width', width).eq('level', level);
-      fail((await set).error);
+      fail((await client.from('pixels_levels').upsert({ width, level, name: name || null })).error);
+    },
+    // Puts the levels of one board size in a new order: `levels` is every
+    // level number in use at that size, and each becomes its place in the list.
+    async orderLevels(width, levels) {
+      await call('pixels_order_levels', { p_width: width, p_order: levels });
+    },
+    // Hides a level from every player but the owner, or shows it again.
+    async setHidden(width, level, hidden) {
+      fail((await client.from('pixels_levels').upsert({ width, level, hidden })).error);
     },
     // Every player with their results and days, and the invite word.
     async players() {

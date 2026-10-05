@@ -17,7 +17,9 @@ solved in a row, then every puzzle by the category its maker gave it, easy to
 hard, with nothing locked, each tile a square, three across on a phone and
 nine on a wide screen, so a category of nine fills its rows. A category is
 headed by its name, such as Fruit, and one with no name by More. The 5×5 ones
-say Quick first and come first, the 15×15 ones say Long and come last. A solved
+say Quick first and come first, the 15×15 ones say Long and come last. The
+owner has a switch beside each name that hides the category from every other
+player, and arrows that move it up or down. A solved
 puzzle shows its picture, name and stars; an unsolved one a question mark and
 how hard it is, and its name stays hidden until it is solved. Leaderboard:
 today's ranking by stars then time, and the all-time one by every star
@@ -59,7 +61,8 @@ picture and how hard that is, outlines each square that would need a guess,
 and saves only a picture with one answer. Size starts a blank board of 5,
 10 or 15 a side. Its Colour step paints the picture
 the puzzle finishes as, from eight inks, and Category places it on the front
-page, with Category name naming that category. A puzzle given a day is that
+page, with Category name naming that category; a category just started is
+hidden until the front page's switch publishes it. A puzzle given a day is that
 day's puzzle and sits in no category; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good
 category.
 
@@ -80,7 +83,7 @@ directly: `pixels_puzzles`, every puzzle, which a staff account may read too;
 `pixels_players`, each player's name with the account or the hash of the
 guest's key; `pixels_player_results` and `pixels_player_days`, each player's
 best time and most stars on a puzzle and on a puzzle of the day; and
-`pixels_settings`, the invite word; and `pixels_levels`, each category's name. `docs/database-access.md` is the rule
+`pixels_settings`, the invite word; and `pixels_levels`, each category's name and whether it is hidden. `docs/database-access.md` is the rule
 they follow.
 
 A player's page calls eight functions, which the publishable key may run and
@@ -89,7 +92,11 @@ which first find the player from the log-in or the key: `pixels_join`,
 `pixels_record`, `pixels_record_day` and `pixels_board`. A time is the
 player's own browser's word: the database refuses only what cannot be, a
 time under two seconds, a puzzle that does not exist, a day more than one
-from today.
+from today. `pixels_puzzles` sends a player no hidden category.
+
+A ninth, `pixels_order_levels`, is the owner's and refuses anyone else: it
+renumbers the categories of one size in one step, so a move cannot stop
+half done.
 
 `players.html` is the owner's: every player with today's puzzle, days in a
 row, puzzles solved, stars and when they last played; the name, which can be

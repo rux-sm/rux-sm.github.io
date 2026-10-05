@@ -9,7 +9,8 @@
    coloured finishes in black and white. Size starts a blank board of 5, 10
    or 15 squares a side, and a saved puzzle keeps the size it has. Category
    is where the puzzle sits on the front page, among those of its size: it
-   lists the categories by name, and New category starts one after them. A
+   lists the categories by name, and New category starts one after them,
+   hidden from the players until the front page's switch publishes it. A
    puzzle given a day is that day's puzzle instead and sits in no category;
    a day takes one puzzle, and after one is saved the field moves on a day.
    Category name names the category chosen, for boards of this size, and is
@@ -211,7 +212,11 @@
       id: editing?.id, name: name.value.trim(), squares: squaresOf(draft), width: side, height: side,
       level: levelOf(), day: day.value || null, colours: colours && squaresOf(colours),
     };
+    // A category just started is hidden, so it is drawn out of the players'
+    // sight; the front page's Published switch shows it.
+    const fresh = !puzzle.day && !puzzles.some(p => p.width === side && p.level === puzzle.level && !p.day);
     try {
+      if (fresh) await data.setHidden?.(side, puzzle.level, true);
       const row = await data.save(puzzle);
       // The category's name goes with it, if it was changed.
       const named = theme.value.trim();
@@ -227,7 +232,7 @@
       if (!puzzle.day) showLevels(puzzle.level);
       if (editing) {
         editing = row;
-        saved(`Saved “${row.name}”`);
+        saved(`Saved “${row.name}”${fresh && data.setHidden ? `. ${named || 'More'} is hidden until you publish it.` : ''}`);
       } else {
         try { localStorage.removeItem(DRAFT); } catch { /* nothing kept */ }
         name.value = '';
@@ -238,7 +243,7 @@
           // On to the next day, for a run of them.
           when.setDate(when.getDate() + 1);
           day.value = `${when.getFullYear()}-${String(when.getMonth() + 1).padStart(2, '0')}-${String(when.getDate()).padStart(2, '0')}`;
-        } else saved(`Saved “${row.name}”. It is in ${named || 'More'}.`);
+        } else saved(`Saved “${row.name}”. It is in ${named || 'More'}${fresh && data.setHidden ? ', hidden until you publish it' : ''}.`);
       }
       $('pixels-error').hidden = true;
     } catch (error) {

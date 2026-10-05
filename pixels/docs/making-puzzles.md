@@ -101,7 +101,12 @@ category by editing that field.
   maker's Category name field. The player guesses the picture sooner, and the
   guess is half the fun. A new name renames it for every puzzle in it.
 - **New category**, the last choice in the Category field, starts one. It
-  stands after the others on the front page, and the maker cannot move it.
+  stands after the others and starts hidden, so only the owner sees it while
+  its nine are drawn.
+- **Publish it on the front page.** Beside each category's name the owner has
+  a switch: on, every player is sent the category; off, only the owner is.
+- **Move it with the arrows** beside the switch, up or down among the
+  categories of its size.
 - **Watch the line under the tag.** It counts the category's easy, medium and
   hard puzzles with the one being drawn, beside what the category aims for.
 

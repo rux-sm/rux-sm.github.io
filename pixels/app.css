@@ -233,7 +233,10 @@
 /* A LEVEL: three tiles across on a phone, so a level of nine is three rows
    of three, and nine across where there is room. Each tile is a square,
    whatever it holds, and its picture is half as wide as it is. */
-.pixels-level-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+/* The owner's switch sits beside the name, and the count at the far end. */
+.pixels-level-head { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem 1rem; }
+.pixels-level-head > .pixels-meta { margin-inline-start: auto; }
+.pixels-moves { display: flex; }
 .pixels-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; max-inline-size: 32rem; }
 @media (min-width: 66rem) {
   .pixels-list { grid-template-columns: repeat(9, minmax(0, 1fr)); max-inline-size: none; }

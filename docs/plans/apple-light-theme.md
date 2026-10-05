@@ -8,8 +8,8 @@ type: plan
 
 Design gains an eighth theme, `apple-light`: a light theme in the style of
 Apple's own apps. Every colour and size in it is read from Apple, as
-geist-dark's were read from Geist's pages. It works in every app on the site
-and passes Design's contrast gate with no exception.
+geist-dark's were read from Geist's pages. It works in every app on the site,
+and Design's contrast measurement reads no text in it under 4.5 to 1.
 
 ## Decisions
 
@@ -30,9 +30,12 @@ and passes Design's contrast gate with no exception.
   text in a darker step of it, and a solid bar of it down the leading edge.
 - **Solid surfaces.** Cards, menus and panels are opaque. The board is dense,
   and a blurred surface over it costs reading.
-- **The contrast gate decides.** Where one of Apple's colours fails the gate
+- **Contrast decides.** Where one of Apple's colours makes less than 4.5 to 1
   as text on its surface, the theme takes Apple's own increased-contrast
   variant of that colour.
+- **It stays out of the account panel until it is whole.** `js/theme.js`
+  knows the name, so a session can put it on a page, and nobody can pick it
+  half built.
 - **Light only.** A dark companion is its own plan.
 - **It is named `apple-light`,** shown as "Apple light" in the account panel.
 - **Apple's current shapes, with solid fills.** Capsule buttons and the
@@ -52,20 +55,23 @@ None open.
   apps on screen under the light appearance. This Mac is set to dark, so the
   iOS Simulator's stock apps are where a light Calendar event and a sheet can
   be read.
-- [ ] Add the `apple-light` token block to `design/css/rux-theme.css`, and
-  name the theme in `design/js/theme.js`, `design/tools/lib/shell.mjs` and
-  the tools that list the themes, then rebuild the pages.
-- [ ] Add the theme to the rounded themes' shared rules in
-  `design/css/rux-overrides.css`, then write Apple's differences from the
-  measurements: fields, the button kinds, the segmented control, the switch,
-  checkbox, radio, menu, tooltip, tag and table.
-- [ ] Set the system font and Apple's type sizes and weights.
+- [ ] Write each token of the `apple-light` block in
+  `design/css/rux-theme.css` beside its source row in
+  `design/docs/apple-token-map.md`, and mark the hover and active steps Apple
+  does not name as derived.
+- [ ] Write the rest of Apple's differences in `design/css/rux-overrides.css`
+  from the measurements: control heights, the segmented control, the switch,
+  checkbox, radio, menu, tooltip, tag and table, and a button's centred label.
+- [ ] Set Apple's type sizes and weights.
 - [ ] Colour the scheduler in `scheduler/theme.css`: the trip bars with their
   leading edge, the three heads, the trip card and the roster.
 - [ ] Give every other app's `theme.css` its `apple-light` block where the
   app sets colours by theme.
-- [ ] Run Design's contrast gate and the full check, and fix each failure
-  with Apple's increased-contrast variant.
+- [ ] Run Design's contrast measurement in each app and the full check, and
+  fix each failure with Apple's increased-contrast variant.
 - [ ] Check in Chrome on :8641 at desk and phone width against the
   measurements: the board, the trip editor's five tabs, the lists, a pop-up,
   the trip card and Design's kitchen sink.
+- [ ] List the theme in the account panel through
+  `design/tools/lib/shell.mjs`, `design/tools/build-builder.mjs` and
+  `design/tools/build-readme.mjs`, and rebuild the pages.

@@ -2,8 +2,9 @@
   rux-theme.css — themes above the compiled four.
 
   TOKEN OVERRIDES, LAYERED ON A COMPILED THEME. Link it after css/rux.css.
-  Three theme blocks live here, `[data-theme="geist-dark"]`,
-  `[data-theme="ant-dark"]` and `[data-theme="spotify-dark"]`, each the whole story for its own theme: every
+  Four theme blocks live here, `[data-theme="geist-dark"]`,
+  `[data-theme="ant-dark"]`, `[data-theme="spotify-dark"]` and
+  `[data-theme="apple-light"]`, each the whole story for its own theme: every
   core token its palette redefines, plus derived values for Carbon's
   button component tokens and transcribed values for its tag,
   notification, status and content-switcher ones (both below), which are
@@ -981,4 +982,238 @@
   --rux-content-switcher-background: rgba(0, 0, 0, 0);
   --rux-content-switcher-background-hover: rgba(141, 141, 141, 0.12);
   --rux-content-switcher-selected: rgba(141, 141, 141, 0.24);
+}
+
+/* APPLE-LIGHT: A LIGHT THEME READ FROM APPLE'S OWN SOFTWARE. Every value is
+   in docs/apple-token-map.md beside where it was read: the Human Interface
+   Guidelines' colour tables, and AppKit under the light appearance. White's
+   compiled values stand for whatever this block does not name, which is the
+   chat family.
+
+   - The page is AppKit's under-page background and a surface on it is white,
+     so a card stands off the page by its fill, as a Mac's window does.
+   - Text is the label colour laid on white. Secondary text is the Guidelines'
+     increased-contrast grey, because the secondary label makes 3.95 to 1 on
+     white and that grey 5.23.
+   - The filled button is the Guidelines' increased-contrast blue under a
+     white label, 4.57 to 1, where the Mac's own accent makes 4.02. It darkens
+     through the link colour to the selected-content blue.
+   - A status colour is the increased-contrast step of its hue, each of which
+     Apple set at 4.5 to 1 on white.
+   - A tag is its hue's default at 14% on white, and its words the
+     increased-contrast step darkened until they make 4.5 to 1 on that tint.
+   - A field is white inside a line, so the three field steps are one. */
+[data-theme="apple-light"] {
+  --rux-color-scheme: light;
+
+  /* background */
+  --rux-background: #f6f6f6;
+  --rux-background-active: #dcdcdc;
+  --rux-background-brand: #1e6ef4;
+  --rux-background-hover: #ededed;
+  --rux-background-inverse: #272727;
+  --rux-background-inverse-hover: #3a3a3a;
+  --rux-background-selected: #e6e6e6;
+  --rux-background-selected-hover: #dcdcdc;
+
+  /* layer */
+  --rux-layer-01: #ffffff;
+  --rux-layer-02: #ffffff;
+  --rux-layer-03: #f6f6f6;
+  --rux-layer-accent-01: #f3f3f3;
+  --rux-layer-accent-02: #ebebeb;
+  --rux-layer-accent-03: #e6e6e6;
+  --rux-layer-accent-active-01: #e6e6e6;
+  --rux-layer-accent-active-02: #dcdcdc;
+  --rux-layer-accent-active-03: #c7c7cc;
+  --rux-layer-accent-hover-01: #ebebeb;
+  --rux-layer-accent-hover-02: #e6e6e6;
+  --rux-layer-accent-hover-03: #dcdcdc;
+  --rux-layer-active-01: #e6e6e6;
+  --rux-layer-active-02: #e6e6e6;
+  --rux-layer-active-03: #dcdcdc;
+  --rux-layer-background-01: #ffffff;
+  --rux-layer-background-02: #ffffff;
+  --rux-layer-background-03: #f6f6f6;
+  --rux-layer-hover-01: #f3f3f3;
+  --rux-layer-hover-02: #f3f3f3;
+  --rux-layer-hover-03: #ebebeb;
+  --rux-layer-selected-01: #ebebeb;
+  --rux-layer-selected-02: #ebebeb;
+  --rux-layer-selected-03: #e6e6e6;
+  --rux-layer-selected-disabled: #aeaeb2;
+  --rux-layer-selected-hover-01: #e6e6e6;
+  --rux-layer-selected-hover-02: #e6e6e6;
+  --rux-layer-selected-hover-03: #dcdcdc;
+  --rux-layer-selected-inverse: #272727;
+
+  /* field */
+  --rux-field-01: #ffffff;
+  --rux-field-02: #ffffff;
+  --rux-field-03: #ffffff;
+  --rux-field-hover-01: #f8f8f8;
+  --rux-field-hover-02: #f8f8f8;
+  --rux-field-hover-03: #f3f3f3;
+
+  /* border */
+  --rux-border-disabled: #e6e6e6;
+  --rux-border-interactive: #1e6ef4;
+  --rux-border-inverse: #272727;
+  --rux-border-strong-01: #c7c7cc;
+  --rux-border-strong-02: #aeaeb2;
+  --rux-border-strong-03: #8e8e93;
+  --rux-border-subtle-00: #e6e6e6;
+  --rux-border-subtle-01: #e6e6e6;
+  --rux-border-subtle-02: #d9d9d9;
+  --rux-border-subtle-03: #d9d9d9;
+  --rux-border-subtle-selected-01: #d9d9d9;
+  --rux-border-subtle-selected-02: #d9d9d9;
+  --rux-border-subtle-selected-03: #c7c7cc;
+  --rux-border-tile-01: #e6e6e6;
+  --rux-border-tile-02: #d9d9d9;
+  --rux-border-tile-03: #d9d9d9;
+
+  /* text */
+  --rux-text-disabled: rgba(0, 0, 0, 0.247);
+  --rux-text-error: #e9152d;
+  --rux-text-helper: #6c6c70;
+  --rux-text-inverse: #ffffff;
+  --rux-text-on-color: #ffffff;
+  --rux-text-on-color-disabled: #8e8e93;
+  --rux-text-placeholder: rgba(0, 0, 0, 0.498);
+  --rux-text-primary: #272727;
+  --rux-text-secondary: #6c6c70;
+
+  /* link */
+  --rux-link-inverse: #5cb8ff;
+  --rux-link-inverse-active: #ffffff;
+  --rux-link-inverse-hover: #8fd0ff;
+  --rux-link-inverse-visited: #a7aaff;
+  --rux-link-primary: #0068da;
+  --rux-link-primary-hover: #0064e1;
+  --rux-link-secondary: #0064e1;
+  --rux-link-visited: #564ade;
+
+  /* icon */
+  --rux-icon-disabled: rgba(0, 0, 0, 0.247);
+  --rux-icon-interactive: #1e6ef4;
+  --rux-icon-inverse: #ffffff;
+  --rux-icon-on-color: #ffffff;
+  --rux-icon-on-color-disabled: #8e8e93;
+  --rux-icon-primary: #272727;
+  --rux-icon-secondary: #6c6c70;
+
+  /* support */
+  --rux-support-caution-major: #c55300;
+  --rux-support-caution-minor: #a16a00;
+  --rux-support-caution-undefined: #b02fc2;
+  --rux-support-error: #e9152d;
+  --rux-support-error-inverse: #ff6165;
+  --rux-support-info: #1e6ef4;
+  --rux-support-info-inverse: #5cb8ff;
+  --rux-support-success: #008932;
+  --rux-support-success-inverse: #4ad968;
+  --rux-support-warning: #c55300;
+  --rux-support-warning-inverse: #fedf43;
+
+  /* focus */
+  --rux-focus: #0067f4;
+  --rux-focus-inset: #ffffff;
+  --rux-focus-inverse: #ffffff;
+
+  /* interactive */
+  --rux-interactive: #1e6ef4;
+  --rux-highlight: #b3d7ff;
+  --rux-overlay: rgba(0, 0, 0, 0.3);
+  --rux-shadow: rgba(0, 0, 0, 0.16);
+  --rux-skeleton-background: #f3f3f3;
+  --rux-skeleton-element: #e6e6e6;
+  --rux-toggle-off: #aeaeb2;
+
+  /* button */
+  --rux-button-primary: #1e6ef4;
+  --rux-button-primary-hover: #0068da;
+  --rux-button-primary-active: #0064e1;
+  --rux-button-tertiary: #0068da;
+  --rux-button-tertiary-hover: #0068da;
+  --rux-button-tertiary-active: #0064e1;
+  --rux-button-secondary: #ebebeb;
+  --rux-button-secondary-hover: #e6e6e6;
+  --rux-button-secondary-active: #dcdcdc;
+  --rux-button-danger-primary: #e9152d;
+  --rux-button-danger-secondary: #e9152d;
+  --rux-button-danger-hover: #cd1228;
+  --rux-button-danger-active: #b11022;
+  --rux-button-separator: #d9d9d9;
+  --rux-button-disabled: #f3f3f3;
+
+  /* tag */
+  --rux-tag-background-red: #ffe3e4;
+  --rux-tag-color-red: #cd1228;
+  --rux-tag-hover-red: #ffd3d4;
+  --rux-tag-background-magenta: #ffe2e7;
+  --rux-tag-color-magenta: #d01045;
+  --rux-tag-hover-magenta: #ffd1da;
+  --rux-tag-background-purple: #f8e2fb;
+  --rux-tag-color-purple: #a92dba;
+  --rux-tag-hover-purple: #f4d1f8;
+  --rux-tag-background-blue: #dbeeff;
+  --rux-tag-color-blue: #1b63dc;
+  --rux-tag-hover-blue: #c7e5ff;
+  --rux-tag-background-cyan: #dbf6fc;
+  --rux-tag-color-cyan: #0076a4;
+  --rux-tag-hover-cyan: #c7f1fa;
+  --rux-tag-background-teal: #dbf7f8;
+  --rux-tag-color-teal: #00798f;
+  --rux-tag-hover-teal: #c7f2f5;
+  --rux-tag-background-green: #e3f7e8;
+  --rux-tag-color-green: #007e2e;
+  --rux-tag-hover-green: #d2f3da;
+  --rux-tag-background-gray: #efeff0;
+  --rux-tag-color-gray: #6c6c70;
+  --rux-tag-hover-gray: #e6e6e7;
+  --rux-tag-border-red: #cd1228;
+  --rux-tag-border-blue: #1b63dc;
+  --rux-tag-border-cyan: #0076a4;
+  --rux-tag-border-teal: #00798f;
+  --rux-tag-border-green: #007e2e;
+  --rux-tag-border-magenta: #d01045;
+  --rux-tag-border-purple: #a92dba;
+  --rux-tag-border-gray: #6c6c70;
+  --rux-tag-border-cool-gray: #6c6c70;
+  --rux-tag-border-warm-gray: #89644b;
+  --rux-tag-background-cool-gray: #efeff0;
+  --rux-tag-color-cool-gray: #6c6c70;
+  --rux-tag-hover-cool-gray: #e6e6e7;
+  --rux-tag-background-warm-gray: #f3ede8;
+  --rux-tag-color-warm-gray: #89644b;
+  --rux-tag-hover-warm-gray: #ede3dc;
+
+  /* notification */
+  --rux-notification-background-error: #ffebec;
+  --rux-notification-background-success: #e7f8eb;
+  --rux-notification-background-info: #e6f3ff;
+  --rux-notification-background-warning: #fff1e5;
+  --rux-notification-action-hover: #f3f3f3;
+  --rux-notification-action-tertiary-inverse: #ffffff;
+  --rux-notification-action-tertiary-inverse-active: #c7c7cc;
+  --rux-notification-action-tertiary-inverse-hover: #f3f3f3;
+  --rux-notification-action-tertiary-inverse-text: #272727;
+  --rux-notification-action-tertiary-inverse-text-on-color-disabled: #8e8e93;
+
+  /* status */
+  --rux-status-red: #e9152d;
+  --rux-status-orange: #c55300;
+  --rux-status-orange-outline: #c55300;
+  --rux-status-yellow: #ffcc00;
+  --rux-status-yellow-outline: #a16a00;
+  --rux-status-green: #008932;
+  --rux-status-blue: #1e6ef4;
+  --rux-status-purple: #b02fc2;
+  --rux-status-gray: #6c6c70;
+
+  /* content-switcher */
+  --rux-content-switcher-background: #ebebeb;
+  --rux-content-switcher-background-hover: #e6e6e6;
+  --rux-content-switcher-selected: #ffffff;
 }

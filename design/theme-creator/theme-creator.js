@@ -40,7 +40,7 @@ import { runKey, sameRun, copy, CAP } from '../builder/session.mjs';
 import { contrastRatio, meetsThreshold, normaliseHex } from './contrast.mjs';
 
 const NAME_RE = /^[a-z][a-z0-9-]*$/;
-const RESERVED = new Set(['white', 'g10', 'g90', 'g100', 'geist-dark', 'ant-dark', 'spotify-dark']);
+const RESERVED = new Set(['white', 'g10', 'g90', 'g100', 'geist-dark', 'ant-dark', 'spotify-dark', 'apple-light']);
 
 // A value the fields accept and the swatch can paint: hex, or one of the
 // twenty-five rgba() values Carbon's own themes carry (every ai-aura-*,

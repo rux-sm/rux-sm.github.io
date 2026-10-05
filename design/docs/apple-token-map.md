@@ -5,8 +5,7 @@ type: reference
 # Apple's light colours and sizes, for apple-light
 
 What Apple's own software says, read from Apple and not from memory. The
-`apple-light` theme in `docs/plans/apple-light-theme.md` is built from these
-values, and each of its tokens is set beside the row it comes from here.
+`apple-light` block in `css/rux-theme.css` is built from these values.
 
 **Where each table comes from.**
 

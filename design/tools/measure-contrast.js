@@ -37,7 +37,7 @@
 (function () {
   'use strict';
   const opts = window.MEASURE_CONTRAST || {};
-  const THEMES = opts.themes || ['white', 'g10', 'g90', 'g100', 'geist-dark', 'ant-dark', 'spotify-dark'];
+  const THEMES = opts.themes || ['white', 'g10', 'g90', 'g100', 'geist-dark', 'ant-dark', 'spotify-dark', 'apple-light'];
   const scope = opts.scope ? document.querySelector(opts.scope) : document.body;
   if (!scope) throw new Error(`measure-contrast: nothing matches ${opts.scope}`);
 

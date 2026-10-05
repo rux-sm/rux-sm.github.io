@@ -106,32 +106,33 @@
    under it wants more room than the pane has. */
 [data-theme="geist-dark"] { --scheduler-head-inset: var(--rux-spacing-04); --scheduler-head-gap: var(--rux-spacing-03); }
 [data-theme="ant-dark"] { --scheduler-head-inset: 8px; --scheduler-head-gap: var(--rux-spacing-03); }
+[data-theme="apple-light"] { --scheduler-head-inset: 6px; --scheduler-head-gap: var(--rux-spacing-03); }
 @media (min-width: 42rem) {
-  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-toolbar {
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .scheduler-toolbar {
     padding: var(--scheduler-head-inset);
     gap: var(--scheduler-head-gap);
   }
-  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-aside__head {
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .scheduler-aside__head {
     flex: none;
     padding-block: var(--scheduler-head-inset);
     padding-inline-end: var(--scheduler-head-inset);
   }
-  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .rux--side-panel .rux--side-panel__header.rux--side-panel__header--has-title {
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .rux--side-panel .rux--side-panel__header.rux--side-panel__header--has-title {
     padding-block: var(--scheduler-head-inset);
   }
-  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-trip .rux--side-panel .rux--side-panel__decorator-and-close {
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .scheduler-trip .rux--side-panel .rux--side-panel__decorator-and-close {
     margin-inline-end: calc(var(--scheduler-head-inset) - var(--rux-spacing-05));
   }
-  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) :is(.rux--btn, .scheduler-weekbtn) {
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) :is(.rux--btn, .scheduler-weekbtn) {
     border-radius: 6px;
   }
   /* Buttons that stand apart by a gap take no rule between them: on a 6px
      corner the toolbar's dividing rule bends into a bracket. The spacer's
      rule goes with them. */
-  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-page .scheduler-toolbar > .rux--btn--ghost:not(:focus-visible) {
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .scheduler-page .scheduler-toolbar > .rux--btn--ghost:not(:focus-visible) {
     border-inline-color: transparent;
   }
-  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-toolbar__spacer { border-inline-start-color: transparent; }
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .scheduler-toolbar__spacer { border-inline-start-color: transparent; }
   /* Geist's bar buttons are its outlined button: the quiet ring Design gives
      the secondary button, on the 1px border a ghost button already carries,
      so each one reads as a button. It gives way to the focus ring, which is
@@ -144,7 +145,7 @@
   [data-theme="geist-dark"] .scheduler-page .scheduler-toolbar .scheduler-weekbtn {
     box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
   }
-  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-trip .rux--side-panel .rux--btn--md.rux--side-panel__close-button {
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .scheduler-trip .rux--side-panel .rux--btn--md.rux--side-panel__close-button {
     block-size: var(--rux-layout-size-height-md);
     inline-size: var(--rux-layout-size-height-md);
     border-radius: 6px;
@@ -182,7 +183,7 @@
    overrides.css deals them, and the first word starts where the fields under
    it do, 24px in: the list's inset, and in geist-dark the tab's own 2px. */
 @media (min-width: 42rem) {
-  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) #scheduler-panel-body .rux--tabs__nav-item {
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) #scheduler-panel-body .rux--tabs__nav-item {
     flex: none;
   }
   [data-theme="geist-dark"] #scheduler-panel-body .rux--tabs__nav-link {
@@ -203,10 +204,10 @@
    scrolled out of sight is one nobody opens. The gap and the list's inset
    Design gives these two themes are taken back, so each share is a fifth. */
 @media (max-width: 41.98rem) {
-  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) #scheduler-panel-body .rux--tabs__nav-link {
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) #scheduler-panel-body .rux--tabs__nav-link {
     margin-inline-start: 0;
   }
-  :is([data-theme="geist-dark"], [data-theme="ant-dark"]) #scheduler-panel-body .rux--tab--list {
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) #scheduler-panel-body .rux--tab--list {
     padding-inline-start: 0;
   }
 }

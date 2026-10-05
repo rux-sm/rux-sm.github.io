@@ -1150,11 +1150,11 @@
 
     /* The newest update's words on one line, the last thing anyone said
        about the trip, whichever update is pinned: the card leads with the
-       pinned one, and the bar says what is new. A pin in outline leads it,
-       where the card's pinned update wears the solid one. While
-       the trip has anything open, mark and words take the colour of the
-       update's age, so down a week the eye finds the trips still in play
-       and how lately each was touched: green while the card's age reads in
+       pinned one, and the bar says what is new. While the trip has
+       anything open, the words take the colour of the update's age, so
+       down a week the eye finds the trips still in play and how lately
+       each was touched, with no mark beside them, since the colour is the
+       mark: green while the card's age reads in
        minutes, hours or 1d, amber for the rest of its first week, and red
        once the card shows a date. Open is anything the card would warn of
        or the office still waits on: a bus that does not fit, a need still
@@ -1164,18 +1164,15 @@
        every bar on the board is one height. */
     const latest = updatesOf(trip)[0] ?? null;
     const news = el('span', null, latest?.body || '');
-    let age = null, tone = '';
+    let tone = '';
     if (latest) {
-      news.title = latest.body;
+      news.title = `${latest.body}\n${updateStamp(latest)}`;
       const open = waitsOf(trip).length > 0 || misfits.length > 0 || needs.some(n => !n.done)
         || (!dayOfContact(trip) && !trip.contact_not_needed);
       const days = (Date.now() - Date.parse(latest.created_at)) / 864e5;
       if (open) tone = ` scheduler-bar__update--${days < 2 ? 'new' : days < 7 ? 'week' : 'old'}`;
-      age = el('span', 'scheduler-bar__age');
-      age.title = updateStamp(latest);
-      age.appendChild(svgUse('#m-keep', '16', '0 0 32 32'));
     }
-    addRow(bar, `scheduler-bar__update${tone}`, age, news);
+    addRow(bar, `scheduler-bar__update${tone}`, news);
 
     // The crew in role order, or what the bar needs before it can have one.
     const crew = assign ? crewOf(trip, assign, driversById, statuses).filter(c => !(placeholder && c.needed)) : [];

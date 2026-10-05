@@ -782,34 +782,15 @@ button.scheduler-row-head__num::after {
    the name drops to the hidden second line; a name too long for the row alone
    still gives way. */
 .scheduler-bar__contact { justify-content: flex-start; flex-wrap: wrap; align-content: flex-start; }
-/* THE UPDATE ROW leads with a pin in outline, and mark and words take the
-   colour of the update's age: success while it is new, warning through its
-   first week and error after. The mark wears the inks the bell and the
-   crew's marks wear, and the words the text steps theme.css sets beside
-   them. A settled trip's row has no age and keeps the bar's ink. The mark
-   keeps its width and the words give way. */
-.scheduler-bar__update { justify-content: flex-start; gap: var(--rux-spacing-02); }
-.scheduler-bar__update > .scheduler-bar__age {
-  display: flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--scheduler-mark-glyph);
-  block-size: var(--scheduler-row-h);
-  overflow: visible;
-}
-.scheduler-bar__age svg { display: block; inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
-.scheduler-bar__update > .scheduler-bar__age + span { flex: 0 1 auto; min-inline-size: 0; }
+/* THE UPDATE ROW'S WORDS take the colour of the update's age, the text
+   steps theme.css sets beside the marks' inks: new, in its first week, or
+   older. A settled trip's row has no age and keeps the bar's ink. */
 .scheduler-bar__update--new { color: var(--scheduler-age-new); }
 .scheduler-bar__update--week { color: var(--scheduler-age-week); }
 .scheduler-bar__update--old { color: var(--scheduler-age-old); }
-.scheduler-bar__update--new > .scheduler-bar__age { color: var(--scheduler-mark-success); }
-.scheduler-bar__update--week > .scheduler-bar__age { color: var(--scheduler-mark-warning); }
-.scheduler-bar__update--old > .scheduler-bar__age { color: var(--scheduler-mark-error); }
 /* The amber bar is the warning colour itself in a dark theme, and none of
-   the inks reads on it, so its update keeps the bar's own, mark and words. */
-.scheduler-bar--amber .scheduler-bar__update,
-.scheduler-bar--amber .scheduler-bar__update > .scheduler-bar__age { color: inherit; }
+   the inks reads on it, so its update keeps the bar's own. */
+.scheduler-bar--amber .scheduler-bar__update { color: inherit; }
 /* The return-after-midnight mark, small and raised so the row keeps its height. */
 .scheduler-bar__next-day { font-size: .75em; line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
 /* Two levels of brightness, and the split is what the row is for: bright is

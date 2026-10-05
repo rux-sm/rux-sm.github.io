@@ -67,8 +67,8 @@
 /* THE WORDS OF A BAR'S NEWEST UPDATE take the colour of its age: new, in its
    first week, or older. They are 12px text, which needs 4.5 to 1 where a
    glyph gets by on 3, so each theme sets them a step past its marks, away
-   from the bar's fill, and the pin beside them keeps the mark's own
-   colour. A theme that sets none leaves the words in the bar's ink.
+   from the bar's fill. A theme that sets none leaves the words in the
+   bar's ink.
 
    White and g10 take Carbon's 70 steps, the ink their bars are written in,
    5.8 to 1 at the least. The Carbon dark themes and spotify-dark, whose bars

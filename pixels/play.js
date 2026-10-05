@@ -23,8 +23,8 @@
    and so does the lost star. Restart empties the board and zeroes the clock,
    and Undo straight after it brings everything back.
 
-   A board wider than ten squares zooms under two fingers; app.js's `drag`
-   says how.
+   A board wider than ten squares zooms under two fingers where its squares
+   are too fine for one; app.js's `drag` says how.
 
    play.html?daily plays the puzzle of the day, the one the owner drew for
    today or else the one app.js makes from the date; its result is kept by
@@ -323,7 +323,7 @@
     };
     $('pixels-hint').addEventListener('click', hint);
 
-    // A board over ten squares wide is too fine for a finger, so it zooms.
+    // A board over ten squares wide may be too fine for a finger, so it zooms where it is.
     const pad = drag(boardHost, {
       start: (y, x) => begin(y, x),
       paint: act,

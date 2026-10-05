@@ -286,16 +286,22 @@
      draw in any direction. A mouse moving with no button down calls
      `hover(y, x)`. Listeners sit on the host, which outlives redraws.
 
-     ZOOM. Where `zoom()` says the board is too fine for a finger, two
-     fingers pinch it larger and slide it, up to squares 48px wide. The
-     square the pinch began over stays under the fingers. There a touch
+     ONE FINGER DRAWS, the last to land. A touch already on the board, such
+     as the hand resting beside it, neither paints as it shifts nor ends
+     the drag as it lifts.
+
+     ZOOM. Where `zoom()` says the board may be too fine for a finger and
+     its squares are in fact under 32px, which a phone's are and a tablet's
+     are not, two fingers pinch it larger and slide it, up to squares 48px
+     wide. The square the pinch began over stays under the fingers. There a touch
      fills when it lifts or crosses into a second square, not when it lands,
      so the first finger of a pinch leaves no stray fill; and after a pinch
      nothing fills until every finger is up. `--zoom`, `--tx` and `--ty` on
      the host are what app.css sizes and slides the board by. `reset()`
      takes the board back to its whole. */
   const drag = (host, { start, paint, hover, free = false, zoom = () => false }) => {
-    let from = null, axis = null, last = null;
+    let from = null, axis = null, last = null, pen = null;
+    const FINE = 32;
     const fingers = new Map();
     let waiting = null, pinch = null, spent = false, z = 1, tx = 0, ty = 0;
     const at = e => {
@@ -314,6 +320,14 @@
       return { gap: Math.hypot(a.x - b.x, a.y - b.y), x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
     };
     const begin = p => { from = last = p; axis = null; start(...p); };
+    // Too fine for a finger: measured without the zoom, which a board whose
+    // squares have since grown, on a turned screen, is taken out of.
+    const fine = () => {
+      if (!zoom()) return false;
+      if (square() / z < FINE) return true;
+      if (z !== 1) { z = 1; tx = ty = 0; apply(); }
+      return false;
+    };
 
     // An iPhone starts selecting text under a finger that rests or moves
     // slowly; stopping the touch's own default is what prevents it.
@@ -322,13 +336,17 @@
       const p = at(e);
       if (!p || e.button > 0) return;
       e.preventDefault();
-      if (e.pointerType !== 'touch' || !zoom()) { begin(p); return; }
+      if (e.pointerType !== 'touch' || !fine()) {
+        pen = e.pointerId;
+        begin(p);
+        return;
+      }
       fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
       if (fingers.size === 2) {
         const view = host.querySelector('.pixels-squares').getBoundingClientRect(), now = span(), size = square();
         pinch = { gap: now.gap, z, x: (now.x - view.x - tx) / size, y: (now.y - view.y - ty) / size };
         waiting = from = null;
-      } else if (fingers.size === 1 && !spent) waiting = p;
+      } else if (fingers.size === 1 && !spent) { waiting = p; pen = e.pointerId; }
     });
     host.addEventListener('pointermove', e => {
       if (fingers.has(e.pointerId)) fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
@@ -346,6 +364,7 @@
         apply();
         return;
       }
+      if ((from || waiting) && e.pointerId !== pen) return;
       const p = at(e);
       if (waiting) {
         if (!p || (p[0] === waiting[0] && p[1] === waiting[1])) return;
@@ -367,9 +386,11 @@
     const end = e => {
       fingers.delete(e.pointerId);
       if (pinch) { pinch = null; spent = true; }
+      // Another finger lifting ends nothing.
+      else if (e.pointerId !== pen) { if (!fingers.size) spent = false; return; }
       // A tap: the finger lifted on the square it landed on.
       if (waiting && e.type === 'pointerup') start(...waiting);
-      waiting = from = null;
+      waiting = from = pen = null;
       if (!fingers.size) spent = false;
     };
     addEventListener('pointerup', end);

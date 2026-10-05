@@ -11,7 +11,8 @@ section it belongs to; when one turns out wrong, the line is replaced.
 
 - The price that counts is the latest quote the customer was sent: a revised or price-matched quote replaces the first, since it is what they agreed to.
 - A quote is entered as the lines that make it, such as a Bus rental line and a Discount line for a price match, so the quoted price is their sum and Billing can be marked Done.
-- A quote is priced from the Route tab's miles a day, entered in the quote calculator, which rounds each charge (regular miles, dead miles, driver pay) up to the next $5, because those miles include the yard legs and a quote with no cents reads cleaner.
+- A plain quote is priced with the Billing tab's Add the bus rental, from the Route tab's miles a day; the quote calculator is opened only for a dead-mile discount, another rate or a price match. Both round each charge (regular miles, dead miles, driver pay) up to the next $5, because those miles include the yard legs and a quote with no cents reads cleaner.
+- A trip from April to early June is quoted at the Busy season mileage rate, not Regular, because those are the busiest weeks and the buses fill either way; the rate's amount is on the rates page.
 - A PO fixes the price; a cost the office takes on after it, such as a second driver, goes in as its own line with an equal Discount, and the trip's pinned update says the decision is still open.
 - Estimated miles is set to the Route summary's total once the route is right, so the two agree.
 - A quote can go out with a leg's times as TBD, because the times are settled with the customer later and never hold a quote back.
@@ -20,6 +21,8 @@ section it belongs to; when one turns out wrong, the line is replaced.
 
 - Every stop with a time in the customer's itinerary goes on the route; a meal or stop with no time and no place stays off until it has one.
 - Times the itinerary leaves TBD get a sensible placeholder, said so in the report, because the route needs times to give hours.
+- A stop that matches a saved location uses the saved location, never a fresh map result, because the saved one already carries the right name and map point.
+- A long day where the group stays nowhere overnight is kept as a one-day trip even when it gets back after midnight, because the +1 beside the time already shows the overlap.
 - Add a fuel card whenever the Route tab suggests one; no need to ask.
 - When the Route tab asks for a second driver, first try one driver resting in a sleeper coach during the longest wait (that stop's wait counted as sleeper berth); if the notice clears, one driver with a sleeper is the plan, because rux always prefers it to a second driver. Only when it does not clear, raise the second driver with rux before deciding, because it changes the cost and the crew.
 - With one driver, the trip requires a sleeper and the pinned update carries the rest plan the driver is told, such as hours in the sleeper at the stop with the bus parked there, since the route cannot show it.
@@ -49,3 +52,14 @@ section it belongs to; when one turns out wrong, the line is replaced.
 ## Placeholders
 
 - A yellow (amber) trip is a placeholder: the bus is held, no quote is sent yet. Asked to add a trip, look for a placeholder with the same customer and dates and fill it in with `draft_trip_change` rather than drafting a new one. Report it as a placeholder, not a booking.
+
+## Not yet decided
+
+Questions rux has been asked and has not answered. An answer becomes a rule
+in its section above, and its question is deleted.
+
+- Does every quoted trip get a bus assigned to hold it, or only when rux says so?
+- Does a broker's availability request follow the same steps as a school's quote, and is a bus held before the broker confirms?
+- When an itinerary gives no headcount, is the customer asked, or does the last count they gave stand?
+- When a save offers to add new places and contact details to the lists, which are added? Until rux says, the answer is Not now.
+- The plan in `docs/plans/scheduler-quote-entry.md` holds the questions on rates, the dead-mile discount and the forms.

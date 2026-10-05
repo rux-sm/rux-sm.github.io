@@ -39,12 +39,68 @@ written. `scheduler/docs/booking.md` is what each booking step must say, and
 6. On rux's go, make the changes, press each tab's Done once it is reviewed,
    say exactly what Save will write, and save on his yes (see Saving).
 
-## Entering a trip
+## Entering a quote
 
-Look for a placeholder first (`rules.md`). Otherwise `draft_trip` with what the
-email or itinerary says, open the link in Chrome, pick every address from its
-list, check the fields with a blue bar, then review it as above and save on
-rux's yes.
+The order is the editor's tabs, Details, Route, Buses, Billing, and each step
+reads only the ones before it. Nothing is written until step 10.
+
+1. **Read.** The whole Missive thread and any itinerary: who is asking, the
+   day, every timed stop, the headcount, and what they asked for.
+2. **Look up.** `find_trips` for a placeholder on the same customer and day
+   (`rules.md`) and for the customer's other trips; `find_contacts` for the
+   saved booking contact; `find_availability` for the day's free buses.
+3. **Draft.** `draft_trip` with the fields you are sure of, and the stops and
+   anything with no field in its notes. Open the link at
+   `http://localhost:8641/scheduler/?draft=<id>`. The link opens once, so the
+   tab stays open until the save.
+4. **Details.** Check each field with a blue bar against the email.
+5. **Route.** Pick the pickup, by name first. Set Spot when the itinerary
+   gives a meeting time. Add each timed stop with its arrival and leaving
+   times. Read the Summary. On a second-driver notice follow `rules.md`: try
+   the longest wait as sleeper berth, and bring the second driver to rux only
+   when the notice stays. Add the fuel card when the tab offers it.
+6. **Buses.** In the vehicle's window turn on the needs the route gave it,
+   Sleeper for a one-driver day with a sleeper rest, and Co-driver when rux
+   chose a second driver. Pick the bus by `rules.md`. An unconfirmed trip gets
+   no driver.
+7. **Billing.** Press Add the bus rental. An Addt'l Driver line follows a
+   co-driver seat by itself. From April to early June set the line's rate by
+   hand (see the traps). Type the Summary's miles into Estimated miles. Open
+   the calculator only for a dead-mile discount, another rate or a price
+   match.
+8. **Review.** Trip actions, Forms, Itinerary, Detailed: one sheet with the
+   stops, each wait's status, the hours, the miles, the rate and the price.
+   Read it against the email.
+9. **Report.** Tell rux what the emails say, the route's figures, the price
+   and what made it, the bus, exactly what Save will write, and only the
+   questions `rules.md` leaves open. Wait for his yes.
+10. **Save.** Link the email thread, press Mark route done and Mark buses
+    done, press Save, write what the trip is waiting on in the update box, and
+    answer the lists prompt by `rules.md`.
+11. **After the save.** Read it back with `get_trip`. Pin the update. Add the
+    itinerary on the Files tab.
+12. **Reply.** Draft the email in chat by `emails.md`. rux prints the quote
+    from Forms, Quote, which is two sheets, and sends it himself.
+13. **Quote sent.** Mark it on the Billing tab, then Mark billing done and
+    Save, only when rux asks for the mark in words. "Done" or "sent" alone is
+    not that, because the mark records what the customer was sent.
+
+### Where each step's facts are written
+
+| The fact | Written in | Seen in the editor as |
+| :--- | :--- | :--- |
+| What each tab holds, and what its Done needs | `scheduler/docs/screen-inventory.md`, section 2 | each tab's Mark done line says what is still needed |
+| The quote lines follow the route's miles and the Buses tab's seats | `scheduler/docs/quote-calculator.md` | turning a co-driver seat on adds the Addt'l Driver line |
+| Add the bus rental and the calculator give one price | `scheduler/docs/quote-calculator.md`, Rounding | the same route shows the same total in both, for one driver and for two |
+| A second driver is needed over 10 hours driving or 15 on duty less rest | `scheduler/docs/quote-calculator.md` | the Route Summary's Second driver notice |
+| A saved location is listed first and carries a location icon | `scheduler/docs/screen-inventory.md`, the Route tab's row | the icon beside the result, and Saved location over the field |
+| A return after midnight stays on a one-day trip | `scheduler/docs/screen-inventory.md`, the Route tab's row | Returns with the next weekday, and +1 on the board's bar |
+| What the checklist counts | `scheduler/checklist.js` | the ring in the panel's head, with Open beside each open item |
+| What confirms a trip, and what goes out with a quote | `scheduler/docs/booking.md` | the Billing tab's summary card |
+| The rates and what each is for | the rates page, `scheduler/quote-rates.html`, never this repository | the Mileage rate select in the calculator |
+
+`docs/plans/scheduler-quote-entry.md` changes steps 3, 5, 7, 10 and 11, and
+rewrites this section as each change is built.
 
 ## Where each fact is in the editor
 
@@ -61,13 +117,18 @@ rux's yes.
   waits, Mark route done.
 - **Buses:** each bus, its driver and co-driver or relief seats, Mark buses done.
 - **Billing:** confirmed or not; the quoted price, which is the sum of the
-  quote lines; Add the bus rental (it shows the calculator's price); Add line
-  (Discount, Second driver, Hotel, Other); Quote sent; Estimated miles;
-  contract, PO, invoice, payments; Mark billing done.
+  quote lines; Add the bus rental (it shows the calculator's price); the
+  Addt'l Driver line a co-driver seat adds; Add line (Discount, Second
+  driver, Hotel, Other); Quote sent; Estimated miles; contract, PO, invoice,
+  payments; Mark billing done.
 - **Files:** the uploaded itineraries, contracts and POs; a file opens in a viewer.
-- **Checklist:** what is left on each leg.
-- **Forms, Driver trip itinerary:** Simple is the driver's sheet, Detailed the
-  office's with the yard and the day totals.
+- **Checklist:** the ring in the panel's head; what is left on each leg under
+  Entered, Customer, Buses, Paperwork and Extras, each with Open.
+- **Forms,** in the panel's Trip actions menu: Quote for the customer, and
+  Envelope, Hours of service and Itinerary for the drivers. The Quote offers
+  to mark it sent the moment it is opened: leave the offer alone. The
+  itinerary's Simple layout is the driver's sheet and Detailed the office's,
+  with the yard, each wait's status, the day totals and the price.
 
 ## Saving
 
@@ -85,6 +146,7 @@ rux's yes.
 
 ## Missive
 
+- A Missive link first shows "Opening in Missive app": press Open in browser to read the thread in Chrome.
 - Open the trip's thread from `booking_contact_missive_url` when it is set.
 - Otherwise search the booking contact's full email address and pick the
   person under **Past recipients**. A plain text search spins and finds nothing.
@@ -101,14 +163,23 @@ rux's yes.
 ## Traps in the editor
 
 - A place search shows its list only after a click in the field following the
-  typing. A hotel not found by name is found by its street address, with the
-  Name field set to the hotel.
+  typing. Search a place by its name first: a saved location, marked with a
+  location icon, is found by its name, and a typed street address can miss it
+  and offer the map's copy of the same place. A hotel not found by name is
+  found by its street address, with the Name field set to the hotel.
 - Set a time input with `form_input` as `HH:MM`, and read the dialog back before Done.
+- A stop's "The wait counts as" is a plain select: set it with `form_input` as `on`, `off` or `sleeper`, because a click shows no menu in a screenshot.
+- Add the bus rental prices the line at the Regular rate. After setting the line's Mileage rate with `form_input`, the Cost keeps the old figure: choose Use calculator price from the line's menu, and read the line back.
 - A dialog may be closing as you click. Check what has the focus before typing.
 - `scroll_to` can shift the whole page; reset the window's scroll before a
   click by coordinates.
 - Leaving the editor drops unsaved changes; Reset takes them back.
 - Mark sent records today's date, not the day the quote went out.
+- Mark billing done stays off until Quote sent is marked, so a trip saved before its quote goes out has Billing left open.
+- On a new trip, Save's Updates box suggests "Quote sent": replace it unless the quote has gone out.
+- After a save, Add update is on the bar's own menu, a right-click on the bar; the editor's ⋮ has only Forms and Color.
+- The Files tab takes a file only once the trip is saved. The upload tool cannot read the Desktop: copy the PDF to the session's scratch folder, press Add file from the page's script so no file dialog opens, give the copy to the hidden file input, choose its type, then delete the copy.
+- A click by `ref` on a tab that is not showing does nothing: take a screenshot to see which tab is open before pressing a button on it.
 
 ## When rux teaches something new
 

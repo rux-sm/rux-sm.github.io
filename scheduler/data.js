@@ -745,15 +745,13 @@
   /* What each bar knows about its bus and its trip's needs, for the trip's
      card: `{ needs, misfits }`, set as the bar is drawn. */
   const barFacts = new WeakMap();
-  /* The bar's attention mark, a bell in `tone`, saying in `words` why: a
-     plain bell for a follow-up, and the same bell with an exclamation mark for
-     an error, so the two differ in shape as well as colour. */
+  /* The bar's attention mark: how many alerts the trip has, in a disc of
+     `tone`, saying in `words` what they are. */
   const attentionMark = (tone, words) => {
-    const m = el('span', `scheduler-bar__msg scheduler-bar__msg--${tone}`);
+    const m = el('span', `scheduler-bar__msg scheduler-bar__msg--${tone}`, String(words.length));
     m.setAttribute('role', 'img');
-    m.setAttribute('aria-label', words);
-    m.title = words;
-    m.appendChild(svgUse(tone === 'error' ? '#m-notification_important-fill' : '#m-notifications-fill', '16', '0 0 32 32'));
+    m.setAttribute('aria-label', words.join(' · '));
+    m.title = words.join(' · ');
     return m;
   };
   /* A destination as the bar shows it: the home state, ", TX" or " TX" at
@@ -1064,11 +1062,11 @@
     const count = leg.count || 1;
 
     /* WHETHER THIS BUS FITS THIS TRIP, and what the trip needs. The bar draws
-       no marks: what is still to be done is the reminder's to ask, and the
-       needs are read on the trip's card, which `barFacts` hands them to. Only a
-       bus that does not fit shows on the bar itself, as the bell in red, since that
-       is a mistake to put right rather than a job still to come: the wrong type
-       of bus, or one that falls short of a need. A placeholder has neither. */
+       no mark for a need: the needs are read on the trip's card, which `barFacts`
+       hands them to, and the bar only counts the ones still open. A bus that
+       does not fit turns that count red, since it is a mistake to put right
+       rather than a job still to come: the wrong type of bus, or one that
+       falls short of a need. A placeholder has neither. */
     const bus = assign?.bus_id != null ? busesById.get(assign.bus_id) : null;
     const wrong = bus ? wrongType(assign.vehicle_type, bus) : null;
     /* Every need the trip carries, in the office's order, and whether this bus
@@ -1106,16 +1104,14 @@
     const misfits = placeholder ? [] : [wrong, ...needs.filter(n => n.short).map(n => n.label)].filter(Boolean);
     barFacts.set(bar, { needs, misfits });
 
-    /* The one mark, at the destination row's end: a bell saying the trip
-       needs looking at, its colour how badly. Red is a bus that does not fit,
-       a mistake on the board; the warning colour is a follow-up to chase. A
-       trip with both shows red, and its card lists both. A bar marks only what
-       needs doing; the checklist says what is done and the card shows the
-       updates. A mark, not a button, because the bar is the button. */
-    const asks = asksFollowUp(trip);
-    const waits = asks ? waitsOf(trip).map(w => WAIT_WORDS[w]) : [];
-    const attention = misfits.length ? attentionMark('error', [...misfits, ...waits].join(' · '))
-      : asks ? attentionMark('warning', waits.join(' · ')) : null;
+    /* The one mark, at the destination row's end: how many alerts the trip's
+       card opens with, its colour how badly. Red is a bus that does not fit,
+       a mistake on the board; the warning colour is a job still to do. A trip
+       with both shows red, and a trip with no alert shows no mark. A mark,
+       not a button, because the bar is the button. */
+    const alerts = alertsOf(trip, { needs, misfits });
+    const attention = alerts.length
+      ? attentionMark(misfits.length ? 'error' : 'warning', alerts.map(a => a.words)) : null;
     const destName = el('span', null, placeName(trip.destination) || 'No destination');
     const dest = count > 1 ? el('span', 'scheduler-bar__multi') : destName;
     if (count > 1) dest.append(destName, el('span', 'scheduler-bar__count', `×${count}`));
@@ -1206,7 +1202,7 @@
       trip.confirmed === false ? 'unconfirmed' : null,
       ...crew.map(crewText),
       ...misfits,
-      asks ? 'needs a follow-up' : null,
+      asksFollowUp(trip) ? 'needs a follow-up' : null,
     ].filter(Boolean).join(', '));
     return bar;
   }
@@ -13282,6 +13278,34 @@
      lacks; missing, what the trip has not got; pending, what is still to be
      done; due, money owed. */
   const TODO_WORDS = { hotel: 'Hotel booking pending', hos: 'HOS form pending' };
+  /* EVERY ALERT A TRIP HAS, in the order its card lists them, from `facts`,
+     what `barFacts` holds for the bar: its words, the card row it is drawn
+     as, where a press on it goes and the field it names. The bar counts
+     these and the card draws them, so the two never disagree.
+
+     A bus that does not fit this trip leads: it is a mistake on the board,
+     and it goes when the bus is changed. Then the follow-up reminder, one for
+     each thing waited on, which stays while it is true, until the missing
+     thing arrives or an update is written. Then nobody named to call on the
+     day, on a trip not marked as needing no one. Last, a need that is still a
+     job, the hotel to book or the hours-of-service form to print; a need the
+     bus falls short of is already a misfit, and one that is met is no alert. */
+  function alertsOf(trip, facts) {
+    const list = (facts?.misfits ?? []).map(words => ({ row: 'scheduler-card__misfit', go: 'fleet', words }));
+    if (asksFollowUp(trip)) {
+      for (const w of waitsOf(trip)) {
+        list.push({ row: 'scheduler-card__asks', go: w === 'itinerary' ? 'itinerary' : 'billing', spot: w, words: WAIT_WORDS[w] });
+      }
+    }
+    if (!dayOfContact(trip) && !trip.contact_not_needed) {
+      list.push({ row: 'scheduler-card__warn', go: 'details', spot: 'contact', words: 'Trip contact missing' });
+    }
+    for (const n of facts?.needs ?? []) {
+      if (n.done || n.short) continue;
+      list.push({ row: 'scheduler-card__warn', go: n.id === 'hos' ? 'forms' : 'billing', spot: n.id, words: TODO_WORDS[n.id] ?? n.label });
+    }
+    return list;
+  }
   function drawCard(trip, bar) {
     const card = el('div', 'scheduler-card');
     card.dataset.tripId = trip.id;
@@ -13296,55 +13320,25 @@
       band.setAttribute('aria-label', `${words}: open ${WARN_GO[go]}`);
       return band;
     };
-    /* EVERY ALERT IS A LINE OF ITS OWN, the bar's bell then its two or three
-       words, so the list reads down the same way whatever kind each one is:
-       the red bell with its mark for a bus that does not fit, the plain bell
-       in the warning band for the rest. The words say which.
-
-       A bus that does not fit this trip leads, in red and with no dismiss: it
-       is a mistake on the board, and it goes when the bus is changed. Its
-       icon is the bar's red bell. */
-    const facts = bar ? barFacts.get(bar) : null;
-    for (const words of facts?.misfits ?? []) {
-      const band = goes(row('scheduler-card__misfit'), 'fleet', words);
-      band.append(svgUse('#m-notification_important-fill', '16', '0 0 32 32'), el('strong', null, words));
-      card.appendChild(band);
-    }
-    /* The follow-up reminder, a line for each thing waited on, has no
-       dismiss: it stays while it is true, until the missing thing arrives or
-       an update is written. A due trip also says when it leaves, once, at the
-       first line's end. */
-    if (asksFollowUp(trip)) {
-      waitsOf(trip).forEach((w, n) => {
-        const band = goes(row('scheduler-card__asks'), w === 'itinerary' ? 'itinerary' : 'billing', WAIT_WORDS[w]);
-        band.dataset.spot = w;
-        band.append(svgUse('#m-notifications-fill', '16', '0 0 32 32'), el('strong', null, WAIT_WORDS[w]));
-        if (n === 0 && dueFollowUp(trip)) {
+    /* EVERY ALERT IS A LINE OF ITS OWN, a bell then its two or three words,
+       so the list reads down the same way whatever kind each one is: the red
+       bell with its mark for a bus that does not fit, the plain bell in the
+       warning band for the rest. The words say which. None has a dismiss. A
+       due trip also says when it leaves, once, at its first reminder's end. */
+    let reminded = false;
+    for (const a of alertsOf(trip, bar ? barFacts.get(bar) : null)) {
+      const band = goes(row(a.row), a.go, a.words);
+      if (a.spot) band.dataset.spot = a.spot;
+      band.append(svgUse(a.row === 'scheduler-card__misfit' ? '#m-notification_important-fill' : '#m-notifications-fill', '16', '0 0 32 32'),
+        el('strong', null, a.words));
+      if (a.row === 'scheduler-card__asks' && !reminded) {
+        reminded = true;
+        if (dueFollowUp(trip)) {
           const days = daysToGo(trip);
           band.appendChild(el('span', 'scheduler-card__asks-when',
             days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : `In ${days} days`));
         }
-        card.appendChild(band);
-      });
-    }
-    /* Nobody named to call on the day, on a trip not marked as needing no one,
-       is a warning band under the reminder, so every warning sits together at
-       the top; the Contacts shortcut reaches whoever is named. */
-    if (!dayOfContact(trip) && !trip.contact_not_needed) {
-      const band = goes(row('scheduler-card__warn'), 'details', 'Trip contact missing');
-      band.dataset.spot = 'contact';
-      band.append(svgUse('#m-notifications-fill', '16', '0 0 32 32'), el('strong', null, 'Trip contact missing'));
-      card.appendChild(band);
-    }
-    /* A need that is still a job, the hotel to book or the hours-of-service
-       form to print, joins the warnings in plain words. A need the bus falls
-       short of is already in the red band above, and one that is met is not
-       shown: the envelope and the Buses tab list every need. */
-    for (const n of facts?.needs ?? []) {
-      if (n.done || n.short) continue;
-      const band = goes(row('scheduler-card__warn'), n.id === 'hos' ? 'forms' : 'billing', TODO_WORDS[n.id] ?? n.label);
-      band.dataset.spot = n.id;
-      band.append(svgUse('#m-notifications-fill', '16', '0 0 32 32'), el('strong', null, TODO_WORDS[n.id] ?? n.label));
+      }
       card.appendChild(band);
     }
     /* THE UPDATES: Updates with their count, "Updates · 5", and Add, over

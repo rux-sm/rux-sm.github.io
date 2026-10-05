@@ -54,6 +54,10 @@
   --scheduler-mark-error: var(--rux-support-error);
   --scheduler-mark-success: var(--rux-support-success);
 }
+/* The figure in a bar's alert count is the dark ink on the warning fill, which
+   is a light colour in every theme but Apple's, whose warning is a dark orange
+   that the inverse text reads on instead, as it does on every theme's error. */
+[data-theme="apple-light"] { --scheduler-mark-on-warning: var(--rux-text-inverse); }
 /* Geist draws a badge's text and icons in the hue's 900 step, and the bars are
    its subtle badges, so the marks take the 900 steps of amber, red and green,
    and done takes the primary text. The lowest is red on the red bar, 4.5 to 1. */

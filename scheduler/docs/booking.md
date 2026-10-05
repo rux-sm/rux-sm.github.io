@@ -53,8 +53,8 @@ The email that goes with the quote says:
 ## 2. Follow up
 
 If the customer has not answered after the office's follow-up wait, the trip
-shows under Needs follow-up on `trips.html`, and its bar on the board wears
-the bell. A trip leaving within a week that still waits on something shows there
+shows under Needs follow-up on `trips.html`, and its bar on the board counts
+the reminder among its alerts. A trip leaving within a week that still waits on something shows there
 too, however recent its updates. A reminder cannot be dismissed: it stays
 until the missing thing arrives or an update is written. Send a short
 check-in. It can say that we price-match and can work with their budget.

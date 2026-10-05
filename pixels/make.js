@@ -14,9 +14,10 @@
    puzzle given a day is that day's puzzle instead and sits in no category;
    a day takes one puzzle, and after one is saved the field moves on a day.
    Category name names the category chosen, for boards of this size, and is
-   saved with the puzzle. A category holds nine: the Category field counts
-   each one's puzzles, and a full one cannot be picked. Save stays off until
-   the picture is solvable and named.
+   saved with the puzzle. A category shows nine: the Category field counts
+   how many of each one's puzzles are on, and a puzzle saved into one with
+   nine on is saved off, for the front page's switch to turn on. Save stays
+   off until the picture is solvable and named.
 
    The data calls a category a level: `level` is its number, which is its
    place on the front page and is never shown, and `theme` is its name.
@@ -36,7 +37,7 @@
   const day = $('pixels-day'), theme = $('pixels-theme');
   const inks = $('pixels-inks');
   const DRAFT = 'pixels-draft';
-  // A category holds nine, three rows of three on a phone.
+  // A category shows nine, three rows of three on a phone; any more are off.
   const PER_LEVEL = 9;
 
   const say = (heading, detail) => {
@@ -83,16 +84,17 @@
   // The name of the category chosen, among boards of this size.
   const themeOf = () => puzzles.find(p => p.width === side && p.level === levelOf() && !p.day)?.theme || '';
   const showTheme = () => { theme.value = themeOf(); };
-  // How many puzzles of this size each category holds, and how many of them
-  // are not the one being edited: nine of those leave it no room.
+  // How many puzzles of this size each category has on and off, and whether
+  // it is full: nine on besides the one being edited leave that one no room.
   const held = () => {
-    const all = {}, others = {};
+    const on = {}, off = {}, others = {};
     puzzles.forEach(p => {
       if (p.width !== side || p.day) return;
-      all[p.level] = (all[p.level] || 0) + 1;
-      if (p.id !== editing?.id) others[p.level] = (others[p.level] || 0) + 1;
+      const count = p.off ? off : on;
+      count[p.level] = (count[p.level] || 0) + 1;
+      if (!p.off && p.id !== editing?.id) others[p.level] = (others[p.level] || 0) + 1;
     });
-    return { all, full: n => (others[n] || 0) >= PER_LEVEL };
+    return { on, off, full: n => (others[n] || 0) >= PER_LEVEL };
   };
   // The first category with room for another puzzle of this size.
   const openLevel = () => {
@@ -101,22 +103,18 @@
     while (full(open)) open++;
     return open;
   };
-  // The Category field: this size's categories by name with how many of
-  // their nine they hold, in their order, then one for a new category,
-  // numbered to stand after them. A full one cannot be picked. `pick` is the
-  // one to choose; a full one gives way to the first with room, and one that
-  // is not there to the new category.
+  // The Category field: this size's categories by name, in their order, each
+  // with how many of its nine are on and how many puzzles it holds off, then
+  // one for a new category, numbered to stand after them. `pick` is the one
+  // to choose, and one that is not there chooses the new category.
   const showLevels = pick => {
-    const names = new Map(), { all, full } = held();
+    const names = new Map(), { on, off } = held();
     puzzles.forEach(p => { if (p.width === side && !p.day) names.set(p.level, p.theme || 'More'); });
     const next = Math.max(0, ...names.keys()) + 1;
-    level.replaceChildren(...[...names].sort((a, b) => a[0] - b[0]).map(([n, text]) => {
-      const option = new Option(`${text} · ${all[n]} of ${PER_LEVEL}`, n);
-      option.disabled = full(n);
-      return option;
-    }), new Option('New category', next));
-    const to = names.has(pick) && !full(pick) ? pick : openLevel();
-    level.value = names.has(to) ? to : next;
+    level.replaceChildren(...[...names].sort((a, b) => a[0] - b[0])
+      .map(([n, text]) => new Option(`${text} · ${on[n] || 0} of ${PER_LEVEL}${off[n] ? `, ${off[n]} off` : ''}`, n)),
+    new Option('New category', next));
+    level.value = names.has(pick) ? pick : next;
   };
 
   let solvable = false;
@@ -208,6 +206,12 @@
       id: editing?.id, name: name.value.trim(), squares: squaresOf(draft), width: side, height: side,
       level: levelOf(), day: day.value || null, colours: colours && squaresOf(colours),
     };
+    // A puzzle that is off stays off. One that comes into a category with
+    // nine on is saved off too, since the category shows nine; a day's
+    // puzzle is in no category and is never off.
+    const stays = editing && !editing.day && editing.level === puzzle.level;
+    puzzle.off = !puzzle.day && !!data.setOff && (!!editing?.off || (!stays && held().full(puzzle.level)));
+    const turnedOff = puzzle.off && !editing?.off;
     // A category just started is hidden, so it is drawn out of the players'
     // sight; the front page's Published switch shows it.
     const fresh = !puzzle.day && !puzzles.some(p => p.width === side && p.level === puzzle.level && !p.day);
@@ -228,7 +232,7 @@
       if (!puzzle.day) showLevels(puzzle.level);
       if (editing) {
         editing = row;
-        saved(`Saved “${row.name}”${fresh && data.setHidden ? `. ${named || 'More'} is hidden until you publish it.` : ''}`);
+        saved(`Saved “${row.name}”${fresh && data.setHidden ? `. ${named || 'More'} is hidden until you publish it.` : turnedOff ? `. It is off: ${named || 'More'} has nine on.` : ''}`);
       } else {
         try { localStorage.removeItem(DRAFT); } catch { /* nothing kept */ }
         name.value = '';
@@ -239,7 +243,7 @@
           // On to the next day, for a run of them.
           when.setDate(when.getDate() + 1);
           day.value = `${when.getFullYear()}-${String(when.getMonth() + 1).padStart(2, '0')}-${String(when.getDate()).padStart(2, '0')}`;
-        } else saved(`Saved “${row.name}”. It is in ${named || 'More'}${fresh && data.setHidden ? ', hidden until you publish it' : ''}.`);
+        } else saved(`Saved “${row.name}”. It is in ${named || 'More'}${fresh && data.setHidden ? ', hidden until you publish it' : turnedOff ? ', off, since nine are on' : ''}.`);
       }
       $('pixels-error').hidden = true;
     } catch (error) {

@@ -89,12 +89,13 @@ look at every row and every column, filling in what each can now decide.
 
 ## A category
 
-A category is up to nine puzzles of one size about one thing, such as Fruit:
-three rows of three on a phone, one row of nine on a wide screen. Its name is
-its heading on the front page, and one with no name is headed More. The
-maker's Category field says which one a puzzle is in, counts each category's
-puzzles, such as Fruit · 7 of 9, and offers the first of its size that still
-has room. The front page lists a category easy to hard by the tag, so the
+A category shows up to nine puzzles of one size about one thing, such as
+Fruit: three rows of three on a phone, one row of nine on a wide screen. It
+can hold more, switched off. Its name is its heading on the front page, and
+one with no name is headed More. The maker's Category field says which one a
+puzzle is in, counts how many of each category's are on, such as
+Fruit · 9 of 9, 3 off, and offers the first of its size that still has
+room. The front page lists a category easy to hard by the tag, so the
 order they were drawn in does not matter, and a puzzle moves category by
 editing that field.
 
@@ -104,10 +105,12 @@ editing that field.
 - **New category**, the last choice in the Category field, starts one. It
   stands after the others and starts hidden, so only the owner sees it while
   its nine are drawn.
-- **A full category cannot be picked.** To put a tenth picture in, move one
-  of its nine to another category first, or delete one.
-- **Keep spares in a hidden category.** A category left unpublished holds
-  pictures no player is sent, ready to swap into a published one.
+- **Draw more than nine.** A picture saved into a category with nine on is
+  saved off, and no player is sent it.
+- **Swap with the switch under each tile** on the front page: switch one off,
+  then a spare on. A tenth is refused until one is off.
+- **Player view**, the switch at the top of the front page, shows the page as
+  a player is sent it: no hidden category, no puzzle that is off.
 - **Publish it on the front page.** Beside each category's name the owner has
   a switch: on, every player is sent the category; off, only the owner is.
 - **Move it with the arrows** beside the switch, up or down among the

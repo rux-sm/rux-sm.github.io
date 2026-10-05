@@ -267,9 +267,12 @@
   white-space: nowrap;
 }
 .pixels-puzzle > .pixels-meta, .pixels-puzzle > .pixels-stars { font-size: .75rem; line-height: 1.2; }
-/* For the owner a tile carries the way to edit its puzzle under it. */
+/* For the owner a tile carries the way to edit its puzzle under it, and the
+   switch that sends it to the players. One switched off is drawn faint. */
 .pixels-tile { display: grid; grid-template-rows: auto auto; gap: .25rem; min-inline-size: 0; }
-.pixels-tile-edit { justify-self: center; font-size: .75rem; }
+.pixels-tile-foot { display: flex; align-items: center; justify-content: center; gap: .5rem; }
+.pixels-tile-edit { font-size: .75rem; }
+.pixels-tile.is-off > .pixels-puzzle { opacity: .4; }
 .pixels-blank {
   display: grid;
   place-items: center;

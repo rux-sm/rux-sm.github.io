@@ -19,7 +19,10 @@ nine on a wide screen, so a category of nine fills its rows. A category is
 headed by its name, such as Fruit, and one with no name by More. The 5×5 ones
 say Quick first and come first, the 15×15 ones say Long and come last. The
 owner has a switch beside each name that hides the category from every other
-player, and arrows that move it up or down. A solved
+player, and arrows that move it up or down. Under each tile the owner has a
+switch that sends that puzzle to no player when off; a category has at most
+nine on. Player view, a switch at the top of the owner's page, draws the page
+as a player is sent it, with nothing of the owner's. A solved
 puzzle shows its picture, name and stars; an unsolved one a question mark and
 how hard it is, and its name stays hidden until it is solved. Leaderboard:
 today's ranking by stars then time, and the all-time one by every star
@@ -61,8 +64,8 @@ picture and how hard that is, outlines each square that would need a guess,
 and saves only a picture with one answer. Size starts a blank board of 5,
 10 or 15 a side. Its Colour step paints the picture
 the puzzle finishes as, from eight inks, and Category places it on the front
-page, with Category name naming that category; a category holds nine, the
-list counts each one's, and a full one cannot be picked. A category just started is
+page, with Category name naming that category; a category shows nine, the
+list counts how many of each one's are on, and a puzzle saved into one with nine on is saved off. A category just started is
 hidden until the front page's switch publishes it. A puzzle given a day is that
 day's puzzle and sits in no category; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good
 category.
@@ -93,7 +96,8 @@ which first find the player from the log-in or the key: `pixels_join`,
 `pixels_record`, `pixels_record_day` and `pixels_board`. A time is the
 player's own browser's word: the database refuses only what cannot be, a
 time under two seconds, a puzzle that does not exist, a day more than one
-from today. `pixels_puzzles` sends a player no hidden category.
+from today. `pixels_puzzles` sends a player no hidden category and no puzzle that is
+switched off, which is `pixels_puzzles.hidden`.
 
 A ninth, `pixels_order_levels`, is the owner's and refuses anyone else: it
 renumbers the categories of one size in one step, so a move cannot stop

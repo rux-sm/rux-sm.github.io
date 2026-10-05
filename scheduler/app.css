@@ -1358,24 +1358,33 @@ button.scheduler-row-head__num::after {
 }
 
 /* THE ATTENTION MARK, at the destination row's end, so it is read with the
-   trip's name and stays put whatever rows the view menu turns off: a bell in
-   the warning colour for a follow-up and the error colour for a bus that
-   does not fit, the inks every other mark wears, set per theme so each reads
-   on every trip colour, its glyph's width and as tall as the row. It stops at the end of the trip's first day,
-   however many days the bar runs, so down a week the bells line up; the row
-   itself is not narrowed, so the name still gives way across the whole bar. */
+   trip's name and stays put whatever rows the view menu turns off: a disc
+   holding how many alerts the trip has, filled in the warning colour, or in
+   the error colour when one of them is a bus that does not fit. The fills are
+   the inks every other mark wears, set per theme, and the figure is the ink
+   theme.css names for the warning and the theme's inverse text on the error. It is a glyph
+   high and round, and widens only for a second figure. It stops at the end of
+   the trip's first day, however many days the bar runs, so down a week the
+   discs line up; the row itself is not narrowed, so the name still gives way
+   across the whole bar. */
 .scheduler-bar__msg {
-  display: flex;
   flex: none;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--scheduler-mark-glyph);
-  block-size: var(--scheduler-row-h);
+  align-self: center;
+  box-sizing: border-box;
+  min-inline-size: var(--scheduler-mark-glyph);
+  block-size: var(--scheduler-mark-glyph);
+  padding-inline: var(--rux-spacing-02);
+  border-radius: calc(var(--scheduler-mark-glyph) / 2);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: var(--scheduler-mark-glyph);
+  letter-spacing: 0;
+  text-align: center;
 }
-.scheduler-bar__msg svg { display: block; inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
-.scheduler-bar__msg--warning { color: var(--scheduler-mark-warning); }
-.scheduler-bar__msg--error { color: var(--scheduler-mark-error); }
-/* The name takes the row's spare room, so the bell sits at the end. */
+.scheduler-bar__msg--warning { background: var(--scheduler-mark-warning); color: var(--scheduler-mark-on-warning, var(--scheduler-on-warning)); }
+.scheduler-bar__msg--error { background: var(--scheduler-mark-error); color: var(--rux-text-inverse); }
+/* The name takes the row's spare room, so the disc sits at the end. */
 .scheduler-bar__dest { justify-content: flex-start; }
 .scheduler-bar__dest > :first-child { margin-inline-end: auto; }
 .scheduler-bar__dest > :not(:first-child):last-child { margin-inline-end: var(--scheduler-day-one-end); }
@@ -2946,7 +2955,7 @@ button.scheduler-row-head__num::after {
    board. Those toggles buy height among the bars; this is where the writing a
    block gave up is read, so hiding a row here would leave it nowhere. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcuts__trip .scheduler-bar__row { display: flex; }
-/* The bar's updates mark is left off: the updates are read just above it,
+/* The bar's alert count is left off: the alerts are read just above it,
    and so is its newest update's row. */
 .scheduler-bar-shortcuts__trip .scheduler-bar__msg { display: none; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcuts__trip .scheduler-bar__update { display: none; }

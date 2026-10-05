@@ -19,7 +19,7 @@
    and where there is not it draws the name form, or says the link is needed.
 
    THE OWNER makes and edits puzzles and sees the players, by the tables'
-   own rules: `save`, `remove`, `setTheme`, `setHidden`, `orderLevels`, `players`, `setWord`, `renamePlayer` and
+   own rules: `save`, `remove`, `setOff`, `setTheme`, `setHidden`, `orderLevels`, `players`, `setWord`, `renamePlayer` and
    `removePlayer`.
 
    THE LOCAL PREVIEW, `npm run serve` on :8640, has no log-in, so there the
@@ -150,6 +150,9 @@
     fail(error);
     return data;
   };
+  // A puzzle's row as the pages hold it: the table's `hidden` is the puzzle's
+  // own switch, which they call `off`, since `hidden` is its category's.
+  const own = ({ hidden, ...row }) => ({ ...row, off: !!hidden });
   const cloud = client && {
     async me() { return call('pixels_me', { p_key: key() }); },
     // A new guest: the key is made here and kept only if the database takes it.
@@ -163,17 +166,19 @@
     // puzzle; the owner reads the table, which holds the hidden levels and
     // the days to come too.
     // Each puzzle comes with its level's theme, if the level has one, and
-    // for the owner with whether the level is hidden.
+    // for the owner with whether the level is hidden, as `hidden`, and
+    // whether the puzzle itself is switched off, as `off`. A player is sent
+    // neither kind.
     async list() {
       if (!owner) return call('pixels_puzzles', { p_key: key() });
       const [puzzles, levels] = await Promise.all([
-        client.from('pixels_puzzles').select('id, name, squares, width, height, level, colours, created_at, day').order('created_at').order('id'),
+        client.from('pixels_puzzles').select('id, name, squares, width, height, level, colours, created_at, day, hidden').order('created_at').order('id'),
         client.from('pixels_levels').select('width, level, name, hidden'),
       ]);
       fail(puzzles.error);
       fail(levels.error);
       const of = p => levels.data.find(l => l.width === p.width && l.level === p.level);
-      return puzzles.data.map(p => ({ ...p, theme: of(p)?.name ?? null, hidden: !!of(p)?.hidden }));
+      return puzzles.data.map(p => ({ ...own(p), theme: of(p)?.name ?? null, hidden: !!of(p)?.hidden }));
     },
     async results() {
       return new Map((await call('pixels_results', { p_key: key() })).map(r => [r.puzzle_id, { seconds: r.best_seconds, stars: r.stars }]));
@@ -189,24 +194,29 @@
     },
     async board(day) { return call('pixels_board', { p_key: key(), p_day: day }); },
 
-    // The owner's, straight to the tables.
-    async save({ id, name, squares, width, height, level, colours, day }) {
+    // The owner's, straight to the tables. `off` saves the puzzle switched
+    // off, so no player is sent it.
+    async save({ id, name, squares, width, height, level, colours, day, off }) {
       if (id) {
         const { data: before, error: readError } = await client.from('pixels_puzzles').select('squares').eq('id', id).single();
         fail(readError);
         const { data, error } = await client.from('pixels_puzzles')
-          .update({ name, squares, width, height, level, colours, day, updated_at: new Date().toISOString() }).eq('id', id).select().single();
+          .update({ name, squares, width, height, level, colours, day, hidden: !!off, updated_at: new Date().toISOString() }).eq('id', id).select().single();
         fail(error);
         // A redrawn picture is a new puzzle, so everyone's results on it go.
         if (before.squares !== squares) fail((await client.from('pixels_player_results').delete().eq('puzzle_id', id)).error);
-        return data;
+        return own(data);
       }
-      const { data, error } = await client.from('pixels_puzzles').insert({ name, squares, width, height, level, colours, day }).select().single();
+      const { data, error } = await client.from('pixels_puzzles').insert({ name, squares, width, height, level, colours, day, hidden: !!off }).select().single();
       fail(error);
-      return data;
+      return own(data);
     },
     async remove(id) {
       fail((await client.from('pixels_puzzles').delete().eq('id', id)).error);
+    },
+    // Switches one puzzle off, so no player is sent it, or on again.
+    async setOff(id, off) {
+      fail((await client.from('pixels_puzzles').update({ hidden: off }).eq('id', id)).error);
     },
     // A level's theme, for boards of one size; an empty name takes it away.
     // Only the name is written, so a hidden level stays hidden.

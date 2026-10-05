@@ -21,8 +21,8 @@
    THE PAGE. `page({ list, one })` takes the page's two words, as in
    `customers` and `customer`, which name its element ids and its messages,
    and returns the notices, the list's search, sort and row click, the
-   fields' error states, the unsaved-changes and conflict modals, and the
-   staff gate at start-up. `$`, `el` and `svgUse` build the rest.
+   fields' error states, the unsaved-changes and conflict modals, the record's
+   History link, and the staff gate at start-up. `$`, `el` and `svgUse` build the rest.
    ========================================================================== */
 (() => {
   'use strict';
@@ -149,6 +149,15 @@
       $(id(`${one}-result-box`)).className = NOTE[kind].cls;
       $(id(`${one}-result-icon`)).setAttribute('href', NOTE[kind].icon);
       $(id(`${one}-result-text`)).textContent = text;
+    };
+
+    /* The record's History link, in its title row: the History page narrowed
+       to this record. A record not saved yet has no history, so no link. */
+    const historyLink = recordId => {
+      const link = $(id(`${one}-history`));
+      if (!link) return;
+      link.hidden = !recordId;
+      link.href = recordId ? `history.html?record=${encodeURIComponent(recordId)}` : 'history.html';
     };
 
     // Cancel and Save stack on a phone, as Carbon's stacked button set does.
@@ -346,7 +355,7 @@
       }
     }
 
-    return { say, result, table, textError, comboError, guard, start };
+    return { say, result, table, textError, comboError, guard, start, historyLink };
   }
 
   window.SchedulerPair = { saveRecord, syncRows, page, $, el, svgUse };

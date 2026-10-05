@@ -21,9 +21,9 @@
 <script src="/design/js/theme.js"></script>
 </head>
 <body>
-<!-- What changed on trips and who changed it, newest first, read by
-     history.js fifty entries at a time. A row opens its trip on the schedule.
-     The shell is trips.html's. -->
+<!-- What changed and who changed it, newest first: trips, drivers, buses,
+     customers, contacts and locations. history.js reads fifty entries at a
+     time, and a row opens what it is about. The shell is trips.html's. -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run build` rewrites this
      block from design/assets/icons.svg. -->
@@ -201,8 +201,9 @@
 <main id="main-content" class="rux--content scheduler-pair-page">
   <!-- ── The list ─────────────────────────────────────────────────────────
        Centred in twelve of the sixteen columns at lg, as the other lists are.
-       The database narrows it by person, by time and by trip; history.js
-       asks again on every change and for the next fifty on Show older. -->
+       The database narrows it by kind, by person, by time and to one trip or
+       record; history.js asks again on every change and for the next fifty
+       on Show older. -->
   <div class="rux--css-grid" id="scheduler-history-list">
     <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-3 rux--lg:col-span-12">
       <div class="rux--stack-vertical rux--stack-scale-5">
@@ -220,12 +221,13 @@
           </div>
         </div>
 
-        <!-- One trip's history: `?trip=<id>` narrows the list to it, and this
-             tag names the trip and clears the filter. -->
-        <div id="scheduler-history-trip" hidden>
+        <!-- One trip's or one record's history: `?trip=<id>` or
+             `?record=<id>` narrows the list to it, and this tag names it and
+             clears the filter. -->
+        <div id="scheduler-history-one" hidden>
           <div class="rux--tag rux--tag--filter rux--layout--size-md rux--tag--blue">
-            <span class="rux--tag__label" id="scheduler-history-trip-label"></span>
-            <button type="button" class="rux--tag__close-icon" aria-label="Show every trip" title="Show every trip" id="scheduler-history-trip-clear">
+            <span class="rux--tag__label" id="scheduler-history-one-label"></span>
+            <button type="button" class="rux--tag__close-icon" aria-label="Show everything" title="Show everything" id="scheduler-history-one-clear">
               <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
             </button>
           </div>
@@ -234,8 +236,27 @@
         <section class="rux--data-table-container" id="scheduler-history-table" aria-labelledby="scheduler-history-h" hidden>
           <section class="rux--table-toolbar" role="group" aria-label="Table actions">
             <div class="rux--toolbar-content">
-              <!-- Whose changes, then how far back. The names are the ones the
-                   history holds, which history.js reads. -->
+              <!-- Changes to what, whose, and how far back. The names are the
+                   ones the history holds, which history.js reads. -->
+              <div class="rux--form-item scheduler-table-show">
+                <div class="rux--select rux--select--inline rux--layout--size-md">
+                  <label class="rux--label rux--visually-hidden" for="scheduler-history-kind">What</label>
+                  <div class="rux--select-input--inline__wrapper">
+                    <div class="rux--select-input__wrapper">
+                      <select id="scheduler-history-kind" class="rux--select-input" autocomplete="off">
+                        <option value="">All</option>
+                        <option value="trip">Trips</option>
+                        <option value="driver">Drivers</option>
+                        <option value="bus">Buses</option>
+                        <option value="customer">Customers</option>
+                        <option value="contact">Contacts</option>
+                        <option value="location">Locations</option>
+                      </select>
+                      <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div class="rux--form-item scheduler-table-show">
                 <div class="rux--select rux--select--inline rux--layout--size-md">
                   <label class="rux--label rux--visually-hidden" for="scheduler-history-person">Person</label>
@@ -275,7 +296,7 @@
                 <tr>
                   <th scope="col"><div class="rux--table-header-label">When</div></th>
                   <th scope="col"><div class="rux--table-header-label">Who</div></th>
-                  <th scope="col"><div class="rux--table-header-label">Trip</div></th>
+                  <th scope="col"><div class="rux--table-header-label">Item</div></th>
                   <th scope="col"><div class="rux--table-header-label">What changed</div></th>
                 </tr>
               </thead>

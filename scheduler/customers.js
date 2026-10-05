@@ -246,6 +246,7 @@
   function drawTitle() {
     $('scheduler-customer-h').textContent = loaded?.name || 'New customer';
     document.title = `${loaded?.name || 'New customer'} — Scheduler`;
+    pair.historyLink(loaded?.id);
     // A customer not yet saved has no contacts, so no Contacts tab and no Delete.
     $('scheduler-customer-tabs').hidden = !loaded;
     drawDelete();

@@ -36,8 +36,8 @@ now.
 - **A failure in the recording never stops a save.** It is a warning in the
   database's log, and the driver, bus or customer saves as before.
 - **The History page stays one list,** with a third choice beside Person and
-  When: Everything, Trips, Drivers, Buses, Customers, Contacts and Locations.
-  Everything is where it opens.
+  When: All, Trips, Drivers, Buses, Customers, Contacts and Locations. All
+  is where it opens.
 - **One read for the page, `search_history`,** returns trip entries and
   record entries together, newest first. It replaces `search_trip_history`,
   and `history_people` replaces `trip_history_people`. The two replaced
@@ -62,22 +62,8 @@ None open.
 
 ## Tasks
 
-- [ ] Show rux the SQL for `record_history`, the trigger functions and their
-      triggers, `search_history` and `history_people`, tried offline against
-      a copy of the tables' shape, and apply it on a yes as one named
-      migration.
-- [ ] Confirm the grants afterwards by `docs/database-access.md`'s check:
-      `anon` can run neither function and reads nothing from the table.
-- [ ] Move `history.js` to `search_history` and `history_people`, add the
-      third choice, the record rows and their links, and the words for each
-      column.
-- [ ] Add the History button to the driver, bus, customer, contact and
-      location pages.
-- [ ] Drop `search_trip_history` and `trip_history_people` once the new page
-      is published.
-- [ ] Update `scheduler/docs/screen-inventory.md` and
-      `scheduler/docs/database-inventory.md` in the same commits.
-- [ ] Check it in Chrome on :8641: trip entries read as before, each choice
-      alone and with Person and When, Show older across both kinds of entry,
-      and the page at phone width. The report says that only a real save of
-      a driver, a bus or a customer can prove the trigger on production.
+- [ ] Drop `search_trip_history` and `trip_history_people` on a yes, once
+      the new page is published.
+- [ ] Read the first real entries on the History page after someone saves a
+      driver, a bus or a customer, since only a real save proves the
+      triggers on production.

@@ -358,6 +358,7 @@
     const name = loaded?.name;
     $('scheduler-driver-h').textContent = name || 'New driver';
     document.title = `${name || 'New driver'} — Scheduler`;
+    pair.historyLink(loaded?.id);
     const tag = $('scheduler-driver-status');
     tag.hidden = !loaded;
     if (loaded) {

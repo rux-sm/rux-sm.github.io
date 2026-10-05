@@ -326,6 +326,7 @@
     const name = loaded?.name || null;
     $('scheduler-contact-h').textContent = name || 'New contact';
     document.title = `${name || 'New contact'} — Scheduler`;
+    pair.historyLink(loaded?.id);
     // A contact not yet saved has no trips, so no Trips tab and no Delete.
     $('scheduler-contact-tabs').hidden = !loaded;
     drawDelete();

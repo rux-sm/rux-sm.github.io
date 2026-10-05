@@ -507,6 +507,7 @@
     const name = loaded?.number ? Vehicles.label(loaded) : null;
     $('scheduler-bus-h').textContent = name || 'New unit';
     document.title = `${name || 'New unit'} — Scheduler`;
+    pair.historyLink(loaded?.id);
     const tag = $('scheduler-bus-status-tag');
     tag.hidden = !loaded;
     if (loaded) {

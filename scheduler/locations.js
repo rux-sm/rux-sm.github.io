@@ -215,6 +215,7 @@
   function drawTitle() {
     $('scheduler-location-h').textContent = loaded?.name || 'New location';
     document.title = `${loaded?.name || 'New location'} — Scheduler`;
+    pair.historyLink(loaded?.id);
     drawDelete();
   }
 

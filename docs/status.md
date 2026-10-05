@@ -22,9 +22,6 @@ done and how.
 
 ## Pixels
 
-- `pixels_results` and `pixels_daily` hold a copy of what `pixels_player_results`
-  and `pixels_player_days` now keep, and nothing reads them. They are dropped
-  once no browser still runs the pages that wrote them.
 - The database still keeps stars, which no page shows: `pixels_record` and
   `pixels_record_day` are sent 3, and `pixels_board` orders by them. They go,
   and the board orders by time and by puzzles solved, before `BOARD` is on.

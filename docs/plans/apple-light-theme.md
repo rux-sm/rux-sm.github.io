@@ -34,31 +34,24 @@ and passes Design's contrast gate with no exception.
   as text on its surface, the theme takes Apple's own increased-contrast
   variant of that colour.
 - **Light only.** A dark companion is its own plan.
+- **It is named `apple-light`,** shown as "Apple light" in the account panel.
+- **Apple's current shapes, with solid fills.** Capsule buttons and the
+  larger corners of Apple's current look, without its glass.
+- **Mac sizes on a wide screen.** A phone keeps each app's own phone layout.
+- **The accent is Apple's blue,** for the main button and for links.
 
 ## Questions
 
-- **The name.** Is `apple-light`, shown as "Apple light" in the account
-  panel, the name you want? The other themes already carry their source's
-  name.
-- **Which Apple look.** Apple's current look has capsule buttons, larger
-  corners and glass. Its earlier look is flatter, with 10px corners. Should
-  the theme take the current shapes with solid fills, which is the
-  recommendation, or the earlier look?
-- **Mac sizes or iPhone sizes.** A Mac's controls are smaller and suit the
-  board on a desk. An iPhone's are larger for a thumb. Is it right to take
-  Mac sizes on a wide screen and keep each app's own phone layout on a phone?
-- **The accent colour.** Should the main button and links be Apple's blue, or
-  the company's own blue from the logo?
+None open.
 
 ## Tasks
 
-- [ ] Read the light-mode system colours, greys, fills, separators and label
-  colours from the Human Interface Guidelines, with their increased-contrast
-  variants, into `design/docs/apple-token-map.md`.
-- [ ] Measure Apple's apps on this Mac at 2x into the same document:
-  Calendar's week view and an event, Settings, Reminders, a sheet and an
-  alert. Record control heights, corners, paddings, gaps, type sizes and
-  weights.
+- [ ] Measure what `design/docs/apple-token-map.md` lists as not measured:
+  the accent-filled states of a button, switch, checkbox and segment, a
+  Calendar event, a sheet, an alert, a menu and a list row. They need Apple's
+  apps on screen under the light appearance. This Mac is set to dark, so the
+  iOS Simulator's stock apps are where a light Calendar event and a sheet can
+  be read.
 - [ ] Add the `apple-light` token block to `design/css/rux-theme.css`, and
   name the theme in `design/js/theme.js`, `design/tools/lib/shell.mjs` and
   the tools that list the themes, then rebuild the pages.

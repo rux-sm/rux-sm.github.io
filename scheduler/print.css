@@ -296,14 +296,18 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    On paper the page size comes from @page and the margins from the box model,
    because a print driver does not reliably honour an @page margin.
 
-   THE PAPER NAMES ITS OWN FACE, as it names its own colours. A theme sets its
-   typeface on the page, and a face is inherited, so without this a form came
-   out of the printer in whichever face the person's theme wears and its lines
-   broke in different places. Plex is the face the forms are measured in and
-   the one file every device is served. The quote names another below, to
-   match the estimate the office sends. */
+   THE PAPER NAMES ITS OWN FACE, as it names its own colours: Helvetica, on
+   every form. A theme sets its typeface on the page, and a face is inherited,
+   so without this a form came out of the printer in whichever face the
+   person's theme wears and its lines broke in different places. Helvetica is
+   the face of the estimate the office sends out of QuickBooks, which the
+   quote stands in for, and one face makes the five forms one set. Carbon's
+   tracking is Plex's optical correction and goes with Plex. */
 .scheduler-form {
-  font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --rux-label-01-letter-spacing: 0;
+  --rux-body-compact-01-letter-spacing: 0;
+  --rux-heading-compact-01-letter-spacing: 0;
   inline-size: var(--scheduler-paper-width, 100%);
   margin-inline: auto;
   /* The page marks are laid over it, so they take no room in what prints. */
@@ -1289,10 +1293,10 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    it is read down a column; this is read across, box by box, and the boxes
    are what a customer's eye has followed on every quote before this one.
 
-   IT IS SET IN HELVETICA, at the office's sizes in points. The sheet it
-   stands in for comes out of QuickBooks in Helvetica, and a customer holding
-   the two side by side should not see a different hand; points, because the
-   sizes are measured off that paper rather than picked from a screen scale.
+   ITS SIZES ARE THE OFFICE'S, in points. The sheet it stands in for comes
+   out of QuickBooks, and a customer holding the two side by side should not
+   see a different hand; points, because the sizes are measured off that
+   paper rather than picked from a screen scale.
 
    AND IT IS THE ONE FORM THAT FILLS. Every label cell on the office's sheet is
    grey, and a customer who has had one before reads the grey as the document.
@@ -1307,7 +1311,6 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    printer that drops the grey anyway leaves the form whole. */
 
 .scheduler-customer-quote {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 12pt;
   line-height: 1.3;
   letter-spacing: 0;

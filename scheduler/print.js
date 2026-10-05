@@ -2181,9 +2181,7 @@
       // NO TICK. `envelope_printed` and `itinerary_printed` are dispatch's
       // record that a driver has their paperwork; a quote is sent, and whether
       // it was is the Billing tab's business, not a form's.
-      // Its folio is in its own face, the office's Helvetica.
-      page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.375in',
-        font: "'Helvetica Neue', Helvetica, Arial, sans-serif" },
+      page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.375in' },
       copies: subject => [subject],
       /* EVERY FIELD, ON A FILLED ONE TOO. The office corrects a quote before
          it sends it -- a price agreed on the phone, a contact the trip has
@@ -2595,7 +2593,8 @@
       style.id = 'scheduler-print-folio';
       document.head.appendChild(style);
     }
-    const font = current.form.page?.font || "'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif";
+    // The paper's face, as print.css names it for every form.
+    const font = "'Helvetica Neue', Helvetica, Arial, sans-serif";
     style.textContent = sheets > 1 && sheet.dataset.sheet === 'flows'
       ? `@page { @bottom-center { content: "Page " counter(page) " of " counter(pages);
           vertical-align: top; padding-top: 0.08in; font-family: ${font}; font-size: 8pt; color: #525252; } }`

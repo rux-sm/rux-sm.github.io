@@ -207,6 +207,21 @@ html:not([data-rux-standalone]) .scheduler-print { background: var(--rux-layer-0
 @media screen {
   [data-rux-standalone] .scheduler-print__frame {
     border: 1px solid var(--rux-border-subtle-01);
+    border-radius: var(--scheduler-surface-radius, 0);
+  }
+  /* A rounded theme rounds the outline (theme.css), and the band and the desk
+     fill it edge to edge, so each takes the corners it reaches, a pixel inside
+     the line, and the band's last control takes its own. */
+  [data-rux-standalone] .scheduler-print__bar {
+    border-start-start-radius: max(0px, calc(var(--scheduler-surface-radius, 0px) - 1px));
+    border-start-end-radius: max(0px, calc(var(--scheduler-surface-radius, 0px) - 1px));
+  }
+  [data-rux-standalone] .scheduler-print__sheet {
+    border-end-start-radius: max(0px, calc(var(--scheduler-surface-radius, 0px) - 1px));
+    border-end-end-radius: max(0px, calc(var(--scheduler-surface-radius, 0px) - 1px));
+  }
+  [data-rux-standalone] .scheduler-print__controls > :last-child {
+    border-start-end-radius: max(0px, calc(var(--scheduler-surface-radius, 0px) - 1px));
   }
 }
 

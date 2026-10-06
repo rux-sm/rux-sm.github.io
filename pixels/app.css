@@ -359,10 +359,16 @@
 /* THE GAME. One column exactly as wide as the board, so the keys under it
    end where it does, set in from the frame's edge by a whole number of
    pixels: centred, or a pixel left of it where the room over is odd. */
-/* Nothing in the game or the maker is text to select: a slow drag on a phone
-   otherwise selects the words beside the board. */
-.pixels-game, .pixels-maker { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
-.pixels-maker input { user-select: text; -webkit-user-select: text; }
+/* Nothing on the game's page or the maker's is text to select. A tap and
+   then a drag on the board is an iPhone's gesture for selecting, and it
+   takes the nearest text there is, in a modal out of sight if need be, so
+   the whole page says no, from its root. A field says so for itself, since
+   a browser makes its own fields text whatever they stand in, and is text
+   only while it is being typed in. */
+html:has(.pixels-game, .pixels-maker),
+html:has(.pixels-game, .pixels-maker) select,
+html:has(.pixels-game, .pixels-maker) input:not(:focus) { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-user-select: text; }
 .pixels-game {
   --most: 600px;
   --chrome: 276px;
@@ -531,12 +537,13 @@
    board, and the board's check over its empty corner. Where the puzzle goes
    is asked as it is saved.
    Its board is the game's, set in by a whole number of pixels as the game
-   is. `--chrome` is the height everything but the board takes, so the
+   is. `--chrome` is the height everything but the board takes, which on a
+   phone counts the toolbar's two lines and the inks under the board, so the
    board takes what the window leaves and the whole maker is in view without
    scrolling. */
 .pixels-maker {
   --most: 600px;
-  --chrome: 169px;
+  --chrome: 355px;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: .5rem;
@@ -556,12 +563,15 @@
    end, over the squares.
 
    The bar is the container its step keys ask for its width, and stands
-   over the board so the menu it opens does too. */
-.pixels-toolbar { position: relative; z-index: 1; container-type: inline-size; display: flex; flex-wrap: wrap; background: var(--rux-layer-01); border-block-end: 1px solid var(--rux-border-subtle-01); }
+   over the board so the menu it opens does too. It sets the height its
+   buttons take, Carbon's small, through the token a Carbon button reads. */
+.pixels-toolbar { --rux-layout-size-height: var(--rux-layout-size-height-sm, 2rem); position: relative; z-index: 1; container-type: inline-size; display: flex; flex-wrap: wrap; background: var(--rux-layer-01); border-block-end: 1px solid var(--rux-border-subtle-01); }
 
 .pixels-toolbar-group { display: flex; }
 .pixels-toolbar-group + .pixels-toolbar-group { box-shadow: inset 1px 0 0 var(--rux-border-subtle-01); }
-.pixels-toolbar-push { margin-inline-start: auto; }
+.pixels-toolbar-history { margin-inline-start: auto; }
+.pixels-toolbar-group.pixels-toolbar-clear { box-shadow: none; }
+.pixels-toolbar-break { display: none; }
 /* THE STEP'S TWO KEYS are the maker's own, since Carbon's icon button is a
    fixed square that holds no word. Each is that button to look at, state
    for state and token for token, so it sits among the others unremarked,
@@ -574,8 +584,8 @@
   justify-content: center;
   gap: .375rem;
   box-sizing: border-box;
-  block-size: 2rem;
-  min-inline-size: 2rem;
+  block-size: var(--rux-layout-size-height);
+  min-inline-size: var(--rux-layout-size-height);
   padding: 0 .4375rem;
   border: 1px solid transparent;
   background: transparent;
@@ -642,3 +652,31 @@ button:disabled > .pixels-ink-now { opacity: .35; }
 .pixels-maker-check > span:not([class])::first-letter { text-transform: uppercase; }
 /* THE SAVED NOTICE floats under the header's end, so it moves nothing. */
 .pixels-saved { position: fixed; inset-block-start: 3.5rem; inset-inline-end: 1rem; z-index: 2; max-inline-size: calc(100vw - 2rem); }
+
+/* THE MAKER ON A PHONE, where the width is short and the height is free.
+   The toolbar is under the board, by the thumb, in two lines of keys at
+   Carbon's large height, each line's keys sharing its width: Back, Save,
+   Delete, Undo and Redo, then Draw, Colour, the three tools and Clear,
+   which is at the end away from Undo. The inks stand open under it, eleven
+   across, so a colour is one tap; make.js moves them there, and the button
+   that opens them elsewhere is not shown. `--keys` is how many keys a group
+   has, which is its share of its line. */
+.pixels-inks-slot > .pixels-inks { grid-template-columns: none; grid-template-rows: repeat(3, auto); grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: .3125rem; padding: 0; margin-block-start: .5rem; }
+.pixels-inks[inert] { opacity: .35; }
+@media (max-width: 47.99rem) {
+  .pixels-maker-work { display: flex; flex-direction: column; }
+  .pixels-toolbar { --rux-layout-size-height: var(--rux-layout-size-height-lg, 3rem); order: 1; column-gap: .375rem; margin-block-start: .5rem; border: 0; background: none; }
+  .pixels-toolbar-group { flex: var(--keys) 1 0; margin: 0; background: var(--rux-layer-01); }
+  .pixels-toolbar-group + .pixels-toolbar-group { box-shadow: none; }
+  .pixels-toolbar-group > * { flex: 1; }
+  .pixels-toolbar svg { inline-size: 1.25rem; block-size: 1.25rem; }
+  .pixels-toolbar-file { order: 1; --keys: 2; }
+  .pixels-toolbar-file:has(#pixels-delete:not([hidden])) { --keys: 3; }
+  .pixels-toolbar-history { order: 2; --keys: 2; }
+  .pixels-toolbar-break { order: 3; display: block; flex: 0 0 100%; block-size: .375rem; }
+  .pixels-toolbar-step { order: 4; --keys: 2; }
+  .pixels-toolbar-tools { order: 5; --keys: 3; }
+  .pixels-toolbar-clear { order: 6; --keys: 1; }
+  .pixels-toolbar-group.pixels-toolbar-ink { display: none; }
+  .pixels-inks-slot { order: 2; }
+}

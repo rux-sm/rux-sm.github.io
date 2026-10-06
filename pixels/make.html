@@ -188,8 +188,9 @@
              name and the size; a toolbar of everything that acts
              on the drawing, set on the board as Carbon's text toolbar is set on
              its text, Back and Save at its start and the drawing's keys at
-             its end; then the board, its check in its corner. Every control is
-             Design's small size, 32px. -->
+             its end; then the board, its check in its corner. On a phone the
+             toolbar is under the board, in two lines of keys a thumb can hit,
+             with the inks open under it. -->
         <form class="pixels-maker" id="pixels-form" novalidate>
           <div class="pixels-maker-head">
             <div class="pixels-maker-top">
@@ -210,30 +211,34 @@
           <div class="pixels-maker-work">
             <!-- At the bar's start, the puzzle's own: Back to the puzzles, Save, and Delete for a saved one. At its end, over the squares, what acts on the drawing in four groups: what takes a move back or wipes the board, the step, the colour step's tools, and its colour, which opens the inks; Draw puts the last two out of reach. -->
             <div class="pixels-toolbar" role="toolbar" aria-label="Maker" id="pixels-toolbar">
-              <div class="pixels-toolbar-group">
-                <a class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" href="./" aria-label="Back to the puzzles" title="Back to the puzzles"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-arrow_back"/></svg></a>
-                <button type="submit" class="rux--btn rux--btn--primary rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-save" aria-label="Save" title="Save" disabled><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-save"/></svg></button>
-                <button type="button" class="rux--btn rux--btn--danger--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-delete" data-rux-open="pixels-delete-modal" aria-label="Delete" title="Delete" hidden><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-delete"/></svg></button>
+              <div class="pixels-toolbar-group pixels-toolbar-file">
+                <a class="rux--btn rux--btn--ghost rux--btn--icon-only" href="./" aria-label="Back to the puzzles" title="Back to the puzzles"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-arrow_back"/></svg></a>
+                <button type="submit" class="rux--btn rux--btn--primary rux--btn--icon-only" id="pixels-save" aria-label="Save" title="Save" disabled><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-save"/></svg></button>
+                <button type="button" class="rux--btn rux--btn--danger--ghost rux--btn--icon-only" id="pixels-delete" data-rux-open="pixels-delete-modal" aria-label="Delete" title="Delete" hidden><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-delete"/></svg></button>
               </div>
-              <div class="pixels-toolbar-group pixels-toolbar-push">
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-undo" disabled aria-label="Undo" title="Undo"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-undo"/></svg></button>
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-redo" disabled aria-label="Redo" title="Redo"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-redo"/></svg></button>
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-clear" aria-label="Clear" title="Clear"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-restart_alt"/></svg></button>
+              <div class="pixels-toolbar-group pixels-toolbar-history">
+                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only" id="pixels-undo" disabled aria-label="Undo" title="Undo"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-undo"/></svg></button>
+                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only" id="pixels-redo" disabled aria-label="Redo" title="Redo"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-redo"/></svg></button>
               </div>
+              <div class="pixels-toolbar-group pixels-toolbar-clear">
+                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only" id="pixels-clear" aria-label="Clear" title="Clear"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-restart_alt"/></svg></button>
+              </div>
+              <!-- On a phone the bar is two lines, and this is where the first ends. -->
+              <span class="pixels-toolbar-break" aria-hidden="true"></span>
               <!-- The step: two keys of the maker's own, since a Carbon icon button holds no word. app.css shows their words where the bar has the room. -->
-              <div class="pixels-toolbar-group" role="radiogroup" aria-label="Step" id="pixels-step">
+              <div class="pixels-toolbar-group pixels-toolbar-step" role="radiogroup" aria-label="Step" id="pixels-step">
                 <button type="button" class="pixels-step-key" role="radio" aria-checked="true" data-step="draw" title="Draw"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-edit"/></svg><span>Draw</span></button>
                 <button type="button" class="pixels-step-key" role="radio" aria-checked="false" data-step="colour" title="Colour"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-palette"/></svg><span>Colour</span></button>
               </div>
-              <div class="pixels-toolbar-group" role="radiogroup" aria-label="Tool" id="pixels-tool">
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm rux--btn--selected" role="radio" aria-checked="true" data-tool="paint" disabled aria-label="Paintbrush" title="Paintbrush"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-brush"/></svg></button>
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" role="radio" aria-checked="false" data-tool="fill" disabled aria-label="Bucket" title="Bucket"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-format_color_fill"/></svg></button>
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" role="radio" aria-checked="false" data-tool="erase" disabled aria-label="Eraser" title="Eraser"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-ink_eraser"/></svg></button>
+              <div class="pixels-toolbar-group pixels-toolbar-tools" role="radiogroup" aria-label="Tool" id="pixels-tool">
+                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--selected" role="radio" aria-checked="true" data-tool="paint" disabled aria-label="Paintbrush" title="Paintbrush"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-brush"/></svg></button>
+                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only" role="radio" aria-checked="false" data-tool="fill" disabled aria-label="Bucket" title="Bucket"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-format_color_fill"/></svg></button>
+                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only" role="radio" aria-checked="false" data-tool="erase" disabled aria-label="Eraser" title="Eraser"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-ink_eraser"/></svg></button>
               </div>
-              <div class="pixels-toolbar-group">
-                <!-- The colour in hand; pressing it opens the inks, which make.js fills. -->
+              <div class="pixels-toolbar-group pixels-toolbar-ink">
+                <!-- The colour in hand; pressing it opens the inks, which make.js fills. On a phone the inks stand open under the bar instead. -->
                 <span class="rux--popover-container rux--popover--bottom-end rux--popover--drop-shadow" id="pixels-ink-menu">
-                  <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-ink" aria-label="Colour" title="Colour" aria-haspopup="true" aria-expanded="false" disabled><span class="pixels-ink-now" data-ink="2"></span></button>
+                  <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only" id="pixels-ink" aria-label="Colour" title="Colour" aria-haspopup="true" aria-expanded="false" disabled><span class="pixels-ink-now" data-ink="2"></span></button>
                   <span class="rux--popover">
                     <span class="rux--popover-content">
                       <span class="pixels-inks" id="pixels-inks" role="radiogroup" aria-label="Colour"></span>
@@ -247,6 +252,8 @@
               <!-- Over the board's empty corner: whether the numbers solve the picture, how hard, and how much is filled. -->
               <div class="pixels-maker-check" id="pixels-check" aria-live="polite"></div>
             </div>
+            <!-- Where the inks stand on a phone; make.js moves them here and back. -->
+            <div class="pixels-inks-slot" id="pixels-inks-slot"></div>
           </div>
         </form>
         </div>

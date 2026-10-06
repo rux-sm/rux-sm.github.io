@@ -193,6 +193,7 @@
     step = to;
     if (step === 'colour' && !colours) colours = draft.map((r, y) => r.map((_, x) => plain(y, x)));
     [...tools.querySelectorAll('button'), inkKey].forEach(b => { b.disabled = step !== 'colour'; });
+    inks.inert = step !== 'colour';
     if (step !== 'colour') window.Rux.popover?.close(inkMenu);
     choose(steps, b => b.dataset.step === step);
     render();
@@ -224,6 +225,16 @@
     inkKey.setAttribute('aria-label', inkKey.title);
   };
   setInk(ink);
+  // On a phone the inks stand open under the toolbar, since there the height
+  // is free; elsewhere they are the menu the toolbar's colour opens.
+  const narrow = matchMedia('(max-width: 47.99rem)'), inkHome = inks.parentElement;
+  const placeInks = () => {
+    (narrow.matches ? $('pixels-inks-slot') : inkHome).append(inks);
+    if (narrow.matches) window.Rux.popover?.close(inkMenu);
+  };
+  narrow.addEventListener('change', placeInks);
+  placeInks();
+  inks.inert = true;
   // Picking one closes the menu, and the board is ready for it.
   inks.addEventListener('click', e => {
     const picked = e.target.closest('.pixels-ink');

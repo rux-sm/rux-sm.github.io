@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>Players — Pixels</title>
+<title>Manage — Pixels</title>
 <script src="/funnel.js"></script>
 <style>html:not([data-rux-unlocked]){visibility:hidden}</style>
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
@@ -21,8 +21,8 @@
 <script src="/design/js/theme.js"></script>
 </head>
 <body>
-<!-- The owner's page, driven by players.js: who has played, how far each has got, the invite word a guest's link carries, and Remove. The shell is the
-     scheduler's: the menu button opens the side nav at every width. -->
+<!-- The owner's page, driven by manage.js: every puzzle of one board size at a time, by category, with the categories' switches and buttons, and
+     ticks that move or delete several puzzles at once. The shell is the scheduler's: the menu button opens the side nav at every width. -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run build` rewrites this
      block from design/assets/icons.svg. -->
@@ -32,8 +32,12 @@
      m- path data: Material Symbols, Copyright Google LLC.
      Both licensed under the Apache License, Version 2.0. r- is drawn here.
      The sprite wrapper and the symbol naming are Design. See NOTICE. -->
+<symbol id="i-chevron--down" viewBox="0 0 16 16"><path d="M8 11 3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z" style="fill:var(--rux-icon-path-1)"/></symbol>
+<symbol id="i-checkmark--filled" viewBox="0 0 16 16"><path d="M8,1C4.1,1,1,4.1,1,8c0,3.9,3.1,7,7,7s7-3.1,7-7C15,4.1,11.9,1,8,1z M7,11L4.3,8.3l0.9-0.8L7,9.3l4-3.9l0.9,0.8L7,11z" style="fill:var(--rux-icon-path-1)"/><path d="M7,11L4.3,8.3l0.9-0.8L7,9.3l4-3.9l0.9,0.8L7,11z" data-icon-path="inner-path" opacity="0" style="fill:var(--rux-icon-path-2,var(--rux-icon-inner,none));opacity:1"/></symbol>
 <symbol id="i-close" viewBox="0 0 32 32"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2 12H14V13H2z" style="fill:var(--rux-icon-path-1)"/><path d="M2 9H14V10H2z" style="fill:var(--rux-icon-path-2)"/><path d="M2 6H14V7H2z"/><path d="M2 3H14V4H2z"/></symbol>
+<symbol id="m-arrow_downward" viewBox="0 -960 960 960"><path d="M450-800v526L202-522l-42 42 320 320 320-320-42-42-248 248v-526h-60Z"/></symbol>
+<symbol id="m-arrow_upward" viewBox="0 -960 960 960"><path d="M450-160v-526L202-438l-42-42 320-320 320 320-42 42-248-248v526h-60Z"/></symbol>
 <symbol id="m-close" viewBox="0 -960 960 960"><path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></symbol>
 <symbol id="m-edit" viewBox="0 -960 960 960"><path d="M180-180h44l472-471-44-44-472 471v44Zm-60 60v-128l617-616 128 128-617 616H120Zm659-617-41-41 41 41Zm-105 64-22-22 44 44-22-22Z"/></symbol>
 <symbol id="m-error-fill" viewBox="0 -960 960 960"><path d="M503.5-289.48q9.5-9.48 9.5-23.5t-9.48-23.52q-9.48-9.5-23.5-9.5t-23.52 9.48q-9.5 9.48-9.5 23.5t9.48 23.52q9.48 9.5 23.5 9.5t23.52-9.48ZM453-433h60v-253h-60v253Zm27.27 353q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Z"/></symbol>
@@ -41,6 +45,7 @@
 <symbol id="m-grid_view" viewBox="0 -960 960 960"><path d="M120-510v-330h330v330H120Zm0 390v-330h330v330H120Zm390-390v-330h330v330H510Zm0 390v-330h330v330H510ZM180-570h210v-210H180v210Zm390 0h210v-210H570v210Zm0 390h210v-210H570v210Zm-390 0h210v-210H180v210Zm390-390Zm0 180Zm-180 0Zm0-180Z"/></symbol>
 <symbol id="m-info" viewBox="0 -960 960 960"><path d="M453-280h60v-240h-60v240Zm50.5-323.2q9.5-9.2 9.5-22.8 0-14.45-9.48-24.22-9.48-9.78-23.5-9.78t-23.52 9.78Q447-640.45 447-626q0 13.6 9.48 22.8 9.48 9.2 23.5 9.2t23.52-9.2ZM480.27-80q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Zm.23-60Q622-140 721-239.5t99-241Q820-622 721.19-721T480-820q-141 0-240.5 98.81T140-480q0 141 99.5 240.5t241 99.5Zm-.5-340Z"/></symbol>
 <symbol id="m-menu" viewBox="0 -960 960 960"><path d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"/></symbol>
+<symbol id="m-delete" viewBox="0 -960 960 960"><path d="M201-120v-630h-41v-60h188v-30h264v30h188v60h-41v630H201Zm60-60h438v-570H261v570Zm106-86h60v-399h-60v399Zm166 0h60v-399h-60v399ZM261-750v570-570Z"/></symbol>
 <symbol id="m-account_circle" viewBox="0 -960 960 960"><path d="M222-255q63-44 125-67.5T480-346q71 0 133.5 23.5T739-255q44-54 62.5-109T820-480q0-145-97.5-242.5T480-820q-145 0-242.5 97.5T140-480q0 61 19 116t63 109Zm160.5-234.5Q343-529 343-587t39.5-97.5Q422-724 480-724t97.5 39.5Q617-645 617-587t-39.5 97.5Q538-450 480-450t-97.5-39.5ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-155.5t86-127Q252-817 325-848.5T480-880q83 0 155.5 31.5t127 86q54.5 54.5 86 127T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480-80Zm107.5-76Q640-172 691-212q-51-36-104-55t-107-19q-54 0-107 19t-104 55q51 40 103.5 56T480-140q55 0 107.5-16Zm-52-375.5Q557-553 557-587t-21.5-55.5Q514-664 480-664t-55.5 21.5Q403-621 403-587t21.5 55.5Q446-510 480-510t55.5-21.5ZM480-587Zm0 374Z"/></symbol>
 <symbol id="m-groups" viewBox="0 -960 960 960"><path d="M0-240v-53q0-38.57 41.5-62.78Q83-380 150.38-380q12.16 0 23.39.5t22.23 2.15q-8 17.35-12 35.17-4 17.81-4 37.18v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Zm540 0v-65q0-19.86-3.5-37.43T765-377.27q11-1.73 22.17-2.23 11.17-.5 22.83-.5 67.5 0 108.75 23.77T960-293v53H780Zm-480-60h360v-6q0-37-50.5-60.5T480-390q-79 0-129.5 23.5T300-305v5ZM149.57-410q-28.57 0-49.07-20.56Q80-451.13 80-480q0-29 20.56-49.5Q121.13-550 150-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T149.57-410Zm660 0q-28.57 0-49.07-20.56Q740-451.13 740-480q0-29 20.56-49.5Q781.13-550 810-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T809.57-410ZM480-480q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T600-600q0 50-34.5 85T480-480Zm.35-60Q506-540 523-557.35t17-43Q540-626 522.85-643t-42.5-17q-25.35 0-42.85 17.15t-17.5 42.5q0 25.35 17.35 42.85t43 17.5ZM480-300Zm0-300Z"/></symbol>
 </svg>
@@ -134,14 +139,14 @@
           <span class="rux--side-nav__link-text">Make</span>
         </a>
       </li>
-      <li class="rux--side-nav__item rux--side-nav__item--large">
-        <a class="rux--side-nav__link" href="manage.html">
+      <li class="rux--side-nav__item rux--side-nav__item--active rux--side-nav__item--large">
+        <a class="rux--side-nav__link rux--side-nav__link--current" href="manage.html" aria-current="page">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-folder"/></svg></div>
           <span class="rux--side-nav__link-text">Manage</span>
         </a>
       </li>
       <li class="rux--side-nav__item rux--side-nav__item--large">
-        <a class="rux--side-nav__link rux--side-nav__link--current" href="players.html" aria-current="page">
+        <a class="rux--side-nav__link" href="players.html">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-groups"/></svg></div>
           <span class="rux--side-nav__link-text">Players</span>
         </a>
@@ -153,8 +158,8 @@
 <main id="main-content" class="rux--content pixels-main">
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
-      <div class="rux--stack-vertical rux--stack-scale-7" id="pixels-players">
-        <h1 class="rux--type-productive-heading-04">Players</h1>
+      <div class="rux--stack-vertical rux--stack-scale-6" id="pixels-manage">
+        <h1 class="rux--type-productive-heading-04">Manage</h1>
         <div id="pixels-error" hidden>
         <div class="rux--inline-notification rux--inline-notification--error" role="alert">
           <div class="rux--inline-notification__details">
@@ -166,33 +171,117 @@
           </div>
         </div>
         </div>
-        <!-- The invite link a guest joins by. Changing the word closes the old link to anyone new. -->
-        <form class="pixels-invite" id="pixels-invite" novalidate hidden>
-          <div class="rux--form-item rux--text-input-wrapper">
-            <div class="rux--text-input__label-wrapper"><label class="rux--label" for="pixels-word">Invite word</label></div>
-            <div class="rux--text-input__field-outer-wrapper">
-              <div class="rux--text-input__field-wrapper"><input id="pixels-word" class="rux--text-input" type="text" maxlength="30" autocomplete="off" required></div>
+        <!-- manage.js writes the sizes here, one a choice, each with how many puzzles it has. -->
+        <div class="rux--content-switcher rux--layout--size-md pixels-sizes" role="tablist" aria-label="Board size" id="pixels-sizes" hidden></div>
+        <!-- What is done to the ticked puzzles. It is there with none ticked, its buttons waiting, and stays in view under the header while the page scrolls. -->
+        <div class="pixels-ticked" id="pixels-ticked" role="toolbar" aria-label="Ticked puzzles" hidden>
+          <span class="pixels-ticked-count" id="pixels-ticked-count" aria-live="polite"></span>
+          <button type="button" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm" id="pixels-ticked-move">Move</button>
+          <button type="button" class="rux--btn rux--btn--danger--tertiary rux--btn--sm rux--layout--size-sm" id="pixels-ticked-delete">Delete</button>
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="pixels-ticked-clear">Clear</button>
+        </div>
+        <!-- manage.js writes a section a category here, then Unsorted. -->
+        <div class="rux--stack-vertical rux--stack-scale-7" id="pixels-levels"></div>
+      </div>
+    </div>
+  </div>
+  <!-- The owner's four windows, which manage.js opens and answers: where the ticked puzzles move, deleting them, a category's new name, and deleting a category. -->
+  <div class="rux--layer-one rux--modal" id="pixels-move-modal" role="presentation">
+    <form role="dialog" aria-modal="true" aria-labelledby="pixels-move-heading" tabindex="-1" class="rux--modal-container rux--modal-container--xs" id="pixels-move" novalidate>
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="pixels-move-heading">Move</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <div class="rux--stack-vertical rux--stack-scale-5">
+          <div class="rux--form-item">
+            <div class="rux--select">
+              <label class="rux--label" for="pixels-move-to">Category</label>
+              <div class="rux--select-input__wrapper">
+                <select id="pixels-move-to" class="rux--select-input" autocomplete="off" autofocus></select>
+                <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+              </div>
             </div>
           </div>
-          <button type="submit" class="rux--btn rux--btn--primary" id="pixels-word-save">Save word</button>
-          <p class="pixels-meta" id="pixels-link"></p>
-        </form>
-        <!-- players.js writes a row a player here. -->
-        <div class="rux--data-table-content pixels-scroll" id="pixels-table" hidden>
-          <table class="rux--data-table rux--data-table--md">
-            <thead>
-              <tr>
-                <th scope="col"><div class="rux--table-header-label">Name</div></th>
-                <th scope="col" data-daily><div class="rux--table-header-label">Today</div></th>
-                <th scope="col" data-daily><div class="rux--table-header-label">Days in a row</div></th>
-                <th scope="col"><div class="rux--table-header-label">Solved</div></th>
-                <th scope="col"><div class="rux--table-header-label">Last played</div></th>
-                <th scope="col"><span class="rux--visually-hidden">Remove</span></th>
-              </tr>
-            </thead>
-            <tbody id="pixels-rows"></tbody>
-          </table>
+          <div id="pixels-move-more" hidden>
+            <div class="rux--form-item rux--text-input-wrapper">
+              <div class="rux--text-input__label-wrapper"><label class="rux--label" for="pixels-move-name">Name of the new category</label></div>
+              <div class="rux--text-input__field-outer-wrapper">
+                <div class="rux--text-input__field-wrapper"><input id="pixels-move-name" class="rux--text-input" type="text" maxlength="30" autocomplete="off"></div>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+        <button type="submit" class="rux--btn rux--btn--primary">Move</button>
+      </div>
+    </form>
+  </div>
+  <div class="rux--layer-one rux--modal" id="pixels-delete-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="pixels-delete-heading" tabindex="-1" class="rux--modal-container rux--modal-container--xs">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="pixels-delete-heading">Delete these puzzles?</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <p id="pixels-delete-text"></p>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Keep</button>
+        <button type="button" class="rux--btn rux--btn--danger" id="pixels-delete-confirm" data-rux-close>Delete</button>
+      </div>
+    </div>
+  </div>
+  <div class="rux--layer-one rux--modal" id="pixels-rename-modal" role="presentation">
+    <form role="dialog" aria-modal="true" aria-labelledby="pixels-rename-heading" tabindex="-1" class="rux--modal-container rux--modal-container--xs" id="pixels-rename" novalidate>
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="pixels-rename-heading">Rename category</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="pixels-rename-name">Name</label></div>
+          <div class="rux--text-input__field-outer-wrapper">
+            <div class="rux--text-input__field-wrapper"><input id="pixels-rename-name" class="rux--text-input" type="text" maxlength="30" autocomplete="off" autofocus></div>
+          </div>
+        </div>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+        <button type="submit" class="rux--btn rux--btn--primary">Rename</button>
+      </div>
+    </form>
+  </div>
+  <div class="rux--layer-one rux--modal" id="pixels-remove-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="pixels-remove-heading" tabindex="-1" class="rux--modal-container rux--modal-container--xs">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="pixels-remove-heading">Delete this category?</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <p id="pixels-remove-text"></p>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Keep</button>
+        <button type="button" class="rux--btn rux--btn--danger" id="pixels-remove-confirm" data-rux-close>Delete</button>
       </div>
     </div>
   </div>
@@ -204,15 +293,17 @@
 <script src="/design/js/popover.js"></script>
 <script src="/design/js/menu.js"></script>
 <script src="/design/js/form-controls.js"></script>
+<script src="/design/js/content-switcher.js"></script>
 <script src="/design/js/ui-shell.js"></script>
 <script src="/design/js/dismiss.js"></script>
 <script src="/design/js/modal.js"></script>
+<script src="/design/js/tile.js"></script>
 <script src="/design/js/profile.js"></script>
 <script src="/switcher.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
 <script src="app.js"></script>
 <script src="data.js"></script>
-<script src="players.js"></script>
+<script src="manage.js"></script>
 </body>
 </html>

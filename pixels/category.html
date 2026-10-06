@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>Players — Pixels</title>
+<title>Category — Pixels</title>
 <script src="/funnel.js"></script>
 <style>html:not([data-rux-unlocked]){visibility:hidden}</style>
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
@@ -21,8 +21,9 @@
 <script src="/design/js/theme.js"></script>
 </head>
 <body>
-<!-- The owner's page, driven by players.js: who has played, how far each has got, the invite word a guest's link carries, and Remove. The shell is the
-     scheduler's: the menu button opens the side nav at every width. -->
+<!-- One category's puzzles, driven by category.js. The address names it: category.html?size=10&at=1, the board's side and the category's place among
+     that size. A tile opens its puzzle in play.html. A guest, with no account, gets no header. The shell is the scheduler's: the menu button opens the
+     side nav at every width. -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run build` rewrites this
      block from design/assets/icons.svg. -->
@@ -34,6 +35,7 @@
      The sprite wrapper and the symbol naming are Design. See NOTICE. -->
 <symbol id="i-close" viewBox="0 0 32 32"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2 12H14V13H2z" style="fill:var(--rux-icon-path-1)"/><path d="M2 9H14V10H2z" style="fill:var(--rux-icon-path-2)"/><path d="M2 6H14V7H2z"/><path d="M2 3H14V4H2z"/></symbol>
+<symbol id="m-arrow_back" viewBox="0 -960 960 960"><path d="m274-450 248 248-42 42-320-320 320-320 42 42-248 248h526v60H274Z"/></symbol>
 <symbol id="m-close" viewBox="0 -960 960 960"><path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></symbol>
 <symbol id="m-edit" viewBox="0 -960 960 960"><path d="M180-180h44l472-471-44-44-472 471v44Zm-60 60v-128l617-616 128 128-617 616H120Zm659-617-41-41 41 41Zm-105 64-22-22 44 44-22-22Z"/></symbol>
 <symbol id="m-error-fill" viewBox="0 -960 960 960"><path d="M503.5-289.48q9.5-9.48 9.5-23.5t-9.48-23.52q-9.48-9.5-23.5-9.5t-23.52 9.48q-9.5 9.48-9.5 23.5t9.48 23.52q9.48 9.5 23.5 9.5t23.52-9.48ZM453-433h60v-253h-60v253Zm27.27 353q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Z"/></symbol>
@@ -141,7 +143,7 @@
         </a>
       </li>
       <li class="rux--side-nav__item rux--side-nav__item--large">
-        <a class="rux--side-nav__link rux--side-nav__link--current" href="players.html" aria-current="page">
+        <a class="rux--side-nav__link" href="players.html">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-groups"/></svg></div>
           <span class="rux--side-nav__link-text">Players</span>
         </a>
@@ -153,8 +155,10 @@
 <main id="main-content" class="rux--content pixels-main">
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
-      <div class="rux--stack-vertical rux--stack-scale-7" id="pixels-players">
-        <h1 class="rux--type-productive-heading-04">Players</h1>
+      <div class="pixels-page">
+      <div class="rux--stack-vertical rux--stack-scale-6" id="pixels-category">
+        <!-- The way back to every category, for a guest too, who has no header. -->
+        <a class="rux--link pixels-back" href="./"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-arrow_back"/></svg>Puzzles</a>
         <div id="pixels-error" hidden>
         <div class="rux--inline-notification rux--inline-notification--error" role="alert">
           <div class="rux--inline-notification__details">
@@ -166,33 +170,10 @@
           </div>
         </div>
         </div>
-        <!-- The invite link a guest joins by. Changing the word closes the old link to anyone new. -->
-        <form class="pixels-invite" id="pixels-invite" novalidate hidden>
-          <div class="rux--form-item rux--text-input-wrapper">
-            <div class="rux--text-input__label-wrapper"><label class="rux--label" for="pixels-word">Invite word</label></div>
-            <div class="rux--text-input__field-outer-wrapper">
-              <div class="rux--text-input__field-wrapper"><input id="pixels-word" class="rux--text-input" type="text" maxlength="30" autocomplete="off" required></div>
-            </div>
-          </div>
-          <button type="submit" class="rux--btn rux--btn--primary" id="pixels-word-save">Save word</button>
-          <p class="pixels-meta" id="pixels-link"></p>
-        </form>
-        <!-- players.js writes a row a player here. -->
-        <div class="rux--data-table-content pixels-scroll" id="pixels-table" hidden>
-          <table class="rux--data-table rux--data-table--md">
-            <thead>
-              <tr>
-                <th scope="col"><div class="rux--table-header-label">Name</div></th>
-                <th scope="col" data-daily><div class="rux--table-header-label">Today</div></th>
-                <th scope="col" data-daily><div class="rux--table-header-label">Days in a row</div></th>
-                <th scope="col"><div class="rux--table-header-label">Solved</div></th>
-                <th scope="col"><div class="rux--table-header-label">Last played</div></th>
-                <th scope="col"><span class="rux--visually-hidden">Remove</span></th>
-              </tr>
-            </thead>
-            <tbody id="pixels-rows"></tbody>
-          </table>
-        </div>
+        <!-- category.js writes the category's name, how much of it is solved and a tile a puzzle here. -->
+      </div>
+      <!-- A guest has no menu, so category.js shows them this. app.js builds what it opens. -->
+      <p class="pixels-foot" id="pixels-foot" hidden><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm" data-rux-open="pixels-how">How to play</button></p>
       </div>
     </div>
   </div>
@@ -213,6 +194,6 @@
 <script src="/account.js"></script>
 <script src="app.js"></script>
 <script src="data.js"></script>
-<script src="players.js"></script>
+<script src="category.js"></script>
 </body>
 </html>

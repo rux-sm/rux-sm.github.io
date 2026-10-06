@@ -10,8 +10,8 @@
    - no login, or an account with no access: to /login/?next=<this address>;
    - a page of an app the account lacks: to Home, or to its one app;
    - otherwise the page opens.
-   /login/ and /scheduler/share/ open without a login. So do Pixels' list and
-   its puzzle, for a guest its link invites: with no login, or a login that
+   /login/ and /scheduler/share/ open without a login. So do Pixels' list, a
+   category's page and a puzzle, for a guest its link invites: with no login, or a login that
    lacks Pixels, they open with `data-rux-guest` on <html>, which tells the
    page it has no account to draw a header for. Pixels' other pages stay
    locked. A local preview has no lock, except the cloud preview on port
@@ -46,7 +46,7 @@
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null')?.user ?? null; }
     catch { return null; }
   };
-  const guestPage = path => /^\/pixels\/(index\.html|play\.html)?$/.test(String(path).split(/[?#]/)[0]);
+  const guestPage = path => /^\/pixels\/(index\.html|category\.html|play\.html)?$/.test(String(path).split(/[?#]/)[0]);
   window.Rux = window.Rux || {};
   window.Rux.access = { accessOf, appOf, canEnter, allows, landing, storedUser, guestPage };
 

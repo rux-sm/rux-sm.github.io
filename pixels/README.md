@@ -12,86 +12,94 @@ account who opens an invite link, `/pixels/?join=` and the invite word, and
 types a name. A guest gets no header, and their browser keeps a key that is
 who they are from then on.
 
-`index.html` has two tabs. Puzzles: today's puzzle on one card with the days
-solved in a row, then every puzzle by the category its maker gave it, easy to
-hard, with nothing locked, each tile a square, three across on a phone and
-nine on a wide screen, so a category of nine fills its rows. A category is
-headed by its name, such as Fruit, and one with no name by More. The 5×5 ones
-say Quick first and come first, the 15×15 ones say Long and come last. The
-owner has a switch beside each name that hides the category from every other
-player, and arrows that move it up or down. Under each tile the owner has a
-switch that sends that puzzle to no player when off; a category has at most
-nine on. Player view, a switch at the top of the owner's page, draws the page
-as a player is sent it, with nothing of the owner's. A solved
-puzzle shows its picture, name and best time; an unsolved one a question mark and
-how hard it is, and its name stays hidden until it is solved. Leaderboard:
-today's ranking with each player's time, and the all-time one with puzzles
-solved.
+`index.html` is the same page for every account, the owner's too, with two
+tabs. Puzzles: today's puzzle on one card with the days solved in a row;
+Continue, a card for the puzzle last played if it is unsolved and otherwise the
+next unsolved after it; then a tile for each category, in the owner's order,
+the 5×5 ones first, saying Quick, and the 15×15 ones last, saying Long. A tile
+shows its category's pictures small, three by three, each a question mark until
+solved, its name, such as Fruit, or More where it has none, how many are
+solved, and a bar of that. Leaderboard: today's ranking with each player's
+time, and the all-time one with puzzles solved.
 
-`play.html?id=` plays one puzzle, 5, 10 or 15 squares a side. The board
-waits behind Tap to start, which with a mouse says Start, drawn bare until
-then, with no number and no mark, and the clock runs from that tap. Fill a square
-or cross it out with X, by tap, by dragging along a row or column, with a
-mouse's right button, which always crosses out, or with
-the arrow keys, Z and X. On a phone a 15×15 board zooms under two fingers,
-its numbers staying in view, and there a touch fills as it lifts.
-A number greys out when its run of squares is filled, a line with no square
-of the picture starts crossed out, and a finished line
+`category.html?size=&at=` is one category, named by its boards' side and its
+place among that size: its puzzles easy to hard, with nothing locked, each tile
+a square, three across on a phone and nine on a wide screen. A solved puzzle
+shows its picture, name and best time; an unsolved one its number in the
+category, a question mark and how hard it is.
+
+`play.html?id=` plays one puzzle, 5, 10 or 15 squares a side. The board waits
+behind Tap to start, which with a mouse says Start, drawn bare until then, with
+no number and no mark, and the clock runs from that tap. Fill a square or cross
+it out with X, by tap, by dragging along a row or column, with a mouse's right
+button, which always crosses out, or with the arrow keys, Z and X. On a phone a
+15×15 board zooms under two fingers, its numbers staying in view, and there a
+touch fills as it lifts. A number greys out when its run of squares is filled,
+a line with no square of the picture starts crossed out, and a finished line
 crosses out its own empty squares. The clock is the score, as in Picross:
 filling a square not in the picture is a mistake, crossed out in red, and it
-adds time, 15 seconds for a puzzle's first, 30 for its second and a minute
-for each one after; a hint adds 30 seconds. The clock is red until the next
-move, and the best time on a puzzle is the one kept.
-Hint, or H, lights the line where the numbers decide the most. Undo, or U, takes back the last tap or
-drag, and Redo, or R, puts it back, but neither touches a mistake, and a
-tap that was only a mistake is no move to take back. Restart
-empties the board, and Undo straight after brings it back. Every board has
-one footprint, whatever its puzzle's size: the squares together are as wide
-as the window's width and height allow, to 600px, and always a multiple of
-30px, so a square is whole pixels on a board of five, ten or fifteen. The
-corner is a square of one size, 84px on a phone and 120px on a wide screen,
-and a tile fills it: the puzzle's name, the picture so far, drawn small, and
-the clock. The keys under the board end where it does. A warm line rules off
-every fifth square. Every other line's numbers sit on a band that runs out
-from its squares and fades, larger on larger squares, and a line with more
-numbers than its room holds draws them smaller to fit.
-When the picture is complete the squares
-fill in as the picture, in its colours if it has them, and its name shows
-with the time, the mistakes and hints, and what they added.
-How to play is three steps in a modal, each with a small board: what the
-numbers mean, filling and crossing out, and what a mistake costs. It opens from the
-menu on every page and from the button under Start, and by itself on the
+adds time, 15 seconds for a puzzle's first, 30 for its second and a minute for
+each one after; a hint adds 30 seconds. The clock is red until the next move,
+and the best time on a puzzle is the one kept. Hint, or H, lights the line
+where the numbers decide the most. Undo, or U, takes back the last tap or drag,
+and Redo, or R, puts it back, but neither touches a mistake, and a tap that was
+only a mistake is no move to take back. Restart empties the board, and Undo
+straight after brings it back. Every board has one footprint, whatever its
+puzzle's size: the squares together are as wide as the window's width and
+height allow, to 600px, and always a multiple of 30px, so a square is whole
+pixels on a board of five, ten or fifteen. The corner is a square of one size,
+84px on a phone and 120px on a wide screen, and a tile fills it: the puzzle's
+name, the picture so far, drawn small, and the clock. The keys under the board
+end where it does. A warm line rules off every fifth square. Every other line's
+numbers sit on a band that runs out from its squares and fades, larger on
+larger squares, and a line with more numbers than its room holds draws them
+smaller to fit. When the picture is complete the squares fill in as the
+picture, in its colours if it has them, and its name shows with the time, the
+mistakes and hints, and what they added. Back goes to the puzzle's category,
+and Next to that category's next unsolved puzzle, then to the category after
+it. How to play is three steps in a modal, each with a small board: what the
+numbers mean, filling and crossing out, and what a mistake costs. It opens from
+the menu on every page and from the button under Start, and by itself on the
 first puzzle of a player who has solved none and has not closed it in this
-browser. A guest has no menu, so the front page has a button for it under
-their puzzles. The clock stands while it is open.
-Each move plays a tone, which the Sound key turns off and an iPhone's
-silent switch does not, and a phone ticks
-on each fill where the browser allows it. A game in
-progress is kept in the browser, so a reload picks it up.
+browser. A guest has no menu, so the front page and a category's have a button
+for it. The clock stands while it is open. Each move plays a tone, which the
+Sound key turns off and an iPhone's silent switch does not, and a phone ticks
+on each fill where the browser allows it. A game in progress is kept in the
+browser, so a reload picks it up.
 
-The leaderboard is switched off by `BOARD` in `app.js`: the front page has
-no tabs and no ranking, and results are saved as ever. The puzzle of the day is switched off by `DAILY` in `app.js`: no page shows
-it, the leaderboard ranks all time only, and the maker still dates puzzles so
-they can be drawn ahead. With it on, `play.html?daily` plays the puzzle of the day: the one the owner drew for
-that day, with its name and colours, or where there is none, one the browser
-makes from the date, the same for everyone. Only it counts toward the days
-in a row. A player is never sent a day's puzzle before its day.
+The leaderboard is switched off by `BOARD` in `app.js`: the front page has no
+tabs and no ranking, and results are saved as ever. The puzzle of the day is
+switched off by `DAILY` in `app.js`: no page shows it, the leaderboard ranks
+all time only, and the maker still dates puzzles so they can be drawn ahead.
+With it on, `play.html?daily` plays the puzzle of the day: the one the owner
+drew for that day, with its name and colours, or where there is none, one the
+browser makes from the date, the same for everyone. Only it counts toward the
+days in a row. A player is never sent a day's puzzle before its day.
 
-`make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits
-or deletes one. Only the owner's account makes and edits: it alone sees Make
-in the menu and, on the front page, Edit and Move under each tile and a
-pencil and a bin on each category, and the database refuses a
-puzzle written by anyone else. It checks as you draw whether the numbers alone can solve the
-picture and how hard that is, outlines each square that would need a guess,
-and saves only a picture with one answer. Size starts a blank board of 5,
-10 or 15 a side. Its Colour step paints the picture
-the puzzle finishes as, from fifty-five inks, and Save asks which category it goes in on the front
-page; a category shows nine, the
-list counts how many of each one's are on, and a puzzle saved into one with nine on is saved off. A category just started is
-named there and hidden until the front page's switch publishes it. No category yet, first in the list, keeps
-the puzzle in Unsorted, a section only the owner sees. Puzzle of the day, in the same list, makes it a
-day's puzzle, which sits in no category; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good
-category.
+`make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits or
+deletes one. Only the owner's account makes and edits: it alone sees Make,
+Manage and Players in the menu, and the database refuses a puzzle written by
+anyone else. It checks as you draw whether the numbers alone can solve the
+picture and how hard that is, outlines each square that would need a guess, and
+saves only a picture with one answer. Size starts a blank board of 5, 10 or 15
+a side. Its Colour step paints the picture the puzzle finishes as, from
+fifty-five inks, and Save asks which category it goes in on the front page; a
+category shows nine, the list counts how many of each one's are on, and a
+puzzle saved into one with nine on is saved off. A category just started is
+named there and hidden until Manage's switch publishes it. No category yet,
+first in the list, keeps the puzzle in Unsorted, a section of Manage. Puzzle of
+the day, in the same list, makes it a day's puzzle, which sits in no category;
+a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a
+good category.
+
+`manage.html` is the owner's desk: every puzzle of one board size at a time, by
+category, then Unsorted. A category's heading has a switch that hides it from
+every player, arrows that move it up or down, a pencil that renames it and a
+bin that deletes it and leaves its puzzles in Unsorted. Under each tile are
+Edit, Play, which keeps no time for a puzzle no player is sent, and a switch
+that sends the puzzle to no player when off; a category has at most nine on.
+Pressing a tile ticks it, and the ticked are moved together, to a category, a
+new one or Unsorted, or deleted; a category left empty goes too.
 
 ## Files
 
@@ -99,8 +107,8 @@ category.
 | :--- | :--- |
 | `app.js` | the rules and the board every page shares: the numbers, the line solver, the puzzle of the day, drawing, dragging and zooming, what a mistake costs, tones and the phone's tick |
 | `data.js` | who is playing, the name form a guest meets, and where puzzles and results are kept |
-| `puzzles.js`, `play.js`, `make.js`, `players.js` | each page's own behaviour |
-| `app.css` | the board, the picture and the puzzle list, under `pixels-` |
+| `puzzles.js`, `category.js`, `play.js`, `make.js`, `manage.js`, `players.js` | each page's own behaviour |
+| `app.css` | the board, the picture, the tiles and Manage, under `pixels-` |
 | `theme.css` | the fifty-five inks a colour picture is painted from |
 
 ## Data

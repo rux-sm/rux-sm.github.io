@@ -38,6 +38,15 @@
    A board wider than ten squares zooms under two fingers where its squares
    are too fine for one; app.js's `drag` says how.
 
+   BACK, and Puzzles once it is solved, go to the puzzle's category. Next is
+   the next unsolved puzzle of that category, then the first unsolved of the
+   category after it, and so round to the first. The puzzle played is kept
+   in this browser under `pixels-last`, for the front page's Continue.
+
+   THE OWNER PLAYS ANY PUZZLE, from Manage. One no player is sent is a
+   trial: titled by its name, with no Next, its Back to Manage, and its time
+   not kept.
+
    play.html?daily plays the puzzle of the day, the one the owner drew for
    today or else the one app.js makes from the date; its result is kept by
    day, and solving it shows the days in a row.
@@ -56,11 +65,11 @@
 (() => {
   'use strict';
 
-  const { data, enter, DAILY, grid, column, clues, solveLine, order, daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title, how } = window.Pixels;
+  const { data, owner, enter, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title, how } = window.Pixels;
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock');
 
-  const PROGRESS = 'pixels-progress';
+  const PROGRESS = 'pixels-progress', LAST = 'pixels-last';
   // How long the finished picture takes to fill in before the name shows.
   const REVEAL = 1100;
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -95,14 +104,26 @@
     }
     // Today's puzzle is the one drawn for today, if there is one.
     const puzzle0 = isDaily ? daily(today(), puzzles) : null;
+    const cats = categories(puzzles);
     puzzles = order(puzzles);
-    const index = puzzles.findIndex(p => String(p.id) === id);
-    if (!isDaily && index < 0) { say('This puzzle is not here', 'It may have been deleted. Pick another from Puzzles.'); return; }
-    const puzzle = isDaily ? puzzle0 : puzzles[index];
+    let puzzle = isDaily ? puzzle0 : puzzles.find(p => String(p.id) === id);
+    // A puzzle no player is sent is the owner's to try.
+    let trial = false;
+    if (!puzzle && owner && data.all) {
+      try { puzzle = (await data.all()).find(p => String(p.id) === id && !p.day); } catch { /* said below */ }
+      trial = !!puzzle;
+    }
+    if (!puzzle) { say('This puzzle is not here', 'It may have been deleted. Pick another from Puzzles.'); return; }
+    // Its category, and its place among that category's puzzles.
+    const home = cats.find(c => c.puzzles.includes(puzzle)), index = home ? home.puzzles.indexOf(puzzle) : -1;
+    const back = trial ? 'manage.html' : home ? where(home) : './';
+    $('pixels-back').href = $('pixels-out').href = back;
+    if (trial) $('pixels-out').textContent = 'Manage';
     // What a result is kept under: the day, or the puzzle's id.
     const key = isDaily ? puzzle.day : puzzle.id;
-    // A name stays hidden until its puzzle is solved; the day's shows its date.
-    const heading = isDaily ? (results.has(key) ? puzzle.name : puzzle.date) : title(puzzle, index, results.has(key));
+    // A name stays hidden until its puzzle is solved; the day's shows its
+    // date, and the owner's trial its name.
+    const heading = isDaily ? (results.has(key) ? puzzle.name : puzzle.date) : trial ? puzzle.name : title(puzzle, index, results.has(key));
     const answer = grid(puzzle.squares, puzzle.width), H = answer.length, W = answer[0].length;
     // An empty board: a line with no square of the picture starts crossed out.
     const bare = { rows: answer.map(r => !r.includes(1)), cols: answer[0].map((_, x) => !column(answer, x).includes(1)) };
@@ -181,7 +202,7 @@
       el.classList.add('is-solved');
       let best = { best: seconds, isNew: true }, lost = false;
       const [saved] = await Promise.allSettled([
-        isDaily ? data.recordDay(key, seconds) : data.record(key, seconds),
+        trial ? best : isDaily ? data.recordDay(key, seconds) : data.record(key, seconds),
         new Promise(done => setTimeout(done, still ? 0 : REVEAL)),
       ]);
       if (saved.status === 'fulfilled') best = saved.value; else lost = true;
@@ -196,6 +217,7 @@
       for (let n = 1; n <= mistakes; n++) extra += penalty(n);
       if (extra) parts.push(added(extra));
       if (lost) parts.push('not saved');
+      else if (trial) parts.push('a trial, not kept');
       else if (!best.isNew) parts.push(`best ${time(best.best)}`);
       else if (results.has(key)) parts.push('a new best');
       if (isDaily && !lost) {
@@ -204,9 +226,15 @@
       }
       $('pixels-solved-time').textContent = parts.join(' · ');
       document.title = `${puzzle.name} — Pixels`;
-      // The next puzzle not yet solved, after this one and then from the
-      // start; after the puzzle of the day, the first not yet solved.
-      const rest = isDaily ? puzzles : [...puzzles.slice(index + 1), ...puzzles.slice(0, index)];
+      // The next puzzle not yet solved: the rest of this category, after
+      // this one and then before it, then each category after it and round
+      // to the first. After the puzzle of the day, the first not yet solved;
+      // after a trial, none.
+      const at = cats.indexOf(home);
+      const rest = isDaily ? puzzles : trial ? [] : [
+        ...home.puzzles.slice(index + 1), ...home.puzzles.slice(0, index),
+        ...[...cats.slice(at + 1), ...cats.slice(0, at)].flatMap(c => c.puzzles),
+      ];
       const done = isDaily ? await data.results().catch(() => new Map()) : results;
       const next = rest.find(p => !done.has(p.id));
       if (next) $('pixels-next').href = `play.html?id=${encodeURIComponent(next.id)}`;
@@ -416,6 +444,7 @@
       setTimeout(() => { settling = false; }, 350);
       game.classList.remove('is-waiting');
       $('pixels-cover').remove();
+      if (!isDaily && !trial) { try { localStorage.setItem(LAST, puzzle.id); } catch { /* Continue starts from the first */ } }
       sound('fill');
     });
     cover.focus({ preventScroll: true });

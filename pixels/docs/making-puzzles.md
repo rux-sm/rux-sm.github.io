@@ -71,7 +71,7 @@ white to black.
   plain: black if it is filled, white if it is not.
 - **Undo, Redo and Clear** work in both steps. Undo takes back a tap, a
   drag, a fill, Clear or a change of size. Cmd+Z undoes and Shift+Cmd+Z redoes.
-- **Back** leaves for the puzzles and loses nothing: a new picture is kept
+- **Back** leaves for Manage and loses nothing: a new picture is kept
   in this browser and is on the board the next time you open Make.
 - **Colour the background too.** A blue sky or a green field behind the shape
   is what makes the finish feel like a reward.
@@ -96,8 +96,8 @@ the game makes itself, which has no name but its date.
   is the one picture all of them see.
 - **Keep it easy or medium.** It is the puzzle people do every day, on a
   phone, often in a spare minute.
-- The front page lists every day drawn, by date, for the owner only; a tile
-  opens it in the maker.
+- Manage lists every day drawn, by date, under Dailies; a tile opens it in
+  the maker.
 
 ## How hard it is
 
@@ -118,22 +118,18 @@ look at every row and every column, filling in what each can now decide.
 ## A category
 
 A category shows up to nine puzzles of one size about one thing, such as
-Fruit: three rows of three on a phone, one row of nine on a wide screen. It
-can hold more, switched off. Its name is its heading on the front page, and
-one with no name is headed More. Save asks which one a puzzle goes in: its
-list counts how many of each category's are on, such as Fruit · 9 of 9, 3
-off, and offers the first of its size that still has room. The front page
-lists a category easy to hard, so the order they were drawn in does not
-matter.
+Fruit: on the front page it is one tile with its nine pictures, three by
+three, and its own page has three rows of three on a phone, one row of nine
+on a wide screen. It can hold more, switched off. Its name is on its tile
+and heads its page, and one with no name is called More. Save asks which one
+a puzzle goes in: its list counts how many of each category's are on, such
+as Fruit · 9 of 9, 3 off, and offers the first of its size that still has
+room. A category lists its puzzles easy to hard, so the order they were
+drawn in does not matter.
 
 - **No category yet**, first in that list, keeps the puzzle in Unsorted: a
-  section on the front page after its size's categories, which only the
-  owner sees. A tile there shows its picture and name, and no player is
-  sent it until it is moved into a category.
-- **Move**, under each tile on the front page, asks which category of its
-  size the puzzle goes to, or Unsorted. One moved into a category with nine
-  on arrives switched off.
-
+  section of Manage after its size's categories. No player is sent a puzzle
+  there until it is moved into a category.
 - **New category**, in that list, starts one, and a field opens for its
   name. It stands after the others and starts hidden, so only the owner
   sees it while its nine are drawn.
@@ -142,15 +138,30 @@ matter.
   named as it is started.
 - **Draw more than nine.** A picture saved into a category with nine on is
   saved off, and no player is sent it.
-- **Swap with the switch under each tile** on the front page: switch one off,
-  then a spare on. A tenth is refused until one is off.
-- **Player view**, the switch at the top of the front page, shows the page as
-  a player is sent it: no hidden category, no puzzle that is off.
-- **Publish it on the front page.** Beside each category's name the owner has
-  a switch: on, every player is sent the category; off, only the owner is.
+
+## Manage
+
+Manage, in the menu, is where puzzles and categories are put in order. It
+shows one board size at a time, chosen at the top: that size's categories,
+then Unsorted. The front page shows only what the players are sent.
+
+- **Tick puzzles to move them.** Press a tile to tick it, or the box beside
+  a category's name to tick all of it. Move, in the bar above, asks where
+  they go: a category of their size, Unsorted, or a new category, named
+  there. They arrive on while the category has fewer than nine on, and off
+  after that.
+- **Delete works on the ticked ones too.** It asks once, and every player's
+  best times on them go with them.
+- **Swap with the switch under each tile:** switch one off, then a spare on.
+  A tenth is refused until one is off.
+- **Edit** opens a puzzle in the maker. **Play** tries it; for a puzzle no
+  player is sent, the time is not kept.
+- **Publish a category** with the switch beside its name: on, every player
+  is sent it; off, only Manage shows it.
 - **Move it with the arrows** beside the switch, up or down among the
   categories of its size. The order is the owner's choice and means nothing
   about how hard a category is.
 - **Rename it with the pencil** beside the arrows.
 - **Delete it with the bin.** Its puzzles are kept: they move to Unsorted,
-  and the categories after it move up.
+  and the categories after it move up. A category left empty by a move or a
+  delete goes the same way.

@@ -292,8 +292,9 @@
 .pixels-scroll { overflow-x: auto; }
 .pixels-scroll[hidden] { display: none; }
 
-/* THE FRONT PAGE. The page keeps 3rem clear each side; on a phone it takes
-   2rem of that back. The tabs' panels start where the page does. */
+/* THE FRONT PAGE AND A CATEGORY'S. The page keeps 3rem clear each side; on a
+   phone it takes 2rem of that back. The tabs' panels start where the page
+   does. */
 @media (max-width: 28rem) {
   .pixels-page { margin: -1rem -2rem 0; }
 }
@@ -302,7 +303,11 @@
 .pixels-foot { margin: 2rem 0 0 -1rem; }
 .pixels-panel { padding: 1.5rem 0 0; }
 
-/* TODAY'S PUZZLE, one card across: the picture, the words, and an arrow. */
+/* THE WAY BACK from a category to the front page: an arrow and a word. */
+.pixels-back { display: inline-flex; align-items: center; gap: .375rem; align-self: start; }
+
+/* A CARD ACROSS THE PAGE, for today's puzzle and for Continue: the picture,
+   the words, and an arrow. */
 .pixels-today {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -322,10 +327,48 @@
 .pixels-today > .pixels-picture--sm { --px: round(down, calc(4rem / var(--size, 10)), 1px); }
 .pixels-today > .pixels-blank { inline-size: 4rem; block-size: 4rem; }
 
-/* A LEVEL: three tiles across on a phone, so a level of nine is three rows
-   of three, and nine across where there is room. Each tile is a square,
-   whatever it holds, and its picture is half as wide as it is. */
-/* The owner's switch sits beside the name, and the count at the far end. */
+/* A CATEGORY'S TILE on the front page, two across on a phone and as many as
+   fit beyond that: its nine pictures, three by three, then its name, how
+   much is solved, and a bar of that. `--unit` is one square of a picture,
+   whole pixels, sized so three pictures and their gaps fill the tile; the
+   tile says how many squares a side its pictures have, as `--size`. A
+   category with fewer than nine keeps a faint square for each one missing.
+   The list asks no width of the page for itself: left to, it would ask for
+   as many columns as its widest allows, and push a phone's page sideways. */
+.pixels-categories { display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: .5rem; min-inline-size: 0; max-inline-size: 60rem; }
+@media (min-width: 48rem) {
+  .pixels-categories { grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); }
+}
+.pixels-categories .pixels-category {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: .25rem;
+  inline-size: auto;
+  min-inline-size: 0;
+  min-block-size: 0;
+  padding: .75rem;
+}
+.pixels-mosaic {
+  --unit: round(down, calc((100cqi - 8px) / 3 / var(--size, 10)), 1px);
+  display: grid;
+  grid-template-columns: repeat(3, calc(var(--unit) * var(--size, 10)));
+  grid-auto-rows: calc(var(--unit) * var(--size, 10));
+  justify-content: space-between;
+  row-gap: 4px;
+  margin-block-end: .5rem;
+}
+.pixels-mosaic > .pixels-picture--sm { --px: var(--unit); }
+.pixels-mosaic > .pixels-blank { inline-size: auto; block-size: auto; font-size: 1rem; }
+.pixels-mosaic-none { background: var(--rux-layer-accent-01); opacity: .4; }
+.pixels-category-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pixels-category > .pixels-meta { font-size: .75rem; }
+
+/* A CATEGORY'S PUZZLES: three tiles across on a phone, so a category of nine
+   is three rows of three, and nine across where there is room. Each tile is
+   a square, whatever it holds, and its picture is half as wide as it is. */
+/* On Manage the heading starts with the box that ticks the category, and
+   the switch sits beside the name; the count is at the far end. */
 .pixels-level-head { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem 1rem; }
 .pixels-level-head > .pixels-meta { margin-inline-start: auto; }
 .pixels-moves { display: flex; }
@@ -359,15 +402,38 @@
   white-space: nowrap;
 }
 .pixels-puzzle > .pixels-meta { font-size: .75rem; line-height: 1.2; }
-/* For the owner a tile carries under it the way to edit its puzzle, Move,
-   and the switch that sends it to the players, which takes a second line
-   where the tile is too narrow for all three. One switched off is drawn
-   faint. */
+/* ON MANAGE a tile is ticked by pressing it, and carries under it the way
+   to edit its puzzle, the way to play it, and the switch that sends it to
+   the players, which takes a second line where the tile is too narrow for
+   all three. One switched off is drawn faint. The tile's tick sits close in
+   its corner, since the tile is small: the token is the one Carbon's
+   selectable tile sets its tick in by. */
 .pixels-tile { display: grid; grid-template-rows: auto auto; gap: .25rem; min-inline-size: 0; }
 .pixels-tile-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .125rem .375rem; }
 .pixels-tile-edit { font-size: .75rem; }
-/* Move is a button that reads as the link beside it. */
-.pixels-tile-move { padding: 0; border: 0; background: none; font-family: inherit; cursor: pointer; }
+.pixels-tile > .pixels-puzzle { --rux-layout-density-padding-inline-local: .375rem; cursor: pointer; }
+/* The heading's box takes the room of the box alone. */
+.pixels-level-head > .rux--checkbox-wrapper { margin: 0; }
+/* THE SIZES, a switcher no wider than its four choices need. */
+.pixels-sizes { max-inline-size: 30rem; }
+.pixels-sizes[hidden] { display: none; }
+/* WHAT IS DONE TO THE TICKED PUZZLES: how many, then Move, Delete and
+   Clear. It is there with none ticked, so a first tick moves no tile from
+   under the pointer, and stays under the header while the page scrolls. */
+.pixels-ticked {
+  position: sticky;
+  inset-block-start: 3rem;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem .75rem;
+  background: var(--rux-layer-01);
+  border-block-end: 1px solid var(--rux-border-strong-01);
+}
+.pixels-ticked[hidden] { display: none; }
+.pixels-ticked-count { margin-inline-end: auto; font-variant-numeric: tabular-nums; }
 .pixels-tile.is-off > .pixels-puzzle { opacity: .4; }
 .pixels-blank {
   display: grid;

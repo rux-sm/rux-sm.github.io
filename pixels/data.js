@@ -18,11 +18,15 @@
    `enter()` is what a page calls first: it says whether there is a player,
    and where there is not it draws the name form, or says the link is needed.
 
+   `list` is what a player is sent, for every account, the owner's too: no
+   hidden category, no puzzle that is off, none in no category.
+
    THE OWNER makes and edits puzzles and sees the players, by the tables'
-   own rules: `save`, `remove`, `setOff`, `move`, `setTheme`, `setHidden`,
-   `orderLevels`, `removeLevel`, `players`, `setWord`, `renamePlayer` and
-   `removePlayer`. A puzzle with no `level` is in no category, and no player
-   is sent it.
+   own rules: `all`, which is every puzzle there is, `save`, `remove`,
+   `setOff`, `move`, `setTheme`, `setHidden`, `orderLevels`, `removeLevel`,
+   `players`, `setWord`, `renamePlayer` and `removePlayer`. `move` and
+   `remove` take one id or several. A puzzle with no `level` is in no
+   category, and no player is sent it.
 
    THE LOCAL PREVIEW, `npm run serve` on :8640, has no log-in, so there the
    same calls read and write this browser's storage instead, starting from
@@ -81,12 +85,20 @@
     // A puzzle kept before levels and sizes were is ten a side, in level 1.
     // Each comes as the database sends the owner's: with its category's
     // name as `theme`, whether the category is hidden, and its own switch.
-    async list() {
+    async all() {
       const db = read();
       return db.puzzles.map(p => ({ width: 10, height: 10, level: 1, colours: null, ...p })).map(p => {
         const row = (db.levels || []).find(l => l.width === p.width && l.level === p.level);
         return { ...p, off: !!p.off, theme: row?.name ?? null, hidden: !!row?.hidden };
       });
+    },
+    // What a player is sent, as the database's function chooses it, with
+    // neither switch: a day's puzzle within a day of today, and of the rest
+    // those that are on, in a category, and whose category is not hidden.
+    async list() {
+      const near = day => Math.abs(new Date(`${day}T12:00`) - new Date().setHours(12, 0, 0, 0)) <= 864e5;
+      return (await this.all()).filter(p => (p.day ? near(p.day) : p.level != null && !p.off && !p.hidden))
+        .map(({ off, hidden, ...p }) => p);
     },
     async days() { return new Map(Object.entries(read().days || {})); },
     async recordDay(day, seconds) {
@@ -120,9 +132,9 @@
       db.puzzles.find(p => p.id === id).off = off;
       write(db);
     },
-    async move(id, level, off) {
-      const db = read();
-      Object.assign(db.puzzles.find(p => p.id === id), { level, off: !!off });
+    async move(ids, level, off) {
+      const db = read(), these = [].concat(ids);
+      db.puzzles.forEach(p => { if (these.includes(p.id)) Object.assign(p, { level, off: !!off }); });
       write(db);
     },
     async setTheme(width, level, name) {
@@ -148,10 +160,10 @@
       db.levels.forEach(l => { if (l.width === width) l.level = after(l.level); });
       write(db);
     },
-    async remove(id) {
-      const db = read();
-      db.puzzles = db.puzzles.filter(p => p.id !== id);
-      delete db.results[id];
+    async remove(ids) {
+      const db = read(), these = [].concat(ids);
+      db.puzzles = db.puzzles.filter(p => !these.includes(p.id));
+      these.forEach(id => { delete db.results[id]; });
       write(db);
     },
     async record(id, seconds) {
@@ -213,15 +225,16 @@
       if (!player.error) localStorage.setItem(GUEST, JSON.stringify({ key: made, name: player.name }));
       return player;
     },
-    // A player is sent the levels the owner has not hidden and the day's
-    // puzzle; the owner reads the table, which holds the hidden levels and
-    // the days to come too.
-    // Each puzzle comes with its level's theme, if the level has one, and
-    // for the owner with whether the level is hidden, as `hidden`, and
-    // whether the puzzle itself is switched off, as `off`. A player is sent
-    // neither kind, and no puzzle that is in no category.
-    async list() {
-      if (!owner) return call('pixels_puzzles', { p_key: key() });
+    // What a player is sent, the owner too: the puzzles of the levels the
+    // owner has not hidden, but for those switched off or in no category,
+    // and the day's puzzle. Each comes with its level's theme, if the level
+    // has one.
+    async list() { return call('pixels_puzzles', { p_key: key() }); },
+    // The owner reads the tables, which hold every puzzle: the hidden
+    // levels' and the days to come too. Each comes with its level's theme,
+    // whether the level is hidden, as `hidden`, and whether the puzzle
+    // itself is switched off, as `off`.
+    async all() {
       const [puzzles, levels] = await Promise.all([
         client.from('pixels_puzzles').select('id, name, squares, width, height, level, colours, created_at, day, hidden').order('created_at').order('id'),
         client.from('pixels_levels').select('width, level, name, hidden'),
@@ -262,17 +275,17 @@
       fail(error);
       return own(data);
     },
-    async remove(id) {
-      fail((await client.from('pixels_puzzles').delete().eq('id', id)).error);
+    async remove(ids) {
+      fail((await client.from('pixels_puzzles').delete().in('id', [].concat(ids))).error);
     },
     // Switches one puzzle off, so no player is sent it, or on again.
     async setOff(id, off) {
       fail((await client.from('pixels_puzzles').update({ hidden: off }).eq('id', id)).error);
     },
-    // Moves a puzzle to another category of its size, or with no level to no
-    // category. `off` is its switch once it is there.
-    async move(id, level, off) {
-      fail((await client.from('pixels_puzzles').update({ level, hidden: !!off }).eq('id', id)).error);
+    // Moves puzzles to another category of their size, or with no level to
+    // no category. `off` is their switch once they are there.
+    async move(ids, level, off) {
+      fail((await client.from('pixels_puzzles').update({ level, hidden: !!off }).in('id', [].concat(ids))).error);
     },
     // A level's theme, for boards of one size; an empty name takes it away.
     // Only the name is written, so a hidden level stays hidden.
@@ -318,11 +331,11 @@
   const store = cloud || (local ? preview : null);
   const guest = !!cloud && !member;
 
-  /* MAKING, EDITING AND THE PLAYERS ARE THE OWNER'S. The database refuses
+  /* MAKING, MANAGING AND THE PLAYERS ARE THE OWNER'S. The database refuses
      anyone else; this only keeps the ways in out of their sight. The local
      preview has no log-in and is whoever runs it. */
   if (!owner) {
-    document.querySelectorAll('.rux--side-nav a[href="make.html"], .rux--side-nav a[href="players.html"]')
+    document.querySelectorAll('.rux--side-nav a[href="make.html"], .rux--side-nav a[href="manage.html"], .rux--side-nav a[href="players.html"]')
       .forEach(a => a.closest('li')?.remove());
   }
 
@@ -379,7 +392,13 @@
       go.disabled = true;
       let player;
       try { player = await cloud.join(name); } catch { player = { error: 'lost' }; }
-      if (!player.error) { location.replace(location.pathname); return; }
+      // The page again, at its own address without the invite word.
+      if (!player.error) {
+        const rest = new URLSearchParams(location.search);
+        rest.delete('join');
+        location.replace(location.pathname + (String(rest) ? `?${rest}` : ''));
+        return;
+      }
       go.disabled = false;
       note.textContent = {
         taken: 'That name is taken. Try another.',

@@ -17,18 +17,18 @@
    which the arrow keys move along. Size starts a blank board of 5, 10 or 15
    squares a side, which Undo takes back, and a saved puzzle keeps the size
    it has. Back, the
-   toolbar's first button, leaves for the puzzles; a new picture is kept as
+   toolbar's first button, leaves for Manage; a new picture is kept as
    the draft, so nothing is lost by it.
 
    SAVE asks where the puzzle goes, once the picture is solvable and named:
    No category yet, which keeps it in Unsorted, where no player is sent it;
    one of its size's categories on the front page, listed by name with how
    many of its nine are on; New category, which starts one after them, asks
-   for its name, and is hidden from the players until the front page's
+   for its name, and is hidden from the players until Manage's
    switch publishes it; or Puzzle of the day, which asks for the day. A day's puzzle sits in no category; a
    day takes one puzzle, and after one is saved the day moves on by one. A
-   puzzle saved into a category with nine on is saved off, for the front
-   page's switch to turn on.
+   puzzle saved into a category with nine on is saved off, for Manage's
+   switch to turn on.
 
    The data calls a category a level: `level` is its number, which is its
    place on the front page and is never shown, and `theme` is its name.
@@ -413,7 +413,7 @@
     puzzle.off = !puzzle.day && !!data.setOff && (!!editing?.off || (!stays && held().full(puzzle.level)));
     const turnedOff = puzzle.off && !editing?.off;
     // A category just started is hidden, so it is drawn out of the players'
-    // sight; the front page's Published switch shows it.
+    // sight; Manage's Published switch shows it.
     const fresh = !puzzle.day && puzzle.level != null && !puzzles.some(p => p.width === side && p.level === puzzle.level && !p.day);
     try {
       if (fresh) await data.setHidden?.(side, puzzle.level, true);
@@ -460,7 +460,7 @@
   $('pixels-delete-confirm').addEventListener('click', async () => {
     try {
       await data.remove(editing.id);
-      location.href = './';
+      location.href = 'manage.html';
     } catch {
       say('The puzzle was not deleted', 'Try again.');
     }
@@ -475,7 +475,7 @@
     }
     const id = new URLSearchParams(location.search).get('id');
     try {
-      puzzles = await data.list();
+      puzzles = await data.all();
     } catch {
       say(id ? 'The puzzle did not load' : 'The puzzles did not load', 'Reload the page to try again.');
     }

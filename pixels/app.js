@@ -9,8 +9,10 @@
    board with its clues and `paint` keeps it in step with the game, `drag`
    paints along it, `picture` draws the finished picture, `penalty` is what a mistake costs,
    `buzz` ticks the phone and `sound` plays a tone. `order` puts puzzles in
-   playing order and `daily` makes the puzzle of a day. `how` builds How to
-   play. The pages add their own behaviour in puzzles.js, play.js and make.js.
+   playing order, `categories` groups them and `daily` makes the puzzle of a
+   day. `tile` draws a puzzle's tile and `bar` a progress bar. `how` builds
+   How to play. The pages add their own behaviour in puzzles.js, category.js,
+   play.js, make.js and manage.js.
    ========================================================================== */
 (() => {
   'use strict';
@@ -127,6 +129,29 @@
     return [...puzzles].sort((a, b) => a.width - b.width || (a.level ?? 100) - (b.level ?? 100) || a.rounds - b.rounds
       || String(a.created_at).localeCompare(String(b.created_at)));
   };
+
+  /* THE CATEGORIES among `puzzles`, in playing order. A category is one
+     board size and one place among that size, which the data calls its
+     level; `theme` is its name, and `puzzles` its own, easy to hard. A
+     puzzle in no category, or drawn for a day, is in none of them.
+     `heading` is what a category is called: its name, or More where it has
+     none, with Quick before it for the small boards and Long for the large.
+     `where` is the address of its page. */
+  const categories = puzzles => {
+    const found = new Map();
+    order(puzzles).forEach(p => {
+      if (p.level == null) return;
+      const key = `${p.width} ${p.level}`;
+      if (!found.has(key)) found.set(key, { width: p.width, level: p.level, theme: p.theme ?? null, hidden: !!p.hidden, puzzles: [] });
+      found.get(key).puzzles.push(p);
+    });
+    return [...found.values()];
+  };
+  const heading = ({ width, theme }) => {
+    const size = width < 10 ? 'Quick' : width > 10 ? 'Long' : '';
+    return size ? (theme ? `${size} · ${theme}` : size) : theme || 'More';
+  };
+  const where = ({ width, level }) => `category.html?size=${width}&at=${level}`;
 
   /* THE PUZZLE OF A DAY. `day` is YYYY-MM-DD. If the owner drew one for the
      day, among `puzzles`, that is it, with its name and its colours. If not,
@@ -526,6 +551,49 @@
   // A puzzle keeps its name hidden until it is solved, as on the DS.
   const title = (puzzle, index, solved) => (solved ? puzzle.name : `Puzzle ${index + 1}`);
 
+  /* A PUZZLE'S TILE, a square link: the picture once `best` is there, or a
+     question mark, then `name`, then the best time or how hard the puzzle
+     is. `art` is the picture or the question mark alone, `words` a span of
+     text, and `bar` a progress bar of `done` out of `all`. */
+  const words = (cls, text) => {
+    const el = document.createElement('span');
+    el.className = cls;
+    el.textContent = text;
+    return el;
+  };
+  const art = (puzzle, solved) => {
+    const el = document.createElement('div');
+    if (solved) {
+      el.className = 'pixels-picture pixels-picture--sm';
+      picture(el, puzzle.squares, puzzle.colours);
+    } else {
+      el.className = 'pixels-blank';
+      el.textContent = '?';
+    }
+    el.setAttribute('aria-hidden', 'true');
+    return el;
+  };
+  const tile = (puzzle, name, href, best) => {
+    const a = document.createElement('a');
+    a.className = 'rux--link rux--tile rux--tile--clickable pixels-puzzle';
+    a.href = href;
+    puzzle.rounds ??= rounds(grid(puzzle.squares, puzzle.width));
+    a.append(art(puzzle, best != null), words('pixels-puzzle-name', name), words('pixels-meta', best != null ? time(best.seconds) : grade(puzzle.rounds)));
+    return a;
+  };
+  const bar = (done, all) => {
+    const el = document.createElement('div');
+    el.className = 'rux--progress-bar rux--progress-bar--small';
+    const track = document.createElement('div');
+    track.className = 'rux--progress-bar__track';
+    const fill = document.createElement('div');
+    fill.className = 'rux--progress-bar__bar';
+    fill.style.transform = `scaleX(${all ? done / all : 0})`;
+    track.appendChild(fill);
+    el.appendChild(track);
+    return el;
+  };
+
   /* HOW TO PLAY. A modal of three steps, each a small board beside its
      words: what the numbers mean, filling and crossing out, and what a
      mistake costs.
@@ -605,7 +673,8 @@
   const chosen = (el, option) => window.Rux.contentSwitcher.select(el, option, { focus: false, silent: true });
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, daily, today, streak,
-    board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title, how, switcher, chosen,
+    SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, categories, heading, where,
+    daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title,
+    words, art, tile, bar, how, switcher, chosen,
   });
 })();

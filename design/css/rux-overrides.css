@@ -902,6 +902,14 @@
 :is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table th:last-child > .rux--table-sort {
   padding-inline-end: var(--rux-spacing-04);
 }
+/*   In a sortable table Carbon leaves a header that does not sort no padding
+     on its cell and 16px on its label, to stand it under the sort buttons'
+     own 16px. Here that cell keeps its 8px, so the label gives its own up:
+     with both, a column that does not sort was headed 16px to the right of
+     its values. */
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .rux--data-table.rux--data-table--sort th > .rux--table-header-label {
+  padding-inline: 0;
+}
 /* - A row is 40px and the header row 36px, measured on Geist's Table page,
      where Carbon's default is 48px for both. Geist gets its 40px from 10px
      above and below one line, so a cell of two lines makes a 54px row
@@ -1820,6 +1828,43 @@
 [data-theme="apple-light"] .rux--date-picker--next .rux--date-picker__day.inRange:nth-child(7n) {
   border-start-end-radius: 1.125rem;
   border-end-end-radius: 1.125rem;
+}
+/* A TABLE'S BOX IS A REGION OF THE PAGE, told apart as this theme's regions
+   are: by its white on the grey page, on the 12px corner a tile takes, with
+   no line. The line and the 8px are Geist's, measured on its Table page,
+   and this theme shared them unmeasured. */
+[data-theme="apple-light"] .rux--data-table-container {
+  border: 0;
+  border-radius: 12px;
+}
+/* WHAT FLOATS CASTS A SHADOW. A menu, a dropdown's list, a popover and the
+   calendar stand over the page, and the ring the rounded themes give them
+   replaced the shadow Carbon casts, so here they lay flat on what they
+   covered. They keep the ring and take the theme's shadow, soft and low. A
+   tooltip is the inverse surface and needs neither. */
+[data-theme="apple-light"] :is(.rux--popover-content:not(.rux--tooltip-content), .rux--list-box__menu, .rux--menu, .rux--overflow-menu-options, .rux--date-picker__calendar) {
+  box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02), 0 8px 24px var(--rux-shadow);
+}
+/* So does a panel that opens over the page from the header: the nav behind
+   the hamburger, and the switcher's and the account's panels. Each is white
+   over a white region, where its 1px edge alone does not show. */
+[data-theme="apple-light"] :is(.rux--side-nav--hidden.rux--side-nav--expanded, .rux--header-panel--expanded) {
+  box-shadow: 0 8px 24px var(--rux-shadow);
+}
+/* THE NAV'S ROWS ARE ROUNDED AND STAND OFF ITS EDGES, and the page you are
+   on is the row's fill alone: a Mac's sidebar marks its selection with a
+   rounded fill and no bar. The row is 8px in from each side and keeps its
+   words where Carbon set them. */
+[data-theme="apple-light"] a.rux--side-nav__link {
+  margin-inline: var(--rux-spacing-03);
+  border-radius: 8px;
+}
+[data-theme="apple-light"] .rux--side-nav__item > a.rux--side-nav__link {
+  padding-inline: var(--rux-spacing-03);
+}
+[data-theme="apple-light"] a.rux--side-nav__link[aria-current=page]::before,
+[data-theme="apple-light"] a.rux--side-nav__link--current::before {
+  content: none;
 }
 /* A CHECKBOX AND A RADIO REST AS A GREY FILL WITH NO RING, measured on the
    Mac's own: 16px, a 5.5px corner on the box, 230 230 230 at rest, which is

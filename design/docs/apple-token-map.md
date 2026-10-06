@@ -41,7 +41,10 @@ What Apple's own software says, read from Apple and not from memory. The
 | Brown | `#ac7f5e` 172, 127, 94 | `#956d51` 149, 109, 81 | `#dba679` 219, 166, 121 |
 
 The dark column is for words on the one dark surface this theme has, the
-inverse one a tooltip is drawn on.
+inverse one a tooltip is drawn on. A status icon takes the default column,
+as Apple's own filled marks do: Calendar's today and Reminders' list icons
+are the vivid colour under a white figure. Words in a status colour take the
+increased-contrast column, darkened where a tint needs it.
 
 ## System greys
 
@@ -229,12 +232,13 @@ pressed step, no tint, and no ink for a tint; the last column says which.
 | `#0068da` | Link | read | `link-primary`, `button-primary-hover`, `button-tertiary`, `button-tertiary-hover` |
 | `#0064e1` | Selected content | read | `link-primary-hover`, `link-secondary`, `button-primary-active`, `button-tertiary-active` |
 | `#564ade` | Indigo, increased contrast | read | `link-visited` |
-| `#c55300` | Orange, increased contrast | read | `support-caution-major`, `support-warning`, `status-orange`, `status-orange-outline` |
+| `#ff8d28` | Orange | read | `support-caution-major`, `support-warning`, `status-orange`, `status-orange-outline` |
 | `#a16a00` | Yellow, increased contrast | read | `support-caution-minor`, `status-yellow-outline` |
 | `#b02fc2` | Purple, increased contrast | read | `support-caution-undefined`, `status-purple` |
-| `#e9152d` | Red, increased contrast | read | `support-error`, `button-danger-primary`, `status-red` |
+| `#ff383c` | Red | read | `support-error`, `status-red` |
+| `#e9152d` | Red, increased contrast | read | `button-danger-primary` |
 | `#ff6165` | Red, increased contrast, dark | read | `support-error-inverse` |
-| `#008932` | Green, increased contrast | read | `support-success`, `status-green` |
+| `#34c759` | Green | read | `support-success`, `status-green` |
 | `#4ad968` | Green, increased contrast, dark | read | `support-success-inverse` |
 | `#fedf43` | Yellow, increased contrast, dark | read | `support-warning-inverse` |
 | `#0067f4` | Focus ring, at full strength | read | `focus` |

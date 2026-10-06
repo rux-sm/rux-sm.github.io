@@ -1107,16 +1107,16 @@
   --rux-icon-secondary: #6c6c70;
 
   /* support */
-  --rux-support-caution-major: #c55300;
+  --rux-support-caution-major: #ff8d28;
   --rux-support-caution-minor: #a16a00;
   --rux-support-caution-undefined: #b02fc2;
-  --rux-support-error: #e9152d;
+  --rux-support-error: #ff383c;
   --rux-support-error-inverse: #ff6165;
   --rux-support-info: #1e6ef4;
   --rux-support-info-inverse: #5cb8ff;
-  --rux-support-success: #008932;
+  --rux-support-success: #34c759;
   --rux-support-success-inverse: #4ad968;
-  --rux-support-warning: #c55300;
+  --rux-support-warning: #ff8d28;
   --rux-support-warning-inverse: #fedf43;
 
   /* focus */
@@ -1205,12 +1205,12 @@
   --rux-notification-action-tertiary-inverse-text-on-color-disabled: #8e8e93;
 
   /* status */
-  --rux-status-red: #e9152d;
-  --rux-status-orange: #c55300;
-  --rux-status-orange-outline: #c55300;
+  --rux-status-red: #ff383c;
+  --rux-status-orange: #ff8d28;
+  --rux-status-orange-outline: #ff8d28;
   --rux-status-yellow: #ffcc00;
   --rux-status-yellow-outline: #a16a00;
-  --rux-status-green: #008932;
+  --rux-status-green: #34c759;
   --rux-status-blue: #1e6ef4;
   --rux-status-purple: #b02fc2;
   --rux-status-gray: #6c6c70;

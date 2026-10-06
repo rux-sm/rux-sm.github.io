@@ -5,15 +5,14 @@
    !important (overrides.css). Empty is the normal state. Design
    AGENTS.md, "Where a change goes". */
 
-/* THE PICTURES' OWN INKS. A puzzle's colour picture is painted from
-   thirty-three of these: ten colours, each in a light, a middle and a dark
-   shade, and white, grey and black. A picture stores one character a
-   square, 0 to 9 then a to z, and each names its ink here. Saved pictures
-   hold these characters, so one never changes its colour, and z is a dark
-   grey that a saved picture holds and the palette does not offer. They sit on
-   :root and in no [data-theme] block because a picture is the same colours
-   whatever theme the person keeps; they are the colours of a thing, not of
-   the interface. */
+/* THE PICTURES' OWN INKS. A puzzle's colour picture is painted from these
+   fifty-five: ten colours, each pale, light, middle, deep and dark, and five
+   greys from white to black. A picture stores one character a square, a
+   digit or a letter of either case, and each names its ink here. Saved
+   pictures hold these characters, so one never changes its colour. They sit
+   on :root and in no [data-theme] block because a picture is the same
+   colours whatever theme the person keeps; they are the colours of a thing,
+   not of the interface. */
 :root {
   --pixels-ink-0: #161616;
   --pixels-ink-1: #ffffff;
@@ -47,6 +46,27 @@
   --pixels-ink-t: #491d8b;
   --pixels-ink-u: #005d5d;
   --pixels-ink-v: #0072c3;
+  --pixels-ink-w: #e0e0e0;
   --pixels-ink-y: #6f6f6f;
   --pixels-ink-z: #393939;
+  --pixels-ink-A: #ffd7d9;
+  --pixels-ink-B: #ffd9be;
+  --pixels-ink-C: #fcf4d6;
+  --pixels-ink-D: #a7f0ba;
+  --pixels-ink-E: #d0e2ff;
+  --pixels-ink-F: #e8daff;
+  --pixels-ink-G: #ffd6e8;
+  --pixels-ink-H: #ecd9c2;
+  --pixels-ink-I: #9ef0f0;
+  --pixels-ink-J: #e5f6ff;
+  --pixels-ink-K: #a2191f;
+  --pixels-ink-L: #eb6200;
+  --pixels-ink-M: #d2a106;
+  --pixels-ink-N: #198038;
+  --pixels-ink-O: #0043ce;
+  --pixels-ink-P: #6929c4;
+  --pixels-ink-Q: #d02670;
+  --pixels-ink-R: #6f4622;
+  --pixels-ink-S: #007d79;
+  --pixels-ink-T: #1192e8;
 }

@@ -6,7 +6,7 @@
    player can solve it by logic alone, how hard that is and how much of the
    board is filled; squares that would need a guess are outlined. COLOUR:
    the toolbar's last button shows the colour in hand and opens the
-   thirty-three inks; pick one and paint any square, filled or not; that is
+   fifty-five inks; pick one and paint any square, filled or not; that is
    the picture the puzzle finishes as. The paintbrush colours the
    squares tapped or dragged over, the bucket every square joined to the one
    tapped through its own ink, and the eraser puts a square back as it
@@ -15,7 +15,8 @@
    Clear, in either step, and Redo puts it back; Cmd or Ctrl with Z undoes,
    and with Shift and Z, or Y, redoes. These are the toolbar over the board,
    which the arrow keys move along. Size starts a blank board of 5, 10 or 15
-   squares a side, and a saved puzzle keeps the size it has. Back, the
+   squares a side, which Undo takes back, and a saved puzzle keeps the size
+   it has. Back, the
    toolbar's first button, leaves for the puzzles; a new picture is kept as
    the draft, so nothing is lost by it.
 
@@ -40,7 +41,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, SIZES, grid, squaresOf, unreached, rounds, grade, board, drag } = window.Pixels;
+  const { data, owner, SIZES, CHARS, grid, squaresOf, unreached, rounds, grade, board, drag } = window.Pixels;
   const $ = id => document.getElementById(id);
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
   const saveNow = $('pixels-save-now');
@@ -49,21 +50,21 @@
   const tools = $('pixels-tool'), steps = $('pixels-step'), size = $('pixels-size');
   const undoKey = $('pixels-undo'), redoKey = $('pixels-redo');
   const DRAFT = 'pixels-draft';
-  // The inks, a colour at a time: its light, its middle and its dark, and
-  // last white, grey and black. Each is the character a picture stores,
-  // then its name. app.css lays them out a colour to a row.
+  // The inks, a colour at a time, pale to dark, and last the greys from
+  // white to black. Each is the character a picture stores, then its name.
+  // app.css lays them out a colour to a row, or to a column on a phone.
   const INKS = [
-    ['c', 'Light red'], ['2', 'Red'], ['m', 'Dark red'],
-    ['d', 'Light orange'], ['3', 'Orange'], ['n', 'Dark orange'],
-    ['e', 'Light yellow'], ['4', 'Yellow'], ['o', 'Dark yellow'],
-    ['f', 'Light green'], ['5', 'Green'], ['p', 'Dark green'],
-    ['g', 'Light blue'], ['6', 'Blue'], ['q', 'Dark blue'],
-    ['j', 'Light purple'], ['9', 'Purple'], ['t', 'Dark purple'],
-    ['i', 'Light pink'], ['8', 'Pink'], ['s', 'Dark pink'],
-    ['h', 'Light brown'], ['7', 'Brown'], ['r', 'Dark brown'],
-    ['k', 'Light teal'], ['a', 'Teal'], ['u', 'Dark teal'],
-    ['l', 'Light sky blue'], ['b', 'Sky blue'], ['v', 'Dark sky blue'],
-    ['1', 'White'], ['y', 'Grey'], ['0', 'Black'],
+    ['A', 'Pale red'], ['c', 'Light red'], ['2', 'Red'], ['K', 'Deep red'], ['m', 'Dark red'],
+    ['B', 'Pale orange'], ['d', 'Light orange'], ['3', 'Orange'], ['L', 'Deep orange'], ['n', 'Dark orange'],
+    ['C', 'Pale yellow'], ['e', 'Light yellow'], ['4', 'Yellow'], ['M', 'Deep yellow'], ['o', 'Dark yellow'],
+    ['D', 'Pale green'], ['f', 'Light green'], ['5', 'Green'], ['N', 'Deep green'], ['p', 'Dark green'],
+    ['E', 'Pale blue'], ['g', 'Light blue'], ['6', 'Blue'], ['O', 'Deep blue'], ['q', 'Dark blue'],
+    ['F', 'Pale purple'], ['j', 'Light purple'], ['9', 'Purple'], ['P', 'Deep purple'], ['t', 'Dark purple'],
+    ['G', 'Pale pink'], ['i', 'Light pink'], ['8', 'Pink'], ['Q', 'Deep pink'], ['s', 'Dark pink'],
+    ['H', 'Pale brown'], ['h', 'Light brown'], ['7', 'Brown'], ['R', 'Deep brown'], ['r', 'Dark brown'],
+    ['I', 'Pale teal'], ['k', 'Light teal'], ['a', 'Teal'], ['S', 'Deep teal'], ['u', 'Dark teal'],
+    ['J', 'Pale sky blue'], ['l', 'Light sky blue'], ['b', 'Sky blue'], ['T', 'Deep sky blue'], ['v', 'Dark sky blue'],
+    ['1', 'White'], ['w', 'Pale grey'], ['y', 'Grey'], ['z', 'Dark grey'], ['0', 'Black'],
   ];
   // A category shows nine, three rows of three on a phone; any more are off.
   const PER_LEVEL = 9;
@@ -181,12 +182,8 @@
   // A square as the colour step starts it, and as the eraser leaves it: the
   // picture as it is seen while solving, dark on light.
   const plain = (y, x) => (draft[y][x] ? 0 : 1);
-  // One key of a group is the chosen one. A Carbon button is drawn as
-  // Carbon draws a selected one; the step's own keys read aria-checked.
-  const choose = (group, on) => group.querySelectorAll('button').forEach(b => {
-    b.setAttribute('aria-checked', on(b));
-    if (b.classList.contains('rux--btn')) b.classList.toggle('rux--btn--selected', on(b));
-  });
+  // One key of a group is the chosen one, which app.css fills.
+  const choose = (group, on) => group.querySelectorAll('button').forEach(b => b.setAttribute('aria-checked', on(b)));
   // The tools and the colour are there in both steps and out of reach in
   // Draw, so the toolbar never changes shape.
   const setStep = to => {
@@ -207,7 +204,7 @@
     b.type = 'button';
     b.className = 'pixels-ink';
     b.setAttribute('role', 'radio');
-    b.setAttribute('aria-checked', parseInt(id, 36) === ink);
+    b.setAttribute('aria-checked', CHARS.indexOf(id) === ink);
     b.setAttribute('aria-label', label);
     b.title = label;
     b.dataset.ink = id;
@@ -218,7 +215,7 @@
   // toolbar's button that opens them.
   const setInk = to => {
     ink = to;
-    const id = ink.toString(36);
+    const id = CHARS[ink];
     inks.querySelectorAll('.pixels-ink').forEach(b => b.setAttribute('aria-checked', b.dataset.ink === id));
     inkKey.firstElementChild.dataset.ink = id;
     inkKey.title = `Colour: ${INKS.find(([i]) => i === id)[1]}`;
@@ -239,7 +236,7 @@
   inks.addEventListener('click', e => {
     const picked = e.target.closest('.pixels-ink');
     if (!picked) return;
-    setInk(parseInt(picked.dataset.ink, 36));
+    setInk(CHARS.indexOf(picked.dataset.ink));
     window.Rux.popover?.close(inkMenu, { restoreFocus: true });
   });
   // The tool the colour step works with: paint, fill or erase.
@@ -253,14 +250,15 @@
     if (picked) setTool(picked.dataset.tool);
   });
 
-  // UNDO AND REDO. A step is the picture as it stood, its squares and its
-  // colours as the strings a puzzle is saved in. `mark` keeps how the
-  // picture stands as a tap or drag begins, and the first square that then
-  // changes puts that on the pile, so a tap that changes nothing leaves no
-  // step. A new size, and a new puzzle after a save, start the pile again.
+  // UNDO AND REDO. A step is the picture as it stood: its size, and its
+  // squares and colours as the strings a puzzle is saved in. `mark` keeps
+  // how the picture stands as a tap or drag begins, and the first square
+  // that then changes puts that on the pile, so a tap that changes nothing
+  // leaves no step. A new size is a step too, so the drawing it wipes comes
+  // back. A new puzzle after a save starts the pile again.
   const STEPS = 200;
   let past = [], ahead = [], before = null;
-  const snap = () => ({ squares: squaresOf(draft), colours: colours && squaresOf(colours) });
+  const snap = () => ({ side, squares: squaresOf(draft), colours: colours && squaresOf(colours) });
   const showMoves = () => { undoKey.disabled = !past.length; redoKey.disabled = !ahead.length; };
   const mark = () => { before = snap(); };
   const changing = () => {
@@ -279,6 +277,12 @@
     if (!from.length) return;
     to.push(snap());
     const now = from.pop();
+    if (now.side !== side) {
+      setSide(now.side);
+      pad.reset();
+      showLevels(openLevel());
+      showWhere();
+    }
     draft = grid(now.squares, side);
     colours = now.colours ? grid(now.colours, side) : null;
     $('pixels-saved').hidden = true;
@@ -343,14 +347,17 @@
     paint: (y, x) => { if (dragging) stroke(y, x); },
     zoom: () => side > 10,
   });
+  // A new size wipes the board, and is a step Undo takes back if there was
+  // a drawing to lose.
   size.addEventListener('change', () => {
+    mark();
+    if (colours || draft.some(r => r.some(Boolean))) changing();
     setSide(+size.value);
     pad.reset();
     showLevels(openLevel());
     showWhere();
     $('pixels-saved').hidden = true;
     clear();
-    forget();
     keepDraft();
   });
   name.addEventListener('input', () => { save.disabled = !ready(); keepDraft(); });
@@ -365,7 +372,7 @@
   // The arrows move along the toolbar, as they do along Carbon's.
   $('pixels-toolbar').addEventListener('keydown', e => {
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-    const keys = [...e.currentTarget.querySelectorAll('.rux--btn, .pixels-step-key')].filter(b => !b.disabled && b.offsetParent), at = keys.indexOf(document.activeElement);
+    const keys = [...e.currentTarget.querySelectorAll('.pixels-bar-key')].filter(b => !b.disabled && b.offsetParent), at = keys.indexOf(document.activeElement);
     if (at < 0) return;
     e.preventDefault();
     keys[(at + (e.key === 'ArrowRight' ? 1 : keys.length - 1)) % keys.length].focus();

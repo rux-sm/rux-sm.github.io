@@ -9,7 +9,8 @@ nine of them in a category.
 
 ## Three sizes
 
-Size starts a blank board. A saved puzzle keeps its size.
+Size starts a blank board, and Undo brings the old one back. A saved puzzle
+keeps its size.
 
 | Size | On the front page | What it is for |
 | :--- | :--- | :--- |
@@ -49,9 +50,9 @@ squares and let the extra room go to detail, not to a bigger blob.
 
 Once the tag is green, Colour paints the picture the player sees at the
 finish. The toolbar's last button shows the colour in hand; press it for the
-thirty-three inks, pick one and paint any square, filled or empty. The inks
-are ten colours, each a row of light, middle and dark, then white, grey and
-black.
+fifty-five inks, pick one and paint any square, filled or empty. The inks
+are ten colours, each in five tones from pale to dark, then five greys from
+white to black.
 
 - **The toolbar over the board** holds every button, each an icon that
   names itself when you rest on it. At its start are Back and Save, with
@@ -59,24 +60,25 @@ black.
   and Clear, then Draw and Colour, then the paintbrush, the bucket and the
   eraser, then the colour.
   Draw and Colour have their words beside their icons where the bar has the
-  room, and are icons alone on a phone.
+  room.
 - **On a phone** the toolbar is under the board, by your thumb, in two rows
-  of large keys: Back, Undo and Redo, and Save at the end with Delete before
-  it, then Draw, Colour, the three tools and Clear. The colours stand open under it, a tap each.
+  of large keys, each with its word under its icon: Back, Undo and Redo, and
+  Save at the end with Delete before it, then Draw, Colour, the three tools
+  and Clear. The colours stand open under it, a tap each.
 - **Paintbrush, Bucket and Eraser** work in Colour. The paintbrush colours
   the squares you tap or drag over. The bucket colours every square joined
   to the one you tap that has its colour. The eraser puts a square back
   plain: black if it is filled, white if it is not.
 - **Undo, Redo and Clear** work in both steps. Undo takes back a tap, a
-  drag, a fill or Clear. Cmd+Z undoes and Shift+Cmd+Z redoes.
+  drag, a fill, Clear or a change of size. Cmd+Z undoes and Shift+Cmd+Z redoes.
 - **Back** leaves for the puzzles and loses nothing: a new picture is kept
   in this browser and is on the board the next time you open Make.
 - **Colour the background too.** A blue sky or a green field behind the shape
   is what makes the finish feel like a reward.
 - **Two or three colours are enough.** Keep the shape one colour and use a
   second for its detail, such as a red apple with a green leaf.
-- **Shade with the same column.** A dark red down one side of the apple and a
-  light red spot near the top make it round.
+- **Shade with one colour's tones.** A deep red down one side of the apple
+  and a pale red spot near the top make it round.
 - A picture never coloured finishes in black and white.
 
 ## The puzzle of the day

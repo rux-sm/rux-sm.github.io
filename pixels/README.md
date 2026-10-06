@@ -84,7 +84,7 @@ puzzle written by anyone else. It checks as you draw whether the numbers alone c
 picture and how hard that is, outlines each square that would need a guess,
 and saves only a picture with one answer. Size starts a blank board of 5,
 10 or 15 a side. Its Colour step paints the picture
-the puzzle finishes as, from thirty-three inks, and Save asks which category it goes in on the front
+the puzzle finishes as, from fifty-five inks, and Save asks which category it goes in on the front
 page; a category shows nine, the
 list counts how many of each one's are on, and a puzzle saved into one with nine on is saved off. A category just started is
 named there and hidden until the front page's switch publishes it. Puzzle of the day, in the same list, makes it a

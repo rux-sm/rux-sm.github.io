@@ -30,12 +30,14 @@
      Results are saved as ever, so a ranking is there to show when it is on. */
   const BOARD = false;
 
+  // The characters a square is stored as, in the order of their numbers: a
+  // digit, then a letter of either case. A picture's inks are named by them.
+  const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   // Rows of numbers from a string of them, one character a square, and the
-  // string again; a square puzzle unless told its width. A character is 0 to
-  // 9 then a to z, which a picture's inks are named by.
+  // string again; a square puzzle unless told its width.
   const grid = (squares, width = Math.sqrt(squares.length)) =>
-    Array.from({ length: squares.length / width }, (_, y) => [...squares.slice(y * width, y * width + width)].map(c => parseInt(c, 36)));
-  const squaresOf = g => g.flat().map(n => n.toString(36)).join('');
+    Array.from({ length: squares.length / width }, (_, y) => [...squares.slice(y * width, y * width + width)].map(c => CHARS.indexOf(c)));
+  const squaresOf = g => g.flat().map(n => CHARS[n]).join('');
   const column = (g, x) => g.map(r => r[x]);
 
   // A line's numbers: the lengths of its runs of filled squares, in order,
@@ -256,7 +258,7 @@
       s.classList.toggle('is-x', v === 2 || v === 3);
       s.classList.toggle('is-miss', v === 3);
       s.classList.toggle('is-unknown', !!options.unknown?.[y][x]);
-      if (options.inks) s.dataset.ink = options.inks[y][x].toString(36); else delete s.dataset.ink;
+      if (options.inks) s.dataset.ink = CHARS[options.inks[y][x]]; else delete s.dataset.ink;
       s.setAttribute('aria-label', `Row ${y + 1}, column ${x + 1}, ${['empty', 'filled', 'crossed out', 'mistake'][v]}`);
     });
     el.querySelectorAll('.pixels-clue').forEach(c => {
@@ -602,7 +604,7 @@
   const chosen = (el, option) => window.Rux.contentSwitcher.select(el, option, { focus: false, silent: true });
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    SIZES, DAILY, BOARD, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, daily, today, streak,
+    SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, daily, today, streak,
     board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title, how, switcher, chosen,
   });
 })();

@@ -213,8 +213,29 @@
 [data-ink="t"] { --ink: var(--pixels-ink-t); }
 [data-ink="u"] { --ink: var(--pixels-ink-u); }
 [data-ink="v"] { --ink: var(--pixels-ink-v); }
+[data-ink="w"] { --ink: var(--pixels-ink-w); }
 [data-ink="y"] { --ink: var(--pixels-ink-y); }
 [data-ink="z"] { --ink: var(--pixels-ink-z); }
+[data-ink="A"] { --ink: var(--pixels-ink-A); }
+[data-ink="B"] { --ink: var(--pixels-ink-B); }
+[data-ink="C"] { --ink: var(--pixels-ink-C); }
+[data-ink="D"] { --ink: var(--pixels-ink-D); }
+[data-ink="E"] { --ink: var(--pixels-ink-E); }
+[data-ink="F"] { --ink: var(--pixels-ink-F); }
+[data-ink="G"] { --ink: var(--pixels-ink-G); }
+[data-ink="H"] { --ink: var(--pixels-ink-H); }
+[data-ink="I"] { --ink: var(--pixels-ink-I); }
+[data-ink="J"] { --ink: var(--pixels-ink-J); }
+[data-ink="K"] { --ink: var(--pixels-ink-K); }
+[data-ink="L"] { --ink: var(--pixels-ink-L); }
+[data-ink="M"] { --ink: var(--pixels-ink-M); }
+[data-ink="N"] { --ink: var(--pixels-ink-N); }
+[data-ink="O"] { --ink: var(--pixels-ink-O); }
+[data-ink="P"] { --ink: var(--pixels-ink-P); }
+[data-ink="Q"] { --ink: var(--pixels-ink-Q); }
+[data-ink="R"] { --ink: var(--pixels-ink-R); }
+[data-ink="S"] { --ink: var(--pixels-ink-S); }
+[data-ink="T"] { --ink: var(--pixels-ink-T); }
 .pixels-game.is-done .pixels-cell[data-ink],
 .pixels-maker .pixels-cell[data-ink] { background: var(--ink); }
 
@@ -543,7 +564,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
    scrolling. */
 .pixels-maker {
   --most: 600px;
-  --chrome: 355px;
+  --chrome: 426px;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: .5rem;
@@ -564,7 +585,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 
    The bar is the container its step keys ask for its width, and stands
    over the board so the menu it opens does too. It sets the height its
-   buttons take, Carbon's small, through the token a Carbon button reads. */
+   keys take, Carbon's small, in the token a Carbon button reads. */
 .pixels-toolbar { --rux-layout-size-height: var(--rux-layout-size-height-sm, 2rem); position: relative; z-index: 1; container-type: inline-size; display: flex; flex-wrap: wrap; background: var(--rux-layer-01); border-block-end: 1px solid var(--rux-border-subtle-01); }
 
 .pixels-toolbar-group { display: flex; }
@@ -572,13 +593,15 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 .pixels-toolbar-history { margin-inline-start: auto; }
 .pixels-toolbar-group.pixels-toolbar-clear, .pixels-toolbar-group.pixels-toolbar-file { box-shadow: none; }
 .pixels-toolbar-break { display: none; }
-/* THE STEP'S TWO KEYS are the maker's own, since Carbon's icon button is a
-   fixed square that holds no word. Each is that button to look at, state
-   for state and token for token, so it sits among the others unremarked,
-   and has its word beside its icon where the bar is 32rem or more across,
-   which a phone's is not. The chosen one is filled as Carbon fills a
-   selected button. */
-.pixels-step-key {
+/* THE TOOLBAR'S KEYS are the maker's own, since Carbon's icon button is a
+   fixed square that holds no word. Each is Carbon's ghost icon button to
+   look at, state for state and token for token, at the height the bar sets.
+   Its word is not shown, but for the step where the bar is 37rem or more
+   across, which is where the whole bar with those words is one line, and on
+   a phone, below. The chosen one of a group is filled as Carbon fills a
+   selected button. Save is filled as Carbon's primary is, and Delete is in
+   its danger red. */
+.pixels-bar-key {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -593,20 +616,32 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   font: inherit;
   font-size: .875rem;
   letter-spacing: .16px;
+  text-decoration: none;
   cursor: pointer;
   transition: background 70ms cubic-bezier(0, 0, .38, .9);
 }
-.pixels-step-key > svg { fill: var(--rux-icon-primary); }
-.pixels-step-key > span { display: none; }
+.pixels-bar-key[hidden] { display: none; }
+.pixels-bar-key > svg { flex: none; fill: var(--rux-icon-primary); }
+.pixels-bar-word { display: none; }
 @media (any-hover: hover) {
-  .pixels-step-key:hover { background: var(--rux-background-hover); }
+  .pixels-bar-key:hover:not(:disabled) { background: var(--rux-background-hover); }
 }
-.pixels-step-key:active { background: var(--rux-background-active); }
-.pixels-step-key:focus-visible { border-color: var(--rux-focus); box-shadow: inset 0 0 0 1px var(--rux-focus), inset 0 0 0 2px var(--rux-background); outline: none; }
-.pixels-step-key[aria-checked="true"] { background: var(--rux-background-selected); }
-@container (min-width: 32rem) {
-  .pixels-step-key { padding-inline: .625rem; }
-  .pixels-step-key > span { display: inline; }
+.pixels-bar-key:active:not(:disabled) { background: var(--rux-background-active); }
+.pixels-bar-key:focus-visible { border-color: var(--rux-focus); box-shadow: inset 0 0 0 1px var(--rux-focus), inset 0 0 0 2px var(--rux-background); outline: none; }
+.pixels-bar-key[aria-checked="true"] { background: var(--rux-background-selected); }
+.pixels-bar-key:disabled { color: var(--rux-text-disabled); cursor: not-allowed; }
+.pixels-bar-key:disabled > svg { fill: var(--rux-icon-disabled); }
+.pixels-bar-key--danger, .pixels-bar-key--danger > svg { color: var(--rux-button-danger-secondary); fill: var(--rux-button-danger-secondary); }
+.pixels-bar-key--go { background: var(--rux-button-primary); color: var(--rux-text-on-color); }
+.pixels-bar-key--go > svg, .pixels-bar-key--go:disabled > svg { fill: currentColor; }
+@media (any-hover: hover) {
+  .pixels-bar-key--go:hover:not(:disabled) { background: var(--rux-button-primary-hover); }
+}
+.pixels-bar-key--go:active:not(:disabled) { background: var(--rux-button-primary-active); }
+.pixels-bar-key--go:disabled { background: var(--rux-button-disabled); color: var(--rux-text-on-color-disabled); }
+@container (min-width: 37rem) {
+  .pixels-toolbar-step > .pixels-bar-key { padding-inline: .625rem; }
+  .pixels-toolbar-step .pixels-bar-word { display: inline; }
 }
 /* THE COLOUR IN HAND, on the toolbar's last button, with the corner mark
    Carbon gives a button that opens a menu. */
@@ -620,9 +655,9 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   border-block-end-color: var(--rux-icon-primary);
 }
 button:disabled > .pixels-ink-now { opacity: .35; }
-/* THE INKS, in the menu that button opens: a colour to a row, light, middle
-   and dark, and last white, grey and black; the chosen one is ringed. */
-.pixels-inks { display: grid; grid-template-columns: repeat(3, 1.75rem); gap: .25rem; padding: .5rem; }
+/* THE INKS, in the menu that button opens: a colour to a row, from pale to
+   dark, and last the greys from white to black; the chosen one is ringed. */
+.pixels-inks { display: grid; grid-template-columns: repeat(5, 1.75rem); gap: .25rem; padding: .5rem; }
 .pixels-ink {
   aspect-ratio: 1;
   padding: 0;
@@ -658,11 +693,11 @@ button:disabled > .pixels-ink-now { opacity: .35; }
    Carbon's large height, each line's keys sharing its width: Back at the
    start, Undo and Redo in the middle, and Delete and Save at the end, Save
    last; then Draw, Colour, the three tools and Clear, which is at the end
-   away from Undo. The inks stand open under it, eleven
-   across, so a colour is one tap; make.js moves them there, and the button
+   away from Undo. Each key is its icon over its word, as the game's keys
+   are. The inks stand open under it, eleven across, so a colour is one tap; make.js moves them there, and the button
    that opens them elsewhere is not shown. `--keys` is how many keys a group
    has, which is its share of its line. */
-.pixels-inks-slot > .pixels-inks { grid-template-columns: none; grid-template-rows: repeat(3, auto); grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: .3125rem; padding: 0; margin-block-start: .5rem; }
+.pixels-inks-slot > .pixels-inks { grid-template-columns: none; grid-template-rows: repeat(5, auto); grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: .3125rem; padding: 0; margin-block-start: .5rem; }
 .pixels-inks[inert] { opacity: .35; }
 @media (max-width: 47.99rem) {
   .pixels-maker-work { display: flex; flex-direction: column; }
@@ -670,7 +705,9 @@ button:disabled > .pixels-ink-now { opacity: .35; }
   .pixels-toolbar-group { flex: var(--keys) 1 0; margin: 0; background: var(--rux-layer-01); }
   .pixels-toolbar-group + .pixels-toolbar-group { box-shadow: none; }
   .pixels-toolbar-group > * { flex: 1; }
-  .pixels-toolbar svg { inline-size: 1.25rem; block-size: 1.25rem; }
+  .pixels-bar-key { flex-direction: column; gap: .125rem; padding: 0; font-size: .6875rem; letter-spacing: 0; }
+  .pixels-bar-key > svg { inline-size: 1.125rem; block-size: 1.125rem; }
+  .pixels-bar-word { display: block; }
   .pixels-toolbar-back { order: 1; --keys: 1; }
   .pixels-toolbar-history { order: 2; --keys: 2; }
   .pixels-toolbar-file { order: 3; --keys: 1; flex-direction: row-reverse; }

@@ -190,7 +190,8 @@
              its text, Back and Save at its start and the drawing's keys at
              its end; then the board, its check in its corner. On a phone the
              toolbar is under the board, in two lines of keys a thumb can hit,
-             with the inks open under it. -->
+             each its icon over its word, with the inks open under it. The
+             toolbar's keys are the maker's own; the fields are Design's. -->
         <form class="pixels-maker" id="pixels-form" novalidate>
           <div class="pixels-maker-head">
             <div class="pixels-maker-top">
@@ -212,35 +213,35 @@
             <!-- At the bar's start, the puzzle's own: Back to the puzzles, then Save, and Delete for a saved one; on a phone Back starts the first line and these two end it. At its end, over the squares, what acts on the drawing in four groups: what takes a move back or wipes the board, the step, the colour step's tools, and its colour, which opens the inks; Draw puts the last two out of reach. -->
             <div class="pixels-toolbar" role="toolbar" aria-label="Maker" id="pixels-toolbar">
               <div class="pixels-toolbar-group pixels-toolbar-back">
-                <a class="rux--btn rux--btn--ghost rux--btn--icon-only" href="./" aria-label="Back to the puzzles" title="Back to the puzzles"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-arrow_back"/></svg></a>
+                <a class="pixels-bar-key" href="./" aria-label="Back to the puzzles" title="Back to the puzzles"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-arrow_back"/></svg><span class="pixels-bar-word">Back</span></a>
               </div>
               <div class="pixels-toolbar-group pixels-toolbar-file">
-                <button type="submit" class="rux--btn rux--btn--primary rux--btn--icon-only" id="pixels-save" aria-label="Save" title="Save" disabled><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-save"/></svg></button>
-                <button type="button" class="rux--btn rux--btn--danger--ghost rux--btn--icon-only" id="pixels-delete" data-rux-open="pixels-delete-modal" aria-label="Delete" title="Delete" hidden><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-delete"/></svg></button>
+                <button type="submit" class="pixels-bar-key pixels-bar-key--go" id="pixels-save" disabled aria-label="Save" title="Save"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-save"/></svg><span class="pixels-bar-word">Save</span></button>
+                <button type="button" class="pixels-bar-key pixels-bar-key--danger" id="pixels-delete" data-rux-open="pixels-delete-modal" hidden aria-label="Delete" title="Delete"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-delete"/></svg><span class="pixels-bar-word">Delete</span></button>
               </div>
               <div class="pixels-toolbar-group pixels-toolbar-history">
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only" id="pixels-undo" disabled aria-label="Undo" title="Undo"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-undo"/></svg></button>
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only" id="pixels-redo" disabled aria-label="Redo" title="Redo"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-redo"/></svg></button>
+                <button type="button" class="pixels-bar-key" id="pixels-undo" disabled aria-label="Undo" title="Undo"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-undo"/></svg><span class="pixels-bar-word">Undo</span></button>
+                <button type="button" class="pixels-bar-key" id="pixels-redo" disabled aria-label="Redo" title="Redo"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-redo"/></svg><span class="pixels-bar-word">Redo</span></button>
               </div>
               <div class="pixels-toolbar-group pixels-toolbar-clear">
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only" id="pixels-clear" aria-label="Clear" title="Clear"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-restart_alt"/></svg></button>
+                <button type="button" class="pixels-bar-key" id="pixels-clear" aria-label="Clear" title="Clear"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-restart_alt"/></svg><span class="pixels-bar-word">Clear</span></button>
               </div>
               <!-- On a phone the bar is two lines, and this is where the first ends. -->
               <span class="pixels-toolbar-break" aria-hidden="true"></span>
-              <!-- The step: two keys of the maker's own, since a Carbon icon button holds no word. app.css shows their words where the bar has the room. -->
+              <!-- The step. Its two keys have their words beside them where the bar has the room. -->
               <div class="pixels-toolbar-group pixels-toolbar-step" role="radiogroup" aria-label="Step" id="pixels-step">
-                <button type="button" class="pixels-step-key" role="radio" aria-checked="true" data-step="draw" title="Draw"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-edit"/></svg><span>Draw</span></button>
-                <button type="button" class="pixels-step-key" role="radio" aria-checked="false" data-step="colour" title="Colour"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-palette"/></svg><span>Colour</span></button>
+                <button type="button" class="pixels-bar-key" role="radio" aria-checked="true" data-step="draw" aria-label="Draw" title="Draw"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-edit"/></svg><span class="pixels-bar-word">Draw</span></button>
+                <button type="button" class="pixels-bar-key" role="radio" aria-checked="false" data-step="colour" aria-label="Colour" title="Colour"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-palette"/></svg><span class="pixels-bar-word">Colour</span></button>
               </div>
               <div class="pixels-toolbar-group pixels-toolbar-tools" role="radiogroup" aria-label="Tool" id="pixels-tool">
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--selected" role="radio" aria-checked="true" data-tool="paint" disabled aria-label="Paintbrush" title="Paintbrush"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-brush"/></svg></button>
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only" role="radio" aria-checked="false" data-tool="fill" disabled aria-label="Bucket" title="Bucket"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-format_color_fill"/></svg></button>
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only" role="radio" aria-checked="false" data-tool="erase" disabled aria-label="Eraser" title="Eraser"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-ink_eraser"/></svg></button>
+                <button type="button" class="pixels-bar-key" role="radio" aria-checked="true" data-tool="paint" disabled aria-label="Paintbrush" title="Paintbrush"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-brush"/></svg><span class="pixels-bar-word">Brush</span></button>
+                <button type="button" class="pixels-bar-key" role="radio" aria-checked="false" data-tool="fill" disabled aria-label="Bucket" title="Bucket"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-format_color_fill"/></svg><span class="pixels-bar-word">Bucket</span></button>
+                <button type="button" class="pixels-bar-key" role="radio" aria-checked="false" data-tool="erase" disabled aria-label="Eraser" title="Eraser"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-ink_eraser"/></svg><span class="pixels-bar-word">Eraser</span></button>
               </div>
               <div class="pixels-toolbar-group pixels-toolbar-ink">
                 <!-- The colour in hand; pressing it opens the inks, which make.js fills. On a phone the inks stand open under the bar instead. -->
                 <span class="rux--popover-container rux--popover--bottom-end rux--popover--drop-shadow" id="pixels-ink-menu">
-                  <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only" id="pixels-ink" aria-label="Colour" title="Colour" aria-haspopup="true" aria-expanded="false" disabled><span class="pixels-ink-now" data-ink="2"></span></button>
+                  <button type="button" class="pixels-bar-key" id="pixels-ink" aria-label="Colour" title="Colour" aria-haspopup="true" aria-expanded="false" disabled><span class="pixels-ink-now" data-ink="2"></span></button>
                   <span class="rux--popover">
                     <span class="rux--popover-content">
                       <span class="pixels-inks" id="pixels-inks" role="radiogroup" aria-label="Colour"></span>

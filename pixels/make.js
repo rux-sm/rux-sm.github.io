@@ -12,8 +12,11 @@
    starts: dark if it is filled, light if not. A picture never coloured
    finishes in black and white. UNDO takes back the last tap, drag, fill or
    Clear, in either step, and Redo puts it back; Cmd or Ctrl with Z undoes,
-   and with Shift and Z, or Y, redoes. Size starts a blank board of 5, 10 or
-   15 squares a side, and a saved puzzle keeps the size it has.
+   and with Shift and Z, or Y, redoes. These are the toolbar over the board,
+   which the arrow keys move along. Size starts a blank board of 5, 10 or 15
+   squares a side, and a saved puzzle keeps the size it has. DISCARD leaves
+   for the puzzles and keeps nothing: a new picture's draft goes, and a
+   saved puzzle stays as it was saved.
 
    CATEGORY is where the puzzle goes: one of its size's categories on the
    front page, listed by name with how many of its nine are on; New
@@ -41,7 +44,7 @@
   const $ = id => document.getElementById(id);
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
   const day = $('pixels-day'), theme = $('pixels-theme');
-  const inks = $('pixels-inks'), paintBox = $('pixels-paint'), tools = $('pixels-tool'), steps = $('pixels-step'), size = $('pixels-size');
+  const inks = $('pixels-inks'), tools = $('pixels-tool'), steps = $('pixels-step'), size = $('pixels-size');
   const undoKey = $('pixels-undo'), redoKey = $('pixels-redo');
   const DRAFT = 'pixels-draft';
   // The inks, a colour at a time: its light, its middle and its dark, and
@@ -177,13 +180,20 @@
   // A square as the colour step starts it, and as the eraser leaves it: the
   // picture as it is seen while solving, dark on light.
   const plain = (y, x) => (draft[y][x] ? 0 : 1);
+  // One key of a group is the chosen one, drawn as Carbon draws a selected
+  // button.
+  const choose = (group, on) => group.querySelectorAll('button').forEach(b => {
+    b.setAttribute('aria-checked', on(b));
+    b.classList.toggle('rux--btn--selected', on(b));
+  });
   // The tools and inks are there in both steps and out of reach in Draw, so
   // the board never moves.
   const setStep = to => {
     step = to;
     if (step === 'colour' && !colours) colours = draft.map((r, y) => r.map((_, x) => plain(y, x)));
-    paintBox.inert = step !== 'colour';
-    steps.querySelectorAll('[data-step]').forEach(b => b.setAttribute('aria-checked', b.dataset.step === step));
+    inks.inert = step !== 'colour';
+    tools.querySelectorAll('button').forEach(b => { b.disabled = step !== 'colour'; });
+    choose(steps, b => b.dataset.step === step);
     render();
   };
   steps.addEventListener('click', e => {
@@ -214,7 +224,7 @@
   let tool = 'paint';
   const setTool = to => {
     tool = to;
-    tools.querySelectorAll('[data-tool]').forEach(b => b.setAttribute('aria-checked', b.dataset.tool === tool));
+    choose(tools, b => b.dataset.tool === tool);
   };
   tools.addEventListener('click', e => {
     const picked = e.target.closest('[data-tool]');
@@ -330,6 +340,20 @@
     colours = null;
     setStep('draw');
   };
+  // The arrows move along the toolbar, as they do along Carbon's.
+  $('pixels-toolbar').addEventListener('keydown', e => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const keys = [...e.currentTarget.querySelectorAll('button:not(:disabled)')], at = keys.indexOf(document.activeElement);
+    if (at < 0) return;
+    e.preventDefault();
+    keys[(at + (e.key === 'ArrowRight' ? 1 : keys.length - 1)) % keys.length].focus();
+  });
+  // Discard leaves for the puzzles and keeps nothing: a new picture's draft
+  // goes, and a saved puzzle stays as it was saved.
+  $('pixels-discard').addEventListener('click', () => {
+    if (!editing) { try { localStorage.removeItem(DRAFT); } catch { /* nothing kept */ } }
+    location.href = './';
+  });
   // Clear is a step too, unless the board was blank already.
   $('pixels-clear').addEventListener('click', () => {
     $('pixels-saved').hidden = true;

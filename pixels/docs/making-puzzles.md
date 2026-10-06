@@ -52,12 +52,17 @@ finish. Pick one of the thirty-three inks and paint any square, filled or
 empty. The palette is ten colours, each light, middle and dark, then white,
 grey and black. It is dimmed while Draw is on.
 
-- **Paintbrush, Bucket and Eraser** are the three tools beside the inks. The
-  paintbrush colours the squares you tap or drag over. The bucket colours
-  every square joined to the one you tap that has its colour. The eraser
-  puts a square back plain: black if it is filled, white if it is not.
-- **Undo, Redo and Clear** are under the board, in both steps. Undo takes
-  back a tap, a drag, a fill or Clear. Cmd+Z undoes and Shift+Cmd+Z redoes.
+- **The toolbar over the board** holds everything that acts on the drawing,
+  each an icon that names itself when you rest on it: Undo, Redo and Clear,
+  then Draw and Colour, then the paintbrush, the bucket and the eraser.
+- **Paintbrush, Bucket and Eraser** work in Colour. The paintbrush colours
+  the squares you tap or drag over. The bucket colours every square joined
+  to the one you tap that has its colour. The eraser puts a square back
+  plain: black if it is filled, white if it is not.
+- **Undo, Redo and Clear** work in both steps. Undo takes back a tap, a
+  drag, a fill or Clear. Cmd+Z undoes and Shift+Cmd+Z redoes.
+- **Discard**, beside Save, leaves for the puzzles and keeps nothing: a new
+  picture's draft goes, and a saved puzzle stays as it was saved.
 - **Colour the background too.** A blue sky or a green field behind the shape
   is what makes the finish feel like a reward.
 - **Two or three colours are enough.** Keep the shape one colour and use a

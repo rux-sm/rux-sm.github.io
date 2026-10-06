@@ -528,35 +528,37 @@
 .pixels-solved-clock { display: block; font-size: 2rem; }
 
 /* THE MAKER. One column the width of its board, in the order of the work:
-   the head, which is Back, the name, the category and the size, with under
-   them the one field more the category can ask for; the board, its check
-   over its empty corner; the keys that act on the drawing, the step and
-   Save; then the colour step's tools and inks. Its board is the game's, to
-   540px of squares, set in by a whole number of pixels as the game is.
-   `--chrome` is the height everything but the board takes, with `--more`
-   for the field the category asks for while it is shown, so the board takes
-   what the window leaves and the whole maker is in view without scrolling.
+   the head, which is the name, the category and the size, with under them
+   the one field more the category can ask for; the toolbar set on the
+   board, the board's check over its empty corner; the inks; then Save and
+   Discard. Its board is the game's, to 540px of squares, set in by a whole
+   number of pixels as the game is. `--chrome` is the height everything but
+   the board takes, with `--more` for the field the category asks for while
+   it is shown, so the board takes what the window leaves and the whole
+   maker is in view without scrolling.
 
-   THE TOOLS AND INKS ARE ARRANGED THREE WAYS, by the window. Under 48rem the
-   tools are a row and the inks squares, across the whole board. From 48rem
-   the tools are a column under the row numbers and the inks under the
-   squares. On a window wider than it is tall they stand beside the board,
-   the inks three across, and `--beside` counts them, because there height
-   is what runs out. */
+   THE INKS ARE ARRANGED THREE WAYS, by the window. Under 48rem they are
+   squares across the whole board. From 48rem they are under the squares. On
+   a window wider than it is tall they stand beside the board, three across,
+   and `--beside` counts them, because there height is what runs out. */
 .pixels-maker {
   --most: 540px;
-  --chrome: calc(316px + var(--more, 0px));
+  --chrome: calc(317px + var(--more, 0px));
   --wide: var(--foot);
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: .75rem;
+  gap: .5rem;
   inline-size: var(--wide);
   margin-inline-start: round(down, calc((100cqi - var(--wide)) / 2), 1px);
 }
 .pixels-maker[data-more] { --more: 2.5rem; }
 .pixels-maker-head { display: grid; gap: .5rem; }
-.pixels-maker-top { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr) 7rem; gap: .5rem; }
-.pixels-key-word { display: none; }
+.pixels-maker-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 7rem; gap: .5rem; }
+/* THE TOOLBAR, after Carbon's text toolbar: a bar of icon buttons the width
+   of what they act on and set on it, in groups with a rule between them. */
+.pixels-toolbar { display: flex; background: var(--rux-layer-01); border-block-end: 1px solid var(--rux-border-subtle-01); }
+.pixels-toolbar-group { display: flex; }
+.pixels-toolbar-group + .pixels-toolbar-group { border-inline-start: 1px solid var(--rux-border-subtle-01); }
 .pixels-maker-board { position: relative; }
 /* THE CHECK, over the board's empty corner: a tag, then how hard the puzzle
    is and how much of the board is filled. */
@@ -576,57 +578,14 @@
   pointer-events: none;
 }
 .pixels-maker-check > span:not([class])::first-letter { text-transform: uppercase; }
-.pixels-maker-keys { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
-.pixels-maker-end { display: flex; gap: .25rem; }
-/* THE MAKER'S KEYS are the game's, on one line and 32px tall: an icon and
-   its word. Under 48rem Back, Undo, Redo and Clear are their icons alone,
-   their words being `pixels-key-word`, and every key keeps less room at
-   its ends, so the row under the board is one row on a phone. Save is the
-   one filled, and Delete the one in red. Keys that belong together are
-   joined, sharing the line between them. */
-.pixels-key--row { display: inline-flex; align-items: center; justify-content: center; gap: .375rem; block-size: 2rem; padding-inline: .5rem; font-size: .875rem; }
-.pixels-key[hidden] { display: none; }
-.pixels-key--go { border-color: transparent; background: var(--rux-button-primary); color: var(--rux-text-on-color); }
-.pixels-key--go:hover { background: var(--rux-button-primary-hover); }
-.pixels-key--go:disabled { border-color: transparent; background: var(--rux-button-disabled); color: var(--rux-text-on-color-disabled); }
-.pixels-key--row.pixels-key--danger { inline-size: 2rem; padding: 0; color: var(--rux-text-error); }
-.pixels-joined { display: flex; }
-.pixels-joined > * + * { margin-inline-start: -1px; }
-.pixels-joined > :not(:disabled) { position: relative; }
-/* A CHOICE OF ONE AMONG KEYS: the step, and the colour step's three tools,
-   each its icon beside its word, the chosen one drawn in the page's
-   opposite colours as the game's two keys are. */
-.pixels-tools { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
-.pixels-tools > button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: .375rem;
-  block-size: 2rem;
-  padding: 0;
-  border: 1px solid var(--rux-border-strong-01);
-  background: var(--rux-layer-01);
-  color: var(--rux-text-primary);
-  font: inherit;
-  font-size: .875rem;
-  cursor: pointer;
-}
-.pixels-tools > [aria-checked="true"] {
-  border-color: var(--rux-background-inverse);
-  background: var(--rux-background-inverse);
-  color: var(--rux-text-inverse);
-}
-.pixels-tools > button:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
-.pixels-tools--row { grid-template-columns: repeat(2, auto); gap: 0; }
-.pixels-tools--row > button { padding-inline: .5rem; }
-.pixels-tools--row > * + * { margin-inline-start: -1px; }
-/* THE COLOUR STEP'S TOOLS AND INKS, dimmed and out of reach while drawing.
-   The inks run a colour at a time, light, middle, dark, so one grid lays
-   them out a colour to a column or a colour to a row; the chosen one is
-   ringed. */
-.pixels-paint { display: grid; gap: .5rem; }
-.pixels-paint[inert] { opacity: .35; }
+/* SAVE AND DISCARD, with Delete apart at the row's end. */
+.pixels-maker-end { display: flex; gap: .5rem; }
+#pixels-delete { margin-inline-start: auto; }
+/* THE INKS, dimmed and out of reach while drawing. They run a colour at a
+   time, light, middle, dark, so one grid lays them out a colour to a column
+   or a colour to a row; the chosen one is ringed. */
 .pixels-inks { display: grid; grid-template-rows: repeat(3, auto); grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: .375rem; }
+.pixels-inks[inert] { opacity: .35; }
 .pixels-ink {
   aspect-ratio: 1;
   padding: 0;
@@ -638,29 +597,25 @@
 /* THE SAVED NOTICE floats under the header's end, so it moves nothing. */
 .pixels-saved { position: fixed; inset-block-start: 3.5rem; inset-inline-end: 1rem; z-index: 2; max-inline-size: calc(100vw - 2rem); }
 @media (min-width: 48rem) {
-  .pixels-maker { --chrome: calc(332px + var(--more, 0px)); gap: 1rem; }
-  .pixels-key-word { display: inline; }
-  .pixels-key--row, .pixels-tools--row > button { padding-inline: .625rem; }
-  .pixels-paint { grid-template-columns: calc(var(--pixels-corner) - .75rem) minmax(0, 1fr); gap: .75rem; }
-  .pixels-paint > .pixels-tools { grid-template-columns: minmax(0, 1fr); gap: .375rem; }
+  .pixels-maker { --chrome: calc(341px + var(--more, 0px)); }
+  .pixels-inks { inline-size: var(--side); margin-inline-start: var(--pixels-corner); }
   .pixels-ink { aspect-ratio: auto; block-size: 2rem; }
 }
 @media (min-width: 48rem) and (orientation: landscape) {
   .pixels-maker {
-    --chrome: calc(208px + var(--more, 0px));
+    --chrome: calc(225px + var(--more, 0px));
     --beside: 8rem;
     --wide: calc(var(--foot) + 8rem);
     grid-template-columns: var(--foot) 6.5rem;
-    grid-template-areas: "head ." "board paint" "keys paint";
+    grid-template-areas: "head ." "work inks" "end .";
     column-gap: 1.5rem;
   }
   .pixels-maker-head { grid-area: head; }
-  .pixels-maker-board { grid-area: board; }
-  .pixels-maker-keys { grid-area: keys; }
-  /* The strip is as tall as the board and its keys and no taller: it asks
+  .pixels-maker-work { grid-area: work; }
+  .pixels-maker-end { grid-area: end; }
+  /* The strip is as tall as the toolbar and board and no taller: it asks
      for no height of its own, and its inks give up theirs when the window
      is short. */
-  .pixels-paint { grid-area: paint; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 1rem; block-size: 0; min-block-size: 100%; }
-  .pixels-inks { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(11, minmax(0, 2rem)); grid-auto-flow: row; gap: .25rem; }
+  .pixels-inks { grid-area: inks; inline-size: auto; margin-inline-start: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(11, minmax(0, 2rem)); grid-auto-flow: row; gap: .25rem; align-content: start; block-size: 0; min-block-size: 100%; }
   .pixels-ink { block-size: auto; }
 }

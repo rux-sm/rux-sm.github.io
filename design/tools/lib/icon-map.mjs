@@ -107,6 +107,7 @@ export const ICONS = {
   'draggable': { material: 'drag_indicator', rux: null },
   'edit': { material: 'edit', rux: null },
   'email': { material: 'mail', rux: null },
+  'erase': { material: 'ink_eraser', rux: null },
   'error--filled': { material: 'error-fill', rux: null },
   'fit-to-width': { material: 'fit_screen', rux: null },
   'folder': { material: 'folder', rux: null },
@@ -130,6 +131,7 @@ export const ICONS = {
   'notification--important': { material: 'notification_important', rux: null },  // Carbon draws no bell with a warning; Material's carries an exclamation mark.
   'overflow-menu--horizontal': { material: 'more_horiz', rux: null },
   'overflow-menu--vertical': { material: 'more_vert', rux: null },
+  'paint-brush': { material: 'brush', rux: null },
   'pause--outline--filled': { material: 'pause_circle-fill', rux: null },  // A solid disc with the bars cut out; `pause--filled` is the bare bars.
   'pending--filled': { material: 'pending-fill', rux: null },
   'phone': { material: 'call', rux: null },
@@ -148,6 +150,7 @@ export const ICONS = {
   'shuttle': { material: 'airport_shuttle', rux: null },
   'settings': { material: 'settings', rux: null },
   'subtract': { material: 'remove', rux: null },
+  'text--fill': { material: 'format_color_fill', rux: null },  // A tipped paint bucket over a bar, in both families: the tool that fills an area.
   'time': { material: 'schedule', rux: null },
   'trash-can': { material: 'delete', rux: null },
   'undefined--filled': { material: 'quiz-fill', rux: null },  // `help` is taken by unknown--filled.

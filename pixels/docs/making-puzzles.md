@@ -37,14 +37,34 @@ squares and let the extra room go to detail, not to a bigger blob.
 2. **Fill a third to two thirds of the board.** On 10×10, fewer than 30
    squares leaves the numbers too little to say; more than 70 and the picture
    is a block.
-3. **Use the whole board.** An empty row or column is a free line. One or two
-   is fine, four makes it a smaller puzzle.
+3. **Use the whole board.** An empty row or column is a free line, and so is
+   a full one. One or two is a nice start, four makes it a smaller puzzle.
 4. **Give it one or two holes**, an eye or a window. They make the picture
    look like something and give the puzzle its hard part.
 5. **Break a mirror.** A picture that is the same left and right often leaves
-   yellow squares. Move or add one square on one side and they usually go.
+   yellow squares, and the player solves the same half twice. Move or add
+   one square on one side and they usually go.
 6. **No lone squares scattered about.** A row that reads 1 1 1 tells the
-   player almost nothing, and three of them make a guessing game.
+   player almost nothing, and three of them make a guessing game. A thin
+   slanted line does the same, since every row it crosses gets a 1.
+
+## A fun puzzle
+
+A good picture is the reward. The fun is in the numbers: the player always
+has a next move, and the picture comes out bit by bit.
+
+1. **Give an easy way in.** Two or three lines with a number over half the
+   board, 6 or more on 10×10, let the player fill squares at the first look.
+2. **Let one thing lead to the next.** Each square found should help a line
+   that crosses it. Medium, in the board's corner, is the sign of that.
+3. **Mix the lines.** Some long runs, and some lines with two or three
+   numbers, which are the most fun to work out.
+4. **Reveal it slowly.** The player should guess the picture halfway
+   through, not at the first look and not only at the end.
+5. **Break up a solid block.** There is nothing to work out inside one. A
+   notch, a shine spot or a bit that sticks out is where the thinking is.
+6. **Play it the next day.** Play, in Manage, tries it. If you were bored or
+   stuck, the players will be too.
 
 ## The colour picture
 

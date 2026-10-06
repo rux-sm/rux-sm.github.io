@@ -460,8 +460,8 @@
 /* Geist's Calendar page and Ant's DatePicker page both round each day's box
    4px, so the picked day is a rounded square and not a block. The days
    between a range's two ends keep their square band, which the two ends
-   close. */
-:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="apple-light"]) .rux--date-picker--next .rux--date-picker__day:not(.inRange) {
+   close. apple-light draws its days its own way, with its other shapes. */
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--date-picker--next .rux--date-picker__day:not(.inRange) {
   border-radius: 4px;
 }
 /* ANT-DARK'S TABLE IS THE OTHER ANSWER, and it was measured too, on Ant's own
@@ -1781,6 +1781,45 @@
 }
 [data-theme="apple-light"] :is(.rux--search-input, .rux--search) {
   border-radius: 999px;
+}
+/* A TILE'S CORNER IS 12px, a step over the 10px of the field it holds: a
+   corner grows with the box, and the rounded themes' shared 8px left this
+   theme's tile tighter than its own fields. Not a measurement; the next step
+   up, which is the side panel's and the modal's. */
+[data-theme="apple-light"] .rux--tile {
+  border-radius: 12px;
+}
+/* A DAY IN THE CALENDAR IS A CIRCLE, 36px in its 40px row, so its hover, its
+   focus ring and the picked day's fill are all round. Carbon's day is the
+   whole cell, which is not square, so the circle is given its own size and
+   centred. A range is one capsule instead: its two ends and the days between
+   run the cell's width, the ends round on their outer side, and a row the
+   range wraps round closes and opens with the same curve. */
+[data-theme="apple-light"] .rux--date-picker--next .rux--date-picker__day {
+  justify-self: center;
+  block-size: 2.25rem;
+  inline-size: 2.25rem;
+  margin-block: 2px;
+  border-radius: 50%;
+}
+[data-theme="apple-light"] .rux--date-picker--next .rux--date-picker__day.inRange,
+[data-theme="apple-light"] .rux--date-picker--next .rux--date-picker__day.selected:has(+ .inRange),
+[data-theme="apple-light"] .rux--date-picker--next .rux--date-picker__day.inRange + .selected {
+  justify-self: stretch;
+  inline-size: auto;
+  border-radius: 0;
+}
+[data-theme="apple-light"] .rux--date-picker--next .rux--date-picker__day.selected:has(+ .inRange),
+[data-theme="apple-light"] .rux--date-picker--next .rux--date-picker__day.inRange + .selected:nth-child(7n + 1),
+[data-theme="apple-light"] .rux--date-picker--next .rux--date-picker__day.inRange:nth-child(7n + 1) {
+  border-start-start-radius: 1.125rem;
+  border-end-start-radius: 1.125rem;
+}
+[data-theme="apple-light"] .rux--date-picker--next .rux--date-picker__day.inRange + .selected,
+[data-theme="apple-light"] .rux--date-picker--next .rux--date-picker__day.selected:has(+ .inRange):nth-child(7n),
+[data-theme="apple-light"] .rux--date-picker--next .rux--date-picker__day.inRange:nth-child(7n) {
+  border-start-end-radius: 1.125rem;
+  border-end-end-radius: 1.125rem;
 }
 /* A CHECKBOX AND A RADIO REST AS A GREY FILL WITH NO RING, measured on the
    Mac's own: 16px, a 5.5px corner on the box, 230 230 230 at rest, which is

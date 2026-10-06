@@ -38,6 +38,9 @@
   // would delete its caret.
   const rangeEl = document.getElementById('scheduler-range');
   const rangeTextEl = document.getElementById('scheduler-range-text') || rangeEl;
+  // The arrows either side of Today.
+  const stepPrev = document.getElementById('scheduler-prev');
+  const stepNext = document.getElementById('scheduler-next');
   const rangeMonthsEl = document.getElementById('scheduler-range-months');
   // The week picker's hidden input and the guard that tells its `change`
   // events apart: ours, from setRange, or a person's, from the calendar.
@@ -573,6 +576,10 @@
        the widest thing in the toolbar does not wrap its row. */
     const fmt = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short' });
     rangeTextEl.textContent = `${fmt.format(weekStart)} – ${fmt.format(weekEnd)}, ${weekEnd.getFullYear()}`;
+    // The arrows step by what is shown, and say so.
+    const stretch = daysShown() > 7 ? 'two weeks' : 'week';
+    stepPrev?.setAttribute('aria-label', `Previous ${stretch}`);
+    stepNext?.setAttribute('aria-label', `Next ${stretch}`);
     /* Below md the label is the week's months and year, "Sep – Oct 2026",
        because the day header under it numbers the days and a phone's toolbar
        has no more room beside its four buttons. `formatRange` writes a week
@@ -14823,8 +14830,9 @@
      would still work, by assignment id, and silently move a trip no longer on
      screen. */
   const go = days => { toast(null); cursor = addDays(cursor, days); show(); };
-  document.getElementById('scheduler-prev')?.addEventListener('click', () => go(-7));
-  document.getElementById('scheduler-next')?.addEventListener('click', () => go(7));
+  // A step is everything on the board, so two weeks shown move on to the two after them.
+  stepPrev?.addEventListener('click', () => go(-daysShown()));
+  stepNext?.addEventListener('click', () => go(daysShown()));
   document.getElementById('scheduler-today')?.addEventListener('click', () => { toast(null); cursor = mondayOf(new Date()); show(); });
 
   /* Compact weeks slide only their trip tracks. The date and bus headers
@@ -14885,7 +14893,7 @@
       const side = dir < 0 ? 'next' : 'prev';
       let spare = schEl.querySelector(`.scheduler-grid--${side}`);
       if (spare) return spare;
-      const week = addDays(cursor, dir < 0 ? 7 : -7);
+      const week = addDays(cursor, dir < 0 ? daysShown() : -daysShown());
       if (!holds(week)) return null;
       spare = el('div', `scheduler-grid scheduler-grid--spare scheduler-grid--${side}`);
       spare.setAttribute('aria-hidden', 'true');
@@ -15018,7 +15026,7 @@
         const animation = el('div', 'rux--inline-loading__animation');
         animation.appendChild(loadingSpinner());
         box.append(animation, el('div', 'rux--inline-loading__text',
-          days > 0 ? 'Loading next week…' : 'Loading previous week…'));
+          `Loading ${days > 0 ? 'next' : 'previous'} ${Math.abs(days) > 7 ? 'two weeks' : 'week'}…`));
         loadingStatus?.replaceChildren(box);
         loadingRow?.classList.add('scheduler-toolbar__weekrow--loading');
       }, 200);
@@ -15063,8 +15071,8 @@
       const dx = e.clientX - start.x;
       const quick = e.timeStamp - start.at < SWIPE_FLICK_MS;
       const far = Math.abs(dx) >= (quick ? SWIPE_FLICK : SWIPE_MIN);
-      // The week moves the way the finger went: left brings the next one in.
-      const days = dx < 0 ? 7 : -7;
+      // The board moves the way the finger went: left brings the next one in.
+      const days = dx < 0 ? daysShown() : -daysShown();
       if (start.sliding) {
         const arriving = schEl.querySelector(dx < 0 ? '.scheduler-grid--next' : '.scheduler-grid--prev');
         if (far && arriving) { settle(dx < 0 ? -start.travel : start.travel, days); return; }

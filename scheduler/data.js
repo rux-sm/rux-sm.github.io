@@ -1519,8 +1519,9 @@
        * the unassigned row never warns, and dropping on the same row does
          nothing;
        * an interrupted gesture writes nothing; only a release drops.
-     Nothing moves optimistically: on release the week is read again, so the
-     screen shows what the database holds. */
+     Nothing moves before the database has taken it: a write that came back is
+     drawn at once from the held week, and the read that follows is what the
+     board ends on. */
 
   /* A mouse lifts a bar after 4px of vertical travel. A finger moves that far
      just landing, so it must stay within TOUCH_SLOP for TOUCH_HOLD_MS; travel
@@ -1574,22 +1575,40 @@
     return false;
   }
 
-  // Timed like a read: a hung write would otherwise leave the board dimmed and
-  // silent, with no way to tell it from a move that never happened.
+  /* Timed like a read: a hung write would otherwise leave the copy in its row
+     and silent, with no way to tell it from a move that never happened. The
+     row is asked back, because the board draws the move on this answer and an
+     update that matched no row reports no error. */
   async function moveToBus(assignmentId, busId) {
-    const { error } = await withTimeout(client.from('trip_assignments').update({ bus_id: busId }).eq('id', assignmentId).then(r => r));
+    const { data, error } = await withTimeout(client.from('trip_assignments')
+      .update({ bus_id: busId }).eq('id', assignmentId).select('id').then(r => r));
     if (error) throw new Error(error.message);
+    if (!data?.length) throw new Error('That bus assignment is no longer there.');
   }
 
   /* An empty slot has no row to move, so dropping one on a bus writes the row:
-     the trip, its leg, the slot's position and the bus. It returns the new id,
-     and undo takes the bus off that row, which draws the slot on the No bus row
-     where it started. */
+     the trip, its leg, the slot's position and the bus. It returns the new row
+     as a read would, for the held week, and undo takes the bus off that row,
+     which draws the slot on the No bus row where it started. */
   async function fillSlot(tripId, leg, position, busId) {
     const { data, error } = await withTimeout(client.from('trip_assignments')
-      .insert({ trip_id: tripId, leg, position, bus_id: busId }).select('id').single().then(r => r));
+      .insert({ trip_id: tripId, leg, position, bus_id: busId })
+      .select('id,bus_id,position,leg,active_roles,needs,vehicle_type').single().then(r => r));
     if (error) throw new Error(error.message);
-    return data.id;
+    return { ...data, trip_drivers: [] };
+  }
+
+  /* Draws a move the database has taken and resolves to the bar on its new
+     row. The held week takes the move and `show` draws it at once, before its
+     read comes back; with a read already in flight, or a week that does not
+     hold the trip, the bar is there only once the read is. */
+  async function drawBusMove(tripId, assignmentId, busId, made) {
+    const held = holdBusMove(tripId, assignmentId, busId, made);
+    const read = show();
+    const landed = () => [...gridEl.querySelectorAll(`.scheduler-bar[data-assignment-id="${CSS.escape(String(assignmentId))}"]`)]
+      .find(b => (b.dataset.busId || null) === (busId == null ? null : String(busId))) ?? null;
+    if (!held || !landed()) await read;
+    return landed();
   }
 
   /* What the row is called, for a message about a bus that may no longer be on
@@ -1624,7 +1643,7 @@
           schEl.removeAttribute('aria-busy');
           gridEl.classList.remove('scheduler-grid--busy');
         }
-        await show();
+        await drawBusMove(tripId, assignmentId, backTo);
         refreshEditor(assignmentId);
         toast('success', 'Move undone', `The trip is back on ${label}.`);
       },
@@ -1684,8 +1703,11 @@
         document.body.style.cursor = 'grabbing';
         try { bar.setPointerCapture(down.pointerId); } catch { /* the pointer is already gone */ }
         if (touch) { touchDragging = true; bar.addEventListener('touchmove', eat, { passive: false }); }
-        // Lifted on the next frame, so the rise is drawn rather than arrived at.
-        if (!reducedMotion.matches) requestAnimationFrame(() => ghost?.classList.add('scheduler-ghost--lifted'));
+        // Lifted on the next frame, so the rise is drawn rather than arrived at;
+        // a copy let go before that frame is already settling and stays flat.
+        if (!reducedMotion.matches) requestAnimationFrame(() => {
+          if (ghost && !ghost.classList.contains('scheduler-ghost--settling')) ghost.classList.add('scheduler-ghost--lifted');
+        });
       };
 
       // Where the copy sits over a row: at rest in its first lane.
@@ -1697,7 +1719,7 @@
       const settle = async top => {
         if (!ghost) return;
         const moving = ghost.style.top !== `${top}px` || ghost.classList.contains('scheduler-ghost--lifted');
-        ghost.classList.remove('scheduler-ghost--lifted');
+        ghost.classList.remove('scheduler-ghost--lifted', 'scheduler-ghost--snapped');
         ghost.classList.add('scheduler-ghost--settling');
         ghost.style.top = `${top}px`;
         if (!moving || reducedMotion.matches) return;
@@ -1711,7 +1733,7 @@
       const putDown = () => {
         ghost?.remove();
         ghost = null;
-        bar.classList.remove('scheduler-bar--dragging');
+        bar.classList.remove('scheduler-bar--dragging', 'scheduler-bar--leaving');
         if (unassignedRow?.dataset.revealed) { unassignedRow.hidden = true; delete unassignedRow.dataset.revealed; }
         placeBarOpen();
       };
@@ -1746,41 +1768,54 @@
           if (liveHeld) setTimeout(liveRefresh, 0);
           return;
         }
-        /* The copy settles into the row, which stays lit, and both hold over
-           the dimmed bar while the move is written and the week read back; the
-           copy comes away once the board draws the bar in its place. */
-        await settle(restIn(target));
-        /* Held as values, not as elements: `show()` below replaces every bar,
-           so `bar` is detached by the time the undo can be pressed. */
+        /* The copy settles flat into the row, which stays lit while the move
+           is written, and the bar fades from where it sat. The settling and the
+           write run together, so the wait is the longer of the two. */
         let assignmentId = bar.dataset.assignmentId;
         const { tripId, leg, slot } = bar.dataset;
         const backTo = fromBus;
         const label = busLabel(fromBus);
-        let failed = null;
+        const warned = target.classList.contains('scheduler-track--warn');
+        bar.classList.add('scheduler-bar--leaving');
+        const settled = settle(restIn(target));
+        let failed = null, made = null;
         try {
           schEl.setAttribute('aria-busy', 'true');
-          gridEl.classList.add('scheduler-grid--busy');
           if (assignmentId) await moveToBus(assignmentId, toBus);
-          else assignmentId = await fillSlot(tripId, leg || 'outbound', +slot || 0, toBus);
+          else { made = await fillSlot(tripId, leg || 'outbound', +slot || 0, toBus); assignmentId = made.id; }
           recordBusChange(tripId, fromBus, toBus);
         } catch (e) {
           failed = String(e && e.message ? e.message : e);
         } finally {
           schEl.removeAttribute('aria-busy');
-          gridEl.classList.remove('scheduler-grid--busy');
         }
-        /* Awaited, so the undo or the failure is shown against the re-read
-           board rather than the pre-move week. The board is re-read either
-           way, because a move that threw may still have landed. */
-        await show();   // read it back, rather than trusting the move landed
-        // The lit row is cleared by name: a read that found nothing changed draws nothing.
+        await settled;
+        if (failed) {
+          /* The copy slides back over the bar, and the week is read after it,
+             because a move that threw may still have landed. */
+          clear();
+          bar.classList.remove('scheduler-bar--leaving');
+          await settle(origin.top);
+          putDown();
+          toast('error', 'Could not move that trip', failed);
+          show();
+          return;
+        }
+        /* Held as values, not as elements: the draw below replaces every bar,
+           so `bar` is detached by the time the undo can be pressed. The copy
+           comes away over the bar drawn in its place, and the row's light
+           fades out on the row drawn in its place. */
+        const landed = await drawBusMove(tripId, assignmentId, toBus, made);
         clear();
-        // A move that did not land slides the copy back over the bar drawn where it was.
-        if (failed) await settle(origin.top);
         putDown();
+        const row = landed?.closest('.scheduler-track');
+        if (row && !reducedMotion.matches) {
+          row.classList.add('scheduler-track--landed');
+          if (warned) row.classList.add('scheduler-track--landed-warn');
+          row.addEventListener('animationend', () => row.classList.remove('scheduler-track--landed', 'scheduler-track--landed-warn'), { once: true });
+        }
         refreshEditor(assignmentId);
-        if (failed) toast('error', 'Could not move that trip', failed);
-        else offerUndo(assignmentId, tripId, toBus, backTo, label);
+        offerUndo(assignmentId, tripId, toBus, backTo, label);
       };
 
       const move = ev => {
@@ -1806,9 +1841,12 @@
           return ev.clientY >= rect.top && ev.clientY <= rect.bottom;
         }) ?? null;
         const sameRow = next && (next.dataset.busId ?? null) === fromBus;
-        // Over a row the copy snaps to where the bar would land; between rows
-        // it follows the pointer.
-        if (ghost) ghost.style.top = `${next ? (sameRow ? origin.top : restIn(next)) : ev.clientY - grip}px`;
+        // Over a row the copy glides to where the bar would land; between rows
+        // it follows the pointer, with no glide to lag behind it.
+        if (ghost) {
+          ghost.classList.toggle('scheduler-ghost--snapped', !!next);
+          ghost.style.top = `${next ? (sameRow ? origin.top : restIn(next)) : ev.clientY - grip}px`;
+        }
         if (next === target) return;
         clear();
         target = next;
@@ -14076,6 +14114,18 @@
      waiting on the network -- `render` decides the overlap per leg, so one
      payload draws nine weeks at nine different starts. */
   let cached = null;
+  /* Writes a bus move the database has taken into the held week: the row's new
+     bus, or the row an empty slot was given. False when the held week has no
+     such trip or row, and nothing can be drawn from it. */
+  function holdBusMove(tripId, assignmentId, busId, made) {
+    const trip = cached?.data.trips.find(t => String(t.id) === String(tripId));
+    if (!trip) return false;
+    const row = (trip.trip_assignments || []).find(a => String(a.id) === String(assignmentId));
+    if (row) row.bus_id = busId;
+    else if (made) trip.trip_assignments = [...(trip.trip_assignments || []), made];
+    else return false;
+    return true;
+  }
   // Whether the last read covers every day shown from this first day: one of
   // its nine weeks, and with two weeks shown, the one after too.
   const holds = start => !!cached && iso(addDays(cached.centre, -NEAR_DAYS)) <= iso(start)

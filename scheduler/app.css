@@ -438,16 +438,17 @@ button.scheduler-row-head__num::after {
   block-size: var(--scheduler-bar-h);
 }
 
-/* While a trip is dragged a copy of its bar rides with the pointer, lifted a
-   little, and snaps into the row it would land in; the bar itself dims where
-   it sits. That row lights up and tints: the interactive tone for a clean
-   drop, the warning tone where the bus is already busy or out of service. A
+/* While a trip is dragged a copy of its bar rides with the pointer, lifted,
+   and glides into the row it would land in; the bar itself dims where it
+   sits. That row lights up and tints: the interactive tone for a clean drop,
+   the warning tone where the bus is already busy or out of service. A
    warning, not a wall, because the drop still goes through. On release the
-   copy settles into the row and stays while the week is read back rather than
-   moved optimistically, then comes away over the bar drawn in its place; a
-   move that fails, or a bar let go nowhere, slides home. The copy is placed by
-   `top` alone, at the bar's own column, so the two-class selector beats the
-   bar's own insets. */
+   copy settles flat into the row, which stays lit while the move is written,
+   and the bar fades from where it sat. Once the database has taken the move
+   the copy comes away over the bar drawn in its place and the row's light
+   fades out; a move that fails, or a bar let go nowhere, slides home. The
+   copy is placed by `top` alone, at the bar's own column, so the two-class
+   selector beats the bar's own insets. */
 .scheduler-track.scheduler-track--drop {
   box-shadow: inset 0 0 0 2px var(--rux-border-interactive);
   background-color: color-mix(in srgb, var(--rux-border-interactive) 14%, transparent);
@@ -456,7 +457,19 @@ button.scheduler-row-head__num::after {
   box-shadow: inset 0 0 0 2px var(--rux-support-warning);
   background-color: color-mix(in srgb, var(--rux-support-warning) 14%, transparent);
 }
+@keyframes scheduler-track-landed {
+  from {
+    box-shadow: inset 0 0 0 2px var(--scheduler-landed);
+    background-color: color-mix(in srgb, var(--scheduler-landed) 14%, transparent);
+  }
+}
+.scheduler-track.scheduler-track--landed {
+  --scheduler-landed: var(--rux-border-interactive);
+  animation: scheduler-track-landed 320ms ease-out;
+}
+.scheduler-track.scheduler-track--landed-warn { --scheduler-landed: var(--rux-support-warning); }
 .scheduler-bar--dragging { opacity: .4; cursor: grabbing; }
+.scheduler-bar--leaving { opacity: 0; transition: opacity 150ms ease-out; }
 .scheduler-bar.scheduler-ghost {
   position: fixed;
   inset: auto;
@@ -464,14 +477,21 @@ button.scheduler-row-head__num::after {
   pointer-events: none;
   box-shadow: 0 6px 20px rgb(0 0 0 / .4);
   transform-origin: center;
-  transition: transform 120ms ease-out, box-shadow 120ms ease-out;
+  transition: transform 140ms cubic-bezier(.2, .9, .3, 1.3), box-shadow 140ms ease-out;
 }
-.scheduler-bar.scheduler-ghost--lifted { transform: scale(1.02); box-shadow: var(--scheduler-lift); }
+.scheduler-bar.scheduler-ghost--lifted { transform: scale(1.03); box-shadow: var(--scheduler-lift); }
+/* Over a row, the copy glides from the last one; between rows it is on the
+   pointer and has no glide to lag behind it. */
+.scheduler-bar.scheduler-ghost--snapped {
+  transition: top 90ms cubic-bezier(.2, .7, .2, 1), transform 140ms cubic-bezier(.2, .9, .3, 1.3), box-shadow 140ms ease-out;
+}
 .scheduler-bar.scheduler-ghost--settling {
+  box-shadow: none;
   transition: top 180ms cubic-bezier(.2, .7, .2, 1), transform 180ms ease-out, box-shadow 180ms ease-out;
 }
 @media (prefers-reduced-motion: reduce) {
-  .scheduler-bar.scheduler-ghost { transition: none; }
+  .scheduler-bar.scheduler-ghost,
+  .scheduler-bar--leaving { transition: none; }
 }
 
 /* ── Time at the yard ───────────────────────────────────────────────────

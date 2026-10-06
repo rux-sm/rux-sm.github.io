@@ -443,12 +443,12 @@ button.scheduler-row-head__num::after {
    sits. That row lights up and tints: the interactive tone for a clean drop,
    the warning tone where the bus is already busy or out of service. A
    warning, not a wall, because the drop still goes through. On release the
-   copy settles flat into the lane its bar will take, in a row that stays lit
-   while the move is written, and the bar fades from where it sat. Once the database has taken the move
-   the copy comes away over the bar drawn in its place and the row's light
-   fades out; a move that fails, or a bar let go nowhere, slides home. The
-   copy is placed by `top` alone, at the bar's own column, so the two-class
-   selector beats the bar's own insets. */
+   copy settles flat into the lane its bar will take and the bar fades from
+   where it sat; a bar let go nowhere slides home. The bar is then drawn on its
+   new bus, fainter while the database has yet to answer, and takes one ring
+   in the success tone when it has. A move that fails is drawn back where it
+   was. The copy is placed by `top` alone, at the bar's own column, so the
+   two-class selector beats the bar's own insets. */
 .scheduler-track.scheduler-track--drop {
   box-shadow: inset 0 0 0 2px var(--rux-border-interactive);
   background-color: color-mix(in srgb, var(--rux-border-interactive) 14%, transparent);
@@ -457,17 +457,12 @@ button.scheduler-row-head__num::after {
   box-shadow: inset 0 0 0 2px var(--rux-support-warning);
   background-color: color-mix(in srgb, var(--rux-support-warning) 14%, transparent);
 }
-@keyframes scheduler-track-landed {
-  from {
-    box-shadow: inset 0 0 0 2px var(--scheduler-landed);
-    background-color: color-mix(in srgb, var(--scheduler-landed) 14%, transparent);
-  }
+.scheduler-bar.scheduler-bar--saving { opacity: .6; cursor: progress; }
+@keyframes scheduler-bar-saved {
+  from { outline: 2px solid var(--rux-support-success); outline-offset: 0; }
+  to { outline: 2px solid transparent; outline-offset: 4px; }
 }
-.scheduler-track.scheduler-track--landed {
-  --scheduler-landed: var(--rux-border-interactive);
-  animation: scheduler-track-landed 320ms ease-out;
-}
-.scheduler-track.scheduler-track--landed-warn { --scheduler-landed: var(--rux-support-warning); }
+.scheduler-bar.scheduler-bar--saved { animation: scheduler-bar-saved 450ms ease-out; }
 /* A drop packs the two rows it changes as the board is about to draw them:
    each takes its height at once and its bars glide to their lanes. A yard
    card sits between two bars of one lane, so it waits for the draw. */

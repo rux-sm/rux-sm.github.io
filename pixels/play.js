@@ -367,9 +367,12 @@
     });
 
     // Arrows move, Z or Space fills, X crosses out, U undoes, R redoes and
-    // H hints, whichever tool is chosen.
+    // H hints, whichever tool is chosen. A key held with Cmd, Ctrl or Alt is
+    // the browser's, so Cmd+Z fills nothing; Space on a button or link
+    // presses it; and no key reaches the board while How to play is open.
     addEventListener('keydown', e => {
-      if (!started || solved || e.target.closest('input, textarea, select, .rux--header, .rux--side-nav')) return;
+      if (!started || solved || e.metaKey || e.ctrlKey || e.altKey || guide.classList.contains('is-visible')
+        || e.target.closest('input, textarea, select, .rux--header, .rux--side-nav')) return;
       const move = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[e.key];
       if (move) {
         e.preventDefault();
@@ -383,7 +386,7 @@
       if (key === 'u') { undo(); return; }
       if (key === 'r') { redo(); return; }
       if (!cursor.length) return;
-      if (key === 'z' || key === ' ') { e.preventDefault(); begin(...cursor, 'fill'); }
+      if (key === 'z' || (key === ' ' && !e.target.closest('button, a'))) { e.preventDefault(); begin(...cursor, 'fill'); }
       else if (key === 'x') begin(...cursor, 'x');
     });
 

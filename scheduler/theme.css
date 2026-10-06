@@ -601,9 +601,9 @@
    of its own colour, and here the grey page already shows each one's shape. */
 [data-theme="apple-light"] .scheduler-page .rux--side-panel { border: 0; }
 /* A list's dashed Add row stands for the next tile in that list, so it takes
-   a tile's 8px corner: Design's capsule rule for this theme's buttons made it
-   a capsule under a stack of cards. */
-[data-theme="apple-light"] .scheduler-list-additem .scheduler-list-add { border-radius: 8px; }
+   a tile's 12px corner: Design's capsule rule for this theme's buttons made
+   it a capsule under a stack of cards. */
+[data-theme="apple-light"] .scheduler-list-additem .scheduler-list-add { border-radius: 12px; }
 /* A TRIP IS AN APPLE CALENDAR EVENT: the pale fill and darker words every
    light theme gives a bar, and a solid edge of the hue down its leading side. The edge is a painted strip, so the bar's border and shadow
    stay free for the week's run-on marks and the selection ring. A bar that

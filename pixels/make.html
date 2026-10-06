@@ -185,7 +185,7 @@
         <!-- The frame is the width the board's size is worked out from. -->
         <div class="pixels-frame">
         <!-- One column the width of the board, in the order of the work: the
-             name and the category; a toolbar of everything that acts
+             name, the category and the size; a toolbar of everything that acts
              on the drawing, set on the board as Carbon's text toolbar is set on
              its text, Back and Save at its start and the drawing's keys at
              its end; then the board, its check in its corner. Every control is
@@ -201,36 +201,31 @@
                   <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
                 </div>
               </div>
+              <!-- Choosing a size starts a blank board of it. A saved puzzle keeps its size, so make.js locks this for one. -->
+              <div class="rux--select pixels-size">
+                <div class="rux--select-input__wrapper">
+                  <select id="pixels-size" class="rux--select-input rux--layout--size-sm" autocomplete="off" aria-label="Size">
+                    <option value="5">5×5</option>
+                    <option value="10" selected>10×10</option>
+                    <option value="15">15×15</option>
+                  </select>
+                  <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+                </div>
+              </div>
             </div>
             <!-- The one thing more the Category field can ask for: a new category's name, or the day of a puzzle of the day. -->
             <div id="pixels-more-theme" hidden><input id="pixels-theme" class="rux--text-input rux--layout--size-sm" type="text" maxlength="30" autocomplete="off" aria-label="Name of the new category" placeholder="Name of the new category"></div>
             <div id="pixels-more-day" hidden><input id="pixels-day" class="rux--text-input rux--layout--size-sm" type="date" aria-label="Day of the puzzle"></div>
           </div>
           <div class="pixels-maker-work">
-            <!-- At the bar's start, the puzzle's own: Back to the puzzles, Save, Delete for a saved one, and its size. At its end, over the squares, what acts on the drawing in four groups: what takes a move back or wipes the board, the step, the colour step's tools, and its colour, which opens the inks; Draw puts the last two out of reach. -->
+            <!-- At the bar's start, the puzzle's own: Back to the puzzles, Save, and Delete for a saved one. At its end, over the squares, what acts on the drawing in four groups: what takes a move back or wipes the board, the step, the colour step's tools, and its colour, which opens the inks; Draw puts the last two out of reach. -->
             <div class="pixels-toolbar" role="toolbar" aria-label="Maker" id="pixels-toolbar">
               <div class="pixels-toolbar-group">
                 <a class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" href="./" aria-label="Back to the puzzles" title="Back to the puzzles"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-arrow_back"/></svg></a>
                 <button type="submit" class="rux--btn rux--btn--primary rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-save" aria-label="Save" title="Save" disabled><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-save"/></svg></button>
                 <button type="button" class="rux--btn rux--btn--danger--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-delete" data-rux-open="pixels-delete-modal" aria-label="Delete" title="Delete" hidden><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-delete"/></svg></button>
               </div>
-              <!-- Choosing a size starts a blank board of it. A saved puzzle keeps its size, so make.js locks this for one. -->
-              <div class="pixels-toolbar-group">
-                <div class="rux--select rux--select--inline">
-                  <div class="rux--select-input--inline__wrapper">
-                    <div class="rux--select-input__wrapper">
-                      <select id="pixels-size" class="rux--select-input rux--layout--size-sm" autocomplete="off" aria-label="Size" title="Size">
-                        <option value="5">5×5</option>
-                        <option value="10" selected>10×10</option>
-                        <option value="15">15×15</option>
-                      </select>
-                      <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="pixels-toolbar-drawing">
-              <div class="pixels-toolbar-group">
+              <div class="pixels-toolbar-group pixels-toolbar-push">
                 <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-undo" disabled aria-label="Undo" title="Undo"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-undo"/></svg></button>
                 <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-redo" disabled aria-label="Redo" title="Redo"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-redo"/></svg></button>
                 <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-clear" aria-label="Clear" title="Clear"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-restart_alt"/></svg></button>
@@ -255,7 +250,6 @@
                     </span>
                   </span>
                 </span>
-              </div>
               </div>
             </div>
             <div class="pixels-maker-board">

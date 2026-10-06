@@ -527,18 +527,17 @@
 .pixels-solved-clock { display: block; font-size: 2rem; }
 
 /* THE MAKER. One column the width of its board, in the order of the work:
-   the head, which is the name and the category, with under them
+   the head, which is the name, the category and the size, with under them
    the one field more the category can ask for; then the toolbar set on the
    board, and the board's check over its empty corner.
    Its board is the game's, set in by a whole number of pixels as the game
-   is. `--chrome` is the height everything but the board takes, the toolbar
-   being two lines under 48rem, with
+   is. `--chrome` is the height everything but the board takes, with
    `--more` for the field the category asks for while it is shown, so the
    board takes what the window leaves and the whole maker is in view without
    scrolling. */
 .pixels-maker {
   --most: 600px;
-  --chrome: calc(202px + var(--more, 0px));
+  --chrome: calc(169px + var(--more, 0px));
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: .5rem;
@@ -548,21 +547,16 @@
 @media (min-width: 48rem) {
   .pixels-maker { --chrome: calc(185px + var(--more, 0px)); }
 }
-/* A window this short leaves a board too narrow for the toolbar on one line,
-   and its second line is counted. */
-@media (min-width: 48rem) and (max-height: 694px) {
-  .pixels-maker { --chrome: calc(218px + var(--more, 0px)); }
-}
 .pixels-maker[data-more] { --more: 2.5rem; }
 .pixels-maker-head { display: grid; gap: .5rem; }
-.pixels-maker-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .5rem; }
+.pixels-maker-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 7rem; gap: .5rem; }
 /* THE TOOLBAR, after Carbon's text toolbar: a bar of icon buttons the width
    of what they act on and set on it, in groups with a rule between them.
    The rule is drawn inside a group's edge and takes no room, because twelve
    buttons are exactly a phone's board across; a narrower board lets the
-   drawing's keys down to a line of their own. Back, Save, Delete and the
-   size start the bar, and the drawing's keys are pushed to its end, over
-   the squares; on a phone the two are a line each.
+   last group down to a line of its own. Back, Save and Delete start the
+   bar, over the board's corner, and the drawing's keys are pushed to its
+   end, over the squares.
 
    The bar is the container its step keys ask for its width, and stands
    over the board so the menu it opens does too. */
@@ -570,12 +564,12 @@
 
 .pixels-toolbar-group { display: flex; }
 .pixels-toolbar-group + .pixels-toolbar-group { box-shadow: inset 1px 0 0 var(--rux-border-subtle-01); }
-.pixels-toolbar-drawing { display: flex; margin-inline-start: auto; box-shadow: inset 1px 0 0 var(--rux-border-subtle-01); }
+.pixels-toolbar-push { margin-inline-start: auto; }
 /* THE STEP'S TWO KEYS are the maker's own, since Carbon's icon button is a
    fixed square that holds no word. Each is that button to look at, state
    for state and token for token, so it sits among the others unremarked,
-   and has its word beside its icon where the bar is 37rem or more across,
-   which is where the whole bar with its words is one line. The chosen one is filled as Carbon fills a
+   and has its word beside its icon where the bar is 32rem or more across,
+   which a phone's is not. The chosen one is filled as Carbon fills a
    selected button. */
 .pixels-step-key {
   display: inline-flex;
@@ -603,7 +597,7 @@
 .pixels-step-key:active { background: var(--rux-background-active); }
 .pixels-step-key:focus-visible { border-color: var(--rux-focus); box-shadow: inset 0 0 0 1px var(--rux-focus), inset 0 0 0 2px var(--rux-background); outline: none; }
 .pixels-step-key[aria-checked="true"] { background: var(--rux-background-selected); }
-@container (min-width: 37rem) {
+@container (min-width: 32rem) {
   .pixels-step-key { padding-inline: .625rem; }
   .pixels-step-key > span { display: inline; }
 }

@@ -3165,35 +3165,23 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
   inset-block-end: calc(var(--rux-spacing-09) + var(--rux-spacing-07) + var(--rux-spacing-05) + var(--scheduler-safe-bottom));
 }
 
-/* THE BAR IS THE CLOCK. A toast that only confirms what just happened wears a
-   line along its foot that runs out in four seconds, and data.js closes the
-   toast when that animation ends -- so the bar and the dismissal are one
-   thing, and pausing the bar pauses the dismissal. Only the card that holds
-   one is positioned, so every other toast keeps Carbon's own box. That card
-   clips what it holds, so on a theme that rounds a toast the bar's ends
-   follow the corners and do not stand out past them. */
-.scheduler-toast > :has(> .scheduler-toast__timer) { position: relative; overflow: hidden; }
-.scheduler-toast__timer {
-  position: absolute;
-  inset-block-end: 0;
-  inset-inline: 0;
-  block-size: 2px;
-  background: var(--rux-support-success);
-  transform-origin: 0 50%;
-  animation: scheduler-toast-timer 4s linear forwards;
+/* A TOAST THAT ASKS FOR NOTHING LEAVES BY ITSELF. Its card waits out
+   `--scheduler-toast-wait`, which data.js sets from how much there is to
+   read, then fades, and data.js closes the toast when the fade ends -- so
+   the fade is the clock and there is no second one to agree with it. Nothing
+   counts the wait down on screen, as Carbon's toast draws nothing. */
+.scheduler-toast__timed { animation: scheduler-toast-leave 240ms ease-in var(--scheduler-toast-wait, 5s) forwards; }
+@keyframes scheduler-toast-leave {
+  to { opacity: 0; }
 }
-@keyframes scheduler-toast-timer {
-  from { transform: scaleX(1); }
-  to { transform: scaleX(0); }
-}
-/* Reading stops the clock: a message never goes out from under the pointer,
-   or while the keyboard is somewhere inside it. */
-.scheduler-toast:hover .scheduler-toast__timer,
-.scheduler-toast:focus-within .scheduler-toast__timer { animation-play-state: paused; }
-/* With motion turned down the bar stops showing rather than stopping: it is
-   what times the toast, so it keeps running and only goes invisible. */
+/* Reading winds the clock back: under the pointer, or while the keyboard is
+   somewhere inside it, the card has no animation, so a message never goes
+   out from under the pointer and its whole wait starts again afterwards. */
+.scheduler-toast:hover .scheduler-toast__timed,
+.scheduler-toast:focus-within .scheduler-toast__timed { animation: none; }
+/* With motion turned down the card goes at once when its wait is over. */
 @media (prefers-reduced-motion: reduce) {
-  .scheduler-toast__timer { opacity: 0; }
+  .scheduler-toast__timed { animation-duration: 1ms; }
 }
 
 /* The page holds still behind a panel in front of the board. A drag that

@@ -274,6 +274,9 @@
     info: { cls: 'rux--toast-notification rux--toast-notification--info', icon: '#m-info-fill' },
     success: { cls: 'rux--toast-notification rux--toast-notification--success', icon: '#m-check_circle-fill' },
     warning: { cls: 'rux--toast-notification rux--toast-notification--warning', icon: '#m-report-fill' },
+    // Something still being done: it draws as a note, and `toast` leaves it up
+    // until what it is waiting on replaces it.
+    working: { cls: 'rux--toast-notification rux--toast-notification--info', icon: '#m-info-fill' },
   };
 
   /* One builder for both places: `say` puts a notice above the board and
@@ -389,18 +392,20 @@
     toastEl.hidden = false;
     const box = note(kind, title, subtitle, action, true);
     toastEl.appendChild(box);
-    /* A success with nothing to press is a receipt for something the person
-       just did and can see on the board, so it closes itself; a warning, an
-       error, the offer of an undo and the notice that a save is still in the
-       air all stay, because each of them is asking for something. The bar
-       along the toast's foot is the clock itself -- the toast goes when the
-       bar's animation ends -- so app.css pausing that animation under the
-       pointer pauses the dismissal, and there are not two clocks to agree. */
-    if (kind === 'success' && !action) {
-      const timer = el('span', 'scheduler-toast__timer');
-      timer.setAttribute('aria-hidden', 'true');
-      timer.addEventListener('animationend', () => { if (timer.isConnected) toast(null); });
-      box.appendChild(timer);
+    /* A success or a note with nothing to press tells the person something
+       and asks for nothing, so it closes itself: after five seconds, and
+       longer the more there is to read, fifteen characters a second and
+       never past ten. A warning, an error, the offer of an undo and the
+       notice that something is still being done all stay, because each is
+       asking for something or is not finished. The wait is the delay on the
+       card's own fade in app.css, and the toast goes when that fade ends --
+       so app.css taking the animation away under the pointer stops the
+       dismissal, and there are not two clocks to agree. */
+    if ((kind === 'success' || kind === 'info') && !action) {
+      const read = `${title ?? ''}${subtitle ?? ''}`.length;
+      box.style.setProperty('--scheduler-toast-wait', `${Math.min(10, Math.max(5, 2 + read / 15)).toFixed(1)}s`);
+      box.classList.add('scheduler-toast__timed');
+      box.addEventListener('animationend', e => { if (e.target === box && box.isConnected) toast(null); });
     }
   }
 
@@ -1637,7 +1642,7 @@
     toast('success', 'Trip moved', `Undo puts it back on ${label}.`, {
       label: 'Undo',
       onClick: async () => {
-        toast('info', 'Putting the trip back…', `Moving it to ${label}.`);
+        toast('working', 'Putting the trip back…', `Moving it to ${label}.`);
         try {
           schEl.setAttribute('aria-busy', 'true');
           gridEl.classList.add('scheduler-grid--busy');
@@ -3190,7 +3195,7 @@
     drawFleet(`scheduler-fleet-${leg}-best`);
     refreshDirty();
     if (!filled) toast('warning', 'No free, rested drivers for the empty seats');
-    else toast('info', `Filled ${filled} ${filled === 1 ? 'seat' : 'seats'}`,
+    else toast('success', `Filled ${filled} ${filled === 1 ? 'seat' : 'seats'}`,
       filled < seats.length ? `${seats.length - filled} still empty: no one else is free and rested. Check, then Save.` : 'Check them, then Save.');
   }
   panelFleet?.addEventListener('click', e => {
@@ -7594,7 +7599,7 @@
         if (r.dropPlace?.lat != null) await driveBackFrom(r.dropPlace);
         drawTimeline();
         remeasure();
-        toast('info', 'Drives measured again', 'Save keeps the new miles and times; Reset takes them back.');
+        toast('success', 'Drives measured again', 'Save keeps the new miles and times; Reset takes them back.');
       }
       summaryMenu.addEventListener('click', () => openItemsMenu(summaryMenu, [
         { label: 'Measure drives again', run: measureAgain },
@@ -10345,7 +10350,7 @@
       return result.data;
     };
     panelSave.disabled = true;
-    toast('info', creating ? 'Creating the trip…' : 'Saving the trip…');
+    toast('working', creating ? 'Creating the trip…' : 'Saving the trip…');
     try {
       /* Create writes every field, not the diff. `readForm` returns null when a
          field is missing, and spreading null would insert a trip with no
@@ -10523,7 +10528,7 @@
         if (bar) openPanel(bar);
       }
       if (error) toast('warning', 'The late save did not go through.', `${error.message} Check the trip before saving again.`);
-      else toast('info', landed[0], unsaved ? 'Reload the trip to see it before saving again.' : landed[1]);
+      else toast(unsaved ? 'warning' : 'success', landed[0], unsaved ? 'Reload the trip to see it before saving again.' : landed[1]);
     }, () => {});
   }
 
@@ -10744,7 +10749,7 @@
       const value = item.dataset.color || null;
       if (value === (bar.dataset.tripColor || null)) return;
       const label = item.querySelector('.rux--menu-item__label').textContent.trim();
-      toast('info', 'Changing the trip color…');
+      toast('working', 'Changing the trip color…');
       try {
         const { error } = await withTimeout(
           client.from('trips').update({ trip_bar_color: value }).eq('id', bar.dataset.tripId).then(r => r));
@@ -10898,7 +10903,7 @@
           status: picked ? value : c.status.value, dirty: picked };
       }));
     const label = DRIVER_STATUSES.find(x => x.value === value).label;
-    toast('info', 'Changing the driver status…');
+    toast('working', 'Changing the driver status…');
     try {
       const { error } = await withTimeout(
         client.rpc('sync_trip_driver_statuses', { p_trip_id: trip.id, p_statuses: list }).then(r => r));
@@ -10922,7 +10927,7 @@
   async function markHotel(bar) {
     if (!['outbound', 'return'].includes(bar.dataset.leg)) return;
     const booked = !bar.dataset.hotelBooked;
-    toast('info', booked ? 'Marking the hotel booked…' : 'Marking the hotel not booked…');
+    toast('working', booked ? 'Marking the hotel booked…' : 'Marking the hotel not booked…');
     try {
       const { error } = await withTimeout(
         client.from('trips').update({ [`hotel_booked_${bar.dataset.leg}`]: booked })
@@ -11109,7 +11114,7 @@
     const found = barSeat(bar);
     const driver = [...panelIndex.driversById.values()].find(d => String(d.id) === String(driverId));
     if (!found || !driver || same(found.seat?.driver_id, driver.id)) return;
-    toast('info', 'Assigning the driver…');
+    toast('working', 'Assigning the driver…');
     try {
       await saveSeats(found.trip, [{ assign: found.assign, driver }]);
       assignRead = null;
@@ -11302,7 +11307,7 @@
       if (!byTrip.has(r.trip)) byTrip.set(r.trip, []);
       byTrip.get(r.trip).push(r);
     }
-    toast('info', 'Assigning drivers…');
+    toast('working', 'Assigning drivers…');
     let saved = 0;
     const failed = new Map();
     for (const [trip, rows] of byTrip) {
@@ -11352,7 +11357,7 @@
       window.Rux?.modal?.open?.(unassignModal);
       return;
     }
-    toast('info', 'Removing the driver…');
+    toast('working', 'Removing the driver…');
     try {
       await saveSeats(found.trip, [{ assign: found.assign, driver: null }]);
       assignRead = null;
@@ -11389,7 +11394,7 @@
     // Held as values: the draw below replaces every bar.
     const { tripId } = bar.dataset;
     const fromBus = bar.dataset.busId || null;
-    toast('info', 'Taking the trip off its bus…');
+    toast('working', 'Taking the trip off its bus…');
     try {
       // The same write the drag makes for a drop on the Unassigned row, drawn the same way.
       await moveToBus(assignmentId, null);
@@ -12663,7 +12668,7 @@
       else toast('error', 'Only PDF files can be added. Export the file as a PDF, then add it again.');
       return false;
     }
-    if (!item) toast('info', `Uploading ${label === 'PO' ? 'the purchase order' : `the ${label.toLowerCase()}`}…`);
+    if (!item) toast('working', `Uploading ${label === 'PO' ? 'the purchase order' : `the ${label.toLowerCase()}`}…`);
     try {
       await uploadDocument(tripId, label, file);
     } catch (err) {
@@ -12687,7 +12692,7 @@
         toast('error', 'Only PDF files can be added. Export the file as a PDF, then try again.');
         return;
       }
-      toast('info', 'Replacing the file…');
+      toast('working', 'Replacing the file…');
       let doc;
       try {
         doc = await replaceDocument(tripId, old, file);
@@ -13225,7 +13230,7 @@
       if (!p.reminder) continue;
       if (p.texting && !docked) {
         toRemind.push({ label: `Remind ${p.name}`, run: async () => {
-          if (await copyText(p.reminder)) toast('info', 'Reminder copied', `Paste it in ${p.name}'s conversation.`);
+          if (await copyText(p.reminder)) toast('success', 'Reminder copied', `Paste it in ${p.name}'s conversation.`);
           closeContacts();
           window.open(p.texting, '_blank', 'noopener');
         } });
@@ -13641,7 +13646,7 @@
     if (!reason) return;
     window.Rux?.modal?.close?.('scheduler-cancel-modal');
     cancelling = null;
-    toast('info', 'Cancelling the trip…');
+    toast('working', 'Cancelling the trip…');
     try {
       const patch = { cancelled_at: new Date().toISOString(), cancellation_reason: reason };
       const { error } = await withTimeout(client.from('trips').update(patch).eq('id', id).then(r => r));
@@ -13705,7 +13710,7 @@
     if (!trip) return;
     window.Rux?.modal?.close?.('scheduler-cancelled-modal');
     reinstating = null;
-    toast('info', 'Bringing the trip back…');
+    toast('working', 'Bringing the trip back…');
     try {
       const { error } = await withTimeout(client.from('trips')
         .update({ cancelled_at: null, cancellation_reason: null }).eq('id', trip.id).then(r => r));

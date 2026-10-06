@@ -234,12 +234,11 @@
   /* The document panel's head is one line that Carbon's buttons lie over, not
      a row that holds them, so nothing in it asks for the bar's height: the
      head is given it, and the buttons are moved in from its corner. Its title
-     starts 8px inside the inset, so a title that lists and the way back,
-     each a button 8px wider than its mark, start on the inset itself. */
+     stays 16px in, over what the panel holds; the way back starts on the
+     inset, and a title that lists is a button 8px wider than its name. */
   :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .scheduler-viewer .rux--side-panel .rux--side-panel__header.rux--side-panel__header--has-title {
     min-block-size: calc(var(--rux-layout-size-height-md) + 2 * var(--scheduler-head-inset));
     padding-block: var(--scheduler-head-inset);
-    padding-inline-start: calc(var(--scheduler-head-inset) + var(--rux-spacing-03));
   }
   :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .scheduler-viewer .rux--side-panel .rux--side-panel__decorator-and-close {
     inset-block-start: var(--scheduler-head-inset);
@@ -252,7 +251,7 @@
     border-radius: 6px;
   }
   :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .scheduler-viewer .rux--side-panel .rux--btn.rux--side-panel__navigation-back-button {
-    margin-inline-start: calc(-1 * var(--rux-spacing-03));
+    margin-inline-start: calc(var(--scheduler-head-inset) - var(--rux-spacing-05));
     block-size: var(--rux-layout-size-height-md);
     inline-size: var(--rux-layout-size-height-md);
     border-radius: 6px;
@@ -296,6 +295,14 @@
     block-size: var(--rux-layout-size-height-md);
     inline-size: var(--rux-layout-size-height-md);
     border-radius: 6px;
+  }
+  /* apple-light's are capsules, as every button beside them in a head is:
+     Design keeps a panel's close and back buttons out of its capsule rule
+     because there they fill a corner, and here they stand clear of it. */
+  [data-theme="apple-light"] :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel .rux--btn--md.rux--side-panel__close-button,
+  [data-theme="apple-light"] .scheduler-viewer .rux--side-panel .rux--btn.rux--side-panel__navigation-back-button,
+  [data-theme="apple-light"] .scheduler-viewer .scheduler-viewer__pick {
+    border-radius: 999px;
   }
   /* Ant's footer buttons are ordinary buttons rather than a band, so they
      line up with the fields above them, 24px in (overrides.css), where
@@ -364,6 +371,32 @@
 :is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-summary__table {
   margin-inline: calc(1px - var(--rux-layout-density-padding-inline-local));
   margin-block-end: calc(1px - var(--rux-layout-density-padding-inline-local));
+}
+/* And its last row draws no rule of its own: a pixel over the ring it made
+   two lines of the tile's foot, the upper one cut square across the corners. */
+:is([data-theme="geist-dark"], [data-theme="apple-light"]) .scheduler-summary__table .rux--data-table tbody tr:last-child td {
+  border-block-end: 0;
+}
+/* apple-light's Summary is one box of labels over values, so its table reads
+   as the figures above it do: the column names in the figures' label type,
+   the values in the primary colour, the first and last columns on the tile's
+   own 16px, and the last row as far off the foot as the first label is off
+   the top. Carbon's table sets a bold header over grey cells and runs to the
+   tile's foot, which made two kinds of label in one box. */
+[data-theme="apple-light"] .scheduler-summary__table {
+  margin-block-end: calc(var(--rux-spacing-04) - var(--rux-layout-density-padding-inline-local));
+}
+[data-theme="apple-light"] .scheduler-summary__table .rux--data-table th {
+  font-size: var(--rux-label-01-font-size);
+  font-weight: var(--rux-label-01-font-weight);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+[data-theme="apple-light"] .scheduler-summary__table .rux--data-table td { color: var(--rux-text-primary); }
+[data-theme="apple-light"] .scheduler-summary__table .rux--data-table :is(th, td):first-child {
+  padding-inline-start: calc(var(--rux-layout-density-padding-inline-local) - 1px);
+}
+[data-theme="apple-light"] .scheduler-summary__table .rux--data-table :is(th, td):last-child {
+  padding-inline-end: calc(var(--rux-layout-density-padding-inline-local) - 1px);
 }
 /* A button's inset is 9px and its border here, where Carbon's is 15px, so
    the card's Add takes back 10px and its word still ends where the ages do. */
@@ -567,6 +600,10 @@
    every side panel in this theme a line, for a panel that slides over a page
    of its own colour, and here the grey page already shows each one's shape. */
 [data-theme="apple-light"] .scheduler-page .rux--side-panel { border: 0; }
+/* A list's dashed Add row stands for the next tile in that list, so it takes
+   a tile's 8px corner: Design's capsule rule for this theme's buttons made it
+   a capsule under a stack of cards. */
+[data-theme="apple-light"] .scheduler-list-additem .scheduler-list-add { border-radius: 8px; }
 /* A TRIP IS AN APPLE CALENDAR EVENT: the pale fill and darker words every
    light theme gives a bar, and a solid edge of the hue down its leading side. The edge is a painted strip, so the bar's border and shadow
    stay free for the week's run-on marks and the selection ring. A bar that

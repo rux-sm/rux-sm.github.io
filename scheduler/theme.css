@@ -604,6 +604,35 @@
    every side panel in this theme a line, for a panel that slides over a page
    of its own colour, and here the grey page already shows each one's shape. */
 [data-theme="apple-light"] .scheduler-page .rux--side-panel { border: 0; }
+/* A rest under 10 hours is a square like the busy ones beside it, in orange:
+   the hue at a tag's 14% on white under the darker orange a word takes on a
+   tint. The 40% under black figures every theme starts from made it the one
+   square on the roster drawn another way. */
+[data-theme="apple-light"] .scheduler-avail__cell--tight {
+  background-color: color-mix(in srgb, var(--rux-support-warning) 14%, #fff);
+  color: var(--scheduler-age-week);
+}
+/* A panel brought in front of the board floats, and takes this theme's lift
+   in place of the hard shadow Carbon casts. */
+[data-theme="apple-light"] .scheduler-page[data-takeover="editor"] .scheduler-trip .rux--side-panel,
+[data-theme="apple-light"] .scheduler-page[data-takeover="viewer"] .scheduler-viewer .rux--side-panel,
+[data-theme="apple-light"] .scheduler-page[data-takeover="roster"] .scheduler-aside {
+  box-shadow: var(--scheduler-lift);
+}
+/* One record's form is a region of its page, as the list it came from is:
+   white on the grey, on the surface's corner, 16px under the tab strip, its
+   fields 24px in as the trip editor's are. */
+[data-theme="apple-light"] .scheduler-pair-page .rux--tab-content {
+  margin-block-start: var(--rux-spacing-05);
+  padding: var(--rux-spacing-06);
+  background: var(--rux-layer);
+  border-radius: var(--scheduler-surface-radius);
+}
+/* A trip's forms, listed in the document panel, are tiles on the panel's own
+   white, so they keep the ring Design leaves off a tile on the page. */
+[data-theme="apple-light"]:not([data-rux-standalone]) .scheduler-print .rux--tile {
+  box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
+}
 /* A list's dashed Add row stands for the next tile in that list, so it takes
    a tile's 12px corner: Design's capsule rule for this theme's buttons made
    it a capsule under a stack of cards. */

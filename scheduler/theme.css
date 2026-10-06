@@ -48,26 +48,18 @@
 [data-theme="g90"],
 [data-theme="g100"],
 [data-theme="ant-dark"],
-[data-theme="spotify-dark"] {
+[data-theme="spotify-dark"],
+[data-theme="apple-light"] {
   --scheduler-mark-warning: var(--rux-support-warning);
   --scheduler-mark-error: var(--rux-support-error);
   --scheduler-mark-success: var(--rux-support-success);
 }
-/* apple-light's marks are Apple's default orange, red and green, the first
-   column of the system colours in Design's docs/apple-token-map.md, where its
-   support tokens are the increased-contrast column. A mark here is a filled
-   shape, a dot or a count, and Apple's own apps draw those in the vivid
-   colour under a white figure: Calendar's today, Reminders' list icons. The
-   support tokens are darkened to be read as words, which made a filled mark
-   brown. The words beside a mark keep that darker shade, through the age
-   colours below. The figure in a count is white on the orange as on the red,
-   2.3 to 1, which is Apple's own and less than a dark figure would hold. */
-[data-theme="apple-light"] {
-  --scheduler-mark-warning: #ff8d28;
-  --scheduler-mark-error: #ff383c;
-  --scheduler-mark-success: #34c759;
-  --scheduler-mark-on-warning: var(--rux-text-inverse);
-}
+/* The figure in a bar's alert count is the dark ink on the warning fill, which
+   is a light colour in every theme. apple-light's is Apple's vivid orange,
+   and Apple's own apps set a white figure on a vivid mark -- Calendar's today,
+   Reminders' list icons -- so this theme does, at 2.3 to 1, less than a dark
+   figure would hold. */
+[data-theme="apple-light"] { --scheduler-mark-on-warning: var(--rux-text-inverse); }
 /* Geist draws a badge's text and icons in the hue's 900 step, and the bars are
    its subtle badges, so the marks take the 900 steps of amber, red and green,
    and done takes the primary text. The lowest is red on the red bar, 4.5 to 1. */
@@ -87,7 +79,9 @@
    White and g10 take Carbon's 70 steps, the ink their bars are written in,
    5.8 to 1 at the least. The Carbon dark themes and spotify-dark, whose bars
    are Carbon's too, take green 30, the warning itself and red 30, 4.5 to 1 on
-   every bar. apple-light darkens its own three support colours to 4.9 to 1.
+   every bar. apple-light darkens Apple's increased-contrast green, orange and
+   red to 4.9 to 1; its support colours are the vivid ones, which are for a
+   filled mark and not for words.
    Geist's green and amber marks are already its text steps, and its red is
    lifted a tenth toward white to clear the teal bar. Ant's bars are bright
    enough that white itself holds only 4.5 to 5.2 on four of them, so its
@@ -108,9 +102,9 @@
   --scheduler-age-old: #ffb3b8;
 }
 [data-theme="apple-light"] {
-  --scheduler-age-new: color-mix(in srgb, var(--rux-support-success) 80%, #000);
-  --scheduler-age-week: color-mix(in srgb, var(--rux-support-warning) 85%, #000);
-  --scheduler-age-old: color-mix(in srgb, var(--rux-support-error) 88%, #000);
+  --scheduler-age-new: color-mix(in srgb, #008932 80%, #000);
+  --scheduler-age-week: color-mix(in srgb, #c55300 85%, #000);
+  --scheduler-age-old: color-mix(in srgb, #e9152d 88%, #000);
 }
 [data-theme="geist-dark"] {
   --scheduler-age-new: var(--scheduler-mark-success);

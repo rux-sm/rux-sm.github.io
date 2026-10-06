@@ -1005,3 +1005,8 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
     border-inline-start: 1px solid var(--rux-border-subtle-01);
   }
 }
+
+/* A status tag over a line of detail in a table cell keeps its own width.
+   The pair's lines are a flex column, which stretches each child to the
+   column's width, and Carbon's tag is as wide as it is told to be. */
+.scheduler-pair-cell__lines > .rux--tag { align-self: flex-start; }

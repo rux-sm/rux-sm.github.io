@@ -8,8 +8,10 @@
    bar is its row count times that plus its block padding. */
 
 /* The lift a trip held in a drag wears, and the selected trip and its card
-   wear too, so what is picked up stands over the week the same way. */
-:root { --scheduler-lift: 0 10px 28px rgb(0 0 0 / .5); }
+   wear too, so what is picked up stands over the week the same way. This is
+   the default, and carries no weight of its own: theme.css loads before this
+   file, and a `:root` here would outrank the lift a theme sets there. */
+:where(:root) { --scheduler-lift: 0 10px 28px rgb(0 0 0 / .5); }
 
 /* The phone's safe areas: the home bar under the page, and the camera cutout
    beside it in landscape. Zero everywhere else. */
@@ -3273,10 +3275,20 @@ html:has(.scheduler-page[data-takeover]) {
    full height and hands the wheel on to the page. The schedule's own pane caps
    its height and keeps the wheel, because there the board fills the window. */
 .scheduler-week--static { max-block-size: none; overscroll-behavior-y: auto; }
+/* No toolbar stands over this week to carry its top corners, so it rounds all
+   four itself where the theme rounds its surfaces. */
+.scheduler-week--static { border-radius: var(--scheduler-surface-radius, 0); }
 .scheduler-week--static .scheduler-bar:hover { background-color: var(--scheduler-bg); }
 .scheduler-week--static .scheduler-bar.scheduler-bar--amber:hover { box-shadow: none; }
 /* A list wider than a phone scrolls sideways inside its own box. */
-.scheduler-share-scroll { overflow-x: auto; }
+/* The page's list of changes is a region of the page as the week above it
+   is, on the same surface, edge and corner. */
+.scheduler-share-scroll {
+  overflow-x: auto;
+  background: var(--rux-layer);
+  border: var(--scheduler-region-edge, 0 solid transparent);
+  border-radius: var(--scheduler-surface-radius, 0);
+}
 .scheduler-share-scroll[hidden] { display: none; }
 
 /* The staff maintenance page's title row: the heading and its dates, then the

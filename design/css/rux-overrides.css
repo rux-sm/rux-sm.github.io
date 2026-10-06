@@ -1944,6 +1944,13 @@
 :where([data-theme^="apple-"]) .rux--toggle__check {
   fill: var(--rux-button-primary);
 }
+/* A progress bar is a capsule, as a Mac's is. Carbon sizes the filled part
+   by scaling it, which would squash a corner of its own, so the track clips
+   it: the bar's outer ends are round and the end of the filled part square. */
+[data-theme^="apple-"] .rux--progress-bar__track {
+  overflow: hidden;
+  border-radius: 999px;
+}
 /* The segmented control is a grey capsule with no ring, and its chosen
    option the accent colour under white words, as AppKit draws one in the
    front window. */

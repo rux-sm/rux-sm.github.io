@@ -139,6 +139,8 @@ which is the secondary fill on white.
 | Checkbox | 16 by 16 | 5.5 | filled |
 | Radio | 16 by 16 | a circle | filled |
 | Switch | 54 by 24 | a capsule | a white thumb in a filled track |
+| Progress bar | 8 high | a capsule | the accent in a track of 240, 240, 240 |
+| Slider | a track 6 high | a capsule | the accent up to a white thumb, 20 by 16 |
 
 Every control's text is 13pt at every size.
 

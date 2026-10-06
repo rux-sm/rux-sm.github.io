@@ -1866,6 +1866,36 @@
 [data-theme="apple-light"] a.rux--side-nav__link--current::before {
   content: none;
 }
+/* A DIALOG FLOATS TOO, over the dimmed page, and casts the same shadow. Its
+   close button stands 12px clear of the corner as a circle, the theme's
+   control size, as a Mac's dialog keeps its close: Carbon's fills the corner
+   as a 48px square, the one square button this theme had left. */
+[data-theme="apple-light"] .rux--modal-container {
+  box-shadow: 0 8px 24px var(--rux-shadow);
+}
+[data-theme="apple-light"] .rux--modal-close-button {
+  inset-block-start: var(--rux-spacing-04);
+  inset-inline-end: var(--rux-spacing-04);
+  border-radius: 50%;
+}
+[data-theme="apple-light"] .rux--modal-close {
+  padding: 6px;
+  border-radius: 50%;
+  block-size: 2.25rem;
+  inline-size: 2.25rem;
+}
+/* A TILE ON THE PAGE IS TOLD APART BY ITS FILL, white on the grey, as a
+   table's box and every other region of the page is, so it draws no ring.
+   The ring is for a tile that stands on a surface of its own colour, where
+   it would otherwise have no shape: inside a panel, a dialog, a popover, a
+   table's box, another tile, or anything that names a layer. An app that
+   stands tiles on a white region of its own gives them the ring there. */
+[data-theme="apple-light"] .rux--tile {
+  box-shadow: none;
+}
+[data-theme="apple-light"] :is(.rux--side-panel, .rux--modal-container, .rux--popover-content, .rux--data-table-container, .rux--header-panel, .rux--side-nav, .rux--tile, [class*="rux--layer-"]) .rux--tile {
+  box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
+}
 /* A CHECKBOX AND A RADIO REST AS A GREY FILL WITH NO RING, measured on the
    Mac's own: 16px, a 5.5px corner on the box, 230 230 230 at rest, which is
    the fill colour on white. Chosen, each fills with the button's blue under

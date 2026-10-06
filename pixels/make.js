@@ -5,8 +5,9 @@
    picture changes, and the check in the board's corner says whether a
    player can solve it by logic alone, how hard that is and how much of the
    board is filled; squares that would need a guess are outlined. COLOUR:
-   pick one of the thirty-three inks and paint any square, filled or not;
-   that is the picture the puzzle finishes as. The paintbrush colours the
+   the toolbar's last button shows the colour in hand and opens the
+   thirty-three inks; pick one and paint any square, filled or not; that is
+   the picture the puzzle finishes as. The paintbrush colours the
    squares tapped or dragged over, the bucket every square joined to the one
    tapped through its own ink, and the eraser puts a square back as it
    starts: dark if it is filled, light if not. A picture never coloured
@@ -44,12 +45,13 @@
   const $ = id => document.getElementById(id);
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
   const day = $('pixels-day'), theme = $('pixels-theme');
-  const inks = $('pixels-inks'), tools = $('pixels-tool'), steps = $('pixels-step'), size = $('pixels-size');
+  const inks = $('pixels-inks'), inkKey = $('pixels-ink'), inkMenu = $('pixels-ink-menu');
+  const tools = $('pixels-tool'), steps = $('pixels-step'), size = $('pixels-size');
   const undoKey = $('pixels-undo'), redoKey = $('pixels-redo');
   const DRAFT = 'pixels-draft';
   // The inks, a colour at a time: its light, its middle and its dark, and
   // last white, grey and black. Each is the character a picture stores,
-  // then its name. app.css lays them out a colour to a column or to a row.
+  // then its name. app.css lays them out a colour to a row.
   const INKS = [
     ['c', 'Light red'], ['2', 'Red'], ['m', 'Dark red'],
     ['d', 'Light orange'], ['3', 'Orange'], ['n', 'Dark orange'],
@@ -186,13 +188,13 @@
     b.setAttribute('aria-checked', on(b));
     b.classList.toggle('rux--btn--selected', on(b));
   });
-  // The tools and inks are there in both steps and out of reach in Draw, so
-  // the board never moves.
+  // The tools and the colour are there in both steps and out of reach in
+  // Draw, so the toolbar never changes shape.
   const setStep = to => {
     step = to;
     if (step === 'colour' && !colours) colours = draft.map((r, y) => r.map((_, x) => plain(y, x)));
-    inks.inert = step !== 'colour';
-    tools.querySelectorAll('button').forEach(b => { b.disabled = step !== 'colour'; });
+    [...tools.querySelectorAll('button'), inkKey].forEach(b => { b.disabled = step !== 'colour'; });
+    if (step !== 'colour') window.Rux.popover?.close(inkMenu);
     choose(steps, b => b.dataset.step === step);
     render();
   };
@@ -212,13 +214,23 @@
     return b;
   };
   inks.replaceChildren(...INKS.map(swatch));
+  // The colour in hand: ringed among the inks, and shown and named on the
+  // toolbar's button that opens them.
   const setInk = to => {
     ink = to;
-    inks.querySelectorAll('.pixels-ink').forEach(b => b.setAttribute('aria-checked', parseInt(b.dataset.ink, 36) === ink));
+    const id = ink.toString(36);
+    inks.querySelectorAll('.pixels-ink').forEach(b => b.setAttribute('aria-checked', b.dataset.ink === id));
+    inkKey.firstElementChild.dataset.ink = id;
+    inkKey.title = `Colour: ${INKS.find(([i]) => i === id)[1]}`;
+    inkKey.setAttribute('aria-label', inkKey.title);
   };
+  setInk(ink);
+  // Picking one closes the menu, and the board is ready for it.
   inks.addEventListener('click', e => {
     const picked = e.target.closest('.pixels-ink');
-    if (picked) setInk(parseInt(picked.dataset.ink, 36));
+    if (!picked) return;
+    setInk(parseInt(picked.dataset.ink, 36));
+    window.Rux.popover?.close(inkMenu, { restoreFocus: true });
   });
   // The tool the colour step works with: paint, fill or erase.
   let tool = 'paint';
@@ -343,7 +355,7 @@
   // The arrows move along the toolbar, as they do along Carbon's.
   $('pixels-toolbar').addEventListener('keydown', e => {
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-    const keys = [...e.currentTarget.querySelectorAll('button:not(:disabled)')], at = keys.indexOf(document.activeElement);
+    const keys = [...e.currentTarget.querySelectorAll('.rux--btn')].filter(b => !b.disabled), at = keys.indexOf(document.activeElement);
     if (at < 0) return;
     e.preventDefault();
     keys[(at + (e.key === 'ArrowRight' ? 1 : keys.length - 1)) % keys.length].focus();

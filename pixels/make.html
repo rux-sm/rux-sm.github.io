@@ -184,9 +184,8 @@
         <!-- One column the width of the board, in the order of the work: the
              name, the category and the size; a toolbar of everything that acts
              on the drawing, set on the board as Carbon's text toolbar is set on
-             its text; the board, its check in its corner; the inks; then Save
-             and Discard. On a window wider than it is tall the inks stand
-             beside the board. Every control is Design's small size, 32px. -->
+             its text; the board, its check in its corner; then Save and
+             Discard. Every control is Design's small size, 32px. -->
         <form class="pixels-maker" id="pixels-form" novalidate>
           <div class="pixels-maker-head">
             <div class="pixels-maker-top">
@@ -215,7 +214,7 @@
             <div id="pixels-more-day" hidden><input id="pixels-day" class="rux--text-input rux--layout--size-sm" type="date" aria-label="Day of the puzzle"></div>
           </div>
           <div class="pixels-maker-work">
-            <!-- What acts on the drawing, in three groups: what takes a move back or wipes the board, the step, and the colour step's tools, which Draw puts out of reach. -->
+            <!-- What acts on the drawing, in four groups: what takes a move back or wipes the board, the step, the colour step's tools, and its colour, which opens the inks. Draw puts the last two out of reach. -->
             <div class="pixels-toolbar" role="toolbar" aria-label="Drawing" id="pixels-toolbar">
               <div class="pixels-toolbar-group">
                 <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-undo" disabled aria-label="Undo" title="Undo"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-undo"/></svg></button>
@@ -231,6 +230,17 @@
                 <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" role="radio" aria-checked="false" data-tool="fill" disabled aria-label="Bucket" title="Bucket"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-format_color_fill"/></svg></button>
                 <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" role="radio" aria-checked="false" data-tool="erase" disabled aria-label="Eraser" title="Eraser"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-ink_eraser"/></svg></button>
               </div>
+              <div class="pixels-toolbar-group">
+                <!-- The colour in hand; pressing it opens the inks, which make.js fills. -->
+                <span class="rux--popover-container rux--popover--bottom-start rux--popover--drop-shadow" id="pixels-ink-menu">
+                  <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-ink" aria-label="Colour" title="Colour" aria-haspopup="true" aria-expanded="false" disabled><span class="pixels-ink-now" data-ink="2"></span></button>
+                  <span class="rux--popover">
+                    <span class="rux--popover-content">
+                      <span class="pixels-inks" id="pixels-inks" role="radiogroup" aria-label="Colour"></span>
+                    </span>
+                  </span>
+                </span>
+              </div>
             </div>
             <div class="pixels-maker-board">
               <div id="pixels-board"></div>
@@ -238,8 +248,6 @@
               <div class="pixels-maker-check" id="pixels-check" aria-live="polite"></div>
             </div>
           </div>
-          <!-- The inks, which make.js fills. They are dimmed while drawing, so the board never moves. -->
-          <div class="pixels-inks" id="pixels-inks" role="radiogroup" aria-label="Colour" inert></div>
           <div class="pixels-maker-end">
             <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm" id="pixels-save" disabled>Save</button>
             <button type="button" class="rux--btn rux--btn--secondary rux--btn--sm rux--layout--size-sm" id="pixels-discard">Discard</button>

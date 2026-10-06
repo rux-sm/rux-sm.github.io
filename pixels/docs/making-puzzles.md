@@ -48,13 +48,15 @@ squares and let the extra room go to detail, not to a bigger blob.
 ## The colour picture
 
 Once the tag is green, Colour paints the picture the player sees at the
-finish. Pick one of the thirty-three inks and paint any square, filled or
-empty. The palette is ten colours, each light, middle and dark, then white,
-grey and black. It is dimmed while Draw is on.
+finish. The toolbar's last button shows the colour in hand; press it for the
+thirty-three inks, pick one and paint any square, filled or empty. The inks
+are ten colours, each a row of light, middle and dark, then white, grey and
+black.
 
 - **The toolbar over the board** holds everything that acts on the drawing,
   each an icon that names itself when you rest on it: Undo, Redo and Clear,
-  then Draw and Colour, then the paintbrush, the bucket and the eraser.
+  then Draw and Colour, then the paintbrush, the bucket and the eraser, then
+  the colour.
 - **Paintbrush, Bucket and Eraser** work in Colour. The paintbrush colours
   the squares you tap or drag over. The bucket colours every square joined
   to the one you tap that has its colour. The eraser puts a square back

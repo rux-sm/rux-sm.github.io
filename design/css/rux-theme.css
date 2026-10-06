@@ -1246,6 +1246,7 @@
      into black, which keeps the hue's whole strength; mixed into this
      theme's grey surfaces a tint loses a third of it and reads muddy. Red's
      step makes 4.1 to 1 on its tint, so it is moved 13% toward white, 4.7.
+   - A notification's fill is the same mix at 28%, seven tenths of a tag's.
    - The inverse surface is a light one here, so what is drawn on it takes
      Apple's light increased-contrast steps. */
 [data-theme="apple-dark"] {
@@ -1435,10 +1436,10 @@
   --rux-tag-hover-warm-gray: #513d2d;
 
   /* notification */
-  --rux-notification-background-error: #462c2c;
-  --rux-notification-background-success: #29402f;
-  --rux-notification-background-info: #223746;
-  --rux-notification-background-warning: #463729;
+  --rux-notification-background-error: #471213;
+  --rux-notification-background-success: #0d3b19;
+  --rux-notification-background-info: #002947;
+  --rux-notification-background-warning: #47290d;
   --rux-notification-action-hover: #323232;
   --rux-notification-action-tertiary-inverse: #1e1e1e;
   --rux-notification-action-tertiary-inverse-active: #48484a;

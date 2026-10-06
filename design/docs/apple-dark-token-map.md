@@ -201,10 +201,10 @@ step, no tint, and no chat surface; the third column says which.
 | `#dba679` | Brown, increased contrast, dark | read | `tag-border-warm-gray`, `tag-color-warm-gray` |
 | `#493729` | Brown at 40% on black | derived | `tag-background-warm-gray` |
 | `#513d2d` | Brown at 44% on black | derived | `tag-hover-warm-gray` |
-| `#462c2c` | Red at 14% on the raised surface | derived | `notification-background-error` |
-| `#29402f` | Green at 14% on the raised surface | derived | `notification-background-success` |
-| `#223746` | Blue at 14% on the raised surface | derived | `notification-background-info` |
-| `#463729` | Orange at 14% on the raised surface | derived | `notification-background-warning` |
+| `#471213` | Red at 28% on black | derived | `notification-background-error` |
+| `#0d3b19` | Green at 28% on black | derived | `notification-background-success` |
+| `#002947` | Blue at 28% on black | derived | `notification-background-info` |
+| `#47290d` | Orange at 28% on black | derived | `notification-background-warning` |
 | `rgba(141, 141, 141, 0.4)` | Carbon's own dark set | derived | `chat-button-active` |
 | `rgba(141, 141, 141, 0.16)` | Carbon's own dark set | derived | `chat-button-hover` |
 | `rgba(141, 141, 141, 0.24)` | Carbon's own dark set | derived | `chat-button-selected` |

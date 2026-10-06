@@ -55,7 +55,7 @@ black.
 
 - **The toolbar over the board** holds every button, each an icon that
   names itself when you rest on it. At its start are Back and Save, with
-  Delete for a saved puzzle. At its end, over the squares, are Undo, Redo
+  Delete for a saved puzzle, then the size. At its end, over the squares, are Undo, Redo
   and Clear, then Draw and Colour, then the paintbrush, the bucket and the
   eraser, then the colour.
   Draw and Colour have their words beside their icons where the bar has the

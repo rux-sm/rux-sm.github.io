@@ -54,9 +54,10 @@ are ten colours, each a row of light, middle and dark, then white, grey and
 black.
 
 - **The toolbar over the board** holds every button, each an icon that
-  names itself when you rest on it: Back, then Undo, Redo and Clear, then
-  Draw and Colour, then the paintbrush, the bucket and the eraser, then the
-  colour, and at the end Save, with Delete before it for a saved puzzle.
+  names itself when you rest on it. At its start are Back and Save, with
+  Delete for a saved puzzle. At its end, over the squares, are Undo, Redo
+  and Clear, then Draw and Colour, then the paintbrush, the bucket and the
+  eraser, then the colour.
   Draw and Colour have their words beside their icons where the bar has the
   room, and are icons alone on a phone.
 - **Paintbrush, Bucket and Eraser** work in Colour. The paintbrush colours

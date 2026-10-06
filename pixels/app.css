@@ -554,7 +554,9 @@
    of what they act on and set on it, in groups with a rule between them.
    The rule is drawn inside a group's edge and takes no room, because twelve
    buttons are exactly a phone's board across; a narrower board lets the
-   last group down to a line of its own. Save and Delete end the bar.
+   last group down to a line of its own. Back, Save and Delete start the
+   bar, over the board's corner, and the drawing's keys are pushed to its
+   end, over the squares.
 
    The bar is the container its step keys ask for its width, and stands
    over the board so the menu it opens does too. */
@@ -562,7 +564,7 @@
 
 .pixels-toolbar-group { display: flex; }
 .pixels-toolbar-group + .pixels-toolbar-group { box-shadow: inset 1px 0 0 var(--rux-border-subtle-01); }
-.pixels-toolbar-end { margin-inline-start: auto; }
+.pixels-toolbar-push { margin-inline-start: auto; }
 /* THE STEP'S TWO KEYS are the maker's own, since Carbon's icon button is a
    fixed square that holds no word. Each is that button to look at, state
    for state and token for token, so it sits among the others unremarked,

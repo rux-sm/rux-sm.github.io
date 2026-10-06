@@ -187,9 +187,9 @@
         <!-- One column the width of the board, in the order of the work: the
              name, the category and the size; a toolbar of everything that acts
              on the drawing, set on the board as Carbon's text toolbar is set on
-             its text, with Back at its start and Save at its end; then the
-             board, its check in its corner. Every control is Design's small
-             size, 32px. -->
+             its text, Back and Save at its start and the drawing's keys at
+             its end; then the board, its check in its corner. Every control is
+             Design's small size, 32px. -->
         <form class="pixels-maker" id="pixels-form" novalidate>
           <div class="pixels-maker-head">
             <div class="pixels-maker-top">
@@ -218,12 +218,14 @@
             <div id="pixels-more-day" hidden><input id="pixels-day" class="rux--text-input rux--layout--size-sm" type="date" aria-label="Day of the puzzle"></div>
           </div>
           <div class="pixels-maker-work">
-            <!-- Back to the puzzles, then what acts on the drawing in four groups: what takes a move back or wipes the board, the step, the colour step's tools, and its colour, which opens the inks; Draw puts the last two out of reach. At the end, Save, and Delete for a saved puzzle. -->
+            <!-- At the bar's start, the puzzle's own: Back to the puzzles, Save, and Delete for a saved one. At its end, over the squares, what acts on the drawing in four groups: what takes a move back or wipes the board, the step, the colour step's tools, and its colour, which opens the inks; Draw puts the last two out of reach. -->
             <div class="pixels-toolbar" role="toolbar" aria-label="Maker" id="pixels-toolbar">
               <div class="pixels-toolbar-group">
                 <a class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" href="./" aria-label="Back to the puzzles" title="Back to the puzzles"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-arrow_back"/></svg></a>
+                <button type="submit" class="rux--btn rux--btn--primary rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-save" aria-label="Save" title="Save" disabled><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-save"/></svg></button>
+                <button type="button" class="rux--btn rux--btn--danger--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-delete" data-rux-open="pixels-delete-modal" aria-label="Delete" title="Delete" hidden><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-delete"/></svg></button>
               </div>
-              <div class="pixels-toolbar-group">
+              <div class="pixels-toolbar-group pixels-toolbar-push">
                 <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-undo" disabled aria-label="Undo" title="Undo"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-undo"/></svg></button>
                 <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-redo" disabled aria-label="Redo" title="Redo"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-redo"/></svg></button>
                 <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-clear" aria-label="Clear" title="Clear"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-restart_alt"/></svg></button>
@@ -240,7 +242,7 @@
               </div>
               <div class="pixels-toolbar-group">
                 <!-- The colour in hand; pressing it opens the inks, which make.js fills. -->
-                <span class="rux--popover-container rux--popover--bottom-start rux--popover--drop-shadow" id="pixels-ink-menu">
+                <span class="rux--popover-container rux--popover--bottom-end rux--popover--drop-shadow" id="pixels-ink-menu">
                   <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-ink" aria-label="Colour" title="Colour" aria-haspopup="true" aria-expanded="false" disabled><span class="pixels-ink-now" data-ink="2"></span></button>
                   <span class="rux--popover">
                     <span class="rux--popover-content">
@@ -248,10 +250,6 @@
                     </span>
                   </span>
                 </span>
-              </div>
-              <div class="pixels-toolbar-group pixels-toolbar-end">
-                <button type="button" class="rux--btn rux--btn--danger--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-delete" data-rux-open="pixels-delete-modal" aria-label="Delete" title="Delete" hidden><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-delete"/></svg></button>
-                <button type="submit" class="rux--btn rux--btn--primary rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-save" aria-label="Save" title="Save" disabled><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-save"/></svg></button>
               </div>
             </div>
             <div class="pixels-maker-board">

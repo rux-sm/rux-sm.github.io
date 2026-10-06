@@ -506,7 +506,8 @@
      it, so the board has to keep the move through every read that cannot know
      of it yet. Each move is held here by its assignment: the trip, the bus it
      went to, the row an empty slot was given, and whether the database has
-     answered. A read is handed every held move on its way in, because one that
+     answered. An empty slot has no assignment until the database makes its
+     row, so it is held under a stand-in row and id until then. A read is handed every held move on its way in, because one that
      began before a write finished comes back without it and would draw the bar
      back; a move is let go by the first read that began after the database
      took it, which carries the move itself. */
@@ -515,14 +516,20 @@
   // Bars lifted and not yet let go, and whether a draw waited for them.
   let barsInHand = 0;
   let drawOwed = false;
+  // Counts the stand-in rows, so each has an id of its own.
+  let standIns = 0;
 
   // Writes one move into a week's payload: the row's bus, or the row a slot was given.
   function moveInto(data, id, move) {
     const trip = data?.trips?.find(t => String(t.id) === String(move.tripId));
     if (!trip) return false;
-    const row = (trip.trip_assignments || []).find(a => String(a.id) === id);
+    const rows = trip.trip_assignments || [];
+    const row = rows.find(a => String(a.id) === id);
     if (row) row.bus_id = move.busId;
-    else if (move.row) trip.trip_assignments = [...(trip.trip_assignments || []), { ...move.row, bus_id: move.busId }];
+    /* A slot some row already fills gets no stand-in beside it: a read can come
+       back holding the row the insert made before the insert's own answer. */
+    else if (move.standIn && rows.some(a => (a.leg || 'outbound') === move.row.leg && (a.position ?? 0) === move.row.position)) return true;
+    else if (move.row) trip.trip_assignments = [...rows, { ...move.row, bus_id: move.busId }];
     else return false;
     return true;
   }
@@ -530,18 +537,45 @@
   /* Holds a move and writes it into the held week. `saving` is a move the
      database has not answered yet, which its bar wears; the other kind counts
      the reads begun so far, so a later one can let it go. */
-  function holdMove(tripId, assignmentId, busId, { saving = false, row = null } = {}) {
+  function holdMove(tripId, assignmentId, busId, { saving = false, row = null, standIn = false } = {}) {
     const id = String(assignmentId);
-    const move = { tripId, busId, saving, row: row ?? heldMoves.get(id)?.row ?? null, since: readsBegun };
+    const move = { tripId, busId, saving, standIn, row: row ?? heldMoves.get(id)?.row ?? null, since: readsBegun };
     heldMoves.set(id, move);
     return !!cached && moveInto(cached.data, id, move);
   }
 
-  // Lets go of a move the database refused and writes the bus it came from back into the held week.
+  // The trip a held move is on, in the held week.
+  const heldTrip = tripId => cached?.data.trips.find(t => String(t.id) === String(tripId));
+
+  /* Lets go of a move the database refused. The bus it came from is written
+     back into the held week; a stand-in row is taken out, which leaves the
+     slot empty as it was. */
   function dropMove(tripId, assignmentId, busId) {
     const id = String(assignmentId);
+    const move = heldMoves.get(id);
     heldMoves.delete(id);
-    if (cached) moveInto(cached.data, id, { tripId, busId });
+    const trip = heldTrip(tripId);
+    if (!trip) return;
+    if (move?.standIn) trip.trip_assignments = (trip.trip_assignments || []).filter(a => String(a.id) !== id);
+    else moveInto(cached.data, id, { tripId, busId });
+  }
+
+  /* Turns a slot's stand-in into the row the database made, in the held week
+     and on its bar, so the answer needs no draw. */
+  function fillStandIn(tripId, standInId, made) {
+    heldMoves.delete(standInId);
+    const trip = heldTrip(tripId);
+    const rows = trip?.trip_assignments || [];
+    const bar = gridEl.querySelector(`.scheduler-bar[data-assignment-id="${CSS.escape(standInId)}"]`);
+    // A read that came back between the insert and its answer already holds the real row.
+    if (rows.some(a => String(a.id) === String(made.id))) {
+      trip.trip_assignments = rows.filter(a => String(a.id) !== standInId);
+      bar?.remove();
+      return;
+    }
+    const row = rows.find(a => String(a.id) === standInId);
+    if (row) Object.assign(row, made);
+    if (bar) bar.dataset.assignmentId = made.id;
   }
 
   async function read(weekStart) {
@@ -1582,8 +1616,8 @@
        * an interrupted gesture writes nothing; only a release drops.
      A bar let go on another bus is drawn there at once, marked as saving,
      while its write is in flight; the database's answer takes the mark off
-     with a ring, or draws the bar back with a notice. It cannot be lifted
-     again until then. The read that follows is what the board ends on. */
+     with a ring, or draws the bar back with a notice. It takes no pointer
+     until then, so nothing else can be asked of a row still being written. The read that follows is what the board ends on. */
 
   /* A mouse lifts a bar after 4px of vertical travel. A finger moves that far
      just landing, so it must stay within TOUCH_SLOP for TOUCH_HOLD_MS; travel
@@ -1757,7 +1791,7 @@
       if (down.button !== 0) return;
       // The trip open in the editor is locked on the board.
       if (isEditorTrip(bar)) return;
-      // One bar at a time, and not one whose last move the database has yet to answer.
+      // One bar at a time. A bar that is saving takes no pointer, in app.css; this is for a finger already down on it.
       if (barsInHand || heldMoves.get(bar.dataset.assignmentId)?.saving) return;
       const touch = down.pointerType === 'touch';
       const startX = down.clientX, startY = down.clientY;
@@ -1912,41 +1946,32 @@
         const write = (assignmentId ? moveToBus(assignmentId, toBus) : fillSlot(tripId, leg || 'outbound', +slot || 0, toBus))
           .then(made => ({ made }), e => ({ failed: String(e && e.message ? e.message : e) }));
         await settle(restIn(target), lane);
-        /* A bar with a row of its own is drawn on its new bus now, marked as
-           saving, and the copy comes away over it: from here the board is drawn
-           from what is held, so another move or a change of week draws it
-           right. An empty slot has no row until the database makes one, so its
-           copy waits in the lit row for that. */
-        if (assignmentId) {
-          holdMove(tripId, assignmentId, toBus, { saving: true });
-          if (!drawHeld()) unpack();
-          clear();
-          putDown();
-        }
+        /* The bar is drawn on its new bus now, marked as saving, and the copy
+           comes away over it: from here the board is drawn from what is held,
+           so another move or a change of week draws it right. An empty slot
+           is held under a stand-in row until the database makes the real one. */
+        const heldAs = assignmentId || `saving-${++standIns}`;
+        holdMove(tripId, heldAs, toBus, assignmentId ? { saving: true } : {
+          saving: true, standIn: true,
+          row: { id: heldAs, bus_id: toBus, position: +slot || 0, leg: leg || 'outbound', active_roles: null, needs: null, vehicle_type: null, trip_drivers: [] },
+        });
+        if (!drawHeld()) unpack();
+        clear();
+        putDown();
         const { made, failed } = await write;
         schEl.removeAttribute('aria-busy');
         if (failed) {
-          /* The bar is drawn back where it was, or the slot's copy slides
-             home, and the week is read after, because a move that threw may
-             still have landed. */
-          if (assignmentId) {
-            dropMove(tripId, assignmentId, fromBus);
-            drawHeld();
-          } else {
-            clear();
-            unpack();
-            bar.classList.remove('scheduler-bar--leaving');
-            await settle(origin.top);
-            putDown();
-          }
+          /* The bar is drawn back where it was, and the week is read after,
+             because a move that threw may still have landed. */
+          dropMove(tripId, heldAs, fromBus);
+          drawHeld();
           toast('error', 'Could not move that trip', failed);
           readAfterMove();
           return;
         }
         recordBusChange(tripId, fromBus, toBus);
-        if (made) assignmentId = made.id;
+        if (made) { fillStandIn(tripId, heldAs, made); assignmentId = made.id; }
         const landed = drawBusMove(tripId, assignmentId, toBus, made);
-        if (made) { clear(); putDown(); }
         refreshEditor(assignmentId);
         /* An undo is offered only for a bar still on the board: the week may
            have changed while the move was written, and an undo there would

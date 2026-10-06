@@ -464,6 +464,31 @@
 :is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--date-picker--next .rux--date-picker__day:not(.inRange) {
   border-radius: 4px;
 }
+/* The two arrows that change the month take no fill under the pointer,
+   measured on the same two pages: each system draws the arrow dimmer at rest
+   and in the text's colour under the pointer, on nothing, where Carbon fills
+   a 40px square. The resting arrow is the secondary icon, the nearest token
+   to Geist's gray 700 and to Ant's white at 45%. Geist's arrow is a circle,
+   filled only while pressed; Ant's has no shape of its own, so its focus
+   ring takes the 4px its days have. */
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--date-picker--next .rux--date-picker__month-nav:hover {
+  background-color: transparent;
+}
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--date-picker--next .rux--date-picker__month-nav svg {
+  fill: var(--rux-icon-secondary);
+}
+:is([data-theme="ant-dark"], [data-theme="geist-dark"]) .rux--date-picker--next .rux--date-picker__month-nav:is(:hover, :focus-visible) svg {
+  fill: var(--rux-icon-primary);
+}
+[data-theme="ant-dark"] .rux--date-picker--next .rux--date-picker__month-nav {
+  border-radius: 4px;
+}
+[data-theme="geist-dark"] .rux--date-picker--next .rux--date-picker__month-nav {
+  border-radius: 50%;
+}
+[data-theme="geist-dark"] .rux--date-picker--next .rux--date-picker__month-nav:active {
+  background-color: var(--rux-layer-active);
+}
 /* ANT-DARK'S TABLE IS THE OTHER ANSWER, and it was measured too, on Ant's own
    Table page in its dark mode: the table takes the raised layer as a fill and
    NO border, rounds only its top two corners, and keeps both the filled header

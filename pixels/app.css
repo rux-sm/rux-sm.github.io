@@ -407,8 +407,11 @@
    the players, which takes a second line where the tile is too narrow for
    all three. One switched off is drawn faint. The tile's tick sits close in
    its corner, since the tile is small: the token is the one Carbon's
-   selectable tile sets its tick in by. */
-.pixels-tile { display: grid; grid-template-rows: auto auto; gap: .25rem; min-inline-size: 0; }
+   selectable tile sets its tick in by. The wrapper is a column and not a
+   grid, because a grid measures the square tile in it over and over, and
+   every measure restyles the picture's squares through the tile's
+   container query. */
+.pixels-tile { display: flex; flex-direction: column; gap: .25rem; min-inline-size: 0; }
 .pixels-tile-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .125rem .375rem; }
 .pixels-tile-edit { font-size: .75rem; }
 .pixels-tile > .pixels-puzzle { --rux-layout-density-padding-inline-local: .375rem; cursor: pointer; }

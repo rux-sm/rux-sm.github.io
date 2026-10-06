@@ -4,7 +4,7 @@
 // For every piece of text on the page, in each theme, the ratio of its colour
 // to the surface behind it, and every one under WCAG's 4.5 to 1 (3 to 1 for
 // text 24px and up, or 18.66px and bold). It switches `data-theme` on the root
-// itself, so one run reads all eight themes without touching the stored
+// itself, so one run reads all nine themes without touching the stored
 // preference, and puts the page's own theme back when it is done.
 //
 // A MEASUREMENT, NOT A GATE. Nothing fails on its output, because a page has
@@ -14,7 +14,7 @@
 //
 // Options, set before loading it:
 //   window.MEASURE_CONTRAST = { themes: ['geist-dark'], scope: '#scheduler-panel' }
-// `themes` defaults to all eight; `scope` to the whole body.
+// `themes` defaults to all nine; `scope` to the whole body.
 //
 // HOW IT READS A COLOUR. Every computed colour is painted into a 1px canvas
 // and read back, so oklch(), color-mix() and color(srgb …) all come out as
@@ -38,7 +38,7 @@
 (function () {
   'use strict';
   const opts = window.MEASURE_CONTRAST || {};
-  const THEMES = opts.themes || ['white', 'g10', 'g90', 'g100', 'geist-dark', 'ant-dark', 'spotify-dark', 'apple-light'];
+  const THEMES = opts.themes || ['white', 'g10', 'g90', 'g100', 'geist-dark', 'ant-dark', 'spotify-dark', 'apple-light', 'apple-dark'];
   const scope = opts.scope ? document.querySelector(opts.scope) : document.body;
   if (!scope) throw new Error(`measure-contrast: nothing matches ${opts.scope}`);
 

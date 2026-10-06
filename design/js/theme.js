@@ -74,9 +74,9 @@
   // found from it, so a page at any depth asks for the same two files.
   const HERE = document.currentScript?.src;
   const NAME = /^[a-z][a-z0-9-]*$/;
-  // Carbon's four compiled themes, then the four css/rux-theme.css adds.
+  // Carbon's four compiled themes, then the five css/rux-theme.css adds.
   const CARBON = new Set(['white', 'g10', 'g90', 'g100']);
-  const KNOWN = new Set([...CARBON, 'geist-dark', 'ant-dark', 'spotify-dark', 'apple-light']);
+  const KNOWN = new Set([...CARBON, 'geist-dark', 'ant-dark', 'spotify-dark', 'apple-light', 'apple-dark']);
   // The shell's zone, and the side nav sits inside it, so one element themes
   // both. The attribute is part of the selector on purpose — see the head.
   const SHELL = '.rux--header[data-theme]';

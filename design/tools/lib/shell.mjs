@@ -87,7 +87,7 @@ export const PAGES = [
 const THEME_NAMES = [
   ['white', 'White'], ['g10', 'Gray 10'], ['g90', 'Gray 90'], ['g100', 'Gray 100'],
   ['geist-dark', 'Geist dark'], ['ant-dark', 'Ant dark'], ['spotify-dark', 'Spotify dark'],
-  ['apple-light', 'Apple light'],
+  ['apple-light', 'Apple light'], ['apple-dark', 'Apple dark'],
 ];
 
 const themeRadios = () => THEME_NAMES.map(([value, label]) =>

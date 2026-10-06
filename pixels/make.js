@@ -2,27 +2,28 @@
    make.js — the puzzle maker
    --------------------------------------------------------------------------
    DRAW: tap a square to fill or empty it, or drag. The numbers update as the
-   picture changes, and the check says whether a player can solve it by logic
-   alone, and then how hard that is; squares that would need a guess are
-   outlined. COLOUR: pick one of the thirty-three inks and paint any square, filled
-   or not; that is the picture the puzzle finishes as. Paint colours the
-   squares tapped or dragged over, Fill every square joined to the one
-   tapped through its own ink, and Pick takes the tapped square's ink and
-   hands back to the tool before it. A picture never coloured finishes in
-   black and white. UNDO takes back the last tap, drag, fill or Clear, in
-   either step, and Redo puts it back; Cmd or Ctrl with Z undoes, and with
-   Shift and Z, or Y, redoes. Size starts a blank board of 5, 10
-   or 15 squares a side, and a saved puzzle keeps the size it has. Category
-   is where the puzzle sits on the front page, among those of its size: it
-   lists the categories by name, and New category starts one after them,
-   hidden from the players until the front page's switch publishes it. A
-   puzzle given a day is that day's puzzle instead and sits in no category;
-   a day takes one puzzle, and after one is saved the field moves on a day.
-   Category name names the category chosen, for boards of this size, and is
-   saved with the puzzle. A category shows nine: the Category field counts
-   how many of each one's puzzles are on, and a puzzle saved into one with
-   nine on is saved off, for the front page's switch to turn on. Save stays
-   off until the picture is solvable and named.
+   picture changes, and the check in the board's corner says whether a
+   player can solve it by logic alone, how hard that is and how much of the
+   board is filled; squares that would need a guess are outlined. COLOUR:
+   pick one of the thirty-three inks and paint any square, filled or not;
+   that is the picture the puzzle finishes as. The paintbrush colours the
+   squares tapped or dragged over, the bucket every square joined to the one
+   tapped through its own ink, and the eraser puts a square back as it
+   starts: dark if it is filled, light if not. A picture never coloured
+   finishes in black and white. UNDO takes back the last tap, drag, fill or
+   Clear, in either step, and Redo puts it back; Cmd or Ctrl with Z undoes,
+   and with Shift and Z, or Y, redoes. Size starts a blank board of 5, 10 or
+   15 squares a side, and a saved puzzle keeps the size it has.
+
+   CATEGORY is where the puzzle goes: one of its size's categories on the
+   front page, listed by name with how many of its nine are on; New
+   category, which starts one after them, asks for its name, and is hidden
+   from the players until the front page's switch publishes it; or Puzzle of
+   the day, which asks for the day. A day's puzzle sits in no category; a
+   day takes one puzzle, and after one is saved the day moves on by one. A
+   puzzle saved into a category with nine on is saved off, for the front
+   page's switch to turn on. Save stays off until the picture is solvable
+   and named, and a day's puzzle has its day.
 
    The data calls a category a level: `level` is its number, which is its
    place on the front page and is never shown, and `theme` is its name.
@@ -36,26 +37,29 @@
 (() => {
   'use strict';
 
-  const { data, owner, SIZES, grid, squaresOf, unreached, rounds, grade, board, drag, switcher, chosen } = window.Pixels;
+  const { data, owner, SIZES, grid, squaresOf, unreached, rounds, grade, board, drag } = window.Pixels;
   const $ = id => document.getElementById(id);
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
   const day = $('pixels-day'), theme = $('pixels-theme');
-  const inks = $('pixels-inks'), paintBox = $('pixels-paint'), tools = $('pixels-tool');
+  const inks = $('pixels-inks'), paintBox = $('pixels-paint'), tools = $('pixels-tool'), steps = $('pixels-step'), size = $('pixels-size');
   const undoKey = $('pixels-undo'), redoKey = $('pixels-redo');
   const DRAFT = 'pixels-draft';
-  // The inks as the palette lays them out, in two sets of three rows: a
-  // colour to a column, light above dark, and white, grey and black in the
-  // second set's last column. Each is the character a picture stores, then
-  // its name.
-  const INKS = [[
-    ['c', 'Light red'], ['d', 'Light orange'], ['e', 'Light yellow'], ['f', 'Light green'], ['g', 'Light blue'], ['j', 'Light purple'],
-    ['2', 'Red'], ['3', 'Orange'], ['4', 'Yellow'], ['5', 'Green'], ['6', 'Blue'], ['9', 'Purple'],
-    ['m', 'Dark red'], ['n', 'Dark orange'], ['o', 'Dark yellow'], ['p', 'Dark green'], ['q', 'Dark blue'], ['t', 'Dark purple'],
-  ], [
-    ['i', 'Light pink'], ['h', 'Light brown'], ['k', 'Light teal'], ['l', 'Light sky blue'], ['1', 'White'],
-    ['8', 'Pink'], ['7', 'Brown'], ['a', 'Teal'], ['b', 'Sky blue'], ['y', 'Grey'],
-    ['s', 'Dark pink'], ['r', 'Dark brown'], ['u', 'Dark teal'], ['v', 'Dark sky blue'], ['0', 'Black'],
-  ]];
+  // The inks, a colour at a time: its light, its middle and its dark, and
+  // last white, grey and black. Each is the character a picture stores,
+  // then its name. app.css lays them out a colour to a column or to a row.
+  const INKS = [
+    ['c', 'Light red'], ['2', 'Red'], ['m', 'Dark red'],
+    ['d', 'Light orange'], ['3', 'Orange'], ['n', 'Dark orange'],
+    ['e', 'Light yellow'], ['4', 'Yellow'], ['o', 'Dark yellow'],
+    ['f', 'Light green'], ['5', 'Green'], ['p', 'Dark green'],
+    ['g', 'Light blue'], ['6', 'Blue'], ['q', 'Dark blue'],
+    ['j', 'Light purple'], ['9', 'Purple'], ['t', 'Dark purple'],
+    ['i', 'Light pink'], ['8', 'Pink'], ['s', 'Dark pink'],
+    ['h', 'Light brown'], ['7', 'Brown'], ['r', 'Dark brown'],
+    ['k', 'Light teal'], ['a', 'Teal'], ['u', 'Dark teal'],
+    ['l', 'Light sky blue'], ['b', 'Sky blue'], ['v', 'Dark sky blue'],
+    ['1', 'White'], ['y', 'Grey'], ['0', 'Black'],
+  ];
   // A category shows nine, three rows of three on a phone; any more are off.
   const PER_LEVEL = 9;
 
@@ -77,32 +81,48 @@
   let draft = blank(), colours = null, editing = null, filling = 1, step = 'draw', ink = 2;
 
   const levelOf = () => Math.min(99, Math.max(1, parseInt(level.value, 10) || 1));
+  // The Category field's last choice makes it a day's puzzle.
+  const daily = () => level.value === 'day';
   const readDraft = () => { try { return JSON.parse(localStorage.getItem(DRAFT) || 'null'); } catch { return null; } };
   const keepDraft = () => {
     if (editing) return;
     try {
       localStorage.setItem(DRAFT, JSON.stringify({
-        squares: squaresOf(draft), name: name.value, level: levelOf(), day: day.value, colours: colours && squaresOf(colours),
+        squares: squaresOf(draft), name: name.value, level: daily() ? 'day' : levelOf(), day: daily() ? day.value : '', colours: colours && squaresOf(colours),
       }));
     } catch { /* a convenience */ }
   };
 
-  // `kind` is the whole class, so the check can find it.
-  const tag = (kind, text) => {
+  // The check, over the board's corner: a tag, then a line for each thing
+  // more. `kind` is the whole class, so the site's check can find it.
+  const report = (kind, text, ...lines) => {
     const span = document.createElement('span');
-    span.className = `rux--tag rux--layout--size-md ${kind}`;
+    span.className = `rux--tag rux--layout--size-sm rux--tag--sm ${kind}`;
     span.textContent = text;
-    check.replaceChildren(span);
+    check.replaceChildren(span, ...lines.map(line => {
+      const row = document.createElement('span');
+      row.textContent = line;
+      return row;
+    }));
   };
 
-  // The size chosen, shown on its switcher.
+  // The size chosen, shown in its field.
   const setSide = to => {
     side = to;
-    chosen($('pixels-size'), $('pixels-size').querySelector(`[data-size="${side}"]`));
+    size.value = side;
   };
   // The name of the category chosen, among boards of this size.
   const themeOf = () => puzzles.find(p => p.width === side && p.level === levelOf() && !p.day)?.theme || '';
-  const showTheme = () => { theme.value = themeOf(); };
+  // What the Category field's choice asks for: a name for a category with
+  // no puzzle yet, a day for a day's puzzle, and for a category there is,
+  // nothing, its name kept as it is.
+  const showWhere = () => {
+    theme.value = themeOf();
+    $('pixels-more-theme').hidden = daily() || puzzles.some(p => p.width === side && p.level === levelOf() && !p.day);
+    $('pixels-more-day').hidden = !daily();
+    // app.css gives the board that much less height while one is shown.
+    $('pixels-form').toggleAttribute('data-more', !$('pixels-more-theme').hidden || daily());
+  };
   // How many puzzles of this size each category has on and off, and whether
   // it is full: nine on besides the one being edited leave that one no room.
   const held = () => {
@@ -124,19 +144,21 @@
   };
   // The Category field: this size's categories by name, in their order, each
   // with how many of its nine are on and how many puzzles it holds off, then
-  // one for a new category, numbered to stand after them. `pick` is the one
-  // to choose, and one that is not there chooses the new category.
+  // one for a new category, numbered to stand after them, and one for a
+  // puzzle of the day. `pick` is the one to choose, 'day' for the last, and
+  // one that is not there chooses the new category.
   const showLevels = pick => {
     const names = new Map(), { on, off } = held();
     puzzles.forEach(p => { if (p.width === side && !p.day) names.set(p.level, p.theme || 'More'); });
     const next = Math.max(0, ...names.keys()) + 1;
     level.replaceChildren(...[...names].sort((a, b) => a[0] - b[0])
       .map(([n, text]) => new Option(`${text} · ${on[n] || 0} of ${PER_LEVEL}${off[n] ? `, ${off[n]} off` : ''}`, n)),
-    new Option('New category', next));
-    level.value = names.has(pick) ? pick : next;
+    new Option('New category…', next), new Option('Puzzle of the day…', 'day'));
+    level.value = pick === 'day' || names.has(pick) ? pick : next;
   };
 
   let solvable = false;
+  const ready = () => solvable && !!name.value.trim() && (!daily() || !!day.value);
   const render = () => {
     const unknown = unreached(draft);
     const guesses = unknown.flat().filter(Boolean).length;
@@ -144,22 +166,30 @@
     // The board keeps the room for numbers a player's has, so the squares
     // never move under a finger as the numbers change.
     board(host, draft, draft, step === 'colour' ? { inks: colours, label: 'Picture' } : { unknown, label: 'Picture' });
-    if (empty) tag('rux--tag--gray', 'Draw a picture');
-    else if (guesses) tag('rux--tag--red', `${guesses} square${guesses === 1 ? '' : 's'} need a guess`);
-    else tag('rux--tag--green', `Solvable · ${grade(rounds(draft))}`);
+    const full = `${Math.round(draft.flat().filter(Boolean).length * 100 / (side * side))}% filled`;
+    if (empty) report('rux--tag--gray', 'Empty');
+    else if (guesses) report('rux--tag--red', `${guesses} to guess`, full);
+    else report('rux--tag--green', 'Solvable', grade(rounds(draft)), full);
     solvable = !empty && !guesses;
-    save.disabled = !solvable || !name.value.trim();
+    save.disabled = !ready();
   };
 
-  // Colour starts as the picture is seen while solving: dark on light.
+  // A square as the colour step starts it, and as the eraser leaves it: the
+  // picture as it is seen while solving, dark on light.
+  const plain = (y, x) => (draft[y][x] ? 0 : 1);
+  // The tools and inks are there in both steps and out of reach in Draw, so
+  // the board never moves.
   const setStep = to => {
     step = to;
-    if (step === 'colour' && !colours) colours = draft.map(r => r.map(c => (c ? 0 : 1)));
-    paintBox.hidden = step !== 'colour';
-    chosen($('pixels-step'), $('pixels-step').querySelector(`[data-step="${step}"]`));
+    if (step === 'colour' && !colours) colours = draft.map((r, y) => r.map((_, x) => plain(y, x)));
+    paintBox.inert = step !== 'colour';
+    steps.querySelectorAll('[data-step]').forEach(b => b.setAttribute('aria-checked', b.dataset.step === step));
     render();
   };
-  switcher($('pixels-step'), b => setStep(b.dataset.step));
+  steps.addEventListener('click', e => {
+    const picked = e.target.closest('[data-step]');
+    if (picked) setStep(picked.dataset.step);
+  });
   const swatch = ([id, label]) => {
     const b = document.createElement('button');
     b.type = 'button';
@@ -171,13 +201,7 @@
     b.dataset.ink = id;
     return b;
   };
-  inks.replaceChildren(...INKS.map(set => {
-    const div = document.createElement('div');
-    div.className = 'pixels-inks-set';
-    div.style.setProperty('--across', set.length / 3);
-    div.append(...set.map(swatch));
-    return div;
-  }));
+  inks.replaceChildren(...INKS.map(swatch));
   const setInk = to => {
     ink = to;
     inks.querySelectorAll('.pixels-ink').forEach(b => b.setAttribute('aria-checked', parseInt(b.dataset.ink, 36) === ink));
@@ -186,11 +210,9 @@
     const picked = e.target.closest('.pixels-ink');
     if (picked) setInk(parseInt(picked.dataset.ink, 36));
   });
-  // The tool the colour step paints with. Pick is for one tap, and `back`
-  // is the tool it hands back to.
-  let tool = 'paint', back = 'paint';
+  // The tool the colour step works with: paint, fill or erase.
+  let tool = 'paint';
   const setTool = to => {
-    if (tool !== 'pick') back = tool;
     tool = to;
     tools.querySelectorAll('[data-tool]').forEach(b => b.setAttribute('aria-checked', b.dataset.tool === tool));
   };
@@ -242,13 +264,15 @@
     if (key === 'y' || e.shiftKey) move(ahead, past); else move(past, ahead);
   });
 
-  // One square of a tap or a drag: painted in the colour step, and in the
-  // draw step filled or emptied as the drag's first square was.
+  // One square of a tap or a drag: painted or put back plain in the colour
+  // step, and in the draw step filled or emptied as the drag's first square
+  // was.
   const stroke = (y, x) => {
     if (step === 'colour') {
-      if (colours[y][x] === ink) return;
+      const to = tool === 'erase' ? plain(y, x) : ink;
+      if (colours[y][x] === to) return;
       changing();
-      colours[y][x] = ink;
+      colours[y][x] = to;
     } else {
       if (draft[y][x] === filling) return;
       changing();
@@ -272,14 +296,13 @@
     render();
     keepDraft();
   };
-  // Only Paint and the draw step go on under a drag; Fill and Pick are a tap.
+  // The bucket is a tap; everything else goes on under a drag.
   let dragging = false;
   const pad = drag(host, {
     free: true,
     start: (y, x) => {
       $('pixels-saved').hidden = true;
-      dragging = step !== 'colour' || tool === 'paint';
-      if (step === 'colour' && tool === 'pick') { setInk(colours[y][x]); setTool(back); return; }
+      dragging = step !== 'colour' || tool !== 'fill';
       mark();
       if (step === 'colour' && tool === 'fill') { flood(y, x); return; }
       filling = draft[y][x] ? 0 : 1;
@@ -288,25 +311,19 @@
     paint: (y, x) => { if (dragging) stroke(y, x); },
     zoom: () => side > 10,
   });
-  switcher($('pixels-size'), b => {
-    setSide(+b.dataset.size);
+  size.addEventListener('change', () => {
+    setSide(+size.value);
     pad.reset();
     showLevels(openLevel());
-    showTheme();
+    showWhere();
     $('pixels-saved').hidden = true;
     clear();
     forget();
     keepDraft();
   });
-  name.addEventListener('input', () => { save.disabled = !solvable || !name.value.trim(); keepDraft(); });
-  level.addEventListener('input', () => { showTheme(); keepDraft(); render(); });
-  level.addEventListener('change', () => { showTheme(); keepDraft(); render(); });
-  // A day's puzzle is in no category, so Category and its name have nothing to say.
-  const showDay = () => {
-    level.disabled = theme.disabled = !!day.value;
-    level.closest('.rux--select').classList.toggle('rux--select--disabled', !!day.value);
-  };
-  day.addEventListener('change', () => { showDay(); keepDraft(); render(); });
+  name.addEventListener('input', () => { save.disabled = !ready(); keepDraft(); });
+  level.addEventListener('change', () => { showWhere(); keepDraft(); render(); });
+  day.addEventListener('change', () => { keepDraft(); render(); });
 
   const clear = () => {
     draft = blank();
@@ -328,7 +345,7 @@
     save.disabled = true;
     const puzzle = {
       id: editing?.id, name: name.value.trim(), squares: squaresOf(draft), width: side, height: side,
-      level: levelOf(), day: day.value || null, colours: colours && squaresOf(colours),
+      level: levelOf(), day: (daily() && day.value) || null, colours: colours && squaresOf(colours),
     };
     // A puzzle that is off stays off. One that comes into a category with
     // nine on is saved off too, since the category shows nine; a day's
@@ -354,6 +371,7 @@
       if (listed) { Object.assign(listed, row, { theme: named || null }); delete listed.rounds; }
       else puzzles.push({ ...row, theme: named || null });
       if (!puzzle.day) showLevels(puzzle.level);
+      showWhere();
       if (editing) {
         editing = row;
         saved(`Saved “${row.name}”${fresh && data.setHidden ? `. ${named || 'More'} is hidden until you publish it.` : turnedOff ? `. It is off: ${named || 'More'} has nine on.` : ''}`);
@@ -405,11 +423,12 @@
       editing = puzzles.find(p => String(p.id) === id) || null;
       if (editing) {
         setSide(editing.width);
-        $('pixels-size-row').hidden = true;
+        size.disabled = true;
+        size.closest('.rux--select').classList.add('rux--select--disabled');
         draft = grid(editing.squares, editing.width);
         colours = editing.colours ? grid(editing.colours, editing.width) : null;
         name.value = editing.name;
-        showLevels(editing.level);
+        showLevels(editing.day ? 'day' : editing.level);
         day.value = editing.day || '';
         $('pixels-heading').textContent = `Edit ${editing.name}`;
         document.title = `Edit ${editing.name} — Pixels`;
@@ -425,12 +444,11 @@
         draft = grid(kept.squares);
         colours = kept.colours ? grid(kept.colours) : null;
         name.value = kept.name || '';
-        if (kept.level) showLevels(kept.level);
+        if (kept.level) showLevels(kept.day ? 'day' : kept.level);
         day.value = kept.day || '';
       }
     }
-    showDay();
-    showTheme();
+    showWhere();
     render();
   })();
 })();

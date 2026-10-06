@@ -84,11 +84,11 @@ puzzle written by anyone else. It checks as you draw whether the numbers alone c
 picture and how hard that is, outlines each square that would need a guess,
 and saves only a picture with one answer. Size starts a blank board of 5,
 10 or 15 a side. Its Colour step paints the picture
-the puzzle finishes as, from eight inks, and Category places it on the front
-page, with Category name naming that category; a category shows nine, the
+the puzzle finishes as, from thirty-three inks, and Category places it on the front
+page; a category shows nine, the
 list counts how many of each one's are on, and a puzzle saved into one with nine on is saved off. A category just started is
-hidden until the front page's switch publishes it. A puzzle given a day is that
-day's puzzle and sits in no category; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good
+named there and hidden until the front page's switch publishes it. Puzzle of the day, in the same list, makes it a
+day's puzzle, which sits in no category; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good
 category.
 
 ## Files

@@ -23,8 +23,9 @@ squares and let the extra room go to detail, not to a bigger blob.
 
 ## What the maker holds you to
 
-- **One answer.** Save stays off until the tag is green. A square outlined in
-  yellow is one the numbers cannot decide, so the player would have to guess.
+- **One answer.** Save stays off until the tag in the board's corner is green
+  and says Solvable. A square outlined in yellow is one the numbers cannot
+  decide, so the player would have to guess, and the tag counts them.
 - **A name**, up to 40 letters. It is hidden until the puzzle is solved, so it
   is the reward: name the thing, in one or two words.
 
@@ -46,18 +47,17 @@ squares and let the extra room go to detail, not to a bigger blob.
 
 ## The colour picture
 
-Once the tag is green, the Colour step paints the picture the player sees at
-the finish. Pick one of the thirty-three inks and paint any square, filled or
-empty. The palette is ten colours, each light, middle and dark down its
-column, then white, grey and black.
+Once the tag is green, Colour paints the picture the player sees at the
+finish. Pick one of the thirty-three inks and paint any square, filled or
+empty. The palette is ten colours, each light, middle and dark, then white,
+grey and black. It is dimmed while Draw is on.
 
-- **Paint, Fill and Pick** are the three tools beside the inks. Paint colours
-  the squares you tap or drag over. Fill colours every square joined to the
-  one you tap that has its colour. Pick takes the colour of the square you
-  tap, then hands back to the tool you had.
-- **Undo and Redo** are the two arrows beside the tag, in both steps. They
-  take back a tap, a drag, a fill or Clear. Cmd+Z undoes and Shift+Cmd+Z
-  redoes.
+- **Paintbrush, Bucket and Eraser** are the three tools beside the inks. The
+  paintbrush colours the squares you tap or drag over. The bucket colours
+  every square joined to the one you tap that has its colour. The eraser
+  puts a square back plain: black if it is filled, white if it is not.
+- **Undo, Redo and Clear** are under the board, in both steps. Undo takes
+  back a tap, a drag, a fill or Clear. Cmd+Z undoes and Shift+Cmd+Z redoes.
 - **Colour the background too.** A blue sky or a green field behind the shape
   is what makes the finish feel like a reward.
 - **Two or three colours are enough.** Keep the shape one colour and use a
@@ -68,9 +68,10 @@ column, then white, grey and black.
 
 ## The puzzle of the day
 
-Give a puzzle a day in "Puzzle of the day for" and it is that day's puzzle,
-in no category. A day takes one puzzle, and after a save the field moves on a
-day, so a week of them is drawn in one sitting. A day with none gets a shape
+Choose Puzzle of the day, the last choice in the Category field, and give
+it its day in the field that opens; it is that day's puzzle, in no category.
+A day takes one puzzle, and after a save the day moves on by one, so a week
+of them is drawn in one sitting. A day with none gets a shape
 the game makes itself, which has no name but its date.
 
 - **Draw ahead.** Nobody is sent a day's puzzle before its day, so next
@@ -84,10 +85,10 @@ the game makes itself, which has no name but its date.
 
 ## How hard it is
 
-The green tag ends in easy, medium or hard. It counts rounds: one round is one
+Under the green tag the corner says easy, medium or hard. It counts rounds: one round is one
 look at every row and every column, filling in what each can now decide.
 
-| Tag | Rounds | What it feels like |
+| It says | Rounds | What it feels like |
 | :--- | :--- | :--- |
 | easy | 1 to 3 | long runs; most lines give something on the first look |
 | medium | 4 or 5 | a few lines wait for their neighbours |
@@ -106,16 +107,16 @@ can hold more, switched off. Its name is its heading on the front page, and
 one with no name is headed More. The maker's Category field says which one a
 puzzle is in, counts how many of each category's are on, such as
 Fruit · 9 of 9, 3 off, and offers the first of its size that still has
-room. The front page lists a category easy to hard by the tag, so the
+room. The front page lists a category easy to hard, so the
 order they were drawn in does not matter, and a puzzle moves category by
 editing that field.
 
-- **Name it for what is in it**, such as Fruit, Animals or At home, in the
-  maker's Category name field. The player guesses the picture sooner, and the
-  guess is half the fun. A new name renames it for every puzzle in it.
-- **New category**, the last choice in the Category field, starts one. It
-  stands after the others and starts hidden, so only the owner sees it while
-  its nine are drawn.
+- **New category**, in the Category field, starts one, and a field opens for
+  its name. It stands after the others and starts hidden, so only the owner
+  sees it while its nine are drawn.
+- **Name it for what is in it**, such as Fruit, Animals or At home. The
+  player guesses the picture sooner, and the guess is half the fun. It is
+  named as it is started.
 - **Draw more than nine.** A picture saved into a category with nine on is
   saved off, and no player is sent it.
 - **Swap with the switch under each tile** on the front page: switch one off,

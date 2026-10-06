@@ -19,15 +19,14 @@
    toolbar's first button, leaves for the puzzles; a new picture is kept as
    the draft, so nothing is lost by it.
 
-   CATEGORY is where the puzzle goes: one of its size's categories on the
-   front page, listed by name with how many of its nine are on; New
-   category, which starts one after them, asks for its name, and is hidden
-   from the players until the front page's switch publishes it; or Puzzle of
-   the day, which asks for the day. A day's puzzle sits in no category; a
+   SAVE asks where the puzzle goes, once the picture is solvable and named:
+   one of its size's categories on the front page, listed by name with how
+   many of its nine are on; New category, which starts one after them, asks
+   for its name, and is hidden from the players until the front page's
+   switch publishes it; or Puzzle of the day, which asks for the day. A day's puzzle sits in no category; a
    day takes one puzzle, and after one is saved the day moves on by one. A
    puzzle saved into a category with nine on is saved off, for the front
-   page's switch to turn on. Save stays off until the picture is solvable
-   and named, and a day's puzzle has its day.
+   page's switch to turn on.
 
    The data calls a category a level: `level` is its number, which is its
    place on the front page and is never shown, and `theme` is its name.
@@ -44,6 +43,7 @@
   const { data, owner, SIZES, grid, squaresOf, unreached, rounds, grade, board, drag } = window.Pixels;
   const $ = id => document.getElementById(id);
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
+  const saveNow = $('pixels-save-now');
   const day = $('pixels-day'), theme = $('pixels-theme');
   const inks = $('pixels-inks'), inkKey = $('pixels-ink'), inkMenu = $('pixels-ink-menu');
   const tools = $('pixels-tool'), steps = $('pixels-step'), size = $('pixels-size');
@@ -125,8 +125,7 @@
     theme.value = themeOf();
     $('pixels-more-theme').hidden = daily() || puzzles.some(p => p.width === side && p.level === levelOf() && !p.day);
     $('pixels-more-day').hidden = !daily();
-    // app.css gives the board that much less height while one is shown.
-    $('pixels-form').toggleAttribute('data-more', !$('pixels-more-theme').hidden || daily());
+    saveNow.disabled = daily() && !day.value;
   };
   // How many puzzles of this size each category has on and off, and whether
   // it is full: nine on besides the one being edited leave that one no room.
@@ -163,7 +162,7 @@
   };
 
   let solvable = false;
-  const ready = () => solvable && !!name.value.trim() && (!daily() || !!day.value);
+  const ready = () => solvable && !!name.value.trim();
   const render = () => {
     const unknown = unreached(draft);
     const guesses = unknown.flat().filter(Boolean).length;
@@ -345,7 +344,7 @@
   });
   name.addEventListener('input', () => { save.disabled = !ready(); keepDraft(); });
   level.addEventListener('change', () => { showWhere(); keepDraft(); render(); });
-  day.addEventListener('change', () => { keepDraft(); render(); });
+  day.addEventListener('change', () => { saveNow.disabled = daily() && !day.value; keepDraft(); });
 
   const clear = () => {
     draft = blank();
@@ -369,9 +368,17 @@
     keepDraft();
   });
 
-  $('pixels-form').addEventListener('submit', async e => {
+  // Save asks where the puzzle goes, and the answer saves it.
+  $('pixels-form').addEventListener('submit', e => {
     e.preventDefault();
     if (save.disabled || !data) return;
+    showWhere();
+    window.Rux.modal.open('pixels-save-modal', save);
+  });
+  $('pixels-where').addEventListener('submit', async e => {
+    e.preventDefault();
+    if (saveNow.disabled || save.disabled || !data) return;
+    window.Rux.modal.close('pixels-save-modal');
     save.disabled = true;
     const puzzle = {
       id: editing?.id, name: name.value.trim(), squares: squaresOf(draft), width: side, height: side,

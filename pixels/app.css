@@ -527,17 +527,16 @@
 .pixels-solved-clock { display: block; font-size: 2rem; }
 
 /* THE MAKER. One column the width of its board, in the order of the work:
-   the head, which is the name, the category and the size, with under them
-   the one field more the category can ask for; then the toolbar set on the
-   board, and the board's check over its empty corner.
+   the head, which is the name and the size; then the toolbar set on the
+   board, and the board's check over its empty corner. Where the puzzle goes
+   is asked as it is saved.
    Its board is the game's, set in by a whole number of pixels as the game
-   is. `--chrome` is the height everything but the board takes, with
-   `--more` for the field the category asks for while it is shown, so the
+   is. `--chrome` is the height everything but the board takes, so the
    board takes what the window leaves and the whole maker is in view without
    scrolling. */
 .pixels-maker {
   --most: 600px;
-  --chrome: calc(169px + var(--more, 0px));
+  --chrome: 169px;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: .5rem;
@@ -545,11 +544,9 @@
   margin-inline-start: round(down, calc((100cqi - var(--foot)) / 2), 1px);
 }
 @media (min-width: 48rem) {
-  .pixels-maker { --chrome: calc(185px + var(--more, 0px)); }
+  .pixels-maker { --chrome: 185px; }
 }
-.pixels-maker[data-more] { --more: 2.5rem; }
-.pixels-maker-head { display: grid; gap: .5rem; }
-.pixels-maker-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 7rem; gap: .5rem; }
+.pixels-maker-top { display: grid; grid-template-columns: minmax(0, 1fr) 7rem; gap: .5rem; }
 /* THE TOOLBAR, after Carbon's text toolbar: a bar of icon buttons the width
    of what they act on and set on it, in groups with a rule between them.
    The rule is drawn inside a group's edge and takes no room, because twelve

@@ -78,8 +78,9 @@ black.
 
 ## The puzzle of the day
 
-Choose Puzzle of the day, the last choice in the Category field, and give
-it its day in the field that opens; it is that day's puzzle, in no category.
+Save asks where the puzzle goes. Choose Puzzle of the day, the last choice,
+and give it its day in the field that opens; it is that day's puzzle, in no
+category.
 A day takes one puzzle, and after a save the day moves on by one, so a week
 of them is drawn in one sitting. A day with none gets a shape
 the game makes itself, which has no name but its date.
@@ -114,15 +115,14 @@ look at every row and every column, filling in what each can now decide.
 A category shows up to nine puzzles of one size about one thing, such as
 Fruit: three rows of three on a phone, one row of nine on a wide screen. It
 can hold more, switched off. Its name is its heading on the front page, and
-one with no name is headed More. The maker's Category field says which one a
-puzzle is in, counts how many of each category's are on, such as
-Fruit · 9 of 9, 3 off, and offers the first of its size that still has
-room. The front page lists a category easy to hard, so the
-order they were drawn in does not matter, and a puzzle moves category by
-editing that field.
+one with no name is headed More. Save asks which one a puzzle goes in: its
+list counts how many of each category's are on, such as Fruit · 9 of 9, 3
+off, and offers the first of its size that still has room. The front page
+lists a category easy to hard, so the order they were drawn in does not
+matter, and a puzzle moves category by saving it into another.
 
-- **New category**, in the Category field, starts one, and a field opens for
-  its name. It stands after the others and starts hidden, so only the owner
+- **New category**, in that list, starts one, and a field opens for its
+  name. It stands after the others and starts hidden, so only the owner
   sees it while its nine are drawn.
 - **Name it for what is in it**, such as Fruit, Animals or At home. The
   player guesses the picture sooner, and the guess is half the fun. It is

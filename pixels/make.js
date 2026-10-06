@@ -21,6 +21,7 @@
    the draft, so nothing is lost by it.
 
    SAVE asks where the puzzle goes, once the picture is solvable and named:
+   No category yet, which keeps it in Unsorted, where no player is sent it;
    one of its size's categories on the front page, listed by name with how
    many of its nine are on; New category, which starts one after them, asks
    for its name, and is hidden from the players until the front page's
@@ -86,7 +87,9 @@
   // `colours` is an ink for every square, or null until the picture is coloured.
   let draft = blank(), colours = null, editing = null, filling = 1, step = 'draw', ink = 2;
 
-  const levelOf = () => Math.min(99, Math.max(1, parseInt(level.value, 10) || 1));
+  // The Category field's first choice keeps the puzzle in no category.
+  const loose = () => level.value === 'none';
+  const levelOf = () => (loose() ? null : Math.min(99, Math.max(1, parseInt(level.value, 10) || 1)));
   // The Category field's last choice makes it a day's puzzle.
   const daily = () => level.value === 'day';
   const readDraft = () => { try { return JSON.parse(localStorage.getItem(DRAFT) || 'null'); } catch { return null; } };
@@ -94,7 +97,7 @@
     if (editing) return;
     try {
       localStorage.setItem(DRAFT, JSON.stringify({
-        squares: squaresOf(draft), name: name.value, level: daily() ? 'day' : levelOf(), day: daily() ? day.value : '', colours: colours && squaresOf(colours),
+        squares: squaresOf(draft), name: name.value, level: daily() ? 'day' : loose() ? 'none' : levelOf(), day: daily() ? day.value : '', colours: colours && squaresOf(colours),
       }));
     } catch { /* a convenience */ }
   };
@@ -120,11 +123,11 @@
   // The name of the category chosen, among boards of this size.
   const themeOf = () => puzzles.find(p => p.width === side && p.level === levelOf() && !p.day)?.theme || '';
   // What the Category field's choice asks for: a name for a category with
-  // no puzzle yet, a day for a day's puzzle, and for a category there is,
-  // nothing, its name kept as it is.
+  // no puzzle yet, a day for a day's puzzle, and for a category there is, or
+  // for none, nothing.
   const showWhere = () => {
     theme.value = themeOf();
-    $('pixels-more-theme').hidden = daily() || puzzles.some(p => p.width === side && p.level === levelOf() && !p.day);
+    $('pixels-more-theme').hidden = daily() || loose() || puzzles.some(p => p.width === side && p.level === levelOf() && !p.day);
     $('pixels-more-day').hidden = !daily();
     saveNow.disabled = daily() && !day.value;
   };
@@ -138,7 +141,7 @@
       count[p.level] = (count[p.level] || 0) + 1;
       if (!p.off && p.id !== editing?.id) others[p.level] = (others[p.level] || 0) + 1;
     });
-    return { on, off, full: n => (others[n] || 0) >= PER_LEVEL };
+    return { on, off, full: n => n != null && (others[n] || 0) >= PER_LEVEL };
   };
   // The first category with room for another puzzle of this size.
   const openLevel = () => {
@@ -147,19 +150,20 @@
     while (full(open)) open++;
     return open;
   };
-  // The Category field: this size's categories by name, in their order, each
-  // with how many of its nine are on and how many puzzles it holds off, then
-  // one for a new category, numbered to stand after them, and one for a
-  // puzzle of the day. `pick` is the one to choose, 'day' for the last, and
-  // one that is not there chooses the new category.
+  // The Category field: first no category, then this size's categories by
+  // name, in their order, each with how many of its nine are on and how many
+  // puzzles it holds off, then one for a new category, numbered to stand
+  // after them, and one for a puzzle of the day. `pick` is the one to
+  // choose, 'none' for the first and 'day' for the last, and one that is
+  // not there chooses the new category.
   const showLevels = pick => {
     const names = new Map(), { on, off } = held();
-    puzzles.forEach(p => { if (p.width === side && !p.day) names.set(p.level, p.theme || 'More'); });
+    puzzles.forEach(p => { if (p.width === side && !p.day && p.level != null) names.set(p.level, p.theme || 'More'); });
     const next = Math.max(0, ...names.keys()) + 1;
-    level.replaceChildren(...[...names].sort((a, b) => a[0] - b[0])
+    level.replaceChildren(new Option('No category yet', 'none'), ...[...names].sort((a, b) => a[0] - b[0])
       .map(([n, text]) => new Option(`${text} · ${on[n] || 0} of ${PER_LEVEL}${off[n] ? `, ${off[n]} off` : ''}`, n)),
     new Option('New category…', next), new Option('Puzzle of the day…', 'day'));
-    level.value = pick === 'day' || names.has(pick) ? pick : next;
+    level.value = pick === 'day' || pick === 'none' || names.has(pick) ? pick : next;
   };
 
   let solvable = false;
@@ -410,13 +414,13 @@
     const turnedOff = puzzle.off && !editing?.off;
     // A category just started is hidden, so it is drawn out of the players'
     // sight; the front page's Published switch shows it.
-    const fresh = !puzzle.day && !puzzles.some(p => p.width === side && p.level === puzzle.level && !p.day);
+    const fresh = !puzzle.day && puzzle.level != null && !puzzles.some(p => p.width === side && p.level === puzzle.level && !p.day);
     try {
       if (fresh) await data.setHidden?.(side, puzzle.level, true);
       const row = await data.save(puzzle);
       // The category's name goes with it, if it was changed.
       const named = theme.value.trim();
-      if (!puzzle.day && named !== themeOf()) {
+      if (!puzzle.day && puzzle.level != null && named !== themeOf()) {
         await data.setTheme?.(side, puzzle.level, named);
         puzzles.forEach(p => { if (p.width === side && p.level === puzzle.level) p.theme = named || null; });
       }
@@ -425,11 +429,11 @@
       const listed = puzzles.find(p => p.id === row.id);
       if (listed) { Object.assign(listed, row, { theme: named || null }); delete listed.rounds; }
       else puzzles.push({ ...row, theme: named || null });
-      if (!puzzle.day) showLevels(puzzle.level);
+      if (!puzzle.day) showLevels(puzzle.level ?? 'none');
       showWhere();
       if (editing) {
         editing = row;
-        saved(`Saved “${row.name}”${fresh && data.setHidden ? `. ${named || 'More'} is hidden until you publish it.` : turnedOff ? `. It is off: ${named || 'More'} has nine on.` : ''}`);
+        saved(`Saved “${row.name}”${row.level == null && !row.day ? '. It is in Unsorted, where no player is sent it.' : fresh && data.setHidden ? `. ${named || 'More'} is hidden until you publish it.` : turnedOff ? `. It is off: ${named || 'More'} has nine on.` : ''}`);
       } else {
         try { localStorage.removeItem(DRAFT); } catch { /* nothing kept */ }
         name.value = '';
@@ -441,7 +445,8 @@
           // On to the next day, for a run of them.
           when.setDate(when.getDate() + 1);
           day.value = `${when.getFullYear()}-${String(when.getMonth() + 1).padStart(2, '0')}-${String(when.getDate()).padStart(2, '0')}`;
-        } else saved(`Saved “${row.name}”. It is in ${named || 'More'}${fresh && data.setHidden ? ', hidden until you publish it' : turnedOff ? ', off, since nine are on' : ''}.`);
+        } else if (row.level == null) saved(`Saved “${row.name}”. It is in Unsorted, where no player is sent it.`);
+        else saved(`Saved “${row.name}”. It is in ${named || 'More'}${fresh && data.setHidden ? ', hidden until you publish it' : turnedOff ? ', off, since nine are on' : ''}.`);
       }
       $('pixels-error').hidden = true;
     } catch (error) {
@@ -483,7 +488,7 @@
         draft = grid(editing.squares, editing.width);
         colours = editing.colours ? grid(editing.colours, editing.width) : null;
         name.value = editing.name;
-        showLevels(editing.day ? 'day' : editing.level);
+        showLevels(editing.day ? 'day' : editing.level ?? 'none');
         day.value = editing.day || '';
         $('pixels-heading').textContent = `Edit ${editing.name}`;
         document.title = `Edit ${editing.name} — Pixels`;

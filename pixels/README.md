@@ -79,7 +79,8 @@ in a row. A player is never sent a day's puzzle before its day.
 
 `make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits
 or deletes one. Only the owner's account makes and edits: it alone sees Make
-in the menu and an Edit link under each tile, and the database refuses a
+in the menu and, on the front page, Edit and Move under each tile and a
+pencil and a bin on each category, and the database refuses a
 puzzle written by anyone else. It checks as you draw whether the numbers alone can solve the
 picture and how hard that is, outlines each square that would need a guess,
 and saves only a picture with one answer. Size starts a blank board of 5,
@@ -87,7 +88,8 @@ and saves only a picture with one answer. Size starts a blank board of 5,
 the puzzle finishes as, from fifty-five inks, and Save asks which category it goes in on the front
 page; a category shows nine, the
 list counts how many of each one's are on, and a puzzle saved into one with nine on is saved off. A category just started is
-named there and hidden until the front page's switch publishes it. Puzzle of the day, in the same list, makes it a
+named there and hidden until the front page's switch publishes it. No category yet, first in the list, keeps
+the puzzle in Unsorted, a section only the owner sees. Puzzle of the day, in the same list, makes it a
 day's puzzle, which sits in no category; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good
 category.
 
@@ -99,7 +101,7 @@ category.
 | `data.js` | who is playing, the name form a guest meets, and where puzzles and results are kept |
 | `puzzles.js`, `play.js`, `make.js`, `players.js` | each page's own behaviour |
 | `app.css` | the board, the picture and the puzzle list, under `pixels-` |
-| `theme.css` | the eight inks a colour picture is painted from |
+| `theme.css` | the fifty-five inks a colour picture is painted from |
 
 ## Data
 
@@ -117,12 +119,14 @@ which first find the player from the log-in or the key: `pixels_join`,
 `pixels_record`, `pixels_record_day` and `pixels_board`. A time is the
 player's own browser's word: the database refuses only what cannot be, a
 time under two seconds, a puzzle that does not exist, a day more than one
-from today. `pixels_puzzles` sends a player no hidden category and no puzzle that is
-switched off, which is `pixels_puzzles.hidden`.
+from today. `pixels_puzzles` sends a player no hidden category, no puzzle that is
+switched off, which is `pixels_puzzles.hidden`, and no puzzle in no
+category, which is one whose `level` is empty.
 
-A ninth, `pixels_order_levels`, is the owner's and refuses anyone else: it
+Two more are the owner's and refuse anyone else. `pixels_order_levels`
 renumbers the categories of one size in one step, so a move cannot stop
-half done.
+half done. `pixels_delete_level` deletes a category the same way: its
+puzzles are left in no category and the categories after it move up.
 
 `players.html` is the owner's: every player with today's puzzle, days in a
 row, puzzles solved and when they last played; the name, which can be

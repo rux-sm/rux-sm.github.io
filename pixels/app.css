@@ -359,11 +359,15 @@
   white-space: nowrap;
 }
 .pixels-puzzle > .pixels-meta { font-size: .75rem; line-height: 1.2; }
-/* For the owner a tile carries the way to edit its puzzle under it, and the
-   switch that sends it to the players. One switched off is drawn faint. */
+/* For the owner a tile carries under it the way to edit its puzzle, Move,
+   and the switch that sends it to the players, which takes a second line
+   where the tile is too narrow for all three. One switched off is drawn
+   faint. */
 .pixels-tile { display: grid; grid-template-rows: auto auto; gap: .25rem; min-inline-size: 0; }
-.pixels-tile-foot { display: flex; align-items: center; justify-content: center; gap: .5rem; }
+.pixels-tile-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .125rem .375rem; }
 .pixels-tile-edit { font-size: .75rem; }
+/* Move is a button that reads as the link beside it. */
+.pixels-tile-move { padding: 0; border: 0; background: none; font-family: inherit; cursor: pointer; }
 .pixels-tile.is-off > .pixels-puzzle { opacity: .4; }
 .pixels-blank {
   display: grid;

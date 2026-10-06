@@ -119,11 +119,12 @@
   const grade = n => (n <= 3 ? 'easy' : n <= 5 ? 'medium' : 'hard');
 
   // Playing order: small boards first, then by level, easy to hard within
-  // one, then as they were made. A puzzle drawn for a day is in no level.
+  // one, then as they were made. A puzzle drawn for a day is in no level,
+  // and one in no category stands after its size's categories.
   const order = puzzles => {
     puzzles = puzzles.filter(p => !p.day);
     puzzles.forEach(p => { p.rounds ??= rounds(grid(p.squares, p.width)); });
-    return [...puzzles].sort((a, b) => a.width - b.width || a.level - b.level || a.rounds - b.rounds
+    return [...puzzles].sort((a, b) => a.width - b.width || (a.level ?? 100) - (b.level ?? 100) || a.rounds - b.rounds
       || String(a.created_at).localeCompare(String(b.created_at)));
   };
 

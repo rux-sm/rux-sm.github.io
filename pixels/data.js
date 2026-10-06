@@ -19,12 +19,15 @@
    and where there is not it draws the name form, or says the link is needed.
 
    THE OWNER makes and edits puzzles and sees the players, by the tables'
-   own rules: `save`, `remove`, `setOff`, `setTheme`, `setHidden`, `orderLevels`, `players`, `setWord`, `renamePlayer` and
-   `removePlayer`.
+   own rules: `save`, `remove`, `setOff`, `move`, `setTheme`, `setHidden`,
+   `orderLevels`, `removeLevel`, `players`, `setWord`, `renamePlayer` and
+   `removePlayer`. A puzzle with no `level` is in no category, and no player
+   is sent it.
 
    THE LOCAL PREVIEW, `npm run serve` on :8640, has no log-in, so there the
    same calls read and write this browser's storage instead, starting from
-   STARTERS. Only that address does: anywhere else, no client is an error.
+   STARTERS, the owner's among them but for the players. Only that address
+   does: anywhere else, no client is an error.
 
    Every value from the database is written with textContent by the pages.
    ========================================================================== */
@@ -59,7 +62,15 @@
       puzzles: STARTERS.map((p, i) => ({ id: `p-${i + 1}`, ...p, width: 10, height: 10, level: 1, colours: null, created_at: new Date(t + i * 1000).toISOString() })),
       results: {},
       days: {},
+      levels: [],
     };
+  };
+  // A category's row in the preview, made the first time it is written.
+  const levelRow = (db, width, level) => {
+    db.levels ||= [];
+    let row = db.levels.find(l => l.width === width && l.level === level);
+    if (!row) db.levels.push(row = { width, level, name: null, hidden: false });
+    return row;
   };
   // A result as the pages hold it; one in storage may be a bare time.
   const kept = r => (r == null ? null : { seconds: typeof r === 'number' ? r : r.seconds });
@@ -68,7 +79,15 @@
   const write = db => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch { /* preview only */ } };
   const preview = {
     // A puzzle kept before levels and sizes were is ten a side, in level 1.
-    async list() { return read().puzzles.map(p => ({ width: 10, height: 10, level: 1, colours: null, ...p })); },
+    // Each comes as the database sends the owner's: with its category's
+    // name as `theme`, whether the category is hidden, and its own switch.
+    async list() {
+      const db = read();
+      return db.puzzles.map(p => ({ width: 10, height: 10, level: 1, colours: null, ...p })).map(p => {
+        const row = (db.levels || []).find(l => l.width === p.width && l.level === p.level);
+        return { ...p, off: !!p.off, theme: row?.name ?? null, hidden: !!row?.hidden };
+      });
+    },
     async days() { return new Map(Object.entries(read().days || {})); },
     async recordDay(day, seconds) {
       const db = read();
@@ -81,19 +100,53 @@
     async results() {
       return new Map(Object.entries(read().results).map(([id, r]) => [id, kept(r)]));
     },
-    async save({ id, name, squares, width, height, level, colours, day }) {
+    async save({ id, name, squares, width, height, level, colours, day, off }) {
       const db = read();
       if (id) {
         const p = db.puzzles.find(q => q.id === id);
         if (p.squares !== squares) delete db.results[id];
-        Object.assign(p, { name, squares, width, height, level, colours, day });
+        Object.assign(p, { name, squares, width, height, level, colours, day, off: !!off });
         write(db);
         return p;
       }
-      const p = { id: `p-${Date.now()}`, name, squares, width, height, level, colours, day, created_at: new Date().toISOString() };
+      const p = { id: `p-${Date.now()}`, name, squares, width, height, level, colours, day, off: !!off, created_at: new Date().toISOString() };
       db.puzzles.push(p);
       write(db);
       return p;
+    },
+    // The owner's, as the database's are, further down.
+    async setOff(id, off) {
+      const db = read();
+      db.puzzles.find(p => p.id === id).off = off;
+      write(db);
+    },
+    async move(id, level, off) {
+      const db = read();
+      Object.assign(db.puzzles.find(p => p.id === id), { level, off: !!off });
+      write(db);
+    },
+    async setTheme(width, level, name) {
+      const db = read();
+      levelRow(db, width, level).name = name || null;
+      write(db);
+    },
+    async setHidden(width, level, hidden) {
+      const db = read();
+      levelRow(db, width, level).hidden = hidden;
+      write(db);
+    },
+    async orderLevels(width, levels) {
+      const db = read(), place = n => levels.indexOf(n) + 1;
+      db.puzzles.forEach(p => { if ((p.width ?? 10) === width && !p.day && p.level !== null) p.level = place(p.level ?? 1); });
+      (db.levels || []).forEach(l => { if (l.width === width) l.level = place(l.level); });
+      write(db);
+    },
+    async removeLevel(width, level) {
+      const db = read(), after = n => (n === level ? null : n > level ? n - 1 : n);
+      db.puzzles.forEach(p => { if ((p.width ?? 10) === width && !p.day && p.level !== null) p.level = after(p.level ?? 1); });
+      db.levels = (db.levels || []).filter(l => l.width !== width || l.level !== level);
+      db.levels.forEach(l => { if (l.width === width) l.level = after(l.level); });
+      write(db);
     },
     async remove(id) {
       const db = read();
@@ -166,7 +219,7 @@
     // Each puzzle comes with its level's theme, if the level has one, and
     // for the owner with whether the level is hidden, as `hidden`, and
     // whether the puzzle itself is switched off, as `off`. A player is sent
-    // neither kind.
+    // neither kind, and no puzzle that is in no category.
     async list() {
       if (!owner) return call('pixels_puzzles', { p_key: key() });
       const [puzzles, levels] = await Promise.all([
@@ -218,6 +271,11 @@
     async setOff(id, off) {
       fail((await client.from('pixels_puzzles').update({ hidden: off }).eq('id', id)).error);
     },
+    // Moves a puzzle to another category of its size, or with no level to no
+    // category. `off` is its switch once it is there.
+    async move(id, level, off) {
+      fail((await client.from('pixels_puzzles').update({ level, hidden: !!off }).eq('id', id)).error);
+    },
     // A level's theme, for boards of one size; an empty name takes it away.
     // Only the name is written, so a hidden level stays hidden.
     async setTheme(width, level, name) {
@@ -227,6 +285,11 @@
     // level number in use at that size, and each becomes its place in the list.
     async orderLevels(width, levels) {
       await call('pixels_order_levels', { p_width: width, p_order: levels });
+    },
+    // Deletes a category of one board size: its puzzles are left in no
+    // category, and the categories after it move up one place.
+    async removeLevel(width, level) {
+      await call('pixels_delete_level', { p_width: width, p_level: level });
     },
     // Hides a level from every player but the owner, or shows it again.
     async setHidden(width, level, hidden) {

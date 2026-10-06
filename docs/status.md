@@ -22,9 +22,6 @@ done and how.
 
 ## Pixels
 
-- A category is named only as the maker starts it. Renaming and deleting one,
-  moving a puzzle between two, and a group for puzzles in no category are
-  not built; they belong on the front page with the owner's other switches.
 - The database still keeps stars, which no page shows: `pixels_record` and
   `pixels_record_day` are sent 3, and `pixels_board` orders by them. They go,
   and the board orders by time and by puzzles solved, before `BOARD` is on.

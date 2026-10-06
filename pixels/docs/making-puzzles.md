@@ -124,7 +124,15 @@ one with no name is headed More. Save asks which one a puzzle goes in: its
 list counts how many of each category's are on, such as Fruit · 9 of 9, 3
 off, and offers the first of its size that still has room. The front page
 lists a category easy to hard, so the order they were drawn in does not
-matter, and a puzzle moves category by saving it into another.
+matter.
+
+- **No category yet**, first in that list, keeps the puzzle in Unsorted: a
+  section on the front page after its size's categories, which only the
+  owner sees. A tile there shows its picture and name, and no player is
+  sent it until it is moved into a category.
+- **Move**, under each tile on the front page, asks which category of its
+  size the puzzle goes to, or Unsorted. One moved into a category with nine
+  on arrives switched off.
 
 - **New category**, in that list, starts one, and a field opens for its
   name. It stands after the others and starts hidden, so only the owner
@@ -143,3 +151,6 @@ matter, and a puzzle moves category by saving it into another.
 - **Move it with the arrows** beside the switch, up or down among the
   categories of its size. The order is the owner's choice and means nothing
   about how hard a category is.
+- **Rename it with the pencil** beside the arrows.
+- **Delete it with the bin.** Its puzzles are kept: they move to Unsorted,
+  and the categories after it move up.

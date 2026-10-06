@@ -1738,6 +1738,16 @@
 [data-theme="apple-light"] .rux--btn--tertiary:not(:disabled):not(.rux--btn--disabled):hover {
   background-color: var(--rux-button-secondary-hover);
 }
+/* Disabled, it is still that push button: the disabled fill under the
+   disabled label, as the secondary beside it turns. Carbon rings a disabled
+   tertiary and empties it, so one button was a fill at work and an outline
+   at rest. */
+[data-theme="apple-light"] .rux--btn--tertiary:is(:disabled, .rux--btn--disabled),
+[data-theme="apple-light"] .rux--btn--tertiary:is(:disabled, .rux--btn--disabled):hover {
+  border-color: transparent;
+  background-color: var(--rux-button-disabled);
+  color: var(--rux-text-on-color-disabled);
+}
 /* A button holds its label in the middle, 18px from each side at this
    height: a 36px push button on a Mac measures 78px round "Cancel". Carbon
    sets the label at the start and keeps 64px at the end for an icon. Its 1px

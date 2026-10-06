@@ -167,9 +167,10 @@
         <div class="pixels-frame">
         <div class="pixels-maker">
           <!-- The board with the tools and inks under it, then the check with
-               undo and redo, the step and the fields: beside the board on a
-               wide window, and on a narrow one in a single column, the step and
-               the inks straight under the board. -->
+               undo and redo, the size, the step and the fields: beside the
+               board on a wide window, and on a narrow one in a single column,
+               the step and the inks straight under the board. Every control
+               is Design's small size, 32px. -->
           <div class="pixels-maker-main">
             <div id="pixels-board"></div>
             <!-- The colour step's tools and its inks, which make.js fills, in two sets. -->
@@ -196,28 +197,28 @@
             <div class="pixels-maker-top">
               <div id="pixels-check" aria-live="polite"></div>
               <div class="pixels-moves">
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" id="pixels-undo" aria-label="Undo" title="Undo" disabled><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-undo"/></svg></button>
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm" id="pixels-redo" aria-label="Redo" title="Redo" disabled><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-redo"/></svg></button>
+                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-undo" aria-label="Undo" title="Undo" disabled><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-undo"/></svg></button>
+                <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-redo" aria-label="Redo" title="Redo" disabled><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-redo"/></svg></button>
               </div>
             </div>
-            <!-- Draw the puzzle, then paint the picture it finishes as. -->
-            <div class="rux--content-switcher rux--content-switcher--lg rux--layout--size-lg" role="tablist" aria-label="Step" id="pixels-step">
-              <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-step="draw"><span class="rux--content-switcher__label">Draw</span></button>
-              <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-step="colour"><span class="rux--content-switcher__label">Colour</span></button>
-            </div>
-          <form class="pixels-maker-form" id="pixels-form" novalidate>
             <!-- Choosing a size starts a blank board of it. make.js hides this for a saved puzzle. -->
             <div id="pixels-size-row">
-              <div class="rux--content-switcher rux--content-switcher--lg rux--layout--size-lg" role="tablist" aria-label="Size" id="pixels-size">
+              <div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm" role="tablist" aria-label="Size" id="pixels-size">
                 <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-size="5"><span class="rux--content-switcher__label">5×5</span></button>
                 <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-size="10"><span class="rux--content-switcher__label">10×10</span></button>
                 <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-size="15"><span class="rux--content-switcher__label">15×15</span></button>
               </div>
             </div>
+            <!-- Draw the puzzle, then paint the picture it finishes as. -->
+            <div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm" role="tablist" aria-label="Step" id="pixels-step">
+              <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-step="draw"><span class="rux--content-switcher__label">Draw</span></button>
+              <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-step="colour"><span class="rux--content-switcher__label">Colour</span></button>
+            </div>
+          <form class="pixels-maker-form" id="pixels-form" novalidate>
             <div class="rux--form-item rux--text-input-wrapper">
               <div class="rux--text-input__label-wrapper"><label class="rux--label" for="pixels-name">Name</label></div>
               <div class="rux--text-input__field-outer-wrapper">
-                <div class="rux--text-input__field-wrapper"><input id="pixels-name" class="rux--text-input" type="text" maxlength="40" autocomplete="off" required></div>
+                <div class="rux--text-input__field-wrapper"><input id="pixels-name" class="rux--text-input rux--layout--size-sm" type="text" maxlength="40" autocomplete="off" required></div>
               </div>
             </div>
             <!-- The category the puzzle sits in on the front page; make.js fills it with those of this size, each with how many of its nine are on, and New category. -->
@@ -225,7 +226,7 @@
               <div class="rux--select">
                 <label class="rux--label" for="pixels-level">Category</label>
                 <div class="rux--select-input__wrapper">
-                  <select id="pixels-level" class="rux--select-input" autocomplete="off"></select>
+                  <select id="pixels-level" class="rux--select-input rux--layout--size-sm" autocomplete="off"></select>
                   <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
                 </div>
               </div>
@@ -234,21 +235,21 @@
             <div class="rux--form-item rux--text-input-wrapper">
               <div class="rux--text-input__label-wrapper"><label class="rux--label" for="pixels-theme">Category name</label></div>
               <div class="rux--text-input__field-outer-wrapper">
-                <div class="rux--text-input__field-wrapper"><input id="pixels-theme" class="rux--text-input" type="text" maxlength="30" autocomplete="off"></div>
+                <div class="rux--text-input__field-wrapper"><input id="pixels-theme" class="rux--text-input rux--layout--size-sm" type="text" maxlength="30" autocomplete="off"></div>
               </div>
             </div>
             <!-- A puzzle given a day is that day's puzzle, in no category. -->
             <div class="rux--form-item rux--text-input-wrapper">
               <div class="rux--text-input__label-wrapper"><label class="rux--label" for="pixels-day">Puzzle of the day for</label></div>
               <div class="rux--text-input__field-outer-wrapper">
-                <div class="rux--text-input__field-wrapper"><input id="pixels-day" class="rux--text-input" type="date"></div>
+                <div class="rux--text-input__field-wrapper"><input id="pixels-day" class="rux--text-input rux--layout--size-sm" type="date"></div>
               </div>
               <div class="rux--form__helper-text">Leave empty for a puzzle in a category.</div>
             </div>
             <div class="pixels-actions">
-              <button type="submit" class="rux--btn rux--btn--primary" id="pixels-save" disabled>Save</button>
-              <button type="button" class="rux--btn rux--btn--ghost" id="pixels-clear">Clear</button>
-              <button type="button" class="rux--btn rux--btn--danger--ghost" id="pixels-delete" data-rux-open="pixels-delete-modal" hidden>Delete</button>
+              <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm" id="pixels-save" disabled>Save</button>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="pixels-clear">Clear</button>
+              <button type="button" class="rux--btn rux--btn--danger--ghost rux--btn--sm rux--layout--size-sm" id="pixels-delete" data-rux-open="pixels-delete-modal" hidden>Delete</button>
             </div>
           </form>
           </div>

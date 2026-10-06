@@ -529,11 +529,13 @@
 
 /* THE MAKER. Its board is the game's, to 450px of squares, set in by a
    whole number of pixels as the game is. On a narrow frame it is one column:
-   the board, the check with undo and redo, the step, the tools and inks,
-   then the fields, which is the order the numbers below give its two
-   halves' children. Where the frame has room for both, the board is on one
+   the board, the check with undo and redo, the size, the step, the tools
+   and inks, then the fields, which is the order the numbers below give its
+   two halves' children. Where the frame has room for both, the board is on one
    side with the tools under its row numbers and the inks under its squares,
-   and the check, the step and the fields are beside it. There `--chrome`
+   and the check, the size, the step and the fields are beside it: what
+   sets the board up, a wider gap, what names and files the puzzle, a wider
+   gap, and Save, with Delete apart at the row's end. There `--chrome`
    counts the inks and `--beside` the fields, so the board takes what the
    window leaves both ways and the whole maker is in view without scrolling.
    That starts at 740px, where the squares beside the fields are 300px. */
@@ -551,15 +553,18 @@
 #pixels-saved { order: 0; }
 #pixels-board { order: 1; }
 .pixels-maker-top { order: 2; display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-block-size: 2rem; }
-#pixels-step { order: 3; }
-.pixels-paint { order: 4; display: grid; gap: .5rem; align-self: start; }
+#pixels-size-row { order: 3; }
+#pixels-step { order: 4; }
+.pixels-paint { order: 5; display: grid; gap: .5rem; align-self: start; }
 .pixels-paint[hidden] { display: none; }
-.pixels-maker-form { order: 5; display: grid; gap: 1rem; align-content: start; inline-size: 18rem; max-inline-size: 100%; }
+.pixels-maker-form { order: 6; display: grid; gap: 1rem; align-content: start; inline-size: 18rem; max-inline-size: 100%; margin-block-start: .5rem; }
+.pixels-maker-form > .pixels-actions { margin-block-start: .5rem; }
+#pixels-delete { margin-inline-start: auto; }
 /* PAINT, FILL AND PICK, the colour step's tools, the chosen one drawn in the
    page's opposite colours as the game's two keys are. */
 .pixels-tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
 .pixels-tools > button {
-  block-size: 2.5rem;
+  block-size: 2rem;
   padding: 0;
   border: 1px solid var(--rux-border-strong-01);
   background: var(--rux-layer-01);
@@ -597,7 +602,6 @@
      eleven across and three down. */
   .pixels-paint { grid-template-columns: calc(var(--pixels-corner) - .75rem) var(--side); gap: .75rem; }
   .pixels-tools { grid-template-columns: 1fr; gap: .375rem; }
-  .pixels-tools > button { block-size: 2rem; }
   .pixels-inks { grid-template-columns: repeat(11, 1fr); gap: .375rem; }
   .pixels-inks-set { grid-column: span var(--across); grid-template-columns: subgrid; gap: .375rem; }
   .pixels-ink { aspect-ratio: auto; block-size: 2rem; }

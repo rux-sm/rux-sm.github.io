@@ -3169,8 +3169,10 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
    line along its foot that runs out in four seconds, and data.js closes the
    toast when that animation ends -- so the bar and the dismissal are one
    thing, and pausing the bar pauses the dismissal. Only the card that holds
-   one is positioned, so every other toast keeps Carbon's own box. */
-.scheduler-toast > :has(> .scheduler-toast__timer) { position: relative; }
+   one is positioned, so every other toast keeps Carbon's own box. That card
+   clips what it holds, so on a theme that rounds a toast the bar's ends
+   follow the corners and do not stand out past them. */
+.scheduler-toast > :has(> .scheduler-toast__timer) { position: relative; overflow: hidden; }
 .scheduler-toast__timer {
   position: absolute;
   inset-block-end: 0;

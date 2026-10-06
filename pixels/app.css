@@ -570,7 +570,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 .pixels-toolbar-group { display: flex; }
 .pixels-toolbar-group + .pixels-toolbar-group { box-shadow: inset 1px 0 0 var(--rux-border-subtle-01); }
 .pixels-toolbar-history { margin-inline-start: auto; }
-.pixels-toolbar-group.pixels-toolbar-clear { box-shadow: none; }
+.pixels-toolbar-group.pixels-toolbar-clear, .pixels-toolbar-group.pixels-toolbar-file { box-shadow: none; }
 .pixels-toolbar-break { display: none; }
 /* THE STEP'S TWO KEYS are the maker's own, since Carbon's icon button is a
    fixed square that holds no word. Each is that button to look at, state
@@ -655,9 +655,10 @@ button:disabled > .pixels-ink-now { opacity: .35; }
 
 /* THE MAKER ON A PHONE, where the width is short and the height is free.
    The toolbar is under the board, by the thumb, in two lines of keys at
-   Carbon's large height, each line's keys sharing its width: Back, Save,
-   Delete, Undo and Redo, then Draw, Colour, the three tools and Clear,
-   which is at the end away from Undo. The inks stand open under it, eleven
+   Carbon's large height, each line's keys sharing its width: Back at the
+   start, Undo and Redo in the middle, and Delete and Save at the end, Save
+   last; then Draw, Colour, the three tools and Clear, which is at the end
+   away from Undo. The inks stand open under it, eleven
    across, so a colour is one tap; make.js moves them there, and the button
    that opens them elsewhere is not shown. `--keys` is how many keys a group
    has, which is its share of its line. */
@@ -670,13 +671,14 @@ button:disabled > .pixels-ink-now { opacity: .35; }
   .pixels-toolbar-group + .pixels-toolbar-group { box-shadow: none; }
   .pixels-toolbar-group > * { flex: 1; }
   .pixels-toolbar svg { inline-size: 1.25rem; block-size: 1.25rem; }
-  .pixels-toolbar-file { order: 1; --keys: 2; }
-  .pixels-toolbar-file:has(#pixels-delete:not([hidden])) { --keys: 3; }
+  .pixels-toolbar-back { order: 1; --keys: 1; }
   .pixels-toolbar-history { order: 2; --keys: 2; }
-  .pixels-toolbar-break { order: 3; display: block; flex: 0 0 100%; block-size: .375rem; }
-  .pixels-toolbar-step { order: 4; --keys: 2; }
-  .pixels-toolbar-tools { order: 5; --keys: 3; }
-  .pixels-toolbar-clear { order: 6; --keys: 1; }
+  .pixels-toolbar-file { order: 3; --keys: 1; flex-direction: row-reverse; }
+  .pixels-toolbar-file:has(#pixels-delete:not([hidden])) { --keys: 2; }
+  .pixels-toolbar-break { order: 4; display: block; flex: 0 0 100%; block-size: .375rem; }
+  .pixels-toolbar-step { order: 5; --keys: 2; }
+  .pixels-toolbar-tools { order: 6; --keys: 3; }
+  .pixels-toolbar-clear { order: 7; --keys: 1; }
   .pixels-toolbar-group.pixels-toolbar-ink { display: none; }
   .pixels-inks-slot { order: 2; }
 }

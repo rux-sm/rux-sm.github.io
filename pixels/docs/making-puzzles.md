@@ -61,8 +61,8 @@ black.
   Draw and Colour have their words beside their icons where the bar has the
   room, and are icons alone on a phone.
 - **On a phone** the toolbar is under the board, by your thumb, in two rows
-  of large keys: Back, Save, Delete, Undo and Redo, then Draw, Colour, the
-  three tools and Clear. The colours stand open under it, a tap each.
+  of large keys: Back, Undo and Redo, and Save at the end with Delete before
+  it, then Draw, Colour, the three tools and Clear. The colours stand open under it, a tap each.
 - **Paintbrush, Bucket and Eraser** work in Colour. The paintbrush colours
   the squares you tap or drag over. The bucket colours every square joined
   to the one you tap that has its colour. The eraser puts a square back

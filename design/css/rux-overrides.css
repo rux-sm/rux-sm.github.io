@@ -760,9 +760,11 @@
 }
 /* The icon is in the flow after its label. Carbon places it absolutely in the
    trailing padding the rule above takes back, so left there it sits on the
-   words. */
+   words. It is centred on the button: the label's line is 18px and the icon
+   16, so at the top of that line it sits a pixel high. */
 :is([data-theme="geist-dark"], [data-theme^="apple-"]) .rux--btn:not(.rux--btn--icon-only) .rux--btn__icon {
   position: static;
+  align-self: center;
   margin-block-start: 0;
   margin-inline-start: var(--rux-spacing-03);
 }
@@ -777,6 +779,7 @@
 }
 [data-theme="ant-dark"] .rux--btn:not(.rux--btn--icon-only) .rux--btn__icon {
   position: static;
+  align-self: center;
   margin-block-start: 0;
   margin-inline-start: var(--rux-spacing-03);
 }
@@ -1810,6 +1813,14 @@
   block-size: 2.25rem;
   inline-size: 2.25rem;
   margin-block: 2px;
+  border-radius: 50%;
+}
+/* The two arrows that change the month are the same circle, in the 40px
+   Carbon gives each, so the pointer's fill on one is round as a day's is. */
+[data-theme^="apple-"] .rux--date-picker--next .rux--date-picker__month-nav {
+  block-size: 2.25rem;
+  inline-size: 2.25rem;
+  margin: 2px;
   border-radius: 50%;
 }
 [data-theme^="apple-"] .rux--date-picker--next .rux--date-picker__day.inRange,

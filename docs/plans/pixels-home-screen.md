@@ -98,10 +98,13 @@ with nothing in a store.
 
 ## Tasks
 
-- [ ] In the simulator, add a Pixels page to the home screen as it is today
-      and from an address ending in `#me=` and a made-up key: which address
-      the icon opens, and whether the app sees Safari's storage. A decision
-      that proves wrong is corrected here before the next task.
+- [ ] In the simulator, with a throwaway page kept outside the repository
+      that shows its own address and what its storage holds: store a value
+      in Safari, then add the page to the home screen from an address ending
+      in `#me=` and a made-up value, once with no manifest and once with one
+      that names a start page. Which address each icon opens, and whether
+      the app sees what Safari stored. A decision that proves wrong is
+      corrected here before the next task.
 - [ ] In the head of the six pages, the iPhone's tags and a link to
       `pixels/manifest.json` that an iPhone is not given.
 - [ ] `pixels/data.js`: the key from the address, for a browser with no

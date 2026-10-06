@@ -558,21 +558,24 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
    board, and the board's check over its empty corner. Where the puzzle goes
    is asked as it is saved.
    Its board is the game's, set in by a whole number of pixels as the game
-   is. `--chrome` is the height everything but the board takes, which on a
-   phone counts the toolbar's two lines and the inks under the board, so the
-   board takes what the window leaves and the whole maker is in view without
-   scrolling. */
+   is. `--chrome` is the height everything but the board takes, so the board
+   takes what the window leaves and the whole maker is in view without
+   scrolling. On a phone the inks stand under the board and are as wide as
+   it is, so their height grows with it, five elevenths of its width: there
+   `--side` is what is left of the window's height after the 253px the head
+   and the toolbar's two lines take, shared eleven parts to the board and
+   five to the inks. */
 .pixels-maker {
   --most: 600px;
-  --chrome: 426px;
+  --chrome: 185px;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: .5rem;
   inline-size: var(--foot);
   margin-inline-start: round(down, calc((100cqi - var(--foot)) / 2), 1px);
 }
-@media (min-width: 48rem) {
-  .pixels-maker { --chrome: 185px; }
+@media (max-width: 47.99rem) {
+  .pixels-maker { --side: round(down, clamp(150px, min(100cqi - var(--pixels-corner), (100dvh - 253px) * 11 / 16 - var(--pixels-corner)), var(--most)), 30px); }
 }
 .pixels-maker-top { display: grid; grid-template-columns: minmax(0, 1fr) 7rem; gap: .5rem; }
 /* THE TOOLBAR, after Carbon's text toolbar: a bar of icon buttons the width
@@ -702,9 +705,9 @@ button:disabled > .pixels-ink-now { opacity: .35; }
 @media (max-width: 47.99rem) {
   .pixels-maker-work { display: flex; flex-direction: column; }
   .pixels-toolbar { --rux-layout-size-height: var(--rux-layout-size-height-lg, 3rem); order: 1; column-gap: .375rem; margin-block-start: .5rem; border: 0; background: none; }
-  .pixels-toolbar-group { flex: var(--keys) 1 0; margin: 0; background: var(--rux-layer-01); }
+  .pixels-toolbar-group { flex: var(--keys) 1 0; min-inline-size: 0; margin: 0; background: var(--rux-layer-01); }
   .pixels-toolbar-group + .pixels-toolbar-group { box-shadow: none; }
-  .pixels-toolbar-group > * { flex: 1; }
+  .pixels-toolbar-group > * { flex: 1; min-inline-size: 0; }
   .pixels-bar-key { flex-direction: column; gap: .125rem; padding: 0; font-size: .6875rem; letter-spacing: 0; }
   .pixels-bar-key > svg { inline-size: 1.125rem; block-size: 1.125rem; }
   .pixels-bar-word { display: block; }

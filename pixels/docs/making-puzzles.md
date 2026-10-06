@@ -57,8 +57,8 @@ black.
   names itself when you rest on it: Back, then Undo, Redo and Clear, then
   Draw and Colour, then the paintbrush, the bucket and the eraser, then the
   colour, and at the end Save, with Delete before it for a saved puzzle.
-  Draw and Colour are a switch with their words where the bar has the room,
-  and two icons on a phone.
+  Draw and Colour have their words beside their icons where the bar has the
+  room, and are icons alone on a phone.
 - **Paintbrush, Bucket and Eraser** work in Colour. The paintbrush colours
   the squares you tap or drag over. The bucket colours every square joined
   to the one you tap that has its colour. The eraser puts a square back

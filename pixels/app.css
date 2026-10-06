@@ -556,19 +556,48 @@
    buttons are exactly a phone's board across; a narrower board lets the
    last group down to a line of its own. Save and Delete end the bar.
 
-   The step is two icons, and where the bar is 32rem or more across, which
-   a phone's is not, Carbon's switcher with the words Draw and Colour, since
-   an icon button holds no word. The bar is the container that is asked, and
-   stands over the board so the menu it opens does too. */
+   The bar is the container its step keys ask for its width, and stands
+   over the board so the menu it opens does too. */
 .pixels-toolbar { position: relative; z-index: 1; container-type: inline-size; display: flex; flex-wrap: wrap; background: var(--rux-layer-01); border-block-end: 1px solid var(--rux-border-subtle-01); }
 
 .pixels-toolbar-group { display: flex; }
 .pixels-toolbar-group + .pixels-toolbar-group { box-shadow: inset 1px 0 0 var(--rux-border-subtle-01); }
 .pixels-toolbar-end { margin-inline-start: auto; }
-.pixels-step-words { display: none; inline-size: 10rem; }
+/* THE STEP'S TWO KEYS are the maker's own, since Carbon's icon button is a
+   fixed square that holds no word. Each is that button to look at, state
+   for state and token for token, so it sits among the others unremarked,
+   and has its word beside its icon where the bar is 32rem or more across,
+   which a phone's is not. The chosen one is filled as Carbon fills a
+   selected button. */
+.pixels-step-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .375rem;
+  box-sizing: border-box;
+  block-size: 2rem;
+  min-inline-size: 2rem;
+  padding: 0 .4375rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--rux-text-primary);
+  font: inherit;
+  font-size: .875rem;
+  letter-spacing: .16px;
+  cursor: pointer;
+  transition: background 70ms cubic-bezier(0, 0, .38, .9);
+}
+.pixels-step-key > svg { fill: var(--rux-icon-primary); }
+.pixels-step-key > span { display: none; }
+@media (any-hover: hover) {
+  .pixels-step-key:hover { background: var(--rux-background-hover); }
+}
+.pixels-step-key:active { background: var(--rux-background-active); }
+.pixels-step-key:focus-visible { border-color: var(--rux-focus); box-shadow: inset 0 0 0 1px var(--rux-focus), inset 0 0 0 2px var(--rux-background); outline: none; }
+.pixels-step-key[aria-checked="true"] { background: var(--rux-background-selected); }
 @container (min-width: 32rem) {
-  .pixels-step-icons { display: none; }
-  .pixels-step-words { display: flex; }
+  .pixels-step-key { padding-inline: .625rem; }
+  .pixels-step-key > span { display: inline; }
 }
 /* THE COLOUR IN HAND, on the toolbar's last button, with the corner mark
    Carbon gives a button that opens a menu. */

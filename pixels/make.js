@@ -41,12 +41,12 @@
 (() => {
   'use strict';
 
-  const { data, owner, SIZES, grid, squaresOf, unreached, rounds, grade, board, drag, switcher, chosen } = window.Pixels;
+  const { data, owner, SIZES, grid, squaresOf, unreached, rounds, grade, board, drag } = window.Pixels;
   const $ = id => document.getElementById(id);
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
   const day = $('pixels-day'), theme = $('pixels-theme');
   const inks = $('pixels-inks'), inkKey = $('pixels-ink'), inkMenu = $('pixels-ink-menu');
-  const tools = $('pixels-tool'), steps = $('pixels-step'), stepWords = $('pixels-step-words'), size = $('pixels-size');
+  const tools = $('pixels-tool'), steps = $('pixels-step'), size = $('pixels-size');
   const undoKey = $('pixels-undo'), redoKey = $('pixels-redo');
   const DRAFT = 'pixels-draft';
   // The inks, a colour at a time: its light, its middle and its dark, and
@@ -182,11 +182,11 @@
   // A square as the colour step starts it, and as the eraser leaves it: the
   // picture as it is seen while solving, dark on light.
   const plain = (y, x) => (draft[y][x] ? 0 : 1);
-  // One key of a group is the chosen one, drawn as Carbon draws a selected
-  // button.
+  // One key of a group is the chosen one. A Carbon button is drawn as
+  // Carbon draws a selected one; the step's own keys read aria-checked.
   const choose = (group, on) => group.querySelectorAll('button').forEach(b => {
     b.setAttribute('aria-checked', on(b));
-    b.classList.toggle('rux--btn--selected', on(b));
+    if (b.classList.contains('rux--btn')) b.classList.toggle('rux--btn--selected', on(b));
   });
   // The tools and the colour are there in both steps and out of reach in
   // Draw, so the toolbar never changes shape.
@@ -196,12 +196,8 @@
     [...tools.querySelectorAll('button'), inkKey].forEach(b => { b.disabled = step !== 'colour'; });
     if (step !== 'colour') window.Rux.popover?.close(inkMenu);
     choose(steps, b => b.dataset.step === step);
-    chosen(stepWords, stepWords.querySelector(`[data-step="${step}"]`));
     render();
   };
-  // The step is on the toolbar twice, as icons and as Carbon's switcher with
-  // words; app.css shows the one the bar has room for.
-  switcher(stepWords, b => setStep(b.dataset.step));
   steps.addEventListener('click', e => {
     const picked = e.target.closest('[data-step]');
     if (picked) setStep(picked.dataset.step);
@@ -359,7 +355,7 @@
   // The arrows move along the toolbar, as they do along Carbon's.
   $('pixels-toolbar').addEventListener('keydown', e => {
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-    const keys = [...e.currentTarget.querySelectorAll('.rux--btn')].filter(b => !b.disabled && b.offsetParent), at = keys.indexOf(document.activeElement);
+    const keys = [...e.currentTarget.querySelectorAll('.rux--btn, .pixels-step-key')].filter(b => !b.disabled && b.offsetParent), at = keys.indexOf(document.activeElement);
     if (at < 0) return;
     e.preventDefault();
     keys[(at + (e.key === 'ArrowRight' ? 1 : keys.length - 1)) % keys.length].focus();

@@ -556,7 +556,7 @@
 .pixels-maker[data-more] { --more: 2.5rem; }
 .pixels-maker-head { display: grid; gap: .5rem; }
 .pixels-maker-top { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr) 7rem; gap: .5rem; }
-.pixels-back > span { display: none; }
+.pixels-key-word { display: none; }
 .pixels-maker-board { position: relative; }
 /* THE CHECK, over the board's empty corner: a tag, then how hard the puzzle
    is and how much of the board is filled. */
@@ -578,15 +578,18 @@
 .pixels-maker-check > span:not([class])::first-letter { text-transform: uppercase; }
 .pixels-maker-keys { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
 .pixels-maker-end { display: flex; gap: .25rem; }
-/* THE MAKER'S KEYS are the game's, on one line and 32px tall: a word, or an
-   icon beside it. Save is the one filled, and Delete the one in red. Keys
-   that belong together are joined, sharing the line between them. */
-.pixels-key--row { display: inline-flex; align-items: center; justify-content: center; gap: .375rem; block-size: 2rem; padding-inline: .625rem; font-size: .875rem; }
+/* THE MAKER'S KEYS are the game's, on one line and 32px tall: an icon and
+   its word. Under 48rem Back, Undo, Redo and Clear are their icons alone,
+   their words being `pixels-key-word`, and every key keeps less room at
+   its ends, so the row under the board is one row on a phone. Save is the
+   one filled, and Delete the one in red. Keys that belong together are
+   joined, sharing the line between them. */
+.pixels-key--row { display: inline-flex; align-items: center; justify-content: center; gap: .375rem; block-size: 2rem; padding-inline: .5rem; font-size: .875rem; }
 .pixels-key[hidden] { display: none; }
 .pixels-key--go { border-color: transparent; background: var(--rux-button-primary); color: var(--rux-text-on-color); }
 .pixels-key--go:hover { background: var(--rux-button-primary-hover); }
 .pixels-key--go:disabled { border-color: transparent; background: var(--rux-button-disabled); color: var(--rux-text-on-color-disabled); }
-.pixels-key--danger { inline-size: 2rem; padding: 0; color: var(--rux-text-error); }
+.pixels-key--row.pixels-key--danger { inline-size: 2rem; padding: 0; color: var(--rux-text-error); }
 .pixels-joined { display: flex; }
 .pixels-joined > * + * { margin-inline-start: -1px; }
 .pixels-joined > :not(:disabled) { position: relative; }
@@ -615,7 +618,7 @@
 }
 .pixels-tools > button:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 .pixels-tools--row { grid-template-columns: repeat(2, auto); gap: 0; }
-.pixels-tools--row > button { padding-inline: .625rem; }
+.pixels-tools--row > button { padding-inline: .5rem; }
 .pixels-tools--row > * + * { margin-inline-start: -1px; }
 /* THE COLOUR STEP'S TOOLS AND INKS, dimmed and out of reach while drawing.
    The inks run a colour at a time, light, middle, dark, so one grid lays
@@ -636,7 +639,8 @@
 .pixels-saved { position: fixed; inset-block-start: 3.5rem; inset-inline-end: 1rem; z-index: 2; max-inline-size: calc(100vw - 2rem); }
 @media (min-width: 48rem) {
   .pixels-maker { --chrome: calc(332px + var(--more, 0px)); gap: 1rem; }
-  .pixels-back > span { display: inline; }
+  .pixels-key-word { display: inline; }
+  .pixels-key--row, .pixels-tools--row > button { padding-inline: .625rem; }
   .pixels-paint { grid-template-columns: calc(var(--pixels-corner) - .75rem) minmax(0, 1fr); gap: .75rem; }
   .pixels-paint > .pixels-tools { grid-template-columns: minmax(0, 1fr); gap: .375rem; }
   .pixels-ink { aspect-ratio: auto; block-size: 2rem; }

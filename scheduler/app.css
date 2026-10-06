@@ -443,8 +443,8 @@ button.scheduler-row-head__num::after {
    sits. That row lights up and tints: the interactive tone for a clean drop,
    the warning tone where the bus is already busy or out of service. A
    warning, not a wall, because the drop still goes through. On release the
-   copy settles flat into the row, which stays lit while the move is written,
-   and the bar fades from where it sat. Once the database has taken the move
+   copy settles flat into the lane its bar will take, in a row that stays lit
+   while the move is written, and the bar fades from where it sat. Once the database has taken the move
    the copy comes away over the bar drawn in its place and the row's light
    fades out; a move that fails, or a bar let go nowhere, slides home. The
    copy is placed by `top` alone, at the bar's own column, so the two-class
@@ -468,6 +468,11 @@ button.scheduler-row-head__num::after {
   animation: scheduler-track-landed 320ms ease-out;
 }
 .scheduler-track.scheduler-track--landed-warn { --scheduler-landed: var(--rux-support-warning); }
+/* A drop packs the two rows it changes as the board is about to draw them:
+   each takes its height at once and its bars glide to their lanes. A yard
+   card sits between two bars of one lane, so it waits for the draw. */
+.scheduler-track--packing > .scheduler-bar:not(.scheduler-bar--leaving) { transition: inset-block-start 180ms cubic-bezier(.2, .7, .2, 1); }
+.scheduler-track--packing > .scheduler-yard { visibility: hidden; }
 .scheduler-bar--dragging { opacity: .4; cursor: grabbing; }
 .scheduler-bar--leaving { opacity: 0; transition: opacity 150ms ease-out; }
 .scheduler-bar.scheduler-ghost {
@@ -491,7 +496,8 @@ button.scheduler-row-head__num::after {
 }
 @media (prefers-reduced-motion: reduce) {
   .scheduler-bar.scheduler-ghost,
-  .scheduler-bar--leaving { transition: none; }
+  .scheduler-bar--leaving,
+  .scheduler-track--packing > .scheduler-bar:not(.scheduler-bar--leaving) { transition: none; }
 }
 
 /* ── Time at the yard ───────────────────────────────────────────────────

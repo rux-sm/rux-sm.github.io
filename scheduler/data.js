@@ -1673,6 +1673,8 @@
       // how far below the bar's top the pointer holds it, and the bar's height
       // above its track's top, which is where it lands in any row.
       let ghost = null, origin = null, grip = 0, pad = 0;
+      // What a drop's packing changed, as [element, property, value before], so a failed move can put it back.
+      const packed = [];
 
       const clear = () => {
         for (const track of tracks) track.classList.remove('scheduler-track--drop', 'scheduler-track--warn');
@@ -1713,15 +1715,43 @@
       // Where the copy sits over a row: at rest in its first lane.
       const restIn = track => track.getBoundingClientRect().top + pad;
 
-      /* Eases the copy to `top`, flat again, and waits for app.css's
-         transition to end, with SETTLE_MS as the ceiling should it never fire.
-         A copy already there and flat, or reduced motion, waits for nothing. */
-      const settle = async top => {
+      /* Packs a row as the board is about to draw it, with the carried bar on
+         it or gone from it, so a drop and the draw that follows agree: the row
+         takes its height, the bars already there move to their lanes, and the
+         answer is the lane the carried bar gets. The order is `render`'s: the
+         trips as read, a trip's outbound leg before its return, a leg's buses
+         by position, and `assignLanes` over that. */
+      const pack = (track, carried) => {
+        const rank = new Map([...panelIndex.trips.keys()].map((id, i) => [String(id), i]));
+        const order = b => [rank.get(b.dataset.tripId) ?? 0, b.dataset.leg === 'return' ? 1 : 0,
+          b === bar || b.dataset.assignmentId ? 0 : 1, +b.dataset.slot || 0];
+        const list = [...track.querySelectorAll(':scope > .scheduler-bar')].filter(b => b !== bar);
+        if (carried) list.push(bar);
+        const rows = list
+          .map(b => ({ bar: b, order: order(b), place: { start: +b.dataset.start, span: +b.dataset.span } }))
+          .sort((x, y) => { const i = x.order.findIndex((v, n) => v !== y.order[n]); return i < 0 ? 0 : x.order[i] - y.order[i]; });
+        const lanes = rows.length ? assignLanes(rows) : 1;
+        const set = (node, prop, value) => { packed.push([node, prop, node.style.getPropertyValue(prop)]); node.style.setProperty(prop, value); };
+        track.classList.add('scheduler-track--packing');
+        set(track, '--scheduler-lanes', lanes);
+        for (const r of rows) if (r.bar !== bar) set(r.bar, '--scheduler-lane', r.lane);
+        return rows.find(r => r.bar === bar)?.lane ?? 0;
+      };
+      const unpack = () => {
+        for (const [node, prop, value] of packed.splice(0).reverse()) node.style.setProperty(prop, value);
+      };
+
+      /* Eases the copy to `top`, or to the lane that many down from it, flat
+         again, and waits for app.css's transition to end, with SETTLE_MS as the
+         ceiling should it never fire. A copy already there and flat, or reduced
+         motion, waits for nothing. A lane is as tall as app.css makes one. */
+      const settle = async (top, lane = 0) => {
         if (!ghost) return;
-        const moving = ghost.style.top !== `${top}px` || ghost.classList.contains('scheduler-ghost--lifted');
+        const at = lane ? `calc(${top}px + ${lane} * (var(--scheduler-bar-h) + var(--scheduler-lane-gap)))` : `${top}px`;
+        const moving = ghost.style.top !== at || ghost.classList.contains('scheduler-ghost--lifted');
         ghost.classList.remove('scheduler-ghost--lifted', 'scheduler-ghost--snapped');
         ghost.classList.add('scheduler-ghost--settling');
-        ghost.style.top = `${top}px`;
+        ghost.style.top = at;
         if (!moving || reducedMotion.matches) return;
         await new Promise(r => {
           const t = setTimeout(r, SETTLE_MS);
@@ -1734,6 +1764,7 @@
         ghost?.remove();
         ghost = null;
         bar.classList.remove('scheduler-bar--dragging', 'scheduler-bar--leaving');
+        for (const track of tracks) track.classList.remove('scheduler-track--packing');
         if (unassignedRow?.dataset.revealed) { unassignedRow.hidden = true; delete unassignedRow.dataset.revealed; }
         placeBarOpen();
       };
@@ -1769,7 +1800,9 @@
           return;
         }
         /* The copy settles flat into the row, which stays lit while the move
-           is written, and the bar fades from where it sat. The settling and the
+           is written, and the bar fades from where it sat. Both rows are packed
+           first, as the board will draw them, so the copy settles where its bar
+           will be and nothing jumps when it is drawn. The settling and the
            write run together, so the wait is the longer of the two. */
         let assignmentId = bar.dataset.assignmentId;
         const { tripId, leg, slot } = bar.dataset;
@@ -1777,7 +1810,9 @@
         const label = busLabel(fromBus);
         const warned = target.classList.contains('scheduler-track--warn');
         bar.classList.add('scheduler-bar--leaving');
-        const settled = settle(restIn(target));
+        const lane = pack(target, true);
+        pack(bar.parentElement, false);
+        const settled = settle(restIn(target), lane);
         let failed = null, made = null;
         try {
           schEl.setAttribute('aria-busy', 'true');
@@ -1794,6 +1829,7 @@
           /* The copy slides back over the bar, and the week is read after it,
              because a move that threw may still have landed. */
           clear();
+          unpack();
           bar.classList.remove('scheduler-bar--leaving');
           await settle(origin.top);
           putDown();
@@ -11343,14 +11379,15 @@
   async function takeOffBus(bar) {
     const assignmentId = bar.dataset.assignmentId;
     if (!assignmentId) return;
+    // Held as values: the draw below replaces every bar.
+    const { tripId } = bar.dataset;
+    const fromBus = bar.dataset.busId || null;
     toast('info', 'Taking the trip off its bus…');
     try {
-      // The same write the drag makes for a drop on the Unassigned row.
-      const { error } = await withTimeout(
-        client.from('trip_assignments').update({ bus_id: null }).eq('id', assignmentId).then(r => r));
-      if (error) throw new Error(error.message);
-      recordBusChange(bar.dataset.tripId, bar.dataset.busId || null, null);
-      await show();
+      // The same write the drag makes for a drop on the Unassigned row, drawn the same way.
+      await moveToBus(assignmentId, null);
+      recordBusChange(tripId, fromBus, null);
+      await drawBusMove(tripId, assignmentId, null);
       refreshEditor(assignmentId);
       toast('success', 'Taken off its bus. It is in the Unassigned row.');
     } catch (err) {

@@ -117,7 +117,7 @@ appearance the two are one white.
 | Secondary text on a chosen row | Secondary label, `#9e9e9e` | 4.31 | Gray, increased contrast, dark | 5.22 |
 | A link on a chosen row | Link, `#419cff` | 4.08 | Blue, increased contrast, dark | 5.37 |
 | A white label on the filled button | Control accent | 4.02 | Blue, increased contrast, light | 4.57 |
-| Red words on the red tag | Red, increased contrast, dark | 4.01 | The same, 13% toward white | 4.55 |
+| Red words on the red tag | Red, increased contrast, dark | 4.13 | The same, 13% toward white | 4.69 |
 
 ## This theme's tokens
 
@@ -176,31 +176,31 @@ step, no tint, and no chat surface; the third column says which.
 | `#0064e1` | Selected content, light | read | `button-primary-active` |
 | `#cd1228` | The light increased-contrast red, darkened for hover | derived | `button-danger-hover` |
 | `#b11022` | The same red, darkened for a press | derived | `button-danger-active` |
-| `#532d2e` | Red at 20% on the raised surface | derived | `tag-background-red` |
-| `#ff7679` | Red, increased contrast, dark, lightened to 4.5 to 1 on its tint | derived | `tag-color-red`, `tag-border-red` |
-| `#642f30` | Red at 28% on the raised surface | derived | `tag-hover-red` |
-| `#532b33` | Pink at 20% on the raised surface | derived | `tag-background-magenta` |
+| `#661a1c` | Red at 40% on black | derived | `tag-background-red` |
+| `#ff7679` | Red, increased contrast, dark, 13% toward white for 4.5 to 1 on its tint | derived | `tag-color-red`, `tag-border-red` |
+| `#701d1e` | Red at 44% on black | derived | `tag-hover-red` |
+| `#661626` | Pink at 40% on black | derived | `tag-background-magenta` |
 | `#ff8ac4` | Pink, increased contrast, dark | read | `tag-color-magenta`, `tag-border-magenta` |
-| `#642c37` | Pink at 28% on the raised surface | derived | `tag-hover-magenta` |
-| `#4c2a50` | Purple at 20% on the raised surface | derived | `tag-background-purple` |
+| `#70182a` | Pink at 44% on black | derived | `tag-hover-magenta` |
+| `#581561` | Purple at 40% on black | derived | `tag-background-purple` |
 | `#ea8dff` | Purple, increased contrast, dark | read | `tag-color-purple`, `tag-border-purple` |
-| `#5a2b61` | Purple at 28% on the raised surface | derived | `tag-hover-purple` |
-| `#203d53` | Blue at 20% on the raised surface | derived | `tag-background-blue` |
-| `#1d4564` | Blue at 28% on the raised surface | derived | `tag-hover-blue` |
-| `#2c4a53` | Cyan at 20% on the raised surface | derived | `tag-background-cyan` |
+| `#60176a` | Purple at 44% on black | derived | `tag-hover-purple` |
+| `#003a66` | Blue at 40% on black | derived | `tag-background-blue` |
+| `#004070` | Blue at 44% on black | derived | `tag-hover-blue` |
+| `#185466` | Cyan at 40% on black | derived | `tag-background-cyan` |
 | `#6dd9ff` | Cyan, increased contrast, dark | read | `tag-color-cyan`, `tag-border-cyan` |
-| `#2e5864` | Cyan at 28% on the raised surface | derived | `tag-hover-cyan` |
-| `#204a4d` | Teal at 20% on the raised surface | derived | `tag-background-teal` |
+| `#1a5d70` | Cyan at 44% on black | derived | `tag-hover-cyan` |
+| `#00545a` | Teal at 40% on black | derived | `tag-background-teal` |
 | `#3bddec` | Teal, increased contrast, dark | read | `tag-color-teal`, `tag-border-teal` |
-| `#1d585c` | Teal at 28% on the raised surface | derived | `tag-hover-teal` |
-| `#2a4a32` | Green at 20% on the raised surface | derived | `tag-background-green` |
+| `#005c63` | Teal at 44% on black | derived | `tag-hover-teal` |
+| `#135423` | Green at 40% on black | derived | `tag-background-green` |
 | `#4ad968` | Green, increased contrast, dark | read | `tag-color-green`, `tag-border-green` |
-| `#2a5735` | Green at 28% on the raised surface | derived | `tag-hover-green` |
-| `#3c3c3d` | Gray at 20% on the raised surface | derived | `tag-background-gray`, `tag-background-cool-gray` |
-| `#454546` | Gray at 28% on the raised surface | derived | `tag-hover-gray`, `tag-hover-cool-gray` |
+| `#155c27` | Green at 44% on black | derived | `tag-hover-green` |
+| `#39393b` | Gray at 40% on black | derived | `tag-background-gray`, `tag-background-cool-gray` |
+| `#3e3e41` | Gray at 44% on black | derived | `tag-hover-gray`, `tag-hover-cool-gray` |
 | `#dba679` | Brown, increased contrast, dark | read | `tag-border-warm-gray`, `tag-color-warm-gray` |
-| `#453c34` | Brown at 20% on the raised surface | derived | `tag-background-warm-gray` |
-| `#504339` | Brown at 28% on the raised surface | derived | `tag-hover-warm-gray` |
+| `#493729` | Brown at 40% on black | derived | `tag-background-warm-gray` |
+| `#513d2d` | Brown at 44% on black | derived | `tag-hover-warm-gray` |
 | `#462c2c` | Red at 14% on the raised surface | derived | `notification-background-error` |
 | `#29402f` | Green at 14% on the raised surface | derived | `notification-background-success` |
 | `#223746` | Blue at 14% on the raised surface | derived | `notification-background-info` |

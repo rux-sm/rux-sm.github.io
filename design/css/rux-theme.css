@@ -1241,9 +1241,11 @@
      colour makes 4.08 to 1 on a chosen row's fill.
    - A status mark is its hue's dark default, and words in a hue take the
      increased-contrast dark step.
-   - A tag is its hue's dark default at 20% on the raised surface under the
-     increased-contrast dark step, which red alone has lightened to reach
-     4.5 to 1 on its tint.
+   - A tag is its hue's dark default at 40% on black, 44% under the pointer,
+     under the increased-contrast dark step. Calendar mixes an event's colour
+     into black, which keeps the hue's whole strength; mixed into this
+     theme's grey surfaces a tint loses a third of it and reads muddy. Red's
+     step makes 4.1 to 1 on its tint, so it is moved 13% toward white, 4.7.
    - The inverse surface is a light one here, so what is drawn on it takes
      Apple's light increased-contrast steps. */
 [data-theme="apple-dark"] {
@@ -1391,30 +1393,30 @@
   --rux-button-disabled: #323232;
 
   /* tag */
-  --rux-tag-background-red: #532d2e;
+  --rux-tag-background-red: #661a1c;
   --rux-tag-color-red: #ff7679;
-  --rux-tag-hover-red: #642f30;
-  --rux-tag-background-magenta: #532b33;
+  --rux-tag-hover-red: #701d1e;
+  --rux-tag-background-magenta: #661626;
   --rux-tag-color-magenta: #ff8ac4;
-  --rux-tag-hover-magenta: #642c37;
-  --rux-tag-background-purple: #4c2a50;
+  --rux-tag-hover-magenta: #70182a;
+  --rux-tag-background-purple: #581561;
   --rux-tag-color-purple: #ea8dff;
-  --rux-tag-hover-purple: #5a2b61;
-  --rux-tag-background-blue: #203d53;
+  --rux-tag-hover-purple: #60176a;
+  --rux-tag-background-blue: #003a66;
   --rux-tag-color-blue: #5cb8ff;
-  --rux-tag-hover-blue: #1d4564;
-  --rux-tag-background-cyan: #2c4a53;
+  --rux-tag-hover-blue: #004070;
+  --rux-tag-background-cyan: #185466;
   --rux-tag-color-cyan: #6dd9ff;
-  --rux-tag-hover-cyan: #2e5864;
-  --rux-tag-background-teal: #204a4d;
+  --rux-tag-hover-cyan: #1a5d70;
+  --rux-tag-background-teal: #00545a;
   --rux-tag-color-teal: #3bddec;
-  --rux-tag-hover-teal: #1d585c;
-  --rux-tag-background-green: #2a4a32;
+  --rux-tag-hover-teal: #005c63;
+  --rux-tag-background-green: #135423;
   --rux-tag-color-green: #4ad968;
-  --rux-tag-hover-green: #2a5735;
-  --rux-tag-background-gray: #3c3c3d;
+  --rux-tag-hover-green: #155c27;
+  --rux-tag-background-gray: #39393b;
   --rux-tag-color-gray: #aeaeb2;
-  --rux-tag-hover-gray: #454546;
+  --rux-tag-hover-gray: #3e3e41;
   --rux-tag-border-red: #ff7679;
   --rux-tag-border-blue: #5cb8ff;
   --rux-tag-border-cyan: #6dd9ff;
@@ -1425,12 +1427,12 @@
   --rux-tag-border-gray: #aeaeb2;
   --rux-tag-border-cool-gray: #aeaeb2;
   --rux-tag-border-warm-gray: #dba679;
-  --rux-tag-background-cool-gray: #3c3c3d;
+  --rux-tag-background-cool-gray: #39393b;
   --rux-tag-color-cool-gray: #aeaeb2;
-  --rux-tag-hover-cool-gray: #454546;
-  --rux-tag-background-warm-gray: #453c34;
+  --rux-tag-hover-cool-gray: #3e3e41;
+  --rux-tag-background-warm-gray: #493729;
   --rux-tag-color-warm-gray: #dba679;
-  --rux-tag-hover-warm-gray: #504339;
+  --rux-tag-hover-warm-gray: #513d2d;
 
   /* notification */
   --rux-notification-background-error: #462c2c;

@@ -57,13 +57,15 @@ white to black.
 - **The toolbar over the board** holds every button, each an icon that
   names itself when you rest on it. At its start are Back and Save, with
   Delete for a saved puzzle. At its end, over the squares, are Undo, Redo
-  and Clear, then Draw and Colour, then the paintbrush, the bucket and the
+  and Clear, then the step, then the paintbrush, the bucket and the
   eraser, then the colour.
-  Draw and Colour have their words beside their icons where the bar has the
-  room.
+- **The step is one key.** It shows the step the board is in, a pencil for
+  Draw or a palette for Colour, with the word beside it where the bar has
+  the room. Press it, or Space, to change to the other, as often as it
+  takes to compare the two pictures.
 - **On a phone** the toolbar is under the board, by your thumb, in two rows
   of large keys, each with its word under its icon: Back, Undo and Redo, and
-  Save at the end with Delete before it, then Draw, Colour, the three tools
+  Save at the end with Delete before it, then the step, the three tools
   and Clear. The colours stand open under it, a tap each.
 - **Paintbrush, Bucket and Eraser** work in Colour. The paintbrush colours
   the squares you tap or drag over. The bucket colours every square joined

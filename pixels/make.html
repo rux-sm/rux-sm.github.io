@@ -235,10 +235,9 @@
               </div>
               <!-- On a phone the bar is two lines, and this is where the first ends. -->
               <span class="pixels-toolbar-break" aria-hidden="true"></span>
-              <!-- The step. Its two keys have their words beside them where the bar has the room. -->
-              <div class="pixels-toolbar-group pixels-toolbar-step" role="radiogroup" aria-label="Step" id="pixels-step">
-                <button type="button" class="pixels-bar-key" role="radio" aria-checked="true" data-step="draw" aria-label="Draw" title="Draw"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-edit"/></svg><span class="pixels-bar-word">Draw</span></button>
-                <button type="button" class="pixels-bar-key" role="radio" aria-checked="false" data-step="colour" aria-label="Colour" title="Colour"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-palette"/></svg><span class="pixels-bar-word">Colour</span></button>
+              <!-- The step: one key, which shows the step the board is in and changes to the other, as Space does. It holds both icons and make.js says which shows. Its word is beside it where the bar has the room. -->
+              <div class="pixels-toolbar-group pixels-toolbar-step">
+                <button type="button" class="pixels-bar-key" id="pixels-step" data-step="draw" aria-label="Draw" title="Draw"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-edit"/></svg><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-palette"/></svg><span class="pixels-bar-word">Draw</span></button>
               </div>
               <div class="pixels-toolbar-group pixels-toolbar-tools" role="radiogroup" aria-label="Tool" id="pixels-tool">
                 <button type="button" class="pixels-bar-key" role="radio" aria-checked="true" data-tool="paint" disabled aria-label="Paintbrush" title="Paintbrush"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-brush"/></svg><span class="pixels-bar-word">Brush</span></button>

@@ -659,7 +659,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
    bar, over the board's corner, and the drawing's keys are pushed to its
    end, over the squares.
 
-   The bar is the container its step keys ask for its width, and stands
+   The bar is the container its step key asks for its width, and stands
    over the board so the menu it opens does too. It sets the height its
    keys take, Carbon's small, in the token a Carbon button reads. */
 .pixels-toolbar { --rux-layout-size-height: var(--rux-layout-size-height-sm, 2rem); position: relative; z-index: 1; container-type: inline-size; display: flex; flex-wrap: wrap; background: var(--rux-layer-01); border-block-end: 1px solid var(--rux-border-subtle-01); }
@@ -673,7 +673,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
    fixed square that holds no word. Each is Carbon's ghost icon button to
    look at, state for state and token for token, at the height the bar sets.
    Its word is not shown, but for the step where the bar is 37rem or more
-   across, which is where the whole bar with those words is one line, and on
+   across, which is where the whole bar with that word is one line, and on
    a phone, below. The chosen one of a group is filled as Carbon fills a
    selected button. Save is filled as Carbon's primary is, and Delete is in
    its danger red. */
@@ -715,8 +715,12 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 }
 .pixels-bar-key--go:active:not(:disabled) { background: var(--rux-button-primary-active); }
 .pixels-bar-key--go:disabled { background: var(--rux-button-disabled); color: var(--rux-text-on-color-disabled); }
+/* The step's key holds both steps' icons and shows the one of the step the
+   board is in. With its word it keeps one width for both, so no key
+   beside it moves as the step changes. */
+#pixels-step[data-step="draw"] > svg:last-of-type, #pixels-step[data-step="colour"] > svg:first-of-type { display: none; }
 @container (min-width: 37rem) {
-  .pixels-toolbar-step > .pixels-bar-key { padding-inline: .625rem; }
+  .pixels-toolbar-step > .pixels-bar-key { inline-size: 5.75rem; padding-inline: .625rem; }
   .pixels-toolbar-step .pixels-bar-word { display: inline; }
 }
 /* THE COLOUR IN HAND, on the toolbar's last button, with the corner mark
@@ -768,7 +772,7 @@ button:disabled > .pixels-ink-now { opacity: .35; }
    The toolbar is under the board, by the thumb, in two lines of keys at
    Carbon's large height, each line's keys sharing its width: Back at the
    start, Undo and Redo in the middle, and Delete and Save at the end, Save
-   last; then Draw, Colour, the three tools and Clear, which is at the end
+   last; then the step's key, the three tools and Clear, which is at the end
    away from Undo. Each key is its icon over its word, as the game's keys
    are. The inks stand open under it, eleven across, so a colour is one tap; make.js moves them there, and the button
    that opens them elsewhere is not shown. `--keys` is how many keys a group
@@ -789,7 +793,7 @@ button:disabled > .pixels-ink-now { opacity: .35; }
   .pixels-toolbar-file { order: 3; --keys: 1; flex-direction: row-reverse; }
   .pixels-toolbar-file:has(#pixels-delete:not([hidden])) { --keys: 2; }
   .pixels-toolbar-break { order: 4; display: block; flex: 0 0 100%; block-size: .375rem; }
-  .pixels-toolbar-step { order: 5; --keys: 2; }
+  .pixels-toolbar-step { order: 5; --keys: 1; }
   .pixels-toolbar-tools { order: 6; --keys: 3; }
   .pixels-toolbar-clear { order: 7; --keys: 1; }
   .pixels-toolbar-group.pixels-toolbar-ink { display: none; }

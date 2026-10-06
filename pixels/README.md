@@ -110,6 +110,7 @@ new one or Unsorted, or deleted; a category left empty goes too.
 | `puzzles.js`, `category.js`, `play.js`, `make.js`, `manage.js`, `players.js` | each page's own behaviour |
 | `app.css` | the board, the picture, the tiles and Manage, under `pixels-` |
 | `theme.css` | the fifty-five inks a colour picture is painted from |
+| `manifest.json` | the name, the window and the icons a browser installs Pixels with; no page names it. `tools/build-app-icons.mjs` writes the four PNG icons in `brand/` from `brand/favicon.svg` |
 
 ## Data
 
@@ -118,8 +119,7 @@ directly: `pixels_puzzles`, every puzzle, which a staff account may read too;
 `pixels_players`, each player's name with the account or the hash of the
 guest's key; `pixels_player_results` and `pixels_player_days`, each player's
 best time on a puzzle and on a puzzle of the day; and
-`pixels_settings`, the invite word; and `pixels_levels`, each category's name and whether it is hidden. `docs/database-access.md` is the rule
-they follow.
+`pixels_settings`, the invite word; and `pixels_levels`, each category's name and whether it is hidden. `docs/database-access.md` is the rule they follow.
 
 A player's page calls eight functions, which the publishable key may run and
 which first find the player from the log-in or the key: `pixels_join`,

@@ -2,8 +2,9 @@
 //
 // Regenerate everything that is committed but derived: Design's compiled
 // stylesheet and generated pages (its own `npm run verify` does that and
-// checks it), LN Guide's page from data/atlas/, and the sprite inlined into the
-// hub's and the scheduler's pages. Publishing is `git push`; this only writes.
+// checks it), LN Guide's page from data/atlas/, the sprite inlined into the
+// hub's and the scheduler's pages, and the home screen icons drawn from an
+// installed app's favicon. Publishing is `git push`; this only writes.
 //
 //   npm run build
 //
@@ -21,4 +22,5 @@ run('npm', ['run', 'build', '--silent'], join(ROOT, 'design'));
 run('npm', ['run', 'generate', '--silent'], join(ROOT, 'design'));
 run(process.execPath, ['tools/build-views.mjs'], join(ROOT, 'ln'));
 run(process.execPath, ['tools/inline-sprite.mjs'], ROOT);
+run(process.execPath, ['tools/build-app-icons.mjs'], ROOT);
 console.log('\n  built. `npm run check` says whether it is right.');

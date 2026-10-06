@@ -4,7 +4,8 @@
 // Design's shared check on every app except Design, which has its own; an app
 // with a tools/check.mjs of its own (LN Guide) runs that instead, and it includes
 // the shared check. Then the sprite currency rule for the pages that paste the
-// sprite by hand, the names sweep over every text file in the repository, the
+// sprite by hand, the same rule for the home screen icons drawn from a
+// favicon, the names sweep over every text file in the repository, the
 // switcher rule, the lock rule and the print rule. `--full` adds Design's
 // `npm run verify`. Exits 1 on any failure. The pre-commit hook runs the fast
 // form; CI runs --full.
@@ -49,6 +50,7 @@ for (const f of folders) {
 }
 
 step('sprite', process.execPath, ['tools/inline-sprite.mjs', '--check']);
+step('app icons', process.execPath, ['tools/build-app-icons.mjs', '--check']);
 
 // THE DOCUMENT RULES from AGENTS.md "Documents", then the fixtures that prove
 // each rule still fires.

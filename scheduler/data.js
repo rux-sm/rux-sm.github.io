@@ -1439,8 +1439,8 @@
       into.appendChild(rowEl);
     }
 
-    // The pane's own border closes the grid, so whichever row ends up last on
-    // screen must not draw a rule of its own.
+    // The pane's own border closes a grid that reaches it, so whichever row
+    // ends up last on screen is marked and the stylesheet decides its rule.
     const shownRows = [...into.querySelectorAll('.scheduler-row')].filter(r => !r.hidden);
     shownRows[shownRows.length - 1]?.classList.add('scheduler-row--last');
 

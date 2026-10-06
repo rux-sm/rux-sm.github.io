@@ -2422,6 +2422,13 @@ button.scheduler-row-head__num::after {
 .scheduler-row--last > * {
   border-block-end: var(--scheduler-last-rule, 1px solid var(--rux-border-subtle-01));
 }
+/* A list that stops short of its pane ends in the open, clear of the edge that
+   would close it, so there the last row keeps its rule in every theme. app.js
+   marks the pane. */
+.scheduler-week--short .scheduler-avail__row:last-child > *,
+.scheduler-week--short .scheduler-row--last > * {
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+}
 /* The row over a priority band takes the band's rule for its own, as the
    column header meets the first row: none where the surface change separates
    them, Carbon's way, and the hairline in a theme that separates with one. */

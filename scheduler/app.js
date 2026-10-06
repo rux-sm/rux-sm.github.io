@@ -103,6 +103,17 @@
     }
   }
 
+  /* A list whose rows stop short of its pane's bottom edge is marked, so its
+     last row keeps the rule that closes it: see `.scheduler-week--short` in
+     app.css. Rows that end inside the pane's corner radius count as reaching
+     the edge, because a rule that close reads as a second edge. */
+  function fitShort(pane) {
+    const grid = pane.querySelector('.scheduler-grid:not(.scheduler-grid--spare)');
+    if (!grid) return;
+    const radius = parseFloat(getComputedStyle(pane).borderEndStartRadius) || 0;
+    pane.classList.toggle('scheduler-week--short', pane.clientHeight - grid.offsetHeight > radius);
+  }
+
   function fitColumns(sch) {
     // Cleared first so the pane and the corner are measured at their
     // stylesheet sizes, not at the sizes the last pass pinned.
@@ -172,5 +183,16 @@
     window.Rux = window.Rux || {};
     window.Rux.schedule = { fit };
     fit();
+
+    // The board and the roster each end short or not as their rows change, a
+    // filter or a second lane as much as a resize, so each grid is observed
+    // with its pane. The mark changes no size, so nothing feeds back.
+    for (const pane of [sch, document.getElementById('scheduler-avail')]) {
+      const grid = pane?.querySelector('.scheduler-grid');
+      if (!grid) continue;
+      const short = new ResizeObserver(() => fitShort(pane));
+      short.observe(pane);
+      short.observe(grid);
+    }
   }
 })();

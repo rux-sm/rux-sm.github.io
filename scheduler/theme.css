@@ -606,9 +606,10 @@
   --scheduler-bar-radius: 6px;
   --scheduler-surface-radius: 12px;
   --scheduler-mark-radius: 4px;
-  /* A rounded region closes its own list, so the last row of the board and of
-     the roster draws no rule: a straight line laid across a 12px corner is cut
-     short at both ends. */
+  /* A rounded region closes a list that reaches its edge, so there the last
+     row of the board and of the roster draws no rule: a straight line laid
+     across a 12px corner is cut short at both ends. A list that stops short
+     keeps its rule, by `.scheduler-week--short` in app.css. */
   --scheduler-last-rule: 0;
 }
 

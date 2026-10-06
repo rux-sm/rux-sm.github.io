@@ -199,16 +199,17 @@
 :is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--from-prev { --scheduler-edge-start: 0px; }
 :is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--to-next { --scheduler-edge-end: 0px; }
 
-/* THE THREE HEADS HOLD EACH ROUNDED THEME'S DEFAULT CONTROLS: the toolbar,
-   the roster's head and the trip editor's head each hold the buttons Design
+/* THE FOUR HEADS HOLD EACH ROUNDED THEME'S DEFAULT CONTROLS: the toolbar,
+   the roster's head, the trip editor's head and the document panel's head
+   each hold the buttons Design
    sizes that theme's controls at, inset from every edge of its bar:
    geist-dark's 36px buttons 12px in and 8px apart in a 60px bar, the 12px
    Geist's own Modal and Fieldset footers hold their buttons at, and
    ant-dark's 32px ones 8px in and 8px apart in a 48px bar. Nothing fills
-   its bar edge to edge, so the three heads
+   its bar edge to edge, so the four heads
    and the rows under them line up across the board, and every button takes
    the theme's 6px corners rather than staying square with the last one
-   following the card's curve. The editor's close button fixes its own 40px,
+   following the card's curve. A panel's close button fixes its own 40px,
    so it is named. The roster's head keeps its full height where the grid
    under it wants more room than the pane has. */
 [data-theme="geist-dark"] { --scheduler-head-inset: var(--rux-spacing-04); --scheduler-head-gap: var(--rux-spacing-03); }
@@ -229,6 +230,32 @@
   }
   :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .scheduler-trip .rux--side-panel .rux--side-panel__decorator-and-close {
     margin-inline-end: calc(var(--scheduler-head-inset) - var(--rux-spacing-05));
+  }
+  /* The document panel's head is one line that Carbon's buttons lie over, not
+     a row that holds them, so nothing in it asks for the bar's height: the
+     head is given it, and the buttons are moved in from its corner. Its title
+     starts 8px inside the inset, so a title that lists and the way back,
+     each a button 8px wider than its mark, start on the inset itself. */
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .scheduler-viewer .rux--side-panel .rux--side-panel__header.rux--side-panel__header--has-title {
+    min-block-size: calc(var(--rux-layout-size-height-md) + 2 * var(--scheduler-head-inset));
+    padding-block: var(--scheduler-head-inset);
+    padding-inline-start: calc(var(--scheduler-head-inset) + var(--rux-spacing-03));
+  }
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .scheduler-viewer .rux--side-panel .rux--side-panel__decorator-and-close {
+    inset-block-start: var(--scheduler-head-inset);
+    inset-inline-end: var(--scheduler-head-inset);
+    block-size: var(--rux-layout-size-height-md);
+  }
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .scheduler-viewer .scheduler-viewer__pick {
+    margin-inline-start: calc(-1 * var(--rux-spacing-03));
+    padding-inline: var(--rux-spacing-03);
+    border-radius: 6px;
+  }
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .scheduler-viewer .rux--side-panel .rux--btn.rux--side-panel__navigation-back-button {
+    margin-inline-start: calc(-1 * var(--rux-spacing-03));
+    block-size: var(--rux-layout-size-height-md);
+    inline-size: var(--rux-layout-size-height-md);
+    border-radius: 6px;
   }
   :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) :is(.rux--btn, .scheduler-weekbtn) {
     border-radius: 6px;
@@ -265,7 +292,7 @@
   [data-theme="apple-light"] .scheduler-page .scheduler-toolbar .scheduler-weekbtn:hover {
     background-color: var(--rux-button-secondary-hover);
   }
-  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) .scheduler-trip .rux--side-panel .rux--btn--md.rux--side-panel__close-button {
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="apple-light"]) :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel .rux--btn--md.rux--side-panel__close-button {
     block-size: var(--rux-layout-size-height-md);
     inline-size: var(--rux-layout-size-height-md);
     border-radius: 6px;
@@ -535,6 +562,11 @@
   --scheduler-shortcut-pad: 6px;
   --scheduler-shortcut-radius: 8px;
 }
+/* The trip editor and the document panel are regions of this board like the
+   schedule and the roster, so they are told apart the same way: Design gives
+   every side panel in this theme a line, for a panel that slides over a page
+   of its own colour, and here the grey page already shows each one's shape. */
+[data-theme="apple-light"] .scheduler-page .rux--side-panel { border: 0; }
 /* A TRIP IS AN APPLE CALENDAR EVENT: the pale fill and darker words every
    light theme gives a bar, and a solid edge of the hue down its leading side. The edge is a painted strip, so the bar's border and shadow
    stay free for the week's run-on marks and the selection ring. A bar that

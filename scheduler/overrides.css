@@ -970,3 +970,37 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
     padding-inline-start: var(--rux-layout-density-padding-inline-local);
   }
 }
+
+/* THE CALCULATOR IN THE BOARD'S PANEL IS THE PANEL'S CONTENT, not a page
+   standing inside it. quote.js marks the page framed; it then takes the
+   panel's own surface and gives up the page's inset, and each tile is a
+   section of that surface: no fill, ring or corner of its own, 16px over its
+   heading, and Carbon's subtle border parting it from the one before, run to
+   the panel's edges as the editor's sections are. A tile keeps its inline
+   inset, which with its body's 8px is the editor's 24px. */
+.scheduler-quote-framed body { background: var(--rux-layer-01); }
+.scheduler-quote-framed .rux--content.scheduler-quote-page,
+.scheduler-quote-framed .scheduler-quote-tabs > .rux--tab-content { padding: 0; }
+.scheduler-quote-framed .scheduler-quote > .rux--tile {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding-block-start: var(--rux-spacing-03);
+}
+.scheduler-quote-framed .scheduler-quote > .rux--tile + .rux--tile {
+  border-block-start: 1px solid var(--rux-border-subtle-01);
+}
+/* A wider panel sets the tiles side by side, as the page does at that width,
+   and a tile beside another is parted from it down its side. */
+@media (min-width: 42rem) {
+  .scheduler-quote-framed .scheduler-quote > .rux--tile.scheduler-quote__modifiers {
+    border-block-start: 0;
+    border-inline-start: 1px solid var(--rux-border-subtle-01);
+  }
+}
+@media (min-width: 66rem) {
+  .scheduler-quote-framed .scheduler-quote > .rux--tile.scheduler-quote__quote {
+    border-block-start: 0;
+    border-inline-start: 1px solid var(--rux-border-subtle-01);
+  }
+}

@@ -3549,6 +3549,14 @@ html:has(.scheduler-page[data-takeover]) {
 /* The trip-changed notice, framed beside a trip, keeps the tiles' own gap
    from the tiles under it. */
 .scheduler-quote__changed { margin-block-end: var(--rux-spacing-05); }
+/* Framed in the board's panel the tiles are sections of one surface with a
+   rule between them, not cards with a gap, so the gap goes; overrides.css
+   takes the tiles' own boxes away. The total's bar is then the panel's foot,
+   as the editor's buttons are, and its rule runs edge to edge. The notice
+   keeps the sections' inset, since the page's own is gone. */
+.scheduler-quote-framed .scheduler-quote { --scheduler-quote-gap: 0px; }
+.scheduler-quote-framed .scheduler-quote-bar::before { inset-inline: 0; }
+.scheduler-quote-framed .scheduler-quote__changed { margin: var(--rux-spacing-05) var(--rux-spacing-06) 0; }
 
 /* The Rules tab: what the calculator does and where it follows the
    spreadsheet. A quirk's example is a line a trip, in figures that line up. */

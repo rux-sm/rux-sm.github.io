@@ -39,7 +39,8 @@ tab's miles and days, in either order. The calculator reads them to try a
 price, and the Billing tab holds the quote Save keeps.
 
 The Quote calculator shortcut, and Open calculator in the Billing tab's Quote
-lines, open the calculator in the board's document panel, without the header or the Rules tab. Its days are the Route tab
+lines, open the calculator in the board's document panel, without the header or the Rules tab, its three tiles laid out
+as sections of the panel with a rule between them and the total as the panel's foot. Its days are the Route tab
 Summary's rows, a day's miles each, from what the editor's fields say now,
 saved or not, once the drives a trip opens without are looked up. A trip
 picked on the board opens in the editor first, because the Summary is where

@@ -808,8 +808,11 @@
      panel's head names it and the week is the page behind it, so the header,
      the title row and the Rules tab's strip go. Taking the header out also
      takes away the room Carbon keeps under it. The panel's toolbar has nothing
-     to print or open, so it hides. */
+     to print or open, so it hides. The page says it is framed, and the
+     stylesheets lay it out as the panel's own content: see
+     `.scheduler-quote-framed` in app.css. */
   if (window.self !== window.top && $('scheduler-quote-form')) {
+    document.documentElement.classList.add('scheduler-quote-framed');
     document.querySelector('.rux--header')?.remove();
     document.querySelector('.scheduler-quote-title')?.remove();
     document.querySelector('.scheduler-quote-tabs > .rux--tabs')?.remove();

@@ -591,10 +591,14 @@
 .pixels-joined > * + * { margin-inline-start: -1px; }
 .pixels-joined > :not(:disabled) { position: relative; }
 /* A CHOICE OF ONE AMONG KEYS: the step, and the colour step's three tools,
-   the chosen one drawn in the page's opposite colours as the game's two
-   keys are. */
+   each its icon beside its word, the chosen one drawn in the page's
+   opposite colours as the game's two keys are. */
 .pixels-tools { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
 .pixels-tools > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .375rem;
   block-size: 2rem;
   padding: 0;
   border: 1px solid var(--rux-border-strong-01);

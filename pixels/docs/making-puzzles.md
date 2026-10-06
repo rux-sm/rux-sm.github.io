@@ -47,9 +47,9 @@ squares and let the extra room go to detail, not to a bigger blob.
 ## The colour picture
 
 Once the tag is green, the Colour step paints the picture the player sees at
-the finish. Pick one of the thirty-six inks and paint any square, filled or
+the finish. Pick one of the thirty-three inks and paint any square, filled or
 empty. The palette is ten colours, each light, middle and dark down its
-column, and six greys from white to black.
+column, then white, grey and black.
 
 - **Paint, Fill and Pick** are the three tools beside the inks. Paint colours
   the squares you tap or drag over. Fill colours every square joined to the

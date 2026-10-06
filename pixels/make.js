@@ -4,7 +4,7 @@
    DRAW: tap a square to fill or empty it, or drag. The numbers update as the
    picture changes, and the check says whether a player can solve it by logic
    alone, and then how hard that is; squares that would need a guess are
-   outlined. COLOUR: pick one of the thirty-six inks and paint any square, filled
+   outlined. COLOUR: pick one of the thirty-three inks and paint any square, filled
    or not; that is the picture the puzzle finishes as. Paint colours the
    squares tapped or dragged over, Fill every square joined to the one
    tapped through its own ink, and Pick takes the tapped square's ink and
@@ -43,18 +43,19 @@
   const inks = $('pixels-inks'), paintBox = $('pixels-paint'), tools = $('pixels-tool');
   const undoKey = $('pixels-undo'), redoKey = $('pixels-redo');
   const DRAFT = 'pixels-draft';
-  // The inks as the palette lays them out, in two sets of eighteen, six to a
-  // row: a colour to a column, light above dark, and the greys in the second
-  // set's last two columns. Each is the character a picture stores, then its
-  // name.
-  const INKS = [
+  // The inks as the palette lays them out, in two sets of three rows: a
+  // colour to a column, light above dark, and white, grey and black in the
+  // second set's last column. Each is the character a picture stores, then
+  // its name.
+  const INKS = [[
     ['c', 'Light red'], ['d', 'Light orange'], ['e', 'Light yellow'], ['f', 'Light green'], ['g', 'Light blue'], ['j', 'Light purple'],
     ['2', 'Red'], ['3', 'Orange'], ['4', 'Yellow'], ['5', 'Green'], ['6', 'Blue'], ['9', 'Purple'],
     ['m', 'Dark red'], ['n', 'Dark orange'], ['o', 'Dark yellow'], ['p', 'Dark green'], ['q', 'Dark blue'], ['t', 'Dark purple'],
-    ['i', 'Light pink'], ['h', 'Light brown'], ['k', 'Light teal'], ['l', 'Light sky blue'], ['1', 'White'], ['y', 'Grey'],
-    ['8', 'Pink'], ['7', 'Brown'], ['a', 'Teal'], ['b', 'Sky blue'], ['w', 'Pale grey'], ['z', 'Dark grey'],
-    ['s', 'Dark pink'], ['r', 'Dark brown'], ['u', 'Dark teal'], ['v', 'Dark sky blue'], ['x', 'Light grey'], ['0', 'Black'],
-  ];
+  ], [
+    ['i', 'Light pink'], ['h', 'Light brown'], ['k', 'Light teal'], ['l', 'Light sky blue'], ['1', 'White'],
+    ['8', 'Pink'], ['7', 'Brown'], ['a', 'Teal'], ['b', 'Sky blue'], ['y', 'Grey'],
+    ['s', 'Dark pink'], ['r', 'Dark brown'], ['u', 'Dark teal'], ['v', 'Dark sky blue'], ['0', 'Black'],
+  ]];
   // A category shows nine, three rows of three on a phone; any more are off.
   const PER_LEVEL = 9;
 
@@ -170,9 +171,10 @@
     b.dataset.ink = id;
     return b;
   };
-  inks.replaceChildren(...[INKS.slice(0, 18), INKS.slice(18)].map(set => {
+  inks.replaceChildren(...INKS.map(set => {
     const div = document.createElement('div');
     div.className = 'pixels-inks-set';
+    div.style.setProperty('--across', set.length / 3);
     div.append(...set.map(swatch));
     return div;
   }));

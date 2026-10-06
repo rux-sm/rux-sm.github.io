@@ -32,7 +32,7 @@
 
   // Rows of numbers from a string of them, one character a square, and the
   // string again; a square puzzle unless told its width. A character is 0 to
-  // 9 then a to z, which is room for a picture's thirty-six inks.
+  // 9 then a to z, which a picture's inks are named by.
   const grid = (squares, width = Math.sqrt(squares.length)) =>
     Array.from({ length: squares.length / width }, (_, y) => [...squares.slice(y * width, y * width + width)].map(c => parseInt(c, 36)));
   const squaresOf = g => g.flat().map(n => n.toString(36)).join('');

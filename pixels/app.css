@@ -214,8 +214,6 @@
 [data-ink="t"] { --ink: var(--pixels-ink-t); }
 [data-ink="u"] { --ink: var(--pixels-ink-u); }
 [data-ink="v"] { --ink: var(--pixels-ink-v); }
-[data-ink="w"] { --ink: var(--pixels-ink-w); }
-[data-ink="x"] { --ink: var(--pixels-ink-x); }
 [data-ink="y"] { --ink: var(--pixels-ink-y); }
 [data-ink="z"] { --ink: var(--pixels-ink-z); }
 .pixels-game.is-done .pixels-cell[data-ink],
@@ -576,11 +574,12 @@
   color: var(--rux-text-inverse);
 }
 .pixels-tools > button:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
-/* The inks to paint with, the chosen one ringed, in two sets of six to a
-   row: a colour to a column, light above dark, and the greys in the second
-   set's last two columns. */
+/* The inks to paint with, the chosen one ringed, in two sets: a colour to
+   a column, light above dark, and white, grey and black in the second set's
+   last column. `--across` is how many columns a set has, which make.js
+   sets. */
 .pixels-inks { display: grid; gap: .5rem; }
-.pixels-inks-set { display: grid; grid-template-columns: repeat(6, minmax(0, 2.5rem)); gap: .5rem; }
+.pixels-inks-set { display: grid; grid-template-columns: repeat(var(--across), minmax(0, 2.5rem)); gap: .5rem; }
 .pixels-ink {
   aspect-ratio: 1;
   padding: 0;
@@ -594,12 +593,12 @@
   .pixels-maker-main { display: grid; gap: 1.5rem; }
   .pixels-maker-side { display: grid; gap: 1rem; align-content: start; inline-size: 18rem; }
   /* The tools in a column under the row numbers, a tool to a row of inks,
-     and the two sets of inks side by side under the squares: twelve across,
-     three down. */
+     and the two sets of inks side by side under the squares, on one grid of
+     eleven across and three down. */
   .pixels-paint { grid-template-columns: calc(var(--pixels-corner) - .75rem) var(--side); gap: .75rem; }
   .pixels-tools { grid-template-columns: 1fr; gap: .375rem; }
   .pixels-tools > button { block-size: 2rem; }
-  .pixels-inks { grid-template-columns: 1fr 1fr; gap: .375rem; }
-  .pixels-inks-set { grid-template-columns: repeat(6, 1fr); gap: .375rem; }
+  .pixels-inks { grid-template-columns: repeat(11, 1fr); gap: .375rem; }
+  .pixels-inks-set { grid-column: span var(--across); grid-template-columns: subgrid; gap: .375rem; }
   .pixels-ink { aspect-ratio: auto; block-size: 2rem; }
 }

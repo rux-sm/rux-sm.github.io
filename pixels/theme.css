@@ -5,11 +5,12 @@
    !important (overrides.css). Empty is the normal state. Design
    AGENTS.md, "Where a change goes". */
 
-/* THE PICTURES' OWN INKS. A puzzle's colour picture is painted from these
-   thirty-six: ten colours, each in a light, a middle and a dark shade, and
-   six greys from white to black. A picture stores one character a square,
-   0 to 9 then a to z, and each names its ink here. Saved pictures hold
-   these characters, so one never changes its colour. They sit on
+/* THE PICTURES' OWN INKS. A puzzle's colour picture is painted from
+   thirty-three of these: ten colours, each in a light, a middle and a dark
+   shade, and white, grey and black. A picture stores one character a
+   square, 0 to 9 then a to z, and each names its ink here. Saved pictures
+   hold these characters, so one never changes its colour, and z is a dark
+   grey that a saved picture holds and the palette does not offer. They sit on
    :root and in no [data-theme] block because a picture is the same colours
    whatever theme the person keeps; they are the colours of a thing, not of
    the interface. */
@@ -46,8 +47,6 @@
   --pixels-ink-t: #491d8b;
   --pixels-ink-u: #005d5d;
   --pixels-ink-v: #0072c3;
-  --pixels-ink-w: #e0e0e0;
-  --pixels-ink-x: #a8a8a8;
   --pixels-ink-y: #6f6f6f;
   --pixels-ink-z: #393939;
 }

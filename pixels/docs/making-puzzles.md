@@ -53,18 +53,18 @@ thirty-three inks, pick one and paint any square, filled or empty. The inks
 are ten colours, each a row of light, middle and dark, then white, grey and
 black.
 
-- **The toolbar over the board** holds everything that acts on the drawing,
-  each an icon that names itself when you rest on it: Undo, Redo and Clear,
-  then Draw and Colour, then the paintbrush, the bucket and the eraser, then
-  the colour.
+- **The toolbar over the board** holds every button, each an icon that
+  names itself when you rest on it: Back, then Undo, Redo and Clear, then
+  Draw and Colour, then the paintbrush, the bucket and the eraser, then the
+  colour, and at the end Save, with Delete before it for a saved puzzle.
 - **Paintbrush, Bucket and Eraser** work in Colour. The paintbrush colours
   the squares you tap or drag over. The bucket colours every square joined
   to the one you tap that has its colour. The eraser puts a square back
   plain: black if it is filled, white if it is not.
 - **Undo, Redo and Clear** work in both steps. Undo takes back a tap, a
   drag, a fill or Clear. Cmd+Z undoes and Shift+Cmd+Z redoes.
-- **Discard**, beside Save, leaves for the puzzles and keeps nothing: a new
-  picture's draft goes, and a saved puzzle stays as it was saved.
+- **Back** leaves for the puzzles and loses nothing: a new picture is kept
+  in this browser and is on the board the next time you open Make.
 - **Colour the background too.** A blue sky or a green field behind the shape
   is what makes the finish feel like a reward.
 - **Two or three colours are enough.** Keep the shape one colour and use a

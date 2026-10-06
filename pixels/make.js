@@ -15,9 +15,9 @@
    Clear, in either step, and Redo puts it back; Cmd or Ctrl with Z undoes,
    and with Shift and Z, or Y, redoes. These are the toolbar over the board,
    which the arrow keys move along. Size starts a blank board of 5, 10 or 15
-   squares a side, and a saved puzzle keeps the size it has. DISCARD leaves
-   for the puzzles and keeps nothing: a new picture's draft goes, and a
-   saved puzzle stays as it was saved.
+   squares a side, and a saved puzzle keeps the size it has. Back, the
+   toolbar's first button, leaves for the puzzles; a new picture is kept as
+   the draft, so nothing is lost by it.
 
    CATEGORY is where the puzzle goes: one of its size's categories on the
    front page, listed by name with how many of its nine are on; New
@@ -359,12 +359,6 @@
     if (at < 0) return;
     e.preventDefault();
     keys[(at + (e.key === 'ArrowRight' ? 1 : keys.length - 1)) % keys.length].focus();
-  });
-  // Discard leaves for the puzzles and keeps nothing: a new picture's draft
-  // goes, and a saved puzzle stays as it was saved.
-  $('pixels-discard').addEventListener('click', () => {
-    if (!editing) { try { localStorage.removeItem(DRAFT); } catch { /* nothing kept */ } }
-    location.href = './';
   });
   // Clear is a step too, unless the board was blank already.
   $('pixels-clear').addEventListener('click', () => {

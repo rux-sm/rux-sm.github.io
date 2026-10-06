@@ -228,9 +228,16 @@
                 <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-redo" disabled aria-label="Redo" title="Redo"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-redo"/></svg></button>
                 <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" id="pixels-clear" aria-label="Clear" title="Clear"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-restart_alt"/></svg></button>
               </div>
-              <div class="pixels-toolbar-group" role="radiogroup" aria-label="Step" id="pixels-step">
+              <!-- The step, twice: two icons, and where the bar has the room, Carbon's switcher with its words. app.css shows one. -->
+              <div class="pixels-toolbar-group pixels-step-icons" role="radiogroup" aria-label="Step" id="pixels-step">
                 <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm rux--btn--selected" role="radio" aria-checked="true" data-step="draw" aria-label="Draw" title="Draw"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-edit"/></svg></button>
                 <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm" role="radio" aria-checked="false" data-step="colour" aria-label="Colour" title="Colour"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-palette"/></svg></button>
+              </div>
+              <div class="pixels-toolbar-group pixels-step-words">
+                <div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm" role="tablist" aria-label="Step" id="pixels-step-words">
+                  <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-step="draw"><span class="rux--content-switcher__label">Draw</span></button>
+                  <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-step="colour"><span class="rux--content-switcher__label">Colour</span></button>
+                </div>
               </div>
               <div class="pixels-toolbar-group" role="radiogroup" aria-label="Tool" id="pixels-tool">
                 <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm rux--btn--selected" role="radio" aria-checked="true" data-tool="paint" disabled aria-label="Paintbrush" title="Paintbrush"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-brush"/></svg></button>

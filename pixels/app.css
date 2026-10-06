@@ -554,11 +554,22 @@
    of what they act on and set on it, in groups with a rule between them.
    The rule is drawn inside a group's edge and takes no room, because twelve
    buttons are exactly a phone's board across; a narrower board lets the
-   last group down to a line of its own. Save and Delete end the bar. */
-.pixels-toolbar { display: flex; flex-wrap: wrap; background: var(--rux-layer-01); border-block-end: 1px solid var(--rux-border-subtle-01); }
+   last group down to a line of its own. Save and Delete end the bar.
+
+   The step is two icons, and where the bar is 32rem or more across, which
+   a phone's is not, Carbon's switcher with the words Draw and Colour, since
+   an icon button holds no word. The bar is the container that is asked, and
+   stands over the board so the menu it opens does too. */
+.pixels-toolbar { position: relative; z-index: 1; container-type: inline-size; display: flex; flex-wrap: wrap; background: var(--rux-layer-01); border-block-end: 1px solid var(--rux-border-subtle-01); }
+
 .pixels-toolbar-group { display: flex; }
 .pixels-toolbar-group + .pixels-toolbar-group { box-shadow: inset 1px 0 0 var(--rux-border-subtle-01); }
 .pixels-toolbar-end { margin-inline-start: auto; }
+.pixels-step-words { display: none; inline-size: 10rem; }
+@container (min-width: 32rem) {
+  .pixels-step-icons { display: none; }
+  .pixels-step-words { display: flex; }
+}
 /* THE COLOUR IN HAND, on the toolbar's last button, with the corner mark
    Carbon gives a button that opens a menu. */
 .pixels-ink-now { position: relative; display: block; inline-size: 1rem; block-size: 1rem; border: 1px solid var(--rux-border-strong-01); background: var(--ink); }

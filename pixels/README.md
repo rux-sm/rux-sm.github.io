@@ -109,7 +109,7 @@ Six tables in the site's database, which only the owner's account reads
 directly: `pixels_puzzles`, every puzzle, which a staff account may read too;
 `pixels_players`, each player's name with the account or the hash of the
 guest's key; `pixels_player_results` and `pixels_player_days`, each player's
-best time on a puzzle and on a puzzle of the day, with a number of stars no page shows; and
+best time on a puzzle and on a puzzle of the day; and
 `pixels_settings`, the invite word; and `pixels_levels`, each category's name and whether it is hidden. `docs/database-access.md` is the rule
 they follow.
 

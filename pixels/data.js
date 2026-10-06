@@ -237,13 +237,11 @@
     async days() {
       return new Map((await call('pixels_days', { p_key: key() })).map(r => [r.day, { seconds: r.seconds }]));
     },
-    // The database's two functions still take a number of stars, 1 to 3,
-    // which no page shows; every solve sends 3.
     async record(id, seconds) {
-      return call('pixels_record', { p_key: key(), p_puzzle: id, p_seconds: seconds, p_stars: 3 });
+      return call('pixels_record', { p_key: key(), p_puzzle: id, p_seconds: seconds });
     },
     async recordDay(day, seconds) {
-      return call('pixels_record_day', { p_key: key(), p_day: day, p_seconds: seconds, p_stars: 3 });
+      return call('pixels_record_day', { p_key: key(), p_day: day, p_seconds: seconds });
     },
     async board(day) { return call('pixels_board', { p_key: key(), p_day: day }); },
 

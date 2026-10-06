@@ -22,7 +22,7 @@ done and how.
 
 ## Pixels
 
-- The database still keeps stars, which no page shows: `pixels_record` and
-  `pixels_record_day` are sent 3, and `pixels_board` orders by them. They go,
-  and the board orders by time and by puzzles solved, before `BOARD` is on.
+- Two leftovers of stars, which nothing reads or writes, are still in the
+  database and go: the `p_stars` that `pixels_record` and `pixels_record_day`
+  take and ignore, and the `stars` column of the two results tables.
 

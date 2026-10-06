@@ -61,9 +61,9 @@
    Reminders' list icons -- so this theme does, at 2.3 to 1, less than a dark
    figure would hold. */
 [data-theme="apple-light"] { --scheduler-mark-on-warning: var(--rux-text-inverse); }
-/* apple-dark's error mark is the red tag's ink: the vivid red makes 2.6 to 1
-   on the amber bar and the ink 3.4. */
-[data-theme="apple-dark"] { --scheduler-mark-error: var(--rux-tag-color-red); }
+/* apple-dark's error mark is its red moved 36% toward white: the vivid red
+   makes 2.0 to 1 on the amber bar and this 3.0. */
+[data-theme="apple-dark"] { --scheduler-mark-error: color-mix(in srgb, var(--rux-support-error) 64%, #fff); }
 /* Geist draws a badge's text and icons in the hue's 900 step, and the bars are
    its subtle badges, so the marks take the 900 steps of amber, red and green,
    and done takes the primary text. The lowest is red on the red bar, 4.5 to 1. */
@@ -86,8 +86,8 @@
    every bar. apple-light darkens Apple's increased-contrast green, orange and
    red to 4.9 to 1; its support colours are the vivid ones, which are for a
    filled mark and not for words. apple-dark takes Apple's increased-contrast
-   dark green, orange and red, the last two lightened to 4.5 to 1 on the amber
-   bar.
+   dark green, orange and red, each lightened until it makes 4.5 to 1 on its
+   brightest bars, the cyan and the amber.
    Geist's green and amber marks are already its text steps, and its red is
    lifted a tenth toward white to clear the teal bar. Ant's bars are bright
    enough that white itself holds only 4.5 to 5.2 on four of them, so its
@@ -113,9 +113,9 @@
   --scheduler-age-old: color-mix(in srgb, #e9152d 88%, #000);
 }
 [data-theme="apple-dark"] {
-  --scheduler-age-new: #4ad968;
-  --scheduler-age-week: color-mix(in srgb, #ffa056 95%, #fff);
-  --scheduler-age-old: color-mix(in srgb, #ff6165 60%, #fff);
+  --scheduler-age-new: color-mix(in srgb, #4ad968 69%, #fff);
+  --scheduler-age-week: color-mix(in srgb, #ffa056 62%, #fff);
+  --scheduler-age-old: color-mix(in srgb, #ff6165 40%, #fff);
 }
 [data-theme="geist-dark"] {
   --scheduler-age-new: var(--scheduler-mark-success);
@@ -157,13 +157,13 @@
    the placeholder keeps its yellow there, lightened as that theme's other
    bars without a notification are. */
 [data-theme="apple-light"] { --scheduler-amber-bg: color-mix(in srgb, oklch(92% 0.07 95) 70%, #fff); }
-/* apple-dark's is a tag of Apple's yellow, as its other bars are tags of
-   their hues: the dark yellow at a tag's 20% on the raised surface, 28% on
-   hover, under the increased-contrast dark yellow. */
+/* apple-dark's is Apple's dark yellow as its other bars are their hues,
+   below: at 32% on the page, 36% on hover, under the increased-contrast dark
+   yellow. */
 [data-theme="apple-dark"] {
-  --scheduler-amber-bg: color-mix(in srgb, var(--rux-status-yellow) 20%, var(--rux-layer-01));
+  --scheduler-amber-bg: color-mix(in srgb, var(--rux-status-yellow) 32%, var(--rux-background));
   --scheduler-amber-fg: #fedf43;
-  --scheduler-amber-hover: color-mix(in srgb, var(--rux-status-yellow) 28%, var(--rux-layer-01));
+  --scheduler-amber-hover: color-mix(in srgb, var(--rux-status-yellow) 36%, var(--rux-background));
   --scheduler-amber-border: #fedf43;
   --scheduler-amber-hover-ring: none;
 }
@@ -208,6 +208,54 @@
 [data-theme="apple-light"] .scheduler-bar--magenta {
   --scheduler-bg: color-mix(in srgb, var(--rux-tag-background-magenta) 70%, #fff); --scheduler-hover: var(--rux-tag-background-magenta);
 }
+/* APPLE-DARK'S BOARD IS CALENDAR'S, measured beside it: the trips lie on the
+   window's own colour, which is this theme's page, where every other region
+   is the raised grey. So the schedule's toolbar, bands and grid take the
+   page's colour inside a line, and the card that opens over a trip keeps the
+   raised surface, which is what parts it from the board. */
+[data-theme="apple-dark"] .scheduler-frame {
+  --rux-layer: var(--rux-background);
+  --scheduler-band-surface: var(--rux-background);
+  border: 1px solid var(--rux-border-subtle-01);
+}
+[data-theme="apple-dark"] .scheduler-bar-shortcuts:not([data-docked]) {
+  --rux-layer: var(--rux-layer-01);
+  --scheduler-band-surface: var(--rux-layer-01);
+}
+/* ITS TRIP IS THE HUE AT 32% ON THAT GROUND, and 36% under the pointer.
+   Calendar fills an event at nearer 38%, under words that make 3 to 1; 32%
+   is as strong as a fill gets while Apple's increased-contrast dark step of
+   each hue still makes 4.5 to 1 on it. Red alone does not, and is moved 20%
+   toward white. The hues are Apple's dark defaults, in
+   design/docs/apple-dark-token-map.md. */
+[data-theme="apple-dark"] .scheduler-bar--gray {
+  --scheduler-bg: color-mix(in srgb, #8e8e93 32%, var(--rux-background)); --scheduler-hover: color-mix(in srgb, #8e8e93 36%, var(--rux-background));
+}
+[data-theme="apple-dark"] .scheduler-bar--cool-gray {
+  --scheduler-bg: color-mix(in srgb, #8e8e93 32%, var(--rux-background)); --scheduler-hover: color-mix(in srgb, #8e8e93 36%, var(--rux-background));
+}
+[data-theme="apple-dark"] .scheduler-bar--blue {
+  --scheduler-bg: color-mix(in srgb, #0091ff 32%, var(--rux-background)); --scheduler-hover: color-mix(in srgb, #0091ff 36%, var(--rux-background));
+}
+[data-theme="apple-dark"] .scheduler-bar--cyan {
+  --scheduler-bg: color-mix(in srgb, #3cd3fe 32%, var(--rux-background)); --scheduler-hover: color-mix(in srgb, #3cd3fe 36%, var(--rux-background));
+}
+[data-theme="apple-dark"] .scheduler-bar--teal {
+  --scheduler-bg: color-mix(in srgb, #00d2e0 32%, var(--rux-background)); --scheduler-hover: color-mix(in srgb, #00d2e0 36%, var(--rux-background));
+}
+[data-theme="apple-dark"] .scheduler-bar--green {
+  --scheduler-bg: color-mix(in srgb, #30d158 32%, var(--rux-background)); --scheduler-hover: color-mix(in srgb, #30d158 36%, var(--rux-background));
+}
+[data-theme="apple-dark"] .scheduler-bar--purple {
+  --scheduler-bg: color-mix(in srgb, #db34f2 32%, var(--rux-background)); --scheduler-hover: color-mix(in srgb, #db34f2 36%, var(--rux-background));
+}
+[data-theme="apple-dark"] .scheduler-bar--magenta {
+  --scheduler-bg: color-mix(in srgb, #ff375f 32%, var(--rux-background)); --scheduler-hover: color-mix(in srgb, #ff375f 36%, var(--rux-background));
+}
+[data-theme="apple-dark"] .scheduler-bar--red {
+  --scheduler-bg: color-mix(in srgb, #ff4245 32%, var(--rux-background)); --scheduler-hover: color-mix(in srgb, #ff4245 36%, var(--rux-background));
+}
+[data-theme="apple-dark"] .scheduler-bar--red { --scheduler-fg: #ff8184; --scheduler-border: #ff8184; }
 /* Carbon's notification holds that fill inside a 1px edge of its colour at
    30%, and so does the bar, in its own ink, because the fill alone is as light
    as the board. The edge is four painted strips, so the bar's border and

@@ -15,6 +15,8 @@
   'use strict';
 
   const TRIP_TYPES = { round_trip: 'round trip', one_way: 'one way', dropoff_pickup: 'drop-off and pickup' };
+  // What each leg of a drop-off and pickup trip is, quoted as a line of its own.
+  const LEG_TYPES = { outbound: 'drop-off', return: 'pickup' };
 
   /* State names as a quote abbreviates them: a stored address carries the name
      in full, "Texas 78504", when the map service returned it, and the code,
@@ -78,18 +80,25 @@
 
   /* The block itself. A line the trip cannot answer yet is dropped, except the
      two times, which the office writes as TBD and settles with the customer.
-     One leg of a drop-off and pickup trip (`oneLeg`) says only when it
-     departs, because to the customer each leg is a departure. */
+
+     ONE LEG OF A DROP-OFF AND PICKUP TRIP (`leg`) IS A LINE OF ITS OWN, and
+     says which it is: the way out is the drop-off, from the pickup to the
+     destination, and the way back is the pickup, from the destination to
+     where the group was picked up, so the two lines tell the legs apart by
+     more than their dates. Each says only when it departs, because to the
+     customer each leg is a departure. */
   function description(trip) {
+    const leg = !trip.leg ? null : trip.leg === 'return' ? 'return' : 'outbound';
     const from = trip.from || null;
     const pickup = place(trip.pickup || '');
     const drop = String(trip.destination || '').trim();
+    const [start, end] = leg === 'return' ? [drop, pickup] : [pickup, drop];
     return [
-      `${vehicle(trip.pax56)} ${TRIP_TYPES[trip.type] || 'trip'}`,
-      [pickup ? `from ${pickup}` : null, drop ? `to ${drop}` : null].filter(Boolean).join(' '),
+      `${vehicle(trip.pax56)} ${(leg && LEG_TYPES[leg]) || TRIP_TYPES[trip.type] || 'trip'}`,
+      [start ? `from ${start}` : null, end ? `to ${end}` : null].filter(Boolean).join(' '),
       from ? `on ${dates(from, trip.to || from)}` : null,
       `departing at ${clock(trip.leave) || 'TBD'}`,
-      trip.oneLeg ? null : `arriving at ${clock(trip.back) || 'TBD'}`,
+      leg ? null : `arriving at ${clock(trip.back) || 'TBD'}`,
     ].filter(Boolean).join('\n');
   }
 

@@ -1329,8 +1329,10 @@
   /* ONE LEG'S DESCRIPTION, for a drop-off and pickup trip, which is quoted
      as two rentals. Each names its own buses, seats, days and the time the
      group leaves on that leg, and neither says when it arrives: to the
-     customer each leg is a departure. Both name the trip's own pickup and
-     destination, so the two lines read as one journey. */
+     customer each leg is a departure. Both are handed the trip's own pickup
+     and destination, and quote-text.js names the leg and runs the way back
+     from the destination, so the two lines read as one journey there and
+     back. */
   function legDescription(trip, leg) {
     const out = leg === 'return' ? 'return' : 'outbound';
     const stops = stopsOf(trip, out);
@@ -1344,7 +1346,7 @@
       from: out === 'return' ? trip.return_start_date : trip.start_date,
       to: out === 'return' ? (trip.return_end_date || trip.return_start_date) : (trip.end_date || trip.start_date),
       leave: stops.find(s => s.type === 'stop')?.depart_prev || null,
-      oneLeg: true,
+      leg: out,
     });
   }
 

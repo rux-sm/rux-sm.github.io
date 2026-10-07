@@ -5283,7 +5283,7 @@
         to: end,
         leave: leg === 'return' ? val('scheduler-f-endtrip') : val('scheduler-f-leave'),
         back: leg ? '' : val('scheduler-f-endtrip'),
-        oneLeg: !!leg,
+        leg: leg || null,
       });
     };
     /* WITH LINES, EVERY LINE, as the estimate's line items: its item, its

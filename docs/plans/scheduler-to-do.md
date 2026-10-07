@@ -39,8 +39,10 @@ team's email, so nobody has to remember to look in three places.
     leave, and a row on every departure says nothing.
   - **Short of buses,** a confirmed trip leaving within 30 days with a leg
     that has fewer buses than it needs.
-  - **No times,** a confirmed trip leaving within a week whose route has no
-    times in.
+  - **No times,** a confirmed trip leaving within a week with no time on any
+    stop of its route.
+- **A leaving-soon row leaves out what another row on the trip already
+  says,** so one fault is one line.
 - **A trip covered by another company's bus keeps its Short of buses row,**
   because saying so on the trip is a plan of its own, named in
   `docs/status.md`.
@@ -124,13 +126,19 @@ team's email, so nobody has to remember to look in three places.
   account that is not signed in, and broadcast on realtime so the count is
   live for everyone.
 - **A trip's rows go with the trip** when it is deleted.
-- **The rules are one file, `scheduler/to-do.js`,** which reads the trips its
-  four rules need itself, because only the board holds them otherwise, and
-  which `scheduler/tools/check-to-do.mjs` runs against sample trips in the
-  check.
-- **Every `rux--*` class comes from Design.** The header action's count, the
-  panel at the width a row needs, and the row itself are checked against
-  Design first, and what is missing is added there with invented content.
+- **Who made a row and who closed it are stamped by the database,** never
+  taken from the page or the connector, so neither can be forged.
+- **A tick's history entry is an Updated entry with one To do line,** because
+  both apps already draw that kind.
+- **The rules are one file, `scheduler/to-do.js`,** which
+  `scheduler/tools/check-to-do.mjs` runs against sample trips in the check.
+  It is handed each leg's buses and seats, as the checklist is.
+- **Every page reads the trips the rules need itself,** because only the
+  board holds them otherwise.
+- **The count is Design's badge indicator on the header action, and the panel
+  is its header panel.** The panel's width and the row are the scheduler's
+  own, `scheduler-to-do`, holding Design's checkbox and overflow menu, because
+  Carbon has no such row and its panel is a switcher's width.
 
 ## Questions
 
@@ -138,14 +146,15 @@ None open.
 
 ## Tasks
 
-- [ ] Check Design for the header action with a count, the header panel at a
-      row's width and a one-line row with a checkbox and a menu; add what is
-      missing to Design with invented content.
-- [ ] Write the SQL for `to_dos`, its rules, its realtime broadcast, the
-      trip-history entry for a tick and Ruxbot's profile with its picture,
-      show it to rux, and apply it as a named migration on a yes.
-- [ ] Write `scheduler/to-do.js` with the four rules and
-      `scheduler/tools/check-to-do.mjs` with sample trips, in the check.
+- [ ] Apply the SQL for `to_dos`, its rules, its realtime broadcast, the
+      trip-history entry for a tick and Ruxbot's profile as a named migration
+      on rux's yes, then check its grants and rules on the live database.
+- [ ] Give Ruxbot its picture: the file put in `profile-photos` from a staff
+      session and its path set on the profile by SQL, each on rux's yes.
+- [ ] Move the board's reading of a leg's buses and seats and of the trip
+      contact out of `data.js` into a file every Scheduler page loads, with
+      the checklist's counts on the board unchanged.
+- [ ] Have every Scheduler page read the trips the four rules need.
 - [ ] Add the header action and panel to every Scheduler page: the groups,
       Mine and Everyone, the add field, tick, Undo, due date, owner, trip and
       delete.

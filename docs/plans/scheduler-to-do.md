@@ -32,8 +32,10 @@ team's email, so nobody has to remember to look in three places.
     unconfirmed trip, a PO or payment not in, a missing itinerary and a
     balance unpaid within two weeks of leaving.
   - **Leaving soon with items open,** a leg leaving today or in the next two
-    days whose checklist is not Ready, as `checklist.js` decides it and the
-    Departures list shows it.
+    days with an item open in its checklist's Customer or Buses group, as
+    `checklist.js` decides it. Entered, Paperwork and Extras are left to the
+    Departures list, because they are open on nearly every leg about to
+    leave, and a row on every departure says nothing.
   - **Short of buses,** a confirmed trip leaving within 30 days with a leg
     that has fewer buses than it needs.
   - **No times,** a confirmed trip leaving within a week whose route has no
@@ -101,8 +103,11 @@ team's email, so nobody has to remember to look in three places.
   press on a row with a trip opens that trip.
 - **Rows about one trip sit together,** so an agent row beside a computed row
   reads as one matter.
-- **Many computed rows of one kind fold into one line** that opens the Trips
-  page filtered to them, so twenty follow-ups do not bury the rest.
+- **More than five computed rows of one kind fold into one line** that opens
+  the Trips page filtered to them, so one kind cannot bury the rest.
+- **Follow-ups always fold,** because most upcoming trips wait on something.
+  A trip leaving within a week that still waits, which `follow-up.js` calls
+  due, keeps a row of its own beside the folded line.
 - **Mine and Everyone switch the list.** Mine is rows that are mine or
   nobody's, and computed rows, which are everybody's.
 - **The count is the Overdue and Today rows under Mine,** after folding.
@@ -134,8 +139,6 @@ team's email, so nobody has to remember to look in three places.
 
 ## Tasks
 
-- [ ] Count what the four rules give on the live trips today, and set from it
-      how many rows of one kind fold into one line.
 - [ ] Check Design for the header action with a count, the header panel at a
       row's width and a one-line row with a checkbox and a menu; add what is
       missing to Design with invented content.
@@ -147,6 +150,8 @@ team's email, so nobody has to remember to look in three places.
 - [ ] Add the header action and panel to every Scheduler page: the groups,
       Mine and Everyone, the add field, tick, Undo, due date, owner, trip and
       delete.
+- [ ] Give the Trips page a Show choice for each kind that can fold. It has
+      one for follow-ups only.
 - [ ] Add the connector's tools to list, add, change and close to-do rows,
       and deploy the function.
 - [ ] Write the review skill: reading the team inbox, checking each thread

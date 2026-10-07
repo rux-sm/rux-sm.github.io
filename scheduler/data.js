@@ -9724,15 +9724,19 @@
   const updateCloseWrap = document.getElementById('scheduler-update-close-wrap');
   const updateError = document.getElementById('scheduler-update-error');
   const updateWhat = document.getElementById('scheduler-update-what');
+  // Pin this update, under the box: on for a new trip, whose first update
+  // says what it waits on, and off for anything else.
+  const updatePin = document.getElementById('scheduler-update-pin');
   let updateSettle = null;   // Save's step, while Save opened the window
   let updateAlone = null;    // the trip, while the window stands on its own
   let updateChange = null;
-  function fillUpdateWindow({ trip, what, line, tripId, editId = null }) {
+  function fillUpdateWindow({ trip, what, line, tripId, editId = null, pin = false }) {
     document.getElementById('scheduler-update-trip').textContent = trip;
     updateWhat.textContent = what;
     updateWhat.hidden = !what;
     updateError.hidden = true;
     updateText.value = line;
+    if (updatePin) updatePin.checked = pin;
     updateSave.disabled = !line;
     requestAnimationFrame(fitUpdateText);
     // A new trip has nothing earlier to list.
@@ -9767,7 +9771,7 @@
       updateSettle = answer => { updateSettle = null; resolve(answer && { ...answer, keys: change?.keys ?? null }); };
       fillUpdateWindow({
         trip: tripName(trip), what, line,
-        tripId: creating ? null : trip?.id,
+        tripId: creating ? null : trip?.id, pin: creating,
       });
     });
   }
@@ -9804,11 +9808,12 @@
   updateSave?.addEventListener('click', async () => {
     const body = updateText.value.trim();
     if (!body) return;
-    if (!updateAlone) { answerUpdate({ kind: 'update', body }); return; }
+    const pin = !!updatePin?.checked;
+    if (!updateAlone) { answerUpdate({ kind: 'update', body, pin }); return; }
     const trip = updateAlone;
     updateSave.disabled = true;
     updateError.hidden = true;
-    if (await writeUpdate(trip.id, { kind: 'update', body, keys: null })) {
+    if (await writeUpdate(trip.id, { kind: 'update', body, keys: null, pin })) {
       updateAlone = null;
       window.Rux?.modal?.close?.(updateModal);
       await show();
@@ -9825,8 +9830,11 @@
   });
   updateModal?.addEventListener('rux:modal-closed', () => { updateAlone = null; updateSettle?.(null); });
 
-  // The prompt's answer, written once the save has landed. A failure is logged
-  // and reported, and never undoes the save.
+  /* The prompt's answer, written once the save has landed. A failure is logged
+     and reported, and never undoes the save. With `pin` the update is pinned
+     once it is written, as the Updates window's Pin does it, so the database
+     lets the trip's other pin go; a pin that fails leaves the update written
+     and says so. */
   async function writeUpdate(tripId, answer) {
     try {
       const actor = await actorName()
@@ -9835,8 +9843,14 @@
       // leaves it out and takes the column's default.
       const row = { trip_id: tripId, body: answer.body, kind: answer.kind, actor_name: actor };
       if (Array.isArray(answer.keys)) row.changes = answer.keys;
-      const { error } = await withTimeout(client.from('trip_updates').insert(row).then(r => r));
+      const { data, error } = await withTimeout(client.from('trip_updates').insert(row).select('id').single().then(r => r));
       if (error) throw new Error(error.message);
+      if (answer.pin) {
+        try { await setPin(data.id, true); } catch (err) {
+          console.warn('The update was not pinned:', err);
+          toast('error', 'The update was not pinned.', String(err?.message ?? err));
+        }
+      }
       return true;
     } catch (err) {
       console.warn('The update was not written:', err);

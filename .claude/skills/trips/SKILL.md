@@ -75,11 +75,11 @@ reads only the ones before it. Nothing is written until step 10.
    and what made it, the bus, exactly what Save will write, and only the
    questions `rules.md` leaves open. Wait for his yes.
 10. **Save.** Link the email thread, press Mark route done and Mark buses
-    done, press Save, write what the trip is waiting on in the update box in
-    a few words, such as "Quote not sent", and answer the lists prompt by
-    `rules.md`.
-11. **After the save.** Read it back with `get_trip`. Pin the update. Add the
-    itinerary on the Files tab.
+    done, press Save, keep the update box's line, "Quote not sent", and its
+    Pin this update tick, which pins it in the same save, and answer the
+    lists prompt by `rules.md`.
+11. **After the save.** Read it back with `get_trip`. Add the itinerary on
+    the Files tab.
 12. **Reply.** Draft the email in chat by `emails.md`. rux prints the quote
     from Forms, Quote, which is two sheets, and sends it himself.
 13. **Quote sent.** Mark it on the Billing tab, then Mark billing done and
@@ -111,7 +111,9 @@ rewrites this section as each change is built.
   update pinned to the top of its card, `pinned_update` in `get_trip`. Write
   it in the Updates window, opened from the bar's menu with Add update, then
   press the pin at its tile's corner, which shows on hover; pressing the tile
-  itself opens its editor. Pinning one unpins the last.
+  itself opens its editor. Pinning one unpins the last. The window's Pin
+  this update tick pins what is written as it is added; Save's box has it
+  ticked for a new trip.
 - **Route:** the Summary (Start, Spot, End; Miles, Drive, On duty, Less rest,
   a row a day), its menu's Measure drives again for a leg saved with old
   drives, the fuel card and second-driver notices, the stops with their

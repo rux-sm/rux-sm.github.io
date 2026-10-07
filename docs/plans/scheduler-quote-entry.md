@@ -186,8 +186,6 @@ Each tab answers one question and reads only the tabs before it:
 
 ## Tasks
 
-- [ ] Add the Pin this update tick to Save's update box and pin the update
-      in the same save.
 - [ ] Add Rest in the sleeper to the Route summary's second-driver notice,
       shown only when the longest wait as sleeper berth clears the rule.
 - [ ] Match saved locations by address in the place search, abbreviations

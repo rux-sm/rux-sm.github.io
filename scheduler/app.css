@@ -2228,6 +2228,8 @@ button.scheduler-row-head__num::after {
    tile on the raised layer, its author's face beside its words over its day.
    A tile is a button that opens it for editing; the one being edited or
    deleted is a plain tile holding its box or its ask. */
+/* Pin this update stands 8px under the box, the gap between a label and its field. */
+.scheduler-update-pin { margin-block-start: var(--rux-spacing-03); }
 .scheduler-updates-error { margin-block-start: var(--rux-spacing-03); color: var(--rux-text-error); }
 .scheduler-updates-log { margin-block-start: var(--rux-spacing-06); }
 .scheduler-updates-log[hidden] { display: none; }

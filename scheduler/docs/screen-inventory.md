@@ -256,7 +256,7 @@ The docked sheet has the same rows and presses but shows two updates, the
 pinned and the newest, cut to one line; a press elsewhere on the section, or
 its title's arrow, opens every update in full. Add is its own button. An
 update's author is its avatar's tooltip. With none, the title says No updates.
-In the Updates window each update has a pin at its corner, on hover or lit blue when pinned;
+In the Updates window each update has a pin at its corner, on hover or lit blue when pinned, and Pin this update under the box, ticked for a new trip, pins what is written as it is added;
 a trip has one pinned update, and pinning another lets the first go. The trip
 has no notes of its own: a note saved in rux-ui becomes the pinned update.
 Only the selected trip has a

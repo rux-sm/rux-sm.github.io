@@ -177,7 +177,7 @@ rewrites this section as each change is built.
 - Leaving the editor drops unsaved changes; Reset takes them back.
 - Mark sent records today's date, not the day the quote went out.
 - Mark billing done stays off until Quote sent is marked, so a trip saved before its quote goes out has Billing left open.
-- On a new trip, Save's Updates box suggests "Quote sent": replace it with "Quote not sent" unless the quote has gone out. A new trip's update is that one line, never a summary of the trip.
+- On a new trip, Save's Updates box opens on "Quote not sent", or "Quote sent" with the price once it is marked: save that line as it stands, with a few words added only when the trip waits on something else. A new trip's update is never a summary of the trip.
 - After a save, Add update is on the bar's own menu, a right-click on the bar; the editor's ⋮ has only Forms and Color.
 - The Files tab takes a file only once the trip is saved. The upload tool cannot read the Desktop: copy the PDF to the session's scratch folder, press Add file from the page's script so no file dialog opens, give the copy to the hidden file input, choose its type, then delete the copy.
 - A click by `ref` on a tab that is not showing does nothing: take a screenshot to see which tab is open before pressing a button on it.

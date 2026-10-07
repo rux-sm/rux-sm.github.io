@@ -186,8 +186,6 @@ Each tab answers one question and reads only the tabs before it:
 
 ## Tasks
 
-- [ ] Open a new trip's update box on Quote not sent unless Quote sent is
-      marked.
 - [ ] Add the Pin this update tick to Save's update box and pin the update
       in the same save.
 - [ ] Add Rest in the sleeper to the Route summary's second-driver notice,

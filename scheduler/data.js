@@ -9710,8 +9710,9 @@
      and is never drawn, so the bar's age still runs from the last real update;
      `none` from Save, no update after any other change, which writes nothing.
      Closing it resolves null, and Save goes back to the trip unsaved. A new
-     trip's box comes filled with Quote sent, a customer-facing change's with
-     its own line, and any other's empty.
+     trip's box comes filled with Quote not sent, or Quote sent and its price
+     once the Billing tab marks it, a customer-facing change's with its own
+     line, and any other's empty.
 
      On its own it has Cancel and Add update and no close at the top: Add
      update writes at once and closes it, and Cancel closes it. */
@@ -9755,7 +9756,7 @@
       what = `You ${phrases.length > 1 ? `${phrases.slice(0, -1).join(', ')} and ${phrases.at(-1)}` : phrases[0]}.`;
     }
     if (takesOff) what = [what, takesOff].filter(Boolean).join(' ');
-    const line = creating ? (editing?.quoteSent ? `Quote sent, ${usdCents(editing.quoteSent.price)}` : 'Quote sent')
+    const line = creating ? (editing?.quoteSent ? `Quote sent, ${usdCents(editing.quoteSent.price)}` : 'Quote not sent')
       : change?.line ?? '';
     updateSkip.textContent = 'Save, no update';
     updateCloseWrap.hidden = false;

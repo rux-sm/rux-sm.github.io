@@ -6,8 +6,8 @@ type: plan
 
 ## Goal
 
-Anyone invited makes a profile by typing a username, draws puzzles in the
-Pixelator, and fills gates of their own. Adding a player as a friend puts
+Anyone invited makes a profile with a username and a PIN, draws their own
+picture and their own puzzles in the Pixelator, and fills gates of their own. Adding a player as a friend puts
 their gates on your front page. The owner can also keep one of their own
 gates for a few picked players. Each stage below is finished and usable
 before the next starts.
@@ -18,27 +18,42 @@ before the next starts.
 
 - **A profile is a player:** the row every player already has, with a
   username nobody else has. A guest's and an account's are the same kind.
-- **Making one is typing a username,** on the form a guest meets today.
-- **The invite link is still the way in,** because a profile can write to
-  the database, and the page is public.
-- **A username alone never logs anyone in,** because then anyone who types
-  it is that player. The browser keeps the player's key, as it does today.
-- **A player comes back on another phone by their own link,** shown on
-  their profile page, which carries the key as a home screen icon's does.
-- **The profile page shows** the username, the gates made, the sprites
-  found, and that link. The username can be changed there.
+- **Making one is typing a username and a PIN of four digits,** on the form
+  a guest meets today.
+- **The invite link is still the way to make one,** because a profile can
+  write to the database, and the page is public.
+- **A browser stays logged in by the key it keeps,** as it does today, and a
+  player has a key for each phone, so a new phone logs no other one out.
+- **Another phone logs in with the username and the PIN,** and needs no
+  invite link.
+- **Five wrong PINs lock that username's log-in for 15 minutes, and twice as
+  long each time after,** because four digits are few enough to guess.
+  Phones already logged in keep playing.
+- **An account needs no PIN,** because it has the site's log-in.
+- **A player draws their own picture,** 15 squares a side, in the
+  Pixelator's inks. It is no puzzle, so it needs no single answer.
+- **Until it is drawn, the picture is made from the username,** the same in
+  every browser, so no player is a blank.
+- **The picture stands beside the username everywhere a player is named:**
+  the Friends page, a friend's gates and the profile page.
+- **The profile page shows** the picture, the username, the gates made and
+  the sprites found, and changes the picture, the username and the PIN.
 
 **Gates of your own**
 
 - **Every player has the Pixelator,** for their own puzzles and gates only.
 - **A gate has an id and a maker.** A gate with no maker is one of the
   owner's built-in ones, which every player is sent as now.
-- **A player has at most 3 gates of 9 puzzles,** so the database has a
-  ceiling on what one invite can write.
+- **A player starts with room for one gate and earns room for another with
+  each gate they clear, up to five,** so playing is what unlocks making, and
+  the database has a ceiling on what one invite can write. The database
+  does the counting.
+- **A gate holds 9 puzzles and is published with 3 or more.**
 - **A player writes through database functions, never a table,** which
   refuse a wrong size, wrong squares, a long name, or one gate too many.
 - **Only the browser checks that a puzzle has one answer,** because the
-  database cannot run the solver. The owner can hide or delete any gate.
+  database cannot run the solver. The owner can hide or delete any gate,
+  and clear any player's picture.
 - **A player's gate is theirs to rename, reorder and delete,** and it is
   played by their friends once they publish it.
 
@@ -77,18 +92,10 @@ before the next starts.
 
 **Not in this plan**
 
-- **A password or PIN for guests,** a profile picture, comments, likes and
+- **A friend request that waits for an answer,** comments, likes and
   reports. The tables leave room for them.
 
 ## Questions
-
-1. **Coming back on another phone:** by the player's own link, which is my
-   pick, because it needs nothing new and nothing to remember. Or a
-   username and a PIN, which is easier to say out loud but needs a guard
-   against guessing.
-2. **Adding a friend:** one-way with no answer, which is my pick, because it
-   is one tap and nobody waits. Or a request the other player accepts.
-3. **The ceiling:** 3 gates of 9 puzzles each for a player. More or fewer?
 
 ## Tasks
 
@@ -110,8 +117,12 @@ before the next starts.
 
 - [ ] A guest's bar with the four places, picked from a page that draws the
       choices.
-- [ ] The profile page: username, change it, gates made, sprites found, and
-      the link for another phone.
+- [ ] The migration: a key for each phone, the PIN kept as a hash, and the
+      count of wrong tries with its lock. Tried on a copy first.
+- [ ] The form a new player meets asks for a username and a PIN, and offers
+      Log in to one who has both already.
+- [ ] The profile page: the picture made from the username, the username,
+      gates made, sprites found, and changing the username and the PIN.
 
 **Stage 4: players make gates**
 
@@ -119,7 +130,10 @@ before the next starts.
       puzzles and gates, with every refusal in the decisions.
 - [ ] The Pixelator opens to every player and saves through them.
 - [ ] A player's own gates: name, order, publish and delete.
-- [ ] Manage lists every player's gates for the owner, to hide or delete.
+- [ ] The Pixelator draws a player's picture, and it shows wherever the
+      player is named.
+- [ ] Manage lists every player's gates for the owner, to hide or delete,
+      and Players clears a picture.
 
 **Stage 5: friends**
 

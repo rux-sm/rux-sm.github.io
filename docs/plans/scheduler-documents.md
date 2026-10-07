@@ -43,6 +43,7 @@ driver who has none.
   its end date on the trip's day, has a warning in the row's place.
 - **Opened from a trip, a background check form has the campus and the trip
   date written into their fields,** on a copy; the stored file never changes.
+  The campus is the trip's customer's name.
 - **The form is printed for the driver to carry,** and its row in the Forms
   list says Printed once it is, as an envelope's does.
 - **The trip's checklist gains Driver forms under Paperwork,** open while any
@@ -78,7 +79,7 @@ driver who has none.
 
 ## Questions
 
-- Which place on the trip is the campus: the pickup, or the customer's name?
+None open.
 
 ## Tasks
 

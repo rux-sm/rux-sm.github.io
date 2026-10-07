@@ -25,14 +25,14 @@ puzzles easy to hard, with nothing locked, each tile a square, three across on a
 wide screen. A solved puzzle shows its picture, name and best time; an unsolved one a question mark,
 how hard it is and its number in the gate, or Boss for the last.
 
-`me.html` is the player's own page: their picture, 15 squares a side, their username, which they can
-change, and how many sprites they have found. Until a player draws a picture, one is made from their
-username, the same in every browser. Draw your picture opens `make.html?me`, the Pixelator with no
-name, no gate and no check, since a picture is no puzzle. `friends.html` is the player's own invite
-link, which makes whoever joins by it their friend both ways, and every other player with Add or
-Remove; adding is one-way and needs no answer. A bar holds the places every player has, Puzzles,
-Friends and Me, and the Pixelator for the owner: along the bottom on a phone, along the top on a
-wide screen, and not on a page where a puzzle is played or drawn.
+`me.html` is the player's own page: their picture, username, sprites found and mana, and the gates
+they have made, each to name, publish or delete, with who has found sprites in it. `friends.html` is
+the player's invite link and every other player, each to add or remove. A player's own puzzles are
+made in the Pixelator, for mana, and a friend's published gates stand after the owner's on the front
+page, saying who made them, and New until opened. A bar holds the places every player has, Puzzles,
+Friends, Pixelator and Me: along the bottom on a phone, along the top on a wide screen, and not on a
+page where a puzzle is played or drawn. `docs/profiles.md` is the whole of it: profiles, friends,
+mana, and who is sent a gate.
 
 `play.html?id=` plays one puzzle, 5, 10 or 15 squares a side. The board waits behind Tap to start,
 which with a mouse says Start, drawn bare until then, with no number and no mark, and the clock runs
@@ -73,21 +73,18 @@ drew for that day, with its name and colours, or where there is none, one the
 browser makes from the date, the same for everyone. Only it counts toward the
 days in a row. A player is never sent a day's puzzle before its day.
 
-`make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits or
-deletes one. Only the owner's account makes and edits: it alone has the Pixelator in
-the bar and Manage and Players in the menu, and the database refuses a puzzle written by
-anyone else. It checks as you draw whether the numbers alone can solve the
-picture and how hard that is, outlines each square that would need a guess, and
-saves only a picture with one answer. Size starts a blank board of 5, 10 or 15
-a side. Its Colour step paints the picture the puzzle finishes as, from
-fifty-five inks, and Save asks which gate it goes in on the front page; a
-gate shows nine, the list counts how many of each one's are on, and a
-puzzle saved into one with nine on is saved off. A gate just started is
-named there and hidden until Manage's switch publishes it. No gate yet,
-first in the list, keeps the puzzle in Unsorted, a section of Manage. Puzzle of
-the day, in the same list, makes it a day's puzzle, which sits in no gate;
-a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a
-good gate.
+`make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits or deletes one. The
+owner's puzzles go in the owner's gates, and the owner alone has Manage and Players in the menu; any
+other player's go in gates of their own, through functions that count their mana. `make.html?me`
+draws a player's picture. It checks as you draw whether the numbers alone can solve the picture and
+how hard that is, outlines each square that would need a guess, and saves only a picture with one
+answer. Size starts a blank board of 5, 10 or 15 a side. Its Colour step paints the picture the
+puzzle finishes as, from fifty-five inks, and Save asks which gate it goes in on the front page; a
+gate shows nine, the list counts how many of each one's are on, and a puzzle saved into one with
+nine on is saved off. A gate just started is named there and hidden until Manage's switch publishes
+it. No gate yet, first in the list, keeps the puzzle in Unsorted, a section of Manage. Puzzle of the
+day, in the same list, makes it a day's puzzle, which sits in no gate; a day takes one.
+`docs/making-puzzles.md` is the guide to a good picture and a good gate.
 
 `manage.html` is the owner's desk: every puzzle of one board size at a time, by gate, then Unsorted.
 A gate's heading has a switch that hides it from every player, arrows that move it up or down, a key
@@ -119,16 +116,18 @@ name and picture with the account or the hash of the guest's key; `pixels_player
 maker, audience and whether it is hidden. A gate and a puzzle with no maker are the owner's.
 `docs/database-access.md` is the rule they follow.
 
-A player's page calls thirteen functions, which the publishable key may run and which first find the
+A player's page calls nineteen functions, which the publishable key may run and which first find the
 player from the log-in or the key: `pixels_join`, `pixels_me`, `pixels_puzzles`, `pixels_results`,
 `pixels_days`, `pixels_record`, `pixels_record_day`, `pixels_board`, `pixels_set_picture`,
-`pixels_rename`, `pixels_people`, `pixels_befriend` and `pixels_renew_invite`. A time is the
-player's own browser's word: the database refuses only what cannot be, a time under two seconds, a
-puzzle the player is not sent, a day more than one from today. `pixels_puzzles` sends a player no
-puzzle that is switched off, which is `pixels_puzzles.hidden`, none in no gate, which is one whose
-`level` is empty, and none in a gate that `pixels_sees` says is not theirs to see: that one function
-is the rule, a hidden gate for nobody and a gate for everyone, for its maker's friends or for the
-players picked, as its audience says.
+`pixels_rename`, `pixels_people`, `pixels_befriend`, `pixels_renew_invite`, and for a player's own
+gates `pixels_mine`, `pixels_keep_puzzle`, `pixels_drop_puzzle`, `pixels_name_my_level`,
+`pixels_publish_my_level` and `pixels_delete_my_level`. A time is the player's own browser's word:
+the database refuses only what cannot be, a time under two seconds, a puzzle the player is not sent,
+a day more than one from today. `pixels_puzzles` sends a player no puzzle that is switched off,
+which is `pixels_puzzles.hidden`, none in no gate, which is one whose `level` is empty, and none in
+a gate that `pixels_sees` says is not theirs to see: that one function is the rule, a hidden gate
+for nobody and a gate for everyone, for its maker's friends or for the players picked, as its
+audience says.
 
 Five more are the owner's and refuse anyone else. `pixels_share_level` keeps a gate for the players
 named, or gives it back to everyone. `pixels_order_levels` renumbers the owner's gates of one size
@@ -138,8 +137,8 @@ deletes a gate the same way: its puzzles are left in no gate and the gates after
 
 `players.html` is the owner's: every player with their picture, today's puzzle, days in a row,
 puzzles solved and when they last played; the name, which can be typed over; Close joining, which
-shuts every invite link to anyone new; Clear picture; and Remove, which takes a player and their
-results off the leaderboard.
+shuts every invite link to anyone new; Clear picture; the gates players have made, each to hide or
+delete; and Remove, which takes a player and their results off the leaderboard.
 
 The local preview, `npm run serve` on :8640, has no log-in, so there Pixels
 keeps its puzzles and times in the browser instead, starting from the nine in

@@ -322,7 +322,12 @@
   .pixels-main:has(.pixels-places) { padding-block-end: calc(5.5rem + env(safe-area-inset-bottom, 0px)); }
 }
 
-/* ME: the player's picture beside their username, then what they have done. */
+/* ME: the player's picture beside their username, then what they have done,
+   then the gates they have made, a block each. */
+#pixels-gates { margin-block-start: 2.5rem; }
+#pixels-made[hidden] { display: none; }
+#pixels-made { margin-block-start: 2.5rem; }
+.pixels-mine { padding-block-start: 1rem; border-block-start: 1px solid var(--rux-border-subtle-01); }
 .pixels-me { display: grid; gap: 1.5rem; max-inline-size: 24rem; }
 .pixels-me-head { display: flex; align-items: center; gap: 1rem; }
 .pixels-me-name { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .5rem; align-items: end; }
@@ -447,9 +452,12 @@
 .pixels-mosaic > .pixels-blank { inline-size: auto; block-size: auto; font-size: 1rem; }
 .pixels-mosaic-none { background: var(--rux-layer-accent-01); opacity: .4; }
 .pixels-category-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Who made a player's gate: their picture and username on one line. */
+.pixels-by { display: flex; align-items: center; gap: .375rem; min-inline-size: 0; }
+.pixels-level-head > .pixels-by { margin-inline-start: 0; }
 /* A gate's name with its grade beside it, the tag at the far end. */
 .pixels-category-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; min-inline-size: 0; }
-.pixels-category-head > .pixels-category-name { min-inline-size: 0; }
+.pixels-category-head > .pixels-category-name { flex: 1; min-inline-size: 0; }
 .pixels-grade { flex: none; margin: 0; }
 .pixels-category > .pixels-meta { font-size: .75rem; }
 

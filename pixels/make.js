@@ -35,7 +35,12 @@
    place on the front page and is never shown, and `theme` is its name.
    docs/making-puzzles.md is the guide to a good one.
 
-   Only the owner's account makes and edits; any other is told so.
+   THE OWNER'S puzzles go in the owner's gates, which every player is sent.
+   ANY OTHER PLAYER makes puzzles for gates of their own, by data.js's
+   `own`: a new puzzle costs one mana, the Gate field lists their gates and
+   New gate, with no Unsorted and no puzzle of the day, a gate holds nine,
+   and Back and Delete leave for Me. A gate just started is hidden until it
+   is published on Me.
 
    make.html?me draws the player's own picture, for any player: the board is
    15 squares a side and starts as the picture they have, or the one made
@@ -60,6 +65,11 @@
   // The player's own picture is drawn here too, and keeps a draft of its own.
   const mine = new URLSearchParams(location.search).has('me');
   const DRAFT = mine ? 'pixels-face-draft' : 'pixels-draft';
+  // Where a puzzle is kept: the owner's tables, or a player's own gates,
+  // which cost mana. `mana` is the player's, and the owner's is never asked.
+  const store = owner ? data : data?.own || null;
+  const home = owner ? 'manage.html' : 'me.html';
+  let mana = Infinity;
   // The inks, a colour at a time, pale to dark, and last the greys from
   // white to black. Each is the character a picture stores, then its name.
   // app.css lays them out a colour to a row, or to a column on a phone.
@@ -138,7 +148,11 @@
     theme.value = themeOf();
     $('pixels-more-theme').hidden = daily() || loose() || puzzles.some(p => p.width === side && p.level === levelOf() && !p.day);
     $('pixels-more-day').hidden = !daily();
-    saveNow.disabled = daily() && !day.value;
+    saveNow.disabled = (daily() && !day.value) || (!editing && mana < 1);
+    $('pixels-mana').hidden = owner;
+    $('pixels-mana').textContent = editing ? `You have ${mana} mana. A change costs none.`
+      : mana < 1 ? 'You have no mana. Find a sprite in a gate somebody else made to earn one.'
+        : `A new puzzle costs 1 mana. You have ${mana}.`;
   };
   // How many puzzles of this size each category has on and off, and whether
   // it is full: nine on besides the one being edited leave that one no room.
@@ -169,9 +183,10 @@
     const names = new Map(), { on, off } = held();
     puzzles.forEach(p => { if (p.width === side && !p.day && p.level != null) names.set(p.level, p.theme || 'More'); });
     const next = Math.max(0, ...names.keys()) + 1;
-    level.replaceChildren(new Option('No gate yet', 'none'), ...[...names].sort((a, b) => a[0] - b[0])
+    // A player's puzzle is always in one of their gates, and never a day's.
+    level.replaceChildren(...(owner ? [new Option('No gate yet', 'none')] : []), ...[...names].sort((a, b) => a[0] - b[0])
       .map(([n, text]) => new Option(`${text} · ${on[n] || 0} of ${PER_LEVEL}${off[n] ? `, ${off[n]} off` : ''}`, n)),
-    new Option('New gate…', next), new Option('Puzzle of the day…', 'day'));
+    new Option('New gate…', next), ...(owner ? [new Option('Puzzle of the day…', 'day')] : []));
     level.value = pick === 'day' || pick === 'none' || names.has(pick) ? pick : next;
   };
 
@@ -453,18 +468,24 @@
     // nine on is saved off too, since the category shows nine; a day's
     // puzzle is in no category and is never off.
     const stays = editing && !editing.day && editing.level === puzzle.level;
-    puzzle.off = !puzzle.day && !!data.setOff && (!!editing?.off || (!stays && held().full(puzzle.level)));
+    puzzle.off = !puzzle.day && !!store.setOff && (!!editing?.off || (!stays && held().full(puzzle.level)));
     const turnedOff = puzzle.off && !editing?.off;
+    // A player's gate holds nine and no more.
+    if (!owner && !stays && held().full(puzzle.level)) {
+      say('That gate has nine puzzles', 'Pick another gate, or start a new one.');
+      render();
+      return;
+    }
     // A category just started is hidden, so it is drawn out of the players'
     // sight; Manage's Published switch shows it.
     const fresh = !puzzle.day && puzzle.level != null && !puzzles.some(p => p.width === side && p.level === puzzle.level && !p.day);
     try {
-      if (fresh) await data.setHidden?.(side, puzzle.level, true);
-      const row = await data.save(puzzle);
+      if (fresh) await store.setHidden?.(side, puzzle.level, true);
+      const row = await store.save(puzzle);
       // The category's name goes with it, if it was changed.
       const named = theme.value.trim();
       if (!puzzle.day && puzzle.level != null && named !== themeOf()) {
-        await data.setTheme?.(side, puzzle.level, named);
+        await store.setTheme?.(side, puzzle.level, named);
         puzzles.forEach(p => { if (p.width === side && p.level === puzzle.level) p.theme = named || null; });
       }
       // The list this page holds takes the puzzle as saved, so the Category
@@ -476,9 +497,10 @@
       showWhere();
       if (editing) {
         editing = row;
-        saved(`Saved “${row.name}”${row.level == null && !row.day ? '. It is in Unsorted, where no player is sent it.' : fresh && data.setHidden ? `. ${named || 'More'} is hidden until you publish it.` : turnedOff ? `. It is off: ${named || 'More'} has nine on.` : ''}`);
+        saved(`Saved “${row.name}”${row.level == null && !row.day ? '. It is in Unsorted, where no player is sent it.' : fresh && store.setHidden ? `. ${named || 'More'} is hidden until you publish it.` : turnedOff ? `. It is off: ${named || 'More'} has nine on.` : ''}`);
       } else {
         try { localStorage.removeItem(DRAFT); } catch { /* nothing kept */ }
+        mana -= 1;
         name.value = '';
         clear();
         forget();
@@ -489,12 +511,15 @@
           when.setDate(when.getDate() + 1);
           day.value = `${when.getFullYear()}-${String(when.getMonth() + 1).padStart(2, '0')}-${String(when.getDate()).padStart(2, '0')}`;
         } else if (row.level == null) saved(`Saved “${row.name}”. It is in Unsorted, where no player is sent it.`);
-        else saved(`Saved “${row.name}”. It is in ${named || 'More'}${fresh && data.setHidden ? ', hidden until you publish it' : turnedOff ? ', off, since nine are on' : ''}.`);
+        else saved(`Saved “${row.name}”. It is in ${named || 'More'}${fresh && store.setHidden ? ', hidden until you publish it' : turnedOff ? ', off, since nine are on' : ''}.`);
       }
       $('pixels-error').hidden = true;
     } catch (error) {
       // The database lets a day have one puzzle.
       if (error?.code === '23505') say('That day already has a puzzle', 'Pick another day, or edit the one it has.');
+      else if (error?.refused === 'mana') say('You have no mana', 'Find a sprite in a gate somebody else made to earn one.');
+      else if (error?.refused === 'full') say('That gate has nine puzzles', 'Pick another gate, or start a new one.');
+      else if (error?.refused === 'gates') say('You have five gates', 'Delete one on Me to start another.');
       else say('The puzzle was not saved', 'Try again.');
     }
     render();
@@ -502,8 +527,8 @@
 
   $('pixels-delete-confirm').addEventListener('click', async () => {
     try {
-      await data.remove(editing.id);
-      location.href = 'manage.html';
+      await store.remove(editing.id);
+      location.href = home;
     } catch {
       say('The puzzle was not deleted', 'Try again.');
     }
@@ -536,14 +561,29 @@
       render();
       return;
     }
-    if (!owner) {
-      say('Only the owner makes puzzles', 'This account can play them.');
+    if (!store) {
+      say('Only the owner makes puzzles here', 'This preview has no players.');
       maker.hidden = true;
       return;
     }
+    if (!owner) {
+      // A player's Back is Me, and what they have to spend is asked first.
+      let got = null;
+      try { got = await store.mine(); } catch { /* said below */ }
+      if (!got) {
+        say('There is no player here yet', 'Open Pixels from your invite link first.');
+        maker.hidden = true;
+        return;
+      }
+      mana = got.mana;
+      const back = maker.querySelector('a[href="manage.html"]');
+      back.href = home;
+      back.title = 'Back to Me';
+      back.setAttribute('aria-label', 'Back to Me');
+    }
     const id = new URLSearchParams(location.search).get('id');
     try {
-      puzzles = await data.all();
+      puzzles = await store.all();
     } catch {
       say(id ? 'The puzzle did not load' : 'The puzzles did not load', 'Reload the page to try again.');
     }

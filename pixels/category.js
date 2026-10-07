@@ -1,7 +1,8 @@
 /* ==========================================================================
    category.js — one category's puzzles
    --------------------------------------------------------------------------
-   category.html?size=10&at=1 names the category: the side of its boards and
+   category.html?size=10&at=1 names the category, with &by= and its maker
+   for a player's own: the side of its boards and
    its place among the categories of that size, which the data calls its
    level. The owner's order decides the place, so an address is good until
    the categories are next reordered; one that names no category says so.
@@ -20,7 +21,7 @@
 (() => {
   'use strict';
 
-  const { data, guest, enter, fresh, categories, heading, side, hardness, gradeTag, sprites, boss, title, words, tile, bar } = window.Pixels;
+  const { data, guest, enter, fresh, see, portrait, categories, heading, side, hardness, gradeTag, sprites, boss, title, words, tile, bar } = window.Pixels;
   const host = document.getElementById('pixels-category');
 
   const say = (heading, detail) => {
@@ -46,11 +47,13 @@
     }
     if (guest) document.getElementById('pixels-foot').hidden = false;
     fresh();
-    const category = categories(puzzles).find(c => c.width === size && c.level === at);
+    const by = query.get('by') || '';
+    const category = categories(puzzles).find(c => c.width === size && c.level === at && (c.maker || '') === by);
     if (!category) {
       say('This gate is not here', 'It may have been moved. Pick one from Puzzles.');
       return;
     }
+    see(category);
     const name = heading(category), all = category.puzzles;
     document.title = `${name} — Pixels`;
     const solved = all.filter(p => results.has(p.id)).length;
@@ -70,6 +73,12 @@
       const best = results.get(p.id);
       return tile(p, title(p, i, !!best, boss(category, i)), `play.html?id=${encodeURIComponent(p.id)}`, best);
     }));
+    // A player's gate says who made it.
+    if (category.by) {
+      const made = words('pixels-meta pixels-by', '');
+      made.append(portrait(category.by), category.by.name);
+      head.append(made);
+    }
     el.append(head, bar(solved, all.length), list);
     host.append(el);
   })();

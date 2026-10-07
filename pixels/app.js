@@ -124,13 +124,15 @@
   const rounds = g => solve(g).rounds;
   const grade = n => (n <= 3 ? 'easy' : n <= 5 ? 'normal' : 'hard');
 
-  // Playing order: small boards first, then by level, easy to hard within
-  // one, then as they were made. A puzzle drawn for a day is in no level,
+  // Playing order: the owner's before any player's, a maker at a time,
+  // small boards first, then by level, easy to hard within one, then as
+  // they were made. A puzzle drawn for a day is in no level,
   // and one in no category stands after its size's categories.
   const order = puzzles => {
     puzzles = puzzles.filter(p => !p.day);
     puzzles.forEach(p => { p.rounds ??= rounds(grid(p.squares, p.width)); });
-    return [...puzzles].sort((a, b) => a.width - b.width || (a.level ?? 100) - (b.level ?? 100) || a.rounds - b.rounds
+    return [...puzzles].sort((a, b) => (a.maker ? 1 : 0) - (b.maker ? 1 : 0) || String(a.maker || '').localeCompare(String(b.maker || ''))
+      || a.width - b.width || (a.level ?? 100) - (b.level ?? 100) || a.rounds - b.rounds
       || String(a.created_at).localeCompare(String(b.created_at)));
   };
 
@@ -139,7 +141,8 @@
      level; `theme` is its name, and `puzzles` its own, easy to hard. A
      puzzle in no category, or drawn for a day, is in none of them.
      `heading` is what a category is called: its name, or More where it has
-     none. `where` is the address of its page.
+     none. `where` is the address of its page. A player's own gate carries
+     its `maker` and, as `by`, their name and picture.
 
      A PLAYER READS A CATEGORY AS A GATE and a solved picture as a sprite.
      `side` is a gate's size as it is written, 10×10. `hardness` is its
@@ -151,8 +154,13 @@
     const found = new Map();
     order(puzzles).forEach(p => {
       if (p.level == null) return;
-      const key = `${p.width} ${p.level}`;
-      if (!found.has(key)) found.set(key, { width: p.width, level: p.level, theme: p.theme ?? null, hidden: !!p.hidden, puzzles: [] });
+      const key = `${p.maker || ''} ${p.width} ${p.level}`;
+      if (!found.has(key)) {
+        found.set(key, {
+          width: p.width, level: p.level, theme: p.theme ?? null, hidden: !!p.hidden, puzzles: [], gate: p.gate ?? null, maker: p.maker ?? null,
+          by: p.maker ? { name: p.maker_name, picture: p.maker_picture, colours: p.maker_colours } : null,
+        });
+      }
       found.get(key).puzzles.push(p);
     });
     return [...found.values()];
@@ -168,7 +176,18 @@
     return el;
   };
   const sprites = (solved, all) => (solved === all ? 'Gate cleared' : `${solved} of ${all} sprites`);
-  const where = ({ width, level }) => `category.html?size=${width}&at=${level}`;
+  const where = ({ width, level, maker }) => `category.html?size=${width}&at=${level}${maker ? `&by=${encodeURIComponent(maker)}` : ''}`;
+  // A gate a player has opened is kept in their browser, so one they have
+  // not says New. `seen` asks and `see` keeps.
+  const SEEN = 'pixels-seen';
+  const gateKey = c => c.gate || `${c.maker || ''}:${c.width}:${c.level}`;
+  const opened = () => { try { return JSON.parse(localStorage.getItem(SEEN) || '[]'); } catch { return null; } };
+  const seen = c => opened()?.includes(gateKey(c)) ?? true;
+  const see = c => {
+    const all = opened();
+    if (!all || all.includes(gateKey(c))) return;
+    try { localStorage.setItem(SEEN, JSON.stringify([...all, gateKey(c)])); } catch { /* it says New again */ }
+  };
 
   // Numbers from 0 up to 1 that follow from `seed`, the same in every browser.
   const seeded = seed => () => {
@@ -771,7 +790,7 @@
   };
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    iphone, installed, fresh, overMenu, face, portrait, side, hardness, gradeTag, sprites, boss,
+    iphone, installed, fresh, overMenu, face, portrait, seen, see, side, hardness, gradeTag, sprites, boss,
     SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title,
     words, art, tile, bar, how, switcher, chosen,

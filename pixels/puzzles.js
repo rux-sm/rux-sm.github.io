@@ -15,7 +15,8 @@
    tile for each category, in playing order: its puzzles' pictures small,
    three by three, each a question mark until it is solved; its name with
    its grade in a tag beside it; its size and how many sprites are found, or
-   Gate cleared; and a bar of that. A tile opens its category in
+   Gate cleared; and a bar of that. A player's gate also says who made it,
+   and one not yet opened says New. A tile opens its category in
    category.html. A player reads a category as a gate.
 
    A guest has no menu, so under the tiles is their way to How to play.
@@ -33,7 +34,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, guest, enter, carry, iphone, installed, fresh, overMenu, portrait, side, hardness, gradeTag, sprites, boss, title, DAILY, BOARD, grid, rounds, grade, categories, heading, where, daily, today, streak, time, words, art, bar, switcher } = window.Pixels;
+  const { data, owner, guest, enter, carry, iphone, installed, fresh, overMenu, portrait, seen, side, hardness, gradeTag, sprites, boss, title, DAILY, BOARD, grid, rounds, grade, categories, heading, where, daily, today, streak, time, words, art, bar, switcher } = window.Pixels;
   const host = document.getElementById('pixels-levels'), leader = document.getElementById('pixels-leader');
   // A tile shows nine pictures, which is as many as a category has on.
   const PER_LEVEL = 9;
@@ -105,8 +106,18 @@
     const solved = c.puzzles.filter(p => results.has(p.id)).length;
     const head = document.createElement('span');
     head.className = 'pixels-category-head';
-    head.append(words('pixels-category-name', heading(c)), gradeTag(hardness(c)));
-    a.append(mosaic, head, words('pixels-meta', `${side(c)} · ${sprites(solved, c.puzzles.length)}`), bar(solved, c.puzzles.length));
+    head.append(words('pixels-category-name', heading(c)));
+    // A gate not yet opened, with nothing found in it, says New.
+    if (!solved && !seen(c)) head.append(words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--high-contrast pixels-grade', 'New'));
+    head.append(gradeTag(hardness(c)));
+    a.append(mosaic, head);
+    // A player's gate says who made it.
+    if (c.by) {
+      const by = words('pixels-meta pixels-by', '');
+      by.append(portrait(c.by), c.by.name);
+      a.append(by);
+    }
+    a.append(words('pixels-meta', `${side(c)} · ${sprites(solved, c.puzzles.length)}`), bar(solved, c.puzzles.length));
     return a;
   };
 

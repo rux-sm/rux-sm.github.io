@@ -10,8 +10,11 @@
    database functions that first find the player, from the log-in or from the
    key: `pixels_puzzles`, `pixels_results`, `pixels_days`, `pixels_record`,
    `pixels_record_day`, `pixels_board`, `pixels_me`, `pixels_join`,
-   `pixels_set_picture`, `pixels_rename`, `pixels_people`, `pixels_befriend`
-   and `pixels_renew_invite`. An invite link is `?join=` and a player's own
+   `pixels_set_picture`, `pixels_rename`, `pixels_people`, `pixels_befriend`,
+   `pixels_renew_invite`, and for a player's own puzzles and gates
+   `pixels_mine`, `pixels_keep_puzzle`, `pixels_drop_puzzle`,
+   `pixels_name_my_level`, `pixels_publish_my_level` and
+   `pixels_delete_my_level`. An invite link is `?join=` and a player's own
    code, and whoever joins by it is that player's friend both ways.
    `results` gives a Map of puzzle id to { seconds } and `days` a Map
    of day to the same; `record` and `recordDay` keep the shorter time, and
@@ -266,6 +269,39 @@
     async people() { return call('pixels_people', { p_key: key() }); },
     async befriend(id, on) { await call('pixels_befriend', { p_key: key(), p_friend: id, p_on: on }); },
     async renewInvite() { return call('pixels_renew_invite', { p_key: key() }); },
+    /* A PLAYER'S OWN PUZZLES AND GATES, by the names the owner's have, so
+       the Pixelator saves either. `mine` is everything of the player's:
+       their mana, their puzzles, each with its gate's name and whether the
+       gate is hidden, and who has solved how much of each gate. A save the
+       database turns down for mana, a full gate or a sixth gate throws with
+       `refused` saying which. */
+    own: {
+      async mine() { return call('pixels_mine', { p_key: key() }); },
+      async all() {
+        const got = await this.mine();
+        if (!got) throw new Error('no player');
+        return got.puzzles.map(p => ({ ...p, day: null, off: false }));
+      },
+      async save({ id, name, squares, width, level, colours }) {
+        const row = await call('pixels_keep_puzzle', {
+          p_key: key(), p_id: id || null, p_name: name, p_squares: squares, p_width: width, p_level: level, p_colours: colours || null,
+        });
+        if (row.error) throw Object.assign(new Error(row.error), { refused: row.error });
+        return { ...row, day: null, off: false };
+      },
+      async remove(id) { await call('pixels_drop_puzzle', { p_key: key(), p_id: id }); },
+      // A gate just started is hidden by the database, so there is nothing to do.
+      async setHidden() {},
+      async setTheme(width, level, name) {
+        await call('pixels_name_my_level', { p_key: key(), p_width: width, p_level: level, p_name: name || null });
+      },
+      async publish(width, level, on) {
+        return call('pixels_publish_my_level', { p_key: key(), p_width: width, p_level: level, p_on: on });
+      },
+      async removeLevel(width, level) {
+        await call('pixels_delete_my_level', { p_key: key(), p_width: width, p_level: level });
+      },
+    },
     async rename(name) {
       const me = await call('pixels_rename', { p_key: key(), p_name: name });
       const kept = readGuest();
@@ -290,7 +326,7 @@
     // itself is switched off, as `off`.
     async all() {
       const [puzzles, levels, picks] = await Promise.all([
-        client.from('pixels_puzzles').select('id, name, squares, width, height, level, colours, created_at, day, hidden').order('created_at').order('id'),
+        client.from('pixels_puzzles').select('id, name, squares, width, height, level, colours, created_at, day, hidden').is('maker', null).order('created_at').order('id'),
         client.from('pixels_levels').select('id, width, level, name, hidden, audience').is('maker', null),
         client.from('pixels_level_players').select('level_id, player_id'),
       ]);
@@ -385,6 +421,25 @@
     async removePlayer(id) {
       fail((await client.from('pixels_players').delete().eq('id', id)).error);
     },
+    // The gates players have made, each with its maker and how many puzzles
+    // it holds. The owner can hide one, which its maker can publish again,
+    // or delete it with its puzzles.
+    async playerGates() {
+      const [levels, puzzles] = await Promise.all([
+        client.from('pixels_levels').select('id, width, level, name, hidden, maker').not('maker', 'is', null).order('width').order('level'),
+        client.from('pixels_puzzles').select('maker, width, level').not('maker', 'is', null),
+      ]);
+      fail(levels.error);
+      fail(puzzles.error);
+      return levels.data.map(l => ({ ...l, puzzles: puzzles.data.filter(p => p.maker === l.maker && p.width === l.width && p.level === l.level).length }));
+    },
+    async hideGate(id) {
+      fail((await client.from('pixels_levels').update({ hidden: true }).eq('id', id)).error);
+    },
+    async deleteGate({ id, maker, width, level }) {
+      fail((await client.from('pixels_puzzles').delete().eq('maker', maker).eq('width', width).eq('level', level)).error);
+      fail((await client.from('pixels_levels').delete().eq('id', id)).error);
+    },
     async clearPicture(id) {
       fail((await client.from('pixels_players').update({ picture: null, picture_colours: null }).eq('id', id)).error);
     },
@@ -396,14 +451,12 @@
   const store = cloud || (local ? preview : null);
   const guest = !!cloud && !member;
 
-  /* MAKING, MANAGING AND THE PLAYERS ARE THE OWNER'S. The database refuses
+  /* MANAGING AND THE PLAYERS ARE THE OWNER'S. The database refuses
      anyone else; this only keeps the ways in out of their sight. The local
      preview has no log-in and is whoever runs it. */
   if (!owner) {
-    document.querySelectorAll('.rux--side-nav a[href="make.html"], .rux--side-nav a[href="manage.html"], .rux--side-nav a[href="players.html"]')
+    document.querySelectorAll('.rux--side-nav a[href="manage.html"], .rux--side-nav a[href="players.html"]')
       .forEach(a => a.closest('li')?.remove());
-    // The Pixelator's place in the bar is the owner's too, for now.
-    document.querySelectorAll('.pixels-places a[href="make.html"]').forEach(a => a.remove());
   }
 
   /* COMING IN. Gives the player, or null. A guest with no player yet gets

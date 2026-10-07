@@ -7,6 +7,8 @@
    leaderboard shows. Remove takes a player off the leaderboard with all
    their results; an account that plays again starts a new player.
 
+   Under the table is every gate a player has made, to hide or delete.
+
    A new player joins by any player's invite link. Close joining shuts every
    link to anyone new; those already in keep playing.
 
@@ -131,6 +133,50 @@
     }));
     document.querySelectorAll('[data-daily]').forEach(th => { th.hidden = !DAILY; });
     $('pixels-table').hidden = false;
+
+    // The gates players have made: who made each, how much it holds, and
+    // whether it is published. Hide unpublishes one; Delete, pressed twice,
+    // takes it and its puzzles.
+    let made = [];
+    try { made = await data.playerGates(); } catch { say('The players\' gates did not load', 'Reload the page to try again.'); }
+    const list = document.createElement('ul');
+    list.className = 'pixels-people';
+    list.append(...made.map(g => {
+      const who = all.players.find(p => p.id === g.maker) || { name: 'A player' };
+      const li = document.createElement('li');
+      li.className = 'pixels-person';
+      const text = document.createElement('span');
+      text.className = 'pixels-person-name';
+      text.textContent = `${who.name} · ${g.name || 'More'} · ${g.width}×${g.width} · ${g.puzzles} of 9 · ${g.hidden ? 'hidden' : 'published'}`;
+      const keys = document.createElement('span');
+      const act = (cls, label, sure, run) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = `rux--btn rux--btn--sm rux--layout--size-sm ${cls}`;
+        b.textContent = label;
+        b.addEventListener('click', async () => {
+          if (sure && b.dataset.sure == null) {
+            b.dataset.sure = '';
+            b.textContent = sure;
+            setTimeout(() => { delete b.dataset.sure; b.textContent = label; }, 4000);
+            return;
+          }
+          b.disabled = true;
+          try { await run(); } catch { say('The gate did not change', 'Try again.'); }
+          draw();
+        });
+        return b;
+      };
+      if (!g.hidden) keys.append(act('rux--btn--ghost', 'Hide', null, () => data.hideGate(g.id)));
+      keys.append(act('rux--btn--danger--ghost', 'Delete', 'Delete it and its puzzles?', () => data.deleteGate(g)));
+      li.append(portrait({ name: who.name, picture: who.picture, colours: who.picture_colours }), text, keys);
+      return li;
+    }));
+    const heading = document.createElement('h2');
+    heading.className = 'rux--type-productive-heading-03';
+    heading.textContent = 'Gates players made';
+    $('pixels-made').replaceChildren(heading, list);
+    $('pixels-made').hidden = !made.length;
   };
 
   if (!data) say('Pixels could not connect', 'Reload the page to try again.');

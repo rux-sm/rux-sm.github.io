@@ -465,6 +465,8 @@
     'route_done_at,route_done_by,buses_done_at,buses_done_by,billing_done_at,billing_done_by',
     'contract_status,invoice_status,balance_paid,date_paid',
     'est_miles,actual_miles',
+    // How many people the customer said are travelling.
+    'passengers',
     // The PO and invoice switches' flags, and the contract note.
     'contract_note,po_received,invoiced',
     // Save inserts, updates and deletes payment rows one at a time, by id.
@@ -2101,12 +2103,6 @@
     row.appendChild(node);
     return row;
   };
-  // A long field with a short menu beside it, two thirds to one.
-  const wide = (...nodes) => {
-    const row = pair(...nodes);
-    row.classList.add('scheduler-pair--wide');
-    return row;
-  };
 
   /* A run of fields under one heading is a fieldset, so a screen reader names
      each field with its group, "Booking contact, Name", and the labels need not
@@ -3329,6 +3325,17 @@
     // What the trip needs stays, and keeps any focus in it; the vehicles redraw.
     for (const n of [...panelFleet.children]) if (!n.hasAttribute('data-fleet-needs')) n.remove();
     const split = fleetSplit();
+    /* MORE PASSENGERS THAN SEATS IS SAID, AND NOTHING MORE: the office decides
+       what to send, so no need is turned on and no bus added. A leg is counted
+       once every vehicle on it has a bus whose seats are recorded, and its
+       notice stands over its own vehicles. */
+    const people = passengersNow();
+    const seatsShort = buses => {
+      const seats = buses.map(b => Number(panelIndex.buses.get(b.busId)?.capacity) || null);
+      if (!people || !seats.length || seats.includes(null)) return null;
+      const total = seats.reduce((a, n) => a + n, 0);
+      return people > total ? notice('warning', 'More passengers than seats', `${people} passengers and ${total} seats.`) : null;
+    };
     for (const leg of ['outbound', 'return']) {
       const buses = editing.fleet[leg];
       const { list, body } = rowList();
@@ -3339,6 +3346,8 @@
       body.appendChild(add.li);
       const title = !split ? 'Vehicles' : leg === 'outbound' ? 'Drop-off vehicles' : 'Pickup vehicles';
       const sec = section(title, list, assignBestButton(leg));
+      const short = seatsShort(buses);
+      if (short) { short.dataset.fleetSeats = leg; short.classList.add('scheduler-fleet-seats'); list.before(short); }
       sec.dataset.fleetSection = leg;
       sec.hidden = leg === 'return' && !split;
       panelFleet.appendChild(sec);
@@ -4657,6 +4666,7 @@
         : (isoOrNull(f['scheduler-f-rend'].value) ?? isoOrNull(f['scheduler-f-rstart'].value)) },
     { key: 'customer', get: f => f['scheduler-f-customer'].value.trim() || null },
     { key: 'trip_type', get: f => f['scheduler-f-type'].value || null },
+    { key: 'passengers', get: () => passengersNow() },
     // The type every vehicle on the trip wants, or null when they differ.
     { key: 'vehicle_type', get: () => {
         const v = fleetVehicles();
@@ -5165,6 +5175,12 @@
     if (!t) return null;
     const n = Number(t);
     return Number.isFinite(n) ? n : null;
+  };
+  /* The Details tab's Passengers as a whole number, or null when it is blank
+     or not a count; the column refuses a negative one. */
+  const passengersNow = () => {
+    const n = money(document.getElementById('scheduler-f-passengers')?.value);
+    return n !== null && n >= 0 ? Math.round(n) : null;
   };
 
   /* The billing rules, `billing.js`: the workflow the `billing-workflow-v1`
@@ -7044,6 +7060,7 @@
       invoiced: invoicedOf(trip),
       est_miles: trip.est_miles ?? null,
       actual_miles: trip.actual_miles ?? null,
+      passengers: trip.passengers ?? null,
       itinerary_not_needed: !!trip.itinerary_not_needed,
       booking_contact_id: trip.booking_contact_id ?? null,
       trip_contact_1_id: trip.trip_contact_1_id ?? null,
@@ -7176,17 +7193,23 @@
       trip.customer), 'scheduler-f-customer', 'customer');
 
     const topFields = el('div', 'rux--stack-vertical rux--stack-scale-5');
+    /* How many people travel: a count the customer gives, which the Buses tab
+       holds against the seats of the buses chosen. */
+    const passengers = moneyField('scheduler-f-passengers', 'Passengers', trip.passengers);
+    passengers.querySelector('input').inputMode = 'numeric';
+    passengers.querySelector('input').addEventListener('input', () => drawFleet());
     topFields.append(
       outRange,
       returnDates,
-      wide(
-        textField('scheduler-f-destination', 'Destination', trip.destination),
+      full(textField('scheduler-f-destination', 'Destination', trip.destination)),
+      pair(
         selectField('scheduler-f-type', 'Type', trip.trip_type, [
           ['', '—'],
           ['round_trip', 'Round trip'],
           ['one_way', 'One way'],
           [SPLIT, 'Split'],
         ]),
+        passengers,
       ),
       colorBox,
     );
@@ -12395,6 +12418,7 @@
     ['return_start_date', 'Inbound start date'],
     ['return_end_date', 'Inbound end date'],
     ['trip_type', 'Trip type'],
+    ['passengers', 'Passengers', 'number'],
     ['is_self_organized', 'Billing type', 'billingType'],
     ['trip_bar_color', 'Trip color'],
     ['booking_contact_name', 'Booking contact'],

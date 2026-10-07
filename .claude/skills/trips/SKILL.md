@@ -105,8 +105,9 @@ rewrites this section as each change is built.
 
 ## Where each fact is in the editor
 
-- **Details:** dates, destination, type, booking contact (its ⋮ menu
-  has Add email thread), trip contacts.
+- **Details:** dates, destination, type, Passengers (the headcount, which
+  the Buses tab holds against the buses' seats), booking contact (its ⋮
+  menu has Add email thread), trip contacts.
 - **Pinned update:** the trip has no notes; what everyone should know is the
   update pinned to the top of its card, `pinned_update` in `get_trip`. Write
   it in the Updates window, opened from the bar's menu with Add update, then
@@ -118,7 +119,8 @@ rewrites this section as each change is built.
   a row a day), its menu's Measure drives again for a leg saved with old
   drives, the fuel card and second-driver notices, the stops with their
   waits, Mark route done.
-- **Buses:** each bus, its driver and co-driver or relief seats, Mark buses done.
+- **Buses:** each bus, its driver and co-driver or relief seats, a warning
+  when Passengers is above the seats, Mark buses done.
 - **Billing:** confirmed or not; the quoted price, which is the sum of the
   quote lines; Add the bus rental (it shows the calculator's price); the
   Addt'l Driver line a co-driver seat adds; Add line (Discount, Second

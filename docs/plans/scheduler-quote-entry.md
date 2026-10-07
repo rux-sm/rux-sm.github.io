@@ -42,7 +42,7 @@ Each tab answers one question and reads only the tabs before it:
 ### Details
 
 - **A trip has a passenger count.** One number field, Passengers, beside
-  the dates, kept in a new `passengers` column on `trips`. The headcount has
+  the dates, kept in the `passengers` column on `trips`. The headcount has
   a home of its own and stops living in the pinned update. No form prints
   it.
 - **The email thread arrives linked.** A draft carries the thread's address,
@@ -171,9 +171,6 @@ Each tab answers one question and reads only the tabs before it:
 
 ### How it is built
 
-- **The one database change is its own step.** The `passengers` column is
-  written as SQL, shown to rux and applied on a yes, before the code that
-  reads it is pushed.
 - **Each change ships by itself.** None depends on another except the rate
   by month and the dead-mile suggestion on the Settings page, and the
   drafted stops on the connector, so the small ones go out first and are
@@ -198,12 +195,6 @@ Each tab answers one question and reads only the tabs before it:
       the old app's driver view reads it.
 - [ ] Let the Files tab hold a file before the first save and send it once
       the trip exists.
-- [ ] Write the `passengers` column as SQL, show it to rux, and apply it on
-      a yes.
-- [ ] Add the Passengers field to the Details tab, read and saved with the
-      trip, and to the history's field names.
-- [ ] Warn on the Buses tab when the passenger count is above the seats the
-      trip's buses hold.
 - [ ] Turn the Rates page into Settings, `settings.html`, laid out with the
       design-page skill: the rates form and its Save on the first tab, a
       link in the side navigation of the fourteen pages that carry one, and

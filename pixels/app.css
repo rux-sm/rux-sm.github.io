@@ -352,9 +352,23 @@
 .pixels-rank-value { min-inline-size: 3.5rem; text-align: end; font-variant-numeric: tabular-nums; }
 
 /* THE OWNER'S PAGE: the invite word beside its button, the link under them. */
-.pixels-invite { display: grid; grid-template-columns: minmax(0, 16rem) auto; gap: .75rem 1rem; align-items: end; }
+.pixels-invite { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem; }
 .pixels-invite[hidden] { display: none; }
-.pixels-invite > p { grid-column: 1 / -1; margin: 0; overflow-wrap: anywhere; }
+.pixels-invite > p { margin: 0; overflow-wrap: anywhere; }
+
+/* FRIENDS: the player's own invite link, then every other player, a row
+   each: picture, username and the key that adds or removes them. */
+.pixels-friends { display: grid; gap: 1.5rem; max-inline-size: 28rem; }
+.pixels-link { display: grid; gap: .5rem; }
+.pixels-link > p { margin: 0; overflow-wrap: anywhere; }
+.pixels-link-keys { display: flex; flex-wrap: wrap; gap: .5rem; }
+.pixels-people { display: grid; margin: 0; padding: 0; list-style: none; }
+.pixels-person { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: .75rem; align-items: center; padding: .5rem 0; border-block-end: 1px solid var(--rux-border-subtle-01); }
+.pixels-person-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.5; }
+/* Who a gate is kept for, in Manage's modal: a box a player. */
+.pixels-share-list { display: grid; gap: .5rem; margin-block-start: 1rem; }
+.pixels-share-list > .rux--checkbox-wrapper { margin: 0; }
+.pixels-share-who { display: inline-flex; align-items: center; gap: .5rem; }
 /* A name stays wide enough to read and type in; on a phone the table slides. */
 .pixels-player-name { min-inline-size: 8rem; max-inline-size: 14rem; }
 .pixels-player-who { display: flex; align-items: center; gap: .5rem; }

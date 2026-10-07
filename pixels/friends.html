@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>Players — Pixels</title>
+<title>Friends — Pixels</title>
 <script src="/funnel.js"></script>
 <style>html:not([data-rux-unlocked]){visibility:hidden}</style>
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
@@ -27,8 +27,8 @@
 <script src="/design/js/theme.js"></script>
 </head>
 <body>
-<!-- The owner's page, driven by players.js: who has played, how far each has got, the invite word a guest's link carries, and Remove. The shell is the
-     scheduler's: the menu button opens the side nav at every width. -->
+<!-- The player's invite link and every other player, each to add or remove as a friend, written by friends.js. A guest,
+     with no account, gets no header. The shell is the scheduler's: the menu button opens the side nav at every width. -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run build` rewrites this
      block from design/assets/icons.svg. -->
@@ -139,7 +139,7 @@
         </a>
       </li>
       <li class="rux--side-nav__item rux--side-nav__item--large">
-        <a class="rux--side-nav__link rux--side-nav__link--current" href="players.html" aria-current="page">
+        <a class="rux--side-nav__link" href="players.html">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-groups"/></svg></div>
           <span class="rux--side-nav__link-text">Players</span>
         </a>
@@ -158,8 +158,8 @@
   </nav>
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
-      <div class="rux--stack-vertical rux--stack-scale-7" id="pixels-players">
-        <h1 class="rux--type-productive-heading-04">Players</h1>
+      <div class="pixels-page">
+      <div class="pixels-friends" id="pixels-friends">
         <div id="pixels-error" hidden>
         <div class="rux--inline-notification rux--inline-notification--error" role="alert">
           <div class="rux--inline-notification__details">
@@ -171,27 +171,8 @@
           </div>
         </div>
         </div>
-        <!-- Whether a new player may join by a player's invite link. players.js writes the words and the button. -->
-        <div class="pixels-invite" id="pixels-invite" hidden>
-          <p class="pixels-meta" id="pixels-joining-text"></p>
-          <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" id="pixels-joining"></button>
-        </div>
-        <!-- players.js writes a row a player here. -->
-        <div class="rux--data-table-content pixels-scroll" id="pixels-table" hidden>
-          <table class="rux--data-table rux--data-table--md">
-            <thead>
-              <tr>
-                <th scope="col"><div class="rux--table-header-label">Name</div></th>
-                <th scope="col" data-daily><div class="rux--table-header-label">Today</div></th>
-                <th scope="col" data-daily><div class="rux--table-header-label">Days in a row</div></th>
-                <th scope="col"><div class="rux--table-header-label">Solved</div></th>
-                <th scope="col"><div class="rux--table-header-label">Last played</div></th>
-                <th scope="col"><span class="rux--visually-hidden">Remove</span></th>
-              </tr>
-            </thead>
-            <tbody id="pixels-rows"></tbody>
-          </table>
-        </div>
+        <!-- friends.js writes the player's invite link and every other player here. -->
+      </div>
       </div>
     </div>
   </div>
@@ -212,6 +193,6 @@
 <script src="/account.js"></script>
 <script src="app.js"></script>
 <script src="data.js"></script>
-<script src="players.js"></script>
+<script src="friends.js"></script>
 </body>
 </html>

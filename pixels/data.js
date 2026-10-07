@@ -10,7 +10,9 @@
    database functions that first find the player, from the log-in or from the
    key: `pixels_puzzles`, `pixels_results`, `pixels_days`, `pixels_record`,
    `pixels_record_day`, `pixels_board`, `pixels_me`, `pixels_join`,
-   `pixels_set_picture` and `pixels_rename`.
+   `pixels_set_picture`, `pixels_rename`, `pixels_people`, `pixels_befriend`
+   and `pixels_renew_invite`. An invite link is `?join=` and a player's own
+   code, and whoever joins by it is that player's friend both ways.
    `results` gives a Map of puzzle id to { seconds } and `days` a Map
    of day to the same; `record` and `recordDay` keep the shorter time, and
    `board` gives a day's ranking and the all-time one. The client is
@@ -28,7 +30,7 @@
    THE OWNER makes and edits puzzles and sees the players, by the tables'
    own rules: `all`, which is every puzzle there is, `save`, `remove`,
    `setOff`, `move`, `setTheme`, `setHidden`, `orderLevels`, `removeLevel`,
-   `players`, `setWord`, `renamePlayer` and `removePlayer`. `move` and
+   `players`, `setJoining`, `share`, `renamePlayer` and `removePlayer`. `move` and
    `remove` take one id or several. A puzzle with no `level` is in no
    category, and no player is sent it.
 
@@ -180,8 +182,12 @@
     // The preview has one player, so its boards hold one row.
     async me() {
       const db = read();
-      return { id: 'preview', name: 'Preview', picture: null, colours: null, ...db.me, found: Object.keys(db.results).length };
+      return { id: 'preview', name: 'Preview', picture: null, colours: null, code: 'preview', ...db.me, found: Object.keys(db.results).length };
     },
+    // The preview has nobody else in it.
+    async people() { return []; },
+    async befriend() {},
+    async renewInvite() { return this.me(); },
     async setPicture(squares, colours) {
       const db = read();
       db.me = { ...db.me, picture: squares, colours: squares ? colours : null };
@@ -255,6 +261,11 @@
     async setPicture(squares, colours) {
       return call('pixels_set_picture', { p_key: key(), p_squares: squares, p_colours: colours });
     },
+    // Every other player, friends first; adding one is one-way, and their
+    // published gates are then sent. A new invite code closes the old link.
+    async people() { return call('pixels_people', { p_key: key() }); },
+    async befriend(id, on) { await call('pixels_befriend', { p_key: key(), p_friend: id, p_on: on }); },
+    async renewInvite() { return call('pixels_renew_invite', { p_key: key() }); },
     async rename(name) {
       const me = await call('pixels_rename', { p_key: key(), p_name: name });
       const kept = readGuest();
@@ -278,14 +289,17 @@
     // whether the level is hidden, as `hidden`, and whether the puzzle
     // itself is switched off, as `off`.
     async all() {
-      const [puzzles, levels] = await Promise.all([
+      const [puzzles, levels, picks] = await Promise.all([
         client.from('pixels_puzzles').select('id, name, squares, width, height, level, colours, created_at, day, hidden').order('created_at').order('id'),
-        client.from('pixels_levels').select('width, level, name, hidden'),
+        client.from('pixels_levels').select('id, width, level, name, hidden, audience').is('maker', null),
+        client.from('pixels_level_players').select('level_id, player_id'),
       ]);
       fail(puzzles.error);
       fail(levels.error);
+      fail(picks.error);
       const of = p => levels.data.find(l => l.width === p.width && l.level === p.level);
-      return puzzles.data.map(p => ({ ...own(p), theme: of(p)?.name ?? null, hidden: !!of(p)?.hidden }));
+      const picked = l => (l?.audience === 'picked' ? picks.data.filter(k => k.level_id === l.id).map(k => k.player_id) : []);
+      return puzzles.data.map(p => ({ ...own(p), theme: of(p)?.name ?? null, hidden: !!of(p)?.hidden, picked: picked(of(p)) }));
     },
     async results() {
       return new Map((await call('pixels_results', { p_key: key() })).map(r => [r.puzzle_id, { seconds: r.best_seconds }]));
@@ -349,19 +363,24 @@
     async setHidden(width, level, hidden) {
       await call('pixels_hide_level', { p_width: width, p_level: level, p_hidden: hidden });
     },
-    // Every player with their results and days, and the invite word.
+    // Keeps one of the owner's gates for the players named, or with none
+    // named gives it back to everyone.
+    async share(width, level, players) {
+      await call('pixels_share_level', { p_width: width, p_level: level, p_players: players.length ? players : null });
+    },
+    // Every player with their results and days, and whether new ones may join.
     async players() {
       const [players, results, days, settings] = await Promise.all([
         client.from('pixels_players').select('id, name, user_id, created_at, last_played_at, picture, picture_colours').order('created_at'),
         client.from('pixels_player_results').select('player_id, puzzle_id, best_seconds'),
         client.from('pixels_player_days').select('player_id, day, seconds'),
-        client.from('pixels_settings').select('invite_word').single(),
+        client.from('pixels_settings').select('joining').single(),
       ]);
       [players, results, days, settings].forEach(r => fail(r.error));
-      return { players: players.data, results: results.data, days: days.data, word: settings.data.invite_word };
+      return { players: players.data, results: results.data, days: days.data, joining: settings.data.joining };
     },
-    async setWord(to) {
-      fail((await client.from('pixels_settings').update({ invite_word: to }).eq('one', true)).error);
+    async setJoining(on) {
+      fail((await client.from('pixels_settings').update({ joining: on }).eq('one', true)).error);
     },
     async removePlayer(id) {
       fail((await client.from('pixels_players').delete().eq('id', id)).error);
@@ -466,6 +485,7 @@
         taken: 'That name is taken. Try another.',
         name: 'A name is 1 to 20 letters.',
         word: 'This invite link is no longer open. Ask for a new one.',
+        closed: 'Pixels is not taking new players just now.',
       }[player.error] || 'That did not go through. Try again.';
     });
     host.replaceChildren(form);

@@ -21,8 +21,8 @@ it. Each stage below is finished and fun to use before the next starts.
   word, clear of the home bar. On a wide screen it is tabs along the top.
 - **A page where a puzzle is played or drawn has no bar,** because the keys
   under the board are at the bottom too, and Back leaves it.
-- **A place is in the bar once it is built:** Puzzles and Me now, and the
-  Pixelator for the owner.
+- **A place is in the bar once it is built:** Puzzles, Friends and Me now,
+  and the Pixelator for the owner.
 - **Manage and Players stay in the owner's menu.**
 
 **A profile**
@@ -118,17 +118,6 @@ it. Each stage below is finished and fun to use before the next starts.
 ## Questions
 
 ## Tasks
-
-**Stage 3: invites, friends and picked players**
-
-- [ ] The migration: each player's invite code, who is whose friend, who is
-      picked for a gate, and the list of players a player may read.
-- [ ] Joining by a player's link makes the two friends. The owner's switch
-      closes joining.
-- [ ] Friends: every player, Add and Remove, and the player's own link.
-      Friends takes its place in the bar.
-- [ ] Manage: a gate's heading says who sees it, everyone or the players
-      ticked in a list.
 
 **Stage 4: mana, players' gates and the payoff**
 

@@ -37,7 +37,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, SIZES, order, grade, words, art, tile, switcher } = window.Pixels;
+  const { data, owner, SIZES, order, grade, words, art, tile, switcher, portrait } = window.Pixels;
   const $ = id => document.getElementById(id);
   const host = $('pixels-levels'), sizes = $('pixels-sizes');
   const { modal } = window.Rux;
@@ -70,7 +70,7 @@
     const found = new Map();
     order(sized()).forEach(p => {
       if (loose(p)) return;
-      if (!found.has(p.level)) found.set(p.level, { level: p.level, theme: p.theme ?? null, hidden: !!p.hidden, puzzles: [] });
+      if (!found.has(p.level)) found.set(p.level, { level: p.level, theme: p.theme ?? null, hidden: !!p.hidden, picked: p.picked || [], puzzles: [] });
       found.get(p.level).puzzles.push(p);
     });
     return [...found.values()];
@@ -305,11 +305,12 @@
           keys.className = 'pixels-moves';
           keys.append(key(`${id}-up`, `Move ${name} up`, '#m-arrow_upward', at > 0 && shift(-1)),
             key(`${id}-down`, `Move ${name} down`, '#m-arrow_downward', at < cats.length - 1 && shift(1)),
+            ...(data.share ? [key(`${id}-share`, `Who sees ${name}`, '#m-groups', from => sharing(c, from))] : []),
             key(`${id}-rename`, `Rename ${name}`, '#m-edit', from => naming(c, from)),
             key(`${id}-remove`, `Delete ${name}`, '#m-delete', from => removing(c, from)));
           return keys;
         })(),
-        words('pixels-meta', `${on} of ${PER_LEVEL} on${off ? `, ${off} off` : ''}`),
+        words('pixels-meta', `${on} of ${PER_LEVEL} on${off ? `, ${off} off` : ''}${c.picked.length ? ` · for ${count(c.picked.length, 'player')}` : ''}`),
       ], c.puzzles.map(p => puzzleTile(p, flip(p, name)))));
     });
     // Unsorted has no switch, place or name of its own.
@@ -450,6 +451,47 @@
       draw([`pixels-level-${c.level}-rename`]);
     } catch {
       say('The gate was not renamed', 'Try again.');
+    }
+  });
+  /* WHO SEES A GATE. The modal lists every player with a box; the ticked are
+     the players the gate is kept for, and none ticked gives it to everyone. */
+  let everyone = null;
+  async function sharing(c, from) {
+    asked = c;
+    try {
+      everyone ||= (await data.players()).players;
+    } catch {
+      say('The players did not load', 'Try again.');
+      return;
+    }
+    $('pixels-share-heading').textContent = `Who sees ${called(c)}?`;
+    $('pixels-share-list').replaceChildren(...everyone.map(p => {
+      const wrap = document.createElement('div');
+      wrap.className = 'rux--checkbox-wrapper';
+      const box = document.createElement('input');
+      Object.assign(box, { type: 'checkbox', className: 'rux--checkbox', id: `pixels-share-${p.id}`, value: p.id, checked: c.picked.includes(p.id) });
+      const label = document.createElement('label');
+      label.className = 'rux--checkbox-label';
+      label.htmlFor = box.id;
+      const who = words('rux--checkbox-label-text pixels-share-who', '');
+      who.append(portrait({ name: p.name, picture: p.picture, colours: p.picture_colours }), p.name);
+      label.append(who);
+      wrap.append(box, label);
+      return wrap;
+    }));
+    modal.open('pixels-share-modal', from);
+  }
+  $('pixels-share').addEventListener('submit', async e => {
+    e.preventDefault();
+    const c = asked, ids = [...$('pixels-share-list').querySelectorAll('input:checked')].map(b => b.value);
+    modal.close('pixels-share-modal');
+    try {
+      await data.share(size, c.level, ids);
+      c.puzzles.forEach(p => { p.picked = ids; });
+      fine();
+      draw([`pixels-level-${c.level}-share`]);
+    } catch {
+      say('The gate did not change', 'Try again.');
     }
   });
   function removing(c, from) {

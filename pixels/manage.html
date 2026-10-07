@@ -157,6 +157,7 @@
   <!-- The places every player has, shown once there is a player. app.js marks the one this page is, and data.js keeps the Pixelator's for the owner. -->
   <nav class="pixels-places" aria-label="Pixels" hidden>
     <a class="pixels-place" href="./"><svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-grid_view"/></svg>Puzzles</a>
+    <a class="pixels-place" href="friends.html"><svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-groups"/></svg>Friends</a>
     <a class="pixels-place" href="make.html"><svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-edit"/></svg>Pixelator</a>
     <a class="pixels-place" href="me.html"><svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-account_circle"/></svg>Me</a>
   </nav>
@@ -245,6 +246,27 @@
         <button type="button" class="rux--btn rux--btn--danger" id="pixels-delete-confirm" data-rux-close>Delete</button>
       </div>
     </div>
+  </div>
+  <!-- Who a gate is kept for. manage.js writes a box a player; with none ticked the gate is everyone's. -->
+  <div class="rux--layer-one rux--modal" id="pixels-share-modal" role="presentation">
+    <form role="dialog" aria-modal="true" aria-labelledby="pixels-share-heading" tabindex="-1" class="rux--modal-container rux--modal-container--xs" id="pixels-share" novalidate>
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="pixels-share-heading">Who sees this gate?</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <p>Tick players to keep this gate for them. With none ticked, everyone sees it.</p>
+        <div class="pixels-share-list" id="pixels-share-list"></div>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+        <button type="submit" class="rux--btn rux--btn--primary">Save</button>
+      </div>
+    </form>
   </div>
   <div class="rux--layer-one rux--modal" id="pixels-rename-modal" role="presentation">
     <form role="dialog" aria-modal="true" aria-labelledby="pixels-rename-heading" tabindex="-1" class="rux--modal-container rux--modal-container--xs" id="pixels-rename" novalidate>

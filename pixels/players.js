@@ -7,8 +7,8 @@
    leaderboard shows. Remove takes a player off the leaderboard with all
    their results; an account that plays again starts a new player.
 
-   The invite word is what a guest's link must carry to join. Saving a new
-   one closes the old link to anyone new; those already in keep playing.
+   A new player joins by any player's invite link. Close joining shuts every
+   link to anyone new; those already in keep playing.
 
    Only the owner's account reads any of this: the database gives nobody else
    a row.
@@ -43,10 +43,17 @@
       return;
     }
     const day = today();
-    $('pixels-word').value = all.word;
-    // The link is the published site's, since a preview's address opens for nobody else.
-    const site = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) ? 'https://rux-sm.github.io' : location.origin;
-    $('pixels-link').textContent = `${site}/pixels/?join=${encodeURIComponent(all.word)}`;
+    $('pixels-joining-text').textContent = all.joining ? 'New players can join by any player\'s invite link.' : 'Joining is closed. No invite link lets a new player in.';
+    $('pixels-joining').textContent = all.joining ? 'Close joining' : 'Open joining';
+    $('pixels-joining').onclick = async () => {
+      try {
+        await data.setJoining(!all.joining);
+        $('pixels-error').hidden = true;
+      } catch {
+        say('Joining did not change', 'Try again.');
+      }
+      draw();
+    };
     $('pixels-invite').hidden = false;
 
     const rows = all.players.map(p => {
@@ -125,19 +132,6 @@
     document.querySelectorAll('[data-daily]').forEach(th => { th.hidden = !DAILY; });
     $('pixels-table').hidden = false;
   };
-
-  $('pixels-invite').addEventListener('submit', async e => {
-    e.preventDefault();
-    const to = $('pixels-word').value.trim();
-    if (to.length < 3) { say('The invite word is too short', 'Use three letters or more.'); return; }
-    try {
-      await data.setWord(to);
-      $('pixels-error').hidden = true;
-    } catch {
-      say('The word was not saved', 'Try again.');
-    }
-    draw();
-  });
 
   if (!data) say('Pixels could not connect', 'Reload the page to try again.');
   else if (!owner || !data.players) say("Only the owner sees the players", 'This account can play.');

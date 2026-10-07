@@ -11858,6 +11858,21 @@
 
   window.Rux.viewer = { setFormControls, setFormNote, setViewerHead, setToolbarShown, setViewerBack, setFormLink };
 
+  /* Opens the panel, or brings it forward. Asked for again while it is open,
+     it is the newest panel again, so it comes in front of an editor opened
+     since where the window has room for one. The room is measured before the
+     board is fit. */
+  function showViewer(opener) {
+    if (viewerEl.hidden) {
+      viewerOpener = opener ?? null;
+      viewerEl.hidden = false;
+    } else {
+      openOrder = openOrder.filter(name => name !== 'viewer').concat('viewer');
+    }
+    placeRoom();
+    window.Rux?.schedule?.fit?.();
+  }
+
   /* A form from print.html. It needs no fetch and no blob address: a page of
      this site is already this origin, which is the whole reason a PDF is
      fetched into one -- so the panel may print what it frames. */
@@ -11879,13 +11894,7 @@
     // No document row stands behind it, so a replace or a delete in the Files
     // tab has nothing here to follow.
     viewerDocId = null;
-    if (viewerEl.hidden) {
-      viewerOpener = opener ?? null;
-      viewerEl.hidden = false;
-      // Open now, so the board is measured before it is fit.
-      placeRoom();
-      window.Rux?.schedule?.fit?.();
-    }
+    showViewer(opener);
     viewerClose?.focus();
     swapFrame(url);
   }
@@ -11903,12 +11912,7 @@
     viewerNote = '';
     setFormNote('');
     viewerDocId = null;
-    if (viewerEl.hidden) {
-      viewerOpener = null;
-      viewerEl.hidden = false;
-      placeRoom();
-      window.Rux?.schedule?.fit?.();
-    }
+    showViewer(null);
     viewerClose?.focus();
     await drawDepartures();
   }
@@ -12021,13 +12025,7 @@
     // signs a fresh one each time it is opened.
     viewerNewTab.href = documentLink(doc.id);
     viewerDocId = String(doc.id);
-    if (viewerEl.hidden) {
-      viewerOpener = opener ?? null;
-      viewerEl.hidden = false;
-      // Open now, so the board is measured before it is fit.
-      placeRoom();
-      window.Rux?.schedule?.fit?.();
-    }
+    showViewer(opener);
     viewerClose?.focus();
     // The file showing, or downloading, is not fetched again, so its zoom stays.
     if (viewerShown?.id === doc.id || viewerLoading?.id === doc.id) return;

@@ -137,10 +137,10 @@ Three homes, and one rule for choosing.
 - **A panel is beside the week or in front of it, never over it.** Every open
   panel sits beside the week while the board holds them and the week's 19.5rem
   minimum; past that the newest comes in front of the board, dimming what it
-  covers, and the rest wait beside the week behind it. Nothing closes itself
-  and nothing is refused. A panel in front sits 16px in from the header and
-  every edge, and Escape, its close button or the dim leave it; `placeRoom` in
-  `scheduler/data.js` decides which is in front.
+  covers, and the rest wait behind it. The viewer shown something new is the
+  newest again. Nothing closes itself and nothing is refused. A panel in front
+  sits 16px in from the header and every edge, and Escape, its close button or
+  the dim leave it; `placeRoom` in `scheduler/data.js` decides which is front.
 - **A generated form is a page, not a modal.** `print.html` draws it and the
   document viewer frames it, so nothing has to hide the board in order to
   print, and two forms on different paper never argue over one `@page`.

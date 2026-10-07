@@ -1270,6 +1270,22 @@
 :is([data-theme="geist-dark"], [data-theme^="apple-"]) :is(.rux--menu-item, .rux--overflow-menu-options__option, .rux--overflow-menu-options__btn) {
   border-radius: 6px;
 }
+/* An overflow menu's divider is a straight line between two options, 4px
+   clear of each, as the menu's own divider is. Carbon draws it as the top
+   border of the option under it, and on that option's 6px corner the line
+   bends down at both ends. */
+:is([data-theme="geist-dark"], [data-theme^="apple-"]) .rux--overflow-menu--divider {
+  position: relative;
+  border-block-start: 0;
+  margin-block-start: 9px;
+}
+:is([data-theme="geist-dark"], [data-theme^="apple-"]) .rux--overflow-menu--divider::before {
+  position: absolute;
+  border-block-start: 1px solid var(--rux-border-subtle);
+  content: "";
+  inset-block-start: -5px;
+  inset-inline: 0;
+}
 /* A dropdown's or combo box's list is the same surface and takes the same
    answer. Its options also carry Carbon's rule between them, which Geist's
    lists do not draw; the pill a hovered or chosen option takes is what parts

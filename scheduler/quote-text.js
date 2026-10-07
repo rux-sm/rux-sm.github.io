@@ -69,10 +69,11 @@
   };
 
   /* The vehicle line, "(52 passengers)", with no count of buses because the
-     line's Quantity carries it. The seats are the assigned bus's, so before a
-     bus is picked the line names the vehicle alone rather than guessing a size. */
-  function vehicle(seats) {
-    return seats ? `(${seats} passengers)` : 'Bus';
+     line's Quantity carries it. A quote names the seats the customer asked
+     for, never the assigned bus's: 52, and 56 only where a vehicle of the
+     line carries the 56 passengers need on the Buses tab. */
+  function vehicle(pax56) {
+    return `(${pax56 ? 56 : 52} passengers)`;
   }
 
   /* The block itself. A line the trip cannot answer yet is dropped, except the
@@ -84,7 +85,7 @@
     const pickup = place(trip.pickup || '');
     const drop = String(trip.destination || '').trim();
     return [
-      `${vehicle(trip.seats)} ${TRIP_TYPES[trip.type] || 'trip'}`,
+      `${vehicle(trip.pax56)} ${TRIP_TYPES[trip.type] || 'trip'}`,
       [pickup ? `from ${pickup}` : null, drop ? `to ${drop}` : null].filter(Boolean).join(' '),
       from ? `on ${dates(from, trip.to || from)}` : null,
       `departing at ${clock(trip.leave) || 'TBD'}`,

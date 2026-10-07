@@ -1299,18 +1299,23 @@
   // agreement's trip date both end on.
   const lastDay = trip => trip.return_end_date || trip.return_start_date || trip.end_date || trip.start_date;
 
-  /* The line item's description, in the wording the Billing tab copies. The
-     seats are the outbound bus's, so a trip with no bus yet names the vehicle
-     without guessing a size. */
+  /* Whether a leg's line names 56 seats: a vehicle on it carries the 56
+     passengers need. A slot with no row yet asks for what the trip does, as
+     the Buses tab seeds it. */
+  function asks56(trip, leg) {
+    const rows = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === leg);
+    const count = leg === 'return' ? (trip.return_bus_count ?? trip.bus_count) : trip.bus_count;
+    return rows.some(a => a.needs?.pax56 === true)
+      || (rows.length < Math.max(Number(count) || 0, 1) && needsOf(trip).some(n => n.id === 'pax56'));
+  }
+
+  /* The line item's description, in the wording the Billing tab copies. */
   function quoteDescription(trip) {
     const times = quoteTimes(trip);
-    const seats = (trip.trip_assignments || [])
-      .filter(a => (a.leg || 'outbound') === 'outbound')
-      .map(a => a.buses?.capacity).find(c => c != null) ?? null;
     return window.SchedulerQuoteText.description({
       type: trip.trip_type,
       buses: trip.bus_count,
-      seats,
+      pax56: asks56(trip, 'outbound'),
       pickup: stopsOf(trip, 'outbound').find(s => s.type === 'pickup')?.address
         || trip.pickup_address || '',
       destination: trip.destination,
@@ -1329,13 +1334,10 @@
   function legDescription(trip, leg) {
     const out = leg === 'return' ? 'return' : 'outbound';
     const stops = stopsOf(trip, out);
-    const seats = (trip.trip_assignments || [])
-      .filter(a => (a.leg || 'outbound') === out)
-      .map(a => a.buses?.capacity).find(c => c != null) ?? null;
     return window.SchedulerQuoteText.description({
       type: trip.trip_type,
       buses: out === 'return' ? (trip.return_bus_count ?? trip.bus_count) : trip.bus_count,
-      seats,
+      pax56: asks56(trip, out),
       pickup: stopsOf(trip, 'outbound').find(s => s.type === 'pickup')?.address
         || trip.pickup_address || '',
       destination: trip.destination,
@@ -2170,12 +2172,12 @@
       binds: 'trip',
       blank: true,
       // What the shared list does not already carry: the price, its lines and
-      // each leg's buses, the office's own contact for the customer, the seats
-      // the description names, and the customer the bill-to is drawn from.
+      // each leg's buses, the office's own contact for the customer, the needs
+      // the description's seats follow, and the customer the bill-to is drawn from.
       columns: [
         'quoted_price', 'bus_count', 'return_bus_count', 'pickup_address', 'booking_contact_email',
         'trip_quote_lines(position,kind,leg,item,description,quantity,cost,amount)',
-        'trip_assignments(leg,buses:bus_id(capacity))',
+        'trip_assignments(leg,needs)', 'trip_reqs', 'req_56pax',
         'customers:customer_id(name,bill_to,usual:usual_location_id(address))',
       ],
       // NO TICK. `envelope_printed` and `itinerary_printed` are dispatch's

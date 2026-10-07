@@ -5263,19 +5263,20 @@
     // Not `iso`, which is this file's own Date formatter.
     const day = id => isoOrNull(document.getElementById(id)?.value ?? '');
     const split = val('scheduler-f-type') === SPLIT;
-    const pickup = val('scheduler-f-pickup') || editing?.route?.pickupPlace?.address || '';
+    // The place's address and not its field, which shows the place's name,
+    // so the block names the pickup's city as the printed quote does.
+    const pickup = editing?.route?.pickupPlace?.address || val('scheduler-f-pickup');
     // One leg's block, or the whole trip's with `leg` null. A leg of a split
     // trip departs at its own time: the drop-off's departure, the pickup's end.
     const words = leg => {
       const fleet = editing?.fleet?.[leg === 'return' ? 'return' : 'outbound'] ?? [];
-      const picked = fleet.find(b => b.busId);
       const start = day(leg === 'return' ? 'scheduler-f-rstart' : 'scheduler-f-start');
       const end = leg === 'return' ? day('scheduler-f-rend') ?? start
         : (split && !leg ? day('scheduler-f-rend') ?? day('scheduler-f-rstart') : day('scheduler-f-end')) ?? start;
       return window.SchedulerQuoteText.description({
         type: val('scheduler-f-type'),
         buses: fleet.length,
-        seats: picked ? panelIndex.buses.get(picked.busId)?.capacity ?? null : null,
+        pax56: fleet.some(b => b.needs?.pax56),
         pickup,
         destination: val('scheduler-f-destination'),
         from: start,

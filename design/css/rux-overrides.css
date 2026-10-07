@@ -1904,6 +1904,24 @@
 [data-theme^="apple-"] a.rux--side-nav__link--current::before {
   content: none;
 }
+/* A MAC'S SIDEBAR NAMES EVERY ROW IN THE LABEL COLOUR AT REGULAR WEIGHT, under
+   an icon in the accent, and only the row you are on is bold: read from
+   Mail's. Carbon sets every row bold in the secondary colour under a grey
+   icon, which on a Mac reads as a list of headings. */
+[data-theme^="apple-"] a.rux--side-nav__link { font-weight: 400; }
+[data-theme^="apple-"] a.rux--side-nav__link:is([aria-current=page], .rux--side-nav__link--current),
+[data-theme^="apple-"] a.rux--side-nav__link:is([aria-current=page], .rux--side-nav__link--current) > span { font-weight: 700; }
+[data-theme^="apple-"] a.rux--side-nav__link > .rux--side-nav__link-text { color: var(--rux-text-primary); }
+[data-theme^="apple-"] a.rux--side-nav__link .rux--side-nav__icon:not(.rux--side-nav__submenu-chevron) > svg {
+  fill: var(--rux-icon-interactive);
+}
+/* On apple-dark the row you are on is AppKit's unemphasized selection, the
+   grey Mail's sidebar fills its chosen mailbox with. Carbon's selected
+   background is a fill on the page, and on the nav's raised surface it
+   stands 1.2 to 1 off it, where this stands 1.6. */
+[data-theme="apple-dark"] a.rux--side-nav__link:is([aria-current=page], .rux--side-nav__link--current) {
+  background-color: var(--rux-background-active);
+}
 /* A DIALOG FLOATS TOO, over the dimmed page, and casts the same shadow. Its
    close button stands 12px clear of the corner as a circle, the theme's
    control size, as a Mac's dialog keeps its close: Carbon's fills the corner

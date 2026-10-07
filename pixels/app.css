@@ -85,7 +85,7 @@
   cursor: pointer;
 }
 /* A stronger line round the edge, and inside it a warm one after every fifth
-   square, as Picross rules its boards, so squares are counted in fives. */
+   square, so squares are counted in fives. */
 .pixels-cell.is-west { border-inline-start: 1px solid var(--guide); }
 .pixels-cell.is-north { border-block-start: 1px solid var(--guide); }
 .pixels-cell.is-east { border-inline-end-color: var(--guide); }
@@ -115,8 +115,8 @@
 .pixels-cell.is-unknown { box-shadow: inset 0 0 0 3px var(--rux-support-warning); }
 
 /* A LINE'S NUMBERS. Every other line's sit on a band, strongest at the
-   squares and fading out to the edge of the room the numbers keep, the way
-   Picross draws them, so the eye keeps to its line.
+   squares and fading out to the edge of the room the numbers keep, so the
+   eye keeps to its line.
 
    THEY ALWAYS FIT. app.js gives a line `--units`, how wide its numbers are
    in ems, a digit being .6 and a gap .3, and `--count`, how many it has. A
@@ -366,6 +366,10 @@
 .pixels-mosaic > .pixels-blank { inline-size: auto; block-size: auto; font-size: 1rem; }
 .pixels-mosaic-none { background: var(--rux-layer-accent-01); opacity: .4; }
 .pixels-category-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* A gate's name with its grade beside it, the tag at the far end. */
+.pixels-category-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; min-inline-size: 0; }
+.pixels-category-head > .pixels-category-name { min-inline-size: 0; }
+.pixels-grade { flex: none; margin: 0; }
 .pixels-category > .pixels-meta { font-size: .75rem; }
 
 /* A CATEGORY'S PUZZLES: three tiles across on a phone, so a category of nine

@@ -1,7 +1,7 @@
 {
   "name": "Pixels",
   "short_name": "Pixels",
-  "description": "Picture logic puzzles",
+  "description": "Nonogram puzzles",
   "id": "/pixels/",
   "start_url": "/pixels/",
   "scope": "/",

@@ -291,7 +291,7 @@
           draw(by < 0 ? [`${now}-up`, `${now}-down`] : [`${now}-down`, `${now}-up`]);
         } catch {
           moving = false;
-          say('The category did not move', 'Try again.');
+          say('The gate did not move', 'Try again.');
         }
       };
       host.append(section(id, name, h2 => [
@@ -299,7 +299,7 @@
         toggle(`${id}-shown`, 'Published', !c.hidden, async to => {
           await data.setHidden(size, c.level, !to);
           c.puzzles.forEach(p => { p.hidden = !to; });
-        }, { failed: ['The category did not change', 'Try again.'] }),
+        }, { failed: ['The gate did not change', 'Try again.'] }),
         (() => {
           const keys = document.createElement('div');
           keys.className = 'pixels-moves';
@@ -364,7 +364,7 @@
     const to = levels().filter(c => these.some(p => p.level !== c.level))
       .map(c => new Option(`${called(c)} · ${c.puzzles.filter(p => !p.off).length} of ${PER_LEVEL}`, c.level));
     if (!these.every(loose)) to.push(new Option('Unsorted', NONE));
-    to.push(new Option('New category…', NEW));
+    to.push(new Option('New gate…', NEW));
     where.replaceChildren(...to);
     $('pixels-move-name').value = '';
     $('pixels-move-heading').textContent = `Move ${these.length === 1 ? these[0].name : count(these.length, 'puzzle')}`;
@@ -379,7 +379,7 @@
     const movers = order(chosen()).filter(p => (p.level ?? null) !== level);
     modal.close('pixels-move-modal');
     if (!movers.length) return;
-    if (level > 99) { say('There is no room for another category', 'Delete one first.'); return; }
+    if (level > 99) { say('There is no room for another gate', 'Delete one first.'); return; }
     // They arrive on while the category has fewer than nine on, and off after.
     let room = level == null ? Infinity : PER_LEVEL - inLevel(level).filter(p => !p.off).length;
     const on = [], off = [];
@@ -449,7 +449,7 @@
       fine();
       draw([`pixels-level-${c.level}-rename`]);
     } catch {
-      say('The category was not renamed', 'Try again.');
+      say('The gate was not renamed', 'Try again.');
     }
   });
   function removing(c, from) {
@@ -471,7 +471,7 @@
       fine();
       draw();
     } catch {
-      say('The category was not deleted', 'The page shows what is left.');
+      say('The gate was not deleted', 'The page shows what is left.');
       again();
     }
   });

@@ -1,6 +1,6 @@
 # Pixels
 
-Picture logic puzzles, and a maker to draw your own — one app on [design](../design/), served at **rux-sm.github.io/pixels/**.
+Nonogram puzzles, and the Pixelator to draw your own — one app on [design](../design/), served at **rux-sm.github.io/pixels/**.
 
 The repository root's `AGENTS.md` is the policy. The site's `docs/status.md` lists what is unfinished here.
 
@@ -12,21 +12,19 @@ name. A guest gets no header, and their browser keeps a key that is who they are
 from then on. Pixels goes on a phone's home screen as an app;
 `docs/home-screen.md` says how, and how a guest stays the same player there.
 
-`index.html` is the same page for every account, the owner's too, with two
-tabs. Puzzles: today's puzzle on one card with the days solved in a row;
-Continue, a card for the puzzle last played if it is unsolved and otherwise the
-next unsolved after it; then a tile for each category, in the owner's order,
-the 5×5 ones first, saying Quick, and the 15×15 ones last, saying Long. A tile
-shows its category's pictures small, three by three, each a question mark until
-solved, its name, such as Fruit, or More where it has none, how many are
-solved, and a bar of that. Leaderboard: today's ranking with each player's
-time, and the all-time one with puzzles solved.
+`index.html` is the same page for every account, the owner's too, with two tabs. Puzzles: today's
+puzzle on one card with the days solved in a row; Continue, a card for the puzzle last played if it
+is unsolved and otherwise the next unsolved after it; then a tile for each gate, which the code
+calls a category, in the owner's order, the 5×5 ones first and the 15×15 last. A tile shows its
+gate's pictures small, three by three, each a question mark until solved; its name, such as Fruit,
+or More where it has none; its grade, the average of its puzzles', in a tag, Easy green, Normal blue
+or Hard purple; its size; and how many sprites are found, or Gate cleared, with a bar of that.
+Leaderboard: today's ranking with each player's time, and the all-time one with puzzles solved.
 
-`category.html?size=&at=` is one category, named by its boards' side and its
-place among that size: its puzzles easy to hard, with nothing locked, each tile
-a square, three across on a phone and nine on a wide screen. A solved puzzle
-shows its picture, name and best time; an unsolved one its number in the
-category, a question mark and how hard it is.
+`category.html?size=&at=` is one gate, named by its boards' side and its place among that size: its
+puzzles easy to hard, with nothing locked, each tile a square, three across on a phone and nine on a
+wide screen. A solved puzzle shows its picture, name and best time; an unsolved one a question mark,
+how hard it is and its number in the gate, or Boss for the last.
 
 `play.html?id=` plays one puzzle, 5, 10 or 15 squares a side. The board waits
 behind Tap to start, which with a mouse says Start, drawn bare until then, with
@@ -36,7 +34,7 @@ button, which always crosses out, or with the arrow keys, Z and X. On a phone a
 15×15 board zooms under two fingers, its numbers staying in view, and there a
 touch fills as it lifts. A number greys out when its run of squares is filled,
 a line with no square of the picture starts crossed out, and a finished line
-crosses out its own empty squares. The clock is the score, as in Picross:
+crosses out its own empty squares. The clock is the score:
 filling a square not in the picture is a mistake, crossed out in red, and it
 adds time, 15 seconds for a puzzle's first, 30 for its second and a minute for
 each one after; a hint adds 30 seconds. The clock is red until the next move,
@@ -55,13 +53,13 @@ numbers sit on a band that runs out from its squares and fades, larger on
 larger squares, and a line with more numbers than its room holds draws them
 smaller to fit. When the picture is complete the squares fill in as the
 picture, in its colours if it has them, and its name shows with the time, the
-mistakes and hints, and what they added. Back goes to the puzzle's category,
-and Next to that category's next unsolved puzzle, then to the category after
+mistakes and hints, and what they added. Back goes to the puzzle's gate,
+and Next to that gate's next unsolved puzzle, then to the gate after
 it. How to play is three steps in a modal, each with a small board: what the
 numbers mean, filling and crossing out, and what a mistake costs. It opens from
 the menu on every page and from the button under Start, and by itself on the
 first puzzle of a player who has solved none and has not closed it in this
-browser. A guest has no menu, so the front page and a category's have a button
+browser. A guest has no menu, so the front page and a gate's have a button
 for it. The clock stands while it is open. Each move plays a tone, which the
 Sound key turns off and an iPhone's silent switch does not, and a phone ticks
 on each fill where the browser allows it. A game in progress is kept in the
@@ -77,29 +75,29 @@ browser makes from the date, the same for everyone. Only it counts toward the
 days in a row. A player is never sent a day's puzzle before its day.
 
 `make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits or
-deletes one. Only the owner's account makes and edits: it alone sees Make,
+deletes one. Only the owner's account makes and edits: it alone sees Pixelator,
 Manage and Players in the menu, and the database refuses a puzzle written by
 anyone else. It checks as you draw whether the numbers alone can solve the
 picture and how hard that is, outlines each square that would need a guess, and
 saves only a picture with one answer. Size starts a blank board of 5, 10 or 15
 a side. Its Colour step paints the picture the puzzle finishes as, from
-fifty-five inks, and Save asks which category it goes in on the front page; a
-category shows nine, the list counts how many of each one's are on, and a
-puzzle saved into one with nine on is saved off. A category just started is
-named there and hidden until Manage's switch publishes it. No category yet,
+fifty-five inks, and Save asks which gate it goes in on the front page; a
+gate shows nine, the list counts how many of each one's are on, and a
+puzzle saved into one with nine on is saved off. A gate just started is
+named there and hidden until Manage's switch publishes it. No gate yet,
 first in the list, keeps the puzzle in Unsorted, a section of Manage. Puzzle of
-the day, in the same list, makes it a day's puzzle, which sits in no category;
+the day, in the same list, makes it a day's puzzle, which sits in no gate;
 a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a
-good category.
+good gate.
 
 `manage.html` is the owner's desk: every puzzle of one board size at a time, by
-category, then Unsorted. A category's heading has a switch that hides it from
+gate, then Unsorted. A gate's heading has a switch that hides it from
 every player, arrows that move it up or down, a pencil that renames it and a
 bin that deletes it and leaves its puzzles in Unsorted. Under each tile are
 Edit, Play, which keeps no time for a puzzle no player is sent, and a switch
-that sends the puzzle to no player when off; a category has at most nine on.
-Pressing a tile ticks it, and the ticked are moved together, to a category, a
-new one or Unsorted, or deleted; a category left empty goes too.
+that sends the puzzle to no player when off; a gate has at most nine on.
+Pressing a tile ticks it, and the ticked are moved together, to a gate, a
+new one or Unsorted, or deleted; a gate left empty goes too.
 
 ## Files
 
@@ -119,7 +117,7 @@ directly: `pixels_puzzles`, every puzzle, which a staff account may read too;
 `pixels_players`, each player's name with the account or the hash of the
 guest's key; `pixels_player_results` and `pixels_player_days`, each player's
 best time on a puzzle and on a puzzle of the day; and
-`pixels_settings`, the invite word; and `pixels_levels`, each category's name and whether it is hidden. `docs/database-access.md` is the rule they follow.
+`pixels_settings`, the invite word; and `pixels_levels`, each gate's name and whether it is hidden. `docs/database-access.md` is the rule they follow.
 
 A player's page calls eight functions, which the publishable key may run and
 which first find the player from the log-in or the key: `pixels_join`,
@@ -127,14 +125,14 @@ which first find the player from the log-in or the key: `pixels_join`,
 `pixels_record`, `pixels_record_day` and `pixels_board`. A time is the
 player's own browser's word: the database refuses only what cannot be, a
 time under two seconds, a puzzle that does not exist, a day more than one
-from today. `pixels_puzzles` sends a player no hidden category, no puzzle that is
+from today. `pixels_puzzles` sends a player no hidden gate, no puzzle that is
 switched off, which is `pixels_puzzles.hidden`, and no puzzle in no
-category, which is one whose `level` is empty.
+gate, which is one whose `level` is empty.
 
 Two more are the owner's and refuse anyone else. `pixels_order_levels`
-renumbers the categories of one size in one step, so a move cannot stop
-half done. `pixels_delete_level` deletes a category the same way: its
-puzzles are left in no category and the categories after it move up.
+renumbers the gates of one size in one step, so a move cannot stop
+half done. `pixels_delete_level` deletes a gate the same way: its
+puzzles are left in no gate and the gates after it move up.
 
 `players.html` is the owner's: every player with today's puzzle, days in a
 row, puzzles solved and when they last played; the name, which can be

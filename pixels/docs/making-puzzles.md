@@ -2,21 +2,21 @@
 type: how-to
 ---
 
-# Making a puzzle, and a category of them
+# Making a puzzle, and a gate of them
 
 How to draw a picture in `make.html` that is fun to solve, and how to put
-nine of them in a category.
+nine of them in a gate.
 
 ## Three sizes
 
 Size starts a blank board, and Undo brings the old one back. A saved puzzle
 keeps its size.
 
-| Size | On the front page | What it is for |
-| :--- | :--- | :--- |
-| 5×5 | Quick, then the category's name | a ten-second puzzle; a symbol, a letter, a face |
-| 10×10 | the category's name | the main game; one thing drawn as a shape |
-| 15×15 | Long, then the category's name | room for detail; a few minutes each, zoomed with two fingers on a phone |
+| Size | What it is for |
+| :--- | :--- |
+| 5×5 | a ten-second puzzle; a symbol, a letter, a face |
+| 10×10 | the main game; one thing drawn as a shape |
+| 15×15 | room for detail; a few minutes each, zoomed with two fingers on a phone |
 
 The rules below are written for 10×10. On 5×5 nearly every picture is easy,
 so aim for a shape worth guessing. On 15×15 keep the same share of filled
@@ -56,7 +56,7 @@ has a next move, and the picture comes out bit by bit.
 1. **Give an easy way in.** Two or three lines with a number over half the
    board, 6 or more on 10×10, let the player fill squares at the first look.
 2. **Let one thing lead to the next.** Each square found should help a line
-   that crosses it. Medium, in the board's corner, is the sign of that.
+   that crosses it. Normal, in the board's corner, is the sign of that.
 3. **Mix the lines.** Some long runs, and some lines with two or three
    numbers, which are the most fun to work out.
 4. **Reveal it slowly.** The player should guess the picture halfway
@@ -94,7 +94,7 @@ white to black.
 - **Undo, Redo and Clear** work in both steps. Undo takes back a tap, a
   drag, a fill, Clear or a change of size. Cmd+Z undoes and Shift+Cmd+Z redoes.
 - **Back** leaves for Manage and loses nothing: a new picture is kept
-  in this browser and is on the board the next time you open Make.
+  in this browser and is on the board the next time you open the Pixelator.
 - **Colour the background too.** A blue sky or a green field behind the shape
   is what makes the finish feel like a reward.
 - **Two or three colours are enough.** Keep the shape one colour and use a
@@ -107,7 +107,7 @@ white to black.
 
 Save asks where the puzzle goes. Choose Puzzle of the day, the last choice,
 and give it its day in the field that opens; it is that day's puzzle, in no
-category.
+gate.
 A day takes one puzzle, and after a save the day moves on by one, so a week
 of them is drawn in one sitting. A day with none gets a shape
 the game makes itself, which has no name but its date.
@@ -116,20 +116,20 @@ the game makes itself, which has no name but its date.
   week's are safe to save now.
 - **Colour it.** Everyone solves the same one on the same day, so its finish
   is the one picture all of them see.
-- **Keep it easy or medium.** It is the puzzle people do every day, on a
+- **Keep it easy or normal.** It is the puzzle people do every day, on a
   phone, often in a spare minute.
 - Manage lists every day drawn, by date, under Dailies; a tile opens it in
   the maker.
 
 ## How hard it is
 
-Under the green tag the corner says easy, medium or hard. It counts rounds: one round is one
+Under the green tag the corner says easy, normal or hard. It counts rounds: one round is one
 look at every row and every column, filling in what each can now decide.
 
 | It says | Rounds | What it feels like |
 | :--- | :--- | :--- |
 | easy | 1 to 3 | long runs; most lines give something on the first look |
-| medium | 4 or 5 | a few lines wait for their neighbours |
+| normal | 4 or 5 | a few lines wait for their neighbours |
 | hard | 6 or more | the picture comes out one corner at a time |
 
 - **To make it easier**, make runs longer: a row of 8 nearly solves itself,
@@ -137,40 +137,41 @@ look at every row and every column, filling in what each can now decide.
 - **To make it harder**, break long runs into short ones and take out the
   full rows, then check the tag is still green.
 
-## A category
+## A gate
 
-A category shows up to nine puzzles of one size about one thing, such as
+A gate shows up to nine puzzles of one size about one thing, such as
 Fruit: on the front page it is one tile with its nine pictures, three by
 three, and its own page has three rows of three on a phone, one row of nine
 on a wide screen. It can hold more, switched off. Its name is on its tile
 and heads its page, and one with no name is called More. Save asks which one
-a puzzle goes in: its list counts how many of each category's are on, such
+a puzzle goes in: its list counts how many of each gate's are on, such
 as Fruit · 9 of 9, 3 off, and offers the first of its size that still has
-room. A category lists its puzzles easy to hard, so the order they were
-drawn in does not matter.
+room. A gate lists its puzzles easy to hard, so the order they were
+drawn in does not matter. The last, which is the hardest, is its boss. The
+tag on a gate's tile is the average of its puzzles: Easy, Normal or Hard.
 
-- **No category yet**, first in that list, keeps the puzzle in Unsorted: a
-  section of Manage after its size's categories. No player is sent a puzzle
-  there until it is moved into a category.
-- **New category**, in that list, starts one, and a field opens for its
+- **No gate yet**, first in that list, keeps the puzzle in Unsorted: a
+  section of Manage after its size's gates. No player is sent a puzzle
+  there until it is moved into a gate.
+- **New gate**, in that list, starts one, and a field opens for its
   name. It stands after the others and starts hidden, so only the owner
   sees it while its nine are drawn.
 - **Name it for what is in it**, such as Fruit, Animals or At home. The
   player guesses the picture sooner, and the guess is half the fun. It is
   named as it is started.
-- **Draw more than nine.** A picture saved into a category with nine on is
+- **Draw more than nine.** A picture saved into a gate with nine on is
   saved off, and no player is sent it.
 
 ## Manage
 
-Manage, in the menu, is where puzzles and categories are put in order. It
-shows one board size at a time, chosen at the top: that size's categories,
+Manage, in the menu, is where puzzles and gates are put in order. It
+shows one board size at a time, chosen at the top: that size's gates,
 then Unsorted. The front page shows only what the players are sent.
 
 - **Tick puzzles to move them.** Press a tile to tick it, or the box beside
-  a category's name to tick all of it. Move, in the bar above, asks where
-  they go: a category of their size, Unsorted, or a new category, named
-  there. They arrive on while the category has fewer than nine on, and off
+  a gate's name to tick all of it. Move, in the bar above, asks where
+  they go: a gate of their size, Unsorted, or a new gate, named
+  there. They arrive on while the gate has fewer than nine on, and off
   after that.
 - **Delete works on the ticked ones too.** It asks once, and every player's
   best times on them go with them.
@@ -178,12 +179,12 @@ then Unsorted. The front page shows only what the players are sent.
   A tenth is refused until one is off.
 - **Edit** opens a puzzle in the maker. **Play** tries it; for a puzzle no
   player is sent, the time is not kept.
-- **Publish a category** with the switch beside its name: on, every player
+- **Publish a gate** with the switch beside its name: on, every player
   is sent it; off, only Manage shows it.
 - **Move it with the arrows** beside the switch, up or down among the
-  categories of its size. The order is the owner's choice and means nothing
-  about how hard a category is.
+  gates of its size. The order is the owner's choice and means nothing
+  about how hard a gate is.
 - **Rename it with the pencil** beside the arrows.
 - **Delete it with the bin.** Its puzzles are kept: they move to Unsorted,
-  and the categories after it move up. A category left empty by a move or a
+  and the gates after it move up. A gate left empty by a move or a
   delete goes the same way.

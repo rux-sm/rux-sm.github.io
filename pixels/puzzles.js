@@ -13,9 +13,10 @@
    solved, the date, the best time or how hard it is, and the days solved in
    a row. Continue is a card like it, for the puzzle to play next. Then a
    tile for each category, in playing order: its puzzles' pictures small,
-   three by three, each a question mark until it is solved; its name, with
-   Quick before it for the 5×5 ones and Long for the 15×15; how many are
-   solved; and a bar of that. A tile opens its category in category.html.
+   three by three, each a question mark until it is solved; its name with
+   its grade in a tag beside it; its size and how many sprites are found, or
+   Gate cleared; and a bar of that. A tile opens its category in
+   category.html. A player reads a category as a gate.
 
    A guest has no menu, so under the tiles is their way to How to play.
 
@@ -32,7 +33,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, guest, enter, carry, iphone, installed, fresh, overMenu, DAILY, BOARD, grid, rounds, grade, categories, heading, where, daily, today, streak, time, words, art, bar, switcher } = window.Pixels;
+  const { data, owner, guest, enter, carry, iphone, installed, fresh, overMenu, side, hardness, gradeTag, sprites, boss, title, DAILY, BOARD, grid, rounds, grade, categories, heading, where, daily, today, streak, time, words, art, bar, switcher } = window.Pixels;
   const host = document.getElementById('pixels-levels'), leader = document.getElementById('pixels-leader');
   // A tile shows nine pictures, which is as many as a category has on.
   const PER_LEVEL = 9;
@@ -85,7 +86,7 @@
     if (!next) return null;
     const game = kept[next.p.id], begun = game && game.squares === next.p.squares;
     return card(`play.html?id=${encodeURIComponent(next.p.id)}`, art(next.p, false),
-      begun || results.size ? 'Continue' : 'Start', `${heading(next.c)} · Puzzle ${next.i + 1}`,
+      begun || results.size ? 'Continue' : 'Start', `${heading(next.c)} · ${title(next.p, next.i, false, boss(next.c, next.i))}`,
       begun ? `In progress · ${time(game.seconds)}` : grade(next.p.rounds));
   };
 
@@ -102,7 +103,10 @@
     mosaic.append(...c.puzzles.slice(0, PER_LEVEL).map(p => art(p, results.has(p.id))));
     for (let n = c.puzzles.length; n < PER_LEVEL; n++) mosaic.append(words('pixels-mosaic-none', ''));
     const solved = c.puzzles.filter(p => results.has(p.id)).length;
-    a.append(mosaic, words('pixels-category-name', heading(c)), words('pixels-meta', `${solved} of ${c.puzzles.length} solved`), bar(solved, c.puzzles.length));
+    const head = document.createElement('span');
+    head.className = 'pixels-category-head';
+    head.append(words('pixels-category-name', heading(c)), gradeTag(hardness(c)));
+    a.append(mosaic, head, words('pixels-meta', `${side(c)} · ${sprites(solved, c.puzzles.length)}`), bar(solved, c.puzzles.length));
     return a;
   };
 

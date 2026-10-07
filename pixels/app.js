@@ -103,7 +103,8 @@
      a player does one line at a time. `unreached` is the squares still
      undecided, which is true of the picture's clues and not of how clever
      the player is. `rounds` is how many times round the board it took, and
-     `grade` names that: the measure of how hard a puzzle is. */
+     `grade` names that: the measure of how hard a puzzle is, easy, normal
+     or hard. */
   const solve = g => {
     const rows = g.map(clues), cols = g[0].map((_, x) => clues(column(g, x)));
     let known = g.map(r => r.map(() => -1)), rounds = 0;
@@ -120,7 +121,7 @@
   };
   const unreached = g => solve(g).known.map(r => r.map(v => v === -1));
   const rounds = g => solve(g).rounds;
-  const grade = n => (n <= 3 ? 'easy' : n <= 5 ? 'medium' : 'hard');
+  const grade = n => (n <= 3 ? 'easy' : n <= 5 ? 'normal' : 'hard');
 
   // Playing order: small boards first, then by level, easy to hard within
   // one, then as they were made. A puzzle drawn for a day is in no level,
@@ -137,8 +138,14 @@
      level; `theme` is its name, and `puzzles` its own, easy to hard. A
      puzzle in no category, or drawn for a day, is in none of them.
      `heading` is what a category is called: its name, or More where it has
-     none, with Quick before it for the small boards and Long for the large.
-     `where` is the address of its page. */
+     none. `where` is the address of its page.
+
+     A PLAYER READS A CATEGORY AS A GATE and a solved picture as a sprite.
+     `side` is a gate's size as it is written, 10×10. `hardness` is its
+     grade, the grade of its puzzles' average rounds, and `gradeTag` writes a
+     grade as a Design tag: easy green, normal blue, hard purple, the word
+     always there with the colour. `sprites` says how far through a gate a
+     player is, and that it is cleared once every puzzle is solved. */
   const categories = puzzles => {
     const found = new Map();
     order(puzzles).forEach(p => {
@@ -149,10 +156,17 @@
     });
     return [...found.values()];
   };
-  const heading = ({ width, theme }) => {
-    const size = width < 10 ? 'Quick' : width > 10 ? 'Long' : '';
-    return size ? (theme ? `${size} · ${theme}` : size) : theme || 'More';
+  const heading = ({ theme }) => theme || 'More';
+  const side = ({ width }) => `${width}×${width}`;
+  const hardness = ({ puzzles }) => grade(Math.round(puzzles.reduce((sum, p) => sum + p.rounds, 0) / puzzles.length));
+  const TONE = { easy: 'rux--tag--green', normal: 'rux--tag--blue', hard: 'rux--tag--purple' };
+  const gradeTag = of => {
+    const el = document.createElement('span');
+    el.className = `rux--tag rux--layout--size-sm rux--tag--sm ${TONE[of]} pixels-grade`;
+    el.textContent = of[0].toUpperCase() + of.slice(1);
+    return el;
   };
+  const sprites = (solved, all) => (solved === all ? 'Gate cleared' : `${solved} of ${all} sprites`);
   const where = ({ width, level }) => `category.html?size=${width}&at=${level}`;
 
   /* THE PUZZLE OF A DAY. `day` is YYYY-MM-DD. If the owner drew one for the
@@ -445,8 +459,8 @@
     return el;
   };
 
-  /* WHAT A MISTAKE COSTS is time on the clock, more each time, the way
-     Picross charges it. `penalty(n)` is the seconds a puzzle's nth mistake
+  /* WHAT A MISTAKE COSTS is time on the clock, more each time.
+     `penalty(n)` is the seconds a puzzle's nth mistake
      adds: 15, then 30, then a minute for each one after. HINT is what a hint
      adds. `added` writes such a cost as the clock would, +0:15. */
   const PENALTY = [15, 30, 60], HINT = 30;
@@ -550,8 +564,10 @@
 
   const time = seconds => `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
 
-  // A puzzle keeps its name hidden until it is solved, as on the DS.
-  const title = (puzzle, index, solved) => (solved ? puzzle.name : `Puzzle ${index + 1}`);
+  // A puzzle keeps its name hidden until it is solved. The last puzzle of a
+  // gate, which is its hardest, is the boss until then; `boss` says which.
+  const boss = (c, index) => c.puzzles.length > 1 && index === c.puzzles.length - 1;
+  const title = (puzzle, index, solved, boss) => (solved ? puzzle.name : boss ? 'Boss' : `Puzzle ${index + 1}`);
 
   /* A PUZZLE'S TILE, a square link: the picture once `best` is there, or a
      question mark, then `name`, then the best time or how hard the puzzle
@@ -710,7 +726,7 @@
   };
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    iphone, installed, fresh, overMenu,
+    iphone, installed, fresh, overMenu, side, hardness, gradeTag, sprites, boss,
     SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title,
     words, art, tile, bar, how, switcher, chosen,

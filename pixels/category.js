@@ -6,11 +6,12 @@
    level. The owner's order decides the place, so an address is good until
    the categories are next reordered; one that names no category says so.
 
-   The page is its name, with Quick before it for the 5×5 ones and Long for
-   the 15×15, how many of its puzzles are solved, a bar of that, and its
-   puzzles easy to hard, three across on a phone, each tile a square, none
-   locked. A solved tile shows its picture, name and best time; an unsolved
-   one its number within the category, a question mark and how hard it is.
+   A player reads a category as a gate. The page is its name with its grade
+   in a tag beside it, its size and how many sprites are found, or Gate
+   cleared, a bar of that, and its puzzles easy to hard, three across on a
+   phone, each tile a square, none locked. A solved tile shows its picture,
+   name and best time; an unsolved one its number within the category, or
+   Boss for the last, a question mark and how hard it is.
 
    The page is the same for every account, the owner's too: it draws what
    data.js's `list` is sent. A guest with no player yet gets the name form
@@ -19,7 +20,7 @@
 (() => {
   'use strict';
 
-  const { data, guest, enter, fresh, categories, heading, title, words, tile, bar } = window.Pixels;
+  const { data, guest, enter, fresh, categories, heading, side, hardness, gradeTag, sprites, boss, title, words, tile, bar } = window.Pixels;
   const host = document.getElementById('pixels-category');
 
   const say = (heading, detail) => {
@@ -47,7 +48,7 @@
     fresh();
     const category = categories(puzzles).find(c => c.width === size && c.level === at);
     if (!category) {
-      say('This category is not here', 'It may have been moved. Pick one from Puzzles.');
+      say('This gate is not here', 'It may have been moved. Pick one from Puzzles.');
       return;
     }
     const name = heading(category), all = category.puzzles;
@@ -62,12 +63,12 @@
     h1.className = 'rux--type-productive-heading-04';
     h1.id = 'pixels-category-name';
     h1.textContent = name;
-    head.append(h1, words('pixels-meta', `${solved} of ${all.length} solved`));
+    head.append(h1, gradeTag(hardness(category)), words('pixels-meta', `${side(category)} · ${sprites(solved, all.length)}`));
     const list = document.createElement('div');
     list.className = 'pixels-list';
     list.append(...all.map((p, i) => {
       const best = results.get(p.id);
-      return tile(p, title(p, i, !!best), `play.html?id=${encodeURIComponent(p.id)}`, best);
+      return tile(p, title(p, i, !!best, boss(category, i)), `play.html?id=${encodeURIComponent(p.id)}`, best);
     }));
     el.append(head, bar(solved, all.length), list);
     host.append(el);

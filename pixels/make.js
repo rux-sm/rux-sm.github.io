@@ -162,9 +162,9 @@
     const names = new Map(), { on, off } = held();
     puzzles.forEach(p => { if (p.width === side && !p.day && p.level != null) names.set(p.level, p.theme || 'More'); });
     const next = Math.max(0, ...names.keys()) + 1;
-    level.replaceChildren(new Option('No category yet', 'none'), ...[...names].sort((a, b) => a[0] - b[0])
+    level.replaceChildren(new Option('No gate yet', 'none'), ...[...names].sort((a, b) => a[0] - b[0])
       .map(([n, text]) => new Option(`${text} · ${on[n] || 0} of ${PER_LEVEL}${off[n] ? `, ${off[n]} off` : ''}`, n)),
-    new Option('New category…', next), new Option('Puzzle of the day…', 'day'));
+    new Option('New gate…', next), new Option('Puzzle of the day…', 'day'));
     level.value = pick === 'day' || pick === 'none' || names.has(pick) ? pick : next;
   };
 

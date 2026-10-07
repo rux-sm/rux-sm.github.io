@@ -65,7 +65,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, enter, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title, how } = window.Pixels;
+  const { data, owner, enter, boss, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title, how } = window.Pixels;
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock');
 
@@ -123,7 +123,7 @@
     const key = isDaily ? puzzle.day : puzzle.id;
     // A name stays hidden until its puzzle is solved; the day's shows its
     // date, and the owner's trial its name.
-    const heading = isDaily ? (results.has(key) ? puzzle.name : puzzle.date) : trial ? puzzle.name : title(puzzle, index, results.has(key));
+    const heading = isDaily ? (results.has(key) ? puzzle.name : puzzle.date) : trial ? puzzle.name : title(puzzle, index, results.has(key), !!home && boss(home, index));
     const answer = grid(puzzle.squares, puzzle.width), H = answer.length, W = answer[0].length;
     // An empty board: a line with no square of the picture starts crossed out.
     const bare = { rows: answer.map(r => !r.includes(1)), cols: answer[0].map((_, x) => !column(answer, x).includes(1)) };

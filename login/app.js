@@ -6,7 +6,8 @@
    it, and otherwise to its landing: Home, or its one app when it has only one.
    window.Rux.access, from /funnel.js, decides both. Only a path on this site
    is accepted as next, so the page cannot send anyone elsewhere. An account
-   already logged in is sent on at once.
+   already logged in is sent on at once. Someone who came from an app that
+   opens without a log-in, as Pixels does for a guest, is given a way back.
    ========================================================================== */
 (async () => {
   'use strict';
@@ -29,6 +30,14 @@
       return url.pathname + url.search + url.hash;
     } catch { return null; }
   })();
+
+  // Someone sent here from an app that opens without a log-in gets a way
+  // back to it, which an app on a phone's home screen has no button for.
+  const from = next && access ? `/${access.appOf(next)}/` : null;
+  if (from && access.guestPage(from)) {
+    $('login-back').firstElementChild.href = from;
+    $('login-back').hidden = false;
+  }
 
   const goOn = user => {
     const granted = access.accessOf(user);

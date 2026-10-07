@@ -17,6 +17,7 @@
 
    `enter()` is what a page calls first: it says whether there is a player,
    and where there is not it draws the name form, or says the link is needed.
+   `carry()` puts a guest's key in the address for a home screen icon to keep.
 
    `list` is what a player is sent, for every account, the owner's too: no
    hidden category, no puzzle that is off, none in no category.
@@ -203,6 +204,19 @@
     } catch { return given || ''; }
   };
 
+  /* A GUEST'S ICON CARRIES THEIR KEY. An iPhone keeps an installed app's
+     storage apart from Safari's, so the icon is made from an address that
+     ends in `#me=` and the key: `carry(true)` puts it there while the steps
+     for adding the icon are open, and `carry(false)` takes it out. A page
+     opened at such an address takes the key out of it at once, and `enter`
+     gives it to a browser that has no player of its own. */
+  const carried = /^#me=([\w-]+)$/.exec(location.hash)?.[1] ?? null;
+  const carry = on => {
+    const mine = on && key();
+    history.replaceState(history.state, '', location.pathname + location.search + (mine ? `#me=${mine}` : ''));
+  };
+  if (carried) carry(false);
+
   // The owner: the local preview is whoever runs it.
   const owner = (!client && local) || (member && !!granted?.owner);
 
@@ -348,6 +362,16 @@
     const me = await cloud.me();
     if (me) return me;
     try { localStorage.removeItem(GUEST); } catch { /* nothing kept */ }
+    // The key an icon carried, kept if the database knows it.
+    let stale = false;
+    if (carried && !member) {
+      const mine = await call('pixels_me', { p_key: carried });
+      if (mine) {
+        try { localStorage.setItem(GUEST, JSON.stringify({ key: carried, name: mine.name })); } catch { /* asked again next time */ }
+        return mine;
+      }
+      stale = true;
+    }
     const text = (tag, cls, words) => {
       const el = document.createElement(tag);
       el.className = cls;
@@ -359,7 +383,11 @@
     form.noValidate = true;
     form.append(text('h1', 'rux--type-productive-heading-04', 'Pixels'));
     if (!word()) {
-      form.append(text('p', 'rux--type-body-01', 'Pixels opens from an invite link. Ask for one to play.'));
+      form.append(text('p', 'rux--type-body-01', stale ? 'This icon no longer opens a player. Ask for a new invite link.' : 'Pixels opens from an invite link. Ask for one to play.'));
+      // An account's way in, which an app on the home screen has no address bar for.
+      const login = text('a', 'rux--link', 'Log in');
+      login.href = '/login/?next=/pixels/';
+      form.append(login);
       host.replaceChildren(form);
       return null;
     }
@@ -417,5 +445,6 @@
     owner,
     guest,
     enter,
+    carry,
   });
 })();

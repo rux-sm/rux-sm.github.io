@@ -260,6 +260,8 @@
    that this outranks a theme's own rule for the space under the header. */
 [data-rux-guest] .pixels-shell { display: none; }
 [data-rux-guest][data-rux-unlocked] .pixels-main { margin-block-start: 0; }
+/* The last row of a page keeps clear of an iPhone's home bar. */
+.pixels-main { padding-block-end: max(2rem, env(safe-area-inset-bottom, 0px)); }
 .pixels-guestbar { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-block-end: 1.5rem; }
 .pixels-guestbar[hidden] { display: none; }
 /* The name form a guest meets first. */
@@ -302,6 +304,8 @@
 /* A guest's way to How to play, its words in line with the tiles above it. */
 .pixels-foot { margin: 2rem 0 0 -1rem; }
 .pixels-panel { padding: 1.5rem 0 0; }
+/* The steps that add Pixels to a home screen: their numbers inside the modal's edge. */
+.pixels-steps { display: grid; gap: .5rem; margin: 1rem 0 0 1.25rem; }
 
 /* THE WAY BACK from a category to the front page: an arrow and a word. */
 .pixels-back { display: inline-flex; align-items: center; gap: .375rem; align-self: start; }

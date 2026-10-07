@@ -19,7 +19,7 @@
 (() => {
   'use strict';
 
-  const { data, guest, enter, categories, heading, title, words, tile, bar } = window.Pixels;
+  const { data, guest, enter, fresh, categories, heading, title, words, tile, bar } = window.Pixels;
   const host = document.getElementById('pixels-category');
 
   const say = (heading, detail) => {
@@ -44,6 +44,7 @@
       return;
     }
     if (guest) document.getElementById('pixels-foot').hidden = false;
+    fresh();
     const category = categories(puzzles).find(c => c.width === size && c.level === at);
     if (!category) {
       say('This category is not here', 'It may have been moved. Pick one from Puzzles.');

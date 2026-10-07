@@ -2,15 +2,15 @@
 
 Picture logic puzzles, and a maker to draw your own — one app on [design](../design/), served at **rux-sm.github.io/pixels/**.
 
-The repository root's `AGENTS.md` is the policy. The site's `docs/status.md`
-lists what is unfinished here.
+The repository root's `AGENTS.md` is the policy. The site's `docs/status.md` lists what is unfinished here.
 
 ## What it is
 
-A player is an account that can open Pixels, or a guest: someone with no
-account who opens an invite link, `/pixels/?join=` and the invite word, and
-types a name. A guest gets no header, and their browser keeps a key that is
-who they are from then on.
+A player is an account that can open Pixels, or a guest: someone with no account
+who opens an invite link, `/pixels/?join=` and the invite word, and types a
+name. A guest gets no header, and their browser keeps a key that is who they are
+from then on. Pixels goes on a phone's home screen as an app;
+`docs/home-screen.md` says how, and how a guest stays the same player there.
 
 `index.html` is the same page for every account, the owner's too, with two
 tabs. Puzzles: today's puzzle on one card with the days solved in a row;
@@ -110,7 +110,7 @@ new one or Unsorted, or deleted; a category left empty goes too.
 | `puzzles.js`, `category.js`, `play.js`, `make.js`, `manage.js`, `players.js` | each page's own behaviour |
 | `app.css` | the board, the picture, the tiles and Manage, under `pixels-` |
 | `theme.css` | the fifty-five inks a colour picture is painted from |
-| `manifest.json` | the name, the window and the icons a browser installs Pixels with; no page names it. `tools/build-app-icons.mjs` writes the four PNG icons in `brand/` from `brand/favicon.svg` |
+| `manifest.json` | the name, the window and the icons a browser installs Pixels with; `app.js` gives it to every browser but an iPhone's. `tools/build-app-icons.mjs` writes the four PNG icons in `brand/` from `brand/favicon.svg` |
 
 ## Data
 

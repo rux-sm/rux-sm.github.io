@@ -11,7 +11,9 @@
    `buzz` ticks the phone and `sound` plays a tone. `order` puts puzzles in
    playing order, `categories` groups them and `daily` makes the puzzle of a
    day. `tile` draws a puzzle's tile and `bar` a progress bar. `how` builds
-   How to play. The pages add their own behaviour in puzzles.js, category.js,
+   How to play. `installed` says the page was opened from a home screen
+   icon and `iphone` that the phone is one, and `fresh` loads a page again
+   after a minute away. The pages add their own behaviour in puzzles.js, category.js,
    play.js, make.js and manage.js.
    ========================================================================== */
 (() => {
@@ -606,6 +608,18 @@
      Closing it is kept in this browser under `pixels-how`, and `how.seen()`
      says so, which is how play.js opens it unasked only for someone who has
      never read it. */
+  // A modal opened from the menu shuts the menu, so closing it shows the
+  // page, and the focus goes to the menu's button, not to a link out of sight.
+  const overMenu = modal => {
+    let menu = null;
+    modal.addEventListener('rux:modal-opened', () => {
+      const nav = document.querySelector('.rux--side-nav--expanded');
+      if (!nav) return;
+      window.Rux.uiShell.closeNav(nav);
+      menu = document.querySelector('.rux--header__menu-toggle');
+    });
+    modal.addEventListener('rux:modal-closed', () => { menu?.focus(); menu = null; });
+  };
   const HOW = 'pixels-how';
   const how = () => {
     const modal = document.getElementById(HOW);
@@ -651,16 +665,7 @@
     cost.textContent = added(penalty(1));
     mistake.appendChild(cost);
     modal.addEventListener('rux:modal-closed', () => { try { localStorage.setItem(HOW, 'seen'); } catch { /* shown again next time */ } });
-    // Opened from the menu, it shuts the menu, so closing it shows the page,
-    // and the focus goes to the menu's button, not to a link out of sight.
-    let menu = null;
-    modal.addEventListener('rux:modal-opened', () => {
-      const nav = document.querySelector('.rux--side-nav--expanded');
-      if (!nav) return;
-      window.Rux.uiShell.closeNav(nav);
-      menu = document.querySelector('.rux--header__menu-toggle');
-    });
-    modal.addEventListener('rux:modal-closed', () => { menu?.focus(); menu = null; });
+    overMenu(modal);
     return modal;
   };
   how.seen = () => { try { return localStorage.getItem(HOW) === 'seen'; } catch { return true; } };
@@ -672,7 +677,40 @@
   const switcher = (el, on) => el.addEventListener('rux:content-switcher-selected', e => on(e.detail.option));
   const chosen = (el, option) => window.Rux.contentSwitcher.select(el, option, { focus: false, silent: true });
 
+  /* ON THE HOME SCREEN. An iPhone takes the icon and the name from tags in
+     each page's head and is given no manifest, because with one its icon
+     opens the manifest's start page and drops a guest's key from the
+     address. Every other browser is given manifest.json here. `installed`
+     says this page was opened from the icon, which an iPhone tells by
+     `navigator.standalone` and the others by the window they are in.
+     Android draws its bar in theme-color, kept here as the header's colour,
+     or the page's for a guest, who has no header, through every change of
+     theme; an iPhone draws its bar in the page's colour by itself. */
+  const iphone = 'standalone' in navigator;
+  if (!iphone) document.head.insertAdjacentHTML('beforeend', '<link rel="manifest" href="manifest.json">');
+  const installed = iphone ? navigator.standalone === true : matchMedia('(display-mode: standalone)').matches;
+  const tint = () => {
+    const header = document.querySelector('.rux--header');
+    const colour = getComputedStyle(header?.getClientRects().length ? header : document.body).backgroundColor;
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta && meta.content !== colour) meta.content = colour;
+  };
+  tint();
+  new MutationObserver(tint).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'style'] });
+
+  /* A page left for a minute or more loads again as it comes back to the
+     front, because an app on the home screen has no reload and a phone
+     keeps its window open for days. */
+  const fresh = () => {
+    let left = 0;
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) left = Date.now();
+      else if (left && Date.now() - left >= 60000) location.reload();
+    });
+  };
+
   window.Pixels = Object.assign(window.Pixels || {}, {
+    iphone, installed, fresh, overMenu,
     SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title,
     words, art, tile, bar, how, switcher, chosen,

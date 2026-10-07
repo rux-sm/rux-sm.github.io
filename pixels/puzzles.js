@@ -19,6 +19,12 @@
 
    A guest has no menu, so under the tiles is their way to How to play.
 
+   ADD TO HOME SCREEN is beside it, and under How to play in an account's
+   menu, where the browser can add Pixels and the page was not opened from
+   the icon. An iPhone is shown the steps in a modal, and a guest's key is
+   in the address while it is open, for the icon to keep. Any other browser
+   opens its own install window, once it says it may.
+
    LEADERBOARD. Two rankings behind one switch: today's puzzle, with each
    player's time, and all time, with puzzles solved and days in a row, in
    the order the database sends them. The player's own row is marked.
@@ -26,7 +32,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, guest, enter, DAILY, BOARD, grid, rounds, grade, categories, heading, where, daily, today, streak, time, words, art, bar, switcher } = window.Pixels;
+  const { data, owner, guest, enter, carry, iphone, installed, fresh, overMenu, DAILY, BOARD, grid, rounds, grade, categories, heading, where, daily, today, streak, time, words, art, bar, switcher } = window.Pixels;
   const host = document.getElementById('pixels-levels'), leader = document.getElementById('pixels-leader');
   // A tile shows nine pictures, which is as many as a category has on.
   const PER_LEVEL = 9;
@@ -180,6 +186,49 @@
     return wrap;
   };
 
+  const ways = [document.getElementById('pixels-add-entry'), document.getElementById('pixels-add-key')];
+  const offer = on => ways.forEach(el => { el.hidden = !on; });
+  if (iphone && !installed) {
+    const modal = document.getElementById('pixels-add');
+    modal.innerHTML = `
+      <div role="dialog" aria-modal="true" aria-labelledby="pixels-add-heading" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+        <div class="rux--modal-header">
+          <h2 class="rux--modal-header__heading" id="pixels-add-heading">Add to home screen</h2>
+          <div class="rux--modal-close-button">
+            <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+              <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="rux--modal-content">
+          <p>Leave this open until the icon is added.</p>
+          <ol class="rux--list--ordered--native pixels-steps">
+            <li class="rux--list__item">In Safari, tap Share. It may be in the menu beside the address.</li>
+            <li class="rux--list__item">Tap Add to Home Screen. It may be under View More.</li>
+            <li class="rux--list__item">Tap Add.</li>
+          </ol>
+        </div>
+        <div class="rux--modal-footer">
+          <button type="button" class="rux--btn rux--btn--primary" data-rux-close autofocus>Done</button>
+        </div>
+      </div>`;
+    modal.addEventListener('rux:modal-opened', () => carry(true));
+    modal.addEventListener('rux:modal-closed', () => carry(false));
+    overMenu(modal);
+    ways.forEach(el => (el.querySelector('a') || el).setAttribute('data-rux-open', 'pixels-add'));
+    offer(true);
+  } else if (!installed) {
+    let prompt = null;
+    addEventListener('beforeinstallprompt', e => { e.preventDefault(); prompt = e; offer(true); });
+    addEventListener('appinstalled', () => { prompt = null; offer(false); });
+    ways.forEach(el => el.addEventListener('click', e => {
+      e.preventDefault();
+      prompt?.prompt();
+      const nav = document.querySelector('.rux--side-nav--expanded');
+      if (nav) window.Rux.uiShell.closeNav(nav);
+    }));
+  }
+
   (async () => {
     if (!data) {
       say('Pixels could not connect', 'Reload the page to try again.');
@@ -199,6 +248,7 @@
       document.getElementById('pixels-guestbar').hidden = false;
       document.getElementById('pixels-foot').hidden = false;
     }
+    fresh();
     // With no leaderboard there is one panel and nothing to switch between.
     document.getElementById('pixels-tabs').hidden = !BOARD;
     if (DAILY) {

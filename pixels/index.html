@@ -7,6 +7,12 @@
 <script src="/funnel.js"></script>
 <style>html:not([data-rux-unlocked]){visibility:hidden}</style>
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
+<!-- What an iPhone names and draws its home screen icon with. app.js gives every other browser manifest.json, and keeps theme-color the header's. -->
+<link rel="apple-touch-icon" href="brand/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pixels">
+<meta name="theme-color" content="#161616">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/design/assets/fonts/IBMPlexSans-Regular-Latin1.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/design/assets/fonts/IBMPlexSans-SemiBold-Latin1.woff2">
 <link rel="stylesheet" href="/design/assets/fonts/plex.css">
@@ -36,6 +42,7 @@
 <symbol id="i-chevron--right" viewBox="0 0 16 16"><path d="M11 8 6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-close" viewBox="0 0 32 32"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2 12H14V13H2z" style="fill:var(--rux-icon-path-1)"/><path d="M2 9H14V10H2z" style="fill:var(--rux-icon-path-2)"/><path d="M2 6H14V7H2z"/><path d="M2 3H14V4H2z"/></symbol>
+<symbol id="m-add" viewBox="0 -960 960 960"><path d="M450-450H200v-60h250v-250h60v250h250v60H510v250h-60v-250Z"/></symbol>
 <symbol id="m-close" viewBox="0 -960 960 960"><path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></symbol>
 <symbol id="m-edit" viewBox="0 -960 960 960"><path d="M180-180h44l472-471-44-44-472 471v44Zm-60 60v-128l617-616 128 128-617 616H120Zm659-617-41-41 41 41Zm-105 64-22-22 44 44-22-22Z"/></symbol>
 <symbol id="m-error-fill" viewBox="0 -960 960 960"><path d="M503.5-289.48q9.5-9.48 9.5-23.5t-9.48-23.52q-9.48-9.5-23.5-9.5t-23.52 9.48q-9.5 9.48-9.5 23.5t9.48 23.52q9.48 9.5 23.5 9.5t23.52-9.48ZM453-433h60v-253h-60v253Zm27.27 353q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Z"/></symbol>
@@ -134,6 +141,13 @@
           <span class="rux--side-nav__link-text">How to play</span>
         </a>
       </li>
+      <!-- Shown by puzzles.js where the browser can add Pixels to a home screen. -->
+      <li class="rux--side-nav__item rux--side-nav__item--large" id="pixels-add-entry" hidden>
+        <a class="rux--side-nav__link" href="#pixels-add">
+          <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg></div>
+          <span class="rux--side-nav__link-text">Add to home screen</span>
+        </a>
+      </li>
       <li class="rux--side-nav__item rux--side-nav__item--large">
         <a class="rux--side-nav__link" href="make.html">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-edit"/></svg></div>
@@ -206,8 +220,8 @@
         </div>
         <!-- puzzles.js writes today's card, Continue and a tile a category here. -->
       </div>
-      <!-- A guest has no menu, so puzzles.js shows them this. app.js builds what it opens. -->
-      <p class="pixels-foot" id="pixels-foot" hidden><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm" data-rux-open="pixels-how">How to play</button></p>
+      <!-- A guest has no menu, so puzzles.js shows them these. app.js builds How to play. -->
+      <p class="pixels-foot" id="pixels-foot" hidden><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm" data-rux-open="pixels-how">How to play</button><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm" id="pixels-add-key" hidden>Add to home screen</button></p>
       </div>
       <div class="rux--tab-content pixels-panel" role="tabpanel" id="pixels-panel-board" aria-labelledby="pixels-tab-board" tabindex="0" hidden>
         <!-- puzzles.js writes the two rankings here. -->
@@ -218,6 +232,8 @@
   </div>
   <!-- How to play. app.js fills it; the menu's entry opens it. -->
   <div class="rux--layer-one rux--modal" id="pixels-how" role="presentation"></div>
+  <!-- The steps that add Pixels to an iPhone's home screen. puzzles.js fills it. -->
+  <div class="rux--layer-one rux--modal" id="pixels-add" role="presentation"></div>
 </main>
 
 <script src="/design/js/overlay.js"></script>

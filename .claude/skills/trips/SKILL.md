@@ -30,8 +30,8 @@ written. `scheduler/docs/booking.md` is what each booking step must say, and
    customer asked for, and who to contact if the booking contact is away.
 3. Open the trip: `/scheduler/?trip=<id>&date=<start_date>`. Read Route, Buses,
    Billing, Details, Files and Checklist.
-4. List what disagrees: stops and times against the itinerary, the route's
-   miles against Estimated miles, the quote lines against the quote sent,
+4. List what disagrees: stops and times against the itinerary, a typed
+   Estimated miles against the route's, the quote lines against the quote sent,
    Quote sent marked or not, Route's notices (second driver, fuel card),
    contacts, the pinned update, the email thread linked or not.
 5. Report before changing anything: what the emails say, what you would
@@ -65,8 +65,8 @@ reads only the ones before it. Nothing is written until step 10.
    no driver.
 7. **Billing.** Press Add the bus rental. An Addt'l Driver line follows a
    co-driver seat by itself. From April to early June set the line's rate by
-   hand (see the traps). Type the Summary's miles into Estimated miles. Open
-   the calculator only for a dead-mile discount, another rate or a price
+   hand (see the traps). Leave Estimated miles blank: it shows the route's
+   miles and Save writes them. Open the calculator only for a dead-mile discount, another rate or a price
    match.
 8. **Review.** Trip actions, Forms, Itinerary, Detailed: one sheet with the
    stops, each wait's status, the hours, the miles, the rate and the price.
@@ -124,7 +124,8 @@ rewrites this section as each change is built.
 - **Billing:** confirmed or not; the quoted price, which is the sum of the
   quote lines; Add the bus rental (it shows the calculator's price); the
   Addt'l Driver line a co-driver seat adds; Add line (Discount, Second
-  driver, Hotel, Other); Quote sent; Estimated miles; contract, PO, invoice,
+  driver, Hotel, Other); Quote sent; Estimated miles, blank while it follows
+  the route; contract, PO, invoice,
   payments; Mark billing done.
 - **Files:** the uploaded itineraries, contracts and POs; a file opens in a viewer.
 - **Checklist:** the ring in the panel's head; what is left on each leg under

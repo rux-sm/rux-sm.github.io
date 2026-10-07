@@ -4724,7 +4724,7 @@
     { key: 'quote_sent_price', get: () => editing?.quoteSent?.price ?? null },
     { key: 'quote_sent_on', get: () => editing?.quoteSent?.on ?? null },
     // The route's miles, on the Route tab.
-    { key: 'est_miles', get: () => money(document.getElementById('scheduler-f-estmiles')?.value) },
+    { key: 'est_miles', get: () => estTyped() ?? routeTotal() },
     { key: 'actual_miles', get: () => money(document.getElementById('scheduler-f-actmiles')?.value) },
     { key: 'contract_status', get: f => stepOn('contractSigned') && on(f['scheduler-f-contract']) ? 'Signed' : 'Pending' },
     { key: 'contract_note',
@@ -5693,7 +5693,26 @@
     const spread = n => Array.from({ length: n }, (_, i) => Math.floor(whole / n) + (i ? 0 : whole % n));
     const perDay = rows ?? (whole > 0 ? spread(days || 1) : null);
     return { miles: perDay ? perDay.reduce((a, b) => a + b, 0) : 0,
-      dead: round2((Number(out) || 0) + (Number(home) || 0)), days, perDay };
+      dead: round2((Number(out) || 0) + (Number(home) || 0)), days, perDay, route: routeMiles };
+  }
+
+  /* ESTIMATED MILES FOLLOW THE ROUTE. The column is rux-ui's override, and
+     its driver records read no other miles, so a blank field is not saved
+     blank: Save writes the route's miles, every leg together, rounded as the
+     Summary's Total is. A figure typed in the field is saved as typed. A trip
+     that opened following and still does is not a change by itself, so an
+     untouched trip stays untouched and the figure goes with the next save. */
+  const routeTotal = () => {
+    const n = (splitNow() ? ['outbound', 'return'] : ['outbound']).reduce((t, l) => t + legFigures(l).route, 0);
+    return n > 0 ? Math.round(n) : null;
+  };
+  const estTyped = () => money(document.getElementById('scheduler-f-estmiles')?.value);
+  const estFollows = () => !!editing?.estFollowed && estTyped() === null;
+  function syncEstHint() {
+    const input = document.getElementById('scheduler-f-estmiles');
+    if (!input) return;
+    const total = routeTotal();
+    if (total) input.placeholder = `${total} by route`; else input.removeAttribute('placeholder');
   }
 
   // What a line is priced from, and the calculator's cost for one bus or one
@@ -6526,7 +6545,7 @@
     const patch = patchOf();
     return routePlan().work || !!paymentsPatch()?.work
       || !!posPatch()?.work || !!invoicesPatch()?.work || !!linesPatch()?.work || fleetChanged()
-      || (!!patch && Object.keys(patch).length > 0) || doneChanged();
+      || (!!patch && Object.keys(patch).some(k => !(k === 'est_miles' && estFollows()))) || doneChanged();
   }
 
   // Unsaved work is a change in an editor that is open.
@@ -6896,6 +6915,7 @@
   }
 
   function refreshDirty() {
+    syncEstHint();
     // A date, a type, the miles or a drive can move a line's price.
     if (linesLive && syncLines()) redrawLines();
     const startEl = document.getElementById('scheduler-f-start');
@@ -8695,17 +8715,19 @@
       panelBilling.appendChild(section('Quote sent', sentBody));
       redrawQuoteSent();
 
-      /* The trip's miles, both legs together, beside the quote. The estimate
-         is rux-ui's override: left blank, the stops' own miles stand, and the
-         field shows their sum as its placeholder. The quote lines price from
-         it only while the route has no miles. */
+      /* The trip's miles, both legs together, beside the quote. Left blank,
+         the estimate follows the route, whose miles the field shows as its
+         placeholder and Save writes; a saved figure that is the stops' own sum
+         opens blank, as following. The quote lines price from a typed one only
+         while the route has no miles. */
       const stopMiles = (trip.trip_stops || []).reduce((n, st) => n + (Number(st.miles) || 0), 0);
+      editing.estFollowed = trip.est_miles == null || (stopMiles > 0 && Math.abs(trip.est_miles - stopMiles) < 1);
       const miles = pair(
-        moneyField('scheduler-f-estmiles', 'Estimated miles', trip.est_miles),
+        moneyField('scheduler-f-estmiles', 'Estimated miles', editing.estFollowed ? null : trip.est_miles),
         moneyField('scheduler-f-actmiles', 'Actual miles', trip.actual_miles),
       );
-      if (stopMiles > 0) miles.querySelector('#scheduler-f-estmiles').placeholder = `${Math.round(stopMiles)} by route`;
       panelBilling.appendChild(section('Miles', miles));
+      syncEstHint();
 
 
       /* Payments use the same `rowList` as PO and invoice, named by their

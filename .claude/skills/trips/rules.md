@@ -14,7 +14,6 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - A plain quote is priced with the Billing tab's Add the bus rental, from the Route tab's miles a day; the quote calculator is opened only for a dead-mile discount, another rate or a price match. Both round each charge (regular miles, dead miles, driver pay) up to the next $5, because those miles include the yard legs and a quote with no cents reads cleaner.
 - A trip from April to early June is quoted at the Busy season mileage rate, not Regular, because those are the busiest weeks and the buses fill either way; the rate's amount is on the rates page.
 - A PO fixes the price; a cost the office takes on after it, such as a second driver, goes in as its own line with an equal Discount, and the trip's pinned update says the decision is still open.
-- Estimated miles is set to the Route summary's total once the route is right, so the two agree.
 - A quote can go out with a leg's times as TBD, because the times are settled with the customer later and never hold a quote back.
 
 ## Route

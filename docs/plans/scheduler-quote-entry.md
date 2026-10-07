@@ -127,10 +127,9 @@ Each tab answers one question and reads only the tabs before it:
   Dead miles discount, for the difference, so the quote shows what was
   taken off. The calculator opens the same way, with Count the route's dead
   miles and Show dead miles as a discount both ticked.
-- **Estimated miles follow the route.** The field shows the Route summary's
-  total and Save writes it, where a blank field writes nothing today, so
-  the old app and the driver's forms read the miles the quote was priced
-  on. A figure typed over it stays.
+- **Estimated miles follow the route.** Left blank, the field shows the
+  Route summary's total and Save writes it, so the old app's driver records
+  read the miles the quote was priced on. A figure typed in it stays.
 
 ### Files
 
@@ -190,9 +189,6 @@ Each tab answers one question and reads only the tabs before it:
 - [ ] Mark a return after midnight as the next day's time on the driver's
       itinerary, the office's and the customer quote, and in what `get_trip`
       returns.
-- [ ] Make Estimated miles show the Route summary's total and save it, with
-      a saved figure that differs from the route read as typed, and check
-      the old app's driver view reads it.
 - [ ] Let the Files tab hold a file before the first save and send it once
       the trip exists.
 - [ ] Turn the Rates page into Settings, `settings.html`, laid out with the

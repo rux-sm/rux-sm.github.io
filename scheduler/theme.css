@@ -833,3 +833,10 @@
   column-gap: var(--rux-spacing-03);
 }
 
+/* THE FORMS LIST'S ROWS STAND 8px APART in the rounded themes, where each
+   row is a box with its own corners: the 1px print.css sets between them is
+   the rule between the rows of one square list, and between two rounded
+   boxes it is two edges touching. */
+:is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) .scheduler-print__tiles {
+  gap: var(--rux-spacing-03);
+}

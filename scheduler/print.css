@@ -1836,6 +1836,19 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   color: var(--rux-text-helper);
 }
 
+/* How much of a form is printed, there too: the count while copies are
+   left, and Printed after a green check once none is. */
+.scheduler-print__tile-done {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-02);
+  margin: 0 0 0 auto;
+  font-size: var(--rux-helper-text-01-font-size);
+  line-height: var(--rux-helper-text-01-line-height);
+  color: var(--rux-text-secondary);
+}
+.scheduler-print__tile-check { flex: none; color: var(--rux-support-success); }
+
 
 /* ── The week schedule ────────────────────────────────────────────────────
    rux-ui's billing report of a week, in its format and layout: Legal

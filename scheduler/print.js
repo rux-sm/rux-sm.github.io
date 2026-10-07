@@ -2995,7 +2995,8 @@
      the leg stops one step earlier, at "the itinerary for the way out", so the
      legs are read beside the buses. */
   const TRIP_BUSES_QUERY = 'id,destination,trip_stops(leg),'
-    + 'trip_assignments(id,leg,position,buses:bus_id(number),trip_drivers(id,driver_id))';
+    + 'itinerary_printed_outbound,itinerary_printed_return,hos_form_printed_outbound,hos_form_printed_return,'
+    + 'trip_assignments(id,leg,position,buses:bus_id(number),trip_drivers(id,driver_id,envelope_printed))';
 
   async function tripBuses(tripId) {
     const client = window.Rux?.account?.client;
@@ -3007,7 +3008,7 @@
     const buses = (data.trip_assignments || [])
       .filter(a => (a.trip_drivers || []).some(d => d.driver_id))
       .sort(byLegThenPosition);
-    return { destination: data.destination, buses, legs: legsOf(data) };
+    return { destination: data.destination, buses, legs: legsOf(data), trip: data };
   }
 
   async function showHub() {
@@ -3047,6 +3048,25 @@
       use.setAttribute('href', form.icon);
       icon.appendChild(use);
       return [icon, el('h3', 'rux--type-body-compact-01 scheduler-print__tile-name', form.short)];
+    };
+
+    /* HOW MUCH OF A FORM IS PRINTED, from the ticks its copies carry: a
+       seat's own on every filled seat of the trip, or the leg's on each leg.
+       They are the ticks the form's Printed box writes, read with the trip,
+       so the list shows what is left to print without opening each form. A
+       form with nothing ticked says nothing. */
+    const printedOf = form => {
+      const marks = form.marks;
+      if (!marks || !found?.trip) return null;
+      const ticks = marks.by === 'leg'
+        ? found.legs.map(leg => found.trip[`${marks.column}_${leg === 'return' ? 'return' : 'outbound'}`])
+        : found.buses.flatMap(a => (a.trip_drivers || []).filter(d => d.driver_id).map(d => d[marks.column]));
+      const done = ticks.filter(Boolean).length;
+      if (!done) return null;
+      const all = done === ticks.length;
+      const says = el('p', 'scheduler-print__tile-done', all ? 'Printed' : `${done} of ${ticks.length} printed`);
+      if (all) says.prepend(sprite('#m-check', 'scheduler-print__tile-check'));
+      return says;
     };
 
     /* THE QUOTE FIRST, because it is the first thing a trip sends, then the
@@ -3094,6 +3114,8 @@
           const tile = el('a', 'rux--link rux--tile rux--tile--clickable');
           tile.href = href;
           tile.append(...face(form));
+          const printed = printedOf(form);
+          if (printed) tile.appendChild(printed);
           tiles.appendChild(tile);
           continue;
         }

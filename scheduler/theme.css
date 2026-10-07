@@ -793,3 +793,43 @@
 }
 :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-call-button { border-radius: 6px; }
 [data-theme^="apple-"] .scheduler-call-button { border-radius: 10px; }
+
+/* THE CONTACT LIST'S MENU STANDS BESIDE THE CLOSE BUTTON AS ITS TWIN on the
+   Apple themes: Design draws a dialog's close there as a 36px circle 12px
+   clear of the corner, so the menu's button is that circle 8px before it,
+   the gap the heads' buttons keep, where app.css sets a 48px square against
+   the corner for Carbon's. Its hover is the close button's, and open it
+   keeps that fill: Carbon turns an open one into a tab joined to its list by
+   a strip, and here the list is a rounded menu that floats 4px under it. */
+[data-theme^="apple-"] .scheduler-contacts__menu {
+  inset-block-start: var(--rux-spacing-04);
+  inset-inline-end: calc(var(--rux-spacing-04) + 2.25rem + var(--rux-spacing-03));
+}
+[data-theme^="apple-"] .scheduler-contacts__menu .rux--overflow-menu {
+  border-radius: 50%;
+  block-size: 2.25rem;
+  inline-size: 2.25rem;
+  min-block-size: 2.25rem;
+}
+@media (any-hover: hover) {
+  [data-theme^="apple-"] .scheduler-contacts__menu .rux--overflow-menu:hover {
+    background-color: var(--rux-layer-hover);
+  }
+}
+[data-theme^="apple-"] .scheduler-contacts__menu .rux--overflow-menu.rux--overflow-menu--open {
+  background-color: var(--rux-layer-hover);
+  box-shadow: none;
+}
+[data-theme^="apple-"] .scheduler-contacts__menu .rux--overflow-menu-options {
+  margin-block-start: var(--rux-spacing-02);
+}
+[data-theme^="apple-"] .scheduler-contacts__menu .rux--overflow-menu-options::after {
+  content: none;
+}
+/* A row's buttons stand 8px apart there, as Design holds that theme's
+   footer buttons: Carbon's 1px is the seam between two squares, and between
+   two capsules it reads as one control split in half. */
+[data-theme^="apple-"] :is(.scheduler-contact__actions, .scheduler-contact__tasks) {
+  column-gap: var(--rux-spacing-03);
+}
+

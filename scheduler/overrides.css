@@ -466,6 +466,12 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   border-block-end: 1px solid var(--rux-border-subtle);
 }
 .scheduler-modal--contacts .rux--modal-content { padding-block-end: var(--rux-spacing-03); }
+/* From md up the window is at least 41rem wide, where the booking contact's
+   four buttons stand beside a name: Carbon's small window is 36% of a wide
+   screen, which on a laptop sets every row's buttons under its person. */
+@media (min-width: 42rem) {
+  .scheduler-modal--contacts .rux--modal-container { min-inline-size: 41rem; }
+}
 .scheduler-modal--contacts .rux--contained-list-item__content {
   padding: var(--rux-spacing-06) 0;
 }

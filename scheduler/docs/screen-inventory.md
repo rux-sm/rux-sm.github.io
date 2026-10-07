@@ -275,14 +275,14 @@ date when their crews differ; Email for a contact who has an address; Remind
 for each driver, a text with their reminder of the leg typed in: "Hi Oscar,
 a reminder for your trip tomorrow:", then the leg in the Driver week info
 message's own lines, from `scheduler/driver-text.js`, and the newest
-itinerary's link; and Add number for a person with none. A driver's Text opens their Google
+itinerary's link; and Add number for a person with none. On a screen md or wider Remind is a button
+in its driver's row, and the booking contact's holds Driver info, which copies the driver details, and
+Email, each before Call and Text; the menu holds what is left. A driver's Text opens their Google
 Messages link on a computer where the Drivers page holds one; there, Remind copies the reminder first, to paste. A call, text
 or email to the customer's people, and the driver details, offer to add it to the trip's updates,
-and writes nothing if the offer is ignored. A shortcut
-that cannot act on the trip, such as the envelope on a bus with no driver, shows faint
-with the reason as its label. Escape clears the selection and takes the bar
-with it. The
-panel keeps its trip through week changes and other selections, so a call
+and writes nothing if the offer is ignored. A shortcut that cannot act on the trip, such as the
+envelope on a bus with no driver, shows faint with the reason as its label. Escape clears the
+selection and takes the bar with it. The panel keeps its trip through week changes and other selections, so a call
 about another trip does not cost an edit in progress, and it asks before
 unsaved changes are lost.
 

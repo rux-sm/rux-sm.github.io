@@ -13272,9 +13272,27 @@
     const go = (href, then) => () => { closeContacts(); then?.(); window.location.href = href; };
     // Apple's Messages reads the body after `&`, everyone else's after `?`.
     const apple = /Mac|iPhone|iPad/.test(navigator.userAgent);
+    /* What is sent about the trip sits in the row of the person it goes to,
+       on a screen wide enough to hold it beside Call and Text: a driver's
+       reminder in theirs, and in the booking contact's Driver info, which
+       copies the driver details, and Email, which opens a message to paste
+       them in. On a phone, where a row has room for two buttons, they stay
+       in the menu. */
+    const roomy = !phoneQuery.matches;
+    const tasks = new Map();
+    const task = it => {
+      const b = el('button', 'rux--btn rux--btn--secondary rux--layout--size-md scheduler-contact__task', it.words || it.label);
+      b.type = 'button';
+      if (it.words) b.setAttribute('aria-label', it.say || it.label);
+      b.addEventListener('click', it.run);
+      const glyph = svgUse(it.icon, '16', '0 0 32 32');
+      glyph.classList.add('rux--btn__icon');
+      b.appendChild(glyph);
+      return b;
+    };
     /* A person is a row of Carbon's contained list: who they are to the trip,
        a driver's bus before their role, over their name and number, with
-       Call and Text at the row's end. */
+       Call and Text at the row's end and their tasks before those. */
     const card = p => {
       const li = el('li', 'rux--contained-list-item');
       const c = el('div', 'rux--contained-list-item__content scheduler-contact');
@@ -13295,7 +13313,13 @@
         text.classList.add('scheduler-contact__text');
         acts.appendChild(text);
       }
-      c.append(who, acts);
+      if (tasks.has(p)) {
+        const sent = el('div', 'scheduler-contact__tasks');
+        sent.append(...tasks.get(p).map(task));
+        const all = el('div', 'scheduler-contact__buttons');
+        all.append(sent, acts);
+        c.append(who, all);
+      } else c.append(who, acts);
       li.appendChild(c);
       return li;
     };
@@ -13306,20 +13330,23 @@
       ...people.filter(p => p.role === 'Trip contact'),
       ...drivers,
     ];
-    const list = el('div', 'rux--contained-list rux--layout--size-lg');
-    const ul = el('ul');
-    ul.setAttribute('role', 'list');
-    ul.append(...everyone.map(card));
-    list.appendChild(ul);
 
-    /* Everything but Call and Text is in the overflow menu beside the close
-       button, in groups parted by Carbon's divider: a group text to every
-       driver on the leg, from two drivers up; the driver details letter to
-       the booking contact, emailed or copied for Missive; an email to a
-       contact who has an address; each driver's reminder of the leg; and Add
-       number for a person with none. */
+    /* The rest is in the overflow menu beside the close button, in groups
+       parted by Carbon's divider: a group text to every driver on the leg,
+       from two drivers up; the driver details letter to the booking contact,
+       emailed or copied for Missive; an email to a contact who has an
+       address; each driver's reminder of the leg; and Add number for a person
+       with none. Where the screen is roomy the reminders, the copied letter
+       and the contact's email are the row's tasks, and the emailed letter
+       stays here, as the copied one does while the booking contact has no
+       row. */
     const groups = [[], [], [], [], []];
     const [toAll, toLetter, toEmail, toRemind, toAdd] = groups;
+    const hand = (p, group, it) => {
+      if (roomy && p) tasks.set(p, [...(tasks.get(p) || []), it]);
+      else group.push(it);
+    };
+    const booker = people.find(p => p.role !== 'Trip contact');
     const numbers = [...new Set(drivers.map(d => d.phone && dial(d.phone)).filter(Boolean))];
     if (numbers.length > 1) {
       toAll.push({ label: `Text all drivers (${numbers.length})`, run: go(`sms:/open?addresses=${numbers.join(',')}`) });
@@ -13332,12 +13359,12 @@
           `mailto:${letter.to.email}?subject=${encodeURIComponent(letter.subject)}&body=${encodeURIComponent(letter.body)}`,
           offer(...sent)) });
       }
-      toLetter.push({ label: 'Copy driver details', run: async () => {
+      hand(booker, toLetter, { label: 'Copy driver details', words: 'Driver info', say: 'Copy driver info', icon: '#m-content_copy', run: async () => {
         if (await copyText(letter.body)) offer(...sent, 'Driver details copied', 'Once it is sent, add it to the trip\'s updates?')();
       } });
     }
     for (const p of people) {
-      if (p.email) toEmail.push({ label: `Email ${p.name}`, run: go(`mailto:${p.email}`, offer('Emailed', p.name)) });
+      if (p.email) hand(p, toEmail, { label: `Email ${p.name}`, words: 'Email', icon: '#m-mail', run: go(`mailto:${p.email}`, offer('Emailed', p.name)) });
     }
     /* Remind opens a text to the driver with their reminder typed in; to the
        office's Google Messages conversation, which takes no text, it copies
@@ -13345,13 +13372,14 @@
     for (const p of drivers) {
       if (!p.reminder) continue;
       if (p.texting && !docked) {
-        toRemind.push({ label: `Remind ${p.name}`, run: async () => {
+        hand(p, toRemind, { label: `Remind ${p.name}`, words: 'Remind', icon: '#m-notifications', run: async () => {
           if (await copyText(p.reminder)) toast('success', 'Reminder copied', `Paste it in ${p.name}'s conversation.`);
           closeContacts();
           window.open(p.texting, '_blank', 'noopener');
         } });
       } else if (p.phone) {
-        toRemind.push({ label: `Remind ${p.name}`, run: go(`sms:${dial(p.phone)}${apple ? '&' : '?'}body=${encodeURIComponent(p.reminder)}`) });
+        hand(p, toRemind, { label: `Remind ${p.name}`, words: 'Remind', icon: '#m-notifications',
+          run: go(`sms:${dial(p.phone)}${apple ? '&' : '?'}body=${encodeURIComponent(p.reminder)}`) });
       }
     }
     for (const p of everyone) {
@@ -13374,6 +13402,11 @@
     }));
     contactsOptions.replaceChildren(...options);
     contactsMenu.hidden = !options.length;
+    const list = el('div', 'rux--contained-list rux--layout--size-lg');
+    const ul = el('ul');
+    ul.setAttribute('role', 'list');
+    ul.append(...everyone.map(card));
+    list.appendChild(ul);
     const rows = everyone.length ? [list] : [];
     contactsList.replaceChildren(...(rows.length ? rows : [el('p', 'scheduler-contacts__empty', 'Nobody to reach on this trip yet.')]));
     document.getElementById('scheduler-contacts-trip').textContent = tripName(trip);

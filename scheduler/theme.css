@@ -663,11 +663,15 @@
 [data-theme^="apple-"] .scheduler-page[data-takeover="roster"] .scheduler-aside {
   box-shadow: var(--scheduler-lift);
 }
-/* On apple-dark it takes a line too, as Design's dialog does there. */
+/* On apple-dark it takes a line too, as Design's dialog does there. The line
+   is a border and not a ring inside the edge, because each panel's head and
+   the editor's tab strip paint their own fill to that edge and would cover
+   one. Every box here is sized from its border, so the 1px comes out of the
+   panel's width. */
 [data-theme="apple-dark"] .scheduler-page[data-takeover="editor"] .scheduler-trip .rux--side-panel,
 [data-theme="apple-dark"] .scheduler-page[data-takeover="viewer"] .scheduler-viewer .rux--side-panel,
 [data-theme="apple-dark"] .scheduler-page[data-takeover="roster"] .scheduler-aside {
-  box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02), var(--scheduler-lift);
+  border: 1px solid var(--rux-border-subtle-02);
 }
 /* One record's form is a region of its page, as the list it came from is:
    its fill on the page, on the surface's corner, 16px under the tab strip, its

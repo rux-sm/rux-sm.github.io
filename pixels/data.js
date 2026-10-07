@@ -9,7 +9,8 @@
    Nobody but the owner reads a table. Everything a player does goes through
    database functions that first find the player, from the log-in or from the
    key: `pixels_puzzles`, `pixels_results`, `pixels_days`, `pixels_record`,
-   `pixels_record_day`, `pixels_board`, `pixels_me` and `pixels_join`.
+   `pixels_record_day`, `pixels_board`, `pixels_me`, `pixels_join`,
+   `pixels_set_picture` and `pixels_rename`.
    `results` gives a Map of puzzle id to { seconds } and `days` a Map
    of day to the same; `record` and `recordDay` keep the shorter time, and
    `board` gives a day's ranking and the all-time one. The client is
@@ -18,6 +19,8 @@
    `enter()` is what a page calls first: it says whether there is a player,
    and where there is not it draws the name form, or says the link is needed.
    `carry()` puts a guest's key in the address for a home screen icon to keep.
+   `me` gives the player with their picture and how many sprites they have
+   found, and `setPicture` and `rename` change their own picture and username.
 
    `list` is what a player is sent, for every account, the owner's too: no
    hidden category, no puzzle that is off, none in no category.
@@ -175,7 +178,22 @@
       return { best: db.results[id].seconds, isNew: !was || seconds < was.seconds };
     },
     // The preview has one player, so its boards hold one row.
-    async me() { return { id: 'preview', name: 'Preview' }; },
+    async me() {
+      const db = read();
+      return { id: 'preview', name: 'Preview', picture: null, colours: null, ...db.me, found: Object.keys(db.results).length };
+    },
+    async setPicture(squares, colours) {
+      const db = read();
+      db.me = { ...db.me, picture: squares, colours: squares ? colours : null };
+      write(db);
+      return this.me();
+    },
+    async rename(name) {
+      const db = read();
+      db.me = { ...db.me, name: name.trim() };
+      write(db);
+      return this.me();
+    },
     async board(day) {
       const db = read(), mine = Object.values(db.results), days = Object.values(db.days || {});
       const today = kept((db.days || {})[day]);
@@ -232,6 +250,17 @@
   const own = ({ hidden, ...row }) => ({ ...row, off: !!hidden });
   const cloud = client && {
     async me() { return call('pixels_me', { p_key: key() }); },
+    // The player's own picture, squares and an ink for each or none; no
+    // squares takes it away. And their own username, which may be taken.
+    async setPicture(squares, colours) {
+      return call('pixels_set_picture', { p_key: key(), p_squares: squares, p_colours: colours });
+    },
+    async rename(name) {
+      const me = await call('pixels_rename', { p_key: key(), p_name: name });
+      const kept = readGuest();
+      if (!me.error && kept) localStorage.setItem(GUEST, JSON.stringify({ ...kept, name: me.name }));
+      return me;
+    },
     // A new guest: the key is made here and kept only if the database takes it.
     async join(name) {
       const made = crypto.randomUUID() + crypto.randomUUID();
@@ -323,7 +352,7 @@
     // Every player with their results and days, and the invite word.
     async players() {
       const [players, results, days, settings] = await Promise.all([
-        client.from('pixels_players').select('id, name, user_id, created_at, last_played_at').order('created_at'),
+        client.from('pixels_players').select('id, name, user_id, created_at, last_played_at, picture, picture_colours').order('created_at'),
         client.from('pixels_player_results').select('player_id, puzzle_id, best_seconds'),
         client.from('pixels_player_days').select('player_id, day, seconds'),
         client.from('pixels_settings').select('invite_word').single(),
@@ -336,6 +365,9 @@
     },
     async removePlayer(id) {
       fail((await client.from('pixels_players').delete().eq('id', id)).error);
+    },
+    async clearPicture(id) {
+      fail((await client.from('pixels_players').update({ picture: null, picture_colours: null }).eq('id', id)).error);
     },
     async renamePlayer(id, name) {
       fail((await client.from('pixels_players').update({ name }).eq('id', id)).error);
@@ -351,13 +383,15 @@
   if (!owner) {
     document.querySelectorAll('.rux--side-nav a[href="make.html"], .rux--side-nav a[href="manage.html"], .rux--side-nav a[href="players.html"]')
       .forEach(a => a.closest('li')?.remove());
+    // The Pixelator's place in the bar is the owner's too, for now.
+    document.querySelectorAll('.pixels-places a[href="make.html"]').forEach(a => a.remove());
   }
 
   /* COMING IN. Gives the player, or null. A guest with no player yet gets
      the name form in `host`, in place of what was there, and the page loads
      again once the name is taken; without the invite word they are told the
      link is needed. */
-  const enter = async host => {
+  const entering = async host => {
     if (!cloud) return store ? store.me() : null;
     const me = await cloud.me();
     if (me) return me;
@@ -437,6 +471,16 @@
     host.replaceChildren(form);
     input.focus();
     return null;
+  };
+
+  // The bar of places shows once there is a player: at once for an account
+  // and the local preview, and for a guest when `enter` finds theirs.
+  const places = document.querySelector('.pixels-places');
+  if (places && (member || (!client && local))) places.hidden = false;
+  const enter = async host => {
+    const me = await entering(host);
+    if (me && places) places.hidden = false;
+    return me;
   };
 
   window.Pixels = Object.assign(window.Pixels || {}, {

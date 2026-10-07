@@ -129,12 +129,6 @@
   <div class="rux--side-nav__overlay"></div>
   <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux rux--side-nav--hidden" aria-label="Side navigation">
     <ul class="rux--side-nav__items">
-      <li class="rux--side-nav__item rux--side-nav__item--active rux--side-nav__item--large">
-        <a class="rux--side-nav__link rux--side-nav__link--current" href="./" aria-current="page">
-          <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-grid_view"/></svg></div>
-          <span class="rux--side-nav__link-text">Puzzles</span>
-        </a>
-      </li>
       <li class="rux--side-nav__item rux--side-nav__item--large">
         <a class="rux--side-nav__link" href="#pixels-how" data-rux-open="pixels-how">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-info"/></svg></div>
@@ -146,12 +140,6 @@
         <a class="rux--side-nav__link" href="#pixels-add">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg></div>
           <span class="rux--side-nav__link-text">Add to home screen</span>
-        </a>
-      </li>
-      <li class="rux--side-nav__item rux--side-nav__item--large">
-        <a class="rux--side-nav__link" href="make.html">
-          <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-edit"/></svg></div>
-          <span class="rux--side-nav__link-text">Pixelator</span>
         </a>
       </li>
       <li class="rux--side-nav__item rux--side-nav__item--large">
@@ -171,6 +159,12 @@
 </header>
 
 <main id="main-content" class="rux--content pixels-main">
+  <!-- The places every player has, shown once there is a player. app.js marks the one this page is, and data.js keeps the Pixelator's for the owner. -->
+  <nav class="pixels-places" aria-label="Pixels" hidden>
+    <a class="pixels-place" href="./"><svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-grid_view"/></svg>Puzzles</a>
+    <a class="pixels-place" href="make.html"><svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-edit"/></svg>Pixelator</a>
+    <a class="pixels-place" href="me.html"><svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-account_circle"/></svg>Me</a>
+  </nav>
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <div class="pixels-page">

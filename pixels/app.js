@@ -10,7 +10,8 @@
    paints along it, `picture` draws the finished picture, `penalty` is what a mistake costs,
    `buzz` ticks the phone and `sound` plays a tone. `order` puts puzzles in
    playing order, `categories` groups them and `daily` makes the puzzle of a
-   day. `tile` draws a puzzle's tile and `bar` a progress bar. `how` builds
+   day. `face` makes a player's picture from their username and `portrait`
+   draws a player's. `tile` draws a puzzle's tile and `bar` a progress bar. `how` builds
    How to play. `installed` says the page was opened from a home screen
    icon and `iphone` that the phone is one, and `fresh` loads a page again
    after a minute away. The pages add their own behaviour in puzzles.js, category.js,
@@ -169,6 +170,14 @@
   const sprites = (solved, all) => (solved === all ? 'Gate cleared' : `${solved} of ${all} sprites`);
   const where = ({ width, level }) => `category.html?size=${width}&at=${level}`;
 
+  // Numbers from 0 up to 1 that follow from `seed`, the same in every browser.
+  const seeded = seed => () => {
+    seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+
   /* THE PUZZLE OF A DAY. `day` is YYYY-MM-DD. If the owner drew one for the
      day, among `puzzles`, that is it, with its name and its colours. If not,
      one is made from the date, so every browser draws the same and no day
@@ -183,13 +192,7 @@
     const date = new Date(`${day}T12:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'long' });
     const drawn = puzzles.find(p => p.day === day);
     if (drawn) return { ...drawn, id: `daily-${day}`, date, level: 0 };
-    let seed = +day.replace(/-/g, '') * 31;
-    const random = () => {
-      seed = seed + 0x6D2B79F5 | 0;
-      let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
-      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-      return ((t ^ t >>> 14) >>> 0) / 4294967296;
-    };
+    const random = seeded(+day.replace(/-/g, '') * 31);
     for (;;) {
       const noise = Array.from({ length: DAY }, () => Array.from({ length: DAY }, () => (random() < .5 ? 1 : 0)));
       const near = (y, x) => {
@@ -459,6 +462,39 @@
     return el;
   };
 
+  /* A PLAYER'S PICTURE, 15 squares a side. `face` makes one from a username,
+     the same in every browser, for a player who has drawn none: squares
+     scattered by the name, smoothed and mirrored, in one deep colour on its
+     pale tone. `portrait` draws a player's own picture, or that one, small
+     beside a name or large on their own page. */
+  const FACE = 15;
+  const face = name => {
+    let seed = 0;
+    for (const c of String(name).trim().toLowerCase()) seed = Math.imul(seed ^ c.codePointAt(0), 16777619);
+    const random = seeded(seed);
+    const hue = Math.floor(random() * 10);
+    for (;;) {
+      const noise = Array.from({ length: FACE }, () => Array.from({ length: FACE }, () => (random() < .5 ? 1 : 0)));
+      const near = (y, x) => {
+        let n = 0;
+        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) n += noise[y + dy]?.[x + dx] || 0;
+        return n;
+      };
+      const g = noise.map((r, y) => r.map((_, x) => (near(y, Math.min(x, FACE - 1 - x)) >= 5 ? 1 : 0)));
+      const filled = g.flat().filter(Boolean).length;
+      if (filled >= 70 && filled <= 150) {
+        return { squares: squaresOf(g), colours: g.flat().map(on => (on ? 'KLMNOPQRST' : 'ABCDEFGHIJ')[hue]).join('') };
+      }
+    }
+  };
+  const portrait = (player, large) => {
+    const el = document.createElement('div');
+    el.className = `pixels-picture pixels-face${large ? ' pixels-face--lg' : ''}`;
+    el.setAttribute('aria-hidden', 'true');
+    const of = player.picture ? { squares: player.picture, colours: player.colours } : face(player.name);
+    return picture(el, of.squares, of.colours);
+  };
+
   /* WHAT A MISTAKE COSTS is time on the clock, more each time.
      `penalty(n)` is the seconds a puzzle's nth mistake
      adds: 15, then 30, then a minute for each one after. HINT is what a hint
@@ -714,6 +750,15 @@
   tint();
   new MutationObserver(tint).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'style'] });
 
+  /* THE PLACES every player has, in one bar on the pages that carry it:
+     along the bottom on a phone, along the top on a wide screen. This marks
+     the place the page is; a gate's page is one of Puzzles'. */
+  const here = location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.pixels-place').forEach(a => {
+    const to = a.getAttribute('href') === './' ? 'index.html' : a.getAttribute('href');
+    if (to === (here === 'category.html' ? 'index.html' : here)) a.setAttribute('aria-current', 'page');
+  });
+
   /* A page left for a minute or more loads again as it comes back to the
      front, because an app on the home screen has no reload and a phone
      keeps its window open for days. */
@@ -726,7 +771,7 @@
   };
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    iphone, installed, fresh, overMenu, side, hardness, gradeTag, sprites, boss,
+    iphone, installed, fresh, overMenu, face, portrait, side, hardness, gradeTag, sprites, boss,
     SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title,
     words, art, tile, bar, how, switcher, chosen,

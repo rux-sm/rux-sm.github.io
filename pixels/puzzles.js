@@ -33,7 +33,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, guest, enter, carry, iphone, installed, fresh, overMenu, side, hardness, gradeTag, sprites, boss, title, DAILY, BOARD, grid, rounds, grade, categories, heading, where, daily, today, streak, time, words, art, bar, switcher } = window.Pixels;
+  const { data, owner, guest, enter, carry, iphone, installed, fresh, overMenu, portrait, side, hardness, gradeTag, sprites, boss, title, DAILY, BOARD, grid, rounds, grade, categories, heading, where, daily, today, streak, time, words, art, bar, switcher } = window.Pixels;
   const host = document.getElementById('pixels-levels'), leader = document.getElementById('pixels-leader');
   // A tile shows nine pictures, which is as many as a category has on.
   const PER_LEVEL = 9;
@@ -248,7 +248,7 @@
       return;
     }
     if (guest) {
-      document.getElementById('pixels-player').textContent = me.name;
+      document.getElementById('pixels-player').replaceChildren(portrait(me), me.name);
       document.getElementById('pixels-guestbar').hidden = false;
       document.getElementById('pixels-foot').hidden = false;
     }

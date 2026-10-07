@@ -250,6 +250,9 @@
   inline-size: max-content;
   background: var(--rux-layer-01);
 }
+/* A player's picture: small beside their name, large on their own page. */
+.pixels-face { --px: 2px; flex: none; }
+.pixels-face--lg { --px: 8px; }
 .pixels-picture > [data-on] { background: var(--rux-text-primary); }
 .pixels-picture > [data-ink] { background: var(--ink); }
 /* A small picture is about 5rem across, whatever its puzzle's size. */
@@ -262,7 +265,70 @@
 [data-rux-guest][data-rux-unlocked] .pixels-main { margin-block-start: 0; }
 /* The last row of a page keeps clear of an iPhone's home bar. */
 .pixels-main { padding-block-end: max(2rem, env(safe-area-inset-bottom, 0px)); }
-.pixels-guestbar { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-block-end: 1.5rem; }
+
+/* THE PLACES every player has, one bar. On a wide screen it is a row of
+   tabs along the top of the page, out to the page's edges; on a phone it is
+   fixed along the bottom, each place its icon over its word, clear of the
+   home bar, and the page keeps room for it. The place the page is carries a
+   line on the edge that meets the page. */
+.pixels-places {
+  display: flex;
+  margin: -2rem -2rem 1.5rem;
+  padding-inline: 1rem;
+  background: var(--rux-layer-01);
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+}
+.pixels-place {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .75rem 1rem;
+  margin-block-end: -1px;
+  border-block-end: 2px solid transparent;
+  color: var(--rux-text-secondary);
+  font-size: .875rem;
+  text-decoration: none;
+}
+.pixels-places[hidden] { display: none; }
+.pixels-place > svg { inline-size: 1.25rem; block-size: 1.25rem; }
+.pixels-place:hover { color: var(--rux-text-primary); background: var(--rux-layer-hover-01); }
+.pixels-place:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
+.pixels-place[aria-current] { color: var(--rux-text-primary); font-weight: 600; border-block-end-color: var(--rux-border-interactive); }
+@media (max-width: 41.99rem) {
+  .pixels-places {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 2;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    margin: 0;
+    padding: 0 0 env(safe-area-inset-bottom, 0px);
+    border-block-start: 1px solid var(--rux-border-subtle-01);
+    border-block-end: 0;
+  }
+  .pixels-place {
+    display: grid;
+    justify-items: center;
+    gap: .125rem;
+    padding: .5rem 0 .375rem;
+    margin-block: -1px 0;
+    border-block-start: 2px solid transparent;
+    border-block-end: 0;
+    font-size: .75rem;
+  }
+  .pixels-place > svg { inline-size: 1.5rem; block-size: 1.5rem; }
+  .pixels-place[aria-current] { border-block-start-color: var(--rux-border-interactive); }
+  .pixels-main:has(.pixels-places) { padding-block-end: calc(5.5rem + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* ME: the player's picture beside their username, then what they have done. */
+.pixels-me { display: grid; gap: 1.5rem; max-inline-size: 24rem; }
+.pixels-me-head { display: flex; align-items: center; gap: 1rem; }
+.pixels-me-name { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .5rem; align-items: end; }
+.pixels-me-note { min-block-size: 1.25rem; margin: 0; color: var(--rux-text-error); }
+.pixels-guestbar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-block-end: 1.5rem; }
+.pixels-guestbar > .pixels-meta { display: flex; align-items: center; gap: .5rem; }
 .pixels-guestbar[hidden] { display: none; }
 /* The name form a guest meets first. */
 .pixels-join { max-inline-size: 20rem; margin-inline: auto; padding-block-start: 2rem; }
@@ -291,6 +357,7 @@
 .pixels-invite > p { grid-column: 1 / -1; margin: 0; overflow-wrap: anywhere; }
 /* A name stays wide enough to read and type in; on a phone the table slides. */
 .pixels-player-name { min-inline-size: 8rem; max-inline-size: 14rem; }
+.pixels-player-who { display: flex; align-items: center; gap: .5rem; }
 .pixels-scroll { overflow-x: auto; }
 .pixels-scroll[hidden] { display: none; }
 
@@ -658,6 +725,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 @media (max-width: 47.99rem) {
   .pixels-maker { --side: round(down, clamp(150px, min(100cqi - var(--pixels-corner), (100dvh - 253px) * 11 / 16 - var(--pixels-corner)), var(--most)), 30px); }
 }
+.pixels-maker-top[hidden], .pixels-maker-check[hidden] { display: none; }
 .pixels-maker-top { display: grid; grid-template-columns: minmax(0, 1fr) 7rem; gap: .5rem; }
 /* THE TOOLBAR, after Carbon's text toolbar: a bar of icon buttons the width
    of what they act on and set on it, in groups with a rule between them.

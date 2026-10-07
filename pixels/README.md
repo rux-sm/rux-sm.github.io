@@ -26,44 +26,42 @@ puzzles easy to hard, with nothing locked, each tile a square, three across on a
 wide screen. A solved puzzle shows its picture, name and best time; an unsolved one a question mark,
 how hard it is and its number in the gate, or Boss for the last.
 
-`play.html?id=` plays one puzzle, 5, 10 or 15 squares a side. The board waits
-behind Tap to start, which with a mouse says Start, drawn bare until then, with
-no number and no mark, and the clock runs from that tap. Fill a square or cross
-it out with X, by tap, by dragging along a row or column, with a mouse's right
-button, which always crosses out, or with the arrow keys, Z and X. On a phone a
-15×15 board zooms under two fingers, its numbers staying in view, and there a
-touch fills as it lifts. A number greys out when its run of squares is filled,
-a line with no square of the picture starts crossed out, and a finished line
-crosses out its own empty squares. The clock is the score:
-filling a square not in the picture is a mistake, crossed out in red, and it
-adds time, 15 seconds for a puzzle's first, 30 for its second and a minute for
-each one after; a hint adds 30 seconds. The clock is red until the next move,
-and the best time on a puzzle is the one kept. Hint, or H, lights the line
-where the numbers decide the most. Undo, or U, takes back the last tap or drag,
-and Redo, or R, puts it back, but neither touches a mistake, and a tap that was
-only a mistake is no move to take back. Restart empties the board, and Undo
-straight after brings it back. Every board has one footprint, whatever its
-puzzle's size: the squares together are as wide as the window's width and
-height allow, to 600px, and always a multiple of 30px, so a square is whole
-pixels on a board of five, ten or fifteen. The corner is a square of one size,
-84px on a phone and 120px on a wide screen, and a tile fills it: the puzzle's
-name, the picture so far, drawn small, and the clock. The keys under the board
-end where it does. A warm line rules off every fifth square. Every other line's
-numbers sit on a band that runs out from its squares and fades, larger on
-larger squares, and a line with more numbers than its room holds draws them
-smaller to fit. When the picture is complete the squares fill in as the
-picture, in its colours if it has them, and its name shows with the time, the
-mistakes and hints, and what they added. Back goes to the puzzle's gate,
-and Next to that gate's next unsolved puzzle, then to the gate after
-it. How to play is three steps in a modal, each with a small board: what the
-numbers mean, filling and crossing out, and what a mistake costs. It opens from
-the menu on every page and from the button under Start, and by itself on the
-first puzzle of a player who has solved none and has not closed it in this
-browser. A guest has no menu, so the front page and a gate's have a button
-for it. The clock stands while it is open. Each move plays a tone, which the
-Sound key turns off and an iPhone's silent switch does not, and a phone ticks
-on each fill where the browser allows it. A game in progress is kept in the
-browser, so a reload picks it up.
+`me.html` is the player's own page: their picture, 15 squares a side, their username, which they can
+change, and how many sprites they have found. Until a player draws a picture, one is made from their
+username, the same in every browser. Draw your picture opens `make.html?me`, the Pixelator with no
+name, no gate and no check, since a picture is no puzzle. A bar holds the places every player has,
+Puzzles and Me, and the Pixelator for the owner: along the bottom on a phone, along the top on a
+wide screen, and not on a page where a puzzle is played or drawn.
+
+`play.html?id=` plays one puzzle, 5, 10 or 15 squares a side. The board waits behind Tap to start,
+which with a mouse says Start, drawn bare until then, with no number and no mark, and the clock runs
+from that tap. Fill a square or cross it out with X, by tap, by dragging along a row or column, with
+a mouse's right button, which always crosses out, or with the arrow keys, Z and X. On a phone a
+15×15 board zooms under two fingers, its numbers staying in view, and there a touch fills as it
+lifts. A number greys out when its run of squares is filled, a line with no square of the picture
+starts crossed out, and a finished line crosses out its own empty squares. The clock is the score:
+filling a square not in the picture is a mistake, crossed out in red, and it adds time, 15 seconds
+for a puzzle's first, 30 for its second and a minute for each one after; a hint adds 30 seconds. The
+clock is red until the next move, and the best time on a puzzle is the one kept. Hint, or H, lights
+the line where the numbers decide the most. Undo, or U, takes back the last tap or drag, and Redo,
+or R, puts it back, but neither touches a mistake, and a tap that was only a mistake is no move to
+take back. Restart empties the board, and Undo straight after brings it back. Every board has one
+footprint, whatever its puzzle's size: the squares together are as wide as the window's width and
+height allow, to 600px, and always a multiple of 30px, so a square is whole pixels on a board of
+five, ten or fifteen. The corner is a square of one size, 84px on a phone and 120px on a wide
+screen, and a tile fills it: the puzzle's name, the picture so far, drawn small, and the clock. The
+keys under the board end where it does. A warm line rules off every fifth square. Every other line's
+numbers sit on a band that runs out from its squares and fades, larger on larger squares, and a line
+with more numbers than its room holds draws them smaller to fit. When the picture is complete the
+squares fill in as the picture, in its colours if it has them, and its name shows with the time, the
+mistakes and hints, and what they added. Back goes to the puzzle's gate, and Next to that gate's
+next unsolved puzzle, then to the gate after it. How to play is three steps in a modal, each with a
+small board: what the numbers mean, filling and crossing out, and what a mistake costs. It opens
+from the menu on every page and from the button under Start, and by itself on the first puzzle of a
+player who has solved none and has not closed it in this browser. A guest has no menu, so the front
+page and a gate's have a button for it. The clock stands while it is open. Each move plays a tone,
+which the Sound key turns off and an iPhone's silent switch does not, and a phone ticks on each fill
+where the browser allows it. A game in progress is kept in the browser, so a reload picks it up.
 
 The leaderboard is switched off by `BOARD` in `app.js`: the front page has no
 tabs and no ranking, and results are saved as ever. The puzzle of the day is
@@ -75,8 +73,8 @@ browser makes from the date, the same for everyone. Only it counts toward the
 days in a row. A player is never sent a day's puzzle before its day.
 
 `make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits or
-deletes one. Only the owner's account makes and edits: it alone sees Pixelator,
-Manage and Players in the menu, and the database refuses a puzzle written by
+deletes one. Only the owner's account makes and edits: it alone has the Pixelator in
+the bar and Manage and Players in the menu, and the database refuses a puzzle written by
 anyone else. It checks as you draw whether the numbers alone can solve the
 picture and how hard that is, outlines each square that would need a guess, and
 saves only a picture with one answer. Size starts a blank board of 5, 10 or 15
@@ -105,7 +103,7 @@ new one or Unsorted, or deleted; a gate left empty goes too.
 | :--- | :--- |
 | `app.js` | the rules and the board every page shares: the numbers, the line solver, the puzzle of the day, drawing, dragging and zooming, what a mistake costs, tones and the phone's tick |
 | `data.js` | who is playing, the name form a guest meets, and where puzzles and results are kept |
-| `puzzles.js`, `category.js`, `play.js`, `make.js`, `manage.js`, `players.js` | each page's own behaviour |
+| `puzzles.js`, `category.js`, `play.js`, `make.js`, `manage.js`, `players.js`, `me.js` | each page's own behaviour |
 | `app.css` | the board, the picture, the tiles and Manage, under `pixels-` |
 | `theme.css` | the fifty-five inks a colour picture is painted from |
 | `manifest.json` | the name, the window and the icons a browser installs Pixels with; `app.js` gives it to every browser but an iPhone's. `tools/build-app-icons.mjs` writes the four PNG icons in `brand/` from `brand/favicon.svg` |
@@ -114,14 +112,14 @@ new one or Unsorted, or deleted; a gate left empty goes too.
 
 Six tables in the site's database, which only the owner's account reads
 directly: `pixels_puzzles`, every puzzle, which a staff account may read too;
-`pixels_players`, each player's name with the account or the hash of the
+`pixels_players`, each player's name and picture with the account or the hash of the
 guest's key; `pixels_player_results` and `pixels_player_days`, each player's
 best time on a puzzle and on a puzzle of the day; and
 `pixels_settings`, the invite word; and `pixels_levels`, each gate's id, name, maker, audience and whether it is hidden. A gate and a puzzle with no maker are the owner's. `docs/database-access.md` is the rule they follow.
 
-A player's page calls eight functions, which the publishable key may run and which first find the
+A player's page calls ten functions, which the publishable key may run and which first find the
 player from the log-in or the key: `pixels_join`, `pixels_me`, `pixels_puzzles`, `pixels_results`,
-`pixels_days`, `pixels_record`, `pixels_record_day` and `pixels_board`. A time is the player's own
+`pixels_days`, `pixels_record`, `pixels_record_day`, `pixels_board`, `pixels_set_picture` and `pixels_rename`. A time is the player's own
 browser's word: the database refuses only what cannot be, a time under two seconds, a puzzle the
 player is not sent, a day more than one from today. `pixels_puzzles` sends a player no puzzle that
 is switched off, which is `pixels_puzzles.hidden`, none in no gate, which is one whose `level` is

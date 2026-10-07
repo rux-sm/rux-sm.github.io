@@ -37,13 +37,18 @@
 
    Only the owner's account makes and edits; any other is told so.
 
+   make.html?me draws the player's own picture, for any player: the board is
+   15 squares a side and starts as the picture they have, or the one made
+   from their username. It has no name, no gate and no check, since it is no
+   puzzle; Save keeps it and Back leaves, both for Me.
+
    make.html?id= edits a saved puzzle. A new picture not yet saved is kept in
    this browser under `pixels-draft`, so a reload does not lose it.
    ========================================================================== */
 (() => {
   'use strict';
 
-  const { data, owner, SIZES, CHARS, grid, squaresOf, unreached, rounds, grade, board, drag } = window.Pixels;
+  const { data, owner, SIZES, CHARS, grid, squaresOf, unreached, rounds, grade, board, drag, face } = window.Pixels;
   const $ = id => document.getElementById(id);
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
   const saveNow = $('pixels-save-now');
@@ -52,7 +57,9 @@
   const tools = $('pixels-tool'), stepKey = $('pixels-step'), size = $('pixels-size');
   const undoKey = $('pixels-undo'), redoKey = $('pixels-redo');
   const maker = document.querySelector('.pixels-maker');
-  const DRAFT = 'pixels-draft';
+  // The player's own picture is drawn here too, and keeps a draft of its own.
+  const mine = new URLSearchParams(location.search).has('me');
+  const DRAFT = mine ? 'pixels-face-draft' : 'pixels-draft';
   // The inks, a colour at a time, pale to dark, and last the greys from
   // white to black. Each is the character a picture stores, then its name.
   // app.css lays them out a colour to a row, or to a column on a phone.
@@ -169,7 +176,7 @@
   };
 
   let solvable = false;
-  const ready = () => solvable && !!name.value.trim();
+  const ready = () => mine || (solvable && !!name.value.trim());
   const render = () => {
     const unknown = unreached(draft);
     const guesses = unknown.flat().filter(Boolean).length;
@@ -415,9 +422,21 @@
   });
 
   // Save asks where the puzzle goes, and the answer saves it.
-  $('pixels-form').addEventListener('submit', e => {
+  $('pixels-form').addEventListener('submit', async e => {
     e.preventDefault();
     if (save.disabled || !data) return;
+    if (mine) {
+      save.disabled = true;
+      try {
+        await data.setPicture(squaresOf(draft), colours && squaresOf(colours));
+        try { localStorage.removeItem(DRAFT); } catch { /* nothing kept */ }
+        location.href = 'me.html';
+      } catch {
+        say('The picture was not saved', 'Try again.');
+        save.disabled = false;
+      }
+      return;
+    }
     showWhere();
     window.Rux.modal.open('pixels-save-modal', save);
   });
@@ -492,6 +511,31 @@
 
   (async () => {
     if (!data) { say('Pixels could not connect', 'Reload the page to try again.'); return; }
+    if (mine) {
+      let me = null;
+      try { me = await data.me(); } catch { /* said below */ }
+      if (!me) {
+        say('There is no player here yet', 'Open Pixels from your invite link first.');
+        maker.hidden = true;
+        return;
+      }
+      $('pixels-heading').textContent = 'Your picture';
+      document.title = 'Your picture — Pixels';
+      document.querySelector('.pixels-maker-top').hidden = true;
+      check.hidden = true;
+      const back = maker.querySelector('a[href="manage.html"]');
+      back.href = 'me.html';
+      back.title = 'Back to Me';
+      back.setAttribute('aria-label', 'Back to Me');
+      setSide(15);
+      const kept = readDraft(), from = kept?.squares?.length === 225 ? kept : me.picture ? { squares: me.picture, colours: me.colours } : face(me.name);
+      draft = grid(from.squares);
+      colours = from.colours ? grid(from.colours) : null;
+      // A picture with colours opens on them, since they are the picture.
+      if (colours) setStep('colour');
+      render();
+      return;
+    }
     if (!owner) {
       say('Only the owner makes puzzles', 'This account can play them.');
       maker.hidden = true;

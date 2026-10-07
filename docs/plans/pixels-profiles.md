@@ -17,8 +17,12 @@ it. Each stage below is finished and fun to use before the next starts.
 
 - **Every player has the same four places:** Puzzles, Friends, Pixelator and
   Me, in one bar, a guest and an account alike, because it is one game.
-- **On a phone the bar is at the bottom,** clear of the home bar. Where it
-  sits on a wide screen is picked from a page that draws the choices.
+- **On a phone the bar is at the bottom,** each place its icon over its
+  word, clear of the home bar. On a wide screen it is tabs along the top.
+- **A page where a puzzle is played or drawn has no bar,** because the keys
+  under the board are at the bottom too, and Back leaves it.
+- **A place is in the bar once it is built:** Puzzles and Me now, and the
+  Pixelator for the owner.
 - **Manage and Players stay in the owner's menu.**
 
 **A profile**
@@ -115,15 +119,6 @@ it. Each stage below is finished and fun to use before the next starts.
 
 ## Tasks
 
-**Stage 2: the bar, Me and your picture**
-
-- [ ] The bar with the four places, on every page, picked from a page that
-      draws the choices at phone and wide widths.
-- [ ] The migration: a player's picture, and the function that saves it.
-- [ ] The picture made from a username, and the Pixelator drawing one.
-- [ ] Me: picture, username, sprites found, and changing the first two.
-      Players clears a picture.
-
 **Stage 3: invites, friends and picked players**
 
 - [ ] The migration: each player's invite code, who is whose friend, who is
@@ -131,6 +126,7 @@ it. Each stage below is finished and fun to use before the next starts.
 - [ ] Joining by a player's link makes the two friends. The owner's switch
       closes joining.
 - [ ] Friends: every player, Add and Remove, and the player's own link.
+      Friends takes its place in the bar.
 - [ ] Manage: a gate's heading says who sees it, everyone or the players
       ticked in a list.
 
@@ -139,7 +135,7 @@ it. Each stage below is finished and fun to use before the next starts.
 - [ ] The migration: mana, and the functions that save, change and delete a
       player's own puzzles and gates, with every refusal in the decisions.
 - [ ] The Pixelator opens to every player, shows mana and saves through
-      them.
+      them, and its place in the bar is everyone's.
 - [ ] A player's own gates on Me: name, order, publish and delete.
 - [ ] The front page: a friend's published gates after the owner's, with
       the maker's picture and username, and New on one not yet opened.

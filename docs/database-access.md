@@ -32,7 +32,7 @@ other account reads it.
 The Pixels tables ask `is_owner()` in `owner_all`, and `pixels_puzzles` adds
 `staff_read`: only the owner makes puzzles and sees the players. A player,
 whether an account or a guest with no account, reaches them only through
-Pixels' eight functions, which find the player first, from the log-in or
+Pixels' ten functions, which find the player first, from the log-in or
 from the hash of a key the guest's browser keeps. Which gates a player is
 sent is `pixels_sees`, which no role may run by itself.
 

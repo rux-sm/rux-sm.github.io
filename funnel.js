@@ -46,7 +46,7 @@
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null')?.user ?? null; }
     catch { return null; }
   };
-  const guestPage = path => /^\/pixels\/(index\.html|category\.html|play\.html)?$/.test(String(path).split(/[?#]/)[0]);
+  const guestPage = path => /^\/pixels\/(index\.html|category\.html|play\.html|me\.html|make\.html)?$/.test(String(path).split(/[?#]/)[0]);
   window.Rux = window.Rux || {};
   window.Rux.access = { accessOf, appOf, canEnter, allows, landing, storedUser, guestPage };
 

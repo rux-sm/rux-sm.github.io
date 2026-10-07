@@ -16,7 +16,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, DAILY, today, streak, time } = window.Pixels;
+  const { data, owner, DAILY, today, streak, time, portrait } = window.Pixels;
   const $ = id => document.getElementById(id);
 
   const say = (heading, detail) => {
@@ -82,7 +82,10 @@
       };
       field.addEventListener('change', rename);
       field.addEventListener('keydown', e => { if (e.key === 'Enter') field.blur(); });
-      named.appendChild(field);
+      const who = document.createElement('div');
+      who.className = 'pixels-player-who';
+      who.append(portrait({ name: p.name, picture: p.picture, colours: p.picture_colours }), field);
+      named.appendChild(who);
       // The two columns for the puzzle of the day go when it is off.
       tr.append(named, ...(DAILY ? [cell(p.today || 'Not yet'), cell(p.days)] : []), cell(p.solved), cell(when(p.last_played_at)));
       const last = document.createElement('td');
@@ -102,6 +105,19 @@
         try { await data.removePlayer(p.id); } catch { say('The player was not removed', 'Try again.'); }
         draw();
       });
+      // A picture the player drew can be taken away; the one made from their name shows again.
+      if (p.picture) {
+        const clear = document.createElement('button');
+        clear.type = 'button';
+        clear.className = 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm';
+        clear.textContent = 'Clear picture';
+        clear.addEventListener('click', async () => {
+          clear.disabled = true;
+          try { await data.clearPicture(p.id); } catch { say('The picture was not cleared', 'Try again.'); }
+          draw();
+        });
+        last.appendChild(clear);
+      }
       last.appendChild(remove);
       tr.appendChild(last);
       return tr;

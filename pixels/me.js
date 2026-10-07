@@ -13,14 +13,15 @@
    puzzles, and their mana comes back. A puzzle's tile opens it in the
    Pixelator. Under a gate is everyone who has found a sprite in it, with
    how many and their time. The local preview has no players, so none of
-   this is shown there.
+   this is shown there, and the owner, whose gates are everyone's and cost no
+   mana, is shown neither their mana nor this list.
    A guest with no player yet gets the name form first; data.js's `enter`
    draws it.
    ========================================================================== */
 (() => {
   'use strict';
 
-  const { data, enter, portrait, words, art, grid, rounds, grade, side, time } = window.Pixels;
+  const { data, owner, enter, portrait, words, art, grid, rounds, grade, side, time } = window.Pixels;
   const host = document.getElementById('pixels-me');
   const say = (heading, detail) => {
     const box = document.getElementById('pixels-error');
@@ -36,7 +37,7 @@
     const h1 = document.createElement('h1');
     h1.className = 'rux--type-productive-heading-04';
     h1.textContent = me.name;
-    text.append(h1, words('pixels-meta', `${me.found} ${me.found === 1 ? 'sprite' : 'sprites'} found${me.mana == null ? '' : ` · ${me.mana} mana`}`));
+    text.append(h1, words('pixels-meta', `${me.found} ${me.found === 1 ? 'sprite' : 'sprites'} found${me.mana == null || owner ? '' : ` · ${me.mana} mana`}`));
     head.append(portrait(me, true), text);
 
     const drawIt = document.createElement('a');
@@ -197,6 +198,7 @@
     }
     if (!me) return;
     draw(me);
-    if (data.own) gates();
+    // The owner's puzzles go in the owner's gates, from Manage, and cost nothing.
+    if (data.own && !owner) gates();
   })();
 })();

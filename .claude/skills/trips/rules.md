@@ -62,4 +62,3 @@ in its section above, and its question is deleted.
 - Does a broker's availability request follow the same steps as a school's quote, and is a bus held before the broker confirms?
 - When an itinerary gives no headcount, is the customer asked, or does the last count they gave stand?
 - When a save offers to add new places and contact details to the lists, which are added? Until rux says, the answer is Not now.
-- The plan in `docs/plans/scheduler-quote-entry.md` holds the questions on rates, the dead-mile discount and the forms.

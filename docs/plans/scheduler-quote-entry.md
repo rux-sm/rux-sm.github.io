@@ -119,10 +119,14 @@ Each tab answers one question and reads only the tabs before it:
   figure means.
 - **Dead miles are suggested past a limit.** Dead miles are the drive from
   the yard to the pickup and back from the last stop. When a leg's pass the
-  office's dead-mile limit, the Billing tab says so and offers to count
-  them on that leg's bus rental, as the Route tab offers a fuel card, and
-  the calculator opens with its tick on. With no limit set, nothing is
-  suggested.
+  office's dead-mile limit, the Billing tab says so and offers the
+  discount, as the Route tab offers a fuel card. With no limit set, nothing
+  is suggested.
+- **The customer sees dead miles as a Discount.** Taking the offer leaves
+  the bus rental at the full rate on every mile and adds a Discount line,
+  Dead miles discount, for the difference, so the quote shows what was
+  taken off. The calculator opens the same way, with Count the route's dead
+  miles and Show dead miles as a discount both ticked.
 - **Estimated miles follow the route.** The field shows the Route summary's
   total and Save writes it, where a blank field writes nothing today, so
   the old app and the driver's forms read the miles the quote was priced
@@ -161,6 +165,9 @@ Each tab answers one question and reads only the tabs before it:
 - **A draft can fill `stops`, the email thread and `passengers`,** beside
   the fields it fills now, and `get_trip` returns `passengers` and marks a
   time past midnight as the next day's.
+- **`get_trip` returns what a save wrote to Billing:** the quote lines, the
+  three Done marks and Quote sent with its price, so a session checks its
+  own save by reading it back and opens Chrome only to look.
 
 ### How it is built
 
@@ -176,11 +183,6 @@ Each tab answers one question and reads only the tabs before it:
   the skill never tells a session to work around something that is gone.
 
 ## Questions
-
-- Should `get_trip` return the quote lines, the three Done marks and Quote
-  sent, so a session can check its own save without opening Chrome?
-- When dead miles are counted, should the quote show a Dead miles discount
-  line, as the calculator's tick does, or only the lower price?
 
 ## Tasks
 
@@ -222,11 +224,13 @@ Each tab answers one question and reads only the tabs before it:
       opening rate in `scheduler/quote.js` take the month of the trip's
       first day.
 - [ ] Say on the Billing tab when a leg's dead miles pass the limit, with
-      the action rux's answer chooses, and open the calculator with its
-      tick on.
+      an action that adds the Dead miles discount line as
+      `linesFromCalculator` does, and open the calculator with both
+      dead-mile ticks on.
 - [ ] Add `stops`, `booking_contact_missive_url` and `passengers` to the
       fields a draft may fill in `scheduler/connector/index.ts`, return
-      `passengers` from `get_trip`, and deploy the connector.
+      `passengers`, the quote lines, the three Done marks and Quote sent
+      from `get_trip`, and deploy the connector.
 - [ ] Teach `applyDraft` in `scheduler/data.js` to lay drafted stops out on
       the Route tab, set each place that matches a saved location, link the
       thread and fill the passenger count, each marked to check, with

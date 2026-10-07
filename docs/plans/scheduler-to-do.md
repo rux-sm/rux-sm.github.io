@@ -15,6 +15,7 @@ team's email, so nobody has to remember to look in three places.
 
 - **It is called To do,** because rux-ui's Tasks list is the per-leg
   paperwork ticks, which the trip checklist now holds.
+- **The list is the whole office's,** with an owner on each row.
 - **Three kinds of row share the list,** told apart by how they arrive and how
   they leave:
 
@@ -40,6 +41,9 @@ team's email, so nobody has to remember to look in three places.
     that has fewer buses than it needs.
   - **No times,** a confirmed trip leaving within a week whose route has no
     times in.
+- **A trip covered by another company's bus keeps its Short of buses row,**
+  because saying so on the trip is a plan of its own, named in
+  `docs/status.md`.
 - **No other rule is added without a reason to,** because a mark that sits on
   most trips says nothing.
 - **A computed row has no tick and no dismiss.** It asks while it is true, as
@@ -130,12 +134,7 @@ team's email, so nobody has to remember to look in three places.
 
 ## Questions
 
-- Is the list the whole office's, with an owner on each row, as decided above,
-  or only rux's own?
-- A trip covered by a bus from another company has no way to say so, so its
-  Short of buses row would never clear. Is a mark on the bus's seat, naming
-  the company, part of this plan or a plan of its own?
-- Are 30 days for Short of buses and a week for No times the right distances?
+None open.
 
 ## Tasks
 

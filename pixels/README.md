@@ -117,22 +117,22 @@ directly: `pixels_puzzles`, every puzzle, which a staff account may read too;
 `pixels_players`, each player's name with the account or the hash of the
 guest's key; `pixels_player_results` and `pixels_player_days`, each player's
 best time on a puzzle and on a puzzle of the day; and
-`pixels_settings`, the invite word; and `pixels_levels`, each gate's name and whether it is hidden. `docs/database-access.md` is the rule they follow.
+`pixels_settings`, the invite word; and `pixels_levels`, each gate's id, name, maker, audience and whether it is hidden. A gate and a puzzle with no maker are the owner's. `docs/database-access.md` is the rule they follow.
 
-A player's page calls eight functions, which the publishable key may run and
-which first find the player from the log-in or the key: `pixels_join`,
-`pixels_me`, `pixels_puzzles`, `pixels_results`, `pixels_days`,
-`pixels_record`, `pixels_record_day` and `pixels_board`. A time is the
-player's own browser's word: the database refuses only what cannot be, a
-time under two seconds, a puzzle that does not exist, a day more than one
-from today. `pixels_puzzles` sends a player no hidden gate, no puzzle that is
-switched off, which is `pixels_puzzles.hidden`, and no puzzle in no
-gate, which is one whose `level` is empty.
+A player's page calls eight functions, which the publishable key may run and which first find the
+player from the log-in or the key: `pixels_join`, `pixels_me`, `pixels_puzzles`, `pixels_results`,
+`pixels_days`, `pixels_record`, `pixels_record_day` and `pixels_board`. A time is the player's own
+browser's word: the database refuses only what cannot be, a time under two seconds, a puzzle the
+player is not sent, a day more than one from today. `pixels_puzzles` sends a player no puzzle that
+is switched off, which is `pixels_puzzles.hidden`, none in no gate, which is one whose `level` is
+empty, and none in a gate that `pixels_sees` says is not theirs to see: that one function is the
+rule, a hidden gate for nobody and a gate for everyone unless its audience says less.
 
-Two more are the owner's and refuse anyone else. `pixels_order_levels`
-renumbers the gates of one size in one step, so a move cannot stop
-half done. `pixels_delete_level` deletes a gate the same way: its
-puzzles are left in no gate and the gates after it move up.
+Four more are the owner's and refuse anyone else. `pixels_order_levels` renumbers the owner's gates
+of one size in one step, so a move cannot stop half done, and each gate keeps its id.
+`pixels_delete_level` deletes a gate the same way: its puzzles are left in no gate and the gates
+after it move up. `pixels_name_level` and `pixels_hide_level` name and hide a gate, and make its row
+if it has none.
 
 `players.html` is the owner's: every player with today's puzzle, days in a
 row, puzzles solved and when they last played; the name, which can be

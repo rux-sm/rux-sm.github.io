@@ -33,7 +33,8 @@ The Pixels tables ask `is_owner()` in `owner_all`, and `pixels_puzzles` adds
 `staff_read`: only the owner makes puzzles and sees the players. A player,
 whether an account or a guest with no account, reaches them only through
 Pixels' eight functions, which find the player first, from the log-in or
-from the hash of a key the guest's browser keeps.
+from the hash of a key the guest's browser keeps. Which gates a player is
+sent is `pixels_sees`, which no role may run by itself.
 
 **No rule may name `anon` or `public`.** The publishable key in `account.js`
 and `data.js` is not a secret and belongs to the `anon` role, so a rule naming

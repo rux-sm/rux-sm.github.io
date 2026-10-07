@@ -48,8 +48,9 @@ it. Each stage below is finished and fun to use before the next starts.
 
 **Who sees a gate**
 
-- **One rule in one database function says whether a player sees a gate,**
-  and every other function asks it, so a new kind of sharing is one change.
+- **One rule in one database function, `pixels_sees`, says whether a player
+  sees a gate,** and every other function asks it, so a new kind of sharing
+  is one change.
 - **A gate has an audience, kept as a word:** `everyone`, `friends` or
   `picked`. More can be added without changing the tables.
 - **The owner's gates are for everyone or for picked players,** chosen in
@@ -70,7 +71,8 @@ it. Each stage below is finished and fun to use before the next starts.
 - **A player has at most five gates.** A gate holds 9 puzzles and is
   published with 3 or more.
 - **A gate has an id and a maker.** A gate with no maker is one of the
-  owner's built-in ones.
+  owner's built-in ones. A puzzle is in the gate of its own maker, size and
+  place, so a player's first gate and the owner's can both be number one.
 - **A player writes through database functions, never a table,** which
   refuse a wrong size, wrong squares, a long name, too little mana, or one
   gate too many.
@@ -112,14 +114,6 @@ it. Each stage below is finished and fun to use before the next starts.
 ## Questions
 
 ## Tasks
-
-**Stage 1: a gate has an id, a maker and an audience**
-
-- [ ] The migration: `pixels_levels` gains an id, a maker and an audience,
-      and a puzzle names its gate by that id. Every gate there today is the
-      owner's and for everyone. Tried on a copy first.
-- [ ] One function says whether a player sees a gate, and `pixels_puzzles`
-      and `pixels_record` ask it. The pages draw exactly what they do today.
 
 **Stage 2: the bar, Me and your picture**
 

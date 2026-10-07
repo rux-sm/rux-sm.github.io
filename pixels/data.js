@@ -304,7 +304,7 @@
     // A level's theme, for boards of one size; an empty name takes it away.
     // Only the name is written, so a hidden level stays hidden.
     async setTheme(width, level, name) {
-      fail((await client.from('pixels_levels').upsert({ width, level, name: name || null })).error);
+      await call('pixels_name_level', { p_width: width, p_level: level, p_name: name || null });
     },
     // Puts the levels of one board size in a new order: `levels` is every
     // level number in use at that size, and each becomes its place in the list.
@@ -318,7 +318,7 @@
     },
     // Hides a level from every player but the owner, or shows it again.
     async setHidden(width, level, hidden) {
-      fail((await client.from('pixels_levels').upsert({ width, level, hidden })).error);
+      await call('pixels_hide_level', { p_width: width, p_level: level, p_hidden: hidden });
     },
     // Every player with their results and days, and the invite word.
     async players() {

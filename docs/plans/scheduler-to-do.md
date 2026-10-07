@@ -57,10 +57,14 @@ team's email, so nobody has to remember to look in three places.
 - **Delete is in the row's menu,** for a row made by mistake.
 - **A tick on a row attached to a trip enters that trip's history,** so the
   trip's record says the work was done and by whom.
-- **An agent row is written straight in, through the connector,** marked as
-  added by Claude and naming the person whose session added it. A wrong row
+- **An agent row is written straight in, through the connector,** as made by
+  Ruxbot, with the person whose session added it kept beside it. A wrong row
   costs one delete, and approving each row first would take back the time the
   list saves.
+- **Ruxbot is a profile with no log-in,** with a name, a picture and a colour
+  like any staff member's, so its rows carry a face and it can do nothing the
+  to-do tools do not. It is never among the faces of who has the Scheduler
+  open, since it is on no page.
 - **The connector is the only way an agent writes a row.** A direct write to
   the database skips the rules and the name of who wrote it, and driving the
   page breaks when the page changes.
@@ -105,8 +109,9 @@ team's email, so nobody has to remember to look in three places.
 - **A field at the top adds a written row,** owned by whoever typed it and
   dated today until changed.
 - **Stored rows are one table, `to_dos`:** the words, where it came from
-  (person or agent), who made it, its owner, due date, trip, thread link and
-  thread key, and who closed it, when and why. Staff only, nothing for an
+  (person or agent), who made it and, for an agent row, whose session it was,
+  its owner, due date, trip, thread link and thread key, and who closed it,
+  when and why. Staff only, nothing for an
   account that is not signed in, and broadcast on realtime so the count is
   live for everyone.
 - **A trip's rows go with the trip** when it is deleted.
@@ -134,9 +139,9 @@ team's email, so nobody has to remember to look in three places.
 - [ ] Check Design for the header action with a count, the header panel at a
       row's width and a one-line row with a checkbox and a menu; add what is
       missing to Design with invented content.
-- [ ] Write the SQL for `to_dos`, its rules, its realtime broadcast and the
-      trip-history entry for a tick, show it to rux, and apply it as a named
-      migration on a yes.
+- [ ] Write the SQL for `to_dos`, its rules, its realtime broadcast, the
+      trip-history entry for a tick and Ruxbot's profile with its picture,
+      show it to rux, and apply it as a named migration on a yes.
 - [ ] Write `scheduler/to-do.js` with the four rules and
       `scheduler/tools/check-to-do.mjs` with sample trips, in the check.
 - [ ] Add the header action and panel to every Scheduler page: the groups,

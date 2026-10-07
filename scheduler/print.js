@@ -1058,6 +1058,10 @@
       const entry = model?.list.find(e => e.row === stop);
       return entry ? waitWords(window.SchedulerRouteFigures.waitOf(model, entry), entry.dwell) : null;
     };
+    /* THE SIMPLE SHEET NAMES ONE WAIT, the rest the driver takes in the
+       sleeper, since it is the plan the day's hours stand on. How long is the
+       row's own Arr and Dep. */
+    const restFor = stop => (stop.dwell_status === 'sleeper' ? 'Rest in sleeper' : null);
     const card = el('article', 'scheduler-form scheduler-driver-itinerary');
     if (detailed) card.dataset.layout = 'detailed';
     card.appendChild(itineraryHead(subject, detailed ? 'Detailed itinerary' : undefined, detailed));
@@ -1133,7 +1137,7 @@
         const pickup = model.rows.pickup;
         body.appendChild(yardRow('Dep', model.times.depart, pickup?.depart_prev_date, dates[i] ?? shown, model.rows.back));
       }
-      body.appendChild(itineraryRow(stop, stops[i + 1] || null, dates[i] ?? shown, detailed ? waitFor(stop) : null));
+      body.appendChild(itineraryRow(stop, stops[i + 1] || null, dates[i] ?? shown, detailed ? waitFor(stop) : restFor(stop)));
     });
     if (!body) table(null);
     if (detailed && model.rows.back) {

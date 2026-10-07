@@ -148,7 +148,7 @@ Three homes, and one rule for choosing.
   record, carries a Printed box beside the panel's Print, ticked by hand,
   which the trip's checklist reads; a trip's Forms list says Printed on such a form's row once
   every copy is ticked, and "1 of 2 printed" until then. The itinerary's Layout picks Simple, the
-  driver's sheet, or Detailed, the office's, with Destination, Client and Contact on one line
+  driver's sheet, which says Rest in sleeper on a stop whose wait is sleeper berth, or Detailed, the office's, with Destination, Client and Contact on one line
   under the bar, the yard at both ends, each wait marked On duty, Off duty or Sleeper berth, and the Route tab's Miles, Drive, On
   duty and Less rest, each day's on its heading and the total after the
   stops, then the Billing tab's saved quote lines: the rental's miles, days,

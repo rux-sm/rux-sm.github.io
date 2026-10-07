@@ -25,7 +25,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - A long day where the group stays nowhere overnight is kept as a one-day trip even when it gets back after midnight, because the +1 beside the time already shows the overlap.
 - Add a fuel card whenever the Route tab suggests one; no need to ask.
 - When the Route tab asks for a second driver, first try one driver resting in a sleeper coach during the longest wait (that stop's wait counted as sleeper berth); if the notice clears, one driver with a sleeper is the plan, because rux always prefers it to a second driver. Only when it does not clear, raise the second driver with rux before deciding, because it changes the cost and the crew.
-- With one driver, the trip requires a sleeper and the pinned update carries the rest plan the driver is told, such as hours in the sleeper at the stop with the bus parked there, since the route cannot show it.
+- With one driver, the trip requires a sleeper and the pinned update carries the rest plan the driver is told, such as hours in the sleeper at the stop with the bus parked there; the driver's itinerary says Rest in sleeper on that stop and nothing more.
 
 ## Buses and drivers
 

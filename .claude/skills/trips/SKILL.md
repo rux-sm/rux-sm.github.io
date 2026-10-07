@@ -130,7 +130,8 @@ rewrites this section as each change is built.
 - **Forms,** in the panel's Trip actions menu: Quote for the customer, and
   Envelope, Hours of service and Itinerary for the drivers. The Quote offers
   to mark it sent the moment it is opened: leave the offer alone. The
-  itinerary's Simple layout is the driver's sheet and Detailed the office's,
+  itinerary's Simple layout is the driver's sheet, which says Rest in sleeper
+  on a stop whose wait counts as sleeper berth, and Detailed the office's,
   with the yard, each wait's status, the day totals and the price.
 
 ## Saving

@@ -193,8 +193,6 @@ Each tab answers one question and reads only the tabs before it:
 - [ ] Mark a return after midnight as the next day's time on the driver's
       itinerary, the office's and the customer quote, and in what `get_trip`
       returns.
-- [ ] Say Rest in sleeper on the Simple itinerary's stop where the wait
-      counts as sleeper berth, in `scheduler/print.js`.
 - [ ] Make Estimated miles show the Route summary's total and save it, with
       a saved figure that differs from the route read as typed, and check
       the old app's driver view reads it.

@@ -97,7 +97,7 @@ a multi-stop layout, on the 6 by 9 envelope itself; the hours-of-service record
 is one per seat too, in the top half of Letter, dated back 7 days from the leg.
 The driver itinerary is one copy per leg, on Letter, running onto as many sheets as its stops need, a day never starting
 at the foot of a sheet and named again over the rest of it on the next, every line typed into before it is printed. Its
-Simple layout is the driver's and its Detailed one the office's, adding the yard, each wait and the leg's daily miles and
+Simple layout is the driver's, naming only the rest taken in the sleeper, and its Detailed one the office's, adding the yard, each wait and the leg's daily miles and
 hours from `route-figures.js`, the Route tab's own sum, which `tools/check-route-figures.mjs` checks. The
 customer quote is one copy per trip, on two Letter sheets: the QUOTE / PROPOSAL
 the office sends, with its estimate number, price and first line item read from the trip, lines

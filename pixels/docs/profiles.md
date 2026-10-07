@@ -52,6 +52,8 @@ What a player has besides the puzzles, and the rule for who is sent a gate.
   puzzle of your own costs one.** A player starts with nine.
 - **Mana is counted by the database from what is there,** so deleting a
   puzzle gives its mana back, and solving your own gives none.
+- **The owner is outside this:** their puzzles go in the owner's gates from
+  Manage and cost nothing, so Me shows them neither mana nor gates.
 - **A player has at most five gates.** A gate holds 9 puzzles and is
   published with 3 or more. One left with no puzzle is gone.
 - **A player writes through database functions, never a table,** which

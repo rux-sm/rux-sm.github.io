@@ -20,6 +20,22 @@ What a player has besides the puzzles, and the rule for who is sent a gate.
 - **Me** shows the picture, the username, the sprites found and the mana,
   changes the first two, and lists the player's own gates.
 
+## A second phone
+
+- **A guest sets a PIN of four digits on Me,** if they want one. It is never
+  asked at the door, and an account, which has the site's log-in, has none.
+- **Another phone logs in with the username and the PIN,** on the form under
+  the name form. It is given a key of its own, so no phone logs another out,
+  and a player keeps the ten newest.
+- **Five wrong PINs lock that username's log-in for 15 minutes, and twice as
+  long each time after,** because four digits are few enough to guess.
+  Phones already logged in keep playing.
+- **The PIN is kept as a hash salted with the player's id,** which hides it
+  from a glance and not from someone holding the table, so only the owner
+  reads the table.
+- **A home screen icon still carries the key its page had,** as
+  `home-screen.md` says.
+
 ## Friends
 
 - **Every player has an invite link of their own,** `?join=` and their code,

@@ -11,7 +11,8 @@
    key: `pixels_puzzles`, `pixels_results`, `pixels_days`, `pixels_record`,
    `pixels_record_day`, `pixels_board`, `pixels_me`, `pixels_join`,
    `pixels_set_picture`, `pixels_rename`, `pixels_people`, `pixels_befriend`,
-   `pixels_renew_invite`, and for a player's own puzzles and gates
+   `pixels_renew_invite`, `pixels_set_pin`, `pixels_login`, and for a player's
+   own puzzles and gates
    `pixels_mine`, `pixels_keep_puzzle`, `pixels_drop_puzzle`,
    `pixels_name_my_level`, `pixels_publish_my_level` and
    `pixels_delete_my_level`. An invite link is `?join=` and a player's own
@@ -22,7 +23,8 @@
    /account.js's, with a log-in or without.
 
    `enter()` is what a page calls first: it says whether there is a player,
-   and where there is not it draws the name form, or says the link is needed.
+   and where there is not it draws the name form, or says the link is needed,
+   and under either the form that logs a player in by their username and PIN.
    `carry()` puts a guest's key in the address for a home screen icon to keep.
    `me` gives the player with their picture and how many sprites they have
    found, and `setPicture` and `rename` change their own picture and username.
@@ -264,6 +266,15 @@
     async setPicture(squares, colours) {
       return call('pixels_set_picture', { p_key: key(), p_squares: squares, p_colours: colours });
     },
+    // The player's own PIN, four digits, or none to take it away; and another
+    // phone logging in by it, which gets a key of its own, kept as a guest's is.
+    async setPin(pin) { return call('pixels_set_pin', { p_key: key(), p_pin: pin }); },
+    async login(name, pin) {
+      const made = crypto.randomUUID() + crypto.randomUUID();
+      const player = await call('pixels_login', { p_name: name, p_pin: pin, p_key: made });
+      if (!player.error) localStorage.setItem(GUEST, JSON.stringify({ key: made, name: player.name }));
+      return player;
+    },
     // Every other player, friends first; adding one is one-way, and their
     // published gates are then sent. A new invite code closes the old link.
     async people() { return call('pixels_people', { p_key: key() }); },
@@ -484,6 +495,62 @@
       el.textContent = words;
       return el;
     };
+    // A field by the markup of Design's text input; `input` is the field itself.
+    const field = (id, label, attrs) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'rux--form-item rux--text-input-wrapper';
+      const labelWrap = document.createElement('div');
+      labelWrap.className = 'rux--text-input__label-wrapper';
+      const name = text('label', 'rux--label', label);
+      name.htmlFor = id;
+      labelWrap.append(name);
+      const outer = document.createElement('div');
+      outer.className = 'rux--text-input__field-outer-wrapper';
+      const inner = document.createElement('div');
+      inner.className = 'rux--text-input__field-wrapper';
+      const input = document.createElement('input');
+      Object.assign(input, { id, className: 'rux--text-input', type: 'text', ...attrs });
+      inner.append(input);
+      outer.append(inner);
+      wrap.append(labelWrap, outer);
+      return { wrap, input };
+    };
+    // The page again, at its own address without the invite code.
+    const again = () => {
+      const rest = new URLSearchParams(location.search);
+      rest.delete('join');
+      location.replace(location.pathname + (String(rest) ? `?${rest}` : ''));
+    };
+    /* LOG IN, for a player who set a PIN on Me and is on another phone: their
+       username and the PIN. It is under the name form, and under the words
+       of a visitor with no invite link. */
+    const logIn = () => {
+      const form = document.createElement('form');
+      form.className = 'pixels-join rux--stack-vertical rux--stack-scale-5';
+      form.noValidate = true;
+      form.append(text('h2', 'rux--type-productive-heading-02', 'Already playing?'));
+      const who = field('pixels-login-name', 'Username', { maxLength: 20, autocomplete: 'username' });
+      const pin = field('pixels-login-pin', 'PIN', { maxLength: 4, inputMode: 'numeric', autocomplete: 'off', type: 'password' });
+      const note = text('p', 'pixels-join-note', '');
+      note.setAttribute('aria-live', 'polite');
+      const go = text('button', 'rux--btn rux--btn--tertiary', 'Log in');
+      go.type = 'submit';
+      form.append(who.wrap, pin.wrap, note, go);
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        if (!who.input.value.trim() || !/^\d{4}$/.test(pin.input.value)) { note.textContent = 'Type your username and your PIN of four digits.'; return; }
+        go.disabled = true;
+        let player;
+        try { player = await cloud.login(who.input.value.trim(), pin.input.value); } catch { player = { error: 'lost' }; }
+        if (!player.error) { again(); return; }
+        go.disabled = false;
+        pin.input.value = '';
+        note.textContent = player.error === 'locked' ? `Too many wrong tries. Try again in ${player.minutes} ${player.minutes === 1 ? 'minute' : 'minutes'}.`
+          : player.error === 'wrong' ? `That username and PIN do not match.${player.left ? ` ${player.left} ${player.left === 1 ? 'try' : 'tries'} left.` : ''}`
+            : 'That did not go through. Try again.';
+      });
+      return form;
+    };
     const form = document.createElement('form');
     form.className = 'pixels-join rux--stack-vertical rux--stack-scale-6';
     form.noValidate = true;
@@ -491,34 +558,19 @@
     if (!word()) {
       form.append(text('p', 'rux--type-body-01', stale ? 'This icon no longer opens a player. Ask for a new invite link.' : 'Pixels opens from an invite link. Ask for one to play.'));
       // An account's way in, which an app on the home screen has no address bar for.
-      const login = text('a', 'rux--link', 'Log in');
+      const login = text('a', 'rux--link', 'Log in with an account');
       login.href = '/login/?next=/pixels/';
-      form.append(login);
-      host.replaceChildren(form);
+      form.addEventListener('submit', e => e.preventDefault());
+      host.replaceChildren(form, logIn(), login);
       return null;
     }
     form.append(text('p', 'rux--type-body-01', 'Type a name to play. Everyone playing sees it on the leaderboard.'));
-    const field = document.createElement('div');
-    field.className = 'rux--form-item rux--text-input-wrapper';
-    const labelWrap = document.createElement('div');
-    labelWrap.className = 'rux--text-input__label-wrapper';
-    const label = text('label', 'rux--label', 'Name');
-    label.htmlFor = 'pixels-join-name';
-    labelWrap.append(label);
-    const outer = document.createElement('div');
-    outer.className = 'rux--text-input__field-outer-wrapper';
-    const inner = document.createElement('div');
-    inner.className = 'rux--text-input__field-wrapper';
-    const input = document.createElement('input');
-    Object.assign(input, { id: 'pixels-join-name', className: 'rux--text-input', type: 'text', maxLength: 20, autocomplete: 'nickname', required: true });
-    inner.append(input);
-    outer.append(inner);
-    field.append(labelWrap, outer);
+    const { wrap, input } = field('pixels-join-name', 'Name', { maxLength: 20, autocomplete: 'nickname', required: true });
     const note = text('p', 'pixels-join-note', '');
     note.setAttribute('aria-live', 'polite');
     const go = text('button', 'rux--btn rux--btn--primary', 'Play');
     go.type = 'submit';
-    form.append(field, note, go);
+    form.append(wrap, note, go);
     form.addEventListener('submit', async e => {
       e.preventDefault();
       const name = input.value.trim();
@@ -526,13 +578,7 @@
       go.disabled = true;
       let player;
       try { player = await cloud.join(name); } catch { player = { error: 'lost' }; }
-      // The page again, at its own address without the invite word.
-      if (!player.error) {
-        const rest = new URLSearchParams(location.search);
-        rest.delete('join');
-        location.replace(location.pathname + (String(rest) ? `?${rest}` : ''));
-        return;
-      }
+      if (!player.error) { again(); return; }
       go.disabled = false;
       note.textContent = {
         taken: 'That name is taken. Try another.',
@@ -541,7 +587,7 @@
         closed: 'Pixels is not taking new players just now.',
       }[player.error] || 'That did not go through. Try again.';
     });
-    host.replaceChildren(form);
+    host.replaceChildren(form, logIn());
     input.focus();
     return null;
   };

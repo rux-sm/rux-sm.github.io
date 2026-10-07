@@ -4,7 +4,8 @@
    The player's picture, large, beside their username, how many sprites
    they have found and their mana. Draw your picture opens the Pixelator on
    it. The username is a field: Save keeps a new one, unless another player
-   has it.
+   has it. A guest sets a PIN of four digits there, to log in on another
+   phone with their username and it.
 
    YOUR GATES are the gates the player has made, each with its name, which
    is a field that saves as it is left, its size, how many puzzles it
@@ -21,7 +22,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, enter, portrait, words, art, grid, rounds, grade, side, time } = window.Pixels;
+  const { data, owner, guest, enter, portrait, words, art, grid, rounds, grade, side, time } = window.Pixels;
   const host = document.getElementById('pixels-me');
   const say = (heading, detail) => {
     const box = document.getElementById('pixels-error');
@@ -91,6 +92,66 @@
       draw(now);
     });
     host.append(head, drawIt, form, note);
+    if (guest && data.setPin) host.append(pinForm(me));
+  };
+
+  /* A PIN, for a guest who wants Pixels on another phone: four digits, kept
+     with Save, and there they log in with their username and it. Remove
+     takes it away. An account has the site's log-in and is not shown this. */
+  const pinForm = me => {
+    const form = document.createElement('form');
+    form.noValidate = true;
+    form.className = 'rux--stack-vertical rux--stack-scale-3';
+    const row = document.createElement('div');
+    row.className = 'pixels-me-name';
+    const wrap = document.createElement('div');
+    wrap.className = 'rux--form-item rux--text-input-wrapper';
+    const labelWrap = document.createElement('div');
+    labelWrap.className = 'rux--text-input__label-wrapper';
+    const input = document.createElement('input');
+    Object.assign(input, { id: 'pixels-me-pin', className: 'rux--text-input', type: 'password', maxLength: 4, inputMode: 'numeric', autocomplete: 'off', placeholder: me.pin ? 'A new PIN' : 'Four digits' });
+    const label = document.createElement('label');
+    label.className = 'rux--label';
+    label.htmlFor = input.id;
+    label.textContent = 'PIN for another phone';
+    labelWrap.append(label);
+    const outer = document.createElement('div');
+    outer.className = 'rux--text-input__field-outer-wrapper';
+    const inner = document.createElement('div');
+    inner.className = 'rux--text-input__field-wrapper';
+    inner.append(input);
+    outer.append(inner);
+    wrap.append(labelWrap, outer);
+    const go = document.createElement('button');
+    go.type = 'submit';
+    go.className = 'rux--btn rux--btn--primary rux--btn--md';
+    go.textContent = 'Save';
+    row.append(wrap, go);
+    const note = words('pixels-meta', me.pin ? 'You have a PIN. On another phone, log in with your username and it.' : 'With a PIN you can log in on another phone, with your username and it.');
+    note.setAttribute('aria-live', 'polite');
+    form.append(row, note);
+    const set = async pin => {
+      go.disabled = true;
+      let now;
+      try { now = await data.setPin(pin); } catch { now = { error: 'lost' }; }
+      go.disabled = false;
+      if (now.error) { note.textContent = now.error === 'pin' ? 'A PIN is four digits.' : 'That did not go through. Try again.'; return; }
+      form.replaceWith(pinForm({ ...me, pin: now.pin }));
+    };
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      if (!/^\d{4}$/.test(input.value)) { note.textContent = 'A PIN is four digits.'; return; }
+      set(input.value);
+    });
+    if (me.pin) {
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm';
+      remove.textContent = 'Remove the PIN';
+      remove.addEventListener('click', () => set(null));
+      form.append(remove);
+    }
+    return form;
   };
 
   const button = (cls, text) => {

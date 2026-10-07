@@ -25,14 +25,14 @@ puzzles easy to hard, with nothing locked, each tile a square, three across on a
 wide screen. A solved puzzle shows its picture, name and best time; an unsolved one a question mark,
 how hard it is and its number in the gate, or Boss for the last.
 
-`me.html` is the player's own page: their picture, username, sprites found and mana, and the gates
-they have made, each to name, publish or delete, with who has found sprites in it. `friends.html` is
-the player's invite link and every other player, each to add or remove. A player's own puzzles are
-made in the Pixelator, for mana, and a friend's published gates stand after the owner's on the front
-page, saying who made them, and New until opened. A bar holds the places every player has, Puzzles,
-Friends, Pixelator and Me: along the bottom on a phone, along the top on a wide screen, and not on a
-page where a puzzle is played or drawn. `docs/profiles.md` is the whole of it: profiles, friends,
-mana, and who is sent a gate.
+`me.html` is the player's own page: their picture, username, sprites found and mana, a PIN for
+logging in on another phone, and the gates they have made, each to name, publish or delete, with who
+has found sprites in it. `friends.html` is the player's invite link and every other player, each to
+add or remove. A player's own puzzles are made in the Pixelator, for mana, and a friend's published
+gates stand after the owner's on the front page, saying who made them, and New until opened. A bar
+holds the places every player has, Puzzles, Friends, Pixelator and Me: along the bottom on a phone,
+along the top on a wide screen, and not on a page where a puzzle is played or drawn.
+`docs/profiles.md` is the whole of it: profiles, friends, mana, and who is sent a gate.
 
 `play.html?id=` plays one puzzle, 5, 10 or 15 squares a side. The board waits behind Tap to start,
 which with a mouse says Start, drawn bare until then, with no number and no mark, and the clock runs
@@ -107,27 +107,28 @@ or deleted; a gate left empty goes too.
 
 ## Data
 
-Eight tables in the site's database, which only the owner's account reads directly:
-`pixels_puzzles`, every puzzle, which a staff account may read too; `pixels_players`, each player's
-name and picture with the account or the hash of the guest's key; `pixels_player_results` and
-`pixels_player_days`, each player's best time on a puzzle and on a puzzle of the day; and
-`pixels_settings`, whether new players may join; `pixels_friends`, who has added whom;
-`pixels_level_players`, the players a gate is kept for; and `pixels_levels`, each gate's id, name,
-maker, audience and whether it is hidden. A gate and a puzzle with no maker are the owner's.
-`docs/database-access.md` is the rule they follow.
+Nine tables in the site's database, which only the owner's account reads directly: `pixels_puzzles`,
+every puzzle, which a staff account may read too; `pixels_players`, each player's name and picture
+with the account or the hash of the guest's key; `pixels_player_results` and `pixels_player_days`,
+each player's best time on a puzzle and on a puzzle of the day; and `pixels_settings`, whether new
+players may join; `pixels_friends`, who has added whom; `pixels_player_keys`, the key of each phone
+that logged in by a PIN; `pixels_level_players`, the players a gate is kept for; and
+`pixels_levels`, each gate's id, name, maker, audience and whether it is hidden. A gate and a puzzle
+with no maker are the owner's. `docs/database-access.md` is the rule they follow.
 
-A player's page calls nineteen functions, which the publishable key may run and which first find the
-player from the log-in or the key: `pixels_join`, `pixels_me`, `pixels_puzzles`, `pixels_results`,
-`pixels_days`, `pixels_record`, `pixels_record_day`, `pixels_board`, `pixels_set_picture`,
-`pixels_rename`, `pixels_people`, `pixels_befriend`, `pixels_renew_invite`, and for a player's own
-gates `pixels_mine`, `pixels_keep_puzzle`, `pixels_drop_puzzle`, `pixels_name_my_level`,
-`pixels_publish_my_level` and `pixels_delete_my_level`. A time is the player's own browser's word:
-the database refuses only what cannot be, a time under two seconds, a puzzle the player is not sent,
-a day more than one from today. `pixels_puzzles` sends a player no puzzle that is switched off,
-which is `pixels_puzzles.hidden`, none in no gate, which is one whose `level` is empty, and none in
-a gate that `pixels_sees` says is not theirs to see: that one function is the rule, a hidden gate
-for nobody and a gate for everyone, for its maker's friends or for the players picked, as its
-audience says.
+A player's page calls twenty-one functions, which the publishable key may run and which first find
+the player from the log-in or the key: `pixels_join`, `pixels_me`, `pixels_puzzles`,
+`pixels_results`, `pixels_days`, `pixels_record`, `pixels_record_day`, `pixels_board`,
+`pixels_set_picture`, `pixels_rename`, `pixels_people`, `pixels_befriend`, `pixels_renew_invite`,
+`pixels_set_pin`, `pixels_login`, and for a player's own gates `pixels_mine`, `pixels_keep_puzzle`,
+`pixels_drop_puzzle`, `pixels_name_my_level`, `pixels_publish_my_level` and
+`pixels_delete_my_level`. A time is the player's own browser's word: the database refuses only what
+cannot be, a time under two seconds, a puzzle the player is not sent, a day more than one from
+today. `pixels_puzzles` sends a player no puzzle that is switched off, which is
+`pixels_puzzles.hidden`, none in no gate, which is one whose `level` is empty, and none in a gate
+that `pixels_sees` says is not theirs to see: that one function is the rule, a hidden gate for
+nobody and a gate for everyone, for its maker's friends or for the players picked, as its audience
+says.
 
 Five more are the owner's and refuse anyone else. `pixels_share_level` keeps a gate for the players
 named, or gives it back to everyone. `pixels_order_levels` renumbers the owner's gates of one size

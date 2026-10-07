@@ -98,6 +98,10 @@ Each tab answers one question and reads only the tabs before it:
   times, the fuel card limits and the dead-mile limit. The Route tab's
   windows for the first two stay, because they are changed with a trip
   open.
+- **A setting one page uses keeps its window there.** Follow-ups stay on
+  Trips and Vehicle types on Fleet. The yard, the bus needs and the billing
+  steps, which only the old app edits, join Settings by the screen
+  inventory's own row and not by this plan.
 
 ### Billing and the rates
 
@@ -113,13 +117,16 @@ Each tab answers one question and reads only the tabs before it:
   calculator show the rate's note beside its amount, and a rate the
   Calendar chose names its month, so nobody has to remember what a bare
   figure means.
-- **Dead miles are suggested past a limit.** When the route's dead miles
-  pass the office's dead-mile limit, the Billing tab offers Count dead miles
-  on the bus rental and the calculator opens with its tick on, as the Route
-  tab offers a fuel card. With no limit set, nothing is suggested.
-- **Estimated miles follow the route.** The field shows the route's total
-  and moves with it until a figure is typed over it, which then stays, so
-  it is not typed again after every quote.
+- **Dead miles are suggested past a limit.** Dead miles are the drive from
+  the yard to the pickup and back from the last stop. When a leg's pass the
+  office's dead-mile limit, the Billing tab says so and offers to count
+  them on that leg's bus rental, as the Route tab offers a fuel card, and
+  the calculator opens with its tick on. With no limit set, nothing is
+  suggested.
+- **Estimated miles follow the route.** The field shows the Route summary's
+  total and Save writes it, where a blank field writes nothing today, so
+  the old app and the driver's forms read the miles the quote was priced
+  on. A figure typed over it stays.
 
 ### Files
 
@@ -143,8 +150,8 @@ Each tab answers one question and reads only the tabs before it:
 ### Forms
 
 - **The Simple itinerary says Rest in sleeper** on the stop where the wait
-  counts as sleeper berth, as the Detailed one does, so the driver reads
-  the rest plan on the sheet they carry.
+  counts as sleeper berth, so the driver reads the rest plan on the sheet
+  they carry. It prints no other wait, which stays the Detailed sheet's.
 - **A return after midnight prints as the next day's time.** The driver's
   itinerary, the office's and the customer quote mark it as the editor and
   the board do, so a driver never reads a midnight return as the morning's.
@@ -172,9 +179,8 @@ Each tab answers one question and reads only the tabs before it:
 
 - Should `get_trip` return the quote lines, the three Done marks and Quote
   sent, so a session can check its own save without opening Chrome?
-- Which of the office's other settings move to the Settings page: the
-  follow-up days, the billing steps, the vehicle types, the bus needs and
-  the yard?
+- When dead miles are counted, should the quote show a Dead miles discount
+  line, as the calculator's tick does, or only the lower price?
 
 ## Tasks
 
@@ -190,9 +196,10 @@ Each tab answers one question and reads only the tabs before it:
       itinerary, the office's and the customer quote, and in what `get_trip`
       returns.
 - [ ] Say Rest in sleeper on the Simple itinerary's stop where the wait
-      counts as sleeper berth.
-- [ ] Make Estimated miles follow the route's total until a figure is typed
-      over it.
+      counts as sleeper berth, in `scheduler/print.js`.
+- [ ] Make Estimated miles show the Route summary's total and save it, with
+      a saved figure that differs from the route read as typed, and check
+      the old app's driver view reads it.
 - [ ] Let the Files tab hold a file before the first save and send it once
       the trip exists.
 - [ ] Write the `passengers` column as SQL, show it to rux, and apply it on
@@ -201,19 +208,22 @@ Each tab answers one question and reads only the tabs before it:
       trip, and to the history's field names.
 - [ ] Warn on the Buses tab when the passenger count is above the seats the
       trip's buses hold.
-- [ ] Turn the Rates page into Settings, `settings.html`, with the rates
-      on its first tab, and link it from the side navigation of every
-      Scheduler page and from the calculator.
+- [ ] Turn the Rates page into Settings, `settings.html`, laid out with the
+      design-page skill: the rates form and its Save on the first tab, a
+      link in the side navigation of the fourteen pages that carry one, and
+      the calculator's Edit rates pointed at it.
 - [ ] Build the Calendar tab: a mileage rate for each month, saved in
       `settings`, with a month left alone on the default rate.
 - [ ] Build the Trips tab: the route times, the fuel card limits and the
       dead-mile limit, the last one new in `settings`.
 - [ ] Show the rate's note on the bus rental line and in the calculator,
       with the month when the Calendar chose it.
-- [ ] Make Add the bus rental and the calculator's opening rate follow the
-      month of the trip's first day.
-- [ ] Offer Count dead miles on the Billing tab, and open the calculator
-      with its tick on, when the route's dead miles pass the limit.
+- [ ] Make `defaultRate` in `scheduler/data.js` and the calculator's
+      opening rate in `scheduler/quote.js` take the month of the trip's
+      first day.
+- [ ] Say on the Billing tab when a leg's dead miles pass the limit, with
+      the action rux's answer chooses, and open the calculator with its
+      tick on.
 - [ ] Add `stops`, `booking_contact_missive_url` and `passengers` to the
       fields a draft may fill in `scheduler/connector/index.ts`, return
       `passengers` from `get_trip`, and deploy the connector.
@@ -226,7 +236,9 @@ Each tab answers one question and reads only the tabs before it:
       rate rule it restates.
 - [ ] Describe the new column, the Settings page and its two new settings,
       the draft's new fields and the changed windows in the scheduler's
-      database and screen inventories and in `working-from-claude.md`.
+      database and screen inventories and in `working-from-claude.md`, and
+      trim the screen inventory's Settings row to the yard, the bus needs
+      and the billing steps.
 - [ ] Enter a trip from an invented itinerary through a draft in Chrome on
       :8641: stops laid out, a saved location set by itself, sleeper rest
       taken from the notice, bus rental added at the month's rate, dead

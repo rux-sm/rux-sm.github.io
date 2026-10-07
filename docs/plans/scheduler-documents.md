@@ -52,8 +52,9 @@ driver who has none.
 - **Search matches every word you type** against the kind, who it is issued
   to, the driver, the file name and the note, so "memorial insurance" narrows
   to one row.
-- **A customer's page lists the documents issued to it,** each opening the
-  same way, under a link to the Documents page narrowed to that customer.
+- **A customer's page lists the documents issued to it on a Documents tab,**
+  each opening the same way, under a link to the Documents page narrowed to
+  that customer.
 - **Only the current copy shows by default.** A new upload of the same kind
   for the same holder and driver makes the old one "old": it is kept, hidden
   behind a "Show old" switch, and never offered by the Claude app.

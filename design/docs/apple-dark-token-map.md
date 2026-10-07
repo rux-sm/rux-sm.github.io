@@ -19,6 +19,8 @@ these values. Its shapes, sizes and type are apple-light's, in
   colours answer with the Guidelines' dark defaults.
 - **Controls:** AppKit's own, drawn off screen under the dark appearance at
   eight times size on the window background.
+- **Calendar's greys:** Calendar's month under the dark appearance on macOS
+  27, read off the screen with Digital Color Meter.
 
 ## System colours
 
@@ -56,22 +58,22 @@ increased-contrast steps.
 ## Labels, fills and separator
 
 Each is white at a strength, so it lightens whatever it sits on. The last two
-columns are what that makes on the window and on this theme's raised surface,
-the under-page background.
+columns are what that makes on this theme's page and on its raised surface,
+Calendar's two greys below.
 
-| Use | AppKit name | Value | On the window | On the raised surface |
+| Use | AppKit name | Value | On the page | On the raised surface |
 | :--- | :--- | :--- | :--- | :--- |
 | Label | `labelColor` | white at 84.7% | `#dddddd` | `#dedede` |
-| Secondary label | `secondaryLabelColor` | white at 54.9% | `#9a9a9a` | `#9e9e9e` |
-| Tertiary label | `tertiaryLabelColor` | white at 24.7% | `#565656` | `#5d5d5d` |
-| Placeholder text | `placeholderTextColor` | white at 54.9% | `#9a9a9a` | `#9e9e9e` |
-| Disabled control text | `disabledControlTextColor` | white at 24.7% | `#565656` | `#5d5d5d` |
-| Separator | `separatorColor` | white at 9.8% | `#343434` | `#3d3d3d` |
-| Fill | `systemFill` | white at 9.8% | `#343434` | `#3d3d3d` |
-| Secondary fill | `secondarySystemFill` | white at 7.8% | `#303030` | `#393939` |
-| Tertiary fill | `tertiarySystemFill` | white at 4.7% | `#292929` | `#323232` |
-| Quaternary fill | `quaternarySystemFill` | white at 2.7% | `#242424` | `#2e2e2e` |
-| Quinary fill | `quinarySystemFill` | white at 0.8% | `#202020` | `#2a2a2a` |
+| Secondary label | `secondaryLabelColor` | white at 54.9% | `#9a9a9b` | `#9e9e9f` |
+| Tertiary label | `tertiaryLabelColor` | white at 24.7% | `#565759` | `#5d5d5f` |
+| Placeholder text | `placeholderTextColor` | white at 54.9% | `#9a9a9b` | `#9e9e9f` |
+| Disabled control text | `disabledControlTextColor` | white at 24.7% | `#565759` | `#5d5d5f` |
+| Separator | `separatorColor` | white at 9.8% | `#353638` | `#3d3d3f` |
+| Fill | `systemFill` | white at 9.8% | `#353638` | `#3d3d3f` |
+| Secondary fill | `secondarySystemFill` | white at 7.8% | `#303133` | `#39393b` |
+| Tertiary fill | `tertiarySystemFill` | white at 4.7% | `#2a2a2c` | `#323234` |
+| Quaternary fill | `quaternarySystemFill` | white at 2.7% | `#252628` | `#2e2e30` |
+| Quinary fill | `quinarySystemFill` | white at 0.8% | `#212224` | `#2a2a2c` |
 
 ## Backgrounds, accent and selection
 
@@ -90,11 +92,21 @@ the under-page background.
 | Focus ring | `keyboardFocusIndicatorColor` | 26,169,255 at 49.8% |
 
 The under-page background is the lighter of the two here, where under the
-light appearance it is the darker. So this theme's page is the window and its
-raised surface the under-page grey, and a card still stands off the page by
-its fill.
+light appearance it is the darker.
 
 The control accent is one colour under both appearances.
+
+## Calendar's greys
+
+| Where in Calendar's month | Reads | AppKit's own |
+| :--- | :--- | :--- |
+| The ground its days lie on | `#1f2022` 31, 32, 34 | Window background, 30, 30, 30 |
+| A day outside the month | `#28282a` 40, 40, 42 | Under-page background, 40, 40, 40 |
+
+Calendar shows AppKit's two greys with a faint blue in them. This theme's
+page is the first and its raised surface the second, so a card still stands
+off the page by its fill, and every label, fill and separator above is laid
+on one of the two and carries that blue.
 
 ## Controls
 
@@ -114,8 +126,8 @@ appearance the two are one white.
 
 | Where | Apple's own | Makes | This theme takes | Makes |
 | :--- | :--- | :--- | :--- | :--- |
-| Secondary text on a chosen row | Secondary label, `#9e9e9e` | 4.31 | Gray, increased contrast, dark | 5.22 |
-| A link on a chosen row | Link, `#419cff` | 4.08 | Blue, increased contrast, dark | 5.37 |
+| Secondary text on a chosen row | Secondary label, `#9e9e9f` | 4.30 | Gray, increased contrast, dark | 5.21 |
+| A link on a chosen row | Link, `#419cff` | 4.07 | Blue, increased contrast, dark | 5.35 |
 | A white label on the filled button | Control accent | 4.02 | Blue, increased contrast, light | 4.57 |
 | Red words on the red tag | Red, increased contrast, dark | 4.13 | The same, 13% toward white | 4.69 |
 
@@ -129,19 +141,19 @@ step, no tint, and no chat surface; the third column says which.
 | Value | From Apple | | Tokens, each `--rux-` |
 | :--- | :--- | :--- | :--- |
 | `dark` | The dark appearance | read | `color-scheme` |
-| `#1e1e1e` | Window and control background | read | `background`, `layer-03`, `layer-background-03`, `text-inverse`, `link-inverse-active`, `icon-inverse`, `focus-inset`, `notification-action-tertiary-inverse`, `chat-prompt-background` |
+| `#1f2022` | Calendar's ground | read | `background`, `layer-03`, `layer-background-03`, `text-inverse`, `link-inverse-active`, `icon-inverse`, `focus-inset`, `notification-action-tertiary-inverse`, `chat-prompt-background` |
 | `#464646` | Selected content, unemphasized | read | `background-active`, `background-selected-hover`, `layer-accent-active-02`, `layer-accent-hover-03`, `layer-active-03`, `layer-selected-hover-03`, `button-secondary-active` |
 | `#1e6ef4` | Blue, increased contrast, light | read | `background-brand`, `support-info-inverse`, `button-primary`, `content-switcher-selected` |
-| `#2e2e2e` | White at 7% on the window, between the two fills | derived | `background-hover` |
+| `#2f3031` | White at 7% on the page, between the two fills | derived | `background-hover` |
 | `#dedede` | Label on the raised surface | read | `background-inverse`, `layer-selected-inverse`, `border-inverse`, `text-primary`, `icon-primary`, `notification-action-tertiary-inverse-text`, `chat-bubble-agent-text`, `chat-bubble-user-text`, `chat-header-text`, `chat-prompt-text` |
 | `#c8c8c8` | The label on the raised surface, darkened for hover | derived | `background-inverse-hover` |
-| `#343434` | Separator and fill on the window | read | `background-selected`, `layer-selected-03` |
-| `#282828` | Under-page background | read | `layer-01`, `layer-02`, `layer-background-01`, `layer-background-02`, `chat-bubble-agent`, `chat-header-background`, `chat-prompt-border-start`, `chat-shell-background` |
-| `#323232` | Tertiary fill on the raised surface | read | `layer-accent-01`, `layer-hover-01`, `layer-hover-02`, `skeleton-background`, `button-disabled`, `notification-action-hover`, `notification-action-tertiary-inverse-hover` |
-| `#393939` | Secondary fill on the raised surface | read | `layer-accent-02`, `layer-accent-hover-01`, `layer-selected-01`, `layer-selected-02`, `button-secondary`, `content-switcher-background`, `chat-bubble-user` |
-| `#3d3d3d` | Separator and fill on the raised surface | read | `layer-accent-03`, `layer-accent-active-01`, `layer-accent-hover-02`, `layer-active-01`, `layer-active-02`, `layer-selected-hover-01`, `layer-selected-hover-02`, `border-disabled`, `border-subtle-00`, `border-subtle-01`, `border-tile-01`, `skeleton-element`, `button-secondary-hover`, `content-switcher-background-hover` |
+| `#353638` | Separator and fill on the page | read | `background-selected`, `layer-selected-03` |
+| `#28282a` | Calendar's day outside the month | read | `layer-01`, `layer-02`, `layer-background-01`, `layer-background-02`, `chat-bubble-agent`, `chat-header-background`, `chat-prompt-border-start`, `chat-shell-background` |
+| `#323234` | Tertiary fill on the raised surface | read | `layer-accent-01`, `layer-hover-01`, `layer-hover-02`, `skeleton-background`, `button-disabled`, `notification-action-hover`, `notification-action-tertiary-inverse-hover` |
+| `#39393b` | Secondary fill on the raised surface | read | `layer-accent-02`, `layer-accent-hover-01`, `layer-selected-01`, `layer-selected-02`, `button-secondary`, `content-switcher-background`, `chat-bubble-user` |
+| `#3d3d3f` | Separator and fill on the raised surface | read | `layer-accent-03`, `layer-accent-active-01`, `layer-accent-hover-02`, `layer-active-01`, `layer-active-02`, `layer-selected-hover-01`, `layer-selected-hover-02`, `border-disabled`, `border-subtle-00`, `border-subtle-01`, `border-tile-01`, `skeleton-element`, `button-secondary-hover`, `content-switcher-background-hover` |
 | `#545456` | Gray 3, increased contrast, dark | read | `layer-accent-active-03`, `border-strong-01`, `border-subtle-selected-03` |
-| `#303030` | Secondary fill on the window | read | `layer-hover-03` |
+| `#303133` | Secondary fill on the page | read | `layer-hover-03` |
 | `#636366` | Gray 2, dark | read | `layer-selected-disabled`, `border-strong-02`, `text-on-color-disabled`, `icon-on-color-disabled`, `toggle-off` |
 | `#161616` | A text field's inside | read | `field-01`, `field-02`, `field-03` |
 | `#1c1c1c` | Quaternary fill on a text field's inside | read | `field-hover-01`, `field-hover-02` |
@@ -208,4 +220,4 @@ step, no tint, and no chat surface; the third column says which.
 | `rgba(141, 141, 141, 0.4)` | Carbon's own dark set | derived | `chat-button-active` |
 | `rgba(141, 141, 141, 0.16)` | Carbon's own dark set | derived | `chat-button-hover` |
 | `rgba(141, 141, 141, 0.24)` | Carbon's own dark set | derived | `chat-button-selected` |
-| `rgba(40, 40, 40, 0)` | The under-page background at no strength, the end of a fade | derived | `chat-prompt-border-end` |
+| `rgba(40, 40, 42, 0)` | The raised surface at no strength, the end of a fade | derived | `chat-prompt-border-end` |

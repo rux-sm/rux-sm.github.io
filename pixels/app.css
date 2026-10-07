@@ -328,6 +328,16 @@
 #pixels-made[hidden] { display: none; }
 #pixels-made { margin-block-start: 2.5rem; }
 .pixels-mine { padding-block-start: 1rem; border-block-start: 1px solid var(--rux-border-subtle-01); }
+/* A gate's own row: its name, what it holds, and its two keys. On a phone
+   the name has a line to itself and the rest sit under it, the keys at the
+   far end; on a wide screen they are one line. */
+.pixels-mine-head { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: .5rem; align-items: center; }
+.pixels-mine-head > input { grid-column: 1 / -1; }
+.pixels-mine-head > .pixels-meta { white-space: nowrap; }
+@media (min-width: 42rem) {
+  .pixels-mine-head { grid-template-columns: minmax(8rem, 14rem) minmax(0, 1fr) auto auto; gap: .5rem 1rem; }
+  .pixels-mine-head > input { grid-column: auto; }
+}
 .pixels-me { display: grid; gap: 1.5rem; max-inline-size: 24rem; }
 .pixels-me-head { display: flex; align-items: center; gap: 1rem; }
 .pixels-me-name { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .5rem; align-items: end; }

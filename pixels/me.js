@@ -8,9 +8,9 @@
    phone with their username and it.
 
    YOUR GATES are the gates the player has made, each with its name, which
-   is a field that saves as it is left, its size, how many puzzles it
-   holds, and whether it is published. Publish sends it to their friends
-   and takes three puzzles; Delete, pressed twice, takes the gate and its
+   is a field that saves as it is left, its size and how many puzzles it
+   holds. Publish sends it to their friends and takes three puzzles, and
+   reads Unpublish once it is; Delete, pressed twice, takes the gate and its
    puzzles, and their mana comes back. A puzzle's tile opens it in the
    Pixelator. Under a gate is everyone who has found a sprite in it, with
    how many and their time. The local preview has no players, so none of
@@ -189,9 +189,9 @@
       const box = document.createElement('div');
       box.className = 'rux--stack-vertical rux--stack-scale-3 pixels-mine';
       const head = document.createElement('div');
-      head.className = 'pixels-level-head';
+      head.className = 'pixels-mine-head';
       const name = document.createElement('input');
-      Object.assign(name, { className: 'rux--text-input rux--layout--size-sm pixels-player-name', type: 'text', maxLength: 30, value: g.theme || '', placeholder: 'Name this gate' });
+      Object.assign(name, { className: 'rux--text-input rux--layout--size-sm', type: 'text', maxLength: 30, value: g.theme || '', placeholder: 'Name this gate' });
       name.setAttribute('aria-label', `Name of ${g.theme || 'this gate'}`);
       name.addEventListener('change', async () => {
         try { await data.own.setTheme(g.width, g.level, name.value.trim()); document.getElementById('pixels-error').hidden = true; } catch { say('The gate was not renamed', 'Try again.'); }
@@ -220,7 +220,7 @@
         try { await data.own.removeLevel(g.width, g.level); } catch { say('The gate was not deleted', 'Try again.'); }
         location.reload();
       });
-      head.append(name, words('pixels-meta', `${side(g)} · ${g.puzzles.length} of 9 · ${g.hidden ? 'hidden' : 'published'}`), shown, remove);
+      head.append(name, words('pixels-meta', `${side(g)} · ${g.puzzles.length} of 9`), shown, remove);
       const list = document.createElement('div');
       list.className = 'pixels-list';
       list.append(...g.puzzles.map(p => {

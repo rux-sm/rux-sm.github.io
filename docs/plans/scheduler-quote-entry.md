@@ -83,26 +83,43 @@ Each tab answers one question and reads only the tabs before it:
   It turns on no need and adds no bus, because the office decides what to
   send.
 
+### Settings
+
+- **The Rates page is the Settings page.** One page holds the office's
+  decisions that seldom change, on three tabs: Rates, Calendar and Trips.
+  It is `settings.html` in place of `quote-rates.html`, linked from the side
+  navigation and from the calculator, so a rule has one place to be looked
+  for.
+- **Calendar sets the default rate for each month.** Twelve rows, one a
+  month, each choosing one of the mileage rates, and a month left alone
+  uses the default rate. It is kept in `settings`, so the busy months are
+  set once and no rate needs dates of its own.
+- **Trips holds what a trip's suggestions are worked out from:** the route
+  times, the fuel card limits and the dead-mile limit. The Route tab's
+  windows for the first two stay, because they are changed with a trip
+  open.
+
 ### Billing and the rates
 
-- **The rates page is the rate guide.** Every mileage rate has a name and a
-  line saying when it is used, in place of the loose note, and the page
-  lists them as a table to read: rate, name, when to use it, season. A rate
-  cannot be saved without saying when it is used, so no rate sits in the
-  list unexplained.
-- **A mileage rate can have a season.** A rate takes an optional first and
-  last day of the year it applies to, so the Busy season rate, April to
-  early June, knows its own dates. A rate with no season is never chosen by
-  date.
+- **A mileage rate is an option with a note.** The Calendar chooses the
+  default, and every other rate is there to be picked by hand on the bus
+  rental line or in the calculator, so none is deleted and none has to
+  explain itself.
 - **Add the bus rental chooses the rate by the trip's first day.** It takes
-  the rate whose season holds that day, and the default rate when none
-  does. The calculator opens on the same rate, so the two agree and a busy
-  season quote needs no hand correction.
+  the Calendar's rate for that day's month. The calculator opens on the
+  same rate, so the two agree and a busy month's quote needs no hand
+  correction.
 - **A price says which rate made it.** The bus rental line and the
-  calculator show the rate's name beside its amount, and a rate chosen by
-  season says so, so nobody has to remember what a bare figure means.
-- **The dead-miles rate says when the discount is given,** in a line of its
-  own on the rates page, so the calculator's tick is a rule and not a guess.
+  calculator show the rate's note beside its amount, and a rate the
+  Calendar chose names its month, so nobody has to remember what a bare
+  figure means.
+- **Dead miles are suggested past a limit.** When the route's dead miles
+  pass the office's dead-mile limit, the Billing tab offers Count dead miles
+  on the bus rental and the calculator opens with its tick on, as the Route
+  tab offers a fuel card. With no limit set, nothing is suggested.
+- **Estimated miles follow the route.** The field shows the route's total
+  and moves with it until a figure is typed over it, which then stays, so
+  it is not typed again after every quote.
 
 ### Files
 
@@ -117,12 +134,17 @@ Each tab answers one question and reads only the tabs before it:
 - **Save's update box can pin what is written in it.** A Pin this update
   tick sits under the box, on for a new trip and off for a change, so the
   note saying what a trip waits on is pinned by the save that writes it.
-- **A new trip's update box suggests Quote sent only when it is marked.**
-  With no quote marked sent the box opens empty and asks what the trip is
-  waiting on, so the suggestion is never a thing that has not happened.
+- **A new trip's update box opens on one standard line.** It reads Quote
+  not sent until a quote is marked sent, and Quote sent with the price once
+  it is, so the first update is short and never says a thing that has not
+  happened. A session saves that line as it stands, adding a few words only
+  when the trip waits on something else.
 
 ### Forms
 
+- **The Simple itinerary says Rest in sleeper** on the stop where the wait
+  counts as sleeper berth, as the Detailed one does, so the driver reads
+  the rest plan on the sheet they carry.
 - **A return after midnight prints as the next day's time.** The driver's
   itinerary, the office's and the customer quote mark it as the editor and
   the board do, so a driver never reads a midnight return as the morning's.
@@ -135,32 +157,29 @@ Each tab answers one question and reads only the tabs before it:
 
 ### How it is built
 
-- **Each database change is its own step,** the `passengers` column and the
-  rates' new columns alike: written as SQL, shown to rux and applied on a
-  yes, before the code that reads it is pushed.
+- **The one database change is its own step.** The `passengers` column is
+  written as SQL, shown to rux and applied on a yes, before the code that
+  reads it is pushed.
 - **Each change ships by itself.** None depends on another except the rate
-  by season on the rates' columns and the drafted stops on the connector,
-  so the small ones go out first and are used while the larger are built.
+  by month and the dead-mile suggestion on the Settings page, and the
+  drafted stops on the connector, so the small ones go out first and are
+  used while the larger are built.
 - **The trips skill follows the editor.** Its Entering a trip steps and its
   traps are rewritten in the same commit as each change they describe, so
   the skill never tells a session to work around something that is gone.
 
 ## Questions
 
-- On which day in June does the Busy season end?
-- What is each mileage rate with no note used for, and which of them can be
-  deleted?
-- When is the dead-mile discount given?
-- Should the driver's Simple itinerary say Rest in sleeper on the stop
-  where the wait counts as sleeper berth, as the Detailed one does?
-- Should Estimated miles follow the route's total until someone types over
-  it, in place of being typed after every quote?
 - Should `get_trip` return the quote lines, the three Done marks and Quote
   sent, so a session can check its own save without opening Chrome?
+- Which of the office's other settings move to the Settings page: the
+  follow-up days, the billing steps, the vehicle types, the bus needs and
+  the yard?
 
 ## Tasks
 
-- [ ] Open a new trip's update box empty unless Quote sent is marked.
+- [ ] Open a new trip's update box on Quote not sent unless Quote sent is
+      marked.
 - [ ] Add the Pin this update tick to Save's update box and pin the update
       in the same save.
 - [ ] Add Rest in the sleeper to the Route summary's second-driver notice,
@@ -170,22 +189,31 @@ Each tab answers one question and reads only the tabs before it:
 - [ ] Mark a return after midnight as the next day's time on the driver's
       itinerary, the office's and the customer quote, and in what `get_trip`
       returns.
+- [ ] Say Rest in sleeper on the Simple itinerary's stop where the wait
+      counts as sleeper berth.
+- [ ] Make Estimated miles follow the route's total until a figure is typed
+      over it.
 - [ ] Let the Files tab hold a file before the first save and send it once
       the trip exists.
-- [ ] Write the `passengers` column and the rates' name, use and season as
-      SQL, show it to rux, and apply it on a yes.
+- [ ] Write the `passengers` column as SQL, show it to rux, and apply it on
+      a yes.
 - [ ] Add the Passengers field to the Details tab, read and saved with the
       trip, and to the history's field names.
 - [ ] Warn on the Buses tab when the passenger count is above the seats the
       trip's buses hold.
-- [ ] Rebuild the rates page's mileage rates as the guide: name, when to
-      use it and season on each row, a when-given line on the dead-miles
-      rate, and no save for a rate that says nothing.
-- [ ] Fill the guide from rux's answers: the Busy season's days, each
-      unexplained rate's use or its deletion, and the dead-mile rule.
-- [ ] Show the rate's name on the bus rental line and in the calculator.
+- [ ] Turn the Rates page into Settings, `settings.html`, with the rates
+      on its first tab, and link it from the side navigation of every
+      Scheduler page and from the calculator.
+- [ ] Build the Calendar tab: a mileage rate for each month, saved in
+      `settings`, with a month left alone on the default rate.
+- [ ] Build the Trips tab: the route times, the fuel card limits and the
+      dead-mile limit, the last one new in `settings`.
+- [ ] Show the rate's note on the bus rental line and in the calculator,
+      with the month when the Calendar chose it.
 - [ ] Make Add the bus rental and the calculator's opening rate follow the
-      trip's first day.
+      month of the trip's first day.
+- [ ] Offer Count dead miles on the Billing tab, and open the calculator
+      with its tick on, when the route's dead miles pass the limit.
 - [ ] Add `stops`, `booking_contact_missive_url` and `passengers` to the
       fields a draft may fill in `scheduler/connector/index.ts`, return
       `passengers` from `get_trip`, and deploy the connector.
@@ -194,13 +222,13 @@ Each tab answers one question and reads only the tabs before it:
       thread and fill the passenger count, each marked to check, with
       unpicked places named in the notice.
 - [ ] Rewrite the trips skill's Entering a trip steps and traps to match
-      what was built, and point `rules.md` at the rates page for every rate
-      rule it restates.
-- [ ] Describe the new column, the rate guide, the draft's new fields and
-      the changed windows in the scheduler's database and screen inventories
-      and in `working-from-claude.md`.
+      what was built, and point `rules.md` at the Settings page for every
+      rate rule it restates.
+- [ ] Describe the new column, the Settings page and its two new settings,
+      the draft's new fields and the changed windows in the scheduler's
+      database and screen inventories and in `working-from-claude.md`.
 - [ ] Enter a trip from an invented itinerary through a draft in Chrome on
       :8641: stops laid out, a saved location set by itself, sleeper rest
-      taken from the notice, bus rental added at the season's rate, file
-      attached before saving, update pinned by the save; then read it back
-      with `get_trip`.
+      taken from the notice, bus rental added at the month's rate, dead
+      miles offered past the limit, file attached before saving, the
+      standard update pinned by the save; then read it back with `get_trip`.

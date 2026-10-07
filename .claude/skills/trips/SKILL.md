@@ -75,8 +75,9 @@ reads only the ones before it. Nothing is written until step 10.
    and what made it, the bus, exactly what Save will write, and only the
    questions `rules.md` leaves open. Wait for his yes.
 10. **Save.** Link the email thread, press Mark route done and Mark buses
-    done, press Save, write what the trip is waiting on in the update box, and
-    answer the lists prompt by `rules.md`.
+    done, press Save, write what the trip is waiting on in the update box in
+    a few words, such as "Quote not sent", and answer the lists prompt by
+    `rules.md`.
 11. **After the save.** Read it back with `get_trip`. Pin the update. Add the
     itinerary on the Files tab.
 12. **Reply.** Draft the email in chat by `emails.md`. rux prints the quote
@@ -176,7 +177,7 @@ rewrites this section as each change is built.
 - Leaving the editor drops unsaved changes; Reset takes them back.
 - Mark sent records today's date, not the day the quote went out.
 - Mark billing done stays off until Quote sent is marked, so a trip saved before its quote goes out has Billing left open.
-- On a new trip, Save's Updates box suggests "Quote sent": replace it unless the quote has gone out.
+- On a new trip, Save's Updates box suggests "Quote sent": replace it with "Quote not sent" unless the quote has gone out. A new trip's update is that one line, never a summary of the trip.
 - After a save, Add update is on the bar's own menu, a right-click on the bar; the editor's ⋮ has only Forms and Color.
 - The Files tab takes a file only once the trip is saved. The upload tool cannot read the Desktop: copy the PDF to the session's scratch folder, press Add file from the page's script so no file dialog opens, give the copy to the hidden file input, choose its type, then delete the copy.
 - A click by `ref` on a tab that is not showing does nothing: take a screenshot to see which tab is open before pressing a button on it.

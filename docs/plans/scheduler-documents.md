@@ -41,9 +41,13 @@ driver who has none.
   each kind asked for in its Forms list,** opening that driver's current form
   of that kind, whoever it is issued to. A driver with no form, or one past
   its end date on the trip's day, has a warning in the row's place.
+- **Opened from a trip, a background check form has the campus and the trip
+  date written into their fields,** on a copy; the stored file never changes.
+- **The form is printed for the driver to carry,** and its row in the Forms
+  list says Printed once it is, as an envelope's does.
 - **The trip's checklist gains Driver forms under Paperwork,** open while any
-  driver on the leg lacks a current form of a kind asked for, and naming who
-  and which.
+  driver on the leg lacks a current form of a kind asked for or has one not
+  yet printed, and naming who and which.
 - **Search matches every word you type** against the kind, who it is issued
   to, the driver, the file name and the note, so "memorial insurance" narrows
   to one row.
@@ -74,21 +78,21 @@ driver who has none.
 
 ## Questions
 
-- Should the scheduler write the campus and trip date onto the PDF? One of
-  the forms has to be read first, to see whether those are boxes it can fill.
-- Is the form printed for the driver to carry, or emailed to the district
-  before the trip?
+- Which place on the trip is the campus: the pickup, or the customer's name?
 
 ## Tasks
 
-- [ ] Read one background check PDF, kept outside this repository, and say
-      whether its campus and date can be filled.
+- [ ] Read one background check PDF, kept outside this repository, and decide
+      how its campus and date are written: into its own boxes, or as text
+      placed on the page.
 - [ ] Write the three tables, the bucket and their access rules as SQL, show
       it to rux, and apply it on a yes.
 - [ ] Build the Documents page: search, kind filter, "Show old", open, upload,
       replace, delete, the end-date marks, and adding and renaming kinds.
 - [ ] List a customer's documents on its page in `customers.html`, with the
       Driver forms required pick.
+- [ ] Write the campus and trip date onto the form's copy when it is opened
+      from a trip.
 - [ ] Add the driver form rows to a trip's Forms list and the item to
       `scheduler/checklist.js`, with its cases in
       `scheduler/tools/check-checklist.mjs`.

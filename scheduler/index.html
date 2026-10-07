@@ -662,6 +662,11 @@
              every document in the panel carries its buttons in one place.
              data.js puts them in; a stored file adds none. -->
         <div class="rux--side-panel__action-toolbar scheduler-viewer__toolbar" id="scheduler-viewer-toolbar" role="group" aria-label="Document actions">
+          <!-- What the row has to say, in the room between a form's own
+               controls and the buttons: a stored file's date, or a form's
+               word. It holds that room empty too, so nothing moves when it
+               speaks. -->
+          <span class="scheduler-viewer__uploaded" id="scheduler-viewer-uploaded"></span>
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" data-viewer-zoom="out" aria-label="Zoom out" title="Zoom out" disabled>
             <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-zoom_out"/></svg>
           </button>
@@ -680,7 +685,6 @@
           <a class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-viewer-new-tab" target="_blank" rel="noopener" aria-label="Open in new tab" title="Open in new tab">
             <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-open_in_new"/></svg>
           </a>
-          <span class="scheduler-viewer__uploaded" id="scheduler-viewer-uploaded"></span>
         </div>
         <!-- The file's wait or its failure, which data.js fills: Carbon's inline
              loading while the file downloads, an inline notification if it

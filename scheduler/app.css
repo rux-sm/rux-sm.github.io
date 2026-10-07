@@ -1729,35 +1729,31 @@ button.scheduler-row-head__num::after {
 
 /* WHICH DOCUMENT AT ONE END, WHAT TO DO WITH IT AT THE OTHER, the way the
    board's toolbar holds its week at one end and its buttons at the other. A
-   form's own controls -- its layout -- hold the
-   start; the buttons every document gets end the row. Where a document has no
-   controls of its own, its buttons still end the row rather than starting
-   it, counted from the first one shown: a form hides the zooms ahead of Print. */
-.scheduler-viewer__toolbar > [data-viewer-form="last"] { margin-inline-end: auto; }
-/* A form's Printed box sits beside Print; with no layout controls ahead of it,
-   it is what starts the actions at the row's end. */
-.scheduler-viewer__toolbar:not(:has(> [data-viewer-form="last"])) > [data-viewer-form="print"] { margin-inline-start: auto; }
-
-.scheduler-viewer__toolbar:not(:has(> [data-viewer-form])) > :nth-child(1 of :not([hidden])) {
-  margin-inline-start: auto;
-}
+   form's own controls -- its layout -- hold the start; the buttons every
+   document gets, a form's Printed box before Print among them, end the row.
+   What parts the two is the row's line of text, which takes all the room
+   between them whether or not it says anything: a stored file's date, or a
+   word a form has to say, is written against the buttons in room that was
+   already its own, so no button moves when it speaks, and a line too long
+   for the room is cut short. */
 /* A button's own display beats the browser's `[hidden]`, so the zoom buttons
    data.js hides in Safari are hidden here. */
 .scheduler-viewer__toolbar > [hidden] { display: none; }
-/* Empty it takes no room at all, so the actions beside it reach the end of the
-   row; a stored file's date, or a word a form has to say, pushes them back
-   along by its own width for as long as it is there. */
-.scheduler-viewer__uploaded:empty { display: none; }
-
 .scheduler-viewer__uploaded {
-  margin-inline-start: auto;
-  padding-inline-end: var(--rux-spacing-03);
+  flex: 1 1 0;
+  align-self: center;
+  min-inline-size: 0;
+  padding-inline: var(--rux-spacing-05) var(--rux-spacing-04);
+  overflow: hidden;
   color: var(--rux-text-secondary);
   font-size: var(--rux-body-compact-01-font-size);
   line-height: var(--rux-body-compact-01-line-height);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
+  text-align: end;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
+.scheduler-viewer__uploaded[data-bad] { color: var(--rux-text-error); }
 /* The wait or the failure, inset as the panel's content is. */
 .scheduler-viewer__status {
   flex: none;

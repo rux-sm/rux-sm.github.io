@@ -11719,7 +11719,7 @@
   }
 
   /* The line a form has to say, in the place a stored file says when it was
-     uploaded: the right-hand end of the same row. It borrows the line and
+     uploaded: the room before the row's buttons. It borrows the line and
      gives it back, so the leg a form was opened on returns once the form has
      finished saying whatever it had to say. */
   let viewerNote = '';

@@ -24,16 +24,19 @@ its usual needs, and shows its notes, without anyone looking them up.
   types a trip offers, Any by default. Driver forms required sits in the same
   group, so everything a customer asks for is in one place.
 - **Picking the customer on a new trip turns its usual needs on and sets its
-  bus type,** as it fills an empty pickup. A saved trip is never changed by its customer's needs.
+  bus type,** as it fills an empty pickup. A saved trip is never changed by
+  its customer's needs.
 - **The Trips tab lists the customer's trips,** the ones `trips.customer_id`
   links, coming trips first and then past ones, newest first, fifty at a time.
   A row opens its trip on the board, as a row on `trips.html` does, and the
   database does the narrowing.
 - **Money is three figures at the top of the Trips tab:** Quoted, Paid and
   Balance, the way a trip's Billing shows Paid and Balance, added up from
-  every trip the customer ever had that is not cancelled. Each row shows its own balance.
-- **Notes, usual needs and the usual bus type are new columns on `customers`,** staff only as the
-  table is, shown to rux as SQL and applied on a yes as a named migration.
+  every trip the customer ever had that is not cancelled. Each row shows its
+  own balance.
+- **Notes, usual needs and the usual bus type are new columns on
+  `customers`,** staff only as the table is, shown to rux as SQL and applied
+  on a yes as a named migration.
 - **rux-ui does not change.** A trip entered there does not start with the
   customer's usual needs.
 - **The Claude app's tools do not change.**

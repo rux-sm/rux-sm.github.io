@@ -16,9 +16,6 @@ done and how.
 
 - The quote calculator's eight spreadsheet quirks are kept until rux and the
   manager decide them. The list is on the calculator's Rules tab.
-- The forms page draws the driver envelope, the hours-of-service record, the
-  driver itinerary and the customer quote. A passenger roster is still named
-  for it, after the printed schedule.
 - A trip covered by a bus from another company has no way to say so, so it
   reads as short of a bus. A mark on the bus's seat, naming the company,
   needs a plan of its own.

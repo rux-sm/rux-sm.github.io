@@ -14,14 +14,12 @@ driver or a customer already holds still opens.
 
 - **rux-ui is retired.** The scheduler is the one app that edits trips, so a
   scheduler change is no longer held to what rux-ui does with the same row.
-- **Nothing is turned off until what only rux-ui does has a home or a no.**
-  Each thing on the list below is built in the scheduler or dropped by rux,
-  and rux-ui stays up until the list is empty.
-- **What only rux-ui does:** the yard, the bus needs and the billing steps
-  in its Settings; pay per seat; ticketed trips, their ticket options and
-  the passenger list; the self-organized billing type; the itinerary's
-  Confirm mark; the Tasks page; the printed week schedule; the two-week
-  board; and the notifications panel.
+- **Nothing is turned off until what only rux-ui does has a home.** That is
+  its Settings: the yard, the bus needs and the billing steps.
+- **The rest of what only rux-ui does is dropped:** pay per seat, ticketed
+  trips with their ticket options and passenger list, the self-organized
+  billing type, the itinerary's Confirm mark, the Tasks page, the printed
+  week schedule, the two-week board and the notifications panel.
 - **The pages people outside the office open keep their addresses.** A
   driver's link opens rux-ui's `driver.html`, and `maintenance.html`,
   `m.html`, `d.html` and `doc.html` are in links already sent, so each gets a
@@ -33,12 +31,6 @@ driver or a customer already holds still opens.
 
 ## Questions
 
-- Which of the things only rux-ui does are still used, and which are
-  dropped: pay per seat, ticketed trips and the passenger list, the
-  self-organized billing type, the itinerary's Confirm mark, the Tasks page,
-  the printed week schedule, the two-week board and the notifications panel?
-- Is rux-ui opened for anything not on that list?
-
 ## Tasks
 
 - [ ] Find every address on rux-ui that a sent link uses, and what
@@ -49,8 +41,6 @@ driver or a customer already holds still opens.
       rux-ui to this site's pages.
 - [ ] Add the yard, the bus needs and the billing steps to the scheduler's
       Settings page.
-- [ ] Build each thing rux keeps from the list, and delete from the screen
-      inventory each one rux drops.
 - [ ] Take out of the scheduler what it does only for rux-ui: the comments
       and rules that name it in `scheduler/*.js`, and the columns it writes
       for rux-ui alone.

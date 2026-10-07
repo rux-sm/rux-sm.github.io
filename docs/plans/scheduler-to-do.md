@@ -146,9 +146,6 @@ None open.
 
 ## Tasks
 
-- [ ] Apply the SQL for `to_dos`, its rules, its realtime broadcast, the
-      trip-history entry for a tick and Ruxbot's profile as a named migration
-      on rux's yes, then check its grants and rules on the live database.
 - [ ] Give Ruxbot its picture: the file put in `profile-photos` from a staff
       session and its path set on the profile by SQL, each on rux's yes.
 - [ ] Move the board's reading of a leg's buses and seats and of the trip

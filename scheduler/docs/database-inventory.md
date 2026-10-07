@@ -98,9 +98,10 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 | `trip_driver_confirmations` | legacy | superseded by `trip_driver_statuses`; still written by the confirm and decline RPCs |
 | `driver_schedule_shares` | driver editor, `../rux-ui/driver.html` | `token`, `driver_id`, `trip_legs` jsonb, `range_start`, `range_end`, `expires_at`, `revoked_at`. RPC only. |
 | `trip_drafts` | Claude connector, trip editor `?draft=` | `author` to `auth.users`, cascade; `trip_id` to `trips`, cascade and null for a new trip; `fields` jsonb, `notes`, `expires_at`. Only the author reads it, only while staff, only before it expires; a nightly job deletes the rest. |
+| `to_dos` | the to-do list's stored rows; no screen reads it yet | `body`; `source` (person, agent); `created_by`, `session_of`, `owner_id` and `closed_by` to `profiles`, set null; `due_on`; `trip_id` to `trips`, cascade; `thread_url`, `thread_key`, one open row per key; `closed_at`, `closed_reason`. Staff only, broadcast on realtime. `to_dos_stamp` sets who made a row and who closed it, an agent row as Ruxbot with the signed-in person in `session_of`, and refuses an agent's close on a row a person wrote. |
 | `maintenance_schedule_shares` | this app's maintenance pages, `../rux-ui/maintenance.html` | one row, `scope = 'main'`, `token`, `revoked_at`. RPC only. |
 | `settings` | Settings view | key-value, `value` jsonb. Yard, locations, requirements, billing defaults and `vehicle-types-v1`, the office's vehicle types as `{ name, label?, icon }`, live here. |
-| `profiles` | both apps' staff log-in, the old app's profile | `display_name`, `photo_path`, `settings` jsonb, `avatar_color`; `user_id`, the Auth user this staff member logs in as; which apps an account opens is in its `app_metadata`. Not `platform.profiles`. |
+| `profiles` | both apps' staff log-in, the old app's profile | `display_name`, `photo_path`, `settings` jsonb, `avatar_color`; `user_id`, the Auth user this staff member logs in as; which apps an account opens is in its `app_metadata`. Ruxbot is the one row with no `user_id`, the profile an agent's to-do rows are made by, whose id `ruxbot_profile_id()` returns. Not `platform.profiles`. |
 | `notifications`, `notification_reads` | header bell | `type` (three values), `severity`, `title`, `ref_table`, `ref_id`, `dedupe_key` unique |
 | `team_messages`, `team_message_reactions`, `team_chat_reads` | team chat | dropped from this app, see the screen inventory |
 | `dev_notes` | dev notes popover | dropped |
@@ -115,7 +116,9 @@ Trigger functions `set_bus_ref`, `set_driver_ref`, `set_trip_ref`, `touch_trips_
 `touch_updated_at` and `trip_itineraries_touch` run on their own, and so do
 `trips_clear_done` and `trip_rows_clear_done`, which take a tab's Done off
 `trips` when its dates, bus counts, needs or price change, or its stops,
-buses or quote lines do. The RPCs a screen calls:
+buses or quote lines do. `to_dos_record_history` writes a tick on a to-do
+row with a trip, and its Undo, into `trip_history` as an Updated entry with
+one To do line. The RPCs a screen calls:
 
 | Area | Functions |
 |---|---|

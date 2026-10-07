@@ -213,12 +213,19 @@
    window's own colour, which is this theme's page, where every other region
    is the raised grey. So the schedule's toolbar, bands and grid take the
    page's colour inside a line, and the card that opens over a trip keeps the
-   raised surface, which is what parts it from the board. */
+   raised surface, which is what parts it from the board.
+
+   Its lines are Calendar's too: the month's grid is one grey, 64, 64, 64,
+   between days as between weeks. So every line in the schedule is that grey,
+   and a day's rule is drawn at its whole strength where the other themes
+   halve it. */
 [data-theme="apple-dark"] .scheduler-frame {
   --rux-layer: var(--rux-background);
+  --rux-border-subtle-01: #404040;
   --scheduler-band-surface: var(--rux-background);
   border: 1px solid var(--rux-border-subtle-01);
 }
+[data-theme="apple-dark"] .scheduler-frame .scheduler-track { --scheduler-day-rule: var(--rux-border-subtle-01); }
 [data-theme="apple-dark"] .scheduler-bar-shortcuts:not([data-docked]) {
   --rux-layer: var(--rux-layer-01);
   --scheduler-band-surface: var(--rux-layer-01);

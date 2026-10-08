@@ -184,9 +184,6 @@ Each tab answers one question and reads only the tabs before it:
 
 - [ ] Match saved locations by address in the place search, abbreviations
       included, ahead of the map's result for the same address.
-- [ ] Mark a return after midnight as the next day's time on the driver's
-      itinerary, the office's and the customer quote, and in what `get_trip`
-      returns.
 - [ ] Let the Files tab hold a file before the first save and send it once
       the trip exists.
 - [ ] Turn the Rates page into Settings, `settings.html`, laid out with the
@@ -209,7 +206,8 @@ Each tab answers one question and reads only the tabs before it:
 - [ ] Add `stops`, `booking_contact_missive_url` and `passengers` to the
       fields a draft may fill in `scheduler/connector/index.ts`, return
       `passengers`, the quote lines, the three Done marks and Quote sent
-      from `get_trip`, and deploy the connector.
+      from `get_trip`, mark a one-day leg's time past midnight there as the
+      next day's, and deploy the connector.
 - [ ] Teach `applyDraft` in `scheduler/data.js` to lay drafted stops out on
       the Route tab, set each place that matches a saved location, link the
       thread and fill the passenger count, each marked to check, with

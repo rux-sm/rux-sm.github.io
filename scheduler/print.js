@@ -783,10 +783,12 @@
     return `${parts.slice(0, -2).join(', ')}\n${parts.slice(-2).join(', ')}`;
   }
 
-  // One line of the table: when, where and the address.
-  function itineraryRow(stop, next, day = null, wait = null) {
+  /* One line of the table: when, where and the address. `late` names the day
+     of a time past midnight on a one-day leg, by the time's label. */
+  function itineraryRow(stop, next, day = null, wait = null, late = null) {
     const tr = el('tr');
-    tr.appendChild(timeCell(itineraryTimes(stop, next, day)));
+    tr.appendChild(timeCell(itineraryTimes(stop, next, day)
+      .map(([label, time, on]) => [label, time, on || late?.get(label) || null])));
     tr.appendChild(locationCell(stop, wait));
     tr.appendChild(textCell('addr', addressLines(stop.address)));
     return tr;
@@ -1083,6 +1085,26 @@
     const dateOf = s => [s.type === 'pickup' ? s.spot_date : s.arrive_date, s.depart_prev_date].find(inLeg) || null;
     const dates = stops.map(s => (s.type === 'return' ? null : dateOf(s)));
     const manyDays = new Set(dates.filter(Boolean)).size > 1;
+    /* A ONE-DAY LEG PAST MIDNIGHT KEEPS NO DATE ON ITS ROWS, so the sheet
+       counts the day as the Route tab does: down the times in order, one
+       earlier than the one before it is the next day's, and the day the group
+       leaves the pickup is the leg's. A time on another day carries its
+       weekday, so 1:00 AM is never read as the morning the trip starts. */
+    const lateDays = (() => {
+      if (manyDays || !legFrom) return null;
+      const { toMin } = window.SchedulerRouteFigures;
+      let last = null, days = 0, start = null;
+      const seen = stops.map((stop, i) => itineraryTimes(stop, stops[i + 1] || null, null).map(([label, time]) => {
+        const n = toMin(time);
+        if (n == null) return [label, null];
+        if (last != null && n < last) days += 1;
+        last = n;
+        if (stop.type === 'pickup' && label === 'Dep') start = days;
+        return [label, days];
+      }));
+      return seen.map(lines => new Map(lines.filter(([, n]) => n != null && n !== (start ?? 0))
+        .map(([label, n]) => [label, dayShift(legFrom, n - (start ?? 0))])));
+    })();
 
     /* A TABLE TO A DAY, its name in the table's head, because the printer
        repeats a head at the top of every sheet the table runs onto: a day cut
@@ -1137,13 +1159,15 @@
         const pickup = model.rows.pickup;
         body.appendChild(yardRow('Dep', model.times.depart, pickup?.depart_prev_date, dates[i] ?? shown, model.rows.back));
       }
-      body.appendChild(itineraryRow(stop, stops[i + 1] || null, dates[i] ?? shown, detailed ? waitFor(stop) : restFor(stop)));
+      body.appendChild(itineraryRow(stop, stops[i + 1] || null, dates[i] ?? shown, detailed ? waitFor(stop) : restFor(stop), lateDays?.[i]));
     });
     if (!body) table(null);
     if (detailed && model.rows.back) {
       const back = model.rows.back;
-      // A one-day leg back past midnight keeps no date on the row; the figures know the day.
-      body.appendChild(yardRow('Arr', model.times.back, back.arrive_date || fig.backOn, shown ?? model.from, back));
+      // A one-day leg back past midnight has the leg's own date on the row, or
+      // none; the figures know the day, and on a longer leg the row's date stands.
+      body.appendChild(yardRow('Arr', model.times.back,
+        fig.days ? back.arrive_date || fig.backOn : fig.backOn || back.arrive_date, shown ?? model.from, back));
     }
     if (!card.querySelector('.scheduler-driver-itinerary__table tbody > tr')) body.appendChild(blankRow());
 

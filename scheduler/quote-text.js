@@ -78,6 +78,22 @@
     return `(${pax56 ? 56 : 52} passengers)`;
   }
 
+  /* A one-day trip that is back at an earlier hour than it left is back the
+     next day, past midnight, and the quote says which day, so 1:00 AM is not
+     read as the morning the trip starts. */
+  const minutes = t => {
+    const m = /^(\d{1,2}):(\d{2})/.exec(String(t ?? ''));
+    return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+  };
+  function backDay(trip) {
+    const from = trip.from || null;
+    const left = minutes(trip.leave), back = minutes(trip.back);
+    if (!from || (trip.to || from) !== from || left == null || back == null || back >= left) return null;
+    const next = parseDay(from);
+    next.setDate(next.getDate() + 1);
+    return next.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+  }
+
   /* The block itself. A line the trip cannot answer yet is dropped, except the
      two times, which the office writes as TBD and settles with the customer.
 
@@ -98,7 +114,7 @@
       [start ? `from ${start}` : null, end ? `to ${end}` : null].filter(Boolean).join(' '),
       from ? `on ${dates(from, trip.to || from)}` : null,
       `departing at ${clock(trip.leave) || 'TBD'}`,
-      leg ? null : `arriving at ${clock(trip.back) || 'TBD'}`,
+      leg ? null : `arriving at ${clock(trip.back) || 'TBD'}${backDay(trip) ? ` on ${backDay(trip)}` : ''}`,
     ].filter(Boolean).join('\n');
   }
 

@@ -191,7 +191,6 @@ site.
 
 ### Checks
 
-- [ ] Parse every tracked script and inline script in `tools/check.mjs`.
 - [ ] Add `scheduler/tools/check-load.mjs`: each scheduler page's scripts,
       in tag order, against a stand-in page, with no list of pages.
 - [ ] Add `scheduler/tools/check-shadow.mjs`: a call must not reach a local

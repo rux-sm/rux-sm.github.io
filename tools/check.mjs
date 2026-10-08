@@ -5,10 +5,10 @@
 // with a tools/check.mjs of its own (LN Guide) runs that instead, and it includes
 // the shared check. Then the sprite currency rule for the pages that paste the
 // sprite by hand, the same rule for the home screen icons drawn from a
-// favicon, the names sweep over every text file in the repository, the
-// switcher rule, the lock rule and the print rule. `--full` adds Design's
-// `npm run verify`. Exits 1 on any failure. The pre-commit hook runs the fast
-// form; CI runs --full.
+// favicon, the parse rule for every script, the names sweep over every text
+// file in the repository, the switcher rule, the lock rule and the print rule.
+// `--full` adds Design's `npm run verify`. Exits 1 on any failure. The
+// pre-commit hook runs the fast form; CI runs --full.
 //
 //   node tools/check.mjs
 //   node tools/check.mjs --full
@@ -51,6 +51,10 @@ for (const f of folders) {
 
 step('sprite', process.execPath, ['tools/inline-sprite.mjs', '--check']);
 step('app icons', process.execPath, ['tools/build-app-icons.mjs', '--check']);
+
+// THE PARSE RULE. Every tracked script, and every script written into a page,
+// parses the way it is loaded; the flag lets Node parse a module unrun.
+step('scripts', process.execPath, ['--experimental-vm-modules', '--no-warnings', 'tools/check-scripts.mjs']);
 
 // THE DOCUMENT RULES from AGENTS.md "Documents", then the fixtures that prove
 // each rule still fires.

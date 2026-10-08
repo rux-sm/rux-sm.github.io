@@ -68,9 +68,9 @@ not only what is missing.
   the checklist reads them.
 - **The Done marks of the Route, Buses and Billing tabs are not shown,**
   because they are open on nearly every trip and would say nothing here.
-- **rux-ui keeps reading what it reads.** Its Tasks list ticks the envelope
-  and the reminder on a driver, and the itinerary and the HOS form on a leg,
-  so a leg's tick follows its drivers' and a tick there marks each driver.
+- **Nothing here is kept in step with rux-ui,** which is retired. The leg's
+  own itinerary and HOS columns on the trip are left as they are and no
+  longer read; the checklist reads each driver's marks.
 - **When and who are stamped by the database,** as a step is turned on, so
   neither app can give a step a time it was not done at.
 - **Driver info sent is kept beside the trip, in `trip_prep`,** so marking it
@@ -86,11 +86,12 @@ None open.
 ## Tasks
 
 - [ ] Apply the SQL for each step's time and who, a driver's own itinerary
-      and HOS marks kept in step with the leg's, and `trip_prep`, as a named
-      migration on rux's yes, then check its grants on the live database.
-- [ ] Give each bus its own fuel card: the SQL shown to rux, the card entered
-      in the bus's window on the Buses tab, and the leg's columns rux-ui reads
-      kept in step.
+      and HOS marks, and `trip_prep`, as a named migration on rux's yes, then
+      check its grants on the live database.
+- [ ] Have the checklist read the itinerary and the HOS form from each
+      driver, in the commit that makes the Forms page mark them there.
+- [ ] Give each bus its own fuel card: the SQL shown to rux, and the card
+      entered in the bus's window on the Buses tab.
 - [ ] Write `scheduler/departures.js` and `scheduler/tools/check-departures.mjs`
       with sample trips, in the check.
 - [ ] Ask after a print on the Forms page whether to mark it, and store a Yes.

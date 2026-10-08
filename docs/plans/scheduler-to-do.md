@@ -153,5 +153,6 @@ None open.
 
 ## Tasks
 
-- [ ] Give Ruxbot its picture: the file put in `profile-photos` from a staff
-      session and its path set on the profile by SQL, each on rux's yes.
+- [ ] Give Ruxbot its picture: the drawn file is `Rux bot red eyes padded.png`
+      in rux's iCloud Drive, to be put in `profile-photos` from a staff session
+      and its path set on the profile by SQL, each on rux's yes.

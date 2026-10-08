@@ -1023,11 +1023,12 @@
    with its brand colour and gets a blue, purple or green band; geist-dark's brand
    is near-white, so on a black page inside an outlined box it was the loudest
    thing on screen. It takes the selected surface instead -- still a state, and
-   the same step the roster's day tint uses -- with a rule under it. */
+   the same step the roster's day tint uses -- inside the hairline every box
+   of Geist's has. */
 [data-theme="geist-dark"] .rux--batch-actions {
   background-color: var(--rux-layer-selected-01);
   color: var(--rux-text-primary);
-  border-block-end: 1px solid var(--rux-border-subtle-01);
+  border: 1px solid var(--rux-border-subtle-01);
 }
 /* The count and the actions are brand-coloured too, so that they disappear
    into a brand bar. On the quiet bar they have to stop being boxes of their
@@ -1117,6 +1118,17 @@
 }
 :is([data-theme="geist-dark"], [data-theme^="apple-"]) .rux--data-table-container .rux--toolbar-content {
   gap: var(--rux-spacing-03);
+}
+/* THE SELECTION BAR STANDS WHERE THE CONTROLS IT COVERS STAND: 12px from the
+   toolbar's edges, on the control's corner. Carbon lays it along the
+   toolbar's lower edge at the controls' height, which in a 60px toolbar left
+   24px of empty bar above a square band. It clips, because the count and
+   each action carry the band's fill as boxes of their own. */
+:is([data-theme="geist-dark"], [data-theme^="apple-"]) .rux--data-table-container .rux--table-toolbar .rux--batch-actions {
+  overflow: hidden;
+  border-radius: 6px;
+  inset-block-end: var(--rux-spacing-04);
+  inset-inline: var(--rux-spacing-04);
 }
 /* A ghost button in the bar is Geist's outlined button: the secondary's quiet
    ring on the 1px border a ghost button already carries, as Geist's Modal
@@ -1922,22 +1934,30 @@
   background-color: var(--rux-button-secondary);
   color: var(--rux-text-primary);
 }
-/* AN INLINE SELECT IS A POP-UP BUTTON, and on a Mac a pop-up button is the
-   push button's own shape: one height, one corner and the same grey fill,
-   in docs/apple-token-map.md. So the select in a table's bar and the two in
-   its foot are that capsule, with no line, and a bar holds two kinds of
-   thing: a lined field to type in and grey buttons to press. A select in a
-   form stays the field the form's other fields are. */
-[data-theme^="apple-"] :is(.rux--select--inline, .rux--pagination .rux--select--inline) .rux--select-input {
+/* A SELECT IS A POP-UP BUTTON, and on a Mac a pop-up button is the push
+   button's own shape: one height, one corner and the same grey fill, in
+   docs/apple-token-map.md. So a select, a dropdown and a multi-select that is
+   not typed into are that capsule, with no line, in a form and in a table's
+   bar and foot alike, and a page holds two kinds of control: a lined field
+   to type in and a grey button to press. A combo box is typed into and stays
+   a field. A fluid one keeps the tall box its label sits inside. */
+[data-theme^="apple-"] :is(.rux--select:not(.rux--select--fluid, .rux--select--fluid *), .rux--pagination .rux--select--inline) .rux--select-input,
+[data-theme^="apple-"] :is(.rux--dropdown, .rux--multi-select:not(.rux--multi-select--filterable)):not(.rux--list-box__wrapper--fluid *) {
   border-radius: 999px;
   background-color: var(--rux-button-secondary);
   box-shadow: none;
 }
-[data-theme^="apple-"] :is(.rux--select--inline, .rux--pagination .rux--select--inline) .rux--select-input:is(:hover, :focus-visible) {
+[data-theme^="apple-"] :is(.rux--select:not(.rux--select--fluid, .rux--select--fluid *), .rux--pagination .rux--select--inline) .rux--select-input:is(:hover, :focus-visible),
+[data-theme^="apple-"] :is(.rux--dropdown, .rux--multi-select:not(.rux--multi-select--filterable)):not(.rux--list-box__wrapper--fluid *):hover {
   background-color: var(--rux-button-secondary-hover);
 }
-[data-theme^="apple-"] :is(.rux--select--inline, .rux--pagination .rux--select--inline) .rux--select-input[disabled] {
+[data-theme^="apple-"] :is(.rux--select:not(.rux--select--fluid, .rux--select--fluid *), .rux--pagination .rux--select--inline) .rux--select-input[disabled],
+[data-theme^="apple-"] :is(.rux--dropdown, .rux--multi-select:not(.rux--multi-select--filterable)):not(.rux--list-box__wrapper--fluid *):is(.rux--list-box--disabled, .rux--dropdown--disabled) {
   background-color: var(--rux-button-disabled);
+}
+/* The dropdown's button fills its capsule, so its focus ring is the capsule's. */
+[data-theme^="apple-"] :is(.rux--dropdown, .rux--multi-select:not(.rux--multi-select--filterable)):not(.rux--list-box__wrapper--fluid *) .rux--list-box__field {
+  border-radius: inherit;
 }
 /* The search that opens from its magnifier is, closed, a button too: the
    grey circle the overflow button beside it is. */
@@ -1957,16 +1977,9 @@
 [data-theme^="apple-"] .rux--search-input:focus-visible ~ .rux--search-close:hover::after {
   border-radius: 999px;
 }
-/* THE SELECTION BAR STANDS WHERE THE CONTROLS IT COVERS STAND: 12px from the
-   toolbar's edges, a capsule as they are. Carbon lays it along the toolbar's
-   lower edge at the controls' height, which in a 60px toolbar left 24px of
-   empty bar above a square band. It clips, because the count and each
-   action carry the band's fill as boxes of their own. */
+/* The selection bar is a capsule, as the controls it covers are. */
 [data-theme^="apple-"] .rux--data-table-container .rux--table-toolbar .rux--batch-actions {
-  overflow: hidden;
   border-radius: 999px;
-  inset-block-end: var(--rux-spacing-04);
-  inset-inline: var(--rux-spacing-04);
 }
 /* A field's corner is 10px at this height, measured on the Mac's text field
    at its largest size, and the search field is a capsule. */

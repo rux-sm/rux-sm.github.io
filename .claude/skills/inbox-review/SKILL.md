@@ -30,7 +30,7 @@ with the `app_*` tools, which leave rux's screen and keyboard alone.
    first line or the team's last comment, and how many messages it holds.
 3. **Sort the rows.** A thread about a trip or a quote is read. Mail that is
    not a trip, such as an audit notice, a receipt, a newsletter or a vendor's
-   warranty, is left, and said in the report in one line.
+   warranty, is left and not reported.
 4. **Open each thread to read** and zoom on the reading pane. The newest
    message is at the bottom; under it are the team's own comments, which say
    what the office already thinks, and any snooze.
@@ -64,6 +64,8 @@ with the `app_*` tools, which leave rux's screen and keyboard alone.
   it.
 - A row is added straight in and reported after, since a wrong one costs one
   delete.
+- Mail that is not about a trip or a request for a quote is ignored, with no
+  row and no line in the report, because the list is for trips.
 
 ## What the first run found about the tools
 

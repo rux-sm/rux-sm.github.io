@@ -50,11 +50,13 @@ Customer page, and `scheduler/docs/database-inventory.md`.
 
 - Which background check PDF may a session read, by its file name in
   Downloads?
-- 188 names on 395 trips match no customer, 35 of them on 55 trips still to
+- 182 names on 389 trips match no customer, 29 of them on 49 trips still to
   come: the same place spelled several ways, or a group after its name. Which
   customer does each coming name belong to?
-- Six trips dated 2028-01-03 are named test org 1 to test org 6. Are they to
-  be deleted?
+- The office's binder spine and binder cover are two tabs of a Google Sheet
+  rux owns, beside its DOT forms, fuel card log, pre-trip checklist and
+  monthly vehicle inspection. Should any of them become forms the scheduler
+  prints, and which?
 - Should History record a change to the driver forms a customer asks for? It
   records the customer's own row only.
 

@@ -1989,6 +1989,32 @@
 [data-theme^="apple-"] .rux--pagination .rux--pagination__button:is(:disabled, .rux--pagination__button--no-index):hover {
   background-color: var(--rux-button-disabled);
 }
+/* EACH ARROW IS A CHEVRON, as a Mac's back and forward are, and the same
+   chevron the page select beside it points down with: Material's
+   keyboard_arrow, the sprite's own. Which glyph a page draws is in its
+   markup, where a theme cannot reach, so the page's glyph is hidden and the
+   chevron is drawn in its place as a mask over the icon colour. The second
+   arrow of the pair is the one that goes forward. */
+[data-theme^="apple-"] .rux--pagination .rux--pagination__button > svg {
+  display: none;
+}
+[data-theme^="apple-"] .rux--pagination .rux--pagination__button::before {
+  content: "";
+  block-size: 1rem;
+  inline-size: 1rem;
+  background-color: var(--rux-icon-primary);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M561-240 320-481l241-241 43 43-198 198 198 198-43 43Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+[data-theme^="apple-"] .rux--pagination .rux--pagination__button + .rux--pagination__button::before {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M530-481 332-679l43-43 241 241-241 241-43-43 198-198Z'/%3E%3C/svg%3E");
+}
+[data-theme^="apple-"] .rux--pagination .rux--pagination__button:is(:disabled, .rux--pagination__button--no-index)::before {
+  background-color: var(--rux-icon-disabled);
+}
+[dir=rtl] [data-theme^="apple-"] .rux--pagination .rux--pagination__button::before,
+[data-theme^="apple-"][dir=rtl] .rux--pagination .rux--pagination__button::before {
+  transform: rotate(0.5turn);
+}
 /* The bar is a region of the page too, on the 12px corner the table's box
    takes. Inside that box it is clipped by it; under it, the bar's two upper
    corners square off as the box's lower ones do. */

@@ -214,12 +214,14 @@
   /* A leg's buses and seats as its checklist reads them: how many buses it
      needs and has, how many fall short of the trip, the seats open and filled,
      the drivers not confirmed, the envelopes and the itineraries not printed,
-     whether a part-time driver rides, and how many of them still lack their
-     hours-of-service form. */
+     whether a part-time driver rides, how many of them still lack their
+     hours-of-service form, and how many of the leg's buses have no fuel card
+     number yet, which only a trip with a card asks. */
   function factsOf(trip, leg, { busesById = new Map(), driversById = new Map(), statuses = new Map() } = {}) {
     const assigns = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === leg);
     const busesNeeded = leg === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1);
-    const facts = { busesNeeded, busesAssigned: 0, busesShort: 0, seatsOpen: 0, seats: 0, unconfirmed: 0, envelopesLeft: 0, itinerariesLeft: 0, partTime: false, hosLeft: 0 };
+    const facts = { busesNeeded, busesAssigned: 0, busesShort: 0, seatsOpen: 0, seats: 0, unconfirmed: 0, envelopesLeft: 0, itinerariesLeft: 0, partTime: false, hosLeft: 0,
+      fuelCardsLeft: Math.max(0, busesNeeded - assigns.filter(a => String(a.fuel_card_number ?? '').trim()).length) };
     for (const a of assigns) {
       if (a.bus_id == null) continue;
       facts.busesAssigned++;

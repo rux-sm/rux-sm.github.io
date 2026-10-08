@@ -397,8 +397,10 @@
        that used to ask it went: a card written down and a card ticked for are
        the same fact asked twice. It is named as the requirement below it is
        named, because one object gets one name on a page. The line under it
-       does not repeat that name: what else would have been received. */
-    { label: 'Fuel card', fill: true },
+       does not repeat that name: what else would have been received. On the
+       first driver's copy of a trip with a card it is typed here, and kept on
+       the bus's row of the trip. */
+    { label: 'Fuel card', fill: true, card: true },
     { label: 'Repairs', money: true },
     { label: 'Received by', fill: true },
     { label: 'Miscellaneous', money: true },
@@ -406,7 +408,30 @@
     { label: 'Total', money: true },
   ];
 
-  function envelopeTally() {
+  /* THE BUS'S FUEL CARD RIDES IN ONE ENVELOPE, the first driver's, and stays
+     with the bus through a relief. So that copy alone carries the card: its
+     requirement, and its number on the tally's line. A co-driver's or a
+     relief's copy says nothing about a card. A blank envelope, with nobody on
+     it, keeps both for the pen. */
+  const hasCard = trip => needsOf(trip).some(n => n.id === 'fuelCard');
+  const carriesCard = (trip, seat) => !!seat && (seat.role || 'driver') === 'driver' && hasCard(trip);
+
+  // Each card line on the sheet and the way to save it now, for a print that starts mid-pause.
+  const cardLines = new WeakMap();
+  // The card's number, written on the bus's row of the trip. Says how it went, and whether it did.
+  async function saveCard(assignment, text) {
+    const number = String(text ?? '').trim() || null;
+    if (!assignment?.id || number === (assignment.fuel_card_number ?? null)) return true;
+    const client = window.Rux?.account?.client;
+    if (!client) { flash('Not connected, so the fuel card was not saved.', true); return false; }
+    const { error } = await client.from('trip_assignments').update({ fuel_card_number: number }).eq('id', assignment.id);
+    if (error) { flash(`The fuel card did not save. ${error.message}`, true); return false; }
+    assignment.fuel_card_number = number;
+    flash(number ? `Fuel card ${number} saved.` : 'Fuel card cleared.');
+    return true;
+  }
+
+  function envelopeTally(trip, assignment, seat) {
     const grid = el('div', 'scheduler-envelope__tally');
     for (const line of TALLY) {
       const node = el('div', 'scheduler-envelope__tally-line');
@@ -414,7 +439,22 @@
       // Whatever a line answers with is pushed to the end of it, so the boxes
       // and the dollar signs stand in columns down the block rather than
       // following labels of every length.
-      node.appendChild(el('span', 'scheduler-envelope__tally-fill'));
+      const fill = el('span', 'scheduler-envelope__tally-fill');
+      if (line.card && assignment?.id && carriesCard(trip, seat)) {
+        fill.classList.add('scheduler-envelope__card');
+        fill.dataset.name = 'Fuel card number';
+        fill.textContent = assignment.fuel_card_number || '';
+        /* Typed on the sheet and kept as it is typed: a pause saves it, and so
+           does leaving the line, so a number typed and printed straight away
+           is on the bus before the dialog opens. */
+        let pause = null;
+        const keep = () => { clearTimeout(pause); return saveCard(assignment, fill.textContent); };
+        cardLines.set(fill, keep);
+        fill.addEventListener('input', () => { clearTimeout(pause); pause = setTimeout(keep, 700); });
+        fill.addEventListener('blur', () => void keep());
+        fill.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); fill.blur(); } });
+      }
+      node.appendChild(fill);
       if (line.choices) {
         for (const choice of line.choices) {
           const opt = el('span', 'scheduler-envelope__choice');
@@ -446,7 +486,8 @@
     /* A part-time driver's copy adds the hours-of-service record they sign,
        which the board asks for on their bus. It is theirs alone, so the other
        seats' copies leave it off. */
-    const needs = [...needsOf(trip), ...(seat?.drivers?.employment_type === 'part-time'
+    const needs = [...needsOf(trip).filter(n => n.id !== 'fuelCard' || !seat || carriesCard(trip, seat)),
+      ...(seat?.drivers?.employment_type === 'part-time'
       ? [{ id: 'hos', label: 'Hours of service', icon: '#m-schedule' }] : [])];
     // The label names what is under it. A requirement is something the driver
     // must do, and calling it a note demotes it; but an empty box headed
@@ -535,7 +576,7 @@
       card.appendChild(table);
       card.appendChild(envelopeLog());
       card.appendChild(envelopeNeeds(trip, seat));
-      card.appendChild(envelopeTally());
+      card.appendChild(envelopeTally(trip, assignment, seat));
       return card;
     }
 
@@ -550,7 +591,7 @@
       cell('Ending odometer', '', true),
     ));
     card.appendChild(table);
-    card.appendChild(envelopeTally());
+    card.appendChild(envelopeTally(trip, assignment, seat));
     card.appendChild(envelopeNeeds(trip, seat));
     return card;
   }
@@ -2112,6 +2153,7 @@
           '.scheduler-envelope__blank',
           '.scheduler-envelope__day',
           '.scheduler-envelope__reqs',
+          '.scheduler-envelope__card',
         ],
       },
       render: envelope,
@@ -2269,7 +2311,7 @@
      other buses with this same list, and a column left out of one copy of it
      is a seat the form drops without saying so. */
   const BUS_SEATS_QUERY = [
-    'id', 'leg', 'position', 'bus_id',
+    'id', 'leg', 'position', 'bus_id', 'fuel_card_number',
     'buses:bus_id(number,type)',
     'trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed,itinerary_printed,hos_form_printed,drivers:driver_id(name,short_name,employment_type))',
   ].join(',');
@@ -2754,6 +2796,7 @@
   }
   let titlesBefore = null;
   window.addEventListener('beforeprint', () => {
+    for (const line of sheet.querySelectorAll('.scheduler-envelope__card')) void cardLines.get(line)?.();
     const file = current?.form.fileName?.(current.every[current.chosen], current.layout);
     if (!file) return;
     const name = window.SchedulerFileNames.bare(file);
@@ -2831,6 +2874,8 @@
      writes nothing. Rows already marked are not asked about again. */
   const markModal = document.getElementById('scheduler-print-mark-modal');
   const markHeading = document.getElementById('scheduler-print-mark-h');
+  const markCardRow = document.getElementById('scheduler-print-mark-card-row');
+  const markCard = document.getElementById('scheduler-print-mark-card');
   let asking = null;
   const namesOf = rows => {
     const names = rows.map(row => nameOf(row)).filter(Boolean);
@@ -2862,15 +2907,29 @@
       if (window.confirm(question)) void markPrinted(mark, true, followBox);
       return;
     }
-    asking = mark;
+    /* The first driver's envelope carries the card, so where its number is
+       not typed yet the same question takes it, for an office that writes the
+       number on the printed sheet. Left empty, nothing is saved for it. */
+    const copy = all ? null : every[chosen];
+    const card = copy && form.id === 'envelope' && copy.assignment?.id && carriesCard(copy.trip, copy.seat)
+      && !copy.assignment.fuel_card_number ? copy.assignment : null;
+    asking = { ...mark, card };
     markHeading.textContent = question;
+    if (markCardRow) markCardRow.hidden = !card;
+    if (markCard) markCard.value = '';
     window.Rux.modal.open(markModal);
   }
-  document.getElementById('scheduler-print-mark-yes')?.addEventListener('click', () => {
+  document.getElementById('scheduler-print-mark-yes')?.addEventListener('click', async () => {
     const mark = asking;
     asking = null;
     window.Rux?.modal?.close?.(markModal);
-    if (mark) void markPrinted(mark, true, followBox);
+    if (!mark) return;
+    const number = mark.card ? String(markCard?.value ?? '').trim() : '';
+    if (number && await saveCard(mark.card, number)) {
+      const line = sheet.querySelector('.scheduler-envelope__card');
+      if (line) line.textContent = number;
+    }
+    void markPrinted(mark, true, followBox);
   });
   markModal?.addEventListener('rux:modal-closed', () => { asking = null; });
 

@@ -12,7 +12,8 @@
                   filled, every driver confirmed
      Paperwork    each driver's itinerary and envelope printed, and the
                   hours-of-service record of each part-time driver
-     Extras       the hotel booked and the fuel card assigned, when wanted
+     Extras       the hotel booked and each bus's fuel card assigned, when
+                  wanted
 
    Entered and Customer are the trip's, so they sit on its first leg. A
    placeholder, a trip not quoted yet, has only Entered. Nothing here reads
@@ -37,7 +38,8 @@
 
   /* One leg's items. `facts` is the board's reading of the leg's buses:
      { busesNeeded, busesAssigned, busesShort, seatsOpen, seats, unconfirmed,
-       envelopesLeft, itinerariesLeft, partTime, hosLeft }, where `seats`
+       envelopesLeft, itinerariesLeft, partTime, hosLeft, fuelCardsLeft },
+     where `seats`
      counts the seats with a driver in them. `tripContact` is whether the trip
      has a day-of contact. */
   function legItems(trip, leg, facts = {}, tripContact = false) {
@@ -90,8 +92,10 @@
     if (wants(trip, 'hotel', 'need_hotel')) {
       add('Extras', 'hotel', 'Hotel booked', trip[`hotel_booked_${leg}`], TABS.billing, trip[`hotel_itinerary_number_${leg}`] || null);
     }
+    // A card is a bus's, its number typed on the first driver's envelope.
     if (wants(trip, 'fuelCard', 'need_fuel_card')) {
-      add('Extras', 'fuel-card', 'Fuel card assigned', trip[`fuel_card_assigned_${leg}`], null, trip[`fuel_card_number_${leg}`] || null);
+      add('Extras', 'fuel-card', 'Fuel card assigned', !facts.fuelCardsLeft, TABS.forms,
+        facts.fuelCardsLeft ? `${plural(facts.fuelCardsLeft, 'bus', 'buses')} without a card` : null);
     }
     return items;
   }

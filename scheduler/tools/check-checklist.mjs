@@ -16,7 +16,7 @@ function expect(name, got, want) {
 }
 
 const base = { trip_type: 'round_trip', confirmed: false, trip_documents: [], trip_reqs: {} };
-const full = { busesNeeded: 1, busesAssigned: 1, busesShort: 0, seatsOpen: 0, seats: 1, unconfirmed: 0, envelopesLeft: 0, itinerariesLeft: 0, partTime: false, hosLeft: 0 };
+const full = { busesNeeded: 1, busesAssigned: 1, busesShort: 0, seatsOpen: 0, seats: 1, unconfirmed: 0, envelopesLeft: 0, itinerariesLeft: 0, partTime: false, hosLeft: 0, fuelCardsLeft: 0 };
 
 expect('a placeholder has only Entered',
   ids(checklist({ ...base, trip_bar_color: 'amber' })),
@@ -44,9 +44,10 @@ expect('a part-time driver asks for the hours-of-service record',
 
 expect('hotel and fuel card appear only when wanted, from tags or the old columns',
   [ids(checklist(ready, () => full, true)).filter(i => /hotel|fuel/.test(i)),
-    ids(checklist({ ...ready, trip_reqs: { hotel: true }, need_fuel_card: true, hotel_booked_outbound: true }, () => full, true))
-      .filter(i => /hotel|fuel/.test(i))],
-  [[], ['hotel:outbound+', 'fuel-card:outbound-']]);
+    ids(checklist({ ...ready, trip_reqs: { hotel: true }, need_fuel_card: true, hotel_booked_outbound: true }, () => ({ ...full, fuelCardsLeft: 1 }), true))
+      .filter(i => /hotel|fuel/.test(i)),
+    ids(checklist({ ...ready, need_fuel_card: true }, () => full, true)).filter(i => /fuel/.test(i))],
+  [[], ['hotel:outbound+', 'fuel-card:outbound-'], ['fuel-card:outbound+']]);
 
 const split = checklist({ ...ready, trip_type: 'dropoff_pickup' }, () => full, true);
 expect('a split trip has two legs, and the trip\'s items only on the first',

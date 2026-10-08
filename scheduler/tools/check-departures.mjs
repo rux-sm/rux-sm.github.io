@@ -82,6 +82,14 @@ expect('a bus that lacks a need and has no driver says both, and a bus the leg h
   [two.buses[1].needs.map(n => `${n.label}:${n.met}`), said(two.buses[1].crew[0].lines), two.buses[1].left, two.missing, two.left],
   [['Sleeper:false'], ['warn Driver needed'], 2, 1, 4 + 2 + 1]);
 
+const card = page({ ...trip, bus_count: 2, need_fuel_card: true, trip_assignments: [
+  bus('a1', 1, [seat('s1', 'd1', 'driver', done)], { fuel_card_number: '4417' }),
+  bus('a2', 2, [seat('s2', 'd2', 'driver', done)], { position: 1 }),
+] }, 'outbound', read);
+expect('a trip with a fuel card asks one of every bus, by its number',
+  [card.buses.map(b => b.needs.filter(n => n.id === 'fuelCard').map(n => `${n.label}:${n.met}`)[0]), card.buses.map(b => b.left)],
+  [['Fuel card 4417:true', 'Fuel card:false'], [0, 3]]);
+
 const split = { ...trip, trip_type: 'dropoff_pickup', return_start_date: day(3), return_bus_count: 1,
   trip_assignments: [bus('a1', 1, [seat('s1', 'd1', 'driver', done)]), bus('a3', 1, [seat('s3', 'd1', 'driver')], { leg: 'return' })] };
 const back = page(split, 'return', read);

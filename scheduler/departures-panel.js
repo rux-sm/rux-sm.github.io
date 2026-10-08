@@ -85,7 +85,7 @@
     'booking_contact_name', 'contacts:booking_contact_id(id,name,phone,email)',
     ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
     'trip_prep(driver_info_sent,driver_info_sent_at,driver_info_sent_by)',
-    `trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,trip_drivers(id,driver_id,role,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
+    `trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
     'trip_stops(position,leg,arrive,spot,depart_prev)'].join(',');
 
   // The buses, the drivers, the office's lists and the staff, read once a page.
@@ -283,11 +283,20 @@
     const icon = svgUse('#m-directions_bus-fill', 20);
     const row = bus.bus ? buses.get(bus.bus.id) ?? bus.bus : null;
     name.append(icon, el('strong', null, row ? String(row.number ?? 'Bus') : 'No bus yet'));
+    // The first driver's seat, whose envelope a missing fuel card is typed on.
+    const lead = bus.crew.find(m => m.seat && (m.seat.role || 'driver') === 'driver');
     for (const n of bus.needs) {
       const t = tag(n.label, n.met ? 'rux--tag--green' : 'rux--tag--red');
       t.prepend(svgUse(n.met ? '#m-check' : '#m-warning-fill'));
       t.setAttribute('aria-label', `${n.label}: ${n.met ? 'this bus has it' : 'this bus lacks it'}`);
-      name.appendChild(t);
+      const act = !n.met && n.action ? actionOf({ action: n.action, key: n.id }, page, bus, lead) : null;
+      if (act) {
+        const a = el('a', 'scheduler-departures__need');
+        a.href = act.href;
+        a.setAttribute('aria-label', `${n.label}: type its number on ${lead.name}'s envelope`);
+        a.appendChild(t);
+        name.appendChild(a);
+      } else name.appendChild(t);
     }
     top.append(name, leftTag(bus.left));
     tile.appendChild(top);

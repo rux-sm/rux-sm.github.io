@@ -596,6 +596,9 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    that cannot give way spills out of the sheet. */
 .scheduler-envelope__tally-line { min-inline-size: 0; }
 .scheduler-envelope__tally-fill { flex: 1; }
+/* The fuel card's number, typed on the first driver's copy: at the line's end,
+   where the pen would have written it, and as heavy as what the form fills in. */
+.scheduler-envelope__card { text-align: end; font-weight: 600; }
 
 /* The room a figure is written in, kept to the right of the dollar sign so a
    column of them lines up, and the first thing to give when the sheet is

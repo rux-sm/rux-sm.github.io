@@ -435,14 +435,12 @@
     // Each leg's hotel: the bar's hotel mark, its menu item and the Buses tab.
     'hotel_booked_outbound', 'hotel_booked_return',
     'hotel_itinerary_number_outbound', 'hotel_itinerary_number_return',
-    // The checklist's hand ticks, kept per leg: the fuel card and its number.
-    'fuel_card_assigned_outbound', 'fuel_card_assigned_return', 'fuel_card_number_outbound', 'fuel_card_number_return',
     // The roles an assignment turns on, and who fills them: the drivers row.
     // The Buses tab edits each seat by its row id, with its relief swap time and
     // note, and each vehicle's own needs and type. A seat also carries what
     // its driver has been handed: the envelope, the itinerary and the
     // hours-of-service form, each printed or not.
-    'trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed,itinerary_printed,hos_form_printed,trip_reminder_sent,trip_reminder_sent_at))',
+    'trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed,itinerary_printed,hos_form_printed,trip_reminder_sent,trip_reminder_sent_at))',
     // The driver details sent to the booking contact, or not, which the Contact list says and marks.
     'trip_prep(driver_info_sent,driver_info_sent_at)',
     // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
@@ -4594,13 +4592,6 @@
     ]),
   ];
 
-  /* The checklist's hand ticks, kept on the trip: each leg's fuel card
-     assigned, with the card's number. The editor's checklist edits them, and
-     Save writes them like any field. */
-  const TICK_KEYS = ['outbound', 'return'].flatMap(leg => [`fuel_card_assigned_${leg}`, `fuel_card_number_${leg}`]);
-  const tickValue = (key, v) => (key.startsWith('fuel_card_number') ? (String(v ?? '').trim() || null) : !!v);
-  const ticksOf = trip => Object.fromEntries(TICK_KEYS.map(k => [k, tickValue(k, trip?.[k])]));
-  EDITS.push(...TICK_KEYS.map(key => ({ key, get: () => (editing?.ticks ? editing.ticks[key] : null) })));
 
   // The id a search field resolved to, or null when the box was cleared or
   // typed freehand. `undefined` means the control is not on screen at all.
@@ -6597,25 +6588,9 @@
     if (checklistOpen()) window.Rux.popover.close(checklistPop);
   }
 
-  // The hand ticks a checklist item stands for, by its id.
-  const TICK_OF = { 'fuel-card': 'fuel_card_assigned' };
-
   function checklistRow(item, leg) {
     const li = el('li', `scheduler-checklist__item${item.done ? ' scheduler-checklist__item--done' : ''}`);
     const kind = item.id.split(':')[0];
-    if (TICK_OF[kind]) {
-      const key = `${TICK_OF[kind]}_${leg}`;
-      const box = checkField(`scheduler-check-${kind}-${leg}`, item.label, editing.ticks[key]);
-      box.querySelector('input').addEventListener('change', e => { editing.ticks[key] = e.target.checked; refreshDirty(); });
-      li.appendChild(box);
-      if (kind === 'fuel-card') {
-        const numKey = `fuel_card_number_${leg}`;
-        const num = textField(`scheduler-check-fuelnum-${leg}`, 'Card number', editing.ticks[numKey], 'Card number');
-        num.querySelector('input').addEventListener('input', e => { editing.ticks[numKey] = tickValue(numKey, e.target.value); refreshDirty(); });
-        li.appendChild(num);
-      }
-      return li;
-    }
     const mark = el('span', `scheduler-checklist__mark${item.done ? '' : ' scheduler-checklist__mark--open'}`);
     if (item.done) mark.appendChild(svgUse('#m-check_circle-fill', '16', '0 0 32 32'));
     const words = el('span', 'scheduler-checklist__words');
@@ -6646,14 +6621,14 @@
     return li;
   }
 
-  /* The checklist: the trip as saved, with the editor's own Done marks and
-     hand ticks laid over it, so a tick or a Done shows here before Save. The
+  /* The checklist: the trip as saved, with the editor's own Done marks laid
+     over it, so a Done shows here before Save. The
      button in the panel head says how much is left after every edit; the list
      is drawn only while its drop-down is open. */
   function drawChecklist() {
     if (!editing?.trip || !panelChecklist || !checklistButton) return;
     const on = doneState();
-    const view = { ...editing.trip, ...editing.ticks, itinerary_not_needed: editing.itineraryNotNeeded };
+    const view = { ...editing.trip, itinerary_not_needed: editing.itineraryNotNeeded };
     for (const { tab } of DONE_TABS) {
       const d = on?.[tab] ? editing.done[tab] : null;
       view[`${tab}_done_at`] = d ? (d.at || 'now') : null;
@@ -6833,11 +6808,9 @@
       done: Object.fromEntries(DONE_TABS.map(({ tab }) => [tab, trip[`${tab}_done_at`]
         ? { at: trip[`${tab}_done_at`], by: trip[`${tab}_done_by`] ?? null, key: null, fresh: false } : null])),
       doneBoxes: {},
-      // The trip as saved, which the checklist reads, and its hand ticks as they stand.
+      // The trip as saved, which the checklist reads.
       trip,
-      ticks: ticksOf(trip),
       before: {
-      ...ticksOf(trip),
       destination: trip.destination ?? null,
       customer: trip.customer ?? null,
       customer_id: trip.customer_id ?? null,

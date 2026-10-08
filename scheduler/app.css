@@ -4455,6 +4455,10 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-departures__bus > svg { flex: none; color: var(--rux-icon-secondary); }
 .scheduler-departures__tag { flex: none; margin: 0; }
 .scheduler-departures__tag > svg { flex: none; margin-inline-end: var(--rux-spacing-02); }
+/* A need still to do that leads somewhere, as a missing fuel card leads to the envelope. */
+.scheduler-departures__need { display: inline-flex; border-radius: 1rem; text-decoration: none; }
+.scheduler-departures__need:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+.scheduler-departures__need .scheduler-departures__tag { cursor: pointer; }
 .scheduler-departures__member { padding-block-start: var(--rux-spacing-03); border-block-start: 1px solid var(--rux-border-subtle-01); }
 .scheduler-departures__who { display: flex; align-items: center; gap: var(--rux-spacing-03); font-size: 0.875rem; }
 .scheduler-departures__role { flex: 1 1 auto; color: var(--rux-text-secondary); }

@@ -17,7 +17,8 @@
    The trip's lines are the whole trip's: confirmed, the itinerary received,
    the trip contact, what the customer still owes, the hotel where the office
    books it, and the driver details sent to the booking contact. A bus's tile
-   holds what the bus needs, met or not, and each crew member's lines:
+   holds what the bus needs, met or not, its fuel card among them where the
+   trip has one, and each crew member's lines:
    confirmed, then the itinerary, the envelope, the reminder, and the
    hours-of-service form for a part-time driver.
 
@@ -110,6 +111,12 @@
         if (!Facts.isVehicleNeed(id)) continue;
         needs.push({ id, label: Facts.requirementLabel(id), met: !Facts.shortfall(id, bus) });
       }
+    }
+    // A trip with a fuel card asks one of every bus, by its number; it is typed on the first driver's envelope.
+    const wantsCard = trip.trip_reqs && 'fuelCard' in trip.trip_reqs ? trip.trip_reqs.fuelCard === true : !!trip.need_fuel_card;
+    if (wantsCard) {
+      const number = String(assign.fuel_card_number ?? '').trim();
+      needs.push({ id: 'fuelCard', label: number ? `Fuel card ${number}` : 'Fuel card', met: !!number, action: 'forms:envelope' });
     }
     const crew = [];
     for (const c of Facts.crewOf(trip, assign, driversById, statuses)) {

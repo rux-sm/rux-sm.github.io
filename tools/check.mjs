@@ -62,6 +62,7 @@ step('scheduler checklist', process.execPath, ['scheduler/tools/check-checklist.
 step('scheduler route figures', process.execPath, ['scheduler/tools/check-route-figures.mjs']);
 step('scheduler to-do', process.execPath, ['scheduler/tools/check-to-do.mjs']);
 step('scheduler departures', process.execPath, ['scheduler/tools/check-departures.mjs']);
+step('scheduler billing', process.execPath, ['scheduler/tools/check-billing.mjs']);
 
 // THE NAMES SWEEP, EVERY TRACKED TEXT FILE. A public repository publishes
 // every tracked file, and only those: the list comes from git, so an ignored

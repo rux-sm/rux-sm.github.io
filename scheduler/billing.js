@@ -52,9 +52,13 @@
     if (contractSigned) return 'contract_signed';
     return 'pending';
   }
-  // A partial PO confirms whenever a PO does, as in rux-ui.
+  // A partial PO confirms whenever a PO does, as in rux-ui. A trip paid past
+  // its price confirms whenever one paid in full does, which rux-ui's own
+  // default list leaves out, so a card fee inside a payment or a discount
+  // after it does not turn a paid trip unconfirmed.
   const confirmRungOf = rung => (rung === 'po_partial' ? 'po_received' : rung);
-  const confirmsTrip = rung => billingWorkflow.confirmWhen.includes(confirmRungOf(rung));
+  const confirmsTrip = rung => billingWorkflow.confirmWhen.includes(confirmRungOf(rung))
+    || (rung === 'overpaid' && billingWorkflow.confirmWhen.includes('paid_full'));
 
   /* A trip's milestones as rux-ui opens them. A confirmed trip with no
      contract status predates the column and counts as signed; a PO reference

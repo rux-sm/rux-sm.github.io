@@ -175,7 +175,6 @@ site.
       and read the link again before Create.
 - [ ] Open Cost empty on a line that follows the calculator, from a rule in
       `scheduler/quote-lines.js` with its check.
-- [ ] Count a trip paid past its price as paid in `billing.js`, with a check.
 - [ ] Make `qbDescription` read each leg's own stops, and
       `linesFromCalculator` write the leg the calculator was filled from.
 - [ ] Total the customer quote from its printed lines, warn in the editor

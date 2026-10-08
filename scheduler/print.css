@@ -2229,7 +2229,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 /* ── The binder covers and spines ─────────────────────────────────────────
    What slides into a ring binder's front pocket and its spine pocket. It is
    read from across the office, so it is three things and each one large: the
-   year, a word for what the binder holds, and the logo. Its sizes are in
+   year, a word for what the binder holds, and the logo. A binder that shares
+   its year with another says its months under the year. Its sizes are in
    inches, measured off the paper and the pocket.
 
    IT FILLS, AS THE QUOTE DOES. The block of colour is what tells a quotes
@@ -2240,6 +2241,8 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    binder's own, named in theme.css: the blue is the logo's. */
 .scheduler-binder {
   align-items: center;
+  /* For what is typed past one line, which is centred as one line is. */
+  text-align: center;
   font-weight: 700;
 }
 
@@ -2262,20 +2265,38 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   justify-content: center;
 }
 
-/* THE COVER, a whole sheet: the logo, the year, the word in its block, and at
-   the foot how the binder is filed, which is the line a second person filing
-   into it needs. */
+/* THE COVER, a whole sheet: the logo, the year with its months, the word in
+   its block, and at the foot how the binder is filed, which is the line a
+   second person filing into it needs. */
 .scheduler-binder--cover .scheduler-binder__logo {
   inline-size: 4.5in;
   margin-block-start: 0.525in;
 }
+/* The year and its months, and what the months' name hangs from while they
+   are not typed. */
+.scheduler-binder__when {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-block-start: 0.98in;
+}
 .scheduler-binder--cover .scheduler-binder__year {
-  margin: 0.98in 0 0;
+  margin: 0;
   font-size: 2.7in;
   /* Named here, because Carbon's reset gives a paragraph its own weight. */
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.04em;
+}
+/* Tucked up into the room a line of figures keeps under itself for a
+   descender it does not have. */
+.scheduler-binder--cover .scheduler-binder__months {
+  margin: -0.14in 0 0;
+  font-size: 0.72in;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 .scheduler-binder--cover .scheduler-binder__block {
   inline-size: 6.5in;
@@ -2320,10 +2341,21 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 .scheduler-binder__strip:last-child { border-inline-end: 1px dashed var(--rux-border-strong-01); }
 
 .scheduler-binder--spines .scheduler-binder__block {
+  position: relative;
+  flex-direction: column;
   align-self: stretch;
   font-size: min(calc((var(--scheduler-binder-spine) - 0.44in) / 2.3), 1in);
   line-height: 1.55;
   letter-spacing: -0.03em;
+}
+/* The months, under the year in its block: as large as "May - Dec" fits
+   across the strip, and a longer run takes a second line. */
+.scheduler-binder--spines .scheduler-binder__months {
+  margin-block-start: -0.12em;
+  padding-block-end: 0.4em;
+  font-size: min(calc((var(--scheduler-binder-spine) - 0.24in) / 5.6), 0.5in);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
 }
 /* The word, down the spine: it reads the right way up when the binder lies
    on its back cover. */
@@ -2344,6 +2376,53 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
   align-self: stretch;
   block-size: 0.22in;
   margin-block-start: 0.2in;
+}
+
+/* THE MONTHS ARE TYPED ONLY ON A BINDER THAT SHARES ITS YEAR, so untyped they
+   take no room, on screen as on paper, and the sheet seen is the sheet
+   printed. Their name hangs under the year, out of the flow, to say where
+   they go; once typed they are in it. */
+@media screen {
+  .scheduler-binder__months:empty {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline: 0;
+    margin: 0.06in 0 0;
+    padding: 0;
+    font-size: 0.24in;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--rux-text-placeholder);
+  }
+  .scheduler-binder--spines .scheduler-binder__months:empty {
+    font-size: min(calc((var(--scheduler-binder-spine) - 0.24in) / 5.6), 0.24in);
+  }
+
+  /* A FIELD TYPED EMPTY SAYS WHAT IT IS, in its own place and at its own
+     size. Without it an emptied field is no wider than its cursor, and there
+     is nothing left to click to type it back. */
+  .scheduler-binder__typed:empty::before {
+    content: attr(data-name);
+    opacity: 0.5;
+  }
+  .scheduler-binder__months:empty::before { opacity: 1; }
+}
+@media print {
+  .scheduler-binder__months:empty { display: none; }
+}
+
+/* The buttons that add a binder like this one and take this one away, in the
+   cover's top corner over its margin. They are the screen's, as the button
+   that adds an itinerary's row is. */
+.scheduler-binder__tools {
+  position: absolute;
+  inset-block-start: 0.14in;
+  inset-inline-end: 0.14in;
+  display: flex;
+  font-weight: 400;
+}
+@media print {
+  .scheduler-binder__tools { display: none; }
 }
 
 /* How to print and cut them, in the margin beside the strips, which is cut

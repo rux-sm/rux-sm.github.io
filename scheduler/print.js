@@ -2099,11 +2099,12 @@
 
   /* ── THE BINDER COVERS AND SPINES ─────────────────────────────────────────
      The office keeps its paper quotes and its confirmed trips in ring
-     binders, a pair for each year. This draws the sheet that slides into a
-     binder's front pocket and the strip that slides into its spine. The year
-     is the largest thing on both, because the year is what tells one pair
-     from the next on a shelf, and a block of colour says the kind: grey for
-     quotes, the logo's blue for confirmed.
+     binders, a pair for each year, and more than a pair where a year's trips
+     overfill one: then each binder holds a run of months, typed under its
+     year. This draws the sheet that slides into a binder's front pocket and
+     the strip that slides into its spine. The year heads both, because the
+     year is what tells one pair from the next on a shelf, and a block of
+     colour says the kind: grey for quotes, the logo's blue for confirmed.
 
      IT READS NOTHING. The years are this one and the next, from today's date,
      and every word on it can be typed over before it is printed. */
@@ -2111,7 +2112,8 @@
     { id: 'quotes', spine: 'Quotes', cover: 'Quotes' },
     { id: 'confirmed', spine: 'Confirmed', cover: 'Confirmed trips' },
   ];
-  const BINDER_FILED = 'Filed by trip date, January at the front';
+  // True of a binder whichever months it holds.
+  const BINDER_FILED = 'Filed by trip date, earliest at the front';
   /* The ring sizes a spine is cut for, in inches. The strip is as wide as the
      ring, which is narrower than the pocket on every binder, so it always
      slides in. */
@@ -2119,11 +2121,16 @@
   // The sheet's width in inches, which says how many strips fit side by side.
   const SPINE_SHEET = 8.5;
 
+  /* THE BINDERS ON THE PAGE. They start as a pair for this year and a pair
+     for the next, and a cover's own buttons add one like it or take it away,
+     which is how a year comes to be split between two. Each keeps a number of
+     its own, so what is typed on it stays its own when the set changes. */
+  let binders = null;
+  let binderCount = 0;
+  const newBinder = (kind, year) => ({ kind, year, id: (binderCount += 1) });
   const binderSet = () => {
     const year = new Date().getFullYear();
-    return [year, year + 1]
-      .flatMap(y => BINDER_KINDS.map(kind => ({ kind, year: y })))
-      .map((binder, slot) => ({ ...binder, slot }));
+    return [year, year + 1].flatMap(y => BINDER_KINDS.map(kind => newBinder(kind, y)));
   };
 
   /* WHAT IS TYPED ON ONE SHEET IS TYPED ON THE REST. A binder's year is on its
@@ -2146,11 +2153,49 @@
   function onBinderTyped(event) {
     const field = event.target.closest?.('[data-binder-key]');
     if (!field) return;
+    /* Chrome leaves a line break in a field typed empty, and print.css shows
+       a field's name only in one that holds nothing. */
+    if (!field.textContent.trim()) field.replaceChildren();
     const key = field.dataset.binderKey;
     binderWords.set(key, field.textContent);
     for (const other of binderFields.get(key) || []) {
       if (other !== field) other.textContent = field.textContent;
     }
+  }
+
+  /* THE SET CHANGED, so every layout is drawn again, which the page does when
+     it hears this on the sheet. What was typed is kept by its key and is on
+     the new sheets; the fields of the old ones are let go. */
+  function redrawBinders(card) {
+    binderFields.clear();
+    card.dispatchEvent(new CustomEvent('scheduler:form-redraw', { bubbles: true }));
+  }
+
+  /* ONE MORE LIKE THIS ONE, beside it: the same kind, with what is typed on
+     this one already on it and the months left to type, because the months
+     are what tell the two apart. */
+  function addBinder(from, card) {
+    const sheetEl = card.parentElement;
+    const next = newBinder(from.kind, from.year);
+    for (const part of ['year', 'cover', 'spine', 'filed']) {
+      const typed = binderWords.get(`${part}:${from.id}`);
+      if (typed != null) binderWords.set(`${part}:${next.id}`, typed);
+    }
+    binders.splice(binders.indexOf(from) + 1, 0, next);
+    redrawBinders(card);
+    sheetEl?.querySelector(`[data-binder-key="months:${next.id}"]`)?.focus();
+  }
+
+  function removeBinder(binder, card) {
+    binders.splice(binders.indexOf(binder), 1);
+    redrawBinders(card);
+  }
+
+  function binderButton(words, press) {
+    const button = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm', words);
+    button.type = 'button';
+    button.addEventListener('click', press);
+    return button;
   }
 
   function binderLogo() {
@@ -2165,16 +2210,29 @@
     el('div', `${cls} scheduler-binder__fill scheduler-binder__fill--${binder.kind.id}`);
 
   function binderCover(binder) {
-    const { kind, year, slot } = binder;
+    const { kind, year, id } = binder;
     const card = el('article', 'scheduler-form scheduler-binder scheduler-binder--cover');
+    // The year and the months of it this binder holds, read as one thing.
+    const when = el('div', 'scheduler-binder__when');
+    when.append(
+      binderField('p', 'scheduler-binder__year', `year:${id}`, String(year), 'Year'),
+      binderField('p', 'scheduler-binder__months', `months:${id}`, '', 'Months'),
+    );
     const block = binderFill(binder, 'scheduler-binder__block');
-    block.appendChild(binderField('span', 'scheduler-binder__word', `cover:${slot}`, kind.cover, 'Label'));
+    block.appendChild(binderField('span', 'scheduler-binder__word', `cover:${id}`, kind.cover, 'Label'));
+    /* Screen only, as an itinerary's Add a row is, and print.css takes them
+       off the paper. The last binder stays, because a page with no cover has
+       no button to add one back. */
+    const tools = el('div', 'scheduler-binder__tools');
+    tools.appendChild(binderButton('Add another like this', () => addBinder(binder, card)));
+    if (binders.length > 1) tools.appendChild(binderButton('Remove this one', () => removeBinder(binder, card)));
     card.append(
+      tools,
       binderLogo(),
-      binderField('p', 'scheduler-binder__year', `year:${slot}`, String(year), 'Year'),
+      when,
       block,
       el('div', 'scheduler-binder__rule'),
-      binderField('p', 'scheduler-binder__filed', `filed:${slot}`, BINDER_FILED, 'How it is filed'),
+      binderField('p', 'scheduler-binder__filed', `filed:${id}`, BINDER_FILED, 'How it is filed'),
     );
     card.addEventListener('input', onBinderTyped);
     return card;
@@ -2182,24 +2240,28 @@
 
   /* A SHEET OF STRIPS, each the full height of the paper, so only the long
      sides are cut. The year is upright at the top, where it lines up along a
-     shelf; the word runs down the spine, so it reads the right way up when
-     the binder lies flat on its back cover. */
-  function binderSpines(binders, size) {
+     shelf, with its months under it in the same block; the word runs down the
+     spine, so it reads the right way up when the binder lies flat on its back
+     cover. */
+  function binderSpines(onSheet, size) {
     const card = el('article', 'scheduler-form scheduler-binder scheduler-binder--spines');
     card.style.setProperty('--scheduler-binder-spine', `${size}in`);
     // Said in the margin beside the strips, where they leave one.
-    if ((SPINE_SHEET - binders.length * Number(size)) / 2 >= 0.6) {
+    if ((SPINE_SHEET - onSheet.length * Number(size)) / 2 >= 0.6) {
       card.appendChild(el('p', 'scheduler-binder__cut',
         `Spines for a ${size} in binder. Print at 100% and cut along the dashed lines.`));
     }
     const strips = el('div', 'scheduler-binder__strips');
-    for (const binder of binders) {
-      const { kind, year, slot } = binder;
+    for (const binder of onSheet) {
+      const { kind, year, id } = binder;
       const strip = el('section', 'scheduler-binder__strip');
       const block = binderFill(binder, 'scheduler-binder__block');
-      block.appendChild(binderField('span', 'scheduler-binder__word', `year:${slot}`, String(year), 'Year'));
+      block.append(
+        binderField('span', 'scheduler-binder__word', `year:${id}`, String(year), 'Year'),
+        binderField('span', 'scheduler-binder__months', `months:${id}`, '', 'Months'),
+      );
       const down = el('div', 'scheduler-binder__down');
-      down.appendChild(binderField('span', 'scheduler-binder__word', `spine:${slot}`, kind.spine, 'Label'));
+      down.appendChild(binderField('span', 'scheduler-binder__word', `spine:${id}`, kind.spine, 'Label'));
       strip.append(block, down, binderLogo(), binderFill(binder, 'scheduler-binder__bar'));
       strips.appendChild(strip);
     }
@@ -2211,7 +2273,7 @@
   /* The covers are a sheet each. The strips go four to a sheet up to the
      1.5 in ring and two to a sheet above it, which is what Letter holds. */
   function binder(subject, layout) {
-    const binders = binderSet();
+    binders ??= binderSet();
     const size = SPINE_SIZES.find(s => layout === `spines-${s}`);
     if (!size) return binders.map(binderCover);
     const perSheet = Number(size) <= 1.5 ? 4 : 2;
@@ -2879,6 +2941,14 @@
        after the room is already its final size. */
     fitPaper();
   };
+
+  /* A FORM WHOSE SHEETS CHANGE IN NUMBER SAYS SO ON THE SHEET, and every
+     layout of it is drawn again, because the sheets kept for a layout are of
+     the form as it was. */
+  sheet.addEventListener('scheduler:form-redraw', () => {
+    drawnSheets.clear();
+    draw();
+  });
 
   /* WHAT CAN BE TYPED INTO. The form's own entry says which of its fields
      take a pen and whether a filled copy takes one too, because the two forms

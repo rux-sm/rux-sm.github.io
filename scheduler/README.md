@@ -107,7 +107,7 @@ Copy for QuickBooks button reads too, so a pasted estimate and a printed quote
 cannot disagree. The week schedule is rux-ui's billing report of a week on
 Legal landscape, five buses a sheet, opened from the board's menu as Print
 week; `week.js` places its trips as it places the board's, and a trip that
-does not fit its row is named above the sheet. The binder covers and spines are the office's own, drawn from today's date and no trip: a Letter cover for each quotes and confirmed binder of this year and the next, and their spine strips in five ring sizes, every word typed over on the sheet. `print.js` holds the registry every form is an entry in; a
+does not fit its row is named above the sheet. The binder covers and spines are the office's own, drawn from today's date and no trip: a Letter cover for each quotes and confirmed binder of this year and the next, and their spine strips in five ring sizes, every word typed over on the sheet. A year split between binders has one added from a cover's own button, and the months each holds are typed under its year, once for its cover and its spines. `print.js` holds the registry every form is an entry in; a
 new form names its group, its short name for the list, a
 Material icon from Design's sprite, what it binds to and its paper, and the
 page gives it the same row, frame and fit as the rest. A form leaves as paper

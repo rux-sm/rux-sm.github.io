@@ -34,9 +34,15 @@ Plain questions, no particular wording:
 - who is free to drive on the 3rd
 - show me the trips for a customer
 - what is on trip 100842
+- the current insurance certificate for a school
+- when does a driver's background check end
 
 Availability counts a bus busy when it is on a trip or out of service, and a
 driver busy when they are on a trip or on time off.
+
+A document comes back with a link to its file. The link works for ten
+minutes and only for staff; ask again for a fresh one. Claude finds documents
+and cannot upload, replace or delete one, which the Documents page does.
 
 ## Enter a trip from an itinerary
 

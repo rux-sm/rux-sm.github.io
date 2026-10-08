@@ -34,6 +34,10 @@ its usual needs, and shows its notes, without anyone looking them up.
   Balance, the way a trip's Billing shows Paid and Balance, added up from
   every trip the customer ever had that is not cancelled. Each row shows its
   own balance.
+- **A trip saved before customers were linked has only the customer's name.**
+  One whose name is exactly a customer's is linked once, by SQL shown to rux
+  and applied on a yes. The driver forms in `scheduler-documents.md` are asked
+  for on linked trips only, so the coming trips are linked first.
 - **Notes, usual needs and the usual bus type are new columns on
   `customers`,** staff only as the table is, shown to rux as SQL and applied
   on a yes as a named migration.
@@ -43,12 +47,14 @@ its usual needs, and shows its notes, without anyone looking them up.
 
 ## Questions
 
-None open.
+- 395 trips, 64 of them still to come, name a customer the Customers list
+  does not have, often a campus with a group after it. Should each such name
+  become a customer, or are the names fixed by hand on the trip?
 
 ## Tasks
 
-- [ ] Count the trips with no customer link, and say how many a Trips tab
-      would miss.
+- [ ] Link the 276 trips whose Customer field is exactly a customer's name,
+      105 of them still to come, by SQL shown to rux.
 - [ ] Write the new columns as SQL, show it to rux, and apply it on a yes.
 - [ ] Add Notes and Usual needs to Details on `customers.html`.
 - [ ] Turn the usual needs on when a new trip's customer is picked, and show

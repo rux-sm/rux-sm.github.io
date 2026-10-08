@@ -46,6 +46,9 @@ driver who has none.
   The campus is the trip's customer's name.
 - **The form is printed for the driver to carry,** and its row in the Forms
   list says Printed once it is, as an envelope's does.
+- **Driver forms are asked for on a trip linked to its customer,** which a
+  save in either app does; `scheduler-customer-profile.md` links the older
+  trips.
 - **The trip's checklist gains Driver forms under Paperwork,** open while any
   driver on the leg lacks a current form of a kind asked for or has one not
   yet printed, and naming who and which.
@@ -88,8 +91,7 @@ None open.
       placed on the page.
 - [ ] Write the campus and trip date onto the form's copy when it is opened
       from a trip.
-- [ ] Add `find_documents` to the connector, deploy it, and describe it in
-      the database inventory and `working-from-claude.md`.
+- [ ] Deploy the connector, whose source has `find_documents`.
 - [ ] Check on a real trip in Chrome on :8641 that the checklist and
       Departures say its driver forms, then ask the Claude app for a document.
 - [ ] Upload the current documents, reading each one's end date from the file.

@@ -92,7 +92,7 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 | `trip_passenger_payments` | manifest | `passenger_id`, `amount`, `method`, `date`, `ref` |
 | `trip_documents` | trip editor Files, driver page, `../rux-ui/doc.html` | `trip_id`, `label`, `file_name`, `file_path`, `file_size`. Files in bucket `trip-documents`. Replacing a file points the same row at the new one in both apps, so a document link keeps working. A driver's link is handed only the rows labelled Itinerary, by `get_driver_share_trips`. |
 | `document_kinds` | Documents page | `name`, unique whatever its case, and `per_driver`, on for a kind kept once for each driver, such as a background check form. Starts as Insurance certificate, W-9 and Driver background check. Staff only. |
-| `company_documents` | Documents page | The office's own paperwork: `kind_id` to `document_kinds`, `customer_id` to `customers` for who it is issued to, `driver_id` to `drivers` for who it is about, all three restrict, so a kind, customer or driver with a document is not deleted; `ends_on`, `note`, `file_name`, `file_path`, `file_size`, `replaced_at`, `created_by` (default `auth.uid()`), `updated_at`. Files in bucket `company-documents` at `<document id>/<file name>`. `replaced_at` is null on the current copy, and a unique index allows one current copy for each kind, customer and driver: the trigger `company_documents_replace` makes the one before a new row old, and `company_documents_restore` brings the newest old one back when the current one is deleted. Staff only. |
+| `company_documents` | Documents page, the connector's `find_documents` | The office's own paperwork: `kind_id` to `document_kinds`, `customer_id` to `customers` for who it is issued to, `driver_id` to `drivers` for who it is about, all three restrict, so a kind, customer or driver with a document is not deleted; `ends_on`, `note`, `file_name`, `file_path`, `file_size`, `replaced_at`, `created_by` (default `auth.uid()`), `updated_at`. Files in bucket `company-documents` at `<document id>/<file name>`. `replaced_at` is null on the current copy, and a unique index allows one current copy for each kind, customer and driver: the trigger `company_documents_replace` makes the one before a new row old, and `company_documents_restore` brings the newest old one back when the current one is deleted. Staff only. |
 | `customer_required_kinds` | Customers page, and every page's checklist through `leg-facts.js` | `customer_id` to `customers` and `kind_id` to `document_kinds`, both cascade: the kinds of driver form a customer asks for on its trips. Staff only. |
 | `trip_itineraries` | Itineraries view | `trip_id` (unique when set), `document` jsonb, `status` (new, reviewed, closed), `label` |
 | `trip_history` | History page, rux-ui's History tab | `trip_id`, `trip_ref`, `action` (ten values), `changes` jsonb, `metadata` jsonb, `actor_name`, the name the browser sends, and `actor_id`, the signed-in account, which is empty on a driver's entry, made from a link with no log-in. RPC only. |
@@ -196,14 +196,14 @@ on the caller's own session, so the same rules apply to it as to a page.
 Sign-in is Supabase's OAuth 2.1 server, whose consent screen is the site's
 own page at `/oauth/consent/`; Supabase hosts none.
 
-**Six tools read**, each on the tables above: `find_trips`, which also
+**Seven tools read**, each on the tables above: `find_trips`, which also
 matches the booking contact's name and email; `get_trip`, on `trips` with its
 assignments, drivers, stops and quote lines, the Email thread link, its pinned update, the passenger count, Quote sent and the three Done marks, the day a one-day leg's time past midnight falls on, and warnings for a leg
 short of buses or a stop dated outside its leg; `find_availability`, which
 reads the trips running across a range and subtracts their buses and drivers,
 then `bus_out_of_service` and `driver_time_off`, and lists each running trip
 with the buses it needs and has, so a trip still waiting for a bus is counted
-against the free ones and a placeholder is not; `find_contacts`, `list_buses` and `list_drivers`.
+against the free ones and a placeholder is not; `find_contacts`, `list_buses` and `list_drivers`; and `find_documents`, which reads the current rows of `company_documents`, keeps those holding every word asked for in their kind, customer, driver, file name or note, and answers each with the day it ends and a link to its file signed for ten minutes as the person asking.
 
 The fields a draft may fill are mostly `trips` columns, but the route's four
 are the Route tab's own names, because the tab writes `trip_stops` rather than

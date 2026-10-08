@@ -223,7 +223,7 @@ Deno.serve(
     [withOAuthProtectedResource(), withSupabase({ auth: 'user' })],
     async (req, { supabase }) => {
       const handler = createMcpHandler(() => {
-        const server = new McpServer({ name: 'scheduler', version: '0.4.0' })
+        const server = new McpServer({ name: 'scheduler', version: '0.5.0' })
 
         server.registerTool(
           'find_trips',
@@ -394,6 +394,41 @@ Deno.serve(
               .select('id, name, phone, email, client')
               .or(`name.ilike.*${text}*,phone.ilike.*${text}*,email.ilike.*${text}*,client.ilike.*${text}*`)
               .order('name').limit(limit)))
+          },
+        )
+
+        server.registerTool(
+          'find_documents',
+          {
+            title: 'Find company documents',
+            description: 'Find the office\'s own paperwork, such as an insurance certificate, the W-9 or a driver\'s background check form, by its kind, the customer it is issued to, the driver, its file name or its note. Every word has to match. Answers with the current copies only, each with the day it ends and a link to the file that lasts ten minutes. Leave search out to list them all.',
+            inputSchema: z.object({
+              search: z.string().max(80).default(''),
+              limit: z.number().int().min(1).max(50).default(10),
+            }),
+            annotations: { readOnlyHint: true },
+          },
+          async ({ search, limit }) => {
+            const rows = orThrow(await supabase.from('company_documents')
+              .select('id, ends_on, note, file_name, file_path, kind:kind_id(name), customer:customer_id(name), driver:driver_id(name)')
+              .is('replaced_at', null).order('created_at', { ascending: false })) as Record<string, any>[]
+            const words = search.toLowerCase().split(/\s+/).filter(Boolean)
+            const found = rows.filter(row => {
+              const hay = [row.kind?.name, row.customer?.name, row.driver?.name, row.file_name, row.note]
+                .filter(Boolean).join(' ').toLowerCase()
+              return words.every(word => hay.includes(word))
+            }).slice(0, limit)
+            // The bucket is private, so each file is reached through a link signed as the person asking.
+            const out = []
+            for (const row of found) {
+              const { data } = await supabase.storage.from('company-documents').createSignedUrl(row.file_path, 600)
+              out.push({
+                id: row.id, kind: row.kind?.name ?? null, issued_to: row.customer?.name ?? null,
+                driver: row.driver?.name ?? null, ends_on: row.ends_on, note: row.note, file_name: row.file_name,
+                link: data?.signedUrl ?? null, link_lasts: '10 minutes',
+              })
+            }
+            return answer(out)
           },
         )
 

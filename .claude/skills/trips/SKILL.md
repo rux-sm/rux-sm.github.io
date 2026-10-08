@@ -76,9 +76,9 @@ reads only the ones before it. Nothing is written until step 10.
    offers it. An Addt'l Driver line follows a co-driver seat by itself.
    Leave Estimated miles blank: it shows the route's miles and Save writes
    them. Open the calculator only for another rate or a price match.
-8. **Review.** Trip actions, Forms, Itinerary, Detailed: one sheet with the
-   stops, each wait's status, the hours, the miles, the rate and the price.
-   Read it against the email.
+8. **Review.** Read the Route tab's stops, each wait's status and the
+   Summary's hours and miles, and the Billing tab's rate and price, against
+   the email. No sheet shows them yet, because Forms draws the saved trip.
 9. **Report.** Tell rux what the emails say, the route's figures, the price
    and what made it, the bus, exactly what Save will write, and only the
    questions `rules.md` leaves open. Wait for his yes.
@@ -87,7 +87,9 @@ reads only the ones before it. Nothing is written until step 10.
     done, press Save, keep the update box's line, "Quote not sent", and its
     Pin this update tick, which pins it in the same save, and answer the
     lists prompt by `rules.md`.
-11. **After the save.** Read it back with `get_trip`.
+11. **After the save.** Read it back with `get_trip`, then Trip actions,
+    Forms, Itinerary, Detailed: one sheet with the stops, each wait's status,
+    the hours, the miles, the rate and the price, as the save wrote them.
 12. **Reply.** Draft the email in chat by `emails.md`. rux prints the quote
     from Forms, Quote, which is two sheets, and sends it himself.
 13. **Quote sent.** Mark it on the Billing tab, then Mark billing done and
@@ -172,7 +174,8 @@ reads only the ones before it. Nothing is written until step 10.
   spreadsheet cannot be previewed: look for the same itinerary on the trip's
   Files tab, or ask rux before downloading it.
 - Link the thread while reviewing: Details, Booking contact ⋮, Add email
-  thread. The dialog's field has the focus; type the address and press Enter.
+  thread. The dialog's field has the focus and takes the conversation's web
+  address, copied from Missive's address bar with the thread open.
 
 ## Traps in the editor
 
@@ -193,6 +196,7 @@ reads only the ones before it. Nothing is written until step 10.
 - On a new trip, Save's Updates box opens on "Quote not sent", or "Quote sent" with the price once it is marked: save that line as it stands, with a few words added only when the trip waits on something else. A new trip's update is never a summary of the trip.
 - After a save, Add update is on the bar's own menu, a right-click on the bar; the editor's ⋮ has only Forms and Color.
 - On a new trip the Files tab holds a file until Save sends it. The upload tool cannot read the Desktop: copy the PDF to the session's scratch folder, press Add file from the page's script so no file dialog opens, give the copy to the hidden file input, choose its type, then delete the copy.
+- Forms draws the saved trip, never what the editor holds: it is off on a new trip until its first save, and on a placeholder being filled in its sheets leave out every change not yet saved.
 - A click by `ref` on a tab that is not showing does nothing: take a screenshot to see which tab is open before pressing a button on it.
 
 ## When rux teaches something new

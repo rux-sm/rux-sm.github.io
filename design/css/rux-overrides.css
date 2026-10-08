@@ -1130,6 +1130,29 @@
   inset-block-end: var(--rux-spacing-04);
   inset-inline: var(--rux-spacing-04);
 }
+/* ANT'S TOOLBAR STANDS INSIDE THE BOX TOO: 16px from every edge and 8px
+   apart, so its 32px controls make a 64px bar, the height of the foot under
+   the rows. Measured on Ant Design Pro's Search Table page, whose toolbar
+   keeps 16px above and below 32px controls with 8px between them. Flush, the
+   search's 6px corners met the box's 8px ones and its fill ran into the
+   header's. The selection bar takes the same inset, and Carbon's 2px above
+   the box's first child goes as it does for Geist. */
+[data-theme="ant-dark"] .rux--data-table-container {
+  padding-block-start: 0;
+}
+[data-theme="ant-dark"] .rux--data-table-container .rux--table-toolbar {
+  block-size: auto;
+  padding: var(--rux-spacing-05);
+}
+[data-theme="ant-dark"] .rux--data-table-container .rux--toolbar-content {
+  gap: var(--rux-spacing-03);
+}
+[data-theme="ant-dark"] .rux--data-table-container .rux--table-toolbar .rux--batch-actions {
+  overflow: hidden;
+  border-radius: 6px;
+  inset-block-end: var(--rux-spacing-05);
+  inset-inline: var(--rux-spacing-05);
+}
 /* A ghost button in the bar is Geist's outlined button: the secondary's quiet
    ring on the 1px border a ghost button already carries, as Geist's Modal
    footer rings Cancel and Previous beside its filled Submit. Under keyboard

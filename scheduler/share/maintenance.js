@@ -387,25 +387,54 @@
   const replaceBtn = $('scheduler-maintenance-replace-confirm');
   const replaceError = $('scheduler-maintenance-replace-error');
   const publicUrl = () => `${location.origin}/scheduler/share/maintenance.html?s=${encodeURIComponent(token)}`;
+  /* Whether the staff page knows the link, or knows there is none. Until a
+     read of it has answered, Create stays off the page: it replaces the
+     link, so offering it after a failed read would end a live one. */
+  let linkKnown = false;
   const showLink = () => {
     if (!staffPage) return;
     linkUrl.textContent = token ? publicUrl() : '';
     linkEl.hidden = !token;
-    createBtn.hidden = !!token;
+    createBtn.hidden = !!token || !linkKnown;
+  };
+  /* The current link, read fresh: its token, '' where there is none, or null
+     when the read failed. The client answers a failed read with an error and
+     does not throw, so the error is looked at. */
+  const readLink = async () => {
+    try {
+      const { data, error } = await client.rpc('get_maintenance_schedule_share');
+      if (error) return null;
+      linkKnown = true;
+      return data?.token ?? '';
+    } catch { return null; }
   };
 
   let loadedAt = null;
-  const load = async () => {
+  const load = async (again = false) => {
     if (!ready) return;
+    // A link whose first read failed is read again before anything is drawn.
+    if (staffPage && !linkKnown) {
+      const found = await readLink();
+      if (found == null) throw new Error('The link could not be read');
+      token = found;
+      showLink();
+    }
     const [schedule, changes] = await Promise.all([
       client.rpc('get_maintenance_schedule', { p_token: token }),
       client.rpc('get_maintenance_schedule_changes', { p_token: token }),
     ]);
     if (schedule.error) throw schedule.error;
     if (!schedule.data) {
-      // A revoked or unknown token. Checking again costs nothing, so the
-      // page keeps checking, and a restored link shows its schedule. The
-      // staff page offers to make a link instead.
+      /* A revoked or unknown token. On the staff page that is believed only
+         once the link itself has been read again: a link replaced from another
+         window is shown, and a read that fails leaves the page as it was. */
+      if (staffPage) {
+        const found = await readLink();
+        if (found == null || (found && (found === token || again))) throw new Error('The link could not be read');
+        if (found) { token = found; showLink(); return load(true); }
+      }
+      // Checking again costs nothing, so the page keeps checking, and a
+      // restored link shows its schedule. The staff page offers to make one.
       weekEl.hidden = true;
       changesEl.hidden = true;
       rangeEl.textContent = '';
@@ -490,8 +519,18 @@
   createBtn.addEventListener('click', async () => {
     createBtn.disabled = true;
     try {
-      await replaceLink();
-      linkNote.textContent = `Link made at ${clock.format(new Date())}. Copy it to send it.`;
+      // A link made since this page last looked is shown, not replaced.
+      const found = await readLink();
+      if (found == null) throw new Error('The link could not be read');
+      if (found) {
+        token = found;
+        showLink();
+        refresh();
+        linkNote.textContent = 'There is a link already. It is shown here.';
+      } else {
+        await replaceLink();
+        linkNote.textContent = `Link made at ${clock.format(new Date())}. Copy it to send it.`;
+      }
       linkNote.hidden = false;
     } catch {
       say('error', "The link couldn't be created", 'Nothing changed. Try again.');
@@ -514,10 +553,8 @@
       say('info', "This account isn't set up as staff yet", 'Ask the owner to set it up.');
       return;
     }
-    try {
-      const { data } = await client.rpc('get_maintenance_schedule_share');
-      token = data?.token ?? '';
-    } catch { /* no token: the load below offers to make a link */ }
+    // A read that fails here is tried again by the load, and offers no Create.
+    token = (await readLink()) ?? '';
     ready = true;
     showLink();
     refresh();

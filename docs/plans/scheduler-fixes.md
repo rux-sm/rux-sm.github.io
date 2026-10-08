@@ -166,8 +166,6 @@ site.
 - [ ] In `driver-view.js`, hold Copy message until the link shows the ticked
       trips, treat a failed status read as an error, read the statuses again
       before marking, and ask before marking.
-- [ ] On the staff maintenance page, tell a failed link read from no link,
-      and read the link again before Create.
 - [ ] Open Cost empty on a line that follows the calculator, from a rule in
       `scheduler/quote-lines.js` with its check.
 - [ ] Make `qbDescription` read each leg's own stops, and

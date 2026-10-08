@@ -76,8 +76,12 @@
    Its host takes `toolbar-search-container-active` while its input has focus or holds a
    value, and loses it when an empty input loses focus; Carbon's CSS widens the host and
    shows the input on that class. The clear button's `search-close--hidden` was read on
-   the same story: off while the input holds a value, on when it is empty. Carbon also
-   empties the input on Escape and keeps focus there; this module does not.
+   the same story: off while the input holds a value, on when it is empty.
+   ESCAPE EMPTIES A SEARCH THAT HOLDS A VALUE and keeps focus there, driven on the same
+   story. Carbon consumes the key in every search, empty or not -- a keydown listener on
+   its <body> heard neither press -- and this module does not. With nothing typed the key
+   passes, and in an open dialog, panel or menu it is js/overlay.js's, which closes the
+   surface: the scheduler's find-a-trip window closes on Escape with a query typed.
    NOT VERIFIED: the open width, which that page's tab was not in front to animate.
 
    NOT VERIFIED: the indeterminate checkbox. `data-rux-indeterminate` is this project's
@@ -233,6 +237,12 @@
     }
   };
 
+  const emptySearch = search => {
+    const input = search?.querySelector('.rux--search-input');
+    if (input) { input.value = ''; input.dispatchEvent(new Event('input', { bubbles: true })); input.focus(); }
+    if (search) syncSearch(search);
+  };
+
   /* ── wiring ────────────────────────────────────────────────────────────── */
   document.addEventListener('click', event => {
     if (!(event.target instanceof Element)) return;
@@ -255,12 +265,20 @@
     }
 
     const clear = event.target.closest('.rux--search-close');
-    if (clear) {
-      const search = clear.closest('.rux--search');
-      const input = search?.querySelector('.rux--search-input');
-      if (input) { input.value = ''; input.dispatchEvent(new Event('input', { bubbles: true })); input.focus(); }
-      if (search) syncSearch(search);
-    }
+    if (clear) emptySearch(clear.closest('.rux--search'));
+  });
+
+  /* Escape empties a search that holds a value. A key something has already
+     answered is left alone: js/overlay.js loads first, closes the open dialog,
+     panel or menu on Escape and marks the key handled, so there the key is
+     the surface's and the search keeps what was typed. */
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape' || event.defaultPrevented || event.isComposing) return;
+    const input = event.target;
+    if (!(input instanceof Element) || !input.matches('.rux--search-input')) return;
+    if (!input.value || input.disabled || input.readOnly) return;
+    event.preventDefault();
+    emptySearch(input.closest('.rux--search'));
   });
 
   document.addEventListener('input', event => {

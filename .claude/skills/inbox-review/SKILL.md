@@ -14,26 +14,29 @@ thread is read in depth. `rules.md` there is the office's policy.
 
 | Tool | For | Never for |
 | :--- | :--- | :--- |
-| Missive, the Mac app, through computer use in the background | reading the team inbox | replying, archiving, labelling, snoozing, assigning or closing a conversation |
+| Missive, in rux's Chrome through Claude in Chrome | reading the team inbox | replying, archiving, labelling, snoozing, assigning or closing a conversation |
 | Scheduler connector: `find_trips`, `get_trip` | matching a thread to its trip, and reading what the scheduler already warns of | |
 | Scheduler connector: `list_to_dos`, `add_to_do`, `change_to_do`, `close_to_do` | the rows | a row a person wrote, which the tools refuse |
 
-Missive is signed in in its Mac app and not in the Claude Chrome profile, and
-signing in is rux's to do. Ask for the app with `request_access`, then work
-with the `app_*` tools, which leave rux's screen and keyboard alone.
+Missive is signed in in rux's Chrome, where its pages read as text, and
+signing in is rux's to do. Work in a tab of the session's own and close it at
+the end.
 
 ## The steps
 
-1. **Open Team Inboxes** in the sidebar. It is the Office inbox.
-2. **Read the whole list first,** before opening anything: scroll it and zoom
-   on the list column. Each row gives the sender, the subject, the time, the
-   first line or the team's last comment, and how many messages it holds.
+1. **Open Team Inboxes,** `https://mail.missiveapp.com/#unassigned`. It is
+   the Office inbox.
+2. **Read the whole list first,** before opening anything, as the page's
+   text (see Reading Missive in Chrome). Each row gives the sender, the
+   subject, the time, the first line or the team's last comment, and how many
+   messages it holds.
 3. **Sort the rows.** A thread about a trip or a quote is read. Mail that is
    not a trip, such as an audit notice, a receipt, a newsletter or a vendor's
    warranty, is left and not reported.
-4. **Open each thread to read** and zoom on the reading pane. The newest
-   message is at the bottom; under it are the team's own comments, which say
-   what the office already thinks, and any snooze.
+4. **Open each thread to read** by its link, and take the page's text again.
+   The newest message is last; among the messages, each at its time, are the
+   team's own comments, which say what the office already thinks, and when
+   the conversation was closed, reopened or snoozed.
 5. **Match it to a trip** with `find_trips`: the sender as booking contact,
    then the customer and the day. A new request often has no trip, or only a
    placeholder. Read the trip's state: confirmed, PO, contract, quote sent,
@@ -44,14 +47,15 @@ with the `app_*` tools, which leave rux's screen and keyboard alone.
    answer. It is not one when the scheduler already says it by itself, such as
    a follow-up due or a leg short of a bus: read `get_trip`'s warnings first.
 7. **`list_to_dos`,** so a thread that already has an open row is changed and
-   not doubled.
+   not doubled. A row is a thread's when its `thread_url` ends in the
+   thread's id. An open row whose thread has no mail since the row was made,
+   and whose trip reads as it did, is left as it is.
 8. **Add the rows** with `add_to_do`, each in a few plain words as the office
    would say them, naming the person and the trip. Give the trip's id when
-   there is one, the thread's key, and a day: today when the trip leaves
+   there is one, the thread's id as its key, the thread's link, so the row
+   opens the email it came from, and a day: today when the trip leaves
    tomorrow, tomorrow for the rest, none for a courtesy reply.
-9. **Give each row its email's link** (see Copying a thread's link), so the
-   row opens the thread it came from.
-10. **Report.** The rows added, the urgent one first; anything odd found on
+9. **Report.** The rows added, the urgent one first; anything odd found on
    the way, such as a request that looks like a trip already on the board;
    and what was not opened.
 
@@ -67,45 +71,29 @@ with the `app_*` tools, which leave rux's screen and keyboard alone.
 - Mail that is not about a trip or a request for a quote is ignored, with no
   row and no line in the report, because the list is for trips.
 
-## What the first run found about the tools
+## Reading Missive in Chrome
 
-- Missive's text is not in the accessibility tree: every label comes back
-  empty, so the inbox is read from pictures.
-- A scroll of the list is raw and small: about eight rows for a `dy` of 14.
-  Take a fresh picture before clicking a row by its place.
-- A click on a row opens it in the pane and changes nothing else.
-- A row's thread key is the sender and the subject in lower case,
-  `pat lee | po attached, october 8`, which keeps one open row a thread from
-  the first read, before any link is copied.
+- **The page's text is the list, then the open thread.** `get_page_text`
+  returns both whole. A script's answer is cut near 1,000 characters, so a
+  script is for the ids alone, asked for in slices.
+- **The list draws only the rows near the view,** and loads the mail under
+  This Week and each month once it is scrolled to its end. Scroll to the end
+  and read again until the rows counted match the number beside Team Inboxes
+  in the sidebar.
+- **A row of the list is a `.conversation-preview`, and its
+  `data-conversation-id` is the thread's id.** The thread's link is
+  `https://mail.missiveapp.com/#unassigned/conversations/<id>`, which opens
+  it, with `#inbox/` in place of `#unassigned/` for a thread outside the
+  team's inboxes. The id is the row's `thread_key` and the link its
+  `thread_url`.
+- **A read row's marker holds `.icon-seen`.** A row without it is unread, and
+  is not opened.
+- **Some rows carry the sender and the subject in lower case as their key,**
+  `pat lee | po attached, october 8`. Such a row is found by the id in its
+  `thread_url` and changed with `change_to_do`; an `add_to_do` under the id
+  would add a second row.
 - A script run in Chrome can run twice. `add_to_do` with a thread key is safe
   to repeat; a second call changes the row the first made.
-
-## Copying a thread's link
-
-The link is Copy link, the last item of the ⋯ menu at the top right of an
-open conversation. It reads
-`https://mail.missiveapp.com/#unassigned/conversations/<id>`, or `#inbox/`
-in place of `#unassigned/` for a thread outside the team's inboxes.
-
-- **It works only with Missive in front.** In the background the menu opens
-  and the copy fails with "Document is not focused". So the links are copied
-  in one pass at the end, under full-screen control, which rux approves and
-  which hides his other windows: say so before and after.
-- **Keep rux's clipboard.** Save it first with `pbpaste`, when it holds text
-  alone, and put it back with `pbcopy` after the last link.
-- **Read where Copy link is before every press.** The menu's items change
-  from thread to thread, a Reply here, an Archive from my Inbox there, and
-  after the first copy a Merge copied conversation… two lines above it. On
-  one thread the place Copy link had on the last was Add to sidebar. Open
-  the menu, zoom on it, then press.
-- **One link at a time:** press Copy link, read it with `pbpaste`, and check
-  it differs from the one before.
-- **A thread that has left the list is found by search:** type a number or
-  a name from it in the Search field. The search stays in the sidebar under
-  Searches until the field is cleared, so clear it and go back to Team
-  Inboxes.
-- Give the link to its row with `change_to_do` as `thread_url`. Find the row
-  by its whole `thread_key`, because two rows can start with one sender.
 
 ## Not run yet
 

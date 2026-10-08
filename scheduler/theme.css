@@ -13,6 +13,17 @@
    two apps show the same envelope. */
 :root { --scheduler-envelope-paper: oklch(88% 0.05 95); }
 
+/* The two blocks of colour on a binder's cover and spine, on :root for the
+   same reason: they are ink on a printed sheet, the same in every theme. The
+   blue is the deep end of the logo's own gradient, which stands on every
+   sheet beside it, and carries white type at 6.4 to 1. The grey leans the
+   same way as the blue and is dark enough to show through a spine's clear
+   pocket. */
+:root {
+  --scheduler-binder-confirmed: #2f6293;
+  --scheduler-binder-quotes: #c1c7cd;
+}
+
 /* The pair a trip bar's marks are drawn from, both of them text-primary and
    text-inverse the way round the theme puts them: `on-warning` is the dark one,
    the ink on a warning fill, and `mark-blank` is the light one, the fill of a

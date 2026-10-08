@@ -2224,3 +2224,139 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
    and is never printed. */
 .scheduler-week__cut { margin-block-end: var(--rux-spacing-05); }
 @media print { .scheduler-week__cut { display: none; } }
+
+
+/* ── The binder covers and spines ─────────────────────────────────────────
+   What slides into a ring binder's front pocket and its spine pocket. It is
+   read from across the office, so it is three things and each one large: the
+   year, a word for what the binder holds, and the logo. Its sizes are in
+   inches, measured off the paper and the pocket.
+
+   IT FILLS, AS THE QUOTE DOES. The block of colour is what tells a quotes
+   binder from a confirmed one before a word is read, so it is the content
+   and prints past Chrome's Background graphics box. The two fills differ in
+   weight as well as hue -- a pale grey under dark ink, a full blue under
+   white -- so a printer with no colour still tells them apart. Both are the
+   binder's own, named in theme.css: the blue is the logo's. */
+.scheduler-binder {
+  align-items: center;
+  font-weight: 700;
+}
+
+.scheduler-binder__fill {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.scheduler-binder__fill--quotes {
+  background: var(--scheduler-binder-quotes);
+  color: var(--rux-text-primary);
+}
+.scheduler-binder__fill--confirmed {
+  background: var(--scheduler-binder-confirmed);
+  color: var(--rux-text-on-color);
+}
+
+.scheduler-binder__block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* THE COVER, a whole sheet: the logo, the year, the word in its block, and at
+   the foot how the binder is filed, which is the line a second person filing
+   into it needs. */
+.scheduler-binder--cover .scheduler-binder__logo {
+  inline-size: 4.5in;
+  margin-block-start: 0.525in;
+}
+.scheduler-binder--cover .scheduler-binder__year {
+  margin: 0.98in 0 0;
+  font-size: 2.7in;
+  /* Named here, because Carbon's reset gives a paragraph its own weight. */
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.scheduler-binder--cover .scheduler-binder__block {
+  inline-size: 6.5in;
+  min-block-size: 1.45in;
+  margin-block-start: 0.6in;
+  font-size: 0.66in;
+}
+.scheduler-binder__rule {
+  inline-size: 2in;
+  margin-block-start: auto;
+  border-block-start: 1.5pt solid var(--rux-border-strong-01);
+}
+.scheduler-binder__filed {
+  margin: 0.28in 0 0.525in;
+  font-size: 15pt;
+  font-weight: 400;
+  color: var(--rux-text-secondary);
+}
+
+/* THE SPINES, strips the full height of the sheet, so only their long sides
+   are cut and the sheet keeps no ink margin of its own. Each strip holds its
+   own, clear of the edge a printer cannot reach. print.js writes the ring
+   size onto the sheet, and every measure on a strip follows it: the year as
+   large as four figures fit across, the word under half the strip's width. */
+.scheduler-form.scheduler-binder--spines { padding: 0; }
+
+.scheduler-binder__strips {
+  flex: 1;
+  align-self: stretch;
+  display: flex;
+  justify-content: center;
+}
+.scheduler-binder__strip {
+  box-sizing: border-box;
+  inline-size: var(--scheduler-binder-spine);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.4in 0.12in;
+  border-inline-start: 1px dashed var(--rux-border-strong-01);
+}
+.scheduler-binder__strip:last-child { border-inline-end: 1px dashed var(--rux-border-strong-01); }
+
+.scheduler-binder--spines .scheduler-binder__block {
+  align-self: stretch;
+  font-size: min(calc((var(--scheduler-binder-spine) - 0.44in) / 2.3), 1in);
+  line-height: 1.55;
+  letter-spacing: -0.03em;
+}
+/* The word, down the spine: it reads the right way up when the binder lies
+   on its back cover. */
+.scheduler-binder__down {
+  flex: 1;
+  min-block-size: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: min(calc(var(--scheduler-binder-spine) * 0.42), 1in);
+  line-height: 1;
+  white-space: nowrap;
+}
+.scheduler-binder__down .scheduler-binder__word { writing-mode: vertical-rl; }
+
+.scheduler-binder--spines .scheduler-binder__logo { inline-size: calc(var(--scheduler-binder-spine) - 0.3in); }
+.scheduler-binder__bar {
+  align-self: stretch;
+  block-size: 0.22in;
+  margin-block-start: 0.2in;
+}
+
+/* How to print and cut them, in the margin beside the strips, which is cut
+   away. Its place is named by the paper's own top and left, because the
+   line's own directions are turned with its writing. */
+.scheduler-binder__cut {
+  position: absolute;
+  top: 0.4in;
+  left: 0.28in;
+  margin: 0;
+  writing-mode: vertical-rl;
+  font-size: 8pt;
+  font-weight: 400;
+  white-space: nowrap;
+  color: var(--rux-text-secondary);
+}

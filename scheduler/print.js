@@ -2097,6 +2097,131 @@
     sheetEl.prepend(box);
   }
 
+  /* ── THE BINDER COVERS AND SPINES ─────────────────────────────────────────
+     The office keeps its paper quotes and its confirmed trips in ring
+     binders, a pair for each year. This draws the sheet that slides into a
+     binder's front pocket and the strip that slides into its spine. The year
+     is the largest thing on both, because the year is what tells one pair
+     from the next on a shelf, and a block of colour says the kind: grey for
+     quotes, the logo's blue for confirmed.
+
+     IT READS NOTHING. The years are this one and the next, from today's date,
+     and every word on it can be typed over before it is printed. */
+  const BINDER_KINDS = [
+    { id: 'quotes', spine: 'Quotes', cover: 'Quotes' },
+    { id: 'confirmed', spine: 'Confirmed', cover: 'Confirmed trips' },
+  ];
+  const BINDER_FILED = 'Filed by trip date, January at the front';
+  /* The ring sizes a spine is cut for, in inches. The strip is as wide as the
+     ring, which is narrower than the pocket on every binder, so it always
+     slides in. */
+  const SPINE_SIZES = ['1', '1.5', '2', '3', '4'];
+  // The sheet's width in inches, which says how many strips fit side by side.
+  const SPINE_SHEET = 8.5;
+
+  const binderSet = () => {
+    const year = new Date().getFullYear();
+    return [year, year + 1]
+      .flatMap(y => BINDER_KINDS.map(kind => ({ kind, year: y })))
+      .map((binder, slot) => ({ ...binder, slot }));
+  };
+
+  /* WHAT IS TYPED ON ONE SHEET IS TYPED ON THE REST. A binder's year is on its
+     cover and on its spine in every size, and its spine's word is on five
+     sheets of strips, so a field is known by what it says rather than by
+     where it is drawn: typing into one writes the others, and a size drawn
+     afterwards starts from what was typed. */
+  const binderWords = new Map();
+  const binderFields = new Map();
+
+  function binderField(tag, cls, key, words, name) {
+    const field = el(tag, `${cls} scheduler-binder__typed`, binderWords.get(key) ?? words);
+    field.dataset.binderKey = key;
+    field.dataset.name = name;
+    if (!binderFields.has(key)) binderFields.set(key, new Set());
+    binderFields.get(key).add(field);
+    return field;
+  }
+
+  function onBinderTyped(event) {
+    const field = event.target.closest?.('[data-binder-key]');
+    if (!field) return;
+    const key = field.dataset.binderKey;
+    binderWords.set(key, field.textContent);
+    for (const other of binderFields.get(key) || []) {
+      if (other !== field) other.textContent = field.textContent;
+    }
+  }
+
+  function binderLogo() {
+    const logo = el('img', 'scheduler-binder__logo');
+    logo.src = '/scheduler/brand/logo.svg';
+    logo.alt = 'Escamilla Tour Buses';
+    return logo;
+  }
+
+  // A block in the kind's colour: the year's on a spine, the word's on a cover.
+  const binderFill = (binder, cls) =>
+    el('div', `${cls} scheduler-binder__fill scheduler-binder__fill--${binder.kind.id}`);
+
+  function binderCover(binder) {
+    const { kind, year, slot } = binder;
+    const card = el('article', 'scheduler-form scheduler-binder scheduler-binder--cover');
+    const block = binderFill(binder, 'scheduler-binder__block');
+    block.appendChild(binderField('span', 'scheduler-binder__word', `cover:${slot}`, kind.cover, 'Label'));
+    card.append(
+      binderLogo(),
+      binderField('p', 'scheduler-binder__year', `year:${slot}`, String(year), 'Year'),
+      block,
+      el('div', 'scheduler-binder__rule'),
+      binderField('p', 'scheduler-binder__filed', `filed:${slot}`, BINDER_FILED, 'How it is filed'),
+    );
+    card.addEventListener('input', onBinderTyped);
+    return card;
+  }
+
+  /* A SHEET OF STRIPS, each the full height of the paper, so only the long
+     sides are cut. The year is upright at the top, where it lines up along a
+     shelf; the word runs down the spine, so it reads the right way up when
+     the binder lies flat on its back cover. */
+  function binderSpines(binders, size) {
+    const card = el('article', 'scheduler-form scheduler-binder scheduler-binder--spines');
+    card.style.setProperty('--scheduler-binder-spine', `${size}in`);
+    // Said in the margin beside the strips, where they leave one.
+    if ((SPINE_SHEET - binders.length * Number(size)) / 2 >= 0.6) {
+      card.appendChild(el('p', 'scheduler-binder__cut',
+        `Spines for a ${size} in binder. Print at 100% and cut along the dashed lines.`));
+    }
+    const strips = el('div', 'scheduler-binder__strips');
+    for (const binder of binders) {
+      const { kind, year, slot } = binder;
+      const strip = el('section', 'scheduler-binder__strip');
+      const block = binderFill(binder, 'scheduler-binder__block');
+      block.appendChild(binderField('span', 'scheduler-binder__word', `year:${slot}`, String(year), 'Year'));
+      const down = el('div', 'scheduler-binder__down');
+      down.appendChild(binderField('span', 'scheduler-binder__word', `spine:${slot}`, kind.spine, 'Label'));
+      strip.append(block, down, binderLogo(), binderFill(binder, 'scheduler-binder__bar'));
+      strips.appendChild(strip);
+    }
+    card.appendChild(strips);
+    card.addEventListener('input', onBinderTyped);
+    return card;
+  }
+
+  /* The covers are a sheet each. The strips go four to a sheet up to the
+     1.5 in ring and two to a sheet above it, which is what Letter holds. */
+  function binder(subject, layout) {
+    const binders = binderSet();
+    const size = SPINE_SIZES.find(s => layout === `spines-${s}`);
+    if (!size) return binders.map(binderCover);
+    const perSheet = Number(size) <= 1.5 ? 4 : 2;
+    const sheets = [];
+    for (let i = 0; i < binders.length; i += perSheet) {
+      sheets.push(binderSpines(binders.slice(i, i + perSheet), size));
+    }
+    return sheets;
+  }
+
   /* THE NAME SAVE AS PDF OFFERS, from file-names.js, so a printed form is
      named as an uploaded file is. A form printed once per driver names the
      driver last, and the return leg's copy says so; the driver itinerary is
@@ -2284,6 +2409,30 @@
       fileName: weekFileName,
       render: weekSchedule,
       afterDraw: showWeekCut,
+    },
+    {
+      id: 'binder',
+      name: 'Binder covers and spines',
+      group: 'Office',
+      short: 'Binder covers and spines',
+      icon: '#m-folder',
+      /* IT BINDS NOTHING. Every other form is drawn from a trip, a bus or a
+         week; this one is drawn from today's date, so it opens from the Forms
+         page alone and a trip's list leaves it off. */
+      binds: null,
+      /* LETTER, ONE SHEET TO A CARD: a cover is the sheet, and a sheet of
+         strips is cut from one. */
+      page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.375in', exact: true },
+      /* THE COVERS, OR THE SPINES IN ONE RING SIZE. A binder that fills up is
+         swapped for a wider one, and only its spine is printed again. */
+      layouts: [
+        { id: 'covers', name: 'Covers' },
+        ...SPINE_SIZES.map(size => ({ id: `spines-${size}`, name: `Spines, ${size} in` })),
+      ],
+      copies: subject => [subject],
+      // The year, the label and how it is filed, on every sheet.
+      typed: { always: true, fields: ['.scheduler-binder__typed'] },
+      render: binder,
     },
   ];
 
@@ -3209,11 +3358,12 @@
     /* THE QUOTE FIRST, because it is the first thing a trip sends, then the
        drivers' forms. A trip's list leaves out the week schedule, which is
        the week's and not the trip's: the board's menu prints the week on
-       screen, and this page opened on no trip still lists it. */
-    const GROUP_ORDER = ['Customers', 'Drivers', 'Schedule'];
+       screen, and this page opened on no trip still lists it. It leaves out
+       a form that binds nothing too, which is the office's own. */
+    const GROUP_ORDER = ['Customers', 'Drivers', 'Schedule', 'Office'];
     const groups = new Map(GROUP_ORDER.map(group => [group, []]));
     for (const form of FORMS) {
-      if (trip && form.binds === 'week') continue;
+      if (trip && (form.binds === 'week' || form.binds === null)) continue;
       if (!groups.has(form.group)) groups.set(form.group, []);
       groups.get(form.group).push(form);
     }
@@ -3580,6 +3730,11 @@
       return show(form, subject, [subject], 0, true);
     }
 
+    // A form that binds nothing has nothing to read and is drawn as it stands.
+    if (form.binds === null) {
+      const subject = {};
+      return show(form, subject, [subject], 0);
+    }
     if (form.binds === 'week') return showWeekForm(form);
     if (form.binds === 'trip' || form.binds === 'trip+leg') return showTripForm(form);
     return showBusForm(form);

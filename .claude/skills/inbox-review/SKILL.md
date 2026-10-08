@@ -82,7 +82,8 @@ with the `app_*` tools, which leave rux's screen and keyboard alone.
 
 The link is Copy link, the last item of the ⋯ menu at the top right of an
 open conversation. It reads
-`https://mail.missiveapp.com/#unassigned/conversations/<id>`.
+`https://mail.missiveapp.com/#unassigned/conversations/<id>`, or `#inbox/`
+in place of `#unassigned/` for a thread outside the team's inboxes.
 
 - **It works only with Missive in front.** In the background the menu opens
   and the copy fails with "Document is not focused". So the links are copied
@@ -97,7 +98,12 @@ open conversation. It reads
   the menu, zoom on it, then press.
 - **One link at a time:** press Copy link, read it with `pbpaste`, and check
   it differs from the one before.
-- Give the link to its row with `change_to_do` as `thread_url`.
+- **A thread that has left the list is found by search:** type a number or
+  a name from it in the Search field. The search stays in the sidebar under
+  Searches until the field is cleared, so clear it and go back to Team
+  Inboxes.
+- Give the link to its row with `change_to_do` as `thread_url`. Find the row
+  by its whole `thread_key`, because two rows can start with one sender.
 
 ## Not run yet
 

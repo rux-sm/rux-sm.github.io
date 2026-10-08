@@ -67,7 +67,10 @@
   const dayWords = day => (day === iso(new Date()) ? 'today' : day === dayFrom(1) ? 'tomorrow' : shortDay.format(parseISO(day)));
   const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
   const tripHref = (trip, day) => `./?trip=${encodeURIComponent(trip.id)}&date=${encodeURIComponent(day || trip.start_date || '')}`;
-  const tripWords = trip => [trip.destination, trip.customer].filter(Boolean).join(' · ') || trip.trip_ref || 'Trip';
+  /* The dot between the parts of a line, tied to the word before it, so a line
+     that wraps breaks after the dot and never starts with one. */
+  const DOT = '\u00A0· ';
+  const tripWords = trip => [trip.destination, trip.customer].filter(Boolean).join(DOT) || trip.trip_ref || 'Trip';
 
   // -- what is known --------------------------------------------------------
   let me = null;            // my staff row, as /account.js gives it
@@ -226,11 +229,12 @@
   // Dots between the parts of a row's quiet line.
   const meta = parts => {
     const p = el('p', 'scheduler-to-do__meta');
-    parts.filter(Boolean).forEach((part, i) => { if (i) p.append(' · '); p.append(part); });
+    parts.filter(Boolean).forEach((part, i) => { if (i) p.append(DOT); p.append(part); });
     return p.childNodes.length ? p : null;
   };
   const tripLink = (trip, day) => {
-    const a = el('a', 'rux--link', tripWords(trip));
+    // The list's own link, inline so a long name wraps with the line it is in.
+    const a = el('a', 'scheduler-to-do__link', tripWords(trip));
     a.href = tripHref(trip, day);
     return a;
   };
@@ -238,7 +242,7 @@
   function computedRow(c) {
     const li = el('li', 'scheduler-to-do__row scheduler-to-do__row--computed');
     const a = el('a', 'scheduler-to-do__open');
-    const words = el('span', 'scheduler-to-do__words', c.what);
+    const words = el('span', 'scheduler-to-do__words', String(c.what).replaceAll(' · ', DOT));
     if (c.fold) {
       a.href = `trips.html?show=${c.kind === 'follow-up' ? 'followup' : c.kind}`;
       a.append(svgUse('#m-arrow_forward'), words);
@@ -270,7 +274,7 @@
     item.append(box, label);
 
     const trip = row.trip_id ? trips.get(row.trip_id) : null;
-    const thread = row.thread_url ? Object.assign(el('a', 'rux--link', 'Email'), { href: row.thread_url, target: '_blank', rel: 'noopener' }) : null;
+    const thread = row.thread_url ? Object.assign(el('a', 'scheduler-to-do__link', 'Email'), { href: row.thread_url, target: '_blank', rel: 'noopener' }) : null;
     const today = iso(new Date());
     const due = done ? null : row.due_on && row.due_on !== today ? `Due ${dayWords(row.due_on)}` : null;
     const closer = done ? staff.get(row.closed_by) : null;
@@ -469,6 +473,19 @@
     // A redraw somebody else's change caused would empty a form being typed in, so it waits for the form to shut.
     if (editingId && document.activeElement?.closest?.('.scheduler-to-do__form')) return;
     list.replaceChildren(...parts);
+    indent();
+  }
+
+  /* A row's quiet line starts where its words do. How far in that is belongs
+     to the theme's checkbox, so it is measured off the first one drawn and
+     handed to app.css, which falls back to Carbon's own distance. */
+  function indent() {
+    const words = list.querySelector('.rux--checkbox-label-text');
+    const box = words?.closest('.rux--checkbox-wrapper');
+    if (!words || !box || !box.getBoundingClientRect().width) return;
+    const start = words.getBoundingClientRect().left + (parseFloat(getComputedStyle(words).paddingInlineStart) || 0)
+      - box.getBoundingClientRect().left;
+    if (start > 0) list.style.setProperty('--scheduler-to-do-indent', `${Math.round(start)}px`);
   }
 
   // -- behaviour ------------------------------------------------------------
@@ -491,7 +508,7 @@
      opens: nothing in it takes a Tab or is read. Opening reads the list
      again, since a tab left open all morning is hours behind. */
   panel.inert = true;
-  panel.addEventListener('rux:header-panel-opened', () => { panel.inert = false; loadStored(); loadTrips(); });
+  panel.addEventListener('rux:header-panel-opened', () => { panel.inert = false; indent(); loadStored(); loadTrips(); });
   panel.addEventListener('rux:header-panel-closed', () => { panel.inert = true; editingId = null; });
 
   let channel = null;

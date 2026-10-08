@@ -4375,8 +4375,14 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-to-do__text .rux--form-item { margin: 0; }
 .scheduler-to-do__text .rux--checkbox-label-text { overflow-wrap: anywhere; }
 .scheduler-to-do__meta { margin: 0; color: var(--rux-text-secondary); font-size: 0.75rem; line-height: 1.33333; overflow-wrap: anywhere; }
-/* Under the checkbox's words, past its 16px box and the 10px beside it. */
-.scheduler-to-do__text .rux--checkbox-wrapper + .scheduler-to-do__meta { padding-inline-start: 1.625rem; }
+/* A link in a row's quiet line, to its trip or its email: the line's own size,
+   and inline, so it wraps as the words around it do. */
+.scheduler-to-do__link { color: var(--rux-link-primary); text-decoration: none; }
+.scheduler-to-do__link:hover { text-decoration: underline; }
+.scheduler-to-do__link:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
+/* Under the checkbox's words: as far in as the theme sets them, which
+   to-do-list.js measures, or Carbon's own 26px until it has. */
+.scheduler-to-do__text .rux--checkbox-wrapper + .scheduler-to-do__meta { padding-inline-start: var(--scheduler-to-do-indent, 1.625rem); }
 .scheduler-to-do__face { flex: none; margin-block-start: var(--rux-spacing-01); }
 .scheduler-to-do__edit { flex: none; margin-block: calc(-1 * var(--rux-spacing-02)); }
 .scheduler-to-do__row--done .rux--checkbox-label-text { color: var(--rux-text-secondary); text-decoration: line-through; }

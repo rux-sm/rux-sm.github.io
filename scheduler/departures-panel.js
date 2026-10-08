@@ -60,6 +60,8 @@
   };
   const dayWords = day => `${day === dayFrom(1) ? 'Tomorrow · ' : day === dayFrom(0) ? 'Today · ' : ''}${longDay.format(parseISO(day))}`;
   const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
+  // The dot between the parts of a line, tied to the word before it, so a wrapped line never starts with one.
+  const DOT = '\u00A0· ';
   const placeName = dest => String(dest || '').replace(/,?\s+TX\s*$/i, '') || 'Trip';
 
   // -- what is known --------------------------------------------------------
@@ -236,7 +238,7 @@
       row.appendChild(a);
       return row;
     }
-    const right = [line.value, line.state === 'done' && line.at ? whenWords(line.at) : null].filter(Boolean).join(' · ');
+    const right = [line.value, line.state === 'done' && line.at ? whenWords(line.at) : null].filter(Boolean).join(DOT);
     if (right) row.appendChild(el('span', 'scheduler-departures__when', right));
     const who = line.state === 'done' ? staff.get(line.by) : null;
     if (who) {
@@ -270,7 +272,7 @@
     place.href = tripHref(page);
     const at = leavesAt(page);
     names.append(place, el('p', 'scheduler-to-do__meta',
-      [page.trip.customer, page.legName, at ? `leaves ${clockOf(at)}` : null].filter(Boolean).join(' · ')));
+      [page.trip.customer, page.legName, at ? `leaves ${clockOf(at)}` : null].filter(Boolean).join(DOT)));
     top.append(names, leftTag(page.tripLeft));
     tile.append(top, lines(page.lines, page));
     return tile;

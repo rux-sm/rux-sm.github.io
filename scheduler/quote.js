@@ -479,17 +479,25 @@
       drawRules(rate);
     };
 
-    // Keeps the chosen rate while it still exists; `fresh` starts from the default.
+    /* Keeps the chosen rate while it still exists; `fresh` starts over. A
+       calculator opened from a trip starts from the rate the Settings page's
+       Calendar gives the month of the trip's first day, named in the list so
+       the price says what made it, and from the default rate otherwise. Any
+       other rate can still be picked. */
+    let tripDate = null;
     const drawRateSelect = (fresh = false) => {
       const select = $('scheduler-quote-rate');
       const current = fresh ? '' : select.value;
       const sorted = [...mileage].sort((a, b) => a.rate - b.rate);
+      const month = tripDate ? Number(tripDate.slice(5, 7)) : null;
+      const monthly = month ? sorted.find(m => m.id === office['rate-calendar-v1'].months?.[month]) ?? null : null;
+      const monthName = month ? new Date(2000, month - 1, 1).toLocaleDateString('en-US', { month: 'long' }) : '';
       select.replaceChildren(...sorted.map(m => Object.assign(document.createElement('option'), {
         className: 'rux--select-option',
         value: String(m.rate),
-        textContent: `${money.format(m.rate)}${m.note ? ` · ${m.note}` : ''}`,
+        textContent: `${money.format(m.rate)}${m.note ? ` · ${m.note}` : ''}${m === monthly ? ` · ${monthName} rate` : ''}`,
       })));
-      const keep = sorted.find(m => String(m.rate) === current) ?? sorted.find(m => m.is_default) ?? sorted[0];
+      const keep = sorted.find(m => String(m.rate) === current) ?? monthly ?? sorted.find(m => m.is_default) ?? sorted[0];
       if (keep) select.value = String(keep.rate);
       select.disabled = !sorted.length;
     };
@@ -571,8 +579,18 @@
       const params = new URLSearchParams(location.search);
       if (!params.has('buses')) return;
       baseline = factsOf(params);
+      tripDate = /^\d{4}-\d{2}-\d{2}$/.test(params.get('date') || '') ? params.get('date') : null;
       $('scheduler-quote-route-dead').checked = params.get('deadon') === '1';
       fillFacts(baseline);
+      /* Past the office's dead-mile limit the discount is the usual quote, so
+         the calculator opens with the route's dead miles counted and shown as
+         a discount, unless the leg's rental already counts them. */
+      const limit = Number(office['dead-miles-v1'].miles) || null;
+      if (limit && baseline.dead > limit && params.get('deadon') !== '1') {
+        $('scheduler-quote-route-dead').checked = true;
+        $('scheduler-quote-dead').value = deadFigure();
+        $('scheduler-quote-dead-discount').checked = true;
+      }
       $('scheduler-quote-route-dead').addEventListener('change', e => {
         $('scheduler-quote-dead').value = e.target.checked ? deadFigure() : '';
       });

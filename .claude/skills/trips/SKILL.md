@@ -64,11 +64,13 @@ reads only the ones before it. Nothing is written until step 10.
 6. **Buses.** In the vehicle's window turn on any other need the route gave
    it, and Co-driver when rux chose a second driver. Pick the bus by `rules.md`. An unconfirmed trip gets
    no driver.
-7. **Billing.** Press Add the bus rental. An Addt'l Driver line follows a
-   co-driver seat by itself. From April to early June set the line's rate by
-   hand (see the traps). Leave Estimated miles blank: it shows the route's
-   miles and Save writes them. Open the calculator only for a dead-mile discount, another rate or a price
-   match.
+7. **Billing.** Press Add the bus rental. It prices the line at the rate
+   the Settings page's Calendar gives the trip's month, and the line names
+   the rate; set another rate on the line only when `rules.md` asks for one
+   the Calendar does not give. Take the dead-mile discount when the tab
+   offers it. An Addt'l Driver line follows a co-driver seat by itself.
+   Leave Estimated miles blank: it shows the route's miles and Save writes
+   them. Open the calculator only for another rate or a price match.
 8. **Review.** Trip actions, Forms, Itinerary, Detailed: one sheet with the
    stops, each wait's status, the hours, the miles, the rate and the price.
    Read it against the email.
@@ -178,7 +180,7 @@ rewrites this section as each change is built.
   found by its street address, with the Name field set to the hotel.
 - Set a time input with `form_input` as `HH:MM`, and read the dialog back before Done.
 - A stop's "The wait counts as" is a plain select: set it with `form_input` as `on`, `off` or `sleeper`, because a click shows no menu in a screenshot.
-- Add the bus rental prices the line at the Regular rate. After setting the line's Mileage rate with `form_input`, the Cost keeps the old figure: choose Use calculator price from the line's menu, and read the line back.
+- After setting a line's Mileage rate with `form_input`, the Cost keeps the old figure: choose Use calculator price from the line's menu, and read the line back.
 - A dialog may be closing as you click. Check what has the focus before typing.
 - `scroll_to` can shift the whole page; reset the window's scroll before a
   click by coordinates.

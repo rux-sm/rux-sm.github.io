@@ -634,7 +634,7 @@
          refused read keeps what was there, as rux-ui does. */
       client.from('settings').select('key,value')
         .in('key', ['billing-workflow-v1', 'yard-location-v1', 'geoapify-key-v1', 'route-times-v1', 'requirements-v1', 'vehicle-types-v1',
-          'follow-up-v1', 'fuel-card-v1'])
+          'follow-up-v1', 'fuel-card-v1', 'rate-calendar-v1', 'dead-miles-v1'])
         .then(r => {
           if (r.error) return;
           const byKey = new Map((r.data || []).map(row => [row.key, row.value]));
@@ -644,6 +644,8 @@
           window.SchedulerPlaces.use(byKey.get('geoapify-key-v1'), yardPlace);
           setRouteTimes(byKey.get('route-times-v1'));
           setFuelLimits(byKey.get('fuel-card-v1'));
+          rateCalendar = byKey.get('rate-calendar-v1')?.months ?? {};
+          deadMilesLimit = Number(byKey.get('dead-miles-v1')?.miles) > 0 ? Number(byKey.get('dead-miles-v1').miles) : null;
           setRequirementList(byKey.get('requirements-v1'));
           window.SchedulerVehicles?.set(byKey.get('vehicle-types-v1'));
           setFollowUp(byKey.get('follow-up-v1'));
@@ -5451,6 +5453,8 @@
 
   let linePending = [];
   let redrawLines = () => {};
+  // The Billing tab's dead-mile offer, drawn again as the route's dead miles move.
+  let redrawDeadOffer = () => {};
   // The Billing tab's Quote sent section, redrawn as the quoted price moves.
   let redrawQuoteSent = () => {};
   let lineEditing = null;
@@ -5548,7 +5552,31 @@
       console.warn('The quote rates did not load:', err);
     });
   }
-  const defaultRate = () => quoteRates?.mileage.find(m => m.is_default)?.rate ?? null;
+  /* THE RATE A TRIP STARTS FROM is the one the Settings page's Calendar gives
+     the month of its first day, and the default rate where that month has
+     none. It is only where a rental line and the calculator start: a rate
+     picked on the line stays the line's. */
+  let rateCalendar = {};        // `rate-calendar-v1`: a month's number to a mileage rate's id
+  let deadMilesLimit = null;    // `dead-miles-v1`: the dead miles past which the discount is offered
+  const tripFirstDay = () => isoOrNull(document.getElementById('scheduler-f-start')?.value ?? '') ?? editing?.before?.start_date ?? null;
+  const calendarRate = () => {
+    const day = tripFirstDay();
+    const id = day ? rateCalendar[Number(day.slice(5, 7))] : null;
+    return id ? quoteRates?.mileage.find(m => m.id === id) ?? null : null;
+  };
+  const defaultRate = () => (calendarRate() ?? quoteRates?.mileage.find(m => m.is_default))?.rate ?? null;
+  /* A rental's rate in words, so a price says what made it: the rate, its
+     note, and the month when it is the rate the Calendar gives the trip's. A
+     line keeps the rate it was priced on, so the month is named by the rate
+     and not by how it was picked. */
+  const rateWords = l => {
+    const rate = l.rate ?? defaultRate();
+    if (rate == null) return null;
+    const note = quoteRates?.mileage.find(m => m.rate === rate)?.note || null;
+    const month = calendarRate()?.rate === rate
+      ? `${parseISO(tripFirstDay()).toLocaleDateString('en-US', { month: 'long' })} rate` : null;
+    return [`$${Number(rate).toFixed(2)}/mi`, note, month].filter(Boolean).join(' · ');
+  };
 
   /* A leg's miles, dead miles and days, and its miles a day as the quote
      calculator prices them. The Route tab's own leg reads the Summary's rows
@@ -6765,6 +6793,7 @@
     syncEstHint();
     // A date, a type, the miles or a drive can move a line's price.
     if (linesLive && syncLines()) redrawLines();
+    else if (linesLive) redrawDeadOffer();
     const startEl = document.getElementById('scheduler-f-start');
     const destEl = document.getElementById('scheduler-f-destination');
     const startOk = !!isoOrNull(startEl?.value);
@@ -8420,6 +8449,9 @@
       linesLive = false;
       const lineList = rowList();
       const linesNote = el('p', 'rux--form__helper-text');
+      // The dead-mile offer, over the lines it adds to.
+      const deadBox = el('div', 'scheduler-dead-offer');
+      deadBox.hidden = true;
       const quotedInput = panelBilling.querySelector('#scheduler-f-quoted');
       /* The price reads as money, as the Balance above it does: $1,669, with
          cents only when it has them. `money` reads the sign and commas back, so
@@ -8453,6 +8485,40 @@
         drawLines();
         refreshDirty();
       };
+      /* THE DEAD-MILE DISCOUNT IS OFFERED PAST THE OFFICE'S LIMIT, as the Route
+         tab offers a fuel card: a leg whose drive from the yard and back is
+         over the Settings page's dead-mile limit, with a rental the calculator
+         prices and no dead miles counted yet. Taking it leaves the rental at
+         the full rate on every mile and adds a Discount line for what the
+         dead-miles rate takes off, a bus at a time, as the calculator's Show
+         dead miles as a discount does, so the customer reads the discount. */
+      const DEAD_DISCOUNT = 'Dead miles discount.';
+      const deadOffers = () => (deadMilesLimit == null ? [] : (splitNow() ? ['outbound', 'return'] : [null]).map(leg => {
+        const onLeg = l => !splitNow() || (l.leg ?? 'outbound') === (leg ?? 'outbound');
+        const rental = linePending.find(l => l.kind === 'rental' && onLeg(l));
+        const dead = legFigures(leg).dead;
+        if (!rental || rental.cost_typed || rental.deadOn || !(dead > deadMilesLimit)) return null;
+        if (linePending.some(l => l.kind === 'discount' && l.description === DEAD_DISCOUNT && onLeg(l))) return null;
+        const b = lineBasis(rental);
+        const q = window.Rux?.quote;
+        if (!q || !quoteRates || b.rate == null || !b.days || !(b.miles > 0)) return null;
+        const full = q.tripQuote({ miles: b.perDay, rate: b.rate, dead: 0 }, quoteRates.named).amount;
+        const less = q.tripQuote({ miles: b.perDay, rate: b.rate, dead }, quoteRates.named).amount;
+        const off = full == null || less == null ? 0 : round2(full - less);
+        return off > 0 ? { leg, dead, off } : null;
+      }).filter(Boolean));
+      const drawDeadOffer = () => {
+        deadBox.replaceChildren(...deadOffers().map(o => notice('info', 'Dead miles',
+          `At ${Math.round(o.dead)} dead miles${o.leg ? ` on the ${o.leg === 'return' ? 'pickup' : 'drop-off'}` : ''}, this trip is past the office's limit of ${deadMilesLimit}.`,
+          // As a list, so the action stands under the words and leaves them the panel's width.
+          [{ label: `Add the discount, ${usdCents(o.off)} a bus`, onClick: () => {
+            linePending.push({ kind: 'discount', leg: o.leg, item: lineKind('discount').item || null, description: DEAD_DISCOUNT,
+              quantity: legBuses(o.leg), cost: -o.off, cost_typed: true, miles: null, dead_miles: null, rate: null });
+            drawLines();
+            refreshDirty();
+          } }])));
+        deadBox.hidden = !deadBox.childElementCount;
+      };
       const drawLines = () => {
         if (linesLive) syncLines();
         lineList.body.replaceChildren();
@@ -8467,6 +8533,8 @@
             split && (l.kind === 'rental' || l.kind === 'second_driver') ? (l.leg === 'return' ? 'Pickup' : 'Drop-off') : null,
             cost === null ? 'No cost yet' : `${lineQty(l) ?? 1} × ${usdCents(cost)}`,
             calc !== null && calc !== cost ? `calculator ${usdCents(calc)}` : null,
+            // A typed cost was not made by a rate, so it names none.
+            l.kind === 'rental' && !l.cost_typed ? rateWords(l) : null,
           ].filter(Boolean).join(' · ');
           const much = amount === null ? '' : usdCents(amount);
           // A line moves up or down one place, which is the order the quote
@@ -8497,6 +8565,7 @@
             ],
           }));
         });
+        drawDeadOffer();
         // With no lines yet, the trip's own rental comes first.
         if (!linePending.length) {
           lineList.body.appendChild(listAddRow({
@@ -8528,6 +8597,7 @@
         linesNote.hidden = !linesNote.textContent;
       };
       redrawLines = drawLines;
+      redrawDeadOffer = drawDeadOffer;
       /* The description the office pastes into its QuickBooks estimate. It
          ends the Quote lines section, under the lines it copies, so the larger
          editor's columns never part them, and it carries the block alone for
@@ -8558,7 +8628,7 @@
       calcButton.id = 'scheduler-f-opencalc';
       calcButton.addEventListener('click', () => openCalculator(null));
       const linesBody = el('div', 'rux--stack-vertical rux--stack-scale-3');
-      linesBody.append(lineList.list, linesNote, calcButton, qbButton);
+      linesBody.append(deadBox, lineList.list, linesNote, calcButton, qbButton);
       panelBilling.appendChild(section('Quote lines', linesBody));
 
       /* QUOTE SENT: the price the customer was sent, and the day, kept for
@@ -12073,6 +12143,8 @@
     if (facts.drivers === 2) params.set('drivers', '2');
     params.set('buses', String(facts.buses));
     if (facts.relief > 0) params.set('relief', String(facts.relief));
+    // The trip's first day, whose month the calculator's opening rate is for.
+    if (tripFirstDay()) params.set('date', tripFirstDay());
     // The route's dead miles, which the calculator offers, and whether the
     // leg's rental already counts them.
     if (facts.dead > 0) {

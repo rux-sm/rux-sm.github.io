@@ -11,8 +11,8 @@ section it belongs to; when one turns out wrong, the line is replaced.
 
 - The price that counts is the latest quote the customer was sent: a revised or price-matched quote replaces the first, since it is what they agreed to.
 - A quote is entered as the lines that make it, such as a Bus rental line and a Discount line for a price match, so the quoted price is their sum and Billing can be marked Done.
-- A plain quote is priced with the Billing tab's Add the bus rental, from the Route tab's miles a day; the quote calculator is opened only for a dead-mile discount, another rate or a price match. Both round each charge (regular miles, dead miles, driver pay) up to the next $5, because those miles include the yard legs and a quote with no cents reads cleaner.
-- A trip from April to early June is quoted at the Busy season mileage rate, not Regular, because those are the busiest weeks and the buses fill either way; the rate's amount is on the rates page.
+- A plain quote is priced with the Billing tab's Add the bus rental, from the Route tab's miles a day; the dead-mile discount is the Billing tab's own offer, past the limit on the Settings page, and the quote calculator is opened only for another rate or a price match. Both round each charge (regular miles, dead miles, driver pay) up to the next $5, because those miles include the yard legs and a quote with no cents reads cleaner.
+- A trip from April to early June is quoted at the Busy season mileage rate, not Regular, because those are the busiest weeks and the buses fill either way; the Settings page's Calendar gives each month its rate, and a month it leaves on Default is set on the line by hand.
 - A PO fixes the price; a cost the office takes on after it, such as a second driver, goes in as its own line with an equal Discount, and the trip's pinned update says the decision is still open.
 - A quote can go out with a leg's times as TBD, because the times are settled with the customer later and never hold a quote back.
 

@@ -182,15 +182,6 @@ Each tab answers one question and reads only the tabs before it:
 
 ## Tasks
 
-- [ ] Show the rate's note on the bus rental line and in the calculator,
-      with the month when the Calendar chose it.
-- [ ] Make `defaultRate` in `scheduler/data.js` and the calculator's
-      opening rate in `scheduler/quote.js` take the month of the trip's
-      first day.
-- [ ] Say on the Billing tab when a leg's dead miles pass the limit, with
-      an action that adds the Dead miles discount line as
-      `linesFromCalculator` does, and open the calculator with both
-      dead-mile ticks on.
 - [ ] Add `stops`, `booking_contact_missive_url` and `passengers` to the
       fields a draft may fill in `scheduler/connector/index.ts`, and deploy
       the connector with the editor change that lays them out.

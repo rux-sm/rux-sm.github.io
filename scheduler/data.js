@@ -4449,6 +4449,25 @@
     return c;
   };
 
+  /* A date box said to be wrong, as Design's invalid date picker is: the
+     wrapper and the input take their invalid classes and a line under them
+     says why. An empty `say` puts the box right again. */
+  function dateSays(input, say) {
+    if (!input) return;
+    const wrap = input.closest('.rux--date-picker-input__wrapper');
+    wrap?.classList.toggle('rux--date-picker-input__wrapper--invalid', !!say);
+    input.classList.toggle('rux--date-picker__input--invalid', !!say);
+    input.setAttribute('aria-invalid', String(!!say));
+    let req = document.getElementById(`${input.id}-req`);
+    if (!req && say && wrap) {
+      req = el('div', 'rux--form-requirement');
+      req.id = `${input.id}-req`;
+      wrap.after(req);
+      input.setAttribute('aria-describedby', req.id);
+    }
+    if (req) { req.textContent = say || ''; req.hidden = !say; }
+  }
+
   /* The calendar body, shared by both variants: `date-picker.js` claims any
      `--next` root holding a `__calendar-container` and fills the days, so
      range and single differ only in variant class and inputs. */
@@ -5445,6 +5464,26 @@
   const usdCents = n => `${n < 0 ? '−' : ''}$${Math.abs(n).toLocaleString('en-US',
     { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   const splitNow = () => document.getElementById('scheduler-f-type')?.value === SPLIT;
+
+  /* A LEG CANNOT END BEFORE IT STARTS. It would cover no day and have no bar
+     on any week, so Save holds until the dates are put right. The pickup pair
+     counts only while the trip is a drop-off and pickup. */
+  const DATE_PAIRS = [['scheduler-f-start', 'scheduler-f-end'], ['scheduler-f-rstart', 'scheduler-f-rend']];
+  const ENDS_FIRST = 'The end date is before the start date.';
+  const endsBeforeStart = (fromId, toId) => {
+    const from = isoOrNull(document.getElementById(fromId)?.value);
+    const to = isoOrNull(document.getElementById(toId)?.value);
+    return !!from && !!to && to < from;
+  };
+  const datesWrong = () => endsBeforeStart(...DATE_PAIRS[0]) || (splitNow() && endsBeforeStart(...DATE_PAIRS[1]));
+  /* What holds Save, in words, or null. The Save button is disabled for the
+     same reasons; this answers the ways to Save that are not that button,
+     such as the box that asks before unsaved work is left. */
+  function saveHeldBy() {
+    if (!isoOrNull(document.getElementById('scheduler-f-start')?.value)) return 'It needs a start date.';
+    if (!document.getElementById('scheduler-f-destination')?.value.trim()) return 'It needs a destination.';
+    return datesWrong() ? ENDS_FIRST : null;
+  }
   // A leg's buses on the Buses tab. A trip that is not split has one rental,
   // on the outbound leg's count.
   const legBuses = leg => Math.max(editing?.fleet?.[leg === 'return' ? 'return' : 'outbound']?.length || 0, 1);
@@ -6733,9 +6772,14 @@
     // destination, which is the bar's only label.
     const destOk = !!destEl?.value.trim();
     destEl?.setAttribute('aria-invalid', String(!destOk));
-    // `aria-invalid` alone marks the date, since Carbon has no invalid class for
-    // the date picker; the disabled Save says the rest.
+    // `aria-invalid` alone marks a missing start; the disabled Save says the rest.
     startEl?.setAttribute('aria-invalid', String(!startOk));
+    // Each pair's end box says when it is before its start, shown or not, so
+    // a mark is cleared too; only a pair on screen holds Save.
+    for (const [fromId, toId] of DATE_PAIRS) {
+      dateSays(document.getElementById(toId), endsBeforeStart(fromId, toId) ? ENDS_FIRST : '');
+    }
+    const datesOk = !datesWrong();
     /* A new trip is saveable untouched, because its defaults are already a real
        trip. `changed` compares against `editing.before`, which a new trip fills
        from its draft, so an untouched panel is unchanged either way. */
@@ -6743,7 +6787,7 @@
     const nothingToDo = !editing?.creating && nothingChanged;
     // A driver in two seats of one leg is the Buses tab's one blocking error.
     const fleetOk = !fleetDuplicates().size;
-    panelSave.disabled = !startOk || !destOk || !fleetOk || nothingToDo;
+    panelSave.disabled = !startOk || !destOk || !datesOk || !fleetOk || nothingToDo;
     setTitle();
     /* Reset follows `nothingChanged`, not `nothingToDo`, which is always false
        while creating. It ignores the required fields: an invalid form is when
@@ -10366,6 +10410,8 @@
      which reports its own errors. */
   async function saveEditor(after, force = false) {
     if (!editing || (!editing.creating && !changed())) return false;
+    const heldBy = saveHeldBy();
+    if (heldBy) { toast('error', 'The trip was not saved.', heldBy); return false; }
     if (fleetDuplicates().size) {
       toast('error', 'The trip was not saved.', 'A driver is in two seats on one leg. Choose another driver on the Buses tab.');
       return false;

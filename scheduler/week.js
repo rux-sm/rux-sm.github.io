@@ -102,10 +102,13 @@
     };
   };
 
+  // A leg saved with its end before its start is read as its start day, so it
+  // still has a bar to open and put right.
+  const lastDay = (from, to) => (to && to >= from ? to : from);
   const legsOf = trip => {
     const legs = [];
-    if (trip.start_date) legs.push({ leg: 'outbound', from: trip.start_date, to: trip.end_date || trip.start_date, count: trip.bus_count || 1, ...timesOf(trip, 'outbound') });
-    if (trip.return_start_date) legs.push({ leg: 'return', from: trip.return_start_date, to: trip.return_end_date || trip.return_start_date, count: trip.return_bus_count || trip.bus_count || 1, ...timesOf(trip, 'return') });
+    if (trip.start_date) legs.push({ leg: 'outbound', from: trip.start_date, to: lastDay(trip.start_date, trip.end_date), count: trip.bus_count || 1, ...timesOf(trip, 'outbound') });
+    if (trip.return_start_date) legs.push({ leg: 'return', from: trip.return_start_date, to: lastDay(trip.return_start_date, trip.return_end_date), count: trip.return_bus_count || trip.bus_count || 1, ...timesOf(trip, 'return') });
     return legs;
   };
 

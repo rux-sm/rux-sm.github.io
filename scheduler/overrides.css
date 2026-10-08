@@ -327,6 +327,12 @@
   display: none;
 }
 
+/* A range's two boxes stay level when one of them is said to be wrong.
+   Carbon's `.rux--date-picker-container` spreads its label, box and message
+   over the pair's shared height, which lifts a box with a message under it
+   above the box beside it; stacked from the top, both sit under their labels. */
+.rux--date-picker--range .rux--date-picker-container { justify-content: flex-start; }
+
 /* The tab strip sticks under the panel's sticky header while the form
    scrolls. It has an opaque surface and a z-index so fields pass under it,
    while the date picker's calendar still opens over it. Negative margins and

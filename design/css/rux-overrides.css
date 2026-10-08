@@ -1115,6 +1115,91 @@
 [data-theme="geist-dark"] .rux--table-toolbar .rux--btn--ghost:not(:disabled):not(.rux--btn--disabled):not(:focus-visible) {
   border-color: var(--rux-border-subtle-02);
 }
+/* A TABLE'S FOOT IS BUILT AS ITS TOOLBAR IS, in every rounded theme. Carbon's
+   pagination bar is a row of square cells parted by lines, each the bar's
+   full height. A rounded control in one of those cells bends its dividing
+   line into a bracket and meets the bar's edges, and a ringed select lies
+   over the bar's own line. So the lines go and the controls stand inside the
+   bar at their own height, 8px apart, the arrows on the control's 6px corner.
+   The bar's top line goes with them: the last row's rule already parts the
+   two, and inside a table's box the pair drew 2px.
+   The inset is 12px for Geist and Apple, their one inset for a bar of
+   buttons, so the foot is the toolbar's height. It is on the bar's two
+   halves and not the bar, which is the container Carbon's width queries
+   measure: padding there hides the page select 24px sooner. The count then
+   starts under the first column's words. */
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--pagination {
+  gap: var(--rux-spacing-03);
+  border-block-start: 0;
+  inline-size: 100%;
+  min-block-size: calc(var(--rux-layout-size-height-local) + 2 * var(--rux-spacing-04));
+}
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--pagination :is(.rux--pagination__left, .rux--pagination__right) {
+  gap: var(--rux-spacing-03);
+  padding: 0;
+  border: 0;
+}
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--pagination .rux--pagination__left {
+  padding-inline-start: var(--rux-spacing-04);
+}
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--pagination .rux--pagination__right {
+  padding-inline-end: var(--rux-spacing-04);
+}
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--pagination :is(.rux--pagination__left, .rux--pagination__right) .rux--pagination__text {
+  margin-inline: 0;
+}
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--pagination .rux--pagination__control-buttons {
+  gap: var(--rux-spacing-03);
+  margin-inline-start: var(--rux-spacing-03);
+}
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--pagination .rux--select--inline .rux--select-input {
+  block-size: var(--rux-layout-size-height-local);
+  padding-inline: 12px 2.25rem;
+  border-inline-end: 0;
+}
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--pagination .rux--select__arrow {
+  transform: translate(0, -50%);
+}
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--pagination .rux--pagination__button {
+  border: 0;
+  border-radius: 6px;
+}
+/* Ant keeps 16px round its pager, measured on its Table page: a 32px pager
+   with a 16px margin above and below, under the rows. Its arrows are bare,
+   8px apart on the 6px corner, measured on its Pagination page. */
+[data-theme="ant-dark"] .rux--pagination {
+  min-block-size: calc(var(--rux-layout-size-height-local) + 2 * var(--rux-spacing-05));
+}
+[data-theme="ant-dark"] .rux--pagination .rux--pagination__left {
+  padding-inline-start: var(--rux-spacing-05);
+}
+[data-theme="ant-dark"] .rux--pagination .rux--pagination__right {
+  padding-inline-end: var(--rux-spacing-05);
+}
+/* Geist has no pager for rows -- its Pagination page is the previous and next
+   links under an article, and sends a numbered pager elsewhere -- so the
+   arrows are what a plain button is in the toolbar: outlined, with the same
+   quiet ring. A disabled one keeps it under the pointer, where Carbon swaps
+   the border's colour. */
+[data-theme="geist-dark"] .rux--pagination .rux--pagination__button,
+[data-theme="geist-dark"] .rux--pagination .rux--pagination__button:is(:disabled, .rux--pagination__button--no-index):hover {
+  border: 1px solid var(--rux-border-subtle-02);
+}
+/* A bar that follows a table's box, or the wrapper that holds the box last,
+   closes it: the box's two lower corners square off where they meet. Geist's
+   box is an outline, so the bar there carries the outline round its other
+   three sides, on the box's 8px. */
+:is([data-theme="geist-dark"], [data-theme^="apple-"]) .rux--data-table-container:has(+ .rux--pagination),
+:is([data-theme="geist-dark"], [data-theme^="apple-"]) :has(+ .rux--pagination) > .rux--data-table-container:last-child {
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
+}
+[data-theme="geist-dark"] :is(.rux--data-table-container, :has(> .rux--data-table-container:last-child)) + .rux--pagination {
+  border: 1px solid var(--rux-border-subtle-01);
+  border-block-start: 0;
+  border-end-start-radius: 8px;
+  border-end-end-radius: 8px;
+}
 /* GEIST'S SEGMENTED CONTROL, measured on its Switch page: a box on the
    surface inside a 1px ring, 6px corners and 4px of padding, holding 28px
    options with 12px sides and no dividers. An option is secondary text, and
@@ -1890,52 +1975,10 @@
   border: 0;
   border-radius: 12px;
 }
-/* A TABLE'S FOOT IS BUILT AS ITS TOOLBAR IS: the page controls stand inside
-   the box, 12px from every edge and 8px apart, so 36px controls make a 60px
-   bar under a 60px toolbar. Carbon's bar is a row of square cells parted by
-   lines, each the bar's full height, and this theme's capsule and field
-   corners cut into those lines and met the bar's edges. So the lines go, the
-   select is the ringed inline select the toolbar has, at its own height, and
-   each arrow is the grey round push button a plain button is in the toolbar,
-   round by its own rule because Carbon's arrow need not be a `btn`.
-   The count starts 12px in, under the first column's words.
-   The inset is on the bar's two halves and not the bar, which is the
-   container Carbon's width queries measure: padding there would hide the
-   page select 24px sooner. */
-[data-theme^="apple-"] .rux--pagination {
-  gap: var(--rux-spacing-03);
-  border-block-start: 0;
-  inline-size: 100%;
-  min-block-size: calc(var(--rux-layout-size-height-local) + 2 * var(--rux-spacing-04));
-}
-[data-theme^="apple-"] .rux--pagination :is(.rux--pagination__left, .rux--pagination__right) {
-  gap: var(--rux-spacing-03);
-  padding: 0;
-  border: 0;
-}
-[data-theme^="apple-"] .rux--pagination .rux--pagination__left {
-  padding-inline-start: var(--rux-spacing-04);
-}
-[data-theme^="apple-"] .rux--pagination .rux--pagination__right {
-  padding-inline-end: var(--rux-spacing-04);
-}
-[data-theme^="apple-"] .rux--pagination :is(.rux--pagination__left, .rux--pagination__right) .rux--pagination__text {
-  margin-inline: 0;
-}
-[data-theme^="apple-"] .rux--pagination .rux--pagination__control-buttons {
-  gap: var(--rux-spacing-03);
-  margin-inline-start: var(--rux-spacing-03);
-}
-[data-theme^="apple-"] .rux--pagination .rux--select--inline .rux--select-input {
-  block-size: var(--rux-layout-size-height-local);
-  padding-inline: 12px 2.25rem;
-  border-inline-end: 0;
-}
-[data-theme^="apple-"] .rux--pagination .rux--select__arrow {
-  transform: translate(0, -50%);
-}
+/* THE PAGE ARROWS ARE THE GREY ROUND PUSH BUTTON a plain button is in the
+   toolbar, round by their own rule because Carbon's arrow need not be a
+   `btn`. The disabled one takes the disabled fill. */
 [data-theme^="apple-"] .rux--pagination .rux--pagination__button {
-  border: 0;
   border-radius: 50%;
   background-color: var(--rux-button-secondary);
 }
@@ -1947,16 +1990,10 @@
   background-color: var(--rux-button-disabled);
 }
 /* The bar is a region of the page too, on the 12px corner the table's box
-   takes. Inside that box it is clipped by it. Under the box, or under the
-   wrapper that holds the box last, the two are one region: the box's lower
-   corners and the bar's upper ones square off where they meet. */
+   takes. Inside that box it is clipped by it; under it, the bar's two upper
+   corners square off as the box's lower ones do. */
 [data-theme^="apple-"] .rux--pagination {
   border-radius: 12px;
-}
-[data-theme^="apple-"] .rux--data-table-container:has(+ .rux--pagination),
-[data-theme^="apple-"] :has(+ .rux--pagination) > .rux--data-table-container:last-child {
-  border-end-start-radius: 0;
-  border-end-end-radius: 0;
 }
 [data-theme^="apple-"] :is(.rux--data-table-container, :has(> .rux--data-table-container:last-child)) + .rux--pagination {
   border-start-start-radius: 0;

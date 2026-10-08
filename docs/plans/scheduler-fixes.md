@@ -56,6 +56,8 @@ site.
   changes are told by phone.
 - **Copy message asks before it marks trips as sent,** as Remind does, since
   a copied text is not a sent one.
+- **A change to a stop's time or place takes Printed and Reminded off,** as
+  a bus or date move does, because the paper now carries an old time.
 - **The driver's link shows each stop, folded,** so Stops changed can be
   read. The page already holds them and the driver carries them on paper.
 - **A cancelled trip stays on the driver's page as a Cancelled card** until
@@ -74,8 +76,21 @@ site.
 - **The maintenance page shows a bus's days out as Out of service,** never
   the reason typed, because the link needs no log-in.
 
-### Money
+### Money and the route
 
+- **The prices on a quote drawn from a trip are locked,** so a discount is
+  a Billing line and the trip holds what the customer signs.
+- **A sent quote stays on the board until the customer cancels or the office
+  takes it off.** The one-week hold stays in `booking.md` as what the office
+  says and is on no signed sheet, because it is not enforced.
+- **An unanswered quote is chased from 60 days before its trip.** Quote sent
+  is read as a date where it is marked, never as proof a quote is unsent,
+  because most quotes out carry no mark.
+- **After a trip has run, a confirmed trip with money owed asks for it,
+  unless a PO covers it,** because a PO's payment is recorded on the printed
+  schedule and not in the scheduler.
+- **Two days are parted by any overnight wait of 8 hours,** whatever its
+  mark, in the second-driver test; 8 is the quote's own printed figure.
 - **A line that follows the calculator keeps following it** after its window
   is opened and closed. Only a figure typed in Cost makes a typed price.
 - **A settled price holds.** Once a PO is in or the trip is paid in full, a
@@ -84,8 +99,7 @@ site.
 - **A draft never changes a Quoted price the editor keeps locked.**
 - **A trip paid past its price counts as paid** when deciding Confirmed.
 - **A placeholder is an amber trip that is not confirmed and has no quote
-  marked sent.** Past either, the colour is only a colour and every reminder
-  applies.
+  marked sent;** past either, every reminder applies.
 - **`emails.md` owns how a quote email is written.** `booking.md` keeps what
   a customer must know before a trip is confirmed and links to it.
 
@@ -98,7 +112,12 @@ site.
   Billing; Claude writes the PO number in the draft's note.
 - **A drafted bus count adds empty vehicles on the Buses tab.**
 - **The connector answers with the pages' rule files,** joined into one
-  generated file at build, so a trip's warnings are its To do rows.
+  generated file at build, so a trip's warnings are its To do rows, and one
+  read tool, `needs_attention`, lists them and a day's departures.
+- **A session presses a real Save on the published site,** which runs only
+  checked code; :8641 is for testing with the page's writes recorded.
+- **A review reads email through Missive's own connector, with reading on
+  and drafting and sending off.** Claude drafts a reply in chat.
 - **A draft link stays its maker's.**
 - **`trips` owns one trip or one customer's thread and `inbox-review` owns
   the team inbox and the To do rows.** The `trip-email` skill is deleted.
@@ -125,32 +144,13 @@ site.
   rewrites every one of those readers.
 - **A change to a rate or a setting is not recorded,** because each quote
   line already keeps the rate it was priced at.
-- **The two-week board and Print week stay,** since both are built and on the
-  board's menus.
+- **The two-week board and Print week stay,** since both are built.
 
 ## Questions
 
-- **The printed quote.** Lock the prices on a quote drawn from a trip, so a
-  discount is a Billing line and a Save (recommended)? Or keep typing on the
-  sheet and warn that it is not saved?
-- **Two terms.** Is a sent quote held for one week? Does a card payment
-  carry a 4% fee? A yes goes on the signed sheets; a no leaves `booking.md`.
-- **Rest between two days.** For the second-driver test, does any overnight
-  wait of 8 hours part two days (recommended), or only one marked Off duty
-  or Sleeper berth? And is it 8 hours, as the quote's terms say, or 10?
-- **Printed and Reminded.** When a stop's time or place changes, do those
-  ticks come off by themselves (recommended), or only on a bus or date move?
-- **Chasing a quote.** How many days before a trip is an unanswered quote
-  worth chasing: 30, 60 or 90? Is Mark quote sent pressed for every quote?
-- **Money after the trip.** Once a trip has run, does one covered by a PO
-  ask for money at once, only after its invoice is marked sent, or never?
-- **Where Claude saves.** Real Saves on the published site, with :8641 kept
-  for testing (recommended)? Or stay on :8641?
-- **Missive.** Will you turn on Missive's own connector, so a review reads
-  email as text and not from pictures? May Claude leave a draft in a thread
-  for you to send, or only draft in chat?
-- **Asking Claude.** Should the Claude app answer "who do I chase this week"
-  and "is tomorrow ready"? A yes builds one new read tool.
+- **The card fee.** Does a card payment carry a 4% fee? A yes goes into the
+  agreement's Payment Policy, so the customer signs it; a no takes the
+  sentence out of `booking.md`.
 
 ## Tasks
 
@@ -248,7 +248,7 @@ site.
 - [ ] Raise Declined and Tell the driver on the bar, the checklist,
       Departures, the Contact list and the To do list, from `leg-facts.js`.
 - [ ] Write the triggers that take Printed, Reminded and Driver info sent
-      off when what they carried changes, as the answer above decides.
+      off when what they carried changes, as SQL on a yes.
 - [ ] Name the drivers to tell in the Cancel dialog, its toast and History.
 - [ ] Add `replace_driver_schedule_share` and the Inactive trigger as SQL on
       a yes, and a Replace link button in Driver view.
@@ -259,14 +259,14 @@ site.
 - [ ] Return a bus's days out from `get_maintenance_schedule`, on a yes, and
       draw them; name the bus in Recent changes.
 
-### Money and the route, once answered
+### Money and the route
 
-- [ ] Build the printed quote's answer in `print.js`, and correct
-      `booking.md` and the agreement's wording by the two terms.
+- [ ] Lock the money cells on a quote drawn from a trip in `print.js`, and
+      put the card fee's answer in `booking.md` and the agreement.
 - [ ] Define a placeholder once, in `billing.js`, and read it in the
       follow-up, To do, checklist and Departures rules, the board and the
       connector.
-- [ ] Ask for a balance after a trip has left, in `follow-up.js`.
+- [ ] Ask for a balance after a trip with no PO has left, in `follow-up.js`.
 - [ ] Teach `follow-up.js` the chase window and when the customer was last
       told, with the window in the Follow-ups dialog.
 - [ ] Hold a settled price in `syncLines`.
@@ -280,15 +280,15 @@ site.
       connector and in `applyDraft`; add vehicles for a drafted bus count and
       take the PO and deposit fields off.
 - [ ] Add `scheduler/tools/build-connector-rules.mjs`, an office-day helper,
-      and `get_trip` warnings from the rules; add the read tool if answered
-      yes; change the To do plan's line in the same commit; deploy.
+      and `get_trip` warnings from the rules; add `needs_attention`; change
+      the To do plan's line in the same commit; deploy.
 - [ ] Reconnect the connector, read a new session's tool list, and write the
       step into `working-from-claude.md`.
 - [ ] Give each skill its job, delete `trip-email` in `~/claude-config`, key
       a row by the conversation's id, drop the link-copying section, and
-      name the address for a real Save, as answered.
-- [ ] Try Missive's connector if it is turned on: read one unread thread and
-      see whether it stays unread; then rewrite the review's steps.
+      name the published site for a real Save.
+- [ ] rux turns on Missive's connector, reading only. Then read one unread
+      thread, see whether it stays unread, and rewrite the review's steps.
 - [ ] Read `by=claude` from the address in `actorName`.
 
 ### Records and the other plans

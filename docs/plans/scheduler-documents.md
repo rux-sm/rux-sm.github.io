@@ -44,6 +44,10 @@ Customer page, and `scheduler/docs/database-inventory.md`.
 - **A document's real content never enters this repository,** which is
   public: a form is read where rux keeps it, and a check uses an invented
   file.
+- **The binder spine is a form the scheduler prints.** No commit in this
+  repository or in rux-ui holds one, on any branch, so the one rux remembers
+  is uncommitted work on his other Mac, to be pushed from there as a branch,
+  or it is built again in `print.js`.
 - **rux-ui does not change.**
 
 ## Questions
@@ -53,10 +57,10 @@ Customer page, and `scheduler/docs/database-inventory.md`.
 - 182 names on 389 trips match no customer, 29 of them on 49 trips still to
   come: the same place spelled several ways, or a group after its name. Which
   customer does each coming name belong to?
-- The office's binder spine and binder cover are two tabs of a Google Sheet
-  rux owns, beside its DOT forms, fuel card log, pre-trip checklist and
-  monthly vehicle inspection. Should any of them become forms the scheduler
-  prints, and which?
+- The binder cover is a tab of a Google Sheet rux owns, beside a binder
+  spine, DOT forms, a fuel card log, a pre-trip checklist and a monthly
+  vehicle inspection. Should the cover, or any of the others, become a form
+  the scheduler prints?
 - Should History record a change to the driver forms a customer asks for? It
   records the customer's own row only.
 
@@ -80,5 +84,9 @@ Customer page, and `scheduler/docs/database-inventory.md`.
       old and Kinds are hidden and the search and Upload share the band.
 - [ ] Upload the office's current documents from the files rux names, each
       with its kind, holder and the end date read from the file.
+- [ ] Bring in the binder spine form: merge the branch pushed from rux's
+      other Mac, or, with none there, build it as an entry in `print.js`'s
+      registry from the Google Sheet's Binder Spine tab, and check it in
+      Chrome on :8641 and on paper's size.
 - [ ] List the names on trips still to come that match no customer, and link
       those trips by SQL shown to rux, once each name has its customer.

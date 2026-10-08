@@ -9235,7 +9235,12 @@
         /* A busy day after a trip the day before shows the hours between
            them: under REST_HOURS, or overlapping, in the warning tone, and
            unknown as a question mark until both trips have times. Time off
-           beats it, as it beats busy. */
+           beats it, as it beats busy.
+           A day that is both time off and a trip keeps the day-off colour and
+           says both: the mark an overlap takes, the reason and the trip in
+           its title, and a press that selects the trip, because that day is a
+           driver booked while away and the roster is where it shows. */
+        const offAndOn = !!day.off && busy;
         const rest = !day.off && busy ? day.rest : null;
         const tight = rest?.hours != null && rest.hours < REST_HOURS;
         const cls = day.off ? 'scheduler-avail__cell scheduler-avail__cell--off'
@@ -9245,17 +9250,20 @@
         cell.dataset.day = String(i);
         if (rest) cell.classList.add('scheduler-avail__cell--rest');
         if (tight) cell.classList.add('scheduler-avail__cell--tight');
+        // `--busy` gives the press its cursor and `--rest` shows the mark; `--off` paints over both.
+        if (offAndOn) cell.classList.add('scheduler-avail__cell--busy', 'scheduler-avail__cell--rest');
         // Whole hours, rounded down, so a rest is never shown longer than it is.
         const restText = !rest ? null : rest.hours == null ? '?' : rest.hours < 0 ? '!' : `${Math.floor(rest.hours)}h`;
         const restWords = !rest ? null
           : rest.hours == null ? `rest after ${rest.after} unknown until both trips have times`
           : rest.hours < 0 ? `overlaps ${rest.after}`
           : `${Math.floor(rest.hours)}h rest after ${rest.after}${tight ? `, under ${REST_HOURS}` : ''}`;
-        cell.appendChild(el('span', null, restText ?? (day.off || day.trips.join(' · '))));
+        cell.appendChild(el('span', null, restText ?? (offAndOn ? '!' : (day.off || day.trips.join(' · ')))));
         if (day.off || busy) {
-          cell.title = `${row.driver.name || ''} — ${day.off || day.trips.join(' · ')}${restWords ? ` · ${restWords}` : ''}`;
+          const said = offAndOn ? `${day.off}, and on ${day.trips.join(' · ')}` : (day.off || day.trips.join(' · '));
+          cell.title = `${row.driver.name || ''} — ${said}${restWords ? ` · ${restWords}` : ''}`;
         }
-        if (!day.off && day.refs.length) availRefs.set(cell, day.refs);
+        if (day.refs.length) availRefs.set(cell, day.refs);
         r.appendChild(cell);
       });
       availGrid.appendChild(r);

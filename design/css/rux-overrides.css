@@ -533,6 +533,13 @@
   min-inline-size: 2rem;
   border-radius: 6px;
 }
+/* A count on one of those 32px buttons has no corner to sit in: Carbon's 4px
+   inset is measured for a 48px button, and here it lands the count on the
+   glyph. So it hangs off the button's top corner, half over the edge. */
+:is([data-theme="geist-dark"] .rux--header, .rux--header[data-theme="geist-dark"]) .rux--header__action .rux--badge-indicator--count {
+  margin-block-start: -0.375rem;
+  margin-inline-end: -0.5rem;
+}
 :is([data-theme="geist-dark"] .rux--header, .rux--header[data-theme="geist-dark"]) .rux--header__name {
   padding-inline-start: var(--rux-spacing-03);
 }

@@ -312,12 +312,13 @@
               <div class="rux--text-area__wrapper">
                 <textarea id="scheduler-send-text" class="rux--text-area" rows="12" readonly aria-describedby="scheduler-send-text-helper" style="width: 100%;"></textarea>
               </div>
-              <div class="rux--form__helper-text" id="scheduler-send-text-helper">Copying marks the ticked trips the driver hasn't answered Pending response.</div>
+              <div class="rux--form__helper-text" id="scheduler-send-text-helper">Copying marks nothing. Once the text has gone, Mark as sent sets the ticked trips the driver hasn't answered to Pending response.</div>
             </div>
-            <div>
+            <div class="scheduler-send__buttons">
               <button type="button" class="rux--btn rux--btn--secondary rux--btn--md rux--layout--size-md" id="scheduler-send-copy">Copy message
                 <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-content_copy"/></svg>
               </button>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md" id="scheduler-send-mark" hidden>Mark as sent</button>
             </div>
             <p class="rux--type-body-compact-01 scheduler-send__note" id="scheduler-send-copied" role="status"></p>
           </div>

@@ -163,9 +163,6 @@ site.
       `find_trips` say when it cut its list, and deploy the connector.
 - [ ] Carry the leg in the Departures and To do links, and make `goToTrip`
       open that leg's bar.
-- [ ] In `driver-view.js`, hold Copy message until the link shows the ticked
-      trips, treat a failed status read as an error, read the statuses again
-      before marking, and ask before marking.
 - [ ] Open Cost empty on a line that follows the calculator, from a rule in
       `scheduler/quote-lines.js` with its check.
 - [ ] Make `qbDescription` read each leg's own stops, and

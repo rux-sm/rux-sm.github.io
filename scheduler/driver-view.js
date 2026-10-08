@@ -11,9 +11,11 @@
    makes a link, or brings back the driver's last one so the address stays
    the same; update_driver_schedule_share saves a new choice to the same
    address; revoke_driver_schedule_share stops it. A link's dates run from
-   the first ticked leg to the last. Copy marks each ticked leg the driver
-   has not answered Pending response through sync_trip_driver_statuses,
-   which takes the trip's whole crew and changes only the rows marked dirty.
+   the first ticked leg to the last. Copy only copies, and only while the
+   link shows the ticked trips, because a copied text is not a sent one. Mark
+   as sent, offered after a copy, sets each ticked leg the driver has not
+   answered to Pending response through sync_trip_driver_statuses, which
+   takes the trip's whole crew and changes only the rows marked dirty.
    ========================================================================== */
 (() => {
   'use strict';
@@ -90,12 +92,19 @@
         itinerary: itinerary?.id || '',
       };
     }).filter(Boolean).sort((x, y) => x.start - y.start || String(x.spot || '').localeCompare(String(y.spot || '')));
+    statuses = await readStatuses();
+  }
+  /* Every answer on the driver's trips, read fresh. A read that fails throws:
+     an empty answer would draw every leg as Not sent, and a mark made from
+     that would turn an accepted trip back into Pending response. */
+  async function readStatuses() {
     const ids = [...new Set(legs.map(l => l.trip.id))];
-    statuses = new Map();
-    if (ids.length) {
-      const r = await client.rpc('get_trip_driver_statuses', { p_trip_ids: ids });
-      for (const s of r.data || []) statuses.set(statusKey(s.tripId, s.driverId, s.leg, s.role), s.status);
-    }
+    const found = new Map();
+    if (!ids.length) return found;
+    const r = await client.rpc('get_trip_driver_statuses', { p_trip_ids: ids });
+    if (r.error) throw r.error;
+    for (const s of r.data || []) found.set(statusKey(s.tripId, s.driverId, s.leg, s.role), s.status);
+    return found;
   }
   const statusOf = l => statuses.get(statusKey(l.trip.id, driver.id, l.leg, l.role)) || 'off';
   const STATUS_WORDS = { confirmed: 'Accepted', declined: 'Declined', 'pending-response': 'Pending response' };
@@ -160,7 +169,11 @@
       : matchesLink() ? 'The link shows these trips.'
       : 'The link shows different trips. Update it to match.';
     $('scheduler-send-text').value = message();
-    $('scheduler-send-copy').disabled = !count;
+    // A link that shows other trips would send the driver to a page without
+    // these, so the message waits for the link to be updated.
+    $('scheduler-send-copy').disabled = !count || (!!link && !matchesLink());
+    // A change of ticks or of the link ends the offer to mark the last copy.
+    $('scheduler-send-mark').hidden = true;
     $('scheduler-leg-link').hidden = !link;
     if (link) {
       $('scheduler-leg-link-url').textContent = PUBLIC + encodeURIComponent(link.token);
@@ -201,17 +214,44 @@
     refresh();
   }
 
-  /* Copies the message, then marks each ticked leg the driver has not
-     answered Pending response. The whole crew of each trip is sent, as
-     sync_trip_driver_statuses asks, with only those legs marked dirty. */
+  // The ticked legs a mark would change: not answered, and not marked already.
+  const unanswered = () => tickedLegs().filter(l => !['confirmed', 'declined', 'pending-response'].includes(statusOf(l)));
+  const tripsWord = n => `${n} ${n === 1 ? 'trip' : 'trips'}`;
+
+  /* Copies the message and marks nothing. The answers are read again, so
+     the list is current, and Mark as sent is offered for the legs the driver
+     has not answered. */
   async function copy() {
     const note = $('scheduler-send-copied');
+    const markBtn = $('scheduler-send-mark');
+    markBtn.hidden = true;
     try { await navigator.clipboard.writeText($('scheduler-send-text').value); } catch {
       $('scheduler-send-text').select();
       note.textContent = "The message couldn't be copied here. It is selected; copy it yourself.";
       return;
     }
-    const chosen = tickedLegs().filter(l => !['confirmed', 'declined'].includes(statusOf(l)));
+    try { statuses = await readStatuses(); } catch {
+      note.textContent = "Copied. The driver's answers could not be read, so no trip can be marked here; set them from the trip.";
+      return;
+    }
+    drawList();
+    const n = unanswered().length;
+    note.textContent = n ? `Copied. Once the text has gone, mark ${tripsWord(n)} as sent.` : 'Copied.';
+    markBtn.hidden = !n;
+  }
+
+  /* Marks each ticked leg the driver has not answered Pending response. The
+     answers are read once more first, since the driver may have answered
+     since the copy. The whole crew of each trip is sent, as
+     sync_trip_driver_statuses asks, with only those legs marked dirty. */
+  async function mark() {
+    const note = $('scheduler-send-copied');
+    const markBtn = $('scheduler-send-mark');
+    try { statuses = await readStatuses(); } catch {
+      note.textContent = "The driver's answers could not be read, so no trip was marked. Try again.";
+      return;
+    }
+    const chosen = unanswered();
     const targets = new Set(chosen.map(l => statusKey(l.trip.id, driver.id, l.leg, l.role)));
     let marked = 0;
     let failed = false;
@@ -219,9 +259,9 @@
       const list = (trip.trip_assignments || []).flatMap(a => activeSeats(a).map(d => {
         const key = statusKey(trip.id, d.driver_id, a.leg, d.role);
         const now = statuses.get(key) || 'off';
-        const mark = targets.has(key) && now !== 'pending-response';
-        if (mark) marked++;
-        return { driverId: d.driver_id, leg: a.leg || 'outbound', role: d.role || 'driver', status: mark ? 'pending-response' : now, dirty: mark };
+        const dirty = targets.has(key) && now !== 'pending-response';
+        if (dirty) marked++;
+        return { driverId: d.driver_id, leg: a.leg || 'outbound', role: d.role || 'driver', status: dirty ? 'pending-response' : now, dirty };
       }));
       if (!list.some(s => s.dirty)) continue;
       const r = await client.rpc('sync_trip_driver_statuses', { p_trip_id: trip.id, p_statuses: list });
@@ -235,8 +275,10 @@
           .finally(() => client.removeChannel(channel));
       });
     }
-    note.textContent = failed ? 'Copied. Some trips could not be marked Pending response; set them from the trip.'
-      : marked ? `Copied. ${marked} ${marked === 1 ? 'trip is' : 'trips are'} marked Pending response.` : 'Copied.';
+    note.textContent = failed ? 'Some trips could not be marked Pending response; set them from the trip.'
+      : marked ? `${marked} ${marked === 1 ? 'trip is' : 'trips are'} marked Pending response.`
+      : 'Nothing was marked: the driver has answered.';
+    markBtn.hidden = true;
     drawList();
   }
 
@@ -277,7 +319,8 @@
     for (const d of drivers) picker.appendChild(Object.assign(el('option', 'rux--select-option', d.name || d.short_name), { value: d.id }));
     picker.addEventListener('change', () => pick(picker.value, drivers).catch(() => page.say('error', 'Something went wrong', 'Pick the driver again.')));
     $('scheduler-send-save').addEventListener('click', () => save().catch(() => { problem("The link didn't save. Try again."); refresh(); }));
-    $('scheduler-send-copy').addEventListener('click', () => copy().catch(() => { $('scheduler-send-copied').textContent = 'Copied, but the trips could not be marked. Set them from the trip.'; }));
+    $('scheduler-send-copy').addEventListener('click', () => copy().catch(() => { $('scheduler-send-copied').textContent = "The message couldn't be copied. Try again."; }));
+    $('scheduler-send-mark').addEventListener('click', () => mark().catch(() => { $('scheduler-send-copied').textContent = 'The trips could not be marked. Set them from the trip.'; }));
     $('scheduler-send-revoke').addEventListener('click', e => window.Rux?.modal?.open($('scheduler-send-revoke-modal'), e.currentTarget));
     $('scheduler-send-revoke-confirm').addEventListener('click', () => revoke().catch(() => problem("The link wasn't revoked, so it still works. Try again.")));
     const wanted = new URLSearchParams(location.search).get('driver') || '';

@@ -213,12 +213,13 @@
 
   /* A leg's buses and seats as its checklist reads them: how many buses it
      needs and has, how many fall short of the trip, the seats open and filled,
-     the drivers not confirmed, the envelopes not printed, and whether a
-     part-time driver rides. */
+     the drivers not confirmed, the envelopes and the itineraries not printed,
+     whether a part-time driver rides, and how many of them still lack their
+     hours-of-service form. */
   function factsOf(trip, leg, { busesById = new Map(), driversById = new Map(), statuses = new Map() } = {}) {
     const assigns = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === leg);
     const busesNeeded = leg === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1);
-    const facts = { busesNeeded, busesAssigned: 0, busesShort: 0, seatsOpen: 0, seats: 0, unconfirmed: 0, envelopesLeft: 0, partTime: false };
+    const facts = { busesNeeded, busesAssigned: 0, busesShort: 0, seatsOpen: 0, seats: 0, unconfirmed: 0, envelopesLeft: 0, itinerariesLeft: 0, partTime: false, hosLeft: 0 };
     for (const a of assigns) {
       if (a.bus_id == null) continue;
       facts.busesAssigned++;
@@ -235,7 +236,11 @@
       for (const d of a.trip_drivers || []) {
         if (!d.driver_id || !roles.has(d.role || 'driver')) continue;
         if (!d.envelope_printed) facts.envelopesLeft++;
-        if (driversById.get(d.driver_id)?.employment_type === 'part-time') facts.partTime = true;
+        if (!d.itinerary_printed) facts.itinerariesLeft++;
+        if (driversById.get(d.driver_id)?.employment_type === 'part-time') {
+          facts.partTime = true;
+          if (!d.hos_form_printed) facts.hosLeft++;
+        }
       }
     }
     return facts;

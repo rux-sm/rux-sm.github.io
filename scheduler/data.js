@@ -435,16 +435,16 @@
     // Each leg's hotel: the bar's hotel mark, its menu item and the Buses tab.
     'hotel_booked_outbound', 'hotel_booked_return',
     'hotel_itinerary_number_outbound', 'hotel_itinerary_number_return',
-    // Each leg's hours-of-service record, printed or not, which a bus with a
-    // part-time driver needs.
-    'hos_form_printed_outbound', 'hos_form_printed_return',
-    // The checklist's other hand ticks, kept per leg as rux-ui keeps them.
-    'itinerary_printed_outbound', 'itinerary_printed_return',
+    // The checklist's hand ticks, kept per leg: the fuel card and its number.
     'fuel_card_assigned_outbound', 'fuel_card_assigned_return', 'fuel_card_number_outbound', 'fuel_card_number_return',
     // The roles an assignment turns on, and who fills them: the drivers row.
     // The Buses tab edits each seat by its row id, with its relief swap time and
-    // note, and each vehicle's own needs and type.
-    'trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed))',
+    // note, and each vehicle's own needs and type. A seat also carries what
+    // its driver has been handed: the envelope, the itinerary and the
+    // hours-of-service form, each printed or not.
+    'trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed,itinerary_printed,hos_form_printed,trip_reminder_sent,trip_reminder_sent_at))',
+    // The driver details sent to the booking contact, or not, which the Contact list says and marks.
+    'trip_prep(driver_info_sent,driver_info_sent_at)',
     // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
     // and the itinerary panel, which frames the file at its path.
     'trip_documents(id,label,created_at,file_name,file_path,file_size)',
@@ -1016,14 +1016,14 @@
       };
     });
     /* A PART-TIME DRIVER SIGNS AN HOURS-OF-SERVICE RECORD, so a bus with one
-       in any seat needs it, and it is done once the Forms page marks this
-       leg's printed. Like the hotel, it is a job and not the bus's
+       in any seat needs it, and it is done once the Forms page marks each
+       of them printed. Like the hotel, it is a job and not the bus's
        equipment, so it is never a misfit. */
-    const partTime = !placeholder && (assign?.trip_drivers || []).some(d => d.driver_id
+    const partTimers = placeholder ? [] : (assign?.trip_drivers || []).filter(d => d.driver_id
       && activeRolesOf(assign).has(d.role || 'driver')
       && driversById.get(d.driver_id)?.employment_type === 'part-time');
-    if (partTime) {
-      const printed = !!trip[`hos_form_printed_${leg.leg}`];
+    if (partTimers.length) {
+      const printed = partTimers.every(d => d.hos_form_printed);
       needs.push({ id: 'hos', href: '#m-schedule', name: 'Hours of service',
         label: printed ? 'Hours of service printed' : 'Hours of service not printed', done: printed });
     }
@@ -4594,12 +4594,10 @@
     ]),
   ];
 
-  /* The checklist's hand ticks, kept on the trip as rux-ui keeps them: each
-     leg's itinerary and hours-of-service record printed, and its fuel card
-     assigned with the card's number. The editor's checklist edits them, and Save
-     writes them like any field. */
-  const TICK_KEYS = ['outbound', 'return'].flatMap(leg => [`itinerary_printed_${leg}`, `hos_form_printed_${leg}`,
-    `fuel_card_assigned_${leg}`, `fuel_card_number_${leg}`]);
+  /* The checklist's hand ticks, kept on the trip: each leg's fuel card
+     assigned, with the card's number. The editor's checklist edits them, and
+     Save writes them like any field. */
+  const TICK_KEYS = ['outbound', 'return'].flatMap(leg => [`fuel_card_assigned_${leg}`, `fuel_card_number_${leg}`]);
   const tickValue = (key, v) => (key.startsWith('fuel_card_number') ? (String(v ?? '').trim() || null) : !!v);
   const ticksOf = trip => Object.fromEntries(TICK_KEYS.map(k => [k, tickValue(k, trip?.[k])]));
   EDITS.push(...TICK_KEYS.map(key => ({ key, get: () => (editing?.ticks ? editing.ticks[key] : null) })));
@@ -6600,7 +6598,7 @@
   }
 
   // The hand ticks a checklist item stands for, by its id.
-  const TICK_OF = { 'itinerary-printed': 'itinerary_printed', hos: 'hos_form_printed', 'fuel-card': 'fuel_card_assigned' };
+  const TICK_OF = { 'fuel-card': 'fuel_card_assigned' };
 
   function checklistRow(item, leg) {
     const li = el('li', `scheduler-checklist__item${item.done ? ' scheduler-checklist__item--done' : ''}`);
@@ -9749,6 +9747,32 @@
   /* The trip changed under the editor. Reload trip drops the editor's changes
      and opens the trip as it is now; Save anyway saves over it and then runs
      what the save was for; closing the box keeps editing. */
+  /* A YES OR NO THE BOARD ASKS, in a small dialog: the question is its
+     heading and a line may sit under it. Yes resolves true; No, the close
+     button, Escape and a press outside resolve false. One question at a time:
+     a second one answers the first with no. */
+  const askModal = document.getElementById('scheduler-ask-modal');
+  let askDone = null;
+  function ask(question, hint = '') {
+    if (!askModal || !window.Rux?.modal?.open) return Promise.resolve(window.confirm(question));
+    return new Promise(resolve => {
+      askDone?.(false);
+      askDone = resolve;
+      document.getElementById('scheduler-ask-h').textContent = question;
+      const line = document.getElementById('scheduler-ask-note');
+      line.textContent = hint;
+      line.parentElement.hidden = !hint;
+      window.Rux.modal.open(askModal);
+    });
+  }
+  document.getElementById('scheduler-ask-yes')?.addEventListener('click', () => {
+    const done = askDone;
+    askDone = null;
+    window.Rux?.modal?.close?.(askModal);
+    done?.(true);
+  });
+  askModal?.addEventListener('rux:modal-closed', () => { const done = askDone; askDone = null; done?.(false); });
+
   const conflictModal = document.getElementById('scheduler-conflict-modal');
   let conflictAfter = null;
   document.getElementById('scheduler-conflict-save')?.addEventListener('click', async () => {
@@ -13137,6 +13161,8 @@
         name: c.who.name, role: c.label, driverId: c.driverId, phone: c.who.phone || null, texting: c.who.texting_url || null,
         bus: a.bus_id != null ? panelIndex.buses.get(a.bus_id)?.number ?? null : null,
         reminder: reminderOf(a, c),
+        // The driver's own row on this bus, which keeps whether they were reminded.
+        seat: (a.trip_drivers || []).find(d => String(d.driver_id) === String(c.driverId) && (d.role || 'driver') === c.role) ?? null,
       }));
     const mine = assigns.filter(a => String(a.id) === bar.dataset.assignmentId).flatMap(crewOfBus);
     const others = assigns.filter(a => String(a.id) !== bar.dataset.assignmentId).flatMap(crewOfBus);
@@ -13151,6 +13177,34 @@
       glyph.classList.add('rux--btn__icon');
       a.appendChild(glyph);
       return a;
+    };
+    /* WHAT WAS SENT IS MARKED HERE, WHERE IT IS SENT, and only on a yes: a
+       text opened is not a text sent, so after Remind and after the driver
+       details the board asks, by name. Yes writes the mark, and the database
+       keeps when and whose it was; No writes nothing. Departures reads both
+       marks. Each can be taken back from its own line in the person's row. */
+    const firstName = name => String(name || '').trim().split(/\s+/)[0] || 'them';
+    const prep = Array.isArray(trip.trip_prep) ? trip.trip_prep[0] ?? null : trip.trip_prep ?? null;
+    const redraw = async () => { await show(); const again = selectedBar(); if (again) openContactsFrom(again, slot); };
+    const setReminded = async (p, want) => {
+      const { error } = await client.from('trip_drivers').update({ trip_reminder_sent: want }).eq('id', p.seat.id);
+      if (error) { toast('error', 'The reminder was not marked.', error.message); return false; }
+      return true;
+    };
+    const setInfoSent = async want => {
+      const { error } = await client.from('trip_prep').upsert({ trip_id: trip.id, driver_info_sent: want }, { onConflict: 'trip_id' });
+      if (error) { toast('error', 'The driver info was not marked.', error.message); return false; }
+      return true;
+    };
+    const askReminded = async p => {
+      if (!p.seat?.id || p.seat.trip_reminder_sent) return;
+      if (!(await ask(`Mark ${firstName(p.name)} as reminded?`))) return;
+      if (await setReminded(p, true)) { await show(); toast('success', `${firstName(p.name)} is marked as reminded`); }
+    };
+    const askInfoSent = async (to, note) => {
+      if (prep?.driver_info_sent) return;
+      if (!(await ask(`Mark driver info as sent to ${firstName(to)}?`, note))) return;
+      if (await setInfoSent(true)) await show();
     };
     // The offer to record a call or text to the customer's people.
     const offer = (did, name, title, subtitle) => () => {
@@ -13203,6 +13257,19 @@
         el('span', 'scheduler-contact__role', p.bus != null ? `Bus ${p.bus} ${p.role}` : p.role),
         el('strong', 'scheduler-contact__name', p.name),
         el('span', 'scheduler-contact__meta', p.phone ? showPhone(p.phone) : 'No number'));
+      // What was marked as sent to this person, with when, and the way to take it back.
+      const sentLine = (words, at, undo) => {
+        const line = el('span', 'scheduler-contact__sent');
+        line.append(svgUse('#m-check_circle-fill', '16', '0 0 32 32'), el('span', null, [words, at ? setAt(at) : null].filter(Boolean).join(' · ')));
+        const back = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', 'Undo');
+        back.type = 'button';
+        back.setAttribute('aria-label', `Undo: ${words}, ${p.name}`);
+        back.addEventListener('click', async () => { back.disabled = true; if (await undo()) await redraw(); else back.disabled = false; });
+        line.appendChild(back);
+        return line;
+      };
+      if (p.seat?.trip_reminder_sent) who.appendChild(sentLine('Reminded', p.seat.trip_reminder_sent_at, () => setReminded(p, false)));
+      if (p === booker && prep?.driver_info_sent) who.appendChild(sentLine('Driver info sent', prep.driver_info_sent_at, () => setInfoSent(false)));
       const acts = el('div', 'scheduler-contact__actions');
       if (p.phone) {
         const call = button('Call', '#m-call', `tel:${dial(p.phone)}`, false, p.customer ? offer('Called', p.name) : null);
@@ -13259,10 +13326,13 @@
       if (letter.to?.email) {
         toLetter.push({ label: 'Email driver details', run: go(
           `mailto:${letter.to.email}?subject=${encodeURIComponent(letter.subject)}&body=${encodeURIComponent(letter.body)}`,
-          offer(...sent)) });
+          async () => { await askInfoSent(sent[1], 'Answer once the email has gone.'); offer(...sent)(); }) });
       }
       hand(booker, toLetter, { label: 'Copy driver details', words: 'Driver info', say: 'Copy driver info', icon: '#m-content_copy', run: async () => {
-        if (await copyText(letter.body)) offer(...sent, 'Driver details copied', 'Once it is sent, add it to the trip\'s updates?')();
+        if (!(await copyText(letter.body))) return;
+        closeContacts();
+        await askInfoSent(sent[1], 'The driver details are copied. Paste and send them, then answer.');
+        offer(...sent, 'Driver details copied', 'Once it is sent, add it to the trip\'s updates?')();
       } });
     }
     for (const p of people) {
@@ -13278,10 +13348,11 @@
           if (await copyText(p.reminder)) toast('success', 'Reminder copied', `Paste it in ${p.name}'s conversation.`);
           closeContacts();
           window.open(p.texting, '_blank', 'noopener');
+          void askReminded(p);
         } });
       } else if (p.phone) {
         hand(p, toRemind, { label: `Remind ${p.name}`, words: 'Remind', icon: '#m-notifications',
-          run: go(`sms:${dial(p.phone)}${apple ? '&' : '?'}body=${encodeURIComponent(p.reminder)}`) });
+          run: go(`sms:${dial(p.phone)}${apple ? '&' : '?'}body=${encodeURIComponent(p.reminder)}`, () => void askReminded(p)) });
       }
     }
     for (const p of everyone) {
@@ -15158,7 +15229,17 @@
     const asked = new URLSearchParams(location.search);
     if (asked.has('trip')) {
       history.replaceState(null, '', location.pathname);
-      goToTrip(asked.get('trip'), asked.get('date'));
+      /* A Departures line opens the trip where its step is done: the Contact
+         list, with the trip selected and its editor left shut, or one tab of
+         the editor. */
+      if (asked.get('open') === 'contacts') {
+        goToTrip(asked.get('trip'), asked.get('date'), { open: false })
+          .then(() => { const bar = selectedBar(); if (bar) openContactsFrom(bar); });
+      } else {
+        const tab = asked.get('tab');
+        goToTrip(asked.get('trip'), asked.get('date'))
+          .then(() => { if (tab) requestAnimationFrame(() => goToChecklistItem(tab)); });
+      }
     } else if (asked.has('draft')) {
       history.replaceState(null, '', location.pathname);
       openDraftTrip(asked.get('draft'));

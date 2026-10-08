@@ -66,6 +66,10 @@ not only what is missing.
 - **What the trip already knows marks itself:** the bus's badges, Confirmed,
   Itinerary received, Trip contact and Balance due are read from the trip, as
   the checklist reads them.
+- **One itinerary sheet is printed for a leg and handed to each driver,** so
+  its question after a print marks every driver on the leg at once.
+- **A fuel card is not a line until each bus has its own,** since the leg's
+  one card would say the same thing on every bus.
 - **The Done marks of the Route, Buses and Billing tabs are not shown,**
   because they are open on nearly every trip and would say nothing here.
 - **Nothing here is kept in step with rux-ui,** which is retired. The leg's
@@ -85,17 +89,6 @@ None open.
 
 ## Tasks
 
-- [ ] Have the checklist read the itinerary and the HOS form from each
-      driver, in the commit that makes the Forms page mark them there.
 - [ ] Give each bus its own fuel card: the SQL shown to rux, and the card
       entered in the bus's window on the Buses tab.
-- [ ] Ask after a print on the Forms page whether to mark it, and store a Yes.
-- [ ] Ask after Remind and Driver info in the Contact list, store a Yes, and
-      give each a tick to take it back.
-- [ ] Build the panel: the day and its arrows, the tabs, the trip's tile and
-      the buses' tiles, at desk and phone widths in each theme.
-- [ ] Add the line at the top of the To do list that opens it.
 - [ ] Take the board's Departures list and its menu item out.
-- [ ] Bring `scheduler/docs/screen-inventory.md` and
-      `scheduler/docs/database-inventory.md` in line, in the commits that
-      change what they describe.

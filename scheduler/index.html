@@ -1538,6 +1538,29 @@
     </div>
   </div>
 
+  <!-- A yes or no the board asks after something is sent, such as a
+       driver's reminder. data.js sets the question and the line under it.
+       No, the close button and Escape all answer no. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-ask-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-ask-h" tabindex="-1" class="rux--modal-container rux--modal-container--xs">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-ask-h">Mark it?</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="No" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <p id="scheduler-ask-note"></p>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>No</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-ask-yes">Yes</button>
+      </div>
+    </div>
+  </div>
+
   <!-- The booking's email thread, opened from the Booking contact menu. Done
        sets the trip's hidden field, which Save writes; data.js fills it. -->
   <div class="rux--layer-one rux--modal" id="scheduler-thread-modal" role="presentation">
@@ -1678,6 +1701,8 @@
 <script src="data.js"></script>
 <script src="/design/js/content-switcher.js"></script>
 <script src="to-do.js"></script>
+<script src="departures.js"></script>
+<script src="departures-panel.js"></script>
 <script src="to-do-list.js"></script>
 </body>
 </html>

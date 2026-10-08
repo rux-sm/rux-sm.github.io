@@ -14,7 +14,9 @@
    a row closed today, struck through, with Undo. A computed row is in Today
    while it is true. Mine is the rows that are mine or nobody's, and every
    computed row; Everyone is all of them. The count on the action is the
-   Overdue and Today rows under Mine.
+   Overdue and Today rows under Mine. The list's first line is Departures:
+   how many of tomorrow's legs are ready, and the way into
+   departures-panel.js's view of them.
 
    The page reads the trips the rules need itself, because only the board
    holds them otherwise: every live trip for the follow-ups, and the buses,
@@ -412,9 +414,26 @@
   panel.setAttribute('aria-labelledby', title.id);
   panel.appendChild(body);
 
+  /* The list's first line: tomorrow's departures, how many are ready, and the
+     way into departures-panel.js's view. It is one of Today's rows while a
+     leg leaving tomorrow is not ready. */
+  const departures = () => window.SchedulerDeparturesPanel?.summary() ?? null;
+  const departuresDue = () => { const d = departures(); return d?.known && d.legs > d.ready ? 1 : 0; };
+  function departuresLine() {
+    const d = departures();
+    if (!d) return null;
+    const b = el('button', 'scheduler-to-do__departures');
+    b.type = 'button';
+    const words = !d.known ? '' : !d.legs ? 'Nothing leaves tomorrow' : `Tomorrow: ${d.ready} of ${d.legs} ready`;
+    b.append(svgUse('#m-directions_bus-fill', 20), el('span', 'scheduler-to-do__words', 'Departures'),
+      el('span', 'scheduler-to-do__detail', words), svgUse('#m-arrow_forward'));
+    b.addEventListener('click', () => window.SchedulerDeparturesPanel.open());
+    return b;
+  }
+
   function drawCount() {
     const rows = grouped(true);
-    const n = rows.get('Overdue').length + rows.get('Today').length;
+    const n = rows.get('Overdue').length + rows.get('Today').length + departuresDue();
     action.querySelector('.rux--badge-indicator')?.remove();
     if (n) action.appendChild(el('div', 'rux--badge-indicator rux--badge-indicator--count', n > 99 ? '99+' : String(n)));
     action.setAttribute('aria-label', n ? `To do, ${n} due` : 'To do');
@@ -445,6 +464,8 @@
       parts.push(el('h3', 'scheduler-to-do__group', 'Done'), ul);
     }
     if (!parts.length) parts.push(el('p', 'scheduler-to-do__none', 'Nothing to do.'));
+    const first = departuresLine();
+    if (first) parts.unshift(first);
     // A redraw somebody else's change caused would empty a form being typed in, so it waits for the form to shut.
     if (editingId && document.activeElement?.closest?.('.scheduler-to-do__form')) return;
     list.replaceChildren(...parts);
@@ -463,6 +484,8 @@
     try { localStorage.setItem(VIEW_KEY, mine ? 'mine' : 'everyone'); } catch { /* this visit only */ }
     draw();
   });
+
+  document.addEventListener('scheduler:departures-summary', () => draw());
 
   /* A closed panel is 0 wide but still in the page, so it is inert until it
      opens: nothing in it takes a Tab or is read. Opening reads the list

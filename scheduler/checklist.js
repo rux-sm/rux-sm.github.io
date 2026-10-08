@@ -10,8 +10,8 @@
                   contact
      Buses        every bus assigned and fit for the trip, every seat
                   filled, every driver confirmed
-     Paperwork    itinerary printed, each driver's envelope printed, the
-                  hours-of-service record where a part-time driver rides
+     Paperwork    each driver's itinerary and envelope printed, and the
+                  hours-of-service record of each part-time driver
      Extras       the hotel booked and the fuel card assigned, when wanted
 
    Entered and Customer are the trip's, so they sit on its first leg. A
@@ -37,8 +37,9 @@
 
   /* One leg's items. `facts` is the board's reading of the leg's buses:
      { busesNeeded, busesAssigned, busesShort, seatsOpen, seats, unconfirmed,
-       envelopesLeft, partTime }, where `seats` counts the seats with a driver
-     in them. `tripContact` is whether the trip has a day-of contact. */
+       envelopesLeft, itinerariesLeft, partTime, hosLeft }, where `seats`
+     counts the seats with a driver in them. `tripContact` is whether the trip
+     has a day-of contact. */
   function legItems(trip, leg, facts = {}, tripContact = false) {
     const first = leg === legsOf(trip)[0];
     const items = [];
@@ -74,12 +75,17 @@
         facts.unconfirmed ? `${plural(facts.unconfirmed, 'driver', 'drivers')} not confirmed` : null);
     }
 
-    add('Paperwork', 'itinerary-printed', 'Itinerary printed', trip[`itinerary_printed_${leg}`], TABS.forms);
+    // Each driver is handed their own, so with nobody in a seat it is not printed yet.
+    add('Paperwork', 'itinerary-printed', 'Itinerary printed', facts.seats && !facts.itinerariesLeft, TABS.forms,
+      facts.itinerariesLeft ? `${plural(facts.itinerariesLeft, 'itinerary', 'itineraries')} left` : null);
     if (facts.seats) {
       add('Paperwork', 'envelopes', 'Envelopes printed', !facts.envelopesLeft, TABS.forms,
         facts.envelopesLeft ? `${plural(facts.envelopesLeft, 'envelope', 'envelopes')} left` : null);
     }
-    if (facts.partTime) add('Paperwork', 'hos', 'Hours of service printed', trip[`hos_form_printed_${leg}`], TABS.forms);
+    if (facts.partTime) {
+      add('Paperwork', 'hos', 'Hours of service printed', !facts.hosLeft, TABS.forms,
+        facts.hosLeft ? `${plural(facts.hosLeft, 'form', 'forms')} left` : null);
+    }
 
     if (wants(trip, 'hotel', 'need_hotel')) {
       add('Extras', 'hotel', 'Hotel booked', trip[`hotel_booked_${leg}`], TABS.billing, trip[`hotel_itinerary_number_${leg}`] || null);

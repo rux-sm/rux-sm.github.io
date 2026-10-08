@@ -2086,7 +2086,7 @@
          or type into, which is what the Forms page is for when no trip sent
          you there. */
       blank: true,
-      marks: { table: 'trip_drivers', column: 'envelope_printed', by: 'seat' },
+      marks: { table: 'trip_drivers', column: 'envelope_printed', by: 'seat', what: 'envelope' },
       /* A particular stock rather than whatever is in the tray: 6 by 9
          inches is the envelope itself, and the name is the one the office
          printer offers it as, which the bar shows beside the count. The ink
@@ -2127,9 +2127,10 @@
          dates it prints count back from the day that driver's leg starts. */
       binds: 'assignment+seat',
       blank: true,
-      /* The mark rux-ui already writes and its task list already reads. It is
-         the leg's, not the seat's, so every driver's copy on a leg shares it. */
-      marks: { table: 'trips', column: 'hos_form_printed', by: 'leg' },
+      /* The seat's own mark, as the envelope's is, and only a part-time
+         driver's counts: nobody else signs one. */
+      marks: { table: 'trip_drivers', column: 'hos_form_printed', by: 'seat', what: 'HOS form',
+        only: seat => seat.drivers?.employment_type === 'part-time' },
       /* LETTER, HELD TO ONE SHEET, with the form in its top half and the rest
          left white. */
       page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.375in', exact: true },
@@ -2155,10 +2156,10 @@
          are keyed by trip and leg with no bus among them. */
       binds: 'trip+leg',
       blank: true,
-      /* The mark rux-ui already writes and its task list already reads, so a
-         sheet printed here shows as printed there. It is the driver's sheet
-         that is marked, so the Detailed layout, the office's, offers no tick. */
-      marks: { table: 'trips', column: 'itinerary_printed', by: 'leg', layout: 'simple' },
+      /* One sheet for the leg, handed to each of its drivers, so its mark is
+         every seat's on the leg at once. It is the driver's sheet that is
+         marked, so the Detailed layout, the office's, offers no tick. */
+      marks: { table: 'trip_drivers', column: 'itinerary_printed', by: 'crew', layout: 'simple', what: 'itinerary' },
       /* SIMPLE IS THE DRIVER'S SHEET AND DETAILED THE OFFICE'S, which adds the
          yard at both ends, each wait and the leg's miles and hours from the
          Route tab. Detailed needs a trip's route, so a blank form is Simple. */
@@ -2270,7 +2271,7 @@
   const BUS_SEATS_QUERY = [
     'id', 'leg', 'position', 'bus_id',
     'buses:bus_id(number,type)',
-    'trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed,drivers:driver_id(name,short_name,employment_type))',
+    'trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed,itinerary_printed,hos_form_printed,drivers:driver_id(name,short_name,employment_type))',
   ].join(',');
 
   /* Outbound before return, then along the trip: the order the hub lists a
@@ -2765,9 +2766,12 @@
       titled.forEach((doc, i) => { doc.title = titlesBefore[i]; });
       titlesBefore = null;
     }
-    if (!printingAll) return;
-    printingAll = false;
-    draw();
+    const all = printingAll;
+    if (all) {
+      printingAll = false;
+      draw();
+    }
+    askToMark(all);
   });
 
   /* A line in the toolbar. `say` replaces what the sheet is holding, which is
@@ -2784,46 +2788,91 @@
     if (text) noteTimer = setTimeout(() => flash(''), 6000);
   }
 
-  /* WHICH ROW A TICK IS WRITTEN ON, AND IN WHICH COLUMN. A mark `by: 'seat'`
-     is this copy's own row in `trip_drivers`. A mark `by: 'leg'` is the trip's
-     row, in the column the schema names for that leg: it keeps a per-leg flag
-     as a pair of columns, `itinerary_printed_outbound` and `_return`, so the
-     leg is the suffix rather than a value. Either way the row is one the page
-     already read, so the tick it draws is what the database says.
+  /* WHICH ROWS A TICK IS WRITTEN ON. A mark `by: 'seat'` is this copy's own
+     row in `trip_drivers`; a mark `by: 'crew'` is every filled seat on the
+     copy's leg, for a sheet the whole leg shares. Either way the rows are ones
+     the page already read, so the tick it draws is what the database says.
 
-     A copy with no row to write on -- a blank form, a trip that answered
-     without an id -- has no tick, and the toolbar leaves it out. */
+     A copy with no row to write on -- a blank form, a leg with nobody in a
+     seat -- has no tick, and the toolbar leaves it out. */
   function markOf(form, copy, layout) {
     const marks = form?.marks;
-    if (marks?.layout && layout !== marks.layout) return null;
-    const row = !marks || !copy ? null
-      : marks.by === 'leg' ? copy.trip : copy.seat;
-    if (!row?.id) return null;
-    return {
-      table: marks.table,
-      row,
-      column: marks.by === 'leg'
-        ? `${marks.column}_${copy.leg === 'return' ? 'return' : 'outbound'}`
-        : marks.column,
-    };
+    if (!marks || !copy || (marks.layout && layout !== marks.layout)) return null;
+    const leg = copy.leg === 'return' ? 'return' : 'outbound';
+    const rows = marks.by === 'crew'
+      ? (copy.trip?.crew || []).filter(a => (a.leg || 'outbound') === leg).flatMap(a => seatsOf(a))
+      : copy.seat?.id ? [copy.seat] : [];
+    if (!rows.length) return null;
+    return { table: marks.table, rows, column: marks.column, what: marks.what || 'form' };
   }
+  const isMarked = mark => mark.rows.every(row => row[mark.column]);
 
-  /* The tick, written where rux-ui keeps it so its task list agrees. It shows
-     at once and goes back to what the row says if the write fails, rather than
-     showing a trip as done that the database never heard about. `sync` is how
-     the box in this page's bar follows the row. */
+  /* The tick, written on each row. It shows at once and goes back to what the
+     rows said if the write fails, rather than showing a driver as handed
+     something the database never heard about. `sync` is how the box in this
+     page's bar follows the rows. */
   async function markPrinted(mark, want, sync) {
-    const { table, row, column } = mark;
-    const was = Boolean(row[column]);
-    row[column] = want;
+    const { table, rows, column } = mark;
+    const was = rows.map(row => Boolean(row[column]));
+    rows.forEach(row => { row[column] = want; });
     sync();
-    const fail = why => { row[column] = was; sync(); flash(why, true); };
+    const fail = why => { rows.forEach((row, i) => { row[column] = was[i]; }); sync(); flash(why, true); };
     const client = window.Rux?.account?.client;
     if (!client) return fail('Not connected, so the tick was not saved.');
-    const { error } = await client.from(table).update({ [column]: want }).eq('id', row.id);
+    const { error } = await client.from(table).update({ [column]: want }).in('id', rows.map(row => row.id));
     if (error) return fail(`The tick did not save. ${error.message}`);
     flash(want ? 'Marked printed.' : 'No longer marked printed.');
   }
+
+  /* AFTER A PRINT, THE PAGE ASKS. `afterprint` cannot tell a sheet that came
+     out from a dialog that was cancelled, so nothing is marked by printing;
+     the person who knows is asked, by name: "Mark Maria's envelope as
+     printed?" Yes writes the tick, and the time and whose it was with it; No
+     writes nothing. Rows already marked are not asked about again. */
+  const markModal = document.getElementById('scheduler-print-mark-modal');
+  const markHeading = document.getElementById('scheduler-print-mark-h');
+  let asking = null;
+  const namesOf = rows => {
+    const names = rows.map(row => nameOf(row)).filter(Boolean);
+    return names.length < 3 ? names.join(' and ') : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`;
+  };
+  const followBox = () => {
+    const box = document.getElementById('scheduler-print-marked');
+    const shown = current ? markOf(current.form, current.every[current.chosen], current.layout) : null;
+    if (box && shown) box.checked = isMarked(shown);
+  };
+  function askToMark(all) {
+    if (!current) return;
+    const { form, every, chosen, layout } = current;
+    const rows = new Map();
+    let first = null;
+    for (const copy of all ? every : [every[chosen]]) {
+      const mark = markOf(form, copy, layout);
+      if (!mark) continue;
+      first ??= mark;
+      for (const row of mark.rows) if (!row[mark.column]) rows.set(row.id, row);
+    }
+    if (!rows.size) return;
+    const mark = { ...first, rows: [...rows.values()] };
+    const who = namesOf(mark.rows);
+    const question = mark.rows.length === 1 && who
+      ? `Mark ${who}'s ${mark.what} as printed?`
+      : `Mark the ${mark.what} as printed for ${who || 'this trip'}?`;
+    if (!markModal || !window.Rux?.modal?.open) {
+      if (window.confirm(question)) void markPrinted(mark, true, followBox);
+      return;
+    }
+    asking = mark;
+    markHeading.textContent = question;
+    window.Rux.modal.open(markModal);
+  }
+  document.getElementById('scheduler-print-mark-yes')?.addEventListener('click', () => {
+    const mark = asking;
+    asking = null;
+    window.Rux?.modal?.close?.(markModal);
+    if (mark) void markPrinted(mark, true, followBox);
+  });
+  markModal?.addEventListener('rux:modal-closed', () => { asking = null; });
 
   /* WHAT GOES IN THE ROW. Standing alone the page's bar holds the layout, the
      copy, Printed, Print and Print all. In the board's panel, 30rem wide, the
@@ -2931,13 +2980,10 @@
       ));
     }
 
-    /* Printed is ticked by hand, never by printing. `afterprint` fires whether
-       the dialog printed or was cancelled and nothing tells the two apart, so
-       a tick from it would mark envelopes that never came out. rux-ui does not
-       guess either: its task list offers Open, or Open and mark as complete,
-       and the person chooses. This is that choice, and it unticks. In the
-       board's panel it sits beside the panel's own Print, which is where the
-       trip's checklist sends someone to tick it. */
+    /* Printed is never ticked by printing alone: the page asks after a print,
+       above, and this box is the same choice by hand, which also unticks a
+       Yes given by mistake. In the board's panel it sits beside the panel's
+       own Print, which is where the trip's checklist sends someone. */
     const printed = markOf(form, every[current.chosen], layout);
     if (printed) {
       const cell = el('div', 'scheduler-print__cell');
@@ -2945,12 +2991,12 @@
       const input = el('input', 'rux--checkbox');
       input.type = 'checkbox';
       input.id = 'scheduler-print-marked';
-      input.checked = Boolean(printed.row[printed.column]);
+      input.checked = isMarked(printed);
       const label = el('label', 'rux--checkbox-label');
       label.htmlFor = input.id;
       label.appendChild(el('div', 'rux--checkbox-label-text', 'Printed'));
       input.addEventListener('change', () => void markPrinted(printed, input.checked,
-        () => { input.checked = Boolean(printed.row[printed.column]); }));
+        () => { input.checked = isMarked(printed); }));
       box.append(input, label);
       cell.appendChild(box);
       // The cell is what looks like the control, so a press anywhere in it
@@ -3090,7 +3136,8 @@
       if (!marks || !found?.trip) return null;
       const ticks = marks.by === 'leg'
         ? found.legs.map(leg => found.trip[`${marks.column}_${leg === 'return' ? 'return' : 'outbound'}`])
-        : found.buses.flatMap(a => (a.trip_drivers || []).filter(d => d.driver_id).map(d => d[marks.column]));
+        : found.buses.flatMap(a => (a.trip_drivers || []).filter(d => d.driver_id && (!marks.only || marks.only(d)))
+          .map(d => d[marks.column]));
       const done = ticks.filter(Boolean).length;
       if (!done) return null;
       const all = done === ticks.length;
@@ -3225,6 +3272,9 @@
     ...TRIP_COLUMNS,
     ...(form.columns || []),
     ...(form.marks?.by === 'leg' ? LEGS.map(leg => `${form.marks.column}_${leg}`) : []),
+    // A mark that is every seat's on a leg needs the leg's seats, with the names its question says.
+    ...(form.marks?.by === 'crew'
+      ? [`crew:trip_assignments(id,leg,trip_drivers(id,driver_id,role,${form.marks.column},drivers:driver_id(name,short_name)))`] : []),
   ].join(',');
 
   /* THE WEEK, for the week schedule. `?week=` is its first day, as the board

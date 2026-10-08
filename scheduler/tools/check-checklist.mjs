@@ -16,7 +16,7 @@ function expect(name, got, want) {
 }
 
 const base = { trip_type: 'round_trip', confirmed: false, trip_documents: [], trip_reqs: {} };
-const full = { busesNeeded: 1, busesAssigned: 1, busesShort: 0, seatsOpen: 0, seats: 1, unconfirmed: 0, envelopesLeft: 0, partTime: false };
+const full = { busesNeeded: 1, busesAssigned: 1, busesShort: 0, seatsOpen: 0, seats: 1, unconfirmed: 0, envelopesLeft: 0, itinerariesLeft: 0, partTime: false, hosLeft: 0 };
 
 expect('a placeholder has only Entered',
   ids(checklist({ ...base, trip_bar_color: 'amber' })),
@@ -28,7 +28,7 @@ expect('a quoted day trip with nothing done',
     'itinerary:outbound-', 'contact:outbound-', 'buses:outbound-', 'seats:outbound-', 'itinerary-printed:outbound-']);
 
 const ready = { ...base, confirmed: true, route_done_at: 't', buses_done_at: 't', billing_done_at: 't',
-  trip_documents: [{ label: 'Itinerary' }], itinerary_printed_outbound: true };
+  trip_documents: [{ label: 'Itinerary' }] };
 const readyLegs = checklist(ready, () => full, true);
 expect('a trip with everything done is ready', [readyLegs[0].ready, leftOf(readyLegs)], [true, 0]);
 
@@ -38,8 +38,9 @@ expect('not needed leaves the contact out and keeps the itinerary, done',
   ['itinerary:outbound+']);
 
 expect('a part-time driver asks for the hours-of-service record',
-  ids(checklist(ready, () => ({ ...full, partTime: true }), true)).filter(i => i.startsWith('hos')),
-  ['hos:outbound-']);
+  [ids(checklist(ready, () => ({ ...full, partTime: true, hosLeft: 1 }), true)).filter(i => i.startsWith('hos')),
+    ids(checklist(ready, () => ({ ...full, partTime: true }), true)).filter(i => i.startsWith('hos'))],
+  [['hos:outbound-'], ['hos:outbound+']]);
 
 expect('hotel and fuel card appear only when wanted, from tags or the old columns',
   [ids(checklist(ready, () => full, true)).filter(i => /hotel|fuel/.test(i)),
@@ -47,7 +48,7 @@ expect('hotel and fuel card appear only when wanted, from tags or the old column
       .filter(i => /hotel|fuel/.test(i))],
   [[], ['hotel:outbound+', 'fuel-card:outbound-']]);
 
-const split = checklist({ ...ready, trip_type: 'dropoff_pickup', itinerary_printed_return: false }, () => full, true);
+const split = checklist({ ...ready, trip_type: 'dropoff_pickup' }, () => full, true);
 expect('a split trip has two legs, and the trip\'s items only on the first',
   [split.length, split[1].items.map(i => i.group).filter((g, i, a) => a.indexOf(g) === i)],
   [2, ['Buses', 'Paperwork']]);

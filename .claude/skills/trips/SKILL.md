@@ -108,8 +108,6 @@ reads only the ones before it. Nothing is written until step 10.
 | What confirms a trip, and what goes out with a quote | `scheduler/docs/booking.md` | the Billing tab's summary card |
 | The rates and what each is for | the Settings page, `scheduler/settings.html`, never this repository | the Mileage rate select in the calculator |
 
-`docs/plans/scheduler-quote-entry.md` changes steps 3, 5, 7, 10 and 11, and
-rewrites this section as each change is built.
 
 ## Where each fact is in the editor
 
@@ -179,9 +177,9 @@ rewrites this section as each change is built.
 ## Traps in the editor
 
 - A place search shows its list only after a click in the field following the
-  typing. Search a place by its name first: a saved location, marked with a
-  location icon, is found by its name, and a typed street address can miss it
-  and offer the map's copy of the same place. A hotel not found by name is
+  typing. A saved location, marked with a location icon, is found by its
+  name or by its street address however the street is written, and the
+  map's copy of the same address is not listed beside it. A hotel not found by name is
   found by its street address, with the Name field set to the hotel.
 - Set a time input with `form_input` as `HH:MM`, and read the dialog back before Done.
 - A stop's "The wait counts as" is a plain select: set it with `form_input` as `on`, `off` or `sleeper`, because a click shows no menu in a screenshot.

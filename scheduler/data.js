@@ -5572,6 +5572,11 @@
   const rateWords = l => {
     const rate = l.rate ?? defaultRate();
     if (rate == null) return null;
+    // A trip under the local line is the flat daily rate, whatever the mileage rate.
+    const b = lineBasis(l);
+    if (b.perDay && quoteRates && window.Rux?.quote?.tripQuote({ miles: b.perDay, rate, dead: 0 }, quoteRates.named).local) {
+      return 'Local daily rate';
+    }
     const note = quoteRates?.mileage.find(m => m.rate === rate)?.note || null;
     const month = calendarRate()?.rate === rate
       ? `${parseISO(tripFirstDay()).toLocaleDateString('en-US', { month: 'long' })} rate` : null;

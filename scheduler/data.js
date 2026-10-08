@@ -8690,15 +8690,45 @@
 
     /* Files is one list: the trip's files, which write at once, with Add file
        as its last row, and under it the line a trip with no itinerary shows.
-       A trip not yet saved has no id to file under. */
+       A trip not yet saved has no id to file under, so its files wait in the
+       list, each marked as going up with the save, and Save sends them once
+       the trip exists. Closing without saving drops them. */
     panelFiles.replaceChildren();
-    if (creating || !client) {
+    if (!client) {
       filesBody = null;
       filesNote = null;
       filesAdd = null;
-      panelFiles.append(section('Files', el('p', 'rux--form__helper-text', creating
-        ? 'Save the trip first, then add its itinerary, contract and purchase order here.'
-        : 'This preview has no connection, so files cannot be listed or added.')));
+      panelFiles.append(section('Files', el('p', 'rux--form__helper-text',
+        'This preview has no connection, so files cannot be listed or added.')));
+    } else if (creating) {
+      const { list, body } = rowList();
+      const progress = el('div', 'rux--file-container');
+      editing.filesWaiting = [];
+      const add = listAddRow({ label: 'Add file', id: 'scheduler-f-fileadd', onClick: () => pickFile(start) });
+      const draw = () => body.replaceChildren(...editing.filesWaiting.map(w => listRow({
+        name: docTypeName(w),
+        meta: ['Goes up with the save', fileSize(w.file.size)].filter(Boolean).join(' · '),
+        title: w.file.name,
+        openLabel: `Open ${w.file.name}, which goes up with the save`,
+        // Not stored yet, so it opens from this computer, in a tab of its own.
+        open: () => window.open(URL.createObjectURL(w.file), '_blank', 'noopener'),
+        items: [{ label: 'Remove', run: () => { editing.filesWaiting = editing.filesWaiting.filter(x => x !== w); draw(); } }],
+      })), add.li);
+      async function start(file) {
+        if (!file) return;
+        if (!(await isPdf(file))) {
+          fileItem(progress, file.name).fail('Only PDF files can be added', 'Export the file as a PDF, then add it again.');
+          return;
+        }
+        askFileType(file.name, label => { editing.filesWaiting.push({ file, label }); draw(); });
+      }
+      filesBody = null;
+      filesNote = null;
+      filesAdd = { li: add.li, progress, start };
+      const listWrap = el('div');
+      listWrap.append(list, progress);
+      panelFiles.append(section('Files', listWrap));
+      draw();
     } else {
       const { list, body } = rowList();
       filesBody = body;
@@ -10338,6 +10368,8 @@
     const patch = patchOf() || {};
     const id = editing.id;
     const creating = editing.creating;
+    // A new trip's files waiting for it, held here because the editor closes on the save.
+    const filesWaiting = creating ? [...(editing.filesWaiting ?? [])] : [];
     const savedId = creating ? editing.newId : id;
     if (!creating && !force && editing.updatedAt) {
       let now = null;
@@ -10504,11 +10536,21 @@
          changes affect, and a Done pressed after those changes still stands. */
       if (Object.keys(doneRow).length) await write('its Done marks', client.from('trips').update(doneRow).eq('id', tripId));
       recordThisSave(tripId);
+      /* A new trip's files went into its list before it existed, and go up
+         now, one at a time, so one that fails does not hold the others back. */
+      const filesLost = [];
+      for (const w of filesWaiting) {
+        try { await uploadDocument(tripId, w.label, w.file); } catch (err) {
+          console.warn('A file did not go up with the save:', err);
+          filesLost.push(w.file.name);
+        }
+      }
       const updateLost = answer.kind !== 'none' && !(await writeUpdate(tripId, answer));
       // Read back rather than trusting the write, as the drag does.
       await show();
       const fields = Object.keys(patch).length;
-      if (updateLost) toast('warning', 'Saved, but the update was not added.', 'Add it from the trip\'s Update shortcut.');
+      if (filesLost.length) toast('warning', 'Trip created, but a file was not added.', `${filesLost.join(', ')}. Add it on the trip's Files tab.`);
+      else if (updateLost) toast('warning', 'Saved, but the update was not added.', 'Add it from the trip\'s Update shortcut.');
       else if (unlinked.length) toast('warning', creating ? 'Trip created.' : 'Saved.',
         `${unlinked.join(', ')} could not be added to the contacts list, so the trip keeps its earlier link.`);
       else if (creating) toast('success', onBus ? 'Trip created on its bus.' : 'Trip created. It is in the Unassigned row until it has a bus.');

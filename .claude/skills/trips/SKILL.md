@@ -75,12 +75,12 @@ reads only the ones before it. Nothing is written until step 10.
 9. **Report.** Tell rux what the emails say, the route's figures, the price
    and what made it, the bus, exactly what Save will write, and only the
    questions `rules.md` leaves open. Wait for his yes.
-10. **Save.** Link the email thread, press Mark route done and Mark buses
+10. **Save.** Add the itinerary on the Files tab, where a new trip's file
+    waits and goes up with the save. Link the email thread, press Mark route done and Mark buses
     done, press Save, keep the update box's line, "Quote not sent", and its
     Pin this update tick, which pins it in the same save, and answer the
     lists prompt by `rules.md`.
-11. **After the save.** Read it back with `get_trip`. Add the itinerary on
-    the Files tab.
+11. **After the save.** Read it back with `get_trip`.
 12. **Reply.** Draft the email in chat by `emails.md`. rux prints the quote
     from Forms, Quote, which is two sheets, and sends it himself.
 13. **Quote sent.** Mark it on the Billing tab, then Mark billing done and
@@ -187,7 +187,7 @@ rewrites this section as each change is built.
 - Mark billing done stays off until Quote sent is marked, so a trip saved before its quote goes out has Billing left open.
 - On a new trip, Save's Updates box opens on "Quote not sent", or "Quote sent" with the price once it is marked: save that line as it stands, with a few words added only when the trip waits on something else. A new trip's update is never a summary of the trip.
 - After a save, Add update is on the bar's own menu, a right-click on the bar; the editor's ⋮ has only Forms and Color.
-- The Files tab takes a file only once the trip is saved. The upload tool cannot read the Desktop: copy the PDF to the session's scratch folder, press Add file from the page's script so no file dialog opens, give the copy to the hidden file input, choose its type, then delete the copy.
+- On a new trip the Files tab holds a file until Save sends it. The upload tool cannot read the Desktop: copy the PDF to the session's scratch folder, press Add file from the page's script so no file dialog opens, give the copy to the hidden file input, choose its type, then delete the copy.
 - A click by `ref` on a tab that is not showing does nothing: take a screenshot to see which tab is open before pressing a button on it.
 
 ## When rux teaches something new

@@ -182,8 +182,6 @@ Each tab answers one question and reads only the tabs before it:
 
 ## Tasks
 
-- [ ] Let the Files tab hold a file before the first save and send it once
-      the trip exists.
 - [ ] Turn the Rates page into Settings, `settings.html`, laid out with the
       design-page skill: the rates form and its Save on the first tab, a
       link in the side navigation of the fourteen pages that carry one, and

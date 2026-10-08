@@ -155,12 +155,7 @@ None open.
 
 - [ ] Give Ruxbot its picture: the file put in `profile-photos` from a staff
       session and its path set on the profile by SQL, each on rux's yes.
-- [ ] Add the connector's tools to list, add, change and close to-do rows,
-      and deploy the function.
 - [ ] Write the review skill: reading the team inbox, checking each thread
       against the schedule, and adding, changing and closing rows.
-- [ ] Bring `scheduler/docs/working-from-claude.md` and the connector's
-      section of `scheduler/docs/database-inventory.md` in line, in the commit
-      that adds the tools.
 - [ ] Tick a row attached to a trip on rux's yes, and read the entry it makes
       on the History page.

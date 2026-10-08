@@ -211,6 +211,15 @@ lists, so it can carry nothing the editor has no way to show; `data.js` maps
 each of those to the control it is typed into, and names in the panel's notice
 any it cannot place. The editor's Save stays the only writer of a trip.
 
+**Four tools are the To do list's,** on `to_dos` and nothing else.
+`list_to_dos` reads the stored rows, not the rows the scheduler works out
+from the trips, which `get_trip`'s warnings say. `add_to_do` adds a row as an
+agent's, which the database makes Ruxbot's with the signed-in person beside
+it; given a thread's key it changes the open row for that thread instead of
+adding a second. `change_to_do` and `close_to_do` take only a row an agent
+made, still open; a close names Ruxbot and carries its reason. An owner is
+given by a staff member's name.
+
 `scheduler/docs/working-from-claude.md` is how to use it.
 
 ## 5. The document link

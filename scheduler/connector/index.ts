@@ -3,6 +3,9 @@
 // database's own staff rules decide what it sees. Nothing here writes a trip.
 // The two draft tools park a filled-in trip in `trip_drafts` and hand back a
 // link to the scheduler's editor, where the person checks it and presses Save.
+// The to-do tools write rows of the office's To do list, in `to_dos`, and
+// nothing else: the database makes each one Ruxbot's, with the signed-in
+// person beside it, and lets a tool close only a row a tool made.
 
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 
@@ -59,6 +62,16 @@ const DRAFT_FIELDS = new Set([
 ])
 
 const ISO_DATE = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'a date as YYYY-MM-DD')
+
+// A to-do row as a tool answers it: names in place of profile ids, and enough
+// of its trip to recognise it.
+const TO_DO_ROW = [
+  'id', 'body', 'source', 'due_on', 'thread_url', 'thread_key', 'created_at',
+  'closed_at', 'closed_reason',
+  'owner:owner_id(display_name)', 'made_by:created_by(display_name)',
+  'for_session_of:session_of(display_name)', 'closed_by:closed_by(display_name)',
+  'trip:trip_id(id, trip_ref, destination, customer, start_date)',
+].join(', ')
 
 /** An MCP answer. Objects go back as JSON so Claude can read the fields. */
 function answer(value: unknown) {
@@ -158,7 +171,7 @@ Deno.serve(
     [withOAuthProtectedResource(), withSupabase({ auth: 'user' })],
     async (req, { supabase }) => {
       const handler = createMcpHandler(() => {
-        const server = new McpServer({ name: 'scheduler', version: '0.3.1' })
+        const server = new McpServer({ name: 'scheduler', version: '0.4.0' })
 
         server.registerTool(
           'find_trips',
@@ -417,6 +430,144 @@ Deno.serve(
             const trip = orThrow(await supabase.from('trips').select('id').eq('id', trip_id).maybeSingle())
             if (!trip) throw new Error('No such trip, or it is not one you can see.')
             return saveDraft({ trip_id, fields, notes: notes ?? null })
+          },
+        )
+
+        // The To do list. These four touch `to_dos` and nothing else. A row a
+        // tool adds is an agent's: the database stamps it as Ruxbot's, keeps
+        // the signed-in person beside it, and refuses a tool's close on a row
+        // a person wrote.
+        const OPEN_IT = 'It shows in the To do list in the scheduler\'s header, for everyone in the office.'
+
+        /** A staff member's profile id by name, since a row's owner is a profile. */
+        async function ownerId(name: string) {
+          const staff = orThrow(await supabase.from('profiles').select('id, display_name').not('user_id', 'is', null))
+          const want = name.trim().toLowerCase()
+          const found = staff.filter((p) => String(p.display_name ?? '').trim().toLowerCase() === want)
+          if (found.length !== 1) {
+            throw new Error(`No one staff member is called "${name}". The staff are: ${staff.map((p) => p.display_name).join(', ')}.`)
+          }
+          return found[0].id as string
+        }
+
+        /** The row a tool may change or close: one an agent made, still open. */
+        async function agentRow(id: string) {
+          const row = orThrow(await supabase.from('to_dos').select('id, source, closed_at').eq('id', id).maybeSingle())
+          if (!row) throw new Error('No such to-do row, or it is not one you can see.')
+          if (row.source !== 'agent') {
+            throw new Error('A person wrote that row, so it is theirs to change or tick. Say in your review what you found, and leave the row.')
+          }
+          if (row.closed_at) throw new Error('That row is already closed.')
+          return row
+        }
+
+        server.registerTool(
+          'list_to_dos',
+          {
+            title: 'List the to-do rows',
+            description:
+              'The rows stored in the office\'s To do list: what a person typed and what a review added. It does NOT list what the scheduler works out from the trips itself, such as a follow-up due or a trip short of a bus; read get_trip\'s warnings for those. Open rows by default.',
+            inputSchema: z.object({
+              include_closed: z.boolean().default(false).describe('Also the rows already ticked or closed.'),
+              trip_id: z.string().uuid().optional().describe('Only the rows about this trip.'),
+              thread_key: z.string().max(200).optional().describe('Only the row about this email thread.'),
+              limit: z.number().int().min(1).max(200).default(100),
+            }),
+            annotations: { readOnlyHint: true },
+          },
+          async ({ include_closed, trip_id, thread_key, limit }) => {
+            let q = supabase.from('to_dos').select(TO_DO_ROW).order('created_at', { ascending: false }).limit(limit)
+            if (!include_closed) q = q.is('closed_at', null)
+            if (trip_id) q = q.eq('trip_id', trip_id)
+            if (thread_key) q = q.eq('thread_key', thread_key)
+            return answer(orThrow(await q))
+          },
+        )
+
+        const toDoShape = {
+          body: z.string().min(1).max(500).describe('What has to be done, in a few plain words, as the office would say it.'),
+          due_on: ISO_DATE.optional().describe('The day it is due. Left out, the row has no date.'),
+          owner: z.string().max(80).optional().describe('The staff member it is for, by name. Left out, it is anyone\'s.'),
+          trip_id: z.string().uuid().optional().describe('The trip it is about.'),
+          thread_url: z.string().url().max(500).optional().describe('The email thread it came from, as a link.'),
+          thread_key: z.string().max(200).optional().describe('The email thread\'s own id. One open row is kept per thread.'),
+        }
+
+        server.registerTool(
+          'add_to_do',
+          {
+            title: 'Add a to-do row',
+            description:
+              'Add a row to the office\'s To do list after a review. Before adding a row about a trip, read get_trip: if its warnings already say it, do not add it, because the scheduler shows that itself. With a thread_key, a second call for the same thread changes the open row it made rather than adding a copy.',
+            inputSchema: z.object(toDoShape),
+          },
+          async ({ body, due_on, owner, trip_id, thread_url, thread_key }) => {
+            const row: Record<string, unknown> = {
+              body, due_on: due_on ?? null, trip_id: trip_id ?? null,
+              thread_url: thread_url ?? null, thread_key: thread_key ?? null,
+              owner_id: owner ? await ownerId(owner) : null,
+            }
+            if (thread_key) {
+              const open = orThrow(await supabase.from('to_dos').select('id, source')
+                .eq('thread_key', thread_key).is('closed_at', null).maybeSingle())
+              if (open) {
+                if (open.source !== 'agent') throw new Error('A person already wrote the open row for that thread. Leave it, and say in your review what you found.')
+                const changed = orThrow(await supabase.from('to_dos').update(row).eq('id', open.id).select(TO_DO_ROW).single())
+                return answer({ changed: true, added: false, row: changed, next: OPEN_IT })
+              }
+            }
+            const added = orThrow(await supabase.from('to_dos').insert({ ...row, source: 'agent' }).select(TO_DO_ROW).single())
+            return answer({ added: true, row: added, next: OPEN_IT })
+          },
+        )
+
+        server.registerTool(
+          'change_to_do',
+          {
+            title: 'Change a to-do row',
+            description:
+              'Change a row a review added: its words, its day, who it is for, its trip or its thread link. Only what you give is changed. A row a person wrote is refused.',
+            inputSchema: z.object({
+              id: z.string().uuid(),
+              body: toDoShape.body.optional(),
+              due_on: ISO_DATE.nullable().optional().describe('The day it is due, or null for no date.'),
+              owner: z.string().max(80).nullable().optional().describe('The staff member it is for, by name, or null for anyone.'),
+              trip_id: z.string().uuid().nullable().optional().describe('The trip it is about, or null for none.'),
+              thread_url: z.string().url().max(500).nullable().optional(),
+            }),
+          },
+          async ({ id, body, due_on, owner, trip_id, thread_url }) => {
+            await agentRow(id)
+            const patch: Record<string, unknown> = {}
+            if (body !== undefined) patch.body = body
+            if (due_on !== undefined) patch.due_on = due_on
+            if (owner !== undefined) patch.owner_id = owner === null ? null : await ownerId(owner)
+            if (trip_id !== undefined) patch.trip_id = trip_id
+            if (thread_url !== undefined) patch.thread_url = thread_url
+            if (!Object.keys(patch).length) throw new Error('Nothing to change.')
+            const row = orThrow(await supabase.from('to_dos').update(patch).eq('id', id).select(TO_DO_ROW).single())
+            return answer({ changed: true, row })
+          },
+        )
+
+        server.registerTool(
+          'close_to_do',
+          {
+            title: 'Close a to-do row',
+            description:
+              'Close a row a review added, once what it asked for is done, with the reason: "The reply went out", "The PO arrived". The row moves to Done in the list for the rest of the day, where anyone can undo it. A row a person wrote is refused: say it looks done in your review, and leave it for them to tick.',
+            inputSchema: z.object({
+              id: z.string().uuid(),
+              reason: z.string().min(1).max(300).describe('Why it is done, in a few words.'),
+            }),
+          },
+          async ({ id, reason }) => {
+            await agentRow(id)
+            const ruxbot = orThrow(await supabase.rpc('ruxbot_profile_id'))
+            const row = orThrow(await supabase.from('to_dos')
+              .update({ closed_at: new Date().toISOString(), closed_by: ruxbot, closed_reason: reason })
+              .eq('id', id).select(TO_DO_ROW).single())
+            return answer({ closed: true, row })
           },
         )
 

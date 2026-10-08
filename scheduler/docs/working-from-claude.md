@@ -62,9 +62,27 @@ way the draft is spent and the link does not open twice.
 A change to an existing trip works the same way: the link opens that trip,
 with the changes filled in over it, and Reset takes them back out.
 
+## Keep the To do list
+
+Claude can read the office's To do list and add to it. Ask in plain words:
+
+- what is on the to-do list
+- add a to-do to call the school about the PO, for Friday
+- close the to-do about the PO, it arrived
+
+A row Claude adds shows in the list at once, for everyone, made by Ruxbot
+with your name kept beside it. Claude can change or close only the rows
+Claude added. A row a person typed stays theirs: Claude says when it looks
+done and leaves the tick to them.
+
+Claude sees the rows people and Claude wrote. What the scheduler works out by
+itself, such as a follow-up due or a trip short of a bus, is not a row;
+Claude reads those from the trip.
+
 ## What it will not do
 
-- It never writes or changes a trip. Only Save in the editor does.
+- It never writes or changes a trip. Only Save in the editor does. The To do
+  list's rows are the one thing it writes itself.
 - A draft can fill only the trip fields the connector lists. Anything else is
   refused, with the list, rather than written.
 - It cannot confirm a trip, mark one paid, assign a bus or a driver, or touch

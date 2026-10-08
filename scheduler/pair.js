@@ -199,17 +199,12 @@
         draw();
       });
 
+      // Design's form controls keep the clear button: it shows while the field
+      // holds text, and it and Escape empty the field and send this `input`.
       const searchInput = $(id(`${list}-search`));
-      const searchClear = $(id(`${list}-search-clear`));
       searchInput?.addEventListener('input', () => {
         state.query = searchInput.value.trim();
-        searchClear.classList.toggle('rux--search-close--hidden', !searchInput.value);
         draw();
-      });
-      searchClear?.addEventListener('click', () => {
-        searchInput.value = '';
-        searchInput.dispatchEvent(new Event('input'));
-        searchInput.focus();
       });
 
       // What the search came to, in the band beside it.

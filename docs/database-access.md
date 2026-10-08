@@ -74,11 +74,12 @@ migration does.
 
 ## Files
 
-**Five buckets.** LN Guide's two are private and their rules ask for the owner.
-`trip-documents` and `driver-photos` are private: staff read them through
-links signed for ten minutes, and the link pages through the
-`trip-document-link` Edge Function, which signs one for a document's id. Only
-staff may upload, replace or delete in any of the three scheduler buckets.
+**Six buckets.** LN Guide's two are private and their rules ask for the owner.
+`trip-documents`, `driver-photos` and `company-documents` are private: staff
+read them through links signed for ten minutes, and the link pages reach a
+trip document through the `trip-document-link` Edge Function, which signs one
+for a document's id. Only staff may upload, replace or delete in any of the
+four scheduler buckets.
 
 **`profile-photos` is the one exception to the rule above.** It is public, so
 it serves a staff member's face to anyone holding the address, and keeps a rule

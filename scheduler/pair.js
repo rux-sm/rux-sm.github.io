@@ -1,8 +1,9 @@
 /* ==========================================================================
    pair.js — WHAT EVERY PAGE PAIR DOES THE SAME WAY
    --------------------------------------------------------------------------
-   Buses, Drivers, Contacts, Customers and Locations are each a list and one
-   record in one file, and Trips and History are each a list alone. What they
+   Buses, Drivers, Contacts, Customers, Locations and Documents are each a
+   list and one record in one file, and Trips and History are each a list
+   alone. What they
    do alike lives here, so a fix reaches them all; each page's own script
    keeps only what its record has.
 
@@ -209,9 +210,6 @@
         searchInput.value = '';
         searchInput.dispatchEvent(new Event('input'));
         searchInput.focus();
-      });
-      searchInput?.addEventListener('keydown', e => {
-        if (e.key === 'Escape' && searchInput.value) { e.preventDefault(); searchClear.click(); }
       });
 
       // What the search came to, in the band beside it.

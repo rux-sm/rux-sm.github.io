@@ -4492,3 +4492,31 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-departures__what { flex: 1 1 auto; min-inline-size: 0; overflow-wrap: anywhere; }
 .scheduler-departures__when { flex: none; color: var(--rux-text-secondary); font-size: 0.75rem; }
 .scheduler-departures__face { flex: none; }
+
+/* ── The Documents page ─────────────────────────────────────────────────────
+   Its list and record are the page pairs'. These are what it has alone. */
+/* Show old sits in the band before the buttons, centred on them, as wide as
+   its label and no wider, so the search keeps the rest of the band. */
+.scheduler-documents-old {
+  flex: none;
+  align-self: center;
+  inline-size: auto;
+  margin-inline-end: var(--rux-spacing-05);
+}
+/* Not on a phone, where the band fits the search and Upload and nothing else,
+   as the other lists' bands do. */
+@media (max-width: 41.98rem) {
+  .scheduler-documents-old,
+  .scheduler-documents-kinds { display: none; }
+}
+/* Edit ends the row, in a column as narrow as the word. */
+.scheduler-documents-act { inline-size: 1%; text-align: end; white-space: nowrap; }
+/* What is wrong with a file or a kind, said under it. */
+.scheduler-documents-error { margin: 0; color: var(--rux-text-error); }
+/* A kind's name, then whether it is kept once for each driver. */
+.scheduler-kinds-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--rux-spacing-05);
+}

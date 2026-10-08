@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>Quote calculator — Scheduler</title>
+<title>Documents — Scheduler</title>
 <script src="/funnel.js"></script>
 <style>html:not([data-rux-unlocked]){visibility:hidden}</style>
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
@@ -21,9 +21,9 @@
 <script src="/design/js/theme.js"></script>
 </head>
 <body>
-<!-- The quote calculator: the office spreadsheet's Calculator tab, formula for
-     formula, worked out by quote.js with the rates saved on settings.html.
-     The shell is index.html's, without the trip search, which is the board's. -->
+<!-- The office's own paperwork, and one document's facts and file, read from
+     and saved to the database by documents.js. The shell is the Customers
+     page's. -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run build` rewrites this
      block from design/assets/icons.svg. -->
@@ -39,6 +39,8 @@
 <symbol id="m-add" viewBox="0 -960 960 960"><path d="M450-450H200v-60h250v-250h60v250h250v60H510v250h-60v-250Z"/></symbol>
 <symbol id="m-arrow_back" viewBox="0 -960 960 960"><path d="m274-450 248 248-42 42-320-320 320-320 42 42-248 248h526v60H274Z"/></symbol>
 <symbol id="m-arrow_forward" viewBox="0 -960 960 960"><path d="M686-450H160v-60h526L438-758l42-42 320 320-320 320-42-42 248-248Z"/></symbol>
+<symbol id="m-arrow_upward" viewBox="0 -960 960 960"><path d="M450-160v-526L202-438l-42-42 320-320 320 320-42 42-248-248v526h-60Z"/></symbol>
+<symbol id="m-swap_vert" viewBox="0 -960 960 960"><path d="M323-450v-316L202-645l-42-42 193-193 193 193-42 42-121-121v316h-60ZM607-80 414-273l42-42 121 121v-316h60v316l121-121 42 42L607-80Z"/></symbol>
 <symbol id="m-apartment" viewBox="0 -960 960 960"><path d="M120-120v-555h165v-165h390v330h165v390H533v-165H427v165H120Zm60-60h105v-105H180v105Zm0-165h105v-105H180v105Zm0-165h105v-105H180v105Zm165 165h105v-105H345v105Zm0-165h105v-105H345v105Zm0-165h105v-105H345v105Zm165 330h105v-105H510v105Zm0-165h105v-105H510v105Zm0-165h105v-105H510v105Zm165 495h105v-105H675v105Zm0-165h105v-105H675v105Z"/></symbol>
 <symbol id="m-apartment-fill" viewBox="0 -960 960 960"><path d="M120-120v-555h165v-165h390v330h165v390H533v-165H427v165H120Zm60-60h105v-105H180v105Zm0-165h105v-105H180v105Zm0-165h105v-105H180v105Zm165 165h105v-105H345v105Zm0-165h105v-105H345v105Zm0-165h105v-105H345v105Zm165 330h105v-105H510v105Zm0-165h105v-105H510v105Zm0-165h105v-105H510v105Zm165 495h105v-105H675v105Zm0-165h105v-105H675v105Z"/></symbol>
 <symbol id="m-directions_bus" viewBox="0 -960 960 960"><path d="M216-120v-111q-29-16-42.5-46T160-341v-397q0-74 76.5-108T481-880q166 0 242.5 34T800-738v397q0 34-13.5 64T744-231v111h-86v-82H302v82h-86Zm265-644h259-520 261Zm177 293H220h520-82Zm-438-60h520v-173H220v173Zm145 203q16-16 16-39t-16-39q-16-16-39-16t-39 16q-16 16-16 39t16 39q16 16 39 16t39-16Zm308 0q16-16 16-39t-16-39q-16-16-39-16t-39 16q-16 16-16 39t16 39q16 16 39 16t39-16ZM220-764h520q-24-26-92-41t-167-15q-118 0-181 13.5T220-764Zm82 502h356q35 0 58.5-27t23.5-62v-120H220v120q0 35 23.5 62t58.5 27Z"/></symbol>
@@ -59,6 +61,7 @@
 <symbol id="m-grid_view" viewBox="0 -960 960 960"><path d="M120-510v-330h330v330H120Zm0 390v-330h330v330H120Zm390-390v-330h330v330H510Zm0 390v-330h330v330H510ZM180-570h210v-210H180v210Zm390 0h210v-210H570v210Zm0 390h210v-210H570v210Zm-390 0h210v-210H180v210Zm390-390Zm0 180Zm-180 0Zm0-180Z"/></symbol>
 <symbol id="m-airline_seat_flat-fill" viewBox="0 -960 960 960"><path d="M360-400v-280h519v280H360ZM80-280v-60h800v60H80Zm35-155q-35-35-35-85t35-85q35-35 85-35t85 35q35 35 35 85t-35 85q-35 35-85 35t-85-35Z"/></symbol>
 <symbol id="m-info-fill" viewBox="0 -960 960 960"><path d="M453-280h60v-240h-60v240Zm50.5-323.2q9.5-9.2 9.5-22.8 0-14.45-9.48-24.22-9.48-9.78-23.5-9.78t-23.52 9.78Q447-640.45 447-626q0 13.6 9.48 22.8 9.48 9.2 23.5 9.2t23.52-9.2ZM480.27-80q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Z"/></symbol>
+<symbol id="m-open_in_new" viewBox="0 -960 960 960"><path d="M120-120v-720h339v60H180v600h600v-279h60v339H120Zm262-219-42-43 398-398H519v-60h321v321h-60v-218L382-339Z"/></symbol>
 <symbol id="m-list" viewBox="0 -960 960 960"><path d="M290-620v-60h550v60H290Zm0 170v-60h550v60H290Zm0 170v-60h550v60H290ZM150-620q-12 0-21-9t-9-21.5q0-12.5 9-21t21.5-8.5q12.5 0 21 8.62 8.5 8.63 8.5 21.38 0 12-8.62 21-8.63 9-21.38 9Zm0 170q-12 0-21-9t-9-21.5q0-12.5 9-21t21.5-8.5q12.5 0 21 8.62 8.5 8.63 8.5 21.38 0 12-8.62 21-8.63 9-21.38 9Zm0 170q-12 0-21-9t-9-21.5q0-12.5 9-21t21.5-8.5q12.5 0 21 8.62 8.5 8.63 8.5 21.38 0 12-8.62 21-8.63 9-21.38 9Z"/></symbol>
 <symbol id="m-location_on" viewBox="0 -960 960 960"><path d="M529.5-510.5Q550-531 550-560t-20.5-49.5Q509-630 480-630t-49.5 20.5Q410-589 410-560t20.5 49.5Q451-490 480-490t49.5-20.5ZM480-159q133-121 196.5-219.5T740-552q0-118-75.5-193T480-820q-109 0-184.5 75T220-552q0 75 65 173.5T480-159Zm0 79Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z"/></symbol>
 <symbol id="m-menu" viewBox="0 -960 960 960"><path d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"/></symbol>
@@ -66,9 +69,10 @@
 <symbol id="m-print" viewBox="0 -960 960 960"><path d="M658-648v-132H302v132h-60v-192h476v192h-60Zm-518 60h680-680Zm599 95q12 0 21-9t9-21q0-12-9-21t-21-9q-12 0-21 9t-9 21q0 12 9 21t21 9Zm-81 313v-192H302v192h356Zm60 60H242v-176H80v-352h800v352H718v176Zm102-236v-232H140v232h102v-76h476v76h102Z"/></symbol>
 <symbol id="m-credit_card-fill" viewBox="0 -960 960 960"><path d="M80-160v-640h800v640H80Zm60-342h680v-129H140v129Z"/></symbol>
 <symbol id="m-history" viewBox="0 -960 960 960"><path d="M477-120q-149 0-253-105.5T120-481h60q0 125 86 213t211 88q127 0 215-89t88-216q0-124-89-209.5T477-780q-68 0-127.5 31T246-667h105v60H142v-208h60v106q52-61 123.5-96T477-840q75 0 141 28t115.5 76.5Q783-687 811.5-622T840-482q0 75-28.5 141t-78 115Q684-177 618-148.5T477-120Zm128-197L451-469v-214h60v189l137 134-43 43Z"/></symbol>
+<symbol id="m-search" viewBox="0 -960 960 960"><path d="M796-121 533-384q-30 26-70 40.5T378-329q-108 0-183-75t-75-181q0-106 75-181t182-75q106 0 180.5 75T632-585q0 43-14 83t-42 75l264 262-44 44ZM377-389q81 0 138-57.5T572-585q0-81-57-138.5T377-781q-82 0-139.5 57.5T180-585q0 81 57.5 138.5T377-389Z"/></symbol>
 <symbol id="m-settings" viewBox="0 -960 960 960"><path d="m388-80-20-126q-19-7-40-19t-37-25l-118 54-93-164 108-79q-2-9-2.5-20.5T185-480q0-9 .5-20.5T188-521L80-600l93-164 118 54q16-13 37-25t40-18l20-127h184l20 126q19 7 40.5 18.5T669-710l118-54 93 164-108 77q2 10 2.5 21.5t.5 21.5q0 10-.5 21t-2.5 21l108 78-93 164-118-54q-16 13-36.5 25.5T592-206L572-80H388Zm48-60h88l14-112q33-8 62.5-25t53.5-41l106 46 40-72-94-69q4-17 6.5-33.5T715-480q0-17-2-33.5t-7-33.5l94-69-40-72-106 46q-23-26-52-43.5T538-708l-14-112h-88l-14 112q-34 7-63.5 24T306-642l-106-46-40 72 94 69q-4 17-6.5 33.5T245-480q0 17 2.5 33.5T254-413l-94 69 40 72 106-46q24 24 53.5 41t62.5 25l14 112Zm44-210q54 0 92-38t38-92q0-54-38-92t-92-38q-54 0-92 38t-38 92q0 54 38 92t92 38Zm0-130Z"/></symbol>
-<symbol id="m-remove" viewBox="0 -960 960 960"><path d="M200-450v-60h560v60H200Z"/></symbol>
 <symbol id="m-delete" viewBox="0 -960 960 960"><path d="M201-120v-630h-41v-60h188v-30h264v30h188v60h-41v630H201Zm60-60h438v-570H261v570Zm106-86h60v-399h-60v399Zm166 0h60v-399h-60v399ZM261-750v570-570Z"/></symbol>
+<symbol id="m-upload" viewBox="0 -960 960 960"><path d="M450-313v-371L330-564l-43-43 193-193 193 193-43 43-120-120v371h-60ZM160-160v-203h60v143h520v-143h60v203H160Z"/></symbol>
 <symbol id="m-person-fill" viewBox="0 -960 960 960"><path d="M372-523q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42ZM160-160v-94q0-38 19-65t49-41q67-30 128.5-45T480-420q62 0 123 15.5T731-360q31 14 50 41t19 65v94H160Z"/></symbol>
 <symbol id="m-account_circle" viewBox="0 -960 960 960"><path d="M222-255q63-44 125-67.5T480-346q71 0 133.5 23.5T739-255q44-54 62.5-109T820-480q0-145-97.5-242.5T480-820q-145 0-242.5 97.5T140-480q0 61 19 116t63 109Zm160.5-234.5Q343-529 343-587t39.5-97.5Q422-724 480-724t97.5 39.5Q617-645 617-587t-39.5 97.5Q538-450 480-450t-97.5-39.5ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-155.5t86-127Q252-817 325-848.5T480-880q83 0 155.5 31.5t127 86q54.5 54.5 86 127T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480-80Zm107.5-76Q640-172 691-212q-51-36-104-55t-107-19q-54 0-107 19t-104 55q51 40 103.5 56T480-140q55 0 107.5-16Zm-52-375.5Q557-553 557-587t-21.5-55.5Q514-664 480-664t-55.5 21.5Q403-621 403-587t21.5 55.5Q446-510 480-510t55.5-21.5ZM480-587Zm0 374Z"/></symbol>
 <symbol id="m-groups" viewBox="0 -960 960 960"><path d="M0-240v-53q0-38.57 41.5-62.78Q83-380 150.38-380q12.16 0 23.39.5t22.23 2.15q-8 17.35-12 35.17-4 17.81-4 37.18v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Zm540 0v-65q0-19.86-3.5-37.43T765-377.27q11-1.73 22.17-2.23 11.17-.5 22.83-.5 67.5 0 108.75 23.77T960-293v53H780Zm-480-60h360v-6q0-37-50.5-60.5T480-390q-79 0-129.5 23.5T300-305v5ZM149.57-410q-28.57 0-49.07-20.56Q80-451.13 80-480q0-29 20.56-49.5Q121.13-550 150-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T149.57-410Zm660 0q-28.57 0-49.07-20.56Q740-451.13 740-480q0-29 20.56-49.5Q781.13-550 810-550q29 0 49.5 20.5t20.5 49.93q0 28.57-20.5 49.07T809.57-410ZM480-480q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T600-600q0 50-34.5 85T480-480Zm.35-60Q506-540 523-557.35t17-43Q540-626 522.85-643t-42.5-17q-25.35 0-42.85 17.15t-17.5 42.5q0 25.35 17.35 42.85t43 17.5ZM480-300Zm0-300Z"/></symbol>
@@ -204,8 +208,8 @@
           <span class="rux--side-nav__link-text">Locations</span>
         </a>
       </li>
-      <li class="rux--side-nav__item rux--side-nav__item--active rux--side-nav__item--large">
-        <a class="rux--side-nav__link rux--side-nav__link--current" href="quote.html" aria-current="page">
+      <li class="rux--side-nav__item rux--side-nav__item--large">
+        <a class="rux--side-nav__link" href="quote.html">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calculate"/></svg></div>
           <span class="rux--side-nav__link-text">Quote calculator</span>
         </a>
@@ -222,8 +226,8 @@
           <span class="rux--side-nav__link-text">Forms</span>
         </a>
       </li>
-      <li class="rux--side-nav__item rux--side-nav__item--large">
-        <a class="rux--side-nav__link" href="documents.html">
+      <li class="rux--side-nav__item rux--side-nav__item--active rux--side-nav__item--large">
+        <a class="rux--side-nav__link rux--side-nav__link--current" href="documents.html" aria-current="page">
           <div class="rux--side-nav__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-description"/></svg></div>
           <span class="rux--side-nav__link-text">Documents</span>
         </a>
@@ -244,414 +248,330 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content scheduler-quote-page">
-  <div class="rux--css-grid">
-    <!-- Centred in twelve of the sixteen columns at lg; app.css says why. -->
+<main id="main-content" class="rux--content scheduler-pair-page">
+  <!-- ── The list ─────────────────────────────────────────────────────────
+       Centred in twelve of the sixteen columns at lg, as the other page pairs
+       are. documents.js draws the rows and owns the search and the sort. A
+       row opens its file in a new tab; Edit opens its facts. -->
+  <div class="rux--css-grid" id="scheduler-documents-list">
     <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-3 rux--lg:col-span-12">
-      <div class="rux--stack-vertical rux--stack-scale-7">
-        <div class="scheduler-quote-title">
-          <h1 class="rux--type-productive-heading-04">Quote calculator</h1>
-          <!-- The page's two actions. Clear quote sits outside the form, so its
-               form attribute ties it to the form it resets. -->
-          <div class="scheduler-quote-title__actions">
-            <button type="reset" form="scheduler-quote-form" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-clear">Clear quote</button>
-            <a class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" href="settings.html">Edit rates<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-edit"/></svg></a>
-          </div>
-        </div>
+      <div class="rux--stack-vertical rux--stack-scale-5">
+        <h1 class="rux--type-productive-heading-04" id="scheduler-documents-h">Documents</h1>
 
-        <!-- One notice for the whole page: an account not set up as staff, a
-             local preview, or rates
-             that would not load. A plain wrapper carries `hidden`, because the
-             notification's own display rule beats the browser's. -->
-        <div id="scheduler-quote-notice" hidden>
-          <div class="rux--inline-notification rux--inline-notification--info" role="status">
+        <!-- The page's notice: no log-in, not staff, or a read that failed. -->
+        <div id="scheduler-documents-notice" hidden>
+          <div class="rux--inline-notification rux--inline-notification--info" role="status" id="scheduler-documents-notice-box">
             <div class="rux--inline-notification__details">
-              <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-info-fill"/></svg>
+              <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use id="scheduler-documents-notice-icon" href="#m-info-fill"/></svg>
               <div class="rux--inline-notification__text-wrapper">
-                <div class="rux--inline-notification__subtitle"><span id="scheduler-quote-notice-text"></span></div>
+                <div class="rux--inline-notification__title" id="scheduler-documents-notice-title"></div>
+                <div class="rux--inline-notification__subtitle" id="scheduler-documents-notice-text"></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Two tabs: the calculator, and the rules it prices by. The strip
-             and both panels are one stack child, as the page pairs have
-             them, and show once the staff gate lets the page draw. -->
-        <div class="scheduler-quote-tabs" id="scheduler-quote-tabs-wrap" hidden>
-        <div class="rux--tabs">
-          <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--previous rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_left"/></svg></button>
-          <div class="rux--tab--list" role="tablist" aria-label="Quote calculator">
-            <button id="scheduler-quote-tab-calculator" class="rux--tabs__nav-item rux--tabs__nav-link rux--tabs__nav-item--selected" role="tab" type="button" aria-selected="true" aria-controls="scheduler-quote-panel-calculator" tabindex="0">
-              <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Calculator</span></div>
-            </button>
-            <button id="scheduler-quote-tab-rules" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-quote-panel-rules" tabindex="-1">
-              <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Rules</span></div>
-            </button>
-          </div>
-          <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--next rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_right"/></svg></button>
-        </div>
-
-        <div class="rux--tab-content" role="tabpanel" id="scheduler-quote-panel-calculator" aria-labelledby="scheduler-quote-tab-calculator" tabindex="0">
-        <!-- Three tiles, in the order a quote is made: the miles, the
-             modifiers, and the quote they add up to. Adding days grows only
-             the miles tile, so nothing else moves. A tile paints layer, so
-             the fields inside it step up to layer-two. -->
-        <!-- Opened from a trip: what changed on its Route or Buses tab since
-             the calculator was filled, with the offer to fill it again. A
-             plain wrapper carries `hidden`. -->
-        <div class="scheduler-quote__changed" id="scheduler-quote-changed" hidden>
-          <div class="rux--actionable-notification rux--actionable-notification--warning" role="status">
-            <div class="rux--actionable-notification__focus-wrapper">
-              <div class="rux--actionable-notification__details">
-                <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-report-fill"/></svg>
-                <div class="rux--actionable-notification__text-wrapper">
-                  <div class="rux--actionable-notification__content">
-                    <div class="rux--actionable-notification__title">The trip changed</div>
-                    <div class="rux--actionable-notification__subtitle" id="scheduler-quote-changed-text"></div>
-                  </div>
-                </div>
+        <section class="rux--data-table-container" id="scheduler-documents-table" aria-labelledby="scheduler-documents-h" hidden>
+          <section class="rux--table-toolbar" role="group" aria-label="Table actions">
+            <div class="rux--toolbar-content">
+              <div class="rux--search rux--layout--size-md rux--toolbar-search-container-persistent" role="search">
+                <div class="rux--search-magnifier"><svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-search"/></svg></div>
+                <label class="rux--label" for="scheduler-documents-search">Search documents</label>
+                <input id="scheduler-documents-search" class="rux--search-input" type="text" role="searchbox" placeholder="Search documents" autocomplete="off">
+                <button type="button" class="rux--search-close rux--search-close--hidden" aria-label="Clear search input" id="scheduler-documents-search-clear">
+                  <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+                </button>
               </div>
-              <div class="rux--actionable-notification__button-wrapper">
-                <button type="button" class="rux--actionable-notification__action-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost" id="scheduler-quote-changed-update">Update calculator</button>
+              <!-- What a search came to, beside the thing that changes it. -->
+              <span class="scheduler-table-note" id="scheduler-documents-count" role="status"></span>
+              <!-- A copy a newer upload replaced is kept, and shown only when asked for. -->
+              <div class="rux--form-item rux--checkbox-wrapper scheduler-documents-old">
+                <input id="scheduler-documents-old" class="rux--checkbox" type="checkbox">
+                <label for="scheduler-documents-old" class="rux--checkbox-label"><div class="rux--checkbox-label-text">Show old</div></label>
               </div>
-            </div>
-          </div>
-        </div>
-        <form class="scheduler-quote" id="scheduler-quote-form" novalidate>
-
-          <!-- Most quotes are only miles and days, at the default rate with one
-               driver, so the miles come first.
-               quote.js draws a field a day, and Enter in the last day adds the
-               next. -->
-          <div class="rux--tile scheduler-quote__miles">
-            <div class="rux--layer-two rux--stack-vertical rux--stack-scale-5 scheduler-quote__body">
-              <fieldset class="scheduler-quote__group">
-                <legend class="rux--type-heading-compact-02">Miles</legend>
-                <div class="scheduler-quote-days" id="scheduler-quote-day-rows"></div>
-              </fieldset>
-              <div class="scheduler-quote__day-buttons">
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-add-day">Add day<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg></button>
-                <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-quote-remove-day" hidden>Remove day<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-remove"/></svg></button>
-              </div>
-            </div>
-          </div>
-
-          <!-- The modifiers change a quote less often, in the order they are
-               used. The regular quote includes one driver; a second adds its
-               own pay. Dead miles and other charges count as 0 while empty. -->
-          <div class="rux--tile scheduler-quote__modifiers">
-            <div class="rux--layer-two scheduler-quote__body">
-              <fieldset class="scheduler-quote__group">
-                <legend class="rux--type-heading-compact-02">Modifiers</legend>
-                <div class="rux--stack-vertical rux--stack-scale-6">
-                  <div class="rux--form-item">
-                    <div class="rux--select">
-                      <label class="rux--label" for="scheduler-quote-rate">Mileage rate</label>
-                      <div class="rux--select-input__wrapper">
-                        <select id="scheduler-quote-rate" class="rux--select-input"></select>
-                        <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="rux--form-item">
-                    <div class="rux--select">
-                      <label class="rux--label" for="scheduler-quote-drivers">Drivers</label>
-                      <div class="rux--select-input__wrapper">
-                        <select id="scheduler-quote-drivers" class="rux--select-input">
-                          <option class="rux--select-option" value="1">1 driver</option>
-                          <option class="rux--select-option" value="2">2 drivers</option>
-                        </select>
-                        <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- The mileage and a second driver are a bus's, times the
-                       buses; each relief driver is the flat charge. -->
-                  <div class="rux--form-item rux--text-input-wrapper">
-                    <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-quote-buses">Buses</label></div>
-                    <div class="rux--text-input__field-outer-wrapper">
-                      <div class="rux--text-input__field-wrapper">
-                        <input id="scheduler-quote-buses" class="rux--text-input" type="text" inputmode="numeric" autocomplete="off" placeholder="1">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="rux--form-item rux--text-input-wrapper">
-                    <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-quote-relief">Relief drivers</label></div>
-                    <div class="rux--text-input__field-outer-wrapper">
-                      <div class="rux--text-input__field-wrapper">
-                        <input id="scheduler-quote-relief" class="rux--text-input" type="text" inputmode="numeric" autocomplete="off" placeholder="0">
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Opened from a trip, the route's dead miles are offered
-                       rather than counted: ticked, they fill the field below. -->
-                  <div id="scheduler-quote-route-dead-item" hidden>
-                    <div class="rux--form-item rux--checkbox-wrapper">
-                      <input class="rux--checkbox" type="checkbox" id="scheduler-quote-route-dead">
-                      <label class="rux--checkbox-label" for="scheduler-quote-route-dead"><span class="rux--checkbox-label-text" id="scheduler-quote-route-dead-text">Count the route's dead miles</span></label>
-                    </div>
-                  </div>
-                  <!-- Dead miles are part of the trip's miles. quote.js puts this
-                       field in Carbon's warning state while there are more of
-                       them than the trip has. -->
-                  <div class="rux--form-item rux--text-input-wrapper">
-                    <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-quote-dead">Dead miles</label></div>
-                    <div class="rux--text-input__field-outer-wrapper">
-                      <div class="rux--text-input__field-wrapper" id="scheduler-quote-dead-wrapper">
-                        <svg class="rux--text-input__invalid-icon rux--text-input__invalid-icon--warning" id="scheduler-quote-dead-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" hidden><use href="#m-warning-fill"/></svg>
-                        <input id="scheduler-quote-dead" class="rux--text-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0" aria-describedby="scheduler-quote-dead-warning">
-                      </div>
-                      <div class="rux--form-requirement" id="scheduler-quote-dead-warning"></div>
-                    </div>
-                  </div>
-                  <div class="rux--form-item rux--text-input-wrapper">
-                    <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-quote-other">Other charges ($)</label></div>
-                    <div class="rux--text-input__field-outer-wrapper">
-                      <div class="rux--text-input__field-wrapper">
-                        <input id="scheduler-quote-other" class="rux--text-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="rux--form-item rux--text-input-wrapper">
-                    <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-quote-discount">Discount ($)</label></div>
-                    <div class="rux--text-input__field-outer-wrapper">
-                      <div class="rux--text-input__field-wrapper">
-                        <input id="scheduler-quote-discount" class="rux--text-input" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </fieldset>
-            </div>
-          </div>
-
-          <!-- The quote: the miles and days it counts, then a line for each part
-               of the price and the total they add up to. The second driver and
-               other charges show only when the quote has them. -->
-          <section class="rux--tile scheduler-quote__quote" aria-labelledby="scheduler-quote-heading">
-            <div class="rux--stack-vertical rux--stack-scale-5 scheduler-quote__body">
-              <h2 class="rux--type-heading-compact-02" id="scheduler-quote-heading">Quote</h2>
-              <!-- Each row is a 16px label line over a 40px value line, and
-                   rows are 24px apart as the fields are. A row's note sits at
-                   the end of its label line, and a charge's rates, each count
-                   times its rate, go under its figure. -->
-              <dl class="scheduler-quote-rows">
-                <div class="scheduler-quote-row">
-                  <dt class="scheduler-quote-row__label">Miles</dt>
-                  <dd class="rux--type-heading-03 scheduler-quote-row__value" id="scheduler-quote-miles-out">0</dd>
-                </div>
-                <div class="scheduler-quote-row">
-                  <dt class="scheduler-quote-row__label">Days</dt>
-                  <dd class="rux--type-heading-03 scheduler-quote-row__value" id="scheduler-quote-days-out">0</dd>
-                </div>
-                <div class="scheduler-quote-row scheduler-quote-row--ruled">
-                  <dt class="scheduler-quote-row__label">Mileage</dt>
-                  <dd class="scheduler-quote-row__note" id="scheduler-quote-mileage-note"></dd>
-                  <dd class="rux--type-heading-03 scheduler-quote-row__value" id="scheduler-quote-mileage">—</dd>
-                  <dd class="scheduler-quote-row__math" id="scheduler-quote-mileage-math"></dd>
-                </div>
-                <div class="scheduler-quote-row" id="scheduler-quote-driver-line" hidden>
-                  <dt class="scheduler-quote-row__label">2nd driver</dt>
-                  <dd class="scheduler-quote-row__note" id="scheduler-quote-driver-note"></dd>
-                  <dd class="rux--type-heading-03 scheduler-quote-row__value" id="scheduler-quote-driver">—</dd>
-                  <dd class="scheduler-quote-row__math" id="scheduler-quote-driver-math"></dd>
-                </div>
-                <div class="scheduler-quote-row" id="scheduler-quote-buses-line" hidden>
-                  <dt class="scheduler-quote-row__label" id="scheduler-quote-buses-label">Buses</dt>
-                  <dd class="rux--type-heading-03 scheduler-quote-row__value" id="scheduler-quote-buses-out">—</dd>
-                  <dd class="scheduler-quote-row__math" id="scheduler-quote-buses-math"></dd>
-                </div>
-                <div class="scheduler-quote-row" id="scheduler-quote-relief-line" hidden>
-                  <dt class="scheduler-quote-row__label">Relief drivers</dt>
-                  <dd class="rux--type-heading-03 scheduler-quote-row__value" id="scheduler-quote-relief-out">—</dd>
-                  <dd class="scheduler-quote-row__math" id="scheduler-quote-relief-math"></dd>
-                </div>
-                <!-- The spreadsheet's meal allowance: shown for reference and
-                     added to nothing, so its figure is in the quieter colour. -->
-                <div class="scheduler-quote-row" id="scheduler-quote-meals-line" hidden>
-                  <dt class="scheduler-quote-row__label">Driver meals</dt>
-                  <dd class="scheduler-quote-row__note">Not in total</dd>
-                  <dd class="rux--type-heading-03 scheduler-quote-row__value scheduler-quote-row__value--reference" id="scheduler-quote-meals">—</dd>
-                  <dd class="scheduler-quote-row__math" id="scheduler-quote-meals-math"></dd>
-                </div>
-                <div class="scheduler-quote-row" id="scheduler-quote-other-line" hidden>
-                  <dt class="scheduler-quote-row__label">Other charges</dt>
-                  <dd class="rux--type-heading-03 scheduler-quote-row__value" id="scheduler-quote-other-out">$0.00</dd>
-                </div>
-                <div class="scheduler-quote-row" id="scheduler-quote-discount-line" hidden>
-                  <dt class="scheduler-quote-row__label">Discount</dt>
-                  <dd class="rux--type-heading-03 scheduler-quote-row__value" id="scheduler-quote-discount-out">$0.00</dd>
-                </div>
-                <!-- The total comes straight after the rows, not at the tile's
-                     foot: the tiles share the tallest's height, and a foot
-                     would drop the total out of view on a long trip. -->
-                <div class="scheduler-quote-row scheduler-quote-row--ruled scheduler-quote__total" aria-live="polite">
-                  <dt class="scheduler-quote-row__label">Total</dt>
-                  <dd class="scheduler-quote-row__value scheduler-quote-total__value scheduler-quote__total-value" id="scheduler-quote-total">$0.00</dd>
-                </div>
-              </dl>
-              <!-- Framed beside a trip in the editor, the quote sets that
-                   trip's lines on its Billing tab. Plain wrappers carry
-                   `hidden`, which a Carbon class's own display would beat. -->
-              <div id="scheduler-quote-send" hidden>
-                <div class="rux--stack-vertical rux--stack-scale-5">
-                  <div id="scheduler-quote-dead-discount-item" hidden>
-                    <div class="rux--form-item rux--checkbox-wrapper">
-                      <input class="rux--checkbox" type="checkbox" id="scheduler-quote-dead-discount">
-                      <label class="rux--checkbox-label" for="scheduler-quote-dead-discount"><span class="rux--checkbox-label-text">Show dead miles as a discount</span></label>
-                    </div>
-                  </div>
-                  <button type="button" class="rux--btn rux--btn--primary rux--layout--size-md" id="scheduler-quote-send-button">Add to quote lines</button>
-                </div>
-              </div>
+              <button type="button" class="rux--btn rux--btn--ghost rux--layout--size-md scheduler-documents-kinds" id="scheduler-documents-kinds" data-rux-open="scheduler-kinds-modal">Kinds</button>
+              <a class="rux--btn rux--btn--primary rux--layout--size-md" href="documents.html?new">Upload
+                <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-upload"/></svg>
+              </a>
             </div>
           </section>
 
-          <!-- Below lg the quote's total is this bar, pinned to the bottom of
-               the screen until the page reaches the quote, where it lands as
-               the quote's last row, in the rows' shape: a label line over the
-               figure. -->
-          <div class="scheduler-quote-bar" aria-live="polite">
-            <span class="scheduler-quote-row__label">Total</span>
-            <span class="rux--type-productive-heading-05 scheduler-quote-row__value scheduler-quote-total__value" id="scheduler-quote-bar-total">$0.00</span>
+          <div class="rux--data-table-content">
+            <table class="rux--data-table rux--data-table--lg rux--data-table--sort" aria-labelledby="scheduler-documents-h">
+              <thead>
+                <tr>
+                  <th scope="col" class="rux--table-sort__header" aria-sort="ascending" data-sort="kind">
+                    <button type="button" class="rux--table-sort rux--table-sort--active">
+                      <span class="rux--table-sort__flex">
+                        <div class="rux--table-header-label">Document</div>
+                        <svg class="rux--table-sort__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-arrow_upward"/></svg>
+                        <svg class="rux--table-sort__icon-unsorted" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-swap_vert"/></svg>
+                      </span>
+                    </button>
+                  </th>
+                  <th scope="col" class="rux--table-sort__header" aria-sort="none" data-sort="holder">
+                    <button type="button" class="rux--table-sort">
+                      <span class="rux--table-sort__flex">
+                        <div class="rux--table-header-label">For</div>
+                        <svg class="rux--table-sort__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-arrow_upward"/></svg>
+                        <svg class="rux--table-sort__icon-unsorted" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-swap_vert"/></svg>
+                      </span>
+                    </button>
+                  </th>
+                  <th scope="col" class="rux--table-sort__header" aria-sort="none" data-sort="ends">
+                    <button type="button" class="rux--table-sort">
+                      <span class="rux--table-sort__flex">
+                        <div class="rux--table-header-label">Ends</div>
+                        <svg class="rux--table-sort__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-arrow_upward"/></svg>
+                        <svg class="rux--table-sort__icon-unsorted" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-swap_vert"/></svg>
+                      </span>
+                    </button>
+                  </th>
+                  <th scope="col"><span class="rux--visually-hidden">Edit</span></th>
+                </tr>
+              </thead>
+              <tbody id="scheduler-documents-rows"></tbody>
+            </table>
           </div>
-        </form>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── One document ─────────────────────────────────────────────────────
+       documents.html?id=<document id> edits a document's facts or replaces
+       its file, and documents.html?new uploads one. Centred in eight of the
+       sixteen columns at lg, as the other page pairs are. -->
+  <div class="rux--css-grid" id="scheduler-document" hidden>
+    <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-5 rux--lg:col-span-8">
+      <div class="rux--stack-vertical rux--stack-scale-7">
+        <div class="rux--stack-vertical rux--stack-scale-3">
+          <nav aria-label="Breadcrumb">
+            <ol class="rux--breadcrumb">
+              <li class="rux--breadcrumb-item"><a class="rux--link" href="documents.html" id="scheduler-document-back">Documents</a></li>
+            </ol>
+          </nav>
+          <div class="scheduler-pair-title">
+            <h1 class="rux--type-productive-heading-04" id="scheduler-document-h">Upload a document</h1>
+            <!-- Said on a copy a newer upload replaced. -->
+            <div class="rux--tag rux--layout--size-md rux--tag--gray" id="scheduler-document-old" hidden><span class="rux--tag__label">Old copy</span></div>
+            <a class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm scheduler-pair-history" href="documents.html" id="scheduler-document-open" target="_blank" rel="noopener" hidden>Open<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-open_in_new"/></svg></a>
+          </div>
         </div>
 
-        <!-- The rules the calculator prices by, for talking a change over.
-             No rate is written in this public file: quote.js fills each
-             example from the saved rates and the mileage rate chosen on the
-             Calculator tab. -->
-        <div class="rux--tab-content" role="tabpanel" id="scheduler-quote-panel-rules" aria-labelledby="scheduler-quote-tab-rules" tabindex="0" hidden>
-          <div class="rux--stack-vertical rux--stack-scale-7 scheduler-quote-rules">
-            <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="scheduler-quote-how-h">
-              <h2 class="rux--type-heading-03" id="scheduler-quote-how-h">How a quote is priced</h2>
-              <ul class="rux--list--unordered">
-                <li class="rux--list__item">Under <span data-quote-rule="trip_local_under">295</span> miles in all, a trip is billed a day at a time, at the local daily rate.</li>
-                <li class="rux--list__item">From <span data-quote-rule="trip_local_under">295</span> miles, it is billed by the mile, with free days. Each day past the free days adds the long distance extra day rate.</li>
-                <li class="rux--list__item">Dead miles are part of the trip's miles. They are billed at the dead miles rate instead of the mileage rate, and still count toward the <span data-quote-rule="trip_local_under">295</span>-mile line and the free days.</li>
-                <li class="rux--list__item">The regular quote includes one driver. Choosing two adds the second driver's pay, worked out on the trip's miles at the two-driver rates.</li>
-                <li class="rux--list__item">Every rate and rule is set on the rates page, under Edit rates, including the mile figures on this tab.</li>
-              </ul>
-            </section>
+        <!-- What a save did. -->
+        <div id="scheduler-document-result" role="status" hidden>
+          <div class="rux--inline-notification" id="scheduler-document-result-box">
+            <div class="rux--inline-notification__details">
+              <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use id="scheduler-document-result-icon" href="#m-check_circle-fill"/></svg>
+              <div class="rux--inline-notification__text-wrapper">
+                <div class="rux--inline-notification__subtitle" id="scheduler-document-result-text"></div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-            <!-- Price by miles, drawn by quote.js at the saved rates, so the drop
-                 at 295 miles can be seen rather than read. -->
-            <section class="rux--stack-vertical rux--stack-scale-5" aria-labelledby="scheduler-quote-chart-h">
-              <h2 class="rux--type-heading-03" id="scheduler-quote-chart-h">Price by miles</h2>
-              <div class="scheduler-quote-chart__controls">
-                <div class="rux--form-item">
+        <div class="rux--stack-vertical rux--stack-scale-7">
+        <form class="rux--stack-vertical rux--stack-scale-7" id="scheduler-document-form" novalidate autocomplete="off">
+
+          <fieldset class="scheduler-pair-group">
+            <legend class="rux--type-heading-compact-02">File</legend>
+            <!-- Design's file uploader: the drop button, its hidden input,
+                 and the one file beside them, which documents.js draws. -->
+            <div class="rux--form-item">
+              <div class="rux--file">
+                <button type="button" class="rux--file__drop-container rux--file-browse-btn" id="scheduler-doc-file-drop">Drag and drop the file here or click to choose it</button>
+                <label class="rux--visually-hidden" for="scheduler-doc-file">File</label>
+                <input id="scheduler-doc-file" type="file" class="rux--file-input rux--visually-hidden" tabindex="-1" accept="application/pdf,image/jpeg,image/png">
+              </div>
+              <div class="rux--file-container rux--file-container--drop" id="scheduler-doc-file-list"></div>
+              <p class="rux--type-label-01 scheduler-documents-error" role="alert" id="scheduler-doc-file-error" hidden></p>
+            </div>
+          </fieldset>
+
+          <fieldset class="scheduler-pair-group">
+            <legend class="rux--type-heading-compact-02">Document</legend>
+            <div class="rux--stack-vertical rux--stack-scale-6">
+              <div class="scheduler-pair-grid">
+                <div class="rux--form-item scheduler-pair-grid__wide">
                   <div class="rux--select">
-                    <label class="rux--label" for="scheduler-quote-chart-days">Trip length</label>
+                    <label class="rux--label" for="scheduler-doc-kind">Kind</label>
                     <div class="rux--select-input__wrapper">
-                      <select id="scheduler-quote-chart-days" class="rux--select-input">
-                        <option class="rux--select-option" value="1">1 day</option>
-                        <option class="rux--select-option" value="2">2 days</option>
-                        <option class="rux--select-option" value="3" selected>3 days</option>
-                        <option class="rux--select-option" value="4">4 days</option>
-                        <option class="rux--select-option" value="5">5 days</option>
-                      </select>
-                      <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg>
+                      <select id="scheduler-doc-kind" class="rux--select-input"></select>
+                      <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg>
                     </div>
+                    <div class="rux--form-requirement" id="scheduler-doc-kind-error"></div>
                   </div>
                 </div>
-                <ul class="scheduler-quote-chart__legend">
-                  <li><span class="scheduler-quote-chart__key scheduler-quote-chart__key--today"></span>Price today</li>
-                  <li><span class="scheduler-quote-chart__key scheduler-quote-chart__key--higher"></span>If it charged whichever is higher</li>
-                </ul>
+                <!-- Asked for only by a kind kept once for each driver. -->
+                <div class="rux--form-item" id="scheduler-doc-driver-item" hidden>
+                  <div class="rux--select">
+                    <label class="rux--label" for="scheduler-doc-driver">Driver</label>
+                    <div class="rux--select-input__wrapper">
+                      <select id="scheduler-doc-driver" class="rux--select-input"></select>
+                      <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg>
+                    </div>
+                    <div class="rux--form-requirement" id="scheduler-doc-driver-error"></div>
+                  </div>
+                </div>
+                <!-- Who it is issued to, a combo box over the customers,
+                     drawn by documents.js. -->
+                <div class="rux--form-item scheduler-pair-grid__wide" id="scheduler-doc-customer-slot"></div>
               </div>
-              <p class="scheduler-quote-chart__note" id="scheduler-quote-chart-note" aria-live="polite"></p>
-              <div class="scheduler-quote-chart" id="scheduler-quote-chart"></div>
-            </section>
-
-            <section class="rux--data-table-container scheduler-quote-rules__table" aria-labelledby="scheduler-quote-quirks-h">
-              <div class="rux--data-table-header">
-                <div>
-                  <h2 class="rux--data-table-header__title" id="scheduler-quote-quirks-h">Where it follows the spreadsheet</h2>
-                  <p class="rux--data-table-header__description">The calculator does these the way the office spreadsheet does, until they are decided. Examples use today's rates and the <span id="scheduler-quote-rules-rate">chosen</span> mileage rate.</p>
+              <p class="rux--form__helper-text scheduler-pair-note">Leave Issued to empty for a document that is for everyone, such as the W-9.</p>
+              <div class="scheduler-pair-grid">
+                <div class="rux--form-item">
+                  <div class="rux--date-picker rux--date-picker--next rux--date-picker--single">
+                    <div class="rux--date-picker-container rux--date-picker-container--single">
+                      <label class="rux--label" for="scheduler-doc-ends">Ends</label>
+                      <div class="rux--date-picker-input__wrapper"><span><input id="scheduler-doc-ends" class="rux--date-picker__input" type="text" autocomplete="off" placeholder="mm/dd/yyyy"><button type="button" class="rux--date-picker__icon" aria-label="Open calendar" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calendar_month"/></svg></button></span></div>
+                    </div>
+                    <div class="rux--date-picker__calendar-container rux--layer-two" hidden><div class="rux--date-picker__calendar" role="grid" aria-label="Calendar" tabindex="0"><div class="rux--date-picker__month"><button type="button" class="rux--date-picker__month-nav" aria-label="Previous month"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_left"/></svg></button><div class="rux--date-picker__current-month"></div><button type="button" class="rux--date-picker__month-nav" aria-label="Next month"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_right"/></svg></button></div><div class="rux--date-picker__weekdays"><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div></div><div class="rux--date-picker__days"></div></div></div>
+                  </div>
+                </div>
+                <div class="rux--form-item rux--text-input-wrapper scheduler-pair-grid__wide">
+                  <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-doc-note">Note</label></div>
+                  <div class="rux--text-input__field-outer-wrapper">
+                    <div class="rux--text-input__field-wrapper"><input id="scheduler-doc-note" class="rux--text-input" type="text" autocomplete="off"></div>
+                  </div>
                 </div>
               </div>
-              <div class="rux--data-table-content">
-                <table class="rux--data-table rux--data-table--lg scheduler-quote-quirks">
-                  <thead>
-                    <tr>
-                      <th scope="col"><div class="rux--table-header-label">#</div></th>
-                      <th scope="col"><div class="rux--table-header-label">What happens</div></th>
-                      <th scope="col"><div class="rux--table-header-label">Example</div></th>
-                      <th scope="col"><div class="rux--table-header-label">Suggested change</div></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td><strong>Crossing <span data-quote-rule="trip_local_under">295</span> miles can lower the price.</strong> Under <span data-quote-rule="trip_local_under">295</span> a trip pays for every day. From <span data-quote-rule="trip_local_under">295</span> it pays by the mile with free days, which for a trip of a few days can come to less.</td>
-                      <td class="scheduler-quote-quirks__example" id="scheduler-quote-quirk-1"></td>
-                      <td>Charge whichever is higher: the local days or the mileage price.</td>
-                    </tr>
-                    <tr>
-                      <td>2</td>
-                      <td><strong>The daily minimum only applies to local trips.</strong> A one-day trip of <span data-quote-rule="trip_local_under">295</span> miles is billed by the mile, which can come to less than one local day.</td>
-                      <td class="scheduler-quote-quirks__example" id="scheduler-quote-quirk-2"></td>
-                      <td>The same change as 1 covers it.</td>
-                    </tr>
-                    <tr>
-                      <td>3</td>
-                      <td><strong>An empty last day isn't counted.</strong> Days count up to the last day with miles. An empty day in the middle counts; an empty day at the end doesn't.</td>
-                      <td class="scheduler-quote-quirks__example" id="scheduler-quote-quirk-3"></td>
-                      <td>Count the last day when the bus is still out that day.</td>
-                    </tr>
-                    <tr>
-                      <td>4</td>
-                      <td><strong>Very long trips drop a charge.</strong> From <span data-quote-rule="trip_free_days_end">10,250</span> trip miles the free-day table runs out and the mileage charge counts as $0. Driver pay does the same from <span data-quote-rule="driver_free_days_end">6,250</span> miles.</td>
-                      <td class="scheduler-quote-quirks__example" id="scheduler-quote-quirk-4"></td>
-                      <td>Set both "Free days stop at" rules on the rates page past any real trip.</td>
-                    </tr>
-                    <tr>
-                      <td>5</td>
-                      <td><strong>The two free-day tables differ.</strong> At <span data-quote-rule="trip_one_free_day_under">750</span> to <span data-quote-rule="driver_one_free_day_under:-1">999</span> miles a quote gets more free days than driver pay does.</td>
-                      <td class="scheduler-quote-quirks__example" id="scheduler-quote-quirk-5"></td>
-                      <td>Keep, if the quote and the driver pay are meant to differ.</td>
-                    </tr>
-                    <tr>
-                      <td>6</td>
-                      <td><strong>The meal allowance isn't added to anything.</strong> The quote shows it under the second driver's pay, for reference only.</td>
-                      <td class="scheduler-quote-quirks__example" id="scheduler-quote-quirk-6"></td>
-                      <td>Keep, if meals are paid outside the quote. Otherwise add it to the second driver's pay.</td>
-                    </tr>
-                    <tr>
-                      <td>7</td>
-                      <td><strong>No miles means no charge.</strong> A quote with no miles entered comes to $0 plus other charges.</td>
-                      <td class="scheduler-quote-quirks__example" id="scheduler-quote-quirk-7"></td>
-                      <td>Ask for miles instead of showing a price.</td>
-                    </tr>
-                    <tr>
-                      <td>8</td>
-                      <td><strong>Each free-day step can lower the price.</strong> From <span data-quote-rule="trip_one_free_day_under">750</span> miles every <span data-quote-rule="free_day_step">250</span> more adds free days, so a trip with extra days dips at each step.</td>
-                      <td class="scheduler-quote-quirks__example" id="scheduler-quote-quirk-8"></td>
-                      <td>Charge at least the price just under each step, or keep the dips as the free days working.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </section>
+            </div>
+          </fieldset>
+
+          <!-- The button set and its order are form-page.html's. -->
+          <div class="rux--btn-set scheduler-pair-buttons">
+            <a class="rux--btn rux--btn--secondary" href="documents.html" id="scheduler-document-cancel">Cancel</a>
+            <button type="submit" class="rux--btn rux--btn--primary" id="scheduler-document-save">Save</button>
           </div>
+        </form>
+
+        <!-- Outside the form: deleting is not an edit Save writes. It is for
+             a wrong upload; a document ages out by being replaced. -->
+        <section class="rux--stack-vertical rux--stack-scale-4 scheduler-pair-group" aria-labelledby="scheduler-document-delete-h" id="scheduler-document-delete-section" hidden>
+          <h2 class="rux--type-heading-compact-02" id="scheduler-document-delete-h">Delete</h2>
+          <p class="rux--type-body-compact-01 scheduler-pair-note">For a wrong upload. To put a newer copy in its place, choose the new file above and save.</p>
+          <div>
+            <button type="button" class="rux--btn rux--btn--danger--tertiary" id="scheduler-document-delete" data-rux-open="scheduler-document-delete-modal">Delete document
+              <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-delete"/></svg>
+            </button>
+          </div>
+        </section>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Every kind of document, to rename, mark and add to. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-kinds-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-kinds-modal-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-kinds-modal-h">Kinds of document</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
         </div>
+      </div>
+      <div class="rux--modal-content">
+        <div class="rux--stack-vertical rux--stack-scale-5">
+          <div class="rux--stack-vertical rux--stack-scale-4" id="scheduler-kinds-rows"></div>
+          <div>
+            <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-kinds-add">Add kind
+              <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg>
+            </button>
+          </div>
+          <p class="rux--type-label-01 scheduler-documents-error" role="alert" id="scheduler-kinds-error" hidden></p>
+        </div>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-kinds-save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Asked before a document is deleted. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-document-delete-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-document-delete-modal-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-document-delete-modal-h">Delete this document?</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <p>Its file is removed. It cannot be undone.</p>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+        <button type="button" class="rux--btn rux--btn--danger" id="scheduler-document-delete-confirm">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Asked before leaving the document with unsaved changes. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-document-unsaved-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-document-unsaved-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-document-unsaved-h">Save changes?</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <p>If you discard them, they are lost.</p>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" id="scheduler-document-unsaved-discard">Discard</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-document-unsaved-save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Asked when Save finds the document was changed elsewhere after the
+       page loaded it. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-document-conflict-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-document-conflict-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-document-conflict-h">Someone else changed this document</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <p>Their changes were saved after you opened this page. Saving now replaces them.</p>
+      </div>
+      <div class="rux--modal-footer">
+        <button type="button" class="rux--btn rux--btn--secondary" id="scheduler-document-conflict-reload">Reload document</button>
+        <button type="button" class="rux--btn rux--btn--danger" id="scheduler-document-conflict-save">Save anyway</button>
       </div>
     </div>
   </div>
 </main>
 
 <script src="/design/js/overlay.js"></script>
+<script src="/design/js/list-box.js"></script>
 <script src="/design/js/tabs.js"></script>
+<script src="/design/js/popover.js"></script>
+<script src="/design/js/date-picker.js"></script>
 <script src="/design/js/form-controls.js"></script>
 <script src="/design/js/ui-shell.js"></script>
+<script src="/design/js/modal.js"></script>
 <script src="/design/js/profile.js"></script>
 <script src="/switcher.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
 <script src="people.js"></script>
-<script src="quote.js"></script>
+<script src="phone.js"></script>
+<script src="pair.js"></script>
+<script src="documents.js"></script>
 <script src="/design/js/content-switcher.js"></script>
 <script src="billing.js"></script>
 <script src="follow-up.js"></script>
@@ -664,3 +584,4 @@
 <script src="to-do-list.js"></script>
 </body>
 </html>
+

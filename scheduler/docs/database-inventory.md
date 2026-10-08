@@ -68,7 +68,7 @@ constraints, not types; there are no views.
 | `drivers` | `id`; `driver_ref` generated `DRV-###` by trigger | `name`, `short_name`, `phone`, `email`, `texting_url`, `address`, `city`, `address_state`, `zip`, `date_of_birth`, `hire_date`, `employment_type` (full-time, part-time, contract, seasonal), `status`, `priority` (1 to 5), `sort_order`, `cdl_class`, `license_number`, `license_state`, `license_exp`, `med_card_expiry`, `endorsements` text[], `emergency_contact_name`, `emergency_contact_phone`, `photo_path`, `notes` |
 | `trip_stops` | `id`; `trip_id` to `trips`, cascade | `position`, `leg` (outbound, return), `type`, `label`, `name`, `address`, `lat`, `lng`, `mapbox_id`, `miles`, `drive`, `miles_source` and `drive_source` (estimated, manual), `depart_prev`, `arrive`, `spot`, `depart_prev_date`, `arrive_date`, `spot_date`, `dwell_status` (off, sleeper, on), `route_status` |
 | `trip_assignments` | `id`; `trip_id` to `trips` cascade; `bus_id` to `buses` set null | `position`, `leg` (outbound, return), `active_roles` text[], `needs` jsonb (the `requirements-v1` entries this vehicle must have, `{id: true}`), `vehicle_type` (a `buses.type`, null for any), `fuel_card_number`, the card that rides with this bus, typed on its first driver's envelope |
-| `trip_drivers` | `id`; `assignment_id` to `trip_assignments` cascade; `driver_id` to `drivers` set null | `role`, `pay`, `report_time`, `instructions`, and the driver's four steps, `envelope_printed`, `trip_reminder_sent`, `itinerary_printed` and `hos_form_printed`, each with `_at` and `_by`, which `trip_drivers_stamp_steps` sets as a step is turned on and clears as it is turned off; a seat given another driver has all four turned off |
+| `trip_drivers` | `id`; `assignment_id` to `trip_assignments` cascade; `driver_id` to `drivers` set null | `role`, `pay`, `report_time`, `instructions`, and the driver's five steps, `envelope_printed`, `trip_reminder_sent`, `itinerary_printed`, `hos_form_printed` and `driver_forms_printed`, each with `_at` and `_by`, which `trip_drivers_stamp_steps` sets as a step is turned on and clears as it is turned off; a seat given another driver has all five turned off |
 
 A trip's place on the grid is `trips` for the dates and times,
 `trip_assignments` for which bus row and which leg, `trip_drivers` for the
@@ -91,6 +91,9 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 | `trip_passengers` | manifest | 17 columns: `name`, `phone`, `email`, `seat`, `status`, `ticket_option_id`, `amount_owed`, `amount_paid`, `group_label`, `pickup_location` |
 | `trip_passenger_payments` | manifest | `passenger_id`, `amount`, `method`, `date`, `ref` |
 | `trip_documents` | trip editor Files, driver page, `../rux-ui/doc.html` | `trip_id`, `label`, `file_name`, `file_path`, `file_size`. Files in bucket `trip-documents`. Replacing a file points the same row at the new one in both apps, so a document link keeps working. A driver's link is handed only the rows labelled Itinerary, by `get_driver_share_trips`. |
+| `document_kinds` | Documents page | `name`, unique whatever its case, and `per_driver`, on for a kind kept once for each driver, such as a background check form. Starts as Insurance certificate, W-9 and Driver background check. Staff only. |
+| `company_documents` | Documents page | The office's own paperwork: `kind_id` to `document_kinds`, `customer_id` to `customers` for who it is issued to, `driver_id` to `drivers` for who it is about, all three restrict, so a kind, customer or driver with a document is not deleted; `ends_on`, `note`, `file_name`, `file_path`, `file_size`, `replaced_at`, `created_by` (default `auth.uid()`), `updated_at`. Files in bucket `company-documents` at `<document id>/<file name>`. `replaced_at` is null on the current copy, and a unique index allows one current copy for each kind, customer and driver: the trigger `company_documents_replace` makes the one before a new row old, and `company_documents_restore` brings the newest old one back when the current one is deleted. Staff only. |
+| `customer_required_kinds` | nothing yet | `customer_id` to `customers` and `kind_id` to `document_kinds`, both cascade: the kinds of driver form a customer asks for on its trips. Staff only. |
 | `trip_itineraries` | Itineraries view | `trip_id` (unique when set), `document` jsonb, `status` (new, reviewed, closed), `label` |
 | `trip_history` | History page, rux-ui's History tab | `trip_id`, `trip_ref`, `action` (ten values), `changes` jsonb, `metadata` jsonb, `actor_name`, the name the browser sends, and `actor_id`, the signed-in account, which is empty on a driver's entry, made from a link with no log-in. RPC only. |
 | `record_history` | History page | `kind` (driver, bus, customer, contact, location), `record_id`, `record_name`, `actor_id`, `actor_name`, `action` (created, updated, deleted), `changes` jsonb, one `field`, `before` and `after` per column that changed. Written only by the `*_history` triggers on those five tables and on `driver_time_off` and `bus_out_of_service`, whichever app made the change; a trigger that fails warns and never stops the save. RPC only. |
@@ -133,10 +136,11 @@ one To do line. The RPCs a screen calls:
 ### Storage buckets
 
 `trip-documents` (paths under the trip id), `driver-photos` and
-`profile-photos`, with no size or file-type limit; only staff can upload,
-replace or delete. The first two are private: staff pages read them through
-ten-minute signed links, and the link pages through `trip-document-link` (§5).
-`profile-photos` is public.
+`profile-photos`, with no size or file-type limit, and `company-documents`
+(paths under the document id), 20 MB a file; only staff can upload, replace
+or delete. All but `profile-photos` are private: staff pages read them through
+ten-minute signed links, and the link pages reach a trip document through
+`trip-document-link` (§5). `profile-photos` is public.
 
 ### Realtime
 
@@ -168,6 +172,7 @@ as in `screen-inventory.md`.
 | `trip_quote_lines` | Trip editor Billing, the customer quote on the Forms page | Trip editor, which writes `quoted_price` as the lines' sum |
 | `trip_passengers`, `trip_passenger_payments` | Manifest | Manifest |
 | `trip_documents` + bucket | Trip editor Files, driver page, `../rux-ui/doc.html` | Trip editor Files and the bar menu's Upload itinerary, each change with a `trip_history` entry |
+| `company_documents` + bucket, `document_kinds` | Documents page | Documents page: an upload, a new copy, an edit of the facts, a delete, and the Kinds window |
 | `trip_history` (RPC) | History page | every save in the trip editor |
 | `record_history` (RPC) | History page | the database, on every change to a driver, a bus, a customer, a contact or a location |
 | `trip_driver_statuses` (RPC) | Schedule, Tasks, Drivers | driver page accepts and declines; the bar menu's driver status items |

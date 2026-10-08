@@ -22,7 +22,7 @@ driver who has none.
   driver it is about, the date it ends, and a note. "Issued to" is blank for a
   general document, like the W-9 or the plain insurance certificate, and the
   driver is blank on everything but a background check form.
-- **The kinds are a list of their own, in a new table `document_kinds`,**
+- **The kinds are a list of their own, in the table `document_kinds`,**
   starting as insurance certificate, W-9 and driver background check. The
   Documents page adds and renames them, so a rename reaches every document
   and every customer that asks for the kind.
@@ -35,7 +35,7 @@ driver who has none.
 - **A background check form is a PDF, uploaded once a year for each driver.**
   Only its campus and trip date differ from one trip to the next.
 - **A customer's page has Driver forms required,** a pick of the kinds marked
-  one for each driver, none by default, stored in a new table
+  one for each driver, none by default, stored in
   `customer_required_kinds`. This is the link between a customer and a form.
 - **A trip for such a customer lists a row for each driver on the leg and
   each kind asked for in its Forms list,** opening that driver's current form
@@ -64,10 +64,9 @@ driver who has none.
   files. The browser's own viewer shows the file, with its download and print
   buttons. Every staff account can open one; no link is ever meant for a
   customer, who gets the file as an email attachment.
-- **The files live in a new private bucket, `company-documents`,** and the
-  facts in a new table, `company_documents`, both staff only, with nothing
-  granted to anon. The table and bucket are SQL shown to rux and applied on a
-  yes, as a named migration.
+- **The files live in the private bucket `company-documents`,** and the
+  facts in the table `company_documents`, both staff only, with nothing
+  granted to anon.
 - **The page is `documents.html` in the scheduler's side menu,** started from
   a Design template; anything Design lacks is added there with invented
   content.
@@ -87,10 +86,6 @@ None open.
 - [ ] Read one background check PDF, kept outside this repository, and decide
       how its campus and date are written: into its own boxes, or as text
       placed on the page.
-- [ ] Write the three tables, the bucket and their access rules as SQL, show
-      it to rux, and apply it on a yes.
-- [ ] Build the Documents page: search, kind filter, "Show old", open, upload,
-      replace, delete, the end-date marks, and adding and renaming kinds.
 - [ ] List a customer's documents on its page in `customers.html`, with the
       Driver forms required pick.
 - [ ] Write the campus and trip date onto the form's copy when it is opened
@@ -98,9 +93,8 @@ None open.
 - [ ] Add the driver form rows to a trip's Forms list and the item to
       `scheduler/checklist.js`, with its cases in
       `scheduler/tools/check-checklist.mjs`.
-- [ ] Add `find_documents` to the connector and deploy it.
-- [ ] Describe the table, bucket, page and tool in the scheduler's database
-      and screen inventories and in `working-from-claude.md`.
-- [ ] Check it in Chrome on :8641 with an invented test file: upload, search,
-      open, replace, delete; then ask the Claude app for it.
+- [ ] Add `find_documents` to the connector, deploy it, and describe it in
+      the database inventory and `working-from-claude.md`.
+- [ ] Check in Chrome on :8641: a customer's Documents tab, a trip's driver
+      form rows and checklist item, then ask the Claude app for a document.
 - [ ] Upload the current documents, reading each one's end date from the file.

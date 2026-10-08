@@ -77,13 +77,23 @@ the end.
 
 ## Reading Missive in Chrome
 
-- **The page's text is the list, then the open thread.** `get_page_text`
-  returns both whole. A script's answer is cut near 1,000 characters, so a
-  script is for the ids alone, asked for in slices.
+- **The list is the page's text while no thread is open.** `get_page_text`
+  returns it whole.
+- **An open thread is read by a script,** because `get_page_text` then
+  returns one line of it. The `innerText` of `document.body` after
+  `Assign to me` is the thread: each message's first line, the team's
+  comments, and when it was closed, reopened or snoozed. A message's whole
+  body is in the shadow root of its `.missive-message-content`, which only an
+  expanded message has, as the newest one is.
+- **A script's answer is cut near 1,000 characters,** so keep the text on
+  `window` and ask for it in slices. A slice holding a link's `?`, `&` or `=`
+  comes back blocked; replace those characters in the slice.
+- **A table pasted into an email is a picture.** Zoom on it to read it.
 - **The list draws only the rows near the view,** and loads the mail under
-  This Week and each month once it is scrolled to its end. Scroll to the end
-  and read again until the rows counted match the number beside Team Inboxes
-  in the sidebar.
+  This Week and each month once the mouse wheel scrolls it to its end;
+  setting `scrollTop` by script loads nothing. Scroll to the end and read
+  again until the rows counted match the number beside Team Inboxes in the
+  sidebar.
 - **A row of the list is a `.conversation-preview`, and its
   `data-conversation-id` is the thread's id.** The thread's link is
   `https://mail.missiveapp.com/#unassigned/conversations/<id>`, which opens
@@ -99,9 +109,18 @@ the end.
 - A script run in Chrome can run twice. `add_to_do` with a thread key is safe
   to repeat; a second call changes the row the first made.
 
-## Not run yet
+## Closing and changing a row
 
-Closing a row whose work the thread shows as done, and changing a row on a
-second review of the same thread, are what `close_to_do` and `change_to_do`
-are for. No review has done either. The first one that does adds what it
-learned here.
+- **An open row whose thread has left Team Inboxes is likely done,** because
+  the office closes a conversation as it answers. Open the thread by the
+  row's link: a reply from the office after the customer's last message, then
+  "closed the conversation", is the work done, and a trip's `quote_sent_on`
+  confirms a quote. Close the row with what went out and when.
+- **Match a row to the list by the id alone.** The office retitles a thread,
+  and a sender shows under another form of their name, so the list's line may
+  share no words with the row.
+- **Change a row whose words are wrong or behind:** a date the email gives
+  differently, a count, or an answer the office was waiting on that came in on
+  another thread. `change_to_do` takes the row's id.
+- **The team's comments say what a row waits on.** New comments alone leave a
+  row as it is, unless what they name has arrived.

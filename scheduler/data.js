@@ -3794,19 +3794,38 @@
     return wrap;
   }
 
-  // The saved locations holding every word typed, up to five, as places.
+  /* AN ADDRESS AS ONE KEY, so 150 N Ohio Ave and 150 North Ohio Avenue are
+     one place however each was typed or the map wrote it: lower case, no
+     punctuation, the country and a ZIP's last four left off, and each word a
+     road, a compass point or the state goes by in its short form. */
+  const ADDRESS_WORDS = { north: 'n', south: 's', east: 'e', west: 'w', northeast: 'ne', northwest: 'nw',
+    southeast: 'se', southwest: 'sw', street: 'st', avenue: 'ave', av: 'ave', boulevard: 'blvd', drive: 'dr',
+    road: 'rd', lane: 'ln', court: 'ct', place: 'pl', parkway: 'pkwy', highway: 'hwy', expressway: 'expy',
+    freeway: 'fwy', circle: 'cir', trail: 'trl', terrace: 'ter', square: 'sq', suite: 'ste', apartment: 'apt',
+    building: 'bldg', texas: 'tx' };
+  const addressKey = v => String(v ?? '').toLowerCase()
+    .replace(/,?\s*united states( of america)?\s*$/, '')
+    .replace(/(\d{5})-\d{4}\b/g, '$1')
+    .replace(/[.,#-]/g, ' ')
+    .split(/\s+/).filter(Boolean).map(w => ADDRESS_WORDS[w] ?? w).join(' ');
+  const savedAsPlace = l => ({ name: l.name, address: l.address, lat: l.lat, lng: l.lng, mapbox_id: l.mapbox_id ?? null, saved: true });
+  /* The saved locations holding every word typed, up to five, as places. The
+     words are held to the name and address as typed and as one key, so a
+     street typed out in full finds the location saved with Blvd. */
   function savedPlaceMatches(text) {
     const words = folded(text).split(/\s+/).filter(Boolean);
+    const keyed = addressKey(text).split(' ').filter(Boolean);
     if (!words.length || text.trim().length < 2) return [];
     return (panelIndex.locations || [])
-      .filter(l => words.every(w => folded(`${l.name} ${l.address}`).includes(w)))
+      .filter(l => words.every(w => folded(`${l.name} ${l.address}`).includes(w))
+        || keyed.every(w => addressKey(`${l.name} ${l.address}`).includes(w)))
       .slice(0, 5)
-      .map(l => ({ name: l.name, address: l.address, lat: l.lat, lng: l.lng, mapbox_id: l.mapbox_id ?? null, saved: true }));
+      .map(savedAsPlace);
   }
-  // The saved location a place is, by the Mapbox id rux-ui saves or by its address, or null.
+  // The saved location a place is, by the Mapbox id rux-ui saves or by its address as one key, or null.
   const savedLocationOf = place => (place ? (panelIndex.locations || []).find(l =>
     (place.mapbox_id && l.mapbox_id === place.mapbox_id)
-    || (!!place.address && folded(l.address) === folded(place.address))) ?? null : null);
+    || (!!place.address && addressKey(l.address) === addressKey(place.address))) ?? null : null);
 
   /* A search over places, as Carbon's combo box, for the Route tab. Its
      options are the saved locations that match, each marked with a location
@@ -3880,7 +3899,9 @@
     };
     /* The saved locations that hold every word typed come first, at once;
        Geoapify is asked a quarter second after typing stops, and its answers
-       follow, less any place already saved. Only the latest answer is drawn. */
+       follow. An answer that is a saved location, by its address, is shown
+       as that location and never beside it, so one place is not picked under
+       two records. Only the latest answer is drawn. */
     input.addEventListener('input', () => {
       clearTimeout(timer);
       shown(null);
@@ -3893,7 +3914,14 @@
         try {
           const got = await searchPlaces(text);
           if (n === asked) {
-            found = [...saved, ...got.filter(g => !saved.some(p => samePlace(p, g)))];
+            const known = [...saved];
+            const fresh = [];
+            for (const g of got) {
+              const loc = savedLocationOf(g);
+              if (!loc) { if (!known.some(p => samePlace(p, g))) fresh.push(g); continue; }
+              if (!known.some(p => addressKey(p.address) === addressKey(loc.address))) known.push(savedAsPlace(loc));
+            }
+            found = [...known, ...fresh];
             draw();
           }
         } catch { /* the saved ones stand */ }
@@ -4692,9 +4720,7 @@
     for (const [place, open] of changed) {
       if (!place || place === open || place.lat == null || !place.address) continue;
       if (yard && folded(place.address) === yard) continue;
-      const saved = (panelIndex.locations || []).some(l =>
-        (place.mapbox_id && l.mapbox_id === place.mapbox_id) || folded(l.address) === folded(place.address));
-      if (saved || out.some(o => samePlace(o.place, place))) continue;
+      if (savedLocationOf(place) || out.some(o => samePlace(o.place, place))) continue;
       out.push({ kind: 'place', place: { ...place } });
     }
     return out;

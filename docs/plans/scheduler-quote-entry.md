@@ -182,8 +182,6 @@ Each tab answers one question and reads only the tabs before it:
 
 ## Tasks
 
-- [ ] Match saved locations by address in the place search, abbreviations
-      included, ahead of the map's result for the same address.
 - [ ] Let the Files tab hold a file before the first save and send it once
       the trip exists.
 - [ ] Turn the Rates page into Settings, `settings.html`, laid out with the

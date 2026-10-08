@@ -56,12 +56,13 @@ reads only the ones before it. Nothing is written until step 10.
 4. **Details.** Check each field with a blue bar against the email.
 5. **Route.** Pick the pickup, by name first. Set Spot when the itinerary
    gives a meeting time. Add each timed stop with its arrival and leaving
-   times. Read the Summary. On a second-driver notice follow `rules.md`: try
-   the longest wait as sleeper berth, and bring the second driver to rux only
-   when the notice stays. Add the fuel card when the tab offers it.
-6. **Buses.** In the vehicle's window turn on the needs the route gave it,
-   Sleeper for a one-driver day with a sleeper rest, and Co-driver when rux
-   chose a second driver. Pick the bus by `rules.md`. An unconfirmed trip gets
+   times. Read the Summary. On a second-driver notice follow `rules.md`:
+   press Rest in the sleeper when it is offered, which sets that wait to
+   sleeper berth and the Sleeper need on the leg's vehicles, and bring the
+   second driver to rux only when the notice offers the co-driver alone. Add
+   the fuel card when the tab offers it.
+6. **Buses.** In the vehicle's window turn on any other need the route gave
+   it, and Co-driver when rux chose a second driver. Pick the bus by `rules.md`. An unconfirmed trip gets
    no driver.
 7. **Billing.** Press Add the bus rental. An Addt'l Driver line follows a
    co-driver seat by itself. From April to early June set the line's rate by

@@ -1016,3 +1016,12 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    The pair's lines are a flex column, which stretches each child to the
    column's width, and Carbon's tag is as wide as it is told to be. */
 .scheduler-pair-cell__lines > .rux--tag { align-self: flex-start; }
+
+/* A notice that offers a choice puts its actions under its words. Carbon
+   lays one action beside them, and two beside them in the trip panel leave
+   the words a column three words wide. The actions start 32px in, so the
+   first one's label stands under the title. */
+.rux--actionable-notification.scheduler-note--choice { flex-wrap: wrap; }
+.rux--actionable-notification.scheduler-note--choice .rux--actionable-notification__details { flex-basis: 100%; }
+.rux--actionable-notification.scheduler-note--choice .rux--actionable-notification__text-wrapper { padding-block-end: 0; }
+.rux--actionable-notification.scheduler-note--choice .rux--actionable-notification__button-wrapper { margin-inline-start: var(--rux-spacing-07); }

@@ -182,8 +182,6 @@ Each tab answers one question and reads only the tabs before it:
 
 ## Tasks
 
-- [ ] Add Rest in the sleeper to the Route summary's second-driver notice,
-      shown only when the longest wait as sleeper berth clears the rule.
 - [ ] Match saved locations by address in the place search, abbreviations
       included, ahead of the map's result for the same address.
 - [ ] Mark a return after midnight as the next day's time on the driver's

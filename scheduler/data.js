@@ -344,12 +344,16 @@
     wrap.appendChild(content);
     details.append(icon, wrap);
     const buttons = el('div', 'rux--actionable-notification__button-wrapper');
-    const btn = el('button', 'rux--actionable-notification__action-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost', action.label);
-    btn.type = 'button';
-    btn.addEventListener('click', action.onClick);
-    buttons.appendChild(btn);
+    // One action, or a choice of them, in the order given.
+    for (const a of [action].flat()) {
+      const btn = el('button', 'rux--actionable-notification__action-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost', a.label);
+      btn.type = 'button';
+      btn.addEventListener('click', a.onClick);
+      buttons.appendChild(btn);
+    }
     focus.append(details, buttons);
     box.appendChild(focus);
+    if (Array.isArray(action)) box.classList.add('scheduler-note--choice');
     if (asToast) box.appendChild(closeButton('rux--actionable-notification', title));
     return box;
   }
@@ -7923,12 +7927,16 @@
           if (index === null) r.list.push(next); else r.list[index] = next;
           /* The list is the order Save writes, so it is kept in time order: by
              day, and within a day by time where both stops have one; a stop
-             with no time keeps its place among its day's. */
+             with no time keeps its place among its day's. On a one-day leg a
+             time before the group leaves the pickup is past midnight, so it
+             sorts after the evening's and the leg stays one day. */
           const at = st => st.arrive || st.leave;
+          const leaves = from === to ? toMin(val('scheduler-f-leave')) : null;
+          const clockOf = st => { const m = toMin(at(st)); return leaves != null && m < leaves ? m + 1440 : m; };
           r.list.sort((x, y) => {
             const dx = x.date || from, dy = y.date || from;
             if (dx !== dy) return dx < dy ? -1 : 1;
-            return at(x) && at(y) ? toMin(at(x)) - toMin(at(y)) : 0;
+            return at(x) && at(y) ? clockOf(x) - clockOf(y) : 0;
           });
           window.Rux?.modal?.close?.('scheduler-stop-modal');
           touch();
@@ -7944,6 +7952,29 @@
          stands: when the bus leaves the yard, is spotted and is back, then
          each day's miles, drive, on duty and less rest on a leg of more than
          one day, then the whole leg's. */
+      /* The longest wait on duty that, counted as sleeper berth, brings every
+         day inside the second-driver rule; null when no one wait does. The
+         figures are worked out again with that wait changed, longest first. */
+      function sleeperRest() {
+        const model = routeModel();
+        const clears = w => !RF.legFigures({ ...model,
+          list: r.list.map(st => (st === w.stop ? { ...st, dwell: 'sleeper' } : st)) }).over;
+        return r.list.filter(st => (st.dwell ?? 'on') === 'on')
+          .map(st => ({ stop: st, wait: RF.waitOf(model, st) ?? 0 }))
+          .filter(w => w.wait > 0).sort((x, y) => y.wait - x.wait)
+          .find(clears) ?? null;
+      }
+      /* Taking the rest is the stop's window and each vehicle's window in one
+         press: the wait counts as sleeper berth, and every vehicle on the leg
+         needs a sleeper. */
+      function takeSleeperRest(stop) {
+        stop.dwell = 'sleeper';
+        for (const b of editing?.fleet?.[r.leg === 'return' ? 'return' : 'outbound'] ?? []) {
+          b.needs = needsObject(new Set([...needIds(b.needs), 'sleeper']));
+        }
+        drawFleet();
+        touch();
+      }
       function drawTotals() {
         const fig = RF.legFigures(routeModel());
         const { days, each, total } = fig;
@@ -8018,8 +8049,18 @@
         const { over } = fig;
         if (over && coDrivers(r.leg) === 0) {
           const why = over.drive > 600 ? `${hm(over.drive)} driving` : `${hm(over.span - over.rest)} on duty less rest`;
-          driverBox.replaceChildren(notice('warning', 'Second driver', `At ${why}${each ? ' in a day' : ''}, this trip needs a second driver.`,
-            { label: 'Add co-driver', onClick: () => setCoDrivers(r.leg, true) }));
+          /* THE SLEEPER REST COMES FIRST, where it is enough: the leg's longest
+             wait on duty, tried as sleeper berth. When the rule then passes,
+             the notice names that stop and offers the rest before the
+             co-driver; when it does not, as on a day of too much driving, the
+             co-driver is the one offer. */
+          const rest = sleeperRest();
+          const coDriver = { label: 'Add co-driver', onClick: () => setCoDrivers(r.leg, true) };
+          driverBox.replaceChildren(rest
+            ? notice('warning', 'Second driver',
+              `At ${why}${each ? ' in a day' : ''}, this trip needs a second driver, or the ${hm(rest.wait)} at ${rest.stop.place?.name || 'the stop'} as rest in the sleeper.`,
+              [{ label: 'Rest in the sleeper', onClick: () => takeSleeperRest(rest.stop) }, coDriver])
+            : notice('warning', 'Second driver', `At ${why}${each ? ' in a day' : ''}, this trip needs a second driver.`, coDriver));
         } else driverBox.replaceChildren();
       }
 

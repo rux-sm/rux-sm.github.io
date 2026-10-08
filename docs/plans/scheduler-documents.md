@@ -88,11 +88,8 @@ None open.
       placed on the page.
 - [ ] Write the campus and trip date onto the form's copy when it is opened
       from a trip.
-- [ ] Add the driver form rows to a trip's Forms list and the item to
-      `scheduler/checklist.js`, with its cases in
-      `scheduler/tools/check-checklist.mjs`.
 - [ ] Add `find_documents` to the connector, deploy it, and describe it in
       the database inventory and `working-from-claude.md`.
-- [ ] Check in Chrome on :8641 a trip's driver form rows and checklist item,
-      then ask the Claude app for a document.
+- [ ] Check on a real trip in Chrome on :8641 that the checklist and
+      Departures say its driver forms, then ask the Claude app for a document.
 - [ ] Upload the current documents, reading each one's end date from the file.

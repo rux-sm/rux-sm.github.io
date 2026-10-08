@@ -137,6 +137,11 @@
         step('reminder', 'Reminder', seat, 'trip_reminder_sent', 'contacts'),
       ];
       if (partTime) lines.push(step('hos', 'HOS form', seat, 'hos_form_printed', 'forms:hos'));
+      /* Where the customer asks for driver forms: a form the driver lacks is
+         said by its kind, and once each is on file they are one step to print. */
+      const forms = Facts.driverFormsOf(trip, assign.leg || 'outbound', c.driverId);
+      for (const f of forms.filter(x => !x.ok)) lines.push(line(`form:${f.kindId}`, 'warn', `No current ${f.kind}`));
+      if (forms.length && forms.every(f => f.ok)) lines.push(step('driver-forms', 'Driver forms', seat, 'driver_forms_printed', 'trip-forms'));
       crew.push({ key: seat?.id ?? `${assign.id}:${c.role}:${c.driverId}`, name: c.who ? (c.who.short_name || c.who.name) : 'Unknown driver',
         role: c.label, partTime, seat, driverId: c.driverId, lines });
     }

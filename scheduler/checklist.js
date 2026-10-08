@@ -10,8 +10,9 @@
                   contact
      Buses        every bus assigned and fit for the trip, every seat
                   filled, every driver confirmed
-     Paperwork    each driver's itinerary and envelope printed, and the
-                  hours-of-service record of each part-time driver
+     Paperwork    each driver's itinerary and envelope printed, the
+                  hours-of-service record of each part-time driver, and each
+                  driver's form of a kind the customer asks for
      Extras       the hotel booked and each bus's fuel card assigned, when
                   wanted
 
@@ -38,7 +39,8 @@
 
   /* One leg's items. `facts` is the board's reading of the leg's buses:
      { busesNeeded, busesAssigned, busesShort, seatsOpen, seats, unconfirmed,
-       envelopesLeft, itinerariesLeft, partTime, hosLeft, fuelCardsLeft },
+       envelopesLeft, itinerariesLeft, partTime, hosLeft, fuelCardsLeft,
+       formsWanted, formsMissing, formsLeft },
      where `seats`
      counts the seats with a driver in them. `tripContact` is whether the trip
      has a day-of contact. */
@@ -87,6 +89,13 @@
     if (facts.partTime) {
       add('Paperwork', 'hos', 'Hours of service printed', !facts.hosLeft, TABS.forms,
         facts.hosLeft ? `${plural(facts.hosLeft, 'form', 'forms')} left` : null);
+    }
+    // A form nobody has uploaded is said by name, since printing cannot fix it.
+    if (facts.formsWanted && facts.seats) {
+      const missing = facts.formsMissing || [];
+      add('Paperwork', 'driver-forms', 'Driver forms printed', !missing.length && !facts.formsLeft, TABS.forms,
+        missing.length ? `No current form: ${missing.join('; ')}`
+          : facts.formsLeft ? `${plural(facts.formsLeft, 'driver', 'drivers')} left` : null);
     }
 
     if (wants(trip, 'hotel', 'need_hotel')) {

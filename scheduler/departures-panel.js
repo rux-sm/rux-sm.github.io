@@ -75,8 +75,8 @@
   let tomorrow = { legs: 0, ready: 0, known: false };
 
   // -- reading --------------------------------------------------------------
-  const STEPS = ['envelope_printed', 'trip_reminder_sent', 'itinerary_printed', 'hos_form_printed'];
-  const COLUMNS = ['id', 'trip_ref', 'destination', 'customer', 'start_date', 'end_date', 'return_start_date', 'return_end_date',
+  const STEPS = ['envelope_printed', 'trip_reminder_sent', 'itinerary_printed', 'hos_form_printed', 'driver_forms_printed'];
+  const COLUMNS = ['id', 'trip_ref', 'destination', 'customer', 'customer_id', 'start_date', 'end_date', 'return_start_date', 'return_end_date',
     'trip_type', 'confirmed', 'trip_bar_color', 'cancelled_at', 'created_at', 'bus_count', 'return_bus_count', 'po_ref',
     // The money, as follow-up.js reads it, for what the customer still owes.
     'quoted_price', 'contract_status', 'po_received', 'po_amount', 'deposit_amount', 'date_paid', 'balance_paid',
@@ -101,6 +101,8 @@
     ]);
     const setting = new Map(settings.map(s => [s.key, s.value]));
     Facts.setRequirementList(setting.get('requirements-v1'));
+    // The driver forms customers ask for; a refused read asks for none.
+    await Facts.readDriverForms(client).catch(() => false);
     window.SchedulerFollowUp.set(setting.get('follow-up-v1'));
     window.SchedulerBilling.setWorkflow(setting.get('billing-workflow-v1'));
     buses = new Map(busRows.map(b => [b.id, b]));
@@ -219,6 +221,8 @@
     if (where === 'forms' && bus && member?.seat) {
       return { words: 'Print', href: `print.html?form=${FORMS[form]}&assignment=${encodeURIComponent(bus.assign.id)}&driver=${encodeURIComponent(member.seat.id)}` };
     }
+    // A driver's forms are files, opened from the trip's Forms list.
+    if (where === 'trip-forms') return { words: 'Print', href: tripHref(page, '&tab=forms') };
     if (where === 'contacts') return { words: line.key === 'reminder' ? 'Remind' : 'Send', href: tripHref(page, '&open=contacts') };
     if (where === 'billing') return { words: 'Open', href: tripHref(page, '&tab=billing') };
     return null;

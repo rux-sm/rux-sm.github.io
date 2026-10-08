@@ -3129,9 +3129,10 @@
      "the envelope for bus 12 on the way out"; a form that binds the trip and
      the leg stops one step earlier, at "the itinerary for the way out", so the
      legs are read beside the buses. */
-  const TRIP_BUSES_QUERY = 'id,destination,trip_stops(leg),'
+  const TRIP_BUSES_QUERY = 'id,destination,customer_id,start_date,return_start_date,trip_stops(leg),'
     + 'itinerary_printed_outbound,itinerary_printed_return,hos_form_printed_outbound,hos_form_printed_return,'
-    + 'trip_assignments(id,leg,position,buses:bus_id(number),trip_drivers(id,driver_id,envelope_printed))';
+    + 'trip_assignments(id,leg,position,buses:bus_id(number),'
+    + 'trip_drivers(id,driver_id,role,envelope_printed,driver_forms_printed,drivers:driver_id(name,short_name)))';
 
   async function tripBuses(tripId) {
     const client = window.Rux?.account?.client;
@@ -3259,6 +3260,72 @@
         tile.append(...face(form), el('p', 'scheduler-print__tile-need', need));
         tiles.appendChild(tile);
       }
+    }
+
+    /* THE DRIVERS' OWN FORMS, where the trip's customer asks for a kind of
+       driver form, such as a background check. Each is a file the Documents
+       page keeps, not a form this page draws: a row for each driver and kind
+       opens the driver's current one in a new tab, and a driver with none
+       says so and links to the upload. The file prints from the browser's
+       own viewer, which nothing here hears, so Printed under a driver's rows
+       is ticked by hand, on the seat, where the checklist reads it. */
+    const Facts = window.SchedulerLegFacts;
+    const client = window.Rux?.account?.client;
+    if (found?.trip && client && Facts?.readDriverForms && await Facts.readDriverForms(client).catch(() => false)
+      && Facts.formKindsOf(found.trip).length) {
+      const section = el('section', 'scheduler-print__group');
+      const heading = el('h2', 'rux--type-label-01 scheduler-print__group-name', 'Driver forms');
+      heading.id = 'scheduler-print-group-driver-forms';
+      section.setAttribute('aria-labelledby', heading.id);
+      const tiles = el('div', 'scheduler-print__tiles');
+      section.append(heading, tiles);
+      const tripId = encodeURIComponent(found.trip.id);
+      const split = found.legs.length > 1;
+      for (const bus of found.buses) {
+        const leg = bus.leg || 'outbound';
+        for (const seat of seatsOf(bus)) {
+          const who = split ? `${nameOf(seat)}, ${leg === 'return' ? 'pickup leg' : 'drop-off leg'}` : nameOf(seat);
+          const forms = Facts.driverFormsOf(found.trip, leg, seat.driver_id);
+          for (const f of forms) {
+            const row = { icon: '#m-description', short: `${f.kind}, ${who}` };
+            if (f.ok) {
+              const tile = el('a', 'rux--link rux--tile rux--tile--clickable');
+              tile.href = `documents.html?open=${encodeURIComponent(f.form.id)}&trip=${tripId}`;
+              tile.target = '_blank';
+              tile.rel = 'noopener';
+              tile.append(...face(row));
+              tiles.appendChild(tile);
+              continue;
+            }
+            const tile = el('div', 'rux--tile');
+            const need = el('p', 'scheduler-print__tile-need');
+            const upload = el('a', 'rux--link', f.form ? 'It has ended. Upload a new one' : 'None on file. Upload it');
+            upload.href = `documents.html?new&kind=${encodeURIComponent(f.kindId)}&driver=${encodeURIComponent(seat.driver_id)}`;
+            upload.target = '_blank';
+            upload.rel = 'noopener';
+            need.appendChild(upload);
+            tile.append(...face(row), need);
+            tiles.appendChild(tile);
+          }
+          if (!forms.length || !forms.every(f => f.ok)) continue;
+          const mark = { table: 'trip_drivers', rows: [seat], column: 'driver_forms_printed', what: 'form' };
+          const tile = el('div', 'rux--tile');
+          const box = el('div', 'rux--form-item rux--checkbox-wrapper');
+          const input = el('input', 'rux--checkbox');
+          input.type = 'checkbox';
+          input.id = `scheduler-print-forms-${seat.id}`;
+          input.checked = isMarked(mark);
+          const label = el('label', 'rux--checkbox-label');
+          label.htmlFor = input.id;
+          label.appendChild(el('div', 'rux--checkbox-label-text', `Printed for ${who}`));
+          input.addEventListener('change', () => void markPrinted(mark, input.checked,
+            () => { input.checked = isMarked(mark); }));
+          box.append(input, label);
+          tile.appendChild(box);
+          tiles.appendChild(tile);
+        }
+      }
+      if (tiles.children.length) list.appendChild(section);
     }
     hub.replaceChildren(list);
   }

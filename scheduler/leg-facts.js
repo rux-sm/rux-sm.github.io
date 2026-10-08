@@ -3,18 +3,20 @@
    --------------------------------------------------------------------------
    The one reading of a trip's needs, of who rides each bus and of its day-of
    contact, loaded by every Scheduler page, so the to-do list on any page
-   reads a leg as the board does. Four parts:
+   reads a leg as the board does. Five parts:
 
      Needs     the office's requirement list, which of a trip's needs are a
                vehicle's, and where a bus falls short of one
      Crew      the roles an assignment turns on, who fills each and their status
      Contact   a contact as the trip records it, and its day-of contact
+     Forms     the driver forms a trip's customer asks for, and each driver's
      Facts     `factsOf`, what checklist.js is handed for a leg
 
-   Nothing here reads the database or the page. The page that read the
-   office's list hands it to `setRequirementList`, and `factsOf` is handed
-   the buses, the drivers and the driver statuses by whoever read them.
-   Needs requirements.js loaded first.
+   Nothing here reads the page. The page that read the office's list hands
+   it to `setRequirementList`, and `factsOf` is handed the buses, the drivers
+   and the driver statuses by whoever read them. The one read is
+   `readDriverForms`, handed the page's client, so every page asks the same
+   two questions. Needs requirements.js loaded first.
    ========================================================================== */
 (() => {
   'use strict';
@@ -211,16 +213,70 @@
      or null. The card says when there is none. */
   const dayOfContact = trip => [1, 2, 3, 4, 5].map(n => tripContact(trip, n)).find(Boolean) ?? null;
 
+  /* THE DRIVER FORMS A CUSTOMER ASKS FOR. A customer names kinds of
+     document kept once for each driver, such as a background check form, and
+     a trip for that customer wants each of its drivers' current form of each
+     kind. Empty until a page has read them, which asks nothing of any trip. */
+  let formKinds = new Map();   // kind id → name
+  let formAsks = new Map();    // customer id → kind ids
+  let driverForms = [];        // each driver's current documents
+  function setDriverForms({ kinds = [], asks = [], forms = [] } = {}) {
+    formKinds = new Map(kinds.map(k => [k.id, k.name]));
+    formAsks = new Map();
+    for (const a of asks) {
+      if (!formAsks.has(a.customer_id)) formAsks.set(a.customer_id, []);
+      formAsks.get(a.customer_id).push(a.kind_id);
+    }
+    driverForms = forms.filter(f => f.driver_id);
+  }
+  /* Reads what `setDriverForms` takes and hands it over. A read that fails
+     leaves the forms as they were, so a trip is never told it lacks a form
+     the page could not look for. */
+  async function readDriverForms(client) {
+    const [kinds, asks, forms] = await Promise.all([
+      client.from('document_kinds').select('id,name').eq('per_driver', true),
+      client.from('customer_required_kinds').select('customer_id,kind_id'),
+      client.from('company_documents').select('id,kind_id,customer_id,driver_id,ends_on')
+        .is('replaced_at', null).not('driver_id', 'is', null),
+    ]);
+    if (kinds.error || asks.error || forms.error) return false;
+    setDriverForms({ kinds: kinds.data, asks: asks.data, forms: forms.data });
+    return true;
+  }
+  // The day a leg leaves, which a form has to last until.
+  const legDay = (trip, leg) => String((leg === 'return' && trip.return_start_date) || trip.start_date || '').slice(0, 10);
+  // The kinds the trip's customer asks for, in name order.
+  const formKindsOf = trip => (formAsks.get(trip.customer_id) || [])
+    .filter(id => formKinds.has(id))
+    .sort((a, b) => formKinds.get(a).localeCompare(formKinds.get(b)));
+  /* One driver's forms for a leg, a row for each kind asked for: the form
+     issued to the trip's customer, else one issued to nobody, else any, since
+     a district's form covers each of its campuses. `ended` is one whose end
+     date is before the leg leaves; with no form at all, `form` is null. */
+  function driverFormsOf(trip, leg, driverId) {
+    const day = legDay(trip, leg);
+    return formKindsOf(trip).map(kindId => {
+      const mine = driverForms.filter(f => f.driver_id === driverId && f.kind_id === kindId);
+      const form = mine.find(f => f.customer_id === trip.customer_id)
+        || mine.find(f => !f.customer_id) || mine[0] || null;
+      const ended = !!form?.ends_on && !!day && String(form.ends_on).slice(0, 10) < day;
+      return { kindId, kind: formKinds.get(kindId), form, ended, ok: !!form && !ended };
+    });
+  }
+
   /* A leg's buses and seats as its checklist reads them: how many buses it
      needs and has, how many fall short of the trip, the seats open and filled,
      the drivers not confirmed, the envelopes and the itineraries not printed,
      whether a part-time driver rides, how many of them still lack their
-     hours-of-service form, and how many of the leg's buses have no fuel card
-     number yet, which only a trip with a card asks. */
+     hours-of-service form, how many of the leg's buses have no fuel card
+     number yet, which only a trip with a card asks, and, where the customer
+     asks for driver forms, who lacks a current one and how many seats have
+     theirs not printed. */
   function factsOf(trip, leg, { busesById = new Map(), driversById = new Map(), statuses = new Map() } = {}) {
     const assigns = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === leg);
     const busesNeeded = leg === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1);
     const facts = { busesNeeded, busesAssigned: 0, busesShort: 0, seatsOpen: 0, seats: 0, unconfirmed: 0, envelopesLeft: 0, itinerariesLeft: 0, partTime: false, hosLeft: 0,
+      formsWanted: formKindsOf(trip).length, formsMissing: [], formsLeft: 0,
       fuelCardsLeft: Math.max(0, busesNeeded - assigns.filter(a => String(a.fuel_card_number ?? '').trim()).length) };
     for (const a of assigns) {
       if (a.bus_id == null) continue;
@@ -243,6 +299,12 @@
           facts.partTime = true;
           if (!d.hos_form_printed) facts.hosLeft++;
         }
+        if (facts.formsWanted) {
+          const lacking = driverFormsOf(trip, leg, d.driver_id).filter(f => !f.ok);
+          const who = driversById.get(d.driver_id);
+          for (const f of lacking) facts.formsMissing.push(`${who?.short_name || who?.name || 'A driver'}, ${f.kind}`);
+          if (!lacking.length && !d.driver_forms_printed) facts.formsLeft++;
+        }
       }
     }
     return facts;
@@ -252,5 +314,6 @@
     REQUIREMENTS, setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
     needIds, requirementsOf, shortfall, needsFor, wrongType,
     ROLES, DRIVER_STATUSES, statusKey, activeRolesOf, crewOf, tripContact, dayOfContact, factsOf,
+    setDriverForms, readDriverForms, formKindsOf, driverFormsOf,
   };
 })();

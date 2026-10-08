@@ -438,9 +438,10 @@
     // The roles an assignment turns on, and who fills them: the drivers row.
     // The Buses tab edits each seat by its row id, with its relief swap time and
     // note, and each vehicle's own needs and type. A seat also carries what
-    // its driver has been handed: the envelope, the itinerary and the
-    // hours-of-service form, each printed or not.
-    'trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed,itinerary_printed,hos_form_printed,trip_reminder_sent,trip_reminder_sent_at))',
+    // its driver has been handed: the envelope, the itinerary, the
+    // hours-of-service form and the forms the customer asks for, each
+    // printed or not.
+    'trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed,itinerary_printed,hos_form_printed,driver_forms_printed,trip_reminder_sent,trip_reminder_sent_at))',
     // The driver details sent to the booking contact, or not, which the Contact list says and marks.
     'trip_prep(driver_info_sent,driver_info_sent_at)',
     // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
@@ -650,6 +651,9 @@
           window.SchedulerVehicles?.set(byKey.get('vehicle-types-v1'));
           setFollowUp(byKey.get('follow-up-v1'));
         }),
+      // The driver forms customers ask for, which the checklist reads. A
+      // refused read keeps what was there.
+      window.SchedulerLegFacts.readDriverForms(client).catch(() => false),
     ]));
     // The fleet is never empty, so an empty one is a read the database refused,
     // which is what an ended log-in or removed access looks like; a reload

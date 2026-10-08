@@ -8,7 +8,11 @@
    pickup picked from the saved locations, and a bill-to address only when
    bills go somewhere else. The address itself lives on the location, so it is
    typed once. Contacts link to a customer from their own page, and a customer
-   a contact or a trip names is never deleted.
+   a contact, a trip or a document names is never deleted.
+
+   A customer also says which kinds of driver form it asks for on its trips,
+   kept in `customer_required_kinds`, and its Documents tab lists the
+   documents issued to it, which the Documents page uploads and edits.
    ========================================================================== */
 (() => {
   'use strict';
@@ -172,8 +176,61 @@
     usual_location_id: pickupId,
     bill_to: billField.value.trim() || null,
   });
-  const snapshot = () => JSON.stringify([readForm(), pickupId ? '' : pickupText]);
+  const snapshot = () => JSON.stringify([readForm(), pickupId ? '' : pickupText, [...wanted].sort()]);
   const dirty = () => baseline !== '' && snapshot() !== baseline;
+
+  /* The driver forms this customer asks for: one checkbox for each kind kept
+     once for each driver. `required` is what the database holds and `wanted`
+     what is ticked, which Save makes the database match. */
+  let formKinds = [];         // the kinds kept once for each driver
+  let required = new Set();   // kind ids, as saved
+  let wanted = new Set();     // kind ids, as ticked
+  let papers = [];            // the documents issued to this customer
+  async function readPapers(id) {
+    const [kinds, asks, docs] = await Promise.all([
+      client.from('document_kinds').select('id,name,per_driver').order('name'),
+      id ? client.from('customer_required_kinds').select('kind_id').eq('customer_id', id) : { data: [] },
+      id ? client.from('company_documents').select('id,kind_id,ends_on,note,file_name,replaced_at,created_at')
+        .eq('customer_id', id).order('created_at', { ascending: false }) : { data: [] },
+    ]);
+    if (kinds.error || asks.error || docs.error) throw kinds.error || asks.error || docs.error;
+    const names = new Map((kinds.data || []).map(k => [k.id, k.name]));
+    formKinds = (kinds.data || []).filter(k => k.per_driver);
+    required = new Set((asks.data || []).map(r => r.kind_id));
+    wanted = new Set(required);
+    papers = (docs.data || []).map(d => ({ ...d, kind: names.get(d.kind_id) || 'Document' }));
+  }
+  function drawForms() {
+    $('scheduler-cu-forms-group').hidden = !formKinds.length;
+    $('scheduler-cu-forms').replaceChildren(...formKinds.map(k => {
+      const item = el('div', 'rux--form-item rux--checkbox-wrapper');
+      const box = el('input', 'rux--checkbox');
+      box.type = 'checkbox';
+      box.id = `scheduler-cu-form-${k.id}`;
+      box.checked = wanted.has(k.id);
+      box.addEventListener('change', () => { if (box.checked) wanted.add(k.id); else wanted.delete(k.id); });
+      const label = el('label', 'rux--checkbox-label');
+      label.setAttribute('for', box.id);
+      label.appendChild(el('div', 'rux--checkbox-label-text', k.name));
+      item.append(box, label);
+      return item;
+    }));
+  }
+  // Makes the database's rows match the ticks: the new ones in, the others out.
+  async function saveForms(id) {
+    const add = [...wanted].filter(k => !required.has(k));
+    const drop = [...required].filter(k => !wanted.has(k));
+    if (add.length) {
+      const { error } = await client.from('customer_required_kinds')
+        .upsert(add.map(kind_id => ({ customer_id: id, kind_id })), { onConflict: 'customer_id,kind_id', ignoreDuplicates: true });
+      if (error) throw error;
+    }
+    if (drop.length) {
+      const { error } = await client.from('customer_required_kinds').delete().eq('customer_id', id).in('kind_id', drop);
+      if (error) throw error;
+    }
+    required = new Set(wanted);
+  }
 
   /* The usual pickup: Carbon's combo box over every saved location, the name
      over the address. Design's list-box.js filters the options as the field
@@ -239,7 +296,9 @@
     pickupId = c.usual_location_id ?? null;
     pickupText = places.get(pickupId)?.name ?? '';
     billField.value = c.bill_to ?? '';
+    wanted = new Set(required);
     drawPickup();
+    drawForms();
     showNameError('');
   }
 
@@ -299,6 +358,40 @@
     }
   }
 
+  // ── documents, read only ──
+  const day = s => { const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); };
+  function drawDocuments() {
+    const list = $('scheduler-customer-documents');
+    list.replaceChildren();
+    const here = loaded ? encodeURIComponent(loaded.id) : '';
+    $('scheduler-customer-documents-upload').href = `documents.html?new&customer=${here}`;
+    $('scheduler-customer-documents-all').href = `documents.html?customer=${here}`;
+    // The current copies; the Documents page shows the old ones.
+    const mine = papers.filter(d => !d.replaced_at);
+    if (!mine.length) {
+      const li = el('li', 'rux--contained-list-item');
+      li.appendChild(el('div', 'rux--contained-list-item__content scheduler-pair-note', 'No documents yet.'));
+      list.appendChild(li);
+      return;
+    }
+    const today = new Date(new Date().toDateString());
+    for (const d of mine) {
+      const li = el('li', 'rux--contained-list-item rux--contained-list-item--clickable');
+      const a = el('a', 'rux--contained-list-item__content scheduler-pair-trip');
+      a.href = `documents.html?open=${encodeURIComponent(d.id)}`;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      const ends = !d.ends_on ? null
+        : `${day(d.ends_on) < today ? 'Ended' : 'Ends'} ${day(d.ends_on).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+      const lines = el('span', 'scheduler-pair-item');
+      lines.appendChild(el('span', 'scheduler-pair-item__main', d.kind));
+      lines.appendChild(el('span', 'scheduler-pair-item__detail', [ends, d.note || d.file_name].filter(Boolean).join(' · ')));
+      a.appendChild(lines);
+      li.appendChild(a);
+      list.appendChild(li);
+    }
+  }
+
   // ── delete ──
   let tripCount = null;     // trips naming this customer, once read
   async function readTripCount() {
@@ -313,7 +406,7 @@
     const section = $('scheduler-customer-delete-section');
     section.hidden = !loaded;
     if (!loaded) return;
-    const n = peopleOf(loaded).length;
+    const n = peopleOf(loaded).length + papers.length;
     const blocked = n > 0 || tripCount !== 0;
     $('scheduler-customer-delete').disabled = blocked;
     $('scheduler-customer-delete-text').textContent = tripCount === null
@@ -321,8 +414,8 @@
       : tripCount < 0
         ? "The trips didn't load, so this customer can't be deleted now."
         : n > 0 || tripCount > 0
-          ? "A contact or a trip names this customer, so it can't be deleted."
-          : 'No contact or trip names this customer.';
+          ? "A contact, a trip or a document names this customer, so it can't be deleted."
+          : 'No contact, trip or document names this customer.';
   }
   // The Delete button opens its modal from markup, `data-rux-open`.
   $('scheduler-customer-delete-confirm')?.addEventListener('click', async () => {
@@ -362,14 +455,17 @@
     await readAllLists();
     if (!customerId) {
       loaded = null;
+      await readPapers(null);
       fillForm({});
     } else {
       loaded = customers.find(c => String(c.id) === customerId) || null;
       if (!loaded) return false;
+      await readPapers(loaded.id);
       fillForm(loaded);
     }
     drawTitle();
     drawContacts();
+    drawDocuments();
     baseline = snapshot();
     $('scheduler-customer').hidden = false;
     if (loaded) readTripCount();
@@ -399,6 +495,9 @@
       loaded = await window.SchedulerPair.saveRecord(client, 'customers',
         { id: id ?? newId, creating: !id, row, columns: COLUMNS });
       id = loaded.id;
+      // Before the save counts as written, so a failure here says to try
+      // again, and the next Save, an update by then, sends the ticks again.
+      await saveForms(id);
       wrote = true;
       // rux-ui shows a contact's organization as text, so its contacts take
       // the new spelling with it. An update that fails is tried again on the
@@ -440,9 +539,11 @@
     if (!data) throw new Error('Customer not found');
     loaded = data;
     customers = [...customers.filter(c => c.id !== id), data];
+    await readPapers(id);
     fillForm(loaded);
     drawTitle();
     drawContacts();
+    drawDocuments();
     baseline = snapshot();
     readTripCount();
   }

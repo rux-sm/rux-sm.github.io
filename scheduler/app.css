@@ -4493,6 +4493,14 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-departures__when { flex: none; color: var(--rux-text-secondary); font-size: 0.75rem; }
 .scheduler-departures__face { flex: none; }
 
+/* A row of links under a read-only list, as a customer's Documents tab has. */
+.scheduler-pair-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--rux-spacing-05);
+}
+
 /* ── The Documents page ─────────────────────────────────────────────────────
    Its list and record are the page pairs'. These are what it has alone. */
 /* Show old sits in the band before the buttons, centred on them, as wide as

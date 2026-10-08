@@ -86,8 +86,6 @@ None open.
 - [ ] Read one background check PDF, kept outside this repository, and decide
       how its campus and date are written: into its own boxes, or as text
       placed on the page.
-- [ ] List a customer's documents on its page in `customers.html`, with the
-      Driver forms required pick.
 - [ ] Write the campus and trip date onto the form's copy when it is opened
       from a trip.
 - [ ] Add the driver form rows to a trip's Forms list and the item to
@@ -95,6 +93,6 @@ None open.
       `scheduler/tools/check-checklist.mjs`.
 - [ ] Add `find_documents` to the connector, deploy it, and describe it in
       the database inventory and `working-from-claude.md`.
-- [ ] Check in Chrome on :8641: a customer's Documents tab, a trip's driver
-      form rows and checklist item, then ask the Claude app for a document.
+- [ ] Check in Chrome on :8641 a trip's driver form rows and checklist item,
+      then ask the Claude app for a document.
 - [ ] Upload the current documents, reading each one's end date from the file.

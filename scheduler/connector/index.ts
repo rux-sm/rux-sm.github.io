@@ -64,6 +64,9 @@ const DRAFT_FIELDS = new Set([
   'trip_contact_2_name', 'trip_contact_2_phone',
   'quoted_price', 'deposit_amount', 'po_ref', 'po_amount',
   'req_sleeper', 'req_56pax', 'req_ada', 'need_hotel', 'need_fuel_card',
+  // How many people travel, the email thread's address in Missive, and the
+  // places between the pickup and the drop-off, which only a new trip takes.
+  'passengers', 'booking_contact_missive_url', 'stops',
 ])
 
 const ISO_DATE = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'a date as YYYY-MM-DD')
@@ -432,7 +435,11 @@ Deno.serve(
         // back a link, and the scheduler's own Save is still the only writer.
         const draftShape = {
           fields: z.record(z.string(), z.unknown())
-            .describe(`Only the trip fields you are sure of. Allowed: ${[...DRAFT_FIELDS].join(', ')}.`),
+            .describe(`Only the trip fields you are sure of. Allowed: ${[...DRAFT_FIELDS].join(', ')}. ` +
+              'stops is the places between the pickup and the drop-off, in the order the bus reaches them, ' +
+              'each { name, address, arrive, leave } with a name or an address and times as HH:MM; ' +
+              'on a round trip the destination is one of them. The editor lays them out on the Route tab, ' +
+              'sets a place that is a saved location, and leaves any other for the person to choose from its list.'),
           notes: z.string().max(2000).optional()
             .describe('What you could not work out, shown at the top of the editor.'),
         }
@@ -446,6 +453,23 @@ Deno.serve(
             )
           }
           if (!Object.keys(fields).length) throw new Error('A draft with no fields is nothing to check.')
+          if ('stops' in fields) {
+            const clock = (t: unknown) => t == null || /^\d{1,2}:\d{2}$/.test(String(t))
+            const stops = fields.stops
+            const fits = Array.isArray(stops) && stops.length <= 30 && stops.every((s) => {
+              const stop = s as Record<string, unknown> | null
+              return !!stop && typeof stop === 'object'
+                && (typeof stop.name === 'string' || typeof stop.address === 'string')
+                && clock(stop.arrive) && clock(stop.leave)
+            })
+            if (!fits) {
+              throw new Error('stops is a list of up to 30 places, each { name, address, arrive, leave }: a name or an address, and times as HH:MM.')
+            }
+          }
+          const thread = fields.booking_contact_missive_url
+          if (thread != null && !/^https:\/\/mail\.missiveapp\.com\//.test(String(thread))) {
+            throw new Error('booking_contact_missive_url is the thread\'s address in Missive, starting https://mail.missiveapp.com/.')
+          }
         }
 
         async function saveDraft(row: Record<string, unknown>) {
@@ -484,6 +508,8 @@ Deno.serve(
           },
           async ({ trip_id, fields, notes }) => {
             checkFields(fields)
+            // A trip that exists has its stops already; a draft would add them again.
+            if ('stops' in fields) throw new Error('stops can be drafted only on a new trip. Change an existing trip\'s stops on its Route tab.')
             const trip = orThrow(await supabase.from('trips').select('id').eq('id', trip_id).maybeSingle())
             if (!trip) throw new Error('No such trip, or it is not one you can see.')
             return saveDraft({ trip_id, fields, notes: notes ?? null })

@@ -88,7 +88,10 @@ matches each thread to its trip and adds the rows. How it does that is the
 - It never writes or changes a trip. Only Save in the editor does. The To do
   list's rows are the one thing it writes itself.
 - A draft can fill only the trip fields the connector lists. Anything else is
-  refused, with the list, rather than written.
+  refused, with the list, rather than written. A new trip's draft can carry
+  its stops, which the editor lays out on the Route tab marked to check: a
+  place that is a saved location is set to it, and any other waits to be
+  chosen from its list.
 - It cannot confirm a trip, mark one paid, assign a bus or a driver, or touch
   a document.
 - An unopened draft is deleted after 14 days.

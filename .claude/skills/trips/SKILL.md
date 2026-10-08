@@ -49,14 +49,19 @@ reads only the ones before it. Nothing is written until step 10.
 2. **Look up.** `find_trips` for a placeholder on the same customer and day
    (`rules.md`) and for the customer's other trips; `find_contacts` for the
    saved booking contact; `find_availability` for the day's free buses.
-3. **Draft.** `draft_trip` with the fields you are sure of, and the stops and
-   anything with no field in its notes. Open the link at
+3. **Draft.** `draft_trip` with the fields you are sure of: `passengers`,
+   the thread's address as `booking_contact_missive_url`, and `stops`, the
+   places between the pickup and the drop-off in order, each with its name,
+   address and arrive and leave times. Anything with no field goes in its
+   notes. Open the link at
    `http://localhost:8641/scheduler/?draft=<id>`. The link opens once, so the
    tab stays open until the save.
 4. **Details.** Check each field with a blue bar against the email.
 5. **Route.** Pick the pickup, by name first. Set Spot when the itinerary
-   gives a meeting time. Add each timed stop with its arrival and leaving
-   times. Read the Summary. On a second-driver notice follow `rules.md`:
+   gives a meeting time. The drafted stops are laid out, each with a blue
+   bar: check each against the itinerary and press Done in its window. One
+   marked No location opens with its address searched, to choose from the
+   list. Read the Summary. On a second-driver notice follow `rules.md`:
    press Rest in the sleeper when it is offered, which sets that wait to
    sleeper berth and the Sleeper need on the leg's vehicles, and bring the
    second driver to rux only when the notice offers the co-driver alone. Add
@@ -78,7 +83,7 @@ reads only the ones before it. Nothing is written until step 10.
    and what made it, the bus, exactly what Save will write, and only the
    questions `rules.md` leaves open. Wait for his yes.
 10. **Save.** Add the itinerary on the Files tab, where a new trip's file
-    waits and goes up with the save. Link the email thread, press Mark route done and Mark buses
+    waits and goes up with the save. Press Mark route done and Mark buses
     done, press Save, keep the update box's line, "Quote not sent", and its
     Pin this update tick, which pins it in the same save, and answer the
     lists prompt by `rules.md`.

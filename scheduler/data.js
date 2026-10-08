@@ -5997,6 +5997,8 @@
   }
   // The open Route tab's redraw, for a change to the route times or the seats.
   let routeTimesDrawn = null;
+  // The open Route tab's taking of a draft's stops; it returns those still to choose.
+  let routeTakesStops = null;
 
   /* THE FUEL CARD LIMITS, the office's, kept in `settings` as `fuel-card-v1`:
      a trip longer than either suggests a fuel card on its Route tab. */
@@ -7172,6 +7174,8 @@
         const link = /^https?:\/\//i.test(value) ? value : '';
         if (link) { openThread.href = link; bookingMenu.before(openThread); } else openThread.remove();
       };
+      // A draft types the thread in, and the open icon follows the field.
+      threadField.addEventListener('input', () => setThread(threadField.value.trim()));
       bookingMenu.addEventListener('click', () => openRowMenu(bookingMenu, {
         editText: threadField.value.trim() ? 'Change email thread' : 'Add email thread',
         edit: () => askThread(threadField.value.trim(), value => {
@@ -7659,6 +7663,29 @@
       const listNote = note(canList ? '' : "This leg has no pickup or yard row, so stops can't be added here.");
       // A change to the route times redraws the figures; a new spot applies when Departs is next typed.
       routeTimesDrawn = () => drawTotals();
+      /* A DRAFT'S STOPS go into the list in the order given, each marked to
+         check. A place that is a saved location, by its address or its name,
+         is set to that location. Any other keeps its words and has no point
+         on the map until the person chooses it from its list, which its
+         window opens ready to search, so it is named in the draft's notice. */
+      routeTakesStops = stops => {
+        const { from } = routeDates(r.leg);
+        const time = t => (/^\d{1,2}:\d{2}/.test(String(t ?? '')) ? String(t).slice(0, 5).padStart(5, '0') : null);
+        const unpicked = [];
+        for (const s of stops) {
+          const name = String(s?.name ?? '').trim(), address = String(s?.address ?? '').trim();
+          if (!name && !address) continue;
+          const loc = savedLocationOf({ address })
+            ?? (name ? (panelIndex.locations || []).find(l => folded(l.name) === folded(name)) : null) ?? null;
+          if (!loc) unpicked.push(`stop ${r.list.length + 1}${name ? `, ${name}` : ''}`);
+          r.list.push({ id: null, open: null, placeChanged: true,
+            place: loc ? savedAsPlace(loc) : { ...placeOf({}), name: name || address, address: address || null },
+            arrive: time(s.arrive), leave: time(s.leave), date: isoOrNull(s.date ?? '') ?? from, leaveDate: null,
+            dwell: 'on', drive: null, miles: null, driveChanged: false, drafted: true });
+        }
+        touch();
+        return unpicked;
+      };
       stopsBody.append(stopsList.list, listNote);
 
       /* A stop with no point on the map, a restroom break on the road, is
@@ -7765,6 +7792,8 @@
             mark.classList.add('scheduler-route-dwell');
             row.querySelector('.scheduler-item__meta').appendChild(mark);
           }
+          // A stop a draft laid out is marked to check until its window is Done.
+          if (st.drafted) row.classList.add('scheduler-drafted');
           // No location is about the place, so it ends the name's line.
           if (!here) {
             row.querySelector('.scheduler-item__line').appendChild(warnLine('No location'));
@@ -7918,8 +7947,12 @@
         name.style.display = 'none';
         /* Words typed and not picked, such as "Restroom break", name a stop
            with no location: it has no address and no point on the map. */
+        /* A stop a draft laid out with no point on the map: its address is
+           searched as the window opens, so its list is there to choose from,
+           and the name the draft gave it stays the stop's over the map's. */
+        const draftedPlace = st.drafted && st.place && st.place.lat == null ? st.place : null;
         const where = placeSearch('scheduler-f-stopaddr', 'Location', st.place, (place, typed) => {
-          setVal('scheduler-f-stopname', place ? place.name ?? '' : typed ?? '');
+          setVal('scheduler-f-stopname', place ? draftedPlace?.name ?? place.name ?? '' : typed ?? '');
           picked = place ? { ...place } : (typed ? { ...placeOf({}), name: typed } : null);
         });
         where.classList.add('scheduler-dialog-grid__wide');
@@ -7978,7 +8011,10 @@
         stopDone = () => {
           // Words left in the search and not picked name a stop with no location.
           const typedWhere = whereInput.value.trim();
-          if (!picked && typedWhere) picked = { ...placeOf({}), name: typedWhere };
+          if (!picked && typedWhere) {
+            picked = { ...placeOf({}), name: typedWhere,
+              address: draftedPlace && typedWhere === draftedPlace.address ? typedWhere : null };
+          }
           const typedName = val('scheduler-f-stopname') || null;
           const place = picked || typedName
             ? { ...(picked ?? placeOf({})), name: typedName ?? picked?.name ?? null } : null;
@@ -7996,6 +8032,7 @@
             date: document.getElementById('scheduler-f-stopday')?.value || st.date || from,
             leaveDate: document.getElementById('scheduler-f-stopleaveday')?.value || null,
             dwell: document.getElementById('scheduler-f-stopdwell')?.value || null,
+            drafted: false,
           };
           if (index === null) r.list.push(next); else r.list[index] = next;
           /* The list is the order Save writes, so it is kept in time order: by
@@ -8015,6 +8052,12 @@
           touch();
         };
         window.Rux?.modal?.open?.('scheduler-stop-modal');
+        if (draftedPlace?.address) {
+          whereInput.value = draftedPlace.address;
+          whereInput.dispatchEvent(new Event('input', { bubbles: true }));
+          setVal('scheduler-f-stopname', draftedPlace.name ?? '');
+          whereInput.focus();
+        }
       }
 
       // "4 h 03", "4 h" or "31 min", as the Summary writes a length of time.
@@ -14818,6 +14861,9 @@
     return_start_date: { id: 'scheduler-f-rstart', kind: 'date' },
     return_end_date: { id: 'scheduler-f-rend', kind: 'date' },
     trip_type: { id: 'scheduler-f-type', kind: 'select' },
+    passengers: { id: 'scheduler-f-passengers', kind: 'text' },
+    // The email thread's address, behind the Booking contact's open icon.
+    booking_contact_missive_url: { id: 'scheduler-f-cthread', kind: 'text' },
     // What the vehicle is and needs goes to the trip's first vehicle.
     vehicle_type: { kind: 'fleet' },
     req_sleeper: { kind: 'fleet', need: 'sleeper' },
@@ -14885,6 +14931,12 @@
     const missed = [];
     const unpicked = [];
     for (const [key, value] of Object.entries(fields || {})) {
+      // The stops between the pickup and the drop-off, laid out on the Route tab.
+      if (key === 'stops') {
+        if (!Array.isArray(value) || !routeTakesStops) { missed.push([key, JSON.stringify(value)]); continue; }
+        unpicked.push(...routeTakesStops(value));
+        continue;
+      }
       const control = DRAFT_CONTROLS[key];
       if (control?.kind === 'trip') {
         if (!editing) { missed.push([key, value]); continue; }

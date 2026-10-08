@@ -182,13 +182,6 @@ Each tab answers one question and reads only the tabs before it:
 
 ## Tasks
 
-- [ ] Add `stops`, `booking_contact_missive_url` and `passengers` to the
-      fields a draft may fill in `scheduler/connector/index.ts`, and deploy
-      the connector with the editor change that lays them out.
-- [ ] Teach `applyDraft` in `scheduler/data.js` to lay drafted stops out on
-      the Route tab, set each place that matches a saved location, link the
-      thread and fill the passenger count, each marked to check, with
-      unpicked places named in the notice.
 - [ ] Rewrite the trips skill's Entering a trip steps and traps to match
       what was built, and point `rules.md` at the Settings page for every
       rate rule it restates.

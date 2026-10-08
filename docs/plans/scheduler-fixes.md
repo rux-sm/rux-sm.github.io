@@ -159,7 +159,6 @@ site.
 
 ### Small fixes, each by itself
 
-- [ ] Narrow `get_driver_share_trips` to itinerary files, as SQL on a yes.
 - [ ] Make a repeated `add_to_do` change only what it is given, make
       `find_trips` say when it cut its list, and deploy the connector.
 - [ ] Hold Save while a leg ends before it starts, with a line under the

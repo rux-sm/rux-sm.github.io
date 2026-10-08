@@ -11,7 +11,7 @@
    Everything comes through token-checked functions, so the page keeps
    working once the database admits only staff:
      get_driver_schedule_share       the driver, the legs and the link's dates
-     get_driver_share_trips          the trips with stops, crew and documents
+     get_driver_share_trips          the trips with stops, crew and itinerary files
      get_driver_assignment_statuses  each answer
      get_driver_accepted_views       what each accepted card showed
      confirm_ / decline_trip_assignment, record_driver_accepted_view

@@ -198,6 +198,8 @@ reads only the ones before it. Nothing is written until step 10.
 - On a new trip the Files tab holds a file until Save sends it. The upload tool cannot read the Desktop: copy the PDF to the session's scratch folder, press Add file from the page's script so no file dialog opens, give the copy to the hidden file input, choose its type, then delete the copy.
 - Forms draws the saved trip, never what the editor holds: it is off on a new trip until its first save, and on a placeholder being filled in its sheets leave out every change not yet saved.
 - A click by `ref` on a tab that is not showing does nothing: take a screenshot to see which tab is open before pressing a button on it.
+- `draft_trip_change` refuses `stops`, which are drafted only on a new trip: on a placeholder add each stop with the Route tab's Add stop.
+- The Route tab redraws its list as each drive is measured, so a `ref` read before a stop's Done is gone after it: scroll the tab to its end and press Add stop from a fresh screenshot.
 
 ## When rux teaches something new
 

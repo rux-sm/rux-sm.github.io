@@ -85,9 +85,6 @@ None open.
 
 ## Tasks
 
-- [ ] Apply the SQL for each step's time and who, a driver's own itinerary
-      and HOS marks, and `trip_prep`, as a named migration on rux's yes, then
-      check its grants on the live database.
 - [ ] Have the checklist read the itinerary and the HOS form from each
       driver, in the commit that makes the Forms page mark them there.
 - [ ] Give each bus its own fuel card: the SQL shown to rux, and the card

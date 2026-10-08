@@ -89,8 +89,6 @@ None open.
       driver, in the commit that makes the Forms page mark them there.
 - [ ] Give each bus its own fuel card: the SQL shown to rux, and the card
       entered in the bus's window on the Buses tab.
-- [ ] Write `scheduler/departures.js` and `scheduler/tools/check-departures.mjs`
-      with sample trips, in the check.
 - [ ] Ask after a print on the Forms page whether to mark it, and store a Yes.
 - [ ] Ask after Remind and Driver info in the Contact list, store a Yes, and
       give each a tick to take it back.

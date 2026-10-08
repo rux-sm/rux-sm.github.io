@@ -155,7 +155,5 @@ None open.
 
 - [ ] Give Ruxbot its picture: the file put in `profile-photos` from a staff
       session and its path set on the profile by SQL, each on rux's yes.
-- [ ] Write the review skill: reading the team inbox, checking each thread
-      against the schedule, and adding, changing and closing rows.
 - [ ] Tick a row attached to a trip on rux's yes, and read the entry it makes
       on the History page.

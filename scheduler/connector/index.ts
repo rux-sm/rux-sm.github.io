@@ -40,6 +40,11 @@ const TRIP_DETAIL = [
   'trip_contact_5_phone', 'req_sleeper', 'req_56pax', 'req_ada',
   'need_hotel', 'need_fuel_card', 'trip_reqs', 'itinerary_confirmed',
   'is_self_organized', 'cancellation_reason', 'updated_at',
+  // What a save writes to the Details and Billing tabs and the three Done
+  // marks, so a session reads its own save back.
+  'passengers', 'quote_sent_price', 'quote_sent_on',
+  'route_done_at', 'route_done_by', 'buses_done_at', 'buses_done_by',
+  'billing_done_at', 'billing_done_by',
 ].join(', ')
 
 // The only trip fields a draft may fill. Anything else is refused, so a draft
@@ -166,6 +171,50 @@ function tripWarnings(
   return warnings
 }
 
+/**
+ * A one-day leg's rows keep the leg's own date on a time past midnight. This
+ * counts the day as the Route tab does: down the times in order, one earlier
+ * than the one before it is the next day's, and the day the group leaves the
+ * pickup is the leg's. A time on another day gains `<time>_on`, its real
+ * day; the row's own date is left as saved.
+ */
+function markPastMidnight<T extends {
+  leg: string; position: number; type?: string | null
+  depart_prev?: string | null; arrive?: string | null; spot?: string | null
+}>(trip: TripLegs, stops: T[]) {
+  const minutes = (t?: string | null) => {
+    const m = /^(\d{1,2}):(\d{2})/.exec(String(t ?? ''))
+    return m ? Number(m[1]) * 60 + Number(m[2]) : null
+  }
+  const dayAfter = (day: string, n: number) => {
+    const d = new Date(`${day}T00:00:00Z`)
+    d.setUTCDate(d.getUTCDate() + n)
+    return d.toISOString().slice(0, 10)
+  }
+  for (const l of legsOf(trip)) {
+    if (!l.start || l.start !== l.end) continue
+    const rows = stops.filter((s) => s.leg === l.leg).sort((a, b) => a.position - b.position)
+    const seen: { row: T; key: 'depart_prev' | 'spot' | 'arrive'; days: number }[] = []
+    let last: number | null = null, days = 0, start: number | null = null
+    for (const row of rows) {
+      for (const key of ['depart_prev', 'spot', 'arrive'] as const) {
+        const n = minutes(row[key])
+        if (n == null) continue
+        if (last != null && n < last) days += 1
+        last = n
+        // The group leaves the pickup at the first stop's departure.
+        if (start == null && key === 'depart_prev' && row.type !== 'pickup') start = days
+        seen.push({ row, key, days })
+      }
+    }
+    for (const t of seen) {
+      const off = t.days - (start ?? 0)
+      if (off !== 0) (t.row as Record<string, unknown>)[`${t.key}_on`] = dayAfter(l.start, off)
+    }
+  }
+  return stops
+}
+
 Deno.serve(
   pipeline(
     [withOAuthProtectedResource(), withSupabase({ auth: 'user' })],
@@ -205,7 +254,7 @@ Deno.serve(
           {
             title: 'Get one trip',
             description:
-              'One trip in full, with the buses and drivers on it, its stops, and warnings: a leg short of buses, or a stop dated outside its leg. An amber trip_bar_color (or its old names orange and yellow) is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. pinned_update, when there is one, is what everyone should know about the trip, the update pinned to the top of its card. Give either a trip id or a trip reference.',
+              'One trip in full, with the buses and drivers on it, its stops, its quote lines, and warnings: a leg short of buses, or a stop dated outside its leg. An amber trip_bar_color (or its old names orange and yellow) is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. pinned_update, when there is one, is what everyone should know about the trip, the update pinned to the top of its card. quote_lines are the Billing tab\'s lines, which add up to quoted_price; route_done_at, buses_done_at and billing_done_at say when each tab was marked Done, and quote_sent_price and quote_sent_on what the customer was sent. On a one-day leg a stop\'s time past midnight also has depart_prev_on, spot_on or arrive_on, the day it falls on. Give either a trip id or a trip reference.',
             inputSchema: z.object({
               trip_id: z.string().uuid().optional(),
               trip_ref: z.string().max(40).optional(),
@@ -228,12 +277,20 @@ Deno.serve(
               .select('leg, position, type, label, name, address, depart_prev, depart_prev_date, arrive, arrive_date, spot, spot_date, miles, drive, dwell_status')
               .eq('trip_id', trip.id).order('leg').order('position'))
 
+            // The Billing tab's lines, which add up to `quoted_price`.
+            const quote_lines = orThrow(await supabase.from('trip_quote_lines')
+              .select('position, kind, leg, item, description, quantity, cost, amount, miles, dead_miles, rate')
+              .eq('trip_id', trip.id).order('position'))
+
             // The one update pinned to the top of the trip's card.
             const pinned_update = orThrow(await supabase.from('trip_updates')
               .select('body, created_at, actor_name')
               .eq('trip_id', trip.id).not('pinned_at', 'is', null).maybeSingle())
 
-            return answer({ trip, pinned_update, warnings: tripWarnings(trip, buses, stops), buses, stops })
+            return answer({
+              trip, pinned_update, warnings: tripWarnings(trip, buses, stops), buses,
+              stops: markPastMidnight(trip, stops), quote_lines,
+            })
           },
         )
 

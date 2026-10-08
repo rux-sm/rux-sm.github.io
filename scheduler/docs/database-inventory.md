@@ -192,7 +192,7 @@ own page at `/oauth/consent/`; Supabase hosts none.
 
 **Six tools read**, each on the tables above: `find_trips`, which also
 matches the booking contact's name and email; `get_trip`, on `trips` with its
-assignments, drivers and stops, the Email thread link, its pinned update, and warnings for a leg
+assignments, drivers, stops and quote lines, the Email thread link, its pinned update, the passenger count, Quote sent and the three Done marks, the day a one-day leg's time past midnight falls on, and warnings for a leg
 short of buses or a stop dated outside its leg; `find_availability`, which
 reads the trips running across a range and subtracts their buses and drivers,
 then `bus_out_of_service` and `driver_time_off`, and lists each running trip

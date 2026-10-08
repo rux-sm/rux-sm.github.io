@@ -204,10 +204,8 @@ Each tab answers one question and reads only the tabs before it:
       `linesFromCalculator` does, and open the calculator with both
       dead-mile ticks on.
 - [ ] Add `stops`, `booking_contact_missive_url` and `passengers` to the
-      fields a draft may fill in `scheduler/connector/index.ts`, return
-      `passengers`, the quote lines, the three Done marks and Quote sent
-      from `get_trip`, mark a one-day leg's time past midnight there as the
-      next day's, and deploy the connector.
+      fields a draft may fill in `scheduler/connector/index.ts`, and deploy
+      the connector with the editor change that lays them out.
 - [ ] Teach `applyDraft` in `scheduler/data.js` to lay drafted stops out on
       the Route tab, set each place that matches a saved location, link the
       thread and fill the passenger count, each marked to check, with

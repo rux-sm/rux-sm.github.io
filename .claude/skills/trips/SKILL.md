@@ -147,8 +147,9 @@ rewrites this section as each change is built.
   and why.
 - "Update your lists?" after a save offers to add new places to Locations:
   choose Not now unless rux asked for it.
-- Check with `get_trip` that it landed. Quote lines and Done marks are not in
-  the connector; the bar's check mark shows all three Done.
+- Check with `get_trip` that it landed: `quote_lines`, `quote_sent_price`,
+  the three `_done_at` marks and `passengers` are in it, and a time past
+  midnight on a one-day leg has `arrive_on` or `depart_prev_on`, its real day.
 - If Chrome disconnects mid-save, look at the page before doing anything
   again, so nothing is saved twice.
 

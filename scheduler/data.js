@@ -5512,9 +5512,9 @@
   const defaultRate = () => quoteRates?.mileage.find(m => m.is_default)?.rate ?? null;
 
   /* A leg's miles, dead miles and days, and its miles a day as the quote
-     calculator prices them. The Route tab's own leg reads the Summary's rows,
-     from the drives it has looked up since the trip opened; the other leg
-     reads its saved stops, spread over its days. Estimated miles stand in
+     calculator prices them. The Route tab's own leg reads the Summary's rows
+     and total, from the drives it has looked up since the trip opened; the
+     other leg reads its saved stops, spread over its days. Estimated miles stand in
      only while the route has no miles, on a trip that is not split. */
   function legFigures(leg) {
     const l = leg === 'return' ? 'return' : 'outbound';
@@ -5527,7 +5527,10 @@
     const home = mine ? r.backMiles : numOrNull(back?.miles);
     const between = stops.filter(st => st !== pickup && st !== back)
       .reduce((n, st) => n + (Number(st.miles) || 0), 0);
-    const routeMiles = between + (Number(out) || 0) + (Number(home) || 0);
+    // The open leg's total is the Summary's own, so a stop added or moved
+    // since the trip opened, or a new trip's whole route, is counted.
+    const routeMiles = mine && r.legMiles != null ? r.legMiles
+      : between + (Number(out) || 0) + (Number(home) || 0);
     const est = splitNow() ? null : money(document.getElementById('scheduler-f-estmiles')?.value ?? '');
     const from = isoOrNull(document.getElementById(l === 'return' ? 'scheduler-f-rstart' : 'scheduler-f-start')?.value ?? '');
     const to = isoOrNull(document.getElementById(l === 'return' ? 'scheduler-f-rend' : 'scheduler-f-end')?.value ?? '') ?? from;
@@ -7990,8 +7993,10 @@
         /* A leg of more than one day has a row a day and a Total, under a Day
            column; a one-day leg is its one row of figures, with no Day column. */
         const rows = days ? [...each.map((cells, n) => [String(n + 1), ...cells]), ['Total', ...total]] : [[...total]];
-        // Each day's miles, for the quote calculator the trip opens.
+        // Each day's miles, for the quote calculator the trip opens, and the
+        // leg's total, which Estimated miles follows.
         r.dayMiles = fig.dayMiles;
+        r.legMiles = fig.legMiles;
         /* What the Route tab's Done asks of this leg: every place found, the
            times in and in order, and the drives measured. */
         r.check = {

@@ -100,6 +100,8 @@ site.
 - **A trip paid past its price counts as paid** when deciding Confirmed.
 - **A placeholder is an amber trip that is not confirmed and has no quote
   marked sent;** past either, every reminder applies.
+- **A card payment carries a 4% fee, written into the agreement's Payment
+  Policy,** so the customer signs it.
 - **`emails.md` owns how a quote email is written.** `booking.md` keeps what
   a customer must know before a trip is confirmed and links to it.
 
@@ -116,12 +118,12 @@ site.
   read tool, `needs_attention`, lists them and a day's departures.
 - **A session presses a real Save on the published site,** which runs only
   checked code; :8641 is for testing with the page's writes recorded.
-- **A review reads email through Missive's own connector, with reading on
-  and drafting and sending off.** Claude drafts a reply in chat.
+- **A review reads the office email as text, never from pictures, and only
+  reads.** Claude drafts a reply in chat.
 - **A draft link stays its maker's.**
 - **`trips` owns one trip or one customer's thread and `inbox-review` owns
   the team inbox and the To do rows.** The `trip-email` skill is deleted.
-- **A To do row's thread key is Missive's own conversation id.**
+- **A To do row's thread key is an id the mail itself carries.**
 - **A Save Claude presses is named as the person with Claude,** from a word
   in the address, so History can tell them apart.
 
@@ -148,16 +150,15 @@ site.
 
 ## Questions
 
-- **The card fee.** Does a card payment carry a 4% fee? A yes goes into the
-  agreement's Payment Policy, so the customer signs it; a no takes the
-  sentence out of `booking.md`.
+- **Reading the office email.** Missive's connector needs a Missive admin.
+  Which way in: Apple Mail on this Mac signed in to the Yahoo account and
+  read by script (recommended), Yahoo Mail in the Claude Chrome profile, or
+  the Missive owner turning the connector on?
 
 ## Tasks
 
 ### Small fixes, each by itself
 
-- [ ] Make `legFigures` in `scheduler/data.js` sum the open leg from the
-      Route tab's live stops, so a new trip saves its route's miles.
 - [ ] Narrow `get_driver_share_trips` to itinerary files, as SQL on a yes.
 - [ ] Make a repeated `add_to_do` change only what it is given, make
       `find_trips` say when it cut its list, and deploy the connector.
@@ -262,7 +263,7 @@ site.
 ### Money and the route
 
 - [ ] Lock the money cells on a quote drawn from a trip in `print.js`, and
-      put the card fee's answer in `booking.md` and the agreement.
+      add the card fee to the agreement's Payment Policy.
 - [ ] Define a placeholder once, in `billing.js`, and read it in the
       follow-up, To do, checklist and Departures rules, the board and the
       connector.
@@ -285,10 +286,10 @@ site.
 - [ ] Reconnect the connector, read a new session's tool list, and write the
       step into `working-from-claude.md`.
 - [ ] Give each skill its job, delete `trip-email` in `~/claude-config`, key
-      a row by the conversation's id, drop the link-copying section, and
+      a row by the mail's own id, drop the link-copying section, and
       name the published site for a real Save.
-- [ ] rux turns on Missive's connector, reading only. Then read one unread
-      thread, see whether it stays unread, and rewrite the review's steps.
+- [ ] Read the office email by the way answered: read one unread message,
+      see whether it stays unread, and rewrite the review's steps.
 - [ ] Read `by=claude` from the address in `actorName`.
 
 ### Records and the other plans

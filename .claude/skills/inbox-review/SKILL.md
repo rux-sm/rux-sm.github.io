@@ -49,7 +49,9 @@ with the `app_*` tools, which leave rux's screen and keyboard alone.
    would say them, naming the person and the trip. Give the trip's id when
    there is one, the thread's key, and a day: today when the trip leaves
    tomorrow, tomorrow for the rest, none for a courtesy reply.
-9. **Report.** The rows added, the urgent one first; anything odd found on
+9. **Give each row its email's link** (see Copying a thread's link), so the
+   row opens the thread it came from.
+10. **Report.** The rows added, the urgent one first; anything odd found on
    the way, such as a request that looks like a trip already on the board;
    and what was not opened.
 
@@ -70,11 +72,32 @@ with the `app_*` tools, which leave rux's screen and keyboard alone.
 - A scroll of the list is raw and small: about eight rows for a `dy` of 14.
   Take a fresh picture before clicking a row by its place.
 - A click on a row opens it in the pane and changes nothing else.
-- Missive's link to a conversation sits in a menu the background tools cannot
-  open, so a row's thread key is the sender and the subject in lower case,
-  `pat lee | po attached, october 8`, which still keeps one open row a thread.
+- A row's thread key is the sender and the subject in lower case,
+  `pat lee | po attached, october 8`, which keeps one open row a thread from
+  the first read, before any link is copied.
 - A script run in Chrome can run twice. `add_to_do` with a thread key is safe
   to repeat; a second call changes the row the first made.
+
+## Copying a thread's link
+
+The link is Copy link, the last item of the ⋯ menu at the top right of an
+open conversation. It reads
+`https://mail.missiveapp.com/#unassigned/conversations/<id>`.
+
+- **It works only with Missive in front.** In the background the menu opens
+  and the copy fails with "Document is not focused". So the links are copied
+  in one pass at the end, under full-screen control, which rux approves and
+  which hides his other windows: say so before and after.
+- **Keep rux's clipboard.** Save it first with `pbpaste`, when it holds text
+  alone, and put it back with `pbcopy` after the last link.
+- **Read where Copy link is before every press.** The menu's items change
+  from thread to thread, a Reply here, an Archive from my Inbox there, and
+  after the first copy a Merge copied conversation… two lines above it. On
+  one thread the place Copy link had on the last was Add to sidebar. Open
+  the menu, zoom on it, then press.
+- **One link at a time:** press Copy link, read it with `pbpaste`, and check
+  it differs from the one before.
+- Give the link to its row with `change_to_do` as `thread_url`.
 
 ## Not run yet
 

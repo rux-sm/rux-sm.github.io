@@ -161,7 +161,6 @@ site.
 
 - [ ] Make a repeated `add_to_do` change only what it is given, make
       `find_trips` say when it cut its list, and deploy the connector.
-- [ ] Make `readWeek` and `show` wait for a bar in hand before drawing.
 - [ ] Draw a roster day that is both time off and a trip as both.
 - [ ] Carry the leg in the Departures and To do links, and make `goToTrip`
       open that leg's bar.

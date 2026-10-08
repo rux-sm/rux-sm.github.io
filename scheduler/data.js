@@ -14304,10 +14304,14 @@
      Every caller gets the same promise, which settles once nothing is left to
      read, so `await show()` means the board is current. */
   function show() {
-    // Cached navigation paints synchronously even while a refresh is in flight.
+    // Cached navigation paints synchronously even while a refresh is in flight,
+    // but never under a bar in hand, whose drag is measuring the rows.
     if (!weekMotion && holds(cursor) && (!shown || iso(shown) !== iso(cursor))) {
-      render({ ...cached.data, weekStart: cursor, weekEnd: lastShown(cursor) });
-      shown = cursor;
+      if (barsInHand) drawOwed = true;
+      else {
+        render({ ...cached.data, weekStart: cursor, weekEnd: lastShown(cursor) });
+        shown = cursor;
+      }
     }
     if (reading) { readAgain = true; return reading; }
     reading = (async () => {
@@ -14599,10 +14603,17 @@
        network. The read still follows, because every change re-read before this
        and so always showed current data; caching without the check would let
        someone else's save go quietly missing while two people dispatch. */
+    /* Neither draw here happens under a bar in hand: a read that began or was
+       queued before the lift would replace the rows the drag is measuring, and
+       the drop would find none. The fresh week is kept and the draw is owed,
+       which the drag's ending pays through `drawHeld`. */
     const held = holds(asked);
     if (held) {
-      render({ ...cached.data, weekStart: asked, weekEnd: lastShown(asked) });
-      shown = asked;
+      if (barsInHand) drawOwed = true;
+      else {
+        render({ ...cached.data, weekStart: asked, weekEnd: lastShown(asked) });
+        shown = asked;
+      }
     }
 
     schEl.setAttribute('aria-busy', 'true');
@@ -14622,6 +14633,7 @@
       const same = held && cached && weekPrint(data, asked) === weekPrint(cached.data, asked);
       cached = { data, centre: asked };
       if (same) return;
+      if (barsInHand) { drawOwed = true; return; }
       render(data);
       shown = asked;
     } catch (e) {

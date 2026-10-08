@@ -71,10 +71,18 @@
    Storybook args did not take, so nothing is claimed about whether Carbon's is
    configurable. Ours is not, and that is worth a decision rather than a silent default.
 
-   NOT VERIFIED: the search clear button and the indeterminate checkbox. Neither was
-   driven, and `data-rux-indeterminate` is this project's own attribute in any case --
-   `indeterminate` is a DOM property with no HTML form, so there is no Carbon markup to
-   compare it against.
+   THE TOOLBAR SEARCH THAT OPENS FROM ITS MAGNIFIER verified live 2026-10-08 on
+   https://react.carbondesignsystem.com/iframe.html?id=components-datatable-toolbar--default
+   Its host takes `toolbar-search-container-active` while its input has focus or holds a
+   value, and loses it when an empty input loses focus; Carbon's CSS widens the host and
+   shows the input on that class. The clear button's `search-close--hidden` was read on
+   the same story: off while the input holds a value, on when it is empty. Carbon also
+   empties the input on Escape and keeps focus there; this module does not.
+   NOT VERIFIED: the open width, which that page's tab was not in front to animate.
+
+   NOT VERIFIED: the indeterminate checkbox. `data-rux-indeterminate` is this project's
+   own attribute -- `indeterminate` is a DOM property with no HTML form, so there is no
+   Carbon markup to compare it against.
    ========================================================================== */
 (() => {
   'use strict';
@@ -211,11 +219,18 @@
     listRow(input)?.classList.add('rux--structured-list-row--selected');
   });
 
-  /* ── search clear ──────────────────────────────────────────────────────── */
-  const syncSearch = search => {
+  /* ── search clear, and the toolbar search that opens ───────────────────── */
+  const EXPANDABLE = 'rux--toolbar-search-container-expandable';
+  const syncSearch = (search, focused) => {
     const input = search.querySelector('.rux--search-input');
     const close = search.querySelector('.rux--search-close');
     close?.classList.toggle('rux--search-close--hidden', !input?.value);
+    // Open while the input has focus or holds a value. A focusout says the
+    // focus is gone before `document.activeElement` does, so it passes false.
+    if (search.classList.contains(EXPANDABLE)) {
+      search.classList.toggle('rux--toolbar-search-container-active',
+        Boolean(input?.value) || (focused ?? input === document.activeElement));
+    }
   };
 
   /* ── wiring ────────────────────────────────────────────────────────────── */
@@ -253,6 +268,14 @@
     const search = event.target.closest('.rux--search');
     if (search && event.target.matches('.rux--search-input')) syncSearch(search);
   });
+
+  for (const [type, focused] of [['focusin', true], ['focusout', false]]) {
+    document.addEventListener(type, event => {
+      if (!(event.target instanceof Element) || !event.target.matches('.rux--search-input')) return;
+      const search = event.target.closest('.' + EXPANDABLE);
+      if (search) syncSearch(search, focused);
+    });
+  }
 
   /* Adopt what the markup shipped: a search that starts with a value shows its
      clear button, and `indeterminate` is set from the attribute that is the

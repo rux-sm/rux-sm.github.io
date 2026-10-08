@@ -208,7 +208,7 @@ _73 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 2
 | `loading` | loading | — | 2 | — | — | — | no |
 | `menu` | button, menu | — | 6 | — | — | guidebanner, menu | no |
 | `menu-button` | button, menu-button | — | 2 | — | — | guidebanner | no |
-| `modal` | button, data-table, modal | — | 12 | — | — | data-table, guidebanner, menu, modal, overlay | no |
+| `modal` | button, data-table, modal | — | 12 | — | — | data-table, form-controls, guidebanner, menu, modal, overlay | no |
 | `multiselect` | checkbox, combo-box, form, list-box, multiselect, tag, text-input | — | 3 | — | — | dismiss, form-controls, list-box, tag-overflow | no |
 | `notification` | button, notification | 1 | 15 | 2 | 0 | dismiss, guidebanner | yes |
 | `notifications-panel` | button, notifications-panel, toggle | — | 2 | — | — | form-controls, guidebanner, notifications-panel | no |

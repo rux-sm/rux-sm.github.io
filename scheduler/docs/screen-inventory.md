@@ -22,7 +22,7 @@ of Design's `js/*.js` behaviours; an *app component* is this app's own.
 |---|---|---|
 | Customers | keep | `contacts.html`, the Contacts list, and one contact at `contacts.html?id=` (§7). |
 | Itineraries | later | Needs the itinerary editor, an app component, and the AI intake. |
-| Settings (`Options`) | keep, trimmed | `settings-page`. Yard, requirements, billing defaults. Saved locations have their own page, `locations.html`. Mapbox and Extract keys move with intake. |
+| Settings (`Options`) | keep, trimmed | `settings.html` holds the rates, the rate by month and the trips' limits. Still rux-ui's alone: the yard, the requirements and the billing defaults, each a tab there when built. Saved locations have their own page, `locations.html`. |
 
 The side nav lists only pages that exist; each view is added when its page is.
 Dropped: Documents, Game, the Samsara and Gallery links.

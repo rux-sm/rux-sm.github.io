@@ -99,7 +99,7 @@ reads only the ones before it. Nothing is written until step 10.
 | A return after midnight stays on a one-day trip | `scheduler/docs/screen-inventory.md`, the Route tab's row | Returns with the next weekday, and +1 on the board's bar |
 | What the checklist counts | `scheduler/checklist.js` | the ring in the panel's head, with Open beside each open item |
 | What confirms a trip, and what goes out with a quote | `scheduler/docs/booking.md` | the Billing tab's summary card |
-| The rates and what each is for | the rates page, `scheduler/quote-rates.html`, never this repository | the Mileage rate select in the calculator |
+| The rates and what each is for | the Settings page, `scheduler/settings.html`, never this repository | the Mileage rate select in the calculator |
 
 `docs/plans/scheduler-quote-entry.md` changes steps 3, 5, 7, 10 and 11, and
 rewrites this section as each change is built.

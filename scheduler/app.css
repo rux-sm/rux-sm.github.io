@@ -3443,7 +3443,7 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-sheet-head > h1 { margin: 0; }
 .scheduler-sheet { min-inline-size: 0; }
 
-/* ── The quote calculator (quote.html) and its rates (quote-rates.html) ─────
+/* ── The quote calculator (quote.html) and the Settings (settings.html) ────
    Both pages use Carbon's editorial style model, which Carbon names for
    low-density product screens such as checkout: centred at lg, both pages in
    twelve of the grid's sixteen columns. The calculator is three tiles in a row, in the order a quote
@@ -3676,6 +3676,20 @@ html:has(.scheduler-page[data-takeover]) {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "trip" "mileage" "driver" "rules";
   }
+}
+
+/* The Settings page's other two tabs. The calendar is twelve selects in as
+   many columns as fit, four at the page's full width; the trips tab is its
+   tiles side by side, stacking where they would be narrower than 16rem. */
+.scheduler-settings-months {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  gap: var(--rux-spacing-06) var(--rux-spacing-05);
+}
+.scheduler-settings-trips {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: var(--rux-spacing-05);
 }
 
 /* The mileage list: a row a rate, its note, the default radio and remove,

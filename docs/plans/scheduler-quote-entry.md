@@ -182,14 +182,6 @@ Each tab answers one question and reads only the tabs before it:
 
 ## Tasks
 
-- [ ] Turn the Rates page into Settings, `settings.html`, laid out with the
-      design-page skill: the rates form and its Save on the first tab, a
-      link in the side navigation of the fourteen pages that carry one, and
-      the calculator's Edit rates pointed at it.
-- [ ] Build the Calendar tab: a mileage rate for each month, saved in
-      `settings`, with a month left alone on the default rate.
-- [ ] Build the Trips tab: the route times, the fuel card limits and the
-      dead-mile limit, the last one new in `settings`.
 - [ ] Show the rate's note on the bus rental line and in the calculator,
       with the month when the Calendar chose it.
 - [ ] Make `defaultRate` in `scheduler/data.js` and the calculator's

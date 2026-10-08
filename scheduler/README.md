@@ -85,7 +85,7 @@ when it lands, and a failed load keeps the current week and offers a retry.
 
 The quote page, `quote.html`, is the quote calculator: the office spreadsheet's
 formulas in `quote.js`. Its rates, and the rules the formulas follow such as
-the 295-mile line, are edited on `quote-rates.html` and kept in the
+the 295-mile line, are edited on `settings.html`, the Settings page, beside the rate each month starts from and the limits a trip's suggestions use, and kept in the
 `quote_rates` and `quote_mileage_rates` tables, which only a staff session
 can read or change. Its Rules tab says how a quote is priced and lists where
 it copies the spreadsheet's quirks, each worked out at the saved rates.

@@ -5,7 +5,7 @@
    included; quote.html's Rules tab lists them, with examples worked out here
    from the saved rates. One rule is the office's own: each part of a
    charge is rounded up to the next $5. One script for two pages: quote.html
-   works a quote out, and quote-rates.html edits the rates it uses. The rates are rows in
+   works a quote out, and settings.html edits the rates it uses. The rates are rows in
    `quote_rates` and `quote_mileage_rates`, which only a staff session can
    read or write, so no rate is written in this public file.
 
@@ -157,6 +157,17 @@
 
   const rates = { ...Object.fromEntries([...RATE_FIELDS.trip, ...RATE_FIELDS.driver].map(f => [f.key, 0])), ...RULE_DEFAULTS };
   let mileage = [];          // [{ id, rate, note, is_default }] as saved
+  /* THE OFFICE'S OTHER SETTINGS the Settings page edits, each a row of
+     `settings`: the mileage rate a month starts from, the times the Route tab
+     adds, and the distances past which a fuel card and a dead-mile discount
+     are offered. The defaults are what data.js uses with no row saved. */
+  const OFFICE_DEFAULTS = {
+    'rate-calendar-v1': { months: {} },
+    'route-times-v1': { spot_minutes: 15, pre_trip_minutes: 0, post_trip_minutes: 0, drive_slowdown_percent: 0 },
+    'fuel-card-v1': { miles: 600, days: 2 },
+    'dead-miles-v1': { miles: null },
+  };
+  const office = structuredClone(OFFICE_DEFAULTS);
   let client = null;
   let canSave = false;
 
@@ -194,6 +205,11 @@
     if (named.error || miles.error) throw new Error((named.error || miles.error).message);
     for (const row of named.data) if (row.key in rates) rates[row.key] = Number(row.value);
     mileage = miles.data.map(m => ({ ...m, rate: Number(m.rate) })).sort((a, b) => a.rate - b.rate);
+    const kept = await client.from('settings').select('key,value').in('key', Object.keys(OFFICE_DEFAULTS));
+    if (kept.error) throw new Error(kept.error.message);
+    for (const key of Object.keys(OFFICE_DEFAULTS)) {
+      office[key] = { ...OFFICE_DEFAULTS[key], ...(kept.data.find(r => r.key === key)?.value ?? {}) };
+    }
   };
 
   // A local preview keeps its rates in sessionStorage, which a browser may
@@ -637,7 +653,7 @@
     };
   };
 
-  /* ── THE RATES (quote-rates.html) ─────────────────────────────────────── */
+  /* ── THE SETTINGS (settings.html): the rates, the calendar, the trips ──── */
 
   const ratesPage = () => {
     const form = $('scheduler-quote-rates-form');
@@ -698,7 +714,95 @@
       $('scheduler-quote-mileage-rows').replaceChildren();
       for (const m of mileage) addRateRow(m);
       if (!mileage.length) addRateRow();
+      drawCalendar();
+      drawTrips();
       showResult(null);
+    };
+
+    /* THE CALENDAR: a select a month, offering every mileage rate as saved.
+       Default leaves the month on the rate marked default, so a rate is named
+       only for the months that differ. */
+    const MONTHS = Array.from({ length: 12 }, (_, i) => new Date(2000, i, 1).toLocaleDateString('en-US', { month: 'long' }));
+    const drawCalendar = () => {
+      const chosen = office['rate-calendar-v1'].months ?? {};
+      $('scheduler-settings-months').replaceChildren(...MONTHS.map((name, i) => {
+        const id = `scheduler-settings-month-${i + 1}`;
+        const item = document.createElement('div');
+        item.className = 'rux--form-item';
+        const box = document.createElement('div');
+        box.className = 'rux--select';
+        const label = Object.assign(document.createElement('label'), { className: 'rux--label', htmlFor: id, textContent: name });
+        const wrap = document.createElement('div');
+        wrap.className = 'rux--select-input__wrapper';
+        const select = Object.assign(document.createElement('select'), { id, className: 'rux--select-input' });
+        select.append(Object.assign(document.createElement('option'), { value: '', textContent: 'Default' }),
+          ...mileage.map(m => Object.assign(document.createElement('option'), {
+            value: m.id, textContent: `${money.format(m.rate)}${m.note ? ` · ${m.note}` : ''}` })));
+        select.value = mileage.some(m => m.id === chosen[i + 1]) ? chosen[i + 1] : '';
+        wrap.append(select);
+        wrap.insertAdjacentHTML('beforeend', '<svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg>');
+        box.append(label, wrap);
+        item.append(box);
+        return item;
+      }));
+    };
+
+    /* THE TRIPS TAB: the Route tab's times, and the limits past which it
+       offers a fuel card and the Billing tab a dead-mile discount. A blank
+       dead-mile limit offers none. */
+    const TRIP_FIELDS = {
+      'route-times': [
+        { id: 'spot', key: 'spot_minutes', label: 'Spot before departure (min)' },
+        { id: 'pre', key: 'pre_trip_minutes', label: 'Pre-trip at the yard (min)' },
+        { id: 'post', key: 'post_trip_minutes', label: 'Post-trip at the yard (min)' },
+        { id: 'slow', key: 'drive_slowdown_percent', label: 'Bus slower than the map (%)' },
+      ],
+      'fuel-card': [
+        { id: 'fuel-miles', key: 'miles', label: 'Offer over (mi)' },
+        { id: 'fuel-days', key: 'days', label: 'Offer over (days)' },
+      ],
+      'dead-miles': [
+        { id: 'dead-miles', key: 'miles', label: 'Offer the discount over (mi)', placeholder: 'Never' },
+      ],
+    };
+    const drawTrips = () => {
+      for (const [group, fields] of Object.entries(TRIP_FIELDS)) {
+        const saved = office[`${group}-v1`];
+        $(`scheduler-settings-${group}`).replaceChildren(...fields.map(f => textField({
+          id: `scheduler-settings-${f.id}`, label: f.label, placeholder: f.placeholder ?? '',
+          value: saved[f.key] === null || saved[f.key] === undefined ? '' : String(saved[f.key]) })));
+      }
+    };
+
+    // The calendar and the trips tab as `settings` rows, or what is wrong.
+    const readOffice = list => {
+      const whole = (id, name, { min = 0, max, blank = false } = {}) => {
+        const raw = $(`scheduler-settings-${id}`).value.trim().replace(/,/g, '');
+        if (raw === '' && blank) return { value: null };
+        const value = Number(raw);
+        if (raw === '' || !Number.isInteger(value) || value < min || (max != null && value > max)) {
+          return { problem: `${name} needs a whole number${max != null ? ` from ${min} to ${max}` : ` of ${min} or more`}.` };
+        }
+        return { value };
+      };
+      const out = {};
+      const take = (key, field, got) => { if (got.problem) return got.problem; (out[key] ??= {})[field] = got.value; return null; };
+      const problem = take('route-times-v1', 'spot_minutes', whole('spot', 'Spot before departure', { max: 240 }))
+        ?? take('route-times-v1', 'pre_trip_minutes', whole('pre', 'Pre-trip at the yard', { max: 240 }))
+        ?? take('route-times-v1', 'post_trip_minutes', whole('post', 'Post-trip at the yard', { max: 240 }))
+        ?? take('route-times-v1', 'drive_slowdown_percent', whole('slow', 'Bus slower than the map', { max: 100 }))
+        ?? take('fuel-card-v1', 'miles', whole('fuel-miles', 'Fuel card miles', { min: 1 }))
+        ?? take('fuel-card-v1', 'days', whole('fuel-days', 'Fuel card days', { min: 1 }))
+        ?? take('dead-miles-v1', 'miles', whole('dead-miles', 'Dead miles', { min: 1, blank: true }));
+      if (problem) return { problem };
+      // A month keeps its rate only while that rate is still in the list.
+      const months = {};
+      MONTHS.forEach((_, i) => {
+        const id = $(`scheduler-settings-month-${i + 1}`).value;
+        if (id && list.some(m => m.id === id)) months[i + 1] = id;
+      });
+      out['rate-calendar-v1'] = { months };
+      return { rows: Object.entries(out).map(([key, value]) => ({ key, value })) };
     };
 
     // The page's fields as rows to save, or a sentence saying what is wrong.
@@ -743,8 +847,12 @@
     const save = async () => {
       const { problem, named, list } = readRates();
       if (problem) return showResult('error', problem);
-      // A local preview has no database: the rates go to this browser tab.
+      const kept = readOffice(list);
+      if (kept.problem) return showResult('error', kept.problem);
+      // A local preview has no database: the rates go to this browser tab,
+      // and the calendar and the trips tab stay on this page.
       if (!client) {
+        for (const { key, value } of kept.rows) office[key] = value;
         for (const { key, value } of named) rates[key] = value;
         mileage = list.sort((a, b) => a.rate - b.rate);
         const kept = savePreview();
@@ -766,6 +874,7 @@
           () => client.from('quote_mileage_rates').update({ is_default: false }).eq('is_default', true).neq('id', chosen),
           () => gone.length ? client.from('quote_mileage_rates').delete().in('id', gone) : { error: null },
           () => client.from('quote_mileage_rates').upsert(list),
+          () => client.from('settings').upsert(kept.rows, { onConflict: 'key' }),
         ];
         for (const step of steps) {
           const { error } = await step();
@@ -773,9 +882,9 @@
         }
         await load();
         drawRates();
-        showResult('success', 'Rates saved.');
+        showResult('success', 'Saved.');
       } catch {
-        showResult('error', "The rates didn't save. Try again.");
+        showResult('error', "The settings didn't save. Try again.");
       } finally {
         button.disabled = !canSave;
       }

@@ -23,9 +23,11 @@ not only what is missing.
 - **It opens on tomorrow.** An arrow each side of the day steps a day back or
   forward, and a press on the day opens a calendar, so the office can get
   ahead or look back at this morning.
-- **A tab per trip leaving that day,** named by its place, with a green tick
-  when the trip is ready or how many lines are left. A ready trip keeps its
-  tab.
+- **A tab per leg leaving that day,** named by its place, with a green tick
+  when it is ready or how many lines are left. A ready one keeps its tab.
+- **A split trip's two legs are two tabs, each on its own day.** The later
+  leg has its own steps, and finds what is the whole trip's, such as Driver
+  info sent, already done.
 - **One trip is one page of the panel:** a tile for the trip, then a tile for
   each bus.
 - **Every status is one line, read the same way:** a mark, what it is, then
@@ -44,6 +46,9 @@ not only what is missing.
   who also wears a Part-time badge.
 - **Itinerary and HOS form are a driver's,** as the envelope is, because each
   driver is handed their own.
+- **A fuel card is a bus's,** one for each bus on the trip, with its number.
+- **A seat given to another driver starts its steps again,** because the
+  envelope and the reminder were the other driver's.
 - **A tile's count is every line of its that is not done,** warnings among
   them, and the tab's count is its tiles' added up.
 - **The panel only shows status.** Nothing is ticked in it.
@@ -63,28 +68,29 @@ not only what is missing.
   the checklist reads them.
 - **The Done marks of the Route, Buses and Billing tabs are not shown,**
   because they are open on nearly every trip and would say nothing here.
-- **rux-ui keeps reading what it reads.** Its Tasks list uses the yes and no
-  columns for a printed itinerary, an envelope and a reminder, so those are
-  still written beside the new times.
+- **rux-ui keeps reading what it reads.** Its Tasks list ticks the envelope
+  and the reminder on a driver, and the itinerary and the HOS form on a leg,
+  so a leg's tick follows its drivers' and a tick there marks each driver.
+- **When and who are stamped by the database,** as a step is turned on, so
+  neither app can give a step a time it was not done at.
+- **Driver info sent is kept beside the trip, in `trip_prep`,** so marking it
+  never moves the trip's own row under an open editor.
 - **The rules are one file, `scheduler/departures.js`,** run against sample
   trips in the check, handed each leg's buses and seats by
   `scheduler/leg-facts.js` as the checklist and the to-do list are.
 
 ## Questions
 
-- A drop-off and pickup trip has two legs on different days. Is each leg its
-  own tab on the day it leaves?
-- On a trip with two buses, does each bus carry its own fuel card and number,
-  or is there one for the trip?
+None open.
 
 ## Tasks
 
-- [ ] Read how rux-ui's Tasks list writes the reminder, the envelope, the
-      printed itinerary and the driver contact columns, so both apps agree on
-      what a tick means.
-- [ ] Write the SQL for each step's time and who, a driver's own itinerary
-      and HOS marks, the reminder, and Driver info sent for a leg; show it to
-      rux, and apply it as a named migration on a yes.
+- [ ] Apply the SQL for each step's time and who, a driver's own itinerary
+      and HOS marks kept in step with the leg's, and `trip_prep`, as a named
+      migration on rux's yes, then check its grants on the live database.
+- [ ] Give each bus its own fuel card: the SQL shown to rux, the card entered
+      in the bus's window on the Buses tab, and the leg's columns rux-ui reads
+      kept in step.
 - [ ] Write `scheduler/departures.js` and `scheduler/tools/check-departures.mjs`
       with sample trips, in the check.
 - [ ] Ask after a print on the Forms page whether to mark it, and store a Yes.

@@ -143,7 +143,7 @@ Everything else is Design's, linked live at `/design/…` with no copy here.
 
 From the repository root, one level up:
 
-    npm run check        # Design's shared check, the sprite, the print rule and the checklist's sample trips
+    npm run check        # Design's shared check, the sprite, the print rule, the rules' sample trips, and every page's scripts parsed and loaded
 
 Open it at http://localhost:8641/scheduler/, the always-on preview the root
 `README.md` describes; the pages link `/design/…` absolutely, so this folder is

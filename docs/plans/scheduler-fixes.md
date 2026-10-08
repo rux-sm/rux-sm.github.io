@@ -191,8 +191,6 @@ site.
 
 ### Checks
 
-- [ ] Add `scheduler/tools/check-load.mjs`: each scheduler page's scripts,
-      in tag order, against a stand-in page, with no list of pages.
 - [ ] Add `scheduler/tools/check-shadow.mjs`: a call must not reach a local
       that hides a module-level function, failing when it cannot follow a
       file, with a failing sample of its own.

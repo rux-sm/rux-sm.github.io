@@ -46,8 +46,9 @@ the end.
    enter, a form to fill, a quote to send, trips to enter, a question to
    answer. It is not one when the scheduler already says it by itself, such as
    a follow-up due or a leg short of a bus: read `get_trip`'s warnings first.
-7. **`list_to_dos`,** so a thread that already has an open row is changed and
-   not doubled. A row is a thread's when its `thread_url` ends in the
+7. **`list_to_dos`, with `include_closed`,** so a thread that already has an
+   open row is changed and not doubled, and one whose row was ticked is not
+   asked again. A row is a thread's when its `thread_url` ends in the
    thread's id. An open row whose thread has no mail since the row was made,
    and whose trip reads as it did, is left as it is.
 8. **Add the rows** with `add_to_do`, each in a few plain words as the office
@@ -70,6 +71,9 @@ the end.
   delete.
 - Mail that is not about a trip or a request for a quote is ignored, with no
   row and no line in the report, because the list is for trips.
+- A thread whose row was ticked gets no new row unless mail has come in on
+  it since the tick, because the tick is the office saying that work is
+  done. A closed row gives when in `closed_at`.
 
 ## Reading Missive in Chrome
 

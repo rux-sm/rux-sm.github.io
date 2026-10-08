@@ -15039,12 +15039,16 @@
   }
 
   /* Shows a trip's week with its bar selected and in view, and opens the
-     trip unless `open` is false, as a pick from Search trips asks. */
-  async function goToTrip(id, day, { open = true } = {}) {
+     trip unless `open` is false, as a pick from Search trips asks. A link
+     that names a leg takes that leg's bar, so a pickup's line in Departures
+     or the To do list never opens the drop-off; one that names none takes
+     the trip's first bar on the week. */
+  async function goToTrip(id, day, { open = true, leg = null } = {}) {
     if (!id || !/^\d{4}-\d{2}-\d{2}$/.test(day ?? '')) { show(); return; }
     cursor = mondayOf(parseISO(day));
     await show();
-    const bar = gridEl.querySelector(`.scheduler-bar[data-trip-id="${CSS.escape(id)}"]`);
+    const bars = [...gridEl.querySelectorAll(`.scheduler-bar[data-trip-id="${CSS.escape(id)}"]`)];
+    const bar = (leg && bars.find(b => (b.dataset.leg || 'outbound') === leg)) || bars[0];
     if (!bar) {
       // A cancelled trip has no bar, so its link opens the cancelled dialog.
       const { data: trip } = await withTimeout(client.from('trips')
@@ -15354,12 +15358,13 @@
       /* A Departures line opens the trip where its step is done: the Contact
          list, with the trip selected and its editor left shut, or one tab of
          the editor. */
+      const leg = ['outbound', 'return'].includes(asked.get('leg')) ? asked.get('leg') : null;
       if (asked.get('open') === 'contacts') {
-        goToTrip(asked.get('trip'), asked.get('date'), { open: false })
+        goToTrip(asked.get('trip'), asked.get('date'), { open: false, leg })
           .then(() => { const bar = selectedBar(); if (bar) openContactsFrom(bar); });
       } else {
         const tab = asked.get('tab');
-        goToTrip(asked.get('trip'), asked.get('date'))
+        goToTrip(asked.get('trip'), asked.get('date'), { leg })
           .then(() => { if (tab) requestAnimationFrame(() => goToChecklistItem(tab)); });
       }
     } else if (asked.has('draft')) {

@@ -161,8 +161,6 @@ site.
 
 - [ ] Make a repeated `add_to_do` change only what it is given, make
       `find_trips` say when it cut its list, and deploy the connector.
-- [ ] Carry the leg in the Departures and To do links, and make `goToTrip`
-      open that leg's bar.
 - [ ] Open Cost empty on a line that follows the calculator, from a rule in
       `scheduler/quote-lines.js` with its check.
 - [ ] Make `qbDescription` read each leg's own stops, and

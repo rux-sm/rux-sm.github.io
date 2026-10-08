@@ -210,7 +210,8 @@
   const MARKS = { done: '#m-check_circle-fill', todo: '#m-close', warn: '#m-warning-fill' };
   const SAID = { done: 'Done', todo: 'To do', warn: 'Needs attention' };
   const keyOf = page => `${page.trip.id}:${page.leg}`;
-  const tripHref = (page, extra = '') => `./?trip=${encodeURIComponent(page.trip.id)}&date=${encodeURIComponent(page.day || '')}${extra}`;
+  // The link names the page's leg, so the board opens that leg's bar and no other.
+  const tripHref = (page, extra = '') => `./?trip=${encodeURIComponent(page.trip.id)}&date=${encodeURIComponent(page.day || '')}&leg=${encodeURIComponent(page.leg || 'outbound')}${extra}`;
   const FORMS = { itinerary: 'driver-itinerary&layout=simple', envelope: 'envelope', hos: 'hours-of-service' };
   // Where a line still to do is done, and the word for doing it.
   function actionOf(line, page, bus, member) {

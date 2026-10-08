@@ -66,7 +66,8 @@
   // "today", "tomorrow", else "Sat, Oct 17".
   const dayWords = day => (day === iso(new Date()) ? 'today' : day === dayFrom(1) ? 'tomorrow' : shortDay.format(parseISO(day)));
   const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
-  const tripHref = (trip, day) => `./?trip=${encodeURIComponent(trip.id)}&date=${encodeURIComponent(day || trip.start_date || '')}`;
+  // A row about one leg names it, so the board opens that leg's bar.
+  const tripHref = (trip, day, leg) => `./?trip=${encodeURIComponent(trip.id)}&date=${encodeURIComponent(day || trip.start_date || '')}${leg ? `&leg=${leg}` : ''}`;
   /* The dot between the parts of a line, tied to the word before it, so a line
      that wraps breaks after the dot and never starts with one. */
   const DOT = '\u00A0· ';
@@ -247,7 +248,7 @@
       a.href = `trips.html?show=${c.kind === 'follow-up' ? 'followup' : c.kind}`;
       a.append(svgUse('#m-arrow_forward'), words);
     } else {
-      a.href = tripHref(c.trip, c.day);
+      a.href = tripHref(c.trip, c.day, c.leg);
       if (c.kind !== 'follow-up' && c.detail) words.append(' ', el('span', 'scheduler-to-do__detail', c.detail));
       const mark = svgUse('#m-warning-fill');
       mark.classList.add('scheduler-to-do__mark');

@@ -155,5 +155,3 @@ None open.
 
 - [ ] Give Ruxbot its picture: the file put in `profile-photos` from a staff
       session and its path set on the profile by SQL, each on rux's yes.
-- [ ] Tick a row attached to a trip on rux's yes, and read the entry it makes
-      on the History page.

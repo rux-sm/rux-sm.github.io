@@ -81,7 +81,7 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 | Table | Used by | Notes |
 |---|---|---|
 | `contacts` | trip editor, Customers view | `name`, `phone`, `email`, `client`, `customer_id` to `customers`. A save in either app gives the booking contact the trip's customer when they have none and carry no other organization. |
-| `customers` | trip editor Customer field, Customers and Locations pages | `name`, `usual_location_id` to `locations`, `bill_to`. A save in either app links the trip, by `customer_id`, to the customer its Customer field names, and makes one for a name typed new. |
+| `customers` | trip editor Customer field, Customers and Locations pages | `name`, `usual_location_id` to `locations`, `bill_to`, `notes`, `usual_reqs`, the needs a new trip for it starts with in the shape of `trips.trip_reqs`, and `usual_vehicle_type`. A save in either app links the trip, by `customer_id`, to the customer its Customer field names, and makes one for a name typed new. |
 | `trip_payments` | trip editor Billing tab | `trip_id`, `position`, `amount`, `method`, `date`, `ref`. Both apps write it row by row by id. |
 | `trip_pos` | trip editor Billing tab | `trip_id` to `trips`, cascade; `position`, `ref`, `amount`, `date` |
 | `trip_invoices` | trip editor Billing tab | `trip_id` to `trips`, cascade; `position`, `number`, `amount`, `date` |

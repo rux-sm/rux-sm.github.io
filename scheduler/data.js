@@ -624,7 +624,7 @@
       client.from('contacts').select('id,name,phone,email,client,customer_id').order('name').then(unwrap),
       // The customers and the saved places, for the Customer field, the fill
       // it makes into an empty pickup, and the Route tab's address search.
-      client.from('customers').select('id,name,usual_location_id').order('name').then(unwrap),
+      client.from('customers').select('id,name,usual_location_id,notes,usual_reqs,usual_vehicle_type').order('name').then(unwrap),
       client.from('locations').select('id,name,address,lat,lng,mapbox_id').order('name').then(unwrap),
       client.from('bus_out_of_service').select('bus_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', iso(from)).then(unwrap),
       // Overlap, not containment: a driver away across the whole fortnight has
@@ -4060,6 +4060,21 @@
   function syncSaved() {
     for (const tip of document.querySelectorAll('.scheduler-saved')) {
       syncSavedTip(tip, document.getElementById(tip.dataset.savedFor));
+    }
+    /* The linked customer's standing notes, under the Customer field, read
+       only: they are the customer's, edited on its own page, and seen here
+       because here is where a trip for it is entered. */
+    const cust = document.getElementById('scheduler-f-customer');
+    const custWrap = cust?.closest('.rux--list-box__wrapper');
+    if (custWrap) {
+      const id = cust.value.trim() ? cust.dataset.customerId : null;
+      const notes = id ? (panelIndex.customers || []).find(c => String(c.id) === String(id))?.notes : null;
+      let note = custWrap.querySelector(':scope > .scheduler-customer-notes');
+      if (!notes) note?.remove();
+      else {
+        if (!note) custWrap.appendChild(note = el('div', 'rux--form__helper-text scheduler-customer-notes'));
+        note.textContent = notes;
+      }
     }
     for (const [nameId, fieldId, key] of SAVED_DIFF) {
       const field = document.getElementById(fieldId);
@@ -10400,12 +10415,32 @@
     const id = e.detail?.option?.dataset.customerId;
     if (!id) { delete t.dataset.customerId; return; }
     t.dataset.customerId = id;
-    fillPickupFrom((panelIndex.customers || []).find(c => c.id === id));
+    const picked = (panelIndex.customers || []).find(c => c.id === id);
+    fillPickupFrom(picked);
+    fillNeedsFrom(picked);
   });
   // The Route tab's own fill, when it is open and its pickup is empty.
   function fillPickupFrom(customer) {
     const place = (panelIndex.locations || []).find(l => l.id === customer?.usual_location_id);
     if (place) editing?.route?.fillPickup?.(place);
+  }
+  /* A new trip takes its customer's usual needs and bus type, on every
+     vehicle of both legs: each need is added to what the vehicle already
+     asks, and the type is set where the vehicle has none. A saved trip is
+     never changed by its customer. */
+  function fillNeedsFrom(customer) {
+    if (!editing?.creating || !customer) return;
+    const usual = needIds(customer.usual_reqs).filter(isVehicleNeed);
+    const type = customer.usual_vehicle_type || null;
+    if (!usual.length && !type) return;
+    for (const leg of ['outbound', 'return']) {
+      for (const b of editing.fleet?.[leg] ?? []) {
+        b.needs = needsObject(new Set([...needIds(b.needs), ...usual]));
+        if (type && !b.vehicleType) b.vehicleType = type;
+      }
+    }
+    drawFleet();
+    refreshDirty();
   }
   panelDetails?.addEventListener('rux:listbox-selected', e => {
     const t = e.target.querySelector?.('input[role="combobox"]');
@@ -10430,6 +10465,7 @@
         cust.value = theirs.name;
         cust.dataset.customerId = theirs.id;
         fillPickupFrom(theirs);
+        fillNeedsFrom(theirs);
       } else suggest('scheduler-f-customer', hit.client);
     } else {
       const ph = document.getElementById(`scheduler-f-dphone${t.id.slice(-1)}`);

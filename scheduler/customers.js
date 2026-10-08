@@ -10,9 +10,11 @@
    typed once. Contacts link to a customer from their own page, and a customer
    a contact, a trip or a document names is never deleted.
 
-   A customer also says which kinds of driver form it asks for on its trips,
-   kept in `customer_required_kinds`, and its Documents tab lists the
-   documents issued to it, which the Documents page uploads and edits.
+   A customer also holds what stays true from trip to trip: its notes, the
+   needs and the bus type a new trip for it starts with, and the kinds of
+   driver form it asks for on its trips, kept in `customer_required_kinds`.
+   Its Trips tab lists its trips under what they come to, and its Documents
+   tab the documents issued to it, which the Documents page uploads and edits.
    ========================================================================== */
 (() => {
   'use strict';
@@ -28,7 +30,10 @@
   // The record view shows the list's column only for its notice.
   if (editing) $('scheduler-customers-h').hidden = true;
 
-  const COLUMNS = 'id,name,usual_location_id,bill_to,updated_at';
+  const COLUMNS = 'id,name,usual_location_id,bill_to,notes,usual_reqs,usual_vehicle_type,updated_at';
+  const Facts = window.SchedulerLegFacts;
+  const Vehicles = window.SchedulerVehicles;
+  const usd = n => Number(n).toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
   const folded = v => String(v ?? '').trim().toLowerCase().replace(/\s+/g, ' ');
 
   let client = null;
@@ -145,6 +150,13 @@
       readCustomers(),
       readLocations().catch(() => []),
       readContacts().catch(() => new Map()),
+      // The office's needs and bus types, for a customer's usual ones. A
+      // refused read keeps the lists the pages start with.
+      client.from('settings').select('key,value').in('key', ['requirements-v1', 'vehicle-types-v1']).then(r => {
+        const byKey = new Map((r.data || []).map(row => [row.key, row.value]));
+        Facts.setRequirementList(byKey.get('requirements-v1'));
+        Vehicles.set(byKey.get('vehicle-types-v1'));
+      }, () => {}),
     ]);
     customers = rows;
     places = new Map(locs.map(l => [l.id, l]));
@@ -162,6 +174,8 @@
   const form = $('scheduler-customer-form');
   const nameField = $('scheduler-cu-name');
   const billField = $('scheduler-cu-bill');
+  const notesField = $('scheduler-cu-notes');
+  const vehicleField = $('scheduler-cu-vehicle');
 
   let loaded = null;
   // A new record's id, made once, so a Save sent again cannot insert it twice.
@@ -175,6 +189,9 @@
     name: nameField.value.trim() || null,
     usual_location_id: pickupId,
     bill_to: billField.value.trim() || null,
+    notes: notesField.value.trim() || null,
+    usual_reqs: Object.fromEntries([...needs].sort().map(id => [id, true])),
+    usual_vehicle_type: vehicleField.value || null,
   });
   const snapshot = () => JSON.stringify([readForm(), pickupId ? '' : pickupText, [...wanted].sort()]);
   const dirty = () => baseline !== '' && snapshot() !== baseline;
@@ -200,21 +217,49 @@
     wanted = new Set(required);
     papers = (docs.data || []).map(d => ({ ...d, kind: names.get(d.kind_id) || 'Document' }));
   }
+  // One checkbox of a group, which keeps `set` as it is ticked.
+  function tick(id, text, set, key) {
+    const item = el('div', 'rux--form-item rux--checkbox-wrapper');
+    const box = el('input', 'rux--checkbox');
+    box.type = 'checkbox';
+    box.id = id;
+    box.checked = set.has(key);
+    box.addEventListener('change', () => { if (box.checked) set.add(key); else set.delete(key); });
+    const label = el('label', 'rux--checkbox-label');
+    label.setAttribute('for', box.id);
+    label.appendChild(el('div', 'rux--checkbox-label-text', text));
+    item.append(box, label);
+    return item;
+  }
+  // A group's checkboxes, after its legend.
+  const fill = (group, items) => group.replaceChildren(group.querySelector('legend'), ...items);
   function drawForms() {
-    $('scheduler-cu-forms-group').hidden = !formKinds.length;
-    $('scheduler-cu-forms').replaceChildren(...formKinds.map(k => {
-      const item = el('div', 'rux--form-item rux--checkbox-wrapper');
-      const box = el('input', 'rux--checkbox');
-      box.type = 'checkbox';
-      box.id = `scheduler-cu-form-${k.id}`;
-      box.checked = wanted.has(k.id);
-      box.addEventListener('change', () => { if (box.checked) wanted.add(k.id); else wanted.delete(k.id); });
-      const label = el('label', 'rux--checkbox-label');
-      label.setAttribute('for', box.id);
-      label.appendChild(el('div', 'rux--checkbox-label-text', k.name));
-      item.append(box, label);
-      return item;
+    const group = $('scheduler-cu-forms-group');
+    group.hidden = !formKinds.length;
+    $('scheduler-cu-forms-help').hidden = !formKinds.length;
+    fill(group, formKinds.map(k => tick(`scheduler-cu-form-${k.id}`, k.name, wanted, k.id)));
+  }
+
+  /* The needs a new trip for this customer starts with: the office's own
+     vehicle needs, the ones a trip's Buses tab asks of each vehicle, and any
+     the customer already holds that the office has since taken off its list.
+     Then the bus type, from the office's types, Any when none is picked. */
+  let needs = new Set();
+  function drawNeeds(vehicle) {
+    const offered = Facts.editableNeeds().filter(n => Facts.isVehicleNeed(n.id));
+    const extra = [...needs].filter(id => !offered.some(n => n.id === id))
+      .map(id => ({ id, label: Facts.requirementLabel(id) }));
+    fill($('scheduler-cu-needs'), [...offered, ...extra]
+      .map(n => tick(`scheduler-cu-need-${n.id}`, n.label, needs, n.id)));
+    const types = Vehicles.types;
+    // A type the customer holds that the office no longer lists stays offered.
+    if (vehicle && !types.some(t => t.name === vehicle)) types.push({ name: vehicle });
+    vehicleField.replaceChildren(...[{ name: '', label: 'Any' }, ...types].map(t => {
+      const option = el('option', 'rux--select-option', t.label || t.name);
+      option.value = t.name;
+      return option;
     }));
+    vehicleField.value = vehicle || '';
   }
   // Makes the database's rows match the ticks: the new ones in, the others out.
   async function saveForms(id) {
@@ -296,8 +341,11 @@
     pickupId = c.usual_location_id ?? null;
     pickupText = places.get(pickupId)?.name ?? '';
     billField.value = c.bill_to ?? '';
+    notesField.value = c.notes ?? '';
+    needs = new Set(Object.keys(c.usual_reqs || {}).filter(id => c.usual_reqs[id] === true));
     wanted = new Set(required);
     drawPickup();
+    drawNeeds(c.usual_vehicle_type ?? '');
     drawForms();
     showNameError('');
   }
@@ -357,6 +405,73 @@
       list.appendChild(li);
     }
   }
+
+  /* ── trips, read only ──
+     Every trip linked to this customer, the coming ones soonest first and
+     then the past ones newest first, fifty at a time. The three figures add
+     up the trips that are not cancelled, each read by billing.js as its own
+     Billing tab reads it. */
+  const TRIP_COLUMNS = ['id', 'trip_ref', 'destination', 'start_date', 'cancelled_at', 'confirmed',
+    'quoted_price', 'deposit_amount', 'date_paid', 'balance_paid', 'contract_status', 'po_received', 'po_ref', 'po_amount',
+    'trip_payments(amount,date)', 'trip_pos(amount)'].join(',');
+  const TRIPS_STEP = 50;
+  let trips = null;         // null until read, or when the read failed
+  let tripsShown = TRIPS_STEP;
+  async function readTrips(id) {
+    trips = null;
+    tripsShown = TRIPS_STEP;
+    drawTrips();
+    const { data, error } = await client.from('trips').select(TRIP_COLUMNS).eq('customer_id', id)
+      .order('start_date', { ascending: false }).limit(2000);
+    trips = error ? null : data || [];
+    drawTrips(!!error);
+  }
+  function drawTrips(failed = false) {
+    const list = $('scheduler-customer-trips');
+    const figures = $('scheduler-customer-figures');
+    const more = $('scheduler-customer-trips-more');
+    list.replaceChildren();
+    figures.replaceChildren();
+    more.hidden = true;
+    const only = text => {
+      const li = el('li', 'rux--contained-list-item');
+      li.appendChild(el('div', 'rux--contained-list-item__content scheduler-pair-note', text));
+      list.appendChild(li);
+    };
+    if (!trips) return only(failed ? "The trips didn't load. Reload the page to try again." : 'Reading the trips…');
+    const today = new Date().toLocaleDateString('en-CA');
+    const money = new Map(trips.map(t => [t.id, window.SchedulerBilling.of(t)]));
+    const live = trips.filter(t => !t.cancelled_at);
+    const sum = pick => live.reduce((n, t) => n + pick(money.get(t.id)), 0);
+    for (const [label, amount] of [['Quoted', sum(m => m.price)], ['Paid', sum(m => m.paid)], ['Balance', sum(m => m.remaining)]]) {
+      const cell = el('div');
+      cell.append(el('dt', null, label), el('dd', null, usd(amount)));
+      figures.appendChild(cell);
+    }
+    if (!trips.length) return only('No trips yet.');
+    const coming = trips.filter(t => String(t.start_date) >= today).reverse();
+    const past = trips.filter(t => String(t.start_date) < today);
+    const ordered = [...coming, ...past];
+    for (const t of ordered.slice(0, tripsShown)) {
+      const m = money.get(t.id);
+      const li = el('li', 'rux--contained-list-item rux--contained-list-item--clickable');
+      const a = el('a', 'rux--contained-list-item__content scheduler-pair-trip');
+      a.href = `./?trip=${encodeURIComponent(t.id)}&date=${encodeURIComponent(t.start_date || '')}`;
+      const owes = t.cancelled_at ? 'Cancelled'
+        : m.price <= 0 ? 'No price'
+        : m.remaining > 0 ? `${usd(m.price)}, ${usd(m.remaining)} owing` : `${usd(m.price)}, paid`;
+      const lines = el('span', 'scheduler-pair-item');
+      lines.appendChild(el('span', 'scheduler-pair-item__main', t.destination || 'Trip'));
+      lines.appendChild(el('span', 'scheduler-pair-item__detail', [
+        t.start_date ? day(t.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : null,
+        t.trip_ref ? `#${t.trip_ref}` : null, owes].filter(Boolean).join(' · ')));
+      a.appendChild(lines);
+      li.appendChild(a);
+      list.appendChild(li);
+    }
+    more.hidden = ordered.length <= tripsShown;
+  }
+  $('scheduler-customer-trips-more')?.addEventListener('click', () => { tripsShown += TRIPS_STEP; drawTrips(); });
 
   // ── documents, read only ──
   const day = s => { const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); };
@@ -468,7 +583,7 @@
     drawDocuments();
     baseline = snapshot();
     $('scheduler-customer').hidden = false;
-    if (loaded) readTripCount();
+    if (loaded) { readTripCount(); readTrips(loaded.id); }
     return true;
   }
 
@@ -546,6 +661,7 @@
     drawDocuments();
     baseline = snapshot();
     readTripCount();
+    readTrips(id);
   }
 
   form?.addEventListener('submit', e => {

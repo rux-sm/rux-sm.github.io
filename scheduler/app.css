@@ -4528,3 +4528,6 @@ html:has(.scheduler-page[data-takeover]) {
   align-items: center;
   column-gap: var(--rux-spacing-05);
 }
+
+/* A customer's standing notes under a trip's Customer field, its own lines kept. */
+.scheduler-customer-notes { white-space: pre-line; }

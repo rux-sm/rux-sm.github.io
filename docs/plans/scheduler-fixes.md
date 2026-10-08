@@ -1,0 +1,299 @@
+---
+type: plan
+---
+
+# Plan: Scheduler fixes
+
+## Goal
+
+A trip never says less than the scheduler knows. A clash, a driver who has
+to be told, and a price that differs from the one sent each show where the
+office already looks: the bar, the checklist, the To do list and Departures.
+What a driver or a customer holds is what the trip holds. An agent's tools
+answer with the pages' own rules. A script that cannot run never reaches the
+site.
+
+## Decisions
+
+### Order
+
+- **The tasks are in building order,** group by group, and the first two
+  groups go before any other scheduler plan, because they are small, need no
+  answer and every later change lands under the new checks.
+- **The other plans follow as quote entry, retiring rux-ui, the customer
+  profile, documents, then routes,** each waiting on the one before it.
+- **A rule goes in a small file with sample cases,** never in `data.js`.
+- **A database change or a deploy is its own step,** applied on rux's yes
+  before the code that reads it is pushed.
+
+### A clash on a saved trip
+
+- **One rule, `scheduler/clashes.js`, says what stands in a saved trip's
+  way:** another trip, time off, days out, Inactive, or a licence or medical
+  card that runs out before the leg ends.
+- **A clash is by the clock.** Two legs that share only the day one ends and
+  the other begins clash when the second leaves before the first is back. A
+  leg with no times counts as a clash, because unknown is not fine.
+- **The bar, the checklist, the To do list and Departures read that one
+  answer,** so they cannot disagree. A placeholder raises nothing on itself.
+- **A clash warns and never refuses.** Save says what the date change now
+  clashes with and goes through, because the other trip may be about to move.
+- **A lapsed card is never picked automatically.** A person can still pick
+  that driver and is told in words, because the date on file may be old.
+- **A date move takes Buses done off,** as it takes Route and Billing off,
+  because the bus was chosen for other days.
+- **A bus's own dates stay on the Fleet page,** raising nothing on a trip.
+- **More passengers than seats is an alert on the bar,** and stays a warning.
+
+### The driver
+
+- **What a driver's job reads as is one file, `scheduler/driver-job.js`,**
+  used by the driver's page and the office, so both name the same changes.
+- **A decline, and a change after a driver accepted, are each a bar alert
+  and a To do row.** The row covers legs leaving within 30 days.
+- **The flag clears when the driver accepts again, or when the office
+  answers Yes to Mark the driver as told** in the Contact list, because many
+  changes are told by phone.
+- **Copy message asks before it marks trips as sent,** as Remind does, since
+  a copied text is not a sent one.
+- **The driver's link shows each stop, folded,** so Stops changed can be
+  read. The page already holds them and the driver carries them on paper.
+- **A cancelled trip stays on the driver's page as a Cancelled card** until
+  its day passes, and Cancel names the drivers to tell.
+- **A file is the itinerary only when its type is Itinerary,** for the
+  driver as for the office, and the driver's link is handed no other file.
+
+### Links without a log-in
+
+- **A driver's link can be replaced with a new address, and setting a driver
+  Inactive revokes it,** so an old text stops opening trips.
+- **A trip document's address stops two days after the trip's last day, or
+  when the trip is cancelled.** Staff still open old files signed in.
+- **The two open live channels go.** The maintenance page and the old board
+  refresh every 30 seconds without them.
+- **The maintenance page shows a bus's days out as Out of service,** never
+  the reason typed, because the link needs no log-in.
+
+### Money
+
+- **A line that follows the calculator keeps following it** after its window
+  is opened and closed. Only a figure typed in Cost makes a typed price.
+- **A settled price holds.** Once a PO is in or the trip is paid in full, a
+  line nobody typed stops repricing and offers the calculator's figure.
+- **The customer quote's Total is the sum of the lines it prints.**
+- **A draft never changes a Quoted price the editor keeps locked.**
+- **A trip paid past its price counts as paid** when deciding Confirmed.
+- **A placeholder is an amber trip that is not confirmed and has no quote
+  marked sent.** Past either, the colour is only a colour and every reminder
+  applies.
+- **`emails.md` owns how a quote email is written.** `booking.md` keeps what
+  a customer must know before a trip is confirmed and links to it.
+
+### The connector and the skills
+
+- **The fields a draft may fill are one table, `scheduler/draft-fields.js`,**
+  read by the connector and the editor, with each field's kind checked
+  before a draft is parked.
+- **A draft cannot carry a PO or a deposit.** A person enters money on
+  Billing; Claude writes the PO number in the draft's note.
+- **A drafted bus count adds empty vehicles on the Buses tab.**
+- **The connector answers with the pages' rule files,** joined into one
+  generated file at build, so a trip's warnings are its To do rows.
+- **A draft link stays its maker's.**
+- **`trips` owns one trip or one customer's thread and `inbox-review` owns
+  the team inbox and the To do rows.** The `trip-email` skill is deleted.
+- **A To do row's thread key is Missive's own conversation id.**
+- **A Save Claude presses is named as the person with Claude,** from a word
+  in the address, so History can tell them apart.
+
+### Checks
+
+- **Every page script is parsed, and every scheduler page's scripts are
+  loaded in order against a stand-in page,** in the fast check.
+- **No check keeps an exception list.** A finding is fixed by renaming.
+- **No browser is added to the check;** a session proves a real Save in
+  Chrome.
+- **The price check proves the written rules in `quote-calculator.md`,** on
+  invented rates, not the office spreadsheet.
+
+### Left as it is
+
+- **Save stays many separate writes,** because it says what landed and one
+  transaction means moving Save into the database.
+- **QuickBooks stays typed by hand,** with Copy for QuickBooks as the bridge.
+- **The past-midnight rule's six copies wait for the routes plan,** which
+  rewrites every one of those readers.
+- **A change to a rate or a setting is not recorded,** because each quote
+  line already keeps the rate it was priced at.
+- **The two-week board and Print week stay,** since both are built and on the
+  board's menus.
+
+## Questions
+
+- **The printed quote.** Lock the prices on a quote drawn from a trip, so a
+  discount is a Billing line and a Save (recommended)? Or keep typing on the
+  sheet and warn that it is not saved?
+- **Two terms.** Is a sent quote held for one week? Does a card payment
+  carry a 4% fee? A yes goes on the signed sheets; a no leaves `booking.md`.
+- **Rest between two days.** For the second-driver test, does any overnight
+  wait of 8 hours part two days (recommended), or only one marked Off duty
+  or Sleeper berth? And is it 8 hours, as the quote's terms say, or 10?
+- **Printed and Reminded.** When a stop's time or place changes, do those
+  ticks come off by themselves (recommended), or only on a bus or date move?
+- **Chasing a quote.** How many days before a trip is an unanswered quote
+  worth chasing: 30, 60 or 90? Is Mark quote sent pressed for every quote?
+- **Money after the trip.** Once a trip has run, does one covered by a PO
+  ask for money at once, only after its invoice is marked sent, or never?
+- **Where Claude saves.** Real Saves on the published site, with :8641 kept
+  for testing (recommended)? Or stay on :8641?
+- **Missive.** Will you turn on Missive's own connector, so a review reads
+  email as text and not from pictures? May Claude leave a draft in a thread
+  for you to send, or only draft in chat?
+- **Asking Claude.** Should the Claude app answer "who do I chase this week"
+  and "is tomorrow ready"? A yes builds one new read tool.
+
+## Tasks
+
+### Small fixes, each by itself
+
+- [ ] Make `legFigures` in `scheduler/data.js` sum the open leg from the
+      Route tab's live stops, so a new trip saves its route's miles.
+- [ ] Narrow `get_driver_share_trips` to itinerary files, as SQL on a yes.
+- [ ] Make a repeated `add_to_do` change only what it is given, make
+      `find_trips` say when it cut its list, and deploy the connector.
+- [ ] Hold Save while a leg ends before it starts, with a line under the
+      dates, and read such a saved leg as one day in `week.js`.
+- [ ] Make `readWeek` and `show` wait for a bar in hand before drawing.
+- [ ] Draw a roster day that is both time off and a trip as both.
+- [ ] Carry the leg in the Departures and To do links, and make `goToTrip`
+      open that leg's bar.
+- [ ] In `driver-view.js`, hold Copy message until the link shows the ticked
+      trips, treat a failed status read as an error, read the statuses again
+      before marking, and ask before marking.
+- [ ] On the staff maintenance page, tell a failed link read from no link,
+      and read the link again before Create.
+- [ ] Open Cost empty on a line that follows the calculator, from a rule in
+      `scheduler/quote-lines.js` with its check.
+- [ ] Count a trip paid past its price as paid in `billing.js`, with a check.
+- [ ] Make `qbDescription` read each leg's own stops, and
+      `linesFromCalculator` write the leg the calculator was filled from.
+- [ ] Total the customer quote from its printed lines, warn in the editor
+      when lines and price part, and skip a locked price in `applyDraft`.
+- [ ] Show the second-driver notice while any bus on the leg has no
+      co-driver seat.
+- [ ] Blank a stop's drive when its place changed and the map did not
+      answer, and say so, in `measureStops`.
+- [ ] Ask No times of each leg in `to-do.js`, with a case in its check.
+- [ ] In the connector, allow a stop's date one day either side of its leg,
+      count a bus busy only on its own leg's days, return `spare_buses`, and
+      deploy.
+- [ ] In `saveEditor`, send a new trip's waiting files when its first save
+      stops partway, and compare the trip's stamp again after the update box.
+- [ ] Rename a vehicle type on `trip_assignments` too, from one list in
+      `vehicles.js`, and a customer on its linked trips.
+- [ ] Write a history entry when an update is edited or deleted, and close
+      a deleted To do row with a reason in place of removing it.
+- [ ] Move the address key into `places.js` and the digits rule into
+      `phone.js`, and use each on both pages that test for a duplicate.
+- [ ] In `applyDraft`, type fields in the table's order, name the six needs
+      it sets with no mark, match a drafted customer or say it is new, and
+      give a draft that cannot open its real reason.
+- [ ] Correct the documents: one home for each count in the two access
+      documents, the screen inventory's rows for what is built, the README's
+      line on the pasted estimate, and `booking.md`'s quote email list.
+
+### Checks
+
+- [ ] Parse every tracked script and inline script in `tools/check.mjs`.
+- [ ] Add `scheduler/tools/check-load.mjs`: each scheduler page's scripts,
+      in tag order, against a stand-in page, with no list of pages.
+- [ ] Add `scheduler/tools/check-shadow.mjs`: a call must not reach a local
+      that hides a module-level function, failing when it cannot follow a
+      file, with a failing sample of its own.
+- [ ] Add a scheduler check runner that finds every `check-*.mjs`, then
+      `check-quote.mjs` on invented rates and `check-pair.mjs` on a stand-in.
+- [ ] Add `check-connector.mjs`: both functions parse and every draft field
+      has a place; pin each function's imports to an exact version.
+- [ ] Write the how-to for proving a trip's Save in Chrome with the page's
+      writes recorded and not sent, in `scheduler/docs/`.
+
+### Clashes
+
+- [ ] Move `fitFor`, `restBetween`, `rankDrivers`, `autoPicks` and
+      `cardLapse` into `scheduler/clashes.js` with
+      `scheduler/tools/check-clashes.mjs`, and make a clash read the clock.
+- [ ] Add the standing rule and read it on the bar, in the checklist's Buses
+      group, as a To do kind, on Departures and as a choice on the Trips
+      page; load `week.js` and `clashes.js` on every page with the To do list.
+- [ ] Warn at Save when a date change makes a clash.
+- [ ] Say a lapsed card in words in every picker, and leave that driver out
+      of the automatic picks.
+- [ ] Mark, on the Drivers and Fleet pages, the upcoming trips that time
+      off, days out or Inactive would cover, before Save.
+- [ ] Put the seats sum in `leg-facts.js` and alert on the bar and its card.
+- [ ] Take Buses done off on a date move, as SQL on a yes.
+
+### The driver and the links
+
+- [ ] Move `legOf`, `jobView`, `changesBetween` and `stateOf` into
+      `scheduler/driver-job.js`, unchanged, with a check written first.
+- [ ] On the driver's page: read again on return to the tab, read again
+      before Accept, tell a replaced itinerary by its file, show the stops
+      folded with the changed lines, and draw the Cancelled card.
+- [ ] Write one migration: `trip_driver_statuses` sent live to staff,
+      `get_trip_driver_statuses` returning what each driver accepted, and
+      the function behind Mark the driver as told. Apply it on a yes.
+- [ ] Listen to the status table on the board, the To do list and
+      Departures, and count statuses in `weekPrint`.
+- [ ] Raise Declined and Tell the driver on the bar, the checklist,
+      Departures, the Contact list and the To do list, from `leg-facts.js`.
+- [ ] Write the triggers that take Printed, Reminded and Driver info sent
+      off when what they carried changes, as the answer above decides.
+- [ ] Name the drivers to tell in the Cancel dialog, its toast and History.
+- [ ] Add `replace_driver_schedule_share` and the Inactive trigger as SQL on
+      a yes, and a Replace link button in Driver view.
+- [ ] End a document's address with its trip in `trip-document-link`, with a
+      check of `handler.ts`, and deploy on a yes.
+- [ ] Use the office's itinerary rule in `share/driver.js`.
+- [ ] Take out the two open channels and their senders.
+- [ ] Return a bus's days out from `get_maintenance_schedule`, on a yes, and
+      draw them; name the bus in Recent changes.
+
+### Money and the route, once answered
+
+- [ ] Build the printed quote's answer in `print.js`, and correct
+      `booking.md` and the agreement's wording by the two terms.
+- [ ] Define a placeholder once, in `billing.js`, and read it in the
+      follow-up, To do, checklist and Departures rules, the board and the
+      connector.
+- [ ] Ask for a balance after a trip has left, in `follow-up.js`.
+- [ ] Teach `follow-up.js` the chase window and when the customer was last
+      told, with the window in the Follow-ups dialog.
+- [ ] Hold a settled price in `syncLines`.
+- [ ] Test each stretch between real rests in `route-figures.js`, with cases
+      for a run through the night on two dates.
+- [ ] Say spot, with its weekday, on a Departures tile.
+
+### The connector and the skills
+
+- [ ] Build `scheduler/draft-fields.js` with its check, and read it in the
+      connector and in `applyDraft`; add vehicles for a drafted bus count and
+      take the PO and deposit fields off.
+- [ ] Add `scheduler/tools/build-connector-rules.mjs`, an office-day helper,
+      and `get_trip` warnings from the rules; add the read tool if answered
+      yes; change the To do plan's line in the same commit; deploy.
+- [ ] Reconnect the connector, read a new session's tool list, and write the
+      step into `working-from-claude.md`.
+- [ ] Give each skill its job, delete `trip-email` in `~/claude-config`, key
+      a row by the conversation's id, drop the link-copying section, and
+      name the address for a real Save, as answered.
+- [ ] Try Missive's connector if it is turned on: read one unread thread and
+      see whether it stays unread; then rewrite the review's steps.
+- [ ] Read `by=claude` from the address in `actorName`.
+
+### Records and the other plans
+
+- [ ] Build `scheduler/trip-history.js` with its check, so any difference in
+      a trip's rows makes a line.
+- [ ] Write each plan's wait into the plan that waits, as one Decisions
+      line, and correct the retirement plan's list of what is dropped.

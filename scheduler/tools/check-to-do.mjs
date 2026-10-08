@@ -57,7 +57,14 @@ expect('a split trip names the leg that is short',
 expect('a confirmed trip within a week with no times says so, and not past a week',
   said(rows([{ ...good, start_date: day(7), end_date: day(7), trip_stops: [{ arrive: null }] },
     { ...good, id: 'b', start_date: day(8), end_date: day(8), trip_stops: [] }], facts)),
-  ['times:a No times']);
+  ['times:a:outbound No times']);
+
+expect('a split trip dropped off with times and picked up in two days with none names the pickup',
+  rows([{ ...good, trip_type: 'dropoff_pickup', start_date: day(-5), end_date: day(-5), return_start_date: day(2),
+    return_bus_count: 1, trip_assignments: [bus, { leg: 'return', bus_id: 1 }],
+    trip_stops: [{ leg: 'outbound', arrive: '08:00' }, { leg: 'return', arrive: null }] }], facts)
+    .map(r => [r.key, r.legName, r.day]),
+  [['times:a:return', 'Pickup', day(2)]]);
 
 const soon = { ...good, start_date: day(1), end_date: day(1) };
 expect('a leg leaving tomorrow with a seat open and no contact says both, and nothing from Paperwork',

@@ -39,8 +39,8 @@ team's email, so nobody has to remember to look in three places.
     leave, and a row on every departure says nothing.
   - **Short of buses,** a confirmed trip leaving within 30 days with a leg
     that has fewer buses than it needs.
-  - **No times,** a confirmed trip leaving within a week with no time on any
-    stop of its route.
+  - **No times,** a confirmed trip with a leg leaving within a week and no
+    time on any of that leg's stops.
 - **A leaving-soon row leaves out what another row on the trip already
   says,** so one fault is one line.
 - **A trip covered by another company's bus keeps its Short of buses row,**

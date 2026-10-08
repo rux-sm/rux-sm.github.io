@@ -12,8 +12,8 @@
                    checklist.js decides
      Short         a confirmed trip with a leg leaving within 30 days that
                    has fewer buses than it needs
-     No times      a confirmed trip leaving within a week whose route has no
-                   times in
+     No times      a confirmed trip with a leg leaving within a week whose
+                   stops have no times in
 
    A leaving-soon row leaves out what another row on the same trip already
    says, so one fault is one line. `fold` then turns a crowd of one kind into
@@ -63,7 +63,8 @@
   const needed = (trip, leg) => (leg === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1));
   const assigned = (trip, leg) => (trip.trip_assignments || [])
     .filter(a => (a.leg || 'outbound') === leg && a.bus_id != null).length;
-  const hasTimes = trip => (trip.trip_stops || []).some(s => s.arrive || s.spot || s.depart_prev);
+  const hasTimes = (trip, leg) => (trip.trip_stops || [])
+    .some(s => (s.leg || 'outbound') === leg && (s.arrive || s.spot || s.depart_prev));
 
   // An open checklist item as a fault, in the words the trip's card uses.
   const OPEN = {
@@ -101,12 +102,15 @@
       if (trip.confirmed) {
         for (const leg of Checklist.legsOf(trip)) {
           const want = needed(trip, leg), has = assigned(trip, leg);
-          if (has >= want || !within(legDay(trip, leg), SHORT_DAYS)) continue;
-          short.add(leg);
-          out.push(row('short', trip, leg, { what: KINDS.short.label, detail: `${has} of ${want}` }));
-        }
-        if (within(trip.start_date, TIMES_DAYS) && !hasTimes(trip)) {
-          out.push(row('times', trip, null, { what: KINDS.times.label, detail: null }));
+          if (has < want && within(legDay(trip, leg), SHORT_DAYS)) {
+            short.add(leg);
+            out.push(row('short', trip, leg, { what: KINDS.short.label, detail: `${has} of ${want}` }));
+          }
+          // Asked of each leg, so a pickup leg with no times is not hidden
+          // behind a drop-off that has them.
+          if (within(legDay(trip, leg), TIMES_DAYS) && !hasTimes(trip, leg)) {
+            out.push(row('times', trip, leg, { what: KINDS.times.label, detail: null }));
+          }
         }
       }
 

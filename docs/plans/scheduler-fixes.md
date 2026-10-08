@@ -183,7 +183,6 @@ site.
       co-driver seat.
 - [ ] Blank a stop's drive when its place changed and the map did not
       answer, and say so, in `measureStops`.
-- [ ] Ask No times of each leg in `to-do.js`, with a case in its check.
 - [ ] In the connector, allow a stop's date one day either side of its leg,
       count a bus busy only on its own leg's days, return `spare_buses`, and
       deploy.

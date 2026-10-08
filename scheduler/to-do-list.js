@@ -94,7 +94,7 @@
   const HEAVY = ['id', 'contact_not_needed', 'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
     ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
     'trip_assignments(id,bus_id,leg,active_roles,needs,vehicle_type,trip_drivers(driver_id,role,envelope_printed))',
-    'trip_stops(arrive,spot,depart_prev)'].join(',');
+    'trip_stops(leg,arrive,spot,depart_prev)'].join(',');
 
   async function readStored() {
     const midnight = new Date();

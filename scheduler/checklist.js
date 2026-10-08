@@ -17,8 +17,8 @@
    Entered and Customer are the trip's, so they sit on its first leg. A
    placeholder, a trip not quoted yet, has only Entered. Nothing here reads
    the database or the page: the trip row brings its own columns, and the
-   board works out what only it can, the buses and seats, and hands them in
-   as `facts`, so a rule lives here once whichever screen asks.
+   page hands in each leg's buses and seats as `facts`, which leg-facts.js
+   works out, so a rule lives here once whichever screen asks.
    ========================================================================== */
 (() => {
   'use strict';

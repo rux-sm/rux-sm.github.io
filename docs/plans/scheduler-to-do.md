@@ -132,7 +132,8 @@ team's email, so nobody has to remember to look in three places.
   both apps already draw that kind.
 - **The rules are one file, `scheduler/to-do.js`,** which
   `scheduler/tools/check-to-do.mjs` runs against sample trips in the check.
-  It is handed each leg's buses and seats, as the checklist is.
+  It is handed each leg's buses and seats, as the checklist is, by
+  `scheduler/leg-facts.js`.
 - **Every page reads the trips the rules need itself,** because only the
   board holds them otherwise.
 - **The count is Design's badge indicator on the header action, and the panel
@@ -148,9 +149,6 @@ None open.
 
 - [ ] Give Ruxbot its picture: the file put in `profile-photos` from a staff
       session and its path set on the profile by SQL, each on rux's yes.
-- [ ] Move the board's reading of a leg's buses and seats and of the trip
-      contact out of `data.js` into a file every Scheduler page loads, with
-      the checklist's counts on the board unchanged.
 - [ ] Have every Scheduler page read the trips the four rules need.
 - [ ] Add the header action and panel to every Scheduler page: the groups,
       Mine and Everyone, the add field, tick, Undo, due date, owner, trip and

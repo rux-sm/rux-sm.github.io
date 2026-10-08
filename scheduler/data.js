@@ -10508,7 +10508,6 @@
       const updateLost = answer.kind !== 'none' && !(await writeUpdate(tripId, answer));
       // Read back rather than trusting the write, as the drag does.
       await show();
-      if (departuresShown) void drawDepartures();
       const fields = Object.keys(patch).length;
       if (updateLost) toast('warning', 'Saved, but the update was not added.', 'Add it from the trip\'s Update shortcut.');
       else if (unlinked.length) toast('warning', creating ? 'Trip created.' : 'Saved.',
@@ -11462,9 +11461,6 @@
      open through week changes and selections, like the editor, and another
      file replaces the one shown. */
   const viewerEl = document.getElementById('scheduler-viewer');
-  const viewerList = document.getElementById('scheduler-viewer-list');
-  // Whether the panel is showing Departures, so a save redraws it.
-  let departuresShown = false;
   let viewerFrame = document.getElementById('scheduler-viewer-frame');
   const viewerTitle = document.getElementById('scheduler-viewer-title');
   const viewerTitleCollapsed = document.getElementById('scheduler-viewer-title-collapsed');
@@ -11598,12 +11594,7 @@
      panel already does; the link stays set, as the tab a print falls back to. */
   function setViewerMode(mode) {
     const form = mode === 'form';
-    // Departures is drawn here rather than framed, and has no toolbar.
-    const list = mode === 'list';
-    if (viewerList) viewerList.hidden = !list;
-    viewerFrame.hidden = list;
-    departuresShown = list;
-    setToolbarShown(!list);
+    setToolbarShown(true);
     setViewerBack(null);
     for (const btn of viewerZooms) btn.hidden = form || noZoom;
     viewerDownload.hidden = form;
@@ -11826,110 +11817,6 @@
     swapFrame(url);
   }
 
-  /* ── Departures ──
-     Every leg leaving today and the next two days, grouped by day, with what
-     its checklist still has open and a button to go and do each; the legs
-     that are ready fold under the rest. Read fresh each time it is drawn,
-     since the week on screen may be another. A placeholder is not leaving. */
-  async function openDepartures() {
-    if (!viewerEl || !viewerList) return;
-    dropShown();
-    setViewerMode('list');
-    setViewerHead('Departures');
-    viewerNote = '';
-    setFormNote('');
-    viewerDocId = null;
-    showViewer(null);
-    viewerClose?.focus();
-    await drawDepartures();
-  }
-
-  // Opens a trip on the board and goes where one of its checklist items is done.
-  async function openDeparture(tripId, day, action) {
-    await goToTrip(tripId, day);
-    requestAnimationFrame(() => goToChecklistItem(action));
-  }
-
-  async function drawDepartures() {
-    if (!viewerList || !departuresShown) return;
-    if (!client) {
-      viewerList.replaceChildren(notice('info', 'No connection', 'This preview cannot read the trips.'));
-      return;
-    }
-    const first = parseISO(iso(new Date()));
-    const days = [0, 1, 2].map(n => iso(addDays(first, n)));
-    let trips;
-    let statusRows;
-    try {
-      const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
-      trips = await withTimeout(client.from('trips').select(TRIP_COLUMNS).is('cancelled_at', null)
-        .or(`and(start_date.gte.${days[0]},start_date.lte.${days[2]}),and(return_start_date.gte.${days[0]},return_start_date.lte.${days[2]})`)
-        .order('start_date').then(unwrap));
-      statusRows = trips.length ? await withTimeout(
-        client.rpc('get_trip_driver_statuses', { p_trip_ids: trips.map(t => t.id) }).then(unwrap)) : [];
-    } catch (e) {
-      if (departuresShown) viewerList.replaceChildren(notice('error', 'Departures did not load', e?.message || String(e)));
-      return;
-    }
-    if (!departuresShown) return;
-    const statuses = new Map(statusRows.map(r => [statusKey(r.tripId, r.driverId, r.leg, r.role), r]));
-    const legs = [];
-    for (const trip of trips) {
-      if (window.SchedulerChecklist.placeholder(trip)) continue;
-      for (const l of tripChecklist(trip, leg => checklistFacts(trip, leg, statuses), !!dayOfContact(trip))) {
-        const day = l.leg === 'return' ? (trip.return_start_date ?? trip.end_date) : trip.start_date;
-        if (days.includes(day)) legs.push({ ...l, trip, day });
-      }
-    }
-    const dayName = (day, n) => (n === 0 ? 'Today' : n === 1 ? 'Tomorrow'
-      : parseISO(day).toLocaleDateString(undefined, { weekday: 'long' }));
-    const parts = [];
-    days.forEach((day, n) => {
-      const here = legs.filter(l => l.day === day).sort((a, b) => b.left - a.left);
-      const open = here.filter(l => l.left);
-      const ready = here.filter(l => !l.left);
-      const body = el('div', 'scheduler-departures__day');
-      if (!here.length) body.appendChild(el('p', 'rux--form__helper-text', 'Nothing leaves.'));
-      for (const l of open) body.appendChild(departureLeg(l));
-      if (ready.length) {
-        const fold = el('details', 'scheduler-departures__ready');
-        fold.appendChild(el('summary', null, `${ready.length} ready`));
-        for (const l of ready) fold.appendChild(departureLeg(l));
-        body.appendChild(fold);
-      }
-      const date = parseISO(day).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-      parts.push(section(`${dayName(day, n)}, ${date}`, body));
-    });
-    viewerList.replaceChildren(...parts);
-  }
-
-  // One leg: its trip, and each item it still has open with a button to it.
-  function departureLeg(l) {
-    const box = el('div', 'scheduler-departures__leg');
-    const split = l.trip.trip_type === SPLIT;
-    const head = el('p', 'scheduler-departures__trip');
-    head.append(el('strong', null, l.trip.destination || 'No destination'),
-      el('span', null, [l.trip.customer, split ? (l.leg === 'return' ? 'pickup leg' : 'drop-off leg') : null,
-        l.left ? `${l.left} left` : 'ready'].filter(Boolean).join(' · ')));
-    box.appendChild(head);
-    const list = el('ul', 'scheduler-checklist');
-    for (const item of l.items.filter(i => !i.done)) {
-      const li = el('li', 'scheduler-checklist__item');
-      const words = el('span', 'scheduler-checklist__words');
-      words.appendChild(el('span', null, item.label));
-      if (item.detail) words.appendChild(el('span', 'scheduler-checklist__detail', item.detail));
-      li.append(el('span', 'scheduler-checklist__mark scheduler-checklist__mark--open'), words);
-      const go = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', item.action === 'forms' ? 'Forms' : 'Open');
-      go.type = 'button';
-      go.setAttribute('aria-label', `${item.label}, ${l.trip.destination || 'trip'}`);
-      go.addEventListener('click', () => void openDeparture(l.trip.id, l.day, item.action ?? 'checklist'));
-      li.appendChild(go);
-      list.appendChild(li);
-    }
-    if (list.children.length) box.appendChild(list);
-    return box;
-  }
-
   /* `trip` names the file as file-names.js names every file, so a copy saved
      or printed from here is offered under the name, whatever it was stored as. */
   async function openDocument(doc, opener, trip) {
@@ -12028,7 +11915,6 @@
   function closeViewer(returnFocus = true) {
     if (!viewerEl || viewerEl.hidden) return;
     viewerEl.hidden = true;
-    departuresShown = false;
     viewerDocId = null;
     // A fetch still running is dropped, and no PDF is held while the panel is shut.
     viewerSeq++;
@@ -13866,11 +13752,6 @@
     show();
   });
   // The week on screen as the forms page's week schedule, in its own tab.
-  document.getElementById('scheduler-menu-departures')?.addEventListener('click', () => {
-    const menu = document.getElementById('scheduler-view-menu');
-    if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }
-    void openDepartures();
-  });
   document.getElementById('scheduler-menu-print-week')?.addEventListener('click', () => {
     const menu = document.getElementById('scheduler-view-menu');
     if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }

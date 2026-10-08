@@ -1760,21 +1760,7 @@ button.scheduler-row-head__num::after {
   padding: var(--rux-spacing-05);
 }
 .scheduler-viewer__status[hidden] { display: none; }
-/* DEPARTURES, drawn in the frame's place: it fills the panel the same way and
-   scrolls on its own. A frame hidden for it stays hidden, whatever its display. */
-.scheduler-viewer__frame[hidden], .scheduler-viewer__list[hidden] { display: none; }
-.scheduler-viewer__list {
-  flex: 1 1 auto;
-  min-block-size: 0;
-  overflow-y: auto;
-  padding: 0 var(--rux-spacing-05) var(--rux-spacing-07);
-}
-.scheduler-departures__leg { padding-block: var(--rux-spacing-03); }
-.scheduler-departures__leg + .scheduler-departures__leg { border-block-start: 1px solid var(--rux-border-subtle-01); }
-.scheduler-departures__trip { display: flex; flex-direction: column; margin: 0 0 var(--rux-spacing-02); }
-.scheduler-departures__trip span { color: var(--rux-text-secondary); }
-.scheduler-departures__ready > summary { cursor: pointer; padding-block: var(--rux-spacing-03); color: var(--rux-text-secondary); }
-.scheduler-departures__ready > summary:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
+.scheduler-viewer__frame[hidden] { display: none; }
 
 .scheduler-viewer__frame {
   display: block;

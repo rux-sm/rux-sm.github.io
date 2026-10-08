@@ -91,4 +91,3 @@ None open.
 
 - [ ] Give each bus its own fuel card: the SQL shown to rux, and the card
       entered in the bus's window on the Buses tab.
-- [ ] Take the board's Departures list and its menu item out.

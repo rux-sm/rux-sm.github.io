@@ -98,7 +98,7 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 | `trip_driver_confirmations` | legacy | superseded by `trip_driver_statuses`; still written by the confirm and decline RPCs |
 | `driver_schedule_shares` | driver editor, `../rux-ui/driver.html` | `token`, `driver_id`, `trip_legs` jsonb, `range_start`, `range_end`, `expires_at`, `revoked_at`. RPC only. |
 | `trip_drafts` | Claude connector, trip editor `?draft=` | `author` to `auth.users`, cascade; `trip_id` to `trips`, cascade and null for a new trip; `fields` jsonb, `notes`, `expires_at`. Only the author reads it, only while staff, only before it expires; a nightly job deletes the rest. |
-| `to_dos` | the to-do list's stored rows; no screen reads it yet | `body`; `source` (person, agent); `created_by`, `session_of`, `owner_id` and `closed_by` to `profiles`, set null; `due_on`; `trip_id` to `trips`, cascade; `thread_url`, `thread_key`, one open row per key; `closed_at`, `closed_reason`. Staff only, broadcast on realtime. `to_dos_stamp` sets who made a row and who closed it, an agent row as Ruxbot with the signed-in person in `session_of`, and refuses an agent's close on a row a person wrote. |
+| `to_dos` | the header's To do panel on every page, which reads the open rows and the ones closed today, adds, edits, ticks and deletes them | `body`; `source` (person, agent); `created_by`, `session_of`, `owner_id` and `closed_by` to `profiles`, set null; `due_on`; `trip_id` to `trips`, cascade; `thread_url`, `thread_key`, one open row per key; `closed_at`, `closed_reason`. Staff only, broadcast on realtime. `to_dos_stamp` sets who made a row and who closed it, an agent row as Ruxbot with the signed-in person in `session_of`, and refuses an agent's close on a row a person wrote. |
 | `maintenance_schedule_shares` | this app's maintenance pages, `../rux-ui/maintenance.html` | one row, `scope = 'main'`, `token`, `revoked_at`. RPC only. |
 | `settings` | Settings view | key-value, `value` jsonb. Yard, locations, requirements, billing defaults and `vehicle-types-v1`, the office's vehicle types as `{ name, label?, icon }`, live here. |
 | `profiles` | both apps' staff log-in, the old app's profile | `display_name`, `photo_path`, `settings` jsonb, `avatar_color`; `user_id`, the Auth user this staff member logs in as; which apps an account opens is in its `app_metadata`. Ruxbot is the one row with no `user_id`, the profile an agent's to-do rows are made by, whose id `ruxbot_profile_id()` returns. Not `platform.profiles`. |
@@ -144,7 +144,9 @@ The old app subscribes to `postgres_changes` on `trips`, `trip_stops`,
 `trip_invoices`, `trip_passengers` and `trip_ticket_options` for the grid,
 and separately on notifications, team chat, dev notes and the game. A
 30-second poll backs the grid up, and is the only thing that picks up
-`trip_drivers`. This app does not subscribe.
+`trip_drivers`. This app subscribes twice: the board's `scheduler-board`
+channel to the tables it draws from, and every page's `scheduler-to-do`
+channel to `to_dos` and the trip tables its computed rows read.
 
 ## 3. Table to screen
 

@@ -113,7 +113,7 @@
 
   /* The faces sit at the Account action's size. Past `FACES` the rest are a
      count whose tooltip says who and where; a phone's header has room beside
-     the logo for one face only. */
+     the logo for one face and no count. */
   function draw() {
     if (!hostEl) return;
     const list = others();
@@ -134,7 +134,7 @@
       link.appendChild(face);
       hostEl.appendChild(link);
     }
-    if (list.length > shown.length) {
+    if (list.length > shown.length && !phone.matches) {
       const rest = list.slice(shown.length);
       const more = document.createElement('span');
       more.className = 'scheduler-header-people__more';

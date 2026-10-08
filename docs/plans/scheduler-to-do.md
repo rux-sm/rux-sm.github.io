@@ -62,7 +62,9 @@ team's email, so nobody has to remember to look in three places.
   and then leaves the list.
 - **A row is put off by changing its due date,** so there is no separate
   snooze to explain.
-- **Delete is in the row's menu,** for a row made by mistake.
+- **A row's pencil opens it in place:** its words, due date, owner and trip,
+  with Delete for a row made by mistake. One button and one form, where a
+  menu would need a second step for each.
 - **A tick on a row attached to a trip enters that trip's history,** so the
   trip's record says the work was done and by whom.
 - **An agent row is written straight in, through the connector,** as made by
@@ -105,8 +107,9 @@ team's email, so nobody has to remember to look in three places.
 - **Rows are grouped Overdue, Today, This week, Later and No date.** A
   computed row is in Today for as long as it is true, ordered by the day its
   trip leaves.
-- **A row is one line:** what, the trip and its customer, who, and when. A
-  press on a row with a trip opens that trip.
+- **A row is its words, then one quiet line:** the trip and its customer and
+  when, with the owner's face at the end. A press on a computed row, or on a
+  stored row's trip, opens that trip.
 - **Rows about one trip sit together,** so an agent row beside a computed row
   reads as one matter.
 - **More than five computed rows of one kind fold into one line** that opens
@@ -138,8 +141,11 @@ team's email, so nobody has to remember to look in three places.
   board holds them otherwise.
 - **The count is Design's badge indicator on the header action, and the panel
   is its header panel.** The panel's width and the row are the scheduler's
-  own, `scheduler-to-do`, holding Design's checkbox and overflow menu, because
-  Carbon has no such row and its panel is a switcher's width.
+  own, `scheduler-to-do`, holding Design's checkbox, link, avatar and button,
+  because Carbon has no such row and its panel is a switcher's width.
+- **On a phone the header's actions are 40px wide and one face shows with no
+  count,** because the bar is 22px short of holding a fourth action at
+  Carbon's 48.
 
 ## Questions
 
@@ -149,19 +155,12 @@ None open.
 
 - [ ] Give Ruxbot its picture: the file put in `profile-photos` from a staff
       session and its path set on the profile by SQL, each on rux's yes.
-- [ ] Have every Scheduler page read the trips the four rules need.
-- [ ] Add the header action and panel to every Scheduler page: the groups,
-      Mine and Everyone, the add field, tick, Undo, due date, owner, trip and
-      delete.
-- [ ] Give the Trips page a Show choice for each kind that can fold. It has
-      one for follow-ups only.
 - [ ] Add the connector's tools to list, add, change and close to-do rows,
       and deploy the function.
 - [ ] Write the review skill: reading the team inbox, checking each thread
       against the schedule, and adding, changing and closing rows.
-- [ ] Bring `scheduler/docs/screen-inventory.md`,
-      `scheduler/docs/database-inventory.md` and
-      `scheduler/docs/working-from-claude.md` in line, in the commits that
-      change what they describe.
-- [ ] Check the panel in Chrome on :8641 at desk and phone widths, in each
-      theme, with two accounts open to see the count change live.
+- [ ] Bring `scheduler/docs/working-from-claude.md` and the connector's
+      section of `scheduler/docs/database-inventory.md` in line, in the commit
+      that adds the tools.
+- [ ] Tick a row attached to a trip on rux's yes, and read the entry it makes
+      on the History page.

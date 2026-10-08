@@ -4347,3 +4347,69 @@ html:has(.scheduler-page[data-takeover]) {
 }
 .scheduler-suggest__now { color: var(--rux-text-secondary); }
 .scheduler-suggest__error { color: var(--rux-text-error); }
+
+/* ══ The to-do list ═══════════════════════════════════════════════════════
+   The header's To do panel, filled by to-do-list.js. The panel is Design's
+   header panel at the width a row needs, the whole screen's on a phone; the
+   row is this app's own, holding Design's checkbox, link, avatar and button. */
+.scheduler-to-do.rux--header-panel--expanded { inline-size: min(24rem, 100vw); }
+@media (max-width: 41.98rem) {
+  .scheduler-to-do.rux--header-panel--expanded { inline-size: 100vw; }
+}
+.scheduler-to-do__body { color: var(--rux-text-primary); }
+.scheduler-to-do__head { display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-05); }
+.scheduler-to-do__title { margin: 0; font-size: 1rem; font-weight: 600; line-height: 1.375; }
+/* Wide enough for Everyone in full; Carbon's switcher fills its row and trims a
+   word it has no room for. */
+.scheduler-to-do__head .rux--content-switcher { flex: none; inline-size: 11.5rem; }
+.scheduler-to-do__add .rux--form-item { margin: 0; }
+.scheduler-to-do__error { margin: 0; color: var(--rux-text-error); font-size: 0.875rem; }
+.scheduler-to-do__error[hidden] { display: none; }
+.scheduler-to-do__group {
+  margin: var(--rux-spacing-05) 0 var(--rux-spacing-02);
+  color: var(--rux-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.33333;
+}
+.scheduler-to-do__group:first-child { margin-block-start: 0; }
+.scheduler-to-do__rows { list-style: none; margin: 0; padding: 0; }
+.scheduler-to-do__row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--rux-spacing-03);
+  padding-block: var(--rux-spacing-03);
+  border-block-start: 1px solid var(--rux-border-subtle-01);
+}
+.scheduler-to-do__text { display: flex; flex-direction: column; flex: 1 1 auto; min-inline-size: 0; gap: var(--rux-spacing-01); }
+.scheduler-to-do__text .rux--form-item { margin: 0; }
+.scheduler-to-do__text .rux--checkbox-label-text { overflow-wrap: anywhere; }
+.scheduler-to-do__meta { margin: 0; color: var(--rux-text-secondary); font-size: 0.75rem; line-height: 1.33333; overflow-wrap: anywhere; }
+/* Under the checkbox's words, past its 16px box and the 10px beside it. */
+.scheduler-to-do__text .rux--checkbox-wrapper + .scheduler-to-do__meta { padding-inline-start: 1.625rem; }
+.scheduler-to-do__face { flex: none; margin-block-start: var(--rux-spacing-01); }
+.scheduler-to-do__edit { flex: none; margin-block: calc(-1 * var(--rux-spacing-02)); }
+.scheduler-to-do__row--done .rux--checkbox-label-text { color: var(--rux-text-secondary); text-decoration: line-through; }
+/* A computed row is one link to its trip: a mark where a tick would be, its
+   words, then the trip under them. */
+.scheduler-to-do__open {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: flex-start;
+  gap: 0.625rem;
+  min-inline-size: 0;
+  color: inherit;
+  font-size: 0.875rem;
+  line-height: 1.28572;
+  text-decoration: none;
+}
+.scheduler-to-do__open:hover .scheduler-to-do__words { text-decoration: underline; }
+.scheduler-to-do__open:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+.scheduler-to-do__open > svg { flex: none; margin-block-start: 1px; color: var(--rux-icon-secondary); }
+.scheduler-to-do__open > .scheduler-to-do__mark { color: var(--rux-support-warning); }
+.scheduler-to-do__detail { color: var(--rux-text-secondary); }
+.scheduler-to-do__none { margin: 0; color: var(--rux-text-secondary); font-size: 0.875rem; }
+.scheduler-to-do__row--editing { display: block; padding-block: var(--rux-spacing-05); }
+.scheduler-to-do__form .rux--form-item { margin: 0; }
+.scheduler-to-do__buttons { display: flex; align-items: center; gap: var(--rux-spacing-03); }
+.scheduler-to-do__gap { flex: 1 1 auto; }

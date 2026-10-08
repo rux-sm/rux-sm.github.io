@@ -69,9 +69,15 @@
   const matches = (t, q) => !q || [t.trip_ref, t.customer, t.destination, t.booking_contact_name,
     t.po_ref, t.invoice_number].filter(Boolean).join(' ').toLowerCase().includes(q.toLowerCase());
 
+  /* The to-do list's other three kinds, as to-do-list.js worked them out for
+     the header: a trip is shown when it has a row of that kind. */
+  const asked = (kind, t) => (window.SchedulerToDoList?.rows() ?? []).some(r => r.kind === kind && r.trip.id === t.id);
   const WHICH = {
     upcoming: t => !t.cancelled_at && (lastDay(t) || '9999') >= today,
     followup: t => FollowUp.asks(t),
+    short: t => asked('short', t),
+    times: t => asked('times', t),
+    leaving: t => asked('leaving', t),
     past: t => !t.cancelled_at && (lastDay(t) || '9999') < today,
     cancelled: t => !!t.cancelled_at,
     all: () => true,
@@ -92,6 +98,12 @@
 
   let trips = [];
   let filter = $('scheduler-trips-filter')?.value || 'upcoming';
+  // A folded line of the to-do list opens this page on its kind, as `?show=`.
+  const shown = new URLSearchParams(location.search).get('show');
+  if (shown && WHICH[shown] && $('scheduler-trips-filter')) {
+    filter = shown;
+    $('scheduler-trips-filter').value = shown;
+  }
   let pageAt = 0;
 
   // Where a row goes: the trip on its week of the schedule.
@@ -194,6 +206,11 @@
     filter = e.target.value;
     pageAt = 0;
     drawList();
+  });
+  // The header's list reads its trips after this page draws, so a view that
+  // shows one of its kinds is drawn again when they arrive.
+  document.addEventListener('scheduler:to-do-rows', () => {
+    if (['short', 'times', 'leaving'].includes(filter)) drawList();
   });
   $('scheduler-trips-page')?.addEventListener('change', e => { pageAt = Number(e.target.value) || 0; drawList(); });
   $('scheduler-trips-prev')?.addEventListener('click', () => { pageAt -= 1; drawList(); });

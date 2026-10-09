@@ -5,14 +5,17 @@
    and for one leg its page, a block for the trip and a block for each bus,
    every status one line. A line is
 
-     { key, state, label, value, at, by, action }
+     { key, state, label, value, at, by, action, mark }
 
    `state` is `done`, `todo` or `warn`: done, the office's to do, or a
    problem sorted out somewhere else. `value` is what a line says beside its
    name, a PO or a contact; `at` and `by` are when a step was done and whose
    profile did it, where the database kept them; `action` is where a `todo`
    is done, `forms:<form>` for that form in the board's document panel or
-   `contacts` for the trip's Contact list.
+   `contacts` for the trip's Contact list; `mark` is the column a `todo`
+   step is kept in, for the panel to turn on where the step was done some
+   other way, on the seat for a crew member's line and on the trip's
+   `trip_prep` row for the trip's.
 
    The trip's lines are the whole trip's: confirmed, the itinerary received,
    the trip contact, what the customer still owes, the hotel where the office
@@ -37,14 +40,14 @@
   const Facts = window.SchedulerLegFacts;
   const ToDo = window.SchedulerToDo;
 
-  const line = (key, state, label, more = {}) => ({ key, state, label, value: null, at: null, by: null, action: null, ...more });
+  const line = (key, state, label, more = {}) => ({ key, state, label, value: null, at: null, by: null, action: null, mark: null, ...more });
   const first = name => String(name || '').trim().split(/\s+/)[0] || '';
   const one = v => (Array.isArray(v) ? v[0] ?? null : v ?? null);
   const usd = n => Number(n).toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
-  // A step a seat or the trip's prep row keeps: done with its stamp, or to do at `action`.
+  // A step a seat or the trip's prep row keeps: done with its stamp, or to do at `action` and kept in `column`.
   const step = (key, label, row, column, action) => (row?.[column]
     ? line(key, 'done', label, { at: row[`${column}_at`] ?? null, by: row[`${column}_by`] ?? null })
-    : line(key, 'todo', label, { action }));
+    : line(key, 'todo', label, { action, mark: column }));
 
   /* The legs that leave on `day`, soonest trip first. A cancelled trip and a
      placeholder leave nothing. */

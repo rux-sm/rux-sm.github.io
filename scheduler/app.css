@@ -4602,6 +4602,18 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-departures__line--todo .scheduler-departures__mark { color: var(--rux-support-error); }
 .scheduler-departures__line--warn .scheduler-departures__mark { color: var(--rux-support-warning); }
 .scheduler-departures__what { flex: 1 1 auto; min-inline-size: 0; overflow-wrap: anywhere; }
+/* The mark of a step still to do is a button that marks it done by hand: at
+   rest the mark, and under the pointer or the focus the tick it would get.
+   Pressed, the line asks under its words, in line with them. */
+.scheduler-departures__tick { display: inline-flex; flex: none; margin: -0.25rem; padding: 0.25rem; border: 0; border-radius: 50%; background: none; color: inherit; cursor: pointer; }
+.scheduler-departures__tick:hover { background-color: var(--rux-layer-hover); }
+.scheduler-departures__tick:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
+.scheduler-departures__hint { display: none; color: var(--rux-icon-primary); }
+.scheduler-departures__tick:is(:hover, :focus-visible) > .scheduler-departures__mark { display: none; }
+.scheduler-departures__tick:is(:hover, :focus-visible) > .scheduler-departures__hint { display: block; }
+.scheduler-departures__line--asking { flex-wrap: wrap; }
+.scheduler-departures__ask { display: flex; flex: 0 0 100%; align-items: center; gap: var(--rux-spacing-03); padding-block-end: var(--rux-spacing-03); padding-inline-start: 1.75rem; color: var(--rux-text-secondary); }
+.scheduler-departures__ask > span { flex: 1 1 auto; }
 .scheduler-departures__when { flex: none; color: var(--rux-text-secondary); font-size: 0.75rem; }
 .scheduler-departures__face { flex: none; }
 

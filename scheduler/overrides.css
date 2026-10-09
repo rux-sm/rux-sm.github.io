@@ -134,6 +134,14 @@
 .scheduler-page[data-takeover]:not([data-takeover="viewer"]) .scheduler-viewer .rux--side-panel {
   display: none;
 }
+/* Below md there is nothing beside a panel to leave room for, so the one in
+   front takes all the inset leaves rather than its 20rem. */
+@media (max-width: 41.98rem) {
+  .scheduler-page[data-takeover="editor"] .scheduler-trip .rux--side-panel,
+  .scheduler-page[data-takeover="viewer"] .scheduler-viewer .rux--side-panel {
+    inline-size: calc(100% - 2 * var(--rux-spacing-05));
+  }
+}
 
 
 
@@ -301,16 +309,16 @@
 #scheduler-panel-body { grid-row: 3; }
 #scheduler-panel > .rux--side-panel__actions-container { grid-row: 4; }
 
-/* The tabs take `spacing-03` inline padding in place of `spacing-05`, so all
-   of them fit the panel without scrolling, and the list fills the strip so its
-   rule runs to the panel's edge. Every tab takes an equal share of it, from
-   a zero basis where Carbon grows each from its word, and its word is centred
-   in it. */
+/* The tabs take `spacing-01` inline padding in place of `spacing-05`, so all
+   five fit the panel's 20rem without scrolling, three of them with a done
+   mark after the word, and the list fills the strip so its rule runs to the
+   panel's edge. Every tab takes an equal share of it, from a zero basis where
+   Carbon grows each from its word, and its word is centred in it. */
 #scheduler-panel-body .rux--tabs__nav-item {
   flex: 1 1 0;
 }
 #scheduler-panel-body .rux--tabs__nav-link {
-  padding-inline: var(--rux-spacing-03);
+  padding-inline: var(--rux-spacing-01);
   justify-content: center;
   text-align: center;
 }
@@ -373,12 +381,31 @@
 /* The editor's action buttons divide the bar evenly. Carbon pads a filled
    button's trailing edge for an optional icon, which raises Reset's and Save's
    minimum width above Cancel's; one symmetric padding lets the equal flex
-   basis decide. Scoped to the panel's bar, so modal footers keep Carbon's
-   spacing. The geist-dark theme ends the bar instead, giving each button its
-   own width and the same padding, so this changes nothing there. */
+   basis decide, and 12px of it is what three words leave of the panel's
+   20rem. Scoped to the panel's bar, so modal footers keep Carbon's spacing.
+   The geist-dark theme ends the bar instead, giving each button its own width
+   and the same padding, so this changes nothing there. */
 .rux--side-panel__actions-container .rux--action-set__action-button {
-  padding-inline: var(--rux-spacing-05);
+  padding-inline: var(--rux-spacing-04);
 }
+/* The editor is 20rem, which no two of its fields share: a name beside a
+   phone number cut both to an ellipsis. A pair there is one field a row. */
+#scheduler-panel .scheduler-pair { grid-template-columns: minmax(0, 1fr); }
+/* The Route tab's Summary has five columns, which Carbon's 16px a side would
+   run 50px past the editor's 20rem. A group in the editor's stack may be
+   narrower than its widest line, so the tile stays inside the panel; the
+   table's cells keep 4px between them and the tile's own inset at its two
+   edges, in the label size, and a row still too wide scrolls inside the tile
+   rather than pushing it out. */
+#scheduler-panel .rux--stack-vertical > .rux--layer-two { min-inline-size: 0; }
+.scheduler-summary__table { overflow-x: auto; }
+.scheduler-summary__table .rux--data-table :is(th, td) {
+  padding-inline: var(--rux-spacing-02);
+  font-size: var(--rux-label-01-font-size);
+}
+.scheduler-summary__table .rux--data-table .rux--table-header-label { font-size: var(--rux-label-01-font-size); }
+.scheduler-summary__table .rux--data-table :is(th, td):first-child { padding-inline-start: var(--rux-layout-density-padding-inline-local); }
+.scheduler-summary__table .rux--data-table :is(th, td):last-child { padding-inline-end: var(--rux-layout-density-padding-inline-local); }
 
 /* Fields in a modal take `field-02`, as rux.css does for fields in a side
    panel. A modal is `rux--layer-one`, where `field-01` barely differs from the
@@ -701,7 +728,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    the width those names need and the panel's own width as its ceiling. */
 #scheduler-viewer-copies {
   min-inline-size: 18rem;
-  max-inline-size: var(--scheduler-viewer-w, 30rem);
+  max-inline-size: var(--scheduler-viewer-w, 20rem);
 }
 
 /* The bar menu's driver list holds every active driver, longer than a short

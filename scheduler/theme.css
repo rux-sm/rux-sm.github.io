@@ -389,39 +389,17 @@
 [data-theme="ant-dark"] #scheduler-panel-body .rux--tabs {
   block-size: calc(2.875rem + var(--rux-spacing-03));
 }
-/* GEIST'S AND ANT'S TABS ARE AS WIDE AS THEIR WORDS, 24px and 32px apart,
-   which is Design's rule for each theme. Beside the week the editor's five
-   fit that way, so they give up the equal shares and the 8px insets
-   overrides.css deals them, and the first word starts where the fields under
-   it do, 24px in: the list's inset, and in geist-dark the tab's own 2px. */
-@media (min-width: 42rem) {
-  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) #scheduler-panel-body .rux--tabs__nav-item {
-    flex: none;
-  }
-  :is([data-theme="geist-dark"], [data-theme^="apple-"]) #scheduler-panel-body .rux--tabs__nav-link {
-    padding-inline: 2px;
-  }
-  [data-theme="ant-dark"] #scheduler-panel-body .rux--tabs__nav-link {
-    padding-inline: 0;
-  }
-  :is([data-theme="geist-dark"], [data-theme^="apple-"]) #scheduler-panel-body .rux--tab--list {
-    padding-inline-start: calc(var(--rux-spacing-06) - 2px);
-  }
-  [data-theme="ant-dark"] #scheduler-panel-body .rux--tab--list {
-    padding-inline-start: var(--rux-spacing-06);
-  }
+/* GEIST'S, ANT'S AND APPLE'S TABS ARE AS WIDE AS THEIR WORDS in Design, 24px
+   and 32px apart. The editor's five keep the equal shares overrides.css deals
+   them instead: with a done mark on three of them their words and Design's
+   gaps are wider than the panel's 20rem, and a tab scrolled out of sight is
+   one nobody opens. The gap and the list's inset Design gives these themes
+   are taken back, so each share is a fifth. */
+:is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) #scheduler-panel-body .rux--tabs__nav-link {
+  margin-inline-start: 0;
 }
-/* On a phone the five keep their equal shares: with a done mark on three of
-   them their words and Design's gaps are wider than the panel, and a tab
-   scrolled out of sight is one nobody opens. The gap and the list's inset
-   Design gives these two themes are taken back, so each share is a fifth. */
-@media (max-width: 41.98rem) {
-  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) #scheduler-panel-body .rux--tabs__nav-link {
-    margin-inline-start: 0;
-  }
-  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) #scheduler-panel-body .rux--tab--list {
-    padding-inline-start: 0;
-  }
+:is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) #scheduler-panel-body .rux--tab--list {
+  padding-inline-start: 0;
 }
 /* Design draws this theme's tile with a 1px ring inside its edge, and the
    Summary's table runs flush to the tile's sides and foot, over the ring. It

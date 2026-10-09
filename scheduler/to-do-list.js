@@ -507,9 +507,11 @@
     return li;
   }
 
-  /* The frame, built once: the switch of three tabs, Add a to-do, then the
-     list. The switch is Design's content switcher, and Add is the dashed row
-     the trip editor's lists end in. */
+  /* The frame, built once: the switch of three tabs in a row of its own at
+     the panel's head, which stays while the body under it scrolls, then Add a
+     to-do and the list. The switch is Design's content switcher, and Add is
+     the dashed row the trip editor's lists end in. */
+  const switchRow = el('div', 'rux--layer-two scheduler-to-do__switch');
   const body = el('div', 'rux--layer-two rux--stack-vertical rux--stack-scale-5 scheduler-to-do__body');
   const views = el('div', 'rux--content-switcher rux--content-switcher--sm rux--layout--size-sm rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg');
   views.setAttribute('role', 'tablist');
@@ -536,8 +538,11 @@
   const error = el('p', 'scheduler-to-do__error');
   error.setAttribute('role', 'alert');
   const list = el('div', 'scheduler-to-do__list');
-  body.append(views, addRow, error, list);
+  switchRow.appendChild(views);
+  body.append(addRow, error, list);
   panel.setAttribute('aria-label', 'To do');
+  // Ahead of both bodies, departures-panel.js's being in the panel already.
+  panel.insertBefore(switchRow, panel.querySelector('.scheduler-departures'));
   panel.appendChild(body);
 
   /* The open row's menu, one for the whole list: Design's menu, which its
@@ -658,15 +663,12 @@
 
   /* The switch shows one tab. To do and Trips are this list, drawn one way or
      the other; Departures is departures-panel.js's, which hides this body
-     while it shows. The switch moves to the head of whichever body shows, so
-     it is the first thing on every tab, and takes back the focus the move
-     cost it. */
+     while it shows. */
   function show(next, focus) {
     const other = window.SchedulerDeparturesPanel;
     view = next === 'trips' || (next === 'departures' && other) ? next : 'list';
     editingId = null;
     if (view === 'departures') other.open(); else other?.close();
-    (view === 'departures' ? panel.querySelector('.scheduler-departures') : body).prepend(views);
     window.Rux.contentSwitcher?.select(views, views.querySelector(`[data-view="${view}"]`), { focus, silent: true });
     draw();
   }
@@ -714,6 +716,7 @@
   }
   if (pane) {
     action.addEventListener('click', () => setPane(panel.hidden));
+    document.getElementById('scheduler-to-do-close')?.addEventListener('click', () => { setPane(false); action.focus(); });
   } else {
     /* A closed header panel is 0 wide but still in the page, so it is inert
        until it opens: nothing in it takes a Tab or is read. */

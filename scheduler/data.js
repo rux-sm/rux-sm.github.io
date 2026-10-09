@@ -6697,11 +6697,14 @@
   // A saved trip's checklist, for its card and the Departures list.
   const tripChecklistOf = trip => tripChecklist(trip, leg => checklistFacts(trip, leg), !!dayOfContact(trip));
 
-  /* Where an item's button goes: an editor tab, or the Forms panel beside the
-     board. The checklist shuts first, so what the button opened is in view. */
-  function goToChecklistItem(action) {
+  /* Where an item's button goes: an editor tab, the Forms panel beside the
+     board, or the leg's itinerary from the customer in the document panel,
+     which is where its Printed tick is made. The checklist shuts first, so
+     what the button opened is in view. */
+  function goToChecklistItem(action, leg = null) {
     closeChecklist();
     if (action === 'forms') { openForms(selectedBar()); return; }
+    if (action === 'itinerary') { openLegItinerary({ trip: editing?.id, leg }, selectedBar()); return; }
     const tab = document.getElementById(`scheduler-tab-${action}`);
     if (tab) window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
   }
@@ -6723,7 +6726,7 @@
       const go = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', item.action === 'forms' ? 'Forms' : 'Open');
       go.type = 'button';
       go.setAttribute('aria-label', `${item.action === 'forms' ? 'Open Forms for' : 'Go to'} ${item.label.toLowerCase()}`);
-      go.addEventListener('click', () => goToChecklistItem(item.action));
+      go.addEventListener('click', () => goToChecklistItem(item.action, leg));
       li.appendChild(go);
     }
     /* The itinerary can be marked not needed from its row, and a row marked
@@ -11818,6 +11821,8 @@
   let viewerDocId = null;
   // The download running: its document id, and the controller that stops it.
   let viewerLoading = null;
+  // The seats the itinerary showing is printed for, where a Departures line opened it.
+  let viewerMark = null;
   const documentLink = id => `share/document.html?id=${encodeURIComponent(id)}`;
   /* A stored file is read through a link signed for ten minutes, never its
      public address, because the trip-documents bucket is closed to all but
@@ -11916,6 +11921,7 @@
      panel already does; the link stays set, as the tab a print falls back to. */
   function setViewerMode(mode) {
     const form = mode === 'form';
+    viewerMark = null;
     setToolbarShown(true);
     setViewerBack(null);
     for (const btn of viewerZooms) btn.hidden = form || noZoom;
@@ -12139,9 +12145,80 @@
     swapFrame(url);
   }
 
+  /* WHAT A STORED ITINERARY MARKS. Opened from a Departures line it is the
+     sheet a leg's drivers are handed, so it carries what the itinerary this
+     app draws carries: a Printed box beside Print, and the question after a
+     print, each writing `itinerary_printed` on every seat of the leg, which
+     the trip's checklist and Departures read. A file opened any other way
+     marks nothing. */
+  function itineraryMarkOf(trip, leg) {
+    const rows = (trip?.trip_assignments || []).filter(a => (a.leg || 'outbound') === (leg || 'outbound'))
+      .flatMap(a => a.trip_drivers || []).filter(seat => seat.driver_id);
+    if (!rows.length) return null;
+    const names = rows.map(seat => {
+      const who = panelIndex.driversById.get(seat.driver_id);
+      return who?.short_name || who?.name || '';
+    }).filter(Boolean);
+    return { rows, names: [...new Set(names)] };
+  }
+  const isMarked = mark => mark.rows.every(seat => seat.itinerary_printed);
+
+  /* The tick shows at once and goes back to what the seats said if the write
+     fails, so no driver reads as handed a sheet the database never heard of. */
+  async function markItinerary(mark, want) {
+    const was = mark.rows.map(seat => Boolean(seat.itinerary_printed));
+    const show = values => {
+      mark.rows.forEach((seat, i) => { seat.itinerary_printed = values[i]; });
+      const box = document.getElementById('scheduler-viewer-marked');
+      if (box && viewerMark === mark) box.checked = isMarked(mark);
+    };
+    show(was.map(() => want));
+    const { error } = client
+      ? await client.from('trip_drivers').update({ itinerary_printed: want }).in('id', mark.rows.map(seat => seat.id))
+      : { error: { message: 'Not connected.' } };
+    if (error) { show(was); toast('error', 'The tick did not save', error.message); return; }
+    toast('success', want ? 'Itinerary marked printed' : 'Itinerary no longer marked printed');
+  }
+
+  // The Printed box, built as print.js builds a form's, for the same place in the toolbar.
+  function printedCell(mark) {
+    const cell = el('div', 'scheduler-print__cell scheduler-print__cell--check');
+    const box = el('div', 'rux--form-item rux--checkbox-wrapper');
+    const input = el('input', 'rux--checkbox');
+    input.type = 'checkbox';
+    input.id = 'scheduler-viewer-marked';
+    input.checked = isMarked(mark);
+    const label = el('label', 'rux--checkbox-label');
+    label.htmlFor = input.id;
+    label.appendChild(el('div', 'rux--checkbox-label-text', 'Printed'));
+    input.addEventListener('change', () => void markItinerary(mark, input.checked));
+    box.append(input, label);
+    cell.appendChild(box);
+    // The cell is what looks like the control, so a press anywhere in it ticks the box.
+    cell.addEventListener('click', e => { if (!e.target.closest('label, input')) input.click(); });
+    cell.setAttribute('data-beside-print', '');
+    return cell;
+  }
+
+  /* After a print the board asks, by name, in the dialog it asks about a
+     reminder in and in a drawn form's own words: a print dialog cancelled
+     looks the same as a sheet that came out, so nothing is marked by
+     printing. Yes writes the tick and No writes nothing. Seats already
+     marked are not asked about again. */
+  async function askItineraryPrinted() {
+    const mark = viewerMark;
+    if (!mark || isMarked(mark)) return;
+    const who = presenceNames(mark.names.map(name => ({ name })));
+    const question = mark.rows.length === 1 && who ? `Mark ${who}'s itinerary as printed?`
+      : `Mark the itinerary as printed for ${who || 'this trip'}?`;
+    if (await ask(question)) void markItinerary(mark, true);
+  }
+
   /* `trip` names the file as file-names.js names every file, so a copy saved
-     or printed from here is offered under the name, whatever it was stored as. */
-  async function openDocument(doc, opener, trip) {
+     or printed from here is offered under the name, whatever it was stored as.
+     `mark` is the leg's seats an itinerary is printed for, where a Departures
+     line opened it. */
+  async function openDocument(doc, opener, trip, mark = null) {
     if (!doc) return;
     setViewerMode('file');
     const url = await signedDocumentUrl(doc.file_path);
@@ -12161,6 +12238,8 @@
     // signs a fresh one each time it is opened.
     viewerNewTab.href = documentLink(doc.id);
     viewerDocId = String(doc.id);
+    viewerMark = mark;
+    if (mark) setFormControls([printedCell(mark)]);
     showViewer(opener);
     viewerClose?.focus();
     // The file showing, or downloading, is not fetched again, so its zoom stays.
@@ -12225,6 +12304,7 @@
       const started = Date.now();
       viewerFrame.contentWindow.focus();
       viewerFrame.contentWindow.print();
+      askItineraryPrinted();
       if (!name) return;
       if (Date.now() - started > 500) giveBack();
       else window.addEventListener('focus', giveBack, { once: true });
@@ -12238,6 +12318,7 @@
     if (!viewerEl || viewerEl.hidden) return;
     viewerEl.hidden = true;
     viewerDocId = null;
+    viewerMark = null;
     // A fetch still running is dropped, and no PDF is held while the panel is shut.
     viewerSeq++;
     dropShown();
@@ -12284,6 +12365,18 @@
     if (driver) asks.set('driver', driver);
     if (trip) { asks.set('trip', trip); asks.set('from', 'forms'); }
     openGenerated({ url: `print.html?${asks}`, kind: 'Form', note: '', opener });
+  }
+
+  /* The itinerary a leg's drivers are handed, as a Departures line asks for
+     it: the file the customer sent, which is the sheet the office prints, with
+     the leg's seats to mark. A trip that has lost its file since the line was
+     drawn gets the itinerary this app draws. */
+  function openLegItinerary({ trip: id, leg, assignment, driver } = {}, opener = null) {
+    // The trip in the editor may be off the week showing.
+    const trip = panelIndex.trips.get(id) ?? (id && String(editing?.id) === String(id) ? editing.trip : null);
+    const doc = trip ? latestItinerary(trip) : null;
+    if (doc) openDocument(doc, opener, trip, itineraryMarkOf(trip, leg));
+    else openTripForm({ form: 'driver-itinerary', layout: 'simple', trip: id, assignment, driver }, opener);
   }
 
   /* The quote calculator beside the week, filled with a leg's miles a day and
@@ -12972,7 +13065,7 @@
       if (viewerDocId === String(old.id)) {
         const trip = panelIndex.trips.get(tripId) ?? panelArgs?.trip;
         const fresh = trip && (trip.trip_documents || []).find(d => String(d.id) === String(doc.id));
-        openDocument(fresh || doc, null, trip);
+        openDocument(fresh || doc, null, trip, viewerMark);
       }
       toast('success', 'The file was replaced.');
     });
@@ -15185,15 +15278,20 @@
   }
 
   /* A LINK TO ONE TRIP, as the address or a row of the To do pane gives it. A
-     Departures line opens the trip where its step is done: the Contact list
-     or a form in the document panel, with the trip selected and its editor
-     left shut, or one tab of the editor. `opener` is the link pressed, where
-     there was one, and takes the focus back when the form's panel shuts. */
+     Departures line opens the trip where its step is done: the Contact list,
+     or a form or the customer's itinerary in the document panel, with the
+     trip selected and its editor left shut, or one tab of the editor.
+     `opener` is the link pressed, where there was one, and takes the focus
+     back when the document panel shuts. */
   function openAsked(asked, opener = null) {
     const leg = ['outbound', 'return'].includes(asked.get('leg')) ? asked.get('leg') : null;
     if (asked.get('open') === 'contacts') {
       goToTrip(asked.get('trip'), asked.get('date'), { open: false, leg })
         .then(() => { const bar = selectedBar(); if (bar) openContactsFrom(bar); });
+    } else if (asked.get('file') === 'itinerary') {
+      goToTrip(asked.get('trip'), asked.get('date'), { open: false, leg })
+        .then(() => openLegItinerary({ trip: asked.get('trip'), leg, assignment: asked.get('assignment'), driver: asked.get('driver') },
+          opener ?? selectedBar()));
     } else if (asked.has('form')) {
       goToTrip(asked.get('trip'), asked.get('date'), { open: false, leg })
         .then(() => openTripForm(Object.fromEntries(['form', 'layout', 'trip', 'assignment', 'driver']

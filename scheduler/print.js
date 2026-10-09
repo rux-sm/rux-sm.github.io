@@ -2390,8 +2390,12 @@
       blank: true,
       /* One sheet for the leg, handed to each of its drivers, so its mark is
          every seat's on the leg at once. It is the driver's sheet that is
-         marked, so the Detailed layout, the office's, offers no tick. */
-      marks: { table: 'trip_drivers', column: 'itinerary_printed', by: 'crew', layout: 'simple', what: 'itinerary' },
+         marked, so the Detailed layout, the office's, offers no tick. Nor
+         does a trip whose customer sent an itinerary: that file is the sheet
+         its drivers are handed, and the board's document panel keeps its
+         tick. */
+      marks: { table: 'trip_drivers', column: 'itinerary_printed', by: 'crew', layout: 'simple', what: 'itinerary',
+        unless: trip => (trip?.trip_documents || []).some(d => String(d.label || '').toLowerCase() === 'itinerary') },
       /* SIMPLE IS THE DRIVER'S SHEET AND DETAILED THE OFFICE'S, which adds the
          yard at both ends, each wait and the leg's miles and hours from the
          Route tab. Detailed needs a trip's route, so a blank form is Simple. */
@@ -2399,10 +2403,12 @@
         { id: 'simple', name: 'Simple' },
         { id: 'detailed', name: 'Detailed', trip: true },
       ],
-      // The Detailed layout's price: the Billing tab's lines as saved.
+      // The Detailed layout's price: the Billing tab's lines as saved. The
+      // trip's files say whether the customer sent an itinerary.
       columns: [
         'quoted_price',
         'trip_quote_lines(position,kind,leg,item,description,quantity,cost,amount,cost_typed,miles,dead_miles,rate)',
+        'trip_documents(label)',
       ],
       /* LETTER, AND NOT `exact`. The envelope must come out on one envelope;
          this runs onto as many sheets as the stops need, and the height is
@@ -3059,10 +3065,11 @@
      the page already read, so the tick it draws is what the database says.
 
      A copy with no row to write on -- a blank form, a leg with nobody in a
-     seat -- has no tick, and the toolbar leaves it out. */
+     seat -- has no tick, and the toolbar leaves it out. So does a copy the
+     form's `unless` rules out, whose tick is kept somewhere else. */
   function markOf(form, copy, layout) {
     const marks = form?.marks;
-    if (!marks || !copy || (marks.layout && layout !== marks.layout)) return null;
+    if (!marks || !copy || (marks.layout && layout !== marks.layout) || marks.unless?.(copy.trip)) return null;
     const leg = copy.leg === 'return' ? 'return' : 'outbound';
     const rows = marks.by === 'crew'
       ? (copy.trip?.crew || []).filter(a => (a.leg || 'outbound') === leg).flatMap(a => seatsOf(a))

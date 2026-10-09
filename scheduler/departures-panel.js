@@ -13,9 +13,9 @@
 
    It only shows status. Every line is a mark, what it is, then when it was
    done and whose face did it, or the word for doing it, which is a link to
-   the place it is done, all of them on the board: that driver's form in the
-   document panel beside the week, the trip's Contact list, or its Billing
-   tab. Nothing is ticked here.
+   the place it is done, all of them on the board: that driver's form, or the
+   itinerary the customer sent, in the document panel beside the week, the
+   trip's Contact list, or its Billing tab. Nothing is ticked here.
 
    The day's trips are read fresh when the panel opens, when the day changes
    and when a step, a seat or a trip changes, on the `scheduler-departures`
@@ -211,15 +211,20 @@
   // The link names the page's leg, so the board opens that leg's bar and no other.
   const tripHref = (page, extra = '') => `./?trip=${encodeURIComponent(page.trip.id)}&date=${encodeURIComponent(page.day || '')}&leg=${encodeURIComponent(page.leg || 'outbound')}${extra}`;
   const FORMS = { itinerary: { form: 'driver-itinerary', layout: 'simple' }, envelope: { form: 'envelope' }, hos: { form: 'hours-of-service' } };
+  const hasItinerary = trip => (trip.trip_documents || []).some(d => String(d.label || '').toLowerCase() === 'itinerary');
   /* Where a line still to do is done, and the word for doing it: the board's
      address, asking for the trip and what to open on it. A form is asked for
      with its bus and its seat, and is printed from the board's document
-     panel. No link has a handler here: to-do-list.js offers a pressed one to
-     the board, which opens it in place where this page is the board. */
+     panel. The itinerary is the file the customer sent where the trip has
+     one, since that is the sheet the driver is handed, and the one this app
+     draws where it has none. No link has a handler here: to-do-list.js
+     offers a pressed one to the board, which opens it in place where this
+     page is the board. */
   function actionOf(line, page, bus, member) {
     const [where, form] = String(line.action || '').split(':');
     if (where === 'forms' && bus && member?.seat) {
-      const asks = new URLSearchParams({ ...FORMS[form], assignment: bus.assign.id, driver: member.seat.id });
+      const what = form === 'itinerary' && hasItinerary(page.trip) ? { file: 'itinerary' } : FORMS[form];
+      const asks = new URLSearchParams({ ...what, assignment: bus.assign.id, driver: member.seat.id });
       return { words: 'Print', href: tripHref(page, `&${asks}`) };
     }
     // A driver's forms are files, opened from the trip's Forms list.

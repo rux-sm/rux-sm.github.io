@@ -26,8 +26,8 @@
   'use strict';
 
   const GROUPS = ['Entered', 'Customer', 'Buses', 'Paperwork', 'Extras'];
-  // Where each item's button goes: an editor tab, or the Forms panel.
-  const TABS = { route: 'route', buses: 'fleet', billing: 'billing', details: 'details', files: 'files', forms: 'forms' };
+  // Where each item's button goes: an editor tab, the Forms panel, or the customer's itinerary in the document panel.
+  const TABS = { route: 'route', buses: 'fleet', billing: 'billing', details: 'details', files: 'files', forms: 'forms', itinerary: 'itinerary' };
 
   const placeholder = trip => ['amber', 'orange', 'yellow'].includes(String(trip.trip_bar_color || '').toLowerCase());
   const hasItinerary = trip => (trip.trip_documents || []).some(d => String(d.label || '').toLowerCase() === 'itinerary');
@@ -80,7 +80,8 @@
     }
 
     // Each driver is handed their own, so with nobody in a seat it is not printed yet.
-    add('Paperwork', 'itinerary-printed', 'Itinerary printed', facts.seats && !facts.itinerariesLeft, TABS.forms,
+    // The sheet is the itinerary the customer sent where the trip has one, and the one Forms draws where it has none.
+    add('Paperwork', 'itinerary-printed', 'Itinerary printed', facts.seats && !facts.itinerariesLeft, hasItinerary(trip) ? TABS.itinerary : TABS.forms,
       facts.itinerariesLeft ? `${plural(facts.itinerariesLeft, 'itinerary', 'itineraries')} left` : null);
     if (facts.seats) {
       add('Paperwork', 'envelopes', 'Envelopes printed', !facts.envelopesLeft, TABS.forms,

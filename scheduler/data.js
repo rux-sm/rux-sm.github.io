@@ -9324,12 +9324,12 @@
      the reason, by the values the driver editor's Reason list saves. A reason
      outside that list, or none, takes the crossed-out day. */
   const TRIP_GLYPH = '#m-directions_bus-fill';
-  const OFF_GLYPHS = {
-    vacation: '#m-beach_access-fill',
-    sick: '#m-medical_services-fill',
-    personal: '#m-person-fill',
-    suspended: '#m-block',
-  };
+  const OFF_GLYPHS = new Map([
+    ['vacation', '#m-beach_access-fill'],
+    ['sick', '#m-medical_services-fill'],
+    ['personal', '#m-person-fill'],
+    ['suspended', '#m-block'],
+  ]);
   const OFF_GLYPH = '#m-event_busy-fill';
 
   /* Draws `count` of the board's `days`, from its day `first`. Every day cell
@@ -9445,7 +9445,7 @@
         if (day.joinPrev) cell.classList.add('scheduler-avail__cell--from-prev');
         if (day.joinNext) cell.classList.add('scheduler-avail__cell--to-next');
         if ((day.off || busy) && !restText && !offAndOn && (!day.joinPrev || j === 0)) {
-          const glyph = svgUse(day.off ? (OFF_GLYPHS[day.reason] || OFF_GLYPH) : TRIP_GLYPH, '16', '0 0 32 32');
+          const glyph = svgUse(day.off ? (OFF_GLYPHS.get(day.reason) || OFF_GLYPH) : TRIP_GLYPH, '16', '0 0 32 32');
           glyph.classList.add('scheduler-avail__glyph');
           cell.appendChild(glyph);
         }

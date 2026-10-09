@@ -1098,6 +1098,17 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   inline-size: 100%;
   margin-inline: 0;
   padding: var(--rux-spacing-05);
+  /* What is left ends the title's line, so the arrow stands a step clear of
+     it and is not read as part of the tag. */
+  gap: var(--rux-spacing-03);
+}
+/* The Prep tab's day fills the row between its two arrows. Carbon sizes a
+   button to its words and caps it at 20rem. */
+.scheduler-departures__stepper > .rux--btn.scheduler-departures__date {
+  flex: 1 1 auto;
+  inline-size: auto;
+  max-inline-size: none;
+  justify-content: center;
 }
 .scheduler-departures .rux--accordion__content { padding-inline: var(--rux-spacing-05); }
 .scheduler-departures .rux--accordion__item--active > .rux--accordion__wrapper { padding-block: 0 var(--rux-spacing-05); }

@@ -4543,7 +4543,9 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-departures[hidden] { display: none; }
 .scheduler-to-do__body[hidden] { display: none; }
 .scheduler-departures__head { display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-03); }
-.scheduler-departures__stepper { display: flex; align-items: center; position: relative; }
+/* The day's row spans the panel, as the legs' tiles under it do: an arrow at
+   each end and the day, which opens the calendar, all the room between. */
+.scheduler-departures__stepper { display: flex; flex: 1 1 auto; align-items: center; position: relative; }
 /* The calendar's own field has no size and takes no press: the day opens it. */
 .scheduler-departures__picker { position: absolute; inset-block-end: 0; inset-inline-end: 0; inline-size: 1px; block-size: 1px; padding: 0; border: 0; opacity: 0; pointer-events: none; }
 /* The list is a cell of the panel's grid, which is as wide as its longest

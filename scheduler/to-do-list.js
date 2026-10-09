@@ -1,8 +1,11 @@
 /* ==========================================================================
-   to-do-list.js — THE TO-DO LIST IN THE HEADER
+   to-do-list.js — THE TO-DO LIST
    --------------------------------------------------------------------------
    Every Scheduler page carries the To do action and its panel; this fills
-   them. There are three kinds of row, on two of the panel's three tabs:
+   them. On the board the panel is a pane beside the week, which the action
+   shows and hides and which stays while a trip or a form opens beside it; on
+   every other page it is the header's own panel. There are three kinds of
+   row, on two of the panel's three tabs:
 
      Computed  worked out here from the trips by to-do.js, never stored. It
                is never done by hand: it asks while it is true and opens its
@@ -49,6 +52,10 @@
   const action = document.getElementById('scheduler-to-do-action');
   const panel = document.getElementById('scheduler-to-do-panel');
   if (!client || !ToDo || !Facts || !action || !panel) return;
+  // The board's pane, or the header's panel on a page with no board.
+  const pane = !panel.classList.contains('rux--header-panel');
+  // Kept for this tab, so a reload of the board leaves the pane as it was.
+  const PANE_KEY = 'rux.scheduler.to-do-open';
 
   const NEW = 'new';   // `editingId` while the form open is a new row's
   const GROUPS = ['Overdue', 'Today', 'This week', 'Later', 'No date'];
@@ -97,6 +104,10 @@
   const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
   // A row about one leg names it, so the board opens that leg's bar.
   const tripHref = (trip, day, leg) => `./?trip=${encodeURIComponent(trip.id)}&date=${encodeURIComponent(day || trip.start_date || '')}${leg ? `&leg=${leg}` : ''}`;
+  /* A link to a trip is offered to the page first. The board takes it and
+     opens the trip where it is, beside this list; a page with no board lets
+     it go, and the link goes to the board. It answers whether it was taken. */
+  const boardTook = href => !document.dispatchEvent(new CustomEvent('scheduler:open-trip', { detail: { href }, cancelable: true }));
   /* The dot between the parts of a line, tied to the word before it, so a line
      that wraps breaks after the dot and never starts with one. */
   const DOT = '\u00A0· ';
@@ -338,7 +349,7 @@
     email.addEventListener('click', () => window.open(row.thread_url, '_blank', 'noopener'));
     const toTrip = button('rux--btn--ghost', 'Trip');
     toTrip.disabled = !trip;
-    toTrip.addEventListener('click', () => { location.href = tripHref(trip); });
+    toTrip.addEventListener('click', () => { if (!boardTook(tripHref(trip))) location.href = tripHref(trip); });
     // Edit and Delete are the menu's; a row ticked today has only Undo to take back.
     const menuButton = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm rux--menu-button__trigger');
     menuButton.type = 'button';
@@ -665,12 +676,51 @@
 
   document.addEventListener('scheduler:departures-summary', () => draw());
 
-  /* A closed panel is 0 wide but still in the page, so it is inert until it
-     opens: nothing in it takes a Tab or is read. Opening reads the list
-     again, since a tab left open all morning is hours behind. */
-  panel.inert = true;
-  panel.addEventListener('rux:header-panel-opened', () => { panel.inert = false; loadStored(); loadTrips(); });
-  panel.addEventListener('rux:header-panel-closed', () => { panel.inert = true; editingId = null; openId = null; doneOpen = false; show('list', false); });
+  // A row's link to its trip, on either tab, by a plain press.
+  panel.addEventListener('click', e => {
+    const a = e.target.closest?.('a[href*="?trip="]');
+    if (!a || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if (boardTook(a.href)) e.preventDefault();
+  });
+
+  /* Opening reads the list again, since a tab left open all morning is hours
+     behind, and shutting puts the To do tab back. Each tells
+     departures-panel.js, whose view the panel also holds. */
+  function opened() {
+    loadStored();
+    loadTrips();
+    panel.dispatchEvent(new CustomEvent('scheduler:to-do-opened'));
+  }
+  function closed() {
+    editingId = null;
+    openId = null;
+    doneOpen = false;
+    show('list', false);
+    panel.dispatchEvent(new CustomEvent('scheduler:to-do-closed'));
+  }
+  /* The board's pane is shown and hidden here, and the board, told by
+     `scheduler:to-do-pane`, finds its room: beside the week, or in front of
+     it where the window is too narrow. The action reads as pressed, its
+     glyph filled, while the pane shows. */
+  function setPane(open) {
+    if (panel.hidden === !open) return;
+    panel.hidden = !open;
+    action.setAttribute('aria-pressed', String(open));
+    action.classList.toggle('rux--btn--selected', open);
+    action.querySelector('use')?.setAttribute('href', open ? '#m-check_circle-fill' : '#m-check_circle');
+    try { if (open) sessionStorage.setItem(PANE_KEY, '1'); else sessionStorage.removeItem(PANE_KEY); } catch { /* not kept */ }
+    if (open) opened(); else closed();
+    document.dispatchEvent(new CustomEvent('scheduler:to-do-pane'));
+  }
+  if (pane) {
+    action.addEventListener('click', () => setPane(panel.hidden));
+  } else {
+    /* A closed header panel is 0 wide but still in the page, so it is inert
+       until it opens: nothing in it takes a Tab or is read. */
+    panel.inert = true;
+    panel.addEventListener('rux:header-panel-opened', () => { panel.inert = false; opened(); });
+    panel.addEventListener('rux:header-panel-closed', () => { panel.inert = true; closed(); });
+  }
 
   let channel = null;
   function listen() {
@@ -694,8 +744,15 @@
     await readStaff().catch(() => {});
     await Promise.all([loadStored(), loadTrips()]);
     listen();
+    let kept = false;
+    try { kept = sessionStorage.getItem(PANE_KEY) === '1'; } catch { /* shut */ }
+    if (pane && kept) setPane(true);
   })();
 
-  // The unfolded computed rows, for the Trips page's Show choices.
-  window.SchedulerToDoList = { rows: () => computed };
+  /* The unfolded computed rows, for the Trips page's Show choices, and the
+     way the board shuts the pane when it is the one in front. */
+  window.SchedulerToDoList = {
+    rows: () => computed,
+    shut: () => { if (pane && !panel.hidden) { setPane(false); action.focus(); } },
+  };
 })();

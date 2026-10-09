@@ -466,7 +466,8 @@
    the quote's pinned total -- sits 4rem down rather than 3rem. */
 [data-theme="geist-dark"] .scheduler-page[data-takeover="editor"] .scheduler-trip .rux--side-panel,
 [data-theme="geist-dark"] .scheduler-page[data-takeover="viewer"] .scheduler-viewer .rux--side-panel,
-[data-theme="geist-dark"] .scheduler-page[data-takeover="roster"] .scheduler-aside {
+[data-theme="geist-dark"] .scheduler-page[data-takeover="roster"] .scheduler-aside,
+[data-theme="geist-dark"] .scheduler-page[data-takeover="to-do"] .scheduler-to-do--pane {
   inset-block-start: calc(4rem + var(--rux-spacing-05));
 }
 [data-theme="geist-dark"] .scheduler-page[data-takeover] .scheduler-scrim {
@@ -664,7 +665,8 @@
    in place of the hard shadow Carbon casts. */
 [data-theme^="apple-"] .scheduler-page[data-takeover="editor"] .scheduler-trip .rux--side-panel,
 [data-theme^="apple-"] .scheduler-page[data-takeover="viewer"] .scheduler-viewer .rux--side-panel,
-[data-theme^="apple-"] .scheduler-page[data-takeover="roster"] .scheduler-aside {
+[data-theme^="apple-"] .scheduler-page[data-takeover="roster"] .scheduler-aside,
+[data-theme^="apple-"] .scheduler-page[data-takeover="to-do"] .scheduler-to-do--pane {
   box-shadow: var(--scheduler-lift);
 }
 /* On apple-dark it takes a line too, as Design's dialog does there. The line
@@ -674,7 +676,8 @@
    panel's width. */
 [data-theme="apple-dark"] .scheduler-page[data-takeover="editor"] .scheduler-trip .rux--side-panel,
 [data-theme="apple-dark"] .scheduler-page[data-takeover="viewer"] .scheduler-viewer .rux--side-panel,
-[data-theme="apple-dark"] .scheduler-page[data-takeover="roster"] .scheduler-aside {
+[data-theme="apple-dark"] .scheduler-page[data-takeover="roster"] .scheduler-aside,
+[data-theme="apple-dark"] .scheduler-page[data-takeover="to-do"] .scheduler-to-do--pane {
   border: 1px solid var(--rux-border-subtle-02);
 }
 /* One record's form is a region of its page, as the list it came from is:

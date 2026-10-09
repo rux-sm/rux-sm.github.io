@@ -9009,6 +9009,8 @@
     ?.addEventListener('scroll', () => nameAvailBand(), true);
   const availToggle = document.getElementById('scheduler-avail-toggle');
   let availOn = false;
+  // The To do pane, which to-do-list.js fills, shows and hides.
+  const toDoPane = document.getElementById('scheduler-to-do-panel');
   /* The board's whole range, one week or two, and which of its days the roster
      last drew, as `first:count`, so a new selection redraws only when it moves
      the roster to the other week. */
@@ -10225,6 +10227,7 @@
         ? '--scheduler-panel-wide-w' : '--scheduler-panel-w'],
       ['editor', !!tripEl && !tripEl.hidden, '--scheduler-editor-w'],
       ['viewer', !!viewerEl && !viewerEl.hidden, `--scheduler-viewer-${pageEl.dataset.viewer ?? 'md'}-w`],
+      ['to-do', !!toDoPane && !toDoPane.hidden, '--scheduler-panel-w'],
     ].filter(([, on]) => on);
     const names = open.map(([name]) => name);
     openOrder = openOrder.filter(name => names.includes(name))
@@ -10255,7 +10258,7 @@
        reached are the same thing. An open panel that is not the one in front
        waits with it. */
     frameEl.inert = !!takeover;
-    for (const [name, el] of [['roster', asideSlot], ['editor', tripEl], ['viewer', viewerEl]]) {
+    for (const [name, el] of [['roster', asideSlot], ['editor', tripEl], ['viewer', viewerEl], ['to-do', toDoPane]]) {
       if (el) el.inert = !!takeover && name !== takeover;
     }
 
@@ -10290,6 +10293,11 @@
   if (boardEl && 'ResizeObserver' in window) {
     new ResizeObserver(() => placeRoom()).observe(boardEl);
   }
+  // to-do-list.js says when it has shown or hidden the To do pane.
+  document.addEventListener('scheduler:to-do-pane', () => {
+    placeRoom();
+    window.Rux?.schedule?.fit?.();
+  });
 
   function placeAvailability() {
     /* The roster is on screen whenever it is asked for. Where it goes -- beside
@@ -14118,6 +14126,7 @@
       case 'viewer': closeViewer(); return true;
       case 'editor': whenSafe(() => closePanel()); return true;
       case 'roster': availOn = false; placeAvailability(); availToggle?.focus(); return true;
+      case 'to-do': window.SchedulerToDoList?.shut(); return true;
       default: return false;
     }
   }
@@ -15157,6 +15166,32 @@
     if (open && !isEditorBar(bar)) whenSafe(() => openRef(ref));
   }
 
+  /* A LINK TO ONE TRIP, as the address or a row of the To do pane gives it. A
+     Departures line opens the trip where its step is done: the Contact list,
+     with the trip selected and its editor left shut, or one tab of the
+     editor. */
+  function openAsked(asked) {
+    const leg = ['outbound', 'return'].includes(asked.get('leg')) ? asked.get('leg') : null;
+    if (asked.get('open') === 'contacts') {
+      goToTrip(asked.get('trip'), asked.get('date'), { open: false, leg })
+        .then(() => { const bar = selectedBar(); if (bar) openContactsFrom(bar); });
+    } else {
+      const tab = asked.get('tab');
+      goToTrip(asked.get('trip'), asked.get('date'), { leg })
+        .then(() => { if (tab) requestAnimationFrame(() => goToChecklistItem(tab)); });
+    }
+  }
+  /* The To do pane offers each of its trip links here before following it,
+     and the board takes the ones that are its own address, so the trip opens
+     beside the list and the page is not read again. */
+  document.addEventListener('scheduler:open-trip', e => {
+    let url;
+    try { url = new URL(e.detail?.href, location.href); } catch { return; }
+    if (url.origin !== location.origin || url.pathname !== location.pathname || !url.searchParams.has('trip')) return;
+    e.preventDefault();
+    openAsked(url.searchParams);
+  });
+
   /* Changing the week drops the toast. An undo for a move on the old week
      would still work, by assignment id, and silently move a trip no longer on
      screen. */
@@ -15448,18 +15483,7 @@
     const asked = new URLSearchParams(location.search);
     if (asked.has('trip')) {
       history.replaceState(null, '', location.pathname);
-      /* A Departures line opens the trip where its step is done: the Contact
-         list, with the trip selected and its editor left shut, or one tab of
-         the editor. */
-      const leg = ['outbound', 'return'].includes(asked.get('leg')) ? asked.get('leg') : null;
-      if (asked.get('open') === 'contacts') {
-        goToTrip(asked.get('trip'), asked.get('date'), { open: false, leg })
-          .then(() => { const bar = selectedBar(); if (bar) openContactsFrom(bar); });
-      } else {
-        const tab = asked.get('tab');
-        goToTrip(asked.get('trip'), asked.get('date'), { leg })
-          .then(() => { if (tab) requestAnimationFrame(() => goToChecklistItem(tab)); });
-      }
+      openAsked(asked);
     } else if (asked.has('draft')) {
       history.replaceState(null, '', location.pathname);
       openDraftTrip(asked.get('draft'));

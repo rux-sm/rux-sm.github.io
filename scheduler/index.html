@@ -160,8 +160,10 @@
          fills it and shows it only while somebody is here. -->
     <div class="scheduler-header-people" id="scheduler-people" hidden></div>
     <!-- To do: what the office has to do now, with how many are due on the
-         button. to-do-list.js fills the panel and the count. -->
-    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="To do" aria-expanded="false" aria-controls="scheduler-to-do-panel" id="scheduler-to-do-action"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-check_circle"/></svg></button>
+         button. On the board it shows and hides a pane beside the week, so it
+         is a pressed toggle here and not the header panel's trigger.
+         to-do-list.js fills the pane and the count. -->
+    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="To do" aria-pressed="false" aria-controls="scheduler-to-do-panel" id="scheduler-to-do-action"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-check_circle"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-account_circle"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="App switcher" aria-expanded="false" aria-controls="rux-switcher-panel"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-grid_view"/></svg></button>
   </div>
@@ -179,7 +181,6 @@
        (js/ui-shell.js): the display name and theme, saved in this browser by
        js/profile.js and js/theme.js. The sign-in button stays hidden until
        something registers a handler for it through js/profile.js. -->
-  <div class="rux--header-panel scheduler-to-do" id="scheduler-to-do-panel"></div>
   <div class="rux--header-panel" id="rux-account-panel">
     <div class="rux--layer-two rux--stack-vertical rux--stack-scale-5">
       <div class="rux--form-item rux--text-input-wrapper">
@@ -528,6 +529,10 @@
               </button>
             </div>
           </div>
+          <!-- The To do pane, left of everything on the board; `order` puts
+               it there while the markup keeps the schedule first. The header's
+               To do action shows and hides it, and to-do-list.js fills it. -->
+          <div class="scheduler-to-do scheduler-to-do--pane" id="scheduler-to-do-panel" role="region" aria-label="To do" hidden></div>
           <!-- The trip editor is a column in the board, not an overlay, so the
                board makes room by layout; it stays hidden until a trip is
                opened. The rux--side-panel classes stay because every part

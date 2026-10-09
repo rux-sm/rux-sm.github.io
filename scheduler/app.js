@@ -89,6 +89,15 @@
     }
     if (avail && avail.style.maxBlockSize) avail.style.removeProperty('max-block-size');
 
+    /* The To do pane takes the same height and scrolls inside it, and gives
+       it up in front of the board, where its own insets are its height. */
+    const toDo = document.querySelector('.scheduler-to-do--pane');
+    if (toDo && !toDo.hidden && getComputedStyle(toDo).position !== 'fixed') {
+      if (toDo.style.blockSize !== panelNext) toDo.style.blockSize = panelNext;
+    } else if (toDo && toDo.style.blockSize) {
+      toDo.style.removeProperty('block-size');
+    }
+
     /* The trip editor and the itinerary panel get a definite `block-size`, not
        a cap: the side panel inside each resolves `block-size: 100%` against
        this box, and a percentage against a parent with only a maximum resolves

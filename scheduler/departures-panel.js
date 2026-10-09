@@ -2,7 +2,7 @@
    departures-panel.js — DEPARTURES, IN THE TO-DO PANEL
    --------------------------------------------------------------------------
    The To do panel's switch, which to-do-list.js draws, opens this in the
-   same header panel and shuts it again: every leg leaving on a day, tomorrow
+   same panel and shuts it again: every leg leaving on a day, tomorrow
    first, a tab each, and under the tabs one leg's page as departures.js
    gives it: a tile for the trip, then a tile for each bus with its crew.
 
@@ -379,7 +379,6 @@
     const list = todoBody();
     if (list) list.hidden = true;
     body.hidden = false;
-    panel.classList.add('scheduler-to-do--departures');
     panel.setAttribute('aria-label', 'Departures');
     draw();
     load();
@@ -387,7 +386,6 @@
   function close() {
     shown = false;
     body.hidden = true;
-    panel.classList.remove('scheduler-to-do--departures');
     const list = todoBody();
     if (list) list.hidden = false;
     panel.setAttribute('aria-label', 'To do');
@@ -417,9 +415,9 @@
     tab?.focus();
     tab?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   });
-  // Shutting the header panel puts the list back, so the action opens on the list.
-  panel.addEventListener('rux:header-panel-closed', close);
-  panel.addEventListener('rux:header-panel-opened', () => { if (!shown) count(); });
+  // Shutting the panel puts the list back, so the action opens on the list.
+  panel.addEventListener('scheduler:to-do-closed', close);
+  panel.addEventListener('scheduler:to-do-opened', () => { if (!shown) count(); });
 
   let channel = null;
   function listen() {

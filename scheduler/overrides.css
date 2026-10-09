@@ -1046,7 +1046,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 .rux--actionable-notification.scheduler-note--choice .rux--actionable-notification__text-wrapper { padding-block-end: 0; }
 .rux--actionable-notification.scheduler-note--choice .rux--actionable-notification__button-wrapper { margin-inline-start: var(--rux-spacing-07); }
 
-/* The To do panel's stored rows are an accordion in a panel 24rem wide.
+/* The To do panel's stored rows are an accordion in a side panel.
    Carbon insets the title 1rem and the open content up to a quarter of its
    width, for reading down a page; here a row lines up with its group's
    heading, its three lines start at the top beside the arrow, and the open

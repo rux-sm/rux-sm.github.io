@@ -21,14 +21,17 @@
   --scheduler-safe-right: env(safe-area-inset-right, 0px);
 }
 
-/* The panels beside the board. The roster is Carbon's `sm`, and showing both
-   weeks its `lg`; the trip editor its `md` and, made larger, its `xl`; and the
-   document viewer its `md`, `lg` or `xl`, never narrower, because its width is
-   the document's zoom: a letter page in 20rem renders 11pt text at under 6px. `placeRoom` in data.js prices
-   the panels by reading these back off them, so the arithmetic and the layout
-   cannot drift. */
+/* The panels beside the board all open at one width, Carbon's
+   `rux--side-panel--md`, so the board's regions line up whichever are open:
+   the To do pane, the roster, the trip editor and the document viewer. The
+   roster showing both weeks is Carbon's `lg`, the editor made larger its
+   `xl`, and the viewer its `lg` or `xl`, never narrower than `md`, because
+   its width is the document's zoom: a letter page in 20rem renders 11pt text
+   at under 6px. `placeRoom` in data.js prices the panels by reading these
+   back off them, so the arithmetic and the layout cannot drift. */
 :root {
-  --scheduler-panel-w: 20rem;
+  /* The To do pane and the roster. */
+  --scheduler-panel-w: 30rem;
   /* The roster showing both weeks, Carbon's `rux--side-panel--lg`: the
      smallest of its widths that holds a second week of 2rem squares and still
      leaves the names their room. */
@@ -1581,7 +1584,8 @@ button.scheduler-row-head__num::after {
    line here, on the outside of the pair, so no rule is doubled where the two
    meet. Every box is sized from its border, so the line costs no width. */
 .scheduler-frame,
-.scheduler-aside {
+.scheduler-aside,
+.scheduler-to-do--pane {
   border: var(--scheduler-region-edge, 0 solid transparent);
   border-radius: var(--scheduler-surface-radius, 0);
 }
@@ -2367,9 +2371,9 @@ button.scheduler-row-head__num::after {
    `.scheduler-grid` and its column template; these rules add denser rows and
    the cell states.
 
-   The roster is 20rem, Carbon's `rux--side-panel--sm` width, the narrowest
-   that holds its names beside a week of squares. It is fixed so it does
-   not move when the driver list changes; the schedule gives way instead.
+   The roster is `--scheduler-panel-w` wide, as every panel beside the board
+   opens. It is fixed so it does not move when the driver list changes; the
+   schedule gives way instead.
    `order` puts it left of the board while the markup keeps the schedule
    first. */
 .scheduler-aside {
@@ -3090,16 +3094,19 @@ body:has(.scheduler-page:not([data-room="tight"]):not([data-board="compact"])) .
   inline-size: 0;
   block-size: auto;
 }
-/* And the roster leaves the row altogether, having no wrapper to collapse. */
-.scheduler-page[data-takeover]:not([data-takeover="roster"]) .scheduler-aside {
+/* And the roster and the To do pane leave the row altogether, having no
+   wrapper to collapse. */
+.scheduler-page[data-takeover]:not([data-takeover="roster"]) .scheduler-aside,
+.scheduler-page[data-takeover]:not([data-takeover="to-do"]) .scheduler-to-do--pane {
   display: none;
 }
 /* Those two hold Carbon side panels, which overrides.css brings forward. The
-   roster has no Carbon component under it, so its own rules do the same by
-   hand, to the same card in the same place. It keeps the edge and the corners
-   `.scheduler-aside` already gives it, because inset from the window they have
-   a page behind them again. */
-.scheduler-page[data-takeover="roster"] .scheduler-aside {
+   roster and the To do pane have no Carbon component under them, so their own
+   rules do the same by hand, to the same card in the same place. Each keeps
+   the edge and the corners it already has, because inset from the window they
+   have a page behind them again. */
+.scheduler-page[data-takeover="roster"] .scheduler-aside,
+.scheduler-page[data-takeover="to-do"] .scheduler-to-do--pane {
   position: fixed;
   inset-block: calc(3rem + var(--rux-spacing-05))
                calc(var(--rux-spacing-05) + var(--scheduler-safe-bottom));
@@ -4387,16 +4394,31 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-suggest__error { color: var(--rux-text-error); }
 
 /* ══ The to-do list ═══════════════════════════════════════════════════════
-   The header's To do panel, filled by to-do-list.js. The panel is Design's
-   header panel at the width a row needs, the whole screen's on a phone. Its
-   head is Design's content switcher and its Add is the dashed row the trip
-   editor's lists end in. A stored row is an item of Design's accordion,
-   holding Design's tag, buttons and menu; a computed row and the edit form
-   are this app's own row. */
-.scheduler-to-do.rux--header-panel--expanded { inline-size: min(24rem, 100vw); }
+   The To do panel, filled by to-do-list.js. On the board it is a pane beside
+   the week; on every other page it is Design's header panel, the whole
+   screen's width on a phone. Both are `--scheduler-panel-w` wide, as the
+   board's other panels open. Its head is Design's content switcher and its
+   Add is the dashed row the trip editor's lists end in. A stored row is an
+   item of Design's accordion, holding Design's tag, buttons and menu; a
+   computed row and the edit form are this app's own row. */
+.scheduler-to-do.rux--header-panel--expanded { inline-size: min(var(--scheduler-panel-w), 100vw); }
 @media (max-width: 41.98rem) {
   .scheduler-to-do.rux--header-panel--expanded { inline-size: 100vw; }
 }
+/* The board's pane: a region of the board like the roster, left of everything
+   on it, on the surface the schedule is on. It never shrinks, the schedule
+   giving way instead, and its list scrolls inside the height app.js gives it.
+   `order` puts it there while the markup keeps the schedule first. */
+.scheduler-to-do--pane {
+  flex: 0 0 var(--scheduler-panel-w);
+  inline-size: var(--scheduler-panel-w);
+  order: -3;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--rux-layer);
+}
+/* The 16px a header panel gives its stack, which the pane is not. */
+.scheduler-to-do--pane > .rux--stack-vertical { padding: var(--rux-spacing-05); }
 .scheduler-to-do__body { color: var(--rux-text-primary); }
 .scheduler-to-do__error { margin: 0; color: var(--rux-text-error); font-size: 0.875rem; }
 .scheduler-to-do__error[hidden] { display: none; }
@@ -4468,9 +4490,7 @@ html:has(.scheduler-page[data-takeover]) {
    The To do panel's other view, drawn by departures-panel.js: a tab for each
    leg leaving on a day, and one leg's page, a tile for the trip and one for
    each bus. Every status is one line, its mark on the left and its time, its
-   face or its action on the right. The panel is a little wider here, so a
-   line holds a name, a time and a face. */
-.scheduler-to-do--departures.rux--header-panel--expanded { inline-size: min(27rem, 100vw); }
+   face or its action on the right. */
 .scheduler-departures { color: var(--rux-text-primary); }
 .scheduler-departures[hidden] { display: none; }
 .scheduler-to-do__body[hidden] { display: none; }

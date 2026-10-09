@@ -40,7 +40,8 @@
    `own`: a new puzzle costs one mana, the Gate field lists their gates and
    New gate, with no Unsorted and no puzzle of the day, a gate holds nine,
    and Back and Delete leave for Me. A gate just started is hidden until it
-   is published on Me.
+   is published on Me. make.html?own is the same for the owner's own gates,
+   which cost no mana, and keeps its draft under `pixels-own-draft`.
 
    make.html?me draws the player's own picture, for any player: the board is
    15 squares a side and starts as the picture they have, or the one made
@@ -63,12 +64,16 @@
   const undoKey = $('pixels-undo'), redoKey = $('pixels-redo');
   const maker = document.querySelector('.pixels-maker');
   // The player's own picture is drawn here too, and keeps a draft of its own.
-  const mine = new URLSearchParams(location.search).has('me');
-  const DRAFT = mine ? 'pixels-face-draft' : 'pixels-draft';
+  const query = new URLSearchParams(location.search);
+  const mine = query.has('me');
+  // Whose gates a puzzle goes in: the owner's, which every player is sent,
+  // or the player's own. The owner draws their own at make.html?own.
+  const personal = !owner || query.has('own');
+  const DRAFT = mine ? 'pixels-face-draft' : personal && owner ? 'pixels-own-draft' : 'pixels-draft';
   // Where a puzzle is kept: the owner's tables, or a player's own gates,
   // which cost mana. `mana` is the player's, and the owner's is never asked.
-  const store = owner ? data : data?.own || null;
-  const home = owner ? 'manage.html' : 'me.html';
+  const store = personal ? data?.own || null : data;
+  const home = personal ? 'me.html' : 'manage.html';
   let mana = Infinity;
   // The inks, a colour at a time, pale to dark, and last the greys from
   // white to black. Each is the character a picture stores, then its name.
@@ -184,9 +189,9 @@
     puzzles.forEach(p => { if (p.width === side && !p.day && p.level != null) names.set(p.level, p.theme || 'More'); });
     const next = Math.max(0, ...names.keys()) + 1;
     // A player's puzzle is always in one of their gates, and never a day's.
-    level.replaceChildren(...(owner ? [new Option('No gate yet', 'none')] : []), ...[...names].sort((a, b) => a[0] - b[0])
+    level.replaceChildren(...(personal ? [] : [new Option('No gate yet', 'none')]), ...[...names].sort((a, b) => a[0] - b[0])
       .map(([n, text]) => new Option(`${text} · ${on[n] || 0} of ${PER_LEVEL}${off[n] ? `, ${off[n]} off` : ''}`, n)),
-    new Option('New gate…', next), ...(owner ? [new Option('Puzzle of the day…', 'day')] : []));
+    new Option('New gate…', next), ...(personal ? [] : [new Option('Puzzle of the day…', 'day')]));
     level.value = pick === 'day' || pick === 'none' || names.has(pick) ? pick : next;
   };
 
@@ -471,7 +476,7 @@
     puzzle.off = !puzzle.day && !!store.setOff && (!!editing?.off || (!stays && held().full(puzzle.level)));
     const turnedOff = puzzle.off && !editing?.off;
     // A player's gate holds nine and no more.
-    if (!owner && !stays && held().full(puzzle.level)) {
+    if (personal && !stays && held().full(puzzle.level)) {
       say('That gate has nine puzzles', 'Pick another gate, or start a new one.');
       render();
       return;
@@ -566,8 +571,9 @@
       maker.hidden = true;
       return;
     }
-    if (!owner) {
-      // A player's Back is Me, and what they have to spend is asked first.
+    if (personal) {
+      // A player's Back is Me, and what they have to spend is asked first;
+      // the owner spends none.
       let got = null;
       try { got = await store.mine(); } catch { /* said below */ }
       if (!got) {
@@ -575,13 +581,13 @@
         maker.hidden = true;
         return;
       }
-      mana = got.mana;
+      if (!owner) mana = got.mana;
       const back = maker.querySelector('a[href="manage.html"]');
       back.href = home;
       back.title = 'Back to Me';
       back.setAttribute('aria-label', 'Back to Me');
     }
-    const id = new URLSearchParams(location.search).get('id');
+    const id = query.get('id');
     try {
       puzzles = await store.all();
     } catch {

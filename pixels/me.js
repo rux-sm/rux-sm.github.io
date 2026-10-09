@@ -14,8 +14,9 @@
    puzzles, and their mana comes back. A puzzle's tile opens it in the
    Pixelator. Under a gate is everyone who has found a sprite in it, with
    how many and their time. The local preview has no players, so none of
-   this is shown there, and the owner, whose gates are everyone's and cost no
-   mana, is shown neither their mana nor this list.
+   this is shown there. The owner has gates of their own here too, apart from
+   the ones every player is sent, and is not shown mana, since theirs cost
+   none.
    A guest with no player yet gets the name form first; data.js's `enter`
    draws it.
    ========================================================================== */
@@ -174,7 +175,7 @@
     top.className = 'pixels-level-head';
     const make = document.createElement('a');
     make.className = 'rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm';
-    make.href = 'make.html';
+    make.href = owner ? 'make.html?own' : 'make.html';
     make.textContent = 'Make a puzzle';
     top.append(words('rux--type-productive-heading-03', 'Your gates'), make);
     el.append(top);
@@ -184,7 +185,7 @@
       if (!found.has(key)) found.set(key, { width: p.width, level: p.level, theme: p.theme, hidden: p.hidden, puzzles: [] });
       found.get(key).puzzles.push(p);
     });
-    if (!found.size) el.append(words('pixels-meta', 'You have made none yet. A puzzle costs 1 mana, and a gate holds nine.'));
+    if (!found.size) el.append(words('pixels-meta', owner ? 'You have made none yet. A gate holds nine, and your friends are sent it once it is published.' : 'You have made none yet. A puzzle costs 1 mana, and a gate holds nine.'));
     [...found.values()].sort((a, b) => a.width - b.width || a.level - b.level).forEach(g => {
       const box = document.createElement('div');
       box.className = 'rux--stack-vertical rux--stack-scale-3 pixels-mine';
@@ -226,7 +227,7 @@
       list.append(...g.puzzles.map(p => {
         const a = document.createElement('a');
         a.className = 'rux--link rux--tile rux--tile--clickable pixels-puzzle';
-        a.href = `make.html?id=${encodeURIComponent(p.id)}`;
+        a.href = `make.html?${owner ? 'own&' : ''}id=${encodeURIComponent(p.id)}`;
         a.append(art(p, true), words('pixels-puzzle-name', p.name), words('pixels-meta', grade(rounds(grid(p.squares, p.width)))));
         return a;
       }));
@@ -259,7 +260,8 @@
     }
     if (!me) return;
     draw(me);
-    // The owner's puzzles go in the owner's gates, from Manage, and cost nothing.
-    if (data.own && !owner) gates();
+    // The owner's own gates are here as a player's are; the ones every player
+    // is sent are in Manage.
+    if (data.own) gates();
   })();
 })();

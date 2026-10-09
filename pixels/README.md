@@ -74,17 +74,17 @@ browser makes from the date, the same for everyone. Only it counts toward the
 days in a row. A player is never sent a day's puzzle before its day.
 
 `make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits or deletes one. The
-owner's puzzles go in the owner's gates, and the owner alone has Manage and Players in the menu; any
-other player's go in gates of their own, through functions that count their mana. `make.html?me`
-draws a player's picture. It checks as you draw whether the numbers alone can solve the picture and
-how hard that is, outlines each square that would need a guess, and saves only a picture with one
-answer. Size starts a blank board of 5, 10 or 15 a side. Its Colour step paints the picture the
-puzzle finishes as, from fifty-five inks, and Save asks which gate it goes in on the front page; a
-gate shows nine, the list counts how many of each one's are on, and a puzzle saved into one with
-nine on is saved off. A gate just started is named there and hidden until Manage's switch publishes
-it. No gate yet, first in the list, keeps the puzzle in Unsorted, a section of Manage. Puzzle of the
-day, in the same list, makes it a day's puzzle, which sits in no gate; a day takes one.
-`docs/making-puzzles.md` is the guide to a good picture and a good gate.
+owner's puzzles go in the owner's gates, and the owner alone has Manage and Players in the menu; a
+player's go in gates of their own, through functions that count their mana, and so do the owner's
+own at `make.html?own`, which cost none. `make.html?me` draws a player's picture. It checks as you
+draw whether the numbers alone can solve the picture and how hard that is, outlines each square that
+would need a guess, and saves only a picture with one answer. Size starts a blank board of 5, 10 or
+15 a side. Its Colour step paints the picture the puzzle finishes as, from fifty-five inks, and Save
+asks which gate it goes in; a gate shows nine, the list counts how many of each one's are on, and a
+puzzle saved into one with nine on is saved off. A gate just started is named there and hidden until
+Manage's switch publishes it. No gate yet, first in the list, keeps the puzzle in Unsorted, a
+section of Manage. Puzzle of the day, in the same list, makes it a day's puzzle, which sits in no
+gate; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good gate.
 
 `manage.html` is the owner's desk: every puzzle of one board size at a time, by gate, then Unsorted.
 A gate's heading has a switch that hides it from every player, arrows that move it up or down, a key

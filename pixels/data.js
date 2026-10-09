@@ -285,7 +285,8 @@
        their mana, their puzzles, each with its gate's name and whether the
        gate is hidden, and who has solved how much of each gate. A save the
        database turns down for mana, a full gate or a sixth gate throws with
-       `refused` saying which. */
+       `refused` saying which. The owner has gates of this kind too, apart
+       from the ones every player is sent, and is charged no mana for them. */
     own: {
       async mine() { return call('pixels_mine', { p_key: key() }); },
       async all() {

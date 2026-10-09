@@ -25,9 +25,20 @@ the schedule comes back as something to press, and is never done by itself.
 - **An owner turns chat on for a person,** in Access on the Account page,
   beside the apps that person may open, and it is off for everyone until
   then. The function refuses a person it is off for.
-- **One office key pays, a secret of the function that rux sets himself,**
-  on its own workspace in the Claude Console with a monthly spend limit, so
-  chat cannot use the credit that `scheduler-file-reading.md` needs.
+- **One office key pays, a secret of the function that rux sets himself.**
+- **An owner sets how much chat may use in a month,** in Access on the
+  Account page, beside the switches: all of the plan's credit, or an amount
+  in dollars. Money is an owner's to limit, and Access is the one place only
+  an owner opens.
+- **The function keeps the count that the limit is held against.** It adds
+  what each answer cost, from the tokens the API reports and the price of
+  the model it called, to a row for the month in `chat_usage`, and once the
+  month's sum reaches the amount it answers that the limit is reached and
+  calls nothing. Access shows the month's sum beside the limit.
+- **The count is the scheduler's own sum, and the Console's bill is the
+  truth.** With no amount set, the plan's credit is the only limit: when it
+  is spent the API answers nothing more until it refreshes, and no card is
+  charged.
 - **It reads freely and changes nothing by itself.** It reads trips, free
   buses and drivers, contacts, company documents and the To do list. A
   change comes back as a card in the conversation with its own button, and
@@ -43,7 +54,8 @@ the schedule comes back as something to press, and is never done by itself.
 - **The chat says who should drive and does not seat them.** A driver goes on
   a trip in the editor, whose Save is the only writer of a trip.
 - **A pressed time off is written to `driver_time_off` as the Drivers page
-  writes it,** so the roster and the pickers read it at once.
+  writes it,** so the roster and the pickers read it at once. Anyone with
+  chat may hold one, as anyone on the staff may on the Drivers page.
 - **The office's rules are the chat's instructions,** the `trips` skill's
   `rules.md`, copied beside the function when it is built, so it never
   recommends a new driver alone on a bus or an owner ahead of a free driver.
@@ -60,8 +72,7 @@ the schedule comes back as something to press, and is never done by itself.
 
 ## Questions
 
-- How much of the plan's monthly API credit may chat use?
-- May anyone with chat hold a driver's time off, or only an owner?
+None open.
 
 ## Tasks
 
@@ -70,11 +81,14 @@ the schedule comes back as something to press, and is never done by itself.
 - [ ] Add `recommend_drivers` from the order Assign best uses, joined into
       the connector's generated rule file.
 - [ ] Add `draft_time_off`, and the card and press that write it.
-- [ ] Try the per-person switch and its owner-only function on PGlite, then
-      show rux the SQL; add the switch to Access on the Account page.
+- [ ] Try the per-person switch, the month's limit, `chat_usage` and their
+      owner-only functions on PGlite, then show rux the SQL.
+- [ ] Add to Access on the Account page the switch for each person, and the
+      limit with the month's sum beside it.
 - [ ] Write `scheduler/chat/index.ts`: the staff and switch checks as the
-      caller, the Claude API with the tools and the office rules, and the
-      answer streamed back.
+      caller, the limit held against the month's sum, the Claude API with
+      the tools and the office rules, the answer streamed back, and its cost
+      added to the month.
 - [ ] Hand rux the two commands, the chat key as the function's secret and
       the deploy.
 - [ ] Draw the chat's header action and panel on every Scheduler page: the
@@ -87,5 +101,6 @@ the schedule comes back as something to press, and is never done by itself.
 - [ ] Check in Chrome on :8641: a free day, a driver recommendation and a
       time off, each against the pages; a person with chat off sees no
       action and is refused by the function; each card's press read back
-      from its table; and a trip whose text holds an instruction, which the
-      chat reports and does not follow.
+      from its table; a limit set under the month's sum, which stops the
+      next answer and says why; and a trip whose text holds an instruction,
+      which the chat reports and does not follow.

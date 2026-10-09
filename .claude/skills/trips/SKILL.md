@@ -190,11 +190,12 @@ reads only the ones before it. Nothing is written until step 10.
   found by its street address, with the Name field set to the hotel.
 - Set a time input with `form_input` as `HH:MM`, and read the dialog back before Done.
 - A stop's "The wait counts as" is a plain select: set it with `form_input` as `on`, `off` or `sleeper`, because a click shows no menu in a screenshot.
-- After setting a line's Mileage rate with `form_input`, the Cost keeps the old figure: choose Use calculator price from the line's menu, and read the line back.
+- Done in a quote line's window keeps whatever its Cost field holds as a typed cost, so a rental opened to change its Mileage rate stops following the route: clear the Cost before Done, or afterwards choose Use calculator price from the line's menu, which is offered only when the two figures differ, and read the line back.
 - A dialog may be closing as you click. Check what has the focus before typing.
 - `scroll_to` can shift the whole page; reset the window's scroll before a
   click by coordinates.
 - Leaving the editor drops unsaved changes; Reset takes them back.
+- An editor tab left open while waiting on rux's yes can be gone when he answers, with every unsaved change: check with `get_trip` that nothing was saved, then draft the change again and rebuild it.
 - Mark sent records today's date, not the day the quote went out.
 - Mark billing done stays off until Quote sent is marked, so a trip saved before its quote goes out has Billing left open.
 - On a new trip, Save's Updates box opens on "Quote not sent", or "Quote sent" with the price once it is marked: save that line as it stands, with a few words added only when the trip waits on something else. A new trip's update is never a summary of the trip.
@@ -206,6 +207,8 @@ reads only the ones before it. Nothing is written until step 10.
 - The Route tab redraws its list as each drive is measured, so a `ref` read before a stop's Done is gone after it: scroll the tab to its end and press Add stop from a fresh screenshot.
 - A vehicle comes off a trip from its tile's own menu, a right-click on the tile, then Remove, which asks first: pressing the tile opens its window, which has no remove.
 - Add the bus rental on a trip that already has a quoted price keeps that price, spread over the buses now on it: after the bus count changes, open the line and type the Cost for one bus that the PO or the quote sent gives.
+- Changing a round trip's pickup leaves the old pickup behind as an extra stop before the return, and it shows only after the save: read the Route tab again once it is saved, remove the leftover stop from its tile's menu, and save once more.
+- `draft_trip_change` fills only the fields the panel shows as one input: `bus_count` and the second trip contact are named in the note at the top and left for the Buses tab and the Trip contacts menu's Add contact.
 
 ## When rux teaches something new
 

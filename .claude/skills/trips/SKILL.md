@@ -8,7 +8,8 @@ description: Review, enter or update charter trips in the scheduler with rux. Re
 **Read `rules.md` first.** It is rux's office policy, and it answers most
 questions before they need asking. `emails.md` is how a customer email is
 written. `scheduler/docs/booking.md` is what each booking step must say, and
-`scheduler/docs/working-from-claude.md` is the connector from rux's side.
+`scheduler/docs/working-from-claude.md` is the scheduler's connector from
+rux's side.
 
 ## The tools
 
@@ -16,8 +17,8 @@ written. `scheduler/docs/booking.md` is what each booking step must say, and
 | :--- | :--- | :--- |
 | Scheduler connector: `find_trips`, `get_trip`, `list_buses`, `list_drivers`, `find_availability`, `find_contacts` | reading a trip, its buses and drivers; checking a save landed | saving: it writes drafts only |
 | `draft_trip`, `draft_trip_change` | a new trip, or a change, as a link that opens the editor filled in | |
-| rux's Chrome, through Claude in Chrome, logged in | the trip editor at `http://localhost:8641/scheduler/`, the forms, Missive | the built-in browser pane, which cannot pass the log-in |
-| Missive, in that Chrome | the customer's emails, quotes and itineraries | sending, replying, archiving, labelling or snoozing |
+| rux's Chrome, through Claude in Chrome, logged in | the trip editor at `http://localhost:8641/scheduler/`, the forms | the built-in browser pane, which cannot pass the log-in |
+| Missive connector: `get_conversations`, `search_conversations`, `get_search_results`, `get_conversation_entries` | the customer's emails, quotes and itineraries | `compose_draft`, `deliver_draft`, `change_labels` and `manage_calendar_events`, which write to Missive: a reply is drafted in chat |
 | Gmail connector | nothing: it is rux's personal mail | |
 | Supabase | a read the connector lacks | writing a trip: the editor's Save is the only writer |
 
@@ -50,7 +51,7 @@ reads only the ones before it. Nothing is written until step 10.
    (`rules.md`) and for the customer's other trips; `find_contacts` for the
    saved booking contact; `find_availability` for the day's free buses.
 3. **Draft.** `draft_trip` with the fields you are sure of: `passengers`,
-   the thread's address as `booking_contact_missive_url`, and `stops`, the
+   the conversation's `link` as `booking_contact_missive_url`, and `stops`, the
    places between the pickup and the drop-off in order, each with its name,
    address and arrive and leave times. Anything with no field goes in its
    notes. Open the link at
@@ -162,24 +163,37 @@ reads only the ones before it. Nothing is written until step 10.
 
 ## Missive
 
-- A Missive link first shows "Opening in Missive app": press Open in browser to read the thread in Chrome.
-- Open the trip's thread from `booking_contact_missive_url` when it is set.
-- Otherwise search the booking contact's full email address and pick the
-  person under **Past recipients**. A plain text search spins and finds nothing.
-- Past recipients is listed only when the search is opened from an inbox: a
-  `#search/` address, or typing on a results page, runs the plain search, so
-  press the field's ✕ first, then select all before typing, because the field
-  keeps the last search's text.
-- Before typing, check that `document.activeElement` is the search input. A
-  missed click sends the keys to the team chat box at the bottom, and Delete
-  outside a text field opens "Archiving from team inbox": press Cancel.
-- A collapsed message opens on a click; older ones load as you scroll up slowly.
-- The eye icon on an attachment previews a PDF without downloading it. A
-  spreadsheet cannot be previewed: look for the same itinerary on the trip's
-  Files tab, or ask rux before downloading it.
+- Missive is read through its connector, which reads as rux and leaves his
+  unread marks as they are. A session that has no Missive tools says so and
+  asks rux to connect Missive in the Claude app under Settings, Connectors.
+- Open the trip's thread from `booking_contact_missive_url` when it is set:
+  the id at the end of that address goes to `get_conversations` as
+  `conversation_ids`, with `include_content` true.
+- Otherwise `search_conversations` with the booking contact's full email
+  address as both `query` and `email`. The search answers in parts: call
+  `get_search_results` with its `search_id` until `done` is true, keeping
+  each call's threads, because a call gives only the ones found since the
+  last. Then read the thread with `get_conversations`.
+- A thread's messages come oldest first, each with its sender, its time,
+  which is in UTC, and its `direction`; the team's comments follow under
+  `internal`. `Status: Completed` in the metadata is a closed conversation.
+  A thread cut short carries `next_entries_before`, and
+  `get_conversation_entries` reads the older part.
+- A message's body ends at `* * *` where the sender quoted earlier mail.
+  When that mail is not among the thread's messages it is another thread
+  with the same person, found by the search above.
+- `include_attachments` true gives each attachment's file name, type and
+  size, and a link that works for a short time; it does not hand over the
+  file, and a picture in a message shows as `(image)`. Look for the same
+  itinerary on the trip's Files tab first. Otherwise ask rux before fetching
+  the file, naming it, who sent it and its size.
+- A PDF is read with no download in rux's Chrome: open the conversation's
+  `link`, press Open in browser if "Opening in Missive app" shows, and press
+  the eye icon on the attachment. Opening a thread there clears its unread
+  mark.
 - Link the thread while reviewing: Details, Booking contact ⋮, Add email
-  thread. The dialog's field has the focus and takes the conversation's web
-  address, copied from Missive's address bar with the thread open.
+  thread. The dialog's field has the focus and takes the conversation's
+  `link`.
 
 ## Traps in the editor
 

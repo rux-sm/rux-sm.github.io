@@ -91,6 +91,13 @@ Ask Claude Code to review the inbox and it reads the team's email in Missive,
 matches each thread to its trip and adds the rows. How it does that is the
 `inbox-review` skill in `.claude/skills/inbox-review/`.
 
+It reads Missive through Missive's own connector, which each person connects
+once: in the Claude app, **Settings → Connectors**, find Missive and press
+**Connect**, then approve it in Missive with only the read permissions
+ticked. Before that a Missive owner or admin turns the connector on for the
+organization, in Missive under **Settings → Organizations → Overview → MCP
+server**.
+
 ## What it will not do
 
 - It never writes or changes a trip. Only Save in the editor does. The To do

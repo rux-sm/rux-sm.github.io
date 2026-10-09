@@ -150,10 +150,7 @@ site.
 
 ## Questions
 
-- **Reading the office email.** Missive's connector needs a Missive admin.
-  Which way in: Apple Mail on this Mac signed in to the Yahoo account and
-  read by script (recommended), Yahoo Mail in the Claude Chrome profile, or
-  the Missive owner turning the connector on?
+None open.
 
 ## Tasks
 
@@ -269,10 +266,8 @@ site.
 - [ ] Reconnect the connector, read a new session's tool list, and write the
       step into `working-from-claude.md`.
 - [ ] Give each skill its job, delete `trip-email` in `~/claude-config`, key
-      a row by the mail's own id, drop the link-copying section, and
-      name the published site for a real Save.
-- [ ] Read the office email by the way answered: read one unread message,
-      see whether it stays unread, and rewrite the review's steps.
+      a row by the mail's own id, and name the published site for a real
+      Save.
 - [ ] Read `by=claude` from the address in `actorName`.
 
 ### Records and the other plans

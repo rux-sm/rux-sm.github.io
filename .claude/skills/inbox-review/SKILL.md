@@ -14,29 +14,27 @@ thread is read in depth. `rules.md` there is the office's policy.
 
 | Tool | For | Never for |
 | :--- | :--- | :--- |
-| Missive, in rux's Chrome through Claude in Chrome | reading the team inbox | replying, archiving, labelling, snoozing, assigning or closing a conversation |
+| Missive connector: `get_conversations`, `get_conversation_entries` | reading the team inbox | `compose_draft`, `deliver_draft`, `change_labels` and `manage_calendar_events`, which write to Missive |
 | Scheduler connector: `find_trips`, `get_trip` | matching a thread to its trip, and reading what the scheduler already warns of | |
 | Scheduler connector: `list_to_dos`, `add_to_do`, `change_to_do`, `close_to_do` | the rows | a row a person wrote, which the tools refuse |
 
-Missive is signed in in rux's Chrome, where its pages read as text, and
-signing in is rux's to do. Work in a tab of the session's own and close it at
-the end.
+The Missive connector reads as rux and sees what he sees. Connecting it is
+rux's to do, in the Claude app under Settings, Connectors; a session that has
+no Missive tools says so and stops.
 
 ## The steps
 
-1. **Open Team Inboxes,** `https://mail.missiveapp.com/#unassigned`. It is
-   the Office inbox.
-2. **Read the whole list first,** before opening anything, as the page's
-   text (see Reading Missive in Chrome). Each row gives the sender, the
-   subject, the time, the first line or the team's last comment, and how many
-   messages it holds.
-3. **Sort the rows.** A thread about a trip or a quote is read. Mail that is
-   not a trip, such as an audit notice, a receipt, a newsletter or a vendor's
-   warranty, is left and not reported.
-4. **Open each thread to read** by its link, and take the page's text again.
-   The newest message is last; among the messages, each at its time, are the
-   team's own comments, which say what the office already thinks, and when
-   the conversation was closed, reopened or snoozed.
+1. **Read the team inbox,** `get_conversations` with `mailbox_id`
+   `unassigned` and `include_content` true. It is the Office inbox, and its
+   `total_count` is the number beside Team Inboxes.
+2. **Read the whole list first,** before matching anything. A call gives 25
+   threads: follow `next_cursor` until `has_more` is false.
+3. **Sort the threads.** A thread about a trip or a quote is kept. Mail that
+   is not a trip, such as an audit notice, a receipt, a newsletter or a
+   vendor's warranty, is left and not reported.
+4. **Read each kept thread** (see Reading Missive). The newest message is
+   last, and after the messages are the team's own comments, each at its
+   time, which say what the office already thinks.
 5. **Match it to a trip** with `find_trips`: the sender as booking contact,
    then the customer and the day. A new request often has no trip, or only a
    placeholder. Read the trip's state: confirmed, PO, contract, quote sent,
@@ -52,19 +50,21 @@ the end.
    thread's id. An open row whose thread has no mail since the row was made,
    and whose trip reads as it did, is left as it is.
 8. **Add the rows** with `add_to_do`, each in its four parts (see Writing a
-   row). Give the trip's id when there is one, the thread's id as its key,
-   the thread's link, which the row's Email button opens, and a day: today
+   row). Give the trip's id when there is one, the conversation's `id` as its
+   key, its `link`, which the row's Email button opens, and a day: today
    when the trip leaves tomorrow, tomorrow for the rest, none for a courtesy
    reply.
-9. **Report.** The rows added, the urgent one first; anything odd found on
-   the way, such as a request that looks like a trip already on the board;
-   and what was not opened.
+9. **Report.** The rows added, the urgent one first; the threads that are
+   unread; anything odd found on the way, such as a request that looks like a
+   trip already on the board; and what was not read, such as a picture or an
+   attachment.
 
 ## rux's rules
 
-- A review leaves an unread thread unread: read its line in the list, say it
-  is there, and do not open it, because opening it clears rux's own unread
-  mark.
+- A review leaves rux's unread marks as they are. A read through the
+  connector does not clear one, so an unread thread is read like any other
+  and the report says it is unread; a review never opens a thread in Chrome,
+  which does clear it.
 - A row has no owner unless rux names one, so anyone in the office can take
   it.
 - A row is added straight in and reported after, since a wrong one costs one
@@ -99,47 +99,50 @@ opened.
   know before it opens the email, one fact a line, and what the team's
   comments say the work waits on.
 
-## Reading Missive in Chrome
+## Reading Missive
 
-- **The list is the page's text while no thread is open.** `get_page_text`
-  returns it whole.
-- **An open thread is read by a script,** because `get_page_text` then
-  returns one line of it. The `innerText` of `document.body` after
-  `Assign to me` is the thread: each message's first line, the team's
-  comments, and when it was closed, reopened or snoozed. A message's whole
-  body is in the shadow root of its `.missive-message-content`, which only an
-  expanded message has, as the newest one is.
-- **A script's answer is cut near 1,000 characters,** so keep the text on
-  `window` and ask for it in slices. A slice holding a link's `?`, `&` or `=`
-  comes back blocked; replace those characters in the slice.
-- **A table pasted into an email is a picture.** Zoom on it to read it.
-- **The list draws only the rows near the view,** and loads the mail under
-  This Week and each month once the mouse wheel scrolls it to its end;
-  setting `scrollTop` by script loads nothing. Scroll to the end and read
-  again until the rows counted match the number beside Team Inboxes in the
-  sidebar.
-- **A row of the list is a `.conversation-preview`, and its
-  `data-conversation-id` is the thread's id.** The thread's link is
-  `https://mail.missiveapp.com/#unassigned/conversations/<id>`, which opens
-  it, with `#inbox/` in place of `#unassigned/` for a thread outside the
-  team's inboxes. The id is the row's `thread_key` and the link its
-  `thread_url`.
-- **A read row's marker holds `.icon-seen`.** A row without it is unread, and
-  is not opened.
+- **The team inbox is the mailbox `unassigned`,** which `search_teams` with
+  `any_team` gives as the Office team's. Its `unseen_count` is how many of
+  its threads are unread, and a call with `unseen` true and `include_content`
+  false lists them.
+- **A thread read without its content is a subject, a team and its labels,**
+  with no sender and no time, so the list is read with content.
+- **A thread's messages come oldest first,** each with its sender, its time,
+  which is in UTC, and its `direction`: inbound from the customer, outbound
+  from the office. The team's comments follow under `internal`, each with
+  its author and time. `Status: Completed` in the metadata is a closed
+  conversation. A thread cut short carries `next_entries_before`, and
+  `get_conversation_entries` reads the older part.
+- **A message's body ends at `* * *` where the sender quoted earlier mail.**
+  The quoted mail is another message of the thread, or another thread with
+  the same person.
+- **A picture shows as `(image)` in the body,** and a table pasted into an
+  email is one. The connector hands over no picture, so the report names the
+  thread as holding one.
+- **An attachment is a name.** With `include_attachments` true each one
+  gives its file name, type and size. A review reads no file; the `trips`
+  skill says how one is read.
+- **The thread's id is the conversation's `id`, and its link the
+  conversation's `link`,**
+  `https://mail.missiveapp.com/#archive/conversations/<id>`, which opens it
+  in Missive. The id is the row's `thread_key` and the link its
+  `thread_url`. A row's link may sit under `#unassigned/` or `#inbox/` in
+  place of `#archive/`; the id at its end is what matches.
 - **Some rows carry the sender and the subject in lower case as their key,**
   `pat lee | po attached, october 8`. Such a row is found by the id in its
   `thread_url` and changed with `change_to_do`; an `add_to_do` under the id
   would add a second row.
-- A script run in Chrome can run twice. `add_to_do` with a thread key is safe
-  to repeat; a second call changes the row the first made.
+- `add_to_do` with a thread key is safe to repeat; a second call changes the
+  row the first made.
 
 ## Closing and changing a row
 
 - **An open row whose thread has left Team Inboxes is likely done,** because
-  the office closes a conversation as it answers. Open the thread by the
-  row's link: a reply from the office after the customer's last message, then
-  "closed the conversation", is the work done, and a trip's `quote_sent_on`
-  confirms a quote. Close the row with what went out and when.
+  the office closes a conversation as it answers. Read the thread by the id
+  at the end of the row's link: an outbound message after the customer's
+  last one, with `Status: Completed` in the metadata, is the work done, and
+  a trip's `quote_sent_on` confirms a quote. Close the row with what went
+  out and when.
 - **Match a row to the list by the id alone.** The office retitles a thread,
   and a sender shows under another form of their name, so the list's line may
   share no words with the row.

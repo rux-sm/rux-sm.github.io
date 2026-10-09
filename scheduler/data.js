@@ -8086,8 +8086,11 @@
 
       // "4 h 03", "4 h" or "31 min", as the Summary writes a length of time.
       const hm = RF.hm;
-      // The drive on to the drop-off counts whenever the leg has stops.
-      const dropCounts = () => !!(r.dropRow || r.list.length);
+      /* The drive on to the drop-off counts wherever Save writes a drop-off
+         row: on every leg but a round trip with no stops, which is let off
+         where it was picked up. A drop-off picked since the trip opened
+         counts at once, before it has a row. */
+      const dropCounts = () => !routeRound() || r.list.length > 0;
       /* The trip's figures, worked out by route-figures.js from the tab as it
          stands: when the bus leaves the yard, is spotted and is back, then
          each day's miles, drive, on duty and less rest on a leg of more than
@@ -8143,7 +8146,7 @@
           status: fig.status,
           pickup: r.pickupPlace?.lat != null,
           // A round trip's drop-off is its pickup, so the pickup answers for it.
-          drop: !dropCounts() || routeRound() || r.dropPlace?.lat != null,
+          drop: routeRound() || r.dropPlace?.lat != null,
           unlocated: r.list.filter(st => !located(st)).length,
           unmeasured: fig.unmeasured,
         };

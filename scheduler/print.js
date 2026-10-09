@@ -902,9 +902,12 @@
      a discount, and the total. A drop-off and pickup prints the leg's lines
      and the lines of the whole trip, with the trip's total under its own.
      Nothing is priced here. A rental priced on other miles than the route
-     has now says so, since the price moves with the itinerary. */
+     has now says so, since the price moves with the itinerary. Dead miles
+     taken off as a discount are that line's to say, so the rental above it
+     says nothing of them. */
   const LINE_NAMES = { rental: 'Bus rental', second_driver: 'Second driver', relief: 'Relief driver',
     discount: 'Discount', hotel: 'Hotel', other: 'Other' };
+  const isDeadDiscount = l => l.kind === 'discount' && /dead miles/i.test(l.description || '');
   const usd = n => `${n < 0 ? '−' : ''}$${Math.abs(n).toLocaleString('en-US',
     { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   const num = v => (v === null || v === undefined || v === '' || !Number.isFinite(Number(v)) ? null : Number(v));
@@ -952,13 +955,13 @@
     const from = split && leg === 'return' ? trip.return_start_date : trip.start_date;
     const to = (split && leg === 'return' ? trip.return_end_date : trip.end_date) || from;
     const dayCount = from && to ? Math.max(1, Math.round((Date.parse(to) - Date.parse(from)) / 86400000) + 1) : null;
+    const deadDiscounted = lines.some(isDeadDiscount);
     for (const l of lines) {
       const qty = num(l.quantity);
       const cost = num(l.cost);
       const amount = num(l.amount) ?? (cost === null ? null : (qty ?? 1) * cost);
       const kind = LINE_NAMES[l.kind] ? l.kind : 'other';
-      const deadDiscount = kind === 'discount' && /dead miles/i.test(l.description || '');
-      const name = deadDiscount ? 'Dead miles discount' : kind === 'other' ? (l.item || LINE_NAMES.other) : LINE_NAMES[kind];
+      const name = isDeadDiscount(l) ? 'Dead miles discount' : kind === 'other' ? (l.item || LINE_NAMES.other) : LINE_NAMES[kind];
       const note = split && !l.leg ? 'Whole trip' : kind === 'other' ? l.description || '' : '';
       let basis = '';
       if (kind === 'rental') {
@@ -972,7 +975,7 @@
           m === null || dayCount === null ? null : `${dayCount} ${dayCount === 1 ? 'day' : 'days'}`,
           l.cost_typed ? null : local ? 'local day rate'
             : rate === null ? null : `at $${rate.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/mi`,
-          m === null ? null : dead > 0 ? `${miles(dead)} dead` : 'no dead miles',
+          m === null || (deadDiscounted && !dead) ? null : dead > 0 ? `${miles(dead)} dead` : 'no dead miles',
           l.cost_typed ? 'price typed' : null,
           m !== null && routeMiles !== null && oneLeg && Math.round(m) !== Math.round(routeMiles)
             ? `route now ${miles(routeMiles)}` : null,

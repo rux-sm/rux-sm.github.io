@@ -2,7 +2,7 @@
    to-do-list.js — THE TO-DO LIST IN THE HEADER
    --------------------------------------------------------------------------
    Every Scheduler page carries the To do action and its panel; this fills
-   them. The list is three kinds of row in one:
+   them. There are three kinds of row, on two of the panel's three tabs:
 
      Computed  worked out here from the trips by to-do.js, never stored. It
                is never done by hand: it asks while it is true and opens its
@@ -18,13 +18,15 @@
    over one row of buttons: Done, Email and Trip, and a menu of Edit and
    Delete. One row is open at a time.
 
-   Rows are grouped Overdue, Today, This week, Later and No date, then Done:
-   a row closed today, struck through, with Undo. A computed row is in Today
-   while it is true. Mine is the rows that are mine or nobody's, and every
-   computed row; Everyone is all of them. The count on the action is the
-   Overdue and Today rows under Mine. The list's first line is Departures:
-   how many of tomorrow's legs are ready, and the way into
-   departures-panel.js's view of them.
+   The panel's head is a switch of three tabs, each with its count. To do
+   holds the stored rows, grouped Overdue, Today, This week, Later and No
+   date, then Done: a row closed today, struck through, with Undo; Add a
+   to-do, above them, opens a new row's form at the head of the list. Trips
+   holds the computed rows, by the day each trip leaves. Departures is
+   departures-panel.js's view, and its tab says how many of tomorrow's legs
+   are ready while one is not. Everyone on the staff sees every row. The
+   count on the action is the Overdue and Today stored rows, every computed
+   row, and tomorrow's departures while one is not ready.
 
    The page reads the trips the rules need itself, because only the board
    holds them otherwise: every live trip for the follow-ups, and the buses,
@@ -46,7 +48,7 @@
   const panel = document.getElementById('scheduler-to-do-panel');
   if (!client || !ToDo || !Facts || !action || !panel) return;
 
-  const VIEW_KEY = 'scheduler-to-do-view';
+  const NEW = 'new';   // `editingId` while the form open is a new row's
   const GROUPS = ['Overdue', 'Today', 'This week', 'Later', 'No date'];
   const MENU_ID = 'scheduler-to-do-menu';
   /* The kinds of work a row can be: each one's words on its tag and the tag's
@@ -104,11 +106,10 @@
   let stored = [];          // `to_dos`: every open row, and the ones closed today
   let computed = [];        // to-do.js's rows, unfolded
   let trips = new Map();    // id -> trip, for a stored row's trip and the Trip choice
-  let editingId = null;     // the stored row whose form is open
+  let editingId = null;     // the stored row whose form is open, or NEW
   let openId = null;        // the stored row that is open, one at a time
+  let view = 'list';        // the tab showing: list, trips or departures
   let failure = '';
-  let mine = true;
-  try { mine = localStorage.getItem(VIEW_KEY) !== 'everyone'; } catch { /* Mine */ }
 
   // -- reading --------------------------------------------------------------
   const LIGHT = ['id', 'trip_ref', 'destination', 'customer', 'start_date', 'end_date', 'return_start_date', 'return_end_date',
@@ -202,45 +203,41 @@
     }
     await loadStored();
   }
-  const add = body => write(() => client.from('to_dos').insert({ body, owner_id: me?.id ?? null, due_on: iso(new Date()) }));
+  const add = fields => write(() => client.from('to_dos').insert(fields));
   const tick = (row, done) => write(() => client.from('to_dos')
     .update({ closed_at: done ? new Date().toISOString() : null }).eq('id', row.id));
   const change = (row, fields) => write(() => client.from('to_dos').update(fields).eq('id', row.id));
   const remove = row => write(() => client.from('to_dos').delete().eq('id', row.id));
 
   // -- the list, as data ----------------------------------------------------
-  const isMine = row => !row.owner_id || row.owner_id === me?.id;
   const groupOf = (row, today, sunday) => (!row.due_on ? 'No date' : row.due_on < today ? 'Overdue'
     : row.due_on === today ? 'Today' : row.due_on <= sunday ? 'This week' : 'Later');
 
-  /* The open rows by group, for Mine or for everyone. Today holds the stored
-     rows due today and every computed row: the ones with no trip first, then
-     a trip at a time by the day it leaves, so the rows about one trip sit
-     together, and the folded lines last. */
-  function grouped(onlyMine) {
+  /* The open stored rows by group. Within Today the rows with no trip come
+     first, then a trip at a time by the day it leaves, so the rows about one
+     trip sit together. */
+  function grouped() {
     const today = iso(new Date());
     const sunday = weekEnd();
     const out = new Map(GROUPS.map(g => [g, []]));
     for (const row of stored) {
-      if (row.closed_at || (onlyMine && !isMine(row))) continue;
-      out.get(groupOf(row, today, sunday)).push({ stored: row });
+      if (row.closed_at) continue;
+      out.get(groupOf(row, today, sunday)).push(row);
     }
-    for (const g of GROUPS) {
-      if (g !== 'Today') out.get(g).sort((a, b) => String(a.stored.due_on || '').localeCompare(String(b.stored.due_on || '')));
-    }
-    const lines = ToDo.fold(computed);
     const tripDay = id => trips.get(id)?.start_date || '9';
-    const place = item => (item.computed?.fold ? [2, '', '', 0]
-      : item.stored ? (item.stored.trip_id ? [1, tripDay(item.stored.trip_id), item.stored.trip_id, 0] : [0, '', '', 0])
-        : [1, item.computed.day || tripDay(item.computed.trip.id), item.computed.trip.id, 1]);
-    const todayRows = [...out.get('Today'), ...lines.map(c => ({ computed: c }))];
-    const rank = new Map(todayRows.map((item, i) => [item, [...place(item), i]]));
-    todayRows.sort((a, b) => {
-      const x = rank.get(a), y = rank.get(b);
-      return x[0] - y[0] || String(x[1]).localeCompare(String(y[1])) || String(x[2]).localeCompare(String(y[2])) || x[3] - y[3] || x[4] - y[4];
-    });
-    out.set('Today', todayRows);
+    const place = row => (row.trip_id ? `1 ${tripDay(row.trip_id)} ${row.trip_id}` : '0');
+    for (const g of GROUPS) {
+      out.get(g).sort(g === 'Today' ? (a, b) => place(a).localeCompare(place(b))
+        : (a, b) => String(a.due_on || '').localeCompare(String(b.due_on || '')));
+    }
     return out;
+  }
+  /* The computed rows as the Trips tab lists them: a trip at a time by the
+     day it leaves, and the folded lines, each standing for many, last. */
+  function tripLines() {
+    const place = c => (c.fold ? '2' : `1 ${c.day || c.trip.start_date || '9'} ${c.trip.id}`);
+    return ToDo.fold(computed).map((c, i) => [place(c), i, c])
+      .sort((a, b) => a[0].localeCompare(b[0]) || a[1] - b[1]).map(x => x[2]);
   }
 
   // -- drawing --------------------------------------------------------------
@@ -438,70 +435,68 @@
     trip.append(option('', 'No trip', !row.trip_id),
       ...choices.map(t => option(t.id, `${t.start_date ? shortDay.format(parseISO(t.start_date)) : 'No date'} · ${tripWords(t)}`, t.id === row.trip_id)));
 
+    // A row not yet saved has nothing to delete.
     const bar = el('div', 'scheduler-to-do__buttons');
-    const del = button('rux--btn--danger--ghost', 'Delete');
+    const del = row.id ? button('rux--btn--danger--ghost', 'Delete') : null;
     const cancel = button('rux--btn--ghost', 'Cancel');
-    const save = button('rux--btn--primary', 'Save');
+    const save = button('rux--btn--primary', row.id ? 'Save' : 'Add');
     save.type = 'submit';
-    bar.append(del, el('span', 'scheduler-to-do__gap'), cancel, save);
+    bar.append(del ?? '', el('span', 'scheduler-to-do__gap'), cancel, save);
     form.append(field('Kind', kind, true), field('Who', who), field('To do', words), field('Detail', detail),
       field('Due', due), field('Owner', owner, true), field('Trip', trip, true), bar);
 
     const shut = () => { editingId = null; draw(); };
     cancel.addEventListener('click', shut);
-    del.addEventListener('click', () => { editingId = null; openId = null; remove(row); });
+    del?.addEventListener('click', () => { editingId = null; openId = null; remove(row); });
     form.addEventListener('submit', e => {
       e.preventDefault();
       const body = words.value.trim();
       if (!body) { words.focus(); return; }
       editingId = null;
       // An empty part is stored as none, which the table asks for; the detail keeps its lines and drops its blank ones.
-      change(row, {
+      const fields = {
         kind: kind.value || null, who: who.value.trim() || null, body,
         detail: detail.value.split('\n').map(s => s.trim()).filter(Boolean).join('\n') || null,
         due_on: due.value || null, owner_id: owner.value || null, trip_id: trip.value || null,
-      });
+      };
+      if (row.id) change(row, fields); else add(fields);
     });
     form.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); shut(); } });
     li.appendChild(form);
     return li;
   }
 
-  // The frame, built once: the title and whose, the add field, then the list.
+  /* The frame, built once: the switch of three tabs, Add a to-do, then the
+     list. The switch is Design's content switcher, and Add is the dashed row
+     the trip editor's lists end in. */
   const body = el('div', 'rux--layer-two rux--stack-vertical rux--stack-scale-5 scheduler-to-do__body');
-  const head = el('div', 'scheduler-to-do__head');
-  const title = el('h2', 'scheduler-to-do__title', 'To do');
-  title.id = 'scheduler-to-do-title';
-  const whose = el('div', 'rux--content-switcher rux--content-switcher--sm rux--layout--size-sm rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg');
-  whose.setAttribute('role', 'tablist');
-  whose.setAttribute('aria-label', 'Whose rows');
-  for (const [view, text] of [['mine', 'Mine'], ['everyone', 'Everyone']]) {
-    const on = (view === 'mine') === mine;
+  const views = el('div', 'rux--content-switcher rux--content-switcher--sm rux--layout--size-sm rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg');
+  views.setAttribute('role', 'tablist');
+  views.setAttribute('aria-label', 'To do, Trips or Departures');
+  for (const [name, text] of [['list', 'To do'], ['trips', 'Trips'], ['departures', 'Departures']]) {
+    const on = name === 'list';
     const b = el('button', `rux--content-switcher-btn${on ? ' rux--content-switcher--selected' : ''}`);
     b.type = 'button';
-    b.dataset.view = view;
+    b.dataset.view = name;
+    b.dataset.words = text;
     b.setAttribute('role', 'tab');
     b.setAttribute('aria-selected', String(on));
     b.tabIndex = on ? 0 : -1;
     b.appendChild(el('span', 'rux--content-switcher__label', text));
-    whose.appendChild(b);
+    views.appendChild(b);
   }
-  head.append(title, whose);
-  const addForm = el('form', 'scheduler-to-do__add');
-  const addInput = el('input', 'rux--text-input rux--layout--size-sm');
-  addInput.type = 'text';
-  addInput.placeholder = 'Add a to-do';
-  addInput.setAttribute('aria-label', 'Add a to-do');
-  addInput.autocomplete = 'off';
-  addForm.appendChild(field('Add a to-do', addInput));
-  // The label is hidden, as Carbon hides one: on its wrapper the class left it
-  // the field's full width, 15px past the panel, which then slid sideways.
-  addForm.querySelector('.rux--label').classList.add('rux--visually-hidden');
+  const addRow = el('div', 'scheduler-list-additem');
+  const addButton = el('button', 'rux--btn rux--btn--ghost rux--layout--size-md scheduler-list-add');
+  addButton.type = 'button';
+  const plus = svgUse('#m-add');
+  plus.setAttribute('class', 'rux--btn__icon');
+  addButton.append(plus, 'Add a to-do');
+  addRow.appendChild(addButton);
   const error = el('p', 'scheduler-to-do__error');
   error.setAttribute('role', 'alert');
   const list = el('div', 'scheduler-to-do__list');
-  body.append(head, addForm, error, list);
-  panel.setAttribute('aria-labelledby', title.id);
+  body.append(views, addRow, error, list);
+  panel.setAttribute('aria-label', 'To do');
   panel.appendChild(body);
 
   /* The open row's menu, one for the whole list: Design's menu, which its
@@ -525,61 +520,80 @@
     menuItem('Delete', true, row => { openId = null; remove(row); }));
   document.body.appendChild(menu);
 
-  /* The list's first line: tomorrow's departures, how many are ready, and the
-     way into departures-panel.js's view. It is one of Today's rows while a
-     leg leaving tomorrow is not ready. */
+  /* Each tab's words, with what it holds after them: the open stored rows,
+     the computed rows, and tomorrow's departures while a leg is not ready,
+     which is also one of what is due. A tab holding nothing is its words. */
   const departures = () => window.SchedulerDeparturesPanel?.summary() ?? null;
   const departuresDue = () => { const d = departures(); return d?.known && d.legs > d.ready ? 1 : 0; };
-  function departuresLine() {
+  function drawViews() {
     const d = departures();
-    if (!d) return null;
-    const b = el('button', 'scheduler-to-do__departures');
-    b.type = 'button';
-    const words = !d.known ? '' : !d.legs ? 'Nothing leaves tomorrow' : `Tomorrow: ${d.ready} of ${d.legs} ready`;
-    b.append(svgUse('#m-directions_bus-fill', 20), el('span', 'scheduler-to-do__words', 'Departures'),
-      el('span', 'scheduler-to-do__detail', words), svgUse('#m-arrow_forward'));
-    b.addEventListener('click', () => window.SchedulerDeparturesPanel.open());
-    return b;
+    const said = {
+      list: stored.filter(r => !r.closed_at).length || '',
+      trips: tripLines().length || '',
+      departures: departuresDue() ? `${d.ready} of ${d.legs}` : '',
+    };
+    for (const b of views.querySelectorAll('[data-view]')) {
+      b.querySelector('.rux--content-switcher__label').textContent = `${b.dataset.words} ${said[b.dataset.view]}`.trim();
+    }
   }
+  // A new row as its form first shows it: mine, due today, and nothing else.
+  const blank = () => ({ id: null, kind: null, who: null, body: '', detail: null, due_on: iso(new Date()), owner_id: me?.id ?? null, trip_id: null });
 
   function drawCount() {
-    const rows = grouped(true);
-    const n = rows.get('Overdue').length + rows.get('Today').length + departuresDue();
+    const rows = grouped();
+    const n = rows.get('Overdue').length + rows.get('Today').length + tripLines().length + departuresDue();
     action.querySelector('.rux--badge-indicator')?.remove();
     if (n) action.appendChild(el('div', 'rux--badge-indicator rux--badge-indicator--count', n > 99 ? '99+' : String(n)));
     action.setAttribute('aria-label', n ? `To do, ${n} due` : 'To do');
   }
 
-  function draw() {
-    drawCount();
-    error.textContent = failure;
-    error.hidden = !failure;
-    const rows = grouped(mine);
+  // The Trips tab: the computed rows in one list.
+  function tripParts() {
+    const lines = tripLines();
+    if (!lines.length) return [el('p', 'scheduler-to-do__none', 'Nothing on a trip needs doing.')];
+    const ul = el('ul', 'scheduler-to-do__rows');
+    ul.setAttribute('role', 'list');
+    for (const c of lines) ul.appendChild(computedRow(c));
+    return [ul];
+  }
+  // The To do tab: a new row's form while one is open, the groups, then Done.
+  function listParts() {
+    const rows = grouped();
     const parts = [];
     for (const g of GROUPS) {
       const items = rows.get(g);
       if (!items.length) continue;
       const ul = el('ul', 'rux--accordion rux--accordion--end scheduler-to-do__rows');
       ul.setAttribute('role', 'list');
-      for (const item of items) {
-        ul.appendChild(item.computed ? computedRow(item.computed)
-          : item.stored.id === editingId ? editForm(item.stored) : storedRow(item.stored, false));
-      }
+      for (const row of items) ul.appendChild(row.id === editingId ? editForm(row) : storedRow(row, false));
       parts.push(el('h3', 'scheduler-to-do__group', g), ul);
     }
-    const done = stored.filter(r => r.closed_at && (!mine || isMine(r)));
+    const done = stored.filter(r => r.closed_at);
     if (done.length) {
       const ul = el('ul', 'rux--accordion rux--accordion--end scheduler-to-do__rows');
       ul.setAttribute('role', 'list');
       for (const r of done) ul.appendChild(storedRow(r, true));
       parts.push(el('h3', 'scheduler-to-do__group', 'Done'), ul);
     }
-    if (!parts.length) parts.push(el('p', 'scheduler-to-do__none', 'Nothing to do.'));
-    const first = departuresLine();
-    if (first) parts.unshift(first);
+    if (!parts.length && editingId !== NEW) parts.push(el('p', 'scheduler-to-do__none', 'Nothing to do.'));
+    if (editingId === NEW) {
+      const ul = el('ul', 'scheduler-to-do__rows');
+      ul.setAttribute('role', 'list');
+      ul.appendChild(editForm(blank()));
+      parts.unshift(ul);
+    }
+    return parts;
+  }
+
+  function draw() {
+    drawCount();
+    drawViews();
+    error.textContent = failure;
+    error.hidden = !failure;
+    addRow.hidden = view !== 'list';
     // A redraw somebody else's change caused would empty a form being typed in, so it waits for the form to shut.
     if (editingId && document.activeElement?.closest?.('.scheduler-to-do__form')) return;
-    list.replaceChildren(...parts);
+    list.replaceChildren(...(view === 'trips' ? tripParts() : listParts()));
   }
 
   // -- behaviour ------------------------------------------------------------
@@ -593,17 +607,29 @@
     }
   });
   list.addEventListener('rux:accordion-closed', e => { if (e.target.dataset?.id === openId) openId = null; });
-  addForm.addEventListener('submit', e => {
-    e.preventDefault();
-    const words = addInput.value.trim();
-    if (!words) return;
-    addInput.value = '';
-    add(words);
-  });
-  whose.addEventListener('rux:content-switcher-selected', () => {
-    mine = whose.querySelector('.rux--content-switcher--selected')?.dataset.view !== 'everyone';
-    try { localStorage.setItem(VIEW_KEY, mine ? 'mine' : 'everyone'); } catch { /* this visit only */ }
+  addButton.addEventListener('click', () => {
+    editingId = NEW;
+    openId = null;
     draw();
+    list.querySelector('.scheduler-to-do__form input[required]')?.focus();
+  });
+
+  /* The switch shows one tab. To do and Trips are this list, drawn one way or
+     the other; Departures is departures-panel.js's, which hides this body
+     while it shows. The switch moves to the head of whichever body shows, so
+     it is the first thing on every tab, and takes back the focus the move
+     cost it. */
+  function show(next, focus) {
+    const other = window.SchedulerDeparturesPanel;
+    view = next === 'trips' || (next === 'departures' && other) ? next : 'list';
+    editingId = null;
+    if (view === 'departures') other.open(); else other?.close();
+    (view === 'departures' ? panel.querySelector('.scheduler-departures') : body).prepend(views);
+    window.Rux.contentSwitcher?.select(views, views.querySelector(`[data-view="${view}"]`), { focus, silent: true });
+    draw();
+  }
+  views.addEventListener('rux:content-switcher-selected', () => {
+    show(views.querySelector('.rux--content-switcher--selected')?.dataset.view, true);
   });
 
   document.addEventListener('scheduler:departures-summary', () => draw());
@@ -613,7 +639,7 @@
      again, since a tab left open all morning is hours behind. */
   panel.inert = true;
   panel.addEventListener('rux:header-panel-opened', () => { panel.inert = false; loadStored(); loadTrips(); });
-  panel.addEventListener('rux:header-panel-closed', () => { panel.inert = true; editingId = null; openId = null; });
+  panel.addEventListener('rux:header-panel-closed', () => { panel.inert = true; editingId = null; openId = null; show('list', false); });
 
   let channel = null;
   function listen() {

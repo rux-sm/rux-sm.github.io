@@ -1067,3 +1067,9 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 .scheduler-to-do .rux--accordion__item--active > .rux--accordion__wrapper { padding-block: 0 var(--rux-spacing-04); }
 /* A group of rows ends without a line, as a group ending in a computed row does. */
 .scheduler-to-do .rux--accordion__item:last-child { border-block-end: 0; }
+
+/* The To do panel's switch has three tabs, each with a count after its word.
+   Carbon gives a switcher's options one width, and the longest, Departures
+   with its count, was cut to an ellipsis; here each is as wide as its words
+   and they share what is left. */
+.scheduler-to-do .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn { flex: 1 1 auto; inline-size: auto; }

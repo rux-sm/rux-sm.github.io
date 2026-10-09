@@ -4388,20 +4388,16 @@ html:has(.scheduler-page[data-takeover]) {
 
 /* ══ The to-do list ═══════════════════════════════════════════════════════
    The header's To do panel, filled by to-do-list.js. The panel is Design's
-   header panel at the width a row needs, the whole screen's on a phone. A
-   stored row is an item of Design's accordion, holding Design's tag, buttons
-   and menu; a computed row and the edit form are this app's own row. */
+   header panel at the width a row needs, the whole screen's on a phone. Its
+   head is Design's content switcher and its Add is the dashed row the trip
+   editor's lists end in. A stored row is an item of Design's accordion,
+   holding Design's tag, buttons and menu; a computed row and the edit form
+   are this app's own row. */
 .scheduler-to-do.rux--header-panel--expanded { inline-size: min(24rem, 100vw); }
 @media (max-width: 41.98rem) {
   .scheduler-to-do.rux--header-panel--expanded { inline-size: 100vw; }
 }
 .scheduler-to-do__body { color: var(--rux-text-primary); }
-.scheduler-to-do__head { display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-05); }
-.scheduler-to-do__title { margin: 0; font-size: 1rem; font-weight: 600; line-height: 1.375; }
-/* Wide enough for Everyone in full; Carbon's switcher fills its row and trims a
-   word it has no room for. */
-.scheduler-to-do__head .rux--content-switcher { flex: none; inline-size: 11.5rem; }
-.scheduler-to-do__add .rux--form-item { margin: 0; }
 .scheduler-to-do__error { margin: 0; color: var(--rux-text-error); font-size: 0.875rem; }
 .scheduler-to-do__error[hidden] { display: none; }
 .scheduler-to-do__group {
@@ -4463,29 +4459,6 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-to-do__buttons { display: flex; align-items: center; gap: var(--rux-spacing-03); }
 .scheduler-to-do__gap { flex: 1 1 auto; }
 
-/* The list's first line, into Departures: the bus, the word, tomorrow's count
-   and an arrow, one button the row's width. */
-.scheduler-to-do__departures {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  inline-size: 100%;
-  min-block-size: 2.5rem;
-  padding: var(--rux-spacing-03) 0;
-  border: 0;
-  background: none;
-  color: inherit;
-  font: inherit;
-  font-size: 0.875rem;
-  text-align: start;
-  cursor: pointer;
-}
-.scheduler-to-do__departures > svg { flex: none; color: var(--rux-icon-secondary); }
-.scheduler-to-do__departures .scheduler-to-do__words { font-weight: 600; }
-.scheduler-to-do__departures .scheduler-to-do__detail { flex: 1 1 auto; text-align: end; }
-.scheduler-to-do__departures:hover .scheduler-to-do__words { text-decoration: underline; }
-.scheduler-to-do__departures:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
-
 /* ══ Departures ═══════════════════════════════════════════════════════════
    The To do panel's other view, drawn by departures-panel.js: a tab for each
    leg leaving on a day, and one leg's page, a tile for the trip and one for
@@ -4496,7 +4469,6 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-departures { color: var(--rux-text-primary); }
 .scheduler-departures[hidden] { display: none; }
 .scheduler-to-do__body[hidden] { display: none; }
-.scheduler-departures__back { align-self: flex-start; gap: var(--rux-spacing-03); margin-inline-start: calc(-1 * var(--rux-spacing-03)); }
 .scheduler-departures__head { display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-03); }
 .scheduler-departures__stepper { display: flex; align-items: center; position: relative; }
 /* The calendar's own field has no size and takes no press: the day opens it. */

@@ -1,10 +1,10 @@
 /* ==========================================================================
    departures-panel.js — DEPARTURES, IN THE TO-DO PANEL
    --------------------------------------------------------------------------
-   The To do list's first line opens this in the same header panel: every
-   leg leaving on a day, tomorrow first, a tab each, and under the tabs one
-   leg's page as departures.js gives it: a tile for the trip, then a tile for
-   each bus with its crew. A back button returns to the list.
+   The To do panel's switch, which to-do-list.js draws, opens this in the
+   same header panel and shuts it again: every leg leaving on a day, tomorrow
+   first, a tab each, and under the tabs one leg's page as departures.js
+   gives it: a tile for the trip, then a tile for each bus with its crew.
 
    It only shows status. Every line is a mark, what it is, then when it was
    done and whose face did it, or the word for doing it, which is a link to
@@ -14,7 +14,8 @@
    The day's trips are read fresh when the panel opens, when the day changes
    and when a step, a seat or a trip changes, on the `scheduler-departures`
    channel. Tomorrow's count, how many legs leave and how many are ready, is
-   kept for the To do list's line and said in `scheduler:departures-summary`.
+   kept for the switch's Departures button and said in
+   `scheduler:departures-summary`.
 
    Needs billing.js, follow-up.js, checklist.js, requirements.js,
    leg-facts.js, to-do.js and departures.js loaded first, and /account.js.
@@ -178,11 +179,6 @@
   const body = el('div', 'rux--layer-two rux--stack-vertical rux--stack-scale-5 scheduler-departures');
   body.hidden = true;
   const head = el('div', 'scheduler-departures__head');
-  const back = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm scheduler-departures__back');
-  back.type = 'button';
-  back.append(svgUse('#m-arrow_back'), el('span', null, 'To do'));
-  const title = el('h2', 'scheduler-to-do__title', 'Departures');
-  title.id = 'scheduler-departures-title';
   const stepper = el('div', 'scheduler-departures__stepper');
   const before = ghost('#m-arrow_back', 'The day before');
   const after = ghost('#m-arrow_forward', 'The day after');
@@ -204,8 +200,8 @@
   const pageEl = el('div', 'scheduler-departures__page');
   pageEl.setAttribute('role', 'tabpanel');
   pageEl.id = 'scheduler-departures-page';
-  head.append(title, stepper);
-  body.append(back, head, tabsWrap, error, pageEl);
+  head.append(stepper);
+  body.append(head, tabsWrap, error, pageEl);
   panel.appendChild(body);
 
   // -- drawing --------------------------------------------------------------
@@ -384,10 +380,9 @@
     if (list) list.hidden = true;
     body.hidden = false;
     panel.classList.add('scheduler-to-do--departures');
-    panel.setAttribute('aria-labelledby', title.id);
+    panel.setAttribute('aria-label', 'Departures');
     draw();
     load();
-    back.focus();
   }
   function close() {
     shown = false;
@@ -395,10 +390,9 @@
     panel.classList.remove('scheduler-to-do--departures');
     const list = todoBody();
     if (list) list.hidden = false;
-    panel.setAttribute('aria-labelledby', 'scheduler-to-do-title');
+    panel.setAttribute('aria-label', 'To do');
   }
   const go = to => { day = to; picked = null; pages = []; draw(); load(); };
-  back.addEventListener('click', () => { close(); panel.querySelector('.scheduler-to-do__departures')?.focus(); });
   before.addEventListener('click', () => go(dayFrom(-1, parseISO(day))));
   after.addEventListener('click', () => go(dayFrom(1, parseISO(day))));
   dayButton.addEventListener('click', () => { try { dayInput.showPicker(); } catch { dayInput.focus(); } });
@@ -448,5 +442,5 @@
     listen();
   })();
 
-  window.SchedulerDeparturesPanel = { open, summary: () => ({ ...tomorrow }) };
+  window.SchedulerDeparturesPanel = { open, close, summary: () => ({ ...tomorrow }) };
 })();

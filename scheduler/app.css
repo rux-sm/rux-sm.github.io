@@ -4408,6 +4408,9 @@ html:has(.scheduler-page[data-takeover]) {
   line-height: 1.33333;
 }
 .scheduler-to-do__group:first-child { margin-block-start: 0; }
+/* Done today stands a group's step under the rows above it. */
+.scheduler-to-do__done { margin-block-start: var(--rux-spacing-05); }
+.scheduler-to-do__done:first-child { margin-block-start: 0; }
 /* The list is a cell of the panel's grid, which is as wide as its longest
    line unless it may shrink; a closed row's line must end in an ellipsis
    at the panel's edge instead. */
@@ -4429,7 +4432,9 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-to-do__kind { margin-block-end: var(--rux-spacing-02); line-height: 0; }
 .scheduler-to-do__tag { margin: 0; }
 .scheduler-to-do__line { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.rux--accordion__item--active .scheduler-to-do__line { overflow: visible; overflow-wrap: anywhere; white-space: normal; }
+/* Only the open row's own lines wrap: Done today is an open item around its
+   rows, and they stay one line each until one of them is opened. */
+.scheduler-to-do__item.rux--accordion__item--active .scheduler-to-do__line { overflow: visible; overflow-wrap: anywhere; white-space: normal; }
 .scheduler-to-do__who { font-weight: 600; }
 .scheduler-to-do__item--done .scheduler-to-do__what { color: var(--rux-text-secondary); text-decoration: line-through; }
 /* The open row: the rest of its quiet lines, then its buttons a step under them. */

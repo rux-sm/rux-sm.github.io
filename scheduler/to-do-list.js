@@ -20,8 +20,10 @@
 
    The panel's head is a switch of three tabs, each with its count. To do
    holds the stored rows, grouped Overdue, Today, This week, Later and No
-   date, then Done: a row closed today, struck through, with Undo; Add a
-   to-do, above them, opens a new row's form at the head of the list. Trips
+   date, then Done today: the rows closed today behind one item of the
+   accordion that says how many and is shut until pressed, each struck
+   through, with Undo; Add a to-do, above them, opens a new row's form at
+   the head of the list. Trips
    holds the computed rows, by the day each trip leaves. Departures is
    departures-panel.js's view, and its tab says how many of tomorrow's legs
    are ready while one is not. Everyone on the staff sees every row. The
@@ -108,6 +110,7 @@
   let trips = new Map();    // id -> trip, for a stored row's trip and the Trip choice
   let editingId = null;     // the stored row whose form is open, or NEW
   let openId = null;        // the stored row that is open, one at a time
+  let doneOpen = false;     // whether Done today is open, shut again when the panel shuts
   let view = 'list';        // the tab showing: list, trips or departures
   let failure = '';
 
@@ -352,6 +355,33 @@
     return li;
   }
 
+  /* Done today: the rows closed today, behind one item of the accordion that
+     says how many it holds. It is shut until pressed, so the tab opens on
+     what is still owed, and its rows are the accordion they are above it. */
+  function doneGroup(rows) {
+    const li = el('li', `rux--accordion__item scheduler-to-do__done-item${doneOpen ? ' rux--accordion__item--active' : ''}`);
+    const heading = el('button', 'rux--accordion__heading');
+    heading.type = 'button';
+    heading.setAttribute('aria-expanded', String(doneOpen));
+    const arrow = svgUse('#m-keyboard_arrow_right');
+    arrow.classList.add('rux--accordion__arrow');
+    heading.append(arrow, el('div', 'rux--accordion__title', `Done today${DOT}${rows.length}`));
+    const wrapper = el('div', 'rux--accordion__wrapper');
+    const inside = el('div', 'rux--accordion__content');
+    inside.id = 'scheduler-to-do-done';
+    heading.setAttribute('aria-controls', inside.id);
+    const ul = el('ul', 'rux--accordion rux--accordion--end scheduler-to-do__rows');
+    ul.setAttribute('role', 'list');
+    for (const r of rows) ul.appendChild(storedRow(r, true));
+    inside.appendChild(ul);
+    wrapper.appendChild(inside);
+    li.append(heading, wrapper);
+    const group = el('ul', 'rux--accordion rux--accordion--end scheduler-to-do__rows scheduler-to-do__done');
+    group.setAttribute('role', 'list');
+    group.appendChild(li);
+    return group;
+  }
+
   let fieldSeq = 0;
   // One labelled field of the edit form, as Design's text input, text area and select are built.
   function field(labelText, control, select) {
@@ -556,7 +586,7 @@
     for (const c of lines) ul.appendChild(computedRow(c));
     return [ul];
   }
-  // The To do tab: a new row's form while one is open, the groups, then Done.
+  // The To do tab: a new row's form while one is open, the groups, then Done today.
   function listParts() {
     const rows = grouped();
     const parts = [];
@@ -569,12 +599,7 @@
       parts.push(el('h3', 'scheduler-to-do__group', g), ul);
     }
     const done = stored.filter(r => r.closed_at);
-    if (done.length) {
-      const ul = el('ul', 'rux--accordion rux--accordion--end scheduler-to-do__rows');
-      ul.setAttribute('role', 'list');
-      for (const r of done) ul.appendChild(storedRow(r, true));
-      parts.push(el('h3', 'scheduler-to-do__group', 'Done'), ul);
-    }
+    if (done.length) parts.push(doneGroup(done));
     if (!parts.length && editingId !== NEW) parts.push(el('p', 'scheduler-to-do__none', 'Nothing to do.'));
     if (editingId === NEW) {
       const ul = el('ul', 'scheduler-to-do__rows');
@@ -599,14 +624,20 @@
   // -- behaviour ------------------------------------------------------------
   /* One row open at a time: Design's accordion leaves every opened item
      open, so opening one shuts the rest, and the open row is remembered, as
-     a redraw builds the list again. */
+     a redraw builds the list again. Done today is not a row: it opens and
+     shuts by itself, around whichever row is open, and is remembered too. */
+  const isDone = item => item.classList.contains('scheduler-to-do__done-item');
   list.addEventListener('rux:accordion-opened', e => {
+    if (isDone(e.target)) { doneOpen = true; return; }
     openId = e.target.dataset?.id || null;
-    for (const item of list.querySelectorAll('.rux--accordion__item--active')) {
+    for (const item of list.querySelectorAll('.scheduler-to-do__item.rux--accordion__item--active')) {
       if (item !== e.target) window.Rux.accordion?.close(item);
     }
   });
-  list.addEventListener('rux:accordion-closed', e => { if (e.target.dataset?.id === openId) openId = null; });
+  list.addEventListener('rux:accordion-closed', e => {
+    if (isDone(e.target)) { doneOpen = false; return; }
+    if (e.target.dataset?.id === openId) openId = null;
+  });
   addButton.addEventListener('click', () => {
     editingId = NEW;
     openId = null;
@@ -639,7 +670,7 @@
      again, since a tab left open all morning is hours behind. */
   panel.inert = true;
   panel.addEventListener('rux:header-panel-opened', () => { panel.inert = false; loadStored(); loadTrips(); });
-  panel.addEventListener('rux:header-panel-closed', () => { panel.inert = true; editingId = null; openId = null; show('list', false); });
+  panel.addEventListener('rux:header-panel-closed', () => { panel.inert = true; editingId = null; openId = null; doneOpen = false; show('list', false); });
 
   let channel = null;
   function listen() {

@@ -20,20 +20,24 @@ full words and its actions.
 - **The tag is the row's first line, and the name leads the words in bold,**
   so the kinds line up down the list and can be read without the rest.
 - **A closed row is three lines and no more:** the tag, the name and words on
-  one line, and one quiet line of the trip, the detail's first line, the due
-  day and Email. What does not fit ends in an ellipsis, so every row is the
-  same size.
+  one line, and one quiet line of the trip, the detail's first line and the
+  due day. What does not fit ends in an ellipsis, so every row is the same
+  size.
 - **A press on a row opens it in place,** to its words in full, every line of
   its detail, and who added it and when. A press on the open row, or on
   another, shuts it. It never opens on hover, because a phone has none.
-- **An open row holds its actions:** Done, then Edit, then Delete apart at the
-  end in the danger colour, so the one used most is first and the one that
-  cannot be taken back is away from it. On a row ticked today, Undo stands
-  where Done does.
+- **An open row holds one row of buttons:** Done, Email and Trip in words,
+  then a menu at its end with Edit and Delete, Delete in the danger colour,
+  because five buttons in words are wider than the row on most themes. On a
+  row ticked today, Undo stands where Done does.
+- **Email opens the row's thread in a new tab, and Trip opens its trip on the
+  board,** as the row's two links do now.
+- **A button a row cannot use is disabled, not left out,** so every open row
+  has the same buttons in the same places.
 - **The tick box, the pencil and the face leave the row,** because the open
   row does what the first two did and says what the third showed.
-- **The trip and Email are links in a closed row too,** so the email stays
-  one press away.
+- **A closed row has no link in it,** so the whole row is one press and the
+  trip's name on its quiet line is words.
 - **A row with no kind carries the tag To do, in Design's outline tag,** so a
   row a person types is the same size as the rest. A kind the panel does not
   know is drawn the same way, as its own word.
@@ -81,8 +85,9 @@ None open.
       opens from the one that fits; write its rules under `scheduler-to-do__`
       in `scheduler/app.css` only where neither does.
 - [ ] Draw a stored row in `scheduler/to-do-list.js` closed in three lines
-      and open in full, with Done, Edit and Delete in the open row, and take
-      the tick box, the pencil and the face out.
+      and open in full, with Done, Email, Trip and a menu of Edit and Delete
+      in the open row, and take the tick box, the pencil, the face and the
+      row's links out.
 - [ ] Add Kind, Who and Detail to the row's edit form.
 - [ ] Give `add_to_do`, `change_to_do` and `list_to_dos` the three fields in
       `scheduler/connector/index.ts`, each description saying what the field
@@ -95,4 +100,6 @@ None open.
 - [ ] Check in Chrome on :8641, on a dark theme and a light one and at 402
       wide: a row of each kind, a typed row under To do, a long row cut with
       an ellipsis, a row opened and shut by press and by keyboard, Done and
-      Undo, and an Edit's save read back from `to_dos`.
+      Undo, Email and Trip each disabled on a row with none, the button row
+      inside the row's width on every theme, and an Edit's save read back
+      from `to_dos`.

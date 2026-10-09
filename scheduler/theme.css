@@ -607,6 +607,12 @@
   --scheduler-avail-fill: oklch(27% 0.07 75);
   --scheduler-avail-edge: oklch(81.87% 0.1584 76.5);
 }
+/* g90's panel is lighter than g100's, so a rest under 10 hours takes the
+   warning at 32% there, where the primary text holds 5.2 to 1 as it does in
+   g100, and not the 40% every other theme starts from, where it fell to 4.4. */
+[data-theme="g90"] .scheduler-avail__cell--tight {
+  --scheduler-avail-fill: color-mix(in srgb, var(--rux-support-warning) 32%, transparent);
+}
 
 /* The roster's column header and its priority headings are one band drawn
    twice. Carbon separates a header from its rows with a change of surface, so

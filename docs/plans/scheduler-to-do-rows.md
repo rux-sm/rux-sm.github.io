@@ -79,4 +79,3 @@ None open.
 
 - [ ] Deploy the connector from the command a session hands rux, then read
       a row's kind, who and detail back through `list_to_dos`.
-- [ ] Rewrite each open agent row into the four parts.

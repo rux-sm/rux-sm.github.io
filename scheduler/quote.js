@@ -779,8 +779,9 @@
         { id: 'fuel-miles', key: 'miles', label: 'Offer over (mi)' },
         { id: 'fuel-days', key: 'days', label: 'Offer over (days)' },
       ],
+      // Its id is not the group's, which the box around the field already has.
       'dead-miles': [
-        { id: 'dead-miles', key: 'miles', label: 'Offer the discount over (mi)', placeholder: 'Never' },
+        { id: 'dead-over', key: 'miles', label: 'Offer the discount over (mi)', placeholder: 'Never' },
       ],
     };
     const drawTrips = () => {
@@ -811,7 +812,7 @@
         ?? take('route-times-v1', 'drive_slowdown_percent', whole('slow', 'Bus slower than the map', { max: 100 }))
         ?? take('fuel-card-v1', 'miles', whole('fuel-miles', 'Fuel card miles', { min: 1 }))
         ?? take('fuel-card-v1', 'days', whole('fuel-days', 'Fuel card days', { min: 1 }))
-        ?? take('dead-miles-v1', 'miles', whole('dead-miles', 'Dead miles', { min: 1, blank: true }));
+        ?? take('dead-miles-v1', 'miles', whole('dead-over', 'Dead miles', { min: 1, blank: true }));
       if (problem) return { problem };
       // A month keeps its rate only while that rate is still in the list.
       const months = {};
@@ -873,9 +874,9 @@
         for (const { key, value } of kept.rows) office[key] = value;
         for (const { key, value } of named) rates[key] = value;
         mileage = list.sort((a, b) => a.rate - b.rate);
-        const kept = savePreview();
+        const stored = savePreview();
         drawRates();
-        return showResult('success', kept
+        return showResult('success', stored
           ? 'Kept in this browser tab for the calculator. Nothing was saved.'
           : 'Applied to this page only. Nothing was saved.');
       }

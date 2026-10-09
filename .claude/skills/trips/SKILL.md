@@ -202,6 +202,7 @@ reads only the ones before it. Nothing is written until step 10.
   name or by its street address however the street is written, and the
   map's copy of the same address is not listed beside it. A hotel not found by name is
   found by its street address, with the Name field set to the hotel.
+- A street address typed alone lists the same street in other towns first: type the town and ZIP after it. The right one may name a colonia where the customer names the town, and a place the map has no name for is named in the Name field that shows once it is picked.
 - Set a time input with `form_input` as `HH:MM`, and read the dialog back before Done.
 - A stop's "The wait counts as" is a plain select: set it with `form_input` as `on`, `off` or `sleeper`, because a click shows no menu in a screenshot.
 - Done in a quote line's window keeps whatever its Cost field holds as a typed cost, so a rental opened to change its Mileage rate stops following the route: clear the Cost before Done, or afterwards choose Use calculator price from the line's menu, which is offered only when the two figures differ, and read the line back.

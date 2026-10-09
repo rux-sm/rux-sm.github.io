@@ -9376,6 +9376,8 @@
       // Weekend letters dim, as the board's day header does; the day rules are
       // drawn in the body only.
       if (isWeekend(d)) cell.classList.add('scheduler-avail__day--weekend');
+      // Today is marked on its letter, as on the board's header.
+      if (iso(d) === iso(new Date())) { cell.classList.add('scheduler-avail__day--today'); cell.setAttribute('aria-current', 'date'); }
       cell.dataset.day = String(i);
       head.appendChild(cell);
     }
@@ -9480,7 +9482,7 @@
   }
 
   /* Tints the selected trip's days down the roster, so "who is free then" needs
-     no counting; null clears it. Busy and day-off cells paint over the tint in
+     no counting; null clears it. Busy and day-off cells take no tint in
      app.css, so it shows on the free cells, which are the answer. */
   function markAvailDays(start, span) {
     for (const c of availGrid.querySelectorAll('.scheduler-avail__cell--on-day, .scheduler-avail__day--on-day')) {

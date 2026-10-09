@@ -2505,6 +2505,15 @@ button.scheduler-row-head__num::after {
   padding-inline: 0;
   text-align: center;
 }
+/* The selected trip's days head their band in its tint, in primary text, and
+   today's letter takes the colour the board's own today does. Two classes, to
+   beat the header row's surface and colour; today comes second, so a selected
+   today stays in its colour. */
+.scheduler-avail__days > .scheduler-avail__day--on-day {
+  background: var(--scheduler-avail-day, var(--rux-layer-selected));
+  color: var(--rux-text-primary);
+}
+.scheduler-avail__days > .scheduler-avail__day--today { color: var(--rux-link-primary-hover); }
 /* The roster's corner, sticky in both axes. */
 .scheduler-avail__day--head {
   position: sticky;
@@ -2518,8 +2527,8 @@ button.scheduler-row-head__num::after {
   text-align: start;
 }
 
-/* The three states. Free is the one being looked for, so it is empty; busy
-   and off are Carbon's tag tints, the palette the trip bar uses. A mark is a
+/* The two marks. Free is the one being looked for, so it is empty; busy and
+   off are Carbon's tag tints, the palette the trip bar uses. A mark is a
    pseudo-element 2px inside its cell's rules, so it sits within its cell
    rather than filling it, and takes the theme's mark radius and an edge where
    the theme draws one. Its fill and edge are the two properties below, which
@@ -2534,12 +2543,18 @@ button.scheduler-row-head__num::after {
    enters the header row. It is the board's day rule, at the same half
    strength, so a driver reads as one row as a bus does beside it. */
 .scheduler-avail__cell { border-inline-start: 1px solid var(--scheduler-day-rule); }
-.scheduler-avail__cell--on-day,
+/* A FREE DAY OF THE SELECTED TRIP fills its whole cell, edge to edge, so it is
+   not taken for a mark: drivers free that day read as one band down the
+   column, and a trip over several days as one band across them. The tint is
+   `--rux-layer-selected`, Carbon's selected-surface token, unless the theme
+   names another. A booked or day-off cell takes none, which is what the
+   `transparent` below is for, so nothing rims its mark. */
+.scheduler-avail__cell--on-day { background-color: var(--scheduler-avail-day, var(--rux-layer-selected)); }
 .scheduler-avail__cell--busy,
 .scheduler-avail__cell--off {
   position: relative;
+  background-color: transparent;
 }
-.scheduler-avail__cell--on-day::after,
 .scheduler-avail__cell--busy::after,
 .scheduler-avail__cell--off::after {
   content: '';
@@ -2549,10 +2564,6 @@ button.scheduler-row-head__num::after {
   border-radius: var(--scheduler-mark-radius, 0);
   background: var(--scheduler-avail-fill);
 }
-/* The selected trip's days tint the free cells with `--rux-layer-selected`,
-   Carbon's selected-surface token. `--busy` and `--off` come after `--on-day`,
-   so a booked or day-off cell keeps its tag colour. */
-.scheduler-avail__cell--on-day { --scheduler-avail-fill: var(--rux-layer-selected); }
 .scheduler-avail__cell--busy {
   --scheduler-avail-fill: var(--rux-tag-background-blue);
   color: var(--rux-tag-color-blue);

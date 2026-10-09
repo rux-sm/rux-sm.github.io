@@ -590,11 +590,10 @@
 }
 /* The roster's busy and day-off marks are the same badges as the bars, blue
    and red, with a 1px edge in the badge's text colour so a run of busy days
-   still reads at a glance on the black grid. A free day of the selected trip is
-   Geist's grey subtle badge, with no edge, so it stays quieter than a booked
-   one. The busy and day-off rules come after the selected one, so a booked day
-   keeps its colour. */
-[data-theme="geist-dark"] .scheduler-avail__cell--on-day { --scheduler-avail-fill: oklch(27% 0 0); }
+   still reads at a glance on the black grid. A free day of the selected trip
+   fills its cell with the grey of Geist's subtle badge, quieter than a booked
+   one. */
+[data-theme="geist-dark"] { --scheduler-avail-day: oklch(27% 0 0); }
 [data-theme="geist-dark"] .scheduler-avail__cell--busy {
   --scheduler-avail-fill: oklch(27% 0.1054 255.8);
   --scheduler-avail-edge: oklch(71.7% 0.1648 250.794);

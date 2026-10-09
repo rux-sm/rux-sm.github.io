@@ -35,7 +35,12 @@ saves nothing itself.
   marked TBD, two endings that hang on a result, a place with no address.
   The note is the notice at the top of the editor, as a draft's is.
 - **A PO answers** its number, its date, its amount, and the buses and days
-  it names.
+  it names. **A contract answers** whether it is signed, by whom and when,
+  which is what marking Contract signed needs.
+- **A file is sent to the API only when someone presses its Read,** and rux
+  has agreed that a customer's itinerary, PO or contract may be.
+- **A reading into a route that has stops asks first, then replaces them,**
+  because a newer itinerary is the whole route again; Reset takes it back.
 - **A disagreement is said, not fixed.** Where the paper's bus count, days or
   amount differ from the trip's, Billing warns with both figures, and the
   office decides which is right.
@@ -62,12 +67,6 @@ saves nothing itself.
 
 ## Questions
 
-- May a customer's itinerary, PO or contract be sent to Anthropic's API to be
-  read? They hold names and phone numbers.
-- When a trip already has stops and a newer itinerary comes in, does a
-  reading replace them after asking, or only ever fill an empty route?
-- What is read from a contract: only that it is signed, by whom and when, or
-  its price and days too?
 - Which Claude Console organization takes the plan's API credits? The link
   is rux's to make and cannot be changed without Anthropic's support.
 
@@ -92,6 +91,9 @@ saves nothing itself.
 - [ ] Offer the reading in Billing for a PO, fill the purchase order's
       number, date and amount marked to check, and warn where the paper and
       the trip disagree.
+- [ ] Offer the reading in Billing for a contract, and turn Contract signed
+      on with who signed and when in its note, marked to check.
+- [ ] Ask before a reading replaces a route's stops.
 - [ ] Say why where a file cannot be read: not a PDF, over the limits, or an
       answer the API declined.
 - [ ] Write the reader into `scheduler/docs/database-inventory.md` beside the

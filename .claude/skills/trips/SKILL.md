@@ -200,6 +200,8 @@ reads only the ones before it. Nothing is written until step 10.
 - A click by `ref` on a tab that is not showing does nothing: take a screenshot to see which tab is open before pressing a button on it.
 - `draft_trip_change` refuses `stops`, which are drafted only on a new trip: on a placeholder add each stop with the Route tab's Add stop.
 - The Route tab redraws its list as each drive is measured, so a `ref` read before a stop's Done is gone after it: scroll the tab to its end and press Add stop from a fresh screenshot.
+- A vehicle comes off a trip from its tile's own menu, a right-click on the tile, then Remove, which asks first: pressing the tile opens its window, which has no remove.
+- Add the bus rental on a trip that already has a quoted price keeps that price, spread over the buses now on it: after the bus count changes, open the line and type the Cost for one bus that the PO or the quote sent gives.
 
 ## When rux teaches something new
 

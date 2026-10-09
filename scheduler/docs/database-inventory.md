@@ -101,7 +101,7 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 | `trip_driver_confirmations` | legacy | superseded by `trip_driver_statuses`; still written by the confirm and decline RPCs |
 | `driver_schedule_shares` | driver editor, `../rux-ui/driver.html` | `token`, `driver_id`, `trip_legs` jsonb, `range_start`, `range_end`, `expires_at`, `revoked_at`. RPC only. |
 | `trip_drafts` | Claude connector, trip editor `?draft=` | `author` to `auth.users`, cascade; `trip_id` to `trips`, cascade and null for a new trip; `fields` jsonb, `notes`, `expires_at`. Only the author reads it, only while staff, only before it expires; a nightly job deletes the rest. |
-| `to_dos` | the header's To do panel on every page, which reads the open rows and the ones closed today, adds, edits, ticks and deletes them | `body`; `source` (person, agent); `created_by`, `session_of`, `owner_id` and `closed_by` to `profiles`, set null; `due_on`; `trip_id` to `trips`, cascade; `thread_url`, `thread_key`, one open row per key; `closed_at`, `closed_reason`. Staff only, broadcast on realtime. `to_dos_stamp` sets who made a row and who closed it, an agent row as Ruxbot with the signed-in person in `session_of`, and refuses an agent's close on a row a person wrote. |
+| `to_dos` | the header's To do panel on every page, which reads the open rows and the ones closed today, adds, edits, closes and deletes them | `kind`, a lower-case name the panel gives words and a colour, `who` it is about, `body`, what to do, and `detail`, its further lines, the first three empty on a row that has none; `source` (person, agent); `created_by`, `session_of`, `owner_id` and `closed_by` to `profiles`, set null; `due_on`; `trip_id` to `trips`, cascade; `thread_url`, `thread_key`, one open row per key; `closed_at`, `closed_reason`. Staff only, broadcast on realtime. `to_dos_stamp` sets who made a row and who closed it, an agent row as Ruxbot with the signed-in person in `session_of`, and refuses an agent's close on a row a person wrote. |
 | `trip_prep` | the Departures panel, and the Contact list, which marks it after Driver info on a yes and takes it back | one row a trip, `trip_id` to `trips`, cascade; `driver_info_sent` with `driver_info_sent_at` and `_by`, which `trip_prep_stamp` sets. Kept off `trips` so marking it does not move `updated_at` under an open editor. Staff only, broadcast on realtime. |
 | `maintenance_schedule_shares` | this app's maintenance pages, `../rux-ui/maintenance.html` | one row, `scope = 'main'`, `token`, `revoked_at`. RPC only. |
 | `settings` | Settings view | key-value, `value` jsonb. Yard, locations, requirements, billing defaults and `vehicle-types-v1`, the office's vehicle types as `{ name, label?, icon }`, live here, with the Settings page's `rate-calendar-v1` (`{ months }`, a month's number to the id of the mileage rate it starts from), `route-times-v1`, `fuel-card-v1` (`{ miles, days }`) and `dead-miles-v1` (`{ miles }`, null for no offer). |
@@ -120,9 +120,9 @@ Trigger functions `set_bus_ref`, `set_driver_ref`, `set_trip_ref`, `touch_trips_
 `touch_updated_at` and `trip_itineraries_touch` run on their own, and so do
 `trips_clear_done` and `trip_rows_clear_done`, which take a tab's Done off
 `trips` when its dates, bus counts, needs or price change, or its stops,
-buses or quote lines do. `to_dos_record_history` writes a tick on a to-do
-row with a trip, and its Undo, into `trip_history` as an Updated entry with
-one To do line. The RPCs a screen calls:
+buses or quote lines do. `to_dos_record_history` writes a to-do row's Done, and its
+Undo, when the row has a trip, into `trip_history` as an Updated entry with
+one To do line, who the row is about ahead of its words. The RPCs a screen calls:
 
 | Area | Functions |
 |---|---|
@@ -222,7 +222,9 @@ any it cannot place. The editor's Save stays the only writer of a trip.
 from the trips, which `get_trip`'s warnings say. `add_to_do` adds a row as an
 agent's, which the database makes Ruxbot's with the signed-in person beside
 it; given a thread's key it changes the open row for that thread instead of
-adding a second. `change_to_do` and `close_to_do` take only a row an agent
+adding a second. A row is written in four parts, its kind, one of the seven
+names in the function's `TO_DO_KINDS`, who it is about, what to do, and its
+detail, whose lines the function trims. `change_to_do` and `close_to_do` take only a row an agent
 made, still open; a close names Ruxbot and carries its reason. An owner is
 given by a staff member's name.
 

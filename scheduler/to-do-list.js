@@ -5,10 +5,18 @@
    them. The list is three kinds of row in one:
 
      Computed  worked out here from the trips by to-do.js, never stored. It
-               has no tick: it asks while it is true and opens its trip.
-     Written   a `to_dos` row a person typed. A tick closes it.
+               is never done by hand: it asks while it is true and opens its
+               trip.
+     Written   a `to_dos` row a person typed.
      Agent     a `to_dos` row a Claude session added through the connector,
-               made by Ruxbot. A tick closes it, as the session may.
+               made by Ruxbot.
+
+   A stored row is an item of Design's accordion. Closed, it is three lines of
+   one size: a tag for its kind, who it is about in bold ahead of its words,
+   and a quiet line of its trip, its detail's first line and its due day. A
+   press opens it to those in full, the rest of its detail and who added it,
+   over one row of buttons: Done, Email and Trip, and a menu of Edit and
+   Delete. One row is open at a time.
 
    Rows are grouped Overdue, Today, This week, Later and No date, then Done:
    a row closed today, struck through, with Undo. A computed row is in Today
@@ -24,7 +32,8 @@
    row, or to a trip, arrives on the `scheduler-to-do` channel and redraws.
 
    Needs billing.js, follow-up.js, checklist.js, requirements.js, leg-facts.js
-   and to-do.js loaded first, and /account.js for the client.
+   and to-do.js loaded first, /account.js for the client, and Design's
+   accordion.js and menu.js, which open a row and its menu.
    ========================================================================== */
 (() => {
   'use strict';
@@ -39,6 +48,22 @@
 
   const VIEW_KEY = 'scheduler-to-do-view';
   const GROUPS = ['Overdue', 'Today', 'This week', 'Later', 'No date'];
+  const MENU_ID = 'scheduler-to-do-menu';
+  /* The kinds of work a row can be: each one's words on its tag and the tag's
+     colour. A row with no kind reads To do, and a kind not listed here reads
+     as its own word, both in the outline tag. The connector's `TO_DO_KINDS`
+     repeats the names. */
+  const KINDS = new Map([
+    ['quote', ['New quote', 'rux--tag--blue']],
+    ['itinerary', ['Itinerary', 'rux--tag--purple']],
+    ['po', ['PO', 'rux--tag--green']],
+    ['change', ['Change', 'rux--tag--magenta']],
+    ['respond', ['Respond', 'rux--tag--teal']],
+    ['form', ['Form', 'rux--tag--cyan']],
+    ['invoice', ['Invoice', 'rux--tag--gray']],
+  ]);
+  const kindOf = row => KINDS.get(row.kind)
+    ?? [row.kind ? row.kind.charAt(0).toUpperCase() + row.kind.slice(1).replaceAll('-', ' ') : 'To do', 'rux--tag--outline'];
   // The tables a computed row is read from; a change to one reads the trips again.
   const TRIP_TABLES = ['trips', 'trip_assignments', 'trip_drivers', 'trip_stops', 'trip_updates', 'trip_documents', 'trip_payments', 'trip_pos'];
 
@@ -80,6 +105,7 @@
   let computed = [];        // to-do.js's rows, unfolded
   let trips = new Map();    // id -> trip, for a stored row's trip and the Trip choice
   let editingId = null;     // the stored row whose form is open
+  let openId = null;        // the stored row that is open, one at a time
   let failure = '';
   let mine = true;
   try { mine = localStorage.getItem(VIEW_KEY) !== 'everyone'; } catch { /* Mine */ }
@@ -139,7 +165,7 @@
   }
 
   async function readStaff() {
-    const rows = await client.from('profiles').select('id,user_id,display_name,photo_path,avatar_color').then(unwrap);
+    const rows = await client.from('profiles').select('id,user_id,display_name').then(unwrap);
     staff = new Map(rows.map(p => [p.id, p]));
   }
 
@@ -218,26 +244,28 @@
   }
 
   // -- drawing --------------------------------------------------------------
-  const face = profile => {
-    if (!profile) return null;
-    const f = el('span', 'rux--user-avatar rux--user-avatar--sm scheduler-to-do__face');
-    account.drawAvatar?.(f, { id: profile.id, name: profile.display_name, photoPath: profile.photo_path, colour: profile.avatar_color }, 'sm');
-    f.title = profile.display_name || '';
-    f.setAttribute('role', 'img');
-    f.setAttribute('aria-label', profile.display_name || 'Someone');
-    return f;
-  };
   // Dots between the parts of a row's quiet line.
   const meta = parts => {
     const p = el('p', 'scheduler-to-do__meta');
     parts.filter(Boolean).forEach((part, i) => { if (i) p.append(DOT); p.append(part); });
     return p.childNodes.length ? p : null;
   };
-  const tripLink = (trip, day) => {
-    // The list's own link, inline so a long name wraps with the line it is in.
-    const a = el('a', 'scheduler-to-do__link', tripWords(trip));
-    a.href = tripHref(trip, day);
-    return a;
+  /* A stored row's tag: its kind's words in its kind's colour. It is a div,
+     as Carbon's tag is, because Design's outline tag is not drawn on a span. */
+  const kindTag = row => {
+    const [words, tone] = kindOf(row);
+    const t = el('div', `rux--tag ${tone} rux--tag--sm rux--layout--size-sm scheduler-to-do__tag`);
+    t.appendChild(el('span', 'rux--tag__label', words));
+    return t;
+  };
+  // Whose a stored row is, then who added it and when, with the person a session added it for.
+  const madeBy = row => {
+    const owner = staff.get(row.owner_id)?.display_name;
+    const maker = staff.get(row.created_by)?.display_name;
+    const sessionOf = staff.get(row.session_of)?.display_name;
+    return [owner && owner !== maker ? `For ${owner}` : null,
+      maker ? `Added by ${maker}${sessionOf ? ` for ${sessionOf}` : ''}` : null,
+      row.created_at ? shortDay.format(new Date(row.created_at)) : null].filter(Boolean).join(DOT);
   };
 
   function computedRow(c) {
@@ -261,51 +289,88 @@
     return li;
   }
 
+  /* A stored row, as an item of Design's accordion, whose script opens and
+     shuts it. The heading is the closed row and the whole of it is the press;
+     the panel under it holds what a closed row has no room for, and the
+     buttons. A button the row cannot use is disabled and never left out, so
+     every open row has the same buttons in the same places. */
   function storedRow(row, done) {
-    const li = el('li', `scheduler-to-do__row${done ? ' scheduler-to-do__row--done' : ''}`);
-    const item = el('div', 'rux--form-item rux--checkbox-wrapper');
-    const box = el('input', 'rux--checkbox');
-    box.type = 'checkbox';
-    box.id = `scheduler-to-do-box-${row.id}`;
-    box.checked = !!done;
-    box.addEventListener('change', () => { box.disabled = true; tick(row, box.checked); });
-    const label = el('label', 'rux--checkbox-label');
-    label.htmlFor = box.id;
-    label.appendChild(el('div', 'rux--checkbox-label-text', row.body));
-    item.append(box, label);
-
+    const open = row.id === openId;
+    const li = el('li', `rux--accordion__item scheduler-to-do__item${done ? ' scheduler-to-do__item--done' : ''}${open ? ' rux--accordion__item--active' : ''}`);
+    li.dataset.id = row.id;
     const trip = row.trip_id ? trips.get(row.trip_id) : null;
-    const thread = row.thread_url ? Object.assign(el('a', 'scheduler-to-do__link', 'Email'), { href: row.thread_url, target: '_blank', rel: 'noopener' }) : null;
+    const lines = String(row.detail || '').split('\n').map(s => s.trim()).filter(Boolean);
     const today = iso(new Date());
     const due = done ? null : row.due_on && row.due_on !== today ? `Due ${dayWords(row.due_on)}` : null;
-    const closer = done ? staff.get(row.closed_by) : null;
-    const said = meta([
-      trip ? tripLink(trip) : null, due, thread,
-      done ? [closer?.display_name, row.closed_reason].filter(Boolean).join(': ') || null : null,
-    ]);
-    const text = el('div', 'scheduler-to-do__text');
-    text.append(item, said ?? '');
+    const added = madeBy(row);
 
-    // Whose it is; a row nobody owns that an agent made shows who made it.
-    const who = face(staff.get(row.owner_id) ?? (row.source === 'agent' ? staff.get(row.created_by) : null));
-    const edit = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm rux--btn--icon-only scheduler-to-do__edit');
-    edit.type = 'button';
-    edit.setAttribute('aria-label', `Edit: ${row.body}`);
-    edit.appendChild(svgUse('#m-edit'));
-    edit.addEventListener('click', () => { editingId = row.id; draw(); panel.querySelector('.scheduler-to-do__form input')?.focus(); });
-    const undo = button('rux--btn--ghost', 'Undo');
-    undo.addEventListener('click', () => { undo.disabled = true; tick(row, false); });
-    li.append(text, who ?? '', done ? undo : edit);
+    const heading = el('button', 'rux--accordion__heading');
+    heading.type = 'button';
+    heading.setAttribute('aria-expanded', String(open));
+    const arrow = svgUse('#m-keyboard_arrow_right');
+    arrow.classList.add('rux--accordion__arrow');
+    const title = el('div', 'rux--accordion__title');
+    const kind = el('div', 'scheduler-to-do__kind');
+    kind.appendChild(kindTag(row));
+    const what = el('span', 'scheduler-to-do__what scheduler-to-do__line');
+    if (row.who) what.append(el('span', 'scheduler-to-do__who', row.who), DOT);
+    what.append(row.body);
+    // The quiet line is never empty, or the row would be a line short: with
+    // no trip, detail or due day it says who added the row.
+    const said = [trip ? tripWords(trip) : null, lines[0], due].filter(Boolean);
+    const quiet = el('span', 'scheduler-to-do__meta scheduler-to-do__line', (said.length ? said : [added]).join(DOT));
+    title.append(kind, what, quiet);
+    heading.append(arrow, title);
+
+    const wrapper = el('div', 'rux--accordion__wrapper');
+    const more = el('div', 'rux--accordion__content scheduler-to-do__more');
+    more.id = `scheduler-to-do-more-${row.id}`;
+    heading.setAttribute('aria-controls', more.id);
+    for (const line of lines.slice(1)) more.appendChild(el('p', 'scheduler-to-do__meta', line));
+    const closed = done ? [staff.get(row.closed_by)?.display_name, row.closed_reason].filter(Boolean).join(': ') : '';
+    if (closed) more.appendChild(el('p', 'scheduler-to-do__meta', closed));
+    if (said.length && added) more.appendChild(el('p', 'scheduler-to-do__meta', added));
+
+    const act = button('rux--btn--primary', done ? 'Undo' : 'Done');
+    act.addEventListener('click', () => { act.disabled = true; openId = null; tick(row, !done); });
+    const email = button('rux--btn--ghost', 'Email');
+    email.disabled = !row.thread_url;
+    email.addEventListener('click', () => window.open(row.thread_url, '_blank', 'noopener'));
+    const toTrip = button('rux--btn--ghost', 'Trip');
+    toTrip.disabled = !trip;
+    toTrip.addEventListener('click', () => { location.href = tripHref(trip); });
+    // Edit and Delete are the menu's; a row ticked today has only Undo to take back.
+    const menuButton = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm rux--menu-button__trigger');
+    menuButton.type = 'button';
+    menuButton.disabled = !!done;
+    menuButton.setAttribute('aria-label', 'More');
+    menuButton.setAttribute('aria-haspopup', 'menu');
+    menuButton.setAttribute('data-rux-open', MENU_ID);
+    menuButton.appendChild(svgUse('#m-more_vert'));
+    const bar = el('div', 'scheduler-to-do__buttons');
+    bar.append(act, email, toTrip, el('span', 'scheduler-to-do__gap'), menuButton);
+    more.appendChild(bar);
+    wrapper.appendChild(more);
+    li.append(heading, wrapper);
     return li;
   }
 
   let fieldSeq = 0;
-  // One labelled field of the edit form, as Design's text input and select are built.
+  // One labelled field of the edit form, as Design's text input, text area and select are built.
   function field(labelText, control, select) {
     const id = `scheduler-to-do-f-${++fieldSeq}`;
     control.id = id;
     const label = el('label', 'rux--label', labelText);
     label.htmlFor = id;
+    if (control.tagName === 'TEXTAREA') {
+      const labelWrap = el('div', 'rux--text-area__label-wrapper');
+      labelWrap.appendChild(label);
+      const wrap = el('div', 'rux--text-area__wrapper');
+      wrap.appendChild(control);
+      const item = el('div', 'rux--form-item');
+      item.append(labelWrap, wrap);
+      return item;
+    }
     if (select) {
       const wrap = el('div', 'rux--select rux--layout--size-sm');
       const inner = el('div', 'rux--select-input__wrapper');
@@ -343,10 +408,22 @@
   function editForm(row) {
     const li = el('li', 'scheduler-to-do__row scheduler-to-do__row--editing');
     const form = el('form', 'scheduler-to-do__form rux--stack-vertical rux--stack-scale-4');
+    const kind = el('select', 'rux--select-input');
+    kind.append(option('', 'To do', !row.kind),
+      ...[...KINDS].map(([name, [text]]) => option(name, text, name === row.kind)),
+      ...(row.kind && !KINDS.has(row.kind) ? [option(row.kind, kindOf(row)[0], true)] : []));
+    const who = el('input', 'rux--text-input rux--layout--size-sm');
+    who.type = 'text';
+    who.value = row.who || '';
+    who.maxLength = 120;
     const words = el('input', 'rux--text-input rux--layout--size-sm');
     words.type = 'text';
     words.value = row.body;
     words.required = true;
+    const detail = el('textarea', 'rux--text-area');
+    detail.rows = 3;
+    detail.value = row.detail || '';
+    detail.maxLength = 1000;
     const due = el('input', 'rux--text-input rux--layout--size-sm');
     due.type = 'date';
     due.value = row.due_on || '';
@@ -367,17 +444,23 @@
     const save = button('rux--btn--primary', 'Save');
     save.type = 'submit';
     bar.append(del, el('span', 'scheduler-to-do__gap'), cancel, save);
-    form.append(field('To do', words), field('Due', due), field('Owner', owner, true), field('Trip', trip, true), bar);
+    form.append(field('Kind', kind, true), field('Who', who), field('To do', words), field('Detail', detail),
+      field('Due', due), field('Owner', owner, true), field('Trip', trip, true), bar);
 
     const shut = () => { editingId = null; draw(); };
     cancel.addEventListener('click', shut);
-    del.addEventListener('click', () => { editingId = null; remove(row); });
+    del.addEventListener('click', () => { editingId = null; openId = null; remove(row); });
     form.addEventListener('submit', e => {
       e.preventDefault();
       const body = words.value.trim();
       if (!body) { words.focus(); return; }
       editingId = null;
-      change(row, { body, due_on: due.value || null, owner_id: owner.value || null, trip_id: trip.value || null });
+      // An empty part is stored as none, which the table asks for; the detail keeps its lines and drops its blank ones.
+      change(row, {
+        kind: kind.value || null, who: who.value.trim() || null, body,
+        detail: detail.value.split('\n').map(s => s.trim()).filter(Boolean).join('\n') || null,
+        due_on: due.value || null, owner_id: owner.value || null, trip_id: trip.value || null,
+      });
     });
     form.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); shut(); } });
     li.appendChild(form);
@@ -419,6 +502,27 @@
   panel.setAttribute('aria-labelledby', title.id);
   panel.appendChild(body);
 
+  /* The open row's menu, one for the whole list: Design's menu, which its
+     script opens from the row's More button and shuts on a pick. It sits in
+     the body, since the panel moves and would carry a fixed menu with it. */
+  const menu = el('ul', 'rux--menu rux--menu--sm');
+  menu.id = MENU_ID;
+  menu.setAttribute('role', 'menu');
+  menu.setAttribute('aria-label', 'More');
+  menu.tabIndex = -1;
+  const menuItem = (text, danger, run) => {
+    const li = el('li', danger ? 'rux--menu-item rux--menu-item--danger' : 'rux--menu-item');
+    li.setAttribute('role', 'menuitem');
+    li.tabIndex = -1;
+    li.appendChild(el('div', 'rux--menu-item__label', text));
+    li.addEventListener('click', () => { const row = stored.find(r => r.id === openId); if (row) run(row); });
+    return li;
+  };
+  menu.append(
+    menuItem('Edit', false, row => { editingId = row.id; draw(); panel.querySelector('.scheduler-to-do__form input[required]')?.focus(); }),
+    menuItem('Delete', true, row => { openId = null; remove(row); }));
+  document.body.appendChild(menu);
+
   /* The list's first line: tomorrow's departures, how many are ready, and the
      way into departures-panel.js's view. It is one of Today's rows while a
      leg leaving tomorrow is not ready. */
@@ -453,7 +557,7 @@
     for (const g of GROUPS) {
       const items = rows.get(g);
       if (!items.length) continue;
-      const ul = el('ul', 'scheduler-to-do__rows');
+      const ul = el('ul', 'rux--accordion rux--accordion--end scheduler-to-do__rows');
       ul.setAttribute('role', 'list');
       for (const item of items) {
         ul.appendChild(item.computed ? computedRow(item.computed)
@@ -463,7 +567,7 @@
     }
     const done = stored.filter(r => r.closed_at && (!mine || isMine(r)));
     if (done.length) {
-      const ul = el('ul', 'scheduler-to-do__rows');
+      const ul = el('ul', 'rux--accordion rux--accordion--end scheduler-to-do__rows');
       ul.setAttribute('role', 'list');
       for (const r of done) ul.appendChild(storedRow(r, true));
       parts.push(el('h3', 'scheduler-to-do__group', 'Done'), ul);
@@ -474,22 +578,19 @@
     // A redraw somebody else's change caused would empty a form being typed in, so it waits for the form to shut.
     if (editingId && document.activeElement?.closest?.('.scheduler-to-do__form')) return;
     list.replaceChildren(...parts);
-    indent();
-  }
-
-  /* A row's quiet line starts where its words do. How far in that is belongs
-     to the theme's checkbox, so it is measured off the first one drawn and
-     handed to app.css, which falls back to Carbon's own distance. */
-  function indent() {
-    const words = list.querySelector('.rux--checkbox-label-text');
-    const box = words?.closest('.rux--checkbox-wrapper');
-    if (!words || !box || !box.getBoundingClientRect().width) return;
-    const start = words.getBoundingClientRect().left + (parseFloat(getComputedStyle(words).paddingInlineStart) || 0)
-      - box.getBoundingClientRect().left;
-    if (start > 0) list.style.setProperty('--scheduler-to-do-indent', `${Math.round(start)}px`);
   }
 
   // -- behaviour ------------------------------------------------------------
+  /* One row open at a time: Design's accordion leaves every opened item
+     open, so opening one shuts the rest, and the open row is remembered, as
+     a redraw builds the list again. */
+  list.addEventListener('rux:accordion-opened', e => {
+    openId = e.target.dataset?.id || null;
+    for (const item of list.querySelectorAll('.rux--accordion__item--active')) {
+      if (item !== e.target) window.Rux.accordion?.close(item);
+    }
+  });
+  list.addEventListener('rux:accordion-closed', e => { if (e.target.dataset?.id === openId) openId = null; });
   addForm.addEventListener('submit', e => {
     e.preventDefault();
     const words = addInput.value.trim();
@@ -509,8 +610,8 @@
      opens: nothing in it takes a Tab or is read. Opening reads the list
      again, since a tab left open all morning is hours behind. */
   panel.inert = true;
-  panel.addEventListener('rux:header-panel-opened', () => { panel.inert = false; indent(); loadStored(); loadTrips(); });
-  panel.addEventListener('rux:header-panel-closed', () => { panel.inert = true; editingId = null; });
+  panel.addEventListener('rux:header-panel-opened', () => { panel.inert = false; loadStored(); loadTrips(); });
+  panel.addEventListener('rux:header-panel-closed', () => { panel.inert = true; editingId = null; openId = null; });
 
   let channel = null;
   function listen() {

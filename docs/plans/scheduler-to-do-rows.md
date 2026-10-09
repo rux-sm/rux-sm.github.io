@@ -77,29 +77,6 @@ None open.
 
 ## Tasks
 
-- [ ] Try the three new columns on PGlite, nullable text with a length limit
-      each, then show rux the SQL for `to_dos`.
-- [ ] Read `to_dos_record_history`, and carry `who` into the line a tick
-      writes to a trip's history.
-- [ ] Read Design's accordion and expandable tile, and build the row that
-      opens from the one that fits; write its rules under `scheduler-to-do__`
-      in `scheduler/app.css` only where neither does.
-- [ ] Draw a stored row in `scheduler/to-do-list.js` closed in three lines
-      and open in full, with Done, Email, Trip and a menu of Edit and Delete
-      in the open row, and take the tick box, the pencil, the face and the
-      row's links out.
-- [ ] Add Kind, Who and Detail to the row's edit form.
-- [ ] Give `add_to_do`, `change_to_do` and `list_to_dos` the three fields in
-      `scheduler/connector/index.ts`, each description saying what the field
-      holds, and hand rux the deploy command.
-- [ ] Rewrite how a row is written in the `inbox-review` skill, and the To do
-      list in `scheduler/docs/screen-inventory.md`,
-      `scheduler/docs/database-inventory.md` and
-      `scheduler/docs/working-from-claude.md`.
-- [ ] Rewrite each open agent row into the four parts with `change_to_do`.
-- [ ] Check in Chrome on :8641, on a dark theme and a light one and at 402
-      wide: a row of each kind, a typed row under To do, a long row cut with
-      an ellipsis, a row opened and shut by press and by keyboard, Done and
-      Undo, Email and Trip each disabled on a row with none, the button row
-      inside the row's width on every theme, and an Edit's save read back
-      from `to_dos`.
+- [ ] Deploy the connector from the command a session hands rux, then read
+      a row's kind, who and detail back through `list_to_dos`.
+- [ ] Rewrite each open agent row into the four parts.

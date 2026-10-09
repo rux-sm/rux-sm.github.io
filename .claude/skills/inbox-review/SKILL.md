@@ -47,15 +47,15 @@ the end.
    answer. It is not one when the scheduler already says it by itself, such as
    a follow-up due or a leg short of a bus: read `get_trip`'s warnings first.
 7. **`list_to_dos`, with `include_closed`,** so a thread that already has an
-   open row is changed and not doubled, and one whose row was ticked is not
-   asked again. A row is a thread's when its `thread_url` ends in the
+   open row is changed and not doubled, and one whose row was marked Done is
+   not asked again. A row is a thread's when its `thread_url` ends in the
    thread's id. An open row whose thread has no mail since the row was made,
    and whose trip reads as it did, is left as it is.
-8. **Add the rows** with `add_to_do`, each in a few plain words as the office
-   would say them, naming the person and the trip. Give the trip's id when
-   there is one, the thread's id as its key, the thread's link, so the row
-   opens the email it came from, and a day: today when the trip leaves
-   tomorrow, tomorrow for the rest, none for a courtesy reply.
+8. **Add the rows** with `add_to_do`, each in its four parts (see Writing a
+   row). Give the trip's id when there is one, the thread's id as its key,
+   the thread's link, which the row's Email button opens, and a day: today
+   when the trip leaves tomorrow, tomorrow for the rest, none for a courtesy
+   reply.
 9. **Report.** The rows added, the urgent one first; anything odd found on
    the way, such as a request that looks like a trip already on the board;
    and what was not opened.
@@ -71,9 +71,33 @@ the end.
   delete.
 - Mail that is not about a trip or a request for a quote is ignored, with no
   row and no line in the report, because the list is for trips.
-- A thread whose row was ticked gets no new row unless mail has come in on
-  it since the tick, because the tick is the office saying that work is
-  done. A closed row gives when in `closed_at`.
+- A thread whose row was marked Done gets no new row unless mail has come in
+  on it since, because Done is the office saying that work is finished. A
+  closed row gives when in `closed_at`.
+
+## Writing a row
+
+A closed row is three lines of one size: a tag, a name and a few words, and
+one quiet line. Each part is short, and the rest shows when the row is
+opened.
+
+- **`kind`** is the work the email asks for, shown as the tag: `quote`, a
+  quote to send; `itinerary`, trips to enter or check from one; `po`, a PO
+  or a signed contract to record; `change`, a booked trip or its quote to
+  change; `respond`, a question to answer; `form`, a customer's form to fill
+  in; `invoice`, an invoice to send. A thread that asks two things takes the
+  kind of the one the office does first.
+- **`who`** is the person who wrote, by the name they sign with, or the
+  company when no person is named.
+- **`body`** is what the work is about, in a few words that fit one line:
+  the group and the place, such as "varsity cheer to Fort Worth". The kind
+  says the work and `who` the person, so neither is said again.
+- **`detail`** is short lines. The first is the days and any count, such as
+  "Jan 14 to 17, 2027 · 30 passengers", and shows on the closed row; the
+  place is left out when the row has a trip, whose name stands on that line.
+  The lines after it show when the row is opened: what the office needs to
+  know before it opens the email, one fact a line, and what the team's
+  comments say the work waits on.
 
 ## Reading Missive in Chrome
 

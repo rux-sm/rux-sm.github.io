@@ -77,9 +77,11 @@ Claude can read the office's To do list and add to it. Ask in plain words:
 - close the to-do about the PO, it arrived
 
 A row Claude adds shows in the list at once, for everyone, made by Ruxbot
-with your name kept beside it. Claude can change or close only the rows
+with your name kept beside it. It carries a tag for its kind of work, such
+as New quote, PO or Respond, then who it is about and what to do in a few
+words; press it for the rest, and for Done, Email and Trip. Claude can change or close only the rows
 Claude added. A row a person typed stays theirs: Claude says when it looks
-done and leaves the tick to them.
+done and leaves Done to them.
 
 Claude sees the rows people and Claude wrote. What the scheduler works out by
 itself, such as a follow-up due or a trip short of a bus, is not a row;

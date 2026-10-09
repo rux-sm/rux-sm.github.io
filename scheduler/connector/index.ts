@@ -74,7 +74,7 @@ const ISO_DATE = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'a date as YYYY-MM-DD')
 // A to-do row as a tool answers it: names in place of profile ids, and enough
 // of its trip to recognise it.
 const TO_DO_ROW = [
-  'id', 'body', 'source', 'due_on', 'thread_url', 'thread_key', 'created_at',
+  'id', 'kind', 'who', 'body', 'detail', 'source', 'due_on', 'thread_url', 'thread_key', 'created_at',
   'closed_at', 'closed_reason',
   'owner:owner_id(display_name)', 'made_by:created_by(display_name)',
   'for_session_of:session_of(display_name)', 'closed_by:closed_by(display_name)',
@@ -584,7 +584,7 @@ Deno.serve(
           {
             title: 'List the to-do rows',
             description:
-              'The rows stored in the office\'s To do list: what a person typed and what a review added. It does NOT list what the scheduler works out from the trips itself, such as a follow-up due or a trip short of a bus; read get_trip\'s warnings for those. Open rows by default.',
+              'The rows stored in the office\'s To do list: what a person typed and what a review added, each with its kind, who it is about, its words and its detail. It does NOT list what the scheduler works out from the trips itself, such as a follow-up due or a trip short of a bus; read get_trip\'s warnings for those. Open rows by default.',
             inputSchema: z.object({
               include_closed: z.boolean().default(false).describe('Also the rows already ticked or closed.'),
               trip_id: z.string().uuid().optional().describe('Only the rows about this trip.'),
@@ -602,8 +602,22 @@ Deno.serve(
           },
         )
 
+        // The kinds of work a row can be. `scheduler/to-do-list.js` holds each
+        // one's words and colour; this repeats the names, since a function
+        // cannot load a browser file.
+        const TO_DO_KINDS = ['quote', 'itinerary', 'po', 'change', 'respond', 'form', 'invoice'] as const
+        /** A row's detail with each line trimmed and its blank lines dropped, or null for none. */
+        const detailLines = (text: string) => text.split('\n').map((s) => s.trim()).filter(Boolean).join('\n') || null
+
         const toDoShape = {
-          body: z.string().min(1).max(500).describe('What has to be done, in a few plain words, as the office would say it.'),
+          kind: z.enum(TO_DO_KINDS).optional().describe(
+            'What kind of work it is, shown as a coloured tag: quote, a quote to send; itinerary, trips to enter or check from one; po, a PO or a signed contract to record; change, a booked trip or its quote to change; respond, a question to answer; form, a customer\'s form to fill in; invoice, an invoice to send.'),
+          who: z.string().min(1).max(120).optional().describe(
+            'Who it is about: the person, or the company when no person is named. The list shows it in bold ahead of the words.'),
+          body: z.string().min(1).max(500).describe(
+            'What to do, in a few words that fit one line: the group and the place, such as "cheer trip to Austin". The kind already says the work and who says the person, so leave both out.'),
+          detail: z.string().min(1).max(1000).optional().describe(
+            'A few short lines, split by line breaks. The first is the days and any count, such as "Jan 15 to 17, 2027 · 30 passengers", and shows on the closed row; leave the place out when the row has a trip, which names it. The rest show when the row is opened: one line of whatever else the office needs before it opens the email.'),
           due_on: ISO_DATE.optional().describe('The day it is due. Left out, the row has no date.'),
           owner: z.string().max(80).optional().describe('The staff member it is for, by name. Left out, it is anyone\'s.'),
           trip_id: z.string().uuid().optional().describe('The trip it is about.'),
@@ -616,12 +630,13 @@ Deno.serve(
           {
             title: 'Add a to-do row',
             description:
-              'Add a row to the office\'s To do list after a review. Before adding a row about a trip, read get_trip: if its warnings already say it, do not add it, because the scheduler shows that itself. With a thread_key, a second call for the same thread changes the open row it made rather than adding a copy.',
+              'Add a row to the office\'s To do list after a review, in four parts: its kind, who it is about, what to do in a few words, and its detail. A closed row shows three lines of one size, so each part stays short. Before adding a row about a trip, read get_trip: if its warnings already say it, do not add it, because the scheduler shows that itself. With a thread_key, a second call for the same thread changes the open row it made rather than adding a copy.',
             inputSchema: z.object(toDoShape),
           },
-          async ({ body, due_on, owner, trip_id, thread_url, thread_key }) => {
+          async ({ kind, who, body, detail, due_on, owner, trip_id, thread_url, thread_key }) => {
             const row: Record<string, unknown> = {
-              body, due_on: due_on ?? null, trip_id: trip_id ?? null,
+              kind: kind ?? null, who: who?.trim() || null, body, detail: detail ? detailLines(detail) : null,
+              due_on: due_on ?? null, trip_id: trip_id ?? null,
               thread_url: thread_url ?? null, thread_key: thread_key ?? null,
               owner_id: owner ? await ownerId(owner) : null,
             }
@@ -644,20 +659,26 @@ Deno.serve(
           {
             title: 'Change a to-do row',
             description:
-              'Change a row a review added: its words, its day, who it is for, its trip or its thread link. Only what you give is changed. A row a person wrote is refused.',
+              'Change a row a review added: its kind, who it is about, its words, its detail, its day, who it is for, its trip or its thread link. Only what you give is changed. A row a person wrote is refused.',
             inputSchema: z.object({
               id: z.string().uuid(),
+              kind: z.enum(TO_DO_KINDS).nullable().optional().describe('The kind of work, as add_to_do lists them, or null for none.'),
+              who: z.string().min(1).max(120).nullable().optional().describe('Who it is about, or null for nobody.'),
               body: toDoShape.body.optional(),
+              detail: z.string().min(1).max(1000).nullable().optional().describe('Its detail, as add_to_do describes it, or null for none.'),
               due_on: ISO_DATE.nullable().optional().describe('The day it is due, or null for no date.'),
               owner: z.string().max(80).nullable().optional().describe('The staff member it is for, by name, or null for anyone.'),
               trip_id: z.string().uuid().nullable().optional().describe('The trip it is about, or null for none.'),
               thread_url: z.string().url().max(500).nullable().optional(),
             }),
           },
-          async ({ id, body, due_on, owner, trip_id, thread_url }) => {
+          async ({ id, kind, who, body, detail, due_on, owner, trip_id, thread_url }) => {
             await agentRow(id)
             const patch: Record<string, unknown> = {}
+            if (kind !== undefined) patch.kind = kind
+            if (who !== undefined) patch.who = who?.trim() || null
             if (body !== undefined) patch.body = body
+            if (detail !== undefined) patch.detail = detail === null ? null : detailLines(detail)
             if (due_on !== undefined) patch.due_on = due_on
             if (owner !== undefined) patch.owner_id = owner === null ? null : await ownerId(owner)
             if (trip_id !== undefined) patch.trip_id = trip_id

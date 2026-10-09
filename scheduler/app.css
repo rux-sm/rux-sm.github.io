@@ -4388,8 +4388,9 @@ html:has(.scheduler-page[data-takeover]) {
 
 /* ══ The to-do list ═══════════════════════════════════════════════════════
    The header's To do panel, filled by to-do-list.js. The panel is Design's
-   header panel at the width a row needs, the whole screen's on a phone; the
-   row is this app's own, holding Design's checkbox, link, avatar and button. */
+   header panel at the width a row needs, the whole screen's on a phone. A
+   stored row is an item of Design's accordion, holding Design's tag, buttons
+   and menu; a computed row and the edit form are this app's own row. */
 .scheduler-to-do.rux--header-panel--expanded { inline-size: min(24rem, 100vw); }
 @media (max-width: 41.98rem) {
   .scheduler-to-do.rux--header-panel--expanded { inline-size: 100vw; }
@@ -4411,6 +4412,10 @@ html:has(.scheduler-page[data-takeover]) {
   line-height: 1.33333;
 }
 .scheduler-to-do__group:first-child { margin-block-start: 0; }
+/* The list is a cell of the panel's grid, which is as wide as its longest
+   line unless it may shrink; a closed row's line must end in an ellipsis
+   at the panel's edge instead. */
+.scheduler-to-do__list { min-inline-size: 0; }
 .scheduler-to-do__rows { list-style: none; margin: 0; padding: 0; }
 .scheduler-to-do__row {
   display: flex;
@@ -4420,20 +4425,20 @@ html:has(.scheduler-page[data-takeover]) {
   border-block-start: 1px solid var(--rux-border-subtle-01);
 }
 .scheduler-to-do__text { display: flex; flex-direction: column; flex: 1 1 auto; min-inline-size: 0; gap: var(--rux-spacing-01); }
-.scheduler-to-do__text .rux--form-item { margin: 0; }
-.scheduler-to-do__text .rux--checkbox-label-text { overflow-wrap: anywhere; }
 .scheduler-to-do__meta { margin: 0; color: var(--rux-text-secondary); font-size: 0.75rem; line-height: 1.33333; overflow-wrap: anywhere; }
-/* A link in a row's quiet line, to its trip or its email: the line's own size,
-   and inline, so it wraps as the words around it do. */
-.scheduler-to-do__link { color: var(--rux-link-primary); text-decoration: none; }
-.scheduler-to-do__link:hover { text-decoration: underline; }
-.scheduler-to-do__link:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
-/* Under the checkbox's words: as far in as the theme sets them, which
-   to-do-list.js measures, or Carbon's own 26px until it has. */
-.scheduler-to-do__text .rux--checkbox-wrapper + .scheduler-to-do__meta { padding-inline-start: var(--scheduler-to-do-indent, 1.625rem); }
-.scheduler-to-do__face { flex: none; margin-block-start: var(--rux-spacing-01); }
-.scheduler-to-do__edit { flex: none; margin-block: calc(-1 * var(--rux-spacing-02)); }
-.scheduler-to-do__row--done .rux--checkbox-label-text { color: var(--rux-text-secondary); text-decoration: line-through; }
+/* A stored row is an item of Design's accordion, and its heading is the closed
+   row: a tag, then its words and its quiet line, each kept to one line and
+   ended in an ellipsis, so every closed row is the same size. Open, the two
+   lines wrap to say all they hold. */
+.scheduler-to-do__kind { margin-block-end: var(--rux-spacing-02); line-height: 0; }
+.scheduler-to-do__tag { margin: 0; }
+.scheduler-to-do__line { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rux--accordion__item--active .scheduler-to-do__line { overflow: visible; overflow-wrap: anywhere; white-space: normal; }
+.scheduler-to-do__who { font-weight: 600; }
+.scheduler-to-do__item--done .scheduler-to-do__what { color: var(--rux-text-secondary); text-decoration: line-through; }
+/* The open row: the rest of its quiet lines, then its buttons a step under them. */
+.scheduler-to-do__more { display: flex; flex-direction: column; gap: var(--rux-spacing-01); }
+.scheduler-to-do__more .scheduler-to-do__buttons { margin-block-start: var(--rux-spacing-03); }
 /* A computed row is one link to its trip: a mark where a tick would be, its
    words, then the trip under them. */
 .scheduler-to-do__open {

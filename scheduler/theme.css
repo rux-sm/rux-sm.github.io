@@ -726,9 +726,7 @@
 [data-theme^="apple-"] .scheduler-viewer__toolbar > .scheduler-print__pick:hover {
   background-color: var(--rux-button-secondary-hover);
 }
-/* The tick's capsule keeps the same room either side of it, and the line of
-   text ends on the gap, having no edge to stand off. */
-[data-theme^="apple-"] .scheduler-viewer__toolbar > .scheduler-print__cell--check { padding-inline: var(--rux-spacing-04); }
+/* The line of text ends on the gap, having no edge to stand off. */
 [data-theme^="apple-"] .scheduler-viewer__toolbar > .scheduler-viewer__uploaded { padding-inline: var(--rux-spacing-03) 0; }
 /* A button that fills its bar edge to edge is that bar's edge, so it stays
    square under Design's capsule rule: on a phone the toolbar and the roster's

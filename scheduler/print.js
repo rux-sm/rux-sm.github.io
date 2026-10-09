@@ -3065,8 +3065,8 @@
      the page already read, so the tick it draws is what the database says.
 
      A copy with no row to write on -- a blank form, a leg with nobody in a
-     seat -- has no tick, and the toolbar leaves it out. So does a copy the
-     form's `unless` rules out, whose tick is kept somewhere else. */
+     seat -- has no tick, and is not asked about. Nor is a copy the form's
+     `unless` rules out, whose tick is kept somewhere else. */
   function markOf(form, copy, layout) {
     const marks = form?.marks;
     if (!marks || !copy || (marks.layout && layout !== marks.layout) || marks.unless?.(copy.trip)) return null;
@@ -3081,9 +3081,9 @@
 
   /* The tick, written on each row. It shows at once and goes back to what the
      rows said if the write fails, rather than showing a driver as handed
-     something the database never heard about. `sync` is how the box in this
-     page's bar follows the rows. */
-  async function markPrinted(mark, want, sync) {
+     something the database never heard about. `sync` is how a box that shows
+     the tick follows the rows, where there is one. */
+  async function markPrinted(mark, want, sync = () => {}) {
     const { table, rows, column } = mark;
     const was = rows.map(row => Boolean(row[column]));
     rows.forEach(row => { row[column] = want; });
@@ -3100,7 +3100,13 @@
      out from a dialog that was cancelled, so nothing is marked by printing;
      the person who knows is asked, by name: "Mark Maria's envelope as
      printed?" Yes writes the tick, and the time and whose it was with it; No
-     writes nothing. Rows already marked are not asked about again. */
+     writes nothing. Rows already marked are not asked about again. The
+     question is the one place a form is marked, so no bar carries a box for
+     it.
+
+     FRAMED IN THE BOARD, THE BOARD ASKS IT, in the dialog it asks about a
+     customer's itinerary and a reminder in, so a print is asked about one
+     way whatever was printed. Standing alone, the page asks in its own. */
   const markModal = document.getElementById('scheduler-print-mark-modal');
   const markHeading = document.getElementById('scheduler-print-mark-h');
   const markCardRow = document.getElementById('scheduler-print-mark-card-row');
@@ -3110,12 +3116,16 @@
     const names = rows.map(row => nameOf(row)).filter(Boolean);
     return names.length < 3 ? names.join(' and ') : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`;
   };
-  const followBox = () => {
-    const box = document.getElementById('scheduler-print-marked');
-    const shown = current ? markOf(current.form, current.every[current.chosen], current.layout) : null;
-    if (box && shown) box.checked = isMarked(shown);
-  };
-  function askToMark(all) {
+  // What a yes does: the card's number where one was typed, then the tick.
+  async function writeMark(mark, typed) {
+    const number = mark.card ? String(typed ?? '').trim() : '';
+    if (number && await saveCard(mark.card, number)) {
+      const line = sheet.querySelector('.scheduler-envelope__card');
+      if (line) line.textContent = number;
+    }
+    void markPrinted(mark, true);
+  }
+  async function askToMark(all) {
     if (!current) return;
     const { form, every, chosen, layout } = current;
     const rows = new Map();
@@ -3132,38 +3142,37 @@
     const question = mark.rows.length === 1 && who
       ? `Mark ${who}'s ${mark.what} as printed?`
       : `Mark the ${mark.what} as printed for ${who || 'this trip'}?`;
-    if (!markModal || !window.Rux?.modal?.open) {
-      if (window.confirm(question)) void markPrinted(mark, true, followBox);
-      return;
-    }
     /* The first driver's envelope carries the card, so where its number is
        not typed yet the same question takes it, for an office that writes the
        number on the printed sheet. Left empty, nothing is saved for it. */
     const copy = all ? null : every[chosen];
     const card = copy && form.id === 'envelope' && copy.assignment?.id && carriesCard(copy.trip, copy.seat)
       && !copy.assignment.fuel_card_number ? copy.assignment : null;
+    if (host?.ask) {
+      const answer = await host.ask(question, card ? { label: 'Fuel card number', placeholder: 'The card in this envelope' } : null);
+      if (answer) void writeMark({ ...mark, card }, answer.value);
+      return;
+    }
+    if (!markModal || !window.Rux?.modal?.open) {
+      if (window.confirm(question)) void markPrinted(mark, true);
+      return;
+    }
     asking = { ...mark, card };
     markHeading.textContent = question;
     if (markCardRow) markCardRow.hidden = !card;
     if (markCard) markCard.value = '';
     window.Rux.modal.open(markModal);
   }
-  document.getElementById('scheduler-print-mark-yes')?.addEventListener('click', async () => {
+  document.getElementById('scheduler-print-mark-yes')?.addEventListener('click', () => {
     const mark = asking;
     asking = null;
     window.Rux?.modal?.close?.(markModal);
-    if (!mark) return;
-    const number = mark.card ? String(markCard?.value ?? '').trim() : '';
-    if (number && await saveCard(mark.card, number)) {
-      const line = sheet.querySelector('.scheduler-envelope__card');
-      if (line) line.textContent = number;
-    }
-    void markPrinted(mark, true, followBox);
+    if (mark) void writeMark(mark, markCard?.value);
   });
   markModal?.addEventListener('rux:modal-closed', () => { asking = null; });
 
   /* WHAT GOES IN THE ROW. Standing alone the page's bar holds the layout, the
-     copy, Printed, Print and Print all. In the board's panel, 30rem wide, the
+     copy, Print and Print all. In the board's panel, 30rem wide, the
      head holds the copy and the panel holds Print, so the row is the layout. */
   /* A CELL OF THE BAND. Carbon ships no text toolbar -- the pattern is a page
      of guidance and a drawing, and the only toolbar classes it compiles are
@@ -3243,9 +3252,9 @@
        already saying which envelope this is, so it is the thing to press to
        say which other one, the way the board's week label opens its date
        picker. That leaves the toolbar to the actions. */
-    /* THE PANEL KEEPS TO THE LAYOUT AND PRINT. Printed and Print all are this
-       page's own, where the Forms page is open on its own; the board's panel
-       is for looking and printing one copy. */
+    /* THE PANEL KEEPS TO THE LAYOUT AND PRINT. Print all is this page's own,
+       where the Forms page is open on its own; the board's panel is for
+       looking and printing one copy. */
     /* A form with one copy to a subject, like the quote, names no copy, and
        the head names the form. */
     const labelOf = copy => form.copyName?.(copy) ?? form.name;
@@ -3266,33 +3275,6 @@
         current.chosen,
         i => { current.chosen = i; draw(); },
       ));
-    }
-
-    /* Printed is never ticked by printing alone: the page asks after a print,
-       above, and this box is the same choice by hand, which also unticks a
-       Yes given by mistake. In the board's panel it sits beside the panel's
-       own Print, which is where the trip's checklist sends someone. */
-    const printed = markOf(form, every[current.chosen], layout);
-    if (printed) {
-      const cell = el('div', 'scheduler-print__cell');
-      const box = el('div', 'rux--form-item rux--checkbox-wrapper');
-      const input = el('input', 'rux--checkbox');
-      input.type = 'checkbox';
-      input.id = 'scheduler-print-marked';
-      input.checked = isMarked(printed);
-      const label = el('label', 'rux--checkbox-label');
-      label.htmlFor = input.id;
-      label.appendChild(el('div', 'rux--checkbox-label-text', 'Printed'));
-      input.addEventListener('change', () => void markPrinted(printed, input.checked,
-        () => { input.checked = isMarked(printed); }));
-      box.append(input, label);
-      cell.appendChild(box);
-      // The cell is what looks like the control, so a press anywhere in it
-      // ticks the box.
-      cell.classList.add('scheduler-print__cell--check');
-      cell.addEventListener('click', e => { if (!e.target.closest('label, input')) input.click(); });
-      if (host) cell.dataset.besidePrint = '';
-      nodes.push(cell);
     }
 
     /* PRINT IS A GHOST ICON, which is what a toolbar's own actions are: in
@@ -3417,7 +3399,7 @@
 
     /* HOW MUCH OF A FORM IS PRINTED, from the ticks its copies carry: a
        seat's own on every filled seat of the trip, or the leg's on each leg.
-       They are the ticks the form's Printed box writes, read with the trip,
+       They are the ticks a yes after a print writes, read with the trip,
        so the list shows what is left to print without opening each form. A
        form with nothing ticked says nothing. */
     const printedOf = form => {

@@ -145,8 +145,8 @@ Three homes, and one rule for choosing.
   document viewer frames it, so nothing has to hide the board in order to
   print, and two forms on different paper never argue over one `@page`.
   A form with a mark, the envelope, the itinerary and the hours-of-service
-  record, asks after a print whether to mark it, by the driver's name, and carries a Printed box beside the panel's Print for the same choice by hand,
-  which the trip's checklist and Departures read; the itinerary has neither on a trip whose customer sent one, because that file is the sheet the drivers are handed, and the board asks after it is printed from the document panel, with no box beside Print; the first driver's envelope takes the bus's fuel card number on its Fuel card line, saved as it is typed, and no other seat's copy names a card; a trip's Forms list says Printed on such a form's row once
+  record, asks after a print whether to mark it, by the driver's name, in the board's own Yes or No dialog where the form is in the document panel and in the page's own where it stands alone, and Yes writes the mark,
+  which the trip's checklist and Departures read; no form carries a box for it, because the question is the one place it is marked; the itinerary does not ask on a trip whose customer sent one, because that file is the sheet the drivers are handed, and the board asks after it is printed from the document panel; the first driver's envelope takes the bus's fuel card number on its Fuel card line, saved as it is typed, and no other seat's copy names a card; a trip's Forms list says Printed on such a form's row once
   every copy is ticked, and "1 of 2 printed" until then. Where the trip's customer asks for a kind of driver form, the list ends in Driver forms: a row for each driver and kind, which opens the driver's current form from the Documents page in a new tab, or says None on file or It has ended and links to the upload, and under a driver whose forms are all on file a Printed box, ticked by hand on the seat because a file prints from the browser's own viewer; Departures lists the same under each driver, a form missing by its kind and Driver forms to print. The itinerary's Layout picks Simple, the
   driver's sheet, which says Rest in sleeper on a stop whose wait is sleeper berth, or Detailed, the office's, with Destination, Client and Contact on one line
   under the bar, the yard at both ends, each wait marked On duty, Off duty or Sleeper berth, and the Route tab's Miles, Drive, On
@@ -155,7 +155,7 @@ Three homes, and one rule for choosing.
   mileage rate and dead miles, flagged when the route's miles have moved
   since, each second driver, relief, hotel and discount line and the total,
   the two tables kept together and moved to the next sheet rather than cut;
-  Detailed has no Printed box and is never offered on a blank form.
+  Detailed is not asked about after a print and is never offered on a blank form.
 
 ### The driver availability grid
 

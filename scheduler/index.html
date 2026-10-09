@@ -690,8 +690,8 @@
            Chrome's scrolls sideways at 30rem. The file's actions start disabled
            and data.js enables them once the file has loaded. -->
       <div class="scheduler-viewer__body">
-        <!-- A GENERATED FORM'S OWN CONTROLS -- its layout, which copy, the
-             Printed tick and Print all -- are built by print.html and handed
+        <!-- A GENERATED FORM'S OWN CONTROLS -- its layout, which copy and
+             Print all -- are built by print.html and handed
              up into this row, ahead of the buttons every document gets, so
              every document in the panel carries its buttons in one place.
              data.js puts them in; a stored file adds none. -->
@@ -1555,9 +1555,10 @@
     </div>
   </div>
 
-  <!-- A yes or no the board asks after something is sent, such as a
-       driver's reminder. data.js sets the question and the line under it.
-       No, the close button and Escape all answer no. -->
+  <!-- A yes or no the board asks after something is sent or printed, such
+       as a driver's reminder or envelope. data.js sets the question, the line
+       under it, and the one field a question may take with its yes. No, the
+       close button and Escape all answer no. -->
   <div class="rux--layer-one rux--modal" id="scheduler-ask-modal" role="presentation">
     <div role="dialog" aria-modal="true" aria-labelledby="scheduler-ask-h" tabindex="-1" class="rux--modal-container rux--modal-container--xs">
       <div class="rux--modal-header">
@@ -1570,6 +1571,18 @@
       </div>
       <div class="rux--modal-content">
         <p id="scheduler-ask-note"></p>
+      </div>
+      <div class="rux--modal-content" id="scheduler-ask-field-row" hidden>
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper">
+            <label class="rux--label" for="scheduler-ask-field" id="scheduler-ask-field-label"></label>
+          </div>
+          <div class="rux--text-input__field-outer-wrapper">
+            <div class="rux--text-input__field-wrapper">
+              <input id="scheduler-ask-field" class="rux--text-input" type="text" autocomplete="off">
+            </div>
+          </div>
+        </div>
       </div>
       <div class="rux--modal-footer">
         <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>No</button>

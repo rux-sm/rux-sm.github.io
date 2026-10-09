@@ -1736,7 +1736,7 @@ button.scheduler-row-head__num::after {
 /* WHICH DOCUMENT AT ONE END, WHAT TO DO WITH IT AT THE OTHER, the way the
    board's toolbar holds its week at one end and its buttons at the other. A
    form's own controls -- its layout -- hold the start; the buttons every
-   document gets, a form's Printed box before Print among them, end the row.
+   document gets end the row.
    What parts the two is the row's line of text, which takes all the room
    between them whether or not it says anything: a stored file's date, or a
    word a form has to say, is written against the buttons in room that was

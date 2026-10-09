@@ -10034,10 +10034,13 @@
   /* A YES OR NO THE BOARD ASKS, in a small dialog: the question is its
      heading and a line may sit under it. Yes resolves true; No, the close
      button, Escape and a press outside resolve false. One question at a time:
-     a second one answers the first with no. */
+     a second one answers the first with no. `field` is one line to type with
+     the yes, such as the fuel card in an envelope just printed; it starts
+     empty, and the asker reads it once the answer is yes. */
   const askModal = document.getElementById('scheduler-ask-modal');
+  const askField = document.getElementById('scheduler-ask-field');
   let askDone = null;
-  function ask(question, hint = '') {
+  function ask(question, hint = '', field = null) {
     if (!askModal || !window.Rux?.modal?.open) return Promise.resolve(window.confirm(question));
     return new Promise(resolve => {
       askDone?.(false);
@@ -10046,6 +10049,13 @@
       const line = document.getElementById('scheduler-ask-note');
       line.textContent = hint;
       line.parentElement.hidden = !hint;
+      const row = document.getElementById('scheduler-ask-field-row');
+      if (row) row.hidden = !field;
+      if (askField) {
+        askField.value = '';
+        askField.placeholder = field?.placeholder || '';
+        document.getElementById('scheduler-ask-field-label').textContent = field?.label || '';
+      }
       window.Rux.modal.open(askModal);
     });
   }
@@ -11935,33 +11945,22 @@
      registered keep working and there is one builder rather than two. It hands
      them over again on every rebuild -- a copy chosen from the head -- so the
      slot is replaced whole each time. The head's list is the way to another
-     copy, and the panel keeps no overflow: the form's page carries Print all
-     and the Printed tick. */
+     copy, and the panel keeps no overflow: the form's page carries Print
+     all. */
   let formNodes = [];
   function setFormControls(nodes) {
     if (!viewerToolbar) return;
     for (const node of formNodes) node.remove();
-    // A form's Printed box goes beside Print; its other controls start the row.
-    const beside = nodes.filter(n => n.hasAttribute?.('data-beside-print'));
-    const ahead = nodes.filter(n => !beside.includes(n));
-    const starts = ahead.map((node, i) => {
+    formNodes = nodes.map((node, i) => {
       const here = document.adoptNode(node);
       /* What the toolbar's own rules size and hold in place, and what a later
          hand-over takes back out again. The last one is named, because it is
          the one that parts these from the buttons every document gets, and
          the zoom buttons hidden between them are no use as a landmark. */
-      here.setAttribute('data-viewer-form', i === ahead.length - 1 ? 'last' : '');
+      here.setAttribute('data-viewer-form', i === nodes.length - 1 ? 'last' : '');
       return here;
     });
-    const ends = beside.map(node => {
-      const here = document.adoptNode(node);
-      here.setAttribute('data-viewer-form', 'print');
-      return here;
-    });
-    formNodes = [...starts, ...ends];
-    viewerToolbar.prepend(...starts);
-    if (viewerPrint) viewerPrint.before(...ends);
-    else viewerToolbar.append(...ends);
+    viewerToolbar.prepend(...formNodes);
   }
 
   /* The line a form has to say, in the place a stored file says when it was
@@ -12102,7 +12101,13 @@
     });
   }
 
-  window.Rux.viewer = { setFormControls, setFormNote, setViewerHead, setToolbarShown, setViewerBack, setFormLink };
+  /* A form in the frame asks through the board's own dialog, so a print is
+     asked about one way whatever was printed. It answers null on a no, and
+     on a yes what was typed in `field`, where the question had one. */
+  const askForForm = async (question, field = null) => ((await ask(question, '', field))
+    ? { value: field ? String(askField?.value ?? '').trim() : '' } : null);
+
+  window.Rux.viewer = { setFormControls, setFormNote, setViewerHead, setToolbarShown, setViewerBack, setFormLink, ask: askForForm };
 
   /* Opens the panel, or brings it forward. Asked for again while it is open,
      it is the newest panel again, so it comes in front of an editor opened

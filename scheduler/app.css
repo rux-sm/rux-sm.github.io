@@ -21,17 +21,17 @@
   --scheduler-safe-right: env(safe-area-inset-right, 0px);
 }
 
-/* The panels beside the board all open at one width, Carbon's
-   `rux--side-panel--md`, so the board's regions line up whichever are open:
-   the To do pane, the roster, the trip editor and the document viewer. The
-   roster showing both weeks is Carbon's `lg`, the editor made larger its
-   `xl`, and the viewer its `lg` or `xl`, never narrower than `md`, because
-   its width is the document's zoom: a letter page in 20rem renders 11pt text
-   at under 6px. `placeRoom` in data.js prices the panels by reading these
-   back off them, so the arithmetic and the layout cannot drift. */
+/* The panels beside the board come in two widths. The lists, the To do pane
+   and the roster, are Carbon's `rux--side-panel--sm`, the roster showing both
+   weeks its `lg`. The trip editor and the document viewer are its `md`; the
+   editor made larger is its `xl`, and the viewer its `lg` or `xl`, never
+   narrower than `md`, because its width is the document's zoom: a letter page
+   in 20rem renders 11pt text at under 6px. `placeRoom` in data.js prices the
+   panels by reading these back off them, so the arithmetic and the layout
+   cannot drift. */
 :root {
   /* The To do pane and the roster. */
-  --scheduler-panel-w: 30rem;
+  --scheduler-panel-w: 20rem;
   /* The roster showing both weeks, Carbon's `rux--side-panel--lg`: the
      smallest of its widths that holds a second week of 2rem squares and still
      leaves the names their room. */
@@ -2371,9 +2371,10 @@ button.scheduler-row-head__num::after {
    `.scheduler-grid` and its column template; these rules add denser rows and
    the cell states.
 
-   The roster is `--scheduler-panel-w` wide, as every panel beside the board
-   opens. It is fixed so it does not move when the driver list changes; the
-   schedule gives way instead.
+   The roster is `--scheduler-panel-w` wide, the narrowest that holds its
+   names beside a week of squares, and the To do pane's width too. It is fixed
+   so it does not move when the driver list changes; the schedule gives way
+   instead.
    `order` puts it left of the board while the markup keeps the schedule
    first. */
 .scheduler-aside {
@@ -4397,7 +4398,7 @@ html:has(.scheduler-page[data-takeover]) {
    The To do panel, filled by to-do-list.js. On the board it is a pane beside
    the week; on every other page it is Design's header panel, the whole
    screen's width on a phone. Both are `--scheduler-panel-w` wide, as the
-   board's other panels open. Its head is Design's content switcher and its
+   roster is. Its head is Design's content switcher and its
    Add is the dashed row the trip editor's lists end in. A stored row is an
    item of Design's accordion, holding Design's tag, buttons and menu; a
    computed row and the edit form are this app's own row. */

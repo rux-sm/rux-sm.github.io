@@ -1071,5 +1071,17 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 /* The To do panel's switch has three tabs, each with a count after its word.
    Carbon gives a switcher's options one width, and the longest, Departures
    with its count, was cut to an ellipsis; here each is as wide as its words
-   and they share what is left. */
-.scheduler-to-do .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn { flex: 1 1 auto; inline-size: auto; }
+   and they share what is left. The panel is 20rem, so an option keeps 8px
+   beside its words where Carbon gives 16px, and the three may shrink, each
+   ending in the ellipsis Carbon's label already has, before the switch
+   would push past the panel's edge. The three selectors are Design's own for
+   an option's padding, which a theme sets on the first and last by name. */
+.scheduler-to-do .rux--content-switcher { min-inline-size: 0; }
+.scheduler-to-do .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn,
+.scheduler-to-do .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:first-child,
+.scheduler-to-do .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:last-child {
+  flex: 1 1 auto;
+  inline-size: auto;
+  min-inline-size: 0;
+  padding-inline: var(--rux-spacing-03);
+}

@@ -13,7 +13,8 @@
    address; revoke_driver_schedule_share stops it. A link's dates run from
    the first ticked leg to the last. Copy only copies, and only while the
    link shows the ticked trips, because a copied text is not a sent one. Mark
-   as sent, offered after a copy, sets each ticked leg the driver has not
+   as sent, offered while the message can be copied and the driver has not
+   answered one of its trips, sets each ticked leg the driver has not
    answered to Pending response through sync_trip_driver_statuses, which
    takes the trip's whole crew and changes only the rows marked dirty.
    ========================================================================== */
@@ -158,6 +159,14 @@
     const b = (link.assignmentRefs || []).map(refKey).sort().join('|');
     return a === b;
   };
+  // A link that shows other trips would send the driver to a page without
+  // these, so the message waits for the link to be updated.
+  const sendable = () => ticked.size > 0 && (!link || matchesLink());
+  // The ticked legs a mark would change: not answered, and not marked already.
+  const unanswered = () => tickedLegs().filter(l => !['confirmed', 'declined', 'pending-response'].includes(statusOf(l)));
+  // Mark as sent shows while the message can go and a mark would change a
+  // trip, however the text was copied.
+  const offerMark = () => { $('scheduler-send-mark').hidden = !sendable() || !unanswered().length; };
   function refresh() {
     const count = ticked.size;
     const save = $('scheduler-send-save');
@@ -169,11 +178,11 @@
       : matchesLink() ? 'The link shows these trips.'
       : 'The link shows different trips. Update it to match.';
     $('scheduler-send-text').value = message();
-    // A link that shows other trips would send the driver to a page without
-    // these, so the message waits for the link to be updated.
-    $('scheduler-send-copy').disabled = !count || (!!link && !matchesLink());
-    // A change of ticks or of the link ends the offer to mark the last copy.
-    $('scheduler-send-mark').hidden = true;
+    $('scheduler-send-copy').disabled = !sendable();
+    // A change of ticks or of the link changes the message, so what was said
+    // of the last copy goes.
+    $('scheduler-send-copied').textContent = '';
+    offerMark();
     $('scheduler-leg-link').hidden = !link;
     if (link) {
       $('scheduler-leg-link-url').textContent = PUBLIC + encodeURIComponent(link.token);
@@ -214,17 +223,13 @@
     refresh();
   }
 
-  // The ticked legs a mark would change: not answered, and not marked already.
-  const unanswered = () => tickedLegs().filter(l => !['confirmed', 'declined', 'pending-response'].includes(statusOf(l)));
   const tripsWord = n => `${n} ${n === 1 ? 'trip' : 'trips'}`;
 
   /* Copies the message and marks nothing. The answers are read again, so
-     the list is current, and Mark as sent is offered for the legs the driver
-     has not answered. */
+     the list and the offer of Mark as sent are current; answers that cannot
+     be read end the offer. */
   async function copy() {
     const note = $('scheduler-send-copied');
-    const markBtn = $('scheduler-send-mark');
-    markBtn.hidden = true;
     try { await navigator.clipboard.writeText($('scheduler-send-text').value); } catch {
       $('scheduler-send-text').select();
       note.textContent = "The message couldn't be copied here. It is selected; copy it yourself.";
@@ -232,21 +237,22 @@
     }
     try { statuses = await readStatuses(); } catch {
       note.textContent = "Copied. The driver's answers could not be read, so no trip can be marked here; set them from the trip.";
+      $('scheduler-send-mark').hidden = true;
       return;
     }
     drawList();
+    offerMark();
     const n = unanswered().length;
     note.textContent = n ? `Copied. Once the text has gone, mark ${tripsWord(n)} as sent.` : 'Copied.';
-    markBtn.hidden = !n;
   }
 
   /* Marks each ticked leg the driver has not answered Pending response. The
      answers are read once more first, since the driver may have answered
-     since the copy. The whole crew of each trip is sent, as
-     sync_trip_driver_statuses asks, with only those legs marked dirty. */
+     since the page read them. The whole crew of each trip is sent, as
+     sync_trip_driver_statuses asks, with only those legs marked dirty. A
+     trip that could not be marked keeps the offer. */
   async function mark() {
     const note = $('scheduler-send-copied');
-    const markBtn = $('scheduler-send-mark');
     try { statuses = await readStatuses(); } catch {
       note.textContent = "The driver's answers could not be read, so no trip was marked. Try again.";
       return;
@@ -275,10 +281,10 @@
           .finally(() => client.removeChannel(channel));
       });
     }
-    note.textContent = failed ? 'Some trips could not be marked Pending response; set them from the trip.'
+    note.textContent = failed ? 'Some trips could not be marked Pending response. Try again, or set them from the trip.'
       : marked ? `${marked} ${marked === 1 ? 'trip is' : 'trips are'} marked Pending response.`
       : 'Nothing was marked: the driver has answered.';
-    markBtn.hidden = true;
+    offerMark();
     drawList();
   }
 

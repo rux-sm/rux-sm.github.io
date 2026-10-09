@@ -106,8 +106,9 @@
   const tripHref = (trip, day, leg) => `./?trip=${encodeURIComponent(trip.id)}&date=${encodeURIComponent(day || trip.start_date || '')}${leg ? `&leg=${leg}` : ''}`;
   /* A link to a trip is offered to the page first. The board takes it and
      opens the trip where it is, beside this list; a page with no board lets
-     it go, and the link goes to the board. It answers whether it was taken. */
-  const boardTook = href => !document.dispatchEvent(new CustomEvent('scheduler:open-trip', { detail: { href }, cancelable: true }));
+     it go, and the link goes to the board. `opener` is the link pressed, for
+     the focus to come back to. It answers whether it was taken. */
+  const boardTook = (href, opener) => !document.dispatchEvent(new CustomEvent('scheduler:open-trip', { detail: { href, opener }, cancelable: true }));
   /* The dot between the parts of a line, tied to the word before it, so a line
      that wraps breaks after the dot and never starts with one. */
   const DOT = '\u00A0· ';
@@ -678,11 +679,11 @@
 
   document.addEventListener('scheduler:departures-summary', () => draw());
 
-  // A row's link to its trip, on either tab, by a plain press.
+  // A link to a trip, a row's on either tab or a Departures line's, by a plain press.
   panel.addEventListener('click', e => {
     const a = e.target.closest?.('a[href*="?trip="]');
     if (!a || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-    if (boardTook(a.href)) e.preventDefault();
+    if (boardTook(a.href, a)) e.preventDefault();
   });
 
   /* Opening reads the list again, since a tab left open all morning is hours

@@ -11,8 +11,8 @@
    problem sorted out somewhere else. `value` is what a line says beside its
    name, a PO or a contact; `at` and `by` are when a step was done and whose
    profile did it, where the database kept them; `action` is where a `todo`
-   is done, `forms:<form>` for the Forms page or `contacts` for the trip's
-   Contact list.
+   is done, `forms:<form>` for that form in the board's document panel or
+   `contacts` for the trip's Contact list.
 
    The trip's lines are the whole trip's: confirmed, the itinerary received,
    the trip contact, what the customer still owes, the hotel where the office

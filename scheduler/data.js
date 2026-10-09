@@ -12269,6 +12269,20 @@
     });
   }
 
+  /* One of a trip's forms, on one bus and one driver's seat, as the address a
+     Departures line carries asks for it. It says it came from the trip's
+     Forms, so the panel's Back reaches the trip's other forms. The head says
+     Form until the form has drawn and names its own copy. */
+  function openTripForm({ form, layout, trip, assignment, driver } = {}, opener = null) {
+    if (!/^[a-z-]+$/.test(form ?? '')) return;
+    const asks = new URLSearchParams({ form });
+    if (layout) asks.set('layout', layout);
+    if (assignment) asks.set('assignment', assignment);
+    if (driver) asks.set('driver', driver);
+    if (trip) { asks.set('trip', trip); asks.set('from', 'forms'); }
+    openGenerated({ url: `print.html?${asks}`, kind: 'Form', note: '', opener });
+  }
+
   /* The quote calculator beside the week, filled with a leg's miles a day and
      its dead miles as the Route tab's Summary counts them, from what the
      editor's fields say now, saved or not. A trip picked on the board opens in
@@ -15168,14 +15182,19 @@
   }
 
   /* A LINK TO ONE TRIP, as the address or a row of the To do pane gives it. A
-     Departures line opens the trip where its step is done: the Contact list,
-     with the trip selected and its editor left shut, or one tab of the
-     editor. */
-  function openAsked(asked) {
+     Departures line opens the trip where its step is done: the Contact list
+     or a form in the document panel, with the trip selected and its editor
+     left shut, or one tab of the editor. `opener` is the link pressed, where
+     there was one, and takes the focus back when the form's panel shuts. */
+  function openAsked(asked, opener = null) {
     const leg = ['outbound', 'return'].includes(asked.get('leg')) ? asked.get('leg') : null;
     if (asked.get('open') === 'contacts') {
       goToTrip(asked.get('trip'), asked.get('date'), { open: false, leg })
         .then(() => { const bar = selectedBar(); if (bar) openContactsFrom(bar); });
+    } else if (asked.has('form')) {
+      goToTrip(asked.get('trip'), asked.get('date'), { open: false, leg })
+        .then(() => openTripForm(Object.fromEntries(['form', 'layout', 'trip', 'assignment', 'driver']
+          .map(key => [key, asked.get(key)])), opener ?? selectedBar()));
     } else {
       const tab = asked.get('tab');
       goToTrip(asked.get('trip'), asked.get('date'), { leg })
@@ -15190,7 +15209,7 @@
     try { url = new URL(e.detail?.href, location.href); } catch { return; }
     if (url.origin !== location.origin || url.pathname !== location.pathname || !url.searchParams.has('trip')) return;
     e.preventDefault();
-    openAsked(url.searchParams);
+    openAsked(url.searchParams, e.detail?.opener);
   });
 
   /* Changing the week drops the toast. An undo for a move on the old week

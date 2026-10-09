@@ -8,8 +8,9 @@
 
    It only shows status. Every line is a mark, what it is, then when it was
    done and whose face did it, or the word for doing it, which is a link to
-   the place it is done: the Forms page on that driver's form, the trip's
-   Contact list, or its Billing tab. Nothing is ticked here.
+   the place it is done, all of them on the board: that driver's form in the
+   document panel beside the week, the trip's Contact list, or its Billing
+   tab. Nothing is ticked here.
 
    The day's trips are read fresh when the panel opens, when the day changes
    and when a step, a seat or a trip changes, on the `scheduler-departures`
@@ -210,12 +211,17 @@
   const keyOf = page => `${page.trip.id}:${page.leg}`;
   // The link names the page's leg, so the board opens that leg's bar and no other.
   const tripHref = (page, extra = '') => `./?trip=${encodeURIComponent(page.trip.id)}&date=${encodeURIComponent(page.day || '')}&leg=${encodeURIComponent(page.leg || 'outbound')}${extra}`;
-  const FORMS = { itinerary: 'driver-itinerary&layout=simple', envelope: 'envelope', hos: 'hours-of-service' };
-  // Where a line still to do is done, and the word for doing it.
+  const FORMS = { itinerary: { form: 'driver-itinerary', layout: 'simple' }, envelope: { form: 'envelope' }, hos: { form: 'hours-of-service' } };
+  /* Where a line still to do is done, and the word for doing it: the board's
+     address, asking for the trip and what to open on it. A form is asked for
+     with its bus and its seat, and is printed from the board's document
+     panel. No link has a handler here: to-do-list.js offers a pressed one to
+     the board, which opens it in place where this page is the board. */
   function actionOf(line, page, bus, member) {
     const [where, form] = String(line.action || '').split(':');
     if (where === 'forms' && bus && member?.seat) {
-      return { words: 'Print', href: `print.html?form=${FORMS[form]}&assignment=${encodeURIComponent(bus.assign.id)}&driver=${encodeURIComponent(member.seat.id)}` };
+      const asks = new URLSearchParams({ ...FORMS[form], assignment: bus.assign.id, driver: member.seat.id });
+      return { words: 'Print', href: tripHref(page, `&${asks}`) };
     }
     // A driver's forms are files, opened from the trip's Forms list.
     if (where === 'trip-forms') return { words: 'Print', href: tripHref(page, '&tab=forms') };

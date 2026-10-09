@@ -55,8 +55,6 @@
   if (!client || !ToDo || !Facts || !action || !panel) return;
   // The board's pane, or the header's panel on a page with no board.
   const pane = !panel.classList.contains('rux--header-panel');
-  // Kept for this tab, so a reload of the board leaves the pane as it was.
-  const PANE_KEY = 'rux.scheduler.to-do-open';
 
   const NEW = 'new';   // `editingId` while the form open is a new row's
   const GROUPS = ['Overdue', 'Today', 'This week', 'Later', 'No date'];
@@ -707,14 +705,14 @@
   /* The board's pane is shown and hidden here, and the board, told by
      `scheduler:to-do-pane`, finds its room: beside the week, or in front of
      it where the window is too narrow. The action reads as pressed, its
-     glyph filled, while the pane shows. */
+     glyph filled, while the pane shows. Nothing keeps whether it was open,
+     so the board always opens on the week with the pane shut. */
   function setPane(open) {
     if (panel.hidden === !open) return;
     panel.hidden = !open;
     action.setAttribute('aria-pressed', String(open));
     action.classList.toggle('rux--btn--selected', open);
     action.querySelector('use')?.setAttribute('href', open ? '#m-check_circle-fill' : '#m-check_circle');
-    try { if (open) sessionStorage.setItem(PANE_KEY, '1'); else sessionStorage.removeItem(PANE_KEY); } catch { /* not kept */ }
     if (open) opened(); else closed();
     document.dispatchEvent(new CustomEvent('scheduler:to-do-pane'));
   }
@@ -751,9 +749,6 @@
     await readStaff().catch(() => {});
     await Promise.all([loadStored(), loadTrips()]);
     listen();
-    let kept = false;
-    try { kept = sessionStorage.getItem(PANE_KEY) === '1'; } catch { /* shut */ }
-    if (pane && kept) setPane(true);
   })();
 
   /* The unfolded computed rows, for the Trips page's Show choices, and the

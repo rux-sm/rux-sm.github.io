@@ -1051,13 +1051,19 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    width, for reading down a page; here a row lines up with its group's
    heading, its three lines start at the top beside the arrow, and the open
    row's buttons need the whole width. A title that may not shrink would
-   push its long line past the panel instead of ending it in an ellipsis. */
-.scheduler-to-do .rux--accordion__heading { align-items: flex-start; padding-block: var(--rux-spacing-03); padding-inline-end: 0; }
+   push its long line past the panel instead of ending it in an ellipsis.
+   The heading reaches 8px past its words on each side, into the panel's own
+   padding, so the hover and focus box has room around them while the words
+   stay in line with the rest of the list. */
+.scheduler-to-do .rux--accordion__heading {
+  align-items: flex-start;
+  inline-size: calc(100% + 2 * var(--rux-spacing-03));
+  margin-inline: calc(-1 * var(--rux-spacing-03));
+  padding: var(--rux-spacing-03);
+}
 .scheduler-to-do .rux--accordion__title { min-inline-size: 0; padding-inline-start: 0; }
 .scheduler-to-do .rux--accordion__arrow { margin-block-start: var(--rux-spacing-01); }
 .scheduler-to-do .rux--accordion__content { padding-inline: 0; }
 .scheduler-to-do .rux--accordion__item--active > .rux--accordion__wrapper { padding-block: 0 var(--rux-spacing-04); }
-/* Open, the heading's last line and the panel's first read as one block. */
-.scheduler-to-do .rux--accordion__item--active > .rux--accordion__heading { padding-block-end: var(--rux-spacing-01); }
 /* A group of rows ends without a line, as a group ending in a computed row does. */
 .scheduler-to-do .rux--accordion__item:last-child { border-block-end: 0; }

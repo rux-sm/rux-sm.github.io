@@ -494,7 +494,9 @@
   addInput.setAttribute('aria-label', 'Add a to-do');
   addInput.autocomplete = 'off';
   addForm.appendChild(field('Add a to-do', addInput));
-  addForm.querySelector('.rux--text-input__label-wrapper').classList.add('rux--visually-hidden');
+  // The label is hidden, as Carbon hides one: on its wrapper the class left it
+  // the field's full width, 15px past the panel, which then slid sideways.
+  addForm.querySelector('.rux--label').classList.add('rux--visually-hidden');
   const error = el('p', 'scheduler-to-do__error');
   error.setAttribute('role', 'alert');
   const list = el('div', 'scheduler-to-do__list');

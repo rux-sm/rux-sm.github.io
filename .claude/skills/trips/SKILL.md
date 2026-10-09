@@ -166,6 +166,10 @@ reads only the ones before it. Nothing is written until step 10.
 - Open the trip's thread from `booking_contact_missive_url` when it is set.
 - Otherwise search the booking contact's full email address and pick the
   person under **Past recipients**. A plain text search spins and finds nothing.
+- Past recipients is listed only when the search is opened from an inbox: a
+  `#search/` address, or typing on a results page, runs the plain search, so
+  press the field's ✕ first, then select all before typing, because the field
+  keeps the last search's text.
 - Before typing, check that `document.activeElement` is the search input. A
   missed click sends the keys to the team chat box at the bottom, and Delete
   outside a text field opens "Archiving from team inbox": press Cancel.

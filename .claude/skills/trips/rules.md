@@ -34,7 +34,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - The owners drive only when no other driver is free, and then on the shortest trips of the day, because they run the company the rest of the time.
 - A trip's equipment needs pick its bus first, such as a sleeper for a long one-driver day, an ADA lift or 56 seats; among the buses that meet them, the farthest trips take the newest, as the board lists the buses newest first, because the newest are the most comfortable and reliable over distance.
 - A bus gets as long at the yard between trips as the week allows, so it can be cleaned and fuelled: a bus back late at night goes out on a later departure the next day rather than an early one.
-- When a trip's drivers rest in the sleeper and one of its buses has none, that bus is swapped with a sleeper from a trip on the same days that needs none, because a swap is easy and comes before a co-driver or a relief driver; only when no trip has one to give is the second driver raised with rux.
+- When a trip's drivers rest in the sleeper and one of its buses has none, the fixes are tried in this order, because a swap is the easiest and a co-driver is the last resort: swap the bus with a sleeper from a trip on the same days that needs none; install a sleeper in the bus, which needs the bus free the day before; and only when neither can be done, a co-driver.
 - Need hotel is on only when the office books the driver's room; when the customer provides it, as they usually do, it stays off.
 
 ## Customers and confirmation
@@ -62,3 +62,4 @@ in its section above, and its question is deleted.
 - Does a broker's availability request follow the same steps as a school's quote, and is a bus held before the broker confirms?
 - When an itinerary gives no headcount, is the customer asked, or does the last count they gave stand?
 - When a save offers to add new places and contact details to the lists, which are added? Until rux says, the answer is Not now.
+- When a sleeper is to be installed in a bus, how is that written in the scheduler, so the bus is held the day before and counts as a sleeper on the trip?

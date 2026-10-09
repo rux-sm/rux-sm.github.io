@@ -2,7 +2,7 @@
    departures.js — WHAT A LEG LEAVING ON A DAY STILL NEEDS
    --------------------------------------------------------------------------
    The one copy of the Departures panel's rules: which legs leave on a day,
-   and for one leg its page, a tile for the trip and a tile for each bus,
+   and for one leg its page, a block for the trip and a block for each bus,
    every status one line. A line is
 
      { key, state, label, value, at, by, action }
@@ -16,7 +16,7 @@
 
    The trip's lines are the whole trip's: confirmed, the itinerary received,
    the trip contact, what the customer still owes, the hotel where the office
-   books it, and the driver details sent to the booking contact. A bus's tile
+   books it, and the driver details sent to the booking contact. A bus's block
    holds what the bus needs, met or not, its fuel card among them where the
    trip has one, and each crew member's lines:
    confirmed, then the itinerary, the envelope, the reminder, and the
@@ -101,7 +101,7 @@
 
   /* One bus of the leg: what it needs, met or not, and its crew's lines. A
      row with no bus yet says so, and so does a seat with nobody in it. */
-  function busTile(trip, assign, { busesById = new Map(), driversById = new Map(), statuses = new Map() } = {}) {
+  function busBlock(trip, assign, { busesById = new Map(), driversById = new Map(), statuses = new Map() } = {}) {
     const bus = assign.bus_id != null ? busesById.get(assign.bus_id) ?? null : null;
     const needs = [];
     if (bus) {
@@ -150,14 +150,14 @@
     return { key: assign.id, assign, bus, needs, crew, left };
   }
 
-  /* A leg's page: the trip's lines, then a tile for each bus the leg has, in
+  /* A leg's page: the trip's lines, then a block for each bus the leg has, in
      the order the trip keeps them, and how many lines are not done. */
   function page(trip, leg, read = {}) {
     const lines = tripLines(trip, leg);
     const buses = (trip.trip_assignments || [])
       .filter(a => (a.leg || 'outbound') === leg)
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
-      .map(a => busTile(trip, a, read));
+      .map(a => busBlock(trip, a, read));
     const tripLeft = lines.filter(l => l.state !== 'done').length;
     const needed = leg === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1);
     // A bus the leg needs and has no row for is one more thing left.

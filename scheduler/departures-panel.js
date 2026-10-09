@@ -1,10 +1,15 @@
 /* ==========================================================================
    departures-panel.js — DEPARTURES, IN THE TO-DO PANEL
    --------------------------------------------------------------------------
-   The To do panel's switch, which to-do-list.js draws, opens this in the
-   same panel and shuts it again: every leg leaving on a day, tomorrow
-   first, a tab each, and under the tabs one leg's page as departures.js
-   gives it: a tile for the trip, then a tile for each bus with its crew.
+   The To do panel's switch, which to-do-list.js draws, opens this from its
+   Prep tab in the same panel and shuts it again: the legs leaving on a day,
+   tomorrow first, in one list, soonest first. Each leg is an item of
+   Design's accordion. Closed, it is its place and when it leaves, how many
+   lines it has left or Ready, and a quiet line of its customer. Open, one at
+   a time, it holds the leg's page as departures.js gives it: the trip's
+   lines, then a block for each bus with its crew. The day opens on its first
+   leg with something left, and a trip whose own lines are all done folds
+   them into one line, Trip ready, which a press unfolds.
 
    It only shows status. Every line is a mark, what it is, then when it was
    done and whose face did it, or the word for doing it, which is a link to
@@ -15,7 +20,7 @@
    The day's trips are read fresh when the panel opens, when the day changes
    and when a step, a seat or a trip changes, on the `scheduler-departures`
    channel. Tomorrow's count, how many legs leave and how many are ready, is
-   kept for the switch's Departures button and said in
+   kept for the switch's Prep tab and said in
    `scheduler:departures-summary`.
 
    Needs billing.js, follow-up.js, checklist.js, requirements.js,
@@ -71,7 +76,8 @@
   let pages = [];           // the day's legs, as departures.js's pages
   let buses = new Map();    // id -> bus, with its number
   let staff = new Map();    // profile id -> profile, for a step's face
-  let picked = null;        // the open tab's key, `tripId:leg`
+  let openKey;              // the open leg's key, `tripId:leg`: null once shut by hand, not set until the day is read
+  const unfolded = new Set(); // the legs whose finished trip lines are shown
   let failure = '';
   let shown = false;
   let tomorrow = { legs: 0, ready: 0, known: false };
@@ -142,7 +148,7 @@
         pages = await readDay(day);
         failure = '';
       } catch (e) {
-        failure = `Departures did not load. ${e?.message || e}`;
+        failure = `Prep did not load. ${e?.message || e}`;
       }
       if (day === dayFrom(1)) said({ legs: pages.length, ready: pages.filter(p => p.left === 0).length });
       draw();
@@ -191,18 +197,11 @@
   dayInput.tabIndex = -1;
   dayInput.setAttribute('aria-hidden', 'true');
   stepper.append(before, dayButton, dayInput, after);
-  const tabsWrap = el('div', 'rux--tabs rux--layout--size-md scheduler-departures__tabs');
-  const tabList = el('div', 'rux--tab--list');
-  tabList.setAttribute('role', 'tablist');
-  tabList.setAttribute('aria-label', 'Trips leaving');
-  tabsWrap.appendChild(tabList);
   const error = el('p', 'scheduler-to-do__error');
   error.setAttribute('role', 'alert');
-  const pageEl = el('div', 'scheduler-departures__page');
-  pageEl.setAttribute('role', 'tabpanel');
-  pageEl.id = 'scheduler-departures-page';
+  const list = el('div', 'scheduler-departures__list');
   head.append(stepper);
-  body.append(head, tabsWrap, error, pageEl);
+  body.append(head, error, list);
   panel.appendChild(body);
 
   // -- drawing --------------------------------------------------------------
@@ -271,22 +270,38 @@
   };
   const leftTag = n => (n ? tag(`${n} left`, 'rux--tag--gray') : tag('Ready', 'rux--tag--green'));
 
-  function tripTile(page) {
-    const tile = el('section', 'rux--tile scheduler-departures__tile');
+  /* The trip's own lines, under a row that opens the trip on the board.
+     While one is not done they are all in view; once every one is done they
+     fold into one line, Trip ready, which a press unfolds. */
+  function tripBlock(page) {
+    const block = el('section', 'scheduler-departures__block');
     const top = el('div', 'scheduler-departures__top');
-    const names = el('div', 'scheduler-departures__names');
-    const place = el('a', 'rux--link scheduler-departures__place', page.trip.destination || 'Trip');
-    place.href = tripHref(page);
-    const at = leavesAt(page);
-    names.append(place, el('p', 'scheduler-to-do__meta',
-      [page.trip.customer, page.legName, at ? `leaves ${clockOf(at)}` : null].filter(Boolean).join(DOT)));
-    top.append(names, leftTag(page.tripLeft));
-    tile.append(top, lines(page.lines, page));
-    return tile;
+    const all = lines(page.lines, page);
+    if (page.tripLeft) top.appendChild(el('strong', null, 'Trip'));
+    else {
+      const open = unfolded.has(keyOf(page));
+      const fold = el('button', 'scheduler-departures__fold');
+      fold.type = 'button';
+      fold.dataset.hold = `fold:${keyOf(page)}`;
+      fold.setAttribute('aria-expanded', String(open));
+      const mark = svgUse(MARKS.done, 18);
+      mark.classList.add('scheduler-departures__mark');
+      const arrow = svgUse('#m-keyboard_arrow_down');
+      arrow.classList.add('scheduler-departures__arrow');
+      fold.append(mark, 'Trip ready', arrow);
+      all.hidden = !open;
+      top.appendChild(fold);
+    }
+    const trip = el('a', 'rux--link', 'Open trip');
+    trip.href = tripHref(page);
+    trip.setAttribute('aria-label', `Open trip: ${page.trip.destination || 'Trip'}`);
+    top.appendChild(trip);
+    block.append(top, all);
+    return block;
   }
 
-  function busTile(page, bus) {
-    const tile = el('section', 'rux--tile scheduler-departures__tile');
+  function busBlock(page, bus) {
+    const block = el('section', 'scheduler-departures__block');
     const top = el('div', 'scheduler-departures__top');
     const name = el('div', 'scheduler-departures__bus');
     const icon = svgUse('#m-directions_bus-fill', 20);
@@ -307,8 +322,10 @@
         name.appendChild(a);
       } else name.appendChild(t);
     }
-    top.append(name, leftTag(bus.left));
-    tile.appendChild(top);
+    top.appendChild(name);
+    // A leg with one bus says what is left on its own heading.
+    if (page.buses.length + page.missing > 1) top.appendChild(leftTag(bus.left));
+    block.appendChild(top);
     for (const member of bus.crew) {
       const who = el('div', 'scheduler-departures__member');
       const headline = el('div', 'scheduler-departures__who');
@@ -316,9 +333,58 @@
       if (member.name) headline.appendChild(el('span', 'scheduler-departures__role', member.role));
       if (member.partTime) headline.appendChild(tag('Part-time', 'rux--tag--purple'));
       who.append(headline, lines(member.lines, page, bus, member));
-      tile.appendChild(who);
+      block.appendChild(who);
     }
-    return tile;
+    return block;
+  }
+
+  // A bus the leg needs and has no row for.
+  function missingBlock(page) {
+    const block = el('section', 'scheduler-departures__block');
+    const top = el('div', 'scheduler-departures__top');
+    const name = el('div', 'scheduler-departures__bus');
+    name.append(svgUse('#m-directions_bus-fill', 20),
+      el('strong', null, page.missing === 1 ? 'One more bus needed' : `${page.missing} more buses needed`));
+    top.append(name, tag(`${page.missing} left`, 'rux--tag--gray'));
+    block.appendChild(top);
+    return block;
+  }
+
+  /* A leg, as an item of Design's accordion, whose script opens and shuts
+     it. The heading is the closed leg: its place and when it leaves, what is
+     left, and its customer under them. */
+  function legItem(page) {
+    const key = keyOf(page);
+    const open = key === openKey;
+    const li = el('li', `rux--accordion__item scheduler-departures__leg${open ? ' rux--accordion__item--active' : ''}`);
+    li.dataset.key = key;
+    const heading = el('button', 'rux--accordion__heading');
+    heading.type = 'button';
+    heading.dataset.hold = `leg:${key}`;
+    heading.setAttribute('aria-expanded', String(open));
+    const arrow = svgUse('#m-keyboard_arrow_right');
+    arrow.classList.add('rux--accordion__arrow');
+    const title = el('div', 'rux--accordion__title');
+    const summary = el('span', 'scheduler-departures__summary');
+    const place = el('span', 'scheduler-departures__place');
+    place.appendChild(el('strong', null, placeName(page.trip.destination)));
+    const at = leavesAt(page);
+    if (at) place.append(DOT, clockOf(at));
+    summary.append(place, leftTag(page.left));
+    title.appendChild(summary);
+    const quiet = [page.trip.customer, page.legName].filter(Boolean).join(DOT);
+    if (quiet) title.appendChild(el('span', 'scheduler-to-do__meta scheduler-to-do__line', quiet));
+    heading.append(arrow, title);
+
+    const wrapper = el('div', 'rux--accordion__wrapper');
+    const content = el('div', 'rux--accordion__content scheduler-departures__page');
+    content.id = `scheduler-departures-leg-${key.replace(':', '-')}`;
+    heading.setAttribute('aria-controls', content.id);
+    content.append(tripBlock(page), ...page.buses.map(b => busBlock(page, b)));
+    if (page.missing) content.appendChild(missingBlock(page));
+    wrapper.appendChild(content);
+    li.append(heading, wrapper);
+    return li;
   }
 
   function draw() {
@@ -326,54 +392,19 @@
     dayInput.value = day;
     error.textContent = failure;
     error.hidden = !failure;
-    if (!pages.some(p => keyOf(p) === picked)) picked = pages[0] ? keyOf(pages[0]) : null;
-
-    tabList.replaceChildren(...pages.map(page => {
-      const on = keyOf(page) === picked;
-      const b = el('button', `rux--tabs__nav-item rux--tabs__nav-link${on ? ' rux--tabs__nav-item--selected' : ''}`);
-      b.type = 'button';
-      b.dataset.key = keyOf(page);
-      b.setAttribute('role', 'tab');
-      b.setAttribute('aria-selected', String(on));
-      b.setAttribute('aria-controls', pageEl.id);
-      b.tabIndex = on ? 0 : -1;
-      const label = el('span', 'rux--tabs__nav-item-label scheduler-departures__tab');
-      label.append(placeName(page.trip.destination));
-      // Two trips to one place are told apart by when each leaves.
-      const twin = pages.some(p => p !== page && placeName(p.trip.destination) === placeName(page.trip.destination));
-      const at = twin ? leavesAt(page) : null;
-      if (at) label.append(el('span', 'scheduler-departures__count', clockOf(at)));
-      if (page.legName) label.append(el('span', 'scheduler-departures__count', page.legName));
-      if (page.left) label.append(el('span', 'scheduler-departures__count', `${page.left} left`));
-      else {
-        const done = svgUse('#m-check_circle-fill');
-        done.classList.add('scheduler-departures__ok');
-        label.append(done, el('span', 'rux--visually-hidden', 'ready'));
-      }
-      const wrap = el('div', 'rux--tabs__nav-item-label-wrapper');
-      wrap.appendChild(label);
-      b.appendChild(wrap);
-      return b;
-    }));
-    tabsWrap.hidden = !pages.length;
-
-    const page = pages.find(p => keyOf(p) === picked);
-    if (!page) {
-      pageEl.replaceChildren(failure ? '' : el('p', 'scheduler-to-do__none', loading && !pages.length ? 'Loading…' : 'Nothing leaves that day.'));
+    if (!pages.length) {
+      list.replaceChildren(failure ? '' : el('p', 'scheduler-to-do__none', loading ? 'Loading…' : 'Nothing leaves that day.'));
       return;
     }
-    const parts = [tripTile(page), ...page.buses.map(b => busTile(page, b))];
-    if (page.missing) {
-      const none = el('section', 'rux--tile scheduler-departures__tile');
-      const top = el('div', 'scheduler-departures__top');
-      const name = el('div', 'scheduler-departures__bus');
-      name.append(svgUse('#m-directions_bus-fill', 20),
-        el('strong', null, page.missing === 1 ? 'One more bus needed' : `${page.missing} more buses needed`));
-      top.append(name, tag(`${page.missing} left`, 'rux--tag--gray'));
-      none.appendChild(top);
-      parts.push(none);
-    }
-    pageEl.replaceChildren(...parts);
+    // The day opens on the work: its first leg with something left.
+    if (openKey === undefined) { const first = pages.find(p => p.left); openKey = first ? keyOf(first) : null; }
+    // The list is built again, so a heading that had the focus is given it back.
+    const held = list.contains(document.activeElement) ? document.activeElement.dataset?.hold : null;
+    const ul = el('ul', 'rux--accordion rux--accordion--end scheduler-to-do__rows');
+    ul.setAttribute('role', 'list');
+    for (const page of pages) ul.appendChild(legItem(page));
+    list.replaceChildren(ul);
+    if (held) [...list.querySelectorAll('[data-hold]')].find(n => n.dataset.hold === held)?.focus();
   }
 
   // -- behaviour ------------------------------------------------------------
@@ -381,45 +412,50 @@
   function open() {
     shown = true;
     day = dayFrom(1);
-    picked = null;
-    const list = todoBody();
-    if (list) list.hidden = true;
+    openKey = undefined;
+    unfolded.clear();
+    const toDo = todoBody();
+    if (toDo) toDo.hidden = true;
     body.hidden = false;
-    panel.setAttribute('aria-label', 'Departures');
+    panel.setAttribute('aria-label', 'Prep');
     draw();
     load();
   }
   function close() {
     shown = false;
     body.hidden = true;
-    const list = todoBody();
-    if (list) list.hidden = false;
+    const toDo = todoBody();
+    if (toDo) toDo.hidden = false;
     panel.setAttribute('aria-label', 'To do');
   }
-  const go = to => { day = to; picked = null; pages = []; draw(); load(); };
+  const go = to => { day = to; openKey = undefined; unfolded.clear(); pages = []; draw(); load(); };
   before.addEventListener('click', () => go(dayFrom(-1, parseISO(day))));
   after.addEventListener('click', () => go(dayFrom(1, parseISO(day))));
   dayButton.addEventListener('click', () => { try { dayInput.showPicker(); } catch { dayInput.focus(); } });
   dayInput.addEventListener('change', () => { if (/^\d{4}-\d{2}-\d{2}$/.test(dayInput.value)) go(dayInput.value); });
-  tabList.addEventListener('click', e => {
-    const tab = e.target.closest('[role="tab"]');
-    if (!tab) return;
-    picked = tab.dataset.key;
-    draw();
-    tabList.querySelector('[aria-selected="true"]')?.focus();
+  /* One leg open at a time, as the Tasks tab's rows are: Design's accordion
+     leaves every opened item open, so opening one shuts the rest, and the
+     open leg is remembered, as a redraw builds the list again. The leg shut
+     above takes its height away, so the pressed heading is brought back
+     into view once it has gone. */
+  list.addEventListener('rux:accordion-opened', e => {
+    const item = e.target;
+    openKey = item.dataset?.key ?? null;
+    for (const other of list.querySelectorAll('.rux--accordion__item--active')) {
+      if (other !== item) window.Rux.accordion?.close(other);
+    }
+    setTimeout(() => item.querySelector('.rux--accordion__heading')?.scrollIntoView({ block: 'nearest' }), 150);
   });
-  // Left and right move along the tabs, as Design's tabs do.
-  tabList.addEventListener('keydown', e => {
-    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-    const at = pages.findIndex(p => keyOf(p) === picked);
-    const next = pages[(at + (e.key === 'ArrowRight' ? 1 : -1) + pages.length) % pages.length];
-    if (!next) return;
-    e.preventDefault();
-    picked = keyOf(next);
-    draw();
-    const tab = tabList.querySelector('[aria-selected="true"]');
-    tab?.focus();
-    tab?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  list.addEventListener('rux:accordion-closed', e => { if (e.target.dataset?.key === openKey) openKey = null; });
+  // Trip ready shows and hides the trip's lines under it.
+  list.addEventListener('click', e => {
+    const fold = e.target.closest('.scheduler-departures__fold');
+    const key = fold?.closest('[data-key]')?.dataset.key;
+    if (!key) return;
+    const open = !unfolded.has(key);
+    if (open) unfolded.add(key); else unfolded.delete(key);
+    fold.setAttribute('aria-expanded', String(open));
+    fold.closest('.scheduler-departures__block').querySelector('.scheduler-departures__lines').hidden = !open;
   });
   // Shutting the panel puts the list back, so the action opens on the list.
   panel.addEventListener('scheduler:to-do-closed', close);

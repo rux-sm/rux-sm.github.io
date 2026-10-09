@@ -4421,9 +4421,31 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-to-do { display: flex; flex-direction: column; overflow: hidden; }
 .scheduler-to-do[hidden] { display: none; }
 .scheduler-to-do__switch { flex: none; padding: var(--rux-spacing-05) var(--rux-spacing-05) 0; }
+/* A tab's count is a pill after its word, filled with a tint of the word's
+   own colour, so it reads on every theme's option, chosen or not. It stands
+   over the chosen option's fill, as the word does. */
+.scheduler-to-do__count {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  align-self: center;
+  min-inline-size: 1.125rem;
+  margin-inline-start: var(--rux-spacing-02);
+  padding-inline: var(--rux-spacing-02);
+  border-radius: 999px;
+  background-color: color-mix(in srgb, currentColor 16%, transparent);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.125rem;
+  text-align: center;
+}
+/* Each body is Design's vertical stack, a grid, which shares a tall pane's
+   spare height among its rows; here the rows keep their own height and the
+   spare is left under the last. */
 .scheduler-to-do__body,
 .scheduler-departures {
   flex: 1 1 auto;
+  align-content: start;
   min-block-size: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -4511,10 +4533,12 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-to-do__gap { flex: 1 1 auto; }
 
 /* ══ Departures ═══════════════════════════════════════════════════════════
-   The To do panel's other view, drawn by departures-panel.js: a tab for each
-   leg leaving on a day, and one leg's page, a tile for the trip and one for
-   each bus. Every status is one line, its mark on the left and its time, its
-   face or its action on the right. */
+   The To do panel's Prep view, drawn by departures-panel.js: the day, then
+   the legs leaving on it in one list, each an item of Design's accordion.
+   Closed, a leg is its place and time, what is left and its customer; open,
+   it holds a block for the trip and one for each bus. Every status is one
+   line, its mark on the left and its time, its face or its action on the
+   right. */
 .scheduler-departures { color: var(--rux-text-primary); }
 .scheduler-departures[hidden] { display: none; }
 .scheduler-to-do__body[hidden] { display: none; }
@@ -4522,15 +4546,38 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-departures__stepper { display: flex; align-items: center; position: relative; }
 /* The calendar's own field has no size and takes no press: the day opens it. */
 .scheduler-departures__picker { position: absolute; inset-block-end: 0; inset-inline-end: 0; inline-size: 1px; block-size: 1px; padding: 0; border: 0; opacity: 0; pointer-events: none; }
-.scheduler-departures__tabs[hidden] { display: none; }
-.scheduler-departures__tab { display: inline-flex; align-items: center; gap: var(--rux-spacing-02); }
-.scheduler-departures__count { color: var(--rux-text-secondary); font-size: 0.75rem; font-weight: 400; }
-.scheduler-departures__ok { color: var(--rux-support-success); }
-.scheduler-departures__page { display: flex; flex-direction: column; gap: var(--rux-spacing-05); }
-.scheduler-departures__tile { min-block-size: 0; padding: var(--rux-spacing-05) var(--rux-spacing-05) var(--rux-spacing-03); }
-.scheduler-departures__top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--rux-spacing-03); padding-block-end: var(--rux-spacing-03); }
-.scheduler-departures__names { min-inline-size: 0; }
-.scheduler-departures__place { font-size: 1.125rem; font-weight: 600; line-height: 1.33333; }
+/* The list is a cell of the panel's grid, which is as wide as its longest
+   line unless it may shrink. */
+.scheduler-departures__list { min-inline-size: 0; }
+/* A leg's heading: its place and time, ended in an ellipsis where they run
+   long, with what is left at the line's end. */
+.scheduler-departures__summary { display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-03); }
+.scheduler-departures__place { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scheduler-departures__place > strong { font-weight: 600; }
+/* The open leg: a block for the trip, then one for each bus, a line between them. */
+.scheduler-departures__page { display: flex; flex-direction: column; }
+.scheduler-departures__block { padding-block: var(--rux-spacing-03); border-block-start: 1px solid var(--rux-border-subtle-01); }
+.scheduler-departures__block:first-child { padding-block-start: 0; border-block-start: 0; }
+.scheduler-departures__block:last-child { padding-block-end: 0; }
+.scheduler-departures__top { display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-03); min-block-size: 2rem; font-size: 0.875rem; }
+/* Trip ready is a line that is pressed: its mark and words as a done line's
+   are, then an arrow that turns over while the trip's lines show. */
+.scheduler-departures__fold {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-block-size: 2rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.scheduler-departures__fold:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+.scheduler-departures__fold > .scheduler-departures__mark { color: var(--rux-support-success); }
+.scheduler-departures__arrow { flex: none; margin-inline-start: calc(-1 * var(--rux-spacing-02)); color: var(--rux-icon-secondary); transition: transform 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
+.scheduler-departures__fold[aria-expanded="true"] > .scheduler-departures__arrow { transform: rotate(180deg); }
 .scheduler-departures__bus { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-03); font-size: 1rem; }
 .scheduler-departures__bus > svg { flex: none; color: var(--rux-icon-secondary); }
 .scheduler-departures__tag { flex: none; margin: 0; }
@@ -4539,11 +4586,12 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-departures__need { display: inline-flex; border-radius: 1rem; text-decoration: none; }
 .scheduler-departures__need:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 .scheduler-departures__need .scheduler-departures__tag { cursor: pointer; }
-.scheduler-departures__member { padding-block-start: var(--rux-spacing-03); border-block-start: 1px solid var(--rux-border-subtle-01); }
+/* A bus's crew, a line between one member and the next. */
+.scheduler-departures__member { padding-block-start: var(--rux-spacing-02); }
+.scheduler-departures__member + .scheduler-departures__member { margin-block-start: var(--rux-spacing-03); border-block-start: 1px solid var(--rux-border-subtle-01); padding-block-start: var(--rux-spacing-03); }
 .scheduler-departures__who { display: flex; align-items: center; gap: var(--rux-spacing-03); font-size: 0.875rem; }
 .scheduler-departures__role { flex: 1 1 auto; color: var(--rux-text-secondary); }
 .scheduler-departures__lines { list-style: none; margin: 0; padding: 0; }
-.scheduler-departures__tile > .scheduler-departures__lines { border-block-start: 1px solid var(--rux-border-subtle-01); padding-block-start: var(--rux-spacing-02); }
 .scheduler-departures__line { display: flex; align-items: center; gap: 0.625rem; min-block-size: 2rem; font-size: 0.875rem; }
 .scheduler-departures__mark { flex: none; }
 .scheduler-departures__line--done .scheduler-departures__mark { color: var(--rux-support-success); }

@@ -21,15 +21,16 @@
    over one row of buttons: Done, Email and Trip, and a menu of Edit and
    Delete. One row is open at a time.
 
-   The panel's head is a switch of three tabs, each with its count. To do
+   The panel's head is a switch of three tabs, each with its count in a
+   pill after its word. Tasks
    holds the stored rows, grouped Overdue, Today, This week, Later and No
    date, then Done today: the rows closed today behind one item of the
    accordion that says how many and is shut until pressed, each struck
    through, with Undo; Add a to-do, above them, opens a new row's form at
-   the head of the list. Trips
-   holds the computed rows, by the day each trip leaves. Departures is
-   departures-panel.js's view, and its tab says how many of tomorrow's legs
-   are ready while one is not. Everyone on the staff sees every row. The
+   the head of the list. Alerts
+   holds the computed rows, by the day each trip leaves. Prep is
+   departures-panel.js's view, Departures, and its tab says how many of
+   tomorrow's legs are not ready yet. Everyone on the staff sees every row. The
    count on the action is the Overdue and Today stored rows, every computed
    row, and tomorrow's departures while one is not ready.
 
@@ -247,7 +248,7 @@
     }
     return out;
   }
-  /* The computed rows as the Trips tab lists them: a trip at a time by the
+  /* The computed rows as the Alerts tab lists them: a trip at a time by the
      day it leaves, and the folded lines, each standing for many, last. */
   function tripLines() {
     const place = c => (c.fold ? '2' : `1 ${c.day || c.trip.start_date || '9'} ${c.trip.id}`);
@@ -516,13 +517,12 @@
   const body = el('div', 'rux--layer-two rux--stack-vertical rux--stack-scale-5 scheduler-to-do__body');
   const views = el('div', 'rux--content-switcher rux--content-switcher--sm rux--layout--size-sm rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg');
   views.setAttribute('role', 'tablist');
-  views.setAttribute('aria-label', 'To do, Trips or Departures');
-  for (const [name, text] of [['list', 'To do'], ['trips', 'Trips'], ['departures', 'Departures']]) {
+  views.setAttribute('aria-label', 'Tasks, Alerts or Prep');
+  for (const [name, text] of [['list', 'Tasks'], ['trips', 'Alerts'], ['departures', 'Prep']]) {
     const on = name === 'list';
     const b = el('button', `rux--content-switcher-btn${on ? ' rux--content-switcher--selected' : ''}`);
     b.type = 'button';
     b.dataset.view = name;
-    b.dataset.words = text;
     b.setAttribute('role', 'tab');
     b.setAttribute('aria-selected', String(on));
     b.tabIndex = on ? 0 : -1;
@@ -567,9 +567,11 @@
     menuItem('Delete', true, row => { openId = null; remove(row); }));
   document.body.appendChild(menu);
 
-  /* Each tab's words, with what it holds after them: the open stored rows,
-     the computed rows, and tomorrow's departures while a leg is not ready,
-     which is also one of what is due. A tab holding nothing is its words. */
+  /* Each tab's word, with how many it holds still open in a pill after it:
+     the open stored rows, the computed rows, and tomorrow's legs not ready
+     yet, which together are also one of what is due. A tab holding nothing
+     is its word. The space parts the two in the tab's name as it is read
+     out; the pill's own margin parts them on the page. */
   const departures = () => window.SchedulerDeparturesPanel?.summary() ?? null;
   const departuresDue = () => { const d = departures(); return d?.known && d.legs > d.ready ? 1 : 0; };
   function drawViews() {
@@ -577,10 +579,11 @@
     const said = {
       list: stored.filter(r => !r.closed_at).length || '',
       trips: tripLines().length || '',
-      departures: departuresDue() ? `${d.ready} of ${d.legs}` : '',
+      departures: departuresDue() ? d.legs - d.ready : '',
     };
     for (const b of views.querySelectorAll('[data-view]')) {
-      b.querySelector('.rux--content-switcher__label').textContent = `${b.dataset.words} ${said[b.dataset.view]}`.trim();
+      const n = said[b.dataset.view];
+      b.replaceChildren(b.querySelector('.rux--content-switcher__label'), ...(n ? [' ', el('span', 'scheduler-to-do__count', n)] : []));
     }
   }
   // A new row as its form first shows it: mine, due today, and nothing else.
@@ -594,7 +597,7 @@
     action.setAttribute('aria-label', n ? `To do, ${n} due` : 'To do');
   }
 
-  // The Trips tab: the computed rows in one list.
+  // The Alerts tab: the computed rows in one list.
   function tripParts() {
     const lines = tripLines();
     if (!lines.length) return [el('p', 'scheduler-to-do__none', 'Nothing on a trip needs doing.')];
@@ -603,7 +606,7 @@
     for (const c of lines) ul.appendChild(computedRow(c));
     return [ul];
   }
-  // The To do tab: a new row's form while one is open, the groups, then Done today.
+  // The Tasks tab: a new row's form while one is open, the groups, then Done today.
   function listParts() {
     const rows = grouped();
     const parts = [];
@@ -662,8 +665,8 @@
     list.querySelector('.scheduler-to-do__form input[required]')?.focus();
   });
 
-  /* The switch shows one tab. To do and Trips are this list, drawn one way or
-     the other; Departures is departures-panel.js's, which hides this body
+  /* The switch shows one tab. Tasks and Alerts are this list, drawn one way
+     or the other; Prep is departures-panel.js's view, which hides this body
      while it shows. */
   function show(next, focus) {
     const other = window.SchedulerDeparturesPanel;
@@ -687,7 +690,7 @@
   });
 
   /* Opening reads the list again, since a tab left open all morning is hours
-     behind, and shutting puts the To do tab back. Each tells
+     behind, and shutting puts the Tasks tab back. Each tells
      departures-panel.js, whose view the panel also holds. */
   function opened() {
     loadStored();

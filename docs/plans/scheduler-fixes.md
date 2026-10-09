@@ -256,7 +256,7 @@ site.
 - [ ] Hold a settled price in `syncLines`.
 - [ ] Test each stretch between real rests in `route-figures.js`, with cases
       for a run through the night on two dates.
-- [ ] Say spot, with its weekday, on a Departures tile.
+- [ ] Say spot, with its weekday, on a Departures leg.
 
 ### The connector and the skills
 

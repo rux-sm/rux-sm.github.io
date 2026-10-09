@@ -109,9 +109,12 @@ export const ICONS = {
   'email': { material: 'mail', rux: null },
   'erase': { material: 'ink_eraser', rux: null },
   'error--filled': { material: 'error-fill', rux: null },
+  'error--outline': { material: 'block', rux: null },  // A ring with a bar across it, in both families: barred.
+  'event--busy': { material: 'event_busy', rux: null },  // Carbon draws no crossed-out day; Material's is a calendar with a cross.
   'fit-to-width': { material: 'fit_screen', rux: null },
   'folder': { material: 'folder', rux: null },
   'grid': { material: 'grid_view', rux: null },
+  'health-cross': { material: 'medical_services', rux: null },  // The cross on a medical bag, so it is not read as `add`.
   'hotel': { material: 'airline_seat_flat', rux: null },  // Carbon's hotel is a bed, which is what a sleeper coach is.
   'idea': { material: 'lightbulb', rux: null },
   'in-progress': { material: 'progress_activity', rux: null },  // `pending` is taken by pending--filled.
@@ -132,6 +135,7 @@ export const ICONS = {
   'overflow-menu--horizontal': { material: 'more_horiz', rux: null },
   'overflow-menu--vertical': { material: 'more_vert', rux: null },
   'paint-brush': { material: 'brush', rux: null },
+  'palm-tree': { material: 'beach_access', rux: null },  // Time away: Carbon draws a palm and Material a beach umbrella.
   'pause--outline--filled': { material: 'pause_circle-fill', rux: null },  // A solid disc with the bars cut out; `pause--filled` is the bare bars.
   'pending--filled': { material: 'pending-fill', rux: null },
   'phone': { material: 'call', rux: null },

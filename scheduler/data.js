@@ -9222,7 +9222,7 @@
         || (a.short_name || a.name || '').localeCompare(b.short_name || b.name || ''))
       .map(d => ({
         driver: d, legs: [],
-        days: Array.from({ length }, () => ({ off: null, trips: [], refs: [], rest: null })),
+        days: Array.from({ length }, () => ({ off: null, reason: null, offOf: null, trips: [], refs: [], rest: null })),
       }));
     const byId = new Map(rows.map(r => [r.driver.id, r]));
 
@@ -9246,6 +9246,9 @@
               if (!day) continue;
               if (!day.trips.includes(what)) day.trips.push(what);
               if (!day.refs.some(r => r.tripId === ref.tripId && r.leg === ref.leg)) day.refs.push(ref);
+              // A leg that runs past the board's range, for the join below.
+              if (i === 0 && place.fromPrev) day.fromPrev = true;
+              if (i === place.span - 1 && place.toNext) day.toNext = true;
             }
             if (!row.legs.some(l => l.tripId === ref.tripId && l.leg === ref.leg)) row.legs.push({ ...leg, tripId: ref.tripId, what });
           }
@@ -9285,11 +9288,49 @@
       if (!place) continue;
       for (let i = 0; i < place.span; i++) {
         const day = row.days[place.start + i];
-        if (day) day.off = off.reason || 'Time off';
+        if (!day) continue;
+        day.off = off.reason || 'Time off';
+        day.reason = off.reason || null;
+        day.offOf = off;
+        day.offFromPrev = i === 0 && place.fromPrev;
+        day.offToNext = i === place.span - 1 && place.toNext;
       }
+    }
+
+    /* WHICH DAYS ARE ONE BAR. A leg over several days is drawn as one bar, as
+       the board draws it, and so is one stretch of time off: a day joins the
+       day before when both are the same leg or the same time off. A day that
+       shows a rest is the first day of its leg, so it starts a bar. Time off
+       beats a trip in a cell, so it also cuts that trip's bar. At either end
+       of the board's range, a day joins on when its leg or time off runs past
+       the range. */
+    const sameLeg = (a, b) => a.refs.some(r => b.refs.some(s => s.tripId === r.tripId && s.leg === r.leg));
+    for (const row of rows) {
+      row.days.forEach((day, i) => {
+        const prev = row.days[i - 1], next = row.days[i + 1];
+        if (day.off) {
+          day.joinPrev = prev ? prev.offOf === day.offOf : !!day.offFromPrev;
+          day.joinNext = next ? next.offOf === day.offOf : !!day.offToNext;
+        } else if (day.trips.length) {
+          day.joinPrev = !day.rest && (prev ? !prev.off && sameLeg(prev, day) : !!day.fromPrev);
+          day.joinNext = next ? !next.off && !next.rest && sameLeg(day, next) : !!day.toNext;
+        }
+      });
     }
     return rows;
   }
+
+  /* The drawing a bar's first day carries: a bus for a trip, and for time off
+     the reason, by the values the driver editor's Reason list saves. A reason
+     outside that list, or none, takes the crossed-out day. */
+  const TRIP_GLYPH = '#m-directions_bus-fill';
+  const OFF_GLYPHS = {
+    vacation: '#m-beach_access-fill',
+    sick: '#m-medical_services-fill',
+    personal: '#m-person-fill',
+    suspended: '#m-block',
+  };
+  const OFF_GLYPH = '#m-event_busy-fill';
 
   /* Draws `count` of the board's `days`, from its day `first`. Every day cell
      keeps the board's own day number, so the selected trip's days light the
@@ -9396,6 +9437,16 @@
           : rest.hours < 0 ? `overlaps ${rest.after}`
           : `${Math.floor(rest.hours)}h rest after ${rest.after}${tight ? `, under ${REST_HOURS}` : ''}`;
         cell.appendChild(el('span', null, restText ?? (offAndOn ? '!' : (day.off || day.trips.join(' · ')))));
+        /* One bar per leg or time off: a day joined to its neighbour runs to
+           that edge of its cell, and the bar's first day shown carries its
+           drawing, unless that day shows a rest or an overlap instead. */
+        if (day.joinPrev) cell.classList.add('scheduler-avail__cell--from-prev');
+        if (day.joinNext) cell.classList.add('scheduler-avail__cell--to-next');
+        if ((day.off || busy) && !restText && !offAndOn && (!day.joinPrev || j === 0)) {
+          const glyph = svgUse(day.off ? (OFF_GLYPHS[day.reason] || OFF_GLYPH) : TRIP_GLYPH, '16', '0 0 32 32');
+          glyph.classList.add('scheduler-avail__glyph');
+          cell.appendChild(glyph);
+        }
         if (day.off || busy) {
           const said = offAndOn ? `${day.off}, and on ${day.trips.join(' · ')}` : (day.off || day.trips.join(' · '));
           cell.title = `${row.driver.name || ''} — ${said}${restWords ? ` · ${restWords}` : ''}`;

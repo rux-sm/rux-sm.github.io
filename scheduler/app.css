@@ -2519,14 +2519,14 @@ button.scheduler-row-head__num::after {
 }
 
 /* The three states. Free is the one being looked for, so it is empty; busy
-   and off are Carbon's tag tints, the palette the trip bar uses. A mark is
-   painted on the content box inside 2px of padding, so it sits within its cell
-   rather than filling it: a run of busy days still reads as a run, and the day
-   it starts and ends on can still be counted against the rules. */
+   and off are Carbon's tag tints, the palette the trip bar uses. A mark is a
+   pseudo-element 2px inside its cell's rules, so it sits within its cell
+   rather than filling it, and takes the theme's mark radius and an edge where
+   the theme draws one. Its fill and edge are the two properties below, which
+   a theme sets in theme.css. */
 .scheduler-avail__cell {
   padding: 2px;
   overflow: hidden;
-  background-clip: content-box;
 }
 /* The day rules in the roster: every body cell rules its start edge, the first
    included, so each day's box is the same and every mark is the same size, 2px
@@ -2534,36 +2534,60 @@ button.scheduler-row-head__num::after {
    enters the header row. It is the board's day rule, at the same half
    strength, so a driver reads as one row as a bus does beside it. */
 .scheduler-avail__cell { border-inline-start: 1px solid var(--scheduler-day-rule); }
-/* The selected trip's days tint the free cells with `--rux-layer-selected`,
-   Carbon's selected-surface token. All three set `background-color`, not the
-   `background` shorthand, which would reset the clip above; `--busy` and
-   `--off` come after `--on-day`, so a booked or day-off cell keeps its tag
-   colour. */
-.scheduler-avail__cell--on-day { background-color: var(--rux-layer-selected); }
-.scheduler-avail__cell--busy {
-  background-color: var(--rux-tag-background-blue);
-  color: var(--rux-tag-color-blue);
-}
+.scheduler-avail__cell--on-day,
+.scheduler-avail__cell--busy,
 .scheduler-avail__cell--off {
-  background-color: var(--rux-tag-background-red);
-  color: var(--rux-tag-color-red);
-}
-/* Geist-dark draws each of the three as a square with the mark radius, 2px
-   inside its cell's rules, on a pseudo-element: the cell's own clipped
-   background can take neither the radius nor an edge. Its fill and edge are
-   in theme.css. */
-[data-theme="geist-dark"] .scheduler-avail__cell--on-day,
-[data-theme="geist-dark"] .scheduler-avail__cell--busy,
-[data-theme="geist-dark"] .scheduler-avail__cell--off {
   position: relative;
 }
-[data-theme="geist-dark"] .scheduler-avail__cell--on-day::after,
-[data-theme="geist-dark"] .scheduler-avail__cell--busy::after,
-[data-theme="geist-dark"] .scheduler-avail__cell--off::after {
+.scheduler-avail__cell--on-day::after,
+.scheduler-avail__cell--busy::after,
+.scheduler-avail__cell--off::after {
   content: '';
   position: absolute;
   inset: 2px;
-  border-radius: var(--scheduler-mark-radius);
+  border: 1px solid var(--scheduler-avail-edge, transparent);
+  border-radius: var(--scheduler-mark-radius, 0);
+  background: var(--scheduler-avail-fill);
+}
+/* The selected trip's days tint the free cells with `--rux-layer-selected`,
+   Carbon's selected-surface token. `--busy` and `--off` come after `--on-day`,
+   so a booked or day-off cell keeps its tag colour. */
+.scheduler-avail__cell--on-day { --scheduler-avail-fill: var(--rux-layer-selected); }
+.scheduler-avail__cell--busy {
+  --scheduler-avail-fill: var(--rux-tag-background-blue);
+  color: var(--rux-tag-color-blue);
+}
+.scheduler-avail__cell--off {
+  --scheduler-avail-fill: var(--rux-tag-background-red);
+  color: var(--rux-tag-color-red);
+}
+/* ONE LEG OR ONE STRETCH OF TIME OFF IS ONE BAR, as the board draws a trip: a
+   day joined to the next runs to that edge of its cell and squares its
+   corners there, and the day it joins does the same and covers the day rule
+   between them, which needs its cell to let the mark out. The first day shown
+   keeps the rule beside the names, having no joined cell before it. */
+.scheduler-avail__cell--to-next::after {
+  inset-inline-end: 0;
+  border-inline-end-width: 0;
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+.scheduler-avail__cell--from-prev::after {
+  inset-inline-start: 0;
+  border-inline-start-width: 0;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+.scheduler-avail__cell--to-next + .scheduler-avail__cell--from-prev { overflow: visible; }
+.scheduler-avail__cell--to-next + .scheduler-avail__cell--from-prev::after { inset-inline-start: -1px; }
+/* A bar's first day carries a drawing in the mark's own text colour: a bus
+   for a trip, and the reason for time off. Centred in the cell, over the
+   mark. */
+.scheduler-avail__glyph {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  z-index: 1;
 }
 .scheduler-avail__cell > span {
   overflow: hidden;
@@ -2575,13 +2599,12 @@ button.scheduler-row-head__num::after {
    question there is free or not. */
 .scheduler-avail__cell > span { visibility: hidden; }
 
-/* THE REST BETWEEN BACK-TO-BACK DAYS is the one word a square carries: the
+/* THE REST BETWEEN BACK-TO-BACK DAYS is the one word a mark carries: the
    hours off before that day's trip, "15h", or "?" until both trips have
    times. Centred, in tabular figures so a column of them lines up, and over
-   Geist's painted square. Under 10 hours the square turns the warning tone,
-   the one the board's drop warning uses, mixed into the surface so the
-   primary text reads on it in every theme; it comes after `--busy` to take
-   that cell's colours. */
+   the mark. Under 10 hours the mark turns the warning tone, the one the
+   board's drop warning uses, mixed into the surface so the primary text reads
+   on it; it comes after `--busy` to take that cell's colours. */
 .scheduler-avail__cell--rest { justify-content: center; }
 .scheduler-avail__cell--rest > span {
   visibility: visible;
@@ -2591,7 +2614,7 @@ button.scheduler-row-head__num::after {
   font-variant-numeric: tabular-nums;
 }
 .scheduler-avail__cell--tight {
-  background-color: color-mix(in srgb, var(--rux-support-warning) 40%, transparent);
+  --scheduler-avail-fill: color-mix(in srgb, var(--rux-support-warning) 40%, transparent);
   color: var(--rux-text-primary);
 }
 

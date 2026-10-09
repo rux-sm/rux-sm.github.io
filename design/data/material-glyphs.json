@@ -714,6 +714,38 @@
         "path|d=M503.5-289.48q9.5-9.48 9.5-23.5t-9.48-23.52q-9.48-9.5-23.5-9.5t-23.52 9.48q-9.5 9.48-9.5 23.5t9.48 23.52q9.48 9.5 23.5 9.5t23.52-9.48ZM453-433h60v-253h-60v253Zm27.27 353q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Z"
       ]
     },
+    "block@960": {
+      "name": "block",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/block.svg",
+      "geometry": [
+        "path|d=M324-111.5Q251-143 197-197t-85.5-127Q80-397 80-480t31.5-156Q143-709 197-763t127-85.5Q397-880 480-880t156 31.5Q709-817 763-763t85.5 127Q880-563 880-480t-31.5 156Q817-251 763-197t-127 85.5Q563-80 480-80t-156-31.5ZM480-140q61.01 0 117.51-20.5Q654-181 699-220L220-699q-38 46-59 102.17T140-480q0 142.37 98.81 241.19Q337.63-140 480-140Zm259-121q37-45 59-101.49 22-56.5 22-117.51 0-142.38-98.81-241.19T480-820q-60.66 0-116.83 21T261-739l478 478ZM480-480Z"
+      ]
+    },
+    "block-fill@960": {
+      "name": "block-fill",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/block-fill.svg",
+      "geometry": [
+        "path|d=M324-111.5Q251-143 197-197t-85.5-127Q80-397 80-480t31.5-156Q143-709 197-763t127-85.5Q397-880 480-880t156 31.5Q709-817 763-763t85.5 127Q880-563 880-480t-31.5 156Q817-251 763-197t-127 85.5Q563-80 480-80t-156-31.5ZM699-220q11-9 21.5-18.86Q731-248.73 740-260L260-740q-11.27 9-21.14 19.5Q229-710 220-699l479 479Z"
+      ]
+    },
+    "event_busy@960": {
+      "name": "event_busy",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/event_busy.svg",
+      "geometry": [
+        "path|d=m381-218-43-43 100-99-100-99 43-43 99 100 99-100 43 43-100 99 100 99-43 43-99-100-99 100ZM120-80v-740h125v-60h65v60h340v-60h65v60h125v740H120Zm60-60h600v-430H180v430Zm0-490h600v-130H180v130Zm0 0v-130 130Z"
+      ]
+    },
+    "event_busy-fill@960": {
+      "name": "event_busy-fill",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/event_busy-fill.svg",
+      "geometry": [
+        "path|d=m381-218-43-43 100-99-100-99 43-43 99 100 99-100 43 43-100 99 100 99-43 43-99-100-99 100ZM120-80v-740h125v-60h65v60h340v-60h65v60h125v740H120Zm60-60h600v-430H180v430Z"
+      ]
+    },
     "fit_screen@960": {
       "name": "fit_screen",
       "size": "960",
@@ -760,6 +792,22 @@
       "source": "node_modules/@material-symbols/svg-400/sharp/grid_view-fill.svg",
       "geometry": [
         "path|d=M120-510v-330h330v330H120Zm0 390v-330h330v330H120Zm390-390v-330h330v330H510Zm0 390v-330h330v330H510Z"
+      ]
+    },
+    "medical_services@960": {
+      "name": "medical_services",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/medical_services.svg",
+      "geometry": [
+        "path|d=M80-80v-640h240v-160h320v160h240v640H80Zm60-60h680v-520H140v520Zm240-580h200v-100H380v100ZM140-140v-520 520Zm310-230v120h60v-120h120v-60H510v-120h-60v120H330v60h120Z"
+      ]
+    },
+    "medical_services-fill@960": {
+      "name": "medical_services-fill",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/medical_services-fill.svg",
+      "geometry": [
+        "path|d=M80-80v-640h240v-160h320v160h240v640H80Zm300-640h200v-100H380v100Zm70 350v120h60v-120h120v-60H510v-120h-60v120H330v60h120Z"
       ]
     },
     "airline_seat_flat@960": {
@@ -1064,6 +1112,22 @@
       "source": "node_modules/@material-symbols/svg-400/sharp/brush-fill.svg",
       "geometry": [
         "path|d=M215-117q-34 0-67-11.5T90-166q35-12 50-35t15-62q0-44 30.5-74.5T260-368q44 0 74.5 30.5T365-263q0 64-43.5 105T215-117Zm230-237-90-95 408-408 92 93-410 410Z"
+      ]
+    },
+    "beach_access@960": {
+      "name": "beach_access",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/beach_access.svg",
+      "geometry": [
+        "path|d=M794-128 531-391l46-46 263 263-46 46Zm-570-46q-53-58-78.5-128.5T120-446q0-78 29-152t88-133q59-59 133.5-88T523-848q73 0 143.5 25.5T794-744L224-174Zm3-89 69-70q-16-22-32-47.5t-29.5-54Q221-463 212-493.5T200-556q-27 74-18.5 151T227-263Zm117-115 246-248q-46-36-93.5-56.5t-90.5-27q-43-6.5-76.5 0T278-685q-18 18-23 51.5t2.5 75q7.5 41.5 29 88T344-378Zm291-294 72-69q-66-42-143.5-49T412-768q30 3 59.5 12t58 21.5q28.5 12.5 55 28.5t50.5 34Z"
+      ]
+    },
+    "beach_access-fill@960": {
+      "name": "beach_access-fill",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/beach_access-fill.svg",
+      "geometry": [
+        "path|d=M795-128 532-391l46-46 263 263-46 46Zm-570-46q-88-97-102-223t43-236q2 33 14.5 73.5T216-475q23 44 55 91t72 92L225-174Zm159-159q-49-50-85-106.5t-54.5-109Q226-601 226-645t22-68q24-26 69.5-27T418-723q55 18 113 53.5T636-585L384-333Zm293-293q-44-40-90.5-72t-92-54.5Q449-775 407-787t-76-13q111-60 239-46t225 102L677-626Z"
       ]
     },
     "pause_circle-fill@960": {

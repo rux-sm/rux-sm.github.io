@@ -16,7 +16,8 @@
    as sent, offered while the message can be copied and the driver has not
    answered one of its trips, sets each ticked leg the driver has not
    answered to Pending response through sync_trip_driver_statuses, which
-   takes the trip's whole crew and changes only the rows marked dirty.
+   takes the trip's whole crew, read again for the mark, and changes only
+   the rows marked dirty.
    ========================================================================== */
 (() => {
   'use strict';
@@ -53,7 +54,7 @@
   const LEG_QUERY = 'id,role,report_time,instructions,trip_assignments(id,leg,active_roles,buses(number),'
     + 'trip_drivers(driver_id,role,drivers(name,short_name)),'
     + 'trips(id,destination,trip_type,start_date,end_date,return_start_date,return_end_date,spot_time,cancelled_at,'
-    + 'trip_stops(leg,type,name,address,spot,position),trip_documents(id,label,created_at),trip_assignments(id,leg,active_roles,trip_drivers(driver_id,role))))';
+    + 'trip_stops(leg,type,name,address,spot,position),trip_documents(id,label,created_at)))';
 
   let driver = null;
   let legs = [];            // [{ key, assignmentId, trip, leg, role, start, end, ... }]
@@ -106,6 +107,16 @@
     if (r.error) throw r.error;
     for (const s of r.data || []) found.set(statusKey(s.tripId, s.driverId, s.leg, s.role), s.status);
     return found;
+  }
+  // Each trip's crew as it stands now, by trip: its buses, and who is in their seats.
+  async function readCrews(tripIds) {
+    const crews = new Map(tripIds.map(id => [id, []]));
+    if (!tripIds.length) return crews;
+    const { data, error } = await client.from('trip_assignments')
+      .select('trip_id,leg,active_roles,trip_drivers(driver_id,role)').in('trip_id', tripIds);
+    if (error) throw error;
+    for (const a of data || []) crews.get(a.trip_id)?.push(a);
+    return crews;
   }
   const statusOf = l => statuses.get(statusKey(l.trip.id, driver.id, l.leg, l.role)) || 'off';
   const STATUS_WORDS = { confirmed: 'Accepted', declined: 'Declined', 'pending-response': 'Pending response' };
@@ -249,8 +260,11 @@
   /* Marks each ticked leg the driver has not answered Pending response. The
      answers are read once more first, since the driver may have answered
      since the page read them. The whole crew of each trip is sent, as
-     sync_trip_driver_statuses asks, with only those legs marked dirty. A
-     trip that could not be marked keeps the offer. */
+     sync_trip_driver_statuses asks, with only those legs marked dirty, and
+     the crew is read now too, because the function deletes the status of a
+     seat its list leaves out and a seat may have been filled since the
+     driver was picked. A leg whose seat is no longer this driver's is left
+     alone and said. A trip that could not be marked keeps the offer. */
   async function mark() {
     const note = $('scheduler-send-copied');
     try { statuses = await readStatuses(); } catch {
@@ -258,22 +272,29 @@
       return;
     }
     const chosen = unanswered();
+    let crews;
+    try { crews = await readCrews([...new Set(chosen.map(l => l.trip.id))]); } catch {
+      note.textContent = "The trips' crews could not be read, so no trip was marked. Try again.";
+      return;
+    }
     const targets = new Set(chosen.map(l => statusKey(l.trip.id, driver.id, l.leg, l.role)));
-    let marked = 0;
+    const sent = new Set();   // the targets found in a seat, and so marked dirty
     let failed = false;
-    for (const trip of new Map(chosen.map(l => [l.trip.id, l.trip])).values()) {
-      const list = (trip.trip_assignments || []).flatMap(a => activeSeats(a).map(d => {
-        const key = statusKey(trip.id, d.driver_id, a.leg, d.role);
-        const now = statuses.get(key) || 'off';
-        const dirty = targets.has(key) && now !== 'pending-response';
-        if (dirty) marked++;
-        return { driverId: d.driver_id, leg: a.leg || 'outbound', role: d.role || 'driver', status: dirty ? 'pending-response' : now, dirty };
+    for (const [tripId, crew] of crews) {
+      const list = crew.flatMap(a => activeSeats(a).map(d => {
+        const key = statusKey(tripId, d.driver_id, a.leg, d.role);
+        const dirty = targets.has(key);
+        if (dirty) sent.add(key);
+        return { driverId: d.driver_id, leg: a.leg || 'outbound', role: d.role || 'driver', status: dirty ? 'pending-response' : statuses.get(key) || 'off', dirty };
       }));
       if (!list.some(s => s.dirty)) continue;
-      const r = await client.rpc('sync_trip_driver_statuses', { p_trip_id: trip.id, p_statuses: list });
+      const r = await client.rpc('sync_trip_driver_statuses', { p_trip_id: tripId, p_statuses: list });
       if (r.error) failed = true;
-      else for (const s of list) if (s.dirty) statuses.set(statusKey(trip.id, s.driverId, s.leg, s.role), 'pending-response');
+      else for (const s of list) if (s.dirty) statuses.set(statusKey(tripId, s.driverId, s.leg, s.role), 'pending-response');
     }
+    const marked = sent.size;
+    const gone = chosen.filter(l => !sent.has(statusKey(l.trip.id, driver.id, l.leg, l.role))).length;
+    const lost = gone ? ` The driver's seat has changed on ${tripsWord(gone)}, which ${gone === 1 ? 'was' : 'were'} not marked. Reload the page to read their trips again.` : '';
     if (marked && !failed) {
       const channel = client.channel('scheduler-trips');
       channel.subscribe(state => {
@@ -282,7 +303,8 @@
       });
     }
     note.textContent = failed ? 'Some trips could not be marked Pending response. Try again, or set them from the trip.'
-      : marked ? `${marked} ${marked === 1 ? 'trip is' : 'trips are'} marked Pending response.`
+      : marked ? `${marked} ${marked === 1 ? 'trip is' : 'trips are'} marked Pending response.${lost}`
+      : gone ? `Nothing was marked.${lost}`
       : 'Nothing was marked: the driver has answered.';
     offerMark();
     drawList();

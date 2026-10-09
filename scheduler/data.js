@@ -12145,11 +12145,12 @@
     swapFrame(url);
   }
 
-  /* WHAT A STORED ITINERARY MARKS. Opened from a Departures line it is the
-     sheet a leg's drivers are handed, so it carries what the itinerary this
-     app draws carries: a Printed box beside Print, and the question after a
-     print, each writing `itinerary_printed` on every seat of the leg, which
-     the trip's checklist and Departures read. A file opened any other way
+  /* WHAT A STORED ITINERARY MARKS. Opened from a Departures line or the
+     checklist it is the sheet a leg's drivers are handed, so after a print
+     the board asks, as the itinerary this app draws asks, and Yes writes
+     `itinerary_printed` on every seat of the leg, which the trip's checklist
+     and Departures read. The toolbar carries no box for it, because the
+     question is the one place it is marked. A file opened any other way
      marks nothing. */
   function itineraryMarkOf(trip, leg) {
     const rows = (trip?.trip_assignments || []).filter(a => (a.leg || 'outbound') === (leg || 'outbound'))
@@ -12163,41 +12164,14 @@
   }
   const isMarked = mark => mark.rows.every(seat => seat.itinerary_printed);
 
-  /* The tick shows at once and goes back to what the seats said if the write
-     fails, so no driver reads as handed a sheet the database never heard of. */
-  async function markItinerary(mark, want) {
-    const was = mark.rows.map(seat => Boolean(seat.itinerary_printed));
-    const show = values => {
-      mark.rows.forEach((seat, i) => { seat.itinerary_printed = values[i]; });
-      const box = document.getElementById('scheduler-viewer-marked');
-      if (box && viewerMark === mark) box.checked = isMarked(mark);
-    };
-    show(was.map(() => want));
+  // The seats in hand follow the write, so a second print of the same file does not ask again.
+  async function markItinerary(mark) {
     const { error } = client
-      ? await client.from('trip_drivers').update({ itinerary_printed: want }).in('id', mark.rows.map(seat => seat.id))
+      ? await client.from('trip_drivers').update({ itinerary_printed: true }).in('id', mark.rows.map(seat => seat.id))
       : { error: { message: 'Not connected.' } };
-    if (error) { show(was); toast('error', 'The tick did not save', error.message); return; }
-    toast('success', want ? 'Itinerary marked printed' : 'Itinerary no longer marked printed');
-  }
-
-  // The Printed box, built as print.js builds a form's, for the same place in the toolbar.
-  function printedCell(mark) {
-    const cell = el('div', 'scheduler-print__cell scheduler-print__cell--check');
-    const box = el('div', 'rux--form-item rux--checkbox-wrapper');
-    const input = el('input', 'rux--checkbox');
-    input.type = 'checkbox';
-    input.id = 'scheduler-viewer-marked';
-    input.checked = isMarked(mark);
-    const label = el('label', 'rux--checkbox-label');
-    label.htmlFor = input.id;
-    label.appendChild(el('div', 'rux--checkbox-label-text', 'Printed'));
-    input.addEventListener('change', () => void markItinerary(mark, input.checked));
-    box.append(input, label);
-    cell.appendChild(box);
-    // The cell is what looks like the control, so a press anywhere in it ticks the box.
-    cell.addEventListener('click', e => { if (!e.target.closest('label, input')) input.click(); });
-    cell.setAttribute('data-beside-print', '');
-    return cell;
+    if (error) { toast('error', 'The itinerary was not marked.', error.message); return; }
+    mark.rows.forEach(seat => { seat.itinerary_printed = true; });
+    toast('success', 'Itinerary marked printed');
   }
 
   /* After a print the board asks, by name, in the dialog it asks about a
@@ -12211,7 +12185,7 @@
     const who = presenceNames(mark.names.map(name => ({ name })));
     const question = mark.rows.length === 1 && who ? `Mark ${who}'s itinerary as printed?`
       : `Mark the itinerary as printed for ${who || 'this trip'}?`;
-    if (await ask(question)) void markItinerary(mark, true);
+    if (await ask(question)) void markItinerary(mark);
   }
 
   /* `trip` names the file as file-names.js names every file, so a copy saved
@@ -12239,7 +12213,6 @@
     viewerNewTab.href = documentLink(doc.id);
     viewerDocId = String(doc.id);
     viewerMark = mark;
-    if (mark) setFormControls([printedCell(mark)]);
     showViewer(opener);
     viewerClose?.focus();
     // The file showing, or downloading, is not fetched again, so its zoom stays.

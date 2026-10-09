@@ -1,9 +1,9 @@
 /* ==========================================================================
    departures.js — WHAT A LEG LEAVING ON A DAY STILL NEEDS
    --------------------------------------------------------------------------
-   The one copy of the Departures panel's rules: which legs leave on a day,
-   and for one leg its page, a block for the trip and a block for each bus,
-   every status one line. A line is
+   The one copy of the Departures panel's rules: which days a day preps for,
+   which legs leave on a day, and for one leg its page, a block for the trip
+   and a block for each bus, every status one line. A line is
 
      { key, state, label, value, at, by, action, mark }
 
@@ -48,6 +48,21 @@
   const step = (key, label, row, column, action) => (row?.[column]
     ? line(key, 'done', label, { at: row[`${column}_at`] ?? null, by: row[`${column}_by`] ?? null })
     : line(key, 'todo', label, { action, mark: column }));
+
+  /* The days `today` preps for, each as `YYYY-MM-DD`: tomorrow, and every
+     day after it until the office is open again, because nobody is in on a
+     Saturday or a Sunday to prep the day that follows. A Friday preps
+     Saturday, Sunday and Monday. */
+  function prepDays(today) {
+    const [y, m, d] = String(today).slice(0, 10).split('-').map(Number);
+    const at = new Date(y, m - 1, d);
+    const days = [];
+    do {
+      at.setDate(at.getDate() + 1);
+      days.push(`${at.getFullYear()}-${String(at.getMonth() + 1).padStart(2, '0')}-${String(at.getDate()).padStart(2, '0')}`);
+    } while (at.getDay() === 0 || at.getDay() === 6);
+    return days;
+  }
 
   /* The legs that leave on `day`, soonest trip first. A cancelled trip and a
      placeholder leave nothing. */
@@ -175,5 +190,5 @@
     return { legs: pages.length, ready: pages.filter(p => p.left === 0).length };
   }
 
-  window.SchedulerDepartures = { legsOn, page, summary };
+  window.SchedulerDepartures = { prepDays, legsOn, page, summary };
 })();

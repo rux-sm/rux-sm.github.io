@@ -29,10 +29,11 @@
    through, with Undo; Add a to-do, above them, opens a new row's form at
    the head of the list. Alerts
    holds the computed rows, by the day each trip leaves. Prep is
-   departures-panel.js's view, Departures, and its tab says how many of
-   tomorrow's legs are not ready yet. Everyone on the staff sees every row. The
-   count on the action is the Overdue and Today stored rows, every computed
-   row, and tomorrow's departures while one is not ready.
+   departures-panel.js's view, Departures, and its tab says how many of the
+   legs to prep for, tomorrow's and on a Friday the weekend's and Monday's,
+   are not ready yet. Everyone on the staff sees every row. The count on the
+   action is the Overdue and Today stored rows, every computed row, and
+   those departures while one is not ready.
 
    The page reads the trips the rules need itself, because only the board
    holds them otherwise: every live trip for the follow-ups, and the buses,
@@ -566,7 +567,7 @@
   document.body.appendChild(menu);
 
   /* Each tab's word, with how many it holds still open in a pill after it:
-     the open stored rows, the computed rows, and tomorrow's legs not ready
+     the open stored rows, the computed rows, and the legs to prep for not ready
      yet, which together are also one of what is due. A tab holding nothing
      is its word. The space parts the two in the tab's name as it is read
      out; the pill's own margin parts them on the page. */

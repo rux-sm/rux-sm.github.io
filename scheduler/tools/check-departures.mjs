@@ -7,7 +7,7 @@ const window = {};
 for (const file of ['billing.js', 'follow-up.js', 'checklist.js', 'requirements.js', 'leg-facts.js', 'to-do.js', 'departures.js']) {
   runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), { window });
 }
-const { legsOn, page, summary } = window.SchedulerDepartures;
+const { prepDays, legsOn, page, summary } = window.SchedulerDepartures;
 const { statusKey } = window.SchedulerLegFacts;
 
 let failed = 0;
@@ -101,6 +101,10 @@ const back = page(split, 'return', read);
 expect('a split trip\'s later leg is its own page on its own day, with the trip\'s lines already done',
   [legsOn([split], day(1)).map(l => l.leg), legsOn([split], day(3)).map(l => l.leg), back.legName, said(back.lines).at(-1), said(back.buses[0].crew[0].lines).slice(1)],
   [['outbound'], ['return'], 'Pickup', 'done Driver info sent to Dayna', ['todo Itinerary -> forms:itinerary', 'todo Envelope -> forms:envelope', 'todo Reminder -> contacts']]);
+
+expect('a working day preps for tomorrow, and a Friday, a Saturday and a Sunday for every day until the office is open again',
+  [prepDays('2026-10-07'), prepDays('2026-10-09'), prepDays('2026-10-10'), prepDays('2026-10-11'), prepDays('2026-10-30')],
+  [['2026-10-08'], ['2026-10-10', '2026-10-11', '2026-10-12'], ['2026-10-11', '2026-10-12'], ['2026-10-12'], ['2026-10-31', '2026-11-01', '2026-11-02']]);
 
 expect('the summary counts the day\'s legs and the ready ones',
   summary([trip, { ...trip, id: 'u', confirmed: false }], day(1), read), { legs: 2, ready: 1 });

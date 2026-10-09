@@ -2,8 +2,11 @@
    departures-panel.js — DEPARTURES, IN THE TO-DO PANEL
    --------------------------------------------------------------------------
    The To do panel's switch, which to-do-list.js draws, opens this from its
-   Prep tab in the same panel and shuts it again: the legs leaving on a day,
-   tomorrow first, in one list, soonest first. Each leg is a tile that
+   Prep tab in the same panel and shuts it again: the legs leaving on the
+   days to prep for, soonest first. That is tomorrow, and on a Friday the
+   weekend and Monday with it, each day under its own heading, since nobody
+   is in to prep until Monday; the arrows and the calendar go to any one
+   day. Each leg is a tile that
    opens: Design's tile around an item of its accordion. Closed, as every leg
    is until it is pressed, it is its place and when it leaves, how many lines
    it has left or Ready, and a quiet line of its customer. Open, one at a
@@ -20,10 +23,10 @@
    marked by hand here: the mark of a step still to do is a button, which
    asks in the line and writes on a yes.
 
-   The day's trips are read fresh when the panel opens, when the day changes
+   The days' trips are read fresh when the panel opens, when the day changes
    and when a step, a seat or a trip changes, on the `scheduler-departures`
-   channel. Tomorrow's count, how many legs leave and how many are ready, is
-   kept for the switch's Prep tab and said in
+   channel. The count for the days to prep for, how many legs leave and how
+   many are ready, is kept for the switch's Prep tab and said in
    `scheduler:departures-summary`.
 
    Needs billing.js, follow-up.js, checklist.js, requirements.js,
@@ -75,8 +78,11 @@
   const placeName = dest => String(dest || '').replace(/,?\s+TX\s*$/i, '') || 'Trip';
 
   // -- what is known --------------------------------------------------------
-  let day = dayFrom(1);
-  let pages = [];           // the day's legs, as departures.js's pages
+  // The days to prep for today, as departures.js gives them.
+  const prepDays = () => Departures.prepDays(dayFrom(0));
+  const prepping = () => days.join() === prepDays().join();
+  let days = prepDays();    // the days listed: the days to prep for, or the one day stepped or picked to
+  let pages = [];           // the days' legs, as departures.js's pages
   let buses = new Map();    // id -> bus, with its number
   let staff = new Map();    // profile id -> profile, for a step's face
   let openKey = null;       // the open leg's key, `tripId:leg`, or none
@@ -85,7 +91,7 @@
   let asking = null;          // the step whose line asks whether to mark it done, by that id
   let failure = '';
   let shown = false;
-  let tomorrow = { legs: 0, ready: 0, known: false };
+  let ahead = { legs: 0, ready: 0, known: false };   // the count for the days to prep for
 
   // -- reading --------------------------------------------------------------
   const STEPS = ['envelope_printed', 'trip_reminder_sent', 'itinerary_printed', 'hos_form_printed', 'driver_forms_printed'];
@@ -136,6 +142,10 @@
       .sort((a, b) => String(leavesAt(a) || '99').localeCompare(String(leavesAt(b) || '99')));
   }
 
+  // Several days' legs, one day after another.
+  const readDays = async which => (await Promise.all(which.map(readDay))).flat();
+  const countOf = rows => ({ legs: rows.length, ready: rows.filter(p => p.left === 0).length });
+
   // When a leg's bus is spotted, or else its first time, as "HH:MM".
   function leavesAt(page) {
     const stops = (page.trip.trip_stops || []).filter(s => (s.leg || 'outbound') === page.leg)
@@ -150,33 +160,32 @@
     if (loading) { again = true; return loading; }
     loading = (async () => {
       try {
-        pages = await readDay(day);
+        pages = await readDays(days);
         failure = '';
       } catch (e) {
         failure = `Prep did not load. ${e?.message || e}`;
       }
-      if (day === dayFrom(1)) said({ legs: pages.length, ready: pages.filter(p => p.left === 0).length });
+      if (prepping()) said(countOf(pages));
       draw();
     })();
     await loading;
     loading = null;
     if (again) { again = false; return load(); }
   }
-  // Tomorrow's count alone, for the To do list's line while this view is shut or on another day.
+  // The count alone for the days to prep for, for the switch while this view is shut or on another day.
   async function count() {
     try {
-      const rows = await readDay(dayFrom(1));
-      said({ legs: rows.length, ready: rows.filter(p => p.left === 0).length });
-    } catch { /* the line keeps what it last said */ }
+      said(countOf(await readDays(prepDays())));
+    } catch { /* the switch keeps what it last said */ }
   }
   function said(now) {
-    tomorrow = { ...now, known: true };
+    ahead = { ...now, known: true };
     document.dispatchEvent(new CustomEvent('scheduler:departures-summary'));
   }
   let soon = null;
   const refresh = () => {
     clearTimeout(soon);
-    soon = setTimeout(() => { if (shown) load(); if (!shown || day !== dayFrom(1)) count(); }, 1500);
+    soon = setTimeout(() => { if (shown) load(); if (!shown || !prepping()) count(); }, 1500);
   };
 
   // -- the frame ------------------------------------------------------------
@@ -431,24 +440,35 @@
     return tile;
   }
 
+  // One day's legs as a list of tiles.
+  const legList = rows => {
+    const ul = el('ul', 'scheduler-to-do__rows scheduler-departures__legs');
+    ul.setAttribute('role', 'list');
+    for (const page of rows) ul.appendChild(legItem(page));
+    return ul;
+  };
   const focusHeld = hold => [...list.querySelectorAll('[data-hold]')].find(n => n.dataset.hold === hold)?.focus();
 
   function draw() {
-    dayButton.textContent = dayWords(day);
-    dayInput.value = day;
+    const several = days.length > 1;
+    dayButton.textContent = several ? `${longDay.format(parseISO(days[0]))} – ${longDay.format(parseISO(days.at(-1)))}` : dayWords(days[0]);
+    dayInput.value = days[0];
     error.textContent = failure;
     error.hidden = !failure;
-    if (!pages.length) {
+    if (!pages.length && (failure || loading || !several)) {
       list.replaceChildren(failure ? '' : el('p', 'scheduler-to-do__none', loading ? 'Loading…' : 'Nothing leaves that day.'));
       return;
     }
     // The list is built again, so a heading that had the focus is given it back.
     const held = list.contains(document.activeElement) ? document.activeElement.dataset?.hold : null;
     steps.clear();
-    const ul = el('ul', 'scheduler-to-do__rows scheduler-departures__legs');
-    ul.setAttribute('role', 'list');
-    for (const page of pages) ul.appendChild(legItem(page));
-    list.replaceChildren(ul);
+    /* Several days are each under their own heading, and a day nothing leaves
+       on says so, since on a Friday that is an answer about the weekend. */
+    list.replaceChildren(...(several ? days.flatMap(d => {
+      const rows = pages.filter(p => p.day === d);
+      return [el('h3', 'scheduler-to-do__group', dayWords(d)),
+        rows.length ? legList(rows) : el('p', 'scheduler-to-do__none', 'Nothing leaves.')];
+    }) : [legList(pages)]));
     if (asking && !steps.has(asking)) asking = null;
     if (held) focusHeld(held);
   }
@@ -457,7 +477,7 @@
   const todoBody = () => panel.querySelector('.scheduler-to-do__body');
   function open() {
     shown = true;
-    day = dayFrom(1);
+    days = prepDays();
     openKey = null;
     unfolded.clear();
     asking = null;
@@ -475,9 +495,10 @@
     if (toDo) toDo.hidden = false;
     panel.setAttribute('aria-label', 'To do');
   }
-  const go = to => { day = to; openKey = null; unfolded.clear(); asking = null; pages = []; draw(); load(); };
-  before.addEventListener('click', () => go(dayFrom(-1, parseISO(day))));
-  after.addEventListener('click', () => go(dayFrom(1, parseISO(day))));
+  // The arrows step off either end of what is listed, to one day.
+  const go = to => { days = [to]; openKey = null; unfolded.clear(); asking = null; pages = []; draw(); load(); };
+  before.addEventListener('click', () => go(dayFrom(-1, parseISO(days[0]))));
+  after.addEventListener('click', () => go(dayFrom(1, parseISO(days.at(-1)))));
   dayButton.addEventListener('click', () => { try { dayInput.showPicker(); } catch { dayInput.focus(); } });
   dayInput.addEventListener('change', () => { if (/^\d{4}-\d{2}-\d{2}$/.test(dayInput.value)) go(dayInput.value); });
   /* One leg open at a time, as the Tasks tab's rows are: Design's accordion
@@ -558,5 +579,5 @@
     listen();
   })();
 
-  window.SchedulerDeparturesPanel = { open, close, summary: () => ({ ...tomorrow }) };
+  window.SchedulerDeparturesPanel = { open, close, summary: () => ({ ...ahead }) };
 })();

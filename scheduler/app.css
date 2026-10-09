@@ -4534,11 +4534,11 @@ html:has(.scheduler-page[data-takeover]) {
 
 /* ══ Departures ═══════════════════════════════════════════════════════════
    The To do panel's Prep view, drawn by departures-panel.js: the day, then
-   the legs leaving on it in one list, each an item of Design's accordion.
-   Closed, a leg is its place and time, what is left and its customer; open,
-   it holds a block for the trip and one for each bus. Every status is one
-   line, its mark on the left and its time, its face or its action on the
-   right. */
+   the legs leaving on it in one list, each a tile that opens, Design's tile
+   around an item of its accordion. Closed, a leg is its place and time, what
+   is left and its customer; open, it holds a block for the trip and one for
+   each bus. Every status is one line, its mark on the left and its time, its
+   face or its action on the right. */
 .scheduler-departures { color: var(--rux-text-primary); }
 .scheduler-departures[hidden] { display: none; }
 .scheduler-to-do__body[hidden] { display: none; }
@@ -4549,15 +4549,19 @@ html:has(.scheduler-page[data-takeover]) {
 /* The list is a cell of the panel's grid, which is as wide as its longest
    line unless it may shrink. */
 .scheduler-departures__list { min-inline-size: 0; }
+/* The legs stand a step apart. A leg's tile keeps no padding of its own:
+   its heading fills it to the edge, so a press anywhere on the closed tile
+   opens it and the hover is the whole tile's, cut to the tile's corners. */
+.scheduler-departures__legs { display: flex; flex-direction: column; gap: var(--rux-spacing-03); }
+.scheduler-departures__leg { min-block-size: 0; padding: 0; overflow: hidden; }
 /* A leg's heading: its place and time, ended in an ellipsis where they run
    long, with what is left at the line's end. */
 .scheduler-departures__summary { display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-03); }
 .scheduler-departures__place { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .scheduler-departures__place > strong { font-weight: 600; }
-/* The open leg: a block for the trip, then one for each bus, a line between them. */
+/* The open leg: a block for the trip, then one for each bus, a line over each. */
 .scheduler-departures__page { display: flex; flex-direction: column; }
 .scheduler-departures__block { padding-block: var(--rux-spacing-03); border-block-start: 1px solid var(--rux-border-subtle-01); }
-.scheduler-departures__block:first-child { padding-block-start: 0; border-block-start: 0; }
 .scheduler-departures__block:last-child { padding-block-end: 0; }
 .scheduler-departures__top { display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-03); min-block-size: 2rem; font-size: 0.875rem; }
 /* Trip ready is a line that is pressed: its mark and words as a done line's

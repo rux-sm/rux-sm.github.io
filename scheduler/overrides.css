@@ -1090,6 +1090,17 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 .scheduler-to-do .rux--accordion__item--active > .rux--accordion__wrapper { padding-block: 0 var(--rux-spacing-04); }
 /* A group of rows ends without a line, as a group ending in a computed row does. */
 .scheduler-to-do .rux--accordion__item:last-child { border-block-end: 0; }
+/* A leg of the Prep tab is an accordion item inside a tile, which is its
+   box: the item draws no line of its own, and its heading and its content
+   keep the tile's 16px from the tile's edge. */
+.scheduler-departures .rux--accordion__item { border-block-start: 0; }
+.scheduler-departures .rux--accordion__heading {
+  inline-size: 100%;
+  margin-inline: 0;
+  padding: var(--rux-spacing-05);
+}
+.scheduler-departures .rux--accordion__content { padding-inline: var(--rux-spacing-05); }
+.scheduler-departures .rux--accordion__item--active > .rux--accordion__wrapper { padding-block: 0 var(--rux-spacing-05); }
 
 /* The To do panel's switch has three tabs, each with a count after its word.
    Carbon gives a switcher's options one width, which cuts the longest with

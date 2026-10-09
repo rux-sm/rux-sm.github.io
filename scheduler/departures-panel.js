@@ -3,13 +3,13 @@
    --------------------------------------------------------------------------
    The To do panel's switch, which to-do-list.js draws, opens this from its
    Prep tab in the same panel and shuts it again: the legs leaving on a day,
-   tomorrow first, in one list, soonest first. Each leg is an item of
-   Design's accordion. Closed, it is its place and when it leaves, how many
-   lines it has left or Ready, and a quiet line of its customer. Open, one at
-   a time, it holds the leg's page as departures.js gives it: the trip's
-   lines, then a block for each bus with its crew. The day opens on its first
-   leg with something left, and a trip whose own lines are all done folds
-   them into one line, Trip ready, which a press unfolds.
+   tomorrow first, in one list, soonest first. Each leg is a tile that
+   opens: Design's tile around an item of its accordion. Closed, as every leg
+   is until it is pressed, it is its place and when it leaves, how many lines
+   it has left or Ready, and a quiet line of its customer. Open, one at a
+   time, it holds the leg's page as departures.js gives it: the trip's lines,
+   then a block for each bus with its crew. A trip whose own lines are all
+   done folds them into one line, Trip ready, which a press unfolds.
 
    It only shows status. Every line is a mark, what it is, then when it was
    done and whose face did it, or the word for doing it, which is a link to
@@ -76,7 +76,7 @@
   let pages = [];           // the day's legs, as departures.js's pages
   let buses = new Map();    // id -> bus, with its number
   let staff = new Map();    // profile id -> profile, for a step's face
-  let openKey;              // the open leg's key, `tripId:leg`: null once shut by hand, not set until the day is read
+  let openKey = null;       // the open leg's key, `tripId:leg`, or none
   const unfolded = new Set(); // the legs whose finished trip lines are shown
   let failure = '';
   let shown = false;
@@ -355,13 +355,13 @@
     return block;
   }
 
-  /* A leg, as an item of Design's accordion, whose script opens and shuts
-     it. The heading is the closed leg: its place and when it leaves, what is
-     left, and its customer under them. */
+  /* A leg, as one of Design's tiles around an item of its accordion, whose
+     script opens and shuts it. The heading is the closed leg: its place and
+     when it leaves, what is left, and its customer under them. */
   function legItem(page) {
     const key = keyOf(page);
     const open = key === openKey;
-    const li = el('li', `rux--accordion__item scheduler-departures__leg${open ? ' rux--accordion__item--active' : ''}`);
+    const li = el('li', `rux--accordion__item${open ? ' rux--accordion__item--active' : ''}`);
     li.dataset.key = key;
     const heading = el('button', 'rux--accordion__heading');
     heading.type = 'button';
@@ -389,7 +389,11 @@
     if (page.missing) content.appendChild(missingBlock(page));
     wrapper.appendChild(content);
     li.append(heading, wrapper);
-    return li;
+    const rows = el('ul', 'rux--accordion rux--accordion--end');
+    rows.appendChild(li);
+    const tile = el('li', 'rux--tile scheduler-departures__leg');
+    tile.appendChild(rows);
+    return tile;
   }
 
   function draw() {
@@ -401,11 +405,9 @@
       list.replaceChildren(failure ? '' : el('p', 'scheduler-to-do__none', loading ? 'Loading…' : 'Nothing leaves that day.'));
       return;
     }
-    // The day opens on the work: its first leg with something left.
-    if (openKey === undefined) { const first = pages.find(p => p.left); openKey = first ? keyOf(first) : null; }
     // The list is built again, so a heading that had the focus is given it back.
     const held = list.contains(document.activeElement) ? document.activeElement.dataset?.hold : null;
-    const ul = el('ul', 'rux--accordion rux--accordion--end scheduler-to-do__rows');
+    const ul = el('ul', 'scheduler-to-do__rows scheduler-departures__legs');
     ul.setAttribute('role', 'list');
     for (const page of pages) ul.appendChild(legItem(page));
     list.replaceChildren(ul);
@@ -417,7 +419,7 @@
   function open() {
     shown = true;
     day = dayFrom(1);
-    openKey = undefined;
+    openKey = null;
     unfolded.clear();
     const toDo = todoBody();
     if (toDo) toDo.hidden = true;
@@ -433,7 +435,7 @@
     if (toDo) toDo.hidden = false;
     panel.setAttribute('aria-label', 'To do');
   }
-  const go = to => { day = to; openKey = undefined; unfolded.clear(); pages = []; draw(); load(); };
+  const go = to => { day = to; openKey = null; unfolded.clear(); pages = []; draw(); load(); };
   before.addEventListener('click', () => go(dayFrom(-1, parseISO(day))));
   after.addEventListener('click', () => go(dayFrom(1, parseISO(day))));
   dayButton.addEventListener('click', () => { try { dayInput.showPicker(); } catch { dayInput.focus(); } });

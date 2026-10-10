@@ -15,7 +15,7 @@ thread is read in depth. `rules.md` there is the office's policy.
 | Tool | For | Never for |
 | :--- | :--- | :--- |
 | Missive connector: `get_conversations`, `get_conversation_entries` | reading the team inbox | `compose_draft`, `deliver_draft`, `change_labels` and `manage_calendar_events`, which write to Missive |
-| Scheduler connector: `find_trips`, `get_trip` | matching a thread to its trip, and reading what the scheduler already warns of | |
+| Scheduler connector: `find_trips`, `get_trip`, `find_availability`, `list_buses` | matching a thread to its trip, reading what the scheduler already warns of, and whether a bus is free on a row's day | |
 | Scheduler connector: `list_to_dos`, `add_to_do`, `change_to_do`, `close_to_do` | the rows | a row a person wrote, which the tools refuse |
 
 The Missive connector reads as rux and sees what he sees. Connecting it is
@@ -47,17 +47,19 @@ no Missive tools says so and stops.
 7. **`list_to_dos`, with `include_closed`,** so a thread that already has an
    open row is changed and not doubled, and one whose row was marked Done is
    not asked again. A row is a thread's when its `thread_url` ends in the
-   thread's id. An open row whose thread has no mail since the row was made,
-   and whose trip reads as it did, is left as it is.
+   thread's id.
 8. **Add the rows** with `add_to_do`, each in its four parts (see Writing a
    row). Give the trip's id when there is one, the conversation's `id` as its
    key, its `link`, which the row's Email button opens, and a day: today
    when the trip leaves tomorrow, tomorrow for the rest, none for a courtesy
    reply.
-9. **Report.** The rows added, the urgent one first; the threads that are
-   unread; anything odd found on the way, such as a request that looks like a
-   trip already on the board; and what was not read, such as a picture or an
-   attachment.
+9. **Bring every open row up to date,** with new mail or without (see
+   Closing and changing a row): close the one whose work is done, change the
+   one whose words are behind, and leave the one that reads true as it is.
+10. **Report.** The rows added, changed and closed, the urgent one first; the
+    threads that are unread; anything odd on a thread that has no row, such
+    as a request that looks like a trip already on the board; and what was
+    not read, such as a picture or an attachment.
 
 ## rux's rules
 
@@ -69,6 +71,9 @@ no Missive tools says so and stops.
   it.
 - A row is added straight in and reported after, since a wrong one costs one
   delete.
+- What a review learns goes on the row, because the office reads the rows
+  and not the report: the report says which rows changed, and holds only
+  what no row can.
 - Mail that is not about a trip or a request for a quote is ignored, with no
   row and no line in the report, because the list is for trips.
 - A thread whose row was marked Done gets no new row unless mail has come in
@@ -137,6 +142,21 @@ opened.
 
 ## Closing and changing a row
 
+- **Every open row is read again at each review,** its thread by the id at
+  the end of its link and its trip when it has one, because a row goes stale
+  with no new mail: a quote goes out, a bus frees up, a second request turns
+  out to be the same job.
+- **A row that says whether a bus is free, or waits on one, has its day
+  checked with `find_availability`.** The free buses less
+  `buses_still_needed` are the ones to offer, since a trip short of a bus
+  takes a free one, and a need the email names, such as seats or a lift,
+  counts: `list_buses` gives each bus's. The line is changed when it no
+  longer reads true.
+- **What the review learns about a row's work goes in its detail,** one fact
+  a line, such as that another row is the same job or that no free bus has
+  the seats asked for. The row's other lines stay as they are.
+- **A row that reads true is left exactly as it is,** so a review changes
+  only what moved.
 - **An open row whose thread has left Team Inboxes is likely done,** because
   the office closes a conversation as it answers. Read the thread by the id
   at the end of the row's link: an outbound message after the customer's

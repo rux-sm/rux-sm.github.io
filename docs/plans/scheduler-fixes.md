@@ -265,9 +265,8 @@ None open.
       the To do plan's line in the same commit; deploy.
 - [ ] Reconnect the connector, read a new session's tool list, and write the
       step into `working-from-claude.md`.
-- [ ] Give each skill its job, delete `trip-email` in `~/claude-config`, key
-      a row by the mail's own id, and name the published site for a real
-      Save.
+- [ ] Give each skill its job, key a row by the mail's own id, and name the
+      published site for a real Save.
 - [ ] Read `by=claude` from the address in `actorName`.
 
 ### Records and the other plans

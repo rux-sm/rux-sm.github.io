@@ -88,7 +88,9 @@ itself, such as a follow-up due or a trip short of a bus, is not a row;
 Claude reads those from the trip.
 
 Ask Claude Code to review the inbox and it reads the team's email in Missive,
-matches each thread to its trip and adds the rows. How it does that is the
+matches each thread to its trip and adds the rows. It reads every open row
+again too: one whose work is done is closed, and one whose words are behind,
+such as whether a bus is free, is changed. How it does that is the
 `inbox-review` skill in `.claude/skills/inbox-review/`.
 
 It reads Missive through Missive's own connector, which each person connects

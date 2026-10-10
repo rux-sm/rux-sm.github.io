@@ -156,7 +156,7 @@ drawn in does not matter. The last, which is the hardest, is its boss. The
 tag on a gate's tile is the average of its puzzles: Easy, Normal or Hard.
 
 - **No gate yet**, first in that list, keeps the puzzle in Unsorted: a
-  section of Manage after its size's gates. No player is sent a puzzle
+  section of Manage after the gates. No player is sent a puzzle
   there until it is moved into a gate.
 - **New gate**, in that list, starts one, and a field opens for its
   name. It stands after the others and starts hidden, so only the owner

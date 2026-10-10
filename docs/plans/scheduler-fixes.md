@@ -157,8 +157,6 @@ None open.
 ### Small fixes, each by itself
 
 - [ ] Deploy the connector on a yes, and read `find_trips` back cut and whole.
-- [ ] In `saveEditor`, send a new trip's waiting files when its first save
-      stops partway, and compare the trip's stamp again after the update box.
 - [ ] Rename a vehicle type on `trip_assignments` too, from one list in
       `vehicles.js`, and a customer on its linked trips.
 - [ ] Write a history entry when an update is edited or deleted, and close

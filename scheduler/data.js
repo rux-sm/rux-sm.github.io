@@ -10131,18 +10131,23 @@
 
   const conflictModal = document.getElementById('scheduler-conflict-modal');
   let conflictAfter = null;
+  // The update already written when the box opened after it, so Save anyway does not ask for it twice.
+  let conflictAnswer = null;
   document.getElementById('scheduler-conflict-save')?.addEventListener('click', async () => {
     const next = conflictAfter;
+    const answered = conflictAnswer;
     conflictAfter = null;
+    conflictAnswer = null;
     window.Rux?.modal?.close?.(conflictModal);
-    if (await saveEditor(next, true)) next?.();
+    if (await saveEditor(next, true, answered)) next?.();
   });
   document.getElementById('scheduler-conflict-reload')?.addEventListener('click', async () => {
     conflictAfter = null;
+    conflictAnswer = null;
     window.Rux?.modal?.close?.(conflictModal);
     await reloadEditorTrip();
   });
-  conflictModal?.addEventListener('rux:modal-closed', () => { conflictAfter = null; });
+  conflictModal?.addEventListener('rux:modal-closed', () => { conflictAfter = null; conflictAnswer = null; });
 
   // Opens the editor's trip afresh on the week of its leg, dropping unsaved changes.
   async function reloadEditorTrip() {
@@ -10711,9 +10716,11 @@
      The trip is read back first. When its `updated_at` is not the one the
      editor opened with, someone saved it in between, and the conflict box asks
      before replacing that, holding `after` to run if the save goes through.
-     `force` is the box's Save anyway. A failed read does not block the save,
-     which reports its own errors. */
-  async function saveEditor(after, force = false) {
+     It is read back again once the update box is answered, because that box
+     stays open for as long as its words take to write. `force` is the
+     conflict box's Save anyway, and `answered` the update it already holds.
+     A failed read does not block the save, which reports its own errors. */
+  async function saveEditor(after, force = false, answered = null) {
     if (!editing || (!editing.creating && !changed())) return false;
     const heldBy = saveHeldBy();
     if (heldBy) { toast('error', 'The trip was not saved.', heldBy); return false; }
@@ -10727,23 +10734,31 @@
     // A new trip's files waiting for it, held here because the editor closes on the save.
     const filesWaiting = creating ? [...(editing.filesWaiting ?? [])] : [];
     const savedId = creating ? editing.newId : id;
-    if (!creating && !force && editing.updatedAt) {
+    const opened = editing.updatedAt;
+    // Whether someone else has saved the trip since the editor opened it.
+    const movedOn = async () => {
+      if (creating || force || !opened) return false;
       let now = null;
       try {
         ({ data: now } = await withTimeout(client.from('trips').select('updated_at').eq('id', id).single().then(r => r)));
       } catch { now = null; }
-      if (now?.updated_at && Date.parse(now.updated_at) !== Date.parse(editing.updatedAt)) {
-        conflictAfter = after ?? null;
-        window.Rux?.modal?.open?.(conflictModal);
-        return false;
-      }
-    }
+      return !!now?.updated_at && Date.parse(now.updated_at) !== Date.parse(opened);
+    };
+    // The conflict box, holding what to run after the save and the update already written.
+    const askConflict = held => {
+      conflictAfter = after ?? null;
+      conflictAnswer = held;
+      window.Rux?.modal?.open?.(conflictModal);
+      return false;
+    };
+    if (await movedOn()) return askConflict(null);
     // Every save asks for its update first; closing the window keeps editing.
     const change = creating ? null : customerChange(patch);
     const named = k => (k in patch ? patch[k] : editing.before?.[k]);
-    const answer = await askForUpdate(change, creating,
+    const answer = answered ?? await askForUpdate(change, creating,
       { id: savedId, destination: named('destination'), customer: named('customer') }, doneTakenOff());
     if (!answer) return false;
+    if (await movedOn()) return askConflict(answer);
     // The Done marks as they stand before anything is written, written last.
     const doneRow = doneRowOf(await actorName()
       ?? (await Promise.resolve(window.Rux?.account?.person?.()).catch(() => null))?.name ?? null);
@@ -10778,6 +10793,23 @@
       if (result.error) throw Object.assign(new Error(result.error.message), { code: result.error.code });
       wrote = true;
       return result.data;
+    };
+    /* A new trip's files went into its list before it existed, and go up once
+       it does, one at a time, so one that fails does not hold the others
+       back. They go once: a save that stops partway sends them from where it
+       stopped, and one that stops after them does not send them again. */
+    let filesSent = false;
+    const sendFiles = async tripId => {
+      const lost = [];
+      if (filesSent) return lost;
+      filesSent = true;
+      for (const w of filesWaiting) {
+        try { await uploadDocument(tripId, w.label, w.file); } catch (err) {
+          console.warn('A file did not go up with the save:', err);
+          lost.push(w.file.name);
+        }
+      }
+      return lost;
     };
     panelSave.disabled = true;
     toast('working', creating ? 'Creating the trip…' : 'Saving the trip…');
@@ -10892,15 +10924,7 @@
          changes affect, and a Done pressed after those changes still stands. */
       if (Object.keys(doneRow).length) await write('its Done marks', client.from('trips').update(doneRow).eq('id', tripId));
       recordThisSave(tripId);
-      /* A new trip's files went into its list before it existed, and go up
-         now, one at a time, so one that fails does not hold the others back. */
-      const filesLost = [];
-      for (const w of filesWaiting) {
-        try { await uploadDocument(tripId, w.label, w.file); } catch (err) {
-          console.warn('A file did not go up with the save:', err);
-          filesLost.push(w.file.name);
-        }
-      }
+      const filesLost = await sendFiles(tripId);
       const updateLost = answer.kind !== 'none' && !(await writeUpdate(tripId, answer));
       // Read back rather than trusting the write, as the drag does.
       await show();
@@ -10934,10 +10958,14 @@
       const didNot = e.timedOut ? 'may not have saved' : 'did not save';
       // What did land is recorded.
       recordThisSave(savedId);
+      /* The new trip exists, and the editor is about to close on it, so the
+         files waiting for it go up now or they are gone with the editor. */
+      const filesLost = creating ? await sendFiles(savedId) : [];
       await show();
       if (creating) {
         closePanel(false);
-        toast('warning', `The trip was created, but ${part} ${didNot}.`, `${check} ${why}`);
+        toast('warning', `The trip was created, but ${part} ${didNot}.`,
+          `${check} ${why}${filesLost.length ? ` A file was not added either: ${filesLost.join(', ')}. Add it on the trip's Files tab.` : ''}`);
         followLateWrite(late, seq, null);
         return true;
       }

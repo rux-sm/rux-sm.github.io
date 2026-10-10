@@ -63,6 +63,13 @@ everything has played a whole game.
   Easy, Normal and Hard tag leaves the front page and a gate's page, because
   it calls a 24-second puzzle normal. The grade stays in the Pixelator and
   Manage.
+- **A gate's tile is a square of sixteen: its number, then its fifteen
+  pictures, four across.** It stays two tiles across on a phone. A custom
+  gate has no number, so its first square is its maker's picture.
+- **A gate's page letters its puzzles A to O,** as Picross DS does, in place
+  of Puzzle 7, and O is the boss. They stand three across on a phone, with
+  the name and best time under each, and five across in three rows on a
+  wide screen, which is Picross DS's grid.
 - **Gates open as Picross DS's levels do.** Gates 1 to 5 are open from the
   start. Gates 6 to 11 open at 40, 50, 60, 70, 80 and 90 sprites found in
   gates 2 to 11, and gate 12 when all 150 of those are found. Picross DS
@@ -173,10 +180,7 @@ numbers cannot decide.
 
 ## Questions
 
-1. **How does a tile show fifteen pictures?** It shows nine, three by three,
-   two tiles across on a phone. Three are drawn at 390px to pick from: three
-   across and taller, one gate a row with five across, and four across with
-   the gate's number in the first square.
+None open.
 
 ## Tasks
 
@@ -190,8 +194,10 @@ numbers cannot decide.
       `pixels/manage.js` and `pixels/puzzles.js`, the count on Me and
       Players, the full gate in `pixels_keep_puzzle`, and the three
       documents that say nine; the SQL is shown to rux first.
-- [ ] Lay fifteen out on a gate's tile and on its page, on a phone and a
-      wide screen.
+- [ ] Lay a gate's tile out as sixteen squares, four across, its number or
+      its maker's picture first.
+- [ ] Letter a gate's puzzles A to O on its page, three across on a phone
+      and five across on a wide screen.
 - [ ] Let gate 1 hold its two sizes on one tile and one page, the five 5×5
       first.
 - [ ] Send each gate's audience with its puzzles, so a page tells the

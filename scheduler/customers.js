@@ -180,7 +180,7 @@
   let loaded = null;
   // A new record's id, made once, so a Save sent again cannot insert it twice.
   const newId = crypto.randomUUID();
-  let contactsBehind = false; // a rename its contacts' organization text missed
+  let contactsBehind = false; // a rename its contacts' organization text or its trips' customer missed
   let pickupId = null;      // the usual pickup picked
   let pickupText = '';      // the pickup field's text
   let baseline = '';
@@ -614,19 +614,21 @@
       // again, and the next Save, an update by then, sends the ticks again.
       await saveForms(id);
       wrote = true;
-      // rux-ui shows a contact's organization as text, so its contacts take
-      // the new spelling with it. An update that fails is tried again on the
-      // next Save, which would otherwise see no rename.
+      // rux-ui shows a contact's organization as text, and a trip carries
+      // its customer's name as text beside the link, so its contacts and its
+      // trips take the new spelling with it. An update that fails is tried
+      // again on the next Save, which would otherwise see no rename.
       if (renamed) {
         const moved = await client.from('contacts').update({ client: row.name }).eq('customer_id', id);
-        contactsBehind = !!moved.error;
+        const trips = await client.from('trips').update({ customer: row.name }).eq('customer_id', id);
+        contactsBehind = !!moved.error || !!trips.error;
       }
       history.replaceState(null, '', `customers.html?id=${encodeURIComponent(id)}`);
       currentId = id;
       await reload(id);
       // A Save that was leaving the page stays, so the missed contacts are said.
       if (contactsBehind) {
-        result('error', "The customer saved, but its contacts still show the old name as their organization. Save again to update them.");
+        result('error', "The customer saved, but its contacts or its trips still show the old name. Save again to update them.");
         return false;
       }
       result('success', 'Saved.');

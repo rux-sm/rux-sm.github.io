@@ -127,6 +127,12 @@ site.
 - **A Save Claude presses is named as the person with Claude,** from a word
   in the address, so History can tell them apart.
 
+### Renames
+
+- **A vehicle type is renamed by one database function,** because a write to
+  a trip's vehicles from the page takes Buses done and Billing done off every
+  trip that has one, and a new name is not a change to check again.
+
 ### Checks
 
 - **Every page script is parsed, and every scheduler page's scripts are
@@ -157,8 +163,10 @@ None open.
 ### Small fixes, each by itself
 
 - [ ] Deploy the connector on a yes, and read `find_trips` back cut and whole.
-- [ ] Rename a vehicle type on `trip_assignments` too, from one list in
-      `vehicles.js`, and a customer on its linked trips.
+- [ ] Add `rename_vehicle_type` as SQL on a yes: one function that renames a
+      type on units, trips, each trip's vehicles and customers' usual type,
+      and puts back the Done marks the rename takes off; call it from
+      `fleet.js`, with the columns listed once in `vehicles.js`.
 - [ ] Write a history entry when an update is edited or deleted, and close
       a deleted To do row with a reason in place of removing it.
 - [ ] Move the address key into `places.js` and the digits rule into

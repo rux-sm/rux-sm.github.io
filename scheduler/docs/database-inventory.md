@@ -198,7 +198,7 @@ Sign-in is Supabase's OAuth 2.1 server, whose consent screen is the site's
 own page at `/oauth/consent/`; Supabase hosts none.
 
 **Seven tools read**, each on the tables above: `find_trips`, which also
-matches the booking contact's name and email; `get_trip`, on `trips` with its
+matches the booking contact's name and email, and answers how many trips match beside the ones its limit lets through, saying so when it cut the list; `get_trip`, on `trips` with its
 assignments, drivers, stops and quote lines, the Email thread link, its pinned update, the passenger count, Quote sent and the three Done marks, the day a one-day leg's time past midnight falls on, and warnings for a leg
 short of buses or a stop dated outside its leg; `find_availability`, which
 reads the trips running across a range and subtracts their buses and drivers,
@@ -223,7 +223,7 @@ any it cannot place. The editor's Save stays the only writer of a trip.
 from the trips, which `get_trip`'s warnings say. `add_to_do` adds a row as an
 agent's, which the database makes Ruxbot's with the signed-in person beside
 it; given a thread's key it changes the open row for that thread instead of
-adding a second. A row is written in four parts, its kind, one of the seven
+adding a second, and only the parts the call gives. A row is written in four parts, its kind, one of the seven
 names in the function's `TO_DO_KINDS`, who it is about, what to do, and its
 detail, whose lines the function trims. `change_to_do` and `close_to_do` take only a row an agent
 made, still open; a close names Ruxbot and carries its reason. An owner is

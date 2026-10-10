@@ -156,8 +156,6 @@ None open.
 
 ### Small fixes, each by itself
 
-- [ ] Make a repeated `add_to_do` change only what it is given, make
-      `find_trips` say when it cut its list, and deploy the connector.
 - [ ] Open Cost empty on a line that follows the calculator, from a rule in
       `scheduler/quote-lines.js` with its check.
 - [ ] Make `qbDescription` read each leg's own stops, and
@@ -169,8 +167,8 @@ None open.
 - [ ] Blank a stop's drive when its place changed and the map did not
       answer, and say so, in `measureStops`.
 - [ ] In the connector, allow a stop's date one day either side of its leg,
-      count a bus busy only on its own leg's days, return `spare_buses`, and
-      deploy.
+      count a bus busy only on its own leg's days, and return `spare_buses`.
+- [ ] Deploy the connector on a yes, and read `find_trips` back cut and whole.
 - [ ] In `saveEditor`, send a new trip's waiting files when its first save
       stops partway, and compare the trip's stamp again after the update box.
 - [ ] Rename a vehicle type on `trip_assignments` too, from one list in

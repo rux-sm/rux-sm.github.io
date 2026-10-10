@@ -230,7 +230,7 @@ Deno.serve(
           {
             title: 'Find trips',
             description:
-              'Find trips by date, destination, customer, booking contact or trip reference. Returns a short line per trip; use get_trip for one in full.',
+              'Find trips by date, destination, customer, booking contact or trip reference. Returns trips, a short line per trip, soonest first, and matching, how many trips match. When more match than limit lets through, cut says how many were left out: narrow the days or the search, or raise limit. Use get_trip for one in full.',
             inputSchema: z.object({
               from: ISO_DATE.optional().describe('Include trips running on or after this day.'),
               to: ISO_DATE.optional().describe('Include trips running on or before this day.'),
@@ -241,14 +241,20 @@ Deno.serve(
             annotations: { readOnlyHint: true },
           },
           async ({ from, to, search, include_cancelled, limit }) => {
-            let q = supabase.from('trips').select(TRIP_SUMMARY)
+            let q = supabase.from('trips').select(TRIP_SUMMARY, { count: 'exact' })
               .order('start_date', { ascending: true }).limit(limit)
             if (to) q = q.lte('start_date', to)
             if (from) q = q.or(`end_date.gte.${from},return_end_date.gte.${from},start_date.gte.${from}`)
             const text = search ? safeSearch(search) : ''
             if (text) q = q.or(`destination.ilike.*${text}*,customer.ilike.*${text}*,trip_ref.ilike.*${text}*,booking_contact_name.ilike.*${text}*,booking_contact_email.ilike.*${text}*`)
             if (!include_cancelled) q = q.is('cancelled_at', null)
-            return answer(orThrow(await q))
+            // A list cut at its limit says so, or a short answer reads as every trip there is.
+            const { data, error, count } = await q
+            const trips = orThrow({ data, error })
+            const matching = count ?? trips.length
+            return answer(matching > trips.length
+              ? { trips, matching, cut: `Only the first ${trips.length} of ${matching} matching trips are listed, soonest first.` }
+              : { trips, matching })
           },
         )
 
@@ -555,7 +561,7 @@ Deno.serve(
         // tool adds is an agent's: the database stamps it as Ruxbot's, keeps
         // the signed-in person beside it, and refuses a tool's close on a row
         // a person wrote.
-        const OPEN_IT = 'It shows in the To do list in the scheduler\'s header, for everyone in the office.'
+        const OPEN_IT = 'It shows in Tasks on the scheduler\'s board, for everyone in the office.'
 
         /** A staff member's profile id by name, since a row's owner is a profile. */
         async function ownerId(name: string) {
@@ -630,26 +636,29 @@ Deno.serve(
           {
             title: 'Add a to-do row',
             description:
-              'Add a row to the office\'s To do list after a review, in four parts: its kind, who it is about, what to do in a few words, and its detail. A closed row shows three lines of one size, so each part stays short. Before adding a row about a trip, read get_trip: if its warnings already say it, do not add it, because the scheduler shows that itself. With a thread_key, a second call for the same thread changes the open row it made rather than adding a copy.',
+              'Add a row to the office\'s To do list after a review, in four parts: its kind, who it is about, what to do in a few words, and its detail. A closed row shows three lines of one size, so each part stays short. Before adding a row about a trip, read get_trip: if its warnings already say it, do not add it, because the scheduler shows that itself. With a thread_key, a second call for the same thread changes the open row it made rather than adding a copy, and changes only the parts it gives: a part left out stays as the row has it.',
             inputSchema: z.object(toDoShape),
           },
           async ({ kind, who, body, detail, due_on, owner, trip_id, thread_url, thread_key }) => {
-            const row: Record<string, unknown> = {
-              kind: kind ?? null, who: who?.trim() || null, body, detail: detail ? detailLines(detail) : null,
-              due_on: due_on ?? null, trip_id: trip_id ?? null,
-              thread_url: thread_url ?? null, thread_key: thread_key ?? null,
-              owner_id: owner ? await ownerId(owner) : null,
-            }
+            // The parts this call gives, and no others, so a second call for a thread leaves the rest of its row alone.
+            const given: Record<string, unknown> = { body }
+            if (kind !== undefined) given.kind = kind
+            if (who !== undefined) given.who = who.trim() || null
+            if (detail !== undefined) given.detail = detailLines(detail)
+            if (due_on !== undefined) given.due_on = due_on
+            if (owner !== undefined) given.owner_id = await ownerId(owner)
+            if (trip_id !== undefined) given.trip_id = trip_id
+            if (thread_url !== undefined) given.thread_url = thread_url
             if (thread_key) {
               const open = orThrow(await supabase.from('to_dos').select('id, source')
                 .eq('thread_key', thread_key).is('closed_at', null).maybeSingle())
               if (open) {
                 if (open.source !== 'agent') throw new Error('A person already wrote the open row for that thread. Leave it, and say in your review what you found.')
-                const changed = orThrow(await supabase.from('to_dos').update(row).eq('id', open.id).select(TO_DO_ROW).single())
+                const changed = orThrow(await supabase.from('to_dos').update(given).eq('id', open.id).select(TO_DO_ROW).single())
                 return answer({ changed: true, added: false, row: changed, next: OPEN_IT })
               }
             }
-            const added = orThrow(await supabase.from('to_dos').insert({ ...row, source: 'agent' }).select(TO_DO_ROW).single())
+            const added = orThrow(await supabase.from('to_dos').insert({ ...given, thread_key: thread_key ?? null, source: 'agent' }).select(TO_DO_ROW).single())
             return answer({ added: true, row: added, next: OPEN_IT })
           },
         )

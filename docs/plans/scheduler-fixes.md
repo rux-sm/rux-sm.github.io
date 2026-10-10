@@ -156,8 +156,6 @@ None open.
 
 ### Small fixes, each by itself
 
-- [ ] Make `qbDescription` read each leg's own stops, and
-      `linesFromCalculator` write the leg the calculator was filled from.
 - [ ] Total the customer quote from its printed lines, warn in the editor
       when lines and price part, and skip a locked price in `applyDraft`.
 - [ ] Show the second-driver notice while any bus on the leg has no

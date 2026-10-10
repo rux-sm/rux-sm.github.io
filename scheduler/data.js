@@ -5163,13 +5163,30 @@
     // Not `iso`, which is this file's own Date formatter.
     const day = id => isoOrNull(document.getElementById(id)?.value ?? '');
     const split = val('scheduler-f-type') === SPLIT;
-    // The place's address and not its field, which shows the place's name,
-    // so the block names the pickup's city as the printed quote does.
-    const pickup = editing?.route?.pickupPlace?.address || val('scheduler-f-pickup');
+    /* EACH LEG READS ITS OWN STOPS, as the printed quote does. The Route tab
+       holds one leg at a time, so its fields are that leg's and no other's:
+       the open leg is read from them, and the other from its saved rows. */
+    const openLeg = editing?.route?.leg === 'return' ? 'return' : 'outbound';
+    const savedStops = l => (editing?.stops || []).filter(st => (st.leg || 'outbound') === l)
+      .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+    // When the group leaves on a leg and when it is let off: the first stop's departure, and the yard row's or the last stop's arrival.
+    const timesOf = l => {
+      if (l === openLeg) return { leave: val('scheduler-f-leave'), back: val('scheduler-f-endtrip') };
+      const rows = savedStops(l);
+      return { leave: rows.find(st => st.type === 'stop')?.depart_prev || '',
+        back: rows.find(st => st.type === 'return')?.depart_prev || rows.filter(st => st.type === 'stop').at(-1)?.arrive || '' };
+    };
+    // The trip's pickup is the drop-off leg's, and its address and not its
+    // field, which shows the place's name, so the block names the pickup's
+    // city as the printed quote does.
+    const pickup = (openLeg === 'outbound' ? editing?.route?.pickupPlace?.address || val('scheduler-f-pickup') : '')
+      || savedStops('outbound').find(st => st.type === 'pickup')?.address || editing?.trip?.pickup_address || '';
     // One leg's block, or the whole trip's with `leg` null. A leg of a split
-    // trip departs at its own time: the drop-off's departure, the pickup's end.
+    // trip says when the group leaves on it; the whole trip leaves on its
+    // first leg and is back on its last.
     const words = leg => {
-      const fleet = editing?.fleet?.[leg === 'return' ? 'return' : 'outbound'] ?? [];
+      const mine = leg === 'return' ? 'return' : 'outbound';
+      const fleet = editing?.fleet?.[mine] ?? [];
       const start = day(leg === 'return' ? 'scheduler-f-rstart' : 'scheduler-f-start');
       const end = leg === 'return' ? day('scheduler-f-rend') ?? start
         : (split && !leg ? day('scheduler-f-rend') ?? day('scheduler-f-rstart') : day('scheduler-f-end')) ?? start;
@@ -5181,8 +5198,8 @@
         destination: val('scheduler-f-destination'),
         from: start,
         to: end,
-        leave: leg === 'return' ? val('scheduler-f-endtrip') : val('scheduler-f-leave'),
-        back: leg ? '' : val('scheduler-f-endtrip'),
+        leave: timesOf(mine).leave,
+        back: leg ? '' : timesOf(split ? 'return' : 'outbound').back,
         leg: leg || null,
       });
     };
@@ -12424,13 +12441,18 @@
      rental at the full rate on every mile and take the difference off, a bus
      at a time. While the calculator's days are the route's, the rental and
      second driver are left untyped, so they keep following the route; days
-     changed in the calculator are typed in as its figures. Save keeps it. */
+     changed in the calculator are typed in as its figures. Save keeps it.
+     On a split trip the leg is the one the calculator was filled from. */
   function linesFromCalculator(q) {
     if (!editing || panelEl.hidden) {
       toast('info', 'Open the trip to add its quote lines');
       return false;
     }
-    const leg = splitNow() ? (editing.route?.leg ?? 'outbound') : null;
+    /* The lines are the leg's the calculator was filled from, which `calcFor`
+       kept: the Route tab may have moved to the other leg since, and its leg
+       is used only where the calculator was filled from no leg of this trip. */
+    const filled = calcFor && String(calcFor.trip) === String(editing.id) ? calcFor.leg : null;
+    const leg = splitNow() ? ((filled ?? editing.route?.leg) === 'return' ? 'return' : 'outbound') : null;
     const buses = editing.fleet?.[leg === 'return' ? 'return' : 'outbound'] ?? [];
     // The Buses tab's co-driver seats follow the calculator's drivers, but a
     // seat with a driver in it is not turned off.

@@ -156,8 +156,6 @@ None open.
 
 ### Small fixes, each by itself
 
-- [ ] Show the second-driver notice while any bus on the leg has no
-      co-driver seat.
 - [ ] Blank a stop's drive when its place changed and the map did not
       answer, and say so, in `measureStops`.
 - [ ] Deploy the connector on a yes, and read `find_trips` back cut and whole.

@@ -8210,11 +8210,17 @@
         } else fuelBox.replaceChildren();
 
         /* A second driver, by the rule the Second driver line quotes: over
-           10 hours driving, or over 15 on duty less rest, on any day. Until a
-           co-driver seat is on for the leg, the Summary says so and offers
-           one; the Buses tab holds the seat, and the quote follows it. */
+           10 hours driving, or over 15 on duty less rest, on any day. Until
+           every bus on the leg has its co-driver seat on, the Summary says so
+           and offers the seats, and where some buses have theirs it says how
+           many do not; the Buses tab holds the seat, and the quote follows
+           it. */
         const { over } = fig;
-        if (over && coDrivers(r.leg) === 0) {
+        const legFleet = editing?.fleet?.[r.leg === 'return' ? 'return' : 'outbound'] ?? [];
+        const without = legFleet.filter(b => b.seats?.['co-driver'] && !b.seats['co-driver'].on).length;
+        const some = coDrivers(r.leg) > 0
+          ? ` ${without} of the leg's ${legFleet.length} buses ${without === 1 ? 'has' : 'have'} no co-driver seat.` : '';
+        if (over && (coDrivers(r.leg) === 0 || without > 0)) {
           const why = over.drive > 600 ? `${hm(over.drive)} driving` : `${hm(over.span - over.rest)} on duty less rest`;
           /* THE SLEEPER REST COMES FIRST, where it is enough: the leg's longest
              wait on duty, tried as sleeper berth. When the rule then passes,
@@ -8225,9 +8231,9 @@
           const coDriver = { label: 'Add co-driver', onClick: () => setCoDrivers(r.leg, true) };
           driverBox.replaceChildren(rest
             ? notice('warning', 'Second driver',
-              `At ${why}${each ? ' in a day' : ''}, this trip needs a second driver, or the ${hm(rest.wait)} at ${rest.stop.place?.name || 'the stop'} as rest in the sleeper.`,
+              `At ${why}${each ? ' in a day' : ''}, this trip needs a second driver, or the ${hm(rest.wait)} at ${rest.stop.place?.name || 'the stop'} as rest in the sleeper.${some}`,
               [{ label: 'Rest in the sleeper', onClick: () => takeSleeperRest(rest.stop) }, coDriver])
-            : notice('warning', 'Second driver', `At ${why}${each ? ' in a day' : ''}, this trip needs a second driver.`, coDriver));
+            : notice('warning', 'Second driver', `At ${why}${each ? ' in a day' : ''}, this trip needs a second driver.${some}`, coDriver));
         } else driverBox.replaceChildren();
       }
 

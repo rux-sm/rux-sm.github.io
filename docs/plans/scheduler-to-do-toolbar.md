@@ -38,17 +38,23 @@ week's toolbar, and nothing is counted twice.
 
 ### Where they are
 
-- **Two buttons in the board's toolbar, after Search and before Driver
-  availability,** because each opens a pane of the board as Driver
-  availability does, and Carbon keeps the header for the whole site's
-  functions.
+- **Two buttons in the board's toolbar, Tasks then Prep, ahead of Search,**
+  because each opens a pane of the board as Driver availability does, and
+  Carbon keeps the header for the whole site's functions.
 - **Both open the one pane, each on its own list.** The pane has no switch:
   its head is the list's name and the close control, and a press on the open
   list's button shuts it.
 - **An open list's button has its glyph filled,** as Driver availability's is.
-- **The count is Design's count badge on the button's corner,** placed by a
-  rule in `scheduler/overrides.css`, because Carbon's own placing covers the
-  glyph at the toolbar's button size.
+- **The count is Design's count badge on the button,** placed by a rule in
+  `scheduler/overrides.css` to stand clear of the glyph, because Carbon's own
+  placing covers it at the toolbar's button size.
+- **On the compact board the week and ⋮ hold still and the controls between
+  them scroll sideways,** in the order Today, Tasks, Prep, Search, Driver
+  availability, because a phone has no room for all five and a swipe keeps
+  each one move away.
+- **In the tight toolbar Search and Driver availability become rows of the ⋮
+  menu,** as Today and New trip do, because a mouse has no swipe and a menu
+  row cannot show a count.
 - **The lists are on the board only.** The other Scheduler pages lose the
   header action and its panel, because a task's Trip button and a Prep line's
   Print already lead to the board.
@@ -67,18 +73,7 @@ week's toolbar, and nothing is counted twice.
 
 ## Questions
 
-- **What is the second list called?** Prep is recommended, because the side
-  nav already has a page named Trips.
-- **Which two controls give way where the toolbar is tight, and on a phone?**
-  Tasks and Prep take the room of two buttons. Search and Driver
-  availability are recommended to become rows of the ⋮ menu there, as Today
-  and New trip do, because a menu row cannot show a count.
-- **Does the chat box follow?** `scheduler-chat.md` puts it in the header
-  beside To do. Leaving it there is recommended, because it is asked from
-  every Scheduler page.
-- **Where does this sit among the plans?** After the Small fixes and Checks
-  groups of `scheduler-fixes.md` is recommended, ahead of its Clashes group,
-  which adds a kind to these lists.
+None open.
 
 ## Tasks
 
@@ -97,9 +92,14 @@ week's toolbar, and nothing is counted twice.
 - [ ] Add the two buttons to the toolbar in `scheduler/index.html`, each with
       its count and its filled glyph while open; place the badge in
       `scheduler/overrides.css`; take the To do action out of the header.
-- [ ] Give way in the tight toolbar and on the compact board as the answer
-      above says, in `scheduler/data.js` and `scheduler/app.css`, and measure
-      both in a light theme and a dark one.
+- [ ] Put the controls between the week and ⋮ in one strip in
+      `scheduler/index.html` and scroll it sideways on the compact board in
+      `scheduler/app.css`, the week picker left outside it so its calendar is
+      not cut, and the badge inside it so the scroll does not cut that.
+- [ ] Add Search and Driver availability to the ⋮ menu for the tight toolbar,
+      in `scheduler/index.html` and `scheduler/app.css`.
+- [ ] Measure the toolbar at its tight width and on the iPhone simulator, in
+      a light theme and a dark one, and set what stands whole before a swipe.
 - [ ] Take the To do action, its panel and the list's scripts off every
       Scheduler page but the board and the Trips page, which keeps
       `to-do-rows.js`; take the header panel's rules out of

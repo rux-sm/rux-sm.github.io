@@ -20,6 +20,8 @@ site.
 - **The tasks are in building order,** group by group, and the first two
   groups go before any other scheduler plan, because they are small, need no
   answer and every later change lands under the new checks.
+- **`scheduler-to-do-toolbar.md` is built after those two groups and ahead
+  of Clashes,** because Clashes adds a kind to its lists.
 - **The other plans follow as quote entry, retiring rux-ui, the customer
   profile, documents, then routes,** each waiting on the one before it.
 - **A rule goes in a small file with sample cases,** never in `data.js`.

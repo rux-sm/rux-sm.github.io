@@ -18,7 +18,8 @@
    a quiet line of its trip, its detail's first line and its due day. A press
    opens it to those in full, the rest of its detail and who added it, over
    one row of buttons: Done, Email and Trip, and a menu of Edit and Delete.
-   One row is open at a time.
+   One row is open at a time. Delete closes the row with the reason Deleted,
+   so it goes to Done today with that said, and nothing is removed.
 
    The rows are grouped Overdue, Today, This week, Later and No date, then
    Done today: the rows closed today behind one item of the accordion that
@@ -158,7 +159,12 @@
   const tick = (row, done) => write(() => client.from('to_dos')
     .update({ closed_at: done ? new Date().toISOString() : null }).eq('id', row.id));
   const change = (row, fields) => write(() => client.from('to_dos').update(fields).eq('id', row.id));
-  const remove = row => write(() => client.from('to_dos').delete().eq('id', row.id));
+  /* Delete closes the row with the reason Deleted and removes nothing. The
+     row leaves the list as a done one does, History keeps what it asked where
+     it had a trip, and an inbox review still finds the thread's row, so it
+     does not add the same one again. */
+  const remove = row => write(() => client.from('to_dos')
+    .update({ closed_at: new Date().toISOString(), closed_reason: 'Deleted' }).eq('id', row.id));
 
   // -- the list, as data ----------------------------------------------------
   const groupOf = (row, today, sunday) => (!row.due_on ? 'No date' : row.due_on < today ? 'Overdue'

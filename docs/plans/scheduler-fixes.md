@@ -167,8 +167,6 @@ None open.
       type on units, trips, each trip's vehicles and customers' usual type,
       and puts back the Done marks the rename takes off; call it from
       `fleet.js`, with the columns listed once in `vehicles.js`.
-- [ ] Write a history entry when an update is edited or deleted, and close
-      a deleted To do row with a reason in place of removing it.
 - [ ] Move the address key into `places.js` and the digits rule into
       `phone.js`, and use each on both pages that test for a duplicate.
 - [ ] In `applyDraft`, type fields in the table's order, name the six needs

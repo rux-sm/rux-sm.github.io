@@ -4283,10 +4283,15 @@
     b.type = 'button';
     return b;
   };
-  async function changeLogged(u, query, fail) {
+  /* Changes or deletes one update. The row keeps only what it says now, and
+     a deleted one keeps nothing, so History is told what it said before:
+     `change` is the entry's before and after. */
+  async function changeLogged(u, query, fail, change) {
+    const tripId = logTrip;
     try {
       const { data, error: failed } = await withTimeout(query.then(r => r));
       if (failed) throw new Error(failed.message);
+      recordHistory(tripId, 'updated', [{ field: 'update', label: 'Update', ...change }], null, { source: 'update' });
       logRows = data ? logRows.map(r => (r.id === u.id ? data : r)) : logRows.filter(r => r.id !== u.id);
       logChanging = null;
       drawLog();
@@ -4348,8 +4353,9 @@
       keep.disabled = true;
       keep.addEventListener('click', () => {
         keep.disabled = true;
-        changeLogged(u, client.from('trip_updates').update({ body: edit.value.trim(), edited_at: new Date().toISOString() })
-          .eq('id', u.id).select(UPDATE_COLUMNS).single(), 'The update was not changed.');
+        const body = edit.value.trim();
+        changeLogged(u, client.from('trip_updates').update({ body, edited_at: new Date().toISOString() })
+          .eq('id', u.id).select(UPDATE_COLUMNS).single(), 'The update was not changed.', { before: u.body, after: body });
       });
       const actions = el('div', 'scheduler-updates__actions');
       actions.append(drop, cancel, keep);
@@ -4364,7 +4370,8 @@
       cancel.addEventListener('click', () => { logChanging = null; drawLog(); });
       gone.addEventListener('click', () => {
         gone.disabled = true;
-        changeLogged(u, client.from('trip_updates').delete().eq('id', u.id), 'The update was not deleted.');
+        changeLogged(u, client.from('trip_updates').delete().eq('id', u.id), 'The update was not deleted.',
+          { before: u.body, after: 'Deleted' });
       });
       const actions = el('div', 'scheduler-updates__actions');
       actions.append(el('span', 'rux--type-body-compact-01 scheduler-updates__ask', 'Delete this update?'), cancel, gone);

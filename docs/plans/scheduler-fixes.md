@@ -170,8 +170,6 @@ None open.
 
 ### Checks
 
-- [ ] Add a scheduler check runner that finds every `check-*.mjs`, then
-      `check-quote.mjs` on invented rates and `check-pair.mjs` on a stand-in.
 - [ ] Add `check-connector.mjs`: both functions parse and every draft field
       has a place; pin each function's imports to an exact version.
 - [ ] Write the how-to for proving a trip's Save in Chrome with the page's

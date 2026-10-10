@@ -2,8 +2,8 @@
 //
 // The one check. Reads switcher.json -- the one list of apps -- and runs
 // Design's shared check on every app except Design, which has its own; an app
-// with a tools/check.mjs of its own (LN Guide) runs that instead, and it includes
-// the shared check. Then the sprite currency rule for the pages that paste the
+// with a tools/check.mjs of its own (LN Guide, the Scheduler) runs that instead,
+// and it includes the shared check, then that app's own rules. Then the sprite currency rule for the pages that paste the
 // sprite by hand, the same rule for the home screen icons drawn from a
 // favicon, the parse rule for every script, the names sweep over every text
 // file in the repository, the switcher rule, the lock rule and the print rule.
@@ -60,19 +60,6 @@ step('scripts', process.execPath, ['--experimental-vm-modules', '--no-warnings',
 // each rule still fires.
 step('docs', process.execPath, ['tools/check-docs.mjs']);
 step('docs fixtures', process.execPath, ['tools/check-docs.test.mjs']);
-
-// THE SCHEDULER'S CHECKLIST, ROUTE, TO-DO AND DEPARTURES RULES, run against sample trips.
-step('scheduler checklist', process.execPath, ['scheduler/tools/check-checklist.mjs']);
-step('scheduler route figures', process.execPath, ['scheduler/tools/check-route-figures.mjs']);
-step('scheduler to-do', process.execPath, ['scheduler/tools/check-to-do.mjs']);
-step('scheduler departures', process.execPath, ['scheduler/tools/check-departures.mjs']);
-step('scheduler billing', process.execPath, ['scheduler/tools/check-billing.mjs']);
-step('scheduler quote lines', process.execPath, ['scheduler/tools/check-quote-lines.mjs']);
-step('scheduler same record', process.execPath, ['scheduler/tools/check-same.mjs']);
-step('scheduler week', process.execPath, ['scheduler/tools/check-week.mjs']);
-// Each scheduler page's scripts, loaded in tag order against a stand-in page.
-step('scheduler load', process.execPath, ['scheduler/tools/check-load.mjs']);
-step('scheduler shadow', process.execPath, ['scheduler/tools/check-shadow.mjs']);
 
 // THE NAMES SWEEP, EVERY TRACKED TEXT FILE. A public repository publishes
 // every tracked file, and only those: the list comes from git, so an ignored

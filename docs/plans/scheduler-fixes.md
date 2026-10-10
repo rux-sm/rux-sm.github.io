@@ -156,8 +156,6 @@ None open.
 
 ### Small fixes, each by itself
 
-- [ ] Open Cost empty on a line that follows the calculator, from a rule in
-      `scheduler/quote-lines.js` with its check.
 - [ ] Make `qbDescription` read each leg's own stops, and
       `linesFromCalculator` write the leg the calculator was filled from.
 - [ ] Total the customer quote from its printed lines, warn in the editor

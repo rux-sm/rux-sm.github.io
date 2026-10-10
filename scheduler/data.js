@@ -5717,7 +5717,7 @@
       }
     }
     for (const l of linePending) {
-      if (l.kind !== 'rental' && l.kind !== 'second_driver' && l.kind !== 'relief') continue;
+      if (!window.SchedulerQuoteLines.priced(l.kind)) continue;
       const b = lineBasis(l);
       const key = JSON.stringify(b);
       if (l.cost_typed || (l.basis === key && l.cost != null)) continue;
@@ -5770,8 +5770,9 @@
 
     const cost = money(String(l.cost ?? ''));
     const qty = moneyField('scheduler-f-lqty', 'Quantity', l.kind === 'rental' ? legBuses(l.leg) : (l.quantity ?? 1));
+    // quote-lines.js says what Cost opens on: nothing, on a line that follows the calculator.
     const costField = moneyField('scheduler-f-lcost', l.kind === 'discount' ? 'Amount off' : 'Cost',
-      cost === null ? null : Math.abs(cost));
+      window.SchedulerQuoteLines.costShown(l, cost));
     /* A bus rental is priced at a mileage rate on its miles. The rate is
        picked from the calculator's list. Dead miles, the drive from the yard
        and back, are left out until they are typed in; the route's figure is
@@ -5784,9 +5785,11 @@
     deadField.querySelector('input').placeholder = routeDead > 0 ? `None · ${Math.round(routeDead)} by route` : 'None';
     const costHelp = el('div', 'rux--form__helper-text scheduler-dialog-grid__wide');
     const calc = calcCost(l, basis);
-    costHelp.textContent = calc === null
-      ? 'Left blank, the cost is worked out once the trip has miles and dates.'
-      : `Left blank, the cost is the calculator's: ${usdCents(calc)} on ${Math.round(basis.miles)} miles over ${basis.days} ${basis.days === 1 ? 'day' : 'days'}.`;
+    costHelp.textContent = l.kind === 'relief'
+      ? (calc === null ? 'Left blank, the cost is the rates page\'s relief charge.' : `Left blank, the cost is the rates page's relief charge: ${usdCents(calc)}.`)
+      : calc === null
+        ? 'Left blank, the cost is worked out once the trip has miles and dates.'
+        : `Left blank, the cost is the calculator's: ${usdCents(calc)} on ${Math.round(basis.miles)} miles over ${basis.days} ${basis.days === 1 ? 'day' : 'days'}.`;
     const hotelRef = textField('scheduler-f-lhotelref', 'Confirmation number', editing?.hotel?.[hotelLeg(l)]?.ref ?? null);
     hotelRef.classList.add('scheduler-dialog-grid__wide');
     const hotelHelp = el('div', 'rux--form__helper-text', 'Typed in, the hotel counts as booked.');
@@ -5807,7 +5810,7 @@
       descHelp.hidden = k !== 'rental';
       rateField.hidden = k !== 'rental' || !quoteRates;
       deadField.hidden = k !== 'rental';
-      costHelp.hidden = k !== 'rental' && k !== 'second_driver';
+      costHelp.hidden = !window.SchedulerQuoteLines.priced(k);
       costField.querySelector('label').textContent = k === 'discount' ? 'Amount off' : 'Cost';
       // A hotel's confirmation is its leg's; a new leg shows that leg's.
       hotelRef.hidden = k !== 'hotel';
@@ -5847,9 +5850,8 @@
       item: val('scheduler-f-litem') || null,
       description: val('scheduler-f-ldesc') || null,
       quantity: kind === 'rental' ? null : money(val('scheduler-f-lqty')),
-      // A discount is typed as the amount off and kept as a negative cost.
-      cost: typed === null ? null : (kind === 'discount' ? -Math.abs(typed) : typed),
-      cost_typed: typed !== null,
+      // quote-lines.js says what is kept of Cost: a typed price only where a figure was typed.
+      ...window.SchedulerQuoteLines.costKept(kind, typed),
     };
     if (kind === 'rental') {
       const rate = money(val('scheduler-f-lrate'));

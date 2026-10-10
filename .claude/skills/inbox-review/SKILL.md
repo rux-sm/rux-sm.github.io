@@ -5,8 +5,8 @@ description: Review the team's email in Missive against the scheduler and keep t
 
 # Reviewing the team inbox
 
-A review turns the day's email into rows of the office's To do list, the one
-in the scheduler's header. `scheduler/docs/working-from-claude.md` is the list
+A review turns the day's email into rows of the office's To do list, which
+the scheduler's board shows as Tasks. `scheduler/docs/working-from-claude.md` is the list
 from rux's side, and the `trips` skill beside this one is how a single trip's
 thread is read in depth. `rules.md` there is the office's policy.
 

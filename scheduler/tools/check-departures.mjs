@@ -31,6 +31,7 @@ const trip = {
   start_date: day(1), end_date: day(1), bus_count: 1, booking_contact_name: 'Dayna Mendez', trip_contact_1_name: 'Pat Lee',
   trip_documents: [{ label: 'Itinerary', created_at: '2026-10-05T10:00:00Z' }], trip_prep: { driver_info_sent: true, driver_info_sent_at: 't9', driver_info_sent_by: 'p1' },
   trip_assignments: [bus('a1', 1, [seat('s1', 'd1', 'driver', done)])],
+  trip_stops: [{ leg: 'outbound', arrive: '08:00' }, { leg: 'return', spot: '15:30' }],
 };
 const read = {
   busesById: new Map([[1, { id: 1, sleeper: true, ada_lift: false, capacity: 56 }], [2, { id: 2, sleeper: false }]]),
@@ -70,6 +71,11 @@ expect('a confirmed trip that still owes says so, with the figure',
 expect('not needed leaves the contact out and keeps the itinerary, done',
   said(page({ ...trip, trip_documents: [], itinerary_not_needed: true, contact_not_needed: true, trip_contact_1_name: null }, 'outbound', read).lines),
   ['done Confirmed [PO 0482]', 'done Itinerary not needed', 'done Driver info sent to Dayna']);
+
+expect('a leg whose stops have no times says so, and is not ready',
+  [said(page({ ...trip, trip_stops: [{ leg: 'outbound', arrive: null }] }, 'outbound', read).lines).filter(l => /times/.test(l)),
+    page({ ...trip, trip_stops: [] }, 'outbound', read).left],
+  [['warn No times'], 1]);
 
 expect('the hotel is a line only where the office books it',
   [said(page({ ...trip, trip_reqs: { hotel: true } }, 'outbound', read).lines).filter(l => /Hotel/.test(l)),

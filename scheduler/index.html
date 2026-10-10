@@ -157,11 +157,6 @@
          Account action; a face links to the page that person is on. people.js
          fills it and shows it only while somebody is here. -->
     <div class="scheduler-header-people" id="scheduler-people" hidden></div>
-    <!-- To do: what the office has to do now, with how many are due on the
-         button. On the board it shows and hides a pane beside the week, so it
-         is a pressed toggle here and not the header panel's trigger.
-         to-do-list.js fills the pane and the count. -->
-    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="To do" aria-pressed="false" aria-controls="scheduler-to-do-panel" id="scheduler-to-do-action"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-check_circle"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-account_circle"/></svg></button>
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="App switcher" aria-expanded="false" aria-controls="rux-switcher-panel"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-grid_view"/></svg></button>
   </div>
@@ -400,6 +395,13 @@
               </h2>
               <div id="scheduler-week-loading" class="scheduler-week-loading" role="status" aria-live="polite"></div>
             </div>
+            <!-- The controls between the week and the menu are one row, which
+                 scrolls sideways where the toolbar has no room for them all:
+                 on a phone, and where the panels beside the week leave it
+                 narrow. The week before the row and the menu and New trip
+                 after it hold still, so the week's calendar, which hangs
+                 under its button, is never cut by the scroll. -->
+            <div class="scheduler-toolbar__strip" id="scheduler-toolbar-strip">
             <!-- Moving through weeks comes straight after the week it changes:
                  Today, then the two steps side by side so going back and forth
                  is one place for the pointer. Today gives way to a menu row
@@ -412,15 +414,24 @@
                  width, so a wider week does not move the buttons, and DOM
                  order is reading order. -->
             <div class="scheduler-toolbar__spacer"></div>
+            <!-- Tasks and Prep, the board's two lists: each shows and hides
+                 the one pane left of the week on its own list, so each is a
+                 pressed toggle, its glyph filled while its list shows, and
+                 each carries how many are due. They lead the row's right
+                 group, so both counts show before a swipe where it scrolls.
+                 to-do-list.js works them. -->
+            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-tasks-toggle" aria-pressed="false" aria-controls="scheduler-to-do-panel" aria-label="Tasks" title="Tasks"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-check_circle"/></svg></button>
+            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-prep-toggle" aria-pressed="false" aria-controls="scheduler-to-do-panel" aria-label="Prep" title="Prep"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg></button>
             <!-- Search is a button that opens its own window, so the toolbar
                  keeps one row at every width. Cmd-K opens it too. -->
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-search-open" data-rux-open="scheduler-search-modal" aria-label="Search trips" title="Search trips (⌘K)"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-search"/></svg></button>
           <!-- Named "Driver availability", like the pane's own head, so one
-               control has one name. It stays in the toolbar on a phone, where
-               the week label shortens to make room for it. It sits beside
+               control has one name. It stays in the toolbar at every width,
+               a swipe along the row away where a phone is too narrow. It sits beside
                search, the other way to look, and its person is outlined while
                the pane is shut and filled while it shows, set by data.js. -->
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-avail-toggle" aria-pressed="false" aria-label="Driver availability"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-person"/></svg></button>
+            </div>
             <!-- The overflow menu (#scheduler-view-menu): New trip where its
                  toolbar button hides, Today below md, then the options for how
                  the board draws. -->
@@ -527,14 +538,16 @@
               </button>
             </div>
           </div>
-          <!-- The To do pane, left of everything on the board; `order` puts
-               it there while the markup keeps the schedule first. The header's
-               To do action shows and hides it, its head holds the close
-               control as the roster's does, and to-do-list.js fills it. -->
-          <div class="scheduler-to-do scheduler-to-do--pane" id="scheduler-to-do-panel" role="region" aria-label="To do" hidden>
+          <!-- The pane of the board's two lists, Tasks and Prep, left of
+               everything on the board; `order` puts it there while the markup
+               keeps the schedule first. The toolbar's two buttons show and
+               hide it, its head holds the name of the list showing and the
+               close control, as the roster's does, and to-do-list.js and
+               departures-panel.js fill it. -->
+          <div class="scheduler-to-do scheduler-to-do--pane" id="scheduler-to-do-panel" role="region" aria-label="Tasks" hidden>
             <div class="scheduler-aside__head">
-              <span class="scheduler-aside__title">To do</span>
-              <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-to-do-close" aria-label="Hide to do">
+              <span class="scheduler-aside__title">Tasks</span>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-to-do-close" aria-label="Hide the list">
                 <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
               </button>
             </div>
@@ -1729,9 +1742,9 @@
 <script src="route-figures.js"></script>
 <script src="file-names.js"></script>
 <script src="data.js"></script>
-<script src="/design/js/content-switcher.js"></script>
 <script src="to-do.js"></script>
 <script src="departures.js"></script>
+<script src="to-do-rows.js"></script>
 <script src="departures-panel.js"></script>
 <script src="to-do-list.js"></script>
 </body>

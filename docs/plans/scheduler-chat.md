@@ -59,8 +59,8 @@ the schedule comes back as something to press, and is never done by itself.
 - **The office's rules are the chat's instructions,** the `trips` skill's
   `rules.md`, copied beside the function when it is built, so it never
   recommends a new driver alone on a bus or an owner ahead of a free driver.
-- **The box is a header action on every Scheduler page,** beside To do, in
-  Design's header panel, drawn only for a person chat is on for.
+- **The box is a header action on every Scheduler page,** in Design's
+  header panel, drawn only for a person chat is on for.
 - **A conversation is the person's own and lasts the visit.** It is kept in
   the tab, so it follows from page to page, and never in the database.
 - **What a tool returns is read as data.** A customer's words in a trip or a

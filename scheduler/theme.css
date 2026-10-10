@@ -320,7 +320,7 @@
   /* Buttons that stand apart by a gap take no rule between them: on a 6px
      corner the toolbar's dividing rule bends into a bracket. The spacer's
      rule goes with them. */
-  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) .scheduler-page .scheduler-toolbar > .rux--btn--ghost:not(:focus-visible) {
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) .scheduler-page :is(.scheduler-toolbar, .scheduler-toolbar__strip) > .rux--btn--ghost:not(:focus-visible) {
     border-inline-color: transparent;
   }
   :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) .scheduler-toolbar__spacer { border-inline-start-color: transparent; }
@@ -328,7 +328,7 @@
      the secondary button, on the 1px border a ghost button already carries,
      so each one reads as a button. It gives way to the focus ring, which is
      that same border. */
-  [data-theme="geist-dark"] .scheduler-page .scheduler-toolbar > .rux--btn--ghost:not(:focus-visible) {
+  [data-theme="geist-dark"] .scheduler-page :is(.scheduler-toolbar, .scheduler-toolbar__strip) > .rux--btn--ghost:not(:focus-visible) {
     border-color: var(--rux-border-subtle-02);
   }
   /* The week's name opens the calendar, so it takes the same ring. It has no
@@ -341,11 +341,11 @@
   [data-theme^="apple-"] .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) :is(.rux--btn, .scheduler-weekbtn) {
     border-radius: 999px;
   }
-  [data-theme^="apple-"] .scheduler-page .scheduler-toolbar > .rux--btn--ghost:not(:focus-visible),
+  [data-theme^="apple-"] .scheduler-page :is(.scheduler-toolbar, .scheduler-toolbar__strip) > .rux--btn--ghost:not(:focus-visible),
   [data-theme^="apple-"] .scheduler-page .scheduler-toolbar .scheduler-weekbtn {
     background-color: var(--rux-button-secondary);
   }
-  [data-theme^="apple-"] .scheduler-page .scheduler-toolbar > .rux--btn--ghost:not(:focus-visible):hover,
+  [data-theme^="apple-"] .scheduler-page :is(.scheduler-toolbar, .scheduler-toolbar__strip) > .rux--btn--ghost:not(:focus-visible):hover,
   [data-theme^="apple-"] .scheduler-page .scheduler-toolbar .scheduler-weekbtn:hover {
     background-color: var(--rux-button-secondary-hover);
   }

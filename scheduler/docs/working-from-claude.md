@@ -68,15 +68,16 @@ way the draft is spent and the link does not open twice.
 A change to an existing trip works the same way: the link opens that trip,
 with the changes filled in over it, and Reset takes them back out.
 
-## Keep the To do list
+## Keep the Tasks list
 
-Claude can read the office's To do list and add to it. Ask in plain words:
+Claude can read the office's Tasks list, the one the board's toolbar opens,
+and add to it. Ask in plain words:
 
 - what is on the to-do list
 - add a to-do to call the school about the PO, for Friday
 - close the to-do about the PO, it arrived
 
-A row Claude adds shows in the list at once, for everyone, made by Ruxbot
+A to-do Claude adds shows in the list at once, for everyone, made by Ruxbot
 with your name kept beside it. It carries a tag for its kind of work, such
 as New quote, PO or Respond, then who it is about and what to do in a few
 words; press it for the rest, and for Done, Email and Trip. Claude can change or close only the rows
@@ -102,7 +103,7 @@ server**.
 
 ## What it will not do
 
-- It never writes or changes a trip. Only Save in the editor does. The To do
+- It never writes or changes a trip. Only Save in the editor does. The Tasks
   list's rows are the one thing it writes itself.
 - A draft can fill only the trip fields the connector lists. Anything else is
   refused, with the list, rather than written. A new trip's draft can carry

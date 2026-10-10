@@ -18,8 +18,9 @@
    `trip_prep` row for the trip's.
 
    The trip's lines are the whole trip's: confirmed, the itinerary received,
-   the trip contact, what the customer still owes, the hotel where the office
-   books it, and the driver details sent to the booking contact. A bus's block
+   No times where the leg's stops have none, the trip contact, what the
+   customer still owes, the hotel where the office books it, and the driver
+   details sent to the booking contact. A bus's block
    holds what the bus needs, met or not, its fuel card among them where the
    trip has one, and each crew member's lines:
    confirmed, then the itinerary, the envelope, the reminder, and the
@@ -89,6 +90,8 @@
     if (itineraries.length) lines.push(line('itinerary', 'done', 'Itinerary received', { at: itineraries[0].created_at ?? null }));
     else if (trip.itinerary_not_needed) lines.push(line('itinerary', 'done', 'Itinerary not needed'));
     else lines.push(line('itinerary', 'warn', 'Itinerary missing'));
+    // Said only while it is true, as what the customer owes is: a leg with times has no line for them.
+    if (!ToDo.hasTimes(trip, leg)) lines.push(line('times', 'warn', ToDo.KINDS.times.label));
 
     if (!trip.contact_not_needed) {
       const contact = Facts.dayOfContact(trip);
@@ -184,7 +187,7 @@
       buses, missing, left: tripLeft + missing + buses.reduce((n, b) => n + b.left, 0) };
   }
 
-  // How many legs leave on a day and how many of them are ready, for the To do list's line.
+  // How many legs leave on a day and how many of them are ready.
   function summary(trips, day, read = {}) {
     const pages = legsOn(trips, day).map(l => page(l.trip, l.leg, read));
     return { legs: pages.length, ready: pages.filter(p => p.left === 0).length };

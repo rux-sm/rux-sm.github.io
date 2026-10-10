@@ -89,7 +89,7 @@
     }
     if (avail && avail.style.maxBlockSize) avail.style.removeProperty('max-block-size');
 
-    /* The To do pane takes the same height and scrolls inside it, and gives
+    /* The lists' pane takes the same height and scrolls inside it, and gives
        it up in front of the board, where its own insets are its height. */
     const toDo = document.querySelector('.scheduler-to-do--pane');
     if (toDo && !toDo.hidden && getComputedStyle(toDo).position !== 'fixed') {

@@ -1,61 +1,53 @@
 /* ==========================================================================
-   to-do-list.js — THE TO-DO LIST
+   to-do-list.js — TASKS, AND THE PANE THE BOARD'S TWO LISTS SHARE
    --------------------------------------------------------------------------
-   Every Scheduler page carries the To do action and its panel; this fills
-   them. On the board the panel is a pane beside the week, which the action
-   shows and hides and which stays while a trip or a form opens beside it; on
-   every other page it is the header's own panel. There are three kinds of
-   row, on two of the panel's three tabs:
+   The board's toolbar has two buttons, Tasks and Prep, and one pane beside
+   the week that shows either list. This shows and hides the pane, says on
+   each button how many are due, and fills Tasks. Prep is departures-panel.js's.
+   The pane stays while a trip or a form opens beside it; a press on the open
+   list's button shuts it, and a press on the other swaps the list.
 
-     Computed  worked out here from the trips by to-do.js, never stored. It
-               is never done by hand: it asks while it is true and opens its
-               trip.
-     Written   a `to_dos` row a person typed.
-     Agent     a `to_dos` row a Claude session added through the connector,
-               made by Ruxbot.
+   Tasks is what people ask of the office, the `to_dos` rows, of two makers:
 
-   A stored row is an item of Design's accordion. Closed, it is three lines of
-   one size: a tag for its kind, who it is about in bold ahead of its words,
-   and a quiet line of its trip, its detail's first line and its due day. A
-   press opens it to those in full, the rest of its detail and who added it,
-   over one row of buttons: Done, Email and Trip, and a menu of Edit and
-   Delete. One row is open at a time.
+     Written   a row a person typed.
+     Agent     a row a Claude session added through the connector, made by
+               Ruxbot.
 
-   The panel's head is a switch of three tabs, each with its count in a
-   pill after its word. Tasks
-   holds the stored rows, grouped Overdue, Today, This week, Later and No
-   date, then Done today: the rows closed today behind one item of the
-   accordion that says how many and is shut until pressed, each struck
-   through, with Undo; Add a to-do, above them, opens a new row's form at
-   the head of the list. Alerts
-   holds the computed rows, by the day each trip leaves. Prep is
-   departures-panel.js's view, Departures, and its tab says how many of the
-   legs to prep for, tomorrow's and on a Friday the weekend's and Monday's,
-   are not ready yet. Everyone on the staff sees every row. The count on the
-   action is the Overdue and Today stored rows, every computed row, and
-   those departures while one is not ready.
+   A row is an item of Design's accordion. Closed, it is three lines of one
+   size: a tag for its kind, who it is about in bold ahead of its words, and
+   a quiet line of its trip, its detail's first line and its due day. A press
+   opens it to those in full, the rest of its detail and who added it, over
+   one row of buttons: Done, Email and Trip, and a menu of Edit and Delete.
+   One row is open at a time.
 
-   The page reads the trips the rules need itself, because only the board
-   holds them otherwise: every live trip for the follow-ups, and the buses,
-   seats, stops and contacts of the ones leaving within 30 days. A change to a
-   row, or to a trip, arrives on the `scheduler-to-do` channel and redraws.
+   The rows are grouped Overdue, Today, This week, Later and No date, then
+   Done today: the rows closed today behind one item of the accordion that
+   says how many and is shut until pressed, each struck through, with Undo;
+   Add a to-do, above them, opens a new row's form at the head of the list.
+   Everyone on the staff sees every row. The count on Tasks is its Overdue
+   and Today rows; the count on Prep is the one departures-panel.js gives.
 
-   Needs billing.js, follow-up.js, checklist.js, requirements.js, leg-facts.js
-   and to-do.js loaded first, /account.js for the client, and Design's
-   accordion.js and menu.js, which open a row and its menu.
+   A change to a row arrives on the `scheduler-to-do` channel and redraws.
+
+   Needs to-do-rows.js for a row's trip, departures-panel.js for Prep,
+   /account.js for the client, and Design's accordion.js and menu.js, which
+   open a row and its menu.
    ========================================================================== */
 (() => {
   'use strict';
 
   const account = window.Rux?.account;
   const client = account?.client;
-  const ToDo = window.SchedulerToDo;
-  const Facts = window.SchedulerLegFacts;
-  const action = document.getElementById('scheduler-to-do-action');
+  const Rows = window.SchedulerToDoRows;
   const panel = document.getElementById('scheduler-to-do-panel');
-  if (!client || !ToDo || !Facts || !action || !panel) return;
-  // The board's pane, or the header's panel on a page with no board.
-  const pane = !panel.classList.contains('rux--header-panel');
+  const title = panel?.querySelector('.scheduler-aside__title');
+  /* The two lists: each one's button, its glyph, filled while its list
+     shows, and its name on the pane's head. */
+  const LISTS = {
+    tasks: { button: document.getElementById('scheduler-tasks-toggle'), glyph: '#m-check_circle', name: 'Tasks', due: 'due' },
+    prep: { button: document.getElementById('scheduler-prep-toggle'), glyph: '#m-directions_bus', name: 'Prep', due: 'not ready' },
+  };
+  if (!client || !panel || !LISTS.tasks.button) return;
 
   const NEW = 'new';   // `editingId` while the form open is a new row's
   const GROUPS = ['Overdue', 'Today', 'This week', 'Later', 'No date'];
@@ -75,8 +67,6 @@
   ]);
   const kindOf = row => KINDS.get(row.kind)
     ?? [row.kind ? row.kind.charAt(0).toUpperCase() + row.kind.slice(1).replaceAll('-', ' ') : 'To do', 'rux--tag--outline'];
-  // The tables a computed row is read from; a change to one reads the trips again.
-  const TRIP_TABLES = ['trips', 'trip_assignments', 'trip_drivers', 'trip_stops', 'trip_updates', 'trip_documents', 'trip_payments', 'trip_pos'];
 
   // -- small things ---------------------------------------------------------
   const el = (tag, cls, text) => {
@@ -104,10 +94,9 @@
   const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
   // A row about one leg names it, so the board opens that leg's bar.
   const tripHref = (trip, day, leg) => `./?trip=${encodeURIComponent(trip.id)}&date=${encodeURIComponent(day || trip.start_date || '')}${leg ? `&leg=${leg}` : ''}`;
-  /* A link to a trip is offered to the page first. The board takes it and
-     opens the trip where it is, beside this list; a page with no board lets
-     it go, and the link goes to the board. `opener` is the link pressed, for
-     the focus to come back to. It answers whether it was taken. */
+  /* A link to a trip is offered to the board, which opens the trip where it
+     is, beside the list. `opener` is the link pressed, for the focus to come
+     back to. It answers whether it was taken. */
   const boardTook = (href, opener) => !document.dispatchEvent(new CustomEvent('scheduler:open-trip', { detail: { href, opener }, cancelable: true }));
   /* The dot between the parts of a line, tied to the word before it, so a line
      that wraps breaks after the dot and never starts with one. */
@@ -118,27 +107,15 @@
   let me = null;            // my staff row, as /account.js gives it
   let staff = new Map();    // profile id -> profile, Ruxbot among them
   let stored = [];          // `to_dos`: every open row, and the ones closed today
-  let computed = [];        // to-do.js's rows, unfolded
-  let trips = new Map();    // id -> trip, for a stored row's trip and the Trip choice
-  let editingId = null;     // the stored row whose form is open, or NEW
-  let openId = null;        // the stored row that is open, one at a time
-  let doneOpen = false;     // whether Done today is open, shut again when the panel shuts
-  let view = 'list';        // the tab showing: list, trips or departures
+  let editingId = null;     // the row whose form is open, or NEW
+  let openId = null;        // the row that is open, one at a time
+  let doneOpen = false;     // whether Done today is open, shut again when the pane shuts
+  let showing = null;       // the list the pane shows, `tasks` or `prep`, or none while it is shut
   let failure = '';
+  // A row's trip, and the trips its Trip choice offers, as to-do-rows.js read them.
+  const tripOf = id => Rows?.trips().get(id) ?? null;
 
   // -- reading --------------------------------------------------------------
-  const LIGHT = ['id', 'trip_ref', 'destination', 'customer', 'start_date', 'end_date', 'return_start_date', 'return_end_date',
-    'trip_type', 'confirmed', 'trip_bar_color', 'cancelled_at', 'created_at', 'bus_count', 'return_bus_count',
-    // What the follow-up rules read: the money, the itinerary and the updates.
-    'quoted_price', 'itinerary_not_needed', 'contract_status', 'po_received', 'po_ref', 'po_amount', 'deposit_amount',
-    'date_paid', 'balance_paid', 'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_documents(label)',
-    'trip_updates(created_at,kind)'].join(',');
-  // What the other three rules read, of the trips leaving soon enough to be asked.
-  const HEAVY = ['id', 'contact_not_needed', 'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
-    ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
-    'trip_assignments(id,bus_id,leg,active_roles,needs,vehicle_type,trip_drivers(driver_id,role,envelope_printed))',
-    'trip_stops(leg,arrive,spot,depart_prev)'].join(',');
-
   async function readStored() {
     const midnight = new Date();
     midnight.setHours(0, 0, 0, 0);
@@ -146,66 +123,25 @@
       .or(`closed_at.is.null,closed_at.gte."${midnight.toISOString()}"`).order('created_at').then(unwrap);
   }
 
-  async function readTrips() {
-    const today = iso(new Date());
-    const far = dayFrom(ToDo.SHORT_DAYS);
-    const within = col => `and(${col}.gte.${today},${col}.lte.${far})`;
-    const [light, heavy, buses, drivers, settings] = await Promise.all([
-      // A trip that left a season ago can still owe a balance; older than that is History's.
-      client.from('trips').select(LIGHT).is('cancelled_at', null).gte('start_date', dayFrom(-90)).order('start_date').limit(5000).then(unwrap),
-      client.from('trips').select(HEAVY).is('cancelled_at', null)
-        .or([within('start_date'), within('return_start_date'), within('end_date')].join(',')).then(unwrap),
-      client.from('buses').select('id,capacity,type,ada_lift,sleeper,equipment').then(unwrap),
-      client.from('drivers').select('id,employment_type').then(unwrap),
-      client.from('settings').select('key,value').in('key', ['requirements-v1', 'follow-up-v1', 'billing-workflow-v1']).then(unwrap),
-    ]);
-    const setting = new Map(settings.map(s => [s.key, s.value]));
-    Facts.setRequirementList(setting.get('requirements-v1'));
-    window.SchedulerFollowUp.set(setting.get('follow-up-v1'));
-    window.SchedulerBilling.setWorkflow(setting.get('billing-workflow-v1'));
-
-    const more = new Map(heavy.map(t => [t.id, t]));
-    const all = light.map(t => ({ ...t, ...more.get(t.id) }));
-    const soon = all.filter(t => window.SchedulerChecklist.legsOf(t)
-      .some(leg => { const d = ToDo.legDay(t, leg); return d && d >= today && d <= dayFrom(ToDo.SOON_DAYS); }));
-    const statusRows = soon.length
-      ? await client.rpc('get_trip_driver_statuses', { p_trip_ids: soon.map(t => t.id) }).then(unwrap) : [];
-    const read = {
-      busesById: new Map(buses.map(b => [b.id, b])),
-      driversById: new Map(drivers.map(d => [d.id, d])),
-      statuses: new Map(statusRows.map(r => [Facts.statusKey(r.tripId, r.driverId, r.leg, r.role), r])),
-    };
-    trips = new Map(all.map(t => [t.id, t]));
-    computed = ToDo.rows(all, { factsOf: (t, leg) => Facts.factsOf(t, leg, read), contactOf: t => !!Facts.dayOfContact(t) });
-    document.dispatchEvent(new CustomEvent('scheduler:to-do-rows'));
-  }
-
   async function readStaff() {
     const rows = await client.from('profiles').select('id,user_id,display_name').then(unwrap);
     staff = new Map(rows.map(p => [p.id, p]));
   }
 
-  /* One read at a time of each kind, and the newest asked for wins: a second
-     ask while one is under way runs once more when it ends. */
-  const once = read => {
-    let running = null;
-    let again = false;
-    const run = async () => {
-      if (running) { again = true; return running; }
-      running = (async () => {
-        try { await read(); failure = ''; } catch (e) { failure = `The list did not load. ${e?.message || e}`; }
-        draw();
-      })();
-      await running;
-      running = null;
-      if (again) { again = false; return run(); }
-    };
-    return run;
-  };
-  const loadStored = once(readStored);
-  const loadTrips = once(readTrips);
-  let tripsTimer = null;
-  const tripsSoon = () => { clearTimeout(tripsTimer); tripsTimer = setTimeout(loadTrips, 1500); };
+  /* One read at a time, and the newest asked for wins: a second ask while one
+     is under way runs once more when it ends. */
+  let reading = null;
+  let again = false;
+  async function loadStored() {
+    if (reading) { again = true; return reading; }
+    reading = (async () => {
+      try { await readStored(); failure = ''; } catch (e) { failure = `The list did not load. ${e?.message || e}`; }
+      draw();
+    })();
+    await reading;
+    reading = null;
+    if (again) { again = false; return loadStored(); }
+  }
 
   // -- writing --------------------------------------------------------------
   async function write(run) {
@@ -239,7 +175,7 @@
       if (row.closed_at) continue;
       out.get(groupOf(row, today, sunday)).push(row);
     }
-    const tripDay = id => trips.get(id)?.start_date || '9';
+    const tripDay = id => tripOf(id)?.start_date || '9';
     const place = row => (row.trip_id ? `1 ${tripDay(row.trip_id)} ${row.trip_id}` : '0');
     for (const g of GROUPS) {
       out.get(g).sort(g === 'Today' ? (a, b) => place(a).localeCompare(place(b))
@@ -247,21 +183,8 @@
     }
     return out;
   }
-  /* The computed rows as the Alerts tab lists them: a trip at a time by the
-     day it leaves, and the folded lines, each standing for many, last. */
-  function tripLines() {
-    const place = c => (c.fold ? '2' : `1 ${c.day || c.trip.start_date || '9'} ${c.trip.id}`);
-    return ToDo.fold(computed).map((c, i) => [place(c), i, c])
-      .sort((a, b) => a[0].localeCompare(b[0]) || a[1] - b[1]).map(x => x[2]);
-  }
 
   // -- drawing --------------------------------------------------------------
-  // Dots between the parts of a row's quiet line.
-  const meta = parts => {
-    const p = el('p', 'scheduler-to-do__meta');
-    parts.filter(Boolean).forEach((part, i) => { if (i) p.append(DOT); p.append(part); });
-    return p.childNodes.length ? p : null;
-  };
   /* A stored row's tag: its kind's words in its kind's colour. It is a div,
      as Carbon's tag is, because Design's outline tag is not drawn on a span. */
   const kindTag = row => {
@@ -280,27 +203,6 @@
       row.created_at ? shortDay.format(new Date(row.created_at)) : null].filter(Boolean).join(DOT);
   };
 
-  function computedRow(c) {
-    const li = el('li', 'scheduler-to-do__row scheduler-to-do__row--computed');
-    const a = el('a', 'scheduler-to-do__open');
-    const words = el('span', 'scheduler-to-do__words', String(c.what).replaceAll(' · ', DOT));
-    if (c.fold) {
-      a.href = `trips.html?show=${c.kind === 'follow-up' ? 'followup' : c.kind}`;
-      a.append(svgUse('#m-arrow_forward'), words);
-    } else {
-      a.href = tripHref(c.trip, c.day, c.leg);
-      if (c.kind !== 'follow-up' && c.detail) words.append(' ', el('span', 'scheduler-to-do__detail', c.detail));
-      const mark = svgUse('#m-warning-fill');
-      mark.classList.add('scheduler-to-do__mark');
-      const leaves = c.day ? `${c.legName ? `${c.legName} leaves` : 'Leaves'} ${dayWords(c.day)}` : null;
-      const body = el('span', 'scheduler-to-do__text');
-      body.append(words, meta([tripWords(c.trip), leaves, c.kind === 'follow-up' && c.detail ? `updated ${c.detail}${c.detail === 'today' ? '' : ' ago'}` : null]) ?? '');
-      a.append(mark, body);
-    }
-    li.appendChild(a);
-    return li;
-  }
-
   /* A stored row, as an item of Design's accordion, whose script opens and
      shuts it. The heading is the closed row and the whole of it is the press;
      the panel under it holds what a closed row has no room for, and the
@@ -310,7 +212,7 @@
     const open = row.id === openId;
     const li = el('li', `rux--accordion__item scheduler-to-do__item${done ? ' scheduler-to-do__item--done' : ''}${open ? ' rux--accordion__item--active' : ''}`);
     li.dataset.id = row.id;
-    const trip = row.trip_id ? trips.get(row.trip_id) : null;
+    const trip = row.trip_id ? tripOf(row.trip_id) : null;
     const lines = String(row.detail || '').split('\n').map(s => s.trim()).filter(Boolean);
     const today = iso(new Date());
     const due = done ? null : row.due_on && row.due_on !== today ? `Due ${dayWords(row.due_on)}` : null;
@@ -472,7 +374,7 @@
         .map(p => option(p.id, p.id === me?.id ? `${p.display_name} (me)` : p.display_name, p.id === row.owner_id)));
     const trip = el('select', 'rux--select-input');
     const today = iso(new Date());
-    const choices = [...trips.values()].filter(t => t.id === row.trip_id
+    const choices = [...(Rows?.trips().values() ?? [])].filter(t => t.id === row.trip_id
       || ((t.return_end_date || t.end_date || t.start_date || '') >= today && !window.SchedulerChecklist.placeholder(t)));
     trip.append(option('', 'No trip', !row.trip_id),
       ...choices.map(t => option(t.id, `${t.start_date ? shortDay.format(parseISO(t.start_date)) : 'No date'} · ${tripWords(t)}`, t.id === row.trip_id)));
@@ -508,26 +410,9 @@
     return li;
   }
 
-  /* The frame, built once: the switch of three tabs in a row of its own at
-     the panel's head, which stays while the body under it scrolls, then Add a
-     to-do and the list. The switch is Design's content switcher, and Add is
-     the dashed row the trip editor's lists end in. */
-  const switchRow = el('div', 'rux--layer-two scheduler-to-do__switch');
+  /* The frame, built once: Add a to-do, the dashed row the trip editor's
+     lists end in, and the list under it. */
   const body = el('div', 'rux--layer-two rux--stack-vertical rux--stack-scale-5 scheduler-to-do__body');
-  const views = el('div', 'rux--content-switcher rux--content-switcher--sm rux--layout--size-sm rux--layout-constraint--size__default-md rux--layout-constraint--size__min-sm rux--layout-constraint--size__max-lg');
-  views.setAttribute('role', 'tablist');
-  views.setAttribute('aria-label', 'Tasks, Alerts or Prep');
-  for (const [name, text] of [['list', 'Tasks'], ['trips', 'Alerts'], ['departures', 'Prep']]) {
-    const on = name === 'list';
-    const b = el('button', `rux--content-switcher-btn${on ? ' rux--content-switcher--selected' : ''}`);
-    b.type = 'button';
-    b.dataset.view = name;
-    b.setAttribute('role', 'tab');
-    b.setAttribute('aria-selected', String(on));
-    b.tabIndex = on ? 0 : -1;
-    b.appendChild(el('span', 'rux--content-switcher__label', text));
-    views.appendChild(b);
-  }
   const addRow = el('div', 'scheduler-list-additem');
   const addButton = el('button', 'rux--btn rux--btn--ghost rux--layout--size-md scheduler-list-add');
   addButton.type = 'button';
@@ -538,16 +423,13 @@
   const error = el('p', 'scheduler-to-do__error');
   error.setAttribute('role', 'alert');
   const list = el('div', 'scheduler-to-do__list');
-  switchRow.appendChild(views);
   body.append(addRow, error, list);
-  panel.setAttribute('aria-label', 'To do');
-  // Ahead of both bodies, departures-panel.js's being in the panel already.
-  panel.insertBefore(switchRow, panel.querySelector('.scheduler-departures'));
+  body.hidden = true;
   panel.appendChild(body);
 
   /* The open row's menu, one for the whole list: Design's menu, which its
      script opens from the row's More button and shuts on a pick. It sits in
-     the body, since the panel moves and would carry a fixed menu with it. */
+     the body, since the pane moves and would carry a fixed menu with it. */
   const menu = el('ul', 'rux--menu rux--menu--sm');
   menu.id = MENU_ID;
   menu.setAttribute('role', 'menu');
@@ -566,46 +448,20 @@
     menuItem('Delete', true, row => { openId = null; remove(row); }));
   document.body.appendChild(menu);
 
-  /* Each tab's word, with how many it holds still open in a pill after it:
-     the open stored rows, the computed rows, and the legs to prep for not ready
-     yet, which together are also one of what is due. A tab holding nothing
-     is its word. The space parts the two in the tab's name as it is read
-     out; the pill's own margin parts them on the page. */
-  const departures = () => window.SchedulerDeparturesPanel?.summary() ?? null;
-  const departuresDue = () => { const d = departures(); return d?.known && d.legs > d.ready ? 1 : 0; };
-  function drawViews() {
-    const d = departures();
-    const said = {
-      list: stored.filter(r => !r.closed_at).length || '',
-      trips: tripLines().length || '',
-      departures: departuresDue() ? d.legs - d.ready : '',
-    };
-    for (const b of views.querySelectorAll('[data-view]')) {
-      const n = said[b.dataset.view];
-      b.replaceChildren(b.querySelector('.rux--content-switcher__label'), ...(n ? [' ', el('span', 'scheduler-to-do__count', n)] : []));
-    }
+  /* How many are due, on each list's button: Design's count badge, and the
+     button's name says it too. Tasks counts its Overdue and Today rows. */
+  function drawCount(list, n) {
+    const { button, name, due } = LISTS[list];
+    if (!button) return;
+    button.querySelector('.rux--badge-indicator')?.remove();
+    if (n) button.appendChild(el('div', 'rux--badge-indicator rux--badge-indicator--count', n > 99 ? '99+' : String(n)));
+    button.setAttribute('aria-label', n ? `${name}, ${n} ${due}` : name);
   }
+  const drawPrepCount = () => drawCount('prep', window.SchedulerDeparturesPanel?.summary().due ?? 0);
   // A new row as its form first shows it: mine, due today, and nothing else.
   const blank = () => ({ id: null, kind: null, who: null, body: '', detail: null, due_on: iso(new Date()), owner_id: me?.id ?? null, trip_id: null });
 
-  function drawCount() {
-    const rows = grouped();
-    const n = rows.get('Overdue').length + rows.get('Today').length + tripLines().length + departuresDue();
-    action.querySelector('.rux--badge-indicator')?.remove();
-    if (n) action.appendChild(el('div', 'rux--badge-indicator rux--badge-indicator--count', n > 99 ? '99+' : String(n)));
-    action.setAttribute('aria-label', n ? `To do, ${n} due` : 'To do');
-  }
-
-  // The Alerts tab: the computed rows in one list.
-  function tripParts() {
-    const lines = tripLines();
-    if (!lines.length) return [el('p', 'scheduler-to-do__none', 'Nothing on a trip needs doing.')];
-    const ul = el('ul', 'scheduler-to-do__rows');
-    ul.setAttribute('role', 'list');
-    for (const c of lines) ul.appendChild(computedRow(c));
-    return [ul];
-  }
-  // The Tasks tab: a new row's form while one is open, the groups, then Done today.
+  // The list: a new row's form while one is open, the groups, then Done today.
   function listParts() {
     const rows = grouped();
     const parts = [];
@@ -630,14 +486,13 @@
   }
 
   function draw() {
-    drawCount();
-    drawViews();
+    const rows = grouped();
+    drawCount('tasks', rows.get('Overdue').length + rows.get('Today').length);
     error.textContent = failure;
     error.hidden = !failure;
-    addRow.hidden = view !== 'list';
     // A redraw somebody else's change caused would empty a form being typed in, so it waits for the form to shut.
     if (editingId && document.activeElement?.closest?.('.scheduler-to-do__form')) return;
-    list.replaceChildren(...(view === 'trips' ? tripParts() : listParts()));
+    list.replaceChildren(...listParts());
   }
 
   // -- behaviour ------------------------------------------------------------
@@ -664,75 +519,68 @@
     list.querySelector('.scheduler-to-do__form input[required]')?.focus();
   });
 
-  /* The switch shows one tab. Tasks and Alerts are this list, drawn one way
-     or the other; Prep is departures-panel.js's view, which hides this body
-     while it shows. */
-  function show(next, focus) {
-    const other = window.SchedulerDeparturesPanel;
-    view = next === 'trips' || (next === 'departures' && other) ? next : 'list';
-    editingId = null;
-    if (view === 'departures') other.open(); else other?.close();
-    window.Rux.contentSwitcher?.select(views, views.querySelector(`[data-view="${view}"]`), { focus, silent: true });
-    draw();
-  }
-  views.addEventListener('rux:content-switcher-selected', () => {
-    show(views.querySelector('.rux--content-switcher--selected')?.dataset.view, true);
-  });
-
-  document.addEventListener('scheduler:departures-summary', () => draw());
-
-  // A link to a trip, a row's on either tab or a Departures line's, by a plain press.
+  // A link to a trip, a Prep row's or a Prep line's, by a plain press.
   panel.addEventListener('click', e => {
     const a = e.target.closest?.('a[href*="?trip="]');
     if (!a || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     if (boardTook(a.href, a)) e.preventDefault();
   });
 
-  /* Opening reads the list again, since a tab left open all morning is hours
-     behind, and shutting puts the Tasks tab back. Each tells
-     departures-panel.js, whose view the panel also holds. */
-  function opened() {
-    loadStored();
-    loadTrips();
-    panel.dispatchEvent(new CustomEvent('scheduler:to-do-opened'));
-  }
-  function closed() {
+  document.addEventListener('scheduler:departures-summary', drawPrepCount);
+  // A task's trip is read by to-do-rows.js, so its words come with that reading.
+  document.addEventListener('scheduler:to-do-rows', () => draw());
+
+  /* The pane shows one list or is shut. A list's button reads as pressed, its
+     glyph filled, while its list shows. Opening a list reads it again, since
+     a tab left open all morning is hours behind, and leaving Tasks shuts its
+     open row and its form. The board, told by `scheduler:to-do-pane`, finds
+     the pane its room: beside the week, or in front of it where the window is
+     too narrow. Nothing keeps whether it was open, so the board always opens
+     on the week with the pane shut. */
+  function setPane(next) {
+    if (next === showing || (next && !LISTS[next]?.button)) return;
+    const was = showing;
+    showing = next;
+    panel.hidden = !next;
+    for (const [name, { button, glyph }] of Object.entries(LISTS)) {
+      if (!button) continue;
+      const on = name === next;
+      button.setAttribute('aria-pressed', String(on));
+      button.classList.toggle('rux--btn--selected', on);
+      button.querySelector('use')?.setAttribute('href', on ? `${glyph}-fill` : glyph);
+    }
     editingId = null;
     openId = null;
     doneOpen = false;
-    show('list', false);
-    panel.dispatchEvent(new CustomEvent('scheduler:to-do-closed'));
+    if (next) {
+      if (title) title.textContent = LISTS[next].name;
+      panel.setAttribute('aria-label', LISTS[next].name);
+    }
+    body.hidden = next !== 'tasks';
+    const prep = window.SchedulerDeparturesPanel;
+    if (next === 'prep') prep?.open(); else if (was === 'prep') prep?.close();
+    if (next) { loadStored(); Rows?.load(); }
+    draw();
+    if (!was !== !next) document.dispatchEvent(new CustomEvent('scheduler:to-do-pane'));
   }
-  /* The board's pane is shown and hidden here, and the board, told by
-     `scheduler:to-do-pane`, finds its room: beside the week, or in front of
-     it where the window is too narrow. The action reads as pressed, its
-     glyph filled, while the pane shows. Nothing keeps whether it was open,
-     so the board always opens on the week with the pane shut. */
-  function setPane(open) {
-    if (panel.hidden === !open) return;
-    panel.hidden = !open;
-    action.setAttribute('aria-pressed', String(open));
-    action.classList.toggle('rux--btn--selected', open);
-    action.querySelector('use')?.setAttribute('href', open ? '#m-check_circle-fill' : '#m-check_circle');
-    if (open) opened(); else closed();
-    document.dispatchEvent(new CustomEvent('scheduler:to-do-pane'));
+  // Shuts the pane and hands the focus back to the button of the list it showed.
+  function shut() {
+    const button = LISTS[showing]?.button;
+    if (!button) return;
+    setPane(null);
+    button.focus();
   }
-  if (pane) {
-    action.addEventListener('click', () => setPane(panel.hidden));
-    document.getElementById('scheduler-to-do-close')?.addEventListener('click', () => { setPane(false); action.focus(); });
-  } else {
-    /* A closed header panel is 0 wide but still in the page, so it is inert
-       until it opens: nothing in it takes a Tab or is read. */
-    panel.inert = true;
-    panel.addEventListener('rux:header-panel-opened', () => { panel.inert = false; opened(); });
-    panel.addEventListener('rux:header-panel-closed', () => { panel.inert = true; closed(); });
+  for (const [name, { button }] of Object.entries(LISTS)) {
+    // Prep is a list only where departures-panel.js loaded to draw it.
+    if (name === 'prep' && !window.SchedulerDeparturesPanel) continue;
+    button?.addEventListener('click', () => setPane(showing === name ? null : name));
   }
+  document.getElementById('scheduler-to-do-close')?.addEventListener('click', shut);
 
   let channel = null;
   function listen() {
     channel = client.channel('scheduler-to-do');
     channel.on('postgres_changes', { event: '*', schema: 'public', table: 'to_dos' }, () => loadStored());
-    for (const table of TRIP_TABLES) channel.on('postgres_changes', { event: '*', schema: 'public', table }, tripsSoon);
     channel.subscribe();
   }
   // Coming back to the tab reads again and reopens a channel the sleep took.
@@ -740,22 +588,18 @@
     if (document.visibilityState !== 'visible' || !me) return;
     if (channel && channel.state !== 'joined' && channel.state !== 'joining') { client.removeChannel(channel); listen(); }
     loadStored();
-    tripsSoon();
   });
 
   (async () => {
     me = await account.person().catch(() => null);
-    // The list is the staff's; any other account's panel stays empty.
+    // The lists are the staff's; any other account's pane stays empty.
     if (!me?.staff) return;
     await readStaff().catch(() => {});
-    await Promise.all([loadStored(), loadTrips()]);
+    await loadStored();
+    drawPrepCount();
     listen();
   })();
 
-  /* The unfolded computed rows, for the Trips page's Show choices, and the
-     way the board shuts the pane when it is the one in front. */
-  window.SchedulerToDoList = {
-    rows: () => computed,
-    shut: () => { if (pane && !panel.hidden) { setPane(false); action.focus(); } },
-  };
+  // The way the board shuts the pane when it is the one in front.
+  window.SchedulerToDoList = { shut };
 })();

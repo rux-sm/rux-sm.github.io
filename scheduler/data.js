@@ -9015,7 +9015,7 @@
     ?.addEventListener('scroll', () => nameAvailBand(), true);
   const availToggle = document.getElementById('scheduler-avail-toggle');
   let availOn = false;
-  // The To do pane, which to-do-list.js fills, shows and hides.
+  // The pane of the board's two lists, which to-do-list.js shows and hides.
   const toDoPane = document.getElementById('scheduler-to-do-panel');
   /* The board's whole range, one week or two, and which of its days the roster
      last drew, as `first:count`, so a new selection redraws only when it moves
@@ -10309,7 +10309,7 @@
   if (boardEl && 'ResizeObserver' in window) {
     new ResizeObserver(() => placeRoom()).observe(boardEl);
   }
-  // to-do-list.js says when it has shown or hidden the To do pane.
+  // to-do-list.js says when it has shown or hidden the lists' pane.
   document.addEventListener('scheduler:to-do-pane', () => {
     placeRoom();
     window.Rux?.schedule?.fit?.();
@@ -15232,7 +15232,7 @@
   /* Shows a trip's week with its bar selected and in view, and opens the
      trip unless `open` is false, as a pick from Search trips asks. A link
      that names a leg takes that leg's bar, so a pickup's line in Departures
-     or the To do list never opens the drop-off; one that names none takes
+     or Prep never opens the drop-off; one that names none takes
      the trip's first bar on the week. */
   async function goToTrip(id, day, { open = true, leg = null } = {}) {
     if (!id || !/^\d{4}-\d{2}-\d{2}$/.test(day ?? '')) { show(); return; }
@@ -15255,7 +15255,7 @@
     if (open && !isEditorBar(bar)) whenSafe(() => openRef(ref));
   }
 
-  /* A LINK TO ONE TRIP, as the address or a row of the To do pane gives it. A
+  /* A LINK TO ONE TRIP, as the address or a row of Prep gives it. A
      Departures line opens the trip where its step is done: the Contact list,
      or a form or the customer's itinerary in the document panel, with the
      trip selected and its editor left shut, or one tab of the editor.
@@ -15280,7 +15280,7 @@
         .then(() => { if (tab) requestAnimationFrame(() => goToChecklistItem(tab)); });
     }
   }
-  /* The To do pane offers each of its trip links here before following it,
+  /* The lists' pane offers each of its trip links here before following it,
      and the board takes the ones that are its own address, so the trip opens
      beside the list and the page is not read again. */
   document.addEventListener('scheduler:open-trip', e => {
@@ -15299,6 +15299,16 @@
   stepPrev?.addEventListener('click', () => go(-daysShown()));
   stepNext?.addEventListener('click', () => go(daysShown()));
   document.getElementById('scheduler-today')?.addEventListener('click', () => { toast(null); cursor = mondayOf(new Date()); show(); });
+
+  /* The toolbar's row of controls scrolls sideways where it has no room for
+     them. A mouse has no swipe, so a wheel turned over the row moves it
+     along; a sideways scroll of the hand's own, and a pinch, are left be. */
+  const toolbarStrip = document.getElementById('scheduler-toolbar-strip');
+  toolbarStrip?.addEventListener('wheel', e => {
+    if (e.ctrlKey || e.deltaX || !e.deltaY || toolbarStrip.scrollWidth <= toolbarStrip.clientWidth) return;
+    toolbarStrip.scrollLeft += e.deltaY;
+    e.preventDefault();
+  }, { passive: false });
 
   /* Compact weeks slide only their trip tracks. The date and bus headers
      stay in place until a completed gesture commits one adjacent week. */

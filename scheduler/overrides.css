@@ -763,7 +763,18 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    the week's controls. It colours the 1px border a ghost button already
    carries, so nothing moves, and it gives way to the focus ring, which is
    that same border. */
-.scheduler-toolbar__weekrow ~ .rux--btn--ghost:not(:focus-visible) { border-inline-start-color: var(--rux-border-subtle-01); }
+.scheduler-toolbar__weekrow ~ .rux--btn--ghost:not(:focus-visible),
+.scheduler-toolbar__strip > .rux--btn--ghost:not(:focus-visible) { border-inline-start-color: var(--rux-border-subtle-01); }
+
+/* A list's count on its toolbar button: Design's count badge, set against
+   the glyph and not the button's corner, where Carbon puts it for the
+   header's 48px actions and where it would cover a glyph at the toolbar's
+   size. It stands off the glyph's upper outer corner by the same step at
+   either button size, the desktop's and the phone's. */
+.scheduler-toolbar .rux--btn > .rux--badge-indicator--count {
+  inset: auto auto calc(50% + var(--rux-spacing-02)) calc(50% + var(--rux-spacing-03));
+  margin: 0;
+}
 
 /* Today is the toolbar's one worded ghost button, and Carbon writes a ghost
    button's words in the link colour. It takes the text colour its icon
@@ -773,7 +784,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 /* New trip where the toolbar is too narrow for its words, in app.css's terms:
    Carbon's icon-only button, a square of the bar's height with the icon in
    the flow, set here because the width decides it and a class cannot. */
-@container scheduler-toolbar (max-width: 45rem) {
+@container scheduler-toolbar (max-width: 54rem) {
   .scheduler-page .scheduler-toolbar .rux--btn--primary {
     justify-content: center;
     padding-inline: 0;
@@ -1069,7 +1080,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 .rux--actionable-notification.scheduler-note--choice .rux--actionable-notification__text-wrapper { padding-block-end: 0; }
 .rux--actionable-notification.scheduler-note--choice .rux--actionable-notification__button-wrapper { margin-inline-start: var(--rux-spacing-07); }
 
-/* The To do panel's stored rows are an accordion in a side panel.
+/* A task's rows are an accordion in the lists' pane.
    Carbon insets the title 1rem and the open content up to a quarter of its
    width, for reading down a page; here a row lines up with its group's
    heading, its three lines start at the top beside the arrow, and the open
@@ -1113,22 +1124,3 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 .scheduler-departures .rux--accordion__content { padding-inline: var(--rux-spacing-05); }
 .scheduler-departures .rux--accordion__item--active > .rux--accordion__wrapper { padding-block: 0 var(--rux-spacing-05); }
 
-/* The To do panel's switch has three tabs, each with a count after its word.
-   Carbon gives a switcher's options one width, which cuts the longest with
-   its count to an ellipsis; here each is as wide as its words and they share
-   what is left, with the words in the middle of each where Carbon starts
-   them at its edge. The panel is 20rem, so an option keeps 8px
-   beside its words where Carbon gives 16px, and the three may shrink, each
-   ending in the ellipsis Carbon's label already has, before the switch
-   would push past the panel's edge. The three selectors are Design's own for
-   an option's padding, which a theme sets on the first and last by name. */
-.scheduler-to-do .rux--content-switcher { min-inline-size: 0; }
-.scheduler-to-do .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn,
-.scheduler-to-do .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:first-child,
-.scheduler-to-do .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:last-child {
-  flex: 1 1 auto;
-  justify-content: center;
-  inline-size: auto;
-  min-inline-size: 0;
-  padding-inline: var(--rux-spacing-03);
-}

@@ -16,9 +16,11 @@
                    stops have no times in
 
    A leaving-soon row leaves out what another row on the same trip already
-   says, so one fault is one line. `fold` then turns a crowd of one kind into
-   one line: follow-ups always, apart from the trips that are due, and any
-   other kind past FOLD rows.
+   says, so one fault is one line. `byTrip` then makes the Prep list's rows of
+   them: one for each trip on each day it has a gap, every gap on its one
+   line, without the legs leaving on a day to prep for, which Departures
+   shows whole, and without the follow-ups that are not due, which the Trips
+   page keeps.
 
    Nothing here reads the database or the page. The trip row brings its own
    columns, and the caller hands in what only it can read, as the checklist
@@ -35,16 +37,15 @@
   const SOON_DAYS = 2;
   const SHORT_DAYS = 30;
   const TIMES_DAYS = 7;
-  const FOLD = 5;
   // The checklist groups a leaving-soon row reads; the rest is the Departures list's.
   const SOON_GROUPS = ['Customer', 'Buses'];
 
-  // Each kind in the order the list shows them, and a crowd of it in words.
+  // Each kind in the order a trip's row says them.
   const KINDS = {
-    'short': { label: 'Short of buses', many: n => `${n} trips are short of buses` },
-    'times': { label: 'No times', many: n => `${n} trips have no times` },
-    'leaving': { label: 'Leaving soon', many: n => `${n} legs leaving soon have items open` },
-    'follow-up': { label: 'Follow-up', many: n => `${n} ${n === 1 ? 'trip needs' : 'trips need'} a follow-up` },
+    'short': { label: 'Short of buses' },
+    'times': { label: 'No times' },
+    'leaving': { label: 'Leaving soon' },
+    'follow-up': { label: 'Follow-up' },
   };
 
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -131,22 +132,25 @@
       || String(a.trip.id).localeCompare(String(b.trip.id)) || order.indexOf(a.kind) - order.indexOf(b.kind));
   }
 
-  /* The rows as the list shows them. A follow-up that is not due always folds,
-     and any other kind folds past FOLD rows; a fold is one line carrying its
-     kind and how many it stands for, placed after the rows left standing. */
-  function fold(all) {
-    const kept = [];
-    const folds = [];
-    for (const kind of Object.keys(KINDS)) {
-      const mine = all.filter(r => r.kind === kind);
-      const stay = kind === 'follow-up' ? mine.filter(r => r.due) : (mine.length > FOLD ? [] : mine);
-      const gone = mine.length - stay.length;
-      kept.push(...stay);
-      if (gone) folds.push({ kind, key: `fold:${kind}`, fold: true, count: gone, what: KINDS[kind].many(gone) });
+  /* The rows as the Prep list shows them: one for each trip on each day it
+     has a gap, with every gap in `whats`, soonest first. A row on one of
+     `prepDays` is left out, because that day's legs are shown whole, and so
+     is a follow-up that is not due. A gap that is one leg's names the leg on
+     a split trip, and the row opens that leg. */
+  function byTrip(all, prepDays = []) {
+    const out = new Map();
+    for (const r of all || []) {
+      if (!r.day || prepDays.includes(r.day)) continue;
+      if (r.kind === 'follow-up' && !r.due) continue;
+      const key = `${r.day}:${r.trip.id}`;
+      if (!out.has(key)) out.set(key, { key, trip: r.trip, day: r.day, leg: null, legName: null, whats: [] });
+      const row = out.get(key);
+      if (r.leg && !row.leg) { row.leg = r.leg; row.legName = r.legName; }
+      const said = r.kind !== 'follow-up' && r.detail ? `${r.what} ${r.detail}` : r.what;
+      for (const what of String(said).split(' · ')) if (!row.whats.includes(what)) row.whats.push(what);
     }
-    const order = new Map(all.map((r, i) => [r.key, i]));
-    return [...kept.sort((a, b) => order.get(a.key) - order.get(b.key)), ...folds];
+    return [...out.values()].sort((a, b) => a.day.localeCompare(b.day) || String(a.trip.id).localeCompare(String(b.trip.id)));
   }
 
-  window.SchedulerToDo = { KINDS, FOLD, SOON_DAYS, SHORT_DAYS, TIMES_DAYS, rows, fold, legDay, legName };
+  window.SchedulerToDo = { KINDS, SOON_DAYS, SHORT_DAYS, TIMES_DAYS, rows, byTrip, legDay, legName, hasTimes };
 })();

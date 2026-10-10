@@ -8,7 +8,7 @@ type: plan
 
 A trip never says less than the scheduler knows. A clash, a driver who has
 to be told, and a price that differs from the one sent each show where the
-office already looks: the bar, the checklist, the To do list and Departures.
+office already looks: the bar, the checklist and Prep.
 What a driver or a customer holds is what the trip holds. An agent's tools
 answer with the pages' own rules. A script that cannot run never reaches the
 site.
@@ -20,8 +20,6 @@ site.
 - **The tasks are in building order,** group by group, and the first two
   groups go before any other scheduler plan, because they are small, need no
   answer and every later change lands under the new checks.
-- **`scheduler-to-do-toolbar.md` is built after those two groups and ahead
-  of Clashes,** because Clashes adds a kind to its lists.
 - **The other plans follow as quote entry, retiring rux-ui, the customer
   profile, documents, then routes,** each waiting on the one before it.
 - **A rule goes in a small file with sample cases,** never in `data.js`.
@@ -36,8 +34,8 @@ site.
 - **A clash is by the clock.** Two legs that share only the day one ends and
   the other begins clash when the second leaves before the first is back. A
   leg with no times counts as a clash, because unknown is not fine.
-- **The bar, the checklist, the To do list and Departures read that one
-  answer,** so they cannot disagree. A placeholder raises nothing on itself.
+- **The bar, the checklist and Prep read that one answer,** so they cannot
+  disagree. A placeholder raises nothing on itself.
 - **A clash warns and never refuses.** Save says what the date change now
   clashes with and goes through, because the other trip may be about to move.
 - **A lapsed card is never picked automatically.** A person can still pick
@@ -52,7 +50,7 @@ site.
 - **What a driver's job reads as is one file, `scheduler/driver-job.js`,**
   used by the driver's page and the office, so both name the same changes.
 - **A decline, and a change after a driver accepted, are each a bar alert
-  and a To do row.** The row covers legs leaving within 30 days.
+  and a gap on Prep.** The gap covers legs leaving within 30 days.
 - **The flag clears when the driver accepts again, or when the office
   answers Yes to Mark the driver as told** in the Contact list, because many
   changes are told by phone.
@@ -116,7 +114,7 @@ site.
   Billing; Claude writes the PO number in the draft's note.
 - **A drafted bus count adds empty vehicles on the Buses tab.**
 - **The connector answers with the pages' rule files,** joined into one
-  generated file at build, so a trip's warnings are its To do rows, and one
+  generated file at build, so a trip's warnings are its gaps on Prep, and one
   read tool, `needs_attention`, lists them and a day's departures.
 - **A session presses a real Save on the published site,** which runs only
   checked code; :8641 is for testing with the page's writes recorded.
@@ -206,8 +204,9 @@ None open.
       `cardLapse` into `scheduler/clashes.js` with
       `scheduler/tools/check-clashes.mjs`, and make a clash read the clock.
 - [ ] Add the standing rule and read it on the bar, in the checklist's Buses
-      group, as a To do kind, on Departures and as a choice on the Trips
-      page; load `week.js` and `clashes.js` on every page with the To do list.
+      group, as a kind of gap in `to-do.js`, on a leg's Prep tile and as a
+      choice on the Trips page; load `week.js` and `clashes.js` on the board
+      and the Trips page, the two that load `to-do-rows.js`.
 - [ ] Warn at Save when a date change makes a clash.
 - [ ] Say a lapsed card in words in every picker, and leave that driver out
       of the automatic picks.
@@ -226,10 +225,10 @@ None open.
 - [ ] Write one migration: `trip_driver_statuses` sent live to staff,
       `get_trip_driver_statuses` returning what each driver accepted, and
       the function behind Mark the driver as told. Apply it on a yes.
-- [ ] Listen to the status table on the board, the To do list and
-      Departures, and count statuses in `weekPrint`.
-- [ ] Raise Declined and Tell the driver on the bar, the checklist,
-      Departures, the Contact list and the To do list, from `leg-facts.js`.
+- [ ] Listen to the status table on the board and Prep, and count statuses
+      in `weekPrint`.
+- [ ] Raise Declined and Tell the driver on the bar, the checklist, the
+      Contact list and Prep, from `leg-facts.js`.
 - [ ] Write the triggers that take Printed, Reminded and Driver info sent
       off when what they carried changes, as SQL on a yes.
 - [ ] Name the drivers to tell in the Cancel dialog, its toast and History.

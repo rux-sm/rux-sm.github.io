@@ -1,5 +1,5 @@
 // Runs to-do.js, the to-do list's computed rules, against sample trips and
-// fails when a row appears, disappears or folds where it should not.
+// fails when a row appears or disappears, or the Prep list joins them, where it should not.
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
@@ -7,7 +7,7 @@ const window = {};
 for (const file of ['billing.js', 'follow-up.js', 'checklist.js', 'to-do.js']) {
   runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), { window });
 }
-const { rows, fold, FOLD } = window.SchedulerToDo;
+const { rows, byTrip } = window.SchedulerToDo;
 
 let failed = 0;
 function expect(name, got, want) {
@@ -19,7 +19,9 @@ function expect(name, got, want) {
 const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 const day = n => { const d = new Date(); d.setDate(d.getDate() + n); return iso(d); };
 const ago = n => new Date(Date.now() - n * 864e5).toISOString();
-const said = list => list.map(r => (r.fold ? `${r.kind} x${r.count}` : `${r.key} ${r.what}${r.detail ? ` [${r.detail}]` : ''}`));
+const said = list => list.map(r => `${r.key} ${r.what}${r.detail ? ` [${r.detail}]` : ''}`);
+// A Prep row: its day from today, its trip, its leg where it names one, and its gaps.
+const joined = list => list.map(r => `${Math.round((new Date(`${r.day}T12:00`) - new Date(`${day(0)}T12:00`)) / 864e5)} ${r.trip.id}${r.legName ? ` ${r.legName}` : ''}: ${r.whats.join(', ')}`);
 
 // A confirmed trip with nothing to ask: paid, its itinerary in, a bus on it and times in.
 const bus = { leg: 'outbound', bus_id: 1 };
@@ -86,14 +88,21 @@ expect('leaving soon leaves out what the follow-up and Short rows already say',
 
 const quiet = n => ({ ...good, id: `q${n}`, confirmed: false, created_at: ago(10), start_date: day(40 + n), end_date: day(40 + n) });
 const due = { ...good, id: 'due', confirmed: false, start_date: day(5), end_date: day(5) };
-expect('follow-ups always fold, apart from the trip that is due',
-  said(fold(rows([quiet(1), due, quiet(2)], facts))),
-  ['follow-up:due Trip unconfirmed [1d]', 'follow-up x2']);
+expect('the Prep list leaves out a follow-up that is not due and keeps the one that is',
+  joined(byTrip(rows([quiet(1), due, quiet(2)], facts))),
+  ['5 due: Trip unconfirmed']);
 
-const shorts = n => Array.from({ length: n }, (_, i) => ({ ...good, id: `s${i}`, bus_count: 2 }));
-expect(`${FOLD} rows of a kind stand, and one more folds them all`,
-  [said(fold(rows(shorts(FOLD), facts))).length, said(fold(rows(shorts(FOLD + 1), facts)))],
-  [FOLD, [`short x${FOLD + 1}`]]);
+expect('a trip with three gaps is one row under the day it leaves, each gap said once',
+  joined(byTrip(rows([{ ...due, bus_count: 2, confirmed: true, trip_documents: [], trip_stops: [] }], facts))),
+  ['5 due: Short of buses 1 of 2, No times, Itinerary missing']);
+
+expect('a leg leaving on a day to prep for has no row, and the trips of other days keep theirs',
+  joined(byTrip(rows([{ ...soon, bus_count: 2 }, { ...good, id: 'b', bus_count: 2 }], facts), [day(1)])),
+  ['20 b: Short of buses 1 of 2']);
+
+expect('a split trip is a row on each day a leg has a gap, naming the leg',
+  joined(byTrip(rows([{ ...good, trip_type: 'dropoff_pickup', bus_count: 2, return_start_date: day(22), return_bus_count: 2 }], facts))),
+  ['20 a Drop-off: Short of buses 1 of 2', '22 a Pickup: Short of buses 0 of 2']);
 
 console.log(failed ? `\n  ${failed} to-do case(s) failed` : '\n  to-do: every case passed');
 process.exit(failed ? 1 : 0);

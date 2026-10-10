@@ -168,11 +168,6 @@ None open.
       and puts back the Done marks the rename takes off; call it from
       `fleet.js`, with the columns listed once in `vehicles.js`.
 
-### Checks
-
-- [ ] Write the how-to for proving a trip's Save in Chrome with the page's
-      writes recorded and not sent, in `scheduler/docs/`.
-
 ### Clashes
 
 - [ ] Move `fitFor`, `restBetween`, `rankDrivers`, `autoPicks` and

@@ -19,18 +19,21 @@ everything has played a whole game.
   still to draw. A gate keeps its theme.
 - **The footprint is Picross DS's: twelve gates of fifteen, 180 puzzles.**
   Gate 1 is its Easy level, gates 2 to 11 its Normal levels 1 to 10, and
-  gate 12 its Extra level, each with that level's board size.
+  gate 12 its Extra level.
 - **A gate holds fifteen puzzles,** lettered A to O in Picross DS. It holds
   nine now, in the pages and in the database.
 - **Gate 1 holds two sizes, five 5×5 and then ten 10×10,** as the Easy level
   does. Every other gate is one size, and a gate is one size in the database
   and in a page's address now.
-- **Five sizes: 5×5, 10×10, 15×15, 20×20 and 25×20.** They hold 5, 25, 75,
-  45 and 30 of the 180. The game has the first three, and the last is its
-  first board that is not square.
+- **Boards stop at 15×15 for now.** 5×5, 10×10 and 15×15 hold 5, 25 and 120
+  of the 180, so gates 8 to 10 are 15×15 where Picross DS's levels 7 to 9
+  are 20×20.
+- **Gates 11 and 12 are 20×20, the finale,** where Picross DS ends on 25×20.
+  The 20×20 board is built last, before gate 11 is drawn, and the database
+  already takes 20 a side.
 - **A big board is played zoomed in on a phone,** as Picross DS zooms its
   large puzzles. The squares share 270px on a phone 390px wide, which is
-  18px each on a 15×15, about 13px on a 20×20 and about 10px on a 25×20.
+  18px each on a 15×15 and about 13px on a 20×20.
 - **A custom gate is outside the base game.** It is one of the owner's kept
   for the players ticked in Manage, or a player's own, sent to their
   friends, and the owner has their own as any player does. It has no number
@@ -95,16 +98,16 @@ What each gate is for, and the level of Picross DS it stands for.
 | 4 | Level 3 | 15×15 | Toys | round shapes worked in from the edges, and a first hole |
 | 5 | Level 4 | 15×15 | At home | handles and legs: thin parts, so lines of 1s and 2s |
 | 6 | Level 5 | 15×15 | Animals | eyes and feet: holes in a shape, a picture that comes slowly |
-| 7 | Level 6 | 15×15 | Things that go | wheels and windows: many numbers in a line, little to start from; the hardest 15×15 |
-| 8 | Level 7 | 20×20 | The sea | the first 20×20: long runs again, and finding your place on a bigger board |
-| 9 | Level 8 | 20×20 | Food | layers and toppings: short runs inside a big shape |
-| 10 | Level 9 | 20×20 | Machines | detail inside a solid outline: dials, buttons, keys; the hardest 20×20 |
-| 11 | Level 10 | 25×20 | Buildings | a board wider than it is tall; rows of windows, the same small number many times |
-| 12 | Extra | 25×20 | Creatures | faces and limbs, everything at once; the last boss |
+| 7 | Level 6 | 15×15 | Things that go | wheels and windows: many numbers in a line, little to start from |
+| 8 | Level 7 | 15×15 | The sea | wavy edges and short runs everywhere |
+| 9 | Level 8 | 15×15 | Food | layers and toppings: short runs inside a big shape |
+| 10 | Level 9 | 15×15 | Machines | detail inside a solid outline: dials, buttons, keys; the hardest 15×15 |
+| 11 | Level 10 | 20×20 | Buildings | the first 20×20; rows of windows, the same small number many times |
+| 12 | Extra | 20×20 | Creatures | faces and limbs, everything at once; the last boss |
 
 What each gate's pictures are drawn to. These start from the ten live
 puzzles and two players' times, and are corrected as gates are played. Gates
-8 to 12 have none, because no board of their sizes has been drawn or timed.
+11 and 12 have none, because no 20×20 has been drawn or timed.
 
 | Gate | First look gives | Most numbers in a line | Filled | Pixelator says | A good time |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -112,10 +115,13 @@ puzzles and two players' times, and are corrected as gates are played. Gates
 | 1, its 10×10 | 55% or more | 2 | 50 to 70% | normal or easier | under a minute |
 | 2 | 45% or more | 3 | 45 to 65% | normal or easier | a minute |
 | 3 | 40% or more | 4 | 50 to 65% | normal or easier | 2 to 3 minutes |
-| 4 | 35 to 45% | 5 | 45 to 60% | normal | 3 to 5 minutes |
-| 5 | 30 to 40% | 5 | 45 to 60% | normal | 4 to 6 minutes |
-| 6 | 25 to 35% | 6 | 40 to 55% | normal or hard | 6 to 8 minutes |
-| 7 | under 25% | 7 | 35 to 50% | hard | 8 to 12 minutes |
+| 4 | 35 to 45% | 4 | 50 to 60% | normal or easier | 3 to 4 minutes |
+| 5 | 35 to 45% | 5 | 45 to 60% | normal | 3 to 5 minutes |
+| 6 | 30 to 40% | 5 | 45 to 60% | normal | 4 to 6 minutes |
+| 7 | 30 to 40% | 6 | 40 to 55% | normal | 5 to 7 minutes |
+| 8 | 25 to 35% | 6 | 40 to 55% | normal or hard | 6 to 8 minutes |
+| 9 | 20 to 30% | 7 | 35 to 50% | hard | 7 to 10 minutes |
+| 10 | under 25% | 7 | 35 to 50% | hard | 8 to 12 minutes |
 
 - **Inside a gate the fifteen climb too:** five at the easy end of its
   numbers, nine in the middle, and a boss one gate harder. Gate 1's five
@@ -179,14 +185,6 @@ Fifteen things to draw in each, as a start:
       wide screen.
 - [ ] Let gate 1 hold its two sizes on one tile and one page, the five 5×5
       first.
-- [ ] Add the 20×20 board to the Pixelator, play and Manage: a square of
-      whole pixels, every line's numbers in their room, and the zoom on a
-      phone.
-- [ ] Add the 25×20 board, the first that is not square: the board, the
-      small pictures, a gate's size as it is written, and the database's
-      limit of 20 a side; the SQL is shown to rux first.
-- [ ] Set the numbers gates 8 to 12 are drawn to, from the first 20×20 and
-      25×20 drawn and timed.
 - [ ] Send each gate's audience with its puzzles, so a page tells the
       course from a gate kept for picked players; the SQL is shown to rux
       first.
@@ -199,4 +197,10 @@ Fifteen things to draw in each, as a start:
 - [ ] Count the course on the front page, and say when all of it is found.
 - [ ] Give a 10×10 its 30px squares at 390px, with every line's numbers
       still in their room, and look at each size in Chrome at that width.
-- [ ] Publish each gate, 1 to 12 in order, as its fifteenth puzzle is drawn.
+- [ ] Publish gates 1 to 10 in order, each as its fifteenth puzzle is drawn.
+- [ ] Add the 20×20 board to the Pixelator, play and Manage: a square of
+      whole pixels, every line's numbers in their room, and the zoom on a
+      phone.
+- [ ] Set the numbers gates 11 and 12 are drawn to, from the first 20×20
+      drawn and timed.
+- [ ] Publish gates 11 and 12 the same way.

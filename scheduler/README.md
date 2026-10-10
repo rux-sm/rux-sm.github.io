@@ -100,11 +100,11 @@ at the foot of a sheet and named again over the rest of it on the next, every li
 Simple layout is the driver's, naming only the rest taken in the sleeper, and its Detailed one the office's; on either, a time past midnight on a one-day leg carries its weekday, and the customer quote says which day it arrives. The Detailed one adds the yard, each wait and the leg's daily miles and
 hours from `route-figures.js`, the Route tab's own sum, which `tools/check-route-figures.mjs` checks. The
 customer quote is one copy per trip, on two Letter sheets: the QUOTE / PROPOSAL
-the office sends, with its estimate number, price and first line item read from the trip, lines
-typed under it that the Total adds up, and the Terms and Conditions Agreement
-Form behind it. Its wording is `quote-text.js`, which the trip editor's
-Copy for QuickBooks button reads too, so a pasted estimate and a printed quote
-cannot disagree. The week schedule is rux-ui's billing report of a week on
+the office sends, with its estimate number and the trip's quote lines, or its price as one bus rental
+where it has none, lines typed under them and a Total that is the sum of the lines the sheet prints;
+and the Terms and Conditions Agreement Form behind it. A rental's wording is `quote-text.js`, which the
+trip editor's Copy for QuickBooks button reads too, each leg from its own stops, so the description
+pasted into an estimate and the one printed on the quote read the same. The week schedule is rux-ui's billing report of a week on
 Legal landscape, five buses a sheet, opened from the board's menu as Print
 week; `week.js` places its trips as it places the board's, and a trip that
 does not fit its row is named above the sheet. The binder covers and spines are the office's own, drawn from today's date and no trip: a Letter cover for each quotes and confirmed binder of this year and the next, and their spine strips in five ring sizes, every word typed over on the sheet. A year split between binders has one added from a cover's own button, and the months each holds are typed under its year, once for its cover and its spines. `print.js` holds the registry every form is an entry in; a

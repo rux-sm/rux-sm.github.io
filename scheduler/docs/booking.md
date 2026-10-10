@@ -32,10 +32,13 @@ under the first line item, so the copy they sign carries it:
 - a requirement they need in writing, such as an ADA-accessible bus with a
   driver trained on its wheelchair lift and securement
 
-The email that goes with the quote says:
+Before a trip is confirmed the customer has to know the following. The quote
+and its Terms and Conditions form say most of it, so the email that goes with
+them stays short; `.claude/skills/trips/emails.md` is how that email is
+written.
 
 - The quote is held on the calendar for one week, and we extend the hold when
-  asked.
+  asked. The office says this; it is on no sheet the customer signs.
 - The trip is confirmed once we receive the **signed quote** and the **signed
   Terms and Conditions form**, plus a **20% down payment**. A school district can
   send a **purchase order** in place of the down payment.

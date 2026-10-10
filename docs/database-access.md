@@ -32,7 +32,7 @@ other account reads it.
 The Pixels tables ask `is_owner()` in `owner_all`, and `pixels_puzzles` adds
 `staff_read`: only the owner makes puzzles and sees the players. A player,
 whether an account or a guest with no account, reaches them only through
-Pixels' twenty-one functions, which find the player first, from the log-in or
+the functions `pixels/README.md` lists, which find the player first, from the log-in or
 from the hash of a key the guest's browser keeps. `pixels_login` is the one
 that gives a browser such a key, for a username and its PIN. Which gates a player is
 sent is `pixels_sees`, which no role may run by itself.
@@ -54,8 +54,9 @@ from `anon` and `public`, and one a staff page calls checks for staff first.
 The list the key may call is in `scheduler/docs/database-inventory.md` §1; a
 new link-page function is granted to `anon` by name, and nothing else is.
 
-**Seven tables carry no rule and no grant on purpose** — among them the share
-tables, the driver statuses and confirmations, and trip history. Only a
+**Some tables carry no rule and no grant on purpose,** and
+`scheduler/docs/database-inventory.md` §1 names each: the share tables, the
+driver statuses and confirmations and the two histories among them. Only a
 definer function reaches them, which is the tightest arrangement there is.
 
 **Live channels are closed the same way.** The scheduler's presence channel is
@@ -74,7 +75,9 @@ migration does.
 
 ## Files
 
-**Six buckets.** LN Guide's two are private and their rules ask for the owner.
+**Seven buckets.** LN Guide's `ln-confirmations` is private and its rules ask
+for the owner. `notes-tile-files` and `notes-walk-shots` are private and carry
+no rule, so no account reaches them.
 `trip-documents`, `driver-photos` and `company-documents` are private: staff
 read them through links signed for ten minutes, and the link pages reach a
 trip document through the `trip-document-link` Edge Function, which signs one

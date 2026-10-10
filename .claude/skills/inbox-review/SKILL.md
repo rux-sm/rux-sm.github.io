@@ -77,7 +77,9 @@ no Missive tools says so and stops.
 - Mail that is not about a trip or a request for a quote is ignored, with no
   row and no line in the report, because the list is for trips.
 - A thread whose row was marked Done gets no new row unless mail has come in
-  on it since, because Done is the office saying that work is finished. A
+  on it since, because Done is the office saying that work is finished. A row
+  closed with the reason Deleted is one the office took off the list, and
+  counts the same. A
   closed row gives when in `closed_at`.
 
 ## Writing a row

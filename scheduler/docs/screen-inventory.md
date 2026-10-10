@@ -45,7 +45,7 @@ The side nav lists only pages that exist; each view is added when its page is. D
 | Itinerary editor | later | App component, with the Itineraries view. |
 | Trip manifest | drop | The office does not use it. A trip's headcount is the Details tab's Passengers. |
 | Trip finder results page | keep | `trips.html`, every trip in a data table with search, a Show choice and pagination, the choice taking Prep's kinds of gap too, Needs follow-up, Short of buses, No times and Leaving soon, and `?show=` opening the page on one; a row opens its trip on the board. Results in a data table on a page. The schedule's toolbar has a search button, and Cmd-K, that open a Search trips window; a pick shows its week with the bar selected and in view, without opening the trip. It finds cancelled trips too, tagged Cancelled; one opens a dialog with the date and reason and a Bring back button. Cancelling needs a typed reason. |
-| Contact info, Driver week info | later | Modals with a text area and the copy button module. Sending marks each sent driver Pending response unless already confirmed or declined, as rux-ui does. |
+| Contact info, Driver week info | keep | Contact info is the Contact list, a modal from the bar's Call or text shortcut: the customer's people, then the crew on each bus of the leg, each to call or text, with Remind for a driver's reminder of the leg and Driver info for the driver details sent to the booking contact; each asks before it marks what was sent. Driver week info is `driver-view.html`: staff pick a driver, tick the legs that go on the driver's link, copy the message, and make, update or revoke the link; Mark as sent sets each leg the driver has not answered to Pending response. |
 | Print schedule | drop | The office does not use it. |
 | Requirements editor | keep | Settings section; a contained list with an add row. Icons come from the rux sprite by a fixed name. |
 | Notifications | drop | The office does not use it. |
@@ -76,7 +76,7 @@ the schedule open, and faces on a bar show who has that trip.
 | Bar menu | keep | Every action on the bar, in four groups parted by rules: open the trip and its itinerary; Forms, which opens the trip's list of forms, the quote calculator, which opens the trip beside it, and Add update, which opens the trip's Updates window; the trip's colour, hotel and drivers' statuses; Take off this bus and Cancel trip. Each item carries the icon its shortcut carries, and what cannot act on the bar is hidden. |
 | Open email thread | keep | In the trip editor rather than on the bar: an open icon on the Booking contact title line once the trip has a thread, whose menu adds, changes or removes it through a small box. The field itself never shows. |
 | Saved record mark | keep | In the trip editor, a small Saved contact, Saved customer or Saved location link right after the label of a field picked from the saved lists, opening that record in a new tab; one typed by hand has none. Under a linked contact's phone or email that differs from the saved one, a grey line says the saved value. |
-| Realtime refresh | later | |
+| Realtime refresh | keep | The board's `scheduler-board` channel reads the week again when a table it draws from changes. Tasks, Prep and the Trips page hold channels of their own; `database-inventory.md` lists them. |
 | Compact board | keep | Where the board itself cannot show three readable days, which is a phone, it draws all seven instead of scrolling to about two. A trip is a 44px block in its colour carrying a code of up to three letters for its destination and nothing else, the same on every block however long; the day band numbers the days; the shortcut bar docks to the bottom edge with the rows the block gave up. `placeRoom` turns it on from the board's own width, never from what the panels leave. |
 
 View preferences stay in `localStorage`, read with a try-catch; none goes to
@@ -97,8 +97,7 @@ Dropped: `../rux-ui/gallery.html` and the four specimen pages.
 
 Each step ends with the page opened in every theme.
 
-5. Print schedule.
-6. Everything marked *later*.
+Everything marked *later*, in the order its rows stand.
 
 ## 6. Not verified
 

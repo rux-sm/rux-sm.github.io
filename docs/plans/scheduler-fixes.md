@@ -167,9 +167,6 @@ None open.
       type on units, trips, each trip's vehicles and customers' usual type,
       and puts back the Done marks the rename takes off; call it from
       `fleet.js`, with the columns listed once in `vehicles.js`.
-- [ ] Correct the documents: one home for each count in the two access
-      documents, the screen inventory's rows for what is built, the README's
-      line on the pasted estimate, and `booking.md`'s quote email list.
 
 ### Checks
 

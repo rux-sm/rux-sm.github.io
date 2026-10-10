@@ -1052,13 +1052,10 @@
     const save = $('scheduler-types-save');
     save.disabled = true;
     try {
-      // A renamed type is renamed where it is held first, so no unit or trip
-      // is left holding a name the list has lost.
+      // A renamed type is renamed where it is held first, so no unit, trip or
+      // customer is left holding a name the list has lost.
       for (const t of rows.filter(r => r.was && r.was !== r.name)) {
-        for (const [table, column] of [['buses', 'type'], ['trips', 'vehicle_type']]) {
-          const { error: e } = await client.from(table).update({ [column]: t.name }).eq(column, t.was);
-          if (e) throw new Error(e.message);
-        }
+        await Vehicles.rename(client, t.was, t.name);
         for (const b of buses) if (b.type === t.was) b.type = t.name;
       }
       await Vehicles.save(client, rows.map(({ was, ...t }) => t));

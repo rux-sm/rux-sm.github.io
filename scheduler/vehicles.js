@@ -5,9 +5,11 @@
    row, and the one way a vehicle is named anywhere: its type, then its
    number, as "Coach 218" or "Van 12". Loaded by every page that names one.
 
-   A type is `{ name, label?, icon }`. `name` is what `buses.type` and
-   `trips.vehicle_type` hold, `label` is how the list writes it where that
-   differs, as "Car / SUV" for Car, and `icon` is one of ICONS below.
+   A type is `{ name, label?, icon }`. `label` is how the list writes it
+   where that differs, as "Car / SUV" for Car, and `icon` is one of ICONS
+   below. `name` is what four columns hold: `buses.type`,
+   `trips.vehicle_type`, `trip_assignments.vehicle_type` and
+   `customers.usual_vehicle_type`. `rename` changes all four.
    ========================================================================== */
 (() => {
   'use strict';
@@ -76,8 +78,16 @@
     return types;
   }
 
+  /* Renames a type in every column that holds it. The database does it in one
+     function, because a write to a trip's vehicles from the page takes Buses
+     done and Billing done off the trip, and that function puts them back. */
+  async function rename(client, was, name) {
+    const { error } = await client.rpc('rename_vehicle_type', { p_was: was, p_name: name });
+    if (error) throw new Error(error.message);
+  }
+
   window.SchedulerVehicles = {
-    ICONS, label, iconOf, inkOn, typeOf, read, save,
+    ICONS, label, iconOf, inkOn, typeOf, read, save, rename,
     get types() { return types.map(t => ({ ...t })); },
     set: list => { if (Array.isArray(list) && list.length) types = clean(list); },
   };

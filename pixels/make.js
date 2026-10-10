@@ -612,13 +612,21 @@
     if (!editing) {
       const kept = readDraft();
       const keptSide = Math.sqrt(kept?.squares?.length || 0);
-      setSide(!id && SIZES.includes(keptSide) ? keptSide : 10);
-      showLevels(openLevel());
-      if (!id && SIZES.includes(keptSide)) {
+      // Manage's Add puzzle names the gate the puzzle is for, as its size
+      // and its level: the board is that size and Save offers that gate. A
+      // drawing kept of that size is on the board; one of another size is
+      // not, and the first square drawn here takes its place.
+      const forSide = +query.get('size'), forLevel = +query.get('gate');
+      const asked = !id && !personal && SIZES.includes(forSide) && Number.isInteger(forLevel) && forLevel >= 1;
+      const draws = !id && SIZES.includes(keptSide) && (!asked || keptSide === forSide);
+      setSide(asked ? forSide : draws ? keptSide : 10);
+      draft = blank();
+      showLevels(asked ? forLevel : openLevel());
+      if (draws) {
         draft = grid(kept.squares);
         colours = kept.colours ? grid(kept.colours) : null;
         name.value = kept.name || '';
-        if (kept.level) showLevels(kept.day ? 'day' : kept.level);
+        if (!asked && kept.level) showLevels(kept.day ? 'day' : kept.level);
         day.value = kept.day || '';
       }
     }

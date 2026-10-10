@@ -88,11 +88,11 @@ gate; a day takes one. `docs/making-puzzles.md` is the guide to a good picture a
 
 `manage.html` is the owner's desk: every gate on one page, small boards first, then Unsorted. A gate's
 heading has its place and name, a Published or Hidden switch, arrows that move it among the gates of
-its size, a key that keeps it for the players ticked in a list, a pencil that renames it and a bin
-that deletes it and leaves its puzzles in Unsorted. Under each tile are Edit, Play, which keeps no
-time for a puzzle no player is sent, and a switch that sends the puzzle to no player when off; a gate
-has at most nine on. Pressing a tile ticks it, and the ticked are moved together, to a gate of their
-size, a new one or Unsorted, or deleted; a gate left empty goes too.
+its size, a key that keeps it for picked players, a pencil that renames it and a bin that deletes it
+and leaves its puzzles in Unsorted. Under each tile are Edit, Play, which keeps no time for a puzzle
+no player is sent, and a switch that sends it to no player when off; a gate has at most nine on. Add
+puzzle, after a gate's tiles, opens the Pixelator for it. Pressing a tile ticks it, and the ticked are
+moved, to a gate of their size, a new one or Unsorted, or deleted; a gate left empty goes too.
 
 ## Files
 

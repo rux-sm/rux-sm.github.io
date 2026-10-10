@@ -174,6 +174,8 @@ shows every gate on one page, small boards first, each with its place, its
 name and its size, then Unsorted. The front page shows only what the
 players are sent.
 
+- **Add puzzle**, the tile after a gate's own, opens the Pixelator on a
+  blank board of that gate's size, and Save offers that gate.
 - **Tick puzzles to move them.** Press a tile to tick it, or the box beside
   a gate's name to tick all of it. Move, in the bar above, asks where
   they go: a gate of their size, Unsorted, or a new gate, named

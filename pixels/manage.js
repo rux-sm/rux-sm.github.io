@@ -18,6 +18,8 @@
    A TILE always shows its puzzle's picture and name, and how hard it is.
    Under it are Edit, which opens it in the maker, Play, which tries it, and
    for one in a category the switch that sends it to no player when off.
+   After a category's tiles is Add puzzle, which opens the maker on a blank
+   board of the category's size, with the category chosen for Save.
 
    TICKS. A tile is ticked by pressing it, and the box in a heading ticks
    its whole category. A bar over the categories stays in view with how many
@@ -219,6 +221,22 @@
     return wrap;
   };
 
+  // The way to draw another puzzle for a category: a tile after its own,
+  // which opens the maker on a blank board of its size with it chosen.
+  const addTile = c => {
+    const wrap = document.createElement('div');
+    wrap.className = 'pixels-tile';
+    const a = document.createElement('a');
+    a.className = 'rux--link rux--tile rux--tile--clickable pixels-puzzle';
+    a.href = `make.html?size=${c.width}&gate=${c.level}`;
+    a.setAttribute('aria-label', `Add a puzzle to ${called(c)}`);
+    const plus = words('pixels-blank', '+');
+    plus.setAttribute('aria-hidden', 'true');
+    a.append(plus, words('pixels-puzzle-name', 'Add puzzle'), words('pixels-meta', side(c.width)));
+    wrap.append(a);
+    return wrap;
+  };
+
   // A section: its heading's parts, and its tiles under them.
   const section = (id, name, parts, tiles) => {
     const el = document.createElement('section');
@@ -308,7 +326,7 @@
           }, { text: false, failed: ['The gate did not change', 'Try again.'] }), word, keys);
           return shown;
         })(),
-      ], c.puzzles.map(p => puzzleTile(p, flip(p, name)))));
+      ], [...c.puzzles.map(p => puzzleTile(p, flip(p, name))), addTile(c)]));
     });
     // Unsorted has no switch, place or name of its own.
     if (strays.length) {

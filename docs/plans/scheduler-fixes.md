@@ -170,8 +170,6 @@ None open.
 
 ### Checks
 
-- [ ] Add `check-connector.mjs`: both functions parse and every draft field
-      has a place; pin each function's imports to an exact version.
 - [ ] Write the how-to for proving a trip's Save in Chrome with the page's
       writes recorded and not sent, in `scheduler/docs/`.
 
@@ -235,9 +233,9 @@ None open.
 
 ### The connector and the skills
 
-- [ ] Build `scheduler/draft-fields.js` with its check, and read it in the
-      connector and in `applyDraft`; add vehicles for a drafted bus count and
-      take the PO and deposit fields off.
+- [ ] Build `scheduler/draft-fields.js` as the one list, with each field's
+      kind checked before a draft is parked, and read it in the connector and
+      in `applyDraft` in place of their two lists.
 - [ ] Add `scheduler/tools/build-connector-rules.mjs`, an office-day helper,
       and `get_trip` warnings from the rules; add `needs_attention`; change
       the To do plan's line in the same commit; deploy.

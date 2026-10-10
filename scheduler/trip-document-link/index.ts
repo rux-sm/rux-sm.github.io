@@ -3,9 +3,11 @@
 // It reads with the service role because the bucket is closed to them; what it
 // answers is `handler.ts`.
 
-import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
+// Each import names one exact version, as check-connector.mjs holds it to;
+// supabase-js is the version the site's pages load.
+import 'jsr:@supabase/functions-js@2.116.0/edge-runtime.d.ts'
 
-import { createClient } from 'npm:@supabase/supabase-js@2'
+import { createClient } from 'npm:@supabase/supabase-js@2.116.0'
 import { handle } from './handler.ts'
 
 const BUCKET = 'trip-documents'

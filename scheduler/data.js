@@ -15162,6 +15162,11 @@
     // The hotel reminder and the fuel card are the trip's own, kept in the editor.
     need_hotel: { kind: 'trip', key: 'hotelWanted' },
     need_fuel_card: { kind: 'trip', key: 'fuelCard' },
+    /* How many vehicles a leg has. Empty ones are added on the Buses tab up
+       to the count, each asking what the first asks, and none is taken away;
+       they come after the first vehicle's type and needs, which they copy. */
+    bus_count: { kind: 'buses', leg: 'outbound' },
+    return_bus_count: { kind: 'buses', leg: 'return' },
     quoted_price: { id: 'scheduler-f-quoted', kind: 'text' },
     est_miles: { id: 'scheduler-f-estmiles', kind: 'text' },
     booking_contact_name: { id: 'scheduler-f-cfind', kind: 'text' },
@@ -15186,7 +15191,8 @@
   // What the notice calls a place that still needs choosing from its list.
   const PLACE_LABEL = { pickup_address: 'the pickup', dropoff_address: 'the drop-off' };
   /* What the notice calls each thing a draft sets that has no field to mark:
-     the first vehicle's type and needs, and the trip's hotel and fuel card. */
+     the first vehicle's type and needs, and the trip's hotel and fuel card.
+     Vehicles a drafted count adds are named where they are added. */
   const UNMARKED_LABEL = {
     vehicle_type: v => `the vehicle type, ${v}`,
     req_sleeper: v => `Sleeper ${v ? 'on' : 'off'}`, req_ada: v => `ADA Lift ${v ? 'on' : 'off'}`,
@@ -15248,6 +15254,18 @@
         editing[control.key] = !!value;
         routeTimesDrawn?.();
         unmarked.push(UNMARKED_LABEL[key](value));
+        continue;
+      }
+      if (control?.kind === 'buses') {
+        const list = control.leg === 'return' && !fleetSplit() ? null : editing?.fleet?.[control.leg];
+        const want = Math.floor(Number(value));
+        if (!list || !(want >= 1)) { missed.push([key, value]); continue; }
+        let added = 0;
+        while (list.length < want) { list.push(blankBus(list[0] ?? {})); added += 1; }
+        if (added) {
+          drawFleet();
+          unmarked.push(`${added} empty ${added === 1 ? 'vehicle' : 'vehicles'} on ${control.leg === 'return' ? 'the pickup leg' : fleetSplit() ? 'the drop-off leg' : 'the Buses tab'}`);
+        }
         continue;
       }
       if (control?.kind === 'fleet') {

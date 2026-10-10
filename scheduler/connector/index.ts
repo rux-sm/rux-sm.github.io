@@ -7,12 +7,15 @@
 // nothing else: the database makes each one Ruxbot's, with the signed-in
 // person beside it, and lets a tool close only a row a tool made.
 
-import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
+// Each import names one exact version, so a deploy bundles what was tried
+// and not whatever a range has come to mean since; check-connector.mjs
+// holds every import to that.
+import 'jsr:@supabase/functions-js@2.116.0/edge-runtime.d.ts'
 
-import { createMcpHandler, McpServer } from 'npm:@modelcontextprotocol/server@^2.0.0'
-import { pipeline } from 'npm:@supabase/middleware@^0.5.0'
-import { withOAuthProtectedResource, withSupabase } from 'npm:@supabase/server@^1.6.0'
-import { z } from 'npm:zod@^4.3.6'
+import { createMcpHandler, McpServer } from 'npm:@modelcontextprotocol/server@2.3.1'
+import { pipeline } from 'npm:@supabase/middleware@0.5.0'
+import { withOAuthProtectedResource, withSupabase } from 'npm:@supabase/server@1.9.1'
+import { z } from 'npm:zod@4.6.5'
 
 // Where a draft link points. The scheduler's trip editor reads `?draft=<id>`.
 const SCHEDULER_URL = Deno.env.get('SCHEDULER_URL') ?? 'https://rux-sm.github.io/scheduler/'
@@ -48,7 +51,10 @@ const TRIP_DETAIL = [
 ].join(', ')
 
 // The only trip fields a draft may fill. Anything else is refused, so a draft
-// can never carry a field the editor does not know how to show and mark.
+// can never carry a field the editor does not know how to show and mark;
+// check-connector.mjs holds each one to a place in the editor's own table.
+// A PO and a deposit are money a person enters on the Billing tab, so
+// neither is here.
 const DRAFT_FIELDS = new Set([
   'destination', 'customer',
   'start_date', 'end_date', 'return_start_date', 'return_end_date',
@@ -62,7 +68,7 @@ const DRAFT_FIELDS = new Set([
   'booking_contact_name', 'booking_contact_phone', 'booking_contact_email',
   'trip_contact_1_name', 'trip_contact_1_phone',
   'trip_contact_2_name', 'trip_contact_2_phone',
-  'quoted_price', 'deposit_amount', 'po_ref', 'po_amount',
+  'quoted_price',
   'req_sleeper', 'req_56pax', 'req_ada', 'need_hotel', 'need_fuel_card',
   // How many people travel, the email thread's address in Missive, and the
   // places between the pickup and the drop-off, which only a new trip takes.
@@ -499,7 +505,9 @@ Deno.serve(
               'stops is the places between the pickup and the drop-off, in the order the bus reaches them, ' +
               'each { name, address, arrive, leave } with a name or an address and times as HH:MM; ' +
               'on a round trip the destination is one of them. The editor lays them out on the Route tab, ' +
-              'sets a place that is a saved location, and leaves any other for the person to choose from its list.'),
+              'sets a place that is a saved location, and leaves any other for the person to choose from its list. ' +
+              'bus_count adds empty vehicles up to that many and takes none away. ' +
+              'A PO or a deposit is not a field: a person enters money on the Billing tab, so say its number or amount in notes.'),
           notes: z.string().max(2000).optional()
             .describe('What you could not work out, shown at the top of the editor.'),
         }

@@ -216,7 +216,10 @@ columns: `pickup_location`, `pickup_address`, `dropoff_location` and
 `/scheduler/?draft=<id>`. A draft may fill only the trip fields the function
 lists, so it can carry nothing the editor has no way to show; `data.js` maps
 each of those to the control it is typed into, and names in the panel's notice
-any it cannot place. The editor's Save stays the only writer of a trip.
+any it cannot place. `scheduler/tools/check-connector.mjs` holds the function's
+list and the editor's table to each other. A drafted bus count adds empty
+vehicles on the Buses tab, and a PO or a deposit is not a field: a person
+enters money on Billing. The editor's Save stays the only writer of a trip.
 
 **Four tools are the To do list's,** on `to_dos` and nothing else.
 `list_to_dos` reads the stored rows, not the rows the scheduler works out

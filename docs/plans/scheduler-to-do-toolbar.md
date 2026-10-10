@@ -48,13 +48,15 @@ week's toolbar, and nothing is counted twice.
 - **The count is Design's count badge on the button,** placed by a rule in
   `scheduler/overrides.css` to stand clear of the glyph, because Carbon's own
   placing covers it at the toolbar's button size.
-- **On the compact board the week and ⋮ hold still and the controls between
-  them scroll sideways,** in the order Today, Tasks, Prep, Search, Driver
-  availability, because a phone has no room for all five and a swipe keeps
-  each one move away.
-- **In the tight toolbar Search and Driver availability become rows of the ⋮
-  menu,** as Today and New trip do, because a mouse has no swipe and a menu
-  row cannot show a count.
+- **Where the toolbar has no room for its controls, the ones between the
+  week and ⋮ scroll sideways,** on a phone and in a narrow window alike,
+  because one rule serves both and no control moves into a menu for it.
+- **The week, ⋮ and New trip hold still,** so the week's calendar opens whole
+  and the menu is always in reach.
+- **Tasks and Prep come ahead of Search in that row,** so the two counts show
+  before a swipe.
+- **A mouse wheel over the row scrolls it sideways,** because a mouse has no
+  swipe.
 - **The lists are on the board only.** The other Scheduler pages lose the
   header action and its panel, because a task's Trip button and a Prep line's
   Print already lead to the board.
@@ -93,11 +95,11 @@ None open.
       its count and its filled glyph while open; place the badge in
       `scheduler/overrides.css`; take the To do action out of the header.
 - [ ] Put the controls between the week and ⋮ in one strip in
-      `scheduler/index.html` and scroll it sideways on the compact board in
-      `scheduler/app.css`, the week picker left outside it so its calendar is
-      not cut, and the badge inside it so the scroll does not cut that.
-- [ ] Add Search and Driver availability to the ⋮ menu for the tight toolbar,
-      in `scheduler/index.html` and `scheduler/app.css`.
+      `scheduler/index.html` and scroll it sideways in `scheduler/app.css`
+      wherever it does not fit, the week picker left outside it so its
+      calendar is not cut, and the badge inside it so the scroll does not cut
+      that; turn a wheel over it into a sideways scroll in
+      `scheduler/data.js`.
 - [ ] Measure the toolbar at its tight width and on the iPhone simulator, in
       a light theme and a dark one, and set what stands whole before a swipe.
 - [ ] Take the To do action, its panel and the list's scripts off every

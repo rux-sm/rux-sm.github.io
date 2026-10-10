@@ -4,20 +4,20 @@
    YOUR INVITE LINK is the address of the front page with `?join=` and the
    player's own code. Whoever joins by it is their friend both ways. Copy
    puts it on the clipboard; New link makes a new code, which closes the old
-   link to anyone new.
+   link to anyone new and goes into this page's address as the old one did.
 
    EVERY OTHER PLAYER is a row, friends first: their picture, their username
    and a key. Add is one-way and needs no answer: the player added is not
    told, and their published gates are sent to the one who added them.
    Remove takes that back.
 
-   A guest with no player yet gets the name form first; data.js's `enter`
-   draws it.
+   A guest with no player yet gets the door first; data.js's `enter` draws
+   it.
    ========================================================================== */
 (() => {
   'use strict';
 
-  const { data, enter, portrait, words } = window.Pixels;
+  const { data, enter, invite, portrait, words } = window.Pixels;
   const host = document.getElementById('pixels-friends');
   const say = (heading, detail) => {
     const box = document.getElementById('pixels-error');
@@ -69,7 +69,9 @@
       delete renew.dataset.sure;
       renew.textContent = 'New link';
       try {
-        show((await data.renewInvite()).code);
+        const { code } = await data.renewInvite();
+        show(code);
+        invite(code);
         document.getElementById('pixels-error').hidden = true;
       } catch {
         say('The link did not change', 'Try again.');

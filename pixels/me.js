@@ -4,8 +4,8 @@
    The player's picture, large, beside their username, how many sprites
    they have found and their mana. Draw your picture opens the Pixelator on
    it. The username is a field: Save keeps a new one, unless another player
-   has it. A guest sets a PIN of four digits there, to log in on another
-   phone with their username and it.
+   has it. A guest changes their PIN of four digits there, which with their
+   username brings them back on any phone.
 
    YOUR GATES are the gates the player has made, each with its name, which
    is a field that saves as it is left, its size and how many puzzles it
@@ -96,9 +96,10 @@
     if (guest && data.setPin) host.append(pinForm(me));
   };
 
-  /* A PIN, for a guest who wants Pixels on another phone: four digits, kept
-     with Save, and there they log in with their username and it. Remove
-     takes it away. An account has the site's log-in and is not shown this. */
+  /* A PIN, which with the username is a guest's way back in on any phone:
+     four digits, kept with Save. The door gives every new guest one, and
+     Remove takes it away. An account has the site's log-in and is not shown
+     this. */
   const pinForm = me => {
     const form = document.createElement('form');
     form.noValidate = true;
@@ -114,7 +115,7 @@
     const label = document.createElement('label');
     label.className = 'rux--label';
     label.htmlFor = input.id;
-    label.textContent = 'PIN for another phone';
+    label.textContent = 'PIN';
     labelWrap.append(label);
     const outer = document.createElement('div');
     outer.className = 'rux--text-input__field-outer-wrapper';
@@ -128,7 +129,7 @@
     go.className = 'rux--btn rux--btn--primary rux--btn--md';
     go.textContent = 'Save';
     row.append(wrap, go);
-    const note = words('pixels-meta', me.pin ? 'You have a PIN. On another phone, log in with your username and it.' : 'With a PIN you can log in on another phone, with your username and it.');
+    const note = words('pixels-meta', me.pin ? 'You have a PIN. Your username and it bring you back on any phone.' : 'With a PIN, your username and it bring you back on any phone.');
     note.setAttribute('aria-live', 'polite');
     form.append(row, note);
     const set = async pin => {

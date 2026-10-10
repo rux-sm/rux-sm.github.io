@@ -3,7 +3,7 @@
    --------------------------------------------------------------------------
    The page is the same for every account, the owner's too: it draws what
    data.js's `list` is sent and nothing else. A guest with no player yet
-   gets the name form first; data.js's `enter` draws it.
+   gets the door first; data.js's `enter` draws it.
 
    While app.js's DAILY is false the puzzle of the day is not shown: no card
    for it, and one ranking, all time, with no days in a row. While its BOARD

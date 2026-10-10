@@ -29,8 +29,9 @@ done and how.
   take and ignore, and the `stars` column of the two results tables.
 - A solve that fails to save is lost: `pixels/play.js` drops the kept game
   before the save and says only that it was not saved, with no way to retry.
-- A guest who loses their browser's key and set no PIN has no way back. The
-  owner needs a way, on Players, to hand a player a new key.
+- A guest with no PIN who loses their browser's key has no way back: one
+  who joined before the door asked for a PIN, or removed it on Me. The owner
+  needs a way, on Players, to hand a player a new key.
 - Mana falls below nothing when a puzzle a player solved is deleted or
   redrawn, and Me shows the minus.
 - `pixels/me.js` loads the page again after a gate fails to delete, so the

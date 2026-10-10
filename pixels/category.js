@@ -16,7 +16,7 @@
    Boss for the last.
 
    The page is the same for every account, the owner's too: it draws what
-   data.js's `list` is sent. A guest with no player yet gets the name form
+   data.js's `list` is sent. A guest with no player yet gets the door
    first, and having no menu, a way to How to play under the tiles.
    ========================================================================== */
 (() => {

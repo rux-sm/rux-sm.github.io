@@ -11,8 +11,8 @@ What a player has besides the puzzles, and the rule for who is sent a gate.
 
 - **A profile is a player:** a row with a username nobody else has. A guest's
   and an account's are the same kind.
-- **Making one is typing a username,** on the form a guest meets, reached by
-  a player's invite link.
+- **Making one is typing a username and a PIN of four digits,** at the door,
+  reached by a player's invite link.
 - **A player draws their own picture,** 15 squares a side, in the Pixelator
   at `make.html?me`. It is no puzzle, so it needs no single answer.
 - **Until it is drawn, the picture is made from the username,** by `face` in
@@ -20,13 +20,21 @@ What a player has besides the puzzles, and the rule for who is sent a gate.
 - **Me** shows the picture, the username, the sprites found and the mana,
   changes the first two, and lists the player's own gates.
 
-## A second phone
+## The door, and coming back
 
-- **A guest sets a PIN of four digits on Me,** if they want one. It is never
-  asked at the door, and an account, which has the site's log-in, has none.
-- **Another phone logs in with the username and the PIN,** on the form under
-  the name form. It is given a key of its own, so no phone logs another out,
-  and a player keeps the ten newest.
+- **The door is one form:** a name, a PIN and Play. `entering` in `data.js`
+  draws it for a browser the database knows no player for.
+- **By an invite link, a new name makes a player with that PIN.** It is two
+  calls, the player and then the PIN, so a connection lost between them
+  leaves a player with no PIN, who sets one on Me.
+- **A name already playing is let in by its PIN,** with a link or without:
+  on another phone, or on the same one once its browser has lost the key.
+  The browser is given a key of its own, so no phone logs another out, and a
+  player keeps the ten newest.
+- **With no invite link the door only lets a player back in,** and tells
+  anyone new to ask a friend for theirs.
+- **A guest changes or removes the PIN on Me.** One with no PIN has only
+  their browser's key. An account, which has the site's log-in, has none.
 - **Five wrong PINs lock that username's log-in for 15 minutes, and twice as
   long each time after,** because four digits are few enough to guess.
   Phones already logged in keep playing.
@@ -39,8 +47,11 @@ What a player has besides the puzzles, and the rule for who is sent a gate.
 ## Friends
 
 - **Every player has an invite link of their own,** `?join=` and their code,
-  and that is the only way in. New link on Friends makes a new code, which
-  closes the old link.
+  and that is the only way in for anyone new. New link on Friends makes a
+  new code, which closes the old link.
+- **A player's address is their invite link.** `enter` puts their code in
+  the address of every page they open, so the address bar, a bookmark and
+  the browser's Share all hand on a link that works.
 - **Whoever joins by a player's link is their friend, both ways, at once.**
 - **Friends lists every other player,** friends first, each with Add or
   Remove. Adding is one-way and needs no answer.

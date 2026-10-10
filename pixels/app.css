@@ -347,7 +347,6 @@
 .pixels-guestbar[hidden] { display: none; }
 /* The name form a guest meets first. */
 .pixels-join { max-inline-size: 20rem; margin-inline: auto; padding-block-start: 2rem; }
-.pixels-join + .pixels-join { margin-block-start: 1rem; border-block-start: 1px solid var(--rux-border-subtle-01); }
 .pixels-join ~ .rux--link { display: block; max-inline-size: 20rem; margin: 1.5rem auto 0; }
 .pixels-join-note { min-block-size: 1.25rem; margin: 0; color: var(--rux-text-error); }
 

@@ -48,11 +48,12 @@ can add Pixels and the page was not opened from the icon.
   closed the address is as it was.
 - **A browser with no player of its own takes the key from the address,** if
   the database knows it, and the address loses it either way. A key the
-  database does not know says so and asks for a new invite link.
+  database does not know says so at the door, where the name and PIN still
+  let the player in.
 - **Whoever opens that address first with no player is that player.** The
   owner can rename or remove a player.
 - **An account logs in once more inside the app,** from the Log in link under
-  the invite message, and its icon carries nothing. The log-in page has a way
+  the door, and its icon carries nothing. The log-in page has a way
   back to Pixels.
 
 ## With no browser around it

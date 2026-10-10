@@ -6,10 +6,10 @@ The repository root's `AGENTS.md` is the policy. The site's `docs/status.md` lis
 
 ## What it is
 
-A player is an account that can open Pixels, or a guest: someone with no account who opens a
-player's invite link, `/pixels/?join=` and that player's code, and types a name. A guest gets no
-header, and their browser keeps a key that is who they are from then on. Pixels goes on a phone's
-home screen as an app; `docs/home-screen.md` says how, and how a guest stays the same player there.
+A player is an account that can open Pixels, or a guest: someone with no account who opens a player's
+invite link, `/pixels/?join=` and that player's code, and types a name and a PIN. A guest gets no header,
+and their browser keeps a key that is who they are; one with no key is let in by the name and the PIN.
+Pixels goes on a phone's home screen as an app, as `docs/home-screen.md` says.
 
 `index.html` is the same page for every account, the owner's too, with two tabs. Puzzles: today's
 puzzle on one card with the days solved in a row; Continue, a card for the puzzle last played if it is
@@ -25,14 +25,14 @@ and then easy to hard, with nothing locked, each tile a square with its letter i
 three across on a phone and five on a wide screen. A solved puzzle shows its picture, name and best
 time; an unsolved one a question mark, or Boss for the last.
 
-`me.html` is the player's own page: their picture, username, sprites found and mana, a PIN for
-logging in on another phone, and the gates they have made, each to name, publish or delete, with who
+`me.html` is the player's own page: their picture, username, sprites found and mana, the PIN that
+brings them back on any phone, and the gates they have made, each to name, publish or delete, with who
 has found sprites in it. `friends.html` is the player's invite link and every other player, each to
 add or remove. A player's own puzzles are made in the Pixelator, for mana, and a friend's published
 gates stand after the owner's on the front page, saying who made them, and New until opened. A bar
 holds the places every player has, Puzzles, Friends, Pixelator and Me: along the bottom on a phone,
-along the top on a wide screen, and not on a page where a puzzle is played or drawn.
-`docs/profiles.md` is the whole of it: profiles, friends, mana, and who is sent a gate.
+along the top on a wide screen, and not where a puzzle is played or drawn. `docs/profiles.md` is the
+whole of it: the door, profiles, friends, mana, and who is sent a gate.
 
 `play.html?id=` plays one puzzle, 5, 10 or 15 squares a side. The board waits behind Tap to start,
 which with a mouse says Start, drawn bare until then, with no number and no mark, and the clock runs
@@ -99,7 +99,7 @@ new one or Unsorted, or deleted; a gate left empty goes too.
 | | |
 | :--- | :--- |
 | `app.js` | the rules and the board every page shares: the numbers, the line solver, the puzzle of the day, drawing, dragging and zooming, what a mistake costs, tones and the phone's tick |
-| `data.js` | who is playing, the name form a guest meets, and where puzzles and results are kept |
+| `data.js` | who is playing, the door a guest meets, and where puzzles and results are kept |
 | `puzzles.js`, `category.js`, `play.js`, `make.js`, `manage.js`, `players.js`, `me.js`, `friends.js` | each page's own behaviour |
 | `app.css` | the board, the picture, the tiles and Manage, under `pixels-` |
 | `theme.css` | the fifty-five inks a colour picture is painted from |

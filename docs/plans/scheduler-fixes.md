@@ -167,9 +167,6 @@ None open.
       type on units, trips, each trip's vehicles and customers' usual type,
       and puts back the Done marks the rename takes off; call it from
       `fleet.js`, with the columns listed once in `vehicles.js`.
-- [ ] In `applyDraft`, type fields in the table's order, name the six needs
-      it sets with no mark, match a drafted customer or say it is new, and
-      give a draft that cannot open its real reason.
 - [ ] Correct the documents: one home for each count in the two access
       documents, the screen inventory's rows for what is built, the README's
       line on the pasted estimate, and `booking.md`'s quote email list.

@@ -15140,14 +15140,17 @@
   // Each field a draft may fill, and the control it is typed into. A field
   // missing from here, or whose control is not on screen, is named in the
   // panel's notice instead, so nothing the connector sent goes quietly.
+  /* THE ORDER IS THE ORDER THEY ARE TYPED IN, whatever order a draft lists
+     them: a field that shows or fills another comes before it, as the type
+     comes before the pickup leg's dates it brings into the panel. */
   const DRAFT_CONTROLS = {
     destination: { id: 'scheduler-f-destination', kind: 'text' },
     customer: { id: 'scheduler-f-customer', kind: 'text' },
+    trip_type: { id: 'scheduler-f-type', kind: 'select' },
     start_date: { id: 'scheduler-f-start', kind: 'date' },
     end_date: { id: 'scheduler-f-end', kind: 'date' },
     return_start_date: { id: 'scheduler-f-rstart', kind: 'date' },
     return_end_date: { id: 'scheduler-f-rend', kind: 'date' },
-    trip_type: { id: 'scheduler-f-type', kind: 'select' },
     passengers: { id: 'scheduler-f-passengers', kind: 'text' },
     // The email thread's address, behind the Booking contact's open icon.
     booking_contact_missive_url: { id: 'scheduler-f-cthread', kind: 'text' },
@@ -15182,6 +15185,14 @@
 
   // What the notice calls a place that still needs choosing from its list.
   const PLACE_LABEL = { pickup_address: 'the pickup', dropoff_address: 'the drop-off' };
+  /* What the notice calls each thing a draft sets that has no field to mark:
+     the first vehicle's type and needs, and the trip's hotel and fuel card. */
+  const UNMARKED_LABEL = {
+    vehicle_type: v => `the vehicle type, ${v}`,
+    req_sleeper: v => `Sleeper ${v ? 'on' : 'off'}`, req_ada: v => `ADA Lift ${v ? 'on' : 'off'}`,
+    req_56pax: v => `56 Pax ${v ? 'on' : 'off'}`,
+    need_hotel: v => `the hotel reminder ${v ? 'on' : 'off'}`, need_fuel_card: v => `the fuel card ${v ? 'on' : 'off'}`,
+  };
 
   // The draft whose fields are in the panel, deleted once the panel closes.
   let openDraft = null;
@@ -15218,7 +15229,13 @@
     const missed = [];
     const unpicked = [];
     const held = [];
-    for (const [key, value] of Object.entries(fields || {})) {
+    const unmarked = [];
+    let newCustomer = null;
+    const given = fields || {};
+    // The table's order first, then what the table does not list, the stops among them.
+    const keys = [...Object.keys(DRAFT_CONTROLS).filter(k => k in given), ...Object.keys(given).filter(k => !(k in DRAFT_CONTROLS))];
+    for (const key of keys) {
+      const value = given[key];
       // The stops between the pickup and the drop-off, laid out on the Route tab.
       if (key === 'stops') {
         if (!Array.isArray(value) || !routeTakesStops) { missed.push([key, JSON.stringify(value)]); continue; }
@@ -15230,6 +15247,7 @@
         if (!editing) { missed.push([key, value]); continue; }
         editing[control.key] = !!value;
         routeTimesDrawn?.();
+        unmarked.push(UNMARKED_LABEL[key](value));
         continue;
       }
       if (control?.kind === 'fleet') {
@@ -15241,6 +15259,7 @@
           first.needs = needsObject(next);
         } else first.vehicleType = value || null;
         drawFleet();
+        unmarked.push(UNMARKED_LABEL[key](value));
         continue;
       }
       const node = control ? document.getElementById(control.id) : null;
@@ -15251,20 +15270,27 @@
       if (key === 'quoted_price' && node.readOnly) { held.push(value); continue; }
       typeInto(node, control.kind, value);
       markDrafted(node);
+      /* A typed customer is linked at Save by its name, or added as a new
+         one. The draft's is matched now, so the field says Saved customer
+         and shows that customer's notes, or the notice says it is new. */
+      if (key === 'customer' && String(value ?? '').trim()) {
+        const known = (panelIndex.customers || []).find(c => folded(c.name) === folded(value));
+        if (known) { node.dataset.customerId = known.id; syncSaved(); } else newCustomer = String(value).trim();
+      }
       /* A place search commits nothing until a result is chosen from its
          list: typing only searches. The address is in the box and the search
          has run, but Save keeps it only once it is picked. */
       if (control.kind === 'place') unpicked.push(PLACE_LABEL[key] ?? key);
     }
     refreshDirty();
-    return { missed, unpicked, held };
+    return { missed, unpicked, held, unmarked, newCustomer };
   }
 
   /* The notice above the fields: what Claude could not work out, and anything
      it filled that this panel has no field for, written out so it can be
      typed in by hand rather than lost. */
-  function draftNotice(notes, { missed, unpicked, held = [] }) {
-    if (!notes && !missed.length && !unpicked.length && !held.length) return;
+  function draftNotice(notes, { missed, unpicked, held = [], unmarked = [], newCustomer = null }) {
+    if (!notes && !missed.length && !unpicked.length && !held.length && !unmarked.length && !newCustomer) return;
     const wrap = el('div', 'scheduler-drafted-notice');
     const note = el('div', 'rux--inline-notification rux--inline-notification--info');
     const details = el('div', 'rux--inline-notification__details');
@@ -15288,6 +15314,14 @@
       texts.appendChild(el('div', 'rux--inline-notification__subtitle',
         `This panel has no field for: ${missed.map(([k, v]) => `${k} = ${v}`).join('; ')}.`));
     }
+    if (unmarked.length) {
+      texts.appendChild(el('div', 'rux--inline-notification__subtitle',
+        `Also set, with no mark beside ${unmarked.length > 1 ? 'them' : 'it'}: ${unmarked.join(', ')}. A vehicle's type and needs are on the first vehicle of the Buses tab.`));
+    }
+    if (newCustomer) {
+      texts.appendChild(el('div', 'rux--inline-notification__subtitle',
+        `${newCustomer} is not on the customers list, and Save adds it. If it is there under another spelling, pick it from the Customer field first.`));
+    }
     for (const price of held) {
       texts.appendChild(el('div', 'rux--inline-notification__subtitle',
         `The quoted price is the total of this trip's quote lines, so the draft's ${Number.isFinite(Number(price)) ? usdCents(Number(price)) : price} was not typed in. Change a line on the Billing tab to change the price.`));
@@ -15299,14 +15333,23 @@
   }
 
   async function openDraftTrip(id) {
-    let row;
+    /* A draft that cannot open says why as far as the page can know. A read
+       that failed is said as that, with the reason given. A read that found
+       nothing has three causes the database does not tell apart for anyone
+       but the draft's maker, so all three are named. */
+    let row = null;
+    let failed = null;
     try {
-      ({ data: row } = await client.from('trip_drafts')
-        .select('id, trip_id, fields, notes').eq('id', id).maybeSingle());
-    } catch { row = null; }
+      const read = await client.from('trip_drafts')
+        .select('id, trip_id, fields, notes').eq('id', id).maybeSingle();
+      row = read.data ?? null;
+      failed = read.error ?? null;
+    } catch (e) { failed = e; }
     if (!row) {
       await show();
-      toast('info', 'That draft is not there', 'It was used already, or it ran out after its fourteen days.');
+      if (failed?.code === '22P02') toast('info', 'That link is not a draft\'s', 'Its address was cut short or changed. Ask Claude for the draft again.');
+      else if (failed) toast('error', 'The draft could not be read', `${failed.message || failed} Open the link again.`);
+      else toast('info', 'That draft is not there', 'It was used already, it ran out after its fourteen days, or it was made for someone else: a draft opens only for the person who asked Claude for it.');
       return;
     }
 

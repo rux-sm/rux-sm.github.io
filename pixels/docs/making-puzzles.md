@@ -165,22 +165,24 @@ tag on a gate's tile is the average of its puzzles: Easy, Normal or Hard.
 ## Manage
 
 Manage, in the menu, is where puzzles and gates are put in order. It
-shows one board size at a time, chosen at the top: that size's gates,
-then Unsorted. The front page shows only what the players are sent.
+shows every gate on one page, small boards first, each with its place, its
+name and its size, then Unsorted. The front page shows only what the
+players are sent.
 
 - **Tick puzzles to move them.** Press a tile to tick it, or the box beside
   a gate's name to tick all of it. Move, in the bar above, asks where
   they go: a gate of their size, Unsorted, or a new gate, named
   there. They arrive on while the gate has fewer than nine on, and off
-  after that.
+  after that. Puzzles of two sizes are moved one size at a time.
 - **Delete works on the ticked ones too.** It asks once, and every player's
   best times on them go with them.
 - **Swap with the switch under each tile:** switch one off, then a spare on.
   A tenth is refused until one is off.
 - **Edit** opens a puzzle in the maker. **Play** tries it; for a puzzle no
   player is sent, the time is not kept.
-- **Publish a gate** with the switch beside its name: on, every player
-  is sent it; off, only Manage shows it.
+- **Publish a gate** with the switch beside its name, which says Published
+  or Hidden: published, every player is sent it; hidden, only Manage shows
+  it.
 - **Move it with the arrows** beside the switch, up or down among the
   gates of its size. The order is the owner's choice and means nothing
   about how hard a gate is.

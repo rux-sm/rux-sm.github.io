@@ -476,10 +476,15 @@
 /* A CATEGORY'S PUZZLES: three tiles across on a phone, so a category of nine
    is three rows of three, and nine across where there is room. Each tile is
    a square, whatever it holds, and its picture is half as wide as it is. */
-/* On Manage the heading starts with the box that ticks the category, and
-   the switch sits beside the name; the count is at the far end. */
+/* A heading's count is at its far end. On Manage, `--desk`, the heading
+   starts with the box that ticks the category, the size and the count stand
+   beside the name, and the far end has the switch, with its word, Published
+   or Hidden, and the keys. */
 .pixels-level-head { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem 1rem; }
 .pixels-level-head > .pixels-meta { margin-inline-start: auto; }
+.pixels-level-head--desk > .pixels-meta { margin-inline-start: 0; }
+.pixels-level-head--desk > .pixels-shown { margin-inline-start: auto; }
+.pixels-shown { display: flex; align-items: center; gap: .5rem; }
 .pixels-moves { display: flex; }
 .pixels-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; max-inline-size: 32rem; }
 @media (min-width: 66rem) {
@@ -526,9 +531,6 @@
 .pixels-tile > .pixels-puzzle { --rux-layout-density-padding-inline-local: .375rem; cursor: pointer; }
 /* The heading's box takes the room of the box alone. */
 .pixels-level-head > .rux--checkbox-wrapper { margin: 0; }
-/* THE SIZES, a switcher no wider than its four choices need. */
-.pixels-sizes { max-inline-size: 30rem; }
-.pixels-sizes[hidden] { display: none; }
 /* WHAT IS DONE TO THE TICKED PUZZLES: how many, then Move, Delete and
    Clear. It is there with none ticked, so a first tick moves no tile from
    under the pointer, and stays under the header while the page scrolls. */

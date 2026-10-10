@@ -27,7 +27,7 @@
 <script src="/design/js/theme.js"></script>
 </head>
 <body>
-<!-- The owner's page, driven by manage.js: every puzzle of one board size at a time, by category, with the categories' switches and buttons, and
+<!-- The owner's page, driven by manage.js: every puzzle of every board size, by category, with the categories' switches and buttons, and
      ticks that move or delete several puzzles at once. The shell is the scheduler's: the menu button opens the side nav at every width. -->
 
 <!-- SPRITE:BEGIN — generated, do not edit. `npm run build` rewrites this
@@ -176,8 +176,6 @@
           </div>
         </div>
         </div>
-        <!-- manage.js writes the sizes here, one a choice, each with how many puzzles it has. -->
-        <div class="rux--content-switcher rux--layout--size-md pixels-sizes" role="tablist" aria-label="Board size" id="pixels-sizes" hidden></div>
         <!-- What is done to the ticked puzzles. It is there with none ticked, its buttons waiting, and stays in view under the header while the page scrolls. -->
         <div class="pixels-ticked" id="pixels-ticked" role="toolbar" aria-label="Ticked puzzles" hidden>
           <span class="pixels-ticked-count" id="pixels-ticked-count" aria-live="polite"></span>
@@ -185,7 +183,7 @@
           <button type="button" class="rux--btn rux--btn--danger--tertiary rux--btn--sm rux--layout--size-sm" id="pixels-ticked-delete">Delete</button>
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="pixels-ticked-clear">Clear</button>
         </div>
-        <!-- manage.js writes a section a category here, then Unsorted. -->
+        <!-- manage.js writes a section a category here, of every board size, then Unsorted. -->
         <div class="rux--stack-vertical rux--stack-scale-7" id="pixels-levels"></div>
       </div>
     </div>

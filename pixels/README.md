@@ -86,13 +86,13 @@ Manage's switch publishes it. No gate yet, first in the list, keeps the puzzle i
 section of Manage. Puzzle of the day, in the same list, makes it a day's puzzle, which sits in no
 gate; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good gate.
 
-`manage.html` is the owner's desk: every puzzle of one board size at a time, by gate, then Unsorted.
-A gate's heading has a switch that hides it from every player, arrows that move it up or down, a key
-that keeps it for the players ticked in a list, a pencil that renames it and a bin that deletes it
-and leaves its puzzles in Unsorted. Under each tile are Edit, Play, which keeps no time for a puzzle
-no player is sent, and a switch that sends the puzzle to no player when off; a gate has at most nine
-on. Pressing a tile ticks it, and the ticked are moved together, to a gate, a new one or Unsorted,
-or deleted; a gate left empty goes too.
+`manage.html` is the owner's desk: every gate on one page, small boards first, then Unsorted. A gate's
+heading has its place and name, a Published or Hidden switch, arrows that move it among the gates of
+its size, a key that keeps it for the players ticked in a list, a pencil that renames it and a bin
+that deletes it and leaves its puzzles in Unsorted. Under each tile are Edit, Play, which keeps no
+time for a puzzle no player is sent, and a switch that sends the puzzle to no player when off; a gate
+has at most nine on. Pressing a tile ticks it, and the ticked are moved together, to a gate of their
+size, a new one or Unsorted, or deleted; a gate left empty goes too.
 
 ## Files
 

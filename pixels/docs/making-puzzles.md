@@ -144,16 +144,17 @@ and this follows a player's time more closely than the rounds do.
 
 ## A gate
 
-A gate shows up to fifteen puzzles of one size about one thing, such as
-Fruit. On the front page it is one tile of sixteen squares, four by four:
-its number, or its maker's picture, then its fifteen pictures. Its own page
-letters its puzzles A to O, three across on a phone and five across on a
-wide screen. It can hold more, switched off. Its name is on its tile and
+A gate shows up to fifteen puzzles about one thing, of one size or more,
+such as Fruit. On the front page it is one tile of sixteen squares, four by
+four: its number, or its maker's picture, then its fifteen pictures. Its own
+page letters its puzzles A to O, three across on a phone and five across on
+a wide screen. It can hold more, switched off. Its name is on its tile and
 heads its page, after its number, and one with no name is called More. Save
 asks which one a puzzle goes in: its list counts how many of each gate's are
-on, such as Fruit · 15 of 15, 3 off, and offers the first of its size that
-still has room. A gate lists its puzzles easy to hard, so the order they
-were drawn in does not matter. The last, which is the hardest, is its boss.
+on, such as Fruit · 15 of 15, 3 off, and offers the first that still has
+room. A gate lists its puzzles small boards first and then easy to hard, so
+the order they were drawn in does not matter. The last, which is the
+hardest, is its boss.
 
 - **No gate yet**, first in that list, keeps the puzzle in Unsorted: a
   section of Manage after the gates. No player is sent a puzzle
@@ -170,17 +171,17 @@ were drawn in does not matter. The last, which is the hardest, is its boss.
 ## Manage
 
 Manage, in the menu, is where puzzles and gates are put in order. It
-shows every gate on one page, small boards first, each with its place, its
-name and its size, then Unsorted. The front page shows only what the
+shows every gate on one page, in order, each with its place, its name and
+its boards' sizes, then Unsorted. The front page shows only what the
 players are sent.
 
 - **Add puzzle**, the tile after a gate's own, opens the Pixelator on a
-  blank board of that gate's size, and Save offers that gate.
+  blank board of that gate's largest size, and Save offers that gate. The
+  Size field changes the board and keeps the gate.
 - **Tick puzzles to move them.** Press a tile to tick it, or the box beside
   a gate's name to tick all of it. Move, in the bar above, asks where
-  they go: a gate of their size, Unsorted, or a new gate, named
-  there. They arrive on while the gate has fewer than fifteen on, and off
-  after that. Puzzles of two sizes are moved one size at a time.
+  they go: a gate, Unsorted, or a new gate, named there. They arrive on
+  while the gate has fewer than fifteen on, and off after that.
 - **Delete works on the ticked ones too.** It asks once, and every player's
   best times on them go with them.
 - **Swap with the switch under each tile:** switch one off, then a spare on.
@@ -191,8 +192,8 @@ players are sent.
   or Hidden: published, every player is sent it; hidden, only Manage shows
   it.
 - **Move it with the arrows** beside the switch, up or down among the
-  gates of its size. The order is the owner's choice and means nothing
-  about how hard a gate is.
+  gates. The order is the one players meet them in, and a gate's number
+  is its place.
 - **Rename it with the pencil** beside the arrows.
 - **Delete it with the bin.** Its puzzles are kept: they move to Unsorted,
   and the gates after it move up. A gate left empty by a move or a

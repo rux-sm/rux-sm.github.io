@@ -88,7 +88,7 @@
     const game = kept[next.p.id], begun = game && game.squares === next.p.squares;
     return card(`play.html?id=${encodeURIComponent(next.p.id)}`, art(next.p, false),
       begun || results.size ? 'Continue' : 'Start', `${heading(next.c)} · ${title(next.p, next.i, false, boss(next.c, next.i))}`,
-      begun ? `In progress · ${time(game.seconds)}` : side(next.c));
+      begun ? `In progress · ${time(game.seconds)}` : side(next.p));
   };
 
   /* A CATEGORY'S TILE: sixteen squares, four by four, then its name, how

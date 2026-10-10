@@ -23,7 +23,7 @@
 
    SAVE asks where the puzzle goes, once the picture is solvable and named:
    No category yet, which keeps it in Unsorted, where no player is sent it;
-   one of its size's categories on the front page, listed by name with how
+   one of the categories on the front page, whatever its boards' size, listed by name with how
    many of its fifteen are on; New category, which starts one after them, asks
    for its name, and is hidden from the players until Manage's
    switch publishes it; or Puzzle of the day, which asks for the day. A day's puzzle sits in no category; a
@@ -144,14 +144,14 @@
     side = to;
     size.value = side;
   };
-  // The name of the category chosen, among boards of this size.
-  const themeOf = () => puzzles.find(p => p.width === side && p.level === levelOf() && !p.day)?.theme || '';
+  // The name of the category chosen.
+  const themeOf = () => puzzles.find(p => p.level === levelOf() && !p.day)?.theme || '';
   // What the Category field's choice asks for: a name for a category with
   // no puzzle yet, a day for a day's puzzle, and for a category there is, or
   // for none, nothing.
   const showWhere = () => {
     theme.value = themeOf();
-    $('pixels-more-theme').hidden = daily() || loose() || puzzles.some(p => p.width === side && p.level === levelOf() && !p.day);
+    $('pixels-more-theme').hidden = daily() || loose() || puzzles.some(p => p.level === levelOf() && !p.day);
     $('pixels-more-day').hidden = !daily();
     saveNow.disabled = (daily() && !day.value) || (!editing && mana < 1);
     $('pixels-mana').hidden = owner;
@@ -159,26 +159,26 @@
       : mana < 1 ? 'You have no mana. Find a sprite in a gate somebody else made to earn one.'
         : `A new puzzle costs 1 mana. You have ${mana}.`;
   };
-  // How many puzzles of this size each category has on and off, and whether
+  // How many puzzles each category has on and off, of any size, and whether
   // it is full: fifteen on besides the one being edited leave that one no room.
   const held = () => {
     const on = {}, off = {}, others = {};
     puzzles.forEach(p => {
-      if (p.width !== side || p.day) return;
+      if (p.day) return;
       const count = p.off ? off : on;
       count[p.level] = (count[p.level] || 0) + 1;
       if (!p.off && p.id !== editing?.id) others[p.level] = (others[p.level] || 0) + 1;
     });
     return { on, off, full: n => n != null && (others[n] || 0) >= PER_LEVEL };
   };
-  // The first category with room for another puzzle of this size.
+  // The first category with room for another puzzle.
   const openLevel = () => {
     const { full } = held();
     let open = 1;
     while (full(open)) open++;
     return open;
   };
-  // The Category field: first no category, then this size's categories by
+  // The Category field: first no category, then the categories by
   // name, in their order, each with how many of its fifteen are on and how many
   // puzzles it holds off, then one for a new category, numbered to stand
   // after them, and one for a puzzle of the day. `pick` is the one to
@@ -186,7 +186,7 @@
   // not there chooses the new category.
   const showLevels = pick => {
     const names = new Map(), { on, off } = held();
-    puzzles.forEach(p => { if (p.width === side && !p.day && p.level != null) names.set(p.level, p.theme || 'More'); });
+    puzzles.forEach(p => { if (!p.day && p.level != null) names.set(p.level, p.theme || 'More'); });
     const next = Math.max(0, ...names.keys()) + 1;
     // A player's puzzle is always in one of their gates, and never a day's.
     level.replaceChildren(...(personal ? [] : [new Option('No gate yet', 'none')]), ...[...names].sort((a, b) => a[0] - b[0])
@@ -409,7 +409,6 @@
     if (colours || draft.some(r => r.some(Boolean))) changing();
     setSide(+size.value);
     pad.reset();
-    showLevels(openLevel());
     showWhere();
     $('pixels-saved').hidden = true;
     clear();
@@ -483,7 +482,7 @@
     }
     // A category just started is hidden, so it is drawn out of the players'
     // sight; Manage's Published switch shows it.
-    const fresh = !puzzle.day && puzzle.level != null && !puzzles.some(p => p.width === side && p.level === puzzle.level && !p.day);
+    const fresh = !puzzle.day && puzzle.level != null && !puzzles.some(p => p.level === puzzle.level && !p.day);
     try {
       if (fresh) await store.setHidden?.(side, puzzle.level, true);
       const row = await store.save(puzzle);
@@ -491,7 +490,7 @@
       const named = theme.value.trim();
       if (!puzzle.day && puzzle.level != null && named !== themeOf()) {
         await store.setTheme?.(side, puzzle.level, named);
-        puzzles.forEach(p => { if (p.width === side && p.level === puzzle.level) p.theme = named || null; });
+        puzzles.forEach(p => { if (p.level === puzzle.level && !p.day) p.theme = named || null; });
       }
       // The list this page holds takes the puzzle as saved, so the Category
       // field lists a category just started, by its name.
@@ -612,7 +611,7 @@
     if (!editing) {
       const kept = readDraft();
       const keptSide = Math.sqrt(kept?.squares?.length || 0);
-      // Manage's Add puzzle names the gate the puzzle is for, as its size
+      // Manage's Add puzzle names the gate the puzzle is for, as a size
       // and its level: the board is that size and Save offers that gate. A
       // drawing kept of that size is on the board; one of another size is
       // not, and the first square drawn here takes its place.

@@ -132,22 +132,24 @@
   };
   const grade = n => (n <= 3 ? 'easy' : n <= 5 ? 'normal' : 'hard');
 
-  // Playing order: the owner's before any player's, a maker at a time,
-  // small boards first, then by level, easy to hard within one, then as
-  // they were made. A puzzle drawn for a day is in no level,
-  // and one in no category stands after its size's categories.
+  // Playing order: the owner's before any player's, a maker at a time, by
+  // level, and within one small boards first, then easy to hard, then as
+  // they were made. A puzzle drawn for a day is in no level, and one in no
+  // category stands after the categories.
   const order = puzzles => {
     puzzles = puzzles.filter(p => !p.day);
     puzzles.forEach(p => { p.rounds ??= rounds(grid(p.squares, p.width)); });
     return [...puzzles].sort((a, b) => (a.maker ? 1 : 0) - (b.maker ? 1 : 0) || String(a.maker || '').localeCompare(String(b.maker || ''))
-      || a.width - b.width || (a.level ?? 100) - (b.level ?? 100) || a.rounds - b.rounds
+      || (a.level ?? 100) - (b.level ?? 100) || a.width - b.width || a.rounds - b.rounds
       || String(a.created_at).localeCompare(String(b.created_at)));
   };
 
-  /* THE CATEGORIES among `puzzles`, in playing order. A category is one
-     board size and one place among that size, which the data calls its
-     level; `theme` is its name, and `puzzles` its own, easy to hard. A
-     puzzle in no category, or drawn for a day, is in none of them.
+  /* THE CATEGORIES among `puzzles`, in playing order. A category is its
+     maker's and one place among their categories, which the data calls its
+     level, and holds boards of any size: `sizes` is the sides it has, small
+     first, and `width` the largest, which its tile is drawn to. `theme` is
+     its name, and `puzzles` its own, small boards first and then easy to
+     hard. A puzzle in no category, or drawn for a day, is in none of them.
      `heading` is what a category is called: its name, or More where it has
      none. `where` is the address of its page. A player's own gate carries
      its `maker` and, as `by`, their name and picture. One of the owner's
@@ -155,16 +157,17 @@
      it is; a player's own has none.
 
      A PLAYER READS A CATEGORY AS A GATE and a solved picture as a sprite.
-     `side` is a gate's size as it is written, 10×10. `sprites` says how far through a gate a
+     `side` is a gate's sizes as they are written, 10×10, or 5×5, 10×10 for
+     one of two. `sprites` says how far through a gate a
      player is, and that it is cleared once every puzzle is solved. */
   const categories = puzzles => {
     const found = new Map();
     order(puzzles).forEach(p => {
       if (p.level == null) return;
-      const key = `${p.maker || ''} ${p.width} ${p.level}`;
+      const key = `${p.maker || ''} ${p.level}`;
       if (!found.has(key)) {
         found.set(key, {
-          width: p.width, level: p.level, theme: p.theme ?? null, hidden: !!p.hidden, puzzles: [], gate: p.gate ?? null, maker: p.maker ?? null,
+          level: p.level, theme: p.theme ?? null, hidden: !!p.hidden, puzzles: [], gate: p.gate ?? null, maker: p.maker ?? null,
           by: p.maker ? { name: p.maker_name, picture: p.maker_picture, colours: p.maker_colours } : null,
         });
       }
@@ -172,17 +175,21 @@
     });
     const cats = [...found.values()];
     let n = 0;
-    cats.forEach(c => { c.number = c.maker ? null : ++n; });
+    cats.forEach(c => {
+      c.number = c.maker ? null : ++n;
+      c.sizes = [...new Set(c.puzzles.map(p => p.width))].sort((a, b) => a - b);
+      c.width = c.sizes[c.sizes.length - 1];
+    });
     return cats;
   };
   const heading = ({ theme }) => theme || 'More';
-  const side = ({ width }) => `${width}×${width}`;
+  const side = ({ sizes, width }) => (sizes || [width]).map(n => `${n}×${n}`).join(', ');
   const sprites = (solved, all) => (solved === all ? 'Gate cleared' : `${solved} of ${all} sprites`);
-  const where = ({ width, level, maker }) => `category.html?size=${width}&at=${level}${maker ? `&by=${encodeURIComponent(maker)}` : ''}`;
+  const where = ({ level, maker }) => `category.html?at=${level}${maker ? `&by=${encodeURIComponent(maker)}` : ''}`;
   // A gate a player has opened is kept in their browser, so one they have
   // not says New. `seen` asks and `see` keeps.
   const SEEN = 'pixels-seen';
-  const gateKey = c => c.gate || `${c.maker || ''}:${c.width}:${c.level}`;
+  const gateKey = c => c.gate || `${c.maker || ''}:${c.level}`;
   const opened = () => { try { return JSON.parse(localStorage.getItem(SEEN) || '[]'); } catch { return null; } };
   const seen = c => opened()?.includes(gateKey(c)) ?? true;
   const see = c => {

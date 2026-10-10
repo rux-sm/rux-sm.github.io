@@ -181,12 +181,17 @@
     el.append(top);
     const found = new Map();
     got.puzzles.forEach(p => {
-      const key = `${p.width} ${p.level}`;
-      if (!found.has(key)) found.set(key, { width: p.width, level: p.level, theme: p.theme, hidden: p.hidden, puzzles: [] });
-      found.get(key).puzzles.push(p);
+      if (!found.has(p.level)) found.set(p.level, { level: p.level, theme: p.theme, hidden: p.hidden, puzzles: [] });
+      found.get(p.level).puzzles.push(p);
+    });
+    // A gate holds boards of any size: `sizes` is the sides it has, and
+    // `width` the first, which the database's functions take and do not read.
+    found.forEach(g => {
+      g.sizes = [...new Set(g.puzzles.map(p => p.width))].sort((a, b) => a - b);
+      g.width = g.sizes[0];
     });
     if (!found.size) el.append(words('pixels-meta', owner ? 'You have made none yet. A gate holds fifteen, and your friends are sent it once it is published.' : 'You have made none yet. A puzzle costs 1 mana, and a gate holds fifteen.'));
-    [...found.values()].sort((a, b) => a.width - b.width || a.level - b.level).forEach(g => {
+    [...found.values()].sort((a, b) => a.level - b.level).forEach(g => {
       const box = document.createElement('div');
       box.className = 'rux--stack-vertical rux--stack-scale-3 pixels-mine';
       const head = document.createElement('div');
@@ -232,7 +237,7 @@
         return a;
       }));
       box.append(head, list);
-      const solvers = got.solvers.filter(s => s.width === g.width && s.level === g.level);
+      const solvers = got.solvers.filter(s => s.level === g.level);
       if (solvers.length) {
         const ul = document.createElement('ul');
         ul.className = 'pixels-people';

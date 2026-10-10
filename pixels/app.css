@@ -434,8 +434,8 @@
    is solved, and a bar of that. The first square is the gate's number, or
    its maker's picture, and the fifteen after are its pictures. `--unit` is
    one square of a picture, whole pixels, sized so four pictures and their
-   gaps fill the tile; the tile says how many squares a side its pictures
-   have, as `--size`, and `--cell` is one picture. The squares stand as far
+   gaps fill the tile; the tile says how many squares a side its largest
+   pictures have, as `--size`, and `--cell` is one picture. The squares stand as far
    apart down as across, so the mosaic is a square whatever the size. A
    category with fewer than fifteen keeps a faint square for each one
    missing.
@@ -466,7 +466,9 @@
   aspect-ratio: 1;
   margin-block-end: .5rem;
 }
-.pixels-mosaic > .pixels-picture--sm { --px: var(--unit); }
+/* A picture is drawn to its own size, so a 5×5 in a gate of 10×10s fills
+   the same square. */
+.pixels-mosaic > .pixels-picture--sm { --px: round(down, calc(var(--cell) / var(--size, 10)), 1px); place-self: center; }
 .pixels-mosaic > .pixels-blank { inline-size: auto; block-size: auto; font-size: 1rem; }
 .pixels-mosaic-none { background: var(--rux-layer-accent-01); opacity: .4; }
 .pixels-mosaic-number { display: grid; place-items: center; background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: 1.25rem; font-weight: 600; }

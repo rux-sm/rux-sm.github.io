@@ -57,8 +57,9 @@ What a player has besides the puzzles, and the rule for who is sent a gate.
   starts; `friends`, which is a player's own, sent to its maker and to
   whoever has added them; or `picked`, which is one of the owner's kept for
   the players ticked in Manage.
-- **A gate is its maker's, a size and a number.** No maker is the owner's, so
-  a player's first gate and the owner's can both be number one.
+- **A gate is its maker's and a number,** and holds boards of any size. No
+  maker is the owner's, so a player's first gate and the owner's can both be
+  number one.
 
 ## Mana and gates of your own
 

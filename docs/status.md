@@ -22,6 +22,8 @@ done and how.
 
 ## Pixels
 
+- The gate functions still take a board size they do not read, and
+  `pixels_levels` keeps a `width` column nothing reads; both go.
 - Two leftovers of stars, which nothing reads or writes, are still in the
   database and go: the `p_stars` that `pixels_record` and `pixels_record_day`
   take and ignore, and the `stars` column of the two results tables.

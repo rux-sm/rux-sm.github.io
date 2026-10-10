@@ -81,10 +81,10 @@
     };
   };
   // A category's row in the preview, made the first time it is written.
-  const levelRow = (db, width, level) => {
+  const levelRow = (db, level) => {
     db.levels ||= [];
-    let row = db.levels.find(l => l.width === width && l.level === level);
-    if (!row) db.levels.push(row = { width, level, name: null, hidden: false });
+    let row = db.levels.find(l => l.level === level);
+    if (!row) db.levels.push(row = { level, name: null, hidden: false });
     return row;
   };
   // A result as the pages hold it; one in storage may be a bare time.
@@ -99,7 +99,7 @@
     async all() {
       const db = read();
       return db.puzzles.map(p => ({ width: 10, height: 10, level: 1, colours: null, ...p })).map(p => {
-        const row = (db.levels || []).find(l => l.width === p.width && l.level === p.level);
+        const row = (db.levels || []).find(l => l.level === p.level);
         return { ...p, off: !!p.off, theme: row?.name ?? null, hidden: !!row?.hidden };
       });
     },
@@ -150,25 +150,25 @@
     },
     async setTheme(width, level, name) {
       const db = read();
-      levelRow(db, width, level).name = name || null;
+      levelRow(db, level).name = name || null;
       write(db);
     },
     async setHidden(width, level, hidden) {
       const db = read();
-      levelRow(db, width, level).hidden = hidden;
+      levelRow(db, level).hidden = hidden;
       write(db);
     },
     async orderLevels(width, levels) {
       const db = read(), place = n => levels.indexOf(n) + 1;
-      db.puzzles.forEach(p => { if ((p.width ?? 10) === width && !p.day && p.level !== null) p.level = place(p.level ?? 1); });
-      (db.levels || []).forEach(l => { if (l.width === width) l.level = place(l.level); });
+      db.puzzles.forEach(p => { if (!p.day && p.level !== null) p.level = place(p.level ?? 1); });
+      (db.levels || []).forEach(l => { l.level = place(l.level); });
       write(db);
     },
     async removeLevel(width, level) {
       const db = read(), after = n => (n === level ? null : n > level ? n - 1 : n);
-      db.puzzles.forEach(p => { if ((p.width ?? 10) === width && !p.day && p.level !== null) p.level = after(p.level ?? 1); });
-      db.levels = (db.levels || []).filter(l => l.width !== width || l.level !== level);
-      db.levels.forEach(l => { if (l.width === width) l.level = after(l.level); });
+      db.puzzles.forEach(p => { if (!p.day && p.level !== null) p.level = after(p.level ?? 1); });
+      db.levels = (db.levels || []).filter(l => l.level !== level);
+      db.levels.forEach(l => { l.level = after(l.level); });
       write(db);
     },
     async remove(ids) {
@@ -339,13 +339,13 @@
     async all() {
       const [puzzles, levels, picks] = await Promise.all([
         client.from('pixels_puzzles').select('id, name, squares, width, height, level, colours, created_at, day, hidden').is('maker', null).order('created_at').order('id'),
-        client.from('pixels_levels').select('id, width, level, name, hidden, audience').is('maker', null),
+        client.from('pixels_levels').select('id, level, name, hidden, audience').is('maker', null),
         client.from('pixels_level_players').select('level_id, player_id'),
       ]);
       fail(puzzles.error);
       fail(levels.error);
       fail(picks.error);
-      const of = p => levels.data.find(l => l.width === p.width && l.level === p.level);
+      const of = p => levels.data.find(l => l.level === p.level);
       const picked = l => (l?.audience === 'picked' ? picks.data.filter(k => k.level_id === l.id).map(k => k.player_id) : []);
       return puzzles.data.map(p => ({ ...own(p), theme: of(p)?.name ?? null, hidden: !!of(p)?.hidden, picked: picked(of(p)) }));
     },
@@ -387,23 +387,23 @@
     async setOff(id, off) {
       fail((await client.from('pixels_puzzles').update({ hidden: off }).eq('id', id)).error);
     },
-    // Moves puzzles to another category of their size, or with no level to
-    // no category. `off` is their switch once they are there.
+    // Moves puzzles to another category, or with no level to no category. `off` is their switch once they are there.
     async move(ids, level, off) {
       fail((await client.from('pixels_puzzles').update({ level, hidden: !!off }).in('id', [].concat(ids))).error);
     },
-    // A level's theme, for boards of one size; an empty name takes it away.
-    // Only the name is written, so a hidden level stays hidden.
+    // A level's theme; an empty name takes it away. Only the name is
+    // written, so a hidden level stays hidden. This and the four after it
+    // take a board size, which the database's functions no longer read.
     async setTheme(width, level, name) {
       await call('pixels_name_level', { p_width: width, p_level: level, p_name: name || null });
     },
-    // Puts the levels of one board size in a new order: `levels` is every
-    // level number in use at that size, and each becomes its place in the list.
+    // Puts the levels in a new order: `levels` is every level number in
+    // use, and each becomes its place in the list.
     async orderLevels(width, levels) {
       await call('pixels_order_levels', { p_width: width, p_order: levels });
     },
-    // Deletes a category of one board size: its puzzles are left in no
-    // category, and the categories after it move up one place.
+    // Deletes a category: its puzzles are left in no category, and the
+    // categories after it move up one place.
     async removeLevel(width, level) {
       await call('pixels_delete_level', { p_width: width, p_level: level });
     },
@@ -438,18 +438,21 @@
     // or delete it with its puzzles.
     async playerGates() {
       const [levels, puzzles] = await Promise.all([
-        client.from('pixels_levels').select('id, width, level, name, hidden, maker').not('maker', 'is', null).order('width').order('level'),
+        client.from('pixels_levels').select('id, level, name, hidden, maker').not('maker', 'is', null).order('level'),
         client.from('pixels_puzzles').select('maker, width, level').not('maker', 'is', null),
       ]);
       fail(levels.error);
       fail(puzzles.error);
-      return levels.data.map(l => ({ ...l, puzzles: puzzles.data.filter(p => p.maker === l.maker && p.width === l.width && p.level === l.level).length }));
+      return levels.data.map(l => {
+        const own = puzzles.data.filter(p => p.maker === l.maker && p.level === l.level);
+        return { ...l, puzzles: own.length, sizes: [...new Set(own.map(p => p.width))].sort((a, b) => a - b) };
+      });
     },
     async hideGate(id) {
       fail((await client.from('pixels_levels').update({ hidden: true }).eq('id', id)).error);
     },
-    async deleteGate({ id, maker, width, level }) {
-      fail((await client.from('pixels_puzzles').delete().eq('maker', maker).eq('width', width).eq('level', level)).error);
+    async deleteGate({ id, maker, level }) {
+      fail((await client.from('pixels_puzzles').delete().eq('maker', maker).eq('level', level)).error);
       fail((await client.from('pixels_levels').delete().eq('id', id)).error);
     },
     async clearPicture(id) {

@@ -1,11 +1,11 @@
 /* ==========================================================================
    category.js — one category's puzzles
    --------------------------------------------------------------------------
-   category.html?size=10&at=1 names the category, with &by= and its maker
-   for a player's own: the side of its boards and
-   its place among the categories of that size, which the data calls its
-   level. The owner's order decides the place, so an address is good until
-   the categories are next reordered; one that names no category says so.
+   category.html?at=1 names the category, with &by= and its maker for a
+   player's own: its place among its maker's categories, which the data
+   calls its level. The owner's order decides the place, so an address is
+   good until the categories are next reordered; one that names no category
+   says so.
 
    A player reads a category as a gate. The page is its name, after its
    number for one of the owner's, its size and how many sprites are found, or Gate
@@ -37,7 +37,7 @@
       say('Pixels could not connect', 'Reload the page to try again.');
       return;
     }
-    const query = new URLSearchParams(location.search), size = +query.get('size'), at = +query.get('at');
+    const query = new URLSearchParams(location.search), at = +query.get('at');
     let puzzles, results;
     try {
       if (!(await enter(host))) return;
@@ -49,7 +49,7 @@
     if (guest) document.getElementById('pixels-foot').hidden = false;
     fresh();
     const by = query.get('by') || '';
-    const category = categories(puzzles).find(c => c.width === size && c.level === at && (c.maker || '') === by);
+    const category = categories(puzzles).find(c => c.level === at && (c.maker || '') === by);
     if (!category) {
       say('This gate is not here', 'It may have been moved. Pick one from Puzzles.');
       return;

@@ -23,8 +23,8 @@ everything has played a whole game.
 - **A gate holds fifteen puzzles,** lettered A to O as Picross DS letters a
   level's.
 - **Gate 1 holds two sizes, five 5×5 and then ten 10×10,** as the Easy level
-  does. Every other gate is one size, and a gate is one size in the database
-  and in a page's address now.
+  does. Every other gate of the course is one size, though any gate can
+  hold more.
 - **Boards stop at 15×15 for now.** 5×5, 10×10 and 15×15 hold 5, 25 and 120
   of the 180, so gates 8 to 10 are 15×15 where Picross DS's levels 7 to 9
   are 20×20.
@@ -103,7 +103,7 @@ What each gate is for, and the level of Picross DS it stands for.
 
 | Gate | Picross DS's | Size | Theme | What it teaches |
 | :--- | :--- | :--- | :--- | :--- |
-| 1 | Easy | 5×5, then 10×10 | Crawling bugs | what a number is, a line that fills itself, two numbers and their gap; then a number over half the line gives its middle squares |
+| 1 | Easy | 5×5, then 10×10 | Bugs | what a number is, a line that fills itself, two numbers and their gap; then a number over half the line gives its middle squares |
 | 2 | Level 1 | 10×10 | Flying bugs | wings: two and three numbers in a line, and X where no run can reach |
 | 3 | Level 2 | 15×15 | Forest | long runs on a big board, the zoom, counting by the fifth lines |
 | 4 | Level 3 | 15×15 | Swamp | round shapes worked in from the edges, and a first hole |
@@ -142,12 +142,12 @@ puzzles and two players' times, and are corrected as gates are played. Gates
 
 Fifteen enemies to draw in each, as a start, the boss last:
 
-1. **Crawling bugs:** ant, tick, beetle, ladybird and slug at 5×5, then worm,
-   snail, caterpillar, spider, centipede, cockroach, flea, woodlouse, earwig
-   and scorpion at 10×10. Drawn plainly those five have one answer at 5×5,
-   grade easy and have two lines that fill themselves.
-2. **Flying bugs:** fly, gnat, mosquito, bee, butterfly, moth, wasp, firefly,
-   dragonfly, grasshopper, cricket, cicada, locust, hornet, queen bee.
+1. **Bugs:** snail, worm, bee, beetle and dragonfly at 5×5, which are drawn,
+   then ant, tick, ladybird, slug, caterpillar, spider, centipede,
+   cockroach, woodlouse and scorpion at 10×10.
+2. **Flying bugs:** fly, gnat, mosquito, butterfly, moth, wasp, firefly,
+   mayfly, horsefly, grasshopper, cricket, cicada, locust, praying mantis,
+   hornet.
 3. **Forest:** fox, crow, owl, snake, hedgehog, badger, hawk, boar, stag,
    wolf, bear, mushroom man, elf archer, werewolf, walking tree.
 4. **Swamp:** frog, toad, newt, leech, eel, turtle, heron, water snake,
@@ -188,8 +188,6 @@ None open.
       numbers beside the picture's, which it misses, and a warning on Save.
 - [ ] Write the course into `pixels/docs/making-puzzles.md`: the twelve
       gates, what each teaches and the numbers each is drawn to.
-- [ ] Let gate 1 hold its two sizes on one tile and one page, the five 5×5
-      first.
 - [ ] Send each gate's audience with its puzzles, so a gate the owner keeps
       for picked players has no number and stands after the course; the SQL
       is shown to rux first.

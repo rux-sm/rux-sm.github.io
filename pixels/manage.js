@@ -2,20 +2,19 @@
    manage.js — the owner's page: every puzzle, by category, and what is done
    to them
    --------------------------------------------------------------------------
-   EVERY GATE ON ONE PAGE, small boards first and in the owner's order
-   within a size, which is the order the players meet them in; then
-   Unsorted, the puzzles in no category, which no player is sent; then
+   EVERY GATE ON ONE PAGE, in the owner's order, which is the order the
+   players meet them in; then Unsorted, the puzzles in no category, which no player is sent; then
    Dailies where a day's puzzle is drawn.
 
    A CATEGORY'S HEADING has its place among the gates every player is sent,
    and its name, and beside them its size and how many of its puzzles are
    on, at most fifteen. At the far end are a switch that says Published or
    Hidden, which hides it from every player; arrows that move it up or down
-   among those of its size; a key that keeps it for picked players; a pencil
+   among the others; a key that keeps it for picked players; a pencil
    that renames it; and a bin that deletes it and leaves its puzzles in
    Unsorted.
 
-   A TILE always shows its puzzle's picture and name, and how hard it is.
+   A TILE always shows its puzzle's picture and name, its size and how hard it is.
    Under it are Edit, which opens it in the maker, Play, which tries it, and
    for one in a category the switch that sends it to no player when off.
    After a category's tiles is Add puzzle, which opens the maker on a blank
@@ -24,16 +23,16 @@
    TICKS. A tile is ticked by pressing it, and the box in a heading ticks
    its whole category. A bar over the categories stays in view with how many
    are ticked, and Move, Delete and Clear, which wait for a tick; it is
-   there before any tile is ticked, so the first tick moves nothing. Move asks where: a category of the
-   ticked puzzles' size, Unsorted, or a new category, which is named there and starts hidden. Puzzles of
-   two sizes are not moved together, because a category holds one size.
+   there before any tile is ticked, so the first tick moves nothing. Move asks where: a category,
+   Unsorted, or a new category, which is named there and starts hidden.
    Puzzles that come into a category arrive on while it has fewer than fifteen
    on, and off after that. A category a move or a delete empties is deleted,
    so the places stay 1, 2, 3. Delete asks once, and every player's times on
    the puzzles go with them.
 
-   The data calls a category a level: it is a board size and `level`, its
-   number, which is its place among that size, and `theme` is its name.
+   The data calls a category a level: `level` is its number, which is its
+   place, and `theme` is its name. It holds boards of any size, and the
+   database's functions still take a size, which they do not read.
 
    Only the owner's account sees this page: the database gives nobody else
    the tables it reads and writes.
@@ -61,21 +60,23 @@
 
   const loose = p => p.level == null;
   // The puzzles in a category or in none, which is all but the days', and
-  // of those the ones in the category at `level` of one board size.
+  // of those the ones in the category at `level`.
   const kept = () => puzzles.filter(p => !p.day);
-  const inLevel = (width, level) => kept().filter(p => p.width === width && p.level === level);
+  const inLevel = level => kept().filter(p => p.level === level);
   const called = c => c.theme || 'More';
   const count = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
   const side = width => `${width}×${width}`;
-  // Every category, small boards first and in the owner's order within a
-  // size, each with its puzzles easy to hard.
+  // The sizes of a category's boards as they are written, small first, and
+  // the largest of them, which is the size its next puzzle most likely is.
+  const sizes = c => [...new Set(c.puzzles.map(p => p.width))].sort((a, b) => a - b);
+  // Every category, in the owner's order, each with its puzzles small
+  // boards first and then easy to hard.
   const levels = () => {
     const found = new Map();
     order(kept()).forEach(p => {
       if (loose(p)) return;
-      const at = `${p.width} ${p.level}`;
-      if (!found.has(at)) found.set(at, { width: p.width, level: p.level, theme: p.theme ?? null, hidden: !!p.hidden, picked: p.picked || [], puzzles: [] });
-      found.get(at).puzzles.push(p);
+      if (!found.has(p.level)) found.set(p.level, { level: p.level, theme: p.theme ?? null, hidden: !!p.hidden, picked: p.picked || [], puzzles: [] });
+      found.get(p.level).puzzles.push(p);
     });
     return [...found.values()];
   };
@@ -186,10 +187,10 @@
     showTicked();
   });
 
-  /* A PUZZLE'S TILE, which pressing ticks, and under it Edit, Play and its
-     switch. `flip` is given the switch's new state, and is missing for a
-     puzzle in no category, which has no switch and says its size, since no
-     heading does. */
+  /* A PUZZLE'S TILE, which pressing ticks, with its size and how hard it
+     is, and under it Edit, Play and its switch. `flip` is given the
+     switch's new state, and is missing for a puzzle in no category, which
+     has no switch. */
   const puzzleTile = (p, flip) => {
     const wrap = document.createElement('div');
     wrap.className = `pixels-tile${p.off && !loose(p) ? ' is-off' : ''}`;
@@ -204,7 +205,7 @@
     const mark = document.createElement('span');
     mark.className = 'rux--tile__checkmark rux--tile__checkmark--persistent';
     mark.innerHTML = '<svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg>';
-    t.append(mark, art(p, true), words('pixels-puzzle-name', p.name), words('pixels-meta', flip ? grade(p.rounds) : `${side(p.width)} · ${grade(p.rounds)}`));
+    t.append(mark, art(p, true), words('pixels-puzzle-name', p.name), words('pixels-meta', `${side(p.width)} · ${grade(p.rounds)}`));
     const foot = document.createElement('div');
     foot.className = 'pixels-tile-foot';
     const link = (text, href, label) => {
@@ -222,17 +223,19 @@
   };
 
   // The way to draw another puzzle for a category: a tile after its own,
-  // which opens the maker on a blank board of its size with it chosen.
+  // which opens the maker with it chosen, on a blank board of the largest
+  // size it holds.
   const addTile = c => {
     const wrap = document.createElement('div');
     wrap.className = 'pixels-tile';
     const a = document.createElement('a');
     a.className = 'rux--link rux--tile rux--tile--clickable pixels-puzzle';
-    a.href = `make.html?size=${c.width}&gate=${c.level}`;
+    const size = Math.max(...sizes(c));
+    a.href = `make.html?size=${size}&gate=${c.level}`;
     a.setAttribute('aria-label', `Add a puzzle to ${called(c)}`);
     const plus = words('pixels-blank', '+');
     plus.setAttribute('aria-hidden', 'true');
-    a.append(plus, words('pixels-puzzle-name', 'Add puzzle'), words('pixels-meta', side(c.width)));
+    a.append(plus, words('pixels-puzzle-name', 'Add puzzle'), words('pixels-meta', side(size)));
     wrap.append(a);
     return wrap;
   };
@@ -277,25 +280,24 @@
     // picked players has none.
     let nth = 0;
     cats.forEach(c => {
-      const id = `pixels-level-${c.width}-${c.level}`, name = called(c);
+      const id = `pixels-level-${c.level}`, name = called(c), width = sizes(c)[0];
       const on = c.puzzles.filter(p => !p.off).length, off = c.puzzles.length - on;
-      /* A move swaps the category with the one before or after it of its
-         size: the database is given every level of the size in the new
-         order and numbers them by it, and the puzzles held here are
-         numbered the same. */
-      const same = cats.filter(x => x.width === c.width), at = same.indexOf(c);
+      /* A move swaps the category with the one before or after it: the
+         database is given every level in the new order and numbers them by
+         it, and the puzzles held here are numbered the same. */
+      const at = cats.indexOf(c);
       const shift = by => async () => {
         if (moving) return;
-        const to = same.map(x => x.level);
+        const to = cats.map(x => x.level);
         [to[at], to[at + by]] = [to[at + by], to[at]];
         moving = true;
         try {
-          await data.orderLevels(c.width, to);
-          kept().forEach(p => { if (p.width === c.width && !loose(p)) p.level = to.indexOf(p.level) + 1; });
+          await data.orderLevels(width, to);
+          kept().forEach(p => { if (!loose(p)) p.level = to.indexOf(p.level) + 1; });
           fine();
           moving = false;
           // The arrow pressed, or the other where the category has reached the end.
-          const now = `pixels-level-${c.width}-${at + by + 1}`;
+          const now = `pixels-level-${at + by + 1}`;
           draw(by < 0 ? [`${now}-up`, `${now}-down`] : [`${now}-down`, `${now}-up`]);
         } catch {
           moving = false;
@@ -304,7 +306,7 @@
       };
       host.append(section(id, c.picked.length ? name : `${++nth} · ${name}`, h2 => [
         tickAll(`${id}-all`, `Tick all of ${name}`), h2,
-        words('pixels-meta', `${side(c.width)} · ${on} of ${PER_LEVEL} on${off ? `, ${off} off` : ''}${c.picked.length ? ` · for ${count(c.picked.length, 'player')}` : ''}`),
+        words('pixels-meta', `${sizes(c).map(side).join(', ')} · ${on} of ${PER_LEVEL} on${off ? `, ${off} off` : ''}${c.picked.length ? ` · for ${count(c.picked.length, 'player')}` : ''}`),
         // The switch, the word for what it has done, and the keys, which
         // stay together where the heading wraps.
         (() => {
@@ -315,12 +317,12 @@
           const keys = document.createElement('div');
           keys.className = 'pixels-moves';
           keys.append(key(`${id}-up`, `Move ${name} up`, '#m-arrow_upward', at > 0 && shift(-1)),
-            key(`${id}-down`, `Move ${name} down`, '#m-arrow_downward', at < same.length - 1 && shift(1)),
+            key(`${id}-down`, `Move ${name} down`, '#m-arrow_downward', at < cats.length - 1 && shift(1)),
             ...(data.share ? [key(`${id}-share`, `Who sees ${name}`, '#m-groups', from => sharing(c, from))] : []),
             key(`${id}-rename`, `Rename ${name}`, '#m-edit', from => naming(c, from)),
             key(`${id}-remove`, `Delete ${name}`, '#m-delete', from => removing(c, from)));
           shown.append(toggle(`${id}-shown`, 'Published', !c.hidden, async to => {
-            await data.setHidden(c.width, c.level, !to);
+            await data.setHidden(width, c.level, !to);
             c.puzzles.forEach(p => { p.hidden = !to; });
             word.textContent = to ? 'Published' : 'Hidden';
           }, { text: false, failed: ['The gate did not change', 'Try again.'] }), word, keys);
@@ -350,7 +352,7 @@
      so a sixteenth is refused until one is switched off. The page is drawn again,
      since the count in the heading changes. */
   const flip = (p, name) => async on => {
-    if (on && inLevel(p.width, p.level).filter(q => !q.off).length >= PER_LEVEL) {
+    if (on && inLevel(p.level).filter(q => !q.off).length >= PER_LEVEL) {
       throw Object.assign(new Error('full'), { said: [`${name} has fifteen on`, 'Switch one off first.'] });
     }
     await data.setOff(p.id, !on);
@@ -365,24 +367,20 @@
     ticked.clear();
     draw();
   };
-  // Deletes each category of `left`, a size and a level each, that has no
-  // puzzle any more, the last first, so one deleted does not renumber one
-  // still to go.
+  // Deletes each category of `left`, its levels, that has no puzzle any
+  // more, the last first, so one deleted does not renumber one still to go.
   const tidy = async left => {
-    const seen = new Map(left.filter(l => l.level != null).map(l => [`${l.width} ${l.level}`, l]));
-    for (const { width, level } of [...seen.values()].sort((a, b) => b.level - a.level)) {
-      if (inLevel(width, level).length) continue;
-      await data.removeLevel(width, level);
-      kept().forEach(p => { if (p.width === width && !loose(p) && p.level > level) p.level--; });
+    for (const level of [...new Set(left)].filter(l => l != null).sort((a, b) => b - a)) {
+      if (inLevel(level).length) continue;
+      await data.removeLevel(0, level);
+      kept().forEach(p => { if (!loose(p) && p.level > level) p.level--; });
     }
   };
-  const place = p => ({ width: p.width, level: p.level });
 
   /* MOVE. The window lists where the ticked puzzles can go: each category
-     of their size, but the one that holds them all already, with how many
-     it has on; Unsorted, unless they are all there; and a new category,
-     which shows a field for its name. Ticked puzzles of two sizes are
-     refused, since no category could take them all. */
+     but the one that holds them all already, with how many it has on;
+     Unsorted, unless they are all there; and a new category, which shows a
+     field for its name. */
   const NEW = 'new', NONE = 'none';
   const where = $('pixels-move-to');
   const showMore = () => { $('pixels-move-more').hidden = where.value !== NEW; };
@@ -390,10 +388,7 @@
   $('pixels-ticked-move').addEventListener('click', e => {
     const these = chosen();
     if (!these.length) return;
-    const width = these[0].width;
-    if (these.some(p => p.width !== width)) { say('A gate holds one size', 'Tick puzzles of one size to move them.'); return; }
-    fine();
-    const to = levels().filter(c => c.width === width && these.some(p => p.level !== c.level))
+    const to = levels().filter(c => these.some(p => p.level !== c.level))
       .map(c => new Option(`${called(c)} · ${c.puzzles.filter(p => !p.off).length} of ${PER_LEVEL}`, c.level));
     if (!these.every(loose)) to.push(new Option('Unsorted', NONE));
     to.push(new Option('New gate…', NEW));
@@ -406,27 +401,26 @@
   $('pixels-move').addEventListener('submit', async e => {
     e.preventDefault();
     const to = where.value, fresh = to === NEW, name = $('pixels-move-name').value.trim();
-    const width = chosen()[0]?.width;
-    // A new category stands after the others of its size.
-    const level = to === NONE ? null : fresh ? Math.max(0, ...levels().filter(c => c.width === width).map(c => c.level)) + 1 : +to;
+    // A new category stands after the others.
+    const level = to === NONE ? null : fresh ? Math.max(0, ...levels().map(c => c.level)) + 1 : +to;
     const movers = order(chosen()).filter(p => (p.level ?? null) !== level);
     modal.close('pixels-move-modal');
     if (!movers.length) return;
     if (level > 99) { say('There is no room for another gate', 'Delete one first.'); return; }
     // They arrive on while the category has fewer than fifteen on, and off after.
-    let room = level == null ? Infinity : PER_LEVEL - inLevel(width, level).filter(p => !p.off).length;
+    let room = level == null ? Infinity : PER_LEVEL - inLevel(level).filter(p => !p.off).length;
     const on = [], off = [];
     movers.forEach(p => { if (level == null || room-- > 0) on.push(p); else off.push(p); });
-    const there = fresh ? { theme: name || null, hidden: true } : inLevel(width, level)[0];
+    const there = fresh ? { theme: name || null, hidden: true } : inLevel(level)[0];
     try {
       // A category just started is hidden, for the Published switch to show.
       if (fresh) {
-        await data.setHidden(width, level, true);
-        await data.setTheme(width, level, name);
+        await data.setHidden(0, level, true);
+        await data.setTheme(0, level, name);
       }
       if (on.length) await data.move(on.map(p => p.id), level, false);
       if (off.length) await data.move(off.map(p => p.id), level, true);
-      const left = movers.map(place);
+      const left = movers.map(p => p.level);
       movers.forEach(p => Object.assign(p, { level, off: off.includes(p), theme: level == null ? null : there?.theme ?? null, hidden: level != null && !!there?.hidden }));
       await tidy(left);
       ticked.clear();
@@ -453,7 +447,7 @@
     try {
       await data.remove(these.map(p => p.id));
       puzzles = puzzles.filter(p => !these.includes(p));
-      await tidy(these.map(place));
+      await tidy(these.map(p => p.level));
       ticked.clear();
       fine();
       draw();
@@ -477,10 +471,10 @@
     const c = asked, name = $('pixels-rename-name').value.trim();
     modal.close('pixels-rename-modal');
     try {
-      await data.setTheme(c.width, c.level, name);
+      await data.setTheme(0, c.level, name);
       c.puzzles.forEach(p => { p.theme = name || null; });
       fine();
-      draw([`pixels-level-${c.width}-${c.level}-rename`]);
+      draw([`pixels-level-${c.level}-rename`]);
     } catch {
       say('The gate was not renamed', 'Try again.');
     }
@@ -518,10 +512,10 @@
     const c = asked, ids = [...$('pixels-share-list').querySelectorAll('input:checked')].map(b => b.value);
     modal.close('pixels-share-modal');
     try {
-      await data.share(c.width, c.level, ids);
+      await data.share(0, c.level, ids);
       c.puzzles.forEach(p => { p.picked = ids; });
       fine();
-      draw([`pixels-level-${c.width}-${c.level}-share`]);
+      draw([`pixels-level-${c.level}-share`]);
     } catch {
       say('The gate did not change', 'Try again.');
     }
@@ -536,9 +530,9 @@
   $('pixels-remove-confirm').addEventListener('click', async () => {
     const c = asked;
     try {
-      await data.removeLevel(c.width, c.level);
+      await data.removeLevel(0, c.level);
       kept().forEach(p => {
-        if (p.width !== c.width || loose(p)) return;
+        if (loose(p)) return;
         if (p.level === c.level) Object.assign(p, { level: null, theme: null, hidden: false });
         else if (p.level > c.level) p.level--;
       });

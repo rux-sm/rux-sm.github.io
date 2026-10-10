@@ -164,10 +164,10 @@ Fifteen things to draw in each, as a start:
 
 ## Questions
 
-1. **Does the grade tag leave the players' pages** for the gate's number?
-2. **How does a tile show fifteen pictures?** It shows nine, three by three,
-   two tiles across on a phone. The choices are drawn side by side at 390px
-   and one is picked.
+1. **How does a tile show fifteen pictures?** It shows nine, three by three,
+   two tiles across on a phone. Three are drawn at 390px to pick from: three
+   across and taller, one gate a row with five across, and four across with
+   the gate's number in the first square.
 
 ## Tasks
 

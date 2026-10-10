@@ -156,8 +156,6 @@ None open.
 
 ### Small fixes, each by itself
 
-- [ ] Blank a stop's drive when its place changed and the map did not
-      answer, and say so, in `measureStops`.
 - [ ] Deploy the connector on a yes, and read `find_trips` back cut and whole.
 - [ ] In `saveEditor`, send a new trip's waiting files when its first save
       stops partway, and compare the trip's stamp again after the update box.

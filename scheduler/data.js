@@ -6087,6 +6087,8 @@
   // drive measured from now on is a bus's; one already saved keeps its minutes.
   const driveBetween = (a, b) => window.SchedulerPlaces.drive(a, b).then(d =>
     (d && routeTimes.slow ? { ...d, min: Math.round(d.min * (1 + routeTimes.slow / 100)) } : d));
+  // The two map points a drive is between, as one word, or null where either has none.
+  const driveEnds = (a, b) => (a?.lat != null && b?.lat != null ? `${a.lat},${a.lng}>${b.lat},${b.lng}` : null);
 
   /* Two places are the same when both carry the Mapbox id rux-ui saves, or when
      their name and address both read the same. A drop-off the same as the
@@ -7654,6 +7656,18 @@
       r.listTouched = false;
       r.dropDrive = r.dropRow ? driveMin(r.dropRow.drive) : null;
       r.dropMiles = r.dropRow ? numOrNull(r.dropRow.miles) : null;
+      /* Which two places each saved drive is between, `drivenFor`, so a drive
+         can be told from one measured before a place moved: a saved stop's is
+         from the place before it, and the last drive's ends at the drop-off. */
+      {
+        let before = r.pickupPlace;
+        for (const st of r.list) {
+          if (st.place?.lat == null) continue;
+          st.drivenFor = st.drive != null ? driveEnds(before, st.place) : null;
+          before = st.place;
+        }
+        r.dropDrivenFor = r.dropDrive != null ? driveEnds(before, routeRound() ? r.pickupPlace : r.dropPlace) : null;
+      }
 
       const DWELL = { on: 'on duty', off: 'off duty', sleeper: 'sleeper berth' };
       // Each kind of wait's mark on a stop: the clock running, the clock
@@ -7915,32 +7929,50 @@
       /* Every leg of the list is measured, from the stop before it or the
          pickup, and the leg on to where the group is let off, by the same
          lookup the yard's two legs use. */
+      /* Measures every drive of the list again. Where the map does not answer,
+         a drive already between these two places stays as it is; one that was
+         measured between two other places, before a stop moved, is blanked
+         and said, because no drive is truer than the wrong one, and the
+         times and miles worked out from it would be wrong with it. */
       async function measureStops() {
+        const asked = async place => { try { return await driveBetween(prev, place); } catch { return null; } };
+        const blanked = [];
         let prev = r.pickupPlace;
         for (const st of r.list) {
           if (!located(st)) {
-            if (st.drive != null || st.miles != null) Object.assign(st, { drive: null, miles: null, driveChanged: true });
+            if (st.drive != null || st.miles != null) Object.assign(st, { drive: null, miles: null, driveChanged: true, drivenFor: null });
             continue;
           }
           if (prev?.lat != null) {
-            try {
-              const d = await driveBetween(prev, st.place);
-              if (d && (d.min !== st.drive || d.miles !== st.miles)) {
-                Object.assign(st, { drive: d.min, miles: d.miles, driveChanged: true });
-              }
-            } catch { /* the drive stays as it was */ }
+            const ends = driveEnds(prev, st.place);
+            const d = await asked(st.place);
+            if (d) {
+              if (d.min !== st.drive || d.miles !== st.miles) Object.assign(st, { drive: d.min, miles: d.miles, driveChanged: true });
+              st.drivenFor = ends;
+            } else if (st.drivenFor !== ends && (st.drive != null || st.miles != null)) {
+              Object.assign(st, { drive: null, miles: null, driveChanged: true, drivenFor: null });
+              blanked.push(st.place.name || 'a stop');
+            }
           }
           prev = st.place;
         }
         const to = routeRound() ? r.pickupPlace : r.dropPlace;
         if (to?.lat != null && prev?.lat != null && prev !== to) {
-          try {
-            const d = await driveBetween(prev, to);
-            if (d) { r.dropDrive = d.min; r.dropMiles = d.miles; r.dropFound = false; }
-          } catch { /* the drive stays as it was */ }
+          const ends = driveEnds(prev, to);
+          const d = await asked(to);
+          if (d) {
+            Object.assign(r, { dropDrive: d.min, dropMiles: d.miles, dropFound: false, dropDrivenFor: ends });
+          } else if (r.dropDrivenFor !== ends && (r.dropDrive != null || r.dropMiles != null)) {
+            Object.assign(r, { dropDrive: null, dropMiles: null, dropFound: false, dropDrivenFor: null });
+            blanked.push(to.name || 'the drop-off');
+          }
         }
         drawStops();
         refreshDirty();
+        if (blanked.length) {
+          toast('warning', 'The map did not answer',
+            `The drive to ${blanked.join(' and to ')} is blank, because the place it was measured from or to has changed. It is looked up again at the next change to the stops.`);
+        }
       }
 
       /* Every leg of the list with a place at both ends and no drive yet is

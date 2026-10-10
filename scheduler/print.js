@@ -1510,24 +1510,24 @@
     return row;
   }
 
-  /* WHAT IS TYPED IS ADDED UP, and only that. The lines come from the trip
-     (`quoteLines`), each Total as it was saved, so a price that will not
-     divide evenly still totals to what was quoted. A Quantity or Cost typed
-     on any line makes that line's Total their product, and the Total box is
-     the sum of the lines, so a deduction typed under the bus rental takes the
-     total down with it. The trip's quoted price is not changed by any of it:
-     that is the Billing tab's, and a price agreed on the sheet is saved
-     there. */
+  /* THE TOTAL IS THE SUM OF THE LINES THE SHEET PRINTS, from the first draw,
+     so the paper always adds up: a trip whose saved lines and quoted price
+     have parted prints the lines' sum, and the Billing tab is where that is
+     said and put right. The lines come from the trip (`quoteLines`), each
+     Total as it was saved, so a price that will not divide evenly still
+     totals to what was quoted. A Quantity or Cost typed on any line makes
+     that line's Total their product, and a deduction typed under the bus
+     rental takes the total down with it. The trip's quoted price is not
+     changed by any of it: that is the Billing tab's, and a price agreed on
+     the sheet is saved there. */
+  const lineSum = totals => {
+    const typed = totals.map(typedNumber).filter(Number.isFinite);
+    return typed.length ? `$${money(typed.reduce((a, b) => a + b, 0)) || '0.00'}` : '';
+  };
   function addUp(card) {
     const rows = [...card.querySelectorAll('.scheduler-customer-quote__line-item')];
-    let sum = 0;
-    let any = false;
-    for (const row of rows) {
-      const n = typedNumber(row.cells[4].textContent);
-      if (Number.isFinite(n)) { sum += n; any = true; }
-    }
     const total = card.querySelector('.scheduler-customer-quote__total-value');
-    if (total && document.activeElement !== total) total.textContent = any ? `$${money(sum) || '0.00'}` : '';
+    if (total && document.activeElement !== total) total.textContent = lineSum(rows.map(row => row.cells[4].textContent));
   }
 
   function onLineTyped(event) {
@@ -1552,8 +1552,9 @@
     table.appendChild(head);
 
     const body = el('tbody');
+    const lines = blank ? [] : quoteLines(trip);
     if (blank) body.appendChild(lineRow('', '', '', '', ''));
-    else for (const l of quoteLines(trip)) body.appendChild(lineRow(l.item, l.desc, l.qty, l.cost, l.total));
+    else for (const l of lines) body.appendChild(lineRow(l.item, l.desc, l.qty, l.cost, l.total));
     /* THE HAND'S DEPTH UNDER THE LINES, which is paper and not a line: the
        office's sheet leaves room under its items and rules only the columns
        down through it. It is the last row before the Total's, so an added line
@@ -1579,12 +1580,11 @@
       row.cells[0].focus();
     });
     gap.appendChild(add);
-    const total = Number(trip.quoted_price);
     sum.append(
       gap,
       el('td', 'scheduler-customer-quote__total-label', 'Total'),
       el('td', 'scheduler-customer-quote__total-value scheduler-customer-quote__num scheduler-customer-quote__typed',
-        !blank && Number.isFinite(total) && total !== 0 ? `$${money(total)}` : ''),
+        lineSum(lines.map(l => l.total))),
     );
     body.appendChild(sum);
     table.addEventListener('input', onLineTyped);

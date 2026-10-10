@@ -8541,6 +8541,8 @@
       linesLive = false;
       const lineList = rowList();
       const linesNote = el('p', 'rux--form__helper-text');
+      // Said as a warning where a saved trip's lines and its price have parted.
+      const linesParted = el('div');
       // The dead-mile offer, over the lines it adds to.
       const deadBox = el('div', 'scheduler-dead-offer');
       deadBox.hidden = true;
@@ -8681,11 +8683,14 @@
         quotedInput.readOnly = linePending.length > 0;
         quotedInput.closest('.rux--text-input-wrapper')
           ?.classList.toggle('rux--text-input-wrapper--readonly', linePending.length > 0);
+        /* With lines the price is their total. A trip saved with the two
+           apart opens that way, and says so as a warning, because the quote
+           prints the lines and their sum while Billing counts the price. */
         const quoted = money(quotedInput.value);
-        linesNote.textContent = !linePending.length ? ''
-          : quoted !== null && quoted !== total
-            ? `The lines add up to ${usdCents(total)}. Change a line and the quoted price becomes their total.`
-            : 'The quoted price is the total of these lines.';
+        const parted = linePending.length > 0 && quoted !== null && quoted !== total;
+        linesParted.replaceChildren(...(parted ? [note('warning', 'The lines and the quoted price differ',
+          `The lines add up to ${usdCents(total)} and the quoted price is ${usdCents(quoted)}. Change a line and the price becomes their total.`)] : []));
+        linesNote.textContent = linePending.length && !parted ? 'The quoted price is the total of these lines.' : '';
         linesNote.hidden = !linesNote.textContent;
       };
       redrawLines = drawLines;
@@ -8720,7 +8725,7 @@
       calcButton.id = 'scheduler-f-opencalc';
       calcButton.addEventListener('click', () => openCalculator(null));
       const linesBody = el('div', 'rux--stack-vertical rux--stack-scale-3');
-      linesBody.append(deadBox, lineList.list, linesNote, calcButton, qbButton);
+      linesBody.append(deadBox, lineList.list, linesParted, linesNote, calcButton, qbButton);
       panelBilling.appendChild(section('Quote lines', linesBody));
 
       /* QUOTE SENT: the price the customer was sent, and the day, kept for
@@ -15150,6 +15155,7 @@
   function applyDraft(fields) {
     const missed = [];
     const unpicked = [];
+    const held = [];
     for (const [key, value] of Object.entries(fields || {})) {
       // The stops between the pickup and the drop-off, laid out on the Route tab.
       if (key === 'stops') {
@@ -15177,6 +15183,10 @@
       }
       const node = control ? document.getElementById(control.id) : null;
       if (!node) { missed.push([key, value]); continue; }
+      /* A price the editor keeps locked is the total of the trip's quote
+         lines, and a draft does not type over it: the lines would no longer
+         add up to it. */
+      if (key === 'quoted_price' && node.readOnly) { held.push(value); continue; }
       typeInto(node, control.kind, value);
       markDrafted(node);
       /* A place search commits nothing until a result is chosen from its
@@ -15185,14 +15195,14 @@
       if (control.kind === 'place') unpicked.push(PLACE_LABEL[key] ?? key);
     }
     refreshDirty();
-    return { missed, unpicked };
+    return { missed, unpicked, held };
   }
 
   /* The notice above the fields: what Claude could not work out, and anything
      it filled that this panel has no field for, written out so it can be
      typed in by hand rather than lost. */
-  function draftNotice(notes, { missed, unpicked }) {
-    if (!notes && !missed.length && !unpicked.length) return;
+  function draftNotice(notes, { missed, unpicked, held = [] }) {
+    if (!notes && !missed.length && !unpicked.length && !held.length) return;
     const wrap = el('div', 'scheduler-drafted-notice');
     const note = el('div', 'rux--inline-notification rux--inline-notification--info');
     const details = el('div', 'rux--inline-notification__details');
@@ -15215,6 +15225,10 @@
     if (missed.length) {
       texts.appendChild(el('div', 'rux--inline-notification__subtitle',
         `This panel has no field for: ${missed.map(([k, v]) => `${k} = ${v}`).join('; ')}.`));
+    }
+    for (const price of held) {
+      texts.appendChild(el('div', 'rux--inline-notification__subtitle',
+        `The quoted price is the total of this trip's quote lines, so the draft's ${Number.isFinite(Number(price)) ? usdCents(Number(price)) : price} was not typed in. Change a line on the Billing tab to change the price.`));
     }
     details.append(icon, texts);
     note.appendChild(details);

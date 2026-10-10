@@ -156,8 +156,6 @@ None open.
 
 ### Small fixes, each by itself
 
-- [ ] Total the customer quote from its printed lines, warn in the editor
-      when lines and price part, and skip a locked price in `applyDraft`.
 - [ ] Show the second-driver notice while any bus on the leg has no
       co-driver seat.
 - [ ] Blank a stop's drive when its place changed and the map did not

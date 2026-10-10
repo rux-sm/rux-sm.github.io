@@ -12,11 +12,11 @@
    PUZZLES. Today's puzzle is one card across the page: its picture once
    solved, the date, the best time or how hard it is, and the days solved in
    a row. Continue is a card like it, for the puzzle to play next. Then a
-   tile for each category, in playing order: its puzzles' pictures small,
-   three by three, each a question mark until it is solved; its name with
-   its grade in a tag beside it; its size and how many sprites are found, or
-   Gate cleared; and a bar of that. A player's gate also says who made it,
-   and one not yet opened says New. A tile opens its category in
+   tile for each category, in playing order: sixteen squares, four by four,
+   its number or its maker's picture and then its puzzles' pictures small,
+   each a question mark until it is solved; its name; its size and how many
+   sprites are found, or Gate cleared; and a bar of that. A player's gate
+   also says who made it, and one not yet opened says New. A tile opens its category in
    category.html. A player reads a category as a gate.
 
    A guest has no menu, so under the tiles is their way to How to play.
@@ -34,10 +34,10 @@
 (() => {
   'use strict';
 
-  const { data, owner, guest, enter, carry, iphone, installed, fresh, overMenu, portrait, seen, side, hardness, gradeTag, sprites, boss, title, DAILY, BOARD, grid, rounds, grade, categories, heading, where, daily, today, streak, time, words, art, bar, switcher } = window.Pixels;
+  const { data, owner, guest, enter, carry, iphone, installed, fresh, overMenu, portrait, seen, side, sprites, boss, title, DAILY, BOARD, grid, rounds, grade, categories, heading, where, daily, today, streak, time, words, art, bar, switcher } = window.Pixels;
   const host = document.getElementById('pixels-levels'), leader = document.getElementById('pixels-leader');
-  // A tile shows nine pictures, which is as many as a category has on.
-  const PER_LEVEL = 9;
+  // A tile shows fifteen pictures, which is as many as a category has on.
+  const PER_LEVEL = 15;
   // What play.js keeps in this browser: the games in progress, and the
   // puzzle last played.
   const PROGRESS = 'pixels-progress', LAST = 'pixels-last';
@@ -88,11 +88,15 @@
     const game = kept[next.p.id], begun = game && game.squares === next.p.squares;
     return card(`play.html?id=${encodeURIComponent(next.p.id)}`, art(next.p, false),
       begun || results.size ? 'Continue' : 'Start', `${heading(next.c)} · ${title(next.p, next.i, false, boss(next.c, next.i))}`,
-      begun ? `In progress · ${time(game.seconds)}` : grade(next.p.rounds));
+      begun ? `In progress · ${time(game.seconds)}` : side(next.c));
   };
 
-  // A category's tile. One with fewer than nine puzzles keeps the room of
-  // nine, so every tile is one shape.
+  /* A CATEGORY'S TILE: sixteen squares, four by four, then its name, how
+     much is found and a bar of that. The first square is the number of one
+     of the owner's gates, or the picture of the player who made it; the
+     fifteen after are its puzzles' pictures, each a question mark until
+     found. One with fewer than fifteen keeps the room of fifteen, so every
+     tile is one shape. */
   const categoryTile = (c, results) => {
     const a = document.createElement('a');
     a.className = 'rux--link rux--tile rux--tile--clickable pixels-category';
@@ -101,22 +105,20 @@
     mosaic.className = 'pixels-mosaic';
     mosaic.setAttribute('aria-hidden', 'true');
     mosaic.style.setProperty('--size', c.width);
-    mosaic.append(...c.puzzles.slice(0, PER_LEVEL).map(p => art(p, results.has(p.id))));
+    mosaic.append(c.by ? portrait(c.by) : words('pixels-mosaic-number', String(c.number)),
+      ...c.puzzles.slice(0, PER_LEVEL).map(p => art(p, results.has(p.id))));
     for (let n = c.puzzles.length; n < PER_LEVEL; n++) mosaic.append(words('pixels-mosaic-none', ''));
     const solved = c.puzzles.filter(p => results.has(p.id)).length;
     const head = document.createElement('span');
     head.className = 'pixels-category-head';
+    // The mosaic is not read out, so the number is said before the name.
+    if (c.number) head.append(words('rux--visually-hidden', `Gate ${c.number}, `));
     head.append(words('pixels-category-name', heading(c)));
     // A gate not yet opened, with nothing found in it, says New.
     if (!solved && !seen(c)) head.append(words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--high-contrast pixels-grade', 'New'));
-    head.append(gradeTag(hardness(c)));
     a.append(mosaic, head);
-    // A player's gate says who made it.
-    if (c.by) {
-      const by = words('pixels-meta pixels-by', '');
-      by.append(portrait(c.by), c.by.name);
-      a.append(by);
-    }
+    // A player's gate says who made it, under the name.
+    if (c.by) a.append(words('pixels-meta pixels-by', c.by.name));
     a.append(words('pixels-meta', `${side(c)} · ${sprites(solved, c.puzzles.length)}`), bar(solved, c.puzzles.length));
     return a;
   };

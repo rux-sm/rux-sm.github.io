@@ -150,13 +150,12 @@
      puzzle in no category, or drawn for a day, is in none of them.
      `heading` is what a category is called: its name, or More where it has
      none. `where` is the address of its page. A player's own gate carries
-     its `maker` and, as `by`, their name and picture.
+     its `maker` and, as `by`, their name and picture. One of the owner's
+     carries its `number`, its place among the owner's, which says how hard
+     it is; a player's own has none.
 
      A PLAYER READS A CATEGORY AS A GATE and a solved picture as a sprite.
-     `side` is a gate's size as it is written, 10×10. `hardness` is its
-     grade, the grade of its puzzles' average rounds, and `gradeTag` writes a
-     grade as a Design tag: easy green, normal blue, hard purple, the word
-     always there with the colour. `sprites` says how far through a gate a
+     `side` is a gate's size as it is written, 10×10. `sprites` says how far through a gate a
      player is, and that it is cleared once every puzzle is solved. */
   const categories = puzzles => {
     const found = new Map();
@@ -171,18 +170,13 @@
       }
       found.get(key).puzzles.push(p);
     });
-    return [...found.values()];
+    const cats = [...found.values()];
+    let n = 0;
+    cats.forEach(c => { c.number = c.maker ? null : ++n; });
+    return cats;
   };
   const heading = ({ theme }) => theme || 'More';
   const side = ({ width }) => `${width}×${width}`;
-  const hardness = ({ puzzles }) => grade(Math.round(puzzles.reduce((sum, p) => sum + p.rounds, 0) / puzzles.length));
-  const TONE = { easy: 'rux--tag--green', normal: 'rux--tag--blue', hard: 'rux--tag--purple' };
-  const gradeTag = of => {
-    const el = document.createElement('span');
-    el.className = `rux--tag rux--layout--size-sm rux--tag--sm ${TONE[of]} pixels-grade`;
-    el.textContent = of[0].toUpperCase() + of.slice(1);
-    return el;
-  };
   const sprites = (solved, all) => (solved === all ? 'Gate cleared' : `${solved} of ${all} sprites`);
   const where = ({ width, level, maker }) => `category.html?size=${width}&at=${level}${maker ? `&by=${encodeURIComponent(maker)}` : ''}`;
   // A gate a player has opened is kept in their browser, so one they have
@@ -627,15 +621,20 @@
 
   const time = seconds => `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
 
-  // A puzzle keeps its name hidden until it is solved. The last puzzle of a
-  // gate, which is its hardest, is the boss until then; `boss` says which.
+  // A puzzle keeps its name hidden until it is solved. Until then it goes
+  // by its letter in its gate, A to O as Picross DS letters a level's, which
+  // `letter` gives; the last, which is the hardest, is the boss, and `boss`
+  // says which.
   const boss = (c, index) => c.puzzles.length > 1 && index === c.puzzles.length - 1;
-  const title = (puzzle, index, solved, boss) => (solved ? puzzle.name : boss ? 'Boss' : `Puzzle ${index + 1}`);
+  const LETTERS = 'ABCDEFGHIJKLMNO';
+  const letter = index => LETTERS[index] ?? String(index + 1);
+  const title = (puzzle, index, solved, boss) => (solved ? puzzle.name : boss ? 'Boss' : `Puzzle ${letter(index)}`);
 
   /* A PUZZLE'S TILE, a square link: the picture once `best` is there, or a
-     question mark, then `name`, then the best time or how hard the puzzle
-     is. `art` is the picture or the question mark alone, `words` a span of
-     text, and `bar` a progress bar of `done` out of `all`. */
+     question mark, then `name`, then the best time. `mark` is its letter in
+     its gate, on a tab in the tile's corner. `art` is the picture or the
+     question mark alone, `words` a span of text, and `bar` a progress bar
+     of `done` out of `all`. */
   const words = (cls, text) => {
     const el = document.createElement('span');
     el.className = cls;
@@ -654,12 +653,14 @@
     el.setAttribute('aria-hidden', 'true');
     return el;
   };
-  const tile = (puzzle, name, href, best) => {
+  const tile = (puzzle, name, href, best, mark) => {
     const a = document.createElement('a');
     a.className = 'rux--link rux--tile rux--tile--clickable pixels-puzzle';
     a.href = href;
-    puzzle.rounds ??= rounds(grid(puzzle.squares, puzzle.width));
-    a.append(art(puzzle, best != null), words('pixels-puzzle-name', name), words('pixels-meta', best != null ? time(best.seconds) : grade(puzzle.rounds)));
+    if (mark) a.append(words('pixels-letter', mark));
+    // A line with nothing to say keeps its room, so every tile's picture
+    // stands at one height.
+    a.append(art(puzzle, best != null), words('pixels-puzzle-name', name || '\u00a0'), words('pixels-meta', best != null ? time(best.seconds) : '\u00a0'));
     return a;
   };
   const bar = (done, all) => {
@@ -798,7 +799,7 @@
   };
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    iphone, installed, fresh, overMenu, face, portrait, seen, see, side, hardness, gradeTag, sprites, boss,
+    iphone, installed, fresh, overMenu, face, portrait, seen, see, side, sprites, boss, letter,
     SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title,
     words, art, tile, bar, how, switcher, chosen,

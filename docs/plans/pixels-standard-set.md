@@ -20,8 +20,8 @@ everything has played a whole game.
 - **The footprint is Picross DS's: twelve gates of fifteen, 180 puzzles.**
   Gate 1 is its Easy level, gates 2 to 11 its Normal levels 1 to 10, and
   gate 12 its Extra level.
-- **A gate holds fifteen puzzles,** lettered A to O in Picross DS. It holds
-  nine now, in the pages and in the database.
+- **A gate holds fifteen puzzles,** lettered A to O as Picross DS letters a
+  level's.
 - **Gate 1 holds two sizes, five 5×5 and then ten 10×10,** as the Easy level
   does. Every other gate is one size, and a gate is one size in the database
   and in a page's address now.
@@ -188,21 +188,11 @@ None open.
       numbers beside the picture's, which it misses, and a warning on Save.
 - [ ] Write the course into `pixels/docs/making-puzzles.md`: the twelve
       gates, what each teaches and the numbers each is drawn to.
-- [ ] Hold a gate to fifteen: `PER_LEVEL` in `pixels/make.js`,
-      `pixels/manage.js` and `pixels/puzzles.js`, the count on Me and
-      Players, the full gate in `pixels_keep_puzzle`, and the three
-      documents that say nine; the SQL is shown to rux first.
-- [ ] Lay a gate's tile out as sixteen squares, four across, its number or
-      its maker's picture first.
-- [ ] Letter a gate's puzzles A to O on its page, three across on a phone
-      and five across on a wide screen.
 - [ ] Let gate 1 hold its two sizes on one tile and one page, the five 5×5
       first.
-- [ ] Send each gate's audience with its puzzles, so a page tells the
-      course from a gate kept for picked players; the SQL is shown to rux
-      first.
-- [ ] Number each gate of the course on the front page and its own page,
-      take the grade tag off both, and stand the custom gates after it.
+- [ ] Send each gate's audience with its puzzles, so a gate the owner keeps
+      for picked players has no number and stands after the course; the SQL
+      is shown to rux first.
 - [ ] Lock gates 6 to 12 until their count of sprites is found: a gate's
       tile, its page, the Continue card and a solved puzzle's Next.
 - [ ] Offer the free hint as a puzzle starts: one row and one column filled

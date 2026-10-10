@@ -24,11 +24,11 @@
    SAVE asks where the puzzle goes, once the picture is solvable and named:
    No category yet, which keeps it in Unsorted, where no player is sent it;
    one of its size's categories on the front page, listed by name with how
-   many of its nine are on; New category, which starts one after them, asks
+   many of its fifteen are on; New category, which starts one after them, asks
    for its name, and is hidden from the players until Manage's
    switch publishes it; or Puzzle of the day, which asks for the day. A day's puzzle sits in no category; a
    day takes one puzzle, and after one is saved the day moves on by one. A
-   puzzle saved into a category with nine on is saved off, for Manage's
+   puzzle saved into a category with fifteen on is saved off, for Manage's
    switch to turn on.
 
    The data calls a category a level: `level` is its number, which is its
@@ -38,7 +38,7 @@
    THE OWNER'S puzzles go in the owner's gates, which every player is sent.
    ANY OTHER PLAYER makes puzzles for gates of their own, by data.js's
    `own`: a new puzzle costs one mana, the Gate field lists their gates and
-   New gate, with no Unsorted and no puzzle of the day, a gate holds nine,
+   New gate, with no Unsorted and no puzzle of the day, a gate holds fifteen,
    and Back and Delete leave for Me. A gate just started is hidden until it
    is published on Me. make.html?own is the same for the owner's own gates,
    which cost no mana, and keeps its draft under `pixels-own-draft`.
@@ -91,8 +91,8 @@
     ['J', 'Pale sky blue'], ['l', 'Light sky blue'], ['b', 'Sky blue'], ['T', 'Deep sky blue'], ['v', 'Dark sky blue'],
     ['1', 'White'], ['w', 'Pale grey'], ['y', 'Grey'], ['z', 'Dark grey'], ['0', 'Black'],
   ];
-  // A category shows nine, three rows of three on a phone; any more are off.
-  const PER_LEVEL = 9;
+  // A category shows fifteen, five rows of three on a phone; any more are off.
+  const PER_LEVEL = 15;
 
   const say = (heading, detail) => {
     const box = $('pixels-error');
@@ -160,7 +160,7 @@
         : `A new puzzle costs 1 mana. You have ${mana}.`;
   };
   // How many puzzles of this size each category has on and off, and whether
-  // it is full: nine on besides the one being edited leave that one no room.
+  // it is full: fifteen on besides the one being edited leave that one no room.
   const held = () => {
     const on = {}, off = {}, others = {};
     puzzles.forEach(p => {
@@ -179,7 +179,7 @@
     return open;
   };
   // The Category field: first no category, then this size's categories by
-  // name, in their order, each with how many of its nine are on and how many
+  // name, in their order, each with how many of its fifteen are on and how many
   // puzzles it holds off, then one for a new category, numbered to stand
   // after them, and one for a puzzle of the day. `pick` is the one to
   // choose, 'none' for the first and 'day' for the last, and one that is
@@ -470,14 +470,14 @@
       level: levelOf(), day: (daily() && day.value) || null, colours: colours && squaresOf(colours),
     };
     // A puzzle that is off stays off. One that comes into a category with
-    // nine on is saved off too, since the category shows nine; a day's
+    // fifteen on is saved off too, since the category shows fifteen; a day's
     // puzzle is in no category and is never off.
     const stays = editing && !editing.day && editing.level === puzzle.level;
     puzzle.off = !puzzle.day && !!store.setOff && (!!editing?.off || (!stays && held().full(puzzle.level)));
     const turnedOff = puzzle.off && !editing?.off;
-    // A player's gate holds nine and no more.
+    // A player's gate holds fifteen and no more.
     if (personal && !stays && held().full(puzzle.level)) {
-      say('That gate has nine puzzles', 'Pick another gate, or start a new one.');
+      say('That gate has fifteen puzzles', 'Pick another gate, or start a new one.');
       render();
       return;
     }
@@ -502,7 +502,7 @@
       showWhere();
       if (editing) {
         editing = row;
-        saved(`Saved “${row.name}”${row.level == null && !row.day ? '. It is in Unsorted, where no player is sent it.' : fresh && store.setHidden ? `. ${named || 'More'} is hidden until you publish it.` : turnedOff ? `. It is off: ${named || 'More'} has nine on.` : ''}`);
+        saved(`Saved “${row.name}”${row.level == null && !row.day ? '. It is in Unsorted, where no player is sent it.' : fresh && store.setHidden ? `. ${named || 'More'} is hidden until you publish it.` : turnedOff ? `. It is off: ${named || 'More'} has fifteen on.` : ''}`);
       } else {
         try { localStorage.removeItem(DRAFT); } catch { /* nothing kept */ }
         mana -= 1;
@@ -516,14 +516,14 @@
           when.setDate(when.getDate() + 1);
           day.value = `${when.getFullYear()}-${String(when.getMonth() + 1).padStart(2, '0')}-${String(when.getDate()).padStart(2, '0')}`;
         } else if (row.level == null) saved(`Saved “${row.name}”. It is in Unsorted, where no player is sent it.`);
-        else saved(`Saved “${row.name}”. It is in ${named || 'More'}${fresh && store.setHidden ? ', hidden until you publish it' : turnedOff ? ', off, since nine are on' : ''}.`);
+        else saved(`Saved “${row.name}”. It is in ${named || 'More'}${fresh && store.setHidden ? ', hidden until you publish it' : turnedOff ? ', off, since fifteen are on' : ''}.`);
       }
       $('pixels-error').hidden = true;
     } catch (error) {
       // The database lets a day have one puzzle.
       if (error?.code === '23505') say('That day already has a puzzle', 'Pick another day, or edit the one it has.');
       else if (error?.refused === 'mana') say('You have no mana', 'Find a sprite in a gate somebody else made to earn one.');
-      else if (error?.refused === 'full') say('That gate has nine puzzles', 'Pick another gate, or start a new one.');
+      else if (error?.refused === 'full') say('That gate has fifteen puzzles', 'Pick another gate, or start a new one.');
       else if (error?.refused === 'gates') say('You have five gates', 'Delete one on Me to start another.');
       else say('The puzzle was not saved', 'Try again.');
     }

@@ -12,18 +12,18 @@ header, and their browser keeps a key that is who they are from then on. Pixels 
 home screen as an app; `docs/home-screen.md` says how, and how a guest stays the same player there.
 
 `index.html` is the same page for every account, the owner's too, with two tabs. Puzzles: today's
-puzzle on one card with the days solved in a row; Continue, a card for the puzzle last played if it
-is unsolved and otherwise the next unsolved after it; then a tile for each gate, which the code
-calls a category, in the owner's order, the 5×5 ones first and the 15×15 last. A tile shows its
-gate's pictures small, three by three, each a question mark until solved; its name, such as Fruit,
-or More where it has none; its grade, the average of its puzzles', in a tag, Easy green, Normal blue
-or Hard purple; its size; and how many sprites are found, or Gate cleared, with a bar of that.
-Leaderboard: today's ranking with each player's time, and the all-time one with puzzles solved.
+puzzle on one card with the days solved in a row; Continue, a card for the puzzle last played if it is
+unsolved and otherwise the next unsolved after it; then a tile for each gate, which the code calls a
+category, in the owner's order, the 5×5 ones first and the 15×15 last. A tile is sixteen squares, four
+by four: its gate's number, or its maker's picture, then its fifteen pictures small, each a question
+mark until solved; then its name, such as Fruit, or More where it has none; its size; and how many
+sprites are found, or Gate cleared, with a bar of that. Leaderboard: today's ranking with each
+player's time, and the all-time one with puzzles solved.
 
 `category.html?size=&at=` is one gate, named by its boards' side and its place among that size: its
-puzzles easy to hard, with nothing locked, each tile a square, three across on a phone and nine on a
-wide screen. A solved puzzle shows its picture, name and best time; an unsolved one a question mark,
-how hard it is and its number in the gate, or Boss for the last.
+puzzles easy to hard, with nothing locked, each tile a square with its letter in the gate, A to O,
+three across on a phone and five on a wide screen. A solved puzzle shows its picture, name and best
+time; an unsolved one a question mark, or Boss for the last.
 
 `me.html` is the player's own page: their picture, username, sprites found and mana, a PIN for
 logging in on another phone, and the gates they have made, each to name, publish or delete, with who
@@ -80,8 +80,8 @@ own at `make.html?own`, which cost none. `make.html?me` draws a player's picture
 draw whether the numbers alone can solve the picture and how hard that is, outlines each square that
 would need a guess, and saves only a picture with one answer. Size starts a blank board of 5, 10 or
 15 a side. Its Colour step paints the picture the puzzle finishes as, from fifty-five inks, and Save
-asks which gate it goes in; a gate shows nine, the list counts how many of each one's are on, and a
-puzzle saved into one with nine on is saved off. A gate just started is named there and hidden until
+asks which gate it goes in; a gate shows fifteen, the list counts how many of each one's are on, and a
+puzzle saved into one with fifteen on is saved off. A gate just started is named there and hidden until
 Manage's switch publishes it. No gate yet, first in the list, keeps the puzzle in Unsorted, a
 section of Manage. Puzzle of the day, in the same list, makes it a day's puzzle, which sits in no
 gate; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good gate.
@@ -90,7 +90,7 @@ gate; a day takes one. `docs/making-puzzles.md` is the guide to a good picture a
 heading has its place and name, a Published or Hidden switch, arrows that move it among the gates of
 its size, a key that keeps it for picked players, a pencil that renames it and a bin that deletes it
 and leaves its puzzles in Unsorted. Under each tile are Edit, Play, which keeps no time for a puzzle
-no player is sent, and a switch that sends it to no player when off; a gate has at most nine on. Add
+no player is sent, and a switch that sends it to no player when off; a gate has at most fifteen on. Add
 puzzle, after a gate's tiles, opens the Pixelator for it. Pressing a tile ticks it, and the ticked are
 moved, to a gate of their size, a new one or Unsorted, or deleted; a gate left empty goes too.
 

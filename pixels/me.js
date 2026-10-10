@@ -185,7 +185,7 @@
       if (!found.has(key)) found.set(key, { width: p.width, level: p.level, theme: p.theme, hidden: p.hidden, puzzles: [] });
       found.get(key).puzzles.push(p);
     });
-    if (!found.size) el.append(words('pixels-meta', owner ? 'You have made none yet. A gate holds nine, and your friends are sent it once it is published.' : 'You have made none yet. A puzzle costs 1 mana, and a gate holds nine.'));
+    if (!found.size) el.append(words('pixels-meta', owner ? 'You have made none yet. A gate holds fifteen, and your friends are sent it once it is published.' : 'You have made none yet. A puzzle costs 1 mana, and a gate holds fifteen.'));
     [...found.values()].sort((a, b) => a.width - b.width || a.level - b.level).forEach(g => {
       const box = document.createElement('div');
       box.className = 'rux--stack-vertical rux--stack-scale-3 pixels-mine';
@@ -221,7 +221,7 @@
         try { await data.own.removeLevel(g.width, g.level); } catch { say('The gate was not deleted', 'Try again.'); }
         location.reload();
       });
-      head.append(name, words('pixels-meta', `${side(g)} · ${g.puzzles.length} of 9`), shown, remove);
+      head.append(name, words('pixels-meta', `${side(g)} · ${g.puzzles.length} of 15`), shown, remove);
       const list = document.createElement('div');
       list.className = 'pixels-list';
       list.append(...g.puzzles.map(p => {

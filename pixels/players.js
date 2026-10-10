@@ -147,7 +147,7 @@
       li.className = 'pixels-person';
       const text = document.createElement('span');
       text.className = 'pixels-person-name';
-      text.textContent = `${who.name} · ${g.name || 'More'} · ${g.width}×${g.width} · ${g.puzzles} of 9 · ${g.hidden ? 'hidden' : 'published'}`;
+      text.textContent = `${who.name} · ${g.name || 'More'} · ${g.width}×${g.width} · ${g.puzzles} of 15 · ${g.hidden ? 'hidden' : 'published'}`;
       const keys = document.createElement('span');
       const act = (cls, label, sure, run) => {
         const b = document.createElement('button');

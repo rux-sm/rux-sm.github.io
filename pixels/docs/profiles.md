@@ -72,7 +72,7 @@ What a player has besides the puzzles, and the rule for who is sent a gate.
   friends as any player's are. They cost the owner no mana and are not held
   to five, so Me shows the owner no mana. The gates every player is sent are
   made from Manage.
-- **A player has at most five gates.** A gate holds 9 puzzles and is
+- **A player has at most five gates.** A gate holds 15 puzzles and is
   published with 3 or more. One left with no puzzle is gone.
 - **A player writes through database functions, never a table,** which
   refuse a wrong size, wrong squares, a long name, too little mana, a full

@@ -5,7 +5,7 @@ type: how-to
 # Making a puzzle, and a gate of them
 
 How to draw a picture in `make.html` that is fun to solve, and how to put
-nine of them in a gate.
+fifteen of them in a gate.
 
 ## Three sizes
 
@@ -144,27 +144,27 @@ and this follows a player's time more closely than the rounds do.
 
 ## A gate
 
-A gate shows up to nine puzzles of one size about one thing, such as
-Fruit: on the front page it is one tile with its nine pictures, three by
-three, and its own page has three rows of three on a phone, one row of nine
-on a wide screen. It can hold more, switched off. Its name is on its tile
-and heads its page, and one with no name is called More. Save asks which one
-a puzzle goes in: its list counts how many of each gate's are on, such
-as Fruit · 9 of 9, 3 off, and offers the first of its size that still has
-room. A gate lists its puzzles easy to hard, so the order they were
-drawn in does not matter. The last, which is the hardest, is its boss. The
-tag on a gate's tile is the average of its puzzles: Easy, Normal or Hard.
+A gate shows up to fifteen puzzles of one size about one thing, such as
+Fruit. On the front page it is one tile of sixteen squares, four by four:
+its number, or its maker's picture, then its fifteen pictures. Its own page
+letters its puzzles A to O, three across on a phone and five across on a
+wide screen. It can hold more, switched off. Its name is on its tile and
+heads its page, after its number, and one with no name is called More. Save
+asks which one a puzzle goes in: its list counts how many of each gate's are
+on, such as Fruit · 15 of 15, 3 off, and offers the first of its size that
+still has room. A gate lists its puzzles easy to hard, so the order they
+were drawn in does not matter. The last, which is the hardest, is its boss.
 
 - **No gate yet**, first in that list, keeps the puzzle in Unsorted: a
   section of Manage after the gates. No player is sent a puzzle
   there until it is moved into a gate.
 - **New gate**, in that list, starts one, and a field opens for its
   name. It stands after the others and starts hidden, so only the owner
-  sees it while its nine are drawn.
+  sees it while its fifteen are drawn.
 - **Name it for what is in it**, such as Fruit, Animals or At home. The
   player guesses the picture sooner, and the guess is half the fun. It is
   named as it is started.
-- **Draw more than nine.** A picture saved into a gate with nine on is
+- **Draw more than fifteen.** A picture saved into a gate with fifteen on is
   saved off, and no player is sent it.
 
 ## Manage
@@ -179,12 +179,12 @@ players are sent.
 - **Tick puzzles to move them.** Press a tile to tick it, or the box beside
   a gate's name to tick all of it. Move, in the bar above, asks where
   they go: a gate of their size, Unsorted, or a new gate, named
-  there. They arrive on while the gate has fewer than nine on, and off
+  there. They arrive on while the gate has fewer than fifteen on, and off
   after that. Puzzles of two sizes are moved one size at a time.
 - **Delete works on the ticked ones too.** It asks once, and every player's
   best times on them go with them.
 - **Swap with the switch under each tile:** switch one off, then a spare on.
-  A tenth is refused until one is off.
+  A sixteenth is refused until one is off.
 - **Edit** opens a puzzle in the maker. **Play** tries it; for a puzzle no
   player is sent, the time is not kept.
 - **Publish a gate** with the switch beside its name, which says Published

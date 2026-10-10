@@ -9,7 +9,7 @@
 
    A CATEGORY'S HEADING has its place among the gates every player is sent,
    and its name, and beside them its size and how many of its puzzles are
-   on, at most nine. At the far end are a switch that says Published or
+   on, at most fifteen. At the far end are a switch that says Published or
    Hidden, which hides it from every player; arrows that move it up or down
    among those of its size; a key that keeps it for picked players; a pencil
    that renames it; and a bin that deletes it and leaves its puzzles in
@@ -27,7 +27,7 @@
    there before any tile is ticked, so the first tick moves nothing. Move asks where: a category of the
    ticked puzzles' size, Unsorted, or a new category, which is named there and starts hidden. Puzzles of
    two sizes are not moved together, because a category holds one size.
-   Puzzles that come into a category arrive on while it has fewer than nine
+   Puzzles that come into a category arrive on while it has fewer than fifteen
    on, and off after that. A category a move or a delete empties is deleted,
    so the places stay 1, 2, 3. Delete asks once, and every player's times on
    the puzzles go with them.
@@ -45,8 +45,8 @@
   const $ = id => document.getElementById(id);
   const host = $('pixels-levels');
   const { modal } = window.Rux;
-  // A category shows nine; the others in it are switched off.
-  const PER_LEVEL = 9;
+  // A category shows fifteen; the others in it are switched off.
+  const PER_LEVEL = 15;
   // Every puzzle there is, and the ids of the ticked ones.
   let puzzles = [];
   const ticked = new Set();
@@ -250,7 +250,7 @@
     h2.textContent = name;
     head.append(...parts(h2));
     const list = document.createElement('div');
-    list.className = 'pixels-list';
+    list.className = 'pixels-list pixels-list--desk';
     list.append(...tiles);
     el.append(head, list);
     return el;
@@ -346,12 +346,12 @@
     focus.map($).find(el => el && !el.disabled)?.focus();
   }
 
-  /* A PUZZLE'S SWITCH. Off, no player is sent it. A category shows nine, so
-     a tenth is refused until one is switched off. The page is drawn again,
+  /* A PUZZLE'S SWITCH. Off, no player is sent it. A category shows fifteen,
+     so a sixteenth is refused until one is switched off. The page is drawn again,
      since the count in the heading changes. */
   const flip = (p, name) => async on => {
     if (on && inLevel(p.width, p.level).filter(q => !q.off).length >= PER_LEVEL) {
-      throw Object.assign(new Error('full'), { said: [`${name} has nine on`, 'Switch one off first.'] });
+      throw Object.assign(new Error('full'), { said: [`${name} has fifteen on`, 'Switch one off first.'] });
     }
     await data.setOff(p.id, !on);
     p.off = !on;
@@ -413,7 +413,7 @@
     modal.close('pixels-move-modal');
     if (!movers.length) return;
     if (level > 99) { say('There is no room for another gate', 'Delete one first.'); return; }
-    // They arrive on while the category has fewer than nine on, and off after.
+    // They arrive on while the category has fewer than fifteen on, and off after.
     let room = level == null ? Infinity : PER_LEVEL - inLevel(width, level).filter(p => !p.off).length;
     const on = [], off = [];
     movers.forEach(p => { if (level == null || room-- > 0) on.push(p); else off.push(p); });

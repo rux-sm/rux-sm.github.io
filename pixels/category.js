@@ -7,12 +7,13 @@
    level. The owner's order decides the place, so an address is good until
    the categories are next reordered; one that names no category says so.
 
-   A player reads a category as a gate. The page is its name with its grade
-   in a tag beside it, its size and how many sprites are found, or Gate
+   A player reads a category as a gate. The page is its name, after its
+   number for one of the owner's, its size and how many sprites are found, or Gate
    cleared, a bar of that, and its puzzles easy to hard, three across on a
-   phone, each tile a square, none locked. A solved tile shows its picture,
-   name and best time; an unsolved one its number within the category, or
-   Boss for the last, a question mark and how hard it is.
+   phone and five on a wide screen, each tile a square, none locked. Each
+   has its letter in the gate, A to O, in its corner. A solved tile shows
+   its picture, name and best time; an unsolved one a question mark, and
+   Boss for the last.
 
    The page is the same for every account, the owner's too: it draws what
    data.js's `list` is sent. A guest with no player yet gets the name form
@@ -21,7 +22,7 @@
 (() => {
   'use strict';
 
-  const { data, guest, enter, fresh, see, portrait, categories, heading, side, hardness, gradeTag, sprites, boss, title, words, tile, bar } = window.Pixels;
+  const { data, guest, enter, fresh, see, portrait, categories, heading, side, sprites, boss, title, letter, words, tile, bar } = window.Pixels;
   const host = document.getElementById('pixels-category');
 
   const say = (heading, detail) => {
@@ -65,13 +66,17 @@
     const h1 = document.createElement('h1');
     h1.className = 'rux--type-productive-heading-04';
     h1.id = 'pixels-category-name';
-    h1.textContent = name;
-    head.append(h1, gradeTag(hardness(category)), words('pixels-meta', `${side(category)} · ${sprites(solved, all.length)}`));
+    h1.textContent = category.number ? `Gate ${category.number} · ${name}` : name;
+    head.append(h1, words('pixels-meta', `${side(category)} · ${sprites(solved, all.length)}`));
     const list = document.createElement('div');
     list.className = 'pixels-list';
     list.append(...all.map((p, i) => {
-      const best = results.get(p.id);
-      return tile(p, title(p, i, !!best, boss(category, i)), `play.html?id=${encodeURIComponent(p.id)}`, best);
+      // An unsolved puzzle shows its letter alone, or Boss, and is read out
+      // as Puzzle C.
+      const best = results.get(p.id), last = boss(category, i);
+      const a = tile(p, best ? p.name : last ? 'Boss' : '', `play.html?id=${encodeURIComponent(p.id)}`, best, letter(i));
+      if (!best) a.setAttribute('aria-label', title(p, i, false, last));
+      return a;
     }));
     // A player's gate says who made it.
     if (category.by) {

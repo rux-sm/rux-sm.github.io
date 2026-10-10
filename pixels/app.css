@@ -430,11 +430,15 @@
 .pixels-today > .pixels-blank { inline-size: 4rem; block-size: 4rem; }
 
 /* A CATEGORY'S TILE on the front page, two across on a phone and as many as
-   fit beyond that: its nine pictures, three by three, then its name, how
-   much is solved, and a bar of that. `--unit` is one square of a picture,
-   whole pixels, sized so three pictures and their gaps fill the tile; the
-   tile says how many squares a side its pictures have, as `--size`. A
-   category with fewer than nine keeps a faint square for each one missing.
+   fit beyond that: sixteen squares, four by four, then its name, how much
+   is solved, and a bar of that. The first square is the gate's number, or
+   its maker's picture, and the fifteen after are its pictures. `--unit` is
+   one square of a picture, whole pixels, sized so four pictures and their
+   gaps fill the tile; the tile says how many squares a side its pictures
+   have, as `--size`, and `--cell` is one picture. The squares stand as far
+   apart down as across, so the mosaic is a square whatever the size. A
+   category with fewer than fifteen keeps a faint square for each one
+   missing.
    The list asks no width of the page for itself: left to, it would ask for
    as many columns as its widest allows, and push a phone's page sideways. */
 .pixels-categories { display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: .5rem; min-inline-size: 0; max-inline-size: 60rem; }
@@ -452,30 +456,39 @@
   padding: .75rem;
 }
 .pixels-mosaic {
-  --unit: round(down, calc((100cqi - 8px) / 3 / var(--size, 10)), 1px);
+  --unit: round(down, calc((100cqi - 12px) / 4 / var(--size, 10)), 1px);
+  --cell: calc(var(--unit) * var(--size, 10));
   display: grid;
-  grid-template-columns: repeat(3, calc(var(--unit) * var(--size, 10)));
-  grid-auto-rows: calc(var(--unit) * var(--size, 10));
+  grid-template-columns: repeat(4, var(--cell));
+  grid-auto-rows: var(--cell);
   justify-content: space-between;
-  row-gap: 4px;
+  align-content: space-between;
+  aspect-ratio: 1;
   margin-block-end: .5rem;
 }
 .pixels-mosaic > .pixels-picture--sm { --px: var(--unit); }
 .pixels-mosaic > .pixels-blank { inline-size: auto; block-size: auto; font-size: 1rem; }
 .pixels-mosaic-none { background: var(--rux-layer-accent-01); opacity: .4; }
+.pixels-mosaic-number { display: grid; place-items: center; background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: 1.25rem; font-weight: 600; }
+/* A maker's picture is fifteen squares a side, whatever the gate's are. */
+.pixels-mosaic > .pixels-face { --px: round(down, calc(var(--cell) / 15), 1px); place-self: center; }
 .pixels-category-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-/* Who made a player's gate: their picture and username on one line. */
+/* Who made a player's gate: their username, after their picture on the
+   gate's own page. */
 .pixels-by { display: flex; align-items: center; gap: .375rem; min-inline-size: 0; }
 .pixels-level-head > .pixels-by { margin-inline-start: 0; }
-/* A gate's name with its grade beside it, the tag at the far end. */
+/* A gate's name, with New at the far end until it is opened. */
 .pixels-category-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; min-inline-size: 0; }
 .pixels-category-head > .pixels-category-name { flex: 1; min-inline-size: 0; }
 .pixels-grade { flex: none; margin: 0; }
 .pixels-category > .pixels-meta { font-size: .75rem; }
 
-/* A CATEGORY'S PUZZLES: three tiles across on a phone, so a category of nine
-   is three rows of three, and nine across where there is room. Each tile is
-   a square, whatever it holds, and its picture is half as wide as it is. */
+/* A CATEGORY'S PUZZLES: three tiles across on a phone, so a category of
+   fifteen is five rows of three, and five across where there is room, three
+   rows of five as Picross DS lays a level out. Each tile is a square,
+   whatever it holds, with its letter on a tab in its corner, and its
+   picture is half as wide as it is. Manage's, `--desk`, are eight across
+   there, so fifteen and Add puzzle are two rows. */
 /* A heading's count is at its far end. On Manage, `--desk`, the heading
    starts with the box that ticks the category, the size and the count stand
    beside the name, and the far end has the switch, with its word, Published
@@ -488,9 +501,24 @@
 .pixels-moves { display: flex; }
 .pixels-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; max-inline-size: 32rem; }
 @media (min-width: 66rem) {
-  .pixels-list { grid-template-columns: repeat(9, minmax(0, 1fr)); max-inline-size: none; }
+  .pixels-list { grid-template-columns: repeat(5, minmax(0, 1fr)); max-inline-size: 50rem; }
+  .pixels-list--desk { grid-template-columns: repeat(8, minmax(0, 1fr)); max-inline-size: none; }
+}
+.pixels-letter {
+  position: absolute;
+  inset: 0 auto auto 0;
+  display: grid;
+  place-items: center;
+  inline-size: 1.125rem;
+  block-size: 1.125rem;
+  background: var(--rux-background-inverse);
+  color: var(--rux-text-inverse);
+  font-size: .75rem;
+  font-weight: 600;
+  line-height: 1;
 }
 .pixels-list .pixels-puzzle {
+  position: relative;
   container-type: inline-size;
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto auto;

@@ -860,7 +860,7 @@ button:disabled > .pixels-ink-now { opacity: .35; }
 .pixels-ink[aria-checked="true"] { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
 .pixels-maker-board { position: relative; }
 /* THE CHECK, over the board's empty corner: a tag, then how hard the puzzle
-   is and how much of the board is filled. */
+   is, how much the first look gives and how much of the board is filled. */
 .pixels-maker-check {
   position: absolute;
   inset: 0 auto auto 0;

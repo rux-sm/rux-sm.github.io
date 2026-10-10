@@ -54,7 +54,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, SIZES, CHARS, grid, squaresOf, unreached, rounds, grade, board, drag, face } = window.Pixels;
+  const { data, owner, SIZES, CHARS, grid, squaresOf, unreached, rounds, firstLook, grade, board, drag, face } = window.Pixels;
   const $ = id => document.getElementById(id);
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
   const saveNow = $('pixels-save-now');
@@ -207,7 +207,7 @@
     const full = `${Math.round(draft.flat().filter(Boolean).length * 100 / (side * side))}% filled`;
     if (empty) report('rux--tag--gray', 'Empty');
     else if (guesses) report('rux--tag--red', `${guesses} to guess`, full);
-    else report('rux--tag--green', 'Solvable', grade(rounds(draft)), full);
+    else report('rux--tag--green', 'Solvable', grade(rounds(draft)), `${Math.round(firstLook(draft) * 100)}% first look`, full);
     solvable = !empty && !guesses;
     save.disabled = !ready();
   };

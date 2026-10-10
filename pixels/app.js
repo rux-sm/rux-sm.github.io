@@ -4,8 +4,8 @@
    window.Pixels holds the puzzle rules and the board: a puzzle's squares are
    a string of 0s and 1s, row by row, and a puzzle is square, 5, 10 or 15 a
    side. `clues` gives a line's numbers,
-   `unreached` says which squares logic alone cannot decide and `rounds` how
-   hard the rest is, `board` draws a
+   `unreached` says which squares logic alone cannot decide, `rounds` how
+   hard the rest is and `firstLook` how much one look gives, `board` draws a
    board with its clues and `paint` keeps it in step with the game, `drag`
    paints along it, `picture` draws the finished picture, `penalty` is what a mistake costs,
    `buzz` ticks the phone and `sound` plays a tone. `order` puts puzzles in
@@ -122,6 +122,14 @@
   };
   const unreached = g => solve(g).known.map(r => r.map(v => v === -1));
   const rounds = g => solve(g).rounds;
+  // How much the first look gives: the share of the board that one look at
+  // every row and column decides, before any square is known. It follows a
+  // player's time more closely than the rounds do.
+  const firstLook = g => {
+    const known = g.map(row => solveLine(clues(row), row.map(() => -1)));
+    g[0].forEach((_, x) => solveLine(clues(column(g, x)), g.map(() => -1)).forEach((v, y) => { if (v !== -1) known[y][x] = v; }));
+    return known.flat().filter(v => v !== -1).length / (g.length * g[0].length);
+  };
   const grade = n => (n <= 3 ? 'easy' : n <= 5 ? 'normal' : 'hard');
 
   // Playing order: the owner's before any player's, a maker at a time,
@@ -791,7 +799,7 @@
 
   window.Pixels = Object.assign(window.Pixels || {}, {
     iphone, installed, fresh, overMenu, face, portrait, seen, see, side, hardness, gradeTag, sprites, boss,
-    SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, grade, order, categories, heading, where,
+    SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title,
     words, art, tile, bar, how, switcher, chosen,
   });

@@ -184,8 +184,6 @@ None open.
 
 ## Tasks
 
-- [ ] Say in the Pixelator's corner how much the first look gives, beside
-      the grade and the share filled.
 - [ ] Guide a picture to its gate's goal in the Pixelator: the gate's
       numbers beside the picture's, which it misses, and a warning on Save.
 - [ ] Write the course into `pixels/docs/making-puzzles.md`: the twelve

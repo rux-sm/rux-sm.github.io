@@ -132,6 +132,11 @@ look at every row and every column, filling in what each can now decide.
 | normal | 4 or 5 | a few lines wait for their neighbours |
 | hard | 6 or more | the picture comes out one corner at a time |
 
+Under that the corner says how much the first look gives, such as 66% first
+look: the share of the board that one look at every row and column decides
+before any square is known. A puzzle that gives more is quicker to solve,
+and this follows a player's time more closely than the rounds do.
+
 - **To make it easier**, make runs longer: a row of 8 nearly solves itself,
   and a full row solves itself and starts every column.
 - **To make it harder**, break long runs into short ones and take out the

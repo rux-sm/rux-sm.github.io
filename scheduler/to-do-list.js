@@ -395,8 +395,8 @@
     form.append(field('Kind', kind, true), field('Who', who), field('To do', words), field('Detail', detail),
       field('Due', due), field('Owner', owner, true), field('Trip', trip, true), bar);
 
-    const shut = () => { editingId = null; draw(); };
-    cancel.addEventListener('click', shut);
+    const shutForm = () => { editingId = null; draw(); };
+    cancel.addEventListener('click', shutForm);
     del?.addEventListener('click', () => { editingId = null; openId = null; remove(row); });
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -411,7 +411,7 @@
       };
       if (row.id) change(row, fields); else add(fields);
     });
-    form.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); shut(); } });
+    form.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); shutForm(); } });
     li.appendChild(form);
     return li;
   }

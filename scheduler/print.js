@@ -941,7 +941,7 @@
       if (under) td.appendChild(el('span', 'scheduler-driver-itinerary__leg', under));
       return td;
     };
-    const row = (name, note, basis, count, amount, cls) => {
+    const priceRow = (name, note, basis, count, amount, cls) => {
       const tr = el('tr', cls || null);
       tr.append(twoLines(name, note), twoLines(basis, count), el('td', null, amount));
       body.appendChild(tr);
@@ -985,15 +985,15 @@
         : kind === 'second_driver' || kind === 'relief' ? (qty === 1 ? 'driver' : 'drivers') : null;
       const count = cost === null ? 'No cost yet'
         : qty !== null && (qty !== 1 || unit) ? `${qty}${unit ? ` ${unit}` : ''} × ${usd(cost)}` : null;
-      row(name, note, basis || count, basis ? count : null, amount === null ? '—' : usd(amount));
+      priceRow(name, note, basis || count, basis ? count : null, amount === null ? '—' : usd(amount));
     }
-    if (!lines.length) row('Quoted price', 'No quote lines', '', null, usd(quoted));
+    if (!lines.length) priceRow('Quoted price', 'No quote lines', '', null, usd(quoted));
 
     // The total of the lines printed; on a split leg, the trip's too.
     const sum = lines.reduce((n, l) => n + (num(l.amount) ?? (num(l.cost) ?? 0) * (num(l.quantity) ?? 1)), 0);
     const total = lines.length ? Math.round(sum * 100) / 100 : quoted;
-    row(split ? `${legName(leg)} total` : 'Total', '', '', null, usd(total), 'scheduler-driver-itinerary__total');
-    if (split && quoted !== null && quoted !== total) row('Trip total', '', '', null, usd(quoted), 'scheduler-driver-itinerary__total');
+    priceRow(split ? `${legName(leg)} total` : 'Total', '', '', null, usd(total), 'scheduler-driver-itinerary__total');
+    if (split && quoted !== null && quoted !== total) priceRow('Trip total', '', '', null, usd(quoted), 'scheduler-driver-itinerary__total');
     t.append(head, body);
     return t;
   }

@@ -72,6 +72,7 @@ step('scheduler same record', process.execPath, ['scheduler/tools/check-same.mjs
 step('scheduler week', process.execPath, ['scheduler/tools/check-week.mjs']);
 // Each scheduler page's scripts, loaded in tag order against a stand-in page.
 step('scheduler load', process.execPath, ['scheduler/tools/check-load.mjs']);
+step('scheduler shadow', process.execPath, ['scheduler/tools/check-shadow.mjs']);
 
 // THE NAMES SWEEP, EVERY TRACKED TEXT FILE. A public repository publishes
 // every tracked file, and only those: the list comes from git, so an ignored

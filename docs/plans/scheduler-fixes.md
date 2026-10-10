@@ -170,9 +170,6 @@ None open.
 
 ### Checks
 
-- [ ] Add `scheduler/tools/check-shadow.mjs`: a call must not reach a local
-      that hides a module-level function, failing when it cannot follow a
-      file, with a failing sample of its own.
 - [ ] Add a scheduler check runner that finds every `check-*.mjs`, then
       `check-quote.mjs` on invented rates and `check-pair.mjs` on a stand-in.
 - [ ] Add `check-connector.mjs`: both functions parse and every draft field

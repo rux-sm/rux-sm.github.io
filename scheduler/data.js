@@ -358,7 +358,7 @@
     return box;
   }
 
-  // The Route tab names its own `note`, so it reaches this one by this name.
+  // A second name for `note`, which the Route tab calls it by.
   const notice = (...args) => note(...args);
 
   /* A toast carries Carbon's close button because nothing else clears it: the
@@ -2110,9 +2110,9 @@
       hint.id = `scheduler-item-hint-${++itemHints}`;
       open.setAttribute('aria-describedby', hint.id);
       open.appendChild(hint);
-      const show = point => openItemsMenu(open, items, `Actions for ${title}`, point);
+      const showItems = point => openItemsMenu(open, items, `Actions for ${title}`, point);
       // Kept from the page's own menu handling, which would shut it at once.
-      open.addEventListener('contextmenu', e => { e.preventDefault(); e.stopPropagation(); show(e); });
+      open.addEventListener('contextmenu', e => { e.preventDefault(); e.stopPropagation(); showItems(e); });
       open.addEventListener('pointerdown', down => {
         held = false;
         if (down.pointerType !== 'touch' || !down.isPrimary) return;
@@ -2127,7 +2127,7 @@
           open.removeEventListener('pointerup', up);
           open.removeEventListener('pointercancel', up);
         };
-        const hold = setTimeout(() => { end(); held = true; show(down); }, TOUCH_HOLD_MS);
+        const hold = setTimeout(() => { end(); held = true; showItems(down); }, TOUCH_HOLD_MS);
         open.addEventListener('pointermove', move);
         open.addEventListener('pointerup', up);
         open.addEventListener('pointercancel', up);
@@ -7375,7 +7375,7 @@
       }
       if (!r.dropPlace && r.pickupPlace && !oneWayType()) r.dropPlace = { ...r.pickupPlace };
       // A line under a field, hidden while it has nothing to say.
-      const note = text => {
+      const routeNote = text => {
         const line = el('p', 'rux--form__helper-text scheduler-route-note', text);
         line.hidden = !text;
         return line;
@@ -7716,7 +7716,7 @@
          whose Save writes them all. A leg rux-ui left with some rows but no
          pickup or yard row has nowhere to put one. */
       const canList = !!(r.pickup && r.back) || !r.all.some(x => x.leg === r.leg);
-      const listNote = note(canList ? '' : "This leg has no pickup or yard row, so stops can't be added here.");
+      const listNote = routeNote(canList ? '' : "This leg has no pickup or yard row, so stops can't be added here.");
       // A change to the route times redraws the figures; a new spot applies when Departs is next typed.
       routeTimesDrawn = () => drawTotals();
       /* A DRAFT'S STOPS go into the list in the order given, each marked to
@@ -9889,41 +9889,41 @@
     const has = (...k) => k.some(x => x in patch);
     const now = k => (k in patch ? patch[k] : editing.before[k]);
     const day = d => parseISO(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-    const say = (key, text) => { keys.push(key); said.push(text); };
+    const sayChange = (key, text) => { keys.push(key); said.push(text); };
     // A quote marked sent comes first, so it is the line the box is filled with.
     if (has('quote_sent_price', 'quote_sent_on') && now('quote_sent_price') != null) {
-      say('quote_sent', `Quote sent, ${usdCents(Number(now('quote_sent_price')))}`);
+      sayChange('quote_sent', `Quote sent, ${usdCents(Number(now('quote_sent_price')))}`);
     }
     if (has('start_date', 'end_date', 'return_start_date', 'return_end_date')) {
       const from = now('start_date');
       const to = now('end_date') || from;
-      say('dates', from ? `Moved the dates to ${day(from)}${to && to !== from ? `–${day(to)}` : ''}` : 'Changed the dates');
+      sayChange('dates', from ? `Moved the dates to ${day(from)}${to && to !== from ? `–${day(to)}` : ''}` : 'Changed the dates');
     }
-    if (has('destination')) say('destination', patch.destination ? `Changed the destination to ${patch.destination}` : 'Changed the destination');
-    if (has('trip_type') || routePlan().work) say('route', 'Changed the times or route');
-    if (has('customer')) say('customer', patch.customer ? `Changed the customer to ${patch.customer}` : 'Changed the customer');
+    if (has('destination')) sayChange('destination', patch.destination ? `Changed the destination to ${patch.destination}` : 'Changed the destination');
+    if (has('trip_type') || routePlan().work) sayChange('route', 'Changed the times or route');
+    if (has('customer')) sayChange('customer', patch.customer ? `Changed the customer to ${patch.customer}` : 'Changed the customer');
     if (has('booking_contact_id', 'booking_contact_name', 'booking_contact_phone', 'booking_contact_email')) {
-      say('contact', 'booking_contact_name' in patch && patch.booking_contact_name
+      sayChange('contact', 'booking_contact_name' in patch && patch.booking_contact_name
         ? `Changed the booking contact to ${patch.booking_contact_name}` : 'Changed the booking contact');
     }
     if (has('quoted_price') || linesPatch()?.work) {
-      say('quote', patch.quoted_price != null ? `Quoted ${usd(Number(patch.quoted_price))}` : 'Changed the quote');
+      sayChange('quote', patch.quoted_price != null ? `Quoted ${usd(Number(patch.quoted_price))}` : 'Changed the quote');
     }
-    if (has('contract_status', 'contract_note')) say('contract', patch.contract_status === 'Signed' ? 'Contract signed' : 'Changed the contract');
+    if (has('contract_status', 'contract_note')) sayChange('contract', patch.contract_status === 'Signed' ? 'Contract signed' : 'Changed the contract');
     const po = posPatch();
     if (po?.work || has('po_received', 'po_ref', 'po_amount')) {
       const added = po?.inserts.find(r => r.ref);
-      say('po', added ? `Added PO ${added.ref}` : 'Changed the PO');
+      sayChange('po', added ? `Added PO ${added.ref}` : 'Changed the PO');
     }
     const inv = invoicesPatch();
     if (inv?.work || has('invoice_status', 'invoiced', 'invoice_number')) {
       const added = inv?.inserts.find(r => r.number);
-      say('invoice', added ? `Added invoice ${added.number}` : 'Changed the invoice');
+      sayChange('invoice', added ? `Added invoice ${added.number}` : 'Changed the invoice');
     }
     const pay = paymentsPatch();
     if (pay?.work) {
       const added = pay.inserts.find(r => Number(r.amount) > 0);
-      say('payment', added ? `Recorded a payment of ${usd(Number(added.amount))}` : 'Changed a payment');
+      sayChange('payment', added ? `Recorded a payment of ${usd(Number(added.amount))}` : 'Changed a payment');
     }
     return said.length ? { said, keys, line: said[0] } : null;
   }
@@ -12588,9 +12588,9 @@
      their counts read from the seats as they will stand. */
   const replaceModal = document.getElementById('scheduler-replace-modal');
   let replaceGo = null;
-  function openReplace(plan, go) {
+  function openReplace(plan, proceed) {
     const body = document.getElementById('scheduler-replace-body');
-    if (!replaceModal || !body) { go(); return; }
+    if (!replaceModal || !body) { proceed(); return; }
     const nameOf = l => (l.kind === 'discount' && /dead miles/i.test(l.description ?? '') ? 'Dead miles discount' : lineKind(l.kind).label);
     const qtyAfter = l => (l.kind === 'rental' ? legBuses(plan.leg)
       : l.kind === 'second_driver' ? (plan.coAfter || 1)
@@ -12623,14 +12623,14 @@
       side('From the calculator', after, add(after)),
       ...(seats ? [el('p', 'rux--type-body-compact-01', seats)] : []),
       el('p', 'rux--type-helper-text-01', 'Hotel lines stay. Nothing is kept until you Save.'));
-    replaceGo = go;
+    replaceGo = proceed;
     window.Rux?.modal?.open?.(replaceModal);
   }
   document.getElementById('scheduler-replace-go')?.addEventListener('click', () => {
-    const go = replaceGo;
+    const proceed = replaceGo;
     replaceGo = null;
     window.Rux?.modal?.close?.(replaceModal);
-    go?.();
+    proceed?.();
   });
   replaceModal?.addEventListener('rux:modal-closed', () => { replaceGo = null; });
   window.Rux.quoteLines = { ready: () => !!editing && !panelEl.hidden, set: linesFromCalculator };
@@ -13611,7 +13611,7 @@
       }
     };
     // A menu item that leaves for a link, putting the window away.
-    const go = (href, then) => () => { closeContacts(); then?.(); window.location.href = href; };
+    const goTo = (href, then) => () => { closeContacts(); then?.(); window.location.href = href; };
     // Apple's Messages reads the body after `&`, everyone else's after `?`.
     const apple = /Mac|iPhone|iPad/.test(navigator.userAgent);
     /* What is sent about the trip sits in the row of the person it goes to,
@@ -13704,13 +13704,13 @@
     const booker = people.find(p => p.role !== 'Trip contact');
     const numbers = [...new Set(drivers.map(d => d.phone && dial(d.phone)).filter(Boolean))];
     if (numbers.length > 1) {
-      toAll.push({ label: `Text all drivers (${numbers.length})`, run: go(`sms:/open?addresses=${numbers.join(',')}`) });
+      toAll.push({ label: `Text all drivers (${numbers.length})`, run: goTo(`sms:/open?addresses=${numbers.join(',')}`) });
     }
     const letter = driverLetter(trip);
     if (letter) {
       const sent = ['Emailed driver details to', letter.to?.name || 'the customer'];
       if (letter.to?.email) {
-        toLetter.push({ label: 'Email driver details', run: go(
+        toLetter.push({ label: 'Email driver details', run: goTo(
           `mailto:${letter.to.email}?subject=${encodeURIComponent(letter.subject)}&body=${encodeURIComponent(letter.body)}`,
           async () => { await askInfoSent(sent[1], 'Answer once the email has gone.'); offer(...sent)(); }) });
       }
@@ -13722,7 +13722,7 @@
       } });
     }
     for (const p of people) {
-      if (p.email) hand(p, toEmail, { label: `Email ${p.name}`, words: 'Email', icon: '#m-mail', run: go(`mailto:${p.email}`, offer('Emailed', p.name)) });
+      if (p.email) hand(p, toEmail, { label: `Email ${p.name}`, words: 'Email', icon: '#m-mail', run: goTo(`mailto:${p.email}`, offer('Emailed', p.name)) });
     }
     /* Remind opens a text to the driver with their reminder typed in; to the
        office's Google Messages conversation, which takes no text, it copies
@@ -13738,14 +13738,14 @@
         } });
       } else if (p.phone) {
         hand(p, toRemind, { label: `Remind ${p.name}`, words: 'Remind', icon: '#m-notifications',
-          run: go(`sms:${dial(p.phone)}${apple ? '&' : '?'}body=${encodeURIComponent(p.reminder)}`, () => void askReminded(p)) });
+          run: goTo(`sms:${dial(p.phone)}${apple ? '&' : '?'}body=${encodeURIComponent(p.reminder)}`, () => void askReminded(p)) });
       }
     }
     for (const p of everyone) {
       if (p.phone || (p.texting && !docked)) continue;
       toAdd.push({ label: `Add number for ${p.name}`, run: p.customer
         ? () => { closeContacts(); openSelected(); }
-        : go(`drivers.html?id=${encodeURIComponent(p.driverId)}`) });
+        : goTo(`drivers.html?id=${encodeURIComponent(p.driverId)}`) });
     }
     const options = groups.filter(g => g.length).flatMap((g, i) => g.map((it, j) => {
       const li = el('li', i && !j ? 'rux--overflow-menu-options__option rux--overflow-menu--divider' : 'rux--overflow-menu-options__option');
@@ -14410,12 +14410,12 @@
   async function searchTrips(q) {
     const safe = searchSafe(q);
     if (safe.length < SEARCH_MIN) return { rows: [] };
-    const read = (like, limit) => client.from('trips')
+    const readLike = (like, limit) => client.from('trips')
       .select('id,destination,customer,booking_contact_name,start_date,cancelled_at,cancellation_reason')
       .or(SEARCH_COLUMNS.map(c => `${c}.ilike.${like}`).join(','))
       .order('start_date', { ascending: false })
       .limit(limit);
-    const [anywhere, starts] = await Promise.all([read(`*${safe}*`, SEARCH_POOL), read(`${safe}*`, SEARCH_CAP)]);
+    const [anywhere, starts] = await Promise.all([readLike(`*${safe}*`, SEARCH_POOL), readLike(`${safe}*`, SEARCH_CAP)]);
     const error = anywhere.error || starts.error;
     if (error) throw new Error(error.message);
     const byId = new Map([...(anywhere.data || []), ...(starts.data || [])].map(t => [t.id, t]));

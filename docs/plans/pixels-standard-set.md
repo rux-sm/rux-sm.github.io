@@ -16,15 +16,19 @@ everything has played a whole game.
 
 - **The base game is the owner's gates that everyone is sent,** in one order,
   small boards first. It is the same for every player, and all of it is
-  still to draw. A gate keeps its nine puzzles and its theme.
+  still to draw. A gate keeps its theme.
+- **A gate holds fifteen puzzles,** as a level of Picross DS does, lettered
+  A to O there. It holds nine now, in the pages and in the database.
 - **A custom gate is outside the base game.** It is one of the owner's kept
   for the players ticked in Manage, or a player's own, sent to their
   friends, and the owner has their own as any player does. It has no number
   and no lock, and stands after the course on the front page. Fruit and the
   live 15×15 gate are the owner's own.
-- **Twelve gates, 108 puzzles: one of 5×5, seven of 10×10, four of 15×15.**
-  The easy course of Mario's Picross is 8, 40 and 16 puzzles of those sizes
-  in levels of eight, and Picross DS opens the same way.
+- **Twelve gates, 180 puzzles: one of 5×5, seven of 10×10, four of 15×15.**
+  Picross DS's Easy and Normal courses are twelve levels of fifteen, the
+  same 180, and a Normal level is one theme and one size that never goes
+  back down. The easy course of Mario's Picross is 8, 40 and 16 puzzles of
+  these three sizes.
 - **Gates 1 to 6, 9 and 10 are drawn first.** They are one, five and two, the
   shape of Nintendo's easy course. Gates 7, 8, 11 and 12 are the hard end.
 - **rux draws every picture.** The course takes Picross's shape and feel and
@@ -42,14 +46,14 @@ everything has played a whole game.
   it calls a 24-second puzzle normal. The grade stays in the Pixelator and
   Manage.
 - **Gates open as the player goes.** The first gate of each size is open from
-  the start, and each later one of that size opens when five of the nine in
-  the gate before it are found. The page holds the lock and the database
+  the start, and each later one of that size opens when eight of the fifteen
+  in the gate before it are found. The page holds the lock and the database
   sends the puzzles as now, since a time is already the browser's word. A
   custom gate is never locked.
 - **The rules of play stay.** A mistake is shown and costs time, and a hint
   costs time. Nintendo's free hint at the start, one row and one column
   filled in, is left out of the first course.
-- **A gate is published when its nine are drawn,** hidden until then as a new
+- **A gate is published when its fifteen are drawn,** hidden until then as a new
   gate is now, so the course grows a gate at a time and no player meets half
   of one.
 - **Each new gate holds a placeholder until it has a puzzle,** because a gate
@@ -104,44 +108,59 @@ puzzles and two players' times, and are corrected as gates are played.
 | 11 | 25 to 35% | 6 | 40 to 55% | normal or hard | 6 to 8 minutes |
 | 12 | under 25% | 7 | 35 to 50% | hard | 8 to 12 minutes |
 
-- **Inside a gate the nine climb too:** three at the easy end of its numbers,
-  five in the middle, and a boss one gate harder.
+- **Inside a gate the fifteen climb too:** five at the easy end of its
+  numbers, nine in the middle, and a boss one gate harder.
 - **Every lesson puzzle has two lines that fill themselves,** a 5 or numbers
   that add up to the line, such as 3 1.
 
-Nine things to draw in each, as a start:
+Fifteen things to draw in each, as a start:
 
-1. **Letters:** L, T, H, U, F, E, N, P, R. Drawn plainly these have one
-   answer at 5×5; A, K, O, S, V, X and Y do not.
+1. **Letters:** L, T, H, U, F, E, N, P, R, I, B, G, M, W, Z. Drawn plainly
+   these have one answer at 5×5 and grade easy; A, C, K, O, S, V, X and Y
+   have more than one, and J and Q grade normal.
 2. **Signs:** heart, star, arrow, diamond, spade, club, note, question mark,
-   lightning.
+   lightning, plus, tick, cross, exclamation mark, crown, speech bubble.
 3. **Outside:** moon, sun, cloud, tree, cactus, mountain, leaf, flower,
-   mushroom.
+   mushroom, raindrop, snowflake, rainbow, volcano, acorn, campfire.
 4. **Toys:** ball, balloon, kite, teddy bear, yo-yo, spinning top, drum,
-   rubber duck, building block.
-5. **At home:** cup, key, lamp, chair, umbrella, bell, candle, pencil, boot.
-6. **Animals:** cat, dog, rabbit, duck, snail, turtle, bird, pig, panda.
+   rubber duck, building block, dice, doll, toy boat, puzzle piece,
+   skateboard, rocking horse.
+5. **At home:** cup, key, lamp, chair, umbrella, bell, candle, pencil, boot,
+   table, bed, door, spoon, book, scissors.
+6. **Animals:** cat, dog, rabbit, duck, snail, turtle, bird, pig, panda,
+   mouse, frog, horse, cow, sheep, fox.
 7. **Things that go:** car, bus, truck, bicycle, sailboat, train, plane,
-   rocket, helicopter.
+   rocket, helicopter, tractor, scooter, hot-air balloon, submarine, tram,
+   canoe.
 8. **The sea:** fish, crab, octopus, whale, shark, seahorse, shell, anchor,
-   lighthouse.
+   lighthouse, jellyfish, starfish, dolphin, lobster, ship's wheel,
+   treasure chest.
 9. **Food:** burger, pizza slice, cupcake, ice cream, hot dog, fries,
-   doughnut, taco, cake.
+   doughnut, taco, cake, sandwich, egg, cheese, pretzel, cookie, lollipop.
 10. **Machines:** camera, clock, radio, telephone, television, fan, robot,
-    sewing machine, typewriter.
+    sewing machine, typewriter, toaster, washing machine, computer, kettle,
+    vacuum cleaner, calculator.
 11. **Buildings:** house, barn, castle, tower, church, windmill, skyscraper,
-    tent, bridge.
+    tent, bridge, igloo, pyramid, shop, school, garage, treehouse.
 12. **Creatures:** owl, dragon, ghost, alien, wizard, knight, mermaid,
-    dinosaur, monster.
+    dinosaur, monster, unicorn, witch, pirate, fairy, yeti, vampire.
 
 ## Questions
 
-1. **Are these the twelve?** Their order, themes, numbers and the nine in
-   each are all there to be changed.
-2. **Do gates open in order,** at five of nine, or stay all open as now?
+1. **Are these the twelve?** Their order, themes, numbers and the fifteen
+   in each are all there to be changed.
+2. **Do gates open in order,** at eight of fifteen, or stay all open as now?
 3. **Does the grade tag leave the players' pages** for the gate's number?
 4. **Is Nintendo's free hint at the start wanted,** now or after the first
    course has been played?
+5. **Does a player's own gate hold fifteen too?** One rule keeps every tile
+   one shape. A new player starts with nine mana, which is nine puzzles, and
+   may have five gates.
+6. **How does a tile show fifteen pictures?** It shows nine, three by three,
+   two tiles across on a phone. The choices are drawn side by side at 390px
+   and one is picked.
+7. **Does the Pixelator say when a picture misses its gate's numbers,** as a
+   warning that never stops a save?
 
 ## Tasks
 
@@ -149,16 +168,22 @@ Nine things to draw in each, as a start:
       the grade and the share filled.
 - [ ] Write the course into `pixels/docs/making-puzzles.md`: the twelve
       gates, what each teaches and the numbers each is drawn to.
+- [ ] Hold a gate to fifteen: `PER_LEVEL` in `pixels/make.js`,
+      `pixels/manage.js` and `pixels/puzzles.js`, the count on Me and
+      Players, the full gate in `pixels_keep_puzzle`, and the three
+      documents that say nine; the SQL is shown to rux first.
+- [ ] Lay fifteen out on a gate's tile and on its page, on a phone and a
+      wide screen.
 - [ ] Send each gate's audience with its puzzles, so a page tells the
       course from a gate kept for picked players; the SQL is shown to rux
       first.
 - [ ] Number each gate of the course on the front page and its own page,
       take the grade tag off both, and stand the custom gates after it.
-- [ ] Lock a gate until five of the one before it are found: its tile, its
+- [ ] Lock a gate until eight of the one before it are found: its tile, its
       page, the Continue card and a solved puzzle's Next.
 - [ ] Count the course on the front page, and say when all of it is found.
 - [ ] Give a 10×10 its 30px squares at 390px, with every line's numbers
       still in their room, and look at each size in Chrome at that width.
-- [ ] Publish gate 1, then gates 2 to 6, 9 and 10, each as its ninth
+- [ ] Publish gate 1, then gates 2 to 6, 9 and 10, each as its fifteenth
       puzzle is drawn.
 - [ ] Publish gates 7, 8, 11 and 12 the same way.

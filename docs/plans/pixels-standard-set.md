@@ -49,8 +49,8 @@ everything has played a whole game.
   words. `pixels/docs/making-puzzles.md` is the guide to a picture.
 - **A gate's puzzles are its enemies, and its boss the strongest.** They are
   creatures a player knows on sight, because the guess is half the fun, and
-  the weakest come first: gate 2 is Bugs. The other gates keep their
-  everyday things until their enemies are chosen.
+  the weakest come first: bugs, then forest, swamp, cave, haunted house,
+  sea, desert, ice, robots, castle and legends.
 - **How much the first look gives is what a gate is drawn to.** It is the
   share of the board known after one look at every row and column. On the ten
   live puzzles it follows the players' times and the count of rounds does
@@ -96,18 +96,18 @@ What each gate is for, and the level of Picross DS it stands for.
 
 | Gate | Picross DS's | Size | Theme | What it teaches |
 | :--- | :--- | :--- | :--- | :--- |
-| 1 | Easy | 5×5, then 10×10 | Letters | what a number is, a line that fills itself, two numbers and their gap; then a number over half the line gives its middle squares |
-| 2 | Level 1 | 10×10 | Bugs | two and three numbers in a line, and X where no run can reach |
-| 3 | Level 2 | 15×15 | Outside | long runs on a big board, the zoom, counting by the fifth lines |
-| 4 | Level 3 | 15×15 | Toys | round shapes worked in from the edges, and a first hole |
-| 5 | Level 4 | 15×15 | At home | handles and legs: thin parts, so lines of 1s and 2s |
-| 6 | Level 5 | 15×15 | Animals | eyes and feet: holes in a shape, a picture that comes slowly |
-| 7 | Level 6 | 15×15 | Things that go | wheels and windows: many numbers in a line, little to start from |
-| 8 | Level 7 | 15×15 | The sea | wavy edges and short runs everywhere |
-| 9 | Level 8 | 15×15 | Food | layers and toppings: short runs inside a big shape |
-| 10 | Level 9 | 15×15 | Machines | detail inside a solid outline: dials, buttons, keys; the hardest 15×15 |
-| 11 | Level 10 | 20×20 | Buildings | the first 20×20; rows of windows, the same small number many times |
-| 12 | Extra | 20×20 | Creatures | faces and limbs, everything at once; the last boss |
+| 1 | Easy | 5×5, then 10×10 | Crawling bugs | what a number is, a line that fills itself, two numbers and their gap; then a number over half the line gives its middle squares |
+| 2 | Level 1 | 10×10 | Flying bugs | wings: two and three numbers in a line, and X where no run can reach |
+| 3 | Level 2 | 15×15 | Forest | long runs on a big board, the zoom, counting by the fifth lines |
+| 4 | Level 3 | 15×15 | Swamp | round shapes worked in from the edges, and a first hole |
+| 5 | Level 4 | 15×15 | Cave | wings, tails and legs: thin parts, so lines of 1s and 2s |
+| 6 | Level 5 | 15×15 | Haunted house | eyes and mouths: holes in a shape, a picture that comes slowly |
+| 7 | Level 6 | 15×15 | Sea | tentacles and fins: many numbers in a line, little to start from |
+| 8 | Level 7 | 15×15 | Desert | coils and stripes: short runs everywhere |
+| 9 | Level 8 | 15×15 | Ice | fur and tusks: short runs inside a big shape |
+| 10 | Level 9 | 15×15 | Robots | detail inside a solid outline: dials, bolts, eyes; the hardest 15×15 |
+| 11 | Level 10 | 20×20 | Castle | the first 20×20; armour and bricks, the same small number many times |
+| 12 | Extra | 20×20 | Legends | wings, heads and tails, everything at once; the last boss |
 
 What each gate's pictures are drawn to. These start from the ten live
 puzzles and two players' times, and are corrected as gates are played. Gates
@@ -116,7 +116,7 @@ puzzles and two players' times, and are corrected as gates are played. Gates
 | Gate | First look gives | Most numbers in a line | Filled | Pixelator says | A good time |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | 1, its 5×5 | 35% or more | 3 | 35 to 65% | easy | 10 seconds |
-| 1, its 10×10 | 55% or more | 2 | 50 to 70% | normal or easier | under a minute |
+| 1, its 10×10 | 55% or more | 3 | 50 to 70% | normal or easier | under a minute |
 | 2 | 45% or more | 3 | 45 to 65% | normal or easier | a minute |
 | 3 | 40% or more | 4 | 50 to 65% | normal or easier | 2 to 3 minutes |
 | 4 | 35 to 45% | 4 | 50 to 60% | normal or easier | 3 to 4 minutes |
@@ -133,40 +133,43 @@ puzzles and two players' times, and are corrected as gates are played. Gates
 - **Every lesson puzzle has two lines that fill themselves,** a 5 or numbers
   that add up to the line, such as 3 1.
 
-Fifteen things to draw in each, as a start:
+Fifteen enemies to draw in each, as a start, the boss last:
 
-1. **Letters:** L, T, H, U and E at 5×5, then F, N, P, R, I, B, G, M, W and
-   Z at 10×10. Drawn plainly those five have one answer at 5×5, grade easy
-   and have two lines that fill themselves; A, C, K, O, S, V, X and Y have
-   more than one answer there.
-2. **Bugs:** worm, ant, fly, tick, bee, mosquito, beetle, ladybird, snail,
-   caterpillar, butterfly, moth, spider, wasp, and a scorpion for the boss.
-   Each is drawn with a thick body, because thin legs leave squares the
-   numbers cannot decide.
-3. **Outside:** moon, sun, cloud, tree, cactus, mountain, leaf, flower,
-   mushroom, raindrop, snowflake, rainbow, volcano, acorn, campfire.
-4. **Toys:** ball, balloon, kite, teddy bear, yo-yo, spinning top, drum,
-   rubber duck, building block, dice, doll, toy boat, puzzle piece,
-   skateboard, rocking horse.
-5. **At home:** cup, key, lamp, chair, umbrella, bell, candle, pencil, boot,
-   table, bed, door, spoon, book, scissors.
-6. **Animals:** cat, dog, rabbit, duck, snail, turtle, bird, pig, panda,
-   mouse, frog, horse, cow, sheep, fox.
-7. **Things that go:** car, bus, truck, bicycle, sailboat, train, plane,
-   rocket, helicopter, tractor, scooter, hot-air balloon, submarine, tram,
-   canoe.
-8. **The sea:** fish, crab, octopus, whale, shark, seahorse, shell, anchor,
-   lighthouse, jellyfish, starfish, dolphin, lobster, ship's wheel,
-   treasure chest.
-9. **Food:** burger, pizza slice, cupcake, ice cream, hot dog, fries,
-   doughnut, taco, cake, sandwich, egg, cheese, pretzel, cookie, lollipop.
-10. **Machines:** camera, clock, radio, telephone, television, fan, robot,
-    sewing machine, typewriter, toaster, washing machine, computer, kettle,
-    vacuum cleaner, calculator.
-11. **Buildings:** house, barn, castle, tower, church, windmill, skyscraper,
-    tent, bridge, igloo, pyramid, shop, school, garage, treehouse.
-12. **Creatures:** owl, dragon, ghost, alien, wizard, knight, mermaid,
-    dinosaur, monster, unicorn, witch, pirate, fairy, yeti, vampire.
+1. **Crawling bugs:** ant, tick, beetle, ladybird and slug at 5×5, then worm,
+   snail, caterpillar, spider, centipede, cockroach, flea, woodlouse, earwig
+   and scorpion at 10×10. Drawn plainly those five have one answer at 5×5,
+   grade easy and have two lines that fill themselves.
+2. **Flying bugs:** fly, gnat, mosquito, bee, butterfly, moth, wasp, firefly,
+   dragonfly, grasshopper, cricket, cicada, locust, hornet, queen bee.
+3. **Forest:** fox, crow, owl, snake, hedgehog, badger, hawk, boar, stag,
+   wolf, bear, mushroom man, elf archer, werewolf, walking tree.
+4. **Swamp:** frog, toad, newt, leech, eel, turtle, heron, water snake,
+   piranha, slime, crocodile, lizard man, will-o'-wisp, bog monster, hydra.
+5. **Cave:** bat, rat, mole, salamander, blind fish, giant spider, imp,
+   goblin, gnome, cave bear, ogre, rock golem, lava blob, stone snake, troll.
+6. **Haunted house:** black cat, ghost, skull, skeleton, zombie, witch,
+   pumpkin head, scarecrow, haunted doll, haunted painting, chest with
+   teeth, poltergeist, headless rider, grim reaper, vampire.
+7. **Sea:** jellyfish, crab, pufferfish, lobster, stingray, swordfish,
+   octopus, squid, anglerfish, shark, sea snake, siren, ghost pirate, sea
+   serpent, kraken.
+8. **Desert:** scarab, horned lizard, rattlesnake, vulture, jackal, hyena,
+   cobra, cactus man, bandit, dust devil, tomb guard, mummy, genie, sand
+   worm, sphinx.
+9. **Ice:** penguin, seal, snow hare, arctic fox, snowy owl, walrus,
+   reindeer, snowman, snow leopard, sabre-tooth cat, polar bear, mammoth,
+   yeti, ice golem, frost giant.
+10. **Robots:** wind-up bot, drone, robot dog, robot arm, roller bot, spider
+    bot, saw bot, turret, tank, android, cyborg, flying saucer, mech, war
+    machine, giant robot.
+11. **Castle:** guard dog, spearman, archer, jester, knight, crossbowman, war
+    horse, gargoyle, living armour, executioner, court wizard, black knight,
+    sorcerer, royal champion, evil king.
+12. **Legends:** pegasus, unicorn, centaur, griffin, harpy, phoenix, medusa,
+    cyclops, minotaur, cerberus, chimera, basilisk, titan, demon, dragon.
+
+A bug is drawn with a thick body, because thin legs leave squares the
+numbers cannot decide.
 
 ## Questions
 
@@ -174,8 +177,6 @@ Fifteen things to draw in each, as a start:
    two tiles across on a phone. Three are drawn at 390px to pick from: three
    across and taller, one gate a row with five across, and four across with
    the gate's number in the first square.
-2. **Which enemies do gates 3 to 12 hold,** and is gate 1 letters, as a
-   lesson, or bugs too?
 
 ## Tasks
 

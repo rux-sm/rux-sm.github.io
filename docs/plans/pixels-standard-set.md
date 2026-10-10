@@ -45,8 +45,12 @@ everything has played a whole game.
 - **Gates are drawn in order.** Gates 1 to 5 are the ones open from the
   start.
 - **rux draws every picture.** The course takes Picross's shape and feel and
-  none of its pictures: everyday things, one to a board, named in one or two
-  plain words. `pixels/docs/making-puzzles.md` is the guide to a picture.
+  none of its pictures: one thing to a board, named in one or two plain
+  words. `pixels/docs/making-puzzles.md` is the guide to a picture.
+- **A gate's puzzles are its enemies, and its boss the strongest.** They are
+  creatures a player knows on sight, because the guess is half the fun, and
+  the weakest come first: gate 2 is Bugs. The other gates keep their
+  everyday things until their enemies are chosen.
 - **How much the first look gives is what a gate is drawn to.** It is the
   share of the board known after one look at every row and column. On the ten
   live puzzles it follows the players' times and the count of rounds does
@@ -93,7 +97,7 @@ What each gate is for, and the level of Picross DS it stands for.
 | Gate | Picross DS's | Size | Theme | What it teaches |
 | :--- | :--- | :--- | :--- | :--- |
 | 1 | Easy | 5×5, then 10×10 | Letters | what a number is, a line that fills itself, two numbers and their gap; then a number over half the line gives its middle squares |
-| 2 | Level 1 | 10×10 | Signs | two and three numbers in a line, and X where no run can reach |
+| 2 | Level 1 | 10×10 | Bugs | two and three numbers in a line, and X where no run can reach |
 | 3 | Level 2 | 15×15 | Outside | long runs on a big board, the zoom, counting by the fifth lines |
 | 4 | Level 3 | 15×15 | Toys | round shapes worked in from the edges, and a first hole |
 | 5 | Level 4 | 15×15 | At home | handles and legs: thin parts, so lines of 1s and 2s |
@@ -135,8 +139,10 @@ Fifteen things to draw in each, as a start:
    Z at 10×10. Drawn plainly those five have one answer at 5×5, grade easy
    and have two lines that fill themselves; A, C, K, O, S, V, X and Y have
    more than one answer there.
-2. **Signs:** heart, star, arrow, diamond, spade, club, note, question mark,
-   lightning, plus, tick, cross, exclamation mark, crown, speech bubble.
+2. **Bugs:** worm, ant, fly, tick, bee, mosquito, beetle, ladybird, snail,
+   caterpillar, butterfly, moth, spider, wasp, and a scorpion for the boss.
+   Each is drawn with a thick body, because thin legs leave squares the
+   numbers cannot decide.
 3. **Outside:** moon, sun, cloud, tree, cactus, mountain, leaf, flower,
    mushroom, raindrop, snowflake, rainbow, volcano, acorn, campfire.
 4. **Toys:** ball, balloon, kite, teddy bear, yo-yo, spinning top, drum,
@@ -168,6 +174,8 @@ Fifteen things to draw in each, as a start:
    two tiles across on a phone. Three are drawn at 390px to pick from: three
    across and taller, one gate a row with five across, and four across with
    the gate's number in the first square.
+2. **Which enemies do gates 3 to 12 hold,** and is gate 1 letters, as a
+   lesson, or bugs too?
 
 ## Tasks
 

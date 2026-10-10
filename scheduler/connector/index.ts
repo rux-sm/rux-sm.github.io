@@ -107,6 +107,13 @@ function overlaps(row: Parameters<typeof lastDay>[0], from: string, to: string) 
   return start <= to && lastDay(row) >= from
 }
 
+/** The day `n` days from a day, as YYYY-MM-DD. */
+function dayFrom(day: string, n: number) {
+  const d = new Date(`${day}T00:00:00Z`)
+  d.setUTCDate(d.getUTCDate() + n)
+  return d.toISOString().slice(0, 10)
+}
+
 /**
  * A placeholder is not a trip yet: the office paints it amber (orange and
  * yellow are its retired names, as week.js maps them) before a quote is sent,
@@ -149,7 +156,9 @@ function busNeeds(trip: { req_56pax?: boolean | null; req_ada?: boolean | null; 
 
 /**
  * What a dispatcher would stop at on this trip: a leg with fewer buses than it
- * needs, and a stop dated outside its leg's days, which is a date typed wrong.
+ * needs, and a stop dated more than a day outside its leg's days, which is a
+ * date typed wrong. One day either side is a real stop: the bus spotted the
+ * evening before, and the group let off past midnight.
  */
 function tripWarnings(
   trip: TripLegs & { trip_bar_color?: string | null },
@@ -163,9 +172,12 @@ function tripWarnings(
   for (const l of legsOf(trip)) {
     const assigned = buses.filter((b) => b.leg === l.leg && b.buses).length
     if (assigned < l.needed && !isPlaceholder(trip)) warnings.push(`The ${l.leg} leg needs ${l.needed} buses and has ${assigned}.`)
+    // A leg with no day has none to be outside of.
+    if (!l.start) continue
+    const first = dayFrom(l.start, -1), last = dayFrom(l.end, 1)
     for (const s of stops.filter((x) => x.leg === l.leg)) {
       for (const day of [s.arrive_date, s.spot_date, s.depart_prev_date]) {
-        if (day && (day < l.start || day > l.end)) {
+        if (day && (day < first || day > last)) {
           warnings.push(`Stop ${s.position + 1}${s.name ? ` (${s.name})` : ''} is dated ${day}, outside the ${l.leg} leg's ${l.start} to ${l.end}.`)
         }
       }
@@ -189,11 +201,6 @@ function markPastMidnight<T extends {
     const m = /^(\d{1,2}):(\d{2})/.exec(String(t ?? ''))
     return m ? Number(m[1]) * 60 + Number(m[2]) : null
   }
-  const dayAfter = (day: string, n: number) => {
-    const d = new Date(`${day}T00:00:00Z`)
-    d.setUTCDate(d.getUTCDate() + n)
-    return d.toISOString().slice(0, 10)
-  }
   for (const l of legsOf(trip)) {
     if (!l.start || l.start !== l.end) continue
     const rows = stops.filter((s) => s.leg === l.leg).sort((a, b) => a.position - b.position)
@@ -212,7 +219,7 @@ function markPastMidnight<T extends {
     }
     for (const t of seen) {
       const off = t.days - (start ?? 0)
-      if (off !== 0) (t.row as Record<string, unknown>)[`${t.key}_on`] = dayAfter(l.start, off)
+      if (off !== 0) (t.row as Record<string, unknown>)[`${t.key}_on`] = dayFrom(l.start, off)
     }
   }
   return stops
@@ -263,7 +270,7 @@ Deno.serve(
           {
             title: 'Get one trip',
             description:
-              'One trip in full, with the buses and drivers on it, its stops, its quote lines, and warnings: a leg short of buses, or a stop dated outside its leg. An amber trip_bar_color (or its old names orange and yellow) is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. pinned_update, when there is one, is what everyone should know about the trip, the update pinned to the top of its card. quote_lines are the Billing tab\'s lines, which add up to quoted_price; route_done_at, buses_done_at and billing_done_at say when each tab was marked Done, and quote_sent_price and quote_sent_on what the customer was sent. On a one-day leg a stop\'s time past midnight also has depart_prev_on, spot_on or arrive_on, the day it falls on. Give either a trip id or a trip reference.',
+              'One trip in full, with the buses and drivers on it, its stops, its quote lines, and warnings: a leg short of buses, or a stop dated more than a day outside its leg. An amber trip_bar_color (or its old names orange and yellow) is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. pinned_update, when there is one, is what everyone should know about the trip, the update pinned to the top of its card. quote_lines are the Billing tab\'s lines, which add up to quoted_price; route_done_at, buses_done_at and billing_done_at say when each tab was marked Done, and quote_sent_price and quote_sent_on what the customer was sent. On a one-day leg a stop\'s time past midnight also has depart_prev_on, spot_on or arrive_on, the day it falls on. Give either a trip id or a trip reference.',
             inputSchema: z.object({
               trip_id: z.string().uuid().optional(),
               trip_ref: z.string().max(40).optional(),
@@ -308,7 +315,7 @@ Deno.serve(
           {
             title: 'Find free buses and drivers',
             description:
-              'Which buses and drivers are free across a range of days, and every trip running then with how many buses it needs and has. A bus is busy when it is on a trip or out of service; a driver is busy when they are on a trip or on time off. A trip still short of buses will take free ones, so buses_still_needed is subtracted from free_buses before anything more is promised. A placeholder (not quoted yet) is listed but asks for no bus.',
+              'Which buses and drivers are free across a range of days, and every trip with a leg running then, with how many buses it needs and has. A bus is busy on the days of the leg it is on, or while out of service; a driver is busy on the days of the leg they drive, or on time off. Between a drop-off and its pickup the trip holds neither. A trip still short of buses will take free ones: buses_still_needed is how many, and spare_buses is the free buses left once those are taken, which is the number that can be promised. A placeholder (not quoted yet) is listed but asks for no bus.',
             inputSchema: z.object({
               from: ISO_DATE,
               to: ISO_DATE.optional().describe('Defaults to the same day as from.'),
@@ -336,16 +343,22 @@ Deno.serve(
               supabase.from('driver_time_off').select('driver_id, start_date, end_date, reason').then(orThrow),
             ])
 
-            const runningTrips = trips.filter((t) => overlaps(t, from, until))
+            // A trip runs on the days of its legs: the days between a drop-off and its pickup are nobody's.
+            const legRuns = (l: { start: string; end: string }) => l.start <= until && l.end >= from
+            const runningTrips = trips.filter((t) => legsOf(t).some(legRuns))
             const running = runningTrips.map((t) => t.id)
             const assignments = running.length
               ? orThrow(await supabase.from('trip_assignments')
                   .select('id, bus_id, trip_id, leg, trip_drivers(driver_id)').in('trip_id', running))
               : []
 
+            // A bus and its crew are busy only on their own leg's days. A row whose leg the trip does not have is counted busy.
+            const legOf = new Map(runningTrips.map((t) => [t.id, new Map(legsOf(t).map((l) => [l.leg, l]))]))
             const busyBuses = new Set<string>()
             const busyDrivers = new Set<string>()
             for (const a of assignments) {
+              const leg = legOf.get(a.trip_id)?.get(a.leg ?? 'outbound')
+              if (leg && !legRuns(leg)) continue
               if (a.bus_id) busyBuses.add(a.bus_id)
               for (const d of a.trip_drivers ?? []) if (d.driver_id) busyDrivers.add(d.driver_id)
             }
@@ -355,7 +368,7 @@ Deno.serve(
             const numberOf = new Map(buses.map((b) => [b.id, b.number]))
             const tripLines = runningTrips.map((t) => {
               const mine = assignments.filter((a) => a.trip_id === t.id)
-              const legs = legsOf(t).filter((l) => l.start <= until && l.end >= from).map((l) => {
+              const legs = legsOf(t).filter(legRuns).map((l) => {
                 const onLeg = mine.filter((a) => a.leg === l.leg && a.bus_id)
                 return {
                   leg: l.leg, needed: l.needed,
@@ -371,11 +384,17 @@ Deno.serve(
               }
             })
 
+            const missingOn = (line: typeof tripLines[number]) => line.legs.reduce((m, l) => m + l.missing, 0)
+            const free = buses.filter((b) => !busyBuses.has(b.id))
+            // With one type asked for, only a trip that could take that type claims a free bus of it.
+            const claimed = runningTrips.reduce((n, t, i) =>
+              n + (!vehicle_type || !t.vehicle_type || t.vehicle_type === vehicle_type ? missingOn(tripLines[i]) : 0), 0)
             return answer({
               from, to: until,
-              free_buses: buses.filter((b) => !busyBuses.has(b.id)),
+              free_buses: free,
               free_drivers: drivers.filter((d) => !busyDrivers.has(d.id)),
-              buses_still_needed: tripLines.reduce((n, t) => n + t.legs.reduce((m, l) => m + l.missing, 0), 0),
+              buses_still_needed: tripLines.reduce((n, t) => n + missingOn(t), 0),
+              spare_buses: Math.max(0, free.length - claimed),
               busy: { buses: busyBuses.size, drivers: busyDrivers.size, trips: running.length },
               trips: tripLines,
             })

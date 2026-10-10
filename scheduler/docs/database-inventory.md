@@ -200,11 +200,10 @@ own page at `/oauth/consent/`; Supabase hosts none.
 **Seven tools read**, each on the tables above: `find_trips`, which also
 matches the booking contact's name and email, and answers how many trips match beside the ones its limit lets through, saying so when it cut the list; `get_trip`, on `trips` with its
 assignments, drivers, stops and quote lines, the Email thread link, its pinned update, the passenger count, Quote sent and the three Done marks, the day a one-day leg's time past midnight falls on, and warnings for a leg
-short of buses or a stop dated outside its leg; `find_availability`, which
-reads the trips running across a range and subtracts their buses and drivers,
+short of buses or a stop dated more than a day outside its leg; `find_availability`, which
+reads the trips with a leg running across a range and subtracts the buses and drivers on those legs,
 then `bus_out_of_service` and `driver_time_off`, and lists each running trip
-with the buses it needs and has, so a trip still waiting for a bus is counted
-against the free ones and a placeholder is not; `find_contacts`, `list_buses` and `list_drivers`; and `find_documents`, which reads the current rows of `company_documents`, keeps those holding every word asked for in their kind, customer, driver, file name or note, and answers each with the day it ends and a link to its file signed for ten minutes as the person asking.
+with the buses it needs and has, and `spare_buses`, the free buses left once the trips still waiting for one have taken theirs, a placeholder taking none; `find_contacts`, `list_buses` and `list_drivers`; and `find_documents`, which reads the current rows of `company_documents`, keeps those holding every word asked for in their kind, customer, driver, file name or note, and answers each with the day it ends and a link to its file signed for ten minutes as the person asking.
 
 The fields a draft may fill are mostly `trips` columns, but the route's four
 are the Route tab's own names, because the tab writes `trip_stops` rather than

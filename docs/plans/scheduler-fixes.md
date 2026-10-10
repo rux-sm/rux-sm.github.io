@@ -166,8 +166,6 @@ None open.
       co-driver seat.
 - [ ] Blank a stop's drive when its place changed and the map did not
       answer, and say so, in `measureStops`.
-- [ ] In the connector, allow a stop's date one day either side of its leg,
-      count a bus busy only on its own leg's days, and return `spare_buses`.
 - [ ] Deploy the connector on a yes, and read `find_trips` back cut and whole.
 - [ ] In `saveEditor`, send a new trip's waiting files when its first save
       stops partway, and compare the trip's stamp again after the update box.

@@ -17,7 +17,8 @@
    plan asks for under what Geoapify found. Design's `js/list-box.js` opens
    and closes the menu. `.nameIsAddress(name, address)` says a saved
    location's name is missing or only a street address, and `.NAME_HELP`
-   asks for a real one.
+   asks for a real one. `.addressKey(address)` is an address as one key, for
+   every page that asks whether two places are the same.
    ========================================================================== */
 (() => {
   'use strict';
@@ -298,5 +299,21 @@
   }
   const NAME_HELP = "Enter the place's name, such as the school or venue, not its street address.";
 
-  window.SchedulerPlaces = { init, use, search, drive, map, field, credit, creditRow, unavailable, nameIsAddress, NAME_HELP };
+  /* AN ADDRESS AS ONE KEY, so 150 N Ohio Ave and 150 North Ohio Avenue are
+     one place however each was typed or the map wrote it: lower case, no
+     punctuation, the country and a ZIP's last four left off, and each word a
+     road, a compass point or the state goes by in its short form. The trip
+     editor and the Locations page both ask it before a place is saved twice. */
+  const ADDRESS_WORDS = { north: 'n', south: 's', east: 'e', west: 'w', northeast: 'ne', northwest: 'nw',
+    southeast: 'se', southwest: 'sw', street: 'st', avenue: 'ave', av: 'ave', boulevard: 'blvd', drive: 'dr',
+    road: 'rd', lane: 'ln', court: 'ct', place: 'pl', parkway: 'pkwy', highway: 'hwy', expressway: 'expy',
+    freeway: 'fwy', circle: 'cir', trail: 'trl', terrace: 'ter', square: 'sq', suite: 'ste', apartment: 'apt',
+    building: 'bldg', texas: 'tx' };
+  const addressKey = v => String(v ?? '').toLowerCase()
+    .replace(/,?\s*united states( of america)?\s*$/, '')
+    .replace(/(\d{5})-\d{4}\b/g, '$1')
+    .replace(/[.,#-]/g, ' ')
+    .split(/\s+/).filter(Boolean).map(w => ADDRESS_WORDS[w] ?? w).join(' ');
+
+  window.SchedulerPlaces = { init, use, search, drive, map, field, credit, creditRow, unavailable, nameIsAddress, NAME_HELP, addressKey };
 })();

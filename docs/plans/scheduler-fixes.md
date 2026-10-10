@@ -167,8 +167,6 @@ None open.
       type on units, trips, each trip's vehicles and customers' usual type,
       and puts back the Done marks the rename takes off; call it from
       `fleet.js`, with the columns listed once in `vehicles.js`.
-- [ ] Move the address key into `places.js` and the digits rule into
-      `phone.js`, and use each on both pages that test for a duplicate.
 - [ ] In `applyDraft`, type fields in the table's order, name the six needs
       it sets with no mark, match a drafted customer or say it is new, and
       give a draft that cannot open its real reason.

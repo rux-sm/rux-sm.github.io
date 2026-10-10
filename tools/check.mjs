@@ -68,6 +68,7 @@ step('scheduler to-do', process.execPath, ['scheduler/tools/check-to-do.mjs']);
 step('scheduler departures', process.execPath, ['scheduler/tools/check-departures.mjs']);
 step('scheduler billing', process.execPath, ['scheduler/tools/check-billing.mjs']);
 step('scheduler quote lines', process.execPath, ['scheduler/tools/check-quote-lines.mjs']);
+step('scheduler same record', process.execPath, ['scheduler/tools/check-same.mjs']);
 step('scheduler week', process.execPath, ['scheduler/tools/check-week.mjs']);
 // Each scheduler page's scripts, loaded in tag order against a stand-in page.
 step('scheduler load', process.execPath, ['scheduler/tools/check-load.mjs']);

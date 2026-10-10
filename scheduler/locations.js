@@ -240,9 +240,15 @@
       showAddressError('Enter the address of the spot tapped on the map.');
       first ??= $('scheduler-l-address');
     } else {
-      // The same place twice would offer two answers for one stop.
-      const same = places.find(p => p.id !== loaded?.id
-        && ((place.mapbox_id && p.mapbox_id === place.mapbox_id) || folded(p.address) === folded(place.address)));
+      // The same place twice would offer two answers for one stop. An
+      // address is compared as places.js keys it, as the trip editor does,
+      // so Street and St, or a ZIP with its last four, do not make a second.
+      // It is asked of a new place and of an address that changed: a place
+      // saved beside its twin before this was asked can still be edited.
+      const key = window.SchedulerPlaces.addressKey;
+      const moved = !loaded || key(loaded.address) !== key(place.address);
+      const same = !moved ? null : places.find(p => p.id !== loaded?.id
+        && ((place.mapbox_id && p.mapbox_id === place.mapbox_id) || key(p.address) === key(place.address)));
       if (same) {
         showAddressError(`This place is already saved as “${same.name}”.`);
         first ??= $('scheduler-l-address');

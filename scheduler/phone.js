@@ -30,5 +30,10 @@
     return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
   }
 
-  window.SchedulerPhone = { format };
+  /* A NUMBER AS IT IS MATCHED: its digits alone, a US number's leading 1
+     dropped, so +1 (956) 994-1169 and 956.994.1169 are one number. Every
+     page that asks whether two people are the same asks this. */
+  const digits = value => String(value ?? '').replace(/\D/g, '').replace(/^1(?=\d{10}$)/, '');
+
+  window.SchedulerPhone = { format, digits };
 })();

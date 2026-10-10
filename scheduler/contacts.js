@@ -58,9 +58,9 @@
 
   // ── people ──────────────────────────────────────────────────────────────
   /* The trip editor's rule for one person, from data.js: the same phone
-     digits, the same email or the same name, case and spacing aside. A US
-     number's leading 1 is dropped, so +1 and no prefix match. */
-  const phoneDigits = v => String(v ?? '').replace(/\D/g, '').replace(/^1(?=\d{10}$)/, '');
+     digits, as phone.js reads them, the same email or the same name, case
+     and spacing aside. */
+  const phoneDigits = window.SchedulerPhone.digits;
   const folded = v => String(v ?? '').trim().toLowerCase();
   const samePerson = (c, p) => [
     [phoneDigits(c.phone), phoneDigits(p.phone)],
@@ -150,7 +150,7 @@
     if (words.includes(q.toLowerCase())) return true;
     // A phone matches by its digits, however either side was typed.
     const digits = q.replace(/\D/g, '');
-    return digits.length >= 3 && phoneDigits(c.phone).includes(digits.replace(/^1(?=\d{10}$)/, ''));
+    return digits.length >= 3 && phoneDigits(c.phone).includes(phoneDigits(digits));
   };
 
   function nextCell(c) {

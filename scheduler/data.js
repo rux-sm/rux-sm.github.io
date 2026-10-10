@@ -3800,20 +3800,8 @@
     return wrap;
   }
 
-  /* AN ADDRESS AS ONE KEY, so 150 N Ohio Ave and 150 North Ohio Avenue are
-     one place however each was typed or the map wrote it: lower case, no
-     punctuation, the country and a ZIP's last four left off, and each word a
-     road, a compass point or the state goes by in its short form. */
-  const ADDRESS_WORDS = { north: 'n', south: 's', east: 'e', west: 'w', northeast: 'ne', northwest: 'nw',
-    southeast: 'se', southwest: 'sw', street: 'st', avenue: 'ave', av: 'ave', boulevard: 'blvd', drive: 'dr',
-    road: 'rd', lane: 'ln', court: 'ct', place: 'pl', parkway: 'pkwy', highway: 'hwy', expressway: 'expy',
-    freeway: 'fwy', circle: 'cir', trail: 'trl', terrace: 'ter', square: 'sq', suite: 'ste', apartment: 'apt',
-    building: 'bldg', texas: 'tx' };
-  const addressKey = v => String(v ?? '').toLowerCase()
-    .replace(/,?\s*united states( of america)?\s*$/, '')
-    .replace(/(\d{5})-\d{4}\b/g, '$1')
-    .replace(/[.,#-]/g, ' ')
-    .split(/\s+/).filter(Boolean).map(w => ADDRESS_WORDS[w] ?? w).join(' ');
+  // An address as one key, by places.js's one rule, so a place typed two ways is one place.
+  const addressKey = window.SchedulerPlaces.addressKey;
   const savedAsPlace = l => ({ name: l.name, address: l.address, lat: l.lat, lng: l.lng, mapbox_id: l.mapbox_id ?? null, saved: true });
   /* The saved locations holding every word typed, up to five, as places. The
      words are held to the name and address as typed and as one key, so a
@@ -4710,7 +4698,8 @@
                                   phone: `scheduler-f-dphone${n}`,
                                   copy: { name: `trip_contact_${n}_name`, phone: `trip_contact_${n}_phone` } })),
   ];
-  const phoneDigits = v => String(v ?? '').replace(/\D/g, '').replace(/^1(?=\d{10}$)/, '');
+  // A phone as it is matched, by phone.js's one rule.
+  const phoneDigits = window.SchedulerPhone.digits;
   const folded = v => String(v ?? '').trim().toLowerCase();
   const samePerson = (c, p) => [
     [phoneDigits(c.phone), phoneDigits(p.phone)],

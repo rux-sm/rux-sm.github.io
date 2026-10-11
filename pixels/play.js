@@ -274,8 +274,12 @@
         if (answer[y][x]) {
           state[y][x] = 1;
           const closed = closeLines(y, x);
-          buzz(closed ? 30 : 10);
-          sound(closed ? 'line' : 'fill', closed ? 0 : climb++);
+          // The last square has the finish's tick and tone, not a line's on
+          // top of them.
+          if (!isSolved()) {
+            buzz(closed ? 30 : 10);
+            sound(closed ? 'line' : 'fill', closed ? 0 : climb++);
+          }
           tell('');
         } else {
           state[y][x] = 3;

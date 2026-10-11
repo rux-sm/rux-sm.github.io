@@ -12,26 +12,26 @@ and their browser keeps a key that is who they are; one with no key is let in by
 Pixels goes on a phone's home screen as an app, as `docs/home-screen.md` says.
 
 `index.html` is the same page for every account, the owner's too, with two tabs. Puzzles: today's
-puzzle on one card with the days solved in a row; then a tile for each gate, which the code calls a
-category, in the owner's order, one to a row on a phone. A tile is its gate's rift, a portal in
-pixels, coloured by the gate's rank, E to S, and shut in grey once every sprite is found; then its
-rank and name, such as E · Bugs, or More where it has none; its number and how many sprites are found;
-and a bar of that. Leaderboard: today's ranking with each player's time, and the all-time one with
-puzzles solved.
+puzzle on one card with the days solved in a row; then a tile for each rift, which the code calls a
+category, in the owner's order, one to a row on a phone. A tile is its rift's portal, drawn in pixels,
+coloured by the rift's rank, E to S, and shut in grey once every sprite is found; then its rank and
+name, such as E · Bugs, or More where it has none; its number and how many sprites are found; and a
+bar of that. Leaderboard: today's ranking with each player's time, and the all-time one with puzzles
+solved.
 
-`category.html?at=` is one gate, named by its place among its maker's: its puzzles, small boards first
-and then easy to hard, with nothing locked, each tile a square with its letter in the gate, A to O,
+`category.html?at=` is one rift, named by its place among its maker's: its puzzles, small boards first
+and then easy to hard, with nothing locked, each tile a square with its letter in the rift, A to O,
 three across on a phone and five on a wide screen. A solved puzzle shows its picture, name and best
 time; an unsolved one a question mark, or Boss for the last.
 
 `me.html` is the player's own page: their picture, username, sprites found and mana, the PIN that
-brings them back on any phone, and the gates they have made, each to name, publish or delete, with who
+brings them back on any phone, and the rifts they have made, each to name, publish or delete, with who
 has found sprites in it. `friends.html` is the player's invite link and every other player, each to
 add or remove. A player's own puzzles are made in the Pixelator, for mana, and a friend's published
-gates stand after the owner's on the front page, saying who made them, and New until opened. A bar
+rifts stand after the owner's on the front page, saying who made them, and New until opened. A bar
 holds the places every player has, Puzzles, Friends, Pixelator and Me: along the bottom on a phone,
 along the top on a wide screen, and not where a puzzle is played or drawn. `docs/profiles.md` is the
-whole of it: the door, profiles, friends, mana, and who is sent a gate.
+whole of it: the door, profiles, friends, mana, and who is sent a rift.
 
 `play.html?id=` plays one puzzle, 5, 10 or 15 squares a side. The board waits behind Tap to start,
 which with a mouse says Start, drawn bare until then, with no number and no mark, and the clock runs
@@ -54,12 +54,12 @@ keys under the board end where it does. A warm line rules off every fifth square
 numbers sit on a band that runs out from its squares and fades, larger on larger squares, and a line
 with more numbers than its room holds draws them smaller to fit. When the picture is complete the
 squares fill in as the picture, in its colours if it has them, and its name shows with the time, the
-mistakes and hints, and what they added. Back goes to the puzzle's gate, and Next to that gate's
-next unsolved puzzle, then to the gate after it. How to play is three steps in a modal, each with a
+mistakes and hints, and what they added. Back goes to the puzzle's rift, and Next to that rift's
+next unsolved puzzle, then to the rift after it. How to play is three steps in a modal, each with a
 small board: what the numbers mean, filling and crossing out, and what a mistake costs. It opens
 from the menu on every page and from the button under Start, and by itself on the first puzzle of a
 player who has solved none and has not closed it in this browser. A guest has no menu, so the front
-page and a gate's have a button for it. The clock stands while it is open. Each move plays a tone,
+page and a rift's have a button for it. The clock stands while it is open. Each move plays a tone,
 which the Sound key turns off and an iPhone's silent switch does not, and a phone ticks on each fill
 where the browser allows it. A game in progress is kept in the browser, so a reload picks it up.
 
@@ -73,25 +73,25 @@ browser makes from the date, the same for everyone. Only it counts toward the
 days in a row. A player is never sent a day's puzzle before its day.
 
 `make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits or deletes one. The
-owner's puzzles go in the owner's gates, and the owner alone has Manage and Players in the menu; a
-player's go in gates of their own, through functions that count their mana, and so do the owner's
+owner's puzzles go in the owner's rifts, and the owner alone has Manage and Players in the menu; a
+player's go in rifts of their own, through functions that count their mana, and so do the owner's
 own at `make.html?own`, which cost none. `make.html?me` draws a player's picture. It checks as you
 draw whether the numbers alone can solve the picture and how hard that is, outlines each square that
 would need a guess, and saves only a picture with one answer. Size starts a blank board of 5, 10 or
 15 a side. Its Colour step paints the picture the puzzle finishes as, from fifty-five inks, and Save
-asks which gate it goes in; a gate shows fifteen, the list counts how many of each one's are on, and a
-puzzle saved into one with fifteen on is saved off. A gate just started is named there and hidden until
-Manage's switch publishes it. No gate yet, first in the list, keeps the puzzle in Unsorted, a
+asks which rift it goes in; a rift shows fifteen, the list counts how many of each one's are on, and a
+puzzle saved into one with fifteen on is saved off. A rift just started is named there and hidden until
+Manage's switch publishes it. No rift yet, first in the list, keeps the puzzle in Unsorted, a
 section of Manage. Puzzle of the day, in the same list, makes it a day's puzzle, which sits in no
-gate; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good gate.
+rift; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good rift.
 
-`manage.html` is the owner's desk: every gate on one page, in order, then Unsorted. A gate's heading
+`manage.html` is the owner's desk: every rift on one page, in order, then Unsorted. A rift's heading
 has its place and name, a Published or Hidden switch, arrows that move it among the others, a key that
 keeps it for picked players, a pencil that renames it and a bin that deletes it and leaves its puzzles
 in Unsorted. Under each tile are Edit, Play, which keeps no time for a puzzle no player is sent, and a
-switch that sends it to no player when off; a gate has at most fifteen on. Add puzzle, after a gate's
-tiles, opens the Pixelator for it. Pressing a tile ticks it, and the ticked are moved, to a gate, a
-new one or Unsorted, or deleted; a gate left empty goes too.
+switch that sends it to no player when off; a rift has at most fifteen on. Add puzzle, after a rift's
+tiles, opens the Pixelator for it. Pressing a tile ticks it, and the ticked are moved, to a rift, a
+new one or Unsorted, or deleted; a rift left empty goes too.
 
 ## Files
 
@@ -111,33 +111,33 @@ every puzzle, which a staff account may read too; `pixels_players`, each player'
 with the account or the hash of the guest's key; `pixels_player_results` and `pixels_player_days`,
 each player's best time on a puzzle and on a puzzle of the day; and `pixels_settings`, whether new
 players may join; `pixels_friends`, who has added whom; `pixels_player_keys`, the key of each phone
-that logged in by a PIN; `pixels_level_players`, the players a gate is kept for; and
-`pixels_levels`, each gate's id, name, maker, audience and whether it is hidden. A gate and a puzzle
+that logged in by a PIN; `pixels_level_players`, the players a rift is kept for; and
+`pixels_levels`, each rift's id, name, maker, audience and whether it is hidden. A rift and a puzzle
 with no maker are the owner's. `docs/database-access.md` is the rule they follow.
 
 A player's page calls twenty-one functions, which the publishable key may run and which first find
 the player from the log-in or the key: `pixels_join`, `pixels_me`, `pixels_puzzles`,
 `pixels_results`, `pixels_days`, `pixels_record`, `pixels_record_day`, `pixels_board`,
 `pixels_set_picture`, `pixels_rename`, `pixels_people`, `pixels_befriend`, `pixels_renew_invite`,
-`pixels_set_pin`, `pixels_login`, and for a player's own gates `pixels_mine`, `pixels_keep_puzzle`,
+`pixels_set_pin`, `pixels_login`, and for a player's own rifts `pixels_mine`, `pixels_keep_puzzle`,
 `pixels_drop_puzzle`, `pixels_name_my_level`, `pixels_publish_my_level` and
 `pixels_delete_my_level`. A time is the player's own browser's word: the database refuses only what
 cannot be, a time under two seconds, a puzzle the player is not sent, a day more than one from
 today. `pixels_puzzles` sends a player no puzzle that is switched off, which is
-`pixels_puzzles.hidden`, none in no gate, which is one whose `level` is empty, and none in a gate
-that `pixels_sees` says is not theirs to see: that one function is the rule, a hidden gate for
-nobody and a gate for everyone, for its maker's friends or for the players picked, as its audience
+`pixels_puzzles.hidden`, none in no rift, which is one whose `level` is empty, and none in a rift
+that `pixels_sees` says is not theirs to see: that one function is the rule, a hidden rift for
+nobody and a rift for everyone, for its maker's friends or for the players picked, as its audience
 says.
 
-Five more are the owner's and refuse anyone else. `pixels_share_level` keeps a gate for the players
-named, or gives it back to everyone. `pixels_order_levels` renumbers the owner's gates
-in one step, so a move cannot stop half done, and each gate keeps its id. `pixels_delete_level`
-deletes a gate the same way: its puzzles are left in no gate and the gates after it move up.
-`pixels_name_level` and `pixels_hide_level` name and hide a gate, and make its row if it has none.
+Five more are the owner's and refuse anyone else. `pixels_share_level` keeps a rift for the players
+named, or gives it back to everyone. `pixels_order_levels` renumbers the owner's rifts
+in one step, so a move cannot stop half done, and each rift keeps its id. `pixels_delete_level`
+deletes a rift the same way: its puzzles are left in no rift and the rifts after it move up.
+`pixels_name_level` and `pixels_hide_level` name and hide a rift, and make its row if it has none.
 
 `players.html` is the owner's: every player with their picture, today's puzzle, days in a row,
 puzzles solved and when they last played; the name, which can be typed over; Close joining, which
-shuts every invite link to anyone new; Clear picture; the gates players have made, each to hide or
+shuts every invite link to anyone new; Clear picture; the rifts players have made, each to hide or
 delete; and Remove, which takes a player and their results off the leaderboard.
 
 The local preview, `npm run serve` on :8640, has no log-in, so there Pixels

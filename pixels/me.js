@@ -7,14 +7,14 @@
    has it. A guest changes their PIN of four digits there, which with their
    username brings them back on any phone.
 
-   YOUR GATES are the gates the player has made, each with its name, which
+   YOUR RIFTS are the rifts the player has made, each with its name, which
    is a field that saves as it is left, its size and how many puzzles it
    holds. Publish sends it to their friends and takes three puzzles, and
-   reads Unpublish once it is; Delete, pressed twice, takes the gate and its
+   reads Unpublish once it is; Delete, pressed twice, takes the rift and its
    puzzles, and their mana comes back. A puzzle's tile opens it in the
-   Pixelator. Under a gate is everyone who has found a sprite in it, with
+   Pixelator. Under a rift is everyone who has found a sprite in it, with
    how many and their time. The local preview has no players, so none of
-   this is shown there. The owner has gates of their own here too, apart from
+   this is shown there. The owner has rifts of their own here too, apart from
    the ones every player is sent, and is not shown mana, since theirs cost
    none.
    A guest with no player yet gets the name form first; data.js's `enter`
@@ -163,11 +163,11 @@
     b.textContent = text;
     return b;
   };
-  // The player's own gates, drawn again after each change to one.
-  const gates = async () => {
+  // The player's own rifts, drawn again after each change to one.
+  const rifts = async () => {
     document.getElementById('pixels-gates')?.remove();
     let got;
-    try { got = await data.own.mine(); } catch { say('Your gates did not load', 'Reload the page to try again.'); return; }
+    try { got = await data.own.mine(); } catch { say('Your rifts did not load', 'Reload the page to try again.'); return; }
     if (!got) return;
     const el = document.createElement('section');
     el.id = 'pixels-gates';
@@ -178,30 +178,30 @@
     make.className = 'rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm';
     make.href = owner ? 'make.html?own' : 'make.html';
     make.textContent = 'Make a puzzle';
-    top.append(words('rux--type-productive-heading-03', 'Your gates'), make);
+    top.append(words('rux--type-productive-heading-03', 'Your rifts'), make);
     el.append(top);
     const found = new Map();
     got.puzzles.forEach(p => {
       if (!found.has(p.level)) found.set(p.level, { level: p.level, theme: p.theme, hidden: p.hidden, puzzles: [] });
       found.get(p.level).puzzles.push(p);
     });
-    // A gate holds boards of any size: `sizes` is the sides it has, and
+    // A rift holds boards of any size: `sizes` is the sides it has, and
     // `width` the first, which the database's functions take and do not read.
     found.forEach(g => {
       g.sizes = [...new Set(g.puzzles.map(p => p.width))].sort((a, b) => a - b);
       g.width = g.sizes[0];
     });
-    if (!found.size) el.append(words('pixels-meta', owner ? 'You have made none yet. A gate holds fifteen, and your friends are sent it once it is published.' : 'You have made none yet. A puzzle costs 1 mana, and a gate holds fifteen.'));
+    if (!found.size) el.append(words('pixels-meta', owner ? 'You have made none yet. A rift holds fifteen, and your friends are sent it once it is published.' : 'You have made none yet. A puzzle costs 1 mana, and a rift holds fifteen.'));
     [...found.values()].sort((a, b) => a.level - b.level).forEach(g => {
       const box = document.createElement('div');
       box.className = 'rux--stack-vertical rux--stack-scale-3 pixels-mine';
       const head = document.createElement('div');
       head.className = 'pixels-mine-head';
       const name = document.createElement('input');
-      Object.assign(name, { className: 'rux--text-input rux--layout--size-sm', type: 'text', maxLength: 30, value: g.theme || '', placeholder: 'Name this gate' });
-      name.setAttribute('aria-label', `Name of ${g.theme || 'this gate'}`);
+      Object.assign(name, { className: 'rux--text-input rux--layout--size-sm', type: 'text', maxLength: 30, value: g.theme || '', placeholder: 'Name this rift' });
+      name.setAttribute('aria-label', `Name of ${g.theme || 'this rift'}`);
       name.addEventListener('change', async () => {
-        try { await data.own.setTheme(g.width, g.level, name.value.trim()); document.getElementById('pixels-error').hidden = true; } catch { say('The gate was not renamed', 'Try again.'); }
+        try { await data.own.setTheme(g.width, g.level, name.value.trim()); document.getElementById('pixels-error').hidden = true; } catch { say('The rift was not renamed', 'Try again.'); }
       });
       name.addEventListener('keydown', e => { if (e.key === 'Enter') name.blur(); });
       const shown = button(g.hidden ? 'rux--btn--tertiary' : 'rux--btn--ghost', g.hidden ? 'Publish' : 'Unpublish');
@@ -209,10 +209,10 @@
         shown.disabled = true;
         try {
           const now = await data.own.publish(g.width, g.level, g.hidden);
-          if (now.error) say('A gate is published with 3 puzzles or more', 'Make another, then publish it.');
+          if (now.error) say('A rift is published with 3 puzzles or more', 'Make another, then publish it.');
           else document.getElementById('pixels-error').hidden = true;
-        } catch { say('The gate did not change', 'Try again.'); }
-        gates();
+        } catch { say('The rift did not change', 'Try again.'); }
+        rifts();
       });
       const remove = button('rux--btn--danger--ghost', 'Delete');
       // A second press within a few seconds does it; the first only asks.
@@ -224,7 +224,7 @@
           return;
         }
         remove.disabled = true;
-        try { await data.own.removeLevel(g.width, g.level); } catch { say('The gate was not deleted', 'Try again.'); }
+        try { await data.own.removeLevel(g.width, g.level); } catch { say('The rift was not deleted', 'Try again.'); }
         location.reload();
       });
       head.append(name, words('pixels-meta', `${side(g)} · ${g.puzzles.length} of 15`), shown, remove);
@@ -266,8 +266,8 @@
     }
     if (!me) return;
     draw(me);
-    // The owner's own gates are here as a player's are; the ones every player
+    // The owner's own rifts are here as a player's are; the ones every player
     // is sent are in Manage.
-    if (data.own) gates();
+    if (data.own) rifts();
   })();
 })();

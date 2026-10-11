@@ -2,11 +2,11 @@
    manage.js — the owner's page: every puzzle, by category, and what is done
    to them
    --------------------------------------------------------------------------
-   EVERY GATE ON ONE PAGE, in the owner's order, which is the order the
+   EVERY RIFT ON ONE PAGE, in the owner's order, which is the order the
    players meet them in; then Unsorted, the puzzles in no category, which no player is sent; then
    Dailies where a day's puzzle is drawn.
 
-   A CATEGORY'S HEADING has its place among the gates every player is sent,
+   A CATEGORY'S HEADING has its place among the rifts every player is sent,
    and its name, and beside them its size and how many of its puzzles are
    on, at most fifteen. At the far end are a switch that says Published or
    Hidden, which hides it from every player; arrows that move it up or down
@@ -276,7 +276,7 @@
       wrap.append(words('rux--type-productive-heading-03', 'No puzzles yet'), make);
       host.append(wrap);
     }
-    // A gate every player is sent has a place among those; one kept for
+    // A rift every player is sent has a place among those; one kept for
     // picked players has none.
     let nth = 0;
     cats.forEach(c => {
@@ -301,7 +301,7 @@
           draw(by < 0 ? [`${now}-up`, `${now}-down`] : [`${now}-down`, `${now}-up`]);
         } catch {
           moving = false;
-          say('The gate did not move', 'Try again.');
+          say('The rift did not move', 'Try again.');
         }
       };
       host.append(section(id, c.picked.length ? name : `${++nth} · ${name}`, h2 => [
@@ -325,7 +325,7 @@
             await data.setHidden(width, c.level, !to);
             c.puzzles.forEach(p => { p.hidden = !to; });
             word.textContent = to ? 'Published' : 'Hidden';
-          }, { text: false, failed: ['The gate did not change', 'Try again.'] }), word, keys);
+          }, { text: false, failed: ['The rift did not change', 'Try again.'] }), word, keys);
           return shown;
         })(),
       ], [...c.puzzles.map(p => puzzleTile(p, flip(p, name))), addTile(c)]));
@@ -391,7 +391,7 @@
     const to = levels().filter(c => these.some(p => p.level !== c.level))
       .map(c => new Option(`${called(c)} · ${c.puzzles.filter(p => !p.off).length} of ${PER_LEVEL}`, c.level));
     if (!these.every(loose)) to.push(new Option('Unsorted', NONE));
-    to.push(new Option('New gate…', NEW));
+    to.push(new Option('New rift…', NEW));
     where.replaceChildren(...to);
     $('pixels-move-name').value = '';
     $('pixels-move-heading').textContent = `Move ${these.length === 1 ? these[0].name : count(these.length, 'puzzle')}`;
@@ -406,7 +406,7 @@
     const movers = order(chosen()).filter(p => (p.level ?? null) !== level);
     modal.close('pixels-move-modal');
     if (!movers.length) return;
-    if (level > 99) { say('There is no room for another gate', 'Delete one first.'); return; }
+    if (level > 99) { say('There is no room for another rift', 'Delete one first.'); return; }
     // They arrive on while the category has fewer than fifteen on, and off after.
     let room = level == null ? Infinity : PER_LEVEL - inLevel(level).filter(p => !p.off).length;
     const on = [], off = [];
@@ -476,11 +476,11 @@
       fine();
       draw([`pixels-level-${c.level}-rename`]);
     } catch {
-      say('The gate was not renamed', 'Try again.');
+      say('The rift was not renamed', 'Try again.');
     }
   });
-  /* WHO SEES A GATE. The modal lists every player with a box; the ticked are
-     the players the gate is kept for, and none ticked gives it to everyone. */
+  /* WHO SEES A RIFT. The modal lists every player with a box; the ticked are
+     the players the rift is kept for, and none ticked gives it to everyone. */
   let everyone = null;
   async function sharing(c, from) {
     asked = c;
@@ -517,7 +517,7 @@
       fine();
       draw([`pixels-level-${c.level}-share`]);
     } catch {
-      say('The gate did not change', 'Try again.');
+      say('The rift did not change', 'Try again.');
     }
   });
   function removing(c, from) {
@@ -539,7 +539,7 @@
       fine();
       draw();
     } catch {
-      say('The gate was not deleted', 'The page shows what is left.');
+      say('The rift was not deleted', 'The page shows what is left.');
       again();
     }
   });

@@ -8,7 +8,7 @@
 
    EVERY OTHER PLAYER is a row, friends first: their picture, their username
    and a key. Add is one-way and needs no answer: the player added is not
-   told, and their published gates are sent to the one who added them.
+   told, and their published rifts are sent to the one who added them.
    Remove takes that back.
 
    A guest with no player yet gets the door first; data.js's `enter` draws

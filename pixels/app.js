@@ -151,15 +151,15 @@
      its name, and `puzzles` its own, small boards first and then easy to
      hard. A puzzle in no category, or drawn for a day, is in none of them.
      `heading` is what a category is called: its name, or More where it has
-     none. `where` is the address of its page. A player's own gate carries
+     none. `where` is the address of its page. A player's own rift carries
      its `maker` and, as `by`, their name and picture. One of the owner's
      carries its `number`, its place among the owner's, which says how hard
      it is, and its `rank`, the letter that number earns; a player's own has
      neither.
 
-     A PLAYER READS A CATEGORY AS A GATE and a solved picture as a sprite.
-     `side` is a gate's sizes as they are written, 10×10, or 5×5, 10×10 for
-     one of two. `sprites` says how far through a gate a
+     A PLAYER READS A CATEGORY AS A RIFT and a solved picture as a sprite.
+     `side` is a rift's sizes as they are written, 10×10, or 5×5, 10×10 for
+     one of two. `sprites` says how far through a rift a
      player is, and that it is cleared once every puzzle is solved. */
   const categories = puzzles => {
     const found = new Map();
@@ -186,25 +186,25 @@
   };
   const heading = ({ theme }) => theme || 'More';
 
-  /* A RIFT is how a gate is drawn on the front page: a portal, fifteen
-     squares a side, lit from its middle. One of the owner's has a rank by
-     its number, two gates to a rank from E to S, and each rank its own ink;
-     a player's own is teal, and one with every sprite found is shut, in
-     greys. RIFT is the picture: W is its white middle, P L M D the ink from
-     pale to deep, and K the dark ring round it. */
+  /* A PORTAL is how a rift is drawn on the front page: fifteen squares a
+     side, lit from its middle. One of the owner's rifts has a rank by its
+     number, two rifts to a rank from E to S, and each rank its own ink; a
+     player's own is teal, and one with every sprite found is shut, in
+     greys. PORTAL is the picture: W is its white middle, P L M D the ink
+     from pale to deep, and K the dark ring round it. */
   const RANKS = 'EEDDCCBBAASS';
   const GLOW = { E: 'Df5Np', D: 'Eg6Oq', C: 'Fj9Pt', B: 'Bd3Ln', A: 'Ac2Km', S: 'Ce4Mo', own: 'IkaSu', shut: 'wyzz0' };
-  const RIFT = ['.....KKKKK.....', '...KKDDDDDKK...', '..KDDMMMMMDDK..', '..KDMMLLLMMDK..', '.KDMMLLPLLMMDK.', '.KDMLLPPPLLMDK.', '.KDMLPPWPPLMDK.',
+  const PORTAL = ['.....KKKKK.....', '...KKDDDDDKK...', '..KDDMMMMMDDK..', '..KDMMLLLMMDK..', '.KDMMLLPLLMMDK.', '.KDMLLPPPLLMDK.', '.KDMLPPWPPLMDK.',
     '.KDMLPWWWPLMDK.', '.KDMLPPWPPLMDK.', '.KDMLLPPPLLMDK.', '.KDMMLLPLLMMDK.', '..KDMMLLLMMDK..', '..KDDMMMMMDDK..', '...KKDDDDDKK...', '.....KKKKK.....'].join('');
-  const rift = (c, shut) => {
+  const portal = (c, shut) => {
     const tones = GLOW[shut ? 'shut' : c.rank || 'own'];
     const ink = { W: shut ? tones[0] : '1', P: tones[0], L: tones[1], M: tones[2], D: tones[3], K: tones[4] };
     const el = document.createElement('div');
-    el.className = 'pixels-picture pixels-rift';
+    el.className = 'pixels-picture pixels-portal';
     el.setAttribute('aria-hidden', 'true');
     el.style.setProperty('--size', 15);
     // A square outside the portal is given no ink, so the tile shows there.
-    el.append(...[...RIFT].map(s => {
+    el.append(...[...PORTAL].map(s => {
       const square = document.createElement('span');
       if (ink[s]) { square.dataset.on = ''; square.dataset.ink = ink[s]; }
       return square;
@@ -212,9 +212,9 @@
     return el;
   };
   const side = ({ sizes, width }) => (sizes || [width]).map(n => `${n}×${n}`).join(', ');
-  const sprites = (solved, all) => (solved === all ? 'Gate cleared' : `${solved} of ${all} sprites`);
+  const sprites = (solved, all) => (solved === all ? 'Rift cleared' : `${solved} of ${all} sprites`);
   const where = ({ level, maker }) => `category.html?at=${level}${maker ? `&by=${encodeURIComponent(maker)}` : ''}`;
-  // A gate a player has opened is kept in their browser, so one they have
+  // A rift a player has opened is kept in their browser, so one they have
   // not says New. `seen` asks and `see` keeps.
   const SEEN = 'pixels-seen';
   const gateKey = c => c.gate || `${c.maker || ''}:${c.level}`;
@@ -657,7 +657,7 @@
   const time = seconds => `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
 
   // A puzzle keeps its name hidden until it is solved. Until then it goes
-  // by its letter in its gate, A to O as Picross DS letters a level's, which
+  // by its letter in its rift, A to O as Picross DS letters a level's, which
   // `letter` gives; the last, which is the hardest, is the boss, and `boss`
   // says which.
   const boss = (c, index) => c.puzzles.length > 1 && index === c.puzzles.length - 1;
@@ -667,7 +667,7 @@
 
   /* A PUZZLE'S TILE, a square link: the picture once `best` is there, or a
      question mark, then `name`, then the best time. `mark` is its letter in
-     its gate, on a tab in the tile's corner. `art` is the picture or the
+     its rift, on a tab in the tile's corner. `art` is the picture or the
      question mark alone, `words` a span of text, and `bar` a progress bar
      of `done` out of `all`. */
   const words = (cls, text) => {
@@ -815,7 +815,7 @@
 
   /* THE PLACES every player has, in one bar on the pages that carry it:
      along the bottom on a phone, along the top on a wide screen. This marks
-     the place the page is; a gate's page is one of Puzzles'. */
+     the place the page is; a rift's page is one of Puzzles'. */
   const here = location.pathname.split('/').pop() || 'index.html';
   document.querySelectorAll('.pixels-place').forEach(a => {
     const to = a.getAttribute('href') === './' ? 'index.html' : a.getAttribute('href');
@@ -834,7 +834,7 @@
   };
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    iphone, installed, fresh, overMenu, face, portrait, seen, see, side, sprites, rift, boss, letter,
+    iphone, installed, fresh, overMenu, face, portrait, seen, see, side, sprites, portal, boss, letter,
     SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title,
     words, art, tile, bar, how, switcher, chosen,

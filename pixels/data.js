@@ -13,7 +13,7 @@
    `pixels_record_day`, `pixels_board`, `pixels_me`, `pixels_join`,
    `pixels_set_picture`, `pixels_rename`, `pixels_people`, `pixels_befriend`,
    `pixels_renew_invite`, `pixels_set_pin`, `pixels_login`, and for a player's
-   own puzzles and gates
+   own puzzles and rifts
    `pixels_mine`, `pixels_keep_puzzle`, `pixels_drop_puzzle`,
    `pixels_name_my_level`, `pixels_publish_my_level` and
    `pixels_delete_my_level`. An invite link is `?join=` and a player's own
@@ -278,16 +278,16 @@
       return player;
     },
     // Every other player, friends first; adding one is one-way, and their
-    // published gates are then sent. A new invite code closes the old link.
+    // published rifts are then sent. A new invite code closes the old link.
     async people() { return call('pixels_people', { p_key: key() }); },
     async befriend(id, on) { await call('pixels_befriend', { p_key: key(), p_friend: id, p_on: on }); },
     async renewInvite() { return call('pixels_renew_invite', { p_key: key() }); },
-    /* A PLAYER'S OWN PUZZLES AND GATES, by the names the owner's have, so
+    /* A PLAYER'S OWN PUZZLES AND RIFTS, by the names the owner's have, so
        the Pixelator saves either. `mine` is everything of the player's:
-       their mana, their puzzles, each with its gate's name and whether the
-       gate is hidden, and who has solved how much of each gate. A save the
-       database turns down for mana, a full gate or a sixth gate throws with
-       `refused` saying which. The owner has gates of this kind too, apart
+       their mana, their puzzles, each with its rift's name and whether the
+       rift is hidden, and who has solved how much of each rift. A save the
+       database turns down for mana, a full rift or a sixth rift throws with
+       `refused` saying which. The owner has rifts of this kind too, apart
        from the ones every player is sent, and is charged no mana for them. */
     own: {
       async mine() { return call('pixels_mine', { p_key: key() }); },
@@ -304,7 +304,7 @@
         return { ...row, day: null, off: false };
       },
       async remove(id) { await call('pixels_drop_puzzle', { p_key: key(), p_id: id }); },
-      // A gate just started is hidden by the database, so there is nothing to do.
+      // A rift just started is hidden by the database, so there is nothing to do.
       async setHidden() {},
       async setTheme(width, level, name) {
         await call('pixels_name_my_level', { p_key: key(), p_width: width, p_level: level, p_name: name || null });
@@ -413,7 +413,7 @@
     async setHidden(width, level, hidden) {
       await call('pixels_hide_level', { p_width: width, p_level: level, p_hidden: hidden });
     },
-    // Keeps one of the owner's gates for the players named, or with none
+    // Keeps one of the owner's rifts for the players named, or with none
     // named gives it back to everyone.
     async share(width, level, players) {
       await call('pixels_share_level', { p_width: width, p_level: level, p_players: players.length ? players : null });
@@ -435,7 +435,7 @@
     async removePlayer(id) {
       fail((await client.from('pixels_players').delete().eq('id', id)).error);
     },
-    // The gates players have made, each with its maker and how many puzzles
+    // The rifts players have made, each with its maker and how many puzzles
     // it holds. The owner can hide one, which its maker can publish again,
     // or delete it with its puzzles.
     async playerGates() {

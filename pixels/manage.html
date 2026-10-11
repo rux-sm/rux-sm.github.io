@@ -203,7 +203,7 @@
         <div class="rux--stack-vertical rux--stack-scale-5">
           <div class="rux--form-item">
             <div class="rux--select">
-              <label class="rux--label" for="pixels-move-to">Gate</label>
+              <label class="rux--label" for="pixels-move-to">Rift</label>
               <div class="rux--select-input__wrapper">
                 <select id="pixels-move-to" class="rux--select-input" autocomplete="off" autofocus></select>
                 <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
@@ -212,7 +212,7 @@
           </div>
           <div id="pixels-move-more" hidden>
             <div class="rux--form-item rux--text-input-wrapper">
-              <div class="rux--text-input__label-wrapper"><label class="rux--label" for="pixels-move-name">Name of the new gate</label></div>
+              <div class="rux--text-input__label-wrapper"><label class="rux--label" for="pixels-move-name">Name of the new rift</label></div>
               <div class="rux--text-input__field-outer-wrapper">
                 <div class="rux--text-input__field-wrapper"><input id="pixels-move-name" class="rux--text-input" type="text" maxlength="30" autocomplete="off"></div>
               </div>
@@ -245,11 +245,11 @@
       </div>
     </div>
   </div>
-  <!-- Who a gate is kept for. manage.js writes a box a player; with none ticked the gate is everyone's. -->
+  <!-- Who a rift is kept for. manage.js writes a box a player; with none ticked the rift is everyone's. -->
   <div class="rux--layer-one rux--modal" id="pixels-share-modal" role="presentation">
     <form role="dialog" aria-modal="true" aria-labelledby="pixels-share-heading" tabindex="-1" class="rux--modal-container rux--modal-container--xs" id="pixels-share" novalidate>
       <div class="rux--modal-header">
-        <h2 class="rux--modal-header__heading" id="pixels-share-heading">Who sees this gate?</h2>
+        <h2 class="rux--modal-header__heading" id="pixels-share-heading">Who sees this rift?</h2>
         <div class="rux--modal-close-button">
           <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
             <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
@@ -257,7 +257,7 @@
         </div>
       </div>
       <div class="rux--modal-content">
-        <p>Tick players to keep this gate for them. With none ticked, everyone sees it.</p>
+        <p>Tick players to keep this rift for them. With none ticked, everyone sees it.</p>
         <div class="pixels-share-list" id="pixels-share-list"></div>
       </div>
       <div class="rux--modal-footer">
@@ -269,7 +269,7 @@
   <div class="rux--layer-one rux--modal" id="pixels-rename-modal" role="presentation">
     <form role="dialog" aria-modal="true" aria-labelledby="pixels-rename-heading" tabindex="-1" class="rux--modal-container rux--modal-container--xs" id="pixels-rename" novalidate>
       <div class="rux--modal-header">
-        <h2 class="rux--modal-header__heading" id="pixels-rename-heading">Rename gate</h2>
+        <h2 class="rux--modal-header__heading" id="pixels-rename-heading">Rename rift</h2>
         <div class="rux--modal-close-button">
           <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
             <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
@@ -293,7 +293,7 @@
   <div class="rux--layer-one rux--modal" id="pixels-remove-modal" role="presentation">
     <div role="dialog" aria-modal="true" aria-labelledby="pixels-remove-heading" tabindex="-1" class="rux--modal-container rux--modal-container--xs">
       <div class="rux--modal-header">
-        <h2 class="rux--modal-header__heading" id="pixels-remove-heading">Delete this gate?</h2>
+        <h2 class="rux--modal-header__heading" id="pixels-remove-heading">Delete this rift?</h2>
         <div class="rux--modal-close-button">
           <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
             <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>

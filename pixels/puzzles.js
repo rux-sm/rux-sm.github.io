@@ -12,12 +12,12 @@
    PUZZLES. Today's puzzle is one card across the page: its picture once
    solved, the date, the best time or how hard it is, and the days solved in
    a row. Then a tile for each category, in playing order, one to a row on
-   a phone: its rift, the portal a player enters it by, in its rank's
-   colour and shut once every sprite is found; its name, after its rank
+   a phone: its portal, the way a player enters it, in its rank's colour
+   and shut once every sprite is found; its name, after its rank
    for one of the owner's; its number and how many sprites are found; and
-   a bar of that. A player's gate also says who made it, and one not yet
+   a bar of that. A player's rift also says who made it, and one not yet
    opened says New. A tile opens its category in category.html. A player
-   reads a category as a gate.
+   reads a category as a rift.
 
    A guest has no menu, so under the tiles is their way to How to play.
 
@@ -34,7 +34,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, guest, enter, carry, iphone, installed, fresh, overMenu, portrait, seen, sprites, rift, DAILY, BOARD, grid, rounds, grade, categories, heading, where, daily, today, streak, time, words, art, bar, switcher } = window.Pixels;
+  const { data, owner, guest, enter, carry, iphone, installed, fresh, overMenu, portrait, seen, sprites, portal, DAILY, BOARD, grid, rounds, grade, categories, heading, where, daily, today, streak, time, words, art, bar, switcher } = window.Pixels;
   const host = document.getElementById('pixels-levels'), leader = document.getElementById('pixels-leader');
 
   const say = (heading, detail) => {
@@ -65,10 +65,10 @@
     row ? `Today · ${row} day${row === 1 ? '' : 's'} in a row` : 'Today', best ? puzzle.name : puzzle.date,
     best ? time(best.seconds) : grade(rounds(grid(puzzle.squares, puzzle.width))));
 
-  /* A CATEGORY'S TILE: its rift, then its name, how much is found and a bar
-     of that. One of the owner's gates says its rank before its name and
+  /* A CATEGORY'S TILE: its portal, then its name, how much is found and a
+     bar of that. One of the owner's rifts says its rank before its name and
      its number before what is found, and a player's says who made it. A
-     gate with every sprite found has its rift shut. */
+     rift with every sprite found has its portal shut. */
   const categoryTile = (c, results) => {
     const a = document.createElement('a');
     a.className = 'rux--link rux--tile rux--tile--clickable pixels-category';
@@ -77,16 +77,16 @@
     const head = document.createElement('span');
     head.className = 'pixels-category-head';
     head.append(words('pixels-category-name', c.rank ? `${c.rank} · ${heading(c)}` : heading(c)));
-    // A gate not yet opened, with nothing found in it, says New.
+    // A rift not yet opened, with nothing found in it, says New.
     if (!solved && !seen(c)) head.append(words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--high-contrast pixels-grade', 'New'));
-    a.append(rift(c, solved === all), head);
-    // A player's gate says who made it, under the name.
+    a.append(portal(c, solved === all), head);
+    // A player's rift says who made it, under the name.
     if (c.by) {
       const by = words('pixels-meta pixels-by', '');
       by.append(portrait(c.by), c.by.name);
       a.append(by);
     }
-    a.append(words('pixels-meta', c.number ? `Gate ${c.number} · ${solved === all ? 'cleared' : `${solved} of ${all} sprites`}` : sprites(solved, all)), bar(solved, all));
+    a.append(words('pixels-meta', c.number ? `Rift ${c.number} · ${solved === all ? 'cleared' : `${solved} of ${all} sprites`}` : sprites(solved, all)), bar(solved, all));
     return a;
   };
 

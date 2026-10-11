@@ -57,10 +57,10 @@ Who sees whom:
   and someone new sees it after the door.
 - **Add makes the two friends both ways, and Remove ends it both ways.** The
   sharer asked for it by sending the link, and a removed friend must stop
-  being sent the other's gates.
+  being sent the other's rifts.
 - **Nobody is added by a typed name or from a list.** `pixels_befriend`
   goes, because by a player's id it lets anyone add anyone and be sent
-  their gates.
+  their rifts.
 - **A friend link keeps `?join=` and the player's code,** so the links
   already sent still work. New link closes the old one.
 - **The address is plain.** `enter` stops putting the code in it, because a
@@ -81,7 +81,7 @@ Who sees whom:
 Leaving, and what is kept:
 
 - **Delete my player, on Me, removes the player and all that is theirs:**
-  results, friendships, keys, gates and puzzles. It asks twice and cannot be
+  results, friendships, keys, rifts and puzzles. It asks twice and cannot be
   taken back.
 - **The door links to What Pixels keeps,** a short page that says what is
   stored about a player and gives an address to write to, since a public

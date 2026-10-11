@@ -35,17 +35,17 @@
    place on the front page and is never shown, and `theme` is its name.
    docs/making-puzzles.md is the guide to a good one.
 
-   THE OWNER'S puzzles go in the owner's gates, which every player is sent.
-   ANY OTHER PLAYER makes puzzles for gates of their own, by data.js's
-   `own`: a new puzzle costs one mana, the Gate field lists their gates and
-   New gate, with no Unsorted and no puzzle of the day, a gate holds fifteen,
-   and Back and Delete leave for Me. A gate just started is hidden until it
-   is published on Me. make.html?own is the same for the owner's own gates,
+   THE OWNER'S puzzles go in the owner's rifts, which every player is sent.
+   ANY OTHER PLAYER makes puzzles for rifts of their own, by data.js's
+   `own`: a new puzzle costs one mana, the Rift field lists their rifts and
+   New rift, with no Unsorted and no puzzle of the day, a rift holds fifteen,
+   and Back and Delete leave for Me. A rift just started is hidden until it
+   is published on Me. make.html?own is the same for the owner's own rifts,
    which cost no mana, and keeps its draft under `pixels-own-draft`.
 
    make.html?me draws the player's own picture, for any player: the board is
    15 squares a side and starts as the picture they have, or the one made
-   from their username. It has no name, no gate and no check, since it is no
+   from their username. It has no name, no rift and no check, since it is no
    puzzle; Save keeps it and Back leaves, both for Me.
 
    make.html?id= edits a saved puzzle. A new picture not yet saved is kept in
@@ -66,11 +66,11 @@
   // The player's own picture is drawn here too, and keeps a draft of its own.
   const query = new URLSearchParams(location.search);
   const mine = query.has('me');
-  // Whose gates a puzzle goes in: the owner's, which every player is sent,
+  // Whose rifts a puzzle goes in: the owner's, which every player is sent,
   // or the player's own. The owner draws their own at make.html?own.
   const personal = !owner || query.has('own');
   const DRAFT = mine ? 'pixels-face-draft' : personal && owner ? 'pixels-own-draft' : 'pixels-draft';
-  // Where a puzzle is kept: the owner's tables, or a player's own gates,
+  // Where a puzzle is kept: the owner's tables, or a player's own rifts,
   // which cost mana. `mana` is the player's, and the owner's is never asked.
   const store = personal ? data?.own || null : data;
   const home = personal ? 'me.html' : 'manage.html';
@@ -156,7 +156,7 @@
     saveNow.disabled = (daily() && !day.value) || (!editing && mana < 1);
     $('pixels-mana').hidden = owner;
     $('pixels-mana').textContent = editing ? `You have ${mana} mana. A change costs none.`
-      : mana < 1 ? 'You have no mana. Find a sprite in a gate somebody else made to earn one.'
+      : mana < 1 ? 'You have no mana. Find a sprite in a rift somebody else made to earn one.'
         : `A new puzzle costs 1 mana. You have ${mana}.`;
   };
   // How many puzzles each category has on and off, of any size, and whether
@@ -188,10 +188,10 @@
     const names = new Map(), { on, off } = held();
     puzzles.forEach(p => { if (!p.day && p.level != null) names.set(p.level, p.theme || 'More'); });
     const next = Math.max(0, ...names.keys()) + 1;
-    // A player's puzzle is always in one of their gates, and never a day's.
-    level.replaceChildren(...(personal ? [] : [new Option('No gate yet', 'none')]), ...[...names].sort((a, b) => a[0] - b[0])
+    // A player's puzzle is always in one of their rifts, and never a day's.
+    level.replaceChildren(...(personal ? [] : [new Option('No rift yet', 'none')]), ...[...names].sort((a, b) => a[0] - b[0])
       .map(([n, text]) => new Option(`${text} · ${on[n] || 0} of ${PER_LEVEL}${off[n] ? `, ${off[n]} off` : ''}`, n)),
-    new Option('New gate…', next), ...(personal ? [] : [new Option('Puzzle of the day…', 'day')]));
+    new Option('New rift…', next), ...(personal ? [] : [new Option('Puzzle of the day…', 'day')]));
     level.value = pick === 'day' || pick === 'none' || names.has(pick) ? pick : next;
   };
 
@@ -474,9 +474,9 @@
     const stays = editing && !editing.day && editing.level === puzzle.level;
     puzzle.off = !puzzle.day && !!store.setOff && (!!editing?.off || (!stays && held().full(puzzle.level)));
     const turnedOff = puzzle.off && !editing?.off;
-    // A player's gate holds fifteen and no more.
+    // A player's rift holds fifteen and no more.
     if (personal && !stays && held().full(puzzle.level)) {
-      say('That gate has fifteen puzzles', 'Pick another gate, or start a new one.');
+      say('That rift has fifteen puzzles', 'Pick another rift, or start a new one.');
       render();
       return;
     }
@@ -521,9 +521,9 @@
     } catch (error) {
       // The database lets a day have one puzzle.
       if (error?.code === '23505') say('That day already has a puzzle', 'Pick another day, or edit the one it has.');
-      else if (error?.refused === 'mana') say('You have no mana', 'Find a sprite in a gate somebody else made to earn one.');
-      else if (error?.refused === 'full') say('That gate has fifteen puzzles', 'Pick another gate, or start a new one.');
-      else if (error?.refused === 'gates') say('You have five gates', 'Delete one on Me to start another.');
+      else if (error?.refused === 'mana') say('You have no mana', 'Find a sprite in a rift somebody else made to earn one.');
+      else if (error?.refused === 'full') say('That rift has fifteen puzzles', 'Pick another rift, or start a new one.');
+      else if (error?.refused === 'gates') say('You have five rifts', 'Delete one on Me to start another.');
       else say('The puzzle was not saved', 'Try again.');
     }
     render();
@@ -611,8 +611,8 @@
     if (!editing) {
       const kept = readDraft();
       const keptSide = Math.sqrt(kept?.squares?.length || 0);
-      // Manage's Add puzzle names the gate the puzzle is for, as a size
-      // and its level: the board is that size and Save offers that gate. A
+      // Manage's Add puzzle names the rift the puzzle is for, as a size
+      // and its level: the board is that size and Save offers that rift. A
       // drawing kept of that size is on the board; one of another size is
       // not, and the first square drawn here takes its place.
       const forSide = +query.get('size'), forLevel = +query.get('gate');

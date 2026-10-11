@@ -7,11 +7,11 @@
    good until the categories are next reordered; one that names no category
    says so.
 
-   A player reads a category as a gate. The page is its name, after its
-   number for one of the owner's, its size and how many sprites are found, or Gate
+   A player reads a category as a rift. The page is its name, after its
+   number for one of the owner's, its size and how many sprites are found, or Rift
    cleared, a bar of that, and its puzzles easy to hard, three across on a
    phone and five on a wide screen, each tile a square, none locked. Each
-   has its letter in the gate, A to O, in its corner. A solved tile shows
+   has its letter in the rift, A to O, in its corner. A solved tile shows
    its picture, name and best time; an unsolved one a question mark, and
    Boss for the last.
 
@@ -51,7 +51,7 @@
     const by = query.get('by') || '';
     const category = categories(puzzles).find(c => c.level === at && (c.maker || '') === by);
     if (!category) {
-      say('This gate is not here', 'It may have been moved. Pick one from Puzzles.');
+      say('This rift is not here', 'It may have been moved. Pick one from Puzzles.');
       return;
     }
     see(category);
@@ -66,7 +66,7 @@
     const h1 = document.createElement('h1');
     h1.className = 'rux--type-productive-heading-04';
     h1.id = 'pixels-category-name';
-    h1.textContent = category.number ? `Gate ${category.number} · ${name}` : name;
+    h1.textContent = category.number ? `Rift ${category.number} · ${name}` : name;
     head.append(h1, words('pixels-meta', `${side(category)} · ${sprites(solved, all.length)}`));
     const list = document.createElement('div');
     list.className = 'pixels-list';
@@ -78,7 +78,7 @@
       if (!best) a.setAttribute('aria-label', title(p, i, false, last));
       return a;
     }));
-    // A player's gate says who made it.
+    // A player's rift says who made it.
     if (category.by) {
       const made = words('pixels-meta pixels-by', '');
       made.append(portrait(category.by), category.by.name);

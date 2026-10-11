@@ -12,12 +12,12 @@
    PUZZLES. Today's puzzle is one card across the page: its picture once
    solved, the date, the best time or how hard it is, and the days solved in
    a row. Then a tile for each category, in playing order, one to a row on
-   a phone: its puzzles' pictures small, five across in three rows as
-   Picross DS lays a level out, each a question mark until it is solved;
-   its name, after its number for one of the owner's; its sizes and how
-   many sprites are found, or Gate cleared; and a bar of that. A player's
-   gate also says who made it, and one not yet opened says New. A tile
-   opens its category in category.html. A player reads a category as a gate.
+   a phone: its rift, the portal a player enters it by, in its rank's
+   colour and shut once every sprite is found; its name, after its rank
+   for one of the owner's; its number and how many sprites are found; and
+   a bar of that. A player's gate also says who made it, and one not yet
+   opened says New. A tile opens its category in category.html. A player
+   reads a category as a gate.
 
    A guest has no menu, so under the tiles is their way to How to play.
 
@@ -34,10 +34,8 @@
 (() => {
   'use strict';
 
-  const { data, owner, guest, enter, carry, iphone, installed, fresh, overMenu, portrait, seen, side, sprites, DAILY, BOARD, grid, rounds, grade, categories, heading, where, daily, today, streak, time, words, art, bar, switcher } = window.Pixels;
+  const { data, owner, guest, enter, carry, iphone, installed, fresh, overMenu, portrait, seen, sprites, rift, DAILY, BOARD, grid, rounds, grade, categories, heading, where, daily, today, streak, time, words, art, bar, switcher } = window.Pixels;
   const host = document.getElementById('pixels-levels'), leader = document.getElementById('pixels-leader');
-  // A tile shows fifteen pictures, which is as many as a category has on.
-  const PER_LEVEL = 15;
 
   const say = (heading, detail) => {
     const box = document.getElementById('pixels-error');
@@ -67,35 +65,28 @@
     row ? `Today · ${row} day${row === 1 ? '' : 's'} in a row` : 'Today', best ? puzzle.name : puzzle.date,
     best ? time(best.seconds) : grade(rounds(grid(puzzle.squares, puzzle.width))));
 
-  /* A CATEGORY'S TILE: its puzzles' pictures, five across in three rows,
-     each a question mark until found, then its name, how much is found and
-     a bar of that. One of the owner's gates says its number before its
-     name, and a player's says who made it. One with fewer than fifteen
-     keeps the room of fifteen, so every tile is one shape. */
+  /* A CATEGORY'S TILE: its rift, then its name, how much is found and a bar
+     of that. One of the owner's gates says its rank before its name and
+     its number before what is found, and a player's says who made it. A
+     gate with every sprite found has its rift shut. */
   const categoryTile = (c, results) => {
     const a = document.createElement('a');
     a.className = 'rux--link rux--tile rux--tile--clickable pixels-category';
     a.href = where(c);
-    const mosaic = document.createElement('div');
-    mosaic.className = 'pixels-mosaic';
-    mosaic.setAttribute('aria-hidden', 'true');
-    mosaic.style.setProperty('--size', c.width);
-    mosaic.append(...c.puzzles.slice(0, PER_LEVEL).map(p => art(p, results.has(p.id))));
-    for (let n = c.puzzles.length; n < PER_LEVEL; n++) mosaic.append(words('pixels-mosaic-none', ''));
-    const solved = c.puzzles.filter(p => results.has(p.id)).length;
+    const solved = c.puzzles.filter(p => results.has(p.id)).length, all = c.puzzles.length;
     const head = document.createElement('span');
     head.className = 'pixels-category-head';
-    head.append(words('pixels-category-name', c.number ? `Gate ${c.number} · ${heading(c)}` : heading(c)));
+    head.append(words('pixels-category-name', c.rank ? `${c.rank} · ${heading(c)}` : heading(c)));
     // A gate not yet opened, with nothing found in it, says New.
     if (!solved && !seen(c)) head.append(words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--high-contrast pixels-grade', 'New'));
-    a.append(mosaic, head);
+    a.append(rift(c, solved === all), head);
     // A player's gate says who made it, under the name.
     if (c.by) {
       const by = words('pixels-meta pixels-by', '');
       by.append(portrait(c.by), c.by.name);
       a.append(by);
     }
-    a.append(words('pixels-meta', `${side(c)} · ${sprites(solved, c.puzzles.length)}`), bar(solved, c.puzzles.length));
+    a.append(words('pixels-meta', c.number ? `Gate ${c.number} · ${solved === all ? 'cleared' : `${solved} of ${all} sprites`}` : sprites(solved, all)), bar(solved, all));
     return a;
   };
 

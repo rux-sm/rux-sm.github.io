@@ -13,11 +13,11 @@ Pixels goes on a phone's home screen as an app, as `docs/home-screen.md` says.
 
 `index.html` is the same page for every account, the owner's too, with two tabs. Puzzles: today's
 puzzle on one card with the days solved in a row; then a tile for each gate, which the code calls a
-category, in the owner's order, one to a row on a phone. A tile is its gate's fifteen pictures small,
-five across in three rows, each a question mark until solved; then its name, after its number, such as
-Gate 1 · Bugs, or More where it has none; its boards' sizes; and how many sprites are found, or Gate
-cleared, with a bar of that. Leaderboard: today's ranking with each player's time, and the all-time
-one with puzzles solved.
+category, in the owner's order, one to a row on a phone. A tile is its gate's rift, a portal in
+pixels, coloured by the gate's rank, E to S, and shut in grey once every sprite is found; then its
+rank and name, such as E · Bugs, or More where it has none; its number and how many sprites are found;
+and a bar of that. Leaderboard: today's ranking with each player's time, and the all-time one with
+puzzles solved.
 
 `category.html?at=` is one gate, named by its place among its maker's: its puzzles, small boards first
 and then easy to hard, with nothing locked, each tile a square with its letter in the gate, A to O,

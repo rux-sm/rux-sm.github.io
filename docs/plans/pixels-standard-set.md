@@ -63,9 +63,12 @@ everything has played a whole game.
   Easy, Normal and Hard tag leaves the front page and a gate's page, because
   it calls a 24-second puzzle normal. The grade stays in the Pixelator and
   Manage.
-- **A gate's tile shows its fifteen pictures five across in three rows,**
-  as Picross DS lays a level out, one gate to a row on a phone. Its number
-  stands before its name, and a custom gate has none.
+- **A gate's tile is its rift: a portal in pixels, drawn in the game's own
+  inks,** one gate to a row on a phone, because the gate's own page already
+  shows its fifteen pictures. A gate has a rank by its number, two gates to
+  a rank from E to S, and each rank a colour: green, blue, purple, orange,
+  red and gold. A cleared gate's rift is shut, in greys, and a custom gate
+  has no rank and is teal.
 - **A gate's page letters its puzzles A to O,** as Picross DS does, in place
   of Puzzle 7, and O is the boss. They stand three across on a phone, with
   the name and best time under each, and five across in three rows on a

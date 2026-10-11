@@ -154,7 +154,8 @@
      none. `where` is the address of its page. A player's own gate carries
      its `maker` and, as `by`, their name and picture. One of the owner's
      carries its `number`, its place among the owner's, which says how hard
-     it is; a player's own has none.
+     it is, and its `rank`, the letter that number earns; a player's own has
+     neither.
 
      A PLAYER READS A CATEGORY AS A GATE and a solved picture as a sprite.
      `side` is a gate's sizes as they are written, 10×10, or 5×5, 10×10 for
@@ -177,12 +178,39 @@
     let n = 0;
     cats.forEach(c => {
       c.number = c.maker ? null : ++n;
+      c.rank = c.number ? RANKS[Math.min(c.number, RANKS.length) - 1] : null;
       c.sizes = [...new Set(c.puzzles.map(p => p.width))].sort((a, b) => a - b);
       c.width = c.sizes[c.sizes.length - 1];
     });
     return cats;
   };
   const heading = ({ theme }) => theme || 'More';
+
+  /* A RIFT is how a gate is drawn on the front page: a portal, fifteen
+     squares a side, lit from its middle. One of the owner's has a rank by
+     its number, two gates to a rank from E to S, and each rank its own ink;
+     a player's own is teal, and one with every sprite found is shut, in
+     greys. RIFT is the picture: W is its white middle, P L M D the ink from
+     pale to deep, and K the dark ring round it. */
+  const RANKS = 'EEDDCCBBAASS';
+  const GLOW = { E: 'Df5Np', D: 'Eg6Oq', C: 'Fj9Pt', B: 'Bd3Ln', A: 'Ac2Km', S: 'Ce4Mo', own: 'IkaSu', shut: 'wyzz0' };
+  const RIFT = ['.....KKKKK.....', '...KKDDDDDKK...', '..KDDMMMMMDDK..', '..KDMMLLLMMDK..', '.KDMMLLPLLMMDK.', '.KDMLLPPPLLMDK.', '.KDMLPPWPPLMDK.',
+    '.KDMLPWWWPLMDK.', '.KDMLPPWPPLMDK.', '.KDMLLPPPLLMDK.', '.KDMMLLPLLMMDK.', '..KDMMLLLMMDK..', '..KDDMMMMMDDK..', '...KKDDDDDKK...', '.....KKKKK.....'].join('');
+  const rift = (c, shut) => {
+    const tones = GLOW[shut ? 'shut' : c.rank || 'own'];
+    const ink = { W: shut ? tones[0] : '1', P: tones[0], L: tones[1], M: tones[2], D: tones[3], K: tones[4] };
+    const el = document.createElement('div');
+    el.className = 'pixels-picture pixels-rift';
+    el.setAttribute('aria-hidden', 'true');
+    el.style.setProperty('--size', 15);
+    // A square outside the portal is given no ink, so the tile shows there.
+    el.append(...[...RIFT].map(s => {
+      const square = document.createElement('span');
+      if (ink[s]) { square.dataset.on = ''; square.dataset.ink = ink[s]; }
+      return square;
+    }));
+    return el;
+  };
   const side = ({ sizes, width }) => (sizes || [width]).map(n => `${n}×${n}`).join(', ');
   const sprites = (solved, all) => (solved === all ? 'Gate cleared' : `${solved} of ${all} sprites`);
   const where = ({ level, maker }) => `category.html?at=${level}${maker ? `&by=${encodeURIComponent(maker)}` : ''}`;
@@ -806,7 +834,7 @@
   };
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    iphone, installed, fresh, overMenu, face, portrait, seen, see, side, sprites, boss, letter,
+    iphone, installed, fresh, overMenu, face, portrait, seen, see, side, sprites, rift, boss, letter,
     SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title,
     words, art, tile, bar, how, switcher, chosen,

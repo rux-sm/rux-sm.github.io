@@ -63,9 +63,9 @@ everything has played a whole game.
   Easy, Normal and Hard tag leaves the front page and a gate's page, because
   it calls a 24-second puzzle normal. The grade stays in the Pixelator and
   Manage.
-- **A gate's tile is a square of sixteen: its number, then its fifteen
-  pictures, four across.** It stays two tiles across on a phone. A custom
-  gate has no number, so its first square is its maker's picture.
+- **A gate's tile shows its fifteen pictures five across in three rows,**
+  as Picross DS lays a level out, one gate to a row on a phone. Its number
+  stands before its name, and a custom gate has none.
 - **A gate's page letters its puzzles A to O,** as Picross DS does, in place
   of Puzzle 7, and O is the boss. They stand three across on a phone, with
   the name and best time under each, and five across in three rows on a
@@ -192,7 +192,7 @@ None open.
       for picked players has no number and stands after the course; the SQL
       is shown to rux first.
 - [ ] Lock gates 6 to 12 until their count of sprites is found: a gate's
-      tile, its page, the Continue card and a solved puzzle's Next.
+      tile, its page and a solved puzzle's Next.
 - [ ] Offer the free hint as a puzzle starts: one row and one column filled
       in, with nothing added to the clock.
 - [ ] Count the course on the front page, and say when all of it is found.

@@ -428,22 +428,18 @@
 .pixels-today > .pixels-picture--sm { --px: round(down, calc(4rem / var(--size, 10)), 1px); }
 .pixels-today > .pixels-blank { inline-size: 4rem; block-size: 4rem; }
 
-/* A CATEGORY'S TILE on the front page, two across on a phone and as many as
-   fit beyond that: sixteen squares, four by four, then its name, how much
-   is solved, and a bar of that. The first square is the gate's number, or
-   its maker's picture, and the fifteen after are its pictures. `--unit` is
-   one square of a picture, whole pixels, sized so four pictures and their
-   gaps fill the tile; the tile says how many squares a side its largest
-   pictures have, as `--size`, and `--cell` is one picture. The squares stand as far
-   apart down as across, so the mosaic is a square whatever the size. A
+/* A CATEGORY'S TILE on the front page, one to a row on a phone and as many
+   as fit beyond that: its fifteen pictures, five across in three rows as
+   Picross DS lays a level out, then its name, how much is solved, and a bar
+   of that. `--unit` is one square of a picture, whole pixels, sized so five
+   pictures and their gaps fill the tile; the tile says how many squares a
+   side its largest pictures have, as `--size`, and `--cell` is one picture.
+   The pictures stand as far apart down as across, whatever the size. A
    category with fewer than fifteen keeps a faint square for each one
    missing.
    The list asks no width of the page for itself: left to, it would ask for
    as many columns as its widest allows, and push a phone's page sideways. */
-.pixels-categories { display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: .5rem; min-inline-size: 0; max-inline-size: 60rem; }
-@media (min-width: 48rem) {
-  .pixels-categories { grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); }
-}
+.pixels-categories { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: .5rem; min-inline-size: 0; max-inline-size: 60rem; }
 .pixels-categories .pixels-category {
   container-type: inline-size;
   display: grid;
@@ -455,14 +451,14 @@
   padding: .75rem;
 }
 .pixels-mosaic {
-  --unit: round(down, calc((100cqi - 12px) / 4 / var(--size, 10)), 1px);
+  --unit: round(down, calc((100cqi - 16px) / 5 / var(--size, 10)), 1px);
   --cell: calc(var(--unit) * var(--size, 10));
   display: grid;
-  grid-template-columns: repeat(4, var(--cell));
+  grid-template-columns: repeat(5, var(--cell));
   grid-auto-rows: var(--cell);
   justify-content: space-between;
   align-content: space-between;
-  aspect-ratio: 1;
+  aspect-ratio: 5 / 3;
   margin-block-end: .5rem;
 }
 /* A picture is drawn to its own size, so a 5×5 in a gate of 10×10s fills
@@ -470,12 +466,8 @@
 .pixels-mosaic > .pixels-picture--sm { --px: round(down, calc(var(--cell) / var(--size, 10)), 1px); place-self: center; }
 .pixels-mosaic > .pixels-blank { inline-size: auto; block-size: auto; font-size: 1rem; }
 .pixels-mosaic-none { background: var(--rux-layer-accent-01); opacity: .4; }
-.pixels-mosaic-number { display: grid; place-items: center; background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: 1.25rem; font-weight: 600; }
-/* A maker's picture is fifteen squares a side, whatever the gate's are. */
-.pixels-mosaic > .pixels-face { --px: round(down, calc(var(--cell) / 15), 1px); place-self: center; }
 .pixels-category-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-/* Who made a player's gate: their username, after their picture on the
-   gate's own page. */
+/* Who made a player's gate: their picture and username on one line. */
 .pixels-by { display: flex; align-items: center; gap: .375rem; min-inline-size: 0; }
 .pixels-level-head > .pixels-by { margin-inline-start: 0; }
 /* A gate's name, with New at the far end until it is opened. */

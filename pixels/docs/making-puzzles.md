@@ -145,8 +145,8 @@ and this follows a player's time more closely than the rounds do.
 ## A gate
 
 A gate shows up to fifteen puzzles about one thing, of one size or more,
-such as Fruit. On the front page it is one tile of sixteen squares, four by
-four: its number, or its maker's picture, then its fifteen pictures. Its own
+such as Fruit. On the front page it is one tile: its fifteen pictures, five
+across in three rows, over its number and its name. Its own
 page letters its puzzles A to O, three across on a phone and five across on
 a wide screen. It can hold more, switched off. Its name is on its tile and
 heads its page, after its number, and one with no name is called More. Save

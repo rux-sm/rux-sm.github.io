@@ -12,11 +12,10 @@ and their browser keeps a key that is who they are; one with no key is let in by
 Pixels goes on a phone's home screen as an app, as `docs/home-screen.md` says.
 
 `index.html` is the same page for every account, the owner's too, with two tabs. Puzzles: today's
-puzzle on one card with the days solved in a row; Continue, a card for the puzzle last played if it is
-unsolved and otherwise the next unsolved after it; then a tile for each gate, which the code calls a
-category, in the owner's order. A tile is sixteen squares, four by four: its gate's number, or its
-maker's picture, then its fifteen pictures small, each a question mark until solved; then its name,
-such as Fruit, or More where it has none; its boards' sizes; and how many sprites are found, or Gate
+puzzle on one card with the days solved in a row; then a tile for each gate, which the code calls a
+category, in the owner's order, one to a row on a phone. A tile is its gate's fifteen pictures small,
+five across in three rows, each a question mark until solved; then its name, after its number, such as
+Gate 1 · Bugs, or More where it has none; its boards' sizes; and how many sprites are found, or Gate
 cleared, with a bar of that. Leaderboard: today's ranking with each player's time, and the all-time
 one with puzzles solved.
 

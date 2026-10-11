@@ -40,8 +40,7 @@
 
    BACK, and Puzzles once it is solved, go to the puzzle's category. Next is
    the next unsolved puzzle of that category, then the first unsolved of the
-   category after it, and so round to the first. The puzzle played is kept
-   in this browser under `pixels-last`, for the front page's Continue.
+   category after it, and so round to the first.
 
    THE OWNER PLAYS ANY PUZZLE, from Manage. One no player is sent is a
    trial: titled by its name, with no Next, its Back to Manage, and its time
@@ -69,7 +68,7 @@
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock');
 
-  const PROGRESS = 'pixels-progress', LAST = 'pixels-last';
+  const PROGRESS = 'pixels-progress';
   // How long the finished picture takes to fill in before the name shows.
   const REVEAL = 1100;
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -444,7 +443,6 @@
       setTimeout(() => { settling = false; }, 350);
       game.classList.remove('is-waiting');
       $('pixels-cover').remove();
-      if (!isDaily && !trial) { try { localStorage.setItem(LAST, puzzle.id); } catch { /* Continue starts from the first */ } }
       sound('fill');
     });
     cover.focus({ preventScroll: true });

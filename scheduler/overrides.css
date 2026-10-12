@@ -770,8 +770,11 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    the glyph and not the button's corner, where Carbon puts it for the
    header's 48px actions and where it would cover a glyph at the toolbar's
    size. It stands off the glyph's upper outer corner by the same step at
-   either button size, the desktop's and the phone's. */
+   either button size, the desktop's and the phone's. A wide count stands
+   past its button's edge, so it is lifted over the next button, whose rule
+   would otherwise cross it. */
 .scheduler-toolbar .rux--btn > .rux--badge-indicator--count {
+  z-index: 1;
   inset: auto auto calc(50% + var(--rux-spacing-02)) calc(50% + var(--rux-spacing-03));
   margin: 0;
 }

@@ -459,6 +459,10 @@
 .pixels-category-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* Who made a player's rift: their picture and username on one line. */
 .pixels-by { display: flex; align-items: center; gap: .375rem; min-inline-size: 0; }
+/* A LOCKED RIFT'S TILE is no link: its portal is dim and its name is in the
+   quieter colour, until the sprites it waits for are found. */
+.pixels-category.is-locked > .pixels-portal { opacity: .3; }
+.pixels-category.is-locked .pixels-category-name { color: var(--rux-text-secondary); }
 .pixels-level-head > .pixels-by { margin-inline-start: 0; }
 /* A rift's name, with New at the far end until it is opened. */
 .pixels-category-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; min-inline-size: 0; }

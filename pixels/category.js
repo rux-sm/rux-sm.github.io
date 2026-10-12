@@ -15,6 +15,9 @@
    its picture, name and best time; an unsolved one a question mark over
    its board's size, with Boss for the last, and the first of them, the one
    to play next, has its question mark in the primary button's colours.
+   A rift of the course that is locked, by app.js's `locks`, shows no
+   puzzle: its name, how many of the sprites it opens at are found, and a
+   bar of that.
 
    The page is the same for every account, the owner's too: it draws what
    data.js's `list` is sent. A guest with no player yet gets the door
@@ -23,7 +26,7 @@
 (() => {
   'use strict';
 
-  const { data, guest, enter, fresh, see, portrait, categories, heading, side, sprites, boss, title, letter, words, tile, bar } = window.Pixels;
+  const { data, guest, enter, fresh, see, portrait, categories, locks, heading, side, sprites, boss, title, letter, words, tile, bar } = window.Pixels;
   const host = document.getElementById('pixels-category');
 
   const say = (heading, detail) => {
@@ -50,14 +53,34 @@
     if (guest) document.getElementById('pixels-foot').hidden = false;
     fresh();
     const by = query.get('by') || '';
-    const category = categories(puzzles).find(c => c.level === at && (c.maker || '') === by);
+    const cats = categories(puzzles);
+    locks(cats, results);
+    const category = cats.find(c => c.level === at && (c.maker || '') === by);
     if (!category) {
       say('This rift is not here', 'It may have been moved. Pick one from Puzzles.');
       return;
     }
-    see(category);
     const name = heading(category), all = category.puzzles;
     document.title = `${name} — Pixels`;
+    // A locked rift shows its name, how far it is from opening and a bar of
+    // that, and none of its puzzles.
+    if (category.short) {
+      const have = category.need - category.short;
+      const el = document.createElement('section');
+      el.className = 'rux--stack-vertical rux--stack-scale-4';
+      el.setAttribute('aria-labelledby', 'pixels-category-name');
+      const head = document.createElement('div');
+      head.className = 'pixels-level-head';
+      const h1 = document.createElement('h1');
+      h1.className = 'rux--type-productive-heading-04';
+      h1.id = 'pixels-category-name';
+      h1.textContent = `Rift ${category.number} · ${name}`;
+      head.append(h1, words('pixels-meta', `${have} of ${category.need} sprites to open`));
+      el.append(head, bar(have, category.need));
+      host.append(el);
+      return;
+    }
+    see(category);
     const solved = all.filter(p => results.has(p.id)).length;
     const el = document.createElement('section');
     el.className = 'rux--stack-vertical rux--stack-scale-4';

@@ -9,8 +9,8 @@
    board with its clues and `paint` keeps it in step with the game, `drag`
    paints along it, `picture` draws the finished picture, `penalty` is what a mistake costs,
    `buzz` ticks the phone and `sound` plays a tone. `order` puts puzzles in
-   playing order, `categories` groups them and `daily` makes the puzzle of a
-   day. `face` makes a player's picture from their username and `portrait`
+   playing order, `categories` groups them, `locks` says which rifts of the
+   course are not open yet and `daily` makes the puzzle of a day. `face` makes a player's picture from their username and `portrait`
    draws a player's. `tile` draws a puzzle's tile, `riftTile` a rift's and `bar` a progress bar. `how` builds
    How to play. `installed` says the page was opened from a home screen
    icon and `iphone` that the phone is one, and `fresh` loads a page again
@@ -214,6 +214,28 @@
   const side = ({ sizes, width }) => (sizes || [width]).map(n => `${n}×${n}`).join(', ');
   const sprites = (solved, all) => (solved === all ? 'Rift cleared' : `${solved} of ${all} sprites`);
   const where = ({ level, maker }) => `category.html?at=${level}${maker ? `&by=${encodeURIComponent(maker)}` : ''}`;
+
+  /* A RIFT OF THE COURSE OPENS AS PICROSS DS'S LEVELS DO. Rifts 1 to 5 are
+     open from the start. Rifts 6 to 11 open at 40, 50, 60, 70, 80 and 90
+     sprites found in rifts 2 to 11, and rift 12 at 150, which is all of
+     them. A rift asks for no more than the rifts before it hold, so a course
+     still being drawn has none that cannot open. A rift with no number, a
+     player's own, is never locked.
+     `locks` gives each of `cats` its `need` and its `short`, how many
+     sprites it still waits for, which is none for an open rift, and returns
+     how many are counted. `found` has the ids of the puzzles solved. The
+     pages hold the lock; the database sends the puzzles all the same. */
+  const OPENS = { 6: 40, 7: 50, 8: 60, 9: 70, 10: 80, 11: 90, 12: 150 };
+  const locks = (cats, found) => {
+    const counted = cats.filter(c => c.number >= 2 && c.number <= 11);
+    const have = counted.reduce((n, c) => n + c.puzzles.filter(p => found.has(p.id)).length, 0);
+    cats.forEach(c => {
+      const before = counted.filter(k => k.number < c.number).reduce((n, k) => n + k.puzzles.length, 0);
+      c.need = Math.min(OPENS[c.number] || 0, before);
+      c.short = Math.max(0, c.need - have);
+    });
+    return have;
+  };
   // A rift a player has opened is kept in their browser, so one they have
   // not says New. `seen` asks and `see` keeps.
   const SEEN = 'pixels-seen';
@@ -716,23 +738,28 @@
      before its name and its number before what is found, and a player's
      says who made it. `found` is how many of its sprites the player has,
      and with all of them its portal is shut. `tag` is a word or two at the
-     name's far end. */
+     name's far end.
+     A LOCKED RIFT'S, one `locks` left short, is no link: its portal is dim,
+     and it says how many of the sprites it opens at are found, with a bar
+     of that. */
   const riftTile = (c, found, tag) => {
-    const a = document.createElement('a');
-    a.className = 'rux--link rux--tile rux--tile--clickable pixels-category';
-    a.href = where(c);
+    const locked = c.short > 0, have = c.need - c.short;
+    const a = document.createElement(locked ? 'div' : 'a');
+    a.className = locked ? 'rux--tile pixels-category is-locked' : 'rux--link rux--tile rux--tile--clickable pixels-category';
+    if (!locked) a.href = where(c);
     const all = c.puzzles.length;
     const head = document.createElement('span');
     head.className = 'pixels-category-head';
     head.append(words('pixels-category-name', c.rank ? `${c.rank} · ${heading(c)}` : heading(c)));
     if (tag) head.append(words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--high-contrast pixels-grade', tag));
-    a.append(portal(c, found === all), head);
+    a.append(portal(c, !locked && found === all), head);
     if (c.by) {
       const by = words('pixels-meta pixels-by', '');
       by.append(portrait(c.by), c.by.name);
       a.append(by);
     }
-    a.append(words('pixels-meta', c.number ? `Rift ${c.number} · ${found === all ? 'cleared' : `${found} of ${all} sprites`}` : sprites(found, all)), bar(found, all));
+    if (locked) a.append(words('pixels-meta', `Rift ${c.number} · ${have} of ${c.need} sprites to open`), bar(have, c.need));
+    else a.append(words('pixels-meta', c.number ? `Rift ${c.number} · ${found === all ? 'cleared' : `${found} of ${all} sprites`}` : sprites(found, all)), bar(found, all));
     return a;
   };
 
@@ -859,7 +886,7 @@
   };
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    iphone, installed, fresh, overMenu, face, portrait, seen, see, side, sprites, portal, boss, letter,
+    iphone, installed, fresh, overMenu, face, portrait, seen, see, side, sprites, portal, locks, boss, letter,
     SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title,
     words, art, tile, bar, riftTile, how, switcher, chosen,

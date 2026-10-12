@@ -85,6 +85,11 @@ everything has played a whole game.
   also asks for each under an hour, and Pixels has no time limit. The page
   holds the lock and the database sends the puzzles as now, since a time is
   already the browser's word. A custom rift is never locked.
+- **A locked rift is shown, and says how far it is from opening.** Its tile
+  is dim and no link, its page holds no puzzle, Next passes it by, and the
+  sprite that opens it says so as it is found. It asks for no more sprites
+  than the rifts before it hold, so the course can grow a rift at a time.
+  The owner plays a locked rift's puzzles from Manage.
 - **The rules of play stay.** A mistake is shown and costs time, and a hint
   costs time.
 - **A puzzle offers Picross DS's free hint as it starts:** one row and one
@@ -205,8 +210,6 @@ None open.
 - [ ] Send each rift's audience with its puzzles, so a rift the owner keeps
       for picked players has no number and stands after the course; the SQL
       is shown to rux first.
-- [ ] Lock rifts 6 to 12 until their count of sprites is found: a rift's
-      tile, its page and a solved puzzle's Next.
 - [ ] Offer the free hint as a puzzle starts: one row and one column filled
       in, with nothing added to the clock.
 - [ ] Count the course on the front page, and say when all of it is found.

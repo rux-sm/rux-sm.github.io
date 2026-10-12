@@ -41,7 +41,8 @@
    BACK goes to the puzzle's category, and so does the category's own tile
    once it is solved, which stands under the time with the sprite counted.
    Next is the next unsolved puzzle of that category, then the first
-   unsolved of the category after it, and so round to the first.
+   unsolved of the category after it, and so round to the first, passing by
+   a rift that is still locked.
 
    THE OWNER PLAYS ANY PUZZLE, from Manage. One no player is sent is a
    trial: titled by its name, with no Next and no rift, its Back to Manage,
@@ -65,7 +66,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, enter, boss, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title, riftTile, how } = window.Pixels;
+  const { data, owner, enter, boss, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title, riftTile, locks, how } = window.Pixels;
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock');
 
@@ -117,6 +118,13 @@
     if (!puzzle) { say('This puzzle is not here', 'It may have been deleted. Pick another from Puzzles.'); return; }
     // Its category, and its place among that category's puzzles.
     const home = cats.find(c => c.puzzles.includes(puzzle)), index = home ? home.puzzles.indexOf(puzzle) : -1;
+    // A rift of the course that is not open yet is not played, by its
+    // address either. The owner plays any, as Manage's Play needs.
+    if (!isDaily) locks(cats, results);
+    if (home?.short && !owner) {
+      say('This rift is not open yet', `${home.need - home.short} of ${home.need} sprites to open it. Pick a puzzle from Puzzles.`);
+      return;
+    }
     const back = trial ? 'manage.html' : home ? where(home) : './';
     $('pixels-back').href = $('pixels-out').href = back;
     if (trial) $('pixels-out').textContent = 'Manage';
@@ -239,7 +247,13 @@
         ...[...cats.slice(at + 1), ...cats.slice(0, at)].flatMap(c => c.puzzles),
       ];
       const done = isDaily ? await data.results().catch(() => new Map()) : results;
-      const next = rest.find(p => !done.has(p.id));
+      // The rifts as they stand with this sprite counted: Next passes by
+      // one still locked, and `opened` is those this sprite opened.
+      const shut = cats.filter(c => c.short > 0), known = new Set(done.keys());
+      if (home && !lost) known.add(puzzle.id);
+      locks(cats, known);
+      const opened = shut.filter(c => !c.short), riftOf = new Map(cats.flatMap(c => c.puzzles.map(p => [p, c])));
+      const next = rest.find(p => !done.has(p.id) && !riftOf.get(p)?.short);
       if (next) $('pixels-next').href = `play.html?id=${encodeURIComponent(next.id)}`;
       else $('pixels-next').remove();
       /* THE PUZZLE'S RIFT stands under the time as the front page draws it,
@@ -247,7 +261,8 @@
          for the first time fills its bar from where it stood, and one in a
          puzzle somebody else made earns a mana, which the tile says; the
          owner has no mana to earn. A time that was not saved counts
-         nothing. */
+         nothing. A rift this sprite opened stands under it, saying
+         Opened. */
       if (home) {
         const first = !results.has(key) && !lost, all = home.puzzles.length;
         const was = home.puzzles.filter(p => results.has(p.id)).length, found = was + (first ? 1 : 0);
@@ -255,7 +270,7 @@
         const rift = riftTile(home, found, earned ? '+1 mana' : '');
         const list = document.createElement('div');
         list.className = 'pixels-categories';
-        list.append(rift);
+        list.append(rift, ...opened.map(c => riftTile(c, c.puzzles.filter(p => known.has(p.id)).length, 'Opened')));
         $('pixels-out').remove();
         const keys = $('pixels-solved').querySelector('.pixels-actions');
         keys.before(list);

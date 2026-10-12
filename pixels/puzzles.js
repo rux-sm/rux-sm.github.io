@@ -17,7 +17,9 @@
    name, after its rank for one of the owner's; its number and how many
    sprites are found; and a bar of that. A player's rift also says who made
    it, and one not yet opened says New. A tile opens its category in
-   category.html. A player reads a category as a rift.
+   category.html, but for a locked one, a rift of the course that waits for
+   more sprites, which is dim and says how many. A player reads a category
+   as a rift.
 
    A guest has no menu, so under the tiles is their way to How to play.
 
@@ -34,7 +36,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, guest, enter, carry, iphone, installed, fresh, overMenu, portrait, seen, riftTile, DAILY, BOARD, grid, rounds, grade, categories, daily, today, streak, time, words, art, switcher } = window.Pixels;
+  const { data, owner, guest, enter, carry, iphone, installed, fresh, overMenu, portrait, seen, locks, riftTile, DAILY, BOARD, grid, rounds, grade, categories, daily, today, streak, time, words, art, switcher } = window.Pixels;
   const host = document.getElementById('pixels-levels'), leader = document.getElementById('pixels-leader');
 
   const say = (heading, detail) => {
@@ -219,10 +221,12 @@
     if (!cats.length) { host.appendChild(empty()); return; }
     const list = document.createElement('div');
     list.className = 'pixels-categories';
-    // A rift not yet opened, with nothing found in it, says New.
+    // A rift not yet opened, with nothing found in it, says New, unless it
+    // is locked, which its tile says for itself.
+    locks(cats, results);
     list.append(...cats.map(c => {
       const found = c.puzzles.filter(p => results.has(p.id)).length;
-      return riftTile(c, found, !found && !seen(c) ? 'New' : '');
+      return riftTile(c, found, !c.short && !found && !seen(c) ? 'New' : '');
     }));
     host.appendChild(list);
   })();

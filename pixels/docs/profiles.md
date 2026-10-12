@@ -93,6 +93,28 @@ What a player has besides the puzzles, and the rule for who is sent a rift.
   database cannot run the solver. On Players the owner hides or deletes any
   player's rift, and clears any picture.
 
+## Fairies
+
+- **A fairy is a hint that adds no time and does the line's work.** Hint
+  picks the line where the numbers decide the most. A fairy fills and
+  crosses out every square of it that is certain, or fills the square under
+  a wrong X. Undo takes those squares back, and the fairy stays spent.
+- **With none left a hint lights the line and adds 30 seconds.**
+- **A new player has three, and clearing a rift of the course gives three:**
+  one of the owner's rifts that everyone is sent, with every puzzle of it
+  that is on found. A player's own rift and a friend's give none, because
+  three puzzles make a rift and two players could trade them for ever.
+- **The database counts them from what is there, as it counts mana.**
+  `pixels_fairies` is three, three for each such rift, less
+  `pixels_players.fairies_used`, and never under none, so a rift that gains
+  a puzzle gives its three again once that one is found.
+- **`pixels_use_fairy` takes one and says how many are left.** The page
+  asks it before it fills the line, and with no answer the hint costs its
+  time.
+- **Me and the Hint key say how many a player has,** and the finish says
+  `+3 fairies` on a rift just cleared. The fairy is drawn in pixels by
+  `app.js`.
+
 ## The payoff
 
 - **A maker sees who has found sprites in each of their rifts,** on Me: each

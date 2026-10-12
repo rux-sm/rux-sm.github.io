@@ -2,7 +2,7 @@
    me.js — the player's own page
    --------------------------------------------------------------------------
    The player's picture, large, beside their username, how many sprites
-   they have found and their mana. Draw your picture opens the Pixelator on
+   they have found, their mana and their fairies. Draw your picture opens the Pixelator on
    it. The username is a field: Save keeps a new one, unless another player
    has it. A guest changes their PIN of four digits there, which with their
    username brings them back on any phone.
@@ -39,7 +39,9 @@
     const h1 = document.createElement('h1');
     h1.className = 'rux--type-productive-heading-04';
     h1.textContent = me.name;
-    text.append(h1, words('pixels-meta', `${me.found} ${me.found === 1 ? 'sprite' : 'sprites'} found${me.mana == null || owner ? '' : ` · ${me.mana} mana`}`));
+    const count = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+    text.append(h1, words('pixels-meta', [`${count(me.found, 'sprite', 'sprites')} found`, me.mana == null || owner ? '' : `${me.mana} mana`,
+      me.fairies == null ? '' : count(me.fairies, 'fairy', 'fairies')].filter(Boolean).join(' · ')));
     head.append(portrait(me, true), text);
 
     const drawIt = document.createElement('a');

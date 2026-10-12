@@ -467,6 +467,8 @@
 /* A rift's name, with New at the far end until it is opened. */
 .pixels-category-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; min-inline-size: 0; }
 .pixels-category-head > .pixels-category-name { flex: 1; min-inline-size: 0; }
+/* The same row under the name, where a rift just cleared says what it gave. */
+.pixels-category-head > .pixels-meta { flex: 1; min-inline-size: 0; font-size: .75rem; }
 .pixels-grade { flex: none; margin: 0; }
 .pixels-category > .pixels-meta { font-size: .75rem; }
 
@@ -752,6 +754,12 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   cursor: pointer;
 }
 .pixels-key:disabled { border-color: var(--rux-border-disabled); color: var(--rux-text-disabled); cursor: default; }
+/* THE HINT KEY'S FAIRY, where the other keys have an icon: the fairy, drawn
+   in pixels of 2px, and beside her how many the player has. With none she
+   is dim, as a locked rift's portal is. */
+.pixels-fairy { --px: 2px; background: none; }
+.pixels-key-fairy { display: flex; align-items: center; gap: .25rem; block-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.pixels-key-fairy[data-none] > .pixels-fairy { opacity: .3; }
 
 .pixels-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
 /* Each view's display would outrank the hidden attribute. */

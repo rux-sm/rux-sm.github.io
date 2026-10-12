@@ -10,7 +10,8 @@
    filled.
 
    THE CLOCK IS THE SCORE. A mistake adds time to it, more each time, and a
-   hint adds some too; app.js's `penalty` and HINT say how much. The clock
+   hint adds some too, unless a fairy gives it; app.js's `penalty` and HINT
+   say how much. The clock
    is red from then until the next move. The best time on a
    puzzle is the one kept. Hint points at a wrong X if there is one, and
    otherwise at the line where the numbers decide the most squares from what
@@ -66,7 +67,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, enter, boss, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title, riftTile, locks, how } = window.Pixels;
+  const { data, owner, enter, boss, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title, riftTile, locks, fairy, how } = window.Pixels;
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock');
 
@@ -148,6 +149,9 @@
     let seconds = fresh ? kept.seconds : 0;
     let mistakes = fresh ? kept.mistakes : 0;
     let hints = fresh ? kept.hints || 0 : 0;
+    // The fairies this game has spent, how many the player has left, and
+    // whether the database is being asked for one.
+    let spent = fresh ? kept.fairies || 0 : 0, fairies = me.fairies || 0, asking = false;
     // No square is marked until a finger, the mouse or an arrow key picks one.
     // `climb` counts the fills of one drag, so each sounds a step higher.
     let tool = 'fill', action = null, cursor = [], solved = false, climb = 0;
@@ -164,7 +168,7 @@
     $('pixels-title').textContent = heading;
     document.title = `${heading} — Pixels`;
 
-    const keep = () => saveProgress(puzzle.id, { squares: puzzle.squares, state, seconds, mistakes, hints });
+    const keep = () => saveProgress(puzzle.id, { squares: puzzle.squares, state, seconds, mistakes, hints, fairies: spent });
     const el = board(boardHost, answer, state, { done: true, label: 'Puzzle' });
     // The name, the picture so far and the clock sit in the board's corner.
     el.querySelector('.pixels-corner').appendChild($('pixels-info'));
@@ -223,6 +227,7 @@
       // What went wrong and what it added, then how the time stands.
       const count = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
       const parts = [mistakes ? count(mistakes, 'mistake') : 'No mistakes'];
+      if (spent) parts.push(`${spent} ${spent === 1 ? 'fairy' : 'fairies'}`);
       if (hints) parts.push(count(hints, 'hint'));
       let extra = hints * HINT;
       for (let n = 1; n <= mistakes; n++) extra += penalty(n);
@@ -261,13 +266,23 @@
          for the first time fills its bar from where it stood, and one in a
          puzzle somebody else made earns a mana, which the tile says; the
          owner has no mana to earn. A time that was not saved counts
-         nothing. A rift this sprite opened stands under it, saying
-         Opened. */
+         nothing. A rift this sprite cleared says the fairies it freed,
+         and one it opened stands under it, saying Opened. */
       if (home) {
         const first = !results.has(key) && !lost, all = home.puzzles.length;
         const was = home.puzzles.filter(p => results.has(p.id)).length, found = was + (first ? 1 : 0);
         const earned = first && !owner && me.mana != null && puzzle.maker !== me.id;
-        const rift = riftTile(home, found, earned ? '+1 mana' : '');
+        // A rift of the course just cleared frees three fairies. The
+        // database is the one that counts them, so it is asked again.
+        let freed = 0;
+        if (first && found === all) {
+          try {
+            const now = await data.me();
+            freed = Math.max(0, (now?.fairies ?? fairies) - fairies);
+            fairies += freed;
+          } catch { /* Me says how many, the next time it is opened */ }
+        }
+        const rift = riftTile(home, found, earned ? '+1 mana' : '', freed ? `+${freed} fairies` : '');
         const list = document.createElement('div');
         list.className = 'pixels-categories';
         list.append(rift, ...opened.map(c => riftTile(c, c.puzzles.filter(p => known.has(p.id)).length, 'Opened')));
@@ -308,7 +323,7 @@
     };
 
     const act = (y, x) => {
-      if (!started || settling || solved) return;
+      if (!started || settling || solved || asking) return;
       const v = state[y][x];
       let missed = false;
       if (action === 'fill' && v === 0) {
@@ -356,7 +371,7 @@
       const entry = past.pop();
       // A Restart taken back: the board, the clock and its mistakes as they were.
       if (!Array.isArray(entry)) {
-        ({ state, seconds, mistakes, hints, past } = entry);
+        ({ state, seconds, mistakes, hints, spent, past } = entry);
         ahead = [];
         tick();
       } else {
@@ -387,15 +402,36 @@
        every X that is right; a wrong X is pointed at first, because the
        numbers cannot be reasoned from it. Otherwise each line is solved from
        what is certain, and the one that decides the most squares to fill, or
-       failing that the most to cross out, is lit. */
-    const hint = () => {
-      if (!started || solved) return;
+       failing that the most to cross out, is lit.
+
+       A FAIRY, where the player has one and the database takes it, does that
+       line's work and adds no time: every square of the line that is certain
+       is filled or crossed out, or the square under a wrong X is filled.
+       They are a move like any other, which Undo takes back, though the
+       fairy stays spent. The board takes no touch while the database is
+       asked. With no fairy, or no answer, the hint lights the line and adds
+       its time. */
+    const fairyKey = $('pixels-fairies'), fairyCount = document.createElement('span');
+    fairyKey.append(fairy(), fairyCount);
+    // The Hint key's fairy and how many the player has, dim with none.
+    const showFairies = () => {
+      fairyCount.textContent = fairies;
+      fairyKey.toggleAttribute('data-none', !fairies);
+      $('pixels-hint').setAttribute('aria-label', `Hint, ${fairies} ${fairies === 1 ? 'fairy' : 'fairies'}`);
+    };
+    showFairies();
+    const hint = async () => {
+      if (!started || solved || asking) return;
       const wrong = [];
       state.forEach((r, y) => r.forEach((v, x) => { if (v === 2 && answer[y][x]) wrong.push([y, x]); }));
-      let text, lit;
+      // `work` is the squares a fairy sets, each its row, its column and 1
+      // to fill it or 2 to cross it out, and `did` what she is said to do.
+      let text, lit, work, did;
       if (wrong.length) {
         cursor = wrong[0];
         text = 'This X is on a square of the picture';
+        work = [[...wrong[0], 1]];
+        did = 'A fairy filled the square under a wrong X';
       } else {
         const known = state.map((r, y) => r.map((v, x) => (v === 1 ? 1 : v && !answer[y][x] ? 0 : -1)));
         let top = null;
@@ -404,19 +440,52 @@
           const fills = agreed.filter((v, k) => v === 1 && have[k] === -1).length;
           const crosses = agreed.filter((v, k) => v === 0 && have[k] === -1).length;
           const worth = fills * 100 + crosses;
-          if (worth && (!top || worth > top.worth)) top = { kind, n, worth, fills };
+          if (worth && (!top || worth > top.worth)) top = { kind, n, worth, fills, agreed, have };
         };
         for (let y = 0; y < H; y++) weigh('row', y, answer[y], known[y]);
         for (let x = 0; x < W; x++) weigh('col', x, column(answer, x), column(known, x));
         if (!top) return;
         lit = `.pixels-cell[data-${top.kind === 'row' ? 'y' : 'x'}="${top.n}"], .pixels-clue[data-${top.kind}="${top.n}"]`;
         text = `${top.kind === 'row' ? 'Row' : 'Column'} ${top.n + 1} has squares to ${top.fills ? 'fill' : 'cross out'}`;
+        work = top.agreed.flatMap((v, k) => (v === -1 || top.have[k] !== -1 ? [] : [top.kind === 'row' ? [top.n, k, v ? 1 : 2] : [k, top.n, v ? 1 : 2]]));
+        did = `A fairy did ${top.kind === 'row' ? 'row' : 'column'} ${top.n + 1}`;
+      }
+      // `took` is a fairy spent, and `came` is false where the database
+      // gave no answer.
+      let took = false, came = true;
+      if (fairies > 0 && data.useFairy) {
+        asking = true;
+        try {
+          const got = await data.useFairy();
+          took = !got.error;
+          fairies = got.fairies ?? fairies;
+        } catch { came = false; }
+        asking = false;
+        showFairies();
+      }
+      if (took) {
+        spent++;
+        past.push(state.map(r => r.slice()));
+        ahead = [];
+        work.forEach(([y, x, v]) => { state[y][x] = v; });
+        work.forEach(([y, x, v]) => { if (v === 1) closeLines(y, x); });
+        draw();
+        if (lit) el.querySelectorAll(lit).forEach(e => e.classList.add('is-hint'));
+        delete clock.dataset.charged;
+        tell(did);
+        if (!isSolved()) {
+          buzz(30);
+          sound('line');
+        }
+        keep();
+        if (isSolved()) finish();
+        return;
       }
       hints++;
       charge(HINT);
       draw();
       if (lit) el.querySelectorAll(lit).forEach(e => e.classList.add('is-hint'));
-      tell(`${text} · ${added(HINT)}`);
+      tell(`${came ? '' : 'No fairy came · '}${text} · ${added(HINT)}`);
       buzz();
       sound('hint');
       keep();
@@ -464,12 +533,13 @@
 
     // Restart is one tap among the keys, so Undo takes it back whole.
     const restart = () => {
-      past = [{ state, seconds, mistakes, hints, past }];
+      past = [{ state, seconds, mistakes, hints, spent, past }];
       ahead = [];
       state = blank();
       seconds = 0;
       mistakes = 0;
       hints = 0;
+      spent = 0;
       tell('');
       saveProgress(puzzle.id, null);
       tick();

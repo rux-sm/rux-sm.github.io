@@ -27,7 +27,7 @@ three across on a phone and five on a wide screen. A solved puzzle shows its pic
 time; an unsolved one a question mark over its board's size, with Boss for the last, and the first of
 them, the one to play next, has its mark in the primary button's colours.
 
-`me.html` is the player's own page: their picture, username, sprites found and mana, the PIN that
+`me.html` is the player's own page: their picture, username, sprites found, mana and fairies, the PIN that
 brings them back on any phone, and the rifts they have made, each to name, publish or delete, with who
 has found sprites in it. `friends.html` is the player's invite link and every other player, each to
 add or remove. A player's own puzzles are made in the Pixelator, for mana, and a friend's published
@@ -44,22 +44,22 @@ mouse's right button, which always crosses out, or with the arrow keys, Z and X.
 number greys out when its run of squares is filled, a line with no square of the picture starts crossed
 out, and a finished line crosses out its own empty squares. The clock is the score: filling a square
 not in the picture is a mistake, crossed out in red, and it adds time, 15 seconds for a puzzle's first,
-30 for its second and a minute for each one after; a hint adds 30 seconds. The clock is red until the
-next move, and the best time on a puzzle is the one kept. Hint, or H, lights the line where the numbers
-decide the most. Undo, or U, takes back the last tap or drag, and Redo, or R, puts it back, but neither
-touches a mistake, and a tap that was only a mistake is no move to take back. Restart empties the
-board, and Undo straight after brings it back. Every board has one footprint, whatever its puzzle's
+30 for its second and a minute for each one after; a hint adds 30 seconds, or spends a fairy and adds
+none. The clock is red until the next move, and the best time on a puzzle is the one kept. Hint, or H,
+lights the line where the numbers decide the most, and a fairy fills in what is certain on it, as
+`docs/profiles.md` says. Undo, or U, takes back the last tap or drag, and Redo, or R, puts it back, but
+neither touches a mistake, and a tap that was only a mistake is no move to take back. Restart empties
+the board, and Undo straight after brings it back. Every board has one footprint, whatever its puzzle's
 size, as wide as the window allows, to 600px, in whole pixels a square; `app.css` has its measures. A
 tile fills the board's corner: the puzzle's name, the picture so far, drawn small, and the clock. A
-warm line rules off every fifth square. Every other line's numbers sit on a band that runs out from its
-squares and fades, and a line with more numbers than its room holds draws them smaller to fit. When the
-picture is complete the squares fill in as the picture, in its colours if it has them, and its name
-shows with the time, the mistakes and hints, and what they added. Under them the rift's tile counts the
-sprite, says +1 mana where the find earned one, and opens the rift, as Back does; a rift the sprite
-opened stands under it, saying Opened. Next goes to that rift's next unsolved puzzle, then to the next
-rift that is open. How to play is three steps in a modal, each with a small board: what the numbers
-mean, filling and crossing out, and what a mistake costs. It opens from the menu on every page and from
-the button under Start, and by itself on the first puzzle of a player who has solved none and has not
+warm line rules off every fifth square. When the picture is complete the squares fill in as the
+picture, in its colours if it has them, and its name shows with the time, the mistakes and hints, and
+what they added. Under them the rift's tile counts the sprite, says +1 mana where the find earned one
+and +3 fairies where it cleared the rift, and opens the rift, as Back does; a rift the sprite opened
+stands under it, saying Opened. Next goes to that rift's next unsolved puzzle, then to the next rift
+that is open. How to play is three steps in a modal, each with a small board: what the numbers mean,
+filling and crossing out, and what a mistake costs. It opens from the menu on every page and from the
+button under Start, and by itself on the first puzzle of a player who has solved none and has not
 closed it in this browser. A guest has no menu, so the front page and a rift's have a button for it.
 The clock stands while it is open. Each move plays a tone, which the Sound key turns off and an
 iPhone's silent switch does not, and a phone ticks on each fill where the browser allows it. A game in
@@ -109,18 +109,18 @@ new one or Unsorted, or deleted; a rift left empty goes too.
 
 Nine tables in the site's database, which only the owner's account reads directly: `pixels_puzzles`,
 every puzzle, which a staff account may read too; `pixels_players`, each player's name and picture
-with the account or the hash of the guest's key; `pixels_player_results` and `pixels_player_days`,
+with the account or the hash of the guest's key, and how many fairies they have used; `pixels_player_results` and `pixels_player_days`,
 each player's best time on a puzzle and on a puzzle of the day; and `pixels_settings`, whether new
 players may join; `pixels_friends`, who has added whom; `pixels_player_keys`, the key of each phone
 that logged in by a PIN; `pixels_level_players`, the players a rift is kept for; and
 `pixels_levels`, each rift's id, name, maker, audience and whether it is hidden. A rift and a puzzle
 with no maker are the owner's. `docs/database-access.md` is the rule they follow.
 
-A player's page calls twenty-one functions, which the publishable key may run and which first find
+A player's page calls twenty-two functions, which the publishable key may run and which first find
 the player from the log-in or the key: `pixels_join`, `pixels_me`, `pixels_puzzles`,
 `pixels_results`, `pixels_days`, `pixels_record`, `pixels_record_day`, `pixels_board`,
 `pixels_set_picture`, `pixels_rename`, `pixels_people`, `pixels_befriend`, `pixels_renew_invite`,
-`pixels_set_pin`, `pixels_login`, and for a player's own rifts `pixels_mine`, `pixels_keep_puzzle`,
+`pixels_set_pin`, `pixels_use_fairy`, `pixels_login`, and for a player's own rifts `pixels_mine`, `pixels_keep_puzzle`,
 `pixels_drop_puzzle`, `pixels_name_my_level`, `pixels_publish_my_level` and
 `pixels_delete_my_level`. A time is the player's own browser's word: the database refuses only what
 cannot be, a time under two seconds, a puzzle the player is not sent, a day more than one from

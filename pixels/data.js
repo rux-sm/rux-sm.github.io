@@ -12,7 +12,7 @@
    key: `pixels_puzzles`, `pixels_results`, `pixels_days`, `pixels_record`,
    `pixels_record_day`, `pixels_board`, `pixels_me`, `pixels_join`,
    `pixels_set_picture`, `pixels_rename`, `pixels_people`, `pixels_befriend`,
-   `pixels_renew_invite`, `pixels_set_pin`, `pixels_login`, and for a player's
+   `pixels_renew_invite`, `pixels_set_pin`, `pixels_use_fairy`, `pixels_login`, and for a player's
    own puzzles and rifts
    `pixels_mine`, `pixels_keep_puzzle`, `pixels_drop_puzzle`,
    `pixels_name_my_level`, `pixels_publish_my_level` and
@@ -94,6 +94,18 @@
   // The better of two results: the shorter time.
   const better = (was, seconds) => ({ seconds: Math.min(seconds, was?.seconds ?? seconds) });
   const write = db => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch { /* preview only */ } };
+  // The preview's fairies, counted as the database counts them: three, and
+  // three for each rift that is shown with every puzzle of it that is on
+  // solved, less those used.
+  const fairiesOf = db => {
+    const rifts = new Map();
+    db.puzzles.forEach(p => {
+      const level = p.level === undefined ? 1 : p.level;
+      if (p.day || level == null || p.off || (db.levels || []).find(l => l.level === level)?.hidden) return;
+      rifts.set(level, (rifts.get(level) ?? true) && p.id in db.results);
+    });
+    return Math.max(0, 3 + 3 * [...rifts.values()].filter(Boolean).length - (db.fairiesUsed || 0));
+  };
   const preview = {
     // A puzzle kept before levels and sizes were is ten a side, in level 1.
     // Each comes as the database sends the owner's: with its category's
@@ -189,7 +201,14 @@
     // The preview has one player, so its boards hold one row.
     async me() {
       const db = read();
-      return { id: 'preview', name: 'Preview', picture: null, colours: null, code: 'preview', ...db.me, found: Object.keys(db.results).length };
+      return { id: 'preview', name: 'Preview', picture: null, colours: null, code: 'preview', ...db.me, found: Object.keys(db.results).length, fairies: fairiesOf(db) };
+    },
+    async useFairy() {
+      const db = read();
+      if (fairiesOf(db) < 1) return { error: 'none', fairies: 0 };
+      db.fairiesUsed = (db.fairiesUsed || 0) + 1;
+      write(db);
+      return { fairies: fairiesOf(db) };
     },
     // The preview has nobody else in it.
     async people() { return []; },
@@ -271,6 +290,9 @@
     // The player's own PIN, four digits, or none to take it away; and another
     // phone logging in by it, which gets a key of its own, kept as a guest's is.
     async setPin(pin) { return call('pixels_set_pin', { p_key: key(), p_pin: pin }); },
+    // Spends one of the player's fairies, if there is one: `fairies` is how
+    // many are left, with `error` where there was none to spend.
+    async useFairy() { return call('pixels_use_fairy', { p_key: key() }); },
     async login(name, pin) {
       const made = crypto.randomUUID() + crypto.randomUUID();
       const player = await call('pixels_login', { p_name: name, p_pin: pin, p_key: made });

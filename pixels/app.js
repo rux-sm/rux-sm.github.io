@@ -10,8 +10,8 @@
    paints along it, `picture` draws the finished picture, `penalty` is what a mistake costs,
    `buzz` ticks the phone and `sound` plays a tone. `order` puts puzzles in
    playing order, `categories` groups them, `locks` says which rifts of the
-   course are not open yet and `daily` makes the puzzle of a day. `face` makes a player's picture from their username and `portrait`
-   draws a player's. `tile` draws a puzzle's tile, `riftTile` a rift's and `bar` a progress bar. `how` builds
+   course are not open yet and `daily` makes the puzzle of a day. `face` makes a player's picture from their username, `portrait`
+   draws a player's and `fairy` the helper a hint spends. `tile` draws a puzzle's tile, `riftTile` a rift's and `bar` a progress bar. `how` builds
    How to play. `installed` says the page was opened from a home screen
    icon and `iphone` that the phone is one, and `fresh` loads a page again
    after a minute away. The pages add their own behaviour in puzzles.js, category.js,
@@ -207,6 +207,22 @@
     el.append(...[...PORTAL].map(s => {
       const square = document.createElement('span');
       if (ink[s]) { square.dataset.on = ''; square.dataset.ink = ink[s]; }
+      return square;
+    }));
+    return el;
+  };
+  /* A FAIRY is the help a player earns and spends, drawn in pixels as a
+     portal is: nine squares a side, her hair, face, wings and dress in the
+     game's inks, with nothing drawn where she has no square. */
+  const FAIRY = ['...444...', '..4BBB4..', 'll.BBB.ll', 'lJl.8.lJl', 'lJl888lJl', '.ll888ll.', '..l888l..', '...8.8...', '...B.B...'].join('');
+  const fairy = () => {
+    const el = document.createElement('span');
+    el.className = 'pixels-picture pixels-fairy';
+    el.setAttribute('aria-hidden', 'true');
+    el.style.setProperty('--size', 9);
+    el.append(...[...FAIRY].map(s => {
+      const square = document.createElement('span');
+      if (s !== '.') { square.dataset.on = ''; square.dataset.ink = s; }
       return square;
     }));
     return el;
@@ -738,12 +754,13 @@
      before its name and its number before what is found, and a player's
      says who made it. `found` is how many of its sprites the player has,
      and with all of them its portal is shut. `tag` is a word or two at the
-     name's far end.
+     name's far end, and `under` one at the far end of the line below it.
      A LOCKED RIFT'S, one `locks` left short, is no link: its portal is dim,
      and it says how many of the sprites it opens at are found, with a bar
      of that. */
-  const riftTile = (c, found, tag) => {
+  const riftTile = (c, found, tag, under) => {
     const locked = c.short > 0, have = c.need - c.short;
+    const pill = text => words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--high-contrast pixels-grade', text);
     const a = document.createElement(locked ? 'div' : 'a');
     a.className = locked ? 'rux--tile pixels-category is-locked' : 'rux--link rux--tile rux--tile--clickable pixels-category';
     if (!locked) a.href = where(c);
@@ -751,15 +768,22 @@
     const head = document.createElement('span');
     head.className = 'pixels-category-head';
     head.append(words('pixels-category-name', c.rank ? `${c.rank} · ${heading(c)}` : heading(c)));
-    if (tag) head.append(words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--high-contrast pixels-grade', tag));
+    if (tag) head.append(pill(tag));
     a.append(portal(c, !locked && found === all), head);
     if (c.by) {
       const by = words('pixels-meta pixels-by', '');
       by.append(portrait(c.by), c.by.name);
       a.append(by);
     }
-    if (locked) a.append(words('pixels-meta', `Rift ${c.number} · ${have} of ${c.need} sprites to open`), bar(have, c.need));
-    else a.append(words('pixels-meta', c.number ? `Rift ${c.number} · ${found === all ? 'cleared' : `${found} of ${all} sprites`}` : sprites(found, all)), bar(found, all));
+    const said = words('pixels-meta', locked ? `Rift ${c.number} · ${have} of ${c.need} sprites to open`
+      : c.number ? `Rift ${c.number} · ${found === all ? 'cleared' : `${found} of ${all} sprites`}` : sprites(found, all));
+    if (under) {
+      const line = document.createElement('span');
+      line.className = 'pixels-category-head';
+      line.append(said, pill(under));
+      a.append(line);
+    } else a.append(said);
+    a.append(locked ? bar(have, c.need) : bar(found, all));
     return a;
   };
 
@@ -810,7 +834,7 @@
           </div>
         </div>
         <div class="rux--modal-content">
-          <ol class="pixels-how">${step('Read the numbers', 'Every number is a run of filled squares in its row or column, in order. 5 is five in a row. 1 1 is two single squares with a gap between them.')}${step('Fill what is certain', `A 5 in a row of five fills the whole row, so start with the biggest numbers. Mark a square that must be empty with X. ${touch ? 'Tap a square, or drag along a row or column.' : 'Click a square, or drag along a row or column; the right button marks an X.'}`)}${step('Mind the clock', `Filling a square that is not in the picture adds time: ${penalty(1)} seconds for the first mistake, ${penalty(2)} for the second and ${penalty(3)} for each one after. A hint adds ${HINT} seconds. Your best time on a puzzle is the one kept.`)}
+          <ol class="pixels-how">${step('Read the numbers', 'Every number is a run of filled squares in its row or column, in order. 5 is five in a row. 1 1 is two single squares with a gap between them.')}${step('Fill what is certain', `A 5 in a row of five fills the whole row, so start with the biggest numbers. Mark a square that must be empty with X. ${touch ? 'Tap a square, or drag along a row or column.' : 'Click a square, or drag along a row or column; the right button marks an X.'}`)}${step('Mind the clock', `Filling a square that is not in the picture adds time: ${penalty(1)} seconds for the first mistake, ${penalty(2)} for the second and ${penalty(3)} for each one after. A hint adds ${HINT} seconds, but a fairy's is free and fills the line for you: you start with three, and every rift you clear frees three more. Your best time on a puzzle is the one kept.`)}
           </ol>${touch ? '' : `
           <p class="pixels-how-keys">Keys: the arrows move, Z fills, X crosses out, H hints, U undoes and R redoes.</p>`}
         </div>
@@ -886,7 +910,7 @@
   };
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    iphone, installed, fresh, overMenu, face, portrait, seen, see, side, sprites, portal, locks, boss, letter,
+    iphone, installed, fresh, overMenu, face, portrait, seen, see, side, sprites, portal, fairy, locks, boss, letter,
     SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title,
     words, art, tile, bar, riftTile, how, switcher, chosen,

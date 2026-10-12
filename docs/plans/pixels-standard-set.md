@@ -25,15 +25,17 @@ everything has played a whole game.
 - **Rift 1 holds two sizes, five 5×5 and then ten 10×10,** as the Easy level
   does. Every other rift of the course is one size, though any rift can
   hold more.
-- **Boards stop at 15×15 for now.** 5×5, 10×10 and 15×15 hold 5, 25 and 120
-  of the 180, so rifts 8 to 10 are 15×15 where Picross DS's levels 7 to 9
-  are 20×20.
+- **Rifts 3 to 10 are 15×15.** 5×5, 10×10, 15×15 and 20×20 hold 5, 25, 120
+  and 30 of the 180, so rifts 8 to 10 are 15×15 where Picross DS's levels 7
+  to 9 are 20×20.
 - **Rifts 11 and 12 are 20×20, the finale,** where Picross DS ends on 25×20.
-  The 20×20 board is built last, before rift 11 is drawn, and the database
-  already takes 20 a side.
+  The 20×20 board is the course's alone: the Pixelator offers it for the
+  owner's rifts, and a player's own stop at 15.
 - **A big board is played zoomed in on a phone,** as Picross DS zooms its
-  large puzzles. The squares share 270px on a phone 390px wide, which is
-  18px each on a 15×15 and about 13px on a 20×20.
+  large puzzles. On a phone 390px wide a 15×15's squares share 270px, 18px
+  each, and a 20×20's share 280px, 14px each, since twenty divide a multiple
+  of 20px and not of 30px. A board's numbers are two thirds of a square at
+  most, so a 20×20's are small until it is zoomed.
 - **A custom rift is outside the base game.** It is one of the owner's kept
   for the players ticked in Manage, or a player's own, sent to their
   friends, and the owner has their own as any player does. It has no number
@@ -211,9 +213,6 @@ None open.
 - [ ] Give a 10×10 its 30px squares at 390px, with every line's numbers
       still in their room, and look at each size in Chrome at that width.
 - [ ] Publish rifts 1 to 10 in order, each as its fifteenth puzzle is drawn.
-- [ ] Add the 20×20 board to the Pixelator, play and Manage: a square of
-      whole pixels, every line's numbers in their room, and the zoom on a
-      phone.
 - [ ] Set the numbers rifts 11 and 12 are drawn to, from the first 20×20
       drawn and timed.
 - [ ] Publish rifts 11 and 12 the same way.

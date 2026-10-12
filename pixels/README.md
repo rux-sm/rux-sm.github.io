@@ -34,11 +34,11 @@ holds the places every player has, Puzzles, Friends, Pixelator and Me: along the
 along the top on a wide screen, and not where a puzzle is played or drawn. `docs/profiles.md` is the
 whole of it: the door, profiles, friends, mana, and who is sent a rift.
 
-`play.html?id=` plays one puzzle, 5, 10 or 15 squares a side. The board waits behind Tap to start,
+`play.html?id=` plays one puzzle, 5, 10, 15 or 20 squares a side. The board waits behind Tap to start,
 which with a mouse says Start, drawn bare until then, with no number and no mark, and the clock runs
 from that tap. Fill a square or cross it out with X, by tap, by dragging along a row or column, with
 a mouse's right button, which always crosses out, or with the arrow keys, Z and X. On a phone a
-15×15 board zooms under two fingers, its numbers staying in view, and there a touch fills as it
+board of 15 or 20 zooms under two fingers, its numbers staying in view, and there a touch fills as it
 lifts. A number greys out when its run of squares is filled, a line with no square of the picture
 starts crossed out, and a finished line crosses out its own empty squares. The clock is the score:
 filling a square not in the picture is a mistake, crossed out in red, and it adds time, 15 seconds
@@ -48,8 +48,8 @@ the line where the numbers decide the most. Undo, or U, takes back the last tap 
 or R, puts it back, but neither touches a mistake, and a tap that was only a mistake is no move to
 take back. Restart empties the board, and Undo straight after brings it back. Every board has one
 footprint, whatever its puzzle's size: the squares together are as wide as the window's width and
-height allow, to 600px, and always a multiple of 30px, so a square is whole pixels on a board of
-five, ten or fifteen. The corner is a square of one size, 84px on a phone and 120px on a wide
+height allow, to 600px, and always a multiple of 30px, or of 20px on a board of twenty, so a square is
+whole pixels on every board. The corner is a square of one size, 84px on a phone and 120px on a wide
 screen, and a tile fills it: the puzzle's name, the picture so far, drawn small, and the clock. The
 keys under the board end where it does. A warm line rules off every fifth square. Every other line's
 numbers sit on a band that runs out from its squares and fades, larger on larger squares, and a line
@@ -78,13 +78,13 @@ owner's puzzles go in the owner's rifts, and the owner alone has Manage and Play
 player's go in rifts of their own, through functions that count their mana, and so do the owner's
 own at `make.html?own`, which cost none. `make.html?me` draws a player's picture. It checks as you
 draw whether the numbers alone can solve the picture and how hard that is, outlines each square that
-would need a guess, and saves only a picture with one answer. Size starts a blank board of 5, 10 or
-15 a side. Its Colour step paints the picture the puzzle finishes as, from fifty-five inks, and Save
-asks which rift it goes in; a rift shows fifteen, the list counts how many of each one's are on, and a
-puzzle saved into one with fifteen on is saved off. A rift just started is named there and hidden until
-Manage's switch publishes it. No rift yet, first in the list, keeps the puzzle in Unsorted, a
-section of Manage. Puzzle of the day, in the same list, makes it a day's puzzle, which sits in no
-rift; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good rift.
+would need a guess, and saves only a picture with one answer. Size starts a blank board of 5, 10 or 15
+a side, 20 in the course. Its Colour step paints the picture the puzzle finishes as, from fifty-five
+inks, and Save asks which rift it goes in; a rift shows fifteen, the list counts how many of each one's
+are on, and a puzzle saved into one with fifteen on is saved off. A rift just started is named there
+and hidden until Manage's switch publishes it. No rift yet, first in the list, keeps the puzzle in
+Unsorted, a section of Manage. Puzzle of the day, in the same list, makes it a day's puzzle, which sits
+in no rift; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good rift.
 
 `manage.html` is the owner's desk: every rift on one page, in order, then Unsorted. A rift's heading
 has its place and name, a Published or Hidden switch, arrows that move it among the others, a key that

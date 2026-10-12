@@ -126,6 +126,8 @@
     // date, and the owner's trial its name.
     const heading = isDaily ? (results.has(key) ? puzzle.name : puzzle.date) : trial ? puzzle.name : title(puzzle, index, results.has(key), !!home && boss(home, index));
     const answer = grid(puzzle.squares, puzzle.width), H = answer.length, W = answer[0].length;
+    // app.css sizes a board of twenty by a step of its own.
+    game.dataset.side = W;
     // An empty board: a line with no square of the picture starts crossed out.
     const bare = { rows: answer.map(r => !r.includes(1)), cols: answer[0].map((_, x) => !column(answer, x).includes(1)) };
     const blank = () => answer.map((r, y) => r.map((_, x) => (bare.rows[y] || bare.cols[x] ? 2 : 0)));

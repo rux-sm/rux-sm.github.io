@@ -5,8 +5,9 @@
 /* ONE GRID OF 6PX. Every size below is chosen so that what is divided comes
    out in whole pixels with nothing rounded: the corner is 84px on a phone and
    120px on a wide screen, the small picture in it 30px and 60px, the squares
-   together a multiple of 30px, and the keys' gaps 6px. They are pixels and
-   not rems because they are a drawing's measures, not text's. */
+   together a multiple of 30px, or of 20px on a board of twenty, and the
+   keys' gaps 6px. They are pixels and not rems because they are a drawing's
+   measures, not text's. */
 :root { --pixels-corner: 84px; --pixels-thumb: 30px; }
 @media (min-width: 48rem) {
   :root { --pixels-corner: 120px; --pixels-thumb: 60px; }
@@ -28,26 +29,33 @@
    EVERY BOARD HAS ONE FOOTPRINT. The squares together are `--side` across,
    whatever the puzzle's size: the most the frame's width and the window's
    height leave beside the corner, from 150px up to `--most`, taken down to a
-   multiple of 30px, which fives, tens and fifteens all divide. `--base`, a
-   square, is that shared out, so it is whole pixels by itself. `--chrome` is
+   multiple of `--step`: 30px, which fives, tens and fifteens all divide, or
+   20px for a board of twenty, which the page marks with `data-side`, so its
+   footprint is the others' or within 20px of it. `--base`, a square, is
+   that shared out, so it is whole pixels by itself. `--chrome` is
    the height the page uses above and below a board. `--cell` is `--base`
    times `--zoom`, which with `--tx` and `--ty` app.js sets as two fingers
    pinch and slide.
 
    The numbers keep the corner's measure both ways, `--clue-w` and
    `--clue-h`, so the corner is a square of one size on every board. `--num`
-   is the size a number is drawn, larger on larger squares; a line with more
-   numbers than fit at that size draws them smaller, below. */
+   is the size a number is drawn, larger on larger squares, and never more
+   than two thirds of a square, so two digits and the gap after them keep
+   inside a column: 10px on a board of twenty's 15px squares, and 13px again
+   once it is zoomed. A line with more numbers than fit at that size draws
+   them smaller, below. */
 .pixels-game, .pixels-maker {
-  --side: round(down, clamp(150px, min(100cqi - var(--pixels-corner), 100dvh - var(--chrome) - var(--pixels-corner)), var(--most)), 30px);
+  --step: 30px;
+  --side: round(down, clamp(150px, min(100cqi - var(--pixels-corner), 100dvh - var(--chrome) - var(--pixels-corner)), var(--most)), var(--step));
   --foot: calc(var(--side) + var(--pixels-corner));
 }
+.pixels-game[data-side="20"], .pixels-maker[data-side="20"] { --step: 20px; }
 .pixels-board {
   --clue-w: var(--pixels-corner);
   --clue-h: var(--pixels-corner);
   --base: calc(var(--side) / var(--cols, 10));
   --cell: round(calc(var(--base) * var(--zoom, 1)), 1px);
-  --num: clamp(13px, round(down, calc(var(--base) * .45), 1px), 20px);
+  --num: min(clamp(13px, round(down, calc(var(--base) * .45), 1px), 20px), max(9px, round(down, calc(var(--cell) / 1.5), 1px)));
   --line: var(--rux-border-subtle-01);
   --guide: var(--rux-border-strong-01);
   --fifth: var(--rux-support-caution-major);
@@ -634,8 +642,9 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
    is red from a mistake or a hint until the next move, and between them the
    picture so far, small. That picture is `--pixels-thumb` across on every
    board, which fives, tens and fifteens all divide, and it sits in the
-   middle on whole pixels. Its empty squares are the page's colour so it
-   shows on the tile. */
+   middle on whole pixels. A board of twenty has it 40px across on a phone,
+   the whole of its room, where 30px would halve a pixel. Its empty squares
+   are the page's colour so it shows on the tile. */
 .pixels-corner { min-inline-size: 0; }
 .pixels-info {
   display: grid;
@@ -670,6 +679,9 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 }
 .pixels-clock[data-charged] { color: var(--rux-text-error); }
 .pixels-thumb { --px: calc(var(--pixels-thumb) / var(--size, 10)); background: var(--rux-background); }
+@media (max-width: 47.99rem) {
+  .pixels-game[data-side="20"] { --pixels-thumb: 40px; }
+}
 
 .pixels-controls { display: grid; gap: .75rem; }
 .pixels-status { min-block-size: 1.25rem; color: var(--rux-text-secondary); }
@@ -769,7 +781,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   margin-inline-start: round(down, calc((100cqi - var(--foot)) / 2), 1px);
 }
 @media (max-width: 47.99rem) {
-  .pixels-maker { --side: round(down, clamp(150px, min(100cqi - var(--pixels-corner), (100dvh - 253px) * 11 / 16 - var(--pixels-corner)), var(--most)), 30px); }
+  .pixels-maker { --side: round(down, clamp(150px, min(100cqi - var(--pixels-corner), (100dvh - 253px) * 11 / 16 - var(--pixels-corner)), var(--most)), var(--step)); }
 }
 .pixels-maker-top[hidden], .pixels-maker-check[hidden] { display: none; }
 .pixels-maker-top { display: grid; grid-template-columns: minmax(0, 1fr) 7rem; gap: .5rem; }

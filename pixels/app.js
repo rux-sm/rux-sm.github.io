@@ -2,8 +2,8 @@
    app.js — what every Pixels page shares
    --------------------------------------------------------------------------
    window.Pixels holds the puzzle rules and the board: a puzzle's squares are
-   a string of 0s and 1s, row by row, and a puzzle is square, 5, 10 or 15 a
-   side. `clues` gives a line's numbers,
+   a string of 0s and 1s, row by row, and a puzzle is square, 5, 10, 15 or
+   20 a side, twenty being the course's alone. `clues` gives a line's numbers,
    `unreached` says which squares logic alone cannot decide, `rounds` how
    hard the rest is and `firstLook` how much one look gives, `board` draws a
    board with its clues and `paint` keeps it in step with the game, `drag`
@@ -21,7 +21,7 @@
   'use strict';
 
   // The sides a puzzle may have, and the side of the puzzle of the day.
-  const SIZES = [5, 10, 15], DAY = 10;
+  const SIZES = [5, 10, 15, 20], DAY = 10;
 
   /* THE PUZZLE OF THE DAY IS OFF. While this is false no page shows it: the
      front page has no Today card, the leaderboard ranks all time only, the

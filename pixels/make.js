@@ -16,8 +16,8 @@
    Clear, in either step, and Redo puts it back; Cmd or Ctrl with Z undoes,
    and with Shift and Z, or Y, redoes. These are the toolbar over the board,
    which the arrow keys move along. Size starts a blank board of 5, 10 or 15
-   squares a side, which Undo takes back, and a saved puzzle keeps the size
-   it has. Back, the
+   squares a side, or 20 for the owner's course, which Undo takes back, and
+   a saved puzzle keeps the size it has. Back, the
    toolbar's first button, leaves for Manage; a new picture is kept as
    the draft, so nothing is lost by it.
 
@@ -74,6 +74,9 @@
   // which cost mana. `mana` is the player's, and the owner's is never asked.
   const store = personal ? data?.own || null : data;
   const home = personal ? 'me.html' : 'manage.html';
+  // Twenty a side is the course's alone: a player's own rifts stop at
+  // fifteen, which the database holds them to.
+  if (personal || mine) size.querySelector('option[value="20"]').remove();
   let mana = Infinity;
   // The inks, a colour at a time, pale to dark, and last the greys from
   // white to black. Each is the character a picture stores, then its name.
@@ -139,10 +142,12 @@
     }));
   };
 
-  // The size chosen, shown in its field.
+  // The size chosen, shown in its field and told to app.css, which sizes a
+  // board of twenty by a step of its own.
   const setSide = to => {
     side = to;
     size.value = side;
+    maker.dataset.side = side;
   };
   // The name of the category chosen.
   const themeOf = () => puzzles.find(p => p.level === levelOf() && !p.day)?.theme || '';

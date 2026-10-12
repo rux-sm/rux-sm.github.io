@@ -7,7 +7,7 @@ type: how-to
 How to draw a picture in `make.html` that is fun to solve, and how to put
 fifteen of them in a rift.
 
-## Three sizes
+## Four sizes
 
 Size starts a blank board, and Undo brings the old one back. A saved puzzle
 keeps its size.
@@ -17,10 +17,11 @@ keeps its size.
 | 5×5 | a ten-second puzzle; a symbol, a letter, a face |
 | 10×10 | the main game; one thing drawn as a shape |
 | 15×15 | room for detail; a few minutes each, zoomed with two fingers on a phone |
+| 20×20 | the finale, the course's last two rifts and the owner's alone; a long puzzle, played zoomed on a phone |
 
 The rules below are written for 10×10. On 5×5 nearly every picture is easy,
-so aim for a shape worth guessing. On 15×15 keep the same share of filled
-squares and let the extra room go to detail, not to a bigger blob.
+so aim for a shape worth guessing. On 15×15 and 20×20 keep the same share of
+filled squares and let the extra room go to detail, not to a bigger blob.
 
 ## What the maker holds you to
 

@@ -201,13 +201,14 @@
           <div class="pixels-maker-head">
             <div class="pixels-maker-top">
               <input id="pixels-name" class="rux--text-input rux--layout--size-sm" type="text" maxlength="40" autocomplete="off" required aria-label="Name" placeholder="Name">
-              <!-- Choosing a size starts a blank board of it. A saved puzzle keeps its size, so make.js locks this for one. -->
+              <!-- Choosing a size starts a blank board of it. A saved puzzle keeps its size, so make.js locks this for one, and takes 20×20 away where the puzzle is for a player's own rift. -->
               <div class="rux--select pixels-size">
                 <div class="rux--select-input__wrapper">
                   <select id="pixels-size" class="rux--select-input rux--layout--size-sm" autocomplete="off" aria-label="Size">
                     <option value="5">5×5</option>
                     <option value="10" selected>10×10</option>
                     <option value="15">15×15</option>
+                    <option value="20">20×20</option>
                   </select>
                   <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
                 </div>

@@ -12,8 +12,9 @@
    cleared, a bar of that, and its puzzles easy to hard, three across on a
    phone and five on a wide screen, each tile a square, none locked. Each
    has its letter in the rift, A to O, in its corner. A solved tile shows
-   its picture, name and best time; an unsolved one a question mark, and
-   Boss for the last.
+   its picture, name and best time; an unsolved one a question mark over
+   its board's size, with Boss for the last, and the first of them, the one
+   to play next, has its question mark in the primary button's colours.
 
    The page is the same for every account, the owner's too: it draws what
    data.js's `list` is sent. A guest with no player yet gets the door
@@ -70,12 +71,15 @@
     head.append(h1, words('pixels-meta', `${side(category)} · ${sprites(solved, all.length)}`));
     const list = document.createElement('div');
     list.className = 'pixels-list';
+    // The first puzzle not yet solved is the one to play next.
+    const next = all.find(p => !results.has(p.id));
     list.append(...all.map((p, i) => {
-      // An unsolved puzzle shows its letter alone, or Boss, and is read out
-      // as Puzzle C.
+      // An unsolved puzzle shows its letter, or Boss, over its board's size,
+      // and is read out as Puzzle C, 5×5.
       const best = results.get(p.id), last = boss(category, i);
-      const a = tile(p, best ? p.name : last ? 'Boss' : '', `play.html?id=${encodeURIComponent(p.id)}`, best, letter(i));
-      if (!best) a.setAttribute('aria-label', title(p, i, false, last));
+      const a = tile(p, best ? p.name : last ? 'Boss' : '', `play.html?id=${encodeURIComponent(p.id)}`, best, letter(i), side(p));
+      if (!best) a.setAttribute('aria-label', `${title(p, i, false, last)}, ${side(p)}${p === next ? ', next' : ''}`);
+      if (p === next) a.classList.add('is-next');
       return a;
     }));
     // A player's rift says who made it.

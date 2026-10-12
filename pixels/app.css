@@ -519,6 +519,9 @@
   white-space: nowrap;
 }
 .pixels-puzzle > .pixels-meta { font-size: .75rem; line-height: 1.2; }
+/* THE PUZZLE TO PLAY NEXT, the first of a rift not yet solved: its question
+   mark is drawn as the primary button is, the colour of every way on. */
+.pixels-puzzle.is-next > .pixels-blank { background: var(--rux-button-primary); color: var(--rux-text-on-color); }
 /* ON MANAGE a tile is ticked by pressing it, and carries under it the way
    to edit its puzzle, the way to play it, and the switch that sends it to
    the players, which takes a second line where the tile is too narrow for
@@ -739,6 +742,10 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 .pixels-game[hidden], .pixels-solved[hidden], .pixels-controls[hidden], .pixels-info[hidden], .pixels-maker[hidden] { display: none; }
 .pixels-solved { display: grid; gap: 1.5rem; justify-items: center; text-align: center; padding-block: 1rem; }
 .pixels-solved-clock { display: block; font-size: 2rem; }
+/* The puzzle's rift under the time: its tile as the front page draws it, as
+   wide as a phone's board at most, in the middle, its words starting at its
+   edge. */
+.pixels-solved > .pixels-categories { grid-template-columns: minmax(0, 24rem); justify-content: center; justify-self: stretch; text-align: start; }
 
 /* THE MAKER. One column the width of its board, in the order of the work:
    the head, which is the name and the size; then the toolbar set on the

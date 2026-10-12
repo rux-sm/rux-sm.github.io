@@ -22,7 +22,8 @@ solved.
 `category.html?at=` is one rift, named by its place among its maker's: its puzzles, small boards first
 and then easy to hard, with nothing locked, each tile a square with its letter in the rift, A to O,
 three across on a phone and five on a wide screen. A solved puzzle shows its picture, name and best
-time; an unsolved one a question mark, or Boss for the last.
+time; an unsolved one a question mark over its board's size, with Boss for the last, and the first
+of them, the one to play next, has its mark in the primary button's colours.
 
 `me.html` is the player's own page: their picture, username, sprites found and mana, the PIN that
 brings them back on any phone, and the rifts they have made, each to name, publish or delete, with who
@@ -54,23 +55,23 @@ keys under the board end where it does. A warm line rules off every fifth square
 numbers sit on a band that runs out from its squares and fades, larger on larger squares, and a line
 with more numbers than its room holds draws them smaller to fit. When the picture is complete the
 squares fill in as the picture, in its colours if it has them, and its name shows with the time, the
-mistakes and hints, and what they added. Back goes to the puzzle's rift, and Next to that rift's
-next unsolved puzzle, then to the rift after it. How to play is three steps in a modal, each with a
-small board: what the numbers mean, filling and crossing out, and what a mistake costs. It opens
-from the menu on every page and from the button under Start, and by itself on the first puzzle of a
-player who has solved none and has not closed it in this browser. A guest has no menu, so the front
-page and a rift's have a button for it. The clock stands while it is open. Each move plays a tone,
-which the Sound key turns off and an iPhone's silent switch does not, and a phone ticks on each fill
-where the browser allows it. A game in progress is kept in the browser, so a reload picks it up.
+mistakes and hints, and what they added. Under them the rift's tile counts the sprite, says +1 mana
+where the find earned one, and opens the rift, as Back does. Next goes to that rift's next unsolved
+puzzle, then to the rift after it. How to play is three steps in a modal, each with a small board:
+what the numbers mean, filling and crossing out, and what a mistake costs. It opens from the menu on
+every page and from the button under Start, and by itself on the first puzzle of a player who has
+solved none and has not closed it in this browser. A guest has no menu, so the front page and a
+rift's have a button for it. The clock stands while it is open. Each move plays a tone, which the
+Sound key turns off and an iPhone's silent switch does not, and a phone ticks on each fill where the
+browser allows it. A game in progress is kept in the browser, so a reload picks it up.
 
-The leaderboard is switched off by `BOARD` in `app.js`: the front page has no
-tabs and no ranking, and results are saved as ever. The puzzle of the day is
-switched off by `DAILY` in `app.js`: no page shows it, the leaderboard ranks
-all time only, and the maker still dates puzzles so they can be drawn ahead.
-With it on, `play.html?daily` plays the puzzle of the day: the one the owner
-drew for that day, with its name and colours, or where there is none, one the
-browser makes from the date, the same for everyone. Only it counts toward the
-days in a row. A player is never sent a day's puzzle before its day.
+The leaderboard is switched off by `BOARD` in `app.js`: the front page has no tabs and no ranking,
+and results are saved as ever. The puzzle of the day is switched off by `DAILY` in `app.js`: no page
+shows it, the leaderboard ranks all time only, and the maker still dates puzzles so they can be
+drawn ahead. With it on, `play.html?daily` plays the puzzle of the day: the one the owner drew for
+that day, with its name and colours, or where there is none, one the browser makes from the date,
+the same for everyone. Only it counts toward the days in a row. A player is never sent a day's
+puzzle before its day.
 
 `make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits or deletes one. The
 owner's puzzles go in the owner's rifts, and the owner alone has Manage and Players in the menu; a

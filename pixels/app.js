@@ -11,7 +11,7 @@
    `buzz` ticks the phone and `sound` plays a tone. `order` puts puzzles in
    playing order, `categories` groups them and `daily` makes the puzzle of a
    day. `face` makes a player's picture from their username and `portrait`
-   draws a player's. `tile` draws a puzzle's tile and `bar` a progress bar. `how` builds
+   draws a player's. `tile` draws a puzzle's tile, `riftTile` a rift's and `bar` a progress bar. `how` builds
    How to play. `installed` says the page was opened from a home screen
    icon and `iphone` that the phone is one, and `fresh` loads a page again
    after a minute away. The pages add their own behaviour in puzzles.js, category.js,
@@ -666,10 +666,10 @@
   const title = (puzzle, index, solved, boss) => (solved ? puzzle.name : boss ? 'Boss' : `Puzzle ${letter(index)}`);
 
   /* A PUZZLE'S TILE, a square link: the picture once `best` is there, or a
-     question mark, then `name`, then the best time. `mark` is its letter in
-     its rift, on a tab in the tile's corner. `art` is the picture or the
-     question mark alone, `words` a span of text, and `bar` a progress bar
-     of `done` out of `all`. */
+     question mark, then `name`, then the best time, or `under` until there
+     is one. `mark` is its letter in its rift, on a tab in the tile's corner.
+     `art` is the picture or the question mark alone, `words` a span of
+     text, and `bar` a progress bar of `done` out of `all`. */
   const words = (cls, text) => {
     const el = document.createElement('span');
     el.className = cls;
@@ -688,14 +688,14 @@
     el.setAttribute('aria-hidden', 'true');
     return el;
   };
-  const tile = (puzzle, name, href, best, mark) => {
+  const tile = (puzzle, name, href, best, mark, under) => {
     const a = document.createElement('a');
     a.className = 'rux--link rux--tile rux--tile--clickable pixels-puzzle';
     a.href = href;
     if (mark) a.append(words('pixels-letter', mark));
     // A line with nothing to say keeps its room, so every tile's picture
     // stands at one height.
-    a.append(art(puzzle, best != null), words('pixels-puzzle-name', name || '\u00a0'), words('pixels-meta', best != null ? time(best.seconds) : '\u00a0'));
+    a.append(art(puzzle, best != null), words('pixels-puzzle-name', name || '\u00a0'), words('pixels-meta', best != null ? time(best.seconds) : under || '\u00a0'));
     return a;
   };
   const bar = (done, all) => {
@@ -709,6 +709,31 @@
     track.appendChild(fill);
     el.appendChild(track);
     return el;
+  };
+
+  /* A RIFT'S TILE, a link to its page: its portal, then its name, how much
+     is found and a bar of that. One of the owner's rifts says its rank
+     before its name and its number before what is found, and a player's
+     says who made it. `found` is how many of its sprites the player has,
+     and with all of them its portal is shut. `tag` is a word or two at the
+     name's far end. */
+  const riftTile = (c, found, tag) => {
+    const a = document.createElement('a');
+    a.className = 'rux--link rux--tile rux--tile--clickable pixels-category';
+    a.href = where(c);
+    const all = c.puzzles.length;
+    const head = document.createElement('span');
+    head.className = 'pixels-category-head';
+    head.append(words('pixels-category-name', c.rank ? `${c.rank} · ${heading(c)}` : heading(c)));
+    if (tag) head.append(words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--high-contrast pixels-grade', tag));
+    a.append(portal(c, found === all), head);
+    if (c.by) {
+      const by = words('pixels-meta pixels-by', '');
+      by.append(portrait(c.by), c.by.name);
+      a.append(by);
+    }
+    a.append(words('pixels-meta', c.number ? `Rift ${c.number} · ${found === all ? 'cleared' : `${found} of ${all} sprites`}` : sprites(found, all)), bar(found, all));
+    return a;
   };
 
   /* HOW TO PLAY. A modal of three steps, each a small board beside its
@@ -837,6 +862,6 @@
     iphone, installed, fresh, overMenu, face, portrait, seen, see, side, sprites, portal, boss, letter,
     SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title,
-    words, art, tile, bar, how, switcher, chosen,
+    words, art, tile, bar, riftTile, how, switcher, chosen,
   });
 })();

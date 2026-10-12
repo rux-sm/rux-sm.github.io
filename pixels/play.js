@@ -38,13 +38,14 @@
    A board wider than ten squares zooms under two fingers where its squares
    are too fine for one; app.js's `drag` says how.
 
-   BACK, and Puzzles once it is solved, go to the puzzle's category. Next is
-   the next unsolved puzzle of that category, then the first unsolved of the
-   category after it, and so round to the first.
+   BACK goes to the puzzle's category, and so does the category's own tile
+   once it is solved, which stands under the time with the sprite counted.
+   Next is the next unsolved puzzle of that category, then the first
+   unsolved of the category after it, and so round to the first.
 
    THE OWNER PLAYS ANY PUZZLE, from Manage. One no player is sent is a
-   trial: titled by its name, with no Next, its Back to Manage, and its time
-   not kept.
+   trial: titled by its name, with no Next and no rift, its Back to Manage,
+   and its time not kept.
 
    play.html?daily plays the puzzle of the day, the one the owner drew for
    today or else the one app.js makes from the date; its result is kept by
@@ -64,7 +65,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, enter, boss, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title, how } = window.Pixels;
+  const { data, owner, enter, boss, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title, riftTile, how } = window.Pixels;
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock');
 
@@ -92,10 +93,11 @@
     const query = new URLSearchParams(location.search), id = query.get('id'), isDaily = query.has('daily');
     if (!data) { say('Pixels could not connect', 'Reload the page to try again.'); return; }
     if (isDaily && !DAILY) { say('The puzzle of the day is off for now', 'Pick a puzzle from the list.'); game.classList.remove('is-loading'); return; }
-    let puzzles, results;
+    let me, puzzles, results;
     try {
       // A guest with no player yet is asked for a name first.
-      if (!(await enter(game.parentElement))) return;
+      me = await enter(game.parentElement);
+      if (!me) return;
       [puzzles, results] = await Promise.all([data.list(), isDaily ? data.days() : data.results()]);
     } catch {
       say('The puzzle did not load', 'Reload the page to try again.');
@@ -238,6 +240,28 @@
       const next = rest.find(p => !done.has(p.id));
       if (next) $('pixels-next').href = `play.html?id=${encodeURIComponent(next.id)}`;
       else $('pixels-next').remove();
+      /* THE PUZZLE'S RIFT stands under the time as the front page draws it,
+         with this sprite counted, and is the way back to it. A sprite found
+         for the first time fills its bar from where it stood, and one in a
+         puzzle somebody else made earns a mana, which the tile says; the
+         owner has no mana to earn. A time that was not saved counts
+         nothing. */
+      if (home) {
+        const first = !results.has(key) && !lost, all = home.puzzles.length;
+        const was = home.puzzles.filter(p => results.has(p.id)).length, found = was + (first ? 1 : 0);
+        const earned = first && !owner && me.mana != null && puzzle.maker !== me.id;
+        const rift = riftTile(home, found, earned ? '+1 mana' : '');
+        const list = document.createElement('div');
+        list.className = 'pixels-categories';
+        list.append(rift);
+        $('pixels-out').remove();
+        const keys = $('pixels-solved').querySelector('.pixels-actions');
+        keys.before(list);
+        if (!keys.childElementCount) keys.remove();
+        if (first && !still) rift.querySelector('.rux--progress-bar__bar').animate(
+          [{ transform: `scaleX(${was / all})` }, { transform: `scaleX(${found / all})` }],
+          { duration: 600, delay: 500, easing: 'ease-out', fill: 'backwards' });
+      }
       // The numbers and the controls leave, and the picture slides from
       // where the board had it to the middle.
       const first = el.querySelector('.pixels-cell'), from = first.getBoundingClientRect();

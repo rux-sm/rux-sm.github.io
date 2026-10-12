@@ -49,8 +49,12 @@ everything has played a whole game.
   words. `pixels/docs/making-puzzles.md` is the guide to a picture.
 - **A rift's puzzles are its enemies, and its boss the strongest.** They are
   creatures a player knows on sight, because the guess is half the fun, and
-  the weakest come first: bugs, then forest, swamp, cave, haunted house,
-  sea, desert, ice, robots, castle and legends.
+  the weakest come first.
+- **Each rift is a world of its own, and only rift 1 has bugs.** No enemy is
+  in two rifts, and a rank's two rifts go together: small things, the wild,
+  the dark, far places, the future and legends.
+- **A rift is named for its portal, not its theme:** The Undergrowth, not
+  Bugs. The name is the rift's in the database, so every page says it.
 - **How much the first look gives is what a rift is drawn to.** It is the
   share of the board known after one look at every row and column. On the ten
   live puzzles it follows the players' times and the count of rounds does
@@ -86,10 +90,10 @@ everything has played a whole game.
 - **A rift is published when its fifteen are drawn,** hidden until then as a
   new rift is now, so the course grows a rift at a time and no player meets
   half of one.
-- **Each new rift holds a placeholder until it has a puzzle,** because a rift
-  lasts only while it holds one. It is a plain frame named Placeholder,
-  switched off, so no player is sent it even from a published rift. It is
-  redrawn as the rift's first puzzle or deleted.
+- **Every enemy has a placeholder until it is drawn:** a plain frame under
+  the enemy's name, switched off, so no player is sent it even from a
+  published rift. It is redrawn as that enemy's puzzle and then switched on.
+  Rifts 11 and 12 hold theirs at 15×15 until the 20×20 board is built.
 - **The puzzles stay in the database,** made in the Pixelator and ordered in
   Manage. No file of them is committed and no tool loads them.
 - **The front page counts the whole course,** and says so when every sprite
@@ -104,20 +108,20 @@ everything has played a whole game.
 
 What each rift is for, and the level of Picross DS it stands for.
 
-| Rift | Picross DS's | Size | Theme | What it teaches |
-| :--- | :--- | :--- | :--- | :--- |
-| 1 | Easy | 5×5, then 10×10 | Bugs | what a number is, a line that fills itself, two numbers and their gap; then a number over half the line gives its middle squares |
-| 2 | Level 1 | 10×10 | Flying bugs | wings: two and three numbers in a line, and X where no run can reach |
-| 3 | Level 2 | 15×15 | Forest | long runs on a big board, the zoom, counting by the fifth lines |
-| 4 | Level 3 | 15×15 | Swamp | round shapes worked in from the edges, and a first hole |
-| 5 | Level 4 | 15×15 | Cave | wings, tails and legs: thin parts, so lines of 1s and 2s |
-| 6 | Level 5 | 15×15 | Haunted house | eyes and mouths: holes in a shape, a picture that comes slowly |
-| 7 | Level 6 | 15×15 | Sea | tentacles and fins: many numbers in a line, little to start from |
-| 8 | Level 7 | 15×15 | Desert | coils and stripes: short runs everywhere |
-| 9 | Level 8 | 15×15 | Ice | fur and tusks: short runs inside a big shape |
-| 10 | Level 9 | 15×15 | Robots | detail inside a solid outline: dials, bolts, eyes; the hardest 15×15 |
-| 11 | Level 10 | 20×20 | Castle | the first 20×20; armour and bricks, the same small number many times |
-| 12 | Extra | 20×20 | Legends | wings, heads and tails, everything at once; the last boss |
+| Rift | Picross DS's | Size | Portal | World | What it teaches |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | Easy | 5×5, then 10×10 | The Undergrowth | bugs | what a number is, a line that fills itself, two numbers and their gap; then a number over half the line gives its middle squares |
+| 2 | Level 1 | 10×10 | The Playroom | toys | arms, ears and wheels: two and three numbers in a line, and X where no run can reach |
+| 3 | Level 2 | 15×15 | The Howling Wood | forest | long runs on a big board, the zoom, counting by the fifth lines |
+| 4 | Level 3 | 15×15 | The Lost Valley | dinosaurs | big round bodies worked in from the edges, and a first hole |
+| 5 | Level 4 | 15×15 | The Deep Dark | cave | wings, tails and legs: thin parts, so lines of 1s and 2s |
+| 6 | Level 5 | 15×15 | Midnight Manor | haunted house | eyes and mouths: holes in a shape, a picture that comes slowly |
+| 7 | Level 6 | 15×15 | The Black Tide | sea | tentacles and fins: many numbers in a line, little to start from |
+| 8 | Level 7 | 15×15 | The Cursed Pyramid | tomb | coils and wrappings: short runs everywhere |
+| 9 | Level 8 | 15×15 | The Outer Void | space | craters and eyes: short runs inside a big shape |
+| 10 | Level 9 | 15×15 | The Iron Works | robots | detail inside a solid outline: dials, bolts, eyes; the hardest 15×15 |
+| 11 | Level 10 | 20×20 | Olympus | Greek myth | the first 20×20; scales, snakes and armour, the same small number many times |
+| 12 | Extra | 20×20 | Dragonspire | classic fantasy | wings, heads and tails, everything at once; the last boss |
 
 What each rift's pictures are drawn to. These start from the ten live
 puzzles and two players' times, and are corrected as rifts are played. Rifts
@@ -143,40 +147,45 @@ puzzles and two players' times, and are corrected as rifts are played. Rifts
 - **Every lesson puzzle has two lines that fill themselves,** a 5 or numbers
   that add up to the line, such as 3 1.
 
-Fifteen enemies to draw in each, as a start, the boss last:
+Fifteen enemies to draw in each, the boss last. Each is in the database under
+its name:
 
-1. **Bugs:** snail, worm, bee, beetle and dragonfly at 5×5, which are drawn,
-   then ant, tick, ladybird, slug, caterpillar, spider, centipede,
-   cockroach, woodlouse and scorpion at 10×10.
-2. **Flying bugs:** fly, gnat, mosquito, butterfly, moth, wasp, firefly,
-   mayfly, horsefly, grasshopper, cricket, cicada, locust, praying mantis,
-   hornet.
-3. **Forest:** fox, crow, owl, snake, hedgehog, badger, hawk, boar, stag,
-   wolf, bear, mushroom man, elf archer, werewolf, walking tree.
-4. **Swamp:** frog, toad, newt, leech, eel, turtle, heron, water snake,
-   piranha, slime, crocodile, lizard man, will-o'-wisp, bog monster, hydra.
-5. **Cave:** bat, rat, mole, salamander, blind fish, giant spider, imp,
-   goblin, gnome, cave bear, ogre, rock golem, lava blob, stone snake, troll.
-6. **Haunted house:** black cat, ghost, skull, skeleton, zombie, witch,
-   pumpkin head, scarecrow, haunted doll, haunted painting, chest with
+1. **The Undergrowth:** snail, worm, bee, beetle and dragonfly at 5×5 and
+   two beetles, pill bug and tick at 10×10, which are drawn, then ant,
+   ladybird, caterpillar, spider, centipede and scorpion at 10×10.
+2. **The Playroom:** bouncy ball, building block, spinning top, rubber duck,
+   toy car, kite, drum, toy boat, teddy bear, rag doll, toy train, rocking
+   horse, toy soldier, puppet, jack-in-the-box.
+3. **The Howling Wood:** fox, crow, owl, snake, hedgehog, badger, hawk,
+   boar, stag, wolf, bear, mushroom man, elf archer, werewolf, walking tree.
+4. **The Lost Valley:** dino egg, hatchling, pterodactyl, raptor, sail-back,
+   duck-bill, bone-head, stegosaurus, club-tail, triceratops, long-neck,
+   sabre-tooth cat, mammoth, spinosaurus, T. rex.
+5. **The Deep Dark:** bat, rat, mole, slime, salamander, blind fish, imp,
+   goblin, gnome, cave bear, ogre, rock golem, lava blob, stone snake,
+   troll.
+6. **Midnight Manor:** black cat, ghost, skull, skeleton, zombie, witch,
+   pumpkin head, scarecrow, haunted clock, haunted painting, chest with
    teeth, poltergeist, headless rider, grim reaper, vampire.
-7. **Sea:** jellyfish, crab, pufferfish, lobster, stingray, swordfish,
-   octopus, squid, anglerfish, shark, sea snake, siren, ghost pirate, sea
-   serpent, kraken.
-8. **Desert:** scarab, horned lizard, rattlesnake, vulture, jackal, hyena,
-   cobra, cactus man, bandit, dust devil, tomb guard, mummy, genie, sand
-   worm, sphinx.
-9. **Ice:** penguin, seal, snow hare, arctic fox, snowy owl, walrus,
-   reindeer, snowman, snow leopard, sabre-tooth cat, polar bear, mammoth,
-   yeti, ice golem, frost giant.
-10. **Robots:** wind-up bot, drone, robot dog, robot arm, roller bot, spider
-    bot, saw bot, turret, tank, android, cyborg, flying saucer, mech, war
+7. **The Black Tide:** jellyfish, crab, pufferfish, lobster, stingray,
+   swordfish, octopus, squid, anglerfish, shark, sea snake, fish man, ghost
+   pirate, sea serpent, kraken.
+8. **The Cursed Pyramid:** lizard, vulture, hyena, jackal, cobra, tomb
+   robber, cursed urn, mummy cat, living statue, crocodile guard, falcon
+   guard, jackal guard, mummy, pharaoh, sphinx.
+9. **The Outer Void:** space blob, moon rock, comet, little green alien,
+   probe, flying saucer, three-eyed alien, brain alien, alien hound, lost
+   astronaut, star fighter, alien soldier, space whale, mothership, alien
+   queen.
+10. **The Iron Works:** scrap bot, drone, robot dog, robot arm, roller bot,
+    claw bot, saw bot, drill bot, turret, tank, android, cyborg, mech, war
     machine, giant robot.
-11. **Castle:** guard dog, spearman, archer, jester, knight, crossbowman, war
-    horse, gargoyle, living armour, executioner, court wizard, black knight,
-    sorcerer, royal champion, evil king.
-12. **Legends:** pegasus, unicorn, centaur, griffin, harpy, phoenix, medusa,
-    cyclops, minotaur, cerberus, chimera, basilisk, titan, demon, dragon.
+11. **Olympus:** satyr, harpy, siren, spartan, centaur, pegasus, griffin,
+    cyclops, medusa, minotaur, bronze giant, chimera, cerberus, titan,
+    hydra.
+12. **Dragonspire:** guard dog, archer, dwarf, orc, knight, gargoyle, living
+    armour, wizard, basilisk, black knight, phoenix, demon, evil king,
+    wyvern, dragon.
 
 A bug is drawn with a thick body, because thin legs leave squares the
 numbers cannot decide.

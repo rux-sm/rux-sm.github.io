@@ -15,7 +15,7 @@ Pixels goes on a phone's home screen as an app, as `docs/home-screen.md` says.
 puzzle on one card with the days solved in a row; then a tile for each rift, which the code calls a
 category, in the owner's order, one to a row on a phone. A tile is its rift's portal, drawn in pixels,
 coloured by the rift's rank, E to S, and shut in grey once every sprite is found; then its rank and
-name, such as E · Bugs, or More where it has none; its number and how many sprites are found; and a
+name, such as E · The Undergrowth, or More where it has none; its number and how many sprites are found; and a
 bar of that. Leaderboard: today's ranking with each player's time, and the all-time one with puzzles
 solved.
 

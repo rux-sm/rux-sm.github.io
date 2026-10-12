@@ -16,6 +16,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - A PO fixes the price; a cost the office takes on after it, such as a second driver, goes in as its own line with an equal Discount, and the trip's pinned update says the decision is still open.
 - A quote can go out with a leg's times as TBD, because the times are settled with the customer later and never hold a quote back.
 - A quote names the departing city and the farthest destination city only, even when the trip stops in more, because one pair of cities keeps the quote simple.
+- When a customer changes a quoted or signed trip's days or route, the trip is priced again by the calculator on the new route and days, as its Bus rental line, never as the old price with a line added, because the calculator's figure is what the office quotes that trip new.
 
 ## Route
 

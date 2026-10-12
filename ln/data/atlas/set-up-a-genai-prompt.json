@@ -10,11 +10,10 @@
   ],
   "updated": "2026-10-12",
   "status": "draft",
-  "summary": "put a one-click AI command on the sales order line form that says whether the line has shipped, and prove its answer against what LN shows.",
+  "summary": "put a one-click AI command on the sales order line screen that drafts a delivery update for the customer, check its answer against what LN shows, improve it one rule at a time, and take it away again.",
   "order": 0,
   "sources": [
     "ttrpi5560m000",
-    "ttrpi5561m000",
     "ttrpi5100m000",
     "ttrpi5501m000",
     "ttadv9140m000",
@@ -26,10 +25,10 @@
   "phases": [
     {
       "n": 0,
-      "title": "Confirm a model is available",
-      "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI LLMs",
-      "session": "GenAI LLMs",
-      "sessionCode": "ttrpi5560m000",
+      "title": "Choose the screen",
+      "route": "Sales ➔ Orders ➔ Order Intake Workbench",
+      "session": "Sales Order Intake Workbench",
+      "sessionCode": "tdsls4601m200",
       "blocks": [
         {
           "kind": "prose",
@@ -40,10 +39,10 @@
             },
             {
               "t": "text",
-              "v": " LN has no language model of its own. It keeps a list retrieved from the Infor GenAI application, and that service marks one model and one version of it as the default. A prompt that names no model uses the default, so this phase is a look and not a setting."
+              "v": " A prompt is tied to one exact session code, and its dataset to that session's table. So the build starts on the screen the command will sit on, not in the setup sessions. LN has no language model of its own: it keeps a list retrieved from the Infor GenAI application, and a prompt that names no model uses the one that service marks as default."
             }
           ],
-          "text": "What LN is doing. LN has no language model of its own. It keeps a list retrieved from the Infor GenAI application, and that service marks one model and one version of it as the default. A prompt that names no model uses the default, so this phase is a look and not a setting."
+          "text": "What LN is doing. A prompt is tied to one exact session code, and its dataset to that session's table. So the build starts on the screen the command will sit on, not in the setup sessions. LN has no language model of its own: it keeps a list retrieved from the Infor GenAI application, and a prompt that names no model uses the one that service marks as default."
         },
         {
           "kind": "steps",
@@ -72,10 +71,163 @@
                     },
                     {
                       "t": "chip",
-                      "v": "GenAI LLMs"
+                      "v": "Sales Order Intake Workbench"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and its "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Order Lines"
+                    },
+                    {
+                      "t": "text",
+                      "v": " tab"
                     }
                   ],
-                  "text": "Open GenAI LLMs"
+                  "text": "Open Sales Order Intake Workbench and its Order Lines tab"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Order lines, one row each"
+                    }
+                  ],
+                  "text": "Order lines, one row each"
+                }
+              ],
+              "id": "0.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.2"
+                    }
+                  ],
+                  "text": "0.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Drill In"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on the line that has been delivered"
+                    }
+                  ],
+                  "text": "Click Drill In on the line that has been delivered"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "Sales Order Lines"
+                    },
+                    {
+                      "t": "text",
+                      "v": " opens on that line, in a tab of its own"
+                    }
+                  ],
+                  "text": "Sales Order Lines opens on that line, in a tab of its own"
+                }
+              ],
+              "id": "0.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.3"
+                    }
+                  ],
+                  "text": "0.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Read the status bar at the foot of the form"
+                    }
+                  ],
+                  "text": "Read the status bar at the foot of the form"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "session",
+                      "code": "tdsls4101m000"
+                    },
+                    {
+                      "t": "text",
+                      "v": " — "
+                    },
+                    {
+                      "t": "pencil"
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "session code"
+                    }
+                  ],
+                  "text": "tdsls4101m000 — session code"
+                }
+              ],
+              "id": "0.3",
+              "optional": false,
+              "produces": true
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.4"
+                    }
+                  ],
+                  "text": "0.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "GenAI LLMs"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "path",
+                      "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI LLMs"
+                    }
+                  ],
+                  "text": "Open GenAI LLMs, Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI LLMs"
                 },
                 {
                   "tokens": [
@@ -107,7 +259,7 @@
                   "text": "A list of models with LLM Name, Provider and Is default"
                 }
               ],
-              "id": "0.1",
+              "id": "0.4",
               "optional": false,
               "produces": false
             },
@@ -117,10 +269,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "0.2"
+                      "v": "0.5"
                     }
                   ],
-                  "text": "0.2"
+                  "text": "0.5"
                 },
                 {
                   "tokens": [
@@ -156,99 +308,7 @@
                   "text": "default model"
                 }
               ],
-              "id": "0.2",
-              "optional": false,
-              "produces": true
-            },
-            {
-              "cells": [
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "0.3"
-                    }
-                  ],
-                  "text": "0.3"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "Tick that row and choose "
-                    },
-                    {
-                      "t": "command",
-                      "route": "Actions ➔ GenAI LLM Versions"
-                    }
-                  ],
-                  "text": "Tick that row and choose Actions ➔ GenAI LLM Versions"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "session",
-                      "code": "ttrpi5561m000",
-                      "name": "GenAI LLM Versions"
-                    },
-                    {
-                      "t": "text",
-                      "v": " lists the model's versions"
-                    }
-                  ],
-                  "text": "GenAI LLM Versions (ttrpi5561m000) lists the model's versions"
-                }
-              ],
-              "id": "0.3",
-              "optional": false,
-              "produces": false
-            },
-            {
-              "cells": [
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "0.4"
-                    }
-                  ],
-                  "text": "0.4"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "Find the version with "
-                    },
-                    {
-                      "t": "field",
-                      "v": "Is default"
-                    },
-                    {
-                      "t": "text",
-                      "v": " ticked"
-                    }
-                  ],
-                  "text": "Find the version with Is default ticked"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "pencil"
-                    },
-                    {
-                      "t": "text",
-                      "v": " "
-                    },
-                    {
-                      "t": "value",
-                      "v": "default version"
-                    }
-                  ],
-                  "text": "default version"
-                }
-              ],
-              "id": "0.4",
+              "id": "0.5",
               "optional": false,
               "produces": true
             }
@@ -273,10 +333,10 @@
             },
             {
               "t": "text",
-              "v": " A dataset is the LN data that will travel with the question, and it is the whole of what the model is told. It starts from one main table, which has to be the table of the screen the command will sit on, because the record the user has open reaches the dataset through its selection index. Fields of related tables can be added beneath it. Every field ticked is sent, so tick only what the prompt will name."
+              "v": " A dataset is the LN data that travels with the question, and it is the whole of what the model is told. It starts from one main table and one index of it. The record the user is on reaches the dataset through that index, which is why both have to be the screen's own. Every field ticked is sent, so the first version takes only what the first prompt text names."
             }
           ],
-          "text": "What LN is doing. A dataset is the LN data that will travel with the question, and it is the whole of what the model is told. It starts from one main table, which has to be the table of the screen the command will sit on, because the record the user has open reaches the dataset through its selection index. Fields of related tables can be added beneath it. Every field ticked is sent, so tick only what the prompt will name."
+          "text": "What LN is doing. A dataset is the LN data that travels with the question, and it is the whole of what the model is told. It starts from one main table and one index of it. The record the user is on reaches the dataset through that index, which is why both have to be the screen's own. Every field ticked is sent, so the first version takes only what the first prompt text names."
         },
         {
           "kind": "steps",
@@ -309,55 +369,47 @@
                     },
                     {
                       "t": "text",
-                      "v": " and start a new dataset"
+                      "v": " and click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "New"
                     }
                   ],
-                  "text": "Open Datasets and start a new dataset"
+                  "text": "Open Datasets and click New"
                 },
                 {
                   "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Dataset Modeler"
+                    },
+                    {
+                      "t": "text",
+                      "v": " tab opens with "
+                    },
                     {
                       "t": "chip",
                       "v": "Dataset Configuration"
                     },
                     {
                       "t": "text",
-                      "v": " opens; "
+                      "v": " in front; four fields are marked mandatory and "
                     },
                     {
                       "t": "field",
-                      "v": "Dataset Name"
+                      "v": "Use Camel Case"
                     },
                     {
                       "t": "text",
-                      "v": ", "
-                    },
-                    {
-                      "t": "field",
-                      "v": "Description"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", "
-                    },
-                    {
-                      "t": "field",
-                      "v": "Main table"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and "
-                    },
-                    {
-                      "t": "field",
-                      "v": "Selection Index"
-                    },
-                    {
-                      "t": "text",
-                      "v": " are mandatory"
+                      "v": " is already ticked"
                     }
                   ],
-                  "text": "Dataset Configuration opens; Dataset Name, Description, Main table and Selection Index are mandatory"
+                  "text": "A Dataset Modeler tab opens with Dataset Configuration in front; four fields are marked mandatory and Use Camel Case is already ticked"
                 }
               ],
               "id": "1.1",
@@ -387,14 +439,14 @@
                     },
                     {
                       "t": "text",
-                      "v": " and a "
+                      "v": " in lowercase and a "
                     },
                     {
                       "t": "field",
                       "v": "Description"
                     }
                   ],
-                  "text": "Enter a Dataset Name and a Description"
+                  "text": "Enter a Dataset Name in lowercase and a Description"
                 },
                 {
                   "tokens": [
@@ -432,22 +484,22 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Set "
-                    },
-                    {
-                      "t": "field",
-                      "v": "Main table"
-                    },
-                    {
-                      "t": "text",
-                      "v": " to "
+                      "v": "Type "
                     },
                     {
                       "t": "literal",
                       "v": "tdsls401"
+                    },
+                    {
+                      "t": "text",
+                      "v": " in "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Main table"
                     }
                   ],
-                  "text": "Set Main table to tdsls401"
+                  "text": "Type tdsls401 in Main table"
                 },
                 {
                   "tokens": [
@@ -499,10 +551,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "—"
+                      "v": "Nine indexes are offered"
                     }
                   ],
-                  "text": "—"
+                  "text": "Nine indexes are offered"
                 }
               ],
               "id": "1.4",
@@ -524,23 +576,47 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Tick "
+                      "v": "Click "
                     },
                     {
-                      "t": "field",
-                      "v": "Use Camel Case"
+                      "t": "button",
+                      "label": "OK"
                     }
                   ],
-                  "text": "Tick Use Camel Case"
+                  "text": "Click OK"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "—"
+                      "v": "The Modeler shows Sales Order Lines ("
+                    },
+                    {
+                      "t": "literal",
+                      "v": "tdsls401"
+                    },
+                    {
+                      "t": "text",
+                      "v": ") under "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Tables"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and its fields under "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Fields"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", none ticked"
                     }
                   ],
-                  "text": "—"
+                  "text": "The Modeler shows Sales Order Lines (tdsls401) under Tables and its fields under Fields, none ticked"
                 }
               ],
               "id": "1.5",
@@ -562,43 +638,51 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Confirm the window"
-                    }
-                  ],
-                  "text": "Confirm the window"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "The Modeler opens on two panels, "
+                      "v": "Tick "
                     },
                     {
-                      "t": "chip",
-                      "v": "Tables"
+                      "t": "literal",
+                      "v": "orno"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "pono"
                     },
                     {
                       "t": "text",
                       "v": " and "
                     },
                     {
-                      "t": "chip",
-                      "v": "Fields"
+                      "t": "literal",
+                      "v": "sqnb"
                     },
                     {
                       "t": "text",
-                      "v": ", with Sales Order Lines ("
+                      "v": " at the head of the list, and "
                     },
                     {
                       "t": "literal",
-                      "v": "tdsls401"
+                      "v": "item"
                     },
                     {
                       "t": "text",
-                      "v": ") chosen"
+                      "v": " a few rows down"
                     }
                   ],
-                  "text": "The Modeler opens on two panels, Tables and Fields, with Sales Order Lines (tdsls401) chosen"
+                  "text": "Tick orno, pono and sqnb at the head of the list, and item a few rows down"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Sales Order, Line, Sequence Number and Item are ticked"
+                    }
+                  ],
+                  "text": "Sales Order, Line, Sequence Number and Item are ticked"
                 }
               ],
               "id": "1.6",
@@ -620,43 +704,35 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "In the box above the "
-                    },
-                    {
-                      "t": "field",
-                      "v": "Description"
-                    },
-                    {
-                      "t": "text",
-                      "v": " column, type "
+                      "v": "Type "
                     },
                     {
                       "t": "literal",
-                      "v": "Delivered"
+                      "v": "qoor"
+                    },
+                    {
+                      "t": "text",
+                      "v": " in the box above the "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Field"
+                    },
+                    {
+                      "t": "text",
+                      "v": " column and press Enter"
                     }
                   ],
-                  "text": "In the box above the Description column, type Delivered"
+                  "text": "Type qoor in the box above the Field column and press Enter"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The list narrows to "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "qidl"
-                    },
-                    {
-                      "t": "text",
-                      "v": " Delivered Quantity and "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "qpdl"
+                      "v": "The list narrows to Ordered Quantity"
                     }
                   ],
-                  "text": "The list narrows to qidl Delivered Quantity and qpdl"
+                  "text": "The list narrows to Ordered Quantity"
                 }
               ],
               "id": "1.7",
@@ -678,23 +754,27 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Tick "
+                      "v": "Tick it, then find and tick "
                     },
                     {
                       "t": "literal",
                       "v": "qidl"
+                    },
+                    {
+                      "t": "text",
+                      "v": " the same way"
                     }
                   ],
-                  "text": "Tick qidl"
+                  "text": "Tick it, then find and tick qidl the same way"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "—"
+                      "v": "Delivered Quantity is ticked"
                     }
                   ],
-                  "text": "—"
+                  "text": "Delivered Quantity is ticked"
                 }
               ],
               "id": "1.8",
@@ -716,63 +796,27 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Clear the box and tick "
+                      "v": "Clear the box, open the mark at the head of "
                     },
                     {
-                      "t": "literal",
-                      "v": "orno"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "pono"
+                      "t": "field",
+                      "v": "Selected"
                     },
                     {
                       "t": "text",
-                      "v": ", "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "sqnb"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "item"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "ddta"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "qoor"
+                      "v": " and choose Selected"
                     }
                   ],
-                  "text": "Clear the box and tick orno, pono, sqnb, item, ddta and qoor"
+                  "text": "Clear the box, open the mark at the head of Selected and choose Selected"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Sales Order, Line, Sequence Number, Item, Planned Delivery Date and Ordered Quantity are ticked"
+                      "v": "Six fields are listed"
                     }
                   ],
-                  "text": "Sales Order, Line, Sequence Number, Item, Planned Delivery Date and Ordered Quantity are ticked"
+                  "text": "Six fields are listed"
                 }
               ],
               "id": "1.9",
@@ -789,160 +833,6 @@
                     }
                   ],
                   "text": "1.10"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "In "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Tables"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", expand "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Referred by"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and choose Sales Order Actual Delivery Lines ("
-                    },
-                    {
-                      "t": "literal",
-                      "v": "tdsls406"
-                    },
-                    {
-                      "t": "text",
-                      "v": ")"
-                    }
-                  ],
-                  "text": "In Tables, expand Referred by and choose Sales Order Actual Delivery Lines (tdsls406)"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "chip",
-                      "v": "Fields"
-                    },
-                    {
-                      "t": "text",
-                      "v": " lists that table's fields, none ticked"
-                    }
-                  ],
-                  "text": "Fields lists that table's fields, none ticked"
-                }
-              ],
-              "id": "1.10",
-              "optional": false,
-              "produces": false
-            },
-            {
-              "cells": [
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "1.11"
-                    }
-                  ],
-                  "text": "1.11"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "Tick "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "dldt"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "shpm"
-                    }
-                  ],
-                  "text": "Tick dldt and shpm"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "Actual Delivery Date and Shipment are ticked"
-                    }
-                  ],
-                  "text": "Actual Delivery Date and Shipment are ticked"
-                }
-              ],
-              "id": "1.11",
-              "optional": false,
-              "produces": false
-            },
-            {
-              "cells": [
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "1.12"
-                    }
-                  ],
-                  "text": "1.12"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "Drag the divider under the two panels upward"
-                    }
-                  ],
-                  "text": "Drag the divider under the two panels upward"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "chip",
-                      "v": "Properties"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Selected Fields"
-                    },
-                    {
-                      "t": "text",
-                      "v": " appear; the tree lists the seven fields and, on a level beneath them, the two delivery fields"
-                    }
-                  ],
-                  "text": "Properties and Selected Fields appear; the tree lists the seven fields and, on a level beneath them, the two delivery fields"
-                }
-              ],
-              "id": "1.12",
-              "optional": false,
-              "produces": false
-            },
-            {
-              "cells": [
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "1.13"
-                    }
-                  ],
-                  "text": "1.13"
                 },
                 {
                   "tokens": [
@@ -967,7 +857,7 @@
                   "text": "No message"
                 }
               ],
-              "id": "1.13",
+              "id": "1.10",
               "optional": false,
               "produces": false
             },
@@ -977,20 +867,28 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "1.14"
+                      "v": "1.11"
                     }
                   ],
-                  "text": "1.14"
+                  "text": "1.11"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Back on "
+                      "v": "On "
                     },
                     {
                       "t": "chip",
                       "v": "Datasets"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Refresh"
                     },
                     {
                       "t": "text",
@@ -1001,7 +899,7 @@
                       "label": "Parameters"
                     }
                   ],
-                  "text": "Back on Datasets, tick the dataset and click Parameters"
+                  "text": "On Datasets, click Refresh, tick the dataset and click Parameters"
                 },
                 {
                   "tokens": [
@@ -1054,7 +952,7 @@
                   "text": "Dataset Parameters (ttrpi5501m000) lists six rows of type Selection Range: orno, pono and sqnb, each with .f and .t"
                 }
               ],
-              "id": "1.14",
+              "id": "1.11",
               "optional": false,
               "produces": false
             }
@@ -1079,10 +977,10 @@
             },
             {
               "t": "text",
-              "v": " A prompt row ties a label, a dataset and two texts together. The label's description becomes the command's name. The instruction text is shown to the user beside the answer. The prompt text is what is sent to the model, with the dataset's output put where its data marker stands. The model fields can stay blank, and then the service's default answers."
+              "v": " A prompt row ties a label, a dataset and two texts together. The label's description becomes the command's name. The instruction text is shown to the user beside the answer. The prompt text is what is sent to the model, with the dataset's output put where its data marker stands. The first prompt text is short on purpose: the task, one rule and the marker."
             }
           ],
-          "text": "What LN is doing. A prompt row ties a label, a dataset and two texts together. The label's description becomes the command's name. The instruction text is shown to the user beside the answer. The prompt text is what is sent to the model, with the dataset's output put where its data marker stands. The model fields can stay blank, and then the service's default answers."
+          "text": "What LN is doing. A prompt row ties a label, a dataset and two texts together. The label's description becomes the command's name. The instruction text is shown to the user beside the answer. The prompt text is what is sent to the model, with the dataset's output put where its data marker stands. The first prompt text is short on purpose: the task, one rule and the marker."
         },
         {
           "kind": "steps",
@@ -1128,10 +1026,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "A blank row"
+                      "v": "A new row that already holds the name of the row the cursor was on"
                     }
                   ],
-                  "text": "A blank row"
+                  "text": "A new row that already holds the name of the row the cursor was on"
                 }
               ],
               "id": "2.1",
@@ -1153,14 +1051,14 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Enter a name in "
+                      "v": "Type a name over it in "
                     },
                     {
                       "t": "field",
                       "v": "GenAI Prompt"
                     }
                   ],
-                  "text": "Enter a name in GenAI Prompt"
+                  "text": "Type a name over it in GenAI Prompt"
                 },
                 {
                   "tokens": [
@@ -1206,10 +1104,72 @@
                     },
                     {
                       "t": "text",
-                      "v": ", pick from the list a label whose description is the name the command should have"
+                      "v": ", open the lookup, enter "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "2"
+                    },
+                    {
+                      "t": "text",
+                      "v": " under "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Language"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and a word under "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Label Description"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", and press Enter"
                     }
                   ],
-                  "text": "In Label, pick from the list a label whose description is the name the command should have"
+                  "text": "In Label, open the lookup, enter 2 under Language and a word under Label Description, and press Enter"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Labels whose description holds that word, each with the context Form Commands"
+                    }
+                  ],
+                  "text": "Labels whose description holds that word, each with the context Form Commands"
+                }
+              ],
+              "id": "2.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "2.4"
+                    }
+                  ],
+                  "text": "2.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Tick one whose description is the name the command should have and that no command on the screen already uses, and click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "OK"
+                    }
+                  ],
+                  "text": "Tick one whose description is the name the command should have and that no command on the screen already uses, and click OK"
                 },
                 {
                   "tokens": [
@@ -1232,7 +1192,7 @@
                   "text": "The description shows beside the code — command name"
                 }
               ],
-              "id": "2.3",
+              "id": "2.4",
               "optional": false,
               "produces": true
             },
@@ -1242,16 +1202,16 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "2.4"
+                      "v": "2.5"
                     }
                   ],
-                  "text": "2.4"
+                  "text": "2.5"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Set "
+                      "v": "Replace what "
                     },
                     {
                       "t": "field",
@@ -1259,10 +1219,10 @@
                     },
                     {
                       "t": "text",
-                      "v": " to the dataset name from 1.2"
+                      "v": " holds with the dataset name from 1.2"
                     }
                   ],
-                  "text": "Set Dataset to the dataset name from 1.2"
+                  "text": "Replace what Dataset holds with the dataset name from 1.2"
                 },
                 {
                   "tokens": [
@@ -1274,7 +1234,7 @@
                   "text": "Its description shows beside it"
                 }
               ],
-              "id": "2.4",
+              "id": "2.5",
               "optional": false,
               "produces": false,
               "refs": [
@@ -1287,10 +1247,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "2.5"
+                      "v": "2.6"
                     }
                   ],
-                  "text": "2.5"
+                  "text": "2.6"
                 },
                 {
                   "tokens": [
@@ -1308,10 +1268,10 @@
                     },
                     {
                       "t": "literal",
-                      "v": "General"
+                      "v": "Email"
                     }
                   ],
-                  "text": "Set Usage Type to General"
+                  "text": "Set Usage Type to Email"
                 },
                 {
                   "tokens": [
@@ -1323,7 +1283,7 @@
                   "text": "—"
                 }
               ],
-              "id": "2.5",
+              "id": "2.6",
               "optional": false,
               "produces": false
             },
@@ -1333,10 +1293,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "2.6"
+                      "v": "2.7"
                     }
                   ],
-                  "text": "2.6"
+                  "text": "2.7"
                 },
                 {
                   "tokens": [
@@ -1373,7 +1333,7 @@
                   "text": "A grey dot under Instruction Text and under Prompt Text"
                 }
               ],
-              "id": "2.6",
+              "id": "2.7",
               "optional": false,
               "produces": false
             },
@@ -1383,10 +1343,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "2.7"
+                      "v": "2.8"
                     }
                   ],
-                  "text": "2.7"
+                  "text": "2.8"
                 },
                 {
                   "tokens": [
@@ -1411,48 +1371,6 @@
                   "text": "No text present; Create, Duplicate, Select or Exit?"
                 }
               ],
-              "id": "2.7",
-              "optional": false,
-              "produces": false
-            },
-            {
-              "cells": [
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "2.8"
-                    }
-                  ],
-                  "text": "2.8"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "Choose "
-                    },
-                    {
-                      "t": "button",
-                      "label": "Create"
-                    }
-                  ],
-                  "text": "Choose Create"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "chip",
-                      "v": "Text Editor"
-                    },
-                    {
-                      "t": "text",
-                      "v": " opens, empty"
-                    }
-                  ],
-                  "text": "Text Editor opens, empty"
-                }
-              ],
               "id": "2.8",
               "optional": false,
               "produces": false
@@ -1472,19 +1390,27 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Type the instruction text from §7"
+                      "v": "Choose "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Create"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", type the instruction text from §10 and save in the editor"
                     }
                   ],
-                  "text": "Type the instruction text from §7"
+                  "text": "Choose Create, type the instruction text from §10 and save in the editor"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "—"
+                      "v": "A last-modified stamp under the text"
                     }
                   ],
-                  "text": "—"
+                  "text": "A last-modified stamp under the text"
                 }
               ],
               "id": "2.9",
@@ -1506,19 +1432,35 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Save in the editor"
+                      "v": "Close the editor, open the text button again, choose "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Prompt"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and then "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Create"
                     }
                   ],
-                  "text": "Save in the editor"
+                  "text": "Close the editor, open the text button again, choose Prompt and then Create"
                 },
                 {
                   "tokens": [
                     {
+                      "t": "chip",
+                      "v": "Text Editor"
+                    },
+                    {
                       "t": "text",
-                      "v": "A last-modified stamp under the text"
+                      "v": " opens, empty"
                     }
                   ],
-                  "text": "A last-modified stamp under the text"
+                  "text": "Text Editor opens, empty"
                 }
               ],
               "id": "2.10",
@@ -1540,90 +1482,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Close the editor, open the text button again and choose "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Prompt"
+                      "v": "Type the first prompt text from §10, save and close"
                     }
                   ],
-                  "text": "Close the editor, open the text button again and choose Prompt"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "No text present; Create, Duplicate, Select or Exit?"
-                    }
-                  ],
-                  "text": "No text present; Create, Duplicate, Select or Exit?"
-                }
-              ],
-              "id": "2.11",
-              "optional": false,
-              "produces": false
-            },
-            {
-              "cells": [
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "2.12"
-                    }
-                  ],
-                  "text": "2.12"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "Choose "
-                    },
-                    {
-                      "t": "button",
-                      "label": "Create"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and type the prompt text from §7"
-                    }
-                  ],
-                  "text": "Choose Create and type the prompt text from §7"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "—"
-                    }
-                  ],
-                  "text": "—"
-                }
-              ],
-              "id": "2.12",
-              "optional": false,
-              "produces": false
-            },
-            {
-              "cells": [
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "2.13"
-                    }
-                  ],
-                  "text": "2.13"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "Save in the editor and close it"
-                    }
-                  ],
-                  "text": "Save in the editor and close it"
+                  "text": "Type the first prompt text from §10, save and close"
                 },
                 {
                   "tokens": [
@@ -1635,7 +1497,7 @@
                   "text": "A green tick under both text columns"
                 }
               ],
-              "id": "2.13",
+              "id": "2.11",
               "optional": false,
               "produces": false
             }
@@ -1688,35 +1550,35 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Open "
+                      "v": "On "
                     },
+                    {
+                      "t": "chip",
+                      "v": "GenAI Prompts"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", tick the prompt and choose "
+                    },
+                    {
+                      "t": "command",
+                      "route": "References ➔ GenAI Prompts by Session"
+                    }
+                  ],
+                  "text": "On GenAI Prompts, tick the prompt and choose References ➔ GenAI Prompts by Session"
+                },
+                {
+                  "tokens": [
                     {
                       "t": "chip",
                       "v": "GenAI Prompts by Session"
                     },
                     {
                       "t": "text",
-                      "v": " and start a new group from the toolbar"
+                      "v": " opens with the prompt as its header and no rows"
                     }
                   ],
-                  "text": "Open GenAI Prompts by Session and start a new group from the toolbar"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "The three "
-                    },
-                    {
-                      "t": "field",
-                      "v": "Session"
-                    },
-                    {
-                      "t": "text",
-                      "v": " boxes open for entry"
-                    }
-                  ],
-                  "text": "The three Session boxes open for entry"
+                  "text": "GenAI Prompts by Session opens with the prompt as its header and no rows"
                 }
               ],
               "id": "3.1",
@@ -1738,7 +1600,15 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Enter "
+                      "v": "Click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "New"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and enter "
                     },
                     {
                       "t": "literal",
@@ -1762,92 +1632,24 @@
                     },
                     {
                       "t": "text",
-                      "v": " in the three boxes"
-                    }
-                  ],
-                  "text": "Enter td, sls and 4101m000 in the three boxes"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "The description reads Sales Order Lines"
-                    }
-                  ],
-                  "text": "The description reads Sales Order Lines"
-                }
-              ],
-              "id": "3.2",
-              "optional": false,
-              "produces": false
-            },
-            {
-              "cells": [
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "3.3"
-                    }
-                  ],
-                  "text": "3.3"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "Click "
-                    },
-                    {
-                      "t": "button",
-                      "label": "New"
-                    }
-                  ],
-                  "text": "Click New"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "A blank row in the grid"
-                    }
-                  ],
-                  "text": "A blank row in the grid"
-                }
-              ],
-              "id": "3.3",
-              "optional": false,
-              "produces": false
-            },
-            {
-              "cells": [
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "3.4"
-                    }
-                  ],
-                  "text": "3.4"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "Enter the prompt name from 2.2 in "
+                      "v": " in the three "
                     },
                     {
                       "t": "field",
-                      "v": "GenAI Prompt"
+                      "v": "Session"
+                    },
+                    {
+                      "t": "text",
+                      "v": " boxes"
                     }
                   ],
-                  "text": "Enter the prompt name from 2.2 in GenAI Prompt"
+                  "text": "Click New and enter td, sls and 4101m000 in the three Session boxes"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The command name shows beside it; "
+                      "v": "The description reads Sales Order Lines; "
                     },
                     {
                       "t": "field",
@@ -1886,59 +1688,10 @@
                       "v": "Records Selected"
                     }
                   ],
-                  "text": "The command name shows beside it; Active is ticked, Authorization is Display, When Enabled is Records Selected"
+                  "text": "The description reads Sales Order Lines; Active is ticked, Authorization is Display, When Enabled is Records Selected"
                 }
               ],
-              "id": "3.4",
-              "optional": false,
-              "produces": false,
-              "refs": [
-                "2.2"
-              ]
-            },
-            {
-              "cells": [
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "3.5"
-                    }
-                  ],
-                  "text": "3.5"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "Set "
-                    },
-                    {
-                      "t": "field",
-                      "v": "Authorization"
-                    },
-                    {
-                      "t": "text",
-                      "v": " to "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "Print/Display"
-                    }
-                  ],
-                  "text": "Set Authorization to Print/Display"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "—"
-                    }
-                  ],
-                  "text": "—"
-                }
-              ],
-              "id": "3.5",
+              "id": "3.2",
               "optional": false,
               "produces": false
             },
@@ -1948,10 +1701,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "3.6"
+                      "v": "3.3"
                     }
                   ],
-                  "text": "3.6"
+                  "text": "3.3"
                 },
                 {
                   "tokens": [
@@ -1984,7 +1737,7 @@
                   "text": "—"
                 }
               ],
-              "id": "3.6",
+              "id": "3.3",
               "optional": false,
               "produces": false
             },
@@ -1994,10 +1747,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "3.7"
+                      "v": "3.4"
                     }
                   ],
-                  "text": "3.7"
+                  "text": "3.4"
                 },
                 {
                   "tokens": [
@@ -2016,56 +1769,27 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "—"
-                    }
-                  ],
-                  "text": "—"
-                }
-              ],
-              "id": "3.7",
-              "optional": false,
-              "produces": false
-            },
-            {
-              "cells": [
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "3.8"
-                    }
-                  ],
-                  "text": "3.8"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "Click "
+                      "v": "The row stays, with "
                     },
                     {
-                      "t": "button",
-                      "label": "Refresh"
-                    }
-                  ],
-                  "text": "Click Refresh"
-                },
-                {
-                  "tokens": [
+                      "t": "literal",
+                      "v": "Display"
+                    },
                     {
                       "t": "text",
-                      "v": "The row is still there with the values from 3.5 and 3.6"
+                      "v": " and "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Always"
                     }
                   ],
-                  "text": "The row is still there with the values from 3.5 and 3.6"
+                  "text": "The row stays, with Display and Always"
                 }
               ],
-              "id": "3.8",
+              "id": "3.4",
               "optional": false,
-              "produces": false,
-              "refs": [
-                "3.5"
-              ]
+              "produces": false
             }
           ]
         }
@@ -2116,35 +1840,27 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Open "
+                      "v": "Close any "
                     },
                     {
                       "t": "chip",
-                      "v": "Sales Order Intake Workbench"
+                      "v": "Sales Order Lines"
                     },
                     {
                       "t": "text",
-                      "v": " and its "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Order Lines"
-                    },
-                    {
-                      "t": "text",
-                      "v": " tab"
+                      "v": " tab that is already open"
                     }
                   ],
-                  "text": "Open Sales Order Intake Workbench and its Order Lines tab"
+                  "text": "Close any Sales Order Lines tab that is already open"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Order lines, one row each"
+                      "v": "—"
                     }
                   ],
-                  "text": "Order lines, one row each"
+                  "text": "—"
                 }
               ],
               "id": "4.1",
@@ -2166,7 +1882,15 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Click "
+                      "v": "On "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Sales Order Intake Workbench"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", click "
                     },
                     {
                       "t": "button",
@@ -2177,21 +1901,20 @@
                       "v": " on the line that has been delivered"
                     }
                   ],
-                  "text": "Click Drill In on the line that has been delivered"
+                  "text": "On Sales Order Intake Workbench, click Drill In on the line that has been delivered"
                 },
                 {
                   "tokens": [
                     {
-                      "t": "session",
-                      "code": "tdsls4101m000",
-                      "name": "Sales Order Lines"
+                      "t": "chip",
+                      "v": "Sales Order Lines"
                     },
                     {
                       "t": "text",
-                      "v": " opens on that line, in a tab of its own"
+                      "v": " opens on that line"
                     }
                   ],
-                  "text": "Sales Order Lines (tdsls4101m000) opens on that line, in a tab of its own"
+                  "text": "Sales Order Lines opens on that line"
                 }
               ],
               "id": "4.2",
@@ -2285,10 +2008,10 @@
                     },
                     {
                       "t": "text",
-                      "v": " and choose the command name from 2.3"
+                      "v": " and choose the command name from 2.4"
                     }
                   ],
-                  "text": "Open Actions and choose the command name from 2.3"
+                  "text": "Open Actions and choose the command name from 2.4"
                 },
                 {
                   "tokens": [
@@ -2310,17 +2033,17 @@
                     },
                     {
                       "t": "text",
-                      "v": " one line"
+                      "v": " the answer"
                     }
                   ],
-                  "text": "A window titled with that name; Prompt holds the instruction text and Response one line"
+                  "text": "A window titled with that name; Prompt holds the instruction text and Response the answer"
                 }
               ],
               "id": "4.4",
               "optional": false,
               "produces": false,
               "refs": [
-                "2.3"
+                "2.4"
               ]
             },
             {
@@ -2347,14 +2070,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The same delivered quantity and shipment, and the status "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "shipped"
+                      "v": "The same ordered and delivered quantities, written as a letter: a heading, a greeting, a list and a sign-off, with formatting marks showing"
                     }
                   ],
-                  "text": "The same delivered quantity and shipment, and the status shipped"
+                  "text": "The same ordered and delivered quantities, written as a letter: a heading, a greeting, a list and a sign-off, with formatting marks showing"
                 }
               ],
               "id": "4.5",
@@ -2384,18 +2103,22 @@
                     {
                       "t": "button",
                       "label": "Close"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", go back to the workbench and drill into the line that has not been delivered"
                     }
                   ],
-                  "text": "Click Close"
+                  "text": "Click Close, go back to the workbench and drill into the line that has not been delivered"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "—"
+                      "v": "The form shows that line"
                     }
                   ],
-                  "text": "—"
+                  "text": "The form shows that line"
                 }
               ],
               "id": "4.6",
@@ -2417,60 +2140,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Use "
-                    },
-                    {
-                      "t": "button",
-                      "label": "Find"
-                    },
-                    {
-                      "t": "text",
-                      "v": " to open the line that has not been delivered"
+                      "v": "Choose the command again"
                     }
                   ],
-                  "text": "Use Find to open the line that has not been delivered"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "The form shows that line"
-                    }
-                  ],
-                  "text": "The form shows that line"
-                }
-              ],
-              "id": "4.7",
-              "optional": false,
-              "produces": false
-            },
-            {
-              "cells": [
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "4.8"
-                    }
-                  ],
-                  "text": "4.8"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "Open "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Actions"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and choose the command again"
-                    }
-                  ],
-                  "text": "Open Actions and choose the command again"
+                  "text": "Choose the command again"
                 },
                 {
                   "tokens": [
@@ -2484,21 +2157,796 @@
                     },
                     {
                       "t": "text",
-                      "v": ", the status "
+                      "v": ", which is right, and a sentence about what will happen next that nothing in LN holds"
+                    }
+                  ],
+                  "text": "Delivered 0, which is right, and a sentence about what will happen next that nothing in LN holds"
+                }
+              ],
+              "id": "4.7",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ],
+      "walked": null
+    },
+    {
+      "n": 5,
+      "title": "Improve it",
+      "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts",
+      "session": "GenAI Prompts",
+      "sessionCode": "ttrpi5150m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " A change to the prompt text is used by the very next run. A change to the dataset is not seen by a session that is already open. So a text change is tested where you stand, and a dataset change after the screen is opened again. Change one thing, run, and read the answer before changing the next."
+            }
+          ],
+          "text": "What LN is doing. A change to the prompt text is used by the very next run. A change to the dataset is not seen by a session that is already open. So a text change is tested where you stand, and a dataset change after the screen is opened again. Change one thing, run, and read the answer before changing the next."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.1"
+                    }
+                  ],
+                  "text": "5.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "On "
                     },
                     {
-                      "t": "literal",
-                      "v": "not shipped"
+                      "t": "chip",
+                      "v": "GenAI Prompts"
                     },
                     {
                       "t": "text",
-                      "v": ", and no delivery date or shipment"
+                      "v": ", tick the prompt, open the text button and choose "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Prompt"
                     }
                   ],
-                  "text": "Delivered 0, the status not shipped, and no delivery date or shipment"
+                  "text": "On GenAI Prompts, tick the prompt, open the text button and choose Prompt"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The editor opens on the text"
+                    }
+                  ],
+                  "text": "The editor opens on the text"
                 }
               ],
-              "id": "4.8",
+              "id": "5.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.2"
+                    }
+                  ],
+                  "text": "5.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Add the form rule from §10 as a line above the marker, save and close"
+                    }
+                  ],
+                  "text": "Add the form rule from §10 as a line above the marker, save and close"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A new last-modified stamp"
+                    }
+                  ],
+                  "text": "A new last-modified stamp"
+                }
+              ],
+              "id": "5.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.3"
+                    }
+                  ],
+                  "text": "5.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "On "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Sales Order Lines"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", still on the undelivered line, choose the command again"
+                    }
+                  ],
+                  "text": "On Sales Order Lines, still on the undelivered line, choose the command again"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "One plain sentence; the letter and the promise are gone"
+                    }
+                  ],
+                  "text": "One plain sentence; the letter and the promise are gone"
+                }
+              ],
+              "id": "5.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.4"
+                    }
+                  ],
+                  "text": "5.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "On "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Datasets"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", tick the dataset and click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Modeler"
+                    }
+                  ],
+                  "text": "On Datasets, tick the dataset and click Modeler"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The Modeler opens directly, without Dataset Configuration"
+                    }
+                  ],
+                  "text": "The Modeler opens directly, without Dataset Configuration"
+                }
+              ],
+              "id": "5.4",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.5"
+                    }
+                  ],
+                  "text": "5.5"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Type "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "ddta"
+                    },
+                    {
+                      "t": "text",
+                      "v": " in the box above "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Field"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", press Enter and tick it"
+                    }
+                  ],
+                  "text": "Type ddta in the box above Field, press Enter and tick it"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Planned Delivery Date is ticked"
+                    }
+                  ],
+                  "text": "Planned Delivery Date is ticked"
+                }
+              ],
+              "id": "5.5",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.6"
+                    }
+                  ],
+                  "text": "5.6"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Under "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Tables"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", expand "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Referred by"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and choose Sales Order Actual Delivery Lines ("
+                    },
+                    {
+                      "t": "literal",
+                      "v": "tdsls406"
+                    },
+                    {
+                      "t": "text",
+                      "v": ")"
+                    }
+                  ],
+                  "text": "Under Tables, expand Referred by and choose Sales Order Actual Delivery Lines (tdsls406)"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "Fields"
+                    },
+                    {
+                      "t": "text",
+                      "v": " lists that table's fields, none ticked"
+                    }
+                  ],
+                  "text": "Fields lists that table's fields, none ticked"
+                }
+              ],
+              "id": "5.6",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.7"
+                    }
+                  ],
+                  "text": "5.7"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Tick "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "dldt"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "shpm"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", and click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Save"
+                    }
+                  ],
+                  "text": "Tick dldt and shpm, and click Save"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Actual Delivery Date and Shipment are ticked; no message"
+                    }
+                  ],
+                  "text": "Actual Delivery Date and Shipment are ticked; no message"
+                }
+              ],
+              "id": "5.7",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.8"
+                    }
+                  ],
+                  "text": "5.8"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Add the three delivery rules and the missing-value rule from §10 to the prompt text, save and close"
+                    }
+                  ],
+                  "text": "Add the three delivery rules and the missing-value rule from §10 to the prompt text, save and close"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "A new last-modified stamp"
+                    }
+                  ],
+                  "text": "A new last-modified stamp"
+                }
+              ],
+              "id": "5.8",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.9"
+                    }
+                  ],
+                  "text": "5.9"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Without closing "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Sales Order Lines"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", choose the command again"
+                    }
+                  ],
+                  "text": "Without closing Sales Order Lines, choose the command again"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The planned delivery date reads "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "[not available]"
+                    },
+                    {
+                      "t": "text",
+                      "v": ": this session is still using the dataset as it was"
+                    }
+                  ],
+                  "text": "The planned delivery date reads [not available]: this session is still using the dataset as it was"
+                }
+              ],
+              "id": "5.9",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.10"
+                    }
+                  ],
+                  "text": "5.10"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Close the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Sales Order Lines"
+                    },
+                    {
+                      "t": "text",
+                      "v": " tab, open the same line again and choose the command"
+                    }
+                  ],
+                  "text": "Close the Sales Order Lines tab, open the same line again and choose the command"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Nothing has shipped yet, and the planned delivery date"
+                    }
+                  ],
+                  "text": "Nothing has shipped yet, and the planned delivery date"
+                }
+              ],
+              "id": "5.10",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.11"
+                    }
+                  ],
+                  "text": "5.11"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open the delivered line and choose the command"
+                    }
+                  ],
+                  "text": "Open the delivered line and choose the command"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Shipped in full, with a delivery date and the shipment from 4.3"
+                    }
+                  ],
+                  "text": "Shipped in full, with a delivery date and the shipment from 4.3"
+                }
+              ],
+              "id": "5.11",
+              "optional": false,
+              "produces": false,
+              "refs": [
+                "4.3"
+              ]
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.12"
+                    }
+                  ],
+                  "text": "5.12"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Add the date rule from §10 to the prompt text, save, and choose the command once more"
+                    }
+                  ],
+                  "text": "Add the date rule from §10 to the prompt text, save, and choose the command once more"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The same facts, each date as year, month and day"
+                    }
+                  ],
+                  "text": "The same facts, each date as year, month and day"
+                }
+              ],
+              "id": "5.12",
+              "optional": false,
+              "produces": false
+            }
+          ]
+        }
+      ],
+      "walked": null
+    },
+    {
+      "n": 6,
+      "title": "Remove it",
+      "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts",
+      "session": "GenAI Prompts",
+      "sessionCode": "ttrpi5150m000",
+      "blocks": [
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "strong",
+              "v": "What LN is doing."
+            },
+            {
+              "t": "text",
+              "v": " LN will not delete a dataset while a prompt uses it, and deleting a prompt takes its links with it. So the prompt goes first and the dataset second, and the link needs no step of its own."
+            }
+          ],
+          "text": "What LN is doing. LN will not delete a dataset while a prompt uses it, and deleting a prompt takes its links with it. So the prompt goes first and the dataset second, and the link needs no step of its own."
+        },
+        {
+          "kind": "steps",
+          "columns": [
+            "#",
+            "Do this",
+            "You should see"
+          ],
+          "rows": [
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6.1"
+                    }
+                  ],
+                  "text": "6.1"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "On "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "GenAI Prompts"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", tick the prompt and click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Delete"
+                    }
+                  ],
+                  "text": "On GenAI Prompts, tick the prompt and click Delete"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Delete the 1 selected record(s) ?"
+                    }
+                  ],
+                  "text": "Delete the 1 selected record(s) ?"
+                }
+              ],
+              "id": "6.1",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6.2"
+                    }
+                  ],
+                  "text": "6.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Choose "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Yes"
+                    }
+                  ],
+                  "text": "Choose Yes"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1 records deleted"
+                    }
+                  ],
+                  "text": "1 records deleted"
+                }
+              ],
+              "id": "6.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6.3"
+                    }
+                  ],
+                  "text": "6.3"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "On "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Datasets"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", tick the dataset, click "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Delete"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and choose "
+                    },
+                    {
+                      "t": "button",
+                      "label": "Yes"
+                    }
+                  ],
+                  "text": "On Datasets, tick the dataset, click Delete and choose Yes"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1 records deleted"
+                    }
+                  ],
+                  "text": "1 records deleted"
+                }
+              ],
+              "id": "6.3",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "6.4"
+                    }
+                  ],
+                  "text": "6.4"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Close the "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Sales Order Lines"
+                    },
+                    {
+                      "t": "text",
+                      "v": " tab, open a line again and open "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Actions"
+                    }
+                  ],
+                  "text": "Close the Sales Order Lines tab, open a line again and open Actions"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The command is gone"
+                    }
+                  ],
+                  "text": "The command is gone"
+                }
+              ],
+              "id": "6.4",
               "optional": false,
               "produces": false
             }
@@ -2518,10 +2966,10 @@
         },
         {
           "t": "text",
-          "v": " put a one-click AI command on the sales order line form that says whether the line has shipped, and prove its answer against what LN shows."
+          "v": " put a one-click AI command on the sales order line screen that drafts a delivery update for the customer, check its answer against what LN shows, improve it one rule at a time, and take it away again."
         }
       ],
-      "text": "Objective: put a one-click AI command on the sales order line form that says whether the line has shipped, and prove its answer against what LN shows."
+      "text": "Objective: put a one-click AI command on the sales order line screen that drafts a delivery update for the customer, check its answer against what LN shows, improve it one rule at a time, and take it away again."
     },
     {
       "kind": "prose",
@@ -2540,14 +2988,14 @@
         },
         {
           "t": "strong",
-          "v": "This walkthrough ends at a checked answer."
+          "v": "This walkthrough builds shared configuration and ends by removing it."
         },
         {
           "t": "text",
-          "v": " Its completion boundary is a response that matches the line's own Shipping tab, for one line that has shipped and one that has not. What it builds is shared configuration: every user of the form sees the command once it is linked."
+          "v": " Its completion boundary is an answer that agrees with the line's Shipping tab, for one line that has shipped and one that has not. From phase 3 until phase 6 every user of the screen sees the command."
         }
       ],
-      "text": "> Warning > This walkthrough ends at a checked answer. Its completion boundary is a response that matches the line's own Shipping tab, for one line that has shipped and one that has not. What it builds is shared configuration: every user of the form sees the command once it is linked."
+      "text": "> Warning > This walkthrough builds shared configuration and ends by removing it. Its completion boundary is an answer that agrees with the line's Shipping tab, for one line that has shipped and one that has not. From phase 3 until phase 6 every user of the screen sees the command."
     },
     {
       "kind": "prose",
@@ -2562,10 +3010,18 @@
         },
         {
           "t": "text",
-          "v": " > Know one sales order line that has been delivered and one that has not."
+          "v": " > Know one sales order line that has been delivered in full and one with nothing delivered. The GenAI feature has to be switched on for the tenant, "
+        },
+        {
+          "t": "literal",
+          "v": "the source on file"
+        },
+        {
+          "t": "text",
+          "v": " §1."
         }
       ],
-      "text": "> Prerequisite > Know one sales order line that has been delivered and one that has not."
+      "text": "> Prerequisite > Know one sales order line that has been delivered in full and one with nothing delivered. The GenAI feature has to be switched on for the tenant, the source on file §1."
     },
     {
       "kind": "glance",
@@ -2595,28 +3051,28 @@
                 },
                 {
                   "t": "text",
-                  "v": " Confirm a model is available"
+                  "v": " Choose the screen"
                 }
               ],
-              "text": "0 Confirm a model is available"
+              "text": "0 Choose the screen"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "GenAI LLMs"
+                  "v": "Sales Order Lines, GenAI LLMs"
                 }
               ],
-              "text": "GenAI LLMs"
+              "text": "Sales Order Lines, GenAI LLMs"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A default model and version are listed"
+                  "v": "The screen's session code is known and a default model is listed"
                 }
               ],
-              "text": "A default model and version are listed"
+              "text": "The screen's session code is known and a default model is listed"
             }
           ]
         },
@@ -2657,10 +3113,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Nine fields of a sales order line and its deliveries are ready to send"
+                  "v": "Six fields of a sales order line are ready to send"
                 }
               ],
-              "text": "Nine fields of a sales order line and its deliveries are ready to send"
+              "text": "Six fields of a sales order line are ready to send"
             }
           ]
         },
@@ -2745,10 +3201,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The command is in the Actions menu of the order line form"
+                  "v": "The command is in the Actions menu of the screen"
                 }
               ],
-              "text": "The command is in the Actions menu of the order line form"
+              "text": "The command is in the Actions menu of the screen"
             }
           ]
         },
@@ -2789,10 +3245,98 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The answer agrees with the Shipping tab for both lines"
+                  "v": "A first answer, right on the facts and wrong in form"
                 }
               ],
-              "text": "The answer agrees with the Shipping tab for both lines"
+              "text": "A first answer, right on the facts and wrong in form"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "5"
+                },
+                {
+                  "t": "text",
+                  "v": " Improve it"
+                }
+              ],
+              "text": "5 Improve it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "GenAI Prompts, Dataset Modeler, Sales Order Lines"
+                }
+              ],
+              "text": "GenAI Prompts, Dataset Modeler, Sales Order Lines"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "One or two plain sentences, with the date and the shipment"
+                }
+              ],
+              "text": "One or two plain sentences, with the date and the shipment"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "6"
+                },
+                {
+                  "t": "text",
+                  "v": " Remove it"
+                }
+              ],
+              "text": "6 Remove it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "GenAI Prompts, Datasets"
+                }
+              ],
+              "text": "GenAI Prompts, Datasets"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The command, the prompt and the dataset are gone"
+                }
+              ],
+              "text": "The command, the prompt and the dataset are gone"
             }
           ]
         }
@@ -2813,20 +3357,223 @@
       "tokens": [
         {
           "t": "strong",
-          "v": "Each row is one line in the Text Editor, typed exactly."
+          "v": "Every prompt is these five decisions, and this walkthrough is one set of answers to them."
         },
         {
           "t": "text",
-          "v": " As run, the prompt text also had an empty line before and after its third line."
+          "v": " Settle them for a prompt of your own before opening any of the setup sessions."
         }
       ],
-      "text": "Each row is one line in the Text Editor, typed exactly. As run, the prompt text also had an empty line before and after its third line."
+      "text": "Every prompt is these five decisions, and this walkthrough is one set of answers to them. Settle them for a prompt of your own before opening any of the setup sessions."
+    },
+    {
+      "kind": "reference",
+      "columns": [
+        "Choice",
+        "How it is settled",
+        "Here"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The screen"
+                }
+              ],
+              "text": "The screen"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The session code in the status bar of the screen the user will be on. A link is to one exact code"
+                }
+              ],
+              "text": "The session code in the status bar of the screen the user will be on. A link is to one exact code"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tdsls4101m000"
+                },
+                {
+                  "t": "text",
+                  "v": ", Sales Order Lines"
+                }
+              ],
+              "text": "tdsls4101m000, Sales Order Lines"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The table and its key"
+                }
+              ],
+              "text": "The table and its key"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The dataset's main table has to be that screen's table, and its selection index the key the screen is viewed by"
+                }
+              ],
+              "text": "The dataset's main table has to be that screen's table, and its selection index the key the screen is viewed by"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "tdsls401"
+                },
+                {
+                  "t": "text",
+                  "v": ", by "
+                },
+                {
+                  "t": "literal",
+                  "v": "1 - Order, Position, Sequence"
+                }
+              ],
+              "text": "tdsls401, by 1 - Order, Position, Sequence"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The fields"
+                }
+              ],
+              "text": "The fields"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Only what the prompt text will name. Everything ticked is sent, and the model knows nothing else"
+                }
+              ],
+              "text": "Only what the prompt text will name. Everything ticked is sent, and the model knows nothing else"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Six of the line; later one more, and two of its deliveries"
+                }
+              ],
+              "text": "Six of the line; later one more, and two of its deliveries"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "What is decided before the model is asked"
+                }
+              ],
+              "text": "What is decided before the model is asked"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A condition that must always hold is a row of the table's filter and not a sentence in the prompt"
+                }
+              ],
+              "text": "A condition that must always hold is a row of the table's filter and not a sentence in the prompt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "None"
+                }
+              ],
+              "text": "None"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "When the command is offered"
+                }
+              ],
+              "text": "When the command is offered"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "Always"
+                },
+                {
+                  "t": "text",
+                  "v": " runs on the row the cursor is on. "
+                },
+                {
+                  "t": "literal",
+                  "v": "Records Selected"
+                },
+                {
+                  "t": "text",
+                  "v": " waits for a tick and sends every ticked row"
+                }
+              ],
+              "text": "Always runs on the row the cursor is on. Records Selected waits for a tick and sends every ticked row"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "Always"
+                }
+              ],
+              "text": "Always"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Each row is one line in the Text Editor, typed exactly, in this order."
+        },
+        {
+          "t": "text",
+          "v": " The marker stays the last line: every line added in phase 5 goes above it."
+        }
+      ],
+      "text": "Each row is one line in the Text Editor, typed exactly, in this order. The marker stays the last line: every line added in phase 5 goes above it."
     },
     {
       "kind": "reference",
       "columns": [
         "Text",
-        "Line",
+        "Added at",
         "Enter"
       ],
       "rows": [
@@ -2845,19 +3592,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "1"
+                  "v": "2.9"
                 }
               ],
-              "text": "1"
+              "text": "2.9"
             },
             {
               "tokens": [
                 {
                   "t": "literal",
-                  "v": "Summarize the shipping status of the selected order lines."
+                  "v": "Draft a delivery update for the customer about this order line."
                 }
               ],
-              "text": "Summarize the shipping status of the selected order lines."
+              "text": "Draft a delivery update for the customer about this order line."
             }
           ]
         },
@@ -2876,19 +3623,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "1"
+                  "v": "2.11"
                 }
               ],
-              "text": "1"
+              "text": "2.11"
             },
             {
               "tokens": [
                 {
                   "t": "literal",
-                  "v": "You are given an XML dataset containing one or more sales order lines."
+                  "v": "You are given an XML dataset containing one sales order line."
                 }
               ],
-              "text": "You are given an XML dataset containing one or more sales order lines."
+              "text": "You are given an XML dataset containing one sales order line."
             }
           ]
         },
@@ -2907,19 +3654,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "2"
+                  "v": "2.11"
                 }
               ],
-              "text": "2"
+              "text": "2.11"
             },
             {
               "tokens": [
                 {
                   "t": "literal",
-                  "v": "For each order line, produce one output line in this format:"
+                  "v": "Write a short delivery update to the customer about this line, stating the sales order and line, the item, the ordered quantity and the delivered quantity."
                 }
               ],
-              "text": "For each order line, produce one output line in this format:"
+              "text": "Write a short delivery update to the customer about this line, stating the sales order and line, the item, the ordered quantity and the delivered quantity."
             }
           ]
         },
@@ -2938,19 +3685,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "3"
+                  "v": "2.11"
                 }
               ],
-              "text": "3"
+              "text": "2.11"
             },
             {
               "tokens": [
                 {
                   "t": "literal",
-                  "v": "<Sales Order> / <Line> | <Item> | Ordered: <ordered quantity> | Delivered: <delivered quantity> | Planned delivery: <date> | Status: <shipped, partly shipped, or not shipped>"
+                  "v": "Use only the information present in the dataset."
                 }
               ],
-              "text": "<Sales Order> / <Line> | <Item> | Ordered: <ordered quantity> | Delivered: <delivered quantity> | Planned delivery: <date> | Status: <shipped, partly shipped, or not shipped>"
+              "text": "Use only the information present in the dataset."
             }
           ]
         },
@@ -2960,28 +3707,28 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Prompt"
+                  "v": "Prompt, the form rule"
                 }
               ],
-              "text": "Prompt"
+              "text": "Prompt, the form rule"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "4"
+                  "v": "5.2"
                 }
               ],
-              "text": "4"
+              "text": "5.2"
             },
             {
               "tokens": [
                 {
                   "t": "literal",
-                  "v": "Rules:"
+                  "v": "Output only the message, in plain sentences. No heading, no greeting, no sign-off, no list and no formatting marks."
                 }
               ],
-              "text": "Rules:"
+              "text": "Output only the message, in plain sentences. No heading, no greeting, no sign-off, no list and no formatting marks."
             }
           ]
         },
@@ -2991,28 +3738,28 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Prompt"
+                  "v": "Prompt, the delivery rules"
                 }
               ],
-              "text": "Prompt"
+              "text": "Prompt, the delivery rules"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "5"
+                  "v": "5.8"
                 }
               ],
-              "text": "5"
+              "text": "5.8"
             },
             {
               "tokens": [
                 {
                   "t": "literal",
-                  "v": "- Use only the information present in the dataset."
+                  "v": "If delivered equals ordered, say the line has shipped in full and give the last actual delivery date and the shipment number."
                 }
               ],
-              "text": "- Use only the information present in the dataset."
+              "text": "If delivered equals ordered, say the line has shipped in full and give the last actual delivery date and the shipment number."
             }
           ]
         },
@@ -3022,28 +3769,28 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Prompt"
+                  "v": "Prompt, the delivery rules"
                 }
               ],
-              "text": "Prompt"
+              "text": "Prompt, the delivery rules"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "6"
+                  "v": "5.8"
                 }
               ],
-              "text": "6"
+              "text": "5.8"
             },
             {
               "tokens": [
                 {
                   "t": "literal",
-                  "v": "- Take the delivered quantity from the order line's own Delivered Quantity field."
+                  "v": "If delivered is above zero and below ordered, say how many of the ordered quantity have shipped and give the planned delivery date."
                 }
               ],
-              "text": "- Take the delivered quantity from the order line's own Delivered Quantity field."
+              "text": "If delivered is above zero and below ordered, say how many of the ordered quantity have shipped and give the planned delivery date."
             }
           ]
         },
@@ -3053,28 +3800,28 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Prompt"
+                  "v": "Prompt, the delivery rules"
                 }
               ],
-              "text": "Prompt"
+              "text": "Prompt, the delivery rules"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "7"
+                  "v": "5.8"
                 }
               ],
-              "text": "7"
+              "text": "5.8"
             },
             {
               "tokens": [
                 {
                   "t": "literal",
-                  "v": "- Shipped means delivered equals ordered; partly shipped means delivered is above zero and below ordered; not shipped means delivered is zero."
+                  "v": "If delivered is zero, say nothing has shipped yet and give the planned delivery date."
                 }
               ],
-              "text": "- Shipped means delivered equals ordered; partly shipped means delivered is above zero and below ordered; not shipped means delivered is zero."
+              "text": "If delivered is zero, say nothing has shipped yet and give the planned delivery date."
             }
           ]
         },
@@ -3084,28 +3831,28 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Prompt"
+                  "v": "Prompt, the missing-value rule"
                 }
               ],
-              "text": "Prompt"
+              "text": "Prompt, the missing-value rule"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "8"
+                  "v": "5.8"
                 }
               ],
-              "text": "8"
+              "text": "5.8"
             },
             {
               "tokens": [
                 {
                   "t": "literal",
-                  "v": "- If the order line has no Delivered Quantity field, write \"Not available in dataset\" for Delivered and for Status."
+                  "v": "If a value you need is not in the dataset, write \"[not available]\" in its place."
                 }
               ],
-              "text": "- If the order line has no Delivered Quantity field, write \"Not available in dataset\" for Delivered and for Status."
+              "text": "If a value you need is not in the dataset, write \"[not available]\" in its place."
             }
           ]
         },
@@ -3115,28 +3862,28 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Prompt"
+                  "v": "Prompt, the date rule"
                 }
               ],
-              "text": "Prompt"
+              "text": "Prompt, the date rule"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "9"
+                  "v": "5.12"
                 }
               ],
-              "text": "9"
+              "text": "5.12"
             },
             {
               "tokens": [
                 {
                   "t": "literal",
-                  "v": "- If actual delivery lines are present, add \" | Last delivery: <date> | Shipment: <number>\" at the end."
+                  "v": "Write every date as YYYY-MM-DD."
                 }
               ],
-              "text": "- If actual delivery lines are present, add \" | Last delivery: <date> | Shipment: <number>\" at the end."
+              "text": "Write every date as YYYY-MM-DD."
             }
           ]
         },
@@ -3146,81 +3893,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Prompt"
+                  "v": "Prompt, the marker"
                 }
               ],
-              "text": "Prompt"
+              "text": "Prompt, the marker"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "10"
+                  "v": "2.11"
                 }
               ],
-              "text": "10"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "literal",
-                  "v": "- Write every date as YYYY-MM-DD."
-                }
-              ],
-              "text": "- Write every date as YYYY-MM-DD."
-            }
-          ]
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Prompt"
-                }
-              ],
-              "text": "Prompt"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "11"
-                }
-              ],
-              "text": "11"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "literal",
-                  "v": "- Output only the lines in the format above. No introduction and no explanation."
-                }
-              ],
-              "text": "- Output only the lines in the format above. No introduction and no explanation."
-            }
-          ]
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Prompt"
-                }
-              ],
-              "text": "Prompt"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "12"
-                }
-              ],
-              "text": "12"
+              "text": "2.11"
             },
             {
               "tokens": [
@@ -3240,36 +3925,28 @@
       "tokens": [
         {
           "t": "strong",
-          "v": "Each rule is there because of an answer that went wrong without it."
+          "v": "Each added line is there because of an answer."
         },
         {
           "t": "text",
-          "v": " The rule in line 8 replaced one that turned missing data into "
-        },
-        {
-          "t": "em",
-          "v": "not shipped"
-        },
-        {
-          "t": "text",
-          "v": ". The date rule followed a run that printed timestamps, and line 11 a run that added an introduction and an explanation."
+          "v": " The form rule followed the letter and its promise. The delivery rules came with the fields they speak of. The missing-value rule turns a field the model was not sent into something a reader can see. The date rule followed timestamps on another prompt."
         }
       ],
-      "text": "Each rule is there because of an answer that went wrong without it. The rule in line 8 replaced one that turned missing data into not shipped. The date rule followed a run that printed timestamps, and line 11 a run that added an introduction and an explanation."
+      "text": "Each added line is there because of an answer. The form rule followed the letter and its promise. The delivery rules came with the fields they speak of. The missing-value rule turns a field the model was not sent into something a reader can see. The date rule followed timestamps on another prompt."
     },
     {
       "kind": "prose",
       "tokens": [
         {
           "t": "strong",
-          "v": "Line 12 is the data marker."
+          "v": "The last line is the data marker."
         },
         {
           "t": "text",
           "v": " LN replaces it with the dataset's output as XML, which is the only output format registered here."
         }
       ],
-      "text": "Line 12 is the data marker. LN replaces it with the dataset's output as XML, which is the only output format registered here."
+      "text": "The last line is the data marker. LN replaces it with the dataset's output as XML, which is the only output format registered here."
     },
     {
       "kind": "troubleshooting",
@@ -3279,6 +3956,45 @@
         "What to check or do"
       ],
       "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The lookup on "
+                },
+                {
+                  "t": "field",
+                  "v": "Main table"
+                },
+                {
+                  "t": "text",
+                  "v": " lists nothing"
+                }
+              ],
+              "text": "The lookup on Main table lists nothing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "It shows one package at a time. Type the table's code, as in 1.3"
+                }
+              ],
+              "text": "It shows one package at a time. Type the table's code, as in 1.3"
+            }
+          ]
+        },
         {
           "cells": [
             {
@@ -3315,10 +4031,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ", as in 2.8"
+                  "v": ", as in 2.9"
                 }
               ],
-              "text": "Nothing. The text has not been written yet; choose Create, as in 2.8"
+              "text": "Nothing. The text has not been written yet; choose Create, as in 2.9"
             }
           ]
         },
@@ -3328,28 +4044,28 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "3"
+                  "v": "2"
                 }
               ],
-              "text": "3"
+              "text": "2"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The grid is empty for a session that should have a link"
+                  "v": "The new row holds another prompt's dataset"
                 }
               ],
-              "text": "The grid is empty for a session that should have a link"
+              "text": "The new row holds another prompt's dataset"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Clear the boxes in the grey row under the column names. They filter the list"
+                  "v": "A new row is a copy of the row the cursor was on. Replace it, as in 2.5"
                 }
               ],
-              "text": "Clear the boxes in the grey row under the column names. They filter the list"
+              "text": "A new row is a copy of the row the cursor was on. Replace it, as in 2.5"
             }
           ]
         },
@@ -3381,10 +4097,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read the session code in the status bar of the form and compare it with 3.2, character for character"
+                  "v": "Read the session code in the status bar of the screen and compare it with 3.2, character for character"
                 }
               ],
-              "text": "Read the session code in the status bar of the form and compare it with 3.2, character for character"
+              "text": "Read the session code in the status bar of the screen and compare it with 3.2, character for character"
             }
           ]
         },
@@ -3420,10 +4136,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " is ticked on the link, then close the form's tab and open the line again"
+                  "v": " is ticked on the link, then close the screen's tab and open the line again"
                 }
               ],
-              "text": "Check that Active is ticked on the link, then close the form's tab and open the line again"
+              "text": "Check that Active is ticked on the link, then close the screen's tab and open the line again"
             }
           ]
         },
@@ -3459,10 +4175,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The dataset's main table is not the form's. The table in the message is the form's; set it in 1.3"
+                  "v": "The dataset's main table is not the screen's. The table in the message is the screen's; a dataset has to be built on it"
                 }
               ],
-              "text": "The dataset's main table is not the form's. The table in the message is the form's; set it in 1.3"
+              "text": "The dataset's main table is not the screen's. The table in the message is the screen's; a dataset has to be built on it"
             }
           ]
         },
@@ -3472,32 +4188,32 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "4"
+                  "v": "5"
                 }
               ],
-              "text": "4"
+              "text": "5"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The response says "
+                  "v": "A value reads "
                 },
                 {
-                  "t": "text",
-                  "v": "Not available in dataset"
+                  "t": "literal",
+                  "v": "[not available]"
                 }
               ],
-              "text": "The response says Not available in dataset"
+              "text": "A value reads [not available]"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The field is not ticked in the dataset, 1.8, or the form was open before the dataset was saved. Close the form's tab and open the line again"
+                  "v": "The field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the line again, as in 5.10"
                 }
               ],
-              "text": "The field is not ticked in the dataset, 1.8, or the form was open before the dataset was saved. Close the form's tab and open the line again"
+              "text": "The field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the line again, as in 5.10"
             }
           ]
         },
@@ -3507,10 +4223,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "4"
+                  "v": "5"
                 }
               ],
-              "text": "4"
+              "text": "5"
             },
             {
               "tokens": [
@@ -3538,28 +4254,28 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "4"
+                  "v": "5"
                 }
               ],
-              "text": "4"
+              "text": "5"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The response carries an introduction or an explanation"
+                  "v": "The answer is a letter again"
                 }
               ],
-              "text": "The response carries an introduction or an explanation"
+              "text": "The answer is a letter again"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Line 11 of the prompt text in §7 is missing"
+                  "v": "The form rule is missing from the prompt text, 5.2"
                 }
               ],
-              "text": "Line 11 of the prompt text in §7 is missing"
+              "text": "The form rule is missing from the prompt text, 5.2"
             }
           ]
         },
@@ -3569,28 +4285,28 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "4"
+                  "v": "6"
                 }
               ],
-              "text": "4"
+              "text": "6"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Dates come back with a time and a zone"
+                  "v": "Unable to delete; record being used in other table"
                 }
               ],
-              "text": "Dates come back with a time and a zone"
+              "text": "Unable to delete; record being used in other table"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Line 10 of the prompt text in §7 is missing"
+                  "v": "A prompt still uses the dataset. Delete the prompt first, as in 6.1"
                 }
               ],
-              "text": "Line 10 of the prompt text in §7 is missing"
+              "text": "A prompt still uses the dataset. Delete the prompt first, as in 6.1"
             }
           ]
         }
@@ -3618,7 +4334,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Link to a session that lists records, set "
+                  "v": "Link to a session that lists records, leave "
                 },
                 {
                   "t": "field",
@@ -3626,7 +4342,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " to "
+                  "v": " on "
                 },
                 {
                   "t": "literal",
@@ -3634,10 +4350,18 @@
                 },
                 {
                   "t": "text",
-                  "v": " in 3.6, and build the dataset on that session's table. One prompt here does this on Business Partners and returns a line for each partner ticked"
+                  "v": " at 3.3, and build the dataset on that session's table. One prompt here does this on Business Partners, "
+                },
+                {
+                  "t": "literal",
+                  "v": "the source on file"
+                },
+                {
+                  "t": "text",
+                  "v": " §5"
                 }
               ],
-              "text": "Link to a session that lists records, set When Enabled to Records Selected in 3.6, and build the dataset on that session's table. One prompt here does this on Business Partners and returns a line for each partner ticked"
+              "text": "Link to a session that lists records, leave When Enabled on Records Selected at 3.3, and build the dataset on that session's table. One prompt here does this on Business Partners, the source on file §5"
             }
           ]
         },
@@ -3724,10 +4448,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " on the prompt, after 2.5"
+                  "v": " on the prompt, after 2.6"
                 }
               ],
-              "text": "Name it in LLM Name and LLM Version on the prompt, after 2.5"
+              "text": "Name it in LLM Name and LLM Version on the prompt, after 2.6"
             }
           ]
         },
@@ -3737,35 +4461,19 @@
               "tokens": [
                 {
                   "t": "chip",
-                  "v": "A change to the dataset later"
+                  "v": "Keeping the prompt"
                 }
               ],
-              "text": "A change to the dataset later"
+              "text": "Keeping the prompt"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Save it, run "
-                },
-                {
-                  "t": "command",
-                  "route": "Actions ➔ Update GenAI Prompts Parameters"
-                },
-                {
-                  "t": "text",
-                  "v": " on Datasets if a filter row's "
-                },
-                {
-                  "t": "field",
-                  "v": "Input"
-                },
-                {
-                  "t": "text",
-                  "v": " box changed, and reopen the target form before testing"
+                  "v": "Stop after phase 5"
                 }
               ],
-              "text": "Save it, run Actions ➔ Update GenAI Prompts Parameters on Datasets if a filter row's Input box changed, and reopen the target form before testing"
+              "text": "Stop after phase 5"
             }
           ]
         }
@@ -3791,5 +4499,5 @@
     }
   ],
   "verification": "Warning No phase of this procedure has yet been performed end to end against a live system. Follow it as a plan, not as a record.",
-  "openIssues": 4
+  "openIssues": 2
 }

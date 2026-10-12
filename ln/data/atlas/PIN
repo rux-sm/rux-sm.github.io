@@ -1,9 +1,9 @@
-commit   f6640a7724a84021b74f00f0146cd8485be0886e
-date     2026-10-12T19:44:46Z
-subject  feat(genai): Write the setup walkthrough
+commit   4e477412ea907f19c37e5485a0ed7498ea6c8bd0
+date     2026-10-12T22:14:20Z
+subject  fix(genai): Keep help filenames out of the export
 contract 15 
 tier     export
-sha256   c2a3643077fe32e66ce75cebf1b274eb0aeb89f468fb9191bbd75b4e5645bd86
+sha256   add172aeb6a9dc0b15a9d2fb40cedb7b981ba6c5659113e2a5ea4e50ca6c5164
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

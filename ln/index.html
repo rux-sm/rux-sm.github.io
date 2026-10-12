@@ -158,7 +158,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-ln-commit="f6640a7724a84021b74f00f0146cd8485be0886e">
+<main id="main-content" class="rux--content" data-ln-commit="4e477412ea907f19c37e5485a0ed7498ea6c8bd0">
 <div class="ln-app">
   <section class="ln-screen" data-screen="home">
     <h1 class="ln-ask">What are you doing?</h1>
@@ -172,7 +172,7 @@
     </div>
     <div class="ln-cards">
       <a class="rux--tile rux--tile--clickable ln-resume" href="./" data-resume hidden><span class="ln-quiet">Carry on</span><b></b></a>
-      <a class="rux--tile rux--tile--clickable" href="./?s=set-up-a-genai-prompt"><b>Set up a GenAI prompt</b><span class="ln-quiet">5 tasks</span></a>
+      <a class="rux--tile rux--tile--clickable" href="./?s=set-up-a-genai-prompt"><b>Set up a GenAI prompt</b><span class="ln-quiet">7 tasks</span></a>
       <a class="rux--tile rux--tile--clickable" href="./?s=create-basic-test-items-and-defaults"><b>Create test items</b><span class="ln-quiet">11 tasks</span></a>
       <a class="rux--tile rux--tile--clickable" href="./?s=run-order-planning-for-one-item"><b>Run order planning</b><span class="ln-quiet">6 tasks</span></a>
       <a class="rux--tile rux--tile--clickable" href="./?s=check-item-inventory"><b>Check an item's inventory</b><span class="ln-quiet">2 tasks</span></a>
@@ -181,29 +181,31 @@
       <a class="rux--tile rux--tile--clickable" href="./?s=transfer-item-between-warehouses"><b>Warehouse transfer</b><span class="ln-quiet">7 tasks</span></a>
       <a class="rux--tile rux--tile--clickable" href="./?s=ship-from-stock"><b>Ship from stock</b><span class="ln-quiet">7 tasks</span></a>
       <a class="rux--tile rux--tile--clickable" href="./?s=demand-to-shipment-via-planning"><b>Plan to shipment</b><span class="ln-quiet">7 tasks</span></a>
-      <a class="rux--tile rux--tile--clickable ln-waiting" href="./?v=confirm"><b>Still to confirm</b><span class="ln-quiet" data-waiting="51">51 tasks</span></a>
+      <a class="rux--tile rux--tile--clickable ln-waiting" href="./?v=confirm"><b>Still to confirm</b><span class="ln-quiet" data-waiting="53">53 tasks</span></a>
     </div>
   </section>
   <section class="ln-screen" data-screen="path" data-s="set-up-a-genai-prompt" hidden>
     <a class="rux--link ln-back" href="./"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Scenarios</a>
     <h1 class="ln-ask">Set up a GenAI prompt</h1>
-    <p class="ln-quiet">Put a one-click AI command on the sales order line form that says whether the line has shipped, and prove its answer against what LN shows.<br>Needs: Know one sales order line that has been delivered and one that has not.</p>
+    <p class="ln-quiet">Put a one-click AI command on the sales order line screen that drafts a delivery update for the customer, check its answer against what LN shows, improve it one rule at a time, and take it away again.<br>Needs: Know one sales order line that has been delivered in full and one with nothing delivered. The GenAI feature has to be switched on for the tenant, <span class="ln-t-exact">the source on file</span> §1.</p>
     <ol class="ln-path">
-      <li data-t="0" data-n="1"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=0"><span class="ln-path__dot">1</span><b>Confirm a model is available<small>4 steps</small></b></a></li>
-      <li data-t="1" data-n="2"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=1"><span class="ln-path__dot">2</span><b>Model the dataset<small>14 steps</small></b></a></li>
-      <li data-t="2" data-n="3"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=2"><span class="ln-path__dot">3</span><b>Write the prompt<small>13 steps</small></b></a></li>
-      <li data-t="3" data-n="4"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=3"><span class="ln-path__dot">4</span><b>Link the prompt to a session<small>8 steps</small></b></a></li>
-      <li data-t="4" data-n="5"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=4"><span class="ln-path__dot">5</span><b>Run it and check the answer<small>8 steps</small></b></a></li>
+      <li data-t="0" data-n="1"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=0"><span class="ln-path__dot">1</span><b>Choose the screen<small>5 steps</small></b></a></li>
+      <li data-t="1" data-n="2"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=1"><span class="ln-path__dot">2</span><b>Model the dataset<small>11 steps</small></b></a></li>
+      <li data-t="2" data-n="3"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=2"><span class="ln-path__dot">3</span><b>Write the prompt<small>11 steps</small></b></a></li>
+      <li data-t="3" data-n="4"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=3"><span class="ln-path__dot">4</span><b>Link the prompt to a session<small>4 steps</small></b></a></li>
+      <li data-t="4" data-n="5"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=4"><span class="ln-path__dot">5</span><b>Run it and check the answer<small>7 steps</small></b></a></li>
+      <li data-t="5" data-n="6"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=5"><span class="ln-path__dot">6</span><b>Improve it<small>12 steps</small></b></a></li>
+      <li data-t="6" data-n="7"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=6"><span class="ln-path__dot">7</span><b>Remove it<small>4 steps</small></b></a></li>
     </ol>
     <a class="rux--btn rux--btn--primary" href="./?s=set-up-a-genai-prompt&amp;t=0" data-start>Start</a>
     <p><a class="rux--link" href="#main-content" data-open="loose">Different cases</a></p>
     <ul class="ln-list" data-panel="loose" hidden>
       <li><b><span class="ln-t-named">A condition that must always hold</span></b><p>Put it in the table's filter in the Modeler, by the <span class="ln-t-named">Filter Present</span> link on the Properties panel, and leave the prompt text to set out the answer</p></li>
       <li><b><span class="ln-t-named">A whole order with its lines</span></b><p>Build the dataset on the order table and add the lines as a table that refers to it, then link to a session on the order table</p></li>
-      <li><b><span class="ln-t-named">A change to the dataset later</span></b><p>Save it, run <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Update GenAI Prompts Parameters</span></span> on Datasets if a filter row's <span class="ln-t-named">Input</span> box changed, and reopen the target form before testing</p></li>
+      <li><b><span class="ln-t-named">Keeping the prompt</span></b><p>Stop after <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5">task 6</a></p></li>
     </ul>
   </section>
-  <section class="ln-screen" data-screen="task" data-s="set-up-a-genai-prompt" data-t="0" data-title="Confirm a model is available" data-after="./?s=set-up-a-genai-prompt&amp;t=1" hidden>
+  <section class="ln-screen" data-screen="task" data-s="set-up-a-genai-prompt" data-t="0" data-title="Choose the screen" data-after="./?s=set-up-a-genai-prompt&amp;t=1" hidden>
     <a class="rux--link ln-back" href="./?s=set-up-a-genai-prompt"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Set up a GenAI prompt</a>
     <div class="rux--progress-bar rux--progress-bar--small">
       <div class="rux--progress-bar__label"><span class="rux--progress-bar__label-text" data-where></span></div>
@@ -211,25 +213,29 @@
     </div>
     <ol class="ln-steps">
       <li data-k="1" data-ref="0.1" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Open <span class="ln-t-named">GenAI LLMs</span></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A list of models with <span class="ln-t-named">LLM Name</span>, <span class="ln-t-named">Provider</span> and <span class="ln-t-named">Is default</span></p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Open <span class="ln-t-named">Sales Order Intake Workbench</span> and its <span class="ln-t-named">Order Lines</span> tab</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Order lines, one row each</p></div>
       </li>
       <li data-k="2" data-ref="0.2" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Drill In</span> on the line that has been delivered</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Sales Order Lines</span> opens on that line, in a tab of its own</p></div>
+      </li>
+      <li data-k="3" data-ref="0.3" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Read the status bar at the foot of the form</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="./?c=tdsls4101m000"><span class="ln-t-exact">tdsls4101m000</span></a> — <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">session code</span></p></div>
+      </li>
+      <li data-k="4" data-ref="0.4" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Open <span class="ln-t-named">GenAI LLMs</span>, <span class="ln-t-named">GenAI LLMs</span></h1>
+          <p class="ln-step__route"><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI LLMs</span></span></p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A list of models with <span class="ln-t-named">LLM Name</span>, <span class="ln-t-named">Provider</span> and <span class="ln-t-named">Is default</span></p></div>
+      </li>
+      <li data-k="5" data-ref="0.5" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">Find the row with <span class="ln-t-named">Is default</span> ticked</h1></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">default model</span></p></div>
       </li>
-      <li data-k="3" data-ref="0.3" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Tick that row and choose <span class="ln-t-named">GenAI LLM Versions</span></h1>
-          <p class="ln-step__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">GenAI LLM Versions</span></span></p></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="./?c=ttrpi5561m000"><span class="ln-t-named">GenAI LLM Versions</span></a> <span class="ln-t-exact">ttrpi5561m000</span> lists the model's versions</p></div>
-      </li>
-      <li data-k="4" data-ref="0.4" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Find the version with <span class="ln-t-named">Is default</span> ticked</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">default version</span></p></div>
-      </li>
     </ol>
-    <p class="ln-task__route"><a class="rux--link" href="./?c=ttrpi5560m000"><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI LLMs</span></span></a>
-      <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="ttrpi5560m000" aria-label="Copy the code ttrpi5560m000">ttrpi5560m000</button></p>
+    <p class="ln-task__route"><a class="rux--link" href="./?c=tdsls4601m200"><span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></a>
+      <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="tdsls4601m200" aria-label="Copy the code tdsls4601m200">tdsls4601m200</button></p>
 
     <div class="ln-confirm" data-confirm="set-up-a-genai-prompt">
       <p class="ln-quiet" data-said>Nobody has confirmed this step in LN yet.</p>
@@ -252,7 +258,7 @@
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
-    <div class="ln-why" data-panel="why" hidden><p>LN has no language model of its own. It keeps a list retrieved from the Infor GenAI application, and that service marks one model and one version of it as the default. A prompt that names no model uses the default, so this phase is a look and not a setting.</p></div>
+    <div class="ln-why" data-panel="why" hidden><p>A prompt is tied to one exact session code, and its dataset to that session's table. So the build starts on the screen the command will sit on, not in the setup sessions. LN has no language model of its own: it keeps a list retrieved from the Infor GenAI application, and a prompt that names no model uses the one that service marks as default.</p></div>
     <div class="ln-nav">
       <a class="rux--btn rux--btn--secondary" href="./" data-prev>Back</a>
       <a class="rux--btn rux--btn--primary" href="./" data-next>Next</a>
@@ -266,55 +272,46 @@
     </div>
     <ol class="ln-steps">
       <li data-k="1" data-ref="1.1" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Open <span class="ln-t-named">Datasets</span> and start a new dataset</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Dataset Configuration</span> opens; <span class="ln-t-named">Dataset Name</span>, <span class="ln-t-named">Description</span>, <span class="ln-t-named">Main table</span> and <span class="ln-t-named">Selection Index</span> are mandatory</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Open <span class="ln-t-named">Datasets</span> and click <span class="ln-t-press">New</span></h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A <span class="ln-t-named">Dataset Modeler</span> tab opens with <span class="ln-t-named">Dataset Configuration</span> in front; four fields are marked mandatory and <span class="ln-t-named">Use Camel Case</span> is already ticked</p></div>
       </li>
       <li data-k="2" data-ref="1.2" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Enter a <span class="ln-t-named">Dataset Name</span> and a <span class="ln-t-named">Description</span></h1></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Enter a <span class="ln-t-named">Dataset Name</span> in lowercase and a <span class="ln-t-named">Description</span></h1></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">dataset name</span></p></div>
       </li>
       <li data-k="3" data-ref="1.3" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">Main table</span> to <span class="ln-t-exact">tdsls401</span></h1></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Type <span class="ln-t-exact">tdsls401</span> in <span class="ln-t-named">Main table</span></h1></div>
       </li>
       <li data-k="4" data-ref="1.4" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">Selection Index</span> to <span class="ln-t-exact">1 - Order, Position, Sequence</span></h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Nine indexes are offered</p></div>
       </li>
       <li data-k="5" data-ref="1.5" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Tick <span class="ln-t-named">Use Camel Case</span></h1></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">OK</span></h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The Modeler shows Sales Order Lines (<span class="ln-t-exact">tdsls401</span>) under <span class="ln-t-named">Tables</span> and its fields under <span class="ln-t-named">Fields</span>, none ticked</p></div>
       </li>
       <li data-k="6" data-ref="1.6" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Confirm the window</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The Modeler opens on two panels, <span class="ln-t-named">Tables</span> and <span class="ln-t-named">Fields</span>, with Sales Order Lines (<span class="ln-t-exact">tdsls401</span>) chosen</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Tick <span class="ln-t-exact">orno</span>, <span class="ln-t-exact">pono</span> and <span class="ln-t-exact">sqnb</span> at the head of the list, and <span class="ln-t-exact">item</span> a few rows down</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Sales Order, Line, Sequence Number and Item are ticked</p></div>
       </li>
       <li data-k="7" data-ref="1.7" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">In the box above the <span class="ln-t-named">Description</span> column, type <span class="ln-t-exact">Delivered</span></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The list narrows to <span class="ln-t-exact">qidl</span> Delivered Quantity and <span class="ln-t-exact">qpdl</span></p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Type <span class="ln-t-exact">qoor</span> in the box above the <span class="ln-t-named">Field</span> column and press Enter</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The list narrows to Ordered Quantity</p></div>
       </li>
       <li data-k="8" data-ref="1.8" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Tick <span class="ln-t-exact">qidl</span></h1></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Tick it, then find and tick <span class="ln-t-exact">qidl</span> the same way</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Delivered Quantity is ticked</p></div>
       </li>
       <li data-k="9" data-ref="1.9" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Clear the box and tick <span class="ln-t-exact">orno</span>, <span class="ln-t-exact">pono</span>, <span class="ln-t-exact">sqnb</span>, <span class="ln-t-exact">item</span>, <span class="ln-t-exact">ddta</span> and <span class="ln-t-exact">qoor</span></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Sales Order, Line, Sequence Number, Item, Planned Delivery Date and Ordered Quantity are ticked</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Clear the box, open the mark at the head of <span class="ln-t-named">Selected</span> and choose Selected</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Six fields are listed</p></div>
       </li>
       <li data-k="10" data-ref="1.10" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">In <span class="ln-t-named">Tables</span>, expand <span class="ln-t-named">Referred by</span> and choose Sales Order Actual Delivery Lines (<span class="ln-t-exact">tdsls406</span>)</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Fields</span> lists that table's fields, none ticked</p></div>
-      </li>
-      <li data-k="11" data-ref="1.11" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Tick <span class="ln-t-exact">dldt</span> and <span class="ln-t-exact">shpm</span></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Actual Delivery Date and Shipment are ticked</p></div>
-      </li>
-      <li data-k="12" data-ref="1.12" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Drag the divider under the two panels upward</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Properties</span> and <span class="ln-t-named">Selected Fields</span> appear; the tree lists the seven fields and, on a level beneath them, the two delivery fields</p></div>
-      </li>
-      <li data-k="13" data-ref="1.13" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Save</span></h1></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>No message</p></div>
       </li>
-      <li data-k="14" data-ref="1.14" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Back on <span class="ln-t-named">Datasets</span>, tick the dataset and click <span class="ln-t-press">Parameters</span></h1></div>
+      <li data-k="11" data-ref="1.11" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">On <span class="ln-t-named">Datasets</span>, click <span class="ln-t-press">Refresh</span>, tick the dataset and click <span class="ln-t-press">Parameters</span></h1></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="./?c=ttrpi5501m000"><span class="ln-t-named">Dataset Parameters</span></a> <span class="ln-t-exact">ttrpi5501m000</span> lists six rows of type Selection Range: <span class="ln-t-exact">orno</span>, <span class="ln-t-exact">pono</span> and <span class="ln-t-exact">sqnb</span>, each with <span class="ln-t-exact">.f</span> and <span class="ln-t-exact">.t</span></p></div>
       </li>
     </ol>
@@ -340,9 +337,13 @@
     </div>
     <div class="ln-step__more">
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
+      <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
-    <div class="ln-why" data-panel="why" hidden><p>A dataset is the LN data that will travel with the question, and it is the whole of what the model is told. It starts from one main table, which has to be the table of the screen the command will sit on, because the record the user has open reaches the dataset through its selection index. Fields of related tables can be added beneath it. Every field ticked is sent, so tick only what the prompt will name.</p></div>
+    <div class="ln-why" data-panel="why" hidden><p>A dataset is the LN data that travels with the question, and it is the whole of what the model is told. It starts from one main table and one index of it. The record the user is on reaches the dataset through that index, which is why both have to be the screen's own. Every field ticked is sent, so the first version takes only what the first prompt text names.</p></div>
+    <ul class="ln-list" data-panel="wrong" hidden>
+      <li><b>The lookup on <span class="ln-t-named">Main table</span> lists nothing</b><p>It shows one package at a time. Type the table's code, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1&amp;k=3">step 3</a></p></li>
+    </ul>
     <div class="ln-nav">
       <a class="rux--btn rux--btn--secondary" href="./" data-prev>Back</a>
       <a class="rux--btn rux--btn--primary" href="./" data-next>Next</a>
@@ -357,51 +358,45 @@
     <ol class="ln-steps">
       <li data-k="1" data-ref="2.1" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">Open <span class="ln-t-named">GenAI Prompts</span> and click <span class="ln-t-press">New</span></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A blank row</p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A new row that already holds the name of the row the cursor was on</p></div>
       </li>
       <li data-k="2" data-ref="2.2" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Enter a name in <span class="ln-t-named">GenAI Prompt</span></h1></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Type a name over it in <span class="ln-t-named">GenAI Prompt</span></h1></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">prompt name</span></p></div>
       </li>
       <li data-k="3" data-ref="2.3" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">In <span class="ln-t-named">Label</span>, pick from the list a label whose description is the name the command should have</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The description shows beside the code — <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">command name</span></p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">In <span class="ln-t-named">Label</span>, open the lookup, enter <span class="ln-t-exact">2</span> under <span class="ln-t-named">Language</span> and a word under <span class="ln-t-named">Label Description</span>, and press Enter</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Labels whose description holds that word, each with the context Form Commands</p></div>
       </li>
       <li data-k="4" data-ref="2.4" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">Dataset</span> to the dataset name from <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1&amp;k=2">task 2 step 2</a></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Its description shows beside it</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Tick one whose description is the name the command should have and that no command on the screen already uses, and click <span class="ln-t-press">OK</span></h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The description shows beside the code — <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">command name</span></p></div>
       </li>
       <li data-k="5" data-ref="2.5" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">Usage Type</span> to <span class="ln-t-exact">General</span></h1></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Replace what <span class="ln-t-named">Dataset</span> holds with the dataset name from <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1&amp;k=2">task 2 step 2</a></h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Its description shows beside it</p></div>
       </li>
       <li data-k="6" data-ref="2.6" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">Usage Type</span> to <span class="ln-t-exact">Email</span></h1></div>
+      </li>
+      <li data-k="7" data-ref="2.7" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Save</span></h1></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A grey dot under <span class="ln-t-named">Instruction Text</span> and under <span class="ln-t-named">Prompt Text</span></p></div>
       </li>
-      <li data-k="7" data-ref="2.7" hidden>
+      <li data-k="8" data-ref="2.8" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">Tick the row, open the text button on the toolbar and choose <span class="ln-t-named">Instruction</span></h1></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>No text present; Create, Duplicate, Select or Exit?</p></div>
       </li>
-      <li data-k="8" data-ref="2.8" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Choose <span class="ln-t-press">Create</span></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Text Editor</span> opens, empty</p></div>
-      </li>
       <li data-k="9" data-ref="2.9" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Type the instruction text from §7</h1></div>
-      </li>
-      <li data-k="10" data-ref="2.10" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Save in the editor</h1></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Choose <span class="ln-t-press">Create</span>, type the instruction text from §10 and save in the editor</h1></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A last-modified stamp under the text</p></div>
       </li>
+      <li data-k="10" data-ref="2.10" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Close the editor, open the text button again, choose <span class="ln-t-named">Prompt</span> and then <span class="ln-t-press">Create</span></h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Text Editor</span> opens, empty</p></div>
+      </li>
       <li data-k="11" data-ref="2.11" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Close the editor, open the text button again and choose <span class="ln-t-named">Prompt</span></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>No text present; Create, Duplicate, Select or Exit?</p></div>
-      </li>
-      <li data-k="12" data-ref="2.12" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Choose <span class="ln-t-press">Create</span> and type the prompt text from §7</h1></div>
-      </li>
-      <li data-k="13" data-ref="2.13" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Save in the editor and close it</h1></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Type the first prompt text from §10, save and close</h1></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A green tick under both text columns</p></div>
       </li>
     </ol>
@@ -431,12 +426,13 @@
       <a class="rux--link" href="#main-content" data-open="cases">A different case</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
-    <div class="ln-why" data-panel="why" hidden><p>A prompt row ties a label, a dataset and two texts together. The label's description becomes the command's name. The instruction text is shown to the user beside the answer. The prompt text is what is sent to the model, with the dataset's output put where its data marker stands. The model fields can stay blank, and then the service's default answers.</p></div>
+    <div class="ln-why" data-panel="why" hidden><p>A prompt row ties a label, a dataset and two texts together. The label's description becomes the command's name. The instruction text is shown to the user beside the answer. The prompt text is what is sent to the model, with the dataset's output put where its data marker stands. The first prompt text is short on purpose: the task, one rule and the marker.</p></div>
     <ul class="ln-list" data-panel="wrong" hidden>
-      <li><b>No text present when a text is opened</b><p>Nothing. The text has not been written yet; choose <span class="ln-t-press">Create</span>, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2&amp;k=8">step 8</a></p></li>
+      <li><b>No text present when a text is opened</b><p>Nothing. The text has not been written yet; choose <span class="ln-t-press">Create</span>, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2&amp;k=9">step 9</a></p></li>
+      <li><b>The new row holds another prompt's dataset</b><p>A new row is a copy of the row the cursor was on. Replace it, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2&amp;k=5">step 5</a></p></li>
     </ul>
     <ul class="ln-list" data-panel="cases" hidden>
-      <li><b><span class="ln-t-named">Another model</span></b><p>Name it in <span class="ln-t-named">LLM Name</span> and <span class="ln-t-named">LLM Version</span> on the prompt, after <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2&amp;k=5">step 5</a></p></li>
+      <li><b><span class="ln-t-named">Another model</span></b><p>Name it in <span class="ln-t-named">LLM Name</span> and <span class="ln-t-named">LLM Version</span> on the prompt, after <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2&amp;k=6">step 6</a></p></li>
     </ul>
     <div class="ln-nav">
       <a class="rux--btn rux--btn--secondary" href="./" data-prev>Back</a>
@@ -451,33 +447,20 @@
     </div>
     <ol class="ln-steps">
       <li data-k="1" data-ref="3.1" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Open <span class="ln-t-named">GenAI Prompts by Session</span> and start a new group from the toolbar</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The three <span class="ln-t-named">Session</span> boxes open for entry</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">On <span class="ln-t-named">GenAI Prompts</span>, tick the prompt and choose <span class="ln-t-named">GenAI Prompts by Session</span></h1>
+          <p class="ln-step__route"><span class="ln-t-route"><span>References</span><span class="sep">➔</span><span class="dest">GenAI Prompts by Session</span></span></p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">GenAI Prompts by Session</span> opens with the prompt as its header and no rows</p></div>
       </li>
       <li data-k="2" data-ref="3.2" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Enter <span class="ln-t-exact">td</span>, <span class="ln-t-exact">sls</span> and <span class="ln-t-exact">4101m000</span> in the three boxes</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The description reads Sales Order Lines</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">New</span> and enter <span class="ln-t-exact">td</span>, <span class="ln-t-exact">sls</span> and <span class="ln-t-exact">4101m000</span> in the three <span class="ln-t-named">Session</span> boxes</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The description reads Sales Order Lines; <span class="ln-t-named">Active</span> is ticked, <span class="ln-t-named">Authorization</span> is <span class="ln-t-exact">Display</span>, <span class="ln-t-named">When Enabled</span> is <span class="ln-t-exact">Records Selected</span></p></div>
       </li>
       <li data-k="3" data-ref="3.3" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">New</span></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A blank row in the grid</p></div>
-      </li>
-      <li data-k="4" data-ref="3.4" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Enter the prompt name from <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2&amp;k=2">task 3 step 2</a> in <span class="ln-t-named">GenAI Prompt</span></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The command name shows beside it; <span class="ln-t-named">Active</span> is ticked, <span class="ln-t-named">Authorization</span> is <span class="ln-t-exact">Display</span>, <span class="ln-t-named">When Enabled</span> is <span class="ln-t-exact">Records Selected</span></p></div>
-      </li>
-      <li data-k="5" data-ref="3.5" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">Authorization</span> to <span class="ln-t-exact">Print/Display</span></h1></div>
-      </li>
-      <li data-k="6" data-ref="3.6" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">When Enabled</span> to <span class="ln-t-exact">Always</span></h1></div>
       </li>
-      <li data-k="7" data-ref="3.7" hidden>
+      <li data-k="4" data-ref="3.4" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Save</span></h1></div>
-      </li>
-      <li data-k="8" data-ref="3.8" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Refresh</span></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The row is still there with the values from <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3&amp;k=5">step 5</a> and <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3&amp;k=6">step 6</a></p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The row stays, with <span class="ln-t-exact">Display</span> and <span class="ln-t-exact">Always</span></p></div>
       </li>
     </ol>
     <p class="ln-task__route"><a class="rux--link" href="./?c=ttadv9160m000"><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts by Session</span></span></a>
@@ -502,23 +485,19 @@
     </div>
     <div class="ln-step__more">
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
-      <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
       <a class="rux--link" href="#main-content" data-open="cases">A different case</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>Nothing shows on any screen until a prompt is linked to a session code. The link is to one exact code: the command appears on that session and on no other, however alike two screens look. Three settings on the link decide whether the command is offered, to whom, and with what selected.</p></div>
-    <ul class="ln-list" data-panel="wrong" hidden>
-      <li><b>The grid is empty for a session that should have a link</b><p>Clear the boxes in the grey row under the column names. They filter the list</p></li>
-    </ul>
     <ul class="ln-list" data-panel="cases" hidden>
-      <li><b><span class="ln-t-named">A command for several ticked records</span></b><p>Link to a session that lists records, set <span class="ln-t-named">When Enabled</span> to <span class="ln-t-exact">Records Selected</span> in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3&amp;k=6">step 6</a>, and build the dataset on that session's table. One prompt here does this on Business Partners and returns a line for each partner ticked</p></li>
+      <li><b><span class="ln-t-named">A command for several ticked records</span></b><p>Link to a session that lists records, leave <span class="ln-t-named">When Enabled</span> on <span class="ln-t-exact">Records Selected</span> at <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3&amp;k=3">step 3</a>, and build the dataset on that session's table. One prompt here does this on Business Partners, <span class="ln-t-exact">the source on file</span> §5</p></li>
     </ul>
     <div class="ln-nav">
       <a class="rux--btn rux--btn--secondary" href="./" data-prev>Back</a>
       <a class="rux--btn rux--btn--primary" href="./" data-next>Next</a>
     </div>
   </section>
-  <section class="ln-screen" data-screen="task" data-s="set-up-a-genai-prompt" data-t="4" data-title="Run it and check the answer" data-after="./?s=set-up-a-genai-prompt&amp;done=1" hidden>
+  <section class="ln-screen" data-screen="task" data-s="set-up-a-genai-prompt" data-t="4" data-title="Run it and check the answer" data-after="./?s=set-up-a-genai-prompt&amp;t=5" hidden>
     <a class="rux--link ln-back" href="./?s=set-up-a-genai-prompt"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Set up a GenAI prompt</a>
     <div class="rux--progress-bar rux--progress-bar--small">
       <div class="rux--progress-bar__label"><span class="rux--progress-bar__label-text" data-where></span></div>
@@ -526,35 +505,31 @@
     </div>
     <ol class="ln-steps">
       <li data-k="1" data-ref="4.1" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Open <span class="ln-t-named">Sales Order Intake Workbench</span> and its <span class="ln-t-named">Order Lines</span> tab</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Order lines, one row each</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Close any <span class="ln-t-named">Sales Order Lines</span> tab that is already open</h1></div>
       </li>
       <li data-k="2" data-ref="4.2" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Drill In</span> on the line that has been delivered</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="./?c=tdsls4101m000"><span class="ln-t-named">Sales Order Lines</span></a> <span class="ln-t-exact">tdsls4101m000</span> opens on that line, in a tab of its own</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">On <span class="ln-t-named">Sales Order Intake Workbench</span>, click <span class="ln-t-press">Drill In</span> on the line that has been delivered</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Sales Order Lines</span> opens on that line</p></div>
       </li>
       <li data-k="3" data-ref="4.3" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">Open the <span class="ln-t-named">Shipping</span> tab</h1></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">delivered quantity</span>, <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">shipment</span></p></div>
       </li>
       <li data-k="4" data-ref="4.4" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Open <span class="ln-t-named">Actions</span> and choose the command name from <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2&amp;k=3">task 3 step 3</a></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A window titled with that name; <span class="ln-t-named">Prompt</span> holds the instruction text and <span class="ln-t-named">Response</span> one line</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Open <span class="ln-t-named">Actions</span> and choose the command name from <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2&amp;k=4">task 3 step 4</a></h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A window titled with that name; <span class="ln-t-named">Prompt</span> holds the instruction text and <span class="ln-t-named">Response</span> the answer</p></div>
       </li>
       <li data-k="5" data-ref="4.5" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">Compare the response with the values from <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4&amp;k=3">step 3</a></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The same delivered quantity and shipment, and the status <span class="ln-t-exact">shipped</span></p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The same ordered and delivered quantities, written as a letter: a heading, a greeting, a list and a sign-off, with formatting marks showing</p></div>
       </li>
       <li data-k="6" data-ref="4.6" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Close</span></h1></div>
-      </li>
-      <li data-k="7" data-ref="4.7" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Use <span class="ln-t-press">Find</span> to open the line that has not been delivered</h1></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Close</span>, go back to the workbench and drill into the line that has not been delivered</h1></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The form shows that line</p></div>
       </li>
-      <li data-k="8" data-ref="4.8" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Open <span class="ln-t-named">Actions</span> and choose the command again</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Delivered <span class="ln-t-exact">0</span>, the status <span class="ln-t-exact">not shipped</span>, and no delivery date or shipment</p></div>
+      <li data-k="7" data-ref="4.7" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Choose the command again</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Delivered <span class="ln-t-exact">0</span>, which is right, and a sentence about what will happen next that nothing in LN holds</p></div>
       </li>
     </ol>
     <p class="ln-task__route"><a class="rux--link" href="./?c=tdsls4601m200"><span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></a>
@@ -584,13 +559,159 @@
     </div>
     <div class="ln-why" data-panel="why" hidden><p>When the command is chosen, LN runs the dataset for the line on the form, writes the result into the prompt text and sends it to the model. The answer opens in a window of its own. The model answers only from what the dataset sent, and a wrong answer looks the same as a right one, so the first runs are checked against the form, once for each kind of line the prompt can meet.</p></div>
     <ul class="ln-list" data-panel="wrong" hidden>
-      <li><b>The command is not in <span class="ln-t-named">Actions</span></b><p>Read the session code in the status bar of the form and compare it with <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3&amp;k=2">task 4 step 2</a>, character for character</p></li>
-      <li><b>The command is still missing and the code is right</b><p>Check that <span class="ln-t-named">Active</span> is ticked on the link, then close the form's tab and open the line again</p></li>
-      <li><b>An error names <span class="ln-t-exact">dataset.get.selection.index</span> and a table</b><p>The dataset's main table is not the form's. The table in the message is the form's; set it in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1&amp;k=3">task 2 step 3</a></p></li>
-      <li><b>The response says Not available in dataset</b><p>The field is not ticked in the dataset, <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1&amp;k=8">task 2 step 8</a>, or the form was open before the dataset was saved. Close the form's tab and open the line again</p></li>
+      <li><b>The command is not in <span class="ln-t-named">Actions</span></b><p>Read the session code in the status bar of the screen and compare it with <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3&amp;k=2">task 4 step 2</a>, character for character</p></li>
+      <li><b>The command is still missing and the code is right</b><p>Check that <span class="ln-t-named">Active</span> is ticked on the link, then close the screen's tab and open the line again</p></li>
+      <li><b>An error names <span class="ln-t-exact">dataset.get.selection.index</span> and a table</b><p>The dataset's main table is not the screen's. The table in the message is the screen's; a dataset has to be built on it</p></li>
+    </ul>
+    <div class="ln-nav">
+      <a class="rux--btn rux--btn--secondary" href="./" data-prev>Back</a>
+      <a class="rux--btn rux--btn--primary" href="./" data-next>Next</a>
+    </div>
+  </section>
+  <section class="ln-screen" data-screen="task" data-s="set-up-a-genai-prompt" data-t="5" data-title="Improve it" data-after="./?s=set-up-a-genai-prompt&amp;t=6" hidden>
+    <a class="rux--link ln-back" href="./?s=set-up-a-genai-prompt"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Set up a GenAI prompt</a>
+    <div class="rux--progress-bar rux--progress-bar--small">
+      <div class="rux--progress-bar__label"><span class="rux--progress-bar__label-text" data-where></span></div>
+      <div class="rux--progress-bar__track"><div class="rux--progress-bar__bar" data-bar></div></div>
+    </div>
+    <ol class="ln-steps">
+      <li data-k="1" data-ref="5.1" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">On <span class="ln-t-named">GenAI Prompts</span>, tick the prompt, open the text button and choose <span class="ln-t-named">Prompt</span></h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The editor opens on the text</p></div>
+      </li>
+      <li data-k="2" data-ref="5.2" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Add the form rule from §10 as a line above the marker, save and close</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A new last-modified stamp</p></div>
+      </li>
+      <li data-k="3" data-ref="5.3" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">On <span class="ln-t-named">Sales Order Lines</span>, still on the undelivered line, choose the command again</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>One plain sentence; the letter and the promise are gone</p></div>
+      </li>
+      <li data-k="4" data-ref="5.4" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">On <span class="ln-t-named">Datasets</span>, tick the dataset and click <span class="ln-t-press">Modeler</span></h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The Modeler opens directly, without Dataset Configuration</p></div>
+      </li>
+      <li data-k="5" data-ref="5.5" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Type <span class="ln-t-exact">ddta</span> in the box above <span class="ln-t-named">Field</span>, press Enter and tick it</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Planned Delivery Date is ticked</p></div>
+      </li>
+      <li data-k="6" data-ref="5.6" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Under <span class="ln-t-named">Tables</span>, expand <span class="ln-t-named">Referred by</span> and choose Sales Order Actual Delivery Lines (<span class="ln-t-exact">tdsls406</span>)</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Fields</span> lists that table's fields, none ticked</p></div>
+      </li>
+      <li data-k="7" data-ref="5.7" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Tick <span class="ln-t-exact">dldt</span> and <span class="ln-t-exact">shpm</span>, and click <span class="ln-t-press">Save</span></h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Actual Delivery Date and Shipment are ticked; no message</p></div>
+      </li>
+      <li data-k="8" data-ref="5.8" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Add the three delivery rules and the missing-value rule from §10 to the prompt text, save and close</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A new last-modified stamp</p></div>
+      </li>
+      <li data-k="9" data-ref="5.9" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Without closing <span class="ln-t-named">Sales Order Lines</span>, choose the command again</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The planned delivery date reads <span class="ln-t-exact">[not available]</span>: this session is still using the dataset as it was</p></div>
+      </li>
+      <li data-k="10" data-ref="5.10" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Close the <span class="ln-t-named">Sales Order Lines</span> tab, open the same line again and choose the command</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Nothing has shipped yet, and the planned delivery date</p></div>
+      </li>
+      <li data-k="11" data-ref="5.11" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Open the delivered line and choose the command</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Shipped in full, with a delivery date and the shipment from <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4&amp;k=3">task 5 step 3</a></p></div>
+      </li>
+      <li data-k="12" data-ref="5.12" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Add the date rule from §10 to the prompt text, save, and choose the command once more</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The same facts, each date as year, month and day</p></div>
+      </li>
+    </ol>
+    <p class="ln-task__route"><a class="rux--link" href="./?c=ttrpi5150m000"><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts</span></span></a>
+      <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="ttrpi5150m000" aria-label="Copy the code ttrpi5150m000">ttrpi5150m000</button></p>
+
+    <div class="ln-confirm" data-confirm="set-up-a-genai-prompt">
+      <p class="ln-quiet" data-said>Nobody has confirmed this step in LN yet.</p>
+      <div class="ln-confirm__ask" data-owner hidden>
+        <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" data-say="matched">It matched</button>
+        <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-say="different">It was different</button>
+      </div>
+      <form class="ln-confirm__form" data-different hidden>
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-set-up-a-genai-prompt-step-6">What was different?</label></div>
+          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+            <input id="diff-set-up-a-genai-prompt-step-6" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+          </div></div>
+        </div>
+        <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
+        <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Send</button>
+      </form>
+    </div>
+    <div class="ln-step__more">
+      <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
+      <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
+      <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
+    </div>
+    <div class="ln-why" data-panel="why" hidden><p>A change to the prompt text is used by the very next run. A change to the dataset is not seen by a session that is already open. So a text change is tested where you stand, and a dataset change after the screen is opened again. Change one thing, run, and read the answer before changing the next.</p></div>
+    <ul class="ln-list" data-panel="wrong" hidden>
+      <li><b>A value reads <span class="ln-t-exact">[not available]</span></b><p>The field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the line again, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5&amp;k=10">step 10</a></p></li>
       <li><b>The response contradicts the Shipping tab</b><p>The same two causes. The model reads only the dataset</p></li>
-      <li><b>The response carries an introduction or an explanation</b><p>Line 11 of the prompt text in §7 is missing</p></li>
-      <li><b>Dates come back with a time and a zone</b><p>Line 10 of the prompt text in §7 is missing</p></li>
+      <li><b>The answer is a letter again</b><p>The form rule is missing from the prompt text, <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5&amp;k=2">step 2</a></p></li>
+    </ul>
+    <div class="ln-nav">
+      <a class="rux--btn rux--btn--secondary" href="./" data-prev>Back</a>
+      <a class="rux--btn rux--btn--primary" href="./" data-next>Next</a>
+    </div>
+  </section>
+  <section class="ln-screen" data-screen="task" data-s="set-up-a-genai-prompt" data-t="6" data-title="Remove it" data-after="./?s=set-up-a-genai-prompt&amp;done=1" hidden>
+    <a class="rux--link ln-back" href="./?s=set-up-a-genai-prompt"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Set up a GenAI prompt</a>
+    <div class="rux--progress-bar rux--progress-bar--small">
+      <div class="rux--progress-bar__label"><span class="rux--progress-bar__label-text" data-where></span></div>
+      <div class="rux--progress-bar__track"><div class="rux--progress-bar__bar" data-bar></div></div>
+    </div>
+    <ol class="ln-steps">
+      <li data-k="1" data-ref="6.1" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">On <span class="ln-t-named">GenAI Prompts</span>, tick the prompt and click <span class="ln-t-press">Delete</span></h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Delete the 1 selected record(s) ?</p></div>
+      </li>
+      <li data-k="2" data-ref="6.2" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Choose <span class="ln-t-press">Yes</span></h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>1 records deleted</p></div>
+      </li>
+      <li data-k="3" data-ref="6.3" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">On <span class="ln-t-named">Datasets</span>, tick the dataset, click <span class="ln-t-press">Delete</span> and choose <span class="ln-t-press">Yes</span></h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>1 records deleted</p></div>
+      </li>
+      <li data-k="4" data-ref="6.4" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Close the <span class="ln-t-named">Sales Order Lines</span> tab, open a line again and open <span class="ln-t-named">Actions</span></h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The command is gone</p></div>
+      </li>
+    </ol>
+    <p class="ln-task__route"><a class="rux--link" href="./?c=ttrpi5150m000"><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts</span></span></a>
+      <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="ttrpi5150m000" aria-label="Copy the code ttrpi5150m000">ttrpi5150m000</button></p>
+
+    <div class="ln-confirm" data-confirm="set-up-a-genai-prompt">
+      <p class="ln-quiet" data-said>Nobody has confirmed this step in LN yet.</p>
+      <div class="ln-confirm__ask" data-owner hidden>
+        <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" data-say="matched">It matched</button>
+        <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-say="different">It was different</button>
+      </div>
+      <form class="ln-confirm__form" data-different hidden>
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-set-up-a-genai-prompt-step-7">What was different?</label></div>
+          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+            <input id="diff-set-up-a-genai-prompt-step-7" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+          </div></div>
+        </div>
+        <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
+        <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Send</button>
+      </form>
+    </div>
+    <div class="ln-step__more">
+      <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
+      <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
+      <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
+    </div>
+    <div class="ln-why" data-panel="why" hidden><p>LN will not delete a dataset while a prompt uses it, and deleting a prompt takes its links with it. So the prompt goes first and the dataset second, and the link needs no step of its own.</p></div>
+    <ul class="ln-list" data-panel="wrong" hidden>
+      <li><b>Unable to delete; record being used in other table</b><p>A prompt still uses the dataset. Delete the prompt first, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=6&amp;k=1">step 1</a></p></li>
     </ul>
     <div class="ln-nav">
       <a class="rux--btn rux--btn--secondary" href="./" data-prev>Back</a>
@@ -818,9 +939,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-create-basic-test-items-and-defaults-step-6">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-create-basic-test-items-and-defaults-step-8">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-create-basic-test-items-and-defaults-step-6" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-create-basic-test-items-and-defaults-step-8" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -943,9 +1064,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-create-basic-test-items-and-defaults-step-7">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-create-basic-test-items-and-defaults-step-9">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-create-basic-test-items-and-defaults-step-7" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-create-basic-test-items-and-defaults-step-9" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -1032,9 +1153,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-create-basic-test-items-and-defaults-step-8">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-create-basic-test-items-and-defaults-step-10">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-create-basic-test-items-and-defaults-step-8" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-create-basic-test-items-and-defaults-step-10" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -1376,9 +1497,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-create-basic-test-items-and-defaults-step-9">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-create-basic-test-items-and-defaults-step-11">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-create-basic-test-items-and-defaults-step-9" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-create-basic-test-items-and-defaults-step-11" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -1444,9 +1565,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-create-basic-test-items-and-defaults-step-10">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-create-basic-test-items-and-defaults-step-12">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-create-basic-test-items-and-defaults-step-10" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-create-basic-test-items-and-defaults-step-12" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -1539,9 +1660,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-run-order-planning-for-one-item-step-11">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-run-order-planning-for-one-item-step-13">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-run-order-planning-for-one-item-step-11" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-run-order-planning-for-one-item-step-13" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -1593,9 +1714,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-run-order-planning-for-one-item-step-12">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-run-order-planning-for-one-item-step-14">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-run-order-planning-for-one-item-step-12" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-run-order-planning-for-one-item-step-14" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -1661,9 +1782,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-run-order-planning-for-one-item-step-13">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-run-order-planning-for-one-item-step-15">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-run-order-planning-for-one-item-step-13" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-run-order-planning-for-one-item-step-15" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -1717,9 +1838,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-run-order-planning-for-one-item-step-14">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-run-order-planning-for-one-item-step-16">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-run-order-planning-for-one-item-step-14" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-run-order-planning-for-one-item-step-16" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -1786,9 +1907,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-run-order-planning-for-one-item-step-15">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-run-order-planning-for-one-item-step-17">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-run-order-planning-for-one-item-step-15" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-run-order-planning-for-one-item-step-17" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -1849,9 +1970,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-run-order-planning-for-one-item-step-16">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-run-order-planning-for-one-item-step-18">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-run-order-planning-for-one-item-step-16" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-run-order-planning-for-one-item-step-18" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -1927,9 +2048,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-check-item-inventory-step-17">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-check-item-inventory-step-19">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-check-item-inventory-step-17" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-check-item-inventory-step-19" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -1986,9 +2107,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-check-item-inventory-step-18">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-check-item-inventory-step-20">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-check-item-inventory-step-18" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-check-item-inventory-step-20" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -2069,9 +2190,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-purchase-order-to-warehouse-receipt-step-19">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-purchase-order-to-warehouse-receipt-step-21">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-purchase-order-to-warehouse-receipt-step-19" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-purchase-order-to-warehouse-receipt-step-21" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -2294,9 +2415,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-purchase-order-to-warehouse-receipt-step-20">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-purchase-order-to-warehouse-receipt-step-22">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-purchase-order-to-warehouse-receipt-step-20" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-purchase-order-to-warehouse-receipt-step-22" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -2952,9 +3073,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-transfer-item-between-warehouses-step-21">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-transfer-item-between-warehouses-step-23">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-transfer-item-between-warehouses-step-21" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-transfer-item-between-warehouses-step-23" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -3012,9 +3133,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-transfer-item-between-warehouses-step-22">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-transfer-item-between-warehouses-step-24">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-transfer-item-between-warehouses-step-22" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-transfer-item-between-warehouses-step-24" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -3067,9 +3188,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-transfer-item-between-warehouses-step-23">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-transfer-item-between-warehouses-step-25">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-transfer-item-between-warehouses-step-23" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-transfer-item-between-warehouses-step-25" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -3109,9 +3230,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-transfer-item-between-warehouses-step-24">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-transfer-item-between-warehouses-step-26">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-transfer-item-between-warehouses-step-24" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-transfer-item-between-warehouses-step-26" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -3623,9 +3744,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-demand-to-shipment-via-planning-step-25">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-demand-to-shipment-via-planning-step-27">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-demand-to-shipment-via-planning-step-25" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-demand-to-shipment-via-planning-step-27" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -3762,9 +3883,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-demand-to-shipment-via-planning-step-26">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-demand-to-shipment-via-planning-step-28">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-demand-to-shipment-via-planning-step-26" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-demand-to-shipment-via-planning-step-28" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -3837,9 +3958,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-demand-to-shipment-via-planning-step-27">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-demand-to-shipment-via-planning-step-29">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-demand-to-shipment-via-planning-step-27" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-demand-to-shipment-via-planning-step-29" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -3908,9 +4029,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-demand-to-shipment-via-planning-step-28">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-demand-to-shipment-via-planning-step-30">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-demand-to-shipment-via-planning-step-28" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-demand-to-shipment-via-planning-step-30" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -3983,9 +4104,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-demand-to-shipment-via-planning-step-29">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-demand-to-shipment-via-planning-step-31">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-demand-to-shipment-via-planning-step-29" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-demand-to-shipment-via-planning-step-31" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -4103,11 +4224,13 @@
     <p class="ln-quiet">Nobody has checked these in LN yet. Open one, do it in LN, and say whether it matched.</p>
     <h2 class="rux--type-productive-heading-02">Set up a GenAI prompt</h2>
     <ul class="ln-list">
-      <li data-wait="set-up-a-genai-prompt" data-steps="0.1 0.2 0.3 0.4"><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0"><span>1 Confirm a model is available</span></a><span class="ln-quiet" data-answered></span></li>
-      <li data-wait="set-up-a-genai-prompt" data-steps="1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 1.12 1.13 1.14"><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1"><span>2 Model the dataset</span></a><span class="ln-quiet" data-answered></span></li>
-      <li data-wait="set-up-a-genai-prompt" data-steps="2.1 2.2 2.3 2.4 2.5 2.6 2.7 2.8 2.9 2.10 2.11 2.12 2.13"><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2"><span>3 Write the prompt</span></a><span class="ln-quiet" data-answered></span></li>
-      <li data-wait="set-up-a-genai-prompt" data-steps="3.1 3.2 3.3 3.4 3.5 3.6 3.7 3.8"><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3"><span>4 Link the prompt to a session</span></a><span class="ln-quiet" data-answered></span></li>
-      <li data-wait="set-up-a-genai-prompt" data-steps="4.1 4.2 4.3 4.4 4.5 4.6 4.7 4.8"><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>5 Run it and check the answer</span></a><span class="ln-quiet" data-answered></span></li>
+      <li data-wait="set-up-a-genai-prompt" data-steps="0.1 0.2 0.3 0.4 0.5"><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0"><span>1 Choose the screen</span></a><span class="ln-quiet" data-answered></span></li>
+      <li data-wait="set-up-a-genai-prompt" data-steps="1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11"><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1"><span>2 Model the dataset</span></a><span class="ln-quiet" data-answered></span></li>
+      <li data-wait="set-up-a-genai-prompt" data-steps="2.1 2.2 2.3 2.4 2.5 2.6 2.7 2.8 2.9 2.10 2.11"><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2"><span>3 Write the prompt</span></a><span class="ln-quiet" data-answered></span></li>
+      <li data-wait="set-up-a-genai-prompt" data-steps="3.1 3.2 3.3 3.4"><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3"><span>4 Link the prompt to a session</span></a><span class="ln-quiet" data-answered></span></li>
+      <li data-wait="set-up-a-genai-prompt" data-steps="4.1 4.2 4.3 4.4 4.5 4.6 4.7"><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>5 Run it and check the answer</span></a><span class="ln-quiet" data-answered></span></li>
+      <li data-wait="set-up-a-genai-prompt" data-steps="5.1 5.2 5.3 5.4 5.5 5.6 5.7 5.8 5.9 5.10 5.11 5.12"><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5"><span>6 Improve it</span></a><span class="ln-quiet" data-answered></span></li>
+      <li data-wait="set-up-a-genai-prompt" data-steps="6.1 6.2 6.3 6.4"><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=6"><span>7 Remove it</span></a><span class="ln-quiet" data-answered></span></li>
     </ul>
     <h2 class="rux--type-productive-heading-02">Create test items</h2>
     <ul class="ln-list">
@@ -4511,15 +4634,16 @@
       </button>
     </div>
     <ul class="ln-list" id="results">
-      <li data-text="no text present when a text is opened nothing. the text has not been written yet; choose create, as in 2.8" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2"><span>No text present when a text is opened</span></a></b><p>Nothing. The text has not been written yet; choose <span class="ln-t-press">Create</span>, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2&amp;k=8">task 3 step 8</a></p></li>
-      <li data-text="the grid is empty for a session that should have a link clear the boxes in the grey row under the column names. they filter the list" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3"><span>The grid is empty for a session that should have a link</span></a></b><p>Clear the boxes in the grey row under the column names. They filter the list</p></li>
-      <li data-text="the command is not in actions read the session code in the status bar of the form and compare it with 3.2, character for character" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>The command is not in <span class="ln-t-named">Actions</span></span></a></b><p>Read the session code in the status bar of the form and compare it with <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3&amp;k=2">task 4 step 2</a>, character for character</p></li>
-      <li data-text="the command is still missing and the code is right check that active is ticked on the link, then close the form's tab and open the line again" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>The command is still missing and the code is right</span></a></b><p>Check that <span class="ln-t-named">Active</span> is ticked on the link, then close the form's tab and open the line again</p></li>
-      <li data-text="an error names dataset.get.selection.index and a table the dataset's main table is not the form's. the table in the message is the form's; set it in 1.3" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>An error names <span class="ln-t-exact">dataset.get.selection.index</span> and a table</span></a></b><p>The dataset's main table is not the form's. The table in the message is the form's; set it in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1&amp;k=3">task 2 step 3</a></p></li>
-      <li data-text="the response says not available in dataset the field is not ticked in the dataset, 1.8, or the form was open before the dataset was saved. close the form's tab and open the line again" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>The response says Not available in dataset</span></a></b><p>The field is not ticked in the dataset, <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1&amp;k=8">task 2 step 8</a>, or the form was open before the dataset was saved. Close the form's tab and open the line again</p></li>
-      <li data-text="the response contradicts the shipping tab the same two causes. the model reads only the dataset" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>The response contradicts the Shipping tab</span></a></b><p>The same two causes. The model reads only the dataset</p></li>
-      <li data-text="the response carries an introduction or an explanation line 11 of the prompt text in §7 is missing" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>The response carries an introduction or an explanation</span></a></b><p>Line 11 of the prompt text in §7 is missing</p></li>
-      <li data-text="dates come back with a time and a zone line 10 of the prompt text in §7 is missing" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>Dates come back with a time and a zone</span></a></b><p>Line 10 of the prompt text in §7 is missing</p></li>
+      <li data-text="the lookup on main table lists nothing it shows one package at a time. type the table's code, as in 1.3" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1"><span>The lookup on <span class="ln-t-named">Main table</span> lists nothing</span></a></b><p>It shows one package at a time. Type the table's code, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1&amp;k=3">task 2 step 3</a></p></li>
+      <li data-text="no text present when a text is opened nothing. the text has not been written yet; choose create, as in 2.9" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2"><span>No text present when a text is opened</span></a></b><p>Nothing. The text has not been written yet; choose <span class="ln-t-press">Create</span>, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2&amp;k=9">task 3 step 9</a></p></li>
+      <li data-text="the new row holds another prompt's dataset a new row is a copy of the row the cursor was on. replace it, as in 2.5" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2"><span>The new row holds another prompt's dataset</span></a></b><p>A new row is a copy of the row the cursor was on. Replace it, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2&amp;k=5">task 3 step 5</a></p></li>
+      <li data-text="the command is not in actions read the session code in the status bar of the screen and compare it with 3.2, character for character" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>The command is not in <span class="ln-t-named">Actions</span></span></a></b><p>Read the session code in the status bar of the screen and compare it with <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3&amp;k=2">task 4 step 2</a>, character for character</p></li>
+      <li data-text="the command is still missing and the code is right check that active is ticked on the link, then close the screen's tab and open the line again" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>The command is still missing and the code is right</span></a></b><p>Check that <span class="ln-t-named">Active</span> is ticked on the link, then close the screen's tab and open the line again</p></li>
+      <li data-text="an error names dataset.get.selection.index and a table the dataset's main table is not the screen's. the table in the message is the screen's; a dataset has to be built on it" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>An error names <span class="ln-t-exact">dataset.get.selection.index</span> and a table</span></a></b><p>The dataset's main table is not the screen's. The table in the message is the screen's; a dataset has to be built on it</p></li>
+      <li data-text="a value reads [not available] the field is not ticked in the dataset, or the screen was open before the dataset was saved. close its tab and open the line again, as in 5.10" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5"><span>A value reads <span class="ln-t-exact">[not available]</span></span></a></b><p>The field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the line again, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5&amp;k=10">task 6 step 10</a></p></li>
+      <li data-text="the response contradicts the shipping tab the same two causes. the model reads only the dataset" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5"><span>The response contradicts the Shipping tab</span></a></b><p>The same two causes. The model reads only the dataset</p></li>
+      <li data-text="the answer is a letter again the form rule is missing from the prompt text, 5.2" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5"><span>The answer is a letter again</span></a></b><p>The form rule is missing from the prompt text, <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5&amp;k=2">task 6 step 2</a></p></li>
+      <li data-text="unable to delete; record being used in other table a prompt still uses the dataset. delete the prompt first, as in 6.1" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=6"><span>Unable to delete; record being used in other table</span></a></b><p>A prompt still uses the dataset. Delete the prompt first, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=6&amp;k=1">task 7 step 1</a></p></li>
       <li data-text="an example item code already exists choose another unused code; do not reuse or repurpose an existing item" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=create-basic-test-items-and-defaults&amp;t=0"><span>An example item code already exists</span></a></b><p>Choose another unused code; do not reuse or repurpose an existing item</p></li>
       <li data-text="a candidate “raw material” warehouse is shop floor select an approved normal warehouse; do not rely on description alone" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=create-basic-test-items-and-defaults&amp;t=0"><span>A candidate “raw material” warehouse is Shop Floor</span></a></b><p>Select an approved Normal warehouse; do not rely on description alone</p></li>
       <li data-text="either item-group code already exists use new dedicated group codes rather than changing an existing group" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=create-basic-test-items-and-defaults&amp;t=1"><span>Either item-group code already exists</span></a></b><p>Use new dedicated group codes rather than changing an existing group</p></li>
@@ -4624,11 +4748,13 @@
       <li data-text="advice greyed out you are on the session toolbar. the advice actions live on the outbound lines toolbar — step 6.3" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=6"><span><span class="ln-t-named">Advice</span> greyed out</span></a></b><p>You are on the session toolbar. The advice actions live on the <span class="ln-t-named">Outbound Lines</span> toolbar — <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=6&amp;k=3">task 7 step 3</a></p></li>
       <li data-text="the order will not advise the header warehouse does not hold the stock. recheck against 0.2" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=6"><span>The order will not advise</span></a></b><p>The header <span class="ln-t-named">Warehouse</span> does not hold the stock. Recheck against <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=0&amp;k=2">task 1 step 2</a></p></li>
       <li data-text="the shipment will not confirm the line was never picked, or the shipment was never frozen. steps 6.4 and 6.5" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=6"><span>The shipment will not confirm</span></a></b><p>The line was never picked, or the shipment was never frozen. Steps <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=6&amp;k=4">task 7 step 4</a> and <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=6&amp;k=5">task 7 step 5</a></p></li>
-      <li data-text="set up a genai prompt confirm a model is available genai llms ttrpi5560m000 0.1 open genai llms a list of models with llm name, provider and is default 0.2 find the row with is default ticked default model 0.3 tick that row and choose actions ➔ genai llm versions genai llm versions (ttrpi5561m000) lists the model's versions 0.4 find the version with is default ticked default version" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0"><span>1 Confirm a model is available</span></a></b>Set up a GenAI prompt</li>
-      <li data-text="set up a genai prompt model the dataset datasets ttrpi5100m000 1.1 open datasets and start a new dataset dataset configuration opens; dataset name, description, main table and selection index are mandatory 1.2 enter a dataset name and a description dataset name 1.3 set main table to tdsls401 — 1.4 set selection index to 1 - order, position, sequence — 1.5 tick use camel case — 1.6 confirm the window the modeler opens on two panels, tables and fields, with sales order lines (tdsls401) chosen 1.7 in the box above the description column, type delivered the list narrows to qidl delivered quantity and qpdl 1.8 tick qidl — 1.9 clear the box and tick orno, pono, sqnb, item, ddta and qoor sales order, line, sequence number, item, planned delivery date and ordered quantity are ticked 1.10 in tables, expand referred by and choose sales order actual delivery lines (tdsls406) fields lists that table's fields, none ticked 1.11 tick dldt and shpm actual delivery date and shipment are ticked 1.12 drag the divider under the two panels upward properties and selected fields appear; the tree lists the seven fields and, on a level beneath them, the two delivery fields 1.13 click save no message 1.14 back on datasets, tick the dataset and click parameters dataset parameters (ttrpi5501m000) lists six rows of type selection range: orno, pono and sqnb, each with .f and .t" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1"><span>2 Model the dataset</span></a></b>Set up a GenAI prompt</li>
-      <li data-text="set up a genai prompt write the prompt genai prompts ttrpi5150m000 2.1 open genai prompts and click new a blank row 2.2 enter a name in genai prompt prompt name 2.3 in label, pick from the list a label whose description is the name the command should have the description shows beside the code — command name 2.4 set dataset to the dataset name from 1.2 its description shows beside it 2.5 set usage type to general — 2.6 click save a grey dot under instruction text and under prompt text 2.7 tick the row, open the text button on the toolbar and choose instruction no text present; create, duplicate, select or exit? 2.8 choose create text editor opens, empty 2.9 type the instruction text from §7 — 2.10 save in the editor a last-modified stamp under the text 2.11 close the editor, open the text button again and choose prompt no text present; create, duplicate, select or exit? 2.12 choose create and type the prompt text from §7 — 2.13 save in the editor and close it a green tick under both text columns" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2"><span>3 Write the prompt</span></a></b>Set up a GenAI prompt</li>
-      <li data-text="set up a genai prompt link the prompt to a session genai prompts by session ttadv9160m000 3.1 open genai prompts by session and start a new group from the toolbar the three session boxes open for entry 3.2 enter td, sls and 4101m000 in the three boxes the description reads sales order lines 3.3 click new a blank row in the grid 3.4 enter the prompt name from 2.2 in genai prompt the command name shows beside it; active is ticked, authorization is display, when enabled is records selected 3.5 set authorization to print/display — 3.6 set when enabled to always — 3.7 click save — 3.8 click refresh the row is still there with the values from 3.5 and 3.6" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3"><span>4 Link the prompt to a session</span></a></b>Set up a GenAI prompt</li>
-      <li data-text="set up a genai prompt run it and check the answer sales order intake workbench tdsls4601m200 4.1 open sales order intake workbench and its order lines tab order lines, one row each 4.2 click drill in on the line that has been delivered sales order lines (tdsls4101m000) opens on that line, in a tab of its own 4.3 open the shipping tab delivered quantity, shipment 4.4 open actions and choose the command name from 2.3 a window titled with that name; prompt holds the instruction text and response one line 4.5 compare the response with the values from 4.3 the same delivered quantity and shipment, and the status shipped 4.6 click close — 4.7 use find to open the line that has not been delivered the form shows that line 4.8 open actions and choose the command again delivered 0, the status not shipped, and no delivery date or shipment" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>5 Run it and check the answer</span></a></b>Set up a GenAI prompt</li>
+      <li data-text="set up a genai prompt choose the screen sales order intake workbench tdsls4601m200 0.1 open sales order intake workbench and its order lines tab order lines, one row each 0.2 click drill in on the line that has been delivered sales order lines opens on that line, in a tab of its own 0.3 read the status bar at the foot of the form tdsls4101m000 — session code 0.4 open genai llms, tools ➔ application extensibility ➔ embedded genai ➔ genai llms a list of models with llm name, provider and is default 0.5 find the row with is default ticked default model" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0"><span>1 Choose the screen</span></a></b>Set up a GenAI prompt</li>
+      <li data-text="set up a genai prompt model the dataset datasets ttrpi5100m000 1.1 open datasets and click new a dataset modeler tab opens with dataset configuration in front; four fields are marked mandatory and use camel case is already ticked 1.2 enter a dataset name in lowercase and a description dataset name 1.3 type tdsls401 in main table — 1.4 set selection index to 1 - order, position, sequence nine indexes are offered 1.5 click ok the modeler shows sales order lines (tdsls401) under tables and its fields under fields, none ticked 1.6 tick orno, pono and sqnb at the head of the list, and item a few rows down sales order, line, sequence number and item are ticked 1.7 type qoor in the box above the field column and press enter the list narrows to ordered quantity 1.8 tick it, then find and tick qidl the same way delivered quantity is ticked 1.9 clear the box, open the mark at the head of selected and choose selected six fields are listed 1.10 click save no message 1.11 on datasets, click refresh, tick the dataset and click parameters dataset parameters (ttrpi5501m000) lists six rows of type selection range: orno, pono and sqnb, each with .f and .t" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1"><span>2 Model the dataset</span></a></b>Set up a GenAI prompt</li>
+      <li data-text="set up a genai prompt write the prompt genai prompts ttrpi5150m000 2.1 open genai prompts and click new a new row that already holds the name of the row the cursor was on 2.2 type a name over it in genai prompt prompt name 2.3 in label, open the lookup, enter 2 under language and a word under label description, and press enter labels whose description holds that word, each with the context form commands 2.4 tick one whose description is the name the command should have and that no command on the screen already uses, and click ok the description shows beside the code — command name 2.5 replace what dataset holds with the dataset name from 1.2 its description shows beside it 2.6 set usage type to email — 2.7 click save a grey dot under instruction text and under prompt text 2.8 tick the row, open the text button on the toolbar and choose instruction no text present; create, duplicate, select or exit? 2.9 choose create, type the instruction text from §10 and save in the editor a last-modified stamp under the text 2.10 close the editor, open the text button again, choose prompt and then create text editor opens, empty 2.11 type the first prompt text from §10, save and close a green tick under both text columns" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2"><span>3 Write the prompt</span></a></b>Set up a GenAI prompt</li>
+      <li data-text="set up a genai prompt link the prompt to a session genai prompts by session ttadv9160m000 3.1 on genai prompts, tick the prompt and choose references ➔ genai prompts by session genai prompts by session opens with the prompt as its header and no rows 3.2 click new and enter td, sls and 4101m000 in the three session boxes the description reads sales order lines; active is ticked, authorization is display, when enabled is records selected 3.3 set when enabled to always — 3.4 click save the row stays, with display and always" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3"><span>4 Link the prompt to a session</span></a></b>Set up a GenAI prompt</li>
+      <li data-text="set up a genai prompt run it and check the answer sales order intake workbench tdsls4601m200 4.1 close any sales order lines tab that is already open — 4.2 on sales order intake workbench, click drill in on the line that has been delivered sales order lines opens on that line 4.3 open the shipping tab delivered quantity, shipment 4.4 open actions and choose the command name from 2.4 a window titled with that name; prompt holds the instruction text and response the answer 4.5 compare the response with the values from 4.3 the same ordered and delivered quantities, written as a letter: a heading, a greeting, a list and a sign-off, with formatting marks showing 4.6 click close, go back to the workbench and drill into the line that has not been delivered the form shows that line 4.7 choose the command again delivered 0, which is right, and a sentence about what will happen next that nothing in ln holds" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>5 Run it and check the answer</span></a></b>Set up a GenAI prompt</li>
+      <li data-text="set up a genai prompt improve it genai prompts ttrpi5150m000 5.1 on genai prompts, tick the prompt, open the text button and choose prompt the editor opens on the text 5.2 add the form rule from §10 as a line above the marker, save and close a new last-modified stamp 5.3 on sales order lines, still on the undelivered line, choose the command again one plain sentence; the letter and the promise are gone 5.4 on datasets, tick the dataset and click modeler the modeler opens directly, without dataset configuration 5.5 type ddta in the box above field, press enter and tick it planned delivery date is ticked 5.6 under tables, expand referred by and choose sales order actual delivery lines (tdsls406) fields lists that table's fields, none ticked 5.7 tick dldt and shpm, and click save actual delivery date and shipment are ticked; no message 5.8 add the three delivery rules and the missing-value rule from §10 to the prompt text, save and close a new last-modified stamp 5.9 without closing sales order lines, choose the command again the planned delivery date reads [not available]: this session is still using the dataset as it was 5.10 close the sales order lines tab, open the same line again and choose the command nothing has shipped yet, and the planned delivery date 5.11 open the delivered line and choose the command shipped in full, with a delivery date and the shipment from 4.3 5.12 add the date rule from §10 to the prompt text, save, and choose the command once more the same facts, each date as year, month and day" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5"><span>6 Improve it</span></a></b>Set up a GenAI prompt</li>
+      <li data-text="set up a genai prompt remove it genai prompts ttrpi5150m000 6.1 on genai prompts, tick the prompt and click delete delete the 1 selected record(s) ? 6.2 choose yes 1 records deleted 6.3 on datasets, tick the dataset, click delete and choose yes 1 records deleted 6.4 close the sales order lines tab, open a line again and open actions the command is gone" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=6"><span>7 Remove it</span></a></b>Set up a GenAI prompt</li>
       <li data-text="create test items confirm the test design warehouses whwmd2500m000 0.1 confirm the approved training company training company 0.2 select the site that will buy, store, make, and sell the test family site 0.3 open warehouses (whwmd2500m000) the warehouse master list opens 0.4 filter the warehouse list to the site from 0.2 only candidate warehouses for that site remain 0.5 record the approved normal warehouse for purchased production materials purchased-item warehouse 0.6 record the approved normal warehouse for finished products finished-item warehouse 0.7 open one approved physical product item that uses the same counting basis its global item data opens 0.8 record its unit set unit set 0.9 record its inventory unit inventory unit 0.10 search items for each proposed example code no existing item uses any proposed code" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=create-basic-test-items-and-defaults&amp;t=0"><span>1 Confirm the test design</span></a></b>Create test items</li>
       <li data-text="create test items create two item groups item groups tcmcs0123m000 1.1 search for the proposed purchased-group code no existing row uses it 1.2 select new a blank item-group row opens 1.3 enter item group and description for the purchased group purchased-supply item group 1.4 set currency to the approved company currency the currency is populated 1.5 save the purchased group the purchased group is available for defaults 1.6 repeat 1.1–1.5 for the made group made-supply item group — both dedicated groups are available for defaults" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=create-basic-test-items-and-defaults&amp;t=1"><span>2 Create two item groups</span></a></b>Create test items</li>
       <li data-text="create test items configure the purchased group item defaults tcibd0102m000 2.1 open item defaults (tcibd0102m000) the company-level default combinations open 2.2 filter for item type = product and the purchased group from 1.3 the current test row appears if already saved; otherwise no row appears 2.3 if the test row is absent, select new a blank item-default record opens 2.4 set item type to product, item group to the purchased group from 1.3, and default supply source to purchase purchased default supply source 2.5 set unit set and inventory unit to the values recorded at 0.8 and 0.9 — 2.6 leave special-purpose typology and traceability controls at their proposed values no new configuration, lot, or serial behaviour is introduced 2.7 save the global default the product/bam-rm combination exists 2.8 continue in the automatically opened item defaults (tcibd0502m000) the multisite follow-on is active 2.9 on the sites tab add the site from 0.2, set its warehouse to the purchased warehouse from 0.5 and its supply source to purchase, and save the site row remains stored 2.10 for ordering, then purchase, then warehousing: open the blue link beside it its defaults session opens — item ordering defaults (tcibd2101m000), items - purchase defaults (tdipu0102m000), items - warehousing defaults (whwmd4101s000) 2.11 compare every tab with the purchased-group values in the family sheet §4, complete what the screen requires, and select ok the defaults close without an error 2.12 confirm the subentity indicator beside the link is active, and select the create check box beside it default data exists, and new items are marked to receive it 2.13 after the third subentity, save item defaults (tcibd0502m000) the site row and create controls remain stored 2.14 close and reopen the product/bam-rm default purchased global subentities — three active indicators, three create controls" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=create-basic-test-items-and-defaults&amp;t=2"><span>3 Configure the purchased group</span></a></b>Create test items</li>
@@ -4720,6 +4846,7 @@
       <li data-text="planned order cprrp1600m000 double-click a planned order in planned orders (cprrp1100m000) one planned order in detail: its order lines, which can be changed here, and the demand each was generated for." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=cprrp1600m000"><span>Planned Order</span></a></b>One planned order in detail: its order lines, which can be changed here, and the demand each was generated for.</li>
       <li data-text="implemented software components tccom0500m000 master data ➔ enterprise model ➔ company data ➔ implemented software components records which ln concepts and modules are switched on for this company." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=tccom0500m000"><span>Implemented Software Components</span></a></b>Records which LN concepts and modules are switched on for this company.</li>
       <li data-text="buy-from business partner tccom4120s000 double-click a record, or new, in buy-from business partners (tccom4520m000) the details screen where one buy-from business partner is entered or maintained." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=tccom4120s000"><span>Buy-from Business Partner</span></a></b>The details screen where one buy-from business partner is entered or maintained.</li>
+      <li data-text="business partners tccom4500m000 master data ➔ business partners ➔ business partners lists the business partners, each with its role, status and main address." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=tccom4500m000"><span>Business Partners</span></a></b>Lists the business partners, each with its role, status and main address.</li>
       <li data-text="buy-from business partners tccom4520m000 product lifecycle management ➔ plm administration ➔ master data ➔ business partners ➔ buy-from business partners lists buy-from business partners and their status, for viewing rather than editing." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=tccom4520m000"><span>Buy-from Business Partners</span></a></b>Lists buy-from business partners and their status, for viewing rather than editing.</li>
       <li data-text="companies tcemm1170m000 master data ➔ enterprise model ➔ enterprise structure ➔ companies holds each company's own settings, among them its calendar and its currency system." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=tcemm1170m000"><span>Companies</span></a></b>Holds each company's own settings, among them its calendar and its currency system.</li>
       <li data-text="concept activation tcemm4600m000 options ➔ run program, session code typed directly — absent from the 2026-08-20 navigation extract shows and maintains the activation status of one ln concept, chosen upstream." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=tcemm4600m000"><span>Concept Activation</span></a></b>Shows and maintains the activation status of one LN concept, chosen upstream.</li>
@@ -4782,6 +4909,7 @@
       <li data-text="purchase order - lines to be released tdpur4501m140 the release to warehousing tab of purchase order (tdpur4100m900) a purchase order's lines that are waiting to be released to warehousing." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=tdpur4501m140"><span>Purchase Order - Lines to be Released</span></a></b>A purchase order's lines that are waiting to be released to warehousing.</li>
       <li data-text="purchase order line status tdpur4534m000 purchase order line status on the appropriate menu of the order lines tab of purchase order (tdpur4100m900) shows which activity a purchase order line is waiting on." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=tdpur4534m000"><span>Purchase Order Line Status</span></a></b>Shows which activity a purchase order line is waiting on.</li>
       <li data-text="purchase order intake workbench tdpur4601m200 procurement ➔ orders ➔ order intake workbench a dashboard of purchase-order activity awaiting attention." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=tdpur4601m200"><span>Purchase Order Intake Workbench</span></a></b>A dashboard of purchase-order activity awaiting attention.</li>
+      <li data-text="sales orders tdsls4100m000 by its help, sales order details on the file menu of sales order (tdsls4100m900), or details on its own overview — not opened in this environment the sales order header, as a list of orders and as the details of one, with the defaults a header hands to its lines." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=tdsls4100m000"><span>Sales Orders</span></a></b>The sales order header, as a list of orders and as the details of one, with the defaults a header hands to its lines.</li>
       <li data-text="sales orders intake (personalization) tdsls4100m100 the personalization editor for the sales orders intake view, opened from sales order intake workbench (tdsls4601m200) the editor that chooses which columns the sales order intake list shows." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=tdsls4100m100"><span>Sales Orders Intake (Personalization)</span></a></b>The editor that chooses which columns the sales order intake list shows.</li>
       <li data-text="sales order tdsls4100m900 drill-in from order intake workbench (tdsls4601m200) the sales order itself, header and lines, opened from the intake workbench." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=tdsls4100m900"><span>Sales Order</span></a></b>The sales order itself, header and lines, opened from the intake workbench.</li>
       <li data-text="sales order lines tdsls4101m000 the order lines tab of sales order (tdsls4100m900), or a line's row icon on sales order intake workbench (tdsls4601m200) the lines of a sales order, with each line's warehouse, dates and inventory figures." hidden><span class="ln-quiet">Screen</span><b><a class="rux--link" href="./?c=tdsls4101m000"><span>Sales Order Lines</span></a></b>The lines of a sales order, with each line's warehouse, dates and inventory figures.</li>
@@ -5025,6 +5153,14 @@
     <h1 class="ln-ask">Buy-from Business Partner</h1>
     <p>The details screen where one buy-from business partner is entered or maintained.</p>
     <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="tccom4120s000" aria-label="Copy the code tccom4120s000">tccom4120s000</button></dd><dt>Reached</dt><dd>double-click a record, or New, in Buy-from Business Partners (tccom4520m000)</dd></dl>
+    <div class="ln-full" data-full hidden></div>
+  </section>
+  <section class="ln-screen" data-screen="card" data-c="tccom4500m000" hidden>
+    <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
+    <p class="ln-quiet">Screen</p>
+    <h1 class="ln-ask">Business Partners</h1>
+    <p>Lists the business partners, each with its role, status and main address.</p>
+    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="tccom4500m000" aria-label="Copy the code tccom4500m000">tccom4500m000</button></dd><dt>Route</dt><dd><span class="ln-t-route"><span>Master Data</span><span class="sep">➔</span><span>Business Partners</span><span class="sep">➔</span><span class="dest">Business Partners</span></span></dd></dl>
     <div class="ln-full" data-full hidden></div>
   </section>
   <section class="ln-screen" data-screen="card" data-c="tccom4520m000" hidden>
@@ -5523,6 +5659,14 @@
     <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="tdpur4601m200" aria-label="Copy the code tdpur4601m200">tdpur4601m200</button></dd><dt>Route</dt><dd><span class="ln-t-route"><span>Procurement</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></dd><dt>Used in</dt><dd><a class="rux--link" href="./?s=create-basic-test-items-and-defaults&amp;t=9">Create test items · 10 Stock the components</a><br><a class="rux--link" href="./?s=purchase-order-to-warehouse-receipt&amp;t=1">Purchase to receipt · 2 Create the purchase order</a></dd></dl>
     <div class="ln-full" data-full hidden></div>
   </section>
+  <section class="ln-screen" data-screen="card" data-c="tdsls4100m000" hidden>
+    <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
+    <p class="ln-quiet">Screen</p>
+    <h1 class="ln-ask">Sales Orders</h1>
+    <p>The sales order header, as a list of orders and as the details of one, with the defaults a header hands to its lines.</p>
+    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="tdsls4100m000" aria-label="Copy the code tdsls4100m000">tdsls4100m000</button></dd><dt>Reached</dt><dd>by its help, Sales Order Details on the File menu of Sales Order (tdsls4100m900), or Details on its own overview — not opened in this environment</dd></dl>
+    <div class="ln-full" data-full hidden></div>
+  </section>
   <section class="ln-screen" data-screen="card" data-c="tdsls4100m100" hidden>
     <a class="rux--link ln-back" href="./?v=search"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Search</a>
     <p class="ln-quiet">Screen</p>
@@ -5544,7 +5688,7 @@
     <p class="ln-quiet">Screen</p>
     <h1 class="ln-ask">Sales Order Lines</h1>
     <p>The lines of a sales order, with each line's warehouse, dates and inventory figures.</p>
-    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="tdsls4101m000" aria-label="Copy the code tdsls4101m000">tdsls4101m000</button></dd><dt>Reached</dt><dd>the Order Lines tab of Sales Order (tdsls4100m900), or a line's row icon on Sales Order Intake Workbench (tdsls4601m200)</dd><dt>Used in</dt><dd><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4">Set up a GenAI prompt · 5 Run it and check the answer</a></dd></dl>
+    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="tdsls4101m000" aria-label="Copy the code tdsls4101m000">tdsls4101m000</button></dd><dt>Reached</dt><dd>the Order Lines tab of Sales Order (tdsls4100m900), or a line's row icon on Sales Order Intake Workbench (tdsls4601m200)</dd><dt>Used in</dt><dd><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0">Set up a GenAI prompt · 1 Choose the screen</a></dd></dl>
     <div class="ln-full" data-full hidden></div>
   </section>
   <section class="ln-screen" data-screen="card" data-c="tdsls4106m100" hidden>
@@ -5616,7 +5760,7 @@
     <p class="ln-quiet">Screen</p>
     <h1 class="ln-ask">Sales Order Intake Workbench</h1>
     <p>A dashboard of sales-order activity awaiting attention.</p>
-    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="tdsls4601m200" aria-label="Copy the code tdsls4601m200">tdsls4601m200</button></dd><dt>Route</dt><dd><span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></dd><dt>Used in</dt><dd><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4">Set up a GenAI prompt · 5 Run it and check the answer</a><br><a class="rux--link" href="./?s=run-order-planning-for-one-item&amp;t=1">Run order planning · 2 Create demand</a><br><a class="rux--link" href="./?s=ship-from-stock&amp;t=1">Ship from stock · 2 Create and approve the sales order</a><br><a class="rux--link" href="./?s=ship-from-stock&amp;t=2">Ship from stock · 3 Release to warehousing</a><br><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=1">Plan to shipment · 2 Create the demand</a></dd></dl>
+    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="tdsls4601m200" aria-label="Copy the code tdsls4601m200">tdsls4601m200</button></dd><dt>Route</dt><dd><span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></dd><dt>Used in</dt><dd><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0">Set up a GenAI prompt · 1 Choose the screen</a><br><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4">Set up a GenAI prompt · 5 Run it and check the answer</a><br><a class="rux--link" href="./?s=run-order-planning-for-one-item&amp;t=1">Run order planning · 2 Create demand</a><br><a class="rux--link" href="./?s=ship-from-stock&amp;t=1">Ship from stock · 2 Create and approve the sales order</a><br><a class="rux--link" href="./?s=ship-from-stock&amp;t=2">Ship from stock · 3 Release to warehousing</a><br><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=1">Plan to shipment · 2 Create the demand</a></dd></dl>
     <div class="ln-full" data-full hidden></div>
   </section>
   <section class="ln-screen" data-screen="card" data-c="tdsmi1500m000" hidden>
@@ -5944,7 +6088,7 @@
     <p class="ln-quiet">Screen</p>
     <h1 class="ln-ask">GenAI Prompts</h1>
     <p>Defines each GenAI prompt, the text sent to the Infor GenAI service, the LN data sent with it, and the model that answers.</p>
-    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="ttrpi5150m000" aria-label="Copy the code ttrpi5150m000">ttrpi5150m000</button></dd><dt>Route</dt><dd><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts</span></span></dd><dt>Used in</dt><dd><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2">Set up a GenAI prompt · 3 Write the prompt</a></dd></dl>
+    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="ttrpi5150m000" aria-label="Copy the code ttrpi5150m000">ttrpi5150m000</button></dd><dt>Route</dt><dd><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts</span></span></dd><dt>Used in</dt><dd><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2">Set up a GenAI prompt · 3 Write the prompt</a><br><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5">Set up a GenAI prompt · 6 Improve it</a><br><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=6">Set up a GenAI prompt · 7 Remove it</a></dd></dl>
     <div class="ln-full" data-full hidden></div>
   </section>
   <section class="ln-screen" data-screen="card" data-c="ttrpi5151m000" hidden>
@@ -5968,7 +6112,7 @@
     <p class="ln-quiet">Screen</p>
     <h1 class="ln-ask">GenAI LLMs</h1>
     <p>Lists the language models the Infor GenAI service offers LN, and which one is the default.</p>
-    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="ttrpi5560m000" aria-label="Copy the code ttrpi5560m000">ttrpi5560m000</button></dd><dt>Route</dt><dd><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI LLMs</span></span></dd><dt>Used in</dt><dd><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0">Set up a GenAI prompt · 1 Confirm a model is available</a></dd></dl>
+    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="ttrpi5560m000" aria-label="Copy the code ttrpi5560m000">ttrpi5560m000</button></dd><dt>Route</dt><dd><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI LLMs</span></span></dd></dl>
     <div class="ln-full" data-full hidden></div>
   </section>
   <section class="ln-screen" data-screen="card" data-c="ttrpi5561m000" hidden>
@@ -5976,7 +6120,7 @@
     <p class="ln-quiet">Screen</p>
     <h1 class="ln-ask">GenAI LLM Versions</h1>
     <p>Lists the versions of one language model, and which version the Infor GenAI service treats as default.</p>
-    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="ttrpi5561m000" aria-label="Copy the code ttrpi5561m000">ttrpi5561m000</button></dd><dt>Reached</dt><dd>from GenAI LLMs (ttrpi5560m000), Actions menu — absent from the 2026-08-20 navigation extract</dd><dt>Used in</dt><dd><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0">Set up a GenAI prompt · 1 Confirm a model is available</a></dd></dl>
+    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="ttrpi5561m000" aria-label="Copy the code ttrpi5561m000">ttrpi5561m000</button></dd><dt>Reached</dt><dd>from GenAI LLMs (ttrpi5560m000), Actions menu — absent from the 2026-08-20 navigation extract</dd></dl>
     <div class="ln-full" data-full hidden></div>
   </section>
   <section class="ln-screen" data-screen="card" data-c="whinh0100m000" hidden>
@@ -6288,7 +6432,7 @@
     <p class="ln-quiet">Idea</p>
     <h1 class="ln-ask">Embedded GenAI</h1>
     <p>LN's built-in AI. A prompt written once by an administrator, sent with LN data to the Infor GenAI service, and run as a command on a screen.</p>
-    <dl class="ln-card__facts"><dt>Also called</dt><dd>genai prompt, dataset, dataset filter, dataset output format, llm</dd><dt>Screens</dt><dd><a class="rux--link" href="./?c=ttrpi5150m000">GenAI Prompts</a><br><a class="rux--link" href="./?c=ttadv9160m000">GenAI Prompts by Session</a><br><a class="rux--link" href="./?c=ttrpi5100m000">Datasets</a><br><a class="rux--link" href="./?c=ttrpi5110m000">Dataset Output Formats</a><br><a class="rux--link" href="./?c=ttrpi5560m000">GenAI LLMs</a><br><a class="rux--link" href="./?c=ttrpi5151m000">GenAI Prompt Parameters</a><br><a class="rux--link" href="./?c=ttrpi5501m000">Dataset Parameters</a><br><a class="rux--link" href="./?c=ttrpi5561m000">GenAI LLM Versions</a><br><a class="rux--link" href="./?c=ttadv9140m000">Dataset Filter</a><br>tccom4500m000<br><a class="rux--link" href="./?c=tdsls4101m000">Sales Order Lines</a></dd></dl>
+    <dl class="ln-card__facts"><dt>Also called</dt><dd>genai prompt, dataset, dataset filter, dataset output format, llm</dd><dt>Screens</dt><dd><a class="rux--link" href="./?c=ttrpi5150m000">GenAI Prompts</a><br><a class="rux--link" href="./?c=ttadv9160m000">GenAI Prompts by Session</a><br><a class="rux--link" href="./?c=ttrpi5100m000">Datasets</a><br><a class="rux--link" href="./?c=ttrpi5110m000">Dataset Output Formats</a><br><a class="rux--link" href="./?c=ttrpi5560m000">GenAI LLMs</a><br><a class="rux--link" href="./?c=ttrpi5151m000">GenAI Prompt Parameters</a><br><a class="rux--link" href="./?c=ttrpi5501m000">Dataset Parameters</a><br><a class="rux--link" href="./?c=ttrpi5561m000">GenAI LLM Versions</a><br><a class="rux--link" href="./?c=ttadv9140m000">Dataset Filter</a><br><a class="rux--link" href="./?c=tccom4500m000">Business Partners</a><br><a class="rux--link" href="./?c=tdsls4101m000">Sales Order Lines</a></dd></dl>
     <div class="ln-full" data-full hidden></div>
   </section>
   <section class="ln-screen" data-screen="card" data-i="order-planning" hidden>
@@ -6392,9 +6536,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-30">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-32">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-30" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-32" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6415,9 +6559,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-31">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-33">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-31" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-33" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6438,9 +6582,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-32">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-34">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-32" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-34" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6461,9 +6605,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-33">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-35">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-33" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-35" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6484,9 +6628,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-34">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-36">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-34" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-36" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6507,9 +6651,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-35">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-37">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-35" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-37" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6530,9 +6674,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-36">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-38">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-36" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-38" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6553,9 +6697,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-37">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-39">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-37" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-39" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6576,9 +6720,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-38">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-40">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-38" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-40" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6599,9 +6743,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-39">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-41">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-39" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-41" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6622,9 +6766,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-40">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-42">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-40" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-42" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6645,9 +6789,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-41">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-43">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-41" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-43" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6668,9 +6812,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-42">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-44">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-42" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-44" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6691,9 +6835,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-43">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-45">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-43" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-45" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6714,9 +6858,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-44">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-46">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-44" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-46" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6737,9 +6881,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-45">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-47">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-45" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-47" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6760,9 +6904,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-46">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-48">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-46" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-48" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6783,9 +6927,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-47">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-49">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-47" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-49" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6806,9 +6950,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-48">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-50">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-48" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-50" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6829,9 +6973,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-49">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-51">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-49" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-51" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6852,9 +6996,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-50">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-52">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-50" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-52" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -6875,9 +7019,9 @@
       </div>
       <form class="ln-confirm__form" data-different hidden>
         <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-51">What was different?</label></div>
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-tasks-task-53">What was different?</label></div>
           <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="diff-tasks-task-51" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+            <input id="diff-tasks-task-53" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
           </div></div>
         </div>
         <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>

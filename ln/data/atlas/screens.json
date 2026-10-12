@@ -110,6 +110,12 @@
       "route": "double-click a record, or New, in Buy-from Business Partners (tccom4520m000)"
     },
     {
+      "code": "tccom4500m000",
+      "name": "Business Partners",
+      "purpose": "Lists the business partners, each with its role, status and main address.",
+      "route": "Master Data ➔ Business Partners ➔ Business Partners"
+    },
+    {
       "code": "tccom4520m000",
       "name": "Buy-from Business Partners",
       "purpose": "Lists buy-from business partners and their status, for viewing rather than editing.",
@@ -480,6 +486,12 @@
       "name": "Purchase Order Intake Workbench",
       "purpose": "A dashboard of purchase-order activity awaiting attention.",
       "route": "Procurement ➔ Orders ➔ Order Intake Workbench"
+    },
+    {
+      "code": "tdsls4100m000",
+      "name": "Sales Orders",
+      "purpose": "The sales order header, as a list of orders and as the details of one, with the defaults a header hands to its lines.",
+      "route": "by its help, Sales Order Details on the File menu of Sales Order (tdsls4100m900), or Details on its own overview — not opened in this environment"
     },
     {
       "code": "tdsls4100m100",

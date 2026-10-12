@@ -43,6 +43,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - When the booking contact is away, the pinned update names who to reach instead, with their email.
 - The email thread is linked to the trip while reviewing it, so the next review opens it directly.
 - A customer's request that has not been answered in the thread, such as driver information or documents, goes in the report.
+- A customer whose profile gives the quote no address gets one before the quote is printed: its usual pickup set to its saved location, or a bill-to address typed when the bills go somewhere else, because the quote's Name/address box prints the profile's bill-to address, or else its usual pickup's.
 
 ## Checklist and paperwork
 

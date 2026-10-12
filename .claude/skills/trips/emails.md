@@ -46,6 +46,6 @@ copies it from the chat and pastes it himself.
 
 "Note:" lines first, one each, only for what rux must act on. Then the email
 alone: no preamble, no quotation marks, no subject line unless asked, ending
-with "Thank you," and rux's full name on the next line, as his sent emails are
-signed. If something missing blocks an accurate reply, ask one short question
-instead.
+with "Thank you," and no name after it, because Missive adds his signature,
+which already carries his name. If something missing blocks an accurate reply,
+ask one short question instead.

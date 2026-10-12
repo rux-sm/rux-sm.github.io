@@ -95,7 +95,7 @@ everything has played a whole game.
 - **Every enemy has a placeholder until it is drawn:** a plain frame under
   the enemy's name, switched off, so no player is sent it even from a
   published rift. It is redrawn as that enemy's puzzle and then switched on.
-  Rifts 11 and 12 hold theirs at 15×15 until the 20×20 board is built.
+  A frame is its rift's size, since a saved puzzle keeps the size it has.
 - **The puzzles stay in the database,** made in the Pixelator and ordered in
   Manage. No file of them is committed and no tool loads them.
 - **The front page counts the whole course,** and says so when every sprite

@@ -14,7 +14,7 @@
   "updated": "2026-09-02",
   "status": "draft",
   "summary": "run the bamboo family down the long route of `order-to-shipment-overview.md` — a sales order that stock cannot cover, through MRP, across the transfer boundary, buying the components and building the finished item, to a confirmed shipment with on-hand verified down.",
-  "order": 7,
+  "order": 8,
   "sources": [
     "cppat1210m000",
     "cprpd0100m000",

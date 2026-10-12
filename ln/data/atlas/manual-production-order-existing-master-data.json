@@ -11,7 +11,7 @@
   "updated": "2026-10-04",
   "status": "draft",
   "summary": "create a quantity-one manual production order from an existing finished item, existing components, an existing BOM, and an existing routing; verify the generated operations and estimated materials; release the order; issue material to the job shop; report the operation(s) complete; and confirm the finished item is received into the warehouse.",
-  "order": 4,
+  "order": 5,
   "sources": [
     "ticst0101m000",
     "ticst0101m100",

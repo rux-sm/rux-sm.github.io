@@ -70,6 +70,32 @@
       ]
     },
     {
+      "id": "embedded-genai",
+      "name": "Embedded GenAI",
+      "terms": [
+        "embedded genai",
+        "genai prompt",
+        "dataset",
+        "dataset filter",
+        "dataset output format",
+        "llm"
+      ],
+      "purpose": "LN's built-in AI. A prompt written once by an administrator, sent with LN data to the Infor GenAI service, and run as a command on a screen.",
+      "sources": [
+        "ttrpi5150m000",
+        "ttadv9160m000",
+        "ttrpi5100m000",
+        "ttrpi5110m000",
+        "ttrpi5560m000",
+        "ttrpi5151m000",
+        "ttrpi5501m000",
+        "ttrpi5561m000",
+        "ttadv9140m000",
+        "tccom4500m000",
+        "tdsls4101m000"
+      ]
+    },
+    {
       "id": "order-planning",
       "name": "Order planning",
       "terms": [

@@ -497,7 +497,7 @@
       "code": "tdsls4101m000",
       "name": "Sales Order Lines",
       "purpose": "The lines of a sales order, with each line's warehouse, dates and inventory figures.",
-      "route": "the Order Lines tab of Sales Order (tdsls4100m900)"
+      "route": "the Order Lines tab of Sales Order (tdsls4100m900), or a line's row icon on Sales Order Intake Workbench (tdsls4601m200)"
     },
     {
       "code": "tdsls4106m100",
@@ -654,6 +654,12 @@
       "route": "unstated in the help; it lists the production warehouse orders for a specific production order"
     },
     {
+      "code": "timfc0110m000",
+      "name": "Serial End Item - As-Built Headers",
+      "purpose": "Lists a production order's end items one serial number to a line, each with a status that follows it from made to received.",
+      "route": "Serial Numbers on Report Operations Completed (tisfc0130m000)"
+    },
+    {
       "code": "tirou0100m000",
       "name": "Job Shop Master Data Parameters",
       "purpose": "The parameter set that controls how routings, operations and work centres behave in job shop production.",
@@ -770,6 +776,60 @@
       "name": "Print Menu Structure",
       "purpose": "Prints the menu tree, which is where the route to a screen can be looked up.",
       "route": "Tools ➔ Application Customization ➔ Menus ➔ Print Menu Structure"
+    },
+    {
+      "code": "ttadv9140m000",
+      "name": "Dataset Filter",
+      "purpose": "Holds the conditions one table of a dataset is filtered by, and marks which of them become prompt parameters.",
+      "route": "from the Dataset Modeler, the Filter Present link on its Properties panel — absent from the 2026-08-20 navigation extract"
+    },
+    {
+      "code": "ttadv9160m000",
+      "name": "GenAI Prompts by Session",
+      "purpose": "Links a GenAI prompt to a session, which is what puts the prompt on that screen as a command.",
+      "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts by Session"
+    },
+    {
+      "code": "ttrpi5100m000",
+      "name": "Datasets",
+      "purpose": "Lists the datasets, the modelled extracts of LN data a GenAI prompt can send with its question.",
+      "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ Datasets"
+    },
+    {
+      "code": "ttrpi5110m000",
+      "name": "Dataset Output Formats",
+      "purpose": "Registers the formats a dataset's output can be written in before it is put into a GenAI prompt.",
+      "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ Dataset Output Formats"
+    },
+    {
+      "code": "ttrpi5150m000",
+      "name": "GenAI Prompts",
+      "purpose": "Defines each GenAI prompt, the text sent to the Infor GenAI service, the LN data sent with it, and the model that answers.",
+      "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts"
+    },
+    {
+      "code": "ttrpi5151m000",
+      "name": "GenAI Prompt Parameters",
+      "purpose": "Lists the inputs one GenAI prompt takes, copied from the dataset linked to it.",
+      "route": "from GenAI Prompts (ttrpi5150m000), menu option GenAI Prompt Parameters — absent from the 2026-08-20 navigation extract"
+    },
+    {
+      "code": "ttrpi5501m000",
+      "name": "Dataset Parameters",
+      "purpose": "Lists the parameters LN generated for one dataset, each a selection range or a query filter.",
+      "route": "from Datasets (ttrpi5100m000), the Parameters command — absent from the 2026-08-20 navigation extract"
+    },
+    {
+      "code": "ttrpi5560m000",
+      "name": "GenAI LLMs",
+      "purpose": "Lists the language models the Infor GenAI service offers LN, and which one is the default.",
+      "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI LLMs"
+    },
+    {
+      "code": "ttrpi5561m000",
+      "name": "GenAI LLM Versions",
+      "purpose": "Lists the versions of one language model, and which version the Infor GenAI service treats as default.",
+      "route": "from GenAI LLMs (ttrpi5560m000), Actions menu — absent from the 2026-08-20 navigation extract"
     },
     {
       "code": "whinh0100m000",
@@ -908,16 +968,34 @@
       "route": "unstated in the help; the Cycle Counting/Adjustment Orders node is on the menu"
     },
     {
+      "code": "whinh8360m000",
+      "name": "Shipment Workbench",
+      "purpose": "Lists the shipments waiting at a warehouse's staging area or docks, to freeze, confirm or reopen them from one place.",
+      "route": "Warehousing ➔ Shipments ➔ Shipment Workbench"
+    },
+    {
       "code": "whinh8361m000",
       "name": "Shipment Execution Workbench",
       "purpose": "Runs a shipment's outbound steps from one screen, from generating advice to confirming.",
       "route": "Warehousing ➔ Shipments ➔ Shipment Execution Workbench"
     },
     {
+      "code": "whinh8370m000",
+      "name": "Shipment Planning Workbench",
+      "purpose": "Plans a week of shipments by turning outbound order lines into projected shipments before anything is picked.",
+      "route": "Warehousing ➔ Shipments ➔ Shipment Planning Workbench"
+    },
+    {
       "code": "whinp1300m000",
       "name": "Planned Inventory Transactions - Graphical View",
       "purpose": "One item's planned receipts and issues as a graph, with tiles for what is on hand, overdue, and due in or out today.",
       "route": "Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Planned Inventory Transactions - Graphical View"
+    },
+    {
+      "code": "whltc3600m100",
+      "name": "Item, Lot and Serial 360",
+      "purpose": "Shows the transactions of one item, lot or serial number, and draws what a lot or serialized item was built from.",
+      "route": "Warehousing ➔ Item, Lot and Serial 360"
     },
     {
       "code": "whwmd1140s000",

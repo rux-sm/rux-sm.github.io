@@ -11,7 +11,7 @@
   "updated": "2026-09-03",
   "status": "draft",
   "summary": "make one finished item visible to planning, give it a demand it cannot cover from stock, run MRP, and read the result — a planned supply chain covering the shortfall — in the Item Order Plan, in Planned Orders, and in the pegging tree.",
-  "order": 1,
+  "order": 2,
   "sources": [
     "cppat1210m000",
     "cprpd0100m000",

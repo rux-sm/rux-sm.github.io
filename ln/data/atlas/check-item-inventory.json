@@ -10,7 +10,7 @@
   "updated": "2026-09-17",
   "status": "draft",
   "summary": "find out how much of one item is in stock, which warehouse holds it, and how much of it is already committed, before a walkthrough consumes, moves or ships it.",
-  "order": 2,
+  "order": 3,
   "sources": [
     "whwmd2515m000",
     "whwmd4300m000"

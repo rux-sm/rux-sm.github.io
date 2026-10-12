@@ -11,7 +11,7 @@
   "updated": "2026-10-04",
   "status": "approved",
   "summary": "take a sales order for an item already in stock through to a confirmed shipment, then verify that inventory decreased by the shipped quantity.",
-  "order": 6,
+  "order": 7,
   "sources": [
     "tdsls4246m000",
     "tdsls4501m140",

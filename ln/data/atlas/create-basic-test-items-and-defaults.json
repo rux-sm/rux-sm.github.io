@@ -13,7 +13,7 @@
   "updated": "2026-09-03",
   "status": "draft",
   "summary": "create a small, isolated item family that proves two supply patterns — purchased components and a Job Shop finished product — and carry it through the engineering, costing, and stock data a quantity-one production order needs, so the finished item can be produced and received into the finished-goods warehouse.",
-  "order": 0,
+  "order": 1,
   "sources": [
     "tccom0100s000",
     "tccom0500m000",

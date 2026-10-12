@@ -4,7 +4,7 @@
   "kind": "reference",
   "id": "tasks",
   "title": "Tasks",
-  "updated": "2026-10-04",
+  "updated": "2026-10-06",
   "status": "draft",
   "sources": [
     "cpdsp1210m000",
@@ -3199,6 +3199,96 @@
           "tokens": [
             {
               "t": "session",
+              "code": "tisfc0130m000",
+              "name": "report-serialized · Report a serialized item completed"
+            },
+            {
+              "t": "text",
+              "v": " · stage 5 · step"
+            }
+          ],
+          "text": "report-serialized · Report a serialized item completed (tisfc0130m000) · stage 5 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations"
+                }
+              ],
+              "text": "Route — Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — report a serialized end item completed, so that the right serial number is the one booked"
+                }
+              ],
+              "text": "Does — report a serialized end item completed, so that the right serial number is the one booked"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - find out who sets the serial status: As-Built Status Handling in Production Order Parameters is Automatic or Manual - Automatic, one item: on the last operation enter the quantity completed and its serial number, then save - Automatic, several items: enter the quantity alone; LN takes that many serials still at Created, in the order they are listed - Manual: from the operation open Serial Numbers, and set each finished serial from Created to Assigned - Manual: back on the operation click Default Qty Completed, which fills in the number set to Assigned, then save - "
+                },
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Do - find out who sets the serial status: As-Built Status Handling in Production Order Parameters is Automatic or Manual - Automatic, one item: on the last operation enter the quantity completed and its serial number, then save - Automatic, several items: enter the quantity alone; LN takes that many serials still at Created, in the order they are listed - Manual: from the operation open Serial Numbers, and set each finished serial from Created to Assigned - Manual: back on the operation click Default Qty Completed, which fills in the number set to Assigned, then save - Not documented for this release."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Under"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "link",
+                  "v": "Demand to shipment",
+                  "href": "order-to-shipment-overview.md"
+                },
+                {
+                  "t": "text",
+                  "v": " 9"
+                }
+              ],
+              "text": "Under — Demand to shipment 9"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
               "code": "tisfc0202m000",
               "name": "cancel-production · Cancel Production Orders"
             },
@@ -4726,14 +4816,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " - before turning locations on, clear what is in flight: unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders - block the warehouse for inbound and for outbound - run Change Location System for the warehouse, then give each stock its location in Assign Locations - "
+                  "v": " - before turning locations on, clear what is in flight: unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders - block the warehouse for inbound and for outbound - run Change Location System for the warehouse, then give each stock its location in Assign Locations - set up at least one receiving location and one staging location, which a warehouse with locations must have - "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Do - before turning locations on, clear what is in flight: unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders - block the warehouse for inbound and for outbound - run Change Location System for the warehouse, then give each stock its location in Assign Locations - Not documented for this release."
+              "text": "Do - before turning locations on, clear what is in flight: unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders - block the warehouse for inbound and for outbound - run Change Location System for the warehouse, then give each stock its location in Assign Locations - set up at least one receiving location and one staging location, which a warehouse with locations must have - Not documented for this release."
             }
           ]
         },
@@ -6874,6 +6964,105 @@
         }
       },
       {
+        "id": "report-serialized",
+        "session": "Report a serialized item completed",
+        "lane": "Manufacturing",
+        "stage": 5,
+        "kind": "step",
+        "code": "tisfc0130m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations"
+            }
+          ],
+          "text": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "report a serialized end item completed, so that the right serial number is the one booked"
+            }
+          ],
+          "text": "report a serialized end item completed, so that the right serial number is the one booked"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "find out who sets the serial status: As-Built Status Handling in Production Order Parameters is Automatic or Manual"
+              }
+            ],
+            "text": "find out who sets the serial status: As-Built Status Handling in Production Order Parameters is Automatic or Manual"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Automatic, one item: on the last operation enter the quantity completed and its serial number, then save"
+              }
+            ],
+            "text": "Automatic, one item: on the last operation enter the quantity completed and its serial number, then save"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Automatic, several items: enter the quantity alone; LN takes that many serials still at Created, in the order they are listed"
+              }
+            ],
+            "text": "Automatic, several items: enter the quantity alone; LN takes that many serials still at Created, in the order they are listed"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Manual: from the operation open Serial Numbers, and set each finished serial from Created to Assigned"
+              }
+            ],
+            "text": "Manual: from the operation open Serial Numbers, and set each finished serial from Created to Assigned"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Manual: back on the operation click Default Qty Completed, which fills in the number set to Assigned, then save"
+              }
+            ],
+            "text": "Manual: back on the operation click Default Qty Completed, which fills in the number set to Assigned, then save"
+          },
+          {
+            "tokens": [
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Not documented for this release."
+          }
+        ],
+        "under": {
+          "map": "order-to-shipment-overview",
+          "node": "9"
+        },
+        "do": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "find out who sets the serial status: As-Built Status Handling in Production Order Parameters is Automatic or Manual. Automatic, one item: on the last operation enter the quantity completed and its serial number, then save. Automatic, several items: enter the quantity alone; LN takes that many serials still at Created, in the order they are listed. Manual: from the operation open Serial Numbers, and set each finished serial from Created to Assigned. Manual: back on the operation click Default Qty Completed, which fills in the number set to Assigned, then save. "
+            },
+            {
+              "t": "strong",
+              "v": "Not documented for this release."
+            }
+          ],
+          "text": "find out who sets the serial status: As-Built Status Handling in Production Order Parameters is Automatic or Manual. Automatic, one item: on the last operation enter the quantity completed and its serial number, then save. Automatic, several items: enter the quantity alone; LN takes that many serials still at Created, in the order they are listed. Manual: from the operation open Serial Numbers, and set each finished serial from Created to Assigned. Manual: back on the operation click Default Qty Completed, which fills in the number set to Assigned, then save. Not documented for this release."
+        }
+      },
+      {
         "id": "cancel-production",
         "session": "Cancel Production Orders",
         "lane": "Manufacturing",
@@ -8092,6 +8281,15 @@
           {
             "tokens": [
               {
+                "t": "text",
+                "v": "set up at least one receiving location and one staging location, which a warehouse with locations must have"
+              }
+            ],
+            "text": "set up at least one receiving location and one staging location, which a warehouse with locations must have"
+          },
+          {
+            "tokens": [
+              {
                 "t": "strong",
                 "v": "Not documented for this release."
               }
@@ -8103,14 +8301,14 @@
           "tokens": [
             {
               "t": "text",
-              "v": "before turning locations on, clear what is in flight: unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders. block the warehouse for inbound and for outbound. run Change Location System for the warehouse, then give each stock its location in Assign Locations. "
+              "v": "before turning locations on, clear what is in flight: unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders. block the warehouse for inbound and for outbound. run Change Location System for the warehouse, then give each stock its location in Assign Locations. set up at least one receiving location and one staging location, which a warehouse with locations must have. "
             },
             {
               "t": "strong",
               "v": "Not documented for this release."
             }
           ],
-          "text": "before turning locations on, clear what is in flight: unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders. block the warehouse for inbound and for outbound. run Change Location System for the warehouse, then give each stock its location in Assign Locations. Not documented for this release."
+          "text": "before turning locations on, clear what is in flight: unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders. block the warehouse for inbound and for outbound. run Change Location System for the warehouse, then give each stock its location in Assign Locations. set up at least one receiving location and one staging location, which a warehouse with locations must have. Not documented for this release."
         }
       },
       {
@@ -8211,5 +8409,5 @@
       "session": 44
     }
   },
-  "openIssues": 49
+  "openIssues": 50
 }

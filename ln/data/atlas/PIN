@@ -1,9 +1,9 @@
-commit   3f3cd5b6fa0f74732ca77c46cc793e32dcee968a
-date     2026-10-04T19:17:42Z
-subject  docs(guides): File the rest of the first read
+commit   f6640a7724a84021b74f00f0146cd8485be0886e
+date     2026-10-12T19:44:46Z
+subject  feat(genai): Write the setup walkthrough
 contract 15 
 tier     export
-sha256   35bf9ab74d60d849e5f981616fa298ad57098a6d088d8c7a20e9d7e68a498207
+sha256   c2a3643077fe32e66ce75cebf1b274eb0aeb89f468fb9191bbd75b4e5645bd86
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

@@ -26,7 +26,7 @@
 (() => {
   'use strict';
 
-  const { data, guest, enter, fresh, see, portrait, categories, locks, heading, side, sprites, boss, title, letter, words, tile, bar } = window.Pixels;
+  const { data, enter, fresh, see, portrait, categories, locks, heading, side, sprites, boss, title, letter, words, tile, bar } = window.Pixels;
   const host = document.getElementById('pixels-category');
 
   const say = (heading, detail) => {
@@ -50,7 +50,6 @@
       say('The puzzles did not load', 'Reload the page to try again.');
       return;
     }
-    if (guest) document.getElementById('pixels-foot').hidden = false;
     fresh();
     const by = query.get('by') || '';
     const cats = categories(puzzles);

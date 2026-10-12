@@ -266,11 +266,6 @@
 /* A small picture is about 5rem across, whatever its puzzle's size. */
 .pixels-picture--sm { --px: round(down, calc(5rem / var(--size, 10)), 1px); }
 
-/* A GUEST HAS NO ACCOUNT, so no header is drawn and the page starts at the
-   top. /funnel.js marks the page for one; both of its marks are named so
-   that this outranks a theme's own rule for the space under the header. */
-[data-rux-guest] .pixels-shell { display: none; }
-[data-rux-guest][data-rux-unlocked] .pixels-main { margin-block-start: 0; }
 /* The last row of a page keeps clear of an iPhone's home bar. */
 .pixels-main { padding-block-end: max(2rem, env(safe-area-inset-bottom, 0px)); }
 
@@ -350,9 +345,11 @@
 .pixels-me-head { display: flex; align-items: center; gap: 1rem; }
 .pixels-me-name { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .5rem; align-items: end; }
 .pixels-me-note { min-block-size: 1.25rem; margin: 0; color: var(--rux-text-error); }
-.pixels-guestbar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-block-end: 1.5rem; }
-.pixels-guestbar > .pixels-meta { display: flex; align-items: center; gap: .5rem; }
-.pixels-guestbar[hidden] { display: none; }
+/* WHAT A GAME'S HEADER WOULD HOLD, a list under the player: Carbon's
+   contained list, as wide as the fields above it. A row that leads to
+   another page is a link drawn as the list's own rows are. */
+.pixels-more { margin-block-start: 2.5rem; max-inline-size: 24rem; }
+.pixels-more-link { color: inherit; text-decoration: none; }
 /* The name form a guest meets first. */
 .pixels-join { max-inline-size: 20rem; margin-inline: auto; padding-block-start: 2rem; }
 .pixels-join ~ .rux--link { display: block; max-inline-size: 20rem; margin: 1.5rem auto 0; }
@@ -406,8 +403,6 @@
   .pixels-page { margin: -1rem -2rem 0; }
 }
 .pixels-tabs[hidden] { display: none; }
-/* A guest's way to How to play, its words in line with the tiles above it. */
-.pixels-foot { margin: 2rem 0 0 -1rem; }
 .pixels-panel { padding: 1.5rem 0 0; }
 /* The steps that add Pixels to a home screen: their numbers inside the modal's edge. */
 .pixels-steps { display: grid; gap: .5rem; margin: 1rem 0 0 1.25rem; }
@@ -553,10 +548,10 @@
 .pixels-level-head > .rux--checkbox-wrapper { margin: 0; }
 /* WHAT IS DONE TO THE TICKED PUZZLES: how many, then Move, Delete and
    Clear. It is there with none ticked, so a first tick moves no tile from
-   under the pointer, and stays under the header while the page scrolls. */
+   under the pointer, and stays at the top while the page scrolls. */
 .pixels-ticked {
   position: sticky;
-  inset-block-start: 3rem;
+  inset-block-start: 0;
   z-index: 1;
   display: flex;
   flex-wrap: wrap;
@@ -911,8 +906,8 @@ button:disabled > .pixels-ink-now { opacity: .35; }
   pointer-events: none;
 }
 .pixels-maker-check > span:not([class])::first-letter { text-transform: uppercase; }
-/* THE SAVED NOTICE floats under the header's end, so it moves nothing. */
-.pixels-saved { position: fixed; inset-block-start: 3.5rem; inset-inline-end: 1rem; z-index: 2; max-inline-size: calc(100vw - 2rem); }
+/* THE SAVED NOTICE floats at the page's top corner, so it moves nothing. */
+.pixels-saved { position: fixed; inset-block-start: 1rem; inset-inline-end: 1rem; z-index: 2; max-inline-size: calc(100vw - 2rem); }
 
 /* THE MAKER ON A PHONE, where the width is short and the height is free.
    The toolbar is under the board, by the thumb, in two lines of keys at

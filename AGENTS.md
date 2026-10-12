@@ -150,7 +150,7 @@ Every app has one word, and its names derive from it.
 | Design | `design/` | Rux Design | `rux--` | `design` |
 | LN Guide | `ln/` | Rux LN Guide | `ln-` | `ln` |
 | Scheduler | `scheduler/` | the company logo, alone | `scheduler-` | `scheduler` |
-| Pixels | `pixels/` | Rux Pixels | `pixels-` | `pixels` |
+| Pixels | `pixels/` | none, a bar of places | `pixels-` | `pixels` |
 | Sevens | `sevens/` | Rux Sevens | `sevens-` | `sevens` |
 | Coins | `coins/` | Rux Coins | `coins-` | `coins` |
 

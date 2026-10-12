@@ -10,15 +10,16 @@ same database. It needs a connection, as the browser does.
 
 ## Adding it
 
-The front page has Add to home screen: beside How to play under a guest's
-tiles, and under How to play in an account's menu. It shows where the browser
-can add Pixels and the page was not opened from the icon.
+Me's list has Add to home screen, where the browser can add Pixels and the
+page was not opened from the icon.
 
-- **Android and desktop Chrome** open the browser's own install window, once
-  the browser says it may.
-- **An iPhone** is shown the steps in a modal: in Safari, tap Share, then Add
-  to Home Screen, then Add. Share may be in the menu beside the address, and
-  Add to Home Screen under View More.
+- **Android and desktop Chrome** open the browser's own install window from
+  that row, once the browser says it may.
+- **An iPhone** is sent to the front page, as `#add`, and shown the steps
+  there in a modal: in Safari, tap Share, then Add to Home Screen, then Add.
+  Share may be in the menu beside the address, and Add to Home Screen under
+  View More. The steps are on the front page because the icon opens the
+  address it was made from.
 
 ## What each phone is told
 
@@ -31,9 +32,9 @@ can add Pixels and the page was not opened from the icon.
 - **`Pixels.installed` says the page was opened from the icon.** An iPhone
   tells by `navigator.standalone`, because with no manifest its
   `display-mode` query stays false; the others tell by that query.
-- **The bar over the page is the header's colour.** An iPhone takes it from
-  the page by itself. Android takes it from `theme-color`, which `app.js`
-  keeps as the header's colour, or the page's for a guest, through every
+- **The bar over the page is the page's colour,** since a game has no
+  header. An iPhone takes it from the page by itself. Android takes it from
+  `theme-color`, which `app.js` keeps as the page's colour through every
   change of theme.
 - **The last row of a page keeps clear of an iPhone's home bar,** by the
   bottom padding of `.pixels-main` in `app.css`.

@@ -794,23 +794,10 @@
      squares a side, so they look as the puzzle does in every theme. Each
      page carries the empty modal, `pixels-how`, which is filled as the page
      loads; `how()` returns it. Anything carrying data-rux-open="pixels-how"
-     opens it, as the entry in each page's menu does, and Design's script
-     closes it.
+     opens it, as the row in Me's list does, and Design's script closes it.
      Closing it is kept in this browser under `pixels-how`, and `how.seen()`
      says so, which is how play.js opens it unasked only for someone who has
      never read it. */
-  // A modal opened from the menu shuts the menu, so closing it shows the
-  // page, and the focus goes to the menu's button, not to a link out of sight.
-  const overMenu = modal => {
-    let menu = null;
-    modal.addEventListener('rux:modal-opened', () => {
-      const nav = document.querySelector('.rux--side-nav--expanded');
-      if (!nav) return;
-      window.Rux.uiShell.closeNav(nav);
-      menu = document.querySelector('.rux--header__menu-toggle');
-    });
-    modal.addEventListener('rux:modal-closed', () => { menu?.focus(); menu = null; });
-  };
   const HOW = 'pixels-how';
   const how = () => {
     const modal = document.getElementById(HOW);
@@ -856,7 +843,6 @@
     cost.textContent = added(penalty(1));
     mistake.appendChild(cost);
     modal.addEventListener('rux:modal-closed', () => { try { localStorage.setItem(HOW, 'seen'); } catch { /* shown again next time */ } });
-    overMenu(modal);
     return modal;
   };
   how.seen = () => { try { return localStorage.getItem(HOW) === 'seen'; } catch { return true; } };
@@ -874,15 +860,14 @@
      address. Every other browser is given manifest.json here. `installed`
      says this page was opened from the icon, which an iPhone tells by
      `navigator.standalone` and the others by the window they are in.
-     Android draws its bar in theme-color, kept here as the header's colour,
-     or the page's for a guest, who has no header, through every change of
-     theme; an iPhone draws its bar in the page's colour by itself. */
+     Android draws its bar in theme-color, kept here as the page's colour
+     through every change of theme, since a game has no header; an iPhone
+     draws its bar in the page's colour by itself. */
   const iphone = 'standalone' in navigator;
   if (!iphone) document.head.insertAdjacentHTML('beforeend', '<link rel="manifest" href="manifest.json">');
   const installed = iphone ? navigator.standalone === true : matchMedia('(display-mode: standalone)').matches;
   const tint = () => {
-    const header = document.querySelector('.rux--header');
-    const colour = getComputedStyle(header?.getClientRects().length ? header : document.body).backgroundColor;
+    const colour = getComputedStyle(document.body).backgroundColor;
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta && meta.content !== colour) meta.content = colour;
   };
@@ -891,11 +876,13 @@
 
   /* THE PLACES every player has, in one bar on the pages that carry it:
      along the bottom on a phone, along the top on a wide screen. This marks
-     the place the page is; a rift's page is one of Puzzles'. */
+     the place the page is; a rift's page is one of Puzzles', and the
+     owner's two, Manage and Players, are reached from Me and are Me's. */
   const here = location.pathname.split('/').pop() || 'index.html';
+  const place = { 'category.html': 'index.html', 'manage.html': 'me.html', 'players.html': 'me.html' }[here] || here;
   document.querySelectorAll('.pixels-place').forEach(a => {
     const to = a.getAttribute('href') === './' ? 'index.html' : a.getAttribute('href');
-    if (to === (here === 'category.html' ? 'index.html' : here)) a.setAttribute('aria-current', 'page');
+    if (to === place) a.setAttribute('aria-current', 'page');
   });
 
   /* A page left for a minute or more loads again as it comes back to the
@@ -910,7 +897,7 @@
   };
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    iphone, installed, fresh, overMenu, face, portrait, seen, see, side, sprites, portal, fairy, locks, boss, letter,
+    iphone, installed, fresh, face, portrait, seen, see, side, sprites, portal, fairy, locks, boss, letter,
     SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title,
     words, art, tile, bar, riftTile, how, switcher, chosen,

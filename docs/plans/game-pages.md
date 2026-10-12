@@ -42,6 +42,8 @@ One bar:
 - **What the header held moves to the Player page,** as a list under the
   player: How to play, Add to home screen, Theme, the way to Rux Home, and
   for the owner alone Manage and Players.
+- **A guest has Theme too.** It is kept in the browser, so it asks nothing
+  of an account, and a guest has no Rux Home to go to.
 - **That list is Carbon's contained list,** which Design ships, so it needs
   no part of its own.
 - **The switcher on Home still lists every game.** `switcher.json` and the
@@ -64,30 +66,23 @@ The parts Carbon lacks:
 - **Five parts are a game's and not Carbon's:** the bar of places, the game
   key, which is an icon over a word, the picture tile with its progress,
   the start cover and the finish panel.
-- **No `rux--` class can be added for them,** since every one of those is
-  compiled from Carbon. Question 1 is where they live.
+- **They live in one sheet that Design serves, `design/css/rux-game.css`,
+  under the prefix `game-`.** No `rux--` class can be added for them, since
+  every one of those is compiled from Carbon, and a copy in each game would
+  drift. The check and `AGENTS.md`'s Names learn the prefix.
+- **Every colour in that sheet is a `--rux-*` token,** as an app's own parts
+  are held to.
 
 ## Questions
 
-1. Where do the five shared parts live? Each game can keep a copy under its
-   own prefix, as each app writes its own toast region today. Or Design can
-   serve one sheet for games, `design/css/rux-game.css`, under a new prefix,
-   `game-`, which the check and `AGENTS.md`'s Names would learn. One sheet
-   is the less work once there are three games, and it is a change to the
-   rule that only Carbon's classes come from Design.
-2. Does a guest get Theme on the Player page? A guest has no way to change
-   the theme today, and it is kept in the browser, so nothing stops it.
+None open.
 
 ## Tasks
 
-- [ ] Take the header out of Pixels for every player, and give Me the list
-      that replaces it: How to play, Add to home screen, Theme, Rux Home,
-      and for the owner Manage and Players. The foot's How to play goes.
-      Look at every page at 402 by 812 and 1280 by 800 in Chrome on :8641.
-- [ ] Bring Manage and Players, the owner's two pages, to the same shape: no
-      header, the bar of places, and reached from Me.
-- [ ] Put the five parts where question 1 says, out of `pixels/app.css`, and
-      with one sheet teach the check its prefix and add it to `AGENTS.md`.
+- [ ] Move the five parts out of `pixels/app.css` into
+      `design/css/rux-game.css` under `game-`, teach the check the prefix,
+      and add it to `AGENTS.md`'s Names and its rule on what must not be
+      invented.
 - [ ] Write the three templates in Design with an invented game, verify
       them, and add their rows to `design/docs/composing-pages.md`,
       `design/docs/choices.md` and the `design-page` skill. Run the full

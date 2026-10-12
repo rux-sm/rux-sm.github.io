@@ -21,13 +21,11 @@
    more sprites, which is dim and says how many. A player reads a category
    as a rift.
 
-   A guest has no menu, so under the tiles is their way to How to play.
-
-   ADD TO HOME SCREEN is beside it, and under How to play in an account's
-   menu, where the browser can add Pixels and the page was not opened from
-   the icon. An iPhone is shown the steps in a modal, and a guest's key is
-   in the address while it is open, for the icon to keep. Any other browser
-   opens its own install window, once it says it may.
+   ADD TO HOME SCREEN is a row of Me's list. An iPhone is sent here by it,
+   as `#add`, and shown the steps in a modal, because its icon opens the
+   address it was made from and this is the page to open. A guest's key is
+   in the address while the modal is open, for the icon to keep. Any other
+   browser opens its own install window from Me.
 
    LEADERBOARD. Two rankings behind one switch: today's puzzle, with each
    player's time, and all time, with puzzles solved and days in a row, in
@@ -36,7 +34,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, guest, enter, carry, iphone, installed, fresh, overMenu, portrait, seen, locks, riftTile, DAILY, BOARD, grid, rounds, grade, categories, daily, today, streak, time, words, art, switcher } = window.Pixels;
+  const { data, owner, enter, carry, iphone, installed, fresh, seen, locks, riftTile, DAILY, BOARD, grid, rounds, grade, categories, daily, today, streak, time, words, art, switcher } = window.Pixels;
   const host = document.getElementById('pixels-levels'), leader = document.getElementById('pixels-leader');
 
   const say = (heading, detail) => {
@@ -147,8 +145,6 @@
     return wrap;
   };
 
-  const ways = [document.getElementById('pixels-add-entry'), document.getElementById('pixels-add-key')];
-  const offer = on => ways.forEach(el => { el.hidden = !on; });
   if (iphone && !installed) {
     const modal = document.getElementById('pixels-add');
     modal.innerHTML = `
@@ -175,19 +171,12 @@
       </div>`;
     modal.addEventListener('rux:modal-opened', () => carry(true));
     modal.addEventListener('rux:modal-closed', () => carry(false));
-    overMenu(modal);
-    ways.forEach(el => (el.querySelector('a') || el).setAttribute('data-rux-open', 'pixels-add'));
-    offer(true);
-  } else if (!installed) {
-    let prompt = null;
-    addEventListener('beforeinstallprompt', e => { e.preventDefault(); prompt = e; offer(true); });
-    addEventListener('appinstalled', () => { prompt = null; offer(false); });
-    ways.forEach(el => el.addEventListener('click', e => {
-      e.preventDefault();
-      prompt?.prompt();
-      const nav = document.querySelector('.rux--side-nav--expanded');
-      if (nav) window.Rux.uiShell.closeNav(nav);
-    }));
+    // Me's row brings an iPhone here as `#add`, which opens the steps and
+    // leaves the address, since the icon keeps whatever the address holds.
+    if (location.hash === '#add') {
+      history.replaceState(history.state, '', location.pathname + location.search);
+      addEventListener('load', () => window.Rux.modal.open(modal));
+    }
   }
 
   (async () => {
@@ -203,11 +192,6 @@
     } catch {
       say('The puzzles did not load', 'Reload the page to try again.');
       return;
-    }
-    if (guest) {
-      document.getElementById('pixels-player').replaceChildren(portrait(me), me.name);
-      document.getElementById('pixels-guestbar').hidden = false;
-      document.getElementById('pixels-foot').hidden = false;
     }
     fresh();
     // With no leaderboard there is one panel and nothing to switch between.

@@ -490,14 +490,6 @@
   const store = cloud || (local ? preview : null);
   const guest = !!cloud && !member;
 
-  /* MANAGING AND THE PLAYERS ARE THE OWNER'S. The database refuses
-     anyone else; this only keeps the ways in out of their sight. The local
-     preview has no log-in and is whoever runs it. */
-  if (!owner) {
-    document.querySelectorAll('.rux--side-nav a[href="manage.html"], .rux--side-nav a[href="players.html"]')
-      .forEach(a => a.closest('li')?.remove());
-  }
-
   /* COMING IN. Gives the player, or null. A guest with no player yet gets
      the door in `host`, in place of what was there, and the page loads
      again once they are in. */

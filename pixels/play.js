@@ -516,7 +516,7 @@
     // presses it; and no key reaches the board while How to play is open.
     addEventListener('keydown', e => {
       if (!started || solved || e.metaKey || e.ctrlKey || e.altKey || guide.classList.contains('is-visible')
-        || e.target.closest('input, textarea, select, .rux--header, .rux--side-nav')) return;
+        || e.target.closest('input, textarea, select')) return;
       const move = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[e.key];
       if (move) {
         e.preventDefault();

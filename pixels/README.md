@@ -7,9 +7,9 @@ The repository root's `AGENTS.md` is the policy. The site's `docs/status.md` lis
 ## What it is
 
 A player is an account that can open Pixels, or a guest: someone with no account who opens a player's
-invite link, `/pixels/?join=` and that player's code, and types a name and a PIN. A guest gets no header,
-and their browser keeps a key that is who they are; one with no key is let in by the name and the PIN.
-Pixels goes on a phone's home screen as an app, as `docs/home-screen.md` says.
+invite link, `/pixels/?join=` and that player's code, and types a name and a PIN. A guest's browser
+keeps a key that is who they are; one with no key is let in by the name and the PIN. Pixels goes on a
+phone's home screen as an app, as `docs/home-screen.md` says.
 
 `index.html` is the same page for every account, the owner's too, with two tabs. Puzzles: today's
 puzzle on one card with the days solved in a row; then a tile for each rift, which the code calls a
@@ -27,14 +27,15 @@ three across on a phone and five on a wide screen. A solved puzzle shows its pic
 time; an unsolved one a question mark over its board's size, with Boss for the last, and the first of
 them, the one to play next, has its mark in the primary button's colours.
 
-`me.html` is the player's own page: their picture, username, sprites found, mana and fairies, the PIN that
-brings them back on any phone, and the rifts they have made, each to name, publish or delete, with who
-has found sprites in it. `friends.html` is the player's invite link and every other player, each to
+`me.html` is the player's own page: their picture, username, sprites found, mana and fairies, the PIN
+that brings them back on any phone, and the rifts they have made, each to name, publish or delete, with
+who has found sprites in it. `friends.html` is the player's invite link and every other player, each to
 add or remove. A player's own puzzles are made in the Pixelator, for mana, and a friend's published
 rifts stand after the owner's on the front page, saying who made them, and New until opened. A bar
 holds the places every player has, Puzzles, Friends, Pixelator and Me: along the bottom on a phone,
-along the top on a wide screen, and not where a puzzle is played or drawn. `docs/profiles.md` is the
-whole of it: the door, profiles, friends, mana, and who is sent a rift.
+along the top on a wide screen, and not where a puzzle is played or drawn. No page has a header: a list
+on Me holds How to play, Add to home screen, Theme and, for an account, the way to Rux Home.
+`docs/profiles.md` is the whole of it: the door, profiles, friends, mana, and who is sent a rift.
 
 `play.html?id=` plays one puzzle, 5, 10, 15 or 20 squares a side. The board waits behind Tap to start,
 which with a mouse says Start, drawn bare until then, with no number and no mark, and the clock runs
@@ -58,12 +59,11 @@ them the rift's tile counts the sprite, says +1 mana where the find earned one a
 cleared the rift, and opens the rift, as Back does; a rift the sprite opened stands under it, saying
 Opened. Next goes to that rift's next unsolved puzzle, then to the next rift that is open. How to play
 is three steps in a modal, each with a small board: what the numbers mean, filling and crossing out,
-and what a mistake costs. It opens from the menu on every page and from the button under Start, and by
-itself on the first puzzle of a player who has solved none and has not closed it in this browser. A
-guest has no menu, so the front page and a rift's have a button for it. The clock stands while it is
-open. Each move plays a tone, which the Sound key turns off and an iPhone's silent switch does not, and
-a phone ticks on each fill where the browser allows it. A game in progress is kept in the browser, so a
-reload picks it up.
+and what a mistake costs. It opens from Me's list and from the button under Start, and by itself on the
+first puzzle of a player who has solved none and has not closed it in this browser. The clock stands
+while it is open. Each move plays a tone, which the Sound key turns off and an iPhone's silent switch
+does not, and a phone ticks on each fill where the browser allows it. A game in progress is kept in the
+browser, so a reload picks it up.
 
 The leaderboard is switched off by `BOARD` in `app.js`: the front page has no tabs and no ranking,
 and results are saved as ever. The puzzle of the day is switched off by `DAILY` in `app.js`: no page
@@ -74,12 +74,12 @@ the same for everyone. Only it counts toward the days in a row. A player is neve
 puzzle before its day.
 
 `make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits or deletes one. The
-owner's puzzles go in the owner's rifts, and the owner alone has Manage and Players in the menu; a
-player's go in rifts of their own, through functions that count their mana, and so do the owner's
-own at `make.html?own`, which cost none. `make.html?me` draws a player's picture. It checks as you
-draw whether the numbers alone can solve the picture and how hard that is, outlines each square that
-would need a guess, and saves only a picture with one answer. Size starts a blank board of 5, 10 or 15
-a side, 20 in the course. Its Colour step paints the picture the puzzle finishes as, from fifty-five
+owner's puzzles go in the owner's rifts, and the owner alone has Manage and Players, in Me's list; a
+player's go in rifts of their own, through functions that count their mana, and so do the owner's own
+at `make.html?own`, which cost none. `make.html?me` draws a player's picture. It checks as you draw
+whether the numbers alone can solve the picture and how hard that is, outlines each square that would
+need a guess, and saves only a picture with one answer. Size starts a blank board of 5, 10 or 15 a
+side, 20 in the course. Its Colour step paints the picture the puzzle finishes as, from fifty-five
 inks, and Save asks which rift it goes in; a rift shows fifteen, the list counts how many of each one's
 are on, and a puzzle saved into one with fifteen on is saved off. A rift just started is named there
 and hidden until Manage's switch publishes it. No rift yet, first in the list, keeps the puzzle in

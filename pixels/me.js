@@ -19,17 +19,72 @@
    none.
    A guest with no player yet gets the name form first; data.js's `enter`
    draws it.
+
+   THE LIST UNDER THE PLAYER is what a header would hold, since a game has
+   none: How to play, Add to home screen where the browser can, Theme, and
+   for an account the way to Rux Home; the owner has Manage and Players
+   too. It is Carbon's contained list. Theme opens the window me.html
+   carries, which Design's js/profile.js runs.
    ========================================================================== */
 (() => {
   'use strict';
 
-  const { data, owner, guest, enter, portrait, words, art, grid, rounds, grade, side, time } = window.Pixels;
+  const { data, owner, guest, enter, iphone, installed, portrait, words, art, grid, rounds, grade, side, time } = window.Pixels;
   const host = document.getElementById('pixels-me');
   const say = (heading, detail) => {
     const box = document.getElementById('pixels-error');
     box.querySelector('.rux--inline-notification__title').textContent = heading;
     box.querySelector('.rux--inline-notification__subtitle').textContent = detail;
     box.hidden = false;
+  };
+
+  // A browser that can install Pixels says so once, as the page loads, which
+  // may be before the list is drawn; `install` keeps what it said.
+  let install = null, offer = () => {};
+  addEventListener('beforeinstallprompt', e => { e.preventDefault(); install = e; offer(); });
+  addEventListener('appinstalled', () => { install = null; offer(); });
+
+  /* THE LIST UNDER THE PLAYER. A row opens a window, by Design's
+     `data-rux-open`, or leads to a page. An iPhone adds Pixels to its home
+     screen from the front page, since its icon opens the address it was
+     made from, so its row leads there; another browser opens its own
+     install window here. A guest has no account for Home to open to. */
+  const more = () => {
+    document.getElementById('pixels-more')?.remove();
+    const el = document.createElement('div');
+    el.id = 'pixels-more';
+    el.className = 'rux--contained-list rux--layout--size-lg rux--contained-list--on-page pixels-more';
+    const ul = document.createElement('ul');
+    ul.setAttribute('role', 'list');
+    const row = (text, { href, open } = {}) => {
+      const li = document.createElement('li');
+      li.className = 'rux--contained-list-item rux--contained-list-item--clickable';
+      const key = document.createElement(href ? 'a' : 'button');
+      key.className = `rux--contained-list-item__content${href ? ' pixels-more-link' : ''}`;
+      key.textContent = text;
+      if (href) key.href = href; else key.type = 'button';
+      if (open) key.dataset.ruxOpen = open;
+      li.append(key);
+      ul.append(li);
+      return key;
+    };
+    const first = row('How to play', { open: 'pixels-how' }).parentElement;
+    if (iphone && !installed) row('Add to home screen', { href: './#add' });
+    else if (!installed) {
+      // The row is in the list only while the browser offers to install.
+      const add = row('Add to home screen');
+      add.addEventListener('click', () => install?.prompt());
+      offer = () => { if (install) first.after(add.parentElement); else add.parentElement.remove(); };
+      offer();
+    }
+    row('Theme', { open: 'pixels-theme' });
+    if (owner) {
+      row('Manage', { href: 'manage.html' });
+      row('Players', { href: 'players.html' });
+    }
+    if (!guest) row('Rux Home', { href: '/' });
+    el.append(ul);
+    host.parentElement.append(el);
   };
 
   const draw = me => {
@@ -96,6 +151,7 @@
     });
     host.append(head, drawIt, form, note);
     if (guest && data.setPin) host.append(pinForm(me));
+    more();
   };
 
   /* A PIN, which with the username is a guest's way back in on any phone:

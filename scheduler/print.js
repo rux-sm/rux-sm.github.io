@@ -1309,7 +1309,7 @@
     { heading: 'Pricing Policy:', text: 'Quotes are based on the itinerary provided at the time. Prices are subject to change if itinerary is updated. Any changes to the itinerary resulting in additional mileage or affecting driver hours will result in price changes. A Fuel surcharge may be added to your final invoice at our discretion if fuel prices fluctuate between the quote date and trip date. The amount will be calculated based on the gallons of fuel used on the trip and the fuel price difference.' },
     { heading: 'Trip Booking and Cancellation Policy:', text: 'Escamilla Tour Buses will only reserve buses once signed Quote, Terms and Conditions form, and 20% deposit (or Purchase order for School Districts) are received. If these documents have not been submitted in a timely manner, we cannot guarantee bus availability.' },
     { text: 'Cancellations one month prior to departure will incur a 20% cancellation fee. Cancellations 48 hours prior to departure will incur a 50% cancellation fee. Cancellations within 24 hours of departure, on the day of or during the trip will incur a 100% cancellation fee. All cancellations must be sent by email.' },
-    { heading: 'Payment Policy:', text: 'Invoices need to be paid in full at least a week prior to departure (Exception: School districts with issued Purchase Order). Payments or Purchase Orders must be mailed, hand delivered or emailed to the Escamilla Tour Buses office. Payments or other paperwork must NOT be handed to the driver. If payment will be split between multiple parties, Escamilla Tour Buses must be notified when reaching out for the initial quote to ensure all parties are billed correctly. School Booster clubs must also pay their part prior to departure.' },
+    { heading: 'Payment Policy:', text: 'Invoices need to be paid in full at least a week prior to departure (Exception: School districts with issued Purchase Order). Payments or Purchase Orders must be mailed, hand delivered or emailed to the Escamilla Tour Buses office. Payments or other paperwork must NOT be handed to the driver. A credit card payment carries a 4% processing fee. If payment will be split between multiple parties, Escamilla Tour Buses must be notified when reaching out for the initial quote to ensure all parties are billed correctly. School Booster clubs must also pay their part prior to departure.' },
     { heading: 'Driver Lodging Policy:', text: 'Customers are responsible for providing reasonable hotel accommodations for drivers on overnight trips. Bus drivers must sleep in their own room separate from bus passengers. When there are two drivers, at minimum a single hotel room with two separate beds must be provided (Sofa beds are not acceptable).' },
     { heading: 'NOTE:', warn: true, text: 'As per FMCSA regulations, our drivers can drive up to 10 hours and stay on duty for a total of 15hrs, which includes both driving and non-driving duties. Once either the 15 hours on duty or 10 hour driving limits are reached, the driver must have 8 consecutive hours of rest. For your safety, please do not interrupt the driver’s rest period via constant phone calls, etc. The driver cannot move the bus during the rest period.' },
     { heading: 'Passenger Behavior Policy:', text: 'Passengers must always stay seated in the bus when in motion. Minors cannot board the bus without a supervising adult present. Passengers should avoid making excessive noise in the bus or distractions for the drivers. Microphone usage should be limited to trip coordinators or supervising adults. Foul language or inappropriate topics may result in microphone privileges being taken away.' },
@@ -1484,10 +1484,15 @@
     return head;
   }
 
+  // Said on a figure that is not typed, for whoever tries to.
+  const HELD = 'Priced on the trip’s Billing tab';
+
   // A cell of a line item's row. The numbers read to the trailing edge, as
-  // money on a bill does; the description is a block of lines.
-  const quoteCell = (cls, text) => {
-    const td = el('td', `scheduler-customer-quote__${cls} scheduler-customer-quote__typed`);
+  // money on a bill does; the description is a block of lines. A `held` cell
+  // is not typed into.
+  const quoteCell = (cls, text, held = false) => {
+    const td = el('td', `scheduler-customer-quote__${cls}${held ? '' : ' scheduler-customer-quote__typed'}`);
+    if (held) td.title = HELD;
     for (const [i, line] of String(text || '').split('\n').entries()) {
       if (i) td.appendChild(el('br'));
       td.appendChild(document.createTextNode(line));
@@ -1499,14 +1504,15 @@
 
   const QUOTE_FIELDS = ['.scheduler-customer-quote__typed'];
 
-  // One line item: Item, Description, Quantity, Cost and Total, in that order.
-  function lineRow(item, desc, qty, cost, total) {
+  // One line item: Item, Description, Quantity, Cost and Total, in that
+  // order, the three figures held on a quote drawn from a trip.
+  function lineRow(item, desc, qty, cost, total, held = false) {
     const row = el('tr', 'scheduler-customer-quote__line-item');
     row.appendChild(quoteCell('item', item));
     row.appendChild(quoteCell('desc', desc));
-    row.appendChild(quoteCell('num', qty));
-    row.appendChild(quoteCell('num', cost));
-    row.appendChild(quoteCell('num', total));
+    row.appendChild(quoteCell('num', qty, held));
+    row.appendChild(quoteCell('num', cost, held));
+    row.appendChild(quoteCell('num', total, held));
     return row;
   }
 
@@ -1515,11 +1521,15 @@
      have parted prints the lines' sum, and the Billing tab is where that is
      said and put right. The lines come from the trip (`quoteLines`), each
      Total as it was saved, so a price that will not divide evenly still
-     totals to what was quoted. A Quantity or Cost typed on any line makes
-     that line's Total their product, and a deduction typed under the bus
-     rental takes the total down with it. The trip's quoted price is not
-     changed by any of it: that is the Billing tab's, and a price agreed on
-     the sheet is saved there. */
+     totals to what was quoted.
+
+     THE FIGURES OF A QUOTE DRAWN FROM A TRIP ARE NOT TYPED. Its Quantity,
+     Cost and Total cells and its Total are the trip's, so the trip holds
+     what the customer signs: a price agreed on the phone or a discount is a
+     line on the Billing tab, and the sheet is drawn again. A line added on
+     the sheet is words alone, a reference number or a requirement. On a
+     blank quote every cell is typed: a Quantity or Cost makes its line's
+     Total their product, and the Total follows the lines. */
   const lineSum = totals => {
     const typed = totals.map(typedNumber).filter(Number.isFinite);
     return typed.length ? `$${money(typed.reduce((a, b) => a + b, 0)) || '0.00'}` : '';
@@ -1552,9 +1562,10 @@
     table.appendChild(head);
 
     const body = el('tbody');
+    const held = !blank;
     const lines = blank ? [] : quoteLines(trip);
     if (blank) body.appendChild(lineRow('', '', '', '', ''));
-    else for (const l of lines) body.appendChild(lineRow(l.item, l.desc, l.qty, l.cost, l.total));
+    else for (const l of lines) body.appendChild(lineRow(l.item, l.desc, l.qty, l.cost, l.total, held));
     /* THE HAND'S DEPTH UNDER THE LINES, which is paper and not a line: the
        office's sheet leaves room under its items and rules only the columns
        down through it. It is the last row before the Total's, so an added line
@@ -1574,18 +1585,16 @@
     const add = el('button', 'rux--btn rux--btn--ghost rux--layout--size-sm scheduler-customer-quote__add', 'Add a line');
     add.type = 'button';
     add.addEventListener('click', () => {
-      const row = lineRow('', '', '', '', '');
+      const row = lineRow('', '', '', '', '', held);
       body.insertBefore(row, room);
       letThemType(row, QUOTE_FIELDS);
       row.cells[0].focus();
     });
     gap.appendChild(add);
-    sum.append(
-      gap,
-      el('td', 'scheduler-customer-quote__total-label', 'Total'),
-      el('td', 'scheduler-customer-quote__total-value scheduler-customer-quote__num scheduler-customer-quote__typed',
-        lineSum(lines.map(l => l.total))),
-    );
+    const totalValue = el('td', `scheduler-customer-quote__total-value scheduler-customer-quote__num${held ? '' : ' scheduler-customer-quote__typed'}`,
+      lineSum(lines.map(l => l.total)));
+    if (held) totalValue.title = HELD;
+    sum.append(gap, el('td', 'scheduler-customer-quote__total-label', 'Total'), totalValue);
     body.appendChild(sum);
     table.addEventListener('input', onLineTyped);
     /* A price typed as "1900" is set as "1,900.00" once the cell is left, so
@@ -2454,11 +2463,11 @@
       // it was is the Billing tab's business, not a form's.
       page: { name: 'Letter', size: 'Letter', width: '8.5in', height: '11in', margin: '0.375in' },
       copies: subject => [subject],
-      /* EVERY FIELD, ON A FILLED ONE TOO. The office corrects a quote before
-         it sends it -- a price agreed on the phone, a contact the trip has
-         not caught up with, the two times it writes TBD and settles after --
-         and this sheet leaves the app for a customer, so the last word on it
-         is the one typed here. */
+      /* EVERY FIELD BUT THE FIGURES, ON A FILLED ONE TOO. The office corrects
+         a quote before it sends it -- a contact the trip has not caught up
+         with, the two times it writes TBD and settles after -- and this sheet
+         leaves the app for a customer, so the last word on it is the one
+         typed here. Its prices are the trip's, held by `quoteTable`. */
       typed: { always: true, fields: QUOTE_FIELDS },
       fileName: quoteFileName,
       render: quote,

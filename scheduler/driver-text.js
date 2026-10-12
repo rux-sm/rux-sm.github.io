@@ -5,7 +5,8 @@
    page and by the board and owned by neither: the week info message lists a
    driver's legs over their link, and the Contacts window's reminder sends one
    leg on its own. One wording, so a reminder and the week's message never
-   describe the same leg two ways.
+   describe the same leg two ways. The Drivers page loads it for the address
+   of a driver's link alone, so the link it copies is the one sent.
 
    IT TAKES A LEG, NOT A PAGE. Each page reads its own rows and hands in the
    same shape: { trip, leg, role, start, end, bus, spot, swap, instructions,

@@ -18,8 +18,8 @@ site.
 ### Order
 
 - **The tasks are in building order,** group by group.
-- **The other plans follow as quote entry, retiring rux-ui, the customer
-  profile, documents, then routes,** each waiting on the one before it.
+- **The other plans follow as retiring rux-ui, documents with the customer
+  profile, then routes,** each waiting on the one before it.
 - **A rule goes in a small file with sample cases,** never in `data.js`.
 - **A database change or a deploy is its own step,** applied on rux's yes
   before the code that reads it is pushed.
@@ -167,7 +167,6 @@ None open.
 - [ ] Mark, on the Drivers and Fleet pages, the upcoming trips that time
       off, days out or Inactive would cover, before Save.
 - [ ] Put the seats sum in `leg-facts.js` and alert on the bar and its card.
-- [ ] Take Buses done off on a date move, as SQL on a yes.
 
 ### The driver and the links
 
@@ -190,15 +189,12 @@ None open.
       a yes, and a Replace link button in Driver view.
 - [ ] End a document's address with its trip in `trip-document-link`, with a
       check of `handler.ts`, and deploy on a yes.
-- [ ] Use the office's itinerary rule in `share/driver.js`.
 - [ ] Take out the two open channels and their senders.
 - [ ] Return a bus's days out from `get_maintenance_schedule`, on a yes, and
       draw them; name the bus in Recent changes.
 
 ### Money and the route
 
-- [ ] Lock the money cells on a quote drawn from a trip in `print.js`, and
-      add the card fee to the agreement's Payment Policy.
 - [ ] Define a placeholder once, in `billing.js`, and read it in the
       follow-up, To do, checklist and Departures rules, the board and the
       connector.
@@ -208,7 +204,6 @@ None open.
 - [ ] Hold a settled price in `syncLines`.
 - [ ] Test each stretch between real rests in `route-figures.js`, with cases
       for a run through the night on two dates.
-- [ ] Say spot, with its weekday, on a Departures leg.
 
 ### The connector and the skills
 
@@ -222,11 +217,8 @@ None open.
       step into `working-from-claude.md`.
 - [ ] Give each skill its job, key a row by the mail's own id, and name the
       published site for a real Save.
-- [ ] Read `by=claude` from the address in `actorName`.
 
-### Records and the other plans
+### Records
 
 - [ ] Build `scheduler/trip-history.js` with its check, so any difference in
       a trip's rows makes a line.
-- [ ] Write each plan's wait into the plan that waits, as one Decisions
-      line, and correct the retirement plan's list of what is dropped.

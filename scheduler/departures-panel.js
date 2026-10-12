@@ -7,9 +7,9 @@
    A day to prep for holds every leg leaving on it. That is tomorrow, and on a
    Friday the weekend and Monday with it, since nobody is in to prep until
    Monday. Each leg is a tile that opens: Design's tile around an item of its
-   accordion. Closed, as every leg is until it is pressed, it is its place and
-   when it leaves, how many lines it has left or Ready, and a quiet line of
-   its customer. Open, one at a time, it holds the leg's page as departures.js
+   accordion. Closed, as every leg is until it is pressed, it is its place,
+   how many lines it has left or Ready, and a quiet line of when its bus is
+   spotted, Spot with its weekday and time, and its customer. Open, one at a time, it holds the leg's page as departures.js
    gives it: the trip's lines, then a block for each bus with its crew. A trip
    whose own lines are all done folds them into one line, Trip ready, which a
    press unfolds.
@@ -119,7 +119,7 @@
     ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
     'trip_prep(driver_info_sent,driver_info_sent_at,driver_info_sent_by)',
     `trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
-    'trip_stops(position,leg,arrive,spot,depart_prev)'].join(',');
+    'trip_stops(position,leg,arrive,spot,depart_prev,arrive_date,spot_date,depart_prev_date)'].join(',');
 
   // The buses, the drivers, the office's lists and the staff, read once a page.
   let basics = null;
@@ -151,20 +151,28 @@
     const statusRows = ids.length ? await client.rpc('get_trip_driver_statuses', { p_trip_ids: ids }).then(unwrap) : [];
     const statuses = new Map(statusRows.map(r => [Facts.statusKey(r.tripId, r.driverId, r.leg, r.role), r]));
     return legs.map(l => Departures.page(l.trip, l.leg, { ...read, statuses }))
-      .sort((a, b) => String(leavesAt(a) || '99').localeCompare(String(leavesAt(b) || '99')));
+      .sort((a, b) => soonest(a).localeCompare(soonest(b)));
   }
 
   // Several days' legs, one day after another.
   const readDays = async which => (await Promise.all(which.map(readDay))).flat();
   const countOf = rows => ({ legs: rows.length, ready: rows.filter(p => p.left === 0).length });
 
-  // When a leg's bus is spotted, or else its first time, as "HH:MM".
+  /* When a leg's bus is spotted, or else its first time: the time as
+     "HH:MM", the day it falls on, which is the leg's own where the row keeps
+     none, and whether it is a spot, since only a spot is called one. */
   function leavesAt(page) {
     const stops = (page.trip.trip_stops || []).filter(s => (s.leg || 'outbound') === page.leg)
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
-    for (const s of stops) for (const t of [s.spot, s.arrive, s.depart_prev]) if (t) return String(t).slice(0, 5);
+    for (const s of stops) {
+      for (const key of ['spot', 'arrive', 'depart_prev']) {
+        if (s[key]) return { time: String(s[key]).slice(0, 5), day: s[`${key}_date`] || page.day, spot: key === 'spot' };
+      }
+    }
     return null;
   }
+  // A leg's place in its day: the day and time above, and last with neither.
+  const soonest = page => { const at = leavesAt(page); return at ? `${at.day} ${at.time}` : '9'; };
 
   let loading = null;
   let again = false;
@@ -414,7 +422,9 @@
 
   /* A leg, as one of Design's tiles around an item of its accordion, whose
      script opens and shuts it. The heading is the closed leg: its place and
-     when it leaves, what is left, and its customer under them. */
+     what is left, and under them when its bus is spotted and its customer.
+     The time is on the quiet line because the pane is narrow, and beside a
+     long place it was the part cut off. */
   function legItem(page) {
     const key = keyOf(page);
     const open = key === openKey;
@@ -430,11 +440,11 @@
     const summary = el('span', 'scheduler-departures__summary');
     const place = el('span', 'scheduler-departures__place');
     place.appendChild(el('strong', null, placeName(page.trip.destination)));
-    const at = leavesAt(page);
-    if (at) place.append(DOT, clockOf(at));
     summary.append(place, leftTag(page.left));
     title.appendChild(summary);
-    const quiet = [page.trip.customer, page.legName].filter(Boolean).join(DOT);
+    const at = leavesAt(page);
+    const when = at && [at.spot ? 'Spot' : '', at.day ? weekday.format(parseISO(at.day)) : '', clockOf(at.time)].filter(Boolean).join(' ');
+    const quiet = [when, page.trip.customer, page.legName].filter(Boolean).join(DOT);
     if (quiet) title.appendChild(el('span', 'scheduler-to-do__meta scheduler-to-do__line', quiet));
     heading.append(arrow, title);
 

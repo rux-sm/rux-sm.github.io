@@ -14,12 +14,14 @@ driver or a customer already holds still opens.
 
 - **rux-ui is retired.** The scheduler is the one app that edits trips, so a
   scheduler change is no longer held to what rux-ui does with the same row.
+- **This plan waits on `scheduler-fixes.md`,** whose Order decision sets the
+  plans' order.
 - **Nothing is turned off until what only rux-ui does has a home.** That is
   its Settings: the yard, the bus needs and the billing steps.
 - **The rest of what only rux-ui does is dropped:** pay per seat, ticketed
   trips with their ticket options and passenger list, the self-organized
-  billing type, the itinerary's Confirm mark, the Tasks page, the printed
-  week schedule, the two-week board and the notifications panel.
+  billing type, the itinerary's Confirm mark, the Tasks page and the
+  notifications panel.
 - **The pages people outside the office open keep their addresses.** A
   driver's link opens rux-ui's `driver.html`, and `maintenance.html`,
   `m.html`, `d.html` and `doc.html` are in links already sent, so each gets a
@@ -35,8 +37,8 @@ driver or a customer already holds still opens.
 
 - [ ] Find every address on rux-ui that a sent link uses, and what
       `scheduler/share/driver.html` lacks beside rux-ui's `driver.html`.
-- [ ] Give the driver's page a home on this site, point `DRIVER_LINK` in
-      `scheduler/drivers.js` at it, and redirect the old address.
+- [ ] Redirect `driver.html` on rux-ui to `scheduler/share/driver.html`,
+      which every link the scheduler makes or copies already opens.
 - [ ] Redirect `maintenance.html`, `m.html`, `d.html` and `doc.html` on
       rux-ui to this site's pages.
 - [ ] Add the yard, the bus needs and the billing steps to the scheduler's

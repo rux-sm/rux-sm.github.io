@@ -171,15 +171,14 @@
     [trip.booking_contact_name, trip.booking_contact_phone],
   ].map(([name, tel]) => ({ name: clean(name), phone: clean(tel) })).find(c => c.name || c.phone) || null;
 
-  // The newest file of each itinerary label, marked Updated when it replaced one.
+  /* The trip's itinerary, by the office's rule: a file whose type is
+     Itinerary and no other, so a file named after one is not one. The newest
+     is the one shown, marked Updated when it replaced another. */
   const itinerariesOf = trip => {
-    const docs = trip.trip_documents || [];
-    const labels = [...new Set(docs.map(d => d.label).filter(l => /(^|[^a-z])itinerary([^a-z]|$)/i.test(l || '')))];
-    return labels.map(label => {
-      const same = docs.filter(d => d.label === label);
-      const newest = same.reduce((a, b) => (new Date(b.created_at || 0) > new Date(a.created_at || 0) ? b : a));
-      return { id: newest.id, label, path: newest.file_path, updated: same.length > 1 };
-    }).sort((a, b) => (/^itinerary$/i.test(a.label) ? -1 : /^itinerary$/i.test(b.label) ? 1 : a.label.localeCompare(b.label)));
+    const same = (trip.trip_documents || []).filter(d => clean(d.label).toLowerCase() === 'itinerary');
+    if (!same.length) return [];
+    const newest = same.reduce((a, b) => (new Date(b.created_at || 0) > new Date(a.created_at || 0) ? b : a));
+    return [{ id: newest.id, label: newest.label, path: newest.file_path, updated: same.length > 1 }];
   };
   // A file opens through its document page, which asks for a link signed for
   // ten minutes each time it is opened, since the bucket is closed. Absolute,

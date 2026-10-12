@@ -28,8 +28,8 @@
   // The record view shows the list's column only for its notice.
   if (editing) $('scheduler-drivers-h').hidden = true;
 
-  // rux-ui's driver page, which is the one a driver's link opens today.
-  const DRIVER_LINK = 'https://rux-sm.github.io/rux-ui/driver.html?s=';
+  // The driver's page a link opens, as Driver view sends it.
+  const { DRIVER_LINK } = window.SchedulerDriverText;
   const PHOTO_BUCKET = 'driver-photos';
   // An expiry this close shows as a warning, as rux-ui's newer roster warns.
   const WARN_DAYS = 45;
@@ -602,11 +602,11 @@
     note.textContent = 'Loading…';
     const { data, error } = await client.rpc('get_driver_schedule_share_for_driver', { p_driver_id: loaded.id });
     if (error) { note.textContent = "The link didn't load."; return; }
-    if (!data?.token) { note.textContent = 'No link yet. Driver links are made in rux-ui.'; return; }
+    if (!data?.token) { note.textContent = 'No link yet. Make one on their page.'; return; }
     const covers = data.rangeStart ? `Covers ${rangeText(data.rangeStart, data.rangeEnd)}. ` : '';
     const ends = String(data.expiresAt || '').slice(0, 10);
     if (ends && daysUntil(ends) < 0) {
-      note.textContent = `${covers}It stopped working on ${longDate(ends)}. Make a new one in rux-ui.`;
+      note.textContent = `${covers}It stopped working on ${longDate(ends)}. Make a new one on their page.`;
       return;
     }
     note.textContent = `${covers}${ends ? `It works until ${longDate(ends)}.` : ''}`;

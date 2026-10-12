@@ -14,6 +14,9 @@ same by hand.
 
 ## Decisions
 
+- **This plan waits on `scheduler-documents.md`,** in the order
+  `scheduler-fixes.md` sets.
+
 ### The shape
 
 - **A leg can hold more than one route.** A route is its own stops and

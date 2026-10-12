@@ -101,7 +101,7 @@ Simple layout is the driver's, naming only the rest taken in the sleeper, and it
 hours from `route-figures.js`, the Route tab's own sum, which `tools/check-route-figures.mjs` checks. The
 customer quote is one copy per trip, on two Letter sheets: the QUOTE / PROPOSAL
 the office sends, with its estimate number and the trip's quote lines, or its price as one bus rental
-where it has none, lines typed under them and a Total that is the sum of the lines the sheet prints;
+where it has none, lines of words typed under them, figures that are the trip's and are not typed on the sheet, and a Total that is the sum of the lines the sheet prints;
 and the Terms and Conditions Agreement Form behind it. A rental's wording is `quote-text.js`, which the
 trip editor's Copy for QuickBooks button reads too, each leg from its own stops, so the description
 pasted into an estimate and the one printed on the quote read the same. The week schedule is rux-ui's billing report of a week on

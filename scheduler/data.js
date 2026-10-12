@@ -6512,7 +6512,8 @@
      Route, Buses and Billing each end with Done, pressed once someone has
      gone back over that tab and it is complete. The database takes a Done off
      when what its tab holds changes, whichever app changes it: the route or
-     the trip's dates take Route and Billing, the buses or their seats take
+     the trip's dates take Route and Billing, the dates take Buses too,
+     because a bus is chosen for its days, the buses or their seats take
      Buses and Billing, what the trip needs of a bus takes Buses, and a quote
      line or the price takes Billing. The editor follows the same rules live,
      so a check goes the moment its tab moves. */
@@ -6521,7 +6522,8 @@
     { tab: 'buses', label: 'Buses', button: 'scheduler-tab-fleet' },
     { tab: 'billing', label: 'Billing', button: 'scheduler-tab-billing' },
   ];
-  const DONE_ROUTE_KEYS = ['start_date', 'end_date', 'return_start_date', 'return_end_date', 'trip_type'];
+  const DONE_DATE_KEYS = ['start_date', 'end_date', 'return_start_date', 'return_end_date'];
+  const DONE_ROUTE_KEYS = [...DONE_DATE_KEYS, 'trip_type'];
   const DONE_PRICE_KEYS = ['quoted_price', 'quote_sent_price', 'quote_sent_on'];
   // What the trip asks of a bus, from its requirements.
   const vehicleNeedsOf = reqs => Object.keys(reqs || {}).filter(k => reqs[k] === true && isVehicleNeed(k)).sort();
@@ -6537,7 +6539,7 @@
     const needs = JSON.stringify(doneNeedRows(editing.fleet)) !== JSON.stringify(doneNeedRows(editing.fleetBefore))
       || 'vehicle_type' in patch
       || ('trip_reqs' in patch && !histSame(vehicleNeedsOf(patch.trip_reqs), vehicleNeedsOf(editing.before.trip_reqs)));
-    return { route, buses: busList || needs, billing: route || busList || !!linesPatch()?.work || has(DONE_PRICE_KEYS) };
+    return { route, buses: busList || needs || has(DONE_DATE_KEYS), billing: route || busList || !!linesPatch()?.work || has(DONE_PRICE_KEYS) };
   }
 
   // What each tab holds now, as one string, for a Done pressed in this sitting.
@@ -6546,7 +6548,8 @@
     const plan = routePlan();
     const route = JSON.stringify([DONE_ROUTE_KEYS.map(k => form[k] ?? null), plan.updates, plan.inserts]);
     const busList = doneBusRows(editing.fleet);
-    const buses = JSON.stringify([busList, doneNeedRows(editing.fleet), form.vehicle_type ?? null, vehicleNeedsOf(form.trip_reqs)]);
+    const buses = JSON.stringify([busList, doneNeedRows(editing.fleet), form.vehicle_type ?? null, vehicleNeedsOf(form.trip_reqs),
+      DONE_DATE_KEYS.map(k => form[k] ?? null)]);
     const lines = linesLive ? linesToSave().map(({ id, ...l }) => l) : null;
     const billing = JSON.stringify([route, busList, lines, DONE_PRICE_KEYS.map(k => form[k] ?? null)]);
     return { route, buses, billing };
@@ -10066,7 +10069,7 @@
   async function writeUpdate(tripId, answer) {
     try {
       const actor = await actorName()
-        ?? (await Promise.resolve(window.Rux?.account?.person?.()).catch(() => null))?.name ?? null;
+        ?? signed((await Promise.resolve(window.Rux?.account?.person?.()).catch(() => null))?.name ?? null);
       // `changes` is not null in the table, so an update that names no change
       // leaves it out and takes the column's default.
       const row = { trip_id: tripId, body: answer.body, kind: answer.kind, actor_name: actor };
@@ -10757,7 +10760,7 @@
     if (await movedOn()) return askConflict(answer);
     // The Done marks as they stand before anything is written, written last.
     const doneRow = doneRowOf(await actorName()
-      ?? (await Promise.resolve(window.Rux?.account?.person?.()).catch(() => null))?.name ?? null);
+      ?? signed((await Promise.resolve(window.Rux?.account?.person?.()).catch(() => null))?.name ?? null));
     /* The trip as it stands, for the history entry to diff against. A read
        that fails leaves `historyBefore` undefined, and the save unrecorded. */
     let historyBefore;
@@ -12900,7 +12903,14 @@
   /* The history's actor is the person's rux-ui profile name, the one rux-ui
      records, found by the account's id; the platform profile's name stands in
      for an account rux-ui never saw, and with neither the function's own
-     default does. Read once per page. */
+     default does. Read once per page.
+
+     A SAVE CLAUDE PRESSES SAYS SO. A session opens the page with `by=claude`
+     in its address, read here as the page loads because opening a trip
+     rewrites the address, and every name this page writes is then the
+     person's "with Claude", so History tells the two apart. */
+  const viaClaude = new URLSearchParams(location.search).get('by') === 'claude';
+  const signed = name => (name && viaClaude ? `${name} with Claude` : name);
   let actorPromise = null;
   const actorName = () => (actorPromise ??= (async () => {
     const uid = await personId();
@@ -12909,7 +12919,7 @@
       try {
         const { data } = await withTimeout(client.schema(schema).from('profiles')
           .select('display_name').eq(key, uid).limit(1).maybeSingle().then(r => r));
-        if (data?.display_name?.trim()) return data.display_name.trim();
+        if (data?.display_name?.trim()) return signed(data.display_name.trim());
       } catch { /* the next source, or the default */ }
     }
     return null;

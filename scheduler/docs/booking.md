@@ -24,13 +24,14 @@ The quote's Estimate no. is the trip's six-digit number. Type the same number
 into the QuickBooks estimate's Estimate no., so the customer, the estimate and
 the trip share one number until QuickBooks gives the invoice its own.
 
-When the customer asks for something to appear on the quote, type it as a line
+When the customer asks for something to appear on the quote, add it as a line
 under the first line item, so the copy they sign carries it:
 
-- their bid, reference or P.O. request number
-- a discount, as a line of its own
+- their bid, reference or P.O. request number, with Add a line on the sheet
 - a requirement they need in writing, such as an ADA-accessible bus with a
-  driver trained on its wheelchair lift and securement
+  driver trained on its wheelchair lift and securement, the same way
+- a discount, as a line of its own on the trip's Billing tab, because the
+  sheet's prices are the trip's and are not typed over
 
 Before a trip is confirmed the customer has to know the following. The quote
 and its Terms and Conditions form say most of it, so the email that goes with

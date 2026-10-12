@@ -1662,14 +1662,16 @@ html:not([data-rux-standalone]) .scheduler-print__grid {
 
 .scheduler-customer-quote__trip-value { overflow-wrap: anywhere; }
 
+/* THE SHEET IS FULL. Sixteen paragraphs and the line to sign have to stay on
+   one sheet, so the line over the policies and the gap between them are a
+   little closer than the quote's terms are set. */
 .scheduler-customer-quote__agreement-intro {
-  margin: var(--rux-spacing-05) 0 var(--rux-spacing-05);
+  margin: var(--rux-spacing-04) 0;
   text-align: center;
 }
 
-/* The quote's terms' spacing, at this sheet's smaller size. */
 .scheduler-customer-quote__policy {
-  margin: 0 0 0.6em;
+  margin: 0 0 0.5em;
 }
 
 .scheduler-customer-quote__policy-heading {

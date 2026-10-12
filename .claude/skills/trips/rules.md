@@ -46,6 +46,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - The email thread is linked to the trip while reviewing it, so the next review opens it directly.
 - A customer's request that has not been answered in the thread, such as driver information or documents, goes in the report.
 - A customer whose profile gives the quote no address gets one before the quote is printed: its usual pickup set to its saved location, or a bill-to address typed when the bills go somewhere else, because the quote's Name/address box prints the profile's bill-to address, or else its usual pickup's.
+- The Charter Bus is a third party that offers the office trips. Hector chooses which ones to take, and the office covers only those, so a list from them is Hector's to answer and a trip is entered once he has chosen it.
 
 ## Checklist and paperwork
 
@@ -62,7 +63,7 @@ Questions rux has been asked and has not answered. An answer becomes a rule
 in its section above, and its question is deleted.
 
 - Does every quoted trip get a bus assigned to hold it, or only when rux says so?
-- Does a broker's availability request follow the same steps as a school's quote, and is a bus held before the broker confirms?
+- Is a bus held for a trip The Charter Bus offers before Hector has chosen it?
 - When an itinerary gives no headcount, is the customer asked, or does the last count they gave stand?
 - When a save offers to add new places and contact details to the lists, which are added? Until rux says, the answer is Not now.
 - When a sleeper is to be installed in a bus, how is that written in the scheduler, so the bus is held the day before and counts as a sleeper on the trip?

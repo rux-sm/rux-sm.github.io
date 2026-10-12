@@ -209,6 +209,8 @@ reads only the ones before it. Nothing is written until step 10.
 - A stop's "The wait counts as" is a plain select: set it with `form_input` as `on`, `off` or `sleeper`, because a click shows no menu in a screenshot.
 - Done in a quote line's window keeps whatever its Cost field holds as a typed cost, so a rental opened to change its Mileage rate stops following the route: clear the Cost before Done, or afterwards choose Use calculator price from the line's menu, which is offered only when the two figures differ, and read the line back.
 - A dialog may be closing as you click. Check what has the focus before typing.
+- A tab whose editor holds unsaved changes does not close: Chrome waits on its leave-page question and the close call times out. Press Reset first when the changes are to be dropped, such as a draft opened only to measure a route.
+- A draft's stop named like a saved location takes that location, wherever it is, so a chain restaurant can land in another city: read each leg's miles on the Route tab, and search the stop again by its street address when a leg is far too long.
 - `scroll_to` can shift the whole page; reset the window's scroll before a
   click by coordinates.
 - Leaving the editor drops unsaved changes; Reset takes them back.

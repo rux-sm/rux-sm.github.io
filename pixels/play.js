@@ -404,13 +404,13 @@
        what is certain, and the one that decides the most squares to fill, or
        failing that the most to cross out, is lit.
 
-       A FAIRY, where the player has one and the database takes it, does that
-       line's work and adds no time: every square of the line that is certain
-       is filled or crossed out, or the square under a wrong X is filled.
-       They are a move like any other, which Undo takes back, though the
-       fairy stays spent. The board takes no touch while the database is
-       asked. With no fairy, or no answer, the hint lights the line and adds
-       its time. */
+       A FAIRY, where the player has one and the database takes it, finishes
+       that line and adds no time: every square of it is filled or crossed
+       out as the picture has it. Where there is a wrong X, the line is its
+       row. Her squares are a move like any other, which Undo takes back,
+       though the fairy stays spent. The board takes no touch while the
+       database is asked. With no fairy, or no answer, the hint lights the
+       line and adds its time. */
     const fairyKey = $('pixels-fairies'), fairyCount = document.createElement('span');
     fairyKey.append(fairy(), fairyCount);
     // The Hint key's fairy and how many the player has, dim with none.
@@ -424,14 +424,13 @@
       if (!started || solved || asking) return;
       const wrong = [];
       state.forEach((r, y) => r.forEach((v, x) => { if (v === 2 && answer[y][x]) wrong.push([y, x]); }));
-      // `work` is the squares a fairy sets, each its row, its column and 1
-      // to fill it or 2 to cross it out, and `did` what she is said to do.
-      let text, lit, work, did;
+      // A line's squares and numbers, and `line`, the one a fairy finishes.
+      const of = (kind, n) => `.pixels-cell[data-${kind === 'row' ? 'y' : 'x'}="${n}"], .pixels-clue[data-${kind}="${n}"]`;
+      let text, lit, line;
       if (wrong.length) {
         cursor = wrong[0];
         text = 'This X is on a square of the picture';
-        work = [[...wrong[0], 1]];
-        did = 'A fairy filled the square under a wrong X';
+        line = { kind: 'row', n: wrong[0][0] };
       } else {
         const known = state.map((r, y) => r.map((v, x) => (v === 1 ? 1 : v && !answer[y][x] ? 0 : -1)));
         let top = null;
@@ -440,15 +439,14 @@
           const fills = agreed.filter((v, k) => v === 1 && have[k] === -1).length;
           const crosses = agreed.filter((v, k) => v === 0 && have[k] === -1).length;
           const worth = fills * 100 + crosses;
-          if (worth && (!top || worth > top.worth)) top = { kind, n, worth, fills, agreed, have };
+          if (worth && (!top || worth > top.worth)) top = { kind, n, worth, fills };
         };
         for (let y = 0; y < H; y++) weigh('row', y, answer[y], known[y]);
         for (let x = 0; x < W; x++) weigh('col', x, column(answer, x), column(known, x));
         if (!top) return;
-        lit = `.pixels-cell[data-${top.kind === 'row' ? 'y' : 'x'}="${top.n}"], .pixels-clue[data-${top.kind}="${top.n}"]`;
+        line = top;
+        lit = of(top.kind, top.n);
         text = `${top.kind === 'row' ? 'Row' : 'Column'} ${top.n + 1} has squares to ${top.fills ? 'fill' : 'cross out'}`;
-        work = top.agreed.flatMap((v, k) => (v === -1 || top.have[k] !== -1 ? [] : [top.kind === 'row' ? [top.n, k, v ? 1 : 2] : [k, top.n, v ? 1 : 2]]));
-        did = `A fairy did ${top.kind === 'row' ? 'row' : 'column'} ${top.n + 1}`;
       }
       // `took` is a fairy spent, and `came` is false where the database
       // gave no answer.
@@ -467,12 +465,17 @@
         spent++;
         past.push(state.map(r => r.slice()));
         ahead = [];
-        work.forEach(([y, x, v]) => { state[y][x] = v; });
-        work.forEach(([y, x, v]) => { if (v === 1) closeLines(y, x); });
+        // The whole line as the picture has it: its squares filled, a wrong
+        // X among them, and its empty ones crossed out. A mistake keeps its
+        // red X.
+        const across = line.kind === 'row';
+        const squares = Array.from({ length: across ? W : H }, (_, k) => (across ? [line.n, k] : [k, line.n]));
+        squares.forEach(([y, x]) => { if (answer[y][x]) state[y][x] = 1; else if (state[y][x] === 0) state[y][x] = 2; });
+        squares.forEach(([y, x]) => { if (answer[y][x]) closeLines(y, x); });
         draw();
-        if (lit) el.querySelectorAll(lit).forEach(e => e.classList.add('is-hint'));
+        el.querySelectorAll(of(line.kind, line.n)).forEach(e => e.classList.add('is-hint'));
         delete clock.dataset.charged;
-        tell(did);
+        tell(`A fairy finished ${across ? 'row' : 'column'} ${line.n + 1}`);
         if (!isSolved()) {
           buzz(30);
           sound('line');

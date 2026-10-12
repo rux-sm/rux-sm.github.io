@@ -95,10 +95,11 @@ What a player has besides the puzzles, and the rule for who is sent a rift.
 
 ## Fairies
 
-- **A fairy is a hint that adds no time and does the line's work.** Hint
-  picks the line where the numbers decide the most. A fairy fills and
-  crosses out every square of it that is certain, or fills the square under
-  a wrong X. Undo takes those squares back, and the fairy stays spent.
+- **A fairy is a hint that adds no time and finishes the line.** Hint picks
+  the line where the numbers decide the most, and a fairy fills and crosses
+  out every square of it as the picture has it. Where there is a wrong X,
+  the line is that X's row. Undo takes her squares back, and the fairy
+  stays spent.
 - **With none left a hint lights the line and adds 30 seconds.**
 - **A new player has three, and clearing a rift of the course gives three:**
   one of the owner's rifts that everyone is sent, with every puzzle of it

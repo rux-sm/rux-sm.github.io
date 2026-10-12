@@ -46,24 +46,24 @@ out, and a finished line crosses out its own empty squares. The clock is the sco
 not in the picture is a mistake, crossed out in red, and it adds time, 15 seconds for a puzzle's first,
 30 for its second and a minute for each one after; a hint adds 30 seconds, or spends a fairy and adds
 none. The clock is red until the next move, and the best time on a puzzle is the one kept. Hint, or H,
-lights the line where the numbers decide the most, and a fairy fills in what is certain on it, as
-`docs/profiles.md` says. Undo, or U, takes back the last tap or drag, and Redo, or R, puts it back, but
-neither touches a mistake, and a tap that was only a mistake is no move to take back. Restart empties
-the board, and Undo straight after brings it back. Every board has one footprint, whatever its puzzle's
-size, as wide as the window allows, to 600px, in whole pixels a square; `app.css` has its measures. A
-tile fills the board's corner: the puzzle's name, the picture so far, drawn small, and the clock. A
-warm line rules off every fifth square. When the picture is complete the squares fill in as the
-picture, in its colours if it has them, and its name shows with the time, the mistakes and hints, and
-what they added. Under them the rift's tile counts the sprite, says +1 mana where the find earned one
-and +3 fairies where it cleared the rift, and opens the rift, as Back does; a rift the sprite opened
-stands under it, saying Opened. Next goes to that rift's next unsolved puzzle, then to the next rift
-that is open. How to play is three steps in a modal, each with a small board: what the numbers mean,
-filling and crossing out, and what a mistake costs. It opens from the menu on every page and from the
-button under Start, and by itself on the first puzzle of a player who has solved none and has not
-closed it in this browser. A guest has no menu, so the front page and a rift's have a button for it.
-The clock stands while it is open. Each move plays a tone, which the Sound key turns off and an
-iPhone's silent switch does not, and a phone ticks on each fill where the browser allows it. A game in
-progress is kept in the browser, so a reload picks it up.
+lights the line where the numbers decide the most, and a fairy finishes it, as `docs/profiles.md` says.
+Undo, or U, takes back the last tap or drag, and Redo, or R, puts it back, but neither touches a
+mistake, and a tap that was only a mistake is no move to take back. Restart empties the board, and Undo
+straight after brings it back. Every board has one footprint, whatever its puzzle's size, as wide as
+the window allows, to 600px, in whole pixels a square; `app.css` has its measures. A tile fills the
+board's corner: the puzzle's name, the picture so far, drawn small, and the clock. A warm line rules
+off every fifth square. When the picture is complete the squares fill in as the picture, in its colours
+if it has them, and its name shows with the time, the mistakes and hints, and what they added. Under
+them the rift's tile counts the sprite, says +1 mana where the find earned one and +3 fairies where it
+cleared the rift, and opens the rift, as Back does; a rift the sprite opened stands under it, saying
+Opened. Next goes to that rift's next unsolved puzzle, then to the next rift that is open. How to play
+is three steps in a modal, each with a small board: what the numbers mean, filling and crossing out,
+and what a mistake costs. It opens from the menu on every page and from the button under Start, and by
+itself on the first puzzle of a player who has solved none and has not closed it in this browser. A
+guest has no menu, so the front page and a rift's have a button for it. The clock stands while it is
+open. Each move plays a tone, which the Sound key turns off and an iPhone's silent switch does not, and
+a phone ticks on each fill where the browser allows it. A game in progress is kept in the browser, so a
+reload picks it up.
 
 The leaderboard is switched off by `BOARD` in `app.js`: the front page has no tabs and no ranking,
 and results are saved as ever. The puzzle of the day is switched off by `DAILY` in `app.js`: no page

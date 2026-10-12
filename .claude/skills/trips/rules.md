@@ -15,6 +15,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - A trip from April to early June is quoted at the Busy season mileage rate, not Regular, because those are the busiest weeks and the buses fill either way; the Settings page's Calendar gives each month its rate, and a month it leaves on Default is set on the line by hand.
 - A PO fixes the price; a cost the office takes on after it, such as a second driver, goes in as its own line with an equal Discount, and the trip's pinned update says the decision is still open.
 - A quote can go out with a leg's times as TBD, because the times are settled with the customer later and never hold a quote back.
+- A quote names the departing city and the farthest destination city only, even when the trip stops in more, because one pair of cities keeps the quote simple.
 
 ## Route
 

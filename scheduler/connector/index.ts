@@ -391,7 +391,7 @@ Deno.serve(
           {
             title: 'Find free buses and drivers',
             description:
-              'Which buses and drivers are free across a range of days, and every trip with a leg running then, with how many buses it needs and has. A bus is busy on the days its leg takes, or while out of service; a driver is busy on the days of the leg they drive, or on time off. A bus back at the yard before the office\'s late-return hour (4:00 AM unless the Settings page says otherwise) came back the night before, so its leg does not take the day it is back on, and one back at or after that hour takes that day: a leg\'s takes_to is its last day counted so. back_after_midnight lists the buses and drivers that are free on the first day asked but only reach the yard that morning, with the time, so a departure before it is not promised and the driver\'s rest is counted from it. Between a drop-off and its pickup the trip holds neither. A trip still short of buses will take free ones: buses_still_needed is how many, and spare_buses is the free buses left once those are taken, which is the number that can be promised. A placeholder (not quoted yet) is listed but asks for no bus.',
+              'Which buses and drivers are free across a range of days, and every trip with a leg running then, with how many buses it needs and has. A bus is busy on the days its leg takes, or while out of service; a driver is busy on the days of the leg they drive, or on time off. A bus back at the yard before the office\'s late-return hour (4:00 AM unless the Settings page says otherwise) came back the night before, so its leg does not take the day it is back on, and one back at or after that hour takes that day: a leg\'s takes_to is its last day counted so. back_after_midnight lists the buses and drivers of a leg that took the day before and only reach the yard on the morning of the first day asked, with the time: one that is free that day is not promised a departure before it, and the driver\'s rest is counted from it. Between a drop-off and its pickup the trip holds neither. A trip still short of buses will take free ones: buses_still_needed is how many, and spare_buses is the free buses left once those are taken, which is the number that can be promised. A placeholder (not quoted yet) is listed but asks for no bus.',
             inputSchema: z.object({
               from: ISO_DATE,
               to: ISO_DATE.optional().describe('Defaults to the same day as from.'),
@@ -474,7 +474,7 @@ Deno.serve(
               }
             })
 
-            // Free that day, and only at the yard from the time given.
+            // Back at the yard on the first day asked, past midnight, from a leg that took the day before.
             const shortOf = new Map(drivers.map((d) => [d.id, d.short_name ?? d.name]))
             const backAfterMidnight = lateTrips.flatMap((t) => legsTaken(t).filter(backThatMorning).map((l) => {
               const onLeg = assignments.filter((a) => a.trip_id === t.id && (a.leg ?? 'outbound') === l.leg)

@@ -829,6 +829,36 @@
     </li>
   </ul>
 
+  <!-- A driver carried to a trip, from Driver availability or off another
+       bar: a figure held at the pointer by the back of its shirt, both arms
+       free, with the name beside it. Its head is a dot the size of a seat's
+       own, which it is when the figure is pulled out of a bar. data.js copies
+       it for each carry and fills the name, carried.js works out how it
+       moves, and app.css turns its parts, hides what a bar still holds, and
+       drops it. -->
+  <template id="scheduler-carried">
+    <div class="scheduler-carried" aria-hidden="true">
+      <div class="scheduler-carried__pull">
+        <svg class="scheduler-carried__figure" width="26" height="42" viewBox="0 0 26 42" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <g class="scheduler-carried__body">
+            <g class="scheduler-carried__torso">
+              <path class="scheduler-carried__pinch" d="M8 1 9 11"/>
+              <path d="M9 11V27"/>
+              <circle cx="13.5" cy="9.5" r="3.75" fill="currentColor" stroke="none"/>
+              <path class="scheduler-carried__arm" d="M9.5 13.5 19 16"/>
+              <path class="scheduler-carried__arm scheduler-carried__arm--back" d="M9.5 13.5 15.5 22"/>
+            </g>
+            <path class="scheduler-carried__leg" d="M9 27 14 39"/>
+            <path class="scheduler-carried__leg scheduler-carried__leg--back" d="M9 27 5.5 39.5"/>
+          </g>
+        </svg>
+      </div>
+      <div class="scheduler-carried__name">
+        <div class="rux--tag rux--tag--gray rux--layout--size-md"><span class="rux--tag__label"></span></div>
+      </div>
+    </div>
+  </template>
+
   <!-- A driver's menu, opened by right-clicking or holding a name in Driver
        availability. data.js places and opens it as the bar's menu, hides
        Call and Text for a driver with no number, and names Pick out trips
@@ -1319,8 +1349,10 @@
     </div>
   </div>
 
-  <!-- Remove driver asks first when the driver has been sent the trip or has
-       confirmed it; data.js names them and says which. -->
+  <!-- Remove driver, a driver thrown off a bar, and a driver dropped on a bar
+       ask first when a driver who would lose a seat has been sent the trip or
+       has confirmed it; data.js names them and says which, and words the
+       button Move where no one is removed. -->
   <div class="rux--layer-one rux--modal" id="scheduler-unassign-modal" role="presentation">
     <div role="dialog" aria-modal="true" aria-labelledby="scheduler-unassign-h" aria-describedby="scheduler-unassign-text" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
       <div class="rux--modal-header">
@@ -1682,6 +1714,7 @@
 <script src="route-figures.js"></script>
 <script src="file-names.js"></script>
 <script src="quote-lines.js"></script>
+<script src="carried.js"></script>
 <script src="data.js"></script>
 <script src="to-do.js"></script>
 <script src="departures.js"></script>

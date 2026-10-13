@@ -854,6 +854,8 @@
       c.needed ? (dot ? `No ${c.label.toLowerCase()}` : 'No relief') : crewName(c)));
     item.title = crewText(c);
     if (c.driverId != null) item.dataset.driverId = c.driverId;
+    // A Driver seat with a driver in it says so: it is what a press pulls them out by.
+    if (c.role === 'driver' && !c.needed) item.dataset.seat = 'driver';
     return item;
   }
 
@@ -1117,6 +1119,8 @@
     crewBox.append(...crew.map(c => crewEl(c, due)));
     // Who drives this bar, for the driver grid to pick out.
     bar.dataset.drivers = crew.filter(c => c.driverId != null).map(c => c.driverId).join(' ');
+    // An empty Driver seat, which app.css outlines while a name is carried from the roster.
+    if (crew.some(c => c.role === 'driver' && c.needed)) bar.dataset.wantsDriver = 'true';
     crewObserver.observe(bar);
     addRow(bar, 'scheduler-bar__drivers', crewBox);
 
@@ -1624,6 +1628,8 @@
     if (!bar.dataset.tripId) return;
     bar.addEventListener('pointerdown', down => {
       if (down.button !== 0) return;
+      // A press on the driver's name lifts the driver, not the trip.
+      if (liftsFrom(down)) return;
       // The trip open in the editor is locked on the board.
       if (isEditorTrip(bar)) return;
       // One bar at a time. A bar that is saving takes no pointer, in app.css; this is for a finger already down on it.
@@ -9134,8 +9140,9 @@
   availGrid?.addEventListener('click', e => {
     const name = e.target.closest('.scheduler-avail__name[data-driver-id]');
     if (name) {
-      // The tap that ends a hold opened the name's menu, and picks no one.
-      if (heldName) { heldName = false; return; }
+      // The tap that ends a hold opened the name's menu, and the press that
+      // ends a carry dropped the name; neither picks anyone.
+      if (heldName || carriedName) { heldName = carriedName = false; return; }
       pickDriver(name.dataset.driverId);
       return;
     }
@@ -9214,6 +9221,427 @@
     availGrid.addEventListener('pointermove', move);
     availGrid.addEventListener('pointerup', up);
     availGrid.addEventListener('pointercancel', up);
+  });
+
+  /* A DRIVER CARRIED TO A TRIP, OR OFF ONE. A mouse or a pen that presses a
+     name in the roster and travels lifts a figure that hangs from the pointer
+     with the name beside it; the same press on the driver's name on a bar
+     pulls that driver out of the bar's Driver seat. While the figure is carried
+     the board is marked, so app.css outlines every bar whose Driver seat is
+     empty, and the bar under the pointer is ringed while it can seat a
+     driver: plainly where the roster shows the driver free on the bar's days,
+     and as a warning where `rosterClash` finds them in the way. An empty slot
+     has no bus row to seat a driver in, and the trip in the editor holds its
+     drivers unsaved there, so neither is ringed and neither gives a driver
+     up. A finger carries no one, because its hold opens a menu and its travel
+     scrolls.
+
+     LET GO OVER A BAR, the bar is the figure's ground. It drops to the foot
+     of the bar, goes over on its back, sits up, gets to its feet and waits,
+     keeping to the bar if the board is scrolled, while `dropDriver` decides.
+     Seated, it hops to the bar's Driver seat and goes back into the ground
+     it comes out of, until its head is the seat's dot. Refused, the bar
+     throws it off and it falls away, and a driver lifted from a bar stays on
+     that bar. Over the bar it was lifted from it does the same and goes back
+     in, and nothing is written.
+
+     LET GO CLEAR OF EVERY BAR, a figure from the roster falls from the
+     pointer, thrown the way the pointer was travelling, and nothing is
+     written. One lifted from a bar falls the same way, and `removeDriver`
+     takes the driver off that bus. Over a bar that takes no driver, or on
+     Escape, a driver lifted from a bar is not thrown: the figure goes and
+     they stay.
+
+     A DRIVER COMES OUT OF A BAR LIKE A CARROT OUT OF THE GROUND. The seat's
+     dot is the figure's head, in the dot's own colour: the head leaves the
+     dot with the pointer and the body follows it out of the bar, hidden up
+     to the line the dot sat on and leaning back toward it, until
+     CARRY_PULL of travel has it clear. Then it is free: it springs to the
+     pointer and is carried as any figure is. Let go before that, it slips
+     back in and nothing has happened, which is also what keeps a slip of the
+     hand from lifting anyone.
+
+     What the figure was lifted from is dimmed while it is out. A roster name
+     slides back in once its figure has fallen out of sight, or its driver
+     has come off a bus, so it reads as there to pick up again.
+
+     The figure's pose is carried.js's, asked for each frame with where its
+     pinch is. With reduced motion it is asked once, hangs still, and is taken
+     away the moment it is let go. */
+  const carriedTemplate = document.getElementById('scheduler-carried');
+  const CARRY_GRAVITY = 2400;                  // a falling figure's pull, in pixels a second squared
+  const CARRY_THROW = 1500;                    // the fastest a figure leaves the pointer, in pixels a second
+  const CARRY_BOUNCE = { vx: -320, vy: -620 }; // off a bar that refused it: up, and back toward the roster
+  const CARRY_FALL_MS = 4000;                  // the longest a fall is waited on to leave the window
+  const CARRY_PULL = 28;                       // pixels of travel that pull a figure clear of its bar
+  const CARRY_FULL = 40;                       // the figure's height in its drawing, pinch to feet
+  const CARRY_WAIST = 27;                      // its hip: how much shows of one stood in a bar
+  const CARRY_LIE = 40;                        // pixels a figure on its back takes up behind its feet
+  const CARRY_PLUNGE_MS = 140;                 // how long a figure at its seat takes to go in to its waist
+  const CARRY_SINK_MS = 180;                   // and from there to its head
+  // The figure's head from where its holder is put, in pixels, and the head's
+  // lower edge in the drawing: the line a pulled figure is hidden below.
+  const CARRY_HEAD = { x: 5.5, y: 13.5, edge: 13.5 };
+  let carriedName = false;
+  const seatsDriver = bar => !!bar.dataset.assignmentId && !isEditorTrip(bar)
+    && !bar.classList.contains('scheduler-bar--saving') && !!barSeat(bar)?.range;
+  /* Whether the roster already shows a driver in the way of a bar: on that
+     bus, or away or on another bus on any of the bar's days. `from` is the
+     bar a driver is being carried off, which is not in their way. It is read
+     off the board's own range as the roster holds it, so the pointer has its
+     answer at once. A warning, not a wall: `dropDriver` asks the database,
+     which sees the days around the board's range and the board cannot. */
+  const rosterClash = (bar, driverId, from) => {
+    if ((bar.dataset.drivers || '').split(' ').includes(driverId)) return true;
+    const row = availAll?.rows.find(r => String(r.driver.id) === driverId);
+    if (!row) return false;
+    const start = +bar.dataset.start, span = +bar.dataset.span;
+    return row.days.slice(start, start + span).some(day => day.off
+      || day.refs.some(r => !(from && r.tripId === from.tripId && r.leg === from.leg)));
+  };
+
+  // Slides a driver's name back into the roster, found afresh because a read can have drawn it again.
+  function nameBack(driverId) {
+    const shown = availGrid?.querySelector(`.scheduler-avail__name[data-driver-id="${CSS.escape(String(driverId))}"]`);
+    if (!shown || reducedMotion.matches) return;
+    shown.classList.remove('scheduler-avail__name--back');
+    void shown.offsetWidth;
+    shown.classList.add('scheduler-avail__name--back');
+    shown.addEventListener('animationend', () => shown.classList.remove('scheduler-avail__name--back'), { once: true });
+  }
+
+  /* One carry, from the press `down`. `held` is what was pressed, which takes
+     the class `dim` while the figure is out; `label` is the name beside the
+     figure; `seat` is the bar a driver is lifted from, as `barRef` gives it,
+     and absent for a name from the roster; `onLift` hears the figure lift. */
+  function carry(down, { driverId, label, held, dim, seat = null, onLift }) {
+    // The figure's holder, the bar ringed under it, its frame, where its pinch
+    // is, once it is let go to fall how fast it is going, while its bar still
+    // holds it that it does, and stood in a bar, how high and since when it sinks.
+    let tag = null, over = null, frame = 0, free = null, rooted = false, planted = null;
+    let at = { x: down.clientX, y: down.clientY };
+    const figure = window.SchedulerCarried?.motion();
+    const still = () => !figure || reducedMotion.matches;
+    // The bar the driver was lifted from, where they already sit.
+    const home = bar => !!seat && bar.dataset.assignmentId === seat.assignmentId;
+
+    const ring = bar => {
+      if (bar === over) return;
+      over?.classList.remove('scheduler-bar--seat', 'scheduler-bar--seat-warn');
+      over = bar;
+      over?.classList.add(!home(over) && rosterClash(over, driverId, seat) ? 'scheduler-bar--seat-warn' : 'scheduler-bar--seat');
+    };
+    // Found afresh each time, because a read can replace every bar under a carried figure.
+    const barAt = e => {
+      const bar = document.elementFromPoint(e.clientX, e.clientY)?.closest('.scheduler-bar');
+      return bar && gridEl.contains(bar) && seatsDriver(bar) ? bar : null;
+    };
+    // Any bar at all, by where it is drawn, so one that takes no pointer still counts.
+    const onBar = e => [...gridEl.querySelectorAll('.scheduler-bar')].some(bar => {
+      const box = bar.getBoundingClientRect();
+      return e.clientX >= box.left && e.clientX <= box.right && e.clientY >= box.top && e.clientY <= box.bottom;
+    });
+    const place = () => {
+      tag.style.insetInlineStart = `${at.x}px`;
+      tag.style.insetBlockStart = `${at.y}px`;
+    };
+    // Writes a pose to the figure as the properties app.css turns its parts by.
+    const pose = parts => {
+      if (!tag || !parts) return;
+      for (const [part, value] of Object.entries(parts)) {
+        tag.style.setProperty(`--scheduler-carried-${part}`, part === 'stretch' ? value.toFixed(3)
+          : part.startsWith('hip') ? `${value.toFixed(1)}px` : `${value.toFixed(1)}deg`);
+      }
+    };
+    const lift = () => {
+      onLift?.();
+      tag = carriedTemplate.content.firstElementChild.cloneNode(true);
+      tag.querySelector('.rux--tag__label').textContent = label;
+      const dot = seat && !still() ? held.querySelector('.scheduler-crew__dot') : null;
+      if (dot) {
+        /* Out of a bar: the figure takes the dot's colour and is put so its
+           head sits on the dot, moved by as far as the pointer has come. */
+        const box = dot.getBoundingClientRect();
+        rooted = true;
+        tag.classList.add('scheduler-carried--rooted');
+        tag.style.color = getComputedStyle(dot).color;
+        tag.style.setProperty('--scheduler-carried-dx', `${box.left + box.width / 2 - down.clientX - CARRY_HEAD.x}px`);
+        tag.style.setProperty('--scheduler-carried-dy', `${box.top + box.height / 2 - down.clientY - CARRY_HEAD.y}px`);
+      }
+      pageEl.appendChild(tag);
+      held.classList.add(dim);
+      document.body.style.cursor = 'grabbing';
+      // Captured, so the bars passed over show no hover of their own.
+      try { held.setPointerCapture(down.pointerId); } catch { /* the pointer is already gone */ }
+      if (rooted) return;
+      pose(figure?.step(performance.now(), at.x, at.y));
+      carried();
+    };
+    // Carried free: the board is marked for it, and its frames begin.
+    const carried = () => {
+      gridEl.classList.add('scheduler-grid--carrying');
+      if (!still()) frame = requestAnimationFrame(tick);
+    };
+    /* One step of the pull, from how far the pointer has come since the
+       press: the figure leans back toward the dot it is coming out of, no
+       further than it can swing, shows as much of itself as has come out,
+       and at CARRY_PULL comes free, swinging from that lean. */
+    const pull = () => {
+      const dx = at.x - down.clientX, dy = at.y - down.clientY;
+      const out = Math.hypot(dx, dy);
+      const lean = Math.max(-80, Math.min(80, Math.atan2(dx, -dy) * 180 / Math.PI));
+      if (out < CARRY_PULL) {
+        tag.style.setProperty('--scheduler-carried-lean', `${lean.toFixed(1)}deg`);
+        tag.style.setProperty('--scheduler-carried-out', `${(CARRY_HEAD.edge + out).toFixed(1)}px`);
+        pose(figure.pulled(performance.now(), out / CARRY_PULL));
+        return;
+      }
+      rooted = false;
+      tag.classList.remove('scheduler-carried--rooted');
+      tag.style.setProperty('--scheduler-carried-dx', '0px');
+      tag.style.setProperty('--scheduler-carried-dy', '0px');
+      figure.release(lean);
+      pose(figure.step(performance.now(), at.x, at.y));
+      carried();
+    };
+    /* Takes the figure away and undims what it was lifted from. `back` slides
+       a roster name in again, for a figure that fell back to the roster and
+       not one seated on a trip. */
+    const gone = back => {
+      cancelAnimationFrame(frame);
+      tag?.remove();
+      tag = null;
+      held.classList.remove(dim);
+      if (back && !seat) nameBack(driverId);
+    };
+    // Let go: nothing holds the figure, so its name and the pinch of its shirt go.
+    const loose = () => {
+      tag.querySelector('.scheduler-carried__name')?.remove();
+      tag.classList.add('scheduler-carried--loose');
+    };
+    // Lets the figure fall, thrown at `speed`; `tick` carries it out of the window.
+    const letFall = speed => {
+      loose();
+      const now = performance.now();
+      const most = v => Math.max(-CARRY_THROW, Math.min(CARRY_THROW, v));
+      free = { now, until: now + CARRY_FALL_MS, vx: most(speed.vx), vy: most(speed.vy) };
+    };
+    /* Let go over a bar, the bar is the figure's ground. It drops to the
+       line the seat's dot sits on, straight down from where it was let go
+       and kept inside the bar with room to lie down; sits down hard, goes
+       over on its back, sits up, gets to its feet and stands there while the
+       drop is decided. Told
+       `sink`, it waits to be on its feet, hops to the Driver seat, a longer
+       hop taking longer, and goes into the bar until its head is the seat's
+       dot. Told `spit`, the bar throws it off as soon as it has landed.
+       Every step is placed from where the dot is now, so the figure keeps to
+       its bar when the board is scrolled or drawn again. */
+    const drop = bar => {
+      loose();
+      const box = bar.getBoundingClientRect();
+      // With no dot to be found, the ground is the foot of the bar under the figure.
+      planted = { ref: barRef(bar), phase: 'fall', next: null, landed: 0, anchor: { x: at.x + CARRY_HEAD.x, y: box.bottom - 12 } };
+      const dot = seatDot();
+      const stand = Math.max(box.left + CARRY_LIE - dot.x, Math.min(box.right - 12 - dot.x, at.x - dot.x));
+      fly({ x: at.x - dot.x, y: at.y - dot.y }, { x: stand, y: -CARRY_FULL });
+    };
+    /* Sets the figure flying between two places, each given from the dot as
+       where its holder is put: dropped, when the second is under the first,
+       and hopped otherwise, thrown so that it comes down on the second. */
+    const fly = (rel, to) => {
+      const dx = to.x - rel.x, dy = to.y - rel.y;
+      const time = dy > 8 && Math.abs(dx) < dy ? Math.sqrt(2 * dy / CARRY_GRAVITY)
+        : Math.max(.26, Math.min(.55, .26 + Math.hypot(dx, dy) / 1100));
+      // `from` is stamped by the first frame of the flight, so the flight is timed on the frames' own clock.
+      Object.assign(planted, { rel, to, time, from: 0, vx: dx / time, vy: dy / time - CARRY_GRAVITY * time / 2 });
+    };
+    /* The middle of the seat's dot now, by the bar as it is drawn now. The
+       figure is hidden while the dot is scrolled under the board's own
+       headings or out of the window, where it would stand over them. A bar
+       that has left the board keeps the figure where the dot last was. */
+    const seatDot = () => {
+      const bar = findBar(planted.ref);
+      const dot = bar?.querySelector('.scheduler-bar__crew .scheduler-crew__dot');
+      if (!dot) return planted.anchor;
+      const box = dot.getBoundingClientRect();
+      planted.anchor = { x: box.left + box.width / 2, y: box.top + box.height / 2 };
+      const top = document.elementFromPoint(planted.anchor.x, planted.anchor.y);
+      tag.style.visibility = top && top.closest('.scheduler-track') === bar.closest('.scheduler-track') ? '' : 'hidden';
+      return planted.anchor;
+    };
+    // Seated: once it is on its feet it hops to the seat and goes in.
+    const sink = () => { if (planted) planted.next = 'sink'; };
+    // Refused: once it has landed the bar throws it off, up and back toward the roster.
+    const spit = () => { if (planted) planted.next = 'spit'; };
+    const tick = now => {
+      frame = requestAnimationFrame(tick);
+      if (planted) {
+        const dot = seatDot();
+        if (planted.phase === 'fall' || planted.phase === 'hop') {
+          planted.from ||= now;
+          const flown = (now - planted.from) / 1000;
+          if (flown < planted.time) {
+            at = {
+              x: dot.x + planted.rel.x + planted.vx * flown,
+              y: dot.y + planted.rel.y + planted.vy * flown + CARRY_GRAVITY * flown * flown / 2,
+            };
+            place();
+            pose(figure.step(now, at.x, at.y));
+            return;
+          }
+          planted.landed = now;
+          tag.classList.add(...(planted.phase === 'fall' ? ['scheduler-carried--standing']
+            : ['scheduler-carried--rooted', 'scheduler-carried--planted']));
+          planted.phase = planted.phase === 'fall' ? 'ground' : 'in';
+        }
+        const since = now - planted.landed;
+        if (planted.phase === 'ground') {
+          at = { x: dot.x + planted.to.x, y: dot.y + planted.to.y };
+          place();
+          if (planted.next === 'spit') {
+            planted = null;
+            tag.style.visibility = '';
+            tag.classList.remove('scheduler-carried--standing');
+            figure.release(0);
+            letFall(CARRY_BOUNCE);
+            return;
+          }
+          if (planted.next === 'sink' && since >= figure.stoodAfter) {
+            tag.classList.remove('scheduler-carried--standing');
+            planted.phase = 'hop';
+            figure.release(0);
+            fly(planted.to, { x: -CARRY_HEAD.x, y: -CARRY_FULL });
+            return;
+          }
+          pose(figure.landed(now, since));
+          return;
+        }
+        /* Into the bar, quick and then slowing as into soft ground, to its
+           waist and on down to its head. The figure drops by as much as the
+           line it is hidden below comes up it, so that line stays on the dot. */
+        const waist = Math.min(1, since / CARRY_PLUNGE_MS);
+        const sunk = Math.max(0, Math.min(1, (since - CARRY_PLUNGE_MS) / CARRY_SINK_MS));
+        const depth = (CARRY_FULL - CARRY_WAIST) * (1 - (1 - waist) ** 2) + (CARRY_WAIST - CARRY_HEAD.edge) * sunk;
+        at = { x: dot.x + planted.to.x, y: dot.y + planted.to.y + depth };
+        place();
+        tag.style.setProperty('--scheduler-carried-out', `${(CARRY_FULL - depth).toFixed(1)}px`);
+        tag.style.setProperty('--scheduler-carried-lean', '0deg');
+        pose(figure.planted(now));
+        if (sunk >= 1) gone(false);
+        return;
+      }
+      if (free) {
+        const dt = Math.max(0, Math.min(.034, (now - free.now) / 1000));
+        free.now = now;
+        free.vy += CARRY_GRAVITY * dt;
+        at = { x: at.x + free.vx * dt, y: at.y + free.vy * dt };
+        place();
+        if (at.y > window.innerHeight + 80 || now > free.until) { gone(true); return; }
+      }
+      pose(figure.step(now, at.x, at.y));
+    };
+    // `clear` is a release clear of every bar, which is what throws a driver off theirs.
+    const end = (release, clear) => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      window.removeEventListener('pointercancel', cancel);
+      window.removeEventListener('keydown', key, true);
+      if (!tag) return;
+      document.body.style.cursor = '';
+      gridEl.classList.remove('scheduler-grid--carrying');
+      // Not yet clear of its bar, the figure slips back in.
+      if (rooted) { gone(false); return; }
+      const bar = release ? over : null;
+      ring(null);
+      if (bar && home(bar)) {
+        if (still()) gone(false); else { drop(bar); sink(); }
+        return;
+      }
+      if (bar) {
+        const answer = dropDriver(bar, driverId, false, seat);
+        if (still()) { gone(false); return; }
+        drop(bar);
+        answer.then(outcome => {
+          if (!tag) return;
+          if (outcome === 'seated') sink();
+          // The box that asks takes over, and the figure waits for nothing.
+          else if (outcome === 'asked') gone(false);
+          else spit();
+        });
+        return;
+      }
+      if (seat && !(release && clear)) { gone(false); return; }
+      if (still()) gone(false); else letFall(figure.speed());
+      const from = seat && findBar(seat);
+      if (from) removeDriver(from, false, true);
+    };
+    const move = e => {
+      if (e.pointerId !== down.pointerId) return;
+      at = { x: e.clientX, y: e.clientY };
+      if (!tag) {
+        // A button let go where no pointerup reached the page.
+        if (!(e.buttons & 1)) { end(false); return; }
+        if (Math.hypot(e.clientX - down.clientX, e.clientY - down.clientY) < DRAG_THRESHOLD) return;
+        lift();
+      }
+      e.preventDefault();
+      place();
+      if (rooted) pull();
+      if (!rooted) ring(barAt(e));
+    };
+    const up = e => {
+      if (e.pointerId !== down.pointerId) return;
+      if (tag && !rooted) ring(barAt(e));
+      end(true, !onBar(e));
+    };
+    const cancel = e => { if (e.pointerId === down.pointerId) end(false); };
+    // Heard first and kept from the page, so Escape lets the figure go and does nothing else.
+    const key = e => {
+      if (e.key !== 'Escape' || !tag) return;
+      e.preventDefault();
+      e.stopPropagation();
+      end(false);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+    window.addEventListener('pointercancel', cancel);
+    window.addEventListener('keydown', key, true);
+  }
+
+  // A press that can start a carry: a mouse's or a pen's main button, logged in.
+  const carries = down => down.pointerType !== 'touch' && down.button === 0 && !!client && !!carriedTemplate;
+
+  availGrid?.addEventListener('pointerdown', down => {
+    carriedName = false;
+    if (!carries(down)) return;
+    const name = down.target.closest('.scheduler-avail__name[data-driver-id]');
+    // The roster in front of the board has no trip under it to drop on.
+    if (!name || pageEl?.getAttribute('data-takeover') === 'roster') return;
+    carry(down, {
+      driverId: name.dataset.driverId, label: name.textContent, held: name, dim: 'scheduler-avail__name--carried',
+      onLift: () => { carriedName = true; },
+    });
+  });
+
+  /* The driver's name on a bar that a press pulls them out by, or null: a bar
+     that could seat a driver gives its own up. `installDrag` asks this first
+     and stands down, so the press pulls the driver and not the trip. */
+  const liftsFrom = down => {
+    if (!carries(down)) return null;
+    const crew = down.target.closest?.('.scheduler-bar__crew > .scheduler-crew[data-seat="driver"][data-driver-id]');
+    const bar = crew?.closest('.scheduler-bar');
+    return bar && gridEl.contains(bar) && seatsDriver(bar) ? crew : null;
+  };
+  gridEl.addEventListener('pointerdown', down => {
+    const crew = liftsFrom(down);
+    if (!crew) return;
+    const bar = crew.closest('.scheduler-bar');
+    carry(down, {
+      driverId: crew.dataset.driverId, label: crew.querySelector('.scheduler-crew__name')?.textContent ?? '',
+      held: crew, dim: 'scheduler-crew--carried', seat: barRef(bar),
+      // The click that ends a carry would otherwise select the bar.
+      onLift: () => bar.addEventListener('click', e => e.stopPropagation(), { capture: true, once: true }),
+    });
   });
 
   driverMenu?.addEventListener('click', e => {
@@ -11427,6 +11855,15 @@
     return { trip, assign, leg, range: range ? { from: range.from, to: range.to, depart: range.depart, back: range.back, backDays: range.backDays } : null, seat };
   }
 
+  // The trips around a leg's dates, from the read kept for them or a new one.
+  async function nearbyFor(range) {
+    const key = `${range.from}:${range.to}`;
+    if (assignRead?.key === key && Date.now() - assignRead.at < 60000) return assignRead.nearby;
+    const nearby = await readNearby(range.from, range.to);
+    assignRead = { key, at: Date.now(), nearby };
+    return nearby;
+  }
+
   /* What runs out before the leg ends, the licence or the medical card, in
      words, or '' when both last the trip. A date not on file says nothing. */
   const cardDay = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
@@ -11492,16 +11929,12 @@
     const seq = ++assignSeq;
     list.replaceChildren(...current, assignItem('Finding free drivers…', { disabled: true }), rule(), more);
 
-    const key = `${range.from}:${range.to}`;
-    let nearby = assignRead?.key === key && Date.now() - assignRead.at < 60000 ? assignRead.nearby : null;
-    if (!nearby) {
-      try {
-        nearby = await readNearby(range.from, range.to);
-        assignRead = { key, at: Date.now(), nearby };
-      } catch {
-        if (seq === assignSeq) list.replaceChildren(...current, assignItem('The drivers could not be read', { disabled: true }), rule(), more);
-        return;
-      }
+    let nearby;
+    try {
+      nearby = await nearbyFor(range);
+    } catch {
+      if (seq === assignSeq) list.replaceChildren(...current, assignItem('The drivers could not be read', { disabled: true }), rule(), more);
+      return;
     }
     if (seq !== assignSeq) return;
     const fit = fitFor(nearby, range, { assignmentId: assign.id });
@@ -11575,20 +12008,150 @@
     recordHistory(trip.id, 'assignment_changed', changes);
   }
 
-  // The bar's menu: one driver for its bus, saved at once, like a colour.
-  async function assignDriver(bar, driverId) {
+  /* The bar's menu: one driver for its bus, saved at once, like a colour.
+     `caution` is what a dropped name's notice says of the driver, which the
+     menu shows beside the name before the pick. Answers whether the driver
+     was seated. */
+  async function assignDriver(bar, driverId, caution) {
     const found = barSeat(bar);
     const driver = [...panelIndex.driversById.values()].find(d => String(d.id) === String(driverId));
-    if (!found || !driver || same(found.seat?.driver_id, driver.id)) return;
+    if (!found || !driver || same(found.seat?.driver_id, driver.id)) return false;
     toast('working', 'Assigning the driver…');
     try {
       await saveSeats(found.trip, [{ assign: found.assign, driver }]);
       assignRead = null;
       await show();
-      toast('success', `${driver.name || 'The driver'} is driving this bus now.`);
+      toast(caution ? 'warning' : 'success', `${driver.name || 'The driver'} is driving this bus now.`, caution || undefined);
+      return true;
     } catch (err) {
       toast('error', `The driver was not assigned. ${err.message}`);
+      return false;
     }
+  }
+
+  /* One ring on a bar a name was dropped on: `scheduler-bar--saved` for a
+     driver seated, the ring a saved bus move takes, and
+     `scheduler-bar--refused` for one turned away. The bar is found afresh,
+     because the save's read draws every bar again. */
+  function ringBar(ref, cls) {
+    const bar = findBar(ref);
+    if (!bar || reducedMotion.matches) return;
+    bar.classList.remove(cls);
+    void bar.offsetWidth;
+    bar.classList.add(cls);
+    bar.addEventListener('animationend', () => bar.classList.remove(cls), { once: true });
+  }
+
+  /* Moves a driver from one bus's Driver seat to another's. On one trip the
+     two seats are one save. On two, the new seat is saved first, so a save
+     that stops between them leaves the driver on both buses, where the board
+     shows it, and never on neither. Answers whether the driver was moved. */
+  async function moveSeat(left, found, driver, caution) {
+    toast('working', 'Moving the driver…');
+    try {
+      if (left.trip === found.trip) {
+        await saveSeats(found.trip, [{ assign: left.assign, driver: null }, { assign: found.assign, driver }]);
+      } else {
+        await saveSeats(found.trip, [{ assign: found.assign, driver }]);
+        await saveSeats(left.trip, [{ assign: left.assign, driver: null }]);
+      }
+      assignRead = null;
+      await show();
+      toast(caution ? 'warning' : 'success', `${driver.name || 'The driver'} is driving this bus now.`,
+        caution || `Moved from ${left.trip.destination || 'their other trip'}.`);
+      return true;
+    } catch (err) {
+      assignRead = null;
+      toast('error', `The driver was not moved. ${err.message}`);
+      // The board is read again, because a move that stopped partway may have saved its first seat.
+      show();
+      return false;
+    }
+  }
+
+  /* A driver dropped on a bar is the menu's pick made by hand, so it is held
+     to the menu's list: a driver already in a seat on this bus is not seated,
+     nor one on another trip or away on the leg's days, and the notice says
+     which. A card that lapses before the leg ends or a back-to-back trip,
+     which the menu marks beside a name, is said as the driver is seated.
+     `from` is the bar a driver was carried off, as `barRef` gives it: that
+     bus is not in their way, and they leave its seat for this one.
+
+     A drop is easier to make by accident than a pick, so one that would
+     unseat a driver who has been sent the trip or has confirmed it asks
+     first, as Remove driver does, and so does one that takes the carried
+     driver off a trip they have been sent or have confirmed.
+
+     The bar is fainter and takes no pointer while the drop is decided, as a
+     bar is while its move is saved, and is ringed with the answer, which is
+     `seated`, `refused`, or `asked` when the box is left to decide. */
+  async function dropDriver(bar, driverId, asked, from) {
+    const found = barSeat(bar);
+    const driver = [...panelIndex.driversById.values()].find(d => String(d.id) === String(driverId));
+    if (!found?.range || !driver) return 'refused';
+    const ref = barRef(bar);
+    const name = driver.name || driver.short_name || 'The driver';
+    const decided = () => {
+      bar.classList.remove('scheduler-bar--saving');
+      findBar(ref)?.classList.remove('scheduler-bar--saving');
+    };
+    const refuse = (kind, title, subtitle) => {
+      decided();
+      toast(kind, title, subtitle);
+      ringBar(ref, 'scheduler-bar--refused');
+      return 'refused';
+    };
+    // The seat a carried driver is leaving, which has to be theirs still.
+    const source = from ? findBar(from) : null;
+    const left = source ? barSeat(source) : null;
+    if (from && String(left?.seat?.driver_id ?? '') !== String(driver.id)) {
+      return refuse('info', `${name} is no longer on that bus.`);
+    }
+    if ((found.assign.trip_drivers || []).some(d => String(d.driver_id) === String(driver.id))) {
+      return refuse('info', `${name} is already on this bus.`);
+    }
+    bar.classList.add('scheduler-bar--saving');
+    toast('working', `Checking ${name} is free…`);
+    let fit;
+    try {
+      const nearby = await nearbyFor(found.range);
+      fit = fitFor(left ? withStand(nearby, new Map([[String(left.assign.id), null]])) : nearby,
+        found.range, { assignmentId: found.assign.id });
+    } catch (err) {
+      return refuse('error', `The driver was not assigned. ${err.message}`);
+    }
+    const [ranked] = rankDrivers([driver], fit);
+    if (ranked.busy) return refuse('warning', `${name} is not free for this trip.`, ranked.busy);
+    /* What a driver in a Driver seat has been told, in the box's words, or
+       null: of the driver in this seat now, and of the carried driver on the
+       bus they are leaving. */
+    const told = seat => {
+      const state = crewOf(seat.trip, seat.assign, panelIndex.driversById, panelIndex.statuses)
+        .find(c => c.role === 'driver' && !c.needed)?.status.value;
+      return state === 'confirmed' ? 'confirmed' : state === 'pending-response' ? 'been sent' : null;
+    };
+    const there = told(found);
+    const away = left ? told(left) : null;
+    if ((there || away) && !asked && unassignModal) {
+      const now = there ? histDriverName(found.seat.driver_id) : null;
+      decided();
+      toast(null);
+      document.getElementById('scheduler-unassign-h').textContent = there ? `Remove ${now}?` : `Move ${name}?`;
+      document.getElementById('scheduler-unassign-text').textContent = [
+        there && `${now} has ${there} this trip, and ${name} would take the seat.`,
+        away && `${name} has ${away} ${left.trip.destination || 'the trip they are on'}, and would come off it.`,
+        `${there && away ? 'Neither is told here' : there ? 'Removing them here does not tell them' : 'Moving them here does not tell them'}, so let them know yourself.`,
+      ].filter(Boolean).join(' ');
+      if (!there) document.getElementById('scheduler-unassign-ok').textContent = 'Move';
+      unassignAfter = () => dropDriver(bar, driverId, true, from);
+      window.Rux?.modal?.open?.(unassignModal);
+      return 'asked';
+    }
+    const caution = [cardLapse(driver, found.range), ranked.near].filter(Boolean).join(' · ');
+    const seated = left ? await moveSeat(left, found, driver, caution) : await assignDriver(bar, driverId, caution);
+    decided();
+    ringBar(ref, seated ? 'scheduler-bar--saved' : 'scheduler-bar--refused');
+    return seated ? 'seated' : 'refused';
   }
 
   /* ── Suggest drivers, for the board's range ──
@@ -11804,13 +12367,17 @@
 
   /* Takes the driver off the bar's bus, saved at once. A driver who has been
      sent the trip or has confirmed it is asked about first, because removing
-     them here tells them nothing. */
+     them here tells them nothing. `thrown` is a driver carried off the bar
+     and let go clear of every other: their name slides back into the roster,
+     and the notice offers to undo it. */
   const unassignModal = document.getElementById('scheduler-unassign-modal');
   let unassignAfter = null;
-  async function removeDriver(bar, asked) {
+  async function removeDriver(bar, asked, thrown) {
     const found = barSeat(bar);
     if (!found?.seat?.driver_id) return;
-    const name = histDriverName(found.seat.driver_id);
+    const ref = barRef(bar);
+    const driverId = found.seat.driver_id;
+    const name = histDriverName(driverId);
     const state = crewOf(found.trip, found.assign, panelIndex.driversById, panelIndex.statuses)
       .find(c => c.role === 'driver' && !c.needed)?.status.value;
     const told = state === 'confirmed' || state === 'pending-response';
@@ -11819,7 +12386,7 @@
       document.getElementById('scheduler-unassign-text').textContent = state === 'confirmed'
         ? `${name} has confirmed this trip. Removing them here does not tell them, so let them know yourself.`
         : `${name} has been sent this trip. Removing them here does not tell them, so let them know yourself.`;
-      unassignAfter = () => removeDriver(bar, true);
+      unassignAfter = () => removeDriver(bar, true, thrown);
       window.Rux?.modal?.open?.(unassignModal);
       return;
     }
@@ -11828,10 +12395,43 @@
       await saveSeats(found.trip, [{ assign: found.assign, driver: null }]);
       assignRead = null;
       await show();
-      toast('success', `${name} is off this bus.`, told ? 'Remember to let them know.' : undefined);
     } catch (err) {
       toast('error', `The driver was not removed. ${err.message}`);
+      return;
     }
+    const said = told ? 'Remember to let them know.' : undefined;
+    if (!thrown) { toast('success', `${name} is off this bus.`, said); return; }
+    nameBack(driverId);
+    /* A throw is easier to make by accident than a pick from the menu, so it
+       can be undone: the driver takes the seat again, and then the status
+       they had, because a seat starts at Not sent. The offer stands down
+       when the seat is off the board or no longer empty. */
+    toast('success', `${name} is off this bus.`, said, {
+      label: 'Undo',
+      onClick: async () => {
+        const again = findBar(ref);
+        const seat = again && barSeat(again);
+        const driver = [...panelIndex.driversById.values()].find(d => String(d.id) === String(driverId));
+        if (!seat || !driver || seat.seat?.driver_id != null) {
+          toast('info', 'That seat has changed, so nothing was undone.');
+          return;
+        }
+        toast('working', 'Putting the driver back…');
+        try {
+          await saveSeats(seat.trip, [{ assign: seat.assign, driver }]);
+          assignRead = null;
+          await show();
+        } catch (err) {
+          toast('error', `The driver was not put back. ${err.message}`);
+          return;
+        }
+        const back = findBar(ref);
+        // `setDriverStatus` says how the status went, and so that the driver is back.
+        if (state && state !== 'off' && back) await setDriverStatus(back, String(driverId), 'driver', state);
+        else toast('success', `${name} is back on this bus.`);
+        ringBar(ref, 'scheduler-bar--saved');
+      },
+    });
   }
   document.getElementById('scheduler-unassign-ok')?.addEventListener('click', () => {
     const run = unassignAfter;
@@ -11839,7 +12439,11 @@
     window.Rux?.modal?.close?.(unassignModal);
     run?.();
   });
-  unassignModal?.addEventListener('rux:modal-closed', () => { unassignAfter = null; });
+  // Shut, the box forgets what it was asked and takes back the word a move changed.
+  unassignModal?.addEventListener('rux:modal-closed', () => {
+    unassignAfter = null;
+    document.getElementById('scheduler-unassign-ok').textContent = 'Remove';
+  });
 
   // Opens the bar's trip on its Buses tab, for every driver and every seat.
   function openOnFleet(bar) {

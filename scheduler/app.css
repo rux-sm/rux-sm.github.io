@@ -469,6 +469,17 @@ button.scheduler-row-head__num::after {
   to { outline: 2px solid transparent; outline-offset: 4px; }
 }
 .scheduler-bar.scheduler-bar--saved { animation: scheduler-bar-saved 450ms ease-out; }
+/* A bar that turned away the driver dropped on it shakes its head, with one
+   ring in the error tone. */
+@keyframes scheduler-bar-refused {
+  0% { outline: 2px solid var(--rux-support-error); outline-offset: 0; transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+  100% { outline: 2px solid transparent; outline-offset: 4px; transform: translateX(0); }
+}
+.scheduler-bar.scheduler-bar--refused { animation: scheduler-bar-refused 450ms ease-out; }
 /* A drop packs the two rows it changes as the board is about to draw them:
    each takes its height at once and its bars glide to their lanes. A yard
    card sits between two bars of one lane, so it waits for the draw. */
@@ -1564,6 +1575,13 @@ button.scheduler-row-head__num::after {
    so the name sits close. In a menu the box keeps the menu icon's size. */
 .scheduler-crew__mark--dot { inline-size: auto; }
 .scheduler-crew__dot { inline-size: 7px; block-size: 7px; border-radius: 50%; background: currentColor; }
+/* The driver's name on a bar is what a press pulls the driver out by, so it
+   shows the open hand; the trip in the editor gives no driver up. While the
+   figure is out the seat is dimmed, as a carried bar is, and its dot is
+   gone, because the dot is the figure's head. */
+.scheduler-bar:not(.scheduler-bar--open) .scheduler-bar__crew > .scheduler-crew[data-seat="driver"] { cursor: grab; }
+.scheduler-crew.scheduler-crew--carried { opacity: .4; }
+.scheduler-crew.scheduler-crew--carried .scheduler-crew__dot { visibility: hidden; }
 .scheduler-crew__mark--success { color: var(--scheduler-mark-success); }
 .scheduler-crew__mark--error { color: var(--scheduler-mark-error); }
 .scheduler-crew__mark--warning { color: var(--scheduler-mark-warning); }
@@ -2683,6 +2701,103 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-avail__name:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 .scheduler-avail__cell--busy { cursor: pointer; }
+
+/* A driver carried to a trip, from the roster or off another bar, is a figure
+   held at the pointer by the back of its shirt, where the closed-hand cursor
+   pinches it, both arms free, with the name beside it as Design's tag, lifted
+   as a carried bar is. The figure is drawn in the icon colour, white on a
+   dark theme and dark on a light one, until data.js gives one pulled out of
+   a bar its seat's own. Its pose is carried.js's: data.js writes each
+   frame's swing, stretch and limb angles as properties on the holder, and
+   each part turns by its own about its own joint. The holder takes no
+   pointer, so the bar under it is the one found.
+
+   While a name is carried, every bar whose Driver seat is empty is outlined
+   with a dashed line that breathes, so where a driver is wanted shows before
+   the pointer gets there. The bar under the pointer takes a solid ring
+   instead, outside its edge and over its neighbours, clear of the selected
+   trip's inset ring: the focus tone where the roster shows the driver free
+   on its days, and the warning tone where it shows them away or on another
+   bus. A warning, not a wall, because the drop is still asked. */
+.scheduler-carried {
+  position: fixed;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--rux-spacing-02);
+  /* The pinch is 8px along the figure's top edge, set just under the pointer. */
+  margin-block-start: var(--rux-spacing-02);
+  margin-inline-start: -.5rem;
+  color: var(--rux-icon-primary);
+  pointer-events: none;
+}
+.scheduler-carried__name {
+  margin-block-start: var(--rux-spacing-03);
+  border-radius: 1rem;
+  box-shadow: var(--scheduler-lift);
+}
+.scheduler-carried__pull { flex: none; }
+.scheduler-carried__figure { display: block; overflow: visible; }
+/* Pulled out of a bar, the figure is set by data.js so its head sits on the
+   seat's dot and moves with the pointer, turned about its head to lean back
+   toward the dot, and hidden below the line the dot sat on, which data.js
+   moves down the figure as it comes out. Its name waits until it is free.
+   Free, it springs to the pointer, a little past it and back. */
+.scheduler-carried {
+  translate: var(--scheduler-carried-dx, 0) var(--scheduler-carried-dy, 0);
+  transition: translate 180ms cubic-bezier(.2, .9, .3, 1.5);
+}
+.scheduler-carried--rooted .scheduler-carried__pull {
+  transform-origin: 13.5px 9.5px;
+  transform: rotate(var(--scheduler-carried-lean, 0deg));
+  clip-path: inset(-3rem -3rem calc(100% - var(--scheduler-carried-out, 100%)) -3rem);
+}
+.scheduler-carried--rooted .scheduler-carried__name { visibility: hidden; }
+/* Let go, nothing holds the figure, so the pinch of its shirt goes. Dropped
+   on a bar it lands, sits, lies, sits up and stands, bending at the hip and
+   swaying about its feet and not its pinch, and data.js keeps it with the bar. Seated, it goes
+   into the bar at its seat the way it came out, hidden below the dot's line. */
+.scheduler-carried--loose .scheduler-carried__pinch { visibility: hidden; }
+.scheduler-carried--standing .scheduler-carried__body { transform-origin: 9.75px 39.5px; }
+.scheduler-carried--planted .scheduler-carried__pull { transform-origin: 9px 27px; }
+/* The joints, in the drawing's own units: the pinch, the shoulder and the
+   hip, which the body is also moved by, from where it stands. The pinched shirt is a thinner line than a limb, so it is not read as
+   a raised arm. */
+.scheduler-carried__pinch { stroke-width: 1.25; }
+.scheduler-carried__body {
+  transform-origin: 8px 1px;
+  transform: translate(var(--scheduler-carried-hip-x, 0px), var(--scheduler-carried-hip-y, 0px))
+    rotate(var(--scheduler-carried-swing)) scaleY(var(--scheduler-carried-stretch));
+}
+/* Everything above the hip leans from it, apart from the legs: how a figure
+   sits, and lies with its legs along the ground. */
+.scheduler-carried__torso { transform-origin: 9px 27px; transform: rotate(var(--scheduler-carried-torso, 0deg)); }
+.scheduler-carried__arm { transform-origin: 9.5px 13.5px; transform: rotate(var(--scheduler-carried-arm)); }
+.scheduler-carried__arm--back { transform: rotate(var(--scheduler-carried-arm-back)); }
+.scheduler-carried__leg { transform-origin: 9px 27px; transform: rotate(var(--scheduler-carried-leg)); }
+.scheduler-carried__leg--back { transform: rotate(var(--scheduler-carried-leg-back)); }
+/* While its figure is out a name is dimmed, as a carried bar is where it sat.
+   Once the figure has fallen out of sight the name slides back in on the
+   selected surface, which fades, so it reads as there to pick up again. */
+.scheduler-avail__name--carried { cursor: grabbing; color: var(--rux-text-disabled); }
+@keyframes scheduler-avail-back {
+  from { text-indent: -4rem; background-color: var(--rux-layer-selected); }
+  60% { text-indent: .25rem; }
+  to { text-indent: 0; }
+}
+.scheduler-avail__name--back { animation: scheduler-avail-back 480ms cubic-bezier(.2, .8, .3, 1); }
+.scheduler-bar.scheduler-bar--seat { outline: 2px solid var(--rux-focus); outline-offset: 1px; z-index: 2; }
+.scheduler-bar.scheduler-bar--seat-warn { outline: 2px solid var(--rux-support-warning); outline-offset: 1px; z-index: 2; }
+.scheduler-grid--carrying .scheduler-bar[data-wants-driver]:not(.scheduler-bar--open, .scheduler-bar--saving, .scheduler-bar--seat, .scheduler-bar--seat-warn) {
+  outline: 2px dashed var(--rux-focus);
+  outline-offset: 1px;
+  z-index: 1;
+  animation: scheduler-bar-wants 1.1s ease-in-out infinite alternate;
+}
+@keyframes scheduler-bar-wants { to { outline-color: color-mix(in srgb, var(--rux-focus) 30%, transparent); } }
+@media (prefers-reduced-motion: reduce) {
+  .scheduler-grid--carrying .scheduler-bar[data-wants-driver] { animation: none; }
+}
 
 /* On the board, every bar but the picked driver's steps back, so theirs stand
    out by contrast rather than by a shadow Carbon keeps for floating things,

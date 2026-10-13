@@ -130,10 +130,10 @@
       not a new value.
 
   RUX-DARK IS RUX'S OWN THEME, STARTED FROM GEIST-DARK. Its block holds
-  geist-dark's values and every rule in css/rux-overrides.css that names
-  geist-dark names it too, so the two draw the same page until a value or a
-  rule is given to rux-dark alone. It is in the account panel while it is
-  built, so it can be picked on any page.
+  geist-dark's values except the ones its own comment names, and every rule
+  in css/rux-overrides.css that names geist-dark names it too, so the two
+  draw the same shapes until a rule is given to rux-dark alone. It is in the
+  account panel while it is built, so it can be picked on any page.
 
   ANT-DARK FOLLOWS ANT DESIGN'S DARK ALGORITHM (`theme.darkAlgorithm` on
   the default seed): its neutrals, text alphas, fills, and its dark blue,
@@ -488,9 +488,18 @@
   --rux-content-switcher-selected: rgba(141, 141, 141, 0.24);
 }
 
-/* RUX-DARK STARTS AS GEIST-DARK'S VALUES, token for token, and this block is
-   where its own are written as they are chosen. A value still equal to
-   geist-dark's is explained in that block and in the header above. */
+/* RUX-DARK STARTS AS GEIST-DARK'S VALUES, and this block is where its own
+   are written as they are chosen. A value still equal to geist-dark's is
+   explained in that block and in the header above.
+
+   ITS RAISED GREYS SIT ONE STEP UP GEIST'S LADDER, which runs #0a0a0a,
+   #111111, #1a1a1a, #242424, #2e2e2e, #333333, #3f3f3f, #525252, #666666.
+   Every layer and field token, the secondary and disabled buttons, the
+   skeleton, the off toggle and the chat's shell and bubbles hold the next
+   grey up from geist-dark's, so the first raised surface is #111111, the
+   lightness of the #0d1117 GitHub's Primer draws a tile in, and the greys
+   keep their order. The page stays black, and the borders, the grey tags
+   and the tinted fills are geist-dark's. */
 [data-theme="rux-dark"] {
   /* color-scheme / brand */
   --rux-color-scheme: dark;
@@ -506,43 +515,43 @@
   --rux-background-selected-hover: rgba(255, 255, 255, 0.14);
 
   /* layer */
-  --rux-layer-01: #0a0a0a;
-  --rux-layer-02: #111111;
-  --rux-layer-03: #1a1a1a;
-  --rux-layer-accent-01: #1a1a1a;
-  --rux-layer-accent-02: #242424;
-  --rux-layer-accent-03: #2e2e2e;
-  --rux-layer-accent-active-01: #333333;
-  --rux-layer-accent-active-02: #3f3f3f;
-  --rux-layer-accent-active-03: #525252;
-  --rux-layer-accent-hover-01: #242424;
-  --rux-layer-accent-hover-02: #2e2e2e;
-  --rux-layer-accent-hover-03: #333333;
-  --rux-layer-active-01: #2e2e2e;
-  --rux-layer-active-02: #333333;
-  --rux-layer-active-03: #3f3f3f;
+  --rux-layer-01: #111111;
+  --rux-layer-02: #1a1a1a;
+  --rux-layer-03: #242424;
+  --rux-layer-accent-01: #242424;
+  --rux-layer-accent-02: #2e2e2e;
+  --rux-layer-accent-03: #333333;
+  --rux-layer-accent-active-01: #3f3f3f;
+  --rux-layer-accent-active-02: #525252;
+  --rux-layer-accent-active-03: #666666;
+  --rux-layer-accent-hover-01: #2e2e2e;
+  --rux-layer-accent-hover-02: #333333;
+  --rux-layer-accent-hover-03: #3f3f3f;
+  --rux-layer-active-01: #333333;
+  --rux-layer-active-02: #3f3f3f;
+  --rux-layer-active-03: #525252;
   --rux-layer-background-01: #000000;
-  --rux-layer-background-02: #0a0a0a;
-  --rux-layer-background-03: #111111;
-  --rux-layer-hover-01: #1a1a1a;
-  --rux-layer-hover-02: #242424;
-  --rux-layer-hover-03: #2e2e2e;
-  --rux-layer-selected-01: #242424;
-  --rux-layer-selected-02: #2e2e2e;
-  --rux-layer-selected-03: #333333;
-  --rux-layer-selected-disabled: #525252;
-  --rux-layer-selected-hover-01: #2e2e2e;
-  --rux-layer-selected-hover-02: #333333;
-  --rux-layer-selected-hover-03: #3f3f3f;
+  --rux-layer-background-02: #111111;
+  --rux-layer-background-03: #1a1a1a;
+  --rux-layer-hover-01: #242424;
+  --rux-layer-hover-02: #2e2e2e;
+  --rux-layer-hover-03: #333333;
+  --rux-layer-selected-01: #2e2e2e;
+  --rux-layer-selected-02: #333333;
+  --rux-layer-selected-03: #3f3f3f;
+  --rux-layer-selected-disabled: #666666;
+  --rux-layer-selected-hover-01: #333333;
+  --rux-layer-selected-hover-02: #3f3f3f;
+  --rux-layer-selected-hover-03: #525252;
   --rux-layer-selected-inverse: #ededed;
 
   /* field */
-  --rux-field-01: #0a0a0a;
-  --rux-field-02: #0a0a0a;
-  --rux-field-03: #111111;
-  --rux-field-hover-01: #1a1a1a;
-  --rux-field-hover-02: #1a1a1a;
-  --rux-field-hover-03: #242424;
+  --rux-field-01: #111111;
+  --rux-field-02: #111111;
+  --rux-field-03: #1a1a1a;
+  --rux-field-hover-01: #242424;
+  --rux-field-hover-02: #242424;
+  --rux-field-hover-03: #2e2e2e;
 
   /* border */
   --rux-border-disabled: rgba(237, 237, 237, 0.25);
@@ -614,10 +623,10 @@
   --rux-chat-avatar-agent: #ededed;
   --rux-chat-avatar-bot: #888888;
   --rux-chat-avatar-user: #52a8ff;
-  --rux-chat-bubble-agent: #111111;
+  --rux-chat-bubble-agent: #1a1a1a;
   --rux-chat-bubble-agent-text: #ededed;
   --rux-chat-bubble-border: #262626;
-  --rux-chat-bubble-user: #1a1a1a;
+  --rux-chat-bubble-user: #242424;
   --rux-chat-bubble-user-text: #ededed;
   --rux-chat-button: #52a8ff;
   --rux-chat-button-active: rgba(255, 255, 255, 0.18);
@@ -625,22 +634,22 @@
   --rux-chat-button-selected: rgba(255, 255, 255, 0.1);
   --rux-chat-button-text-hover: #8fc7ff;
   --rux-chat-button-text-selected: #a1a1a1;
-  --rux-chat-header-background: #0a0a0a;
+  --rux-chat-header-background: #111111;
   --rux-chat-header-text: #ededed;
   --rux-chat-prompt-background: #000000;
   --rux-chat-prompt-border-end: rgba(26, 26, 26, 0);
   --rux-chat-prompt-border-start: #1a1a1a;
   --rux-chat-prompt-text: #ededed;
-  --rux-chat-shell-background: #0a0a0a;
+  --rux-chat-shell-background: #111111;
 
   /* misc */
   --rux-interactive: #ededed;
   --rux-highlight: #102a43;
   --rux-overlay: rgba(0, 0, 0, 0.72);
   --rux-shadow: rgba(0, 0, 0, 0.8);
-  --rux-skeleton-background: #1a1a1a;
-  --rux-skeleton-element: #2e2e2e;
-  --rux-toggle-off: #2e2e2e;
+  --rux-skeleton-background: #242424;
+  --rux-skeleton-element: #333333;
+  --rux-toggle-off: #333333;
 
   /* button */
   --rux-button-primary: #ededed;
@@ -649,15 +658,15 @@
   --rux-button-tertiary: #ededed;
   --rux-button-tertiary-hover: #d4d4d4;
   --rux-button-tertiary-active: #a1a1a1;
-  --rux-button-secondary: #0a0a0a;
-  --rux-button-secondary-hover: #1a1a1a;
-  --rux-button-secondary-active: #2e2e2e;
+  --rux-button-secondary: #111111;
+  --rux-button-secondary-hover: #242424;
+  --rux-button-secondary-active: #333333;
   --rux-button-danger-primary: #e2162a;
   --rux-button-danger-secondary: #ff565f;
   --rux-button-danger-hover: #cd2b31;
   --rux-button-danger-active: #b81d26;
   --rux-button-separator: #000000;
-  --rux-button-disabled: #1a1a1a;
+  --rux-button-disabled: #242424;
 
   /* tag */
   --rux-tag-background-red: #4f000f;

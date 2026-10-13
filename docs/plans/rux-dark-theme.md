@@ -13,9 +13,13 @@ site, and Design's contrast measurement reads no text in it under 4.5 to 1.
 ## Decisions
 
 - **It starts as geist-dark.** Its block in `design/css/rux-theme.css` holds
-  geist-dark's values, and every rule that names geist-dark in
-  `design/css/rux-overrides.css`, `scheduler/theme.css` and
-  `scheduler/app.css` names it too, so the two draw the same page.
+  geist-dark's values where it has none of its own, and every rule that names
+  geist-dark in `design/css/rux-overrides.css`, `scheduler/theme.css` and
+  `scheduler/app.css` names it too, so the two draw the same shapes.
+- **The raised greys are Geist's, one step up.** Every surface, field and
+  secondary button holds the next grey on Geist's ladder, so a panel is
+  `#111111`, the lightness of Primer's `bgColor-default`, `#0d1117`. The page
+  stays black.
 - **A colour is changed in its own block; a shape is split off when it
   changes.** A rule rux-dark stops sharing loses its name from the shared
   selector and is written for rux-dark alone, so geist-dark never moves.
@@ -29,9 +33,12 @@ site, and Design's contrast measurement reads no text in it under 4.5 to 1.
 
 ## Questions
 
-- **Which system decides each part?** The page and its greys, the accent and
-  the main button, the status colours, the corners and control heights, and
-  the header each take Geist's answer or Primer's.
+- **Which system decides each part?** The borders, the accent and the main
+  button, the status colours, the corners and control heights, and the
+  header each take Geist's answer or Primer's.
+- **Do the borders follow the surfaces up?** They are geist-dark's, so each
+  is a little fainter on its raised surface than it was. Primer's are far
+  brighter: `borderColor-default` is `#3d444d` on a `#0d1117` tile.
 - **Which face?** Geist Sans, which the theme wears now, or the device's own
   system face, which downloads nothing.
 - **Is there a light companion?** `rux-light` would be its own plan.
@@ -44,6 +51,10 @@ site, and Design's contrast measurement reads no text in it under 4.5 to 1.
 - [ ] Write the chosen colours into the `rux-dark` block, and replace the
   block's opening comment with what each group is taken from.
 - [ ] Split off and rewrite the shape rules that change.
-- [ ] Give the scheduler's trip bars, marks and panels their own pass.
+- [ ] Give the scheduler's trip bars, marks and panels their own pass. The
+  No bus row is `#242424`, as light as a bar's fill, so only the bar's hue
+  parts them.
+- [ ] Set the grey tags against a selected table row, which is now lighter
+  than the tag on it.
 - [ ] Measure contrast on the kitchen sink and on each app's front page with
   `design/tools/measure-contrast.js`.

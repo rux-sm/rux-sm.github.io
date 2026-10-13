@@ -564,6 +564,28 @@
 :is([data-theme="rux-dark"] .rux--header, .rux--header[data-theme="rux-dark"]) .rux--header__action:not(:has(.rux--user-avatar), :focus-visible) {
   border-color: var(--rux-border-subtle-02);
 }
+/* RUX-DARK'S ACCOUNT BUTTON IS THE FACE ITSELF, 32px as GitHub's is: the
+   picture fills the button, where the other themes set a 24px one inside
+   it, and its initials take the 32px avatar's type. The button is round with
+   it. The face covers the border the focus ring is drawn on, so here the
+   ring is an outline 2px clear of it. */
+:is([data-theme="rux-dark"] .rux--header, .rux--header[data-theme="rux-dark"]) .rux--header__action:has(.rux--user-avatar) {
+  border-radius: 50%;
+}
+:is([data-theme="rux-dark"] .rux--header, .rux--header[data-theme="rux-dark"]) .rux--header__action:has(.rux--user-avatar):focus-visible {
+  outline: 2px solid var(--rux-focus);
+  outline-offset: 2px;
+}
+:is([data-theme="rux-dark"] .rux--header, .rux--header[data-theme="rux-dark"]) .rux--header__action :is(.rux--user-avatar, .rux--user-avatar__photo) {
+  flex: none;
+  block-size: 2rem;
+  inline-size: 2rem;
+}
+:is([data-theme="rux-dark"] .rux--header, .rux--header[data-theme="rux-dark"]) .rux--header__action .rux--user-avatar {
+  font-size: var(--rux-body-compact-01-font-size, 0.875rem);
+  line-height: var(--rux-body-compact-01-line-height, 1.28572);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing, 0.16px);
+}
 /* A count on one of those 32px buttons has no corner to sit in: Carbon's 4px
    inset is measured for a 48px button, and here it lands the count on the
    glyph. So it hangs off the button's top corner, half over the edge. */
@@ -1658,7 +1680,7 @@
    action row, and a modal's close and footer. */
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--header__action,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--side-panel__navigation-back-button,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--side-panel__close-button,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--side-panel__close-button,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--action-set__action-button,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--modal-close-button,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--modal-footer .rux--btn {
@@ -1669,15 +1691,15 @@
    side panel's back button, in the corner opposite, takes that one. A
    notification's sits in the top corner only; it is 48px tall in a taller
    surface, so its lower corners stay square. */
-:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--side-panel__close-button,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--side-panel__close-button,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--modal-close-button {
   border-start-end-radius: 12px;
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--side-panel__navigation-back-button {
   border-start-start-radius: 12px;
 }
-:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--inline-notification__close-button,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--toast-notification__close-button {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--inline-notification__close-button,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--toast-notification__close-button {
   border-start-end-radius: 8px;
 }
 /* RUX-DARK'S DIALOG KEEPS ITS CLOSE BUTTON CLEAR OF THE CORNER AND RINGS IT.
@@ -1701,6 +1723,43 @@
 [data-theme="rux-dark"] .rux--modal-close:focus-visible {
   border-color: var(--rux-focus);
   box-shadow: inset 0 0 0 1px var(--rux-focus);
+}
+/* ITS SIDE PANEL'S CLOSE BUTTON STANDS THE SAME 12px CLEAR, RINGED, and is
+   32px whichever size class a page gives it, which leaves 4px before the
+   48px the title keeps clear at its end. Carbon sizes the button by three
+   classes, so these rules name the panel and the button's two. */
+[data-theme="rux-dark"] .rux--side-panel__decorator-and-close {
+  inset-block-start: var(--rux-spacing-04);
+  inset-inline-end: var(--rux-spacing-04);
+}
+[data-theme="rux-dark"] .rux--side-panel .rux--btn.rux--side-panel__close-button {
+  border-radius: 6px;
+  block-size: 2rem;
+  inline-size: 2rem;
+}
+[data-theme="rux-dark"] .rux--side-panel .rux--btn.rux--side-panel__close-button:not(:focus) {
+  border-color: var(--rux-border-subtle-02);
+}
+/* A NOTIFICATION'S IS A RINGED 32px BUTTON 8px IN ON EVERY SIDE, which is
+   the 48px square Carbon gives it, so the words beside it wrap where they
+   did. A toast keeps the free margin that sets its button at the far end.
+   Carbon draws the focus ring as an outline inside the button, so the
+   border takes the focus colour with it. */
+[data-theme="rux-dark"] :is(.rux--inline-notification__close-button, .rux--toast-notification__close-button, .rux--actionable-notification__close-button) {
+  margin: var(--rux-spacing-03);
+  border: 1px solid var(--rux-border-subtle-02);
+  border-radius: 6px;
+  block-size: 2rem;
+  inline-size: 2rem;
+  min-block-size: 2rem;
+  min-inline-size: 2rem;
+  max-inline-size: 2rem;
+}
+[data-theme="rux-dark"] .rux--toast-notification__close-button {
+  margin-inline-start: auto;
+}
+[data-theme="rux-dark"] :is(.rux--inline-notification__close-button, .rux--toast-notification__close-button, .rux--actionable-notification__close-button):focus-visible {
+  border-color: var(--rux-focus);
 }
 /* The side panel's header and action row paint their own fill over the
    panel's corners, so they take its curve too. */

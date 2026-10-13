@@ -25,10 +25,12 @@ site, and Design's contrast measurement reads no text in it under 4.5 to 1.
   `borderColor-default`, `#3d444d`, and a rule between rows is `#343434`,
   its `borderColor-muted` over a panel.
 - **A button is ringed where it stands clear.** The header's buttons, the
-  buttons in a scheduler panel's head and a modal's X take the button's
-  border; the modal's X stands 12px clear of its corner to take it. Primer
-  leaves a close button bare; rux-dark does not follow it there. The account
-  button is a face and takes none.
+  buttons in a scheduler panel's head and the X of a modal, a side panel and
+  a notification take the button's border; each X stands clear of its corner
+  to take it. Primer leaves a close button bare; rux-dark does not follow it
+  there. On a phone the scheduler's panel heads keep Carbon's bare squares.
+- **The account button is the face, 32px.** The picture fills the header's
+  32px button, as GitHub's does, and takes no ring.
 - **A colour is changed in its own block; a shape is split off when it
   changes.** A rule rux-dark stops sharing loses its name from the shared
   selector and is written for rux-dark alone, so geist-dark never moves.
@@ -60,9 +62,8 @@ site, and Design's contrast measurement reads no text in it under 4.5 to 1.
 - [ ] Give the scheduler's trip bars, marks and panels their own pass. The
   No bus row is `#242424`, as light as a bar's fill, so only the bar's hue
   parts them.
-- [ ] Ring the close buttons still bare. Design's side panel and
-  notifications fill a corner and have to stand clear of it first; its
-  dialog, guide banner and coachmark already do.
+- [ ] Ring the close buttons still bare: Design's dialog, guide banner and
+  coachmark, which already stand clear of a corner.
 - [ ] Set the grey tags against a selected table row, which is now lighter
   than the tag on it.
 - [ ] Measure contrast on the kitchen sink and on each app's front page with

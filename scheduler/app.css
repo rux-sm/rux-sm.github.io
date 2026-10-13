@@ -4585,12 +4585,11 @@ html:has(.scheduler-page[data-takeover]) {
 /* ══ Tasks and Prep ══════════════════════════════════════════════════════
    The pane of the board's two lists, beside the week, `--scheduler-panel-w`
    wide as the roster is. to-do-list.js shows it and fills Tasks, and
-   departures-panel.js fills Prep. Add a to-do is the dashed row the trip
-   editor's lists end in. Every row of either list is a tile. What opens in
-   place, a task as a leg on Prep is, is Design's tile around an item of its
-   accordion, holding Design's tag, buttons and menu, and a task's form is a
-   tile too. A trip on Prep with a gap, which leaves for its trip, is
-   Design's clickable tile, one link. */
+   departures-panel.js fills Prep. Every row of either list is a tile. What
+   opens in place, a task as a leg on Prep is, is Design's tile around an
+   item of its accordion, holding Design's tag, buttons and menu, and a
+   task's form is a tile too. A trip on Prep with a gap, which leaves for its
+   trip, is Design's clickable tile, one link. */
 /* The pane is a column that does not scroll: its head keeps its place, and
    the list under it scrolls in what is left. */
 .scheduler-to-do { display: flex; flex-direction: column; overflow: hidden; }

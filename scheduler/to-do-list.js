@@ -7,11 +7,9 @@
    The pane stays while a trip or a form opens beside it; a press on the open
    list's button shuts it, and a press on the other swaps the list.
 
-   Tasks is what people ask of the office, the `to_dos` rows, of two makers:
-
-     Written   a row a person typed.
-     Agent     a row a Claude session added through the connector, made by
-               Ruxbot.
+   Tasks is what people ask of the office, the `to_dos` rows. A Claude
+   session adds a row through the connector, made by Ruxbot; nobody adds one
+   here, where a row is done, edited and deleted.
 
    A row is a tile that opens, Design's tile around an item of its accordion,
    as a leg is on Prep. Closed, it is who it is about in bold, with its due
@@ -28,9 +26,8 @@
 
    The rows are grouped Overdue, Today, This week, Later and No date, then
    Done today: the rows closed today behind one line that says how many and
-   is shut until pressed, each a tile struck through, with Undo; Add a
-   to-do, above them, opens a new row's form at the head of the list.
-   Everyone on the staff sees every row. The count on Tasks is its Overdue
+   is shut until pressed, each a tile struck through, with Undo. Everyone on
+   the staff sees every row. The count on Tasks is its Overdue
    and Today rows; the count on Prep is the one departures-panel.js gives.
 
    A change to a row arrives on the `scheduler-to-do` channel and redraws.
@@ -55,7 +52,6 @@
   };
   if (!client || !panel || !LISTS.tasks.button) return;
 
-  const NEW = 'new';   // `editingId` while the form open is a new row's
   const GROUPS = ['Overdue', 'Today', 'This week', 'Later', 'No date'];
   const MENU_ID = 'scheduler-to-do-menu';
   /* The kinds of work a row can be: each one's words on its tag and the tag's
@@ -113,7 +109,7 @@
   let me = null;            // my staff row, as /account.js gives it
   let staff = new Map();    // profile id -> profile, Ruxbot among them
   let stored = [];          // `to_dos`: every open row, and the ones closed today
-  let editingId = null;     // the row whose form is open, or NEW
+  let editingId = null;     // the row whose form is open
   let openId = null;        // the row that is open, one at a time
   let doneOpen = false;     // whether Done today is open, shut again when the pane shuts
   let showing = null;       // the list the pane shows, `tasks` or `prep`, or none while it is shut
@@ -160,7 +156,6 @@
     }
     await loadStored();
   }
-  const add = fields => write(() => client.from('to_dos').insert(fields));
   const tick = (row, done) => write(() => client.from('to_dos')
     .update({ closed_at: done ? new Date().toISOString() : null }).eq('id', row.id));
   const change = (row, fields) => write(() => client.from('to_dos').update(fields).eq('id', row.id));
@@ -301,7 +296,7 @@
     return tileOf(li);
   }
 
-  // A list of tiles, a step apart: a group's rows, the done rows, or a new row's form.
+  // A list of tiles, a step apart: a group's rows, or the done rows.
   const tileList = () => {
     const ul = el('ul', 'scheduler-to-do__rows scheduler-to-do__tiles');
     ul.setAttribute('role', 'list');
@@ -420,23 +415,22 @@
     trip.append(option('', 'No trip', !row.trip_id),
       ...choices.map(t => option(t.id, `${t.start_date ? shortDay.format(parseISO(t.start_date)) : 'No date'} · ${tripWords(t)}`, t.id === row.trip_id)));
 
-    // A row not yet saved has nothing to delete.
     const bar = el('div', 'scheduler-to-do__buttons');
-    const del = row.id ? button('rux--btn--danger--ghost', 'Delete') : null;
+    const del = button('rux--btn--danger--ghost', 'Delete');
     const cancel = button('rux--btn--ghost', 'Cancel');
     cancel.classList.add('scheduler-to-do__end');
-    const save = button('rux--btn--primary', row.id ? 'Save' : 'Add');
+    const save = button('rux--btn--primary', 'Save');
     save.type = 'submit';
-    bar.append(del ?? '', cancel, save);
-    // Who added a saved row, and when: its tile does not say.
-    const added = row.id ? madeBy(row) : '';
+    bar.append(del, cancel, save);
+    // Who added the row, and when: its tile does not say.
+    const added = madeBy(row);
     form.append(field('Kind', kind, true), field('Who', who), field('To do', words), field('Detail', detail),
       field('Due', due), field('Owner', owner, true), field('Trip', trip, true),
       added ? el('p', 'scheduler-to-do__meta', added) : '', bar);
 
     const shutForm = () => { editingId = null; draw(); };
     cancel.addEventListener('click', shutForm);
-    del?.addEventListener('click', () => { editingId = null; openId = null; remove(row); });
+    del.addEventListener('click', () => { editingId = null; openId = null; remove(row); });
     form.addEventListener('submit', e => {
       e.preventDefault();
       const body = words.value.trim();
@@ -448,27 +442,20 @@
         detail: detail.value.split('\n').map(s => s.trim()).filter(Boolean).join('\n') || null,
         due_on: due.value || null, owner_id: owner.value || null, trip_id: trip.value || null,
       };
-      if (row.id) change(row, fields); else add(fields);
+      change(row, fields);
     });
     form.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); shutForm(); } });
     li.appendChild(form);
     return li;
   }
 
-  /* The frame, built once: Add a to-do, the dashed row the trip editor's
-     lists end in, and the list under it. */
+  /* The frame, built once: a line for what went wrong, and the list under
+     it. */
   const body = el('div', 'rux--layer-two rux--stack-vertical rux--stack-scale-5 scheduler-to-do__body');
-  const addRow = el('div', 'scheduler-list-additem');
-  const addButton = el('button', 'rux--btn rux--btn--ghost rux--layout--size-md scheduler-list-add');
-  addButton.type = 'button';
-  const plus = svgUse('#m-add');
-  plus.setAttribute('class', 'rux--btn__icon');
-  addButton.append(plus, 'Add a to-do');
-  addRow.appendChild(addButton);
   const error = el('p', 'scheduler-to-do__error');
   error.setAttribute('role', 'alert');
   const list = el('div', 'scheduler-to-do__list');
-  body.append(addRow, error, list);
+  body.append(error, list);
   body.hidden = true;
   panel.appendChild(body);
 
@@ -503,10 +490,8 @@
     button.setAttribute('aria-label', n ? `${name}, ${n} ${due}` : name);
   }
   const drawPrepCount = () => drawCount('prep', window.SchedulerDeparturesPanel?.summary().due ?? 0);
-  // A new row as its form first shows it: mine, due today, and nothing else.
-  const blank = () => ({ id: null, kind: null, who: null, body: '', detail: null, due_on: iso(new Date()), owner_id: me?.id ?? null, trip_id: null });
 
-  // The list: a new row's form while one is open, the groups, then Done today.
+  // The list: the groups, then Done today.
   function listParts() {
     const rows = grouped();
     const parts = [];
@@ -519,12 +504,7 @@
     }
     const done = stored.filter(r => r.closed_at);
     if (done.length) parts.push(doneGroup(done));
-    if (!parts.length && editingId !== NEW) parts.push(el('p', 'scheduler-to-do__none', 'Nothing to do.'));
-    if (editingId === NEW) {
-      const ul = tileList();
-      ul.appendChild(editForm(blank()));
-      parts.unshift(ul);
-    }
+    if (!parts.length) parts.push(el('p', 'scheduler-to-do__none', 'Nothing to do.'));
     return parts;
   }
 
@@ -555,13 +535,6 @@
     if (isDone(e.target)) { doneOpen = false; return; }
     if (e.target.dataset?.id === openId) openId = null;
   });
-  addButton.addEventListener('click', () => {
-    editingId = NEW;
-    openId = null;
-    draw();
-    list.querySelector('.scheduler-to-do__form input[required]')?.focus();
-  });
-
   // A link to a trip, a Prep row's or a Prep line's, by a plain press.
   panel.addEventListener('click', e => {
     const a = e.target.closest?.('a[href*="?trip="]');

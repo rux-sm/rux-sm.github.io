@@ -463,6 +463,17 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-card__action {
   margin-inline-end: -10px;
 }
+/* An open task's Email and Trip are Geist's outlined button, as the bar's
+   buttons are: the quiet ring on the 1px border a ghost button already
+   carries, so each reads as a button beside Done. It gives way to the focus
+   ring, which is that same border. Ringed buttons stand the bar's 8px apart,
+   where bare ones keep half of that. */
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-to-do__more .rux--btn--ghost:not(.rux--btn--icon-only, :focus-visible) {
+  border-color: var(--rux-border-subtle-02);
+}
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-to-do__more > .scheduler-to-do__buttons {
+  gap: var(--rux-spacing-03);
+}
 /* Geist's header is 64px, not the shell's 48 (Design's rux-overrides.css), so
    what the board places under it -- a panel brought in front, its scrim and
    the quote's pinned total -- sits 4rem down rather than 3rem. */

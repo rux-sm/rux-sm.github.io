@@ -1702,25 +1702,26 @@
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--toast-notification__close-button {
   border-start-end-radius: 8px;
 }
-/* RUX-DARK'S DIALOG KEEPS ITS CLOSE BUTTON CLEAR OF THE CORNER AND RINGS IT.
-   It stands 12px in at the theme's 36px control size with the 6px corners
-   its other buttons have, in the border a button has, so it fills the 48px
-   Carbon keeps for it at the header's end and the title starts where it
-   did. The border is the 1px the other rings are, so the focus ring, which
-   is that border, takes an inset line to stay Carbon's 2px. */
-[data-theme="rux-dark"] .rux--modal-close-button {
+/* RUX-DARK'S MODAL AND DIALOG KEEP THEIR CLOSE BUTTON CLEAR OF THE CORNER
+   AND RING IT. It stands 12px in at the theme's 36px control size with the
+   6px corners its other buttons have, in the border a button has, so it
+   fills the 48px Carbon keeps for it at the header's end and the title
+   starts where it did. The border is the 1px the other rings are, so the
+   focus ring, which is that border, takes an inset line to stay Carbon's
+   2px. */
+[data-theme="rux-dark"] :is(.rux--modal-close-button, .rux--dialog__header-controls) {
   inset-block-start: var(--rux-spacing-04);
   inset-inline-end: var(--rux-spacing-04);
   border-radius: 6px;
 }
-[data-theme="rux-dark"] .rux--modal-close {
+[data-theme="rux-dark"] :is(.rux--modal-close, .rux--dialog__close) {
   padding: 7px;
   border: 1px solid var(--rux-border-subtle-02);
   border-radius: 6px;
   block-size: 2.25rem;
   inline-size: 2.25rem;
 }
-[data-theme="rux-dark"] .rux--modal-close:focus-visible {
+[data-theme="rux-dark"] :is(.rux--modal-close, .rux--dialog__close):focus-visible {
   border-color: var(--rux-focus);
   box-shadow: inset 0 0 0 1px var(--rux-focus);
 }
@@ -1760,6 +1761,50 @@
 }
 [data-theme="rux-dark"] :is(.rux--inline-notification__close-button, .rux--toast-notification__close-button, .rux--actionable-notification__close-button):focus-visible {
   border-color: var(--rux-focus);
+}
+/* A GUIDE BANNER AND A COACHMARK ARE SURFACES WITH AN INK OF THEIR OWN, a
+   colour or the inverse of the page, where the grey ring would read as dirt:
+   their close button is ringed in that ink at 30%, which stands about as
+   far off its surface as the grey ring does off a panel. The banner's
+   stands 8px clear at its 32px, without the 6px Carbon pads its top by,
+   which set the glyph low in the ring. A coachmark's head is 32px tall and its
+   tagline 36px, so their button is 24px, 4px in, and neither grows; the
+   handle a floating coachmark is dragged by is a grip, not a button to
+   ring. Carbon holds the tagline's border clear and its button at the far
+   end with `!important`, so those two declarations answer in kind. */
+[data-theme="rux-dark"] .rux--guidebanner__close-button {
+  inset-block-start: var(--rux-spacing-03);
+  inset-inline-end: var(--rux-spacing-03);
+}
+[data-theme="rux-dark"] .rux--guidebanner__close-button .rux--btn {
+  padding-block-start: 0;
+}
+[data-theme="rux-dark"] .rux--guidebanner__close-button .rux--btn:not(:focus) {
+  border-color: color-mix(in srgb, currentColor 30%, transparent);
+}
+[data-theme="rux-dark"] .rux--coachmark--content-header .rux--btn--icon-only:not(.rux--coachmark--content-header--drag-icon) {
+  margin: var(--rux-spacing-02);
+  block-size: 1.5rem;
+  inline-size: 1.5rem;
+  min-block-size: 1.5rem;
+}
+[data-theme="rux-dark"] .rux--coachmark--content-header .rux--btn--icon-only:not(.rux--coachmark--content-header--drag-icon, :focus) {
+  border-color: color-mix(in srgb, var(--rux-icon-inverse) 30%, transparent);
+}
+[data-theme="rux-dark"] .rux--coachmark-tagline--close-btn-container {
+  display: grid;
+  place-items: center;
+  align-self: center;
+}
+[data-theme="rux-dark"] .rux--coachmark-tagline--close-btn {
+  margin-inline-start: 0 !important;
+  border-radius: 6px;
+  block-size: 1.5rem;
+  inline-size: 1.5rem;
+  min-block-size: 1.5rem;
+}
+[data-theme="rux-dark"] .rux--coachmark-tagline--close-btn:not(:focus-visible) {
+  border-color: color-mix(in srgb, currentColor 30%, transparent) !important;
 }
 /* The side panel's header and action row paint their own fill over the
    panel's corners, so they take its curve too. */

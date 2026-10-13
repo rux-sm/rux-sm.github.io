@@ -21,7 +21,7 @@
    background on the theme's `layer-01`, the raised surface a tile uses, so
    the bar still stands off the page instead of running into it. Geist is the
    exception: its header is the page's own black, parted by a hairline, so
-   geist-dark keeps the page's background. A header
+   geist-dark keeps the page's background, and rux-dark with it. A header
    with no `data-theme` of its own — the kitchen sink's specimens, inside a
    themed sandbox — is left to its sandbox.
 
@@ -43,7 +43,7 @@
         data-rux-custom-theme to the id, and sets every validated token
         inline. An inline style beats any stylesheet regardless of selector,
         which is why this needs no compiled CSS anywhere.
-     2. It is one of the seven known literal names — the attribute alone.
+     2. It is one of the known literal names — the attribute alone.
      3. It matches the name shape but resolves to nothing — a theme deleted
         elsewhere, or garbage. The stored preference is corrected to white
         (so the account panel stops pointing at a ghost id) and white is
@@ -74,9 +74,9 @@
   // found from it, so a page at any depth asks for the same two files.
   const HERE = document.currentScript?.src;
   const NAME = /^[a-z][a-z0-9-]*$/;
-  // Carbon's four compiled themes, then the five css/rux-theme.css adds.
+  // Carbon's four compiled themes, then the six css/rux-theme.css adds.
   const CARBON = new Set(['white', 'g10', 'g90', 'g100']);
-  const KNOWN = new Set([...CARBON, 'geist-dark', 'ant-dark', 'spotify-dark', 'apple-light', 'apple-dark']);
+  const KNOWN = new Set([...CARBON, 'geist-dark', 'rux-dark', 'ant-dark', 'spotify-dark', 'apple-light', 'apple-dark']);
   // The shell's zone, and the side nav sits inside it, so one element themes
   // both. The attribute is part of the selector on purpose — see the head.
   const SHELL = '.rux--header[data-theme]';
@@ -162,23 +162,24 @@
   // above them the bar takes the theme's raised surface — `layer-01`, what a
   // tile is drawn on — rather than the page's own background, which would
   // leave the bar and the page one 1px border apart. Geist draws its header on
-  // the page's own surface and parts it with a line, so a geist-dark bar, or a
-  // saved theme built on it, is left on the page's background. Set inline
+  // the page's own surface and parts it with a line, so a geist-dark bar, a
+  // rux-dark one, or a saved theme built on either, is left on the page's
+  // background. Set inline
   // because a saved theme writes its own `background` inline too, and this has
   // to beat it; clearOverrides() takes it off again on the next apply().
-  const FLAT = new Set(['geist-dark']);
+  const FLAT = new Set(['geist-dark', 'rux-dark']);
   const dressShell = (el, name, custom) => {
     wear(el, name, custom);
     if ((custom || !CARBON.has(name)) && !FLAT.has(el.dataset.theme)) el.style.setProperty('--rux-background', 'var(--rux-layer-01)');
     dressMark(el);
   };
 
-  // GEIST'S OWN FACES, FOR THE ONE THEME THAT WEARS THEM. geist-dark sets its
-  // words in Geist Sans (css/rux-overrides.css names the family), and no page
-  // links a stylesheet for it: this file already runs in the head of every
-  // page before the first paint and already knows the theme, so it writes the
-  // two faces and preloads the one every page uses. Another theme asks for
-  // nothing. The face is `swap`, where Plex's is `optional`: someone who
+  // GEIST'S OWN FACES, FOR THE TWO THEMES THAT WEAR THEM. geist-dark and
+  // rux-dark set their words in Geist Sans (css/rux-overrides.css names the
+  // family), and no page links a stylesheet for it: this file already runs in
+  // the head of every page before the first paint and already knows the
+  // theme, so it writes the two faces and preloads the one every page uses.
+  // Another theme asks for nothing. The face is `swap`, where Plex's is `optional`: someone who
   // picks this theme in the account panel sees it arrive on that page, and
   // the preload keeps every later page from painting in Plex first. Geist
   // Sans is one variable file covering the 400, 500 and 600 the theme uses.
@@ -199,8 +200,9 @@
     ['Geist', '100 900', 'Geist-Variable-Latin1.woff2'],
     ['Geist Mono', '400', 'GeistMono-Regular-Latin1.woff2'],
   ];
+  const GEIST_FACED = new Set(['geist-dark', 'rux-dark']);
   const dressFaces = () => {
-    if (!HERE || document.documentElement.dataset.theme !== 'geist-dark') return;
+    if (!HERE || !GEIST_FACED.has(document.documentElement.dataset.theme)) return;
     if (document.getElementById('rux-geist-faces')) return;
     const url = file => new URL(`../assets/fonts/${file}`, HERE).href;
     const preload = document.createElement('link');

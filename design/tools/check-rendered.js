@@ -73,14 +73,15 @@
     sections: document.querySelectorAll(SEC).length,
     emptySvgs: [...document.querySelectorAll(`${MAIN} svg`)].filter(s => !s.children.length).length,
     uaStyled,
-    // Nine: the four Carbon themes plus the five in
-    // css/rux-theme.css (geist-dark, ant-dark, spotify-dark, apple-light, apple-dark), which only
+    // Ten: the four Carbon themes plus the six in
+    // css/rux-theme.css (geist-dark, rux-dark, ant-dark, spotify-dark, apple-light, apple-dark), which only
     // the sink and the templates link.
     white: sweep('white'),
     g10: sweep('g10'),
     g90: sweep('g90'),
     g100: sweep('g100'),
     geistDark: sweep('geist-dark'),
+    ruxDark: sweep('rux-dark'),
     antDark: sweep('ant-dark'),
     spotifyDark: sweep('spotify-dark'),
     appleLight: sweep('apple-light'),

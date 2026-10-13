@@ -3937,7 +3937,7 @@ html:has(.scheduler-page[data-takeover]) {
 }
 /* Geist-dark parts the band's controls 8px apart, so the note keeps no margin
    of its own there, where the other themes' band has no gap and needs it. */
-[data-theme="geist-dark"] .scheduler-table-note { margin-inline-end: 0; }
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-table-note { margin-inline-end: 0; }
 /* Not on a phone. The band there is the search, the Show choice and New and
    nothing else fits: the count crushed the field to a magnifier and pushed the
    button off the end. The choice is held to what its first word needs, not

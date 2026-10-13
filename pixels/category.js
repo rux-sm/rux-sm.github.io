@@ -26,7 +26,7 @@
 (() => {
   'use strict';
 
-  const { data, enter, fresh, see, portrait, categories, locks, heading, side, sprites, boss, title, letter, words, tile, bar } = window.Pixels;
+  const { data, enter, fresh, see, stand, portrait, categories, locks, heading, side, sprites, boss, title, letter, words, tile, bar } = window.Pixels;
   const host = document.getElementById('pixels-category');
 
   const say = (heading, detail) => {
@@ -80,6 +80,7 @@
       return;
     }
     see(category);
+    stand(category);
     const solved = all.filter(p => results.has(p.id)).length;
     const el = document.createElement('section');
     el.className = 'rux--stack-vertical rux--stack-scale-4';

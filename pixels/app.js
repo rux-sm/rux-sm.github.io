@@ -200,7 +200,7 @@
     const tones = GLOW[shut ? 'shut' : c.rank || 'own'];
     const ink = { W: shut ? tones[0] : '1', P: tones[0], L: tones[1], M: tones[2], D: tones[3], K: tones[4] };
     const el = document.createElement('div');
-    el.className = 'pixels-picture pixels-portal game-tile-art';
+    el.className = 'pixels-picture pixels-portal';
     el.setAttribute('aria-hidden', 'true');
     el.style.setProperty('--size', 15);
     // A square outside the portal is given no ink, so the tile shows there.
@@ -263,6 +263,12 @@
     if (!all || all.includes(gateKey(c))) return;
     try { localStorage.setItem(SEEN, JSON.stringify([...all, gateKey(c)])); } catch { /* it says New again */ }
   };
+
+  // The rift a player last went into is kept there too, so the map opens
+  // with it in view. `stand` keeps it and `stood` asks.
+  const AT = 'pixels-at';
+  const stand = c => { try { localStorage.setItem(AT, gateKey(c)); } catch { /* the map opens on the next rift to play */ } };
+  const stood = c => { try { return localStorage.getItem(AT) === gateKey(c); } catch { return false; } };
 
   // Numbers from 0 up to 1 that follow from `seed`, the same in every browser.
   const seeded = seed => () => {
@@ -769,7 +775,9 @@
     head.className = 'game-tile-head';
     head.append(words('game-tile-name', c.rank ? `${c.rank} · ${heading(c)}` : heading(c)));
     if (tag) head.append(pill(tag));
-    a.append(portal(c, !locked && found === all), head);
+    const gate = portal(c, !locked && found === all);
+    gate.classList.add('game-tile-art');
+    a.append(gate, head);
     if (c.by) {
       const by = words('game-tile-note pixels-by', '');
       by.append(portrait(c.by), c.by.name);
@@ -897,7 +905,7 @@
   };
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    iphone, installed, fresh, face, portrait, seen, see, side, sprites, portal, fairy, locks, boss, letter,
+    iphone, installed, fresh, face, portrait, seen, see, stand, stood, side, sprites, portal, fairy, locks, boss, letter,
     SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title,
     words, art, tile, bar, riftTile, how, switcher, chosen,

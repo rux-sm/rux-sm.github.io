@@ -11,15 +11,15 @@ invite link, `/pixels/?join=` and that player's code, and types a name and a PIN
 keeps a key that is who they are; one with no key is let in by the name and the PIN. Pixels goes on a
 phone's home screen as an app, as `docs/home-screen.md` says.
 
-`index.html` is the same page for every account, the owner's too, with two tabs. Puzzles: today's
-puzzle on one card with the days solved in a row; then a tile for each rift, which the code calls a
-category, in the owner's order, one to a row on a phone. A tile is its rift's portal, drawn in pixels,
-coloured by the rift's rank, E to S, and shut in grey once every sprite is found; then its rank and
-name, such as E · The Undergrowth, or More where it has none; its number and how many sprites are
-found; and a bar of that. A rift of the course from the sixth on is locked until enough sprites are
-found, which `app.js`'s `locks` counts: its tile is dim and no link, its page shows no puzzle, and both
-say how many of those sprites are found. Leaderboard: today's ranking with each player's time, and the
-all-time one with puzzles solved.
+`index.html` has two tabs. Puzzles: today's puzzle on one card with the days solved in a row; then a
+tile for each rift, which the code calls a category, in the owner's order, one to a row on a phone. A
+tile is its rift's portal, drawn in pixels, coloured by the rift's rank, E to S, and shut in grey once
+every sprite is found; then its rank and name, such as E · The Undergrowth, or More where it has none;
+its number and how many sprites are found; and a bar of that. A rift of the course from the sixth on is
+locked until enough sprites are found, which `app.js`'s `locks` counts: its tile is dim and no link,
+its page shows no puzzle, and both say how many of those sprites are found. The owner is drawn the
+course as a map in place of its tiles, which `docs/drawing-the-map.md` says how to draw. Leaderboard:
+today's ranking with each player's time, and the all-time one with puzzles solved.
 
 `category.html?at=` is one rift, named by its place among its maker's: its puzzles, small boards first
 and then easy to hard, none of them locked, each tile a square with its letter in the rift, A to O,

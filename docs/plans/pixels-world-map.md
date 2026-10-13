@@ -146,6 +146,7 @@ The pictures:
 - **A part of the map, the fog, the character and the two keys' pictures
   have a placeholder first, made by a script,** which is also rux's
   template: the canvas at its size with its spots marked.
+  `pixels/docs/drawing-the-map.md` is how a part and the fog are drawn.
 
 The order:
 
@@ -160,17 +161,6 @@ None open.
 
 ## Tasks
 
-- [ ] Make the placeholders by a script, each with its spots marked: the
-      six parts of the map and the fog, as `pixels/art/map-1.png` to
-      `map-6.png` and `fog.png`.
-- [ ] Step 1, the map: draw the course on the front page over the parts
-      that show, with fog above them, each rift's portal and words at its
-      spot, the locked, cleared, new and unpublished looks, custom rifts as
-      tiles under the map with the side place leading to them, the owner
-      alone drawn the map, and the page opening on the player's rift.
-      Measure it at 360, 402 and 1280 wide.
-- [ ] Write `pixels/docs/drawing-the-map.md`, the how-to for a picture: each
-      canvas and its size, the spots, the inks, and the file to save.
 - [ ] Step 2, the boss and Continue: hold the boss until the fourteen are
       found, on the rift's page, on the puzzle's page and in Next puzzle;
       add Continue to the front page; show the sword and the shield on the

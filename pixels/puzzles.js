@@ -1,9 +1,9 @@
 /* ==========================================================================
    puzzles.js — the front page: two tabs, the categories and the leaderboard
    --------------------------------------------------------------------------
-   The page is the same for every account, the owner's too: it draws what
-   data.js's `list` is sent and nothing else. A guest with no player yet
-   gets the door first; data.js's `enter` draws it.
+   The page draws what data.js's `list` is sent and nothing else, the
+   owner's as a map and every other player's as tiles. A guest with no
+   player yet gets the door first; data.js's `enter` draws it.
 
    While app.js's DAILY is false the puzzle of the day is not shown: no card
    for it, and one ranking, all time, with no days in a row. While its BOARD
@@ -34,7 +34,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, enter, carry, iphone, installed, fresh, seen, locks, riftTile, DAILY, BOARD, grid, rounds, grade, categories, daily, today, streak, time, words, art, switcher } = window.Pixels;
+  const { data, owner, enter, carry, iphone, installed, fresh, seen, stood, locks, portal, heading, where, riftTile, DAILY, BOARD, grid, rounds, grade, categories, daily, today, streak, time, words, art, switcher } = window.Pixels;
   const host = document.getElementById('pixels-levels'), leader = document.getElementById('pixels-leader');
 
   const say = (heading, detail) => {
@@ -127,6 +127,83 @@
     return el;
   };
 
+  /* THE MAP. The owner is drawn the course as a map in place of its tiles:
+     one land with a path through it, and a rift's portal on the path where
+     a rift of the course is. Every other player is drawn the tiles while the
+     map's first part is a placeholder.
+
+     The map is drawn in six parts, one to a rank and two rifts to a part,
+     each a picture in art/ of 120 squares by 80, `map-1.png` at the foot. A
+     part shows once one of its rifts is here, and `fog.png` lies over the
+     highest. A square is a whole number of screen pixels, which app.css
+     sets as `--map-px`.
+
+     SPOTS is where each rift of the course stands on its part, the top left
+     square of its portal, and SIDE the same for the side place on the first
+     part, which leads to the rifts outside the course, under the map.
+     tools/build-placeholders.mjs reads both to mark them on a part's
+     template, so a spot moves here and that is run again.
+
+     A rift on the map is its portal with its words under it: its rank and
+     name, and how many sprites are found. A locked one is dim and no link
+     and says how many open it, a cleared one is shut, and one not yet
+     opened pulses. `map` returns the map and where each rift is on it. */
+  const MAP = owner;
+  const SPOTS = [[23, 43], [83, 11], [23, 43], [83, 11], [23, 43], [83, 11], [23, 43], [83, 11], [23, 43], [83, 11], [23, 43], [83, 11]];
+  const SIDE = [87, 51];
+  const put = (el, [x, y]) => {
+    el.style.setProperty('--x', x);
+    el.style.setProperty('--y', y);
+    return el;
+  };
+  const sign = (name, note) => {
+    const text = document.createElement('span');
+    text.className = 'pixels-map-words';
+    text.append(words('pixels-map-name', name), words('pixels-map-note', note));
+    return text;
+  };
+  const place = (c, found) => {
+    const all = c.puzzles.length, locked = c.short > 0, cleared = !locked && found === all, unopened = !locked && !found && !seen(c);
+    const a = document.createElement(locked ? 'div' : 'a');
+    a.className = `pixels-map-rift${locked ? ' is-locked' : ''}${unopened ? ' is-new' : ''}`;
+    if (!locked) a.href = where(c);
+    a.append(portal(c, cleared), sign(`${c.rank} · ${heading(c)}`,
+      locked ? `${c.need - c.short} of ${c.need} sprites to open` : cleared ? 'Rift cleared' : unopened ? `New · ${all} sprites` : `${found} of ${all} sprites`));
+    return put(a, SPOTS[c.number - 1]);
+  };
+  // The side place is drawn on the part's picture, so here it is only the
+  // square to press and its words.
+  const sidePlace = (count, unopened) => {
+    const a = document.createElement('a');
+    a.className = 'pixels-map-rift';
+    a.href = '#pixels-more';
+    const square = document.createElement('span');
+    square.className = 'pixels-map-side';
+    a.append(square, sign('More rifts', `${unopened ? 'New · ' : ''}${count} rift${count === 1 ? '' : 's'}`));
+    return put(a, SIDE);
+  };
+  const map = (course, more, results) => {
+    const count = c => c.puzzles.filter(p => results.has(p.id)).length;
+    const el = document.createElement('nav'), places = new Map();
+    el.className = 'pixels-map';
+    el.setAttribute('aria-label', 'Rifts');
+    for (let n = 0; n * 2 < course.length; n++) {
+      const part = document.createElement('div');
+      part.className = 'pixels-map-part';
+      part.style.backgroundImage = `url(art/map-${n + 1}.png)`;
+      course.slice(n * 2, n * 2 + 2).forEach(c => {
+        places.set(c, place(c, count(c)));
+        part.append(places.get(c));
+      });
+      if (!n && more.length) part.append(sidePlace(more.length, more.some(c => !count(c) && !seen(c))));
+      el.append(part);
+    }
+    const fog = document.createElement('div');
+    fog.className = 'pixels-map-fog';
+    el.append(fog);
+    return { el, places };
+  };
+
   // Nothing is published. The owner is shown the way to where that is done.
   const empty = () => {
     const wrap = document.createElement('div');
@@ -203,15 +280,34 @@
     if (ranks) leader.appendChild(leaderboard(ranks));
     const cats = categories(puzzles);
     if (!cats.length) { host.appendChild(empty()); return; }
-    const list = document.createElement('div');
-    list.className = 'game-tiles';
+    locks(cats, results);
     // A rift not yet opened, with nothing found in it, says New, unless it
     // is locked, which its tile says for itself.
-    locks(cats, results);
-    list.append(...cats.map(c => {
-      const found = c.puzzles.filter(p => results.has(p.id)).length;
-      return riftTile(c, found, !c.short && !found && !seen(c) ? 'New' : '');
-    }));
-    host.appendChild(list);
+    const tiles = rifts => {
+      const list = document.createElement('div');
+      list.className = 'game-tiles';
+      list.append(...rifts.map(c => {
+        const found = c.puzzles.filter(p => results.has(p.id)).length;
+        return riftTile(c, found, !c.short && !found && !seen(c) ? 'New' : '');
+      }));
+      return list;
+    };
+    if (!MAP) { host.appendChild(tiles(cats)); return; }
+    // The course is the rifts the map has a spot for. A rift past them, and
+    // every rift with no number, keeps its tile under the map.
+    const course = cats.filter(c => c.number && c.number <= SPOTS.length), more = cats.filter(c => !course.includes(c));
+    const land = course.length ? map(course, more, results) : null;
+    if (land) host.appendChild(land.el);
+    if (more.length) {
+      const h2 = document.createElement('h2');
+      h2.className = 'rux--type-productive-heading-03';
+      h2.id = 'pixels-more';
+      h2.textContent = 'More rifts';
+      host.append(...(land ? [h2] : []), tiles(more));
+    }
+    // The map opens with the player's rift in the middle of the window: the
+    // one they last went into, or the first with a sprite left to find.
+    const mine = course.find(stood) || course.find(c => !c.short && c.puzzles.some(p => !results.has(p.id))) || course[0];
+    if (land) land.places.get(mine).scrollIntoView({ block: 'center' });
   })();
 })();

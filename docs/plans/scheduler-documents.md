@@ -64,8 +64,9 @@ Customer page, and `scheduler/docs/database-inventory.md`.
 ## Tasks
 
 - [ ] Deploy the connector, whose source answers `find_documents` with each
-      document's holder, then call `find_documents` through the Scheduler
-      connector and open the link it answers with.
+      document's holder and finds a district's documents by a school's name,
+      then call `find_documents` through the Scheduler connector with a
+      school's name and open the link it answers with.
 - [ ] Read the background check PDF rux names, and decide how its campus and
       date are written: into its own boxes, or as text placed on the page.
 - [ ] Write the campus and the trip date onto the form's copy in
@@ -77,8 +78,6 @@ Customer page, and `scheduler/docs/database-inventory.md`.
       a driver form: the checklist's Driver forms printed item, the
       Departures line under each driver, and the Printed tick, read back
       from `trip_drivers.driver_forms_printed`.
-- [ ] Check the Documents page at an iPhone's width, 402 by 812, where Show
-      old and Kinds are hidden and the search and Upload share the band.
 - [ ] Upload each driver's background check form from the file rux names,
       with its driver and the end date read from the file.
 - [ ] List the names on trips still to come that match no customer, and link

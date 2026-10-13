@@ -84,9 +84,12 @@ Inside a rift:
 
 Playing:
 
-- **Fill is the sword and X is the shield.** The two tool keys show a sword
-  and a shield, each beside the mark it leaves, because the mark is what
-  tells a new player which key does what.
+- **Fill is the sword and X is the shield, and the two are one switch.**
+  The sword is its left half and the shield its right, and the half in hand
+  is filled. A tap on a half picks it and so does a slide toward it, so
+  nobody has to find a gesture.
+- **The switch shows the two pictures alone,** since the board shows the
+  mark each leaves.
 - **How to play says it as a fight:** strike the squares that are the
   monster, and guard the ones that are not.
 - **Nothing else about play changes.** A mistake costs time as it does now,
@@ -131,19 +134,19 @@ The character:
 The pictures:
 
 - **rux draws the six parts of the map, the base character, its three pieces
-  of armour, the sword and the shield of the two keys, nine squares a side,
+  of armour, the sword and the shield of the switch, nine squares a side,
   and a world for a rift where one is wanted.** They are pixel
   art, drawn one pixel to a square and painted from the game's own
   fifty-five inks, so they sit with the sprites.
 - **The map and the worlds are PNGs in `pixels/art/`:** `map-1.png` to
   `map-6.png` from the foot up, `fog.png`, and `rift-01.png` to
   `rift-12.png`.
-- **The character, its armour and the two keys' pictures are kept as a
+- **The character, its armour and the switch's two pictures are kept as a
   sprite is,** a character a square in the game's inks, so a player's
   drawing and rux's are one kind of thing.
 - **A picture keeps its own colours in every theme,** as a sprite does, and
   the page round it follows the theme.
-- **A part of the map, the fog, the character and the two keys' pictures
+- **A part of the map, the fog, the character and the switch's two pictures
   have a placeholder first, made by a script,** which is also rux's
   template: the canvas at its size with its spots marked.
   `pixels/docs/drawing-the-map.md` is how a part and the fog are drawn.
@@ -157,14 +160,40 @@ The order:
 
 ## Questions
 
-None open.
+Each is followed by the pick it would be built by.
+
+- **Does a mistake cost health in place of time?** Yes: the character has
+  three hearts, a mistake takes one, and the clock only counts up as the
+  score, so nobody loses by thinking slowly.
+- **Can a puzzle be lost?** Yes, gently: at no hearts a fairy brings the
+  character back if the player has one, and otherwise the puzzle starts
+  again with nothing else lost.
+- **Does the enemy have a health bar?** Yes: it is the picture's squares
+  still to fill, so it needs no drawing and no new rule.
+- **Is the character on the puzzle's page?** Yes, in one strip over the
+  board, facing the enemy as a shadow, since the enemy's picture is the
+  answer. It comes after step 3, which makes the character.
+- **How does the character move?** By its one drawing: the sword swings for
+  a slash and jabs for a stab, the shield lifts for a block, and the
+  character shakes when hurt and falls at no hearts, so a player's own
+  armour needs no second drawing.
+- **Does armour add health?** Yes, a heart a piece, so a piece unlocked is
+  worth more than its look.
+- **Are there potions?** No: a fairy already does a potion's work, and a
+  second thing to count is one more for a new player to learn.
+- **Is the character seven layers?** Yes: skin and eyes are colours picked,
+  the head, the body and the shield are drawn on, hands and feet follow the
+  body, and the sword is fixed, with one item to a slot.
+- **Are the switch's placeholder pictures the owner's alone?** Yes, as the
+  map's are, and every other player keeps the two keys until the pictures
+  are rux's.
 
 ## Tasks
 
 - [ ] Step 2, the boss and Continue: hold the boss until the fourteen are
       found, on the rift's page, on the puzzle's page and in Next puzzle;
-      add Continue to the front page; show the sword and the shield on the
-      two tool keys, on placeholders first; and say the story's line and
+      add Continue to the front page; make the two tool keys one switch of a
+      sword and a shield, on placeholders first; and say the story's line and
       the fight at the door and in How to play.
 - [ ] Step 3, the character and its helmet: the base character on the map
       at the player's rift, on a placeholder first; its walk to a tapped

@@ -278,16 +278,12 @@
       const face = document.createElement('div');
       face.className = 'rux--user-avatar rux--user-avatar--md';
       face.setAttribute('aria-hidden', 'true');
-      const text = document.createElement('div');
-      text.className = 'rux--stack-vertical';
       const name = document.createElement('div');
       name.className = 'rux--type-heading-compact-01';
+      // The name is one line beside a taller picture, so it sits at its middle.
+      name.style.alignSelf = 'center';
       name.textContent = who?.name ?? '';
-      const label = document.createElement('span');
-      label.className = 'rux--label rux--label--no-margin';
-      label.textContent = 'Signed in';
-      text.append(name, label);
-      line.append(face, text);
+      line.append(face, name);
       head.append(line);
       if (await showAvatar(face, 'md')) panel.prepend(head);
       const row = menu.querySelector('#rux-account-profile');

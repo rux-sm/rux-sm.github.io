@@ -33,8 +33,8 @@ who has found sprites in it. `friends.html` is the player's invite link and ever
 add or remove. A player's own puzzles are made in the Pixelator, for mana, and a friend's published
 rifts stand after the owner's on the front page, saying who made them, and New until opened. A bar
 holds the places every player has, Puzzles, Friends, Pixelator and Me: along the bottom on a phone,
-along the top on a wide screen, and not where a puzzle is played or drawn. No page has a header: a list
-on Me holds How to play, Add to home screen, Theme and, for an account, the way to Rux Home.
+along the top on a wider one, and in a header from 66rem; not where a puzzle is played or drawn. Me's
+list holds How to play, Add to home screen, Theme and, for an account, the way to Rux Home.
 `docs/profiles.md` is the whole of it: the door, profiles, friends, mana, and who is sent a rift.
 
 `play.html?id=` plays one puzzle, 5, 10, 15 or 20 squares a side. The board waits behind Tap to start,

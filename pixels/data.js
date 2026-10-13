@@ -630,12 +630,20 @@
   };
 
   // The bar of places shows once there is a player: at once for an account
-  // and the local preview, and for a guest when `enter` finds theirs.
-  const places = document.querySelector('.game-places');
-  if (places && (member || (!client && local))) places.hidden = false;
+  // and the local preview, and for a guest when `enter` finds theirs. So does
+  // the header a wide screen has, whose panel app.js's `shell` then fills.
+  const places = document.querySelector('.game-places'), head = document.querySelector('.game-header');
+  const show = () => {
+    if (places) places.hidden = false;
+    if (head) head.hidden = false;
+  };
+  if (member || (!client && local)) show();
   const enter = async host => {
     const me = await entering(host);
-    if (me && places) places.hidden = false;
+    if (me) {
+      show();
+      window.Pixels.shell?.(me);
+    }
     if (me) invite(me.code);
     return me;
   };
@@ -649,4 +657,7 @@
     carry,
     invite,
   });
+  // A page that asks for no player, as the owner's two do, still has the
+  // header's panel to fill, and an account or the preview is here already.
+  if (member || (!client && local)) window.Pixels.shell?.();
 })();

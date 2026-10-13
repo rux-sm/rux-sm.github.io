@@ -4,10 +4,10 @@ type: how-to
 
 # Draw an app icon
 
-Every app but Home has one icon, `icon.svg` in its own `brand/` folder. The
-home page shows it on the app's tile at 32px, painted in the tile's text
-colour. `switcher.json` names the file, and the check fails an app that has
-none.
+Every app has one icon, `icon.svg` in its own `brand/` folder; Home's is in
+the root's. The home page shows it on the app's tile at 32px, painted in the
+tile's text colour, and the account panel shows it beside the app's name.
+`switcher.json` names the file, and the check fails an app that has none.
 
 ## The board
 

@@ -72,12 +72,8 @@ None open.
 
 ## Tasks
 
-- [ ] Give Pixels the header on a wide screen, as Design's game templates
-      have it, with its own rows in the menu and a player with no account
-      drawn theirs. Sevens has the header already and takes the bar of
-      places when `docs/plans/game-pages.md` moves it.
-- [ ] Take the older panel's code out once the games are moved, since
-      Pixels' Me still keeps its theme in a modal of radios: the radios in
-      `design/js/profile.js`, the name field and the button in
+- [ ] Take the older panel's code out, now that no page carries it: the
+      radios in `design/js/profile.js`, the name field and the button in
       `/account.js`, and the switcher half of the account case in
-      `design/tools/check-behaviour.js`.
+      `design/tools/check-behaviour.js`. `/account.js` then writes who is
+      logged in through `Rux.profile.who`, as a game does for a guest.

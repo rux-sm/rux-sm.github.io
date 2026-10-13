@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+<!-- The app list icon: a house in outline, its roof a staircase two squares
+     thick and a door frame standing on the floor, one run of squares per row on
+     the 16 grid the other apps' marks use. It is a CSS mask over the text
+     colour, so this file's own colours are discarded and only its alpha is
+     read; that is why it carries no fill and no title. brand/favicon.svg is the
+     site's mark, not this drawing. -->
+<path d="M7 1L9 1L9 2L7 2ZM6 2L10 2L10 3L6 3ZM5 3L7 3L7 4L5 4ZM9 3L11 3L11 4L9 4ZM4 4L6 4L6 5L4 5ZM10 4L12 4L12 5L10 5ZM3 5L5 5L5 6L3 6ZM11 5L13 5L13 6L11 6ZM2 6L4 6L4 7L2 7ZM12 6L14 6L14 7L12 7ZM1 7L4 7L4 8L1 8ZM12 7L15 7L15 8L12 8ZM2 8L4 8L4 9L2 9ZM12 8L14 8L14 9L12 9ZM2 9L4 9L4 10L2 10ZM6 9L10 9L10 10L6 10ZM12 9L14 9L14 10L12 10ZM2 10L4 10L4 11L2 11ZM6 10L7 10L7 11L6 11ZM9 10L10 10L10 11L9 11ZM12 10L14 10L14 11L12 11ZM2 11L4 11L4 12L2 12ZM6 11L7 11L7 12L6 12ZM9 11L10 11L10 12L9 12ZM12 11L14 11L14 12L12 12ZM2 12L4 12L4 13L2 13ZM6 12L7 12L7 13L6 13ZM9 12L10 12L10 13L9 13ZM12 12L14 12L14 13L12 13ZM2 13L7 13L7 14L2 14ZM9 13L14 13L14 14L9 14ZM2 14L7 14L7 15L2 15ZM9 14L14 14L14 15L9 15Z"/>
+</svg>

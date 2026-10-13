@@ -883,15 +883,33 @@
   new MutationObserver(tint).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'style'] });
 
   /* THE PLACES every player has, in one bar on the pages that carry it:
-     along the bottom on a phone, along the top on a wide screen. This marks
-     the place the page is; a rift's page is one of Puzzles', and the
-     owner's two, Manage and Players, are reached from Me and are Me's. */
+     along the bottom on a phone and along the top on a wider screen, and
+     from 66rem as the links of the header in the bar's place. This marks
+     the place the page is, in both; a rift's page is one of Puzzles', and
+     the owner's two, Manage and Players, are reached from Me and are Me's. */
   const here = location.pathname.split('/').pop() || 'index.html';
   const place = { 'category.html': 'index.html', 'manage.html': 'me.html', 'players.html': 'me.html' }[here] || here;
-  document.querySelectorAll('.game-place').forEach(a => {
+  document.querySelectorAll('.game-place, .game-header .rux--header__menu-item').forEach(a => {
     const to = a.getAttribute('href') === './' ? 'index.html' : a.getAttribute('href');
-    if (to === place) a.setAttribute('aria-current', 'page');
+    if (to !== place) return;
+    a.setAttribute('aria-current', 'page');
+    if (a.classList.contains('rux--header__menu-item')) a.classList.add('rux--header__menu-item--current');
   });
+
+  /* THE HEADER'S PANEL, on a wide screen. data.js calls `shell` once there is
+     a player, with them where it has them, and Design's js/profile.js does
+     the writing. The game's own
+     rows stand over Profile: Me, which the header has no link for, How to
+     play, and for the owner Manage and Players. A player with no account is
+     written there too, their picture on the account action, since a guest
+     has no account to say who they are. */
+  const shell = me => {
+    const panel = window.Rux?.profile;
+    if (!panel?.rows) return;
+    panel.rows([{ text: 'Me', href: 'me.html' }, { text: 'How to play', open: 'pixels-how' },
+      ...(window.Pixels.owner ? [{ text: 'Manage', href: 'manage.html' }, { text: 'Players', href: 'players.html' }] : [])]);
+    if (me && window.Pixels.guest) panel.who({ name: me.name, face: () => portrait(me) });
+  };
 
   /* A page left for a minute or more loads again as it comes back to the
      front, because an app on the home screen has no reload and a phone
@@ -908,6 +926,6 @@
     iphone, installed, fresh, face, portrait, seen, see, stand, stood, side, sprites, portal, fairy, locks, boss, letter,
     SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title,
-    words, art, tile, bar, riftTile, how, switcher, chosen,
+    words, art, tile, bar, riftTile, how, switcher, chosen, shell,
   });
 })();

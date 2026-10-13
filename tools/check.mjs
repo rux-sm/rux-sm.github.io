@@ -88,14 +88,14 @@ step(`names (${text.length} text files)`, process.execPath, ['ln/tools/check-pub
 // THE SWITCHER RULE. Three things can go wrong and all are quiet: a list that
 // does not parse, a path no site can have, and an app with no icon file, whose
 // tile on Home would be drawn with an empty space where the icon goes. Home
-// is never a tile, so it needs none.
+// is never a tile, and has one for its row in the account panel's list.
 console.log('\n── switcher');
 let bad = 0;
 const fail = m => { console.log('  FAIL  ' + m); bad++; };
 for (const a of apps) {
   for (const k of ['name', 'path', 'description']) if (typeof a[k] !== 'string' || !a[k]) fail(`switcher.json: an app is missing ${k}`);
   if (a.path && !(a.path === '/' || /^\/[a-z0-9-]+\/$/.test(a.path))) fail(`switcher.json: ${a.name}: path must be "/" or "/name/", got ${a.path}`);
-  if (a.path !== '/' && !(typeof a.icon === 'string' && /^\/[a-z0-9/-]+\.svg$/.test(a.icon) && existsSync(join(ROOT, a.icon)))) fail(`switcher.json: ${a.name}: icon must be an absolute path to an .svg that exists, got ${a.icon}`);
+  if (!(typeof a.icon === 'string' && /^\/[a-z0-9/-]+\.svg$/.test(a.icon) && existsSync(join(ROOT, a.icon)))) fail(`switcher.json: ${a.name}: icon must be an absolute path to an .svg that exists, got ${a.icon}`);
 }
 if (!apps.some(a => a.path === '/')) fail('switcher.json: no app at "/"');
 console.log(`  ${bad ? 'FAIL' : ' ok '}  apps    ${apps.length} in switcher.json${bad ? '' : ', every path and icon well formed'}`);

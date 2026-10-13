@@ -33,7 +33,7 @@ page was not opened from the icon.
   tells by `navigator.standalone`, because with no manifest its
   `display-mode` query stays false; the others tell by that query.
 - **The bar over the page is the page's colour,** since a game has no
-  header. An iPhone takes it from the page by itself. Android takes it from
+  header on a phone. An iPhone takes it from the page by itself. Android takes it from
   `theme-color`, which `app.js` keeps as the page's colour through every
   change of theme.
 - **The last row of a page keeps clear of an iPhone's home bar,** by the

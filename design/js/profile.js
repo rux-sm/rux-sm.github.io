@@ -188,7 +188,14 @@
       const a = document.createElement('a');
       a.className = 'rux--switcher__item-link';
       a.href = href ?? `#${open}`;
-      if (open) a.dataset.ruxOpen = open;
+      if (open) {
+        a.dataset.ruxOpen = open;
+        // The modal opens over the page, so the panel it was opened from shuts.
+        a.addEventListener('click', () => {
+          const action = document.querySelector('.rux--header__action[aria-controls="rux-account-panel"]');
+          if (action && panel.classList.contains('rux--header-panel--expanded')) window.Rux.uiShell?.closePanel(action);
+        });
+      }
       a.textContent = text;
       // A collapsed panel's links are out of the tab order, as js/ui-shell.js leaves them.
       if (shut) a.tabIndex = -1;

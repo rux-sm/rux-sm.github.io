@@ -3,7 +3,8 @@
     {
       "name": "Home",
       "path": "/",
-      "description": "The front door"
+      "description": "The front door",
+      "icon": "/brand/icon.svg"
     },
     {
       "name": "LN Guide",

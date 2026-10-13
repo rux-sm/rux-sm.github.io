@@ -27,7 +27,7 @@
 
   // THE LIST IS `ul.rux--switcher` NAMED Applications. A page with the one
   // account panel has it there, under the list of the account's own rows,
-  // where it is the way to ANOTHER app: it opens on a rule and the word Apps,
+  // where it is the way to ANOTHER app: it opens on a rule,
   // and with nowhere else to go, or for a guest, it is left out. A page not yet moved onto
   // that panel has the list in a panel of its own, behind the App switcher
   // action.
@@ -46,7 +46,7 @@
       continue;
     }
     ul.innerHTML = menu
-      ? `${rule}<li><span class="rux--label rux--label--no-margin">Apps</span></li>${apps.map(row).join('')}`
+      ? `${rule}${apps.map(row).join('')}`
       : apps.map((a, i) => row(a) + (i === 0 && apps.length > 1 ? rule : '')).join('');
     // A collapsed panel's links stay out of the tab order, as js/ui-shell.js leaves them.
     if (!ul.closest('.rux--header-panel--expanded')) for (const a of ul.querySelectorAll('a')) a.tabIndex = -1;

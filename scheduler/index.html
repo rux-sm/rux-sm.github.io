@@ -421,22 +421,25 @@
                  width, so a wider week does not move the buttons, and DOM
                  order is reading order. -->
             <div class="scheduler-toolbar__spacer"></div>
+            <!-- Search leads the row's right group, apart from the three
+                 buttons after it, which each show and hide a pane. It opens
+                 its own window, so the toolbar keeps one row at every width.
+                 Cmd-K opens it too. -->
+            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-search-open" data-rux-open="scheduler-search-modal" aria-label="Search trips" title="Search trips (⌘K)"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-search"/></svg></button>
             <!-- Tasks and Prep, the board's two lists: each shows and hides
                  the one pane left of the week on its own list, so each is a
                  pressed toggle, its glyph filled while its list shows, and
-                 each carries how many are due. They lead the row's right
-                 group, so both counts show before a swipe where it scrolls.
-                 to-do-list.js works them. -->
+                 each carries how many are due. Where the row scrolls, a
+                 phone 402px wide shows search and both counts before a swipe,
+                 and one 375px wide search and Tasks. to-do-list.js works
+                 them. -->
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-tasks-toggle" aria-pressed="false" aria-controls="scheduler-to-do-panel" aria-label="Tasks" title="Tasks"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-check_circle"/></svg></button>
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-prep-toggle" aria-pressed="false" aria-controls="scheduler-to-do-panel" aria-label="Prep" title="Prep"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg></button>
-            <!-- Search is a button that opens its own window, so the toolbar
-                 keeps one row at every width. Cmd-K opens it too. -->
-            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-search-open" data-rux-open="scheduler-search-modal" aria-label="Search trips" title="Search trips (⌘K)"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-search"/></svg></button>
           <!-- Named "Driver availability", like the pane's own head, so one
                control has one name. It stays in the toolbar at every width,
                a swipe along the row away where a phone is too narrow. It sits beside
-               search, the other way to look, and its person is outlined while
-               the pane is shut and filled while it shows, set by data.js. -->
+               Tasks and Prep, the bar's other panes, and its person is outlined
+               while the pane is shut and filled while it shows, set by data.js. -->
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-avail-toggle" aria-pressed="false" aria-label="Driver availability"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-person"/></svg></button>
             </div>
             <!-- The overflow menu (#scheduler-view-menu): New trip where its

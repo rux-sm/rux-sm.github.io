@@ -71,7 +71,10 @@ to Design with invented content, never as a local rule on a `rux--*` class.
 A colour goes in the app's `theme.css` inside a `[data-theme]` block; a
 component rule in its `overrides.css` at Carbon's specificity; a
 component Carbon lacks is the app's own, under its own prefix, every colour
-a `--rux-*` token. No Carbon file is ever edited.
+a `--rux-*` token. The parts every game has and Carbon lacks are Design's,
+in `design/css/rux-game.css` under `game-`; the check fails on a `game-*`
+class that is not there, so a game does not invent one. No Carbon file is
+ever edited.
 
 ## Where things are
 
@@ -154,6 +157,8 @@ Every app has one word, and its names derive from it.
 | Sevens | `sevens/` | Rux Sevens | `sevens-` | `sevens` |
 | Coins | `coins/` | Rux Coins | `coins-` | `coins` |
 
+- **`game-` is no app's prefix.** It is the games' shared sheet in Design,
+  which Pixels links beside its own `pixels-` classes.
 - **Names people read are sentence case.** A page title is `Page — App`, and
   an app's front page is titled with the app name alone.
 - **Names the computer reads are lowercase.** Hyphens join words, and an

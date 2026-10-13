@@ -24,7 +24,9 @@ const DEFINES = ['css/rux.css', 'sink/harness.css'];
 // Phase 10's customization files REFERENCE tokens like a page and are gated
 // like one, but they do not DEFINE any: a name css/rux-theme.css introduces is
 // a token no component reads, and the loop below fails on it. 2026-09-02.
-const CUSTOM_CSS = ['css/rux-theme.css', 'css/rux-overrides.css'];
+// css/rux-game.css, the parts a game has that Carbon lacks, is held to the
+// same: it reads tokens and defines none.
+const CUSTOM_CSS = ['css/rux-theme.css', 'css/rux-overrides.css', 'css/rux-game.css'];
 const ROOTS = pageFiles(['css/rux.css', 'sink/harness.css', ...CUSTOM_CSS]);
 
 // Carbon custom properties its React/Lit layer sets at runtime and its light-DOM CSS

@@ -101,7 +101,7 @@ new one or Unsorted, or deleted; a rift left empty goes too.
 | `app.js` | the rules and the board every page shares: the numbers, the line solver, the puzzle of the day, drawing, dragging and zooming, what a mistake costs, tones and the phone's tick |
 | `data.js` | who is playing, the door a guest meets, and where puzzles and results are kept |
 | `puzzles.js`, `category.js`, `play.js`, `make.js`, `manage.js`, `players.js`, `me.js`, `friends.js` | each page's own behaviour |
-| `app.css` | the board, the picture, the tiles and Manage, under `pixels-` |
+| `app.css` | the board, the picture, the tiles and Manage, under `pixels-`. The bar of places, the keys, a rift's tile, the start cover and the finish panel are `game-`, from `design/css/rux-game.css` |
 | `theme.css` | the fifty-five inks a colour picture is painted from |
 | `manifest.json` | the name, the window and the icons a browser installs Pixels with; `app.js` gives it to every browser but an iPhone's. `tools/build-app-icons.mjs` writes the four PNG icons in `brand/` from `brand/favicon.svg` |
 

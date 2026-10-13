@@ -91,7 +91,7 @@ than measurements and live with their reasoning in `tools/build.mjs`.
 |---|---|
 | `AGENTS.md` | the policy, binding every agent; `CLAUDE.md` imports it |
 | `src/app.scss` | the build manifest — which components and themes compile, under which prefix. |
-| `css/` | build output, generated and committed: `rux.css`, `rux.min.css`, and the two files every page links after them — `rux-theme.css` (token values) and `rux-overrides.css` (component rules) |
+| `css/` | build output, generated and committed: `rux.css`, `rux.min.css`, and the two files every page links after them — `rux-theme.css` (token values) and `rux-overrides.css` (component rules). `rux-game.css` is hand-written and only a game links it: the parts a game has that Carbon lacks, under `game-` |
 | `js/` | the behaviour layer; `overlay.js` is the kernel and loads first. |
 | `templates/` | complete pages, shell included; copy the nearest one. |
 | `sink/` | one markup fragment per component, plus `ORDER`, `harness.css`, `harness.js` |

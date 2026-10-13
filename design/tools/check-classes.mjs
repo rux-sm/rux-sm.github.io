@@ -47,7 +47,9 @@ let bad = 0, stripped = 0, used = new Set();
 // invented class WITH a stylesheet behind it — the exact thing this gate exists
 // to refuse — so each is read with its comments stripped and every `.rux--*`
 // it selects must resolve. Added 2026-09-02; it makes nothing weaker.
-const CUSTOM_CSS = ['css/rux-theme.css', 'css/rux-overrides.css'];
+// css/rux-game.css is hand-written too, under its own `game-` prefix, and a
+// `.rux--*` it selects is held to the same.
+const CUSTOM_CSS = ['css/rux-theme.css', 'css/rux-overrides.css', 'css/rux-game.css'];
 for (const f of CUSTOM_CSS) {
   const src = readFileSync(f, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   for (const m of src.matchAll(/\.(rux--[a-zA-Z0-9_-]+)/g)) {

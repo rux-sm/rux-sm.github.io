@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="/design/css/rux.css">
 <link rel="stylesheet" href="/design/css/rux-theme.css">
 <link rel="stylesheet" href="/design/css/rux-overrides.css">
+<link rel="stylesheet" href="/design/css/rux-game.css">
 <link rel="stylesheet" href="theme.css">
 <link rel="stylesheet" href="overrides.css">
 <link rel="stylesheet" href="app.css">
@@ -48,7 +49,7 @@
 </svg>
 <!-- SPRITE:END -->
 
-<main id="main-content" class="rux--content pixels-main">
+<main id="main-content" class="rux--content game-main">
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
       <!-- Drawn only once play.js has built the board, so the keys are never seen where the board will be. -->
@@ -73,11 +74,13 @@
           <span class="pixels-clock" id="pixels-clock" role="timer" aria-label="Time">00:00</span>
         </div>
         <!-- The board waits behind Start: play.js shows it, and starts the clock, on the tap. -->
-        <div class="pixels-stage">
+        <div class="game-stage pixels-stage">
           <div id="pixels-board"></div>
-          <div class="pixels-start" id="pixels-cover">
-            <button type="button" class="rux--btn rux--btn--primary pixels-start-key" id="pixels-start">Tap to start</button>
-            <button type="button" class="rux--btn rux--btn--ghost pixels-start-key" id="pixels-how-open" data-rux-open="pixels-how">How to play</button>
+          <div class="game-cover" id="pixels-cover">
+            <div class="game-cover-panel">
+              <button type="button" class="rux--btn rux--btn--primary game-cover-key" id="pixels-start">Tap to start</button>
+              <button type="button" class="rux--btn rux--btn--ghost game-cover-key" id="pixels-how-open" data-rux-open="pixels-how">How to play</button>
+            </div>
           </div>
         </div>
         <div class="pixels-controls">
@@ -86,24 +89,24 @@
             <button type="button" role="radio" aria-checked="true" aria-label="Fill" data-tool="fill"><span class="pixels-mark pixels-mark--fill" aria-hidden="true"></span></button>
             <button type="button" role="radio" aria-checked="false" aria-label="Cross out" data-tool="x"><span class="pixels-mark pixels-mark--x" aria-hidden="true"></span></button>
           </div>
-          <div class="pixels-keys">
-            <a class="pixels-key" id="pixels-back" href="./"><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-arrow_back"/></svg>Back</a>
-            <button type="button" class="pixels-key" id="pixels-restart"><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-restart_alt"/></svg>Restart</button>
-            <!-- play.js draws a fairy here, and how many the player has. --><button type="button" class="pixels-key" id="pixels-hint"><span class="pixels-key-fairy" id="pixels-fairies"></span>Hint</button>
-            <button type="button" class="pixels-key" id="pixels-undo" disabled><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-undo"/></svg>Undo</button>
-            <button type="button" class="pixels-key" id="pixels-redo" disabled><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-redo"/></svg>Redo</button>
+          <div class="game-keys">
+            <a class="game-key" id="pixels-back" href="./"><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-arrow_back"/></svg>Back</a>
+            <button type="button" class="game-key" id="pixels-restart"><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-restart_alt"/></svg>Restart</button>
+            <!-- play.js draws a fairy here, and how many the player has. --><button type="button" class="game-key" id="pixels-hint"><span class="pixels-key-fairy" id="pixels-fairies"></span>Hint</button>
+            <button type="button" class="game-key" id="pixels-undo" disabled><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-undo"/></svg>Undo</button>
+            <button type="button" class="game-key" id="pixels-redo" disabled><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-redo"/></svg>Redo</button>
             <!-- play.js sets it from the saved choice; pressed is on. -->
-            <button type="button" class="pixels-key" id="pixels-sound" aria-pressed="true"><svg class="pixels-key-icon pixels-sound-on" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-volume_up"/></svg><svg class="pixels-key-icon pixels-sound-off" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-volume_off"/></svg>Sound</button>
+            <button type="button" class="game-key" id="pixels-sound" aria-pressed="true"><svg class="pixels-key-icon pixels-sound-on" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-volume_up"/></svg><svg class="pixels-key-icon pixels-sound-off" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-volume_off"/></svg>Sound</button>
           </div>
         </div>
         <!-- Shown under the finished picture, which is the board itself. play.js puts the puzzle's rift between the time and the keys, in place of the way out. -->
-        <div class="pixels-solved" id="pixels-solved" hidden>
+        <div class="game-finish pixels-solved" id="pixels-solved" hidden>
           <div>
             <h1 class="rux--type-productive-heading-04" id="pixels-solved-name"></h1>
-            <span class="pixels-clock pixels-solved-clock" id="pixels-solved-clock"></span>
+            <span class="pixels-clock game-finish-score" id="pixels-solved-clock"></span>
             <p class="pixels-meta" id="pixels-solved-time"></p>
           </div>
-          <div class="pixels-actions">
+          <div class="game-finish-actions">
             <a class="rux--btn rux--btn--primary" id="pixels-next" href="./">Next puzzle</a>
             <a class="rux--btn rux--btn--ghost" id="pixels-out" href="./">Puzzles</a>
           </div>

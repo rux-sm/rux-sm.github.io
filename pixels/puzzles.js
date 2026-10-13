@@ -204,7 +204,7 @@
     const cats = categories(puzzles);
     if (!cats.length) { host.appendChild(empty()); return; }
     const list = document.createElement('div');
-    list.className = 'pixels-categories';
+    list.className = 'game-tiles';
     // A rift not yet opened, with nothing found in it, says New, unless it
     // is locked, which its tile says for itself.
     locks(cats, results);

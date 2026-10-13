@@ -42,7 +42,9 @@
 //
 // WHAT IT CHECKS, and it is only what is genuinely the same in every app:
 //   classes   every rux--* class a page or local script uses is compiled in
-//             Design's css/rux.css, wherever this found it
+//             Design's css/rux.css, wherever this found it; and every game-*
+//             class is in Design's css/rux-game.css, the parts a game has
+//             that Carbon lacks
 //   tokens    every var(--rux-*) a page, local stylesheet or script reads is
 //             declared in Design's css or the app's own two delta files
 //   files     every relative href/src on a page names a file that exists, and
@@ -128,6 +130,11 @@ const stripJsComments = s => s.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:\
 const inAttrs = html => new Set([...html.matchAll(/\bclass="([^"]*)"/g)].flatMap(m => m[1].split(/\s+/)).filter(c => c.startsWith('rux--')));
 const inScript = js => new Set([...js.matchAll(/\brux--[A-Za-z0-9_:-]+/g)].map(m => m[0].replace(/:+$/, '')));
 const inSheet = css => new Set([...css.matchAll(/\.(rux--(?:\\.|[A-Za-z0-9_-])+)/g)].map(m => m[1].replace(/\\/g, '')));
+// A GAME'S CLASS is `game-` where a name starts, so an app's own
+// `pixels-game-over` is not one. The same three ways of writing it.
+const gameInAttrs = html => new Set([...html.matchAll(/\bclass="([^"]*)"/g)].flatMap(m => m[1].split(/\s+/)).filter(c => c.startsWith('game-')));
+const gameInScript = js => new Set([...js.matchAll(/(?<![A-Za-z0-9_-])game-[A-Za-z0-9_-]+/g)].map(m => m[0]));
+const gameInSheet = css => new Set([...css.matchAll(/\.(game-[A-Za-z0-9_-]+)/g)].map(m => m[1]));
 const skipRef = v => /^(?:[a-z][a-z0-9+.-]*:|\/\/|#|\/)/i.test(v) || v === '';
 
 // ── the rules ───────────────────────────────────────────────────────────────
@@ -171,7 +178,7 @@ export function check(root, opts = {}) {
     // because report() subtracts it: omitting it made that arithmetic NaN,
     // which printed nothing and threw nothing -- a second thing an early
     // return once got quietly wrong.
-    return { failures, notes, pages: [], classUses: 0, tokenUses: 0, defined: 0, ds, dsFrom, absolute: 0, unresolvable: 0, symbols: 0,
+    return { failures, notes, pages: [], classUses: 0, gameUses: 0, tokenUses: 0, defined: 0, ds, dsFrom, absolute: 0, unresolvable: 0, symbols: 0,
       ran: ['ds'],
       notRun: Object.fromEntries(['classes','tokens','files','sprite','ids'].map(k => [k, 'no Design was found, so there is nothing to check this app against'])) };
   }
@@ -184,6 +191,7 @@ export function check(root, opts = {}) {
   const ruxCss = cssText(vendorCss[0]);
   if (!ruxCss) fail('classes', rel(vendorCss[0]), 'missing; nothing to resolve a class against');
   const defined = new Set([...ruxCss.matchAll(/\.(rux--(?:\\.|[A-Za-z0-9_-])+)/g)].map(m => m[1].replace(/\\/g, '')));
+  const game = gameInSheet(stripJsComments(cssText(join(ds, 'css', 'rux-game.css'))));
 
   const pages = walk(root, ['.html']);
   const scripts = walk(root, ['.js', '.mjs']);
@@ -193,7 +201,7 @@ export function check(root, opts = {}) {
     for (const m of t.matchAll(/(--rux-[A-Za-z0-9_-]+)\s*:/g)) declared.add(m[1]);
 
   // classes and tokens, over every page and local script
-  let classUses = 0, tokenUses = 0, absolute = 0;
+  let classUses = 0, gameUses = 0, tokenUses = 0, absolute = 0;
   const tokensIn = (text) => new Set([...text.matchAll(/var\(\s*(--rux-[A-Za-z0-9_-]+)/g)].map(m => m[1]));
   const sources = [
     ...pages.map(f => [f, stripHtmlComments(readFileSync(f, 'utf8')), 'html']),
@@ -209,6 +217,11 @@ export function check(root, opts = {}) {
       : kind === 'js' ? inScript(text) : inSheet(text);
     classUses += used.size;
     for (const c of used) if (!defined.has(c)) fail('classes', rel(f), `${c} is not compiled in ${dsFrom}'s rux.css`);
+    const usedGame = kind === 'html'
+      ? new Set([...gameInAttrs(text), ...[...text.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].flatMap(m => [...gameInScript(stripJsComments(m[1]))])])
+      : kind === 'js' ? gameInScript(text) : gameInSheet(text);
+    gameUses += usedGame.size;
+    for (const c of usedGame) if (!game.has(c)) fail('classes', rel(f), `${c} is not in ${dsFrom}'s rux-game.css, which holds every game-* class`);
     const toks = tokensIn(text);
     tokenUses += toks.size;
     for (const t of toks) if (!declared.has(t)) fail('tokens', rel(f), `var(${t}) is declared nowhere -- not in Design's css, not in this app's own two files`);
@@ -275,7 +288,7 @@ export function check(root, opts = {}) {
   }
   if (unresolvable) notes.push(`${unresolvable} root-absolute resource${unresolvable === 1 ? '' : 's'} (/…) not checked: ${hub ? 'not under /design/ and not in the hub' : 'they name files on the account\'s root site, which is not this app -- pass --hub <dir> to check them'}`);
 
-  return { failures, notes, pages: pages.map(rel), classUses, tokenUses, defined: defined.size, ds, dsFrom, absolute, unresolvable, symbols,
+  return { failures, notes, pages: pages.map(rel), classUses, gameUses, tokenUses, defined: defined.size, ds, dsFrom, absolute, unresolvable, symbols,
     ran: ['ds', 'classes', 'tokens', 'files', 'sprite', 'ids'],
     notRun: {} };
 }
@@ -309,7 +322,7 @@ function report(root, r) {
     }
     console.log(`  ${fs.length ? 'FAIL' : ' ok '}  ${rule.padEnd(8)}${fs.length ? '' : ({
       ds: `design from ${r.dsFrom}`,
-      classes: `${r.classUses} uses resolve against ${r.defined} compiled`,
+      classes: `${r.classUses} uses resolve against ${r.defined} compiled${r.gameUses ? `, and ${r.gameUses} of a game- class against rux-game.css` : ''}`,
       tokens: `${r.tokenUses} var(--rux-*) reads resolve`,
       files: `every relative href and src on ${r.pages.length} page${r.pages.length === 1 ? '' : 's'} exists${r.absolute - r.unresolvable > 0 ? `, and ${r.absolute - r.unresolvable} root-absolute resource${r.absolute - r.unresolvable === 1 ? '' : 's'}` : ''}`,
       sprite: r.symbols ? `${r.symbols} inlined symbol${r.symbols === 1 ? '' : 's'} match the sprite Design ships` : 'no page inlines a symbol',
@@ -345,6 +358,7 @@ function selfTest() {
     writeFileSync(join(dir, 'css/rux.css'), '.rux--btn{--rux-x:1}.rux--btn--primary{color:var(--rux-x)}.rux--lg\\:col-span-8{}');
     writeFileSync(join(dir, 'css/rux-theme.css'), '[data-theme=white]{--rux-y:2}');
     writeFileSync(join(dir, 'css/rux-overrides.css'), '');
+    writeFileSync(join(dir, 'css/rux-game.css'), '/* .game-in-a-comment is prose */.game-key{color:var(--rux-y)}.game-key:disabled{}');
     writeFileSync(join(dir, 'assets/icons.svg'), '<svg><symbol id="i-a"><path d="M0 0h1"/></symbol></svg>');
   };
   const elsewhere = () => {
@@ -359,7 +373,7 @@ function selfTest() {
     delete process.env.DS;
     w('theme.css', '/* empty */');
     w('overrides.css', '.rux--btn{color:var(--rux-y)}');
-    w('app.js', '// rux--not-a-class in a comment is prose\ndocument.body.classList.add("rux--btn");');
+    w('app.js', '// rux--not-a-class in a comment is prose\ndocument.body.classList.add("rux--btn");\ndocument.querySelector(".game-key").className = "game-key app-game-over";');
     w('brand/logo.svg', '<svg/>');
     w('index.html', [
       '<!doctype html><html lang="en" data-theme="white"><head>',
@@ -368,7 +382,7 @@ function selfTest() {
       '<style>.x{color:var(--rux-x)}</style></head><body>',
       '<!-- rux--in-a-comment is prose, not a use -->',
       '<img src="brand/logo.svg" alt="">',
-      '<button class="rux--btn rux--btn--primary rux--lg:col-span-8" aria-controls="panel" id="open">Open</button>',
+      '<button class="rux--btn rux--btn--primary rux--lg:col-span-8 game-key app-game-over" aria-controls="panel" id="open">Open</button>',
       '<div id="panel"><label for="name">Name</label><input id="name"></div>',
       '<a href="#panel">Panel</a><a href="https://example.com/">Out</a><a href="/switcher.js">Root</a>',
       '<svg><symbol id="i-a"><path d="M0 0h1"/></symbol></svg><svg><use href="#i-a"/></svg>',
@@ -414,6 +428,10 @@ function selfTest() {
     }],
     ['classes', 'classes', () => w('page.html', '<html><body class="rux--invented"></body></html>')],
     ['classes in a local script', 'classes', () => w('more.js', 'el.className = "rux--nope";')],
+    ['classes: a game- class not in the sheet', 'classes', () => w('page.html', '<html><body class="game-invented"></body></html>')],
+    ['classes: one in a local script', 'classes', () => w('more.js', 'el.className = "game-nope";')],
+    ['classes: one in a local sheet', 'classes', () => w('app.css', '.game-mine{display:none}')],
+    ['classes: no game sheet in Design', 'classes', () => rmSync(join(away, 'css/rux-game.css'))],
     ['tokens', 'tokens', () => w('theme.css', '[data-theme=white]{color:var(--rux-unknown)}')],
     ['files', 'files', () => w('page.html', '<html><body><img src="missing.svg"></body></html>')],
     ['ids: dangling aria-controls', 'ids', () => w('page.html', '<html><body><button aria-controls="nowhere">x</button></body></html>')],

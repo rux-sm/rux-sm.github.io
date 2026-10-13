@@ -284,10 +284,10 @@
         }
         const rift = riftTile(home, found, earned ? '+1 mana' : '', freed ? `+${freed} fairies` : '');
         const list = document.createElement('div');
-        list.className = 'pixels-categories';
+        list.className = 'game-tiles';
         list.append(rift, ...opened.map(c => riftTile(c, c.puzzles.filter(p => known.has(p.id)).length, 'Opened')));
         $('pixels-out').remove();
-        const keys = $('pixels-solved').querySelector('.pixels-actions');
+        const keys = $('pixels-solved').querySelector('.game-finish-actions');
         keys.before(list);
         if (!keys.childElementCount) keys.remove();
         if (first && !still) rift.querySelector('.rux--progress-bar__bar').animate(

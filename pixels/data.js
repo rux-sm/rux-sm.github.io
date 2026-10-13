@@ -631,7 +631,7 @@
 
   // The bar of places shows once there is a player: at once for an account
   // and the local preview, and for a guest when `enter` finds theirs.
-  const places = document.querySelector('.pixels-places');
+  const places = document.querySelector('.game-places');
   if (places && (member || (!client && local))) places.hidden = false;
   const enter = async host => {
     const me = await entering(host);

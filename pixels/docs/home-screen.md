@@ -37,7 +37,7 @@ page was not opened from the icon.
   `theme-color`, which `app.js` keeps as the page's colour through every
   change of theme.
 - **The last row of a page keeps clear of an iPhone's home bar,** by the
-  bottom padding of `.pixels-main` in `app.css`.
+  bottom padding of `.game-main` in `design/css/rux-game.css`.
 
 ## Staying the same player
 

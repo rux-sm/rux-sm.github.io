@@ -51,8 +51,8 @@ One bar:
 
 The order:
 
-- **Pixels first, in place, under its own prefix,** so the shapes are
-  proven on a real game before Design holds them.
+- **Pixels first,** so the shapes are proven on a real game before Design
+  holds their templates.
 - **Design second:** three templates, `game-hub.html`, `game-play.html` and
   `game-player.html`, of an invented game, each verified as
   `design/docs/verifying-templates.md` asks, with their rows in
@@ -63,13 +63,13 @@ The order:
 
 The parts Carbon lacks:
 
-- **Five parts are a game's and not Carbon's:** the bar of places, the game
-  key, which is an icon over a word, the picture tile with its progress,
-  the start cover and the finish panel.
+- **Six parts are a game's and not Carbon's:** the page's bottom room, the
+  bar of places, the game key, which is an icon over a word, the picture
+  tile with its progress, the start cover and the finish panel.
 - **They live in one sheet that Design serves, `design/css/rux-game.css`,
   under the prefix `game-`.** No `rux--` class can be added for them, since
   every one of those is compiled from Carbon, and a copy in each game would
-  drift. The check and `AGENTS.md`'s Names learn the prefix.
+  drift. The shared check fails an app on a `game-` class the sheet lacks.
 - **Every colour in that sheet is a `--rux-*` token,** as an app's own parts
   are held to.
 
@@ -79,13 +79,10 @@ None open.
 
 ## Tasks
 
-- [ ] Move the five parts out of `pixels/app.css` into
-      `design/css/rux-game.css` under `game-`, teach the check the prefix,
-      and add it to `AGENTS.md`'s Names and its rule on what must not be
-      invented.
 - [ ] Write the three templates in Design with an invented game, verify
       them, and add their rows to `design/docs/composing-pages.md`,
-      `design/docs/choices.md` and the `design-page` skill. Run the full
-      check.
+      `design/docs/choices.md` and the `design-page` skill. Design's own
+      class gate, `design/tools/check-classes.mjs`, reads only `rux--`
+      classes, so teach it `game-` for these pages. Run the full check.
 - [ ] Move Sevens: its list of tables onto Hub and its table onto Play.
 - [ ] Say each game's pages by the three shapes in its `README.md`.

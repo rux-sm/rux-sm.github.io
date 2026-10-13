@@ -200,7 +200,7 @@
     const tones = GLOW[shut ? 'shut' : c.rank || 'own'];
     const ink = { W: shut ? tones[0] : '1', P: tones[0], L: tones[1], M: tones[2], D: tones[3], K: tones[4] };
     const el = document.createElement('div');
-    el.className = 'pixels-picture pixels-portal';
+    el.className = 'pixels-picture pixels-portal game-tile-art';
     el.setAttribute('aria-hidden', 'true');
     el.style.setProperty('--size', 15);
     // A square outside the portal is given no ink, so the tile shows there.
@@ -760,26 +760,26 @@
      of that. */
   const riftTile = (c, found, tag, under) => {
     const locked = c.short > 0, have = c.need - c.short;
-    const pill = text => words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--high-contrast pixels-grade', text);
+    const pill = text => words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--high-contrast game-tile-tag', text);
     const a = document.createElement(locked ? 'div' : 'a');
-    a.className = locked ? 'rux--tile pixels-category is-locked' : 'rux--link rux--tile rux--tile--clickable pixels-category';
+    a.className = locked ? 'rux--tile game-tile is-locked' : 'rux--link rux--tile rux--tile--clickable game-tile';
     if (!locked) a.href = where(c);
     const all = c.puzzles.length;
     const head = document.createElement('span');
-    head.className = 'pixels-category-head';
-    head.append(words('pixels-category-name', c.rank ? `${c.rank} · ${heading(c)}` : heading(c)));
+    head.className = 'game-tile-head';
+    head.append(words('game-tile-name', c.rank ? `${c.rank} · ${heading(c)}` : heading(c)));
     if (tag) head.append(pill(tag));
     a.append(portal(c, !locked && found === all), head);
     if (c.by) {
-      const by = words('pixels-meta pixels-by', '');
+      const by = words('game-tile-note pixels-by', '');
       by.append(portrait(c.by), c.by.name);
       a.append(by);
     }
-    const said = words('pixels-meta', locked ? `Rift ${c.number} · ${have} of ${c.need} sprites to open`
+    const said = words('game-tile-note', locked ? `Rift ${c.number} · ${have} of ${c.need} sprites to open`
       : c.number ? `Rift ${c.number} · ${found === all ? 'cleared' : `${found} of ${all} sprites`}` : sprites(found, all));
     if (under) {
       const line = document.createElement('span');
-      line.className = 'pixels-category-head';
+      line.className = 'game-tile-head';
       line.append(said, pill(under));
       a.append(line);
     } else a.append(said);
@@ -880,7 +880,7 @@
      owner's two, Manage and Players, are reached from Me and are Me's. */
   const here = location.pathname.split('/').pop() || 'index.html';
   const place = { 'category.html': 'index.html', 'manage.html': 'me.html', 'players.html': 'me.html' }[here] || here;
-  document.querySelectorAll('.pixels-place').forEach(a => {
+  document.querySelectorAll('.game-place').forEach(a => {
     const to = a.getAttribute('href') === './' ? 'index.html' : a.getAttribute('href');
     if (to === place) a.setAttribute('aria-current', 'page');
   });

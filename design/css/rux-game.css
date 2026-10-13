@@ -1,0 +1,147 @@
+/* rux-game.css -- the parts a game has that Carbon lacks. A game links it
+   after rux.css, rux-theme.css and rux-overrides.css, and no other app links
+   it. Every class here is under the prefix `game-`, because a `rux--` class
+   is one Carbon compiled and none can be added. Every colour is a `--rux-*`
+   token, so each theme draws these parts from its own values.
+   tools/check-app.mjs resolves a game's use of a `game-` class against this
+   file, as it resolves a `rux--` class against rux.css.
+
+   SIX PARTS: the page, the bar of places, the game key, the picture tile,
+   the start cover and the finish panel. Each is used with Carbon's own
+   components and never in place of one: a picture tile is Carbon's tile laid
+   out round a picture, and the keys on a cover are Carbon's buttons.
+
+   A game has no header. The bar of places is its one way round, and what a
+   header would hold is a list on the player's page. */
+
+/* THE PAGE, on the game's <main> beside Carbon's content class. Its last row
+   keeps clear of a phone's home bar, and of the bar of places where the page
+   carries one. */
+.game-main { padding-block-end: max(2rem, env(safe-area-inset-bottom, 0px)); }
+
+/* THE BAR OF PLACES, the first thing in the page. On a wide screen it is a
+   row along the top, out to the page's edges through the 2rem Carbon's
+   content keeps clear; on a phone it is fixed along the bottom, each place
+   its icon over its word, clear of the home bar. The place the page is,
+   marked by aria-current, carries a line on the edge that meets the page. */
+.game-places {
+  display: flex;
+  margin: -2rem -2rem 1.5rem;
+  padding-inline: 1rem;
+  background: var(--rux-layer-01);
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+}
+.game-place {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .75rem 1rem;
+  margin-block-end: -1px;
+  border-block-end: 2px solid transparent;
+  color: var(--rux-text-secondary);
+  font-size: .875rem;
+  text-decoration: none;
+}
+.game-places[hidden] { display: none; }
+.game-place > svg { inline-size: 1.25rem; block-size: 1.25rem; }
+.game-place:hover { color: var(--rux-text-primary); background: var(--rux-layer-hover-01); }
+.game-place:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
+.game-place[aria-current] { color: var(--rux-text-primary); font-weight: 600; border-block-end-color: var(--rux-border-interactive); }
+@media (max-width: 41.99rem) {
+  .game-places {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 2;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    margin: 0;
+    padding: 0 0 env(safe-area-inset-bottom, 0px);
+    border-block-start: 1px solid var(--rux-border-subtle-01);
+    border-block-end: 0;
+  }
+  .game-place {
+    display: grid;
+    justify-items: center;
+    gap: .125rem;
+    padding: .5rem 0 .375rem;
+    margin-block: -1px 0;
+    border-block-start: 2px solid transparent;
+    border-block-end: 0;
+    font-size: .75rem;
+  }
+  .game-place > svg { inline-size: 1.5rem; block-size: 1.5rem; }
+  .game-place[aria-current] { border-block-start-color: var(--rux-border-interactive); }
+  .game-main:has(.game-places) { padding-block-end: calc(5.5rem + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* THE GAME KEY, an icon over its word, 3.5rem to press. A row of them shares
+   the row's width. A key that is a switch says so with aria-pressed and is
+   in the quieter colour while it is off. */
+.game-keys { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: .375rem; }
+.game-key {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: .125rem;
+  block-size: 3.5rem;
+  padding: 0;
+  border: 1px solid var(--rux-border-strong-01);
+  background: none;
+  color: var(--rux-text-primary);
+  font: inherit;
+  font-size: .75rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+.game-key[aria-pressed="false"] { color: var(--rux-text-secondary); }
+.game-key:disabled { border-color: var(--rux-border-disabled); color: var(--rux-text-disabled); cursor: default; }
+.game-key:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+
+/* THE PICTURE TILE, on Carbon's tile: a picture at its start, and beside it
+   a name, a note of how far along it is, and Carbon's progress bar. The
+   list is one tile to a row on a phone and as many as fit beyond that. It
+   asks no width of the page for itself: left to, it would ask for as many
+   columns as its widest allows, and push a phone's page sideways.
+   The head is the name with a tag at its far end, and a note takes the same
+   row where it carries a tag too. A locked tile, which is no link, has its
+   picture dim and its name in the quieter colour. */
+.game-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: .5rem; min-inline-size: 0; max-inline-size: 60rem; }
+.game-tiles .game-tile {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-content: center;
+  gap: .25rem .875rem;
+  inline-size: auto;
+  min-inline-size: 0;
+  min-block-size: 0;
+  padding: .75rem;
+}
+.game-tile > :not(.game-tile-art) { grid-column: 2; }
+.game-tile-art { grid-column: 1; grid-row: 1 / span 3; align-self: center; }
+.game-tile-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; min-inline-size: 0; }
+.game-tile-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.game-tile-note { color: var(--rux-text-secondary); font-size: .75rem; font-variant-numeric: tabular-nums; }
+.game-tile-head > .game-tile-name, .game-tile-head > .game-tile-note { flex: 1; min-inline-size: 0; }
+.game-tile-tag { flex: none; margin: 0; }
+.game-tile.is-locked > .game-tile-art { opacity: .3; }
+.game-tile.is-locked .game-tile-name { color: var(--rux-text-secondary); }
+
+/* THE START COVER. The stage holds the board, and the cover lies over it
+   until play begins: a panel in its middle with Carbon's buttons, each as
+   wide as the panel. A game whose board does not fill the stage says where
+   the cover lies with `--game-cover-inset`. The panel is 11.25rem across,
+   so its keys are the width a word or two needs. */
+.game-stage { position: relative; }
+.game-cover { position: absolute; inset: var(--game-cover-inset, 0); display: grid; place-content: center; }
+.game-cover-panel { display: grid; gap: .375rem; inline-size: 11.25rem; padding: .75rem; background: var(--rux-background); }
+.game-cover-key { inline-size: 100%; }
+
+/* THE FINISH PANEL, under what was played: what was won, the score, and the
+   ways on, in the middle. A picture tile in it is as wide as a phone's
+   board at most, its words starting at its edge. */
+.game-finish { display: grid; gap: 1.5rem; justify-items: center; text-align: center; padding-block: 1rem; }
+.game-finish[hidden] { display: none; }
+.game-finish-score { display: block; font-size: 2rem; }
+.game-finish-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.game-finish > .game-tiles { grid-template-columns: minmax(0, 24rem); justify-content: center; justify-self: stretch; text-align: start; }

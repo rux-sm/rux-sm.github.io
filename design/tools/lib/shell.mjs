@@ -46,9 +46,9 @@
 //
 
 // THE SHELL'S OWN SCRIPTS, because a panel nobody wired is an affordance that
-// lies — the rule js/ states about itself. The account panel carries theme
-// radios, and js/profile.js is what listens to them: a page with the panel
-// and without the script checks the radio and moves nothing, and a stored
+// lies — the rule js/ states about itself. The account panel carries the
+// theme's select, and js/profile.js is what listens to it: a page with the
+// panel and without the script picks a theme and moves nothing, and a stored
 // theme renders white because nothing applies it.
 //
 // TWO PLACES, AND THE SPLIT IS NOT COSMETIC. The first pair goes in <head>,
@@ -80,10 +80,25 @@ export const PAGES = [
   { id: 'theme-creator', file: 'theme-creator.html', label: 'Theme creator' },
 ];
 
-// The ten themes as the profile panel's radio group, generated rather than
-// pasted: ten near-identical blocks copied into four files is four copies to
-// forget. White is checked because every page ships `data-theme="white"`;
-// js/theme.js re-checks whichever one storage holds on load.
+// THE ACCOUNT PANEL, the one panel the header's one action opens, and the
+// one place its markup is written. shell() emits it into the pages a
+// generator writes, and tools/inline-account.mjs splices the same bytes
+// between two markers in every template, so no page keeps a copy of its own
+// to drift.
+//
+// WHAT IS IN IT, top to bottom, is two of Carbon's switcher lists. The first
+// is the account's own rows: Profile, which opens the Account page; the
+// theme, as Carbon's inline select, which says the theme in use and opens the
+// list in place; and Log out, a link to the log-in page that the script
+// behind it turns into the act. Profile and Log out ship hidden: /account.js
+// shows them once someone is logged in, and writes who that is above them.
+// The second list is the apps that account can open. /switcher.js fills it
+// from /switcher.json and leaves it out where there is only the app the page
+// is, so its one entry here is what stays when that fetch fails.
+//
+// THE THEMES ARE GENERATED rather than pasted. White is selected because a
+// page ships `data-theme="white"`; js/profile.js selects whichever one
+// storage holds on load, and adds an option for each saved custom theme.
 const THEME_NAMES = [
   ['white', 'White'], ['g10', 'Gray 10'], ['g90', 'Gray 90'], ['g100', 'Gray 100'],
   ['geist-dark', 'Geist dark'], ['ant-dark', 'Ant dark'], ['spotify-dark', 'Spotify dark'],
@@ -91,14 +106,37 @@ const THEME_NAMES = [
   ['rux-dark', 'Rux dark'],
 ];
 
-const themeRadios = () => THEME_NAMES.map(([value, label]) =>
-`          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-${value}" class="rux--radio-button" type="radio" name="rux-theme" value="${value}"${value === 'white' ? ' checked' : ''}>
-            <label for="rux-theme-${value}" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">${label}</span>
-            </label>
-          </div>`).join('\n');
+const themeOptions = () => THEME_NAMES.map(([value, label]) =>
+`                  <option class="rux--select-option" value="${value}"${value === 'white' ? ' selected' : ''}>${label}</option>`).join('\n');
+
+export const accountAction = () =>
+`    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>`;
+
+export const accountPanel = () =>
+`  <div class="rux--header-panel" id="rux-account-panel">
+    <ul class="rux--switcher" aria-label="Account">
+      <li class="rux--switcher__item" id="rux-account-profile" hidden><a class="rux--switcher__item-link" href="/account/">Profile</a></li>
+      <li>
+        <div class="rux--form-item">
+          <div class="rux--select rux--select--inline rux--layout--size-md">
+            <label class="rux--label" for="rux-profile-theme">Theme</label>
+            <div class="rux--select-input--inline__wrapper">
+              <div class="rux--select-input__wrapper">
+                <select id="rux-profile-theme" class="rux--select-input">
+${themeOptions()}
+                </select>
+                <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="rux--switcher__item" hidden><a class="rux--switcher__item-link" href="/login/" id="rux-profile-sign-in">Log out</a></li>
+    </ul>
+    <ul class="rux--switcher" aria-label="Applications">
+      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/">Home</a></li>
+    </ul>
+  </div>`;
 
 const navItems = current => PAGES.map(p => {
   const active = p.id === current;
@@ -119,51 +157,9 @@ export function shell(current) {
   <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
   <a class="rux--header__name" href="./"><img src="brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;Design</a>
   <div class="rux--header__global">
-    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>
-    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="App switcher" aria-expanded="false" aria-controls="rux-switcher-panel"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-grid"/></svg></button>
+${accountAction()}
   </div>
-  <!-- THE SWITCHER IS THE HUB'S LIST AND NOT THIS FILE'S. /switcher.js fetches
-       /switcher.json from the account root and rewrites every ul.rux--switcher
-       on the page, marking the one you are on; the entries below are the
-       FALLBACK it leaves in place when that fetch fails — a module served
-       alone, or offline. Nothing but the hub lists apps.
-
-       THEY MATCH switcher.json's ORDER AND NAMES AS OF 2026-09-12, deliberately
-       rather than approximately. The hardcoded list this replaces said
-       "Notes" where the hub says "Notes" and put Design System first where
-       the hub puts it last, so a page whose fetch failed showed a different
-       ecosystem from one whose fetch worked. A fallback that disagrees with
-       the thing it stands in for is worse than no fallback. -->
-  <div class="rux--header-panel" id="rux-switcher-panel">
-    <ul class="rux--switcher" aria-label="Applications">
-      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/">Home</a></li>
-      <li><hr class="rux--switcher__item--divider"></li>
-      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/ln/">LN Guide</a></li>
-      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/scheduler/">Scheduler</a></li>
-      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/design/" aria-current="page">Design</a></li>
-    </ul>
-  </div>
-  <div class="rux--header-panel" id="rux-account-panel">
-    <div class="rux--layer-two rux--stack-vertical rux--stack-scale-5">
-      <div class="rux--form-item rux--text-input-wrapper">
-        <div class="rux--text-input__label-wrapper">
-          <label class="rux--label" for="rux-profile-name">Display name</label>
-        </div>
-        <div class="rux--text-input__field-outer-wrapper">
-          <div class="rux--text-input__field-wrapper">
-            <input id="rux-profile-name" class="rux--text-input" type="text" autocomplete="nickname" placeholder="Saved in this browser">
-          </div>
-        </div>
-      </div>
-      <div class="rux--form-item">
-        <fieldset class="rux--radio-button-group rux--radio-button-group--label-right rux--radio-button-group--vertical" id="rux-profile-theme">
-          <legend class="rux--label">Theme</legend>
-${themeRadios()}
-        </fieldset>
-      </div>
-      <button type="button" class="rux--btn rux--btn--tertiary" id="rux-profile-sign-in" hidden>Sign in</button>
-    </div>
-  </div>
+${accountPanel()}
 
   <div class="rux--side-nav__overlay"></div>
   <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux rux--side-nav--hidden" aria-label="Pages">

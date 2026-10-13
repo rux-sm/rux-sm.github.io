@@ -3,10 +3,14 @@
    --------------------------------------------------------------------------
    Requires js/theme.js, linked in <head>. Claims the account panel by its id,
    `#rux-account-panel`: a header panel the Account action opens through
-   aria-controls (js/ui-shell.js), holding a display name and a theme. This
-   module keeps both in localStorage under the one key js/theme.js reads, so
-   the next page on the origin — any app, not only this one — opens in the
-   theme just chosen.
+   aria-controls (js/ui-shell.js), holding the theme and, where a page has a
+   field for one, a display name. This module keeps both in localStorage
+   under the one key js/theme.js reads, so the next page on the origin — any
+   app, not only this one — opens in the theme just chosen.
+
+   THE THEME IS PICKED FROM `#rux-profile-theme`: a select in the header's
+   panel, and a group of radios named `rux-theme` in a page that still
+   carries one. Both are kept in step the same way.
 
    THIS IS THE LOCAL PROFILE, the layer that is not password-protected and
    needs no network: what the gates can drive, and what keeps an app usable
@@ -59,7 +63,9 @@
   if (!panel) return;
 
   const name = panel.querySelector('#rux-profile-name');
-  const fieldset = panel.querySelector('#rux-profile-theme');
+  const picker = panel.querySelector('#rux-profile-theme');
+  const select = picker?.tagName === 'SELECT' ? picker : null;
+  const fieldset = select ? null : picker;
   const signIn = panel.querySelector('#rux-profile-sign-in');
   const listeners = new Set();
   const getRadios = () => [...panel.querySelectorAll('input[name="rux-theme"]')];
@@ -98,6 +104,24 @@
     }
   };
 
+  // The same for a select: one option per saved custom theme, made from the
+  // select's own first option, and dropped once its theme no longer exists.
+  const syncCustomOptions = () => {
+    const saved = window.Rux?.customThemes?.list() ?? [];
+    const savedIds = new Set(saved.map(t => t.id));
+    for (const o of [...select.options]) if (o.dataset.ruxCustom && !savedIds.has(o.value)) o.remove();
+    const present = new Set([...select.options].map(o => o.value));
+    for (const t of saved) {
+      if (present.has(t.id)) continue;
+      const option = select.options[0].cloneNode(false);
+      option.value = t.id;
+      option.textContent = t.id;
+      option.selected = false;
+      option.dataset.ruxCustom = 'true';
+      select.appendChild(option);
+    }
+  };
+
   // The radios follow the STORED preference, falling back to the theme the
   // page is actually in only when nothing is stored yet — a page with no
   // stored theme shows its own default as checked, same as always; a stored
@@ -105,8 +129,13 @@
   // dataset can't be the source of truth once Phase 16's custom themes exist.
   const render = p => {
     if (name && name.value !== (p.name ?? '')) name.value = p.name ?? '';
-    syncCustomRadios();
     const current = p.theme ?? document.documentElement.dataset.theme ?? '';
+    if (select) {
+      syncCustomOptions();
+      select.value = current;
+      return;
+    }
+    syncCustomRadios();
     for (const r of getRadios()) r.checked = r.value === current;
   };
   const set = patch => {
@@ -119,6 +148,7 @@
   };
 
   name?.addEventListener('input', () => set({ name: name.value }));
+  select?.addEventListener('change', () => set({ theme: select.value }));
   fieldset?.addEventListener('change', e => {
     const r = e.target;
     if (!(r instanceof HTMLInputElement) || r.name !== 'rux-theme' || !r.checked) return;
@@ -133,8 +163,10 @@
 
   const onSignIn = fn => {
     if (!signIn) return;
-    signIn.hidden = false;
-    signIn.addEventListener('click', fn);
+    // In the header's panel it is the button's row that ships hidden.
+    (signIn.closest('[hidden]') ?? signIn).hidden = false;
+    // Where it is a link, the handler is the act and the link is not followed.
+    signIn.addEventListener('click', e => { e.preventDefault(); fn(e); });
   };
 
   render(get());

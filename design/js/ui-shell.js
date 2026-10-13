@@ -244,6 +244,7 @@
      a static specimen on the first press anywhere would make the sink's own
      readings depend on where the pointer went. Its button still closes it. */
   const EXPANDED_PANEL = 'rux--header-panel--expanded';
+  const STOPS = 'a, button, select, input';
   const panels = new Map();   // panel -> registration
   const panelFor = trigger => {
     const id = trigger.getAttribute('aria-controls');
@@ -254,8 +255,9 @@
     panel.classList.toggle(EXPANDED_PANEL, open);
     trigger.classList.toggle('rux--header__action--active', open);
     trigger.setAttribute('aria-expanded', String(open));
-    // Carbon's own tabindex swap: a collapsed panel's links are not in the tab order.
-    for (const a of panel.querySelectorAll('a, button')) a.tabIndex = open ? 0 : -1;
+    // Carbon's own tabindex swap: a collapsed panel's links are not in the tab
+    // order, and nor is a field this system puts in one.
+    for (const a of panel.querySelectorAll(STOPS)) a.tabIndex = open ? 0 : -1;
     const reg = panels.get(panel);
     if (open && !reg) {
       panels.set(panel, overlay.register({
@@ -331,7 +333,7 @@
   // A collapsed panel's links leave the tab order on load, as Carbon renders them.
   for (const panel of document.querySelectorAll('.rux--header-panel'))
     if (!panel.classList.contains(EXPANDED_PANEL))
-      for (const a of panel.querySelectorAll('a, button')) a.tabIndex = -1;
+      for (const a of panel.querySelectorAll(STOPS)) a.tabIndex = -1;
 
   window.Rux.uiShell = {
     openNav: (nav, trigger) => setNav(nav, true, trigger),

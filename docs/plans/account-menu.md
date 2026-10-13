@@ -38,8 +38,11 @@ the game's rows alone.
 - **With no login, as in a local preview or a Design template, the menu is
   Theme and every app,** with no person, no Profile and no Log out.
 - **The block is written into every page by a tool, between markers, as the
-  sprite is,** so no page's copy can differ from another's. The 46 pages
-  that carry the two panels each hold a copy of their own today.
+  sprite is,** so no page's copy can differ from another's.
+  `design/tools/lib/shell.mjs` is where it is written and
+  `design/tools/inline-account.mjs` splices it. Design's templates and its
+  own pages take it that way; an app's pages each still hold the two panels
+  in a copy of their own, which the scripts keep working until it is moved.
 - **Home's grid of apps is as it is.**
 
 In a game:
@@ -67,20 +70,17 @@ None open.
 
 ## Tasks
 
-- [ ] Compose the menu in Design: one action and one panel in
-      `design/sink/ui-shell.html` and the shell that
-      `design/tools/lib/shell.mjs` writes, with `design/js/profile.js` and
-      `design/js/ui-shell.js` to match, through Design's gates.
-- [ ] Fill the one panel from `/switcher.js` and `/account.js`: the person,
-      Profile, Log out and the apps.
-- [ ] Write the tool that puts the block into every page carrying its
-      markers, and mark Design's templates and root pages.
-- [ ] Move each app onto it, a page looked at with a login at 402 and 1280
-      wide: Home and Account, LN Guide through its generator, the Scheduler,
-      Coins and Sevens.
+- [ ] Move each app onto the panel, a page looked at with a login at 402 and
+      1280 wide: Home and Account, LN Guide through its generator, the
+      Scheduler, Coins and Sevens. Each page takes the `ACCOUNT` markers and
+      loses its App switcher action, `design/tools/inline-account.mjs` is
+      run over the site's pages by the root build, and its `--check` joins
+      the root check.
 - [ ] Give the games the header on a wide screen: Pixels and Sevens, and the
       three game templates in Design, with a game's own rows in the menu
       and a player with no account drawn theirs.
-- [ ] Correct `design/docs/composing-pages.md`, `design/docs/choices.md` and
-      the `design-page` skill where they say the header has global actions
-      and a switcher panel.
+- [ ] Take the older panel's code out once no page carries it: the radios in
+      `design/js/profile.js`, the name field and the button in
+      `/account.js`, the list in a panel of its own in `/switcher.js`, and
+      the switcher half of the account case in
+      `design/tools/check-behaviour.js`.

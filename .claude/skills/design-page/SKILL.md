@@ -37,8 +37,8 @@ Seventeen exist, each a **complete page**, shell included; a game's three have n
 
 **A game's three are copied together.** They have one bar of places and no
 header, and the parts Carbon lacks are `game-` classes from
-`design/css/rux-game.css`, which the check holds a game to. Rows 3 and 4 of
-the table in §2 do not apply to them.
+`design/css/rux-game.css`, which the check holds a game to. Row 3 of the
+table in §2 does not apply to them.
 
 **Not `design/sink/ui-shell.html`**: same shell in a 22rem sandbox, positioned for a
 specimen.
@@ -63,14 +63,17 @@ call", take the default and say which one you took.
 | 1 | Page shape | the rows in §1 | which template you copy | the nearest row in §1 |
 | 2 | Theme | `white` `g10` `g90` `g100` `rux` | `data-theme` on `<html>` | `white`; `g10` when cards should stand off the page; `g90`/`g100` for a dark tool |
 | 3 | Header nav links | present, absent | the `<nav class="rux--header__nav">` block | present |
-| 4 | Global actions and the switcher panel | present, absent | `rux--header__global` and its sibling panel | present |
-| 5 | Field style | regular, fluid | the ten controls that have both: text input, text area, select, number input, search, date picker, time picker, dropdown, combo box, multi-select | regular |
-| 6 | Button kinds | primary, secondary, tertiary, ghost, danger, danger tertiary, danger ghost | the modifier on each `rux--btn` | one primary per view, secondary beside it, ghost for the quiet action |
-| 7 | Button size | `xs` `sm` `md` `lg` `xl` | the size class | `lg`, which carries no class; every template button is `lg` |
-| 8 | Body blocks | any name in `design/sink/ORDER` | what goes inside `.rux--content` | the template's own |
+| 4 | Field style | regular, fluid | the ten controls that have both: text input, text area, select, number input, search, date picker, time picker, dropdown, combo box, multi-select | regular |
+| 5 | Button kinds | primary, secondary, tertiary, ghost, danger, danger tertiary, danger ghost | the modifier on each `rux--btn` | one primary per view, secondary beside it, ghost for the quiet action |
+| 6 | Button size | `xs` `sm` `md` `lg` `xl` | the size class | `lg`, which carries no class; every template button is `lg` |
+| 7 | Body blocks | any name in `design/sink/ORDER` | what goes inside `.rux--content` | the template's own |
 
-**Five things are not choices**, and offering them is itself the error:
+**Six things are not choices**, and offering them is itself the error:
 
+- **The account action and its panel.** Every app has the same one: the
+  theme, the account's rows and the apps that account can open. It is
+  generated between the `ACCOUNT` markers; `design/docs/choices.md` says
+  what is in it.
 - **The side nav.** Only the expanded, fixed variant is captured. No rail, no
   collapsed-by-default; ask before offering one.
 - **The header's theme.** `g100` by Carbon's own guidance under Carbon's four.
@@ -79,10 +82,10 @@ call", take the default and say which one you took.
 - **Button states**: disabled, loading, selected. The page sets them; they are
   not decided at creation.
 - **Fluid for checkbox, radio and toggle.** No fluid form exists for those
-  three, so row 5 cannot reach them. It does reach the list-box family, which
+  three, so row 4 cannot reach them. It does reach the list-box family, which
   takes fluid on its wrapper, `rux--list-box__wrapper--fluid`.
 
-**Row 5 is one decision for the whole form, not one per field.** Carbon does not
+**Row 4 is one decision for the whole form, not one per field.** Carbon does not
 mix regular and fluid in a group.
 
 Everything the table offers is already compiled. §3 is for anything you reach
@@ -91,7 +94,7 @@ for beyond it.
 ### Where the template stops and you start
 
 A template, or `builder.html`'s download of one with its answers filled in,
-settles rows 1 and 2 plus name, title and file. Rows 3 to 8 are composition,
+settles rows 1 and 2 plus name, title and file. Rows 3 to 7 are composition,
 which is this skill. Start from the copy, then compose into it. A new app's
 steps are in the repository's `AGENTS.md`, the "a new app" row.
 

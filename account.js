@@ -8,9 +8,10 @@
    anonymous session and no GitHub or Google log-in. Without a login, as in a
    local preview, these pages use the profile this browser keeps.
 
-   WITH A LOGIN, staff or not, the account panel offers Account settings and
-   Log out, and the name and theme sync to platform.profiles, cloud first on
-   load and local edits pushed up after, debounced. Which pages any
+   WITH A LOGIN, staff or not, the account panel says who is logged in and
+   offers Profile, which opens the Account page, and Log out, and the name
+   and theme sync to platform.profiles, cloud first on load and local edits
+   pushed up after, debounced. Which pages any
    account opens is /funnel.js's, and which apps the switcher lists is
    /switcher.js's.
 
@@ -254,6 +255,9 @@
 
   const panel = document.getElementById('rux-account-panel');
   const panelButton = panel?.querySelector('#rux-profile-sign-in');
+  // The one account panel lists its rows. A page not yet moved onto it has the
+  // older panel: a stack with a name field, the themes and a button.
+  const menu = panel?.querySelector('ul.rux--switcher[aria-label="Account"]');
 
   // THE ACCOUNT SIDE OF A PAGE, run at load once the login is confirmed, for
   // every account, staff or not: platform.profiles lets any login keep its
@@ -261,43 +265,74 @@
   const setupAccount = async session => {
     if (!profile || !session || session.user.is_anonymous) return;
 
-    if (panelButton) {
-      // The account panel's door into the Account page, which every account
-      // with access opens.
-      const link = document.createElement('a');
-      link.className = 'rux--link rux--link--inline';
-      link.href = '/account/';
-      link.textContent = 'Account settings';
-      panelButton.insertAdjacentElement('afterend', link);
-    }
-
-    /* THE PANEL SAYS WHOSE ACCOUNT THIS IS. Until now only the missing Sign in
-       button said you were signed in at all, and the field below it asks for a
-       "display name" that is this browser's alone -- so the panel offered a
-       name that was not the account's and never gave the one that was. The
-       photo is left out: the header's Account button is this person's face and
-       sits directly above the panel. */
-    const stack = panel?.firstElementChild;
-    if (stack) {
+    if (menu) {
+      /* THE PANEL SAYS WHOSE ACCOUNT THIS IS, over its rows: their picture
+         and their name, as the header's Account action is their picture.
+         Profile, the row that opens the Account page, is shown to every
+         account. */
       const who = await person();
+      const head = document.createElement('div');
+      head.className = 'rux--stack-vertical';
       const line = document.createElement('div');
-      const label = document.createElement('div');
+      line.className = 'rux--stack-horizontal rux--stack-scale-4';
+      const face = document.createElement('div');
+      face.className = 'rux--user-avatar rux--user-avatar--md';
+      face.setAttribute('aria-hidden', 'true');
+      const text = document.createElement('div');
+      text.className = 'rux--stack-vertical';
+      const name = document.createElement('div');
+      name.className = 'rux--type-heading-compact-01';
+      name.textContent = who?.name ?? '';
+      const label = document.createElement('span');
       label.className = 'rux--label rux--label--no-margin';
       label.textContent = 'Signed in';
-      line.appendChild(label);
-      if (who?.name) {
-        const name = document.createElement('div');
-        name.textContent = who.name;
-        line.appendChild(name);
-      }
-      stack.prepend(line);
+      text.append(name, label);
+      line.append(face, text);
+      head.append(line);
+      if (await showAvatar(face, 'md')) panel.prepend(head);
+      const row = menu.querySelector('#rux-account-profile');
+      if (row) row.hidden = false;
       // A name this browser keeps can change under the panel while it is open.
-      if (who && !who.staff) profile.onChange(p => {
-        const name = line.lastElementChild === label ? null : line.lastElementChild;
-        if (p.name && name) name.textContent = p.name;
-        else if (p.name) { const n = document.createElement('div'); n.textContent = p.name; line.appendChild(n); }
-        else if (name) name.remove();
-      });
+      if (who && !who.staff) profile.onChange(p => { name.textContent = p.name ?? ''; });
+    } else {
+      if (panelButton) {
+        // The account panel's door into the Account page, which every account
+        // with access opens.
+        const link = document.createElement('a');
+        link.className = 'rux--link rux--link--inline';
+        link.href = '/account/';
+        link.textContent = 'Account settings';
+        panelButton.insertAdjacentElement('afterend', link);
+      }
+
+      /* THE PANEL SAYS WHOSE ACCOUNT THIS IS. Until now only the missing Sign in
+         button said you were signed in at all, and the field below it asks for a
+         "display name" that is this browser's alone -- so the panel offered a
+         name that was not the account's and never gave the one that was. The
+         photo is left out: the header's Account button is this person's face and
+         sits directly above the panel. */
+      const stack = panel?.firstElementChild;
+      if (stack) {
+        const who = await person();
+        const line = document.createElement('div');
+        const label = document.createElement('div');
+        label.className = 'rux--label rux--label--no-margin';
+        label.textContent = 'Signed in';
+        line.appendChild(label);
+        if (who?.name) {
+          const name = document.createElement('div');
+          name.textContent = who.name;
+          line.appendChild(name);
+        }
+        stack.prepend(line);
+        // A name this browser keeps can change under the panel while it is open.
+        if (who && !who.staff) profile.onChange(p => {
+          const name = line.lastElementChild === label ? null : line.lastElementChild;
+          if (p.name && name) name.textContent = p.name;
+          else if (p.name) { const n = document.createElement('div'); n.textContent = p.name; line.appendChild(n); }
+          else if (name) name.remove();
+        });
+      }
     }
 
     // The panel's one button becomes Log out. profile.js reveals it only when

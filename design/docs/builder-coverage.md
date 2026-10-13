@@ -244,6 +244,6 @@ _73 shipped fragments · 21 marked, holding 27 of the catalogue's 77 blocks · 2
 | `toggletip` | dropdown, link, list-box, popover, toggletip | — | 2 | — | — | coachmark, copy-button, form-controls, list-box, popover, tag-overflow | no |
 | `tooltip` | button, popover, tooltip | — | 3 | — | — | coachmark, copy-button, guidebanner, popover, tag-overflow | no |
 | `treeview` | treeview | — | 2 | — | — | — | no |
-| `ui-shell` | button, form, radio-button, stack, text-input, ui-shell, user-avatar | — | 4 | — | — | guidebanner, list-box, notifications-panel, profile, theme, ui-shell | no |
+| `ui-shell` | button, form, select, stack, ui-shell, user-avatar | — | 4 | — | — | form-controls, guidebanner, notifications-panel, theme, ui-shell | no |
 | `user-avatar` | user-avatar | — | 20 | — | — | — | no |
 <!-- COVERAGE:END -->

@@ -44,22 +44,25 @@ bar of places stands where the header would.
 ## UI shell — one, with parts
 
 Carbon ships one shell and Design carries one attested build of it: a dark
-header with the product name, header nav links, global actions, two
-right-hand header panels (**the switcher** and **the account panel**) and a
-left side nav, expanded, fixed. Two things are choices and four are not:
+header with the product name, header nav links, one global action with its
+right-hand header panel (**the account panel**) and a left side nav,
+expanded, fixed. One thing is a choice and five are not:
 
 - **Header nav links**: present or absent.
-- **Global actions and the switcher panel**: present or absent. Two actions
-  ship, in Carbon's prescribed order: the switcher, where an ecosystem lists
-  its apps, and the account. Notifications and help are not among them: an
+- The global action: one ships, the account, which is the person's picture
+  once someone is logged in. Notifications and help are not beside it: an
   icon-only button with no handler is an affordance that lies. Add one in a
-  product when it does something.
+  product when it does something, in Carbon's prescribed order.
 - Side nav: only the expanded, fixed variant is captured. No rail, no
   collapsed-by-default; ask before offering one.
-- The account panel: every app has one. It holds the profile
-  (a display name and the theme), saved in the browser under one key every
-  app on the origin shares, so a choice made in one app is the choice in all.
-  `js/theme.js` applies it before first paint, `js/profile.js` keeps it.
+- The account panel: every app has the same one, written once in
+  `tools/lib/shell.mjs` and spliced into each template by
+  `tools/inline-account.mjs`. It holds who is logged in, Profile, the theme
+  and Log out, and under them the apps that account can open, left out
+  where there is only the app the page is. The theme is saved in the browser
+  under one key every app on the origin shares, so a choice made in one app
+  is the choice in all. `js/theme.js` applies it before first paint,
+  `js/profile.js` keeps it.
 - The shell's theme: the header is `g100` by Carbon's own guidance under
   Carbon's four. A theme above those four is the page's own, so the shell
   takes it too, on that theme's `layer-01`.

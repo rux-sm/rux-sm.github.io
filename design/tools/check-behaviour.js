@@ -516,65 +516,61 @@
       !has(panel, EXP), `--expanded=${has(panel, EXP)} after two presses`);
   })();
 
-  // ── ui-shell: two panels in one header, each action opens its own ────────
-  // Added 2026-09-02 with the account panel. js/ui-shell.js
-  // resolves a panel through aria-controls when the action names one; the
-  // Account action must open #rux-account-panel and leave the switcher's
-  // closed, and opening the switcher must close it, because the kernel keeps
-  // one dismissible surface on the stack.
+  // ── ui-shell: the account panel, the header's one ────────────────────────
+  // js/ui-shell.js resolves a panel through aria-controls when the action
+  // names one: the Account action opens #rux-account-panel, a second press
+  // closes it, and a field in it is in the tab order only while it is open.
   //
-  // THIS CASE IS NOT SECTION-SCOPED, AND THE OTHER TWO ABOVE IT ARE. Corrected
-  // 2026-09-11 after it started skipping. It read `fixture('#ui-shell')` for
-  // the two ACTIONS while resolving their PANELS with document.getElementById
-  // two lines later -- half-scoped, and only ever correct while one shell on
-  // the page owned both halves. `aria-controls` names an id, and an id is
-  // document-scoped by definition, so the action and its target are resolved
-  // the same way now.
+  // THIS CASE IS DOCUMENT-SCOPED, where the two above it are scoped to their
+  // section. `aria-controls` names an id, and an id is the document's, so the
+  // action and its panel are found the same way. The sink's ui-shell specimen
+  // carries ks- ids and is not what this drives: it follows the shell that
+  // owns the id, the page's own on kitchen-sink.html and a consumer's on a
+  // consumer page.
   //
-  // WHAT MADE IT SKIP, because the cause is the useful half: kitchen-sink.html
-  // gained a real shell, the ui-shell SPECIMEN was carrying the canonical
-  // rux-account-panel and rux-switcher-panel ids, and thirteen ids existed
-  // twice on one page. The specimen took ks- ids; nothing inside #ui-shell
-  // names the canonical panels any more, so a section-scoped lookup finds
-  // nothing and the case reported "no account panel here" on a page that has
-  // one.
-  //
-  // WHAT THIS MAKES WEAKER, stated rather than left to be discovered: the case
-  // no longer asserts anything about the SPECIMEN. It follows whichever shell
-  // on the page owns those two ids -- the page's own on kitchen-sink.html, a
-  // consumer's on a consumer page -- so the sink's ui-shell fragment now has
-  // no case exercising its panel pair. That is a real loss of one fixture's
-  // coverage, traded for the case testing the shell a reader actually uses.
-  // If the specimen is ever to be covered again it needs its own case naming
-  // the ks- ids, which is a second fixture and not this edit.
+  // A SHELL NOT YET MOVED ONTO THE ONE PANEL keeps a switcher panel beside
+  // it, and there the second half asserts what it always did: opening the
+  // switcher closes the account panel, because the kernel keeps one
+  // dismissible surface on the stack.
   (() => {
     const account = document.querySelector('.rux--header__action[aria-controls="rux-account-panel"]');
-    const grid = document.querySelector('.rux--header__action[aria-controls="rux-switcher-panel"]');
-    if (!account && !grid) return skip('ui-shell', 'account panel', 'no account panel here');
     const ap = document.getElementById('rux-account-panel');
-    const sp = document.getElementById('rux-switcher-panel');
-    if (!account || !grid || !ap || !sp) return record('ui-shell', 'account panel', false,
-      `action account=${!!account} grid=${!!grid}, `
-      + `#rux-account-panel=${!!ap} #rux-switcher-panel=${!!sp}`);
+    if (!account && !ap?.classList.contains('rux--header-panel')) return skip('ui-shell', 'account panel', 'no account panel here');
+    if (!account || !ap) return record('ui-shell', 'account panel', false,
+      `action account=${!!account}, #rux-account-panel=${!!ap}`);
     const EXP = 'rux--header-panel--expanded';
     if (has(ap, EXP)) click(account);
-    if (has(sp, EXP)) click(grid);
+    const field = ap.querySelector('select, input');
+    const shut = field?.tabIndex;
 
     click(account);
-    record('ui-shell', 'the Account action opens its own panel and not the switcher',
-      has(ap, EXP) && !has(sp, EXP) && account.getAttribute('aria-expanded') === 'true',
-      `account=${has(ap, EXP)}, switcher=${has(sp, EXP)}, aria-expanded=${account.getAttribute('aria-expanded')}`);
+    record('ui-shell', 'the Account action opens its panel',
+      has(ap, EXP) && account.getAttribute('aria-expanded') === 'true',
+      `expanded=${has(ap, EXP)}, aria-expanded=${account.getAttribute('aria-expanded')}`);
+    if (field) record('ui-shell', 'a field in the panel is in the tab order only while it is open',
+      shut === -1 && field.tabIndex === 0, `closed=${shut}, open=${field.tabIndex}`);
 
-    click(grid);
-    record('ui-shell', 'opening the switcher closes the account panel',
-      has(sp, EXP) && !has(ap, EXP) && account.getAttribute('aria-expanded') === 'false',
-      `account=${has(ap, EXP)}, switcher=${has(sp, EXP)}`);
-    click(grid);
+    const grid = document.querySelector('.rux--header__action[aria-controls="rux-switcher-panel"]');
+    const sp = document.getElementById('rux-switcher-panel');
+    if (grid && sp) {
+      click(grid);
+      record('ui-shell', 'opening the switcher closes the account panel',
+        has(sp, EXP) && !has(ap, EXP) && account.getAttribute('aria-expanded') === 'false',
+        `account=${has(ap, EXP)}, switcher=${has(sp, EXP)}`);
+      click(grid);
+    } else {
+      click(account);
+      record('ui-shell', 'a second press closes it',
+        !has(ap, EXP) && account.getAttribute('aria-expanded') === 'false',
+        `expanded=${has(ap, EXP)}, aria-expanded=${account.getAttribute('aria-expanded')}`);
+    }
   })();
 
   // ── profile and theme: the local profile round trip ──────────────────────
-  // js/profile.js: a theme radio moves data-theme on <html> and stores it; a
-  // name stores as typed. js/theme.js: apply() puts a stored theme on <html>
+  // js/profile.js: a theme picked in the panel moves data-theme on <html> and
+  // stores it, from the select the header's panel has or the radios a page
+  // may still carry; a name, where the page has a field for one, stores as
+  // typed. js/theme.js: apply() puts a stored theme on <html>
   // and refuses a value that does not look like a theme name, and it dresses
   // the shell's own zone — g100 under Carbon's four, the page's theme above
   // them, on that theme's layer-01. Everything touched — storage, the theme,
@@ -583,27 +579,30 @@
     const P = window.Rux?.profile, T = window.Rux?.theme;
     const panel = document.getElementById('rux-account-panel');
     if (!P || !T || !panel) return skip('profile', 'local profile', 'no account panel or modules here');
+    const select = panel.querySelector('select#rux-profile-theme');
     const radio = panel.querySelector('input[name="rux-theme"][value="g90"]');
     const name = document.getElementById('rux-profile-name');
-    if (!radio || !name) return record('profile', 'local profile', false,
-      `inside the account panel: g90 radio=${!!radio}, #rux-profile-name=${!!name}`);
+    if (!select && !radio) return record('profile', 'local profile', false,
+      'inside the account panel: no theme select and no g90 radio');
     const html = document.documentElement;
     const shell = document.querySelector('.rux--header[data-theme]');
     const before = {
-      theme: html.dataset.theme, stored: localStorage.getItem(T.KEY), name: name.value,
+      theme: html.dataset.theme, stored: localStorage.getItem(T.KEY), name: name?.value,
       shell: shell?.getAttribute('data-theme'), shellBg: shell?.style.getPropertyValue('--rux-background'),
     };
 
-    radio.checked = true;
-    radio.dispatchEvent(new Event('change', { bubbles: true }));
-    record('profile', 'a theme radio moves data-theme on <html> and stores it',
+    if (select) select.value = 'g90'; else radio.checked = true;
+    (select ?? radio).dispatchEvent(new Event('change', { bubbles: true }));
+    record('profile', 'a theme picked in the panel moves data-theme on <html> and stores it',
       html.dataset.theme === 'g90' && T.read()?.theme === 'g90',
       `data-theme=${html.dataset.theme}, stored=${T.read()?.theme}`);
 
-    name.value = 'Check';
-    name.dispatchEvent(new Event('input', { bubbles: true }));
-    record('profile', 'a typed name is stored',
-      T.read()?.name === 'Check', `stored name=${T.read()?.name}`);
+    if (name) {
+      name.value = 'Check';
+      name.dispatchEvent(new Event('input', { bubbles: true }));
+      record('profile', 'a typed name is stored',
+        T.read()?.name === 'Check', `stored name=${T.read()?.name}`);
+    }
 
     localStorage.setItem(T.KEY, JSON.stringify({ theme: 'g10' }));
     record('theme', 'apply() puts the stored theme on <html>',
@@ -640,8 +639,8 @@
       if (before.shellBg) shell.style.setProperty('--rux-background', before.shellBg);
       else shell.style.removeProperty('--rux-background');
     }
-    name.value = before.name;
-    window.dispatchEvent(new StorageEvent('storage', { key: T.KEY }));  // re-render the radios to the restored theme
+    if (name) name.value = before.name;
+    window.dispatchEvent(new StorageEvent('storage', { key: T.KEY }));  // re-render the picker to the restored theme
   })();
 
   // ── tile: the collapsed cap is an inline value, and it round-trips ────────

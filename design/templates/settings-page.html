@@ -447,140 +447,72 @@
 
   <!-- REPLACE: global actions. Icon-only, so each needs an aria-label.
 
+       ONE SHIPS HERE: the account, which is the person's picture once someone
+       is logged in. It opens the one panel below, which holds the theme, the
+       way to the profile and out, and the apps that account can open, so the
+       app switcher has no button of its own.
+
        ORDER IS PRESCRIBED, right to left: switcher, account, notifications,
        help. Carbon fixes those so they do not shift as a user moves between
        products, and anything a product adds of its own goes in the band LEFT
-       of them, with search furthest left of all. Right-aligned, no gaps.
-
-       TWO OF THE FOUR SHIP HERE, and the order above is why these two and in
-       this order. NOTIFICATIONS AND HELP ARE NOT HERE, dropped 2026-09-03:
-       an icon-only button with no handler is an affordance that lies, the
-       rule js/ states about itself, and nothing in this ecosystem notifies
-       or has help to open. Carbon's captured story has all of them and
-       sink/ui-shell.html keeps them, because that fragment is the capture
-       and this file is what an app ships. Add one back in a product when it
-       does something; put it here, in this order, not at the end.
-
-       A theme control is NOT a header action: Carbon reserves these utilities
-       for "universal, system-level functions" and no capture has one. Since
-       2026-09-02 it lives INSIDE the account panel below, with the profile
-       (js/profile.js); the sink's five buttons stay in harness.js as a demo
-       convenience. It moves `data-theme` on <html>, which is the CONTENT
-       only: the shell keeps its own g100 either way. -->
+       of them, with search furthest left of all. Right-aligned, no gaps. An
+       icon-only button with no handler is an affordance that lies, so
+       notifications and help are added in a product when they do something,
+       in that order. sink/ui-shell.html keeps Carbon's captured set. -->
   <div class="rux--header__global">
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>
-    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="App switcher" aria-expanded="false" aria-controls="rux-switcher-panel"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-grid"/></svg></button>
   </div>
-  <!-- THE SWITCHER PANEL: a sibling of __global, collapsed until the grid button
-       opens it (js/ui-shell.js). Every app in an ecosystem lists the same apps
-       here; a divider is an <hr> in an li of its own. -->
-  <div class="rux--header-panel" id="rux-switcher-panel">
+  <!-- THE ACCOUNT PANEL: Carbon's header panel, a sibling of __global,
+       collapsed until the Account action opens it through aria-controls
+       (js/ui-shell.js). What is IN it is this system's own, two of Carbon's
+       switcher lists. The first holds the account's rows: Profile and Log
+       out, which /account.js shows once someone is logged in, with who that
+       is written over them; and between the two the theme, as Carbon's inline
+       select, kept in this browser under one key shared by every app on the
+       origin (js/theme.js, js/profile.js). The second is the apps that
+       account can open, which /switcher.js lists and leaves out where there
+       is only the app the page is; its one entry is what stays when that
+       list cannot be fetched.
+
+       The panel between the markers is generated: `npm run generate` rewrites
+       it in every template from tools/lib/shell.mjs, so no template's differs
+       from another's. -->
+  <!-- ACCOUNT:BEGIN — generated, do not edit. `npm run generate` rewrites this
+       block in every template from tools/lib/shell.mjs. -->
+  <div class="rux--header-panel" id="rux-account-panel">
+    <ul class="rux--switcher" aria-label="Account">
+      <li class="rux--switcher__item" id="rux-account-profile" hidden><a class="rux--switcher__item-link" href="/account/">Profile</a></li>
+      <li>
+        <div class="rux--form-item">
+          <div class="rux--select rux--select--inline rux--layout--size-md">
+            <label class="rux--label" for="rux-profile-theme">Theme</label>
+            <div class="rux--select-input--inline__wrapper">
+              <div class="rux--select-input__wrapper">
+                <select id="rux-profile-theme" class="rux--select-input">
+                  <option class="rux--select-option" value="white" selected>White</option>
+                  <option class="rux--select-option" value="g10">Gray 10</option>
+                  <option class="rux--select-option" value="g90">Gray 90</option>
+                  <option class="rux--select-option" value="g100">Gray 100</option>
+                  <option class="rux--select-option" value="geist-dark">Geist dark</option>
+                  <option class="rux--select-option" value="ant-dark">Ant dark</option>
+                  <option class="rux--select-option" value="spotify-dark">Spotify dark</option>
+                  <option class="rux--select-option" value="apple-light">Apple light</option>
+                  <option class="rux--select-option" value="apple-dark">Apple dark</option>
+                  <option class="rux--select-option" value="rux-dark">Rux dark</option>
+                </select>
+                <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="rux--switcher__item" hidden><a class="rux--switcher__item-link" href="/login/" id="rux-profile-sign-in">Log out</a></li>
+    </ul>
     <ul class="rux--switcher" aria-label="Applications">
-      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="./" aria-current="page">Rux Design</a></li>
-      <li><hr class="rux--switcher__item--divider"></li>
-      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="./">Deployments</a></li>
-      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="./">Billing</a></li>
+      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/">Home</a></li>
     </ul>
   </div>
-  <!-- THE ACCOUNT PANEL: the same header panel, opened by the Account action
-       through aria-controls (js/ui-shell.js), holding the profile every app
-       keeps — a display name and the theme, saved in this browser under one
-       key shared by every app on the origin (js/theme.js, js/profile.js).
-       The panel is captured (--header-w-actions-and-right-panel); what is IN
-       it is a product's own, composed from the sink's text input and vertical
-       radio group. The sign-in button ships hidden and shows only once
-       something registers a handler for it, because a button with no handler
-       is an affordance that lies. -->
-  <div class="rux--header-panel" id="rux-account-panel">
-    <div class="rux--layer-two rux--stack-vertical rux--stack-scale-5">
-      <div class="rux--form-item rux--text-input-wrapper">
-        <div class="rux--text-input__label-wrapper">
-          <label class="rux--label" for="rux-profile-name">Display name</label>
-        </div>
-        <div class="rux--text-input__field-outer-wrapper">
-          <div class="rux--text-input__field-wrapper">
-            <input id="rux-profile-name" class="rux--text-input" type="text" autocomplete="nickname" placeholder="Saved in this browser">
-          </div>
-        </div>
-      </div>
-      <div class="rux--form-item">
-        <fieldset class="rux--radio-button-group rux--radio-button-group--label-right rux--radio-button-group--vertical" id="rux-profile-theme">
-          <legend class="rux--label">Theme</legend>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-white" class="rux--radio-button" type="radio" name="rux-theme" value="white" checked>
-            <label for="rux-theme-white" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">White</span>
-            </label>
-          </div>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-g10" class="rux--radio-button" type="radio" name="rux-theme" value="g10">
-            <label for="rux-theme-g10" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">Gray 10</span>
-            </label>
-          </div>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-g90" class="rux--radio-button" type="radio" name="rux-theme" value="g90">
-            <label for="rux-theme-g90" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">Gray 90</span>
-            </label>
-          </div>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-g100" class="rux--radio-button" type="radio" name="rux-theme" value="g100">
-            <label for="rux-theme-g100" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">Gray 100</span>
-            </label>
-          </div>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-geist-dark" class="rux--radio-button" type="radio" name="rux-theme" value="geist-dark">
-            <label for="rux-theme-geist-dark" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">Geist dark</span>
-            </label>
-          </div>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-ant-dark" class="rux--radio-button" type="radio" name="rux-theme" value="ant-dark">
-            <label for="rux-theme-ant-dark" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">Ant dark</span>
-            </label>
-          </div>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-spotify-dark" class="rux--radio-button" type="radio" name="rux-theme" value="spotify-dark">
-            <label for="rux-theme-spotify-dark" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">Spotify dark</span>
-            </label>
-          </div>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-apple-light" class="rux--radio-button" type="radio" name="rux-theme" value="apple-light">
-            <label for="rux-theme-apple-light" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">Apple light</span>
-            </label>
-          </div>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-apple-dark" class="rux--radio-button" type="radio" name="rux-theme" value="apple-dark">
-            <label for="rux-theme-apple-dark" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">Apple dark</span>
-            </label>
-          </div>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-rux-dark" class="rux--radio-button" type="radio" name="rux-theme" value="rux-dark">
-            <label for="rux-theme-rux-dark" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">Rux dark</span>
-            </label>
-          </div>
-        </fieldset>
-      </div>
-      <button type="button" class="rux--btn rux--btn--tertiary" id="rux-profile-sign-in" hidden>Sign in</button>
-    </div>
-  </div>
+  <!-- ACCOUNT:END -->
 
   <!-- The scrim. Only visible under the mobile media query, where the nav
        overlays the page; pressing it closes the nav. -->

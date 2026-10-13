@@ -239,7 +239,7 @@ const targetOptions = [`          <option value="kitchen-sink.html">Kitchen sink
 
 // The base-theme radios: sink/radio.html's group, vertical, one per compiled
 // base, white checked by default. Labels match the account panel's own
-// (templates/*.html's #rux-profile-theme fieldset) rather than the raw
+// (the options of its #rux-profile-theme select) rather than the raw
 // data-theme value.
 const BASE_LABELS = { white: 'White', g10: 'Gray 10', g90: 'Gray 90', g100: 'Gray 100' };
 const baseOptions = Object.keys(BASE_LABELS).map(name => `                    <div class="rux--radio-button-wrapper">

@@ -36,6 +36,29 @@
    for exactly that, and it is a class, not a rule here. */
 .rux--header-panel > .rux--stack-vertical { padding: var(--rux-spacing-05); }
 
+/* THE ACCOUNT PANEL'S ROWS. The panel is two of Carbon's switcher lists, and
+   Carbon's list holds links alone, so what else stands in one is dressed as
+   a row here: the theme's inline select, the word over the apps, and an
+   app's icon before its name. Their room is on the list's own item, so each
+   of Carbon's parts keeps Carbon's box, and the theme's label is written as
+   a row's words are. A row a script has not shown yet takes no room, and
+   nor does the list of apps where there is nowhere else to go. Over the
+   rows a script writes who is logged in, their picture beside their name,
+   in the page's first ink. */
+.rux--header-panel > .rux--switcher > li { inline-size: 100%; }
+.rux--header-panel > .rux--switcher[hidden] { display: none; }
+.rux--header-panel > .rux--switcher > li:has(> .rux--form-item) { padding: var(--rux-spacing-03) var(--rux-spacing-05); }
+.rux--header-panel > .rux--switcher > li:has(> .rux--label) { padding: var(--rux-spacing-03) var(--rux-spacing-05) 0; }
+.rux--header-panel > .rux--switcher .rux--select--inline { justify-content: space-between; inline-size: 100%; }
+.rux--header-panel > .rux--switcher .rux--select--inline .rux--label {
+  font-size: var(--rux-heading-compact-01-font-size, 0.875rem);
+  font-weight: var(--rux-heading-compact-01-font-weight, 600);
+  line-height: var(--rux-heading-compact-01-line-height, 1.28572);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing, 0.16px);
+}
+.rux--header-panel > .rux--stack-vertical > .rux--stack-horizontal { align-items: center; justify-content: start; color: var(--rux-text-primary); }
+.rux--switcher__item-link > [aria-hidden="true"] { display: inline-block; margin-inline-end: var(--rux-spacing-03); block-size: 1rem; inline-size: 1rem; vertical-align: -0.1875rem; }
+
 /* A HIDDEN BUTTON MUST NOT RENDER. Found by looking, 2026-09-02, after every
    gate had passed: the account panel's sign-in button ships `hidden` and was
    drawn anyway, because Carbon's `.rux--btn { display: inline-flex }` is an

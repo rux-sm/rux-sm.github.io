@@ -21,10 +21,29 @@
   const current = a => a.path === '/' ? here === '/' || here === '/index.html' : here.startsWith(a.path);
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-  for (const ul of document.querySelectorAll('ul.rux--switcher')) {
-    ul.innerHTML = apps.map((a, i) =>
-      `<li class="rux--switcher__item"><a class="rux--switcher__item-link" href="${esc(a.path)}"${current(a) ? ' aria-current="page"' : ''}>${esc(a.name)}</a></li>`
-      + (i === 0 && apps.length > 1 ? '<li><hr class="rux--switcher__item--divider"></li>' : '')).join('');
+  // THE LIST IS `ul.rux--switcher` NAMED Applications. A page with the one
+  // account panel has it there, under the list of the account's own rows,
+  // where it is the way to ANOTHER app: it opens on a rule and the word Apps,
+  // and with nowhere else to go it is left out. A page not yet moved onto
+  // that panel has the list in a panel of its own, behind the App switcher
+  // action.
+  // An app is its icon and its name, and the one the page is, is marked.
+  const mark = a => a.icon
+    ? ` style="-webkit-mask:url(${esc(a.icon)}) center/contain no-repeat;mask:url(${esc(a.icon)}) center/contain no-repeat;background:currentColor"`
+    : '';
+  const row = a => `<li class="rux--switcher__item"><a class="rux--switcher__item-link${current(a) ? ' rux--switcher__item-link--selected' : ''}" href="${esc(a.path)}"${current(a) ? ' aria-current="page"' : ''}>`
+    + `<span aria-hidden="true"${mark(a)}></span>${esc(a.name)}</a></li>`;
+  const rule = '<li><hr class="rux--switcher__item--divider"></li>';
+  for (const ul of document.querySelectorAll('ul.rux--switcher[aria-label="Applications"]')) {
+    const menu = ul.parentElement.querySelector(':scope > ul.rux--switcher[aria-label="Account"]');
+    if (menu && !apps.some(a => !current(a))) {
+      ul.replaceChildren();
+      ul.hidden = true;
+      continue;
+    }
+    ul.innerHTML = menu
+      ? `${rule}<li><span class="rux--label rux--label--no-margin">Apps</span></li>${apps.map(row).join('')}`
+      : apps.map((a, i) => row(a) + (i === 0 && apps.length > 1 ? rule : '')).join('');
     // A collapsed panel's links stay out of the tab order, as js/ui-shell.js leaves them.
     if (!ul.closest('.rux--header-panel--expanded')) for (const a of ul.querySelectorAll('a')) a.tabIndex = -1;
   }

@@ -19,6 +19,12 @@ What a player has besides the puzzles, and the rule for who is sent a rift.
   `app.js`, the same in every browser.
 - **Me** shows the picture, the username, the sprites found and the mana,
   changes the first two, and lists the player's own rifts.
+- **A player's character is kept as their gear,** which `pixels_me` sends
+  and `pixels_set_gear` takes whole: one ink for the skin, one for the
+  eyes, and for a piece of armour the player's drawing of it, 225
+  characters, an ink where the piece has a square and a dot where it has
+  none. Anything else is refused. The owner alone has a character while
+  it is a placeholder.
 
 ## The door, and coming back
 

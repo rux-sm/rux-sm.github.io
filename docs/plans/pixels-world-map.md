@@ -131,8 +131,11 @@ The character:
   since they are how it plays. The helmet and the body armour are worn once
   unlocked, and the shield is drawn on once unlocked.
 - **Drawing on armour costs no mana,** since it makes no puzzle.
-- **A player's armour is kept with the player in the database,** so it comes
-  back on any phone with their name and PIN. The SQL is shown to rux first.
+- **A player's armour and colours are kept with the player in the database,**
+  as their gear, so they come back on any phone with their name and PIN.
+- **Me picks the skin's and the eyes' colour, from eight inks each, and
+  leads to the Pixelator to draw on a piece,** where the board is the whole
+  character and only the piece's squares take paint.
 - **The player's picture stays what stands beside their name.** The
   character is who walks the map and stands on Me.
 - **A tap on an open rift hops the character there, in half a second, and
@@ -193,10 +196,6 @@ None open.
 ## Tasks
 
 - [ ] Say the story's line at the door, which `pixels/data.js` draws.
-- [ ] Step 3, drawing on armour: the character standing on Me; a place
-      there to draw on an unlocked piece with the Pixelator's board and to
-      pick the skin's and the eyes' colours; and a player's armour and
-      colours kept in the database, the SQL shown to rux first.
 - [ ] Step 4, the rest of the armour: the body armour, and drawing on the
       shield, each at what unlocks it.
 - [ ] Step 5, the worlds: a rift's picture at the head of its page, where

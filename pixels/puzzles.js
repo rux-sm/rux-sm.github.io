@@ -337,7 +337,7 @@
     if (!land) return;
     land.places.get(mine).scrollIntoView({ block: 'center' });
     // The character stands a square clear of its rift's portal, on its left.
-    const who = hero(worn(me.found || 0)), beside = el => el.getBoundingClientRect().left - who.offsetWidth * 16 / 15;
+    const who = hero(worn(me.found || 0), me.gear), beside = el => el.getBoundingClientRect().left - who.offsetWidth * 16 / 15;
     who.classList.add('pixels-map-hero');
     const [x, y] = SPOTS[mine.number - 1];
     land.places.get(mine).parentElement.append(put(who, [x - 16, y]));

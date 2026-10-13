@@ -22,11 +22,10 @@ place of its tiles, their character by their rift (`docs/drawing-the-map.md`). C
 puzzle to play. Leaderboard: today's ranking by time, and the all-time one by puzzles solved.
 
 `category.html?at=` is one rift, named by its place among its maker's: its puzzles, small boards first
-and then easy to hard, each tile a square with its letter in the rift, A to O, three across on a phone
-and five on a wide one. A solved puzzle shows its picture, name and best time, an unsolved one a
-question mark over its size, with Boss for the last, and the first of them, the one to play next, has
-its mark in the primary button's colours. A rift of the course holds its boss back, dim, until the rest
-are found.
+and then easy to hard, each tile a square with its letter in the rift, A to O, three across on a phone,
+five on a wide one. A solved puzzle shows its picture, name and best time, an unsolved one a question
+mark over its size, with Boss for the last, and the first, the one to play next, has its mark in the
+primary button's colours. A course rift holds its boss back, dim, until the rest are found.
 
 `me.html` is the player's own page: their picture, username, sprites found, mana and fairies, the PIN
 that brings them back on any phone, and the rifts they have made, each to name, publish or delete, with
@@ -76,14 +75,14 @@ puzzle before its day.
 `make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits or deletes one. The
 owner's puzzles go in the owner's rifts, and the owner alone has Manage and Players, in Me's list; a
 player's go in rifts of their own, through functions that count their mana, and so do the owner's own
-at `make.html?own`, which cost none. `make.html?me` draws a player's picture. It checks as you draw
-whether the numbers alone can solve the picture and how hard that is, outlines each square that would
-need a guess, and saves only a picture with one answer. Size starts a blank board of 5, 10 or 15 a
-side, 20 in the course. Its Colour step paints the picture the puzzle finishes as, from fifty-five
-inks, and Save asks which rift it goes in; a rift shows fifteen, the list counts how many of each one's
-are on, and a puzzle saved into one with fifteen on is saved off. A rift just started is named there
-and hidden until Manage's switch publishes it. No rift yet, first in the list, keeps the puzzle in
-Unsorted, a section of Manage. Puzzle of the day, in the same list, makes it a day's puzzle, which sits
+at `make.html?own`, which cost none. `make.html?me` draws a player's picture, and `?wear=helmet` the
+helmet of the owner's character. It checks as you draw whether the numbers alone can solve the picture
+and how hard that is, outlines each square that would need a guess, and saves only a picture with one
+answer. Size starts a blank board of 5, 10 or 15 a side, 20 in the course. Its Colour step paints the
+picture the puzzle finishes as, from fifty-five inks, and Save asks which rift it goes in; a rift shows
+fifteen, the list counts how many of each one's are on, and a puzzle saved into one with fifteen on is
+saved off. A rift just started is named there and hidden until Manage's switch publishes it. No rift
+yet keeps the puzzle in Unsorted, a section of Manage, and Puzzle of the day makes it a day's puzzle,
 in no rift; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good rift.
 
 `manage.html` is the owner's desk: every rift on one page, in order, then Unsorted. A rift's heading
@@ -116,19 +115,18 @@ that logged in by a PIN; `pixels_level_players`, the players a rift is kept for;
 `pixels_levels`, each rift's id, name, maker, audience and whether it is hidden. A rift and a puzzle
 with no maker are the owner's. `docs/database-access.md` is the rule they follow.
 
-A player's page calls twenty-two functions, which the publishable key may run and which first find
-the player from the log-in or the key: `pixels_join`, `pixels_me`, `pixels_puzzles`,
-`pixels_results`, `pixels_days`, `pixels_record`, `pixels_record_day`, `pixels_board`,
-`pixels_set_picture`, `pixels_rename`, `pixels_people`, `pixels_befriend`, `pixels_renew_invite`,
-`pixels_set_pin`, `pixels_use_fairy`, `pixels_login`, and for a player's own rifts `pixels_mine`, `pixels_keep_puzzle`,
-`pixels_drop_puzzle`, `pixels_name_my_level`, `pixels_publish_my_level` and
+A player's page calls twenty-three functions, which the publishable key may run and which first find
+the player from the log-in or the key: `pixels_join`, `pixels_me`, `pixels_puzzles`, `pixels_results`,
+`pixels_days`, `pixels_record`, `pixels_record_day`, `pixels_board`, `pixels_set_picture`,
+`pixels_set_gear`, `pixels_rename`, `pixels_people`, `pixels_befriend`, `pixels_renew_invite`,
+`pixels_set_pin`, `pixels_use_fairy`, `pixels_login`, and for a player's own rifts `pixels_mine`,
+`pixels_keep_puzzle`, `pixels_drop_puzzle`, `pixels_name_my_level`, `pixels_publish_my_level` and
 `pixels_delete_my_level`. A time is the player's own browser's word: the database refuses only what
-cannot be, a time under two seconds, a puzzle the player is not sent, a day more than one from
-today. `pixels_puzzles` sends a player no puzzle that is switched off, which is
-`pixels_puzzles.hidden`, none in no rift, which is one whose `level` is empty, and none in a rift
-that `pixels_sees` says is not theirs to see: that one function is the rule, a hidden rift for
-nobody and a rift for everyone, for its maker's friends or for the players picked, as its audience
-says.
+cannot be, a time under two seconds, a puzzle the player is not sent, a day more than one from today.
+`pixels_puzzles` sends a player no puzzle that is switched off, which is `pixels_puzzles.hidden`, none
+in no rift, which is one whose `level` is empty, and none in a rift that `pixels_sees` says is not
+theirs to see: that one function is the rule, a hidden rift for nobody and a rift for everyone, for its
+maker's friends or for the players picked, as its audience says.
 
 Five more are the owner's and refuse anyone else. `pixels_share_level` keeps a rift for the players
 named, or gives it back to everyone. `pixels_order_levels` renumbers the owner's rifts

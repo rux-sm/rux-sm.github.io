@@ -244,7 +244,7 @@
     // `move` is one of the character's moves, each a layer or the whole of
     // it leaving its place and coming back; one already moving is left to
     // finish, and nothing moves for a player who has asked for less of it.
-    const champion = owner ? hero(wear) : null, shadow = owner ? shade() : null;
+    const champion = owner ? hero(wear, me.gear) : null, shadow = owner ? shade() : null;
     if (champion) {
       life.before(champion);
       foe.after(shadow);

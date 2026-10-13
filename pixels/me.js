@@ -29,7 +29,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, guest, enter, iphone, installed, portrait, words, art, grid, rounds, grade, side, time } = window.Pixels;
+  const { data, owner, guest, enter, iphone, installed, portrait, worn, hero, words, art, grid, rounds, grade, side, time } = window.Pixels;
   const host = document.getElementById('pixels-me');
   const say = (heading, detail) => {
     const box = document.getElementById('pixels-error');
@@ -115,6 +115,62 @@
     host.parentElement.append(el);
   };
 
+  /* THE CHARACTER, for the owner while it is a placeholder: who stands on
+     the map and fights, drawn large, with an ink to pick for its skin and
+     one for its eyes, each kept as it is picked, and the way to the
+     Pixelator to draw on its helmet once five sprites have earned it. The
+     first ink of each row is the one the character starts in. */
+  const SKIN = ['B', 'd', 'h', 'H', '7', 'R', 'r', 'A'], EYES = ['0', '7', '6', '5', 'a', '9', 'y', '2'];
+  const character = me => {
+    const el = document.createElement('section');
+    el.className = 'pixels-me-hero';
+    el.setAttribute('aria-label', 'Your character');
+    const wear = worn(me.found || 0), picks = document.createElement('div'), note = words('pixels-me-note', '');
+    picks.className = 'pixels-me-hero-picks';
+    note.setAttribute('aria-live', 'polite');
+    let gear = me.gear || {}, who = hero(wear, gear);
+    const tones = (label, name, inks) => {
+      const row = document.createElement('div');
+      row.className = 'pixels-tones';
+      row.setAttribute('role', 'radiogroup');
+      row.setAttribute('aria-label', label);
+      row.append(...inks.map((id, n) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'pixels-ink';
+        b.setAttribute('role', 'radio');
+        b.setAttribute('aria-label', `${label} ${n + 1}`);
+        b.setAttribute('aria-checked', (gear[name] || inks[0]) === id);
+        b.dataset.ink = id;
+        return b;
+      }));
+      row.addEventListener('click', async e => {
+        const picked = e.target.closest('.pixels-ink');
+        if (!picked || picked.getAttribute('aria-checked') === 'true') return;
+        const to = { ...gear, [name]: picked.dataset.ink };
+        try { await data.setGear(to); } catch { note.textContent = 'That did not go through. Try again.'; return; }
+        note.textContent = '';
+        gear = to;
+        row.querySelectorAll('.pixels-ink').forEach(b => b.setAttribute('aria-checked', b === picked));
+        const now = hero(wear, gear);
+        who.replaceWith(now);
+        who = now;
+      });
+      return [words('pixels-meta', label), row];
+    };
+    picks.append(...tones('Skin', 'skin', SKIN), ...tones('Eyes', 'eyes', EYES));
+    if (wear.includes('helmet')) {
+      const a = document.createElement('a');
+      a.className = 'rux--btn rux--btn--tertiary';
+      a.href = 'make.html?wear=helmet';
+      a.textContent = 'Draw on your helmet';
+      picks.append(a);
+    } else picks.append(words('pixels-meta', 'Five sprites found earn a helmet.'));
+    picks.append(note);
+    el.append(who, picks);
+    return el;
+  };
+
   const draw = me => {
     const head = document.createElement('div');
     head.className = 'pixels-me-head';
@@ -178,6 +234,7 @@
       draw(now);
     });
     host.append(head, drawIt, form, note);
+    if (owner && data.setGear) host.append(character(me));
     if (guest && data.setPin) host.append(pinForm(me));
     more();
   };

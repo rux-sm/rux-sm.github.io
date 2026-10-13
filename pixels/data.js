@@ -214,6 +214,13 @@
     async people() { return []; },
     async befriend() {},
     async renewInvite() { return this.me(); },
+    // The character's colours and the player's drawings of its armour.
+    async setGear(gear) {
+      const db = read();
+      db.me = { ...db.me, gear };
+      write(db);
+      return this.me();
+    },
     async setPicture(squares, colours) {
       const db = read();
       db.me = { ...db.me, picture: squares, colours: squares ? colours : null };
@@ -287,6 +294,9 @@
     async setPicture(squares, colours) {
       return call('pixels_set_picture', { p_key: key(), p_squares: squares, p_colours: colours });
     },
+    // The player's own character: its skin's and its eyes' ink and their
+    // drawing of each piece of armour, or none to set it all back.
+    async setGear(gear) { return call('pixels_set_gear', { p_key: key(), p_gear: gear }); },
     // The player's own PIN, four digits, or none to take it away; and another
     // phone logging in by it, which gets a key of its own, kept as a guest's is.
     async setPin(pin) { return call('pixels_set_pin', { p_key: key(), p_pin: pin }); },

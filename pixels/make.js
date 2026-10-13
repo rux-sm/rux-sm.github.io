@@ -48,13 +48,19 @@
    from their username. It has no name, no rift and no check, since it is no
    puzzle; Save keeps it and Back leaves, both for Me.
 
+   make.html?wear=helmet draws on the helmet of the owner's character, once
+   five sprites have earned it. The board is the whole character, 15 squares
+   a side, in the colour step alone, and only the helmet's squares take
+   paint; the eraser and Clear put them back as the helmet starts. Save
+   keeps the drawing with the player's gear, and Back leaves, both for Me.
+
    make.html?id= edits a saved puzzle. A new picture not yet saved is kept in
    this browser under `pixels-draft`, so a reload does not lose it.
    ========================================================================== */
 (() => {
   'use strict';
 
-  const { data, owner, SIZES, CHARS, grid, squaresOf, unreached, rounds, firstLook, grade, board, drag, face } = window.Pixels;
+  const { data, owner, SIZES, CHARS, grid, squaresOf, unreached, rounds, firstLook, grade, board, drag, face, worn, piece, figure } = window.Pixels;
   const $ = id => document.getElementById(id);
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
   const saveNow = $('pixels-save-now');
@@ -64,12 +70,14 @@
   const undoKey = $('pixels-undo'), redoKey = $('pixels-redo');
   const maker = document.querySelector('.pixels-maker');
   // The player's own picture is drawn here too, and keeps a draft of its own.
+  // So is a piece of the owner's character's armour, which is the helmet.
   const query = new URLSearchParams(location.search);
-  const mine = query.has('me');
+  const wearing = owner && query.get('wear') === 'helmet' ? 'helmet' : null;
+  const mine = query.has('me') || !!wearing;
   // Whose rifts a puzzle goes in: the owner's, which every player is sent,
   // or the player's own. The owner draws their own at make.html?own.
   const personal = !owner || query.has('own');
-  const DRAFT = mine ? 'pixels-face-draft' : personal && owner ? 'pixels-own-draft' : 'pixels-draft';
+  const DRAFT = wearing ? `pixels-${wearing}-draft` : mine ? 'pixels-face-draft' : personal && owner ? 'pixels-own-draft' : 'pixels-draft';
   // Where a puzzle is kept: the owner's tables, or a player's own rifts,
   // which cost mana. `mana` is the player's, and the owner's is never asked.
   const store = personal ? data?.own || null : data;
@@ -113,6 +121,9 @@
   const blank = () => Array.from({ length: side }, () => new Array(side).fill(0));
   // `colours` is an ink for every square, or null until the picture is coloured.
   let draft = blank(), colours = null, editing = null, filling = 1, step = 'draw', ink = 2;
+  // For a piece of armour: the character as it stands before the piece is
+  // drawn on, which the eraser and Clear go back to, and whose it is.
+  let under = null, player = null;
 
   // The Category field's first choice keeps the puzzle in no category.
   const loose = () => level.value === 'none';
@@ -219,7 +230,7 @@
 
   // A square as the colour step starts it, and as the eraser leaves it: the
   // picture as it is seen while solving, dark on light.
-  const plain = (y, x) => (draft[y][x] ? 0 : 1);
+  const plain = (y, x) => (under ? under[y][x] : draft[y][x] ? 0 : 1);
   // One key of a group is the chosen one, which app.css fills.
   const choose = (group, on) => group.querySelectorAll('button').forEach(b => b.setAttribute('aria-checked', on(b)));
   // The tools and the colour are there in both steps and out of reach in
@@ -249,7 +260,7 @@
   // that has the focus is not pressed by it, as Enter presses it; a field
   // and the inks keep their own Space.
   const spaced = e => {
-    if (e.key !== ' ' || e.metaKey || e.ctrlKey || e.altKey || maker.hidden) return false;
+    if (wearing || e.key !== ' ' || e.metaKey || e.ctrlKey || e.altKey || maker.hidden) return false;
     const at = e.target;
     return (at === document.body || !!at.closest?.('.pixels-maker')) && !at.closest?.('input, select, textarea, .pixels-inks');
   };
@@ -365,6 +376,8 @@
   // was.
   const stroke = (y, x) => {
     if (step === 'colour') {
+      // A piece of armour takes paint on its own squares alone.
+      if (wearing && !draft[y][x]) return;
       const to = tool === 'erase' ? plain(y, x) : ink;
       if (colours[y][x] === to) return;
       changing();
@@ -380,12 +393,12 @@
   // Every square joined to this one, side to side, through its own ink.
   const flood = (y, x) => {
     const was = colours[y][x];
-    if (was === ink) return;
+    if (was === ink || (wearing && !draft[y][x])) return;
     changing();
     const todo = [[y, x]];
     while (todo.length) {
       const [r, c] = todo.pop();
-      if (colours[r]?.[c] !== was) continue;
+      if (colours[r]?.[c] !== was || (wearing && !draft[r][c])) continue;
       colours[r][c] = ink;
       todo.push([r + 1, c], [r - 1, c], [r, c + 1], [r, c - 1]);
     }
@@ -440,6 +453,14 @@
   $('pixels-clear').addEventListener('click', () => {
     $('pixels-saved').hidden = true;
     mark();
+    // A piece of armour goes back to how it starts, and keeps its squares.
+    if (wearing) {
+      changing();
+      colours = under.map(r => r.slice());
+      render();
+      keepDraft();
+      return;
+    }
     if (colours || draft.some(r => r.some(Boolean))) changing();
     clear();
     keepDraft();
@@ -452,11 +473,13 @@
     if (mine) {
       save.disabled = true;
       try {
-        await data.setPicture(squaresOf(draft), colours && squaresOf(colours));
+        // A piece is kept as an ink for each of its squares and a dot for every other.
+        if (wearing) await data.setGear({ ...(player.gear || {}), [wearing]: draft.flat().map((on, i) => (on ? CHARS[colours.flat()[i]] : '.')).join('') });
+        else await data.setPicture(squaresOf(draft), colours && squaresOf(colours));
         try { localStorage.removeItem(DRAFT); } catch { /* nothing kept */ }
         location.href = 'me.html';
       } catch {
-        say('The picture was not saved', 'Try again.');
+        say(wearing ? 'The helmet was not saved' : 'The picture was not saved', 'Try again.');
         save.disabled = false;
       }
       return;
@@ -553,8 +576,13 @@
         maker.hidden = true;
         return;
       }
-      $('pixels-heading').textContent = 'Your picture';
-      document.title = 'Your picture — Pixels';
+      if (wearing && !worn(me.found || 0).includes(wearing)) {
+        say('Your helmet is not here yet', 'Five sprites found earn it.');
+        maker.hidden = true;
+        return;
+      }
+      $('pixels-heading').textContent = wearing ? 'Your helmet' : 'Your picture';
+      document.title = `${wearing ? 'Your helmet' : 'Your picture'} — Pixels`;
       document.querySelector('.pixels-maker-top').hidden = true;
       check.hidden = true;
       const back = maker.querySelector('a[href="manage.html"]');
@@ -562,6 +590,21 @@
       back.title = 'Back to Me';
       back.setAttribute('aria-label', 'Back to Me');
       setSide(15);
+      if (wearing) {
+        // The board is the whole character, so the piece is drawn where it
+        // is worn: its squares are the filled ones, and the colours are the
+        // character's, with the piece as a draft kept here has it, or as the
+        // player last saved it, or as it starts.
+        player = me;
+        const squares = piece(wearing), inked = whole => [...whole].map(s => (s === '.' ? '1' : s));
+        const kept = readDraft()?.colours, now = inked(figure([wearing], me.gear));
+        draft = grid([...squares].map(s => (s === '.' ? '0' : '1')).join(''));
+        under = grid(inked(figure([wearing], { ...me.gear, [wearing]: null })).join(''));
+        colours = grid(now.map((s, i) => (squares[i] !== '.' && kept?.length === 225 ? kept[i] : s)).join(''));
+        stepKey.hidden = true;
+        setStep('colour');
+        return;
+      }
       const kept = readDraft(), from = kept?.squares?.length === 225 ? kept : me.picture ? { squares: me.picture, colours: me.colours } : face(me.name);
       draft = grid(from.squares);
       colours = from.colours ? grid(from.colours) : null;

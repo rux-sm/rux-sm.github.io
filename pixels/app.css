@@ -693,6 +693,13 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 .pixels-hero-sword { transform-origin: 76.67% 56.67%; }
 .pixels-hero.is-down { transform: rotate(-90deg); }
 .pixels-shade { --px: 2px; flex: none; background: none; }
+/* THE CHARACTER ON ME, for the owner: drawn in pixels of 6px, and beside
+   it a row of eight inks for its skin and one for its eyes, the Pixelator's
+   swatches at 1.5rem, and the way to draw on its helmet. */
+.pixels-me-hero { display: flex; align-items: start; gap: 1rem; }
+.pixels-me-hero > .pixels-hero { --px: 6px; }
+.pixels-me-hero-picks { display: grid; justify-items: start; gap: .5rem; }
+.pixels-tones { display: grid; grid-template-columns: repeat(8, 1.5rem); gap: .25rem; }
 .pixels-hearts { display: flex; gap: 2px; }
 .pixels-heart { --px: 2px; background: none; }
 .pixels-heart[data-lost] { filter: grayscale(1); opacity: .3; }

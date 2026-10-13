@@ -246,7 +246,15 @@
      sprites they have found, the helmet at five, and `hero` draws the
      character wearing it: its head is the helmet, or without one its hair.
      SHADE is the enemy, a shadow, since its own picture is the puzzle's
-     answer, and `shade` draws it. */
+     answer, and `shade` draws it.
+
+     A PLAYER MAKES THE CHARACTER THEIR OWN in what the data calls their
+     gear: `skin` and `eyes` are each one ink, which those layers are drawn
+     in, and a piece of armour named there is the player's own drawing of
+     it, an ink for each of the piece's squares and a dot for every other.
+     `layers` is the seven as a player's gear leaves them, `figure` the
+     whole character as one picture, and `piece` a piece of armour as it is
+     before a player draws on it. */
   const HERO = {
     skin: ['...............', '...............', '...............', '......BBBB.....', '.....BBBBB.....', '.....BBBBB.....', '...............', '...B......B....', '...............', '...............', '...............', '...............', '...............', '...............', '...............'].join(''),
     eyes: ['...............', '...............', '...............', '...............', '.......0.0.....', '...............', '...............', '...............', '...............', '...............', '...............', '...............', '...............', '...............', '...............'].join(''),
@@ -259,14 +267,23 @@
   };
   const SHADE = ['...............', '...y.......y...', '...yy.....yy...', '...yyyyyyyyy...', '..yyyyyyyyyyy..', '..yy22yyy22yy..', '..yyyyyyyyyyy..', '..yyyyyyyyyyy..', '..yy.y.y.y.yy..', '..yyyyyyyyyyy..', '...yyyyyyyyy...', '...yyyyyyyyy...', '...yy.yyy.yy...', '...yy.yyy.yy...', '..yyy.yyy.yyy..'].join('');
   const worn = found => (found >= 5 ? ['helmet'] : []);
-  const hero = (wear = []) => {
+  const piece = name => HERO[name];
+  const layers = (wear = [], gear) => {
+    const tone = (name, ink) => (/^[0-9a-zA-Z]$/.test(ink || '') ? HERO[name].replace(/[^.]/g, ink) : HERO[name]);
+    // A drawing counts only where it is the piece's own squares and no other.
+    const own = name => (gear?.[name]?.length === 225 && [...gear[name]].every((s, i) => (s === '.') === (HERO[name][i] === '.')) ? gear[name] : HERO[name]);
+    const head = wear.includes('helmet') ? 'helmet' : 'hair';
+    return [['skin', tone('skin', gear?.skin)], ['eyes', tone('eyes', gear?.eyes)], [head, head === 'helmet' ? own('helmet') : HERO.hair],
+      ['body', HERO.body], ['ends', HERO.ends], ['shield', HERO.shield], ['sword', HERO.sword]];
+  };
+  const hero = (wear, gear) => {
     const el = document.createElement('span');
     el.className = 'pixels-hero';
     el.setAttribute('aria-hidden', 'true');
-    el.append(...['skin', 'eyes', wear.includes('helmet') ? 'helmet' : 'hair', 'body', 'ends', 'shield', 'sword']
-      .map(name => drawn(HERO[name], `pixels-hero-layer pixels-hero-${name}`)));
+    el.append(...layers(wear, gear).map(([name, squares]) => drawn(squares, `pixels-hero-layer pixels-hero-${name}`)));
     return el;
   };
+  const figure = (wear, gear) => layers(wear, gear).reduce((all, [, squares]) => [...squares].map((s, i) => (s === '.' ? all[i] : s)).join(''), '.'.repeat(225));
   const shade = () => drawn(SHADE, 'pixels-shade');
   const side = ({ sizes, width }) => (sizes || [width]).map(n => `${n}×${n}`).join(', ');
   const sprites = (solved, all) => (solved === all ? 'Rift cleared' : `${solved} of ${all} sprites`);
@@ -976,7 +993,7 @@
   };
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    iphone, installed, fresh, face, portrait, seen, see, stand, stood, side, sprites, portal, fairy, heart, sword, shield, worn, hero, shade, locks, boss, holds, letter,
+    iphone, installed, fresh, face, portrait, seen, see, stand, stood, side, sprites, portal, fairy, heart, sword, shield, worn, hero, shade, piece, figure, locks, boss, holds, letter,
     SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, sounds, listen, time, title,
     words, art, tile, bar, riftTile, how, switcher, chosen, shell,

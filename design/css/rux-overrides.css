@@ -1660,7 +1660,7 @@
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--side-panel__navigation-back-button,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--side-panel__close-button,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--action-set__action-button,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--modal-close-button,
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--modal-close-button,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--modal-footer .rux--btn {
   border-radius: 0;
 }
@@ -1670,7 +1670,7 @@
    notification's sits in the top corner only; it is 48px tall in a taller
    surface, so its lower corners stay square. */
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--side-panel__close-button,
-:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--modal-close-button {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--modal-close-button {
   border-start-end-radius: 12px;
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--side-panel__navigation-back-button {
@@ -1679,6 +1679,28 @@
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--inline-notification__close-button,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--toast-notification__close-button {
   border-start-end-radius: 8px;
+}
+/* RUX-DARK'S DIALOG KEEPS ITS CLOSE BUTTON CLEAR OF THE CORNER AND RINGS IT.
+   It stands 12px in at the theme's 36px control size with the 6px corners
+   its other buttons have, in the border a button has, so it fills the 48px
+   Carbon keeps for it at the header's end and the title starts where it
+   did. The border is the 1px the other rings are, so the focus ring, which
+   is that border, takes an inset line to stay Carbon's 2px. */
+[data-theme="rux-dark"] .rux--modal-close-button {
+  inset-block-start: var(--rux-spacing-04);
+  inset-inline-end: var(--rux-spacing-04);
+  border-radius: 6px;
+}
+[data-theme="rux-dark"] .rux--modal-close {
+  padding: 7px;
+  border: 1px solid var(--rux-border-subtle-02);
+  border-radius: 6px;
+  block-size: 2.25rem;
+  inline-size: 2.25rem;
+}
+[data-theme="rux-dark"] .rux--modal-close:focus-visible {
+  border-color: var(--rux-focus);
+  box-shadow: inset 0 0 0 1px var(--rux-focus);
 }
 /* The side panel's header and action row paint their own fill over the
    panel's corners, so they take its curve too. */

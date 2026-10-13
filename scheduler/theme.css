@@ -852,15 +852,36 @@
     background-color: var(--rux-layer-hover);
   }
 }
-[data-theme^="apple-"] .scheduler-contacts__menu .rux--overflow-menu.rux--overflow-menu--open {
+:is([data-theme^="apple-"], [data-theme="rux-dark"]) .scheduler-contacts__menu .rux--overflow-menu.rux--overflow-menu--open {
   background-color: var(--rux-layer-hover);
   box-shadow: none;
 }
-[data-theme^="apple-"] .scheduler-contacts__menu .rux--overflow-menu-options {
+:is([data-theme^="apple-"], [data-theme="rux-dark"]) .scheduler-contacts__menu .rux--overflow-menu-options {
   margin-block-start: var(--rux-spacing-02);
 }
-[data-theme^="apple-"] .scheduler-contacts__menu .rux--overflow-menu-options::after {
+:is([data-theme^="apple-"], [data-theme="rux-dark"]) .scheduler-contacts__menu .rux--overflow-menu-options::after {
   content: none;
+}
+/* On rux-dark the menu is the close button's twin too: Design rings that
+   theme's close as a 36px button with 6px corners 12px clear of the corner,
+   so the menu's button is the same ringed button 8px before it, and open
+   it keeps a fill and floats its list 4px under it, by the three rules
+   above that name this theme: Carbon's strip would cover the ring's lower
+   edge. Its focus ring is Carbon's outline, drawn inside the border, so the
+   border takes the focus colour with it. */
+[data-theme="rux-dark"] .scheduler-contacts__menu {
+  inset-block-start: var(--rux-spacing-04);
+  inset-inline-end: calc(var(--rux-spacing-04) + 2.25rem + var(--rux-spacing-03));
+}
+[data-theme="rux-dark"] .scheduler-contacts__menu .rux--overflow-menu {
+  border: 1px solid var(--rux-border-subtle-02);
+  border-radius: 6px;
+  block-size: 2.25rem;
+  inline-size: 2.25rem;
+  min-block-size: 2.25rem;
+}
+[data-theme="rux-dark"] .scheduler-contacts__menu .rux--overflow-menu:focus-visible {
+  border-color: var(--rux-focus);
 }
 /* A row's buttons stand 8px apart there, as Design holds that theme's
    footer buttons: Carbon's 1px is the seam between two squares, and between

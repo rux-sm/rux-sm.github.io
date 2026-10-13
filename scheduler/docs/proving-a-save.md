@@ -71,6 +71,14 @@ The second read then differs, and the conflict box opens after the update box.
 
 - **Wait with `__wait(ms)`.** Chrome slows a timer in a tab left in the
   background, so a script that waits on `setTimeout` runs out of time.
+- **A background tab draws no frames.** Chrome calls no
+  `requestAnimationFrame` in a tab it holds hidden, so whatever moves by
+  frames stands still. Give the page a `requestAnimationFrame` of the test's
+  own and call what it collects between waits.
+- **A later read finds the real rows.** A recorded write changes nothing a
+  read sees, so a step that checks what the save before it left, as an Undo
+  does, stands down. Apply `__writes` to the rows a `trips` read brings back
+  to prove that step.
 - **A modal is open when it has the class `is-visible`.** Its computed
   visibility says visible for a closed one too.
 - **A tab's name can carry a mark.** Route reads as more than its word once it

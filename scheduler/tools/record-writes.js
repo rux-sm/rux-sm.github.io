@@ -132,6 +132,8 @@
         return { data: [], error: null };
       },
       createSignedUrl: (...args) => real.createSignedUrl(...args),
+      // A profile photo's address, which the board asks for to draw who else is on a trip.
+      getPublicUrl: (...args) => real.getPublicUrl(...args),
     };
   };
 })();

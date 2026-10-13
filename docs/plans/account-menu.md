@@ -47,7 +47,8 @@ In a game:
 - **A game takes this header on a wide screen,** holding the game's places
   and the menu, so an account can leave for another app from any game as
   it can from any app. On a phone a game keeps its bar of places and no
-  header, and Me holds the menu's rows.
+  header, and shows no picture button: Me is one tap away in the bar and
+  holds the menu's rows.
 - **On a wide screen Me is not a place:** the row that says who is playing
   opens it, as the picture button is the player.
 - **A game adds its own rows to the menu:** How to play, and Add to home
@@ -62,9 +63,7 @@ In a game:
 
 ## Questions
 
-- **On a phone, does a game show the picture button at its top too?**
-  Recommended no: a phone's game has no header to hold it, Me is one tap
-  away in the bar of places, and Me holds the same rows.
+None open.
 
 ## Tasks
 

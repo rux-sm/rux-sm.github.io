@@ -34,14 +34,15 @@ The shapes:
 
 One bar:
 
-- **A game has no header.** One bar holds its places: along the bottom on a
-  phone and along the top on a wide screen. A guest has only that today, so
-  the owner and a player see one game.
+- **A game has no header on a phone.** One bar along the bottom holds its
+  places. On a wide screen it takes the shell's header, which holds its
+  places and the account menu, as `docs/plans/account-menu.md` plans; until
+  that is built its bar of places stands along the top.
 - **Play shows no bar,** only its own keys and a way back, as Pixels' puzzle
   and Pixelator do now.
-- **What the header held moves to the Player page,** as a list under the
-  player: How to play, Add to home screen, Theme, the way to Rux Home, and
-  for the owner alone Manage and Players.
+- **On a phone what a header would hold is on the Player page,** as a list
+  under the player: How to play, Add to home screen, Theme, the way to Rux
+  Home, and for the owner alone Manage and Players.
 - **A guest has Theme too.** It is kept in the browser, so it asks nothing
   of an account, and a guest has no Rux Home to go to.
 - **That list is Carbon's contained list,** which Design ships, so it needs

@@ -1575,13 +1575,14 @@ button.scheduler-row-head__num::after {
    so the name sits close. In a menu the box keeps the menu icon's size. */
 .scheduler-crew__mark--dot { inline-size: auto; }
 .scheduler-crew__dot { inline-size: 7px; block-size: 7px; border-radius: 50%; background: currentColor; }
-/* The driver's name on a bar is what a press pulls the driver out by, so it
-   shows the open hand; the trip in the editor gives no driver up. While the
-   figure is out the seat is dimmed, as a carried bar is, and its dot is
-   gone, because the dot is the figure's head. */
-.scheduler-bar:not(.scheduler-bar--open) .scheduler-bar__crew > .scheduler-crew[data-seat="driver"] { cursor: grab; }
+/* A driver's name on a bar is what a press pulls the driver out by, whatever
+   seat they are in, so it shows the open hand; the trip in the editor gives
+   no driver up. While the figure is out the seat is dimmed, as a carried bar
+   is, and its mark is gone, the dot or a relief's arrows, because the mark is
+   the figure's head. */
+.scheduler-bar:not(.scheduler-bar--open) .scheduler-bar__crew > .scheduler-crew[data-seat][data-driver-id] { cursor: grab; }
 .scheduler-crew.scheduler-crew--carried { opacity: .4; }
-.scheduler-crew.scheduler-crew--carried .scheduler-crew__dot { visibility: hidden; }
+.scheduler-crew.scheduler-crew--carried :is(.scheduler-crew__dot, .scheduler-crew__mark svg) { visibility: hidden; }
 .scheduler-crew__mark--success { color: var(--scheduler-mark-success); }
 .scheduler-crew__mark--error { color: var(--scheduler-mark-error); }
 .scheduler-crew__mark--warning { color: var(--scheduler-mark-warning); }
@@ -2712,7 +2713,7 @@ button.scheduler-row-head__num::after {
    each part turns by its own about its own joint. The holder takes no
    pointer, so the bar under it is the one found.
 
-   While a name is carried, every bar whose Driver seat is empty is outlined
+   While a name is carried, every bar with an empty seat is outlined
    with a dashed line that breathes, so where a driver is wanted shows before
    the pointer gets there. The bar under the pointer takes a solid ring
    instead, outside its edge and over its neighbours, clear of the selected
@@ -2788,7 +2789,7 @@ button.scheduler-row-head__num::after {
 .scheduler-avail__name--back { animation: scheduler-avail-back 480ms cubic-bezier(.2, .8, .3, 1); }
 .scheduler-bar.scheduler-bar--seat { outline: 2px solid var(--rux-focus); outline-offset: 1px; z-index: 2; }
 .scheduler-bar.scheduler-bar--seat-warn { outline: 2px solid var(--rux-support-warning); outline-offset: 1px; z-index: 2; }
-.scheduler-grid--carrying .scheduler-bar[data-wants-driver]:not(.scheduler-bar--open, .scheduler-bar--saving, .scheduler-bar--seat, .scheduler-bar--seat-warn) {
+.scheduler-grid--carrying .scheduler-bar[data-wants-crew]:not(.scheduler-bar--open, .scheduler-bar--saving, .scheduler-bar--seat, .scheduler-bar--seat-warn) {
   outline: 2px dashed var(--rux-focus);
   outline-offset: 1px;
   z-index: 1;
@@ -2796,8 +2797,45 @@ button.scheduler-row-head__num::after {
 }
 @keyframes scheduler-bar-wants { to { outline-color: color-mix(in srgb, var(--rux-focus) 30%, transparent); } }
 @media (prefers-reduced-motion: reduce) {
-  .scheduler-grid--carrying .scheduler-bar[data-wants-driver] { animation: none; }
+  .scheduler-grid--carrying .scheduler-bar[data-wants-crew] { animation: none; }
 }
+
+/* THE SEATS OF A BUS, WHILE A DRIVER IS CARRIED OVER ITS BAR. A bus with more
+   than one seat on lays them along the foot of its bar, over its update and
+   its crew, which the seats say again in full: a chip a seat, the seat's
+   name over who is in it. They share the bar's width, and where they do not
+   fit side by side, as four do not on one day, they take a second line. The
+   chip a release would take is ringed in the focus tone. One whose driver
+   would lose the seat is ringed in the warning tone and says Replace over
+   their name, so the colour is never the only signal. */
+.scheduler-seats {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--rux-spacing-01);
+  padding: var(--rux-spacing-01);
+  background: var(--rux-layer-01);
+}
+.scheduler-seats__seat {
+  display: flex;
+  flex: 1 1 3.5rem;
+  flex-direction: column;
+  min-inline-size: 0;
+  padding-inline: var(--rux-spacing-02);
+  color: var(--rux-text-primary);
+  background: var(--rux-layer-02);
+  outline: 1px solid var(--rux-border-subtle-02);
+  outline-offset: -1px;
+}
+.scheduler-seats__role,
+.scheduler-seats__who { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scheduler-seats__role { color: var(--rux-text-secondary); }
+.scheduler-seats__who--empty { color: var(--rux-text-helper); }
+.scheduler-seats__seat--aim { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
+.scheduler-seats__seat--replace { outline: 2px solid var(--rux-support-warning); outline-offset: -2px; }
+.scheduler-seats__seat--replace .scheduler-seats__role { color: var(--rux-text-primary); }
 
 /* On the board, every bar but the picked driver's steps back, so theirs stand
    out by contrast rather than by a shadow Carbon keeps for floating things,

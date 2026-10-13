@@ -353,13 +353,14 @@
     } catch { /* platform unreachable: the local profile stands */ }
 
     /* The header's Account action shows the person in place of its glyph,
-       and says who it is. Another account's name follows the panel's. */
+       at Carbon's 32px avatar, and says who it is. Another account's name
+       follows the panel's. */
     const action = document.querySelector('.rux--header__action[aria-controls="rux-account-panel"]');
     if (action) {
       const avatar = document.createElement('div');
-      avatar.className = 'rux--user-avatar rux--user-avatar--sm';
+      avatar.className = 'rux--user-avatar rux--user-avatar--md';
       avatar.setAttribute('aria-hidden', 'true');
-      if (await showAvatar(avatar, 'sm')) {
+      if (await showAvatar(avatar, 'md')) {
         action.replaceChildren(avatar);
         const who = await person();
         const label = () => action.setAttribute('aria-label', who.name ? `Account, ${who.name}` : 'Account');

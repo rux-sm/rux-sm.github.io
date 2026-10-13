@@ -564,27 +564,21 @@
 :is([data-theme="rux-dark"] .rux--header, .rux--header[data-theme="rux-dark"]) .rux--header__action:not(:has(.rux--user-avatar), :focus-visible) {
   border-color: var(--rux-border-subtle-02);
 }
-/* RUX-DARK'S ACCOUNT BUTTON IS THE FACE ITSELF, 32px as GitHub's is: the
-   picture fills the button, where the other themes set a 24px one inside
-   it, and its initials take the 32px avatar's type. The button is round with
-   it. The face covers the border the focus ring is drawn on, so here the
-   ring is an outline 2px clear of it. */
-:is([data-theme="rux-dark"] .rux--header, .rux--header[data-theme="rux-dark"]) .rux--header__action:has(.rux--user-avatar) {
+/* THE ACCOUNT BUTTON IS THE FACE ITSELF where the header's buttons are 32px:
+   the picture is Carbon's 32px avatar in every theme, which sits inside
+   Carbon's 48px button and fills these. So the button is round with it, the
+   picture is kept from shrinking into the 30px the border leaves, and since
+   the face covers the border the focus ring is drawn on, the ring is an
+   outline 2px clear of it. */
+:is(:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header, .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"])) .rux--header__action:has(.rux--user-avatar) {
   border-radius: 50%;
 }
-:is([data-theme="rux-dark"] .rux--header, .rux--header[data-theme="rux-dark"]) .rux--header__action:has(.rux--user-avatar):focus-visible {
+:is(:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header, .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"])) .rux--header__action:has(.rux--user-avatar):focus-visible {
   outline: 2px solid var(--rux-focus);
   outline-offset: 2px;
 }
-:is([data-theme="rux-dark"] .rux--header, .rux--header[data-theme="rux-dark"]) .rux--header__action :is(.rux--user-avatar, .rux--user-avatar__photo) {
+:is(:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header, .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"])) .rux--header__action .rux--user-avatar {
   flex: none;
-  block-size: 2rem;
-  inline-size: 2rem;
-}
-:is([data-theme="rux-dark"] .rux--header, .rux--header[data-theme="rux-dark"]) .rux--header__action .rux--user-avatar {
-  font-size: var(--rux-body-compact-01-font-size, 0.875rem);
-  line-height: var(--rux-body-compact-01-line-height, 1.28572);
-  letter-spacing: var(--rux-body-compact-01-letter-spacing, 0.16px);
 }
 /* A count on one of those 32px buttons has no corner to sit in: Carbon's 4px
    inset is measured for a 48px button, and here it lands the count on the

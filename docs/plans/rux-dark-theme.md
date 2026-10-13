@@ -30,8 +30,9 @@ site, and Design's contrast measurement reads no text in it under 4.5 to 1.
   and on a coloured or inverse surface the ring is that surface's ink at
   30%. Primer leaves a close button bare; rux-dark does not follow it there.
   On a phone the scheduler's panel heads keep Carbon's bare squares.
-- **The account button is the face, 32px.** The picture fills the header's
-  32px button, as GitHub's does, and takes no ring.
+- **The account button is the face.** The picture is 32px in every theme,
+  so it fills this theme's 32px header button, as GitHub's does, and takes
+  no ring.
 - **A colour is changed in its own block; a shape is split off when it
   changes.** A rule rux-dark stops sharing loses its name from the shared
   selector and is written for rux-dark alone, so geist-dark never moves.

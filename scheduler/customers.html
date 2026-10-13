@@ -374,6 +374,13 @@
                 <div class="rux--form-item scheduler-pair-grid__wide" id="scheduler-cu-pickup-slot"></div>
               </div>
               <p class="rux--form__helper-text scheduler-pair-note">Not in the list? Add it on the <a class="rux--link" href="locations.html?new">Locations</a> page first.</p>
+              <div class="scheduler-pair-grid">
+                <!-- The customer this one is part of, as a school is of its
+                     district: a combo box over the other customers, drawn by
+                     customers.js. -->
+                <div class="rux--form-item scheduler-pair-grid__wide" id="scheduler-cu-part-slot"></div>
+              </div>
+              <p class="rux--form__helper-text scheduler-pair-note">A school's district, or any customer this one belongs to. That customer's documents show on this one's Documents tab too.</p>
               <div class="rux--form-item scheduler-pair-notes">
                 <div class="rux--text-area__label-wrapper"><label class="rux--label" for="scheduler-cu-bill">Bill-to address</label></div>
                 <div class="rux--text-area__wrapper">
@@ -471,6 +478,7 @@
         <!-- Read only here: a document is uploaded and edited on the
              Documents page, which these links open for this customer. -->
         <div class="rux--tab-content" role="tabpanel" id="scheduler-customer-panel-documents" aria-labelledby="scheduler-customer-tab-documents" tabindex="0" hidden>
+          <div class="rux--stack-vertical rux--stack-scale-7">
           <section class="rux--stack-vertical rux--stack-scale-4 scheduler-pair-group" aria-labelledby="scheduler-customer-documents-h">
             <h2 class="rux--type-heading-compact-02" id="scheduler-customer-documents-h">Documents issued to this customer</h2>
             <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page">
@@ -483,6 +491,18 @@
               <a class="rux--link" href="documents.html" id="scheduler-customer-documents-all">Open in Documents</a>
             </div>
           </section>
+          <!-- The documents of the customer this one is part of, which cover
+               it too. Shown only where it is part of one. -->
+          <section class="rux--stack-vertical rux--stack-scale-4 scheduler-pair-group" aria-labelledby="scheduler-customer-whole-documents-h" id="scheduler-customer-whole-documents-section" hidden>
+            <h2 class="rux--type-heading-compact-02" id="scheduler-customer-whole-documents-h"></h2>
+            <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page">
+              <ul role="list" id="scheduler-customer-whole-documents"></ul>
+            </div>
+            <div class="scheduler-pair-links">
+              <a class="rux--link" href="customers.html" id="scheduler-customer-whole-link"></a>
+            </div>
+          </section>
+          </div>
         </div>
         </div>
       </div>

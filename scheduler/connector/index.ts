@@ -528,7 +528,7 @@ Deno.serve(
           'find_documents',
           {
             title: 'Find company documents',
-            description: 'Find the office\'s own paperwork, such as an insurance certificate, the W-9 or a driver\'s background check form, by its kind, the holder named on it, the customer it belongs to, the driver, its file name or its note. Every word has to match. Answers with the current copies only, each with the day it ends and a link to the file that lasts ten minutes. Leave search out to list them all.',
+            description: 'Find the office\'s own paperwork, such as an insurance certificate, the W-9 or a driver\'s background check form, by its kind, the holder named on it, the customer it belongs to, the driver, its file name or its note. A customer that is part of another, as a school is of its district, finds that customer\'s documents too. Every word has to match. Answers with the current copies only, each with the day it ends and a link to the file that lasts ten minutes. Leave search out to list them all.',
             inputSchema: z.object({
               search: z.string().max(80).default(''),
               limit: z.number().int().min(1).max(50).default(10),
@@ -537,11 +537,16 @@ Deno.serve(
           },
           async ({ search, limit }) => {
             const rows = orThrow(await supabase.from('company_documents')
-              .select('id, holder, ends_on, note, file_name, file_path, kind:kind_id(name), customer:customer_id(name), driver:driver_id(name)')
+              .select('id, holder, ends_on, note, file_name, file_path, customer_id, kind:kind_id(name), customer:customer_id(name), driver:driver_id(name)')
               .is('replaced_at', null).order('created_at', { ascending: false })) as Record<string, any>[]
+            // A district's certificate covers its schools, so a school's name finds it.
+            const parts = orThrow(await supabase.from('customers').select('name, part_of_id')
+              .not('part_of_id', 'is', null)) as Record<string, any>[]
+            const partsOf = (id: string) => parts.filter(p => p.part_of_id === id).map(p => p.name)
             const words = search.toLowerCase().split(/\s+/).filter(Boolean)
             const found = rows.filter(row => {
-              const hay = [row.kind?.name, row.holder, row.customer?.name, row.driver?.name, row.file_name, row.note]
+              const hay = [row.kind?.name, row.holder, row.customer?.name, row.driver?.name, row.file_name, row.note,
+                ...(row.customer_id ? partsOf(row.customer_id) : [])]
                 .filter(Boolean).join(' ').toLowerCase()
               return words.every(word => hay.includes(word))
             }).slice(0, limit)

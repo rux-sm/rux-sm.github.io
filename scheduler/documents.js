@@ -55,6 +55,7 @@
   let kinds = [];
   let documents = [];
   let customers = new Map();  // customer id → customer
+  let parts = new Map();      // customer id → the names of the customers that are part of it
   let drivers = new Map();    // driver id → driver
 
   // ── reading ─────────────────────────────────────────────────────────────
@@ -67,12 +68,18 @@
     const [k, d, c, p] = await Promise.all([
       read('document_kinds', 'id,name,per_driver,updated_at', 'name'),
       read('company_documents', COLUMNS, 'created_at'),
-      read('customers', 'id,name', 'name'),
+      read('customers', 'id,name,part_of_id', 'name'),
       read('drivers', 'id,name,short_name,status', 'name'),
     ]);
     kinds = k;
     documents = d;
     customers = new Map(c.map(row => [row.id, row]));
+    parts = new Map();
+    for (const row of c) {
+      if (!row.part_of_id) continue;
+      if (!parts.has(row.part_of_id)) parts.set(row.part_of_id, []);
+      parts.get(row.part_of_id).push(row.name);
+    }
     drivers = new Map(p.map(row => [row.id, row]));
   }
 
@@ -150,9 +157,12 @@
     },
     ends: (a, b) => ending(a).rank - ending(b).rank,
   };
-  // Every word typed has to be somewhere in the row.
+  /* Every word typed has to be somewhere in the row, or in the name of a
+     customer that is part of the row's customer: a district's certificate
+     covers its schools, so a school's name finds it. */
   const matches = (doc, q) => {
-    const hay = folded([kindOf(doc)?.name, ...whoOf(doc), doc.file_name, doc.note].filter(Boolean).join(' '));
+    const hay = folded([kindOf(doc)?.name, ...whoOf(doc), doc.file_name, doc.note,
+      ...(parts.get(doc.customer_id) || [])].filter(Boolean).join(' '));
     return folded(q).split(' ').filter(Boolean).every(word => hay.includes(word));
   };
 

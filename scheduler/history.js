@@ -90,7 +90,7 @@
     },
     customer: {
       word: 'Customer', page: 'customers.html',
-      words: { name: 'Name', bill_to: 'Bill-to address', usual_location_id: 'Usual pickup' },
+      words: { name: 'Name', bill_to: 'Bill-to address', usual_location_id: 'Usual pickup', part_of_id: 'Part of' },
     },
     contact: {
       word: 'Contact', page: 'contacts.html',

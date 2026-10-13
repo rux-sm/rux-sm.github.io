@@ -15,6 +15,10 @@
    driver form it asks for on its trips, kept in `customer_required_kinds`.
    Its Trips tab lists its trips under what they come to, and its Documents
    tab the documents issued to it, which the Documents page uploads and edits.
+
+   A customer may be part of another, as a school is of its district. Its
+   Documents tab then lists that customer's documents under its own, since a
+   certificate written to a district covers its schools.
    ========================================================================== */
 (() => {
   'use strict';
@@ -30,7 +34,7 @@
   // The record view shows the list's column only for its notice.
   if (editing) $('scheduler-customers-h').hidden = true;
 
-  const COLUMNS = 'id,name,usual_location_id,bill_to,notes,usual_reqs,usual_vehicle_type,updated_at';
+  const COLUMNS = 'id,name,usual_location_id,part_of_id,bill_to,notes,usual_reqs,usual_vehicle_type,updated_at';
   const Facts = window.SchedulerLegFacts;
   const Vehicles = window.SchedulerVehicles;
   const usd = n => Number(n).toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
@@ -183,17 +187,20 @@
   let contactsBehind = false; // a rename its contacts' organization text or its trips' customer missed
   let pickupId = null;      // the usual pickup picked
   let pickupText = '';      // the pickup field's text
+  let partOfId = null;      // the customer this one is part of
+  let partOfText = '';      // the Part of field's text
   let baseline = '';
 
   const readForm = () => ({
     name: nameField.value.trim() || null,
     usual_location_id: pickupId,
+    part_of_id: partOfId,
     bill_to: billField.value.trim() || null,
     notes: notesField.value.trim() || null,
     usual_reqs: Object.fromEntries([...needs].sort().map(id => [id, true])),
     usual_vehicle_type: vehicleField.value || null,
   });
-  const snapshot = () => JSON.stringify([readForm(), pickupId ? '' : pickupText, [...wanted].sort()]);
+  const snapshot = () => JSON.stringify([readForm(), pickupId ? '' : pickupText, partOfId ? '' : partOfText, [...wanted].sort()]);
   const dirty = () => baseline !== '' && snapshot() !== baseline;
 
   /* The driver forms this customer asks for: one checkbox for each kind kept
@@ -203,19 +210,26 @@
   let required = new Set();   // kind ids, as saved
   let wanted = new Set();     // kind ids, as ticked
   let papers = [];            // the documents issued to this customer
-  async function readPapers(id) {
-    const [kinds, asks, docs] = await Promise.all([
+  let wholePapers = [];       // the current documents of the customer it is part of
+  async function readPapers(id, wholeId) {
+    const of = whose => client.from('company_documents')
+      .select('id,kind_id,holder,ends_on,note,file_name,replaced_at,created_at')
+      .eq('customer_id', whose).order('created_at', { ascending: false });
+    const [kinds, asks, docs, whole] = await Promise.all([
       client.from('document_kinds').select('id,name,per_driver').order('name'),
       id ? client.from('customer_required_kinds').select('kind_id').eq('customer_id', id) : { data: [] },
-      id ? client.from('company_documents').select('id,kind_id,holder,ends_on,note,file_name,replaced_at,created_at')
-        .eq('customer_id', id).order('created_at', { ascending: false }) : { data: [] },
+      id ? of(id) : { data: [] },
+      wholeId ? of(wholeId).is('replaced_at', null) : { data: [] },
     ]);
-    if (kinds.error || asks.error || docs.error) throw kinds.error || asks.error || docs.error;
+    const error = kinds.error || asks.error || docs.error || whole.error;
+    if (error) throw error;
     const names = new Map((kinds.data || []).map(k => [k.id, k.name]));
+    const named = rows => (rows || []).map(d => ({ ...d, kind: names.get(d.kind_id) || 'Document' }));
     formKinds = (kinds.data || []).filter(k => k.per_driver);
     required = new Set((asks.data || []).map(r => r.kind_id));
     wanted = new Set(required);
-    papers = (docs.data || []).map(d => ({ ...d, kind: names.get(d.kind_id) || 'Document' }));
+    papers = named(docs.data);
+    wholePapers = named(whole.data);
   }
   // One checkbox of a group, which keeps `set` as it is ticked.
   function tick(id, text, set, key) {
@@ -336,15 +350,74 @@
     slot.replaceChildren(wrap);
   }
 
+  /* The customer this one is part of: Carbon's combo box over the other
+     customers, less any that is part of this one, so two never point at each
+     other. Design's list-box.js filters and picks, as it does the pickup. */
+  function drawPartOf() {
+    const slot = $('scheduler-cu-part-slot');
+    const lab = el('label', 'rux--label', 'Part of');
+    lab.setAttribute('for', 'scheduler-cu-part');
+    const root = el('div', 'rux--combo-box rux--list-box');
+    const box = el('div', 'rux--list-box__field');
+    const current = customers.find(c => c.id === partOfId);
+    const input = el('input', current ? 'rux--text-input' : 'rux--text-input rux--text-input--empty');
+    input.type = 'text';
+    input.id = 'scheduler-cu-part';
+    input.setAttribute('role', 'combobox');
+    input.setAttribute('aria-autocomplete', 'list');
+    input.setAttribute('aria-haspopup', 'listbox');
+    input.setAttribute('aria-expanded', 'false');
+    input.autocomplete = 'scheduler-customer-field';
+    input.placeholder = 'Search customers';
+    input.value = current?.name ?? '';
+    box.appendChild(input);
+    const menu = el('ul', 'rux--list-box__menu');
+    menu.setAttribute('role', 'listbox');
+    menu.hidden = true;
+    const offered = customers
+      .filter(c => c.id !== loaded?.id && !(loaded && c.part_of_id === loaded.id))
+      .sort(byName);
+    for (const c of offered) {
+      const on = c.id === partOfId;
+      const option = el('li', on
+        ? 'rux--list-box__menu-item rux--list-box__menu-item--active'
+        : 'rux--list-box__menu-item');
+      option.setAttribute('role', 'option');
+      option.setAttribute('aria-selected', String(on));
+      option.dataset.customerId = c.id;
+      option.dataset.ruxText = c.name;
+      option.appendChild(el('div', 'rux--list-box__menu-item__option', c.name));
+      menu.appendChild(option);
+    }
+    root.append(box, menu);
+    const req = el('div', 'rux--form-requirement');
+    req.id = 'scheduler-cu-part-error';
+    const wrap = el('div', 'rux--list-box__wrapper');
+    wrap.append(lab, root, req);
+    input.addEventListener('input', () => {
+      partOfId = null;
+      partOfText = input.value.trim();
+    });
+    root.addEventListener('rux:listbox-selected', e => {
+      partOfId = e.detail?.option?.dataset.customerId ?? null;
+      partOfText = input.value.trim();
+      showPartOfError('');
+    });
+    slot.replaceChildren(wrap);
+  }
+
   function fillForm(c) {
     nameField.value = c.name ?? '';
     pickupId = c.usual_location_id ?? null;
     pickupText = places.get(pickupId)?.name ?? '';
+    partOfId = c.part_of_id ?? null;
+    partOfText = customers.find(x => x.id === partOfId)?.name ?? '';
     billField.value = c.bill_to ?? '';
     notesField.value = c.notes ?? '';
     needs = new Set(Object.keys(c.usual_reqs || {}).filter(id => c.usual_reqs[id] === true));
     wanted = new Set(required);
     drawPickup();
+    drawPartOf();
     drawNeeds(c.usual_vehicle_type ?? '');
     drawForms();
     showNameError('');
@@ -362,9 +435,11 @@
   // ── validation ──
   const showNameError = message => pair.textError(nameField, 'scheduler-cu-name-error', message);
   const showPickupError = message => pair.comboError($('scheduler-cu-pickup'), 'scheduler-cu-pickup-error', message);
+  const showPartOfError = message => pair.comboError($('scheduler-cu-part'), 'scheduler-cu-part-error', message);
   function validate() {
     showNameError('');
     showPickupError('');
+    showPartOfError('');
     let first = null;
     const name = nameField.value.trim();
     if (!name) { showNameError('Enter a name.'); first ??= nameField; }
@@ -376,6 +451,10 @@
     if (!pickupId && pickupText) {
       showPickupError('Pick a location from the list, or clear the field.');
       first ??= $('scheduler-cu-pickup');
+    }
+    if (!partOfId && partOfText) {
+      showPartOfError('Pick a customer from the list, or clear the field.');
+      first ??= $('scheduler-cu-part');
     }
     first?.focus();
     return !first;
@@ -475,22 +554,17 @@
 
   // ── documents, read only ──
   const day = s => { const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); };
-  function drawDocuments() {
-    const list = $('scheduler-customer-documents');
+  // One customer's current documents as rows of a list, each opening its file.
+  function listDocuments(list, rows, owner) {
     list.replaceChildren();
-    const here = loaded ? encodeURIComponent(loaded.id) : '';
-    $('scheduler-customer-documents-upload').href = `documents.html?new&customer=${here}`;
-    $('scheduler-customer-documents-all').href = `documents.html?customer=${here}`;
-    // The current copies; the Documents page shows the old ones.
-    const mine = papers.filter(d => !d.replaced_at);
-    if (!mine.length) {
+    if (!rows.length) {
       const li = el('li', 'rux--contained-list-item');
       li.appendChild(el('div', 'rux--contained-list-item__content scheduler-pair-note', 'No documents yet.'));
       list.appendChild(li);
       return;
     }
     const today = new Date(new Date().toDateString());
-    for (const d of mine) {
+    for (const d of rows) {
       const li = el('li', 'rux--contained-list-item rux--contained-list-item--clickable');
       const a = el('a', 'rux--contained-list-item__content scheduler-pair-trip');
       a.href = `documents.html?open=${encodeURIComponent(d.id)}`;
@@ -501,12 +575,29 @@
       const lines = el('span', 'scheduler-pair-item');
       lines.appendChild(el('span', 'scheduler-pair-item__main', d.kind));
       // The holder named on it, where that is not the customer's own name.
-      const holder = folded(d.holder) === folded(loaded?.name) ? null : d.holder;
+      const holder = folded(d.holder) === folded(owner?.name) ? null : d.holder;
       lines.appendChild(el('span', 'scheduler-pair-item__detail', [holder, ends, d.note || d.file_name].filter(Boolean).join(' · ')));
       a.appendChild(lines);
       li.appendChild(a);
       list.appendChild(li);
     }
+  }
+
+  /* The customer's own current documents, the Documents page showing the old
+     ones, then those of the customer it is part of, under that one's name. */
+  function drawDocuments() {
+    const here = loaded ? encodeURIComponent(loaded.id) : '';
+    $('scheduler-customer-documents-upload').href = `documents.html?new&customer=${here}`;
+    $('scheduler-customer-documents-all').href = `documents.html?customer=${here}`;
+    listDocuments($('scheduler-customer-documents'), papers.filter(d => !d.replaced_at), loaded);
+    const whole = customers.find(c => c.id === loaded?.part_of_id) || null;
+    $('scheduler-customer-whole-documents-section').hidden = !whole;
+    if (!whole) return;
+    $('scheduler-customer-whole-documents-h').textContent = `Documents issued to ${whole.name}`;
+    listDocuments($('scheduler-customer-whole-documents'), wholePapers, whole);
+    const link = $('scheduler-customer-whole-link');
+    link.textContent = `Open ${whole.name}`;
+    link.href = `customers.html?id=${encodeURIComponent(whole.id)}`;
   }
 
   // ── delete ──
@@ -523,7 +614,9 @@
     const section = $('scheduler-customer-delete-section');
     section.hidden = !loaded;
     if (!loaded) return;
-    const n = peopleOf(loaded).length + papers.length;
+    // A customer another is part of stays, as one a contact or a document names does.
+    const parts = customers.filter(c => c.part_of_id === loaded.id).length;
+    const n = peopleOf(loaded).length + papers.length + parts;
     const blocked = n > 0 || tripCount !== 0;
     $('scheduler-customer-delete').disabled = blocked;
     $('scheduler-customer-delete-text').textContent = tripCount === null
@@ -531,8 +624,8 @@
       : tripCount < 0
         ? "The trips didn't load, so this customer can't be deleted now."
         : n > 0 || tripCount > 0
-          ? "A contact, a trip or a document names this customer, so it can't be deleted."
-          : 'No contact, trip or document names this customer.';
+          ? "A contact, a trip, a document or another customer names this customer, so it can't be deleted."
+          : 'No contact, trip, document or other customer names this customer.';
   }
   // The Delete button opens its modal from markup, `data-rux-open`.
   $('scheduler-customer-delete-confirm')?.addEventListener('click', async () => {
@@ -577,7 +670,7 @@
     } else {
       loaded = customers.find(c => String(c.id) === customerId) || null;
       if (!loaded) return false;
-      await readPapers(loaded.id);
+      await readPapers(loaded.id, loaded.part_of_id);
       fillForm(loaded);
     }
     drawTitle();
@@ -658,7 +751,7 @@
     if (!data) throw new Error('Customer not found');
     loaded = data;
     customers = [...customers.filter(c => c.id !== id), data];
-    await readPapers(id);
+    await readPapers(id, loaded.part_of_id);
     fillForm(loaded);
     drawTitle();
     drawContacts();

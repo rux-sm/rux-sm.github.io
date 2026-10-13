@@ -12,7 +12,8 @@ rift of the course is. The map is drawn a part at a time and the rest lies
 under fog, so it is as big as the course is and never looks empty. The
 player's character walks to a rift and goes in, and a rift ends on its boss.
 The character is one rux draws, and a player makes it their own by drawing
-on the armour they unlock. Each picture is built on a placeholder first, so
+on the armour they unlock. A puzzle is played as a fight: the sword fills a
+square and the shield crosses one out. Each picture is built on a placeholder first, so
 the game works before it is drawn.
 
 ## Decisions
@@ -77,6 +78,16 @@ Inside a rift:
   because a tile is not seen through. It has no spots to place, so it needs
   no template, and a rift without one has none.
 
+Playing:
+
+- **Fill is the sword and X is the shield.** The two tool keys show a sword
+  and a shield, each beside the mark it leaves, because the mark is what
+  tells a new player which key does what.
+- **How to play says it as a fight:** strike the squares that are the
+  monster, and guard the ones that are not.
+- **Nothing else about play changes.** A mistake costs time as it does now,
+  and no puzzle can be lost.
+
 The character:
 
 - **Every player starts as one base character, which rux draws.** It is 15
@@ -90,8 +101,10 @@ The character:
 - **The helmet is unlocked at five sprites found,** which is rift 1's
   lesson, so a new player's first sitting ends on a reward.
 - **A piece is a set of the character's squares,** so a drawing of it lies
-  over the base and nothing else moves. A piece not yet unlocked is not
-  worn.
+  over the base and nothing else moves.
+- **The base character carries a sword and a plain shield from the start,**
+  since they are how it plays. The helmet and the body armour are worn once
+  unlocked, and the shield is drawn on once unlocked.
 - **Drawing on armour costs no mana,** since it makes no puzzle.
 - **A player's armour is kept with the player in the database,** so it comes
   back on any phone with their name and PIN. The SQL is shown to rux first.
@@ -106,32 +119,33 @@ The character:
 The pictures:
 
 - **rux draws the six parts of the map, the base character, its three pieces
-  of armour, and a world for a rift where one is wanted.** They are pixel
+  of armour, the sword and the shield of the two keys, nine squares a side,
+  and a world for a rift where one is wanted.** They are pixel
   art, drawn one pixel to a square and painted from the game's own
   fifty-five inks, so they sit with the sprites.
 - **The map and the worlds are PNGs in `pixels/art/`:** `map-1.png` to
   `map-6.png` from the foot up, `fog.png`, and `rift-01.png` to
   `rift-12.png`.
-- **The character and its armour are kept as a sprite is,** a character a
-  square in the game's inks, so a player's drawing and rux's are one kind of
-  thing.
+- **The character, its armour and the two keys' pictures are kept as a
+  sprite is,** a character a square in the game's inks, so a player's
+  drawing and rux's are one kind of thing.
 - **A picture keeps its own colours in every theme,** as a sprite does, and
   the page round it follows the theme.
-- **A part of the map, the fog and the character have a placeholder first,
-  made by a script,** which is also rux's template: the canvas at its size
-  with its spots marked.
+- **A part of the map, the fog, the character and the two keys' pictures
+  have a placeholder first, made by a script,** which is also rux's
+  template: the canvas at its size with its spots marked.
 
 The order:
 
 - **Five steps, each whole by itself:** the map's first part under fog; the
-  boss and Continue; the character and its helmet; the rest of the armour;
-  the worlds. What needs no drawing comes first, and the worlds, which are
+  boss, Continue and the sword and shield; the character and its helmet; the
+  rest of the armour; the worlds. What needs no drawing comes first, and the worlds, which are
   the most drawing for the least play, come last.
 
 ## Questions
 
-- **What unlocks the body armour and the shield?** Recommended 15 sprites
-  found in the course and then 30, so each comes within the rifts that are
+- **What unlocks the body armour, and drawing on the shield?** Recommended
+  15 sprites found in the course and then 30, so each comes within the rifts that are
   published and none waits on a rift still to draw.
 - **Does the character hop, or walk in frames?** A hop moves one standing
   drawing along the path. Walking frames need the base and every piece of
@@ -167,15 +181,16 @@ The order:
       canvas and its size, the spots, the inks, and the file to save.
 - [ ] Step 2, the boss and Continue: hold the boss until the fourteen are
       found, on the rift's page, on the puzzle's page and in Next puzzle;
-      add Continue to the front page; and say the story's line at the door
-      and in How to play.
+      add Continue to the front page; show the sword and the shield on the
+      two tool keys, on placeholders first; and say the story's line and
+      the fight at the door and in How to play.
 - [ ] Step 3, the character and its helmet: the base character on the map
       at the player's rift, on a placeholder first; its walk to a tapped
       rift; the helmet at five sprites; a place on Me to draw on an unlocked
       piece with the Pixelator's board; and a player's armour kept in the
       database, the SQL shown to rux first.
-- [ ] Step 4, the rest of the armour: the body armour and the shield, each
-      at what unlocks it.
+- [ ] Step 4, the rest of the armour: the body armour, and drawing on the
+      shield, each at what unlocks it.
 - [ ] Step 5, the worlds: a rift's picture at the head of its page, where
       it has one.
 - [ ] Put each of rux's pictures in place of its placeholder as it is drawn,

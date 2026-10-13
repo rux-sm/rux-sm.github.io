@@ -57,7 +57,11 @@ The world map:
   left. It stands over the bar of places on a phone, by the thumb, and is
   not there once everything is found.
 - **A custom rift is not on the path.** It has no number, so it keeps its
-  tile, as Design's picture tile.
+  tile, under the map, and one side place on the map's first part, off the
+  path, leads to those tiles. Every player has different friends, so spots
+  picked freely would land on each other.
+- **While its first part is a placeholder the map is the owner's alone,**
+  and every other player is drawn the tiles, because a push publishes.
 - **The game says its story in one line, at the door and in How to play:**
   Rifts are opening. Close them. A cleared rift's portal is already shut, so
   the map tells it too.
@@ -99,7 +103,9 @@ The character:
   player's to draw on.** It starts as rux's drawing of it, the player paints
   over its squares in the game's inks, and it can be set back to rux's.
 - **The helmet is unlocked at five sprites found,** which is rift 1's
-  lesson, so a new player's first sitting ends on a reward.
+  lesson, so a new player's first sitting ends on a reward. The body armour
+  comes at 15 sprites found in the course and drawing on the shield at 30,
+  so neither waits on a rift still to draw.
 - **A piece is a set of the character's squares,** so a drawing of it lies
   over the base and nothing else moves.
 - **The base character carries a sword and a plain shield from the start,**
@@ -114,6 +120,12 @@ The character:
   half a second, and then the rift opens.** A second tap opens it at once.
   There is no steering, and with motion turned down in the phone's settings
   there is no walk.
+- **The walk is a hop: one standing drawing moves along the path.** Walking
+  frames would need the base and every piece of armour drawn again for each
+  frame, and a player's own drawing fits only one.
+- **A player's character is seen by that player alone, on the map and on
+  Me,** since a store asks for a way to report what one player draws and
+  another sees.
 - **A tap on a locked rift says what opens it and goes nowhere.**
 
 The pictures:
@@ -144,28 +156,7 @@ The order:
 
 ## Questions
 
-- **What unlocks the body armour, and drawing on the shield?** Recommended
-  15 sprites found in the course and then 30, so each comes within the rifts that are
-  published and none waits on a rift still to draw.
-- **Does the character hop, or walk in frames?** A hop moves one standing
-  drawing along the path. Walking frames need the base and every piece of
-  armour drawn again for each frame, and a player's own drawing fits only
-  one. Recommended the hop.
-- **Who sees a player's character?** Only the player, on the map and on Me,
-  or their friends too, on Friends. Recommended the player alone first,
-  since a store asks for a way to report what one player draws and another
-  sees.
-- **While a part is a placeholder, who sees the map?** A push publishes, so
-  every player would see grey blocks. Recommended that only the owner sees
-  the map until the first part is rux's picture, and the other players keep
-  the tiles.
-- **Where do custom rifts stand?** A spot of their own on the map that the
-  maker picks, with a branch to it; or one side place rux draws on the
-  first part, off the path, that opens them as a list of tiles; or a list
-  under the map. Recommended the one side place: every player has different
-  friends, so spots picked freely would land on each other and crowd the
-  map, and a branch to a rift nobody has made yet cannot be drawn into the
-  picture.
+None open.
 
 ## Tasks
 
@@ -174,9 +165,10 @@ The order:
       `map-6.png` and `fog.png`.
 - [ ] Step 1, the map: draw the course on the front page over the parts
       that show, with fog above them, each rift's portal and words at its
-      spot, the locked, cleared, new and unpublished looks, custom rifts
-      kept as tiles, and the page opening on the player's rift. Measure it
-      at 360, 402 and 1280 wide.
+      spot, the locked, cleared, new and unpublished looks, custom rifts as
+      tiles under the map with the side place leading to them, the owner
+      alone drawn the map, and the page opening on the player's rift.
+      Measure it at 360, 402 and 1280 wide.
 - [ ] Write `pixels/docs/drawing-the-map.md`, the how-to for a picture: each
       canvas and its size, the spots, the inks, and the file to save.
 - [ ] Step 2, the boss and Continue: hold the boss until the fourteen are

@@ -52,6 +52,12 @@ exports, so a correction is made once and every screen redraws.
 
 ### Easy to read
 
+- **A scenario's reference waits behind one link on its page and on each of
+  its tasks.** Atlas exports it as tables under their headings. A table is
+  drawn as a list, and one whose rows are text to type as that text with a
+  Copy button, because a reader building their own case looks things up and
+  does not walk them.
+
 - **One idea on a screen**, a column no wider than a comfortable line, the step
   in large type, and no italics. Names the reader must find on the LN screen are
   in bold.

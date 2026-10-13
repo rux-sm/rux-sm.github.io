@@ -99,7 +99,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-ln-commit="809382aa24a39dc4139776f19e46372dd944586a">
+<main id="main-content" class="rux--content" data-ln-commit="26379debf18d82173a2934f9a7675f3778bbd9fc">
 <div class="ln-app">
   <section class="ln-screen" data-screen="home">
     <h1 class="ln-ask">What are you doing?</h1>
@@ -128,25 +128,85 @@
   <section class="ln-screen" data-screen="path" data-s="set-up-a-genai-prompt" hidden>
     <a class="rux--link ln-back" href="./"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Scenarios</a>
     <h1 class="ln-ask">Set up a GenAI prompt</h1>
-    <p class="ln-quiet">Put a one-click AI command on the sales order line screen, check its answer, improve it, and take it away.<br>Needs: Know one sales order line that has been delivered in full and one with nothing delivered. The GenAI feature has to be switched on for the tenant. </p>
-    <p class="ln-go"><a class="rux--btn rux--btn--primary" href="./?s=set-up-a-genai-prompt&amp;t=0" data-start>Start</a><span class="ln-quiet">54 steps</span></p>
+    <p class="ln-quiet">Put a one-click AI command on an LN screen, check its answer, improve it, and take it away.<br>Needs: Know the screen the command belongs on, and one record of each kind the answer must tell apart. The GenAI feature has to be switched on for the tenant. </p>
+    <p class="ln-go"><a class="rux--btn rux--btn--primary" href="./?s=set-up-a-genai-prompt&amp;t=0" data-start>Start</a><span class="ln-quiet">57 steps</span></p>
     <ol class="ln-path ln-path--tight">
-      <li data-t="0" data-n="1"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=0"><span class="ln-path__dot">1</span><b>Choose the screen</b><small>5<span class="rux--visually-hidden"> steps</span></small></a></li>
-      <li data-t="1" data-n="2"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=1"><span class="ln-path__dot">2</span><b>Model the dataset</b><small>11<span class="rux--visually-hidden"> steps</span></small></a></li>
+      <li data-t="0" data-n="1"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=0"><span class="ln-path__dot">1</span><b>Decide what the prompt is for</b><small>9<span class="rux--visually-hidden"> steps</span></small></a></li>
+      <li data-t="1" data-n="2"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=1"><span class="ln-path__dot">2</span><b>Model the dataset</b><small>10<span class="rux--visually-hidden"> steps</span></small></a></li>
       <li data-t="2" data-n="3"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=2"><span class="ln-path__dot">3</span><b>Write the prompt</b><small>11<span class="rux--visually-hidden"> steps</span></small></a></li>
       <li data-t="3" data-n="4"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=3"><span class="ln-path__dot">4</span><b>Link the prompt to a session</b><small>4<span class="rux--visually-hidden"> steps</span></small></a></li>
       <li data-t="4" data-n="5"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=4"><span class="ln-path__dot">5</span><b>Run it and check the answer</b><small>7<span class="rux--visually-hidden"> steps</span></small></a></li>
       <li data-t="5" data-n="6"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=5"><span class="ln-path__dot">6</span><b>Improve it</b><small>12<span class="rux--visually-hidden"> steps</span></small></a></li>
       <li data-t="6" data-n="7"><a class="ln-path__stop" href="./?s=set-up-a-genai-prompt&amp;t=6"><span class="ln-path__dot">7</span><b>Remove it</b><small>4<span class="rux--visually-hidden"> steps</span></small></a></li>
     </ol>
+    <p><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;r=1">Reference</a><span class="ln-quiet"> The six choices · The two texts · A template for the two texts · Kinds of prompt</span></p>
     <p><a class="rux--link" href="#main-content" data-open="loose">Different cases</a></p>
     <ul class="ln-list" data-panel="loose" hidden>
-      <li><b><span class="ln-t-named">A condition that must always hold</span></b><p>Put it in the table's filter in the Modeler, by the <span class="ln-t-named">Filter Present</span> link on the Properties panel, and leave the prompt text to set out the answer</p></li>
-      <li><b><span class="ln-t-named">A whole order with its lines</span></b><p>Build the dataset on the order table and add the lines as a table that refers to it, then link to a session on the order table</p></li>
       <li><b><span class="ln-t-named">Keeping the prompt</span></b><p>Stop after <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5">task 6</a></p></li>
     </ul>
   </section>
-  <section class="ln-screen" data-screen="task" data-s="set-up-a-genai-prompt" data-t="0" data-title="Choose the screen" data-after="./?s=set-up-a-genai-prompt&amp;t=1" hidden>
+  <section class="ln-screen" data-screen="ref" data-s="set-up-a-genai-prompt" hidden>
+    <a class="rux--link ln-back" href="./?s=set-up-a-genai-prompt"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Set up a GenAI prompt</a>
+    <h1 class="ln-ask">Reference</h1>
+    <h2 class="ln-ref__title">The six choices</h2>
+    <p><strong>Every prompt is these six decisions, and the example is one set of answers to them.</strong> <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0">Task 1</a> settles them before any of the setup sessions is opened.</p>
+    <ul class="ln-list">
+      <li><b>The screen</b><p><span class="ln-quiet">How it is settled</span><br>The session code in the status bar of the screen the user will be on. A link is to one exact code</p><p><span class="ln-quiet">In the example</span><br><a class="rux--link" href="./?c=tdsls4101m000"><span class="ln-t-exact">tdsls4101m000</span></a>, Sales Order Lines</p></li>
+      <li><b>The table and its key</b><p><span class="ln-quiet">How it is settled</span><br>The dataset's main table has to be that screen's table, and its selection index the key the screen is viewed by</p><p><span class="ln-quiet">In the example</span><br><span class="ln-t-exact">tdsls401</span>, by <span class="ln-t-exact">1 - Order, Position, Sequence</span></p></li>
+      <li><b>The fields</b><p><span class="ln-quiet">How it is settled</span><br>Only what the prompt text will name. Everything ticked is sent, and the model knows nothing else</p><p><span class="ln-quiet">In the example</span><br>Six of the line; later one more, and two of its deliveries</p></li>
+      <li><b>One record or several</b><p><span class="ln-quiet">How it is settled</span><br><span class="ln-t-exact">Always</span> runs on the row the cursor is on. <span class="ln-t-exact">Records Selected</span> waits for a tick and sends every ticked row</p><p><span class="ln-quiet">In the example</span><br><span class="ln-t-exact">Always</span></p></li>
+      <li><b>What is decided before the model is asked</b><p><span class="ln-quiet">How it is settled</span><br>A condition that must always hold is a row of the table's filter and not a sentence in the prompt</p><p><span class="ln-quiet">In the example</span><br>None</p></li>
+      <li><b>The sentence the user sees</b><p><span class="ln-quiet">How it is settled</span><br>The instruction text, shown beside the answer. It says what the command does</p><p><span class="ln-quiet">In the example</span><br>Draft a delivery update for the customer about this order line.</p></li>
+    </ul>
+    <h2 class="ln-ref__title">The two texts</h2>
+    <p><strong>The instruction text is for the user and the prompt text is for the model.</strong> The answer window prints the instruction text in a box headed Prompt, and the prompt text is what is sent with the data.</p>
+    <p><strong>Infor's help defines the two texts and says nothing about how to write them.</strong> What follows is what the prompt texts in this environment hold and what their runs showed, a line of the prompt text at a time in the order the lines are typed.</p>
+    <ul class="ln-list">
+      <li><b>What the data is</b><p><span class="ln-quiet">What it is for</span><br>Tells the model what the XML holds and how many records to expect</p><p><span class="ln-quiet">Seen without it</span><br>Not tried. The prompt texts read here open with it</p></li>
+      <li><b>The task</b><p><span class="ln-quiet">What it is for</span><br>What to write, for whom, and the values it must state</p><p><span class="ln-quiet">Seen without it</span><br>Not tried</p></li>
+      <li><b>Use only the dataset</b><p><span class="ln-quiet">What it is for</span><br>Keeps the model to the values it was sent</p><p><span class="ln-quiet">Seen without it</span><br>With this rule alone the quantities were right, and the model still wrote a letter and promised a notification</p></li>
+      <li><b>The form of the answer</b><p><span class="ln-quiet">What it is for</span><br>Plain sentences, one set line for each record, or a list</p><p><span class="ln-quiet">Seen without it</span><br>A letter: a heading, a greeting, a list and a sign-off, with formatting marks showing</p></li>
+      <li><b>One line for each kind of record</b><p><span class="ln-quiet">What it is for</span><br>What to say in each case the answer must tell apart</p><p><span class="ln-quiet">Seen without it</span><br>The quantities and nothing about what they mean</p></li>
+      <li><b>Nothing to report</b><p><span class="ln-quiet">What it is for</span><br>The exact words for when no record qualifies</p><p><span class="ln-quiet">Seen without it</span><br>Not tried. Given the words, the model also used them for a dataset that arrived empty</p></li>
+      <li><b>A missing value</b><p><span class="ln-quiet">What it is for</span><br>What to write for a value the dataset did not send</p><p><span class="ln-quiet">Seen without it</span><br>Not tried. With it, a field the open session had not loaded read <span class="ln-t-exact">[not available]</span> where a date could have been guessed</p></li>
+      <li><b>How a value is written</b><p><span class="ln-quiet">What it is for</span><br>One way of writing a date</p><p><span class="ln-quiet">Seen without it</span><br>Full timestamps on some runs of another prompt on the same fields</p></li>
+      <li><b>The marker</b><p><span class="ln-quiet">What it is for</span><br>Where LN puts the data, as the last line</p><p><span class="ln-quiet">Seen without it</span><br>Not tried. The help says the data is then added to the end of the prompt</p></li>
+    </ul>
+    <p><strong>Each line after the third was added because of an answer.</strong> The form line followed the letter and its promise. The lines for each kind of record came with the fields they speak of. The missing-value line turned a field the model was not sent into something a reader can see.</p>
+    <p><strong>A line that makes the model list what it received is a check on the dataset.</strong> One prompt here ends its answer with the code of every record in the dataset, and that line is how a ticked record that never reached the model was noticed.</p>
+    <p><strong>The marker is </strong><span class="ln-t-exact">#data,XML#</span><strong> here.</strong> XML is the only output format registered in this environment.</p>
+    <h2 class="ln-ref__title">A template for the two texts</h2>
+    <p><strong>Square brackets mark what to replace.</strong> A line with none is typed as it stands, and the line for a kind of record is typed once for each kind.</p>
+    <div class="ln-type">
+      <p class="ln-type__name"><b>Instruction</b><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-copy="[What the command does, in one sentence.]">Copy</button></p>
+      <div class="ln-type__text"><p>[What the command does, in one sentence.]</p></div>
+    </div>
+    <div class="ln-type">
+      <p class="ln-type__name"><b>Prompt</b><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-copy="You are given an XML dataset containing [what one record is, and how many to expect].
+[What to write and for whom], stating [the values the answer must hold].
+Use only the information present in the dataset.
+Output only [the message], in [plain sentences]. No heading, no greeting, no sign-off, no list and no formatting marks.
+If [one kind of record], say [what it means] and give [the values that go with it].
+If [nothing qualifies], write &quot;[the exact words]&quot;.
+If a value you need is not in the dataset, write &quot;[not available]&quot; in its place.
+Write every date as YYYY-MM-DD.
+#data,XML#">Copy</button></p>
+      <div class="ln-type__text"><p>You are given an XML dataset containing [what one record is, and how many to expect].</p><p>[What to write and for whom], stating [the values the answer must hold].</p><p>Use only the information present in the dataset.</p><p>Output only [the message], in [plain sentences]. No heading, no greeting, no sign-off, no list and no formatting marks.</p><p>If [one kind of record], say [what it means] and give [the values that go with it].</p><p>If [nothing qualifies], write &quot;[the exact words]&quot;.</p><p>If a value you need is not in the dataset, write &quot;[not available]&quot; in its place.</p><p>Write every date as YYYY-MM-DD.</p><p>#data,XML#</p></div>
+    </div>
+    <p><strong>Start with the first three lines of the prompt text and the marker, and add the rest after an answer calls for them.</strong> That is the order of phases 2 and 5, and it shows what each line changes.</p>
+    <p><strong>With camel case on, name a field by its description run together.</strong> The dataset sends <span class="ln-t-exact">qidl</span> as <em>DeliveredQuantity</em>, and the example's text says delivered.</p>
+    <h2 class="ln-ref__title">Kinds of prompt</h2>
+    <p><strong>The steps build one kind, a command about the record in view.</strong> The others differ in a choice of <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0">task 1</a>, and each row says which.</p>
+    <ul class="ln-list">
+      <li><b>One record, on its screen</b><p><span class="ln-quiet">What differs</span><br><span class="ln-t-named">When Enabled</span> is <span class="ln-t-exact">Always</span>, and the dataset's index is the key the screen is viewed by</p><p><span class="ln-quiet">Seen here</span><br>The example</p></li>
+      <li><b>Several ticked records</b><p><span class="ln-quiet">What differs</span><br>The link is to a screen that lists records, <span class="ln-t-named">When Enabled</span> stays <span class="ln-t-exact">Records Selected</span> at <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3&amp;k=3">task 4 step 3</a>, and the task says what to do across the records</p><p><span class="ln-quiet">Seen here</span><br>A prompt on Business Partners that looks for one company entered twice. Of seven partners ticked, its answer listed six as received</p></li>
+      <li><b>A condition the data must meet</b><p><span class="ln-quiet">What differs</span><br>The condition is a row of the table's filter in the Modeler, by the <span class="ln-t-named">Filter Present</span> link on the Properties panel, and the prompt text only sets the answer out</p><p><span class="ln-quiet">Seen here</span><br>A prompt that lists sales orders by three conditions its dataset's filter applies. On another filtered dataset a ticked record did not reach the model, and no message said so</p></li>
+      <li><b>A record with what refers to it</b><p><span class="ln-quiet">What differs</span><br>A table under <span class="ln-t-named">Referred by</span> is added in the Modeler, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5&amp;k=6">task 6 step 6</a></p><p><span class="ln-quiet">Seen here</span><br>The example's delivery lines, and a dataset of sales orders with their lines</p></li>
+      <li><b>One dataset for several prompts</b><p><span class="ln-quiet">What differs</span><br>A filter row with <span class="ln-t-named">Input</span> ticked becomes a parameter of each prompt that uses the dataset, and its value is set on the prompt</p><p><span class="ln-quiet">Seen here</span><br>One prompt here has such a parameter, with a constant for its value. <strong>Not documented for this release.</strong></p></li>
+    </ul>
+    <p><strong>A filter was not built for this walkthrough.</strong> The filters described here were found in datasets already in the environment.</p>
+  </section>
+  <section class="ln-screen" data-screen="task" data-s="set-up-a-genai-prompt" data-t="0" data-title="Decide what the prompt is for" data-after="./?s=set-up-a-genai-prompt&amp;t=1" hidden>
     <a class="rux--link ln-back" href="./?s=set-up-a-genai-prompt"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Set up a GenAI prompt</a>
     <div class="rux--progress-bar rux--progress-bar--small">
       <div class="rux--progress-bar__label"><span class="rux--progress-bar__label-text" data-where></span></div>
@@ -154,23 +214,45 @@
     </div>
     <ol class="ln-steps">
       <li data-k="1" data-ref="0.1" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Open <span class="ln-t-named">Sales Order Intake Workbench</span> and its <span class="ln-t-named">Order Lines</span> tab</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Order lines, one row each</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Open the screen the command belongs on, with one record in view</h1>
+          <p class="ln-step__note">The example opens <span class="ln-t-named">Sales Order Intake Workbench</span>, its <span class="ln-t-named">Order Lines</span> tab, and clicks <span class="ln-t-press">Drill In</span> on a delivered line</p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The screen on one record. In the example <span class="ln-t-named">Sales Order Lines</span> opens on that line, in a tab of its own</p></div>
       </li>
       <li data-k="2" data-ref="0.2" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Drill In</span> on the line that has been delivered</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Sales Order Lines</span> opens on that line, in a tab of its own</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Read the status bar at the foot of the screen</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The screen's code, <a class="rux--link" href="./?c=tdsls4101m000"><span class="ln-t-exact">tdsls4101m000</span></a> in the example — <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">session code</span></p></div>
       </li>
       <li data-k="3" data-ref="0.3" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Read the status bar at the foot of the form</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="./?c=tdsls4101m000"><span class="ln-t-exact">tdsls4101m000</span></a> — <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">session code</span></p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Note the table that screen's records live in</h1>
+          <p class="ln-step__note">The example's is <span class="ln-t-exact">tdsls401</span></p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">table</span></p></div>
       </li>
       <li data-k="4" data-ref="0.4" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">List what the answer has to state, by the labels the screen shows</h1>
+          <p class="ln-step__note">The example states the order and line, the item, and the ordered and delivered quantities</p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">fields</span></p></div>
+      </li>
+      <li data-k="5" data-ref="0.5" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Decide whether the command answers about the record in view or about records the user ticks</h1>
+          <p class="ln-step__note">The example answers about the line in view</p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">one record or several</span></p></div>
+      </li>
+      <li data-k="6" data-ref="0.6" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Decide whether the data must meet a condition before the model is asked</h1>
+          <p class="ln-step__note">The example has none</p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">condition</span></p></div>
+      </li>
+      <li data-k="7" data-ref="0.7" hidden>
+        <div class="ln-step__main"><h1 class="ln-step__do">Write the one sentence the user will see beside the answer</h1>
+          <p class="ln-step__note">The example's is <span class="ln-t-exact">Draft a delivery update for the customer about this order line.</span></p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">instruction text</span></p></div>
+      </li>
+      <li data-k="8" data-ref="0.8" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">Open <span class="ln-t-named">GenAI LLMs</span></h1>
           <p class="ln-step__route"><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI LLMs</span></span></p></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A list of models with <span class="ln-t-named">LLM Name</span>, <span class="ln-t-named">Provider</span> and <span class="ln-t-named">Is default</span></p></div>
       </li>
-      <li data-k="5" data-ref="0.5" hidden>
+      <li data-k="9" data-ref="0.9" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">Find the row with <span class="ln-t-named">Is default</span> ticked</h1></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">default model</span></p></div>
       </li>
@@ -197,9 +279,10 @@
     </div>
     <div class="ln-step__more">
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
+      <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
-    <div class="ln-why" data-panel="why" hidden><p>A prompt is tied to one exact session code, and its dataset to that session's table. So the build starts on the screen the command will sit on, not in the setup sessions. LN has no language model of its own: it keeps a list retrieved from the Infor GenAI application, and a prompt that names no model uses the one that service marks as default.</p></div>
+    <div class="ln-why" data-panel="why" hidden><p>A prompt is tied to one exact session code, and its dataset to that session's table. So the build starts on the screen the command will sit on, not in the setup sessions, and with what the answer has to say. The example's screen is Sales Order Lines. LN has no language model of its own: it keeps a list retrieved from the Infor GenAI application, and a prompt that names no model uses the one that service marks as default.</p></div>
     <div class="ln-nav">
       <a class="rux--btn rux--btn--secondary" href="./" data-prev>Back</a>
       <a class="rux--btn rux--btn--primary" href="./" data-next>Next</a>
@@ -221,40 +304,39 @@
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">dataset name</span></p></div>
       </li>
       <li data-k="3" data-ref="1.3" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Type <span class="ln-t-exact">tdsls401</span> in <span class="ln-t-named">Main table</span></h1></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Type the table from <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0&amp;k=3">task 1 step 3</a> in <span class="ln-t-named">Main table</span></h1>
+          <p class="ln-step__note">The example types <span class="ln-t-exact">tdsls401</span></p></div>
       </li>
       <li data-k="4" data-ref="1.4" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">Selection Index</span> to <span class="ln-t-exact">1 - Order, Position, Sequence</span></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Nine indexes are offered</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">Selection Index</span> to the key the screen is viewed by</h1>
+          <p class="ln-step__note">The example's is <span class="ln-t-exact">1 - Order, Position, Sequence</span></p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The table's indexes are offered, nine in the example</p></div>
       </li>
       <li data-k="5" data-ref="1.5" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">OK</span></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The Modeler shows Sales Order Lines (<span class="ln-t-exact">tdsls401</span>) under <span class="ln-t-named">Tables</span> and its fields under <span class="ln-t-named">Fields</span>, none ticked</p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The Modeler shows the table under <span class="ln-t-named">Tables</span> and its fields under <span class="ln-t-named">Fields</span>, none ticked</p></div>
       </li>
       <li data-k="6" data-ref="1.6" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Tick <span class="ln-t-exact">orno</span>, <span class="ln-t-exact">pono</span> and <span class="ln-t-exact">sqnb</span> at the head of the list, and <span class="ln-t-exact">item</span> a few rows down</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Sales Order, Line, Sequence Number and Item are ticked</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Tick every field of the index you chose</h1>
+          <p class="ln-step__note">The example ticks <span class="ln-t-exact">orno</span>, <span class="ln-t-exact">pono</span> and <span class="ln-t-exact">sqnb</span> at the head of the list</p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The index's fields are ticked</p></div>
       </li>
       <li data-k="7" data-ref="1.7" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Type <span class="ln-t-exact">qoor</span> in the box above the <span class="ln-t-named">Field</span> column and press Enter</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The list narrows to Ordered Quantity</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">For each field from <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0&amp;k=4">task 1 step 4</a>, type its code in the box above the <span class="ln-t-named">Field</span> column, press Enter and tick it</h1>
+          <p class="ln-step__note">The example finds <span class="ln-t-exact">item</span>, <span class="ln-t-exact">qoor</span> and <span class="ln-t-exact">qidl</span></p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The list narrows to that field, and it is ticked</p></div>
       </li>
       <li data-k="8" data-ref="1.8" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Tick <span class="ln-t-exact">qoor</span></h1>
-          <p class="ln-step__note">Then type <span class="ln-t-exact">qidl</span> in the same box, press Enter and tick <span class="ln-t-exact">qidl</span></p></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Ordered Quantity and Delivered Quantity are ticked</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Clear the box above <span class="ln-t-named">Field</span>, open the mark at the head of <span class="ln-t-named">Selected</span> and choose Selected</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Only the ticked fields are listed, six in the example</p></div>
       </li>
       <li data-k="9" data-ref="1.9" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Clear the box above <span class="ln-t-named">Field</span>, open the mark at the head of <span class="ln-t-named">Selected</span> and choose Selected</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Six fields are listed</p></div>
-      </li>
-      <li data-k="10" data-ref="1.10" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Save</span></h1></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>No message</p></div>
       </li>
-      <li data-k="11" data-ref="1.11" hidden>
+      <li data-k="10" data-ref="1.10" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">On <span class="ln-t-named">Datasets</span>, click <span class="ln-t-press">Refresh</span>, tick the dataset and click <span class="ln-t-press">Parameters</span></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="./?c=ttrpi5501m000"><span class="ln-t-named">Dataset Parameters</span></a> <span class="ln-t-exact">ttrpi5501m000</span> lists six rows of type Selection Range: <span class="ln-t-exact">orno</span>, <span class="ln-t-exact">pono</span> and <span class="ln-t-exact">sqnb</span>, each with <span class="ln-t-exact">.f</span> and <span class="ln-t-exact">.t</span></p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="./?c=ttrpi5501m000"><span class="ln-t-named">Dataset Parameters</span></a> <span class="ln-t-exact">ttrpi5501m000</span> lists the dataset's parameters. In the example six rows of type Selection Range: <span class="ln-t-exact">orno</span>, <span class="ln-t-exact">pono</span> and <span class="ln-t-exact">sqnb</span>, each with <span class="ln-t-exact">.f</span> and <span class="ln-t-exact">.t</span></p></div>
       </li>
     </ol>
     <p class="ln-task__route"><a class="rux--link" href="./?c=ttrpi5100m000"><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">Datasets</span></span></a>
@@ -280,9 +362,10 @@
     <div class="ln-step__more">
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
+      <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
-    <div class="ln-why" data-panel="why" hidden><p>A dataset is the LN data that travels with the question, and it is the whole of what the model is told. It starts from one main table and one index of it. The record the user is on reaches the dataset through that index, which is why both have to be the screen's own. Every field ticked is sent, so the first version takes only what the first prompt text names.</p></div>
+    <div class="ln-why" data-panel="why" hidden><p>A dataset is the LN data that travels with the question, and it is the whole of what the model is told. It starts from one main table and one index of it. The record the user is on reaches the dataset through that index, which is why both have to be the screen's own. Every field ticked is sent, so the first version takes only what the first prompt text names. The example's is six fields of a sales order line.</p></div>
     <ul class="ln-list" data-panel="wrong" hidden>
       <li><b>The lookup on <span class="ln-t-named">Main table</span> lists nothing</b><p>It shows one package at a time. Type the table's code, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1&amp;k=3">step 3</a></p></li>
     </ul>
@@ -319,7 +402,8 @@
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Its description shows beside it</p></div>
       </li>
       <li data-k="6" data-ref="2.6" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">Usage Type</span> to <span class="ln-t-exact">Email</span></h1></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">Usage Type</span> to the kind of answer</h1>
+          <p class="ln-step__note">The example sets <span class="ln-t-exact">Email</span></p></div>
       </li>
       <li data-k="7" data-ref="2.7" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Save</span></h1></div>
@@ -330,7 +414,7 @@
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>No text present; Create, Duplicate, Select or Exit?</p></div>
       </li>
       <li data-k="9" data-ref="2.9" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Choose <span class="ln-t-press">Create</span>, type <span class="ln-t-exact">Draft a delivery update for the customer about this order line.</span> and save in the editor</h1></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Choose <span class="ln-t-press">Create</span>, type your sentence from <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0&amp;k=7">task 1 step 7</a> and save in the editor</h1></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A last-modified stamp under the text</p></div>
       </li>
       <li data-k="10" data-ref="2.10" hidden>
@@ -338,7 +422,8 @@
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Text Editor</span> opens, empty</p></div>
       </li>
       <li data-k="11" data-ref="2.11" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Type four lines, each on a line of its own, then save and close: <span class="ln-t-exact">You are given an XML dataset containing one sales order line.</span> <span class="ln-t-exact">Write a short delivery update to the customer about this line, stating the sales order and line, the item, the ordered quantity and the delivered quantity.</span> <span class="ln-t-exact">Use only the information present in the dataset.</span> <span class="ln-t-exact">#data,XML#</span></h1></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Type the first prompt text, each line on a line of its own, then save and close: what the data is, the task, one rule and the marker</h1>
+          <p class="ln-step__note">The example types <span class="ln-t-exact">You are given an XML dataset containing one sales order line.</span> <span class="ln-t-exact">Write a short delivery update to the customer about this line, stating the sales order and line, the item, the ordered quantity and the delivered quantity.</span> <span class="ln-t-exact">Use only the information present in the dataset.</span> <span class="ln-t-exact">#data,XML#</span></p></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A green tick under both text columns</p></div>
       </li>
     </ol>
@@ -366,6 +451,7 @@
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
       <a class="rux--link" href="#main-content" data-open="cases">A different case</a>
+      <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>A prompt row ties a label, a dataset and two texts together. The label's description becomes the command's name. The instruction text is shown to the user beside the answer. The prompt text is what is sent to the model, with the dataset's output put where its data marker stands. The first prompt text is short on purpose: the task, one rule and the marker.</p></div>
@@ -395,15 +481,17 @@
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">GenAI Prompts by Session</span> opens with the prompt as its header and no rows</p></div>
       </li>
       <li data-k="2" data-ref="3.2" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">New</span> and enter <span class="ln-t-exact">td</span>, <span class="ln-t-exact">sls</span> and <span class="ln-t-exact">4101m000</span> in the three <span class="ln-t-named">Session</span> boxes</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The description reads Sales Order Lines; <span class="ln-t-named">Active</span> is ticked, <span class="ln-t-named">Authorization</span> is <span class="ln-t-exact">Display</span>, <span class="ln-t-named">When Enabled</span> is <span class="ln-t-exact">Records Selected</span></p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">New</span> and enter your session code from <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0&amp;k=2">task 1 step 2</a> across the three <span class="ln-t-named">Session</span> boxes: two letters, three letters and the rest</h1>
+          <p class="ln-step__note">The example enters <span class="ln-t-exact">td</span>, <span class="ln-t-exact">sls</span> and <span class="ln-t-exact">4101m000</span></p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The description reads the screen's name; <span class="ln-t-named">Active</span> is ticked, <span class="ln-t-named">Authorization</span> is <span class="ln-t-exact">Display</span>, <span class="ln-t-named">When Enabled</span> is <span class="ln-t-exact">Records Selected</span></p></div>
       </li>
       <li data-k="3" data-ref="3.3" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">When Enabled</span> to <span class="ln-t-exact">Always</span></h1></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">When Enabled</span> by your note from <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0&amp;k=5">task 1 step 5</a>: <span class="ln-t-exact">Always</span> for the record in view, <span class="ln-t-exact">Records Selected</span> for ticked records</h1>
+          <p class="ln-step__note">The example sets <span class="ln-t-exact">Always</span></p></div>
       </li>
       <li data-k="4" data-ref="3.4" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Save</span></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The row stays, with <span class="ln-t-exact">Display</span> and <span class="ln-t-exact">Always</span></p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The row stays, with <span class="ln-t-exact">Display</span> and your setting</p></div>
       </li>
     </ol>
     <p class="ln-task__route"><a class="rux--link" href="./?c=ttadv9160m000"><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts by Session</span></span></a>
@@ -429,15 +517,12 @@
     <div class="ln-step__more">
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
-      <a class="rux--link" href="#main-content" data-open="cases">A different case</a>
+      <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>Nothing shows on any screen until a prompt is linked to a session code. The link is to one exact code: the command appears on that session and on no other, however alike two screens look. Three settings on the link decide whether the command is offered, to whom, and with what selected.</p></div>
     <ul class="ln-list" data-panel="wrong" hidden>
-      <li><b><span class="ln-t-named">GenAI Prompts by Session</span> opens with a session as its header, not the prompt</b><p>It was opened from the menu, or with no prompt ticked. Step to Sales Order Lines with the group arrows on the toolbar, click <span class="ln-t-press">New</span> and enter the prompt's name in <span class="ln-t-named">GenAI Prompt</span>; the link is the same</p></li>
-    </ul>
-    <ul class="ln-list" data-panel="cases" hidden>
-      <li><b><span class="ln-t-named">A command for several ticked records</span></b><p>Link to a session that lists records, leave <span class="ln-t-named">When Enabled</span> on <span class="ln-t-exact">Records Selected</span> at <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3&amp;k=3">step 3</a>, and build the dataset on that session's table. One prompt here does this on Business Partners. </p></li>
+      <li><b><span class="ln-t-named">GenAI Prompts by Session</span> opens with a session as its header, not the prompt</b><p>It was opened from the menu, or with no prompt ticked. Step to your screen with the group arrows on the toolbar, click <span class="ln-t-press">New</span> and enter the prompt's name in <span class="ln-t-named">GenAI Prompt</span>; the link is the same</p></li>
     </ul>
     <div class="ln-nav">
       <a class="rux--btn rux--btn--secondary" href="./" data-prev>Back</a>
@@ -452,15 +537,17 @@
     </div>
     <ol class="ln-steps">
       <li data-k="1" data-ref="4.1" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Close any <span class="ln-t-named">Sales Order Lines</span> tab that is already open</h1></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Close any tab of the screen that is already open</h1></div>
       </li>
       <li data-k="2" data-ref="4.2" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">On <span class="ln-t-named">Sales Order Intake Workbench</span>, click <span class="ln-t-press">Drill In</span> on the line that has been delivered</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Sales Order Lines</span> opens on that line</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Open the screen on a record whose answer you know</h1>
+          <p class="ln-step__note">The example drills into the delivered line from <span class="ln-t-named">Sales Order Intake Workbench</span></p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The screen on that record</p></div>
       </li>
       <li data-k="3" data-ref="4.3" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Open the <span class="ln-t-named">Shipping</span> tab</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">delivered quantity</span>, <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">shipment</span></p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Note the values the answer should state</h1>
+          <p class="ln-step__note">The example reads the delivered quantity and the shipment on the <span class="ln-t-named">Shipping</span> tab</p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">expected values</span></p></div>
       </li>
       <li data-k="4" data-ref="4.4" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">Open <span class="ln-t-named">Actions</span> and choose the command name from <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2&amp;k=4">task 3 step 4</a></h1></div>
@@ -468,15 +555,16 @@
       </li>
       <li data-k="5" data-ref="4.5" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">Compare the response with the values from <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4&amp;k=3">step 3</a></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The same ordered and delivered quantities, written as a letter: a heading, a greeting, a list and a sign-off, with formatting marks showing</p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The facts agree or they do not, and the form is the model's own. In the example the quantities were right and the answer was a letter: a heading, a greeting, a list and a sign-off, with formatting marks showing</p></div>
       </li>
       <li data-k="6" data-ref="4.6" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Close</span>, go back to the workbench and drill into the line that has not been delivered</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The form shows that line</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Close</span> and open a record of another kind</h1>
+          <p class="ln-step__note">The example opens the line that has not been delivered</p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The screen shows that record</p></div>
       </li>
       <li data-k="7" data-ref="4.7" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">Open <span class="ln-t-named">Actions</span> and choose the command from <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2&amp;k=4">task 3 step 4</a></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Delivered <span class="ln-t-exact">0</span>, which is right, and a sentence about what will happen next that nothing in LN holds</p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>An answer for that record. In the example delivered <span class="ln-t-exact">0</span>, which is right, and a sentence about what will happen next that nothing in LN holds</p></div>
       </li>
     </ol>
     <p class="ln-task__route"><a class="rux--link" href="./?c=tdsls4601m200"><span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></a>
@@ -502,12 +590,14 @@
     <div class="ln-step__more">
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
+      <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
-    <div class="ln-why" data-panel="why" hidden><p>When the command is chosen, LN runs the dataset for the line on the form, writes the result into the prompt text and sends it to the model. The answer opens in a window of its own. The model answers only from what the dataset sent, and a wrong answer looks the same as a right one, so the first runs are checked against the form, once for each kind of line the prompt can meet.</p></div>
+    <div class="ln-why" data-panel="why" hidden><p>When the command is chosen, LN runs the dataset for the record on the screen, writes the result into the prompt text and sends it to the model. The answer opens in a window of its own. The model answers only from what the dataset sent, and a wrong answer looks the same as a right one, so the first runs are checked against the screen, once for each kind of record the prompt can meet.</p></div>
     <ul class="ln-list" data-panel="wrong" hidden>
       <li><b>The command is not in <span class="ln-t-named">Actions</span></b><p>Read the session code in the status bar of the screen and compare it with <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3&amp;k=2">task 4 step 2</a>, character for character</p></li>
-      <li><b>The command is still missing and the code is right</b><p>Check that <span class="ln-t-named">Active</span> is ticked on the link, then close the screen's tab and open the line again</p></li>
+      <li><b>The command is still missing and the code is right</b><p>Check that <span class="ln-t-named">Active</span> is ticked on the link, then close the screen's tab and open the record again</p></li>
+      <li><b>The command is in <span class="ln-t-named">Actions</span> and greyed</b><p>The link waits for a ticked record. Tick one, or set <span class="ln-t-named">When Enabled</span> to <span class="ln-t-exact">Always</span>, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3&amp;k=3">task 4 step 3</a></p></li>
       <li><b>An error names <span class="ln-t-exact">dataset.get.selection.index</span> and a table</b><p>The dataset's main table is not the screen's. The table in the message is the screen's; a dataset has to be built on it</p></li>
     </ul>
     <div class="ln-nav">
@@ -527,48 +617,54 @@
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The editor opens on the text</p></div>
       </li>
       <li data-k="2" data-ref="5.2" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Add a line above the marker, then save and close: <span class="ln-t-exact">Output only the message, in plain sentences. No heading, no greeting, no sign-off, no list and no formatting marks.</span></h1></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Add a line above the marker that fixes what was wrong with the form of the answer, then save and close</h1>
+          <p class="ln-step__note">The example adds <span class="ln-t-exact">Output only the message, in plain sentences. No heading, no greeting, no sign-off, no list and no formatting marks.</span></p></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A new last-modified stamp</p></div>
       </li>
       <li data-k="3" data-ref="5.3" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">On <span class="ln-t-named">Sales Order Lines</span>, still on the undelivered line, open <span class="ln-t-named">Actions</span> and choose the command</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>One plain sentence; the letter and the promise are gone</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">On the screen, still on the same record, open <span class="ln-t-named">Actions</span> and choose the command</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The answer in the form asked for. In the example one plain sentence; the letter and the promise are gone</p></div>
       </li>
       <li data-k="4" data-ref="5.4" hidden>
         <div class="ln-step__main"><h1 class="ln-step__do">On <span class="ln-t-named">Datasets</span>, tick the dataset and click <span class="ln-t-press">Modeler</span></h1></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The Modeler opens directly, without Dataset Configuration</p></div>
       </li>
       <li data-k="5" data-ref="5.5" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Type <span class="ln-t-exact">ddta</span> in the box above <span class="ln-t-named">Field</span>, press Enter and tick <span class="ln-t-exact">ddta</span></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Planned Delivery Date is ticked</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Tick a field the answer still lacks, found by its code in the box above <span class="ln-t-named">Field</span></h1>
+          <p class="ln-step__note">The example ticks <span class="ln-t-exact">ddta</span>, Planned Delivery Date</p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The field is ticked</p></div>
       </li>
       <li data-k="6" data-ref="5.6" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Under <span class="ln-t-named">Tables</span>, expand <span class="ln-t-named">Referred by</span> and choose Sales Order Actual Delivery Lines (<span class="ln-t-exact">tdsls406</span>)</h1></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">For a value kept in a table that refers to this one, expand <span class="ln-t-named">Referred by</span> under <span class="ln-t-named">Tables</span> and choose that table</h1>
+          <p class="ln-step__note">The example chooses Sales Order Actual Delivery Lines (<span class="ln-t-exact">tdsls406</span>)</p></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Fields</span> lists that table's fields, none ticked</p></div>
       </li>
       <li data-k="7" data-ref="5.7" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Tick <span class="ln-t-exact">dldt</span> and <span class="ln-t-exact">shpm</span>, and click <span class="ln-t-press">Save</span></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Actual Delivery Date and Shipment are ticked; no message</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Tick the fields wanted there and click <span class="ln-t-press">Save</span></h1>
+          <p class="ln-step__note">The example ticks <span class="ln-t-exact">dldt</span> and <span class="ln-t-exact">shpm</span></p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The fields are ticked; no message</p></div>
       </li>
       <li data-k="8" data-ref="5.8" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Add four lines above the marker in the prompt text, then save and close: <span class="ln-t-exact">If delivered equals ordered, say the line has shipped in full and give the last actual delivery date and the shipment number.</span> <span class="ln-t-exact">If delivered is above zero and below ordered, say how many of the ordered quantity have shipped and give the planned delivery date.</span> <span class="ln-t-exact">If delivered is zero, say nothing has shipped yet and give the planned delivery date.</span> <span class="ln-t-exact">If a value you need is not in the dataset, write &quot;[not available]&quot; in its place.</span></h1></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Add a line above the marker for each kind of record the answer must tell apart, and one for a value the dataset does not hold, then save and close</h1>
+          <p class="ln-step__note">The example adds <span class="ln-t-exact">If delivered equals ordered, say the line has shipped in full and give the last actual delivery date and the shipment number.</span> <span class="ln-t-exact">If delivered is above zero and below ordered, say how many of the ordered quantity have shipped and give the planned delivery date.</span> <span class="ln-t-exact">If delivered is zero, say nothing has shipped yet and give the planned delivery date.</span> <span class="ln-t-exact">If a value you need is not in the dataset, write &quot;[not available]&quot; in its place.</span></p></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A new last-modified stamp</p></div>
       </li>
       <li data-k="9" data-ref="5.9" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Without closing <span class="ln-t-named">Sales Order Lines</span>, open <span class="ln-t-named">Actions</span> and choose the command</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The planned delivery date reads <span class="ln-t-exact">[not available]</span>: this session is still using the dataset as it was</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Without closing the screen, open <span class="ln-t-named">Actions</span> and choose the command</h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The new field is missing from the answer: this session is still using the dataset as it was. In the example the planned delivery date reads <span class="ln-t-exact">[not available]</span></p></div>
       </li>
       <li data-k="10" data-ref="5.10" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Close the <span class="ln-t-named">Sales Order Lines</span> tab, open the undelivered line again, and choose the command from <span class="ln-t-named">Actions</span></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Nothing has shipped yet, and the planned delivery date</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Close the screen's tab, open the same record again, and choose the command from <span class="ln-t-named">Actions</span></h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The answer holds the new field. In the example nothing has shipped yet, and the planned delivery date</p></div>
       </li>
       <li data-k="11" data-ref="5.11" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Open the delivered line and choose the command from <span class="ln-t-named">Actions</span></h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Shipped in full, with a delivery date and the shipment from <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4&amp;k=3">task 5 step 3</a></p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Open a record of each other kind and choose the command from <span class="ln-t-named">Actions</span></h1></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Each answer follows its own rule. In the example the delivered line reads shipped in full, with a delivery date and the shipment from <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4&amp;k=3">task 5 step 3</a></p></div>
       </li>
       <li data-k="12" data-ref="5.12" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Add <span class="ln-t-exact">Write every date as YYYY-MM-DD.</span> above the marker in the prompt text, save, and choose the command from <span class="ln-t-named">Actions</span> on the delivered line</h1></div>
-        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The same facts, each date as year, month and day</p></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Add a line that fixes how a kind of value is written, save, and choose the command from <span class="ln-t-named">Actions</span> again</h1>
+          <p class="ln-step__note">The example adds <span class="ln-t-exact">Write every date as YYYY-MM-DD.</span></p></div>
+        <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The same facts, written that way. In the example each date as year, month and day</p></div>
       </li>
     </ol>
     <p class="ln-task__route"><a class="rux--link" href="./?c=ttrpi5150m000"><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts</span></span></a>
@@ -594,12 +690,13 @@
     <div class="ln-step__more">
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
+      <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>A change to the prompt text is used by the very next run. A change to the dataset is not seen by a session that is already open. So a text change is tested where you stand, and a dataset change after the screen is opened again. Change one thing, run, and read the answer before changing the next.</p></div>
     <ul class="ln-list" data-panel="wrong" hidden>
-      <li><b>A value reads <span class="ln-t-exact">[not available]</span></b><p>The field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the line again, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5&amp;k=10">step 10</a></p></li>
-      <li><b>The response contradicts the Shipping tab</b><p>The same two causes. The model reads only the dataset</p></li>
+      <li><b>A value reads <span class="ln-t-exact">[not available]</span></b><p>The field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5&amp;k=10">step 10</a></p></li>
+      <li><b>The response contradicts the screen</b><p>The same two causes. The model reads only the dataset</p></li>
       <li><b>The answer is a letter again</b><p>The form rule is missing from the prompt text, <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5&amp;k=2">step 2</a></p></li>
     </ul>
     <div class="ln-nav">
@@ -627,7 +724,7 @@
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>1 records deleted</p></div>
       </li>
       <li data-k="4" data-ref="6.4" hidden>
-        <div class="ln-step__main"><h1 class="ln-step__do">Close the <span class="ln-t-named">Sales Order Lines</span> tab, open a line again and open <span class="ln-t-named">Actions</span></h1></div>
+        <div class="ln-step__main"><h1 class="ln-step__do">Close the screen's tab, open a record again and open <span class="ln-t-named">Actions</span></h1></div>
         <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The command is gone</p></div>
       </li>
     </ol>
@@ -654,6 +751,7 @@
     <div class="ln-step__more">
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
+      <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>LN will not delete a dataset while a prompt uses it, and deleting a prompt takes its links with it. So the prompt goes first and the dataset second, and the link needs no step of its own.</p></div>
@@ -3223,12 +3321,23 @@
       <li data-t="5" data-n="6"><a class="ln-path__stop" href="./?s=ship-from-stock&amp;t=5"><span class="ln-path__dot">6</span><b>Ship</b><small>5<span class="rux--visually-hidden"> steps</span></small></a></li>
       <li data-t="6" data-n="7"><a class="ln-path__stop" href="./?s=ship-from-stock&amp;t=6"><span class="ln-path__dot">7</span><b>Verify it worked</b><small>1<span class="rux--visually-hidden"> step</span></small></a></li>
     </ol>
+    <p><a class="rux--link" href="./?s=ship-from-stock&amp;r=1">Reference</a><span class="ln-quiet"> Recognising the right warehousing order</span></p>
     <p><a class="rux--link" href="#main-content" data-open="loose">Different cases</a></p>
     <ul class="ln-list" data-panel="loose" hidden>
       <li><b><span class="ln-t-named">Standalone advice sessions</span></b><p><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Outbound/Inspections</span></span> holds <span class="ln-t-named">Generate Outbound Advice</span> and <span class="ln-t-named">Release Outbound Advice</span> as their own sessions. Useful for a batch rather than one order</p></li>
       <li><b><span class="ln-t-named">Direct Release</span></b><p><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span>Advice</span><span class="sep">➔</span><span class="dest">Direct Release</span></span> appears to combine generate and release. <strong>Not documented for this release.</strong></p></li>
       <li><b><span class="ln-t-named">Advice already exists</span></b><p>Depends on the warehousing procedure attached to the order type. Check <span class="ln-t-named">Advised Quantity</span> first. Source: Infor LN help for <a class="rux--link" href="./?c=whinh0120m000"><span class="ln-t-named">Default Order Types by Origin</span></a> <span class="ln-t-exact">whinh0120m000</span></p></li>
       <li><b><span class="ln-t-named">Undoing</span></b><p><span class="ln-t-named">Undo Advice</span> · <span class="ln-t-named">Undo Release</span> · <span class="ln-t-named">Undo Advice/Release</span> (Shift+Z)</p></li>
+    </ul>
+  </section>
+  <section class="ln-screen" data-screen="ref" data-s="ship-from-stock" hidden>
+    <a class="rux--link ln-back" href="./?s=ship-from-stock"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Ship from stock</a>
+    <h1 class="ln-ask">Reference</h1>
+    <h2 class="ln-ref__title">Recognising the right warehousing order</h2>
+    <ul class="ln-list">
+      <li><b>Order Type</b><p><span class="ln-quiet">Sales side</span><br><span class="ln-t-named">20 — SO/SC Out</span></p><p><span class="ln-quiet">Production side</span><br>30 — Production (Out)</p></li>
+      <li><b>Transaction Type</b><p><span class="ln-quiet">Sales side</span><br><span class="ln-t-named">Issue</span></p><p><span class="ln-quiet">Production side</span><br>Issue</p></li>
+      <li><b>Ship-To</b><p><span class="ln-quiet">Sales side</span><br><span class="ln-t-named">Business Partner</span> — your customer</p><p><span class="ln-quiet">Production side</span><br>A work center</p></li>
     </ul>
   </section>
   <section class="ln-screen" data-screen="task" data-s="ship-from-stock" data-t="0" data-title="Confirm there is stock" data-after="./?s=ship-from-stock&amp;t=1" hidden>
@@ -3264,6 +3373,7 @@
 
     <div class="ln-step__more">
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
+      <a class="rux--link" href="./?s=ship-from-stock&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>Inventory 360 shows what is physically on hand, and <em>Allocated</em> shows how much of it other orders have already claimed. Stock is usually spread across several warehouses, and the sales order must name one that actually holds enough, or LN will raise nothing to pick. This phase records that choice before the order exists.</p></div>
@@ -3328,6 +3438,7 @@
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
       <a class="rux--link" href="#main-content" data-open="cases">A different case</a>
+      <a class="rux--link" href="./?s=ship-from-stock&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>Approving the order is what makes its lines eligible for warehousing: LN releases only approved lines, and an unapproved order fails at the next phase with no obvious reason. The Order Acknowledgement that prints carries the sales order number, which the warehousing order will inherit.</p></div>
@@ -3407,6 +3518,7 @@
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
       <a class="rux--link" href="#main-content" data-open="cases">A different case</a>
+      <a class="rux--link" href="./?s=ship-from-stock&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>Releasing hands the approved lines from Sales to Warehousing: LN creates a warehousing order that carries the sales order's number, and from here the activities of the warehousing procedure, not the sales order, decide what happens next. The release runs from the Actions menu; the <em>Lines ready for</em> panel only counts.</p></div>
@@ -3464,6 +3576,7 @@
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
       <a class="rux--link" href="#main-content" data-open="cases">A different case</a>
+      <a class="rux--link" href="./?s=ship-from-stock&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>Generating advice is LN deciding which stock, in which locations, will satisfy each outbound line. In this environment the next activity, releasing the advice, is automatic, so one action fills both the <em>Advised</em> and <em>Released</em> columns and prints the picking list. That is a property of the order type's procedure, not of LN.</p></div>
@@ -3526,6 +3639,7 @@
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
       <a class="rux--link" href="#main-content" data-open="cases">A different case</a>
+      <a class="rux--link" href="./?s=ship-from-stock&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>The picking list is the record of stock physically moving to staging, and confirming it is what fills <em>Picked</em>. The phase exists because this environment sets the <em>Picking List</em> activity to manual and the warehouse is location-controlled; change either and LN ticks <em>Picked</em> on release and the phase disappears. Once a line is staged, LN creates the shipment line.</p></div>
@@ -3578,6 +3692,7 @@
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
       <a class="rux--link" href="#main-content" data-open="cases">A different case</a>
+      <a class="rux--link" href="./?s=ship-from-stock&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>Freezing fixes the shipment's contents and confirming relieves inventory; the status is always derived from those two actions, never set by hand. Freezing is mandatory here, carried from the warehousing order type, and confirming is a one-way door: a correction from there needs a return shipment.</p></div>
@@ -3614,6 +3729,7 @@
 
     <div class="ln-step__more">
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
+      <a class="rux--link" href="./?s=ship-from-stock&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>Nothing new. This phase reads the same figures <a class="rux--link" href="./?s=ship-from-stock&amp;t=0">task 1</a> read, because a confirmed shipment is a document reaching a status and the inventory figure is the only proof that stock moved.</p><p><strong>On-hand before − on-hand after must equal the shipped quantity.</strong> If it does not, the shipment was not confirmed. The walkthrough is complete when the shipment is <strong>Confirmed</strong> and this inventory check passes.</p></div>
@@ -3645,12 +3761,26 @@
       <li data-t="5" data-n="6"><a class="ln-path__stop" href="./?s=demand-to-shipment-via-planning&amp;t=5"><span class="ln-path__dot">6</span><b>Build the pairs</b><small>7<span class="rux--visually-hidden"> steps</span></small></a></li>
       <li data-t="6" data-n="7"><a class="ln-path__stop" href="./?s=demand-to-shipment-via-planning&amp;t=6"><span class="ln-path__dot">7</span><b>Ship</b><small>7<span class="rux--visually-hidden"> steps</span></small></a></li>
     </ol>
+    <p><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;r=1">Reference</a><span class="ln-quiet"> The bamboo family, for reference</span></p>
     <p><a class="rux--link" href="#main-content" data-open="loose">Different cases</a></p>
     <ul class="ln-list" data-panel="loose" hidden>
       <li><b><span class="ln-t-named">Stock already covers the order</span></b><p>The <span class="ln-t-named">YES</span> branch of the flowchart. Planning generates no planned orders, and phases 2–5 do not happen at all — go straight to <a class="rux--link" href="./?s=ship-from-stock">Ship from stock</a>. MRP still runs; whether it generates anything depends on demand against on-hand plus on-order</p></li>
       <li><b><span class="ln-t-named">The finished item is in the wrong warehouse to ship from</span></b><p>Insert <a class="rux--link" href="./?s=transfer-item-between-warehouses">Warehouse transfer</a> between phases 5 and 6. On current evidence <span class="ln-t-exact">BAM-CHOP-PAIR</span> is received and shipped at <span class="ln-t-exact">ADNA01</span>, so this does not arise</p></li>
       <li><b><span class="ln-t-named">Components already in stock</span></b><p><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=3">Task 4</a> transfers only the production side and <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=4">task 5</a> does not happen. This is the likely shape of a sleeve-only shortfall </p></li>
     </ul>
+  </section>
+  <section class="ln-screen" data-screen="ref" data-s="demand-to-shipment-via-planning" hidden>
+    <a class="rux--link ln-back" href="./?s=demand-to-shipment-via-planning"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Plan to shipment</a>
+    <h1 class="ln-ask">Reference</h1>
+    <h2 class="ln-ref__title">The bamboo family, for reference</h2>
+    <p>Values verified 2026-08-25. </p>
+    <ul class="ln-list">
+      <li><b><span class="ln-t-exact">BAM-CHOP-PAIR</span></b><p><span class="ln-quiet">Role</span><br>Finished product</p><p><span class="ln-quiet">Supply source</span><br><span class="ln-t-named">Job Shop</span></p><p><span class="ln-quiet">Per pair</span><br>1</p><p><span class="ln-quiet">Cluster row</span><br><span class="ln-t-exact">NA1</span> / <span class="ln-t-exact">CSADNA01</span></p></li>
+      <li><b><span class="ln-t-exact">BAM-ROD</span></b><p><span class="ln-quiet">Role</span><br>Purchased material</p><p><span class="ln-quiet">Supply source</span><br><span class="ln-t-named">Purchase</span></p><p><span class="ln-quiet">Per pair</span><br>2</p><p><span class="ln-quiet">Cluster row</span><br><span class="ln-t-exact">NA1</span> / <span class="ln-t-exact">CSADNA01</span></p></li>
+      <li><b><span class="ln-t-exact">BAM-SLEEVE</span></b><p><span class="ln-quiet">Role</span><br>Purchased packaging</p><p><span class="ln-quiet">Supply source</span><br><span class="ln-t-named">Purchase</span></p><p><span class="ln-quiet">Per pair</span><br>1</p><p><span class="ln-quiet">Cluster row</span><br><span class="ln-t-exact">NA1</span> / <span class="ln-t-exact">CSADNA01</span></p></li>
+    </ul>
+    <p>BOM <span class="ln-t-exact">JB0000242</span> — <strong>revision </strong><span class="ln-t-exact">000002</span>; revision <span class="ln-t-exact">000001</span> was expired 2026-08-18. Routing <span class="ln-t-exact">0</span> revision <span class="ln-t-exact">000001</span>, operation <span class="ln-t-exact">10</span>, work center <span class="ln-t-exact">A1000</span>. Site <span class="ln-t-exact">CSADNA01</span>. Raw materials at <span class="ln-t-exact">ADNA02</span>, finished goods at <span class="ln-t-exact">ADNA01</span>.</p>
+    <p><b>Warning.</b> <span class="ln-t-exact">BAM-ROD</span><strong> has a buy-from business partner and </strong><span class="ln-t-exact">BAM-SLEEVE</span><strong> has not been checked.</strong> <span class="ln-t-exact">BP4000006</span> FAIRFIELD ENGINEERING CO. was added to <span class="ln-t-exact">BAM-ROD</span> on 2026-08-25 <strong>because the transfer refused it without one</strong>. If MRP proposes a planned purchase order for <span class="ln-t-exact">BAM-SLEEVE</span>, <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=3">task 4</a> will very likely fail on it the same way. <strong>Not documented for this release.</strong></p>
   </section>
   <section class="ln-screen" data-screen="task" data-s="demand-to-shipment-via-planning" data-t="0" data-title="Preflight" data-after="./?s=demand-to-shipment-via-planning&amp;t=1" hidden>
     <a class="rux--link ln-back" href="./?s=demand-to-shipment-via-planning"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Plan to shipment</a>
@@ -3703,6 +3833,7 @@
     <div class="ln-step__more">
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
+      <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>&gt; <strong>Prerequisite</strong> &gt; The bamboo family as section 2 describes it. If any of it is missing, <a class="rux--link" href="./?s=create-basic-test-items-and-defaults">Create test items</a> builds it and <a class="rux--link" href="./?s=run-order-planning-for-one-item">Run order planning</a> phase 0 adds the planning data.</p><p>Nothing yet. This chain fails silently in two places, an item with no planning data and a component whose stock already covers the requirement, and both are decided by figures readable before anything is created. The Item Order Plan shows whether each item is plannable; Inventory 360 shows what MRP will net against.</p></div>
@@ -3754,6 +3885,7 @@
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
       <a class="rux--link" href="#main-content" data-open="cases">A different case</a>
+      <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>A sales order for more pairs than exist creates the shortfall the rest of the chain answers. Planning will see it only if its delivery date falls inside the item's order horizon, which LN computes in workdays on a calendar, and the order is approved now because <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=6">task 7</a>'s release needs it, not because planning does.</p></div>
@@ -3843,6 +3975,7 @@
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
       <a class="rux--link" href="#main-content" data-open="cases">A different case</a>
+      <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>MRP nets the demand against stock and generates a planned production order for the pairs, then, through the BOM, planned purchase orders for the rods the pairs need. The arithmetic in the pegging tree is the test that it did so correctly.</p></div>
@@ -3918,6 +4051,7 @@
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
       <a class="rux--link" href="#main-content" data-open="cases">A different case</a>
+      <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>&gt; <strong>Warning</strong> &gt; <strong>The purchase half of this phase is walked; the production half has never been run here.</strong> On 2026-08-25 two planned purchase orders for <span class="ln-t-exact">BAM-ROD</span> became purchase order <span class="ln-t-exact">100000682</span>. The two planned production orders beside them were deliberately left untransferred and remain at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span>. Step <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=3&amp;k=6">step 6</a> is therefore the one step in this walkthrough nobody has performed — <strong>you are testing it, not using it.</strong></p><p>A planned order is a proposal that no other module can see. Confirming marks it approved, and transferring translates it: a planned production order becomes a production order in Job Shop Control and a planned purchase order becomes a purchase order in Procurement, decided by the item's supply source. A transfer run against unconfirmed orders appears to do nothing.</p></div>
@@ -3988,6 +4122,7 @@
     <div class="ln-step__more">
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
+      <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>The purchase order generated an inbound warehousing order; receiving against it and confirming the receipt books the components into the raw-material warehouse. The on-hand figure, not the receipt status, is the proof.</p></div>
@@ -4064,6 +4199,7 @@
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
       <a class="rux--link" href="#main-content" data-open="cases">A different case</a>
+      <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>The production order releases, issues the components from the warehouse to the work center, and on the last operation reported complete posts the finished pairs to inventory, silently or after asking depending on a parameter. <strong>Production Completed</strong> is the handoff to Warehousing, not a failed <strong>Completed</strong>.</p></div>
@@ -4136,6 +4272,7 @@
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
       <a class="rux--link" href="#main-content" data-open="cases">A different case</a>
+      <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>The sales order from <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=1">task 2</a> is released to warehousing, advised, picked, frozen and confirmed, exactly as in the ship-from-stock walkthrough. On-hand at the shipping warehouse down by the shipped quantity is the completion test for the whole chain.</p></div>
@@ -4171,8 +4308,8 @@
     <p class="ln-quiet">Nobody has checked these in LN yet. Open one, do it in LN, and say whether it matched.</p>
     <h2 class="rux--type-productive-heading-02">Set up a GenAI prompt</h2>
     <ul class="ln-list">
-      <li data-wait="set-up-a-genai-prompt" data-steps="0.1 0.2 0.3 0.4 0.5"><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0"><span>1 Choose the screen</span></a><span class="ln-quiet" data-answered></span></li>
-      <li data-wait="set-up-a-genai-prompt" data-steps="1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11"><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1"><span>2 Model the dataset</span></a><span class="ln-quiet" data-answered></span></li>
+      <li data-wait="set-up-a-genai-prompt" data-steps="0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9"><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0"><span>1 Decide what the prompt is for</span></a><span class="ln-quiet" data-answered></span></li>
+      <li data-wait="set-up-a-genai-prompt" data-steps="1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10"><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1"><span>2 Model the dataset</span></a><span class="ln-quiet" data-answered></span></li>
       <li data-wait="set-up-a-genai-prompt" data-steps="2.1 2.2 2.3 2.4 2.5 2.6 2.7 2.8 2.9 2.10 2.11"><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2"><span>3 Write the prompt</span></a><span class="ln-quiet" data-answered></span></li>
       <li data-wait="set-up-a-genai-prompt" data-steps="3.1 3.2 3.3 3.4"><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3"><span>4 Link the prompt to a session</span></a><span class="ln-quiet" data-answered></span></li>
       <li data-wait="set-up-a-genai-prompt" data-steps="4.1 4.2 4.3 4.4 4.5 4.6 4.7"><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>5 Run it and check the answer</span></a><span class="ln-quiet" data-answered></span></li>
@@ -4584,12 +4721,13 @@
       <li data-text="the lookup on main table lists nothing it shows one package at a time. type the table's code, as in 1.3" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1"><span>The lookup on <span class="ln-t-named">Main table</span> lists nothing</span></a></b><p>It shows one package at a time. Type the table's code, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1&amp;k=3">task 2 step 3</a></p></li>
       <li data-text="no text present when a text is opened nothing. the text has not been written yet; choose create, as in 2.9" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2"><span>No text present when a text is opened</span></a></b><p>Nothing. The text has not been written yet; choose <span class="ln-t-press">Create</span>, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2&amp;k=9">task 3 step 9</a></p></li>
       <li data-text="the new row holds another prompt's dataset a new row is a copy of the row the cursor was on. replace it, as in 2.5" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2"><span>The new row holds another prompt's dataset</span></a></b><p>A new row is a copy of the row the cursor was on. Replace it, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2&amp;k=5">task 3 step 5</a></p></li>
-      <li data-text="genai prompts by session opens with a session as its header, not the prompt it was opened from the menu, or with no prompt ticked. step to sales order lines with the group arrows on the toolbar, click new and enter the prompt's name in genai prompt; the link is the same" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3"><span><span class="ln-t-named">GenAI Prompts by Session</span> opens with a session as its header, not the prompt</span></a></b><p>It was opened from the menu, or with no prompt ticked. Step to Sales Order Lines with the group arrows on the toolbar, click <span class="ln-t-press">New</span> and enter the prompt's name in <span class="ln-t-named">GenAI Prompt</span>; the link is the same</p></li>
+      <li data-text="genai prompts by session opens with a session as its header, not the prompt it was opened from the menu, or with no prompt ticked. step to your screen with the group arrows on the toolbar, click new and enter the prompt's name in genai prompt; the link is the same" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3"><span><span class="ln-t-named">GenAI Prompts by Session</span> opens with a session as its header, not the prompt</span></a></b><p>It was opened from the menu, or with no prompt ticked. Step to your screen with the group arrows on the toolbar, click <span class="ln-t-press">New</span> and enter the prompt's name in <span class="ln-t-named">GenAI Prompt</span>; the link is the same</p></li>
       <li data-text="the command is not in actions read the session code in the status bar of the screen and compare it with 3.2, character for character" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>The command is not in <span class="ln-t-named">Actions</span></span></a></b><p>Read the session code in the status bar of the screen and compare it with <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3&amp;k=2">task 4 step 2</a>, character for character</p></li>
-      <li data-text="the command is still missing and the code is right check that active is ticked on the link, then close the screen's tab and open the line again" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>The command is still missing and the code is right</span></a></b><p>Check that <span class="ln-t-named">Active</span> is ticked on the link, then close the screen's tab and open the line again</p></li>
+      <li data-text="the command is still missing and the code is right check that active is ticked on the link, then close the screen's tab and open the record again" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>The command is still missing and the code is right</span></a></b><p>Check that <span class="ln-t-named">Active</span> is ticked on the link, then close the screen's tab and open the record again</p></li>
+      <li data-text="the command is in actions and greyed the link waits for a ticked record. tick one, or set when enabled to always, as in 3.3" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>The command is in <span class="ln-t-named">Actions</span> and greyed</span></a></b><p>The link waits for a ticked record. Tick one, or set <span class="ln-t-named">When Enabled</span> to <span class="ln-t-exact">Always</span>, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3&amp;k=3">task 4 step 3</a></p></li>
       <li data-text="an error names dataset.get.selection.index and a table the dataset's main table is not the screen's. the table in the message is the screen's; a dataset has to be built on it" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>An error names <span class="ln-t-exact">dataset.get.selection.index</span> and a table</span></a></b><p>The dataset's main table is not the screen's. The table in the message is the screen's; a dataset has to be built on it</p></li>
-      <li data-text="a value reads [not available] the field is not ticked in the dataset, or the screen was open before the dataset was saved. close its tab and open the line again, as in 5.10" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5"><span>A value reads <span class="ln-t-exact">[not available]</span></span></a></b><p>The field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the line again, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5&amp;k=10">task 6 step 10</a></p></li>
-      <li data-text="the response contradicts the shipping tab the same two causes. the model reads only the dataset" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5"><span>The response contradicts the Shipping tab</span></a></b><p>The same two causes. The model reads only the dataset</p></li>
+      <li data-text="a value reads [not available] the field is not ticked in the dataset, or the screen was open before the dataset was saved. close its tab and open the record again, as in 5.10" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5"><span>A value reads <span class="ln-t-exact">[not available]</span></span></a></b><p>The field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5&amp;k=10">task 6 step 10</a></p></li>
+      <li data-text="the response contradicts the screen the same two causes. the model reads only the dataset" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5"><span>The response contradicts the screen</span></a></b><p>The same two causes. The model reads only the dataset</p></li>
       <li data-text="the answer is a letter again the form rule is missing from the prompt text, 5.2" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5"><span>The answer is a letter again</span></a></b><p>The form rule is missing from the prompt text, <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5&amp;k=2">task 6 step 2</a></p></li>
       <li data-text="unable to delete; record being used in other table a prompt still uses the dataset. delete the prompt first, as in 6.1" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=6"><span>Unable to delete; record being used in other table</span></a></b><p>A prompt still uses the dataset. Delete the prompt first, as in <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=6&amp;k=1">task 7 step 1</a></p></li>
       <li data-text="an example item code already exists choose another unused code; do not reuse or repurpose an existing item" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=create-basic-test-items-and-defaults&amp;t=0"><span>An example item code already exists</span></a></b><p>Choose another unused code; do not reuse or repurpose an existing item</p></li>
@@ -4696,13 +4834,13 @@
       <li data-text="advice greyed out you are on the session toolbar. the advice actions live on the outbound lines toolbar — step 6.3" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=6"><span><span class="ln-t-named">Advice</span> greyed out</span></a></b><p>You are on the session toolbar. The advice actions live on the <span class="ln-t-named">Outbound Lines</span> toolbar — <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=6&amp;k=3">task 7 step 3</a></p></li>
       <li data-text="the order will not advise the header warehouse does not hold the stock. recheck against 0.2" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=6"><span>The order will not advise</span></a></b><p>The header <span class="ln-t-named">Warehouse</span> does not hold the stock. Recheck against <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=0&amp;k=2">task 1 step 2</a></p></li>
       <li data-text="the shipment will not confirm the line was never picked, or the shipment was never frozen. steps 6.4 and 6.5" hidden><span class="ln-quiet">Problem</span><b><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=6"><span>The shipment will not confirm</span></a></b><p>The line was never picked, or the shipment was never frozen. Steps <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=6&amp;k=4">task 7 step 4</a> and <a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=6&amp;k=5">task 7 step 5</a></p></li>
-      <li data-text="set up a genai prompt choose the screen sales order intake workbench tdsls4601m200 0.1 open sales order intake workbench and its order lines tab order lines, one row each 0.2 click drill in on the line that has been delivered sales order lines opens on that line, in a tab of its own 0.3 read the status bar at the foot of the form tdsls4101m000 — session code 0.4 open genai llms, tools ➔ application extensibility ➔ embedded genai ➔ genai llms a list of models with llm name, provider and is default 0.5 find the row with is default ticked default model" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0"><span>1 Choose the screen</span></a></b>Set up a GenAI prompt</li>
-      <li data-text="set up a genai prompt model the dataset datasets ttrpi5100m000 1.1 open datasets and click new a dataset modeler tab opens with dataset configuration in front; four fields are marked mandatory and use camel case is already ticked 1.2 enter a dataset name in lowercase and a description dataset name 1.3 type tdsls401 in main table — 1.4 set selection index to 1 - order, position, sequence nine indexes are offered 1.5 click ok the modeler shows sales order lines (tdsls401) under tables and its fields under fields, none ticked 1.6 tick orno, pono and sqnb at the head of the list, and item a few rows down sales order, line, sequence number and item are ticked 1.7 type qoor in the box above the field column and press enter the list narrows to ordered quantity 1.8 tick qoor. then type qidl in the same box, press enter and tick qidl ordered quantity and delivered quantity are ticked 1.9 clear the box above field, open the mark at the head of selected and choose selected six fields are listed 1.10 click save no message 1.11 on datasets, click refresh, tick the dataset and click parameters dataset parameters (ttrpi5501m000) lists six rows of type selection range: orno, pono and sqnb, each with .f and .t" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1"><span>2 Model the dataset</span></a></b>Set up a GenAI prompt</li>
-      <li data-text="set up a genai prompt write the prompt genai prompts ttrpi5150m000 2.1 open genai prompts and click new a new row that already holds the name of the row the cursor was on 2.2 type the prompt's name in genai prompt, over the one already there prompt name 2.3 in label, open the lookup, enter 2 under language and a word under label description, and press enter labels whose description holds that word, each with the context form commands 2.4 tick a label whose description is the name the command should have and that no command on the screen already uses, and click ok the description shows beside the code — command name 2.5 replace what dataset holds with the dataset name from 1.2 its description shows beside it 2.6 set usage type to email — 2.7 click save a grey dot under instruction text and under prompt text 2.8 tick the row, open the text button on the toolbar and choose instruction no text present; create, duplicate, select or exit? 2.9 choose create, type draft a delivery update for the customer about this order line. and save in the editor a last-modified stamp under the text 2.10 close the editor, open the text button again, choose prompt and then create text editor opens, empty 2.11 type four lines, each on a line of its own, then save and close: you are given an xml dataset containing one sales order line. write a short delivery update to the customer about this line, stating the sales order and line, the item, the ordered quantity and the delivered quantity. use only the information present in the dataset. #data,xml# a green tick under both text columns" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2"><span>3 Write the prompt</span></a></b>Set up a GenAI prompt</li>
-      <li data-text="set up a genai prompt link the prompt to a session genai prompts by session ttadv9160m000 3.1 on genai prompts, tick the prompt and choose references ➔ genai prompts by session. do not open it from the menu genai prompts by session opens with the prompt as its header and no rows 3.2 click new and enter td, sls and 4101m000 in the three session boxes the description reads sales order lines; active is ticked, authorization is display, when enabled is records selected 3.3 set when enabled to always — 3.4 click save the row stays, with display and always" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3"><span>4 Link the prompt to a session</span></a></b>Set up a GenAI prompt</li>
-      <li data-text="set up a genai prompt run it and check the answer sales order intake workbench tdsls4601m200 4.1 close any sales order lines tab that is already open — 4.2 on sales order intake workbench, click drill in on the line that has been delivered sales order lines opens on that line 4.3 open the shipping tab delivered quantity, shipment 4.4 open actions and choose the command name from 2.4 a window titled with that name; prompt holds the instruction text and response the answer 4.5 compare the response with the values from 4.3 the same ordered and delivered quantities, written as a letter: a heading, a greeting, a list and a sign-off, with formatting marks showing 4.6 click close, go back to the workbench and drill into the line that has not been delivered the form shows that line 4.7 open actions and choose the command from 2.4 delivered 0, which is right, and a sentence about what will happen next that nothing in ln holds" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>5 Run it and check the answer</span></a></b>Set up a GenAI prompt</li>
-      <li data-text="set up a genai prompt improve it genai prompts ttrpi5150m000 5.1 on genai prompts, tick the prompt, open the text button and choose prompt the editor opens on the text 5.2 add a line above the marker, then save and close: output only the message, in plain sentences. no heading, no greeting, no sign-off, no list and no formatting marks. a new last-modified stamp 5.3 on sales order lines, still on the undelivered line, open actions and choose the command one plain sentence; the letter and the promise are gone 5.4 on datasets, tick the dataset and click modeler the modeler opens directly, without dataset configuration 5.5 type ddta in the box above field, press enter and tick ddta planned delivery date is ticked 5.6 under tables, expand referred by and choose sales order actual delivery lines (tdsls406) fields lists that table's fields, none ticked 5.7 tick dldt and shpm, and click save actual delivery date and shipment are ticked; no message 5.8 add four lines above the marker in the prompt text, then save and close: if delivered equals ordered, say the line has shipped in full and give the last actual delivery date and the shipment number. if delivered is above zero and below ordered, say how many of the ordered quantity have shipped and give the planned delivery date. if delivered is zero, say nothing has shipped yet and give the planned delivery date. if a value you need is not in the dataset, write &quot;[not available]&quot; in its place. a new last-modified stamp 5.9 without closing sales order lines, open actions and choose the command the planned delivery date reads [not available]: this session is still using the dataset as it was 5.10 close the sales order lines tab, open the undelivered line again, and choose the command from actions nothing has shipped yet, and the planned delivery date 5.11 open the delivered line and choose the command from actions shipped in full, with a delivery date and the shipment from 4.3 5.12 add write every date as yyyy-mm-dd. above the marker in the prompt text, save, and choose the command from actions on the delivered line the same facts, each date as year, month and day" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5"><span>6 Improve it</span></a></b>Set up a GenAI prompt</li>
-      <li data-text="set up a genai prompt remove it genai prompts ttrpi5150m000 6.1 on genai prompts, tick the prompt and click delete delete the 1 selected record(s) ? 6.2 choose yes 1 records deleted 6.3 on datasets, tick the dataset, click delete and choose yes 1 records deleted 6.4 close the sales order lines tab, open a line again and open actions the command is gone" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=6"><span>7 Remove it</span></a></b>Set up a GenAI prompt</li>
+      <li data-text="set up a genai prompt decide what the prompt is for sales order intake workbench tdsls4601m200 0.1 open the screen the command belongs on, with one record in view. the example opens sales order intake workbench, its order lines tab, and clicks drill in on a delivered line the screen on one record. in the example sales order lines opens on that line, in a tab of its own 0.2 read the status bar at the foot of the screen the screen's code, tdsls4101m000 in the example — session code 0.3 note the table that screen's records live in. the example's is tdsls401 table 0.4 list what the answer has to state, by the labels the screen shows. the example states the order and line, the item, and the ordered and delivered quantities fields 0.5 decide whether the command answers about the record in view or about records the user ticks. the example answers about the line in view one record or several 0.6 decide whether the data must meet a condition before the model is asked. the example has none condition 0.7 write the one sentence the user will see beside the answer. the example's is draft a delivery update for the customer about this order line. instruction text 0.8 open genai llms, tools ➔ application extensibility ➔ embedded genai ➔ genai llms a list of models with llm name, provider and is default 0.9 find the row with is default ticked default model" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0"><span>1 Decide what the prompt is for</span></a></b>Set up a GenAI prompt</li>
+      <li data-text="set up a genai prompt model the dataset datasets ttrpi5100m000 1.1 open datasets and click new a dataset modeler tab opens with dataset configuration in front; four fields are marked mandatory and use camel case is already ticked 1.2 enter a dataset name in lowercase and a description dataset name 1.3 type the table from 0.3 in main table. the example types tdsls401 — 1.4 set selection index to the key the screen is viewed by. the example's is 1 - order, position, sequence the table's indexes are offered, nine in the example 1.5 click ok the modeler shows the table under tables and its fields under fields, none ticked 1.6 tick every field of the index you chose. the example ticks orno, pono and sqnb at the head of the list the index's fields are ticked 1.7 for each field from 0.4, type its code in the box above the field column, press enter and tick it. the example finds item, qoor and qidl the list narrows to that field, and it is ticked 1.8 clear the box above field, open the mark at the head of selected and choose selected only the ticked fields are listed, six in the example 1.9 click save no message 1.10 on datasets, click refresh, tick the dataset and click parameters dataset parameters (ttrpi5501m000) lists the dataset's parameters. in the example six rows of type selection range: orno, pono and sqnb, each with .f and .t" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=1"><span>2 Model the dataset</span></a></b>Set up a GenAI prompt</li>
+      <li data-text="set up a genai prompt write the prompt genai prompts ttrpi5150m000 2.1 open genai prompts and click new a new row that already holds the name of the row the cursor was on 2.2 type the prompt's name in genai prompt, over the one already there prompt name 2.3 in label, open the lookup, enter 2 under language and a word under label description, and press enter labels whose description holds that word, each with the context form commands 2.4 tick a label whose description is the name the command should have and that no command on the screen already uses, and click ok the description shows beside the code — command name 2.5 replace what dataset holds with the dataset name from 1.2 its description shows beside it 2.6 set usage type to the kind of answer. the example sets email — 2.7 click save a grey dot under instruction text and under prompt text 2.8 tick the row, open the text button on the toolbar and choose instruction no text present; create, duplicate, select or exit? 2.9 choose create, type your sentence from 0.7 and save in the editor a last-modified stamp under the text 2.10 close the editor, open the text button again, choose prompt and then create text editor opens, empty 2.11 type the first prompt text, each line on a line of its own, then save and close: what the data is, the task, one rule and the marker. the example types you are given an xml dataset containing one sales order line. write a short delivery update to the customer about this line, stating the sales order and line, the item, the ordered quantity and the delivered quantity. use only the information present in the dataset. #data,xml# a green tick under both text columns" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=2"><span>3 Write the prompt</span></a></b>Set up a GenAI prompt</li>
+      <li data-text="set up a genai prompt link the prompt to a session genai prompts by session ttadv9160m000 3.1 on genai prompts, tick the prompt and choose references ➔ genai prompts by session. do not open it from the menu genai prompts by session opens with the prompt as its header and no rows 3.2 click new and enter your session code from 0.2 across the three session boxes: two letters, three letters and the rest. the example enters td, sls and 4101m000 the description reads the screen's name; active is ticked, authorization is display, when enabled is records selected 3.3 set when enabled by your note from 0.5: always for the record in view, records selected for ticked records. the example sets always — 3.4 click save the row stays, with display and your setting" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=3"><span>4 Link the prompt to a session</span></a></b>Set up a GenAI prompt</li>
+      <li data-text="set up a genai prompt run it and check the answer sales order intake workbench tdsls4601m200 4.1 close any tab of the screen that is already open — 4.2 open the screen on a record whose answer you know. the example drills into the delivered line from sales order intake workbench the screen on that record 4.3 note the values the answer should state. the example reads the delivered quantity and the shipment on the shipping tab expected values 4.4 open actions and choose the command name from 2.4 a window titled with that name; prompt holds the instruction text and response the answer 4.5 compare the response with the values from 4.3 the facts agree or they do not, and the form is the model's own. in the example the quantities were right and the answer was a letter: a heading, a greeting, a list and a sign-off, with formatting marks showing 4.6 click close and open a record of another kind. the example opens the line that has not been delivered the screen shows that record 4.7 open actions and choose the command from 2.4 an answer for that record. in the example delivered 0, which is right, and a sentence about what will happen next that nothing in ln holds" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4"><span>5 Run it and check the answer</span></a></b>Set up a GenAI prompt</li>
+      <li data-text="set up a genai prompt improve it genai prompts ttrpi5150m000 5.1 on genai prompts, tick the prompt, open the text button and choose prompt the editor opens on the text 5.2 add a line above the marker that fixes what was wrong with the form of the answer, then save and close. the example adds output only the message, in plain sentences. no heading, no greeting, no sign-off, no list and no formatting marks. a new last-modified stamp 5.3 on the screen, still on the same record, open actions and choose the command the answer in the form asked for. in the example one plain sentence; the letter and the promise are gone 5.4 on datasets, tick the dataset and click modeler the modeler opens directly, without dataset configuration 5.5 tick a field the answer still lacks, found by its code in the box above field. the example ticks ddta, planned delivery date the field is ticked 5.6 for a value kept in a table that refers to this one, expand referred by under tables and choose that table. the example chooses sales order actual delivery lines (tdsls406) fields lists that table's fields, none ticked 5.7 tick the fields wanted there and click save. the example ticks dldt and shpm the fields are ticked; no message 5.8 add a line above the marker for each kind of record the answer must tell apart, and one for a value the dataset does not hold, then save and close. the example adds if delivered equals ordered, say the line has shipped in full and give the last actual delivery date and the shipment number. if delivered is above zero and below ordered, say how many of the ordered quantity have shipped and give the planned delivery date. if delivered is zero, say nothing has shipped yet and give the planned delivery date. if a value you need is not in the dataset, write &quot;[not available]&quot; in its place. a new last-modified stamp 5.9 without closing the screen, open actions and choose the command the new field is missing from the answer: this session is still using the dataset as it was. in the example the planned delivery date reads [not available] 5.10 close the screen's tab, open the same record again, and choose the command from actions the answer holds the new field. in the example nothing has shipped yet, and the planned delivery date 5.11 open a record of each other kind and choose the command from actions each answer follows its own rule. in the example the delivered line reads shipped in full, with a delivery date and the shipment from 4.3 5.12 add a line that fixes how a kind of value is written, save, and choose the command from actions again. the example adds write every date as yyyy-mm-dd. the same facts, written that way. in the example each date as year, month and day" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5"><span>6 Improve it</span></a></b>Set up a GenAI prompt</li>
+      <li data-text="set up a genai prompt remove it genai prompts ttrpi5150m000 6.1 on genai prompts, tick the prompt and click delete delete the 1 selected record(s) ? 6.2 choose yes 1 records deleted 6.3 on datasets, tick the dataset, click delete and choose yes 1 records deleted 6.4 close the screen's tab, open a record again and open actions the command is gone" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=6"><span>7 Remove it</span></a></b>Set up a GenAI prompt</li>
       <li data-text="create test items confirm the test design warehouses whwmd2500m000 0.1 confirm the approved training company training company 0.2 select the site that will buy, store, make, and sell the test family site 0.3 open warehouses (whwmd2500m000) the warehouse master list opens 0.4 filter the warehouse list to the site from 0.2 only candidate warehouses for that site remain 0.5 record the approved normal warehouse for purchased production materials purchased-item warehouse 0.6 record the approved normal warehouse for finished products finished-item warehouse 0.7 open one approved physical product item that uses the same counting basis its global item data opens 0.8 record its unit set unit set 0.9 record its inventory unit inventory unit 0.10 search items for each proposed example code no existing item uses any proposed code" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=create-basic-test-items-and-defaults&amp;t=0"><span>1 Confirm the test design</span></a></b>Create test items</li>
       <li data-text="create test items create two item groups item groups tcmcs0123m000 1.1 search for the proposed purchased-group code no existing row uses it 1.2 select new a blank item-group row opens 1.3 enter item group and description for the purchased group purchased-supply item group 1.4 set currency to the approved company currency the currency is populated 1.5 save the purchased group the purchased group is available for defaults 1.6 repeat 1.1–1.5 for the made group made-supply item group — both dedicated groups are available for defaults" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=create-basic-test-items-and-defaults&amp;t=1"><span>2 Create two item groups</span></a></b>Create test items</li>
       <li data-text="create test items configure the purchased group item defaults tcibd0102m000 2.1 open item defaults (tcibd0102m000) the company-level default combinations open 2.2 filter for item type = product and the purchased group from 1.3 the current test row appears if already saved; otherwise no row appears 2.3 if the test row is absent, select new a blank item-default record opens 2.4 set item type to product, item group to the purchased group from 1.3, and default supply source to purchase purchased default supply source 2.5 set unit set and inventory unit to the values recorded at 0.8 and 0.9 — 2.6 leave special-purpose typology and traceability controls at their proposed values no new configuration, lot, or serial behaviour is introduced 2.7 save the global default the product/bam-rm combination exists 2.8 continue in the automatically opened item defaults (tcibd0502m000) the multisite follow-on is active 2.9 on the sites tab add the site from 0.2, set its warehouse to the purchased warehouse from 0.5 and its supply source to purchase, and save the site row remains stored 2.10 for ordering, then purchase, then warehousing: open the blue link beside it its defaults session opens — item ordering defaults (tcibd2101m000), items - purchase defaults (tdipu0102m000), items - warehousing defaults (whwmd4101s000) 2.11 compare every tab with the purchased-group values in the family sheet §4, complete what the screen requires, and select ok the defaults close without an error 2.12 confirm the subentity indicator beside the link is active, and select the create check box beside it default data exists, and new items are marked to receive it 2.13 after the third subentity, save item defaults (tcibd0502m000) the site row and create controls remain stored 2.14 close and reopen the product/bam-rm default purchased global subentities — three active indicators, three create controls" hidden><span class="ln-quiet">Task</span><b><a class="rux--link" href="./?s=create-basic-test-items-and-defaults&amp;t=2"><span>3 Configure the purchased group</span></a></b>Create test items</li>
@@ -5636,7 +5774,7 @@
     <p class="ln-quiet">Screen</p>
     <h1 class="ln-ask">Sales Order Lines</h1>
     <p>The lines of a sales order, with each line's warehouse, dates and inventory figures.</p>
-    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="tdsls4101m000" aria-label="Copy the code tdsls4101m000">tdsls4101m000</button></dd><dt>Reached</dt><dd>the Order Lines tab of Sales Order (tdsls4100m900), or a line's row icon on Sales Order Intake Workbench (tdsls4601m200)</dd><dt>Used in</dt><dd><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0">Set up a GenAI prompt · 1 Choose the screen</a></dd></dl>
+    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="tdsls4101m000" aria-label="Copy the code tdsls4101m000">tdsls4101m000</button></dd><dt>Reached</dt><dd>the Order Lines tab of Sales Order (tdsls4100m900), or a line's row icon on Sales Order Intake Workbench (tdsls4601m200)</dd><dt>Used in</dt><dd><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0">Set up a GenAI prompt · 1 Decide what the prompt is for</a></dd></dl>
     <div class="ln-full" data-full hidden></div>
   </section>
   <section class="ln-screen" data-screen="card" data-c="tdsls4106m100" hidden>
@@ -5708,7 +5846,7 @@
     <p class="ln-quiet">Screen</p>
     <h1 class="ln-ask">Sales Order Intake Workbench</h1>
     <p>A dashboard of sales-order activity awaiting attention.</p>
-    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="tdsls4601m200" aria-label="Copy the code tdsls4601m200">tdsls4601m200</button></dd><dt>Route</dt><dd><span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></dd><dt>Used in</dt><dd><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0">Set up a GenAI prompt · 1 Choose the screen</a><br><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4">Set up a GenAI prompt · 5 Run it and check the answer</a><br><a class="rux--link" href="./?s=run-order-planning-for-one-item&amp;t=1">Run order planning · 2 Create demand</a><br><a class="rux--link" href="./?s=ship-from-stock&amp;t=1">Ship from stock · 2 Create and approve the sales order</a><br><a class="rux--link" href="./?s=ship-from-stock&amp;t=2">Ship from stock · 3 Release to warehousing</a><br><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=1">Plan to shipment · 2 Create the demand</a></dd></dl>
+    <dl class="ln-card__facts"><dt>Code</dt><dd><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="tdsls4601m200" aria-label="Copy the code tdsls4601m200">tdsls4601m200</button></dd><dt>Route</dt><dd><span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></dd><dt>Used in</dt><dd><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=0">Set up a GenAI prompt · 1 Decide what the prompt is for</a><br><a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=4">Set up a GenAI prompt · 5 Run it and check the answer</a><br><a class="rux--link" href="./?s=run-order-planning-for-one-item&amp;t=1">Run order planning · 2 Create demand</a><br><a class="rux--link" href="./?s=ship-from-stock&amp;t=1">Ship from stock · 2 Create and approve the sales order</a><br><a class="rux--link" href="./?s=ship-from-stock&amp;t=2">Ship from stock · 3 Release to warehousing</a><br><a class="rux--link" href="./?s=demand-to-shipment-via-planning&amp;t=1">Plan to shipment · 2 Create the demand</a></dd></dl>
     <div class="ln-full" data-full hidden></div>
   </section>
   <section class="ln-screen" data-screen="card" data-c="tdsmi1500m000" hidden>

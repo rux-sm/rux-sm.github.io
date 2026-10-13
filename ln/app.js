@@ -31,6 +31,7 @@
     if (p.get('v') === 'map') return by('[data-screen="map"]');
     if (p.get('v') === 'confirm') return by('[data-screen="confirm"]');
     const s = p.get('s');
+    if (s && p.get('r')) return by(`[data-screen="ref"][data-s="${q(s)}"]`);
     if (s && p.get('done')) return by(`[data-screen="done"][data-s="${q(s)}"]`);
     if (s && p.get('f')) return by(`[data-screen="fork"][data-s="${q(s)}"][data-t="${q(p.get('t'))}"][data-f="${q(p.get('f'))}"]`);
     if (s && p.get('t') != null) return taskOf(s, p.get('t'));

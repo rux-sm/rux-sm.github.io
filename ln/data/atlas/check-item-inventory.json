@@ -1,5 +1,5 @@
 {
-  "contract": 15,
+  "contract": 16,
   "tier": "export",
   "id": "check-item-inventory",
   "title": "Check an item's inventory",
@@ -676,7 +676,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "At a glance"
     },
     {
       "kind": "troubleshooting",
@@ -826,7 +827,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "If it does not work"
     }
   ],
   "verification": "Warning No phase of this procedure has yet been performed end to end against a live system. Follow it as a plan, not as a record.",

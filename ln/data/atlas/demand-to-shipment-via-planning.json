@@ -1,5 +1,5 @@
 {
-  "contract": 15,
+  "contract": 16,
   "tier": "export",
   "id": "demand-to-shipment-via-planning",
   "title": "Plan to shipment",
@@ -3276,7 +3276,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "At a glance"
     },
     {
       "kind": "prose",
@@ -3303,7 +3304,8 @@
           "v": " rail along the top is a ship-from-stock order that never crosses the transfer boundary; everything below it is the route this walkthrough walks. Its sessions and their routes are stated per phase below, not on the diagram."
         }
       ],
-      "text": "The overview is the level-1 view of this walkthrough — five stages across six module lanes, master data through confirmed shipment. The YES rail along the top is a ship-from-stock order that never crosses the transfer boundary; everything below it is the route this walkthrough walks. Its sessions and their routes are stated per phase below, not on the diagram."
+      "text": "The overview is the level-1 view of this walkthrough — five stages across six module lanes, master data through confirmed shipment. The YES rail along the top is a ship-from-stock order that never crosses the transfer boundary; everything below it is the route this walkthrough walks. Its sessions and their routes are stated per phase below, not on the diagram.",
+      "under": "At a glance"
     },
     {
       "kind": "prose",
@@ -3326,7 +3328,8 @@
           "v": " names all 21 sessions this chain touches, each with its route, the action performed there and what it leaves for the next one. It is the page to keep open beside the screen while you walk this walkthrough; every tile names the phase step here that owns its detail, so the two cannot drift apart quietly."
         }
       ],
-      "text": "The level-2 view holds what the diagram leaves out. The session map names all 21 sessions this chain touches, each with its route, the action performed there and what it leaves for the next one. It is the page to keep open beside the screen while you walk this walkthrough; every tile names the phase step here that owns its detail, so the two cannot drift apart quietly."
+      "text": "The level-2 view holds what the diagram leaves out. The session map names all 21 sessions this chain touches, each with its route, the action performed there and what it leaves for the next one. It is the page to keep open beside the screen while you walk this walkthrough; every tile names the phase step here that owns its detail, so the two cannot drift apart quietly.",
+      "under": "At a glance"
     },
     {
       "kind": "prose",
@@ -3340,25 +3343,19 @@
           "v": " Planned ➔ Confirmed ➔ transferred ➔ real order ➔ received or completed ➔ shipped."
         }
       ],
-      "text": "The Item Order Plan is the progress indicator for phases 0–2; the order status is the indicator from phase 3 on. Planned ➔ Confirmed ➔ transferred ➔ real order ➔ received or completed ➔ shipped."
+      "text": "The Item Order Plan is the progress indicator for phases 0–2; the order status is the indicator from phase 3 on. Planned ➔ Confirmed ➔ transferred ➔ real order ➔ received or completed ➔ shipped.",
+      "under": "At a glance"
     },
     {
       "kind": "prose",
       "tokens": [
         {
           "t": "text",
-          "v": "Values verified 2026-08-25 — "
-        },
-        {
-          "t": "literal",
-          "v": "the source on file"
-        },
-        {
-          "t": "text",
-          "v": ", which owns them. Do not re-derive them here."
+          "v": "Values verified 2026-08-25. "
         }
       ],
-      "text": "Values verified 2026-08-25 — the source on file, which owns them. Do not re-derive them here."
+      "text": "Values verified 2026-08-25.",
+      "under": "The bamboo family, for reference"
     },
     {
       "kind": "reference",
@@ -3541,7 +3538,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "The bamboo family, for reference"
     },
     {
       "kind": "prose",
@@ -3635,7 +3633,8 @@
           "v": "."
         }
       ],
-      "text": "BOM JB0000242 — revision 000002; revision 000001 was expired 2026-08-18. Routing 0 revision 000001, operation 10, work center A1000. Site CSADNA01. Raw materials at ADNA02, finished goods at ADNA01."
+      "text": "BOM JB0000242 — revision 000002; revision 000001 was expired 2026-08-18. Routing 0 revision 000001, operation 10, work center A1000. Site CSADNA01. Raw materials at ADNA02, finished goods at ADNA01.",
+      "under": "The bamboo family, for reference"
     },
     {
       "kind": "prose",
@@ -3709,7 +3708,8 @@
           "v": "Not documented for this release."
         }
       ],
-      "text": "> Warning > BAM-ROD has a buy-from business partner and BAM-SLEEVE has not been checked. BP4000006 FAIRFIELD ENGINEERING CO. was added to BAM-ROD on 2026-08-25 because the transfer refused it without one. If MRP proposes a planned purchase order for BAM-SLEEVE, phase 3 will very likely fail on it the same way. Not documented for this release."
+      "text": "> Warning > BAM-ROD has a buy-from business partner and BAM-SLEEVE has not been checked. BP4000006 FAIRFIELD ENGINEERING CO. was added to BAM-ROD on 2026-08-25 because the transfer refused it without one. If MRP proposes a planned purchase order for BAM-SLEEVE, phase 3 will very likely fail on it the same way. Not documented for this release.",
+      "under": "The bamboo family, for reference"
     },
     {
       "kind": "troubleshooting",
@@ -4455,7 +4455,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "If it does not work"
     },
     {
       "kind": "variants",
@@ -4611,7 +4612,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "Variants"
     },
     {
       "kind": "downstream",
@@ -4691,7 +4693,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "Downstream actions"
     }
   ],
   "verification": "Warning Partly verified. Phases 1, 6 have been performed against a live system and confirmed. Phases 0, 2, 3, 4, 5 have not. Follow those as a plan, not as a record.",

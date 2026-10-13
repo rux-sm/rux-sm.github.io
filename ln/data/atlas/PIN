@@ -1,9 +1,9 @@
-commit   809382aa24a39dc4139776f19e46372dd944586a
-date     2026-10-13T02:57:52Z
-subject  docs(tasks): Cut each objective to one sentence
-contract 15 
+commit   26379debf18d82173a2934f9a7675f3778bbd9fc
+date     2026-10-13T05:53:10Z
+subject  fix(planning): Keep a library path from exporting
+contract 16 
 tier     export
-sha256   3475c060c8d5c693e0c91a21439f3d2776528937ba1c8643593eeffed6642576
+sha256   5a597000a93d95177c85a93effd54fd6544f85865884b92b5111c86dc0e32e13
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

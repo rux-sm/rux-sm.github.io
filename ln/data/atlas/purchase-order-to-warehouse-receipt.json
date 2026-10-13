@@ -1,5 +1,5 @@
 {
-  "contract": 15,
+  "contract": 16,
   "tier": "export",
   "id": "purchase-order-to-warehouse-receipt",
   "title": "Purchase to receipt",
@@ -2055,7 +2055,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "At a glance"
     },
     {
       "kind": "prose",
@@ -2069,7 +2070,8 @@
           "v": " Until phase 4 produces one, nothing has entered the warehouse — a purchase order at any status is a commitment, not stock."
         }
       ],
-      "text": "The receipt number is the progress indicator. Until phase 4 produces one, nothing has entered the warehouse — a purchase order at any status is a commitment, not stock."
+      "text": "The receipt number is the progress indicator. Until phase 4 produces one, nothing has entered the warehouse — a purchase order at any status is a commitment, not stock.",
+      "under": "At a glance"
     },
     {
       "kind": "troubleshooting",
@@ -2347,7 +2349,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "If it does not work"
     },
     {
       "kind": "variants",
@@ -2440,7 +2443,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "Variants"
     },
     {
       "kind": "downstream",
@@ -2518,7 +2522,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "Downstream actions"
     }
   ],
   "verification": "Warning Partly verified. Phases 1, 2, 3, 4 have been performed against a live system and confirmed. Phases 0, 5 have not. Follow those as a plan, not as a record.",

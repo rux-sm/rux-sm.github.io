@@ -50,6 +50,14 @@
 .ln-path--tight li { padding-block-end: .75rem; }
 .ln-path--tight .ln-path__stop { grid-template-columns: 2rem 1fr auto; align-items: start; }
 .ln-path--tight small { padding-block-start: .4rem; font-variant-numeric: tabular-nums; }
+/* A scenario's reference: a heading a section, and text to type in a box that
+   keeps a line a line however it wraps. */
+.ln-ref__title { font-size: 1.125rem; line-height: 1.3; font-weight: 600; margin: 1rem 0 -.5rem; }
+.ln-list .ln-quiet { font-size: .8125rem; }
+.ln-type { display: grid; gap: .5rem; }
+.ln-type__name { display: flex; align-items: center; justify-content: space-between; margin: 0; }
+.ln-type__text { display: grid; gap: .625rem; padding: 1rem; background: var(--rux-layer-01); border: 1px solid var(--rux-border-subtle-01); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .8125rem; line-height: 1.5; overflow-wrap: anywhere; }
+.ln-type__text p { margin: 0; }
 /* The one action, with how long the scenario is beside it. */
 .ln-go { display: flex; align-items: center; gap: 1rem; }
 

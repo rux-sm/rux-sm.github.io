@@ -13,6 +13,8 @@ One page, `index.html`, whose address says which screen shows:
   card for each scenario.
 - **A scenario** is a path of tasks, with each decision drawn as a fork.
 - **A task** shows one step at a time, with what you should see.
+- **Reference** is what a scenario has to look up and not walk: its tables as
+  lists, and text to type with a Copy button.
 - **A decision** is a screen of its own, each answer a button.
 - **Map** shows a scenario's route, and the whole chain behind a button.
 - **Search** finds problems, tasks, screens and ideas, and opens a card for

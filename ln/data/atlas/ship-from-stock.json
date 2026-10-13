@@ -1,5 +1,5 @@
 {
-  "contract": 15,
+  "contract": 16,
   "tier": "export",
   "id": "ship-from-stock",
   "title": "Ship from stock",
@@ -2976,7 +2976,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "At a glance"
     },
     {
       "kind": "prose",
@@ -3006,7 +3007,8 @@
           "v": ". That is the clearest progress indicator in the flow."
         }
       ],
-      "text": "Read the quantity columns, not the steps, to know where you are. The Warehousing Order's Outbound Lines tab fills five columns in order — Ordered ➔ Advised ➔ Released ➔ Picked ➔ Shipped. That is the clearest progress indicator in the flow."
+      "text": "Read the quantity columns, not the steps, to know where you are. The Warehousing Order's Outbound Lines tab fills five columns in order — Ordered ➔ Advised ➔ Released ➔ Picked ➔ Shipped. That is the clearest progress indicator in the flow.",
+      "under": "At a glance"
     },
     {
       "kind": "troubleshooting",
@@ -3985,7 +3987,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "If it does not work"
     },
     {
       "kind": "reference",
@@ -4092,7 +4095,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "Recognising the right warehousing order"
     },
     {
       "kind": "variants",
@@ -4315,7 +4319,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "Variants"
     },
     {
       "kind": "prose",
@@ -4341,7 +4346,8 @@
           "v": ", then on-hand reduced by the shipped quantity."
         }
       ],
-      "text": "A variant earns its own walkthrough only when it changes the phase structure. Shipping short adds a back-order tail, so it graduates; Direct Release collapses two steps inside one phase, so it stays here. Every variant converges on the same completion test: shipment Confirmed, then on-hand reduced by the shipped quantity."
+      "text": "A variant earns its own walkthrough only when it changes the phase structure. Shipping short adds a back-order tail, so it graduates; Direct Release collapses two steps inside one phase, so it stays here. Every variant converges on the same completion test: shipment Confirmed, then on-hand reduced by the shipped quantity.",
+      "under": "Variants"
     },
     {
       "kind": "downstream",
@@ -4421,7 +4427,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "Downstream actions"
     }
   ],
   "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",

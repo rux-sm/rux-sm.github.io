@@ -394,7 +394,8 @@ function path(s) {
     <ol class="ln-path ln-path--tight">${s.phases.map((p) => `
       <li data-t="${p.n}" data-n="${p.n + 1}"><a class="ln-path__stop" href="${taskHref(s, p.n)}"><span class="ln-path__dot">${p.n + 1}</span><b>${esc(p.title)}</b><small>${rowsOf(p).length}<span class="rux--visually-hidden"> ${rowsOf(p).length === 1 ? 'step' : 'steps'}</span></small></a></li>${extrasOf(s, p).forks.map((n) => `
       <li data-kind="fork"><a class="ln-path__stop" href="${here(`s=${esc(s.id)}&amp;t=${p.n}&amp;f=${esc(n.id)}`)}"><span class="ln-path__dot"></span><b>${esc(n.session)}</b></a></li>`).join('')}`).join('')}
-    </ol>${loose.length ? `
+    </ol>${refLink(s) ? `
+    <p>${refLink(s)}<span class="ln-quiet"> ${looked(s).map((g) => esc(g.title)).join(' · ')}</span></p>` : ''}${loose.length ? `
     <p><a class="rux--link" href="#main-content" data-open="loose">Different cases</a></p>${list(loose, 'loose')}` : ''}
   </section>`;
 }
@@ -428,7 +429,8 @@ ${p.walked ? '' : confirmBox(s.id, 'step')}
     <div class="ln-step__more">${reason ? `
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>` : ''}${wrong.length ? `
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>` : ''}${cases.length ? `
-      <a class="rux--link" href="#main-content" data-open="cases">A different case</a>` : ''}
+      <a class="rux--link" href="#main-content" data-open="cases">A different case</a>` : ''}${refLink(s) ? `
+      ${refLink(s)}` : ''}
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>${reason ? `
     <div class="ln-why" data-panel="why" hidden>${reason}</div>` : ''}${list(wrong, 'wrong')}${list(cases, 'cases')}
@@ -462,6 +464,53 @@ function fork(s, p, i, n, nextFork) {
     <div class="ln-choices">${answers.join('')}${look("I'm not sure, open", n.read)}${look('Check or change it in', n.setting)}</div>
   </section>`;
 }
+
+// ---- a scenario's reference -----------------------------------------------
+// What a reader looks up and does not walk: each numbered section of the
+// walkthrough that holds a reference table, with its paragraphs. A table is
+// drawn as a list, a row an entry headed by its first cell with each later cell
+// under its column's name, because a table of sentences does not fit a column.
+// A table whose last cells are text to type is drawn as that text, a block for
+// each first cell, with a button that copies the block.
+const looked = (s) => {
+  const groups = [];
+  for (const x of s.sections) {
+    if (!x.under) continue;
+    if (groups.at(-1)?.title !== x.under) groups.push({ title: x.under, blocks: [] });
+    groups.at(-1).blocks.push(x);
+  }
+  return groups.filter((g) => g.blocks.some((x) => x.kind === 'reference'));
+};
+const typed = (x) => x.rows.every((r) => r.cells.at(-1).tokens.length === 1 && r.cells.at(-1).tokens[0].t === 'literal');
+function looking(x) {
+  if (!typed(x)) return `
+    <ul class="ln-list">${x.rows.map((r) => `
+      <li><b>${tokens(r.cells[0].tokens)}</b>${r.cells.slice(1).map((c, i) => c.text.trim() ? `<p><span class="ln-quiet">${esc(x.columns[i + 1])}</span><br>${tokens(c.tokens)}</p>` : '').join('')}</li>`).join('')}
+    </ul>`;
+  const texts = [];
+  for (const r of x.rows) {
+    const name = r.cells[0].text, line = r.cells.at(-1).tokens[0].v;
+    if (texts.at(-1)?.name === name) texts.at(-1).lines.push(line); else texts.push({ name, lines: [line] });
+  }
+  return texts.map((t) => `
+    <div class="ln-type">
+      <p class="ln-type__name"><b>${esc(t.name)}</b><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-copy="${esc(t.lines.join('\n'))}">Copy</button></p>
+      <div class="ln-type__text">${t.lines.map((l) => `<p>${esc(l)}</p>`).join('')}</div>
+    </div>`).join('');
+}
+// A callout arrives as "> ", its kind in bold, " > " and then the sentence. Here
+// the kind opens the paragraph.
+const said = (list) => list[0]?.t === 'text' && list[0].v.trim() === '>' && list[1]?.t === 'strong' && list[2]?.t === 'text'
+  ? `<b>${esc(list[1].v)}.</b> ${tokens([{ t: 'text', v: list[2].v.replace(/^\s*>\s*/, '') }, ...list.slice(3)])}`
+  : tokens(list);
+const reference = (s) => looked(s).length ? `
+  <section class="ln-screen" data-screen="ref" data-s="${esc(s.id)}" hidden>
+    ${back(here(`s=${esc(s.id)}`), esc(s.title))}
+    <h1 class="ln-ask">Reference</h1>${looked(s).map((g) => `
+    <h2 class="ln-ref__title">${esc(g.title)}</h2>${g.blocks.map((x) => x.kind === 'reference' ? looking(x) : x.text?.trim() ? `
+    <p>${said(x.tokens)}</p>` : '').join('')}`).join('')}
+  </section>` : '';
+const refLink = (s) => looked(s).length ? `<a class="rux--link" href="${here(`s=${esc(s.id)}&amp;r=1`)}">Reference</a>` : '';
 
 const done = (s) => `
   <section class="ln-screen" data-screen="done" data-s="${esc(s.id)}" hidden>
@@ -618,7 +667,7 @@ const page = () => `<!doctype html>
 <!-- SPRITE:END -->
 ${shell.replace('{{nav}}', nav)}
 <main id="main-content" class="rux--content" data-ln-commit="${commit}">
-<div class="ln-app">${home()}${scenarios.map((s) => drawing(s, () => path(s) + s.phases.map((p, i) => task(s, p, i)).join('') + done(s))).join('')}${confirm()}${map()}${find()}${cardsOut()}
+<div class="ln-app">${home()}${scenarios.map((s) => drawing(s, () => path(s) + reference(s) + s.phases.map((p, i) => task(s, p, i)).join('') + done(s))).join('')}${confirm()}${map()}${find()}${cardsOut()}
 </div>
 <nav class="ln-tabs" aria-label="LN Guide">${TABS.map(([id, href, name]) => `
   <a href="${href}" data-tab="${id}">${name}</a>`).join('')}

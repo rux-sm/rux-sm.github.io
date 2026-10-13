@@ -1,5 +1,5 @@
 {
-  "contract": 15,
+  "contract": 16,
   "tier": "export",
   "id": "manual-production-order-existing-master-data",
   "title": "Production order",
@@ -2737,7 +2737,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "At a glance"
     },
     {
       "kind": "prose",
@@ -2792,7 +2793,8 @@
           "v": " from this walkthrough."
         }
       ],
-      "text": "Use the finished-goods receipt as the boundary. This walkthrough is complete only when Production Orders shows Order Status Completed with Quantity Delivered equal to the production quantity, and Inventory 360 confirms the receiving warehouse's on-hand increased by the same amount. Do not run Close Production Orders (ticst0201m000) from this walkthrough."
+      "text": "Use the finished-goods receipt as the boundary. This walkthrough is complete only when Production Orders shows Order Status Completed with Quantity Delivered equal to the production quantity, and Inventory 360 confirms the receiving warehouse's on-hand increased by the same amount. Do not run Close Production Orders (ticst0201m000) from this walkthrough.",
+      "under": "At a glance"
     },
     {
       "kind": "troubleshooting",
@@ -3329,7 +3331,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "If it does not work"
     },
     {
       "kind": "variants",
@@ -3464,7 +3467,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "Variants"
     },
     {
       "kind": "downstream",
@@ -3573,7 +3577,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "Downstream actions"
     }
   ],
   "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",

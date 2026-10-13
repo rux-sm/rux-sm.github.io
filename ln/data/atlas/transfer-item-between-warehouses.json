@@ -1,5 +1,5 @@
 {
-  "contract": 15,
+  "contract": 16,
   "tier": "export",
   "id": "transfer-item-between-warehouses",
   "title": "Warehouse transfer",
@@ -2369,7 +2369,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "At a glance"
     },
     {
       "kind": "prose",
@@ -2383,7 +2384,8 @@
           "v": " Unlike a sale, a same-company transfer order does not hand off to a second order at the destination — section 3.1 of the notes on phase 1 explains why, and it is what makes phases 2–5 all sit on the one order number recorded in phase 1."
         }
       ],
-      "text": "One warehousing order carries the whole move. Unlike a sale, a same-company transfer order does not hand off to a second order at the destination — section 3.1 of the notes on phase 1 explains why, and it is what makes phases 2–5 all sit on the one order number recorded in phase 1."
+      "text": "One warehousing order carries the whole move. Unlike a sale, a same-company transfer order does not hand off to a second order at the destination — section 3.1 of the notes on phase 1 explains why, and it is what makes phases 2–5 all sit on the one order number recorded in phase 1.",
+      "under": "At a glance"
     },
     {
       "kind": "troubleshooting",
@@ -2654,7 +2656,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "If it does not work"
     },
     {
       "kind": "variants",
@@ -2795,7 +2798,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "Variants"
     },
     {
       "kind": "prose",
@@ -2813,7 +2817,8 @@
           "v": ". Multicompany transfer does; the other two rows do not change this walkthrough's phases, only which sessions and fields matter within them."
         }
       ],
-      "text": "A variant earns its own walkthrough only when it changes the phase structure. Multicompany transfer does; the other two rows do not change this walkthrough's phases, only which sessions and fields matter within them."
+      "text": "A variant earns its own walkthrough only when it changes the phase structure. Multicompany transfer does; the other two rows do not change this walkthrough's phases, only which sessions and fields matter within them.",
+      "under": "Variants"
     },
     {
       "kind": "downstream",
@@ -2859,7 +2864,8 @@
             }
           ]
         }
-      ]
+      ],
+      "under": "Downstream actions"
     }
   ],
   "verification": "Warning Partly verified. Phases 0, 1, 2 have been performed against a live system and confirmed. Phases 3, 4, 5, 6 have not. Follow those as a plan, not as a record.",

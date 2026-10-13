@@ -127,9 +127,12 @@ The order:
   so every player would see grey blocks. Recommended that only the owner
   sees the map and a rift's world until rux's picture is in, and the other
   players keep the tiles.
-- **Where do custom rifts stand?** Under the map, a long scroll down on a
-  phone, or on Friends beside who made them. Recommended under the map
-  first, because it changes nothing else.
+- **Where do custom rifts stand?** A spot of their own on the map that the
+  maker picks, with a branch to it; or one side place rux draws, off the
+  path, that opens them as a list of tiles; or a list under the map.
+  Recommended the one side place: every player has different friends, so
+  spots picked freely would land on each other and crowd the map, and a
+  branch to a rift nobody has made yet cannot be drawn into the picture.
 
 ## Tasks
 

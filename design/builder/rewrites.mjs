@@ -75,6 +75,8 @@ export function exportPage(templateHtml, answers = {}) {
   lines = firstPerLine(lines, '"../css/rux.css"', '"/design/css/rux.css"');
   lines = firstPerLine(lines, '"../css/rux-theme.css"', '"/design/css/rux-theme.css"');
   lines = firstPerLine(lines, '"../css/rux-overrides.css"', '"/design/css/rux-overrides.css"');
+  // A game template links the sheet of what every game shares.
+  lines = firstPerLine(lines, '"../css/rux-game.css"', '"/design/css/rux-game.css"');
   // brand/ is the PROJECT'S, not Design's: the script seeds logo.svg beside
   // the page and never overwrites it, so the path must not point at
   // /design/, which is never the project's to keep a file under. Placed here

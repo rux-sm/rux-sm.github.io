@@ -58,8 +58,22 @@ for (const f of CUSTOM_CSS) {
     bad++;
   }
 }
+// A GAME'S CLASS, `game-`, is this system's own and not Carbon's: the game
+// templates use them, and each must be a selector in css/rux-game.css, so a
+// mistyped one is caught as a mistyped `rux--` one is.
+const GAME_CSS = 'css/rux-game.css';
+const game = new Set([...readFileSync(GAME_CSS, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/\.(game-[a-zA-Z0-9_-]+)/g)].map(m => m[1]));
+let gameUsed = 0;
 for (const f of files) {
   const html = readFileSync(f, 'utf8');
+  for (const m of html.matchAll(/class="([^"]*)"/g)) {
+    for (const cls of m[1].split(/\s+/).filter(c => c.startsWith('game-'))) {
+      gameUsed++;
+      if (game.has(cls)) continue;
+      console.log(`  UNDEFINED  ${cls.padEnd(42)} ${f}  (not in ${GAME_CSS})`);
+      bad++;
+    }
+  }
   // The pattern itself is in tools/lib/ownership.mjs, so this gate and the
   // figures README publishes count the same thing. It yields one entry per
   // OCCURRENCE, which is what lets the loop below name both sites of a class
@@ -99,5 +113,5 @@ for (const f of jsFiles) {
   }
 }
 
-console.log(`\n  files ${files.length} + ${jsFiles.length} js · classes used ${used.size} · defined in CSS ${defined.size} · undefined ${bad} · stripped ${stripped}`);
+console.log(`\n  files ${files.length} + ${jsFiles.length} js · classes used ${used.size} · defined in CSS ${defined.size} · game- uses ${gameUsed} of ${game.size} in ${GAME_CSS} · undefined ${bad} · stripped ${stripped}`);
 process.exit(bad + stripped ? 1 : 0);

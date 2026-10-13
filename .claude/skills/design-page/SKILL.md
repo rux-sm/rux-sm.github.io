@@ -13,7 +13,7 @@ for why any line here is true.
 
 ## 1. Copy a template — never start from scratch
 
-Fourteen exist, each a **complete page**, shell included.
+Seventeen exist, each a **complete page**, shell included; a game's three have no shell.
 
 | page | start from |
 | :--- | :--- |
@@ -31,6 +31,14 @@ Fourteen exist, each a **complete page**, shell included.
 | grouped preferences | `design/templates/settings-page.html` |
 | dates and times | `design/templates/schedule-page.html` |
 | something went wrong | `design/templates/error-state.html` |
+| a game's front page, tiles to pick from | `design/templates/game-hub.html` |
+| a game being played | `design/templates/game-play.html` |
+| who is playing a game, and what they can set | `design/templates/game-player.html` |
+
+**A game's three are copied together.** They have one bar of places and no
+header, and the parts Carbon lacks are `game-` classes from
+`design/css/rux-game.css`, which the check holds a game to. Rows 3 and 4 of
+the table in §2 do not apply to them.
 
 **Not `design/sink/ui-shell.html`**: same shell in a 22rem sandbox, positioned for a
 specimen.
@@ -52,7 +60,7 @@ call", take the default and say which one you took.
 
 | # | Question | The only answers | What it changes | Default |
 | :-- | :--- | :--- | :--- | :--- |
-| 1 | Page shape | the twelve in §1 | which template you copy | the nearest row in §1 |
+| 1 | Page shape | the rows in §1 | which template you copy | the nearest row in §1 |
 | 2 | Theme | `white` `g10` `g90` `g100` `rux` | `data-theme` on `<html>` | `white`; `g10` when cards should stand off the page; `g90`/`g100` for a dark tool |
 | 3 | Header nav links | present, absent | the `<nav class="rux--header__nav">` block | present |
 | 4 | Global actions and the switcher panel | present, absent | `rux--header__global` and its sibling panel | present |

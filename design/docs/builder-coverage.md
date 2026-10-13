@@ -169,7 +169,7 @@ one. **Its three CONTAINED specimens cannot be marked** — lines 151, 219
   of those three."
 
 <!-- COVERAGE:BEGIN -->
-_73 shipped fragments · 21 marked, holding 27 of the catalogue's 70 blocks · 299 candidate regions in the 52 unmarked._
+_73 shipped fragments · 21 marked, holding 27 of the catalogue's 77 blocks · 299 candidate regions in the 52 unmarked._
 
 | fragment | components | blocks | candidates | text | variants | behaviour | in the builder |
 |---|---|---|---|---|---|---|---|

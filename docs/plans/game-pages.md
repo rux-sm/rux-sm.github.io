@@ -63,13 +63,15 @@ The order:
 
 The parts Carbon lacks:
 
-- **Six parts are a game's and not Carbon's:** the page's bottom room, the
-  bar of places, the game key, which is an icon over a word, the picture
-  tile with its progress, the start cover and the finish panel.
+- **Six parts are a game's and not Carbon's:** the page, which is its
+  bottom room and its width on a phone, the bar of places, the game key,
+  which is an icon over a word, the picture tile with its progress, the
+  start cover and the finish panel.
 - **They live in one sheet that Design serves, `design/css/rux-game.css`,
   under the prefix `game-`.** No `rux--` class can be added for them, since
   every one of those is compiled from Carbon, and a copy in each game would
-  drift. The shared check fails an app on a `game-` class the sheet lacks.
+  drift. The shared check fails an app on a `game-` class the sheet lacks,
+  and Design's class gate fails a template on one.
 - **Every colour in that sheet is a `--rux-*` token,** as an app's own parts
   are held to.
 
@@ -79,10 +81,5 @@ None open.
 
 ## Tasks
 
-- [ ] Write the three templates in Design with an invented game, verify
-      them, and add their rows to `design/docs/composing-pages.md`,
-      `design/docs/choices.md` and the `design-page` skill. Design's own
-      class gate, `design/tools/check-classes.mjs`, reads only `rux--`
-      classes, so teach it `game-` for these pages. Run the full check.
 - [ ] Move Sevens: its list of tables onto Hub and its table onto Play.
 - [ ] Say each game's pages by the three shapes in its `README.md`.

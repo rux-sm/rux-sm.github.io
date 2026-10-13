@@ -933,6 +933,153 @@
       "close": "      <!-- BLOCK:END form -->\n"
     },
     {
+      "id": "templates/game-hub/title",
+      "source": "templates/game-hub.html",
+      "name": "title",
+      "label": "Title",
+      "kind": "composition",
+      "slot": "body",
+      "follows": null,
+      "deps": [],
+      "frameDeps": [],
+      "line": 372,
+      "provenance": "PROVENANCE: rendered-dom · components-tile--clickable, components-tag--default and components-progressbar--default, as sink/tile.html, sink/tags.html and sink/progress-bar.html record them, 2026-08-28. The `game-` parts are no capture, because Carbon ships none of them: they are this system's own, in css/rux-game.css, and were measured on a game built from them.",
+      "grid": "rux--css-grid",
+      "column": "rux--col-span-100 rux--css-grid-column",
+      "stack": "rux--stack-scale-6 rux--stack-vertical",
+      "open": "        <!-- BLOCK:BEGIN name=title label=\"Title\" -->\n",
+      "html": "        <!-- REPLACE: what the tiles are, and how far along the player is. One\n             line of each; a hub has no description. -->\n        <div class=\"rux--stack-vertical rux--stack-scale-2\">\n          <h1 class=\"rux--type-productive-heading-04\">Trails</h1>\n          <p class=\"lanterns-note\">19 of 60 lanterns lit</p>\n        </div>\n",
+      "close": "        <!-- BLOCK:END title -->\n"
+    },
+    {
+      "id": "templates/game-hub/tiles",
+      "source": "templates/game-hub.html",
+      "name": "tiles",
+      "label": "Picture tiles",
+      "kind": "composition",
+      "slot": "body",
+      "follows": null,
+      "deps": [],
+      "frameDeps": [],
+      "line": 381,
+      "provenance": "PROVENANCE: rendered-dom · components-tile--clickable, components-tag--default and components-progressbar--default, as sink/tile.html, sink/tags.html and sink/progress-bar.html record them, 2026-08-28. The `game-` parts are no capture, because Carbon ships none of them: they are this system's own, in css/rux-game.css, and were measured on a game built from them.",
+      "grid": "rux--css-grid",
+      "column": "rux--col-span-100 rux--css-grid-column",
+      "stack": "rux--stack-scale-6 rux--stack-vertical",
+      "open": "        <!-- BLOCK:BEGIN name=tiles label=\"Picture tiles\" -->\n",
+      "html": "        <!-- THE PICTURE TILE is Carbon's clickable tile laid out round a\n             picture: the art at its start, then a head, a note and Carbon's\n             small progress bar. One tile to a row on a phone and as many as\n             fit beyond that.\n\n             THE HEAD is the name with at most one tag at its far end, a word\n             or two: New, or what was just won. The tag is Carbon's small\n             high-contrast one, so it reads the same on every art.\n\n             THE NOTE SAYS WHAT THE BAR SHOWS, in words, so the bar is hidden\n             from a screen reader and nothing is said twice.\n\n             A LOCKED TILE IS A DIV, NOT A LINK, with `is-locked`: its art is\n             dim, its name is in the quieter colour, and its note and bar say\n             how near it is to opening.\n\n             REPLACE: the tiles. Colour belongs to the art; the tile stays in\n             Carbon's neutrals. -->\n        <div class=\"game-tiles\">\n          <a class=\"rux--link rux--tile rux--tile--clickable game-tile\" href=\"game-play.html\">\n            <div class=\"game-tile-art lanterns-art\" aria-hidden=\"true\"><svg width=\"28\" height=\"28\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#m-lightbulb\"/></svg></div>\n            <div class=\"game-tile-head\"><span class=\"game-tile-name\">Harbour</span></div>\n            <span class=\"game-tile-note\">Trail 1 · cleared</span>\n            <div class=\"rux--progress-bar rux--progress-bar--small\" aria-hidden=\"true\"><div class=\"rux--progress-bar__track\"><div class=\"rux--progress-bar__bar\" style=\"transform:scaleX(1)\"></div></div></div>\n          </a>\n          <a class=\"rux--link rux--tile rux--tile--clickable game-tile\" href=\"game-play.html\">\n            <div class=\"game-tile-art lanterns-art\" aria-hidden=\"true\"><svg width=\"28\" height=\"28\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#m-lightbulb\"/></svg></div>\n            <div class=\"game-tile-head\"><span class=\"game-tile-name\">Orchard</span></div>\n            <span class=\"game-tile-note\">Trail 2 · 4 of 15 lanterns</span>\n            <div class=\"rux--progress-bar rux--progress-bar--small\" aria-hidden=\"true\"><div class=\"rux--progress-bar__track\"><div class=\"rux--progress-bar__bar\" style=\"transform:scaleX(0.267)\"></div></div></div>\n          </a>\n          <a class=\"rux--link rux--tile rux--tile--clickable game-tile\" href=\"game-play.html\">\n            <div class=\"game-tile-art lanterns-art\" aria-hidden=\"true\"><svg width=\"28\" height=\"28\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#m-lightbulb\"/></svg></div>\n            <div class=\"game-tile-head\"><span class=\"game-tile-name\">Old bridge</span><div class=\"rux--tag rux--layout--size-sm rux--tag--high-contrast rux--tag--sm game-tile-tag\"><span class=\"rux--tag__label\">New</span></div></div>\n            <span class=\"game-tile-note\">Trail 3 · 0 of 15 lanterns</span>\n            <div class=\"rux--progress-bar rux--progress-bar--small\" aria-hidden=\"true\"><div class=\"rux--progress-bar__track\"><div class=\"rux--progress-bar__bar\" style=\"transform:scaleX(0)\"></div></div></div>\n          </a>\n          <div class=\"rux--tile game-tile is-locked\">\n            <div class=\"game-tile-art lanterns-art\" aria-hidden=\"true\"><svg width=\"28\" height=\"28\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#m-lightbulb\"/></svg></div>\n            <div class=\"game-tile-head\"><span class=\"game-tile-name\">Lighthouse</span></div>\n            <span class=\"game-tile-note\">Trail 4 · 19 of 30 lanterns to open</span>\n            <div class=\"rux--progress-bar rux--progress-bar--small\" aria-hidden=\"true\"><div class=\"rux--progress-bar__track\"><div class=\"rux--progress-bar__bar\" style=\"transform:scaleX(0.633)\"></div></div></div>\n          </div>\n        </div>\n",
+      "close": "        <!-- BLOCK:END tiles -->\n"
+    },
+    {
+      "id": "templates/game-play/board",
+      "source": "templates/game-play.html",
+      "name": "board",
+      "label": "Board and start cover",
+      "kind": "composition",
+      "slot": "body",
+      "follows": null,
+      "deps": [],
+      "frameDeps": [
+        {
+          "attr": "data-rux-open",
+          "id": "lanterns-how"
+        }
+      ],
+      "line": 379,
+      "provenance": "PROVENANCE: rendered-dom · components-modal--default, components-tile--clickable, components-tag--default and components-progressbar--default, as sink/modal.html, sink/tile.html, sink/tags.html and sink/progress-bar.html record them, 2026-08-28. The `game-` parts are no capture, because Carbon ships none of them: they are this system's own, in css/rux-game.css, and were measured on a game built from them.",
+      "grid": "rux--css-grid",
+      "column": "rux--col-span-100 rux--css-grid-column",
+      "stack": "rux--stack-scale-5 rux--stack-vertical",
+      "open": "        <!-- BLOCK:BEGIN name=board label=\"Board and start cover\" -->\n",
+      "html": "        <!-- THE STAGE HOLDS THE BOARD, AND THE COVER LIES OVER IT until play\n             begins, so nothing is read or moved before the clock would run.\n             The cover's panel holds Carbon's buttons, each as wide as the\n             panel: one primary, Start, and one ghost, the way to the rules.\n             The board is `inert` under the cover, so the keyboard cannot\n             reach what the pointer cannot.\n\n             A board that does not fill its stage says where the cover lies\n             with `--game-cover-inset` on the stage.\n\n             REPLACE: the name of what is played, and the board. -->\n        <div class=\"rux--stack-vertical rux--stack-scale-4\">\n          <h1 class=\"rux--type-productive-heading-03\">Orchard</h1>\n          <div class=\"game-stage\">\n            <div class=\"lanterns-board\" id=\"lanterns-board\" inert>\n              <button type=\"button\" class=\"lanterns-lamp\" aria-pressed=\"false\" aria-label=\"Lantern 1\"></button>\n              <button type=\"button\" class=\"lanterns-lamp\" aria-pressed=\"false\" aria-label=\"Lantern 2\"></button>\n              <button type=\"button\" class=\"lanterns-lamp\" aria-pressed=\"false\" aria-label=\"Lantern 3\"></button>\n              <button type=\"button\" class=\"lanterns-lamp\" aria-pressed=\"false\" aria-label=\"Lantern 4\"></button>\n              <button type=\"button\" class=\"lanterns-lamp\" aria-pressed=\"false\" aria-label=\"Lantern 5\"></button>\n              <button type=\"button\" class=\"lanterns-lamp\" aria-pressed=\"false\" aria-label=\"Lantern 6\"></button>\n              <button type=\"button\" class=\"lanterns-lamp\" aria-pressed=\"false\" aria-label=\"Lantern 7\"></button>\n              <button type=\"button\" class=\"lanterns-lamp\" aria-pressed=\"false\" aria-label=\"Lantern 8\"></button>\n              <button type=\"button\" class=\"lanterns-lamp\" aria-pressed=\"false\" aria-label=\"Lantern 9\"></button>\n            </div>\n            <div class=\"game-cover\" id=\"lanterns-cover\">\n              <div class=\"game-cover-panel\">\n                <button type=\"button\" class=\"rux--btn rux--btn--primary game-cover-key\" id=\"lanterns-start\">Start</button>\n                <button type=\"button\" class=\"rux--btn rux--btn--ghost game-cover-key\" data-rux-open=\"lanterns-how\">How to play</button>\n              </div>\n            </div>\n          </div>\n        </div>\n",
+      "close": "        <!-- BLOCK:END board -->\n"
+    },
+    {
+      "id": "templates/game-play/keys",
+      "source": "templates/game-play.html",
+      "name": "keys",
+      "label": "Game keys",
+      "kind": "composition",
+      "slot": "body",
+      "follows": null,
+      "deps": [],
+      "frameDeps": [],
+      "line": 415,
+      "provenance": "PROVENANCE: rendered-dom · components-modal--default, components-tile--clickable, components-tag--default and components-progressbar--default, as sink/modal.html, sink/tile.html, sink/tags.html and sink/progress-bar.html record them, 2026-08-28. The `game-` parts are no capture, because Carbon ships none of them: they are this system's own, in css/rux-game.css, and were measured on a game built from them.",
+      "grid": "rux--css-grid",
+      "column": "rux--col-span-100 rux--css-grid-column",
+      "stack": "rux--stack-scale-5 rux--stack-vertical",
+      "open": "        <!-- BLOCK:BEGIN name=keys label=\"Game keys\" -->\n",
+      "html": "        <!-- THE GAME KEYS, an icon over its word, 3.5rem to press and at the\n             bottom on a phone, by the thumb. The row shares its width, so\n             four to six keys fit a phone. The first is the way back and is a\n             link; the rest are buttons. A key that cannot act is disabled,\n             and a key that is a switch carries aria-pressed.\n\n             REPLACE: the keys. An icon is 20px, from the sprite. -->\n        <div class=\"game-keys\" id=\"lanterns-keys\">\n          <a class=\"game-key\" href=\"game-hub.html\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#m-arrow_back\"/></svg>Back</a>\n          <button type=\"button\" class=\"game-key\" id=\"lanterns-restart\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#m-restart_alt\"/></svg>Restart</button>\n          <button type=\"button\" class=\"game-key\" id=\"lanterns-hint\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#m-lightbulb\"/></svg>Hint</button>\n          <button type=\"button\" class=\"game-key\" id=\"lanterns-undo\" disabled><svg width=\"20\" height=\"20\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#m-undo\"/></svg>Undo</button>\n          <button type=\"button\" class=\"game-key\" id=\"lanterns-sound\" aria-pressed=\"true\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#m-volume_up\"/></svg>Sound</button>\n        </div>\n",
+      "close": "        <!-- BLOCK:END keys -->\n"
+    },
+    {
+      "id": "templates/game-play/finish",
+      "source": "templates/game-play.html",
+      "name": "finish",
+      "label": "Finish panel",
+      "kind": "composition",
+      "slot": "body",
+      "follows": null,
+      "deps": [],
+      "frameDeps": [],
+      "line": 432,
+      "provenance": "PROVENANCE: rendered-dom · components-modal--default, components-tile--clickable, components-tag--default and components-progressbar--default, as sink/modal.html, sink/tile.html, sink/tags.html and sink/progress-bar.html record them, 2026-08-28. The `game-` parts are no capture, because Carbon ships none of them: they are this system's own, in css/rux-game.css, and were measured on a game built from them.",
+      "grid": "rux--css-grid",
+      "column": "rux--col-span-100 rux--css-grid-column",
+      "stack": "rux--stack-scale-5 rux--stack-vertical",
+      "open": "        <!-- BLOCK:BEGIN name=finish label=\"Finish panel\" -->\n",
+      "html": "        <!-- THE FINISH PANEL, hidden until the game is over, under what was\n             played: what was won, the score, the tile the game belongs to as\n             the hub draws it, and the ways on. Movement is for a reward, so\n             this is where a game animates, and nowhere before it.\n\n             ONE PRIMARY WAY ON. The tile is the way back to the hub.\n\n             REPLACE: the score and what it is measured in, and the tile. -->\n        <div class=\"game-finish\" id=\"lanterns-finish\" hidden>\n          <div>\n            <h2 class=\"rux--type-productive-heading-04\">Orchard</h2>\n            <span class=\"game-finish-score\">9 of 9</span>\n            <p class=\"lanterns-note\">Every lantern lit</p>\n          </div>\n          <div class=\"game-tiles\">\n            <a class=\"rux--link rux--tile rux--tile--clickable game-tile\" href=\"game-hub.html\">\n              <div class=\"game-tile-art lanterns-art\" aria-hidden=\"true\"><svg width=\"28\" height=\"28\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#m-lightbulb\"/></svg></div>\n              <div class=\"game-tile-head\"><span class=\"game-tile-name\">Orchard</span><div class=\"rux--tag rux--layout--size-sm rux--tag--high-contrast rux--tag--sm game-tile-tag\"><span class=\"rux--tag__label\">+1 lantern</span></div></div>\n              <span class=\"game-tile-note\">Trail 2 · 5 of 15 lanterns</span>\n              <div class=\"rux--progress-bar rux--progress-bar--small\" aria-hidden=\"true\"><div class=\"rux--progress-bar__track\"><div class=\"rux--progress-bar__bar\" style=\"transform:scaleX(0.333)\"></div></div></div>\n            </a>\n          </div>\n          <div class=\"game-finish-actions\">\n            <button type=\"button\" class=\"rux--btn rux--btn--primary\">Next trail</button>\n          </div>\n        </div>\n",
+      "close": "        <!-- BLOCK:END finish -->\n"
+    },
+    {
+      "id": "templates/game-player/player",
+      "source": "templates/game-player.html",
+      "name": "player",
+      "label": "Player",
+      "kind": "composition",
+      "slot": "body",
+      "follows": null,
+      "deps": [],
+      "frameDeps": [],
+      "line": 379,
+      "provenance": "PROVENANCE: rendered-dom · components-containedlist--with-interactive-items and components-modal--default, as sink/contained-list.html and sink/modal.html record them, 2026-08-28. The `game-` parts are no capture, because Carbon ships none of them: they are this system's own, in css/rux-game.css, and were measured on a game built from them.",
+      "grid": "rux--css-grid",
+      "column": "rux--col-span-100 rux--css-grid-column",
+      "stack": "rux--stack-scale-7 rux--stack-vertical",
+      "open": "        <!-- BLOCK:BEGIN name=player label=\"Player\" -->\n",
+      "html": "        <!-- REPLACE: who is playing. A picture, a name, and one line of what\n             they have done. What they can change about themselves goes\n             under this, a field to a row. -->\n        <div class=\"lanterns-player\">\n          <div class=\"lanterns-art lanterns-art--lg\" aria-hidden=\"true\"><svg width=\"40\" height=\"40\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#m-account_circle\"/></svg></div>\n          <div>\n            <h1 class=\"rux--type-productive-heading-04\">Robin</h1>\n            <p class=\"lanterns-note\">19 lanterns lit · 1 trail cleared</p>\n          </div>\n        </div>\n",
+      "close": "        <!-- BLOCK:END player -->\n"
+    },
+    {
+      "id": "templates/game-player/list",
+      "source": "templates/game-player.html",
+      "name": "list",
+      "label": "List of the rest",
+      "kind": "composition",
+      "slot": "body",
+      "follows": null,
+      "deps": [],
+      "frameDeps": [
+        {
+          "attr": "data-rux-open",
+          "id": "lanterns-how"
+        },
+        {
+          "attr": "data-rux-open",
+          "id": "lanterns-theme"
+        }
+      ],
+      "line": 392,
+      "provenance": "PROVENANCE: rendered-dom · components-containedlist--with-interactive-items and components-modal--default, as sink/contained-list.html and sink/modal.html record them, 2026-08-28. The `game-` parts are no capture, because Carbon ships none of them: they are this system's own, in css/rux-game.css, and were measured on a game built from them.",
+      "grid": "rux--css-grid",
+      "column": "rux--col-span-100 rux--css-grid-column",
+      "stack": "rux--stack-scale-7 rux--stack-vertical",
+      "open": "        <!-- BLOCK:BEGIN name=list label=\"List of the rest\" -->\n",
+      "html": "        <!-- WHAT A HEADER WOULD HOLD IS THIS LIST: the rules, the theme, and\n             whatever else belongs to the game and not to a place. It is\n             Carbon's contained list with clickable items, each a button that\n             opens a modal by `data-rux-open`. A row for one kind of player\n             only is left out for the rest, not disabled.\n\n             REPLACE: the rows. A word or two each, no description. -->\n        <div class=\"rux--contained-list rux--layout--size-lg rux--contained-list--on-page lanterns-list\">\n          <ul role=\"list\">\n            <li class=\"rux--contained-list-item rux--contained-list-item--clickable\">\n              <button type=\"button\" class=\"rux--contained-list-item__content\" data-rux-open=\"lanterns-how\">How to play</button>\n            </li>\n            <li class=\"rux--contained-list-item rux--contained-list-item--clickable\">\n              <button type=\"button\" class=\"rux--contained-list-item__content\" data-rux-open=\"lanterns-theme\">Theme</button>\n            </li>\n          </ul>\n        </div>\n",
+      "close": "        <!-- BLOCK:END list -->\n"
+    },
+    {
       "id": "templates/list-page/title",
       "source": "templates/list-page.html",
       "name": "title",
@@ -1534,6 +1681,86 @@
             "\n"
           ],
           "post": ""
+        }
+      ]
+    },
+    {
+      "name": "game-hub",
+      "path": "templates/game-hub.html",
+      "slots": [
+        {
+          "name": "body",
+          "line": 370,
+          "start": 95579,
+          "end": 99916,
+          "container": {
+            "grid": "rux--css-grid",
+            "column": "rux--col-span-100 rux--css-grid-column",
+            "stack": "rux--stack-scale-6 rux--stack-vertical"
+          },
+          "blocks": [
+            "title",
+            "tiles"
+          ],
+          "pre": "\n",
+          "gaps": [
+            "\n"
+          ],
+          "post": "\n"
+        }
+      ]
+    },
+    {
+      "name": "game-play",
+      "path": "templates/game-play.html",
+      "slots": [
+        {
+          "name": "body",
+          "line": 377,
+          "start": 95835,
+          "end": 101755,
+          "container": {
+            "grid": "rux--css-grid",
+            "column": "rux--col-span-100 rux--css-grid-column",
+            "stack": "rux--stack-scale-5 rux--stack-vertical"
+          },
+          "blocks": [
+            "board",
+            "keys",
+            "finish"
+          ],
+          "pre": "\n",
+          "gaps": [
+            "\n",
+            "\n"
+          ],
+          "post": "\n"
+        }
+      ]
+    },
+    {
+      "name": "game-player",
+      "path": "templates/game-player.html",
+      "slots": [
+        {
+          "name": "body",
+          "line": 377,
+          "start": 96033,
+          "end": 97910,
+          "container": {
+            "grid": "rux--css-grid",
+            "column": "rux--col-span-100 rux--css-grid-column",
+            "stack": "rux--stack-scale-7 rux--stack-vertical"
+          },
+          "blocks": [
+            "player",
+            "list"
+          ],
+          "pre": "\n",
+          "gaps": [
+            "\n"
+          ],
+          "post": "\n"
         }
       ]
     },

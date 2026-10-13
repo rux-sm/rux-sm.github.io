@@ -276,6 +276,14 @@ const KNOWN = {
   'templates/wizard-page:modal-close__icon': [[...TOOLTIP_CHROME, 'btn', 'btn--primary', 'btn--icon-only'],
     'the tooltip chrome as everywhere else, plus the btn classes on the close button, '
     + 'declined on the measurement recorded at modal:modal-close__icon.'],
+  // The two game templates that carry a modal, declined as wizard-page's
+  // is. The positioning wrapper, modal-close-button, is present in both.
+  'templates/game-play:modal-close__icon': [[...TOOLTIP_CHROME, 'btn', 'btn--primary', 'btn--icon-only'],
+    'the tooltip chrome as everywhere else, plus the btn classes on the close button, '
+    + 'declined on the measurement recorded at modal:modal-close__icon.'],
+  'templates/game-player:modal-close__icon': [[...TOOLTIP_CHROME, 'btn', 'btn--primary', 'btn--icon-only'],
+    'the tooltip chrome as everywhere else, plus the btn classes on the close button, '
+    + 'declined on the measurement recorded at modal:modal-close__icon.'],
   'templates/table-page:toolbar-action': [['popover-container'], 'the icon-tooltip the sink declines throughout'],
   'templates/table-page:overflow-menu': [TOOLTIP_CHROME, 'the icon-tooltip the sink declines throughout'],
   'templates/table-page:overflow-menu__icon': [[...TOOLTIP_CHROME, 'btn', 'btn--ghost', 'btn--icon-only'],

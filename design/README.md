@@ -65,11 +65,11 @@ The table is generated on every `npm run verify`. Do not edit it by hand.
 | Components | **82 / 87 compiled** in 85 `@use` lines — `data-table` is four of them — and `docs/inventory.md` decides all 87, which `check-inventory` fails if it stops |
 | Themes | 4 — white, g10, g90, g100 — plus `geist-dark`, `ant-dark`, `spotify-dark`, `apple-light` and `apple-dark`, token override blocks in `css/rux-theme.css`, not a compile |
 | Tokens · classes | **631** `--rux-*` defined, 9 more read through a fallback · **1,944** `.rux--*` |
-| Kitchen sink | **73** sections · **1,119** classes with `templates/` and `js/` |
+| Kitchen sink | **73** sections · **1,120** classes with `templates/` and `js/` |
 | Class coverage | **1,066 / 1,520 (70%)** — ratcheted in `data/coverage.json` |
 | Spacing scale | 13 `--rux-spacing-*` tokens, demoed in the `spacing` section |
-| Markup provenance | **81 `rendered-dom` · 6 `source` · 0 `inferred`** across 87 files |
-| Icons | 275 symbols in a 88.4 KB sprite — 57 referenced, 218 nothing points at |
+| Markup provenance | **84 `rendered-dom` · 6 `source` · 0 `inferred`** across 90 files |
+| Icons | 275 symbols in a 88.4 KB sprite — 65 referenced, 210 nothing points at |
 | Size | 1110.8 KB raw · 999.8 KB min · **102 KB gzipped** |
 | Behaviour JS | **23** modules · **81 KB gzipped** · 270.0 KB raw, 58% of it comment · 112.1 KB of code |
 

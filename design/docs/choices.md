@@ -34,6 +34,12 @@ the second column is the suggestion.
 | `schedule-page` | dates and times |
 | `empty-state` | nothing to show yet |
 | `error-state` | something failed |
+| `game-hub` | a game's front page: picture tiles to pick from |
+| `game-play` | a game being played: the board, its keys and the finish |
+| `game-player` | who is playing a game, and what they can set |
+
+The three game pages have no shell. They are copied together, and their one
+bar of places stands where the header would.
 
 ## UI shell — one, with parts
 

@@ -340,12 +340,8 @@
 .pixels-scroll { overflow-x: auto; }
 .pixels-scroll[hidden] { display: none; }
 
-/* THE FRONT PAGE AND A CATEGORY'S. The page keeps 3rem clear each side; on a
-   phone it takes 2rem of that back. The tabs' panels start where the page
+/* THE FRONT PAGE AND A CATEGORY'S. The tabs' panels start where the page
    does. */
-@media (max-width: 28rem) {
-  .pixels-page { margin: -1rem -2rem 0; }
-}
 .pixels-tabs[hidden] { display: none; }
 .pixels-panel { padding: 1.5rem 0 0; }
 /* The steps that add Pixels to a home screen: their numbers inside the modal's edge. */

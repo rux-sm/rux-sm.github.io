@@ -241,6 +241,21 @@
       "purpose": "One record, opened from a list and saved back to it \u2014 the record half of the pair, centred.",
       "reviewed": true,
       "suggestions": []
+    },
+    "game-hub": {
+      "purpose": "A game's front page: picture tiles to pick from, under one bar of places.",
+      "reviewed": false,
+      "suggestions": []
+    },
+    "game-play": {
+      "purpose": "A game being played: the board under its start cover, its keys, and the finish panel.",
+      "reviewed": false,
+      "suggestions": []
+    },
+    "game-player": {
+      "purpose": "Who is playing a game, and the list of what a header would have held.",
+      "reviewed": false,
+      "suggestions": []
     }
   },
   "variants": {
@@ -388,6 +403,21 @@
       "recommended": "as-attested",
       "reason": "The block ships at the size it was attested at, as every other template button does. Marked reviewed by rux 2026-10-04.",
       "reviewed": true
+    },
+    "templates/game-play/board#0": {
+      "recommended": "as-attested",
+      "reason": "Start is the cover's one primary key, at the size every template button ships at, and as wide as the cover's panel.",
+      "reviewed": false
+    },
+    "templates/game-play/board#1": {
+      "recommended": "as-attested",
+      "reason": "The way to the rules is the cover's quiet key, a ghost, so Start stays the one primary.",
+      "reviewed": false
+    },
+    "templates/game-play/finish#0": {
+      "recommended": "as-attested",
+      "reason": "The finish panel has one primary way on, at the size every template button ships at.",
+      "reviewed": false
     }
   }
 }

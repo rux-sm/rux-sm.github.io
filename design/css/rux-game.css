@@ -14,10 +14,19 @@
    A game has no header. The bar of places is its one way round, and what a
    header would hold is a list on the player's page. */
 
+/* Each part's display would outrank the hidden attribute. */
+.game-places[hidden], .game-keys[hidden], .game-cover[hidden], .game-finish[hidden] { display: none; }
+
 /* THE PAGE, on the game's <main> beside Carbon's content class. Its last row
    keeps clear of a phone's home bar, and of the bar of places where the page
    carries one. */
 .game-main { padding-block-end: max(2rem, env(safe-area-inset-bottom, 0px)); }
+/* Its column, the one element inside Carbon's grid column. Carbon keeps 3rem
+   clear each side of it; on a phone it takes 2rem of that back, and 1rem
+   from the top, so a tile or a board has the width. */
+@media (max-width: 28rem) {
+  .game-page { margin: -1rem -2rem 0; }
+}
 
 /* THE BAR OF PLACES, the first thing in the page. On a wide screen it is a
    row along the top, out to the page's edges through the 2rem Carbon's
@@ -42,7 +51,6 @@
   font-size: .875rem;
   text-decoration: none;
 }
-.game-places[hidden] { display: none; }
 .game-place > svg { inline-size: 1.25rem; block-size: 1.25rem; }
 .game-place:hover { color: var(--rux-text-primary); background: var(--rux-layer-hover-01); }
 .game-place:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
@@ -141,7 +149,6 @@
    ways on, in the middle. A picture tile in it is as wide as a phone's
    board at most, its words starting at its edge. */
 .game-finish { display: grid; gap: 1.5rem; justify-items: center; text-align: center; padding-block: 1rem; }
-.game-finish[hidden] { display: none; }
 .game-finish-score { display: block; font-size: 2rem; }
 .game-finish-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
 .game-finish > .game-tiles { grid-template-columns: minmax(0, 24rem); justify-content: center; justify-self: stretch; text-align: start; }

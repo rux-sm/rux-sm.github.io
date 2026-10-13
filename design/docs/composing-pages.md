@@ -32,6 +32,11 @@ what you do not need.
 | dates and times | `templates/schedule-page.html` |
 | nothing to show yet | `templates/empty-state.html` |
 | something went wrong | `templates/error-state.html` |
+| a game: tiles to pick from, the board, and the player | `templates/game-hub.html`, `templates/game-play.html` and `templates/game-player.html`, together |
+
+**A game's three pages have no shell.** One bar of places is their way round,
+and `css/rux-game.css` holds the parts Carbon lacks, under `game-`; the
+comment at the head of `templates/game-hub.html` says what each page is for.
 
 **Do not start from `sink/ui-shell.html`.** It is the same shell in a 22rem
 sandbox, so its header and nav are positioned for a specimen rather than a page.

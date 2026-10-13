@@ -25,7 +25,7 @@
   "phases": [
     {
       "n": 0,
-      "title": "Decide what the prompt is for",
+      "title": "Plan the prompt",
       "route": "Sales ➔ Orders ➔ Order Intake Workbench",
       "session": "Sales Order Intake Workbench",
       "sessionCode": "tdsls4601m200",
@@ -67,23 +67,7 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Open the screen the command belongs on, with one record in view. The example opens "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Sales Order Intake Workbench"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", its "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Order Lines"
-                    },
-                    {
-                      "t": "text",
-                      "v": " tab, and clicks "
+                      "v": "Open the screen the command is for, on one record. Example: "
                     },
                     {
                       "t": "button",
@@ -91,27 +75,39 @@
                     },
                     {
                       "t": "text",
-                      "v": " on a delivered line"
+                      "v": " on a delivered line in "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Sales Order Intake Workbench"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Order Lines"
+                    },
+                    {
+                      "t": "text",
+                      "v": " tab"
                     }
                   ],
-                  "text": "Open the screen the command belongs on, with one record in view. The example opens Sales Order Intake Workbench, its Order Lines tab, and clicks Drill In on a delivered line"
+                  "text": "Open the screen the command is for, on one record. Example: Drill In on a delivered line in Sales Order Intake Workbench, Order Lines tab"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The screen on one record. In the example "
+                      "v": "The record on its screen. Example: "
                     },
                     {
                       "t": "chip",
                       "v": "Sales Order Lines"
-                    },
-                    {
-                      "t": "text",
-                      "v": " opens on that line, in a tab of its own"
                     }
                   ],
-                  "text": "The screen on one record. In the example Sales Order Lines opens on that line, in a tab of its own"
+                  "text": "The record on its screen. Example: Sales Order Lines"
                 }
               ],
               "id": "0.1",
@@ -133,16 +129,16 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Read the status bar at the foot of the screen"
+                      "v": "Read the code in the status bar at the foot of the screen"
                     }
                   ],
-                  "text": "Read the status bar at the foot of the screen"
+                  "text": "Read the code in the status bar at the foot of the screen"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The screen's code, "
+                      "v": "Example: "
                     },
                     {
                       "t": "session",
@@ -150,7 +146,7 @@
                     },
                     {
                       "t": "text",
-                      "v": " in the example — "
+                      "v": " — "
                     },
                     {
                       "t": "pencil"
@@ -164,7 +160,7 @@
                       "v": "session code"
                     }
                   ],
-                  "text": "The screen's code, tdsls4101m000 in the example — session code"
+                  "text": "Example: tdsls4101m000 — session code"
                 }
               ],
               "id": "0.2",
@@ -186,14 +182,14 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Note the table that screen's records live in. The example's is "
+                      "v": "Note the table the screen's records are in. Example: "
                     },
                     {
                       "t": "literal",
                       "v": "tdsls401"
                     }
                   ],
-                  "text": "Note the table that screen's records live in. The example's is tdsls401"
+                  "text": "Note the table the screen's records are in. Example: tdsls401"
                 },
                 {
                   "tokens": [
@@ -231,10 +227,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "List what the answer has to state, by the labels the screen shows. The example states the order and line, the item, and the ordered and delivered quantities"
+                      "v": "List the values the answer must state. Example: order, line, item, ordered and delivered quantity"
                     }
                   ],
-                  "text": "List what the answer has to state, by the labels the screen shows. The example states the order and line, the item, and the ordered and delivered quantities"
+                  "text": "List the values the answer must state. Example: order, line, item, ordered and delivered quantity"
                 },
                 {
                   "tokens": [
@@ -272,10 +268,14 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Decide whether the command answers about the record in view or about records the user ticks. The example answers about the line in view"
+                      "v": "Write the one sentence the user will see. Example: "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Draft a delivery update for the customer about this order line."
                     }
                   ],
-                  "text": "Decide whether the command answers about the record in view or about records the user ticks. The example answers about the line in view"
+                  "text": "Write the one sentence the user will see. Example: Draft a delivery update for the customer about this order line."
                 },
                 {
                   "tokens": [
@@ -288,10 +288,10 @@
                     },
                     {
                       "t": "value",
-                      "v": "one record or several"
+                      "v": "instruction text"
                     }
                   ],
-                  "text": "one record or several"
+                  "text": "instruction text"
                 }
               ],
               "id": "0.5",
@@ -313,92 +313,6 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Decide whether the data must meet a condition before the model is asked. The example has none"
-                    }
-                  ],
-                  "text": "Decide whether the data must meet a condition before the model is asked. The example has none"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "pencil"
-                    },
-                    {
-                      "t": "text",
-                      "v": " "
-                    },
-                    {
-                      "t": "value",
-                      "v": "condition"
-                    }
-                  ],
-                  "text": "condition"
-                }
-              ],
-              "id": "0.6",
-              "optional": false,
-              "produces": true
-            },
-            {
-              "cells": [
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "0.7"
-                    }
-                  ],
-                  "text": "0.7"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "Write the one sentence the user will see beside the answer. The example's is "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "Draft a delivery update for the customer about this order line."
-                    }
-                  ],
-                  "text": "Write the one sentence the user will see beside the answer. The example's is Draft a delivery update for the customer about this order line."
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "pencil"
-                    },
-                    {
-                      "t": "text",
-                      "v": " "
-                    },
-                    {
-                      "t": "value",
-                      "v": "instruction text"
-                    }
-                  ],
-                  "text": "instruction text"
-                }
-              ],
-              "id": "0.7",
-              "optional": false,
-              "produces": true
-            },
-            {
-              "cells": [
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "0.8"
-                    }
-                  ],
-                  "text": "0.8"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
                       "v": "Open "
                     },
                     {
@@ -412,60 +326,10 @@
                     {
                       "t": "path",
                       "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI LLMs"
-                    }
-                  ],
-                  "text": "Open GenAI LLMs, Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI LLMs"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "A list of models with "
-                    },
-                    {
-                      "t": "field",
-                      "v": "LLM Name"
                     },
                     {
                       "t": "text",
-                      "v": ", "
-                    },
-                    {
-                      "t": "field",
-                      "v": "Provider"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and "
-                    },
-                    {
-                      "t": "field",
-                      "v": "Is default"
-                    }
-                  ],
-                  "text": "A list of models with LLM Name, Provider and Is default"
-                }
-              ],
-              "id": "0.8",
-              "optional": false,
-              "produces": false
-            },
-            {
-              "cells": [
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "0.9"
-                    }
-                  ],
-                  "text": "0.9"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "Find the row with "
+                      "v": " and find the row with "
                     },
                     {
                       "t": "field",
@@ -476,28 +340,21 @@
                       "v": " ticked"
                     }
                   ],
-                  "text": "Find the row with Is default ticked"
+                  "text": "Open GenAI LLMs, Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI LLMs and find the row with Is default ticked"
                 },
                 {
                   "tokens": [
                     {
-                      "t": "pencil"
-                    },
-                    {
                       "t": "text",
-                      "v": " "
-                    },
-                    {
-                      "t": "value",
-                      "v": "default model"
+                      "v": "One model is the default"
                     }
                   ],
-                  "text": "default model"
+                  "text": "One model is the default"
                 }
               ],
-              "id": "0.9",
+              "id": "0.6",
               "optional": false,
-              "produces": true
+              "produces": false
             }
           ]
         }
@@ -568,35 +425,15 @@
                 {
                   "tokens": [
                     {
-                      "t": "text",
-                      "v": "A "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Dataset Modeler"
-                    },
-                    {
-                      "t": "text",
-                      "v": " tab opens with "
-                    },
-                    {
                       "t": "chip",
                       "v": "Dataset Configuration"
                     },
                     {
                       "t": "text",
-                      "v": " in front; four fields are marked mandatory and "
-                    },
-                    {
-                      "t": "field",
-                      "v": "Use Camel Case"
-                    },
-                    {
-                      "t": "text",
-                      "v": " is already ticked"
+                      "v": " opens"
                     }
                   ],
-                  "text": "A Dataset Modeler tab opens with Dataset Configuration in front; four fields are marked mandatory and Use Camel Case is already ticked"
+                  "text": "Dataset Configuration opens"
                 }
               ],
               "id": "1.1",
@@ -671,7 +508,7 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Type the table from 0.3 in "
+                      "v": "Type your table in "
                     },
                     {
                       "t": "field",
@@ -679,14 +516,14 @@
                     },
                     {
                       "t": "text",
-                      "v": ". The example types "
+                      "v": ". Example: "
                     },
                     {
                       "t": "literal",
                       "v": "tdsls401"
                     }
                   ],
-                  "text": "Type the table from 0.3 in Main table. The example types tdsls401"
+                  "text": "Type your table in Main table. Example: tdsls401"
                 },
                 {
                   "tokens": [
@@ -700,10 +537,7 @@
               ],
               "id": "1.3",
               "optional": false,
-              "produces": false,
-              "refs": [
-                "0.3"
-              ]
+              "produces": false
             },
             {
               "cells": [
@@ -728,23 +562,23 @@
                     },
                     {
                       "t": "text",
-                      "v": " to the key the screen is viewed by. The example's is "
+                      "v": " to the screen's key. Example: "
                     },
                     {
                       "t": "literal",
                       "v": "1 - Order, Position, Sequence"
                     }
                   ],
-                  "text": "Set Selection Index to the key the screen is viewed by. The example's is 1 - Order, Position, Sequence"
+                  "text": "Set Selection Index to the screen's key. Example: 1 - Order, Position, Sequence"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The table's indexes are offered, nine in the example"
+                      "v": "—"
                     }
                   ],
-                  "text": "The table's indexes are offered, nine in the example"
+                  "text": "—"
                 }
               ],
               "id": "1.4",
@@ -779,26 +613,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The Modeler shows the table under "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Tables"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and its fields under "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Fields"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", none ticked"
+                      "v": "The Modeler lists the table's fields, none ticked"
                     }
                   ],
-                  "text": "The Modeler shows the table under Tables and its fields under Fields, none ticked"
+                  "text": "The Modeler lists the table's fields, none ticked"
                 }
               ],
               "id": "1.5",
@@ -820,7 +638,7 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Tick every field of the index you chose. The example ticks "
+                      "v": "Tick the fields of that index. Example: "
                     },
                     {
                       "t": "literal",
@@ -844,19 +662,19 @@
                     },
                     {
                       "t": "text",
-                      "v": " at the head of the list"
+                      "v": ", at the head of the list"
                     }
                   ],
-                  "text": "Tick every field of the index you chose. The example ticks orno, pono and sqnb at the head of the list"
+                  "text": "Tick the fields of that index. Example: orno, pono and sqnb, at the head of the list"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The index's fields are ticked"
+                      "v": "—"
                     }
                   ],
-                  "text": "The index's fields are ticked"
+                  "text": "—"
                 }
               ],
               "id": "1.6",
@@ -878,15 +696,7 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "For each field from 0.4, type its code in the box above the "
-                    },
-                    {
-                      "t": "field",
-                      "v": "Field"
-                    },
-                    {
-                      "t": "text",
-                      "v": " column, press Enter and tick it. The example finds "
+                      "v": "Find each of your fields and tick it. Example: "
                     },
                     {
                       "t": "literal",
@@ -907,26 +717,31 @@
                     {
                       "t": "literal",
                       "v": "qidl"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", each typed in the box above "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Field"
                     }
                   ],
-                  "text": "For each field from 0.4, type its code in the box above the Field column, press Enter and tick it. The example finds item, qoor and qidl"
+                  "text": "Find each of your fields and tick it. Example: item, qoor and qidl, each typed in the box above Field"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The list narrows to that field, and it is ticked"
+                      "v": "The list narrows to the field"
                     }
                   ],
-                  "text": "The list narrows to that field, and it is ticked"
+                  "text": "The list narrows to the field"
                 }
               ],
               "id": "1.7",
               "optional": false,
-              "produces": false,
-              "refs": [
-                "0.4"
-              ]
+              "produces": false
             },
             {
               "cells": [
@@ -951,27 +766,23 @@
                     },
                     {
                       "t": "text",
-                      "v": ", open the mark at the head of "
+                      "v": " and choose Selected at the head of "
                     },
                     {
                       "t": "field",
                       "v": "Selected"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and choose Selected"
                     }
                   ],
-                  "text": "Clear the box above Field, open the mark at the head of Selected and choose Selected"
+                  "text": "Clear the box above Field and choose Selected at the head of Selected"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Only the ticked fields are listed, six in the example"
+                      "v": "Only the ticked fields. Example: six"
                     }
                   ],
-                  "text": "Only the ticked fields are listed, six in the example"
+                  "text": "Only the ticked fields. Example: six"
                 }
               ],
               "id": "1.8",
@@ -1044,67 +855,18 @@
                     {
                       "t": "button",
                       "label": "Refresh"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", tick the dataset and click "
-                    },
-                    {
-                      "t": "button",
-                      "label": "Parameters"
                     }
                   ],
-                  "text": "On Datasets, click Refresh, tick the dataset and click Parameters"
+                  "text": "On Datasets, click Refresh"
                 },
                 {
                   "tokens": [
                     {
-                      "t": "session",
-                      "code": "ttrpi5501m000",
-                      "name": "Dataset Parameters"
-                    },
-                    {
                       "t": "text",
-                      "v": " lists the dataset's parameters. In the example six rows of type Selection Range: "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "orno"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "pono"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "sqnb"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", each with "
-                    },
-                    {
-                      "t": "literal",
-                      "v": ".f"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and "
-                    },
-                    {
-                      "t": "literal",
-                      "v": ".t"
+                      "v": "Your dataset is listed"
                     }
                   ],
-                  "text": "Dataset Parameters (ttrpi5501m000) lists the dataset's parameters. In the example six rows of type Selection Range: orno, pono and sqnb, each with .f and .t"
+                  "text": "Your dataset is listed"
                 }
               ],
               "id": "1.10",
@@ -1181,10 +943,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "A new row that already holds the name of the row the cursor was on"
+                      "v": "A new row, filled with another prompt's values"
                     }
                   ],
-                  "text": "A new row that already holds the name of the row the cursor was on"
+                  "text": "A new row, filled with another prompt's values"
                 }
               ],
               "id": "2.1",
@@ -1206,18 +968,14 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Type the prompt's name in "
+                      "v": "Type your prompt's name over the one in "
                     },
                     {
                       "t": "field",
                       "v": "GenAI Prompt"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", over the one already there"
                     }
                   ],
-                  "text": "Type the prompt's name in GenAI Prompt, over the one already there"
+                  "text": "Type your prompt's name over the one in GenAI Prompt"
                 },
                 {
                   "tokens": [
@@ -1255,7 +1013,7 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "In "
+                      "v": "In the "
                     },
                     {
                       "t": "field",
@@ -1263,7 +1021,7 @@
                     },
                     {
                       "t": "text",
-                      "v": ", open the lookup, enter "
+                      "v": " lookup, enter "
                     },
                     {
                       "t": "literal",
@@ -1290,16 +1048,16 @@
                       "v": ", and press Enter"
                     }
                   ],
-                  "text": "In Label, open the lookup, enter 2 under Language and a word under Label Description, and press Enter"
+                  "text": "In the Label lookup, enter 2 under Language and a word under Label Description, and press Enter"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Labels whose description holds that word, each with the context Form Commands"
+                      "v": "Labels with that word"
                     }
                   ],
-                  "text": "Labels whose description holds that word, each with the context Form Commands"
+                  "text": "Labels with that word"
                 }
               ],
               "id": "2.3",
@@ -1321,21 +1079,21 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Tick a label whose description is the name the command should have and that no command on the screen already uses, and click "
+                      "v": "Tick a label that reads as the command's name and click "
                     },
                     {
                       "t": "button",
                       "label": "OK"
+                    },
+                    {
+                      "t": "text",
+                      "v": ". Pick one no command on the screen uses"
                     }
                   ],
-                  "text": "Tick a label whose description is the name the command should have and that no command on the screen already uses, and click OK"
+                  "text": "Tick a label that reads as the command's name and click OK. Pick one no command on the screen uses"
                 },
                 {
                   "tokens": [
-                    {
-                      "t": "text",
-                      "v": "The description shows beside the code — "
-                    },
                     {
                       "t": "pencil"
                     },
@@ -1348,7 +1106,7 @@
                       "v": "command name"
                     }
                   ],
-                  "text": "The description shows beside the code — command name"
+                  "text": "command name"
                 }
               ],
               "id": "2.4",
@@ -1378,10 +1136,10 @@
                     },
                     {
                       "t": "text",
-                      "v": " holds with the dataset name from 1.2"
+                      "v": " holds with your dataset name"
                     }
                   ],
-                  "text": "Replace what Dataset holds with the dataset name from 1.2"
+                  "text": "Replace what Dataset holds with your dataset name"
                 },
                 {
                   "tokens": [
@@ -1395,10 +1153,7 @@
               ],
               "id": "2.5",
               "optional": false,
-              "produces": false,
-              "refs": [
-                "1.2"
-              ]
+              "produces": false
             },
             {
               "cells": [
@@ -1423,14 +1178,14 @@
                     },
                     {
                       "t": "text",
-                      "v": " to the kind of answer. The example sets "
+                      "v": ". Example: "
                     },
                     {
                       "t": "literal",
                       "v": "Email"
                     }
                   ],
-                  "text": "Set Usage Type to the kind of answer. The example sets Email"
+                  "text": "Set Usage Type. Example: Email"
                 },
                 {
                   "tokens": [
@@ -1474,22 +1229,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "A grey dot under "
-                    },
-                    {
-                      "t": "field",
-                      "v": "Instruction Text"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and under "
-                    },
-                    {
-                      "t": "field",
-                      "v": "Prompt Text"
+                      "v": "A grey dot under each text column"
                     }
                   ],
-                  "text": "A grey dot under Instruction Text and under Prompt Text"
+                  "text": "A grey dot under each text column"
                 }
               ],
               "id": "2.7",
@@ -1511,14 +1254,14 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Tick the row, open the text button on the toolbar and choose "
+                      "v": "Tick the row, open the text button and choose "
                     },
                     {
                       "t": "chip",
                       "v": "Instruction"
                     }
                   ],
-                  "text": "Tick the row, open the text button on the toolbar and choose Instruction"
+                  "text": "Tick the row, open the text button and choose Instruction"
                 },
                 {
                   "tokens": [
@@ -1557,27 +1300,24 @@
                     },
                     {
                       "t": "text",
-                      "v": ", type your sentence from 0.7 and save in the editor"
+                      "v": ", type your sentence and save"
                     }
                   ],
-                  "text": "Choose Create, type your sentence from 0.7 and save in the editor"
+                  "text": "Choose Create, type your sentence and save"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "A last-modified stamp under the text"
+                      "v": "A last-modified stamp"
                     }
                   ],
-                  "text": "A last-modified stamp under the text"
+                  "text": "A last-modified stamp"
                 }
               ],
               "id": "2.9",
               "optional": false,
-              "produces": false,
-              "refs": [
-                "0.7"
-              ]
+              "produces": false
             },
             {
               "cells": [
@@ -1594,7 +1334,7 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Close the editor, open the text button again, choose "
+                      "v": "Close the editor, then open the text button, "
                     },
                     {
                       "t": "chip",
@@ -1602,27 +1342,27 @@
                     },
                     {
                       "t": "text",
-                      "v": " and then "
+                      "v": " and "
                     },
                     {
                       "t": "button",
                       "label": "Create"
                     }
                   ],
-                  "text": "Close the editor, open the text button again, choose Prompt and then Create"
+                  "text": "Close the editor, then open the text button, Prompt and Create"
                 },
                 {
                   "tokens": [
                     {
-                      "t": "chip",
-                      "v": "Text Editor"
+                      "t": "text",
+                      "v": "An empty "
                     },
                     {
-                      "t": "text",
-                      "v": " opens, empty"
+                      "t": "chip",
+                      "v": "Text Editor"
                     }
                   ],
-                  "text": "Text Editor opens, empty"
+                  "text": "An empty Text Editor"
                 }
               ],
               "id": "2.10",
@@ -1644,7 +1384,7 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Type the first prompt text, each line on a line of its own, then save and close: what the data is, the task, one rule and the marker. The example types "
+                      "v": "Type the first prompt text, one line each, then save and close. Example: "
                     },
                     {
                       "t": "literal",
@@ -1675,7 +1415,7 @@
                       "v": "#data,XML#"
                     }
                   ],
-                  "text": "Type the first prompt text, each line on a line of its own, then save and close: what the data is, the task, one rule and the marker. The example types You are given an XML dataset containing one sales order line. Write a short delivery update to the customer about this line, stating the sales order and line, the item, the ordered quantity and the delivered quantity. Use only the information present in the dataset. #data,XML#"
+                  "text": "Type the first prompt text, one line each, then save and close. Example: You are given an XML dataset containing one sales order line. Write a short delivery update to the customer about this line, stating the sales order and line, the item, the ordered quantity and the delivered quantity. Use only the information present in the dataset. #data,XML#"
                 },
                 {
                   "tokens": [
@@ -1740,15 +1480,7 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "On "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "GenAI Prompts"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", tick the prompt and choose "
+                      "v": "Tick the prompt and choose "
                     },
                     {
                       "t": "command",
@@ -1759,20 +1491,16 @@
                       "v": ". Do not open it from the menu"
                     }
                   ],
-                  "text": "On GenAI Prompts, tick the prompt and choose References ➔ GenAI Prompts by Session. Do not open it from the menu"
+                  "text": "Tick the prompt and choose References ➔ GenAI Prompts by Session. Do not open it from the menu"
                 },
                 {
                   "tokens": [
                     {
-                      "t": "chip",
-                      "v": "GenAI Prompts by Session"
-                    },
-                    {
                       "t": "text",
-                      "v": " opens with the prompt as its header and no rows"
+                      "v": "The prompt as the header, with no rows"
                     }
                   ],
-                  "text": "GenAI Prompts by Session opens with the prompt as its header and no rows"
+                  "text": "The prompt as the header, with no rows"
                 }
               ],
               "id": "3.1",
@@ -1802,7 +1530,7 @@
                     },
                     {
                       "t": "text",
-                      "v": " and enter your session code from 0.2 across the three "
+                      "v": " and type your session code across the three "
                     },
                     {
                       "t": "field",
@@ -1810,7 +1538,7 @@
                     },
                     {
                       "t": "text",
-                      "v": " boxes: two letters, three letters and the rest. The example enters "
+                      "v": " boxes. Example: "
                     },
                     {
                       "t": "literal",
@@ -1833,60 +1561,21 @@
                       "v": "4101m000"
                     }
                   ],
-                  "text": "Click New and enter your session code from 0.2 across the three Session boxes: two letters, three letters and the rest. The example enters td, sls and 4101m000"
+                  "text": "Click New and type your session code across the three Session boxes. Example: td, sls and 4101m000"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The description reads the screen's name; "
-                    },
-                    {
-                      "t": "field",
-                      "v": "Active"
-                    },
-                    {
-                      "t": "text",
-                      "v": " is ticked, "
-                    },
-                    {
-                      "t": "field",
-                      "v": "Authorization"
-                    },
-                    {
-                      "t": "text",
-                      "v": " is "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "Display"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", "
-                    },
-                    {
-                      "t": "field",
-                      "v": "When Enabled"
-                    },
-                    {
-                      "t": "text",
-                      "v": " is "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "Records Selected"
+                      "v": "The screen's name appears"
                     }
                   ],
-                  "text": "The description reads the screen's name; Active is ticked, Authorization is Display, When Enabled is Records Selected"
+                  "text": "The screen's name appears"
                 }
               ],
               "id": "3.2",
               "optional": false,
-              "produces": false,
-              "refs": [
-                "0.2"
-              ]
+              "produces": false
             },
             {
               "cells": [
@@ -1911,7 +1600,7 @@
                     },
                     {
                       "t": "text",
-                      "v": " by your note from 0.5: "
+                      "v": ": "
                     },
                     {
                       "t": "literal",
@@ -1919,7 +1608,7 @@
                     },
                     {
                       "t": "text",
-                      "v": " for the record in view, "
+                      "v": " for the record on screen, "
                     },
                     {
                       "t": "literal",
@@ -1927,14 +1616,14 @@
                     },
                     {
                       "t": "text",
-                      "v": " for ticked records. The example sets "
+                      "v": " for ticked records. Example: "
                     },
                     {
                       "t": "literal",
                       "v": "Always"
                     }
                   ],
-                  "text": "Set When Enabled by your note from 0.5: Always for the record in view, Records Selected for ticked records. The example sets Always"
+                  "text": "Set When Enabled: Always for the record on screen, Records Selected for ticked records. Example: Always"
                 },
                 {
                   "tokens": [
@@ -1948,10 +1637,7 @@
               ],
               "id": "3.3",
               "optional": false,
-              "produces": false,
-              "refs": [
-                "0.5"
-              ]
+              "produces": false
             },
             {
               "cells": [
@@ -1981,18 +1667,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The row stays, with "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "Display"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and your setting"
+                      "v": "The row stays"
                     }
                   ],
-                  "text": "The row stays, with Display and your setting"
+                  "text": "The row stays"
                 }
               ],
               "id": "3.4",
@@ -2048,10 +1726,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Close any tab of the screen that is already open"
+                      "v": "Close any open tab of your screen"
                     }
                   ],
-                  "text": "Close any tab of the screen that is already open"
+                  "text": "Close any open tab of your screen"
                 },
                 {
                   "tokens": [
@@ -2082,23 +1760,19 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Open the screen on a record whose answer you know. The example drills into the delivered line from "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Sales Order Intake Workbench"
+                      "v": "Open your screen on a record whose answer you know. Example: the delivered line"
                     }
                   ],
-                  "text": "Open the screen on a record whose answer you know. The example drills into the delivered line from Sales Order Intake Workbench"
+                  "text": "Open your screen on a record whose answer you know. Example: the delivered line"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The screen on that record"
+                      "v": "—"
                     }
                   ],
-                  "text": "The screen on that record"
+                  "text": "—"
                 }
               ],
               "id": "4.2",
@@ -2120,7 +1794,7 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Note the values the answer should state. The example reads the delivered quantity and the shipment on the "
+                      "v": "Note the values the answer should state. Example: delivered quantity and shipment, on the "
                     },
                     {
                       "t": "chip",
@@ -2131,7 +1805,7 @@
                       "v": " tab"
                     }
                   ],
-                  "text": "Note the values the answer should state. The example reads the delivered quantity and the shipment on the Shipping tab"
+                  "text": "Note the values the answer should state. Example: delivered quantity and shipment, on the Shipping tab"
                 },
                 {
                   "tokens": [
@@ -2177,16 +1851,16 @@
                     },
                     {
                       "t": "text",
-                      "v": " and choose the command name from 2.4"
+                      "v": " and choose your command"
                     }
                   ],
-                  "text": "Open Actions and choose the command name from 2.4"
+                  "text": "Open Actions and choose your command"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "A window titled with that name; "
+                      "v": "A window with your sentence under "
                     },
                     {
                       "t": "field",
@@ -2194,26 +1868,19 @@
                     },
                     {
                       "t": "text",
-                      "v": " holds the instruction text and "
+                      "v": " and the answer under "
                     },
                     {
                       "t": "field",
                       "v": "Response"
-                    },
-                    {
-                      "t": "text",
-                      "v": " the answer"
                     }
                   ],
-                  "text": "A window titled with that name; Prompt holds the instruction text and Response the answer"
+                  "text": "A window with your sentence under Prompt and the answer under Response"
                 }
               ],
               "id": "4.4",
               "optional": false,
-              "produces": false,
-              "refs": [
-                "2.4"
-              ]
+              "produces": false
             },
             {
               "cells": [
@@ -2230,27 +1897,24 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Compare the response with the values from 4.3"
+                      "v": "Compare the answer with your expected values"
                     }
                   ],
-                  "text": "Compare the response with the values from 4.3"
+                  "text": "Compare the answer with your expected values"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The facts agree or they do not, and the form is the model's own. In the example the quantities were right and the answer was a letter: a heading, a greeting, a list and a sign-off, with formatting marks showing"
+                      "v": "The facts should match. Example: the right quantities, written as a letter"
                     }
                   ],
-                  "text": "The facts agree or they do not, and the form is the model's own. In the example the quantities were right and the answer was a letter: a heading, a greeting, a list and a sign-off, with formatting marks showing"
+                  "text": "The facts should match. Example: the right quantities, written as a letter"
                 }
               ],
               "id": "4.5",
               "optional": false,
-              "produces": false,
-              "refs": [
-                "4.3"
-              ]
+              "produces": false
             },
             {
               "cells": [
@@ -2275,19 +1939,19 @@
                     },
                     {
                       "t": "text",
-                      "v": " and open a record of another kind. The example opens the line that has not been delivered"
+                      "v": " and open a record of another kind. Example: a line with nothing delivered"
                     }
                   ],
-                  "text": "Click Close and open a record of another kind. The example opens the line that has not been delivered"
+                  "text": "Click Close and open a record of another kind. Example: a line with nothing delivered"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The screen shows that record"
+                      "v": "—"
                     }
                   ],
-                  "text": "The screen shows that record"
+                  "text": "—"
                 }
               ],
               "id": "4.6",
@@ -2317,16 +1981,16 @@
                     },
                     {
                       "t": "text",
-                      "v": " and choose the command from 2.4"
+                      "v": " and choose your command"
                     }
                   ],
-                  "text": "Open Actions and choose the command from 2.4"
+                  "text": "Open Actions and choose your command"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "An answer for that record. In the example delivered "
+                      "v": "An answer for that record. Example: delivered "
                     },
                     {
                       "t": "literal",
@@ -2334,18 +1998,15 @@
                     },
                     {
                       "t": "text",
-                      "v": ", which is right, and a sentence about what will happen next that nothing in LN holds"
+                      "v": ", and a promise nothing in LN holds"
                     }
                   ],
-                  "text": "An answer for that record. In the example delivered 0, which is right, and a sentence about what will happen next that nothing in LN holds"
+                  "text": "An answer for that record. Example: delivered 0, and a promise nothing in LN holds"
                 }
               ],
               "id": "4.7",
               "optional": false,
-              "produces": false,
-              "refs": [
-                "2.4"
-              ]
+              "produces": false
             }
           ]
         }
@@ -2417,10 +2078,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The editor opens on the text"
+                      "v": "The text, in the editor"
                     }
                   ],
-                  "text": "The editor opens on the text"
+                  "text": "The text, in the editor"
                 }
               ],
               "id": "5.1",
@@ -2442,23 +2103,23 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Add a line above the marker that fixes what was wrong with the form of the answer, then save and close. The example adds "
+                      "v": "Add a line above the marker that fixes the answer's form, then save and close. Example: "
                     },
                     {
                       "t": "literal",
                       "v": "Output only the message, in plain sentences. No heading, no greeting, no sign-off, no list and no formatting marks."
                     }
                   ],
-                  "text": "Add a line above the marker that fixes what was wrong with the form of the answer, then save and close. The example adds Output only the message, in plain sentences. No heading, no greeting, no sign-off, no list and no formatting marks."
+                  "text": "Add a line above the marker that fixes the answer's form, then save and close. Example: Output only the message, in plain sentences. No heading, no greeting, no sign-off, no list and no formatting marks."
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "A new last-modified stamp"
+                      "v": "—"
                     }
                   ],
-                  "text": "A new last-modified stamp"
+                  "text": "—"
                 }
               ],
               "id": "5.2",
@@ -2480,7 +2141,7 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "On the screen, still on the same record, open "
+                      "v": "Choose your command from "
                     },
                     {
                       "t": "chip",
@@ -2488,19 +2149,19 @@
                     },
                     {
                       "t": "text",
-                      "v": " and choose the command"
+                      "v": " again, on the same record"
                     }
                   ],
-                  "text": "On the screen, still on the same record, open Actions and choose the command"
+                  "text": "Choose your command from Actions again, on the same record"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The answer in the form asked for. In the example one plain sentence; the letter and the promise are gone"
+                      "v": "The answer in that form. Example: one plain sentence"
                     }
                   ],
-                  "text": "The answer in the form asked for. In the example one plain sentence; the letter and the promise are gone"
+                  "text": "The answer in that form. Example: one plain sentence"
                 }
               ],
               "id": "5.3",
@@ -2543,10 +2204,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The Modeler opens directly, without Dataset Configuration"
+                      "v": "The Modeler opens"
                     }
                   ],
-                  "text": "The Modeler opens directly, without Dataset Configuration"
+                  "text": "The Modeler opens"
                 }
               ],
               "id": "5.4",
@@ -2568,15 +2229,7 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Tick a field the answer still lacks, found by its code in the box above "
-                    },
-                    {
-                      "t": "field",
-                      "v": "Field"
-                    },
-                    {
-                      "t": "text",
-                      "v": ". The example ticks "
+                      "v": "Tick a field the answer still lacks. Example: "
                     },
                     {
                       "t": "literal",
@@ -2587,16 +2240,16 @@
                       "v": ", Planned Delivery Date"
                     }
                   ],
-                  "text": "Tick a field the answer still lacks, found by its code in the box above Field. The example ticks ddta, Planned Delivery Date"
+                  "text": "Tick a field the answer still lacks. Example: ddta, Planned Delivery Date"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The field is ticked"
+                      "v": "—"
                     }
                   ],
-                  "text": "The field is ticked"
+                  "text": "—"
                 }
               ],
               "id": "5.5",
@@ -2618,7 +2271,7 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "For a value kept in a table that refers to this one, expand "
+                      "v": "For a value in a related table, expand "
                     },
                     {
                       "t": "chip",
@@ -2626,15 +2279,7 @@
                     },
                     {
                       "t": "text",
-                      "v": " under "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Tables"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and choose that table. The example chooses Sales Order Actual Delivery Lines ("
+                      "v": " and choose the table. Example: Sales Order Actual Delivery Lines ("
                     },
                     {
                       "t": "literal",
@@ -2645,20 +2290,16 @@
                       "v": ")"
                     }
                   ],
-                  "text": "For a value kept in a table that refers to this one, expand Referred by under Tables and choose that table. The example chooses Sales Order Actual Delivery Lines (tdsls406)"
+                  "text": "For a value in a related table, expand Referred by and choose the table. Example: Sales Order Actual Delivery Lines (tdsls406)"
                 },
                 {
                   "tokens": [
                     {
-                      "t": "chip",
-                      "v": "Fields"
-                    },
-                    {
                       "t": "text",
-                      "v": " lists that table's fields, none ticked"
+                      "v": "That table's fields, none ticked"
                     }
                   ],
-                  "text": "Fields lists that table's fields, none ticked"
+                  "text": "That table's fields, none ticked"
                 }
               ],
               "id": "5.6",
@@ -2680,7 +2321,7 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Tick the fields wanted there and click "
+                      "v": "Tick the fields you want there and click "
                     },
                     {
                       "t": "button",
@@ -2688,7 +2329,7 @@
                     },
                     {
                       "t": "text",
-                      "v": ". The example ticks "
+                      "v": ". Example: "
                     },
                     {
                       "t": "literal",
@@ -2703,16 +2344,16 @@
                       "v": "shpm"
                     }
                   ],
-                  "text": "Tick the fields wanted there and click Save. The example ticks dldt and shpm"
+                  "text": "Tick the fields you want there and click Save. Example: dldt and shpm"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The fields are ticked; no message"
+                      "v": "No message"
                     }
                   ],
-                  "text": "The fields are ticked; no message"
+                  "text": "No message"
                 }
               ],
               "id": "5.7",
@@ -2734,7 +2375,7 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Add a line above the marker for each kind of record the answer must tell apart, and one for a value the dataset does not hold, then save and close. The example adds "
+                      "v": "Add a line above the marker for each kind of record, and one for a missing value, then save and close. Example: "
                     },
                     {
                       "t": "literal",
@@ -2765,16 +2406,16 @@
                       "v": "If a value you need is not in the dataset, write \"[not available]\" in its place."
                     }
                   ],
-                  "text": "Add a line above the marker for each kind of record the answer must tell apart, and one for a value the dataset does not hold, then save and close. The example adds If delivered equals ordered, say the line has shipped in full and give the last actual delivery date and the shipment number. If delivered is above zero and below ordered, say how many of the ordered quantity have shipped and give the planned delivery date. If delivered is zero, say nothing has shipped yet and give the planned delivery date. If a value you need is not in the dataset, write \"[not available]\" in its place."
+                  "text": "Add a line above the marker for each kind of record, and one for a missing value, then save and close. Example: If delivered equals ordered, say the line has shipped in full and give the last actual delivery date and the shipment number. If delivered is above zero and below ordered, say how many of the ordered quantity have shipped and give the planned delivery date. If delivered is zero, say nothing has shipped yet and give the planned delivery date. If a value you need is not in the dataset, write \"[not available]\" in its place."
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "A new last-modified stamp"
+                      "v": "—"
                     }
                   ],
-                  "text": "A new last-modified stamp"
+                  "text": "—"
                 }
               ],
               "id": "5.8",
@@ -2796,31 +2437,23 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Without closing the screen, open "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Actions"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and choose the command"
+                      "v": "Choose your command again without closing the screen"
                     }
                   ],
-                  "text": "Without closing the screen, open Actions and choose the command"
+                  "text": "Choose your command again without closing the screen"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The new field is missing from the answer: this session is still using the dataset as it was. In the example the planned delivery date reads "
+                      "v": "The new field is missing, because an open screen keeps the old dataset. Example: "
                     },
                     {
                       "t": "literal",
                       "v": "[not available]"
                     }
                   ],
-                  "text": "The new field is missing from the answer: this session is still using the dataset as it was. In the example the planned delivery date reads [not available]"
+                  "text": "The new field is missing, because an open screen keeps the old dataset. Example: [not available]"
                 }
               ],
               "id": "5.9",
@@ -2842,23 +2475,19 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Close the screen's tab, open the same record again, and choose the command from "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Actions"
+                      "v": "Close the screen's tab, open the record again and choose your command"
                     }
                   ],
-                  "text": "Close the screen's tab, open the same record again, and choose the command from Actions"
+                  "text": "Close the screen's tab, open the record again and choose your command"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The answer holds the new field. In the example nothing has shipped yet, and the planned delivery date"
+                      "v": "The new field is in the answer"
                     }
                   ],
-                  "text": "The answer holds the new field. In the example nothing has shipped yet, and the planned delivery date"
+                  "text": "The new field is in the answer"
                 }
               ],
               "id": "5.10",
@@ -2880,31 +2509,24 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Open a record of each other kind and choose the command from "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Actions"
+                      "v": "Choose your command on a record of each other kind"
                     }
                   ],
-                  "text": "Open a record of each other kind and choose the command from Actions"
+                  "text": "Choose your command on a record of each other kind"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Each answer follows its own rule. In the example the delivered line reads shipped in full, with a delivery date and the shipment from 4.3"
+                      "v": "Each answer follows its own line. Example: shipped in full, with a date and the shipment"
                     }
                   ],
-                  "text": "Each answer follows its own rule. In the example the delivered line reads shipped in full, with a delivery date and the shipment from 4.3"
+                  "text": "Each answer follows its own line. Example: shipped in full, with a date and the shipment"
                 }
               ],
               "id": "5.11",
               "optional": false,
-              "produces": false,
-              "refs": [
-                "4.3"
-              ]
+              "produces": false
             },
             {
               "cells": [
@@ -2921,31 +2543,23 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Add a line that fixes how a kind of value is written, save, and choose the command from "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Actions"
-                    },
-                    {
-                      "t": "text",
-                      "v": " again. The example adds "
+                      "v": "Add a line that fixes how a value is written, save, and choose your command again. Example: "
                     },
                     {
                       "t": "literal",
                       "v": "Write every date as YYYY-MM-DD."
                     }
                   ],
-                  "text": "Add a line that fixes how a kind of value is written, save, and choose the command from Actions again. The example adds Write every date as YYYY-MM-DD."
+                  "text": "Add a line that fixes how a value is written, save, and choose your command again. Example: Write every date as YYYY-MM-DD."
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The same facts, written that way. In the example each date as year, month and day"
+                      "v": "Example: each date as year, month and day"
                     }
                   ],
-                  "text": "The same facts, written that way. In the example each date as year, month and day"
+                  "text": "Example: each date as year, month and day"
                 }
               ],
               "id": "5.12",
@@ -3188,14 +2802,14 @@
       "tokens": [
         {
           "t": "strong",
-          "v": "Each step says what to do for a prompt of your own, and then what the example did."
+          "v": "Each step says what to do, then gives the example."
         },
         {
           "t": "text",
           "v": " The example is a delivery update for the customer about one sales order line."
         }
       ],
-      "text": "Each step says what to do for a prompt of your own, and then what the example did. The example is a delivery update for the customer about one sales order line."
+      "text": "Each step says what to do, then gives the example. The example is a delivery update for the customer about one sales order line."
     },
     {
       "kind": "prose",
@@ -3236,10 +2850,10 @@
         },
         {
           "t": "text",
-          "v": " > Know the screen the command belongs on, and one record of each kind the answer must tell apart. The GenAI feature has to be switched on for the tenant. "
+          "v": " > A screen to put the command on, a record of each kind to test with, and GenAI switched on for the tenant. "
         }
       ],
-      "text": "> Prerequisite > Know the screen the command belongs on, and one record of each kind the answer must tell apart. The GenAI feature has to be switched on for the tenant."
+      "text": "> Prerequisite > A screen to put the command on, a record of each kind to test with, and GenAI switched on for the tenant."
     },
     {
       "kind": "glance",
@@ -3269,28 +2883,28 @@
                 },
                 {
                   "t": "text",
-                  "v": " Decide what the prompt is for"
+                  "v": " Plan the prompt"
                 }
               ],
-              "text": "0 Decide what the prompt is for"
+              "text": "0 Plan the prompt"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The screen the command belongs on, GenAI LLMs"
+                  "v": "The screen the command is for, GenAI LLMs"
                 }
               ],
-              "text": "The screen the command belongs on, GenAI LLMs"
+              "text": "The screen the command is for, GenAI LLMs"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Six notes, from the screen's session code to the sentence the user sees"
+                  "v": "The session code, the table, the fields and the sentence the user sees"
                 }
               ],
-              "text": "Six notes, from the screen's session code to the sentence the user sees"
+              "text": "The session code, the table, the fields and the sentence the user sees"
             }
           ]
         },
@@ -3581,10 +3195,10 @@
         },
         {
           "t": "text",
-          "v": " Phase 0 settles them before any of the setup sessions is opened."
+          "v": " Phase 0 settles the first three and the last, and 3.3 the fourth."
         }
       ],
-      "text": "Every prompt is these six decisions, and the example is one set of answers to them. Phase 0 settles them before any of the setup sessions is opened.",
+      "text": "Every prompt is these six decisions, and the example is one set of answers to them. Phase 0 settles the first three and the last, and 3.3 the fourth.",
       "under": "The six choices"
     },
     {
@@ -4752,6 +4366,103 @@
         "What to check or do"
       ],
       "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "0"
+                }
+              ],
+              "text": "0"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The screen's table is not known"
+                }
+              ],
+              "text": "The screen's table is not known"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Build the dataset on your best guess. A wrong table stops the first run with an error that names the right one"
+                }
+              ],
+              "text": "Build the dataset on your best guess. A wrong table stops the first run with an error that names the right one"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "It is not clear which index is the screen's key"
+                }
+              ],
+              "text": "It is not clear which index is the screen's key"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open Find on the screen. In the example its first way to search, Order, Position, Sequence, is index 1"
+                }
+              ],
+              "text": "Open Find on the screen. In the example its first way to search, Order, Position, Sequence, is index 1"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A field's code is not known"
+                }
+              ],
+              "text": "A field's code is not known"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Type part of its name in the box above "
+                },
+                {
+                  "t": "field",
+                  "v": "Description"
+                }
+              ],
+              "text": "Type part of its name in the box above Description"
+            }
+          ]
+        },
         {
           "cells": [
             {

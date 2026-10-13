@@ -1,9 +1,9 @@
-commit   26379debf18d82173a2934f9a7675f3778bbd9fc
-date     2026-10-13T05:53:10Z
-subject  fix(planning): Keep a library path from exporting
+commit   1dffc1e5b60c7dd1954320e5f5a45f2bea7d69df
+date     2026-10-13T06:24:01Z
+subject  docs(genai): Cut each step to one short action
 contract 16 
 tier     export
-sha256   5a597000a93d95177c85a93effd54fd6544f85865884b92b5111c86dc0e32e13
+sha256   26d22903f07b7fb91662b94264bd24fabf8b169cc5cd06c8ae3105b37ca76434
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

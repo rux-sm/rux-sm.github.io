@@ -754,7 +754,15 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Tick it, then find and tick "
+                      "v": "Tick "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "qoor"
+                    },
+                    {
+                      "t": "text",
+                      "v": ". Then type "
                     },
                     {
                       "t": "literal",
@@ -762,19 +770,23 @@
                     },
                     {
                       "t": "text",
-                      "v": " the same way"
+                      "v": " in the same box, press Enter and tick "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "qidl"
                     }
                   ],
-                  "text": "Tick it, then find and tick qidl the same way"
+                  "text": "Tick qoor. Then type qidl in the same box, press Enter and tick qidl"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Delivered Quantity is ticked"
+                      "v": "Ordered Quantity and Delivered Quantity are ticked"
                     }
                   ],
-                  "text": "Delivered Quantity is ticked"
+                  "text": "Ordered Quantity and Delivered Quantity are ticked"
                 }
               ],
               "id": "1.8",
@@ -796,7 +808,15 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Clear the box, open the mark at the head of "
+                      "v": "Clear the box above "
+                    },
+                    {
+                      "t": "field",
+                      "v": "Field"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", open the mark at the head of "
                     },
                     {
                       "t": "field",
@@ -807,7 +827,7 @@
                       "v": " and choose Selected"
                     }
                   ],
-                  "text": "Clear the box, open the mark at the head of Selected and choose Selected"
+                  "text": "Clear the box above Field, open the mark at the head of Selected and choose Selected"
                 },
                 {
                   "tokens": [
@@ -1051,14 +1071,18 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Type a name over it in "
+                      "v": "Type the prompt's name in "
                     },
                     {
                       "t": "field",
                       "v": "GenAI Prompt"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", over the one already there"
                     }
                   ],
-                  "text": "Type a name over it in GenAI Prompt"
+                  "text": "Type the prompt's name in GenAI Prompt, over the one already there"
                 },
                 {
                   "tokens": [
@@ -1162,14 +1186,14 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Tick one whose description is the name the command should have and that no command on the screen already uses, and click "
+                      "v": "Tick a label whose description is the name the command should have and that no command on the screen already uses, and click "
                     },
                     {
                       "t": "button",
                       "label": "OK"
                     }
                   ],
-                  "text": "Tick one whose description is the name the command should have and that no command on the screen already uses, and click OK"
+                  "text": "Tick a label whose description is the name the command should have and that no command on the screen already uses, and click OK"
                 },
                 {
                   "tokens": [
@@ -1398,10 +1422,18 @@
                     },
                     {
                       "t": "text",
-                      "v": ", type the instruction text from §10 and save in the editor"
+                      "v": ", type "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Draft a delivery update for the customer about this order line."
+                    },
+                    {
+                      "t": "text",
+                      "v": " and save in the editor"
                     }
                   ],
-                  "text": "Choose Create, type the instruction text from §10 and save in the editor"
+                  "text": "Choose Create, type Draft a delivery update for the customer about this order line. and save in the editor"
                 },
                 {
                   "tokens": [
@@ -1482,10 +1514,38 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Type the first prompt text from §10, save and close"
+                      "v": "Type four lines, each on a line of its own, then save and close: "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "You are given an XML dataset containing one sales order line."
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Write a short delivery update to the customer about this line, stating the sales order and line, the item, the ordered quantity and the delivered quantity."
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Use only the information present in the dataset."
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "#data,XML#"
                     }
                   ],
-                  "text": "Type the first prompt text from §10, save and close"
+                  "text": "Type four lines, each on a line of its own, then save and close: You are given an XML dataset containing one sales order line. Write a short delivery update to the customer about this line, stating the sales order and line, the item, the ordered quantity and the delivered quantity. Use only the information present in the dataset. #data,XML#"
                 },
                 {
                   "tokens": [
@@ -1563,9 +1623,13 @@
                     {
                       "t": "command",
                       "route": "References ➔ GenAI Prompts by Session"
+                    },
+                    {
+                      "t": "text",
+                      "v": ". Do not open it from the menu"
                     }
                   ],
-                  "text": "On GenAI Prompts, tick the prompt and choose References ➔ GenAI Prompts by Session"
+                  "text": "On GenAI Prompts, tick the prompt and choose References ➔ GenAI Prompts by Session. Do not open it from the menu"
                 },
                 {
                   "tokens": [
@@ -2140,10 +2204,18 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Choose the command again"
+                      "v": "Open "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Actions"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and choose the command from 2.4"
                     }
                   ],
-                  "text": "Choose the command again"
+                  "text": "Open Actions and choose the command from 2.4"
                 },
                 {
                   "tokens": [
@@ -2165,7 +2237,10 @@
               ],
               "id": "4.7",
               "optional": false,
-              "produces": false
+              "produces": false,
+              "refs": [
+                "2.4"
+              ]
             }
           ]
         }
@@ -2262,10 +2337,14 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Add the form rule from §10 as a line above the marker, save and close"
+                      "v": "Add a line above the marker, then save and close: "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Output only the message, in plain sentences. No heading, no greeting, no sign-off, no list and no formatting marks."
                     }
                   ],
-                  "text": "Add the form rule from §10 as a line above the marker, save and close"
+                  "text": "Add a line above the marker, then save and close: Output only the message, in plain sentences. No heading, no greeting, no sign-off, no list and no formatting marks."
                 },
                 {
                   "tokens": [
@@ -2304,10 +2383,18 @@
                     },
                     {
                       "t": "text",
-                      "v": ", still on the undelivered line, choose the command again"
+                      "v": ", still on the undelivered line, open "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Actions"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and choose the command"
                     }
                   ],
-                  "text": "On Sales Order Lines, still on the undelivered line, choose the command again"
+                  "text": "On Sales Order Lines, still on the undelivered line, open Actions and choose the command"
                 },
                 {
                   "tokens": [
@@ -2400,10 +2487,14 @@
                     },
                     {
                       "t": "text",
-                      "v": ", press Enter and tick it"
+                      "v": ", press Enter and tick "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "ddta"
                     }
                   ],
-                  "text": "Type ddta in the box above Field, press Enter and tick it"
+                  "text": "Type ddta in the box above Field, press Enter and tick ddta"
                 },
                 {
                   "tokens": [
@@ -2550,10 +2641,38 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Add the three delivery rules and the missing-value rule from §10 to the prompt text, save and close"
+                      "v": "Add four lines above the marker in the prompt text, then save and close: "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "If delivered equals ordered, say the line has shipped in full and give the last actual delivery date and the shipment number."
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "If delivered is above zero and below ordered, say how many of the ordered quantity have shipped and give the planned delivery date."
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "If delivered is zero, say nothing has shipped yet and give the planned delivery date."
+                    },
+                    {
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "If a value you need is not in the dataset, write \"[not available]\" in its place."
                     }
                   ],
-                  "text": "Add the three delivery rules and the missing-value rule from §10 to the prompt text, save and close"
+                  "text": "Add four lines above the marker in the prompt text, then save and close: If delivered equals ordered, say the line has shipped in full and give the last actual delivery date and the shipment number. If delivered is above zero and below ordered, say how many of the ordered quantity have shipped and give the planned delivery date. If delivered is zero, say nothing has shipped yet and give the planned delivery date. If a value you need is not in the dataset, write \"[not available]\" in its place."
                 },
                 {
                   "tokens": [
@@ -2592,10 +2711,18 @@
                     },
                     {
                       "t": "text",
-                      "v": ", choose the command again"
+                      "v": ", open "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Actions"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and choose the command"
                     }
                   ],
-                  "text": "Without closing Sales Order Lines, choose the command again"
+                  "text": "Without closing Sales Order Lines, open Actions and choose the command"
                 },
                 {
                   "tokens": [
@@ -2642,10 +2769,14 @@
                     },
                     {
                       "t": "text",
-                      "v": " tab, open the same line again and choose the command"
+                      "v": " tab, open the undelivered line again, and choose the command from "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Actions"
                     }
                   ],
-                  "text": "Close the Sales Order Lines tab, open the same line again and choose the command"
+                  "text": "Close the Sales Order Lines tab, open the undelivered line again, and choose the command from Actions"
                 },
                 {
                   "tokens": [
@@ -2676,10 +2807,14 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Open the delivered line and choose the command"
+                      "v": "Open the delivered line and choose the command from "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Actions"
                     }
                   ],
-                  "text": "Open the delivered line and choose the command"
+                  "text": "Open the delivered line and choose the command from Actions"
                 },
                 {
                   "tokens": [
@@ -2713,10 +2848,26 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Add the date rule from §10 to the prompt text, save, and choose the command once more"
+                      "v": "Add "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Write every date as YYYY-MM-DD."
+                    },
+                    {
+                      "t": "text",
+                      "v": " above the marker in the prompt text, save, and choose the command from "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Actions"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on the delivered line"
                     }
                   ],
-                  "text": "Add the date rule from §10 to the prompt text, save, and choose the command once more"
+                  "text": "Add Write every date as YYYY-MM-DD. above the marker in the prompt text, save, and choose the command from Actions on the delivered line"
                 },
                 {
                   "tokens": [
@@ -3560,21 +3711,21 @@
       "tokens": [
         {
           "t": "strong",
-          "v": "Each row is one line in the Text Editor, typed exactly, in this order."
+          "v": "The finished prompt text is eleven lines, in the order the steps add them."
         },
         {
           "t": "text",
-          "v": " The marker stays the last line: every line added in phase 5 goes above it."
+          "v": " The instruction text is one line and is typed once."
         }
       ],
-      "text": "Each row is one line in the Text Editor, typed exactly, in this order. The marker stays the last line: every line added in phase 5 goes above it."
+      "text": "The finished prompt text is eleven lines, in the order the steps add them. The instruction text is one line and is typed once."
     },
     {
       "kind": "reference",
       "columns": [
         "Text",
-        "Added at",
-        "Enter"
+        "Typed at",
+        "What it is"
       ],
       "rows": [
         {
@@ -3600,11 +3751,11 @@
             {
               "tokens": [
                 {
-                  "t": "literal",
-                  "v": "Draft a delivery update for the customer about this order line."
+                  "t": "text",
+                  "v": "The sentence the user is shown beside the answer"
                 }
               ],
-              "text": "Draft a delivery update for the customer about this order line."
+              "text": "The sentence the user is shown beside the answer"
             }
           ]
         },
@@ -3631,73 +3782,11 @@
             {
               "tokens": [
                 {
-                  "t": "literal",
-                  "v": "You are given an XML dataset containing one sales order line."
-                }
-              ],
-              "text": "You are given an XML dataset containing one sales order line."
-            }
-          ]
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
                   "t": "text",
-                  "v": "Prompt"
+                  "v": "What the data is, the task, one rule, and the marker"
                 }
               ],
-              "text": "Prompt"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "2.11"
-                }
-              ],
-              "text": "2.11"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "literal",
-                  "v": "Write a short delivery update to the customer about this line, stating the sales order and line, the item, the ordered quantity and the delivered quantity."
-                }
-              ],
-              "text": "Write a short delivery update to the customer about this line, stating the sales order and line, the item, the ordered quantity and the delivered quantity."
-            }
-          ]
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Prompt"
-                }
-              ],
-              "text": "Prompt"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "2.11"
-                }
-              ],
-              "text": "2.11"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "literal",
-                  "v": "Use only the information present in the dataset."
-                }
-              ],
-              "text": "Use only the information present in the dataset."
+              "text": "What the data is, the task, one rule, and the marker"
             }
           ]
         },
@@ -3724,11 +3813,11 @@
             {
               "tokens": [
                 {
-                  "t": "literal",
-                  "v": "Output only the message, in plain sentences. No heading, no greeting, no sign-off, no list and no formatting marks."
+                  "t": "text",
+                  "v": "No letter: plain sentences only"
                 }
               ],
-              "text": "Output only the message, in plain sentences. No heading, no greeting, no sign-off, no list and no formatting marks."
+              "text": "No letter: plain sentences only"
             }
           ]
         },
@@ -3755,73 +3844,11 @@
             {
               "tokens": [
                 {
-                  "t": "literal",
-                  "v": "If delivered equals ordered, say the line has shipped in full and give the last actual delivery date and the shipment number."
-                }
-              ],
-              "text": "If delivered equals ordered, say the line has shipped in full and give the last actual delivery date and the shipment number."
-            }
-          ]
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
                   "t": "text",
-                  "v": "Prompt, the delivery rules"
+                  "v": "What to say for a line shipped in full, partly shipped, or not shipped"
                 }
               ],
-              "text": "Prompt, the delivery rules"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "5.8"
-                }
-              ],
-              "text": "5.8"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "literal",
-                  "v": "If delivered is above zero and below ordered, say how many of the ordered quantity have shipped and give the planned delivery date."
-                }
-              ],
-              "text": "If delivered is above zero and below ordered, say how many of the ordered quantity have shipped and give the planned delivery date."
-            }
-          ]
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Prompt, the delivery rules"
-                }
-              ],
-              "text": "Prompt, the delivery rules"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "5.8"
-                }
-              ],
-              "text": "5.8"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "literal",
-                  "v": "If delivered is zero, say nothing has shipped yet and give the planned delivery date."
-                }
-              ],
-              "text": "If delivered is zero, say nothing has shipped yet and give the planned delivery date."
+              "text": "What to say for a line shipped in full, partly shipped, or not shipped"
             }
           ]
         },
@@ -3848,11 +3875,11 @@
             {
               "tokens": [
                 {
-                  "t": "literal",
-                  "v": "If a value you need is not in the dataset, write \"[not available]\" in its place."
+                  "t": "text",
+                  "v": "What to write for a value the dataset did not send"
                 }
               ],
-              "text": "If a value you need is not in the dataset, write \"[not available]\" in its place."
+              "text": "What to write for a value the dataset did not send"
             }
           ]
         },
@@ -3879,42 +3906,11 @@
             {
               "tokens": [
                 {
-                  "t": "literal",
-                  "v": "Write every date as YYYY-MM-DD."
-                }
-              ],
-              "text": "Write every date as YYYY-MM-DD."
-            }
-          ]
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
                   "t": "text",
-                  "v": "Prompt, the marker"
+                  "v": "One way of writing a date"
                 }
               ],
-              "text": "Prompt, the marker"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "2.11"
-                }
-              ],
-              "text": "2.11"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "literal",
-                  "v": "#data,XML#"
-                }
-              ],
-              "text": "#data,XML#"
+              "text": "One way of writing a date"
             }
           ]
         }
@@ -3939,14 +3935,14 @@
       "tokens": [
         {
           "t": "strong",
-          "v": "The last line is the data marker."
+          "v": "The marker stays the last line."
         },
         {
           "t": "text",
-          "v": " LN replaces it with the dataset's output as XML, which is the only output format registered here."
+          "v": " LN replaces it with the dataset's output as XML, which is the only output format registered here, and every line added in phase 5 goes above it."
         }
       ],
-      "text": "The last line is the data marker. LN replaces it with the dataset's output as XML, which is the only output format registered here."
+      "text": "The marker stays the last line. LN replaces it with the dataset's output as XML, which is the only output format registered here, and every line added in phase 5 goes above it."
     },
     {
       "kind": "troubleshooting",
@@ -4066,6 +4062,57 @@
                 }
               ],
               "text": "A new row is a copy of the row the cursor was on. Replace it, as in 2.5"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "GenAI Prompts by Session"
+                },
+                {
+                  "t": "text",
+                  "v": " opens with a session as its header, not the prompt"
+                }
+              ],
+              "text": "GenAI Prompts by Session opens with a session as its header, not the prompt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "It was opened from the menu, or with no prompt ticked. Step to Sales Order Lines with the group arrows on the toolbar, click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": " and enter the prompt's name in "
+                },
+                {
+                  "t": "field",
+                  "v": "GenAI Prompt"
+                },
+                {
+                  "t": "text",
+                  "v": "; the link is the same"
+                }
+              ],
+              "text": "It was opened from the menu, or with no prompt ticked. Step to Sales Order Lines with the group arrows on the toolbar, click New and enter the prompt's name in GenAI Prompt; the link is the same"
             }
           ]
         },

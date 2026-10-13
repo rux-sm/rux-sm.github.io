@@ -10,7 +10,7 @@
   ],
   "updated": "2026-10-04",
   "status": "draft",
-  "summary": "create a quantity-one manual production order from an existing finished item, existing components, an existing BOM, and an existing routing; verify the generated operations and estimated materials; release the order; issue material to the job shop; report the operation(s) complete; and confirm the finished item is received into the warehouse.",
+  "summary": "make one finished item on a manual production order and receive it into the warehouse.",
   "order": 5,
   "sources": [
     "ticst0101m000",
@@ -2416,10 +2416,10 @@
         },
         {
           "t": "text",
-          "v": " create a quantity-one manual production order from an existing finished item, existing components, an existing BOM, and an existing routing; verify the generated operations and estimated materials; release the order; issue material to the job shop; report the operation(s) complete; and confirm the finished item is received into the warehouse."
+          "v": " make one finished item on a manual production order and receive it into the warehouse."
         }
       ],
-      "text": "Objective: create a quantity-one manual production order from an existing finished item, existing components, an existing BOM, and an existing routing; verify the generated operations and estimated materials; release the order; issue material to the job shop; report the operation(s) complete; and confirm the finished item is received into the warehouse."
+      "text": "Objective: make one finished item on a manual production order and receive it into the warehouse."
     },
     {
       "kind": "prose",

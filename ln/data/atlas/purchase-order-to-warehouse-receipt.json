@@ -10,7 +10,7 @@
   ],
   "updated": "2026-09-02",
   "status": "draft",
-  "summary": "buy raw materials from an external supplier and bring them into a raw-material warehouse on a purchase order — and verify that on-hand at that warehouse rose by exactly the quantity received.",
+  "summary": "buy raw materials on a purchase order and receive them into a warehouse.",
   "order": 4,
   "sources": [
     "tccom4120s000",
@@ -1725,7 +1725,7 @@
         },
         {
           "t": "text",
-          "v": " buy raw materials from an external supplier and bring them into a raw-material warehouse on a purchase order — and verify that on-hand at that warehouse rose by exactly the quantity received. "
+          "v": " buy raw materials on a purchase order and receive them into a warehouse. "
         },
         {
           "t": "strong",
@@ -1745,7 +1745,7 @@
           "v": ", which walked it inside a master-data walkthrough. "
         }
       ],
-      "text": "Objective: buy raw materials from an external supplier and bring them into a raw-material warehouse on a purchase order — and verify that on-hand at that warehouse rose by exactly the quantity received. Base walkthrough — this is the atomic \"buy it in\" process. It was extracted from phase 9 of Create test items, which walked it inside a master-data walkthrough."
+      "text": "Objective: buy raw materials on a purchase order and receive them into a warehouse. Base walkthrough — this is the atomic \"buy it in\" process. It was extracted from phase 9 of Create test items, which walked it inside a master-data walkthrough."
     },
     {
       "kind": "prose",

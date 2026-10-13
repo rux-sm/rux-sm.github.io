@@ -10,7 +10,7 @@
   ],
   "updated": "2026-09-03",
   "status": "draft",
-  "summary": "make one finished item visible to planning, give it a demand it cannot cover from stock, run MRP, and read the result — a planned supply chain covering the shortfall — in the Item Order Plan, in Planned Orders, and in the pegging tree.",
+  "summary": "give one item a demand stock cannot cover, run MRP, and read the plan it makes.",
   "order": 2,
   "sources": [
     "cppat1210m000",
@@ -1675,7 +1675,7 @@
         },
         {
           "t": "text",
-          "v": " make one finished item visible to planning, give it a demand it cannot cover from stock, run MRP, and read the result — a planned supply chain covering the shortfall — in the Item Order Plan, in Planned Orders, and in the pegging tree. "
+          "v": " give one item a demand stock cannot cover, run MRP, and read the plan it makes. "
         },
         {
           "t": "strong",
@@ -1686,7 +1686,7 @@
           "v": " — the first Enterprise Planning walkthrough in the library. Everything before this created supply by hand; this is where the system proposes it."
         }
       ],
-      "text": "Objective: make one finished item visible to planning, give it a demand it cannot cover from stock, run MRP, and read the result — a planned supply chain covering the shortfall — in the Item Order Plan, in Planned Orders, and in the pegging tree. Base walkthrough — the first Enterprise Planning walkthrough in the library. Everything before this created supply by hand; this is where the system proposes it."
+      "text": "Objective: give one item a demand stock cannot cover, run MRP, and read the plan it makes. Base walkthrough — the first Enterprise Planning walkthrough in the library. Everything before this created supply by hand; this is where the system proposes it."
     },
     {
       "kind": "prose",

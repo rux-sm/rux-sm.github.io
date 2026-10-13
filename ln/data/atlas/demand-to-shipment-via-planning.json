@@ -13,7 +13,7 @@
   ],
   "updated": "2026-09-02",
   "status": "draft",
-  "summary": "run the bamboo family down the long route of `order-to-shipment-overview.md` — a sales order that stock cannot cover, through MRP, across the transfer boundary, buying the components and building the finished item, to a confirmed shipment with on-hand verified down.",
+  "summary": "take a sales order stock cannot cover through planning, buying and building to a confirmed shipment.",
   "order": 8,
   "sources": [
     "cppat1210m000",
@@ -2911,16 +2911,7 @@
         },
         {
           "t": "text",
-          "v": " run the bamboo family down the long route of "
-        },
-        {
-          "t": "link",
-          "v": "Demand to shipment",
-          "href": "order-to-shipment-overview.md"
-        },
-        {
-          "t": "text",
-          "v": " — a sales order that stock cannot cover, through MRP, across the transfer boundary, buying the components and building the finished item, to a confirmed shipment with on-hand verified down. "
+          "v": " take a sales order stock cannot cover through planning, buying and building to a confirmed shipment. "
         },
         {
           "t": "strong",
@@ -2931,7 +2922,7 @@
           "v": " — it carries the sequence and the handovers. Each phase names the atomic walkthrough that owns its detail and does not restate it."
         }
       ],
-      "text": "Objective: run the bamboo family down the long route of Demand to shipment — a sales order that stock cannot cover, through MRP, across the transfer boundary, buying the components and building the finished item, to a confirmed shipment with on-hand verified down. Spine walkthrough — it carries the sequence and the handovers. Each phase names the atomic walkthrough that owns its detail and does not restate it."
+      "text": "Objective: take a sales order stock cannot cover through planning, buying and building to a confirmed shipment. Spine walkthrough — it carries the sequence and the handovers. Each phase names the atomic walkthrough that owns its detail and does not restate it."
     },
     {
       "kind": "prose",

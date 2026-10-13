@@ -147,8 +147,8 @@ function headline(list, p) {
     if (t.t !== 'command' && t.t !== 'path') { out.push(t); continue; }
     if (t.route !== p.route) routes.push(t.route);
     const dest = t.route.split(ARROW).at(-1), last = out.at(-1), before = out.at(-2);
-    // "Open Name code at Route": the route names the screen already said.
-    if (before?.t === 'session' && before.name === dest && last?.t === 'text' && last.v.trim() === 'at') { out.pop(); continue; }
+    // "Open Name code at Route", "Open Name, Route": the route names the screen already said.
+    if ((before?.name ?? before?.v) === dest && last?.t === 'text' && /^(at|,)$/.test(last.v.trim())) { out.pop(); continue; }
     // "Route (code)": the code names the route's last stop, so it becomes a screen.
     const [open, code, close] = list.slice(i + 1, i + 4);
     if (open?.t === 'text' && /^\s*\(\s*$/.test(open.v) && code?.t === 'session' && !code.name && close?.t === 'text' && /^\s*\)/.test(close.v)) {
@@ -377,6 +377,10 @@ const why = (p) => p.blocks.filter((b) => b.kind === 'prose')
 const afterTask = (s, i, forks) => forks.length ? here(`s=${esc(s.id)}&amp;t=${s.phases[i].n}&amp;f=${esc(forks[0].id)}`)
   : s.phases[i + 1] ? taskHref(s, s.phases[i + 1].n) : here(`s=${esc(s.id)}&amp;done=1`);
 
+// A scenario opens on its one action. The path under it is the overview, a
+// line a task, with the task's step count at the end of the line.
+const count = (n) => n === 1 ? '1 step' : `${n} steps`;
+
 function path(s) {
   const need = needs(s);
   const loose = section(s, 'variants').filter((row) => !/\b\d+\.\d+\b/.test(row.cells[1].text))
@@ -386,11 +390,11 @@ function path(s) {
     ${back('./', 'Scenarios')}
     <h1 class="ln-ask">${esc(s.title)}</h1>
     <p class="ln-quiet">${esc(cap(s.summary))}${need.map((n) => `<br>Needs: ${n}`).join('')}</p>
-    <ol class="ln-path">${s.phases.map((p) => `
-      <li data-t="${p.n}" data-n="${p.n + 1}"><a class="ln-path__stop" href="${taskHref(s, p.n)}"><span class="ln-path__dot">${p.n + 1}</span><b>${esc(p.title)}<small>${rowsOf(p).length === 1 ? '1 step' : `${rowsOf(p).length} steps`}</small></b></a></li>${extrasOf(s, p).forks.map((n) => `
+    <p class="ln-go"><a class="rux--btn rux--btn--primary" href="${taskHref(s, s.phases[0].n)}" data-start>Start</a><span class="ln-quiet">${count(s.phases.reduce((n, p) => n + rowsOf(p).length, 0))}</span></p>
+    <ol class="ln-path ln-path--tight">${s.phases.map((p) => `
+      <li data-t="${p.n}" data-n="${p.n + 1}"><a class="ln-path__stop" href="${taskHref(s, p.n)}"><span class="ln-path__dot">${p.n + 1}</span><b>${esc(p.title)}</b><small>${rowsOf(p).length}<span class="rux--visually-hidden"> ${rowsOf(p).length === 1 ? 'step' : 'steps'}</span></small></a></li>${extrasOf(s, p).forks.map((n) => `
       <li data-kind="fork"><a class="ln-path__stop" href="${here(`s=${esc(s.id)}&amp;t=${p.n}&amp;f=${esc(n.id)}`)}"><span class="ln-path__dot"></span><b>${esc(n.session)}</b></a></li>`).join('')}`).join('')}
-    </ol>
-    <a class="rux--btn rux--btn--primary" href="${taskHref(s, s.phases[0].n)}" data-start>Start</a>${loose.length ? `
+    </ol>${loose.length ? `
     <p><a class="rux--link" href="#main-content" data-open="loose">Different cases</a></p>${list(loose, 'loose')}` : ''}
   </section>`;
 }

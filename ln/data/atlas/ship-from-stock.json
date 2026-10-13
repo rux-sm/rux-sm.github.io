@@ -10,7 +10,7 @@
   ],
   "updated": "2026-10-04",
   "status": "approved",
-  "summary": "take a sales order for an item already in stock through to a confirmed shipment, then verify that inventory decreased by the shipped quantity.",
+  "summary": "ship a sales order for an item already in stock, and check inventory went down.",
   "order": 7,
   "sources": [
     "tdsls4246m000",
@@ -2581,7 +2581,7 @@
         },
         {
           "t": "text",
-          "v": " take a sales order for an item already in stock through to a confirmed shipment, then verify that inventory decreased by the shipped quantity. "
+          "v": " ship a sales order for an item already in stock, and check inventory went down. "
         },
         {
           "t": "strong",
@@ -2592,7 +2592,7 @@
           "v": " — situational variants build on this one. See Variants."
         }
       ],
-      "text": "Objective: take a sales order for an item already in stock through to a confirmed shipment, then verify that inventory decreased by the shipped quantity. Base walkthrough — situational variants build on this one. See Variants."
+      "text": "Objective: ship a sales order for an item already in stock, and check inventory went down. Base walkthrough — situational variants build on this one. See Variants."
     },
     {
       "kind": "prose",
@@ -4133,22 +4133,14 @@
                 },
                 {
                   "t": "text",
-                  "v": "; see 5.2. Once the shipment is confirmed a backorder is generated, and it becomes a new line only after it is confirmed in Sales — "
-                },
-                {
-                  "t": "literal",
-                  "v": "the source on file"
-                },
-                {
-                  "t": "text",
-                  "v": ". "
+                  "v": "; see 5.2. Once the shipment is confirmed a backorder is generated, and it becomes a new line only after it is confirmed in Sales. "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Reduce Shipped Quantity on Shipment Lines (whinh4131m000); see 5.2. Once the shipment is confirmed a backorder is generated, and it becomes a new line only after it is confirmed in Sales — the source on file. Not documented for this release."
+              "text": "Reduce Shipped Quantity on Shipment Lines (whinh4131m000); see 5.2. Once the shipment is confirmed a backorder is generated, and it becomes a new line only after it is confirmed in Sales. Not documented for this release."
             }
           ]
         },

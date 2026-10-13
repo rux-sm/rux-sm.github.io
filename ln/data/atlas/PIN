@@ -1,9 +1,9 @@
-commit   20fec37e10ab70de4aac53d682713cd01e3c7a76
-date     2026-10-13T01:54:57Z
-subject  fix(genai): Correct the steps a reader stumbled on
+commit   809382aa24a39dc4139776f19e46372dd944586a
+date     2026-10-13T02:57:52Z
+subject  docs(tasks): Cut each objective to one sentence
 contract 15 
 tier     export
-sha256   6566b8f5f1d0deee7a0471e3a044b44e6e173188d7ffd9463c2b89fea0d5214d
+sha256   3475c060c8d5c693e0c91a21439f3d2776528937ba1c8643593eeffed6642576
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

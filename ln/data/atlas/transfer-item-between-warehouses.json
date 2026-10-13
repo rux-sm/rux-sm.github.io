@@ -9,7 +9,7 @@
   ],
   "updated": "2026-09-02",
   "status": "draft",
-  "summary": "move a quantity of one item from a source warehouse to a destination warehouse, both in the same logistic company, using a manually created warehousing order — and verify that on-hand at the source dropped and on-hand at the destination rose by the same quantity.",
+  "summary": "move a quantity of one item between two warehouses, and check both on-hand figures.",
   "order": 6,
   "sources": [
     "cppat1210m000",
@@ -2008,7 +2008,7 @@
         },
         {
           "t": "text",
-          "v": " move a quantity of one item from a source warehouse to a destination warehouse, both in the same logistic company, using a manually created warehousing order — and verify that on-hand at the source dropped and on-hand at the destination rose by the same quantity. "
+          "v": " move a quantity of one item between two warehouses, and check both on-hand figures. "
         },
         {
           "t": "strong",
@@ -2019,7 +2019,7 @@
           "v": " — this is the foundation for a future multicompany-transfer variant."
         }
       ],
-      "text": "Objective: move a quantity of one item from a source warehouse to a destination warehouse, both in the same logistic company, using a manually created warehousing order — and verify that on-hand at the source dropped and on-hand at the destination rose by the same quantity. Base walkthrough — this is the foundation for a future multicompany-transfer variant."
+      "text": "Objective: move a quantity of one item between two warehouses, and check both on-hand figures. Base walkthrough — this is the foundation for a future multicompany-transfer variant."
     },
     {
       "kind": "prose",

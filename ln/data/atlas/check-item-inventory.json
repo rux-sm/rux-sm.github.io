@@ -9,7 +9,7 @@
   ],
   "updated": "2026-09-17",
   "status": "draft",
-  "summary": "find out how much of one item is in stock, which warehouse holds it, and how much of it is already committed, before a walkthrough consumes, moves or ships it.",
+  "summary": "find out how much of one item is in stock, where, and how much is already committed.",
   "order": 3,
   "sources": [
     "whwmd2515m000",
@@ -548,10 +548,10 @@
         },
         {
           "t": "text",
-          "v": " find out how much of one item is in stock, which warehouse holds it, and how much of it is already committed, before a walkthrough consumes, moves or ships it."
+          "v": " find out how much of one item is in stock, where, and how much is already committed."
         }
       ],
-      "text": "Objective: find out how much of one item is in stock, which warehouse holds it, and how much of it is already committed, before a walkthrough consumes, moves or ships it."
+      "text": "Objective: find out how much of one item is in stock, where, and how much is already committed."
     },
     {
       "kind": "prose",

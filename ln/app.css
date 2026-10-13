@@ -45,6 +45,13 @@
 .ln-path li[data-kind="fork"] .ln-path__dot { border-style: dashed; }
 .ln-path b { font-weight: 400; padding-block-start: .3rem; display: block; }
 .ln-path small { display: block; font-size: .8125rem; color: var(--rux-text-secondary); }
+/* A scenario's own path: a line a task, the step count at the end of it, close
+   enough that the whole scenario shows above the tab bar. */
+.ln-path--tight li { padding-block-end: .75rem; }
+.ln-path--tight .ln-path__stop { grid-template-columns: 2rem 1fr auto; align-items: start; }
+.ln-path--tight small { padding-block-start: .4rem; font-variant-numeric: tabular-nums; }
+/* The one action, with how long the scenario is beside it. */
+.ln-go { display: flex; align-items: center; gap: 1rem; }
 
 /* ---- One step: where you are, what to do, what you should see, then on ---- */
 .ln-steps { margin: 0; padding: 0; list-style: none; }

@@ -28,7 +28,9 @@ exports, so a correction is made once and every screen redraws.
   on card for the last place the reader stopped, and a card for each scenario.
 
 - **A scenario is a path down the page.** Each task is a stop on it, and a
-  decision is a fork drawn between the two tasks it separates.
+  decision is a fork drawn between the two tasks it separates. Its one button,
+  Start or Carry on, sits above the path, and a stop is one line that ends in
+  its step count.
 
 - **A task is walked one step at a time.** A step shows where the reader is,
   what to do, the screen's code to copy, and what they should see. Back and

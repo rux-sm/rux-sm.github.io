@@ -10,7 +10,7 @@
   ],
   "updated": "2026-10-12",
   "status": "draft",
-  "summary": "put a one-click AI command on the sales order line screen that drafts a delivery update for the customer, check its answer against what LN shows, improve it one rule at a time, and take it away again.",
+  "summary": "put a one-click AI command on the sales order line screen, check its answer, improve it, and take it away.",
   "order": 0,
   "sources": [
     "ttrpi5560m000",
@@ -3117,10 +3117,10 @@
         },
         {
           "t": "text",
-          "v": " put a one-click AI command on the sales order line screen that drafts a delivery update for the customer, check its answer against what LN shows, improve it one rule at a time, and take it away again."
+          "v": " put a one-click AI command on the sales order line screen, check its answer, improve it, and take it away."
         }
       ],
-      "text": "Objective: put a one-click AI command on the sales order line screen that drafts a delivery update for the customer, check its answer against what LN shows, improve it one rule at a time, and take it away again."
+      "text": "Objective: put a one-click AI command on the sales order line screen, check its answer, improve it, and take it away."
     },
     {
       "kind": "prose",
@@ -3161,18 +3161,10 @@
         },
         {
           "t": "text",
-          "v": " > Know one sales order line that has been delivered in full and one with nothing delivered. The GenAI feature has to be switched on for the tenant, "
-        },
-        {
-          "t": "literal",
-          "v": "the source on file"
-        },
-        {
-          "t": "text",
-          "v": " §1."
+          "v": " > Know one sales order line that has been delivered in full and one with nothing delivered. The GenAI feature has to be switched on for the tenant. "
         }
       ],
-      "text": "> Prerequisite > Know one sales order line that has been delivered in full and one with nothing delivered. The GenAI feature has to be switched on for the tenant, the source on file §1."
+      "text": "> Prerequisite > Know one sales order line that has been delivered in full and one with nothing delivered. The GenAI feature has to be switched on for the tenant."
     },
     {
       "kind": "glance",
@@ -4397,18 +4389,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " at 3.3, and build the dataset on that session's table. One prompt here does this on Business Partners, "
-                },
-                {
-                  "t": "literal",
-                  "v": "the source on file"
-                },
-                {
-                  "t": "text",
-                  "v": " §5"
+                  "v": " at 3.3, and build the dataset on that session's table. One prompt here does this on Business Partners. "
                 }
               ],
-              "text": "Link to a session that lists records, leave When Enabled on Records Selected at 3.3, and build the dataset on that session's table. One prompt here does this on Business Partners, the source on file §5"
+              "text": "Link to a session that lists records, leave When Enabled on Records Selected at 3.3, and build the dataset on that session's table. One prompt here does this on Business Partners."
             }
           ]
         },

@@ -3,14 +3,14 @@
   "tier": "export",
   "id": "set-up-a-genai-prompt",
   "title": "Set up a GenAI prompt",
-  "module": "Tools · Sales",
+  "module": "Tools · Warehousing",
   "modules": [
     "Tools",
-    "Sales"
+    "Warehousing"
   ],
   "updated": "2026-10-13",
   "status": "draft",
-  "summary": "put a one-click AI command on an LN screen, check its answer, improve it, and take it away.",
+  "summary": "put a one-click AI command on any LN screen, check its answer, improve it, and take it away.",
   "order": 0,
   "sources": [
     "ttrpi5560m000",
@@ -19,16 +19,16 @@
     "ttadv9140m000",
     "ttrpi5150m000",
     "ttadv9160m000",
-    "tdsls4601m200",
-    "tdsls4101m000"
+    "whwmd4100m100",
+    "whwmd4300m000"
   ],
   "phases": [
     {
       "n": 0,
       "title": "Plan the prompt",
-      "route": "Sales ➔ Orders ➔ Order Intake Workbench",
-      "session": "Sales Order Intake Workbench",
-      "sessionCode": "tdsls4601m200",
+      "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Company - Item Inventory",
+      "session": "Company - Item Inventory",
+      "sessionCode": "whwmd4100m100",
       "blocks": [
         {
           "kind": "prose",
@@ -39,10 +39,10 @@
             },
             {
               "t": "text",
-              "v": " A prompt is tied to one exact session code, and its dataset to that session's table. So the build starts on the screen the command will sit on, not in the setup sessions, and with what the answer has to say. The example's screen is Sales Order Lines. LN has no language model of its own: it keeps a list retrieved from the Infor GenAI application, and a prompt that names no model uses the one that service marks as default."
+              "v": " A prompt is tied to one exact session code, and its dataset to that session's table. From that table a dataset reaches the tables it points to and the tables that point at it, and nothing beyond. So the build starts with what the answer must say, and then finds the screen whose record owns that data. The example's stock rows belong to an item's warehousing record, which is what Company - Item Inventory lists. LN has no language model of its own: it keeps a list retrieved from the Infor GenAI application, and a prompt that names no model uses the one that service marks as default."
             }
           ],
-          "text": "What LN is doing. A prompt is tied to one exact session code, and its dataset to that session's table. So the build starts on the screen the command will sit on, not in the setup sessions, and with what the answer has to say. The example's screen is Sales Order Lines. LN has no language model of its own: it keeps a list retrieved from the Infor GenAI application, and a prompt that names no model uses the one that service marks as default."
+          "text": "What LN is doing. A prompt is tied to one exact session code, and its dataset to that session's table. From that table a dataset reaches the tables it points to and the tables that point at it, and nothing beyond. So the build starts with what the answer must say, and then finds the screen whose record owns that data. The example's stock rows belong to an item's warehousing record, which is what Company - Item Inventory lists. LN has no language model of its own: it keeps a list retrieved from the Infor GenAI application, and a prompt that names no model uses the one that service marks as default."
         },
         {
           "kind": "steps",
@@ -67,52 +67,31 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Open the screen the command is for, on one record. Example: "
-                    },
-                    {
-                      "t": "button",
-                      "label": "Drill In"
-                    },
-                    {
-                      "t": "text",
-                      "v": " on a delivered line in "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Sales Order Intake Workbench"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Order Lines"
-                    },
-                    {
-                      "t": "text",
-                      "v": " tab"
+                      "v": "List the values the answer must state. Example: an item's stock in each warehouse, and each planned receipt and issue"
                     }
                   ],
-                  "text": "Open the screen the command is for, on one record. Example: Drill In on a delivered line in Sales Order Intake Workbench, Order Lines tab"
+                  "text": "List the values the answer must state. Example: an item's stock in each warehouse, and each planned receipt and issue"
                 },
                 {
                   "tokens": [
                     {
-                      "t": "text",
-                      "v": "The record on its screen. Example: "
+                      "t": "pencil"
                     },
                     {
-                      "t": "chip",
-                      "v": "Sales Order Lines"
+                      "t": "text",
+                      "v": " "
+                    },
+                    {
+                      "t": "value",
+                      "v": "values"
                     }
                   ],
-                  "text": "The record on its screen. Example: Sales Order Lines"
+                  "text": "values"
                 }
               ],
               "id": "0.1",
               "optional": false,
-              "produces": false
+              "produces": true
             },
             {
               "cells": [
@@ -124,6 +103,44 @@
                     }
                   ],
                   "text": "0.2"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Open a screen that lists the record those values belong to. Example: "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Company - Item Inventory"
+                    }
+                  ],
+                  "text": "Open a screen that lists the record those values belong to. Example: Company - Item Inventory"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "One row for each record. Example: an item on each row"
+                    }
+                  ],
+                  "text": "One row for each record. Example: an item on each row"
+                }
+              ],
+              "id": "0.2",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "0.3"
+                    }
+                  ],
+                  "text": "0.3"
                 },
                 {
                   "tokens": [
@@ -142,7 +159,7 @@
                     },
                     {
                       "t": "session",
-                      "code": "tdsls4101m000"
+                      "code": "whwmd4100m100"
                     },
                     {
                       "t": "text",
@@ -160,52 +177,7 @@
                       "v": "session code"
                     }
                   ],
-                  "text": "Example: tdsls4101m000 — session code"
-                }
-              ],
-              "id": "0.2",
-              "optional": false,
-              "produces": true
-            },
-            {
-              "cells": [
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "0.3"
-                    }
-                  ],
-                  "text": "0.3"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "Note the table the screen's records are in. Example: "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "tdsls401"
-                    }
-                  ],
-                  "text": "Note the table the screen's records are in. Example: tdsls401"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "pencil"
-                    },
-                    {
-                      "t": "text",
-                      "v": " "
-                    },
-                    {
-                      "t": "value",
-                      "v": "table"
-                    }
-                  ],
-                  "text": "table"
+                  "text": "Example: whwmd4100m100 — session code"
                 }
               ],
               "id": "0.3",
@@ -227,10 +199,14 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "List the values the answer must state. Example: order, line, item, ordered and delivered quantity"
+                      "v": "Note the table the screen's records are in. Example: "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "whwmd400"
                     }
                   ],
-                  "text": "List the values the answer must state. Example: order, line, item, ordered and delivered quantity"
+                  "text": "Note the table the screen's records are in. Example: whwmd400"
                 },
                 {
                   "tokens": [
@@ -243,10 +219,10 @@
                     },
                     {
                       "t": "value",
-                      "v": "fields"
+                      "v": "table"
                     }
                   ],
-                  "text": "fields"
+                  "text": "table"
                 }
               ],
               "id": "0.4",
@@ -272,10 +248,10 @@
                     },
                     {
                       "t": "literal",
-                      "v": "Draft a delivery update for the customer about this order line."
+                      "v": "Check where this item's stock is and what is planned in and out."
                     }
                   ],
-                  "text": "Write the one sentence the user will see. Example: Draft a delivery update for the customer about this order line."
+                  "text": "Write the one sentence the user will see. Example: Check where this item's stock is and what is planned in and out."
                 },
                 {
                   "tokens": [
@@ -377,10 +353,10 @@
             },
             {
               "t": "text",
-              "v": " A dataset is the LN data that travels with the question, and it is the whole of what the model is told. It starts from one main table and one index of it. The record the user is on reaches the dataset through that index, which is why both have to be the screen's own. Every field ticked is sent, so the first version takes only what the first prompt text names. The example's is six fields of a sales order line."
+              "v": " A dataset is the LN data that travels with the question, and it is the whole of what the model is told. It starts from one main table and one index of it. The record the user is on reaches the dataset through that index, which is why both have to be the screen's own. Around the main table the Modeler offers two branches: Refers to, for a value behind a code, and Referred by, for rows that belong to the record. Every field ticked is sent, so take only what the prompt text will name."
             }
           ],
-          "text": "What LN is doing. A dataset is the LN data that travels with the question, and it is the whole of what the model is told. It starts from one main table and one index of it. The record the user is on reaches the dataset through that index, which is why both have to be the screen's own. Every field ticked is sent, so the first version takes only what the first prompt text names. The example's is six fields of a sales order line."
+          "text": "What LN is doing. A dataset is the LN data that travels with the question, and it is the whole of what the model is told. It starts from one main table and one index of it. The record the user is on reaches the dataset through that index, which is why both have to be the screen's own. Around the main table the Modeler offers two branches: Refers to, for a value behind a code, and Referred by, for rows that belong to the record. Every field ticked is sent, so take only what the prompt text will name."
         },
         {
           "kind": "steps",
@@ -468,9 +444,17 @@
                     {
                       "t": "field",
                       "v": "Description"
+                    },
+                    {
+                      "t": "text",
+                      "v": ". Example: "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "item_stock"
                     }
                   ],
-                  "text": "Enter a Dataset Name in lowercase and a Description"
+                  "text": "Enter a Dataset Name in lowercase and a Description. Example: item_stock"
                 },
                 {
                   "tokens": [
@@ -520,10 +504,10 @@
                     },
                     {
                       "t": "literal",
-                      "v": "tdsls401"
+                      "v": "whwmd400"
                     }
                   ],
-                  "text": "Type your table in Main table. Example: tdsls401"
+                  "text": "Type your table in Main table. Example: whwmd400"
                 },
                 {
                   "tokens": [
@@ -566,10 +550,10 @@
                     },
                     {
                       "t": "literal",
-                      "v": "1 - Order, Position, Sequence"
+                      "v": "1 - Item"
                     }
                   ],
-                  "text": "Set Selection Index to the screen's key. Example: 1 - Order, Position, Sequence"
+                  "text": "Set Selection Index to the screen's key. Example: 1 - Item"
                 },
                 {
                   "tokens": [
@@ -642,30 +626,10 @@
                     },
                     {
                       "t": "literal",
-                      "v": "orno"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "pono"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "sqnb"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", at the head of the list"
+                      "v": "item"
                     }
                   ],
-                  "text": "Tick the fields of that index. Example: orno, pono and sqnb, at the head of the list"
+                  "text": "Tick the fields of that index. Example: item"
                 },
                 {
                   "tokens": [
@@ -696,47 +660,31 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Find each of your fields and tick it. Example: "
+                      "v": "Set the list above the "
                     },
                     {
-                      "t": "literal",
-                      "v": "item"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "qoor"
+                      "t": "chip",
+                      "v": "Tables"
                     },
                     {
                       "t": "text",
-                      "v": " and "
+                      "v": " tree to "
                     },
                     {
                       "t": "literal",
-                      "v": "qidl"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", each typed in the box above "
-                    },
-                    {
-                      "t": "field",
-                      "v": "Field"
+                      "v": "By Name"
                     }
                   ],
-                  "text": "Find each of your fields and tick it. Example: item, qoor and qidl, each typed in the box above Field"
+                  "text": "Set the list above the Tables tree to By Name"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The list narrows to the field"
+                      "v": "Each branch lists its tables in the order of their codes"
                     }
                   ],
-                  "text": "The list narrows to the field"
+                  "text": "Each branch lists its tables in the order of their codes"
                 }
               ],
               "id": "1.7",
@@ -758,31 +706,47 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Clear the box above "
+                      "v": "For a value behind a code, expand "
                     },
                     {
-                      "t": "field",
-                      "v": "Field"
+                      "t": "chip",
+                      "v": "Refers to"
                     },
                     {
                       "t": "text",
-                      "v": " and choose Selected at the head of "
+                      "v": ", choose the table and tick the field. Example: Items ("
                     },
                     {
-                      "t": "field",
-                      "v": "Selected"
+                      "t": "literal",
+                      "v": "tcibd001"
+                    },
+                    {
+                      "t": "text",
+                      "v": "), then "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "dsca"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "cuni"
                     }
                   ],
-                  "text": "Clear the box above Field and choose Selected at the head of Selected"
+                  "text": "For a value behind a code, expand Refers to, choose the table and tick the field. Example: Items (tcibd001), then dsca and cuni"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Only the ticked fields. Example: six"
+                      "v": "That table's fields. Example: Description and Inventory Unit"
                     }
                   ],
-                  "text": "Only the ticked fields. Example: six"
+                  "text": "That table's fields. Example: Description and Inventory Unit"
                 }
               ],
               "id": "1.8",
@@ -799,6 +763,286 @@
                     }
                   ],
                   "text": "1.9"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "For rows that belong to the record, expand "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Referred by"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", choose the table and tick its fields. Example: Item Inventory by Warehouse ("
+                    },
+                    {
+                      "t": "literal",
+                      "v": "whwmd215"
+                    },
+                    {
+                      "t": "text",
+                      "v": "), then "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "cwar"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "qhnd"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "qblk"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "qord"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "qall"
+                    }
+                  ],
+                  "text": "For rows that belong to the record, expand Referred by, choose the table and tick its fields. Example: Item Inventory by Warehouse (whwmd215), then cwar, qhnd, qblk, qord and qall"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "That table's fields, none ticked until you tick them"
+                    }
+                  ],
+                  "text": "That table's fields, none ticked until you tick them"
+                }
+              ],
+              "id": "1.9",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.10"
+                    }
+                  ],
+                  "text": "1.10"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Do the same for each other set of rows. Example: Planned Inventory Transactions by Item ("
+                    },
+                    {
+                      "t": "literal",
+                      "v": "whinp100"
+                    },
+                    {
+                      "t": "text",
+                      "v": "), then "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "koor"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "orno"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "kotr"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "pono"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "qana"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "date"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "cwar"
+                    }
+                  ],
+                  "text": "Do the same for each other set of rows. Example: Planned Inventory Transactions by Item (whinp100), then koor, orno, kotr, pono, qana, date and cwar"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "—"
+                    }
+                  ],
+                  "text": "—"
+                }
+              ],
+              "id": "1.10",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.11"
+                    }
+                  ],
+                  "text": "1.11"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "For a name behind a code in those rows, expand the table and then its own "
+                    },
+                    {
+                      "t": "chip",
+                      "v": "Refers to"
+                    },
+                    {
+                      "t": "text",
+                      "v": ". Example: under Item Inventory by Warehouse, Warehouses ("
+                    },
+                    {
+                      "t": "literal",
+                      "v": "whwmd200"
+                    },
+                    {
+                      "t": "text",
+                      "v": "), then Warehouses ("
+                    },
+                    {
+                      "t": "literal",
+                      "v": "tcmcs003"
+                    },
+                    {
+                      "t": "text",
+                      "v": "), and tick "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "dsca"
+                    }
+                  ],
+                  "text": "For a name behind a code in those rows, expand the table and then its own Refers to. Example: under Item Inventory by Warehouse, Warehouses (whwmd200), then Warehouses (tcmcs003), and tick dsca"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The path to the table, printed above the tree"
+                    }
+                  ],
+                  "text": "The path to the table, printed above the tree"
+                }
+              ],
+              "id": "1.11",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.12"
+                    }
+                  ],
+                  "text": "1.12"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Drag the bar under the two panels upward"
+                    }
+                  ],
+                  "text": "Drag the bar under the two panels upward"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "chip",
+                      "v": "Selected Fields"
+                    },
+                    {
+                      "t": "text",
+                      "v": " lists every field ticked, under its table"
+                    }
+                  ],
+                  "text": "Selected Fields lists every field ticked, under its table"
+                }
+              ],
+              "id": "1.12",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "1.13"
+                    }
+                  ],
+                  "text": "1.13"
                 },
                 {
                   "tokens": [
@@ -823,7 +1067,7 @@
                   "text": "No message"
                 }
               ],
-              "id": "1.9",
+              "id": "1.13",
               "optional": false,
               "produces": false
             },
@@ -833,10 +1077,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "1.10"
+                      "v": "1.14"
                     }
                   ],
-                  "text": "1.10"
+                  "text": "1.14"
                 },
                 {
                   "tokens": [
@@ -869,7 +1113,7 @@
                   "text": "Your dataset is listed"
                 }
               ],
-              "id": "1.10",
+              "id": "1.14",
               "optional": false,
               "produces": false
             }
@@ -894,10 +1138,10 @@
             },
             {
               "t": "text",
-              "v": " A prompt row ties a label, a dataset and two texts together. The label's description becomes the command's name. The instruction text is shown to the user beside the answer. The prompt text is what is sent to the model, with the dataset's output put where its data marker stands. The first prompt text is short on purpose: the task, one rule and the marker."
+              "v": " A prompt row ties a label, a dataset and two texts together. The label's description becomes the command's name. The instruction text is shown to the user beside the answer. The prompt text is what is sent to the model, with the dataset's output put where its data marker stands. The first prompt text is short on purpose: what the data is, the task, one rule and the marker."
             }
           ],
-          "text": "What LN is doing. A prompt row ties a label, a dataset and two texts together. The label's description becomes the command's name. The instruction text is shown to the user beside the answer. The prompt text is what is sent to the model, with the dataset's output put where its data marker stands. The first prompt text is short on purpose: the task, one rule and the marker."
+          "text": "What LN is doing. A prompt row ties a label, a dataset and two texts together. The label's description becomes the command's name. The instruction text is shown to the user beside the answer. The prompt text is what is sent to the model, with the dataset's output put where its data marker stands. The first prompt text is short on purpose: what the data is, the task, one rule and the marker."
         },
         {
           "kind": "steps",
@@ -973,9 +1217,17 @@
                     {
                       "t": "field",
                       "v": "GenAI Prompt"
+                    },
+                    {
+                      "t": "text",
+                      "v": ". Example: "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "stock_check"
                     }
                   ],
-                  "text": "Type your prompt's name over the one in GenAI Prompt"
+                  "text": "Type your prompt's name over the one in GenAI Prompt. Example: stock_check"
                 },
                 {
                   "tokens": [
@@ -1045,10 +1297,10 @@
                     },
                     {
                       "t": "text",
-                      "v": ", and press Enter"
+                      "v": ", and press Enter. Example: Inventory"
                     }
                   ],
-                  "text": "In the Label lookup, enter 2 under Language and a word under Label Description, and press Enter"
+                  "text": "In the Label lookup, enter 2 under Language and a word under Label Description, and press Enter. Example: Inventory"
                 },
                 {
                   "tokens": [
@@ -1087,10 +1339,10 @@
                     },
                     {
                       "t": "text",
-                      "v": ". Pick one no command on the screen uses"
+                      "v": ". Pick one no command on the screen uses. Example: Item Inventory"
                     }
                   ],
-                  "text": "Tick a label that reads as the command's name and click OK. Pick one no command on the screen uses"
+                  "text": "Tick a label that reads as the command's name and click OK. Pick one no command on the screen uses. Example: Item Inventory"
                 },
                 {
                   "tokens": [
@@ -1182,10 +1434,10 @@
                     },
                     {
                       "t": "literal",
-                      "v": "Email"
+                      "v": "Report"
                     }
                   ],
-                  "text": "Set Usage Type. Example: Email"
+                  "text": "Set Usage Type. Example: Report"
                 },
                 {
                   "tokens": [
@@ -1388,7 +1640,7 @@
                     },
                     {
                       "t": "literal",
-                      "v": "You are given an XML dataset containing one sales order line."
+                      "v": "You are given an XML dataset for one item: its description and unit, its inventory in each warehouse, and its planned inventory transactions."
                     },
                     {
                       "t": "text",
@@ -1396,7 +1648,7 @@
                     },
                     {
                       "t": "literal",
-                      "v": "Write a short delivery update to the customer about this line, stating the sales order and line, the item, the ordered quantity and the delivered quantity."
+                      "v": "Write a stock check for someone about to promise this item to a customer."
                     },
                     {
                       "t": "text",
@@ -1415,7 +1667,7 @@
                       "v": "#data,XML#"
                     }
                   ],
-                  "text": "Type the first prompt text, one line each, then save and close. Example: You are given an XML dataset containing one sales order line. Write a short delivery update to the customer about this line, stating the sales order and line, the item, the ordered quantity and the delivered quantity. Use only the information present in the dataset. #data,XML#"
+                  "text": "Type the first prompt text, one line each, then save and close. Example: You are given an XML dataset for one item: its description and unit, its inventory in each warehouse, and its planned inventory transactions. Write a stock check for someone about to promise this item to a customer. Use only the information present in the dataset. #data,XML#"
                 },
                 {
                   "tokens": [
@@ -1542,7 +1794,7 @@
                     },
                     {
                       "t": "literal",
-                      "v": "td"
+                      "v": "wh"
                     },
                     {
                       "t": "text",
@@ -1550,7 +1802,7 @@
                     },
                     {
                       "t": "literal",
-                      "v": "sls"
+                      "v": "wmd"
                     },
                     {
                       "t": "text",
@@ -1558,19 +1810,19 @@
                     },
                     {
                       "t": "literal",
-                      "v": "4101m000"
+                      "v": "4100m100"
                     }
                   ],
-                  "text": "Click New and type your session code across the three Session boxes. Example: td, sls and 4101m000"
+                  "text": "Click New and type your session code across the three Session boxes. Example: wh, wmd and 4100m100"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The screen's name appears"
+                      "v": "The screen's name appears. Example: Company - Item Inventory"
                     }
                   ],
-                  "text": "The screen's name appears"
+                  "text": "The screen's name appears. Example: Company - Item Inventory"
                 }
               ],
               "id": "3.2",
@@ -1608,7 +1860,7 @@
                     },
                     {
                       "t": "text",
-                      "v": " for the record on screen, "
+                      "v": " for the row in view or the ticked rows, "
                     },
                     {
                       "t": "literal",
@@ -1616,14 +1868,14 @@
                     },
                     {
                       "t": "text",
-                      "v": " for ticked records. Example: "
+                      "v": " to wait for a tick. Example: "
                     },
                     {
                       "t": "literal",
                       "v": "Always"
                     }
                   ],
-                  "text": "Set When Enabled: Always for the record on screen, Records Selected for ticked records. Example: Always"
+                  "text": "Set When Enabled: Always for the row in view or the ticked rows, Records Selected to wait for a tick. Example: Always"
                 },
                 {
                   "tokens": [
@@ -1685,9 +1937,9 @@
     {
       "n": 4,
       "title": "Run it and check the answer",
-      "route": "Sales ➔ Orders ➔ Order Intake Workbench",
-      "session": "Sales Order Intake Workbench",
-      "sessionCode": "tdsls4601m200",
+      "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Company - Item Inventory",
+      "session": "Company - Item Inventory",
+      "sessionCode": "whwmd4100m100",
       "blocks": [
         {
           "kind": "prose",
@@ -1698,10 +1950,10 @@
             },
             {
               "t": "text",
-              "v": " When the command is chosen, LN runs the dataset for the record on the screen, writes the result into the prompt text and sends it to the model. The answer opens in a window of its own. The model answers only from what the dataset sent, and a wrong answer looks the same as a right one, so the first runs are checked against the screen, once for each kind of record the prompt can meet."
+              "v": " When the command is chosen, LN runs the dataset for the record on the screen, writes the result into the prompt text and sends it to the model. The answer opens in a window of its own. The model answers only from what the dataset sent, and a wrong answer looks the same as a right one, so the first run is checked against the screen and then read for what nobody asked for."
             }
           ],
-          "text": "What LN is doing. When the command is chosen, LN runs the dataset for the record on the screen, writes the result into the prompt text and sends it to the model. The answer opens in a window of its own. The model answers only from what the dataset sent, and a wrong answer looks the same as a right one, so the first runs are checked against the screen, once for each kind of record the prompt can meet."
+          "text": "What LN is doing. When the command is chosen, LN runs the dataset for the record on the screen, writes the result into the prompt text and sends it to the model. The answer opens in a window of its own. The model answers only from what the dataset sent, and a wrong answer looks the same as a right one, so the first run is checked against the screen and then read for what nobody asked for."
         },
         {
           "kind": "steps",
@@ -1760,10 +2012,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Open your screen on a record whose answer you know. Example: the delivered line"
+                      "v": "Open your screen and tick a record whose answer you can check. Example: an item with stock in two warehouses"
                     }
                   ],
-                  "text": "Open your screen on a record whose answer you know. Example: the delivered line"
+                  "text": "Open your screen and tick a record whose answer you can check. Example: an item with stock in two warehouses"
                 },
                 {
                   "tokens": [
@@ -1794,18 +2046,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Note the values the answer should state. Example: delivered quantity and shipment, on the "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Shipping"
-                    },
-                    {
-                      "t": "text",
-                      "v": " tab"
+                      "v": "Note the values the answer should state. Example: the item's on hand and on order figures on its row"
                     }
                   ],
-                  "text": "Note the values the answer should state. Example: delivered quantity and shipment, on the Shipping tab"
+                  "text": "Note the values the answer should state. Example: the item's on hand and on order figures on its row"
                 },
                 {
                   "tokens": [
@@ -1906,10 +2150,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The facts should match. Example: the right quantities, written as a letter"
+                      "v": "The facts should match. Example: the warehouses' figures add up to the row's"
                     }
                   ],
-                  "text": "The facts should match. Example: the right quantities, written as a letter"
+                  "text": "The facts should match. Example: the warehouses' figures add up to the row's"
                 }
               ],
               "id": "4.5",
@@ -1931,80 +2175,22 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Click "
-                    },
-                    {
-                      "t": "button",
-                      "label": "Close"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and open a record of another kind. Example: a line with nothing delivered"
+                      "v": "Read the answer for what the prompt text did not ask for"
                     }
                   ],
-                  "text": "Click Close and open a record of another kind. Example: a line with nothing delivered"
+                  "text": "Read the answer for what the prompt text did not ask for"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "—"
+                      "v": "Example: a report with a column of the model's own sums, one of them wrong, and a promise"
                     }
                   ],
-                  "text": "—"
+                  "text": "Example: a report with a column of the model's own sums, one of them wrong, and a promise"
                 }
               ],
               "id": "4.6",
-              "optional": false,
-              "produces": false
-            },
-            {
-              "cells": [
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "4.7"
-                    }
-                  ],
-                  "text": "4.7"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "Open "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Actions"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and choose your command"
-                    }
-                  ],
-                  "text": "Open Actions and choose your command"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "An answer for that record. Example: delivered "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "0"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", and a promise nothing in LN holds"
-                    }
-                  ],
-                  "text": "An answer for that record. Example: delivered 0, and a promise nothing in LN holds"
-                }
-              ],
-              "id": "4.7",
               "optional": false,
               "produces": false
             }
@@ -2029,10 +2215,10 @@
             },
             {
               "t": "text",
-              "v": " A change to the prompt text is used by the very next run. A change to the dataset is not seen by a session that is already open. So a text change is tested where you stand, and a dataset change after the screen is opened again. Change one thing, run, and read the answer before changing the next."
+              "v": " A change to the prompt text is used by the very next run. A change to the dataset is not seen by a session that is already open. So a text change is tested where you stand, and a dataset change after the screen is opened again. Each line added here answers something the first answer got wrong or left out."
             }
           ],
-          "text": "What LN is doing. A change to the prompt text is used by the very next run. A change to the dataset is not seen by a session that is already open. So a text change is tested where you stand, and a dataset change after the screen is opened again. Change one thing, run, and read the answer before changing the next."
+          "text": "What LN is doing. A change to the prompt text is used by the very next run. A change to the dataset is not seen by a session that is already open. So a text change is tested where you stand, and a dataset change after the screen is opened again. Each line added here answers something the first answer got wrong or left out."
         },
         {
           "kind": "steps",
@@ -2103,14 +2289,14 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Add a line above the marker that fixes the answer's form, then save and close. Example: "
+                      "v": "Add a line above the marker that fixes the answer's form. Example: "
                     },
                     {
                       "t": "literal",
-                      "v": "Output only the message, in plain sentences. No heading, no greeting, no sign-off, no list and no formatting marks."
+                      "v": "Output plain text only. No heading, no table, no list marks, no bold and no emoji."
                     }
                   ],
-                  "text": "Add a line above the marker that fixes the answer's form, then save and close. Example: Output only the message, in plain sentences. No heading, no greeting, no sign-off, no list and no formatting marks."
+                  "text": "Add a line above the marker that fixes the answer's form. Example: Output plain text only. No heading, no table, no list marks, no bold and no emoji."
                 },
                 {
                   "tokens": [
@@ -2141,27 +2327,23 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Choose your command from "
+                      "v": "Add a line that forbids what the first answer added. Example: "
                     },
                     {
-                      "t": "chip",
-                      "v": "Actions"
-                    },
-                    {
-                      "t": "text",
-                      "v": " again, on the same record"
+                      "t": "literal",
+                      "v": "Do not calculate, total or subtract anything, and do not say what can be promised. Report the figures as they are."
                     }
                   ],
-                  "text": "Choose your command from Actions again, on the same record"
+                  "text": "Add a line that forbids what the first answer added. Example: Do not calculate, total or subtract anything, and do not say what can be promised. Report the figures as they are."
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The answer in that form. Example: one plain sentence"
+                      "v": "—"
                     }
                   ],
-                  "text": "The answer in that form. Example: one plain sentence"
+                  "text": "—"
                 }
               ],
               "id": "5.3",
@@ -2183,31 +2365,23 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "On "
+                      "v": "Add a line that says how the answer opens. Example: "
                     },
                     {
-                      "t": "chip",
-                      "v": "Datasets"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", tick the dataset and click "
-                    },
-                    {
-                      "t": "button",
-                      "label": "Modeler"
+                      "t": "literal",
+                      "v": "First line: the item, its description and its inventory unit."
                     }
                   ],
-                  "text": "On Datasets, tick the dataset and click Modeler"
+                  "text": "Add a line that says how the answer opens. Example: First line: the item, its description and its inventory unit."
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The Modeler opens"
+                      "v": "—"
                     }
                   ],
-                  "text": "The Modeler opens"
+                  "text": "—"
                 }
               ],
               "id": "5.4",
@@ -2229,18 +2403,14 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Tick a field the answer still lacks. Example: "
+                      "v": "Add a line for one kind of row, with its values in order. Example: "
                     },
                     {
                       "t": "literal",
-                      "v": "ddta"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", Planned Delivery Date"
+                      "v": "Then one line for each warehouse, written as: warehouse code and name: on hand, blocked, allocated, on order."
                     }
                   ],
-                  "text": "Tick a field the answer still lacks. Example: ddta, Planned Delivery Date"
+                  "text": "Add a line for one kind of row, with its values in order. Example: Then one line for each warehouse, written as: warehouse code and name: on hand, blocked, allocated, on order."
                 },
                 {
                   "tokens": [
@@ -2271,35 +2441,23 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "For a value in a related table, expand "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "Referred by"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and choose the table. Example: Sales Order Actual Delivery Lines ("
+                      "v": "Do the same for each other kind of row. Example: "
                     },
                     {
                       "t": "literal",
-                      "v": "tdsls406"
-                    },
-                    {
-                      "t": "text",
-                      "v": ")"
+                      "v": "Then the planned inventory transactions, earliest transaction date first, one line each: date, warehouse, order type, order and line, transaction type, planned quantity."
                     }
                   ],
-                  "text": "For a value in a related table, expand Referred by and choose the table. Example: Sales Order Actual Delivery Lines (tdsls406)"
+                  "text": "Do the same for each other kind of row. Example: Then the planned inventory transactions, earliest transaction date first, one line each: date, warehouse, order type, order and line, transaction type, planned quantity."
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "That table's fields, none ticked"
+                      "v": "—"
                     }
                   ],
-                  "text": "That table's fields, none ticked"
+                  "text": "—"
                 }
               ],
               "id": "5.6",
@@ -2321,39 +2479,23 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Tick the fields you want there and click "
-                    },
-                    {
-                      "t": "button",
-                      "label": "Save"
-                    },
-                    {
-                      "t": "text",
-                      "v": ". Example: "
+                      "v": "Add the exact words for when there is nothing to report. Example: "
                     },
                     {
                       "t": "literal",
-                      "v": "dldt"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "shpm"
+                      "v": "If there are no planned inventory transactions, write \"Nothing planned in or out.\""
                     }
                   ],
-                  "text": "Tick the fields you want there and click Save. Example: dldt and shpm"
+                  "text": "Add the exact words for when there is nothing to report. Example: If there are no planned inventory transactions, write \"Nothing planned in or out.\""
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "No message"
+                      "v": "—"
                     }
                   ],
-                  "text": "No message"
+                  "text": "—"
                 }
               ],
               "id": "5.7",
@@ -2375,38 +2517,14 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Add a line above the marker for each kind of record, and one for a missing value, then save and close. Example: "
+                      "v": "Add a line for the one thing the reader must not miss. Example: "
                     },
                     {
                       "t": "literal",
-                      "v": "If delivered equals ordered, say the line has shipped in full and give the last actual delivery date and the shipment number."
-                    },
-                    {
-                      "t": "text",
-                      "v": " "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "If delivered is above zero and below ordered, say how many of the ordered quantity have shipped and give the planned delivery date."
-                    },
-                    {
-                      "t": "text",
-                      "v": " "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "If delivered is zero, say nothing has shipped yet and give the planned delivery date."
-                    },
-                    {
-                      "t": "text",
-                      "v": " "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "If a value you need is not in the dataset, write \"[not available]\" in its place."
+                      "v": "End with one sentence naming any warehouse where allocated is greater than on hand, or saying there is none."
                     }
                   ],
-                  "text": "Add a line above the marker for each kind of record, and one for a missing value, then save and close. Example: If delivered equals ordered, say the line has shipped in full and give the last actual delivery date and the shipment number. If delivered is above zero and below ordered, say how many of the ordered quantity have shipped and give the planned delivery date. If delivered is zero, say nothing has shipped yet and give the planned delivery date. If a value you need is not in the dataset, write \"[not available]\" in its place."
+                  "text": "Add a line for the one thing the reader must not miss. Example: End with one sentence naming any warehouse where allocated is greater than on hand, or saying there is none."
                 },
                 {
                   "tokens": [
@@ -2437,23 +2555,23 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Choose your command again without closing the screen"
+                      "v": "Add a line for a missing value. Example: "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "If a value you need is not in the dataset, write \"[not available]\" in its place."
                     }
                   ],
-                  "text": "Choose your command again without closing the screen"
+                  "text": "Add a line for a missing value. Example: If a value you need is not in the dataset, write \"[not available]\" in its place."
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The new field is missing, because an open screen keeps the old dataset. Example: "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "[not available]"
+                      "v": "—"
                     }
                   ],
-                  "text": "The new field is missing, because an open screen keeps the old dataset. Example: [not available]"
+                  "text": "—"
                 }
               ],
               "id": "5.9",
@@ -2475,19 +2593,23 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Close the screen's tab, open the record again and choose your command"
+                      "v": "Add a line for how a date is written, then save and close. Example: "
+                    },
+                    {
+                      "t": "literal",
+                      "v": "Write every date as YYYY-MM-DD."
                     }
                   ],
-                  "text": "Close the screen's tab, open the record again and choose your command"
+                  "text": "Add a line for how a date is written, then save and close. Example: Write every date as YYYY-MM-DD."
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The new field is in the answer"
+                      "v": "A new last-modified stamp"
                     }
                   ],
-                  "text": "The new field is in the answer"
+                  "text": "A new last-modified stamp"
                 }
               ],
               "id": "5.10",
@@ -2509,19 +2631,19 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Choose your command on a record of each other kind"
+                      "v": "Choose your command again on the same record, without closing the screen"
                     }
                   ],
-                  "text": "Choose your command on a record of each other kind"
+                  "text": "Choose your command again on the same record, without closing the screen"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Each answer follows its own line. Example: shipped in full, with a date and the shipment"
+                      "v": "The answer in that form. Example: a line for each warehouse, then a line for each planned receipt and issue"
                     }
                   ],
-                  "text": "Each answer follows its own line. Example: shipped in full, with a date and the shipment"
+                  "text": "The answer in that form. Example: a line for each warehouse, then a line for each planned receipt and issue"
                 }
               ],
               "id": "5.11",
@@ -2543,27 +2665,91 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Add a line that fixes how a value is written, save, and choose your command again. Example: "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "Write every date as YYYY-MM-DD."
+                      "v": "Compare it with your expected values again"
                     }
                   ],
-                  "text": "Add a line that fixes how a value is written, save, and choose your command again. Example: Write every date as YYYY-MM-DD."
+                  "text": "Compare it with your expected values again"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Example: each date as year, month and day"
+                      "v": "The facts should match"
                     }
                   ],
-                  "text": "Example: each date as year, month and day"
+                  "text": "The facts should match"
                 }
               ],
               "id": "5.12",
               "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.13"
+                    }
+                  ],
+                  "text": "5.13"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Choose your command on a record of each other kind. Example: an item with no stock that customers have ordered, and an item with nothing"
+                    }
+                  ],
+                  "text": "Choose your command on a record of each other kind. Example: an item with no stock that customers have ordered, and an item with nothing"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Each answer fits its record. Example: the two sales orders waiting; the words for nothing planned"
+                    }
+                  ],
+                  "text": "Each answer fits its record. Example: the two sales orders waiting; the words for nothing planned"
+                }
+              ],
+              "id": "5.13",
+              "optional": false,
+              "produces": false
+            },
+            {
+              "cells": [
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "5.14"
+                    }
+                  ],
+                  "text": "5.14"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "Optional: tick a field the answer still lacks in the Modeler, save, then close the screen's tab and open the record again"
+                    }
+                  ],
+                  "text": "Optional: tick a field the answer still lacks in the Modeler, save, then close the screen's tab and open the record again"
+                },
+                {
+                  "tokens": [
+                    {
+                      "t": "text",
+                      "v": "The new field is in the answer"
+                    }
+                  ],
+                  "text": "The new field is in the answer"
+                }
+              ],
+              "id": "5.14",
+              "optional": true,
               "produces": false
             }
           ]
@@ -2753,14 +2939,14 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Close the screen's tab, open a record again and open "
+                      "v": "Close the screen's tab, open the screen again and open "
                     },
                     {
                       "t": "chip",
                       "v": "Actions"
                     }
                   ],
-                  "text": "Close the screen's tab, open a record again and open Actions"
+                  "text": "Close the screen's tab, open the screen again and open Actions"
                 },
                 {
                   "tokens": [
@@ -2792,24 +2978,24 @@
         },
         {
           "t": "text",
-          "v": " put a one-click AI command on an LN screen, check its answer, improve it, and take it away."
+          "v": " put a one-click AI command on any LN screen, check its answer, improve it, and take it away."
         }
       ],
-      "text": "Objective: put a one-click AI command on an LN screen, check its answer, improve it, and take it away."
+      "text": "Objective: put a one-click AI command on any LN screen, check its answer, improve it, and take it away."
     },
     {
       "kind": "prose",
       "tokens": [
         {
           "t": "strong",
-          "v": "Each step says what to do, then gives the example."
+          "v": "Each step says what to do for your own prompt, then gives the example."
         },
         {
           "t": "text",
-          "v": " The example is a delivery update for the customer about one sales order line."
+          "v": " The example is a stock check: where an item's stock is, and what is planned in and out."
         }
       ],
-      "text": "Each step says what to do, then gives the example. The example is a delivery update for the customer about one sales order line."
+      "text": "Each step says what to do for your own prompt, then gives the example. The example is a stock check: where an item's stock is, and what is planned in and out."
     },
     {
       "kind": "prose",
@@ -2850,10 +3036,10 @@
         },
         {
           "t": "text",
-          "v": " > A screen to put the command on, a record of each kind to test with, and GenAI switched on for the tenant. "
+          "v": " > An idea that passes the four questions of Is it worth a prompt, a record of each kind to test with, and GenAI switched on for the tenant. "
         }
       ],
-      "text": "> Prerequisite > A screen to put the command on, a record of each kind to test with, and GenAI switched on for the tenant."
+      "text": "> Prerequisite > An idea that passes the four questions of Is it worth a prompt, a record of each kind to test with, and GenAI switched on for the tenant."
     },
     {
       "kind": "glance",
@@ -2892,19 +3078,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The screen the command is for, GenAI LLMs"
+                  "v": "The screen that lists the record, GenAI LLMs"
                 }
               ],
-              "text": "The screen the command is for, GenAI LLMs"
+              "text": "The screen that lists the record, GenAI LLMs"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The session code, the table, the fields and the sentence the user sees"
+                  "v": "The session code, the table, the values and the sentence the user sees"
                 }
               ],
-              "text": "The session code, the table, the fields and the sentence the user sees"
+              "text": "The session code, the table, the values and the sentence the user sees"
             }
           ]
         },
@@ -3077,10 +3263,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A first answer, checked against the screen for each kind of record"
+                  "v": "A first answer, checked against the screen"
                 }
               ],
-              "text": "A first answer, checked against the screen for each kind of record"
+              "text": "A first answer, checked against the screen"
             }
           ]
         },
@@ -3112,10 +3298,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "GenAI Prompts, Dataset Modeler, the screen"
+                  "v": "GenAI Prompts, the screen"
                 }
               ],
-              "text": "GenAI Prompts, Dataset Modeler, the screen"
+              "text": "GenAI Prompts, the screen"
             },
             {
               "tokens": [
@@ -3191,6 +3377,177 @@
       "tokens": [
         {
           "t": "strong",
+          "v": "A prompt is one click that reads and never writes."
+        },
+        {
+          "t": "text",
+          "v": " The user chooses the command, LN sends the record with the data its dataset names, and the answer opens in a window to read, copy or download. There is nowhere to type a question, and nothing is written back to LN."
+        }
+      ],
+      "text": "A prompt is one click that reads and never writes. The user chooses the command, LN sends the record with the data its dataset names, and the answer opens in a window to read, copy or download. There is nowhere to type a question, and nothing is written back to LN.",
+      "under": "Is it worth a prompt"
+    },
+    {
+      "kind": "reference",
+      "columns": [
+        "Ask of the idea",
+        "A good sign",
+        "Seen here"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Is the answer already on one screen?"
+                }
+              ],
+              "text": "Is the answer already on one screen?"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No. It takes several screens, or several records"
+                }
+              ],
+              "text": "No. It takes several screens, or several records"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The example puts an item's stock in each warehouse and every planned receipt and issue in one answer"
+                }
+              ],
+              "text": "The example puts an item's stock in each warehouse and every planned receipt and issue in one answer"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Does somebody read it before acting on it?"
+                }
+              ],
+              "text": "Does somebody read it before acting on it?"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Yes. A wrong answer reads like a right one"
+                }
+              ],
+              "text": "Yes. A wrong answer reads like a right one"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Every answer carries LN's notice to verify it"
+                }
+              ],
+              "text": "Every answer carries LN's notice to verify it"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Is the work wording, or a judgement on text?"
+                }
+              ],
+              "text": "Is the work wording, or a judgement on text?"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Yes, and not a calculation"
+                }
+              ],
+              "text": "Yes, and not a calculation"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Left free, the model added sums of its own and one of them was wrong"
+                }
+              ],
+              "text": "Left free, the model added sums of its own and one of them was wrong"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Can the screen's record reach the data?"
+                }
+              ],
+              "text": "Can the screen's record reach the data?"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Yes. How far a dataset reaches says how to tell"
+                }
+              ],
+              "text": "Yes. How far a dataset reaches says how to tell"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The example was first wanted on the sales order line, which cannot reach an item's stock"
+                }
+              ],
+              "text": "The example was first wanted on the sales order line, which cannot reach an item's stock"
+            }
+          ]
+        }
+      ],
+      "under": "Is it worth a prompt"
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "An idea that only restates one field saves nothing."
+        },
+        {
+          "t": "text",
+          "v": " A delivery update built here on one order line gave back three values of that line's own screen."
+        }
+      ],
+      "text": "An idea that only restates one field saves nothing. A delivery update built here on one order line gave back three values of that line's own screen.",
+      "under": "Is it worth a prompt"
+    },
+    {
+      "kind": "prose",
+      "tokens": [],
+      "text": "",
+      "under": "Is it worth a prompt"
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
           "v": "Every prompt is these six decisions, and the example is one set of answers to them."
         },
         {
@@ -3224,23 +3581,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The session code in the status bar of the screen the user will be on. A link is to one exact code"
+                  "v": "Go where the record that owns the data is listed, not where the user happens to be. A link is to one exact session code, read in the status bar"
                 }
               ],
-              "text": "The session code in the status bar of the screen the user will be on. A link is to one exact code"
+              "text": "Go where the record that owns the data is listed, not where the user happens to be. A link is to one exact session code, read in the status bar"
             },
             {
               "tokens": [
                 {
                   "t": "session",
-                  "code": "tdsls4101m000"
+                  "code": "whwmd4100m100"
                 },
                 {
                   "t": "text",
-                  "v": ", Sales Order Lines"
+                  "v": ", Company - Item Inventory"
                 }
               ],
-              "text": "tdsls4101m000, Sales Order Lines"
+              "text": "whwmd4100m100, Company - Item Inventory"
             }
           ]
         },
@@ -3268,7 +3625,7 @@
               "tokens": [
                 {
                   "t": "literal",
-                  "v": "tdsls401"
+                  "v": "whwmd400"
                 },
                 {
                   "t": "text",
@@ -3276,10 +3633,10 @@
                 },
                 {
                   "t": "literal",
-                  "v": "1 - Order, Position, Sequence"
+                  "v": "1 - Item"
                 }
               ],
-              "text": "tdsls401, by 1 - Order, Position, Sequence"
+              "text": "whwmd400, by 1 - Item"
             }
           ]
         },
@@ -3307,10 +3664,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Six of the line; later one more, and two of its deliveries"
+                  "v": "The item with its description and unit, its stock in each warehouse, and its planned receipts and issues"
                 }
               ],
-              "text": "Six of the line; later one more, and two of its deliveries"
+              "text": "The item with its description and unit, its stock in each warehouse, and its planned receipts and issues"
             }
           ]
         },
@@ -3333,7 +3690,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " runs on the row the cursor is on. "
+                  "v": " runs on the row the cursor is on, or on the ticked rows. "
                 },
                 {
                   "t": "literal",
@@ -3341,10 +3698,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " waits for a tick and sends every ticked row"
+                  "v": " waits for a tick"
                 }
               ],
-              "text": "Always runs on the row the cursor is on. Records Selected waits for a tick and sends every ticked row"
+              "text": "Always runs on the row the cursor is on, or on the ticked rows. Records Selected waits for a tick"
             },
             {
               "tokens": [
@@ -3412,15 +3769,282 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Draft a delivery update for the customer about this order line."
+                  "v": "Check where this item's stock is and what is planned in and out."
                 }
               ],
-              "text": "Draft a delivery update for the customer about this order line."
+              "text": "Check where this item's stock is and what is planned in and out."
             }
           ]
         }
       ],
       "under": "The six choices"
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "A dataset starts at the screen's table and reaches in two directions only."
+        }
+      ],
+      "text": "A dataset starts at the screen's table and reaches in two directions only.",
+      "under": "How far a dataset reaches"
+    },
+    {
+      "kind": "reference",
+      "columns": [
+        "From the main table",
+        "What it adds",
+        "In the example"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A table it points to, under "
+                },
+                {
+                  "t": "chip",
+                  "v": "Refers to"
+                }
+              ],
+              "text": "A table it points to, under Refers to"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "One value on the record, a name behind a code. It opens to the tables it points to in turn"
+                }
+              ],
+              "text": "One value on the record, a name behind a code. It opens to the tables it points to in turn"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The item's description and unit"
+                }
+              ],
+              "text": "The item's description and unit"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A table that points at it, under "
+                },
+                {
+                  "t": "chip",
+                  "v": "Referred by"
+                }
+              ],
+              "text": "A table that points at it, under Referred by"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Rows that belong to the record. It opens to both branches of its own"
+                }
+              ],
+              "text": "Rows that belong to the record. It opens to both branches of its own"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A row for each warehouse, and a row for each planned receipt and issue"
+                }
+              ],
+              "text": "A row for each warehouse, and a row for each planned receipt and issue"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A table that points at a table it points to"
+                }
+              ],
+              "text": "A table that points at a table it points to"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Nothing. Refers to never turns back"
+                }
+              ],
+              "text": "Nothing. Refers to never turns back"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A sales order line reaches its item, and not the item's stock"
+                }
+              ],
+              "text": "A sales order line reaches its item, and not the item's stock"
+            }
+          ]
+        }
+      ],
+      "under": "How far a dataset reaches"
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "So the screen is chosen by where the data is."
+        },
+        {
+          "t": "text",
+          "v": " Three screens were weighed for the example."
+        }
+      ],
+      "text": "So the screen is chosen by where the data is. Three screens were weighed for the example.",
+      "under": "How far a dataset reaches"
+    },
+    {
+      "kind": "reference",
+      "columns": [
+        "Screen",
+        "Its record",
+        "Steps to the stock rows"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Sales Order Lines"
+                }
+              ],
+              "text": "Sales Order Lines"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An order line"
+                }
+              ],
+              "text": "An order line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "None. The line holds no stock figure and reaches its item only by "
+                },
+                {
+                  "t": "chip",
+                  "v": "Refers to"
+                }
+              ],
+              "text": "None. The line holds no stock figure and reaches its item only by Refers to"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Inventory 360"
+                }
+              ],
+              "text": "Inventory 360"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An item"
+                }
+              ],
+              "text": "An item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Two, through a list of tables too long to work down"
+                }
+              ],
+              "text": "Two, through a list of tables too long to work down"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Company - Item Inventory"
+                }
+              ],
+              "text": "Company - Item Inventory"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An item's warehousing record"
+                }
+              ],
+              "text": "An item's warehousing record"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "One"
+                }
+              ],
+              "text": "One"
+            }
+          ]
+        }
+      ],
+      "under": "How far a dataset reaches"
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "To learn which table a screen is on, link a prompt to it and run it."
+        },
+        {
+          "t": "text",
+          "v": " A run on the wrong table is refused, and the message names the screen's table."
+        }
+      ],
+      "text": "To learn which table a screen is on, link a prompt to it and run it. A run on the wrong table is refused, and the message names the screen's table.",
+      "under": "How far a dataset reaches"
+    },
+    {
+      "kind": "prose",
+      "tokens": [],
+      "text": "",
+      "under": "How far a dataset reaches"
     },
     {
       "kind": "prose",
@@ -3506,10 +4130,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "What to write, for whom, and the values it must state"
+                  "v": "What to write, and for whom"
                 }
               ],
-              "text": "What to write, for whom, and the values it must state"
+              "text": "What to write, and for whom"
             },
             {
               "tokens": [
@@ -3546,10 +4170,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "With this rule alone the quantities were right, and the model still wrote a letter and promised a notification"
+                  "v": "With this rule alone the figures LN sent were right, and the model still added sums of its own and said what could be promised"
                 }
               ],
-              "text": "With this rule alone the quantities were right, and the model still wrote a letter and promised a notification"
+              "text": "With this rule alone the figures LN sent were right, and the model still added sums of its own and said what could be promised"
             }
           ]
         },
@@ -3568,19 +4192,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Plain sentences, one set line for each record, or a list"
+                  "v": "Plain text, one set line for each record, or a list"
                 }
               ],
-              "text": "Plain sentences, one set line for each record, or a list"
+              "text": "Plain text, one set line for each record, or a list"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A letter: a heading, a greeting, a list and a sign-off, with formatting marks showing"
+                  "v": "A report with headings and a table, its formatting marks showing. On another prompt, a letter with a greeting and a sign-off"
                 }
               ],
-              "text": "A letter: a heading, a greeting, a list and a sign-off, with formatting marks showing"
+              "text": "A report with headings and a table, its formatting marks showing. On another prompt, a letter with a greeting and a sign-off"
             }
           ]
         },
@@ -3590,28 +4214,59 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "One line for each kind of record"
+                  "v": "No calculating"
                 }
               ],
-              "text": "One line for each kind of record"
+              "text": "No calculating"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "What to say in each case the answer must tell apart"
+                  "v": "Stops the model adding figures LN did not send"
                 }
               ],
-              "text": "What to say in each case the answer must tell apart"
+              "text": "Stops the model adding figures LN did not send"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The quantities and nothing about what they mean"
+                  "v": "A column of the model's own subtractions, one of them wrong, and totals nobody asked for"
                 }
               ],
-              "text": "The quantities and nothing about what they mean"
+              "text": "A column of the model's own subtractions, one of them wrong, and totals nobody asked for"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A line for each part"
+                }
+              ],
+              "text": "A line for each part"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "What to print, and in what order"
+                }
+              ],
+              "text": "What to print, and in what order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The model chose the parts, and left the planned receipts and issues out"
+                }
+              ],
+              "text": "The model chose the parts, and left the planned receipts and issues out"
             }
           ]
         },
@@ -3630,19 +4285,50 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The exact words for when no record qualifies"
+                  "v": "The exact words for when no row qualifies"
                 }
               ],
-              "text": "The exact words for when no record qualifies"
+              "text": "The exact words for when no row qualifies"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Not tried. Given the words, the model also used them for a dataset that arrived empty"
+                  "v": "Not tried. Given the words, the model used them for a record with no rows and, on another prompt, for a dataset that arrived empty"
                 }
               ],
-              "text": "Not tried. Given the words, the model also used them for a dataset that arrived empty"
+              "text": "Not tried. Given the words, the model used them for a record with no rows and, on another prompt, for a dataset that arrived empty"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The thing not to miss"
+                }
+              ],
+              "text": "The thing not to miss"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "One closing sentence on what the reader must see"
+                }
+              ],
+              "text": "One closing sentence on what the reader must see"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Not tried. With it, the answer named the warehouse where more was allocated than on hand, and said so when there was none"
+                }
+              ],
+              "text": "Not tried. With it, the answer named the warehouse where more was allocated than on hand, and said so when there was none"
             }
           ]
         },
@@ -3670,18 +4356,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Not tried. With it, a field the open session had not loaded read "
+                  "v": "Not tried. With it, a blank description read "
                 },
                 {
                   "t": "literal",
                   "v": "[not available]"
-                },
-                {
-                  "t": "text",
-                  "v": " where a date could have been guessed"
                 }
               ],
-              "text": "Not tried. With it, a field the open session had not loaded read [not available] where a date could have been guessed"
+              "text": "Not tried. With it, a blank description read [not available]"
             }
           ]
         },
@@ -3709,10 +4391,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Full timestamps on some runs of another prompt on the same fields"
+                  "v": "Full timestamps on some runs of another prompt"
                 }
               ],
-              "text": "Full timestamps on some runs of another prompt on the same fields"
+              "text": "Full timestamps on some runs of another prompt"
             }
           ]
         },
@@ -3759,10 +4441,10 @@
         },
         {
           "t": "text",
-          "v": " The form line followed the letter and its promise. The lines for each kind of record came with the fields they speak of. The missing-value line turned a field the model was not sent into something a reader can see."
+          "v": " The form line followed a report nobody asked for. The line against calculating followed a wrong sum. The lines for each part put back what the model had left out."
         }
       ],
-      "text": "Each line after the third was added because of an answer. The form line followed the letter and its promise. The lines for each kind of record came with the fields they speak of. The missing-value line turned a field the model was not sent into something a reader can see.",
+      "text": "Each line after the third was added because of an answer. The form line followed a report nobody asked for. The line against calculating followed a wrong sum. The lines for each part put back what the model had left out.",
       "under": "The two texts"
     },
     {
@@ -3818,10 +4500,10 @@
         },
         {
           "t": "text",
-          "v": " A line with none is typed as it stands, and the line for a kind of record is typed once for each kind."
+          "v": " A line with none is typed as it stands, and the line for a kind of row is typed once for each kind."
         }
       ],
-      "text": "Square brackets mark what to replace. A line with none is typed as it stands, and the line for a kind of record is typed once for each kind.",
+      "text": "Square brackets mark what to replace. A line with none is typed as it stands, and the line for a kind of row is typed once for each kind.",
       "under": "A template for the two texts"
     },
     {
@@ -3868,10 +4550,10 @@
               "tokens": [
                 {
                   "t": "literal",
-                  "v": "You are given an XML dataset containing [what one record is, and how many to expect]."
+                  "v": "You are given an XML dataset for [what one record is, and what comes with it]."
                 }
               ],
-              "text": "You are given an XML dataset containing [what one record is, and how many to expect]."
+              "text": "You are given an XML dataset for [what one record is, and what comes with it]."
             }
           ]
         },
@@ -3890,10 +4572,10 @@
               "tokens": [
                 {
                   "t": "literal",
-                  "v": "[What to write and for whom], stating [the values the answer must hold]."
+                  "v": "[What to write, and for whom]."
                 }
               ],
-              "text": "[What to write and for whom], stating [the values the answer must hold]."
+              "text": "[What to write, and for whom]."
             }
           ]
         },
@@ -3934,10 +4616,10 @@
               "tokens": [
                 {
                   "t": "literal",
-                  "v": "Output only [the message], in [plain sentences]. No heading, no greeting, no sign-off, no list and no formatting marks."
+                  "v": "Output plain text only. No heading, no table, no list marks, no bold and no emoji."
                 }
               ],
-              "text": "Output only [the message], in [plain sentences]. No heading, no greeting, no sign-off, no list and no formatting marks."
+              "text": "Output plain text only. No heading, no table, no list marks, no bold and no emoji."
             }
           ]
         },
@@ -3956,10 +4638,10 @@
               "tokens": [
                 {
                   "t": "literal",
-                  "v": "If [one kind of record], say [what it means] and give [the values that go with it]."
+                  "v": "Do not calculate, total or subtract anything. Report the figures as they are."
                 }
               ],
-              "text": "If [one kind of record], say [what it means] and give [the values that go with it]."
+              "text": "Do not calculate, total or subtract anything. Report the figures as they are."
             }
           ]
         },
@@ -3978,10 +4660,76 @@
               "tokens": [
                 {
                   "t": "literal",
-                  "v": "If [nothing qualifies], write \"[the exact words]\"."
+                  "v": "First line: [what opens the answer]."
                 }
               ],
-              "text": "If [nothing qualifies], write \"[the exact words]\"."
+              "text": "First line: [what opens the answer]."
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Prompt"
+                }
+              ],
+              "text": "Prompt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "Then one line for each [kind of row], written as: [the values, in order]."
+                }
+              ],
+              "text": "Then one line for each [kind of row], written as: [the values, in order]."
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Prompt"
+                }
+              ],
+              "text": "Prompt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "If there are no [rows of that kind], write \"[the exact words]\"."
+                }
+              ],
+              "text": "If there are no [rows of that kind], write \"[the exact words]\"."
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Prompt"
+                }
+              ],
+              "text": "Prompt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "End with one sentence [on the one thing the reader must not miss]."
+                }
+              ],
+              "text": "End with one sentence [on the one thing the reader must not miss]."
             }
           ]
         },
@@ -4074,7 +4822,7 @@
       "tokens": [
         {
           "t": "strong",
-          "v": "With camel case on, name a field by its description run together."
+          "v": "Name a field by the words of its description."
         },
         {
           "t": "text",
@@ -4082,22 +4830,14 @@
         },
         {
           "t": "literal",
-          "v": "qidl"
+          "v": "qhnd"
         },
         {
           "t": "text",
-          "v": " as "
-        },
-        {
-          "t": "em",
-          "v": "DeliveredQuantity"
-        },
-        {
-          "t": "text",
-          "v": ", and the example's text says delivered."
+          "v": " under Inventory on Hand, and the example's text says on hand."
         }
       ],
-      "text": "With camel case on, name a field by its description run together. The dataset sends qidl as DeliveredQuantity, and the example's text says delivered.",
+      "text": "Name a field by the words of its description. The dataset sends qhnd under Inventory on Hand, and the example's text says on hand.",
       "under": "A template for the two texts"
     },
     {
@@ -4105,14 +4845,14 @@
       "tokens": [
         {
           "t": "strong",
-          "v": "The steps build one kind, a command about the record in view."
+          "v": "The steps build one kind, a record with the rows that belong to it."
         },
         {
           "t": "text",
           "v": " The others differ in a choice of phase 0, and each row says which."
         }
       ],
-      "text": "The steps build one kind, a command about the record in view. The others differ in a choice of phase 0, and each row says which.",
+      "text": "The steps build one kind, a record with the rows that belong to it. The others differ in a choice of phase 0, and each row says which.",
       "under": "Kinds of prompt"
     },
     {
@@ -4129,16 +4869,59 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "One record, on its screen"
+                  "v": "One record, with the rows that belong to it"
                 }
               ],
-              "text": "One record, on its screen"
+              "text": "One record, with the rows that belong to it"
             },
             {
               "tokens": [
                 {
+                  "t": "text",
+                  "v": "A table under "
+                },
+                {
+                  "t": "chip",
+                  "v": "Referred by"
+                },
+                {
+                  "t": "text",
+                  "v": " for each set of rows, as in 1.9"
+                }
+              ],
+              "text": "A table under Referred by for each set of rows, as in 1.9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The example: an item, its stock in each warehouse and its planned receipts and issues"
+                }
+              ],
+              "text": "The example: an item, its stock in each warehouse and its planned receipts and issues"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "One record, as a message"
+                }
+              ],
+              "text": "One record, as a message"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The task names who the message is for, and "
+                },
+                {
                   "t": "field",
-                  "v": "When Enabled"
+                  "v": "Usage Type"
                 },
                 {
                   "t": "text",
@@ -4146,23 +4929,19 @@
                 },
                 {
                   "t": "literal",
-                  "v": "Always"
-                },
-                {
-                  "t": "text",
-                  "v": ", and the dataset's index is the key the screen is viewed by"
+                  "v": "Email"
                 }
               ],
-              "text": "When Enabled is Always, and the dataset's index is the key the screen is viewed by"
+              "text": "The task names who the message is for, and Usage Type is Email"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The example"
+                  "v": "A delivery update for a customer about one sales order line"
                 }
               ],
-              "text": "The example"
+              "text": "A delivery update for a customer about one sales order line"
             }
           ]
         },
@@ -4249,45 +5028,6 @@
                 }
               ],
               "text": "A prompt that lists sales orders by three conditions its dataset's filter applies. On another filtered dataset a ticked record did not reach the model, and no message said so"
-            }
-          ]
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "A record with what refers to it"
-                }
-              ],
-              "text": "A record with what refers to it"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "A table under "
-                },
-                {
-                  "t": "chip",
-                  "v": "Referred by"
-                },
-                {
-                  "t": "text",
-                  "v": " is added in the Modeler, as in 5.6"
-                }
-              ],
-              "text": "A table under Referred by is added in the Modeler, as in 5.6"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "The example's delivery lines, and a dataset of sales orders with their lines"
-                }
-              ],
-              "text": "The example's delivery lines, and a dataset of sales orders with their lines"
             }
           ]
         },
@@ -4403,6 +5143,37 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "0"
+                }
+              ],
+              "text": "0"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The screen you wanted cannot reach the data"
+                }
+              ],
+              "text": "The screen you wanted cannot reach the data"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Put the command on a screen whose record owns the data, as How far a dataset reaches sets out"
+                }
+              ],
+              "text": "Put the command on a screen whose record owns the data, as How far a dataset reaches sets out"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "1"
                 }
               ],
@@ -4421,10 +5192,92 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open Find on the screen. In the example its first way to search, Order, Position, Sequence, is index 1"
+                  "v": "Open Find on the screen. Its first way to search is the key"
                 }
               ],
-              "text": "Open Find on the screen. In the example its first way to search, Order, Position, Sequence, is index 1"
+              "text": "Open Find on the screen. Its first way to search is the key"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A table cannot be found under "
+                },
+                {
+                  "t": "chip",
+                  "v": "Referred by"
+                }
+              ],
+              "text": "A table cannot be found under Referred by"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set the list above the tree to "
+                },
+                {
+                  "t": "literal",
+                  "v": "By Name"
+                },
+                {
+                  "t": "text",
+                  "v": ", as in 1.7, and go down to the table's code"
+                }
+              ],
+              "text": "Set the list above the tree to By Name, as in 1.7, and go down to the table's code"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The list under "
+                },
+                {
+                  "t": "chip",
+                  "v": "Referred by"
+                },
+                {
+                  "t": "text",
+                  "v": " is too long to work down"
+                }
+              ],
+              "text": "The list under Referred by is too long to work down"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The screen's table is too far from the data. Use a screen whose own table is one step from it"
+                }
+              ],
+              "text": "The screen's table is too far from the data. Use a screen whose own table is one step from it"
             }
           ]
         },
@@ -4560,19 +5413,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The new row holds another prompt's dataset"
+                  "v": "The new row holds another prompt's values"
                 }
               ],
-              "text": "The new row holds another prompt's dataset"
+              "text": "The new row holds another prompt's values"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A new row is a copy of the row the cursor was on. Replace it, as in 2.5"
+                  "v": "A new row is a copy of the row the cursor was on. Replace them, as in 2.4 and 2.5"
                 }
               ],
-              "text": "A new row is a copy of the row the cursor was on. Replace it, as in 2.5"
+              "text": "A new row is a copy of the row the cursor was on. Replace them, as in 2.4 and 2.5"
             }
           ]
         },
@@ -4694,10 +5547,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " is ticked on the link, then close the screen's tab and open the record again"
+                  "v": " is ticked on the link, then close the screen's tab and open it again"
                 }
               ],
-              "text": "Check that Active is ticked on the link, then close the screen's tab and open the record again"
+              "text": "Check that Active is ticked on the link, then close the screen's tab and open it again"
             }
           ]
         },
@@ -4788,10 +5641,72 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The dataset's main table is not the screen's. The table in the message is the screen's; a dataset has to be built on it"
+                  "v": "The dataset's main table is not the screen's. The table in the message is the screen's: build the dataset on it, or link the prompt to a screen on your table"
                 }
               ],
-              "text": "The dataset's main table is not the screen's. The table in the message is the screen's; a dataset has to be built on it"
+              "text": "The dataset's main table is not the screen's. The table in the message is the screen's: build the dataset on it, or link the prompt to a screen on your table"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The answer holds figures LN does not"
+                }
+              ],
+              "text": "The answer holds figures LN does not"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The line against calculating is missing, 5.3"
+                }
+              ],
+              "text": "The line against calculating is missing, 5.3"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The answer is a report or a letter again"
+                }
+              ],
+              "text": "The answer is a report or a letter again"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The form line is missing, 5.2"
+                }
+              ],
+              "text": "The form line is missing, 5.2"
             }
           ]
         },
@@ -4823,10 +5738,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in 5.10"
+                  "v": "The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in 5.14"
                 }
               ],
-              "text": "The field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in 5.10"
+              "text": "The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in 5.14"
             }
           ]
         },
@@ -4854,41 +5769,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The same two causes. The model reads only the dataset"
-                }
-              ],
-              "text": "The same two causes. The model reads only the dataset"
-            }
-          ]
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
+                  "v": "The model reads only the dataset. Read "
+                },
+                {
+                  "t": "chip",
+                  "v": "Selected Fields"
+                },
                 {
                   "t": "text",
-                  "v": "5"
+                  "v": ", as in 1.12, then open the screen again"
                 }
               ],
-              "text": "5"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "The answer is a letter again"
-                }
-              ],
-              "text": "The answer is a letter again"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "The form rule is missing from the prompt text, 5.2"
-                }
-              ],
-              "text": "The form rule is missing from the prompt text, 5.2"
+              "text": "The model reads only the dataset. Read Selected Fields, as in 1.12, then open the screen again"
             }
           ]
         },
@@ -5017,5 +5909,5 @@
     }
   ],
   "verification": "Warning No phase of this procedure has yet been performed end to end against a live system. Follow it as a plan, not as a record.",
-  "openIssues": 4
+  "openIssues": 5
 }

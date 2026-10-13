@@ -446,6 +446,12 @@
       "route": "Procurement ➔ Master Data ➔ General ➔ User Profiles"
     },
     {
+      "code": "tdpur0194m000",
+      "name": "Purchase Order Types",
+      "purpose": "Lists the purchase order types, each with the kind of order it makes and the warehousing order type it hands on.",
+      "route": "Procurement ➔ Master Data ➔ Orders ➔ Order Types"
+    },
+    {
       "code": "tdpur0694m000",
       "name": "Purchase Order Type",
       "purpose": "Holds one purchase order type's controls, number series, warehousing order type and the activities its orders run.",
@@ -1024,6 +1030,12 @@
       "name": "Warehouse - Item Inventory",
       "purpose": "One row per warehouse holding or expecting an item — where a warehouse to ship from is chosen.",
       "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Warehouse - Item Inventory"
+    },
+    {
+      "code": "whwmd4100m100",
+      "name": "Company - Item Inventory",
+      "purpose": "Lists every item with its inventory across the company, on hand, blocked, on order and allocated.",
+      "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Company - Item Inventory"
     },
     {
       "code": "whwmd4101s000",

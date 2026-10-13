@@ -336,8 +336,9 @@
         </div>
 
         <!-- Trips. What a trip's suggestions are worked out from: the times
-             the Route tab adds, and the distances past which it offers a fuel
-             card and the Billing tab a dead-mile discount. -->
+             the Route tab adds, the distances past which it offers a fuel
+             card and the Billing tab a dead-mile discount, and the hour
+             before which a bus back at the yard came back the night before. -->
         <div class="rux--tab-content" role="tabpanel" id="scheduler-settings-panel-trips" aria-labelledby="scheduler-settings-tab-trips" tabindex="0" hidden>
         <div class="scheduler-settings-trips">
           <div class="rux--tile">
@@ -361,6 +362,14 @@
               <fieldset class="scheduler-quote__group">
                 <legend class="rux--type-heading-compact-02">Dead miles</legend>
                 <div class="rux--stack-vertical rux--stack-scale-6" id="scheduler-settings-dead-miles"></div>
+              </fieldset>
+            </div>
+          </div>
+          <div class="rux--tile">
+            <div class="rux--layer-two scheduler-quote__body">
+              <fieldset class="scheduler-quote__group">
+                <legend class="rux--type-heading-compact-02">Late return</legend>
+                <div class="rux--stack-vertical rux--stack-scale-6" id="scheduler-settings-late-return"></div>
               </fieldset>
             </div>
           </div>

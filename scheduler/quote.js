@@ -159,13 +159,16 @@
   let mileage = [];          // [{ id, rate, note, is_default }] as saved
   /* THE OFFICE'S OTHER SETTINGS the Settings page edits, each a row of
      `settings`: the mileage rate a month starts from, the times the Route tab
-     adds, and the distances past which a fuel card and a dead-mile discount
-     are offered. The defaults are what data.js uses with no row saved. */
+     adds, the distances past which a fuel card and a dead-mile discount are
+     offered, and the hour of the morning before which a bus back at the yard
+     came back the night before. The defaults are what data.js and week.js
+     use with no row saved. */
   const OFFICE_DEFAULTS = {
     'rate-calendar-v1': { months: {} },
     'route-times-v1': { spot_minutes: 15, pre_trip_minutes: 0, post_trip_minutes: 0, drive_slowdown_percent: 0 },
     'fuel-card-v1': { miles: 600, days: 2 },
     'dead-miles-v1': { miles: null },
+    'late-return-v1': { hour: 4 },
   };
   const office = structuredClone(OFFICE_DEFAULTS);
   let client = null;
@@ -765,9 +768,10 @@
       }));
     };
 
-    /* THE TRIPS TAB: the Route tab's times, and the limits past which it
-       offers a fuel card and the Billing tab a dead-mile discount. A blank
-       dead-mile limit offers none. */
+    /* THE TRIPS TAB: the Route tab's times, the limits past which it offers
+       a fuel card and the Billing tab a dead-mile discount, and the late
+       return's hour. A blank dead-mile limit offers none, and hour 0 counts
+       no return as the night before. */
     const TRIP_FIELDS = {
       'route-times': [
         { id: 'spot', key: 'spot_minutes', label: 'Spot before departure (min)' },
@@ -782,6 +786,9 @@
       // Its id is not the group's, which the box around the field already has.
       'dead-miles': [
         { id: 'dead-over', key: 'miles', label: 'Offer the discount over (mi)', placeholder: 'Never' },
+      ],
+      'late-return': [
+        { id: 'late-hour', key: 'hour', label: 'The night before, when back before (AM hour)' },
       ],
     };
     const drawTrips = () => {
@@ -812,7 +819,8 @@
         ?? take('route-times-v1', 'drive_slowdown_percent', whole('slow', 'Bus slower than the map', { max: 100 }))
         ?? take('fuel-card-v1', 'miles', whole('fuel-miles', 'Fuel card miles', { min: 1 }))
         ?? take('fuel-card-v1', 'days', whole('fuel-days', 'Fuel card days', { min: 1 }))
-        ?? take('dead-miles-v1', 'miles', whole('dead-over', 'Dead miles', { min: 1, blank: true }));
+        ?? take('dead-miles-v1', 'miles', whole('dead-over', 'Dead miles', { min: 1, blank: true }))
+        ?? take('late-return-v1', 'hour', whole('late-hour', 'Late return', { max: 12 }));
       if (problem) return { problem };
       // A month keeps its rate only while that rate is still in the list.
       const months = {};

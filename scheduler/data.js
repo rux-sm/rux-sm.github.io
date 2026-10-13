@@ -82,10 +82,10 @@
   // Math.round, because a span crossing a daylight-saving change is 23 or 25
   // hours and integer division would drop or add a day.
   const daysBetween = (a, b) => Math.round((b - a) / DAY);
-  // The days after its own a one-day leg comes back, past midnight, as
-  // `SchedulerWeek.timesOf` counts them: the bar marks its return +1, and a
-  // driver's rest counts from it.
-  const daysBack = leg => (leg.from === leg.to && leg.back ? leg.backDays ?? 0 : 0);
+  // The days after the last it takes a leg comes back, before the office's
+  // late-return hour, as `SchedulerWeek.takes` counts them: the bar marks its
+  // return +1, and a driver's rest counts from it.
+  const daysBack = leg => leg.backDays ?? 0;
 
   // -- the palette ----------------------------------------------------------
   // The trip colours and what a trip paints as, shared with the printed week.
@@ -635,7 +635,7 @@
          refused read keeps what was there, as rux-ui does. */
       client.from('settings').select('key,value')
         .in('key', ['billing-workflow-v1', 'yard-location-v1', 'geoapify-key-v1', 'route-times-v1', 'requirements-v1', 'vehicle-types-v1',
-          'follow-up-v1', 'fuel-card-v1', 'rate-calendar-v1', 'dead-miles-v1'])
+          'follow-up-v1', 'fuel-card-v1', 'rate-calendar-v1', 'dead-miles-v1', 'late-return-v1'])
         .then(r => {
           if (r.error) return;
           const byKey = new Map((r.data || []).map(row => [row.key, row.value]));
@@ -645,6 +645,7 @@
           window.SchedulerPlaces.use(byKey.get('geoapify-key-v1'), yardPlace);
           setRouteTimes(byKey.get('route-times-v1'));
           setFuelLimits(byKey.get('fuel-card-v1'));
+          window.SchedulerWeek.setLateReturn(byKey.get('late-return-v1'));
           rateCalendar = byKey.get('rate-calendar-v1')?.months ?? {};
           deadMilesLimit = Number(byKey.get('dead-miles-v1')?.miles) > 0 ? Number(byKey.get('dead-miles-v1').miles) : null;
           setRequirementList(byKey.get('requirements-v1'));
@@ -712,7 +713,7 @@
 
   // -- placing --------------------------------------------------------------
   // Which days a leg covers, its times and its lane, shared with the printed week.
-  const { stopsOfLeg, timesOf, legsOf, clip, assignLanes } = window.SchedulerWeek;
+  const { stopsOfLeg, timesOf, legsOf, takes, clip, assignLanes } = window.SchedulerWeek;
 
   // The contact columns as the editor shows them on opening, so an untouched
   // panel has nothing to save. Day-of rows are drawn without gaps, so they are.
@@ -2664,12 +2665,14 @@
 
   async function loadFleetClashes() {
     if (!client || !editing?.fleet) return;
-    // The dates as the form holds them, with the times the trip was saved with.
+    // The dates as the form holds them, with the times the trip was saved
+    // with, which say the days each leg takes.
     const saved = editing.id != null ? legsOf(panelIndex.trips.get(editing.id) ?? {}) : [];
     const ranges = Object.fromEntries(['outbound', 'return'].map(l => {
       const r = fleetLegDates(l);
       const times = saved.find(x => x.leg === l);
-      return [l, r && { ...r, depart: times?.depart ?? null, back: times?.back ?? null, backDays: times?.backDays ?? 0 }];
+      return [l, r && { from: r.from, ends: r.to, depart: times?.depart ?? null, back: times?.back ?? null,
+        ...takes(r.from, r.to, times) }];
     }));
     const all = Object.values(ranges).filter(Boolean);
     if (!all.length) return;
@@ -7764,7 +7767,7 @@
       const routeModel = () => {
         const { from, to } = routeDates(r.leg);
         return {
-          from, to, pre: routeTimes.pre, post: routeTimes.post,
+          from, to, pre: routeTimes.pre, post: routeTimes.post, late: window.SchedulerWeek.lateReturn(),
           times: { depart: val('scheduler-f-depart'), spot: val('scheduler-f-spot'), leave: val('scheduler-f-leave'),
             endtrip: val('scheduler-f-endtrip'), back: val('scheduler-f-return') },
           out: [r.driveOut, r.driveMiles], home: [r.backDrive, r.backMiles],
@@ -7793,13 +7796,19 @@
       };
       const touch = () => { r.listTouched = true; drawStops(); refreshDirty(); measureStops(); };
 
-      /* A leg of more than one day lists its stops under a heading per day,
-         each with that day's own figures, and a stop dated outside the leg
-         after them. */
+      /* A leg of more than one day lists its stops under a heading per day
+         it counts, each with that day's own figures, and a stop dated after
+         them or outside the leg below the last. A bus back before the
+         late-return hour came back the night before, so that morning has no
+         heading and its times carry their weekday. */
       const dayOf = st => st.date || routeDates(r.leg).from;
       function drawStops() {
         stopsList.body.replaceChildren();
         const late = pastMidnight();
+        const { from, to } = routeDates(r.leg);
+        const lastRow = RF.countsTo(routeModel());
+        // The days after the leg's first a day past its last heading falls.
+        const pastRows = day => (from && day && lastRow && day > lastRow ? daysBetween(parseISO(from), parseISO(day)) : 0);
         /* The road between two places, between their rows: its drive and
            miles, which belong to neither place. The first comes from the
            pickup and the last goes on to the drop-off. */
@@ -7823,7 +7832,7 @@
           // A leave on a later day than the arrival carries its weekday.
           const leaveDay = leaveDayOf(st, routeDates(r.leg).from);
           // On a one-day leg a time past midnight carries the next day's.
-          const got = late.get(`${i}:arrive`) ?? 0, left = late.get(`${i}:leave`) ?? got;
+          const got = late.get(`${i}:arrive`) ?? pastRows(st.date), left = late.get(`${i}:leave`) ?? got;
           const leaveWord = st.leave && leaveDay && leaveDay !== (st.date ?? routeDates(r.leg).from)
             ? `${parseISO(leaveDay).toLocaleDateString(undefined, { weekday: 'short' })} ${clock(st.leave)}`
             : left !== got || !st.arrive ? clockOn(st.leave, left) : clock(st.leave);
@@ -7891,14 +7900,13 @@
           const end = val('scheduler-f-endtrip');
           const word = letOffAtPickup() ? 'Returns' : 'Arrives';
           return endTile('D', 'Drop-off', letOffAtPickup() ? r.pickupPlace : r.dropPlace, 'Add drop-off',
-            end ? `${word} ${clockOn(end, late.get('endtrip') ?? 0)}` : 'No time',
+            end ? `${word} ${clockOn(end, late.get('endtrip') ?? pastRows(to))}` : 'No time',
             () => openEnd('scheduler-dropoff-modal', 'scheduler-f-endtrip'));
         };
         let num = 0;  // the stops numbered so far
         let daysDrawn = 0;  // so the pickup goes under the first day
-        const { from, to } = routeDates(r.leg);
         const days = [];
-        if (from && to && to > from) for (let d = from; d <= to && days.length < 31; d = dayAfter(d, 1)) days.push(d);
+        if (from && to && to > from) for (let d = from; d <= lastRow && days.length < 31; d = dayAfter(d, 1)) days.push(d);
         if (days.length > 1) {
           days.forEach((d, n) => {
             const head = el('li', 'scheduler-route-day');
@@ -11852,7 +11860,7 @@
     const leg = assign.leg || 'outbound';
     const range = legsOf(trip).find(l => l.leg === leg);
     const seat = (assign.trip_drivers || []).find(d => (d.role || 'driver') === 'driver') ?? null;
-    return { trip, assign, leg, range: range ? { from: range.from, to: range.to, depart: range.depart, back: range.back, backDays: range.backDays } : null, seat };
+    return { trip, assign, leg, range: range ? { from: range.from, to: range.to, ends: range.ends, depart: range.depart, back: range.back, backDays: range.backDays } : null, seat };
   }
 
   // The trips around a leg's dates, from the read kept for them or a new one.
@@ -11864,13 +11872,14 @@
     return nearby;
   }
 
-  /* What runs out before the leg ends, the licence or the medical card, in
-     words, or '' when both last the trip. A date not on file says nothing. */
+  /* What runs out before the leg ends, on its last day as saved, the licence
+     or the medical card, in words, or '' when both last the trip. A date not
+     on file says nothing. */
   const cardDay = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
   function cardLapse(d, range) {
     return [['Licence', d.license_exp], ['Medical card', d.med_card_expiry]]
       .map(([what, v]) => [what, String(v ?? '').slice(0, 10)])
-      .filter(([, day]) => /^\d{4}-\d{2}-\d{2}$/.test(day) && day < range.to)
+      .filter(([, day]) => /^\d{4}-\d{2}-\d{2}$/.test(day) && day < (range.ends ?? range.to))
       .map(([what, day]) => `${what} ${day < range.from ? 'expired' : 'expires'} ${cardDay.format(parseISO(day))}`)
       .join(' · ');
   }
@@ -12188,7 +12197,7 @@
           if (state === 'pending-response' || state === 'confirmed') continue;
           rows.push({
             key: String(assign.id), trip, assign, now, state, split: legs.length > 1,
-            leg: { leg: l.leg, from: l.from, to: l.to, depart: l.depart, back: l.back, backDays: l.backDays },
+            leg: { leg: l.leg, from: l.from, to: l.to, ends: l.ends, depart: l.depart, back: l.back, backDays: l.backDays },
             ticked: state !== 'off', choice: null, pick: null, options: [], error: null,
           });
         }

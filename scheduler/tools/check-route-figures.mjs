@@ -8,7 +8,7 @@ import { runInNewContext } from 'node:vm';
 
 const window = {};
 runInNewContext(readFileSync(new URL('../route-figures.js', import.meta.url), 'utf8'), { window });
-const { fromStops, legFigures, roomInto, dropRoom, midnights } = window.SchedulerRouteFigures;
+const { fromStops, legFigures, roomInto, dropRoom, midnights, countsTo } = window.SchedulerRouteFigures;
 
 let failed = 0;
 function expect(name, got, want) {
@@ -93,6 +93,35 @@ expect('a one-way leg has no stops between, and counts the drop-off', [oneWay.li
 // The office's pre-trip and post-trip time go on the ends of the day.
 const withChecks = { ...tight, pre: 15, post: 10 };
 expect('pre-trip and post-trip add to on duty', table(legFigures(withChecks)), ['402 | 7 h 28 | 12 h 32 | 12 h 32']);
+
+/* THE LATE RETURN. Out Friday, the group let off at 2:00 the third morning
+   and the bus at the yard at 2:17, before the office's hour: the bus came
+   back the night before, so the drive home is Saturday's and the leg is two
+   days, back on the Sunday. */
+const awayRows = rows([
+  ['pickup', 'A', '11:28', '2026-10-16', null, null, 5, '0:15', 'on', '11:45'],
+  ['stop', 'B', '12:00', '2026-10-16', '17:00', '2026-10-16', 229, '3:26', 'on'],
+  ['stop', 'A', '22:00', '2026-10-17', '02:00', '2026-10-18', 229, '3:26', 'on'],
+  ['return', 'Y', '02:00', '2026-10-18', '02:17', '2026-10-18', 6, '0:17', 'on'],
+]);
+const awayTrip = { trip_type: 'round_trip', start_date: '2026-10-16', end_date: '2026-10-18' };
+const away = fromStops(awayTrip, 'outbound', awayRows, times);
+const awayFig = legFigures(away);
+expect('a bus back before the hour on its last morning gives that morning no row',
+  [countsTo(away), table(awayFig), awayFig.legDays, awayFig.dayMiles, awayFig.backOn, dropRoom(away)],
+  ['2026-10-17', ['1 | 234 | 3 h 41 | 5 h 32 | 5 h 32', '2 | 235 | 3 h 43 | 4 h 17 | 4 h 17', 'Total | 469 | 7 h 24 | 9 h 49 | 9 h 49'],
+    2, [234, 235], '2026-10-18', 240]);
+const awayAtTwo = legFigures(fromStops(awayTrip, 'outbound', awayRows, { ...times, late: 120 }));
+expect('with the hour at 2 the same leg keeps its three days', [awayAtTwo.legDays, awayAtTwo.dayMiles], [3, [234, 0, 235]]);
+// Saved over two days and back at 1:30 the second morning: one day, one row.
+const night = legFigures(fromStops({ trip_type: 'round_trip', start_date: '2026-10-16', end_date: '2026-10-17' }, 'outbound', rows([
+  ['pickup', 'A', '12:50', '2026-10-16', null, null, 12, '0:25', 'on', '13:15'],
+  ['stop', 'B', '13:30', '2026-10-16', '16:00', '2026-10-16', 122, '2:05', 'on'],
+  ['stop', 'A', '22:30', '2026-10-16', '01:00', '2026-10-17', 122, '2:02', 'on'],
+  ['return', 'Y', '01:00', '2026-10-17', '01:30', '2026-10-17', 12, '0:25', 'on'],
+]), times));
+expect('a two-day leg back before the hour on its second morning is one row',
+  [night.days, table(night), night.legDays, night.backOn], [false, ['268 | 4 h 57 | 12 h 40 | 12 h 40'], 1, '2026-10-17']);
 
 console.log(failed ? `\n  ${failed} route figure case(s) failed` : '\n  route figures: every case passed');
 process.exit(failed ? 1 : 0);

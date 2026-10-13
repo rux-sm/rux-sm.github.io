@@ -153,6 +153,76 @@ function legsOf(trip: TripLegs) {
   return legs
 }
 
+type LegStop = {
+  leg?: string | null; position?: number | null; type?: string | null
+  depart_prev?: string | null; arrive?: string | null; spot?: string | null
+}
+
+/** Minutes after midnight, from "HH:MM" or "HH:MM:SS". */
+function clockMinutes(t?: string | null) {
+  const m = /^(\d{1,2}):(\d{2})/.exec(String(t ?? ''))
+  return m ? Number(m[1]) * 60 + Number(m[2]) : null
+}
+
+/**
+ * The office's late-return hour as minutes after midnight, from `settings`'
+ * `late-return-v1`; 4:00 AM with no row, as week.js has it.
+ */
+function lateReturnMinutes(value: unknown) {
+  const given = (value as { hour?: unknown } | null)?.hour
+  const hour = Number(given)
+  return (given != null && Number.isFinite(hour) && hour >= 0 && hour <= 12 ? hour : 4) * 60
+}
+
+/**
+ * The days a leg takes, as week.js's `takes` counts them, so an answer here
+ * agrees with the board. The bus is back on the leg's last day, or the day
+ * after when the yard return is earlier on the clock than the trip's end; on a
+ * one-day leg it is back as many days on as its times pass midnight, counted
+ * from the group's departure. Back before the late-return hour, it came back
+ * the night before: the leg takes the days up to the one before, and `back` is
+ * the day and time it is really back. Back at or after that hour, the leg
+ * takes the day it is back on. A leg with no yard return takes its own dates.
+ */
+function takes(
+  trip: { departure_time?: string | null; return_time?: string | null },
+  l: { leg: string; start: string; end: string },
+  stops: LegStop[],
+  lateBefore: number,
+) {
+  const rows = stops.filter((s) => (s.leg ?? 'outbound') === l.leg)
+    .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+  const pickup = rows.find((s) => s.type === 'pickup') ?? rows[0]
+  const back = [...rows].reverse().find((s) => s.type === 'return')
+  const home = clockMinutes(back?.arrive)
+  if (!l.start || !back || home == null) return { end: l.end, back: null as string | null }
+  let over = 0
+  if (l.end > l.start) {
+    const end = clockMinutes(back.depart_prev)
+    over = end != null && home < end ? 1 : 0
+  } else {
+    const run = rows.slice(Math.max(rows.indexOf(pickup), 0), rows.indexOf(back) + 1)
+    const depart = pickup?.depart_prev || (l.leg === 'outbound' ? trip.departure_time : trip.return_time)
+    const times = [depart, pickup?.arrive, pickup?.spot, ...run.slice(1).flatMap((s) => [s.depart_prev, s.arrive, s.spot])]
+    // The group's departure is the row after the pickup's `depart_prev`.
+    const group = run.length > 1 ? 3 : 0
+    let last: number | null = null, days = 0, start = 0
+    times.forEach((t, i) => {
+      const n = clockMinutes(t)
+      if (n != null) {
+        if (last != null && n < last) days += 1
+        last = n
+      }
+      if (i === group) start = days
+    })
+    over = days - start
+  }
+  const backOn = dayFrom(l.end, over)
+  return home < lateBefore && backOn > l.start
+    ? { end: dayFrom(backOn, -1), back: `${backOn} ${String(back.arrive).slice(0, 5)}` }
+    : { end: backOn, back: null as string | null }
+}
+
 /** What the trip needs from a bus, in words, as the editor's Buses tab asks. */
 function busNeeds(trip: { req_56pax?: boolean | null; req_ada?: boolean | null; req_sleeper?: boolean | null; vehicle_type?: string | null }) {
   return [
@@ -321,7 +391,7 @@ Deno.serve(
           {
             title: 'Find free buses and drivers',
             description:
-              'Which buses and drivers are free across a range of days, and every trip with a leg running then, with how many buses it needs and has. A bus is busy on the days of the leg it is on, or while out of service; a driver is busy on the days of the leg they drive, or on time off. Between a drop-off and its pickup the trip holds neither. A trip still short of buses will take free ones: buses_still_needed is how many, and spare_buses is the free buses left once those are taken, which is the number that can be promised. A placeholder (not quoted yet) is listed but asks for no bus.',
+              'Which buses and drivers are free across a range of days, and every trip with a leg running then, with how many buses it needs and has. A bus is busy on the days its leg takes, or while out of service; a driver is busy on the days of the leg they drive, or on time off. A bus back at the yard before the office\'s late-return hour (4:00 AM unless the Settings page says otherwise) came back the night before, so its leg does not take the day it is back on, and one back at or after that hour takes that day: a leg\'s takes_to is its last day counted so. back_after_midnight lists the buses and drivers that are free on the first day asked but only reach the yard that morning, with the time, so a departure before it is not promised and the driver\'s rest is counted from it. Between a drop-off and its pickup the trip holds neither. A trip still short of buses will take free ones: buses_still_needed is how many, and spare_buses is the free buses left once those are taken, which is the number that can be promised. A placeholder (not quoted yet) is listed but asks for no bus.',
             inputSchema: z.object({
               from: ISO_DATE,
               to: ISO_DATE.optional().describe('Defaults to the same day as from.'),
@@ -338,31 +408,45 @@ Deno.serve(
               .eq('status', 'active').order('sort_order')
             if (vehicle_type) busQuery = busQuery.eq('type', vehicle_type)
 
-            const [buses, drivers, trips, offRoad, timeOff] = await Promise.all([
+            // A leg that ended the day before may take the first day asked, or be back on it past midnight.
+            const since = dayFrom(from, -1)
+            const [buses, drivers, trips, offRoad, timeOff, late] = await Promise.all([
               busQuery.then(orThrow),
               supabase.from('drivers').select('id, name, short_name, phone, priority')
                 .eq('status', 'active').order('sort_order').then(orThrow),
-              supabase.from('trips').select('id, trip_ref, customer, destination, trip_type, confirmed, trip_bar_color, start_date, end_date, return_start_date, return_end_date, bus_count, return_bus_count, vehicle_type, req_56pax, req_ada, req_sleeper')
+              supabase.from('trips').select('id, trip_ref, customer, destination, trip_type, confirmed, trip_bar_color, start_date, end_date, return_start_date, return_end_date, departure_time, return_time, bus_count, return_bus_count, vehicle_type, req_56pax, req_ada, req_sleeper, trip_stops(leg, position, type, depart_prev, arrive, spot)')
                 .is('cancelled_at', null).lte('start_date', until)
-                .or(`end_date.gte.${from},return_end_date.gte.${from},start_date.gte.${from}`).then(orThrow),
+                .or(`end_date.gte.${since},return_end_date.gte.${since},start_date.gte.${since}`).then(orThrow),
               supabase.from('bus_out_of_service').select('bus_id, start_date, end_date, reason').then(orThrow),
               supabase.from('driver_time_off').select('driver_id, start_date, end_date, reason').then(orThrow),
+              supabase.from('settings').select('value').eq('key', 'late-return-v1').maybeSingle().then(orThrow),
             ])
 
-            // A trip runs on the days of its legs: the days between a drop-off and its pickup are nobody's.
+            // Each leg with the days it takes: `end` its last day counted, `back` when it is back after that.
+            const lateBefore = lateReturnMinutes(late?.value)
+            const takenOf = new Map(trips.map((t) => [t.id, legsOf(t).map((l) => ({ ...l, ...takes(t, l, t.trip_stops ?? [], lateBefore) }))]))
+            const legsTaken = (t: { id: string }) => takenOf.get(t.id) ?? []
+
+            // A trip runs on the days its legs take: the days between a drop-off and its pickup are nobody's.
             const legRuns = (l: { start: string; end: string }) => l.start <= until && l.end >= from
-            const runningTrips = trips.filter((t) => legsOf(t).some(legRuns))
+            // A leg that took the day before and is back on the first day asked, past midnight.
+            const backThatMorning = (l: { start: string; end: string; back: string | null }) =>
+              !legRuns(l) && !!l.back && l.back.slice(0, 10) === from
+            const runningTrips = trips.filter((t) => legsTaken(t).some(legRuns))
             const running = runningTrips.map((t) => t.id)
-            const assignments = running.length
+            const lateTrips = trips.filter((t) => legsTaken(t).some(backThatMorning))
+            const wanted = [...new Set([...running, ...lateTrips.map((t) => t.id)])]
+            const assignments = wanted.length
               ? orThrow(await supabase.from('trip_assignments')
-                  .select('id, bus_id, trip_id, leg, trip_drivers(driver_id)').in('trip_id', running))
+                  .select('id, bus_id, trip_id, leg, trip_drivers(driver_id)').in('trip_id', wanted))
               : []
 
             // A bus and its crew are busy only on their own leg's days. A row whose leg the trip does not have is counted busy.
-            const legOf = new Map(runningTrips.map((t) => [t.id, new Map(legsOf(t).map((l) => [l.leg, l]))]))
+            const legOf = new Map(runningTrips.map((t) => [t.id, new Map(legsTaken(t).map((l) => [l.leg, l]))]))
             const busyBuses = new Set<string>()
             const busyDrivers = new Set<string>()
             for (const a of assignments) {
+              if (!legOf.has(a.trip_id)) continue
               const leg = legOf.get(a.trip_id)?.get(a.leg ?? 'outbound')
               if (leg && !legRuns(leg)) continue
               if (a.bus_id) busyBuses.add(a.bus_id)
@@ -374,10 +458,10 @@ Deno.serve(
             const numberOf = new Map(buses.map((b) => [b.id, b.number]))
             const tripLines = runningTrips.map((t) => {
               const mine = assignments.filter((a) => a.trip_id === t.id)
-              const legs = legsOf(t).filter(legRuns).map((l) => {
+              const legs = legsTaken(t).filter(legRuns).map((l) => {
                 const onLeg = mine.filter((a) => a.leg === l.leg && a.bus_id)
                 return {
-                  leg: l.leg, needed: l.needed,
+                  leg: l.leg, takes_to: l.end, ...(l.back ? { back: l.back } : {}), needed: l.needed,
                   buses: onLeg.map((a) => numberOf.get(a.bus_id) ?? 'another type'),
                   missing: isPlaceholder(t) ? 0 : Math.max(0, l.needed - onLeg.length),
                   drivers: mine.filter((a) => a.leg === l.leg).reduce((n, a) => n + (a.trip_drivers ?? []).length, 0),
@@ -389,6 +473,17 @@ Deno.serve(
                 placeholder: isPlaceholder(t), needs: busNeeds(t), legs,
               }
             })
+
+            // Free that day, and only at the yard from the time given.
+            const shortOf = new Map(drivers.map((d) => [d.id, d.short_name ?? d.name]))
+            const backAfterMidnight = lateTrips.flatMap((t) => legsTaken(t).filter(backThatMorning).map((l) => {
+              const onLeg = assignments.filter((a) => a.trip_id === t.id && (a.leg ?? 'outbound') === l.leg)
+              return {
+                trip_ref: t.trip_ref, customer: t.customer, destination: t.destination, leg: l.leg, back: l.back,
+                buses: onLeg.filter((a) => a.bus_id && numberOf.has(a.bus_id)).map((a) => numberOf.get(a.bus_id)),
+                drivers: onLeg.flatMap((a) => (a.trip_drivers ?? []).map((d) => shortOf.get(d.driver_id)).filter(Boolean)),
+              }
+            }))
 
             const missingOn = (line: typeof tripLines[number]) => line.legs.reduce((m, l) => m + l.missing, 0)
             const free = buses.filter((b) => !busyBuses.has(b.id))
@@ -402,6 +497,7 @@ Deno.serve(
               buses_still_needed: tripLines.reduce((n, t) => n + missingOn(t), 0),
               spare_buses: Math.max(0, free.length - claimed),
               busy: { buses: busyBuses.size, drivers: busyDrivers.size, trips: running.length },
+              back_after_midnight: backAfterMidnight,
               trips: tripLines,
             })
           },

@@ -12,6 +12,8 @@
 
      from, to   the leg's first and last day, ISO
      pre, post  the office's pre-trip and post-trip minutes (`route-times-v1`)
+     late       the office's late-return hour as minutes after midnight
+                (`late-return-v1`), 4:00 AM where the model leaves it out
      times      { depart, spot, leave, endtrip, back }: the yard departure,
                 the spot, the group's departure, the trip's end and the yard
                 return, "HH:MM" or empty
@@ -64,6 +66,19 @@
   const manyDays = m => !!(m.from && m.to && m.to > m.from);
   const isLocated = (m, st) => (m.located ? m.located(st) : !!st.located);
   const dayOf = (m, st) => st.date || m.from;
+
+  /* The last day a longer leg's figures count. Its end is on its last day,
+     and a bus back at the yard that morning before the late-return hour came
+     back the night before: the drive home is the day before's, which is then
+     the last with a row. A yard return earlier on the clock than the trip's
+     end is the day after the last, so the last day keeps its row. A one-day
+     leg is its own day. */
+  function countsTo(m) {
+    if (!manyDays(m)) return m.to ?? m.from;
+    const back = toMin(m.times.back), end = toMin(m.times.endtrip);
+    if (back == null || back >= (m.late ?? 240) || (end != null && back < end)) return m.to;
+    return dayAfter(m.to, -1);
+  }
 
   // A wait runs from the arrival to the leave on the day each falls, which
   // may be the next day or, for a stay of nights, a later one.
@@ -179,10 +194,13 @@
   /* One day's figures: the legs that end that day, the yard's leg out on the
      first and the legs home on the last, and on duty from the day's first
      time to its last, less its waits marked off duty or sleeper. A later day
-     starts when the bus leaves for its first stop. */
+     starts when the bus leaves for its first stop. `last` is the last day
+     with a row, and a time on a day after it is that row's. */
   function dayFigures(m, d, first, last) {
     const t = m.times;
-    const mine = m.list.filter(st => dayOf(m, st) === d);
+    const rowOf = day => (day && day > last ? last : day);
+    const reached = st => rowOf(dayOf(m, st)), left = st => rowOf(leaveDayOf(st, m.from));
+    const mine = m.list.filter(st => reached(st) === d);
     const legs = [...(d === first ? [m.out] : []), ...mine.filter(st => isLocated(m, st)).map(st => [st.drive, st.miles]),
       ...(d === last ? [...(m.dropCounts ? [m.drop] : []), m.home] : [])];
     const times = [];
@@ -190,7 +208,7 @@
     /* A day starts with the yard on the first day, or with the bus leaving
        where it spent the night, or else the drive to its first stop. A stop
        left the next day ends its own day when it is reached. */
-    const leftToday = m.list.filter(st => dayOf(m, st) !== d && st.leave && leaveDayOf(st, m.from) === d);
+    const leftToday = m.list.filter(st => reached(st) !== d && st.leave && left(st) === d);
     if (d === first) { put(t.depart, m.pre); put(t.spot); put(t.leave); }
     else if (leftToday.length) put(leftToday.at(-1).leave);
     else {
@@ -198,7 +216,7 @@
       if (timed) put(timed.arrive, timed.drive ?? 0);
       else if (d === last) put(t.endtrip, m.drop[0] ?? 0);
     }
-    for (const st of mine) { put(st.arrive); if (leaveDayOf(st, m.from) === d) put(st.leave); }
+    for (const st of mine) { put(st.arrive); if (left(st) === d) put(st.leave); }
     if (d === last) { put(t.endtrip); put(t.back, -m.post); }
     // A time earlier than the one before it is past midnight.
     let roll = 0;
@@ -208,7 +226,7 @@
       run.push(n + roll);
     }
     // A night's wait belongs to neither day, which each end or start at it.
-    const rest = restOf(m, mine.filter(st => leaveDayOf(st, m.from) === d));
+    const rest = restOf(m, mine.filter(st => left(st) === d));
     const span = run.length > 1 ? run.at(-1) - run[0] : null;
     const needs = !timesComplete(mine) || (d === first && !t.leave) || (d === last && !t.endtrip);
     // A day with a stop reached before the bus left the last one has no
@@ -221,14 +239,16 @@
      each stop's. On duty is the span from pre-trip to post-trip, and less
      rest is that less the waits the driver is off the clock for, the
      passenger rule's own sum. A leg of more than one day has a row a day,
-     `each`, and its Total's on duty is theirs added up once every day has
-     its times.
+     `each`, up to the last day `countsTo` gives, and its Total's on duty is
+     theirs added up once every day has its times; one that counts a single
+     day is that day's row alone.
 
      Returns { days, dates, each, total, backOn, dayMiles, legMiles, legDays,
-     over, status, unmeasured }: `backOn` the day the bus is back when it is
-     not the leg's first, `over` the first row past the second-driver rule
-     (over 10 hours driving, or over 15 on duty less rest), `status` Needs
-     times or Check times when the times cannot give on duty. */
+     over, status, unmeasured }: `days` whether it has a row a day, `backOn`
+     the day the bus is back when it is not the leg's first, `over` the first
+     row past the second-driver rule (over 10 hours driving, or over 15 on
+     duty less rest), `status` Needs times or Check times when the times
+     cannot give on duty. */
   function legFigures(m) {
     const t = m.times;
     const legs = [m.out, ...m.list.filter(st => isLocated(m, st)).map(st => [st.drive, st.miles]),
@@ -243,22 +263,30 @@
     if (span != null) span += m.pre + m.post;
     const rest = restOf(m, m.list);
     // Over more than one day the yard-to-yard span is the days', not a clock's.
-    const days = manyDays(m);
-    if (days) span = null;
-    const needs = !days && !(t.leave && t.endtrip && timesComplete(m.list));
-    const wrong = !days && m.list.some(st => isLocated(m, st) && (roomInto(m, st) ?? 0) < 0);
-    const total = figures(legs, span, rest, wrong ? 'check' : needs);
+    const many = manyDays(m);
+    if (many) span = null;
+    const needs = !many && !(t.leave && t.endtrip && timesComplete(m.list));
+    const wrong = !many && m.list.some(st => isLocated(m, st) && (roomInto(m, st) ?? 0) < 0);
+    let total = figures(legs, span, rest, wrong ? 'check' : needs);
+    const lastRow = countsTo(m);
     const dates = [];
     let each = null;
-    if (days) {
-      for (let d = m.from; d <= m.to && dates.length < 31; d = dayAfter(d, 1)) dates.push(d);
+    if (many) {
+      for (let d = m.from; d <= lastRow && dates.length < 31; d = dayAfter(d, 1)) dates.push(d);
       each = dates.map(d => dayFigures(m, d, dates[0], dates.at(-1)));
-      const status = each.find(c => c.status === 'Check times')?.status ?? each.find(c => c.status)?.status;
-      const on = each.reduce((n, c) => n + (c.span ?? 0), 0);
-      const off = each.reduce((n, c) => n + (c.span == null ? 0 : c.rest), 0);
-      total[2] = status ?? (on ? hm(on) : '—');
-      total[3] = status || !on ? '—' : hm(on - off);
+      if (each.length === 1) {
+        // Back the night of its first day: that day's row is the leg's.
+        [total] = each;
+        each = null;
+      } else {
+        const status = each.find(c => c.status === 'Check times')?.status ?? each.find(c => c.status)?.status;
+        const on = each.reduce((n, c) => n + (c.span ?? 0), 0);
+        const off = each.reduce((n, c) => n + (c.span == null ? 0 : c.rest), 0);
+        total[2] = status ?? (on ? hm(on) : '—');
+        total[3] = status || !on ? '—' : hm(on - off);
+      }
     }
+    const days = !!each;
     const backDays = late.get('return') ?? 0;
     return {
       days,
@@ -267,11 +295,11 @@
       total,
       // The last day's, where it is not the first: a longer leg's last day, or
       // the next day a one-day leg comes back on past midnight.
-      backOn: days ? m.to : backDays > 0 && m.from ? dayAfter(m.from, backDays) : null,
+      backOn: many ? m.to : backDays > 0 && m.from ? dayAfter(m.from, backDays) : null,
       // Each day's miles, for the quote calculator the trip opens.
       dayMiles: each ? each.map(c => c.miles) : [total.miles],
       legMiles: Math.round(legs.reduce((n, [, mi]) => n + (Number(mi) || 0), 0)),
-      legDays: m.from && m.to ? daysFrom(m.from, m.to) + 1 : 1,
+      legDays: m.from && lastRow ? daysFrom(m.from, lastRow) + 1 : 1,
       over: (each ?? [total]).find(c => c.drive > 600 || (c.span != null && c.span - c.rest > 900)) ?? null,
       status: days ? (each.find(c => c.status === 'Check times')?.status ?? each.find(c => c.status)?.status ?? null)
         : total.status,
@@ -303,7 +331,7 @@
      stops between are the list, less the row the group is let off at: a
      one-way or split leg's last stop, or a round trip's row back at the
      pickup. `rows` are the trip's `trip_stops`; `routeTimes` the office's
-     `{ pre, post }`. Each stop keeps its row as `row`. */
+     `{ pre, post, late }`. Each stop keeps its row as `row`. */
   function fromStops(trip, leg, rows, routeTimes = {}) {
     const stops = (rows || []).filter(s => (s.leg || 'outbound') === leg)
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
@@ -331,7 +359,7 @@
     const from = leg === 'return' ? trip.return_start_date ?? null : trip.start_date ?? null;
     const to = leg === 'return' ? trip.return_end_date ?? from : trip.end_date ?? from;
     return {
-      from, to, pre: routeTimes.pre ?? 0, post: routeTimes.post ?? 0,
+      from, to, pre: routeTimes.pre ?? 0, post: routeTimes.post ?? 0, late: routeTimes.late,
       times: { depart: hhmm(pickup?.depart_prev), spot: hhmm(pickup?.spot), leave: hhmm(inner[0]?.depart_prev),
         endtrip: hhmm(back?.depart_prev), back: hhmm(back?.arrive) },
       out: [driveMin(pickup?.drive), numOrNull(pickup?.miles)],
@@ -348,7 +376,7 @@
 
   window.SchedulerRouteFigures = {
     toMin, hm, leaveDayOf, samePlace,
-    waitOf, minutesAt, timeBetween, legInto, roomInto, dropRoom, midnights,
+    waitOf, minutesAt, timeBetween, legInto, roomInto, dropRoom, midnights, countsTo,
     legFigures, fromStops,
   };
 })();

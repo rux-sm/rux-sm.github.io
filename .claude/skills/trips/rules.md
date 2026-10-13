@@ -24,6 +24,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - Times the itinerary leaves TBD get a sensible placeholder, said so in the report, because the route needs times to give hours.
 - A stop that matches a saved location uses the saved location, never a fresh map result, because the saved one already carries the right name and map point.
 - A long day where the group stays nowhere overnight is kept as a one-day trip even when it gets back after midnight, because the +1 beside the time already shows the overlap.
+- A trip is entered with the real day and time the bus is back at the yard, and its dates are never shortened by hand: a return before the late-return hour on the Settings page, 4:00 AM, counts as the night before by itself, so the board, the picks and the quote's days leave that day free, because it leaves room for a whole other trip.
 - Add a fuel card whenever the Route tab suggests one; no need to ask.
 - When the Route tab's second-driver notice offers Rest in the sleeper, take it: one driver resting in a sleeper coach during that wait is the plan, because rux always prefers it to a second driver. Only when the notice offers the co-driver alone, raise the second driver with rux before deciding, because it changes the cost and the crew.
 - With one driver, the trip requires a sleeper and the pinned update carries the rest plan the driver is told, such as hours in the sleeper at the stop with the bus parked there; the driver's itinerary says Rest in sleeper on that stop and nothing more.
@@ -33,6 +34,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - Drivers are sent the trip only once it is confirmed, so an unconfirmed trip's drivers not confirming is expected, not a problem.
 - A new driver goes out first as co-driver beside an experienced driver, never alone on a bus, so they learn the work before they drive a trip of their own.
 - A driver gets trips on two days in a row only when the rest between them is clearly enough, at least 10 hours from one trip's return to the yard to the next trip's departure, such as an evening trip back by 19:30 before a 10:30 departure, so the driver's hours reset. A trip spanning several days counts as one trip.
+- A driver rux has said not to depend on is not counted as cover: a review leaves them out of the free drivers and offers them for no seat, because a trip that waits on them may have no driver on the day; who that is stays out of this public file.
 - The owners drive only when no other driver is free, and then on the shortest trips of the day, because they run the company the rest of the time.
 - A trip's equipment needs pick its bus first, such as a sleeper for a long one-driver day, an ADA lift or 56 seats; among the buses that meet them, the farthest trips take the newest, as the board lists the buses newest first, because the newest are the most comfortable and reliable over distance.
 - A bus gets as long at the yard between trips as the week allows, so it can be cleaned and fuelled: a bus back late at night goes out on a later departure the next day rather than an early one.

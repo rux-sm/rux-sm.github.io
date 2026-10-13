@@ -66,7 +66,7 @@
      group's departure, each stop and the yard back, and a time earlier on the
      clock than the one before it is past midnight. The count starts at the
      group's departure, which is on the leg's day, so a yard departure the
-     night before is not counted. A longer leg dates its times instead. */
+     night before is not counted. A longer leg's end is on its last day. */
   const clockMin = t => {
     const m = /^(\d{1,2}):(\d{2})/.exec(t || '');
     return m ? Number(m[1]) * 60 + Number(m[2]) : null;
@@ -91,6 +91,9 @@
     return days - start;
   };
 
+  /* A leg's times as saved: the yard departure, the spot, the trip's end and
+     the yard return, and `nights`, the midnights a one-day leg's return comes
+     after its departure. */
   const timesOf = (trip, leg) => {
     const { stops, pickup, back } = stopsOfLeg(trip, leg);
     const depart = pickup?.depart_prev || (leg === 'outbound' ? trip.departure_time : trip.return_time) || null;
@@ -98,17 +101,60 @@
       depart,
       back: back?.arrive || null,
       spot: pickup?.spot || null,
-      backDays: midnightsOf(stops, pickup, back, depart),
+      end: back?.depart_prev || null,
+      nights: midnightsOf(stops, pickup, back, depart),
     };
+  };
+
+  /* THE LATE RETURN, the office's, kept in `settings` as `late-return-v1`: a
+     bus back at the yard before this hour of the morning came back the night
+     before, so the day it is back on is not one the leg takes. Hour 0 counts
+     no return as the night before. */
+  const LATE_RETURN_HOUR = 4;
+  let lateBefore = LATE_RETURN_HOUR * 60;
+  const setLateReturn = value => {
+    const hour = Number(value?.hour);
+    lateBefore = (value?.hour != null && Number.isFinite(hour) && hour >= 0 && hour <= 12 ? hour : LATE_RETURN_HOUR) * 60;
+  };
+  // The hour as minutes after midnight, for a route's model.
+  const lateReturn = () => lateBefore;
+
+  const dayFrom = (day, n) => {
+    const d = parseISO(day);
+    d.setDate(d.getDate() + n);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
+
+  /* THE DAYS A LEG TAKES, from its dates and its times as `timesOf` gives
+     them. The bus is back on the leg's last day, or the day after when the
+     yard return is earlier on the clock than the trip's end; on a one-day leg
+     it is back as many days on as its times pass midnight. Back before the
+     late-return hour, the leg takes the days up to the one before and
+     `backDays` says how many days after its last the bus is back, the bar's
+     +1; back at or after that hour, it takes the day it is back on. A leg
+     with no yard return takes its own dates. */
+  const takes = (from, to, times) => {
+    const back = clockMin(times?.back);
+    if (back == null) return { to, backDays: 0 };
+    const end = clockMin(times.end);
+    const backOn = dayFrom(to, to > from ? (end != null && back < end ? 1 : 0) : times.nights ?? 0);
+    return back < lateBefore && backOn > from ? { to: dayFrom(backOn, -1), backDays: 1 } : { to: backOn, backDays: 0 };
   };
 
   // A leg saved with its end before its start is read as its start day, so it
   // still has a bar to open and put right.
   const lastDay = (from, to) => (to && to >= from ? to : from);
+  /* A trip's legs, each with the days it takes, `from` to `to`, and `ends`,
+     the last day as saved. */
   const legsOf = trip => {
     const legs = [];
-    if (trip.start_date) legs.push({ leg: 'outbound', from: trip.start_date, to: lastDay(trip.start_date, trip.end_date), count: trip.bus_count || 1, ...timesOf(trip, 'outbound') });
-    if (trip.return_start_date) legs.push({ leg: 'return', from: trip.return_start_date, to: lastDay(trip.return_start_date, trip.return_end_date), count: trip.return_bus_count || trip.bus_count || 1, ...timesOf(trip, 'return') });
+    const add = (leg, from, end, count) => {
+      const times = timesOf(trip, leg);
+      const ends = lastDay(from, end);
+      legs.push({ leg, from, ends, count, ...times, ...takes(from, ends, times) });
+    };
+    if (trip.start_date) add('outbound', trip.start_date, trip.end_date, trip.bus_count || 1);
+    if (trip.return_start_date) add('return', trip.return_start_date, trip.return_end_date, trip.return_bus_count || trip.bus_count || 1);
     return legs;
   };
 
@@ -142,6 +188,6 @@
 
   window.SchedulerWeek = {
     TRIP_COLORS, RETIRED_COLORS, tripColorOf, standardHueOf, hueFor,
-    stopsOfLeg, timesOf, legsOf, clip, assignLanes,
+    stopsOfLeg, timesOf, legsOf, takes, setLateReturn, lateReturn, clip, assignLanes,
   };
 })();

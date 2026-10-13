@@ -267,14 +267,21 @@
   }
   /* The office's `route-times-v1`, the pre-trip and post-trip minutes the
      Route tab adds to on duty, which the Detailed itinerary's figures add the
-     same way. A read that fails leaves both at nothing, as the Route tab does
-     before its settings answer. */
-  let routeTimes = { pre: 0, post: 0 };
+     same way, and its `late-return-v1`, the hour before which a bus back at
+     the yard came back the night before, which the printed week and the
+     itinerary's days follow as the board does. A read that fails leaves the
+     minutes at nothing and the hour at its default, as the Route tab does
+     before its settings answer. A shared form's page loads no week.js, and
+     draws neither a week nor a route's figures. */
+  let routeTimes = { pre: 0, post: 0, late: window.SchedulerWeek?.lateReturn() };
   async function readRouteTimes(client) {
     const { data } = await client
-      .from('settings').select('value').eq('key', 'route-times-v1').maybeSingle();
+      .from('settings').select('key,value').in('key', ['route-times-v1', 'late-return-v1']);
+    const value = key => (data || []).find(row => row.key === key)?.value;
     const minutes = v => (Number.isFinite(Number(v)) && v !== null && v !== '' && Number(v) >= 0 ? Math.round(Number(v)) : 0);
-    routeTimes = { pre: minutes(data?.value?.pre_trip_minutes), post: minutes(data?.value?.post_trip_minutes) };
+    window.SchedulerWeek?.setLateReturn(value('late-return-v1'));
+    routeTimes = { pre: minutes(value('route-times-v1')?.pre_trip_minutes), post: minutes(value('route-times-v1')?.post_trip_minutes),
+      late: window.SchedulerWeek?.lateReturn() };
   }
   /* THE ONE QUOTE RULE THE DETAILED PRICE READS: a rental under these miles
      is priced at the local day rate, not by the mile. quote.js's `rule`
@@ -861,8 +868,14 @@
      one-day leg; on a longer leg each day's
      on its own heading, and the Total alone after the last day. Nothing on
      the sheet is added up here. */
-  function dayWords(fig, day) {
-    const c = fig?.days ? fig.each[fig.dates.indexOf(day)] : null;
+  function dayWords(fig, day, headed) {
+    /* A day after the last with a row is that row's: the bus came back the
+       night before, and the morning's rows are the last day's drive home. It
+       carries the figures only when the last day had no heading of its own
+       to carry them. */
+    const last = fig?.days ? fig.dates.at(-1) : null;
+    const at = !last ? -1 : day > last ? (headed.has(last) ? -1 : fig.dates.length - 1) : fig.dates.indexOf(day);
+    const c = at >= 0 ? fig.each[at] : null;
     if (!c) return '';
     const [miles, drive, onDuty, lessRest] = c;
     return [
@@ -1155,6 +1168,7 @@
        by the fold is named again over the rest of it. The column names head
        only the first table, as they are read once. */
     let body = null;
+    const headed = new Set();  // the days named so far
     const table = day => {
       const t = el('table', 'scheduler-driver-itinerary__table');
       t.appendChild(el('caption', 'rux--visually-hidden', day ? dayName(day) : 'Stops'));
@@ -1180,7 +1194,8 @@
         name.dataset.name = 'Day';
         th.appendChild(name);
         // On the Detailed layout the day's own figures share its line.
-        const figures = detailed ? dayWords(fig, day) : '';
+        const figures = detailed ? dayWords(fig, day, headed) : '';
+        headed.add(day);
         if (figures) th.appendChild(el('span', 'scheduler-driver-itinerary__day-figures', figures));
         row.appendChild(th);
         head.appendChild(row);
@@ -3658,6 +3673,8 @@
         .lte('start_date', isoDay(to))
         .or(`end_date.gte.${isoDay(from)},return_end_date.gte.${isoDay(from)},start_date.gte.${isoDay(from)}`),
       readRequirementNames(client).catch(() => {}),
+      // The late-return hour, which says the days each leg takes.
+      readRouteTimes(client).catch(() => {}),
     ]);
     if (buses.error || trips.error) {
       return say('error', "The week can't be read right now.", 'Check your connection, then reload the page.');

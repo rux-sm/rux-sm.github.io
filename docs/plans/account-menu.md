@@ -48,15 +48,16 @@ the game's rows alone.
 
 In a game:
 
-- **A game takes this header on a wide screen,** holding the game's places
-  and the menu, so an account can leave for another app from any game as
-  it can from any app. On a phone a game keeps its bar of places and no
+- **A game takes this header on a wide screen,** from 66rem, where Carbon
+  shows a header's links, holding the game's places and the menu, so an
+  account can leave for another app from any game as it can from any app. On a phone a game keeps its bar of places and no
   header, and shows no picture button: Me is one tap away in the bar and
   holds the menu's rows.
-- **On a wide screen Me is not a place:** the row that says who is playing
-  opens it, as the picture button is the player.
-- **A game adds its own rows to the menu:** How to play, and Add to home
-  screen where the browser can.
+- **On a wide screen Me is not a place:** it is the first of the game's own
+  rows in the menu, as the picture button is the player.
+- **A game adds its own rows to the menu** through `Rux.profile.rows`: Me,
+  How to play, and for Pixels' owner Manage and Players. Add to home screen
+  stays on Me, where a phone finds it.
 - **A player with no account has the same button, with the picture they
   drew,** and their menu is who is playing, the game's rows and Theme. They
   have no Profile, no Log out and no apps, since they have no account to
@@ -71,9 +72,10 @@ None open.
 
 ## Tasks
 
-- [ ] Give the games the header on a wide screen: Pixels and Sevens, and the
-      three game templates in Design, with a game's own rows in the menu
-      and a player with no account drawn theirs.
+- [ ] Give Pixels the header on a wide screen, as Design's game templates
+      have it, with its own rows in the menu and a player with no account
+      drawn theirs. Sevens has the header already and takes the bar of
+      places when `docs/plans/game-pages.md` moves it.
 - [ ] Take the older panel's code out once the games are moved, since
       Pixels' Me still keeps its theme in a modal of radios: the radios in
       `design/js/profile.js`, the name field and the button in

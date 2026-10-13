@@ -6,13 +6,15 @@
    tools/check-app.mjs resolves a game's use of a `game-` class against this
    file, as it resolves a `rux--` class against rux.css.
 
-   SIX PARTS: the page, the bar of places, the game key, the picture tile,
-   the start cover and the finish panel. Each is used with Carbon's own
+   SEVEN PARTS: the page, the header, the bar of places, the game key, the
+   picture tile, the start cover and the finish panel. Each is used with Carbon's own
    components and never in place of one: a picture tile is Carbon's tile laid
    out round a picture, and the keys on a cover are Carbon's buttons.
 
-   A game has no header. The bar of places is its one way round, and what a
-   header would hold is a list on the player's page. */
+   On a phone a game has no header. The bar of places is its one way round,
+   and what a header would hold is a list on the player's page. On a wide
+   screen it takes Carbon's header, which holds the places and the account's
+   panel. */
 
 /* Each part's display would outrank the hidden attribute. */
 .game-places[hidden], .game-keys[hidden], .game-cover[hidden], .game-finish[hidden] { display: none; }
@@ -26,6 +28,23 @@
    from the top, so a tile or a board has the width. */
 @media (max-width: 28rem) {
   .game-page { margin: -1rem -2rem 0; }
+}
+
+/* THE HEADER, which a game takes on a wide screen only: Carbon's own, with
+   the game's places as its links and the account action at its end, so
+   whoever is logged in can leave for another app. Carbon shows a header's
+   links from 66rem, so that is where a game's header starts. Below it the
+   header is not drawn, the page starts at its top, and the bar of places is
+   the way round; where the header shows, the bar is not drawn. A header a
+   script has not shown yet, as while nobody is playing, takes no room. */
+@media (max-width: 65.99rem) {
+  .game-header { display: none; }
+  .game-header ~ .rux--content.game-main { margin-block-start: 0; }
+}
+@media (min-width: 66rem) {
+  .game-header[hidden] { display: none; }
+  .game-header[hidden] ~ .rux--content.game-main { margin-block-start: 0; }
+  .game-header:not([hidden]) ~ .game-main .game-places { display: none; }
 }
 
 /* THE BAR OF PLACES, the first thing in the page. On a wide screen it is a

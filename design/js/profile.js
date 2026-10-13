@@ -20,6 +20,8 @@
      set(patch)       merge, store, apply the theme, re-render, notify
      onChange(fn)     called after every set() with the new profile
      onSignIn(fn)     reveals the sign-in button and binds fn to it
+     rows(items)      an app's own rows in the header's panel, over Profile
+     who({name,face}) who is here, for a player with no account
    The sign-in button ships `hidden` and stays hidden until something calls
    onSignIn, because a button with no handler is an affordance that lies.
 
@@ -169,6 +171,57 @@
     signIn.addEventListener('click', e => { e.preventDefault(); fn(e); });
   };
 
+  /* AN APP'S OWN ROWS, in the header's panel over Profile. `rows` takes them
+     in order, each `{ text, href }` for a page or `{ text, open }` for the id
+     of a modal js/modal.js opens, and writes them as the first items of the
+     account's list. Called again it replaces what it wrote. A page with no
+     such list is left as it is. */
+  const rows = items => {
+    const list = panel.querySelector('ul.rux--switcher[aria-label="Account"]');
+    if (!list) return;
+    for (const old of list.querySelectorAll('li[data-rux-row]')) old.remove();
+    const shut = !panel.classList.contains('rux--header-panel--expanded');
+    list.prepend(...items.map(({ text, href, open }) => {
+      const li = document.createElement('li');
+      li.className = 'rux--switcher__item';
+      li.dataset.ruxRow = '';
+      const a = document.createElement('a');
+      a.className = 'rux--switcher__item-link';
+      a.href = href ?? `#${open}`;
+      if (open) a.dataset.ruxOpen = open;
+      a.textContent = text;
+      // A collapsed panel's links are out of the tab order, as js/ui-shell.js leaves them.
+      if (shut) a.tabIndex = -1;
+      li.append(a);
+      return li;
+    }));
+  };
+
+  /* WHO IS HERE, for an app whose player has no account: their name over the
+     rows beside a picture the app draws, and the same picture on the Account
+     action in place of its glyph. `face` returns a new element each time it
+     is called, since the picture stands in two places. /account.js writes
+     the same for someone logged in. */
+  const who = ({ name: called, face }) => {
+    if (!panel.classList.contains('rux--header-panel')) return;
+    panel.querySelector(':scope > [data-rux-who]')?.remove();
+    const head = document.createElement('div');
+    head.className = 'rux--stack-vertical';
+    head.dataset.ruxWho = '';
+    const line = document.createElement('div');
+    line.className = 'rux--stack-horizontal rux--stack-scale-4';
+    const text = document.createElement('div');
+    text.className = 'rux--type-heading-compact-01';
+    text.textContent = called;
+    line.append(face(), text);
+    head.append(line);
+    panel.prepend(head);
+    const action = document.querySelector('.rux--header__action[aria-controls="rux-account-panel"]');
+    if (!action) return;
+    action.replaceChildren(face());
+    action.setAttribute('aria-label', `Account, ${called}`);
+  };
+
   render(get());
-  window.Rux.profile = { get, set, onChange: fn => listeners.add(fn), onSignIn };
+  window.Rux.profile = { get, set, onChange: fn => listeners.add(fn), onSignIn, rows, who };
 })();

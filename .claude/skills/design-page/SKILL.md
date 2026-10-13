@@ -13,7 +13,7 @@ for why any line here is true.
 
 ## 1. Copy a template — never start from scratch
 
-Seventeen exist, each a **complete page**, shell included; a game's three have no shell.
+Seventeen exist, each a **complete page**, shell included; a game's three have a header on a wide screen and no side nav.
 
 | page | start from |
 | :--- | :--- |
@@ -35,10 +35,11 @@ Seventeen exist, each a **complete page**, shell included; a game's three have n
 | a game being played | `design/templates/game-play.html` |
 | who is playing a game, and what they can set | `design/templates/game-player.html` |
 
-**A game's three are copied together.** They have one bar of places and no
-header, and the parts Carbon lacks are `game-` classes from
-`design/css/rux-game.css`, which the check holds a game to. Row 3 of the
-table in §2 does not apply to them.
+**A game's three are copied together.** On a phone they have one bar of
+places and no header; from 66rem the hub and the player's page take the
+header, with the places as its links. The parts Carbon lacks are `game-`
+classes from `design/css/rux-game.css`, which the check holds a game to. A
+game adds its own rows to the account's panel with `Rux.profile.rows`.
 
 **Not `design/sink/ui-shell.html`**: same shell in a 22rem sandbox, positioned for a
 specimen.

@@ -229,7 +229,7 @@ _73 shipped fragments · 21 marked, holding 27 of the catalogue's 77 blocks · 2
 | `skeleton` | breadcrumb, button, link, skeleton-styles | — | 13 | — | — | guidebanner | no |
 | `slider` | form, slider, text-input | — | 6 | — | — | list-box | no |
 | `spacing` | — | — | 0 | — | — | — | no |
-| `stack` | button, stack, tile | — | 3 | — | — | guidebanner, tile | no |
+| `stack` | button, stack, tile | — | 3 | — | — | guidebanner, profile, tile | no |
 | `structured-list` | structured-list | 2 | 2 | 12 | 0 | form-controls | yes |
 | `table` | button, checkbox, data-table, overflow-menu, radio-button, search, tag | 1 | 6 | 9 | 1 | data-table, dismiss, form-controls, guidebanner, menu, overlay, profile, tag-overflow | yes |
 | `tabs` | popover, tabs, tooltip | 1 | 11 | 8 | 0 | coachmark, copy-button, popover, tabs, tag-overflow | yes |
@@ -238,12 +238,12 @@ _73 shipped fragments · 21 marked, holding 27 of the catalogue's 77 blocks · 2
 | `tearsheet` | Tearsheet, action-set, button, form, modal, text-input | — | 4 | — | — | guidebanner, list-box, menu, modal | no |
 | `text-input` | button, form, popover, text-input, toggle, tooltip | — | 10 | — | — | coachmark, copy-button, form-controls, guidebanner, list-box, popover, tag-overflow | no |
 | `textarea` | form, text-area | — | 5 | — | — | — | no |
-| `tile` | button, link, stack, tile | 2 | 9 | 2 | 0 | guidebanner, tile | yes |
+| `tile` | button, link, stack, tile | 2 | 9 | 2 | 0 | guidebanner, profile, tile | yes |
 | `time-picker` | checkbox, form, select, text-input, time-picker | — | 4 | — | — | form-controls, list-box | no |
 | `toggle` | toggle | — | 7 | — | — | form-controls | no |
 | `toggletip` | dropdown, link, list-box, popover, toggletip | — | 2 | — | — | coachmark, copy-button, form-controls, list-box, popover, tag-overflow | no |
 | `tooltip` | button, popover, tooltip | — | 3 | — | — | coachmark, copy-button, guidebanner, popover, tag-overflow | no |
 | `treeview` | treeview | — | 2 | — | — | — | no |
-| `ui-shell` | button, form, select, stack, ui-shell, user-avatar | — | 4 | — | — | form-controls, guidebanner, notifications-panel, theme, ui-shell | no |
+| `ui-shell` | button, form, select, stack, ui-shell, user-avatar | — | 4 | — | — | form-controls, guidebanner, notifications-panel, profile, theme, ui-shell | no |
 | `user-avatar` | user-avatar | — | 20 | — | — | — | no |
 <!-- COVERAGE:END -->

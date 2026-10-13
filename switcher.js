@@ -17,6 +17,10 @@
     const granted = access.accessOf(user);
     apps = apps.filter(a => a.path === '/' || access.allows(granted, a.path));
   }
+  // A PLAYER WITH NO ACCOUNT HAS NO OTHER APP TO OPEN. /funnel.js marks a page
+  // it opened to a guest, and with no login there the account panel lists
+  // no apps.
+  const guest = !user && document.documentElement.hasAttribute('data-rux-guest');
   const here = location.pathname;
   const current = a => a.path === '/' ? here === '/' || here === '/index.html' : here.startsWith(a.path);
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -24,7 +28,7 @@
   // THE LIST IS `ul.rux--switcher` NAMED Applications. A page with the one
   // account panel has it there, under the list of the account's own rows,
   // where it is the way to ANOTHER app: it opens on a rule and the word Apps,
-  // and with nowhere else to go it is left out. A page not yet moved onto
+  // and with nowhere else to go, or for a guest, it is left out. A page not yet moved onto
   // that panel has the list in a panel of its own, behind the App switcher
   // action.
   // An app is its icon and its name, and the one the page is, is marked.
@@ -36,7 +40,7 @@
   const rule = '<li><hr class="rux--switcher__item--divider"></li>';
   for (const ul of document.querySelectorAll('ul.rux--switcher[aria-label="Applications"]')) {
     const menu = ul.parentElement.querySelector(':scope > ul.rux--switcher[aria-label="Account"]');
-    if (menu && !apps.some(a => !current(a))) {
+    if (menu && (guest || !apps.some(a => !current(a)))) {
       ul.replaceChildren();
       ul.hidden = true;
       continue;

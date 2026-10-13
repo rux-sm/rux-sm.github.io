@@ -942,7 +942,7 @@
       "follows": null,
       "deps": [],
       "frameDeps": [],
-      "line": 372,
+      "line": 441,
       "provenance": "PROVENANCE: rendered-dom · components-tile--clickable, components-tag--default and components-progressbar--default, as sink/tile.html, sink/tags.html and sink/progress-bar.html record them, 2026-08-28. The `game-` parts are no capture, because Carbon ships none of them: they are this system's own, in css/rux-game.css, and were measured on a game built from them.",
       "grid": "rux--css-grid",
       "column": "rux--col-span-100 rux--css-grid-column",
@@ -961,7 +961,7 @@
       "follows": null,
       "deps": [],
       "frameDeps": [],
-      "line": 381,
+      "line": 450,
       "provenance": "PROVENANCE: rendered-dom · components-tile--clickable, components-tag--default and components-progressbar--default, as sink/tile.html, sink/tags.html and sink/progress-bar.html record them, 2026-08-28. The `game-` parts are no capture, because Carbon ships none of them: they are this system's own, in css/rux-game.css, and were measured on a game built from them.",
       "grid": "rux--css-grid",
       "column": "rux--col-span-100 rux--css-grid-column",
@@ -985,7 +985,7 @@
           "id": "lanterns-how"
         }
       ],
-      "line": 379,
+      "line": 381,
       "provenance": "PROVENANCE: rendered-dom · components-modal--default, components-tile--clickable, components-tag--default and components-progressbar--default, as sink/modal.html, sink/tile.html, sink/tags.html and sink/progress-bar.html record them, 2026-08-28. The `game-` parts are no capture, because Carbon ships none of them: they are this system's own, in css/rux-game.css, and were measured on a game built from them.",
       "grid": "rux--css-grid",
       "column": "rux--col-span-100 rux--css-grid-column",
@@ -1004,7 +1004,7 @@
       "follows": null,
       "deps": [],
       "frameDeps": [],
-      "line": 415,
+      "line": 417,
       "provenance": "PROVENANCE: rendered-dom · components-modal--default, components-tile--clickable, components-tag--default and components-progressbar--default, as sink/modal.html, sink/tile.html, sink/tags.html and sink/progress-bar.html record them, 2026-08-28. The `game-` parts are no capture, because Carbon ships none of them: they are this system's own, in css/rux-game.css, and were measured on a game built from them.",
       "grid": "rux--css-grid",
       "column": "rux--col-span-100 rux--css-grid-column",
@@ -1023,7 +1023,7 @@
       "follows": null,
       "deps": [],
       "frameDeps": [],
-      "line": 432,
+      "line": 434,
       "provenance": "PROVENANCE: rendered-dom · components-modal--default, components-tile--clickable, components-tag--default and components-progressbar--default, as sink/modal.html, sink/tile.html, sink/tags.html and sink/progress-bar.html record them, 2026-08-28. The `game-` parts are no capture, because Carbon ships none of them: they are this system's own, in css/rux-game.css, and were measured on a game built from them.",
       "grid": "rux--css-grid",
       "column": "rux--col-span-100 rux--css-grid-column",
@@ -1042,7 +1042,7 @@
       "follows": null,
       "deps": [],
       "frameDeps": [],
-      "line": 379,
+      "line": 448,
       "provenance": "PROVENANCE: rendered-dom · components-containedlist--with-interactive-items and components-modal--default, as sink/contained-list.html and sink/modal.html record them, 2026-08-28. The `game-` parts are no capture, because Carbon ships none of them: they are this system's own, in css/rux-game.css, and were measured on a game built from them.",
       "grid": "rux--css-grid",
       "column": "rux--col-span-100 rux--css-grid-column",
@@ -1064,19 +1064,15 @@
         {
           "attr": "data-rux-open",
           "id": "lanterns-how"
-        },
-        {
-          "attr": "data-rux-open",
-          "id": "lanterns-theme"
         }
       ],
-      "line": 392,
+      "line": 461,
       "provenance": "PROVENANCE: rendered-dom · components-containedlist--with-interactive-items and components-modal--default, as sink/contained-list.html and sink/modal.html record them, 2026-08-28. The `game-` parts are no capture, because Carbon ships none of them: they are this system's own, in css/rux-game.css, and were measured on a game built from them.",
       "grid": "rux--css-grid",
       "column": "rux--col-span-100 rux--css-grid-column",
       "stack": "rux--stack-scale-7 rux--stack-vertical",
       "open": "        <!-- BLOCK:BEGIN name=list label=\"List of the rest\" -->\n",
-      "html": "        <!-- WHAT A HEADER WOULD HOLD IS THIS LIST: the rules, the theme, and\n             whatever else belongs to the game and not to a place. It is\n             Carbon's contained list with clickable items, each a button that\n             opens a modal by `data-rux-open`. A row for one kind of player\n             only is left out for the rest, not disabled.\n\n             REPLACE: the rows. A word or two each, no description. -->\n        <div class=\"rux--contained-list rux--layout--size-lg rux--contained-list--on-page lanterns-list\">\n          <ul role=\"list\">\n            <li class=\"rux--contained-list-item rux--contained-list-item--clickable\">\n              <button type=\"button\" class=\"rux--contained-list-item__content\" data-rux-open=\"lanterns-how\">How to play</button>\n            </li>\n            <li class=\"rux--contained-list-item rux--contained-list-item--clickable\">\n              <button type=\"button\" class=\"rux--contained-list-item__content\" data-rux-open=\"lanterns-theme\">Theme</button>\n            </li>\n          </ul>\n        </div>\n",
+      "html": "        <!-- WHAT A HEADER WOULD HOLD IS THIS LIST: the rules, the theme, and\n             whatever else belongs to the game and not to a place. It is\n             Carbon's contained list with clickable items, each a button that\n             opens a modal by `data-rux-open`. A row for one kind of player\n             only is left out for the rest, not disabled.\n\n             THE THEME IS A ROW TOO, Carbon's inline select. It is a second\n             way to the one the header's panel holds, for a phone, which is\n             drawn no header: the script at the foot of the page gives it\n             the panel's own options and keeps the two in step.\n\n             REPLACE: the rows. A word or two each, no description. -->\n        <div class=\"rux--contained-list rux--layout--size-lg rux--contained-list--on-page lanterns-list\">\n          <ul role=\"list\">\n            <li class=\"rux--contained-list-item rux--contained-list-item--clickable\">\n              <button type=\"button\" class=\"rux--contained-list-item__content\" data-rux-open=\"lanterns-how\">How to play</button>\n            </li>\n            <li class=\"rux--contained-list-item\">\n              <div class=\"rux--contained-list-item__content\">\n                <div class=\"rux--form-item\">\n                  <div class=\"rux--select rux--select--inline rux--layout--size-md\">\n                    <label class=\"rux--label\" for=\"lanterns-theme\">Theme</label>\n                    <div class=\"rux--select-input--inline__wrapper\">\n                      <div class=\"rux--select-input__wrapper\">\n                        <select id=\"lanterns-theme\" class=\"rux--select-input\"></select>\n                        <svg class=\"rux--select__arrow\" width=\"16\" height=\"16\" viewBox=\"0 0 32 32\" fill=\"currentColor\" aria-hidden=\"true\"><use href=\"#i-chevron--down\"/></svg>\n                      </div>\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </li>\n          </ul>\n        </div>\n",
       "close": "        <!-- BLOCK:END list -->\n"
     },
     {
@@ -1690,9 +1686,9 @@
       "slots": [
         {
           "name": "body",
-          "line": 370,
-          "start": 95579,
-          "end": 99916,
+          "line": 439,
+          "start": 100081,
+          "end": 104418,
           "container": {
             "grid": "rux--css-grid",
             "column": "rux--col-span-100 rux--css-grid-column",
@@ -1716,9 +1712,9 @@
       "slots": [
         {
           "name": "body",
-          "line": 377,
-          "start": 95835,
-          "end": 101755,
+          "line": 379,
+          "start": 95967,
+          "end": 101887,
           "container": {
             "grid": "rux--css-grid",
             "column": "rux--col-span-100 rux--css-grid-column",
@@ -1744,9 +1740,9 @@
       "slots": [
         {
           "name": "body",
-          "line": 377,
-          "start": 96033,
-          "end": 97910,
+          "line": 446,
+          "start": 100456,
+          "end": 103257,
           "container": {
             "grid": "rux--css-grid",
             "column": "rux--col-span-100 rux--css-grid-column",

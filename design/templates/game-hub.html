@@ -30,8 +30,10 @@
      sink/progress-bar.html record them, 2026-08-28. The `game-` parts are no
      capture, because Carbon ships none of them: they are this system's own,
      in css/rux-game.css, and were measured on a game built from them. -->
-<!-- BEHAVIOUR: none · a tile and a place are links, and a locked tile is no
-     link. Nothing here carries a module or a handler. -->
+<!-- BEHAVIOUR: derived · a tile and a place are links, and a locked tile is
+     no link. The header's panel is js/ui-shell.js on js/overlay.js, built
+     from the captured markup. NOT COVERED: no running Carbon page was
+     opened, since Carbon has no game to read. -->
 <!--
   THE GAME HUB. A complete page: the bar of places, a title, and a list of
   picture tiles. Copy this file, replace the marked regions, delete the rest
@@ -42,9 +44,11 @@
   (templates/game-play.html); and the player, who is playing and what they
   can set (templates/game-player.html). Copy the three together.
 
-  A GAME HAS NO HEADER. One bar holds its places, and what a header would
-  hold is a list on the player's page. Play shows no bar, only its own keys
-  and a way back.
+  ON A PHONE A GAME HAS NO HEADER. One bar holds its places, and what a
+  header would hold is a list on the player's page. On a wide screen the hub
+  and the player's page take Carbon's header, with the places and the
+  account's panel in it. Play shows neither, only its own keys and a way
+  back.
 
   WHAT CARBON LACKS IS IN css/rux-game.css, under the prefix `game-`: the
   page's bottom room, the bar of places, the game key, the picture tile, the
@@ -351,6 +355,71 @@
 </svg>
 <!-- SPRITE:END -->
 
+<!-- THE HEADER, which a game takes on a wide screen only, from 66rem, where
+     Carbon shows a header's links. It holds the game's places and the account
+     action, so whoever is logged in can leave for another app. Below that
+     width css/rux-game.css draws no header, and the bar of places in the page
+     is the way round.
+
+     ME IS NOT ONE OF ITS LINKS. The account action is the player, and Me is
+     the first of the game's own rows in its panel, which the script at the
+     foot of the page writes.
+
+     REPLACE: the name, and the places, the same as the bar's but for Me. -->
+<header class="rux--header game-header" data-theme="g100" aria-label="Lanterns">
+  <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
+  <a class="rux--header__name" href="game-hub.html"><span class="rux--header__name--prefix">Rux</span>&nbsp;Lanterns</a>
+  <nav class="rux--header__nav" aria-label="Lanterns">
+    <ul class="rux--header__menu-bar">
+      <li><a class="rux--header__menu-item rux--header__menu-item--current" href="game-hub.html" aria-current="page"><span class="rux--text-truncate-end">Trails</span></a></li>
+      <li><a class="rux--header__menu-item" href="game-hub.html#friends"><span class="rux--text-truncate-end">Friends</span></a></li>
+    </ul>
+  </nav>
+  <div class="rux--header__global">
+    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-user--avatar"/></svg></button>
+  </div>
+  <!-- THE ACCOUNT PANEL, the header's one: the theme, the account's rows and
+       the apps that account can open. The panel between the markers is
+       generated: `npm run generate` rewrites it in every template from
+       tools/lib/shell.mjs. -->
+  <!-- ACCOUNT:BEGIN — generated, do not edit. `npm run generate` rewrites this
+       block in every template from tools/lib/shell.mjs. -->
+  <div class="rux--header-panel" id="rux-account-panel">
+    <ul class="rux--switcher" aria-label="Account">
+      <li class="rux--switcher__item" id="rux-account-profile" hidden><a class="rux--switcher__item-link" href="/account/">Profile</a></li>
+      <li>
+        <div class="rux--form-item">
+          <div class="rux--select rux--select--inline rux--layout--size-md">
+            <label class="rux--label" for="rux-profile-theme">Theme</label>
+            <div class="rux--select-input--inline__wrapper">
+              <div class="rux--select-input__wrapper">
+                <select id="rux-profile-theme" class="rux--select-input">
+                  <option class="rux--select-option" value="white" selected>White</option>
+                  <option class="rux--select-option" value="g10">Gray 10</option>
+                  <option class="rux--select-option" value="g90">Gray 90</option>
+                  <option class="rux--select-option" value="g100">Gray 100</option>
+                  <option class="rux--select-option" value="geist-dark">Geist dark</option>
+                  <option class="rux--select-option" value="ant-dark">Ant dark</option>
+                  <option class="rux--select-option" value="spotify-dark">Spotify dark</option>
+                  <option class="rux--select-option" value="apple-light">Apple light</option>
+                  <option class="rux--select-option" value="apple-dark">Apple dark</option>
+                  <option class="rux--select-option" value="rux-dark">Rux dark</option>
+                </select>
+                <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="rux--switcher__item" hidden><a class="rux--switcher__item-link" href="/login/" id="rux-profile-sign-in">Log out</a></li>
+    </ul>
+    <ul class="rux--switcher" aria-label="Applications">
+      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/">Home</a></li>
+    </ul>
+  </div>
+  <!-- ACCOUNT:END -->
+</header>
+
 <main id="main-content" class="rux--content game-main">
   <!-- THE BAR OF PLACES, the game's one way round: along the bottom on a phone,
        along the top on a wide screen. A game has no header. The place this page
@@ -440,7 +509,17 @@
 <script src="../js/dismiss.js"></script>
 <script src="../js/tile.js"></script>
 <script src="../js/modal.js"></script>
+<script src="../js/ui-shell.js"></script>
+<script src="../js/profile.js"></script>
+<script src="/switcher.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
+<script>
+// REPLACE: THE GAME'S OWN ROWS in the account's panel, over Profile, which
+// js/profile.js writes: Me, which a wide screen has no place for. A row is
+// `{ text, href }` for a page, or `{ text, open }` for the id of a modal that
+// every page of the game carries.
+window.Rux.profile?.rows([{ text: 'Me', href: 'game-player.html' }]);
+</script>
 </body>
 </html>

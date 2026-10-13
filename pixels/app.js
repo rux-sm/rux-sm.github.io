@@ -213,20 +213,30 @@
   };
   /* A FAIRY is the help a player earns and spends, drawn in pixels as a
      portal is: nine squares a side, her hair, face, wings and dress in the
-     game's inks, with nothing drawn where she has no square. */
+     game's inks, with nothing drawn where she has no square. `drawn` makes
+     such a picture from its squares, and the others of the size are a
+     HEART, which a mistake costs, and the SWORD and the SHIELD of the
+     switch, which are placeholders until they are drawn. */
   const FAIRY = ['...444...', '..4BBB4..', 'll.BBB.ll', 'lJl.8.lJl', 'lJl888lJl', '.ll888ll.', '..l888l..', '...8.8...', '...B.B...'].join('');
-  const fairy = () => {
+  const HEART = ['.22...22.', '2c22.2222', '2c2222222', '222222222', '222222222', '.2222222.', '..22222..', '...222...', '....2....'].join('');
+  const SWORD = ['.......yy', '......ywy', '.....ywy.', '....ywy..', '.4.ywy...', '..4yy....', '..74.....', '.7..4....', '7........'].join('');
+  const SHIELD = ['OOOOOOOOO', 'Oggg1gggO', 'Oggg1gggO', 'O1111111O', 'Oggg1gggO', '.Ogg1ggO.', '..Og1gO..', '...O1O...', '....O....'].join('');
+  const drawn = (squares, cls) => {
     const el = document.createElement('span');
-    el.className = 'pixels-picture pixels-fairy';
+    el.className = `pixels-picture ${cls}`;
     el.setAttribute('aria-hidden', 'true');
     el.style.setProperty('--size', 9);
-    el.append(...[...FAIRY].map(s => {
+    el.append(...[...squares].map(s => {
       const square = document.createElement('span');
       if (s !== '.') { square.dataset.on = ''; square.dataset.ink = s; }
       return square;
     }));
     return el;
   };
+  const fairy = () => drawn(FAIRY, 'pixels-fairy');
+  const heart = () => drawn(HEART, 'pixels-heart');
+  const sword = () => drawn(SWORD, 'pixels-tool-art');
+  const shield = () => drawn(SHIELD, 'pixels-tool-art');
   const side = ({ sizes, width }) => (sizes || [width]).map(n => `${n}×${n}`).join(', ');
   const sprites = (solved, all) => (solved === all ? 'Rift cleared' : `${solved} of ${all} sprites`);
   const where = ({ level, maker }) => `category.html?at=${level}${maker ? `&by=${encodeURIComponent(maker)}` : ''}`;
@@ -595,12 +605,11 @@
     return picture(el, of.squares, of.colours);
   };
 
-  /* WHAT A MISTAKE COSTS is time on the clock, more each time.
-     `penalty(n)` is the seconds a puzzle's nth mistake
-     adds: 15, then 30, then a minute for each one after. HINT is what a hint
-     adds. `added` writes such a cost as the clock would, +0:15. */
-  const PENALTY = [15, 30, 60], HINT = 30;
-  const penalty = n => PENALTY[Math.min(n, PENALTY.length) - 1];
+  /* WHAT A MISTAKE COSTS is a heart. A puzzle is begun with HEARTS of them,
+     and with none left it is lost until a fairy brings them back or it is
+     started again. The clock is the score and only a hint adds to it, HINT
+     seconds; `added` writes such a cost as the clock would, +0:30. */
+  const HEARTS = 3, HINT = 30;
   const added = seconds => `+${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
 
   /* A TICK IN THE HAND. Android vibrates for `ms`. An iPhone has no vibration
@@ -641,6 +650,7 @@
     line: [[659, .07], [880, .1]],
     miss: [[147, .2]],
     hint: [[440, .07], [554, .1]],
+    fall: [[196, .12], [147, .12], [98, .3]],
     solved: [[523, .1], [659, .1], [784, .1], [1047, .25]],
   };
   const SOUND = 'pixels-sound', FRESH = 400;
@@ -705,6 +715,11 @@
   // `letter` gives; the last, which is the hardest, is the boss, and `boss`
   // says which.
   const boss = (c, index) => c.puzzles.length > 1 && index === c.puzzles.length - 1;
+  // A rift of the course holds its boss back until every other puzzle of it
+  // is found, and `holds` says it still does, from the puzzles found. A boss
+  // already found is out, and a player's own rift holds none.
+  const holds = (c, found) => !!c.number && c.puzzles.length > 1 && !found.has(c.puzzles.at(-1).id)
+    && c.puzzles.slice(0, -1).some(p => !found.has(p.id));
   const LETTERS = 'ABCDEFGHIJKLMNO';
   const letter = index => LETTERS[index] ?? String(index + 1);
   const title = (puzzle, index, solved, boss) => (solved ? puzzle.name : boss ? 'Boss' : `Puzzle ${letter(index)}`);
@@ -712,6 +727,7 @@
   /* A PUZZLE'S TILE, a square link: the picture once `best` is there, or a
      question mark, then `name`, then the best time, or `under` until there
      is one. `mark` is its letter in its rift, on a tab in the tile's corner.
+     With no `href` it is no link and is drawn dim, as a boss held back is.
      `art` is the picture or the question mark alone, `words` a span of
      text, and `bar` a progress bar of `done` out of `all`. */
   const words = (cls, text) => {
@@ -733,9 +749,9 @@
     return el;
   };
   const tile = (puzzle, name, href, best, mark, under) => {
-    const a = document.createElement('a');
-    a.className = 'rux--link rux--tile rux--tile--clickable pixels-puzzle';
-    a.href = href;
+    const a = document.createElement(href ? 'a' : 'div');
+    a.className = href ? 'rux--link rux--tile rux--tile--clickable pixels-puzzle' : 'rux--tile pixels-puzzle is-held';
+    if (href) a.href = href;
     if (mark) a.append(words('pixels-letter', mark));
     // A line with nothing to say keeps its room, so every tile's picture
     // stands at one height.
@@ -795,9 +811,9 @@
     return a;
   };
 
-  /* HOW TO PLAY. A modal of three steps, each a small board beside its
-     words: what the numbers mean, filling and crossing out, and what a
-     mistake costs.
+  /* HOW TO PLAY. A modal of the story's one line and three steps, each a
+     small board beside its words: what the numbers mean, filling and
+     crossing out, said as a fight, and what a mistake costs.
      The boards are the game's own, drawn by `board` from one picture of five
      squares a side, so they look as the puzzle does in every theme. Each
      page carries the empty modal, `pixels-how`, which is filled as the page
@@ -829,7 +845,8 @@
           </div>
         </div>
         <div class="rux--modal-content">
-          <ol class="pixels-how">${step('Read the numbers', 'Every number is a run of filled squares in its row or column, in order. 5 is five in a row. 1 1 is two single squares with a gap between them.')}${step('Fill what is certain', `A 5 in a row of five fills the whole row, so start with the biggest numbers. Mark a square that must be empty with X. ${touch ? 'Tap a square, or drag along a row or column.' : 'Click a square, or drag along a row or column; the right button marks an X.'}`)}${step('Mind the clock', `Filling a square that is not in the picture adds time: ${penalty(1)} seconds for the first mistake, ${penalty(2)} for the second and ${penalty(3)} for each one after. A hint adds ${HINT} seconds, but a fairy's is free and fills the line for you: you start with three, and every rift you clear frees three more. Your best time on a puzzle is the one kept.`)}
+          <p class="pixels-how-story"><strong>Rifts are opening. Close them.</strong></p>
+          <ol class="pixels-how">${step('Read the numbers', 'Every number is a run of filled squares in its row or column, in order. 5 is five in a row. 1 1 is two single squares with a gap between them.')}${step('Strike what is certain', `Every puzzle is a monster. Fill the squares that are the monster to strike it, and mark the ones that are not with X to guard them. A 5 in a row of five fills the whole row, so start with the biggest numbers. ${touch ? 'Tap a square, or drag along a row or column.' : 'Click a square, or drag along a row or column; the right button marks an X.'}`)}${step('Mind your hearts', `Filling a square that is not in the picture costs a heart, and you have ${HEARTS}. With none left a fairy brings you back, or the puzzle starts again. A hint adds ${HINT} seconds to your time, but a fairy's is free and fills the line for you: you start with three fairies, and every rift you clear frees three more. Your best time on a puzzle is the one kept.`)}
           </ol>${touch ? '' : `
           <p class="pixels-how-keys">Keys: the arrows move, Z fills, X crosses out, H hints, U undoes and R redoes.</p>`}
         </div>
@@ -846,10 +863,15 @@
     board(numbers, answer, answer);
     board(filling, answer, begun, { done: true });
     board(mistake, answer, missed, { done: true });
-    const cost = document.createElement('span');
-    cost.className = 'pixels-penalty';
-    cost.textContent = added(penalty(1));
-    mistake.appendChild(cost);
+    // Under the mistake, the hearts it left: one of them lost.
+    const left = document.createElement('div');
+    left.className = 'pixels-hearts';
+    left.append(...Array.from({ length: HEARTS }, (_, n) => {
+      const one = heart();
+      one.toggleAttribute('data-lost', n === HEARTS - 1);
+      return one;
+    }));
+    mistake.appendChild(left);
     modal.addEventListener('rux:modal-closed', () => { try { localStorage.setItem(HOW, 'seen'); } catch { /* shown again next time */ } });
     return modal;
   };
@@ -923,9 +945,9 @@
   };
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    iphone, installed, fresh, face, portrait, seen, see, stand, stood, side, sprites, portal, fairy, locks, boss, letter,
+    iphone, installed, fresh, face, portrait, seen, see, stand, stood, side, sprites, portal, fairy, heart, sword, shield, locks, boss, holds, letter,
     SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
-    daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title,
+    daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, sounds, listen, time, title,
     words, art, tile, bar, riftTile, how, switcher, chosen, shell,
   });
 })();

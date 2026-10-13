@@ -3,16 +3,26 @@
    --------------------------------------------------------------------------
    Fill a square or cross it out with X; a mouse's right button crosses out
    whichever is chosen. Filling a square that is not in the picture is a
-   mistake: it is crossed out in red and adds time. A number greys out
+   mistake: it is crossed out in red and costs a heart. A number greys out
    once its run of squares is filled, a line with no square of the picture
    starts crossed out, a line that is finished crosses out its own empty
    squares, and the puzzle is solved when every square of the picture is
    filled.
 
-   THE CLOCK IS THE SCORE. A mistake adds time to it, more each time, and a
-   hint adds some too, unless a fairy gives it; app.js's `penalty` and HINT
-   say how much. The clock
-   is red from then until the next move. The best time on a
+   THE PUZZLE IS A FIGHT. Over the board stand the player's hearts, app.js's
+   HEARTS of them, and the enemy's health, a bar of the picture's squares
+   still to fill. At no hearts the board takes no touch and a cover over it
+   asks which: a fairy, where the player has one and the database takes it,
+   brings every heart back, or the puzzle starts again as Restart starts it.
+
+   THE SWITCH. The owner's two tool keys are one switch while its pictures
+   are placeholders: the sword, which fills, on its left and the shield,
+   which crosses out, on its right, with no mark beside either. A tap on a
+   half picks it, and so does a finger's slide toward it.
+
+   THE CLOCK IS THE SCORE. It only counts up, but for a hint, which adds
+   app.js's HINT seconds unless a fairy gives it and turns the clock red
+   until the next move. The best time on a
    puzzle is the one kept. Hint points at a wrong X if there is one, and
    otherwise at the line where the numbers decide the most squares from what
    is on the board.
@@ -32,9 +42,9 @@
    UNDO takes back the last tap or drag, with the squares a finished line
    crossed out for it, as far back as the puzzle's start, and REDO puts it
    back until a new move is made. Neither touches a mistake: the red X stays
-   and so does the time it added, and a tap that was only a mistake is no move
-   to take back. Restart empties the board and zeroes the clock,
-   and Undo straight after it brings everything back.
+   and so does the heart it cost, and a tap that was only a mistake is no move
+   to take back. Restart empties the board, zeroes the clock and fills the
+   hearts, and Undo straight after it brings everything back.
 
    A board wider than ten squares zooms under two fingers where its squares
    are too fine for one; app.js's `drag` says how.
@@ -43,7 +53,8 @@
    once it is solved, which stands under the time with the sprite counted.
    Next is the next unsolved puzzle of that category, then the first
    unsolved of the category after it, and so round to the first, passing by
-   a rift that is still locked.
+   a rift that is still locked and a boss still held back. A boss held
+   back, by app.js's `holds`, is not played by its address either.
 
    THE OWNER PLAYS ANY PUZZLE, from Manage. One no player is sent is a
    trial: titled by its name, with no Next and no rift, its Back to Manage,
@@ -53,7 +64,7 @@
    today or else the one app.js makes from the date; its result is kept by
    day, and solving it shows the days in a row.
 
-   Each fill, X, finished line, mistake, hint and solve plays a tone and
+   Each fill, X, finished line, mistake, fall, hint and solve plays a tone and
    ticks the phone, and an X taken off or a move undone plays a falling
    one. The Sound key keeps its choice in this browser.
 
@@ -67,7 +78,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, enter, boss, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, penalty, HINT, added, buzz, sound, sounds, listen, time, title, riftTile, locks, fairy, how } = window.Pixels;
+  const { data, owner, enter, boss, holds, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, sounds, listen, time, title, riftTile, locks, fairy, heart, sword, shield, how } = window.Pixels;
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock');
 
@@ -75,6 +86,8 @@
   // How long the finished picture takes to fill in before the name shows.
   const REVEAL = 1100;
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // How far a finger slides along the switch before it picks a half.
+  const SLIDE = 24;
 
   const say = (heading, detail) => {
     const box = $('pixels-error');
@@ -126,6 +139,12 @@
       say('This rift is not open yet', `${home.need - home.short} of ${home.need} sprites to open it. Pick a puzzle from Puzzles.`);
       return;
     }
+    // Nor is a boss the rift still holds back.
+    if (home && !owner && boss(home, index) && holds(home, results)) {
+      const left = home.puzzles.slice(0, -1).filter(p => !results.has(p.id)).length;
+      say('The boss is not out yet', `${left} more sprite${left === 1 ? '' : 's'} to find in this rift first.`);
+      return;
+    }
     const back = trial ? 'manage.html' : home ? where(home) : './';
     $('pixels-back').href = $('pixels-out').href = back;
     if (trial) $('pixels-out').textContent = 'Manage';
@@ -149,6 +168,9 @@
     let seconds = fresh ? kept.seconds : 0;
     let mistakes = fresh ? kept.mistakes : 0;
     let hints = fresh ? kept.hints || 0 : 0;
+    // The hearts left, all of them for a kept game that says none, and
+    // whether the character is down, at no hearts, with the cover up.
+    let hearts = fresh ? kept.hearts ?? HEARTS : HEARTS, down = false;
     // The fairies this game has spent, how many the player has left, and
     // whether the database is being asked for one.
     let spent = fresh ? kept.fairies || 0 : 0, fairies = me.fairies || 0, asking = false;
@@ -168,15 +190,20 @@
     $('pixels-title').textContent = heading;
     document.title = `${heading} — Pixels`;
 
-    const keep = () => saveProgress(puzzle.id, { squares: puzzle.squares, state, seconds, mistakes, hints, fairies: spent });
+    const keep = () => saveProgress(puzzle.id, { squares: puzzle.squares, state, seconds, mistakes, hints, hearts, fairies: spent });
     const el = board(boardHost, answer, state, { done: true, label: 'Puzzle' });
     // The name, the picture so far and the clock sit in the board's corner.
     el.querySelector('.pixels-corner').appendChild($('pixels-info'));
     $('pixels-info').hidden = false;
     const thumb = picture($('pixels-thumb'), '0'.repeat(W * H));
+    // The enemy's health is the share of the picture's squares not yet filled.
+    const foe = $('pixels-foe'), whole = answer.flat().filter(Boolean).length;
     const draw = () => {
       paint(el, answer, state, { done: true });
       [...thumb.children].forEach((s, i) => s.toggleAttribute('data-on', state[Math.floor(i / W)][i % W] === 1));
+      const left = (whole - state.flat().filter(v => v === 1).length) / whole;
+      foe.style.setProperty('--left', left);
+      foe.setAttribute('aria-valuenow', Math.round(left * 100));
       el.querySelectorAll('.is-hint').forEach(e => e.classList.remove('is-hint'));
       highlight(el, ...cursor);
       $('pixels-undo').disabled = !past.length;
@@ -190,7 +217,19 @@
       if (error) status.dataset.error = ''; else delete status.dataset.error;
     };
 
-    // A mistake or a hint puts `cost` seconds on the clock and turns it red.
+    // The hearts, a lost one dim; `hit` shakes the one just lost.
+    const life = $('pixels-hearts');
+    const showHearts = hit => {
+      life.replaceChildren(...Array.from({ length: HEARTS }, (_, n) => {
+        const one = heart();
+        one.toggleAttribute('data-lost', n >= hearts);
+        one.toggleAttribute('data-hit', !!hit && n === hearts);
+        return one;
+      }));
+      life.setAttribute('aria-label', `${hearts} of ${HEARTS} hearts`);
+    };
+
+    // A hint puts `cost` seconds on the clock and turns it red.
     const charge = cost => {
       seconds += cost;
       tick();
@@ -224,14 +263,11 @@
 
       $('pixels-solved-name').textContent = puzzle.name;
       $('pixels-solved-clock').textContent = time(seconds);
-      // What went wrong and what it added, then how the time stands.
+      // What went wrong and what the hints added, then how the time stands.
       const count = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
       const parts = [mistakes ? count(mistakes, 'mistake') : 'No mistakes'];
       if (spent) parts.push(`${spent} ${spent === 1 ? 'fairy' : 'fairies'}`);
-      if (hints) parts.push(count(hints, 'hint'));
-      let extra = hints * HINT;
-      for (let n = 1; n <= mistakes; n++) extra += penalty(n);
-      if (extra) parts.push(added(extra));
+      if (hints) parts.push(count(hints, 'hint'), added(hints * HINT));
       if (lost) parts.push('not saved');
       else if (trial) parts.push('a trial, not kept');
       else if (!best.isNew) parts.push(`best ${time(best.best)}`);
@@ -253,12 +289,14 @@
       ];
       const done = isDaily ? await data.results().catch(() => new Map()) : results;
       // The rifts as they stand with this sprite counted: Next passes by
-      // one still locked, and `opened` is those this sprite opened.
+      // one still locked and a boss still held back, and `opened` is those
+      // this sprite opened.
       const shut = cats.filter(c => c.short > 0), known = new Set(done.keys());
       if (home && !lost) known.add(puzzle.id);
       locks(cats, known);
       const opened = shut.filter(c => !c.short), riftOf = new Map(cats.flatMap(c => c.puzzles.map(p => [p, c])));
-      const next = rest.find(p => !done.has(p.id) && !riftOf.get(p)?.short);
+      const kept = p => { const c = riftOf.get(p); return !!c && (c.short > 0 || (p === c.puzzles.at(-1) && holds(c, known))); };
+      const next = rest.find(p => !done.has(p.id) && !kept(p));
       if (next) $('pixels-next').href = `play.html?id=${encodeURIComponent(next.id)}`;
       else $('pixels-next').remove();
       /* THE PUZZLE'S RIFT stands under the time as the front page draws it,
@@ -323,7 +361,7 @@
     };
 
     const act = (y, x) => {
-      if (!started || settling || solved || asking) return;
+      if (!started || settling || solved || asking || down) return;
       const v = state[y][x];
       let missed = false;
       if (action === 'fill' && v === 0) {
@@ -340,11 +378,11 @@
         } else {
           state[y][x] = 3;
           mistakes++;
-          const cost = penalty(mistakes);
-          charge(cost);
+          hearts--;
+          showHearts(true);
           buzz([40, 60, 40]);
-          sound('miss');
-          tell(`Not in the picture · ${added(cost)}`, true);
+          sound(hearts ? 'miss' : 'fall');
+          tell('Not in the picture', true);
           missed = true;
         }
       } else if (action === 'x' && v === 0) { state[y][x] = 2; sound('x'); }
@@ -356,6 +394,7 @@
       draw();
       keep();
       if (isSolved()) finish();
+      else if (missed && !hearts) fall();
     };
     // A drag keeps doing what its first square did, so X that starts on an X
     // takes them off along the drag.
@@ -367,13 +406,16 @@
     };
 
     const undo = () => {
-      if (!started || solved || !past.length) return;
+      if (!started || solved || down || !past.length) return;
       const entry = past.pop();
-      // A Restart taken back: the board, the clock and its mistakes as they were.
+      // A Restart taken back: the board, the clock, its mistakes and the
+      // hearts as they were, down again if there were none.
       if (!Array.isArray(entry)) {
-        ({ state, seconds, mistakes, hints, spent, past } = entry);
+        ({ state, seconds, mistakes, hints, spent, hearts, past } = entry);
         ahead = [];
         tick();
+        showHearts();
+        if (!hearts) fall();
       } else {
         ahead.push(state.map(r => r.slice()));
         // A mistake made since stays as it is.
@@ -386,7 +428,7 @@
       keep();
     };
     const redo = () => {
-      if (!started || solved || !ahead.length) return;
+      if (!started || solved || down || !ahead.length) return;
       past.push(state.map(r => r.slice()));
       state = ahead.pop().map((r, y) => r.map((v, x) => (state[y][x] === 3 ? 3 : v)));
       cursor = [];
@@ -421,7 +463,7 @@
     };
     showFairies();
     const hint = async () => {
-      if (!started || solved || asking) return;
+      if (!started || solved || asking || down) return;
       const wrong = [];
       state.forEach((r, y) => r.forEach((v, x) => { if (v === 2 && answer[y][x]) wrong.push([y, x]); }));
       // A line's squares and numbers, and `line`, the one a fairy finishes.
@@ -503,11 +545,41 @@
       right: true,
       zoom: () => W > 10,
     });
-    $('pixels-tool').addEventListener('click', e => {
+    // The tool in hand, by a tap on its key, or for the owner by a tap on
+    // its half of the switch or a slide toward it. The tap a slide ends in,
+    // as the finger lifts, picks nothing.
+    const pick = $('pixels-tool');
+    const choose = which => {
+      if (tool === which) return;
+      tool = which;
+      pick.querySelectorAll('button').forEach(b => b.setAttribute('aria-checked', b.dataset.tool === which));
+      buzz();
+    };
+    let from = null, slid = false, lifted = -Infinity;
+    if (owner) {
+      pick.classList.add('pixels-pick--switch');
+      const [fill, cross] = pick.querySelectorAll('button');
+      fill.replaceChildren(sword());
+      fill.setAttribute('aria-label', 'Sword, fills');
+      cross.replaceChildren(shield());
+      cross.setAttribute('aria-label', 'Shield, crosses out');
+      pick.addEventListener('pointerdown', e => { from = e.clientX; slid = false; });
+      pick.addEventListener('pointermove', e => {
+        // A mouse with no button down is passing over, not sliding.
+        if (e.pointerType === 'mouse' && !e.buttons) from = null;
+        if (from == null || Math.abs(e.clientX - from) < SLIDE) return;
+        choose(e.clientX < from ? 'fill' : 'x');
+        from = e.clientX;
+        slid = true;
+      });
+      for (const type of ['pointerup', 'pointercancel']) pick.addEventListener(type, e => {
+        if (slid) lifted = e.timeStamp;
+        from = null;
+      });
+    }
+    pick.addEventListener('click', e => {
       const picked = e.target.closest('button');
-      if (!picked) return;
-      tool = picked.dataset.tool;
-      $('pixels-tool').querySelectorAll('button').forEach(b => b.setAttribute('aria-checked', b === picked));
+      if (picked && e.timeStamp - lifted > 500) choose(picked.dataset.tool);
     });
 
     // Arrows move, Z or Space fills, X crosses out, U undoes, R redoes and
@@ -536,19 +608,64 @@
 
     // Restart is one tap among the keys, so Undo takes it back whole.
     const restart = () => {
-      past = [{ state, seconds, mistakes, hints, spent, past }];
+      past = [{ state, seconds, mistakes, hints, spent, hearts, past }];
       ahead = [];
       state = blank();
       seconds = 0;
       mistakes = 0;
       hints = 0;
       spent = 0;
+      hearts = HEARTS;
+      rise();
       tell('');
       saveProgress(puzzle.id, null);
       tick();
+      showHearts();
       draw();
     };
     $('pixels-restart').addEventListener('click', () => { if (started && !solved) restart(); });
+
+    // At no hearts the cover is up until the player picks. With no fairy to
+    // spend, or none that came, the one way on is to start again.
+    const fallen = $('pixels-fallen'), revive = $('pixels-revive'), again = $('pixels-again');
+    function fall() {
+      down = true;
+      revive.hidden = !(fairies > 0 && data.useFairy);
+      $('pixels-fallen-words').textContent = 'No hearts left';
+      fallen.hidden = false;
+      (revive.hidden ? again : revive).focus({ preventScroll: true });
+    }
+    function rise() {
+      down = false;
+      fallen.hidden = true;
+    }
+    revive.addEventListener('click', async () => {
+      if (asking) return;
+      asking = true;
+      let took = false;
+      try {
+        const got = await data.useFairy();
+        took = !got.error;
+        fairies = got.fairies ?? fairies;
+      } catch { /* said on the cover */ }
+      asking = false;
+      showFairies();
+      if (!took) {
+        revive.hidden = true;
+        $('pixels-fallen-words').textContent = 'No fairy came';
+        again.focus({ preventScroll: true });
+        return;
+      }
+      spent++;
+      hearts = HEARTS;
+      rise();
+      showHearts();
+      tell('A fairy brought you back');
+      buzz(30);
+      sound('line');
+      keep();
+    });
+    again.addEventListener('click', restart);
 
     listen();
     const cover = $('pixels-start');
@@ -562,6 +679,8 @@
       game.classList.remove('is-waiting');
       $('pixels-cover').remove();
       sound('fill');
+      // A game left at no hearts comes back to the same choice.
+      if (!hearts) fall();
     });
     cover.focus({ preventScroll: true });
     if (!results.size && !how.seen()) window.Rux.modal.open(guide, $('pixels-how-open'));
@@ -573,6 +692,7 @@
     });
 
     tick();
+    showHearts();
     draw();
     game.classList.remove('is-loading');
   })();

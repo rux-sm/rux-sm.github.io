@@ -73,9 +73,22 @@
           <div class="pixels-picture pixels-thumb" id="pixels-thumb" aria-hidden="true"></div>
           <span class="pixels-clock" id="pixels-clock" role="timer" aria-label="Time">00:00</span>
         </div>
+        <!-- The fight, which play.js draws: the player's hearts, and the enemy's health, the share of its picture still to fill. -->
+        <div class="pixels-fight">
+          <div class="pixels-hearts" id="pixels-hearts" role="img" aria-label="Hearts"></div>
+          <div class="pixels-foe" id="pixels-foe" role="meter" aria-label="Enemy health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div class="pixels-foe-bar"></div></div>
+        </div>
         <!-- The board waits behind Start: play.js shows it, and starts the clock, on the tap. -->
         <div class="game-stage pixels-stage">
           <div id="pixels-board"></div>
+          <!-- At no hearts, shown by play.js: a fairy brings them back, or the puzzle starts again. -->
+          <div class="game-cover" id="pixels-fallen" hidden>
+            <div class="game-cover-panel">
+              <p class="pixels-fallen-words" id="pixels-fallen-words">No hearts left</p>
+              <button type="button" class="rux--btn rux--btn--primary game-cover-key" id="pixels-revive">Use a fairy</button>
+              <button type="button" class="rux--btn rux--btn--ghost game-cover-key" id="pixels-again">Start again</button>
+            </div>
+          </div>
           <div class="game-cover" id="pixels-cover">
             <div class="game-cover-panel">
               <button type="button" class="rux--btn rux--btn--primary game-cover-key" id="pixels-start">Tap to start</button>
@@ -85,6 +98,7 @@
         </div>
         <div class="pixels-controls">
           <div class="pixels-status" id="pixels-status" aria-live="polite"></div>
+          <!-- Fill and X. For the owner play.js makes the two one switch, a sword and a shield. -->
           <div class="pixels-pick" role="radiogroup" aria-label="Tool" id="pixels-tool">
             <button type="button" role="radio" aria-checked="true" aria-label="Fill" data-tool="fill"><span class="pixels-mark pixels-mark--fill" aria-hidden="true"></span></button>
             <button type="button" role="radio" aria-checked="false" aria-label="Cross out" data-tool="x"><span class="pixels-mark pixels-mark--x" aria-hidden="true"></span></button>

@@ -13,7 +13,8 @@ under fog, so it is as big as the course is and never looks empty. The
 player's character walks to a rift and goes in, and a rift ends on its boss.
 The character is one rux draws, and a player makes it their own by drawing
 on the armour they unlock. A puzzle is played as a fight: the sword fills a
-square and the shield crosses one out. Each picture is built on a placeholder first, so
+square, the shield crosses one out, a mistake costs the character a heart,
+and the enemy's health falls as its picture is filled. Each picture is built on a placeholder first, so
 the game works before it is drawn.
 
 ## Decisions
@@ -54,8 +55,8 @@ The world map:
   went into, kept in this browser, or the first with a sprite left to find.
 - **Continue is one primary button that opens the next puzzle to play:** the
   first not found in the player's rift, or in the first open rift with one
-  left. It stands over the bar of places on a phone, by the thumb, and is
-  not there once everything is found.
+  left. It stands over the bar of places on a phone, by the thumb, and over
+  the puzzles on a wider screen, and is not there once everything is found.
 - **A custom rift is not on the path.** It has no number, so it keeps its
   tile, under the map, and one side place on the map's first part, off the
   path, leads to those tiles. Every player has different friends, so spots
@@ -92,8 +93,18 @@ Playing:
   mark each leaves.
 - **How to play says it as a fight:** strike the squares that are the
   monster, and guard the ones that are not.
-- **Nothing else about play changes.** A mistake costs time as it does now,
-  and no puzzle can be lost.
+- **The character has three hearts, and a mistake takes one.** The clock
+  only counts up and is the score, so nobody loses by thinking slowly. A
+  hint adds time as it does now.
+- **At no hearts the puzzle is lost, gently.** The player picks: a fairy
+  brings the character back with every heart, where they have one, or the
+  puzzle starts again. Nothing else is lost.
+- **The enemy has a health bar: the squares of its picture still to fill,**
+  which needs no drawing and no new rule.
+- **The hearts and the enemy's bar stand in one strip over the board,**
+  where the character and the enemy join them.
+- **There are no potions,** since a fairy does a potion's work and a second
+  thing to count is one more for a new player to learn.
 
 The character:
 
@@ -102,6 +113,11 @@ The character:
   board draws it and it stands on the map at a rift's size.
 - **It has three pieces of armour: a helmet, body armour and a shield.** At
   15 squares a side those are the pieces with room to draw on.
+- **It is seven layers, one item to each:** skin and eyes are colours
+  picked; the head, the body and the shield are drawn on; hands and feet
+  follow the body; and the sword is fixed.
+- **A piece of armour unlocked adds a heart,** so it is worth more than its
+  look.
 - **Armour is unlocked a piece at a time, and a piece unlocked is the
   player's to draw on.** It starts as rux's drawing of it, the player paints
   over its squares in the game's inks, and it can be set back to rux's.
@@ -130,6 +146,13 @@ The character:
   Me,** since a store asks for a way to report what one player draws and
   another sees.
 - **A tap on a locked rift says what opens it and goes nowhere.**
+- **It stands on the puzzle's page too, in the strip over the board, facing
+  the enemy,** which is a shadow there, since its picture is the answer.
+- **Its moves are the player's:** a drag of fills is a slash, one fill a
+  stab and an X a block; it shakes at a mistake and falls at no hearts.
+- **It moves by its one drawing.** The sword's layer swings or jabs, the
+  shield's lifts and the whole of it shakes or falls, so a player's own
+  armour needs no second drawing.
 
 The pictures:
 
@@ -150,56 +173,29 @@ The pictures:
   have a placeholder first, made by a script,** which is also rux's
   template: the canvas at its size with its spots marked.
   `pixels/docs/drawing-the-map.md` is how a part and the fog are drawn.
+- **While its two pictures are placeholders the switch is the owner's
+  alone,** as the map is, and every other player has the two keys.
 
 The order:
 
 - **Five steps, each whole by itself:** the map's first part under fog; the
-  boss, Continue and the sword and shield; the character and its helmet; the
-  rest of the armour; the worlds. What needs no drawing comes first, and the worlds, which are
+  boss, Continue, the switch and the fight's hearts and bar; the character
+  and its helmet; the rest of the armour; the worlds. What needs no drawing comes first, and the worlds, which are
   the most drawing for the least play, come last.
 
 ## Questions
 
-Each is followed by the pick it would be built by.
-
-- **Does a mistake cost health in place of time?** Yes: the character has
-  three hearts, a mistake takes one, and the clock only counts up as the
-  score, so nobody loses by thinking slowly.
-- **Can a puzzle be lost?** Yes, gently: at no hearts a fairy brings the
-  character back if the player has one, and otherwise the puzzle starts
-  again with nothing else lost.
-- **Does the enemy have a health bar?** Yes: it is the picture's squares
-  still to fill, so it needs no drawing and no new rule.
-- **Is the character on the puzzle's page?** Yes, in one strip over the
-  board, facing the enemy as a shadow, since the enemy's picture is the
-  answer. It comes after step 3, which makes the character.
-- **How does the character move?** By its one drawing: the sword swings for
-  a slash and jabs for a stab, the shield lifts for a block, and the
-  character shakes when hurt and falls at no hearts, so a player's own
-  armour needs no second drawing.
-- **Does armour add health?** Yes, a heart a piece, so a piece unlocked is
-  worth more than its look.
-- **Are there potions?** No: a fairy already does a potion's work, and a
-  second thing to count is one more for a new player to learn.
-- **Is the character seven layers?** Yes: skin and eyes are colours picked,
-  the head, the body and the shield are drawn on, hands and feet follow the
-  body, and the sword is fixed, with one item to a slot.
-- **Are the switch's placeholder pictures the owner's alone?** Yes, as the
-  map's are, and every other player keeps the two keys until the pictures
-  are rux's.
+None open.
 
 ## Tasks
 
-- [ ] Step 2, the boss and Continue: hold the boss until the fourteen are
-      found, on the rift's page, on the puzzle's page and in Next puzzle;
-      add Continue to the front page; make the two tool keys one switch of a
-      sword and a shield, on placeholders first; and say the story's line and
-      the fight at the door and in How to play.
-- [ ] Step 3, the character and its helmet: the base character on the map
-      at the player's rift, on a placeholder first; its walk to a tapped
-      rift; the helmet at five sprites; a place on Me to draw on an unlocked
-      piece with the Pixelator's board; and a player's armour kept in the
-      database, the SQL shown to rux first.
+- [ ] Say the story's line at the door, which `pixels/data.js` draws.
+- [ ] Step 3, the character and its helmet: the base character in its
+      seven layers, on a placeholder first, on the map at the player's rift
+      and on the puzzle's page with its moves; its walk to a tapped rift;
+      the helmet at five sprites, and a heart for a piece; a place on Me to
+      draw on an unlocked piece with the Pixelator's board; and a player's
+      armour kept in the database, the SQL shown to rux first.
 - [ ] Step 4, the rest of the armour: the body armour, and drawing on the
       shield, each at what unlocks it.
 - [ ] Step 5, the worlds: a rift's picture at the head of its page, where
@@ -208,5 +204,5 @@ Each is followed by the pick it would be built by.
       and show the map to every player once its first part is rux's
       picture.
 - [ ] Correct `docs/plans/pixels-standard-set.md` and `pixels/README.md`
-      where they say a rift is a tile on the front page and that no puzzle
-      of a rift is locked, in the commit that changes each.
+      where they say a rift is a tile on the front page, in the commit that
+      shows the map to every player.

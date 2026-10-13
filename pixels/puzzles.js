@@ -21,6 +21,11 @@
    more sprites, which is dim and says how many. A player reads a category
    as a rift.
 
+   CONTINUE is one primary button that opens the next puzzle to play: the
+   first not found in the rift the player last went into, or in the first
+   open rift with one left. It is over the bar of places on a phone and over
+   the puzzles on a wider screen, and is not there once everything is found.
+
    ADD TO HOME SCREEN is a row of Me's list. An iPhone is sent here by it,
    as `#add`, and shown the steps in a modal, because its icon opens the
    address it was made from and this is the page to open. A guest's key is
@@ -281,6 +286,21 @@
     const cats = categories(puzzles);
     if (!cats.length) { host.appendChild(empty()); return; }
     locks(cats, results);
+    // Continue: the first puzzle not found, in the player's rift if it has
+    // one and else in the first open rift that has. A rift's boss is its
+    // last, so the first not found is never one held back.
+    const left = c => !c.short && c.puzzles.find(p => !results.has(p.id));
+    const onward = [cats.find(stood), ...cats].map(c => c && left(c)).find(Boolean);
+    if (onward) {
+      const wrap = document.createElement('div');
+      wrap.className = 'pixels-continue';
+      const a = document.createElement('a');
+      a.className = 'rux--btn rux--btn--primary pixels-continue-key';
+      a.href = `play.html?id=${encodeURIComponent(onward.id)}`;
+      a.textContent = 'Continue';
+      wrap.append(a);
+      host.before(wrap);
+    }
     // A rift not yet opened, with nothing found in it, says New, unless it
     // is locked, which its tile says for itself.
     const tiles = rifts => {

@@ -165,7 +165,8 @@
 .pixels-board.is-solved .pixels-cell { border-color: transparent; }
 .pixels-game.is-done .pixels-board { --clue-w: 0px; }
 .pixels-game.is-done .pixels-board > :not(.pixels-squares),
-.pixels-game.is-done .pixels-controls { display: none; }
+.pixels-game.is-done .pixels-controls,
+.pixels-game.is-done .pixels-fight { display: none; }
 
 /* MOVEMENT, for those who have not asked for less of it. */
 @media (prefers-reduced-motion: no-preference) {
@@ -173,6 +174,9 @@
   .pixels-game .pixels-cell.is-fill { animation: pixels-pop .12s ease-out; }
   .pixels-game .pixels-cell.is-x::before, .pixels-game .pixels-cell.is-x::after { animation: pixels-appear .15s ease-out; }
   .pixels-game .pixels-cell.is-miss { animation: pixels-shake .3s; }
+  .pixels-heart[data-hit] { animation: pixels-shake .3s; }
+  .pixels-foe-bar { transition: transform .2s ease-out; }
+  .pixels-pick--switch > button { transition: background-color .11s, border-color .11s; }
   .pixels-board.is-solved .pixels-clue,
   .pixels-board.is-solved .pixels-cell.is-x::before,
   .pixels-board.is-solved .pixels-cell.is-x::after { transition: opacity .3s; }
@@ -251,7 +255,6 @@
 .pixels-maker .pixels-cell[data-ink] { background: var(--ink); }
 
 /* WHAT A MISTAKE ADDS TO THE CLOCK, written as +0:15 in How to play. */
-.pixels-penalty { color: var(--rux-text-error); font-weight: 600; font-variant-numeric: tabular-nums; }
 
 /* THE FINISHED PICTURE: the squares alone, no lines and no clues. */
 .pixels-picture {
@@ -344,6 +347,21 @@
    does. */
 .pixels-tabs[hidden] { display: none; }
 .pixels-panel { padding: 1.5rem 0 0; }
+/* CONTINUE, the way on to the next puzzle. On a phone it lies over the bar
+   of places, by the thumb, as wide as the page less its margins, and the
+   panel keeps room for it under its last tile; on a wider screen it stands
+   over the puzzles. */
+.pixels-continue { margin-block-end: 1.5rem; }
+@media (max-width: 41.99rem) {
+  .pixels-continue {
+    position: fixed;
+    inset: auto 1rem calc(4.25rem + env(safe-area-inset-bottom, 0px));
+    z-index: 1;
+    margin: 0;
+  }
+  .pixels-continue-key { inline-size: 100%; max-inline-size: none; }
+  .pixels-panel:has(.pixels-continue) { padding-block-end: 4rem; }
+}
 /* The steps that add Pixels to a home screen: their numbers inside the modal's edge. */
 .pixels-steps { display: grid; gap: .5rem; margin: 1rem 0 0 1.25rem; }
 
@@ -501,6 +519,9 @@ a.pixels-map-rift:hover > .pixels-map-words { background: var(--rux-layer-hover-
 /* THE PUZZLE TO PLAY NEXT, the first of a rift not yet solved: its question
    mark is drawn as the primary button is, the colour of every way on. */
 .pixels-puzzle.is-next > .pixels-blank { background: var(--rux-button-primary); color: var(--rux-text-on-color); }
+/* A BOSS HELD BACK is dim, as a locked rift's portal is. */
+.pixels-puzzle.is-held > .pixels-blank { opacity: .3; }
+.pixels-puzzle.is-held > .pixels-puzzle-name { color: var(--rux-text-secondary); }
 /* ON MANAGE a tile is ticked by pressing it, and carries under it the way
    to edit its puzzle, the way to play it, and the switch that sends it to
    the players, which takes a second line where the tile is too narrow for
@@ -561,7 +582,7 @@ html:has(.pixels-game, .pixels-maker) input:not(:focus) { user-select: none; -we
 html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-user-select: text; }
 .pixels-game {
   --most: 600px;
-  --chrome: 276px;
+  --chrome: 310px;
   display: grid;
   gap: 1rem;
   inline-size: var(--foot);
@@ -585,9 +606,10 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 .pixels-game.is-waiting .pixels-cell::before,
 .pixels-game.is-waiting .pixels-cell::after { content: none; }
 
-/* HOW TO PLAY. Three steps down the modal, each a small board beside its
-   words. The boards are the game's own at 20px a square, with 36px for
-   their numbers, and nothing on them takes a touch. */
+/* HOW TO PLAY. The story's line, then three steps down the modal, each a
+   small board beside its words. The boards are the game's own at 20px a
+   square, with 36px for their numbers, and nothing on them takes a touch. */
+.pixels-how-story { margin: 0 0 1.5rem; }
 .pixels-how { display: grid; gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
 .pixels-how-step { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1rem; align-items: start; }
 .pixels-how-step p { margin: .25rem 0 0; }
@@ -642,6 +664,20 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   .pixels-game[data-side="20"] { --pixels-thumb: 40px; }
 }
 
+/* THE FIGHT, a strip over the board: the player's hearts over the corner,
+   and over the squares the enemy's health, a bar as long as the share of
+   its picture still to fill. A heart is drawn in pixels of 2px, so the
+   strip is 18px deep, which `--chrome` counts with the gap under it, and a
+   heart lost is grey and dim. At no hearts Design's cover lies over the
+   squares again, with a line of words over its keys. */
+.pixels-fight { display: grid; grid-template-columns: var(--pixels-corner) minmax(0, 1fr); align-items: center; block-size: 18px; }
+.pixels-hearts { display: flex; justify-content: center; gap: 2px; }
+.pixels-heart { --px: 2px; background: none; }
+.pixels-heart[data-lost] { filter: grayscale(1); opacity: .3; }
+.pixels-foe { block-size: .5rem; background: var(--rux-layer-accent-01); overflow: hidden; }
+.pixels-foe-bar { block-size: 100%; background: var(--rux-support-error); transform: scaleX(var(--left, 1)); transform-origin: 0 50%; }
+.pixels-fallen-words { margin: 0; font-weight: 600; text-align: center; }
+
 .pixels-controls { display: grid; gap: .75rem; }
 .pixels-status { min-block-size: 1.25rem; color: var(--rux-text-secondary); }
 .pixels-status[data-error] { color: var(--rux-text-error); }
@@ -683,6 +719,19 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   transform: rotate(45deg);
 }
 .pixels-mark--x::after { transform: rotate(-45deg); }
+/* THE SWITCH, which the two keys are for the owner while its pictures are
+   placeholders: one control of two halves, the sword on its left and the
+   shield on its right, each drawn in pixels of 4px with no mark beside it.
+   The half in hand is filled, the sword's as the primary button is and the
+   shield's as the secondary, and the other half's picture is dim. A
+   finger's slide along it is the switch's own, so the page does not move
+   under one. */
+.pixels-pick--switch { gap: 0; touch-action: none; }
+.pixels-pick--switch > button + button { margin-inline-start: -2px; }
+.pixels-pick--switch > [aria-checked="true"] { position: relative; border-color: var(--rux-button-primary); background: var(--rux-button-primary); }
+.pixels-pick--switch > [data-tool="x"][aria-checked="true"] { border-color: var(--rux-button-secondary); background: var(--rux-button-secondary); }
+.pixels-pick--switch > [aria-checked="false"] > .pixels-picture { opacity: .4; }
+.pixels-tool-art { --px: 4px; background: none; }
 
 /* THE ROW OF KEYS under them, Design's game keys: back, restart, hint,
    undo, redo and sound. Sound stays pressed while on, and shows the speaker

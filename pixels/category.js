@@ -10,11 +10,14 @@
    A player reads a category as a rift. The page is its name, after its
    number for one of the owner's, its size and how many sprites are found, or Rift
    cleared, a bar of that, and its puzzles easy to hard, three across on a
-   phone and five on a wide screen, each tile a square, none locked. Each
+   phone and five on a wide screen, each tile a square. Each
    has its letter in the rift, A to O, in its corner. A solved tile shows
    its picture, name and best time; an unsolved one a question mark over
    its board's size, with Boss for the last, and the first of them, the one
    to play next, has its question mark in the primary button's colours.
+   The boss of a rift of the course is held back until the others are
+   found, by app.js's `holds`: its tile is dim, no link, and says how many
+   are still to find.
    A rift of the course that is locked, by app.js's `locks`, shows no
    puzzle: its name, how many of the sprites it opens at are found, and a
    bar of that.
@@ -26,7 +29,7 @@
 (() => {
   'use strict';
 
-  const { data, enter, fresh, see, stand, portrait, categories, locks, heading, side, sprites, boss, title, letter, words, tile, bar } = window.Pixels;
+  const { data, enter, fresh, see, stand, portrait, categories, locks, heading, side, sprites, boss, holds, title, letter, words, tile, bar } = window.Pixels;
   const host = document.getElementById('pixels-category');
 
   const say = (heading, detail) => {
@@ -96,12 +99,15 @@
     list.className = 'pixels-list';
     // The first puzzle not yet solved is the one to play next.
     const next = all.find(p => !results.has(p.id));
+    // The boss held back says how many sprites are still to find before it.
+    const before = holds(category, results) ? all.length - 1 - solved : 0;
     list.append(...all.map((p, i) => {
       // An unsolved puzzle shows its letter, or Boss, over its board's size,
       // and is read out as Puzzle C, 5×5.
-      const best = results.get(p.id), last = boss(category, i);
-      const a = tile(p, best ? p.name : last ? 'Boss' : '', `play.html?id=${encodeURIComponent(p.id)}`, best, letter(i), side(p));
-      if (!best) a.setAttribute('aria-label', `${title(p, i, false, last)}, ${side(p)}${p === next ? ', next' : ''}`);
+      const best = results.get(p.id), last = boss(category, i), out = !(last && before);
+      const a = tile(p, best ? p.name : last ? 'Boss' : '', out ? `play.html?id=${encodeURIComponent(p.id)}` : '', best, letter(i), out ? side(p) : `after ${before} more`);
+      if (!out) a.setAttribute('aria-label', `Boss, out after ${before} more sprite${before === 1 ? '' : 's'}`);
+      else if (!best) a.setAttribute('aria-label', `${title(p, i, false, last)}, ${side(p)}${p === next ? ', next' : ''}`);
       if (p === next) a.classList.add('is-next');
       return a;
     }));

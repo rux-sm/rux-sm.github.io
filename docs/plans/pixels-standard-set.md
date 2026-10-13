@@ -90,8 +90,9 @@ everything has played a whole game.
   sprite that opens it says so as it is found. It asks for no more sprites
   than the rifts before it hold, so the course can grow a rift at a time.
   The owner plays a locked rift's puzzles from Manage.
-- **The rules of play stay.** A mistake is shown and costs time. A hint
-  costs time or a fairy, as `pixels/docs/profiles.md` says.
+- **A mistake is shown and costs a heart,** as
+  `docs/plans/pixels-world-map.md` decides. A hint costs time or a fairy,
+  as `pixels/docs/profiles.md` says.
 - **A puzzle offers Picross DS's free hint as it starts:** one row and one
   column, picked at random, filled in at no cost.
 - **A rift is published when its fifteen are drawn,** hidden until then as a

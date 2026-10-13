@@ -498,8 +498,17 @@
    skeleton, the off toggle and the chat's shell and bubbles hold the next
    grey up from geist-dark's, so the first raised surface is #111111, the
    lightness of the #0d1117 GitHub's Primer draws a tile in, and the greys
-   keep their order. The page stays black, and the borders, the grey tags
-   and the tinted fills are geist-dark's. */
+   keep their order. The page stays black, and the grey tags and the tinted
+   fills are geist-dark's.
+
+   ITS BORDERS ARE PRIMER'S, AS NEUTRAL GREYS OF THE SAME LIGHTNESS. Primer
+   outlines a box, a button and a field alike in borderColor-default,
+   #3d444d, which is #434343 without its blue: so border-subtle-01 to -03
+   and the three tile borders hold it. A rule between rows is Primer's
+   borderColor-muted, that colour at 70%, which over a #111111 surface is
+   #343434: border-subtle-00 holds it. The selected borders move one step up
+   Geist's ladder to stay above those. The strong borders are geist-dark's;
+   its #606060 is already near Primer's borderColor-emphasis, #656c76. */
 [data-theme="rux-dark"] {
   /* color-scheme / brand */
   --rux-color-scheme: dark;
@@ -560,16 +569,16 @@
   --rux-border-strong-01: #606060;
   --rux-border-strong-02: #666666;
   --rux-border-strong-03: #888888;
-  --rux-border-subtle-00: #1a1a1a;
-  --rux-border-subtle-01: #262626;
-  --rux-border-subtle-02: #333333;
-  --rux-border-subtle-03: #3f3f3f;
-  --rux-border-subtle-selected-01: #3f3f3f;
-  --rux-border-subtle-selected-02: #525252;
-  --rux-border-subtle-selected-03: #666666;
-  --rux-border-tile-01: #333333;
-  --rux-border-tile-02: #3f3f3f;
-  --rux-border-tile-03: #525252;
+  --rux-border-subtle-00: #343434;
+  --rux-border-subtle-01: #434343;
+  --rux-border-subtle-02: #434343;
+  --rux-border-subtle-03: #434343;
+  --rux-border-subtle-selected-01: #525252;
+  --rux-border-subtle-selected-02: #666666;
+  --rux-border-subtle-selected-03: #888888;
+  --rux-border-tile-01: #434343;
+  --rux-border-tile-02: #434343;
+  --rux-border-tile-03: #434343;
 
   /* text */
   --rux-text-disabled: rgba(237, 237, 237, 0.25);
@@ -625,7 +634,7 @@
   --rux-chat-avatar-user: #52a8ff;
   --rux-chat-bubble-agent: #1a1a1a;
   --rux-chat-bubble-agent-text: #ededed;
-  --rux-chat-bubble-border: #262626;
+  --rux-chat-bubble-border: #434343;
   --rux-chat-bubble-user: #242424;
   --rux-chat-bubble-user-text: #ededed;
   --rux-chat-button: #52a8ff;
@@ -637,8 +646,8 @@
   --rux-chat-header-background: #111111;
   --rux-chat-header-text: #ededed;
   --rux-chat-prompt-background: #000000;
-  --rux-chat-prompt-border-end: rgba(26, 26, 26, 0);
-  --rux-chat-prompt-border-start: #1a1a1a;
+  --rux-chat-prompt-border-end: rgba(52, 52, 52, 0);
+  --rux-chat-prompt-border-start: #343434;
   --rux-chat-prompt-text: #ededed;
   --rux-chat-shell-background: #111111;
 

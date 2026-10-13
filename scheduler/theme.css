@@ -339,6 +339,27 @@
   :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-page .scheduler-toolbar .scheduler-weekbtn {
     box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
   }
+  /* rux-dark rings the buttons in a panel's head as it does the bar's, the
+     close button among them: they stand clear of the corner here, so each
+     reads as a button. Primer leaves a close button bare, and this theme
+     does not follow it there. The ring gives way to the focus ring, which is
+     that same border. */
+  [data-theme="rux-dark"] .scheduler-page .scheduler-aside__head > .rux--btn:not(:focus),
+  [data-theme="rux-dark"] .scheduler-page :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel__header .rux--btn:not(:focus) {
+    border-color: var(--rux-border-subtle-02);
+  }
+  /* Ringed buttons that touch draw a doubled line between them, so they
+     stand the bar's gap apart. The trip's title gives up those 16px from the
+     32px Carbon keeps clear after it, and so holds the letters it held. */
+  [data-theme="rux-dark"] .scheduler-page .scheduler-aside__head > .rux--btn + .rux--btn {
+    margin-inline-start: var(--scheduler-head-gap);
+  }
+  [data-theme="rux-dark"] .scheduler-page :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel__decorator-and-close {
+    gap: var(--scheduler-head-gap);
+  }
+  [data-theme="rux-dark"] .scheduler-page .scheduler-trip .rux--side-panel__title-text {
+    padding-inline-end: calc(2rem - 2 * var(--scheduler-head-gap));
+  }
   /* apple-light's bar buttons are a Mac's push buttons: the grey fill under
      the label colour, each a capsule, the week's name with them. */
   [data-theme^="apple-"] .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) :is(.rux--btn, .scheduler-weekbtn) {

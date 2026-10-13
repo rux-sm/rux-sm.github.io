@@ -24,10 +24,10 @@ site, and Design's contrast measurement reads no text in it under 4.5 to 1.
   field are outlined in `#434343`, the lightness of Primer's
   `borderColor-default`, `#3d444d`, and a rule between rows is `#343434`,
   its `borderColor-muted` over a panel.
-- **A header button is ringed, a quiet button is not.** Primer rings the
-  buttons in GitHub's header and leaves a close button and a face bare, so
-  the header's buttons take the ring and a panel's X and the account button
-  do not.
+- **A button is ringed where it stands clear.** The header's buttons and
+  the buttons in a scheduler panel's head, the X among them, take the
+  button's border. Primer leaves a close button bare; rux-dark does not
+  follow it there. The account button is a face and takes none.
 - **A colour is changed in its own block; a shape is split off when it
   changes.** A rule rux-dark stops sharing loses its name from the shared
   selector and is written for rux-dark alone, so geist-dark never moves.
@@ -59,6 +59,9 @@ site, and Design's contrast measurement reads no text in it under 4.5 to 1.
 - [ ] Give the scheduler's trip bars, marks and panels their own pass. The
   No bus row is `#242424`, as light as a bar's fill, so only the bar's hue
   parts them.
+- [ ] Ring the close buttons that fill a corner: Design's side panel, modal
+  and notification. Each has to stand clear of its corner first, as the
+  scheduler's panel heads do.
 - [ ] Set the grey tags against a selected table row, which is now lighter
   than the tag on it.
 - [ ] Measure contrast on the kitchen sink and on each app's front page with

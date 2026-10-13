@@ -19,11 +19,10 @@ site, and Design's contrast measurement reads no text in it under 4.5 to 1.
 - **A colour is changed in its own block; a shape is split off when it
   changes.** A rule rux-dark stops sharing loses its name from the shared
   selector and is written for rux-dark alone, so geist-dark never moves.
-- **It is named `rux-dark`,** shown as "Rux dark" in the account panel, as
-  every theme here is a name and a `-light` or `-dark`.
-- **It stays out of the account panel until it is whole.** `js/theme.js`
-  knows the name, so a session can put it on a page, and nobody can pick it
-  half built.
+- **It is named `rux-dark`,** as every theme here is a name and a `-light`
+  or `-dark`.
+- **It is in the account panel while it is built,** as "Rux dark" after the
+  other nine, so rux picks it on any page to see where it stands.
 - **Every number comes from its source, none from memory.** Geist's values
   are in `design/docs/geist-token-map.md`; Primer's are read from Primer's
   own published colours and components.
@@ -48,5 +47,3 @@ site, and Design's contrast measurement reads no text in it under 4.5 to 1.
 - [ ] Give the scheduler's trip bars, marks and panels their own pass.
 - [ ] Measure contrast on the kitchen sink and on each app's front page with
   `design/tools/measure-contrast.js`.
-- [ ] List it: the account panel on every page that carries the theme list,
-  and the Themes row `design/tools/build-readme.mjs` writes.

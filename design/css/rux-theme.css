@@ -132,8 +132,8 @@
   RUX-DARK IS RUX'S OWN THEME, STARTED FROM GEIST-DARK. Its block holds
   geist-dark's values and every rule in css/rux-overrides.css that names
   geist-dark names it too, so the two draw the same page until a value or a
-  rule is given to rux-dark alone. It is not in the account panel:
-  `js/theme.js` knows the name, so a session puts it on a page to work on it.
+  rule is given to rux-dark alone. It is in the account panel while it is
+  built, so it can be picked on any page.
 
   ANT-DARK FOLLOWS ANT DESIGN'S DARK ALGORITHM (`theme.darkAlgorithm` on
   the default seed): its neutrals, text alphas, fills, and its dark blue,

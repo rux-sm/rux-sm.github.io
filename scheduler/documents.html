@@ -263,7 +263,7 @@
                       </span>
                     </button>
                   </th>
-                  <th scope="col" class="rux--table-sort__header" aria-sort="none" data-sort="holder">
+                  <th scope="col" class="rux--table-sort__header" aria-sort="none" data-sort="who">
                     <button type="button" class="rux--table-sort">
                       <span class="rux--table-sort__flex">
                         <div class="rux--table-header-label">For</div>
@@ -331,7 +331,8 @@
           <fieldset class="scheduler-pair-group">
             <legend class="rux--type-heading-compact-02">File</legend>
             <!-- Design's file uploader: the drop button, its hidden input,
-                 and the one file beside them, which documents.js draws. -->
+                 and the file beside them, which documents.js draws. A new
+                 upload takes several files, each its own document. -->
             <div class="rux--form-item">
               <div class="rux--file">
                 <button type="button" class="rux--file__drop-container rux--file-browse-btn" id="scheduler-doc-file-drop">Drag and drop the file here or click to choose it</button>
@@ -368,11 +369,21 @@
                     <div class="rux--form-requirement" id="scheduler-doc-driver-error"></div>
                   </div>
                 </div>
-                <!-- Who it is issued to, a combo box over the customers,
-                     drawn by documents.js. -->
+                <!-- The name printed on it, which a certificate's holder
+                     need not be a customer to have. -->
+                <div class="rux--form-item rux--text-input-wrapper scheduler-pair-grid__wide" id="scheduler-doc-holder-item">
+                  <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-doc-holder">Holder</label></div>
+                  <div class="rux--text-input__field-outer-wrapper">
+                    <div class="rux--text-input__field-wrapper"><input id="scheduler-doc-holder" class="rux--text-input" type="text" autocomplete="off"></div>
+                  </div>
+                </div>
+                <!-- The customer it belongs to, a combo box over the
+                     customers, drawn by documents.js. -->
                 <div class="rux--form-item scheduler-pair-grid__wide" id="scheduler-doc-customer-slot"></div>
               </div>
-              <p class="rux--form__helper-text scheduler-pair-note">Leave Issued to empty for a document that is for everyone, such as the W-9.</p>
+              <p class="rux--form__helper-text scheduler-pair-note" id="scheduler-doc-one-note">Holder is the name printed on a certificate. Leave it and Customer empty for a document that is for everyone, such as the W-9.</p>
+              <!-- Said in their place while several files are chosen. -->
+              <p class="rux--form__helper-text scheduler-pair-note" id="scheduler-doc-several-note" hidden>Each file becomes its own document. Its holder is the start of its name, up to the first underscore, and it joins the customer of that name or the one the holder's last document is linked to.</p>
               <div class="scheduler-pair-grid">
                 <div class="rux--form-item">
                   <div class="rux--date-picker rux--date-picker--next rux--date-picker--single">

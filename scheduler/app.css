@@ -4797,10 +4797,14 @@ html:has(.scheduler-page[data-takeover]) {
   .scheduler-documents-old,
   .scheduler-documents-kinds { display: none; }
 }
+/* A long holder takes the row's width and leaves the day it ends on one line. */
+.scheduler-documents-ends { white-space: nowrap; }
 /* Edit ends the row, in a column as narrow as the word. */
 .scheduler-documents-act { inline-size: 1%; text-align: end; white-space: nowrap; }
 /* What is wrong with a file or a kind, said under it. */
 .scheduler-documents-error { margin: 0; color: var(--rux-text-error); }
+/* Several chosen files scroll in a box of their own, so Save stays in reach. */
+.scheduler-documents-files { max-block-size: 22.5rem; overflow-y: auto; }
 /* A kind's name, then whether it is kept once for each driver. */
 .scheduler-kinds-row {
   display: grid;

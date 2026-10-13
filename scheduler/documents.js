@@ -7,10 +7,12 @@
    its file. They read and write `company_documents` and `document_kinds`,
    and the files live in the private `company-documents` bucket.
 
-   A document is a file and five facts: its kind, the customer it is issued
-   to, the driver it is about, the day it ends and a note. The database keeps
-   one current copy for each kind, customer and driver: a new upload makes the
-   one before it old, and deleting the current one brings the one before back.
+   A document is a file and six facts: its kind, the holder named on it, the
+   customer it belongs to, the driver it is about, the day it ends and a note.
+   The database keeps one current copy for each kind, holder, customer and
+   driver: a new upload makes the one before it old, and deleting the current
+   one brings the one before back. A new upload takes several files at once,
+   each its own document, named for its holder by its file name.
    ========================================================================== */
 (() => {
   'use strict';
@@ -31,10 +33,12 @@
   const MAX_BYTES = 20 * 1024 * 1024;
   // An end date this close shows as a warning, as a driver's licence does.
   const WARN_DAYS = 30;
-  const COLUMNS = 'id,kind_id,customer_id,driver_id,ends_on,note,file_name,file_path,file_size,replaced_at,created_at,updated_at';
+  const COLUMNS = 'id,kind_id,customer_id,driver_id,holder,ends_on,note,file_name,file_path,file_size,replaced_at,created_at,updated_at';
   const TYPES = { pdf: 'application/pdf', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png' };
 
   const folded = v => String(v ?? '').trim().toLowerCase().replace(/\s+/g, ' ');
+  // A typed name with its spaces tidied, or null when there is none.
+  const clean = v => String(v ?? '').trim().replace(/\s+/g, ' ') || null;
   const DAY = 864e5;
   const parseISO = s => { const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); };
   const today = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
@@ -126,22 +130,29 @@
   }
 
   /* ══ The list ═══════════════════════════════════════════════════════════ */
-  const holderOf = doc => [driverOf(doc)?.name, customerOf(doc)?.name].filter(Boolean);
+  /* Who a document is for: its driver, the holder named on it and the
+     customer it belongs to. A holder that is the customer's own name is said
+     once. */
+  const whoOf = doc => {
+    const customer = customerOf(doc)?.name;
+    const holder = folded(doc.holder) === folded(customer) ? null : doc.holder;
+    return [driverOf(doc)?.name, holder, customer].filter(Boolean);
+  };
   const byKind = (a, b) => folded(kindOf(a)?.name).localeCompare(folded(kindOf(b)?.name))
-    || folded(holderOf(a).join(' ')).localeCompare(folded(holderOf(b).join(' ')))
+    || folded(whoOf(a).join(' ')).localeCompare(folded(whoOf(b).join(' ')))
     || String(b.created_at).localeCompare(String(a.created_at));
   // A document for nobody in particular sorts after every one with a holder.
   const SORTS = {
     kind: byKind,
-    holder: (a, b) => {
-      const x = holderOf(a).join(' '), y = holderOf(b).join(' ');
+    who: (a, b) => {
+      const x = whoOf(a).join(' '), y = whoOf(b).join(' ');
       return !x && !y ? 0 : !x ? 1 : !y ? -1 : folded(x).localeCompare(folded(y));
     },
     ends: (a, b) => ending(a).rank - ending(b).rank,
   };
   // Every word typed has to be somewhere in the row.
   const matches = (doc, q) => {
-    const hay = folded([kindOf(doc)?.name, ...holderOf(doc), doc.file_name, doc.note].filter(Boolean).join(' '));
+    const hay = folded([kindOf(doc)?.name, ...whoOf(doc), doc.file_name, doc.note].filter(Boolean).join(' '));
     return folded(q).split(' ').filter(Boolean).every(word => hay.includes(word));
   };
 
@@ -186,17 +197,17 @@
       what.appendChild(cell);
 
       const who = el('td');
-      const [first, second] = holderOf(doc);
+      const [first, ...rest] = whoOf(doc);
       if (first) {
         const wl = el('div', 'scheduler-pair-cell__lines');
         wl.appendChild(el('span', null, first));
-        if (second) wl.appendChild(el('span', 'scheduler-pair-cell__detail', second));
+        if (rest.length) wl.appendChild(el('span', 'scheduler-pair-cell__detail', rest.join(' · ')));
         who.appendChild(wl);
       } else {
         who.appendChild(el('span', 'scheduler-pair-note', '—'));
       }
 
-      const ends = el('td');
+      const ends = el('td', 'scheduler-documents-ends');
       ends.appendChild(isOld(doc) ? el('span', 'scheduler-pair-note', doc.ends_on ? longDay(doc.ends_on) : '—') : indicator(ending(doc)));
 
       const act = el('td', 'scheduler-documents-act');
@@ -322,6 +333,7 @@
   const form = $('scheduler-document-form');
   const kindField = $('scheduler-doc-kind');
   const driverField = $('scheduler-doc-driver');
+  const holderField = $('scheduler-doc-holder');
   const endsField = $('scheduler-doc-ends');
   const noteField = $('scheduler-doc-note');
   const fileInput = $('scheduler-doc-file');
@@ -330,6 +342,7 @@
   // A new record's id, made once, so a Save sent again cannot insert it twice.
   let newId = crypto.randomUUID();
   let chosen = null;        // the file picked and not yet saved
+  let several = [];         // the files picked for a new upload, when more than one
   let customerId = null;    // the customer picked
   let customerText = '';    // the customer field's text
   let baseline = '';
@@ -339,19 +352,20 @@
     kind_id: kindField.value || null,
     customer_id: customerId,
     driver_id: perDriver() ? driverField.value || null : null,
+    holder: clean(holderField.value),
     ends_on: fieldDay(endsField.value),
     note: noteField.value.trim() || null,
   });
-  const snapshot = () => JSON.stringify([readForm(), customerId ? '' : customerText, chosen?.name ?? '']);
+  const snapshot = () => JSON.stringify([readForm(), customerId ? '' : customerText, chosen?.name ?? '', several.map(f => f.name)]);
   const dirty = () => baseline !== '' && snapshot() !== baseline;
 
-  /* The customer a document is issued to: Carbon's combo box over every
+  /* The customer a document belongs to: Carbon's combo box over every
      customer. Design's list-box.js filters the options as the field is typed
-     in and says which was picked, or none. Left empty, the document is a
-     general one. */
+     in and says which was picked, or none. Left empty, the document is on no
+     customer's page. */
   function drawCustomer() {
     const slot = $('scheduler-doc-customer-slot');
-    const lab = el('label', 'rux--label', 'Issued to');
+    const lab = el('label', 'rux--label', 'Customer');
     lab.setAttribute('for', 'scheduler-doc-customer');
     const root = el('div', 'rux--combo-box rux--list-box');
     const box = el('div', 'rux--list-box__field');
@@ -421,16 +435,41 @@
   kindField?.addEventListener('change', () => { drawDriver(); showKindError(''); });
   driverField?.addEventListener('change', () => showDriverError(''));
 
+  // One of several chosen files: its name, and a button that takes it out.
+  function severalItem(file) {
+    const item = el('span', 'rux--file__selected-file rux--file__selected-file--md');
+    const name = el('p', 'rux--file-filename', file.name);
+    name.title = file.name;
+    const state = el('span', 'rux--file__state-container');
+    const close = el('button', 'rux--file-close');
+    close.type = 'button';
+    close.setAttribute('aria-label', `Remove ${file.name}`);
+    close.appendChild(svgUse('#m-close', '16', '0 0 32 32'));
+    close.addEventListener('click', () => pick(several.filter(f => f !== file)));
+    state.appendChild(close);
+    const stateBox = el('div');
+    stateBox.appendChild(state);
+    item.append(name, stateBox);
+    return item;
+  }
+
   /* The file: Design's drop button, then the one file the document holds or
      is about to. Picking another on a saved document replaces its file with
-     the next Save, and the copy before it is kept as an old one. */
+     the next Save, and the copy before it is kept as an old one. A new upload
+     takes several files, listed one to a line. */
   function drawFile() {
     const list = $('scheduler-doc-file-list');
     const name = chosen?.name ?? loaded?.file_name;
     list.replaceChildren();
+    list.classList.toggle('scheduler-documents-files', several.length > 0);
+    fileInput.multiple = !loaded;
     $('scheduler-doc-file-drop').textContent = loaded
       ? 'Drag and drop a new copy here or click to choose one'
-      : 'Drag and drop the file here or click to choose it';
+      : 'Drag and drop a file, or several, here or click to choose';
+    if (several.length) {
+      list.append(...several.map(severalItem));
+      return;
+    }
     if (!name) return;
     const item = el('span', 'rux--file__selected-file rux--file__selected-file--md');
     const wrap = el('div', 'rux--file-filename-container-wrap');
@@ -455,7 +494,7 @@
       close.type = 'button';
       close.setAttribute('aria-label', `Remove ${name}`);
       close.appendChild(svgUse('#m-close', '16', '0 0 32 32'));
-      close.addEventListener('click', () => { chosen = null; fileInput.value = ''; drawFile(); });
+      close.addEventListener('click', () => pick([]));
       state.appendChild(close);
     }
     const stateBox = el('div');
@@ -467,24 +506,74 @@
       button.addEventListener('click', () => window.open(`documents.html?open=${encodeURIComponent(loaded.id)}`, '_blank', 'noopener'));
     }
   }
-  function choose(file) {
-    if (!file) return;
-    const ext = String(file.name || '').split('.').pop().toLowerCase();
-    if (!TYPES[ext]) return showFileError('Choose a PDF, a JPEG or a PNG.');
-    if (file.size > MAX_BYTES) return showFileError('That file is over 20 MB. Choose a smaller one.');
-    showFileError('');
-    chosen = file;
+  /* What the form holds once files are picked: one file, or several on a new
+     upload. Several hide the holder and the customer, which each file has of
+     its own, and say so. */
+  function pick(files) {
+    chosen = files.length === 1 ? files[0] : null;
+    several = files.length > 1 ? files : [];
+    fileInput.value = '';
+    const many = several.length > 0;
+    $('scheduler-doc-holder-item').hidden = many;
+    $('scheduler-doc-customer-slot').hidden = many;
+    $('scheduler-doc-one-note').hidden = many;
+    $('scheduler-doc-several-note').hidden = !many;
+    if (chosen && !loaded) nameFrom(chosen);
     drawFile();
+    drawTitle();
+  }
+
+  /* A certificate's file is named for its holder first, then an underscore
+     and the rest. A file with no underscore is named for its holder alone. */
+  const holderIn = name => {
+    const base = name.replace(/\.[^.]*$/, '');
+    const at = base.indexOf('_');
+    return clean(at > 0 ? base.slice(0, at) : base);
+  };
+  /* The customer a holder's new document joins with nobody picking one: the
+     customer the holder's current document is linked to, so a link made once
+     carries to the next copy, and otherwise the customer of the holder's own
+     name. */
+  function customerFor(kindId, holder) {
+    const name = folded(holder);
+    if (!name) return null;
+    const before = documents.find(d => !isOld(d) && d.customer_id
+      && folded(d.holder) === name && (!kindId || d.kind_id === kindId));
+    if (before) return before.customer_id;
+    return [...customers.values()].find(c => folded(c.name) === name)?.id ?? null;
+  }
+  // One new file named that way fills an empty Holder, and then an empty Customer.
+  function nameFrom(file) {
+    if (!file.name.includes('_') || holderField.value.trim()) return;
+    holderField.value = holderIn(file.name) ?? '';
+    if (customerId || customerText) return;
+    customerId = customerFor(kindField.value, holderField.value);
+    customerText = customers.get(customerId)?.name ?? '';
+    drawCustomer();
+  }
+
+  function choose(files) {
+    const picked = [...(files || [])];
+    if (!picked.length) return;
+    const many = picked.length > 1;
+    if (loaded && many) return showFileError('Choose one file. A saved document holds one.');
+    for (const file of picked) {
+      const ext = String(file.name || '').split('.').pop().toLowerCase();
+      if (!TYPES[ext]) return showFileError(many ? `${file.name} is not a PDF, a JPEG or a PNG.` : 'Choose a PDF, a JPEG or a PNG.');
+      if (file.size > MAX_BYTES) return showFileError(many ? `${file.name} is over 20 MB.` : 'That file is over 20 MB. Choose a smaller one.');
+    }
+    showFileError('');
+    pick(picked);
   }
   const drop = $('scheduler-doc-file-drop');
   drop?.addEventListener('click', () => fileInput.click());
-  fileInput?.addEventListener('change', () => choose(fileInput.files?.[0]));
+  fileInput?.addEventListener('change', () => choose(fileInput.files));
   drop?.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('rux--file__drop-container--drag-over'); });
   drop?.addEventListener('dragleave', () => drop.classList.remove('rux--file__drop-container--drag-over'));
   drop?.addEventListener('drop', e => {
     e.preventDefault();
     drop.classList.remove('rux--file__drop-container--drag-over');
-    choose(e.dataTransfer?.files?.[0]);
+    choose(e.dataTransfer?.files);
   });
 
   function fillForm(doc) {
@@ -494,17 +583,17 @@
     customerText = customers.get(customerId)?.name ?? '';
     driverField.value = doc.driver_id ?? '';
     endsField.value = shownDay(doc.ends_on ? String(doc.ends_on).slice(0, 10) : '');
+    holderField.value = doc.holder ?? '';
     noteField.value = doc.note ?? '';
-    chosen = null;
-    fileInput.value = '';
     drawCustomer();
     drawDriver();
-    drawFile();
+    pick([]);
     for (const clear of [showKindError, showDriverError, showFileError]) clear('');
   }
 
   function drawTitle() {
-    const name = loaded ? kindOf(loaded)?.name || 'Document' : 'Upload a document';
+    const name = loaded ? kindOf(loaded)?.name || 'Document'
+      : several.length ? `Upload ${several.length} documents` : 'Upload a document';
     $('scheduler-document-h').textContent = name;
     document.title = `${name} — Scheduler`;
     $('scheduler-document-old').hidden = !(loaded && isOld(loaded));
@@ -541,10 +630,14 @@
     for (const clear of [showKindError, showDriverError, showCustomerError, showFileError]) clear('');
     let first = null;
     const bad = (show, message, field) => { show(message); first = first || field; };
-    if (!loaded && !chosen) bad(showFileError, 'Choose the file to upload.', drop);
+    if (!loaded && !chosen && !several.length) bad(showFileError, 'Choose the file to upload.', drop);
     if (!kindField.value) bad(showKindError, 'Pick the kind of document.', kindField);
-    if (!customerId && customerText) bad(showCustomerError, 'Pick a customer from the list, or clear the field.', $('scheduler-doc-customer'));
-    if (perDriver() && !driverField.value) bad(showDriverError, 'Pick the driver this is for.', driverField);
+    if (several.length) {
+      if (perDriver()) bad(showKindError, 'A kind kept once for each driver takes one file at a time.', kindField);
+    } else {
+      if (!customerId && customerText) bad(showCustomerError, 'Pick a customer from the list, or clear the field.', $('scheduler-doc-customer'));
+      if (perDriver() && !driverField.value) bad(showDriverError, 'Pick the driver this is for.', driverField);
+    }
     first?.focus();
     return !first;
   }
@@ -599,10 +692,58 @@
       .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'document';
     return ext ? `${base}.${ext}` : base;
   };
-  const SAME = 'Another current document has this kind, customer and driver. Open that one and replace its file.';
+  const SAME = 'Another current document has this kind, holder, customer and driver. Open that one and replace its file.';
+
+  /* Several files, one after another: each is uploaded, then written as its
+     own document with the form's kind, end date and note, its holder from its
+     name and its customer the holder's. A file that lands leaves the list, so
+     a Save that stops partway is finished by the next one. */
+  async function saveSeveral() {
+    const { kind_id, ends_on, note } = readForm();
+    const saveBtn = $('scheduler-document-save');
+    saveBtn.disabled = true;
+    const total = several.length;
+    let done = 0;
+    try {
+      for (const file of [...several]) {
+        result('info', `Uploading ${done + 1} of ${total}.`);
+        const id = crypto.randomUUID();
+        const path = `${id}/${slug(file.name)}`;
+        const ext = file.name.split('.').pop().toLowerCase();
+        const up = await client.storage.from(BUCKET).upload(path, file, { contentType: TYPES[ext], upsert: false });
+        if (up.error) throw up.error;
+        const holder = holderIn(file.name);
+        try {
+          documents.push(await window.SchedulerPair.saveRecord(client, 'company_documents', {
+            id, creating: true, columns: COLUMNS,
+            row: { kind_id, customer_id: customerFor(kind_id, holder), driver_id: null, holder, ends_on, note,
+              file_name: file.name, file_path: path, file_size: file.size },
+          }));
+        } catch (error) {
+          // A file whose row never landed is taken back out.
+          await client.storage.from(BUCKET).remove([path]).catch(() => {});
+          throw error;
+        }
+        several = several.filter(f => f !== file);
+        done += 1;
+        drawFile();
+      }
+      guard.leave('documents.html');
+      return true;
+    } catch {
+      pick(several);
+      result('error', done
+        ? `${done} of ${total} were uploaded. The rest are still chosen: save again to go on.`
+        : "The documents weren't uploaded. Try again.");
+      return false;
+    } finally {
+      saveBtn.disabled = false;
+    }
+  }
 
   async function save(force = false) {
     if (!validate()) return false;
+    if (several.length) return saveSeveral();
     const row = readForm();
     const saveBtn = $('scheduler-document-save');
     saveBtn.disabled = true;

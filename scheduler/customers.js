@@ -207,7 +207,7 @@
     const [kinds, asks, docs] = await Promise.all([
       client.from('document_kinds').select('id,name,per_driver').order('name'),
       id ? client.from('customer_required_kinds').select('kind_id').eq('customer_id', id) : { data: [] },
-      id ? client.from('company_documents').select('id,kind_id,ends_on,note,file_name,replaced_at,created_at')
+      id ? client.from('company_documents').select('id,kind_id,holder,ends_on,note,file_name,replaced_at,created_at')
         .eq('customer_id', id).order('created_at', { ascending: false }) : { data: [] },
     ]);
     if (kinds.error || asks.error || docs.error) throw kinds.error || asks.error || docs.error;
@@ -500,7 +500,9 @@
         : `${day(d.ends_on) < today ? 'Ended' : 'Ends'} ${day(d.ends_on).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
       const lines = el('span', 'scheduler-pair-item');
       lines.appendChild(el('span', 'scheduler-pair-item__main', d.kind));
-      lines.appendChild(el('span', 'scheduler-pair-item__detail', [ends, d.note || d.file_name].filter(Boolean).join(' · ')));
+      // The holder named on it, where that is not the customer's own name.
+      const holder = folded(d.holder) === folded(loaded?.name) ? null : d.holder;
+      lines.appendChild(el('span', 'scheduler-pair-item__detail', [holder, ends, d.note || d.file_name].filter(Boolean).join(' · ')));
       a.appendChild(lines);
       li.appendChild(a);
       list.appendChild(li);

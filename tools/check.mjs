@@ -3,7 +3,8 @@
 // The one check. Reads switcher.json -- the one list of apps -- and runs
 // Design's shared check on every app except Design, which has its own; an app
 // with a tools/check.mjs of its own (LN Guide, the Scheduler) runs that instead,
-// and it includes the shared check, then that app's own rules. Then the sprite currency rule for the pages that paste the
+// and it includes the shared check, then that app's own rules. Then the account panel rule for the pages that carry
+// Design's panel between markers, the sprite currency rule for the pages that paste the
 // sprite by hand, the same rule for the home screen icons drawn from a
 // favicon, the parse rule for every script, the names sweep over every text
 // file in the repository, the switcher rule, the lock rule and the print rule.
@@ -49,6 +50,12 @@ for (const f of folders) {
   else step(f, process.execPath, [APP_CHECK, dir, '--ds', DS, '--hub', ROOT]);
 }
 
+// THE ACCOUNT PANEL. A page outside Design that carries its markers holds the
+// panel Design writes, to the byte; Design's own templates are held to it by
+// Design's verify.
+const sitePages = (spawnSync('git', ['ls-files', '*.html'], { cwd: ROOT, encoding: 'utf8' }).stdout ?? '').split('\n')
+  .filter(p => p && !p.startsWith('design/') && existsSync(join(ROOT, p)));
+step('account panel', process.execPath, ['design/tools/inline-account.mjs', '--check', ...sitePages]);
 step('sprite', process.execPath, ['tools/inline-sprite.mjs', '--check']);
 step('app icons', process.execPath, ['tools/build-app-icons.mjs', '--check']);
 

@@ -40,9 +40,10 @@ the game's rows alone.
 - **The block is written into every page by a tool, between markers, as the
   sprite is,** so no page's copy can differ from another's.
   `design/tools/lib/shell.mjs` is where it is written and
-  `design/tools/inline-account.mjs` splices it. Design's templates and its
-  own pages take it that way; an app's pages each still hold the two panels
-  in a copy of their own, which the scripts keep working until it is moved.
+  `design/tools/inline-account.mjs` splices it, into Design's templates
+  by Design's generate and into every app's pages by the root build, and
+  the root check fails a page whose panel is not that one. LN Guide's
+  generator takes it from the same file.
 - **Home's grid of apps is as it is.**
 
 In a game:
@@ -70,17 +71,11 @@ None open.
 
 ## Tasks
 
-- [ ] Move each app onto the panel, a page looked at with a login at 402 and
-      1280 wide: Home and Account, LN Guide through its generator, the
-      Scheduler, Coins and Sevens. Each page takes the `ACCOUNT` markers and
-      loses its App switcher action, `design/tools/inline-account.mjs` is
-      run over the site's pages by the root build, and its `--check` joins
-      the root check.
 - [ ] Give the games the header on a wide screen: Pixels and Sevens, and the
       three game templates in Design, with a game's own rows in the menu
       and a player with no account drawn theirs.
-- [ ] Take the older panel's code out once no page carries it: the radios in
+- [ ] Take the older panel's code out once the games are moved, since
+      Pixels' Me still keeps its theme in a modal of radios: the radios in
       `design/js/profile.js`, the name field and the button in
-      `/account.js`, the list in a panel of its own in `/switcher.js`, and
-      the switcher half of the account case in
+      `/account.js`, and the switcher half of the account case in
       `design/tools/check-behaviour.js`.

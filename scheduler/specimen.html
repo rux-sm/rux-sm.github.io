@@ -48,6 +48,7 @@
      m- path data: Material Symbols, Copyright Google LLC.
      Both licensed under the Apache License, Version 2.0. r- is drawn here.
      The sprite wrapper and the symbol naming are Design. See NOTICE. -->
+<symbol id="i-chevron--down" viewBox="0 0 16 16"><path d="M8 11 3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-close" viewBox="0 0 32 32"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2 12H14V13H2z" style="fill:var(--rux-icon-path-1)"/><path d="M2 9H14V10H2z" style="fill:var(--rux-icon-path-2)"/><path d="M2 6H14V7H2z"/><path d="M2 3H14V4H2z"/></symbol>
 <symbol id="m-accessible-fill" viewBox="0 -960 960 960"><path d="M430.5-755.5Q409-777 409-807t21.5-51.5Q452-880 482-880t51.5 21.5Q555-837 555-807t-21.5 51.5Q512-734 482-734t-51.5-21.5ZM696-80v-209H410v-319q0-30 21-51t51-21q23 0 39 9t38 35q42 49 92 82t109 35v60q-51 0-105-25t-104-67v183h205v288h-60Zm-300 0q-83 0-139.5-56.5T200-276q0-68 49.5-125.5T380-468v61q-54 5-86.5 44.5T261-276q0 58 38.5 97t96.5 39q47 0 87-32.5t44-86.5h61q-8 80-66 129.5T396-80Z"/></symbol>
@@ -61,7 +62,6 @@
 <symbol id="m-keyboard_arrow_right" viewBox="0 -960 960 960"><path d="M530-481 332-679l43-43 241 241-241 241-43-43 198-198Z"/></symbol>
 <symbol id="m-close" viewBox="0 -960 960 960"><path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></symbol>
 <symbol id="m-description" viewBox="0 -960 960 960"><path d="M319-250h322v-60H319v60Zm0-170h322v-60H319v60ZM160-80v-800h421l219 219v581H160Zm391-554v-186H220v680h520v-494H551ZM220-820v186-186 680-680Z"/></symbol>
-<symbol id="m-grid_view" viewBox="0 -960 960 960"><path d="M120-510v-330h330v330H120Zm0 390v-330h330v330H120Zm390-390v-330h330v330H510Zm0 390v-330h330v330H510ZM180-570h210v-210H180v210Zm390 0h210v-210H570v210Zm0 390h210v-210H570v210Zm-390 0h210v-210H180v210Zm390-390Zm0 180Zm-180 0Zm0-180Z"/></symbol>
 <symbol id="m-airline_seat_flat-fill" viewBox="0 -960 960 960"><path d="M360-400v-280h519v280H360ZM80-280v-60h800v60H80Zm35-155q-35-35-35-85t35-85q35-35 85-35t85 35q35 35 35 85t-35 85q-35 35-85 35t-85-35Z"/></symbol>
 <symbol id="m-open_in_new" viewBox="0 -960 960 960"><path d="M120-120v-720h339v60H180v600h600v-279h60v339H120Zm262-219-42-43 398-398H519v-60h321v321h-60v-218L382-339Z"/></symbol>
 <symbol id="m-list" viewBox="0 -960 960 960"><path d="M290-620v-60h550v60H290Zm0 170v-60h550v60H290Zm0 170v-60h550v60H290ZM150-620q-12 0-21-9t-9-21.5q0-12.5 9-21t21.5-8.5q12.5 0 21 8.62 8.5 8.63 8.5 21.38 0 12-8.62 21-8.63 9-21.38 9Zm0 170q-12 0-21-9t-9-21.5q0-12.5 9-21t21.5-8.5q12.5 0 21 8.62 8.5 8.63 8.5 21.38 0 12-8.62 21-8.63 9-21.38 9Zm0 170q-12 0-21-9t-9-21.5q0-12.5 9-21t21.5-8.5q12.5 0 21 8.62 8.5 8.63 8.5 21.38 0 12-8.62 21-8.63 9-21.38 9Z"/></symbol>
@@ -90,118 +90,48 @@
        file, not this markup, and the file's own aspect sets the width. -->
   <a class="rux--header__name" href="./"><img src="brand/logo-header.png" alt="Escamilla Tour Buses" style="height:1.25rem;width:auto;flex:none"></a>
 
-  <!-- Global actions, in Carbon's order from the right: the switcher, then
-       account. Icon-only, so each has an aria-label. The theme control is in
-       the account panel, not here, because Carbon keeps these actions for
-       system-level functions. -->
+  <!-- The global action: the account, icon-only, so it has an aria-label. It
+       opens the one panel below, which holds the theme, the account's rows
+       and the apps that account can open. -->
   <div class="rux--header__global">
     <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="Account" aria-expanded="false" aria-controls="rux-account-panel"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-account_circle"/></svg></button>
-    <button type="button" class="rux--header__action rux--btn rux--layout--size-lg rux--btn--ghost rux--btn--icon-only" aria-label="App switcher" aria-expanded="false" aria-controls="rux-switcher-panel"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-grid_view"/></svg></button>
   </div>
-  <!-- The switcher panel, opened by the grid button (js/ui-shell.js).
-       /switcher.js refills the list from /switcher.json; these entries stay if
-       that fetch fails. -->
-  <div class="rux--header-panel" id="rux-switcher-panel">
+  <!-- ACCOUNT:BEGIN — generated, do not edit. `npm run build` rewrites this
+       panel in every page from design/tools/lib/shell.mjs. -->
+  <div class="rux--header-panel" id="rux-account-panel">
+    <ul class="rux--switcher" aria-label="Account">
+      <li class="rux--switcher__item" id="rux-account-profile" hidden><a class="rux--switcher__item-link" href="/account/">Profile</a></li>
+      <li>
+        <div class="rux--form-item">
+          <div class="rux--select rux--select--inline rux--layout--size-md">
+            <label class="rux--label" for="rux-profile-theme">Theme</label>
+            <div class="rux--select-input--inline__wrapper">
+              <div class="rux--select-input__wrapper">
+                <select id="rux-profile-theme" class="rux--select-input">
+                  <option class="rux--select-option" value="white" selected>White</option>
+                  <option class="rux--select-option" value="g10">Gray 10</option>
+                  <option class="rux--select-option" value="g90">Gray 90</option>
+                  <option class="rux--select-option" value="g100">Gray 100</option>
+                  <option class="rux--select-option" value="geist-dark">Geist dark</option>
+                  <option class="rux--select-option" value="ant-dark">Ant dark</option>
+                  <option class="rux--select-option" value="spotify-dark">Spotify dark</option>
+                  <option class="rux--select-option" value="apple-light">Apple light</option>
+                  <option class="rux--select-option" value="apple-dark">Apple dark</option>
+                  <option class="rux--select-option" value="rux-dark">Rux dark</option>
+                </select>
+                <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="rux--switcher__item" hidden><a class="rux--switcher__item-link" href="/login/" id="rux-profile-sign-in">Log out</a></li>
+    </ul>
     <ul class="rux--switcher" aria-label="Applications">
       <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/">Home</a></li>
-      <li><hr class="rux--switcher__item--divider"></li>
-      <li class="rux--switcher__item"><a class="rux--switcher__item-link" href="/scheduler/" aria-current="page">Scheduler</a></li>
     </ul>
   </div>
-  <!-- The account panel, opened by the Account button through aria-controls
-       (js/ui-shell.js): the display name and theme, saved in this browser by
-       js/profile.js and js/theme.js. The sign-in button stays hidden until
-       something registers a handler for it through js/profile.js. -->
-  <div class="rux--header-panel" id="rux-account-panel">
-    <div class="rux--layer-two rux--stack-vertical rux--stack-scale-5">
-      <div class="rux--form-item rux--text-input-wrapper">
-        <div class="rux--text-input__label-wrapper">
-          <label class="rux--label" for="rux-profile-name">Display name</label>
-        </div>
-        <div class="rux--text-input__field-outer-wrapper">
-          <div class="rux--text-input__field-wrapper">
-            <input id="rux-profile-name" class="rux--text-input" type="text" autocomplete="nickname" placeholder="Saved in this browser">
-          </div>
-        </div>
-      </div>
-      <div class="rux--form-item">
-        <fieldset class="rux--radio-button-group rux--radio-button-group--label-right rux--radio-button-group--vertical" id="rux-profile-theme">
-          <legend class="rux--label">Theme</legend>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-white" class="rux--radio-button" type="radio" name="rux-theme" value="white" checked>
-            <label for="rux-theme-white" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">White</span>
-            </label>
-          </div>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-g10" class="rux--radio-button" type="radio" name="rux-theme" value="g10">
-            <label for="rux-theme-g10" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">Gray 10</span>
-            </label>
-          </div>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-g90" class="rux--radio-button" type="radio" name="rux-theme" value="g90">
-            <label for="rux-theme-g90" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">Gray 90</span>
-            </label>
-          </div>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-g100" class="rux--radio-button" type="radio" name="rux-theme" value="g100">
-            <label for="rux-theme-g100" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">Gray 100</span>
-            </label>
-          </div>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-geist-dark" class="rux--radio-button" type="radio" name="rux-theme" value="geist-dark">
-            <label for="rux-theme-geist-dark" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">Geist dark</span>
-            </label>
-          </div>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-ant-dark" class="rux--radio-button" type="radio" name="rux-theme" value="ant-dark">
-            <label for="rux-theme-ant-dark" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">Ant dark</span>
-            </label>
-          </div>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-spotify-dark" class="rux--radio-button" type="radio" name="rux-theme" value="spotify-dark">
-            <label for="rux-theme-spotify-dark" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">Spotify dark</span>
-            </label>
-          </div>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-apple-light" class="rux--radio-button" type="radio" name="rux-theme" value="apple-light">
-            <label for="rux-theme-apple-light" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">Apple light</span>
-            </label>
-          </div>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-apple-dark" class="rux--radio-button" type="radio" name="rux-theme" value="apple-dark">
-            <label for="rux-theme-apple-dark" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">Apple dark</span>
-            </label>
-          </div>
-          <div class="rux--radio-button-wrapper">
-            <input id="rux-theme-rux-dark" class="rux--radio-button" type="radio" name="rux-theme" value="rux-dark">
-            <label for="rux-theme-rux-dark" class="rux--radio-button__label">
-              <span class="rux--radio-button__appearance"></span>
-              <span class="rux--radio-button__label-text">Rux dark</span>
-            </label>
-          </div>
-        </fieldset>
-      </div>
-      <button type="button" class="rux--btn rux--btn--tertiary" id="rux-profile-sign-in" hidden>Sign in</button>
-    </div>
-  </div>
+  <!-- ACCOUNT:END -->
 
   <!-- The scrim. Only visible below 66rem, where the nav overlays the page;
        pressing it closes the nav. -->

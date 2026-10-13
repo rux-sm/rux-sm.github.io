@@ -650,7 +650,7 @@ Deno.serve(
           body: z.string().min(1).max(500).describe(
             'What to do, in a few words that fit one line: the group and the place, such as "cheer trip to Austin". The kind already says the work and who says the person, so leave both out.'),
           detail: z.string().min(1).max(1000).optional().describe(
-            'A few short lines, split by line breaks. The first is the days and any count, such as "Jan 15 to 17, 2027 · 30 passengers", and shows on the closed row; leave the place out when the row has a trip, which names it. The rest show when the row is opened: one line of whatever else the office needs before it opens the email.'),
+            'A few short lines, split by line breaks. The first is the days and any count, such as "Jan 15 to 17, 2027 · 30 passengers", and shows on the closed row; leave the place out when the row has a trip, which names it. The rest are its notes, a list shown when the row is opened: one line for each thing the office needs before it opens the email, each a phrase of a few words and never a sentence, such as "Quoted Sep 24, never answered". 35 characters fill one line of the row, and a note runs to 70 at most.'),
           due_on: ISO_DATE.optional().describe('The day it is due. Left out, the row has no date.'),
           owner: z.string().max(80).optional().describe('The staff member it is for, by name. Left out, it is anyone\'s.'),
           trip_id: z.string().uuid().optional().describe('The trip it is about.'),
@@ -663,7 +663,7 @@ Deno.serve(
           {
             title: 'Add a to-do row',
             description:
-              'Add a row to the office\'s To do list after a review, in four parts: its kind, who it is about, what to do in a few words, and its detail. A closed row shows three lines of one size, so each part stays short. Before adding a row about a trip, read get_trip: if its warnings already say it, do not add it, because the scheduler shows that itself. With a thread_key, a second call for the same thread changes the open row it made rather than adding a copy, and changes only the parts it gives: a part left out stays as the row has it.',
+              'Add a row to the office\'s To do list after a review, in four parts: its kind, who it is about, what to do in a few words, and its detail. A closed row shows who it is about beside its due day, what to do, and one quiet line of its kind and its detail\'s first line, so each part stays short. Before adding a row about a trip, read get_trip: if its warnings already say it, do not add it, because the scheduler shows that itself. With a thread_key, a second call for the same thread changes the open row it made rather than adding a copy, and changes only the parts it gives: a part left out stays as the row has it.',
             inputSchema: z.object(toDoShape),
           },
           async ({ kind, who, body, detail, due_on, owner, trip_id, thread_url, thread_key }) => {

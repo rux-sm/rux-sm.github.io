@@ -84,8 +84,9 @@ no Missive tools says so and stops.
 
 ## Writing a row
 
-A closed row is three lines of one size: a tag, a name and a few words, and
-one quiet line. Each part is short, and the rest shows when the row is
+A closed row is a tile: a name with the due day beside it, a few words on
+up to two lines, and one quiet line that starts with the tag and is cut
+where it runs long. Each part is short, and the rest shows when the row is
 opened.
 
 - **`kind`** is the work the email asks for, shown as the tag: `quote`, a
@@ -102,9 +103,16 @@ opened.
 - **`detail`** is short lines. The first is the days and any count, such as
   "Jan 14 to 17, 2027 · 30 passengers", and shows on the closed row; the
   place is left out when the row has a trip, whose name stands on that line.
-  The lines after it show when the row is opened: what the office needs to
-  know before it opens the email, one fact a line, and what the team's
-  comments say the work waits on.
+  The lines after it are the row's notes, a list that shows when the row is
+  opened: what the office needs to know before it opens the email, one fact
+  a line, and what the team's comments say the work waits on.
+- **A note is a phrase and never a sentence,** because the tile is narrow
+  and a sentence fills three of its lines. It is the fewest words that keep
+  the fact: 35 characters fill one line of the tile, and a note runs to two
+  lines, 70, and no further. "Quoted Sep 24, never answered", "First choice
+  sold out Oct 12" and "Waits on the manager's yes" are notes. A note leaves
+  out what the row already says, its person, its place and its work, and
+  the words "the office" and "the customer".
 
 ## Reading Missive
 
@@ -154,9 +162,10 @@ opened.
   takes a free one, and a need the email names, such as seats or a lift,
   counts: `list_buses` gives each bus's. The line is changed when it no
   longer reads true.
-- **What the review learns about a row's work goes in its detail,** one fact
-  a line, such as that another row is the same job or that no free bus has
-  the seats asked for. The row's other lines stay as they are.
+- **What the review learns about a row's work goes in its detail,** as a
+  note written the way Writing a row says, such as "Same job as the Oct 3
+  row" or "No free bus has 56 seats". The row's other lines stay as they
+  are.
 - **A row that reads true is left exactly as it is,** so a review changes
   only what moved.
 - **An open row whose thread has left Team Inboxes is likely done,** because

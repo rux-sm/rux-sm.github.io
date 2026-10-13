@@ -1083,39 +1083,38 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 .rux--actionable-notification.scheduler-note--choice .rux--actionable-notification__text-wrapper { padding-block-end: 0; }
 .rux--actionable-notification.scheduler-note--choice .rux--actionable-notification__button-wrapper { margin-inline-start: var(--rux-spacing-07); }
 
-/* A task's rows are an accordion in the lists' pane.
-   Carbon insets the title 1rem and the open content up to a quarter of its
-   width, for reading down a page; here a row lines up with its group's
-   heading, its three lines start at the top beside the arrow, and the open
-   row's buttons need the whole width. A title that may not shrink would
-   push its long line past the panel instead of ending it in an ellipsis.
-   The heading reaches 8px past its words on each side, into the panel's own
-   padding, so the hover and focus box has room around them while the words
-   stay in line with the rest of the list. */
+/* A task and a leg on Prep are each a one-item accordion inside a tile, in
+   the lists' pane, and the tile is the item's box.
+   Carbon rules each item off from the next, insets the title 1rem and the
+   open content up to a quarter of its width, for reading down a page; here
+   the item draws no line, the heading fills the tile and keeps the tile's
+   16px from its edge, its lines start at the top beside the arrow, which
+   stands a step clear of what ends them, and the open content keeps the
+   same 16px. A title that may not shrink would push its long line past the
+   tile instead of ending it in an ellipsis. */
+.scheduler-to-do .rux--accordion__item { border-block: 0; }
 .scheduler-to-do .rux--accordion__heading {
   align-items: flex-start;
-  inline-size: calc(100% + 2 * var(--rux-spacing-03));
-  margin-inline: calc(-1 * var(--rux-spacing-03));
-  padding: var(--rux-spacing-03);
+  gap: var(--rux-spacing-03);
+  padding: var(--rux-spacing-05);
 }
 .scheduler-to-do .rux--accordion__title { min-inline-size: 0; padding-inline-start: 0; }
 .scheduler-to-do .rux--accordion__arrow { margin-block-start: var(--rux-spacing-01); }
-.scheduler-to-do .rux--accordion__content { padding-inline: 0; }
-.scheduler-to-do .rux--accordion__item--active > .rux--accordion__wrapper { padding-block: 0 var(--rux-spacing-04); }
-/* A group of rows ends without a line, as a group ending in a computed row does. */
-.scheduler-to-do .rux--accordion__item:last-child { border-block-end: 0; }
-/* A leg of the Prep tab is an accordion item inside a tile, which is its
-   box: the item draws no line of its own, and its heading and its content
-   keep the tile's 16px from the tile's edge. */
-.scheduler-departures .rux--accordion__item { border-block-start: 0; }
-.scheduler-departures .rux--accordion__heading {
-  inline-size: 100%;
-  margin-inline: 0;
-  padding: var(--rux-spacing-05);
-  /* What is left ends the title's line, so the arrow stands a step clear of
-     it and is not read as part of the tag. */
-  gap: var(--rux-spacing-03);
-}
+.scheduler-to-do .rux--accordion__content { padding-inline: var(--rux-spacing-05); }
+.scheduler-to-do .rux--accordion__item--active > .rux--accordion__wrapper { padding-block: 0 var(--rux-spacing-05); }
+/* Done today is an item with no tile around it: its heading is one line at
+   the accordion's own height, its words and arrow in line with the tiles'
+   own, and its content is the done rows' tiles, edge to edge, a step under
+   it. */
+.scheduler-to-do .scheduler-to-do__done-item > .rux--accordion__heading { align-items: center; padding-block: 0; }
+.scheduler-to-do .scheduler-to-do__done-item > .rux--accordion__heading > .rux--accordion__arrow { margin-block-start: 0; }
+.scheduler-to-do .scheduler-to-do__done-item > .rux--accordion__wrapper > .rux--accordion__content { padding-inline: 0; }
+.scheduler-to-do .scheduler-to-do__done-item.rux--accordion__item--active > .rux--accordion__wrapper { padding-block: var(--rux-spacing-03) 0; }
+/* Carbon keeps 4rem at the end of a primary button for an icon it may carry.
+   A task's Done and its form's Save carry none, and a tile leaves their row
+   254px beside the week, so each ends as far from its words as it begins,
+   which is Carbon's own measure for a ghost button. */
+.scheduler-to-do__buttons .rux--btn--primary { padding-inline-end: calc(var(--rux-layout-density-padding-inline-local) - 0.0625rem); }
 /* The Prep tab's day fills the row between its two arrows. Carbon sizes a
    button to its words and caps it at 20rem. */
 .scheduler-departures__stepper > .rux--btn.scheduler-departures__date {
@@ -1124,6 +1123,4 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   max-inline-size: none;
   justify-content: center;
 }
-.scheduler-departures .rux--accordion__content { padding-inline: var(--rux-spacing-05); }
-.scheduler-departures .rux--accordion__item--active > .rux--accordion__wrapper { padding-block: 0 var(--rux-spacing-05); }
 

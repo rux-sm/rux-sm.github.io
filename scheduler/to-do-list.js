@@ -13,18 +13,23 @@
      Agent     a row a Claude session added through the connector, made by
                Ruxbot.
 
-   A row is an item of Design's accordion. Closed, it is three lines of one
-   size: a tag for its kind, who it is about in bold ahead of its words, and
-   a quiet line of its trip, its detail's first line and its due day. A press
-   opens it to those in full, the rest of its detail and who added it, over
-   one row of buttons: Done, Email and Trip, and a menu of Edit and Delete.
-   One row is open at a time. Delete closes the row with the reason Deleted,
-   so it goes to Done today with that said, and nothing is removed.
+   A row is a tile that opens, Design's tile around an item of its accordion,
+   as a leg is on Prep. Closed, it is who it is about in bold, with its due
+   day at the line's end, in the error colour once the day is past; its
+   words under them, on up to two lines; and a last line of its kind's tag,
+   its trip and its detail's first line, the one line cut where it runs
+   long. A row that names nobody starts with its words. A press opens it to
+   those in full, then the rest of its detail as a list, a fact to an item,
+   then one row of buttons: Done, Email and Trip, and a menu of Edit and
+   Delete. Who added a row is said in its form, under the fields, and not on
+   its tile. One row is open at a time. Delete closes the row with the
+   reason Deleted, so it goes to Done today with that said, and nothing is
+   removed.
 
    The rows are grouped Overdue, Today, This week, Later and No date, then
-   Done today: the rows closed today behind one item of the accordion that
-   says how many and is shut until pressed, each struck through, with Undo;
-   Add a to-do, above them, opens a new row's form at the head of the list.
+   Done today: the rows closed today behind one line that says how many and
+   is shut until pressed, each a tile struck through, with Undo; Add a
+   to-do, above them, opens a new row's form at the head of the list.
    Everyone on the staff sees every row. The count on Tasks is its Overdue
    and Today rows; the count on Prep is the one departures-panel.js gives.
 
@@ -209,11 +214,23 @@
       row.created_at ? shortDay.format(new Date(row.created_at)) : null].filter(Boolean).join(DOT);
   };
 
-  /* A stored row, as an item of Design's accordion, whose script opens and
-     shuts it. The heading is the closed row and the whole of it is the press;
-     the panel under it holds what a closed row has no room for, and the
-     buttons. A button the row cannot use is disabled and never left out, so
-     every open row has the same buttons in the same places. */
+  /* A tile around a one-item accordion, as a leg's is on Prep: the item's
+     heading fills the tile, so the whole closed tile is the press. */
+  const tileOf = item => {
+    const rows = el('ul', 'rux--accordion rux--accordion--end');
+    rows.appendChild(item);
+    const tile = el('li', 'rux--tile scheduler-to-do__tile');
+    tile.appendChild(rows);
+    return tile;
+  };
+
+  /* A stored row, as a tile around an item of Design's accordion, whose
+     script opens and shuts it. The heading is the closed row and the whole
+     of it is the press; the panel under it holds what a closed row has no
+     room for: its notes, Design's list, then the buttons, and on a done
+     row who closed it, and why where it was deleted. A button the row cannot
+     use is disabled and never left out, so every open row has the same
+     buttons in the same places. */
   function storedRow(row, done) {
     const open = row.id === openId;
     const li = el('li', `rux--accordion__item scheduler-to-do__item${done ? ' scheduler-to-do__item--done' : ''}${open ? ' rux--accordion__item--active' : ''}`);
@@ -221,8 +238,8 @@
     const trip = row.trip_id ? tripOf(row.trip_id) : null;
     const lines = String(row.detail || '').split('\n').map(s => s.trim()).filter(Boolean);
     const today = iso(new Date());
-    const due = done ? null : row.due_on && row.due_on !== today ? `Due ${dayWords(row.due_on)}` : null;
-    const added = madeBy(row);
+    // A row due today is under Today, which says so, and a done row is past its day.
+    const dueDay = !done && row.due_on && row.due_on !== today ? row.due_on : null;
 
     const heading = el('button', 'rux--accordion__heading');
     heading.type = 'button';
@@ -230,26 +247,34 @@
     const arrow = svgUse('#m-keyboard_arrow_right');
     arrow.classList.add('rux--accordion__arrow');
     const title = el('div', 'rux--accordion__title');
-    const kind = el('div', 'scheduler-to-do__kind');
-    kind.appendChild(kindTag(row));
-    const what = el('span', 'scheduler-to-do__what scheduler-to-do__line');
-    if (row.who) what.append(el('span', 'scheduler-to-do__who', row.who), DOT);
-    what.append(row.body);
-    // The quiet line is never empty, or the row would be a line short: with
-    // no trip, detail or due day it says who added the row.
-    const said = [trip ? tripWords(trip) : null, lines[0], due].filter(Boolean);
-    const quiet = el('span', 'scheduler-to-do__meta scheduler-to-do__line', (said.length ? said : [added]).join(DOT));
-    title.append(kind, what, quiet);
+    // The first line is who the row is about, or its words where it names
+    // nobody, and its due day ends the line, with Due said for a reader.
+    const top = el('span', 'scheduler-to-do__top');
+    const what = el('span', 'scheduler-to-do__what', row.body);
+    top.appendChild(row.who ? el('span', 'scheduler-to-do__who', row.who) : what);
+    if (dueDay) {
+      const words = dayWords(dueDay);
+      const due = el('span', `scheduler-to-do__due${dueDay < today ? ' scheduler-to-do__due--late' : ''}`);
+      due.append(el('span', 'rux--visually-hidden', 'Due '), words.charAt(0).toUpperCase() + words.slice(1));
+      top.appendChild(due);
+    }
+    const context = el('span', 'scheduler-to-do__context');
+    const said = [trip ? tripWords(trip) : null, lines[0]].filter(Boolean).join(DOT);
+    context.appendChild(kindTag(row));
+    if (said) context.appendChild(el('span', 'scheduler-to-do__meta scheduler-to-do__line', said));
+    title.append(top, ...(row.who ? [what] : []), context);
     heading.append(arrow, title);
 
     const wrapper = el('div', 'rux--accordion__wrapper');
     const more = el('div', 'rux--accordion__content scheduler-to-do__more');
     more.id = `scheduler-to-do-more-${row.id}`;
     heading.setAttribute('aria-controls', more.id);
-    for (const line of lines.slice(1)) more.appendChild(el('p', 'scheduler-to-do__meta', line));
+    if (lines.length > 1) {
+      const notes = el('ul', 'rux--list--unordered scheduler-to-do__notes');
+      for (const line of lines.slice(1)) notes.appendChild(el('li', 'rux--list__item scheduler-to-do__note', line));
+      more.appendChild(notes);
+    }
     const closed = done ? [staff.get(row.closed_by)?.display_name, row.closed_reason].filter(Boolean).join(': ') : '';
-    if (closed) more.appendChild(el('p', 'scheduler-to-do__meta', closed));
-    if (said.length && added) more.appendChild(el('p', 'scheduler-to-do__meta', added));
 
     const act = button('rux--btn--primary', done ? 'Undo' : 'Done');
     act.addEventListener('click', () => { act.disabled = true; openId = null; tick(row, !done); });
@@ -260,7 +285,7 @@
     toTrip.disabled = !trip;
     toTrip.addEventListener('click', () => { if (!boardTook(tripHref(trip))) location.href = tripHref(trip); });
     // Edit and Delete are the menu's; a row ticked today has only Undo to take back.
-    const menuButton = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm rux--menu-button__trigger');
+    const menuButton = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm rux--menu-button__trigger scheduler-to-do__end');
     menuButton.type = 'button';
     menuButton.disabled = !!done;
     menuButton.setAttribute('aria-label', 'More');
@@ -268,16 +293,25 @@
     menuButton.setAttribute('data-rux-open', MENU_ID);
     menuButton.appendChild(svgUse('#m-more_vert'));
     const bar = el('div', 'scheduler-to-do__buttons');
-    bar.append(act, email, toTrip, el('span', 'scheduler-to-do__gap'), menuButton);
+    bar.append(act, email, toTrip, menuButton);
     more.appendChild(bar);
+    if (closed) more.appendChild(el('div', 'scheduler-to-do__meta', closed));
     wrapper.appendChild(more);
     li.append(heading, wrapper);
-    return li;
+    return tileOf(li);
   }
 
+  // A list of tiles, a step apart: a group's rows, the done rows, or a new row's form.
+  const tileList = () => {
+    const ul = el('ul', 'scheduler-to-do__rows scheduler-to-do__tiles');
+    ul.setAttribute('role', 'list');
+    return ul;
+  };
+
   /* Done today: the rows closed today, behind one item of the accordion that
-     says how many it holds. It is shut until pressed, so the tab opens on
-     what is still owed, and its rows are the accordion they are above it. */
+     says how many it holds. It is a line and no tile, shut until pressed, so
+     the tab opens on what is still owed, and its rows are the tiles they
+     are above it. */
   function doneGroup(rows) {
     const li = el('li', `rux--accordion__item scheduler-to-do__done-item${doneOpen ? ' rux--accordion__item--active' : ''}`);
     const heading = el('button', 'rux--accordion__heading');
@@ -285,13 +319,12 @@
     heading.setAttribute('aria-expanded', String(doneOpen));
     const arrow = svgUse('#m-keyboard_arrow_right');
     arrow.classList.add('rux--accordion__arrow');
-    heading.append(arrow, el('div', 'rux--accordion__title', `Done today${DOT}${rows.length}`));
+    heading.append(arrow, el('div', 'rux--accordion__title scheduler-to-do__done-title', `Done today${DOT}${rows.length}`));
     const wrapper = el('div', 'rux--accordion__wrapper');
     const inside = el('div', 'rux--accordion__content');
     inside.id = 'scheduler-to-do-done';
     heading.setAttribute('aria-controls', inside.id);
-    const ul = el('ul', 'rux--accordion rux--accordion--end scheduler-to-do__rows');
-    ul.setAttribute('role', 'list');
+    const ul = tileList();
     for (const r of rows) ul.appendChild(storedRow(r, true));
     inside.appendChild(ul);
     wrapper.appendChild(inside);
@@ -352,9 +385,11 @@
     return b;
   };
 
+  /* A row's form, in the row's tile. The fields are a layer over the tile,
+     which is itself a layer over the pane. */
   function editForm(row) {
-    const li = el('li', 'scheduler-to-do__row scheduler-to-do__row--editing');
-    const form = el('form', 'scheduler-to-do__form rux--stack-vertical rux--stack-scale-4');
+    const li = el('li', 'rux--tile scheduler-to-do__tile scheduler-to-do__tile--editing');
+    const form = el('form', 'scheduler-to-do__form rux--layer-three rux--stack-vertical rux--stack-scale-4');
     const kind = el('select', 'rux--select-input');
     kind.append(option('', 'To do', !row.kind),
       ...[...KINDS].map(([name, [text]]) => option(name, text, name === row.kind)),
@@ -389,11 +424,15 @@
     const bar = el('div', 'scheduler-to-do__buttons');
     const del = row.id ? button('rux--btn--danger--ghost', 'Delete') : null;
     const cancel = button('rux--btn--ghost', 'Cancel');
+    cancel.classList.add('scheduler-to-do__end');
     const save = button('rux--btn--primary', row.id ? 'Save' : 'Add');
     save.type = 'submit';
-    bar.append(del ?? '', el('span', 'scheduler-to-do__gap'), cancel, save);
+    bar.append(del ?? '', cancel, save);
+    // Who added a saved row, and when: its tile does not say.
+    const added = row.id ? madeBy(row) : '';
     form.append(field('Kind', kind, true), field('Who', who), field('To do', words), field('Detail', detail),
-      field('Due', due), field('Owner', owner, true), field('Trip', trip, true), bar);
+      field('Due', due), field('Owner', owner, true), field('Trip', trip, true),
+      added ? el('p', 'scheduler-to-do__meta', added) : '', bar);
 
     const shutForm = () => { editingId = null; draw(); };
     cancel.addEventListener('click', shutForm);
@@ -474,8 +513,7 @@
     for (const g of GROUPS) {
       const items = rows.get(g);
       if (!items.length) continue;
-      const ul = el('ul', 'rux--accordion rux--accordion--end scheduler-to-do__rows');
-      ul.setAttribute('role', 'list');
+      const ul = tileList();
       for (const row of items) ul.appendChild(row.id === editingId ? editForm(row) : storedRow(row, false));
       parts.push(el('h3', 'scheduler-to-do__group', g), ul);
     }
@@ -483,8 +521,7 @@
     if (done.length) parts.push(doneGroup(done));
     if (!parts.length && editingId !== NEW) parts.push(el('p', 'scheduler-to-do__none', 'Nothing to do.'));
     if (editingId === NEW) {
-      const ul = el('ul', 'scheduler-to-do__rows');
-      ul.setAttribute('role', 'list');
+      const ul = tileList();
       ul.appendChild(editForm(blank()));
       parts.unshift(ul);
     }

@@ -14,11 +14,13 @@
    whose own lines are all done folds them into one line, Trip ready, which a
    press unfolds.
 
-   Any other day holds one row for each trip leaving on it with a gap, as
-   to-do.js's `byTrip` joins them: its place and customer, then every gap on
-   one quiet line, and a press opens the trip. A day with no such trip has no
+   Any other day holds one tile for each trip leaving on it with a gap, as
+   to-do.js's `byTrip` joins them: its place, what it still needs under it
+   in full, then its customer on a quiet line. A press opens the trip, since
+   such a tile has nothing to open in place, and an arrow says so where a
+   leg's tile has the one that turns. A day with no such trip has no
    heading. The arrows and the calendar go to any one day, which then shows
-   alone, as tiles.
+   alone, as legs.
 
    Every line of a leg is a mark, what it is, then when it was done and whose
    face did it, or the word for doing it, which is a link to the place it is
@@ -428,7 +430,7 @@
   function legItem(page) {
     const key = keyOf(page);
     const open = key === openKey;
-    const li = el('li', `rux--accordion__item${open ? ' rux--accordion__item--active' : ''}`);
+    const li = el('li', `rux--accordion__item scheduler-departures__leg${open ? ' rux--accordion__item--active' : ''}`);
     li.dataset.key = key;
     const heading = el('button', 'rux--accordion__heading');
     heading.type = 'button';
@@ -458,39 +460,43 @@
     li.append(heading, wrapper);
     const rows = el('ul', 'rux--accordion rux--accordion--end');
     rows.appendChild(li);
-    const tile = el('li', 'rux--tile scheduler-departures__leg');
+    const tile = el('li', 'rux--tile scheduler-to-do__tile');
     tile.appendChild(rows);
     return tile;
   }
 
   // One day's legs as a list of tiles.
   const legList = rows => {
-    const ul = el('ul', 'scheduler-to-do__rows scheduler-departures__legs');
+    const ul = el('ul', 'scheduler-to-do__rows scheduler-to-do__tiles');
     ul.setAttribute('role', 'list');
     for (const page of rows) ul.appendChild(legItem(page));
     return ul;
   };
   const focusHeld = hold => [...list.querySelectorAll('[data-hold]')].find(n => n.dataset.hold === hold)?.focus();
 
-  /* A trip's row on a day that is not prepped for: one link to the trip, a
-     mark where a leg's tag would be, its place and customer, then its gaps
-     under them, the leg first where the trip is split. */
+  /* A trip's tile on a day that is not prepped for. It is one link to the
+     trip, Design's clickable tile, since it has nothing to open in place:
+     its place, as a leg's tile names it, and an arrow where a leg's tile has
+     the one that turns; what the trip still needs under them, in full; then
+     a quiet line of its customer, and its leg where the trip is split. */
   function tripRow(row) {
-    const li = el('li', 'scheduler-to-do__row scheduler-to-do__row--computed');
-    const a = el('a', 'scheduler-to-do__open');
+    const li = el('li');
+    const a = el('a', 'rux--link rux--tile rux--tile--clickable scheduler-to-do__link');
     a.href = `./?trip=${encodeURIComponent(row.trip.id)}&date=${encodeURIComponent(row.day)}${row.leg ? `&leg=${encodeURIComponent(row.leg)}` : ''}`;
-    const mark = svgUse('#m-warning-fill');
-    mark.classList.add('scheduler-to-do__mark');
     const text = el('span', 'scheduler-to-do__text');
-    const name = [row.trip.destination, row.trip.customer].filter(Boolean).join(DOT) || row.trip.trip_ref || 'Trip';
-    text.append(el('span', 'scheduler-to-do__words', name),
-      el('span', 'scheduler-to-do__meta', [row.legName, ...row.whats].filter(Boolean).join(DOT)));
-    a.append(mark, text);
+    const place = el('span', 'scheduler-departures__place');
+    place.appendChild(el('strong', null, row.trip.destination ? placeName(row.trip.destination) : row.trip.trip_ref || 'Trip'));
+    text.append(place, el('span', 'scheduler-departures__gaps', row.whats.join(DOT)));
+    const quiet = [row.trip.customer, row.legName].filter(Boolean).join(DOT);
+    if (quiet) text.appendChild(el('span', 'scheduler-to-do__meta scheduler-to-do__line', quiet));
+    const arrow = svgUse('#m-keyboard_arrow_right');
+    arrow.classList.add('scheduler-to-do__go');
+    a.append(text, arrow);
     li.appendChild(a);
     return li;
   }
   const rowList = rows => {
-    const ul = el('ul', 'scheduler-to-do__rows');
+    const ul = el('ul', 'scheduler-to-do__rows scheduler-to-do__tiles');
     ul.setAttribute('role', 'list');
     for (const row of rows) ul.appendChild(tripRow(row));
     return ul;

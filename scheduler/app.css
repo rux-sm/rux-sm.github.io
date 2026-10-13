@@ -4548,9 +4548,11 @@ html:has(.scheduler-page[data-takeover]) {
    The pane of the board's two lists, beside the week, `--scheduler-panel-w`
    wide as the roster is. to-do-list.js shows it and fills Tasks, and
    departures-panel.js fills Prep. Add a to-do is the dashed row the trip
-   editor's lists end in. A task's row is an item of Design's accordion,
-   holding Design's tag, buttons and menu; a trip's row on Prep and the edit
-   form are this app's own row. */
+   editor's lists end in. Every row of either list is a tile. What opens in
+   place, a task as a leg on Prep is, is Design's tile around an item of its
+   accordion, holding Design's tag, buttons and menu, and a task's form is a
+   tile too. A trip on Prep with a gap, which leaves for its trip, is
+   Design's clickable tile, one link. */
 /* The pane is a column that does not scroll: its head keeps its place, and
    the list under it scrolls in what is left. */
 .scheduler-to-do { display: flex; flex-direction: column; overflow: hidden; }
@@ -4582,69 +4584,101 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-to-do__body { color: var(--rux-text-primary); }
 .scheduler-to-do__error { margin: 0; color: var(--rux-text-error); font-size: 0.875rem; }
 .scheduler-to-do__error[hidden] { display: none; }
+/* A group's heading is an h3, whose letters Design sets for a heading twice
+   this size, so it takes a label's spacing with a label's size. */
 .scheduler-to-do__group {
   margin: var(--rux-spacing-05) 0 var(--rux-spacing-02);
   color: var(--rux-text-secondary);
   font-size: 0.75rem;
   font-weight: 600;
   line-height: 1.33333;
+  letter-spacing: var(--rux-label-01-letter-spacing);
 }
 .scheduler-to-do__group:first-child { margin-block-start: 0; }
-/* Done today stands a group's step under the rows above it. */
-.scheduler-to-do__done { margin-block-start: var(--rux-spacing-05); }
-.scheduler-to-do__done:first-child { margin-block-start: 0; }
 /* The list is a cell of the panel's grid, which is as wide as its longest
    line unless it may shrink; a closed row's line must end in an ellipsis
    at the panel's edge instead. */
 .scheduler-to-do__list { min-inline-size: 0; }
 .scheduler-to-do__rows { list-style: none; margin: 0; padding: 0; }
-.scheduler-to-do__row {
+/* Done today stands a group's step under the tiles above it, a line in the
+   quiet colour. Its list is one of the rows' lists, so its step comes after
+   their margin, which would take it back. */
+.scheduler-to-do__done { margin-block-start: var(--rux-spacing-05); }
+.scheduler-to-do__done:first-child { margin-block-start: 0; }
+.scheduler-to-do__done-title { color: var(--rux-text-secondary); }
+/* The tiles stand a step apart. A tile keeps no padding of its own: its
+   heading fills it to the edge, so a press anywhere on the closed tile opens
+   it and the hover is the whole tile's, cut to the tile's corners. */
+.scheduler-to-do__tiles { display: flex; flex-direction: column; gap: var(--rux-spacing-03); }
+.scheduler-to-do__tile { min-block-size: 0; padding: 0; overflow: hidden; }
+/* A tile that is one link, as a trip's is on Prep, has no heading to fill
+   it, so it keeps the 16px a heading would and sets its words as a heading
+   sets its own. Its lines are a column, and an arrow ends its first line
+   where a tile that opens has the one that turns. */
+.scheduler-to-do__link {
   display: flex;
   align-items: flex-start;
   gap: var(--rux-spacing-03);
-  padding-block: var(--rux-spacing-03);
-  border-block-start: 1px solid var(--rux-border-subtle-01);
+  padding: var(--rux-spacing-05);
+  font-size: var(--rux-body-01-font-size);
+  line-height: var(--rux-body-01-line-height);
+  letter-spacing: var(--rux-body-01-letter-spacing);
 }
-.scheduler-to-do__text { display: flex; flex-direction: column; flex: 1 1 auto; min-inline-size: 0; gap: var(--rux-spacing-01); }
+.scheduler-to-do__text { display: flex; flex-direction: column; flex: 1 1 auto; min-inline-size: 0; }
+.scheduler-to-do__go { flex: none; margin-block-start: var(--rux-spacing-01); fill: var(--rux-icon-primary); }
 .scheduler-to-do__meta { margin: 0; color: var(--rux-text-secondary); font-size: 0.75rem; line-height: 1.33333; overflow-wrap: anywhere; }
-/* A task's row is an item of Design's accordion, and its heading is the closed
-   row: a tag, then its words and its quiet line, each kept to one line and
-   ended in an ellipsis, so every closed row is the same size. Open, the two
-   lines wrap to say all they hold. */
-.scheduler-to-do__kind { margin-block-end: var(--rux-spacing-02); line-height: 0; }
-.scheduler-to-do__tag { margin: 0; }
-.scheduler-to-do__line { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-/* Only the open row's own lines wrap: Done today is an open item around its
-   rows, and they stay one line each until one of them is opened. */
-.scheduler-to-do__item.rux--accordion__item--active .scheduler-to-do__line { overflow: visible; overflow-wrap: anywhere; white-space: normal; }
-.scheduler-to-do__who { font-weight: 600; }
-.scheduler-to-do__item--done .scheduler-to-do__what { color: var(--rux-text-secondary); text-decoration: line-through; }
-/* The open row: the rest of its quiet lines, then its buttons a step under them. */
-.scheduler-to-do__more { display: flex; flex-direction: column; gap: var(--rux-spacing-01); }
-.scheduler-to-do__more .scheduler-to-do__buttons { margin-block-start: var(--rux-spacing-03); }
-/* A trip's row on Prep is one link to its trip: a mark, its place and
-   customer, then its gaps under them. */
-.scheduler-to-do__open {
-  display: flex;
+/* A task's heading is the closed row. Its first line is who it is about,
+   ended in an ellipsis, with its due day at the line's end, in the error
+   colour once the day is past; a row that names nobody starts with its words
+   there. Its words stand under them on up to two lines, since they are what
+   is asked. Its last line is its kind's tag, then its trip and its detail's
+   first line, ended in an ellipsis: the one line a closed row cuts. */
+.scheduler-to-do__top { display: flex; align-items: baseline; justify-content: space-between; gap: var(--rux-spacing-03); }
+.scheduler-to-do__who { flex: 1 1 auto; min-inline-size: 0; overflow: hidden; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.scheduler-to-do__due { flex: none; color: var(--rux-text-secondary); font-size: 0.75rem; line-height: 1.33333; }
+.scheduler-to-do__due--late { color: var(--rux-text-error); }
+.scheduler-to-do__what {
+  display: -webkit-box;
   flex: 1 1 auto;
-  align-items: flex-start;
-  gap: 0.625rem;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   min-inline-size: 0;
-  color: inherit;
-  font-size: 0.875rem;
-  line-height: 1.28572;
-  text-decoration: none;
+  overflow: hidden;
+  overflow-wrap: anywhere;
 }
-.scheduler-to-do__open:hover .scheduler-to-do__words { text-decoration: underline; }
-.scheduler-to-do__open:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
-.scheduler-to-do__open > svg { flex: none; margin-block-start: 1px; color: var(--rux-icon-secondary); }
-.scheduler-to-do__open > .scheduler-to-do__mark { color: var(--rux-support-warning); }
-.scheduler-to-do__detail { color: var(--rux-text-secondary); }
+.scheduler-to-do__context { display: flex; align-items: baseline; margin-block-start: var(--rux-spacing-01); }
+.scheduler-to-do__tag { flex: none; margin: 0; margin-inline-end: var(--rux-spacing-03); }
+.scheduler-to-do__line { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Open, every line says all it holds. The last line's words stay beside the
+   tag where they fit on the one line, so a short row opens without moving;
+   words too long for that stand under the tag and wrap at the tile's width,
+   never around the tag or in a column beside it. Only the open row's own
+   lines do: Done today is an open item around its rows, and they keep their
+   closed lines until one of them is opened. */
+.scheduler-to-do__item.rux--accordion__item--active :is(.scheduler-to-do__who, .scheduler-to-do__line) { overflow: visible; overflow-wrap: anywhere; white-space: normal; }
+.scheduler-to-do__item.rux--accordion__item--active .scheduler-to-do__what { display: block; overflow: visible; }
+.scheduler-to-do__item.rux--accordion__item--active .scheduler-to-do__context { flex-wrap: wrap; row-gap: var(--rux-spacing-02); }
+.scheduler-to-do__item.rux--accordion__item--active .scheduler-to-do__context > .scheduler-to-do__line { flex: none; max-inline-size: 100%; }
+.scheduler-to-do__item--done :is(.scheduler-to-do__who, .scheduler-to-do__what) { color: var(--rux-text-secondary); text-decoration: line-through; }
+/* The open row, its parts a step apart. Its notes are the rest of its
+   detail as Design's list, a fact to an item behind a dash, in the quiet
+   colour, since the row's own words above them are what is asked. Its
+   buttons follow, and a done row ends in a quiet line of who closed it. */
+.scheduler-to-do__more { display: flex; flex-direction: column; gap: var(--rux-spacing-03); }
+.scheduler-to-do__notes { display: flex; flex-direction: column; gap: var(--rux-spacing-02); }
+.scheduler-to-do__note { color: var(--rux-text-secondary); overflow-wrap: anywhere; }
+.scheduler-to-do__notes + .scheduler-to-do__buttons { margin-block-start: var(--rux-spacing-02); }
 .scheduler-to-do__none { margin: 0; color: var(--rux-text-secondary); font-size: 0.875rem; }
-.scheduler-to-do__row--editing { display: block; padding-block: var(--rux-spacing-05); }
+/* A row's form stands in the row's tile, which keeps its 16px around it. */
+.scheduler-to-do__tile--editing { padding: var(--rux-spacing-05); }
 .scheduler-to-do__form .rux--form-item { margin: 0; }
-.scheduler-to-do__buttons { display: flex; align-items: center; gap: var(--rux-spacing-03); }
-.scheduler-to-do__gap { flex: 1 1 auto; }
+/* A row of buttons, in a tile 254px wide beside the week: what acts on the
+   row first, and from the one marked as the end's, at the far end. They
+   stand half a step apart, since a ghost button keeps room around its own
+   words, and a row with no room wraps, where the tile would cut it off. */
+.scheduler-to-do__buttons { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-02); }
+.scheduler-to-do__end { margin-inline-start: auto; }
 
 /* ══ Prep ═════════════════════════════════════════════════════════════════
    The Prep list, drawn by departures-panel.js: each day under its heading,
@@ -4652,7 +4686,9 @@ html:has(.scheduler-page[data-takeover]) {
    Design's tile around an item of its accordion. Closed, a leg is its place and time, what
    is left and its customer; open, it holds a block for the trip and one for
    each bus. Every status is one line, its mark on the left and its time, its
-   face or its action on the right. */
+   face or its action on the right. Any other day holds a tile for each trip
+   with a gap, one link to the trip: its place, what it still needs, and its
+   customer, in a task's order. */
 .scheduler-departures { color: var(--rux-text-primary); }
 .scheduler-departures[hidden] { display: none; }
 .scheduler-to-do__body[hidden] { display: none; }
@@ -4665,16 +4701,16 @@ html:has(.scheduler-page[data-takeover]) {
 /* The list is a cell of the panel's grid, which is as wide as its longest
    line unless it may shrink. */
 .scheduler-departures__list { min-inline-size: 0; }
-/* The legs stand a step apart. A leg's tile keeps no padding of its own:
-   its heading fills it to the edge, so a press anywhere on the closed tile
-   opens it and the hover is the whole tile's, cut to the tile's corners. */
-.scheduler-departures__legs { display: flex; flex-direction: column; gap: var(--rux-spacing-03); }
-.scheduler-departures__leg { min-block-size: 0; padding: 0; overflow: hidden; }
 /* A leg's heading: its place and time, ended in an ellipsis where they run
    long, with what is left at the line's end. */
 .scheduler-departures__summary { display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-03); }
 .scheduler-departures__place { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .scheduler-departures__place > strong { font-weight: 600; }
+/* An open leg's heading says all it holds, as an open task's does. */
+.scheduler-departures__leg.rux--accordion__item--active :is(.scheduler-departures__place, .scheduler-to-do__line) { overflow: visible; overflow-wrap: anywhere; white-space: normal; }
+/* What a trip still needs, on its tile: every gap, wrapped, since they are
+   what the tile is there to say. */
+.scheduler-departures__gaps { overflow-wrap: anywhere; }
 /* The open leg: a block for the trip, then one for each bus, a line over each. */
 .scheduler-departures__page { display: flex; flex-direction: column; }
 .scheduler-departures__block { padding-block: var(--rux-spacing-03); border-block-start: 1px solid var(--rux-border-subtle-01); }
@@ -4712,7 +4748,11 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-departures__who { display: flex; align-items: center; gap: var(--rux-spacing-03); font-size: 0.875rem; }
 .scheduler-departures__role { flex: 1 1 auto; color: var(--rux-text-secondary); }
 .scheduler-departures__lines { list-style: none; margin: 0; padding: 0; }
-.scheduler-departures__line { display: flex; align-items: center; gap: 0.625rem; min-block-size: 2rem; font-size: 0.875rem; }
+/* A line's value or action sits at its end, and goes under its words, still
+   at the end, where the two do not fit on one line: a long PO number beside
+   Confirmed would otherwise press the word into two. */
+.scheduler-departures__line { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-01) 0.625rem; min-block-size: 2rem; font-size: 0.875rem; }
+.scheduler-departures__line > :is(.rux--link, .scheduler-departures__when) { margin-inline-start: auto; }
 .scheduler-departures__mark { flex: none; }
 .scheduler-departures__line--done .scheduler-departures__mark { color: var(--rux-support-success); }
 .scheduler-departures__line--todo .scheduler-departures__mark { color: var(--rux-support-error); }
@@ -4727,7 +4767,7 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-departures__hint { display: none; color: var(--rux-icon-primary); }
 .scheduler-departures__tick:is(:hover, :focus-visible) > .scheduler-departures__mark { display: none; }
 .scheduler-departures__tick:is(:hover, :focus-visible) > .scheduler-departures__hint { display: block; }
-.scheduler-departures__line--asking { flex-wrap: wrap; }
+.scheduler-departures__line--asking { row-gap: 0.625rem; }
 .scheduler-departures__ask { display: flex; flex: 0 0 100%; align-items: center; gap: var(--rux-spacing-03); padding-block-end: var(--rux-spacing-03); padding-inline-start: 1.75rem; color: var(--rux-text-secondary); }
 .scheduler-departures__ask > span { flex: 1 1 auto; }
 .scheduler-departures__when { flex: none; color: var(--rux-text-secondary); font-size: 0.75rem; }

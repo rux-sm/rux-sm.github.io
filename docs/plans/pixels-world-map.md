@@ -10,8 +10,10 @@ The course is a journey a player can see. The front page is a map of one
 fantasy land with a path through it, and a rift opens on the path where a
 rift of the course is. The player's character walks to a rift and goes in,
 and inside is that rift's own world, with its fifteen enemies standing in it
-and its boss last. rux draws the map and the worlds in pixels, and each is
-built on a placeholder first, so it works before it is drawn.
+and its boss last. The character is one rux draws, and a player makes it
+their own by drawing on the armour they unlock. rux draws the map and the
+worlds in pixels, and each is built on a placeholder first, so it works
+before it is drawn.
 
 ## Decisions
 
@@ -48,6 +50,20 @@ The world map:
 
 The character:
 
+- **Every player starts as one base character, which rux draws.** It is 15
+  squares a side, as a player's picture and a portal are, so the Pixelator's
+  board draws it and it stands on the map at a rift's size.
+- **Armour is unlocked a piece at a time, and a piece unlocked is the
+  player's to draw on.** It starts as rux's drawing of it, the player paints
+  over its squares in the game's inks, and it can be set back to rux's.
+- **A piece is a set of the character's squares,** so a drawing of it lies
+  over the base and nothing else moves. A piece not yet unlocked is not
+  worn.
+- **Drawing on armour costs no mana,** since it makes no puzzle.
+- **A player's armour is kept with the player in the database,** so it comes
+  back on any phone with their name and PIN. The SQL is shown to rux first.
+- **The player's picture stays what stands beside their name.** The
+  character is who walks the map and stands on Me.
 - **A tap on an open rift walks the character there along the path, in about
   half a second, and then the rift opens.** There is no steering, and with
   motion turned down in the phone's settings there is no walk.
@@ -77,11 +93,14 @@ Inside a rift:
 
 The pictures:
 
-- **rux draws thirteen: the map and a world for each rift.** They are pixel
-  art, drawn one pixel to a square and painted from the game's own
-  fifty-five inks, so they sit with the sprites.
-- **Each is a PNG in `pixels/art/`:** `map.png`, and `rift-01.png` to
-  `rift-12.png`.
+- **rux draws the map, a world for each rift, the base character and each
+  piece of its armour.** They are pixel art, drawn one pixel to a square and
+  painted from the game's own fifty-five inks, so they sit with the sprites.
+- **The map and the worlds are PNGs in `pixels/art/`:** `map.png`, and
+  `rift-01.png` to `rift-12.png`.
+- **The character and its armour are kept as a sprite is,** a character a
+  square in the game's inks, so a player's drawing and rux's are one kind of
+  thing.
 - **A picture keeps its own colours in every theme,** as a sprite does, and
   the page round it follows the theme.
 - **Every picture has a placeholder first, made by a script,** which is also
@@ -89,15 +108,21 @@ The pictures:
 
 The order:
 
-- **Four steps, each whole by itself:** the map, the walk, the worlds, the
-  boss.
+- **Five steps, each whole by itself:** the map, the walk, the worlds, the
+  boss, the armour. The walk is built with the base character alone.
 
 ## Questions
 
-- **Who is the character?** Each player's own picture, hopping along the
-  path, needs nothing drawn and makes every player themselves. One hero rux
-  draws, with walking frames, looks better and is the same for everyone.
-  Recommended the player's own picture first.
+- **Which pieces of armour are there, and what unlocks each?** Recommended
+  six, one to a rank: helmet, shield, body armour, boots, sword and cape,
+  each unlocked by clearing the first rift of its rank, so the helmet comes
+  with rift 1.
+- **Does the character hop, or walk in frames?** A hop moves one standing
+  drawing along the path. Walking frames need the base and every piece of
+  armour drawn again for each frame, and a player's own drawing fits only
+  one. Recommended the hop.
+- **Who sees a player's character?** Only the player, on the map and on Me,
+  or their friends too, on Friends. Recommended the player alone first.
 - **While a picture is a placeholder, who sees the map?** A push publishes,
   so every player would see grey blocks. Recommended that only the owner
   sees the map and a rift's world until rux's picture is in, and the other
@@ -118,12 +143,15 @@ The order:
       1280 wide.
 - [ ] Write `pixels/docs/drawing-the-map.md`, the how-to for a picture: the
       two canvas sizes, the spots, the inks, and the file to save.
-- [ ] Step 2, the walk: the character on the map, at the player's rift, and
-      its walk to a tapped rift.
+- [ ] Step 2, the walk: the base character on the map, at the player's rift,
+      and its walk to a tapped rift, on a placeholder character first.
 - [ ] Step 3, the worlds: a course rift's page as its world, with the
       fifteen enemies at their spots.
 - [ ] Step 4, the boss: hold the boss until the fourteen are found, on the
       rift's page, on the puzzle's page and in Next puzzle.
+- [ ] Step 5, the armour: the pieces and what unlocks each, a place on Me to
+      draw on an unlocked piece with the Pixelator's board, and a player's
+      armour kept in the database, the SQL shown to rux first.
 - [ ] Put each of rux's pictures in place of its placeholder as it is drawn,
       and show the map to every player once its own picture is in.
 - [ ] Correct `docs/plans/pixels-standard-set.md` and `pixels/README.md`

@@ -39,7 +39,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, enter, carry, iphone, installed, fresh, seen, stood, locks, portal, heading, where, riftTile, DAILY, BOARD, grid, rounds, grade, categories, daily, today, streak, time, words, art, switcher } = window.Pixels;
+  const { data, owner, enter, carry, iphone, installed, fresh, seen, stood, locks, worn, hero, portal, heading, where, riftTile, DAILY, BOARD, grid, rounds, grade, categories, daily, today, streak, time, words, art, switcher } = window.Pixels;
   const host = document.getElementById('pixels-levels'), leader = document.getElementById('pixels-leader');
 
   const say = (heading, detail) => {
@@ -152,7 +152,13 @@
      A rift on the map is its portal with its words under it: its rank and
      name, and how many sprites are found. A locked one is dim and no link
      and says how many open it, a cleared one is shut, and one not yet
-     opened pulses. `map` returns the map and where each rift is on it. */
+     opened pulses. `map` returns the map and where each rift is on it.
+
+     THE CHARACTER stands beside the player's rift, app.js's `hero` in what
+     the player has. A tap on another open rift hops it there in half a
+     second and then opens the rift; a tap while it hops opens the rift at
+     once, and so does every tap for a player who has asked for less
+     movement. */
   const MAP = owner;
   const SPOTS = [[23, 43], [83, 11], [23, 43], [83, 11], [23, 43], [83, 11], [23, 43], [83, 11], [23, 43], [83, 11], [23, 43], [83, 11]];
   const SIDE = [87, 51];
@@ -328,6 +334,32 @@
     // The map opens with the player's rift in the middle of the window: the
     // one they last went into, or the first with a sprite left to find.
     const mine = course.find(stood) || course.find(c => !c.short && c.puzzles.some(p => !results.has(p.id))) || course[0];
-    if (land) land.places.get(mine).scrollIntoView({ block: 'center' });
+    if (!land) return;
+    land.places.get(mine).scrollIntoView({ block: 'center' });
+    // The character stands a square clear of its rift's portal, on its left.
+    const who = hero(worn(me.found || 0)), beside = el => el.getBoundingClientRect().left - who.offsetWidth * 16 / 15;
+    who.classList.add('pixels-map-hero');
+    const [x, y] = SPOTS[mine.number - 1];
+    land.places.get(mine).parentElement.append(put(who, [x - 16, y]));
+    let at = land.places.get(mine), moved = [0, 0], hopping = false;
+    land.el.addEventListener('click', e => {
+      const to = e.target.closest('a.pixels-map-rift');
+      // The side place, the rift it stands by, a second tap and a tap that
+      // opens a new window are the browser's to follow.
+      if (!to || to === at || hopping || ![...land.places.values()].includes(to)) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      e.preventDefault();
+      hopping = true;
+      const from = who.getBoundingClientRect(), there = to.getBoundingClientRect();
+      const next = [moved[0] + beside(to) - from.left, moved[1] + there.top - from.top];
+      const shift = ([dx, dy], up = 0) => ({ transform: `translate(${dx}px, ${dy - up}px)` });
+      who.animate([shift(moved), shift([(moved[0] + next[0]) / 2, (moved[1] + next[1]) / 2], who.offsetHeight / 2), shift(next)], { duration: 500, easing: 'ease-in-out' })
+        .finished.then(() => {
+          // It stays where it landed, for a player who comes back to this page.
+          who.style.transform = shift(next).transform;
+          [at, moved, hopping] = [to, next, false];
+          location.href = to.href;
+        });
+    });
   })();
 })();

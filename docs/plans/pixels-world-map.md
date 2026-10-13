@@ -135,13 +135,14 @@ The character:
   back on any phone with their name and PIN. The SQL is shown to rux first.
 - **The player's picture stays what stands beside their name.** The
   character is who walks the map and stands on Me.
-- **A tap on an open rift walks the character there along the path, in about
-  half a second, and then the rift opens.** A second tap opens it at once.
-  There is no steering, and with motion turned down in the phone's settings
-  there is no walk.
-- **The walk is a hop: one standing drawing moves along the path.** Walking
-  frames would need the base and every piece of armour drawn again for each
-  frame, and a player's own drawing fits only one.
+- **A tap on an open rift hops the character there, in half a second, and
+  then the rift opens.** A second tap opens it at once. There is no
+  steering, and with motion turned down in the phone's settings there is no
+  hop.
+- **The hop is one standing drawing moved straight from rift to rift.**
+  Walking frames would need the base and every piece of armour drawn again
+  for each frame, and a player's own drawing fits only one; and a walk
+  along the path would need the path's points kept beside each picture.
 - **A player's character is seen by that player alone, on the map and on
   Me,** since a store asks for a way to report what one player draws and
   another sees.
@@ -174,7 +175,9 @@ The pictures:
   template: the canvas at its size with its spots marked.
   `pixels/docs/drawing-the-map.md` is how a part and the fog are drawn.
 - **While its two pictures are placeholders the switch is the owner's
-  alone,** as the map is, and every other player has the two keys.
+  alone,** as the map is, and every other player has the two keys. So is
+  the character while it is one, with its armour, the armour's hearts and
+  the enemy's shadow.
 
 The order:
 
@@ -190,19 +193,17 @@ None open.
 ## Tasks
 
 - [ ] Say the story's line at the door, which `pixels/data.js` draws.
-- [ ] Step 3, the character and its helmet: the base character in its
-      seven layers, on a placeholder first, on the map at the player's rift
-      and on the puzzle's page with its moves; its walk to a tapped rift;
-      the helmet at five sprites, and a heart for a piece; a place on Me to
-      draw on an unlocked piece with the Pixelator's board; and a player's
-      armour kept in the database, the SQL shown to rux first.
+- [ ] Step 3, drawing on armour: the character standing on Me; a place
+      there to draw on an unlocked piece with the Pixelator's board and to
+      pick the skin's and the eyes' colours; and a player's armour and
+      colours kept in the database, the SQL shown to rux first.
 - [ ] Step 4, the rest of the armour: the body armour, and drawing on the
       shield, each at what unlocks it.
 - [ ] Step 5, the worlds: a rift's picture at the head of its page, where
       it has one.
 - [ ] Put each of rux's pictures in place of its placeholder as it is drawn,
-      and show the map to every player once its first part is rux's
-      picture.
+      and show every player the map once its first part is rux's picture,
+      the switch once its two are, and the character once it is.
 - [ ] Correct `docs/plans/pixels-standard-set.md` and `pixels/README.md`
       where they say a rift is a tile on the front page, in the commit that
       shows the map to every player.

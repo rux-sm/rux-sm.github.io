@@ -175,6 +175,7 @@
   .pixels-game .pixels-cell.is-x::before, .pixels-game .pixels-cell.is-x::after { animation: pixels-appear .15s ease-out; }
   .pixels-game .pixels-cell.is-miss { animation: pixels-shake .3s; }
   .pixels-heart[data-hit] { animation: pixels-shake .3s; }
+  .pixels-fight > .pixels-hero { transition: transform .3s ease-in; }
   .pixels-foe-bar { transition: transform .2s ease-out; }
   .pixels-pick--switch > button { transition: background-color .11s, border-color .11s; }
   .pixels-board.is-solved .pixels-clue,
@@ -449,6 +450,16 @@ a.pixels-map-rift:hover > .pixels-map-words { background: var(--rux-layer-hover-
 .pixels-map-rift:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 .pixels-map-rift.is-locked > .pixels-portal { opacity: .3; }
 .pixels-map-rift.is-locked .pixels-map-name { color: var(--rux-text-secondary); }
+/* THE CHARACTER ON THE MAP stands at a spot of its own, as a rift does, in
+   the map's squares, over the picture and under a finger: a tap goes
+   through it to what it stands on. */
+.pixels-hero.pixels-map-hero {
+  --px: var(--map-px);
+  position: absolute;
+  inset-inline-start: calc(var(--x) * var(--map-px));
+  inset-block-start: calc(var(--y) * var(--map-px));
+  pointer-events: none;
+}
 /* A rift not yet opened pulses until it is entered. */
 @media (prefers-reduced-motion: no-preference) {
   .pixels-map-rift.is-new > .pixels-portal { animation: pixels-pulse 1.6s ease-in-out infinite; }
@@ -664,17 +675,28 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   .pixels-game[data-side="20"] { --pixels-thumb: 40px; }
 }
 
-/* THE FIGHT, a strip over the board: the player's hearts over the corner,
-   and over the squares the enemy's health, a bar as long as the share of
-   its picture still to fill. A heart is drawn in pixels of 2px, so the
-   strip is 18px deep, which `--chrome` counts with the gap under it, and a
-   heart lost is grey and dim. At no hearts Design's cover lies over the
-   squares again, with a line of words over its keys. */
-.pixels-fight { display: grid; grid-template-columns: var(--pixels-corner) minmax(0, 1fr); align-items: center; block-size: 18px; }
-.pixels-hearts { display: flex; justify-content: center; gap: 2px; }
+/* THE FIGHT, a strip over the board, one row: the player's hearts, then
+   the enemy's health, a bar as long as the share of its picture still to
+   fill, which takes the room that is left. A heart is drawn in pixels of
+   2px, so the strip is 18px deep, which `--chrome` counts with the gap
+   under it, and a heart lost is grey and dim. At no hearts Design's cover
+   lies over the squares again, with a line of words over its keys.
+
+   THE CHARACTER stands before the hearts and the enemy's shadow after the
+   bar, for the owner, each fifteen squares of 2px, so the strip is 30px
+   deep there. The character is its layers one over another in one box, and
+   its sword turns about its grip. At no hearts it lies on its back. */
+.pixels-fight { display: flex; align-items: center; gap: .5rem; min-block-size: 18px; }
+.pixels-game:has(.pixels-hero) { --chrome: 322px; }
+.pixels-hero { --px: 2px; position: relative; flex: none; display: block; inline-size: calc(15 * var(--px)); block-size: calc(15 * var(--px)); }
+.pixels-hero-layer { position: absolute; inset: 0; background: none; }
+.pixels-hero-sword { transform-origin: 76.67% 56.67%; }
+.pixels-hero.is-down { transform: rotate(-90deg); }
+.pixels-shade { --px: 2px; flex: none; background: none; }
+.pixels-hearts { display: flex; gap: 2px; }
 .pixels-heart { --px: 2px; background: none; }
 .pixels-heart[data-lost] { filter: grayscale(1); opacity: .3; }
-.pixels-foe { block-size: .5rem; background: var(--rux-layer-accent-01); overflow: hidden; }
+.pixels-foe { flex: 1; block-size: .5rem; background: var(--rux-layer-accent-01); overflow: hidden; }
 .pixels-foe-bar { block-size: 100%; background: var(--rux-support-error); transform: scaleX(var(--left, 1)); transform-origin: 0 50%; }
 .pixels-fallen-words { margin: 0; font-weight: 600; text-align: center; }
 
@@ -723,13 +745,13 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
    placeholders: one control of two halves, the sword on its left and the
    shield on its right, each drawn in pixels of 4px with no mark beside it.
    The half in hand is filled, the sword's as the primary button is and the
-   shield's as the secondary, and the other half's picture is dim. A
-   finger's slide along it is the switch's own, so the page does not move
-   under one. */
+   shield's in the page's opposite colour, as a chosen key is, so a glance
+   tells which, and the other half's picture is dim. A finger's slide
+   along it is the switch's own, so the page does not move under one. */
 .pixels-pick--switch { gap: 0; touch-action: none; }
 .pixels-pick--switch > button + button { margin-inline-start: -2px; }
 .pixels-pick--switch > [aria-checked="true"] { position: relative; border-color: var(--rux-button-primary); background: var(--rux-button-primary); }
-.pixels-pick--switch > [data-tool="x"][aria-checked="true"] { border-color: var(--rux-button-secondary); background: var(--rux-button-secondary); }
+.pixels-pick--switch > [data-tool="x"][aria-checked="true"] { border-color: var(--rux-background-inverse); background: var(--rux-background-inverse); }
 .pixels-pick--switch > [aria-checked="false"] > .pixels-picture { opacity: .4; }
 .pixels-tool-art { --px: 4px; background: none; }
 

@@ -225,7 +225,7 @@
     const el = document.createElement('span');
     el.className = `pixels-picture ${cls}`;
     el.setAttribute('aria-hidden', 'true');
-    el.style.setProperty('--size', 9);
+    el.style.setProperty('--size', Math.sqrt(squares.length));
     el.append(...[...squares].map(s => {
       const square = document.createElement('span');
       if (s !== '.') { square.dataset.on = ''; square.dataset.ink = s; }
@@ -237,6 +237,37 @@
   const heart = () => drawn(HEART, 'pixels-heart');
   const sword = () => drawn(SWORD, 'pixels-tool-art');
   const shield = () => drawn(SHIELD, 'pixels-tool-art');
+
+  /* THE CHARACTER, fifteen squares a side, facing the enemy on its right,
+     in seven layers drawn one over another: skin, eyes, head, body, hands
+     and feet, shield and sword. Each layer is a picture of its own, so the
+     sword and the shield move by themselves. They are placeholders until
+     the base character is drawn. `worn` is the armour a player has for the
+     sprites they have found, the helmet at five, and `hero` draws the
+     character wearing it: its head is the helmet, or without one its hair.
+     SHADE is the enemy, a shadow, since its own picture is the puzzle's
+     answer, and `shade` draws it. */
+  const HERO = {
+    skin: ['...............', '...............', '...............', '......BBBB.....', '.....BBBBB.....', '.....BBBBB.....', '...............', '...B......B....', '...............', '...............', '...............', '...............', '...............', '...............', '...............'].join(''),
+    eyes: ['...............', '...............', '...............', '...............', '.......0.0.....', '...............', '...............', '...............', '...............', '...............', '...............', '...............', '...............', '...............', '...............'].join(''),
+    hair: ['...............', '.....77777.....', '....777777.....', '....77.........', '....7..........', '...............', '...............', '...............', '...............', '...............', '...............', '...............', '...............', '...............', '...............'].join(''),
+    helmet: ['......2........', '.....yyyyy.....', '....yyyyyyy....', '....yywwwww....', '....yy.........', '....y..........', '...............', '...............', '...............', '...............', '...............', '...............', '...............', '...............', '...............'].join(''),
+    body: ['...............', '...............', '...............', '...............', '...............', '...............', '....555555.....', '....555555.....', '....555555.....', '....555555.....', '....NNNNNN.....', '....55..55.....', '....55..55.....', '....55..55.....', '...............'].join(''),
+    ends: ['...............', '...............', '...............', '...............', '...............', '...............', '...............', '...............', '...R......R....', '...............', '...............', '...............', '...............', '...............', '....RRR.RRR....'].join(''),
+    shield: ['...............', '...............', '...............', '...............', '...............', '...............', 'OOOO...........', 'OggO...........', 'OggO...........', 'OggO...........', '.OO............', '...............', '...............', '...............', '...............'].join(''),
+    sword: ['...............', '...........y...', '...........y...', '...........y...', '...........y...', '...........y...', '...........y...', '..........444..', '...........7...', '...........4...', '...............', '...............', '...............', '...............', '...............'].join(''),
+  };
+  const SHADE = ['...............', '...y.......y...', '...yy.....yy...', '...yyyyyyyyy...', '..yyyyyyyyyyy..', '..yy22yyy22yy..', '..yyyyyyyyyyy..', '..yyyyyyyyyyy..', '..yy.y.y.y.yy..', '..yyyyyyyyyyy..', '...yyyyyyyyy...', '...yyyyyyyyy...', '...yy.yyy.yy...', '...yy.yyy.yy...', '..yyy.yyy.yyy..'].join('');
+  const worn = found => (found >= 5 ? ['helmet'] : []);
+  const hero = (wear = []) => {
+    const el = document.createElement('span');
+    el.className = 'pixels-hero';
+    el.setAttribute('aria-hidden', 'true');
+    el.append(...['skin', 'eyes', wear.includes('helmet') ? 'helmet' : 'hair', 'body', 'ends', 'shield', 'sword']
+      .map(name => drawn(HERO[name], `pixels-hero-layer pixels-hero-${name}`)));
+    return el;
+  };
+  const shade = () => drawn(SHADE, 'pixels-shade');
   const side = ({ sizes, width }) => (sizes || [width]).map(n => `${n}×${n}`).join(', ');
   const sprites = (solved, all) => (solved === all ? 'Rift cleared' : `${solved} of ${all} sprites`);
   const where = ({ level, maker }) => `category.html?at=${level}${maker ? `&by=${encodeURIComponent(maker)}` : ''}`;
@@ -945,7 +976,7 @@
   };
 
   window.Pixels = Object.assign(window.Pixels || {}, {
-    iphone, installed, fresh, face, portrait, seen, see, stand, stood, side, sprites, portal, fairy, heart, sword, shield, locks, boss, holds, letter,
+    iphone, installed, fresh, face, portrait, seen, see, stand, stood, side, sprites, portal, fairy, heart, sword, shield, worn, hero, shade, locks, boss, holds, letter,
     SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, sounds, listen, time, title,
     words, art, tile, bar, riftTile, how, switcher, chosen, shell,

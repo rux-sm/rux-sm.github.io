@@ -15,6 +15,13 @@
    asks which: a fairy, where the player has one and the database takes it,
    brings every heart back, or the puzzle starts again as Restart starts it.
 
+   THE CHARACTER stands at the strip's start and the enemy's shadow at its
+   end, for the owner while both are placeholders. It wears the armour the
+   owner has, app.js's `worn`, and each piece is one more heart. It moves by
+   its one drawing: the sword jabs for one fill and swings for a drag of
+   them, the shield lifts for an X, a mistake shakes it as the shadow
+   lunges, and at no hearts it lies down until it is brought back.
+
    THE SWITCH. The owner's two tool keys are one switch while its pictures
    are placeholders: the sword, which fills, on its left and the shield,
    which crosses out, on its right, with no mark beside either. A tap on a
@@ -78,7 +85,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, enter, boss, holds, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, sounds, listen, time, title, riftTile, locks, fairy, heart, sword, shield, how } = window.Pixels;
+  const { data, owner, enter, boss, holds, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, sounds, listen, time, title, riftTile, locks, fairy, heart, sword, shield, worn, hero, shade, how } = window.Pixels;
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock');
 
@@ -168,15 +175,19 @@
     let seconds = fresh ? kept.seconds : 0;
     let mistakes = fresh ? kept.mistakes : 0;
     let hints = fresh ? kept.hints || 0 : 0;
-    // The hearts left, all of them for a kept game that says none, and
-    // whether the character is down, at no hearts, with the cover up.
-    let hearts = fresh ? kept.hearts ?? HEARTS : HEARTS, down = false;
+    // The hearts a puzzle is begun with: HEARTS, and one more for each piece
+    // of armour the owner's character wears. Then the hearts left, all of
+    // them for a kept game that says none, and whether the character is
+    // down, at no hearts, with the cover up.
+    const wear = owner ? worn(me.found || 0) : [], most = HEARTS + wear.length;
+    let hearts = fresh ? Math.min(kept.hearts ?? most, most) : most, down = false;
     // The fairies this game has spent, how many the player has left, and
     // whether the database is being asked for one.
     let spent = fresh ? kept.fairies || 0 : 0, fairies = me.fairies || 0, asking = false;
     // No square is marked until a finger, the mouse or an arrow key picks one.
     // `climb` counts the fills of one drag, so each sounds a step higher.
-    let tool = 'fill', action = null, cursor = [], solved = false, climb = 0;
+    // `strokes` counts them too, so the character knows a drag from a tap.
+    let tool = 'fill', action = null, cursor = [], solved = false, climb = 0, strokes = 0;
     // Nothing moves, and the clock stands, until the cover is tapped; and
     // the board takes no touch for a moment after, so a second tap meant for
     // the cover cannot land on the square that was under it.
@@ -220,13 +231,36 @@
     // The hearts, a lost one dim; `hit` shakes the one just lost.
     const life = $('pixels-hearts');
     const showHearts = hit => {
-      life.replaceChildren(...Array.from({ length: HEARTS }, (_, n) => {
+      life.replaceChildren(...Array.from({ length: most }, (_, n) => {
         const one = heart();
         one.toggleAttribute('data-lost', n >= hearts);
         one.toggleAttribute('data-hit', !!hit && n === hearts);
         return one;
       }));
-      life.setAttribute('aria-label', `${hearts} of ${HEARTS} hearts`);
+      life.setAttribute('aria-label', `${hearts} of ${most} hearts`);
+    };
+
+    // The character and the enemy's shadow, at the two ends of the strip.
+    // `move` is one of the character's moves, each a layer or the whole of
+    // it leaving its place and coming back; one already moving is left to
+    // finish, and nothing moves for a player who has asked for less of it.
+    const champion = owner ? hero(wear) : null, shadow = owner ? shade() : null;
+    if (champion) {
+      life.before(champion);
+      foe.after(shadow);
+    }
+    const sway = (part, frames, ms) => { if (!still && !part.getAnimations().length) part.animate(frames, { duration: ms, easing: 'ease-out' }); };
+    const move = kind => {
+      if (!champion) return;
+      const of = name => champion.querySelector(`.pixels-hero-${name}`), rest = { transform: 'none' };
+      if (kind === 'stab') sway(of('sword'), [rest, { transform: 'translate(20%, 7%) rotate(70deg)' }, rest], 180);
+      if (kind === 'slash') sway(of('sword'), [rest, { transform: 'rotate(120deg)' }, rest], 240);
+      if (kind === 'block') sway(of('shield'), [rest, { transform: 'translate(60%, -7%)' }, rest], 260);
+      if (kind === 'stab' || kind === 'slash') sway(shadow, [rest, { transform: 'translateX(13%)' }, rest], 180);
+      if (kind === 'hurt') {
+        sway(shadow, [rest, { transform: 'translateX(-40%)' }, rest], 240);
+        sway(champion, [rest, { transform: 'translateX(-13%)' }, { transform: 'translateX(7%)' }, rest], 300);
+      }
     };
 
     // A hint puts `cost` seconds on the clock and turns it red.
@@ -276,6 +310,8 @@
         const row = streak(new Set([...results.keys(), key]));
         parts.push(`${row} day${row === 1 ? '' : 's'} in a row`);
       }
+      // The sprite that earns the owner's character its helmet says so.
+      if (owner && home && !lost && !results.has(key) && worn((me.found || 0) + 1).length > wear.length) parts.push('Helmet unlocked');
       $('pixels-solved-time').textContent = parts.join(' · ');
       document.title = `${puzzle.name} — Pixels`;
       // The next puzzle not yet solved: the rest of this category, after
@@ -374,6 +410,7 @@
             buzz(closed ? 30 : 10);
             sound(closed ? 'line' : 'fill', closed ? 0 : climb++);
           }
+          move(++strokes > 1 ? 'slash' : 'stab');
           tell('');
         } else {
           state[y][x] = 3;
@@ -382,10 +419,11 @@
           showHearts(true);
           buzz([40, 60, 40]);
           sound(hearts ? 'miss' : 'fall');
+          move('hurt');
           tell('Not in the picture', true);
           missed = true;
         }
-      } else if (action === 'x' && v === 0) { state[y][x] = 2; sound('x'); }
+      } else if (action === 'x' && v === 0) { state[y][x] = 2; sound('x'); move('block'); }
       else if (action === 'unx' && v === 2) { state[y][x] = 0; sound('pop'); }
       else return;
       // A mistake is not a move: Undo has nothing of it to take back.
@@ -400,7 +438,7 @@
     // takes them off along the drag.
     const begin = (y, x, which = tool) => {
       action = which === 'fill' ? 'fill' : state[y][x] === 2 ? 'unx' : 'x';
-      climb = 0;
+      climb = strokes = 0;
       held = state.map(r => r.slice());
       act(y, x);
     };
@@ -615,7 +653,7 @@
       mistakes = 0;
       hints = 0;
       spent = 0;
-      hearts = HEARTS;
+      hearts = most;
       rise();
       tell('');
       saveProgress(puzzle.id, null);
@@ -630,6 +668,7 @@
     const fallen = $('pixels-fallen'), revive = $('pixels-revive'), again = $('pixels-again');
     function fall() {
       down = true;
+      champion?.classList.add('is-down');
       revive.hidden = !(fairies > 0 && data.useFairy);
       $('pixels-fallen-words').textContent = 'No hearts left';
       fallen.hidden = false;
@@ -637,6 +676,7 @@
     }
     function rise() {
       down = false;
+      champion?.classList.remove('is-down');
       fallen.hidden = true;
     }
     revive.addEventListener('click', async () => {
@@ -657,7 +697,7 @@
         return;
       }
       spent++;
-      hearts = HEARTS;
+      hearts = most;
       rise();
       showHearts();
       tell('A fairy brought you back');

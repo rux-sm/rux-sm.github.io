@@ -1,0 +1,20 @@
+/* overrides.css -- this project's own, linked after /design/css/rux-overrides.css.
+   Only component rules at Carbon's own specificity with no !important go
+   here. Design AGENTS.md, "Where a change goes". Empty is the normal state. */
+
+/* A phone's reader gets the width: Carbon insets `.rux--content` 2rem on
+   every side, and the grid column adds its own 1rem, which on a 375px screen
+   leaves the words 279px. Below Carbon's md breakpoint the inline inset is
+   1rem, so the column's own gutter is the margin. */
+@media (max-width: 41.98rem) {
+  .rux--content {
+    padding-inline: var(--rux-spacing-05);
+  }
+}
+
+/* `.rux--text-area` sets no width, so inside its flex wrapper it sits at the
+   browser's 20 columns; on the quote form it takes the field's width, as
+   every other field there does. */
+.website-form .rux--text-area {
+  flex: 1 1 auto;
+}

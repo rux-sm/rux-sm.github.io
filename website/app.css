@@ -1,0 +1,197 @@
+/* app.css -- the website's own parts, the pieces of a public company site
+   Carbon has no component for, under the `website-` prefix. Every colour is a
+   --rux-* token, so the parts follow the theme the zone around them sets.
+   Carbon's own components are used as Design compiles them and are never
+   restyled here. */
+
+/* The company logo in the header, at the height the Scheduler shows it. It
+   sits in Carbon's `header__name`, which lays it out. */
+.website-logo {
+  block-size: 1.25rem;
+  inline-size: auto;
+  flex: none;
+}
+
+/* A PHOTO keeps its own shape, from the width and height its <img> carries,
+   so the page keeps its place while it loads. In a gallery every photo is
+   cropped to one shape instead, so a row of them lines up. */
+.website-photo {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  background-color: var(--rux-layer-01);
+}
+.website-photo--crop {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+/* THE HERO: the words beside a photo on a wide screen, and the photo above
+   them on a phone, where the first thing seen is the bus. */
+.website-hero {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+}
+.website-hero__photo {
+  order: -1;
+}
+@media (min-width: 66rem) {
+  .website-hero {
+    grid-template-columns: 5fr 6fr;
+    gap: 3rem;
+  }
+  .website-hero__photo {
+    order: 0;
+  }
+}
+
+/* A ROW OF EQUAL PARTS: one column on a phone, two on a tablet, three or four
+   on a wide screen. A list carries it, so its items are counted aloud. */
+.website-cards {
+  display: grid;
+  gap: 1rem;
+  padding: 0;
+  margin: 0;
+  grid-template-columns: minmax(0, 1fr);
+  list-style: none;
+}
+@media (min-width: 42rem) {
+  .website-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 66rem) {
+  .website-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .website-cards--four {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+/* A tile in the row is as tall as the tallest beside it, with its words at
+   the top: Carbon's vertical stack is a grid, which would otherwise share the
+   extra height out between its rows. */
+.website-cards > li > .rux--tile {
+  block-size: 100%;
+  align-content: start;
+}
+
+/* A FEATURE: its icon in the company's blue beside its words. */
+.website-feature {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.website-feature > svg {
+  flex: none;
+  fill: var(--rux-interactive);
+}
+
+/* A PHOTO WITH ITS CAPTION, in the gallery and beside a section. */
+.website-figure {
+  margin: 0;
+}
+.website-figure > figcaption {
+  padding-block-start: 0.5rem;
+  color: var(--rux-text-secondary);
+}
+
+/* TWO HALVES: words and a photo side by side on a wide screen, stacked on a
+   phone with the words first. */
+.website-split {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+}
+@media (min-width: 66rem) {
+  .website-split {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3rem;
+  }
+}
+
+/* A STEP's number, large, in the company's blue. */
+.website-step-number {
+  color: var(--rux-interactive);
+}
+
+/* THE PAGE'S CALLS TO ACTION, which wrap onto a second line where the two
+   do not fit beside each other. Carbon's `btn-set` holds its buttons on one
+   line at 12.25rem each, which cuts "Call (956) 994-1169" in two, and its
+   expressive buttons at 20rem, which overrun a half-width column. */
+.website-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* THE FOOTER is a dark zone of its own: `data-theme="g100"` on it gives
+   every token inside Carbon's dark values, so its links and text need no
+   colour of their own. Its inline padding is `.rux--content`'s, so its
+   columns line up with the page above. */
+.website-footer {
+  padding: 3rem 2rem 2rem;
+  background-color: var(--rux-background);
+  color: var(--rux-text-primary);
+}
+@media (max-width: 41.98rem) {
+  .website-footer {
+    padding-inline: var(--rux-spacing-05);
+  }
+}
+.website-footer ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.website-footer__columns {
+  display: grid;
+  gap: 2rem;
+  align-items: start;
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 42rem) {
+  .website-footer__columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 66rem) {
+  .website-footer__columns {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.website-footer__fine {
+  padding-block-start: 2rem;
+  border-block-start: 1px solid var(--rux-border-subtle);
+  margin-block-start: 2rem;
+  color: var(--rux-text-secondary);
+}
+
+/* TWO FIELDS SIDE BY SIDE, a date beside its time, which stay a pair at
+   every width because each is short. */
+.website-pair {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* A paragraph of words keeps a line a reader can follow, about 75
+   characters, however wide the screen. */
+.website-measure {
+  max-inline-size: 45rem;
+}
+
+/* A FIELDSET'S NAME stands as the heading of its part of the form. A legend
+   is no item of the fieldset's stack, so the stack's gap does not reach it,
+   and it carries the same gap itself. */
+.website-legend {
+  padding: 0;
+  margin-block-end: 1.5rem;
+}
+
+/* A field the form sends a reader to, its first error, stops clear of the
+   fixed 3rem header with its label in view. */
+.website-form :is(input, textarea) {
+  scroll-margin-block-start: 6rem;
+}

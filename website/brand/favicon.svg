@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" role="img" aria-label="Escamilla Tour Buses">
+<title>Escamilla Tour Buses</title>
+<!-- The company's mark in a customer's browser tab: the bus rux drew for the
+     Scheduler, the same twelve rectangles, because the tab belongs to the
+     company and not to this app. brand/icon.svg is the app's own tile.
+     Self themed because a favicon gets no CSS from the page: gray-100 on a
+     light tab strip, gray-10 on a dark one. -->
+<style>
+svg{fill:#161616}
+@media (prefers-color-scheme:dark){svg{fill:#f4f4f4}}
+</style>
+<path d="M3 2L4 2L4 13L3 13ZM6 9L10 9L10 13L6 13ZM3 2L13 2L13 3L3 3ZM1 5L2 5L2 8L1 8ZM1 7L4 7L4 8L1 8ZM12 7L15 7L15 8L12 8ZM3 11L13 11L13 13L3 13ZM3 8L13 8L13 10L3 10ZM14 5L15 5L15 8L14 8ZM4 12L6 12L6 14L4 14ZM10 12L12 12L12 14L10 14ZM12 2L13 2L13 13L12 13Z"/>
+</svg>

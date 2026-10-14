@@ -1,0 +1,19 @@
+/* theme.css -- this project's own, linked after /design/css/rux-theme.css.
+   Only token values inside a [data-theme] block go here. Design AGENTS.md,
+   "Where a change goes".
+
+   THE COMPANY'S BLUE IN PLACE OF CARBON'S. The site is the company's, so its
+   one action colour is the deep end of the logo's own gradient, which carries
+   white type at 6 to 1 and reads as a link on white at the same ratio.
+   Hover and active step darker as Carbon's own blue does. Focus keeps
+   Carbon's blue, so a focused button still shows a ring of another colour. */
+[data-theme="white"] {
+  --rux-background-brand: #2f6293;
+  --rux-interactive: #2f6293;
+  --rux-border-interactive: #2f6293;
+  --rux-button-primary: #2f6293;
+  --rux-button-primary-hover: #29567f;
+  --rux-button-primary-active: #1f4263;
+  --rux-link-primary: #2f6293;
+  --rux-link-primary-hover: #1f4263;
+}

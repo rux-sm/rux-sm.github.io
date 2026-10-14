@@ -19,6 +19,12 @@
       "icon": "/scheduler/brand/icon.svg"
     },
     {
+      "name": "Website",
+      "path": "/website/",
+      "description": "The company's public site, in preview",
+      "icon": "/website/brand/icon.svg"
+    },
+    {
       "name": "Pixels",
       "path": "/pixels/",
       "description": "Nonogram puzzles",

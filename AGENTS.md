@@ -13,8 +13,9 @@ unfinished, and `docs/plans/` holds the plans.
 **Public, and the whole website.** GitHub Pages serves this tree as-is at
 rux-sm.github.io: `/` is `index.html` here, and every folder named like a
 URL path is that app — `design/` at `/design/`, `scheduler/` at
-`/scheduler/`, `ln/` at `/ln/`, `pixels/` at `/pixels/`, `sevens/`
-at `/sevens/`, `coins/` at `/coins/`. **A push to `main` publishes**, after CI runs the check.
+`/scheduler/`, `website/` at `/website/`, `ln/` at `/ln/`, `pixels/` at
+`/pixels/`, `sevens/` at `/sevens/`, `coins/` at `/coins/`. **A push to
+`main` publishes**, after CI runs the check.
 There is no release, no tag and no separate publish step.
 
 One thing stays outside it, for privacy, cloned beside it: `atlas`,
@@ -153,6 +154,7 @@ Every app has one word, and its names derive from it.
 | Design | `design/` | Rux Design | `rux--` | `design` |
 | LN Guide | `ln/` | Rux LN Guide | `ln-` | `ln` |
 | Scheduler | `scheduler/` | the company logo, alone | `scheduler-` | `scheduler` |
+| Website | `website/` | the company logo, with its page links | `website-` | `website` |
 | Pixels | `pixels/` | Rux Pixels on a wide screen, a bar of places below it | `pixels-` | `pixels` |
 | Sevens | `sevens/` | Rux Sevens | `sevens-` | `sevens` |
 | Coins | `coins/` | Rux Coins | `coins-` | `coins` |
@@ -160,7 +162,8 @@ Every app has one word, and its names derive from it.
 - **`game-` is no app's prefix.** It is the games' shared sheet in Design,
   which Pixels links beside its own `pixels-` classes.
 - **Names people read are sentence case.** A page title is `Page — App`, and
-  an app's front page is titled with the app name alone.
+  an app's front page is titled with the app name alone. The website's pages
+  are the company's, so the company's name stands where the app's would.
 - **Names the computer reads are lowercase.** Hyphens join words, and an
   underscore separates the parts of a name, such as a topic and a date:
   `order-planning-training_2026-08-20`.

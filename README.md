@@ -8,6 +8,7 @@ https://rux-sm.github.io/. The folders are the site:
 | `index.html`, `account/`, `login/`, `switcher.json`, `switcher.js`, `account.js`, `funnel.js`, `robots.txt` | `/` | the hub: the front door, the account panel, the log-in page and the page lock |
 | `design/` | `/design/` | the design system: Carbon v11 compiled under the `rux` prefix, its kitchen sink, templates, page builder and theme creator |
 | `scheduler/` | `/scheduler/` | fleet scheduling and dispatch |
+| `website/` | `/website/` | the company's public website, in English and Spanish, in preview beside its current site |
 | `ln/` | `/ln/` | LN Guide: Infor LN tasks to follow step by step, generated from the private `atlas` |
 | `pixels/` | `/pixels/` | picture logic puzzles and a maker to draw them |
 | `sevens/` | `/sevens/` | an online card game by the rules of Flip 7 |

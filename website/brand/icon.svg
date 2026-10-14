@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+<!-- The app tile icon: a browser window, the website. Its frame is x=1..15
+     and y=2..14, with three dots cut into the title bar and the page cut out
+     below it, 105 squares in all. It is a CSS mask over the tile's text
+     colour, so it carries no fill and no title. -->
+<path d="M1 2L15 2L15 3L1 3ZM1 3L3 3L3 4L1 4ZM4 3L5 3L5 4L4 4ZM6 3L7 3L7 4L6 4ZM8 3L15 3L15 4L8 4ZM1 4L15 4L15 6L1 6ZM1 6L3 6L3 12L1 12ZM13 6L15 6L15 12L13 12ZM1 12L15 12L15 14L1 14Z"/>
+</svg>

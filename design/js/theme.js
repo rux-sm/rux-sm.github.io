@@ -174,12 +174,12 @@
     dressMark(el);
   };
 
-  // GEIST'S OWN FACES, FOR THE TWO THEMES THAT WEAR THEM. geist-dark and
-  // rux-dark set their words in Geist Sans (css/rux-overrides.css names the
-  // family), and no page links a stylesheet for it: this file already runs in
-  // the head of every page before the first paint and already knows the
-  // theme, so it writes the two faces and preloads the one every page uses.
-  // Another theme asks for nothing. The face is `swap`, where Plex's is `optional`: someone who
+  // GEIST'S OWN FACES, FOR THE THEME THAT WEARS THEM. geist-dark sets its
+  // words in Geist Sans (css/rux-overrides.css names the family), and no page
+  // links a stylesheet for it: this file already runs in the head of every
+  // page before the first paint and already knows the theme, so it writes the
+  // two faces and preloads the one every page uses. Another theme asks for
+  // nothing; rux-dark wears Plex, as Carbon's own themes do. The face is `swap`, where Plex's is `optional`: someone who
   // picks this theme in the account panel sees it arrive on that page, and
   // the preload keeps every later page from painting in Plex first. Geist
   // Sans is one variable file covering the 400, 500 and 600 the theme uses.
@@ -200,7 +200,7 @@
     ['Geist', '100 900', 'Geist-Variable-Latin1.woff2'],
     ['Geist Mono', '400', 'GeistMono-Regular-Latin1.woff2'],
   ];
-  const GEIST_FACED = new Set(['geist-dark', 'rux-dark']);
+  const GEIST_FACED = new Set(['geist-dark']);
   const dressFaces = () => {
     if (!HERE || !GEIST_FACED.has(document.documentElement.dataset.theme)) return;
     if (document.getElementById('rux-geist-faces')) return;

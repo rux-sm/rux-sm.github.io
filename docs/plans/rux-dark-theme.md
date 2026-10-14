@@ -15,14 +15,38 @@ text in it under 4.5 to 1 and no control's resting shape under 3 to 1.
 
 ## Decisions
 
-- **Geist and Primer are where it started, not where its values come from.**
-  The block holds geist-dark's values where it has none of its own, with its
-  raised greys one step up Geist's ladder and its borders at Primer's strength;
-  each is kept only until a Rux value replaces it, and nothing new is taken from
-  either system.
-- **The page stays black, and the raised greys keep their order,** with
-  `#111111` as the first surface, because the rings and spacing already built
-  are measured against that ladder.
+- **Its colours, corners, face and field ring are its own; its other shapes
+  are geist-dark's.** The 64px header, the ringed buttons, the menus held off
+  their edge and the segmented control stay shared until a Rux shape replaces
+  one, and nothing new is taken from Geist or Primer.
+- **The ink is the mark's `#f4f4f4`.** The words, the icons, the main button,
+  the brand fill and the mark are one colour, so the logo and the page agree.
+- **The main button stays that one ink on black,** because the mark is one
+  colour; the accent is spent on links, selection and state, never on the
+  primary action.
+- **The accent is slate,** Carbon blue's hue, 262, at about half its chroma,
+  and it carries every accent token: the links, info, the on toggle, the
+  inverse focus, the highlight, the blue tag, the notification actions, the
+  chat's button and the `ai-*` tokens.
+- **The greys are half-cool.** Each keeps the OKLCH lightness of the neutral
+  ladder whose first raised surface is `#111111` and takes Carbon cool gray's
+  hue, 248, at half its chroma. The page stays `#000000`.
+- **Every hue sits on slate's steps.** A tag of any hue takes slate's lightness
+  and chroma, and what must be seen -- the support colours, the status dots,
+  the error text and the danger button -- takes the same lightness with more
+  chroma, so success is one green on a screen.
+- **Corners follow the mark's squares, in two steps.** 2px on a control: a
+  button, a field, a dropdown, a search, a date field and a checkbox. 4px on a
+  surface: a tile, a menu, a popover, a tooltip, a notification, a toast, a
+  calendar, a modal, a side panel's free corners, and a tag. 0 where a box
+  meets the window's edge or another box it is joined to. Round only where the
+  roundness is the meaning: the account picture, a radio, a toggle and a
+  status dot. Nothing is rounder than 4px.
+- **The face is IBM Plex Sans,** with Plex Mono for code, as Carbon's own
+  themes wear it, because Carbon's type scale is drawn for it.
+- **A field rings in `border-strong-01`, at 3 to 1 on the field,** and a box
+  keeps the quieter `border-subtle` line, because a field's edge is a
+  control's and a box's is not.
 - **A button is ringed where it stands clear.** The header's buttons, the
   buttons in a scheduler panel's head and every close button Design has take
   the button's border; each X stands clear of its corner to take it, and on a
@@ -30,69 +54,32 @@ text in it under 4.5 to 1 and no control's resting shape under 3 to 1.
   the scheduler's panel heads keep Carbon's bare squares.
 - **The account button is the face.** The picture is 32px in every theme, so it
   fills this theme's 32px header button and takes no ring.
-- **A colour is changed in its own block; a shape is split off when it
-  changes.** A rule rux-dark stops sharing loses its name from the shared
-  selector and is written for rux-dark alone, so geist-dark never moves. Once
-  the corners and the face are chosen, the shared selectors split in one pass
-  rather than rule by rule.
+- **A colour is changed in its own block; a shape is written for rux-dark
+  alone.** A rule left with nothing rux-dark shares loses its name, and a
+  corner it changes in a rule it still shares otherwise is written for it
+  right after that rule, so geist-dark never moves and the cascade keeps its
+  order.
 - **It is named `rux-dark`, and it is in the account panel** as "Rux dark"
   while it is built, so rux picks it on any page to see where it stands.
+- **There is no light companion in this plan.** `rux-light` would be its own.
 - **Every number is measured, none remembered.** A Carbon colour is read from
   `@carbon/colors` in `design/node_modules`, and a value chosen for Rux is
-  measured on every layer it sits on before it is written.
+  measured on every layer it sits on before it is written;
+  `design/docs/rux-dark-token-map.md` lists each one and its source.
 
 ## Questions
 
-- **Which accent hue?** Rux has none: every blue in the theme is Geist's
-  (`#52a8ff`, `#0070f3`, `#47a8ff`) or Carbon's (`#4589ff`, `#0f62fe`). One hue
-  would carry the links, info, the on toggle, the inverse focus, the highlight,
-  the blue and cyan tags, the blue status, the notification actions and the AI
-  tokens. The retired purple is out. Recommended: rux names a hue, and a session
-  measures its steps on every layer before one is written.
-- **Does the primary stay one colour, and in which ink?** The main button and
-  the brand surface are light ink on black, which matches the mark. The words
-  are Geist's `#ededed` and the mark is Carbon's `#f4f4f4`. Recommended: keep it
-  one colour, in the mark's `#f4f4f4`, so the logo and the words are one ink.
-- **Which greys?** Geist's neutral ladder, as now, or Carbon's cool gray or
-  warm gray family, which keeps the theme on Carbon and sets it apart from both
-  g100 and geist-dark at a glance. Recommended: a tinted Carbon family, written
-  once as a named ramp that every layer, field, border and button state steps
-  along.
-- **Which corners?** Geist's 6, 8 and 12px with round tags, as now; Carbon's
-  square; or a step of the mark's squares, 2px for a control and 4px for a
-  surface and a tag. Recommended: the 2px and 4px step.
-- **Which face?** Geist Sans, as now; IBM Plex Sans, which Design already
-  serves and Carbon is drawn for; or the device's own face, which downloads
-  nothing. Recommended: Plex Sans.
-- **Which colours mean error, warning and success?** The `support-*` colours
-  are Geist's and the `status-*` colours and tag borders are Carbon's, so
-  success is three greens on one screen. Recommended: one palette for support,
-  status, tags and avatars, drawn from the same family as the accent.
-- **Does a field's outline reach 3 to 1?** Its `#434343` ring is 1.9 to 1 on
-  the field and 2.1 against the page, as Primer draws it, where Carbon's
-  underline meets the 3 to 1 a control's edge needs. Recommended: a field rings
-  in `border-strong-01`, and a box keeps the quieter line.
-- **Is there a light companion?** `rux-light`, read from the other end of the
-  same ramp, would be its own plan.
+None open.
 
 ## Tasks
 
-- [ ] Write `design/docs/rux-dark-token-map.md`: the ramp, the accent's steps
-  and the meaning palette, each token beside the value it holds now and the
-  source of the one it takes.
-- [ ] Write the chosen colours into the `rux-dark` block, and replace the
-  block's opening comment with what each group is taken from.
-- [ ] Route every accent token through the one hue, the `ai-*` tokens with
-  them, so none falls through to white's values.
-- [ ] Split rux-dark out of the selectors it shares with geist-dark in
-  `design/css/rux-overrides.css`, `scheduler/theme.css` and `scheduler/app.css`,
-  and out of `GEIST_FACED` and `FLAT` in `design/js/theme.js`, then write its
-  corners and its face.
-- [ ] Draw the words, the brand fill and the mark in the one chosen ink.
-- [ ] Give the scheduler's trip bars, marks and panels their own pass. The No
-  bus row is `#242424`, as light as a bar's fill, so only the bar's hue parts
-  them.
-- [ ] Set the grey tags against a selected table row, which is now lighter
-  than the tag on it.
-- [ ] Measure contrast on the kitchen sink and on each app's front page with
-  `design/tools/measure-contrast.js`.
+- [ ] Give the scheduler's trip bars, marks and panels their own pass. Its
+  bars, their marks, the roster's busy and day-off cells and an update's age
+  colours are still Geist's subtle badge, in the rules `scheduler/theme.css`
+  shares with geist-dark; dropping rux-dark from them hands the bars to the
+  tag tints, which are slate's steps, and the marks then need measuring on
+  those. The No bus row has to stand apart from a bar's fill by more than its
+  hue.
+- [ ] Measure contrast on each app's front page with
+  `design/tools/measure-contrast.js`, in rux's Chrome, where the log-in
+  passes.

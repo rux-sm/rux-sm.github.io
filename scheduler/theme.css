@@ -311,14 +311,23 @@
     padding-inline: var(--rux-spacing-03);
     border-radius: 6px;
   }
+  [data-theme="rux-dark"] .scheduler-viewer .scheduler-viewer__pick {
+    border-radius: 2px;
+  }
   :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) .scheduler-viewer .rux--side-panel .rux--btn.rux--side-panel__navigation-back-button {
     margin-inline-start: calc(var(--scheduler-head-inset) - var(--rux-spacing-05));
     block-size: var(--rux-layout-size-height-md);
     inline-size: var(--rux-layout-size-height-md);
     border-radius: 6px;
   }
-  :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) :is(.rux--btn, .scheduler-weekbtn) {
+  [data-theme="rux-dark"] .scheduler-viewer .rux--side-panel .rux--btn.rux--side-panel__navigation-back-button {
+    border-radius: 2px;
+  }
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) :is(.rux--btn, .scheduler-weekbtn) {
     border-radius: 6px;
+  }
+  [data-theme="rux-dark"] .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) :is(.rux--btn, .scheduler-weekbtn) {
+    border-radius: 2px;
   }
   /* Buttons that stand apart by a gap take no rule between them: on a 6px
      corner the toolbar's dividing rule bends into a bracket. The spacer's
@@ -375,6 +384,9 @@
     block-size: var(--rux-layout-size-height-md);
     inline-size: var(--rux-layout-size-height-md);
     border-radius: 6px;
+  }
+  [data-theme="rux-dark"] :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel .rux--btn--md.rux--side-panel__close-button {
+    border-radius: 2px;
   }
   /* apple-light's are capsules, as every button beside them in a head is:
      Design keeps a panel's close and back buttons out of its capsule rule
@@ -797,8 +809,10 @@
 /* The rounded themes round this app's own shapes to match Design's: 6px on a
    trip bar, like a button, 12px on the week, the largest box on the page, and 4px on a bar's
    marks, like a tag. Ant Design Pro and Geist were both measured at those
-   three, which is why one block serves both. Every other theme leaves them
-   square, as Carbon draws them. */
+   three, which is why one block serves both. rux-dark takes Design's two
+   steps instead: 2px on a bar and a mark, which are controls, and 4px on the
+   week, a surface. Every other theme leaves them square, as Carbon draws
+   them. */
 [data-theme="ant-dark"],
 [data-theme="geist-dark"],
 [data-theme="rux-dark"],
@@ -812,16 +826,25 @@
      keeps its rule, by `.scheduler-week--short` in app.css. */
   --scheduler-last-rule: 0;
 }
+[data-theme="rux-dark"] {
+  --scheduler-bar-radius: 2px;
+  --scheduler-surface-radius: 4px;
+  --scheduler-mark-radius: 2px;
+}
 
 /* THE TRIP'S SHORTCUTS HOLD THEIR SLOTS OFF THE EDGE in geist-dark, as
    Geist's own Menu does and Design's menus do in this theme: 6px inside the
    12px corner, each slot a 6px tile, so the corners nest and every slot's
    hover is the same shape. The card's slots take 12px, with the card's
-   rules above. */
+   rules above. rux-dark keeps the 6px of room and squares each slot to its
+   2px. */
 [data-theme="geist-dark"],
 [data-theme="rux-dark"] {
   --scheduler-shortcut-pad: 6px;
   --scheduler-shortcut-radius: 6px;
+}
+[data-theme="rux-dark"] {
+  --scheduler-shortcut-radius: 2px;
 }
 
 /* CALL, TEXT AND MAP WEAR THE SECONDARY BUTTON'S COLOURS (app.css), and three
@@ -836,7 +859,10 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-call-button:not(:focus-visible) {
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"]) .scheduler-call-button { border-radius: 6px; }
+:is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-call-button { border-radius: 6px; }
+[data-theme="rux-dark"] .scheduler-call-button {
+  border-radius: 2px;
+}
 [data-theme^="apple-"] .scheduler-call-button { border-radius: 10px; }
 
 /* THE CONTACT LIST'S MENU STANDS BESIDE THE CLOSE BUTTON AS ITS TWIN on the
@@ -884,7 +910,7 @@
 }
 [data-theme="rux-dark"] .scheduler-contacts__menu .rux--overflow-menu {
   border: 1px solid var(--rux-border-subtle-02);
-  border-radius: 6px;
+  border-radius: 2px;
   block-size: 2.25rem;
   inline-size: 2.25rem;
   min-block-size: 2.25rem;
@@ -903,7 +929,7 @@
   }
   [data-theme="rux-dark"] .scheduler-page .rux--side-panel .rux--btn.rux--side-panel__close-button {
     border-radius: 0;
-    border-start-end-radius: 12px;
+    border-start-end-radius: 4px;
     block-size: var(--rux-layout-size-height-lg);
     inline-size: var(--rux-layout-size-height-lg);
   }

@@ -1067,6 +1067,16 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--modal-content {
   padding: 20px;
 }
+/* Rux Dark holds a dialog's title and body 24px in, the inset its side
+   panels give what they hold, so a dialog and a panel share one margin; its
+   buttons and its close keep the 12px every bar's buttons keep. */
+[data-theme="rux-dark"] .rux--modal-header {
+  padding-block-start: 24px;
+  padding-inline-start: 24px;
+}
+[data-theme="rux-dark"] .rux--modal-content {
+  padding: 24px;
+}
 /* GEIST'S SELECTION BAR IS NOT A BRAND SLAB. Every other theme fills this bar
    with its brand colour and gets a blue, purple or green band; geist-dark's brand
    is near-white, so on a black page inside an outlined box it was the loudest

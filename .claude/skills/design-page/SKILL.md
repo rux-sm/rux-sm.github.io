@@ -55,6 +55,9 @@ entry there is attested: a template or a sink fragment renders it, diffed
 against a Carbon capture. So an answer that is not in the table below is not a
 harder version of this job; it is a request to `design/docs/choices.md` first.
 
+Buttons an app places itself, in its own bars and rows, take the sizes and
+gaps in `design/docs/button-spacing.md`: 36px, 8px apart, 12px from a bar's edge.
+
 Ask only what is still undecided. A brief that already names the shape and the
 theme has answered rows 1 and 2; do not re-ask them. When the answer is "your
 call", take the default and say which one you took.

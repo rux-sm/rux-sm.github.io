@@ -716,7 +716,7 @@
     let done = 0;
     try {
       for (const file of [...several]) {
-        result('info', `Uploading ${done + 1} of ${total}.`);
+        result('working', `Uploading ${done + 1} of ${total}.`);
         const id = crypto.randomUUID();
         const path = `${id}/${slug(file.name)}`;
         const ext = file.name.split('.').pop().toLowerCase();

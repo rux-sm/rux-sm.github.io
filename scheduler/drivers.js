@@ -801,7 +801,7 @@
     const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
     const path = `${loaded.id}/photo-${Date.now()}.${ext}`;
     const old = loaded.photo_path;
-    result('info', 'Uploading the photo…');
+    result('working', 'Uploading the photo…');
     const up = await client.storage.from(PHOTO_BUCKET).upload(path, file, { contentType: file.type || undefined, upsert: false });
     if (up.error) { result('error', "The photo wasn't uploaded. Try again."); return; }
     const { error } = await client.from('drivers').update({ photo_path: path }).eq('id', loaded.id);

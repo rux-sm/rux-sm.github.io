@@ -712,18 +712,8 @@
       return row;
     };
 
-    // Whole class names, so the check can find each one in this file.
-    const RESULT_CLASS = {
-      success: 'rux--inline-notification rux--inline-notification--success',
-      error: 'rux--inline-notification rux--inline-notification--error',
-    };
-    const showResult = (kind, text) => {
-      $('scheduler-quote-rates-result').hidden = !kind;
-      if (!kind) return;
-      $('scheduler-quote-rates-result-box').className = RESULT_CLASS[kind];
-      $('scheduler-quote-rates-result-icon').setAttribute('href', kind === 'success' ? '#m-check_circle-fill' : '#m-error-fill');
-      $('scheduler-quote-rates-result-text').textContent = text;
-    };
+    // What a save of the rates did is a toast, as every save says.
+    const showResult = (kind, text) => window.SchedulerToast.report(kind, text);
 
     const drawRates = () => {
       for (const group of ['trip', 'driver']) {

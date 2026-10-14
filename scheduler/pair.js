@@ -134,8 +134,9 @@
   function page({ list, one }) {
     const id = part => `scheduler-${part}`;
 
-    /* The notice over the list and the result under the form: Carbon's
-       inline notification, shown with a kind and hidden with none. */
+    /* The notice over the list, Carbon's inline notification shown with a
+       kind and hidden with none, says what the list is; the result of
+       something just done, a save, a photo or a copy, is a toast. */
     const say = (kind, title, text) => {
       $(id(`${list}-notice`)).hidden = !kind;
       if (!kind) return;
@@ -144,13 +145,7 @@
       $(id(`${list}-notice-title`)).textContent = title;
       $(id(`${list}-notice-text`)).textContent = text || '';
     };
-    const result = (kind, text) => {
-      $(id(`${one}-result`)).hidden = !kind;
-      if (!kind) return;
-      $(id(`${one}-result-box`)).className = NOTE[kind].cls;
-      $(id(`${one}-result-icon`)).setAttribute('href', NOTE[kind].icon);
-      $(id(`${one}-result-text`)).textContent = text;
-    };
+    const result = (kind, text) => window.SchedulerToast.report(kind, text);
 
     /* The record's History link, in its title row: the History page narrowed
        to this record. A record not saved yet has no history, so no link. */

@@ -3069,16 +3069,21 @@
     askToMark(all);
   });
 
-  /* A line in the toolbar. `say` replaces what the sheet is holding, which is
-     right for "this form cannot be drawn" and wrong for anything said while a
-     form is on it. */
+  /* What a press on the form did. On the office's pages it is a toast: the
+     board's, where the form is in the board's document panel, and the Forms
+     page's own. A shared link's page loads no toast, so there it is a line in
+     the toolbar, which `say` would not do: `say` replaces what the sheet is
+     holding, which is right for "this form cannot be drawn" and wrong for
+     anything said while a form is on it. */
   let noteTimer = null;
   function flash(text, bad) {
-    if (host) host.setFormNote(text, bad);
-    else {
-      note.textContent = text;
-      note.toggleAttribute('data-bad', Boolean(bad));
+    const report = host ? host.report : window.SchedulerToast?.report;
+    if (report) {
+      if (text) report(bad ? 'error' : 'success', text);
+      return;
     }
+    note.textContent = text;
+    note.toggleAttribute('data-bad', Boolean(bad));
     clearTimeout(noteTimer);
     if (text) noteTimer = setTimeout(() => flash(''), 6000);
   }

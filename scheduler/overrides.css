@@ -1074,11 +1074,79 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    column's width, and Carbon's tag is as wide as it is told to be. */
 .scheduler-pair-cell__lines > .rux--tag { align-self: flex-start; }
 
+/* ── Toast ──────────────────────────────────────────────────────────────────
+   A toast is Carbon's inline notification in one line, and where it goes is
+   the app's own. It is here, beside the rules that draw its line, because
+   every office page that shows one links this file, the Forms page among
+   them, which links print.css and not app.css. Where the header has no room, as on a phone, it is at the
+   bottom right, over empty track rather than the toolbar's controls at the
+   top right. z-index 9000 keeps it over the trip panel, so a save's toast is
+   never behind the button pressed. */
+.scheduler-toast {
+  position: fixed;
+  inset-block-end: calc(var(--rux-spacing-05) + var(--scheduler-safe-bottom));
+  inset-inline-end: calc(var(--rux-spacing-05) + var(--scheduler-safe-right));
+  z-index: 9000;
+  display: flex;
+  justify-content: flex-end;
+}
+/* At the bottom the toast has the screen less the gutter on both sides to
+   be as wide as its words, and below md it takes all of that. */
+.scheduler-toast[data-place="bottom"] {
+  inset-inline-start: calc(var(--rux-spacing-05) + var(--scheduler-safe-left));
+}
+
+/* While the trip panel is open the toast lifts clear of its action bar: 48px
+   of condensed actions, the 32px under the panel and the toast's own 16px
+   gutter. Carbon's `--rux--side-panel--actions-height` is scoped to the panel
+   and does not resolve here. `:has()` reads the panel's `[hidden]`, so no
+   class has to be kept in sync. */
+body:has(#scheduler-panel:not([hidden])) .scheduler-toast:not([data-place="header"]) {
+  /* Plus the home bar, which the toast keeps above whether the panel is beside
+     the week or in front of the board. */
+  inset-block-end: calc(var(--rux-spacing-09) + var(--rux-spacing-07) + var(--rux-spacing-05) + var(--scheduler-safe-bottom));
+}
+
+/* Where the header has room the toast stands in it instead, centred in the
+   gap between the company's name and the header's buttons, which toast.js
+   measures into these properties as it shows the toast. The row is the
+   header's middle. */
+.scheduler-toast[data-place="header"] {
+  inset-block: var(--scheduler-toast-top) auto;
+  inset-inline: var(--scheduler-toast-start) auto;
+  inline-size: var(--scheduler-toast-room);
+  justify-content: center;
+  align-items: flex-start;
+  pointer-events: none;
+}
+.scheduler-toast[data-place="header"] > * { pointer-events: auto; }
+
+/* A TOAST THAT ASKS FOR NOTHING LEAVES BY ITSELF. Its card waits out
+   `--scheduler-toast-wait`, which toast.js sets from how much there is to
+   read, then fades, and toast.js closes the toast when the fade ends -- so
+   the fade is the clock and there is no second one to agree with it. Nothing
+   counts the wait down on screen, as Carbon's toast draws nothing. */
+.scheduler-toast__timed { animation: scheduler-toast-leave 240ms ease-in var(--scheduler-toast-wait, 5s) forwards; }
+@keyframes scheduler-toast-leave {
+  to { opacity: 0; }
+}
+/* Reading winds the clock back: under the pointer, while the keyboard is
+   somewhere inside it, or opened to show all its words, the card has no
+   animation, so a message never goes
+   out from under the pointer and its whole wait starts again afterwards. */
+.scheduler-toast:hover .scheduler-toast__timed,
+.scheduler-toast:focus-within .scheduler-toast__timed,
+.scheduler-toast__timed[data-open] { animation: none; }
+/* With motion turned down the card goes at once when its wait is over. */
+@media (prefers-reduced-motion: reduce) {
+  .scheduler-toast__timed { animation-duration: 1ms; }
+}
+
 /* A toast is Carbon's inline notification in one line, the row the
-   header's height leaves, `--scheduler-toast-row`, which data.js sets, in
+   header's height leaves, `--scheduler-toast-row`, which toast.js sets, in
    the header or at the bottom: as wide as its words up to the room it has,
    the title and the words after it on that line, cut off with an ellipsis
-   where they run out of room. data.js gives the words the whole of them as
+   where they run out of room. toast.js gives the words the whole of them as
    their tooltip, and pressing them opens the toast, `[data-open]`, to wrap
    them onto as many lines as they take. The icon, the action and the close
    button are centred on the first line, and the close button is 32px, the

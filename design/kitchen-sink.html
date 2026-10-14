@@ -3165,10 +3165,11 @@
 </section>
 
 <section class="ks-sec" id="notification">
-  <h2>Notification</h2><p>inline · low contrast · toast · actionable · <a class="rux--link" href="https://carbondesignsystem.com/components/notification/usage/">IBM guidance</a></p>
+  <h2>Notification</h2><p>inline · low contrast · toast · actionable · actionable toast · <a class="rux--link" href="https://carbondesignsystem.com/components/notification/usage/">IBM guidance</a></p>
   <!-- PROVENANCE: rendered-dom · react.carbondesignsystem.com, 2026-08-27
-     components-notifications-inline--default, --toast--default and
-     --actionable--inline. All three variants diffed and matched.
+     components-notifications-inline--default, --toast--default,
+     --actionable--inline and --actionable--default, which is the toast. All
+     four variants diffed and matched.
 
      Three defects the diff found, none of which any name-based gate could see:
 
@@ -3346,7 +3347,7 @@
   </div>
 
   <div class="ks-label">actionable</div>
-  <div style="display:grid;gap:.5rem">
+  <div style="display:grid;gap:.5rem;margin-block-end:2rem">
     <div class="rux--actionable-notification rux--actionable-notification--info" role="alertdialog">
       <span class="rux--visually-hidden" role="link">Beginning of notification</span>
       <div class="rux--actionable-notification__focus-wrapper">
@@ -3425,6 +3426,98 @@
         <div class="rux--actionable-notification__button-wrapper">
           <button type="button" class="rux--actionable-notification__action-button rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm">View</button>
           <button type="button" class="rux--actionable-notification__close-button" aria-label="Close notification: Import finished">
+            <svg class="rux--actionable-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <span class="rux--visually-hidden" role="link">End of notification</span>
+    </div>
+  </div>
+
+  <!-- A toast with an action is Carbon's actionable notification with
+       --toast: its icon is the toast's, and its action is the tertiary button,
+       under the words and lined up with the title, where an inline one is the
+       ghost button beside them. -->
+  <div class="ks-label">actionable · toast</div>
+  <div style="display:grid;gap:.5rem;max-width:22rem">
+    <div class="rux--actionable-notification rux--actionable-notification--toast rux--actionable-notification--success" role="alertdialog">
+      <span class="rux--visually-hidden" role="link">Beginning of notification</span>
+      <div class="rux--actionable-notification__focus-wrapper">
+        <div class="rux--actionable-notification__details">
+          <svg class="rux--toast-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg>
+          <div class="rux--actionable-notification__text-wrapper">
+            <div class="rux--actionable-notification__content">
+              <div class="rux--actionable-notification__title">Message archived</div>
+              <div class="rux--actionable-notification__subtitle">It is in the Archive folder.</div>
+            </div>
+          </div>
+        </div>
+        <div class="rux--actionable-notification__button-wrapper">
+          <button type="button" class="rux--actionable-notification__action-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--tertiary">Undo</button>
+          <button type="button" class="rux--actionable-notification__close-button" aria-label="Close notification: Message archived">
+            <svg class="rux--actionable-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <span class="rux--visually-hidden" role="link">End of notification</span>
+    </div>
+    <div class="rux--actionable-notification rux--actionable-notification--toast rux--actionable-notification--info" role="alertdialog">
+      <span class="rux--visually-hidden" role="link">Beginning of notification</span>
+      <div class="rux--actionable-notification__focus-wrapper">
+        <div class="rux--actionable-notification__details">
+          <svg class="rux--toast-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
+          <div class="rux--actionable-notification__text-wrapper">
+            <div class="rux--actionable-notification__content">
+              <div class="rux--actionable-notification__title">New version ready</div>
+              <div class="rux--actionable-notification__subtitle">Reload to start using it.</div>
+            </div>
+          </div>
+        </div>
+        <div class="rux--actionable-notification__button-wrapper">
+          <button type="button" class="rux--actionable-notification__action-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--tertiary">Reload</button>
+          <button type="button" class="rux--actionable-notification__close-button" aria-label="Close notification: New version ready">
+            <svg class="rux--actionable-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <span class="rux--visually-hidden" role="link">End of notification</span>
+    </div>
+    <div class="rux--actionable-notification rux--actionable-notification--toast rux--actionable-notification--warning" role="alertdialog">
+      <span class="rux--visually-hidden" role="link">Beginning of notification</span>
+      <div class="rux--actionable-notification__focus-wrapper">
+        <div class="rux--actionable-notification__details">
+          <svg class="rux--toast-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+          <div class="rux--actionable-notification__text-wrapper">
+            <div class="rux--actionable-notification__content">
+              <div class="rux--actionable-notification__title">Draft not synced</div>
+              <div class="rux--actionable-notification__subtitle">The last edit is only on this device.</div>
+            </div>
+          </div>
+        </div>
+        <div class="rux--actionable-notification__button-wrapper">
+          <button type="button" class="rux--actionable-notification__action-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--tertiary">Try again</button>
+          <button type="button" class="rux--actionable-notification__close-button" aria-label="Close notification: Draft not synced">
+            <svg class="rux--actionable-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <span class="rux--visually-hidden" role="link">End of notification</span>
+    </div>
+    <div class="rux--actionable-notification rux--actionable-notification--toast rux--actionable-notification--error" role="alertdialog">
+      <span class="rux--visually-hidden" role="link">Beginning of notification</span>
+      <div class="rux--actionable-notification__focus-wrapper">
+        <div class="rux--actionable-notification__details">
+          <svg class="rux--toast-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-error--filled"/></svg>
+          <div class="rux--actionable-notification__text-wrapper">
+            <div class="rux--actionable-notification__content">
+              <div class="rux--actionable-notification__title">Payment declined</div>
+              <div class="rux--actionable-notification__subtitle">The card on file has expired.</div>
+            </div>
+          </div>
+        </div>
+        <div class="rux--actionable-notification__button-wrapper">
+          <button type="button" class="rux--actionable-notification__action-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--tertiary">Update card</button>
+          <button type="button" class="rux--actionable-notification__close-button" aria-label="Close notification: Payment declined">
             <svg class="rux--actionable-notification__close-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
           </button>
         </div>

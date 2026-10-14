@@ -3358,10 +3358,11 @@ body:has(.scheduler-page:not([data-room="tight"]):not([data-board="compact"])) .
 }
 
 /* ── Toast ──────────────────────────────────────────────────────────────────
-   Carbon's toast classes style the card but not where it goes, so the
-   placement is the app's own. Bottom right covers empty track rather than the
-   toolbar's controls at the top right. z-index 9000 keeps it over the trip
-   panel, so a save's toast is never behind the button pressed. */
+   A toast is Carbon's inline notification in one line, and where it goes is
+   the app's own. Where the header has no room, as on a phone, it is at the
+   bottom right, over empty track rather than the toolbar's controls at the
+   top right. z-index 9000 keeps it over the trip panel, so a save's toast is
+   never behind the button pressed. */
 .scheduler-toast {
   position: fixed;
   inset-block-end: calc(var(--rux-spacing-05) + var(--scheduler-safe-bottom));
@@ -3370,11 +3371,10 @@ body:has(.scheduler-page:not([data-room="tight"]):not([data-board="compact"])) .
   display: flex;
   justify-content: flex-end;
 }
-/* Below md the toast spans the screen less the gutter on both sides, rather
-   than Carbon's 18rem card hanging off one edge. */
-@media (max-width: 41.98rem) {
-  .scheduler-toast { inset-inline: var(--rux-spacing-05); }
-  .scheduler-toast > * { min-inline-size: 0; inline-size: 100%; max-inline-size: none; }
+/* At the bottom the toast has the screen less the gutter on both sides to
+   be as wide as its words, and below md it takes all of that. */
+.scheduler-toast[data-place="bottom"] {
+  inset-inline-start: calc(var(--rux-spacing-05) + var(--scheduler-safe-left));
 }
 
 /* While the trip panel is open the toast lifts clear of its action bar: 48px
@@ -3390,9 +3390,8 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast:not([data-place="heade
 
 /* Where the header has room the toast stands in it instead, centred in the
    gap between the company's name and the header's buttons, which data.js
-   measures into these four properties as it shows the toast. The row is the
-   header's middle, one line, and a notice too long for it is cut off there,
-   its whole text on hover. */
+   measures into these properties as it shows the toast. The row is the
+   header's middle. */
 .scheduler-toast[data-place="header"] {
   inset-block: var(--scheduler-toast-top) auto;
   inset-inline: var(--scheduler-toast-start) auto;
@@ -3412,11 +3411,13 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast:not([data-place="heade
 @keyframes scheduler-toast-leave {
   to { opacity: 0; }
 }
-/* Reading winds the clock back: under the pointer, or while the keyboard is
-   somewhere inside it, the card has no animation, so a message never goes
+/* Reading winds the clock back: under the pointer, while the keyboard is
+   somewhere inside it, or opened to show all its words, the card has no
+   animation, so a message never goes
    out from under the pointer and its whole wait starts again afterwards. */
 .scheduler-toast:hover .scheduler-toast__timed,
-.scheduler-toast:focus-within .scheduler-toast__timed { animation: none; }
+.scheduler-toast:focus-within .scheduler-toast__timed,
+.scheduler-toast__timed[data-open] { animation: none; }
 /* With motion turned down the card goes at once when its wait is over. */
 @media (prefers-reduced-motion: reduce) {
   .scheduler-toast__timed { animation-duration: 1ms; }

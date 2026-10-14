@@ -1074,48 +1074,69 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    column's width, and Carbon's tag is as wide as it is told to be. */
 .scheduler-pair-cell__lines > .rux--tag { align-self: flex-start; }
 
-/* A toast in the header is Carbon's inline notification in one line, the
-   row the header's height leaves, `--scheduler-toast-row`, which data.js
-   sets: as wide as its words up to the gap it stands in, the title and the
-   words after it on that line, cut off with an ellipsis where they run out
-   of room; data.js gives the text the whole of them as its tooltip. The
-   icon, the action and the close button are centred on the line, and the
-   close button is 32px, the size of the header's own buttons. */
-.scheduler-toast[data-place="header"] > :is(.rux--inline-notification, .rux--actionable-notification) {
+/* A toast is Carbon's inline notification in one line, the row the
+   header's height leaves, `--scheduler-toast-row`, which data.js sets, in
+   the header or at the bottom: as wide as its words up to the room it has,
+   the title and the words after it on that line, cut off with an ellipsis
+   where they run out of room. data.js gives the words the whole of them as
+   their tooltip, and pressing them opens the toast, `[data-open]`, to wrap
+   them onto as many lines as they take. The icon, the action and the close
+   button are centred on the first line, and the close button is 32px, the
+   size of the header's own buttons. */
+.scheduler-toast[data-place] > :is(.rux--inline-notification, .rux--actionable-notification) {
   min-block-size: var(--scheduler-toast-row);
   min-inline-size: 0;
   inline-size: auto;
   max-inline-size: 100%;
 }
-.scheduler-toast[data-place="header"] :is(.rux--inline-notification__details, .rux--actionable-notification__details, .rux--actionable-notification__text-wrapper) {
+/* Below md Carbon lets a notice wrap its action onto a line of its own and
+   pins its close button in the corner; a toast keeps both on its one line,
+   with the margins Carbon gives them from md up. */
+.scheduler-toast[data-place] > :is(.rux--inline-notification, .rux--actionable-notification) {
+  flex-wrap: nowrap;
+}
+.scheduler-toast[data-place] :is(.rux--inline-notification__details, .rux--actionable-notification__details) {
+  margin: 0 0.8125rem;
+}
+.scheduler-toast[data-place] :is(.rux--inline-notification__details, .rux--actionable-notification__details, .rux--actionable-notification__text-wrapper) {
   min-inline-size: 0;
 }
-.scheduler-toast[data-place="header"] :is(.rux--inline-notification__text-wrapper, .rux--actionable-notification__text-wrapper) {
+.scheduler-toast[data-place] :is(.rux--inline-notification__text-wrapper, .rux--actionable-notification__text-wrapper) {
   padding-block: calc((var(--scheduler-toast-row) - 1.125rem) / 2);
 }
-.scheduler-toast[data-place="header"] :is(.rux--inline-notification__text-wrapper, .rux--actionable-notification__content) {
+.scheduler-toast[data-place] :is(.rux--inline-notification__text-wrapper, .rux--actionable-notification__content) {
   display: block;
   overflow: hidden;
   min-inline-size: 0;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.scheduler-toast[data-place="header"] :is(.rux--inline-notification__title, .rux--inline-notification__subtitle, .rux--actionable-notification__title, .rux--actionable-notification__subtitle) {
+.scheduler-toast[data-place] :is(.rux--inline-notification__title, .rux--inline-notification__subtitle, .rux--actionable-notification__title, .rux--actionable-notification__subtitle) {
   display: inline;
 }
-.scheduler-toast[data-place="header"] .rux--inline-notification__icon {
+.scheduler-toast[data-place] .rux--inline-notification__icon {
   margin-block-start: calc((var(--scheduler-toast-row) - 1.25rem) / 2);
 }
-.scheduler-toast[data-place="header"] .rux--actionable-notification__action-button.rux--btn--ghost {
+.scheduler-toast[data-place] .rux--actionable-notification__action-button.rux--btn--ghost {
   margin-block: calc((var(--scheduler-toast-row) - 2rem) / 2);
+  margin-inline-start: 0;
 }
-.scheduler-toast[data-place="header"] :is(.rux--inline-notification__close-button, .rux--actionable-notification__close-button) {
+.scheduler-toast[data-place] :is(.rux--inline-notification__close-button, .rux--actionable-notification__close-button) {
+  position: static;
   margin: calc((var(--scheduler-toast-row) - 2rem) / 2);
   block-size: 2rem;
   min-block-size: 2rem;
   inline-size: 2rem;
   min-inline-size: 2rem;
   max-inline-size: 2rem;
+}
+.scheduler-toast[data-place] [data-open] :is(.rux--inline-notification__text-wrapper, .rux--actionable-notification__content) {
+  white-space: normal;
+}
+@media (max-width: 41.98rem) {
+  .scheduler-toast[data-place="bottom"] > :is(.rux--inline-notification, .rux--actionable-notification) {
+    inline-size: 100%;
+  }
 }
 
 /* A notice that offers a choice puts its actions under its words. Carbon

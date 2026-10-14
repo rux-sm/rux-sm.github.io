@@ -40,8 +40,10 @@ header's menu needs, and the FAQ loads Design's accordion.
 
 ## Its parts
 
-- `theme.css` sets the company's blue, the deep end of the logo, as the
-  action colour on the white theme and as the primary button's on the dark.
+- Every page is on Carbon's `g10` theme, a light grey page with its tiles
+  and fields white on it. `theme.css` sets the company's blue, the deep end
+  of the logo, as the action colour there and as the primary button's on the
+  dark bands.
 - `app.css` holds the parts Carbon has no component for, under `website-`:
   the bands, the hero, rows of tiles, features, photos, the calls to action,
   the form's pairs and headings, and the footer. Every page opens on a dark
@@ -54,8 +56,9 @@ header's menu needs, and the FAQ loads Design's accordion.
 - `app.js` is the quote form: its checks and their words in both languages,
   the return that a one-way trip hides, and the draft kept in the tab's
   session storage until a request lands.
-- `brand/` holds the logo, `icon.svg`, the app's tile, a browser window, and
-  `favicon.svg`, the company's bus, for a customer's tab.
+- `brand/` holds the logo, `icon.svg`, the app's tile, a browser window,
+  `favicon.svg`, the company's bus, for a customer's tab, and `share.jpg`,
+  the picture a shared link shows.
 - `photos/` holds each photo as WebP at two widths, the larger and a
   `-small` copy at half its width, without their metadata. A photo shows
   whole, except a tall one beside words, cut to 4:3 from its foot.

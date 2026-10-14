@@ -4,10 +4,11 @@
 
    THE COMPANY'S BLUE IN PLACE OF CARBON'S. The site is the company's, so its
    one action colour is the deep end of the logo's own gradient, which carries
-   white type at 6 to 1 and reads as a link on white at the same ratio.
-   Hover and active step darker as Carbon's own blue does. Focus keeps
-   Carbon's blue, so a focused button still shows a ring of another colour. */
-[data-theme="white"] {
+   white type at 6 to 1 and reads as a link at 6 to 1 on a white tile and 5.5
+   to 1 on the page's g10 grey. Hover and active step darker as Carbon's own
+   blue does. Focus keeps Carbon's blue, so a focused button still shows a
+   ring of another colour. */
+[data-theme="g10"] {
   --rux-background-brand: #2f6293;
   --rux-interactive: #2f6293;
   --rux-border-interactive: #2f6293;
@@ -16,6 +17,7 @@
   --rux-button-primary-active: #1f4263;
   --rux-link-primary: #2f6293;
   --rux-link-primary-hover: #1f4263;
+  --rux-icon-interactive: #2f6293;
 }
 
 /* THE SAME BUTTON IN THE DARK BANDS. A page's first and last bands are g100

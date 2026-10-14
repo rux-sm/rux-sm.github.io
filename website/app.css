@@ -295,6 +295,12 @@
   margin-block-end: 1.5rem;
 }
 
+/* A part a link opens, such as a group on the Trips page, stops clear of the
+   fixed 3rem header with a gap above it. */
+main [id] {
+  scroll-margin-block-start: 5rem;
+}
+
 /* A field the form sends a reader to, its first error, stops clear of the
    fixed 3rem header with its label in view. */
 .website-form :is(input, textarea) {

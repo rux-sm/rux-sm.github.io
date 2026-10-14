@@ -3382,11 +3382,26 @@ body:has(.scheduler-page:not([data-room="tight"]):not([data-board="compact"])) .
    gutter. Carbon's `--rux--side-panel--actions-height` is scoped to the panel
    and does not resolve here. `:has()` reads the panel's `[hidden]`, so no
    class has to be kept in sync. */
-body:has(#scheduler-panel:not([hidden])) .scheduler-toast {
+body:has(#scheduler-panel:not([hidden])) .scheduler-toast:not([data-place="header"]) {
   /* Plus the home bar, which the toast keeps above whether the panel is beside
      the week or in front of the board. */
   inset-block-end: calc(var(--rux-spacing-09) + var(--rux-spacing-07) + var(--rux-spacing-05) + var(--scheduler-safe-bottom));
 }
+
+/* Where the header has room the toast stands in it instead, centred in the
+   gap between the company's name and the header's buttons, which data.js
+   measures into these four properties as it shows the toast. The row is the
+   header's middle; a notice too long for one row wraps and hangs below the
+   header rather than cut its words off. */
+.scheduler-toast[data-place="header"] {
+  inset-block: var(--scheduler-toast-top) auto;
+  inset-inline: var(--scheduler-toast-start) auto;
+  inline-size: var(--scheduler-toast-room);
+  justify-content: center;
+  align-items: flex-start;
+  pointer-events: none;
+}
+.scheduler-toast[data-place="header"] > * { pointer-events: auto; }
 
 /* A TOAST THAT ASKS FOR NOTHING LEAVES BY ITSELF. Its card waits out
    `--scheduler-toast-wait`, which data.js sets from how much there is to

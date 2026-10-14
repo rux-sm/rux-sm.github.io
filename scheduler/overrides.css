@@ -1074,6 +1074,36 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    column's width, and Carbon's tag is as wide as it is told to be. */
 .scheduler-pair-cell__lines > .rux--tag { align-self: flex-start; }
 
+/* A toast in the header is Carbon's inline notification in one row the
+   header's height leaves, `--scheduler-toast-row`, which data.js sets: as
+   wide as its words up to the gap it stands in, the words wrapping under
+   the title when they run out of room. The icon, the action and the close
+   button are centred on the first line, and the close button is 32px, the
+   size of the header's own buttons. */
+.scheduler-toast[data-place="header"] > :is(.rux--inline-notification, .rux--actionable-notification) {
+  min-block-size: var(--scheduler-toast-row);
+  min-inline-size: 0;
+  inline-size: auto;
+  max-inline-size: 100%;
+}
+.scheduler-toast[data-place="header"] :is(.rux--inline-notification__text-wrapper, .rux--actionable-notification__text-wrapper) {
+  padding-block: calc((var(--scheduler-toast-row) - 1.125rem) / 2);
+}
+.scheduler-toast[data-place="header"] .rux--inline-notification__icon {
+  margin-block-start: calc((var(--scheduler-toast-row) - 1.25rem) / 2);
+}
+.scheduler-toast[data-place="header"] .rux--actionable-notification__action-button.rux--btn--ghost {
+  margin-block: calc((var(--scheduler-toast-row) - 2rem) / 2);
+}
+.scheduler-toast[data-place="header"] :is(.rux--inline-notification__close-button, .rux--actionable-notification__close-button) {
+  margin: calc((var(--scheduler-toast-row) - 2rem) / 2);
+  block-size: 2rem;
+  min-block-size: 2rem;
+  inline-size: 2rem;
+  min-inline-size: 2rem;
+  max-inline-size: 2rem;
+}
+
 /* A notice that offers a choice puts its actions under its words. Carbon
    lays one action beside them, and two beside them in the trip panel leave
    the words a column three words wide. The actions start 32px in, so the

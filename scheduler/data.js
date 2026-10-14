@@ -287,14 +287,20 @@
     working: { cls: 'rux--toast-notification rux--toast-notification--info', icon: '#m-info-fill' },
   };
 
-  /* One builder for both places: `say` puts a notice above the board and
-     `toast` over the page. With an `action` it is Carbon's actionable
-     notification, from `carbon-react-dom.json`'s
+  /* One builder for every place a notice goes. `where` is 'toast' for
+     Carbon's toast at the bottom of the screen, 'header' for the one-row
+     notice `toast` stands in the header, and anything else for a notice in
+     the page, as `say` and the editor's tabs put one. With an `action` it is
+     Carbon's actionable notification, from `carbon-react-dom.json`'s
      `components-notifications-actionable--inline`, whose icon keeps
-     `rux--inline-notification__icon`, or as a toast its `--default`. The capture's `role="alertdialog"` and
-     focus sentinels are left out: they trap the keyboard, and this action is
-     an offer about something already done. */
-  function note(kind, title, subtitle, action, asToast) {
+     `rux--inline-notification__icon`, or as a toast its `--default`. The
+     capture's `role="alertdialog"` and focus sentinels are left out: they
+     trap the keyboard, and this action is an offer about something already
+     done. A toast in either place has a close button; one in the page does
+     not, because the page's next render clears it. */
+  function note(kind, title, subtitle, action, where) {
+    const asToast = where === 'toast';
+    const closes = asToast || where === 'header';
     /* A plain toast is Carbon's toast notification, which sets its own width.
        Its icon is a direct child and `__details` holds the text, as in
        `components-notifications-toast--default`. */
@@ -326,6 +332,7 @@
       );
       details.append(icon, wrap);
       box.appendChild(details);
+      if (closes) box.appendChild(closeButton('rux--inline-notification', title));
       return box;
     }
     const spec = ACTION_NOTE[kind] ?? ACTION_NOTE.info;
@@ -361,7 +368,7 @@
     focus.append(details, buttons);
     box.appendChild(focus);
     if (Array.isArray(action)) box.classList.add('scheduler-note--choice');
-    if (asToast) box.appendChild(closeButton('rux--actionable-notification', title));
+    if (closes) box.appendChild(closeButton('rux--actionable-notification', title));
     return box;
   }
 
@@ -374,6 +381,7 @@
      Design's notifications do. */
   const CLOSE = {
     'rux--actionable-notification': { btn: 'rux--actionable-notification__close-button', icon: 'rux--actionable-notification__close-icon' },
+    'rux--inline-notification': { btn: 'rux--inline-notification__close-button', icon: 'rux--inline-notification__close-icon' },
     'rux--toast-notification': { btn: 'rux--toast-notification__close-button', icon: 'rux--toast-notification__close-icon' },
   };
   function closeButton(base, title) {
@@ -397,8 +405,50 @@
     if (!kind) { statusEl.hidden = true; return; }
     statusEl.classList.remove('rux--visually-hidden');
     statusEl.hidden = false;
-    statusEl.appendChild(note(kind, title, subtitle, action, false));
+    statusEl.appendChild(note(kind, title, subtitle, action, 'page'));
   }
+
+  /* WHERE A TOAST STANDS. Where the header has room, in the gap between the
+     company's name and the header's buttons, so a toast covers neither the
+     board nor the editor or any panel beside it; elsewhere, as on a phone,
+     at the bottom of the screen. The gap is measured as the toast is shown,
+     since the header's height is the theme's and its buttons the window's.
+     The row is 40px in a 64px header and 32px in Carbon's 48px one, and a
+     toast of one row is centred in the header on its own height, borders
+     and all; a longer one starts where that row does and hangs below. The
+     toast wears the header's theme, so it reads on the header's surface. */
+  const TOAST_ROOM = 360;
+  function toastPlace() {
+    const header = document.querySelector('.rux--header');
+    const name = header?.querySelector('.rux--header__name');
+    const buttons = [...(header?.querySelectorAll('.rux--header__global > *') ?? [])].filter(b => b.offsetWidth);
+    if (!name || !header.offsetHeight) return null;
+    const bar = header.getBoundingClientRect();
+    const start = name.getBoundingClientRect().right + 16;
+    const end = (buttons.length ? Math.min(...buttons.map(b => b.getBoundingClientRect().left)) : bar.right) - 16;
+    if (end - start < TOAST_ROOM) return null;
+    return { start, room: end - start, row: bar.height / 2 + 8, top: bar.top, height: bar.height, theme: header.dataset.theme };
+  }
+  function placeToast(place, box) {
+    if (!place) {
+      delete toastEl.dataset.place;
+      toastEl.removeAttribute('data-theme');
+      return;
+    }
+    toastEl.dataset.place = 'header';
+    if (place.theme) toastEl.dataset.theme = place.theme;
+    else toastEl.removeAttribute('data-theme');
+    const tall = box?.offsetHeight ?? place.row;
+    const drop = tall <= place.height - 8 ? (place.height - tall) / 2 : (place.height - place.row) / 2;
+    toastEl.style.setProperty('--scheduler-toast-top', `${place.top + drop}px`);
+    toastEl.style.setProperty('--scheduler-toast-start', `${place.start}px`);
+    toastEl.style.setProperty('--scheduler-toast-room', `${place.room}px`);
+    toastEl.style.setProperty('--scheduler-toast-row', `${place.row}px`);
+  }
+  // A window narrowed under a toast in the header takes it to the bottom.
+  window.addEventListener('resize', () => {
+    if (toastEl && !toastEl.hidden && toastEl.dataset.place) placeToast(toastPlace(), toastEl.firstElementChild);
+  });
 
   /* Over the page, for a notice about what a person just did, so the board does
      not jump the way it would under `say`'s in-flow region. The placement is in
@@ -409,8 +459,12 @@
     toastEl.replaceChildren();
     if (!kind) { toastEl.hidden = true; return; }
     toastEl.hidden = false;
-    const box = note(kind, title, subtitle, action, true);
+    const place = toastPlace();
+    placeToast(place);
+    const box = note(kind, title, subtitle, action, place ? 'header' : 'toast');
     toastEl.appendChild(box);
+    // Centred again on the height the toast's words gave it.
+    if (place) placeToast(place, box);
     /* A success or a note with nothing to press tells the person something
        and asks for nothing, so it closes itself: after five seconds, and
        longer the more there is to read, fifteen characters a second and

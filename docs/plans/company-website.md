@@ -108,8 +108,6 @@ the last one forwarded came in March 2026.
 
 ## Questions
 
-- Is anything else on the pages out of date or wrong, and are there newer
-  photos of the fleet, or of the family and the team, to put on them?
 - A tourism bureau wrote the office a strong commendation. May the site quote
   it, by name, beside the current site's testimonial?
 - Who holds the GoDaddy account for the domain, and the Mailchimp account
@@ -131,8 +129,8 @@ the last one forwarded came in March 2026.
 - [ ] Revoke the Mandrill key in the current site's script, in the Mailchimp
       account or through the agency that hosts the site, and have both forms
       replaced with the phone number and the office's email until the switch.
-- [ ] Put rux's answers on the pages in both languages: anything out of
-      date, new photos and the commendation.
+- [ ] Put the commendation on the pages in both languages if rux allows
+      it, and new photos of the fleet or the team once rux has them.
 - [ ] Once approved, move `website/` to its own repository with `README.md`,
       `AGENTS.md`, `CNAME`, a 404 page, the Design sync tool and a check run
       in CI for the class rule, links, and every page's title and

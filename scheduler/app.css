@@ -1190,7 +1190,6 @@ button.scheduler-row-head__num::after {
   align-items: start;
 }
 .scheduler-card__update-list .scheduler-card__face { justify-self: center; }
-/* The pinned update's pin stands where a face does, in the card's quieter ink. */
 /* A line from the old notes stands behind a note in the quieter ink, at the
    size of the face it stands in for. */
 .scheduler-note-face {
@@ -1204,9 +1203,7 @@ button.scheduler-row-head__num::after {
 .scheduler-note-face--md { inline-size: 2rem; block-size: 2rem; }
 .scheduler-note-face > svg { inline-size: 1rem; block-size: 1rem; fill: currentColor; }
 .scheduler-note-face--md > svg { inline-size: 1.25rem; block-size: 1.25rem; }
-.scheduler-card__update[data-pinned] > svg { inline-size: 1rem; block-size: 1rem; color: color-mix(in srgb, var(--card-ink) 70%, transparent); }
-/* Docked and closed, the pinned update and the newest of the rest show, each
-   cut to one line. Open, every update shows whole, in a list that scrolls
+/* Docked and closed, the two newest updates show, each cut to one line. Open, every update shows whole, in a list that scrolls
    past four rows. Floating, every update shows whole and the card's height
    is the limit. */
 .scheduler-card__update-list {
@@ -1326,42 +1323,9 @@ button.scheduler-row-head__num::after {
   cursor: pointer;
 }
 .scheduler-card__open:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
-/* THE PIN: a 24px button at the row's end that pins the update, or unpins
-   the pinned one, in the link colour while it is pinned. Floating, it stands
-   over the age while the row is hovered or holds focus, so the ages keep
-   their one column; docked, where a thumb has no hover, it always shows
-   after the age. */
-.scheduler-card__pin {
-  position: relative;
-  z-index: 2;
-  grid-row: 1;
-  grid-column: 3;
-  justify-self: end;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--rux-layout-size-height-xs);
-  block-size: var(--rux-layout-size-height-xs);
-  margin-block: calc((1.125rem - var(--rux-layout-size-height-xs)) / 2);
-  padding: 0;
-  border: 0;
-  border-radius: var(--scheduler-shortcut-radius, 0);
-  background: none;
-  color: color-mix(in srgb, var(--card-ink) 70%, transparent);
-  cursor: pointer;
-}
-/* The age keeps its cell on the first line, which the pin shares, and ends at
-   the cell's end: the cell is the pin's 24px, wider than an age, and Add's
-   word above ends on that same line. */
+/* The age keeps its cell at the end of the first line, where Add's word
+   above ends. */
 .scheduler-card__update > .scheduler-card__when { grid-row: 1; grid-column: 3; justify-self: end; }
-.scheduler-card__pin > svg { inline-size: 1rem; block-size: 1rem; fill: currentColor; }
-.scheduler-card__pin:hover { color: var(--card-ink); background: var(--card-hover); }
-.scheduler-card__pin[aria-pressed="true"] { color: var(--rux-link-primary); }
-.scheduler-card__pin:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update:not(:hover, :focus-within) > .scheduler-card__pin { visibility: hidden; }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update:is(:hover, :focus-within) > .scheduler-card__when { visibility: hidden; }
-.scheduler-bar-shortcuts[data-card][data-docked] .scheduler-card__update { grid-template-columns: 1rem minmax(0, 1fr) auto auto; }
-.scheduler-bar-shortcuts[data-card][data-docked] .scheduler-card__pin { grid-column: 4; }
 .scheduler-bar-shortcuts[data-card] .scheduler-card__words {
   font-size: var(--rux-body-compact-01-font-size);
   line-height: var(--rux-body-compact-01-line-height);
@@ -2265,8 +2229,6 @@ button.scheduler-row-head__num::after {
    tile on the raised layer, its author's face beside its words over its day.
    A tile is a button that opens it for editing; the one being edited or
    deleted is a plain tile holding its box or its ask. */
-/* Pin this update stands 8px under the box, the gap between a label and its field. */
-.scheduler-update-pin { margin-block-start: var(--rux-spacing-03); }
 .scheduler-updates-error { margin-block-start: var(--rux-spacing-03); color: var(--rux-text-error); }
 .scheduler-updates-log { margin-block-start: var(--rux-spacing-06); }
 .scheduler-updates-log[hidden] { display: none; }
@@ -2281,22 +2243,6 @@ button.scheduler-row-head__num::after {
   text-align: start;
 }
 .scheduler-updates__face { flex: none; }
-/* An update's pin stands at its tile's top corner, beside the tile's button,
-   with room kept for it at the tile's end. It shows while the tile is hovered
-   or holds focus, always where nothing hovers, and always on the pinned
-   update, in the link colour. */
-.scheduler-updates__item { position: relative; }
-.scheduler-updates__item:has(> .scheduler-updates__pin) > .scheduler-updates__tile { padding-inline-end: calc(var(--rux-spacing-04) + var(--rux-layout-size-height-sm)); }
-.scheduler-updates__pin {
-  position: absolute;
-  inset-block-start: var(--rux-spacing-03);
-  inset-inline-end: var(--rux-spacing-03);
-}
-@media (hover: hover) {
-  .scheduler-updates__item:not(:hover, :focus-within) > .scheduler-updates__pin[aria-pressed="false"] { visibility: hidden; }
-}
-.scheduler-updates__pin[aria-pressed="true"] { color: var(--rux-link-primary); }
-.scheduler-updates__pin[aria-pressed="true"] .rux--btn__icon { fill: var(--rux-link-primary); }
 .scheduler-updates__text { flex: 1; min-inline-size: 0; }
 /* An update's Edit box, or the ask before it goes: Delete or the question at
    the left, the other buttons at the right. */
@@ -3175,9 +3121,8 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__misfit, .scheduler-card__asks, .scheduler-card__warn) { border-block-start: 0; }
 
 /* The updates hold at least their title and one line however many there
-   are, so the sheet is the same height with none, one or twenty, and one line
-   taller with a pinned update, on the raised layer the sheet itself no
-   longer paints. */
+   are, so the sheet is the same height with none, one or twenty, on the
+   raised layer the sheet itself no longer paints. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__updates {
   min-block-size: calc(2rem + 2 * var(--rux-spacing-03));
   background: var(--rux-layer-02);

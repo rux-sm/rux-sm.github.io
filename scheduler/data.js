@@ -345,9 +345,8 @@
     // what the Route tab edits on a leg's pickup, drop-off and return rows.
     'trip_stops(id,position,leg,type,label,name,address,lat,lng,mapbox_id,depart_prev,arrive,spot,'
       + 'depart_prev_date,arrive_date,spot_date,miles,drive,miles_source,drive_source,dwell_status)',
-    // What was said to the customer, for the bar's follow-up mark and its card,
-    // with the one update pinned to the card's top.
-    'trip_updates(id,created_at,actor_id,actor_name,body,kind,edited_at,pinned_at)',
+    // What was said to the customer, for the bar's follow-up mark and its card.
+    'trip_updates(id,created_at,actor_id,actor_name,body,kind,edited_at)',
   ].join(',');
 
   /* A hung connection never rejects, so a request races this timeout and the
@@ -941,8 +940,7 @@
     addRow(bar, 'scheduler-bar__time', when, whenDep);
 
     /* The newest update's words on one line, the last thing anyone said
-       about the trip, whichever update is pinned: the card leads with the
-       pinned one, and the bar says what is new. While the trip has
+       about the trip, as the card's list starts with it. While the trip has
        anything open, the words take the colour of the update's age, so
        down a week the eye finds the trips still in play and how lately
        each was touched, with no mark beside them, since the colour is the
@@ -1001,7 +999,7 @@
      scroll all still belong to the week on screen. Without one it draws into
      the board's own grid and everything that follows a week change follows. */
   /* The week the board last drew. A read of that same week -- a save, a live
-     change from someone else, a pin -- keeps the selected trip selected, so
+     change from someone else, an update -- keeps the selected trip selected, so
      its card stays open; moving to another week starts with nothing picked. */
   let renderedWeek = null;
   function render(data, target) {
@@ -4095,7 +4093,7 @@
      saved. A `nothing` row marks a skipped prompt and is not drawn; an
      `imported` row was copied out of the old notes, so it has a date and no
      time. An update whose words were changed says so. */
-  const UPDATE_COLUMNS = 'id,created_at,actor_id,actor_name,body,kind,edited_at,pinned_at';
+  const UPDATE_COLUMNS = 'id,created_at,actor_id,actor_name,body,kind,edited_at';
   function updateStamp(u) {
     const at = new Date(u.created_at);
     const opts = { month: 'short', day: 'numeric' };
@@ -4118,15 +4116,12 @@
     return [when, u.edited_at ? 'edited' : null].filter(Boolean).join(' · ');
   }
 
-  /* The Updates window's list: the trip's updates, the pinned one first and
-     the rest newest first, each a tile of its author's face beside its words
-     over its day, the full stamp the day's tooltip, and Pinned beside the
-     pinned one's day. Pressing a tile turns its words into a box with Delete,
-     Cancel and Save; Delete then asks on the tile before it goes. The pin is
-     a button at the tile's corner, outside the box. Each writes at once, and
-     the board reads it. Pinning one unpins the trip's other, in the database.
-     It is read fresh each time the window opens, for the trip `logTrip`
-     names. */
+  /* The Updates window's list: the trip's updates, newest first, each a tile
+     of its author's face beside its words over its day, the full stamp the
+     day's tooltip. Pressing a tile turns its words into a box with Delete,
+     Cancel and Save; Delete then asks on the tile before it goes. Each writes
+     at once, and the board reads it. It is read fresh each time the window
+     opens, for the trip `logTrip` names. */
   const logEl = document.getElementById('scheduler-updates-log');
   const logStatus = document.getElementById('scheduler-updates-status');
   let logTrip = null;
@@ -4156,25 +4151,6 @@
       drawLog();
     }
   }
-  /* Pins or unpins one update. The database lets the trip's other pin go, so
-     every other row here is unpinned to match. */
-  async function pinLogged(u, on) {
-    try {
-      const { data, error: failed } = await withTimeout(client.from('trip_updates')
-        .update({ pinned_at: on ? new Date().toISOString() : null })
-        .eq('id', u.id).select(UPDATE_COLUMNS).single().then(r => r));
-      if (failed) throw new Error(failed.message);
-      logRows = logRows.map(r => (r.id === u.id ? data : on ? { ...r, pinned_at: null } : r));
-      logChanging = null;
-      drawLog();
-      show();
-    } catch (err) {
-      const fail = on ? 'The update was not pinned.' : 'The update was not unpinned.';
-      console.warn(fail, err);
-      toast('error', fail, String(err?.message ?? err));
-      drawLog();
-    }
-  }
   function logItem(u) {
     const li = el('li', 'scheduler-updates__item');
     const text = el('span', 'scheduler-updates__text');
@@ -4185,8 +4161,7 @@
     tile.append(face, text);
     li.appendChild(tile);
     const words = () => {
-      const day = el('span', 'rux--type-label-01 scheduler-updates__meta',
-        [u.pinned_at ? 'Pinned' : null, updateDay(u)].filter(Boolean).join(' · '));
+      const day = el('span', 'rux--type-label-01 scheduler-updates__meta', updateDay(u));
       day.title = updateStamp(u);
       text.append(el('span', 'rux--type-body-compact-01 scheduler-updates__body', u.body), day);
     };
@@ -4236,25 +4211,11 @@
     tile.type = 'button';
     tile.setAttribute('aria-label', `Edit update: ${u.body}`);
     tile.addEventListener('click', () => { logChanging = { id: u.id, mode: 'edit' }; drawLog(); });
-    /* Its pin, as on the trip card: an icon button at the tile's corner,
-       beside the tile rather than inside it, showing on hover, and always on
-       the pinned update, in the link colour. */
-    const pin = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm scheduler-updates__pin');
-    pin.type = 'button';
-    pin.setAttribute('aria-pressed', String(!!u.pinned_at));
-    pin.setAttribute('aria-label', u.pinned_at ? 'Unpin update' : 'Pin update');
-    pin.title = u.pinned_at ? 'Unpin' : 'Pin';
-    const pinIcon = svgUse('#m-keep-fill', '16', '0 0 32 32');
-    pinIcon.setAttribute('class', 'rux--btn__icon');
-    pin.appendChild(pinIcon);
-    pin.addEventListener('click', () => { pin.disabled = true; pinLogged(u, !u.pinned_at); });
-    li.appendChild(pin);
     return li;
   }
   function drawLog() {
     if (!logEl) return;
-    logEl.replaceChildren(...logRows.filter(u => u.kind !== 'nothing')
-      .sort((x, y) => !!y.pinned_at - !!x.pinned_at).map(logItem));
+    logEl.replaceChildren(...logRows.filter(u => u.kind !== 'nothing').map(logItem));
     logStatus.hidden = logEl.childElementCount > 0;
     logStatus.textContent = 'No updates yet.';
   }
@@ -4968,8 +4929,6 @@
      has been quiet, and whether it asks. */
   const { set: setFollowUp, waitsOf, updatesOf, quietSince, asks: asksFollowUp, due: dueFollowUp, daysToGo,
     agoShort, WORDS: WAIT_WORDS } = window.SchedulerFollowUp;
-  // The one update pinned to the top of the trip's card, or null.
-  const pinnedOf = trip => updatesOf(trip).find(u => u.pinned_at) ?? null;
   const { checklist: tripChecklist, leftOf: checklistLeft, GROUPS: CHECK_GROUPS } = window.SchedulerChecklist;
 
   let editing = null;   // { id, before: {...} }
@@ -10346,19 +10305,15 @@
   const updateCloseWrap = document.getElementById('scheduler-update-close-wrap');
   const updateError = document.getElementById('scheduler-update-error');
   const updateWhat = document.getElementById('scheduler-update-what');
-  // Pin this update, under the box: on for a new trip, whose first update
-  // says what it waits on, and off for anything else.
-  const updatePin = document.getElementById('scheduler-update-pin');
   let updateSettle = null;   // Save's step, while Save opened the window
   let updateAlone = null;    // the trip, while the window stands on its own
   let updateChange = null;
-  function fillUpdateWindow({ trip, what, line, tripId, editId = null, pin = false }) {
+  function fillUpdateWindow({ trip, what, line, tripId, editId = null }) {
     document.getElementById('scheduler-update-trip').textContent = trip;
     updateWhat.textContent = what;
     updateWhat.hidden = !what;
     updateError.hidden = true;
     updateText.value = line;
-    if (updatePin) updatePin.checked = pin;
     updateSave.disabled = !line;
     requestAnimationFrame(fitUpdateText);
     // A new trip has nothing earlier to list.
@@ -10393,12 +10348,12 @@
       updateSettle = answer => { updateSettle = null; resolve(answer && { ...answer, keys: change?.keys ?? null }); };
       fillUpdateWindow({
         trip: tripName(trip), what, line,
-        tripId: creating ? null : trip?.id, pin: creating,
+        tripId: creating ? null : trip?.id,
       });
     });
   }
   // The window on its own, for a trip on the board.
-  // With `editId`, that update opens in its box ready to change, pin or delete.
+  // With `editId`, that update opens in its box ready to change or delete.
   function openUpdatesWindow(trip, editId = null) {
     if (!updateModal || !trip) return;
     updateSettle = null;
@@ -10430,12 +10385,11 @@
   updateSave?.addEventListener('click', async () => {
     const body = updateText.value.trim();
     if (!body) return;
-    const pin = !!updatePin?.checked;
-    if (!updateAlone) { answerUpdate({ kind: 'update', body, pin }); return; }
+    if (!updateAlone) { answerUpdate({ kind: 'update', body }); return; }
     const trip = updateAlone;
     updateSave.disabled = true;
     updateError.hidden = true;
-    if (await writeUpdate(trip.id, { kind: 'update', body, keys: null, pin })) {
+    if (await writeUpdate(trip.id, { kind: 'update', body, keys: null })) {
       updateAlone = null;
       window.Rux?.modal?.close?.(updateModal);
       await show();
@@ -10453,10 +10407,7 @@
   updateModal?.addEventListener('rux:modal-closed', () => { updateAlone = null; updateSettle?.(null); });
 
   /* The prompt's answer, written once the save has landed. A failure is logged
-     and reported, and never undoes the save. With `pin` the update is pinned
-     once it is written, as the Updates window's Pin does it, so the database
-     lets the trip's other pin go; a pin that fails leaves the update written
-     and says so. */
+     and reported, and never undoes the save. */
   async function writeUpdate(tripId, answer) {
     try {
       const actor = await actorName()
@@ -10465,14 +10416,8 @@
       // leaves it out and takes the column's default.
       const row = { trip_id: tripId, body: answer.body, kind: answer.kind, actor_name: actor };
       if (Array.isArray(answer.keys)) row.changes = answer.keys;
-      const { data, error } = await withTimeout(client.from('trip_updates').insert(row).select('id').single().then(r => r));
+      const { error } = await withTimeout(client.from('trip_updates').insert(row).then(r => r));
       if (error) throw new Error(error.message);
-      if (answer.pin) {
-        try { await setPin(data.id, true); } catch (err) {
-          console.warn('The update was not pinned:', err);
-          toast('error', 'The update was not pinned.', String(err?.message ?? err));
-        }
-      }
       return true;
     } catch (err) {
       console.warn('The update was not written:', err);
@@ -13976,42 +13921,6 @@
     e.preventDefault();
     goToWarning(press.dataset.go, press.dataset.spot);
   });
-  /* Pins or unpins an update from the card, as the Updates window's Pin does;
-     the database lets the trip's other pin go, and the board reads it again,
-     which keeps the trip selected, so its card stays open with the pin moved.
-     A pin is one small press, so the toast offers it back: undoing a pin puts
-     the pin back where it was, `was`, or takes it off; undoing an unpin pins
-     the update again. */
-  const setPin = async (id, on) => {
-    const { error } = await withTimeout(client.from('trip_updates')
-      .update({ pinned_at: on ? new Date().toISOString() : null }).eq('id', id).then(r => r));
-    if (error) throw new Error(error.message);
-  };
-  async function pinFromCard(id, on, was = null) {
-    if (!id) return;
-    try {
-      await setPin(id, on);
-      await show();
-      toast('success', on ? 'Pinned' : 'Unpinned', on ? 'It stays at the top of the trip\'s updates.' : 'It goes back among the updates by date.', {
-        label: 'Undo',
-        onClick: async () => {
-          try {
-            if (!on) await setPin(id, true);
-            else if (was && was !== id) await setPin(was, true);
-            else await setPin(id, false);
-            await show();
-            toast('success', on ? 'Pin undone' : 'Unpin undone');
-          } catch (err) {
-            toast('error', 'That was not undone.', String(err?.message ?? err));
-          }
-        },
-      });
-    } catch (err) {
-      const fail = on ? 'The update was not pinned.' : 'The update was not unpinned.';
-      console.warn(fail, err);
-      toast('error', fail, String(err?.message ?? err));
-    }
-  }
   /* The field a warning's fix starts in, on the tab it opens: the first trip
      contact, the Contract signed switch an unconfirmed trip waits on, the PO
      switch, Payments for a balance, the quote lines for a hotel. */
@@ -14508,7 +14417,7 @@
     face.setAttribute('aria-label', who);
     return face;
   }
-  const cardKey = trip => (trip ? JSON.stringify([pageEl?.getAttribute('data-board'), quickOpenFor === trip.id, pinnedOf(trip)?.id ?? null, asksFollowUp(trip), waitsOf(trip), dayOfContact(trip),
+  const cardKey = trip => (trip ? JSON.stringify([pageEl?.getAttribute('data-board'), quickOpenFor === trip.id, asksFollowUp(trip), waitsOf(trip), dayOfContact(trip),
     !!trip.contact_not_needed, updatesOpenFor === trip.id,
     (trip.trip_updates || []).map(u => u.id).sort(), agoShort(quietSince(trip) || Date.now())]) : '');
   /* How long ago an update was written: minutes in the first hour, hours in
@@ -14617,7 +14526,7 @@
       card.appendChild(band);
     }
     /* THE UPDATES: Updates with their count, "Updates · 5", and Add, over
-       the updates, the pinned one first and the rest newest first. Floating,
+       the updates, newest first. Floating,
        the card has the room to show every update in full, scrolling past the
        card's height. Docked, two lines show, each cut to one line, and the
        whole section is one press that opens every update in full and a
@@ -14625,11 +14534,9 @@
        lines have nothing more to show, which fitUpdates works out once they
        are drawn. With none, No updates and Add. */
     const all = updatesOf(trip);
-    const pinned = pinnedOf(trip);
-    const rest = all.filter(u => u !== pinned);
     const floating = pageEl?.getAttribute('data-board') !== 'compact';
     const open = all.length > 0 && (floating || updatesOpenFor === trip.id);
-    const shown = open ? [...(pinned ? [pinned] : []), ...rest] : [...(pinned ? [pinned] : []), ...rest].slice(0, 2);
+    const shown = open ? all : all.slice(0, 2);
     const part = row('scheduler-card__updates');
     part.dataset.count = String(all.length);
     part.dataset.shown = String(shown.length);
@@ -14637,41 +14544,22 @@
     const add = cardAction('update', 'Add', 'Add an update');
     /* An update is its author's 16px avatar, its words, and on its first
        line's end how long ago, always as a number, so every update's age
-       stands in one column. The pinned update has a pin where the avatar
-       stands. The name is the avatar's or the pin's tooltip and accessible
+       stands in one column. The name is the avatar's tooltip and accessible
        name, and the full date the age's tooltip. */
     const updateItem = u => {
       const item = el('li', 'scheduler-card__update');
-      let face;
-      if (u === pinned) {
-        item.dataset.pinned = '';
-        face = svgUse('#m-keep-fill', '16', '0 0 32 32');
-        const who = `Pinned · ${updateStamp(u)}`;
-        face.setAttribute('role', 'img');
-        face.setAttribute('aria-label', who);
-        face.appendChild(document.createElementNS('http://www.w3.org/2000/svg', 'title')).textContent = who;
-      } else {
-        face = updateFace(u, 'sm');
-      }
+      const face = updateFace(u, 'sm');
       face.classList.add('scheduler-card__face');
       const when = el('span', 'scheduler-card__when', ageShort(u.created_at));
       when.title = updateStamp(u);
       /* An update is a press that opens it in the Updates window: a button
          laid over the whole row, so a pointer can press anywhere on it and
-         Tab reaches it, with the pin button standing over it rather than
-         inside it, since a button holds no other. */
+         Tab reaches it. */
       item.dataset.updateId = u.id;
       const open = el('button', 'scheduler-card__open');
       open.type = 'button';
       open.setAttribute('aria-label', `Edit update: ${u.body}`);
-      const pin = el('button', 'scheduler-card__pin');
-      pin.type = 'button';
-      pin.dataset.pin = u === pinned ? 'off' : 'on';
-      pin.setAttribute('aria-pressed', String(u === pinned));
-      pin.setAttribute('aria-label', u === pinned ? 'Unpin update' : 'Pin update');
-      pin.title = u === pinned ? 'Unpin' : 'Pin';
-      pin.appendChild(svgUse('#m-keep-fill', '16', '0 0 32 32'));
-      item.append(open, face, el('span', 'scheduler-card__words', u.body), when, pin);
+      item.append(open, face, el('span', 'scheduler-card__words', u.body), when);
       return item;
     };
     /* Docked, with any updates, the title's words are the section's toggle, a
@@ -14704,7 +14592,7 @@
     }
     if (all.length) {
       const list = el('ol', 'scheduler-card__update-list');
-      list.setAttribute('aria-label', pinned ? 'Updates, the pinned one first, then newest first' : 'Updates, newest first');
+      list.setAttribute('aria-label', 'Updates, newest first');
       list.append(...shown.map(updateItem));
       part.appendChild(list);
     }
@@ -14758,13 +14646,6 @@
     const action = e.target.closest('.scheduler-card__action');
     if (action) {
       openQuick(action.closest('.scheduler-card')?.dataset.tripId ?? null);
-      return;
-    }
-    // An update's pin pins or unpins it in place.
-    const pin = e.target.closest('.scheduler-card__pin');
-    if (pin) {
-      const was = barShortcuts.querySelector('.scheduler-card__update[data-pinned]')?.dataset.updateId ?? null;
-      pinFromCard(pin.closest('.scheduler-card__update')?.dataset.updateId, pin.dataset.pin === 'on', was);
       return;
     }
     // A warning goes where it is put right.

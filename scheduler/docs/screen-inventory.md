@@ -64,7 +64,7 @@ the schedule open, and faces on a bar show who has that trip.
 | Tasks, the old app's | drop | The office does not use it. The trip's checklist and the board's two lists do its work. |
 | History | keep | `history.html`, every change to a trip, a driver, a bus, a customer, a contact or a location in a data table, newest first, fifty at a time with Show older for the next fifty. Three choices narrow it to one kind, to one person and to today, yesterday or the last 7 or 30 days. `history.html?trip=<id>`, which the bar menu's History opens, narrows it to one trip, and `history.html?record=<id>`, which the History link on a record's own page opens, to one record. A row opens what it is about; an entry for something deleted opens nothing. The database does the narrowing, in `search_history`. |
 | Pending marks on the bar | drop | A missing itinerary, purchase order or balance is what the follow-up reminder waits on, so the reminder asks for it; drawn on the bar as well, the itinerary and trip contact marks sat on four in five upcoming trips and said nothing. |
-| Newest update on the bar | keep | A row between the times and the drivers holds the trip's newest update on one line, cut where the bar ends, whichever update is pinned; a trip with none leaves it empty. While the trip has anything open, a warning on its card or a confirmation, PO, itinerary or balance the office still waits on, the words take the colour of the update's age, and a settled trip's stay in the bar's ink: green while the card's age reads in minutes, hours or 1d, amber for the rest of its first week, red once the card shows a date, except on an amber bar, where none of the three reads and the words keep the bar's ink. No mark leads the row, since the colour is the mark; the tooltip is the update whole and its stamp. Newest update in the week's More menu turns the row off, as it does the others. The phone's sheet leaves it out, because the updates are read just above the trip there. |
+| Newest update on the bar | keep | A row between the times and the drivers holds the trip's newest update on one line, cut where the bar ends; a trip with none leaves it empty. While the trip has anything open, a warning on its card or a confirmation, PO, itinerary or balance the office still waits on, the words take the colour of the update's age, and a settled trip's stay in the bar's ink: green while the card's age reads in minutes, hours or 1d, amber for the rest of its first week, red once the card shows a date, except on an amber bar, where none of the three reads and the words keep the bar's ink. No mark leads the row, since the colour is the mark; the tooltip is the update whole and its stamp. Newest update in the week's More menu turns the row off, as it does the others. The phone's sheet leaves it out, because the updates are read just above the trip there. |
 | Bus fit | keep | A bar whose bus is the wrong type for its vehicle, or falls short of a need its vehicle carries, including equipment the Fleet page records, turns the bar's alert count red; its card says what is wrong in a red band above the reminder. |
 | Needs and trip contact | keep | On the card's warning band, only what needs doing: a need the bus falls short of in the red band, and a need still to do, Hotel booking pending or HOS form pending; a met need is not shown. Hours of service is a need on a bus with a part-time driver in any seat, done once the Forms page marks each part-time driver's record printed, and printed among the requirements on that driver's own envelope. A trip with no trip contact, and not marked as needing none, says Trip contact missing in the card's warning band. |
 | Late return | new | A bus back at the yard before the late-return hour, 4:00 AM unless the Settings page's Trips tab says otherwise, came back the night before. The leg takes the days up to the one before: its bar ends there and marks the return +1, and the day the bus is back on is free for that bus and its drivers, in the Buses tab's picks, the driver menu and the availability grid, with a back-to-back driver's rest counted from the real return. Back at or after that hour the leg takes the day it is back on, a one-day leg's bar running into the next day. The yard return decides, not the drop-off; a leg with no yard return takes its own dates, and hour 0 counts no return as the night before. The printed week and the connector's availability count the same days. |
@@ -245,20 +245,16 @@ No warning has a dismiss; each stays until it is put right. Needs that are
 met are not shown.
 Then the updates: Updates in Carbon's 14px heading, its count in a grey tag,
 and + Add, a ghost button, at its end, over every update in
-full, the pinned one first, led by a pin where an update's avatar stands, and
-the rest newest first, each with its age at the right (45m, 2h, 3d, or its
+full, newest first, each with its age at the right (45m, 2h, 3d, or its
 date, Sep 22, past a week), scrolling past the card's height and fading at its
 foot while there is more below; a line from the old notes shows a note icon.
-An update is a press that opens it in the Updates window; its pin, over the
-age on hover, pins or unpins it, with Undo in the toast. Add opens a box under
+An update is a press that opens it in the Updates window. Add opens a box under
 the title that adds a typed line on Enter; Escape or leaving it empty closes it.
-The docked sheet has the same rows and presses but shows two updates, the
-pinned and the newest, cut to one line; a press elsewhere on the section, or
-its title's arrow, opens every update in full. Add is its own button. An
-update's author is its avatar's tooltip. With none, the title says No updates.
-In the Updates window each update has a pin at its corner, on hover or lit blue when pinned, and Pin this update under the box, ticked for a new trip, pins what is written as it is added;
-a trip has one pinned update, and pinning another lets the first go. The trip
-has no notes of its own: a note saved in rux-ui becomes the pinned update.
+The docked sheet has the same rows and presses but shows the two newest
+updates, cut to one line; a press elsewhere on the section, or its title's
+arrow, opens every update in full. Add is its own button. An update's author
+is its avatar's tooltip. With none, the title says No updates. The trip has
+no notes of its own: a note saved in rux-ui becomes an update.
 Only the selected trip has a card, the trip open in the editor too, where
 Open trip is disabled as Already open. Every trip has the same four slots: Open trip, the itinerary,
 opened or uploaded, Forms and Contacts; every other action is on the

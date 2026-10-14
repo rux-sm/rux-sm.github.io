@@ -346,7 +346,7 @@ Deno.serve(
           {
             title: 'Get one trip',
             description:
-              'One trip in full, with the buses and drivers on it, its stops, its quote lines, and warnings: a leg short of buses, or a stop dated more than a day outside its leg. An amber trip_bar_color (or its old names orange and yellow) is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. pinned_update, when there is one, is what everyone should know about the trip, the update pinned to the top of its card. quote_lines are the Billing tab\'s lines, which add up to quoted_price; route_done_at, buses_done_at and billing_done_at say when each tab was marked Done, and quote_sent_price and quote_sent_on what the customer was sent. On a one-day leg a stop\'s time past midnight also has depart_prev_on, spot_on or arrive_on, the day it falls on. Give either a trip id or a trip reference.',
+              'One trip in full, with the buses and drivers on it, its stops, its quote lines, and warnings: a leg short of buses, or a stop dated more than a day outside its leg. An amber trip_bar_color (or its old names orange and yellow) is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. updates are what has been said about the trip, newest first, as its card lists them. quote_lines are the Billing tab\'s lines, which add up to quoted_price; route_done_at, buses_done_at and billing_done_at say when each tab was marked Done, and quote_sent_price and quote_sent_on what the customer was sent. On a one-day leg a stop\'s time past midnight also has depart_prev_on, spot_on or arrive_on, the day it falls on. Give either a trip id or a trip reference.',
             inputSchema: z.object({
               trip_id: z.string().uuid().optional(),
               trip_ref: z.string().max(40).optional(),
@@ -374,13 +374,15 @@ Deno.serve(
               .select('position, kind, leg, item, description, quantity, cost, amount, miles, dead_miles, rate')
               .eq('trip_id', trip.id).order('position'))
 
-            // The one update pinned to the top of the trip's card.
-            const pinned_update = orThrow(await supabase.from('trip_updates')
+            // The trip's updates, newest first, as its card lists them; a
+            // `nothing` row marks a skipped prompt and is left out, as the card
+            // leaves it out.
+            const updates = orThrow(await supabase.from('trip_updates')
               .select('body, created_at, actor_name')
-              .eq('trip_id', trip.id).not('pinned_at', 'is', null).maybeSingle())
+              .eq('trip_id', trip.id).neq('kind', 'nothing').order('created_at', { ascending: false }))
 
             return answer({
-              trip, pinned_update, warnings: tripWarnings(trip, buses, stops), buses,
+              trip, updates, warnings: tripWarnings(trip, buses, stops), buses,
               stops: markPastMidnight(trip, stops), quote_lines,
             })
           },

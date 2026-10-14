@@ -13,7 +13,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - A quote is entered as the lines that make it, such as a Bus rental line and a Discount line for a price match, so the quoted price is their sum and Billing can be marked Done.
 - A plain quote is priced with the Billing tab's Add the bus rental, from the Route tab's miles a day; the dead-mile discount is the Billing tab's own offer, past the limit on the Settings page, and the quote calculator is opened only for another rate or a price match. Both round each charge (regular miles, dead miles, driver pay) up to the next $5, because those miles include the yard legs and a quote with no cents reads cleaner.
 - A trip from April to early June is quoted at the Busy season mileage rate, not Regular, because those are the busiest weeks and the buses fill either way; the Settings page's Calendar gives each month its rate, and a month it leaves on Default is set on the line by hand.
-- A PO fixes the price; a cost the office takes on after it, such as a second driver, goes in as its own line with an equal Discount, and the trip's pinned update says the decision is still open.
+- A PO fixes the price; a cost the office takes on after it, such as a second driver, goes in as its own line with an equal Discount, and an update says the decision is still open.
 - A quote can go out with a leg's times as TBD, because the times are settled with the customer later and never hold a quote back.
 - A quote names the departing city and the farthest destination city only, even when the trip stops in more, because one pair of cities keeps the quote simple.
 - When a customer changes a quoted or signed trip's days or route, the trip is priced again by the calculator on the new route and days, as its Bus rental line, never as the old price with a line added, because the calculator's figure is what the office quotes that trip new.
@@ -28,7 +28,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - Add a fuel card whenever the Route tab suggests one; no need to ask.
 - When a save offers to add new places to Locations, save each one whose address is a full, correct street address and whose name is the place's accurate name, and leave out the rest, because a saved location gives the next trip the right name and map point.
 - When the Route tab's second-driver notice offers Rest in the sleeper, take it: one driver resting in a sleeper coach during that wait is the plan, because rux always prefers it to a second driver. Only when the notice offers the co-driver alone, raise the second driver with rux before deciding, because it changes the cost and the crew.
-- With one driver, the trip requires a sleeper and the pinned update carries the rest plan the driver is told, such as hours in the sleeper at the stop with the bus parked there; the driver's itinerary says Rest in sleeper on that stop and nothing more.
+- With one driver, the trip requires a sleeper and an update carries the rest plan the driver is told, such as hours in the sleeper at the stop with the bus parked there; the driver's itinerary says Rest in sleeper on that stop and nothing more.
 
 ## Buses and drivers
 
@@ -44,8 +44,8 @@ section it belongs to; when one turns out wrong, the line is replaced.
 
 ## Customers and confirmation
 
-- A trip is confirmed by a signed contract, a PO or a payment; until then the pinned update says what it is waiting on.
-- When the booking contact is away, the pinned update names who to reach instead, with their email.
+- A trip is confirmed by a signed contract, a PO or a payment; until then an update says what it is waiting on.
+- When the booking contact is away, an update names who to reach instead, with their email.
 - The email thread is linked to the trip while reviewing it, so the next review opens it directly.
 - A customer's request that has not been answered in the thread, such as driver information or documents, goes in the report.
 - A customer whose profile gives the quote no address gets one before the quote is printed: its usual pickup set to its saved location, or a bill-to address typed when the bills go somewhere else, because the quote's Name/address box prints the profile's bill-to address, or else its usual pickup's.

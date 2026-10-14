@@ -1,6 +1,6 @@
 ---
 name: trips
-description: Review, enter or update charter trips in the scheduler with rux. Read the customer's email thread in Missive for the quote, itinerary, PO and requests, check the trip's Route, Buses, Billing, Files and checklist against it, make the changes in rux's Chrome and save on his yes. Use for any request to review a trip or a week's trips, enter a trip from an itinerary or email, fix a trip's price, stops, contacts or pinned update, or draft a customer email about a trip. rux's office rules are in rules.md beside this file, and every new rule he gives is added there.
+description: Review, enter or update charter trips in the scheduler with rux. Read the customer's email thread in Missive for the quote, itinerary, PO and requests, check the trip's Route, Buses, Billing, Files and checklist against it, make the changes in rux's Chrome and save on his yes. Use for any request to review a trip or a week's trips, enter a trip from an itinerary or email, fix a trip's price, stops, contacts or updates, or draft a customer email about a trip. rux's office rules are in rules.md beside this file, and every new rule he gives is added there.
 ---
 
 # Working trips with rux
@@ -35,7 +35,7 @@ rux's side.
 4. List what disagrees: stops and times against the itinerary, a typed
    Estimated miles against the route's, the quote lines against the quote sent,
    Quote sent marked or not, Route's notices (second driver, fuel card),
-   contacts, the pinned update, the email thread linked or not.
+   contacts, the newest update, the email thread linked or not.
 5. Report before changing anything: what the emails say, what you would
    change, and only the questions `rules.md` does not already answer.
 6. On rux's go, make the changes, press each tab's Done once it is reviewed,
@@ -86,9 +86,8 @@ reads only the ones before it. Nothing is written until step 10.
    questions `rules.md` leaves open. Wait for his yes.
 10. **Save.** Add the itinerary on the Files tab, where a new trip's file
     waits and goes up with the save. Press Mark route done and Mark buses
-    done, press Save, keep the update box's line, "Quote not sent", and its
-    Pin this update tick, which pins it in the same save, and answer the
-    lists prompt by `rules.md`.
+    done, press Save, keep the update box's line, "Quote not sent", and
+    answer the lists prompt by `rules.md`.
 11. **After the save.** Read it back with `get_trip`, then Trip actions,
     Forms, Itinerary, Detailed: one sheet with the stops, each wait's status,
     the hours, the miles, the rate and the price, as the save wrote them.
@@ -118,13 +117,11 @@ reads only the ones before it. Nothing is written until step 10.
 - **Details:** dates, destination, type, Passengers (the headcount, which
   the Buses tab holds against the buses' seats), booking contact (its ⋮
   menu has Add email thread), trip contacts.
-- **Pinned update:** the trip has no notes; what everyone should know is the
-  update pinned to the top of its card, `pinned_update` in `get_trip`. Write
-  it in the Updates window, opened from the bar's menu with Add update, then
-  press the pin at its tile's corner, which shows on hover; pressing the tile
-  itself opens its editor. Pinning one unpins the last. The window's Pin
-  this update tick pins what is written as it is added; Save's box has it
-  ticked for a new trip.
+- **Updates:** the trip has no notes; what has been said about it is its
+  updates, newest first on its card, `updates` in `get_trip`. Add one with
+  the card's Add, which opens a box that adds what is typed on Enter, or in
+  the Updates window, opened from the bar's menu with Add update; pressing an
+  update opens its editor.
 - **Route:** the Summary (Start, Spot, End; Miles, Drive, On duty, Less rest,
   a row a day), its menu's Measure drives again for a leg saved with old
   drives, the fuel card and second-driver notices, the stops with their

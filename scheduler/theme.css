@@ -348,12 +348,10 @@
   [data-theme="rux-dark"] .scheduler-page :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel__header .rux--btn:not(:focus) {
     border-color: var(--rux-border-subtle-02);
   }
-  /* Ringed buttons that touch draw a doubled line between them, so they
-     stand the bar's gap apart. The trip's title gives up those 16px from the
-     32px Carbon keeps clear after it, and so holds the letters it held. */
-  [data-theme="rux-dark"] .scheduler-page .scheduler-aside__head > .rux--btn + .rux--btn {
-    margin-inline-start: var(--scheduler-head-gap);
-  }
+  /* Ringed buttons that touch draw a doubled line between them, so a
+     panel's head buttons stand the bar's gap apart; the roster's head has it
+     already. The trip's title gives up those 16px from the 32px Carbon keeps
+     clear after it, and so holds the letters it held. */
   [data-theme="rux-dark"] .scheduler-page :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel__decorator-and-close {
     gap: var(--scheduler-head-gap);
   }
@@ -913,10 +911,11 @@
     border-color: transparent;
   }
 }
-/* A row's buttons stand 8px apart there, as Design holds that theme's
-   footer buttons: Carbon's 1px is the seam between two squares, and between
-   two capsules it reads as one control split in half. */
-[data-theme^="apple-"] :is(.scheduler-contact__actions, .scheduler-contact__tasks) {
+/* A row's buttons stand 8px apart in the rounded themes, as Design holds
+   their footer buttons and button sets: Carbon's 1px is the seam between two
+   squares, and between two rounded buttons it reads as one control split in
+   half. */
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) :is(.scheduler-contact__actions, .scheduler-contact__tasks) {
   column-gap: var(--rux-spacing-03);
 }
 

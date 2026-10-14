@@ -259,8 +259,8 @@ update's author is its avatar's tooltip. With none, the title says No updates.
 In the Updates window each update has a pin at its corner, on hover or lit blue when pinned, and Pin this update under the box, ticked for a new trip, pins what is written as it is added;
 a trip has one pinned update, and pinning another lets the first go. The trip
 has no notes of its own: a note saved in rux-ui becomes the pinned update.
-Only the selected trip has a
-card. Every trip has the same four slots: Open trip, the itinerary,
+Only the selected trip has a card, the trip open in the editor too, where
+Open trip is disabled as Already open. Every trip has the same four slots: Open trip, the itinerary,
 opened or uploaded, Forms and Contacts; every other action is on the
 right-click menu. Contacts opens Contact list, a centred window as Updates is,
 of one Carbon contained list: the booking contact, the trip contacts, then

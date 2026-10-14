@@ -10150,8 +10150,8 @@
     return !panelEl.hidden && !!panelArgs?.ref && !panelArgs.draft && bar.dataset.tripId === panelArgs.ref.tripId;
   }
 
-  /* The shortcut bar follows the selection, except onto the bar the editor
-     holds, which the editor already shows. It is placed the way a calendar's
+  /* The shortcut bar follows the selection, onto the trip open in the editor
+     too, so its updates can be read and added beside the editor. It is placed the way a calendar's
      event popover is: beside the trip's first day, where everything the trip
      says is written, over the trip's own later days or the board after it,
      with its arrow at the first day's middle; on the first day's left where
@@ -10183,7 +10183,7 @@
   function placeBarOpen(bar = selectedBar()) {
     if (!barShortcuts) return;
     // A board set aside behind a panel in front of it has no trip to point at.
-    const none = !bar?.dataset.tripId || isEditorBar(bar) || menuHidesCard || gridEl.querySelector('.scheduler-bar--dragging')
+    const none = !bar?.dataset.tripId || menuHidesCard || gridEl.querySelector('.scheduler-bar--dragging')
       || !!schEl.closest('[inert]') || barKey(bar) === cardAwayFor;
     barShortcuts.hidden = none;
     // The Contacts window goes with its trip when it is put down.
@@ -11673,8 +11673,9 @@
     // The driver list's notes, such as the driver on the bus now, are not actions.
     if (item.getAttribute('aria-disabled') === 'true') return;
     const bar = barMenuFor;
-    // Its card stays put away after the menu shuts, as after a shortcut.
-    cardAwayFor = barKey(bar);
+    // Its card stays put away after the menu shuts, as after a shortcut, except
+    // after Open, whose editor opens beside the board.
+    if (item.id !== 'scheduler-bar-menu-open') cardAwayFor = barKey(bar);
     window.Rux?.menu?.close?.(barMenu);
     barMenu.hidden = true;
 
@@ -13993,7 +13994,7 @@
      show the name. */
   const SHORTCUT_ACTIONS = [
     { id: 'open', label: 'Open trip', icon: '#m-open_in_new', short: 'Open',
-      blocked: () => null, run: () => openSelected() },
+      blocked: bar => (isEditorBar(bar) ? 'Already open' : null), run: () => openSelected() },
     // Opens the itinerary, or uploads one on a trip that has none, as the
     // right-click menu swaps the two.
     { id: 'itinerary', label: 'Open or upload itinerary', icon: '#m-attachment', short: 'Itinerary',
@@ -14171,16 +14172,15 @@
   /* Where a warning is put right. The itinerary slot uploads or opens the
      itinerary as its own press does, Forms opens the trip's forms, and the
      rest open the trip on the tab that holds the fix, asking first about
-     unsaved work in another trip. */
+     unsaved work in another trip; the trip already in the editor only turns
+     to the tab. */
   function goToWarning(go, spot) {
     const bar = selectedBar();
     if (!bar?.dataset.tripId) return;
     if (go === 'itinerary') { barShortcuts.querySelector('.scheduler-bar-shortcut[data-shortcut="itinerary"]')?.click(); return; }
     putCardAway(bar);
     if (go === 'forms') { openForms(bar); return; }
-    const ref = barRef(bar);
-    whenSafe(() => {
-      openRef(ref);
+    const toFix = () => {
       const tab = document.getElementById(`scheduler-tab-${go}`);
       if (tab) window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
       // Once the tab has drawn, its field comes into view with the cursor in it.
@@ -14198,7 +14198,10 @@
         }
         field.focus({ preventScroll: true });
       }, 0);
-    });
+    };
+    if (isEditorBar(bar)) { toFix(); return; }
+    const ref = barRef(bar);
+    whenSafe(() => { openRef(ref); toFix(); });
   }
 
   let shortcutsDrawn = '';
@@ -14207,7 +14210,7 @@
     const trip = panelIndex.trips.get(bar.dataset.tripId);
     const carded = !!trip;
     const key = [bar.dataset.tripId, bar.dataset.leg, bar.dataset.itineraryId,
-      bar.dataset.assignmentId, bar.dataset.busId, bar.dataset.needHotel,
+      bar.dataset.assignmentId, bar.dataset.busId, isEditorBar(bar), bar.dataset.needHotel,
       bar.dataset.hotelBooked, slots.join(), cardKey(trip),
       JSON.stringify(barFacts.get(bar) ?? null)].join('|');
     // The same slots on the same bar are left alone, so a focused slot keeps focus.
@@ -14930,8 +14933,9 @@
     const bar = selectedBar();
     if (!bar) return;
     // A shortcut puts the card away, except Contacts, whose window opens over it
-    // and hands focus back to its slot on closing.
-    if (btn.dataset.shortcut !== 'contacts') putCardAway(bar);
+    // and hands focus back to its slot on closing, and Open, whose editor opens
+    // beside the board.
+    if (btn.dataset.shortcut !== 'contacts' && btn.dataset.shortcut !== 'open') putCardAway(bar);
     (FIXED_SHORTCUTS[btn.dataset.shortcut] ?? SHORTCUT_ACTIONS.find(a => a.id === btn.dataset.shortcut))?.run(bar, btn);
   });
 

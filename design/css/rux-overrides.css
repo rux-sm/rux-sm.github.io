@@ -219,6 +219,12 @@
   border-inline-end: 1px solid var(--rux-border-subtle);
   border-inline-start: 1px solid var(--rux-border-subtle);
 }
+/* The header's links mirrored into it take the same layer, as a header menu's
+   links do when it opens: Carbon fills each with the header's background,
+   which drew them as a dark strip across the lighter panel. */
+.rux--side-nav--hidden a.rux--header__menu-item { background-color: var(--rux-layer); }
+.rux--side-nav--hidden a.rux--header__menu-item:hover { background-color: var(--rux-layer-hover); }
+.rux--side-nav--hidden a.rux--header__menu-item:active { background-color: var(--rux-layer-active); }
 
 /* AN OPEN HEADER BUTTON AND ITS PANEL ARE ONE SURFACE. Carbon draws the open
    button as a tab: its layer, a line down each side and, below it, the

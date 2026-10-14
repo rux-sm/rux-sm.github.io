@@ -3212,7 +3212,7 @@
     refreshDirty();
     if (!filled) toast('warning', 'No free, rested drivers for the empty seats');
     else toast('success', `Filled ${filled} ${filled === 1 ? 'seat' : 'seats'}`,
-      filled < seats.length ? `${seats.length - filled} still empty: no one else is free and rested. Check, then Save.` : 'Check them, then Save.');
+      filled < seats.length ? `${seats.length - filled} still empty; nobody else is free. Check, then Save.` : 'Check them, then Save.');
   }
   panelFleet?.addEventListener('click', e => {
     const btn = e.target.closest?.('[data-fleet-best]');
@@ -4978,9 +4978,9 @@
     /* A link moves the trip's `updated_at`, so the week is read again, or the
        trip's next save would take this write for someone else's. */
     if (linked) await show();
-    if (failed.length || moved.length) toast('warning', 'Some of the lists were not updated.', [
-      failed.length ? `${failed.join(', ')} could not be saved. Try again from the contact or location page.` : '',
-      moved.length ? `${moved.join(', ')} changed elsewhere since, so it was left as it is.` : '',
+    if (failed.length || moved.length) toast('warning', 'Some lists were not updated.', [
+      failed.length ? `Could not save ${failed.join(', ')}.` : '',
+      moved.length ? `${moved.join(', ')} changed elsewhere.` : '',
     ].filter(Boolean).join(' '));
     else if (done) toast('success', 'Lists updated.');
   });
@@ -7493,8 +7493,8 @@
         setVal('scheduler-f-return', end != null && r.backDrive != null ? fromMin(end + r.backDrive) : '');
       };
 
-      const lookupFailed = (e, what) => toast('warning', `The drive ${what} was not found.`,
-        `${e?.message || 'Geoapify did not answer.'} The yard time stays blank until it answers.`);
+      const lookupFailed = (e, what) => toast('warning', `No drive found ${what}`,
+        `${e?.message ? `${e.message} ` : ''}The yard time stays blank.`);
 
       /* The bus's three times, each with the drive it was worked out from,
          are the summary's tooltip. The group's second time is named for what
@@ -7776,7 +7776,7 @@
         if (r.dropPlace?.lat != null) await driveBackFrom(r.dropPlace);
         drawTimeline();
         remeasure();
-        toast('success', 'Drives measured again', 'Save keeps the new miles and times; Reset takes them back.');
+        toast('success', 'Drives measured again', 'Save keeps the new miles and times.');
       }
       summaryMenu.addEventListener('click', () => openItemsMenu(summaryMenu, [
         { label: 'Measure drives again', run: measureAgain },
@@ -8051,7 +8051,7 @@
         refreshDirty();
         if (blanked.length) {
           toast('warning', 'The map did not answer',
-            `The drive to ${blanked.join(' and to ')} is blank, because the place it was measured from or to has changed. It is looked up again at the next change to the stops.`);
+            `The drive to ${blanked.join(' and to ')} is blank for now.`);
         }
       }
 
@@ -11325,7 +11325,7 @@
     const heldBy = saveHeldBy();
     if (heldBy) { toast('error', 'The trip was not saved.', heldBy); return false; }
     if (fleetDuplicates().size) {
-      toast('error', 'The trip was not saved.', 'A driver is in two seats on one leg. Choose another driver on the Buses tab.');
+      toast('error', 'The trip was not saved.', 'One driver is in two seats. Fix it on Buses.');
       return false;
     }
     const patch = patchOf() || {};
@@ -11529,10 +11529,10 @@
       // Read back rather than trusting the write, as the drag does.
       await show();
       const fields = Object.keys(patch).length;
-      if (filesLost.length) toast('warning', 'Trip created, but a file was not added.', `${filesLost.join(', ')}. Add it on the trip's Files tab.`);
-      else if (updateLost) toast('warning', 'Saved, but the update was not added.', 'Add it from the trip\'s Update shortcut.');
+      if (filesLost.length) toast('warning', 'Trip created; a file was not added.', `${filesLost.join(', ')}. Add it on Files.`);
+      else if (updateLost) toast('warning', 'Saved, but the update was not added.', 'Add it from the card.');
       else if (unlinked.length) toast('warning', creating ? 'Trip created.' : 'Saved.',
-        `${unlinked.join(', ')} could not be added to the contacts list, so the trip keeps its earlier link.`);
+        `${unlinked.join(', ')} was not added to Contacts.`);
       else if (creating) toast('success', onBus ? 'Trip created on its bus.' : 'Trip created. It is in the Unassigned row until it has a bus.');
       else toast('success', fields ? `Saved ${fields} change${fields === 1 ? '' : 's'}.` : 'Saved.');
       offerListUpdates(tripId, savedCustomerId, offers);
@@ -11542,7 +11542,7 @@
       /* Nothing landed, or a new trip's insert ran out of time, which its fixed
          id makes safe to send again. The editor stays as it is for another try. */
       if (!wrote && (creating || !e.timedOut)) {
-        if (e.timedOut) toast('warning', 'The trip may not have been created.', `${why} Press Save again. It cannot make a second copy.`);
+        if (e.timedOut) toast('warning', 'Not sure the trip was created.', `${why} Save again. No copy is made.`);
         else toast('error', `The trip was not ${creating ? 'created' : 'saved'}. ${why}`);
         panelSave.disabled = false;
         followLateWrite(late, seq, null, ['The trip was created after all.', 'Press Save to finish it.']);
@@ -11552,9 +11552,9 @@
          match the database, and sending them again would save some twice, so
          the board is read back and the editor lets them go. A new trip closes,
          since it exists now; an existing one reopens as it is saved. */
-      const check = part === 'its buses' ? 'Check its buses on the Buses tab.'
-        : part === 'the trip' ? 'Check the trip and make the change again if it is missing.'
-        : `Check ${part} and add what is missing.`;
+      const check = part === 'its buses' ? 'See Buses.'
+        : part === 'the trip' ? 'Check it.'
+        : `Check ${part}.`;
       const didNot = e.timedOut ? 'may not have saved' : 'did not save';
       // What did land is recorded.
       recordThisSave(savedId);
@@ -11564,8 +11564,8 @@
       await show();
       if (creating) {
         closePanel(false);
-        toast('warning', `The trip was created, but ${part} ${didNot}.`,
-          `${check} ${why}${filesLost.length ? ` A file was not added either: ${filesLost.join(', ')}. Add it on the trip's Files tab.` : ''}`);
+        toast('warning', `Trip created, but ${part} ${didNot}.`,
+          `${check} ${why}${filesLost.length ? ` A file was not added either: ${filesLost.join(', ')}.` : ''}`);
         followLateWrite(late, seq, null);
         return true;
       }
@@ -11594,8 +11594,8 @@
         const bar = findBar(panelArgs.ref);
         if (bar) openPanel(bar);
       }
-      if (error) toast('warning', 'The late save did not go through.', `${error.message} Check the trip before saving again.`);
-      else toast(unsaved ? 'warning' : 'success', landed[0], unsaved ? 'Reload the trip to see it before saving again.' : landed[1]);
+      if (error) toast('warning', 'The late save did not go through.', `${error.message} Check the trip first.`);
+      else toast(unsaved ? 'warning' : 'success', landed[0], unsaved ? 'Reload the trip before saving again.' : landed[1]);
     }, () => {});
   }
 
@@ -12271,7 +12271,7 @@
       caution,
       left && left.trip !== found.trip && `Moved from ${left.trip.destination || 'their other trip'}`,
       // A relief's swap time is the Buses tab's to set, and a new seat has none.
-      RELIEF.has(found.role) && !found.seat?.report_time && 'No swap time yet, which the Buses tab sets',
+      RELIEF.has(found.role) && !found.seat?.report_time && 'No swap time yet',
     ].filter(Boolean).join(' · ');
     const plan = dropped && (was || left) ? [
       left && { ref: left.ref, role: left.role, expect: null, driverId: driver.id, status: had.status, keep: row },
@@ -12280,7 +12280,7 @@
     const back = old && left ? `${old} and ${name} are back where they were.`
       : old ? `${old} is back on this bus.` : `${name} is back where they were.`;
     toast(caution ? 'warning' : 'success',
-      `${name} is ${found.role === 'driver' ? 'driving this bus' : `the ${SEAT_LABEL[found.role].toLowerCase()} on this bus`} now.`,
+      `${name} is ${found.role === 'driver' ? 'driving this bus' : `the ${SEAT_LABEL[found.role].toLowerCase()} on this bus`}.`,
       said || undefined, plan ? { label: 'Undo', onClick: () => undoSeats(plan, back) } : undefined);
     return true;
   }
@@ -13051,7 +13051,7 @@
     const saved = editing.before?.quoted_price == null ? null : Number(editing.before.quoted_price);
     if (price == null) return;
     if (price !== saved || linesPatch()?.work) {
-      toast('info', 'Save to send this price', 'The customer quote shows the saved price until the trip is saved.');
+      toast('info', 'Save to send this price', 'The quote shows the last saved price.');
       return;
     }
     if (editing.quoteSent && round2(editing.quoteSent.price) === round2(price)) return;
@@ -13449,9 +13449,9 @@
       const tab = document.getElementById('scheduler-tab-billing');
       if (tab && tab.getAttribute('aria-selected') !== 'true') window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
       const count = legBuses(leg);
-      if (assigned > 0) toast('warning', 'A co-driver is still assigned', 'Take them off on the Buses tab to drop the Second driver line.');
-      else if (q.buses !== count) toast('warning', `The Buses tab has ${count} ${count === 1 ? 'bus' : 'buses'}`, 'The bus rental counts those. Add or take off a bus there to match.');
-      else if (relief > 0 && q.relief !== relief) toast('warning', `The Buses tab has ${relief} relief ${relief === 1 ? 'seat' : 'seats'}`, 'The relief line counts those. Change the seats there to match.');
+      if (assigned > 0) toast('warning', 'A co-driver is still assigned', 'Take them off on Buses first.');
+      else if (q.buses !== count) toast('warning', `The Buses tab has ${count} ${count === 1 ? 'bus' : 'buses'}`, 'The rental counts those; match them there.');
+      else if (relief > 0 && q.relief !== relief) toast('warning', `The Buses tab has ${relief} relief ${relief === 1 ? 'seat' : 'seats'}`, 'The relief line counts those.');
       else toast('success', 'Quote lines set from the calculator', 'Save to keep them.');
     };
     // Nothing to lose goes straight in; lines or a typed price are asked about.
@@ -13978,7 +13978,7 @@
   async function uploadFrom(tripId, label, file, item) {
     if (!(await isPdf(file))) {
       if (item) item.fail('Only PDF files can be added', 'Export the file as a PDF, then add it again.');
-      else toast('error', 'Only PDF files can be added. Export the file as a PDF, then add it again.');
+      else toast('error', 'Only PDF files can be added. Export it as a PDF first.');
       return false;
     }
     if (!item) toast('working', `Uploading ${label === 'PO' ? 'the purchase order' : `the ${label.toLowerCase()}`}…`);
@@ -14002,7 +14002,7 @@
   function replaceFrom(tripId, old) {
     pickFile(async file => {
       if (!(await isPdf(file))) {
-        toast('error', 'Only PDF files can be added. Export the file as a PDF, then try again.');
+        toast('error', 'Only PDF files can be added. Export it as a PDF first.');
         return;
       }
       toast('working', 'Replacing the file…');
@@ -14482,12 +14482,12 @@
     // The offer to record a call or text to the customer's people.
     const offer = (did, name, title, subtitle) => () => {
       const body = `${did} ${name}`;
-      toast('info', title ?? body, subtitle ?? 'Add it to the trip\'s updates?', {
+      toast('info', title ?? body, subtitle ?? 'Add it to the updates?', {
         label: 'Add update',
         onClick: async () => {
           toast(null);
           if (await writeUpdate(trip.id, { kind: 'update', body, keys: null })) { await show(); toast('success', 'Update added', body); }
-          else toast('warning', 'The update was not added.', 'Add it from the trip\'s Update shortcut.');
+          else toast('warning', 'The update was not added.', 'Add it from the card.');
         },
       });
     };
@@ -14599,13 +14599,13 @@
       if (letter.to?.email) {
         toLetter.push({ label: 'Email driver details', run: goTo(
           `mailto:${letter.to.email}?subject=${encodeURIComponent(letter.subject)}&body=${encodeURIComponent(letter.body)}`,
-          async () => { await askInfoSent(sent[1], 'Answer once the email has gone.'); offer(...sent)(); }) });
+          async () => { await askInfoSent(sent[1], 'Answer once the email has gone.'); offer(...sent, 'Driver details emailed')(); }) });
       }
       hand(booker, toLetter, { label: 'Copy driver details', words: 'Driver info', say: 'Copy driver info', icon: '#m-content_copy', run: async () => {
         if (!(await copyText(letter.body))) return;
         closeContacts();
         await askInfoSent(sent[1], 'The driver details are copied. Paste and send them, then answer.');
-        offer(...sent, 'Driver details copied', 'Once it is sent, add it to the trip\'s updates?')();
+        offer(...sent, 'Driver details copied', 'Add to updates once sent?')();
       } });
     }
     for (const p of people) {
@@ -15073,7 +15073,7 @@
       await show();
       // A cancelled trip leaves the board, and the editor with it.
       if (editing?.id === id && !panelEl.hidden) closePanel(false);
-      if (kept) toast('warning', 'Trip cancelled, but its buses and drivers are still on it.', 'Bring it back from search, take them off on its Buses tab, and cancel it again.');
+      if (kept) toast('warning', 'Cancelled with its buses and drivers', 'Restore it, free them, cancel again.');
       else toast('success', 'Trip cancelled. It is off the schedule, and search still finds it.');
     } catch (e) {
       toast('error', `The trip was not cancelled. ${e.message}`);
@@ -16253,9 +16253,9 @@
     } catch (e) { failed = e; }
     if (!row) {
       await show();
-      if (failed?.code === '22P02') toast('info', 'That link is not a draft\'s', 'Its address was cut short or changed. Ask Claude for the draft again.');
+      if (failed?.code === '22P02') toast('info', 'That link is not a draft\'s', 'The address is broken. Ask Claude again.');
       else if (failed) toast('error', 'The draft could not be read', `${failed.message || failed} Open the link again.`);
-      else toast('info', 'That draft is not there', 'It was used already, it ran out after its fourteen days, or it was made for someone else: a draft opens only for the person who asked Claude for it.');
+      else toast('info', 'That draft is not there', 'Used, over 14 days old, or someone else\'s.');
       return;
     }
 
@@ -16295,7 +16295,7 @@
         .select('id,destination,customer,start_date,cancelled_at,cancellation_reason')
         .eq('id', id).maybeSingle().then(r => r)).catch(() => ({ data: null }));
       if (trip?.cancelled_at) { openCancelledModal(trip); return; }
-      toast('info', 'That week is showing', 'The trip has no bar on it — it may have no bus yet.');
+      toast('info', 'That week is showing', 'The trip has no bar; it may have no bus yet.');
       return;
     }
     bar.scrollIntoView({ block: 'center', inline: 'center' });

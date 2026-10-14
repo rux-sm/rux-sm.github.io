@@ -7,9 +7,9 @@ type: plan
 ## Goal
 
 escamillatourbuses.com opens over HTTPS on any phone, says what the company
-runs and where it goes, and takes a quote request that always reaches the
-office: as a New quote on the board's Tasks, which starts the trip with the
-request already filled in, and as an email in Missive that one reply answers.
+runs and where it goes, and takes a quote request straight into the
+scheduler, as a New quote on the board's Tasks, which starts the trip with the
+request already filled in.
 
 The site stands as a public preview in this repository, `website/`, beside
 the current site, and takes the current site's address only once the manager
@@ -39,6 +39,9 @@ the last one forwarded came in March 2026.
   this one holds the other apps. Its links stay inside its folder, so it moves
   whole, and a 404 page comes with the move, since GitHub Pages serves one
   404 for a whole site.
+- **The moved site's repository is rux-sm's,** for now, the account that
+  already runs these pages; an organization for the company can take it over
+  later.
 - **Its look is Design's.** Pages are built from Design's shell, tiles,
   notifications, accordion and form controls, linked from `/design/`. The
   parts Carbon has no component for, the hero, photos, rows of tiles and the
@@ -57,6 +60,10 @@ the last one forwarded came in March 2026.
 - **The photos are the current site's of coaches still in the fleet.** Its
   three photos of MCI coaches the fleet no longer runs, and its four of
   people, are left out until rux sends what replaces them.
+- **The tourism bureau's commendation is quoted by the bureau's name once the
+  bureau says yes,** a line or two beside the current site's testimonial,
+  because a letter to the office is not the same as praise on a public page.
+  It is the one organization the pages name.
 - **Work for us is a part of About us:** call or come by the office, and no
   form, which would collect licence details the site should not hold.
 - **The quote form asks what the office quotes from and what first requests
@@ -74,21 +81,25 @@ the last one forwarded came in March 2026.
   widget of its own for the site's domain, a hidden field a person never
   fills, and a limit on requests from one address in an hour.
 - **A request is stored in `quote_requests` with a number of its own,** shown
-  to the customer and in the email's subject. Staff read and update it under
-  `staff_all`, and only the function adds one.
+  to the customer on the thank-you page, to give when they call. Staff read
+  and update it under `staff_all`, and only the function adds one.
 - **Each request adds a New quote row to Tasks:** `kind` `quote`, `source`
   `website`, due the day it came in, its organization or name as who, its trip
   in a line as words and its facts as detail. `to_dos` gains
   `quote_request_id`, and `to_dos_stamp` takes a website row with no one
   signed in, which names Website where a person or Ruxbot would be.
-- **The function emails e-escamilla@sbcglobal.net, the one inbox the team
-  reads in Missive,** with the customer as Reply-To, so a reply in Missive
-  reaches them, and sends the customer a copy of what they asked.
-- **A request is never lost to one failing part.** It is stored first and
-  emailed either way, and the page says it failed only when both failed, with
-  the phone number and what was typed still there.
-- **Mail goes out from the company's domain, signed with SPF and DKIM,**
-  because the office's inbox already files some customers' requests as spam.
+- **A request goes to the scheduler alone, and no email is sent,** because
+  the office's quote work is already a New quote on Tasks, and a mail service
+  would add domain records, a key and a spam filter between the form and the
+  office. Tasks' count shows it the day it lands, and the office answers by
+  writing to the customer from Missive. A free mail service, such as Resend's
+  free tier, can be added later if a request ever waits unseen.
+- **A request that fails to store is never lost in silence.** The page says
+  it was not sent, gives the phone number and keeps what was typed.
+- **The thank-you page promises no reply time.** It gives the request's
+  number, says the office answers Monday to Friday, 8 to 5, and asks for a
+  call about a trip in the next few days, because a promise the office misses
+  costs more than none.
 - **Start trip turns a request into a draft,** a `trip_drafts` row for
   whoever pressed it with the fields `draft_trip` writes, and opens the editor
   on `?draft=`, so Save stays a person's. The draft fills Customer where the
@@ -96,41 +107,30 @@ the last one forwarded came in March 2026.
   email or phone is a contact's; Update your lists offers the rest after the
   save. `trip_drafts` gains `quote_request_id`, and the save links the request
   and its Tasks row to the trip.
-- **Inbox review joins a request's email to its row** by the request number
-  in the subject, adding the thread's link and no second New quote.
 - **A session cannot deploy a function.** It hands rux the deploy command for
-  `quote-request`, as for the connector, and rux sets the function's secrets,
-  the Turnstile secret and the mail key, in the dashboard.
-- **The domain moves only once the site serves at its GitHub address and a
-  request has landed.** Every Microsoft 365 record stays as it is, the domain
-  is verified with GitHub so no one else can claim it, and the old hosting is
-  cancelled after.
+  `quote-request`, as for the connector, and rux sets the function's secret,
+  the Turnstile secret, in the dashboard.
+- **The switch is proven with one real request,** marked as a test in its
+  details and closed at once, since the database is never tried otherwise.
+- **The domain moves only once the site serves at its GitHub address and the
+  test request has landed.** Every Microsoft 365 record stays as it is, the
+  domain is verified with GitHub so no one else can claim it, and the old
+  hosting is cancelled after.
 
 ## Questions
 
-- A tourism bureau wrote the office a strong commendation. May the site quote
-  it, by name, beside the current site's testimonial?
 - Who holds the GoDaddy account for the domain, and the Mailchimp account
   behind the Mandrill key? Is the current hosting under a contract, and are
   the site's photos the company's to reuse?
-- Which GitHub account owns the moved site: rux-sm, or an organization for
-  the company, so the site outlives one person's account?
-- Which service sends the mail: the company's Microsoft 365, already paid but
-  needing an app registered in its admin, or a mail service such as Resend,
-  quicker to set up with a few DNS records?
-- What does the customer's copy promise: a reply within a working day, or
-  something else?
-- The database is never tried with a test record. May the switch send one
-  real request marked as a test and closed at once, or is the first
-  customer's request the proof?
 
 ## Tasks
 
 - [ ] Revoke the Mandrill key in the current site's script, in the Mailchimp
       account or through the agency that hosts the site, and have both forms
       replaced with the phone number and the office's email until the switch.
-- [ ] Put the commendation on the pages in both languages if rux allows
-      it, and new photos of the fleet or the team once rux has them.
+- [ ] Ask the tourism bureau whether the site may quote its letter by name,
+      and on a yes put a line or two of it on the pages in both languages.
+- [ ] Put new photos of the fleet or the team on the pages once rux has them.
 - [ ] Once approved, move `website/` to its own repository with `README.md`,
       `AGENTS.md`, `CNAME`, a 404 page, the Design sync tool and a check run
       in CI for the class rule, links, and every page's title and
@@ -140,19 +140,18 @@ the last one forwarded came in March 2026.
       `to_dos_stamp`, show it to rux, apply it on a yes, and update
       `scheduler/docs/database-inventory.md`.
 - [ ] Write `scheduler/quote-request/`, its rules in a handler the check runs
-      against sample requests: the fields, the hidden field, the limit, the
-      email's subject and the Tasks row. Pin its imports, as
+      against sample requests: the fields, the hidden field, the limit and
+      the Tasks row. Pin its imports, as
       `scheduler/tools/check-connector.mjs` holds the connector's.
-- [ ] Add the mail service's domain records at GoDaddy and a Turnstile widget
-      for the site's domain, hand rux the deploy command and the secrets, and
-      point the form at the function with a failed send checked.
+- [ ] Add a Turnstile widget for the site's domain, hand rux the deploy
+      command and the secret, point the form at the function with a failed
+      send checked, give the thank-you page the request's number, and send
+      the test request and close it.
 - [ ] Show a website request on Tasks, with Website where its maker goes, its
       facts in its detail and Start trip among its buttons, and update
       `scheduler/docs/screen-inventory.md`.
 - [ ] Build Start trip: the draft from the request, its fields run against
       sample requests in the check, and the links Save writes.
-- [ ] Teach `.claude/skills/inbox-review/` to join a request's email to its
-      row by the number in its subject.
 - [ ] Add how a website request is answered to `scheduler/docs/booking.md`,
       ahead of sending the quote.
 - [ ] Point `www` and the bare domain at GitHub Pages at GoDaddy, keeping

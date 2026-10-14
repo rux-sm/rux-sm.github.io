@@ -35,13 +35,17 @@ text in it under 4.5 to 1 and no control's resting shape under 3 to 1.
   and chroma, and what must be seen -- the support colours, the status dots,
   the error text and the danger button -- takes the same lightness with more
   chroma, so success is one green on a screen.
-- **Corners follow the mark's squares, in two steps.** 2px on a control: a
-  button, a field, a dropdown, a search, a date field and a checkbox. 4px on a
+- **Corners follow the mark's squares, in two steps.** 3px on a control and a
+  tag: a button, a field, a dropdown, a search, a date field and a checkbox,
+  and the tag because a corner reads rounder on a smaller thing. 6px on a
   surface: a tile, a menu, a popover, a tooltip, a notification, a toast, a
-  calendar, a modal, a side panel's free corners, and a tag. 0 where a box
-  meets the window's edge or another box it is joined to. Round only where the
-  roundness is the meaning: the account picture, a radio, a toggle and a
-  status dot. Nothing is rounder than 4px.
+  calendar, a modal, a switcher's box and a side panel's free corners. 0 where
+  a box meets the window's edge or another box it is joined to. Round only
+  where the roundness is the meaning: the account picture, a radio, a toggle
+  and a status dot. Nothing is rounder than 6px.
+- **A control held close to a surface's edge stands 3px in,** a menu's item, a
+  switcher's option and a scheduler shortcut, so its 3px corner runs parallel
+  to the surface's 6px; a control well clear of the edge needs no such care.
 - **The face is IBM Plex Sans,** with Plex Mono for code, as Carbon's own
   themes wear it, because Carbon's type scale is drawn for it.
 - **A field rings in `border-strong-01`, at 3 to 1 on the field,** and a box

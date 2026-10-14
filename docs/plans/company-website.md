@@ -108,8 +108,6 @@ the last one forwarded came in March 2026.
 
 ## Questions
 
-- Are the office hours still Monday to Friday, 8 to 5? Nothing in the mail
-  says, so the pages carry the current site's.
 - Is anything else on the pages out of date or wrong, and are there newer
   photos of the fleet, or of the family and the team, to put on them?
 - A tourism bureau wrote the office a strong commendation. May the site quote
@@ -133,8 +131,8 @@ the last one forwarded came in March 2026.
 - [ ] Revoke the Mandrill key in the current site's script, in the Mailchimp
       account or through the agency that hosts the site, and have both forms
       replaced with the phone number and the office's email until the switch.
-- [ ] Put rux's answers on the pages in both languages: the hours, anything
-      out of date, new photos and the commendation.
+- [ ] Put rux's answers on the pages in both languages: anything out of
+      date, new photos and the commendation.
 - [ ] Once approved, move `website/` to its own repository with `README.md`,
       `AGENTS.md`, `CNAME`, a 404 page, the Design sync tool and a check run
       in CI for the class rule, links, and every page's title and

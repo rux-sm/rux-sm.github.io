@@ -3391,8 +3391,8 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast:not([data-place="heade
 /* Where the header has room the toast stands in it instead, centred in the
    gap between the company's name and the header's buttons, which data.js
    measures into these four properties as it shows the toast. The row is the
-   header's middle; a notice too long for one row wraps and hangs below the
-   header rather than cut its words off. */
+   header's middle, one line, and a notice too long for it is cut off there,
+   its whole text on hover. */
 .scheduler-toast[data-place="header"] {
   inset-block: var(--scheduler-toast-top) auto;
   inset-inline: var(--scheduler-toast-start) auto;

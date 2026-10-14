@@ -1074,20 +1074,34 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    column's width, and Carbon's tag is as wide as it is told to be. */
 .scheduler-pair-cell__lines > .rux--tag { align-self: flex-start; }
 
-/* A toast in the header is Carbon's inline notification in one row the
-   header's height leaves, `--scheduler-toast-row`, which data.js sets: as
-   wide as its words up to the gap it stands in, the words wrapping under
-   the title when they run out of room. The icon, the action and the close
-   button are centred on the first line, and the close button is 32px, the
-   size of the header's own buttons. */
+/* A toast in the header is Carbon's inline notification in one line, the
+   row the header's height leaves, `--scheduler-toast-row`, which data.js
+   sets: as wide as its words up to the gap it stands in, the title and the
+   words after it on that line, cut off with an ellipsis where they run out
+   of room; data.js gives the text the whole of them as its tooltip. The
+   icon, the action and the close button are centred on the line, and the
+   close button is 32px, the size of the header's own buttons. */
 .scheduler-toast[data-place="header"] > :is(.rux--inline-notification, .rux--actionable-notification) {
   min-block-size: var(--scheduler-toast-row);
   min-inline-size: 0;
   inline-size: auto;
   max-inline-size: 100%;
 }
+.scheduler-toast[data-place="header"] :is(.rux--inline-notification__details, .rux--actionable-notification__details, .rux--actionable-notification__text-wrapper) {
+  min-inline-size: 0;
+}
 .scheduler-toast[data-place="header"] :is(.rux--inline-notification__text-wrapper, .rux--actionable-notification__text-wrapper) {
   padding-block: calc((var(--scheduler-toast-row) - 1.125rem) / 2);
+}
+.scheduler-toast[data-place="header"] :is(.rux--inline-notification__text-wrapper, .rux--actionable-notification__content) {
+  display: block;
+  overflow: hidden;
+  min-inline-size: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.scheduler-toast[data-place="header"] :is(.rux--inline-notification__title, .rux--inline-notification__subtitle, .rux--actionable-notification__title, .rux--actionable-notification__subtitle) {
+  display: inline;
 }
 .scheduler-toast[data-place="header"] .rux--inline-notification__icon {
   margin-block-start: calc((var(--scheduler-toast-row) - 1.25rem) / 2);

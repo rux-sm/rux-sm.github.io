@@ -332,6 +332,7 @@
       );
       details.append(icon, wrap);
       box.appendChild(details);
+      if (where === 'header') wrap.title = [title, subtitle].filter(Boolean).join('\n');
       if (closes) box.appendChild(closeButton('rux--inline-notification', title));
       return box;
     }
@@ -350,6 +351,8 @@
       el('div', 'rux--actionable-notification__subtitle', subtitle),
     );
     wrap.appendChild(content);
+    // The header's one line can cut the words off, so the whole of them shows on hover.
+    if (where === 'header') content.title = [title, subtitle].filter(Boolean).join('\n');
     details.append(icon, wrap);
     const buttons = el('div', 'rux--actionable-notification__button-wrapper');
     /* One action, or a choice of them, in the order given. A toast's is
@@ -413,10 +416,10 @@
      board nor the editor or any panel beside it; elsewhere, as on a phone,
      at the bottom of the screen. The gap is measured as the toast is shown,
      since the header's height is the theme's and its buttons the window's.
-     The row is 40px in a 64px header and 32px in Carbon's 48px one, and a
-     toast of one row is centred in the header on its own height, borders
-     and all; a longer one starts where that row does and hangs below. The
-     toast wears the header's theme, so it reads on the header's surface. */
+     The row is 40px in a 64px header and 32px in Carbon's 48px one, always
+     one line, and the toast is centred in the header on its own height,
+     borders and all. It wears the header's theme, so it reads on the
+     header's surface. */
   const TOAST_ROOM = 360;
   function toastPlace() {
     const header = document.querySelector('.rux--header');
@@ -438,8 +441,7 @@
     toastEl.dataset.place = 'header';
     if (place.theme) toastEl.dataset.theme = place.theme;
     else toastEl.removeAttribute('data-theme');
-    const tall = box?.offsetHeight ?? place.row;
-    const drop = tall <= place.height - 8 ? (place.height - tall) / 2 : (place.height - place.row) / 2;
+    const drop = (place.height - (box?.offsetHeight ?? place.row)) / 2;
     toastEl.style.setProperty('--scheduler-toast-top', `${place.top + drop}px`);
     toastEl.style.setProperty('--scheduler-toast-start', `${place.start}px`);
     toastEl.style.setProperty('--scheduler-toast-room', `${place.room}px`);

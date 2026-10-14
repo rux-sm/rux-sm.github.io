@@ -3462,13 +3462,15 @@
   }
 
   /* What is this file? Asked once a PDF is dropped or picked: the types as
-     radio buttons, Itinerary first picked, and Something else opens a Name
+     radio buttons with none picked, so a file is never labelled by accident,
+     and Add file stays disabled until one is. Something else opens a Name
      field whose words become the file's label. Add file hands the label on;
      Cancel or the close adds nothing. */
   const fileTypeModal = document.getElementById('scheduler-file-type-modal');
   const fileTypeGroup = document.getElementById('scheduler-file-type-group');
   const fileTypeOther = document.getElementById('scheduler-file-type-other');
   const fileTypeInput = document.getElementById('scheduler-file-type-label');
+  const fileTypeAdd = document.getElementById('scheduler-file-type-add');
   let fileTypeDone = null;
   for (const [value, name] of [...DOC_TYPES, [DOC_OTHER, 'Something else']]) {
     const id = `scheduler-file-type-${value.toLowerCase().replace(/\W+/g, '-')}`;
@@ -3485,8 +3487,9 @@
     fileTypeGroup?.appendChild(wrap);
   }
   if (fileTypeInput) fileTypeInput.maxLength = DOC_LABEL_MAX;
-  const pickedFileType = () => fileTypeGroup?.querySelector('input:checked')?.value ?? 'Itinerary';
+  const pickedFileType = () => fileTypeGroup?.querySelector('input:checked')?.value ?? '';
   fileTypeGroup?.addEventListener('change', () => {
+    fileTypeAdd.disabled = !pickedFileType();
     fileTypeOther.hidden = pickedFileType() !== DOC_OTHER;
     nameError(fileTypeInput, '');
     if (!fileTypeOther.hidden) fileTypeInput.focus();
@@ -3495,16 +3498,17 @@
     if (!fileTypeModal) { done('Itinerary'); return; }
     fileTypeDone = done;
     document.getElementById('scheduler-file-type-name').textContent = fileName;
-    const first = fileTypeGroup.querySelector('input');
-    first.checked = true;
+    for (const input of fileTypeGroup.querySelectorAll('input')) input.checked = false;
+    fileTypeAdd.disabled = true;
     fileTypeOther.hidden = true;
     fileTypeInput.value = '';
     nameError(fileTypeInput, '');
     window.Rux?.modal?.open?.(fileTypeModal);
-    first.focus();
+    fileTypeGroup.querySelector('input').focus();
   }
   const finishFileType = () => {
     const picked = pickedFileType();
+    if (!picked) return;
     const label = picked === DOC_OTHER ? docLabelFor(fileTypeInput.value) : picked;
     if (!label) {
       nameError(fileTypeInput, 'Type a name for the file.');
@@ -3516,7 +3520,7 @@
     window.Rux?.modal?.close?.(fileTypeModal);
     done?.(label);
   };
-  document.getElementById('scheduler-file-type-add')?.addEventListener('click', finishFileType);
+  fileTypeAdd?.addEventListener('click', finishFileType);
   fileTypeInput?.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); finishFileType(); } });
   fileTypeModal?.addEventListener('rux:modal-closed', () => { fileTypeDone = null; });
 

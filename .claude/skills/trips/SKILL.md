@@ -156,7 +156,7 @@ reads only the ones before it. Nothing is written until step 10.
 - Save opens Updates: replace its suggestion with one line saying what changed
   and why.
 - "Update your lists?" after a save offers to add new places to Locations:
-  choose Not now unless rux asked for it.
+  answer it by `rules.md`, and name in the report each place saved.
 - Check with `get_trip` that it landed: `quote_lines`, `quote_sent_price`,
   the three `_done_at` marks and `passengers` are in it, and a time past
   midnight on a one-day leg has `arrive_on` or `depart_prev_on`, its real day.

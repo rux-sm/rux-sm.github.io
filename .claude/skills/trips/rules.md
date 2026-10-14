@@ -26,6 +26,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - A long day where the group stays nowhere overnight is kept as a one-day trip even when it gets back after midnight, because the +1 beside the time already shows the overlap.
 - A trip is entered with the real day and time the bus is back at the yard, and its dates are never shortened by hand: a return before the late-return hour on the Settings page, 4:00 AM, counts as the night before by itself, so the board, the picks and the quote's days leave that day free, because it leaves room for a whole other trip.
 - Add a fuel card whenever the Route tab suggests one; no need to ask.
+- When a save offers to add new places to Locations, save each one whose address is a full, correct street address and whose name is the place's accurate name, and leave out the rest, because a saved location gives the next trip the right name and map point.
 - When the Route tab's second-driver notice offers Rest in the sleeper, take it: one driver resting in a sleeper coach during that wait is the plan, because rux always prefers it to a second driver. Only when the notice offers the co-driver alone, raise the second driver with rux before deciding, because it changes the cost and the crew.
 - With one driver, the trip requires a sleeper and the pinned update carries the rest plan the driver is told, such as hours in the sleeper at the stop with the bus parked there; the driver's itinerary says Rest in sleeper on that stop and nothing more.
 
@@ -67,5 +68,5 @@ in its section above, and its question is deleted.
 - Does every quoted trip get a bus assigned to hold it, or only when rux says so?
 - Is a bus held for a trip The Charter Bus offers before Hector has chosen it?
 - When an itinerary gives no headcount, is the customer asked, or does the last count they gave stand?
-- When a save offers to add new places and contact details to the lists, which are added? Until rux says, the answer is Not now.
+- When a save offers to add new contact details to the lists, which are added? Until rux says, the answer is Not now.
 - When a sleeper is to be installed in a bus, how is that written in the scheduler, so the bus is held the day before and counts as a sleeper on the trip?

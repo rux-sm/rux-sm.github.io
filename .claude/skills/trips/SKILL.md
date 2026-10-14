@@ -206,9 +206,10 @@ reads only the ones before it. Nothing is written until step 10.
   found by its street address, with the Name field set to the hotel.
 - A street address typed alone lists the same street in other towns first: type the town and ZIP after it. The right one may name a colonia where the customer names the town, and a place the map has no name for is named in the Name field that shows once it is picked.
 - Set a time input with `form_input` as `HH:MM`, and read the dialog back before Done.
+- A long route goes in at a stop a batch, with no `ref` to read: a place's list can take several seconds to come back from the map, and ArrowDown then Enter in the Location field picks from it, the first press landing on the first place; the page's script then sets the window's `#scheduler-f-stopday` select and its Arrival time and Leave time inputs with `input` and `change` events and reads them back, and after Done each stop tile's `aria-label` gives its times, drive and miles.
 - A stop's "The wait counts as" is a plain select: set it with `form_input` as `on`, `off` or `sleeper`, because a click shows no menu in a screenshot.
 - Done in a quote line's window keeps whatever its Cost field holds as a typed cost, so a rental opened to change its Mileage rate stops following the route: clear the Cost before Done, or afterwards choose Use calculator price from the line's menu, which is offered only when the two figures differ, and read the line back.
-- A dialog may be closing as you click. Check what has the focus before typing.
+- A dialog may be closing as you click, and a stop's window moves the focus to its Close button a moment after it opens, so a place typed at once goes nowhere: click in the Location field and check what has the focus before typing.
 - A tab whose editor holds unsaved changes does not close: Chrome waits on its leave-page question and the close call times out. Press Reset first when the changes are to be dropped, such as a draft opened only to measure a route.
 - A draft's stop named like a saved location takes that location, wherever it is, so a chain restaurant can land in another city: read each leg's miles on the Route tab, and search the stop again by its street address when a leg is far too long.
 - `scroll_to` can shift the whole page; reset the window's scroll before a
@@ -224,6 +225,7 @@ reads only the ones before it. Nothing is written until step 10.
 - A click by `ref` on a tab that is not showing does nothing: take a screenshot to see which tab is open before pressing a button on it.
 - `draft_trip_change` refuses `stops`, which are drafted only on a new trip: on a placeholder add each stop with the Route tab's Add stop.
 - The Route tab redraws its list as each drive is measured, so a `ref` read before a stop's Done is gone after it: scroll the tab to its end and press Add stop from a fresh screenshot.
+- Add stop pressed while the Route tab is still redrawing can open no window, and a click by coordinates then lands on the board, where it opens another trip's card and Escape asks to save or discard the whole editor: check the stop's window is showing before clicking or typing in it.
 - A vehicle comes off a trip from its tile's own menu, a right-click on the tile, then Remove, which asks first: pressing the tile opens its window, which has no remove.
 - Add the bus rental on a trip that already has a quoted price keeps that price, spread over the buses now on it: after the bus count changes, open the line and type the Cost for one bus that the PO or the quote sent gives.
 - Changing a round trip's pickup leaves the old pickup behind as an extra stop before the return, and it shows only after the save: read the Route tab again once it is saved, remove the leftover stop from its tile's menu, and save once more.

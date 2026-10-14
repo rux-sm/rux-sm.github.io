@@ -47,7 +47,8 @@
 }
 
 /* A ROW OF EQUAL PARTS: one column on a phone, two on a tablet, three or four
-   on a wide screen. A list carries it, so its items are counted aloud. */
+   on a wide screen. A list carries it, so its items are counted aloud. A row
+   of four short parts, the big numbers, is two across even on a phone. */
 .website-cards {
   display: grid;
   gap: 1rem;
@@ -56,9 +57,19 @@
   grid-template-columns: minmax(0, 1fr);
   list-style: none;
 }
+.website-cards--four {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
 @media (min-width: 42rem) {
   .website-cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+/* Where a row is two across, an odd last part takes the whole row, so three
+   parts leave no empty cell beside the third. */
+@media (max-width: 65.98rem) {
+  .website-cards > li:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
 }
 @media (min-width: 66rem) {
@@ -119,11 +130,17 @@
 /* THE PAGE'S CALLS TO ACTION, which wrap onto a second line where the two
    do not fit beside each other. Carbon's `btn-set` holds its buttons on one
    line at 12.25rem each, which cuts "Call (956) 994-1169" in two, and its
-   expressive buttons at 20rem, which overrun a half-width column. */
+   expressive buttons at 20rem, which overrun a half-width column. On a phone
+   they stack, each the column's full width, as Carbon's stacked buttons do. */
 .website-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+}
+@media (max-width: 41.98rem) {
+  .website-actions {
+    flex-direction: column;
+  }
 }
 
 /* THE FOOTER is a dark zone of its own: `data-theme="g100"` on it gives
@@ -160,12 +177,6 @@
   .website-footer__columns {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
-}
-.website-footer__fine {
-  padding-block-start: 2rem;
-  border-block-start: 1px solid var(--rux-border-subtle);
-  margin-block-start: 2rem;
-  color: var(--rux-text-secondary);
 }
 
 /* TWO FIELDS SIDE BY SIDE, a date beside its time, which stay a pair at

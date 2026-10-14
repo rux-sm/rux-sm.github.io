@@ -18,3 +18,21 @@
 .website-form .rux--text-area {
   flex: 1 1 auto;
 }
+
+/* A big number in a row sets its label just above its number at the foot of
+   its cell, so a label that runs to two lines leaves every number level. */
+.website-cards .rux--big-number {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  block-size: 100%;
+}
+
+/* A stacked call to action on a phone takes the column's width: Carbon sizes a
+   button to its words and caps it at 20rem. */
+@media (max-width: 41.98rem) {
+  .website-actions .rux--btn {
+    inline-size: 100%;
+    max-inline-size: none;
+  }
+}

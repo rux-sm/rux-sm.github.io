@@ -45,8 +45,9 @@ header's menu needs, and the FAQ loads Design's accordion.
 - `app.css` holds the parts Carbon has no component for, under `website-`:
   the hero, rows of tiles, features, photos, the calls to action, the form's
   pairs and headings, and the footer, which is a `g100` zone.
-- `overrides.css` narrows the page's inset on a phone and widens the quote
-  form's text area.
+- `overrides.css` narrows the page's inset on a phone, widens the quote
+  form's text area, keeps a row's big numbers level, and lets a call to action
+  fill a phone's width.
 - `app.js` is the quote form: its checks and their words in both languages,
   the return that a one-way trip hides, and the draft kept in the tab's
   session storage until a request lands.

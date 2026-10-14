@@ -674,6 +674,22 @@
         "path|d=M121-120v-128l616-616 128 128-616 616H121Zm618-577 40-40-41-41-40 40 41 41Z"
       ]
     },
+    "school@960": {
+      "name": "school",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/school.svg",
+      "geometry": [
+        "path|d=M479-120 189-279v-240L40-600l439-240 441 240v317h-60v-282l-91 46v240L479-120Zm0-308 315-172-315-169-313 169 313 172Zm0 240 230-127v-168L479-360 249-485v170l230 127Zm1-240Zm-1 74Zm0 0Z"
+      ]
+    },
+    "school-fill@960": {
+      "name": "school-fill",
+      "size": "960",
+      "source": "node_modules/@material-symbols/svg-400/sharp/school-fill.svg",
+      "geometry": [
+        "path|d=M860-283v-282L479-360 40-600l439-240 441 240v317h-60ZM479-120 189-279v-210l290 159 290-159v210L479-120Z"
+      ]
+    },
     "mail@960": {
       "name": "mail",
       "size": "960",

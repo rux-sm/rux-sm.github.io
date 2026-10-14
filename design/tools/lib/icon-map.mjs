@@ -106,6 +106,7 @@ export const ICONS = {
   'download': { material: 'download', rux: null },
   'draggable': { material: 'drag_indicator', rux: null },
   'edit': { material: 'edit', rux: null },
+  'education': { material: 'school', rux: null },
   'email': { material: 'mail', rux: null },
   'erase': { material: 'ink_eraser', rux: null },
   'error--filled': { material: 'error-fill', rux: null },

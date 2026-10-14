@@ -291,7 +291,7 @@
      `toast` over the page. With an `action` it is Carbon's actionable
      notification, from `carbon-react-dom.json`'s
      `components-notifications-actionable--inline`, whose icon keeps
-     `rux--inline-notification__icon`. The capture's `role="alertdialog"` and
+     `rux--inline-notification__icon`, or as a toast its `--default`. The capture's `role="alertdialog"` and
      focus sentinels are left out: they trap the keyboard, and this action is
      an offer about something already done. */
   function note(kind, title, subtitle, action, asToast) {
@@ -334,7 +334,8 @@
     const focus = el('div', 'rux--actionable-notification__focus-wrapper');
     const details = el('div', 'rux--actionable-notification__details');
     const icon = svgUse(spec.icon, '20', '0 0 32 32');
-    icon.setAttribute('class', 'rux--inline-notification__icon');
+    // A toast's icon is the toast's, as `components-notifications-actionable--default` draws it.
+    icon.setAttribute('class', asToast ? 'rux--toast-notification__icon' : 'rux--inline-notification__icon');
     const wrap = el('div', 'rux--actionable-notification__text-wrapper');
     const content = el('div', 'rux--actionable-notification__content');
     content.append(
@@ -344,9 +345,15 @@
     wrap.appendChild(content);
     details.append(icon, wrap);
     const buttons = el('div', 'rux--actionable-notification__button-wrapper');
-    // One action, or a choice of them, in the order given.
+    /* One action, or a choice of them, in the order given. A toast's is
+       Carbon's tertiary button, under the words and lined up with the title;
+       an inline notification's is the ghost one beside them, as Carbon's own
+       action button picks. */
+    const buttonClass = asToast
+      ? 'rux--actionable-notification__action-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--tertiary'
+      : 'rux--actionable-notification__action-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost';
     for (const a of [action].flat()) {
-      const btn = el('button', 'rux--actionable-notification__action-button rux--btn rux--btn--sm rux--layout--size-sm rux--btn--ghost', a.label);
+      const btn = el('button', buttonClass, a.label);
       btn.type = 'button';
       btn.addEventListener('click', a.onClick);
       buttons.appendChild(btn);

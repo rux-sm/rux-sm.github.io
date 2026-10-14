@@ -35,7 +35,7 @@
   const WARN_DAYS = 45;
 
   const DRIVER_COLUMNS = [
-    'id', 'name', 'short_name', 'phone', 'email', 'date_of_birth', 'texting_url',
+    'id', 'name', 'short_name', 'phone', 'email', 'date_of_birth', 'texting_url', 'language',
     'address', 'city', 'address_state', 'zip',
     'emergency_contact_name', 'emergency_contact_phone',
     'cdl_class', 'license_state', 'license_number', 'license_exp', 'med_card_expiry', 'endorsements',
@@ -278,6 +278,7 @@
       email: text('email'),
       date_of_birth: dateOf('dob'),
       texting_url: text('texting'),
+      language: field('language').value === 'es' ? 'es' : 'en',
       address: text('address'),
       city: text('city'),
       address_state: upper('state'),
@@ -298,7 +299,7 @@
     };
   }
   const WRITTEN = Object.keys({
-    name: 0, short_name: 0, phone: 0, email: 0, date_of_birth: 0, texting_url: 0, address: 0, city: 0,
+    name: 0, short_name: 0, phone: 0, email: 0, date_of_birth: 0, texting_url: 0, language: 0, address: 0, city: 0,
     address_state: 0, zip: 0, emergency_contact_name: 0, emergency_contact_phone: 0, cdl_class: 0,
     license_state: 0, license_number: 0, license_exp: 0, med_card_expiry: 0, endorsements: 0, status: 0,
     employment_type: 0, priority: 0, hire_date: 0, notes: 0,
@@ -331,6 +332,7 @@
     set('email', d.email);
     set('dob', shownDay(d.date_of_birth ? String(d.date_of_birth).slice(0, 10) : ''));
     set('texting', d.texting_url);
+    set('language', d.language === 'es' ? 'es' : 'en');
     set('address', d.address);
     set('city', d.city);
     set('state', d.address_state);

@@ -69,6 +69,9 @@
         <div class="rux--stack-vertical rux--stack-scale-2">
           <h1 class="rux--type-productive-heading-04" id="scheduler-leg-hello"></h1>
           <p class="rux--type-body-01" id="scheduler-leg-summary"></p>
+          <!-- The other language, written in that language; driver.js shows
+               it on the driver's own page and switches the cards. -->
+          <div><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-leg-language" lang="es" hidden>Ver en español</button></div>
         </div>
         </div>
         <!-- One notice for the page: no link, a link no longer active, a
@@ -103,16 +106,16 @@
     <div class="rux--modal-header">
       <h2 class="rux--modal-header__heading" id="scheduler-leg-decline-h">Decline this assignment?</h2>
       <div class="rux--modal-close-button">
-        <button type="button" class="rux--modal-close" aria-label="Keep the assignment" data-rux-close>
+        <button type="button" class="rux--modal-close" aria-label="Keep the assignment" id="scheduler-leg-decline-close" data-rux-close>
           <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
         </button>
       </div>
     </div>
     <div class="rux--modal-content">
-      <p>Dispatch will be told that you can't take this trip.</p>
+      <p id="scheduler-leg-decline-text">Dispatch will be told that you can't take this trip.</p>
     </div>
     <div class="rux--modal-footer">
-      <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+      <button type="button" class="rux--btn rux--btn--secondary" id="scheduler-leg-decline-cancel" data-rux-close>Cancel</button>
       <button type="button" class="rux--btn rux--btn--danger" id="scheduler-leg-decline-confirm">Decline assignment</button>
     </div>
   </div>
@@ -123,6 +126,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
 <script src="../phone.js"></script>
+<script src="driver-words.js"></script>
 <script src="driver.js"></script>
 </body>
 </html>

@@ -119,7 +119,7 @@ so the ink drawn there is the ink that prints. After a sent quote: `docs/booking
 The pages in `share/` are for people without a log-in, who arrive by a link:
 `share/document.html` opens a trip document, `share/maintenance.html`
 shows the maintenance crew two weeks of buses and the recent changes, and
-`share/driver.html` shows a driver the trips dispatch sent them to accept or
+`share/driver.html` shows a driver, in English or Spanish as their profile says and they can switch, the trips dispatch sent them to accept or
 decline, a card of basics each, whose View itinerary opens the itinerary
 file uploaded to the trip and View envelope opens `share/form.html`, which
 draws the forms page's envelope from the same link. Staff see the same schedule inside the app at `maintenance.html`,

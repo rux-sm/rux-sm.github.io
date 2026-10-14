@@ -71,7 +71,7 @@
     driver: {
       word: 'Driver', page: 'drivers.html', words: {
         name: 'Name', short_name: 'Short name', phone: 'Phone', email: 'Email', date_of_birth: 'Date of birth',
-        texting_url: 'Google Messages link', address: 'Street address', city: 'City', address_state: 'State', zip: 'ZIP',
+        texting_url: 'Google Messages link', language: 'Language', address: 'Street address', city: 'City', address_state: 'State', zip: 'ZIP',
         emergency_contact_name: 'Emergency contact', emergency_contact_phone: 'Emergency phone',
         cdl_class: 'CDL class', license_state: 'Issuing state', license_number: 'Licence number',
         license_exp: 'Licence expires', med_card_expiry: 'Medical card expires', endorsements: 'Endorsements',

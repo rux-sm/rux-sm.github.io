@@ -25,7 +25,7 @@
   const TZ = 'America/Chicago';
   const MAX_LEGS = 50;
   // The wording a driver is sent, shared with the board's reminder.
-  const { DRIVER_LINK: PUBLIC, messageDate, roleLabel, stopsForLeg, legLines } = window.SchedulerDriverText;
+  const { DRIVER_LINK: PUBLIC, messageDate, messageRange, roleLabel, stopsForLeg, legLines, wordsFor } = window.SchedulerDriverText;
   const $ = id => document.getElementById(id);
   const client = window.Rux?.account?.client;
   const page = window.SchedulerDriverPage;
@@ -42,8 +42,6 @@
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const today = () => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date());
   const short = (d, opts) => d.toLocaleDateString('en-US', opts);
-  const rangeText = (a, b) => (iso(a) === iso(b) ? short(a, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
-    : `${short(a, { month: 'short', day: 'numeric' })} – ${short(b, { month: 'short', day: 'numeric', year: 'numeric' })}`);
   const nameOf = d => clean(d?.short_name || d?.name) || 'Driver';
   const activeSeats = a => {
     const roles = Array.isArray(a.active_roles) ? new Set(a.active_roles.map(e => String(e).split(':', 1)[0])) : null;
@@ -87,10 +85,10 @@
       return {
         key: `${trip.id}:${leg}`, assignmentId: a.id, trip, leg, role: row.role || 'driver',
         start: dateOf(start), end: dateOf(end) || dateOf(start),
-        bus: a.buses?.number != null ? String(a.buses.number) : 'not set',
+        bus: a.buses?.number != null ? String(a.buses.number) : '',
         spot: pickup.spot || trip.spot_time, swap: row.report_time, instructions: clean(row.instructions),
         partner: partner ? nameOf(partner.drivers) : '',
-        from: pickup.address || pickup.name, to: inbound ? (back.address || back.name || 'Yard') : trip.destination,
+        from: pickup.address || pickup.name, to: inbound ? (back.address || back.name || '') : trip.destination, toYard: inbound,
         itinerary: itinerary?.id || '',
       };
     }).filter(Boolean).sort((x, y) => x.start - y.start || String(x.spot || '').localeCompare(String(y.spot || '')));
@@ -140,7 +138,7 @@
       label.htmlFor = id;
       const text = el('div', 'rux--checkbox-label-text scheduler-send__leg');
       text.append(el('span', null, `${messageDate(l.start, l.end)} · ${clean(l.trip.destination) || 'Trip'}`),
-        el('span', 'scheduler-send__meta', [`Bus ${l.bus}`, roleLabel(l.role), STATUS_WORDS[statusOf(l)] || 'Not sent'].join(' · ')));
+        el('span', 'scheduler-send__meta', [l.bus ? `Bus ${l.bus}` : 'Bus not set', roleLabel(l.role), STATUS_WORDS[statusOf(l)] || 'Not sent'].join(' · ')));
       label.appendChild(text);
       item.append(box, label);
       list.appendChild(item);
@@ -151,14 +149,17 @@
   function message() {
     const chosen = tickedLegs();
     const first = nameOf(driver).split(/\s+/)[0];
-    if (!chosen.length) return `Hi ${first}, no trips are ticked yet.`;
+    // In the driver's language, which their profile holds.
+    const lang = driver?.language;
+    const w = wordsFor(lang);
+    if (!chosen.length) return w.noneTicked(first);
     const from = chosen.reduce((a, l) => (l.start < a ? l.start : a), chosen[0].start);
     const to = chosen.reduce((a, l) => (l.end > a ? l.end : a), chosen[0].end);
     const url = link ? PUBLIC + encodeURIComponent(link.token) : '';
-    const lines = [`Hi ${first}, here are your assignments for ${rangeText(from, to)}:`];
+    const lines = [w.week(first, messageRange(from, to, lang))];
     // Without a link, each trip carries its itinerary; the link carries them all.
-    for (const l of chosen) lines.push('', ...legLines(l, { itinerary: !url }));
-    if (url) lines.push('', 'Trip details and itineraries:', url);
+    for (const l of chosen) lines.push('', ...legLines(l, { itinerary: !url, lang }));
+    if (url) lines.push('', w.details, url);
     return lines.join('\n');
   }
 
@@ -341,7 +342,7 @@
     try { staff = await account.staffProfile(); } catch { /* said below */ }
     if (!staff) { page.say('error', "This account isn't set up as staff yet", 'Ask the owner to set it up.'); return; }
     const picker = $('scheduler-leg-driver');
-    const { data, error } = await client.from('drivers').select('id,name,short_name').order('name');
+    const { data, error } = await client.from('drivers').select('id,name,short_name,language').order('name');
     if (error) { page.say('error', "The drivers didn't load", 'Reload the page to try again.'); return; }
     const drivers = data || [];
     for (const d of drivers) picker.appendChild(Object.assign(el('option', 'rux--select-option', d.name || d.short_name), { value: d.id }));

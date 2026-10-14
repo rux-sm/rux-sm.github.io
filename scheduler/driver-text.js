@@ -11,6 +11,12 @@
    IT TAKES A LEG, NOT A PAGE. Each page reads its own rows and hands in the
    same shape: { trip, leg, role, start, end, bus, spot, swap, instructions,
    partner, from, to, itinerary }, dates as Date and times as stored.
+
+   IT WRITES IN THE DRIVER'S LANGUAGE, `en` or `es` from their profile, which
+   each caller passes in; English when none is. What the office typed, a
+   place or an instruction, stays as typed. The Spanish speaks to the driver
+   as tú. The two tables hold the same lines, which
+   tools/check-driver-words.mjs holds them to.
    ========================================================================== */
 (() => {
   'use strict';
@@ -23,12 +29,14 @@
 
   const clean = v => String(v ?? '').trim();
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  const short = (d, opts) => d.toLocaleDateString('en-US', opts);
-  // "THU 10/1", or "THU 10/1–SUN 10/4" across days.
-  const messageDate = (a, b) => {
-    const day = d => short(d, { weekday: 'short' }).toUpperCase();
-    const num = d => `${d.getMonth() + 1}/${d.getDate()}`;
-    return iso(a) === iso(b) ? `${day(a)} ${num(a)}` : `${day(a)} ${num(a)}–${day(b)} ${num(b)}`;
+  const short = (d, opts, locale = 'en-US') => d.toLocaleDateString(locale, opts);
+  /* "THU 10/1", or "THU 10/1–SUN 10/4" across days. In Spanish the month is
+     a word, "JUE 1 OCT", since a Spanish reader may take 10/1 for January. */
+  const messageDate = (a, b, lang = 'en') => {
+    const one = lang === 'es'
+      ? d => `${short(d, { weekday: 'short' }, 'es-MX')} ${d.getDate()} ${short(d, { month: 'short' }, 'es-MX')}`.replace(/\./g, '').toUpperCase()
+      : d => `${short(d, { weekday: 'short' }).toUpperCase()} ${d.getMonth() + 1}/${d.getDate()}`;
+    return iso(a) === iso(b) ? one(a) : `${one(a)}–${one(b)}`;
   };
   // "11:43 AM", from a stored "11:43:00".
   const timeText = v => {
@@ -47,8 +55,67 @@
     if (parts.length > 1 && /^(texas|tx|oklahoma|ok)(\s+\d{5}(?:-\d{4})?)?$/i.test(parts.at(-1))) parts.pop();
     return parts.at(-1);
   };
-  const ROLE = { 'driver': 'Driver', 'co-driver': 'Co-driver', 'relief-start': 'Relief driver', 'relief-end': 'Relief driver' };
-  const roleLabel = r => ROLE[r] || 'Driver';
+  /* WHAT A TEXT SAYS, in each language. A line that takes something from the
+     leg is a function of it. */
+  const WORDS = {
+    en: {
+      role: { 'driver': 'Driver', 'co-driver': 'Co-driver', 'relief': 'Relief driver' },
+      bus: number => `Bus ${number}`,
+      busNotSet: 'Bus not set',
+      yard: 'Yard',
+      inbound: 'Inbound',
+      outbound: 'Outbound',
+      swapAt: time => `${time} swap`,
+      swapWith: name => `Swap: coordinate with ${name}`,
+      swapNotSet: 'Swap time not set',
+      spotAt: time => `${time} spot`,
+      pickup: 'Pickup',
+      destination: 'Destination',
+      itinerary: link => `Itinerary: ${link}`,
+      reminderToday: name => `Hi ${name}, a reminder for your trip today:`,
+      reminderTomorrow: name => `Hi ${name}, a reminder for your trip tomorrow:`,
+      reminderSoon: name => `Hi ${name}, a reminder for your trip coming up:`,
+      week: (name, range) => `Hi ${name}, here are your assignments for ${range}:`,
+      noneTicked: name => `Hi ${name}, no trips are ticked yet.`,
+      details: 'Trip details and itineraries:',
+    },
+    es: {
+      role: { 'driver': 'Chofer', 'co-driver': 'Segundo chofer', 'relief': 'Chofer de relevo' },
+      bus: number => `Autobús ${number}`,
+      busNotSet: 'Autobús sin asignar',
+      yard: 'Patio',
+      inbound: 'Regreso',
+      outbound: 'Ida',
+      swapAt: time => `Relevo a las ${time}`,
+      swapWith: name => `Relevo: acuerda la hora con ${name}`,
+      swapNotSet: 'Hora del relevo sin definir',
+      spotAt: time => `Llegar a las ${time}`,
+      pickup: 'Recogida',
+      destination: 'Destino',
+      itinerary: link => `Itinerario: ${link}`,
+      reminderToday: name => `Hola ${name}, te recordamos tu viaje de hoy:`,
+      reminderTomorrow: name => `Hola ${name}, te recordamos tu viaje de mañana:`,
+      reminderSoon: name => `Hola ${name}, te recordamos tu próximo viaje:`,
+      week: (name, range) => `Hola ${name}, estos son tus viajes del ${range}:`,
+      noneTicked: name => `Hola ${name}, todavía no hay viajes marcados.`,
+      details: 'Detalles e itinerarios de tus viajes:',
+    },
+  };
+  const wordsFor = lang => WORDS[lang === 'es' ? 'es' : 'en'];
+  /* The days a week's message covers: "Oct 12 – Oct 25, 2026", or one day
+     as "Sat, Oct 17, 2026"; in Spanish, after the message's "del", "12 de
+     octubre al 25 de octubre de 2026", or "sábado 17 de octubre de 2026". */
+  const messageRange = (a, b, lang = 'en') => {
+    if (lang === 'es') {
+      const day = d => `${d.getDate()} de ${short(d, { month: 'long' }, 'es-MX')}`;
+      return iso(a) === iso(b) ? `${short(a, { weekday: 'long' }, 'es-MX')} ${day(a)} de ${a.getFullYear()}`
+        : `${day(a)} al ${day(b)} de ${b.getFullYear()}`;
+    }
+    return iso(a) === iso(b) ? short(a, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
+      : `${short(a, { month: 'short', day: 'numeric' })} – ${short(b, { month: 'short', day: 'numeric', year: 'numeric' })}`;
+  };
+  const ROLE_KEY = { 'driver': 'driver', 'co-driver': 'co-driver', 'relief-start': 'relief', 'relief-end': 'relief' };
+  const roleLabel = (r, lang) => wordsFor(lang).role[ROLE_KEY[r] || 'driver'];
   const isRelief = r => r === 'relief-start' || r === 'relief-end';
 
   /* A leg's stops, in route order. A drop-off and pickup trip saved before
@@ -70,34 +137,37 @@
      runs; then a relief driver's swap, and their instructions, or everyone
      else's spot time; then where the leg runs from and to. `itinerary` adds
      the leg's itinerary link, which a message without a driver link carries. */
-  function legLines(l, { itinerary = false } = {}) {
+  function legLines(l, { itinerary = false, lang = 'en' } = {}) {
+    const w = wordsFor(lang);
     const lines = [];
-    const legWord = l.trip.trip_type === 'dropoff_pickup' ? (l.leg === 'return' ? 'Inbound' : 'Outbound') : '';
-    lines.push([messageDate(l.start, l.end), `Bus ${l.bus}`, roleLabel(l.role), legWord].filter(Boolean).join(' • '));
+    const legWord = l.trip.trip_type === 'dropoff_pickup' ? (l.leg === 'return' ? w.inbound : w.outbound) : '';
+    lines.push([messageDate(l.start, l.end, lang), l.bus ? w.bus(l.bus) : w.busNotSet, roleLabel(l.role, lang), legWord].filter(Boolean).join(' • '));
     if (isRelief(l.role)) {
-      lines.push(l.swap ? `${timeText(l.swap)} swap` : l.partner ? `Swap: coordinate with ${l.partner}` : 'Swap time not set');
+      lines.push(l.swap ? w.swapAt(timeText(l.swap)) : l.partner ? w.swapWith(l.partner) : w.swapNotSet);
       if (l.instructions) lines.push(l.instructions);
     } else if (l.spot) {
-      lines.push(`${timeText(l.spot)} spot`);
+      lines.push(w.spotAt(timeText(l.spot)));
     }
     const a = town(l.from), b = town(l.to);
-    if (a || b) lines.push(`${a || 'Pickup'} → ${b || 'Destination'}`);
-    if (itinerary && l.itinerary) lines.push(`Itinerary: ${DOCUMENT_LINK}${encodeURIComponent(l.itinerary)}`);
+    // `toYard` is a leg that ends back at the yard, which the office may leave unnamed.
+    if (a || b || l.toYard) lines.push(`${a || w.pickup} → ${b || (l.toYard ? w.yard : w.destination)}`);
+    if (itinerary && l.itinerary) lines.push(w.itinerary(`${DOCUMENT_LINK}${encodeURIComponent(l.itinerary)}`));
     return lines;
   }
 
   /* The reminder for one leg, to one driver by their first name: today,
      tomorrow, or coming up, from `today` as yyyy-mm-dd on the office's
      calendar, then the leg's lines and its itinerary. */
-  function reminder(first, l, today) {
+  function reminder(first, l, today, lang = 'en') {
+    const w = wordsFor(lang);
     const [y, m, d] = today.split('-').map(Number);
     const next = iso(new Date(y, m - 1, d + 1));
-    const when = iso(l.start) === today ? 'today' : iso(l.start) === next ? 'tomorrow' : 'coming up';
-    return [`Hi ${first}, a reminder for your trip ${when}:`, '', ...legLines(l, { itinerary: true })].join('\n');
+    const hello = iso(l.start) === today ? w.reminderToday : iso(l.start) === next ? w.reminderTomorrow : w.reminderSoon;
+    return [hello(first), '', ...legLines(l, { itinerary: true, lang })].join('\n');
   }
 
   window.SchedulerDriverText = {
-    SITE, DRIVER_LINK, DOCUMENT_LINK,
-    messageDate, timeText, town, roleLabel, isRelief, stopsForLeg, legLines, reminder,
+    SITE, DRIVER_LINK, DOCUMENT_LINK, WORDS, wordsFor,
+    messageDate, messageRange, timeText, town, roleLabel, isRelief, stopsForLeg, legLines, reminder,
   };
 })();

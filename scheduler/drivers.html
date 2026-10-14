@@ -413,13 +413,28 @@
                   </div>
                 </div>
               </div>
-              <!-- The one field rux-ui checks: a link to the driver's Google
-                   Messages conversation. -->
-              <div class="rux--form-item rux--text-input-wrapper">
-                <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-d-texting">Google Messages link</label></div>
-                <div class="rux--text-input__field-outer-wrapper">
-                  <div class="rux--text-input__field-wrapper"><input id="scheduler-d-texting" class="rux--text-input" type="url" autocomplete="off" placeholder="https://messages.google.com/…"></div>
-                  <div class="rux--form-requirement" id="scheduler-d-texting-error"></div>
+              <!-- How the office reaches the driver: the one field rux-ui
+                   checks, a link to their Google Messages conversation, and
+                   the language their schedule link and texts are written in. -->
+              <div class="scheduler-pair-grid">
+                <div class="rux--form-item rux--text-input-wrapper scheduler-pair-grid__wide">
+                  <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-d-texting">Google Messages link</label></div>
+                  <div class="rux--text-input__field-outer-wrapper">
+                    <div class="rux--text-input__field-wrapper"><input id="scheduler-d-texting" class="rux--text-input" type="url" autocomplete="off" placeholder="https://messages.google.com/…"></div>
+                    <div class="rux--form-requirement" id="scheduler-d-texting-error"></div>
+                  </div>
+                </div>
+                <div class="rux--form-item">
+                  <div class="rux--select">
+                    <label class="rux--label" for="scheduler-d-language">Language</label>
+                    <div class="rux--select-input__wrapper">
+                      <select id="scheduler-d-language" class="rux--select-input">
+                        <option class="rux--select-option" value="en">English</option>
+                        <option class="rux--select-option" value="es">Español</option>
+                      </select>
+                      <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="rux--form-item rux--text-input-wrapper">

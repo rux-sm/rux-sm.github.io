@@ -471,7 +471,7 @@
       // roster lists them in the order they are called on; `employment_type`,
       // because a part-time driver needs an hours-of-service record; the
       // licence and medical card dates, so the bar menu flags an expired one.
-      client.from('drivers').select('id,name,short_name,status,priority,phone,texting_url,employment_type,license_exp,med_card_expiry').then(unwrap),
+      client.from('drivers').select('id,name,short_name,status,priority,phone,texting_url,employment_type,license_exp,med_card_expiry,language').then(unwrap),
       // Every contact, read once with the week for the contact search rather
       // than on each keystroke.
       client.from('contacts').select('id,name,phone,email,client,customer_id').order('name').then(unwrap),
@@ -14212,13 +14212,13 @@
       const first = String(c.who.short_name || c.who.name || 'there').trim().split(/\s+/)[0];
       return driverText.reminder(first, {
         trip, leg, role: c.role, start: parseISO(legStart), end: parseISO(legEnd),
-        bus: number != null ? String(number) : 'not set',
+        bus: number != null ? String(number) : '',
         spot: legPickup.spot, swap: c.reportTime, instructions: String(seat?.instructions ?? '').trim(),
         partner: partner ? (partner.short_name || partner.name) : '',
         from: legPickup.address || legPickup.name,
-        to: inbound ? (legBack.address || legBack.name || 'Yard') : trip.destination,
+        to: inbound ? (legBack.address || legBack.name || '') : trip.destination, toYard: inbound,
         itinerary: latestItinerary(trip)?.id || '',
-      }, officeToday);
+      }, officeToday, c.who.language);
     };
     const crewOfBus = a => crewOf(trip, a, panelIndex.driversById, panelIndex.statuses)
       .filter(c => c.who)

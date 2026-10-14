@@ -18,7 +18,8 @@ rux's side.
 | Scheduler connector: `find_trips`, `get_trip`, `list_buses`, `list_drivers`, `find_availability`, `find_contacts` | reading a trip, its buses and drivers; checking a save landed | saving: it writes drafts only |
 | `draft_trip`, `draft_trip_change` | a new trip, or a change, as a link that opens the editor filled in | |
 | rux's Chrome, through Claude in Chrome, logged in | the trip editor at `http://localhost:8641/scheduler/`, the forms | the built-in browser pane, which cannot pass the log-in |
-| Missive connector: `get_conversations`, `search_conversations`, `get_search_results`, `get_conversation_entries` | the customer's emails, quotes and itineraries | `compose_draft`, `deliver_draft`, `change_labels` and `manage_calendar_events`, which write to Missive: a reply is drafted in chat |
+| Missive connector: `get_conversations`, `search_conversations`, `get_search_results`, `get_conversation_entries` | the customer's emails, quotes and itineraries | `change_labels` and `manage_calendar_events`, which write to Missive |
+| Missive's `compose_draft` and `deliver_draft` | sending an email as rux when he asks in chat for it to be sent (see Missive below) | an email he has not asked to send: a reply is drafted in chat |
 | Gmail connector | nothing: it is rux's personal mail | |
 | Supabase | a read the connector lacks | writing a trip: the editor's Save is the only writer |
 
@@ -196,6 +197,13 @@ reads only the ones before it. Nothing is written until step 10.
 - Link the thread while reviewing: Details, Booking contact ⋮, Add email
   thread. The dialog's field has the focus and takes the conversation's
   `link`.
+- An email rux asks in chat to send goes out from Missive as him, written
+  by `emails.md`. `compose_draft` in `reply` mode drafts it in the
+  customer's thread, replying to their last message, with `to` set to the
+  people the thread writes to and `reply_all` false. `get_conversations`
+  then reads the draft back: its author is rux, its sender the office's
+  address, and its recipients the customer's. `deliver_draft` sends it only
+  once all three are right, because a sent email cannot be taken back.
 
 ## Traps in the editor
 

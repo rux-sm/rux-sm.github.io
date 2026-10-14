@@ -41,8 +41,10 @@ the new text and replace this file with it.
 
 ## What to send back to rux
 
-A draft is written in the chat reply, never in Missive or Gmail, because rux
-copies it from the chat and pastes it himself.
+A draft is written in the chat reply, because rux reads it there first. It
+goes out from Missive only when he asks in chat for it to be sent, as
+`SKILL.md` describes under Missive, and never from Gmail, which is his
+personal mail.
 
 "Note:" lines first, one each, only for what rux must act on. Then the email
 alone: no preamble, no quotation marks, no subject line unless asked, ending

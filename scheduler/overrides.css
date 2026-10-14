@@ -1234,7 +1234,21 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast:not([data-place="heade
 .scheduler-to-do .rux--accordion__title { min-inline-size: 0; padding-inline-start: 0; }
 .scheduler-to-do .rux--accordion__arrow { margin-block-start: var(--rux-spacing-01); }
 .scheduler-to-do .rux--accordion__content { padding-inline: var(--rux-spacing-05); }
-.scheduler-to-do .rux--accordion__item--active > .rux--accordion__wrapper { padding-block: 0 var(--rux-spacing-05); }
+/* Open, the heading gives half of its 16px under it to the content, so its
+   lines still stand 16px from the first line below them and its focus ring
+   stands 8px clear of that line instead of on it. */
+.scheduler-to-do .rux--accordion__item--active > .rux--accordion__heading { padding-block-end: var(--rux-spacing-03); }
+.scheduler-to-do .rux--accordion__item--active > .rux--accordion__wrapper { padding-block: var(--rux-spacing-03) var(--rux-spacing-05); }
+/* A HEADING'S FOCUS RING IS INSIDE IT AND FOLLOWS THE TILE'S CORNERS. Carbon
+   draws the ring's top and bottom lines half outside the heading, where the
+   tile, which clips to its corners, cut the corners off, and the bottom half
+   lay on the open row's first line. The heading takes the tile's corners, the
+   bottom two only while it is closed, and the ring is 2px inset all round. */
+.scheduler-to-do__tile > .rux--accordion,
+.scheduler-to-do__tile .rux--accordion__item,
+.scheduler-to-do__tile .rux--accordion__heading { border-radius: inherit; }
+.scheduler-to-do__tile .rux--accordion__item--active > .rux--accordion__heading { border-end-start-radius: 0; border-end-end-radius: 0; }
+.scheduler-to-do__tile .rux--accordion__heading:focus-visible { box-shadow: inset 0 0 0 2px var(--rux-focus); }
 /* Done today is an item with no tile around it: its heading is one line at
    the accordion's own height, its words and arrow in line with the tiles'
    own, and its content is the done rows' tiles, edge to edge, a step under

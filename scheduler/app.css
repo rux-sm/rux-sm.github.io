@@ -4593,11 +4593,13 @@ html:has(.scheduler-page[data-takeover]) {
 /* The open row, its parts a step apart. Its notes are the rest of its
    detail as Design's list, a fact to an item behind a dash, in the quiet
    colour, since the row's own words above them are what is asked. Its
-   buttons follow, and a done row ends in a quiet line of who closed it. */
+   buttons follow 16px under them, the space the heading's lines keep above
+   the notes and the tile keeps under the buttons, and a done row ends in a
+   quiet line of who closed it. */
 .scheduler-to-do__more { display: flex; flex-direction: column; gap: var(--rux-spacing-03); }
 .scheduler-to-do__notes { display: flex; flex-direction: column; gap: var(--rux-spacing-02); }
 .scheduler-to-do__note { color: var(--rux-text-secondary); overflow-wrap: anywhere; }
-.scheduler-to-do__notes + .scheduler-to-do__buttons { margin-block-start: var(--rux-spacing-02); }
+.scheduler-to-do__notes + .scheduler-to-do__buttons { margin-block-start: var(--rux-spacing-03); }
 .scheduler-to-do__none { margin: 0; color: var(--rux-text-secondary); font-size: 0.875rem; }
 /* A row's form stands in the row's tile, which keeps its 16px around it. */
 .scheduler-to-do__tile--editing { padding: var(--rux-spacing-05); }

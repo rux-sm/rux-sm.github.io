@@ -1634,12 +1634,13 @@
 }
 /* A notification's action is each system's own small button, not Carbon's
    link-coloured text. Geist's Note page puts a small solid button in the
-   note, its primary fill under dark text; Ant's Alert page puts a small text
+   note, its primary fill under dark text; Rux Dark outlines it in the note's
+   own hue, in the rules after these; Ant's Alert page puts a small text
    button in the alert's own ink, with the hover and pressed fills of
    `colorBgTextHover` and `colorBgTextActive`, which are this theme's
    background-hover and background-active. On a tint, the ring is the page's
    focus colour rather than Carbon's inverse one. */
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:not(:disabled):not(.rux--btn--disabled) {
+[data-theme="geist-dark"] .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:not(:disabled):not(.rux--btn--disabled) {
   background-color: var(--rux-button-primary);
   color: var(--rux-text-on-color);
 }
@@ -1650,11 +1651,33 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--actionable-notification:not(.rux--actionable-notification--toast) .rux--actionable-notification__action-button.rux--btn--ghost {
   margin-inline-end: var(--rux-spacing-03);
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:not(:disabled):not(.rux--btn--disabled):hover {
+[data-theme="geist-dark"] .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:not(:disabled):not(.rux--btn--disabled):hover {
   background-color: var(--rux-button-primary-hover);
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:not(:disabled):not(.rux--btn--disabled):active {
+[data-theme="geist-dark"] .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:not(:disabled):not(.rux--btn--disabled):active {
   background-color: var(--rux-button-primary-active);
+}
+/* RUX DARK OUTLINES A NOTIFICATION'S ACTION IN THE NOTIFICATION'S OWN HUE:
+   its ring and its words take the colour the notice's words already are,
+   the ring at 45% of it over the tint, so the notice reads as one object and
+   its button does not outshout its words. Pressed, it fills with a wash of
+   that hue. A toast's tertiary action is drawn the same as an inline
+   notice's ghost one, and its focus ring is the border, as Rux Dark's
+   other rings are. */
+[data-theme="rux-dark"] .rux--actionable-notification .rux--actionable-notification__action-button:is(.rux--btn--ghost, .rux--btn--tertiary):not(:disabled):not(.rux--btn--disabled) {
+  border-color: color-mix(in srgb, currentColor 45%, transparent);
+  background-color: transparent;
+  color: inherit;
+}
+[data-theme="rux-dark"] .rux--actionable-notification .rux--actionable-notification__action-button:is(.rux--btn--ghost, .rux--btn--tertiary):not(:disabled):not(.rux--btn--disabled):hover {
+  background-color: color-mix(in srgb, currentColor 14%, transparent);
+}
+[data-theme="rux-dark"] .rux--actionable-notification .rux--actionable-notification__action-button:is(.rux--btn--ghost, .rux--btn--tertiary):not(:disabled):not(.rux--btn--disabled):active {
+  background-color: color-mix(in srgb, currentColor 24%, transparent);
+}
+[data-theme="rux-dark"] .rux--actionable-notification .rux--actionable-notification__action-button:is(.rux--btn--ghost, .rux--btn--tertiary):not(:disabled):not(.rux--btn--disabled):focus-visible {
+  border-color: var(--rux-focus);
+  box-shadow: inset 0 0 0 1px var(--rux-focus);
 }
 [data-theme="ant-dark"] .rux--actionable-notification .rux--actionable-notification__action-button.rux--btn--ghost:not(:disabled):not(.rux--btn--disabled) {
   color: var(--rux-text-primary);
@@ -1738,11 +1761,13 @@
 /* A NOTIFICATION'S IS A RINGED 32px BUTTON 8px IN ON EVERY SIDE, which is
    the 48px square Carbon gives it, so the words beside it wrap where they
    did. A toast keeps the free margin that sets its button at the far end.
-   Carbon draws the focus ring as an outline inside the button, so the
-   border takes the focus colour with it. */
+   The ring and the cross are the notification's hue, as its action is, and
+   a press washes it with that hue. Carbon draws the focus ring as an
+   outline inside the button, so the border takes the focus colour with it. */
 [data-theme="rux-dark"] :is(.rux--inline-notification__close-button, .rux--toast-notification__close-button, .rux--actionable-notification__close-button) {
   margin: var(--rux-spacing-03);
-  border: 1px solid var(--rux-border-subtle-02);
+  border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+  color: inherit;
   border-radius: 6px;
   block-size: 2rem;
   inline-size: 2rem;
@@ -1755,6 +1780,12 @@
 }
 [data-theme="rux-dark"] :is(.rux--inline-notification__close-button, .rux--toast-notification__close-button, .rux--actionable-notification__close-button):focus-visible {
   border-color: var(--rux-focus);
+}
+[data-theme="rux-dark"] :is(.rux--inline-notification__close-button, .rux--toast-notification__close-button, .rux--actionable-notification__close-button):hover {
+  background-color: color-mix(in srgb, currentColor 14%, transparent);
+}
+[data-theme="rux-dark"] :is(.rux--inline-notification, .rux--toast-notification, .rux--actionable-notification) :is(.rux--inline-notification__close-icon, .rux--toast-notification__close-icon, .rux--actionable-notification__close-icon) {
+  fill: currentColor;
 }
 /* A GUIDE BANNER AND A COACHMARK ARE SURFACES WITH AN INK OF THEIR OWN, a
    colour or the inverse of the page, where the grey ring would read as dirt:

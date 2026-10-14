@@ -495,11 +495,19 @@
    ITS RAISED GREYS SIT ONE STEP UP GEIST'S LADDER, which runs #0a0a0a,
    #111111, #1a1a1a, #242424, #2e2e2e, #333333, #3f3f3f, #525252, #666666.
    Every layer and field token, the secondary and disabled buttons, the
-   skeleton, the off toggle and the chat's shell and bubbles hold the next
-   grey up from geist-dark's, so the first raised surface is #111111, the
-   lightness of the #0d1117 GitHub's Primer draws a tile in, and the greys
-   keep their order. The page stays black, and the grey tags and the tinted
-   fills are geist-dark's.
+   skeleton and the chat's shell and bubbles hold the next grey up from
+   geist-dark's, so the first raised surface is #111111, the lightness of the
+   #0d1117 GitHub's Primer draws a tile in, and the greys keep their order.
+   The page stays black, and the grey tags and the tinted fills are
+   geist-dark's.
+
+   TWO VALUES HOLD THEIR CONTRAST ON THE RAISED GREYS. Helper text is
+   #8f8f8f, the grey this block already gives disabled text on a coloured
+   fill, because geist-dark's #888888 falls to 4.4 to 1 on the #242424 of
+   layer-03; #8f8f8f is 4.8 to 1 there. The off toggle's track is Carbon
+   g100's #6f6f6f, 3.8 to 1 on layer-01 and 3.1 on layer-03, because a
+   control's resting shape needs 3 to 1 and the next grey up, #333333, is
+   1.5 to 1 on layer-01.
 
    ITS BORDERS ARE PRIMER'S, AS NEUTRAL GREYS OF THE SAME LIGHTNESS. Primer
    outlines a box, a button and a field alike in borderColor-default,
@@ -583,7 +591,7 @@
   /* text */
   --rux-text-disabled: rgba(237, 237, 237, 0.25);
   --rux-text-error: #ff6369;
-  --rux-text-helper: #888888;
+  --rux-text-helper: #8f8f8f;
   --rux-text-inverse: #000000;
   --rux-text-on-color: #000000;
   --rux-text-on-color-disabled: #8f8f8f;
@@ -658,7 +666,7 @@
   --rux-shadow: rgba(0, 0, 0, 0.8);
   --rux-skeleton-background: #242424;
   --rux-skeleton-element: #333333;
-  --rux-toggle-off: #333333;
+  --rux-toggle-off: #6f6f6f;
 
   /* button */
   --rux-button-primary: #ededed;

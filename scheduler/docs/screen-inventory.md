@@ -187,8 +187,7 @@ yard to the later one's departure: "15h", in the warning tone under 10 hours,
 
 With two weeks on the board the grid shows one of them: the week the selected
 trip starts in, or with nothing selected the week holding today, else the
-first. Its head's days button shows both weeks, widening the pane from 20rem to
-40rem so each day keeps its size, and the browser keeps that choice.
+first. The pane stays 20rem, the width of every panel beside the board.
 
 ### Time at the yard
 

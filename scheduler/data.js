@@ -9586,17 +9586,11 @@
 
   /* WITH TWO WEEKS ON THE BOARD the roster shows one of them: the week the
      selected trip starts in, or with nothing selected the week holding today,
-     else the first. A trip crossing into the second week shows its first, and
-     the days button shows both, widening the pane to Carbon's lg. The choice is
-     this browser's, as the editor's size is. */
-  const ROSTER_DAYS_KEY = 'rux.scheduler.roster-days';
-  const availDaysBtn = document.getElementById('scheduler-avail-days');
-  let rosterBoth = false;
-  try { rosterBoth = localStorage.getItem(ROSTER_DAYS_KEY) === '14'; } catch { /* one week */ }
-
+     else the first. A trip crossing into the second week shows its first. The
+     pane stays one week wide, the width of every panel beside the board. */
   function rosterSlice() {
     const { weekStart, days } = availAll;
-    if (days <= 7 || rosterBoth) return { first: 0, count: days };
+    if (days <= 7) return { first: 0, count: days };
     const on = currentTripDay();
     const midnight = new Date();
     midnight.setHours(0, 0, 0, 0);
@@ -9618,15 +9612,6 @@
     markAvailDays(on ? on.start : null, on ? on.span : 1);
     markDriverTrips();
   }
-
-  availDaysBtn?.addEventListener('click', () => {
-    rosterBoth = !rosterBoth;
-    try { localStorage.setItem(ROSTER_DAYS_KEY, rosterBoth ? '14' : '7'); } catch { /* kept for this visit */ }
-    drawRoster();
-    // The pane changed width, so the board lays out again around it.
-    placeRoom();
-    window.Rux?.schedule?.fit?.();
-  });
 
   function availabilityRows({ trips, drivers, timeOff, weekStart, weekEnd }) {
     const length = daysBetween(weekStart, weekEnd) + 1;
@@ -9758,19 +9743,8 @@
   function drawAvailability(rows, weekStart, first, count, days) {
     availGrid.textContent = '';
     availEl.style.setProperty('--scheduler-days', String(count));
-    availEl.classList.toggle('scheduler-week--avail-both', count > 7);
-    asideSlot?.classList.toggle('scheduler-aside--wide', count > 7);
-
-    // The head offers the other count only while the board shows two weeks.
+    // Two weeks on the board, so a day's title names its date.
     const two = days > 7;
-    availDaysBtn.hidden = !two;
-    if (two) {
-      const words = rosterBoth ? 'Show one week' : 'Show both weeks';
-      availDaysBtn.setAttribute('aria-pressed', String(rosterBoth));
-      availDaysBtn.setAttribute('aria-label', words);
-      availDaysBtn.title = words;
-      availDaysBtn.querySelector('use')?.setAttribute('href', rosterBoth ? '#m-close_fullscreen' : '#m-open_in_full');
-    }
 
     /* The first band's name heads the whole roster, in the column header where
        "Driver" used to sit: a band heading is the header band again, so one
@@ -10642,8 +10616,7 @@
        list keeps its place, so widening the window and narrowing it again
        brings the same one forward. */
     const open = [
-      ['roster', availOn, asideSlot?.classList.contains('scheduler-aside--wide')
-        ? '--scheduler-panel-wide-w' : '--scheduler-panel-w'],
+      ['roster', availOn, '--scheduler-panel-w'],
       ['editor', !!tripEl && !tripEl.hidden, '--scheduler-editor-w'],
       ['viewer', !!viewerEl && !viewerEl.hidden, `--scheduler-viewer-${pageEl.dataset.viewer ?? 'sm'}-w`],
       ['to-do', !!toDoPane && !toDoPane.hidden, '--scheduler-panel-w'],

@@ -13,8 +13,10 @@
 }
 
 /* A PHOTO keeps its own shape, from the width and height its <img> carries,
-   so the page keeps its place while it loads. In a gallery every photo is
-   cropped to one shape instead, so a row of them lines up. */
+   so the page keeps its place while it loads and nothing in it is cut. A
+   tall photo beside words is cropped to a wider shape, its foot kept, since
+   the coach's wheels, a lift's platform or a sign stand at the bottom of
+   every tall photo here and sky fills the top. */
 .website-photo {
   display: block;
   inline-size: 100%;
@@ -24,10 +26,78 @@
 .website-photo--crop {
   aspect-ratio: 4 / 3;
   object-fit: cover;
+  object-position: 50% 100%;
 }
 
-/* THE HERO: the words beside a photo on a wide screen, and the photo above
-   them on a phone, where the first thing seen is the bus. */
+/* A BAND runs from edge to edge of the window, past `.rux--content`'s inset,
+   as a zone of its own: `data-theme="g100"` on it gives everything inside
+   Carbon's dark values, as the footer does. A grid inside it lines its words
+   up with the page's. `--website-inset` is `.rux--content`'s padding, which
+   overrides.css narrows on a phone. */
+.website-band {
+  --website-inset: 2rem;
+  position: relative;
+  isolation: isolate;
+  margin-inline: calc(-1 * var(--website-inset));
+  padding: var(--rux-spacing-10) var(--website-inset);
+  background-color: var(--rux-background);
+  color: var(--rux-text-primary);
+}
+@media (max-width: 41.98rem) {
+  .website-band {
+    --website-inset: var(--rux-spacing-05);
+    padding-block: var(--rux-spacing-09);
+  }
+}
+/* The page's first band meets the header, past the content's top inset, and
+   holds the preview notice, the page's heading and what the page is about. */
+.website-band--intro {
+  margin-block: -2rem var(--rux-spacing-10);
+  padding-block-start: 2rem;
+}
+/* The page's last band meets the footer, past the content's bottom inset:
+   a photo of a coach behind the page's call to action, darkened most where
+   the words stand so they read at full contrast. */
+.website-band--photo {
+  margin-block: var(--rux-spacing-10) -2rem;
+  padding-block: var(--rux-spacing-12);
+  overflow: hidden;
+}
+@media (min-width: 66rem) {
+  .website-band--photo {
+    padding-block: var(--rux-spacing-13);
+  }
+}
+/* The photo fills the band, cut to its height; the coach's side and its
+   name stand about two thirds of the way down, so that part is kept. */
+.website-band__backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: 50% 68%;
+}
+.website-band--photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--rux-background) 92%, transparent) 0%,
+    color-mix(in srgb, var(--rux-background) 78%, transparent) 50%,
+    color-mix(in srgb, var(--rux-background) 40%, transparent) 100%);
+}
+@media (max-width: 41.98rem) {
+  .website-band--photo::after {
+    background: color-mix(in srgb, var(--rux-background) 82%, transparent);
+  }
+}
+
+/* THE HERO, in the home page's first band: the words beside a photo on a
+   wide screen, and the photo above them on a phone, where the first thing
+   seen is the bus. */
 .website-hero {
   display: grid;
   gap: 2rem;
@@ -48,7 +118,8 @@
 
 /* A ROW OF EQUAL PARTS: one column on a phone, two on a tablet, three or four
    on a wide screen. A list carries it, so its items are counted aloud. A row
-   of four short parts, the big numbers, is two across even on a phone. */
+   of four short parts, the big numbers or tall photos, is two across even on
+   a phone; a row of two wide photos stays two across on a wide screen. */
 .website-cards {
   display: grid;
   gap: 1rem;
@@ -65,6 +136,11 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+/* THE BIG NUMBERS stand on a hairline each, as a row of figures does. */
+.website-stats > li {
+  padding-block-start: var(--rux-spacing-05);
+  border-block-start: 1px solid var(--rux-border-subtle-01);
+}
 /* Where a row is two across, an odd last part takes the whole row, so three
    parts leave no empty cell beside the third. */
 @media (max-width: 65.98rem) {
@@ -79,6 +155,24 @@
   .website-cards--four {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
+  .website-cards--two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* A TILE'S ICON, in the company's blue. */
+.website-icon {
+  fill: var(--rux-interactive);
+}
+
+/* THE CUSTOMER'S WORDS, set off by a rule in the company's blue. */
+.website-quote {
+  margin: 0;
+  padding-inline-start: var(--rux-spacing-07);
+  border-inline-start: 0.25rem solid var(--rux-interactive);
+}
+.website-quote > figcaption {
+  color: var(--rux-text-secondary);
 }
 /* A tile in the row is as tall as the tallest beside it, with its words at
    the top: Carbon's vertical stack is a grid, which would otherwise share the

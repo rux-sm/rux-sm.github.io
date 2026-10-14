@@ -92,30 +92,40 @@
 </header>
 
 <main id="main-content" class="rux--content">
+  <!-- THE PAGE OPENS ON A DARK BAND under the header: the preview notice,
+       the heading and what the page is about. -->
+  <div class="website-band website-band--intro" data-theme="g100">
+    <div class="rux--css-grid">
+      <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
+        <div class="rux--stack-vertical rux--stack-scale-7">
+          <!-- THE PREVIEW NOTICE, on every page until the site takes the company's
+               address, so nobody mistakes it for the site the office answers. -->
+          <div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast" role="status">
+            <div class="rux--inline-notification__details">
+              <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
+              <div class="rux--inline-notification__text-wrapper">
+                <div class="rux--inline-notification__title">Vista previa</div>
+                <div class="rux--inline-notification__subtitle">Esta es una vista previa del nuevo sitio de Escamilla Tour Buses. Para reservar un viaje hoy, llame al <a class="rux--link rux--link--inline" href="tel:+19569941169">(956) 994-1169</a> o escriba a <a class="rux--link rux--link--inline" href="mailto:e-escamilla@sbcglobal.net">e-escamilla@sbcglobal.net</a>.</div>
+              </div>
+            </div>
+          </div>
+          <section class="website-hero">
+            <div class="rux--stack-vertical rux--stack-scale-6">
+              <h1 class="rux--type-fluid-heading-05">Autobuses chárter desde el Valle del Río Grande</h1>
+              <p class="rux--type-body-02">Empresa familiar en McAllen desde 2002. Nuestros autobuses Prevost llevan a escuelas, universidades, equipos y grupos por todo Texas y por todo el país.</p>
+              <div class="website-actions"><a class="rux--btn rux--btn--primary rux--btn--expressive" href="quote.html">Solicite una cotización<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a><a class="rux--btn rux--btn--tertiary rux--btn--expressive" href="tel:+19569941169">Llame al (956) 994-1169<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-call"/></svg></a></div>
+            </div>
+            <div class="website-hero__photo"><img class="website-photo" fetchpriority="high" src="../photos/coach-red.webp" srcset="../photos/coach-red-small.webp 700w, ../photos/coach-red.webp 1400w" sizes="(min-width: 66rem) 55vw, 100vw" width="1400" height="935" alt="Un autobús Prevost rojo y negro de Escamilla estacionado bajo un cielo azul" decoding="async"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
       <div class="rux--stack-vertical rux--stack-scale-10">
-        <!-- THE PREVIEW NOTICE, on every page until the site takes the company's
-             address, so nobody mistakes it for the site the office answers. -->
-        <div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast" role="status">
-          <div class="rux--inline-notification__details">
-            <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
-            <div class="rux--inline-notification__text-wrapper">
-              <div class="rux--inline-notification__title">Vista previa</div>
-              <div class="rux--inline-notification__subtitle">Esta es una vista previa del nuevo sitio de Escamilla Tour Buses. Para reservar un viaje hoy, llame al <a class="rux--link rux--link--inline" href="tel:+19569941169">(956) 994-1169</a> o escriba a <a class="rux--link rux--link--inline" href="mailto:e-escamilla@sbcglobal.net">e-escamilla@sbcglobal.net</a>.</div>
-            </div>
-          </div>
-        </div>
-        <section class="website-hero">
-          <div class="rux--stack-vertical rux--stack-scale-6">
-            <h1 class="rux--type-fluid-heading-05">Autobuses chárter desde el Valle del Río Grande</h1>
-            <p class="rux--type-body-02">Empresa familiar en McAllen desde 2002. Nuestros autobuses Prevost llevan a escuelas, universidades, equipos y grupos por todo Texas y por todo el país.</p>
-            <div class="website-actions"><a class="rux--btn rux--btn--primary rux--btn--expressive" href="quote.html">Solicite una cotización<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a><a class="rux--btn rux--btn--tertiary rux--btn--expressive" href="tel:+19569941169">Llame al (956) 994-1169<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-call"/></svg></a></div>
-          </div>
-          <div class="website-hero__photo"><img class="website-photo" src="../photos/coach-red.webp" srcset="../photos/coach-red-small.webp 700w, ../photos/coach-red.webp 1400w" sizes="(min-width: 66rem) 55vw, 100vw" width="1400" height="935" alt="Un autobús Prevost rojo y negro de Escamilla estacionado bajo un cielo azul" decoding="async"></div>
-        </section>
         <section class="rux--stack-vertical rux--stack-scale-6">
-          <ul class="website-cards website-cards--four">
+          <ul class="website-cards website-cards--four website-stats">
             <li>
               <figure class="rux--big-number">
                 <span class="rux--big-number__row"><figcaption class="rux--big-number__label">autobuses Prevost</figcaption></span>
@@ -148,37 +158,37 @@
           <ul class="website-cards">
             <li>
               <div class="rux--tile rux--stack-vertical rux--stack-scale-3">
-                <svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-school"/></svg>
+                <svg class="website-icon" width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-school"/></svg>
                 <h3 class="rux--type-heading-03">Escuelas y distritos escolares</h3>
               </div>
             </li>
             <li>
               <div class="rux--tile rux--stack-vertical rux--stack-scale-3">
-                <svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-apartment"/></svg>
+                <svg class="website-icon" width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-apartment"/></svg>
                 <h3 class="rux--type-heading-03">Colegios y universidades</h3>
               </div>
             </li>
             <li>
               <div class="rux--tile rux--stack-vertical rux--stack-scale-3">
-                <svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg>
+                <svg class="website-icon" width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg>
                 <h3 class="rux--type-heading-03">Equipos deportivos</h3>
               </div>
             </li>
             <li>
               <div class="rux--tile rux--stack-vertical rux--stack-scale-3">
-                <svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-route"/></svg>
+                <svg class="website-icon" width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-route"/></svg>
                 <h3 class="rux--type-heading-03">Agencias y compañías chárter</h3>
               </div>
             </li>
             <li>
               <div class="rux--tile rux--stack-vertical rux--stack-scale-3">
-                <svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calendar_month"/></svg>
+                <svg class="website-icon" width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calendar_month"/></svg>
                 <h3 class="rux--type-heading-03">Congresos y eventos</h3>
               </div>
             </li>
             <li>
               <div class="rux--tile rux--stack-vertical rux--stack-scale-3">
-                <svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-groups"/></svg>
+                <svg class="website-icon" width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-groups"/></svg>
                 <h3 class="rux--type-heading-03">Iglesias, campamentos y familias</h3>
               </div>
             </li>
@@ -212,18 +222,26 @@
           </ol>
           <p><a class="rux--link rux--link--lg" href="contact.html#faq">Lea las respuestas a preguntas frecuentes</a></p>
         </section>
-        <figure class="rux--stack-vertical rux--stack-scale-4">
+        <figure class="website-quote rux--stack-vertical rux--stack-scale-4">
           <blockquote class="rux--type-fluid-quotation-01" lang="en">“Escamilla Tours is a first rate company. Provides top notch service for every charter bus with great customer service.”</blockquote>
           <figcaption class="rux--type-body-01">— Shands Brooks Charters</figcaption>
         </figure>
-        <section class="rux--stack-vertical rux--stack-scale-6">
-          <h2 class="rux--type-fluid-heading-04">¿Listo para viajar?</h2>
-          <p class="rux--type-body-02 website-measure">Los viernes de primavera y las semanas de competencias de noviembre se llenan con meses de anticipación; pida su cotización con tiempo.</p>
-          <div class="website-actions"><a class="rux--btn rux--btn--primary rux--btn--expressive" href="quote.html">Solicite una cotización<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a><a class="rux--btn rux--btn--tertiary rux--btn--expressive" href="tel:+19569941169">Llame al (956) 994-1169<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-call"/></svg></a></div>
-        </section>
       </div>
     </div>
   </div>
+  <!-- THE PAGE CLOSES ON A PHOTO BAND: its call to action over a coach. -->
+  <section class="website-band website-band--photo" data-theme="g100">
+    <img class="website-band__backdrop" src="../photos/coach-silver.webp" srcset="../photos/coach-silver-small.webp 700w, ../photos/coach-silver.webp 1400w" sizes="100vw" width="1400" height="935" alt="" loading="lazy" decoding="async">
+    <div class="rux--css-grid">
+      <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
+        <div class="rux--stack-vertical rux--stack-scale-6">
+          <h2 class="rux--type-fluid-heading-04">¿Listo para viajar?</h2>
+          <p class="rux--type-body-02 website-measure">Los viernes de primavera y las semanas de competencias de noviembre se llenan con meses de anticipación; pida su cotización con tiempo.</p>
+          <div class="website-actions"><a class="rux--btn rux--btn--primary rux--btn--expressive" href="quote.html">Solicite una cotización<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a><a class="rux--btn rux--btn--tertiary rux--btn--expressive" href="tel:+19569941169">Llame al (956) 994-1169<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-call"/></svg></a></div>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <footer class="website-footer" data-theme="g100">

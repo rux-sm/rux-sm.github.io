@@ -87,41 +87,51 @@
 </header>
 
 <main id="main-content" class="rux--content">
+  <!-- THE PAGE OPENS ON A DARK BAND under the header: the preview notice,
+       the heading and what the page is about. -->
+  <div class="website-band website-band--intro" data-theme="g100">
+    <div class="rux--css-grid">
+      <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
+        <div class="rux--stack-vertical rux--stack-scale-7">
+          <!-- THE PREVIEW NOTICE, on every page until the site takes the company's
+               address, so nobody mistakes it for the site the office answers. -->
+          <div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast" role="status">
+            <div class="rux--inline-notification__details">
+              <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
+              <div class="rux--inline-notification__text-wrapper">
+                <div class="rux--inline-notification__title">Preview</div>
+                <div class="rux--inline-notification__subtitle">This is a preview of the new Escamilla Tour Buses website. To book a trip today, call <a class="rux--link rux--link--inline" href="tel:+19569941169">(956) 994-1169</a> or email <a class="rux--link rux--link--inline" href="mailto:e-escamilla@sbcglobal.net">e-escamilla@sbcglobal.net</a>.</div>
+              </div>
+            </div>
+          </div>
+          <h1 class="rux--type-fluid-heading-05">Our buses</h1>
+          <p class="rux--type-body-02 website-measure">Nine Prevost H3-45 motorcoaches, from model years 2014 to 2025, and a 15-passenger Mercedes van. We keep the fleet young by bringing in new coaches as the old ones retire.</p>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
       <div class="rux--stack-vertical rux--stack-scale-10">
-        <!-- THE PREVIEW NOTICE, on every page until the site takes the company's
-             address, so nobody mistakes it for the site the office answers. -->
-        <div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast" role="status">
-          <div class="rux--inline-notification__details">
-            <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
-            <div class="rux--inline-notification__text-wrapper">
-              <div class="rux--inline-notification__title">Preview</div>
-              <div class="rux--inline-notification__subtitle">This is a preview of the new Escamilla Tour Buses website. To book a trip today, call <a class="rux--link rux--link--inline" href="tel:+19569941169">(956) 994-1169</a> or email <a class="rux--link rux--link--inline" href="mailto:e-escamilla@sbcglobal.net">e-escamilla@sbcglobal.net</a>.</div>
-            </div>
-          </div>
-        </div>
         <section class="rux--stack-vertical rux--stack-scale-6">
-          <h1 class="rux--type-fluid-heading-05">Our buses</h1>
-          <p class="rux--type-body-02 website-measure">Nine Prevost H3-45 motorcoaches, from model years 2014 to 2025, and a 15-passenger Mercedes van. We keep the fleet young by bringing in new coaches as the old ones retire.</p>
           <ul class="website-cards">
             <li>
               <div class="rux--tile rux--stack-vertical rux--stack-scale-3">
-                <svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg>
+                <svg class="website-icon" width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg>
                 <h3 class="rux--type-heading-03">52-passenger coach</h3>
                 <p class="rux--type-body-01">Six Prevost H3-45 coaches, each with a sleeper berth for a second driver on long trips. Three of them carry a wheelchair lift.</p>
               </div>
             </li>
             <li>
               <div class="rux--tile rux--stack-vertical rux--stack-scale-3">
-                <svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg>
+                <svg class="website-icon" width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg>
                 <h3 class="rux--type-heading-03">56-passenger coach</h3>
                 <p class="rux--type-body-01">Three Prevost H3-45 coaches, for the group that needs every seat. Ask for one when you request your quote.</p>
               </div>
             </li>
             <li>
               <div class="rux--tile rux--stack-vertical rux--stack-scale-3">
-                <svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-airport_shuttle"/></svg>
+                <svg class="website-icon" width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-airport_shuttle"/></svg>
                 <h3 class="rux--type-heading-03">15-passenger van</h3>
                 <p class="rux--type-body-01">A Mercedes van for small groups and short runs.</p>
               </div>
@@ -147,53 +157,67 @@
         </section>
         <section class="rux--stack-vertical rux--stack-scale-6">
           <h2 class="rux--type-fluid-heading-04">Photos</h2>
-          <ul class="website-cards">
-            <li>
-              <figure class="website-figure">
-                <img class="website-photo website-photo--crop" src="photos/coach-474-front.webp" srcset="photos/coach-474-front-small.webp 480w, photos/coach-474-front.webp 960w" sizes="(min-width: 66rem) 30vw, (min-width: 42rem) 45vw, 100vw" width="960" height="1080" alt="The front of coach 474, a red Prevost H3-45" loading="lazy" decoding="async">
-                <figcaption class="rux--type-body-01">Coach 474, one of our lift coaches</figcaption>
-              </figure>
-            </li>
-            <li>
-              <figure class="website-figure">
-                <img class="website-photo website-photo--crop" src="photos/coach-red.webp" srcset="photos/coach-red-small.webp 700w, photos/coach-red.webp 1400w" sizes="(min-width: 66rem) 30vw, (min-width: 42rem) 45vw, 100vw" width="1400" height="935" alt="A red and black Prevost coach" loading="lazy" decoding="async">
-                <figcaption class="rux--type-body-01">A Prevost H3-45</figcaption>
-              </figure>
-            </li>
-            <li>
-              <figure class="website-figure">
-                <img class="website-photo website-photo--crop" src="photos/luggage-bays.webp" srcset="photos/luggage-bays-small.webp 480w, photos/luggage-bays.webp 960w" sizes="(min-width: 66rem) 30vw, (min-width: 42rem) 45vw, 100vw" width="960" height="1080" alt="The open luggage bays under a red coach" loading="lazy" decoding="async">
-                <figcaption class="rux--type-body-01">Luggage bays under the floor</figcaption>
-              </figure>
-            </li>
-            <li>
-              <figure class="website-figure">
-                <img class="website-photo website-photo--crop" src="photos/coach-silver.webp" srcset="photos/coach-silver-small.webp 700w, photos/coach-silver.webp 1400w" sizes="(min-width: 66rem) 30vw, (min-width: 42rem) 45vw, 100vw" width="1400" height="935" alt="A silver Prevost coach with the Escamilla name" loading="lazy" decoding="async">
-                <figcaption class="rux--type-body-01">A silver Prevost</figcaption>
-              </figure>
-            </li>
-            <li>
-              <figure class="website-figure">
-                <img class="website-photo website-photo--crop" src="photos/usb-and-wifi.webp" srcset="photos/usb-and-wifi-small.webp 480w, photos/usb-and-wifi.webp 960w" sizes="(min-width: 66rem) 30vw, (min-width: 42rem) 45vw, 100vw" width="960" height="1080" alt="A USB port under a seat and a phone on the coach’s Wi-Fi" loading="lazy" decoding="async">
-                <figcaption class="rux--type-body-01">USB, power and Wi-Fi at the seats</figcaption>
-              </figure>
-            </li>
-            <li>
-              <figure class="website-figure">
-                <img class="website-photo website-photo--crop" src="photos/coach-474-road.webp" srcset="photos/coach-474-road-small.webp 480w, photos/coach-474-road.webp 960w" sizes="(min-width: 66rem) 30vw, (min-width: 42rem) 45vw, 100vw" width="960" height="1080" alt="Coach 474 on the highway" loading="lazy" decoding="async">
-                <figcaption class="rux--type-body-01">On the road</figcaption>
-              </figure>
-            </li>
-          </ul>
-        </section>
-        <section class="rux--stack-vertical rux--stack-scale-6">
-          <h2 class="rux--type-fluid-heading-04">Need a bus?</h2>
-          <p class="rux--type-body-02 website-measure">Tell us how many are going, and we’ll tell you how many coaches it takes.</p>
-          <div class="website-actions"><a class="rux--btn rux--btn--primary rux--btn--expressive" href="quote.html">Request a quote<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a><a class="rux--btn rux--btn--tertiary rux--btn--expressive" href="tel:+19569941169">Call (956) 994-1169<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-call"/></svg></a></div>
+          <!-- Every photo keeps its own shape, so no coach is cut: the wide ones
+               two across, the tall ones four across on a wide screen. -->
+          <div class="rux--stack-vertical rux--stack-scale-5">
+            <ul class="website-cards website-cards--two">
+              <li>
+                <figure class="website-figure">
+                  <img class="website-photo" src="photos/coach-red.webp" srcset="photos/coach-red-small.webp 700w, photos/coach-red.webp 1400w" sizes="(min-width: 42rem) 50vw, 100vw" width="1400" height="935" alt="A red and black Prevost coach" loading="lazy" decoding="async">
+                  <figcaption class="rux--type-body-01">A Prevost H3-45</figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="website-figure">
+                  <img class="website-photo" src="photos/coach-silver.webp" srcset="photos/coach-silver-small.webp 700w, photos/coach-silver.webp 1400w" sizes="(min-width: 42rem) 50vw, 100vw" width="1400" height="935" alt="A silver Prevost coach with the Escamilla name" loading="lazy" decoding="async">
+                  <figcaption class="rux--type-body-01">A silver Prevost</figcaption>
+                </figure>
+              </li>
+            </ul>
+            <ul class="website-cards website-cards--four">
+              <li>
+                <figure class="website-figure">
+                  <img class="website-photo" src="photos/coach-474-front.webp" srcset="photos/coach-474-front-small.webp 480w, photos/coach-474-front.webp 960w" sizes="(min-width: 66rem) 25vw, 50vw" width="960" height="1080" alt="The front of coach 474, a red Prevost H3-45" loading="lazy" decoding="async">
+                  <figcaption class="rux--type-body-01">Coach 474, one of our lift coaches</figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="website-figure">
+                  <img class="website-photo" src="photos/coach-474-road.webp" srcset="photos/coach-474-road-small.webp 480w, photos/coach-474-road.webp 960w" sizes="(min-width: 66rem) 25vw, 50vw" width="960" height="1080" alt="Coach 474 on the highway" loading="lazy" decoding="async">
+                  <figcaption class="rux--type-body-01">On the road</figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="website-figure">
+                  <img class="website-photo" src="photos/luggage-bays.webp" srcset="photos/luggage-bays-small.webp 480w, photos/luggage-bays.webp 960w" sizes="(min-width: 66rem) 25vw, 50vw" width="960" height="1080" alt="The open luggage bays under a red coach" loading="lazy" decoding="async">
+                  <figcaption class="rux--type-body-01">Luggage bays under the floor</figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="website-figure">
+                  <img class="website-photo" src="photos/usb-and-wifi.webp" srcset="photos/usb-and-wifi-small.webp 480w, photos/usb-and-wifi.webp 960w" sizes="(min-width: 66rem) 25vw, 50vw" width="960" height="1080" alt="A USB port under a seat and a phone on the coach’s Wi-Fi" loading="lazy" decoding="async">
+                  <figcaption class="rux--type-body-01">USB, power and Wi-Fi at the seats</figcaption>
+                </figure>
+              </li>
+            </ul>
+          </div>
         </section>
       </div>
     </div>
   </div>
+  <!-- THE PAGE CLOSES ON A PHOTO BAND: its call to action over a coach. -->
+  <section class="website-band website-band--photo" data-theme="g100">
+    <img class="website-band__backdrop" src="photos/coach-silver.webp" srcset="photos/coach-silver-small.webp 700w, photos/coach-silver.webp 1400w" sizes="100vw" width="1400" height="935" alt="" loading="lazy" decoding="async">
+    <div class="rux--css-grid">
+      <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
+        <div class="rux--stack-vertical rux--stack-scale-6">
+          <h2 class="rux--type-fluid-heading-04">Need a bus?</h2>
+          <p class="rux--type-body-02 website-measure">Tell us how many are going, and we’ll tell you how many coaches it takes.</p>
+          <div class="website-actions"><a class="rux--btn rux--btn--primary rux--btn--expressive" href="quote.html">Request a quote<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-arrow--right"/></svg></a><a class="rux--btn rux--btn--tertiary rux--btn--expressive" href="tel:+19569941169">Call (956) 994-1169<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-call"/></svg></a></div>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <footer class="website-footer" data-theme="g100">

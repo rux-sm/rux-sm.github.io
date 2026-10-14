@@ -87,24 +87,34 @@
 </header>
 
 <main id="main-content" class="rux--content">
+  <!-- THE PAGE OPENS ON A DARK BAND under the header: the preview notice,
+       the heading and what the page is about. -->
+  <div class="website-band website-band--intro" data-theme="g100">
+    <div class="rux--css-grid">
+      <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
+        <div class="rux--stack-vertical rux--stack-scale-7">
+          <!-- THE PREVIEW NOTICE, on every page until the site takes the company's
+               address, so nobody mistakes it for the site the office answers. -->
+          <div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast" role="status">
+            <div class="rux--inline-notification__details">
+              <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
+              <div class="rux--inline-notification__text-wrapper">
+                <div class="rux--inline-notification__title">Vista previa</div>
+                <div class="rux--inline-notification__subtitle">Esta es una vista previa del nuevo sitio de Escamilla Tour Buses. Para reservar un viaje hoy, llame al <a class="rux--link rux--link--inline" href="tel:+19569941169">(956) 994-1169</a> o escriba a <a class="rux--link rux--link--inline" href="mailto:e-escamilla@sbcglobal.net">e-escamilla@sbcglobal.net</a>.</div>
+              </div>
+            </div>
+          </div>
+          <h1 class="rux--type-fluid-heading-05">Nosotros</h1>
+          <p class="rux--type-body-02 website-measure">Una empresa familiar de cuatro generaciones, al servicio del Valle del Río Grande desde McAllen desde 2002.</p>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
       <div class="rux--stack-vertical rux--stack-scale-10">
-        <!-- THE PREVIEW NOTICE, on every page until the site takes the company's
-             address, so nobody mistakes it for the site the office answers. -->
-        <div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast" role="status">
-          <div class="rux--inline-notification__details">
-            <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
-            <div class="rux--inline-notification__text-wrapper">
-              <div class="rux--inline-notification__title">Vista previa</div>
-              <div class="rux--inline-notification__subtitle">Esta es una vista previa del nuevo sitio de Escamilla Tour Buses. Para reservar un viaje hoy, llame al <a class="rux--link rux--link--inline" href="tel:+19569941169">(956) 994-1169</a> o escriba a <a class="rux--link rux--link--inline" href="mailto:e-escamilla@sbcglobal.net">e-escamilla@sbcglobal.net</a>.</div>
-            </div>
-          </div>
-        </div>
         <section class="website-split">
           <div class="rux--stack-vertical rux--stack-scale-6">
-            <h1 class="rux--type-fluid-heading-05">Nosotros</h1>
-          <p class="rux--type-body-02 website-measure">Una empresa familiar de cuatro generaciones, al servicio del Valle del Río Grande desde McAllen desde 2002.</p>
           <h2 class="rux--type-fluid-heading-04">Nuestra historia</h2>
             <p class="rux--type-body-02 website-measure">La primera compañía de autobuses de la familia Escamilla, Transportes Escamilla, empezó en 1995 en Los Herreras, Nuevo León. La segunda generación siguió con su propia compañía de autobuses de turismo en Monterrey.</p>
             <p class="rux--type-body-02 website-measure">La tercera y la cuarta generación trajeron el oficio de la familia al sur de Texas, donde Escamilla Tour Buses ha servido al Valle desde 2002, una empresa de la familia y manejada por ella.</p>
@@ -119,36 +129,44 @@
           <ul class="website-cards">
             <li>
               <div class="rux--tile rux--stack-vertical rux--stack-scale-3">
-                <svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-check_circle"/></svg>
+                <svg class="website-icon" width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-check_circle"/></svg>
                 <h3 class="rux--type-heading-03">Su viaje, bien hecho</h3>
                 <p class="rux--type-body-01">Nuestra meta es su completa satisfacción en cada viaje, desde la primera cotización hasta el regreso a casa.</p>
               </div>
             </li>
             <li>
               <div class="rux--tile rux--stack-vertical rux--stack-scale-3">
-                <svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg>
+                <svg class="website-icon" width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg>
                 <h3 class="rux--type-heading-03">Una flotilla joven</h3>
                 <p class="rux--type-body-01">Cuando un autobús se retira llega uno nuevo, así que usted viaja en un Prevost moderno.</p>
               </div>
             </li>
             <li>
               <div class="rux--tile rux--stack-vertical rux--stack-scale-3">
-                <svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-request_quote"/></svg>
+                <svg class="website-icon" width="32" height="32" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-request_quote"/></svg>
                 <h3 class="rux--type-heading-03">Respuestas claras</h3>
                 <p class="rux--type-body-01">Su precio sale de las millas y los días del viaje, por escrito, y nos ajustamos a su presupuesto.</p>
               </div>
             </li>
           </ul>
         </section>
-        <section class="rux--stack-vertical rux--stack-scale-6" id="drive">
+      </div>
+    </div>
+  </div>
+  <!-- THE PAGE CLOSES ON A PHOTO BAND: its call to action over a coach. -->
+  <section class="website-band website-band--photo" data-theme="g100" id="drive">
+    <img class="website-band__backdrop" src="../photos/coach-silver.webp" srcset="../photos/coach-silver-small.webp 700w, ../photos/coach-silver.webp 1400w" sizes="100vw" width="1400" height="935" alt="" loading="lazy" decoding="async">
+    <div class="rux--css-grid">
+      <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
+        <div class="rux--stack-vertical rux--stack-scale-6">
           <h2 class="rux--type-fluid-heading-04">Maneje con nosotros</h2>
           <p class="rux--type-body-02 website-measure">Si le gusta viajar, sabe tratar con la gente y quiere ser chofer profesional de autobús, nos gustaría conocerle.</p>
           <p class="rux--type-body-02 website-measure">Los choferes de autobús necesitan una licencia de manejo comercial (CDL) con el permiso para pasajeros. Llámenos o venga a la oficina para presentar su solicitud.</p>
           <div class="website-actions"><a class="rux--btn rux--btn--primary rux--btn--expressive" href="tel:+19569941169">Llame al (956) 994-1169<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-call"/></svg></a><a class="rux--btn rux--btn--tertiary rux--btn--expressive" href="https://www.google.com/maps/search/?api=1&amp;query=2801+Zinnia+Ave+McAllen+TX+78504">Cómo llegar<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-location_on"/></svg></a></div>
-        </section>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 </main>
 
 <footer class="website-footer" data-theme="g100">

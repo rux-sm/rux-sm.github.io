@@ -17,3 +17,13 @@
   --rux-link-primary: #2f6293;
   --rux-link-primary-hover: #1f4263;
 }
+
+/* THE SAME BUTTON IN THE DARK BANDS. A page's first and last bands are g100
+   zones, and their primary button keeps the company's blue, which carries
+   white type at 6 to 1 whatever is behind it. Links there keep Carbon's light
+   blue, which the company's blue is too dark to replace on black. */
+[data-theme="g100"] {
+  --rux-button-primary: #2f6293;
+  --rux-button-primary-hover: #29567f;
+  --rux-button-primary-active: #1f4263;
+}

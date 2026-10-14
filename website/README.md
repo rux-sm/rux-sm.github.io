@@ -41,10 +41,13 @@ header's menu needs, and the FAQ loads Design's accordion.
 ## Its parts
 
 - `theme.css` sets the company's blue, the deep end of the logo, as the
-  action colour on the white theme.
+  action colour on the white theme and as the primary button's on the dark.
 - `app.css` holds the parts Carbon has no component for, under `website-`:
-  the hero, rows of tiles, features, photos, the calls to action, the form's
-  pairs and headings, and the footer, which is a `g100` zone.
+  the bands, the hero, rows of tiles, features, photos, the calls to action,
+  the form's pairs and headings, and the footer. Every page opens on a dark
+  band, a `g100` zone from edge to edge, holding the preview notice and the
+  heading; four close on a photo band holding the call to action; the footer
+  is `g100` too.
 - `overrides.css` narrows the page's inset on a phone, widens the quote
   form's text area, keeps a row's big numbers level, and lets a call to action
   fill a phone's width.
@@ -54,7 +57,8 @@ header's menu needs, and the FAQ loads Design's accordion.
 - `brand/` holds the logo, `icon.svg`, the app's tile, a browser window, and
   `favicon.svg`, the company's bus, for a customer's tab.
 - `photos/` holds each photo as WebP at two widths, the larger and a
-  `-small` copy at half its width, without their metadata.
+  `-small` copy at half its width, without their metadata. A photo shows
+  whole, except a tall one beside words, cut to 4:3 from its foot.
 
 ## The facts on the pages
 

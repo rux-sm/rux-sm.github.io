@@ -14,7 +14,27 @@ Agreement Form printed behind it. If this page and that wording ever disagree,
 the signed wording wins and this page gets fixed. Prices and rates stay off this
 page because the repository is public. `quote-calculator.md` covers pricing.
 
-## 1. Send the quote
+## 1. A request from the website
+
+The company website's quote form puts each request on the board's Tasks as a
+New quote, due the day it came in and added by Website. Its lines are the
+request's number, the customer's name, phone and email, whether a purchase
+order pays, when the trip leaves and comes back, a wheelchair lift where they
+need one, and their own words. A request sent in Spanish says so; answer it in
+Spanish.
+
+1. Open the row and press **Start trip**. The trip editor opens filled in from
+   the request, with a notice of what it said beyond its fields. Choose the
+   pickup and the destination from their lists on the Route tab, check the
+   marked fields, price the trip and Save. The request and the row now name
+   the trip, and the row's Trip opens it.
+2. Send the quote as the next step says, writing from Missive to the email on
+   the request. The customer has no copy of what they asked, so a question
+   about it goes in that email.
+3. Tick the row Done once the quote is sent. A trip leaving in the next few
+   days was asked to call; one that has not, call.
+
+## 2. Send the quote
 
 Print the customer quote from the trip on `print.html` and save it as a PDF.
 The PDF is two sheets, the quote and the Terms and Conditions form. Always send
@@ -54,7 +74,7 @@ written.
 - A school sends the final itinerary before the P.O., because the price can
   change with the itinerary.
 
-## 2. Follow up
+## 3. Follow up
 
 If the customer has not answered after the office's follow-up wait, the trip
 shows under Needs follow-up on `trips.html`, and its bar on the board counts
@@ -63,7 +83,7 @@ too, however recent its updates. A reminder cannot be dismissed: it stays
 until the missing thing arrives or an update is written. Send a short
 check-in. It can say that we price-match and can work with their budget.
 
-## 3. When the customer says yes
+## 4. When the customer says yes
 
 Reply the same day with the next steps, in this order:
 
@@ -86,7 +106,7 @@ Reply the same day with the next steps, in this order:
 When a customer asks for particular drivers, say we will do our best. Do not
 promise anyone until dispatch has assigned them.
 
-## 4. Record it on the trip
+## 5. Record it on the trip
 
 Record each piece as it arrives, on the trip editor's Billing tab: the contract
 signed, the P.O. with its number and amount, or the deposit as a payment. The

@@ -25,7 +25,7 @@ process.removeAllListeners('warning');
 
 const SCHEDULER = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ROOT = resolve(SCHEDULER, '..');
-const FUNCTIONS = ['connector', 'trip-document-link'];
+const FUNCTIONS = ['connector', 'trip-document-link', 'quote-request'];
 
 let failed = 0;
 const fail = words => { failed++; console.log(`  FAIL  ${words}`); };

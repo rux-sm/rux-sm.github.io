@@ -3433,6 +3433,7 @@
     if (openDraft) {
       const spent = openDraft;
       openDraft = null;
+      openDraftRequest = null;
       client.from('trip_drafts').delete().eq('id', spent).then(() => {}, () => {});
     }
     // Closing puts the editor's own trip down; a different trip selected
@@ -11209,6 +11210,13 @@
       const tripId = creating ? row.id : id;
       // Only once the trip stands does its contact take its customer.
       await fillContactCustomer(row);
+      /* A trip started from a website request takes it, and its New quote
+         row on Tasks takes the trip, so the row's Trip opens it. */
+      if (creating && openDraftRequest) {
+        await write('the website request', client.from('quote_requests').update({ trip_id: tripId }).eq('id', openDraftRequest));
+        await write('the website request', client.from('to_dos').update({ trip_id: tripId })
+          .eq('quote_request_id', openDraftRequest).is('trip_id', null));
+      }
 
       /* The route's rows: a new trip's first ones, or an existing leg's
          changes and the rows it lacks. Each is written one at a time, since an
@@ -15763,6 +15771,8 @@
 
   // The draft whose fields are in the panel, deleted once the panel closes.
   let openDraft = null;
+  // The website request that draft came from, which the new trip takes on Save.
+  let openDraftRequest = null;
 
   /* Typing a value in. The events are the ones a person's typing fires, which
      is what the panel listens to for its dirty state; setting `value` alone
@@ -15865,10 +15875,11 @@
     return { missed, unpicked, held, unmarked, newCustomer };
   }
 
-  /* The notice above the fields: what Claude could not work out, and anything
-     it filled that this panel has no field for, written out so it can be
-     typed in by hand rather than lost. */
-  function draftNotice(notes, { missed, unpicked, held = [], unmarked = [], newCustomer = null }) {
+  /* The notice above the fields: what Claude could not work out, or what a
+     website request said beyond its fields, and anything filled that this
+     panel has no field for, written out so it can be typed in by hand rather
+     than lost. */
+  function draftNotice(notes, { missed, unpicked, held = [], unmarked = [], newCustomer = null }, website = false) {
     if (!notes && !missed.length && !unpicked.length && !held.length && !unmarked.length && !newCustomer) return;
     const wrap = el('div', 'scheduler-drafted-notice');
     const note = el('div', 'rux--inline-notification rux--inline-notification--info');
@@ -15882,7 +15893,8 @@
     use.setAttribute('href', '#m-info-fill');
     icon.appendChild(use);
     const texts = el('div', 'rux--inline-notification__text-wrapper');
-    texts.appendChild(el('div', 'rux--inline-notification__title', 'Filled in by Claude. Check the marked fields.'));
+    texts.appendChild(el('div', 'rux--inline-notification__title',
+      `Filled in ${website ? 'from a website request' : 'by Claude'}. Check the marked fields.`));
     if (notes) texts.appendChild(el('div', 'rux--inline-notification__subtitle', notes));
     if (unpicked.length) {
       texts.appendChild(el('div', 'rux--inline-notification__subtitle',
@@ -15920,7 +15932,7 @@
     let failed = null;
     try {
       const read = await client.from('trip_drafts')
-        .select('id, trip_id, fields, notes').eq('id', id).maybeSingle();
+        .select('id, trip_id, fields, notes, quote_request_id').eq('id', id).maybeSingle();
       row = read.data ?? null;
       failed = read.error ?? null;
     } catch (e) { failed = e; }
@@ -15948,7 +15960,8 @@
     }
 
     openDraft = row.id;
-    draftNotice(row.notes, applyDraft(row.fields));
+    openDraftRequest = row.quote_request_id ?? null;
+    draftNotice(row.notes, applyDraft(row.fields), !!openDraftRequest);
   }
 
   /* Shows a trip's week with its bar selected and in view, and opens the

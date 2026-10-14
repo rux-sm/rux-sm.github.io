@@ -166,6 +166,48 @@
   const remove = row => write(() => client.from('to_dos')
     .update({ closed_at: new Date().toISOString(), closed_reason: 'Deleted' }).eq('id', row.id));
 
+  /* START TRIP turns a website request into a draft, as Claude's are: the
+     request's facts fill the editor, and only the person's Save makes the
+     trip, which then takes the request and this row. The board opens a
+     draft named in its address. */
+  const PO_WORDS = { yes: 'Yes', no: 'No', unsure: 'Not sure yet' };
+  function draftOf(r) {
+    const round = r.trip_type === 'round';
+    const name = `${r.first_name} ${r.last_name}`;
+    const fields = {
+      destination: r.destination,
+      customer: r.organization || name,
+      trip_type: round ? 'round_trip' : 'one_way',
+      start_date: r.leave_on,
+      end_date: round ? r.return_on : r.leave_on,
+      passengers: String(r.passengers),
+      pickup_address: r.pickup,
+      booking_contact_name: name,
+      booking_contact_phone: r.phone,
+      booking_contact_email: r.email,
+    };
+    if (r.leave_at) fields.departure_time = r.leave_at.slice(0, 5);
+    if (round && r.return_at) fields.return_time = r.return_at.slice(0, 5);
+    if (r.wheelchair_lift) fields.req_ada = true;
+    // A round trip's destination is a stop on the way; a one-way trip's is where it ends.
+    if (round) fields.stops = [{ name: r.destination }];
+    else fields.dropoff_address = r.destination;
+    const notes = [`Website request ${r.number}${r.lang === 'es' ? ', sent in Spanish' : ''}.`,
+      `Purchase order: ${PO_WORDS[r.purchase_order] ?? r.purchase_order}.`, r.details].filter(Boolean).join(' ');
+    return { fields, notes, quote_request_id: r.id };
+  }
+  async function startTrip(row, pressed) {
+    pressed.disabled = true;
+    try {
+      const request = await client.from('quote_requests').select('*').eq('id', row.quote_request_id).single().then(unwrap);
+      const draft = await client.from('trip_drafts').insert(draftOf(request)).select('id').single().then(unwrap);
+      location.href = `./?draft=${draft.id}`;
+    } catch (e) {
+      failure = `The trip could not be started. ${e?.message || e}`;
+      draw();
+    }
+  }
+
   // -- the list, as data ----------------------------------------------------
   const groupOf = (row, today, sunday) => (!row.due_on ? 'No date' : row.due_on < today ? 'Overdue'
     : row.due_on === today ? 'Today' : row.due_on <= sunday ? 'This week' : 'Later');
@@ -199,10 +241,12 @@
     t.appendChild(el('span', 'rux--tag__label', words));
     return t;
   };
-  // Whose a stored row is, then who added it and when, with the person a session added it for.
+  /* Whose a stored row is, then who added it and when, with the person a
+     session added it for. A row the website made has no maker, and says
+     Website where the person would be. */
   const madeBy = row => {
     const owner = staff.get(row.owner_id)?.display_name;
-    const maker = staff.get(row.created_by)?.display_name;
+    const maker = row.source === 'website' ? 'Website' : staff.get(row.created_by)?.display_name;
     const sessionOf = staff.get(row.session_of)?.display_name;
     return [owner && owner !== maker ? `For ${owner}` : null,
       maker ? `Added by ${maker}${sessionOf ? ` for ${sessionOf}` : ''}` : null,
@@ -276,9 +320,14 @@
     const email = button('rux--btn--ghost', 'Email');
     email.disabled = !row.thread_url;
     email.addEventListener('click', () => window.open(row.thread_url, '_blank', 'noopener'));
-    const toTrip = button('rux--btn--ghost', 'Trip');
-    toTrip.disabled = !trip;
-    toTrip.addEventListener('click', () => { if (!boardTook(tripHref(trip))) location.href = tripHref(trip); });
+    // A website request with no trip yet starts one where its trip would open.
+    const starts = !done && !row.trip_id && !!row.quote_request_id;
+    const toTrip = button('rux--btn--ghost', starts ? 'Start trip' : 'Trip');
+    toTrip.disabled = !trip && !starts;
+    toTrip.addEventListener('click', () => {
+      if (starts) startTrip(row, toTrip);
+      else if (!boardTook(tripHref(trip))) location.href = tripHref(trip);
+    });
     // Edit and Delete are the menu's; a row ticked today has only Undo to take back.
     const menuButton = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm rux--menu-button__trigger scheduler-to-do__end');
     menuButton.type = 'button';

@@ -72,9 +72,9 @@ the last one forwarded came in March 2026.
   leave out:** name, phone, email, organization, whether a purchase order
   pays, one way or round trip, pickup, destination, the date and time each
   way, passengers, a wheelchair lift, and stops and details.
-- **In the preview the form sends nothing, and says so before it is
-  filled.** It checks its fields and opens the thank-you page, which says
-  again that no request was sent.
+- **The form sends from the preview on,** at the site's GitHub address, so
+  the domain moves to a site that already takes requests; every page still
+  opens with the preview notice.
 - **Once live, the form posts to an Edge Function, `quote-request`, never to
   a table,** as `docs/database-access.md` requires of a page without a
   log-in. Its source sits in `scheduler/quote-request/`, and it reaches the
@@ -137,25 +137,9 @@ the last one forwarded came in March 2026.
 - [ ] Ask the tourism bureau whether the site may quote its letter by name,
       and on a yes put a line or two of it on the pages in both languages.
 - [ ] Put new photos of the fleet or the team on the pages once rux has them.
-- [ ] Write the migration for `quote_requests`, `to_dos.quote_request_id`,
-      `trip_drafts.quote_request_id` and a `website` source in
-      `to_dos_stamp`, show it to rux, apply it on a yes, and update
-      `scheduler/docs/database-inventory.md`.
-- [ ] Write `scheduler/quote-request/`, its rules in a handler the check runs
-      against sample requests: the fields, the hidden field, the limit and
-      the Tasks row. Pin its imports, as
-      `scheduler/tools/check-connector.mjs` holds the connector's.
-- [ ] Add a Turnstile widget for the site's domain, hand rux the deploy
-      command and the secret, point the form at the function with a failed
-      send checked, give the thank-you page the request's number, and send
-      the test request and close it.
-- [ ] Show a website request on Tasks, with Website where its maker goes, its
-      facts in its detail and Start trip among its buttons, and update
-      `scheduler/docs/screen-inventory.md`.
-- [ ] Build Start trip: the draft from the request, its fields run against
-      sample requests in the check, and the links Save writes.
-- [ ] Add how a website request is answered to `scheduler/docs/booking.md`,
-      ahead of sending the quote.
+- [ ] Put the site's Turnstile widget's site key in its `app.js` once rux has
+      made the widget, set its secret and deployed `quote-request`; check a
+      failed send, then send the test request and close it.
 - [ ] Add `CNAME` to the site's repository, point `www` and the bare domain
       at GitHub Pages at GoDaddy, keeping every Microsoft 365 record, verify
       the domain with GitHub, turn on Enforce HTTPS, and check that http and

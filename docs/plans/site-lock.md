@@ -9,8 +9,9 @@ type: plan
 Every page of rux-sm.github.io opens only for a logged-in account, and the
 apps ticked for the account decide which pages it can open and where everything
 else sends it. The scheduler's public link pages, for drivers, maintenance and documents, are
-rebuilt with Design here and open without a login, and so does the company's
-website, `website/`.
+rebuilt with Design here and open without a login, and so does the
+not-found page, `404.html`, which forwards the company website's old
+addresses to its own repository.
 
 ## Decisions
 

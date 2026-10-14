@@ -11,9 +11,10 @@ runs and where it goes, and takes a quote request straight into the
 scheduler, as a New quote on the board's Tasks, which starts the trip with the
 request already filled in.
 
-The site stands as a public preview in this repository, `website/`, beside
-the current site, and takes the current site's address only once the manager
-approves it. `website/README.md` says what the preview is.
+The site stands as a public preview in its own repository,
+`escamillatourbuses`, at rux-sm.github.io/escamillatourbuses/, beside the
+current site, and takes the current site's address only once the manager
+approves it. Its `README.md` says what the preview is.
 
 The current site has no HTTPS on `www`, and both its forms send from the
 visitor's browser through a Mandrill key written in the page's script, from a
@@ -23,31 +24,32 @@ the last one forwarded came in March 2026.
 
 ## Decisions
 
-- **The preview is an app in this repository, `website/`, open to everyone
-  without a log-in,** so the manager can open it on any phone while the
-  current site stays at its address. Its pages load no lock, and
-  `tools/check.mjs` leaves the folder out of the lock rule.
+- **The site is its own public repository, `rux-sm/escamillatourbuses`, open
+  to everyone without a log-in,** because a custom domain takes a
+  repository's whole address and this one holds the other apps. GitHub Pages
+  serves it at rux-sm.github.io/escamillatourbuses/ until the domain moves, so
+  the manager can open it on any phone while the current site stays at its
+  address. This repository's `404.html` forwards the old `/website/`
+  addresses to it.
 - **Search engines are asked not to list the preview, and every page says it
   is a preview,** with the office's phone and email, so a search finds one
   site and nobody mistakes this one for the site the office answers.
-- **Everything after the preview waits on the manager's yes.** The preview is
-  pages alone; the database, the function and the scheduler's part are built
-  once the site is approved.
-- **Once approved, the site moves to its own public repository on GitHub
-  Pages,** with escamillatourbuses.com as its custom domain and HTTPS
-  enforced, because a custom domain takes a repository's whole address and
-  this one holds the other apps. Its links stay inside its folder, so it moves
-  whole, and a 404 page comes with the move, since GitHub Pages serves one
-  404 for a whole site.
-- **The moved site's repository is rux-sm's,** for now, the account that
-  already runs these pages; an organization for the company can take it over
-  later.
+- **Only the domain waits on the manager's yes.** The repository and the
+  quote requests are built first, so the switch is one step when the yes
+  comes.
+- **At the switch, escamillatourbuses.com becomes the repository's custom
+  domain, with HTTPS enforced,** and a `CNAME` file comes with it. Its links
+  stay inside its folder and its 404 page reads its links from the site's
+  root, so nothing else changes.
+- **The repository is rux-sm's,** for now, the account that already runs
+  these pages; an organization for the company can take it over later.
 - **Its look is Design's.** Pages are built from Design's shell, tiles,
-  notifications, accordion and form controls, linked from `/design/`. The
-  parts Carbon has no component for, the hero, photos, rows of tiles and the
-  footer, are the site's own `website-` classes in its `app.css`. Once moved,
-  Design's built sheets are copied in by a sync tool and held to the same
-  class rule, so a Design change reaches the public site only when synced.
+  notifications, accordion and form controls, copied into the site's
+  `design/` from Design's committed build by its sync tool and held to
+  Design's classes by its check, so a Design change reaches the public site
+  only when synced. The parts Carbon has no component for, the bands, hero,
+  photos, rows of tiles and the footer, are the site's own `website-`
+  classes in its `app.css`.
 - **The site is in English and Spanish, a page of each for every page,** the
   Spanish under `es/`, each linking to its other language at the same place.
   A request keeps the language it was sent in, so the office answers in it.
@@ -78,16 +80,20 @@ the last one forwarded came in March 2026.
   log-in. Its source sits in `scheduler/quote-request/`, and it reaches the
   database with the service role, as `scheduler/trip-document-link/` does.
 - **Spam is stopped by Turnstile, which the log-in already uses,** with a
-  widget of its own for the site's domain, a hidden field a person never
-  fills, and a limit on requests from one address in an hour.
+  widget of its own for the site's addresses, a hidden field a person never
+  fills, and a limit on requests from one address in an hour. The function
+  checks each token with Cloudflare itself, since the log-in's check is
+  Supabase Auth's own.
 - **A request is stored in `quote_requests` with a number of its own,** shown
   to the customer on the thank-you page, to give when they call. Staff read
-  and update it under `staff_all`, and only the function adds one.
+  and update it, and only the function adds one: no policy or grant lets a
+  signed-in person insert.
 - **Each request adds a New quote row to Tasks:** `kind` `quote`, `source`
   `website`, due the day it came in, its organization or name as who, its trip
   in a line as words and its facts as detail. `to_dos` gains
-  `quote_request_id`, and `to_dos_stamp` takes a website row with no one
-  signed in, which names Website where a person or Ruxbot would be.
+  `quote_request_id`, its `source` rule takes `website`, and `to_dos_stamp`
+  takes a website row only with no one signed in, naming Website where a
+  person or Ruxbot would be.
 - **A request goes to the scheduler alone, and no email is sent,** because
   the office's quote work is already a New quote on Tasks, and a mail service
   would add domain records, a key and a spam filter between the form and the
@@ -131,10 +137,6 @@ the last one forwarded came in March 2026.
 - [ ] Ask the tourism bureau whether the site may quote its letter by name,
       and on a yes put a line or two of it on the pages in both languages.
 - [ ] Put new photos of the fleet or the team on the pages once rux has them.
-- [ ] Once approved, move `website/` to its own repository with `README.md`,
-      `AGENTS.md`, `CNAME`, a 404 page, the Design sync tool and a check run
-      in CI for the class rule, links, and every page's title and
-      description, and take `website/` out of this repository.
 - [ ] Write the migration for `quote_requests`, `to_dos.quote_request_id`,
       `trip_drafts.quote_request_id` and a `website` source in
       `to_dos_stamp`, show it to rux, apply it on a yes, and update
@@ -154,9 +156,9 @@ the last one forwarded came in March 2026.
       sample requests in the check, and the links Save writes.
 - [ ] Add how a website request is answered to `scheduler/docs/booking.md`,
       ahead of sending the quote.
-- [ ] Point `www` and the bare domain at GitHub Pages at GoDaddy, keeping
-      every Microsoft 365 record, verify the domain with GitHub, turn on
-      Enforce HTTPS, and check that http and https, with and without `www`,
-      all land on the new site.
+- [ ] Add `CNAME` to the site's repository, point `www` and the bare domain
+      at GitHub Pages at GoDaddy, keeping every Microsoft 365 record, verify
+      the domain with GitHub, turn on Enforce HTTPS, and check that http and
+      https, with and without `www`, all land on the new site.
 - [ ] Point the Google Business Profile, Facebook and Instagram at the new
       site, then cancel the old hosting.

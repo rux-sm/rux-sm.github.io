@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en" data-theme="g10">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Not found — Rux Home</title>
+<meta name="robots" content="noindex">
+<!-- THE PAGE GITHUB PAGES SHOWS FOR ANY ADDRESS WITH NO FILE. It holds
+     nothing, so it opens with no log-in: tools/check.mjs leaves it out of the
+     lock rule. The company's website moved to its own repository, so an old
+     address under /website/ goes on to the same page there. -->
+<script>
+  if (/^\/website(\/|$)/.test(location.pathname)) {
+    location.replace('/escamillatourbuses/' + location.pathname.replace(/^\/website\/?/, '') + location.search + location.hash);
+  }
+</script>
+<link rel="stylesheet" href="/design/assets/fonts/plex.css">
+<link rel="stylesheet" href="/design/css/rux.css">
+</head>
+<body>
+<main class="rux--content">
+  <div class="rux--stack-vertical rux--stack-scale-6">
+    <h1 class="rux--type-fluid-heading-05">Not found</h1>
+    <p class="rux--type-body-02">There is nothing at this address. <a class="rux--link rux--link--lg" href="/">Go to the front page</a></p>
+  </div>
+</main>
+</body>
+</html>

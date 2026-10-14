@@ -5,16 +5,19 @@ https://rux-sm.github.io/. The folders are the site:
 
 | Folder | Serves | What |
 | :--- | :--- | :--- |
-| `index.html`, `account/`, `login/`, `switcher.json`, `switcher.js`, `account.js`, `funnel.js`, `robots.txt` | `/` | the hub: the front door, the account panel, the log-in page and the page lock |
+| `index.html`, `404.html`, `account/`, `login/`, `switcher.json`, `switcher.js`, `account.js`, `funnel.js`, `robots.txt` | `/` | the hub: the front door, the not-found page, the account panel, the log-in page and the page lock |
 | `design/` | `/design/` | the design system: Carbon v11 compiled under the `rux` prefix, its kitchen sink, templates, page builder and theme creator |
 | `scheduler/` | `/scheduler/` | fleet scheduling and dispatch |
-| `website/` | `/website/` | the company's public website, in English and Spanish, in preview beside its current site |
 | `ln/` | `/ln/` | LN Guide: Infor LN tasks to follow step by step, generated from the private `atlas` |
 | `pixels/` | `/pixels/` | picture logic puzzles and a maker to draw them |
 | `sevens/` | `/sevens/` | an online card game by the rules of Flip 7 |
 | `coins/` | `/coins/` | the household's money: income, spending, accounts, debts and bills |
 | `tools/` | — | the commands below |
 | `docs/` | — | `docs/status.md`, what is unfinished, `docs/database-access.md`, who may read the database, `docs/app-icons.md`, how an app icon is drawn, and `docs/plans/`, changes being decided or built |
+
+The company's public website, in English and Spanish, is a repository of its
+own, `escamillatourbuses`, served at rux-sm.github.io/escamillatourbuses/ and
+cloned beside this one; `404.html` forwards the addresses it had here.
 
 `AGENTS.md` is the policy, including how documents are kept.
 

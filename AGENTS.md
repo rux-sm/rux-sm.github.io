@@ -10,17 +10,21 @@ unfinished, and `docs/plans/` holds the plans.
 
 ## What this repository is
 
-**Public, and the whole website.** GitHub Pages serves this tree as-is at
+**Public, and the whole of rux-sm.github.io.** GitHub Pages serves this tree as-is at
 rux-sm.github.io: `/` is `index.html` here, and every folder named like a
 URL path is that app — `design/` at `/design/`, `scheduler/` at
-`/scheduler/`, `website/` at `/website/`, `ln/` at `/ln/`, `pixels/` at
-`/pixels/`, `sevens/` at `/sevens/`, `coins/` at `/coins/`. **A push to
-`main` publishes**, after CI runs the check.
+`/scheduler/`, `ln/` at `/ln/`, `pixels/` at `/pixels/`, `sevens/` at
+`/sevens/`, `coins/` at `/coins/`. **A push to `main` publishes**, after CI
+runs the check.
 There is no release, no tag and no separate publish step.
 
-One thing stays outside it, for privacy, cloned beside it: `atlas`,
-the LN knowledge library LN Guide is generated from. A task that
-needs it edits it in the same session, after reading its own `AGENTS.md`.
+Two things stay outside it, cloned beside it. `atlas`, for privacy, is the
+LN knowledge library LN Guide is generated from. `escamillatourbuses` is the
+company's public website, served at rux-sm.github.io/escamillatourbuses/,
+because a custom domain takes a repository's whole address; it copies
+Design's build in and sends quote requests to the Scheduler. A task that
+needs either edits it in the same session, after reading its own
+`AGENTS.md`.
 
 **The database has no repository.** It is the one Supabase project,
 `udnmqhayzhrbltxzzhjw`, named `rux-ui` in the dashboard after the old trips
@@ -38,7 +42,7 @@ another folder, no second authorization for the same task. What does not
 relax: atlas content leaves atlas only through `npm run export`; Design is
 authored with invented, generic content, and nothing from atlas or a client
 goes under `design/`; a database change is applied to production as its own
-deliberate step, never by a website deploy.
+deliberate step, never by a deploy of either site.
 
 ## The four commands
 
@@ -154,7 +158,7 @@ Every app has one word, and its names derive from it.
 | Design | `design/` | Rux Design | `rux--` | `design` |
 | LN Guide | `ln/` | Rux LN Guide | `ln-` | `ln` |
 | Scheduler | `scheduler/` | the company logo, alone | `scheduler-` | `scheduler` |
-| Website | `website/` | the company logo, with its page links | `website-` | `website` |
+| Website | the `escamillatourbuses` repository | the company logo, with its page links | `website-` | `website` |
 | Pixels | `pixels/` | Rux Pixels on a wide screen, a bar of places below it | `pixels-` | `pixels` |
 | Sevens | `sevens/` | Rux Sevens | `sevens-` | `sevens` |
 | Coins | `coins/` | Rux Coins | `coins-` | `coins` |

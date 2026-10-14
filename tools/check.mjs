@@ -110,10 +110,11 @@ if (bad) failed.push('switcher');
 console.log('\n── funnel');
 const LOCK = '<script src="/funnel.js"></script>\n<style>html:not([data-rux-unlocked]){visibility:hidden}</style>';
 const CONFIRM = /<script src="https:\/\/cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@\d+\.\d+\.\d+\/dist\/umd\/supabase\.js" integrity="sha384-[A-Za-z0-9+/=]+" crossorigin="anonymous"><\/script>[\s\S]*<script src="(?:\.\.\/|\/)?account\.js"><\/script>/;
-// THE COMPANY'S WEBSITE IS PUBLIC, the one folder the rule leaves out: its
-// pages load no lock and no log-in, because a customer opens them with no
-// account. Every other page stays held to the rule.
-const PUBLIC = ['website/'];
+// THE NOT-FOUND PAGE IS PUBLIC, the one page the rule leaves out: it holds
+// nothing, and it forwards the company website's old addresses to the
+// website's own repository, which a customer opens with no account. Every
+// other page stays held to the rule.
+const PUBLIC = ['404.html'];
 const pages = text.filter(p => p.endsWith('.html') && !PUBLIC.some(d => p.startsWith(d)))
   .map(p => [p, readFileSync(join(ROOT, p), 'utf8')])
   .filter(([, s]) => s.includes('<head>'));

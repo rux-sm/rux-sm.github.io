@@ -139,6 +139,13 @@
 .rux--menu-item[hidden],
 .rux--menu-item-divider[hidden] { display: none; }
 
+/* A HIDDEN MODAL FOOTER MUST NOT RENDER, the same rule again: a window that
+   has buttons in one use and none in another hides its footer, and Carbon's
+   `.rux--modal-footer { display: flex }` is an author declaration the
+   attribute loses to. It names the container too, since the rounded themes
+   set the footer a grid at a theme's specificity. */
+.rux--modal-container > .rux--modal-footer[hidden] { display: none; }
+
 /* A CONTAINED LIST'S LABEL TAKES ITS HEADER'S TYPE. This repair is of this
    system's own divergence, not Carbon's: Carbon renders `__label` on a `<div>`
    that inherits the header's type, and `sink/contained-list.html` deliberately

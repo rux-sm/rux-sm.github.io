@@ -30,7 +30,8 @@ text in it under 4.5 to 1 and no control's resting shape under 3 to 1.
   its hue holds there, so no colour shouts louder than another: a tint at 0.28
   (0.32 on hover) behind an ink at 0.75 (0.82 for amber and yellow, 0.82 on
   hover), and a fill at the lightest step that still holds white at 4.5 to 1,
-  0.535 to 0.59 by hue. One palette serves every use: a tag, a trip bar, a
+  0.535 to 0.59 by hue. Every ink sits on the one step, the accent's too, so
+  the set reads as one family. One palette serves every use: a tag, a trip bar, a
   status dot, a support colour, error text, the danger button, an avatar, and
   Carbon's guide banner and coachmark, whose blue and purple become its own.
 - **The colours use the wider Display P3 range,** written in OKLCH, so a Mac
@@ -59,9 +60,9 @@ text in it under 4.5 to 1 and no control's resting shape under 3 to 1.
   to the surface's 8px; a control well clear of the edge needs no such care.
 - **The face is IBM Plex Sans,** with Plex Mono for code, as Carbon's own
   themes wear it, because Carbon's type scale is drawn for it.
-- **A field rings in `border-strong-01`, at 3 to 1 on the field,** and a box
-  keeps the quieter `border-subtle` line, because a field's edge is a
-  control's and a box's is not.
+- **A field and every ringed button ring in `border-strong-01`,** 3 to 1 or
+  better on what they stand on, and a box keeps the quieter `border-subtle`
+  line, because a control's edge is part of its shape and a box's is not.
 - **A button is ringed where it stands clear.** The header's buttons, the
   buttons in a scheduler panel's head and every close button Design has take
   the button's border; each X stands clear of its corner to take it, and on a
@@ -85,19 +86,16 @@ text in it under 4.5 to 1 and no control's resting shape under 3 to 1.
 
 ## Questions
 
-- **Which blue?** Carbon's hue, 262, as now; 250, leaning toward cyan as
-  Geist's does; or either with its ink a step deeper, at 0.70 or 0.72, which
-  gives the trip bars' words the old Geist bars' strength. Rendered side by
-  side on the kitchen sink.
-- **How does the Unassigned row part from its bars?** Its track turned black,
-  below a bus row's; or kept grey, with each bar on it ringed in its ink.
-- **Do Secondary and Tertiary ring at 3 to 1?** Both at the field ring's
-  `#63666a`, 3.6 to 1 on the page; or Tertiary alone, Secondary keeping its
-  fill and quiet ring.
+- **How dark is the Unassigned row?** It darkens in every theme with black
+  laid over the board, its "No bus" label taking the primary text so it still
+  reads. 40% is the most every theme's label holds, 5.2 to 1 in apple-light,
+  and reads as a heavy grey band in the light themes; 25% is lighter there.
+  In the near-black themes either leaves it barely darker than a bus row,
+  with its bars as clear of it as of any row.
 
 ## Tasks
 
 - [ ] Part the scheduler's Unassigned row from a trip bar by more than its
-  hue. Its track is `layer-hover-01`, at the lightness of the palette's tint,
-  so a bar on it measures 1.00 to 1.11 to 1 against it and is told apart by
-  colour alone.
+  hue, in every theme. Its track is `layer-hover-01`, at about the lightness
+  of a bar's fill, so a bar on it measures 1.02 to 1.62 to 1 against it across
+  the ten themes and 1.03 in rux-dark.

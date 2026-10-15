@@ -462,6 +462,12 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled) {
   border-color: var(--rux-border-subtle-02, #e0e0e0);
 }
+/* rux-dark rings an outlined button as it rings a field, in border-strong-01,
+   3.6 to 1 on the page, because a button is a control and its resting shape
+   holds 3 to 1; every ringed button it has takes the same line. */
+[data-theme="rux-dark"] .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled) {
+  border-color: var(--rux-border-strong-01);
+}
 /* Under keyboard focus the border is the focus colour again, as Carbon has it:
    the border is the outer half of its 2px ring, and the rule above outranks
    Carbon's own, which left this button a 1px ring beside every other's 2px. */
@@ -480,6 +486,9 @@
   border-color: var(--rux-border-subtle-02, #e0e0e0);
   color: var(--rux-text-primary, #161616);
 }
+[data-theme="rux-dark"] .rux--btn--tertiary:not(:disabled):not(.rux--btn--disabled) {
+  border-color: var(--rux-border-strong-01);
+}
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--btn--tertiary:not(:disabled):not(.rux--btn--disabled):hover {
   background-color: var(--rux-button-secondary-hover);
 }
@@ -491,6 +500,9 @@
   border-color: var(--rux-border-subtle-02, #e0e0e0);
   background-color: var(--rux-button-secondary-active);
 }
+[data-theme="rux-dark"] .rux--btn--tertiary:not(:disabled):not(.rux--btn--disabled):active {
+  border-color: var(--rux-border-strong-01);
+}
 
 /* A SELECTABLE TAG RINGS LIKE THE OUTLINE BUTTON. Carbon draws it with
    `border-inverse`, the brightest line the theme has, so the trip editor's
@@ -501,6 +513,9 @@
    that says which of several views is showing, and the line is what says it. */
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--tag--selectable {
   border-color: var(--rux-border-subtle-02, #e0e0e0);
+}
+[data-theme="rux-dark"] .rux--tag--selectable {
+  border-color: var(--rux-border-strong-01);
 }
 
 /* The option at each end of a list takes the menu's curve. A selected or
@@ -656,7 +671,7 @@
    GitHub's does not, and the ring gives way to the focus ring, which is that
    same border. */
 :is([data-theme="rux-dark"] .rux--header, .rux--header[data-theme="rux-dark"]) .rux--header__action:not(:has(.rux--user-avatar), :focus-visible) {
-  border-color: var(--rux-border-subtle-02);
+  border-color: var(--rux-border-strong-01);
 }
 /* THE ACCOUNT BUTTON IS THE FACE ITSELF where the header's buttons are 32px:
    the picture is Carbon's 32px avatar in every theme, which sits inside
@@ -1331,6 +1346,9 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--table-toolbar .rux--btn--ghost:not(:disabled):not(.rux--btn--disabled):not(:focus-visible) {
   border-color: var(--rux-border-subtle-02);
 }
+[data-theme="rux-dark"] .rux--table-toolbar .rux--btn--ghost:not(:disabled):not(.rux--btn--disabled):not(:focus-visible) {
+  border-color: var(--rux-border-strong-01);
+}
 /* A TABLE'S FOOT IS BUILT AS ITS TOOLBAR IS, in every rounded theme. Carbon's
    pagination bar is a row of square cells parted by lines, each the bar's
    full height. A rounded control in one of those cells bends its dividing
@@ -1403,6 +1421,9 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--pagination .rux--pagination__button,
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--pagination .rux--pagination__button:is(:disabled, .rux--pagination__button--no-index):hover {
   border: 1px solid var(--rux-border-subtle-02);
+}
+[data-theme="rux-dark"] .rux--pagination .rux--pagination__button:not(:disabled, .rux--pagination__button--no-index) {
+  border-color: var(--rux-border-strong-01);
 }
 /* A bar that follows a table's box, or the wrapper that holds the box last,
    closes it: the box's two lower corners square off where they meet. Geist's
@@ -1904,7 +1925,7 @@
 }
 [data-theme="rux-dark"] :is(.rux--modal-close, .rux--dialog__close) {
   padding: 7px;
-  border: 1px solid var(--rux-border-subtle-02);
+  border: 1px solid var(--rux-border-strong-01);
   border-radius: 4px;
   block-size: 2.25rem;
   inline-size: 2.25rem;
@@ -1927,7 +1948,7 @@
   inline-size: 2rem;
 }
 [data-theme="rux-dark"] .rux--side-panel .rux--btn.rux--side-panel__close-button:not(:focus) {
-  border-color: var(--rux-border-subtle-02);
+  border-color: var(--rux-border-strong-01);
 }
 /* A NOTIFICATION'S IS A RINGED 32px BUTTON 8px IN ON EVERY SIDE, which is
    the 48px square Carbon gives it, so the words beside it wrap where they

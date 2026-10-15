@@ -370,22 +370,27 @@ button.scheduler-row-head__num::after {
 .scheduler-row:has(+ .scheduler-type-band) > * {
   border-block-end: var(--scheduler-band-rule);
 }
-/* The Unassigned row's head takes its track's tint, so the one row that is not
-   a bus reads as one row across the divider. The row rules' `border-subtle-01`
-   reads on this tint too. */
-.scheduler-row--unassigned .scheduler-row-head { background: var(--rux-layer-hover-01); }
+/* THE UNASSIGNED ROW SITS LOWER THAN THE BUS ROWS: its head and track are the
+   pane's surface mixed 25% toward black, in every theme, so a trip bar on it
+   stands off it by its fill's lightness and not by its hue alone. A grey a
+   step up, which it was, sat at a bar's own lightness in most themes. The
+   head stays opaque, because bars scroll under it, and its label takes the
+   primary text, which this darker row holds at 8 to 1 or better in every
+   theme where the secondary would fall to 2.8. */
+.scheduler-row--unassigned { --scheduler-unassigned: color-mix(in srgb, var(--rux-layer) 75%, #000); }
+.scheduler-row--unassigned .scheduler-row-head { background: var(--scheduler-unassigned); }
 .scheduler-row--unassigned .scheduler-row-head__num {
   /* Always two lines, "No" over "bus", so the label is no wider than the bus
      numbers. */
   white-space: pre-line;
-  color: var(--rux-text-secondary);
+  color: var(--rux-text-primary);
   font-weight: 400;
   font-style: italic;
   font-size: var(--rux-helper-text-01-font-size);
   line-height: var(--rux-helper-text-01-line-height);
   letter-spacing: var(--rux-helper-text-01-letter-spacing);
 }
-.scheduler-row--unassigned .scheduler-track { background-color: var(--rux-layer-hover-01); }
+.scheduler-row--unassigned .scheduler-track { background-color: var(--scheduler-unassigned); }
 
 .scheduler-track {
   position: relative;

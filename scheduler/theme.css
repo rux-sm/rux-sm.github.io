@@ -60,7 +60,6 @@
 [data-theme="g10"],
 [data-theme="g90"],
 [data-theme="g100"],
-[data-theme="rux-dark"],
 [data-theme="ant-dark"],
 [data-theme="spotify-dark"],
 [data-theme^="apple-"] {
@@ -91,6 +90,16 @@
   --scheduler-mark-rest: oklch(71.2% 0.1953 304.2);
   --scheduler-mark-done: var(--rux-text-primary);
 }
+/* rux-dark's bars are deep containers, on which an ink at 0.75 holds only 2.7
+   to 1, so its marks take each ink's hover step: 3.7 to 1 at the least, the
+   red on a hovered green bar. */
+[data-theme="rux-dark"] {
+  --scheduler-mark-warning: oklch(0.88 0.121 75);
+  --scheduler-mark-error: oklch(0.82 0.124 25);
+  --scheduler-mark-success: oklch(0.82 0.2 150);
+  --scheduler-mark-info: oklch(0.82 0.093 262);
+  --scheduler-mark-rest: oklch(0.82 0.111 300);
+}
 
 /* THE WORDS OF A BAR'S NEWEST UPDATE take the colour of its age: new, in its
    first week, or older. They are 12px text, which needs 4.5 to 1 where a
@@ -107,9 +116,10 @@
    dark green, orange and red, each lightened to make 4.7 to 1 on its
    brightest bar, the amber.
    Geist's green and amber marks are already its text steps, and its red is
-   lifted a tenth toward white to clear the teal bar. rux-dark's are its own
-   green, amber and red inks, which every bar's tint holds at 4.59 to 1 at
-   the least, the red on a hovered green bar. Ant's bars are bright
+   lifted a tenth toward white to clear the teal bar. No green, amber and
+   red reads as words on every one of rux-dark's deep containers, so there
+   the words keep the bar's own colour and the age is a 2px line at their
+   start, in its marks' colours. Ant's bars are bright
    enough that white itself holds only 4.5 to 5.2 on four of them, so its
    words take the palest tints that still show a hue, 3.7 to 1 at the least,
    on the green bar. */
@@ -143,10 +153,18 @@
   --scheduler-age-old: color-mix(in srgb, var(--scheduler-mark-error) 90%, #fff);
 }
 [data-theme="rux-dark"] {
-  --scheduler-age-new: var(--rux-support-success);
-  --scheduler-age-week: var(--rux-support-warning);
-  --scheduler-age-old: var(--rux-support-error);
+  --scheduler-age-new: var(--scheduler-mark-success);
+  --scheduler-age-week: var(--scheduler-mark-warning);
+  --scheduler-age-old: var(--scheduler-mark-error);
 }
+[data-theme="rux-dark"] .scheduler-bar__update:is(.scheduler-bar__update--new, .scheduler-bar__update--week, .scheduler-bar__update--old) {
+  padding-inline-start: calc(2px + var(--rux-spacing-02));
+  color: inherit;
+  box-shadow: inset 2px 0 0 var(--scheduler-age);
+}
+[data-theme="rux-dark"] .scheduler-bar__update--new { --scheduler-age: var(--scheduler-age-new); }
+[data-theme="rux-dark"] .scheduler-bar__update--week { --scheduler-age: var(--scheduler-age-week); }
+[data-theme="rux-dark"] .scheduler-bar__update--old { --scheduler-age: var(--scheduler-age-old); }
 [data-theme="ant-dark"] {
   --scheduler-age-new: #d9f7be;
   --scheduler-age-week: #fff1b8;
@@ -520,13 +538,13 @@
   --scheduler-amber-hover-ring: none;
 }
 /* RUX-DARK'S BARS ARE ITS TAGS, from app.css, so every hue sits on its
-   palette's steps: the tint behind the ink, the tint's hover step on hover, and
-   the ink on a run-on edge. The amber placeholder, which has no tag, takes the
-   palette's amber the same way. */
+   palette's steps: the container under its pale words, the container's hover
+   step on hover, and the ink on a run-on edge. The amber placeholder, which
+   has no tag, takes the palette's amber the same way. */
 [data-theme="rux-dark"] {
-  --scheduler-amber-bg: oklch(0.28 0.064 75);
-  --scheduler-amber-fg: var(--rux-support-warning);
-  --scheduler-amber-hover: oklch(0.32 0.074 75);
+  --scheduler-amber-bg: oklch(0.40 0.087 75);
+  --scheduler-amber-fg: oklch(0.92 0.05 75);
+  --scheduler-amber-hover: oklch(0.44 0.096 75);
   --scheduler-amber-border: var(--rux-support-warning);
   --scheduler-amber-hover-ring: none;
 }
@@ -646,7 +664,7 @@
 [data-theme="rux-dark"] .scheduler-avail__cell--busy { --scheduler-avail-edge: var(--rux-tag-border-blue); }
 [data-theme="rux-dark"] .scheduler-avail__cell--off { --scheduler-avail-edge: var(--rux-tag-border-red); }
 [data-theme="rux-dark"] .scheduler-avail__cell--tight {
-  --scheduler-avail-fill: oklch(0.28 0.064 75);
+  --scheduler-avail-fill: oklch(0.40 0.087 75);
   --scheduler-avail-edge: var(--rux-support-warning);
 }
 

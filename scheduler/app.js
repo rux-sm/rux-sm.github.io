@@ -52,13 +52,23 @@
   /* The pane's height is measured from its own top rather than capped at the
      stylesheet's fixed `100dvh - 15rem`, so anything above it that changes
      height gives the difference to the grid. The bottom margin is the content
-     region's own padding, so the grid stops where page content stops. */
+     region's own padding, so the grid stops where page content stops.
+     Tops are read from the top of the page, not the window: read from the
+     window, a pass made while the page is scrolled adds the scroll to every
+     height, which lets the page scroll further, and the next pass adds more. */
   function fitHeight(sch) {
     const content = sch.closest('.rux--content');
     const below = content ? parseFloat(getComputedStyle(content).paddingBottom) || 0 : 0;
-    const top = sch.getBoundingClientRect().top;
+    const scrolled = window.scrollY;
+    const box = sch.getBoundingClientRect();
+    const top = box.top + scrolled;
+    // The frame's own edge under the grid, the line a theme draws round its
+    // regions, is room the grid leaves, so the board ends where the editor does.
+    const frame = sch.closest('.scheduler-frame');
+    const edge = frame ? Math.max(0, frame.getBoundingClientRect().bottom - box.bottom) : 0;
+    // Whole pixels down, so a fraction never takes the page past the window.
     // A floor, so a short window scrolls the page rather than crushing the grid.
-    const height = Math.max(12 * 16, Math.round(window.innerHeight - top - below));
+    const height = Math.max(12 * 16, Math.floor(window.innerHeight - top - edge - below));
     const next = `${height}px`;
     // A height, not a cap: a short week leaves the frame empty below its last
     // bus, so the frame ends level with the roster and the editor beside it.
@@ -67,8 +77,8 @@
     // The regions beside the grid start at `.scheduler-board`'s top, above the
     // grid, so their height is measured from the board.
     const board = sch.closest('.scheduler-board');
-    const panelTop = board ? board.getBoundingClientRect().top : top;
-    const panelNext = `${Math.max(12 * 16, Math.round(window.innerHeight - panelTop - below))}px`;
+    const panelTop = board ? board.getBoundingClientRect().top + scrolled : top;
+    const panelNext = `${Math.max(12 * 16, Math.floor(window.innerHeight - panelTop - below))}px`;
 
     /* The driver roster takes that figure as its height, so its card ends
        level with the board and the editor: a short list leaves the card empty

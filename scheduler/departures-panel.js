@@ -405,13 +405,28 @@
     // A leg with one bus says what is left on its own heading.
     if (page.buses.length + page.missing > 1) top.appendChild(leftTag(bus.left));
     block.appendChild(top);
+    /* A crew member's name row carries whether they confirmed the trip: the
+       mark before the name, as a line's is before its words, and when they
+       confirmed, or their status, at its end. The steps follow as lines. */
     for (const member of bus.crew) {
       const who = el('div', 'scheduler-departures__member');
-      const headline = el('div', 'scheduler-departures__who');
-      headline.append(el('strong', null, member.name || member.role));
+      const [confirm, ...steps] = member.lines[0]?.key === 'confirmed' ? member.lines : [null, ...member.lines];
+      const headline = el('div', `scheduler-departures__who${confirm ? ` scheduler-departures__who--${confirm.state}` : ''}`);
+      if (confirm) {
+        const mark = svgUse(MARKS[confirm.state], 18);
+        mark.classList.add('scheduler-departures__mark');
+        headline.append(mark, el('span', 'rux--visually-hidden', `${confirm.state === 'done' ? 'Confirmed' : confirm.label}: `));
+      }
+      headline.appendChild(el('strong', null, member.name || member.role));
       if (member.name) headline.appendChild(el('span', 'scheduler-departures__role', member.role));
       if (member.partTime) headline.appendChild(tag('Part-time', 'rux--tag--purple'));
-      who.append(headline, lines(member.lines, page, bus, member));
+      if (confirm) {
+        const when = confirm.state === 'done' && confirm.at ? whenWords(confirm.at) : null;
+        const end = el('span', 'scheduler-departures__when', confirm.state === 'done' ? when || 'Confirmed' : confirm.label);
+        end.title = confirm.state === 'done' ? ['Confirmed', when].filter(Boolean).join(' ') : confirm.label;
+        headline.appendChild(end);
+      }
+      who.append(headline, lines(steps, page, bus, member));
       block.appendChild(who);
     }
     return block;

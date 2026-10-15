@@ -2333,13 +2333,10 @@ button.scheduler-row-head__num::after {
 }
 /* The Route tab's Summary is a framed tile, so its own edge parts it from the
    stops: no rule follows it, and the first day stands 24px under it. The tile
-   sits as far under the tabs as it does from the panel's sides, 16px: the
-   tab's own 8px and 8px more. */
+   sits as far under the tabs' line as it does from the panel's sides, 16px,
+   the strip's 8px under its line and the tab's own 8px, as Billing's does. */
 #scheduler-panel-body .rux--tab-content > .scheduler-panel-section--summary + .scheduler-panel-section::before {
   display: none;
-}
-#scheduler-panel-body .rux--tab-content > .scheduler-panel-section--summary:first-child {
-  margin-block-start: var(--rux-spacing-03);
 }
 /* A group's heading line with an overflow menu trigger at its end. The line
    keeps the title's own height, so the title sits 16px over the first label as
@@ -4726,8 +4723,13 @@ html:has(.scheduler-page[data-takeover]) {
 /* A bus's crew, each member set apart by space alone. */
 .scheduler-departures__member { padding-block-start: var(--rux-spacing-02); }
 .scheduler-departures__member + .scheduler-departures__member { margin-block-start: var(--rux-spacing-03); }
-.scheduler-departures__who { display: flex; align-items: center; gap: var(--rux-spacing-03); font-size: 0.875rem; }
-.scheduler-departures__role { flex: 1 1 auto; color: var(--rux-text-secondary); }
+/* A crew member's name row: the confirmation's mark, the name, the seat,
+   then when they confirmed, kept whole at the row's end while the name and
+   the seat give way in an ellipsis. */
+.scheduler-departures__who { display: flex; align-items: center; gap: 0.625rem; min-block-size: 2rem; font-size: 0.875rem; }
+.scheduler-departures__who > :is(strong, .scheduler-departures__role) { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scheduler-departures__role { color: var(--rux-text-secondary); }
+.scheduler-departures__who > .scheduler-departures__when { flex: none; margin-inline-start: auto; }
 .scheduler-departures__lines { list-style: none; margin: 0; padding: 0; }
 /* A line is one line: its mark, its short name, then its word or action at
    its end. Where they run long each ends in an ellipsis rather than
@@ -4736,9 +4738,9 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-departures__line > :is(.rux--link, .scheduler-departures__when) { margin-inline-start: auto; }
 .scheduler-departures__line > .rux--link { flex: none; }
 .scheduler-departures__mark { flex: none; }
-.scheduler-departures__line--done .scheduler-departures__mark { color: var(--rux-support-success); }
+:is(.scheduler-departures__line--done, .scheduler-departures__who--done) .scheduler-departures__mark { color: var(--rux-support-success); }
 .scheduler-departures__line--todo .scheduler-departures__mark { color: var(--rux-support-error); }
-.scheduler-departures__line--warn .scheduler-departures__mark { color: var(--rux-support-warning); }
+:is(.scheduler-departures__line--warn, .scheduler-departures__who--warn) .scheduler-departures__mark { color: var(--rux-support-warning); }
 .scheduler-departures__what { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* The mark of a step still to do is a button that marks it done by hand: at
    rest the mark, and under the pointer or the focus the tick it would get.

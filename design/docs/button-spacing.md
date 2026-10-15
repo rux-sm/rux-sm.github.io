@@ -6,8 +6,8 @@ type: reference
 
 How big a button is, how far it stands from the button beside it, and how far
 from the edge of what holds it, in Rux Dark. Geist Dark shares every rule here
-but the header and the dialog's margin, and Ant Dark and the Apple themes
-share the gaps.
+but the header, the dialog's margin and the list a button opens, and Ant Dark
+and the Apple themes share the gaps.
 Carbon's four themes keep Carbon's own: square buttons edge to edge in a bar,
 and a button set joined by a 1px seam.
 
@@ -53,3 +53,12 @@ bar, as Geist's own site does.
 A label stands 10px from each side, 9px of padding and the 1px border, with an
 icon 8px after it. A button in a foot keeps 16px each side, so a short label
 does not read as pushed off centre.
+
+## The list a button opens
+
+A menu, an overflow menu and a dropdown's or combo box's list open 4px from
+their button or field: below it, or above it where there is no room below.
+Inside the list, items stand 4px in from its edge, and a menu's labels start
+36px in, after one 16px column that holds a row's check or its icon. A menu
+whose choices carry icons, such as a colour with its swatch, keeps a column
+for each.

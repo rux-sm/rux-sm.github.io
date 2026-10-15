@@ -92,10 +92,13 @@
     if (getComputedStyle(surface).position !== 'fixed') return;
     // A SUBMENU OPENS BESIDE ITS ITEM, Carbon's `right-start`: its first item
     // level with the parent item, flipped to the left where there is no room.
+    // The first item stands below the surface's top border and padding both,
+    // since a theme may hold the surface off its trigger with a clear border.
     if (trigger.matches(ITEMS)) {
       const t = trigger.getBoundingClientRect();
       const box = surface.getBoundingClientRect();
-      const pad = parseFloat(getComputedStyle(surface).paddingBlockStart) || 0;
+      const cs = getComputedStyle(surface);
+      const pad = (parseFloat(cs.borderBlockStartWidth) || 0) + (parseFloat(cs.paddingBlockStart) || 0);
       const left = t.right + box.width <= window.innerWidth ? t.right : Math.max(0, t.left - box.width);
       const top = Math.max(0, Math.min(t.top - pad, window.innerHeight - box.height));
       surface.style.insetBlockStart = `${Math.round(top)}px`;

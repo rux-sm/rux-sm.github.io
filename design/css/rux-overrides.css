@@ -1723,6 +1723,38 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--list-box__menu-item__option {
   border-block-start-color: transparent;
 }
+/* RUX-DARK'S LISTS STAND 4px OFF WHAT OPENS THEM. A menu, an overflow menu
+   and a dropdown's or combo box's list open 4px below their button or field,
+   or 4px above it, as GitHub's do; Carbon lays them against it, which here
+   ran the list's ring into the button's. The space is a transparent band
+   above and below the surface, so every script that places one under or over
+   its trigger, Design's or an app's, leaves it without knowing: the fill and
+   the ring stop at the band, and the corners are 4px taller to stay 8px
+   inside it. Carbon's tab joining an overflow menu to its trigger would fill
+   the band, so it goes. */
+[data-theme="rux-dark"] :is(.rux--menu, .rux--overflow-menu-options, .rux--list-box__menu) {
+  border-block: 4px solid transparent;
+  border-radius: 8px / 12px;
+  background-clip: padding-box;
+}
+[data-theme="rux-dark"] .rux--overflow-menu-options:not(.rux--breadcrumb-menu-options)::after {
+  display: none;
+}
+/* RUX-DARK'S MENU KEEPS ONE COLUMN BEFORE ITS LABELS, for a check or an
+   icon. Carbon keeps a column for each when a menu has both, so in a menu of
+   commands with icons over choices with checks every label stood 60px in,
+   behind two columns of which each row used one. Here a row's check and icon
+   share the first column, and every label starts 36px in, as in a menu with
+   only one of them. A menu with a choice that carries an icon, as a colour
+   with its swatch, keeps Carbon's two. */
+[data-theme="rux-dark"] .rux--menu--with-icons.rux--menu--with-selectable-items:not(:has(> .rux--menu-item[aria-checked] > .rux--menu-item__icon:not(:empty), > * > ul > .rux--menu-item[aria-checked] > .rux--menu-item__icon:not(:empty))) > .rux--menu-item,
+[data-theme="rux-dark"] .rux--menu--with-icons.rux--menu--with-selectable-items:not(:has(> .rux--menu-item[aria-checked] > .rux--menu-item__icon:not(:empty), > * > ul > .rux--menu-item[aria-checked] > .rux--menu-item__icon:not(:empty))) > * > ul > .rux--menu-item {
+  grid-template-columns: 1rem 1fr max-content;
+}
+[data-theme="rux-dark"] .rux--menu--with-icons.rux--menu--with-selectable-items:not(:has(> .rux--menu-item[aria-checked] > .rux--menu-item__icon:not(:empty), > * > ul > .rux--menu-item[aria-checked] > .rux--menu-item__icon:not(:empty))) > .rux--menu-item > :is(.rux--menu-item__selection-icon, .rux--menu-item__icon),
+[data-theme="rux-dark"] .rux--menu--with-icons.rux--menu--with-selectable-items:not(:has(> .rux--menu-item[aria-checked] > .rux--menu-item__icon:not(:empty), > * > ul > .rux--menu-item[aria-checked] > .rux--menu-item__icon:not(:empty))) > * > ul > .rux--menu-item > :is(.rux--menu-item__selection-icon, .rux--menu-item__icon) {
+  grid-area: 1 / 1;
+}
 /* The side panel takes a real border rather than that ring, because its own
    header and action row paint opaque fills over its top and bottom edges and
    would cover one. Carbon sizes every box from its border, so the 1px comes

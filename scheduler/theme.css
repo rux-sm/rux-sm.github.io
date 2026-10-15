@@ -100,6 +100,11 @@
   --scheduler-mark-info: oklch(0.82 0.093 262);
   --scheduler-mark-rest: oklch(0.82 0.111 300);
 }
+/* Its alert discs are badges, one set with Design's count badge, and a filled
+   disc holds 3.3 to 1 on any container at the inks themselves, so they take
+   the palette's inks: the amber and the red that the support colours are. */
+[data-theme="rux-dark"] .scheduler-bar__msg--warning { background: var(--rux-support-warning); }
+[data-theme="rux-dark"] .scheduler-bar__msg--error { background: var(--rux-support-error); }
 
 /* THE WORDS OF A BAR'S NEWEST UPDATE take the colour of its age: new, in its
    first week, or older. They are 12px text, which needs 4.5 to 1 where a

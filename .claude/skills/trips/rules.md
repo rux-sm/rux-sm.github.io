@@ -23,6 +23,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - Every stop with a time in the customer's itinerary goes on the route; a meal or stop with no time and no place stays off until it has one.
 - Times the itinerary leaves TBD get a sensible placeholder, said so in the report, because the route needs times to give hours.
 - A stop that matches a saved location uses the saved location, never a fresh map result, because the saved one already carries the right name and map point.
+- A local trip over two days is entered as a split trip and treated as two separate local trips, each day its own leg from the yard and back with its own Bus rental line, because the bus comes home every night.
 - A long day where the group stays nowhere overnight is kept as a one-day trip even when it gets back after midnight, because the +1 beside the time already shows the overlap.
 - A trip is entered with the real day and time the bus is back at the yard, and its dates are never shortened by hand: a return before the late-return hour on the Settings page, 4:00 AM, counts as the night before by itself, so the board, the picks and the quote's days leave that day free, because it leaves room for a whole other trip.
 - Add a fuel card whenever the Route tab suggests one; no need to ask.

@@ -39,8 +39,8 @@ and holds on both.
 
 The hues are red 25, orange 50, amber 75, yellow 95, green 150, teal 185, cyan
 225, blue 262, purple 300 and magenta 350, in OKLCH degrees. The accent is the
-blue. A notification's fill is its ink at 15% over the page, so a big surface
-stays calm.
+blue. A low-contrast notification's fill is its ink at 15% over the page, so a
+big surface stays calm.
 
 | Token | geist-dark | rux-dark | From |
 | :--- | :--- | :--- | :--- |

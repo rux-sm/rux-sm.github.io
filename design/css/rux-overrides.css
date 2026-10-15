@@ -753,6 +753,23 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) :is(.rux--list-box--disabled, .rux--dropdown--disabled) .rux--list-box__label {
   color: var(--rux-text-on-color-disabled);
 }
+/* RUX-DARK'S DISABLED FIELD DROPS ITS RING AND DIMS ITS WORDS to the ink at
+   25%, Carbon's disabled text, on the same lifted fill: the ring is what says
+   a field can be typed in, and the disabled button's grey was brighter than an
+   empty field's placeholder, the ink at 40%, so disabled read stronger than
+   empty. */
+[data-theme="rux-dark"] :is(.rux--text-input, .rux--text-area, .rux--select-input, .rux--date-picker__input):disabled,
+[data-theme="rux-dark"] .rux--search-input[disabled],
+[data-theme="rux-dark"] .rux--number :is(input[type=number], input[type=text]):disabled,
+[data-theme="rux-dark"] :is(.rux--list-box--disabled, .rux--dropdown--disabled),
+[data-theme="rux-dark"] :is(.rux--list-box--disabled, .rux--dropdown--disabled):hover {
+  box-shadow: none;
+  color: var(--rux-text-disabled);
+  -webkit-text-fill-color: var(--rux-text-disabled);
+}
+[data-theme="rux-dark"] :is(.rux--list-box--disabled, .rux--dropdown--disabled) .rux--list-box__label {
+  color: var(--rux-text-disabled);
+}
 /* GEIST'S CHECKBOX AND RADIO REST IN A GREY RING AND FILL WHEN CHOSEN,
    measured on its Checkbox and Radio pages: a 16px box with 4px corners and a
    16px circle, each ringed #8f8f8f at rest, and #ededed with a black tick or
@@ -1978,6 +1995,47 @@
 }
 [data-theme="rux-dark"] :is(.rux--inline-notification, .rux--toast-notification, .rux--actionable-notification) :is(.rux--inline-notification__close-icon, .rux--toast-notification__close-icon, .rux--actionable-notification__close-icon) {
   fill: currentColor;
+}
+/* RUX-DARK FILLS A HIGH-CONTRAST NOTIFICATION with its hue's fill under white
+   words, as the danger button is filled, and leaves the tint to a
+   low-contrast one: Carbon parts the two with an inverse slab, which on a
+   dark page is the brightest thing on screen. Every fill holds white at 4.5
+   to 1 by the palette's own rule. The glyph, the close button and the
+   action's ring take the white, and so does focus, which in blue would
+   vanish on the blue fill. */
+[data-theme="rux-dark"] :is(.rux--inline-notification, .rux--toast-notification, .rux--actionable-notification):not(.rux--inline-notification--low-contrast, .rux--toast-notification--low-contrast, .rux--actionable-notification--low-contrast) {
+  border-color: transparent;
+  color: #ffffff;
+}
+[data-theme="rux-dark"] :is(.rux--inline-notification--error, .rux--toast-notification--error, .rux--actionable-notification--error):not(.rux--inline-notification--low-contrast, .rux--toast-notification--low-contrast, .rux--actionable-notification--low-contrast) {
+  background: var(--rux-support-error-inverse);
+}
+[data-theme="rux-dark"] :is(.rux--inline-notification--success, .rux--toast-notification--success, .rux--actionable-notification--success):not(.rux--inline-notification--low-contrast, .rux--toast-notification--low-contrast, .rux--actionable-notification--low-contrast) {
+  background: var(--rux-support-success-inverse);
+}
+[data-theme="rux-dark"] :is(.rux--inline-notification--info, .rux--inline-notification--info-square, .rux--toast-notification--info, .rux--toast-notification--info-square, .rux--actionable-notification--info, .rux--actionable-notification--info-square):not(.rux--inline-notification--low-contrast, .rux--toast-notification--low-contrast, .rux--actionable-notification--low-contrast) {
+  background: var(--rux-support-info-inverse);
+}
+[data-theme="rux-dark"] :is(.rux--inline-notification--warning, .rux--inline-notification--warning-alt, .rux--toast-notification--warning, .rux--toast-notification--warning-alt, .rux--actionable-notification--warning, .rux--actionable-notification--warning-alt):not(.rux--inline-notification--low-contrast, .rux--toast-notification--low-contrast, .rux--actionable-notification--low-contrast) {
+  background: var(--rux-support-warning-inverse);
+}
+[data-theme="rux-dark"] :is(.rux--toast-notification, .rux--actionable-notification):not(.rux--toast-notification--low-contrast, .rux--actionable-notification--low-contrast) :is(.rux--toast-notification__subtitle, .rux--toast-notification__caption, .rux--actionable-notification__subtitle, .rux--actionable-notification__caption) {
+  color: inherit;
+}
+[data-theme="rux-dark"] .rux--actionable-notification:not(.rux--actionable-notification--low-contrast) a {
+  color: inherit;
+  text-decoration: underline;
+}
+[data-theme="rux-dark"] :is(.rux--inline-notification, .rux--toast-notification, .rux--actionable-notification):not(.rux--inline-notification--low-contrast, .rux--toast-notification--low-contrast, .rux--actionable-notification--low-contrast) :is(.rux--inline-notification__icon, .rux--toast-notification__icon, .rux--actionable-notification__icon) {
+  fill: #ffffff;
+}
+[data-theme="rux-dark"] :is(.rux--inline-notification, .rux--toast-notification, .rux--actionable-notification):not(.rux--inline-notification--low-contrast, .rux--toast-notification--low-contrast, .rux--actionable-notification--low-contrast) :is(.rux--inline-notification__close-button, .rux--toast-notification__close-button, .rux--actionable-notification__close-button):focus-visible {
+  border-color: #ffffff;
+  outline-color: #ffffff;
+}
+[data-theme="rux-dark"] .rux--actionable-notification:not(.rux--actionable-notification--low-contrast) .rux--actionable-notification__action-button:is(.rux--btn--ghost, .rux--btn--tertiary):not(:disabled):not(.rux--btn--disabled):focus-visible {
+  border-color: #ffffff;
+  box-shadow: inset 0 0 0 1px #ffffff;
 }
 /* A GUIDE BANNER AND A COACHMARK ARE SURFACES WITH AN INK OF THEIR OWN, a
    colour or the inverse of the page, where the grey ring would read as dirt:

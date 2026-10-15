@@ -3,9 +3,16 @@
 //
 // For every piece of text on the page, in each theme, the ratio of its colour
 // to the surface behind it, and every one under WCAG's 4.5 to 1 (3 to 1 for
-// text 24px and up, or 18.66px and bold). It switches `data-theme` on the root
-// itself, so one run reads all ten themes without touching the stored
-// preference, and puts the page's own theme back when it is done.
+// text 24px and up, or 18.66px and bold). One run reads all ten themes
+// without touching the stored preference, and puts the page's own theme back
+// when it is done.
+//
+// IT SWITCHES THEMES AS THE PAGE DOES. Where the page loads js/theme.js, each
+// theme goes through Rux.theme.apply() with the stored preference read as
+// that theme, so an app's header, which carries `data-theme` of its own,
+// wears the theme it really would; without theme.js it sets `data-theme` on
+// the root. Text inside any element with its own `data-theme` is measured in
+// the theme that element carries, and its row names that theme.
 //
 // A MEASUREMENT, NOT A GATE. Nothing fails on its output, because a page has
 // text that is faint on purpose and exempt -- disabled controls, which it
@@ -92,22 +99,41 @@
   const label = el => (typeof el.className === 'string' && el.className.split(' ').filter(Boolean).slice(0, 2).join('.'))
     || el.tagName.toLowerCase();
 
+  // theme.js corrects a stored name that resolves to nothing by writing
+  // 'white' over it, so only a name it knows is ever handed to it.
+  const KNOWN = ['white', 'g10', 'g90', 'g100', 'geist-dark', 'rux-dark', 'ant-dark', 'spotify-dark', 'apple-light', 'apple-dark'];
+  const KEY = window.Rux?.theme?.KEY;
+  const root = document.documentElement;
+  for (const t of THEMES) {
+    if (KEY && !KNOWN.includes(t) && !window.Rux.customThemes?.get(t)) throw new Error(`measure-contrast: no theme ${t}`);
+  }
+  // getItem is shadowed on the prototype, because one assigned on
+  // localStorage itself would be stored as an item named getItem.
+  const realGet = Storage.prototype.getItem;
+  const wear = theme => {
+    if (!KEY) { root.setAttribute('data-theme', theme); return; }
+    Storage.prototype.getItem = function (k) {
+      return this === localStorage && k === KEY ? JSON.stringify({ theme }) : realGet.call(this, k);
+    };
+    try { window.Rux.theme.apply(); } finally { Storage.prototype.getItem = realGet; }
+  };
+
   const noMotion = document.createElement('style');
   noMotion.textContent = '*, *::before, *::after { transition: none !important; animation: none !important; }';
   document.head.append(noMotion);
-  const root = document.documentElement;
   const own = root.getAttribute('data-theme');
+  const marked = [...document.querySelectorAll('[data-theme]')].map(el => [el, el.getAttribute('data-theme')]);
 
   const result = {};
   let texts = 0;
   for (const theme of THEMES) {
-    root.setAttribute('data-theme', theme);
+    wear(theme);
     void document.body.offsetHeight;
     const rows = {};
     const placeholders = [];
     texts = 0;
     for (const el of scope.querySelectorAll('*')) {
-      if (!el.getClientRects().length || exempt(el) || el.closest('[data-theme]:not(html)')) continue;
+      if (!el.getClientRects().length || exempt(el)) continue;
       const cs = getComputedStyle(el);
       if (cs.visibility === 'hidden' || +cs.opacity === 0) continue;
       const field = el.matches('input:not([type=checkbox]):not([type=radio]):not([type=hidden]), textarea, select');
@@ -123,7 +149,9 @@
       const size = parseFloat(cs.fontSize);
       const large = size >= 24 || (size >= 18.66 && +cs.fontWeight >= 700);
       if (r >= (large ? 3 : 4.5)) continue;
-      const key = `${label(el)} ${cs.color.replace(/ /g, '')} on rgb(${bg.slice(0, 3).map(Math.round)})`;
+      const zone = el.closest('[data-theme]');
+      const carried = zone && zone !== root ? ` in ${zone.getAttribute('data-theme')}` : '';
+      const key = `${label(el)}${carried} ${cs.color.replace(/ /g, '')} on rgb(${bg.slice(0, 3).map(Math.round)})`;
       rows[key] ??= { ratio: r, count: 0, example: text.slice(0, 32) };
       rows[key].count++;
     }
@@ -133,7 +161,9 @@
     };
   }
 
-  own ? root.setAttribute('data-theme', own) : root.removeAttribute('data-theme');
+  for (const [el, name] of marked) el.setAttribute('data-theme', name);
+  if (own === null) root.removeAttribute('data-theme');
+  if (KEY) window.Rux.theme.apply();
   noMotion.remove();
   for (const [theme, r] of Object.entries(result)) {
     console.log(`  ${theme}: ${r.under.length} under the line`);

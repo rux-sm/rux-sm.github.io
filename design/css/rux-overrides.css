@@ -727,13 +727,14 @@
 [data-theme="geist-dark"] .rux--number :is(input[type=number], input[type=text]) {
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle-01);
 }
-/* RUX-DARK RINGS A FIELD AS A CONTROL, in border-strong-01, which holds 3 to
-   1 on the raised field-03, where a box keeps the quieter subtle line: a
-   field's edge is what says it can be typed in, and 3 to 1 is what a
-   control's edge needs. */
+/* RUX-DARK FILLS A FIELD AND RINGS IT QUIETLY. The field tokens lift it one
+   step above the surface it sits on, and it takes the same quiet line as a
+   box, so a column of fields reads as soft slabs under their labels rather
+   than as a stack of bright frames. A disabled field keeps half the fill and
+   loses the line; a read-only one keeps the line and loses the fill. */
 [data-theme="rux-dark"] :is(.rux--text-input, .rux--text-area, .rux--select-input, .rux--date-picker__input, .rux--search-input, .rux--list-box, .rux--dropdown),
 [data-theme="rux-dark"] .rux--number :is(input[type=number], input[type=text]) {
-  box-shadow: inset 0 0 0 1px var(--rux-border-strong-01);
+  box-shadow: inset 0 0 0 1px var(--rux-border-subtle-01);
 }
 /* A DISABLED FIELD IS THE ONE THAT LIFTS OFF ITS SURFACE: #1a1a1a with its
    value in #8f8f8f inside the same ring, measured on Geist's Input, Select
@@ -753,17 +754,19 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) :is(.rux--list-box--disabled, .rux--dropdown--disabled) .rux--list-box__label {
   color: var(--rux-text-on-color-disabled);
 }
-/* RUX-DARK'S DISABLED FIELD DROPS ITS RING AND DIMS ITS WORDS to the ink at
-   25%, Carbon's disabled text, on the same lifted fill: the ring is what says
-   a field can be typed in, and the disabled button's grey was brighter than an
-   empty field's placeholder, the ink at 40%, so disabled read stronger than
-   empty. */
+/* RUX-DARK'S DISABLED FIELD STEPS BACK FROM AN ENABLED ONE: its fill at half
+   strength over the surface, no ring, and its words in the ink at 25%,
+   Carbon's disabled text. The shared rule above lifts it to the disabled
+   button's grey, which here is lighter than an enabled field's fill and put
+   the disabled field forward; and its #8f8f8f words read stronger than an
+   empty field's placeholder, the ink at 40%. */
 [data-theme="rux-dark"] :is(.rux--text-input, .rux--text-area, .rux--select-input, .rux--date-picker__input):disabled,
 [data-theme="rux-dark"] .rux--search-input[disabled],
 [data-theme="rux-dark"] .rux--number :is(input[type=number], input[type=text]):disabled,
 [data-theme="rux-dark"] :is(.rux--list-box--disabled, .rux--dropdown--disabled),
 [data-theme="rux-dark"] :is(.rux--list-box--disabled, .rux--dropdown--disabled):hover {
   box-shadow: none;
+  background-color: color-mix(in srgb, var(--rux-field) 50%, transparent);
   color: var(--rux-text-disabled);
   -webkit-text-fill-color: var(--rux-text-disabled);
 }

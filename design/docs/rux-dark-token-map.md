@@ -14,8 +14,9 @@ that ink at the strength geist-dark gives white.
 
 **The greys are neutral,** a ladder whose first raised surface is `#111111`,
 on a page of `#000000`. **The lines are quiet:** a rule and a box's edge are
-`#343434`, and the faint rule `#2e2e2e`; only a field's ring and an outlined
-button's take `border-strong-01`.
+`#343434`, and the faint rule `#2e2e2e`; only an outlined button's ring takes
+`border-strong-01`. **A field is filled** one even step of OKLCH lightness,
+0.062, above the layer it sits on, inside the quiet line.
 
 **The palette** is vivid, and every hue takes the same steps. A step is an
 OKLCH lightness, and each hue takes 95% of the most chroma Display P3 holds
@@ -83,12 +84,12 @@ big surface stays calm.
 | `layer-selected-hover-02` | `#333333` | `#3f3f3f` | neutral grey #3f3f3f |
 | `layer-selected-hover-03` | `#3f3f3f` | `#525252` | neutral grey #525252 |
 | `layer-selected-inverse` | `#ededed` | `#ededed` | neutral grey #ededed |
-| `field-01` | `#0a0a0a` | `#111111` | neutral grey #111111 |
-| `field-02` | `#0a0a0a` | `#111111` | neutral grey #111111 |
-| `field-03` | `#111111` | `#1a1a1a` | neutral grey #1a1a1a |
-| `field-hover-01` | `#1a1a1a` | `#242424` | neutral grey #242424 |
-| `field-hover-02` | `#1a1a1a` | `#242424` | neutral grey #242424 |
-| `field-hover-03` | `#242424` | `#2e2e2e` | neutral grey #2e2e2e |
+| `field-01` | `#0a0a0a` | `#1f1f1f` | one step above layer-01 |
+| `field-02` | `#0a0a0a` | `#292929` | one step above layer-02 |
+| `field-03` | `#111111` | `#333333` | one step above layer-03 |
+| `field-hover-01` | `#1a1a1a` | `#2e2e2e` | a step above field-01 |
+| `field-hover-02` | `#1a1a1a` | `#383838` | a step above field-02 |
+| `field-hover-03` | `#242424` | `#434343` | a step above field-03 |
 | `border-disabled` | `rgba(237, 237, 237, 0.25)` | `rgba(244, 244, 244, 0.25)` | the ink at 0.25 |
 | `border-interactive` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
 | `border-inverse` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |

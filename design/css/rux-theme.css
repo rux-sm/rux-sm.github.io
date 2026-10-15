@@ -501,10 +501,13 @@
    THE GREYS ARE NEUTRAL, as the mark is: a ladder whose first raised surface
    is #111111, under a page of #000000, so the vivid colours read true on it.
    Two steps are set by contrast rather than by the ladder: border-strong-01,
-   #666666, which rings a field at 3.03 to 1 on field-03, and toggle-off,
-   #6f6f6f, 3.09 to 1 on layer-03. THE LINES ARE QUIET: a rule and a box's
-   edge are #343434, 1.52 to 1 on layer-01, and the faint rule under it
-   #2e2e2e, so only a field's ring and an outlined button's are strong. The
+   #666666, the ring of an outlined button, 3.66 to 1 on the page, and
+   toggle-off, #6f6f6f, 3.09 to 1 on layer-03. THE LINES ARE QUIET: a rule
+   and a box's edge are #343434, 1.52 to 1 on layer-01, and the faint rule
+   under it #2e2e2e, so only an outlined button's ring is strong. A FIELD IS
+   FILLED, one even step above the surface it sits on -- 0.062 of OKLCH
+   lightness, #111111 to #1f1f1f -- inside the quiet line, and its hover a
+   step above that. The
    grey tags stand a step above a selected row, and the cool-gray and
    warm-gray tags are Carbon's 80 and 20 steps.
 
@@ -577,12 +580,12 @@
   --rux-layer-selected-inverse: #ededed;
 
   /* field */
-  --rux-field-01: #111111;
-  --rux-field-02: #111111;
-  --rux-field-03: #1a1a1a;
-  --rux-field-hover-01: #242424;
-  --rux-field-hover-02: #242424;
-  --rux-field-hover-03: #2e2e2e;
+  --rux-field-01: #1f1f1f;
+  --rux-field-02: #292929;
+  --rux-field-03: #333333;
+  --rux-field-hover-01: #2e2e2e;
+  --rux-field-hover-02: #383838;
+  --rux-field-hover-03: #434343;
 
   /* border */
   --rux-border-disabled: rgba(244, 244, 244, 0.25);

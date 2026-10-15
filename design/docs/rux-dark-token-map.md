@@ -15,28 +15,31 @@ Carbon cool gray 10, `#f2f4f8`, at the strength geist-dark gives white.
 Carbon cool gray's hue, 248, at chroma 0.0065, half of cool gray's own. The
 page is `#000000`.
 
-**Slate** is Carbon blue's hue, 262, at about half its chroma. Its steps, as
-OKLCH lightness and chroma, are the quiet steps every hue shares:
+**The palette** is vivid, and every hue takes the same steps. A step is an
+OKLCH lightness, and each hue takes 95% of the most chroma Display P3 holds
+there, to 0.2 at most: a tint at 0.28, its hover at 0.32, an ink at 0.75 and
+its hover at 0.82 (amber and yellow 0.82 and 0.88), and a fill at the lightest
+step that still holds white at 4.5 to 1, pressing 0.05 and 0.10 darker. Every
+pairing is measured at full P3 strength and as an ordinary screen shows it,
+and holds on both.
 
-| Step | Lightness | Chroma | Slate |
-| :--- | :--- | :--- | :--- |
-| text | 0.75 | 0.076 | `#94afdf` |
-| hover | 0.83 | 0.049 | `#b6c8e8` |
-| fill | 0.556 | 0.109 | `#4f72b3` |
-| fillHover | 0.50 | 0.105 | `#41629f` |
-| fillActive | 0.44 | 0.094 | `#355186` |
-| tint | 0.29 | 0.039 | `#212b3f` |
-| tintHover | 0.32 | 0.043 | `#273349` |
-| tagText | 0.82 | 0.055 | `#b1c5e9` |
+| Hue | tint | tint, hover | ink | ink, hover | fill |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| red | `oklch(0.28 0.122 25)` | `oklch(0.32 0.139 25)` | `oklch(0.75 0.183 25)` | `oklch(0.82 0.124 25)` | `oklch(0.59 0.2 25)` |
+| orange | `oklch(0.28 0.08 50)` | `oklch(0.32 0.091 50)` | `oklch(0.75 0.2 50)` | `oklch(0.82 0.136 50)` | `oklch(0.58 0.166 50)` |
+| amber | `oklch(0.28 0.064 75)` | `oklch(0.32 0.074 75)` | `oklch(0.82 0.188 75)` | `oklch(0.88 0.121 75)` | `oklch(0.57 0.131 75)` |
+| yellow | `oklch(0.28 0.063 95)` | `oklch(0.32 0.072 95)` | `oklch(0.82 0.185 95)` | `oklch(0.88 0.198 95)` | `oklch(0.565 0.127 95)` |
+| green | `oklch(0.28 0.102 150)` | `oklch(0.32 0.117 150)` | `oklch(0.75 0.2 150)` | `oklch(0.82 0.2 150)` | `oklch(0.535 0.195 150)` |
+| teal | `oklch(0.28 0.063 185)` | `oklch(0.32 0.072 185)` | `oklch(0.75 0.17 185)` | `oklch(0.82 0.186 185)` | `oklch(0.54 0.122 185)` |
+| cyan | `oklch(0.28 0.067 225)` | `oklch(0.32 0.076 225)` | `oklch(0.75 0.177 225)` | `oklch(0.82 0.125 225)` | `oklch(0.55 0.131 225)` |
+| blue | `oklch(0.28 0.153 262)` | `oklch(0.32 0.175 262)` | `oklch(0.75 0.132 262)` | `oklch(0.82 0.093 262)` | `oklch(0.575 0.2 262)` |
+| purple | `oklch(0.28 0.148 300)` | `oklch(0.32 0.169 300)` | `oklch(0.75 0.157 300)` | `oklch(0.82 0.111 300)` | `oklch(0.59 0.2 300)` |
+| magenta | `oklch(0.28 0.124 350)` | `oklch(0.32 0.142 350)` | `oklch(0.75 0.2 350)` | `oklch(0.82 0.15 350)` | `oklch(0.59 0.2 350)` |
 
-**The signal steps** are for what must be seen -- support, status, error text
-and the danger button -- at more chroma: glyph 0.70 and 0.16, glyphLight (amber
-and yellow) 0.82 and 0.15, text 0.75 and 0.13, fill 0.55 and 0.17, fillHover
-0.50 and 0.16, fillActive 0.45 and 0.15. A notification's fill is its glyph at
-15% over the page.
-
-**The hues**, in OKLCH degrees: red 25, orange 50, amber 75, yellow 95, green
-150, teal 185, cyan 225, blue 262, purple 300, magenta 350.
+The hues are red 25, orange 50, amber 75, yellow 95, green 150, teal 185, cyan
+225, blue 262, purple 300 and magenta 350, in OKLCH degrees. The accent is the
+blue. A notification's fill is its ink at 15% over the page, so a big surface
+stays calm.
 
 | Token | geist-dark | rux-dark | From |
 | :--- | :--- | :--- | :--- |
@@ -101,7 +104,7 @@ and yellow) 0.82 and 0.15, text 0.75 and 0.13, fill 0.55 and 0.17, fillHover
 | `border-tile-02` | `#3f3f3f` | `#404346` | cool grey at the lightness of #434343 |
 | `border-tile-03` | `#525252` | `#404346` | cool grey at the lightness of #434343 |
 | `text-disabled` | `rgba(237, 237, 237, 0.25)` | `rgba(244, 244, 244, 0.25)` | the ink at 0.25 |
-| `text-error` | `#ff6369` | `#f58b84` | signal red text |
+| `text-error` | `#ff6369` | `oklch(0.75 0.183 25)` | red ink |
 | `text-helper` | `#888888` | `#8c9093` | cool grey at the lightness of #8f8f8f |
 | `text-inverse` | `#000000` | `#000000` | cool grey at the lightness of #000000 |
 | `text-on-color` | `#000000` | `#000000` | cool grey at the lightness of #000000 |
@@ -109,14 +112,14 @@ and yellow) 0.82 and 0.15, text 0.75 and 0.13, fill 0.55 and 0.17, fillHover
 | `text-placeholder` | `rgba(237, 237, 237, 0.4)` | `rgba(244, 244, 244, 0.4)` | the ink at 0.4 |
 | `text-primary` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
 | `text-secondary` | `#a1a1a1` | `#9ea2a5` | cool grey at the lightness of #a1a1a1 |
-| `link-inverse` | `#005ff2` | `#41629f` | slate fillHover |
+| `link-inverse` | `#005ff2` | `oklch(0.525 0.2 262)` | blue fill, hover |
 | `link-inverse-active` | `#000000` | `#000000` | cool grey at the lightness of #000000 |
-| `link-inverse-hover` | `#002359` | `#355186` | slate fillActive |
-| `link-inverse-visited` | `#7c3aed` | `#6d5496` | quiet purple fillHover |
-| `link-primary` | `#52a8ff` | `#94afdf` | slate text |
-| `link-primary-hover` | `#8fc7ff` | `#b6c8e8` | slate hover |
-| `link-secondary` | `#8fc7ff` | `#b6c8e8` | slate hover |
-| `link-visited` | `#bf7af0` | `#b5a3d8` | quiet purple text |
+| `link-inverse-hover` | `#002359` | `oklch(0.475 0.2 262)` | blue fill, pressed |
+| `link-inverse-visited` | `#7c3aed` | `oklch(0.54 0.2 300)` | purple fill, hover |
+| `link-primary` | `#52a8ff` | `oklch(0.75 0.132 262)` | blue ink |
+| `link-primary-hover` | `#8fc7ff` | `oklch(0.82 0.093 262)` | blue ink, hover |
+| `link-secondary` | `#8fc7ff` | `oklch(0.82 0.093 262)` | blue ink, hover |
+| `link-visited` | `#bf7af0` | `oklch(0.75 0.157 300)` | purple ink |
 | `icon-disabled` | `rgba(237, 237, 237, 0.25)` | `rgba(244, 244, 244, 0.25)` | the ink at 0.25 |
 | `icon-interactive` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
 | `icon-inverse` | `#000000` | `#000000` | cool grey at the lightness of #000000 |
@@ -124,33 +127,33 @@ and yellow) 0.82 and 0.15, text 0.75 and 0.13, fill 0.55 and 0.17, fillHover
 | `icon-on-color-disabled` | `rgba(0, 0, 0, 0.4)` | `rgba(0, 0, 0, 0.4)` | black, as before |
 | `icon-primary` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
 | `icon-secondary` | `#a1a1a1` | `#9ea2a5` | cool grey at the lightness of #a1a1a1 |
-| `support-caution-major` | `#f97316` | `#eb7c33` | signal orange glyph |
-| `support-caution-minor` | `#f5a623` | `#e3c23b` | signal yellow glyphLight |
-| `support-caution-undefined` | `#8e4ec6` | `#ae84f2` | signal purple glyph |
-| `support-error` | `#f13342` | `#f2716a` | signal red glyph |
-| `support-error-inverse` | `#cd2b31` | `#c13c3b` | signal red fill |
-| `support-info` | `#52a8ff` | `#679cff` | signal blue glyph |
-| `support-info-inverse` | `#0070f3` | `#4f72b3` | slate fill |
-| `support-success` | `#00ac3a` | `#43b966` | signal green glyph |
-| `support-success-inverse` | `#2a7e3b` | `#05893e` | signal green fill |
-| `support-warning` | `#ffae00` | `#fcb442` | signal amber glyphLight |
-| `support-warning-inverse` | `#d97706` | `#986600` | signal amber fill |
+| `support-caution-major` | `#f97316` | `oklch(0.75 0.2 50)` | orange ink |
+| `support-caution-minor` | `#f5a623` | `oklch(0.82 0.185 95)` | yellow ink |
+| `support-caution-undefined` | `#8e4ec6` | `oklch(0.75 0.157 300)` | purple ink |
+| `support-error` | `#f13342` | `oklch(0.75 0.183 25)` | red ink |
+| `support-error-inverse` | `#cd2b31` | `oklch(0.59 0.2 25)` | red fill |
+| `support-info` | `#52a8ff` | `oklch(0.75 0.132 262)` | blue ink |
+| `support-info-inverse` | `#0070f3` | `oklch(0.575 0.2 262)` | blue fill |
+| `support-success` | `#00ac3a` | `oklch(0.75 0.2 150)` | green ink |
+| `support-success-inverse` | `#2a7e3b` | `oklch(0.535 0.195 150)` | green fill |
+| `support-warning` | `#ffae00` | `oklch(0.82 0.188 75)` | amber ink |
+| `support-warning-inverse` | `#d97706` | `oklch(0.57 0.131 75)` | amber fill |
 | `focus` | `#ffffff` | `#ffffff` | white |
 | `focus-inset` | `#000000` | `#000000` | cool grey at the lightness of #000000 |
-| `focus-inverse` | `#0070f3` | `#4f72b3` | slate fill |
+| `focus-inverse` | `#0070f3` | `oklch(0.575 0.2 262)` | blue fill |
 | `chat-avatar-agent` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
 | `chat-avatar-bot` | `#888888` | `#85898c` | cool grey at the lightness of #888888 |
-| `chat-avatar-user` | `#52a8ff` | `#94afdf` | slate text |
+| `chat-avatar-user` | `#52a8ff` | `oklch(0.75 0.132 262)` | blue ink |
 | `chat-bubble-agent` | `#111111` | `#181a1d` | cool grey at the lightness of #1a1a1a |
 | `chat-bubble-agent-text` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
 | `chat-bubble-border` | `#262626` | `#404346` | cool grey at the lightness of #434343 |
 | `chat-bubble-user` | `#1a1a1a` | `#222427` | cool grey at the lightness of #242424 |
 | `chat-bubble-user-text` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
-| `chat-button` | `#52a8ff` | `#94afdf` | slate text |
+| `chat-button` | `#52a8ff` | `oklch(0.75 0.132 262)` | blue ink |
 | `chat-button-active` | `rgba(255, 255, 255, 0.18)` | `rgba(242, 244, 248, 0.18)` | Carbon cool gray 10 at 0.18 |
 | `chat-button-hover` | `rgba(255, 255, 255, 0.06)` | `rgba(242, 244, 248, 0.06)` | Carbon cool gray 10 at 0.06 |
 | `chat-button-selected` | `rgba(255, 255, 255, 0.1)` | `rgba(242, 244, 248, 0.1)` | Carbon cool gray 10 at 0.1 |
-| `chat-button-text-hover` | `#8fc7ff` | `#b6c8e8` | slate hover |
+| `chat-button-text-hover` | `#8fc7ff` | `oklch(0.82 0.093 262)` | blue ink, hover |
 | `chat-button-text-selected` | `#a1a1a1` | `#9ea2a5` | cool grey at the lightness of #a1a1a1 |
 | `chat-header-background` | `#0a0a0a` | `#0f1114` | cool grey at the lightness of #111111 |
 | `chat-header-text` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
@@ -160,7 +163,7 @@ and yellow) 0.82 and 0.15, text 0.75 and 0.13, fill 0.55 and 0.17, fillHover
 | `chat-prompt-text` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
 | `chat-shell-background` | `#0a0a0a` | `#0f1114` | cool grey at the lightness of #111111 |
 | `interactive` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
-| `highlight` | `#102a43` | `#212b3f` | slate tint |
+| `highlight` | `#102a43` | `oklch(0.28 0.153 262)` | blue tint |
 | `overlay` | `rgba(0, 0, 0, 0.72)` | `rgba(0, 0, 0, 0.72)` | black, as before |
 | `shadow` | `rgba(0, 0, 0, 0.8)` | `rgba(0, 0, 0, 0.8)` | black, as before |
 | `skeleton-background` | `#1a1a1a` | `#222427` | cool grey at the lightness of #242424 |
@@ -175,43 +178,43 @@ and yellow) 0.82 and 0.15, text 0.75 and 0.13, fill 0.55 and 0.17, fillHover
 | `button-secondary` | `#0a0a0a` | `#0f1114` | cool grey at the lightness of #111111 |
 | `button-secondary-hover` | `#1a1a1a` | `#222427` | cool grey at the lightness of #242424 |
 | `button-secondary-active` | `#2e2e2e` | `#313336` | cool grey at the lightness of #333333 |
-| `button-danger-primary` | `#e2162a` | `#c13c3b` | signal red fill |
-| `button-danger-secondary` | `#ff565f` | `#f58b84` | signal red text |
-| `button-danger-hover` | `#cd2b31` | `#ac3031` | signal red fillHover |
-| `button-danger-active` | `#b81d26` | `#972527` | signal red fillActive |
+| `button-danger-primary` | `#e2162a` | `oklch(0.59 0.2 25)` | red fill |
+| `button-danger-secondary` | `#ff565f` | `oklch(0.75 0.183 25)` | red ink |
+| `button-danger-hover` | `#cd2b31` | `oklch(0.54 0.2 25)` | red fill, hover |
+| `button-danger-active` | `#b81d26` | `oklch(0.49 0.2 25)` | red fill, pressed |
 | `button-separator` | `#000000` | `#000000` | cool grey at the lightness of #000000 |
 | `button-disabled` | `#1a1a1a` | `#222427` | cool grey at the lightness of #242424 |
-| `tag-background-red` | `#4f000f` | `#3d2421` | quiet red tint |
-| `tag-color-red` | `#ff565f` | `#e6b7b2` | quiet red tagText |
-| `tag-hover-red` | `#550614` | `#462a28` | quiet red tintHover |
-| `tag-background-magenta` | `#530029` | `#3a232e` | quiet magenta tint |
-| `tag-color-magenta` | `#ff4d8d` | `#e1b6c9` | quiet magenta tagText |
-| `tag-hover-magenta` | `#59002e` | `#442a36` | quiet magenta tintHover |
-| `tag-background-purple` | `#3b084d` | `#2e273c` | quiet purple tint |
-| `tag-color-purple` | `#c472fb` | `#c9bde3` | quiet purple tagText |
-| `tag-hover-purple` | `#400f53` | `#362e46` | quiet purple tintHover |
-| `tag-background-blue` | `#002458` | `#212b3f` | slate tint |
-| `tag-color-blue` | `#47a8ff` | `#b1c5e9` | slate tagText |
-| `tag-hover-blue` | `#00295e` | `#273349` | slate tintHover |
-| `tag-background-cyan` | `#002458` | `#132f3a` | quiet cyan tint |
-| `tag-color-cyan` | `#47a8ff` | `#9eccdf` | quiet cyan tagText |
-| `tag-hover-cyan` | `#00295e` | `#183743` | quiet cyan tintHover |
-| `tag-background-teal` | `#003429` | `#11322e` | quiet teal tint |
-| `tag-color-teal` | `#00cfb7` | `#9cd0c9` | quiet teal tagText |
-| `tag-hover-teal` | `#003a2e` | `#153a36` | quiet teal tintHover |
-| `tag-background-green` | `#003400` | `#1d3121` | quiet green tint |
-| `tag-color-green` | `#00ca50` | `#accfb2` | quiet green tagText |
-| `tag-hover-green` | `#003902` | `#223927` | quiet green tintHover |
+| `tag-background-red` | `#4f000f` | `oklch(0.28 0.122 25)` | red tint |
+| `tag-color-red` | `#ff565f` | `oklch(0.75 0.183 25)` | red ink |
+| `tag-hover-red` | `#550614` | `oklch(0.32 0.139 25)` | red tint, hover |
+| `tag-background-magenta` | `#530029` | `oklch(0.28 0.124 350)` | magenta tint |
+| `tag-color-magenta` | `#ff4d8d` | `oklch(0.75 0.2 350)` | magenta ink |
+| `tag-hover-magenta` | `#59002e` | `oklch(0.32 0.142 350)` | magenta tint, hover |
+| `tag-background-purple` | `#3b084d` | `oklch(0.28 0.148 300)` | purple tint |
+| `tag-color-purple` | `#c472fb` | `oklch(0.75 0.157 300)` | purple ink |
+| `tag-hover-purple` | `#400f53` | `oklch(0.32 0.169 300)` | purple tint, hover |
+| `tag-background-blue` | `#002458` | `oklch(0.28 0.153 262)` | blue tint |
+| `tag-color-blue` | `#47a8ff` | `oklch(0.75 0.132 262)` | blue ink |
+| `tag-hover-blue` | `#00295e` | `oklch(0.32 0.175 262)` | blue tint, hover |
+| `tag-background-cyan` | `#002458` | `oklch(0.28 0.067 225)` | cyan tint |
+| `tag-color-cyan` | `#47a8ff` | `oklch(0.75 0.177 225)` | cyan ink |
+| `tag-hover-cyan` | `#00295e` | `oklch(0.32 0.076 225)` | cyan tint, hover |
+| `tag-background-teal` | `#003429` | `oklch(0.28 0.063 185)` | teal tint |
+| `tag-color-teal` | `#00cfb7` | `oklch(0.75 0.17 185)` | teal ink |
+| `tag-hover-teal` | `#003a2e` | `oklch(0.32 0.072 185)` | teal tint, hover |
+| `tag-background-green` | `#003400` | `oklch(0.28 0.102 150)` | green tint |
+| `tag-color-green` | `#00ca50` | `oklch(0.75 0.2 150)` | green ink |
+| `tag-hover-green` | `#003902` | `oklch(0.32 0.117 150)` | green tint, hover |
 | `tag-background-gray` | `#262626` | `#3c3f42` | cool grey at the lightness of #3f3f3f |
 | `tag-color-gray` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
 | `tag-hover-gray` | `#2b2b2b` | `#474a4e` | cool grey at the lightness of #4a4a4a |
-| `tag-border-red` | `#fa4d56` | `#da9c96` | quiet red text |
-| `tag-border-blue` | `#4589ff` | `#94afdf` | slate text |
-| `tag-border-cyan` | `#1192e8` | `#77b9d2` | quiet cyan text |
-| `tag-border-teal` | `#009d9a` | `#74beb4` | quiet teal text |
-| `tag-border-green` | `#24a148` | `#8cbc95` | quiet green text |
-| `tag-border-magenta` | `#ee5396` | `#d49bb5` | quiet magenta text |
-| `tag-border-purple` | `#a56eff` | `#b5a3d8` | quiet purple text |
+| `tag-border-red` | `#fa4d56` | `oklch(0.75 0.183 25)` | red ink |
+| `tag-border-blue` | `#4589ff` | `oklch(0.75 0.132 262)` | blue ink |
+| `tag-border-cyan` | `#1192e8` | `oklch(0.75 0.177 225)` | cyan ink |
+| `tag-border-teal` | `#009d9a` | `oklch(0.75 0.17 185)` | teal ink |
+| `tag-border-green` | `#24a148` | `oklch(0.75 0.2 150)` | green ink |
+| `tag-border-magenta` | `#ee5396` | `oklch(0.75 0.2 350)` | magenta ink |
+| `tag-border-purple` | `#a56eff` | `oklch(0.75 0.157 300)` | purple ink |
 | `tag-border-gray` | `#8d8d8d` | `#8a8e91` | cool grey at the lightness of #8d8d8d |
 | `tag-border-cool-gray` | `#878d96` | `#878d96` | Carbon cool gray 50 |
 | `tag-border-warm-gray` | `#8f8b8b` | `#8f8b8b` | Carbon warm gray 50 |
@@ -221,24 +224,24 @@ and yellow) 0.82 and 0.15, text 0.75 and 0.13, fill 0.55 and 0.17, fillHover
 | `tag-background-warm-gray` | `#262626` | `#3c3838` | Carbon warm gray 80 |
 | `tag-color-warm-gray` | `#ededed` | `#e5e0df` | Carbon warm gray 20 |
 | `tag-hover-warm-gray` | `#2b2b2b` | `#565151` | Carbon warm gray 70 |
-| `notification-background-error` | `#220b0c` | `#241110` | signal red glyph at 15% over the page |
-| `notification-background-success` | `#0b190d` | `#0a1c0f` | signal green glyph at 15% over the page |
-| `notification-background-info` | `#0c1926` | `#0f1726` | signal blue glyph at 15% over the page |
-| `notification-background-warning` | `#251905` | `#261b0a` | signal amber glyph at 15% over the page |
+| `notification-background-error` | `#220b0c` | `oklch(0.216 0.038 23.6)` | red ink at 15% over the page |
+| `notification-background-success` | `#0b190d` | `oklch(0.216 0.042 151)` | green ink at 15% over the page |
+| `notification-background-info` | `#0c1926` | `oklch(0.217 0.027 262.7)` | blue ink at 15% over the page |
+| `notification-background-warning` | `#251905` | `oklch(0.231 0.044 79.2)` | amber ink at 15% over the page |
 | `notification-action-hover` | `var(--rux-layer-hover)` | `var(--rux-layer-hover)` | Carbon g100, by reference |
-| `notification-action-tertiary-inverse` | `#0f62fe` | `#4f72b3` | slate fill |
-| `notification-action-tertiary-inverse-active` | `#002d9c` | `#355186` | slate fillActive |
-| `notification-action-tertiary-inverse-hover` | `#0050e6` | `#41629f` | slate fillHover |
+| `notification-action-tertiary-inverse` | `#0f62fe` | `oklch(0.575 0.2 262)` | blue fill |
+| `notification-action-tertiary-inverse-active` | `#002d9c` | `oklch(0.475 0.2 262)` | blue fill, pressed |
+| `notification-action-tertiary-inverse-hover` | `#0050e6` | `oklch(0.525 0.2 262)` | blue fill, hover |
 | `notification-action-tertiary-inverse-text` | `#ffffff` | `#ffffff` | white |
 | `notification-action-tertiary-inverse-text-on-color-disabled` | `#8d8d8d` | `#8a8e91` | cool grey at the lightness of #8d8d8d |
-| `status-red` | `#fa4d56` | `#f2716a` | signal red glyph |
-| `status-orange` | `#ff832b` | `#eb7c33` | signal orange glyph |
-| `status-orange-outline` | `#ff832b` | `#eb7c33` | signal orange glyph |
-| `status-yellow` | `#f1c21b` | `#e3c23b` | signal yellow glyphLight |
-| `status-yellow-outline` | `#f1c21b` | `#e3c23b` | signal yellow glyphLight |
-| `status-green` | `#42be65` | `#43b966` | signal green glyph |
-| `status-blue` | `#4589ff` | `#679cff` | signal blue glyph |
-| `status-purple` | `#a56eff` | `#ae84f2` | signal purple glyph |
+| `status-red` | `#fa4d56` | `oklch(0.75 0.183 25)` | red ink |
+| `status-orange` | `#ff832b` | `oklch(0.75 0.2 50)` | orange ink |
+| `status-orange-outline` | `#ff832b` | `oklch(0.75 0.2 50)` | orange ink |
+| `status-yellow` | `#f1c21b` | `oklch(0.82 0.185 95)` | yellow ink |
+| `status-yellow-outline` | `#f1c21b` | `oklch(0.82 0.185 95)` | yellow ink |
+| `status-green` | `#42be65` | `oklch(0.75 0.2 150)` | green ink |
+| `status-blue` | `#4589ff` | `oklch(0.75 0.132 262)` | blue ink |
+| `status-purple` | `#a56eff` | `oklch(0.75 0.157 300)` | purple ink |
 | `status-gray` | `#8d8d8d` | `#8a8e91` | cool grey at the lightness of #8d8d8d |
 | `content-switcher-background` | `rgba(0, 0, 0, 0)` | `rgba(0, 0, 0, 0)` | black, as before |
 | `content-switcher-background-hover` | `rgba(141, 141, 141, 0.12)` | `rgba(138, 142, 145, 0.12)` | cool grey at the lightness of #8d8d8d, as a wash |
@@ -246,21 +249,21 @@ and yellow) 0.82 and 0.15, text 0.75 and 0.13, fill 0.55 and 0.17, fillHover
 | `ai-aura-end` | `not set` | `rgba(0, 0, 0, 0)` | clear, as Carbon g100 |
 | `ai-aura-hover-background` | `not set` | `#313336` | cool grey at the lightness of #333333 |
 | `ai-aura-hover-end` | `not set` | `rgba(0, 0, 0, 0)` | clear, as Carbon g100 |
-| `ai-aura-hover-start` | `not set` | `rgba(148, 175, 223, 0.4)` | slate text at 0.4 |
-| `ai-aura-start` | `not set` | `rgba(148, 175, 223, 0.1)` | slate text at 0.1 |
-| `ai-aura-start-sm` | `not set` | `rgba(148, 175, 223, 0.16)` | slate text at 0.16 |
-| `ai-border-end` | `not set` | `#94afdf` | slate text |
-| `ai-border-start` | `not set` | `rgba(182, 200, 232, 0.36)` | slate hover at 0.36 |
-| `ai-border-strong` | `not set` | `#b6c8e8` | slate hover |
+| `ai-aura-hover-start` | `not set` | `oklch(0.75 0.132 262 / 0.4)` | blue ink at 0.4 |
+| `ai-aura-start` | `not set` | `oklch(0.75 0.132 262 / 0.1)` | blue ink at 0.1 |
+| `ai-aura-start-sm` | `not set` | `oklch(0.75 0.132 262 / 0.16)` | blue ink at 0.16 |
+| `ai-border-end` | `not set` | `oklch(0.75 0.132 262)` | blue ink |
+| `ai-border-start` | `not set` | `oklch(0.82 0.093 262 / 0.36)` | blue ink, hover, at 0.36 |
+| `ai-border-strong` | `not set` | `oklch(0.82 0.093 262)` | blue ink, hover |
 | `ai-drop-shadow` | `not set` | `rgba(0, 0, 0, 0.28)` | black, as Carbon g100 |
-| `ai-inner-shadow` | `not set` | `rgba(148, 175, 223, 0.16)` | slate text at 0.16 |
+| `ai-inner-shadow` | `not set` | `oklch(0.75 0.132 262 / 0.16)` | blue ink at 0.16 |
 | `ai-overlay` | `not set` | `rgba(0, 0, 0, 0.5)` | black, as Carbon g100 |
 | `ai-popover-background` | `not set` | `#0f1114` | cool grey at the lightness of #111111 |
-| `ai-popover-caret-bottom` | `not set` | `#94afdf` | slate text |
-| `ai-popover-caret-bottom-background` | `not set` | `#212b3f` | slate tint |
-| `ai-popover-caret-bottom-background-actions` | `not set` | `#1d2638` | slate tint, a step darker |
-| `ai-popover-caret-center` | `not set` | `#4f72b3` | slate fill |
+| `ai-popover-caret-bottom` | `not set` | `oklch(0.75 0.132 262)` | blue ink |
+| `ai-popover-caret-bottom-background` | `not set` | `oklch(0.28 0.153 262)` | blue tint |
+| `ai-popover-caret-bottom-background-actions` | `not set` | `oklch(0.25 0.137 262)` | blue tint, a step darker |
+| `ai-popover-caret-center` | `not set` | `oklch(0.575 0.2 262)` | blue fill |
 | `ai-popover-shadow-outer-01` | `not set` | `rgba(0, 0, 0, 0.12)` | black, as Carbon g100 |
 | `ai-popover-shadow-outer-02` | `not set` | `rgba(0, 0, 0, 0.08)` | black, as Carbon g100 |
-| `ai-skeleton-background` | `not set` | `rgba(148, 175, 223, 0.5)` | slate text at 0.5 |
-| `ai-skeleton-element-background` | `not set` | `rgba(148, 175, 223, 0.3)` | slate text at 0.3 |
+| `ai-skeleton-background` | `not set` | `oklch(0.75 0.132 262 / 0.5)` | blue ink at 0.5 |
+| `ai-skeleton-element-background` | `not set` | `oklch(0.75 0.132 262 / 0.3)` | blue ink at 0.3 |

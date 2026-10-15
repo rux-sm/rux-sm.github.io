@@ -28,8 +28,9 @@ text in it under 4.5 to 1 and no control's resting shape under 3 to 1.
   95, green 150, teal 185, cyan 225, blue 262, purple 300 and magenta 350, in
   OKLCH degrees -- takes the same steps of lightness, each at the most chroma
   its hue holds there, so no colour shouts louder than another: a tint at 0.28
-  (0.32 on hover) behind an ink at 0.74 (0.82 for amber and yellow, 0.82 on
-  hover), and a fill at about 0.55 that holds white at 4.5 to 1. One palette
+  (0.32 on hover) behind an ink at 0.75 (0.82 for amber and yellow, 0.82 on
+  hover), and a fill at the lightest step that still holds white at 4.5 to 1,
+  0.535 to 0.59 by hue. One palette
   serves every use: a tag, a trip bar, a status dot, a support colour, error
   text and the danger button.
 - **The colours use the wider Display P3 range,** written in OKLCH, so a Mac
@@ -88,9 +89,6 @@ None open.
 
 ## Tasks
 
-- [ ] Write the vivid palette into rux-dark's block in `design/css/rux-theme.css`:
-  the tags, the support and status colours, error text, the danger button, the
-  links and every accent token, with the block's comment and the token map.
 - [ ] Give the scheduler's trip bars, marks and roster the palette. Its bars,
   their marks, the roster's busy, day-off and short-rest cells, the amber bar
   and an update's age colours are still Geist's, in the rules

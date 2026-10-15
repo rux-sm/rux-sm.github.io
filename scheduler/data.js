@@ -5418,7 +5418,15 @@
         named: Object.fromEntries((named.data || []).map(r => [r.key, Number(r.value)])),
         mileage: (miles.data || []).map(m => ({ ...m, rate: Number(m.rate) })).sort((a, b) => a.rate - b.rate),
       };
-      if (linesLive && syncLines()) { redrawLines(); refreshDirty(); }
+      /* The lines draw again even when no price moved, because a typed
+         cost's calculator price, a rental's rate and the dead-mile offer
+         are read from these rates. Save's state is refreshed only when a
+         price moved. */
+      if (linesLive) {
+        const moved = syncLines();
+        redrawLines();
+        if (moved) refreshDirty();
+      }
     }).catch(err => {
       quoteRatesAsked = null;
       console.warn('The quote rates did not load:', err);

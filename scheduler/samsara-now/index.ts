@@ -26,7 +26,12 @@ async function samsara<T>(path: string, params: Record<string, string>): Promise
   do {
     const q = new URLSearchParams({ ...params, ...(after ? { after } : {}) })
     const r = await fetch(`${SAMSARA}${path}?${q}`, { headers: { Authorization: `Bearer ${TOKEN}` } })
-    if (!r.ok) throw new Error(`samsara ${path} ${r.status}`)
+    if (!r.ok) {
+      // Samsara's status and words go to the function's log, which says why a
+      // list did not come, such as a key without the permission it needs.
+      console.warn(`samsara ${path} ${r.status} ${(await r.text()).slice(0, 300)}`)
+      throw new Error(`samsara ${path} ${r.status}`)
+    }
     const body = await r.json()
     rows.push(...(body?.data ?? []))
     after = body?.pagination?.hasNextPage ? body.pagination.endCursor ?? '' : ''

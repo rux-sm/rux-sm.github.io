@@ -10577,7 +10577,7 @@
   async function writeUpdate(tripId, answer) {
     try {
       const actor = await actorName()
-        ?? signed((await Promise.resolve(window.Rux?.account?.person?.()).catch(() => null))?.name ?? null);
+        ?? ((await Promise.resolve(window.Rux?.account?.person?.()).catch(() => null))?.name ?? null);
       // `changes` is not null in the table, so an update that names no change
       // leaves it out and takes the column's default.
       const row = { trip_id: tripId, body: answer.body, kind: answer.kind, actor_name: actor };
@@ -11231,7 +11231,7 @@
     if (await movedOn()) return askConflict(answer);
     // The Done marks as they stand before anything is written, written last.
     const doneRow = doneRowOf(await actorName()
-      ?? signed((await Promise.resolve(window.Rux?.account?.person?.()).catch(() => null))?.name ?? null));
+      ?? ((await Promise.resolve(window.Rux?.account?.person?.()).catch(() => null))?.name ?? null));
     /* The trip as it stands, for the history entry to diff against. A read
        that fails leaves `historyBefore` undefined, and the save unrecorded. */
     let historyBefore;
@@ -13670,14 +13670,7 @@
   /* The history's actor is the person's rux-ui profile name, the one rux-ui
      records, found by the account's id; the platform profile's name stands in
      for an account rux-ui never saw, and with neither the function's own
-     default does. Read once per page.
-
-     A SAVE CLAUDE PRESSES SAYS SO. A session opens the page with `by=claude`
-     in its address, read here as the page loads because opening a trip
-     rewrites the address, and every name this page writes is then the
-     person's "with Claude", so History tells the two apart. */
-  const viaClaude = new URLSearchParams(location.search).get('by') === 'claude';
-  const signed = name => (name && viaClaude ? `${name} with Claude` : name);
+     default does. Read once per page. */
   let actorPromise = null;
   const actorName = () => (actorPromise ??= (async () => {
     const uid = await personId();
@@ -13686,7 +13679,7 @@
       try {
         const { data } = await withTimeout(client.schema(schema).from('profiles')
           .select('display_name').eq(key, uid).limit(1).maybeSingle().then(r => r));
-        if (data?.display_name?.trim()) return signed(data.display_name.trim());
+        if (data?.display_name?.trim()) return data.display_name.trim();
       } catch { /* the next source, or the default */ }
     }
     return null;

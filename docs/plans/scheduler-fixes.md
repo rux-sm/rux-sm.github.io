@@ -122,8 +122,8 @@ site.
 - **`trips` owns one trip or one customer's thread and `inbox-review` owns
   the team inbox and the To do rows.** The `trip-email` skill is deleted.
 - **A To do row's thread key is an id the mail itself carries.**
-- **A Save Claude presses is named as the person with Claude,** from a word
-  in the address, so History can tell them apart.
+- **A Save Claude presses is named as the person alone,** as if they made it
+  by hand.
 
 ### Checks
 

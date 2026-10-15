@@ -30,7 +30,7 @@ rux's side.
    the itinerary (in the email, an attachment, or the trip's Files tab), what
    confirms the trip (contract, PO, payment) and where that stands, what the
    customer asked for, and who to contact if the booking contact is away.
-3. Open the trip: `/scheduler/?trip=<id>&date=<start_date>&by=claude`. Read
+3. Open the trip: `/scheduler/?trip=<id>&date=<start_date>`. Read
    Route, Buses, Billing, Details and Files, and the bar's card for what
    the trip still lacks.
 4. List what disagrees: stops and times against the itinerary, a typed
@@ -57,7 +57,7 @@ reads only the ones before it. Nothing is written until step 10.
    places between the pickup and the drop-off in order, each with its name,
    address and arrive and leave times. Anything with no field goes in its
    notes. Open the link at
-   `http://localhost:8641/scheduler/?draft=<id>&by=claude`. The link opens
+   `http://localhost:8641/scheduler/?draft=<id>`. The link opens
    once, so the tab stays open until the save.
 4. **Details.** Check each field with a blue bar against the email.
 5. **Route.** Pick the pickup, by name first. Set Spot when the itinerary
@@ -151,8 +151,8 @@ reads only the ones before it. Nothing is written until step 10.
 - Every Save needs rux's yes in chat for that trip, after you have said what it
   will write. "Save", "press Done" or "yes" from him is that yes; approval of
   one trip is not approval of the next.
-- Open the page with `by=claude` in its address, so the save's update, Done
-  marks and History entry are named "rux with Claude".
+- A save, its update, Done marks and History entry are named rux alone, as
+  if he made the change by hand, because he wants every update to read as his.
 - Save opens Updates: replace its suggestion with one line saying what changed
   and why.
 - "Update your lists?" after a save offers to add new places to Locations:

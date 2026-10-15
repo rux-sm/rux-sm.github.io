@@ -75,9 +75,8 @@ Customer page, and `scheduler/docs/database-inventory.md`.
 - [ ] Check the filled copy in Chrome on :8641 with an invented PDF shaped
       like the real one.
 - [ ] Check on a real trip in Chrome on :8641, for a customer that asks for
-      a driver form: the checklist's Driver forms printed item, the
-      Departures line under each driver, and the Printed tick, read back
-      from `trip_drivers.driver_forms_printed`.
+      a driver form: the Departures line under each driver, and the Printed
+      tick, read back from `trip_drivers.driver_forms_printed`.
 - [ ] Upload each driver's background check form from the file rux names,
       with its driver and the end date read from the file.
 - [ ] List the names on trips still to come that match no customer, and link

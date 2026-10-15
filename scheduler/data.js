@@ -32,7 +32,7 @@
   const {
     REQUIREMENTS, setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
     needIds, requirementsOf, shortfall, needsFor, wrongType,
-    ROLES, DRIVER_STATUSES, statusKey, activeRolesOf, crewOf, tripContact, dayOfContact, factsOf,
+    ROLES, DRIVER_STATUSES, statusKey, activeRolesOf, crewOf, tripContact, dayOfContact,
   } = window.SchedulerLegFacts;
 
   const PROJECT = 'https://udnmqhayzhrbltxzzhjw.supabase.co';
@@ -1902,9 +1902,6 @@
   const panelRoute = document.getElementById('scheduler-panel-route');
   const panelFiles = document.getElementById('scheduler-panel-files');
   // The checklist's drop-down in the panel head, its button and the list inside it.
-  const checklistPop = document.getElementById('scheduler-checklist-pop');
-  const checklistButton = document.getElementById('scheduler-checklist-button');
-  const panelChecklist = document.getElementById('scheduler-panel-checklist');
   const panelSave = document.getElementById('scheduler-panel-save');
   const panelReset = document.getElementById('scheduler-panel-reset');
   const panelCancel = document.getElementById('scheduler-panel-cancel');
@@ -3445,7 +3442,6 @@
     editing.itineraryNotNeeded = on;
     refreshDirty();
     if (editing.trip) drawItineraryNote(editing.trip);
-    drawChecklist();
   }
 
   /* Carbon's file item for the file going up, from `sink/file-uploader.html`:
@@ -3596,7 +3592,6 @@
   // closing it is setting `hidden`.
   function closePanel(returnFocus = true) {
     if (panelEl.hidden) return;
-    closeChecklist();
     // A read that waited for this editor is owed as soon as it is out of the way.
     if (liveHeld) setTimeout(liveRefresh, 0);
     setTimeout(presenceTell, 0);
@@ -5103,7 +5098,6 @@
      has been quiet, and whether it asks. */
   const { set: setFollowUp, waitsOf, updatesOf, quietSince, asks: asksFollowUp, due: dueFollowUp, daysToGo,
     agoShort, WORDS: WAIT_WORDS } = window.SchedulerFollowUp;
-  const { checklist: tripChecklist, leftOf: checklistLeft, GROUPS: CHECK_GROUPS } = window.SchedulerChecklist;
 
   let editing = null;   // { id, before: {...} }
 
@@ -6716,113 +6710,15 @@
     }
   }
 
-  /* ── The checklist ──
-     checklist.js holds the rules; the board hands it what only the board can
-     read, each leg's buses and seats, and the editor's checklist draws the result
-     for the trip as it stands in the editor. */
-  function checklistFacts(trip, leg, statuses = panelIndex.statuses) {
-    return factsOf(trip, leg, { busesById: panelIndex.buses, driversById: panelIndex.driversById, statuses });
-  }
-  // A saved trip's checklist, for its card and the Departures list.
-  const tripChecklistOf = trip => tripChecklist(trip, leg => checklistFacts(trip, leg), !!dayOfContact(trip));
-
-  /* Where an item's button goes: an editor tab, the Forms panel beside the
-     board, or the leg's itinerary from the customer in the document panel,
-     which is where its Printed tick is made. The checklist shuts first, so
-     what the button opened is in view. */
-  function goToChecklistItem(action, leg = null) {
-    closeChecklist();
+  /* Where a link to a part of the open trip goes: an editor tab, the Forms
+     panel beside the board, or the leg's itinerary from the customer in the
+     document panel, which is where its Printed tick is made. */
+  function goToTripPart(action, leg = null) {
     if (action === 'forms') { openForms(selectedBar()); return; }
     if (action === 'itinerary') { openLegItinerary({ trip: editing?.id, leg }, selectedBar()); return; }
     const tab = document.getElementById(`scheduler-tab-${action}`);
     if (tab) window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
   }
-  const checklistOpen = () => !!checklistPop && !!window.Rux?.popover?.isOpen?.(checklistPop);
-  function closeChecklist() {
-    if (checklistOpen()) window.Rux.popover.close(checklistPop);
-  }
-
-  function checklistRow(item, leg) {
-    const li = el('li', `scheduler-checklist__item${item.done ? ' scheduler-checklist__item--done' : ''}`);
-    const kind = item.id.split(':')[0];
-    const mark = el('span', `scheduler-checklist__mark${item.done ? '' : ' scheduler-checklist__mark--open'}`);
-    if (item.done) mark.appendChild(svgUse('#m-check_circle-fill', '16', '0 0 32 32'));
-    const words = el('span', 'scheduler-checklist__words');
-    words.append(el('span', null, item.label), el('span', 'rux--visually-hidden', item.done ? ', done' : ', not done'));
-    if (item.detail) words.appendChild(el('span', 'scheduler-checklist__detail', item.detail));
-    li.append(mark, words);
-    if (!item.done && item.action) {
-      const go = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', item.action === 'forms' ? 'Forms' : 'Open');
-      go.type = 'button';
-      go.setAttribute('aria-label', `${item.action === 'forms' ? 'Open Forms for' : 'Go to'} ${item.label.toLowerCase()}`);
-      go.addEventListener('click', () => goToChecklistItem(item.action, leg));
-      li.appendChild(go);
-    }
-    /* The itinerary can be marked not needed from its row, and a row marked
-       so takes it back; either is an edit Save writes. */
-    const skipped = kind === 'itinerary' && item.done && editing.itineraryNotNeeded && !itinerariesOf(editing.trip).length;
-    if (kind === 'itinerary' && (!item.done || skipped)) {
-      const flip = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', skipped ? 'Undo' : 'Not needed');
-      flip.type = 'button';
-      flip.id = 'scheduler-check-itinerary-needed';
-      flip.setAttribute('aria-label', skipped ? 'Undo itinerary not needed' : 'Itinerary not needed');
-      flip.addEventListener('click', () => {
-        setItineraryNotNeeded(!skipped);
-        document.getElementById('scheduler-check-itinerary-needed')?.focus();
-      });
-      li.appendChild(flip);
-    }
-    return li;
-  }
-
-  /* The checklist: the trip as saved, with the editor's own Done marks laid
-     over it, so a Done shows here before Save. The
-     button in the panel head says how much is left after every edit; the list
-     is drawn only while its drop-down is open. */
-  function drawChecklist() {
-    if (!editing?.trip || !panelChecklist || !checklistButton) return;
-    const on = doneState();
-    const view = { ...editing.trip, itinerary_not_needed: editing.itineraryNotNeeded };
-    for (const { tab } of DONE_TABS) {
-      const d = on?.[tab] ? editing.done[tab] : null;
-      view[`${tab}_done_at`] = d ? (d.at || 'now') : null;
-      view[`${tab}_done_by`] = d?.by ?? null;
-    }
-    const legs = tripChecklist(view, leg => checklistFacts(editing.trip, leg), !!dayOfContact(editing.trip));
-    const left = checklistLeft(legs);
-    const words = left ? `${left} left` : 'Ready';
-    /* Redrawn only when its words change, because every edit lands here and a
-       press whose target was just replaced never reaches the popover. */
-    if (checklistButton.dataset.words !== words) {
-      checklistButton.dataset.words = words;
-      const mark = left ? el('span', 'scheduler-checklist__mark scheduler-checklist__mark--open')
-        : el('span', 'scheduler-checklist__mark');
-      if (!left) mark.appendChild(svgUse('#m-check_circle-fill', '16', '0 0 32 32'));
-      checklistButton.replaceChildren(mark, el('span', null, words));
-      checklistButton.setAttribute('aria-label', `Checklist: ${words}`);
-      checklistButton.title = 'Checklist';
-    }
-    if (!checklistOpen()) return;
-    const active = document.activeElement;
-    const keep = panelChecklist.contains(active) ? { id: active.id, at: active.selectionStart ?? null } : null;
-    const parts = [el('p', 'scheduler-checklist__summary', left ? `${left} left` : 'Ready to go')];
-    for (const l of legs) {
-      for (const group of CHECK_GROUPS) {
-        const items = l.items.filter(i => i.group === group);
-        if (!items.length) continue;
-        const list = el('ul', 'scheduler-checklist');
-        for (const i of items) list.appendChild(checklistRow(i, l.leg));
-        parts.push(section(legs.length > 1 ? `${group}, ${l.leg === 'return' ? 'pickup leg' : 'drop-off leg'}` : group, list));
-      }
-    }
-    panelChecklist.replaceChildren(...parts);
-    const back = keep?.id ? document.getElementById(keep.id) : null;
-    if (back) {
-      back.focus();
-      if (keep.at != null && typeof back.setSelectionRange === 'function') back.setSelectionRange(keep.at, keep.at);
-    }
-  }
-
   // The Done marks a save takes off, named in the update window before it saves.
   function doneTakenOff() {
     const on = doneState();
@@ -6883,7 +6779,6 @@
     redrawQuoteSent();
     tellCalculator();
     drawDone();
-    drawChecklist();
   }
 
   /* New trip opens the same panel on a draft: a round trip, unconfirmed, on the
@@ -7118,19 +7013,12 @@
     };
     const [outFrom, outTo] = outLabels(trip.trip_type === SPLIT);
 
-    /* The trip's own fields are one stack, 16px apart. Destination has Type
-       beside it, a short menu a third of the row, so the split type is named
-       "Split" there, which a third fits; the date labels still say Drop-off
-       and Pickup. The trip bar's
-       colour is picked from the panel head's Trip actions menu, as from the
-       bar's own: it is seldom changed and the bar itself shows it, so its
-       field stays in the page, hidden, for Save to read. The tab is
-       Details, and its first section is the trip itself, then its people. */
+    /* The trip's own fields are one stack, 16px apart: the dates,
+       Destination, Type beside Passengers, then the trip bar's colour. Type
+       names the split type "Split", and the date labels say Drop-off and
+       Pickup. The tab is Details, and its first section is the trip itself,
+       then its people. */
     const colorItem = colorField('scheduler-f-color', trip);
-    tripColorItem = colorItem;
-    const colorBox = el('div');
-    colorBox.hidden = true;
-    colorBox.appendChild(colorItem);
     /* A one-day trip leaves the end box empty, which Save reads as the start
        day, and the box says Same day. */
     const outRange = dateRange('scheduler-f-start', 'scheduler-f-end', outFrom, outTo, trip.start_date,
@@ -7168,7 +7056,7 @@
         ]),
         passengers,
       ),
-      colorBox,
+      colorItem,
     );
     // The tab's name heads its first section.
     panelDetails.appendChild(section(null, topFields));
@@ -9074,8 +8962,6 @@
     /* A tabpanel is a tab stop only when nothing inside it is focusable, the
        ARIA pattern; otherwise the panel is a redundant stop with a focus ring
        round the whole tab. Decided per panel from its contents, which change. */
-    closeChecklist();
-    panelChecklist?.replaceChildren();
     for (const tp of [panelDetails, panelBilling, panelRoute, panelFleet, panelFiles]) {
       const focusable = tp.querySelector('input, select, textarea, button, a[href], [tabindex]:not([tabindex="-1"])');
       if (focusable) tp.removeAttribute('tabindex');
@@ -11184,17 +11070,6 @@
   panelBilling?.addEventListener('input', refreshDirty);
   panelBilling?.addEventListener('change', refreshDirty);
   panelBilling?.addEventListener('rux:toggle', refreshDirty);
-  /* The checklist's list is drawn as its drop-down opens, and laid across the
-     editor under the head, 16px in from each edge, measured from the popover's
-     own box because that is what its position is written against. */
-  checklistPop?.addEventListener('rux:popover-opened', () => {
-    const editor = panelEl.getBoundingClientRect();
-    const own = checklistPop.getBoundingClientRect();
-    const inset = 16;
-    panelChecklist.style.setProperty('--scheduler-checklist-start', `${Math.round(editor.left + inset - own.left)}px`);
-    panelChecklist.style.setProperty('--scheduler-checklist-width', `${Math.round(editor.width - 2 * inset)}px`);
-    drawChecklist();
-  });
   // Route has fields and two place searches, the pickup's and the drop-off's
   // in their own dialogs, which sit outside the panel.
   for (const host of [panelRoute, document.getElementById('scheduler-pickup-modal'),
@@ -11218,33 +11093,6 @@
      now. */
   panelCancel?.addEventListener('click', () => {
     if (editing?.id) openCancelModal(editing.id);
-  });
-
-  /* The panel head's Trip actions: Forms, the trip's printed forms beside the
-     board, which a trip not yet saved has none of; then Color, the trip bar's
-     colour in a submenu as the bar's own menu has it, its chip the colour now,
-     from the field the open trip drew. */
-  let tripColorItem = null;
-  const panelMenu = document.getElementById('scheduler-panel-menu');
-  panelMenu?.addEventListener('click', () => {
-    if (!editing) return;
-    const colorItem = tripColorItem;
-    const now = colorItem?.current();
-    const formsIcon = svgUse('#m-description', '16', '0 0 32 32');
-    openItemsMenu(panelMenu, [
-      { label: 'Forms', icon: formsIcon, disabled: !editing.id || editing.creating,
-        run: () => openForms(null, editing.id, panelMenu) },
-      ...(colorItem ? [{
-        label: 'Color',
-        icon: colorItem.chip((colorItem.choices.find(c => c.value === now) ?? colorItem.choices[0]).hue),
-        items: colorItem.choices.map(c => ({
-          label: c.label,
-          checked: c.value === now,
-          icon: colorItem.chip(c.hue),
-          run: () => { colorItem.setColor(c.value); refreshDirty(); panelMenu.focus(); },
-        })),
-      }] : []),
-    ], 'Trip actions');
   });
 
   // Save closes the editor once the week has been read back.
@@ -13244,7 +13092,7 @@
   /* The forms this trip can fill in, on print.html's own list. It takes the
      trip rather than the bar's assignment, because the list is the trip's and
      a form that wants one bus asks for it once it is chosen. */
-  // From a bar, or from the editor's Trip actions menu with the trip's id and its button.
+  // From a bar, or with a trip's id and the button that asked.
   function openForms(bar, id = bar?.dataset.tripId, opener = bar) {
     if (!id) return;
     openGenerated({
@@ -16246,7 +16094,7 @@
     } else {
       const tab = asked.get('tab');
       goToTrip(asked.get('trip'), asked.get('date'), { leg })
-        .then(() => { if (tab) requestAnimationFrame(() => goToChecklistItem(tab)); });
+        .then(() => { if (tab) requestAnimationFrame(() => goToTripPart(tab)); });
     }
   }
   /* The lists' pane offers each of its trip links here before following it,

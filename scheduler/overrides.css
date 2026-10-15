@@ -178,7 +178,7 @@
   min-inline-size: 0;
   border-block-end: 0;
 }
-/* The editor's head buttons, Trip actions, the size and close, sit in the
+/* The editor's head buttons, the size and close, sit in the
    head's row rather than over its end, where Carbon places them, so a long
    destination ends in its ellipsis before them however many there are.
    Scoped to the editor, whose head is a row; the document panel stacks its

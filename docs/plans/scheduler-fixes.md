@@ -8,7 +8,7 @@ type: plan
 
 A trip never says less than the scheduler knows. A clash, a driver who has
 to be told, and a price that differs from the one sent each show where the
-office already looks: the bar, the checklist and Prep.
+office already looks: the bar, its card and Prep.
 What a driver or a customer holds is what the trip holds. An agent's tools
 answer with the pages' own rules. A script that cannot run never reaches the
 site.
@@ -32,7 +32,7 @@ site.
 - **A clash is by the clock.** Two legs that share only the day one ends and
   the other begins clash when the second leaves before the first is back. A
   leg with no times counts as a clash, because unknown is not fine.
-- **The bar, the checklist and Prep read that one answer,** so they cannot
+- **The bar, `checklist.js` and Prep read that one answer,** so they cannot
   disagree. A placeholder raises nothing on itself.
 - **A clash warns and never refuses.** Save says what the date change now
   clashes with and goes through, because the other trip may be about to move.
@@ -180,7 +180,7 @@ None open.
       the function behind Mark the driver as told. Apply it on a yes.
 - [ ] Listen to the status table on the board and Prep, and count statuses
       in `weekPrint`.
-- [ ] Raise Declined and Tell the driver on the bar, the checklist, the
+- [ ] Raise Declined and Tell the driver on the bar, in `checklist.js`, the
       Contact list and Prep, from `leg-facts.js`.
 - [ ] Write the triggers that take Printed, Reminded and Driver info sent
       off when what they carried changes, as SQL on a yes.

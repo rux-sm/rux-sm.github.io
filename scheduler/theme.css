@@ -551,6 +551,20 @@
    back in, so an update's own light keeps that reach too. Add is the
    outlined button as well, its edge where the ages end. */
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__row { padding-inline: 0; }
+/* Its top and foot stand on that edge too, so the card's 12px is the margin
+   all round. Add, first in a card with no warnings, is 32px on the title's
+   18px line, so the line stands 7px in and Add's box 12px from the top, as
+   from the side; the last update's 32px row ends 12px from the foot, and with
+   no updates Add's box does. A warning's row is 32px already. */
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates:first-child {
+  padding-block-start: calc((var(--rux-layout-size-height-sm) - 1.125rem) / 2);
+}
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates {
+  padding-block-end: calc((var(--rux-layout-size-height-sm) - 1.125rem) / 2);
+}
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates:has(> .scheduler-card__update-list) {
+  padding-block-end: 0;
+}
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__row:is([data-go], [data-more]):hover {
   box-shadow: -6px 0 0 var(--card-hover), 6px 0 0 var(--card-hover);
 }

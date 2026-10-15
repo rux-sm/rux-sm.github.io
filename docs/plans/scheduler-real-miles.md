@@ -28,8 +28,6 @@ the miles the trip was quoted for.
 - **The Samsara key is read-only.** It is made in Samsara under Settings →
   API Tokens with only Read Vehicles and Read Vehicle Statistics, and set as
   the function secret `SAMSARA_API_TOKEN` by rux; no session handles it.
-- **Deploying the function is its own step,** on rux's yes, as with the other
-  three.
 
 ## Questions
 
@@ -37,6 +35,5 @@ the miles the trip was quoted for.
 
 - [ ] Make the read-only Samsara key and set it as `SAMSARA_API_TOKEN`
       (rux, in Samsara and the Supabase dashboard).
-- [ ] Deploy `samsara-miles` with Verify JWT off, on rux's yes.
 - [ ] Press Get from Samsara on one past trip in Chrome on :8641, compare
       each bus's miles with Samsara's own trip report, and leave it unsaved.

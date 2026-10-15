@@ -9,6 +9,13 @@
       "autoPort": false
     },
     {
+      "name": "website",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["../escamillatourbuses/tools/serve.mjs"],
+      "port": 8645,
+      "autoPort": false
+    },
+    {
       "name": "serve-cloud",
       "url": "http://localhost:8641",
       "port": 8641

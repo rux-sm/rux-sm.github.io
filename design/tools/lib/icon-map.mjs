@@ -69,6 +69,7 @@ export const ICONS = {
   'arrow--right': { material: 'arrow_forward', rux: null },
   'arrow--up': { material: 'arrow_upward', rux: null },
   'arrows--vertical': { material: 'swap_vert', rux: null },
+  'asleep': { material: 'bedtime', rux: null },  // A driver in the sleeper berth; the bed is hotel's.
   'attachment': { material: 'attachment', rux: null },
   'building': { material: 'apartment', rux: null },
   'bus': { material: 'directions_bus', rux: null },
@@ -102,8 +103,10 @@ export const ICONS = {
   'currency--dollar': { material: 'attach_money', rux: null },
   'delivery-truck': { material: 'local_shipping', rux: null },
   'diamond-fill': { material: 'diamond-fill', rux: null },  // Material draws the diamond; `square` is low-severity's.
+  'document--tasks': { material: 'assignment', rux: null },  // A driver on duty, not driving.
   'document': { material: 'description', rux: null },
   'download': { material: 'download', rux: null },
+  'driver-analysis': { material: 'search_hands_free', rux: null },  // Both draw a steering wheel: a driver at the wheel.
   'draggable': { material: 'drag_indicator', rux: null },
   'edit': { material: 'edit', rux: null },
   'education': { material: 'school', rux: null },
@@ -142,6 +145,7 @@ export const ICONS = {
   'phone': { material: 'call', rux: null },
   'pin': { material: 'keep', rux: null },
   'play--filled': { material: 'play_circle-fill', rux: null },  // A solid disc with the triangle cut out.
+  'power': { material: 'power_settings_new', rux: null },  // A driver off duty.
   'printer': { material: 'print', rux: null },
   'purchase': { material: 'credit_card', rux: null },  // Carbon's purchase is a credit card.
   'radio-button': { material: 'radio_button_unchecked', rux: null },

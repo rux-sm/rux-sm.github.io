@@ -10434,10 +10434,11 @@
      once the Billing tab marks it, a customer-facing change's with its own
      line, and any other's empty.
 
-     On its own it has Add update right under the box, Close at its foot and
-     no close at the top: Add update writes at once and closes it, and Close
-     closes it. The main button is one button, moved between the foot and the
-     box, so it keeps one handler. */
+     On its own it has Add update right under the box and no footer, the
+     close at the top its way out, as Carbon closes a window with nothing in
+     its footer: Add update writes at once and closes it. The main button is
+     one button, moved between the footer and the box, so it keeps one
+     handler. */
   const updateModal = document.getElementById('scheduler-update-modal');
   const updateText = document.getElementById('scheduler-update-text');
   const updateSave = document.getElementById('scheduler-update-save');
@@ -10445,6 +10446,7 @@
   const updateClose = document.getElementById('scheduler-update-close');
   const updateCloseWrap = document.getElementById('scheduler-update-close-wrap');
   const updateAdd = document.getElementById('scheduler-update-add');
+  const updateFooter = document.getElementById('scheduler-update-footer');
   const updateError = document.getElementById('scheduler-update-error');
   const updateWhat = document.getElementById('scheduler-update-what');
   let updateSettle = null;   // Save's step, while Save opened the window
@@ -10486,6 +10488,7 @@
     updateSave.textContent = 'Save with update';
     updateSkip.after(updateSave);
     updateAdd.hidden = true;
+    updateFooter.hidden = false;
     updateClose.setAttribute('aria-label', 'Back to the trip, not saved');
     updateClose.title = 'Back to the trip, not saved';
     return new Promise(resolve => {
@@ -10503,11 +10506,13 @@
     updateSettle = null;
     updateChange = null;
     updateAlone = trip;
-    updateSkip.textContent = 'Close';
-    updateCloseWrap.hidden = true;
+    updateCloseWrap.hidden = false;
+    updateClose.setAttribute('aria-label', 'Close');
+    updateClose.title = 'Close';
     updateSave.textContent = 'Add update';
     updateAdd.appendChild(updateSave);
     updateAdd.hidden = false;
+    updateFooter.hidden = true;
     fillUpdateWindow({ trip: tripName(trip), what: '', line: '', tripId: trip.id, editId });
   }
   const answerUpdate = answer => {
@@ -10545,7 +10550,6 @@
     }
   });
   updateSkip?.addEventListener('click', () => {
-    if (updateAlone) { updateAlone = null; window.Rux?.modal?.close?.(updateModal); return; }
     answerUpdate(updateChange ? { kind: 'nothing', body: updateChange.line } : { kind: 'none' });
   });
   updateModal?.addEventListener('rux:modal-closed', () => { updateAlone = null; updateSettle?.(null); });

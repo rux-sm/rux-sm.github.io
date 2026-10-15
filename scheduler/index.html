@@ -1596,9 +1596,9 @@
   <!-- The Updates window: a box for a new update over the trip's updates so
        far as tiles. Every Save opens it, with Save, no update and Save with
        update, and its close goes back to the trip unsaved; the Update shortcut
-       opens it on its own, with Add update under the box, Close at its foot
-       and no close at the top. data.js fills the label, the sentence, the
-       buttons' words and the list, and moves the main button. -->
+       opens it on its own, with Add update under the box and no footer, its
+       close at the top the way out. data.js fills the label, the sentence,
+       the buttons' words and the list, and moves the main button. -->
   <div class="rux--layer-one rux--modal" id="scheduler-update-modal" role="presentation">
     <div role="dialog" aria-modal="true" aria-labelledby="scheduler-update-h" aria-describedby="scheduler-update-what" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
       <div class="rux--modal-header">
@@ -1622,7 +1622,7 @@
           <p class="rux--type-body-compact-01 scheduler-updates-empty" id="scheduler-updates-status" hidden></p>
         </div>
       </div>
-      <div class="rux--modal-footer">
+      <div class="rux--modal-footer" id="scheduler-update-footer">
         <button type="button" class="rux--btn rux--btn--secondary" id="scheduler-update-skip">Save, no update</button>
         <button type="button" class="rux--btn rux--btn--primary" id="scheduler-update-save">Save with update</button>
       </div>

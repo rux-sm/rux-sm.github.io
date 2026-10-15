@@ -275,16 +275,16 @@
 :is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-12-teal { background-color: #3ddbd9; }
 /* rux-dark's avatars are its palette, as its tags are: the first six take each
    hue's ink, the tags' own text colour, and the second six its hover step,
-   0.82, Carbon's two sets in the same order. The greys are its cool grey at
+   0.82, Carbon's two sets in the same order. The greys are its neutral grey at
    those two lightnesses. Black initials read at 9 to 1 or better on every one. */
 [data-theme="rux-dark"] .rux--user-avatar--order-1-cyan { background-color: var(--rux-tag-color-cyan); }
-[data-theme="rux-dark"] .rux--user-avatar--order-2-gray { background-color: oklch(0.75 0.0065 248); }
+[data-theme="rux-dark"] .rux--user-avatar--order-2-gray { background-color: oklch(0.75 0 0); }
 [data-theme="rux-dark"] .rux--user-avatar--order-3-green { background-color: var(--rux-tag-color-green); }
 [data-theme="rux-dark"] .rux--user-avatar--order-4-magenta { background-color: var(--rux-tag-color-magenta); }
 [data-theme="rux-dark"] .rux--user-avatar--order-5-purple { background-color: var(--rux-tag-color-purple); }
 [data-theme="rux-dark"] .rux--user-avatar--order-6-teal { background-color: var(--rux-tag-color-teal); }
 [data-theme="rux-dark"] .rux--user-avatar--order-7-cyan { background-color: oklch(0.82 0.125 225); }
-[data-theme="rux-dark"] .rux--user-avatar--order-8-gray { background-color: oklch(0.82 0.0065 248); }
+[data-theme="rux-dark"] .rux--user-avatar--order-8-gray { background-color: oklch(0.82 0 0); }
 [data-theme="rux-dark"] .rux--user-avatar--order-9-green { background-color: oklch(0.82 0.2 150); }
 [data-theme="rux-dark"] .rux--user-avatar--order-10-magenta { background-color: oklch(0.82 0.15 350); }
 [data-theme="rux-dark"] .rux--user-avatar--order-11-purple { background-color: oklch(0.82 0.111 300); }
@@ -462,9 +462,12 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled) {
   border-color: var(--rux-border-subtle-02, #e0e0e0);
 }
-/* rux-dark rings an outlined button as it rings a field, in border-strong-01,
-   3.6 to 1 on the page, because a button is a control and its resting shape
-   holds 3 to 1; every ringed button it has takes the same line. */
+/* rux-dark rings its outlined buttons, Secondary and Tertiary, as it rings a
+   field, in border-strong-01, 3.6 to 1 on the page, because the ring is the
+   whole of their shape. Every other button it rings -- a ghost button in a
+   bar, an icon button, a close -- keeps the quiet line, because its icon or
+   its place already says it is one, and a row of strong rings reads as a
+   fence. */
 [data-theme="rux-dark"] .rux--btn--secondary:not(:disabled):not(.rux--btn--disabled) {
   border-color: var(--rux-border-strong-01);
 }
@@ -513,9 +516,6 @@
    that says which of several views is showing, and the line is what says it. */
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--tag--selectable {
   border-color: var(--rux-border-subtle-02, #e0e0e0);
-}
-[data-theme="rux-dark"] .rux--tag--selectable {
-  border-color: var(--rux-border-strong-01);
 }
 
 /* The option at each end of a list takes the menu's curve. A selected or
@@ -671,7 +671,7 @@
    GitHub's does not, and the ring gives way to the focus ring, which is that
    same border. */
 :is([data-theme="rux-dark"] .rux--header, .rux--header[data-theme="rux-dark"]) .rux--header__action:not(:has(.rux--user-avatar), :focus-visible) {
-  border-color: var(--rux-border-strong-01);
+  border-color: var(--rux-border-subtle-02);
 }
 /* THE ACCOUNT BUTTON IS THE FACE ITSELF where the header's buttons are 32px:
    the picture is Carbon's 32px avatar in every theme, which sits inside
@@ -1363,9 +1363,6 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--table-toolbar .rux--btn--ghost:not(:disabled):not(.rux--btn--disabled):not(:focus-visible) {
   border-color: var(--rux-border-subtle-02);
 }
-[data-theme="rux-dark"] .rux--table-toolbar .rux--btn--ghost:not(:disabled):not(.rux--btn--disabled):not(:focus-visible) {
-  border-color: var(--rux-border-strong-01);
-}
 /* A TABLE'S FOOT IS BUILT AS ITS TOOLBAR IS, in every rounded theme. Carbon's
    pagination bar is a row of square cells parted by lines, each the bar's
    full height. A rounded control in one of those cells bends its dividing
@@ -1438,9 +1435,6 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--pagination .rux--pagination__button,
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--pagination .rux--pagination__button:is(:disabled, .rux--pagination__button--no-index):hover {
   border: 1px solid var(--rux-border-subtle-02);
-}
-[data-theme="rux-dark"] .rux--pagination .rux--pagination__button:not(:disabled, .rux--pagination__button--no-index) {
-  border-color: var(--rux-border-strong-01);
 }
 /* A bar that follows a table's box, or the wrapper that holds the box last,
    closes it: the box's two lower corners square off where they meet. Geist's
@@ -1942,7 +1936,7 @@
 }
 [data-theme="rux-dark"] :is(.rux--modal-close, .rux--dialog__close) {
   padding: 7px;
-  border: 1px solid var(--rux-border-strong-01);
+  border: 1px solid var(--rux-border-subtle-02);
   border-radius: 4px;
   block-size: 2.25rem;
   inline-size: 2.25rem;
@@ -1965,7 +1959,7 @@
   inline-size: 2rem;
 }
 [data-theme="rux-dark"] .rux--side-panel .rux--btn.rux--side-panel__close-button:not(:focus) {
-  border-color: var(--rux-border-strong-01);
+  border-color: var(--rux-border-subtle-02);
 }
 /* A NOTIFICATION'S IS A RINGED 32px BUTTON 8px IN ON EVERY SIDE, which is
    the 48px square Carbon gives it, so the words beside it wrap where they

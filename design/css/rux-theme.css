@@ -489,23 +489,24 @@
   --rux-content-switcher-selected: rgba(141, 141, 141, 0.24);
 }
 
-/* RUX-DARK IS RUX'S OWN LOOK: one ink, slightly cool greys and one vivid
+/* RUX-DARK IS RUX'S OWN LOOK: one ink, neutral greys and one vivid
    palette, each value measured on the layers it sits on. docs/rux-dark-token-map.md
    lists every token beside where it comes from.
 
    THE INK IS THE MARK'S #f4f4f4: the words, the icons, the main button, the
    brand fill and every inverse surface, so the logo and the page are one
-   colour. A wash over a surface is Carbon cool gray 10, #f2f4f8, at the
-   strengths geist-dark used for white.
+   colour. A wash over a surface is that ink at the strengths geist-dark
+   used for white.
 
-   THE GREYS ARE SLIGHTLY COOL. Each keeps the OKLCH lightness of the neutral
-   ladder this theme used, whose first raised surface is #111111, and takes
-   Carbon cool gray's hue, 248, at half its chroma, 0.0065: #111111 becomes
-   #0f1114. The page stays #000000. Two steps are set by contrast rather than
-   by the ladder: border-strong-01, #63666a, the darkest tinted grey a field's
-   ring holds 3 to 1 against on field-03, and toggle-off, #6c7073, which
-   holds 3.1 to 1 on layer-03. The grey tags stand a step above a selected
-   row, and the cool-gray and warm-gray tags are Carbon's 80 and 20 steps.
+   THE GREYS ARE NEUTRAL, as the mark is: a ladder whose first raised surface
+   is #111111, under a page of #000000, so the vivid colours read true on it.
+   Two steps are set by contrast rather than by the ladder: border-strong-01,
+   #666666, which rings a field at 3.03 to 1 on field-03, and toggle-off,
+   #6f6f6f, 3.09 to 1 on layer-03. THE LINES ARE QUIET: a rule and a box's
+   edge are #343434, 1.52 to 1 on layer-01, and the faint rule under it
+   #2e2e2e, so only a field's ring and an outlined button's are strong. The
+   grey tags stand a step above a selected row, and the cool-gray and
+   warm-gray tags are Carbon's 80 and 20 steps.
 
    THE COLOURS ARE VIVID, AND EVERY HUE TAKES THE SAME STEPS. Each step is an
    OKLCH lightness, and each hue takes 95% of the most chroma Display P3 holds
@@ -536,81 +537,81 @@
 
   /* background */
   --rux-background: #000000;
-  --rux-background-active: rgba(242, 244, 248, 0.18);
+  --rux-background-active: rgba(244, 244, 244, 0.18);
   --rux-background-brand: #f4f4f4;
-  --rux-background-hover: rgba(242, 244, 248, 0.06);
+  --rux-background-hover: rgba(244, 244, 244, 0.06);
   --rux-background-inverse: #f4f4f4;
-  --rux-background-inverse-hover: #d1d5d8;
-  --rux-background-selected: rgba(242, 244, 248, 0.1);
-  --rux-background-selected-hover: rgba(242, 244, 248, 0.14);
+  --rux-background-inverse-hover: #d4d4d4;
+  --rux-background-selected: rgba(244, 244, 244, 0.1);
+  --rux-background-selected-hover: rgba(244, 244, 244, 0.14);
 
   /* layer */
-  --rux-layer-01: #0f1114;
-  --rux-layer-02: #181a1d;
-  --rux-layer-03: #222427;
-  --rux-layer-accent-01: #222427;
-  --rux-layer-accent-02: #2c2e31;
-  --rux-layer-accent-03: #313336;
-  --rux-layer-accent-active-01: #3c3f42;
-  --rux-layer-accent-active-02: #4f5256;
-  --rux-layer-accent-active-03: #63666a;
-  --rux-layer-accent-hover-01: #2c2e31;
-  --rux-layer-accent-hover-02: #313336;
-  --rux-layer-accent-hover-03: #3c3f42;
-  --rux-layer-active-01: #313336;
-  --rux-layer-active-02: #3c3f42;
-  --rux-layer-active-03: #4f5256;
+  --rux-layer-01: #111111;
+  --rux-layer-02: #1a1a1a;
+  --rux-layer-03: #242424;
+  --rux-layer-accent-01: #242424;
+  --rux-layer-accent-02: #2e2e2e;
+  --rux-layer-accent-03: #333333;
+  --rux-layer-accent-active-01: #3f3f3f;
+  --rux-layer-accent-active-02: #525252;
+  --rux-layer-accent-active-03: #666666;
+  --rux-layer-accent-hover-01: #2e2e2e;
+  --rux-layer-accent-hover-02: #333333;
+  --rux-layer-accent-hover-03: #3f3f3f;
+  --rux-layer-active-01: #333333;
+  --rux-layer-active-02: #3f3f3f;
+  --rux-layer-active-03: #525252;
   --rux-layer-background-01: #000000;
-  --rux-layer-background-02: #0f1114;
-  --rux-layer-background-03: #181a1d;
-  --rux-layer-hover-01: #222427;
-  --rux-layer-hover-02: #2c2e31;
-  --rux-layer-hover-03: #313336;
-  --rux-layer-selected-01: #2c2e31;
-  --rux-layer-selected-02: #313336;
-  --rux-layer-selected-03: #3c3f42;
-  --rux-layer-selected-disabled: #63666a;
-  --rux-layer-selected-hover-01: #313336;
-  --rux-layer-selected-hover-02: #3c3f42;
-  --rux-layer-selected-hover-03: #4f5256;
-  --rux-layer-selected-inverse: #eaeef1;
+  --rux-layer-background-02: #111111;
+  --rux-layer-background-03: #1a1a1a;
+  --rux-layer-hover-01: #242424;
+  --rux-layer-hover-02: #2e2e2e;
+  --rux-layer-hover-03: #333333;
+  --rux-layer-selected-01: #2e2e2e;
+  --rux-layer-selected-02: #333333;
+  --rux-layer-selected-03: #3f3f3f;
+  --rux-layer-selected-disabled: #666666;
+  --rux-layer-selected-hover-01: #333333;
+  --rux-layer-selected-hover-02: #3f3f3f;
+  --rux-layer-selected-hover-03: #525252;
+  --rux-layer-selected-inverse: #ededed;
 
   /* field */
-  --rux-field-01: #0f1114;
-  --rux-field-02: #0f1114;
-  --rux-field-03: #181a1d;
-  --rux-field-hover-01: #222427;
-  --rux-field-hover-02: #222427;
-  --rux-field-hover-03: #2c2e31;
+  --rux-field-01: #111111;
+  --rux-field-02: #111111;
+  --rux-field-03: #1a1a1a;
+  --rux-field-hover-01: #242424;
+  --rux-field-hover-02: #242424;
+  --rux-field-hover-03: #2e2e2e;
 
   /* border */
   --rux-border-disabled: rgba(244, 244, 244, 0.25);
   --rux-border-interactive: #f4f4f4;
   --rux-border-inverse: #f4f4f4;
-  --rux-border-strong-01: #63666a;
-  --rux-border-strong-02: #63666a;
-  --rux-border-strong-03: #85898c;
-  --rux-border-subtle-00: #323437;
-  --rux-border-subtle-01: #404346;
-  --rux-border-subtle-02: #404346;
-  --rux-border-subtle-03: #404346;
-  --rux-border-subtle-selected-01: #4f5256;
-  --rux-border-subtle-selected-02: #63666a;
-  --rux-border-subtle-selected-03: #85898c;
-  --rux-border-tile-01: #404346;
-  --rux-border-tile-02: #404346;
-  --rux-border-tile-03: #404346;
+  --rux-border-strong-01: #666666;
+  --rux-border-strong-02: #666666;
+  --rux-border-strong-03: #888888;
+  --rux-border-subtle-00: #2e2e2e;
+  --rux-border-subtle-01: #343434;
+  --rux-border-subtle-02: #343434;
+  --rux-border-subtle-03: #343434;
+  --rux-border-subtle-selected-01: #525252;
+  --rux-border-subtle-selected-02: #666666;
+  --rux-border-subtle-selected-03: #888888;
+  --rux-border-tile-01: #343434;
+  --rux-border-tile-02: #343434;
+  --rux-border-tile-03: #343434;
 
   /* text */
   --rux-text-disabled: rgba(244, 244, 244, 0.25);
   --rux-text-error: oklch(0.75 0.183 25);
-  --rux-text-helper: #8c9093;
+  --rux-text-helper: #8f8f8f;
   --rux-text-inverse: #000000;
   --rux-text-on-color: #000000;
-  --rux-text-on-color-disabled: #8c9093;
+  --rux-text-on-color-disabled: #8f8f8f;
   --rux-text-placeholder: rgba(244, 244, 244, 0.4);
   --rux-text-primary: #f4f4f4;
-  --rux-text-secondary: #9ea2a5;
+  --rux-text-secondary: #a1a1a1;
 
   /* link */
   --rux-link-inverse: oklch(0.525 0.2 262);
@@ -629,7 +630,7 @@
   --rux-icon-on-color: #000000;
   --rux-icon-on-color-disabled: rgba(0, 0, 0, 0.4);
   --rux-icon-primary: #f4f4f4;
-  --rux-icon-secondary: #9ea2a5;
+  --rux-icon-secondary: #a1a1a1;
 
   /* support */
   --rux-support-caution-major: oklch(0.75 0.2 50);
@@ -651,52 +652,52 @@
 
   /* chat */
   --rux-chat-avatar-agent: #f4f4f4;
-  --rux-chat-avatar-bot: #85898c;
+  --rux-chat-avatar-bot: #888888;
   --rux-chat-avatar-user: oklch(0.75 0.132 262);
-  --rux-chat-bubble-agent: #181a1d;
+  --rux-chat-bubble-agent: #1a1a1a;
   --rux-chat-bubble-agent-text: #f4f4f4;
-  --rux-chat-bubble-border: #404346;
-  --rux-chat-bubble-user: #222427;
+  --rux-chat-bubble-border: #343434;
+  --rux-chat-bubble-user: #242424;
   --rux-chat-bubble-user-text: #f4f4f4;
   --rux-chat-button: oklch(0.75 0.132 262);
-  --rux-chat-button-active: rgba(242, 244, 248, 0.18);
-  --rux-chat-button-hover: rgba(242, 244, 248, 0.06);
-  --rux-chat-button-selected: rgba(242, 244, 248, 0.1);
+  --rux-chat-button-active: rgba(244, 244, 244, 0.18);
+  --rux-chat-button-hover: rgba(244, 244, 244, 0.06);
+  --rux-chat-button-selected: rgba(244, 244, 244, 0.1);
   --rux-chat-button-text-hover: oklch(0.82 0.093 262);
-  --rux-chat-button-text-selected: #9ea2a5;
-  --rux-chat-header-background: #0f1114;
+  --rux-chat-button-text-selected: #a1a1a1;
+  --rux-chat-header-background: #111111;
   --rux-chat-header-text: #f4f4f4;
   --rux-chat-prompt-background: #000000;
-  --rux-chat-prompt-border-end: rgba(50, 52, 55, 0);
-  --rux-chat-prompt-border-start: #323437;
+  --rux-chat-prompt-border-end: rgba(46, 46, 46, 0);
+  --rux-chat-prompt-border-start: #2e2e2e;
   --rux-chat-prompt-text: #f4f4f4;
-  --rux-chat-shell-background: #0f1114;
+  --rux-chat-shell-background: #111111;
 
   /* misc */
   --rux-interactive: #f4f4f4;
   --rux-highlight: oklch(0.28 0.153 262);
   --rux-overlay: rgba(0, 0, 0, 0.72);
   --rux-shadow: rgba(0, 0, 0, 0.8);
-  --rux-skeleton-background: #222427;
-  --rux-skeleton-element: #313336;
-  --rux-toggle-off: #6c7073;
+  --rux-skeleton-background: #242424;
+  --rux-skeleton-element: #333333;
+  --rux-toggle-off: #6f6f6f;
 
   /* button */
   --rux-button-primary: #f4f4f4;
-  --rux-button-primary-hover: #d1d5d8;
-  --rux-button-primary-active: #9ea2a5;
+  --rux-button-primary-hover: #d4d4d4;
+  --rux-button-primary-active: #a1a1a1;
   --rux-button-tertiary: #f4f4f4;
-  --rux-button-tertiary-hover: #d1d5d8;
-  --rux-button-tertiary-active: #9ea2a5;
-  --rux-button-secondary: #0f1114;
-  --rux-button-secondary-hover: #222427;
-  --rux-button-secondary-active: #313336;
+  --rux-button-tertiary-hover: #d4d4d4;
+  --rux-button-tertiary-active: #a1a1a1;
+  --rux-button-secondary: #111111;
+  --rux-button-secondary-hover: #242424;
+  --rux-button-secondary-active: #333333;
   --rux-button-danger-primary: oklch(0.59 0.2 25);
   --rux-button-danger-secondary: oklch(0.75 0.183 25);
   --rux-button-danger-hover: oklch(0.54 0.2 25);
   --rux-button-danger-active: oklch(0.49 0.2 25);
   --rux-button-separator: #000000;
-  --rux-button-disabled: #222427;
+  --rux-button-disabled: #242424;
 
   /* tag */
   --rux-tag-background-red: oklch(0.28 0.122 25);
@@ -720,9 +721,9 @@
   --rux-tag-background-green: oklch(0.28 0.102 150);
   --rux-tag-color-green: oklch(0.75 0.2 150);
   --rux-tag-hover-green: oklch(0.32 0.117 150);
-  --rux-tag-background-gray: #3c3f42;
+  --rux-tag-background-gray: #3f3f3f;
   --rux-tag-color-gray: #f4f4f4;
-  --rux-tag-hover-gray: #474a4e;
+  --rux-tag-hover-gray: #4a4a4a;
   --rux-tag-border-red: oklch(0.75 0.183 25);
   --rux-tag-border-blue: oklch(0.75 0.132 262);
   --rux-tag-border-cyan: oklch(0.75 0.177 225);
@@ -730,7 +731,7 @@
   --rux-tag-border-green: oklch(0.75 0.2 150);
   --rux-tag-border-magenta: oklch(0.75 0.2 350);
   --rux-tag-border-purple: oklch(0.75 0.157 300);
-  --rux-tag-border-gray: #8a8e91;
+  --rux-tag-border-gray: #8d8d8d;
   --rux-tag-border-cool-gray: #878d96;
   --rux-tag-border-warm-gray: #8f8b8b;
   --rux-tag-background-cool-gray: #343a3f;
@@ -750,7 +751,7 @@
   --rux-notification-action-tertiary-inverse-active: oklch(0.475 0.2 262);
   --rux-notification-action-tertiary-inverse-hover: oklch(0.525 0.2 262);
   --rux-notification-action-tertiary-inverse-text: #ffffff;
-  --rux-notification-action-tertiary-inverse-text-on-color-disabled: #8a8e91;
+  --rux-notification-action-tertiary-inverse-text-on-color-disabled: #8d8d8d;
 
   /* status indicator */
   --rux-status-red: oklch(0.75 0.183 25);
@@ -761,16 +762,16 @@
   --rux-status-green: oklch(0.75 0.2 150);
   --rux-status-blue: oklch(0.75 0.132 262);
   --rux-status-purple: oklch(0.75 0.157 300);
-  --rux-status-gray: #8a8e91;
+  --rux-status-gray: #8d8d8d;
 
   /* content switcher */
   --rux-content-switcher-background: rgba(0, 0, 0, 0);
-  --rux-content-switcher-background-hover: rgba(138, 142, 145, 0.12);
-  --rux-content-switcher-selected: rgba(138, 142, 145, 0.24);
+  --rux-content-switcher-background-hover: rgba(141, 141, 141, 0.12);
+  --rux-content-switcher-selected: rgba(141, 141, 141, 0.24);
 
   /* ai */
   --rux-ai-aura-end: rgba(0, 0, 0, 0);
-  --rux-ai-aura-hover-background: #313336;
+  --rux-ai-aura-hover-background: #333333;
   --rux-ai-aura-hover-end: rgba(0, 0, 0, 0);
   --rux-ai-aura-hover-start: oklch(0.75 0.132 262 / 0.4);
   --rux-ai-aura-start: oklch(0.75 0.132 262 / 0.1);
@@ -781,7 +782,7 @@
   --rux-ai-drop-shadow: rgba(0, 0, 0, 0.28);
   --rux-ai-inner-shadow: oklch(0.75 0.132 262 / 0.16);
   --rux-ai-overlay: rgba(0, 0, 0, 0.5);
-  --rux-ai-popover-background: #0f1114;
+  --rux-ai-popover-background: #111111;
   --rux-ai-popover-caret-bottom: oklch(0.75 0.132 262);
   --rux-ai-popover-caret-bottom-background: oklch(0.28 0.153 262);
   --rux-ai-popover-caret-bottom-background-actions: oklch(0.25 0.137 262);

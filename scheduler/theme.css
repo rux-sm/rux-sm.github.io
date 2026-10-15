@@ -442,9 +442,9 @@
     padding-inline: var(--rux-spacing-06);
   }
   /* The editor and the viewer are columns of the board here, not the panel
-     Design floats under the header, which geist-dark shortens by its 4rem
-     header; a column keeps the board's whole height, so its foot meets the
-     week's. */
+     Design floats under the header, which geist-dark and rux-dark shorten by
+     their taller header; a column keeps the board's whole height, so its
+     foot meets the week's. */
   :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-page .rux--side-panel {
     block-size: 100%;
   }
@@ -516,20 +516,23 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-to-do__more > .scheduler-to-do__buttons {
   gap: var(--rux-spacing-03);
 }
-/* Geist's header is 64px, not the shell's 48 (Design's rux-overrides.css), so
-   what the board places under it -- a panel brought in front, its scrim and
-   the quote's pinned total -- sits 4rem down rather than 3rem. */
+/* Geist's header is 64px and rux-dark's 60px, not the shell's 48 (Design's
+   rux-overrides.css), so what the board places under it -- a panel brought
+   in front, its scrim and the quote's pinned total -- sits that far down
+   rather than 3rem. */
+[data-theme="geist-dark"] { --scheduler-header-height: 4rem; }
+[data-theme="rux-dark"] { --scheduler-header-height: 3.75rem; }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-page[data-takeover="editor"] .scheduler-trip .rux--side-panel,
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-page[data-takeover="viewer"] .scheduler-viewer .rux--side-panel,
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-page[data-takeover="roster"] .scheduler-aside,
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-page[data-takeover="to-do"] .scheduler-to-do--pane {
-  inset-block-start: calc(4rem + var(--rux-spacing-05));
+  inset-block-start: calc(var(--scheduler-header-height) + var(--rux-spacing-05));
 }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-page[data-takeover] .scheduler-scrim {
-  inset-block-start: 4rem;
+  inset-block-start: var(--scheduler-header-height);
 }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-quote__quote > .scheduler-quote__body {
-  inset-block-start: calc(4rem + var(--rux-spacing-07));
+  inset-block-start: calc(var(--scheduler-header-height) + var(--rux-spacing-07));
 }
 
 /* GEIST'S BARS ARE ITS SUBTLE BADGE, which Geist asks for on a dense surface:

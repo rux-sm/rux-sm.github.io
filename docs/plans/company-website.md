@@ -31,9 +31,10 @@ the last one forwarded came in March 2026.
   the manager can open it on any phone while the current site stays at its
   address. This repository's `404.html` forwards the old `/website/`
   addresses to it.
-- **Search engines are asked not to list the preview, and every page says it
-  is a preview,** with the office's phone and email, so a search finds one
-  site and nobody mistakes this one for the site the office answers.
+- **Search engines are asked not to list the preview,** so a search finds
+  one site. The pages carry no preview notice, so the manager sees the site
+  as it will stand; only the thank-you page says a request reaches the office
+  once the site is live.
 - **Only the domain waits on the manager's yes.** The repository and the
   quote requests are built first, so the switch is one step when the yes
   comes.
@@ -80,8 +81,7 @@ the last one forwarded came in March 2026.
   pays, one way or round trip, pickup, destination, the date and time each
   way, passengers, a wheelchair lift, and stops and details.
 - **The form sends from the preview on,** at the site's GitHub address, so
-  the domain moves to a site that already takes requests; every page still
-  opens with the preview notice.
+  the domain moves to a site that already takes requests.
 - **Once live, the form posts to an Edge Function, `quote-request`, never to
   a table,** as `docs/database-access.md` requires of a page without a
   log-in. Its source sits in `scheduler/quote-request/`, and it reaches the

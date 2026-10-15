@@ -14653,13 +14653,15 @@
        due trip also says when it leaves, once, at its first reminder's end. */
     /* THE NEEDS: what the trip still needs, under a title of its own with
        the count its bar carries, in the bar's colour, so the disc on the bar
-       and the list it counts read as one thing. */
+       and the list it counts read as one thing, and the list in a box of its
+       own under it, apart from the updates. */
     const alerts = alertsOf(trip, bar ? barFacts.get(bar) : null);
+    const needsList = el('div', 'scheduler-card__needs-list');
     if (alerts.length) {
-      const head = row('scheduler-card__needs');
-      head.appendChild(cardTitle('Needs', alerts.length, null,
-        alerts.some(a => a.row === 'scheduler-card__misfit') ? 'error' : 'warning'));
-      card.appendChild(head);
+      const needs = row('scheduler-card__needs');
+      needs.append(cardTitle('Needs', alerts.length, null,
+        alerts.some(a => a.row === 'scheduler-card__misfit') ? 'error' : 'warning'), needsList);
+      card.appendChild(needs);
     }
     let reminded = false;
     for (const a of alerts) {
@@ -14675,7 +14677,7 @@
             days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : `In ${days} days`));
         }
       }
-      card.appendChild(band);
+      needsList.appendChild(band);
     }
     /* ON THE ROAD: while the bar is out, each driver Samsara has in the bus,
        with their duty and the driving hours they have left, the one at the

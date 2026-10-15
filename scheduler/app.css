@@ -1111,11 +1111,11 @@ button.scheduler-row-head__num::after {
   padding: var(--rux-spacing-02) var(--rux-spacing-03);
   border-block-start: 1px solid var(--card-rule);
 }
-/* The reminder and the other warnings come first, under the Needs title,
-   each a plain row of the card's own surface: the bell in the bar's own
-   warning ink says what it is, with no tint, which turned muddy on a dark
-   card, and the words are in the body's regular weight, as an update's are,
-   so the title over them is what stands out. */
+/* The reminder and the other warnings come first, in the Needs box, each a
+   plain row: the bell in the bar's own warning ink says what it is, with no
+   tint, which turned muddy on a dark card, and the words are in the body's
+   regular weight, as an update's are, so the title over them is what stands
+   out. */
 .scheduler-card__asks,
 .scheduler-card__warn {
   display: grid;
@@ -1125,10 +1125,6 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-card__asks > svg,
 .scheduler-card__warn > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: var(--scheduler-mark-warning); }
-/* A second warning under the first takes no rule between, so the warnings
-   read as one list. */
-:is(.scheduler-card__asks, .scheduler-card__warn) + :is(.scheduler-card__asks, .scheduler-card__warn),
-.scheduler-card__misfit + .scheduler-card__misfit { border-block-start: 0; padding-block-start: 0; }
 /* A bus that does not fit is a row like the reminder's with the red bell,
    above it: a mistake on the board comes before a job still to do. */
 .scheduler-card__misfit {
@@ -1177,6 +1173,44 @@ button.scheduler-row-head__num::after {
 .scheduler-card__title:last-child { margin-block-end: 0; }
 .scheduler-card__updates { padding-block: var(--rux-spacing-03); }
 .scheduler-card__needs { padding-block: var(--rux-spacing-03); }
+/* THE NEEDS ARE A BOX OF THEIR OWN under their title, 8px under it: the next
+   layer up, at an update's hover corner, its warnings 32px rows in 14px type
+   12px in from its sides with no rule between them, each lit on hover inside
+   the box. The bell and the words start where an update's face and words do,
+   and the day a due trip leaves ends the first line in 12px; where the words
+   and the day do not fit one line, the day drops under them. */
+.scheduler-bar-shortcuts[data-card] .scheduler-card__needs > .scheduler-card__title { margin-block-end: 0; }
+.scheduler-card__needs-list {
+  display: flex;
+  flex-direction: column;
+  margin-block-start: var(--rux-spacing-03);
+  padding-block: var(--rux-spacing-02);
+  border-radius: var(--scheduler-shortcut-radius, 0);
+  background: var(--rux-layer-03);
+  overflow: hidden;
+}
+.scheduler-card__needs-list > .scheduler-card__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0;
+  padding: calc((var(--rux-layout-size-height-sm) - 1.125rem) / 2) var(--rux-spacing-04);
+  border-block-start: 0;
+}
+.scheduler-card__needs-list > .scheduler-card__row > svg { flex: none; margin-block-start: 1px; }
+.scheduler-card__needs-list > .scheduler-card__row > strong {
+  flex: 0 1 auto;
+  margin-inline: var(--rux-spacing-03) var(--rux-spacing-02);
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+}
+.scheduler-card__needs-list .scheduler-card__asks-when { margin-inline-start: auto; margin-block-start: 1px; }
+/* A warning is a press that goes where it is put right, lit on hover in the
+   box's own hover step. */
+.scheduler-card__needs-list > .scheduler-card__row[data-go] { cursor: pointer; }
+.scheduler-card__needs-list > .scheduler-card__row[data-go]:hover { background: var(--rux-layer-hover-03); }
+.scheduler-card__needs-list > .scheduler-card__row[data-go]:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
 /* On the road: a line for each driver Samsara has in the bus, their duty's
    mark, their name, bold at the wheel, and their duty and hours. */
 .scheduler-card__road { padding-block: var(--rux-spacing-03); }
@@ -1272,42 +1306,15 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__updates:has(> .scheduler-card__update-list) { padding-block-end: calc(var(--rux-spacing-05) - (var(--rux-layout-size-height-sm) - 1.125rem) / 2); }
 .scheduler-bar-shortcuts[data-card] .scheduler-card__title { margin-block-end: var(--rux-spacing-05); }
 .scheduler-bar-shortcuts[data-card] .scheduler-card__title:last-child { margin-block-end: 0; }
-/* The Needs title stands 16px under the card's top and 16px over the first
-   warning, as the Updates title does, and the warning under it draws no rule.
-   The rule over a first warning takes a pixel of its
-   7. The bell and the words start where an update's face and words do, and
-   the day it leaves ends where their ages do, in their 12px; where the words
-   and the day do not fit one line, the day drops under them. */
-.scheduler-bar-shortcuts[data-card] .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 0;
-  padding-block: calc((var(--rux-layout-size-height-sm) - 1.125rem) / 2 - 1px) calc((var(--rux-layout-size-height-sm) - 1.125rem) / 2);
-}
+/* The Needs part holds its title and box 16px in from the card's top, as
+   from its sides, and the card's 16px under the box. The updates under it
+   draw no rule, since the box parts them, and their title's 32px Add stands
+   that 16px clear of the box. */
 .scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__needs { padding-block: var(--rux-spacing-05); }
-.scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__needs + .scheduler-card__row { border-block-start: 0; }
-.scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__needs + :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit),
-.scheduler-bar-shortcuts[data-card] .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn) + :is(.scheduler-card__asks, .scheduler-card__warn),
-.scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__misfit + .scheduler-card__misfit,
-.scheduler-bar-shortcuts[data-card][data-side="above"] .scheduler-card > .scheduler-card__row:first-child:is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit),
-.scheduler-bar-shortcuts[data-docked] .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) {
+.scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__needs + .scheduler-card__updates {
+  border-block-start: 0;
   padding-block-start: calc((var(--rux-layout-size-height-sm) - 1.125rem) / 2);
 }
-.scheduler-bar-shortcuts[data-card] .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) > svg { flex: none; margin-block-start: 1px; }
-.scheduler-bar-shortcuts[data-card] .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) > strong {
-  flex: 0 1 auto;
-  margin-inline: var(--rux-spacing-03) var(--rux-spacing-02);
-  font-size: var(--rux-body-compact-01-font-size);
-  line-height: var(--rux-body-compact-01-line-height);
-  letter-spacing: var(--rux-body-compact-01-letter-spacing);
-}
-.scheduler-bar-shortcuts[data-card] .scheduler-card__asks-when { margin-inline-start: auto; margin-block-start: 1px; }
-/* A warning is a press that goes where it is put right, lit on hover across
-   the card's width as an update is. */
-.scheduler-card > .scheduler-card__row[data-go] { cursor: pointer; }
-.scheduler-card > .scheduler-card__row[data-go]:hover { background: var(--card-hover); }
-.scheduler-card > .scheduler-card__row[data-go]:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
 /* An update is a press that opens it in the Updates window, its row lit on
    hover across the card's whole width like a menu's row, and the rows meet.
    The list runs out to the card's sides itself, because a list that scrolls
@@ -3166,16 +3173,13 @@ button.scheduler-row-head__num::after {
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
 /* The card's rows join the sheet's own flow and stand above the trip: the
-   reminder, then the updates. What changes size from trip to trip is all up
+   needs, then the updates. What changes size from trip to trip is all up
    there, so the sheet grows upward and the trip and its slots keep one place
-   at the foot on every trip. The reminder at the top needs no rule above it. */
+   at the foot on every trip. The needs at the top need no rule above them. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-card { display: contents; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card > * { flex: 1 0 100%; min-inline-size: 0; }
-.scheduler-bar-shortcuts[data-docked] .scheduler-card__needs { order: -5; }
-.scheduler-bar-shortcuts[data-docked] .scheduler-card__misfit { order: -4; }
-.scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__asks, .scheduler-card__warn) { order: -3; }
+.scheduler-bar-shortcuts[data-docked] .scheduler-card__needs { order: -3; border-block-start: 0; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__updates { order: -1; }
-.scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__needs, .scheduler-card__misfit, .scheduler-card__asks, .scheduler-card__warn) { border-block-start: 0; }
 
 /* The updates hold at least their title and one line however many there
    are, so the sheet is the same height with none, one or twenty, on the
@@ -3184,9 +3188,9 @@ button.scheduler-row-head__num::after {
   min-block-size: calc(2rem + 2 * var(--rux-spacing-03));
   background: var(--rux-layer-02);
 }
-/* The warnings stand on the same raised layer, since the sheet under them
-   is the header's. */
-.scheduler-bar-shortcuts[data-docked] .scheduler-card > :is(.scheduler-card__needs, .scheduler-card__misfit, .scheduler-card__asks, .scheduler-card__warn) { background: var(--rux-layer-02); }
+/* The needs stand on the same raised layer, since the sheet under them is
+   the header's, and their box on the layer above it. */
+.scheduler-bar-shortcuts[data-docked] .scheduler-card > .scheduler-card__needs { background: var(--rux-layer-02); }
 /* The trip, above its slots: the bar's own rows, cloned, so they keep
    one builder and one set of rules. The trip's colour comes with them as the
    bar's colour class, and the head paints its fill and ink, so it reads as

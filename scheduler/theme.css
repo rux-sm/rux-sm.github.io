@@ -585,7 +585,16 @@
    all round. Add, first in a card with no warnings, is 32px on the title's
    18px line, so the line stands 7px in and Add's box 12px from the top, as
    from the side; the last update's 32px row ends 12px from the foot, and with
-   no updates Add's box does. A warning's row is 32px already. */
+   no updates Add's box does. The Needs title stands on the edge too, 12px
+   down as from the side, and the card's 12px parts its box from the updates,
+   whose Add stands that far under it; the updates start 12px under their
+   title, the same step. */
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__needs {
+  padding-block: 0 var(--rux-spacing-04);
+}
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__updates > .scheduler-card__title:not(:last-child) {
+  margin-block-end: var(--rux-spacing-04);
+}
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates:first-child {
   padding-block-start: calc((var(--rux-layout-size-height-sm) - 1.125rem) / 2);
 }

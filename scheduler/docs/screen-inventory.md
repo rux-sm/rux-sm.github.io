@@ -233,7 +233,8 @@ warning and each one-line update is a 32px row in 14px regular type, 16px in fro
 warning's leave day drops under its words where both do not fit one line. The card opens with its warnings under a
 title, Needs, in Carbon's 14px heading with the bar's own alert disc beside it,
 its count in the same colour, so the disc on the bar and the list it counts read
-as one; they are plain rows on the card's own surface with no tint: a bus that
+as one; they stand in a box of their own under it, the next layer up at an
+update's hover corner, plain rows with no tint and no rule between: a bus that
 does not fit behind a red bell, then the follow-up reminder, Trip contact
 missing, and each need still to do, Hotel booking pending or HOS form pending,
 each a line of its own behind a bell in its disc's colour. Once the trip is back, `close-out.js`'s

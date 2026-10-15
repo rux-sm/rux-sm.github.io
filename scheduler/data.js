@@ -1793,6 +1793,12 @@
     row.append(...nodes);
     return row;
   };
+  // A field beside a count, which keeps a narrow box; overrides.css sizes it.
+  const countPair = (...nodes) => {
+    const row = pair(...nodes);
+    row.classList.add('scheduler-pair--count');
+    return row;
+  };
   /* One field across the whole row. A dropdown or a contact search keeps its
      own width and ignores its container, so it takes the pair's one-column
      form, whose sizing makes every box down to the input fill. */
@@ -6986,7 +6992,7 @@
       outRange,
       returnDates,
       full(textField('scheduler-f-destination', 'Destination', trip.destination)),
-      pair(
+      countPair(
         selectField('scheduler-f-type', 'Type', trip.trip_type, [
           ['', '—'],
           ['round_trip', 'Round trip'],

@@ -2334,7 +2334,7 @@ button.scheduler-row-head__num::after {
 
 /* Two fields side by side, each half the row, tops aligned so a helper text
    under one does not move the other. In the trip editor, 20rem wide, a pair
-   is one field a row instead: overrides.css. */
+   is one field a row instead, unless one is a count: overrides.css. */
 .scheduler-pair {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

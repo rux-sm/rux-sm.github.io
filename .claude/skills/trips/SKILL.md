@@ -115,8 +115,8 @@ reads only the ones before it. Nothing is written until step 10.
 ## Where each fact is in the editor
 
 - **Details:** dates, destination, type, Passengers (the headcount, which
-  the Buses tab holds against the buses' seats), booking contact (its ⋮
-  menu has Add email thread), trip contacts.
+  the Buses tab holds against the buses' seats), booking contact (Add
+  email thread follows its Email label), trip contacts.
 - **Updates:** the trip has no notes; what has been said about it is its
   updates, newest first on its card, `updates` in `get_trip`. Add one with
   the card's Add, which opens a box that adds what is typed on Enter, or in

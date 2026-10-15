@@ -708,7 +708,10 @@ button.scheduler-row-head__num::after {
   align-items: baseline;
   gap: var(--rux-spacing-03);
 }
-.scheduler-saved[hidden] { display: none; }
+/* The Email label's thread links follow it the same way. */
+.scheduler-saved[hidden],
+.scheduler-thread-link[hidden],
+.scheduler-thread-add[hidden] { display: none; }
 /* A row's mark before its name, a Route stop's number or Pickup and
    Drop-off: a solid circle in the inverse colours, as a counter badge is,
    which a longer mark stretches to a pill. */
@@ -4461,10 +4464,12 @@ html:has(.scheduler-page[data-takeover]) {
 /* The drop-off pair a round trip does not ask for. `rux--stack-vertical` is
    `display: grid`, which outranks the bare `[hidden]` attribute. */
 .scheduler-route-drop[hidden] { display: none; }
-/* The link that opens them, the route times' Change, and the Files tab's
-   earlier versions and Not needed are buttons, because they act on this page
-   rather than going anywhere, and Carbon's link is written for an anchor. */
+/* The link that opens them, the route times' Change, the Files tab's
+   earlier versions and Not needed, and Add email thread are buttons, because
+   they act on this page rather than going anywhere, and Carbon's link is
+   written for an anchor. */
 .scheduler-route-open,
+.scheduler-thread-add,
 .scheduler-files-earlier > button,
 .scheduler-files-note > button {
   appearance: none;

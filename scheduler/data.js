@@ -7030,22 +7030,35 @@
          contact in full. */
       // The name and phone share a row, a contact read at a glance; half the
       // 30rem panel leaves each about 180px beside its copy button.
-      /* The booking's conversation is a link, never a field on show: the
-         title line's menu adds, changes or takes it away through the Email
-         thread box, and once there is one an open icon beside the menu opens
-         it. The field stays in the page, hidden, for Save to read. */
+      /* The booking's conversation is a link, never a field on show. It
+         follows the Email label on its line, as a saved record's link follows
+         Name: Email thread opens it, and with none, Add email thread opens
+         the Email thread box. The title line's menu changes or removes it.
+         The field stays in the page, hidden, for Save to read. */
       const thread = el('div');
       thread.appendChild(textField('scheduler-f-cthread', 'Email thread', trip.booking_contact_missive_url));
       thread.hidden = true;
       const threadField = thread.querySelector('#scheduler-f-cthread');
+      const emailItem = withCopy(textField('scheduler-f-cemail', 'Email', contact?.email),
+        'scheduler-f-cemail', 'Booking contact email');
+      // One named window, as rux-ui opens it, so each thread reuses the tab.
+      const openThread = el('a', 'rux--link rux--link--sm scheduler-thread-link', 'Email thread');
+      openThread.target = 'missive';
+      openThread.rel = 'noopener';
+      openThread.title = 'Open the email thread';
+      const addThread = el('button', 'rux--link rux--link--sm scheduler-thread-add', 'Add email thread');
+      addThread.type = 'button';
+      const emailLabel = emailItem.querySelector('label[for="scheduler-f-cemail"]');
+      const emailRow = el('div', 'scheduler-label-row');
+      emailLabel.replaceWith(emailRow);
+      emailRow.append(emailLabel, openThread, addThread);
       const bookingStack = el('div', 'rux--stack-vertical rux--stack-scale-5');
       bookingStack.append(
         pair(withSaved(withCopy(contactSearch('scheduler-f-cfind', 'Name', allContacts, contact),
           'scheduler-f-cfind', 'Booking contact name'), 'scheduler-f-cfind', 'contact'),
         withCopy(textField('scheduler-f-cphone', 'Phone', contact?.phone),
           'scheduler-f-cphone', 'Booking contact phone')),
-        withCopy(textField('scheduler-f-cemail', 'Email', contact?.email),
-          'scheduler-f-cemail', 'Booking contact email'),
+        emailItem,
         customerBox,
         thread,
       );
@@ -7058,29 +7071,26 @@
       bookingMenu.title = 'Booking contact actions';
       bookingMenu.appendChild(svgUse('#m-more_vert', '16', '0 0 32 32'));
       bookingMenu.lastChild.setAttribute('class', 'rux--btn__icon');
-      // One named window, as rux-ui opens it, so each thread reuses the tab.
-      const openThread = el('a', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm');
-      openThread.target = 'missive';
-      openThread.rel = 'noopener';
-      openThread.setAttribute('aria-label', 'Open email thread');
-      openThread.title = 'Open email thread';
-      openThread.appendChild(svgUse('#m-open_in_new', '16', '0 0 32 32'));
-      openThread.lastChild.setAttribute('class', 'rux--btn__icon');
-      // Only a web address opens, so anything else leaves the icon off.
+      // Only a web address opens, so anything else shows neither link.
       const setThread = value => {
         threadField.value = value;
         const link = /^https?:\/\//i.test(value) ? value : '';
-        if (link) { openThread.href = link; bookingMenu.before(openThread); } else openThread.remove();
+        if (link) openThread.href = link; else openThread.removeAttribute('href');
+        openThread.hidden = !link;
+        addThread.hidden = !!value;
       };
-      // A draft types the thread in, and the open icon follows the field.
+      // A draft types the thread in, and the links follow the field.
       threadField.addEventListener('input', () => setThread(threadField.value.trim()));
+      // Focus goes back where the box was asked from, or to the link it made.
+      const editThread = from => askThread(threadField.value.trim(), value => {
+        setThread(value);
+        refreshDirty();
+        (from === bookingMenu ? bookingMenu : value ? openThread : addThread).focus();
+      });
+      addThread.addEventListener('click', () => editThread(addThread));
       bookingMenu.addEventListener('click', () => openRowMenu(bookingMenu, {
         editText: threadField.value.trim() ? 'Change email thread' : 'Add email thread',
-        edit: () => askThread(threadField.value.trim(), value => {
-          setThread(value);
-          refreshDirty();
-          bookingMenu.focus();
-        }),
+        edit: () => editThread(bookingMenu),
         removeText: 'Remove email thread', removeDisabled: !threadField.value.trim(),
         remove: () => {
           setThread('');
@@ -15767,7 +15777,7 @@
     return_start_date: { id: 'scheduler-f-rstart', kind: 'date' },
     return_end_date: { id: 'scheduler-f-rend', kind: 'date' },
     passengers: { id: 'scheduler-f-passengers', kind: 'text' },
-    // The email thread's address, behind the Booking contact's open icon.
+    // The email thread's address, behind the Email label's Email thread link.
     booking_contact_missive_url: { id: 'scheduler-f-cthread', kind: 'text' },
     // What the vehicle is and needs goes to the trip's first vehicle.
     vehicle_type: { kind: 'fleet' },

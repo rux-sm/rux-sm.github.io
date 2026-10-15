@@ -60,6 +60,7 @@
 [data-theme="g10"],
 [data-theme="g90"],
 [data-theme="g100"],
+[data-theme="rux-dark"],
 [data-theme="ant-dark"],
 [data-theme="spotify-dark"],
 [data-theme^="apple-"] {
@@ -79,8 +80,7 @@
 /* Geist draws a badge's text and icons in the hue's 900 step, and the bars are
    its subtle badges, so the marks take the 900 steps of amber, red and green,
    and done takes the primary text. The lowest is red on the red bar, 4.5 to 1. */
-[data-theme="geist-dark"],
-[data-theme="rux-dark"] {
+[data-theme="geist-dark"] {
   --scheduler-mark-warning: oklch(77.21% 0.1991 64.28);
   --scheduler-mark-error: oklch(69.96% 0.2136 22.03);
   --scheduler-mark-success: oklch(73.1% 0.2158 148.29);
@@ -102,7 +102,9 @@
    dark green, orange and red, each lightened to make 4.7 to 1 on its
    brightest bar, the amber.
    Geist's green and amber marks are already its text steps, and its red is
-   lifted a tenth toward white to clear the teal bar. Ant's bars are bright
+   lifted a tenth toward white to clear the teal bar. rux-dark's are its own
+   green, amber and red inks, which every bar's tint holds at 4.59 to 1 at
+   the least, the red on a hovered green bar. Ant's bars are bright
    enough that white itself holds only 4.5 to 5.2 on four of them, so its
    words take the palest tints that still show a hue, 3.7 to 1 at the least,
    on the green bar. */
@@ -130,11 +132,15 @@
   --scheduler-age-week: color-mix(in srgb, #ffa056 62%, #fff);
   --scheduler-age-old: color-mix(in srgb, #ff6165 40%, #fff);
 }
-[data-theme="geist-dark"],
-[data-theme="rux-dark"] {
+[data-theme="geist-dark"] {
   --scheduler-age-new: var(--scheduler-mark-success);
   --scheduler-age-week: var(--scheduler-mark-warning);
   --scheduler-age-old: color-mix(in srgb, var(--scheduler-mark-error) 90%, #fff);
+}
+[data-theme="rux-dark"] {
+  --scheduler-age-new: var(--rux-support-success);
+  --scheduler-age-week: var(--rux-support-warning);
+  --scheduler-age-old: var(--rux-support-error);
 }
 [data-theme="ant-dark"] {
   --scheduler-age-new: #d9f7be;
@@ -507,12 +513,22 @@
    the most the red and pink bars take with their text still at 4.5 to 1, and
    the edge of a bar that runs on takes the text colour. Magenta is
    Geist's pink and the greys its grey. */
-[data-theme="geist-dark"],
-[data-theme="rux-dark"] {
+[data-theme="geist-dark"] {
   --scheduler-amber-bg: oklch(27% 0.0835 64.78);
   --scheduler-amber-fg: oklch(77.21% 0.1991 64.28);
   --scheduler-amber-hover: oklch(29% 0.0835 64.78);
   --scheduler-amber-border: oklch(77.21% 0.1991 64.28);
+  --scheduler-amber-hover-ring: none;
+}
+/* RUX-DARK'S BARS ARE ITS TAGS, from app.css, so every hue sits on its
+   palette's steps: the tint behind the ink, the tint's hover step on hover, and
+   the ink on a run-on edge. The amber placeholder, which has no tag, takes the
+   palette's amber the same way. */
+[data-theme="rux-dark"] {
+  --scheduler-amber-bg: oklch(0.28 0.064 75);
+  --scheduler-amber-fg: var(--rux-support-warning);
+  --scheduler-amber-hover: oklch(0.32 0.074 75);
+  --scheduler-amber-border: var(--rux-support-warning);
   --scheduler-amber-hover-ring: none;
 }
 /* The selected trip's floating shortcuts sit on Geist's menu surface rather
@@ -583,33 +599,33 @@
 /* The rule between two updates steps down to the faintest border, as Design's
    Geist table rows do, so a wrapped update still reads as one row. */
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update { border-block-start-color: var(--rux-border-subtle-00); }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-bar--red {
+[data-theme="geist-dark"] .scheduler-bar--red {
   --scheduler-bg: oklch(27% 0.1084 19.02); --scheduler-hover: oklch(29% 0.1084 19.02);
   --scheduler-fg: oklch(69.96% 0.2136 22.03); --scheduler-border: oklch(69.96% 0.2136 22.03);
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-bar--blue,
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-bar--cyan {
+[data-theme="geist-dark"] .scheduler-bar--blue,
+[data-theme="geist-dark"] .scheduler-bar--cyan {
   --scheduler-bg: oklch(27% 0.1054 255.8); --scheduler-hover: oklch(29% 0.1054 255.8);
   --scheduler-fg: oklch(71.7% 0.1648 250.794); --scheduler-border: oklch(71.7% 0.1648 250.794);
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-bar--teal {
+[data-theme="geist-dark"] .scheduler-bar--teal {
   --scheduler-bg: oklch(27% 0.0997 180.99); --scheduler-hover: oklch(29% 0.0997 180.99);
   --scheduler-fg: oklch(74.56% 0.1765 182.8); --scheduler-border: oklch(74.56% 0.1765 182.8);
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-bar--green {
+[data-theme="geist-dark"] .scheduler-bar--green {
   --scheduler-bg: oklch(27% 0.1164 150.09); --scheduler-hover: oklch(29% 0.1164 150.09);
   --scheduler-fg: oklch(73.1% 0.2158 148.29); --scheduler-border: oklch(73.1% 0.2158 148.29);
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-bar--purple {
+[data-theme="geist-dark"] .scheduler-bar--purple {
   --scheduler-bg: oklch(27% 0.1197 314.41); --scheduler-hover: oklch(29% 0.1197 314.41);
   --scheduler-fg: oklch(69.87% 0.2037 309.51); --scheduler-border: oklch(69.87% 0.2037 309.51);
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-bar--magenta {
+[data-theme="geist-dark"] .scheduler-bar--magenta {
   --scheduler-bg: oklch(27% 0.1387 355.93); --scheduler-hover: oklch(29% 0.1387 355.93);
   --scheduler-fg: oklch(69.36% 0.2223 3.91); --scheduler-border: oklch(69.36% 0.2223 3.91);
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-bar--gray,
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-bar--cool-gray {
+[data-theme="geist-dark"] .scheduler-bar--gray,
+[data-theme="geist-dark"] .scheduler-bar--cool-gray {
   --scheduler-bg: oklch(27% 0 0); --scheduler-hover: oklch(29% 0 0);
   --scheduler-fg: #ededed; --scheduler-border: #ededed;
 }
@@ -618,17 +634,17 @@
    still reads at a glance on the black grid. A free day of the selected trip
    fills its cell with the grey of Geist's subtle badge, quieter than a booked
    one. */
-[data-theme="geist-dark"], [data-theme="rux-dark"] { --scheduler-avail-day: oklch(27% 0 0); }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-avail__cell--busy {
+[data-theme="geist-dark"] { --scheduler-avail-day: oklch(27% 0 0); }
+[data-theme="geist-dark"] .scheduler-avail__cell--busy {
   --scheduler-avail-fill: oklch(27% 0.1054 255.8);
   --scheduler-avail-edge: oklch(71.7% 0.1648 250.794);
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-avail__cell--off {
+[data-theme="geist-dark"] .scheduler-avail__cell--off {
   --scheduler-avail-fill: oklch(27% 0.1084 19.02);
   --scheduler-avail-edge: oklch(69.96% 0.2136 22.03);
 }
 /* A rest under 10 hours is Geist's amber badge, after busy, which it also is. */
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-avail__cell--tight {
+[data-theme="geist-dark"] .scheduler-avail__cell--tight {
   --scheduler-avail-fill: oklch(27% 0.07 75);
   --scheduler-avail-edge: oklch(81.87% 0.1584 76.5);
 }
@@ -637,6 +653,15 @@
    g100, and not the 40% every other theme starts from, where it fell to 4.4. */
 [data-theme="g90"] .scheduler-avail__cell--tight {
   --scheduler-avail-fill: color-mix(in srgb, var(--rux-support-warning) 32%, transparent);
+}
+/* rux-dark's roster marks are its blue and red tags, as its bars are, each
+   inside a 1px edge of its ink as geist-dark draws them, and a short rest is
+   its amber the same way. */
+[data-theme="rux-dark"] .scheduler-avail__cell--busy { --scheduler-avail-edge: var(--rux-tag-border-blue); }
+[data-theme="rux-dark"] .scheduler-avail__cell--off { --scheduler-avail-edge: var(--rux-tag-border-red); }
+[data-theme="rux-dark"] .scheduler-avail__cell--tight {
+  --scheduler-avail-fill: oklch(0.28 0.064 75);
+  --scheduler-avail-edge: var(--rux-support-warning);
 }
 
 /* The roster's column header and its priority headings are one band drawn

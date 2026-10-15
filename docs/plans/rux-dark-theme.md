@@ -89,10 +89,7 @@ None open.
 
 ## Tasks
 
-- [ ] Give the scheduler's trip bars, marks and roster the palette. Its bars,
-  their marks, the roster's busy, day-off and short-rest cells, the amber bar
-  and an update's age colours are still Geist's, in the rules
-  `scheduler/theme.css` shares with geist-dark; dropping rux-dark from them
-  hands the bars to the tag steps, and the marks and age words are then
-  measured on every bar. The No bus row has to stand apart from a bar's fill
-  by more than its hue.
+- [ ] Part the scheduler's Unassigned row from a trip bar by more than its
+  hue. Its track is `layer-hover-01`, at the lightness of the palette's tint,
+  so a bar on it measures 1.00 to 1.11 to 1 against it and is told apart by
+  colour alone.

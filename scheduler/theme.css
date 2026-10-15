@@ -658,15 +658,10 @@
 [data-theme="g90"] .scheduler-avail__cell--tight {
   --scheduler-avail-fill: color-mix(in srgb, var(--rux-support-warning) 32%, transparent);
 }
-/* rux-dark's roster marks are its blue and red tags, as its bars are, each
-   inside a 1px edge of its ink as geist-dark draws them, and a short rest is
-   its amber the same way. */
-[data-theme="rux-dark"] .scheduler-avail__cell--busy { --scheduler-avail-edge: var(--rux-tag-border-blue); }
-[data-theme="rux-dark"] .scheduler-avail__cell--off { --scheduler-avail-edge: var(--rux-tag-border-red); }
-[data-theme="rux-dark"] .scheduler-avail__cell--tight {
-  --scheduler-avail-fill: oklch(0.40 0.087 75);
-  --scheduler-avail-edge: var(--rux-support-warning);
-}
+/* rux-dark's roster marks are its blue and red containers, as its bars are,
+   with no edge, so a run of days reads as one stretch and the grid stays
+   quiet; a short rest is its amber container the same way. */
+[data-theme="rux-dark"] .scheduler-avail__cell--tight { --scheduler-avail-fill: oklch(0.40 0.087 75); }
 
 /* The roster's column header and its priority headings are one band drawn
    twice. Carbon separates a header from its rows with a change of surface, so

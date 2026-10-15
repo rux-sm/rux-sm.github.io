@@ -13,7 +13,7 @@
 import 'jsr:@supabase/functions-js@2.116.0/edge-runtime.d.ts'
 
 import { createClient } from 'npm:@supabase/supabase-js@2.116.0'
-import { handle, type Clock, type Stat, type Vehicle } from './handler.ts'
+import { handle, type Clock, type Fix, type Stat, type Vehicle } from './handler.ts'
 
 const TOKEN = Deno.env.get('SAMSARA_API_TOKEN') ?? ''
 const SAMSARA = 'https://api.samsara.com'
@@ -67,6 +67,16 @@ Deno.serve(req => {
     },
     clocks() {
       return samsara<Clock>('/fleet/hos/clocks', { limit: '512' })
+    },
+    async history(vehicleIds, from, to) {
+      const rows = await samsara<{ id: string; gps?: Fix[] }>('/fleet/vehicles/stats/history', {
+        types: 'gps', vehicleIds: vehicleIds.join(','),
+        startTime: new Date(from).toISOString(), endTime: new Date(to).toISOString(),
+      })
+      // A vehicle's readings may come over more than one page.
+      const out: Record<string, Fix[]> = {}
+      for (const r of rows) (out[String(r.id)] ??= []).push(...(r.gps ?? []))
+      return out
     },
   })
 })

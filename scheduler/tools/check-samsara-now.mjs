@@ -67,10 +67,15 @@ const NOW = Date.parse('2026-10-14T20:00:00Z');
 const ago = min => new Date(NOW - min * 60_000).toISOString();
 const BUSES = [{ id: 'b1', number: '101' }, { id: 'b2', number: '102' }, { id: 'b3', number: '900' }];
 const DRIVERS = [{ id: 'd1', name: 'Ana Maria Ruiz' }, { id: 'd2', name: 'Ben Ortiz' }];
-function parts({ buses = BUSES, clocksFail = false, keyed = true } = {}) {
-  let calls = 0;
+// A bus driving east along a line of latitude, a reading every half minute
+// a hundredth of a mile apart, from two hours ago.
+const fix = (min, lng) => ({ time: ago(min), latitude: 26.2, longitude: lng });
+const DRIVE = Array.from({ length: 241 }, (_, i) => fix(120 - i / 2, -97.9 + i * 0.000163));
+function parts({ buses = BUSES, clocksFail = false, keyed = true, historyFail = false } = {}) {
+  let calls = 0, asked = null;
   return {
     get calls() { return calls; },
+    get asked() { return asked; },
     deps: {
       keyed,
       now: () => NOW,
@@ -78,8 +83,8 @@ function parts({ buses = BUSES, clocksFail = false, keyed = true } = {}) {
       drivers: async () => DRIVERS,
       vehicles: async () => { calls++; return [{ id: 'v101', name: '101' }, { id: 'v102', name: ' 102 ' }]; },
       stats: async ids => { calls++; return [
-        { id: 'v101', engineState: { time: ago(1), value: 'On' }, gps: { time: ago(1), speedMilesPerHour: 64.6, reverseGeo: { formattedLocation: 'Somewhere, TX' } } },
-        { id: 'v102', engineState: { time: ago(40), value: 'On' }, gps: { time: ago(40), speedMilesPerHour: 30 } },
+        { id: 'v101', engineState: { time: ago(1), value: 'On' }, gps: { time: ago(1), latitude: 26.2, longitude: -97.7, headingDegrees: 271.6, speedMilesPerHour: 64.6, reverseGeo: { formattedLocation: 'Somewhere, TX' } } },
+        { id: 'v102', engineState: { time: ago(40), value: 'On' }, gps: { time: ago(40), latitude: 26.1, longitude: -98.2, headingDegrees: 90, speedMilesPerHour: 30 } },
         { id: 'v103', engineState: { time: ago(90), value: 'On' }, gps: { time: ago(1), speedMilesPerHour: 32 } },
       ].filter(s => ids.includes(s.id)); },
       clocks: async () => { calls++; if (clocksFail) throw new Error('403'); return [
@@ -87,6 +92,8 @@ function parts({ buses = BUSES, clocksFail = false, keyed = true } = {}) {
         clock('Ben Ortiz', 'sleeperBed', 4 * H, 9 * H, 50 * H),
         clock('Cal Diaz', 'offDuty', 10 * H, 15 * H, 70 * H, null),
       ]; },
+      history: async (ids, from, to) => { calls++; asked = [ids, from, to]; if (historyFail) throw new Error('403');
+        return { v101: DRIVE.filter(f => Date.parse(f.time) >= from) }; },
     },
   };
 }
@@ -96,6 +103,23 @@ expect('only the buses Samsara has come back', a.buses.map(b => b.bus_id), ['b1'
 expect('a fresh reading gives the engine, the speed and the place',
   [a.buses[0].engine, a.buses[0].mph, a.buses[0].place], ['on', 65, 'Somewhere, TX']);
 expect('a reading forty minutes old says nothing about now', [a.buses[1].engine, a.buses[1].mph], [null, null]);
+expect('where a bus is and the way it heads, a fresh reading',
+  [a.buses[0].lat, a.buses[0].lng, a.buses[0].heading], [26.2, -97.7, 272]);
+expect('an old reading keeps where the bus is, and says no heading',
+  [a.buses[1].lat, a.buses[1].lng, a.buses[1].heading], [26.1, -98.2, null]);
+expect('no path is asked when none is named', [p.asked, 'path' in a.buses[0]], [null, false]);
+p = parts();
+a = await liveFor(BUSES, DRIVERS, p.deps, { b1: ago(60) });
+const path = a.buses[0].path;
+expect('a path is the readings since the time named, one a tenth of a mile on, and the newest',
+  [path.length, path[0][2], path.at(-1)[2], 'path' in a.buses[1]], [13, NOW - 60 * 60_000, NOW, false]);
+p = parts();
+await liveFor(BUSES, DRIVERS, p.deps, { b1: ago(10 * 24 * 60) });
+expect('a path reaches back four days at most', (NOW - p.asked[1]) / H, 96);
+p = parts({ historyFail: true });
+a = await liveFor(BUSES, DRIVERS, p.deps, { b1: ago(60) });
+expect('a path Samsara refuses is an empty one, and the bus still comes back',
+  [a.buses[0].path, a.buses[0].engine], [[], 'on']);
 const long = parts();
 long.deps.vehicles = async () => [{ id: 'v103', name: '103' }];
 const onLong = await liveFor([{ id: 'b4', number: '103' }], DRIVERS, long.deps);
@@ -110,15 +134,15 @@ expect('without the hours permission the buses still come back, with no drivers'
   [a.hours, a.buses.length, a.buses[0].drivers.length, a.buses[0].engine], [false, 2, 0, 'on']);
 
 // ── who is answered ─────────────────────────────────────────────────────────
-async function post({ auth = 'Bearer staff', method = 'POST', ...opts } = {}) {
+async function post({ auth = 'Bearer staff', method = 'POST', body = '{}', ...opts } = {}) {
   const q = parts(opts);
   const req = new Request('https://example.supabase.co/functions/v1/samsara-now', {
     method, headers: { origin: 'http://localhost:8641', 'content-type': 'application/json', ...(auth ? { authorization: auth } : {}) },
-    body: method === 'POST' ? '{}' : undefined,
+    body: method === 'POST' ? body : undefined,
   });
   const res = await handle(req, q.deps);
   const text = await res.text();
-  return { status: res.status, body: text ? JSON.parse(text) : null, calls: q.calls };
+  return { status: res.status, body: text ? JSON.parse(text) : null, calls: q.calls, asked: q.asked };
 }
 let r = await post({ method: 'OPTIONS' });
 expect('the log-in preview may ask', r.status, 204);
@@ -130,6 +154,11 @@ r = await post({ keyed: false });
 expect('with no Samsara key it says so', [r.status, r.body, r.calls], [503, { error: 'no-key' }, 0]);
 r = await post();
 expect('the fleet is answered', [r.status, r.body.hours, r.body.buses.length], [200, true, 2]);
+r = await post({ body: JSON.stringify({ paths: { b1: ago(30), b2: 7 } }) });
+expect('a body naming a bus gives its path, and a time that is not one is passed over',
+  [r.status, r.asked[0], r.body.buses[0].path.length > 0, 'path' in r.body.buses[1]], [200, ['v101'], true, false]);
+r = await post({ body: 'not json' });
+expect('a body that is not JSON asks for no path', [r.status, r.asked], [200, null]);
 
 console.log(failed ? `\n  ${failed} fault(s) in samsara-now` : '');
 process.exit(failed ? 1 : 0);

@@ -1,9 +1,10 @@
 // What `samsara-now` answers, with no imports, so it runs the same in the
 // Edge runtime and under Node, where scheduler/tools/check-samsara-now.mjs
-// sends it sample fleets. The board asks it once a minute while a trip is on
-// the road, and gets back, for each bus Samsara knows, whether its engine is
-// on, how fast it is going, and the drivers logged into it with their duty
-// status and the driving hours each has left.
+// sends it sample fleets. The board and the Live map ask it once a minute,
+// and get back, for each bus Samsara knows, whether its engine is
+// on, how fast it is going, where it is and which way it is heading, and the
+// drivers logged into it with their duty status and the driving hours each
+// has left.
 //
 // A BUS IS THE SAMSARA VEHICLE NAMED WITH ITS NUMBER, as in samsara-miles. A
 // DRIVER IS THE SAMSARA DRIVER WITH THE SAME FIRST AND LAST NAME: middle names,
@@ -15,9 +16,18 @@
 // HOURS LEFT is the least of the three clocks Samsara keeps, driving, shift and
 // cycle, which is how long the driver may still drive. Without the key's hours
 // permission the buses still come back, with no drivers and `hours` false.
+//
+// A PATH is where a bus has been since a time the caller names, for each bus
+// in the body's `paths`, `{ bus_id: ISO time }`: Samsara's GPS readings since
+// then, thinned to one every tenth of a mile, so the board can tell which of
+// a leg's stops the bus has reached and the map can draw where it went. A
+// path reaches back four days at most.
 
 // A reading older than this says nothing about now.
 export const FRESH_MS = 15 * 60_000
+export const PATH_MS = 4 * 24 * 3600_000
+// Two readings closer than this are one point on a path.
+export const PATH_STEP_MILES = 0.1
 
 export type Bus = { id: string; number: string | null }
 export type Driver = { id: string; name: string | null }
@@ -25,8 +35,9 @@ export type Vehicle = { id: string; name: string }
 export type Stat = {
   id: string
   engineState?: { time: string; value: string }
-  gps?: { time: string; speedMilesPerHour?: number; reverseGeo?: { formattedLocation?: string } }
+  gps?: { time: string; latitude?: number; longitude?: number; headingDegrees?: number; speedMilesPerHour?: number; reverseGeo?: { formattedLocation?: string } }
 }
+export type Fix = { time: string; latitude: number; longitude: number }
 export type Clock = {
   driver?: { id?: string; name?: string }
   currentDutyStatus?: { hosStatusType?: string }
@@ -48,6 +59,8 @@ export type Deps = {
   vehicles(): Promise<Vehicle[]>
   stats(vehicleIds: string[]): Promise<Stat[]>
   clocks(): Promise<Clock[]>
+  // Each vehicle's GPS readings between two instants, by vehicle id.
+  history(vehicleIds: string[], from: number, to: number): Promise<Record<string, Fix[]>>
   keyed: boolean
   now(): number
 }
@@ -68,6 +81,11 @@ export type LiveBus = {
   engine: 'on' | 'idle' | 'off' | null
   mph: number | null
   place: string | null
+  lat: number | null
+  lng: number | null
+  heading: number | null
+  // [latitude, longitude, ms] from oldest to newest, for a bus the caller asked a path of.
+  path?: [number, number, number][]
   seen: string | null
   drivers: LiveDriver[]
 }
@@ -150,10 +168,37 @@ export function markWheel(drivers: LiveDriver[]): LiveDriver[] {
   return drivers.map(d => ({ ...d, wheel: d === able[0] }))
 }
 
+// ── paths ───────────────────────────────────────────────────────────────────
+
+// The miles between two points, as the crow flies.
+export function miles(a: [number, number], b: [number, number]): number {
+  const rad = Math.PI / 180
+  const dLat = (b[0] - a[0]) * rad, dLng = (b[1] - a[1]) * rad
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(a[0] * rad) * Math.cos(b[0] * rad) * Math.sin(dLng / 2) ** 2
+  return 3958.8 * 2 * Math.asin(Math.sqrt(h))
+}
+
+// Readings in time order, kept where they are a step from the last one kept,
+// and the newest always.
+export function thin(fixes: Fix[]): [number, number, number][] {
+  const points = fixes
+    .map(f => [f.latitude, f.longitude, Date.parse(f.time)] as [number, number, number])
+    .filter(p => p.every(Number.isFinite))
+    .sort((a, b) => a[2] - b[2])
+  const kept: [number, number, number][] = []
+  for (const p of points) {
+    const last = kept.at(-1)
+    if (!last || miles([last[0], last[1]], [p[0], p[1]]) >= PATH_STEP_MILES) kept.push(p)
+  }
+  const newest = points.at(-1)
+  if (newest && kept.at(-1) !== newest) kept.push(newest)
+  return kept
+}
+
 const ENGINE: Record<string, 'on' | 'idle' | 'off'> = { On: 'on', Idle: 'idle', Off: 'off' }
 const nameOf = (v: string | null | undefined) => String(v ?? '').trim().toLowerCase()
 
-export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps): Promise<Answer> {
+export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths: Record<string, string> = {}): Promise<Answer> {
   const now = deps.now()
   const vehicles = await deps.vehicles()
   const vehicleOf = new Map(vehicles.map(v => [nameOf(v.name), v.id]))
@@ -161,10 +206,19 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps): Prom
     .filter((p): p is { bus: Bus; vehicle: string } => !!p.vehicle)
   const ids = pairs.map(p => p.vehicle)
 
+  // The earliest time any bus's path is asked from, held to four days back.
+  const since = new Map<string, number>()
+  for (const p of pairs) {
+    const at = Date.parse(paths[p.bus.id] ?? '')
+    if (Number.isFinite(at)) since.set(p.vehicle, Math.min(Math.max(at, now - PATH_MS), now))
+  }
   let hours = true
-  const [stats, clocks] = await Promise.all([
+  const [stats, clocks, history] = await Promise.all([
     ids.length ? deps.stats(ids) : Promise.resolve([] as Stat[]),
     deps.clocks().catch(() => { hours = false; return [] as Clock[] }),
+    // A path that cannot be read leaves the bus without one, and the rest stands.
+    since.size ? deps.history([...since.keys()], Math.min(...since.values()), now).catch(() => ({} as Record<string, Fix[]>))
+      : Promise.resolve({} as Record<string, Fix[]>),
   ])
   const statOf = new Map(stats.map(s => [String(s.id), s]))
   const index = driverIndex(drivers)
@@ -193,8 +247,13 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps): Prom
         engine: s?.engineState && (engineFresh || gpsFresh) ? ENGINE[s.engineState.value] ?? null : null,
         mph: gpsFresh && typeof s!.gps!.speedMilesPerHour === 'number' ? Math.round(s!.gps!.speedMilesPerHour) : null,
         place: gpsFresh ? s!.gps!.reverseGeo?.formattedLocation ?? null : null,
+        // Where the bus is, however old, so a bus parked for days still has a place on the map.
+        lat: typeof s?.gps?.latitude === 'number' ? s.gps.latitude : null,
+        lng: typeof s?.gps?.longitude === 'number' ? s.gps.longitude : null,
+        heading: gpsFresh && typeof s!.gps!.headingDegrees === 'number' ? Math.round(s!.gps!.headingDegrees) : null,
         seen: seen.length ? new Date(Math.max(...seen)).toISOString() : null,
         drivers: markWheel(inVehicle.get(vehicle) ?? []),
+        ...(since.has(vehicle) ? { path: thin((history[vehicle] ?? []).filter(f => Date.parse(f.time) >= since.get(vehicle)!)) } : {}),
       }
     }),
   }
@@ -220,8 +279,17 @@ export async function handle(req: Request, deps: Deps): Promise<Response> {
   if (!buses.length) return reply(404, { error: 'not-found' })
   if (!deps.keyed) return reply(503, { error: 'no-key' })
 
+  // The body may name the buses to give a path of; anything else asks for none.
+  let paths: Record<string, string> = {}
   try {
-    return reply(200, await liveFor(buses, drivers, deps))
+    const body = await req.json()
+    if (body?.paths && typeof body.paths === 'object') {
+      paths = Object.fromEntries(Object.entries(body.paths).filter((e): e is [string, string] => typeof e[1] === 'string'))
+    }
+  } catch { /* no body */ }
+
+  try {
+    return reply(200, await liveFor(buses, drivers, deps, paths))
   } catch {
     return reply(502, { error: 'samsara' })
   }

@@ -509,6 +509,10 @@
           <h2 class="rux--side-panel__title-text" id="scheduler-panel-title">&nbsp;</h2>
           <h2 class="rux--side-panel__collapsed-title-text" id="scheduler-panel-title-collapsed">&nbsp;</h2>
         </div>
+        <!-- The trip's number, in the head's own row so the head keeps its
+             height; the destination's ellipsis comes before it. Empty and
+             hidden on a trip not yet saved, which has no number. -->
+        <span class="scheduler-panel-ref" id="scheduler-panel-ref" hidden></span>
         <div class="rux--side-panel__decorator-and-close">
           <!-- Inside .rux--side-panel Carbon sizes the close button with its own
                rule, so rux--btn--md, not rux--layout--size-md, makes it 40px. -->

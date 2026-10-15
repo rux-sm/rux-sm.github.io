@@ -1910,6 +1910,7 @@
   const panelBody = document.getElementById('scheduler-panel-body');
   const panelTitle = document.getElementById('scheduler-panel-title');
   const panelTitleCollapsed = document.getElementById('scheduler-panel-title-collapsed');
+  const panelRef = document.getElementById('scheduler-panel-ref');
   const pageEl = document.querySelector('.scheduler-page');
   // The selected trip's shortcut bar, placed and drawn by placeBarOpen.
   const barShortcuts = document.getElementById('scheduler-bar-shortcuts');
@@ -6858,6 +6859,11 @@
     const heading = creating ? 'New trip' : 'Edit trip';
     panelTitle.textContent = heading;
     panelTitleCollapsed.textContent = heading;
+    // The trip's number beside the title; a trip not yet saved has none.
+    const tripRef = creating ? '' : String(trip.trip_ref ?? '');
+    panelRef.textContent = tripRef ? `#${tripRef}` : '';
+    panelRef.title = tripRef ? `Trip ${tripRef}` : '';
+    panelRef.hidden = !tripRef;
 
     const legDays = leg ? daysBetween(parseISO(leg.from), parseISO(leg.to)) + 1 : 0;
     const when = !leg ? '' : leg.from === leg.to

@@ -1597,8 +1597,9 @@
        far as tiles. Every Save opens it, with Save, no update and Save with
        update, and its close goes back to the trip unsaved; the Update shortcut
        opens it on its own, with Add update under the box and no footer, its
-       close at the top the way out. data.js fills the label, the sentence,
-       the buttons' words and the list, and moves the main button. -->
+       close at the top the way out, and the box hidden while an earlier
+       update is open. data.js fills the label, the sentence, the buttons'
+       words and the list, and moves the main button. -->
   <div class="rux--layer-one rux--modal" id="scheduler-update-modal" role="presentation">
     <div role="dialog" aria-modal="true" aria-labelledby="scheduler-update-h" aria-describedby="scheduler-update-what" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
       <div class="rux--modal-header">
@@ -1612,7 +1613,7 @@
       </div>
       <div class="rux--modal-content">
         <p class="rux--type-body-compact-01 scheduler-prompt-changes" id="scheduler-update-what"></p>
-        <div class="rux--text-area__wrapper">
+        <div class="rux--text-area__wrapper" id="scheduler-update-box">
           <textarea id="scheduler-update-text" class="rux--text-area" rows="2" placeholder="What happened?" aria-label="Update"></textarea>
         </div>
         <div class="scheduler-update-add" id="scheduler-update-add" hidden></div>

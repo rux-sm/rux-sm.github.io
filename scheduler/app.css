@@ -2289,6 +2289,11 @@ button.scheduler-row-head__num::after {
    window stands on its own, ends the box's line, a step under it. */
 .scheduler-update-add { display: flex; justify-content: flex-end; margin-block-start: var(--rux-spacing-03); }
 .scheduler-update-add[hidden] { display: none; }
+/* While an earlier update is open to change or delete, the window on its own
+   hides the new update's box and Add update, so one box shows at a time, and
+   the list moves up to the top of the window. */
+#scheduler-update-modal[data-alone][data-editing] :is(#scheduler-update-box, #scheduler-update-add) { display: none; }
+#scheduler-update-modal[data-alone][data-editing] .scheduler-updates-log { margin-block-start: 0; }
 .scheduler-updates-error { margin-block-start: var(--rux-spacing-03); color: var(--rux-text-error); }
 .scheduler-updates-log { margin-block-start: var(--rux-spacing-06); }
 .scheduler-updates-log[hidden] { display: none; }

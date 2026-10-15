@@ -4388,6 +4388,8 @@
   }
   function drawLog() {
     if (!logEl) return;
+    // The window says while an update is open, so on its own it hides the new box.
+    logEl.closest('.rux--modal')?.toggleAttribute('data-editing', !!logChanging);
     logEl.replaceChildren(...logRows.filter(u => u.kind !== 'nothing').map(logItem));
     logStatus.hidden = logEl.childElementCount > 0;
     logStatus.textContent = 'No updates yet.';
@@ -10436,9 +10438,11 @@
 
      On its own it has Add update right under the box and no footer, the
      close at the top its way out, as Carbon closes a window with nothing in
-     its footer: Add update writes at once and closes it. The main button is
-     one button, moved between the footer and the box, so it keeps one
-     handler. */
+     its footer: Add update writes at once and closes it. While an earlier
+     update is open to change or delete, the box and Add update are hidden,
+     so one box shows at a time; from Save the box stays, since Save with
+     update reads it. The main button is one button, moved between the
+     footer and the box, so it keeps one handler. */
   const updateModal = document.getElementById('scheduler-update-modal');
   const updateText = document.getElementById('scheduler-update-text');
   const updateSave = document.getElementById('scheduler-update-save');
@@ -10489,6 +10493,7 @@
     updateSkip.after(updateSave);
     updateAdd.hidden = true;
     updateFooter.hidden = false;
+    updateModal.removeAttribute('data-alone');
     updateClose.setAttribute('aria-label', 'Back to the trip, not saved');
     updateClose.title = 'Back to the trip, not saved';
     return new Promise(resolve => {
@@ -10513,6 +10518,7 @@
     updateAdd.appendChild(updateSave);
     updateAdd.hidden = false;
     updateFooter.hidden = true;
+    updateModal.setAttribute('data-alone', '');
     fillUpdateWindow({ trip: tripName(trip), what: '', line: '', tripId: trip.id, editId });
   }
   const answerUpdate = answer => {

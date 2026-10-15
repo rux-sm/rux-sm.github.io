@@ -514,13 +514,19 @@
    THE COLOURS ARE VIVID, AND EVERY HUE TAKES THE SAME STEPS. Each step is an
    OKLCH lightness, and each hue takes 95% of the most chroma Display P3 holds
    there, to 0.2 at most, so a Mac or an iPhone shows it at full strength and
-   an ordinary screen the nearest colour it has: a tint at 0.28 and 0.32 on
-   hover, an ink at 0.75 and 0.82 on hover (amber and yellow 0.82 and 0.88,
-   or they read as brown), and a fill at the lightest step that still holds
-   white at 4.5 to 1, 0.535 to 0.59 by hue, pressing 0.05 and 0.10 darker. A
-   tag is its ink on its tint, and the support colours, the status dots, the
-   error text and the danger button are the same inks and fills, so success
-   is one green on a screen. Every pairing is measured both ways and holds.
+   an ordinary screen the nearest colour it has: an ink at 0.75 and 0.82 on
+   hover (amber and yellow 0.82 and 0.88, or they read as brown), and a fill
+   at the lightest step that still holds white at 4.5 to 1, 0.535 to 0.59 by
+   hue, pressing 0.05 and 0.10 darker. The support colours, the status dots,
+   the error text and the danger button are those inks and fills, so success
+   is one green on a screen.
+
+   A TAG IS A CONTAINER, as Material 3 draws one: a deep colour at 0.40, 0.44
+   on hover, under words at 0.92 that keep 0.05 of its hue. The container
+   holds 0.17 of chroma, or 90% of what Display P3 holds there where that is
+   less, so blue and purple, which P3 holds most of, stand no louder than red,
+   and the container stands clear of the board at about 2 to 1. Every pairing
+   is measured both ways and holds.
 
    THE ACCENT IS THE PALETTE'S BLUE, Carbon blue's hue, 262: it carries every
    link, the on toggle, the inverse focus, the highlight, the blue tag, the
@@ -528,8 +534,8 @@
    blue where g100 has its own.
 
    A BIG SURFACE STAYS CALM: a low-contrast notification's fill is its ink at
-   15% over the page, under the vivid ink, where a tag or a trip bar takes the
-   full tint.
+   15% over the page, under the vivid ink, where a tag or a trip bar takes its
+   container.
 
    THE BLOCK REACHES CARBON'S GUIDE BANNER TOO, which carries g100's tokens
    of its own and would otherwise keep them inside a rux-dark page. */
@@ -678,7 +684,7 @@
 
   /* misc */
   --rux-interactive: #f4f4f4;
-  --rux-highlight: oklch(0.28 0.153 262);
+  --rux-highlight: oklch(0.40 0.17 262);
   --rux-overlay: rgba(0, 0, 0, 0.72);
   --rux-shadow: rgba(0, 0, 0, 0.8);
   --rux-skeleton-background: #242424;
@@ -703,27 +709,27 @@
   --rux-button-disabled: #242424;
 
   /* tag */
-  --rux-tag-background-red: oklch(0.28 0.122 25);
-  --rux-tag-color-red: oklch(0.75 0.183 25);
-  --rux-tag-hover-red: oklch(0.32 0.139 25);
-  --rux-tag-background-magenta: oklch(0.28 0.124 350);
-  --rux-tag-color-magenta: oklch(0.75 0.2 350);
-  --rux-tag-hover-magenta: oklch(0.32 0.142 350);
-  --rux-tag-background-purple: oklch(0.28 0.148 300);
-  --rux-tag-color-purple: oklch(0.75 0.157 300);
-  --rux-tag-hover-purple: oklch(0.32 0.169 300);
-  --rux-tag-background-blue: oklch(0.28 0.153 262);
-  --rux-tag-color-blue: oklch(0.75 0.132 262);
-  --rux-tag-hover-blue: oklch(0.32 0.175 262);
-  --rux-tag-background-cyan: oklch(0.28 0.067 225);
-  --rux-tag-color-cyan: oklch(0.75 0.177 225);
-  --rux-tag-hover-cyan: oklch(0.32 0.076 225);
-  --rux-tag-background-teal: oklch(0.28 0.063 185);
-  --rux-tag-color-teal: oklch(0.75 0.17 185);
-  --rux-tag-hover-teal: oklch(0.32 0.072 185);
-  --rux-tag-background-green: oklch(0.28 0.102 150);
-  --rux-tag-color-green: oklch(0.75 0.2 150);
-  --rux-tag-hover-green: oklch(0.32 0.117 150);
+  --rux-tag-background-red: oklch(0.40 0.165 25);
+  --rux-tag-color-red: oklch(0.92 0.05 25);
+  --rux-tag-hover-red: oklch(0.44 0.17 25);
+  --rux-tag-background-magenta: oklch(0.40 0.168 350);
+  --rux-tag-color-magenta: oklch(0.92 0.05 350);
+  --rux-tag-hover-magenta: oklch(0.44 0.17 350);
+  --rux-tag-background-purple: oklch(0.40 0.17 300);
+  --rux-tag-color-purple: oklch(0.92 0.047 300);
+  --rux-tag-hover-purple: oklch(0.44 0.17 300);
+  --rux-tag-background-blue: oklch(0.40 0.17 262);
+  --rux-tag-color-blue: oklch(0.92 0.04 262);
+  --rux-tag-hover-blue: oklch(0.44 0.17 262);
+  --rux-tag-background-cyan: oklch(0.40 0.09 225);
+  --rux-tag-color-cyan: oklch(0.92 0.05 225);
+  --rux-tag-hover-cyan: oklch(0.44 0.099 225);
+  --rux-tag-background-teal: oklch(0.40 0.086 185);
+  --rux-tag-color-teal: oklch(0.92 0.05 185);
+  --rux-tag-hover-teal: oklch(0.44 0.094 185);
+  --rux-tag-background-green: oklch(0.40 0.138 150);
+  --rux-tag-color-green: oklch(0.92 0.05 150);
+  --rux-tag-hover-green: oklch(0.44 0.152 150);
   --rux-tag-background-gray: #3f3f3f;
   --rux-tag-color-gray: #f4f4f4;
   --rux-tag-hover-gray: #4a4a4a;
@@ -787,8 +793,8 @@
   --rux-ai-overlay: rgba(0, 0, 0, 0.5);
   --rux-ai-popover-background: #111111;
   --rux-ai-popover-caret-bottom: oklch(0.75 0.132 262);
-  --rux-ai-popover-caret-bottom-background: oklch(0.28 0.153 262);
-  --rux-ai-popover-caret-bottom-background-actions: oklch(0.25 0.137 262);
+  --rux-ai-popover-caret-bottom-background: oklch(0.40 0.17 262);
+  --rux-ai-popover-caret-bottom-background-actions: oklch(0.37 0.17 262);
   --rux-ai-popover-caret-center: oklch(0.575 0.2 262);
   --rux-ai-popover-shadow-outer-01: rgba(0, 0, 0, 0.12);
   --rux-ai-popover-shadow-outer-02: rgba(0, 0, 0, 0.08);

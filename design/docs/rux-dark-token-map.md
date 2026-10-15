@@ -20,24 +20,26 @@ on a page of `#000000`. **The lines are quiet:** a rule and a box's edge are
 
 **The palette** is vivid, and every hue takes the same steps. A step is an
 OKLCH lightness, and each hue takes 95% of the most chroma Display P3 holds
-there, to 0.2 at most: a tint at 0.28, its hover at 0.32, an ink at 0.75 and
-its hover at 0.82 (amber and yellow 0.82 and 0.88), and a fill at the lightest
-step that still holds white at 4.5 to 1, pressing 0.05 and 0.10 darker. Every
-pairing is measured at full P3 strength and as an ordinary screen shows it,
-and holds on both.
+there, to 0.2 at most: an ink at 0.75 and its hover at 0.82 (amber and yellow
+0.82 and 0.88), and a fill at the lightest step that still holds white at 4.5
+to 1, pressing 0.05 and 0.10 darker. **A tag is a container,** as Material 3
+draws one: a deep colour at 0.40 and 0.44 on hover, holding 0.17 of chroma or
+90% of what P3 holds there where that is less, under words at 0.92 that keep
+0.05 of the hue. Every pairing is measured at full P3 strength and as an
+ordinary screen shows it, and holds on both.
 
-| Hue | tint | tint, hover | ink | ink, hover | fill |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| red | `oklch(0.28 0.122 25)` | `oklch(0.32 0.139 25)` | `oklch(0.75 0.183 25)` | `oklch(0.82 0.124 25)` | `oklch(0.59 0.2 25)` |
-| orange | `oklch(0.28 0.08 50)` | `oklch(0.32 0.091 50)` | `oklch(0.75 0.2 50)` | `oklch(0.82 0.136 50)` | `oklch(0.58 0.166 50)` |
-| amber | `oklch(0.28 0.064 75)` | `oklch(0.32 0.074 75)` | `oklch(0.82 0.188 75)` | `oklch(0.88 0.121 75)` | `oklch(0.57 0.131 75)` |
-| yellow | `oklch(0.28 0.063 95)` | `oklch(0.32 0.072 95)` | `oklch(0.82 0.185 95)` | `oklch(0.88 0.198 95)` | `oklch(0.565 0.127 95)` |
-| green | `oklch(0.28 0.102 150)` | `oklch(0.32 0.117 150)` | `oklch(0.75 0.2 150)` | `oklch(0.82 0.2 150)` | `oklch(0.535 0.195 150)` |
-| teal | `oklch(0.28 0.063 185)` | `oklch(0.32 0.072 185)` | `oklch(0.75 0.17 185)` | `oklch(0.82 0.186 185)` | `oklch(0.54 0.122 185)` |
-| cyan | `oklch(0.28 0.067 225)` | `oklch(0.32 0.076 225)` | `oklch(0.75 0.177 225)` | `oklch(0.82 0.125 225)` | `oklch(0.55 0.131 225)` |
-| blue | `oklch(0.28 0.153 262)` | `oklch(0.32 0.175 262)` | `oklch(0.75 0.132 262)` | `oklch(0.82 0.093 262)` | `oklch(0.575 0.2 262)` |
-| purple | `oklch(0.28 0.148 300)` | `oklch(0.32 0.169 300)` | `oklch(0.75 0.157 300)` | `oklch(0.82 0.111 300)` | `oklch(0.59 0.2 300)` |
-| magenta | `oklch(0.28 0.124 350)` | `oklch(0.32 0.142 350)` | `oklch(0.75 0.2 350)` | `oklch(0.82 0.15 350)` | `oklch(0.59 0.2 350)` |
+| Hue | container | container, hover | words | ink | ink, hover | fill |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| red | `oklch(0.40 0.165 25)` | `oklch(0.44 0.17 25)` | `oklch(0.92 0.05 25)` | `oklch(0.75 0.183 25)` | `oklch(0.82 0.124 25)` | `oklch(0.59 0.2 25)` |
+| orange | `oklch(0.40 0.108 50)` | `oklch(0.44 0.119 50)` | `oklch(0.92 0.05 50)` | `oklch(0.75 0.2 50)` | `oklch(0.82 0.136 50)` | `oklch(0.58 0.166 50)` |
+| amber | `oklch(0.40 0.087 75)` | `oklch(0.44 0.096 75)` | `oklch(0.92 0.05 75)` | `oklch(0.82 0.188 75)` | `oklch(0.88 0.121 75)` | `oklch(0.57 0.131 75)` |
+| yellow | `oklch(0.40 0.085 95)` | `oklch(0.44 0.094 95)` | `oklch(0.92 0.05 95)` | `oklch(0.82 0.185 95)` | `oklch(0.88 0.198 95)` | `oklch(0.565 0.127 95)` |
+| green | `oklch(0.40 0.138 150)` | `oklch(0.44 0.152 150)` | `oklch(0.92 0.05 150)` | `oklch(0.75 0.2 150)` | `oklch(0.82 0.2 150)` | `oklch(0.535 0.195 150)` |
+| teal | `oklch(0.40 0.086 185)` | `oklch(0.44 0.094 185)` | `oklch(0.92 0.05 185)` | `oklch(0.75 0.17 185)` | `oklch(0.82 0.186 185)` | `oklch(0.54 0.122 185)` |
+| cyan | `oklch(0.40 0.09 225)` | `oklch(0.44 0.099 225)` | `oklch(0.92 0.05 225)` | `oklch(0.75 0.177 225)` | `oklch(0.82 0.125 225)` | `oklch(0.55 0.131 225)` |
+| blue | `oklch(0.40 0.17 262)` | `oklch(0.44 0.17 262)` | `oklch(0.92 0.04 262)` | `oklch(0.75 0.132 262)` | `oklch(0.82 0.093 262)` | `oklch(0.575 0.2 262)` |
+| purple | `oklch(0.40 0.17 300)` | `oklch(0.44 0.17 300)` | `oklch(0.92 0.047 300)` | `oklch(0.75 0.157 300)` | `oklch(0.82 0.111 300)` | `oklch(0.59 0.2 300)` |
+| magenta | `oklch(0.40 0.168 350)` | `oklch(0.44 0.17 350)` | `oklch(0.92 0.05 350)` | `oklch(0.75 0.2 350)` | `oklch(0.82 0.15 350)` | `oklch(0.59 0.2 350)` |
 
 The hues are red 25, orange 50, amber 75, yellow 95, green 150, teal 185, cyan
 225, blue 262, purple 300 and magenta 350, in OKLCH degrees. The accent is the
@@ -166,7 +168,7 @@ big surface stays calm.
 | `chat-prompt-text` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
 | `chat-shell-background` | `#0a0a0a` | `#111111` | neutral grey #111111 |
 | `interactive` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
-| `highlight` | `#102a43` | `oklch(0.28 0.153 262)` | blue tint |
+| `highlight` | `#102a43` | `oklch(0.40 0.17 262)` | blue container |
 | `overlay` | `rgba(0, 0, 0, 0.72)` | `rgba(0, 0, 0, 0.72)` | black, as before |
 | `shadow` | `rgba(0, 0, 0, 0.8)` | `rgba(0, 0, 0, 0.8)` | black, as before |
 | `skeleton-background` | `#1a1a1a` | `#242424` | neutral grey #242424 |
@@ -187,27 +189,27 @@ big surface stays calm.
 | `button-danger-active` | `#b81d26` | `oklch(0.49 0.2 25)` | red fill, pressed |
 | `button-separator` | `#000000` | `#000000` | neutral grey #000000 |
 | `button-disabled` | `#1a1a1a` | `#242424` | neutral grey #242424 |
-| `tag-background-red` | `#4f000f` | `oklch(0.28 0.122 25)` | red tint |
-| `tag-color-red` | `#ff565f` | `oklch(0.75 0.183 25)` | red ink |
-| `tag-hover-red` | `#550614` | `oklch(0.32 0.139 25)` | red tint, hover |
-| `tag-background-magenta` | `#530029` | `oklch(0.28 0.124 350)` | magenta tint |
-| `tag-color-magenta` | `#ff4d8d` | `oklch(0.75 0.2 350)` | magenta ink |
-| `tag-hover-magenta` | `#59002e` | `oklch(0.32 0.142 350)` | magenta tint, hover |
-| `tag-background-purple` | `#3b084d` | `oklch(0.28 0.148 300)` | purple tint |
-| `tag-color-purple` | `#c472fb` | `oklch(0.75 0.157 300)` | purple ink |
-| `tag-hover-purple` | `#400f53` | `oklch(0.32 0.169 300)` | purple tint, hover |
-| `tag-background-blue` | `#002458` | `oklch(0.28 0.153 262)` | blue tint |
-| `tag-color-blue` | `#47a8ff` | `oklch(0.75 0.132 262)` | blue ink |
-| `tag-hover-blue` | `#00295e` | `oklch(0.32 0.175 262)` | blue tint, hover |
-| `tag-background-cyan` | `#002458` | `oklch(0.28 0.067 225)` | cyan tint |
-| `tag-color-cyan` | `#47a8ff` | `oklch(0.75 0.177 225)` | cyan ink |
-| `tag-hover-cyan` | `#00295e` | `oklch(0.32 0.076 225)` | cyan tint, hover |
-| `tag-background-teal` | `#003429` | `oklch(0.28 0.063 185)` | teal tint |
-| `tag-color-teal` | `#00cfb7` | `oklch(0.75 0.17 185)` | teal ink |
-| `tag-hover-teal` | `#003a2e` | `oklch(0.32 0.072 185)` | teal tint, hover |
-| `tag-background-green` | `#003400` | `oklch(0.28 0.102 150)` | green tint |
-| `tag-color-green` | `#00ca50` | `oklch(0.75 0.2 150)` | green ink |
-| `tag-hover-green` | `#003902` | `oklch(0.32 0.117 150)` | green tint, hover |
+| `tag-background-red` | `#4f000f` | `oklch(0.40 0.165 25)` | red container |
+| `tag-color-red` | `#ff565f` | `oklch(0.92 0.05 25)` | red words |
+| `tag-hover-red` | `#550614` | `oklch(0.44 0.17 25)` | red container, hover |
+| `tag-background-magenta` | `#530029` | `oklch(0.40 0.168 350)` | magenta container |
+| `tag-color-magenta` | `#ff4d8d` | `oklch(0.92 0.05 350)` | magenta words |
+| `tag-hover-magenta` | `#59002e` | `oklch(0.44 0.17 350)` | magenta container, hover |
+| `tag-background-purple` | `#3b084d` | `oklch(0.40 0.17 300)` | purple container |
+| `tag-color-purple` | `#c472fb` | `oklch(0.92 0.047 300)` | purple words |
+| `tag-hover-purple` | `#400f53` | `oklch(0.44 0.17 300)` | purple container, hover |
+| `tag-background-blue` | `#002458` | `oklch(0.40 0.17 262)` | blue container |
+| `tag-color-blue` | `#47a8ff` | `oklch(0.92 0.04 262)` | blue words |
+| `tag-hover-blue` | `#00295e` | `oklch(0.44 0.17 262)` | blue container, hover |
+| `tag-background-cyan` | `#002458` | `oklch(0.40 0.09 225)` | cyan container |
+| `tag-color-cyan` | `#47a8ff` | `oklch(0.92 0.05 225)` | cyan words |
+| `tag-hover-cyan` | `#00295e` | `oklch(0.44 0.099 225)` | cyan container, hover |
+| `tag-background-teal` | `#003429` | `oklch(0.40 0.086 185)` | teal container |
+| `tag-color-teal` | `#00cfb7` | `oklch(0.92 0.05 185)` | teal words |
+| `tag-hover-teal` | `#003a2e` | `oklch(0.44 0.094 185)` | teal container, hover |
+| `tag-background-green` | `#003400` | `oklch(0.40 0.138 150)` | green container |
+| `tag-color-green` | `#00ca50` | `oklch(0.92 0.05 150)` | green words |
+| `tag-hover-green` | `#003902` | `oklch(0.44 0.152 150)` | green container, hover |
 | `tag-background-gray` | `#262626` | `#3f3f3f` | neutral grey #3f3f3f |
 | `tag-color-gray` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
 | `tag-hover-gray` | `#2b2b2b` | `#4a4a4a` | neutral grey #4a4a4a |
@@ -263,8 +265,8 @@ big surface stays calm.
 | `ai-overlay` | `not set` | `rgba(0, 0, 0, 0.5)` | black, as Carbon g100 |
 | `ai-popover-background` | `not set` | `#111111` | neutral grey #111111 |
 | `ai-popover-caret-bottom` | `not set` | `oklch(0.75 0.132 262)` | blue ink |
-| `ai-popover-caret-bottom-background` | `not set` | `oklch(0.28 0.153 262)` | blue tint |
-| `ai-popover-caret-bottom-background-actions` | `not set` | `oklch(0.25 0.137 262)` | blue tint, a step darker |
+| `ai-popover-caret-bottom-background` | `not set` | `oklch(0.40 0.17 262)` | blue container |
+| `ai-popover-caret-bottom-background-actions` | `not set` | `oklch(0.37 0.17 262)` | blue container, a step darker |
 | `ai-popover-caret-center` | `not set` | `oklch(0.575 0.2 262)` | blue fill |
 | `ai-popover-shadow-outer-01` | `not set` | `rgba(0, 0, 0, 0.12)` | black, as Carbon g100 |
 | `ai-popover-shadow-outer-02` | `not set` | `rgba(0, 0, 0, 0.08)` | black, as Carbon g100 |

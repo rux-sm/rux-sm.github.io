@@ -273,16 +273,16 @@
 :is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-10-magenta { background-color: #ffafd2; }
 :is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-11-purple { background-color: #d4bbff; }
 :is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-12-teal { background-color: #3ddbd9; }
-/* rux-dark's avatars are its palette, as its tags are: the first six take each
-   hue's ink, the tags' own text colour, and the second six its hover step,
+/* rux-dark's avatars are its palette: the first six take each hue's ink,
+   0.75, and the second six its hover step,
    0.82, Carbon's two sets in the same order. The greys are its neutral grey at
    those two lightnesses. Black initials read at 9 to 1 or better on every one. */
-[data-theme="rux-dark"] .rux--user-avatar--order-1-cyan { background-color: var(--rux-tag-color-cyan); }
+[data-theme="rux-dark"] .rux--user-avatar--order-1-cyan { background-color: oklch(0.75 0.177 225); }
 [data-theme="rux-dark"] .rux--user-avatar--order-2-gray { background-color: oklch(0.75 0 0); }
-[data-theme="rux-dark"] .rux--user-avatar--order-3-green { background-color: var(--rux-tag-color-green); }
-[data-theme="rux-dark"] .rux--user-avatar--order-4-magenta { background-color: var(--rux-tag-color-magenta); }
-[data-theme="rux-dark"] .rux--user-avatar--order-5-purple { background-color: var(--rux-tag-color-purple); }
-[data-theme="rux-dark"] .rux--user-avatar--order-6-teal { background-color: var(--rux-tag-color-teal); }
+[data-theme="rux-dark"] .rux--user-avatar--order-3-green { background-color: oklch(0.75 0.2 150); }
+[data-theme="rux-dark"] .rux--user-avatar--order-4-magenta { background-color: oklch(0.75 0.2 350); }
+[data-theme="rux-dark"] .rux--user-avatar--order-5-purple { background-color: oklch(0.75 0.157 300); }
+[data-theme="rux-dark"] .rux--user-avatar--order-6-teal { background-color: oklch(0.75 0.17 185); }
 [data-theme="rux-dark"] .rux--user-avatar--order-7-cyan { background-color: oklch(0.82 0.125 225); }
 [data-theme="rux-dark"] .rux--user-avatar--order-8-gray { background-color: oklch(0.82 0 0); }
 [data-theme="rux-dark"] .rux--user-avatar--order-9-green { background-color: oklch(0.82 0.2 150); }
@@ -2048,13 +2048,13 @@
    Carbon paints both as a gradient from blue 80 to purple 70 and gives the
    banner g100's tokens and its own blues and purples by value; rux-dark's
    block in rux-theme.css reaches the banner too, and these take the
-   palette's blue and purple tints, inks and fill in their place. */
+   palette's blue and purple containers, inks and fill in their place. */
 [data-theme="rux-dark"] :is(.rux--guidebanner, .rux--coachmark-tagline) {
-  background: linear-gradient(90deg, oklch(0.28 0.153 262) 0%, oklch(0.28 0.148 300) 100%);
-  background-color: oklch(0.28 0.153 262);
+  background: linear-gradient(90deg, var(--rux-tag-background-blue) 0%, var(--rux-tag-background-purple) 100%);
+  background-color: var(--rux-tag-background-blue);
 }
 [data-theme="rux-dark"] .rux--coachmark-tagline::before {
-  background: linear-gradient(90deg, oklch(0.32 0.175 262) 0%, oklch(0.32 0.169 300) 100%);
+  background: linear-gradient(90deg, var(--rux-tag-hover-blue) 0%, var(--rux-tag-hover-purple) 100%);
 }
 /* Carbon rounds three small parts of its AI and coachmark kits by 1 and 2px,
    outside rux-dark's two steps: the inline AI label and the AI skeleton's
@@ -2067,13 +2067,15 @@
   border-radius: 8px;
 }
 [data-theme="rux-dark"] .rux--guidebanner__navigation {
-  border-block-start-color: var(--rux-tag-color-purple);
+  border-block-start-color: var(--rux-tag-border-purple);
 }
+/* The banner is the blue container, on which the link's ink holds only 4.25
+   to 1, so its links take the ink's hover step and the blue words on hover. */
 [data-theme="rux-dark"] .rux--guidebanner__carousel :is(.rux--btn--ghost, .rux--guidebanner__element-link, .rux--guidebanner__element-link:visited) {
-  color: var(--rux-link-primary);
+  color: var(--rux-link-secondary);
 }
 [data-theme="rux-dark"] .rux--guidebanner__carousel .rux--guidebanner__element-link:is(:active, :hover) {
-  color: var(--rux-link-primary-hover);
+  color: var(--rux-tag-color-blue);
 }
 [data-theme="rux-dark"] .rux--guidebanner__carousel .rux--btn--ghost:is(:active, :hover) {
   background-color: oklch(0.59 0.2 300);

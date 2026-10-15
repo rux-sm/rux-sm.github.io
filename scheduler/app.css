@@ -4293,13 +4293,12 @@ html:has(.scheduler-page[data-takeover]) {
    day's miles, drive and on duty, its total row in the heading weight. */
 .scheduler-route-total td { font-weight: var(--rux-heading-compact-01-font-weight); }
 /* The Summary is one tile: the figures in its padding, then the table 16px
-   under them and flush with the tile's sides and bottom, its padding taken
-   back by Carbon's own tile padding variable. The tile clips the table to
-   its own corners, where a theme rounds them. */
+   under them and flush with the tile's sides, their padding taken back by
+   Carbon's own tile padding variable. The tile's padding stays under it, so
+   its last row clears the corners a theme rounds. */
 .scheduler-summary { overflow: hidden; }
 .scheduler-summary__table {
-  margin: var(--rux-spacing-05) calc(-1 * var(--rux-layout-density-padding-inline-local))
-    calc(-1 * var(--rux-layout-density-padding-inline-local));
+  margin: var(--rux-spacing-05) calc(-1 * var(--rux-layout-density-padding-inline-local)) 0;
 }
 /* A day's heading over its stops, in the list, 16px above and 8px below. */
 .scheduler-route-day {
@@ -4312,6 +4311,9 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-route-day:first-child { padding-block-start: 0; }
 /* The day's name is a section title, in its type; the row sets its spacing. */
 .scheduler-route-day__name { flex: none; margin-block-end: 0; }
+/* The first day's line ends in the leg's menu, a 32px button reaching 5px
+   above and below the 22px line, as a section heading's control does. */
+.scheduler-route-day > .rux--btn { align-self: center; margin-block: -0.3125rem; }
 /* The drive between two stops, on its own line between their rows: a short
    rule, the bus, then the time and miles in grey, set in from the tiles' edge
    so it reads as the road and not as a record. */

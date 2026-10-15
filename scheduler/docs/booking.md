@@ -121,7 +121,8 @@ On the trip itself:
   room itself, with its price. It does not mean the trip is overnight. Typing
   the confirmation number in the line's window marks it booked, as the bar
   menu's Mark hotel booked does.
-- Add a fuel card from the Route summary's menu, or from the note the Route tab
-  shows when a trip is past the office's miles or days.
+- Add a fuel card from the Route tab's menu, on its first day's line, or
+  from the note the Route tab shows when a trip is past the office's miles
+  or days.
 - Attach the final itinerary when it comes in, and fill in the trip contacts
   from it.

@@ -7588,13 +7588,13 @@
          and on duty on a leg of more than one day, then the whole leg's.
          One tile, the figures padded and the table flush with its edges. */
       const summary = el('div', 'rux--tile scheduler-summary');
-      // The Summary's menu, at the end of its title line: the route times,
-      // which apply to every trip.
+      // The leg's menu, at the end of its first day's heading: its drives
+      // measured again, the route times, which apply to every trip, and the fuel card.
       const summaryMenu = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger');
       summaryMenu.type = 'button';
       summaryMenu.setAttribute('aria-haspopup', 'true');
       summaryMenu.setAttribute('aria-expanded', 'false');
-      summaryMenu.setAttribute('aria-label', 'Summary options');
+      summaryMenu.setAttribute('aria-label', 'Route options');
       summaryMenu.appendChild(svgUse('#m-more_vert', '16', '0 0 32 32'));
       summaryMenu.lastChild.setAttribute('class', 'rux--btn__icon');
       // The fuel card is turned on and off here, and suggested under the Summary.
@@ -7616,7 +7616,7 @@
         { label: 'Fuel card limits', run: openFuelLimits },
         editing.fuelCard ? { label: 'Remove fuel card', run: () => setFuelCard(false) }
           : { label: 'Add fuel card', run: () => setFuelCard(true) },
-      ], 'Summary options'));
+      ], 'Route options'));
       const fuelBox = el('div', 'scheduler-fuel');
       const driverBox = el('div', 'scheduler-fuel');
       const summaryLayer = el('div', 'rux--stack-vertical rux--stack-scale-4');
@@ -7817,16 +7817,16 @@
           });
           r.list.forEach((st, i) => { if (!days.includes(dayOf(st))) stopsList.body.append(...rowFor(st, i, ++num)); });
         } else {
-          // A one-day leg is headed by its date alone.
-          if (from) {
-            const head = el('li', 'scheduler-route-day');
-            head.appendChild(el('span', 'scheduler-panel-section__title scheduler-route-day__name',
-              parseISO(from).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })));
-            stopsList.body.appendChild(head);
-          }
+          // A one-day leg is headed by its date alone; a leg with no date yet
+          // keeps the heading line, empty, for the menu.
+          const head = el('li', 'scheduler-route-day');
+          head.appendChild(el('span', 'scheduler-panel-section__title scheduler-route-day__name',
+            from ? parseISO(from).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) : ''));
+          stopsList.body.appendChild(head);
           stopsList.body.appendChild(pickupTile());
           r.list.forEach((st, i) => stopsList.body.append(...rowFor(st, i, ++num)));
         }
+        stopsList.body.querySelector('.scheduler-route-day')?.append(summaryMenu);
         // The leg on to the drop-off, from the last stop or, with none, the pickup.
         if (dropCounts()) stopsList.body.appendChild(dropLine());
         stopsList.body.appendChild(dropTile());
@@ -8188,7 +8188,7 @@
       routeTitle.hidden = !routeTitle.textContent;
       // The kept times go last, so the Summary is the tab's first section.
       panelRoute.append(
-        section('Summary', summaryLayer, summaryMenu),
+        section(null, summaryLayer),
         routeSection,
         routeBox,
         doneSection('route'),

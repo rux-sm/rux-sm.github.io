@@ -2322,9 +2322,11 @@ button.scheduler-row-head__num::after {
 .scheduler-updates__body { display: block; white-space: pre-wrap; overflow-wrap: anywhere; }
 .scheduler-updates__meta { display: block; color: var(--rux-text-secondary); margin-block-start: var(--rux-spacing-01); }
 .scheduler-updates-empty { color: var(--rux-text-secondary); }
-/* Calculator and Copy for QuickBooks end the Quote lines, side by side, 16px
-   under what comes before them rather than the list's own 8px. */
-.scheduler-line-tools { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); margin-block-start: var(--rux-spacing-03); }
+/* The quoted price, the lines' total, stands under them, and Calculator and
+   Copy for QuickBooks end the Quote, side by side; each is 16px under what
+   comes before it rather than the list's own 8px. */
+:is(.scheduler-line-total, .scheduler-line-tools) { margin-block-start: var(--rux-spacing-03); }
+.scheduler-line-tools { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); }
 /* The Updates window's head: what changed, over the box. */
 .scheduler-prompt-changes { color: var(--rux-text-secondary); margin-block-end: var(--rux-spacing-05); }
 

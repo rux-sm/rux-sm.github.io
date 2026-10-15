@@ -5393,7 +5393,7 @@
      price of one bus, so its quantity is always the Buses tab's count; a
      second driver is the extra drivers at one driver's pay; a discount is a
      negative cost. Pending rows like the POs, kept with their
-     `trip_quote_lines` ids, and drawn on the Billing tab under Quoted price,
+     `trip_quote_lines` ids, and drawn on the Billing tab over Quoted price,
      which is their sum.
 
      The item names and descriptions are the office's QuickBooks items, so a
@@ -8473,11 +8473,7 @@
       summary.append(statusLine, confirmWhy, figures);
       panelBilling.appendChild(section(null, summary));
 
-      // One field needs no heading over its own label.
-      panelBilling.appendChild(section(null,
-        moneyField('scheduler-f-quoted', 'Quoted price', trip.quoted_price)));
-
-      /* THE QUOTE'S LINES, under the price they add up to. With any line the
+      /* THE QUOTE'S LINES, over the price they add up to. With any line the
          price is their total and is not typed; with none it is typed as it
          always was, and the quote prints it as one line. The price is written
          only when the total moves, so opening a trip whose price rux-ui
@@ -8511,7 +8507,9 @@
       // The dead-mile offer, over the lines it adds to.
       const deadBox = el('div', 'scheduler-dead-offer');
       deadBox.hidden = true;
-      const quotedInput = panelBilling.querySelector('#scheduler-f-quoted');
+      const quotedField = moneyField('scheduler-f-quoted', 'Quoted price', trip.quoted_price);
+      quotedField.classList.add('scheduler-line-total');
+      const quotedInput = quotedField.querySelector('input');
       /* The price reads as money, as the Balance above it does: $1,669, with
          cents only when it has them. `money` reads the sign and commas back, so
          what is saved is still the number. */
@@ -8659,7 +8657,7 @@
       redrawLines = drawLines;
       redrawDeadOffer = drawDeadOffer;
       /* The description the office pastes into its QuickBooks estimate. It
-         ends the Quote lines section, under the lines it copies, so the larger
+         ends the Quote section, under the lines it copies, so the larger
          editor's columns never part them, and it carries the block alone for
          the reason `qbDescription` gives. A browser that refuses the clipboard says so, because a copy
          button that goes quiet is worse than one that reports a failure. */
@@ -8685,8 +8683,8 @@
       const lineTools = el('div', 'scheduler-line-tools');
       lineTools.append(calcButton, qbButton);
       const linesBody = el('div', 'rux--stack-vertical rux--stack-scale-3');
-      linesBody.append(deadBox, lineList.list, linesParted, lineTools);
-      panelBilling.appendChild(section('Quote lines', linesBody));
+      linesBody.append(deadBox, lineList.list, linesParted, quotedField, lineTools);
+      panelBilling.appendChild(section('Quote', linesBody));
 
       /* QUOTE SENT: the price the customer was sent, and the day, kept for
          Save by one press. The quote lines can move after it, and the section
@@ -8894,8 +8892,7 @@
         // Through the panel's own listener, so Save counts the miles.
         (actual ?? panelBilling).dispatchEvent(new Event('input', { bubbles: true }));
       });
-      panelBilling.appendChild(section('Miles', milesBody, samsaraButton ?? undefined));
-      syncEstHint();
+      const milesSection = section('Miles', milesBody, samsaraButton ?? undefined);
 
 
       /* Payments use the same `rowList` as PO and invoice, named by their
@@ -8929,8 +8926,9 @@
       const listWrap = section('Payments', payList.list);
 
       /* The order is contract, PO and invoice, as the ladder climbs, then
-         payments last because it is the only section that grows. Every section
-         is a `section()`, so the three switches share one right edge. */
+         payments, then the miles, which closing a trip out fills in with the
+         invoice and the balance. Every section is a `section()`, so the three
+         switches share one right edge. */
       const poBody = poList.list;
 
       const invBody = invList.list;
@@ -8947,8 +8945,10 @@
         poWrap,
         invWrap,
         listWrap,
+        milesSection,
         doneSection('billing'),
       );
+      syncEstHint();
 
       /* A switch that is off hides and disables its fields and clears them.
          `clear` is false on the first pass, so opening a trip that holds a value
@@ -14157,7 +14157,7 @@
     confirmation: () => document.getElementById('scheduler-f-contract'),
     po: () => document.getElementById('scheduler-f-poreceived'),
     balance: () => sectionTitled('Payments')?.querySelector('button, input'),
-    hotel: () => sectionTitled('Quote lines')?.querySelector('button, input'),
+    hotel: () => sectionTitled('Quote')?.querySelector('button, input'),
     miles: () => document.getElementById('scheduler-f-actmiles'),
     invoice: () => sectionTitled('Invoice sent')?.querySelector('button, input'),
   };

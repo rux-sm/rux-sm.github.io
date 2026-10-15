@@ -129,12 +129,12 @@ reads only the ones before it. Nothing is written until step 10.
   waits, Mark route done.
 - **Buses:** each bus, its driver and co-driver or relief seats, a warning
   when Passengers is above the seats, Mark buses done.
-- **Billing:** confirmed or not; the quoted price, which is the sum of the
-  quote lines; Add the bus rental (it shows the calculator's price); the
-  Addt'l Driver line a co-driver seat adds; Add line (Discount, Second
-  driver, Hotel, Other); Quote sent; Estimated miles, blank while it follows
-  the route; contract, PO, invoice,
-  payments; Mark billing done.
+- **Billing:** confirmed or not; Quote: Add the bus rental (it shows the
+  calculator's price), the Addt'l Driver line a co-driver seat adds, Add line
+  (Discount, Second driver, Hotel, Other), and under the lines the quoted
+  price, their sum; Quote sent; contract, PO, invoice, payments; Miles:
+  Estimated miles, blank while it follows the route, Actual miles and each
+  driver's miles; Mark billing done.
 - **Files:** the uploaded itineraries, contracts and POs; a file opens in a viewer.
 - **Forms,** on the bar's right-click menu: Quote for the customer, and
   Envelope, Hours of service and Itinerary for the drivers. The Quote offers

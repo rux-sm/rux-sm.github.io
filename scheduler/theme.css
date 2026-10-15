@@ -996,3 +996,16 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) .scheduler-print__tiles {
   gap: var(--rux-spacing-03);
 }
+
+/* PREP'S DAY AND ITS TWO ARROWS ARE THE BAR'S BUTTONS in the two themes that
+   ring them: each ringed, on the theme's corners, and the bar's gap apart so
+   two rings never meet. The ring gives way to the focus ring, which is that
+   same border. */
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-departures__stepper {
+  gap: var(--scheduler-head-gap);
+}
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-departures__stepper > .rux--btn--ghost:not(:focus-visible) {
+  border-color: var(--rux-border-subtle-02);
+}
+[data-theme="geist-dark"] .scheduler-departures__stepper > .rux--btn { border-radius: 6px; }
+[data-theme="rux-dark"] .scheduler-departures__stepper > .rux--btn { border-radius: 4px; }

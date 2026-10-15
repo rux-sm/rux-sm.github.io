@@ -8,8 +8,8 @@
    Friday the weekend and Monday with it, since nobody is in to prep until
    Monday. Each leg is a tile that opens: Design's tile around an item of its
    accordion. Closed, as every leg is until it is pressed, it is its place,
-   how many lines it has left or Ready, and a quiet line of when its bus is
-   spotted, Spot with its weekday and time, and its customer. Open, one at a time, it holds the leg's page as departures.js
+   how many lines it has left or Ready, and a quiet line of its customer.
+   Open, one at a time, it holds the leg's page as departures.js
    gives it: the trip's lines, then a block for each bus with its crew. A trip
    whose own lines are all done folds them into one line, Trip ready, which a
    press unfolds.
@@ -69,7 +69,6 @@
   const weekday = new Intl.DateTimeFormat(undefined, { weekday: 'short' });
   // "7:08a", the board's short clock, from a time of day or a moment.
   const clock = (h, m) => `${h % 12 || 12}:${String(m).padStart(2, '0')}${h < 12 ? 'a' : 'p'}`;
-  const clockOf = t => { const [h, m] = String(t).split(':').map(Number); return Number.isFinite(h) && Number.isFinite(m) ? clock(h, m) : ''; };
   // When a step was done: "Wed 8:15a", or "Today 8:15a".
   const whenWords = at => {
     const d = new Date(at);
@@ -152,15 +151,15 @@
   const readDays = async which => (await Promise.all(which.map(readDay))).flat();
   const countOf = rows => ({ legs: rows.length, ready: rows.filter(p => p.left === 0).length });
 
-  /* When a leg's bus is spotted, or else its first time: the time as
-     "HH:MM", the day it falls on, which is the leg's own where the row keeps
-     none, and whether it is a spot, since only a spot is called one. */
+  /* When a leg's bus is spotted, or else its first time, which orders the
+     day's legs: the time as "HH:MM", and the day it falls on, which is the
+     leg's own where the row keeps none. */
   function leavesAt(page) {
     const stops = (page.trip.trip_stops || []).filter(s => (s.leg || 'outbound') === page.leg)
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
     for (const s of stops) {
       for (const key of ['spot', 'arrive', 'depart_prev']) {
-        if (s[key]) return { time: String(s[key]).slice(0, 5), day: s[`${key}_date`] || page.day, spot: key === 'spot' };
+        if (s[key]) return { time: String(s[key]).slice(0, 5), day: s[`${key}_date`] || page.day };
       }
     }
     return null;
@@ -206,7 +205,7 @@
 
   // -- the frame ------------------------------------------------------------
   const ghost = (href, label) => {
-    const b = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm rux--btn--icon-only');
+    const b = el('button', 'rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md rux--btn--icon-only');
     b.type = 'button';
     b.setAttribute('aria-label', label);
     b.title = label;
@@ -219,7 +218,7 @@
   const stepper = el('div', 'scheduler-departures__stepper');
   const before = ghost('#m-arrow_back', 'The day before');
   const after = ghost('#m-arrow_forward', 'The day after');
-  const dayButton = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm scheduler-departures__date');
+  const dayButton = el('button', 'rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md scheduler-departures__date');
   dayButton.type = 'button';
   // The browser's own calendar, opened from the day; it takes no room of its own.
   const dayInput = el('input', 'scheduler-departures__picker');
@@ -416,9 +415,8 @@
 
   /* A leg, as one of Design's tiles around an item of its accordion, whose
      script opens and shuts it. The heading is the closed leg: its place and
-     what is left, and under them when its bus is spotted and its customer.
-     The time is on the quiet line because the pane is narrow, and beside a
-     long place it was the part cut off. */
+     what is left, and under them its customer, and on a split trip which
+     leg; the spot time is the open leg's, on its lines. */
   function legItem(page) {
     const key = keyOf(page);
     const open = key === openKey;
@@ -436,10 +434,9 @@
     place.appendChild(el('strong', null, placeName(page.trip.destination)));
     summary.append(place, leftTag(page.left));
     title.appendChild(summary);
-    const at = leavesAt(page);
-    const when = at && [at.spot ? 'Spot' : '', at.day ? weekday.format(parseISO(at.day)) : '', clockOf(at.time)].filter(Boolean).join(' ');
-    const quiet = [when, page.trip.customer, page.legName].filter(Boolean).join(DOT);
-    if (quiet) title.appendChild(el('span', 'scheduler-to-do__meta scheduler-to-do__line', quiet));
+    // Always a line, so the arrow at its end never meets what is left.
+    const quiet = [page.trip.customer || 'No customer', page.legName].filter(Boolean).join(DOT);
+    title.appendChild(el('span', 'scheduler-to-do__meta scheduler-to-do__line', quiet));
     heading.append(arrow, title);
 
     const wrapper = el('div', 'rux--accordion__wrapper');

@@ -287,14 +287,14 @@ writes `trips.actual_miles` and each seat's `trip_drivers.miles`. It is deployed
 ## 8. Samsara now
 
 `samsara-now`, source in `scheduler/samsara-now/`, is the board's line for a
-bus out on its trip, asked once a minute while a bar is within two hours of
-its yard times. It reads `buses` and `drivers` on the caller's own session, so
-a caller who is not staff finds no fleet and Samsara is never asked. For each
-bus Samsara names with its number it answers the engine, speed and place, none
-from a reading over fifteen minutes old, and the drivers logged in: each one's
-duty, the least of their three clocks as hours left, and who is at the wheel.
-Hours need the key's Compliance permission; without it the drivers are left
-out. A Samsara driver is the scheduler's with the same first and last name,
-and a name two drivers share matches nobody. It writes nothing, is deployed
-with Verify JWT off, as §5 is, and answers the site and the log-in preview.
+bus out on its trip, asked once a minute while a bar is within two hours of its
+trip. It reads `buses` and `drivers` on the caller's own session, so a caller
+who is not staff finds no fleet and Samsara is never asked. For each bus
+Samsara names with its number it answers the engine, speed and place, none from
+a reading over fifteen minutes old but the engine's, stamped on a change and
+kept while the GPS reports; and the drivers logged in: each one's duty, the
+least of their three clocks as hours left, and who is at the wheel, with the
+key's Compliance permission. A Samsara driver is the scheduler's with the same
+first and last name, unless two share it. It writes nothing, is deployed with
+Verify JWT off as §5 is, and answers the site and the log-in preview.
 `scheduler/tools/check-samsara-now.mjs` runs it against an invented fleet.

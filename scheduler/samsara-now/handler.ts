@@ -187,7 +187,10 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps): Prom
       const seen = [engineAt, gpsAt].filter(Number.isFinite)
       return {
         bus_id: bus.id,
-        engine: engineFresh ? ENGINE[s!.engineState!.value] ?? null : null,
+        // Samsara stamps the engine's state when it changes, so an engine on
+        // for an hour has an hour-old stamp; the state holds while the GPS is
+        // still reporting.
+        engine: s?.engineState && (engineFresh || gpsFresh) ? ENGINE[s.engineState.value] ?? null : null,
         mph: gpsFresh && typeof s!.gps!.speedMilesPerHour === 'number' ? Math.round(s!.gps!.speedMilesPerHour) : null,
         place: gpsFresh ? s!.gps!.reverseGeo?.formattedLocation ?? null : null,
         seen: seen.length ? new Date(Math.max(...seen)).toISOString() : null,

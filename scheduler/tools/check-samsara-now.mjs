@@ -80,6 +80,7 @@ function parts({ buses = BUSES, clocksFail = false, keyed = true } = {}) {
       stats: async ids => { calls++; return [
         { id: 'v101', engineState: { time: ago(1), value: 'On' }, gps: { time: ago(1), speedMilesPerHour: 64.6, reverseGeo: { formattedLocation: 'Somewhere, TX' } } },
         { id: 'v102', engineState: { time: ago(40), value: 'On' }, gps: { time: ago(40), speedMilesPerHour: 30 } },
+        { id: 'v103', engineState: { time: ago(90), value: 'On' }, gps: { time: ago(1), speedMilesPerHour: 32 } },
       ].filter(s => ids.includes(s.id)); },
       clocks: async () => { calls++; if (clocksFail) throw new Error('403'); return [
         clock('Ana Ruiz', 'driving', 9 * H + 3 * 60_000, 14 * H, 69 * H),
@@ -95,6 +96,11 @@ expect('only the buses Samsara has come back', a.buses.map(b => b.bus_id), ['b1'
 expect('a fresh reading gives the engine, the speed and the place',
   [a.buses[0].engine, a.buses[0].mph, a.buses[0].place], ['on', 65, 'Somewhere, TX']);
 expect('a reading forty minutes old says nothing about now', [a.buses[1].engine, a.buses[1].mph], [null, null]);
+const long = parts();
+long.deps.vehicles = async () => [{ id: 'v103', name: '103' }];
+const onLong = await liveFor([{ id: 'b4', number: '103' }], DRIVERS, long.deps);
+expect('an engine on since long ago is still on while the GPS reports',
+  [onLong.buses[0].engine, onLong.buses[0].mph], ['on', 32]);
 expect('the drivers logged into the bus, who is at the wheel, and their hours',
   a.buses[0].drivers.map(x => [x.driver_id, x.duty, x.wheel, x.left_ms]),
   [['d1', 'driving', true, 9 * H + 3 * 60_000], ['d2', 'sleeper', false, 4 * H]]);

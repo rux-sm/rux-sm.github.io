@@ -27,8 +27,12 @@ fills what it knows, so closing a trip out is mostly one check and a Save.
   that does not fit, the confirmation, the PO and the itinerary. The balance
   stays, as follow-up.js already keeps it.
 - **They ask the close-out questions instead:** a leg with no bus, a seat
-  with no driver, and no actual miles; and the invoice and the payment, if
-  the questions below keep them.
+  with no driver, no actual miles, no invoice and an unpaid balance.
+- **The invoice and the payment are asked for in the scheduler,** because the
+  office enters both there after QuickBooks makes them. The invoice is
+  billing.js's invoiced rule, and is not asked for when the billing workflow
+  turns its invoiced step off; the payment is the balance follow-up.js
+  already asks for.
 - **Check with Samsara fills what it can,** through samsara-miles, which also
   starts saying who drove each bus, from Samsara's own trips for the vehicle.
   It shows each bus's miles and drivers beside the trip's, fills Actual miles,
@@ -44,9 +48,6 @@ fills what it knows, so closing a trip out is mostly one check and a Save.
 
 ## Questions
 
-- **Are invoices and payments kept in the scheduler, or only in QuickBooks?**
-  This year 497 past trips have no invoice in the scheduler and 538 are not
-  marked paid. If QuickBooks alone keeps them, close-out leaves both out.
 - **Does a trip close itself once nothing is missing, or does someone press
   Close out?** Closing itself needs no new column and asks only while
   something is true, as follow-ups do. A button keeps a mark of who closed it,

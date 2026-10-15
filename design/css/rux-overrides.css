@@ -261,18 +261,34 @@
    `text-inverse`: dark initials on a dark fill, as low as 1.8 to 1. These are
    Carbon's dark set, copied, and they read at 5.4 to 1 or better under each
    dark theme's `text-inverse`. */
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-1-cyan { background-color: #1192e8; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-2-gray { background-color: #8d8d8d; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-3-green { background-color: #24a148; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-4-magenta { background-color: #ee5396; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-5-purple { background-color: #a56eff; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-6-teal { background-color: #009d9a; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-7-cyan { background-color: #82cfff; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-8-gray { background-color: #c6c6c6; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-9-green { background-color: #6fdc8c; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-10-magenta { background-color: #ffafd2; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-11-purple { background-color: #d4bbff; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-12-teal { background-color: #3ddbd9; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-1-cyan { background-color: #1192e8; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-2-gray { background-color: #8d8d8d; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-3-green { background-color: #24a148; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-4-magenta { background-color: #ee5396; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-5-purple { background-color: #a56eff; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-6-teal { background-color: #009d9a; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-7-cyan { background-color: #82cfff; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-8-gray { background-color: #c6c6c6; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-9-green { background-color: #6fdc8c; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-10-magenta { background-color: #ffafd2; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-11-purple { background-color: #d4bbff; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-12-teal { background-color: #3ddbd9; }
+/* rux-dark's avatars are its palette, as its tags are: the first six take each
+   hue's ink, the tags' own text colour, and the second six its hover step,
+   0.82, Carbon's two sets in the same order. The greys are its cool grey at
+   those two lightnesses. Black initials read at 9 to 1 or better on every one. */
+[data-theme="rux-dark"] .rux--user-avatar--order-1-cyan { background-color: var(--rux-tag-color-cyan); }
+[data-theme="rux-dark"] .rux--user-avatar--order-2-gray { background-color: oklch(0.75 0.0065 248); }
+[data-theme="rux-dark"] .rux--user-avatar--order-3-green { background-color: var(--rux-tag-color-green); }
+[data-theme="rux-dark"] .rux--user-avatar--order-4-magenta { background-color: var(--rux-tag-color-magenta); }
+[data-theme="rux-dark"] .rux--user-avatar--order-5-purple { background-color: var(--rux-tag-color-purple); }
+[data-theme="rux-dark"] .rux--user-avatar--order-6-teal { background-color: var(--rux-tag-color-teal); }
+[data-theme="rux-dark"] .rux--user-avatar--order-7-cyan { background-color: oklch(0.82 0.125 225); }
+[data-theme="rux-dark"] .rux--user-avatar--order-8-gray { background-color: oklch(0.82 0.0065 248); }
+[data-theme="rux-dark"] .rux--user-avatar--order-9-green { background-color: oklch(0.82 0.2 150); }
+[data-theme="rux-dark"] .rux--user-avatar--order-10-magenta { background-color: oklch(0.82 0.15 350); }
+[data-theme="rux-dark"] .rux--user-avatar--order-11-purple { background-color: oklch(0.82 0.111 300); }
+[data-theme="rux-dark"] .rux--user-avatar--order-12-teal { background-color: oklch(0.82 0.186 185); }
 
 /* ROUNDED THEMES. Ant Design Pro and Geist were both measured at the same
    three radii -- a tag 4px, a control 6px, a surface 8px -- and both draw a
@@ -339,6 +355,7 @@
   border-radius: 8px;
 }
 [data-theme="rux-dark"] .rux--tile,
+[data-theme="rux-dark"] .rux--card,
 [data-theme="rux-dark"] .rux--file__drop-container,
 [data-theme="rux-dark"] .rux--list-box__menu,
 [data-theme="rux-dark"] .rux--menu,
@@ -348,6 +365,13 @@
 [data-theme="rux-dark"] .rux--toast-notification,
 [data-theme="rux-dark"] .rux--actionable-notification {
   border-radius: 8px;
+}
+/* A LOW-CONTRAST NOTIFICATION KEEPS ONE EDGE. Carbon draws its edge as a
+   square ::before laid over the box; a theme that rings and rounds the box
+   itself already has that edge, so the square one doubled it and stood out of
+   every rounded corner. */
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) :is(.rux--inline-notification--low-contrast, .rux--actionable-notification--low-contrast)::before {
+  content: none;
 }
 /* Ant's tag is a 4px rectangle. Geist has no square badge at all -- its Badge
    and its Pill are both fully round, at the same 24px height Carbon's tag
@@ -375,6 +399,17 @@
 [data-theme="rux-dark"] .rux--side-panel,
 [data-theme="rux-dark"] .rux--modal-container {
   border-radius: 8px;
+}
+/* A placed side panel stands on the window's edge and its foot, so only its
+   inner top corner is free and rounds; a panel an app sets inside its page,
+   with no placement, keeps all four. */
+[data-theme="rux-dark"] .rux--side-panel--right-placement {
+  border-radius: 0;
+  border-start-start-radius: 8px;
+}
+[data-theme="rux-dark"] .rux--side-panel--left-placement {
+  border-radius: 0;
+  border-start-end-radius: 8px;
 }
 
 /* GEIST'S TERTIARY BUTTON IS PLAIN TEXT, NOT A LINK. Carbon paints a ghost
@@ -1933,6 +1968,40 @@
    handle a floating coachmark is dragged by is a grip, not a button to
    ring. Carbon holds the tagline's border clear and its button at the far
    end with `!important`, so those two declarations answer in kind. */
+/* THE GUIDE BANNER AND THE COACHMARK'S TAGLINE ARE RUX'S BLUE AND PURPLE.
+   Carbon paints both as a gradient from blue 80 to purple 70 and gives the
+   banner g100's tokens and its own blues and purples by value; rux-dark's
+   block in rux-theme.css reaches the banner too, and these take the
+   palette's blue and purple tints, inks and fill in their place. */
+[data-theme="rux-dark"] :is(.rux--guidebanner, .rux--coachmark-tagline) {
+  background: linear-gradient(90deg, oklch(0.28 0.153 262) 0%, oklch(0.28 0.148 300) 100%);
+  background-color: oklch(0.28 0.153 262);
+}
+[data-theme="rux-dark"] .rux--coachmark-tagline::before {
+  background: linear-gradient(90deg, oklch(0.32 0.175 262) 0%, oklch(0.32 0.169 300) 100%);
+}
+/* Carbon rounds three small parts of its AI and coachmark kits by 1 and 2px,
+   outside rux-dark's two steps: the inline AI label and the AI skeleton's
+   icon are controls and take 4px, and the tagline is a surface and takes 8px,
+   its hover fill with it. */
+[data-theme="rux-dark"] :is(.rux--ai-label__button--inline, .rux--ai-label__button--inline::before, .rux--skeleton__icon--ai) {
+  border-radius: 4px;
+}
+[data-theme="rux-dark"] :is(.rux--coachmark-tagline, .rux--coachmark-tagline::before) {
+  border-radius: 8px;
+}
+[data-theme="rux-dark"] .rux--guidebanner__navigation {
+  border-block-start-color: var(--rux-tag-color-purple);
+}
+[data-theme="rux-dark"] .rux--guidebanner__carousel :is(.rux--btn--ghost, .rux--guidebanner__element-link, .rux--guidebanner__element-link:visited) {
+  color: var(--rux-link-primary);
+}
+[data-theme="rux-dark"] .rux--guidebanner__carousel .rux--guidebanner__element-link:is(:active, :hover) {
+  color: var(--rux-link-primary-hover);
+}
+[data-theme="rux-dark"] .rux--guidebanner__carousel .rux--btn--ghost:is(:active, :hover) {
+  background-color: oklch(0.59 0.2 300);
+}
 [data-theme="rux-dark"] .rux--guidebanner__close-button {
   inset-block-start: var(--rux-spacing-03);
   inset-inline-end: var(--rux-spacing-03);

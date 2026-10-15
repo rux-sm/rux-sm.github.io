@@ -524,8 +524,12 @@
    blue where g100 has its own.
 
    A BIG SURFACE STAYS CALM: a notification's fill is its ink at 15% over the
-   page, under the vivid ink, where a tag or a trip bar takes the full tint. */
-[data-theme="rux-dark"] {
+   page, under the vivid ink, where a tag or a trip bar takes the full tint.
+
+   THE BLOCK REACHES CARBON'S GUIDE BANNER TOO, which carries g100's tokens
+   of its own and would otherwise keep them inside a rux-dark page. */
+[data-theme="rux-dark"],
+[data-theme="rux-dark"] .rux--guidebanner {
   /* color-scheme / brand */
   --rux-color-scheme: dark;
 

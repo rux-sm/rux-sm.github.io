@@ -4,7 +4,8 @@ type: reference
 
 # Rux dark's tokens and where each comes from
 
-Every colour `[data-theme="rux-dark"]` sets in `css/rux-theme.css`, beside the
+Every colour `[data-theme="rux-dark"]` sets in `css/rux-theme.css`, on the page
+and on Carbon's guide banner, which carries g100's tokens of its own, beside the
 value geist-dark sets for the same token, and the rule rux-dark's comes from.
 The rules are the ones below; the block's own comment says why.
 

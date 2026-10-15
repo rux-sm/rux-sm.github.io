@@ -30,9 +30,9 @@ text in it under 4.5 to 1 and no control's resting shape under 3 to 1.
   its hue holds there, so no colour shouts louder than another: a tint at 0.28
   (0.32 on hover) behind an ink at 0.75 (0.82 for amber and yellow, 0.82 on
   hover), and a fill at the lightest step that still holds white at 4.5 to 1,
-  0.535 to 0.59 by hue. One palette
-  serves every use: a tag, a trip bar, a status dot, a support colour, error
-  text and the danger button.
+  0.535 to 0.59 by hue. One palette serves every use: a tag, a trip bar, a
+  status dot, a support colour, error text, the danger button, an avatar, and
+  Carbon's guide banner and coachmark, whose blue and purple become its own.
 - **The colours use the wider Display P3 range,** written in OKLCH, so a Mac
   or an iPhone shows them at their full strength and an ordinary screen shows
   the nearest colour it has; each pairing holds its contrast on both.
@@ -85,7 +85,15 @@ text in it under 4.5 to 1 and no control's resting shape under 3 to 1.
 
 ## Questions
 
-None open.
+- **Which blue?** Carbon's hue, 262, as now; 250, leaning toward cyan as
+  Geist's does; or either with its ink a step deeper, at 0.70 or 0.72, which
+  gives the trip bars' words the old Geist bars' strength. Rendered side by
+  side on the kitchen sink.
+- **How does the Unassigned row part from its bars?** Its track turned black,
+  below a bus row's; or kept grey, with each bar on it ringed in its ink.
+- **Do Secondary and Tertiary ring at 3 to 1?** Both at the field ring's
+  `#63666a`, 3.6 to 1 on the page; or Tertiary alone, Secondary keeping its
+  fill and quiet ring.
 
 ## Tasks
 

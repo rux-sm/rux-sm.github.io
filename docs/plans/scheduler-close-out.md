@@ -45,36 +45,23 @@ fills what it knows, so closing a trip out is mostly one check and a Save.
   board, the card and the Trips page share, as they share follow-up.js.
 - **The Trips page gets a To close filter** beside Past, listing the trips
   that are back and still ask something.
+- **A trip closes itself once nothing is missing.** Nothing is stored and no
+  one presses anything; it asks only while something is true, as follow-ups
+  do.
+- **A leg a bus from another company drove** is answered by an Actual miles
+  typed by hand, and its bus waits on the farm-out mark the status list
+  names; until that mark exists, the leg asks for a bus.
 
 ## Questions
-
-- **Does a trip close itself once nothing is missing, or does someone press
-  Close out?** Closing itself needs no new column and asks only while
-  something is true, as follow-ups do. A button keeps a mark of who closed it,
-  which is a database change. Recommended: it closes itself.
-- **What closes a leg a bus from another company drove,** which has no bus of
-  ours and no Samsara miles? Recommended: an Actual miles typed by hand
-  answers the miles, and the leg waits on the farm-out mark the status list
-  already names, rather than asking for a bus forever.
 
 ## Tasks
 
 - [ ] Tick Read Vehicle Trips on the Samsara key (rux, in Samsara), which
       samsara-miles needs to say who drove.
-- [ ] Write `scheduler/close-out.js`: when a trip is back, what it still asks,
-      and the date asking starts; with a check of its own beside the other
-      rules in `scheduler/tools/`.
-- [ ] Stop the board's drag and driver carry for a trip that is back, in
-      `scheduler/data.js`.
-- [ ] Ask before Save when a change to a trip that is back touches its buses,
-      drivers, dates or stops.
-- [ ] Swap the card's and bell's before-trip questions for the close-out ones
-      once a trip is back.
 - [ ] Teach samsara-miles who drove each bus, with its check, and deploy it on
       rux's yes.
 - [ ] Add Check with Samsara's drivers and differences beside Get from
       Samsara on the Billing tab, and prove a Save in Chrome on :8641 by
       `scheduler/docs/proving-a-save.md`.
-- [ ] Add the To close filter to `scheduler/trips.html`.
-- [ ] Describe close-out in `scheduler/README.md` and the samsara-miles
-      section of `scheduler/docs/database-inventory.md`.
+- [ ] Say who drove in the samsara-miles section of
+      `scheduler/docs/database-inventory.md`.

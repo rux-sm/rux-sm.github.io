@@ -772,32 +772,12 @@
     off: { icon: '#m-power_settings_new-fill', word: 'Off duty' },
   };
   const roadHours = ms => `${Math.floor(ms / ROAD_HOUR)}:${String(Math.floor((ms % ROAD_HOUR) / 60e3)).padStart(2, '0')}`;
-  const roadDay = (date, n) => new Date(Date.UTC(+date.slice(0, 4), +date.slice(5, 7) - 1, +date.slice(8, 10) + n))
-    .toISOString().slice(0, 10);
-  // What a McAllen wall clock reads at an instant, as if it were UTC.
-  const roadWall = ms => {
-    const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hourCycle: 'h23',
-      year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).formatToParts(new Date(ms));
-    const n = t => Number(parts.find(p => p.type === t)?.value);
-    return Date.UTC(n('year'), n('month') - 1, n('day'), n('hour'), n('minute'));
-  };
-  // The instant a McAllen date and time name, whatever zone the browser is in;
-  // the offset is checked a second time, which settles a clock change.
-  const roadInstant = (date, time) => {
-    const [h, m] = String(time).split(':').map(Number);
-    const asUtc = Date.UTC(+date.slice(0, 4), +date.slice(5, 7) - 1, +date.slice(8, 10), h || 0, m || 0);
-    const first = asUtc - (roadWall(asUtc) - asUtc);
-    return asUtc - (roadWall(first) - first);
-  };
   /* A leg's stretch on the road, padded at each end: from its yard-out to
-     its yard-back, which a past-midnight return puts on the day after `to`.
-     With no times it runs from the first day's start to the late-return
-     hour after the last. */
+     its yard-back, as week.js reads both on the office's clock. */
   const roadSpan = leg => {
     if (!leg?.from || !leg?.to) return null;
-    const from = roadInstant(leg.from, leg.depart || '00:00');
-    const to = leg.back ? roadInstant(roadDay(leg.to, daysBack(leg)), leg.back) : roadInstant(roadDay(leg.to, 1), '04:00');
-    return [from - ROAD_MARGIN, Math.max(to, from) + ROAD_MARGIN];
+    const from = window.SchedulerWeek.departAt(leg);
+    return [from - ROAD_MARGIN, Math.max(window.SchedulerWeek.backAt(leg), from) + ROAD_MARGIN];
   };
   const roadOut = bar => {
     const now = Date.now();
@@ -961,6 +941,8 @@
     bar.tabIndex = 0;
     bar.setAttribute('aria-pressed', 'false');
     bar.dataset.tripId = trip.id;
+    // A trip that is back stays where it is on the board; close-out.js says when.
+    if (window.SchedulerCloseOut.isBack(trip)) bar.classList.add('scheduler-bar--back');
     bar.dataset.leg = leg.leg;
     bar.dataset.start = place.start;
     bar.dataset.span = place.span;
@@ -1108,8 +1090,9 @@
     let tone = '';
     if (latest) {
       news.title = `${latest.body}\n${updateStamp(latest)}`;
-      const open = waitsOf(trip).length > 0 || misfits.length > 0 || needs.some(n => !n.done)
-        || (!dayOfContact(trip) && !trip.contact_not_needed);
+      const open = window.SchedulerCloseOut.isBack(trip) ? window.SchedulerCloseOut.asks(trip).length > 0
+        : waitsOf(trip).length > 0 || misfits.length > 0 || needs.some(n => !n.done)
+          || (!dayOfContact(trip) && !trip.contact_not_needed);
       const days = (Date.now() - Date.parse(latest.created_at)) / 864e5;
       if (open) tone = ` scheduler-bar__update--${days < 2 ? 'new' : days < 7 ? 'week' : 'old'}`;
     }
@@ -1641,8 +1624,8 @@
       if (down.button !== 0) return;
       // A press on the driver's name lifts the driver, not the trip.
       if (liftsFrom(down)) return;
-      // The trip open in the editor is locked on the board.
-      if (isEditorTrip(bar)) return;
+      // The trip open in the editor is locked on the board, and so is a trip that is back.
+      if (isEditorTrip(bar) || bar.classList.contains('scheduler-bar--back')) return;
       // One bar at a time. A bar that is saving takes no pointer, in app.css; this is for a finger already down on it.
       if (barsInHand || heldMoves.get(bar.dataset.assignmentId)?.saving) return;
       const touch = down.pointerType === 'touch';
@@ -9288,7 +9271,8 @@
   const CARRY_HEAD = { x: 5.5, y: 13.5, edge: 13.5 };
   let carriedName = false;
   const seatsDriver = bar => !!bar.dataset.assignmentId && !isEditorTrip(bar)
-    && !bar.classList.contains('scheduler-bar--saving') && !!barSeat(bar)?.range;
+    && !bar.classList.contains('scheduler-bar--saving') && !bar.classList.contains('scheduler-bar--back')
+    && !!barSeat(bar)?.range;
   /* Whether the roster already shows a driver in the way of a bar: on that
      bus, or away or on another bus on any of the bar's days. `from` is the
      bar a driver is being carried off, which is not in their way. It is read
@@ -11157,6 +11141,14 @@
       return false;
     };
     if (await movedOn()) return askConflict(null);
+    /* A trip that is back is history: a change to its buses, drivers, dates
+       or stops asks first. Billing, files and updates do not, because they
+       are what closing a trip out fills in. */
+    const backTrip = creating ? null : panelIndex?.trips?.get(id);
+    if (backTrip && !answered && window.SchedulerCloseOut.isBack(backTrip)
+      && (routePlan().work || fleetChanged() || DONE_ROUTE_KEYS.some(k => k in patch))
+      && !await ask('This trip already happened. Save the change anyway?',
+        'It changes the buses, drivers, dates or stops of a trip that is back.')) return false;
     // Every save asks for its update first; closing the window keeps editing.
     const change = creating ? null : customerChange(patch);
     const named = k => (k in patch ? patch[k] : editing.before?.[k]);
@@ -14009,6 +14001,8 @@
     po: () => document.getElementById('scheduler-f-poreceived'),
     balance: () => sectionTitled('Payments')?.querySelector('button, input'),
     hotel: () => sectionTitled('Quote lines')?.querySelector('button, input'),
+    miles: () => document.getElementById('scheduler-f-actmiles'),
+    invoice: () => sectionTitled('Invoice sent')?.querySelector('button, input'),
   };
   /* Where a warning is put right. The itinerary slot uploads or opens the
      itinerary as its own press does, Forms opens the trip's forms, and the
@@ -14552,6 +14546,12 @@
      job, the hotel to book or the hours-of-service form to print; a need the
      bus falls short of is already a misfit, and one that is met is no alert. */
   function alertsOf(trip, facts) {
+    /* A trip that is back asks only what its record lacks, close-out.js's
+       list, in place of everything asked before it left. */
+    const CloseOut = window.SchedulerCloseOut;
+    if (CloseOut.isBack(trip)) {
+      return CloseOut.asks(trip).map(id => ({ row: 'scheduler-card__warn', go: CloseOut.GO[id], spot: id, words: CloseOut.WORDS[id] }));
+    }
     const list = (facts?.misfits ?? []).map(words => ({ row: 'scheduler-card__misfit', go: 'fleet', words }));
     if (asksFollowUp(trip)) {
       for (const w of waitsOf(trip)) {

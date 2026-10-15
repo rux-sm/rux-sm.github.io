@@ -1584,11 +1584,11 @@ button.scheduler-row-head__num::after {
 .scheduler-crew__duty--off { color: currentColor; opacity: .7; }
 .scheduler-crew--wheel > .scheduler-crew__name { font-weight: 600; }
 /* A driver's name on a bar is what a press pulls the driver out by, whatever
-   seat they are in, so it shows the open hand; the trip in the editor gives
-   no driver up. While the figure is out the seat is dimmed, as a carried bar
+   seat they are in, so it shows the open hand; the trip in the editor and a
+   trip that is back give no driver up. While the figure is out the seat is dimmed, as a carried bar
    is, and its mark is gone, the dot or a relief's arrows, because the mark is
    the figure's head. */
-.scheduler-bar:not(.scheduler-bar--open) .scheduler-bar__crew > .scheduler-crew[data-seat][data-driver-id] { cursor: grab; }
+.scheduler-bar:not(.scheduler-bar--open, .scheduler-bar--back) .scheduler-bar__crew > .scheduler-crew[data-seat][data-driver-id] { cursor: grab; }
 .scheduler-crew.scheduler-crew--carried { opacity: .4; }
 .scheduler-crew.scheduler-crew--carried :is(.scheduler-crew__dot, .scheduler-crew__mark svg) { visibility: hidden; }
 .scheduler-crew__mark--success { color: var(--scheduler-mark-success); }

@@ -125,6 +125,30 @@
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   };
 
+  /* THE OFFICE'S CLOCK. A McAllen date and time as an instant, whatever zone
+     the browser is in: the offset is found at a first guess and checked once
+     more, which settles a guess across a clock change. A leg leaves the yard
+     at its departure, or its first day's start with none; it is back at its
+     yard return, on the day after `to` when that is past midnight, or with no
+     return at the late-return hour after its last day. */
+  const officeWall = ms => {
+    const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hourCycle: 'h23',
+      year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).formatToParts(new Date(ms));
+    const n = t => Number(parts.find(p => p.type === t)?.value);
+    return Date.UTC(n('year'), n('month') - 1, n('day'), n('hour'), n('minute'));
+  };
+  const officeInstant = (day, time) => {
+    const [y, m, d] = String(day).split('-').map(Number);
+    const [h, min] = String(time || '00:00').split(':').map(Number);
+    const asUtc = Date.UTC(y, m - 1, d, h || 0, min || 0);
+    const first = asUtc - (officeWall(asUtc) - asUtc);
+    return asUtc - (officeWall(first) - first);
+  };
+  const departAt = leg => officeInstant(leg.from, leg.depart);
+  const backAt = leg => (leg.back
+    ? officeInstant(dayFrom(leg.to, leg.backDays ?? 0), leg.back)
+    : officeInstant(dayFrom(leg.to, 1), `${Math.floor(lateBefore / 60)}:${lateBefore % 60}`));
+
   /* THE DAYS A LEG TAKES, from its dates and its times as `timesOf` gives
      them. The bus is back on the leg's last day, or the day after when the
      yard return is earlier on the clock than the trip's end; on a one-day leg
@@ -189,5 +213,6 @@
   window.SchedulerWeek = {
     TRIP_COLORS, RETIRED_COLORS, tripColorOf, standardHueOf, hueFor,
     stopsOfLeg, timesOf, legsOf, takes, setLateReturn, lateReturn, clip, assignLanes,
+    officeInstant, departAt, backAt,
   };
 })();

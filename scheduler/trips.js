@@ -22,7 +22,10 @@
     'start_date', 'end_date', 'return_start_date', 'return_end_date',
     'bus_count', 'return_bus_count', 'quoted_price', 'po_ref', 'invoice_number',
     'confirmed', 'invoiced', 'balance_paid', 'cancelled_at', 'cancellation_reason',
-    'trip_assignments(leg,buses:bus_id(number))',
+    'trip_assignments(leg,bus_id,active_roles,buses:bus_id(number),trip_drivers(driver_id,role))',
+    // What close-out.js reads: when the trip is back, and what its record lacks.
+    'departure_time', 'return_time', 'actual_miles', 'invoice_status',
+    'trip_stops(leg,type,position,depart_prev,arrive,spot)',
     // What the follow-up rules read: the money, the itinerary and the updates.
     'created_at', 'trip_bar_color', 'itinerary_not_needed', 'contract_status', 'po_received', 'po_amount',
     'deposit_amount', 'date_paid', 'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_documents(label)',
@@ -79,6 +82,7 @@
     times: t => asked('times', t),
     leaving: t => asked('leaving', t),
     past: t => !t.cancelled_at && (lastDay(t) || '9999') < today,
+    close: t => window.SchedulerCloseOut.asks(t).length > 0,
     cancelled: t => !!t.cancelled_at,
     all: () => true,
   };

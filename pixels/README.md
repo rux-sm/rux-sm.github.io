@@ -6,10 +6,10 @@ The repository root's `AGENTS.md` is the policy. The site's `docs/status.md` lis
 
 ## What it is
 
-A player is an account that can open Pixels, or a guest: someone with no account who opens a player's
-invite link, `/pixels/?join=` and that player's code, and types a name and a PIN. A guest's browser
-keeps a key that is who they are; one with no key is let in by the name and the PIN. Pixels goes on a
-phone's home screen as an app, as `docs/home-screen.md` says.
+A player is an account that can open Pixels, or a guest: anyone with no account who opens the plain
+address, `/pixels/`, and types a name and a PIN at the door. A guest's browser keeps a key that is who
+they are; one with no key is let in by the name and the PIN. No player is shown another but a friend.
+Pixels goes on a phone's home screen as an app, as `docs/home-screen.md` says.
 
 `index.html` has two tabs. Puzzles: today's puzzle on a card with the days solved in a row; then a tile
 for each rift, which the code calls a category, in the owner's order, one to a row on a phone. A tile
@@ -29,12 +29,12 @@ primary button's colours. A course rift holds its boss back, dim, until the rest
 
 `me.html` is the player's own page: their picture, username, sprites found, mana and fairies, the PIN
 that brings them back on any phone, and the rifts they have made, each to name, publish or delete, with
-who has found sprites in it. `friends.html` is the player's invite link and every other player, each to
-add or remove. A player's own puzzles are made in the Pixelator, for mana, and a friend's published
-rifts stand after the owner's on the front page, saying who made them, and New until opened. A bar
-holds the places every player has, Puzzles, Friends, Pixelator and Me: along the bottom on a phone,
-along the top on a wider one, and in a header from 66rem; not where a puzzle is played or drawn. Me's
-list holds How to play, Add to home screen, Theme and, for an account, the way to Rux Home.
+who has found sprites in it, and a guest's Delete my player. `friends.html` is the player's friend link
+and their friends, each to remove. A player's own puzzles are made in the Pixelator, for mana, and a
+friend's published rifts stand after the owner's on the front page, saying who made them, and New until
+opened. A bar holds the places every player has, Puzzles, Friends, Pixelator and Me: along the bottom
+on a phone, along the top on a wider one, and in a header from 66rem; not where a puzzle is played or
+drawn. Me's list holds How to play, Add to home screen, Theme and, for an account, the way to Rux Home.
 `docs/profiles.md` is the whole of it: the door, profiles, friends, mana, and who is sent a rift.
 
 `play.html?id=` plays one puzzle, 5, 10, 15 or 20 squares a side. The board waits bare behind Tap to
@@ -106,27 +106,29 @@ new one or Unsorted, or deleted; a rift left empty goes too.
 
 ## Data
 
-Nine tables in the site's database, which only the owner's account reads directly: `pixels_puzzles`,
-every puzzle, which a staff account may read too; `pixels_players`, each player's name and picture
-with the account or the hash of the guest's key, and how many fairies they have used; `pixels_player_results` and `pixels_player_days`,
-each player's best time on a puzzle and on a puzzle of the day; and `pixels_settings`, whether new
-players may join; `pixels_friends`, who has added whom; `pixels_player_keys`, the key of each phone
-that logged in by a PIN; `pixels_level_players`, the players a rift is kept for; and
-`pixels_levels`, each rift's id, name, maker, audience and whether it is hidden. A rift and a puzzle
-with no maker are the owner's. `docs/database-access.md` is the rule they follow.
+Ten tables in the site's database, which only the owner's account reads directly: `pixels_puzzles`, every
+puzzle, which a staff account may read too; `pixels_players`, each player's name and picture with the
+account or the hash of the guest's key, and how many fairies they have used; `pixels_player_results` and `pixels_player_days`, each player's best
+time on a puzzle and on a puzzle of the day; `pixels_settings`, whether new players may join;
+`pixels_friends`, who is whose friend; `pixels_player_keys`, the key of each phone that came back by a PIN;
+`pixels_level_players`, the players a rift is kept for; `pixels_levels`, each rift's id, name, maker,
+audience and whether it is hidden; and `pixels_door_log`, a day of hashed callers for the door's brakes,
+which no account reads. A rift and a puzzle with no maker are the owner's. `docs/database-access.md` is the
+rule they follow.
 
-A player's page calls twenty-three functions, which the publishable key may run and which first find
-the player from the log-in or the key: `pixels_join`, `pixels_me`, `pixels_puzzles`, `pixels_results`,
+A player's page calls twenty-five functions, which the publishable key may run and which first find the
+player from the log-in or the key: `pixels_door`, `pixels_me`, `pixels_puzzles`, `pixels_results`,
 `pixels_days`, `pixels_record`, `pixels_record_day`, `pixels_board`, `pixels_set_picture`,
-`pixels_set_gear`, `pixels_rename`, `pixels_people`, `pixels_befriend`, `pixels_renew_invite`,
-`pixels_set_pin`, `pixels_use_fairy`, `pixels_login`, and for a player's own rifts `pixels_mine`,
-`pixels_keep_puzzle`, `pixels_drop_puzzle`, `pixels_name_my_level`, `pixels_publish_my_level` and
-`pixels_delete_my_level`. A time is the player's own browser's word: the database refuses only what
-cannot be, a time under two seconds, a puzzle the player is not sent, a day more than one from today.
-`pixels_puzzles` sends a player no puzzle that is switched off, which is `pixels_puzzles.hidden`, none
-in no rift, which is one whose `level` is empty, and none in a rift that `pixels_sees` says is not
-theirs to see: that one function is the rule, a hidden rift for nobody and a rift for everyone, for its
-maker's friends or for the players picked, as its audience says.
+`pixels_set_gear`, `pixels_rename`, `pixels_set_pin`, `pixels_use_fairy`, `pixels_leave`,
+`pixels_people`, `pixels_friend_offer`, `pixels_add_friend`, `pixels_unfriend`, `pixels_renew_invite`,
+and for a player's own rifts `pixels_mine`, `pixels_keep_puzzle`, `pixels_drop_puzzle`,
+`pixels_name_my_level`, `pixels_publish_my_level` and `pixels_delete_my_level`. A time is the player's
+own browser's word: the database refuses only what cannot be, a time under two seconds, a puzzle the
+player is not sent, a day more than one from today. `pixels_puzzles` sends a player no puzzle that is
+switched off, which is `pixels_puzzles.hidden`, none in no rift, which is one whose `level` is empty,
+and none in a rift that `pixels_sees` says is not theirs to see: that one function is the rule, a
+hidden rift for nobody and a rift for everyone, for its maker's friends or for the players picked, as
+its audience says.
 
 Five more are the owner's and refuse anyone else. `pixels_share_level` keeps a rift for the players
 named, or gives it back to everyone. `pixels_order_levels` renumbers the owner's rifts
@@ -136,7 +138,7 @@ deletes a rift the same way: its puzzles are left in no rift and the rifts after
 
 `players.html` is the owner's: every player with their picture, today's puzzle, days in a row,
 puzzles solved and when they last played; the name, which can be typed over; Close joining, which
-shuts every invite link to anyone new; Clear picture; the rifts players have made, each to hide or
+shuts the door to anyone new; Clear picture; the rifts players have made, each to hide or
 delete; and Remove, which takes a player and their results off the leaderboard.
 
 The local preview, `npm run serve` on :8640, has no log-in, so there Pixels

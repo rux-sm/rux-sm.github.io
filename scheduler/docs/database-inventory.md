@@ -35,11 +35,11 @@ the schema to match the page.
   `staff_all` rule for a staff session; `profiles` lets staff read and each
   person update their own row, but never its `user_id`;
   `quote_rates` and `quote_mileage_rates` are staff only too.
-- **Eight tables have no rule at all**, so they are reachable only through
+- **Nine tables have no rule at all**, so they are reachable only through
   `security definer` functions: `trip_history`, `record_history`,
   `driver_schedule_shares`, `maintenance_schedule_shares`,
   `trip_driver_confirmations`, `trip_driver_statuses`, `trip_buses`,
-  `trip_docs`.
+  `trip_docs`, and Pixels' `pixels_door_log`.
 - **The publishable key can run ten functions, the ones the link pages
   call:** the driver page's `get_driver_schedule_share`,
   `get_driver_share_trips`, `get_driver_assignment_statuses`,

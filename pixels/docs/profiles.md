@@ -12,7 +12,7 @@ What a player has besides the puzzles, and the rule for who is sent a rift.
 - **A profile is a player:** a row with a username nobody else has. A guest's
   and an account's are the same kind.
 - **Making one is typing a username and a PIN of four digits,** at the door,
-  reached by a player's invite link.
+  which the plain address shows anyone.
 - **A player draws their own picture,** 15 squares a side, in the Pixelator
   at `make.html?me`. It is no puzzle, so it needs no single answer.
 - **Until it is drawn, the picture is made from the username,** by `face` in
@@ -28,41 +28,63 @@ What a player has besides the puzzles, and the rule for who is sent a rift.
 
 ## The door, and coming back
 
-- **The door is one form:** a name, a PIN and Play. `entering` in `data.js`
-  draws it for a browser the database knows no player for.
-- **By an invite link, a new name makes a player with that PIN.** It is two
-  calls, the player and then the PIN, so a connection lost between them
-  leaves a player with no PIN, who sets one on Me.
-- **A name already playing is let in by its PIN,** with a link or without:
-  on another phone, or on the same one once its browser has lost the key.
-  The browser is given a key of its own, so no phone logs another out, and a
-  player keeps the ten newest.
-- **With no invite link the door only lets a player back in,** and tells
-  anyone new to ask a friend for theirs.
+- **The door is one form and one call:** a name, a PIN and Play. `entering`
+  in `data.js` draws it for a browser the database knows no player for, and
+  `pixels_door` answers it.
+- **A new name makes a player with that PIN,** so no player starts without
+  one.
+- **A name already playing is let in by its PIN:** on another phone, or on
+  the same one once its browser has lost the key. The browser is given a key
+  of its own, so no phone logs another out, and a player keeps the ten
+  newest.
+- **A PIN people pick most is refused,** at the door and on Me: a pair said
+  twice, such as 1212 or 1111, and a run up or down, such as 1234 or 9876.
 - **A guest changes or removes the PIN on Me.** One with no PIN has only
   their browser's key. An account, which has the site's log-in, has none.
-- **Five wrong PINs lock that username's log-in for 15 minutes, and twice as
-  long each time after,** because four digits are few enough to guess.
-  Phones already logged in keep playing.
+- **Five wrong PINs lock that username's way back for 15 minutes, and twice
+  as long each time after,** because four digits are few enough to guess.
+  Phones already in keep playing.
 - **The PIN is kept as a hash salted with the player's id,** which hides it
   from a glance and not from someone holding the table, so only the owner
   reads the table.
 - **A home screen icon still carries the key its page had,** as
   `home-screen.md` says.
 
+## The door's brakes
+
+- **The whole door makes 30 new players an hour,** then says it is full for
+  the moment. A player coming back is still let in.
+- **One address makes 10 players a day and misses 20 times an hour,** a miss
+  being a taken name or a wrong PIN.
+- **The address is Cloudflare's `cf-connecting-ip`,** which a caller cannot
+  set: a request that sends one is refused before it reaches the database.
+- **`pixels_door_log` keeps a hash of the address, salted, for a day,** and
+  never the address.
+- **A guest with nothing found, nothing drawn and no friend 30 days after
+  joining is deleted,** by `pixels_prune`, which runs each night and empties
+  the log past a day.
+- **The owner can close the door to anyone new,** on Players.
+
 ## Friends
 
-- **Every player has an invite link of their own,** `?join=` and their code,
-  and that is the only way in for anyone new. New link on Friends makes a
-  new code, which closes the old link.
-- **A player's address is their invite link.** `enter` puts their code in
-  the address of every page they open, so the address bar, a bookmark and
-  the browser's Share all hand on a link that works.
-- **Whoever joins by a player's link is their friend, both ways, at once.**
-- **Friends lists every other player,** friends first, each with Add or
-  Remove. Adding is one-way and needs no answer.
-- **The owner can close joining for everyone,** on Players, and removing a
-  player ends their link.
+- **A player sees another only as a friend.** Friends lists a player's
+  friends, the ranking holds them and the player, and a maker is told which
+  friends found their sprites. The database sends nobody else.
+- **Every player has a friend link of their own,** `?join=` and their code,
+  on Friends with Share and Copy. New link makes a new code, which closes
+  the old one.
+- **A friend link asks before it adds.** Whoever opens it is shown the
+  sharer's username and picture with Add friend and Not now: a player
+  already in at once, and someone new after the door.
+- **Add makes the two friends both ways, and Remove ends it both ways.**
+- **Nobody is added from a list or by a typed name.**
+
+## Leaving
+
+- **Delete my player, on Me, is a guest's.** It asks twice, then the player
+  and all that is theirs are gone: results, friendships, keys, rifts and
+  puzzles. What the browser kept for them goes too, and the door is what is
+  left.
 
 ## Who is sent a rift
 
@@ -72,7 +94,7 @@ What a player has besides the puzzles, and the rule for who is sent a rift.
   publish it.
 - **A rift has an audience:** `everyone`, which is one of the owner's as it
   starts; `friends`, which is a player's own, sent to its maker and to
-  whoever has added them; or `picked`, which is one of the owner's kept for
+  their friends; or `picked`, which is one of the owner's kept for
   the players ticked in Manage.
 - **A rift is its maker's and a number,** and holds boards of any size. No
   maker is the owner's, so a player's first rift and the owner's can both be

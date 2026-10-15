@@ -2,22 +2,22 @@
    data.js — who is playing, and where puzzles and results are kept
    --------------------------------------------------------------------------
    A PLAYER is an account that can open Pixels, or a GUEST: someone with no
-   account who came by an invite link, typed a name and a PIN, and whose
-   browser made a long random key, kept under `pixels-guest`. The database
-   knows a guest by that key's hash, and a browser with no key by the name
-   and the PIN, which earn it a key of its own.
+   account who typed a name and a PIN at the door, and whose browser made a
+   long random key, kept under `pixels-guest`. The database knows a guest by
+   that key's hash, and a browser with no key by the name and the PIN, which
+   earn it a key of its own.
 
    Nobody but the owner reads a table. Everything a player does goes through
    database functions that first find the player, from the log-in or from the
-   key: `pixels_puzzles`, `pixels_results`, `pixels_days`, `pixels_record`,
-   `pixels_record_day`, `pixels_board`, `pixels_me`, `pixels_join`,
-   `pixels_set_picture`, `pixels_rename`, `pixels_people`, `pixels_befriend`,
-   `pixels_renew_invite`, `pixels_set_pin`, `pixels_use_fairy`, `pixels_login`, and for a player's
-   own puzzles and rifts
-   `pixels_mine`, `pixels_keep_puzzle`, `pixels_drop_puzzle`,
+   key: `pixels_door`, `pixels_me`, `pixels_puzzles`, `pixels_results`,
+   `pixels_days`, `pixels_record`, `pixels_record_day`, `pixels_board`,
+   `pixels_set_picture`, `pixels_rename`, `pixels_set_pin`, `pixels_use_fairy`, `pixels_leave`,
+   `pixels_people`, `pixels_friend_offer`, `pixels_add_friend`,
+   `pixels_unfriend`, `pixels_renew_invite`, and for a player's own puzzles
+   and rifts `pixels_mine`, `pixels_keep_puzzle`, `pixels_drop_puzzle`,
    `pixels_name_my_level`, `pixels_publish_my_level` and
-   `pixels_delete_my_level`. An invite link is `?join=` and a player's own
-   code, and whoever joins by it is that player's friend both ways.
+   `pixels_delete_my_level`. A friend link is `?join=` and a player's own
+   code, and whoever opens it is asked before the two are made friends.
    `results` gives a Map of puzzle id to { seconds } and `days` a Map
    of day to the same; `record` and `recordDay` keep the shorter time, and
    `board` gives a day's ranking and the all-time one. The client is
@@ -25,9 +25,9 @@
 
    `enter()` is what a page calls first: it says whether there is a player,
    and where there is not it draws the door, one form of a name and a PIN.
-   Where there is one it puts their invite code in the address, as `invite()`
-   does. `carry()` puts a guest's key in the address for a home screen icon
-   to keep.
+   A player who opened a friend link is asked there whether to add its
+   sharer. `carry()` puts a guest's key in the address for a home screen
+   icon to keep.
    `me` gives the player with their picture and how many sprites they have
    found, and `setPicture` and `rename` change their own picture and username.
 
@@ -212,7 +212,7 @@
     },
     // The preview has nobody else in it.
     async people() { return []; },
-    async befriend() {},
+    async unfriend() {},
     async renewInvite() { return this.me(); },
     // The character's colours and the player's drawings of its armour.
     async setGear(gear) {
@@ -252,13 +252,21 @@
   const GUEST = 'pixels-guest', WORD = 'pixels-join';
   const readGuest = () => { try { return JSON.parse(localStorage.getItem(GUEST) || 'null'); } catch { return null; } };
   const key = () => (member ? null : readGuest()?.key ?? null);
-  // The invite word, from the link, kept while this tab is open.
+  // A friend link's code, from the address, kept while this tab is open so
+  // it outlasts the door; `forget` drops it and takes it out of the address.
   const word = () => {
     const given = new URLSearchParams(location.search).get('join');
     try {
       if (given) sessionStorage.setItem(WORD, given);
       return given || sessionStorage.getItem(WORD) || '';
     } catch { return given || ''; }
+  };
+  const forget = () => {
+    try { sessionStorage.removeItem(WORD); } catch { /* nothing kept */ }
+    const rest = new URLSearchParams(location.search);
+    if (!rest.has('join')) return;
+    rest.delete('join');
+    history.replaceState(history.state, '', location.pathname + (String(rest) ? `?${rest}` : '') + location.hash);
   };
 
   /* A GUEST'S ICON CARRIES THEIR KEY. An iPhone keeps an installed app's
@@ -297,22 +305,18 @@
     // The player's own character: its skin's and its eyes' ink and their
     // drawing of each piece of armour, or none to set it all back.
     async setGear(gear) { return call('pixels_set_gear', { p_key: key(), p_gear: gear }); },
-    // The player's own PIN, four digits, or none to take it away; and another
-    // phone logging in by it, which gets a key of its own, kept as a guest's is.
+    // The player's own PIN, four digits, or none to take it away.
     async setPin(pin) { return call('pixels_set_pin', { p_key: key(), p_pin: pin }); },
     // Spends one of the player's fairies, if there is one: `fairies` is how
     // many are left, with `error` where there was none to spend.
     async useFairy() { return call('pixels_use_fairy', { p_key: key() }); },
-    async login(name, pin) {
-      const made = crypto.randomUUID() + crypto.randomUUID();
-      const player = await call('pixels_login', { p_name: name, p_pin: pin, p_key: made });
-      if (!player.error) localStorage.setItem(GUEST, JSON.stringify({ key: made, name: player.name }));
-      return player;
-    },
-    // Every other player, friends first; adding one is one-way, and their
-    // published rifts are then sent. A new invite code closes the old link.
+    // The player's friends, and nobody else. `friendOffer` says whose a
+    // friend link's code is, `addFriend` makes the two friends both ways and
+    // `unfriend` ends it both ways. A new code closes the old link.
     async people() { return call('pixels_people', { p_key: key() }); },
-    async befriend(id, on) { await call('pixels_befriend', { p_key: key(), p_friend: id, p_on: on }); },
+    async friendOffer(code) { return call('pixels_friend_offer', { p_key: key(), p_code: code }); },
+    async addFriend(code) { return call('pixels_add_friend', { p_key: key(), p_code: code }); },
+    async unfriend(id) { await call('pixels_unfriend', { p_key: key(), p_friend: id }); },
     async renewInvite() { return call('pixels_renew_invite', { p_key: key() }); },
     /* A PLAYER'S OWN PUZZLES AND RIFTS, by the names the owner's have, so
        the Pixelator saves either. `mine` is everything of the player's:
@@ -354,12 +358,20 @@
       if (!me.error && kept) localStorage.setItem(GUEST, JSON.stringify({ ...kept, name: me.name }));
       return me;
     },
-    // A new guest: the key is made here and kept only if the database takes it.
-    async join(name) {
+    // The door, for a browser with no player: a new name makes one with
+    // that PIN, and a name already playing is let in by its PIN. The key is
+    // made here and kept only if the database takes it.
+    async door(name, pin) {
       const made = crypto.randomUUID() + crypto.randomUUID();
-      const player = await call('pixels_join', { p_name: name, p_key: made, p_word: word() });
+      const player = await call('pixels_door', { p_name: name, p_pin: pin, p_key: made });
       if (!player.error) localStorage.setItem(GUEST, JSON.stringify({ key: made, name: player.name }));
       return player;
+    },
+    // A guest's player and all that is theirs, gone for good, and with it
+    // what this browser kept for them.
+    async leave() {
+      await call('pixels_leave', { p_key: key() });
+      for (const kept of [GUEST, 'pixels-progress', 'pixels-last', 'pixels-seen']) localStorage.removeItem(kept);
     },
     // What a player is sent, the owner too: the puzzles of the levels the
     // owner has not hidden, but for those switched off or in no category,
@@ -500,23 +512,24 @@
   const store = cloud || (local ? preview : null);
   const guest = !!cloud && !member;
 
-  /* COMING IN. Gives the player, or null. A guest with no player yet gets
-     the door in `host`, in place of what was there, and the page loads
-     again once they are in. */
+  /* COMING IN. Gives the player, or null. A browser with no player gets the
+     door in `host`, in place of what was there, and a player who opened a
+     friend link is asked there whether to add its sharer. Either way the
+     page loads again once it is answered. */
   const entering = async host => {
     if (!cloud) return store ? store.me() : null;
-    const me = await cloud.me();
-    if (me) return me;
-    try { localStorage.removeItem(GUEST); } catch { /* nothing kept */ }
-    // The key an icon carried, kept if the database knows it.
-    let stale = false;
-    if (carried && !member) {
-      const mine = await call('pixels_me', { p_key: carried });
-      if (mine) {
-        try { localStorage.setItem(GUEST, JSON.stringify({ key: carried, name: mine.name })); } catch { /* asked again next time */ }
-        return mine;
+    // Read first, so a friend link's code is kept through the door.
+    const code = word();
+    let me = await cloud.me(), stale = false;
+    if (!me) {
+      try { localStorage.removeItem(GUEST); } catch { /* nothing kept */ }
+      // The key an icon carried, kept if the database knows it.
+      if (carried && !member) {
+        me = await call('pixels_me', { p_key: carried });
+        if (me) {
+          try { localStorage.setItem(GUEST, JSON.stringify({ key: carried, name: me.name })); } catch { /* asked again next time */ }
+        } else stale = true;
       }
-      stale = true;
     }
     const text = (tag, cls, words) => {
       const el = document.createElement(tag);
@@ -544,58 +557,74 @@
       wrap.append(labelWrap, outer);
       return { wrap, input };
     };
-    // The page again, at its own address without the invite code.
+    // The page again, at its own address without the link's code.
     const again = () => {
       const rest = new URLSearchParams(location.search);
       rest.delete('join');
       location.replace(location.pathname + (String(rest) ? `?${rest}` : ''));
     };
-    /* THE DOOR is one form: a name, a PIN of four digits and Play. By an
-       invite link a new name makes a player, who is given that PIN. A name
-       already playing is let in by its PIN, with a link or without, and this
-       browser gets a key of its own. It answers nothing when the player is
-       in, or the words to show. */
-    const invited = !!word();
-    const knock = async (name, pin) => {
-      const lost = 'That did not go through. Try again.';
-      let joined = { error: 'word' };
-      if (invited) {
-        try { joined = await cloud.join(name); } catch { return lost; }
-        if (!joined.error) {
-          // The player is in either way: a PIN that will not save is set on Me.
-          for (let tries = 0; tries < 2; tries++) {
-            try { await cloud.setPin(pin); break; } catch { /* once more */ }
-          }
-          return '';
-        }
-        if (joined.error === 'name') return 'A name is 1 to 20 letters.';
-        if (!['taken', 'word', 'closed'].includes(joined.error)) return lost;
-      }
-      let back;
-      try { back = await cloud.login(name, pin); } catch { return lost; }
-      if (!back.error) return '';
-      const taken = joined.error === 'taken';
-      if (back.error === 'locked') {
-        const wait = `${back.minutes} ${back.minutes === 1 ? 'minute' : 'minutes'}`;
-        return taken ? `That name is taken. If it is yours, try again in ${wait}.` : `Too many wrong tries. Try again in ${wait}.`;
-      }
-      if (back.error !== 'wrong') return lost;
-      // Tries left are counted only for a name that has a PIN.
-      if (back.left) {
-        const left = `${back.left} ${back.left === 1 ? 'try' : 'tries'} left.`;
-        return taken ? `That name is taken. If it is yours, the PIN is wrong. ${left}` : `That name and PIN do not match. ${left}`;
-      }
-      if (taken) return 'That name is taken. Try another.';
-      if (!invited) return 'No player has that name and PIN. New here? Ask a friend for their link.';
-      return joined.error === 'closed' ? 'Pixels is not taking new players just now.' : 'This invite link is no longer open. Ask a friend for a new one.';
-    };
+
+    /* A FRIEND LINK ASKS BEFORE IT ADDS. Its code names another player who
+       is not a friend yet: their picture and username, Add friend and Not
+       now. A code that names nobody, the player themself or a friend is
+       dropped without a word. */
+    if (me) {
+      if (!code) return me;
+      let offer = null;
+      try { offer = await cloud.friendOffer(code); } catch { /* the link can be opened again */ }
+      if (!offer || offer.friend) { forget(); return me; }
+      const form = document.createElement('form');
+      form.className = 'pixels-join rux--stack-vertical rux--stack-scale-6';
+      form.noValidate = true;
+      const note = text('p', 'pixels-join-note', '');
+      note.setAttribute('aria-live', 'polite');
+      const keys = document.createElement('div');
+      keys.className = 'pixels-link-keys';
+      const add = text('button', 'rux--btn rux--btn--primary', 'Add friend'), skip = text('button', 'rux--btn rux--btn--ghost', 'Not now');
+      add.type = 'submit';
+      skip.type = 'button';
+      keys.append(add, skip);
+      form.append(window.Pixels.portrait(offer, true), text('h1', 'rux--type-productive-heading-04', `Add ${offer.name} as a friend?`),
+        text('p', 'rux--type-body-01', 'Friends see each other\'s username, picture and rifts.'), note, keys);
+      const answered = () => {
+        try { sessionStorage.removeItem(WORD); } catch { /* nothing kept */ }
+        again();
+      };
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        add.disabled = skip.disabled = true;
+        let made;
+        try { made = await cloud.addFriend(code); } catch { made = { error: 'lost' }; }
+        if (!made.error) { answered(); return; }
+        add.disabled = skip.disabled = false;
+        note.textContent = made.error === 'word' ? 'This link is no longer open. Ask for a new one.' : 'That did not go through. Try again.';
+      });
+      skip.addEventListener('click', answered);
+      host.replaceChildren(form);
+      return null;
+    }
+
+    /* THE DOOR is one form and one call: a name, a PIN of four digits and
+       Play. A new name makes a player with that PIN, and a name already
+       playing is let in by its PIN, on a key of this browser's own. */
+    const count = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+    const refusal = ({ error, left, minutes }) => ({
+      name: 'A name is 1 to 20 letters.',
+      pin: 'A PIN is four digits.',
+      weak: 'That PIN is too easy to guess. Pick another.',
+      taken: 'That name is taken. Try another.',
+      wrong: `That name is taken. If it is yours, the PIN is wrong. ${count(left, 'try', 'tries')} left.`,
+      locked: `Too many wrong PINs for that name. Try again in ${count(minutes, 'minute', 'minutes')}.`,
+      closed: 'Pixels is not taking new players just now.',
+      busy: 'Pixels is full for the moment. Try again in a little while.',
+      slow: 'Too many tries from here. Try again in an hour.',
+    }[error] || 'That did not go through. Try again.');
     const form = document.createElement('form');
     form.className = 'pixels-join rux--stack-vertical rux--stack-scale-6';
     form.noValidate = true;
     form.append(text('h1', 'rux--type-productive-heading-04', 'Pixels'));
-    form.append(text('p', 'rux--type-body-01', invited ? 'Pick a name and a PIN to play. The same two bring you back on any phone.'
-      : stale ? 'This icon no longer opens a player. Type your name and PIN, or ask a friend for their link.'
-        : 'Type your name and PIN to play. New here? Ask a friend for their link.'));
+    form.append(text('p', 'rux--type-body-01', stale ? 'This icon no longer opens a player. Your name and PIN still do.'
+      : 'Pick a name and a PIN to play. The same two bring you back on any phone.'));
     // Named as a log-in's fields are, so a browser offers to keep the two.
     const who = field('pixels-join-name', 'Name', { maxLength: 20, autocomplete: 'username', required: true });
     const pin = field('pixels-join-pin', 'PIN, four digits', { maxLength: 4, inputMode: 'numeric', autocomplete: 'current-password', type: 'password', required: true });
@@ -611,32 +640,18 @@
       if (!/^\d{4}$/.test(pin.input.value)) { note.textContent = 'A PIN is four digits.'; return; }
       go.disabled = true;
       note.textContent = '';
-      const said = await knock(name, pin.input.value);
-      if (!said) { again(); return; }
+      let player;
+      try { player = await cloud.door(name, pin.input.value); } catch { player = { error: 'lost' }; }
+      if (!player.error) { again(); return; }
       go.disabled = false;
-      note.textContent = said;
+      note.textContent = refusal(player);
     });
-    if (invited) host.replaceChildren(form);
-    else {
-      // An account's way in, which an app on the home screen has no address bar for.
-      const login = text('a', 'rux--link', 'Log in with an account');
-      login.href = '/login/?next=/pixels/';
-      host.replaceChildren(form, login);
-    }
+    // An account's way in, which an app on the home screen has no address bar for.
+    const login = text('a', 'rux--link', 'Log in with an account');
+    login.href = '/login/?next=/pixels/';
+    host.replaceChildren(form, login);
     who.input.focus();
     return null;
-  };
-
-  /* EVERY ADDRESS A PLAYER COPIES IS THEIR INVITE LINK. Once there is a
-     player the address carries `?join=` and their own code, so the address
-     bar, a bookmark and the browser's Share all hand on a link that lets a
-     friend in. Friends calls it again when the code changes. */
-  const invite = code => {
-    if (!cloud || !code) return;
-    const rest = new URLSearchParams(location.search);
-    if (rest.get('join') === code) return;
-    rest.set('join', code);
-    history.replaceState(history.state, '', `${location.pathname}?${rest}${location.hash}`);
   };
 
   // The bar of places shows once there is a player: at once for an account
@@ -654,7 +669,6 @@
       show();
       window.Pixels.shell?.(me);
     }
-    if (me) invite(me.code);
     return me;
   };
 
@@ -665,7 +679,6 @@
     guest,
     enter,
     carry,
-    invite,
   });
   // A page that asks for no player, as the owner's two do, still has the
   // header's panel to fill, and an account or the preview is here already.

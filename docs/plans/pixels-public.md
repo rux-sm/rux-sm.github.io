@@ -105,24 +105,6 @@ Where it lives:
 
 ## Tasks
 
-- [ ] Find the request header that carries the caller's address into a
-      database function, and prove a forged one does not get through.
-      Without one, the address brake leaves this plan and the whole-door
-      brake stands. The SQL is shown to rux first.
-- [ ] Write the first migration and test it offline in PGlite:
-      `pixels_door` with the brakes; the refused PINs in it and in
-      `pixels_set_pin`; `pixels_people`, `pixels_board` and `pixels_mine`
-      holding friends only; the friend link's three functions, which show
-      the sharer, add both ways and remove both ways; `pixels_leave`; the
-      day's log of hashed addresses; and the nightly job. Each is granted
-      to the key by name. The SQL is shown to rux first, and
-      `docs/database-access.md`'s check is run after it.
-- [ ] Open the door: the plain address joins in one call, with words for a
-      refused PIN and for each brake, and the address stays plain.
-- [ ] Make the friend link ask: for a player already in, and for someone
-      new after the door. Friends lists friends only, each with Remove, and
-      has Copy and Share.
-- [ ] Add Delete my player to Me.
 - [ ] Write What Pixels keeps and link it from the door.
 - [ ] Drop `pixels_befriend`, `pixels_join` and `pixels_login` in a second
       migration, shown to rux first.

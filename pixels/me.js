@@ -17,8 +17,13 @@
    this is shown there. The owner has rifts of their own here too, apart from
    the ones every player is sent, and is not shown mana, since theirs cost
    none.
-   A guest with no player yet gets the name form first; data.js's `enter`
-   draws it.
+   DELETE MY PLAYER is a guest's, at the foot of the page. It asks twice, a
+   press each, and then the player and all that is theirs are gone and the
+   door is what is left. An account has none, since its player is made again
+   when it next opens Pixels.
+
+   A guest with no player yet gets the door first; data.js's `enter` draws
+   it.
 
    THE LIST UNDER THE PLAYER is what a header would hold, since a game has
    none: How to play, Add to home screen where the browser can, Theme, and
@@ -237,6 +242,41 @@
     if (owner && data.setGear) host.append(character(me));
     if (guest && data.setPin) host.append(pinForm(me));
     more();
+    if (guest && data.leave) leave();
+  };
+
+  // Delete my player: the first two presses only ask, and a press not
+  // followed within a few seconds starts over.
+  const leave = () => {
+    document.getElementById('pixels-leave')?.remove();
+    const el = document.createElement('p');
+    el.id = 'pixels-leave';
+    el.className = 'pixels-leave';
+    const asks = ['Delete my player', 'Delete everything of mine?', 'It cannot be undone. Delete?'];
+    const key = button('rux--btn--danger--ghost', asks[0]);
+    let step = 0, timer;
+    const show = n => { step = n; key.textContent = asks[n]; };
+    key.addEventListener('click', async () => {
+      clearTimeout(timer);
+      if (step < 2) {
+        show(step + 1);
+        timer = setTimeout(() => show(0), 5000);
+        return;
+      }
+      key.disabled = true;
+      try {
+        await data.leave();
+      } catch {
+        key.disabled = false;
+        show(0);
+        say('Your player was not deleted', 'Try again.');
+        return;
+      }
+      location.replace('./');
+    });
+    el.append(key);
+    // After the rifts, which are drawn after the host.
+    host.parentElement.append(el);
   };
 
   /* A PIN, which with the username is a guest's way back in on any phone:
@@ -280,7 +320,10 @@
       let now;
       try { now = await data.setPin(pin); } catch { now = { error: 'lost' }; }
       go.disabled = false;
-      if (now.error) { note.textContent = now.error === 'pin' ? 'A PIN is four digits.' : 'That did not go through. Try again.'; return; }
+      if (now.error) {
+        note.textContent = { pin: 'A PIN is four digits.', weak: 'That PIN is too easy to guess. Pick another.' }[now.error] || 'That did not go through. Try again.';
+        return;
+      }
       form.replaceWith(pinForm({ ...me, pin: now.pin }));
     };
     form.addEventListener('submit', e => {

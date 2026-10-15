@@ -36,7 +36,7 @@ saves nothing itself.
   The note is the notice at the top of the editor, as a draft's is.
 - **A PO answers** its number, its date, its amount, and the buses and days
   it names. **A contract answers** whether it is signed, by whom and when,
-  which is what marking Contract signed needs.
+  which is what the Billing list's Contract signed row holds.
 - **A file is sent to the API only when someone presses its Read,** and rux
   has agreed that a customer's itinerary, PO or contract may be.
 - **A reading into a route that has stops asks first, then replaces them,**
@@ -91,8 +91,9 @@ saves nothing itself.
 - [ ] Offer the reading in Billing for a PO, fill the purchase order's
       number, date and amount marked to check, and warn where the paper and
       the trip disagree.
-- [ ] Offer the reading in Billing for a contract, and turn Contract signed
-      on with who signed and when in its note, marked to check.
+- [ ] Offer the reading in Billing for a contract, and add the Contract
+      signed row with the day it was signed and who signed in its note,
+      marked to check.
 - [ ] Ask before a reading replaces a route's stops.
 - [ ] Say why where a file cannot be read: not a PDF, over the limits, or an
       answer the API declined.

@@ -1418,13 +1418,10 @@ button.scheduler-row-head__num::after {
    tab's name while it holds. */
 .scheduler-done { display: flex; flex-direction: column; align-items: flex-start; gap: var(--rux-spacing-03); }
 .scheduler-done .rux--form__helper-text { margin: 0; }
-/* A done tab's Done, and a sent quote, are each one line: what holds and
-   when, then its undo at the line's end, where a section heading keeps its
-   control. */
-.scheduler-done--on,
-.scheduler-sent-line { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; column-gap: var(--rux-spacing-03); }
-.scheduler-done--on > .rux--btn,
-.scheduler-sent-line > .rux--btn { margin-inline-start: auto; }
+/* A done tab's Done is one line: what holds and when, then its undo at the
+   line's end, where a section heading keeps its control. */
+.scheduler-done--on { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; column-gap: var(--rux-spacing-03); }
+.scheduler-done--on > .rux--btn { margin-inline-start: auto; }
 /* Carbon runs helper text the field's full width, which would break the line. */
 .scheduler-done--on > .rux--form__helper-text { inline-size: auto; }
 .scheduler-done__head { display: flex; align-items: center; gap: var(--rux-spacing-03); margin: 0; }
@@ -2207,12 +2204,7 @@ button.scheduler-row-head__num::after {
    one line, the day and then the time. */
 .scheduler-dialog-grid--pairs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
-/* A milestone's fields, shown only while its switch is on. The block is also a
-   `rux--stack-vertical`, which is `display: grid` and beats the browser's own
-   `[hidden]`, so hidden is restated, scoped to this app's class. */
-.scheduler-milestone-fields[hidden] { display: none; }
-
-/* A section heading with an inline control on its right, a switch or a
+/* A section heading with an inline control on its right, a menu or a
    button. The row keeps the 22px title line's height, so its words start where
    a plain heading's do, and what sits under it stands 16px below, as under a
    plain heading. */

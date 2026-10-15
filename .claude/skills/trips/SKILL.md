@@ -94,7 +94,7 @@ reads only the ones before it. Nothing is written until step 10.
     the hours, the miles, the rate and the price, as the save wrote them.
 12. **Reply.** Draft the email in chat by `emails.md`. rux prints the quote
     from Forms, Quote, which is two sheets, and sends it himself.
-13. **Quote sent.** Mark it on the Billing tab, then Mark billing done and
+13. **Quote sent.** Add it from the Billing list's Add entry, then Mark billing done and
     Save, only when rux asks for the mark in words. "Done" or "sent" alone is
     not that, because the mark records what the customer was sent.
 
@@ -133,8 +133,9 @@ reads only the ones before it. Nothing is written until step 10.
   Quote: Add the bus rental (it shows the calculator's price), the Addt'l
   Driver line a co-driver seat adds, Add line (Discount, Second driver,
   Hotel, Other), the quoted price typed under them only on a trip with no
-  line, and Calculator and Copy for QuickBooks in its ⋮; Quote sent;
-  contract, PO, invoice, payments; Miles: Estimated miles, blank while it
+  line, and Calculator and Copy for QuickBooks in its ⋮; Billing: Quote
+  sent, the contract, POs, invoices and payments as one list, each added
+  from Add entry; Miles: Estimated miles, blank while it
   follows the route, beside Actual miles, then each driver's miles, and Get
   from Samsara in its ⋮; Mark billing done.
 - **Files:** the uploaded itineraries, contracts and POs; a file opens in a viewer.
@@ -222,7 +223,7 @@ reads only the ones before it. Nothing is written until step 10.
   click by coordinates.
 - Leaving the editor drops unsaved changes; Reset takes them back.
 - An editor tab left open while waiting on rux's yes can be gone when he answers, with every unsaved change: check with `get_trip` that nothing was saved, then draft the change again and rebuild it.
-- Mark sent records today's date, not the day the quote went out.
+- Quote sent, from the Billing list's Add entry, records today's date, not the day the quote went out.
 - Mark billing done stays off until Quote sent is marked, so a trip saved before its quote goes out has Billing left open.
 - On a new trip, Save's Updates box opens on "Quote not sent", or "Quote sent" with the price once it is marked: save that line as it stands, with a few words added only when the trip waits on something else. A new trip's update is never a summary of the trip.
 - After a save, Add update is on the bar's own menu, a right-click on the bar; Forms is on that menu too, and the bar's colour is the last field of Details.

@@ -329,7 +329,7 @@
     'quote_sent_price,quote_sent_on',
     // Who marked the Route, Buses and Billing tabs done, and when.
     'route_done_at,route_done_by,buses_done_at,buses_done_by,billing_done_at,billing_done_by',
-    'contract_status,invoice_status,balance_paid,date_paid',
+    'contract_status,contract_signed_on,invoice_status,balance_paid,date_paid',
     'est_miles,actual_miles',
     // How many people the customer said are travelling.
     'passengers',
@@ -1915,10 +1915,10 @@
   const barShortcuts = document.getElementById('scheduler-bar-shortcuts');
   const unsavedModal = document.getElementById('scheduler-unsaved-modal');
 
-  /* A section can carry one control on its heading line, as each billing
-     switch does. The head is app markup rather than a `contained-list`
-     header, because Contract holds form fields, not list rows; every billing
-     section uses it, so the switches share one right edge. */
+  /* A section can carry one control on its heading line, as the Quote and
+     Miles menus do. The head is app markup rather than a `contained-list`
+     header, because a section can hold form fields, not only list rows;
+     every section uses it, so the controls share one right edge. */
   const section = (title, node, action) => {
     const wrap = el('div', 'scheduler-panel-section');
     // A titleless section still keeps the section's spacing above it.
@@ -3713,29 +3713,6 @@
     return FIELD(id, label, outer, 'rux--form-item rux--text-input-wrapper');
   }
 
-  /* Carbon's default toggle, from `sink/toggle.html`, with no On/Off text: the
-     section heading beside it names the state (Contract signed, PO received,
-     Invoice sent) and is its label. `js/form-controls.js` binds it and fires
-     `rux:toggle`. */
-  function toggleAction(id, label, on) {
-    const box = el('div', 'rux--toggle');
-    const btn = el('button', 'rux--toggle__button');
-    btn.type = 'button';
-    btn.id = id;
-    btn.setAttribute('role', 'switch');
-    btn.setAttribute('aria-checked', String(!!on));
-    btn.setAttribute('aria-label', label);
-    const lab = el('label', 'rux--toggle__label');
-    lab.setAttribute('for', id);
-    const appearance = el('div', 'rux--toggle__appearance');
-    const sw = el('div', 'rux--toggle__switch');
-    if (on) sw.classList.add('rux--toggle__switch--checked');
-    appearance.appendChild(sw);
-    lab.appendChild(appearance);
-    box.append(btn, lab);
-    return box;
-  }
-
   /* Money is a text input with a decimal keyboard, not `rux--number-input`,
      whose stepper buttons suit nothing anyone steps by one.
      `inputmode="decimal"` gives a phone the right keypad. */
@@ -4637,9 +4614,10 @@
        statuses are text columns holding "Pending"/"Signed" and
        "Pending"/"Invoiced", not booleans.
 
-       Each gated field is null while its switch is off, the rule rux-ui's
-       `collectTrip` follows too. `invoiced` is written beside `invoice_status`
-       so the two always agree. */
+       The milestones are the Billing list's rows: the contract is signed while
+       it has its row, with that row's day and note, and a step the billing
+       workflow does not use is off. `invoiced` is written beside
+       `invoice_status` so the two always agree. */
     { key: 'quoted_price', get: f => money(f['scheduler-f-quoted'].value) },
     // What the customer was sent, kept by Quote sent on the Billing tab.
     { key: 'quote_sent_price', get: () => editing?.quoteSent?.price ?? null },
@@ -4647,19 +4625,20 @@
     // The route's miles, on the Route tab.
     { key: 'est_miles', get: () => estTyped() ?? routeTotal() },
     { key: 'actual_miles', get: () => money(document.getElementById('scheduler-f-actmiles')?.value) },
-    { key: 'contract_status', get: f => stepOn('contractSigned') && on(f['scheduler-f-contract']) ? 'Signed' : 'Pending' },
-    { key: 'contract_note',
-      get: f => stepOn('contractSigned') && on(f['scheduler-f-contract']) ? (f['scheduler-f-contractnote'].value.trim() || null) : null },
+    { key: 'contract_status', get: () => (contractNow() ? 'Signed' : 'Pending') },
+    { key: 'contract_signed_on', get: () => contractNow()?.on ?? null },
+    { key: 'contract_note', get: () => contractNow()?.note ?? null },
     /* The PO and invoice columns are filled from the rows in `trip_pos` and
        `trip_invoices`: `po_ref` is the first PO's reference, `po_amount` the sum
        of the PO amounts and `invoice_number` the first invoice's number, because
        rux-ui and other readers still use the columns. `listRowsToSave` is the
-       list Save writes, so the columns and the rows agree. */
-    { key: 'po_received', get: f => stepOn('poReceived') && on(f['scheduler-f-poreceived']) },
+       list Save writes, so the columns and the rows agree, and PO received and
+       Invoice sent are on while their list has a row. */
+    { key: 'po_received', get: () => stepOn('poReceived') && poPending.length > 0 },
     { key: 'po_ref', get: () => listRowsToSave('po')[0]?.ref ?? null },
     { key: 'po_amount', get: () => sumOrNull(listRowsToSave('po')) },
-    { key: 'invoice_status', get: f => on(f['scheduler-f-invoice']) ? 'Invoiced' : 'Pending' },
-    { key: 'invoiced', get: f => on(f['scheduler-f-invoice']) },
+    { key: 'invoice_status', get: () => (invPending.length ? 'Invoiced' : 'Pending') },
+    { key: 'invoiced', get: () => invPending.length > 0 },
     { key: 'invoice_number', get: () => listRowsToSave('invoice')[0]?.number ?? null },
     // A trip that runs without an itinerary loses its bar's mark.
     { key: 'itinerary_not_needed', get: () => !!editing?.itineraryNotNeeded },
@@ -5103,15 +5082,18 @@
      the trip, and whether the payments reach the quote, with the latest
      payment's date. The tab's summary draws from it and Save writes from it,
      so what the tab says is what the trip becomes. */
+  // The open editor's signed contract, `{ on, note }`, or null.
+  const contractNow = () => (stepOn('contractSigned') ? editing?.contract ?? null : null);
+
   function billingNow() {
     const quoted = money(document.getElementById('scheduler-f-quoted')?.value);
     const price = quoted ?? 0;
     const amounts = payPending.map(p => Number(p.amount) || 0);
     const paid = amounts.reduce((n, a) => n + a, 0);
     const poAmount = poPending.reduce((n, p) => n + (Number(p.amount) || 0), 0);
-    const poReceived = stepOn('poReceived') && on(document.getElementById('scheduler-f-poreceived'));
+    const poReceived = stepOn('poReceived') && poPending.length > 0;
     const rung = billingStatus({
-      contractSigned: stepOn('contractSigned') && on(document.getElementById('scheduler-f-contract')),
+      contractSigned: !!contractNow(),
       poReceived, poAmount, price, paid,
     });
     const fullyPaid = price > 0 && price - paid <= 0;
@@ -5121,7 +5103,7 @@
   }
 
   // The trip columns a save that changes billing derives, as rux-ui's does.
-  const BILLING_KEYS = ['quoted_price', 'contract_status', 'contract_note', 'po_received', 'po_ref',
+  const BILLING_KEYS = ['quoted_price', 'contract_status', 'contract_signed_on', 'contract_note', 'po_received', 'po_ref',
                         'po_amount', 'invoice_status', 'invoiced', 'invoice_number'];
   function derivedBilling() {
     const b = billingNow();
@@ -5143,7 +5125,6 @@
                       // ids on the panel: a missing element returns null.
                       'start', 'end', 'rstart', 'rend',
                       'quoted',
-                      'contract', 'contractnote', 'poreceived', 'invoice',
                       'color']) {
       f[`scheduler-f-${id}`] = document.getElementById(`scheduler-f-${id}`);
     }
@@ -5351,10 +5332,10 @@
     const val = id => document.getElementById(id)?.value.trim() ?? '';
     const row = { ref: val('scheduler-f-oref') || null, amount: money(val('scheduler-f-oamount')),
                   date: isoOrNull(val('scheduler-f-odate')) };
-    // An empty dialog adds nothing, as in the payment dialog: the switch alone
-    // already says a PO is expected. The date is not counted, since it starts
-    // filled in.
-    if (row.ref === null && row.amount === null) {
+    // Adding a PO is what marks it received, so a new one is added with only
+    // its date; an existing row emptied this way is left alone, as in the
+    // payment dialog.
+    if (row.ref === null && row.amount === null && poEditing !== null) {
       window.Rux?.modal?.close?.('scheduler-po-modal');
       return;
     }
@@ -5388,9 +5369,9 @@
   document.getElementById('scheduler-inv-done')?.addEventListener('click', () => {
     const val = id => document.getElementById(id)?.value.trim() ?? '';
     const row = { number: val('scheduler-f-inum') || null, date: isoOrNull(val('scheduler-f-idate')) };
-    // An empty dialog adds nothing, the rule the other two dialogs follow;
-    // the date starts filled in, so only the number counts.
-    if (row.number === null) {
+    // Adding an invoice is what marks it sent, so a new one is added with
+    // only its date; an existing row emptied this way is left alone.
+    if (row.number === null && invEditing !== null) {
       window.Rux?.modal?.close?.('scheduler-inv-modal');
       return;
     }
@@ -5398,6 +5379,34 @@
     else Object.assign(invPending[invEditing], row);
     window.Rux?.modal?.close?.('scheduler-inv-modal');
     redrawInvoices();
+    refreshDirty();
+  });
+
+  /* The contract dialog: the day it was signed, today on a new one, and a
+     note, such as who signed. Adding it is what marks the contract signed,
+     so Done adds a new one filled in or not, and Cancel adds nothing. */
+  let redrawContract = () => {};
+  function openContractDialog() {
+    const host = document.getElementById('scheduler-contract-fields');
+    if (!host || !editing) return;
+    const c = editing.contract ?? { on: iso(new Date()), note: null };
+    document.getElementById('scheduler-contract-h').textContent =
+      editing.contract ? 'Edit contract' : 'Contract signed';
+    const grid = el('div', 'scheduler-dialog-grid');
+    grid.append(
+      dateOne('scheduler-f-signedon', 'Signed', c.on),
+      textField('scheduler-f-signednote', 'Note', c.note),
+    );
+    host.replaceChildren(grid);
+    window.Rux?.datePicker?.init?.(host);
+    window.Rux?.modal?.open?.('scheduler-contract-modal');
+  }
+
+  document.getElementById('scheduler-contract-done')?.addEventListener('click', () => {
+    const val = id => document.getElementById(id)?.value.trim() ?? '';
+    editing.contract = { on: isoOrNull(val('scheduler-f-signedon')), note: val('scheduler-f-signednote') || null };
+    window.Rux?.modal?.close?.('scheduler-contract-modal');
+    redrawContract();
     refreshDirty();
   });
 
@@ -5948,19 +5957,16 @@
     return { inserts, updates, deletes, work: !!(inserts.length || updates.length || deletes.length) };
   }
 
-  /* The rows Save writes for one list. Off means none. On means the pending
-     rows in order, and at least one: a PO expected with nothing typed is one
-     empty row, so `po_received` always agrees with whether rows exist, the
-     rule rux-ui follows too. */
+  /* The rows Save writes for one list, the pending rows in order. A PO
+     received is a row, one with nothing typed if need be, so `po_received`
+     always agrees with whether rows exist, the rule rux-ui follows too. */
   function listRowsToSave(kind) {
     const po = kind === 'po';
-    if (!on(document.getElementById(po ? 'scheduler-f-poreceived' : 'scheduler-f-invoice'))) return [];
     const refKey = po ? 'ref' : 'number';
-    const rows = (po ? poPending : invPending).map((p, position) => ({
+    return (po ? poPending : invPending).map((p, position) => ({
       id: p.id ?? null, position, [refKey]: p[refKey] ?? null,
       amount: money(String(p.amount ?? '')), date: p.date ?? null,
     }));
-    return rows.length ? rows : [{ id: null, position: 0, [refKey]: null, amount: null, date: null }];
   }
 
   // The sum of the rows' amounts, or null when no row has one.
@@ -6926,6 +6932,7 @@
       // The milestones as the switches open, so an untouched trip saves none.
       contract_status: contractSignedOf(trip) ? 'Signed' : 'Pending',
       invoice_status: invoicedOf(trip) ? 'Invoiced' : 'Pending',
+      contract_signed_on: contractSignedOf(trip) ? (trip.contract_signed_on ?? null) : null,
       contract_note: contractSignedOf(trip) ? (trip.contract_note ?? null) : null,
       // Booleans take `!!`, not `?? null`, because `same(false, null)` is a change.
       po_received: poReceivedOf(trip),
@@ -8301,35 +8308,10 @@
     {
       // Billing renders on a new trip too, because `readForm` needs its ids on
       // the panel.
-      /* Three milestones, each a switch on its section's heading line. Off hides
-         and clears what the switch owns, so nothing hidden holds a value Save
-         would write. The box carries `scheduler-milestone-fields` because
-         `rux--stack-vertical` is `display: grid`, which overrides the bare
-         `[hidden]` attribute. */
-      const gate = (fields, help) => {
-        const box = el('div', 'rux--stack-vertical rux--stack-scale-5 scheduler-milestone-fields');
-        box.append(...fields);
-        if (help) box.appendChild(help);
-        return box;
-      };
-
-      const contract = gate(
-        [textField('scheduler-f-contractnote', 'Contract note', trip.contract_note, 'Note')]);
-      const contractSwitch = toggleAction('scheduler-f-contract', 'Contract signed',
-        contractSignedOf(trip));
-
-      const poSwitch = toggleAction('scheduler-f-poreceived', 'PO received',
-        poReceivedOf(trip));
-      const invoiceSwitch = toggleAction('scheduler-f-invoice', 'Invoice sent',
-        invoicedOf(trip));
-
-      /* PO and invoice are lists, one row per record with no limit, built from
-         the same `rowList` as Payments. Off hides and clears the rows, as it
-         does fields (`syncLists`). */
-      const poList = rowList();
-      const invList = rowList();
-
-      const redrawLists = () => { drawPos(); drawInvoices(); };
+      /* The milestones are the Billing list's rows, below. The contract is
+         its one row, with the day it was signed and a note, or null. */
+      editing.contract = contractSignedOf(trip)
+        ? { on: trip.contract_signed_on ?? null, note: trip.contract_note ?? null } : null;
 
       /* The rows are the tables' own, with their ids. A trip object that
          never carried them shows its single columns as one unsaved row, and
@@ -8342,49 +8324,6 @@
       invPending = fromTables
         ? editing.invoices.map(v => ({ id: String(v.id), number: v.number ?? null, amount: v.amount ?? null, date: v.date ?? null }))
         : (trip.invoice_number ? [{ number: trip.invoice_number, amount: null, date: null }] : []);
-
-      const drawPos = () => {
-        poList.body.replaceChildren();
-
-        poPending.forEach((p, i) => {
-          const much = (p.amount ?? null) === null ? '' : usd(Number(p.amount) || 0);
-          const ref = p.ref || 'No reference';
-          poList.body.appendChild(listRow({
-            name: p.ref ? `PO ${p.ref}` : ref, meta: p.date ? mdy(p.date) : 'No date', much,
-            title: ['Purchase order', ref, p.date ? mdy(p.date) : null, much || 'No amount'].filter(Boolean).join(' · '),
-            edit: () => openPoDialog(i),
-            removeLabel: `Remove purchase order ${ref}`,
-            remove: () => { poPending.splice(i, 1); drawPos(); refreshDirty(); },
-          }));
-        });
-        // The add row is also the empty state.
-        poList.body.appendChild(listAddRow({
-          label: 'Add purchase order', id: 'scheduler-f-poadd',
-          onClick: () => openPoDialog(null),
-        }).li);
-        drawSummary();
-      };
-
-      const drawInvoices = () => {
-        invList.body.replaceChildren();
-
-        invPending.forEach((v, i) => {
-          const num = v.number || 'No number';
-          invList.body.appendChild(listRow({
-            name: v.number ? `Invoice ${v.number}` : num, meta: v.date ? mdy(v.date) : 'No date',
-            title: ['Invoice', num, v.date ? mdy(v.date) : null].filter(Boolean).join(' · '),
-            edit: () => openInvoiceDialog(i),
-            removeLabel: `Remove invoice ${num}`,
-            remove: () => { invPending.splice(i, 1); drawInvoices(); refreshDirty(); },
-          }));
-        });
-        invList.body.appendChild(listAddRow({
-          label: 'Add invoice', id: 'scheduler-f-invadd',
-          onClick: () => openInvoiceDialog(null),
-        }).li);
-      };
-      redrawPos = drawPos;
-      redrawInvoices = drawInvoices;
 
       /* Payments are saved by `id`, not replaced: new rows insert, changed rows
          update, removed rows delete, so a failure touches only its own row.
@@ -8696,53 +8635,34 @@
       panelBilling.appendChild(section('Quote', linesBody, quoteMenu));
 
       /* QUOTE SENT: the price the customer was sent, and the day, kept for
-         Save by one press. The quote lines can move after it, and the section
-         then says by how much, with the offer to mark the new price sent.
-         Once the contract is signed, it is the price they signed. */
-      const sentBody = el('div', 'rux--stack-vertical rux--stack-scale-4');
+         Save by one press, and the Billing list's first row. The quote lines
+         can move after it, and a warning under them then says by how much,
+         with the offer to mark the new price sent. Once the contract is
+         signed, it is the price they signed. */
       const markSent = price => {
         editing.quoteSent = price == null ? null : { price: round2(price), on: iso(new Date()) };
         refreshDirty();
       };
-      // Whole dollars unless there are cents, as the summary's Paid and Balance read.
+      // Whole dollars unless there are cents, as the summary's figures read.
       const sentPrice = n => (round2(n) % 1 ? usdCents(n) : usd(n));
-      const smallButton = (label, kindClass, run) => {
-        const b = el('button', `rux--btn ${kindClass} rux--btn--sm rux--layout--size-sm`, label);
-        b.type = 'button';
-        b.addEventListener('click', run);
-        return b;
-      };
+      const sentWarn = el('div');
+      linesBody.insertBefore(sentWarn, quotedRow);
+      let drawBillingList = () => {};
+      let sentDrawn = '';
       redrawQuoteSent = () => {
         const now = money(quotedInput.value);
         const sent = editing?.quoteSent;
-        const signed = stepOn('contractSigned') && on(document.getElementById('scheduler-f-contract'));
+        const signed = !!contractNow();
         const key = JSON.stringify([now, sent, signed]);
-        if (sentBody.dataset.drawn === key) return;
-        sentBody.dataset.drawn = key;
-        if (!sent) {
-          sentBody.replaceChildren(
-            smallButton(now == null ? 'Mark quote sent' : `Mark sent at ${sentPrice(now)}`, 'rux--btn--tertiary', () => markSent(now)));
-          sentBody.lastChild.disabled = now == null;
-          return;
-        }
-        // One line: the price sent or signed and its day, then Mark not sent at its end.
-        const day = sent.on ? parseISO(sent.on) : null;
-        const said = [`${signed ? 'Signed' : 'Sent'} ${sentPrice(sent.price)}`,
-          day?.toLocaleDateString(undefined, day.getFullYear() === new Date().getFullYear()
-            ? { month: 'short', day: 'numeric' } : { month: 'short', day: 'numeric', year: 'numeric' })]
-          .filter(Boolean).join(' · ');
-        const line = el('div', 'scheduler-sent-line');
-        line.append(el('p', 'rux--type-body-compact-01', said), smallButton('Mark not sent', 'rux--btn--ghost', () => markSent(null)));
-        const parts = [line];
-        if (now != null && round2(now) !== round2(sent.price)) {
-          const diff = round2(now - sent.price);
-          parts.push(notice('warning', 'The quote changed',
-            `Now ${sentPrice(now)}, ${sentPrice(Math.abs(diff))} ${diff > 0 ? 'more' : 'less'} than the customer ${signed ? 'signed at' : 'was sent'}.`,
-            { label: `Mark ${sentPrice(now)} sent`, onClick: () => markSent(now) }));
-        }
-        sentBody.replaceChildren(...parts);
+        if (sentDrawn === key) return;
+        sentDrawn = key;
+        const diff = sent && now != null ? round2(now - sent.price) : 0;
+        sentWarn.hidden = !diff;
+        sentWarn.replaceChildren(...(diff ? [notice('warning', 'The quote changed',
+          `Now ${sentPrice(now)}, ${sentPrice(Math.abs(diff))} ${diff > 0 ? 'more' : 'less'} than the customer ${signed ? 'signed at' : 'was sent'}.`,
+          { label: `Mark ${sentPrice(now)} sent`, onClick: () => markSent(now) })] : []));
+        drawBillingList();
       };
-      panelBilling.appendChild(section('Quote sent', sentBody));
       redrawQuoteSent();
 
       /* The trip's miles, both legs together, beside the quote. Left blank,
@@ -8912,111 +8832,107 @@
       const milesSection = section('Miles', milesBody, milesMenu ?? undefined);
 
 
-      /* Payments use the same `rowList` as PO and invoice, named by their
-         method, with no switch: a receipt has no milestone to gate. */
-      const payList = rowList();
-      const draw = () => {
-        payList.body.replaceChildren();
-        pending.forEach((p, i) => {
+      /* THE BILLING LIST: Quote sent, the contract, each PO, each invoice and
+         each payment, a row each in the ladder's order and each kind by date,
+         so a kind is always in the same place. The rows are the milestones:
+         PO received is on while there is a PO row, Invoice sent while there
+         is an invoice, the contract while it has its row. A step the office's
+         billing workflow does not use is neither shown nor offered. One Add
+         entry row ends it, offering what can be added. */
+      const billList = rowList();
+      // A list's rows with their places in it, earliest first and undated last.
+      const byDate = rows => rows.map((row, i) => [row, i])
+        .sort(([a], [b]) => (a.date || '\uffff').localeCompare(b.date || '\uffff'));
+      const drawBilling = () => {
+        const rows = [];
+        const now = money(quotedInput.value);
+        const sent = editing.quoteSent;
+        if (sent) {
+          const said = ['Quote sent', sent.on ? mdy(sent.on) : null, sentPrice(sent.price)].filter(Boolean).join(' · ');
+          const items = [
+            ...(now != null && round2(now) !== round2(sent.price)
+              ? [{ label: `Mark ${sentPrice(now)} sent`, run: () => markSent(now) }] : []),
+            { label: 'Mark not sent', danger: true, run: () => markSent(null) },
+          ];
+          rows.push(listRow({
+            name: 'Quote sent', meta: sent.on ? mdy(sent.on) : 'No date', much: sentPrice(sent.price), title: said,
+            items, open: e => openItemsMenu(e.currentTarget, items, `Actions for ${said}`), openLabel: `Actions for ${said}`,
+          }));
+        }
+        const contract = contractNow();
+        if (contract) {
+          const when = contract.on ? mdy(contract.on) : 'No date';
+          rows.push(listRow({
+            name: 'Contract signed', meta: [when, contract.note].filter(Boolean).join(' · '),
+            title: ['Contract signed', when, contract.note].filter(Boolean).join(' · '),
+            edit: () => openContractDialog(),
+            removeLabel: 'Remove the signed contract',
+            remove: () => { editing.contract = null; drawBilling(); refreshDirty(); },
+          }));
+        }
+        for (const [p, i] of stepOn('poReceived') ? byDate(poPending) : []) {
+          const much = (p.amount ?? null) === null ? '' : usd(Number(p.amount) || 0);
+          const name = p.ref ? `PO ${p.ref}` : 'PO, no reference';
+          rows.push(listRow({
+            name, meta: p.date ? mdy(p.date) : 'No date', much,
+            title: ['Purchase order', p.ref || 'No reference', p.date ? mdy(p.date) : null, much || 'No amount'].filter(Boolean).join(' · '),
+            edit: () => openPoDialog(i),
+            removeLabel: `Remove ${name}`,
+            remove: () => { poPending.splice(i, 1); drawBilling(); refreshDirty(); },
+          }));
+        }
+        for (const [v, i] of stepOn('invoiced') ? byDate(invPending) : []) {
+          const name = v.number ? `Invoice ${v.number}` : 'Invoice, no number';
+          rows.push(listRow({
+            name, meta: v.date ? mdy(v.date) : 'No date',
+            title: ['Invoice', v.number || 'No number', v.date ? mdy(v.date) : null].filter(Boolean).join(' · '),
+            edit: () => openInvoiceDialog(i),
+            removeLabel: `Remove ${name}`,
+            remove: () => { invPending.splice(i, 1); drawBilling(); refreshDirty(); },
+          }));
+        }
+        for (const [p, i] of byDate(pending)) {
           const when = p.date ? mdy(p.date) : 'No date';
           const much = usd(Number(p.amount) || 0);
-          payList.body.appendChild(listRow({
-            name: p.method || 'Payment', meta: when, much,
+          const name = p.method ? `${p.method} payment` : 'Payment';
+          rows.push(listRow({
+            name, meta: when, much,
             /* The reference is on the tooltip and in the dialog, not the tile: it
                is looked up rather than scanned, and it would wrap the line. */
-            title: [p.method || 'Payment', when, much,
-                    p.ref ? `Ref ${p.ref}` : null].filter(Boolean).join(' · '),
+            title: [name, when, much, p.ref ? `Ref ${p.ref}` : null].filter(Boolean).join(' · '),
             edit: () => openPaymentDialog(i),
-            removeLabel: `Remove ${p.method || 'payment'} of ${much}`,
-            remove: () => { pending.splice(i, 1); draw(); refreshDirty(); },
+            removeLabel: `Remove the ${name} of ${much}`,
+            remove: () => { pending.splice(i, 1); drawBilling(); refreshDirty(); },
           }));
-        });
-        // The add row is also the empty state, as in the two lists above.
-        payList.body.appendChild(listAddRow({
-          label: 'Add payment', id: 'scheduler-f-payadd',
-          onClick: () => openPaymentDialog(null),
-        }).li);
+        }
+        const offers = [
+          ...(sent ? [] : [{ label: 'Quote sent', disabled: now == null, run: () => markSent(now) }]),
+          ...(stepOn('contractSigned') && !editing.contract ? [{ label: 'Contract signed', run: () => openContractDialog() }] : []),
+          ...(stepOn('poReceived') ? [{ label: 'Purchase order', run: () => openPoDialog(null) }] : []),
+          ...(stepOn('invoiced') ? [{ label: 'Invoice', run: () => openInvoiceDialog(null) }] : []),
+          { label: 'Payment', run: () => openPaymentDialog(null) },
+        ];
+        // The add row is also the empty state, as in every list.
+        const add = listAddRow({ label: 'Add entry', id: 'scheduler-f-billadd',
+          onClick: () => openItemsMenu(add.btn, offers, 'Add entry') });
+        billList.body.replaceChildren(...rows, add.li);
         drawSummary();
       };
-      draw();
-      redrawPayments = draw;
-      const listWrap = section('Payments', payList.list);
+      drawBillingList = drawBilling;
+      redrawPos = drawBilling;
+      redrawInvoices = drawBilling;
+      redrawPayments = drawBilling;
+      redrawContract = drawBilling;
 
-      /* The order is contract, PO and invoice, as the ladder climbs, then
-         payments, then the miles, which closing a trip out fills in with the
-         invoice and the balance. Every section is a `section()`, so the three
-         switches share one right edge. */
-      const poBody = poList.list;
-
-      const invBody = invList.list;
-      const poWrap = section('PO received', poBody, poSwitch);
-      const invWrap = section('Invoice sent', invBody, invoiceSwitch);
-      const contractSection = section('Contract signed', contract, contractSwitch);
-
-      // A milestone the workflow does not use is not shown, and counts as off.
-      contractSection.hidden = !stepOn('contractSigned');
-      poWrap.hidden = !stepOn('poReceived');
-      invWrap.hidden = !stepOn('invoiced');
       panelBilling.append(
-        contractSection,
-        poWrap,
-        invWrap,
-        listWrap,
+        section('Billing', billList.list),
         milesSection,
         doneSection('billing'),
       );
       syncEstHint();
-
-      /* A switch that is off hides and disables its fields and clears them.
-         `clear` is false on the first pass, so opening a trip that holds a value
-         under an off switch shows it rather than arming Save to erase it. */
-      const GATES = [
-        ['scheduler-f-contract', ['scheduler-f-contractnote'], contract],
-      ];
-      const syncGates = (clear) => {
-        for (const [toggleId, fieldIds, box] of GATES) {
-          const open = on(document.getElementById(toggleId));
-          box.hidden = !open;
-          for (const fid of fieldIds) {
-            const input = document.getElementById(fid);
-            if (!input) continue;
-            input.disabled = !open;
-            if (!open && clear) input.value = '';
-          }
-        }
-      };
-      /* A list is gated by what sits under its heading, not its section, whose
-         heading holds the switch; hiding it also drops the space under the
-         heading. The `<ul>` is hidden too, which `.scheduler-list-body[hidden]`
-         keeps hidden. Off empties the array, and `clear` is
-         false on the first pass, as with the fields. */
-      const syncLists = (clear) => {
-        for (const [toggleId, box, content, pending, redraw] of [
-          ['scheduler-f-poreceived', poList, poBody, poPending, drawPos],
-          ['scheduler-f-invoice', invList, invBody, invPending, drawInvoices]]) {
-          const open = on(document.getElementById(toggleId));
-          box.body.hidden = !open;
-          content.hidden = !open;
-          if (!open && clear && pending.length) { pending.length = 0; redraw(); }
-        }
-        redrawLists();
-      };
-
-      syncGates(false);
-      syncLists(false);
-      /* Listened for on the tab, not the switch: Design's `setToggle` dispatches
-         `rux:toggle` on the `.rux--toggle` box, which contains the button, so
-         the event never reaches a listener on the button. */
-      panelBilling.addEventListener('rux:toggle', () => {
-        syncGates(true);
-        syncLists(true);
-        drawSummary();
-      });
       // The quoted price redraws the figures on `input`, so they follow each keystroke.
       document.getElementById('scheduler-f-quoted')?.addEventListener('input', drawSummary);
-      drawPos();
-      drawInvoices();
-      drawSummary();
+      drawBilling();
     }
 
     /* Fleet is how many buses each leg needs, the bus on each and who fills its
@@ -10493,7 +10409,7 @@
     if (has('quoted_price') || linesPatch()?.work) {
       sayChange('quote', patch.quoted_price != null ? `Quoted ${usd(Number(patch.quoted_price))}` : 'Changed the quote');
     }
-    if (has('contract_status', 'contract_note')) sayChange('contract', patch.contract_status === 'Signed' ? 'Contract signed' : 'Changed the contract');
+    if (has('contract_status', 'contract_signed_on', 'contract_note')) sayChange('contract', patch.contract_status === 'Signed' ? 'Contract signed' : 'Changed the contract');
     const po = posPatch();
     if (po?.work || has('po_received', 'po_ref', 'po_amount')) {
       const added = po?.inserts.find(r => r.ref);
@@ -13547,6 +13463,7 @@
     ['trip_contact_2_phone', 'Alternate trip phone'],
     ['notes', 'Notes'],
     ['contract_status', 'Contract status'],
+    ['contract_signed_on', 'Contract signed on'],
     ['contract_note', 'Contract note'],
     ['quoted_price', 'Quoted price', 'money'],
     ['quote_sent_price', 'Quote sent at', 'money'],
@@ -13956,9 +13873,10 @@
       return false;
     }
     item?.done();
-    if (label === 'PO' && editing?.id === tripId && !panelEl.hidden) {
-      const sw = document.getElementById('scheduler-f-poreceived');
-      if (sw && sw.getAttribute('aria-checked') !== 'true') window.Rux?.formControls?.toggle?.(sw.closest('.rux--toggle'), true);
+    if (label === 'PO' && editing?.id === tripId && !panelEl.hidden && !poPending.length) {
+      poPending.push({ ref: null, amount: null, date: iso(new Date()) });
+      redrawPos();
+      refreshDirty();
     }
     await refreshDocuments(tripId);
     toast('success', `${file.name} was added to the trip.`);
@@ -14171,8 +14089,8 @@
     .find(h => h.textContent.trim() === title)?.closest('.scheduler-panel-section') ?? null;
   const WARN_SPOT = {
     contact: () => document.querySelector('[aria-labelledby="scheduler-f-dgroup"] :is(input, button)'),
-    confirmation: () => document.getElementById('scheduler-f-contract'),
-    po: () => document.getElementById('scheduler-f-poreceived'),
+    confirmation: () => document.getElementById('scheduler-f-billadd'),
+    po: () => document.getElementById('scheduler-f-billadd'),
     balance: () => sectionTitled('Payments')?.querySelector('button, input'),
     hotel: () => sectionTitled('Quote')?.querySelector('button, input'),
     miles: () => document.getElementById('scheduler-f-actmiles'),

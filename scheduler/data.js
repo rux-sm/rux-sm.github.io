@@ -750,6 +750,157 @@
     }
   });
 
+  /* ── On the road, from Samsara ─────────────────────────────────────────────
+     While a bus is out on its trip, its bar's update line gives way to what
+     Samsara says the bus is doing: the engine's dot, green running and amber
+     idling, the speed, ten blocks for the ten hours a driver may drive, and
+     the hours the driver at the wheel has left, amber under one. Each driver
+     Samsara has in the bus wears their duty in place of their dot, the one at
+     the wheel in bold, and the name's tooltip and the trip's card say each
+     one's hours. A driver at the wheel the bar does not name is named on the
+     line instead of the speed. A bar is out from two hours before its yard-out
+     to two hours after its yard-back, and only while the engine is on. The
+     samsara-now Edge Function is asked once a minute, and only while such a
+     bar is on the board and the page is in view. */
+  const ROAD_MARGIN = 2 * 3600e3;
+  const ROAD_EVERY = 60e3;
+  const ROAD_HOUR = 3600e3;
+  const ROAD_DUTY = {
+    driving: { icon: '#m-search_hands_free-fill', word: 'Driving' },
+    on: { icon: '#m-assignment-fill', word: 'On duty' },
+    sleeper: { icon: '#m-bedtime-fill', word: 'Sleeper' },
+    off: { icon: '#m-power_settings_new-fill', word: 'Off duty' },
+  };
+  const roadHours = ms => `${Math.floor(ms / ROAD_HOUR)}:${String(Math.floor((ms % ROAD_HOUR) / 60e3)).padStart(2, '0')}`;
+  const roadDay = (date, n) => new Date(Date.UTC(+date.slice(0, 4), +date.slice(5, 7) - 1, +date.slice(8, 10) + n))
+    .toISOString().slice(0, 10);
+  // What a McAllen wall clock reads at an instant, as if it were UTC.
+  const roadWall = ms => {
+    const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hourCycle: 'h23',
+      year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).formatToParts(new Date(ms));
+    const n = t => Number(parts.find(p => p.type === t)?.value);
+    return Date.UTC(n('year'), n('month') - 1, n('day'), n('hour'), n('minute'));
+  };
+  // The instant a McAllen date and time name, whatever zone the browser is in;
+  // the offset is checked a second time, which settles a clock change.
+  const roadInstant = (date, time) => {
+    const [h, m] = String(time).split(':').map(Number);
+    const asUtc = Date.UTC(+date.slice(0, 4), +date.slice(5, 7) - 1, +date.slice(8, 10), h || 0, m || 0);
+    const first = asUtc - (roadWall(asUtc) - asUtc);
+    return asUtc - (roadWall(first) - first);
+  };
+  /* A leg's stretch on the road, padded at each end: from its yard-out to
+     its yard-back, which a past-midnight return puts on the day after `to`.
+     With no times it runs from the first day's start to the late-return
+     hour after the last. */
+  const roadSpan = leg => {
+    if (!leg?.from || !leg?.to) return null;
+    const from = roadInstant(leg.from, leg.depart || '00:00');
+    const to = leg.back ? roadInstant(roadDay(leg.to, daysBack(leg)), leg.back) : roadInstant(roadDay(leg.to, 1), '04:00');
+    return [from - ROAD_MARGIN, Math.max(to, from) + ROAD_MARGIN];
+  };
+  const roadOut = bar => {
+    const now = Date.now();
+    return Number(bar.dataset.roadFrom) <= now && now <= Number(bar.dataset.roadTo);
+  };
+  const roadWords = d => [ROAD_DUTY[d.duty]?.word ?? 'Status unknown',
+    d.left_ms != null ? `${roadHours(d.left_ms)} driving left` : null, d.wheel ? 'at the wheel' : null].filter(Boolean).join(' · ');
+  const roadShort = name => {
+    const words = String(name).trim().split(/\s+/);
+    return words.length > 1 ? `${words[0]} ${words.at(-1)[0]}.` : words[0];
+  };
+  const roadMark = duty => {
+    const mark = el('span', `scheduler-crew__duty scheduler-crew__duty--${duty}`);
+    mark.appendChild(svgUse(ROAD_DUTY[duty].icon, '16', '0 0 16 16'));
+    return mark;
+  };
+
+  let roadAnswer = null, roadAsked = 0, roadStopped = false, roadBusy = false;
+  const roadBusOf = bar => roadAnswer?.buses?.find(b => b.bus_id === bar.dataset.busId) ?? null;
+
+  async function askRoad() {
+    if (roadStopped || roadBusy || !client || document.hidden) return;
+    if (![...gridEl.querySelectorAll('.scheduler-bar[data-road-from]')].some(roadOut)) {
+      if (roadAnswer) { roadAnswer = null; drawRoad(); }
+      return;
+    }
+    roadBusy = true;
+    let r;
+    try { r = await client.functions.invoke('samsara-now', { body: {} }); } catch (error) { r = { error }; }
+    roadBusy = false;
+    roadAsked = Date.now();
+    const status = r.error?.context?.status;
+    /* No Samsara key, or no fleet this log-in may read, is nothing to show
+       and nothing to ask again; a lapsed log-in is asked again next time. A
+       failed answer keeps the last for five minutes, then the bars go back to
+       their updates. */
+    if (status === 503 || status === 404) { roadStopped = true; roadAnswer = null; }
+    else if (!r.error && r.data) roadAnswer = r.data;
+    else if (roadAnswer && Date.now() - Date.parse(roadAnswer.at) > 5 * 60e3) roadAnswer = null;
+    drawRoad();
+  }
+
+  function drawRoad() {
+    for (const bar of gridEl.querySelectorAll('.scheduler-bar[data-bus-id]')) {
+      const bus = roadBusOf(bar);
+      const out = !!bus && (bus.engine === 'on' || bus.engine === 'idle') && !!bar.dataset.roadFrom && roadOut(bar);
+      roadBar(bar, out ? bus : null);
+    }
+  }
+
+  // One driver's duty on their name: the mark, bold at the wheel, and the
+  // hours on the tooltip; with no driver, the name as the bar drew it.
+  function roadCrew(item, d) {
+    item.querySelector(':scope > .scheduler-crew__duty')?.remove();
+    item.classList.remove('scheduler-crew--wheel');
+    delete item.dataset.duty;
+    if (item.dataset.baseTitle != null) { item.title = item.dataset.baseTitle; delete item.dataset.baseTitle; }
+    if (!d) return;
+    item.dataset.baseTitle = item.title;
+    if (d.duty) { item.prepend(roadMark(d.duty)); item.dataset.duty = d.duty; }
+    item.classList.toggle('scheduler-crew--wheel', d.wheel);
+    item.title = `${item.title}\nSamsara: ${roadWords(d)}`;
+  }
+
+  function roadBar(bar, bus) {
+    const key = bus ? JSON.stringify([bus.engine, bus.mph, bus.place, bus.drivers]) : '';
+    if ((bar.dataset.road ?? '') === key) return;
+    if (key) bar.dataset.road = key; else delete bar.dataset.road;
+    bar.classList.toggle('scheduler-bar--road', !!bus);
+    bar.classList.toggle('scheduler-bar--idling', bus?.engine === 'idle');
+    const line = bar.querySelector(':scope > .scheduler-bar__road');
+    const crewBox = bar.querySelector(':scope > .scheduler-bar__drivers > .scheduler-bar__crew');
+    const crew = crewBox ? [...crewBox.querySelectorAll(':scope > .scheduler-crew')] : [];
+    const named = new Set(crew.map(c => c.dataset.driverId).filter(Boolean));
+    for (const item of crew) roadCrew(item, bus?.drivers.find(d => d.driver_id && d.driver_id === item.dataset.driverId) ?? null);
+    if (crewBox) fitCrew(crewBox);
+    if (!line) return;
+    if (!bus) { line.replaceChildren(); line.removeAttribute('title'); return; }
+    const wheel = bus.drivers.find(d => d.wheel) ?? null;
+    const parts = [el('span', 'scheduler-road__dot')];
+    if (wheel && !named.has(wheel.driver_id)) parts.push(el('span', 'scheduler-road__who', roadShort(wheel.name)));
+    else if (bus.engine === 'idle') parts.push(el('span', 'scheduler-road__speed', 'Idle'));
+    else if (bus.mph != null) parts.push(el('span', 'scheduler-road__speed', String(bus.mph)), el('span', 'scheduler-road__unit', 'mph'));
+    if (wheel?.left_ms != null) {
+      const low = wheel.left_ms < ROAD_HOUR ? ' scheduler-road--low' : '';
+      const blocks = el('span', `scheduler-road__blocks${low}`);
+      const lit = Math.min(10, Math.max(1, Math.round(wheel.left_ms / ROAD_HOUR)));
+      for (let i = 0; i < 10; i++) blocks.appendChild(el('i', i < lit ? 'is-lit' : null));
+      parts.push(blocks, el('span', `scheduler-road__hours${low}`, roadHours(wheel.left_ms)));
+    } else if (bus.place) parts.push(el('span', 'scheduler-road__place', bus.place));
+    line.replaceChildren(...parts);
+    line.title = [
+      [bus.engine === 'idle' ? 'Idling' : bus.mph != null ? `${bus.mph} mph` : 'Engine on', bus.place].filter(Boolean).join(' · '),
+      ...bus.drivers.map(d => `${d.name}: ${roadWords(d)}`),
+      `Samsara, ${new Date(roadAnswer.at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`,
+    ].join('\n');
+  }
+
+  setInterval(askRoad, ROAD_EVERY);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && Date.now() - roadAsked > ROAD_EVERY) askRoad();
+  });
+
   /* ── Time at the yard ──────────────────────────────────────────────────────
      A bus's time at the yard between two trips on days side by side, from the
      earlier trip's return to the later one's departure, for cleaning and
@@ -963,6 +1114,10 @@
       if (open) tone = ` scheduler-bar__update--${days < 2 ? 'new' : days < 7 ? 'week' : 'old'}`;
     }
     addRow(bar, `scheduler-bar__update${tone}`, news);
+    // The line that takes the update's place while the bus is out; roadBar fills it.
+    addRow(bar, 'scheduler-bar__road');
+    const road = bar.dataset.busId ? roadSpan(leg) : null;
+    if (road) [bar.dataset.roadFrom, bar.dataset.roadTo] = road;
 
     // The crew in role order, or what the bar needs before it can have one.
     const crew = assign ? crewOf(trip, assign, driversById, statuses).filter(c => !(placeholder && c.needed)) : [];
@@ -1285,6 +1440,10 @@
     if (!barCount) say('info', days > 7 ? 'Nothing these two weeks' : 'Nothing this week',
       `No trip touches these ${days > 7 ? 'fourteen' : 'seven'} days.`);
     else say(null);
+
+    // The new bars take what Samsara last said, and ask again if it is old.
+    drawRoad();
+    if (Date.now() - roadAsked > ROAD_EVERY) askRoad();
 
     // The notice above changes how much height is left for the grid. app.js
     // owns that sum, so this asks it to refit.
@@ -14588,6 +14747,25 @@
         }
       }
       card.appendChild(band);
+    }
+    /* ON THE ROAD: while the bar is out, each driver Samsara has in the bus,
+       with their duty and the driving hours they have left, the one at the
+       wheel first. */
+    const onRoad = bar?.dataset.road ? roadBusOf(bar) : null;
+    if (onRoad?.drivers.length) {
+      const part = row('scheduler-card__road');
+      const head = el('div', 'scheduler-card__title');
+      head.appendChild(el('span', 'scheduler-card__heading', 'On the road'));
+      part.appendChild(head);
+      const list = el('ul', 'scheduler-card__road-list');
+      for (const d of [...onRoad.drivers].sort((a, b) => b.wheel - a.wheel)) {
+        const item = el('li', `scheduler-card__road-driver${d.wheel ? ' scheduler-card__road-driver--wheel' : ''}`);
+        item.append(d.duty ? roadMark(d.duty) : el('span', 'scheduler-crew__duty'),
+          el('span', 'scheduler-card__road-name', d.name), el('span', 'scheduler-card__road-words', roadWords({ ...d, wheel: false })));
+        list.appendChild(item);
+      }
+      part.appendChild(list);
+      card.appendChild(part);
     }
     /* THE UPDATES: Updates with their count, "Updates · 5", and Add, over
        the updates, newest first. Floating,

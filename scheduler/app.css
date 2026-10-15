@@ -1189,6 +1189,14 @@ button.scheduler-row-head__num::after {
 /* A part with nothing in it is its title alone, which says so. */
 .scheduler-card__title:last-child { margin-block-end: 0; }
 .scheduler-card__updates { padding-block: var(--rux-spacing-03); }
+/* On the road: a line for each driver Samsara has in the bus, their duty's
+   mark, their name, bold at the wheel, and their duty and hours. */
+.scheduler-card__road { padding-block: var(--rux-spacing-03); }
+.scheduler-card__road-list { display: grid; gap: var(--rux-spacing-02); margin: 0; padding: 0; list-style: none; }
+.scheduler-card__road-driver { display: flex; align-items: center; gap: var(--rux-spacing-03); min-inline-size: 0; }
+.scheduler-card__road-name { flex: none; }
+.scheduler-card__road-driver--wheel > .scheduler-card__road-name { font-weight: 600; }
+.scheduler-card__road-words { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--rux-text-secondary); }
 /* An update: its author's 16px face in the column the alerts' marks stand
    in, its words, and its age at the right of its first line, so every age
    stands in one column. */
@@ -1557,6 +1565,56 @@ button.scheduler-row-head__num::after {
    so the name sits close. In a menu the box keeps the menu icon's size. */
 .scheduler-crew__mark--dot { inline-size: auto; }
 .scheduler-crew__dot { inline-size: 7px; block-size: 7px; border-radius: 50%; background: currentColor; }
+
+/* ON THE ROAD, from Samsara: while the bus is out, the update's line gives
+   way to the engine's dot, the speed, ten blocks for the ten hours a driver
+   may drive and the hours the driver at the wheel has left, and each driver
+   Samsara has in the bus wears their duty in place of their dot. Green is the
+   engine running, amber idling and under an hour left. A board set to hide the
+   updates hides this line with them, so every bar keeps one height. */
+.scheduler-bar__road { display: none; }
+.scheduler-bar--road > .scheduler-bar__update { display: none; }
+.scheduler-bar--road > .scheduler-bar__road {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--rux-spacing-02);
+  --scheduler-road: var(--scheduler-mark-success);
+}
+.scheduler-bar--idling > .scheduler-bar__road { --scheduler-road: var(--scheduler-mark-warning); }
+.scheduler-week--no-update .scheduler-bar__road { display: none; }
+.scheduler-road__dot {
+  flex: none;
+  inline-size: 6px;
+  block-size: 6px;
+  margin-inline: 3px var(--rux-spacing-01);
+  border-radius: 50%;
+  background: var(--scheduler-road);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--scheduler-road) 30%, transparent);
+}
+.scheduler-road__speed, .scheduler-road__unit, .scheduler-road__who { flex: none; color: var(--scheduler-road); }
+.scheduler-road__speed, .scheduler-road__hours { font-family: var(--rux-code-01-font-family); font-variant-numeric: tabular-nums; }
+.scheduler-road__unit { font-size: .72em; opacity: .75; margin-inline-start: calc(-1 * var(--rux-spacing-01)); }
+/* The blocks share what the line has left, up to the width they have on a
+   day-wide bar, so a bar three days wide does not stretch them. */
+.scheduler-road__blocks { flex: 1 1 0; min-inline-size: 0; max-inline-size: 6rem; display: flex; gap: 2px; block-size: 9px; }
+.scheduler-road__blocks > i { flex: 1; border-radius: 1px; background: color-mix(in srgb, currentColor 18%, transparent); }
+.scheduler-road__blocks > i.is-lit { background: var(--scheduler-mark-success); }
+.scheduler-road__hours { flex: none; color: var(--scheduler-mark-success); }
+.scheduler-road__blocks.scheduler-road--low > i.is-lit { background: var(--scheduler-mark-warning); }
+.scheduler-road__hours.scheduler-road--low { color: var(--scheduler-mark-warning); }
+.scheduler-road__place { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: .85; }
+/* A driver's duty takes the place of their dot: the wheel driving, the
+   clipboard on duty, the moon in the sleeper and the power button off duty,
+   each its own shape so the colour is never the only signal. */
+.scheduler-crew[data-duty] > .scheduler-crew__mark { display: none; }
+.scheduler-crew__duty { display: flex; flex: none; align-items: center; justify-content: center; inline-size: var(--scheduler-mark-glyph); }
+.scheduler-crew__duty svg { display: block; inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
+.scheduler-crew__duty--driving { color: var(--scheduler-mark-success); }
+.scheduler-crew__duty--on { color: var(--scheduler-mark-info); }
+.scheduler-crew__duty--sleeper { color: var(--scheduler-mark-rest); }
+.scheduler-crew__duty--off { color: currentColor; opacity: .7; }
+.scheduler-crew--wheel > .scheduler-crew__name { font-weight: 600; }
 /* A driver's name on a bar is what a press pulls the driver out by, whatever
    seat they are in, so it shows the open hand; the trip in the editor gives
    no driver up. While the figure is out the seat is dimmed, as a carried bar

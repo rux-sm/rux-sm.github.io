@@ -8176,8 +8176,11 @@
       routeTitle.textContent = routeHeading();
       routeTitle.hidden = !routeTitle.textContent;
       // The kept times go last, so the Summary is the tab's first section.
+      // Its tile is a frame of its own, so app.css draws no rule after it.
+      const summarySection = section(null, summaryLayer);
+      summarySection.classList.add('scheduler-panel-section--summary');
       panelRoute.append(
-        section(null, summaryLayer),
+        summarySection,
         routeSection,
         routeBox,
         doneSection('route'),

@@ -23,6 +23,8 @@ the schema to match the page.
   `../rux-ui/js/data/supabase.js`.
 - **A third reader is the Claude connector**, an Edge Function rather than a
   page; section 4 covers it.
+- **A fourth is `samsara-miles`**, the Edge Function behind the Billing tab's
+  Get from Samsara; section 7 covers it.
 - **The old app goes through a proxy.** Its client's URL is a Cloudflare
   Worker (`../rux-ui/worker/`), a pass-through to the Supabase host plus one
   route of its own, `/ai/extract`, used only by the intake page. This app
@@ -133,6 +135,7 @@ one To do line, who the row is about ahead of its words. The RPCs a screen calls
 | Maintenance link | `create_maintenance_schedule_share`, `get_maintenance_schedule_share`, `get_maintenance_schedule`, `get_maintenance_schedule_changes`, `revoke_maintenance_schedule_share`; `replace_maintenance_schedule_share`, staff only, gives the link a new token or makes the first one |
 | Document links | the `trip-document-link` Edge Function (§5), for this app's and rux-ui's document link pages; `get_trip_document` is staff only and nothing calls it |
 | Website requests | the `quote-request` Edge Function (§6), for the company website's quote form; `quote_request_add`, which only the service role runs, is its one write |
+| Samsara miles | the `samsara-miles` Edge Function (§7), for the Billing tab's Get from Samsara; it writes nothing |
 | History | `record_trip_history`, which both apps write trip entries through; `search_history` and `history_people`, the History page's read of trip and record entries together and its names; `get_trip_history`, rux-ui's read. All staff only. `record_row_history` and `record_line_history` are the trigger functions, with `history_actor` and `history_text` under them, and nobody calls those four. |
 | Vehicle types | `rename_vehicle_type`, staff only, which the Fleet page's Vehicle types list calls: it renames a type on `buses`, `trips`, `trip_assignments` and `customers`, and puts back the Buses done and Billing done the rename takes off |
 | Access, owner only, on the Account page | `is_owner`, `list_accounts`, `set_account_apps`; not callable without a log-in |
@@ -189,7 +192,7 @@ as in `screen-inventory.md`.
 
 ## 4. The Claude connector
 
-`scheduler-connector`, one of the project's two Edge Functions, source in
+`scheduler-connector`, one of the project's four Edge Functions, source in
 `scheduler/connector/index.ts`. It serves MCP at
 `/functions/v1/scheduler-connector`, which the Claude app speaks to a custom
 connector, and it is deployed with Verify JWT off because it carries its own
@@ -239,7 +242,7 @@ given by a staff member's name.
 
 ## 5. The document link
 
-`trip-document-link`, the project's other Edge Function, source in
+`trip-document-link`, source in
 `scheduler/trip-document-link/`. A page without a log-in posts a trip
 document's id to `/functions/v1/trip-document-link` and gets back a link to the
 file signed for ten minutes, or 404 for an id with no file. It reads with the
@@ -262,3 +265,19 @@ number. It is deployed with Verify JWT off, as §5 is, and answers the site at
 its GitHub address and at the company's, and the site's local server.
 `scheduler/tools/check-quote-request.mjs` runs its rules against sample
 requests.
+
+## 7. Samsara miles
+
+`samsara-miles`, source in `scheduler/samsara-miles/`, is the Billing tab's
+Get from Samsara. The editor posts a trip's id to
+`/functions/v1/samsara-miles`, and the function reads the trip's dates, stops
+and buses on the caller's own session, so a caller who is not staff finds no
+trip and Samsara is never asked. With its one secret, `SAMSARA_API_TOKEN`, a
+read-only Samsara key, it asks for each bus's odometer at the start and end of
+each leg the bus is on, and answers with each bus's miles, or why it has none,
+and the farthest bus's total. A bus is the Samsara vehicle named with its
+number. A leg runs from its yard-out to its yard-back, read as McAllen times
+and widened by two hours each side, but never into the same bus's trip before
+or after. It writes nothing; Save writes `trips.actual_miles`. It is deployed
+with Verify JWT off, as §5 is, and answers the site and the log-in preview.
+`scheduler/tools/check-samsara-miles.mjs` runs it against sample trips.

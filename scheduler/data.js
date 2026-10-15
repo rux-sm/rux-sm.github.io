@@ -8650,7 +8650,54 @@
         moneyField('scheduler-f-estmiles', 'Estimated miles', editing.estFollowed ? null : trip.est_miles),
         moneyField('scheduler-f-actmiles', 'Actual miles', trip.actual_miles),
       );
-      panelBilling.appendChild(section('Miles', miles));
+      /* Get from Samsara, on the heading line, asks the samsara-miles Edge
+         Function how far each bus went by its odometer, on the trip as last
+         saved, and puts the farthest bus's total in Actual miles for Save to
+         write. Under the fields, a line per bus says its miles or why it has
+         none. A trip not yet saved has nothing to read. */
+      const milesBody = el('div', 'rux--stack-vertical rux--stack-scale-4');
+      const samsaraOut = el('div', 'rux--stack-vertical rux--stack-scale-2');
+      samsaraOut.hidden = true;
+      milesBody.append(miles, samsaraOut);
+      const SAMSARA_WHY = {
+        'not-in-samsara': 'not in Samsara', 'other-trip': 'on another trip then',
+        'not-finished': 'not back yet', 'no-readings': 'no readings',
+      };
+      const samsaraLine = b => {
+        const bus = panelIndex?.buses?.get(b.bus_id);
+        const name = bus ? vehicleName(bus) : `Unit ${b.number ?? ''}`.trim();
+        const each = b.legs.map(l => (l.miles != null ? `${l.miles} mi` : SAMSARA_WHY[l.note] ?? 'no miles'));
+        if (b.legs.length < 2) return `${name}: ${each[0] ?? 'no miles'}`;
+        const legs = b.legs.map((l, i) => `${each[i]} ${l.leg === 'return' ? 'back' : 'out'}`).join(', ');
+        return b.miles != null ? `${name}: ${b.miles} mi (${legs})` : `${name}: ${legs}`;
+      };
+      const samsaraButton = editing.creating ? null : smallButton('Get from Samsara', 'rux--btn--ghost', async () => {
+        samsaraButton.disabled = true;
+        samsaraButton.textContent = 'Getting miles…';
+        let r;
+        try { r = await client.functions.invoke('samsara-miles', { body: { trip_id: editing.id } }); } catch (error) { r = { error }; }
+        samsaraButton.disabled = false;
+        samsaraButton.textContent = 'Get from Samsara';
+        samsaraOut.hidden = false;
+        if (r.error || !r.data) {
+          const status = r.error?.context?.status;
+          const [title, why] = status === 503 ? ['Samsara is not connected yet', 'Its key has not been set.']
+            : status === 401 ? ['Log in again', 'Your log-in has run out.']
+            : ['Samsara did not answer', 'Check your connection, then try again.'];
+          samsaraOut.replaceChildren(notice('error', title, why));
+          return;
+        }
+        const found = r.data;
+        samsaraOut.replaceChildren(...(found.buses.length
+          ? found.buses.map(b => el('p', 'rux--form__helper-text', samsaraLine(b)))
+          : [el('p', 'rux--form__helper-text', 'No buses on this trip yet.')]));
+        const actual = document.getElementById('scheduler-f-actmiles');
+        if (found.actual != null && actual) {
+          actual.value = String(found.actual);
+          actual.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      });
+      panelBilling.appendChild(section('Miles', milesBody, samsaraButton ?? undefined));
       syncEstHint();
 
 

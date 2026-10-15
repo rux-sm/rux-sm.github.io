@@ -133,8 +133,8 @@ Staff can also work the schedule from the Claude app, which asks the
 fills in comes back as a link that opens the editor at `./?draft=<id>` with
 the filled fields marked, and Save there writes it. `docs/working-from-claude.md`
 is how to use it, and section 4 of `docs/database-inventory.md` is what it is.
-The link pages open a trip document through the other Edge Function,
-`trip-document-link/`, which hands back a ten-minute link to the file.
+The link pages open a trip document through `trip-document-link/`, and the
+Billing tab's Get from Samsara reads each bus's miles through `samsara-miles/`.
 
 The schedule grid and the trip bar are this app's own; Carbon has neither.
 Everything else is Design's, linked live at `/design/…` with no copy here.

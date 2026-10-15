@@ -1,7 +1,7 @@
-// The Edge Functions' rule. The Scheduler has two functions that run on
-// Supabase and not in the page, so nothing else in the check reads them: the
-// connector, the Claude app's door to the trips, and trip-document-link.
-// This holds them to three things.
+// The Edge Functions' rule. The Scheduler's functions run on Supabase and not
+// in the page, so nothing else in the check reads them: the connector, the
+// Claude app's door to the trips; trip-document-link; quote-request; and
+// samsara-miles. This holds them to three things.
 //
 //   They parse. Each is TypeScript; its types are taken off and what is left
 //   is parsed as the module it is.
@@ -25,7 +25,7 @@ process.removeAllListeners('warning');
 
 const SCHEDULER = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ROOT = resolve(SCHEDULER, '..');
-const FUNCTIONS = ['connector', 'trip-document-link', 'quote-request'];
+const FUNCTIONS = ['connector', 'trip-document-link', 'quote-request', 'samsara-miles'];
 
 let failed = 0;
 const fail = words => { failed++; console.log(`  FAIL  ${words}`); };

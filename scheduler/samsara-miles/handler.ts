@@ -1,0 +1,317 @@
+// What `samsara-miles` answers, with no imports, so it runs the same in the
+// Edge runtime and under Node, where scheduler/tools/check-samsara-miles.mjs
+// sends it sample trips. The trip editor's Get from Samsara sends a trip's id
+// and gets back how far each of its buses went on each leg, by Samsara's
+// odometer, and the farthest bus's total for the Actual miles box.
+//
+// A LEG'S WINDOW is its planned yard-out to yard-back, from its stops, widened
+// by two hours each side to catch an early start or a late return; a parked
+// bus adds no miles, so the margin costs nothing. The margin stops where the
+// same bus's previous or next trip begins, and a bus booked on another trip
+// inside the window itself gets no miles for that leg.
+//
+// TIMES ARE THE OFFICE'S. The stops keep McAllen wall-clock times with no zone,
+// and each is turned into an instant with that date's offset.
+
+export const ZONE = 'America/Chicago'
+export const MARGIN_MS = 2 * 3600_000
+const METERS_PER_MILE = 1609.344
+const DAY_MS = 86_400_000
+// A leg with no yard-back time ends at this hour the day after its last date,
+// the office's late-return line.
+const LATE_HOUR = 4
+
+export type Stop = {
+  leg: string | null
+  type: string | null
+  position: number | null
+  depart_prev: string | null
+  depart_prev_date: string | null
+  arrive: string | null
+  arrive_date: string | null
+  spot: string | null
+  spot_date: string | null
+}
+export type Assignment = { bus_id: string | null; leg: string | null }
+export type Trip = {
+  id: string
+  start_date: string | null
+  end_date: string | null
+  return_start_date: string | null
+  return_end_date: string | null
+  departure_time: string | null
+  return_time: string | null
+  trip_stops: Stop[]
+  trip_assignments: Assignment[]
+}
+export type Bus = { id: string; number: string | null }
+export type Vehicle = { id: string; name: string }
+export type Reading = { time: string; value: number }
+export type Readings = Record<string, {
+  obdOdometerMeters?: Reading
+  gpsOdometerMeters?: Reading
+  gpsDistanceMeters?: Reading
+}>
+
+export type Deps = {
+  // The trip with its stops and buses, read on the caller's own log-in, or
+  // null when there is none or the caller may not read it.
+  trip(id: string): Promise<Trip | null>
+  // The buses by id, read the same way.
+  buses(ids: string[]): Promise<Bus[]>
+  // Other trips, not cancelled, that put one of these buses on the road
+  // between the two dates; each carries only those buses' assignments.
+  others(busIds: string[], from: string, to: string, except: string): Promise<Trip[]>
+  // Every vehicle in Samsara.
+  vehicles(): Promise<Vehicle[]>
+  // Each vehicle's last odometer readings at or before an instant.
+  readings(vehicleIds: string[], at: string): Promise<Readings>
+  // Whether a Samsara key is set.
+  keyed: boolean
+  now(): number
+}
+
+export type LegNote = 'not-in-samsara' | 'other-trip' | 'not-finished' | 'no-readings'
+export type BusLeg = {
+  leg: 'outbound' | 'return'
+  miles: number | null
+  source: 'engine' | 'gps' | null
+  note: LegNote | null
+}
+export type BusMiles = { bus_id: string; number: string | null; miles: number | null; legs: BusLeg[] }
+export type Answer = {
+  legs: { leg: 'outbound' | 'return'; from: string; to: string; timed: boolean }[]
+  buses: BusMiles[]
+  actual: number | null
+}
+
+// The pages that ask: the site, and its log-in preview.
+const ORIGINS = new Set([
+  'https://rux-sm.github.io',
+  'http://localhost:8641',
+])
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+function headers(origin: string | null): Record<string, string> {
+  return {
+    'Access-Control-Allow-Origin': origin && ORIGINS.has(origin) ? origin : 'https://rux-sm.github.io',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Vary': 'Origin',
+    'Cache-Control': 'no-store',
+  }
+}
+
+// ── time ────────────────────────────────────────────────────────────────────
+
+const DATE = /^(\d{4})-(\d{2})-(\d{2})$/
+const TIME = /^(\d{1,2}):(\d{2})/
+
+// What a McAllen wall clock reads at an instant, as if it were UTC.
+function wall(ms: number): number {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: ZONE, hourCycle: 'h23',
+    year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit',
+  }).formatToParts(new Date(ms))
+  const n = (t: string) => Number(parts.find(p => p.type === t)?.value)
+  return Date.UTC(n('year'), n('month') - 1, n('day'), n('hour'), n('minute'), n('second'))
+}
+
+// The instant a McAllen date and time name. The offset is found at a first
+// guess and checked once more, which settles a guess across a clock change.
+export function instant(date: string, time: string | null): number | null {
+  const d = DATE.exec(date ?? '')
+  if (!d) return null
+  const t = TIME.exec(time ?? '00:00')
+  if (!t || Number(t[1]) > 23 || Number(t[2]) > 59) return null
+  const asUtc = Date.UTC(Number(d[1]), Number(d[2]) - 1, Number(d[3]), Number(t[1]), Number(t[2]))
+  // A date the calendar does not have would roll into the next month.
+  if (new Date(asUtc).toISOString().slice(0, 10) !== date) return null
+  let ms = asUtc - (wall(asUtc) - asUtc)
+  ms = asUtc - (wall(ms) - ms)
+  return ms
+}
+
+const iso = (ms: number) => new Date(ms).toISOString()
+
+// ── a leg's window ──────────────────────────────────────────────────────────
+
+export type Window = { start: number; end: number; timed: boolean }
+
+// A leg's planned yard-out to yard-back, read the way the Route tab reads the
+// saved rows: the `pickup` row's departure is the yard-out, the last `return`
+// row's arrival the yard-back. With no times it is the leg's whole days, to
+// the late-return hour after the last. Null when the leg has no dates.
+export function legWindow(trip: Trip, leg: 'outbound' | 'return'): Window | null {
+  const from = leg === 'return' ? trip.return_start_date : trip.start_date
+  const to = (leg === 'return' ? trip.return_end_date : trip.end_date) ?? from
+  if (!from || !to) return null
+  const rows = (trip.trip_stops || []).filter(s => (s.leg || 'outbound') === leg)
+    .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+  const pickup = rows.find(s => s.type === 'pickup') ?? null
+  const back = [...rows].reverse().find(s => s.type === 'return') ?? null
+
+  const outTime = pickup?.depart_prev ?? pickup?.spot ?? (leg === 'outbound' ? trip.departure_time : null)
+  const outDate = (pickup?.depart_prev ? pickup.depart_prev_date : pickup?.spot ? pickup.spot_date : null) ?? from
+  const backTime = back?.arrive ?? back?.depart_prev ?? (leg === 'outbound' && !trip.return_start_date ? trip.return_time : null)
+  const backDate = (back?.arrive ? back.arrive_date : back?.depart_prev ? back.depart_prev_date : null) ?? to
+
+  const timed = !!(outTime && backTime)
+  const start = instant(outDate, outTime ?? '00:00')
+  let end = backTime ? instant(backDate, backTime) : instant(to, `${LATE_HOUR}:00`)
+  if (start == null || end == null) return null
+  if (!backTime) end += DAY_MS
+  // A yard-back read as earlier than the yard-out is past midnight.
+  while (end <= start) end += DAY_MS
+  return { start, end, timed }
+}
+
+const legsOf = (trip: Trip): ('outbound' | 'return')[] =>
+  trip.return_start_date ? ['outbound', 'return'] : ['outbound']
+
+const legOfAssignment = (a: Assignment): 'outbound' | 'return' => (a.leg === 'return' ? 'return' : 'outbound')
+
+// ── miles ───────────────────────────────────────────────────────────────────
+
+// The McAllen date of an instant.
+const day = (ms: number) => new Date(wall(ms)).toISOString().slice(0, 10)
+
+// The miles between two sets of readings, from the engine's odometer where
+// both have it, else Samsara's GPS ones. A kind whose last reading is from
+// before the window was not read on the road, which a bus on a trip always
+// is, so it is passed over; null when no kind is left.
+export function between(a: Readings[string] | undefined, b: Readings[string] | undefined, start: number):
+  { miles: number; source: 'engine' | 'gps' } | null {
+  const kinds = [['obdOdometerMeters', 'engine'], ['gpsOdometerMeters', 'gps'], ['gpsDistanceMeters', 'gps']] as const
+  for (const [kind, source] of kinds) {
+    const x = a?.[kind]
+    const y = b?.[kind]
+    if (!x || !y || !Number.isFinite(x.value) || !Number.isFinite(y.value)) continue
+    if (Date.parse(y.time) < start) continue
+    const meters = y.value - x.value
+    if (meters < 0) continue
+    return { miles: Math.round(meters / METERS_PER_MILE), source }
+  }
+  return null
+}
+
+const nameKey = (v: string | null | undefined) => String(v ?? '').trim().toLowerCase()
+
+export async function milesFor(trip: Trip, deps: Deps): Promise<Answer> {
+  const legs = legsOf(trip)
+    .map(leg => ({ leg, w: legWindow(trip, leg) }))
+    .filter((l): l is { leg: 'outbound' | 'return'; w: Window } => !!l.w)
+
+  const busIds = [...new Set((trip.trip_assignments || []).map(a => a.bus_id).filter((v): v is string => !!v))]
+  if (!busIds.length || !legs.length) {
+    return { legs: legs.map(l => ({ leg: l.leg, from: iso(l.w.start), to: iso(l.w.end), timed: l.w.timed })), buses: [], actual: null }
+  }
+
+  const first = Math.min(...legs.map(l => l.w.start))
+  const last = Math.max(...legs.map(l => l.w.end))
+  const [buses, others, vehicles] = await Promise.all([
+    deps.buses(busIds),
+    deps.others(busIds, day(first - DAY_MS), day(last + DAY_MS), trip.id),
+    deps.vehicles(),
+  ])
+  // A bus is its Samsara vehicle when the vehicle's name is the bus's number.
+  const vehicleOf = new Map(vehicles.map(v => [nameKey(v.name), v.id]))
+  const numberOf = new Map(buses.map(b => [b.id, b.number]))
+
+  // The same bus's windows on other trips.
+  const busy = new Map<string, Window[]>()
+  for (const o of others) {
+    for (const a of o.trip_assignments || []) {
+      if (!a.bus_id) continue
+      const w = legWindow(o, legOfAssignment(a))
+      if (w) busy.set(a.bus_id, [...(busy.get(a.bus_id) ?? []), w])
+    }
+  }
+
+  // Each bus on each of its legs: the instants to read at, or why not.
+  type Ask = { bus: string; leg: 'outbound' | 'return'; vehicle: string | null; from: number; to: number; note: LegNote | null }
+  const asks: Ask[] = []
+  const now = deps.now()
+  for (const bus of busIds) {
+    const on = new Set((trip.trip_assignments || []).filter(a => a.bus_id === bus).map(legOfAssignment))
+    const vehicle = vehicleOf.get(nameKey(numberOf.get(bus))) ?? null
+    for (const { leg, w } of legs) {
+      if (!on.has(leg)) continue
+      const near = busy.get(bus) ?? []
+      let from = w.start - MARGIN_MS
+      let to = w.end + MARGIN_MS
+      let note: LegNote | null = vehicle ? null : 'not-in-samsara'
+      for (const o of near) {
+        if (o.start < w.end && o.end > w.start) note = note ?? 'other-trip'
+        else if (o.end <= w.start) from = Math.max(from, o.end)
+        else if (o.start >= w.end) to = Math.min(to, o.start)
+      }
+      if (!note && w.end > now) note = 'not-finished'
+      asks.push({ bus, leg, vehicle, from, to: Math.min(to, now), note })
+    }
+  }
+
+  // One Samsara call per instant, for every vehicle read at it.
+  const wanted = new Map<number, Set<string>>()
+  for (const a of asks) {
+    if (a.note || !a.vehicle) continue
+    for (const at of [a.from, a.to]) wanted.set(at, (wanted.get(at) ?? new Set()).add(a.vehicle))
+  }
+  const read = new Map<number, Readings>()
+  await Promise.all([...wanted].map(async ([at, ids]) => { read.set(at, await deps.readings([...ids], iso(at))) }))
+
+  const out: BusMiles[] = busIds.map(bus => {
+    const mine = asks.filter(a => a.bus === bus).map(a => {
+      if (a.note || !a.vehicle) return { leg: a.leg, miles: null, source: null, note: a.note }
+      const got = between(read.get(a.from)?.[a.vehicle], read.get(a.to)?.[a.vehicle], a.from)
+      return got
+        ? { leg: a.leg, miles: got.miles, source: got.source, note: null }
+        : { leg: a.leg, miles: null, source: null, note: 'no-readings' as const }
+    })
+    const whole = mine.length > 0 && mine.every(l => l.miles != null)
+    return { bus_id: bus, number: numberOf.get(bus) ?? null, miles: whole ? mine.reduce((n, l) => n + (l.miles ?? 0), 0) : null, legs: mine }
+  })
+  const totals = out.map(b => b.miles).filter((m): m is number => m != null)
+  return {
+    legs: legs.map(l => ({ leg: l.leg, from: iso(l.w.start), to: iso(l.w.end), timed: l.w.timed })),
+    buses: out,
+    actual: totals.length ? Math.max(...totals) : null,
+  }
+}
+
+export async function handle(req: Request, deps: Deps): Promise<Response> {
+  const base = headers(req.headers.get('origin'))
+  const reply = (status: number, body: unknown) =>
+    new Response(JSON.stringify(body), { status, headers: { ...base, 'Content-Type': 'application/json' } })
+
+  if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: base })
+  if (req.method !== 'POST') return reply(405, { error: 'method' })
+  if (!/^Bearer\s+\S+/i.test(req.headers.get('authorization') ?? '')) return reply(401, { error: 'log-in' })
+
+  let id = ''
+  try {
+    const body = await req.json()
+    id = typeof body?.trip_id === 'string' ? body.trip_id.trim() : ''
+  } catch {
+    // A body that is not JSON carries no id, and is answered as one.
+  }
+  if (!UUID.test(id)) return reply(400, { error: 'no-id' })
+
+  let trip: Trip | null
+  try {
+    trip = await deps.trip(id)
+  } catch {
+    return reply(502, { error: 'unavailable' })
+  }
+  // A trip the caller may not read is answered as one that does not exist,
+  // before Samsara is asked anything.
+  if (!trip) return reply(404, { error: 'not-found' })
+  if (!deps.keyed) return reply(503, { error: 'no-key' })
+
+  try {
+    return reply(200, await milesFor(trip, deps))
+  } catch {
+    return reply(502, { error: 'samsara' })
+  }
+}

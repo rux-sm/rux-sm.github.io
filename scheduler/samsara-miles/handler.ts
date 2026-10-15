@@ -2,7 +2,8 @@
 // Edge runtime and under Node, where scheduler/tools/check-samsara-miles.mjs
 // sends it sample trips. The trip editor's Get from Samsara sends a trip's id
 // and gets back how far each of its buses went on each leg, by Samsara's
-// odometer, and the farthest bus's total for the Actual miles box.
+// odometer, who drove each one, and the farthest bus's total for the Actual
+// miles box.
 //
 // A LEG'S WINDOW is its planned yard-out to yard-back, from its stops, widened
 // by two hours each side to catch an early start or a late return; a parked
@@ -53,12 +54,17 @@ export type Readings = Record<string, {
   gpsDistanceMeters?: Reading
 }>
 
+export type Driver = { id: string; name: string | null }
+export type VehicleTrip = { startMs: number; endMs?: number; driverId?: number | string | null; distanceMeters?: number }
+export type SamsaraDriver = { id: string; name: string }
+
 export type Deps = {
   // The trip with its stops and buses, read on the caller's own log-in, or
   // null when there is none or the caller may not read it.
   trip(id: string): Promise<Trip | null>
-  // The buses by id, read the same way.
+  // The buses by id, and every driver, read the same way.
   buses(ids: string[]): Promise<Bus[]>
+  drivers(): Promise<Driver[]>
   // Other trips, not cancelled, that put one of these buses on the road
   // between the two dates; each carries only those buses' assignments.
   others(busIds: string[], from: string, to: string, except: string): Promise<Trip[]>
@@ -66,6 +72,11 @@ export type Deps = {
   vehicles(): Promise<Vehicle[]>
   // Each vehicle's last odometer readings at or before an instant.
   readings(vehicleIds: string[], at: string): Promise<Readings>
+  // Samsara's own trips for a vehicle between two instants, each with the
+  // driver logged in; throws when the key may not read them.
+  vehicleTrips(vehicleId: string, fromMs: number, toMs: number): Promise<VehicleTrip[]>
+  // Every Samsara driver's id and name.
+  samsaraDrivers(): Promise<SamsaraDriver[]>
   // Whether a Samsara key is set.
   keyed: boolean
   now(): number
@@ -78,7 +89,14 @@ export type BusLeg = {
   source: 'engine' | 'gps' | null
   note: LegNote | null
 }
-export type BusMiles = { bus_id: string; number: string | null; miles: number | null; legs: BusLeg[] }
+// A driver Samsara saw drive the bus, matched to the scheduler's where it can
+// be, or nobody logged in when `name` is null.
+export type Drove = { driver_id: string | null; name: string | null; miles: number }
+export type BusMiles = {
+  bus_id: string; number: string | null; miles: number | null; legs: BusLeg[]
+  // Who drove it, most miles first, or null when Samsara could not say.
+  drivers: Drove[] | null
+}
 export type Answer = {
   legs: { leg: 'outbound' | 'return'; from: string; to: string; timed: boolean }[]
   buses: BusMiles[]
@@ -198,6 +216,24 @@ export function between(a: Readings[string] | undefined, b: Readings[string] | u
 
 const nameKey = (v: string | null | undefined) => String(v ?? '').trim().toLowerCase()
 
+/* A SAMSARA DRIVER IS THE SCHEDULER'S WITH THE SAME FIRST AND LAST NAME, the
+   rule samsara-now matches by: middle names, initials and a Jr. or Sr. are
+   passed over, and a name two drivers share matches nobody. */
+const SUFFIXES = new Set(['jr', 'sr', 'ii', 'iii', 'iv'])
+export function personKey(name: string | null | undefined): string | null {
+  const words = String(name ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+    .replace(/[^a-z\s-]/g, ' ').split(/\s+/).filter(w => w && w.length > 1 && !SUFFIXES.has(w))
+  return words.length >= 2 ? `${words[0]} ${words.at(-1)}` : null
+}
+function driverIndex(drivers: Driver[]): Map<string, string> {
+  const seen = new Map<string, string | null>()
+  for (const d of drivers) {
+    const key = personKey(d.name)
+    if (key) seen.set(key, seen.has(key) ? null : d.id)
+  }
+  return new Map([...seen].filter((e): e is [string, string] => e[1] != null))
+}
+
 export async function milesFor(trip: Trip, deps: Deps): Promise<Answer> {
   const legs = legsOf(trip)
     .map(leg => ({ leg, w: legWindow(trip, leg) }))
@@ -261,6 +297,42 @@ export async function milesFor(trip: Trip, deps: Deps): Promise<Answer> {
   const read = new Map<number, Readings>()
   await Promise.all([...wanted].map(async ([at, ids]) => { read.set(at, await deps.readings([...ids], iso(at))) }))
 
+  /* Who drove each bus: Samsara's own trips for it that start inside each
+     leg's window, their miles added up for each driver logged in. Without the
+     key's permission to read them, nobody is known. */
+  let known = true
+  const segments = new Map<string, VehicleTrip[]>()
+  let names = new Map<string, string>()
+  let index = new Map<string, string>()
+  const askable = asks.filter(a => a.vehicle && a.note !== 'other-trip')
+  try {
+    const [found, theirs, ours] = await Promise.all([
+      Promise.all(askable.map(a => deps.vehicleTrips(a.vehicle!, a.from, a.to))),
+      deps.samsaraDrivers().catch(() => [] as SamsaraDriver[]),
+      deps.drivers(),
+    ])
+    askable.forEach((a, i) => segments.set(`${a.bus}|${a.leg}`, found[i]))
+    names = new Map(theirs.map(d => [String(d.id), d.name]))
+    index = driverIndex(ours)
+  } catch {
+    known = false
+  }
+  const droveFor = (bus: string): Drove[] | null => {
+    if (!known) return null
+    const meters = new Map<string, number>()
+    for (const a of asks.filter(x => x.bus === bus)) {
+      for (const s of segments.get(`${bus}|${a.leg}`) ?? []) {
+        if (!(s.startMs >= a.from && s.startMs <= a.to)) continue
+        const who = s.driverId ? String(s.driverId) : ''
+        meters.set(who, (meters.get(who) ?? 0) + (s.distanceMeters ?? 0))
+      }
+    }
+    return [...meters].map(([who, m]) => {
+      const name = who ? names.get(who) ?? null : null
+      return { driver_id: index.get(personKey(name) ?? '') ?? null, name, miles: Math.round(m / METERS_PER_MILE) }
+    }).filter(d => d.name || d.miles > 0).sort((x, y) => y.miles - x.miles)
+  }
+
   const out: BusMiles[] = busIds.map(bus => {
     const mine = asks.filter(a => a.bus === bus).map(a => {
       if (a.note || !a.vehicle) return { leg: a.leg, miles: null, source: null, note: a.note }
@@ -270,7 +342,8 @@ export async function milesFor(trip: Trip, deps: Deps): Promise<Answer> {
         : { leg: a.leg, miles: null, source: null, note: 'no-readings' as const }
     })
     const whole = mine.length > 0 && mine.every(l => l.miles != null)
-    return { bus_id: bus, number: numberOf.get(bus) ?? null, miles: whole ? mine.reduce((n, l) => n + (l.miles ?? 0), 0) : null, legs: mine }
+    return { bus_id: bus, number: numberOf.get(bus) ?? null, miles: whole ? mine.reduce((n, l) => n + (l.miles ?? 0), 0) : null,
+      legs: mine, drivers: droveFor(bus) }
   })
   const totals = out.map(b => b.miles).filter((m): m is number => m != null)
   return {

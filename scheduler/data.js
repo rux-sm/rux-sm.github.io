@@ -8738,6 +8738,27 @@
         'not-in-samsara': 'not in Samsara', 'other-trip': 'on another trip then',
         'not-finished': 'not back yet', 'no-readings': 'no readings',
       };
+      /* Under each bus, who Samsara saw drive it and how far, then where that
+         and the trip's own seats differ: a driver on the trip Samsara never
+         saw in the bus, and one who drove it the trip does not name. Nothing
+         changes by itself; the Buses tab is where a seat is put right. */
+      const seatName = id => {
+        const d = panelIndex?.driversById?.get(id);
+        return d?.short_name || d?.name || 'A driver';
+      };
+      const droveName = d => (d.driver_id ? seatName(d.driver_id) : d.name ? roadShort(d.name) : 'Nobody logged in');
+      const samsaraWho = b => {
+        if (!b.drivers?.length) return [];
+        const lines = [`Drove: ${b.drivers.map(d => `${droveName(d)} ${d.miles} mi`).join(', ')}`];
+        const seated = new Set((trip.trip_assignments || []).filter(a => a.bus_id === b.bus_id)
+          .flatMap(a => (a.trip_drivers || []).map(d => d.driver_id)).filter(Boolean));
+        const seen = new Set(b.drivers.map(d => d.driver_id).filter(Boolean));
+        const unseen = [...seated].filter(id => !seen.has(id)).map(seatName);
+        const extra = b.drivers.filter(d => d.name && d.miles > 0 && !seated.has(d.driver_id)).map(droveName);
+        if (unseen.length) lines.push(`On the trip, not seen in Samsara: ${unseen.join(', ')}`);
+        if (extra.length) lines.push(`Drove, not on the trip: ${extra.join(', ')}`);
+        return lines;
+      };
       const samsaraLine = b => {
         const bus = panelIndex?.buses?.get(b.bus_id);
         const name = bus ? vehicleName(bus) : `Unit ${b.number ?? ''}`.trim();
@@ -8764,7 +8785,12 @@
         }
         const found = r.data;
         samsaraOut.replaceChildren(...(found.buses.length
-          ? found.buses.map(b => el('p', 'rux--form__helper-text', samsaraLine(b)))
+          ? found.buses.flatMap(b => {
+            // The bus's own line is bold, so its drivers read as its own.
+            const head = el('p', 'rux--form__helper-text');
+            head.appendChild(el('strong', null, samsaraLine(b)));
+            return [head, ...samsaraWho(b).map(words => el('p', 'rux--form__helper-text', words))];
+          })
           : [el('p', 'rux--form__helper-text', 'No buses on this trip yet.')]));
         const actual = document.getElementById('scheduler-f-actmiles');
         if (found.actual != null && actual) {

@@ -56,12 +56,5 @@ fills what it knows, so closing a trip out is mostly one check and a Save.
 
 ## Tasks
 
-- [ ] Tick Read Vehicle Trips on the Samsara key (rux, in Samsara), which
-      samsara-miles needs to say who drove.
-- [ ] Teach samsara-miles who drove each bus, with its check, and deploy it on
-      rux's yes.
-- [ ] Add Check with Samsara's drivers and differences beside Get from
-      Samsara on the Billing tab, and prove a Save in Chrome on :8641 by
-      `scheduler/docs/proving-a-save.md`.
-- [ ] Say who drove in the samsara-miles section of
-      `scheduler/docs/database-inventory.md`.
+- [ ] Deploy samsara-miles on rux's yes, and check who drove one past trip's
+      buses against Samsara's own trip history.

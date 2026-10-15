@@ -87,7 +87,17 @@ const reading = (time, value) => ({ time, value });
 
 // Stand-in parts: invented odometers that rise between two instants, and a
 // record of every instant Samsara is asked about.
-function parts({ others = [], now = Date.parse('2026-10-20T00:00:00Z'), odometer, keyed = true, found = day } = {}) {
+// Samsara's own trips for v101 on the day trip: two drivers and a stretch
+// with nobody logged in, inside the window, and one from the night before.
+const SEGMENTS = {
+  v101: [
+    { startMs: Date.parse('2026-10-10T11:30:00Z'), driverId: 11, distanceMeters: Math.round(200 * MILE) },
+    { startMs: Date.parse('2026-10-10T20:00:00Z'), driverId: 12, distanceMeters: Math.round(99 * MILE) },
+    { startMs: Date.parse('2026-10-11T02:40:00Z'), driverId: 0, distanceMeters: Math.round(1 * MILE) },
+    { startMs: Date.parse('2026-10-10T04:00:00Z'), driverId: 11, distanceMeters: Math.round(70 * MILE) },
+  ],
+};
+function parts({ others = [], now = Date.parse('2026-10-20T00:00:00Z'), odometer, keyed = true, found = day, tripsFail = false } = {}) {
   const asked = [];
   let samsaraCalls = 0;
   return {
@@ -105,6 +115,9 @@ function parts({ others = [], now = Date.parse('2026-10-20T00:00:00Z'), odometer
         asked.push([at, [...ids].sort()]);
         return Object.fromEntries(ids.map(v => [v, odometer(v, at)]));
       },
+      drivers: async () => [{ id: 'd1', name: 'Ana Maria Ruiz' }, { id: 'd2', name: 'Ben Ortiz' }],
+      vehicleTrips: async v => { if (tripsFail) throw new Error('401'); return SEGMENTS[v] ?? []; },
+      samsaraDrivers: async () => [{ id: '11', name: 'Ana Ruiz Jr' }, { id: '12', name: 'Dee Moss' }],
     },
   };
 }
@@ -162,6 +175,17 @@ p = parts({ odometer: () => ({ obdOdometerMeters: reading('2026-10-09T00:00:00Z'
 a = await milesFor(three, p.deps);
 expect('a bus with no reading inside the window has no readings', a.buses.slice(0, 2).map(b => b.legs[0].note),
   ['no-readings', 'no-readings']);
+
+p = parts({ odometer });
+a = await milesFor(three, p.deps);
+expect('who drove each bus, most miles first, matched where the office has them',
+  a.buses.map(b => [b.number, b.drivers]),
+  [['101', [{ driver_id: 'd1', name: 'Ana Ruiz Jr', miles: 200 }, { driver_id: null, name: 'Dee Moss', miles: 99 },
+    { driver_id: null, name: null, miles: 1 }]], ['102', []], ['900', []]]);
+p = parts({ odometer, tripsFail: true });
+a = await milesFor(three, p.deps);
+expect('without permission to read Samsara\'s trips, nobody is known, and the miles still come',
+  [a.buses.map(b => b.drivers), a.actual], [[null, null, null], 400]);
 
 const both = { ...split, trip_assignments: [{ bus_id: 'b1', leg: 'outbound' }, { bus_id: 'b1', leg: 'return' }] };
 p = parts({ odometer: (v, at) => ({ obdOdometerMeters: reading(at, Math.round((Date.parse(at) - Date.parse('2026-10-10T00:00:00Z')) / 3600_000 * 10 * MILE)) }) });

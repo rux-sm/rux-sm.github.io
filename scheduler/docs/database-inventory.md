@@ -271,17 +271,17 @@ requests.
 ## 7. Samsara miles
 
 `samsara-miles`, source in `scheduler/samsara-miles/`, is the Billing tab's
-Get from Samsara. The editor posts a trip's id to
-`/functions/v1/samsara-miles`, and the function reads the trip's dates, stops
-and buses on the caller's own session, so a caller who is not staff finds no
-trip and Samsara is never asked. With its one secret, `SAMSARA_API_TOKEN`, a
-read-only Samsara key, it asks for each bus's odometer at the start and end of
-each leg the bus is on, and answers with each bus's miles, or why it has none,
-and the farthest bus's total. A bus is the Samsara vehicle named with its
-number. A leg runs from its yard-out to its yard-back, read as McAllen times
-and widened by two hours each side, but never into the same bus's trip before
-or after. It writes nothing; Save writes `trips.actual_miles`. It is deployed
-with Verify JWT off, as §5 is, and answers the site and the log-in preview.
+Get from Samsara. It reads the trip's dates, stops and buses, and `drivers`, on
+the caller's own session, so a caller who is not staff finds no trip and
+Samsara is never asked. With `SAMSARA_API_TOKEN` it reads each bus's odometer
+at the start and end of each leg the bus is on, and Samsara's own trips for
+the bus, which name the driver logged in; it answers each bus's miles, or why
+it has none, who drove it and how far, matched as §8 matches drivers, and the
+farthest bus's total. A bus is the Samsara vehicle named with its number. A
+leg runs from its yard-out to its yard-back, widened by two hours each side
+but never into the same bus's trip before or after. Without Read Vehicle
+Trips nobody is known and the miles still come. It writes nothing; Save
+writes `trips.actual_miles`. It is deployed with Verify JWT off, as §5 is.
 `scheduler/tools/check-samsara-miles.mjs` runs it against sample trips.
 
 ## 8. Samsara now

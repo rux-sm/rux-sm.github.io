@@ -84,6 +84,10 @@ r = await post({ ...good, leave_date: '2026-10-13' });
 expect('a trip leaving in the past is refused', r.body.fields, ['leave_date']);
 r = await post({ ...good, return_date: '2026-11-12' });
 expect('a return before the trip leaves is refused', r.body.fields, ['return_date']);
+r = await post({ ...good, return_date: '2026-11-13', return_time: '07:00' });
+expect('a same-day return at or before the time it leaves is refused', r.body.fields, ['return_time']);
+r = await post({ ...good, return_time: '07:00' });
+expect('a later day may be back at an earlier hour', r.status, 200);
 r = await post({ ...good, leave_date: '2026-02-30' });
 expect('a date that does not exist is refused', r.body.fields, ['leave_date']);
 for (const people of ['0', '1001', '12a', '']) {

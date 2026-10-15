@@ -112,6 +112,9 @@ export function requestFrom(body: Record<string, unknown>, today: string): { fie
   if (leaveTime && !realTime(leaveTime)) fields.push('leave_time')
   if (round && (!realDate(returnDate) || returnDate < leaveDate)) fields.push('return_date')
   if (round && returnTime && !realTime(returnTime)) fields.push('return_time')
+  // A trip back the same day it leaves is back after it leaves, when both
+  // times are given; a later day may be back at any hour.
+  else if (round && returnTime && leaveTime && returnDate === leaveDate && returnTime <= leaveTime) fields.push('return_time')
   if (!/^\d+$/.test(people) || Number(people) < 1 || Number(people) > 1000) fields.push('people')
   if (fields.length) return { fields }
 

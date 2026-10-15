@@ -37,6 +37,11 @@ the last one forwarded came in March 2026.
 - **Only the domain waits on the manager's yes.** The repository and the
   quote requests are built first, so the switch is one step when the yes
   comes.
+- **The new site carries everything the current one says,** its tagline,
+  the family's history by name and the coaches' luggage space among it, so
+  nothing is lost at the switch. A link saved from the current site, which is
+  one page reached by `#buses`, `#quote-form` and the like, opens the new
+  page that holds that part.
 - **At the switch, escamillatourbuses.com becomes the repository's custom
   domain, with HTTPS enforced,** and a `CNAME` file comes with it. Its links
   stay inside its folder and its 404 page reads its links from the site's
@@ -138,7 +143,7 @@ the last one forwarded came in March 2026.
       replaced with the phone number and the office's email until the switch.
 - [ ] Ask the tourism bureau whether the site may quote its letter by name,
       and on a yes put a line or two of it on the pages in both languages.
-- [ ] Put new photos of the fleet or the team on the pages once rux has them.
+- [ ] Put photos of the team on the pages once rux has them.
 - [ ] Put the site's Turnstile widget's site key in its `app.js` once rux has
       made the widget, set its secret and deployed `quote-request`; check a
       failed send, then send the test request and close it.

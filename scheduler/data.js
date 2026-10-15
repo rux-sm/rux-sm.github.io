@@ -8095,7 +8095,13 @@
         const times = el('dl', 'scheduler-figures');
         for (const [label, time] of [['Start', yardOut], ['Spot', spot], [`End${lastDay}`, yardBack]]) {
           const box = el('div');
-          box.append(el('dt', null, label), el('dd', null, time ? clock(time) : '—'));
+          // AM or PM in its own span, smaller, as the board writes its a and p.
+          const said = time ? clock(time) : '—';
+          const ampm = / (AM|PM)$/.exec(said);
+          const value = el('dd');
+          if (ampm) value.append(said.slice(0, ampm.index), el('span', 'scheduler-figures__ampm', ampm[0]));
+          else value.append(said);
+          box.append(el('dt', null, label), value);
           times.appendChild(box);
         }
         times.title = busSaid;

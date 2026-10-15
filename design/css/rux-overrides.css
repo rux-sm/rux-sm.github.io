@@ -641,15 +641,22 @@
 /* GEIST'S HEADER IS 64px, measured on its own site: 16px on every side of
    32px controls, the name 24px in. Carbon's is 48px of edge-to-edge 48px
    squares. The bar keeps Carbon's parts: its icons become 32px buttons with
-   6px corners, 4px in rux-dark, 8px apart, and the name starts 8px past the
-   bar's 16px.
+   6px corners, 8px apart, and the name starts 8px past the bar's 16px.
+   RUX-DARK'S HEADER IS 60px, the height of its every other bar of buttons:
+   12px on every side of its 36px controls, as its table toolbar and the
+   scheduler's panel heads hold theirs, on 4px corners.
    Everything Carbon places under the header -- the page's content, the side
-   nav and its overlay, the header's panels and a side panel -- moves to 4rem
+   nav and its overlay, the header's panels and a side panel -- moves down
    with it. */
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header,
-.rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"]) {
+[data-theme="geist-dark"] .rux--header,
+.rux--header[data-theme="geist-dark"] {
   block-size: 4rem;
   padding-inline: var(--rux-spacing-05);
+}
+[data-theme="rux-dark"] .rux--header,
+.rux--header[data-theme="rux-dark"] {
+  block-size: 3.75rem;
+  padding-inline: var(--rux-spacing-04);
 }
 :is(:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header, .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"])) .rux--header__global {
   align-items: center;
@@ -663,6 +670,10 @@
   border-radius: 6px;
 }
 :is([data-theme="rux-dark"] .rux--header, .rux--header[data-theme="rux-dark"]) .rux--header__action {
+  block-size: var(--rux-layout-size-height-md);
+  min-block-size: var(--rux-layout-size-height-md);
+  inline-size: var(--rux-layout-size-height-md);
+  min-inline-size: var(--rux-layout-size-height-md);
   border-radius: 4px;
 }
 /* RUX-DARK RINGS ITS HEADER BUTTONS, as GitHub rings the buttons in its
@@ -673,12 +684,12 @@
 :is([data-theme="rux-dark"] .rux--header, .rux--header[data-theme="rux-dark"]) .rux--header__action:not(:has(.rux--user-avatar), :focus-visible) {
   border-color: var(--rux-border-subtle-02);
 }
-/* THE ACCOUNT BUTTON IS THE FACE ITSELF where the header's buttons are 32px:
-   the picture is Carbon's 32px avatar in every theme, which sits inside
-   Carbon's 48px button and fills these. So the button is round with it, the
-   picture is kept from shrinking into the 30px the border leaves, and since
-   the face covers the border the focus ring is drawn on, the ring is an
-   outline 2px clear of it. */
+/* THE ACCOUNT BUTTON IS THE FACE ITSELF where the header's buttons are small:
+   the picture is Carbon's 32px avatar, which sits inside Carbon's 48px
+   button and fills geist-dark's; rux-dark's 36px button takes a 36px face.
+   So the button is round with it, the picture is kept from shrinking into
+   the space the border leaves, and since the face covers the border the
+   focus ring is drawn on, the ring is an outline 2px clear of it. */
 :is(:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header, .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"])) .rux--header__action:has(.rux--user-avatar) {
   border-radius: 50%;
 }
@@ -689,7 +700,11 @@
 :is(:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header, .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"])) .rux--header__action .rux--user-avatar {
   flex: none;
 }
-/* A count on one of those 32px buttons has no corner to sit in: Carbon's 4px
+:is([data-theme="rux-dark"] .rux--header, .rux--header[data-theme="rux-dark"]) .rux--header__action :is(.rux--user-avatar, .rux--user-avatar__photo) {
+  block-size: var(--rux-layout-size-height-md);
+  inline-size: var(--rux-layout-size-height-md);
+}
+/* A count on one of those small buttons has no corner to sit in: Carbon's 4px
    inset is measured for a 48px button, and here it lands the count on the
    glyph. So it hangs off the button's top corner, half over the edge. */
 :is(:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header, .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"])) .rux--header__action .rux--badge-indicator--count {
@@ -718,23 +733,35 @@
   padding-inline-start: var(--rux-spacing-03);
 }
 /* The menu toggle is set to the header's top, above, so that in Carbon's bar
-   it spans the full 48px its neighbours do. Here it is a 32px button in a
-   64px bar, and the top is 16px above the row the name and the other buttons
-   sit on, so it takes that row's centre. */
+   it spans the full 48px its neighbours do. Here it is a button inset from
+   the bar's edges, and the top is above the row the name and the other
+   buttons sit on, so it takes that row's centre. */
 :is(:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header, .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"])) .rux--header__menu-toggle {
   align-self: center;
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) :is(.rux--header ~ .rux--content, div:has(.rux--header) ~ .rux--content) {
+[data-theme="geist-dark"] :is(.rux--header ~ .rux--content, div:has(.rux--header) ~ .rux--content) {
   margin-block-start: 4rem;
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) :is(.rux--side-nav--ux, .rux--side-nav__overlay, .rux--header-panel, .rux--side-panel) {
+[data-theme="geist-dark"] :is(.rux--side-nav--ux, .rux--side-nav__overlay, .rux--header-panel, .rux--side-panel) {
   inset-block-start: 4rem;
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) :is(.rux--header ~ .rux--side-nav, .rux--side-panel) {
+[data-theme="geist-dark"] :is(.rux--header ~ .rux--side-nav, .rux--side-panel) {
   block-size: calc(100% - 4rem);
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header ~ .rux--side-nav {
+[data-theme="geist-dark"] .rux--header ~ .rux--side-nav {
   inset-block-start: 4rem;
+}
+[data-theme="rux-dark"] :is(.rux--header ~ .rux--content, div:has(.rux--header) ~ .rux--content) {
+  margin-block-start: 3.75rem;
+}
+[data-theme="rux-dark"] :is(.rux--side-nav--ux, .rux--side-nav__overlay, .rux--header-panel, .rux--side-panel) {
+  inset-block-start: 3.75rem;
+}
+[data-theme="rux-dark"] :is(.rux--header ~ .rux--side-nav, .rux--side-panel) {
+  block-size: calc(100% - 3.75rem);
+}
+[data-theme="rux-dark"] .rux--header ~ .rux--side-nav {
+  inset-block-start: 3.75rem;
 }
 /* GEIST'S FIELDS ARE OUTLINED, NOT FILLED. Its control takes the container's
    own surface and a 1px ring, measured on Geist's Input page at rgba(255 255

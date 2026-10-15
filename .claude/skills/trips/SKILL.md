@@ -108,7 +108,7 @@ reads only the ones before it. Nothing is written until step 10.
 | A second driver is needed over 10 hours driving or 15 on duty less rest | `scheduler/docs/quote-calculator.md` | the Route Summary's Second driver notice |
 | A saved location is listed first and carries a location icon | `scheduler/docs/screen-inventory.md`, the Route tab's row | the icon beside the result, and Saved location over the field |
 | A return after midnight stays on a one-day trip | `scheduler/docs/screen-inventory.md`, the Route tab's row | Returns with the next weekday, and +1 on the board's bar |
-| What the checklist counts | `scheduler/checklist.js` | Prep's lines for a leg leaving soon, and Tasks for one further out |
+| What the checklist counts | `scheduler/checklist.js` | Prep's lines for a leg leaving soon, and To do for one further out |
 | What confirms a trip, and what goes out with a quote | `scheduler/docs/booking.md` | the Billing tab's summary card |
 | The rates and what each is for | the Settings page, `scheduler/settings.html`, never this repository | the Mileage rate select in the calculator |
 

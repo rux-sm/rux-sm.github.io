@@ -1,13 +1,13 @@
 /* ==========================================================================
-   to-do-list.js — TASKS, AND THE PANE THE BOARD'S TWO LISTS SHARE
+   to-do-list.js — TO DO, AND THE PANE THE BOARD'S TWO LISTS SHARE
    --------------------------------------------------------------------------
-   The board's toolbar has two buttons, Tasks and Prep, and one pane beside
+   The board's toolbar has two buttons, To do and Prep, and one pane beside
    the week that shows either list. This shows and hides the pane, says on
-   each button how many are due, and fills Tasks. Prep is departures-panel.js's.
+   each button how many are due, and fills To do. Prep is departures-panel.js's.
    The pane stays while a trip or a form opens beside it; a press on the open
    list's button shuts it, and a press on the other swaps the list.
 
-   Tasks is what people ask of the office, the `to_dos` rows. A Claude
+   To do is what people ask of the office, the `to_dos` rows. A Claude
    session adds a row through the connector, made by Ruxbot; nobody adds one
    here, where a row is done, edited and deleted.
 
@@ -27,7 +27,7 @@
    The rows are grouped Overdue, Today, This week, Later and No date, then
    Done today: the rows closed today behind one line that says how many and
    is shut until pressed, each a tile struck through, with Undo. Everyone on
-   the staff sees every row. The count on Tasks is its Overdue
+   the staff sees every row. The count on To do is its Overdue
    and Today rows; the count on Prep is the one departures-panel.js gives.
 
    A change to a row arrives on the `scheduler-to-do` channel and redraws.
@@ -47,7 +47,7 @@
   /* The two lists: each one's button, its glyph, filled while its list
      shows, and its name on the pane's head. */
   const LISTS = {
-    tasks: { button: document.getElementById('scheduler-tasks-toggle'), glyph: '#m-check_circle', name: 'Tasks', due: 'due' },
+    tasks: { button: document.getElementById('scheduler-tasks-toggle'), glyph: '#m-check_circle', name: 'To do', due: 'due' },
     prep: { button: document.getElementById('scheduler-prep-toggle'), glyph: '#m-directions_bus', name: 'Prep', due: 'not ready' },
   };
   if (!client || !panel || !LISTS.tasks.button) return;
@@ -530,7 +530,7 @@
   document.body.appendChild(menu);
 
   /* How many are due, on each list's button: Design's count badge, and the
-     button's name says it too. Tasks counts its Overdue and Today rows. */
+     button's name says it too. To do counts its Overdue and Today rows. */
   function drawCount(list, n) {
     const { button, name, due } = LISTS[list];
     if (!button) return;
@@ -597,7 +597,7 @@
 
   /* The pane shows one list or is shut. A list's button reads as pressed, its
      glyph filled, while its list shows. Opening a list reads it again, since
-     a tab left open all morning is hours behind, and leaving Tasks shuts its
+     a tab left open all morning is hours behind, and leaving To do shuts its
      open row and its form. The board, told by `scheduler:to-do-pane`, finds
      the pane its room: beside the week, or in front of it where the window is
      too narrow. Nothing keeps whether it was open, so the board always opens

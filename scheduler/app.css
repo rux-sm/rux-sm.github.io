@@ -1111,9 +1111,11 @@ button.scheduler-row-head__num::after {
   padding: var(--rux-spacing-02) var(--rux-spacing-03);
   border-block-start: 1px solid var(--card-rule);
 }
-/* The reminder and the other warnings come first, each a plain row of the
-   card's own surface: the bell in the bar's own warning ink and the words in
-   bold say what it is, with no tint, which turned muddy on a dark card. */
+/* The reminder and the other warnings come first, under the Needs title,
+   each a plain row of the card's own surface: the bell in the bar's own
+   warning ink says what it is, with no tint, which turned muddy on a dark
+   card, and the words are in the body's regular weight, as an update's are,
+   so the title over them is what stands out. */
 .scheduler-card__asks,
 .scheduler-card__warn {
   display: grid;
@@ -1136,8 +1138,7 @@ button.scheduler-row-head__num::after {
   align-items: center;
 }
 .scheduler-card__misfit > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: var(--scheduler-mark-error); }
-.scheduler-card__misfit > strong { min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
-:is(.scheduler-card__asks, .scheduler-card__warn) > strong { min-inline-size: 0; font-weight: var(--rux-heading-compact-01-font-weight); }
+:is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) > strong { min-inline-size: 0; font-weight: 400; }
 /* A due reminder names the day it leaves at the row's end, quieter than the
    alerts it times. */
 .scheduler-card__asks-when { flex: none; white-space: nowrap; color: var(--rux-text-secondary); }
@@ -1153,7 +1154,7 @@ button.scheduler-row-head__num::after {
    card's edge, so turning primary with words to save moves nothing. */
 .scheduler-card__action[data-card-action="save"] { margin-inline-end: 0; }
 /* A part's title: Carbon's 14px heading in the card's own ink, its count a
-   small grey tag beside it, and the part's button at its end. */
+   disc of the bar's alert set beside it, and the part's button at its end. */
 .scheduler-card__title {
   display: flex;
   align-items: center;
@@ -1175,6 +1176,7 @@ button.scheduler-row-head__num::after {
 /* A part with nothing in it is its title alone, which says so. */
 .scheduler-card__title:last-child { margin-block-end: 0; }
 .scheduler-card__updates { padding-block: var(--rux-spacing-03); }
+.scheduler-card__needs { padding-block: var(--rux-spacing-03); }
 /* On the road: a line for each driver Samsara has in the bus, their duty's
    mark, their name, bold at the wheel, and their duty and hours. */
 .scheduler-card__road { padding-block: var(--rux-spacing-03); }
@@ -1270,7 +1272,9 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__updates:has(> .scheduler-card__update-list) { padding-block-end: calc(var(--rux-spacing-05) - (var(--rux-layout-size-height-sm) - 1.125rem) / 2); }
 .scheduler-bar-shortcuts[data-card] .scheduler-card__title { margin-block-end: var(--rux-spacing-05); }
 .scheduler-bar-shortcuts[data-card] .scheduler-card__title:last-child { margin-block-end: 0; }
-/* A warning's words are bold. The rule over the first takes a pixel of its
+/* The Needs title stands 16px under the card's top and 16px over the first
+   warning, as the Updates title does, and the warning under it draws no rule.
+   The rule over a first warning takes a pixel of its
    7. The bell and the words start where an update's face and words do, and
    the day it leaves ends where their ages do, in their 12px; where the words
    and the day do not fit one line, the day drops under them. */
@@ -1281,6 +1285,9 @@ button.scheduler-row-head__num::after {
   gap: 0;
   padding-block: calc((var(--rux-layout-size-height-sm) - 1.125rem) / 2 - 1px) calc((var(--rux-layout-size-height-sm) - 1.125rem) / 2);
 }
+.scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__needs { padding-block: var(--rux-spacing-05); }
+.scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__needs + .scheduler-card__row { border-block-start: 0; }
+.scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__needs + :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit),
 .scheduler-bar-shortcuts[data-card] .scheduler-card > :is(.scheduler-card__asks, .scheduler-card__warn) + :is(.scheduler-card__asks, .scheduler-card__warn),
 .scheduler-bar-shortcuts[data-card] .scheduler-card > .scheduler-card__misfit + .scheduler-card__misfit,
 .scheduler-bar-shortcuts[data-card][data-side="above"] .scheduler-card > .scheduler-card__row:first-child:is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit),
@@ -1392,6 +1399,9 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar__msg--warning { background: var(--scheduler-mark-warning); color: var(--scheduler-mark-on-warning, var(--scheduler-on-warning)); }
 .scheduler-bar__msg--error { background: var(--scheduler-mark-error); color: var(--rux-text-inverse); }
+/* A plain count, as the trip card gives its updates, is the set's grey: the
+   theme's secondary icon colour under its inverse text. */
+.scheduler-bar__msg--plain { background: var(--rux-icon-secondary); color: var(--rux-text-inverse); }
 /* The name takes the row's spare room, so the disc sits at the end. */
 .scheduler-bar__dest { justify-content: flex-start; }
 .scheduler-bar__dest > :first-child { margin-inline-end: auto; }
@@ -1634,7 +1644,7 @@ button.scheduler-row-head__num::after {
   border-start-start-radius: var(--scheduler-surface-radius, 0);
   border-start-end-radius: var(--scheduler-surface-radius, 0);
 }
-/* The lists' pane, Tasks and Prep, has no day band under its head, so the head
+/* The lists' pane, To do and Prep, has no day band under its head, so the head
    draws the rule the roster's band draws under its own, in the grid's colour,
    and every pane's head stands off what it holds the same way. */
 .scheduler-to-do--pane > .scheduler-aside__head {
@@ -3161,10 +3171,11 @@ button.scheduler-row-head__num::after {
    at the foot on every trip. The reminder at the top needs no rule above it. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-card { display: contents; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card > * { flex: 1 0 100%; min-inline-size: 0; }
+.scheduler-bar-shortcuts[data-docked] .scheduler-card__needs { order: -5; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__misfit { order: -4; }
 .scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__asks, .scheduler-card__warn) { order: -3; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__updates { order: -1; }
-.scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__misfit, .scheduler-card__asks, .scheduler-card__warn) { border-block-start: 0; }
+.scheduler-bar-shortcuts[data-docked] :is(.scheduler-card__needs, .scheduler-card__misfit, .scheduler-card__asks, .scheduler-card__warn) { border-block-start: 0; }
 
 /* The updates hold at least their title and one line however many there
    are, so the sheet is the same height with none, one or twenty, on the
@@ -3175,7 +3186,7 @@ button.scheduler-row-head__num::after {
 }
 /* The warnings stand on the same raised layer, since the sheet under them
    is the header's. */
-.scheduler-bar-shortcuts[data-docked] .scheduler-card > :is(.scheduler-card__misfit, .scheduler-card__asks, .scheduler-card__warn) { background: var(--rux-layer-02); }
+.scheduler-bar-shortcuts[data-docked] .scheduler-card > :is(.scheduler-card__needs, .scheduler-card__misfit, .scheduler-card__asks, .scheduler-card__warn) { background: var(--rux-layer-02); }
 /* The trip, above its slots: the bar's own rows, cloned, so they keep
    one builder and one set of rules. The trip's colour comes with them as the
    bar's colour class, and the head paints its fill and ink, so it reads as
@@ -3197,7 +3208,7 @@ button.scheduler-row-head__num::after {
    block gave up is read, so hiding a row here would leave it nowhere. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcuts__trip .scheduler-bar__row { display: flex; }
 /* The bar's alert count is left off: the alerts are read just above it,
-   and so is its newest update's row. */
+   under their own count, and so is its newest update's row. */
 .scheduler-bar-shortcuts__trip .scheduler-bar__msg { display: none; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcuts__trip .scheduler-bar__update { display: none; }
 /* The phone number dials, drawn as a link in the trip's own ink. */
@@ -4527,9 +4538,9 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-suggest__now { color: var(--rux-text-secondary); }
 .scheduler-suggest__error { color: var(--rux-text-error); }
 
-/* ══ Tasks and Prep ══════════════════════════════════════════════════════
+/* ══ To do and Prep ══════════════════════════════════════════════════════
    The pane of the board's two lists, beside the week, `--scheduler-panel-w`
-   wide as the roster is. to-do-list.js shows it and fills Tasks, and
+   wide as the roster is. to-do-list.js shows it and fills To do, and
    departures-panel.js fills Prep. Every row of either list is a tile. What
    opens in place, a task as a leg on Prep is, is Design's tile around an
    item of its accordion, holding Design's tag, buttons and menu, and a

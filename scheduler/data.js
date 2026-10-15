@@ -11312,7 +11312,7 @@
       // Only once the trip stands does its contact take its customer.
       await fillContactCustomer(row);
       /* A trip started from a website request takes it, and its New quote
-         row on Tasks takes the trip, so the row's Trip opens it. */
+         row on To do takes the trip, so the row's Trip opens it. */
       if (creating && openDraftRequest) {
         await write('the website request', client.from('quote_requests').update({ trip_id: tripId }).eq('id', openDraftRequest));
         await write('the website request', client.from('to_dos').update({ trip_id: tripId })
@@ -14581,13 +14581,15 @@
   }
 
   /* A part's title, Carbon's way of heading a list: its name in the 14px
-     heading type, its count in a small grey tag beside it, and the part's
-     button at its end. */
-  function cardTitle(name, count, action) {
+     heading type, its count beside it in a disc of the bar's alert set, in
+     `tone` -- plain grey for a count, the warning or the error colour for
+     what the trip needs -- and the part's button, if it has one, at its end. */
+  function cardTitle(name, count, action, tone = 'plain') {
     const title = el('div', 'scheduler-card__title');
     const heading = el('span', 'scheduler-card__heading', name);
-    if (count) heading.appendChild(el('span', 'rux--tag rux--tag--gray rux--layout--size-sm scheduler-card__count', String(count)));
-    title.append(heading, action);
+    if (count) heading.appendChild(el('span', `scheduler-bar__msg scheduler-bar__msg--${tone} scheduler-card__count`, String(count)));
+    title.appendChild(heading);
+    if (action) title.appendChild(action);
     return title;
   }
 
@@ -14649,8 +14651,18 @@
        bell with its mark for a bus that does not fit, the plain bell in the
        warning band for the rest. The words say which. None has a dismiss. A
        due trip also says when it leaves, once, at its first reminder's end. */
+    /* THE NEEDS: what the trip still needs, under a title of its own with
+       the count its bar carries, in the bar's colour, so the disc on the bar
+       and the list it counts read as one thing. */
+    const alerts = alertsOf(trip, bar ? barFacts.get(bar) : null);
+    if (alerts.length) {
+      const head = row('scheduler-card__needs');
+      head.appendChild(cardTitle('Needs', alerts.length, null,
+        alerts.some(a => a.row === 'scheduler-card__misfit') ? 'error' : 'warning'));
+      card.appendChild(head);
+    }
     let reminded = false;
-    for (const a of alertsOf(trip, bar ? barFacts.get(bar) : null)) {
+    for (const a of alerts) {
       const band = goes(row(a.row), a.go, a.words);
       if (a.spot) band.dataset.spot = a.spot;
       band.append(svgUse(a.row === 'scheduler-card__misfit' ? '#m-notification_important-fill' : '#m-notifications-fill', '16', '0 0 32 32'),

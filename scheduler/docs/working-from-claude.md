@@ -71,9 +71,9 @@ way the draft is spent and the link does not open twice.
 A change to an existing trip works the same way: the link opens that trip,
 with the changes filled in over it, and Reset takes them back out.
 
-## Keep the Tasks list
+## Keep the To do list
 
-Claude can read the office's Tasks list, the one the board's toolbar opens,
+Claude can read the office's To do list, the one the board's toolbar opens,
 and add to it. Ask in plain words:
 
 - what is on the to-do list
@@ -106,7 +106,7 @@ server**.
 
 ## What it will not do
 
-- It never writes or changes a trip. Only Save in the editor does. The Tasks
+- It never writes or changes a trip. Only Save in the editor does. The To do
   list's rows are the one thing it writes itself.
 - A draft can fill only the trip fields the connector lists. Anything else is
   refused, with the list, rather than written. A new trip's draft can carry

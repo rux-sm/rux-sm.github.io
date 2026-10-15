@@ -16,7 +16,7 @@ page because the repository is public. `quote-calculator.md` covers pricing.
 
 ## 1. A request from the website
 
-The company website's quote form puts each request on the board's Tasks as a
+The company website's quote form puts each request on the board's To do list as a
 New quote, due the day it came in and added by Website. Its lines are the
 request's number, the customer's name, phone and email, whether a purchase
 order pays, when the trip leaves and comes back, a wheelchair lift where they

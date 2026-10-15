@@ -1232,14 +1232,19 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast:not([data-place="heade
   }
 }
 
-/* A notice that offers a choice puts its actions under its words. Carbon
-   lays one action beside them, and two beside them in the trip panel leave
-   the words a column three words wide. The actions start 32px in, so the
-   first one's label stands under the title. */
-.rux--actionable-notification.scheduler-note--choice { flex-wrap: wrap; }
-.rux--actionable-notification.scheduler-note--choice .rux--actionable-notification__details { flex-basis: 100%; }
-.rux--actionable-notification.scheduler-note--choice .rux--actionable-notification__text-wrapper { padding-block-end: 0; }
-.rux--actionable-notification.scheduler-note--choice .rux--actionable-notification__button-wrapper { margin-inline-start: var(--rux-spacing-07); }
+/* A notice that offers a choice puts its actions under its words, and so
+   does every notice in the trip editor. Carbon lays an action beside them,
+   which in the editor's 20rem left the words a column three words wide. The
+   actions start 32px in, so the first one's label stands under the title. */
+:is(.rux--actionable-notification.scheduler-note--choice, #scheduler-panel .rux--actionable-notification) { flex-wrap: wrap; }
+:is(.rux--actionable-notification.scheduler-note--choice, #scheduler-panel .rux--actionable-notification) .rux--actionable-notification__details { flex-basis: 100%; }
+:is(.rux--actionable-notification.scheduler-note--choice, #scheduler-panel .rux--actionable-notification) .rux--actionable-notification__text-wrapper { padding-block-end: 0; }
+:is(.rux--actionable-notification.scheduler-note--choice, #scheduler-panel .rux--actionable-notification) .rux--actionable-notification__button-wrapper { margin-inline-start: var(--rux-spacing-07); }
+/* Carbon holds a notice to 18rem, wider than the editor's column once the
+   panel's padding is off it, and in a stack the notice widened the column
+   and the Route summary's tile above it into the padding. In the editor a
+   notice takes the column's width. */
+#scheduler-panel :is(.rux--inline-notification, .rux--actionable-notification) { min-inline-size: 0; }
 
 /* A task and a leg on Prep are each a one-item accordion inside a tile, in
    the lists' pane, and the tile is the item's box.

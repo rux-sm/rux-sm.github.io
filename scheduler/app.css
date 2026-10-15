@@ -2282,13 +2282,17 @@ button.scheduler-row-head__num::after {
   margin-block-end: var(--rux-spacing-05);
 }
 /* The Updates window's list, under the box: each update a
-   tile on the raised layer, its author's face beside its words over its day.
+   tile on the raised layer, its author's face beside its words over its day,
+   the tiles a step apart, as the board's lists hold theirs.
    A tile is a button that opens it for editing; the one being edited or
-   deleted is a plain tile holding its box or its ask. */
+   deleted is a plain tile holding its box or its ask. Add update, when the
+   window stands on its own, ends the box's line, a step under it. */
+.scheduler-update-add { display: flex; justify-content: flex-end; margin-block-start: var(--rux-spacing-03); }
+.scheduler-update-add[hidden] { display: none; }
 .scheduler-updates-error { margin-block-start: var(--rux-spacing-03); color: var(--rux-text-error); }
 .scheduler-updates-log { margin-block-start: var(--rux-spacing-06); }
 .scheduler-updates-log[hidden] { display: none; }
-.scheduler-updates { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.scheduler-updates { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--rux-spacing-03); }
 .scheduler-updates__tile {
   display: flex;
   gap: var(--rux-spacing-04);

@@ -4318,6 +4318,12 @@
       drawLog();
     }
   }
+  /* A box as tall as its words, two lines at the least, so an update opened
+     to change shows whole and the box grows as it is typed in. */
+  function fitBox(box) {
+    box.style.blockSize = 'auto';
+    box.style.blockSize = `${box.scrollHeight + box.offsetHeight - box.clientHeight}px`;
+  }
   function logItem(u) {
     const li = el('li', 'scheduler-updates__item');
     const text = el('span', 'scheduler-updates__text');
@@ -4345,7 +4351,7 @@
       const keep = smallBtn('rux--btn--primary', 'Save');
       drop.addEventListener('click', () => { logChanging = { id: u.id, mode: 'delete' }; drawLog(); });
       cancel.addEventListener('click', () => { logChanging = null; drawLog(); });
-      edit.addEventListener('input', () => { keep.disabled = !edit.value.trim() || edit.value.trim() === u.body; });
+      edit.addEventListener('input', () => { keep.disabled = !edit.value.trim() || edit.value.trim() === u.body; fitBox(edit); });
       keep.disabled = true;
       keep.addEventListener('click', () => {
         keep.disabled = true;
@@ -4356,7 +4362,7 @@
       const actions = el('div', 'scheduler-updates__actions');
       actions.append(drop, cancel, keep);
       text.append(wrapEdit, actions);
-      requestAnimationFrame(() => { edit.focus(); edit.setSelectionRange(edit.value.length, edit.value.length); });
+      requestAnimationFrame(() => { fitBox(edit); edit.focus(); edit.setSelectionRange(edit.value.length, edit.value.length); });
       return li;
     }
     words();
@@ -10428,14 +10434,17 @@
      once the Billing tab marks it, a customer-facing change's with its own
      line, and any other's empty.
 
-     On its own it has Cancel and Add update and no close at the top: Add
-     update writes at once and closes it, and Cancel closes it. */
+     On its own it has Add update right under the box, Close at its foot and
+     no close at the top: Add update writes at once and closes it, and Close
+     closes it. The main button is one button, moved between the foot and the
+     box, so it keeps one handler. */
   const updateModal = document.getElementById('scheduler-update-modal');
   const updateText = document.getElementById('scheduler-update-text');
   const updateSave = document.getElementById('scheduler-update-save');
   const updateSkip = document.getElementById('scheduler-update-skip');
   const updateClose = document.getElementById('scheduler-update-close');
   const updateCloseWrap = document.getElementById('scheduler-update-close-wrap');
+  const updateAdd = document.getElementById('scheduler-update-add');
   const updateError = document.getElementById('scheduler-update-error');
   const updateWhat = document.getElementById('scheduler-update-what');
   let updateSettle = null;   // Save's step, while Save opened the window
@@ -10475,6 +10484,8 @@
     updateSkip.textContent = 'Save, no update';
     updateCloseWrap.hidden = false;
     updateSave.textContent = 'Save with update';
+    updateSkip.after(updateSave);
+    updateAdd.hidden = true;
     updateClose.setAttribute('aria-label', 'Back to the trip, not saved');
     updateClose.title = 'Back to the trip, not saved';
     return new Promise(resolve => {
@@ -10495,6 +10506,8 @@
     updateSkip.textContent = 'Close';
     updateCloseWrap.hidden = true;
     updateSave.textContent = 'Add update';
+    updateAdd.appendChild(updateSave);
+    updateAdd.hidden = false;
     fillUpdateWindow({ trip: tripName(trip), what: '', line: '', tripId: trip.id, editId });
   }
   const answerUpdate = answer => {
@@ -10506,9 +10519,7 @@
   /* The new update's box starts two lines tall and grows with what is
      typed, so an empty window shows more of the trip's updates. */
   function fitUpdateText() {
-    if (!updateText) return;
-    updateText.style.blockSize = 'auto';
-    updateText.style.blockSize = `${updateText.scrollHeight + updateText.offsetHeight - updateText.clientHeight}px`;
+    if (updateText) fitBox(updateText);
   }
   updateText?.addEventListener('input', () => { updateSave.disabled = !updateText.value.trim(); fitUpdateText(); });
   // Cmd or Ctrl with Enter presses the main button, as a chat box sends.

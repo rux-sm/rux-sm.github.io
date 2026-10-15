@@ -4604,21 +4604,6 @@ html:has(.scheduler-page[data-takeover]) {
    it and the hover is the whole tile's, cut to the tile's corners. */
 .scheduler-to-do__tiles { display: flex; flex-direction: column; gap: var(--rux-spacing-03); }
 .scheduler-to-do__tile { min-block-size: 0; padding: 0; overflow: hidden; }
-/* A tile that is one link, as a trip's is on Prep, has no heading to fill
-   it, so it keeps the 16px a heading would and sets its words as a heading
-   sets its own. Its lines are a column, and an arrow ends its first line
-   where a tile that opens has the one that turns. */
-.scheduler-to-do__link {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--rux-spacing-03);
-  padding: var(--rux-spacing-05);
-  font-size: var(--rux-body-01-font-size);
-  line-height: var(--rux-body-01-line-height);
-  letter-spacing: var(--rux-body-01-letter-spacing);
-}
-.scheduler-to-do__text { display: flex; flex-direction: column; flex: 1 1 auto; min-inline-size: 0; }
-.scheduler-to-do__go { flex: none; margin-block-start: var(--rux-spacing-01); fill: var(--rux-icon-primary); }
 .scheduler-to-do__meta { margin: 0; color: var(--rux-text-secondary); font-size: 0.75rem; line-height: 1.33333; overflow-wrap: anywhere; }
 /* A task's heading is the closed row. Its first line is who it is about,
    ended in an ellipsis, with its due day at the line's end, in the error
@@ -4664,7 +4649,9 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-to-do__notes { display: flex; flex-direction: column; gap: var(--rux-spacing-02); }
 .scheduler-to-do__note { color: var(--rux-text-secondary); overflow-wrap: anywhere; }
 .scheduler-to-do__notes + .scheduler-to-do__buttons { margin-block-start: var(--rux-spacing-03); }
-.scheduler-to-do__none { margin: 0; color: var(--rux-text-secondary); font-size: 0.875rem; }
+/* An empty list or day is a tile of its own where its rows would be, its
+   one line in the quiet colour, as tall as its words and the tile's 16px. */
+.scheduler-to-do__none.rux--tile { min-block-size: 0; margin: 0; color: var(--rux-text-secondary); font-size: 0.875rem; }
 /* A row's form stands in the row's tile, which keeps its 16px around it. */
 .scheduler-to-do__tile--editing { padding: var(--rux-spacing-05); }
 .scheduler-to-do__form .rux--form-item { margin: 0; }
@@ -4676,14 +4663,12 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-to-do__end { margin-inline-start: auto; }
 
 /* ══ Prep ═════════════════════════════════════════════════════════════════
-   The Prep list, drawn by departures-panel.js: each day under its heading,
-   and on a day to prep for the legs leaving on it, each a tile that opens,
-   Design's tile around an item of its accordion. Closed, a leg is its place and time, what
-   is left and its customer; open, it holds a block for the trip and one for
-   each bus. Every status is one line, its mark on the left and its time, its
-   face or its action on the right. Any other day holds a tile for each trip
-   with a gap, one link to the trip: its place, what it still needs, and its
-   customer, in a task's order. */
+   The Prep list, drawn by departures-panel.js: the legs leaving on the days
+   to prep for, each a tile that opens, Design's tile around an item of its
+   accordion, the weekend's days each under a heading. Closed, a leg is its
+   place and time, what is left and its customer; open, it holds a block for
+   the trip and one for each bus. Every status is one line, its mark on the
+   left and its time, its face or its action on the right. */
 .scheduler-departures { color: var(--rux-text-primary); }
 .scheduler-departures[hidden] { display: none; }
 .scheduler-to-do__body[hidden] { display: none; }
@@ -4703,9 +4688,6 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-departures__place > strong { font-weight: 600; }
 /* An open leg's heading says all it holds, as an open task's does. */
 .scheduler-departures__leg.rux--accordion__item--active :is(.scheduler-departures__place, .scheduler-to-do__line) { overflow: visible; overflow-wrap: anywhere; white-space: normal; }
-/* What a trip still needs, on its tile: every gap, wrapped, since they are
-   what the tile is there to say. */
-.scheduler-departures__gaps { overflow-wrap: anywhere; }
 /* The open leg: a block for the trip, then one for each bus, a line over each. */
 .scheduler-departures__page { display: flex; flex-direction: column; }
 .scheduler-departures__block { padding-block: var(--rux-spacing-03); border-block-start: 1px solid var(--rux-border-subtle-01); }

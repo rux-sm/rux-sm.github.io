@@ -553,7 +553,7 @@
     }
     const done = stored.filter(r => r.closed_at);
     if (done.length) parts.push(doneGroup(done));
-    if (!parts.length) parts.push(el('p', 'scheduler-to-do__none', 'Nothing to do.'));
+    if (!parts.length) parts.push(el('p', 'rux--tile scheduler-to-do__none', 'Nothing to do.'));
     return parts;
   }
 

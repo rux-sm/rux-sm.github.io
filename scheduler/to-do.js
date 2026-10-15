@@ -16,11 +16,7 @@
                    stops have no times in
 
    A leaving-soon row leaves out what another row on the same trip already
-   says, so one fault is one line. `byTrip` then makes the Prep list's rows of
-   them: one for each trip on each day it has a gap, every gap on its one
-   line, without the legs leaving on a day to prep for, which Departures
-   shows whole, and without the follow-ups that are not due, which the Trips
-   page keeps.
+   says, so one fault is one line.
 
    Nothing here reads the database or the page. The trip row brings its own
    columns, and the caller hands in what only it can read, as the checklist
@@ -132,25 +128,5 @@
       || String(a.trip.id).localeCompare(String(b.trip.id)) || order.indexOf(a.kind) - order.indexOf(b.kind));
   }
 
-  /* The rows as the Prep list shows them: one for each trip on each day it
-     has a gap, with every gap in `whats`, soonest first. A row on one of
-     `prepDays` is left out, because that day's legs are shown whole, and so
-     is a follow-up that is not due. A gap that is one leg's names the leg on
-     a split trip, and the row opens that leg. */
-  function byTrip(all, prepDays = []) {
-    const out = new Map();
-    for (const r of all || []) {
-      if (!r.day || prepDays.includes(r.day)) continue;
-      if (r.kind === 'follow-up' && !r.due) continue;
-      const key = `${r.day}:${r.trip.id}`;
-      if (!out.has(key)) out.set(key, { key, trip: r.trip, day: r.day, leg: null, legName: null, whats: [] });
-      const row = out.get(key);
-      if (r.leg && !row.leg) { row.leg = r.leg; row.legName = r.legName; }
-      const said = r.kind !== 'follow-up' && r.detail ? `${r.what} ${r.detail}` : r.what;
-      for (const what of String(said).split(' · ')) if (!row.whats.includes(what)) row.whats.push(what);
-    }
-    return [...out.values()].sort((a, b) => a.day.localeCompare(b.day) || String(a.trip.id).localeCompare(String(b.trip.id)));
-  }
-
-  window.SchedulerToDo = { KINDS, SOON_DAYS, SHORT_DAYS, TIMES_DAYS, rows, byTrip, legDay, legName, hasTimes };
+  window.SchedulerToDo = { KINDS, SOON_DAYS, SHORT_DAYS, TIMES_DAYS, rows, legDay, legName, hasTimes };
 })();

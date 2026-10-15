@@ -1,8 +1,8 @@
 /* ==========================================================================
    departures-panel.js — PREP, WHAT THE TRIPS STILL NEED
    --------------------------------------------------------------------------
-   The board's Prep list, in the pane to-do-list.js shows and hides: what the
-   trips still need, soonest first, each day under its own heading.
+   The board's Prep list, in the pane to-do-list.js shows and hides: the
+   legs leaving on the days to prep for, and what each still needs.
 
    A day to prep for holds every leg leaving on it. That is tomorrow, and on a
    Friday the weekend and Monday with it, since nobody is in to prep until
@@ -14,13 +14,11 @@
    whose own lines are all done folds them into one line, Trip ready, which a
    press unfolds.
 
-   Any other day holds one tile for each trip leaving on it with a gap, as
-   to-do.js's `byTrip` joins them: its place, what it still needs under it
-   in full, then its customer on a quiet line. A press opens the trip, since
-   such a tile has nothing to open in place, and an arrow says so where a
-   leg's tile has the one that turns. A day with no such trip has no
-   heading. The arrows and the calendar go to any one day, which then shows
-   alone, as legs.
+   One day shows under no heading of its own, since the day above the list
+   names it; the weekend's three days each take one. A day with nothing
+   leaving says so in a tile where its legs would be. What a trip leaving on
+   another day still needs is on its card and the Trips page, not here. The
+   arrows and the calendar go to any one day, which then shows alone.
 
    Every line of a leg is a mark, what it is, then when it was done and whose
    face did it, or the word for doing it, which is a link to the place it is
@@ -34,12 +32,10 @@
    The days' trips are read fresh when the list opens, when the day changes
    and when a step, a seat or a trip changes, on the `scheduler-departures`
    channel. The count on the Prep button is the legs not ready on the days to
-   prep for and the rows of the other days, said in
-   `scheduler:departures-summary`.
+   prep for, said in `scheduler:departures-summary`.
 
    Needs billing.js, follow-up.js, checklist.js, requirements.js,
-   leg-facts.js, to-do.js, departures.js and to-do-rows.js loaded first, and
-   /account.js.
+   leg-facts.js and departures.js loaded first, and /account.js.
    ========================================================================== */
 (() => {
   'use strict';
@@ -48,8 +44,6 @@
   const client = account?.client;
   const Departures = window.SchedulerDepartures;
   const Facts = window.SchedulerLegFacts;
-  const ToDo = window.SchedulerToDo;
-  const Rows = window.SchedulerToDoRows;
   const panel = document.getElementById('scheduler-to-do-panel');
   if (!client || !Departures || !Facts || !panel) return;
 
@@ -104,8 +98,6 @@
   let shown = false;
   let reading = false;        // whether the days' legs are being read, for the word an empty day says
   let ahead = { legs: 0, ready: 0, known: false };   // the count for the days to prep for
-  // The other days' rows: one for each trip with a gap, as to-do.js joins what to-do-rows.js read.
-  const later = () => (ToDo && Rows ? ToDo.byTrip(Rows.rows(), prepDays()) : []);
 
   // -- reading --------------------------------------------------------------
   const STEPS = ['envelope_printed', 'trip_reminder_sent', 'itinerary_printed', 'hos_form_printed', 'driver_forms_printed'];
@@ -474,58 +466,30 @@
   };
   const focusHeld = hold => [...list.querySelectorAll('[data-hold]')].find(n => n.dataset.hold === hold)?.focus();
 
-  /* A trip's tile on a day that is not prepped for. It is one link to the
-     trip, Design's clickable tile, since it has nothing to open in place:
-     its place, as a leg's tile names it, and an arrow where a leg's tile has
-     the one that turns; what the trip still needs under them, in full; then
-     a quiet line of its customer, and its leg where the trip is split. */
-  function tripRow(row) {
-    const li = el('li');
-    const a = el('a', 'rux--link rux--tile rux--tile--clickable scheduler-to-do__link');
-    a.href = `./?trip=${encodeURIComponent(row.trip.id)}&date=${encodeURIComponent(row.day)}${row.leg ? `&leg=${encodeURIComponent(row.leg)}` : ''}`;
-    const text = el('span', 'scheduler-to-do__text');
-    const place = el('span', 'scheduler-departures__place');
-    place.appendChild(el('strong', null, row.trip.destination ? placeName(row.trip.destination) : row.trip.trip_ref || 'Trip'));
-    text.append(place, el('span', 'scheduler-departures__gaps', row.whats.join(DOT)));
-    const quiet = [row.trip.customer, row.legName].filter(Boolean).join(DOT);
-    if (quiet) text.appendChild(el('span', 'scheduler-to-do__meta scheduler-to-do__line', quiet));
-    const arrow = svgUse('#m-keyboard_arrow_right');
-    arrow.classList.add('scheduler-to-do__go');
-    a.append(text, arrow);
-    li.appendChild(a);
-    return li;
-  }
-  const rowList = rows => {
-    const ul = el('ul', 'scheduler-to-do__rows scheduler-to-do__tiles');
-    ul.setAttribute('role', 'list');
-    for (const row of rows) ul.appendChild(tripRow(row));
-    return ul;
-  };
-  const none = words => el('p', 'scheduler-to-do__none', words);
+  // A day with nothing leaving: a tile saying so, where its legs would be.
+  const none = words => el('p', 'rux--tile scheduler-to-do__none', words);
+  const nothing = (d, alone) => none(reading ? 'Loading…'
+    : !alone ? 'No trips leaving.' : d === dayFrom(1) ? 'No trips leaving tomorrow.' : 'No trips leaving that day.');
 
   function draw() {
     dayButton.textContent = days.length > 1 ? `${longDay.format(parseISO(days[0]))} – ${longDay.format(parseISO(days.at(-1)))}` : dayWords(days[0]);
     dayInput.value = days[0];
-    const wrong = failure || (prepping() ? Rows?.failure() : '') || '';
+    const wrong = failure;
     error.textContent = wrong;
     error.hidden = !wrong;
     // The list is built again, so a heading that had the focus is given it back.
     const held = list.contains(document.activeElement) ? document.activeElement.dataset?.hold : null;
     steps.clear();
-    if (!prepping()) {
-      // One day stepped or picked to, alone: its legs, with no heading over them.
-      list.replaceChildren(pages.length ? legList(pages) : failure ? '' : none(reading ? 'Loading…' : 'Nothing leaves that day.'));
+    if (days.length === 1) {
+      // One day, the one the day above names: its legs, with no heading over them.
+      list.replaceChildren(pages.length ? legList(pages) : failure ? '' : nothing(days[0], true));
     } else {
-      /* Every day with something on it, soonest first. A day to prep for is
-         there whatever leaves on it, since on a Friday nothing leaving is an
-         answer about the weekend; any other day is there for its rows. */
-      const rows = later();
-      const all = [...new Set([...days, ...rows.map(r => r.day)])].sort();
-      list.replaceChildren(...all.flatMap(d => {
-        const heading = el('h3', 'scheduler-to-do__group', dayWords(d));
-        if (!days.includes(d)) return [heading, rowList(rows.filter(r => r.day === d))];
+      /* The weekend's days, each under its heading and there whatever leaves
+         on it, since on a Friday nothing leaving is an answer about the
+         weekend. */
+      list.replaceChildren(...days.flatMap(d => {
         const legs = pages.filter(p => p.day === d);
-        return [heading, legs.length ? legList(legs) : none(reading ? 'Loading…' : 'Nothing leaves.')];
+        return [el('h3', 'scheduler-to-do__group', dayWords(d)), legs.length ? legList(legs) : nothing(d, false)];
       }));
     }
     if (asking && !steps.has(asking)) asking = null;
@@ -607,11 +571,6 @@
     fold.setAttribute('aria-expanded', String(open));
     fold.closest('.scheduler-departures__block').querySelector('.scheduler-departures__lines').hidden = !open;
   });
-  // The other days' rows came, or changed: the count says so, and the open list shows them.
-  document.addEventListener('scheduler:to-do-rows', () => {
-    document.dispatchEvent(new CustomEvent('scheduler:departures-summary'));
-    if (shown && prepping()) draw();
-  });
 
   let channel = null;
   function listen() {
@@ -635,6 +594,6 @@
   })();
 
   /* The count, and `due` for the Prep button: the legs not ready on the days
-     to prep for, and the other days' rows. */
-  window.SchedulerDeparturesPanel = { open, close, summary: () => ({ ...ahead, due: (ahead.known ? ahead.legs - ahead.ready : 0) + later().length }) };
+     to prep for. */
+  window.SchedulerDeparturesPanel = { open, close, summary: () => ({ ...ahead, due: ahead.known ? ahead.legs - ahead.ready : 0 }) };
 })();

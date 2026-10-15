@@ -2,8 +2,7 @@
    to-do-rows.js — WHAT THE TRIPS ASK, READ
    --------------------------------------------------------------------------
    Reads the trips to-do.js's rules need and keeps the rows they give: for
-   the board's Prep list, for a task's trip on the To do list, and for the
-   Trips page's Show choices. The page reads them itself, because only the
+   a task's trip on the To do list, and for the Trips page's Show choices. The page reads them itself, because only the
    board's week holds trips otherwise: every live trip for the follow-ups,
    and the buses, seats, stops and contacts of the ones leaving within 30
    days. A change to a trip arrives on the `scheduler-to-do-rows` channel and

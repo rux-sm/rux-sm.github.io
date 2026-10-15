@@ -698,10 +698,9 @@
 }
 /* RUX-DARK'S BADGES ARE ONE SET with the scheduler's alert discs: a disc 16px
    high that widens only for a second figure, its black figure 11px semibold
-   in tabular figures and centred, on the palette's ink at its hover step,
-   the step every mark on a container takes. Its red is 0.82, as the discs'
-   error is; the 0.75 ink stays the error text's. */
-[data-theme="rux-dark"] .rux--badge-indicator { background: oklch(0.82 0.124 25); }
+   in tabular figures and centred, on the palette's ink. The fill is Carbon's
+   own, support-error, which here is the red ink the error text is drawn in,
+   so there is one red on a screen; the figure holds 8.1 to 1 on it. */
 [data-theme="rux-dark"] .rux--badge-indicator--count {
   box-sizing: border-box;
   align-items: center;

@@ -695,6 +695,12 @@ button.scheduler-row-head__num::after {
   transform: translateY(-50%);
 }
 .scheduler-copy-host > .scheduler-copy[hidden] { display: none; }
+/* It shows while the field is pointed at or typed in, so a tab of filled
+   fields is not a column of icons. Its room in the field stays, so the value
+   never moves; a touch screen, with nothing to point, shows it always. */
+@media (hover: hover) {
+  .scheduler-copy-host:not(:hover, :focus-within) > .scheduler-copy { opacity: 0; }
+}
 /* The saved-record link follows its label on the label's line. The label
    keeps Carbon's space under it, so the row sets the field's distance. */
 .scheduler-label-row {
@@ -1398,6 +1404,15 @@ button.scheduler-row-head__num::after {
    tab's name while it holds. */
 .scheduler-done { display: flex; flex-direction: column; align-items: flex-start; gap: var(--rux-spacing-03); }
 .scheduler-done .rux--form__helper-text { margin: 0; }
+/* A done tab's Done, and a sent quote, are each one line: what holds and
+   when, then its undo at the line's end, where a section heading keeps its
+   control. */
+.scheduler-done--on,
+.scheduler-sent-line { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; column-gap: var(--rux-spacing-03); }
+.scheduler-done--on > .rux--btn,
+.scheduler-sent-line > .rux--btn { margin-inline-start: auto; }
+/* Carbon runs helper text the field's full width, which would break the line. */
+.scheduler-done--on > .rux--form__helper-text { inline-size: auto; }
 .scheduler-done__head { display: flex; align-items: center; gap: var(--rux-spacing-03); margin: 0; }
 .scheduler-done__head svg, .scheduler-tab-done svg { color: var(--rux-support-success); flex: none; }
 .scheduler-tab-done { display: inline-flex; align-items: center; margin-inline-start: var(--rux-spacing-02); }
@@ -2183,6 +2198,8 @@ button.scheduler-row-head__num::after {
    group's menu does, and a 24px switch 1px. */
 .scheduler-panel-section__head > .rux--btn { margin-block: -0.3125rem; }
 .scheduler-panel-section__head > .rux--toggle { margin-block: -0.0625rem; }
+/* With no title, the control still sits at the line's end. */
+.scheduler-panel-section__head > :only-child { margin-inline-start: auto; }
 /* A switch's heading is its label and takes the rest of the row, full height,
    so a tap anywhere left of the switch flips it. */
 .scheduler-panel-section__head > label.scheduler-panel-section__title {
@@ -2263,10 +2280,9 @@ button.scheduler-row-head__num::after {
 .scheduler-updates__body { display: block; white-space: pre-wrap; overflow-wrap: anywhere; }
 .scheduler-updates__meta { display: block; color: var(--rux-text-secondary); margin-block-start: var(--rux-spacing-01); }
 .scheduler-updates-empty { color: var(--rux-text-secondary); }
-/* Open calculator and Copy for QuickBooks end the Quote lines, each 16px
-   under what comes before it rather than the list's own 8px, across the
-   section's width as the add rows above them are. */
-.scheduler-quickbooks { margin-block-start: var(--rux-spacing-03); inline-size: 100%; max-inline-size: none; }
+/* Calculator and Copy for QuickBooks end the Quote lines, side by side, 16px
+   under what comes before them rather than the list's own 8px. */
+.scheduler-line-tools { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); margin-block-start: var(--rux-spacing-03); }
 /* The Updates window's head: what changed, over the box. */
 .scheduler-prompt-changes { color: var(--rux-text-secondary); margin-block-end: var(--rux-spacing-05); }
 

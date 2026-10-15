@@ -38,7 +38,7 @@ The trip's facts come first: the Buses tab's buses and seats and the Route
 tab's miles and days, in either order. The calculator reads them to try a
 price, and the Billing tab holds the quote Save keeps.
 
-The Quote calculator shortcut, and Open calculator in the Billing tab's Quote
+The Quote calculator shortcut, and Calculator in the Billing tab's Quote
 lines, open the calculator in the board's document panel, without the header or the Rules tab, its three tiles laid out
 as sections of the panel with a rule between them and the total as the panel's foot. Its days are the Route tab
 Summary's rows, a day's miles each, from what the editor's fields say now,

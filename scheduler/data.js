@@ -1766,8 +1766,15 @@
      section uses it, so the switches share one right edge. */
   const section = (title, node, action) => {
     const wrap = el('div', 'scheduler-panel-section');
-    // A titleless section still keeps the `spacing-07` above it.
-    if (!title) { wrap.appendChild(node); return wrap; }
+    // A titleless section still keeps the section's spacing above it.
+    if (!title && !action) { wrap.appendChild(node); return wrap; }
+    // A titleless section's control keeps the heading line, at its end.
+    if (!title) {
+      const bar = el('div', 'scheduler-panel-section__head');
+      bar.append(action);
+      wrap.append(bar, ...(node ? [node] : []));
+      return wrap;
+    }
     /* A switch's heading is its label, so the words flip it too: a label
        forwards its click to the switch's button. */
     const sw = action?.querySelector('.rux--toggle__button');
@@ -3037,7 +3044,8 @@
       const add = listAddRow({ label: 'Add vehicle', id: `scheduler-fleet-${leg}-add`, onClick: () => openVehicleDialog(leg, null) });
       if (buses.length >= MAX_BUSES) add.btn.disabled = true;
       body.appendChild(add.li);
-      const title = !split ? 'Vehicles' : leg === 'outbound' ? 'Drop-off vehicles' : 'Pickup vehicles';
+      // One leg's list needs no heading, since the tab names it; a split names each leg.
+      const title = !split ? null : leg === 'outbound' ? 'Drop-off vehicles' : 'Pickup vehicles';
       const sec = section(title, list, assignBestButton(leg));
       const short = seatsShort(buses);
       if (short) { short.dataset.fleetSeats = leg; short.classList.add('scheduler-fleet-seats'); list.before(short); }
@@ -6508,6 +6516,8 @@
       if (!box) continue;
       const focused = box.contains(document.activeElement);
       const words = label.toLowerCase();
+      // Done reads as one line: the check and its name, who and when, then Undo.
+      box.classList.toggle('scheduler-done--on', !!on[tab]);
       if (on[tab]) {
         const d = editing.done[tab];
         const head = el('p', 'scheduler-done__head');
@@ -6987,7 +6997,8 @@
       ),
       colorBox,
     );
-    panelDetails.appendChild(section('Trip information', topFields));
+    // The tab's name heads its first section.
+    panelDetails.appendChild(section(null, topFields));
 
     // The Buses tab is its vehicles alone; what the trip needs is on Billing and Route.
     panelFleet.querySelector(':scope > [data-fleet-needs]')?.remove();
@@ -8408,7 +8419,6 @@
       askQuoteRates();
       linesLive = false;
       const lineList = rowList();
-      const linesNote = el('p', 'rux--form__helper-text');
       // Said as a warning where a saved trip's lines and its price have parted.
       const linesParted = el('div');
       // The dead-mile offer, over the lines it adds to.
@@ -8558,8 +8568,6 @@
         const parted = linePending.length > 0 && quoted !== null && quoted !== total;
         linesParted.replaceChildren(...(parted ? [note('warning', 'The lines and the quoted price differ',
           `The lines add up to ${usdCents(total)} and the quoted price is ${usdCents(quoted)}. Change a line and the price becomes their total.`)] : []));
-        linesNote.textContent = linePending.length && !parted ? 'The quoted price is the total of these lines.' : '';
-        linesNote.hidden = !linesNote.textContent;
       };
       redrawLines = drawLines;
       redrawDeadOffer = drawDeadOffer;
@@ -8568,11 +8576,8 @@
          editor's columns never part them, and it carries the block alone for
          the reason `qbDescription` gives. A browser that refuses the clipboard says so, because a copy
          button that goes quiet is worse than one that reports a failure. */
-      const qbButton = el('button', 'rux--btn rux--btn--tertiary rux--layout--size-md scheduler-quickbooks', 'Copy for QuickBooks');
+      const qbButton = el('button', 'rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm', 'Copy for QuickBooks');
       qbButton.type = 'button';
-      const qbIcon = svgUse('#m-content_copy', '16', '0 0 32 32');
-      qbIcon.classList.add('rux--btn__icon');
-      qbButton.appendChild(qbIcon);
       qbButton.id = 'scheduler-f-quickbooks';
       qbButton.addEventListener('click', async () => {
         try {
@@ -8584,16 +8589,16 @@
       });
       /* The quote calculator, beside the week and filled from this trip, as
          the Calculator shortcut opens it: the lines are what it sets, so the
-         way to it sits with them, above the copy of what it made. */
-      const calcButton = el('button', 'rux--btn rux--btn--tertiary rux--layout--size-md scheduler-quickbooks', 'Open calculator');
+         way to it sits with them, beside the copy of what it made. The two
+         are small and carry no icon, so side by side they fit the 20rem editor. */
+      const calcButton = el('button', 'rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm', 'Calculator');
       calcButton.type = 'button';
-      const calcIcon = svgUse('#m-calculate', '16', '0 0 32 32');
-      calcIcon.classList.add('rux--btn__icon');
-      calcButton.appendChild(calcIcon);
       calcButton.id = 'scheduler-f-opencalc';
       calcButton.addEventListener('click', () => openCalculator(null));
+      const lineTools = el('div', 'scheduler-line-tools');
+      lineTools.append(calcButton, qbButton);
       const linesBody = el('div', 'rux--stack-vertical rux--stack-scale-3');
-      linesBody.append(deadBox, lineList.list, linesParted, linesNote, calcButton, qbButton);
+      linesBody.append(deadBox, lineList.list, linesParted, lineTools);
       panelBilling.appendChild(section('Quote lines', linesBody));
 
       /* QUOTE SENT: the price the customer was sent, and the day, kept for
@@ -8605,6 +8610,8 @@
         editing.quoteSent = price == null ? null : { price: round2(price), on: iso(new Date()) };
         refreshDirty();
       };
+      // Whole dollars unless there are cents, as the summary's Paid and Balance read.
+      const sentPrice = n => (round2(n) % 1 ? usdCents(n) : usd(n));
       const smallButton = (label, kindClass, run) => {
         const b = el('button', `rux--btn ${kindClass} rux--btn--sm rux--layout--size-sm`, label);
         b.type = 'button';
@@ -8620,20 +8627,25 @@
         sentBody.dataset.drawn = key;
         if (!sent) {
           sentBody.replaceChildren(
-            el('p', 'rux--form__helper-text', 'Not sent yet. Marking it keeps the price the customer was sent.'),
-            smallButton(now == null ? 'Mark quote sent' : `Mark sent at ${usdCents(now)}`, 'rux--btn--tertiary', () => markSent(now)));
+            smallButton(now == null ? 'Mark quote sent' : `Mark sent at ${sentPrice(now)}`, 'rux--btn--tertiary', () => markSent(now)));
           sentBody.lastChild.disabled = now == null;
           return;
         }
-        const said = `${signed ? 'Customer signed at' : 'Sent to customer:'} ${usdCents(sent.price)}${sent.on ? ` on ${mdy(sent.on)}` : ''}`;
-        const parts = [el('p', 'rux--type-body-compact-01', said)];
+        // One line: the price sent or signed and its day, then Mark not sent at its end.
+        const day = sent.on ? parseISO(sent.on) : null;
+        const said = [`${signed ? 'Signed' : 'Sent'} ${sentPrice(sent.price)}`,
+          day?.toLocaleDateString(undefined, day.getFullYear() === new Date().getFullYear()
+            ? { month: 'short', day: 'numeric' } : { month: 'short', day: 'numeric', year: 'numeric' })]
+          .filter(Boolean).join(' · ');
+        const line = el('div', 'scheduler-sent-line');
+        line.append(el('p', 'rux--type-body-compact-01', said), smallButton('Mark not sent', 'rux--btn--ghost', () => markSent(null)));
+        const parts = [line];
         if (now != null && round2(now) !== round2(sent.price)) {
           const diff = round2(now - sent.price);
           parts.push(notice('warning', 'The quote changed',
-            `Now ${usdCents(now)}, ${usdCents(Math.abs(diff))} ${diff > 0 ? 'more' : 'less'} than the customer ${signed ? 'signed at' : 'was sent'}.`,
-            { label: `Mark ${usdCents(now)} sent`, onClick: () => markSent(now) }));
+            `Now ${sentPrice(now)}, ${sentPrice(Math.abs(diff))} ${diff > 0 ? 'more' : 'less'} than the customer ${signed ? 'signed at' : 'was sent'}.`,
+            { label: `Mark ${sentPrice(now)} sent`, onClick: () => markSent(now) }));
         }
-        parts.push(smallButton('Mark not sent', 'rux--btn--ghost', () => markSent(null)));
         sentBody.replaceChildren(...parts);
       };
       panelBilling.appendChild(section('Quote sent', sentBody));
@@ -8829,7 +8841,7 @@
       filesBody = null;
       filesNote = null;
       filesAdd = null;
-      panelFiles.append(section('Files', el('p', 'rux--form__helper-text',
+      panelFiles.append(section(null, el('p', 'rux--form__helper-text',
         'This preview has no connection, so files cannot be listed or added.')));
     } else if (creating) {
       const { list, body } = rowList();
@@ -8858,7 +8870,7 @@
       filesAdd = { li: add.li, progress, start };
       const listWrap = el('div');
       listWrap.append(list, progress);
-      panelFiles.append(section('Files', listWrap));
+      panelFiles.append(section(null, listWrap));
       draw();
     } else {
       const { list, body } = rowList();
@@ -8867,7 +8879,7 @@
       filesNote = el('p', 'rux--form__helper-text scheduler-files-note');
       const listWrap = el('div');
       listWrap.append(list, filesAdd.progress, filesNote);
-      panelFiles.append(section('Files', listWrap));
+      panelFiles.append(section(null, listWrap));
       drawFiles(trip);
     }
 

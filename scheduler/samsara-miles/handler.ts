@@ -2,8 +2,8 @@
 // Edge runtime and under Node, where scheduler/tools/check-samsara-miles.mjs
 // sends it sample trips. The trip editor's Get from Samsara sends a trip's id
 // and gets back how far each of its buses went on each leg, by Samsara's
-// odometer, who drove each one, and the farthest bus's total for the Actual
-// miles box.
+// odometer, who drove each one on each leg and in all, and the farthest bus's
+// total for the Actual miles box.
 //
 // A LEG'S WINDOW is its planned yard-out to yard-back, from its stops, widened
 // by two hours each side to catch an early start or a late return; a parked
@@ -88,6 +88,9 @@ export type BusLeg = {
   miles: number | null
   source: 'engine' | 'gps' | null
   note: LegNote | null
+  // Who drove the bus on this leg, for the leg's own seats, most miles first,
+  // or null when Samsara could not say.
+  drivers: Drove[] | null
 }
 // A driver Samsara saw drive the bus, matched to the scheduler's where it can
 // be, or nobody logged in when `name` is null.
@@ -317,10 +320,10 @@ export async function milesFor(trip: Trip, deps: Deps): Promise<Answer> {
   } catch {
     known = false
   }
-  const droveFor = (bus: string): Drove[] | null => {
+  const droveFor = (bus: string, leg?: 'outbound' | 'return'): Drove[] | null => {
     if (!known) return null
     const meters = new Map<string, number>()
-    for (const a of asks.filter(x => x.bus === bus)) {
+    for (const a of asks.filter(x => x.bus === bus && (!leg || x.leg === leg))) {
       for (const s of segments.get(`${bus}|${a.leg}`) ?? []) {
         if (!(s.startMs >= a.from && s.startMs <= a.to)) continue
         const who = s.driverId ? String(s.driverId) : ''
@@ -334,12 +337,13 @@ export async function milesFor(trip: Trip, deps: Deps): Promise<Answer> {
   }
 
   const out: BusMiles[] = busIds.map(bus => {
-    const mine = asks.filter(a => a.bus === bus).map(a => {
-      if (a.note || !a.vehicle) return { leg: a.leg, miles: null, source: null, note: a.note }
+    const mine: BusLeg[] = asks.filter(a => a.bus === bus).map(a => {
+      const drivers = droveFor(bus, a.leg)
+      if (a.note || !a.vehicle) return { leg: a.leg, miles: null, source: null, note: a.note, drivers }
       const got = between(read.get(a.from)?.[a.vehicle], read.get(a.to)?.[a.vehicle], a.from)
       return got
-        ? { leg: a.leg, miles: got.miles, source: got.source, note: null }
-        : { leg: a.leg, miles: null, source: null, note: 'no-readings' as const }
+        ? { leg: a.leg, miles: got.miles, source: got.source, note: null, drivers }
+        : { leg: a.leg, miles: null, source: null, note: 'no-readings' as const, drivers }
     })
     const whole = mine.length > 0 && mine.every(l => l.miles != null)
     return { bus_id: bus, number: numberOf.get(bus) ?? null, miles: whole ? mine.reduce((n, l) => n + (l.miles ?? 0), 0) : null,

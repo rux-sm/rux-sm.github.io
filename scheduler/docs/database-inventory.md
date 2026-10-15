@@ -72,7 +72,7 @@ constraints, not types; there are no views.
 | `drivers` | `id`; `driver_ref` generated `DRV-###` by trigger | `name`, `short_name`, `phone`, `email`, `texting_url`, `address`, `city`, `address_state`, `zip`, `date_of_birth`, `hire_date`, `employment_type` (full-time, part-time, contract, seasonal), `status`, `priority` (1 to 5), `sort_order`, `cdl_class`, `license_number`, `license_state`, `license_exp`, `med_card_expiry`, `endorsements` text[], `emergency_contact_name`, `emergency_contact_phone`, `photo_path`, `notes`, `language` (`en` or `es`, not null, default `en`: the language the driver's schedule link and the texts sent to them are written in, which `get_driver_schedule_share` returns with the driver) |
 | `trip_stops` | `id`; `trip_id` to `trips`, cascade | `position`, `leg` (outbound, return), `type`, `label`, `name`, `address`, `lat`, `lng`, `mapbox_id`, `miles`, `drive`, `miles_source` and `drive_source` (estimated, manual), `depart_prev`, `arrive`, `spot`, `depart_prev_date`, `arrive_date`, `spot_date`, `dwell_status` (off, sleeper, on), `route_status` |
 | `trip_assignments` | `id`; `trip_id` to `trips` cascade; `bus_id` to `buses` set null | `position`, `leg` (outbound, return), `active_roles` text[], `needs` jsonb (the `requirements-v1` entries this vehicle must have, `{id: true}`), `vehicle_type` (a `buses.type`, null for any), `fuel_card_number`, the card that rides with this bus, typed on its first driver's envelope |
-| `trip_drivers` | `id`; `assignment_id` to `trip_assignments` cascade; `driver_id` to `drivers` set null | `role`, `pay`, `report_time`, `instructions`, and the driver's five steps, `envelope_printed`, `trip_reminder_sent`, `itinerary_printed`, `hos_form_printed` and `driver_forms_printed`, each with `_at` and `_by`, which `trip_drivers_stamp_steps` sets as a step is turned on and clears as it is turned off; a seat given another driver has all five turned off |
+| `trip_drivers` | `id`; `assignment_id` to `trip_assignments` cascade; `driver_id` to `drivers` set null | `role`, `pay`, `report_time`, `instructions`, `miles`, the whole miles the seat's driver drove its bus on its leg, and the driver's five steps, `envelope_printed`, `trip_reminder_sent`, `itinerary_printed`, `hos_form_printed` and `driver_forms_printed`, each with `_at` and `_by`, which `trip_drivers_stamp_steps` sets as a step is turned on and clears as it is turned off; a seat given another driver has all five turned off |
 
 A trip's place on the grid is `trips` for the dates and times,
 `trip_assignments` for which bus row and which leg, `trip_drivers` for the
@@ -171,7 +171,7 @@ as in `screen-inventory.md`.
 | Table | Read by | Written by |
 |---|---|---|
 | `trips` | Schedule, Trips search, driver page | Trip editor; a save that changes billing also writes `confirmed`, `balance_paid` and `date_paid`, derived as rux-ui derives them, and one that changes the route clears rux-ui's `itinerary_confirmed`; Cancel writes `cancelled_at` and `cancellation_reason` |
-| `trip_assignments` (with `active_roles`), `trip_drivers` | Schedule, Drivers, Fleet | Trip editor's Buses tab, which updates, inserts and deletes rows by id and never writes `trip_drivers.pay`; the bar's Assign driver menu, Suggest drivers and a driver carried to or off a bar, which change, add and delete one seat's `trip_drivers` row by id, write `active_roles` only to drop a status saved in it or to keep a seat on, and on Undo write back what a deleted row held, its `pay` with it; the bus reassignment drag writes `trip_assignments.bus_id` alone, or inserts the row when the bar is an empty slot; Cancel deletes the trip's rows, and their drivers with them, as rux-ui's cancel does |
+| `trip_assignments` (with `active_roles`), `trip_drivers` | Schedule, Drivers, Fleet | Trip editor's Buses tab, which updates, inserts and deletes rows by id and never writes `trip_drivers.pay`, and its Billing tab's Miles, which updates `trip_drivers.miles` by id; a seat either tab or the bar gives another driver has its miles cleared; the bar's Assign driver menu, Suggest drivers and a driver carried to or off a bar, which change, add and delete one seat's `trip_drivers` row by id, write `active_roles` only to drop a status saved in it or to keep a seat on, and on Undo write back what a deleted row held, its `pay` and `miles` with it; the bus reassignment drag writes `trip_assignments.bus_id` alone, or inserts the row when the bar is an empty slot; Cancel deletes the trip's rows, and their drivers with them, as rux-ui's cancel does |
 | `trip_stops` | Schedule, Trip editor Route tab, driver page | Trip editor Route tab: a leg's pickup, drop-off and return rows, added when missing |
 | `buses`, `bus_out_of_service` | Schedule, Fleet, `../rux-ui/maintenance.html` | Fleet editor |
 | `drivers`, `driver_time_off` | Schedule, Drivers | Driver editor |
@@ -276,12 +276,12 @@ the caller's own session, so a caller who is not staff finds no trip and
 Samsara is never asked. With `SAMSARA_API_TOKEN` it reads each bus's odometer
 at the start and end of each leg the bus is on, and Samsara's own trips for
 the bus, which name the driver logged in; it answers each bus's miles, or why
-it has none, who drove it and how far, matched as §8 matches drivers, and the
-farthest bus's total. A bus is the Samsara vehicle named with its number. A
+it has none, who drove it and how far on each leg and in all, matched as §8
+matches drivers, and the farthest bus's total. A bus is the Samsara vehicle named with its number. A
 leg runs from its yard-out to its yard-back, widened by two hours each side
 but never into the same bus's trip before or after. Without Read Vehicle
 Trips nobody is known and the miles still come. It writes nothing; Save
-writes `trips.actual_miles`. It is deployed with Verify JWT off, as §5 is.
+writes `trips.actual_miles` and each seat's `trip_drivers.miles`. It is deployed with Verify JWT off, as §5 is.
 `scheduler/tools/check-samsara-miles.mjs` runs it against sample trips.
 
 ## 8. Samsara now

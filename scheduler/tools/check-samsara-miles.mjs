@@ -97,7 +97,7 @@ const SEGMENTS = {
     { startMs: Date.parse('2026-10-10T04:00:00Z'), driverId: 11, distanceMeters: Math.round(70 * MILE) },
   ],
 };
-function parts({ others = [], now = Date.parse('2026-10-20T00:00:00Z'), odometer, keyed = true, found = day, tripsFail = false } = {}) {
+function parts({ others = [], now = Date.parse('2026-10-20T00:00:00Z'), odometer, keyed = true, found = day, tripsFail = false, segments = SEGMENTS } = {}) {
   const asked = [];
   let samsaraCalls = 0;
   return {
@@ -116,7 +116,7 @@ function parts({ others = [], now = Date.parse('2026-10-20T00:00:00Z'), odometer
         return Object.fromEntries(ids.map(v => [v, odometer(v, at)]));
       },
       drivers: async () => [{ id: 'd1', name: 'Ana Maria Ruiz' }, { id: 'd2', name: 'Ben Ortiz' }],
-      vehicleTrips: async v => { if (tripsFail) throw new Error('401'); return SEGMENTS[v] ?? []; },
+      vehicleTrips: async v => { if (tripsFail) throw new Error('401'); return segments[v] ?? []; },
       samsaraDrivers: async () => [{ id: '11', name: 'Ana Ruiz Jr' }, { id: '12', name: 'Dee Moss' }],
     },
   };
@@ -191,6 +191,18 @@ const both = { ...split, trip_assignments: [{ bus_id: 'b1', leg: 'outbound' }, {
 p = parts({ odometer: (v, at) => ({ obdOdometerMeters: reading(at, Math.round((Date.parse(at) - Date.parse('2026-10-10T00:00:00Z')) / 3600_000 * 10 * MILE)) }) });
 a = await milesFor(both, p.deps);
 expect('a bus on both legs adds them up', [a.buses[0].legs.map(l => l.miles), a.buses[0].miles], [[80, 80], 160]);
+p = parts({
+  odometer: (v, at) => ({ obdOdometerMeters: reading(at, 0) }),
+  segments: { v101: [
+    { startMs: Date.parse('2026-10-10T13:30:00Z'), driverId: 11, distanceMeters: Math.round(80 * MILE) },
+    { startMs: Date.parse('2026-10-12T14:30:00Z'), driverId: 12, distanceMeters: Math.round(70 * MILE) },
+    { startMs: Date.parse('2026-10-12T16:00:00Z'), driverId: 11, distanceMeters: Math.round(10 * MILE) },
+  ] },
+});
+a = await milesFor(both, p.deps);
+expect('each leg says who drove the bus on it, and the bus who drove it in all',
+  [a.buses[0].legs.map(l => l.drivers.map(d => [d.name, d.miles])), a.buses[0].drivers.map(d => [d.name, d.miles])],
+  [[[['Ana Ruiz Jr', 80]], [['Dee Moss', 70], ['Ana Ruiz Jr', 10]]], [['Ana Ruiz Jr', 90], ['Dee Moss', 70]]]);
 
 // ── who is answered ─────────────────────────────────────────────────────────
 async function post(body, { auth = 'Bearer staff', method = 'POST', origin = 'http://localhost:8641', ...opts } = {}) {

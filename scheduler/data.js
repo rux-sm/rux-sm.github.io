@@ -293,8 +293,9 @@
     // note, and each vehicle's own needs and type. A seat also carries what
     // its driver has been handed: the envelope, the itinerary, the
     // hours-of-service form and the forms the customer asks for, each
-    // printed or not.
-    'trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,envelope_printed,itinerary_printed,hos_form_printed,driver_forms_printed,trip_reminder_sent,trip_reminder_sent_at))',
+    // printed or not, and how far its driver drove, which the Billing tab's
+    // Miles edits.
+    'trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,miles,envelope_printed,itinerary_printed,hos_form_printed,driver_forms_printed,trip_reminder_sent,trip_reminder_sent_at))',
     // The driver details sent to the booking contact, or not, which the Contact list says and marks.
     'trip_prep(driver_info_sent,driver_info_sent_at)',
     // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
@@ -2306,7 +2307,7 @@
   const RELIEF = new Set(['relief-start', 'relief-end']);
   let fleetSeq = 0;
 
-  const blankSeat = () => ({ on: false, rowId: null, driverId: null, reportTime: null, note: null, status: 'off', statusDirty: false });
+  const blankSeat = () => ({ on: false, rowId: null, driverId: null, reportTime: null, note: null, miles: null, status: 'off', statusDirty: false });
   /* A vehicle not yet on a row. `seed` is the needs and type it starts with:
      an empty slot of a trip takes the trip's, so it still asks for them, and
      only a change from them makes it worth a row. */
@@ -2340,6 +2341,7 @@
       seat.driverId = row.driver_id ?? null;
       seat.reportTime = hhmmOrNull(row.report_time);
       seat.note = row.instructions ?? null;
+      seat.miles = row.miles ?? null;
       const saved = row.driver_id ? statuses?.get(statusKey(trip.id, row.driver_id, leg, r.role)) : null;
       const value = saved ? saved.status : on.get(r.role);
       seat.status = DRIVER_STATUSES.some(s => s.value === value) ? value : 'off';
@@ -2447,6 +2449,7 @@
             if (!same(s.driverId, p.driverId)) sp.driver_id = s.driverId;
             if (!same(s.reportTime, p.reportTime)) sp.report_time = s.reportTime;
             if (!same(s.note, p.note)) sp.instructions = s.note;
+            if (!same(s.miles, p.miles)) sp.miles = s.miles;
             if (Object.keys(sp).length) seats.push({ op: 'update', id: s.rowId, patch: sp });
           } else if (seatFilled(s)) {
             seats.push({ op: 'insert', row: seatRow(r.role, s) });
@@ -2458,14 +2461,18 @@
       });
       if (ops.inserts.length || ops.updates.length || ops.deletes.length) work.legs.push(ops);
     }
-    // Any change to who sits where, or a status picked here, sends the crew.
+    /* Any change to who sits where, or a status picked here, sends the crew.
+       A seat's miles alone is the close-out filling in, and sends nothing. */
     const statusPicked = fleetLegsToSave().some(leg => now[leg].some(b => ROLES.some(r => b.seats[r.role].statusDirty)));
-    work.statuses = work.legs.length > 0 || statusPicked;
-    work.work = Object.keys(work.trip).length > 0 || work.statuses;
+    const onlyMiles = s => s.op === 'update' && Object.keys(s.patch).every(k => k === 'miles');
+    const moved = work.legs.some(ops => ops.inserts.length || ops.deletes.length
+      || ops.updates.some(u => Object.keys(u.patch).length || !u.seats.every(onlyMiles)));
+    work.statuses = moved || statusPicked;
+    work.work = Object.keys(work.trip).length > 0 || work.legs.length > 0 || work.statuses;
     return work;
   }
 
-  const seatRow = (role, s) => ({ driver_id: s.driverId, role, report_time: s.reportTime, instructions: s.note });
+  const seatRow = (role, s) => ({ driver_id: s.driverId, role, report_time: s.reportTime, instructions: s.note, miles: s.miles ?? null });
 
   /* Whether the Buses tab holds changes someone made. A new trip's fleet is all
      work to Save, which writes its count and its cell's bus however untouched,
@@ -2473,6 +2480,11 @@
   const fleetChanged = () => (editing?.creating
     ? JSON.stringify(editing.fleet) !== JSON.stringify(editing.fleetBefore)
     : !!fleetWork()?.work);
+  // Whether it changes who or what goes, which a seat's miles alone does not.
+  const fleetMoved = () => {
+    const work = fleetWork();
+    return !!work && (Object.keys(work.trip).length > 0 || work.statuses);
+  };
 
   // A driver in two seats of one leg is the one thing that blocks Save.
   function fleetDuplicates(fleet = editing?.fleet) {
@@ -3220,6 +3232,8 @@
     else if (focusId) document.getElementById(focusId)?.focus();
     // A bus added or taken off changes a rental line's quantity.
     if (linesLive) redrawLines();
+    // The Billing tab's Miles has a field for each seat.
+    seatMilesDrawn?.();
   }
 
   // The vehicle a control edits: the window's copy inside the window, else the tab's.
@@ -3293,6 +3307,8 @@
       const next = find(panelIndex.driversById, picked);
       if (same(next, seat.driverId)) return;
       seat.driverId = next;
+      // The miles were the last driver's.
+      seat.miles = null;
       seat.status = 'off';
       seat.statusDirty = false;
     } else {
@@ -6026,6 +6042,8 @@
   }
   // The open Route tab's redraw, for a change to the route times or the seats.
   let routeTimesDrawn = null;
+  // The open Billing tab's redraw of each seat's miles, for a change to the seats.
+  let seatMilesDrawn = null;
   // The open Route tab's taking of a draft's stops; it returns those still to choose.
   let routeTakesStops = null;
 
@@ -8732,47 +8750,113 @@
         moneyField('scheduler-f-actmiles', 'Actual miles', trip.actual_miles),
       );
       /* Get from Samsara, on the heading line, asks the samsara-miles Edge
-         Function how far each bus went by its odometer, on the trip as last
-         saved, and puts the farthest bus's total in Actual miles for Save to
-         write. Under the fields, a line per bus says its miles or why it has
-         none. A trip not yet saved has nothing to read. */
+         Function how far each bus went by its odometer, and who drove it, on
+         the trip as last saved. It puts the farthest bus's total in Actual
+         miles, and each seated driver it saw in their own field, for Save to
+         write. A trip not yet saved has nothing to read. */
       const milesBody = el('div', 'rux--stack-vertical rux--stack-scale-4');
+      const seatMilesBox = el('div', 'rux--stack-vertical rux--stack-scale-5');
       const samsaraOut = el('div', 'rux--stack-vertical rux--stack-scale-2');
-      samsaraOut.hidden = true;
-      milesBody.append(miles, samsaraOut);
+      milesBody.append(miles);
+      /* The seats' fields and what Samsara says stand under the two fields
+         only while they hold something, since an empty stack still takes its
+         gap, and a stack's display outranks `hidden`. */
+      const placeMilesParts = () => {
+        for (const part of [seatMilesBox, samsaraOut]) {
+          if (part.hasChildNodes()) milesBody.append(part);
+          else part.remove();
+        }
+      };
+      let samsaraFound = null;
       const SAMSARA_WHY = {
         'not-in-samsara': 'not in Samsara', 'other-trip': 'on another trip then',
         'not-finished': 'not back yet', 'no-readings': 'no readings',
       };
-      /* Under each bus, who Samsara saw drive it and how far, then where that
-         and the trip's own seats differ: a driver on the trip Samsara never
-         saw in the bus, and one who drove it the trip does not name. Nothing
-         changes by itself; the Buses tab is where a seat is put right. */
       const seatName = id => {
         const d = panelIndex?.driversById?.get(id);
         return d?.short_name || d?.name || 'A driver';
       };
-      const droveName = d => (d.driver_id ? seatName(d.driver_id) : d.name ? roadShort(d.name) : 'Nobody logged in');
-      const samsaraWho = b => {
-        if (!b.drivers?.length) return [];
-        const lines = [`Drove: ${b.drivers.map(d => `${droveName(d)} ${d.miles} mi`).join(', ')}`];
-        const seated = new Set((trip.trip_assignments || []).filter(a => a.bus_id === b.bus_id)
-          .flatMap(a => (a.trip_drivers || []).map(d => d.driver_id)).filter(Boolean));
-        const seen = new Set(b.drivers.map(d => d.driver_id).filter(Boolean));
-        const unseen = [...seated].filter(id => !seen.has(id)).map(seatName);
-        const extra = b.drivers.filter(d => d.name && d.miles > 0 && !seated.has(d.driver_id)).map(droveName);
-        if (unseen.length) lines.push(`On the trip, not seen in Samsara: ${unseen.join(', ')}`);
-        if (extra.length) lines.push(`Drove, not on the trip: ${extra.join(', ')}`);
-        return lines;
+      const droveName = d => (d.driver_id ? seatName(d.driver_id) : roadShort(d.name));
+      const busFound = busId => samsaraFound?.buses.find(b => b.bus_id === busId) ?? null;
+      const legFound = (busId, leg) => busFound(busId)?.legs.find(l => l.leg === leg) ?? null;
+      /* Who Samsara saw drive a bus on a leg, or null when it could not say:
+         the leg's own answer, or the bus's where it is on that leg alone. */
+      const droveOn = (busId, leg) => legFound(busId, leg)?.drivers
+        ?? (busFound(busId)?.legs.length === 1 && legFound(busId, leg) ? busFound(busId).drivers : null);
+      const mi = n => `${Number(n).toLocaleString()} mi`;
+
+      /* EACH DRIVER'S MILES, a field per filled seat under the bus and leg it
+         drove, kept on the seat. Under the fields, the drivers' total and how
+         far it is from the bus's odometer, which a driver who did not log in,
+         or logged into another bus, pulls apart. Then where Samsara and the
+         seats differ: who drove the bus the trip does not seat, and who the
+         trip seats that Samsara never saw in it. The Buses tab is where a
+         seat is put right. */
+      const drawSeatMiles = () => {
+        if (!editing?.fleet) return;
+        const split = fleetSplit();
+        const groups = [];
+        for (const leg of fleetLegs()) {
+          editing.fleet[leg].forEach((b, i) => {
+            const seats = ROLES.map(r => ({ role: r.role, seat: b.seats[r.role] })).filter(x => seatFilled(x.seat));
+            const found = b.busId ? legFound(b.busId, leg) : null;
+            if (!seats.length && !found) return;
+            const bus = b.busId ? panelIndex?.buses?.get(b.busId) : null;
+            const name = `${bus ? vehicleName(bus) : 'No bus yet'}${split ? (leg === 'return' ? ', pickup' : ', drop-off') : ''}`;
+            const odometer = found?.miles ?? null;
+            const head = el('p', 'rux--form__helper-text');
+            head.appendChild(el('strong', null, !found ? name
+              : `${name}: ${odometer != null ? mi(odometer) : SAMSARA_WHY[found.note] ?? 'no miles'}`));
+            const group = el('div', 'rux--stack-vertical rux--stack-scale-4');
+            const after = el('div', 'rux--stack-vertical rux--stack-scale-2');
+            const total = el('p', 'rux--form__helper-text');
+            const notes = [];
+            // The total, once there is a figure, and only beside a second seat or the odometer.
+            const drawTotal = () => {
+              const figures = seats.map(x => x.seat.miles).filter(n => n != null);
+              const shown = figures.length > 0 && (seats.length > 1 || odometer != null);
+              const sum = figures.reduce((n, m) => n + m, 0);
+              const off = odometer == null ? '' : sum === odometer ? ', the same as the odometer'
+                : `, ${Math.abs(sum - odometer).toLocaleString()} ${sum > odometer ? 'more' : 'fewer'} than the odometer`;
+              total.textContent = `Drivers' total: ${mi(sum)}${off}`;
+              if (shown) after.prepend(total);
+              else total.remove();
+              if (after.hasChildNodes()) group.append(after);
+              else after.remove();
+            };
+            const fields = seats.map(({ role, seat }) => {
+              const field = moneyField(`scheduler-f-seatmiles-${leg}-${i}-${role}`, seatName(seat.driverId), seat.miles);
+              const input = field.querySelector('input');
+              input.inputMode = 'numeric';
+              // The column holds whole miles, none below zero.
+              input.addEventListener('input', () => {
+                const n = money(input.value);
+                seat.miles = n == null ? null : Math.max(0, Math.round(n));
+                drawTotal();
+              });
+              return field;
+            });
+            const drove = b.busId ? droveOn(b.busId, leg) : null;
+            if (drove) {
+              const seated = new Set(seats.map(x => String(x.seat.driverId)));
+              const extra = drove.filter(d => d.name && d.miles > 0 && !seated.has(String(d.driver_id)));
+              const nobody = drove.find(d => !d.name && d.miles > 0);
+              const unseen = seats.filter(x => !drove.some(d => same(d.driver_id, x.seat.driverId))).map(x => seatName(x.seat.driverId));
+              if (extra.length) notes.push(`Drove, not on the trip: ${extra.map(d => `${droveName(d)} ${mi(d.miles)}`).join(', ')}`);
+              if (nobody) notes.push(`Nobody logged in: ${mi(nobody.miles)}`);
+              if (unseen.length) notes.push(`On the trip, not seen in Samsara: ${unseen.join(', ')}`);
+            }
+            group.append(head, ...fields);
+            after.append(...notes.map(words => el('p', 'rux--form__helper-text', words)));
+            drawTotal();
+            groups.push(group);
+          });
+        }
+        seatMilesBox.replaceChildren(...groups);
+        placeMilesParts();
       };
-      const samsaraLine = b => {
-        const bus = panelIndex?.buses?.get(b.bus_id);
-        const name = bus ? vehicleName(bus) : `Unit ${b.number ?? ''}`.trim();
-        const each = b.legs.map(l => (l.miles != null ? `${l.miles} mi` : SAMSARA_WHY[l.note] ?? 'no miles'));
-        if (b.legs.length < 2) return `${name}: ${each[0] ?? 'no miles'}`;
-        const legs = b.legs.map((l, i) => `${each[i]} ${l.leg === 'return' ? 'back' : 'out'}`).join(', ');
-        return b.miles != null ? `${name}: ${b.miles} mi (${legs})` : `${name}: ${legs}`;
-      };
+      seatMilesDrawn = drawSeatMiles;
+
       const samsaraButton = editing.creating ? null : smallButton('Get from Samsara', 'rux--btn--ghost', async () => {
         samsaraButton.disabled = true;
         samsaraButton.textContent = 'Getting miles…';
@@ -8780,29 +8864,35 @@
         try { r = await client.functions.invoke('samsara-miles', { body: { trip_id: editing.id } }); } catch (error) { r = { error }; }
         samsaraButton.disabled = false;
         samsaraButton.textContent = 'Get from Samsara';
-        samsaraOut.hidden = false;
         if (r.error || !r.data) {
           const status = r.error?.context?.status;
           const [title, why] = status === 503 ? ['Samsara is not connected yet', 'Its key has not been set.']
             : status === 401 ? ['Log in again', 'Your log-in has run out.']
             : ['Samsara did not answer', 'Check your connection, then try again.'];
           samsaraOut.replaceChildren(notice('error', title, why));
+          placeMilesParts();
           return;
         }
-        const found = r.data;
-        samsaraOut.replaceChildren(...(found.buses.length
-          ? found.buses.flatMap(b => {
-            // The bus's own line is bold, so its drivers read as its own.
-            const head = el('p', 'rux--form__helper-text');
-            head.appendChild(el('strong', null, samsaraLine(b)));
-            return [head, ...samsaraWho(b).map(words => el('p', 'rux--form__helper-text', words))];
-          })
+        samsaraFound = r.data;
+        samsaraOut.replaceChildren(...(samsaraFound.buses.length ? []
           : [el('p', 'rux--form__helper-text', 'No buses on this trip yet.')]));
-        const actual = document.getElementById('scheduler-f-actmiles');
-        if (found.actual != null && actual) {
-          actual.value = String(found.actual);
-          actual.dispatchEvent(new Event('input', { bubbles: true }));
+        // Each seated driver Samsara saw drive the seat's bus on its leg.
+        for (const leg of fleetLegs()) {
+          for (const b of editing.fleet?.[leg] ?? []) {
+            const drove = b.busId ? droveOn(b.busId, leg) : null;
+            if (!drove) continue;
+            for (const role of ROLES.map(x => x.role)) {
+              const seat = b.seats[role];
+              const d = seatFilled(seat) && drove.find(x => same(x.driver_id, seat.driverId));
+              if (d) seat.miles = d.miles;
+            }
+          }
         }
+        drawSeatMiles();
+        const actual = document.getElementById('scheduler-f-actmiles');
+        if (samsaraFound.actual != null && actual) actual.value = String(samsaraFound.actual);
+        // Through the panel's own listener, so Save counts the miles.
+        (actual ?? panelBilling).dispatchEvent(new Event('input', { bubbles: true }));
       });
       panelBilling.appendChild(section('Miles', milesBody, samsaraButton ?? undefined));
       syncEstHint();
@@ -11186,11 +11276,11 @@
     };
     if (await movedOn()) return askConflict(null);
     /* A trip that is back is history: a change to its buses, drivers, dates
-       or stops asks first. Billing, files and updates do not, because they
-       are what closing a trip out fills in. */
+       or stops asks first. Billing, the drivers' miles, files and updates do
+       not, because they are what closing a trip out fills in. */
     const backTrip = creating ? null : panelIndex?.trips?.get(id);
     if (backTrip && !answered && window.SchedulerCloseOut.isBack(backTrip)
-      && (routePlan().work || fleetChanged() || DONE_ROUTE_KEYS.some(k => k in patch))
+      && (routePlan().work || fleetMoved() || DONE_ROUTE_KEYS.some(k => k in patch))
       && !await ask('This trip already happened. Save the change anyway?',
         'It changes the buses, drivers, dates or stops of a trip that is back.')) return false;
     // Every save asks for its update first; closing the window keeps editing.
@@ -11887,21 +11977,22 @@
   const driverById = id => [...panelIndex.driversById.values()].find(d => String(d.id) === String(id));
 
   /* What a seat's row holds besides who sits in it: the pay, the report time
-     and note, and the five steps its driver has been handed. An undo gives
-     them back with the driver. `seatKept` is the ones that say anything, a
-     field that is filled and a step that is on. */
+     and note, the miles its driver drove, and the five steps its driver has
+     been handed. An undo gives them back with the driver. `seatKept` is the
+     ones that say anything, a field that is filled and a step that is on. */
   const SEAT_STEPS = ['envelope_printed', 'trip_reminder_sent', 'itinerary_printed', 'hos_form_printed', 'driver_forms_printed'];
-  const SEAT_KEPT = ['pay', 'report_time', 'instructions', ...SEAT_STEPS];
+  const SEAT_KEPT = ['pay', 'report_time', 'instructions', 'miles', ...SEAT_STEPS];
   const seatKept = (row, columns = SEAT_KEPT) => Object.fromEntries(columns
     .filter(k => row?.[k] != null && row[k] !== false).map(k => [k, row[k]]));
   /* Who a seat holds, with what an undo gives them back where the row stays
-     and only its driver changes: the status they have, and the steps that
-     are on, which the database turns off on a row given another driver. */
+     and only its driver changes: the status they have, the steps that are
+     on, which the database turns off on a row given another driver, and the
+     miles they drove, which `saveSeats` clears. */
   const heldIn = found => ({
     driverId: found.seat.driver_id,
     status: crewOf(found.trip, found.assign, panelIndex.driversById, panelIndex.statuses)
       .find(c => c.role === found.role && !c.needed)?.status.value ?? 'off',
-    keep: seatKept(found.seat, SEAT_STEPS),
+    keep: seatKept(found.seat, [...SEAT_STEPS, 'miles']),
   });
 
   // The trips around a leg's dates, from the read kept for them or a new one.
@@ -12054,7 +12145,8 @@
       if (!driver) {
         if (seat?.id) [was] = await run(client.from('trip_drivers').delete().eq('id', seat.id).select(SEAT_KEPT.join(','))) ?? [];
       } else if (seat?.id) {
-        await run(client.from('trip_drivers').update({ driver_id: driver.id }).eq('id', seat.id));
+        // The miles were the last driver's.
+        await run(client.from('trip_drivers').update({ driver_id: driver.id, miles: null }).eq('id', seat.id));
         if (keep) await run(client.from('trip_drivers').update(keep).eq('id', seat.id));
       } else await run(client.from('trip_drivers').insert({ assignment_id: assign.id, driver_id: driver.id, role, ...keep }));
       // The row as the database gave it up, or as the board held it where it gave none back.
@@ -13519,6 +13611,7 @@
       pay: histNumber(d.pay),
       report_time: histNull(d.report_time),
       instructions: histNull(d.instructions),
+      miles: histNumber(d.miles),
     })).sort((x, y) => `${x.role}:${x.driver_id}`.localeCompare(`${y.role}:${y.driver_id}`)),
   }));
   const histStops = rows => histByPosition(rows).map(s => ({
@@ -13547,13 +13640,14 @@
   const histBusName = id => (panelIndex.buses.get(id) ? vehicleName(panelIndex.buses.get(id)) : `Unit ${id}`);
   const histDriverName = id => panelIndex.driversById.get(id)?.name ?? id;
 
-  // "Outbound · Bus 12 · Driver: Name ($300 · report 06:00) | …"
+  // "Outbound · Bus 12 · Driver: Name ($300 · report 06:00 · 412 mi) | …"
   function histFleetSummary(rows) {
     if (!rows.length) return null;
     return rows.map(a => {
       const crew = a.drivers.filter(d => d.driver_id).map(d => {
         const details = [d.pay ? `$${Number(d.pay).toLocaleString()}` : null,
-          d.report_time ? `report ${d.report_time}` : null].filter(Boolean);
+          d.report_time ? `report ${d.report_time}` : null,
+          d.miles != null ? `${Number(d.miles).toLocaleString()} mi` : null].filter(Boolean);
         return `${HISTORY_ROLES[d.role] || d.role || 'Driver'}: ${histDriverName(d.driver_id)}`
           + (details.length ? ` (${details.join(' · ')})` : '');
       });
@@ -13585,7 +13679,7 @@
 
   // A trip and every row a save can change, as the database holds them.
   const HISTORY_READ = '*,'
-    + 'trip_assignments(bus_id,position,leg,active_roles,trip_drivers(driver_id,role,pay,report_time,instructions)),'
+    + 'trip_assignments(bus_id,position,leg,active_roles,trip_drivers(driver_id,role,pay,report_time,instructions,miles)),'
     + 'trip_stops(position,leg,type,label,name,address,depart_prev,arrive,spot),'
     + 'trip_payments(position,amount,method,date,ref),'
     + 'trip_pos(position,ref,amount,date),'

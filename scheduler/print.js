@@ -283,17 +283,33 @@
     routeTimes = { pre: minutes(value('route-times-v1')?.pre_trip_minutes), post: minutes(value('route-times-v1')?.post_trip_minutes),
       late: window.SchedulerWeek?.lateReturn() };
   }
-  /* THE ONE QUOTE RULE THE DETAILED PRICE READS: a rental under these miles
-     is priced at the local day rate, not by the mile. quote.js's `rule`
-     answers it as the calculator does, its default while none is saved;
-     unread, no rental is called local. */
-  let quoteRules = { localUnder: null };
+  /* THE QUOTE RATES THE DETAILED PRICE READS: the miles under which a
+     rental is priced at the local day rate, not by the mile, which quote.js's
+     `rule` answers as the calculator does, its default while none is saved;
+     and the rates, mileage rates and Calendar a typed price's calculator
+     figure is worked out from, as Billing works it out. Unread, no rental is
+     called local and no calculator figure is printed. */
+  let quoteRules = { localUnder: null, named: null, mileage: [], calendar: {} };
   async function readQuoteRules(client) {
-    const { data, error } = await client.from('quote_rates').select('value').eq('key', 'trip_local_under').maybeSingle();
-    if (error || !window.Rux?.quote) return;
-    const n = Number(data?.value);
-    quoteRules = { localUnder: window.Rux.quote.rule(data && Number.isFinite(n) ? { trip_local_under: n } : {}, 'trip_local_under') };
+    const [named, mileage, calendar] = await Promise.all([
+      client.from('quote_rates').select('key,value'),
+      client.from('quote_mileage_rates').select('id,rate,is_default'),
+      client.from('settings').select('value').eq('key', 'rate-calendar-v1').maybeSingle(),
+    ]);
+    if (named.error || !window.Rux?.quote) return;
+    const r = Object.fromEntries((named.data || []).map(row => [row.key, Number(row.value)]));
+    quoteRules = {
+      localUnder: window.Rux.quote.rule(r, 'trip_local_under'),
+      named: r,
+      mileage: (mileage.data || []).map(m => ({ ...m, rate: Number(m.rate) })),
+      calendar: calendar.data?.value?.months ?? {},
+    };
   }
+  // The rate a rental saved with none starts from, as Billing's: the Calendar's for the trip's first month, or the default.
+  const startingRate = trip => {
+    const id = trip.start_date ? quoteRules.calendar[Number(trip.start_date.slice(5, 7))] : null;
+    return ((id ? quoteRules.mileage.find(m => m.id === id) : null) ?? quoteRules.mileage.find(m => m.is_default))?.rate ?? null;
+  };
   // The list itself, however it was read: the driver's page has it from the
   // link's own function, since a driver cannot read `settings`.
   function useRequirements(value) {
@@ -914,10 +930,11 @@
      then each line added to it, a second driver, a relief driver, the hotel,
      a discount, and the total. A drop-off and pickup prints the leg's lines
      and the lines of the whole trip, with the trip's total under its own.
-     Nothing is priced here. A rental priced on other miles than the route
-     has now says so, since the price moves with the itinerary. Dead miles
-     taken off as a discount are that line's to say, so the rental above it
-     says nothing of them. */
+     Nothing is priced here: a typed price only says what the calculator
+     makes it, where the two differ, as Billing does. A rental priced on
+     other miles than the route has now says so, since the price moves with
+     the itinerary. Dead miles taken off as a discount are that line's to
+     say, so the rental above it says nothing of them. */
   const LINE_NAMES = { rental: 'Bus rental', second_driver: 'Second driver', relief: 'Relief driver',
     discount: 'Discount', hotel: 'Hotel', other: 'Other' };
   const isDeadDiscount = l => l.kind === 'discount' && /dead miles/i.test(l.description || '');
@@ -926,7 +943,7 @@
   const num = v => (v === null || v === undefined || v === '' || !Number.isFinite(Number(v)) ? null : Number(v));
   const miles = n => `${Math.round(n).toLocaleString('en-US')} mi`;
 
-  function detailedPrice(subject, fig) {
+  function detailedPrice(subject, fig, model) {
     const { trip, leg } = subject;
     const split = trip.trip_type === 'dropoff_pickup';
     const saved = (trip.trip_quote_lines || []).slice().sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
@@ -969,6 +986,20 @@
     const to = (split && leg === 'return' ? trip.return_end_date : trip.end_date) || from;
     const dayCount = from && to ? Math.max(1, Math.round((Date.parse(to) - Date.parse(from)) / 86400000) + 1) : null;
     const deadDiscounted = lines.some(isDeadDiscount);
+    /* What the calculator makes a typed line, on what Billing would price it
+       from: the leg's miles a day, its days, and for a rental its rate and
+       its dead miles, the route's unless other dead miles were typed. A line
+       of the whole trip on a drop-off and pickup is priced on no one leg. */
+    const QL = window.SchedulerQuoteLines;
+    const whole = Math.round(fig?.legMiles > 0 ? fig.legMiles : (!split && num(trip.est_miles)) || 0);
+    const perDay = QL ? QL.milesADay(fig?.dayMiles, whole, dayCount) : null;
+    const routeDead = Math.round(((num(model?.out?.[1]) ?? 0) + (num(model?.home?.[1]) ?? 0)) * 100) / 100;
+    const calculated = l => {
+      if (!QL?.priced(l.kind) || !l.cost_typed || (l.kind !== 'relief' && (split ? l.leg !== leg : leg !== 'outbound'))) return null;
+      const saved = num(l.dead_miles) ?? 0;
+      const dead = saved > 0 ? (Math.round(saved) !== Math.round(routeDead) ? saved : routeDead) : 0;
+      return QL.calculated(l.kind, { perDay, days: dayCount, dead, rate: num(l.rate) ?? startingRate(trip) }, quoteRules.named);
+    };
     for (const l of lines) {
       const qty = num(l.quantity);
       const cost = num(l.cost);
@@ -996,8 +1027,10 @@
       }
       const unit = kind === 'rental' ? (qty === 1 ? 'bus' : 'buses')
         : kind === 'second_driver' || kind === 'relief' ? (qty === 1 ? 'driver' : 'drivers') : null;
-      const count = cost === null ? 'No cost yet'
-        : qty !== null && (qty !== 1 || unit) ? `${qty}${unit ? ` ${unit}` : ''} × ${usd(cost)}` : null;
+      const calc = calculated(l);
+      const count = [cost === null ? 'No cost yet'
+        : qty !== null && (qty !== 1 || unit) ? `${qty}${unit ? ` ${unit}` : ''} × ${usd(cost)}` : null,
+      calc !== null && calc !== cost ? `calculator ${usd(calc)}` : null].filter(Boolean).join(' · ') || null;
       priceRow(name, note, basis || count, basis ? count : null, amount === null ? '—' : usd(amount));
     }
     if (!lines.length) priceRow('Quoted price', 'No quote lines', '', null, usd(quoted));
@@ -1247,7 +1280,7 @@
     if (detailed) {
       const summary = el('div', 'scheduler-driver-itinerary__summary');
       summary.appendChild(detailedTotals(fig));
-      const price = detailedPrice(subject, fig);
+      const price = detailedPrice(subject, fig, model);
       if (price) summary.appendChild(price);
       card.appendChild(summary);
     }
@@ -2427,10 +2460,12 @@
         { id: 'simple', name: 'Simple' },
         { id: 'detailed', name: 'Detailed', trip: true },
       ],
-      // The Detailed layout's price: the Billing tab's lines as saved. The
-      // trip's files say whether the customer sent an itinerary.
+      // The Detailed layout's price: the Billing tab's lines as saved, and
+      // the estimated miles a typed price's calculator figure falls back on
+      // where the route has none. The trip's files say whether the customer
+      // sent an itinerary.
       columns: [
-        'quoted_price',
+        'quoted_price', 'est_miles',
         'trip_quote_lines(position,kind,leg,item,description,quantity,cost,amount,cost_typed,miles,dead_miles,rate)',
         'trip_documents(label)',
       ],

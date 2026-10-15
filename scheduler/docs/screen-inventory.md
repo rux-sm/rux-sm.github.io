@@ -153,7 +153,8 @@ Three homes, and one rule for choosing.
   duty and Less rest, each day's on its heading and the total after the
   stops, then the Billing tab's saved quote lines: the rental's miles, days,
   mileage rate and dead miles, flagged when the route's miles have moved
-  since, each second driver, relief, hotel and discount line and the total,
+  since, beside a typed price what the calculator makes it where the two
+  differ, as Billing shows it, each second driver, relief, hotel and discount line and the total,
   the two tables kept together and moved to the next sheet rather than cut;
   Detailed is not asked about after a print and is never offered on a blank form.
 

@@ -7,10 +7,11 @@
    it is priced from changes, until a figure is typed in its Cost; only that
    makes a typed price. So its window opens with Cost empty, and Done with
    nothing typed leaves it following. Any other line has the cost it was
-   given.
+   given. What the calculator makes the line cost is worked out here too, on
+   `Rux.quote`'s formulas, so Billing and the Detailed itinerary agree.
 
-   Nothing here reads the page or the database: the editor hands in the line
-   and the numbers it read from its fields.
+   Nothing here reads the page or the database: the editor and the print
+   hand in the line and the numbers they read.
    ========================================================================== */
 (() => {
   'use strict';
@@ -34,5 +35,35 @@
     cost_typed: typed != null,
   });
 
-  window.SchedulerQuoteLines = { PRICED, priced, follows, costShown, costKept };
+  /* A leg's miles a day as the calculator prices them: the Route Summary's
+     rows where any has miles, or else the leg's whole miles spread over its
+     days, the odd miles on the first; null with no miles. */
+  const milesADay = (rows, whole, days) => {
+    if (rows?.some(m => m > 0)) return rows.map(m => Math.round(m));
+    const n = days || 1;
+    return whole > 0 ? Array.from({ length: n }, (_, i) => Math.floor(whole / n) + (i ? 0 : whole % n)) : null;
+  };
+
+  const round2 = n => Math.round(n * 100) / 100;
+  /* What the calculator makes a line cost for one bus or one extra driver,
+     from `basis`, { perDay, days, dead, rate }, and the rates page's named
+     rates; null where the leg has no miles or days yet, or the line is not
+     the calculator's. Billing prices a line with it, and the Detailed
+     itinerary prints it beside a typed price. A relief driver is the flat
+     charge, whatever the trip. */
+  const calculated = (kind, basis, named, q = window.Rux?.quote) => {
+    if (kind === 'relief') return Number.isFinite(named?.driver_relief_flat) ? named.driver_relief_flat : null;
+    const perDay = basis?.perDay;
+    if (!q || !named || !basis.days || !(perDay?.reduce((a, b) => a + b, 0) > 0)) return null;
+    let amount = null;
+    if (kind === 'rental' && basis.rate != null) {
+      amount = q.tripQuote({ miles: perDay, rate: basis.rate, dead: basis.dead }, named).amount;
+    } else if (kind === 'second_driver') {
+      const half = perDay.map(m => m / 2);
+      amount = q.driverPay({ driver1: half, driver2: half, drivers: 2 }, named).amount;
+    }
+    return amount == null ? null : round2(amount);
+  };
+
+  window.SchedulerQuoteLines = { PRICED, priced, follows, costShown, costKept, milesADay, calculated };
 })();

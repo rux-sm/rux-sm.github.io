@@ -5646,10 +5646,8 @@
     const from = isoOrNull(document.getElementById(l === 'return' ? 'scheduler-f-rstart' : 'scheduler-f-start')?.value ?? '');
     const to = isoOrNull(document.getElementById(l === 'return' ? 'scheduler-f-rend' : 'scheduler-f-end')?.value ?? '') ?? from;
     const days = from && to ? Math.max(1, Math.round((parseISO(to) - parseISO(from)) / 86400000) + 1) : null;
-    const rows = mine && r.dayMiles?.some(m => m > 0) ? r.dayMiles.map(m => Math.round(m)) : null;
     const whole = Math.round(routeMiles > 0 ? routeMiles : est ?? 0);
-    const spread = n => Array.from({ length: n }, (_, i) => Math.floor(whole / n) + (i ? 0 : whole % n));
-    const perDay = rows ?? (whole > 0 ? spread(days || 1) : null);
+    const perDay = window.SchedulerQuoteLines.milesADay(mine ? r.dayMiles : null, whole, days);
     return { miles: perDay ? perDay.reduce((a, b) => a + b, 0) : 0,
       dead: round2((Number(out) || 0) + (Number(home) || 0)), days, perDay, route: routeMiles };
   }
@@ -5683,22 +5681,7 @@
     return { miles: f.miles, perDay: f.perDay, dead, days: f.days, rate: l.rate ?? defaultRate() };
   }
   function calcCost(l, b = lineBasis(l)) {
-    // A relief driver is the rates page's flat charge, whatever the trip.
-    if (l.kind === 'relief') return Number.isFinite(quoteRates?.named.driver_relief_flat) ? quoteRates.named.driver_relief_flat : null;
-    const q = window.Rux?.quote;
-    if (!q || !quoteRates || !b.days || !(b.miles > 0)) return null;
-    const perDay = b.perDay;
-    if (l.kind === 'rental') {
-      if (b.rate == null) return null;
-      const amount = q.tripQuote({ miles: perDay, rate: b.rate, dead: b.dead }, quoteRates.named).amount;
-      return amount == null ? null : round2(amount);
-    }
-    if (l.kind === 'second_driver') {
-      const half = perDay.map(m => m / 2);
-      const amount = q.driverPay({ driver1: half, driver2: half, drivers: 2 }, quoteRates.named).amount;
-      return amount == null ? null : round2(amount);
-    }
-    return null;
+    return window.SchedulerQuoteLines.calculated(l.kind, b, quoteRates?.named);
   }
 
   /* Brings the lines in step with the editor, and says whether any moved.

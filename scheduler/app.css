@@ -961,14 +961,6 @@ button.scheduler-row-head__num::after {
   background: transparent;
 }
 .scheduler-bar-shortcut:hover { background: var(--rux-layer-accent-hover-01); }
-/* A slot is a tile of the theme's own corner where the bar holds its slots
-   off the edge. Where the slots run to the edge instead, the end ones fill the
-   bar's rounded corners, so their hover follows the curve. Only while it
-   floats: docked, the bar is square across the screen's foot, and its slots
-   are square in it. */
-.scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut { border-radius: var(--scheduler-shortcut-radius, 0); }
-.scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut:first-child { border-start-start-radius: var(--scheduler-shortcut-radius, var(--scheduler-surface-radius, 0)); border-end-start-radius: var(--scheduler-shortcut-radius, var(--scheduler-surface-radius, 0)); }
-.scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut:last-child { border-start-end-radius: var(--scheduler-shortcut-radius, var(--scheduler-surface-radius, 0)); border-end-end-radius: var(--scheduler-shortcut-radius, var(--scheduler-surface-radius, 0)); }
 .scheduler-bar-shortcut:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 /* An action that cannot act on this trip is drawn faint in the bar's own
    icon colour, so it reads on every theme. */
@@ -976,11 +968,11 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcut[aria-disabled="true"] { cursor: default; }
 .scheduler-bar-shortcut[aria-disabled="true"]:hover { background: transparent; }
 
-/* THE CARD: the trip's reminder, note and updates under the shortcut slots,
-   so only ever one thing floats over the week. Only the selected trip has
-   one, because a card on hover covered the trips below it. It is 20rem
-   wide, and the slots share it. Its ink is the surface's own, so the same
-   rules read on the floating band and on the docked sheet. */
+/* THE CARD: the selected trip's warnings, who is driving it and its
+   updates, so only ever one thing floats over the week. Only the selected
+   trip has one, because a card on hover covered the trips below it. Docked
+   on a phone it sits under the shortcut slots. Its ink is the surface's own,
+   so the same rules read on the floating band and on the docked sheet. */
 .scheduler-bar-shortcuts[data-card] {
   flex-wrap: wrap;
   inline-size: min(20rem, calc(100vw - 2 * var(--rux-spacing-05)));
@@ -1003,13 +995,15 @@ button.scheduler-row-head__num::after {
    week's sticky bands and under the trip panel. It is a raised card a step
    lighter than the board inside a hairline, so it stands off the week on a
    dark theme, where a shadow does not show, as well as on a light one.
-   data.js sizes it to the week, two days wide and between two and five
-   buses tall; the updates take what height is left and scroll past it. */
+   It is 18rem wide on every week, and data.js sizes its height to the
+   week, between two and five buses tall; the updates take what height is
+   left and scroll past it. A trip with no card leaves it empty, and an empty
+   one is not drawn. */
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
   position: fixed;
   z-index: 996;
   box-sizing: border-box;
-  inline-size: var(--scheduler-card-w, min(20rem, calc(100vw - 2 * var(--rux-spacing-05))));
+  inline-size: min(18rem, calc(100vw - 2 * var(--rux-spacing-05)));
   min-block-size: var(--scheduler-card-min-h, 0);
   max-block-size: var(--scheduler-card-max-h, none);
   align-content: flex-start;
@@ -1024,7 +1018,7 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card {
   display: flex;
   flex-direction: column;
-  max-block-size: calc(var(--scheduler-card-max-h, 100vh) - var(--scheduler-slot-h, 2.5rem) - 2 * var(--scheduler-shortcut-pad, 0px));
+  max-block-size: calc(var(--scheduler-card-max-h, 100vh) - 2 * var(--scheduler-shortcut-pad, 0px));
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > * { flex: none; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates { display: flex; flex-direction: column; flex: 0 1 auto; min-block-size: 0; }
@@ -1083,38 +1077,9 @@ button.scheduler-row-head__num::after {
   --card-error: var(--rux-support-error);
   --card-warning: var(--rux-support-warning);
 }
-/* Each slot carries its word under its icon, because a tooltip names a slot
-   only after a second's hover, and stacked the words fit a card two days
-   wide on a narrow week. The four make one row, sharing the card's width
-   equally: 40px on the strip, and 48px on the card, Carbon's large control.
-   No rule parts one from the next or the row from the card under it: each
-   slot's icon and word mark it out, the pointer lights the whole of the one
-   it is on, and the card's first row stands 16px clear. */
-.scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut {
-  flex: 1 1 0;
-  flex-direction: column;
-  inline-size: auto;
-  min-inline-size: var(--scheduler-slot-w);
-  block-size: var(--scheduler-slot-h, 2.5rem);
-  padding: 0 var(--rux-spacing-02);
-}
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) { --scheduler-slot-h: 3rem; }
-.scheduler-bar-shortcuts:not([data-docked]) > .scheduler-bar-shortcut > svg { flex: none; }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut:hover { background: var(--card-hover); }
+/* The floating card's first row draws no rule over itself. */
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > :first-child { border-block-start: 0; }
-/* Above its trip the slots come last, so they sit against the trip the arrow
-   points at. */
-.scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) > .scheduler-bar-shortcut { order: 1; }
-.scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut__label {
-  display: block;
-  max-inline-size: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: var(--rux-label-01-font-size);
-  line-height: var(--rux-label-01-line-height);
-  letter-spacing: var(--rux-label-01-letter-spacing);
-}
+.scheduler-bar-shortcuts:empty { display: none; }
 .scheduler-card {
   flex: 1 0 100%;
   min-inline-size: 0;

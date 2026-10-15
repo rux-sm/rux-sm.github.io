@@ -10200,18 +10200,14 @@
     const gone = box.bottom <= ceiling || box.top >= pane.bottom
       || box.right <= first - TIP_GAP || box.left >= pane.right;
     barShortcuts.toggleAttribute('data-out', gone && !barShortcuts.contains(document.activeElement));
-    /* THE CARD IS SIZED TO THE WEEK: two days wide and two buses tall, 16px
-       inside the cells it covers, so it lines up with the day lines and
-       covers about half the trips above and below. A trip with more updates
-       than that holds grows it to five buses, so the list under the slots
-       and the warnings shows several updates before it scrolls. Never so
-       narrow that the slots' words are cut, nor taller than the board. */
+    /* THE CARD'S HEIGHT IS SIZED TO THE WEEK, two buses tall, and a trip
+       with more updates than that holds grows it to five, so the list under
+       the warnings shows several updates before it scrolls; never taller than
+       the board. Its width is app.css's, the same on every week. */
     const INSET = 16;
     const days = [...gridEl.querySelectorAll('.scheduler-day')].map(d => d.getBoundingClientRect());
     const rowH = bar.parentElement.getBoundingClientRect().height;
-    const dayW = days[0]?.width ?? 0;
     const roomH = pane.bottom - ceiling - 2 * TIP_GAP;
-    barShortcuts.style.setProperty('--scheduler-card-w', `${Math.max(256, 2 * dayW - 2 * INSET)}px`);
     barShortcuts.style.setProperty('--scheduler-card-min-h', `${Math.min(2 * rowH, roomH)}px`);
     barShortcuts.style.setProperty('--scheduler-card-max-h', `${Math.min(5 * rowH - 2 * INSET, roomH)}px`);
     const list = barShortcuts.querySelector('.scheduler-card__updates[data-open] .scheduler-card__update-list');
@@ -11589,6 +11585,11 @@
 
     if (item.id === 'scheduler-bar-menu-forms') {
       openForms(bar);
+      return;
+    }
+
+    if (item.id === 'scheduler-bar-menu-contacts') {
+      openContactsFrom(bar, bar);
       return;
     }
 
@@ -14041,7 +14042,7 @@
   function goToWarning(go, spot) {
     const bar = selectedBar();
     if (!bar?.dataset.tripId) return;
-    if (go === 'itinerary') { barShortcuts.querySelector('.scheduler-bar-shortcut[data-shortcut="itinerary"]')?.click(); return; }
+    if (go === 'itinerary') { SHORTCUT_ACTIONS.find(a => a.id === 'itinerary').run(bar); return; }
     putCardAway(bar);
     if (go === 'forms') { openForms(bar); return; }
     const toFix = () => {
@@ -14069,11 +14070,15 @@
   }
 
   let shortcutsDrawn = '';
+  /* The slots are the phone's docked sheet's alone, where there is no
+     right-click; the floating card is the trip's warnings and updates, and the
+     bar's own menu holds what the slots do. */
   function drawShortcuts(bar) {
-    const slots = SHORTCUT_ROW;
+    const docked = pageEl?.getAttribute('data-board') === 'compact';
+    const slots = docked ? SHORTCUT_ROW : [];
     const trip = panelIndex.trips.get(bar.dataset.tripId);
     const carded = !!trip;
-    const key = [bar.dataset.tripId, bar.dataset.leg, bar.dataset.itineraryId,
+    const key = [docked, bar.dataset.tripId, bar.dataset.leg, bar.dataset.itineraryId,
       bar.dataset.assignmentId, bar.dataset.busId, isEditorBar(bar), bar.dataset.needHotel,
       bar.dataset.hotelBooked, slots.join(), cardKey(trip),
       JSON.stringify(barFacts.get(bar) ?? null)].join('|');

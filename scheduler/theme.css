@@ -530,49 +530,22 @@
   --scheduler-amber-border: var(--rux-support-warning);
   --scheduler-amber-hover-ring: none;
 }
-/* The selected trip's floating shortcuts sit on Geist's menu surface rather
-   than the header band: a raised dark surface inside a hairline, with light
-   icons, so
-   the brightest thing on the board is the ring on the trip it belongs to.
-   The hairline is Geist's own border, and the arrow carries it too. */
+/* The selected trip's floating card sits on Geist's menu surface rather
+   than the header band: a raised dark surface inside a hairline, so the
+   brightest thing on the board is the ring on the trip it belongs to. The
+   hairline is Geist's own border, and the arrow carries it too. */
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts:not([data-docked]) {
   --card-edge: var(--rux-border-subtle-01);
   background: var(--rux-layer-02);
   box-shadow: 0 0 0 1px var(--card-edge), var(--scheduler-lift);
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut { color: var(--rux-icon-primary); }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut:hover { background: var(--rux-layer-hover-02); }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut[aria-disabled="true"]:hover { background: transparent; }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts:not([data-docked]) .scheduler-bar-shortcut:focus-visible { outline-color: var(--rux-focus); }
-/* THE CARD'S FOUR SLOTS ARE A BAR OF BUTTONS, held as Design holds every bar
-   of buttons in this theme: 12px from the card's edge, 8px apart, each in
-   the outlined button's quiet ring. So they take no rule between them, and
-   give their padding and their fixed width to the words, which all still
-   fit. The ring is an inset shadow, because a slot has no border of its own.
-   They keep 40px, this theme's bar, where app.css makes the card's slots
-   48px, and the rule app.css takes off the card's first row stays here, to
-   part the ringed row from the card; above its trip, where the slots come
-   last, the card's foot carries that rule.
-   data.js never sets the card narrower than 256px, which fits four slots edge
-   to edge; held apart they need 288px for the longest word to stand clear of
-   its ring, so that is the floor here. data.js places the card by the width
-   it measures, so the wider floor needs nothing from it. */
+/* THE CARD HOLDS ITS ROWS 12px FROM ITS EDGE, as Design holds every bar of
+   buttons in this theme. */
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
   --scheduler-shortcut-pad: var(--rux-spacing-04);
-  --scheduler-slot-h: 2.5rem;
-  column-gap: var(--rux-spacing-03);
-  row-gap: var(--rux-spacing-04);
-  inline-size: min(max(var(--scheduler-card-w, 18rem), 18rem), calc(100vw - 2 * var(--rux-spacing-05)));
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut {
-  min-inline-size: 0;
-  padding-inline: 0;
-  box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
-}
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked], [data-side="above"]) .scheduler-card > :first-child { border-block-start: 1px solid var(--card-rule); }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) > .scheduler-card { border-block-end: 1px solid var(--card-rule); }
-/* What is under the slots starts and ends where they do. A row gives up its
-   16px sides, so its words stand on the slots' edge; a row that lights under
+/* Its rows start and end on that 12px edge. A row gives up its 16px sides,
+   so its words stand on the edge; a row that lights under
    the pointer carries the light 6px past each side, where the row itself
    used to reach. The updates' list runs 6px out and each update comes 6px
    back in, so an update's own light keeps that reach too. Add is the
@@ -689,7 +662,6 @@
 [data-theme^="apple-"] {
   --scheduler-band-surface: var(--rux-layer);
   --scheduler-band-rule: 1px solid var(--rux-border-subtle-01);
-  --scheduler-shortcut-pad: 6px;
   --scheduler-shortcut-radius: 8px;
 }
 [data-theme="apple-light"] { --scheduler-lift: 0 8px 24px rgb(0 0 0 / .16); }
@@ -806,14 +778,7 @@
 @media (max-width: 41.98rem) {
   [data-theme^="apple-"] .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) .rux--btn { border-radius: 0; }
 }
-/* The card's slots are grey push buttons here, where geist-dark rings them. */
-[data-theme^="apple-"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut {
-  box-shadow: none;
-  background-color: var(--rux-button-secondary);
-}
-[data-theme^="apple-"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut:hover {
-  background-color: var(--rux-button-secondary-hover);
-}
+/* The card's Add is a grey push button here, where geist-dark rings it. */
 [data-theme^="apple-"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__action:not(:focus-visible) {
   border-color: transparent;
   background-color: var(--rux-button-secondary);
@@ -856,18 +821,13 @@
   --scheduler-mark-radius: 4px;
 }
 
-/* THE TRIP'S SHORTCUTS HOLD THEIR SLOTS OFF THE EDGE in geist-dark, as
-   Geist's own Menu does and Design's menus do in this theme: 6px inside the
-   12px corner, each slot a 6px tile, so the corners nest and every slot's
-   hover is the same shape. The card's slots take 12px, with the card's
-   rules above. rux-dark holds each slot 4px in at its 4px corner, which runs
-   parallel to its 8px surface, as its menus do. */
+/* AN UPDATE'S HOVER IS A TILE OF THE THEME'S SMALL CORNER, as a row of
+   Geist's own Menu is and Design's menus are in this theme: 6px in
+   geist-dark, and 4px in rux-dark, which runs parallel to its 8px surface. */
 [data-theme="geist-dark"] {
-  --scheduler-shortcut-pad: 6px;
   --scheduler-shortcut-radius: 6px;
 }
 [data-theme="rux-dark"] {
-  --scheduler-shortcut-pad: 4px;
   --scheduler-shortcut-radius: 4px;
 }
 

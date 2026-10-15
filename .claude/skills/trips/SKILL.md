@@ -31,7 +31,7 @@ rux's side.
    confirms the trip (contract, PO, payment) and where that stands, what the
    customer asked for, and who to contact if the booking contact is away.
 3. Open the trip: `/scheduler/?trip=<id>&date=<start_date>&by=claude`. Read
-   Route, Buses, Billing, Details and Files, and the bar's popup for what
+   Route, Buses, Billing, Details and Files, and the bar's card for what
    the trip still lacks.
 4. List what disagrees: stops and times against the itinerary, a typed
    Estimated miles against the route's, the quote lines against the quote sent,
@@ -89,8 +89,8 @@ reads only the ones before it. Nothing is written until step 10.
     waits and goes up with the save. Press Mark route done and Mark buses
     done, press Save, keep the update box's line, "Quote not sent", and
     answer the lists prompt by `rules.md`.
-11. **After the save.** Read it back with `get_trip`, then the bar's
-    Forms, Itinerary, Detailed: one sheet with the stops, each wait's status,
+11. **After the save.** Read it back with `get_trip`, then Forms on the
+    bar's right-click menu, Itinerary, Detailed: one sheet with the stops, each wait's status,
     the hours, the miles, the rate and the price, as the save wrote them.
 12. **Reply.** Draft the email in chat by `emails.md`. rux prints the quote
     from Forms, Quote, which is two sheets, and sends it himself.
@@ -136,7 +136,7 @@ reads only the ones before it. Nothing is written until step 10.
   the route; contract, PO, invoice,
   payments; Mark billing done.
 - **Files:** the uploaded itineraries, contracts and POs; a file opens in a viewer.
-- **Forms,** on the bar's popup and right-click menu: Quote for the customer, and
+- **Forms,** on the bar's right-click menu: Quote for the customer, and
   Envelope, Hours of service and Itinerary for the drivers. The Quote offers
   to mark it sent the moment it is opened: leave the offer alone. The
   itinerary's Simple layout is the driver's sheet, which says Rest in sleeper
@@ -223,7 +223,7 @@ reads only the ones before it. Nothing is written until step 10.
 - Mark sent records today's date, not the day the quote went out.
 - Mark billing done stays off until Quote sent is marked, so a trip saved before its quote goes out has Billing left open.
 - On a new trip, Save's Updates box opens on "Quote not sent", or "Quote sent" with the price once it is marked: save that line as it stands, with a few words added only when the trip waits on something else. A new trip's update is never a summary of the trip.
-- After a save, Add update is on the bar's own menu, a right-click on the bar; Forms is on the trip's board popup and that menu, and the bar's colour is the last field of Details.
+- After a save, Add update is on the bar's own menu, a right-click on the bar; Forms is on that menu too, and the bar's colour is the last field of Details.
 - On a new trip the Files tab holds a file until Save sends it. The upload tool cannot read the Desktop: copy the PDF to the session's scratch folder, press Add file from the page's script so no file dialog opens, give the copy to the hidden file input, choose its type, then delete the copy.
 - Forms draws the saved trip, never what the editor holds: it is off on a new trip until its first save, and on a placeholder being filled in its sheets leave out every change not yet saved.
 - A click by `ref` on a tab that is not showing does nothing: take a screenshot to see which tab is open before pressing a button on it.

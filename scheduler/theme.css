@@ -349,10 +349,18 @@
   :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-page :is(.scheduler-toolbar, .scheduler-toolbar__strip) > .rux--btn--ghost:not(:focus-visible) {
     border-color: var(--rux-border-subtle-02);
   }
+  /* rux-dark rings a button as it rings a field, in border-strong-01, here
+     and wherever this file rings one, as Design's outlined button is. */
+  [data-theme="rux-dark"] .scheduler-page :is(.scheduler-toolbar, .scheduler-toolbar__strip) > .rux--btn--ghost:not(:focus-visible) {
+    border-color: var(--rux-border-strong-01);
+  }
   /* The week's name opens the calendar, so it takes the same ring. It has no
      border of its own, so the ring is an inset shadow and nothing moves. */
   :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-page .scheduler-toolbar .scheduler-weekbtn {
     box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
+  }
+  [data-theme="rux-dark"] .scheduler-page .scheduler-toolbar .scheduler-weekbtn {
+    box-shadow: inset 0 0 0 1px var(--rux-border-strong-01);
   }
   /* rux-dark rings the buttons in a panel's head as it does the bar's, the
      close button among them: they stand clear of the corner here, so each
@@ -361,7 +369,7 @@
      that same border. */
   [data-theme="rux-dark"] .scheduler-page .scheduler-aside__head > .rux--btn:not(:focus),
   [data-theme="rux-dark"] .scheduler-page :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel__header .rux--btn:not(:focus) {
-    border-color: var(--rux-border-subtle-02);
+    border-color: var(--rux-border-strong-01);
   }
   /* Ringed buttons that touch draw a doubled line between them, so a
      panel's head buttons stand the bar's gap apart; the roster's head has it
@@ -487,6 +495,9 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-to-do__more .rux--btn--ghost:not(.rux--btn--icon-only, :focus-visible) {
   border-color: var(--rux-border-subtle-02);
 }
+[data-theme="rux-dark"] .scheduler-to-do__more .rux--btn--ghost:not(.rux--btn--icon-only, :focus-visible) {
+  border-color: var(--rux-border-strong-01);
+}
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-to-do__more > .scheduler-to-do__buttons {
   gap: var(--rux-spacing-03);
 }
@@ -570,6 +581,9 @@
   padding-inline: 0;
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
 }
+[data-theme="rux-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-bar-shortcut {
+  box-shadow: inset 0 0 0 1px var(--rux-border-strong-01);
+}
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked], [data-side="above"]) .scheduler-card > :first-child { border-block-start: 1px solid var(--card-rule); }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card][data-side="above"]:not([data-docked]) > .scheduler-card { border-block-end: 1px solid var(--card-rule); }
 /* What is under the slots starts and ends where they do. A row gives up its
@@ -586,6 +600,7 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update[data-update-id] { padding-inline: 6px; }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__action { margin-inline-end: 0; }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__action:not(:focus-visible) { border-color: var(--rux-border-subtle-02); }
+[data-theme="rux-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__action:not(:focus-visible) { border-color: var(--rux-border-strong-01); }
 /* The card inside it takes the same raised surface's ink, and parts its rows
    with the hairline that edges the menu, as a Geist menu parts its groups. */
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) {

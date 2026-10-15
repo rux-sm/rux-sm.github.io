@@ -43,7 +43,9 @@ the last one forwarded came in March 2026.
   root, so nothing else changes.
 - **The repository is rux-sm's,** for now, the account that already runs
   these pages; an organization for the company can take it over later.
-- **Its look is Design's.** Pages are built from Design's shell, tiles,
+- **Its look is Design's, on its Apple theme,** light pages with dark bands,
+  for a modern, rounded look in the device's own typeface. Pages are built
+  from Design's shell, tiles,
   notifications, accordion and form controls, copied into the site's
   `design/` from Design's committed build by its sync tool and held to
   Design's classes by its check, so a Design change reaches the public site
@@ -59,9 +61,9 @@ the last one forwarded came in March 2026.
   mail:** the active fleet's types, seats, lifts and sleeper berths, the terms
   in `scheduler/docs/booking.md`, who books and where they go. No customer,
   driver or trip is named.
-- **The photos are the current site's of coaches still in the fleet.** Its
-  three photos of MCI coaches the fleet no longer runs, and its four of
-  people, are left out until rux sends what replaces them.
+- **The photos are the company's own, of coaches still in the fleet,** most
+  of them coach 763 from its newer set. No photo shows a passenger, so no
+  one on a trip appears on a public page.
 - **The tourism bureau's commendation is quoted by the bureau's name once the
   bureau says yes,** a line or two beside the current site's testimonial,
   because a letter to the office is not the same as praise on a public page.

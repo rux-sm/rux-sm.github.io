@@ -24,17 +24,27 @@ text in it under 4.5 to 1 and no control's resting shape under 3 to 1.
 - **The main button stays that one ink on black,** because the mark is one
   colour; the accent is spent on links, selection and state, never on the
   primary action.
-- **The accent is slate,** Carbon blue's hue, 262, at about half its chroma,
-  and it carries every accent token: the links, info, the on toggle, the
-  inverse focus, the highlight, the blue tag, the notification actions, the
-  chat's button and the `ai-*` tokens.
+- **The colours are vivid.** Every hue -- red 25, orange 50, amber 75, yellow
+  95, green 150, teal 185, cyan 225, blue 262, purple 300 and magenta 350, in
+  OKLCH degrees -- takes the same steps of lightness, each at the most chroma
+  its hue holds there, so no colour shouts louder than another: a tint at 0.28
+  (0.32 on hover) behind an ink at 0.74 (0.82 for amber and yellow, 0.82 on
+  hover), and a fill at about 0.55 that holds white at 4.5 to 1. One palette
+  serves every use: a tag, a trip bar, a status dot, a support colour, error
+  text and the danger button.
+- **The colours use the wider Display P3 range,** written in OKLCH, so a Mac
+  or an iPhone shows them at their full strength and an ordinary screen shows
+  the nearest colour it has; each pairing holds its contrast on both.
+- **The accent is the palette's blue,** and it carries every accent token: the
+  links, info, the on toggle, the inverse focus, the highlight, the blue tag,
+  the notification actions, the chat's button and the `ai-*` tokens.
+- **A big surface stays calm.** A notification's fill is its ink at 15% over
+  the page, under the vivid ink, because a whole box at full strength tires
+  the eye where a tag or a bar does not.
 - **The greys are half-cool.** Each keeps the OKLCH lightness of the neutral
   ladder whose first raised surface is `#111111` and takes Carbon cool gray's
-  hue, 248, at half its chroma. The page stays `#000000`.
-- **Every hue sits on slate's steps.** A tag of any hue takes slate's lightness
-  and chroma, and what must be seen -- the support colours, the status dots,
-  the error text and the danger button -- takes the same lightness with more
-  chroma, so success is one green on a screen.
+  hue, 248, at half its chroma. The page stays `#000000`, and a grey tag stands
+  a step above the surfaces, because it has no hue to part it from them.
 - **Corners follow the mark's squares, in two steps.** 4px on a control and a
   tag: a button, a field, a dropdown, a search, a date field and a checkbox,
   and the tag because a corner reads rounder on a smaller thing. 8px on a
@@ -68,8 +78,9 @@ text in it under 4.5 to 1 and no control's resting shape under 3 to 1.
 - **There is no light companion in this plan.** `rux-light` would be its own.
 - **Every number is measured, none remembered.** A Carbon colour is read from
   `@carbon/colors` in `design/node_modules`, and a value chosen for Rux is
-  measured on every layer it sits on before it is written;
-  `design/docs/rux-dark-token-map.md` lists each one and its source.
+  measured on every layer it sits on before it is written, at full P3 strength
+  and as an ordinary screen shows it; `design/docs/rux-dark-token-map.md` lists
+  each one and its source.
 
 ## Questions
 
@@ -77,10 +88,13 @@ None open.
 
 ## Tasks
 
-- [ ] Give the scheduler's trip bars, marks and panels their own pass. Its
-  bars, their marks, the roster's busy and day-off cells and an update's age
-  colours are still Geist's subtle badge, in the rules `scheduler/theme.css`
-  shares with geist-dark; dropping rux-dark from them hands the bars to the
-  tag tints, which are slate's steps, and the marks then need measuring on
-  those. The No bus row has to stand apart from a bar's fill by more than its
-  hue.
+- [ ] Write the vivid palette into rux-dark's block in `design/css/rux-theme.css`:
+  the tags, the support and status colours, error text, the danger button, the
+  links and every accent token, with the block's comment and the token map.
+- [ ] Give the scheduler's trip bars, marks and roster the palette. Its bars,
+  their marks, the roster's busy, day-off and short-rest cells, the amber bar
+  and an update's age colours are still Geist's, in the rules
+  `scheduler/theme.css` shares with geist-dark; dropping rux-dark from them
+  hands the bars to the tag steps, and the marks and age words are then
+  measured on every bar. The No bus row has to stand apart from a bar's fill
+  by more than its hue.

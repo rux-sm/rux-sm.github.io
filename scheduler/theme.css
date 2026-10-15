@@ -842,6 +842,14 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-panel.rux--side-panel--left-placement {
   border-inline-end: 1px solid var(--rux-border-subtle-01);
 }
+/* rux-dark rounds only a placed panel's inner top corner (Design's
+   rux-overrides.css), since one stands on the window's edge and foot. The
+   document viewer is placed left for Carbon's sake but stands in the page
+   with the board around it, as the trip editor does, so it keeps the
+   theme's four corners as the editor does. */
+[data-theme="rux-dark"] .scheduler-page .rux--side-panel.rux--side-panel--left-placement {
+  border-radius: var(--scheduler-surface-radius);
+}
 
 /* The rounded themes round this app's own shapes to match Design's: 6px on a
    trip bar, like a button, 12px on the week, the largest box on the page, and 4px on a bar's

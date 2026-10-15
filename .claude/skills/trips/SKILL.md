@@ -109,7 +109,7 @@ reads only the ones before it. Nothing is written until step 10.
 | A saved location is listed first and carries a location icon | `scheduler/docs/screen-inventory.md`, the Route tab's row | the icon beside the result, and Saved location over the field |
 | A return after midnight stays on a one-day trip | `scheduler/docs/screen-inventory.md`, the Route tab's row | Returns with the next weekday, and +1 on the board's bar |
 | What the checklist counts | `scheduler/checklist.js` | Prep's lines for a leg leaving soon, and To do for one further out |
-| What confirms a trip, and what goes out with a quote | `scheduler/docs/booking.md` | the Billing tab's summary card |
+| What confirms a trip, and what goes out with a quote | `scheduler/docs/booking.md` | the Billing tab's summary tile |
 | The rates and what each is for | the Settings page, `scheduler/settings.html`, never this repository | the Mileage rate select in the calculator |
 
 
@@ -129,12 +129,14 @@ reads only the ones before it. Nothing is written until step 10.
   waits, Mark route done.
 - **Buses:** each bus, its driver and co-driver or relief seats, a warning
   when Passengers is above the seats, Mark buses done.
-- **Billing:** confirmed or not; Quote: Add the bus rental (it shows the
-  calculator's price), the Addt'l Driver line a co-driver seat adds, Add line
-  (Discount, Second driver, Hotel, Other), and under the lines the quoted
-  price, their sum; Quote sent; contract, PO, invoice, payments; Miles:
-  Estimated miles, blank while it follows the route, Actual miles and each
-  driver's miles; Mark billing done.
+- **Billing:** a tile of Quoted, Paid and Balance over confirmed or not;
+  Quote: Add the bus rental (it shows the calculator's price), the Addt'l
+  Driver line a co-driver seat adds, Add line (Discount, Second driver,
+  Hotel, Other), the quoted price typed under them only on a trip with no
+  line, and Calculator and Copy for QuickBooks in its ⋮; Quote sent;
+  contract, PO, invoice, payments; Miles: Estimated miles, blank while it
+  follows the route, beside Actual miles, then each driver's miles, and Get
+  from Samsara in its ⋮; Mark billing done.
 - **Files:** the uploaded itineraries, contracts and POs; a file opens in a viewer.
 - **Forms,** on the bar's right-click menu: Quote for the customer, and
   Envelope, Hours of service and Itinerary for the drivers. The Quote offers

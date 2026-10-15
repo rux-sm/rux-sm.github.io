@@ -43,6 +43,12 @@ Route tab's do.
 - **Quote sent, Contract signed, each PO, each invoice and each payment are
   rows of one `rowList`,** each with its check, what it is, its date and its
   amount, and a ⋮ that edits or removes it.
+- **The rows stand in the ladder's order:** Quote sent first, as the first
+  step the customer sees, then the contract, POs, invoices and payments, each
+  kind by date, so a kind is always in the same place.
+- **A signed contract has a date, `trips.contract_signed_on`,** today when
+  its row is added and typed over in its window, so its row reads like the
+  others; a trip signed before the column shows no date.
 - **One Add row ends the list** and offers what is not there yet: Quote sent,
   Contract signed, Purchase order, Invoice and Payment.
 - **A step the office's billing workflow does not use is not offered,** and
@@ -67,29 +73,12 @@ Route tab's do.
 
 ## Questions
 
-1. **Does a signed contract get a date?** Every other row of the list has
-   one. Recommended: a `trips.contract_signed_on` column, today when the row
-   is added and typed over in its window; the trips already signed show
-   theirs as no date. The column is SQL shown to rux first.
-2. **What order are the rows in?** Recommended: the ladder's, Quote sent,
-   contract, POs, invoices, then payments, each kind by date, so a kind is
-   always in the same place. The other way is one date order, which reads as
-   a history.
-3. **Is Quote sent a row of the list, or a line under the quote?**
-   Recommended: the list's first row, since it is the first step the customer
-   sees.
+None open.
 
 ## Tasks
 
-- [ ] Make the summary the Route tab's tile, with Quoted, Paid and Balance
-      and the status at its foot, and check it in Chrome on :8641.
-- [ ] Move Calculator and Copy for QuickBooks to the Quote heading's ⋮, and
-      show the Quoted price field only on a trip with no lines.
-- [ ] Set Estimated and Actual miles side by side, and move Get from Samsara
-      to the Miles heading's ⋮.
-- [ ] Show rux the SQL for the contract's date if question 1 is yes, and the
-      PO row for the one trip with PO received on and no PO, and apply them
-      on his yes.
+- [ ] Show rux the SQL for `trips.contract_signed_on` and the PO row for the
+      one trip with PO received on and no PO, and apply them on his yes.
 - [ ] Build the Billing list: the rows, their windows, the one Add row and
       the workflow's steps, with Save writing the four columns from the rows.
 - [ ] Point the warnings that open Billing at the list's Add row.

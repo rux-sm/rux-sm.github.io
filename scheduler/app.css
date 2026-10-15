@@ -2322,11 +2322,9 @@ button.scheduler-row-head__num::after {
 .scheduler-updates__body { display: block; white-space: pre-wrap; overflow-wrap: anywhere; }
 .scheduler-updates__meta { display: block; color: var(--rux-text-secondary); margin-block-start: var(--rux-spacing-01); }
 .scheduler-updates-empty { color: var(--rux-text-secondary); }
-/* The quoted price, the lines' total, stands under them, and Calculator and
-   Copy for QuickBooks end the Quote, side by side; each is 16px under what
-   comes before it rather than the list's own 8px. */
-:is(.scheduler-line-total, .scheduler-line-tools) { margin-block-start: var(--rux-spacing-03); }
-.scheduler-line-tools { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); }
+/* A typed quoted price stands 16px under the lines' add rows rather than
+   the list's own 8px. */
+.scheduler-line-total { margin-block-start: var(--rux-spacing-03); }
 /* The Updates window's head: what changed, over the box. */
 .scheduler-prompt-changes { color: var(--rux-text-secondary); margin-block-end: var(--rux-spacing-05); }
 
@@ -4326,6 +4324,13 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-summary { overflow: hidden; }
 .scheduler-summary__table {
   margin: var(--rux-spacing-05) calc(-1 * var(--rux-layout-density-padding-inline-local)) 0;
+}
+/* Billing's Summary ends in its status, under a rule run to the tile's sides
+   as the table's top is, and 16px either side of it. */
+.scheduler-summary__foot {
+  margin: var(--rux-spacing-05) calc(-1 * var(--rux-layout-density-padding-inline-local)) 0;
+  padding: var(--rux-spacing-05) var(--rux-layout-density-padding-inline-local) 0;
+  border-block-start: 1px solid var(--rux-border-subtle);
 }
 /* A day's heading over its stops, in the list, 16px above and 8px below. */
 .scheduler-route-day {

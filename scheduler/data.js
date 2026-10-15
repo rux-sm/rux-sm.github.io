@@ -2198,6 +2198,19 @@
   };
   /* `point`, a pointer event, places the menu where the pointer is, for a
      right-click or a hold; without it the menu drops from `trigger`. */
+  // A section heading's ⋮ trigger, which `openItemsMenu` opens.
+  const menuTrigger = (id, label) => {
+    const btn = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger');
+    btn.type = 'button';
+    btn.id = id;
+    btn.setAttribute('aria-haspopup', 'true');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-label', label);
+    btn.title = label;
+    btn.appendChild(svgUse('#m-more_vert', '16', '0 0 32 32'));
+    btn.lastChild.setAttribute('class', 'rux--btn__icon');
+    return btn;
+  };
   const openItemsMenu = (trigger, items, label, point) => {
     if (!itemsMenuEl) {
       itemsMenuEl = el('ul', 'rux--menu rux--menu--sm rux--menu--open rux--menu--shown');
@@ -8305,15 +8318,6 @@
       const contractSwitch = toggleAction('scheduler-f-contract', 'Contract signed',
         contractSignedOf(trip));
 
-      /* The PO coverage line. A PO confirms the trip whatever its amount
-         (rux-ui's `isStatusConfirmed`), so the line only says what the POs and
-         payments leave uncovered, counted as `billingStatus` counts it:
-
-             shortfall = max(0, (quoted - paid) - po_amount) */
-      const poCoverage = el('p', 'rux--form__helper-text');
-      // It sits in the list, under the POs and over the add tile it speaks to.
-      const poCoverageItem = el('li');
-      poCoverageItem.appendChild(poCoverage);
       const poSwitch = toggleAction('scheduler-f-poreceived', 'PO received',
         poReceivedOf(trip));
       const invoiceSwitch = toggleAction('scheduler-f-invoice', 'Invoice sent',
@@ -8353,7 +8357,6 @@
             remove: () => { poPending.splice(i, 1); drawPos(); refreshDirty(); },
           }));
         });
-        poList.body.appendChild(poCoverageItem);
         // The add row is also the empty state.
         poList.body.appendChild(listAddRow({
           label: 'Add purchase order', id: 'scheduler-f-poadd',
@@ -8425,20 +8428,12 @@
 
       const statusLine = el('div', 'scheduler-billing-status');
       const figures = el('dl', 'scheduler-figures');
-      const confirmWhy = el('p', 'rux--form__helper-text');
+      const summaryNote = el('p', 'rux--form__helper-text');
       const drawSummary = () => {
         // The PO amount is the sum of the PO rows, so coverage counts every PO.
         const { quoted, price, paid, poAmount, poReceived: poOn, rung, confirmed } = billingNow();
         const remaining = Math.max(0, price - paid);
         const shortfall = Math.max(0, remaining - poAmount);
-
-        // The coverage line gives the amount, which is what the next PO or
-        // payment has to close.
-        poCoverage.textContent = !poOn ? ''
-          : price <= 0 ? 'No quoted price to cover'
-          : shortfall <= 0 ? 'Covers the balance'
-          : `${usd(shortfall)} uncovered. Add a PO or payment.`;
-        poCoverageItem.hidden = !poCoverage.textContent;
 
         const [rungLabel, rungTone] = STATUS_LABEL[rung];
 
@@ -8451,26 +8446,44 @@
         const status = el('span', `rux--tag rux--layout--size-sm ${rungTone}`, rungLabel);
         status.title = `Billing status: ${rungLabel}`;
         statusLine.replaceChildren(state, status);
-        // Paid and Balance side by side; the quoted price is the field below.
+        // Quoted, Paid and Balance side by side, as the Route summary's times are.
         const figure = (label, value) => {
           const box = el('div');
           box.append(el('dt', null, label), el('dd', null, value));
           return box;
         };
         figures.replaceChildren(
+          figure('Quoted', quoted === null ? '—' : usd(quoted)),
           figure('Paid', usd(paid)),
-          figure('Balance', quoted === null ? 'No quote'
+          figure('Balance', quoted === null ? '—'
             : (quoted - paid < 0 ? `−${usd(paid - quoted)}` : usd(quoted - paid))),
         );
-        /* Unconfirmed, the line states what would confirm the trip. Confirmed,
-           the status tag already names what did, so the line is hidden. */
-        confirmWhy.textContent = confirmed ? '' : cap(wouldConfirm);
-        confirmWhy.hidden = confirmed;
+        /* Under the tile, what is left. Unconfirmed, what would confirm the
+           trip. Confirmed by a PO, what the POs and payments leave uncovered,
+           since a PO confirms the trip whatever its amount (rux-ui's
+           `isStatusConfirmed`), counted as `billingStatus` counts it:
+
+               shortfall = max(0, (quoted - paid) - po_amount)
+
+           Otherwise the status tag already names what did, and it is hidden. */
+        summaryNote.textContent = !confirmed ? cap(wouldConfirm)
+          : !poOn ? ''
+          : price <= 0 ? 'No quoted price for the PO to cover.'
+          : shortfall <= 0 ? 'The balance is covered.'
+          : `${usd(shortfall)} uncovered. Add a PO or payment.`;
+        summaryNote.hidden = !summaryNote.textContent;
       };
-      /* The summary opens the tab as its first section, with no box: the status
-         line, the reason line while unconfirmed, then the money. */
-      const summary = el('div', 'rux--stack-vertical rux--stack-scale-5');
-      summary.append(statusLine, confirmWhy, figures);
+      /* THE SUMMARY IS THE ROUTE TAB'S TILE, and opens the tab as that one
+         does: the money as figures, the confirmation and billing status at
+         its foot, and under the tile what is left. */
+      const summaryTile = el('div', 'rux--tile scheduler-summary');
+      const summaryFoot = el('div', 'scheduler-summary__foot');
+      summaryFoot.appendChild(statusLine);
+      summaryTile.append(figures, summaryFoot);
+      const summaryLayer = el('div', 'rux--layer-two');
+      summaryLayer.appendChild(summaryTile);
+      const summary = el('div', 'rux--stack-vertical rux--stack-scale-4');
+      summary.append(summaryLayer, summaryNote);
       panelBilling.appendChild(section(null, summary));
 
       /* THE QUOTE'S LINES, over the price they add up to. With any line the
@@ -8507,8 +8520,12 @@
       // The dead-mile offer, over the lines it adds to.
       const deadBox = el('div', 'scheduler-dead-offer');
       deadBox.hidden = true;
+      /* The typed price, under the lines' add rows, only while the trip has
+         no line; with one the price is their total, which the summary shows.
+         The field stays on the page, hidden, since Save reads it. */
       const quotedField = moneyField('scheduler-f-quoted', 'Quoted price', trip.quoted_price);
-      quotedField.classList.add('scheduler-line-total');
+      const quotedRow = el('div', 'scheduler-line-total');
+      quotedRow.appendChild(quotedField);
       const quotedInput = quotedField.querySelector('input');
       /* The price reads as money, as the Balance above it does: $1,669, with
          cents only when it has them. `money` reads the sign and commas back, so
@@ -8642,10 +8659,8 @@
           drawSummary();
         }
         totalBefore = total;
-        // Carbon's read-only field, so the price does not look typeable.
         quotedInput.readOnly = linePending.length > 0;
-        quotedInput.closest('.rux--text-input-wrapper')
-          ?.classList.toggle('rux--text-input-wrapper--readonly', linePending.length > 0);
+        quotedRow.hidden = linePending.length > 0;
         /* With lines the price is their total. A trip saved with the two
            apart opens that way, and says so as a warning, because the quote
            prints the lines and their sum while Billing counts the price. */
@@ -8656,35 +8671,29 @@
       };
       redrawLines = drawLines;
       redrawDeadOffer = drawDeadOffer;
-      /* The description the office pastes into its QuickBooks estimate. It
-         ends the Quote section, under the lines it copies, so the larger
-         editor's columns never part them, and it carries the block alone for
-         the reason `qbDescription` gives. A browser that refuses the clipboard says so, because a copy
-         button that goes quiet is worse than one that reports a failure. */
-      const qbButton = el('button', 'rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm', 'Copy for QuickBooks');
-      qbButton.type = 'button';
-      qbButton.id = 'scheduler-f-quickbooks';
-      qbButton.addEventListener('click', async () => {
+      /* THE QUOTE HEADING'S MENU. Calculator opens the quote calculator beside
+         the week, filled from this trip, as the Calculator shortcut does: the
+         lines are what it sets. Copy for QuickBooks copies the description the
+         office pastes into its QuickBooks estimate, the block alone for the
+         reason `qbDescription` gives; a browser that refuses the clipboard
+         says so, because a copy that goes quiet is worse than one that
+         reports a failure. */
+      const quoteMenu = menuTrigger('scheduler-f-quotemenu', 'Quote options');
+      const copyForQuickBooks = async () => {
         try {
           await navigator.clipboard.writeText(qbDescription());
           toast('success', 'Copied for QuickBooks', 'Paste it into the estimate description.');
         } catch {
           toast('error', 'Could not copy that', 'The browser would not reach the clipboard.');
         }
-      });
-      /* The quote calculator, beside the week and filled from this trip, as
-         the Calculator shortcut opens it: the lines are what it sets, so the
-         way to it sits with them, beside the copy of what it made. The two
-         are small and carry no icon, so side by side they fit the 20rem editor. */
-      const calcButton = el('button', 'rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm', 'Calculator');
-      calcButton.type = 'button';
-      calcButton.id = 'scheduler-f-opencalc';
-      calcButton.addEventListener('click', () => openCalculator(null));
-      const lineTools = el('div', 'scheduler-line-tools');
-      lineTools.append(calcButton, qbButton);
+      };
+      quoteMenu.addEventListener('click', () => openItemsMenu(quoteMenu, [
+        { label: 'Calculator', run: () => openCalculator(null) },
+        { label: 'Copy for QuickBooks', run: copyForQuickBooks },
+      ], 'Quote options'));
       const linesBody = el('div', 'rux--stack-vertical rux--stack-scale-3');
-      linesBody.append(deadBox, lineList.list, linesParted, quotedField, lineTools);
-      panelBilling.appendChild(section('Quote', linesBody));
+      linesBody.append(deadBox, lineList.list, linesParted, quotedRow);
+      panelBilling.appendChild(section('Quote', linesBody, quoteMenu));
 
       /* QUOTE SENT: the price the customer was sent, and the day, kept for
          Save by one press. The quote lines can move after it, and the section
@@ -8747,11 +8756,12 @@
         moneyField('scheduler-f-estmiles', 'Estimated miles', editing.estFollowed ? null : trip.est_miles),
         moneyField('scheduler-f-actmiles', 'Actual miles', trip.actual_miles),
       );
-      /* Get from Samsara, on the heading line, asks the samsara-miles Edge
+      miles.classList.add('scheduler-pair--figures');
+      /* Get from Samsara, in the heading's menu, asks the samsara-miles Edge
          Function how far each bus went by its odometer, and who drove it, on
          the trip as last saved. It puts the farthest bus's total in Actual
          miles, and each seated driver it saw in their own field, for Save to
-         write. A trip not yet saved has nothing to read. */
+         write. A trip not yet saved has nothing to read, so has no menu. */
       const milesBody = el('div', 'rux--stack-vertical rux--stack-scale-4');
       const seatMilesBox = el('div', 'rux--stack-vertical rux--stack-scale-5');
       const samsaraOut = el('div', 'rux--stack-vertical rux--stack-scale-2');
@@ -8855,14 +8865,16 @@
       };
       seatMilesDrawn = drawSeatMiles;
 
-      const samsaraButton = editing.creating ? null : smallButton('Get from Samsara', 'rux--btn--ghost', async () => {
-        samsaraButton.disabled = true;
-        samsaraButton.textContent = 'Getting miles…';
+      let samsaraAsking = false;
+      const getFromSamsara = async () => {
+        if (samsaraAsking) return;
+        samsaraAsking = true;
+        toast('working', 'Getting miles from Samsara…');
         let r;
         try { r = await client.functions.invoke('samsara-miles', { body: { trip_id: editing.id } }); } catch (error) { r = { error }; }
-        samsaraButton.disabled = false;
-        samsaraButton.textContent = 'Get from Samsara';
+        samsaraAsking = false;
         if (r.error || !r.data) {
+          toast(null);
           const status = r.error?.context?.status;
           const [title, why] = status === 503 ? ['Samsara is not connected yet', 'Its key has not been set.']
             : status === 401 ? ['Log in again', 'Your log-in has run out.']
@@ -8875,6 +8887,7 @@
         samsaraOut.replaceChildren(...(samsaraFound.buses.length ? []
           : [el('p', 'rux--form__helper-text', 'No buses on this trip yet.')]));
         // Each seated driver Samsara saw drive the seat's bus on its leg.
+        let filled = samsaraFound.actual != null;
         for (const leg of fleetLegs()) {
           for (const b of editing.fleet?.[leg] ?? []) {
             const drove = b.busId ? droveOn(b.busId, leg) : null;
@@ -8882,7 +8895,7 @@
             for (const role of ROLES.map(x => x.role)) {
               const seat = b.seats[role];
               const d = seatFilled(seat) && drove.find(x => same(x.driver_id, seat.driverId));
-              if (d) seat.miles = d.miles;
+              if (d) { seat.miles = d.miles; filled = true; }
             }
           }
         }
@@ -8891,8 +8904,12 @@
         if (samsaraFound.actual != null && actual) actual.value = String(samsaraFound.actual);
         // Through the panel's own listener, so Save counts the miles.
         (actual ?? panelBilling).dispatchEvent(new Event('input', { bubbles: true }));
-      });
-      const milesSection = section('Miles', milesBody, samsaraButton ?? undefined);
+        toast('success', 'Miles from Samsara', filled ? 'Save keeps them.' : 'It has none for this trip yet.');
+      };
+      const milesMenu = editing.creating ? null : menuTrigger('scheduler-f-milesmenu', 'Miles options');
+      milesMenu?.addEventListener('click', () => openItemsMenu(milesMenu,
+        [{ label: 'Get from Samsara', run: getFromSamsara }], 'Miles options'));
+      const milesSection = section('Miles', milesBody, milesMenu ?? undefined);
 
 
       /* Payments use the same `rowList` as PO and invoice, named by their
@@ -13305,7 +13322,7 @@
       url: `quote.html?${params}`,
       kind: 'Quote calculator',
       note: '',
-      opener: bar ?? document.getElementById('scheduler-f-opencalc'),
+      opener: bar ?? document.getElementById('scheduler-f-quotemenu'),
     });
   }
 

@@ -474,10 +474,14 @@
   padding-inline-start: 0;
 }
 /* Design draws this theme's tile with a 1px ring inside its edge, and the
-   Summary's table runs flush to the tile's sides, over the ring. It stops a
-   pixel short of each, so the ring closes round it. */
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-summary__table {
+   Summary's table and Billing's foot run flush to the tile's sides, over the
+   ring. They stop a pixel short of each, so the ring closes round them, and
+   the foot's words keep the tile's own inset. */
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) :is(.scheduler-summary__table, .scheduler-summary__foot) {
   margin-inline: calc(1px - var(--rux-layout-density-padding-inline-local));
+}
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-summary__foot {
+  padding-inline: calc(var(--rux-layout-density-padding-inline-local) - 1px);
 }
 /* apple-light's Summary is one box of labels over values, so its table reads
    as the figures above it do: the column names in the figures' label type,

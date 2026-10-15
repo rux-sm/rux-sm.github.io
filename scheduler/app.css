@@ -485,6 +485,19 @@ button.scheduler-row-head__num::after {
    card sits between two bars of one lane, so it waits for the draw. */
 .scheduler-track--packing > .scheduler-bar:not(.scheduler-bar--leaving) { transition: inset-block-start 180ms cubic-bezier(.2, .7, .2, 1); }
 .scheduler-track--packing > .scheduler-yard { visibility: hidden; }
+/* A bar a mouse presses on rises at once, as the copy a drag carries does,
+   and settles back when it is let go where it is, so it reads as picked up
+   before it travels. It keeps any ring it wears, adds the lift, and stands a
+   layer over the other bars, under the bus column and day header, as a
+   selected trip does. data.js presses only a bar that can move. Every bar
+   carries the transition, so the settle back is drawn too; it comes before
+   the rules below, so a leaving bar's fade keeps its own. */
+.scheduler-bar { transition: transform 140ms cubic-bezier(.2, .9, .3, 1.3), box-shadow 140ms ease-out; }
+.scheduler-bar.scheduler-bar--pressed { z-index: 2; transform: scale(1.03); }
+.scheduler-bar.scheduler-bar--pressed:not([aria-pressed="true"]) { box-shadow: var(--scheduler-lift); }
+.scheduler-bar.scheduler-bar--amber.scheduler-bar--pressed:hover:not([aria-pressed="true"]) {
+  box-shadow: var(--scheduler-amber-hover-ring), var(--scheduler-lift);
+}
 .scheduler-bar--dragging { opacity: .4; cursor: grabbing; }
 .scheduler-bar--leaving { opacity: 0; transition: opacity 150ms ease-out; }
 .scheduler-bar.scheduler-ghost {
@@ -507,9 +520,12 @@ button.scheduler-row-head__num::after {
   transition: top 180ms cubic-bezier(.2, .7, .2, 1), transform 180ms ease-out, box-shadow 180ms ease-out;
 }
 @media (prefers-reduced-motion: reduce) {
+  .scheduler-bar,
   .scheduler-bar.scheduler-ghost,
   .scheduler-bar--leaving,
   .scheduler-track--packing > .scheduler-bar:not(.scheduler-bar--leaving) { transition: none; }
+  /* A pressed bar is lifted by its shadow alone, as the copy is not scaled. */
+  .scheduler-bar.scheduler-bar--pressed { transform: none; }
 }
 
 /* ── Time at the yard ───────────────────────────────────────────────────

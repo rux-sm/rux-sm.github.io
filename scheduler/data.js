@@ -1629,6 +1629,10 @@
       // One bar at a time. A bar that is saving takes no pointer, in app.css; this is for a finger already down on it.
       if (barsInHand || heldMoves.get(bar.dataset.assignmentId)?.saving) return;
       const touch = down.pointerType === 'touch';
+      /* A mouse or pen press raises the bar at once, and a release where it is
+         settles it back, both drawn by app.css. A finger raises nothing until
+         its hold is done, because most touches on the board mean to scroll. */
+      if (!touch) bar.classList.add('scheduler-bar--pressed');
       const startX = down.clientX, startY = down.clientY;
       const start = +bar.dataset.start, span = +bar.dataset.span;
       const fromBus = bar.dataset.busId || null;
@@ -1657,7 +1661,13 @@
         unassignedRow = gridEl.querySelector('.scheduler-row--unassigned');
         if (unassignedRow?.hidden) { unassignedRow.hidden = false; unassignedRow.dataset.revealed = 'true'; }
         tracks = [...gridEl.querySelectorAll('.scheduler-track')];
+        /* The press's rise comes off the bar at once, with no settle, so the
+           bar is measured at its own size; the copy takes the rise over. */
+        const pressed = bar.classList.contains('scheduler-bar--pressed');
+        bar.style.transition = 'none';
+        bar.classList.remove('scheduler-bar--pressed');
         origin = bar.getBoundingClientRect();
+        bar.style.removeProperty('transition');
         grip = startY - origin.top;
         /* The first lane's height above the track, read off the source track's
            highest bar: this bar may sit in a lower lane, and the copy lands in
@@ -1670,9 +1680,12 @@
         document.body.style.cursor = 'grabbing';
         try { bar.setPointerCapture(down.pointerId); } catch { /* the pointer is already gone */ }
         if (touch) { touchDragging = true; bar.addEventListener('touchmove', eat, { passive: false }); }
-        // Lifted on the next frame, so the rise is drawn rather than arrived at;
-        // a copy let go before that frame is already settling and stays flat.
-        if (!reducedMotion.matches) requestAnimationFrame(() => {
+        // A pressed bar was already up, so its copy starts lifted. Otherwise it
+        // is lifted on the next frame, so the rise is drawn rather than arrived
+        // at; a copy let go before that frame is already settling and stays flat.
+        if (reducedMotion.matches) { /* flat, as app.css draws it */ }
+        else if (pressed) ghost.classList.add('scheduler-ghost--lifted');
+        else requestAnimationFrame(() => {
           if (ghost && !ghost.classList.contains('scheduler-ghost--settling')) ghost.classList.add('scheduler-ghost--lifted');
         });
       };
@@ -1740,6 +1753,8 @@
       const finish = async (release) => {
         if (done) return;
         done = true;
+        // A press let go where it was settles back; a lifted bar already let its rise go.
+        bar.classList.remove('scheduler-bar--pressed');
         if (hold) { clearTimeout(hold); hold = 0; }
         window.removeEventListener('pointermove', move);
         window.removeEventListener('pointerup', onUp);

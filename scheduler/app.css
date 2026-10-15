@@ -1133,6 +1133,9 @@ button.scheduler-row-head__num::after {
   margin-block: calc((1.125rem - var(--rux-layout-size-height-sm)) / 2);
   margin-inline-end: calc(-1 * var(--rux-spacing-05));
 }
+/* Save, while the quick update's box is open, keeps its padding inside the
+   card's edge, so turning primary with words to save moves nothing. */
+.scheduler-card__action[data-card-action="save"] { margin-inline-end: 0; }
 /* A part's title: Carbon's 14px heading in the card's own ink, its count a
    small grey tag beside it, and the part's button at its end. */
 .scheduler-card__title {

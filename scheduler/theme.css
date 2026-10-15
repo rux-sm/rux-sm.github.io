@@ -557,7 +557,7 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list { margin-inline: -6px; }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update[data-update-id] { padding-inline: 6px; }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__action { margin-inline-end: 0; }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__action:not(:focus-visible) { border-color: var(--rux-border-subtle-02); }
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__action:not(:focus-visible, .rux--btn--primary) { border-color: var(--rux-border-subtle-02); }
 /* The card inside it takes the same raised surface's ink, and parts its rows
    with the hairline that edges the menu, as a Geist menu parts its groups. */
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
@@ -779,7 +779,7 @@
   [data-theme^="apple-"] .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) .rux--btn { border-radius: 0; }
 }
 /* The card's Add is a grey push button here, where geist-dark rings it. */
-[data-theme^="apple-"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__action:not(:focus-visible) {
+[data-theme^="apple-"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__action:not(:focus-visible, .rux--btn--primary) {
   border-color: transparent;
   background-color: var(--rux-button-secondary);
 }

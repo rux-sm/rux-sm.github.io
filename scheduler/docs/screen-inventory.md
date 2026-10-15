@@ -248,7 +248,8 @@ full, newest first, each with its age at the right (45m, 2h, 3d, or its
 date, Sep 22, past a week), scrolling past the card's height and fading at its
 foot while there is more below; a line from the old notes shows a note icon.
 An update is a press that opens it in the Updates window. Add opens a box under
-the title that adds a typed line on Enter; Escape or leaving it empty closes it.
+the title and becomes Save, primary once a line is typed, which adds the line as
+Enter does; Save with nothing typed, Escape or leaving it empty closes it.
 The docked sheet has the same rows and presses but shows the two newest
 updates, cut to one line; a press elsewhere on the section, or its title's
 arrow, opens every update in full. Add is its own button. An update's author

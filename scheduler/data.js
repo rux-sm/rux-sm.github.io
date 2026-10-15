@@ -13959,6 +13959,12 @@
     placeBarOpen();
     barShortcuts.querySelector('.scheduler-card__quick input')?.focus();
   }
+  // The box's Save is primary while there are words to save.
+  const markSave = (save, ready) => {
+    save.classList.toggle('rux--btn--primary', ready);
+    save.classList.toggle('rux--btn--ghost', !ready);
+  };
+  const quickSave = input => input.closest('.scheduler-card')?.querySelector('.scheduler-card__action[data-card-action="save"]');
   // Closes the box, handing focus back to Add when the box held it.
   function closeQuick(refocus) {
     quickOpenFor = null;
@@ -13967,17 +13973,20 @@
     if (refocus) barShortcuts.querySelector('.scheduler-card__action')?.focus();
   }
   // Leaving the box with nothing typed closes it; a redraw that rebuilt it
-  // is not leaving.
+  // is not leaving, and nor is a press on Save, which closes it itself.
   barShortcuts?.addEventListener('focusout', e => {
     const input = e.target.closest?.('.scheduler-card__quick input');
-    if (!input || input.value.trim()) return;
+    if (!input || input.value.trim() || e.relatedTarget?.closest?.('.scheduler-card__action')) return;
     setTimeout(() => {
       if (input.isConnected && document.activeElement !== input && quickOpenFor === input.dataset.tripId) closeQuick(false);
     }, 0);
   });
   barShortcuts?.addEventListener('input', e => {
     const input = e.target.closest?.('.scheduler-card__quick input');
-    if (input) quickDraft = { tripId: input.dataset.tripId, text: input.value };
+    if (!input) return;
+    quickDraft = { tripId: input.dataset.tripId, text: input.value };
+    const save = quickSave(input);
+    if (save) markSave(save, !!input.value.trim());
   });
   /* The quick update keeps its keys from the board: Enter adds it, Escape
      clears what is typed, and an Escape with nothing typed closes the box. */
@@ -13990,6 +13999,8 @@
       if (!input.value) { closeQuick(true); return; }
       input.value = '';
       quickDraft = { tripId: null, text: '' };
+      const save = quickSave(input);
+      if (save) markSave(save, false);
       return;
     }
     e.stopPropagation();
@@ -14000,7 +14011,9 @@
   async function quickAdd(input) {
     const body = input.value.trim();
     if (!body) return;
+    const save = quickSave(input);
     input.disabled = true;
+    if (save) save.disabled = true;
     if (await writeUpdate(input.dataset.tripId, { kind: 'update', body, keys: null })) {
       quickDraft = { tripId: null, text: '' };
       quickOpenFor = null;
@@ -14009,6 +14022,7 @@
       toast('success', 'Update added');
     } else {
       input.disabled = false;
+      if (save) save.disabled = false;
       toast('error', 'The update was not added.', 'Try again.');
     }
   }
@@ -14671,7 +14685,11 @@
     part.dataset.count = String(all.length);
     part.dataset.shown = String(shown.length);
     part.toggleAttribute('data-open', open);
-    const add = cardAction('update', 'Add', 'Add an update');
+    /* While the quick update's box is open, Add reads Save: it adds what is
+       typed, as Enter does, and with nothing typed closes the box. */
+    const quickOpen = quickOpenFor === trip.id || (quickDraft.tripId === trip.id && !!quickDraft.text);
+    const add = quickOpen ? cardAction('save', 'Save', 'Save the update') : cardAction('update', 'Add', 'Add an update');
+    if (quickOpen) markSave(add, quickDraft.tripId === trip.id && !!quickDraft.text.trim());
     /* An update is its author's 16px avatar, its words, and on its first
        line's end how long ago, always as a number, so every update's age
        stands in one column. The name is the avatar's tooltip and accessible
@@ -14706,10 +14724,10 @@
     }
     part.appendChild(title);
     /* A quick update is typed into the card itself, in a box that Add opens
-       under the title: Enter adds it to the trip at once, as the Updates
-       window's Add update does, and Escape clears it, or with nothing typed
-       closes the box. It stays open, with what is typed, across a redraw. */
-    if (quickOpenFor === trip.id || (quickDraft.tripId === trip.id && quickDraft.text)) {
+       under the title: Save or Enter adds it to the trip at once, as the
+       Updates window's Add update does, and Escape clears it, or with nothing
+       typed closes the box. It stays open, with what is typed, across a redraw. */
+    if (quickOpen) {
       const quick = el('div', 'rux--text-input__field-wrapper rux--layout--size-sm scheduler-card__quick');
       const quickInput = el('input', 'rux--text-input');
       quickInput.type = 'text';
@@ -14772,9 +14790,15 @@
   barShortcuts?.addEventListener('click', e => {
     // The quick update's box takes its own clicks.
     if (e.target.closest('.scheduler-card__quick')) return;
-    // Add opens the quick update's box under the title.
+    // Add opens the quick update's box under the title, and Save adds what
+    // it holds, or with nothing typed closes it.
     const action = e.target.closest('.scheduler-card__action');
     if (action) {
+      if (action.dataset.cardAction === 'save') {
+        const input = action.closest('.scheduler-card')?.querySelector('.scheduler-card__quick input');
+        if (input?.value.trim()) quickAdd(input); else closeQuick(true);
+        return;
+      }
       openQuick(action.closest('.scheduler-card')?.dataset.tripId ?? null);
       return;
     }

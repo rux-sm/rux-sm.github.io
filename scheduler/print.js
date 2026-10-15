@@ -723,13 +723,17 @@
   }
 
   /* One copy per filled seat, told apart as the envelope's are: the bus, the
-     leg where it is the way back, the seat and the driver's full name. */
+     leg where it is the way back, the seat and the driver's full name. The
+     board's panel heads the copy on screen by the driver's name alone, which
+     fits its head; its list of copies keeps the rest. */
+  const seatDriverName = subject => String(subject.seat?.drivers?.name || nameOf(subject.seat)).trim() || null;
   const seatCopyName = subject => [
     subject.assignment?.buses?.number != null ? String(subject.assignment.buses.number) : null,
     subject.leg === 'return' ? 'Return' : null,
     roleName(subject.seat?.role),
-    String(subject.seat?.drivers?.name || nameOf(subject.seat)).trim() || null,
+    seatDriverName(subject),
   ].filter(Boolean).join(' · ');
+  const seatCopyHead = subject => seatDriverName(subject) ?? seatCopyName(subject);
 
   /* ── The driver itinerary ─────────────────────────────────────────────────
      The office's clean copy of the plan for the day: where the bus goes, when,
@@ -2389,6 +2393,7 @@
       copies: subject => seatsOf(subject.assignment)
         .map(seat => ({ ...subject, seat })),
       copyName: seatCopyName,
+      copyHead: seatCopyHead,
       /* What dispatch fills in can be typed over, filled or blank, as the
          itinerary and the quote can, for a change the trip does not hold yet.
          The day-of block is left alone, because the driver's pen fills it
@@ -2426,6 +2431,7 @@
       copies: subject => seatsOf(subject.assignment)
         .map(seat => ({ ...subject, seat })),
       copyName: seatCopyName,
+      copyHead: seatCopyHead,
       /* A blank one can be typed into; a filled one prints what the trip
          knows and the driver's pen does the rest, which leaves Print all
          free to stack every driver's copy on the trip. */
@@ -3320,14 +3326,17 @@
        where the Forms page is open on its own; the board's panel is for
        looking and printing one copy. */
     /* A form with one copy to a subject, like the quote, names no copy, and
-       the head names the form. */
+       the head names the form. A copy's head may be shorter than its name in
+       the list, as a seat's is its driver alone. */
     const labelOf = copy => form.copyName?.(copy) ?? form.name;
+    const headOf = copy => form.copyHead?.(copy) ?? labelOf(copy);
     if (host) {
       const chosen = every[current.chosen];
       host.setViewerHead(
-        current.blank ? `${form.name} — blank` : labelOf(chosen),
+        current.blank ? `${form.name} — blank` : headOf(chosen),
         every.length > 1 ? every.map((copy, i) => ({
           label: labelOf(copy),
+          head: headOf(copy),
           checked: i === current.chosen,
           choose: () => { current.chosen = i; buildControls(); draw(); },
         })) : [],

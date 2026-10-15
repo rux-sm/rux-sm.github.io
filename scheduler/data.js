@@ -12819,15 +12819,18 @@
   /* THE HEAD: which document is on screen, in one line. One that is one of
      several makes its title the button that lists them, as the board's week
      label opens its date picker; one that stands alone stays text, because a
-     menu of one thing is a menu that wastes a press. */
+     menu of one thing is a menu that wastes a press. A pick may head the
+     panel by a shorter name than the list gives it, as an envelope's driver
+     alone; the whole name is the title's hover. */
   let viewerPick = [];
   function setViewerHead(title, picks = []) {
     viewerPick = picks;
     const chosen = picks.find(p => p.checked);
-    const name = chosen ? chosen.label : title;
+    const name = chosen ? chosen.head ?? chosen.label : title;
     for (const h of [viewerTitle, viewerTitleCollapsed]) {
       h.replaceChildren();
       h.textContent = name || '';
+      h.title = chosen?.label ?? name ?? '';
     }
     if (!viewerTitle) return;
     const listed = picks.length > 1;

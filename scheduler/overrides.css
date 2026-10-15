@@ -226,8 +226,9 @@
 /* THE DOCUMENT PANEL'S HEAD, scoped by `.scheduler-viewer`, the app's box
    around the panel: each rule below is Carbon's own selector with that one
    class before it, so it wins by that class and the order this file loads in
-   rather than by an id. The head's title ends where Carbon's close button, in
-   its corner, begins. */
+   rather than by an id. The head's title ends 8px short of its two buttons,
+   the size and the close, which lie over the head's end the theme's inset
+   from its edge and the theme's gap apart. */
 .scheduler-viewer .rux--side-panel .rux--side-panel__header.rux--side-panel__header--has-title {
   flex-direction: column;
   align-items: stretch;
@@ -235,7 +236,7 @@
   /* One line whatever the head holds: Carbon adds a row above the title for
      any head that has a back button in it, shown or not. */
   padding-block: 0;
-  padding-inline-end: var(--rux-layout-size-height-md);
+  padding-inline-end: calc(2 * var(--rux-layout-size-height-md) + var(--scheduler-head-gap, 0px) + var(--scheduler-head-inset, 0px) + var(--rux-spacing-03));
 }
 /* Carbon lays its collapsed title over the real one and fades it in as the
    title beneath shrinks. Neither panel animates its title -- index.html says

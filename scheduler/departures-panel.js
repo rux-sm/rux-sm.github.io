@@ -20,8 +20,9 @@
    another day still needs is on its card and the Trips page, not here. The
    arrows and the calendar go to any one day, which then shows alone.
 
-   Every line of a leg is a mark, what it is, then when it was done and whose
-   face did it, or the word for doing it, which is a link to the place it is
+   Every line of a leg is one line: a mark, a short name, then the word or
+   two departures.js gives it, with the day it was done, or when it was done
+   and whose face did it, or the word for doing it, which is a link to the place it is
    done, all of them on the board: that driver's form, or the itinerary the
    customer sent, in the document panel beside the week, the trip's Contact
    list, or its Billing tab. A step is marked where it is done. One done some
@@ -74,6 +75,13 @@
     const d = new Date(at);
     if (Number.isNaN(d.getTime())) return '';
     return `${iso(d) === iso(new Date()) ? 'Today' : weekday.format(d)} ${clock(d.getHours(), d.getMinutes())}`;
+  };
+  // The day alone, after a line's word: "today", "Wed" within the week, else "9/28".
+  const shortDay = at => {
+    const d = new Date(at);
+    if (Number.isNaN(d.getTime())) return '';
+    const ago = Math.round((parseISO(iso(new Date())) - parseISO(iso(d))) / 86_400_000);
+    return ago === 0 ? 'today' : ago > 0 && ago < 7 ? weekday.format(d) : `${d.getMonth() + 1}/${d.getDate()}`;
   };
   const dayWords = day => `${day === dayFrom(1) ? 'Tomorrow · ' : day === dayFrom(0) ? 'Today · ' : ''}${longDay.format(parseISO(day))}`;
   const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
@@ -293,8 +301,16 @@
       a.setAttribute('aria-label', `${act.words}: ${of}`);
       row.appendChild(a);
     } else {
-      const right = [line.value, line.state === 'done' && line.at ? whenWords(line.at) : null].filter(Boolean).join(DOT);
-      if (right) row.appendChild(el('span', 'scheduler-departures__when', right));
+      /* The line's word at its end, with the day where it was done, as
+         Received Thu; a step with no word says when. Whatever the end cuts
+         short, its title gives whole. */
+      const when = line.state === 'done' && line.at ? whenWords(line.at) : null;
+      const right = line.value ? [line.value, line.at ? shortDay(line.at) : null].filter(Boolean).join(' ') : when;
+      if (right) {
+        const end = el('span', 'scheduler-departures__when', right);
+        end.title = [line.value, when].filter(Boolean).join(DOT);
+        row.appendChild(end);
+      }
       const who = line.state === 'done' ? staff.get(line.by) : null;
       if (who) {
         const f = el('span', 'rux--user-avatar rux--user-avatar--sm scheduler-departures__face');

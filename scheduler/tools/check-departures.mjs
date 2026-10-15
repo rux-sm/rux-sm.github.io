@@ -46,7 +46,11 @@ expect('a leg shows on the day it leaves and on no other',
 const ready = page(trip, 'outbound', read);
 expect('a ready trip: its own lines, all done',
   said(ready.lines),
-  ['done Confirmed [PO 0482]', 'done Itinerary received', 'done Trip contact [Pat Lee]', 'done Driver info sent to Dayna']);
+  ['done Confirmation [Paid]', 'done Itinerary [Received]', 'done Contact [Pat Lee]', 'done Driver info [Sent]']);
+expect('a confirmation says what did it, a PO by its number',
+  [ready.lines[0].value, page({ ...trip, date_paid: null }, 'outbound', read).lines[0].value,
+    page({ ...trip, date_paid: null, po_ref: null, po_received: false, contract_status: 'Signed' }, 'outbound', read).lines[0].value],
+  ['Paid', 'PO 0482', 'Contract']);
 expect('and its one bus, its one driver, nothing left',
   [ready.buses.length, said(ready.buses[0].crew[0].lines), ready.left],
   [1, ['done Confirmed', 'done Itinerary', 'done Envelope', 'done Reminder'], 0]);
@@ -56,7 +60,7 @@ const raw = page({ ...trip, confirmed: false, po_ref: null, date_paid: null, tri
   trip_assignments: [bus('a1', 1, [seat('s1', 'd1', 'driver')])] }, 'outbound', { ...read, statuses: new Map() });
 expect('nothing done: problems warn, and the office\'s own steps say where they are done',
   [said(raw.lines), said(raw.buses[0].crew[0].lines), raw.left],
-  [['warn Trip unconfirmed', 'warn Itinerary missing', 'warn Trip contact missing', 'todo Driver info sent to Dayna -> contacts'],
+  [['warn Confirmation [Not yet]', 'warn Itinerary [Missing]', 'warn Contact [Missing]', 'todo Driver info -> contacts'],
     ['warn Trip not sent', 'todo Itinerary -> forms:itinerary', 'todo Envelope -> forms:envelope', 'todo Reminder -> contacts'], 8]);
 
 expect('a step still to do names the column it is kept in, and the hotel, booked on the trip, names none',
@@ -65,22 +69,22 @@ expect('a step still to do names the column it is kept in, and the hotel, booked
   ['driver_info_sent', [null, 'itinerary_printed', 'envelope_printed', 'trip_reminder_sent'], null]);
 
 expect('a confirmed trip that still owes says so, with the figure',
-  said(page({ ...trip, date_paid: null, deposit_amount: 200 }, 'outbound', read).lines).filter(l => /Balance|PO\/payment/.test(l)),
-  ['warn Balance due [$800]']);
+  said(page({ ...trip, date_paid: null, deposit_amount: 200 }, 'outbound', read).lines).filter(l => /Balance|PO or payment/.test(l)),
+  ['warn Balance [$800 due]']);
 
 expect('not needed leaves the contact out and keeps the itinerary, done',
   said(page({ ...trip, trip_documents: [], itinerary_not_needed: true, contact_not_needed: true, trip_contact_1_name: null }, 'outbound', read).lines),
-  ['done Confirmed [PO 0482]', 'done Itinerary not needed', 'done Driver info sent to Dayna']);
+  ['done Confirmation [Paid]', 'done Itinerary [Not needed]', 'done Driver info [Sent]']);
 
 expect('a leg whose stops have no times says so, and is not ready',
-  [said(page({ ...trip, trip_stops: [{ leg: 'outbound', arrive: null }] }, 'outbound', read).lines).filter(l => /times/.test(l)),
+  [said(page({ ...trip, trip_stops: [{ leg: 'outbound', arrive: null }] }, 'outbound', read).lines).filter(l => /Times/.test(l)),
     page({ ...trip, trip_stops: [] }, 'outbound', read).left],
-  [['warn No times'], 1]);
+  [['warn Times [Missing]'], 1]);
 
 expect('the hotel is a line only where the office books it',
   [said(page({ ...trip, trip_reqs: { hotel: true } }, 'outbound', read).lines).filter(l => /Hotel/.test(l)),
     said(page({ ...trip, need_hotel: true, hotel_booked_outbound: true, hotel_itinerary_number_outbound: 'H77' }, 'outbound', read).lines).filter(l => /Hotel/.test(l))],
-  [['todo Hotel booked -> billing'], ['done Hotel booked [H77]']]);
+  [['todo Hotel -> billing'], ['done Hotel [H77]']]);
 
 const two = page({ ...trip, bus_count: 3, trip_reqs: { sleeper: true }, trip_assignments: [
   bus('a1', 1, [seat('s1', 'd1', 'driver', done), seat('s2', 'd2', 'co-driver', { itinerary_printed: true })], { needs: { sleeper: true }, active_roles: ['driver', 'co-driver'] }),
@@ -106,7 +110,7 @@ const split = { ...trip, trip_type: 'dropoff_pickup', return_start_date: day(3),
 const back = page(split, 'return', read);
 expect('a split trip\'s later leg is its own page on its own day, with the trip\'s lines already done',
   [legsOn([split], day(1)).map(l => l.leg), legsOn([split], day(3)).map(l => l.leg), back.legName, said(back.lines).at(-1), said(back.buses[0].crew[0].lines).slice(1)],
-  [['outbound'], ['return'], 'Pickup', 'done Driver info sent to Dayna', ['todo Itinerary -> forms:itinerary', 'todo Envelope -> forms:envelope', 'todo Reminder -> contacts']]);
+  [['outbound'], ['return'], 'Pickup', 'done Driver info [Sent]', ['todo Itinerary -> forms:itinerary', 'todo Envelope -> forms:envelope', 'todo Reminder -> contacts']]);
 
 expect('a working day preps for tomorrow, and a Friday, a Saturday and a Sunday for every day until the office is open again',
   [prepDays('2026-10-07'), prepDays('2026-10-09'), prepDays('2026-10-10'), prepDays('2026-10-11'), prepDays('2026-10-30')],

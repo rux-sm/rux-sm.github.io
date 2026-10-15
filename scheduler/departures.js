@@ -8,8 +8,9 @@
      { key, state, label, value, at, by, action, mark }
 
    `state` is `done`, `todo` or `warn`: done, the office's to do, or a
-   problem sorted out somewhere else. `value` is what a line says beside its
-   name, a PO or a contact; `at` and `by` are when a step was done and whose
+   problem sorted out somewhere else. `label` is a short name and `value` the
+   word or two at the line's end, as Confirmation and the PO that did it, or
+   Itinerary and Missing, so a line is one line; `at` and `by` are when a step was done and whose
    profile did it, where the database kept them; `action` is where a `todo`
    is done, `forms:<form>` for that form in the board's document panel or
    `contacts` for the trip's Contact list; `mark` is the column a `todo`
@@ -42,13 +43,22 @@
   const ToDo = window.SchedulerToDo;
 
   const line = (key, state, label, more = {}) => ({ key, state, label, value: null, at: null, by: null, action: null, mark: null, ...more });
-  const first = name => String(name || '').trim().split(/\s+/)[0] || '';
   const one = v => (Array.isArray(v) ? v[0] ?? null : v ?? null);
   const usd = n => Number(n).toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
   // A step a seat or the trip's prep row keeps: done with its stamp, or to do at `action` and kept in `column`.
-  const step = (key, label, row, column, action) => (row?.[column]
-    ? line(key, 'done', label, { at: row[`${column}_at`] ?? null, by: row[`${column}_by`] ?? null })
+  const step = (key, label, row, column, action, done = null) => (row?.[column]
+    ? line(key, 'done', label, { value: done, at: row[`${column}_at`] ?? null, by: row[`${column}_by`] ?? null })
     : line(key, 'todo', label, { action, mark: column }));
+
+  // What confirmed a trip, in a word, a PO by its number; null where the trip says only that it is.
+  const CONFIRMED_BY = { contract_signed: 'Contract', deposit_received: 'Deposit', paid_full: 'Paid', overpaid: 'Paid' };
+  function confirmedBy(trip) {
+    const rung = Billing.confirmRungOf(Billing.of(trip).rung);
+    if (rung === 'po_received') return trip.po_ref ? `PO ${trip.po_ref}` : 'PO';
+    return CONFIRMED_BY[rung] ?? null;
+  }
+  // What the customer still owes, as a short name.
+  const OWED = { po: 'PO or payment', balance: 'Balance' };
 
   /* The days `today` preps for, each as `YYYY-MM-DD`: tomorrow, and every
      day after it until the office is open again, because nobody is in on a
@@ -81,42 +91,40 @@
   function tripLines(trip, leg) {
     const lines = [];
     lines.push(trip.confirmed
-      ? line('confirmed', 'done', 'Confirmed', { value: trip.po_ref ? `PO ${trip.po_ref}` : null })
-      : line('confirmed', 'warn', 'Trip unconfirmed'));
+      ? line('confirmed', 'done', 'Confirmation', { value: confirmedBy(trip) })
+      : line('confirmed', 'warn', 'Confirmation', { value: 'Not yet' }));
 
     const itineraries = (trip.trip_documents || [])
       .filter(d => String(d.label || '').toLowerCase() === 'itinerary')
       .sort((a, b) => Date.parse(b.created_at || 0) - Date.parse(a.created_at || 0));
-    if (itineraries.length) lines.push(line('itinerary', 'done', 'Itinerary received', { at: itineraries[0].created_at ?? null }));
-    else if (trip.itinerary_not_needed) lines.push(line('itinerary', 'done', 'Itinerary not needed'));
-    else lines.push(line('itinerary', 'warn', 'Itinerary missing'));
+    if (itineraries.length) lines.push(line('itinerary', 'done', 'Itinerary', { value: 'Received', at: itineraries[0].created_at ?? null }));
+    else if (trip.itinerary_not_needed) lines.push(line('itinerary', 'done', 'Itinerary', { value: 'Not needed' }));
+    else lines.push(line('itinerary', 'warn', 'Itinerary', { value: 'Missing' }));
     // Said only while it is true, as what the customer owes is: a leg with times has no line for them.
-    if (!ToDo.hasTimes(trip, leg)) lines.push(line('times', 'warn', ToDo.KINDS.times.label));
+    if (!ToDo.hasTimes(trip, leg)) lines.push(line('times', 'warn', 'Times', { value: 'Missing' }));
 
     if (!trip.contact_not_needed) {
       const contact = Facts.dayOfContact(trip);
-      lines.push(contact ? line('contact', 'done', 'Trip contact', { value: contact.name || null })
-        : line('contact', 'warn', 'Trip contact missing'));
+      lines.push(contact ? line('contact', 'done', 'Contact', { value: contact.name || null })
+        : line('contact', 'warn', 'Contact', { value: 'Missing' }));
     }
 
-    // What the customer still owes, in follow-up.js's words, with the figure.
+    // What the customer still owes, as follow-up.js counts it, with the figure.
     const waits = FollowUp.waitsOf(trip);
     const { remaining } = Billing.of(trip);
     for (const w of ['po', 'balance']) {
-      if (waits.includes(w)) lines.push(line(w, 'warn', FollowUp.WORDS[w], { value: remaining > 0 ? usd(remaining) : null }));
+      if (waits.includes(w)) lines.push(line(w, 'warn', OWED[w], { value: remaining > 0 ? `${usd(remaining)} due` : 'Due' }));
     }
 
     // The office books the room only where the trip says so, by its tag or the older column.
     const hotel = trip.trip_reqs && 'hotel' in trip.trip_reqs ? trip.trip_reqs.hotel === true : !!trip.need_hotel;
     if (hotel) {
       lines.push(trip[`hotel_booked_${leg}`]
-        ? line('hotel', 'done', 'Hotel booked', { value: trip[`hotel_itinerary_number_${leg}`] || null })
-        : line('hotel', 'todo', 'Hotel booked', { action: 'billing' }));
+        ? line('hotel', 'done', 'Hotel', { value: trip[`hotel_itinerary_number_${leg}`] || 'Booked' })
+        : line('hotel', 'todo', 'Hotel', { action: 'billing' }));
     }
 
-    const booker = first(Facts.tripContact(trip, 0)?.name);
-    lines.push(step('driver-info', booker ? `Driver info sent to ${booker}` : 'Driver info sent',
-      one(trip.trip_prep), 'driver_info_sent', 'contacts'));
+    lines.push(step('driver-info', 'Driver info', one(trip.trip_prep), 'driver_info_sent', 'contacts', 'Sent'));
     return lines;
   }
 

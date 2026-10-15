@@ -1260,13 +1260,13 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast:not([data-place="heade
 .scheduler-to-do .rux--accordion__arrow { margin-block-start: var(--rux-spacing-01); }
 .scheduler-to-do .rux--accordion__content { padding-inline: var(--rux-spacing-05); }
 /* A Prep leg keeps what is left at its heading's top right and the arrow at
-   its bottom right, on the customer's line: the title runs the heading's
-   width, and the arrow stands over the end of that last line, which leaves
-   the arrow its room. */
+   its bottom right, on the customer's line, 4px under the place so the two
+   do not touch: the title runs the heading's width, and the arrow stands
+   over the end of that last line, which leaves the arrow its room. */
 .scheduler-departures__leg > .rux--accordion__heading { display: grid; grid-template-columns: minmax(0, 1fr) auto; }
 .scheduler-departures__leg > .rux--accordion__heading > .rux--accordion__title { grid-area: 1 / 1 / 2 / 3; }
 .scheduler-departures__leg > .rux--accordion__heading > .rux--accordion__arrow { grid-area: 1 / 2; align-self: end; margin-block-start: 0; }
-.scheduler-departures__leg .rux--accordion__title > .scheduler-to-do__line { padding-inline-end: calc(1rem + var(--rux-spacing-03)); }
+.scheduler-departures__leg .rux--accordion__title > .scheduler-to-do__line { margin-block-start: var(--rux-spacing-02); padding-inline-end: calc(1rem + var(--rux-spacing-03)); }
 /* Open, the heading gives half of its 16px under it to the content, so its
    lines still stand 16px from the first line below them and its focus ring
    stands 8px clear of that line instead of on it. */

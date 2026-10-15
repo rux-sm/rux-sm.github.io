@@ -84,6 +84,3 @@ None open.
   tag tints, which are slate's steps, and the marks then need measuring on
   those. The No bus row has to stand apart from a bar's fill by more than its
   hue.
-- [ ] Measure contrast on each app's front page with
-  `design/tools/measure-contrast.js`, in rux's Chrome, where the log-in
-  passes.

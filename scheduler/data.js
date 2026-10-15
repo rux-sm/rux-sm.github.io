@@ -759,8 +759,9 @@
      Samsara has in the bus wears their duty in place of their dot, the one at
      the wheel in bold, and the name's tooltip and the trip's card say each
      one's hours. A driver at the wheel the bar does not name is named on the
-     line instead of the speed. A bar is out from two hours before its yard-out
-     to two hours after its yard-back, and only while the engine is on. The
+     line instead of the speed. A bar is out from its yard-out to its yard-back
+     whatever the engine is doing, its dot grey and Off on the line while the
+     engine is off, and in the two hours either side only while it runs. The
      samsara-now Edge Function is asked once a minute, and only while such a
      bar is on the board and the page is in view. */
   const ROAD_MARGIN = 2 * 3600e3;
@@ -783,6 +784,11 @@
   const roadOut = bar => {
     const now = Date.now();
     return Number(bar.dataset.roadFrom) <= now && now <= Number(bar.dataset.roadTo);
+  };
+  // Inside the trip's own hours, yard-out to yard-back, without the margins.
+  const roadDuring = bar => {
+    const now = Date.now();
+    return Number(bar.dataset.roadFrom) + ROAD_MARGIN <= now && now <= Number(bar.dataset.roadTo) - ROAD_MARGIN;
   };
   const roadWords = d => [ROAD_DUTY[d.duty]?.word ?? 'Status unknown',
     d.left_ms != null ? `${roadHours(d.left_ms)} driving left` : null, d.wheel ? 'at the wheel' : null].filter(Boolean).join(' · ');
@@ -824,7 +830,8 @@
   function drawRoad() {
     for (const bar of gridEl.querySelectorAll('.scheduler-bar[data-bus-id]')) {
       const bus = roadBusOf(bar);
-      const out = !!bus && (bus.engine === 'on' || bus.engine === 'idle') && !!bar.dataset.roadFrom && roadOut(bar);
+      const out = !!bus && !!bar.dataset.roadFrom && roadOut(bar)
+        && (bus.engine === 'on' || bus.engine === 'idle' || roadDuring(bar));
       roadBar(bar, out ? bus : null);
     }
   }
@@ -849,6 +856,7 @@
     if (key) bar.dataset.road = key; else delete bar.dataset.road;
     bar.classList.toggle('scheduler-bar--road', !!bus);
     bar.classList.toggle('scheduler-bar--idling', bus?.engine === 'idle');
+    bar.classList.toggle('scheduler-bar--parked', !!bus && bus.engine !== 'on' && bus.engine !== 'idle');
     const line = bar.querySelector(':scope > .scheduler-bar__road');
     const crewBox = bar.querySelector(':scope > .scheduler-bar__drivers > .scheduler-bar__crew');
     const crew = crewBox ? [...crewBox.querySelectorAll(':scope > .scheduler-crew')] : [];
@@ -861,6 +869,7 @@
     const parts = [el('span', 'scheduler-road__dot')];
     if (wheel && !named.has(wheel.driver_id)) parts.push(el('span', 'scheduler-road__who', roadShort(wheel.name)));
     else if (bus.engine === 'idle') parts.push(el('span', 'scheduler-road__speed', 'Idle'));
+    else if (bus.engine === 'off') parts.push(el('span', 'scheduler-road__speed', 'Off'));
     else if (bus.mph != null) parts.push(el('span', 'scheduler-road__speed', String(bus.mph)), el('span', 'scheduler-road__unit', 'mph'));
     if (wheel?.left_ms != null) {
       const low = wheel.left_ms < ROAD_HOUR ? ' scheduler-road--low' : '';
@@ -871,7 +880,8 @@
     } else if (bus.place) parts.push(el('span', 'scheduler-road__place', bus.place));
     line.replaceChildren(...parts);
     line.title = [
-      [bus.engine === 'idle' ? 'Idling' : bus.mph != null ? `${bus.mph} mph` : 'Engine on', bus.place].filter(Boolean).join(' · '),
+      [bus.engine === 'idle' ? 'Idling' : bus.engine === 'off' ? 'Engine off' : bus.engine == null ? 'No engine reading'
+        : bus.mph != null ? `${bus.mph} mph` : 'Engine on', bus.place].filter(Boolean).join(' · '),
       ...bus.drivers.map(d => `${d.name}: ${roadWords(d)}`),
       `Samsara, ${new Date(roadAnswer.at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`,
     ].join('\n');

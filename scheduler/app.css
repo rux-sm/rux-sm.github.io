@@ -1551,7 +1551,8 @@ button.scheduler-row-head__num::after {
    way to the engine's dot, the speed, ten blocks for the ten hours a driver
    may drive and the hours the driver at the wheel has left, and each driver
    Samsara has in the bus wears their duty in place of their dot. Green is the
-   engine running, amber idling and under an hour left. A board set to hide the
+   engine running, amber idling and under an hour left, and grey the engine off
+   or unknown during the trip's hours. A board set to hide the
    updates hides this line with them, so every bar keeps one height. */
 .scheduler-bar__road { display: none; }
 .scheduler-bar--road > .scheduler-bar__update { display: none; }
@@ -1563,6 +1564,7 @@ button.scheduler-row-head__num::after {
   --scheduler-road: var(--scheduler-mark-success);
 }
 .scheduler-bar--idling > .scheduler-bar__road { --scheduler-road: var(--scheduler-mark-warning); }
+.scheduler-bar--parked > .scheduler-bar__road { --scheduler-road: color-mix(in srgb, currentColor 60%, transparent); }
 .scheduler-week--no-update .scheduler-bar__road { display: none; }
 .scheduler-road__dot {
   flex: none;

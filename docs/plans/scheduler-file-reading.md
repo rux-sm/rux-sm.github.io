@@ -91,11 +91,6 @@ These are the draft's own, so the chat and the Read button both use them.
 
 ## Tasks
 
-### The draft fills what a reading finds
-
-- [ ] Deploy the connector on rux's yes, and draft one change from a new
-      chat to see the tools take `stops`, `purchase_order` and `contract`.
-
 ### The editor's Read button
 
 - [ ] Write five invented itineraries and three invented POs, with what each

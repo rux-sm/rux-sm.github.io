@@ -31,10 +31,9 @@ stays dark, as it is now. The launch itself is
   quote filled and See the fleet as the quiet second action, with calling
   left to the header. The photograph's fade is softer and wider, and the
   words over it keep 4.5 to 1, measured.
-- **The hero's photograph is widened to 21:9, 3360 by 1440,** sky, trees and
-  road added on the left and the coach untouched, so a laptop and a wide
-  screen each crop only sky and road; a phone still crops it close to the
-  coach.
+- **The hero's photograph is rux's widened one,** 2400 by 1010 with the
+  coach in its middle, run across the whole band at 130% from its left edge
+  so the coach lands clear of the words; a phone crops it close to the coach.
 - **The bar under the hero is a strip of short facts with fine dividers,**
   with no card or circle.
 - **The site states the company's federal record, which a school checks:**
@@ -88,5 +87,3 @@ stays dark, as it is now. The launch itself is
 - [ ] Crop the empty sky from the About page's office photograph.
 - [ ] Put the photographs of a 56-seat coach and the van on the Fleet page
       once rux has them.
-- [ ] Fit the widened hero photograph once rux has made it, with its small
-      and large WebP files.

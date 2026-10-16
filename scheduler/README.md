@@ -116,17 +116,17 @@ name `file-names.js` gives every file a trip has, uploaded or printed. The page
 follows the theme the person keeps and the sheet on it carries the light one,
 so the ink drawn there is the ink that prints. After a sent quote: `docs/booking.md`.
 
-The pages in `share/` are for people without a log-in, who arrive by a link:
-`share/document.html` opens a trip document, `share/maintenance.html`
-shows the maintenance crew two weeks of buses and the recent changes, and
-`share/driver.html` shows a driver, in English or Spanish as their profile says and they can switch, the trips dispatch sent them to accept or
-decline, a card of basics each, whose View itinerary opens the itinerary
-file uploaded to the trip and View envelope opens `share/form.html`, which
-draws the forms page's envelope from the same link. Staff see the same schedule inside the app at `maintenance.html`,
-from the side nav, where they copy the public link to send and replace it
-when it has gone further than it should, and a driver's page at
-`driver-view.html`, from See their page on the Drivers page, where they tick
-the trips to send, copy the message and make, update or revoke the link.
+The pages in `share/` are for people without a log-in, who arrive by a link: `share/document.html`
+opens a trip document, `share/maintenance.html` shows the maintenance crew two weeks of buses and
+the recent changes, and `share/driver.html` shows a driver, in English or Spanish as their profile
+says and they can switch, the trips dispatch sent them to accept or decline, a card of basics each
+with its stops folded, whose View itinerary opens the itinerary file uploaded to the trip and View
+envelope opens `share/form.html`, which draws the forms page's envelope from the same link; a
+cancelled trip stays as a Cancelled card until its day passes, and the page reads the trips again on
+return and before Accept. Staff see the same schedule inside the app at `maintenance.html`, from the
+side nav, where they copy the public link to send and replace it when it has gone further than it
+should, and a driver's page at `driver-view.html`, from See their page on the Drivers page, where
+they tick the trips to send, copy the message and make, update or revoke the link.
 
 Staff can also work the schedule from the Claude app, which asks the
 `scheduler-connector` Edge Function, with its source in `connector/`. It reads the live tables and writes no trip: a trip Claude

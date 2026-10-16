@@ -69,7 +69,7 @@
      The page hands in what only it holds: the office's names for the trip's
      needs, the answers, the kept views and its words. */
   const Job = window.SchedulerDriverJob;
-  const { dateOnly, dayFmt, rangeText, timeText, todayIso, roleKey, jobView, keyOf } = Job;
+  const { clean, dateOnly, dayFmt, rangeText, timeText, todayIso, roleKey, jobView, keyOf } = Job;
   let requirementNames = new Map();
   const legOf = (ref, trip, driverId) => Job.legOf(ref, trip, driverId, requirementNames);
   const pageWords = () => ({ w, keptValue, keptRequirement });
@@ -349,9 +349,21 @@
       decline.disabled = accept.disabled = true;
       button.textContent = action === 'accept' ? w.accepting : w.declining;
       try {
-        await answer(l, action);
-        card.replaceWith(cardOf(l));
-        summarize();
+        /* ACCEPT TAKES WHAT IS THERE NOW: the trips are read again first, and
+           a leg that changed since the card was drawn is drawn again to be
+           read, not accepted. */
+        if (action === 'accept' && !staffPage) {
+          const shownView = JSON.stringify(jobView(l));
+          await load();
+          const now = items?.find(i => !i.error && !i.cancelled && i.trip.id === l.trip.id && i.leg === l.leg && i.role === l.role);
+          if (!now || JSON.stringify(jobView(now)) !== shownView) { say('warning', w.changedJustNow, ''); return; }
+          await answer(now, action);
+          draw();
+        } else {
+          await answer(l, action);
+          card.replaceWith(cardOf(l));
+          summarize();
+        }
         announce(action === 'accept' ? w.acceptedSaid : w.declinedSaid);
       } catch {
         decline.disabled = accept.disabled = false;
@@ -419,6 +431,8 @@
     // The answer under what it answers, then who to call on the day.
     const response = responseOf(l, card);
     if (response) card.appendChild(response);
+    const stops = stopsOf(l);
+    if (stops) card.appendChild(stops);
     if (l.contact) card.appendChild(callSection(w.contact, l.contact.name, l.contact.phone));
 
     // The driver's own bus first; another bus's crew says which bus.
@@ -441,6 +455,51 @@
     }
     card.appendChild(section(null, paperworkOf(l)));
     return card;
+  }
+
+  /* EACH STOP, FOLDED: the list the driver carries on paper, so Stops
+     changed can be read here. A stop says when the bus gets there and when
+     it leaves, which is the next stop's leaving time. */
+  function stopsOf(l) {
+    if (!l.stops.length) return null;
+    const fold = el('details', 'scheduler-leg-card__stops');
+    fold.appendChild(el('summary', 'rux--type-body-compact-01', w.stops(l.stops.length)));
+    const list = el('ol', 'scheduler-leg-card__stop-list');
+    l.stops.forEach((st, i) => {
+      const arrive = st.type === 'pickup' ? st.spot || st.arrive : st.arrive;
+      const leave = l.stops[i + 1]?.depart_prev;
+      const item = el('li', 'rux--type-body-compact-01');
+      item.append(el('span', 'scheduler-leg-card__stop-name', clean(st.name) || clean(st.address) || clean(st.label) || w.stopUnnamed),
+        el('span', 'scheduler-leg-card__stop-times', [arrive && w.stopArrive(timeText(arrive)), leave && w.stopLeave(timeText(leave))].filter(Boolean).join(' · ')));
+      list.appendChild(item);
+    });
+    fold.appendChild(list);
+    return fold;
+  }
+
+  /* A CANCELLED TRIP stays until its day passes, so a driver who had it
+     knows it is off: its days, where it was going, and nothing to answer. */
+  function cancelledCard(i) {
+    const card = el('article', 'rux--tile scheduler-leg-card');
+    const head = el('header', 'scheduler-leg-card__head');
+    head.append(el('h2', 'rux--type-productive-heading-03', rangeText(i.start, i.end, true, WORDS.LOCALE[lang]) || w.assignment),
+      el('p', 'rux--type-body-compact-02 scheduler-leg-card__where', i.destination || w.destination));
+    const tags = el('div', 'scheduler-leg-card__tags');
+    tags.appendChild(tag(w.cancelled, 'red', '#m-cancel-fill'));
+    head.appendChild(tags);
+    card.append(head, el('p', 'rux--type-body-compact-01', w.cancelledText));
+    return card;
+  }
+  // A cancelled leg's days and destination, as its card shows them.
+  function cancelledOf(ref, trip) {
+    const leg = ref.leg || 'outbound';
+    const inbound = leg === 'return' && trip.trip_type === 'dropoff_pickup';
+    return {
+      cancelled: true, trip, leg,
+      start: inbound ? trip.return_start_date : trip.start_date,
+      end: inbound ? (trip.return_end_date || trip.return_start_date) : (trip.end_date || trip.start_date),
+      destination: clean(trip.destination),
+    };
   }
 
   // `why` names a line in driver-words.js.
@@ -489,14 +548,16 @@
     items = (s.assignmentRefs || []).map(ref => {
       const trip = (trips.data.trips || []).find(t => String(t.id) === String(ref.tripId));
       if (!trip) return { error: 'notLoaded' };
-      if (trip.cancelled_at) return null;
+      if (trip.cancelled_at) return cancelledOf(ref, trip);
       return legOf(ref, trip, s.driver.id);
     }).filter(Boolean).filter(i => i.error || String(i.end || i.start || '').slice(0, 10) >= today)
       // Soonest first, and a leg that would not load after the rest.
       .sort((a, b) => (!!a.error - !!b.error) || String(a.start || '').localeCompare(String(b.start || '')));
     driverName = s.driver.shortName || s.driver.name;
+    loadedAt = Date.now();
     draw();
   }
+  let loadedAt = 0;
 
   // The greeting and the cards, drawn again in the other language when the
   // driver switches.
@@ -505,10 +566,10 @@
   function draw() {
     if (!items) return;
     $('scheduler-leg-hello').textContent = w.hello(driverName);
-    shown = items.filter(i => !i.error);
+    shown = items.filter(i => !i.error && !i.cancelled);
     summarize();
     introEl.hidden = false;
-    listEl.replaceChildren(...items.map(i => (i.error ? problemCard(i.error) : cardOf(i))));
+    listEl.replaceChildren(...items.map(i => (i.error ? problemCard(i.error) : i.cancelled ? cancelledCard(i) : cardOf(i))));
     say(null);
     if (!items.length) say('info', w.noTrips, w.noTripsText);
   }
@@ -543,5 +604,9 @@
     channel = client.channel(CHANNEL);
     channel.subscribe();
     run(load);
+    // Coming back to the page reads the trips again, so an open phone never shows yesterday's card.
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && Date.now() - loadedAt > 30e3) run(load);
+    });
   }
 })();

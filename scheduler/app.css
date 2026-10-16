@@ -3596,6 +3596,14 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-leg-card__buttons > .rux--btn { inline-size: 100%; max-inline-size: none; }
 .scheduler-leg-card__error { margin: 0; color: var(--rux-text-error); }
 .scheduler-leg-card__changes { margin: var(--rux-spacing-02) 0 0; padding-inline-start: var(--rux-spacing-05); list-style: disc; }
+/* The stops, folded under the card: a count to press, then each stop's name
+   with when the bus gets there and leaves under it. */
+.scheduler-leg-card__stops > summary { cursor: pointer; color: var(--rux-link-primary); padding-block: var(--rux-spacing-02); }
+.scheduler-leg-card__stops > summary:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+.scheduler-leg-card__stop-list { margin: var(--rux-spacing-02) 0 0; padding-inline-start: var(--rux-spacing-06); display: grid; gap: var(--rux-spacing-03); }
+.scheduler-leg-card__stop-list > li { display: grid; }
+.scheduler-leg-card__stop-name { font-weight: 600; }
+.scheduler-leg-card__stop-times { color: var(--rux-text-secondary); }
 .scheduler-leg-card__section {
   display: grid;
   gap: var(--rux-spacing-03);

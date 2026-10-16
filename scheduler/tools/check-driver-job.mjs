@@ -42,7 +42,10 @@ expect('a driver on no bus of the leg is told it is not theirs', legOf(ref, trip
 
 const view = jobView(l);
 expect('what Accept keeps, as text the card writes', [view.dates, view.time, view.bus, view.role, view.stops.length, view.itinerary],
-  ['Sat, Nov 7 – Sun, Nov 8, 2026', '6:30 AM', '763', 'Driver', 3, 'f1']);
+  ['Sat, Nov 7 – Sun, Nov 8, 2026', '6:30 AM', '763', 'Driver', 3, 'a.pdf']);
+const replaced = jobView(legOf(ref, { ...trip, trip_documents: [{ ...trip.trip_documents[0], file_path: 'c.pdf' }] }, 'd1', new Map([['sleeper', 'Sleeper berth']])));
+expect('an itinerary replaced under the same document reads as new', changesBetween(view, replaced, l, say), ['New itinerary']);
+expect('a view kept with the document\'s id still matches the same file', changesBetween({ ...view, itinerary: 'f1' }, view, l, say), []);
 
 const moved = jobView(legOf(ref, { ...trip, trip_assignments: [{ ...trip.trip_assignments[0], buses: { number: 897 } }],
   trip_stops: trip.trip_stops.map(s => (s.position === 1 ? { ...s, arrive: '10:30' } : s)),

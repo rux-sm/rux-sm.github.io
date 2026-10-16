@@ -135,9 +135,6 @@ None open.
 
 ### The driver and the links
 
-- [ ] On the driver's page: read again on return to the tab, read again
-      before Accept, tell a replaced itinerary by its file, show the stops
-      folded with the changed lines, and draw the Cancelled card.
 - [ ] Write one migration: `trip_driver_statuses` sent live to staff,
       `get_trip_driver_statuses` returning what each driver accepted, and
       the function behind Mark the driver as told. Apply it on a yes.

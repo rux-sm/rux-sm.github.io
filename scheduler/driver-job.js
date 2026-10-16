@@ -171,7 +171,8 @@
       role: roleLabel(l.role),
       relief: l.relief ? [l.relief.at && `Handoff at ${timeText(l.relief.at)}`, l.relief.instructions].filter(Boolean).join(' · ') : '',
       requirements: [...l.requirements].sort(),
-      itinerary: l.itineraries[0]?.id || '',
+      // The file itself, so a file replaced under the same document reads as new.
+      itinerary: l.itineraries[0]?.path || l.itineraries[0]?.id || '',
     };
   }
   // What Accept keeps, in the order a change is listed.
@@ -186,6 +187,9 @@
       const a = was?.[key] ?? (Array.isArray(now[key]) ? [] : '');
       const b = now[key];
       if (JSON.stringify(a) === JSON.stringify(b)) continue;
+      // A view kept before the itinerary was told by its file holds the
+      // document's id, which stands for the file it had then.
+      if (key === 'itinerary' && a && a === l.itineraries[0]?.id) continue;
       // A relief driver's card gives the handoff, which `relief` compares, and
       // not the bus's spot time.
       if (key === 'time' && isRelief(l.role)) continue;

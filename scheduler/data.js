@@ -8921,9 +8921,11 @@
             const bus = b.busId ? panelIndex?.buses?.get(b.busId) : null;
             const name = `${bus ? vehicleName(bus) : 'No bus yet'}${split ? (leg === 'return' ? ', pickup' : ', drop-off') : ''}`;
             const odometer = found?.miles ?? null;
-            const head = el('p', 'rux--form__helper-text');
-            head.appendChild(el('strong', null, !found ? name
-              : `${name}: ${odometer != null ? mi(odometer) : SAMSARA_WHY[found.note] ?? 'no miles'}`));
+            // The tile's title line, as a Buses tile's: the bus, and its miles or why none.
+            const head = el('div', 'scheduler-item__line');
+            head.appendChild(el('span', 'scheduler-item__name', name));
+            if (found) head.appendChild(el('span', 'scheduler-item__much',
+              odometer != null ? mi(odometer) : SAMSARA_WHY[found.note] ?? 'no miles'));
             const group = el('div', 'rux--stack-vertical rux--stack-scale-4');
             const after = el('div', 'rux--stack-vertical rux--stack-scale-2');
             const total = el('p', 'rux--form__helper-text');

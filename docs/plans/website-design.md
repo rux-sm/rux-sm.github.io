@@ -31,12 +31,22 @@ stays dark, as it is now. The launch itself is
   quote filled and See the fleet as the quiet second action, with calling
   left to the header. The photograph's fade is softer and wider, and the
   words over it keep 4.5 to 1, measured.
-- **The bar under the hero is a strip of four short facts with fine
-  dividers,** with no card or circle.
+- **The hero's photograph is widened to 21:9, 3360 by 1440,** sky, trees and
+  road added on the left and the coach untouched, so a laptop and a wide
+  screen each crop only sky and road; a phone still crops it close to the
+  coach.
+- **The bar under the hero is a strip of short facts with fine dividers,**
+  with no card or circle.
+- **The site states the company's federal record, which a school checks:**
+  USDOT 1017740 and MC-419620 in the footer, and FMCSA's Satisfactory safety
+  rating in the strip, each linked to the company's SAFER page so anyone can
+  check it. Crash counts and inspection rates stay off, because they change
+  every month.
 - **Groups we serve is a two-column list with fine lines,** each group a
   title and a line, linking to Services, where each group gets its details.
-- **The customer's words are an open quotation** with room around it and
-  its source under it, not a rounded box.
+- **No customer's words are on the site until a customer agrees to be
+  named,** because the site names no customer otherwise; they return as an
+  open quotation with room around it, not a rounded box.
 - **The type steps down and gets lighter:** the home page's headline 56 to
   64px and an inner page's title 44 to 52px, both medium weight; a section
   heading 32px; body 16 to 18px. They are token values in the site's
@@ -53,24 +63,15 @@ stays dark, as it is now. The launch itself is
   prevents a wrong answer stays.
 - **The header keeps its links,** with more room around the logo and the
   phone action easier to see, within the header's one text button.
+- **Every button takes a 6px corner,** the corner Apple's theme already
+  gives a field, so every control on the site shares one shape.
 - **Every change is made in English and Spanish together,** and checked in
   Chrome on desktop and phone before it is pushed.
 
 ## Questions
 
-- Buttons: keep Apple's round pill, or a modest 8px corner on every button
-  across the site?
-- The only vehicle photographs are of coach 763, a 52-seat lift coach. Can
-  rux get one of a 56-seat coach and one of the van for the Fleet page, or
-  do those rows go without a photograph?
-- The home page's quotation names Shands Brooks Charters, a customer, which
-  the site's rules forbid. Ask them and keep the name, or keep the words
-  under "a Texas charter company"?
-- Should the site show safety facts, such as the USDOT number, insurance
-  and driver checks? If so, what are they, so they can join the strip?
-- The hero's photograph: will rux widen it with a generative-expand tool,
-  sky and road added on the left with the coach untouched, or does it stay
-  as it is with the softer fade?
+- Insurance and driver testing: what cover does the company carry, and are
+  drivers drug and alcohol tested? Either joins the strip once it is known.
 
 ## Tasks
 
@@ -90,4 +91,10 @@ stays dark, as it is now. The launch itself is
 - [ ] Give the header's logo more room and make its phone action easier to
       see.
 - [ ] Crop the empty sky from the About page's office photograph.
-- [ ] Set the buttons' corners as rux answers.
+- [ ] Set every button's corner to 6px.
+- [ ] Put the USDOT and MC numbers in the footer and the safety rating in
+      the strip, linked to SAFER.
+- [ ] Put the photographs of a 56-seat coach and the van on the Fleet page
+      once rux has them.
+- [ ] Fit the widened hero photograph once rux has made it, with its small
+      and large WebP files.

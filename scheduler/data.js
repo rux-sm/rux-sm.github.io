@@ -885,9 +885,9 @@
       const out = !!bar.dataset.roadFrom && (Road.isOut(bus, span) || Live.watching(bus, span));
       roadBar(bar, out ? bus : null);
     }
-    // A live card that shows follows its bus with each answer.
+    // A card on its On the road tab follows its bus with each answer.
     const shown = selectedBar();
-    if (shown && liveFor === barKey(shown)) placeBarOpen(shown);
+    if (shown?.dataset.road && roadTabOf(shown) === 'road') placeBarOpen(shown);
   }
 
   // One driver's duty on their name: the mark ringed by the hours left, bold
@@ -1064,24 +1064,21 @@
 
   setInterval(askRoad, ROAD_EVERY);
 
-  /* THE LIVE CARD opens from a press on an out bar's live line, in the
-     card's place; a press anywhere else on the bar shows the trip card, as it
-     always has, and a press on the line of a bar whose live card shows puts
-     the card away, as a second press on a bar does. It runs before app.js's
-     own press, which it stops only to turn a shown card from one to the
-     other. `liveFor` is the bar, by barKey, whose card is the live one. */
-  let liveFor = null;
-  gridEl?.addEventListener('click', e => {
-    const bar = e.target.closest('.scheduler-bar');
-    if (!bar?.dataset.tripId || e.detail > 1) return;
-    const key = barKey(bar);
-    const onLine = !!bar.dataset.road && !!e.target.closest('.scheduler-bar__road');
-    const selected = bar.getAttribute('aria-pressed') === 'true';
-    if (onLine && selected && liveFor === key) { liveFor = null; return; }
-    const want = onLine ? key : null;
-    if (selected && liveFor !== want) { liveFor = want; e.stopPropagation(); placeBarOpen(bar); return; }
-    liveFor = want;
-  }, true);
+  /* THE CARD OF A TRIP OUT ON THE ROAD has two tabs, On the road and
+     Updates, and opens on On the road; the tab picked stays with the trip
+     until the page loads again. Design's tabs.js switches them and says so
+     with rux:tab-selected, which the card is drawn again from, so it fits
+     and places itself for the tab now showing. */
+  const roadTabs = new Map();
+  const roadTabOf = bar => roadTabs.get(barKey(bar)) ?? 'road';
+  document.addEventListener('rux:tab-selected', e => {
+    const which = e.detail?.tab?.dataset.roadTab;
+    const bar = selectedBar();
+    if (!which || !bar) return;
+    roadTabs.set(barKey(bar), which);
+    placeBarOpen(bar);
+    document.querySelector(`#scheduler-bar-shortcuts [data-road-tab="${which}"]`)?.focus();
+  });
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && Date.now() - roadAsked > ROAD_EVERY) askRoad();
   });
@@ -14525,7 +14522,7 @@
     const key = [docked, bar.dataset.tripId, bar.dataset.leg, bar.dataset.itineraryId,
       bar.dataset.assignmentId, bar.dataset.busId, isEditorBar(bar), bar.dataset.needHotel,
       bar.dataset.hotelBooked, slots.join(), cardKey(trip),
-      JSON.stringify(barFacts.get(bar) ?? null), liveFor === barKey(bar) ? `live ${bar.dataset.road ?? ''}` : ''].join('|');
+      JSON.stringify(barFacts.get(bar) ?? null), bar.dataset.road ? `${roadTabOf(bar)} ${roadTabOf(bar) === 'road' ? bar.dataset.road : ''}` : ''].join('|');
     // The same slots on the same bar are left alone, so a focused slot keeps focus.
     // The slots are counted rather than every child, because the docked bar
     // carries the trip's rows ahead of them.
@@ -14547,7 +14544,7 @@
       btn.append(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '16', '0 0 32 32'),
         el('span', 'scheduler-bar-shortcut__label', action.short));
       return btn;
-    }), ...(carded ? [liveFor === barKey(bar) && bar.dataset.road ? drawLiveCard(trip, bar) : drawCard(trip, bar)] : []));
+    }), ...(carded ? [bar.dataset.road ? drawRoadCard(trip, bar) : drawCard(trip, bar)] : []));
     barShortcuts.toggleAttribute('data-card', carded);
   }
 
@@ -15167,15 +15164,7 @@
     card.dataset.tripId = trip.id;
     const row = cls => el('div', `scheduler-card__row ${cls}`);
     const bus = roadBusOf(bar);
-    const number = panelIndex.buses.get(bar.dataset.busId)?.number;
-    const back = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm scheduler-card__action', 'Trip card');
-    back.type = 'button';
-    back.setAttribute('aria-label', 'Show the trip card');
-    back.addEventListener('click', () => { liveFor = null; placeBarOpen(bar); });
-    const head = row('scheduler-card__live-head');
-    head.appendChild(cardTitle(number != null ? `Bus ${number} on the road` : 'On the road', null, back));
-    card.appendChild(head);
-    if (!bus) return card;
+    if (!bus) { card.appendChild(el('p', 'scheduler-card__row scheduler-card__live-none', 'Samsara has no reading for this bus now.')); return card; }
     const next = roadNext(bar, bus);
     const said = roadLook(bar, bus, next, roadNamed(bar));
     // Each warning in a band of its colour: its mark, its name and why.
@@ -15195,8 +15184,9 @@
       if (away) { a.target = '_blank'; a.rel = 'noopener'; }
       return a;
     };
-    if (bus.lat != null && bus.lng != null) links.appendChild(link('Open in Google Maps', `https://www.google.com/maps/search/?api=1&query=${bus.lat},${bus.lng}`, true));
-    links.appendChild(link('Show on Live map', `live.html?bus=${encodeURIComponent(bar.dataset.busId)}`, false));
+    // Short words, so the two sit side by side in Carbon's button padding.
+    if (bus.lat != null && bus.lng != null) links.appendChild(link('Google Maps', `https://www.google.com/maps/search/?api=1&query=${bus.lat},${bus.lng}`, true));
+    links.appendChild(link('Live map', `live.html?bus=${encodeURIComponent(bar.dataset.busId)}`, false));
     mapRow.append(holder, links);
     card.appendChild(mapRow);
     liveMapInto(holder, bar, bus, next, hueFor(trip));
@@ -15281,6 +15271,48 @@
     return card;
   }
 
+  /* The tabs over an out trip's card, as Design draws a tablist, each tab's
+     panel its card: On the road the live card, Updates the trip card, with
+     its Needs counted on its tab in their colour. */
+  function drawRoadCard(trip, bar) {
+    const on = roadTabOf(bar);
+    const wrap = el('div', 'scheduler-card-tabs');
+    const tabs = el('div', 'rux--tabs scheduler-card-tabs__tabs');
+    const list = el('div', 'rux--tab--list');
+    list.setAttribute('role', 'tablist');
+    list.setAttribute('aria-label', 'Trip card');
+    tabs.appendChild(list);
+    const alerts = alertsOf(trip, barFacts.get(bar));
+    const panels = [['road', 'On the road', () => drawLiveCard(trip, bar)], ['updates', 'Updates', () => drawCard(trip, bar)]].map(([id, words, draw]) => {
+      const selected = id === on;
+      const tab = el('button', `rux--tabs__nav-item rux--tabs__nav-link${selected ? ' rux--tabs__nav-item--selected' : ''}`);
+      tab.type = 'button';
+      tab.id = `scheduler-card-tab-${id}`;
+      tab.dataset.roadTab = id;
+      tab.setAttribute('role', 'tab');
+      tab.setAttribute('aria-selected', String(selected));
+      tab.setAttribute('aria-controls', `scheduler-card-panel-${id}`);
+      tab.tabIndex = selected ? 0 : -1;
+      const label = el('div', 'rux--tabs__nav-item-label-wrapper');
+      label.appendChild(el('span', 'rux--tabs__nav-item-label', words));
+      if (id === 'updates' && alerts.length) {
+        label.appendChild(el('span', `scheduler-bar__msg scheduler-bar__msg--${alerts.some(a => a.row === 'scheduler-card__misfit') ? 'error' : 'warning'} scheduler-card__count`,
+          String(alerts.length)));
+      }
+      tab.appendChild(label);
+      list.appendChild(tab);
+      const panel = el('div', 'rux--tab-content scheduler-card-tabs__panel');
+      panel.id = `scheduler-card-panel-${id}`;
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', tab.id);
+      panel.hidden = !selected;
+      panel.appendChild(draw());
+      return panel;
+    });
+    wrap.append(tabs, ...panels);
+    return wrap;
+  }
+
   function drawCard(trip, bar) {
     const card = el('div', 'scheduler-card');
     card.dataset.tripId = trip.id;
@@ -15327,25 +15359,6 @@
         }
       }
       needsList.appendChild(band);
-    }
-    /* ON THE ROAD: while the bar is out, one row saying what its live line
-       says, the worst warning or where the bus is, which opens the live
-       card. */
-    if (bar?.dataset.road) {
-      const bus = roadBusOf(bar);
-      const said = bus ? roadLook(bar, bus, roadNext(bar, bus), roadNamed(bar)) : null;
-      const worst = said?.warnings[0] ?? null;
-      const words = worst ? [worst.title, worst.detail] : said?.phase ? [said.phase.title, said.phase.detail] : ['Out on its leg', ''];
-      const part = row('scheduler-card__road');
-      part.appendChild(cardTitle('On the road'));
-      const open = el('button', `scheduler-card__live-open${worst ? ` scheduler-card__live-open--${worst.tone}` : ''}`);
-      open.type = 'button';
-      open.setAttribute('aria-label', `Open the live card: ${words.filter(Boolean).join(', ')}`);
-      open.append(el('span', 'scheduler-card__live-said', words[0]), el('span', 'scheduler-card__live-more', words[1] || ''),
-        svgUse('#m-keyboard_arrow_right', '16', '0 0 16 16'));
-      open.addEventListener('click', () => { liveFor = barKey(bar); placeBarOpen(bar); });
-      part.appendChild(open);
-      card.appendChild(part);
     }
     /* THE UPDATES: Updates with their count, "Updates · 5", and Add, over
        the updates, newest first. Floating,

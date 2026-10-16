@@ -1225,11 +1225,9 @@ button.scheduler-row-head__num::after {
 .scheduler-card__road-stop { display: flex; align-items: baseline; justify-content: space-between; gap: var(--rux-spacing-03); min-inline-size: 0; }
 .scheduler-card__road-stop > .scheduler-card__road-name { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .scheduler-card__road-stop--next > .scheduler-card__road-name { font-weight: 600; }
-/* The time keeps its room and the stop's name gives way; the next stop
-   says more, so its words take a line of their own under its name. */
+/* Every stop is one line: the time keeps its room and the stop's name gives
+   way, the next stop's as well. */
 .scheduler-card__road-stop > .scheduler-card__road-words { flex: none; }
-.scheduler-card__road-stop--next { display: grid; }
-.scheduler-card__road-stop--next > .scheduler-card__road-words { flex: initial; }
 .scheduler-card__road-words--late { color: var(--rux-text-primary); font-weight: 600; }
 /* An engine lamp that is on: its name in bold, in the error text colour for
    the stop lamp, then each code's words on a line of its own, wrapped whole. */
@@ -1237,35 +1235,21 @@ button.scheduler-row-head__num::after {
 .scheduler-card__road-lamp > .scheduler-card__road-name { font-weight: 600; }
 .scheduler-card__road-lamp--stop > .scheduler-card__road-name { color: var(--rux-text-error); }
 .scheduler-card__road-fault { color: var(--rux-text-secondary); }
-/* The trip card's On the road row: what the bar's live line says, the
-   warning's name in its colour, and an arrow, one press that opens the live
-   card. */
-.scheduler-card__live-open {
-  display: flex;
-  align-items: center;
-  gap: var(--rux-spacing-02);
-  inline-size: 100%;
-  margin-block-start: var(--rux-spacing-02);
-  padding: var(--rux-spacing-02) var(--rux-spacing-03);
-  border: 0;
-  background: var(--card-hover);
-  color: var(--card-ink);
-  font: inherit;
-  text-align: start;
-  cursor: pointer;
-}
-.scheduler-card__live-open:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
-.scheduler-card__live-said { flex: none; font-weight: 600; }
-.scheduler-card__live-open--error > .scheduler-card__live-said { color: var(--rux-text-error); }
-.scheduler-card__live-more { flex: 1 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--rux-text-secondary); }
-.scheduler-card__live-open > svg { flex: none; fill: currentColor; }
-/* THE LIVE CARD, data.js's drawLiveCard: wider than the trip card, for its
-   map. Each warning is a band tinted its colour, its mark and name over
+/* AN OUT TRIP'S CARD is two tabs over its two cards, data.js's
+   drawRoadCard: On the road, the live card, and Updates, the trip card, its
+   Needs counted on its tab. It stands in the card's place and is as wide as
+   the live card's map asks, both tabs alike so the card does not jump. */
+.scheduler-card-tabs { flex: 1 0 100%; min-inline-size: 0; }
+.scheduler-card-tabs__tabs { padding-inline: var(--rux-spacing-03); }
+.scheduler-card-tabs__tabs .scheduler-card__count { margin-inline-start: var(--rux-spacing-02); }
+/* THE LIVE CARD, data.js's drawLiveCard, the On the road tab. Each warning is a band tinted its colour, its mark and name over
    the sentence that says why; the map stands under them with its two links;
    each driver's clocks are three meters, filled to what is left of what the
    rule allows, amber under an hour; the tank and the engine close it. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]):has(> .scheduler-card--live) {
+.scheduler-bar-shortcuts[data-card]:not([data-docked]):has(> .scheduler-card-tabs) {
   inline-size: min(22rem, calc(100vw - 2 * var(--rux-spacing-05)));
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked]):has(> .scheduler-card-tabs > .scheduler-card-tabs__panel:not([hidden]) > .scheduler-card--live) {
   overflow-y: auto;
 }
 .scheduler-card__live-warn {

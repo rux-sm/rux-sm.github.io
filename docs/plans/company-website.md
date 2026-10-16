@@ -152,5 +152,13 @@ the last one forwarded came in March 2026.
       at GitHub Pages at GoDaddy, keeping every Microsoft 365 record, verify
       the domain with GitHub, turn on Enforce HTTPS, and check that http and
       https, with and without `www`, all land on the new site.
+- [ ] At the switch, open the site to search engines: take the `noindex`
+      robots tag off every page but `404.html`, `thanks.html` and
+      `es/thanks.html`; give every page a `canonical` link and an `og:url`
+      to its own https://www.escamillatourbuses.com/ address; make every
+      `hreflang` link absolute and add `hreflang="x-default"` to the English
+      page; add `robots.txt` and a `sitemap.xml` of the twelve pages in both
+      languages at the repository's root; and submit the sitemap in Google
+      Search Console.
 - [ ] Point the Google Business Profile, Facebook and Instagram at the new
       site, then cancel the old hosting.

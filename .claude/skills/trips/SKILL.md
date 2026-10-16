@@ -5,6 +5,9 @@ description: Review, enter or update charter trips in the scheduler with rux. Re
 
 # Working trips with rux
 
+This skill owns one trip, or one customer's thread. The team inbox and the
+To do list's rows are the `inbox-review` skill's.
+
 **Read `rules.md` first.** It is rux's office policy, and it answers most
 questions before they need asking. `emails.md` is how a customer email is
 written. `scheduler/docs/booking.md` is what each booking step must say, and
@@ -15,9 +18,9 @@ rux's side.
 
 | Tool | For | Never for |
 | :--- | :--- | :--- |
-| Scheduler connector: `find_trips`, `get_trip`, `list_buses`, `list_drivers`, `find_availability`, `find_contacts` | reading a trip, its buses and drivers; checking a save landed | saving: it writes drafts only |
+| Scheduler connector: `find_trips`, `get_trip`, `list_buses`, `list_drivers`, `find_availability`, `find_contacts`, `needs_attention` | reading a trip, its buses and drivers, and what the board says it lacks; checking a save landed | saving: it writes drafts only |
 | `draft_trip`, `draft_trip_change` | a new trip, or a change, as a link that opens the editor filled in | |
-| rux's Chrome, through Claude in Chrome, logged in | the trip editor at `http://localhost:8641/scheduler/`, the forms | the built-in browser pane, which cannot pass the log-in |
+| rux's Chrome, through Claude in Chrome, logged in | the trip editor and the forms on the published site, `https://rux-sm.github.io/scheduler/`, for every real Save, since it runs only checked code | the built-in browser pane, which cannot pass the log-in; `http://localhost:8641/scheduler/`, which is for testing a change with its writes recorded (`scheduler/docs/proving-a-save.md`) |
 | Missive connector: `get_conversations`, `search_conversations`, `get_search_results`, `get_conversation_entries` | the customer's emails, quotes and itineraries | `change_labels` and `manage_calendar_events`, which write to Missive |
 | Missive's `compose_draft` and `deliver_draft` | sending an email as rux when he asks in chat for it to be sent (see Missive below) | an email he has not asked to send: a reply is drafted in chat |
 | Gmail connector | nothing: it is rux's personal mail | |
@@ -56,8 +59,7 @@ reads only the ones before it. Nothing is written until step 10.
    the conversation's `link` as `booking_contact_missive_url`, and `stops`, the
    places between the pickup and the drop-off in order, each with its name,
    address and arrive and leave times. Anything with no field goes in its
-   notes. Open the link at
-   `http://localhost:8641/scheduler/?draft=<id>`. The link opens
+   notes. Open the link it returns, on the published site. The link opens
    once, so the tab stays open until the save.
 4. **Details.** Check each field with a blue bar against the email.
 5. **Route.** Pick the pickup, by name first. Set Spot when the itinerary

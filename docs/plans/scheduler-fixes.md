@@ -24,28 +24,6 @@ site.
 - **A database change or a deploy is its own step,** applied on rux's yes
   before the code that reads it is pushed.
 
-### The connector and the skills
-
-- **The fields a draft may fill are one table, `scheduler/draft-fields.js`,**
-  read by the connector and the editor, with each field's kind checked
-  before a draft is parked.
-- **A draft cannot carry a PO or a deposit.** A person enters money on
-  Billing; Claude writes the PO number in the draft's note.
-- **A drafted bus count adds empty vehicles on the Buses tab.**
-- **The connector answers with the pages' rule files,** joined into one
-  generated file at build, so a trip's warnings are its gaps on Prep, and one
-  read tool, `needs_attention`, lists them and a day's departures.
-- **A session presses a real Save on the published site,** which runs only
-  checked code; :8641 is for testing with the page's writes recorded.
-- **A review reads the office email as text, never from pictures, and only
-  reads.** Claude drafts a reply in chat.
-- **A draft link stays its maker's.**
-- **`trips` owns one trip or one customer's thread and `inbox-review` owns
-  the team inbox and the To do rows.** The `trip-email` skill is deleted.
-- **A To do row's thread key is an id the mail itself carries.**
-- **A Save Claude presses is named as the person alone,** as if they made it
-  by hand.
-
 ### Checks
 
 - **Every page script is parsed, and every scheduler page's scripts are
@@ -74,18 +52,10 @@ None open.
 ## Tasks
 
 
-### The connector and the skills
+### The connector
 
-- [ ] Build `scheduler/draft-fields.js` as the one list, with each field's
-      kind checked before a draft is parked, and read it in the connector and
-      in `applyDraft` in place of their two lists.
-- [ ] Add `scheduler/tools/build-connector-rules.mjs`, an office-day helper,
-      and `get_trip` warnings from the rules; add `needs_attention`; change
-      the To do plan's line in the same commit; deploy.
-- [ ] Reconnect the connector, read a new session's tool list, and write the
-      step into `working-from-claude.md`.
-- [ ] Give each skill its job, key a row by the mail's own id, and name the
-      published site for a real Save.
+- [ ] From a new session, call `needs_attention` and read its answer against
+      the board's To do list and Prep panel for the same days.
 
 ### Records
 

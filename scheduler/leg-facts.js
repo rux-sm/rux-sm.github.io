@@ -14,9 +14,11 @@
 
    Nothing here reads the page. The page that read the office's list hands
    it to `setRequirementList`, and `factsOf` is handed the buses, the drivers
-   and the driver statuses by whoever read them. The one read is
-   `readDriverForms`, handed the page's client, so every page asks the same
-   two questions. Needs requirements.js loaded first.
+   and the driver statuses by whoever read them. Two reads take the page's
+   client, so every page and the connector ask the same questions:
+   `readDriverForms`, and `readBasics`, the buses, the drivers and the
+   office's settings every rule needs set first. Needs requirements.js
+   loaded first.
    ========================================================================== */
 (() => {
   'use strict';
@@ -258,6 +260,27 @@
     setDriverForms({ kinds: kinds.data, asks: asks.data, forms: forms.data });
     return true;
   }
+  /* The buses and the drivers by id, and the office's settings set in the
+     rule files that keep them: the requirement list here, the follow-up wait
+     and window in follow-up.js and the billing workflow in billing.js.
+     `forms` reads the driver forms too, as Prep does. */
+  async function readBasics(client, { forms = false } = {}) {
+    const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
+    const [buses, drivers, settings] = await Promise.all([
+      client.from('buses').select('id,number,capacity,type,ada_lift,sleeper,equipment').then(unwrap),
+      // The names, status and card dates, for what stands in a driver's way.
+      client.from('drivers').select('id,name,short_name,employment_type,status,license_exp,med_card_expiry').then(unwrap),
+      client.from('settings').select('key,value').in('key', ['requirements-v1', 'follow-up-v1', 'billing-workflow-v1']).then(unwrap),
+    ]);
+    const setting = new Map(settings.map(s => [s.key, s.value]));
+    setRequirementList(setting.get('requirements-v1'));
+    window.SchedulerFollowUp?.set(setting.get('follow-up-v1'));
+    window.SchedulerBilling?.setWorkflow(setting.get('billing-workflow-v1'));
+    // The driver forms customers ask for; a refused read asks for none.
+    if (forms) await readDriverForms(client).catch(() => false);
+    return { busesById: new Map(buses.map(b => [b.id, b])), driversById: new Map(drivers.map(d => [d.id, d])) };
+  }
+
   // The day a leg leaves, which a form has to last until.
   const legDay = (trip, leg) => String((leg === 'return' && trip.return_start_date) || trip.start_date || '').slice(0, 10);
   // The kinds the trip's customer asks for, in name order.
@@ -343,6 +366,6 @@
     REQUIREMENTS, setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
     needIds, requirementsOf, shortfall, needsFor, wrongType, seatsTotal, seatsOf, overSeats,
     ROLES, DRIVER_STATUSES, statusKey, activeRolesOf, crewOf, tripContact, dayOfContact, factsOf,
-    setDriverForms, readDriverForms, formKindsOf, driverFormsOf,
+    setDriverForms, readDriverForms, readBasics, formKindsOf, driverFormsOf,
   };
 })();

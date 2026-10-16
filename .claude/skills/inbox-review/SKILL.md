@@ -8,14 +8,16 @@ description: Review the team's email in Missive against the scheduler and keep t
 A review turns the day's email into rows of the office's To do list, the
 one the scheduler's toolbar opens. `scheduler/docs/working-from-claude.md` is the list
 from rux's side, and the `trips` skill beside this one is how a single trip's
-thread is read in depth. `rules.md` there is the office's policy.
+thread is read in depth. This skill owns the team inbox and the To do
+list's rows; one trip or one customer's thread is that skill's. `rules.md`
+there is the office's policy.
 
 ## The tools
 
 | Tool | For | Never for |
 | :--- | :--- | :--- |
 | Missive connector: `get_conversations`, `get_conversation_entries` | reading the team inbox | `compose_draft`, `deliver_draft`, `change_labels` and `manage_calendar_events`, which write to Missive |
-| Scheduler connector: `find_trips`, `get_trip`, `find_availability`, `list_buses` | matching a thread to its trip, reading what the scheduler already warns of, and whether a bus is free on a row's day | |
+| Scheduler connector: `find_trips`, `get_trip`, `needs_attention`, `find_availability`, `list_buses` | matching a thread to its trip, reading what the scheduler already says it lacks, and whether a bus is free on a row's day | |
 | Scheduler connector: `list_to_dos`, `add_to_do`, `change_to_do`, `close_to_do` | the rows | a row a person wrote, which the tools refuse |
 
 The Missive connector reads as rux and sees what he sees. Connecting it is
@@ -43,7 +45,8 @@ no Missive tools says so and stops.
    the office or brings something to record: a PO or a signed contract to
    enter, a form to fill, a quote to send, trips to enter, a question to
    answer. It is not one when the scheduler already says it by itself, such as
-   a follow-up due or a leg short of a bus: read `get_trip`'s warnings first.
+   a follow-up due or a leg short of a bus: read `get_trip`'s `warnings` and
+   `to_do` first.
 7. **`list_to_dos`, with `include_closed`,** so a thread that already has an
    open row is changed and not doubled, and one whose row was marked Done is
    not asked again. A row is a thread's when its `thread_url` ends in the
@@ -143,10 +146,6 @@ opened.
   in Missive. The id is the row's `thread_key` and the link its
   `thread_url`. A row's link may sit under `#unassigned/` or `#inbox/` in
   place of `#archive/`; the id at its end is what matches.
-- **Some rows carry the sender and the subject in lower case as their key,**
-  `pat lee | po attached, october 8`. Such a row is found by the id in its
-  `thread_url` and changed with `change_to_do`; an `add_to_do` under the id
-  would add a second row.
 - `add_to_do` with a thread key is safe to repeat; a second call changes the
   row the first made.
 

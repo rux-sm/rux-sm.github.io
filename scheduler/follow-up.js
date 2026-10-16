@@ -54,18 +54,20 @@
     return setting;
   }
 
-  const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  /* Today on the office's calendar, YYYY-MM-DD, whatever clock the code runs
+     on: the browser's in the office, or the connector's, which keeps UTC. */
+  const today = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date());
   const parseISO = s => { const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); };
   const placeholder = trip => window.SchedulerBilling.placeholder(trip);
   // Whole days until the trip leaves, 0 on the day, or null with no date.
   const daysToGo = trip => (trip.start_date
-    ? Math.round((parseISO(trip.start_date) - parseISO(iso(new Date()))) / 864e5) : null);
+    ? Math.round((parseISO(trip.start_date) - parseISO(today())) / 864e5) : null);
   const hasItinerary = trip => (trip.trip_documents || []).some(d => String(d.label || '').toLowerCase() === 'itinerary');
 
   function waitsOf(trip) {
     if (placeholder(trip) || trip.cancelled_at) return [];
-    const today = iso(new Date());
-    const left = !!trip.start_date && trip.start_date <= today;
+    const now = today();
+    const left = !!trip.start_date && trip.start_date <= now;
     const waits = [];
     const { price, remaining, rung, poReceived } = window.SchedulerBilling.of(trip);
     if (!left) {
@@ -77,7 +79,7 @@
       else if (price > 0 && (rung === 'pending' || rung === 'contract_signed')) waits.push('po');
       if (!hasItinerary(trip) && !trip.itinerary_not_needed) waits.push('itinerary');
     }
-    const soon = !!trip.start_date && (parseISO(trip.start_date) - parseISO(today)) / 864e5 <= BALANCE_DAYS;
+    const soon = !!trip.start_date && (parseISO(trip.start_date) - parseISO(now)) / 864e5 <= BALANCE_DAYS;
     const owes = trip.confirmed !== false && remaining > 0;
     if (owes && (left ? !poReceived : soon && (rung === 'po_partial' || rung === 'deposit_received'))) {
       waits.push('balance');
@@ -120,7 +122,7 @@
   };
 
   window.SchedulerFollowUp = {
-    KEY, WORDS, set, read, save, waitsOf, updatesOf, quietSince, due, daysToGo, asks, agoShort,
+    KEY, WORDS, today, set, read, save, waitsOf, updatesOf, quietSince, due, daysToGo, asks, agoShort,
     get setting() { return { ...setting }; },
   };
 })();

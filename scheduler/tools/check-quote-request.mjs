@@ -123,16 +123,18 @@ expect('a long request still fits the 1000 characters a To do row\'s detail hold
 // ── Start trip's draft ──────────────────────────────────────────────────────
 /* To do's Start trip turns a stored request into a draft for the trip editor.
    Its draft is read out of to-do-list.js and run on requests as the database
-   returns them, and every field it fills must have a place in the editor. */
+   returns them, and every field it fills must be one draft-fields.js lets a
+   draft fill, of the kind it takes. */
 const list = readFileSync(new URL('../to-do-list.js', import.meta.url), 'utf8');
-const editor = readFileSync(new URL('../data.js', import.meta.url), 'utf8');
 const from = list.indexOf('  const PO_WORDS');
 const to = list.indexOf('  async function startTrip');
 const box = {};
 if (from < 0 || to < from) { failed++; console.log('   FAIL  Start trip\'s draft could not be read from to-do-list.js'); }
 else runInNewContext(`${list.slice(from, to)}\nbox.draftOf = draftOf;`, { box });
-const table = editor.slice(editor.indexOf('const DRAFT_CONTROLS = {'), editor.indexOf('\n  };', editor.indexOf('const DRAFT_CONTROLS = {')));
-const places = new Set([...table.matchAll(/^\s{4}([a-z0-9_]+):\s*\{/gm)].map(m => m[1]).concat('stops'));
+// What a draft may fill, and the kind of each value: draft-fields.js, which the editor and the connector read.
+const fieldsBox = {};
+runInNewContext(readFileSync(new URL('../draft-fields.js', import.meta.url), 'utf8'), { window: fieldsBox });
+const { problems } = fieldsBox.SchedulerDraftFields;
 const stored = {
   id: 'r1', number: 1001, lang: 'es', first_name: 'Ana', last_name: 'Lopez', phone: '(956) 555-0100',
   email: 'ana@example.org', organization: 'Example High School Band', purchase_order: 'yes', trip_type: 'round',
@@ -156,8 +158,8 @@ if (box.draftOf) {
     passengers: '45', pickup_address: '100 Main St, McAllen', booking_contact_name: 'Ana Lopez',
     booking_contact_phone: '(956) 555-0100', booking_contact_email: 'ana@example.org', dropoff_address: 'San Antonio',
   });
-  const both = [box.draftOf(stored), d].flatMap(x => Object.keys(x.fields));
-  expect('every field a draft fills has a place in the editor', [...new Set(both)].filter(k => !places.has(k)), []);
+  expect('every field a draft fills is one draft-fields.js lets a draft fill, of the kind it takes',
+    [problems(box.draftOf(stored).fields), problems(d.fields)], [[], []]);
 }
 
 console.log(failed ? `\n  ${failed} fault(s) in quote-request` : '');

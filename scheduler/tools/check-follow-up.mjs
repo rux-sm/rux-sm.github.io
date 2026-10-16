@@ -18,7 +18,8 @@ function expect(name, got, want) {
 }
 
 const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-const day = n => { const d = new Date(); d.setDate(d.getDate() + n); return iso(d); };
+// Days from the office's today, as the rules count them, whatever clock the check runs on.
+const day = n => { const [y, m, d] = window.SchedulerFollowUp.today().split('-').map(Number); return iso(new Date(y, m - 1, d + n)); };
 const ago = n => new Date(Date.now() - n * 864e5).toISOString();
 
 // A quote out and not answered, its itinerary in.

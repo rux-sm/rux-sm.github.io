@@ -7,7 +7,7 @@ const window = {};
 for (const file of ['billing.js', 'follow-up.js', 'checklist.js', 'requirements.js', 'leg-facts.js', 'week.js', 'clashes.js', 'to-do.js', 'departures.js']) {
   runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), { window, Intl, Date });
 }
-const { prepDays, legsOn, page, summary } = window.SchedulerDepartures;
+const { prepDays, legsOn, page, gapWords, summary } = window.SchedulerDepartures;
 const { statusKey } = window.SchedulerLegFacts;
 
 let failed = 0;
@@ -17,7 +17,8 @@ function expect(name, got, want) {
   console.log(`   ${ok ? 'ok  ' : 'FAIL'}  ${name}${ok ? '' : `\n         got  ${JSON.stringify(got)}\n         want ${JSON.stringify(want)}`}`);
 }
 const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-const day = n => { const d = new Date(); d.setDate(d.getDate() + n); return iso(d); };
+// Days from the office's today, as the rules count them, whatever clock the check runs on.
+const day = n => { const [y, m, d] = window.SchedulerFollowUp.today().split('-').map(Number); return iso(new Date(y, m - 1, d + n)); };
 const said = lines => lines.map(l => `${l.state} ${l.label}${l.value ? ` [${l.value}]` : ''}${l.action ? ` -> ${l.action}` : ''}`);
 
 const done = { itinerary_printed: true, itinerary_printed_at: 't1', itinerary_printed_by: 'p1',
@@ -124,6 +125,11 @@ expect('a split trip\'s later leg is its own page on its own day, with the trip\
 expect('a working day preps for tomorrow, and a Friday, a Saturday and a Sunday for every day until the office is open again',
   [prepDays('2026-10-07'), prepDays('2026-10-09'), prepDays('2026-10-10'), prepDays('2026-10-11'), prepDays('2026-10-30')],
   [['2026-10-08'], ['2026-10-10', '2026-10-11', '2026-10-12'], ['2026-10-11', '2026-10-12'], ['2026-10-12'], ['2026-10-31', '2026-11-01', '2026-11-02']]);
+
+expect('a page\'s gaps in words, for the connector: nothing on a ready leg, and each gap named by its bus and person',
+  [gapWords(ready), gapWords(page(raw.trip, 'outbound', { ...read, busesById: new Map([[1, { id: 1, number: 763 }]]), statuses: new Map() }))],
+  [[], ['Confirmation: Not yet', 'Itinerary: Missing', 'Contact: Missing', 'Driver info: to do',
+    'Bus 763, George: Trip not sent', 'Bus 763, George: Itinerary: to do', 'Bus 763, George: Envelope: to do', 'Bus 763, George: Reminder: to do']]);
 
 expect('the summary counts the day\'s legs and the ready ones',
   summary([trip, { ...trip, id: 'u', confirmed: false }], day(1), read), { legs: 2, ready: 1 });

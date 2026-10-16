@@ -206,10 +206,12 @@ on the caller's own session, so the same rules apply to it as to a page.
 Sign-in is Supabase's OAuth 2.1 server, whose consent screen is the site's
 own page at `/oauth/consent/`; Supabase hosts none.
 
-**Seven tools read**, each on the tables above: `find_trips`, which also
+**The connector answers by the pages' own rules:** `connector/rules.ts` is the rule files joined by `scheduler/tools/build-connector-rules.mjs` at `npm run build`, which `check-connector.mjs` holds to the files as they are, and their days are the office's in America/Chicago though the function runs on UTC.
+
+**Eight tools read**, each on the tables above: `find_trips`, which also
 matches the booking contact's name and email, and answers how many trips match beside the ones its limit lets through, saying so when it cut the list; `get_trip`, on `trips` with its
-assignments, drivers, stops and quote lines, the Email thread link, its updates newest first, the passenger count, Quote sent and the three Done marks, the day a one-day leg's time past midnight falls on, and warnings for a leg
-short of buses or a stop dated more than a day outside its leg; `find_availability`, which
+assignments, drivers, stops and quote lines, the Email thread link, its updates newest first, the passenger count, Quote sent and the three Done marks, the day a one-day leg's time past midnight falls on, `warnings`, each leg's
+gaps as Prep's `departures.js` reads them and a stop dated more than a day outside its leg, and `to_do`, what `to-do.js` works out for the trip, neither for a placeholder or a cancelled trip; `needs_attention`, every row `to-do.js` works out and each leg leaving on the days the office preps for, or a day asked, with its gaps; `find_availability`, which
 reads the trips with a leg running across a range, each leg on the days it takes by `late-return-v1` as the board counts them, and subtracts the buses and drivers on those legs,
 then `bus_out_of_service` and `driver_time_off`, and lists each running trip
 with the buses it needs and has, `spare_buses`, the free buses left once the trips still waiting for one have taken theirs, a placeholder taking none, and `back_after_midnight`, the buses and drivers of a leg that took the day before and only reach the yard on the morning of the first day asked, with the time; `find_contacts`, `list_buses` and `list_drivers`; and `find_documents`, which reads the current rows of `company_documents`, keeps those holding every word asked for in their kind, holder, customer, driver, file name or note, or in the name of a customer that is part of theirs, and answers each with the day it ends and a link to its file signed for ten minutes as the person asking.
@@ -222,16 +224,14 @@ columns: `pickup_location`, `pickup_address`, `dropoff_location` and
 **Two tools write, and neither writes a trip.** `draft_trip` and
 `draft_trip_change` put a row in `trip_drafts` and return
 `/scheduler/?draft=<id>`. A draft may fill only the trip fields the function
-lists, so it can carry nothing the editor has no way to show; `data.js` maps
-each of those to the control it is typed into, and names in the panel's notice
-any it cannot place. `scheduler/tools/check-connector.mjs` holds the function's
-list and the editor's table to each other. A drafted bus count adds empty
+lists, `scheduler/draft-fields.js`, which the editor reads too: each field's kind of value, checked before a draft is parked, and the control it is typed into;
+the panel's notice names any it cannot place. A drafted bus count adds empty
 vehicles on the Buses tab, and a PO or a deposit is not a field: a person
 enters money on Billing. The editor's Save stays the only writer of a trip.
 
 **Four tools are the To do list's,** on `to_dos` and nothing else.
 `list_to_dos` reads the stored rows, not the rows the scheduler works out
-from the trips, which `get_trip`'s warnings say. `add_to_do` adds a row as an
+from the trips, which `needs_attention` and `get_trip` say. `add_to_do` adds a row as an
 agent's, which the database makes Ruxbot's with the signed-in person beside
 it; given a thread's key it changes the open row for that thread instead of
 adding a second, and only the parts the call gives. A row is written in four parts, its kind, one of the seven

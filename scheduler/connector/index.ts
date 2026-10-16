@@ -17,6 +17,16 @@ import { pipeline } from 'npm:@supabase/middleware@0.5.0'
 import { withOAuthProtectedResource, withSupabase } from 'npm:@supabase/server@1.9.1'
 import { z } from 'npm:zod@4.6.5'
 
+// The pages' own rule files, joined by build-connector-rules.mjs: what a
+// draft may fill, and what Prep and the To do list say a trip lacks.
+import rules from './rules.ts'
+const DraftFields = rules.SchedulerDraftFields
+const Billing = rules.SchedulerBilling
+const LegFacts = rules.SchedulerLegFacts
+const ToDo = rules.SchedulerToDo
+const Departures = rules.SchedulerDepartures
+const FollowUp = rules.SchedulerFollowUp
+
 // Where a draft link points. The scheduler's trip editor reads `?draft=<id>`.
 const SCHEDULER_URL = Deno.env.get('SCHEDULER_URL') ?? 'https://rux-sm.github.io/scheduler/'
 
@@ -50,30 +60,10 @@ const TRIP_DETAIL = [
   'billing_done_at', 'billing_done_by',
 ].join(', ')
 
-// The only trip fields a draft may fill. Anything else is refused, so a draft
-// can never carry a field the editor does not know how to show and mark;
-// check-connector.mjs holds each one to a place in the editor's own table.
-// A PO and a deposit are money a person enters on the Billing tab, so
-// neither is here.
-const DRAFT_FIELDS = new Set([
-  'destination', 'customer',
-  'start_date', 'end_date', 'return_start_date', 'return_end_date',
-  // The route, as the scheduler's tab asks for it: two places, each a name
-  // and an address, and the two times the group moves. The bus's own times
-  // are worked out from these and cannot be set.
-  'pickup_location', 'pickup_address', 'dropoff_location', 'dropoff_address',
-  'departure_time', 'return_time',
-  'trip_type', 'vehicle_type', 'bus_count', 'return_bus_count',
-  'est_miles',
-  'booking_contact_name', 'booking_contact_phone', 'booking_contact_email',
-  'trip_contact_1_name', 'trip_contact_1_phone',
-  'trip_contact_2_name', 'trip_contact_2_phone',
-  'quoted_price',
-  'req_sleeper', 'req_56pax', 'req_ada', 'need_hotel', 'need_fuel_card',
-  // How many people travel, the email thread's address in Missive, and the
-  // places between the pickup and the drop-off, which only a new trip takes.
-  'passengers', 'booking_contact_missive_url', 'stops',
-])
+// The only trip fields a draft may fill, draft-fields.js's list. Anything
+// else is refused. A PO and a deposit are money a person enters on the
+// Billing tab, so neither is there.
+const DRAFT_FIELDS: string[] = DraftFields.FIELDS.map((f: { key: string }) => f.key)
 
 const ISO_DATE = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'a date as YYYY-MM-DD')
 
@@ -120,16 +110,8 @@ function dayFrom(day: string, n: number) {
   return d.toISOString().slice(0, 10)
 }
 
-/**
- * A placeholder is not a trip yet, as billing.js reads one: amber (orange and
- * yellow are its retired names, as week.js maps them), not confirmed, and with
- * no quote marked sent. The board asks no bus of it.
- */
-function isPlaceholder(trip: { trip_bar_color?: string | null, confirmed?: boolean | null,
-  quote_sent_price?: number | null, quote_sent_on?: string | null }) {
-  return ['amber', 'orange', 'yellow'].includes(String(trip.trip_bar_color ?? '').toLowerCase())
-    && !trip.confirmed && trip.quote_sent_price == null && !trip.quote_sent_on
-}
+/** A placeholder is not a trip yet, as billing.js reads one. The board asks no bus of it. */
+const isPlaceholder = (trip: Record<string, unknown>): boolean => Billing.placeholder(trip)
 
 type TripLegs = {
   trip_type?: string | null; bus_count?: number | null; return_bus_count?: number | null
@@ -233,14 +215,12 @@ function busNeeds(trip: { req_56pax?: boolean | null; req_ada?: boolean | null; 
 }
 
 /**
- * What a dispatcher would stop at on this trip: a leg with fewer buses than it
- * needs, and a stop dated more than a day outside its leg's days, which is a
- * date typed wrong. One day either side is a real stop: the bus spotted the
- * evening before, and the group let off past midnight.
+ * A stop dated more than a day outside its leg's days, which is a date typed
+ * wrong. One day either side is a real stop: the bus spotted the evening
+ * before, and the group let off past midnight.
  */
-function tripWarnings(
-  trip: TripLegs & Parameters<typeof isPlaceholder>[0],
-  buses: { leg: string; buses: unknown }[],
+function stopDateWarnings(
+  trip: TripLegs,
   stops: {
     leg: string; position: number; name?: string | null
     arrive_date?: string | null; spot_date?: string | null; depart_prev_date?: string | null
@@ -248,8 +228,6 @@ function tripWarnings(
 ) {
   const warnings: string[] = []
   for (const l of legsOf(trip)) {
-    const assigned = buses.filter((b) => b.leg === l.leg && b.buses).length
-    if (assigned < l.needed && !isPlaceholder(trip)) warnings.push(`The ${l.leg} leg needs ${l.needed} buses and has ${assigned}.`)
     // A leg with no day has none to be outside of.
     if (!l.start) continue
     const first = dayFrom(l.start, -1), last = dayFrom(l.end, 1)
@@ -262,6 +240,27 @@ function tripWarnings(
     }
   }
   return warnings
+}
+
+type Row = Record<string, any>
+
+/** A To do row the trips give, in words: its kind, its trip and leg, and what it says. */
+function toDoWords(r: Row) {
+  return {
+    kind: ToDo.KINDS[r.kind]?.label ?? r.kind, trip_id: r.trip.id, trip_ref: r.trip.trip_ref ?? null,
+    destination: r.trip.destination ?? null, customer: r.trip.customer ?? null,
+    ...(r.legName ? { leg: r.legName } : {}), day: r.day, what: r.what,
+    ...(r.detail ? { detail: r.detail } : {}), ...(r.due ? { due: true } : {}),
+  }
+}
+
+/** A leg's Prep page in words: its trip, whether it is ready, and each gap. */
+function prepWords(p: Row) {
+  return {
+    trip_id: p.trip.id, trip_ref: p.trip.trip_ref ?? null, destination: p.trip.destination ?? null,
+    customer: p.trip.customer ?? null, ...(p.legName ? { leg: p.legName } : {}), day: p.day,
+    ready: p.left === 0, gaps: Departures.gapWords(p),
+  }
 }
 
 /**
@@ -308,7 +307,7 @@ Deno.serve(
     [withOAuthProtectedResource(), withSupabase({ auth: 'user' })],
     async (req, { supabase }) => {
       const handler = createMcpHandler(() => {
-        const server = new McpServer({ name: 'scheduler', version: '0.5.0' })
+        const server = new McpServer({ name: 'scheduler', version: '0.6.0' })
 
         server.registerTool(
           'find_trips',
@@ -348,7 +347,7 @@ Deno.serve(
           {
             title: 'Get one trip',
             description:
-              'One trip in full, with the buses and drivers on it, its stops, its quote lines, and warnings: a leg short of buses, or a stop dated more than a day outside its leg. An amber trip_bar_color (or its old names orange and yellow) on a trip not confirmed and with no quote_sent_price or quote_sent_on is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. updates are what has been said about the trip, newest first, as its card lists them. quote_lines are the Billing tab\'s lines, which add up to quoted_price; route_done_at, buses_done_at and billing_done_at say when each tab was marked Done, and quote_sent_price and quote_sent_on what the customer was sent. On a one-day leg a stop\'s time past midnight also has depart_prev_on, spot_on or arrive_on, the day it falls on. Give either a trip id or a trip reference.',
+              'One trip in full, with the buses and drivers on it, its stops, its quote lines, and what it lacks. warnings are each leg\'s gaps as the board\'s Prep panel lists them, such as a bus not assigned, a driver not confirmed or an itinerary missing, each a line, and a stop dated more than a day outside its leg. to_do is what the board\'s To do list says of the trip, such as a follow-up due or a driver to tell of a change; neither is a stored row, and each goes once the trip is fixed. A placeholder and a cancelled trip lack nothing. An amber trip_bar_color (or its old names orange and yellow) on a trip not confirmed and with no quote_sent_price or quote_sent_on is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. updates are what has been said about the trip, newest first, as its card lists them. quote_lines are the Billing tab\'s lines, which add up to quoted_price; route_done_at, buses_done_at and billing_done_at say when each tab was marked Done, and quote_sent_price and quote_sent_on what the customer was sent. On a one-day leg a stop\'s time past midnight also has depart_prev_on, spot_on or arrive_on, the day it falls on. Give either a trip id or a trip reference.',
             inputSchema: z.object({
               trip_id: z.string().uuid().optional(),
               trip_ref: z.string().max(40).optional(),
@@ -383,9 +382,42 @@ Deno.serve(
               .select('body, created_at, actor_name')
               .eq('trip_id', trip.id).neq('kind', 'nothing').order('created_at', { ascending: false }))
 
+            // What Prep and the To do list say the trip lacks, by the pages' own rules.
+            const prep = await Departures.readTrip(supabase, trip.id, await LegFacts.readBasics(supabase, { forms: true }))
+            const live = !!prep && !trip.cancelled_at && !isPlaceholder(prep.trip)
+            const gaps = live ? prep.pages.flatMap((p: Row) => Departures.gapWords(p).map((w: string) => (p.legName ? `${p.legName}: ${w}` : w))) : []
+            const to_do = prep ? ToDo.rows([prep.trip], ToDo.handed(prep.read)).map(toDoWords) : []
+
             return answer({
-              trip, updates, warnings: tripWarnings(trip, buses, stops), buses,
+              trip, updates, warnings: [...gaps, ...stopDateWarnings(trip, stops)], to_do, buses,
               stops: markPastMidnight(trip, stops), quote_lines,
+            })
+          },
+        )
+
+        server.registerTool(
+          'needs_attention',
+          {
+            title: 'What needs attention',
+            description:
+              'What the scheduler itself says needs doing, by the board\'s own rules. to_do is every row its To do list works out from the trips: a follow-up due, a trip short of buses, no times, a clash, a driver who declined or has a change to be told, a leg leaving soon with something open. departures is each day the office preps for, tomorrow and on to the next working day, or the day asked, with every leg leaving that day, whether it is ready, and its gaps as the Prep panel lists them. None of this is a stored row: each goes once its trip is fixed, so never add a To do row for it. today is the office\'s day.',
+            inputSchema: z.object({
+              day: ISO_DATE.optional().describe('List the legs leaving on this day. Left out, the days the office preps for today.'),
+            }),
+            annotations: { readOnlyHint: true },
+          },
+          async ({ day }) => {
+            const today = FollowUp.today()
+            const days: string[] = day ? [day] : Departures.prepDays(today)
+            const basics = await LegFacts.readBasics(supabase, { forms: true })
+            const [rows, ...pages] = await Promise.all([
+              ToDo.read(supabase).then((r: Row) => r.rows),
+              ...days.map((d) => Departures.readDay(supabase, d, basics)),
+            ])
+            return answer({
+              today,
+              to_do: rows.map(toDoWords),
+              departures: days.map((d, i) => ({ day: d, legs: pages[i].map(prepWords) })),
             })
           },
         )
@@ -617,32 +649,10 @@ Deno.serve(
             .describe('What you could not work out, shown at the top of the editor.'),
         }
 
-        function checkFields(fields: Record<string, unknown>) {
-          const unknown = Object.keys(fields).filter((k) => !DRAFT_FIELDS.has(k))
-          if (unknown.length) {
-            throw new Error(
-              `These are not trip fields a draft can fill: ${unknown.join(', ')}. ` +
-              `Allowed: ${[...DRAFT_FIELDS].join(', ')}.`,
-            )
-          }
-          if (!Object.keys(fields).length) throw new Error('A draft with no fields is nothing to check.')
-          if ('stops' in fields) {
-            const clock = (t: unknown) => t == null || /^\d{1,2}:\d{2}$/.test(String(t))
-            const stops = fields.stops
-            const fits = Array.isArray(stops) && stops.length <= 30 && stops.every((s) => {
-              const stop = s as Record<string, unknown> | null
-              return !!stop && typeof stop === 'object'
-                && (typeof stop.name === 'string' || typeof stop.address === 'string')
-                && clock(stop.arrive) && clock(stop.leave)
-            })
-            if (!fits) {
-              throw new Error('stops is a list of up to 30 places, each { name, address, arrive, leave }: a name or an address, and times as HH:MM.')
-            }
-          }
-          const thread = fields.booking_contact_missive_url
-          if (thread != null && !/^https:\/\/mail\.missiveapp\.com\//.test(String(thread))) {
-            throw new Error('booking_contact_missive_url is the thread\'s address in Missive, starting https://mail.missiveapp.com/.')
-          }
+        // What draft-fields.js says is wrong with a draft's fields, as one refusal.
+        function checkFields(fields: Record<string, unknown>, change = false) {
+          const wrong: string[] = DraftFields.problems(fields, { change })
+          if (wrong.length) throw new Error(wrong.join(' '))
         }
 
         async function saveDraft(row: Record<string, unknown>) {
@@ -680,9 +690,8 @@ Deno.serve(
             inputSchema: z.object({ trip_id: z.string().uuid(), ...draftShape }),
           },
           async ({ trip_id, fields, notes }) => {
-            checkFields(fields)
-            // A trip that exists has its stops already; a draft would add them again.
-            if ('stops' in fields) throw new Error('stops can be drafted only on a new trip. Change an existing trip\'s stops on its Route tab.')
+            // A trip that exists has its stops already, so a change cannot carry them.
+            checkFields(fields, true)
             const trip = orThrow(await supabase.from('trips').select('id').eq('id', trip_id).maybeSingle())
             if (!trip) throw new Error('No such trip, or it is not one you can see.')
             return saveDraft({ trip_id, fields, notes: notes ?? null })
@@ -722,7 +731,7 @@ Deno.serve(
           {
             title: 'List the to-do rows',
             description:
-              'The rows stored in the office\'s To do list: what a person typed and what a review added, each with its kind, who it is about, its words and its detail. It does NOT list what the scheduler works out from the trips itself, such as a follow-up due or a trip short of a bus; read get_trip\'s warnings for those. Open rows by default.',
+              'The rows stored in the office\'s To do list: what a person typed and what a review added, each with its kind, who it is about, its words and its detail. It does NOT list what the scheduler works out from the trips itself, such as a follow-up due or a trip short of a bus; needs_attention lists those, and get_trip gives one trip\'s. Open rows by default.',
             inputSchema: z.object({
               include_closed: z.boolean().default(false).describe('Also the rows already ticked or closed.'),
               trip_id: z.string().uuid().optional().describe('Only the rows about this trip.'),
@@ -768,7 +777,7 @@ Deno.serve(
           {
             title: 'Add a to-do row',
             description:
-              'Add a row to the office\'s To do list after a review, in four parts: its kind, who it is about, what to do in a few words, and its detail. A closed row shows who it is about beside its due day, what to do, and one quiet line of its kind and its detail\'s first line, so each part stays short. Before adding a row about a trip, read get_trip: if its warnings already say it, do not add it, because the scheduler shows that itself. With a thread_key, a second call for the same thread changes the open row it made rather than adding a copy, and changes only the parts it gives: a part left out stays as the row has it.',
+              'Add a row to the office\'s To do list after a review, in four parts: its kind, who it is about, what to do in a few words, and its detail. A closed row shows who it is about beside its due day, what to do, and one quiet line of its kind and its detail\'s first line, so each part stays short. Before adding a row about a trip, read get_trip: if its warnings or to_do already say it, do not add it, because the scheduler shows that itself. With a thread_key, a second call for the same thread changes the open row it made rather than adding a copy, and changes only the parts it gives: a part left out stays as the row has it.',
             inputSchema: z.object(toDoShape),
           },
           async ({ kind, who, body, detail, due_on, owner, trip_id, thread_url, thread_key }) => {

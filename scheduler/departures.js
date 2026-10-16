@@ -30,11 +30,14 @@
    driver-job.js reads it. What is in the way is clashes.js's standing rule, read against the
    `nearby` trips, time off and days out the caller hands in.
 
-   Nothing here reads the database or the page. The trip row brings its
+   `page` reads neither the database nor the page. The trip row brings its
    columns, its `trip_prep` row and its seats with their steps, and the
    caller hands in the buses, the drivers and the driver statuses it read,
-   as leg-facts.js takes them.
-   Needs billing.js, follow-up.js, checklist.js, leg-facts.js and to-do.js.
+   as leg-facts.js takes them. `readDay` and `readTrip`, handed a client and
+   leg-facts.js's `readBasics`, read all of that, so Prep and the connector
+   ask the same.
+   Needs billing.js, follow-up.js, checklist.js, leg-facts.js and to-do.js,
+   and for the reads week.js and clashes.js.
    ========================================================================== */
 (() => {
   'use strict';
@@ -205,11 +208,93 @@
       buses, missing, left: tripLeft + missing + buses.reduce((n, b) => n + b.left, 0) };
   }
 
+  /* What a leg's page still lacks, each a line of words: the trip's lines
+     not done, a bus the leg has no row for, and each bus's unmet needs and
+     its crew's lines not done, named by the bus and the person. */
+  function gapWords(p) {
+    const said = l => (l.value ? `${l.label}: ${l.value}` : l.state === 'todo' ? `${l.label}: to do` : l.label);
+    const out = p.lines.filter(l => l.state !== 'done').map(said);
+    if (p.missing) out.push(`${p.missing} ${p.missing === 1 ? 'bus' : 'buses'} not assigned`);
+    for (const b of p.buses) {
+      const name = b.bus ? `Bus ${b.bus.number ?? ''}`.trim() : 'No bus yet';
+      if (!b.bus) out.push(name);
+      for (const n of b.needs.filter(x => !x.met)) out.push(`${name}: ${n.label}`);
+      for (const c of b.crew) {
+        for (const l of c.lines.filter(x => x.state !== 'done')) out.push(`${name}, ${c.name ?? c.role}: ${said(l)}`);
+      }
+    }
+    return out;
+  }
+
   // How many legs leave on a day and how many of them are ready.
   function summary(trips, day, read = {}) {
     const pages = legsOn(trips, day).map(l => page(l.trip, l.leg, read));
     return { legs: pages.length, ready: pages.filter(p => p.left === 0).length };
   }
 
-  window.SchedulerDepartures = { prepDays, legsOn, page, summary };
+  // -- reading ------------------------------------------------------------
+  const STEPS = ['envelope_printed', 'trip_reminder_sent', 'itinerary_printed', 'hos_form_printed', 'driver_forms_printed'];
+  const COLUMNS = ['id', 'trip_ref', 'destination', 'customer', 'customer_id', 'start_date', 'end_date', 'return_start_date', 'return_end_date',
+    'trip_type', 'confirmed', 'trip_bar_color', 'cancelled_at', 'created_at', 'bus_count', 'return_bus_count', 'po_ref',
+    // A quote marked sent, which ends a placeholder and is the day the customer was last told.
+    'quote_sent_price', 'quote_sent_on',
+    // The money, as follow-up.js reads it, for what the customer still owes.
+    'quoted_price', 'contract_status', 'po_received', 'po_amount', 'deposit_amount', 'date_paid', 'balance_paid',
+    'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_updates(created_at,kind)',
+    'itinerary_not_needed', 'contact_not_needed',
+    'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
+    'hotel_booked_outbound', 'hotel_booked_return', 'hotel_itinerary_number_outbound', 'hotel_itinerary_number_return',
+    'booking_contact_name', 'contacts:booking_contact_id(id,name,phone,email)',
+    ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
+    'trip_prep(driver_info_sent,driver_info_sent_at,driver_info_sent_by)',
+    `trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
+    // What a driver's job reads as, for a change they have not been told of.
+    'spot_time', 'trip_documents(id,label,created_at,file_path)',
+    // The group's two times, which the To do rules read for a trip read here.
+    'departure_time', 'return_time',
+    'trip_stops(position,leg,type,label,name,address,arrive,spot,depart_prev,arrive_date,spot_date,depart_prev_date)'].join(',');
+
+  const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
+  // The last day any of the legs takes, so what is read around them reaches its end.
+  const lastOf = (legs, from) => legs.reduce((last, l) => {
+    const to = window.SchedulerWeek?.legsOf(l.trip).find(x => x.leg === l.leg)?.to;
+    return to && to > last ? to : last;
+  }, from);
+
+  /* The pages of `legs`, { trip, leg }, with the driver statuses of their
+     trips and the trips, time off and days out around them from `from`, for
+     what stands in each leg's way. */
+  async function pagesOf(client, legs, from, basics) {
+    const ids = [...new Set(legs.map(l => l.trip.id))];
+    const [statusRows, nearby] = await Promise.all([
+      ids.length ? client.rpc('get_trip_driver_statuses', { p_trip_ids: ids }).then(unwrap) : [],
+      legs.length && window.SchedulerClashes ? window.SchedulerClashes.readNearby(client, from, lastOf(legs, from)) : null,
+    ]);
+    const statuses = new Map(statusRows.map(r => [Facts.statusKey(r.tripId, r.driverId, r.leg, r.role), r]));
+    const read = { ...basics, statuses, nearby };
+    return { pages: legs.map(l => page(l.trip, l.leg, read)), read };
+  }
+
+  // The legs leaving on a day, as pages.
+  async function readDay(client, day, basics) {
+    const trips = await client.from('trips').select(COLUMNS).is('cancelled_at', null)
+      .or(`start_date.eq.${day},return_start_date.eq.${day},end_date.eq.${day}`).order('start_date').then(unwrap);
+    return (await pagesOf(client, legsOn(trips, day), day, basics)).pages;
+  }
+
+  /* One trip with a page for each of its legs, whatever day they leave, and
+     what was read for them, which to-do.js's `handed` takes too; null for a
+     trip not found. */
+  async function readTrip(client, tripId, basics) {
+    const trip = (await client.from('trips').select(COLUMNS).eq('id', tripId).maybeSingle().then(r => {
+      if (r.error) throw new Error(r.error.message);
+      return r.data;
+    })) ?? null;
+    if (!trip) return null;
+    const legs = Checklist.legsOf(trip).map(leg => ({ trip, leg }));
+    const { pages, read } = await pagesOf(client, legs, trip.start_date ?? FollowUp.today(), basics);
+    return { trip, pages, read };
+  }
+
+  window.SchedulerDepartures = { COLUMNS, prepDays, legsOn, page, gapWords, summary, readDay, readTrip };
 })();

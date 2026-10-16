@@ -23,6 +23,9 @@ Each person does this on their own Claude plan, with their own staff account.
 3. Press **Connect**. It sends you to the site's own Allow screen, which names
    what is being asked for. Approve it.
 
+When the connector gains a tool, a new chat lists it. A chat already open
+keeps the tools it started with.
+
 An account that cannot open the scheduler is refused, because the connector
 queries as whoever signed in.
 
@@ -30,6 +33,7 @@ queries as whoever signed in.
 
 Plain questions, no particular wording:
 
+- what needs attention, or what is not ready for tomorrow
 - what does bus 12 have next week
 - who is free to drive on the 3rd
 - show me the trips for a customer
@@ -89,7 +93,8 @@ done and leaves Done to them.
 
 Claude sees the rows people and Claude wrote. What the scheduler works out by
 itself, such as a follow-up due or a trip short of a bus, is not a row;
-Claude reads those from the trip.
+Claude reads those as the board's To do list and Prep panel show them, by
+the same rules, and never adds a row for one.
 
 Ask Claude Code to review the inbox and it reads the team's email in Missive,
 matches each thread to its trip and adds the rows. It reads every open row
@@ -120,7 +125,8 @@ server**.
 ## Saving from Claude Code
 
 Claude Code, working in your own Chrome, can make a change in the trip editor
-and press Save itself, but only after you say yes to that change. It goes
+on the published site and press Save itself, but only after you say yes to
+that change. It goes
 through the editor rather than the connector, so the save runs the same
 checks and history as yours. The save's update, Done marks and History entry
 carry your name alone, as if you had made the change by hand.

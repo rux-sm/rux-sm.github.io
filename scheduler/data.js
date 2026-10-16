@@ -15979,56 +15979,13 @@
      Save. The draft is deleted when the panel closes, saved or not, because
      it has been read either way. */
 
-  // Each field a draft may fill, and the control it is typed into. A field
-  // missing from here, or whose control is not on screen, is named in the
-  // panel's notice instead, so nothing the connector sent goes quietly.
-  /* THE ORDER IS THE ORDER THEY ARE TYPED IN, whatever order a draft lists
-     them: a field that shows or fills another comes before it, as the type
-     comes before the pickup leg's dates it brings into the panel. */
-  const DRAFT_CONTROLS = {
-    destination: { id: 'scheduler-f-destination', kind: 'text' },
-    customer: { id: 'scheduler-f-customer', kind: 'text' },
-    trip_type: { id: 'scheduler-f-type', kind: 'select' },
-    start_date: { id: 'scheduler-f-start', kind: 'date' },
-    end_date: { id: 'scheduler-f-end', kind: 'date' },
-    return_start_date: { id: 'scheduler-f-rstart', kind: 'date' },
-    return_end_date: { id: 'scheduler-f-rend', kind: 'date' },
-    passengers: { id: 'scheduler-f-passengers', kind: 'text' },
-    // The email thread's address, behind the Email label's Email thread link.
-    booking_contact_missive_url: { id: 'scheduler-f-cthread', kind: 'text' },
-    // What the vehicle is and needs goes to the trip's first vehicle.
-    vehicle_type: { kind: 'fleet' },
-    req_sleeper: { kind: 'fleet', need: 'sleeper' },
-    req_ada: { kind: 'fleet', need: 'adaLift' },
-    req_56pax: { kind: 'fleet', need: 'pax56' },
-    // The hotel reminder and the fuel card are the trip's own, kept in the editor.
-    need_hotel: { kind: 'trip', key: 'hotelWanted' },
-    need_fuel_card: { kind: 'trip', key: 'fuelCard' },
-    /* How many vehicles a leg has. Empty ones are added on the Buses tab up
-       to the count, each asking what the first asks, and none is taken away;
-       they come after the first vehicle's type and needs, which they copy. */
-    bus_count: { kind: 'buses', leg: 'outbound' },
-    return_bus_count: { kind: 'buses', leg: 'return' },
-    quoted_price: { id: 'scheduler-f-quoted', kind: 'text' },
-    est_miles: { id: 'scheduler-f-estmiles', kind: 'text' },
-    booking_contact_name: { id: 'scheduler-f-cfind', kind: 'text' },
-    booking_contact_phone: { id: 'scheduler-f-cphone', kind: 'text' },
-    booking_contact_email: { id: 'scheduler-f-cemail', kind: 'text' },
-    trip_contact_1_name: { id: 'scheduler-f-d1', kind: 'text' },
-    trip_contact_1_phone: { id: 'scheduler-f-dphone1', kind: 'text' },
-    trip_contact_2_name: { id: 'scheduler-f-d2', kind: 'text' },
-    trip_contact_2_phone: { id: 'scheduler-f-dphone2', kind: 'text' },
-    // The Route tab. It is built when the panel opens, not when the tab is
-    // shown, so these are on screen from the start like every other field.
-    pickup_location: { id: 'scheduler-f-pickupname', kind: 'text' },
-    pickup_address: { id: 'scheduler-f-pickup', kind: 'place' },
-    dropoff_location: { id: 'scheduler-f-dropname', kind: 'text' },
-    dropoff_address: { id: 'scheduler-f-dropoff', kind: 'place' },
-    departure_time: { id: 'scheduler-f-leave', kind: 'time' },
-    return_time: { id: 'scheduler-f-endtrip', kind: 'time' },
-    /* The spot time is not here because it is not typed any more: the tab
-       works it out from when the group leaves. */
-  };
+  /* Each field a draft may fill, and the control it is typed into, in the
+     order they are typed: draft-fields.js's list, which the connector reads
+     too. The stops have no control; the Route tab lays them out. A field
+     whose control is not on screen is named in the panel's notice instead,
+     so nothing the connector sent goes quietly. */
+  const DRAFT_CONTROLS = Object.fromEntries(window.SchedulerDraftFields.FIELDS
+    .filter(f => f.kind !== 'stops').map(f => [f.key, f]));
 
   // What the notice calls a place that still needs choosing from its list.
   const PLACE_LABEL = { pickup_address: 'the pickup', dropoff_address: 'the drop-off' };
@@ -16095,7 +16052,7 @@
       const control = DRAFT_CONTROLS[key];
       if (control?.kind === 'trip') {
         if (!editing) { missed.push([key, value]); continue; }
-        editing[control.key] = !!value;
+        editing[control.tripKey] = !!value;
         routeTimesDrawn?.();
         unmarked.push(UNMARKED_LABEL[key](value));
         continue;

@@ -107,68 +107,21 @@
   let ahead = { legs: 0, ready: 0, known: false };   // the count for the days to prep for
 
   // -- reading --------------------------------------------------------------
-  const STEPS = ['envelope_printed', 'trip_reminder_sent', 'itinerary_printed', 'hos_form_printed', 'driver_forms_printed'];
-  const COLUMNS = ['id', 'trip_ref', 'destination', 'customer', 'customer_id', 'start_date', 'end_date', 'return_start_date', 'return_end_date',
-    'trip_type', 'confirmed', 'trip_bar_color', 'cancelled_at', 'created_at', 'bus_count', 'return_bus_count', 'po_ref',
-    // A quote marked sent, which ends a placeholder and is the day the customer was last told.
-    'quote_sent_price', 'quote_sent_on',
-    // The money, as follow-up.js reads it, for what the customer still owes.
-    'quoted_price', 'contract_status', 'po_received', 'po_amount', 'deposit_amount', 'date_paid', 'balance_paid',
-    'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_updates(created_at,kind)',
-    'itinerary_not_needed', 'contact_not_needed',
-    'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
-    'hotel_booked_outbound', 'hotel_booked_return', 'hotel_itinerary_number_outbound', 'hotel_itinerary_number_return',
-    'booking_contact_name', 'contacts:booking_contact_id(id,name,phone,email)',
-    ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
-    'trip_prep(driver_info_sent,driver_info_sent_at,driver_info_sent_by)',
-    `trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
-    // What a driver's job reads as, for a change they have not been told of.
-    'spot_time', 'trip_documents(id,label,created_at,file_path)',
-    'trip_stops(position,leg,type,label,name,address,arrive,spot,depart_prev,arrive_date,spot_date,depart_prev_date)'].join(',');
-
-  // The buses, the drivers, the office's lists and the staff, read once a page.
+  // The buses, the drivers and the office's lists, and the staff, read once a page.
   let basics = null;
   const readBasics = () => (basics ??= (async () => {
-    const [busRows, driverRows, settings, profiles] = await Promise.all([
-      client.from('buses').select('id,number,capacity,type,ada_lift,sleeper,equipment').then(unwrap),
-      // The status and the card dates, for what stands in a driver's way.
-      client.from('drivers').select('id,name,short_name,employment_type,status,license_exp,med_card_expiry').then(unwrap),
-      client.from('settings').select('key,value').in('key', ['requirements-v1', 'follow-up-v1', 'billing-workflow-v1']).then(unwrap),
+    const [read, profiles] = await Promise.all([
+      Facts.readBasics(client, { forms: true }),
       client.from('profiles').select('id,display_name,photo_path,avatar_color').then(unwrap),
     ]);
-    const setting = new Map(settings.map(s => [s.key, s.value]));
-    Facts.setRequirementList(setting.get('requirements-v1'));
-    // The driver forms customers ask for; a refused read asks for none.
-    await Facts.readDriverForms(client).catch(() => false);
-    window.SchedulerFollowUp.set(setting.get('follow-up-v1'));
-    window.SchedulerBilling.setWorkflow(setting.get('billing-workflow-v1'));
-    buses = new Map(busRows.map(b => [b.id, b]));
+    buses = read.busesById;
     staff = new Map(profiles.map(p => [p.id, p]));
-    return { busesById: buses, driversById: new Map(driverRows.map(d => [d.id, d])) };
+    return read;
   })().catch(e => { basics = null; throw e; }));
 
   // One day's legs as pages, soonest first.
-  async function readDay(which) {
-    const read = await readBasics();
-    const trips = await client.from('trips').select(COLUMNS).is('cancelled_at', null)
-      .or(`start_date.eq.${which},return_start_date.eq.${which},end_date.eq.${which}`).order('start_date').then(unwrap);
-    const legs = Departures.legsOn(trips, which);
-    const ids = [...new Set(legs.map(l => l.trip.id))];
-    // The trips, time off and days out around the day, for what stands in each leg's way.
-    const [statusRows, nearby] = await Promise.all([
-      ids.length ? client.rpc('get_trip_driver_statuses', { p_trip_ids: ids }).then(unwrap) : [],
-      legs.length && window.SchedulerClashes ? window.SchedulerClashes.readNearby(client, which, lastOf(legs, which)) : null,
-    ]);
-    const statuses = new Map(statusRows.map(r => [Facts.statusKey(r.tripId, r.driverId, r.leg, r.role), r]));
-    return legs.map(l => Departures.page(l.trip, l.leg, { ...read, statuses, nearby }))
-      .sort((a, b) => soonest(a).localeCompare(soonest(b)));
-  }
-
-  // The last day any of a day's legs takes, so what is read around them reaches its end.
-  const lastOf = (legs, which) => legs.reduce((last, l) => {
-    const to = window.SchedulerWeek?.legsOf(l.trip).find(x => x.leg === l.leg)?.to;
-    return to && to > last ? to : last;
-  }, which);
+  const readDay = async which => (await Departures.readDay(client, which, await readBasics()))
+    .sort((a, b) => soonest(a).localeCompare(soonest(b)));
 
   // Several days' legs, one day after another.
   const readDays = async which => (await Promise.all(which.map(readDay))).flat();

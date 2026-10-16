@@ -1,13 +1,10 @@
 /* ==========================================================================
    to-do-rows.js — WHAT THE TRIPS ASK, READ
    --------------------------------------------------------------------------
-   Reads the trips to-do.js's rules need and keeps the rows they give: for
-   a task's trip on the To do list, and for the Trips page's Show choices. The page reads them itself, because only the
-   board's week holds trips otherwise: every live trip for the follow-ups,
-   and the buses, seats, stops and contacts of the ones leaving within 30
-   days, with the trips, time off and days out around them, which
-   clashes.js's standing rule reads. A change to a trip arrives on the `scheduler-to-do-rows` channel and
-   reads them again, and each reading says `scheduler:to-do-rows`.
+   Keeps the rows to-do.js's `read` gives: for a task's trip on the To do
+   list, and for the Trips page's Show choices. A change to a trip arrives on
+   the `scheduler-to-do-rows` channel and reads them again, and each reading
+   says `scheduler:to-do-rows`.
 
    Needs billing.js, follow-up.js, checklist.js, requirements.js, leg-facts.js,
    week.js, clashes.js, share/driver-words.js, driver-job.js and to-do.js
@@ -24,63 +21,13 @@
 
   // The tables a row is read from; a change to one reads the trips again.
   const TABLES = ['trips', 'trip_assignments', 'trip_drivers', 'trip_stops', 'trip_updates', 'trip_documents', 'trip_payments', 'trip_pos', 'trip_driver_statuses'];
-  const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  const dayFrom = n => { const d = new Date(); d.setDate(d.getDate() + n); return iso(d); };
-  const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
 
   let computed = [];        // to-do.js's rows, every one
   let trips = new Map();    // id -> trip, for a task's trip and its Trip choice
   let failure = '';
 
-  const LIGHT = ['id', 'trip_ref', 'destination', 'customer', 'start_date', 'end_date', 'return_start_date', 'return_end_date',
-    'trip_type', 'confirmed', 'trip_bar_color', 'cancelled_at', 'created_at', 'bus_count', 'return_bus_count',
-    // A quote marked sent, which ends a placeholder and is the day the customer was last told.
-    'quote_sent_price', 'quote_sent_on',
-    // What the follow-up rules read: the money, the itinerary and the updates.
-    'quoted_price', 'itinerary_not_needed', 'contract_status', 'po_received', 'po_ref', 'po_amount', 'deposit_amount',
-    'date_paid', 'balance_paid', 'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_documents(label)',
-    'trip_updates(created_at,kind)'].join(',');
-  // What the other three rules read, of the trips leaving soon enough to be asked.
-  const HEAVY = ['id', 'contact_not_needed', 'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
-    'departure_time', 'return_time', 'spot_time', 'trip_documents(id,label,created_at,file_path)',
-    ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
-    'trip_assignments(id,bus_id,leg,active_roles,needs,vehicle_type,trip_drivers(driver_id,role,envelope_printed,report_time,instructions))',
-    'trip_stops(position,leg,type,label,name,address,arrive,spot,depart_prev)'].join(',');
-
   async function read() {
-    const today = iso(new Date());
-    const far = dayFrom(ToDo.SHORT_DAYS);
-    const within = col => `and(${col}.gte.${today},${col}.lte.${far})`;
-    const [light, heavy, buses, drivers, settings, nearby] = await Promise.all([
-      // A trip that left a season ago can still owe a balance; older than that is History's.
-      client.from('trips').select(LIGHT).is('cancelled_at', null).gte('start_date', dayFrom(-90)).order('start_date').limit(5000).then(unwrap),
-      client.from('trips').select(HEAVY).is('cancelled_at', null)
-        .or([within('start_date'), within('return_start_date'), within('end_date')].join(',')).then(unwrap),
-      client.from('buses').select('id,number,capacity,type,ada_lift,sleeper,equipment').then(unwrap),
-      // The names, status and card dates, for what stands in a driver's way.
-      client.from('drivers').select('id,name,short_name,employment_type,status,license_exp,med_card_expiry').then(unwrap),
-      client.from('settings').select('key,value').in('key', ['requirements-v1', 'follow-up-v1', 'billing-workflow-v1']).then(unwrap),
-      // What is around the trips leaving within 30 days, for the Clash rows.
-      window.SchedulerClashes?.readNearby(client, today, dayFrom(ToDo.SHORT_DAYS + 30)) ?? null,
-    ]);
-    const setting = new Map(settings.map(s => [s.key, s.value]));
-    Facts.setRequirementList(setting.get('requirements-v1'));
-    window.SchedulerFollowUp.set(setting.get('follow-up-v1'));
-    window.SchedulerBilling.setWorkflow(setting.get('billing-workflow-v1'));
-
-    const more = new Map(heavy.map(t => [t.id, t]));
-    const all = light.map(t => ({ ...t, ...more.get(t.id) }));
-    // Each answer of the trips leaving within 30 days, for a decline or a change to tell.
-    const statusRows = heavy.length
-      ? await client.rpc('get_trip_driver_statuses', { p_trip_ids: heavy.map(t => t.id) }).then(unwrap) : [];
-    const facts = {
-      busesById: new Map(buses.map(b => [b.id, b])),
-      driversById: new Map(drivers.map(d => [d.id, d])),
-      nearby,
-      statuses: new Map(statusRows.map(r => [Facts.statusKey(r.tripId, r.driverId, r.leg, r.role), r])),
-    };
-    trips = new Map(all.map(t => [t.id, t]));
-    computed = ToDo.rows(all, { factsOf: (t, leg) => Facts.factsOf(t, leg, facts), contactOf: t => !!Facts.dayOfContact(t) });
+    ({ rows: computed, trips } = await ToDo.read(client));
   }
 
   /* One read at a time, and the newest asked for wins: a second ask while one

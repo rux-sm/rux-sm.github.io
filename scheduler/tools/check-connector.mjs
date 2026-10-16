@@ -7,18 +7,18 @@
 //   is parsed as the module it is.
 //   Every import names one exact version. A range bundles whatever it has
 //   come to mean on the day of a deploy, which nobody tried.
-//   Every field a draft may fill has a place in the editor. The connector's
-//   list and the editor's table are two lists of one thing, and a field in
-//   one and not the other is a field Claude fills and the editor drops, or a
-//   place nothing can fill.
+//   The connector's rules are the pages' rule files as they are now.
+//   connector/rules.ts is built from them, and a stale copy answers Claude
+//   by rules the pages no longer keep. It is run, too: each rule it hands
+//   the connector is there.
 //
-// It fails when it cannot find a function, a list or a table to read.
+// It fails when it cannot find a function to read.
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { stripTypeScriptTypes } from 'node:module';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 // Taking the types off is new enough in Node to warn each time it is used.
 process.removeAllListeners('warning');
@@ -64,28 +64,25 @@ try {
   }
 } finally { rmSync(scratch, { recursive: true, force: true }); }
 
-// ── every draft field has a place ───────────────────────────────────────────
-const between = (text, open, close) => {
-  const a = text.indexOf(open);
-  const b = a < 0 ? -1 : text.indexOf(close, a + open.length);
-  return a < 0 || b < 0 ? null : text.slice(a + open.length, b);
-};
-const plain = text => text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
-const connector = readFileSync(join(SCHEDULER, 'connector', 'index.ts'), 'utf8');
-const editor = readFileSync(join(SCHEDULER, 'data.js'), 'utf8');
-const listed = between(connector, 'const DRAFT_FIELDS = new Set([', '])');
-const table = between(editor, 'const DRAFT_CONTROLS = {', '\n  };');
-const fields = listed === null ? [] : [...plain(listed).matchAll(/'([a-z0-9_]+)'/g)].map(m => m[1]);
-const places = table === null ? [] : [...plain(table).matchAll(/^\s{4}([a-z0-9_]+):\s*\{/gm)].map(m => m[1]);
-if (!fields.length) fail('the connector\'s DRAFT_FIELDS could not be read');
-if (!places.length) fail('the editor\'s DRAFT_CONTROLS could not be read');
-if (fields.length && places.length) {
-  // The stops are laid out on the Route tab by their own code, not by a row of the table.
-  const hasPlace = new Set([...places, 'stops']);
-  for (const f of fields) if (!hasPlace.has(f)) fail(`a draft may fill ${f}, and the editor has no place for it`);
-  for (const p of places) if (!fields.includes(p)) fail(`the editor has a place for ${p}, and no draft may fill it`);
-}
+// ── the connector's rules are the pages' ────────────────────────────────────
+const { build, FILES } = await import('./build-connector-rules.mjs');
+const rulesPath = join(SCHEDULER, 'connector', 'rules.ts');
+let rulesNow = '';
+try { rulesNow = readFileSync(rulesPath, 'utf8'); } catch { /* said below */ }
+if (rulesNow !== build()) fail('scheduler/connector/rules.ts is not the rule files as they are; run npm run build');
+const wanted = { SchedulerDraftFields: ['FIELDS', 'problems'], SchedulerBilling: ['placeholder'], SchedulerFollowUp: ['today'],
+  SchedulerLegFacts: ['readBasics'], SchedulerToDo: ['read', 'rows', 'handed', 'KINDS'], SchedulerDepartures: ['readDay', 'readTrip', 'gapWords', 'prepDays'] };
+const rulesDir = mkdtempSync(join(tmpdir(), 'check-connector-rules-'));
+try {
+  const out = join(rulesDir, 'rules.mjs');
+  writeFileSync(out, stripTypeScriptTypes(rulesNow));
+  const rules = (await import(pathToFileURL(out).href)).default;
+  for (const [name, parts] of Object.entries(wanted)) {
+    for (const part of parts) if (rules[name]?.[part] == null) fail(`the connector's rules have no ${name}.${part}`);
+  }
+} catch (e) { fail(`the connector's rules do not run: ${e.message.split('\n')[0]}`); }
+finally { rmSync(rulesDir, { recursive: true, force: true }); }
 
 console.log(failed ? `\n  ${failed} fault(s) in the Edge Functions`
-  : `   ok   functions  ${files} files of ${FUNCTIONS.length} functions parse, ${imports} imports each name one version, ${fields.length} draft fields each have a place`);
+  : `   ok   functions  ${files} files of ${FUNCTIONS.length} functions parse, ${imports} imports each name one version, the connector's rules are ${FILES.length} rule files as they are`);
 process.exit(failed ? 1 : 0);

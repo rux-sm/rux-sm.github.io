@@ -24,11 +24,18 @@
    A leaving-soon row leaves out what another row on the same trip already
    says, so one fault is one line.
 
-   Nothing here reads the database or the page. The trip row brings its own
-   columns, and the caller hands in what only it can read, as the checklist
-   takes it: `factsOf(trip, leg)` for the leg's buses and seats, and
-   `contactOf(trip)` for whether it has a day-of contact.
-   Needs billing.js, follow-up.js and checklist.js loaded first.
+   `rows` reads neither the database nor the page. The trip row brings its
+   own columns, and the caller hands in what only it can read, as the
+   checklist takes it: `factsOf(trip, leg)` for the leg's buses and seats,
+   and `contactOf(trip)` for whether it has a day-of contact; `handed` makes
+   both from a read. `read`, handed a client, reads what the rows need, so
+   the pages and the connector ask the same: every live trip from 90 days
+   back for the follow-ups, and the buses, seats, stops and contacts of the
+   ones leaving within 30 days, with the trips, time off and days out around
+   them, which clashes.js's standing rule reads.
+   Needs billing.js, follow-up.js and checklist.js loaded first, and for
+   `read` requirements.js, leg-facts.js, week.js, clashes.js,
+   share/driver-words.js and driver-job.js.
    ========================================================================== */
 (() => {
   'use strict';
@@ -56,7 +63,9 @@
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const parseISO = s => { const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); };
   // Whole days from today to a day, 0 on the day, or null with no date.
-  const daysTo = day => (day ? Math.round((parseISO(day) - parseISO(iso(new Date()))) / 864e5) : null);
+  const daysTo = day => (day ? Math.round((parseISO(day) - parseISO(FollowUp.today())) / 864e5) : null);
+  // The office's day `n` days from today.
+  const dayFrom = n => { const d = parseISO(FollowUp.today()); d.setDate(d.getDate() + n); return iso(d); };
   const within = (day, days) => { const n = daysTo(day); return n != null && n >= 0 && n <= days; };
 
   const split = trip => trip.trip_type === 'dropoff_pickup';
@@ -156,5 +165,52 @@
       || String(a.trip.id).localeCompare(String(b.trip.id)) || order.indexOf(a.kind) - order.indexOf(b.kind));
   }
 
-  window.SchedulerToDo = { KINDS, SOON_DAYS, SHORT_DAYS, TIMES_DAYS, rows, legDay, legName, hasTimes };
+  // -- reading ------------------------------------------------------------
+  const LIGHT = ['id', 'trip_ref', 'destination', 'customer', 'start_date', 'end_date', 'return_start_date', 'return_end_date',
+    'trip_type', 'confirmed', 'trip_bar_color', 'cancelled_at', 'created_at', 'bus_count', 'return_bus_count',
+    // A quote marked sent, which ends a placeholder and is the day the customer was last told.
+    'quote_sent_price', 'quote_sent_on',
+    // What the follow-up rules read: the money, the itinerary and the updates.
+    'quoted_price', 'itinerary_not_needed', 'contract_status', 'po_received', 'po_ref', 'po_amount', 'deposit_amount',
+    'date_paid', 'balance_paid', 'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_documents(label)',
+    'trip_updates(created_at,kind)'].join(',');
+  // What the other three rules read, of the trips leaving soon enough to be asked.
+  const HEAVY = ['id', 'contact_not_needed', 'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
+    'departure_time', 'return_time', 'spot_time', 'trip_documents(id,label,created_at,file_path)',
+    ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
+    'trip_assignments(id,bus_id,leg,active_roles,needs,vehicle_type,trip_drivers(driver_id,role,envelope_printed,report_time,instructions))',
+    'trip_stops(position,leg,type,label,name,address,arrive,spot,depart_prev)'].join(',');
+
+  // What the rules are handed from a read's buses, drivers, statuses and what is around.
+  const handed = read => ({
+    factsOf: (t, leg) => window.SchedulerLegFacts.factsOf(t, leg, read),
+    contactOf: t => !!window.SchedulerLegFacts.dayOfContact(t),
+  });
+
+  /* Every row the trips give now, and the trips by id. */
+  async function read(client) {
+    const Facts = window.SchedulerLegFacts;
+    const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
+    const today = FollowUp.today();
+    const far = dayFrom(SHORT_DAYS);
+    const soonOn = col => `and(${col}.gte.${today},${col}.lte.${far})`;
+    const [light, heavy, basics, nearby] = await Promise.all([
+      // A trip that left a season ago can still owe a balance; older than that is History's.
+      client.from('trips').select(LIGHT).is('cancelled_at', null).gte('start_date', dayFrom(-90)).order('start_date').limit(5000).then(unwrap),
+      client.from('trips').select(HEAVY).is('cancelled_at', null)
+        .or([soonOn('start_date'), soonOn('return_start_date'), soonOn('end_date')].join(',')).then(unwrap),
+      Facts.readBasics(client),
+      // What is around the trips leaving within 30 days, for the Clash rows.
+      window.SchedulerClashes?.readNearby(client, today, dayFrom(SHORT_DAYS + 30)) ?? null,
+    ]);
+    const more = new Map(heavy.map(t => [t.id, t]));
+    const all = light.map(t => ({ ...t, ...more.get(t.id) }));
+    // Each answer of the trips leaving within 30 days, for a decline or a change to tell.
+    const statusRows = heavy.length
+      ? await client.rpc('get_trip_driver_statuses', { p_trip_ids: heavy.map(t => t.id) }).then(unwrap) : [];
+    const statuses = new Map(statusRows.map(r => [Facts.statusKey(r.tripId, r.driverId, r.leg, r.role), r]));
+    return { rows: rows(all, handed({ ...basics, nearby, statuses })), trips: new Map(all.map(t => [t.id, t])) };
+  }
+
+  window.SchedulerToDo = { KINDS, SOON_DAYS, SHORT_DAYS, TIMES_DAYS, LIGHT, HEAVY, rows, handed, read, legDay, legName, hasTimes };
 })();

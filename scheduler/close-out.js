@@ -6,7 +6,8 @@
    week.js reads it on the office's clock. A trip that is back stops moving
    on the board and asks only what its record lacks, in the words every alert
    uses: a leg short of a bus or a seat with no driver, as the checklist
-   counts them; no actual miles; no invoice, where the billing workflow
+   counts them; no actual miles; a filled seat with no pay, since every
+   driver is paid by the trip; no invoice, where the billing workflow
    invoices; and a balance still owed that no PO covers. It asks while one of them is true and
    closes itself once none is, so nothing is stored. Only a trip that ends on
    or after FROM asks anything, so the trips before close-out began raise
@@ -19,11 +20,11 @@
 
   const FROM = '2026-10-15';
   const WORDS = {
-    bus: 'Bus missing', driver: 'Driver missing', miles: 'Actual miles missing',
+    bus: 'Bus missing', driver: 'Driver missing', miles: 'Actual miles missing', pay: 'Driver pay missing',
     invoice: 'Invoice missing', balance: 'Balance due',
   };
   // Where the trip editor puts each one right.
-  const GO = { bus: 'fleet', driver: 'fleet', miles: 'billing', invoice: 'billing', balance: 'billing' };
+  const GO = { bus: 'fleet', driver: 'fleet', miles: 'billing', pay: 'billing', invoice: 'billing', balance: 'billing' };
 
   const placeholder = trip => window.SchedulerBilling.placeholder(trip);
   const legsOf = trip => window.SchedulerWeek.legsOf(trip);
@@ -52,6 +53,7 @@
     if (facts.some(f => f.busesAssigned < f.busesNeeded)) list.push('bus');
     if (facts.some(f => f.seatsOpen > 0)) list.push('driver');
     if (trip.actual_miles == null || trip.actual_miles === '') list.push('miles');
+    if (facts.some(f => f.payLeft > 0)) list.push('pay');
     const Billing = window.SchedulerBilling;
     if (Billing.stepOn('invoiced') && !Billing.invoicedOf(trip)) list.push('invoice');
     // A PO's payment is recorded on the printed schedule, so a PO covers what is owed.

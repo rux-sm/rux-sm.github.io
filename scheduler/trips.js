@@ -22,7 +22,7 @@
     'start_date', 'end_date', 'return_start_date', 'return_end_date',
     'bus_count', 'return_bus_count', 'quoted_price', 'po_ref', 'invoice_number',
     'confirmed', 'invoiced', 'balance_paid', 'cancelled_at', 'cancellation_reason',
-    'trip_assignments(leg,bus_id,active_roles,buses:bus_id(number),trip_drivers(driver_id,role))',
+    'trip_assignments(leg,bus_id,active_roles,buses:bus_id(number),trip_drivers(driver_id,role,pay))',
     // What close-out.js reads: when the trip is back, and what its record lacks.
     'departure_time', 'return_time', 'actual_miles', 'invoice_status',
     'trip_stops(leg,type,position,depart_prev,arrive,spot)',

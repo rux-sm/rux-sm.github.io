@@ -309,7 +309,7 @@
      hours-of-service form, how many of the leg's buses have no fuel card
      number yet, which only a trip with a card asks, and, where the customer
      asks for driver forms, who lacks a current one and how many seats have
-     theirs not printed. Handed `nearby`, the trips, time off and days out
+     theirs not printed, and how many filled seats have no pay yet. Handed `nearby`, the trips, time off and days out
      around it, it also says what stands in its way, as clashes.js's
      standing rule says it. `declined` names the drivers who said no, and
      `toTell` each confirmed driver the leg changed for since they accepted,
@@ -318,7 +318,7 @@
     const assigns = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === leg);
     const busesNeeded = leg === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1);
     const facts = { busesNeeded, busesAssigned: 0, busesShort: 0, seatsOpen: 0, seats: 0, unconfirmed: 0, envelopesLeft: 0, itinerariesLeft: 0, partTime: false, hosLeft: 0,
-      declined: [], toTell: [],
+      payLeft: 0, declined: [], toTell: [],
       formsWanted: formKindsOf(trip).length, formsMissing: [], formsLeft: 0,
       fuelCardsLeft: Math.max(0, busesNeeded - assigns.filter(a => String(a.fuel_card_number ?? '').trim()).length) };
     if (nearby && window.SchedulerClashes) {
@@ -346,6 +346,7 @@
       for (const d of a.trip_drivers || []) {
         if (!d.driver_id || !roles.has(d.role || 'driver')) continue;
         if (!d.envelope_printed) facts.envelopesLeft++;
+        if (d.pay == null || d.pay === '') facts.payLeft++;
         if (!d.itinerary_printed) facts.itinerariesLeft++;
         if (driversById.get(d.driver_id)?.employment_type === 'part-time') {
           facts.partTime = true;

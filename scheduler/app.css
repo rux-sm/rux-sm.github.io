@@ -2445,9 +2445,11 @@ button.scheduler-row-head__num::after {
 #scheduler-panel-body #scheduler-panel-details > * + .scheduler-panel-section::before {
   display: none;
 }
-/* So are the Billing tab's, the summary, the quote's lines, the billing list
-   and each bus's miles; only its Done row keeps the rule that closes a tab. */
-#scheduler-panel-body #scheduler-panel-billing > * + .scheduler-panel-section:not(:has(> .scheduler-done))::before {
+/* So are the Billing tab's, the summary, the quote's lines, the billing list,
+   the miles and each bus's driver pay. The rule stays over its two Done rows,
+   Billing done and Closed, and over Miles, where what is filled in after the
+   trip begins. */
+#scheduler-panel-body #scheduler-panel-billing > * + .scheduler-panel-section:not(:has(> .scheduler-done)):not(.scheduler-panel-section--after)::before {
   display: none;
 }
 /* A group's heading line with an overflow menu trigger at its end. The line

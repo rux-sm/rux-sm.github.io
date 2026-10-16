@@ -25,9 +25,9 @@ const stops = (depart, back) => [
   { leg: 'outbound', type: 'stop', position: 1, depart_prev: '08:00' },
   { leg: 'outbound', type: 'return', position: 2, depart_prev: '17:00', arrive: back },
 ];
-const seat = { leg: 'outbound', bus_id: 'b1', active_roles: ['driver'], trip_drivers: [{ driver_id: 'd1', role: 'driver' }] };
+const seat = { leg: 'outbound', bus_id: 'b1', active_roles: ['driver'], trip_drivers: [{ driver_id: 'd1', role: 'driver', pay: 250 }] };
 // A day trip on Tuesday 20 October 2026, back at the yard at 6 PM, with its
-// record whole: a bus, a driver, actual miles, an invoice and paid.
+// record whole: a bus, a driver with their pay, actual miles, an invoice and paid.
 const done = {
   id: 't1', start_date: '2026-10-20', end_date: '2026-10-20', bus_count: 1,
   trip_stops: stops('06:00', '18:00'), trip_assignments: [seat],
@@ -58,12 +58,15 @@ expect('a seat with no driver', asks({ ...done, trip_assignments: [{ ...seat, tr
 expect('a co-driver turned on and not filled',
   asks({ ...done, trip_assignments: [{ ...seat, active_roles: ['driver', 'co-driver'] }] }, after), ['driver']);
 expect('no actual miles', asks({ ...done, actual_miles: null }, after), ['miles']);
+expect('a seated driver with no pay', asks({ ...done, trip_assignments: [{ ...seat, trip_drivers: [{ driver_id: 'd1', role: 'driver', pay: null }] }] }, after), ['pay']);
+expect('a pay of nothing is a pay', asks({ ...done, trip_assignments: [{ ...seat, trip_drivers: [{ driver_id: 'd1', role: 'driver', pay: 0 }] }] }, after), []);
+expect('a seat that is off asks no pay', asks({ ...done, trip_assignments: [{ ...seat, trip_drivers: [...seat.trip_drivers, { driver_id: 'd2', role: 'co-driver', pay: null }] }] }, after), []);
 expect('no invoice', asks({ ...done, invoice_number: null }, after), ['invoice']);
 expect('a balance still owed', asks({ ...done, trip_payments: [{ amount: 400, date: '2026-10-21' }] }, after), ['balance']);
 expect('a balance a PO covers is not asked for', asks({ ...done, po_ref: 'PO-1', trip_payments: [{ amount: 400, date: '2026-10-21' }] }, after), []);
 expect('everything at once, in the card\'s order',
-  asks({ ...done, bus_count: 2, trip_assignments: [{ ...seat, trip_drivers: [] }], actual_miles: null, invoice_number: null, trip_payments: [] }, after),
-  ['bus', 'driver', 'miles', 'invoice', 'balance']);
+  asks({ ...done, bus_count: 2, trip_assignments: [{ ...seat, active_roles: ['driver', 'co-driver'], trip_drivers: [{ driver_id: 'd1', role: 'driver' }] }], actual_miles: null, invoice_number: null, trip_payments: [] }, after),
+  ['bus', 'driver', 'miles', 'pay', 'invoice', 'balance']);
 expect('a leg with no bus at all asks for the bus, which has no seat yet',
   asks({ ...done, trip_assignments: [] }, after), ['bus']);
 window.SchedulerBilling.setWorkflow({ workflow: { invoiced: { active: false } } });

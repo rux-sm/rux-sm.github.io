@@ -24,6 +24,9 @@ office sees it on the trip and where it adds up driver pay.
   `samsara-miles`, which gains the bus's GPS history across the pickup.
 - **The $20 goes to the Driver seat,** the driver in the pickup's seat, and
   not to a co-driver or a relief.
+- **Every driver is paid by the trip,** so each seat's pay is typed on the
+  Billing tab's Driver pay, and a trip that is back is not closed until every
+  filled seat has one.
 - **The trip's card says it while the bus is out:** the pickup's arrival with
   on time in green, or the minutes late in amber, from the live trail.
 - **The database change is its own step,** SQL shown to rux and applied on

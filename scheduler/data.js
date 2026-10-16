@@ -8853,19 +8853,46 @@
          when it reached each leg's pickup, on the trip as last saved. It puts
          the farthest bus's total in Actual miles, each seated driver it saw in
          their own field and each arrival on its bus, for Save to write. A trip not yet saved has nothing to read, so has no menu. */
-      /* The trip's two figures in a tile, and each bus in a tile of its own
-         under it, 8px apart as a list's tiles are. */
+      /* The trip's two figures in a tile. Each bus's tile is under Driver pay,
+         8px apart as a list's tiles are. */
       const milesBody = el('div', 'rux--stack-vertical rux--stack-scale-3');
       const seatMilesBox = el('div', 'rux--stack-vertical rux--stack-scale-3');
       const samsaraOut = el('div', 'rux--stack-vertical rux--stack-scale-2');
       milesBody.append(fieldTile(miles));
-      /* The seats' fields and what Samsara says stand under the two fields
-         only while they hold something, since an empty stack still takes its
-         gap, and a stack's display outranks `hidden`. */
+      /* What Samsara says stands under the two fields only while it holds
+         something, since an empty stack still takes its gap, and a stack's
+         display outranks `hidden`. */
       const placeMilesParts = () => {
-        for (const part of [seatMilesBox, samsaraOut]) {
-          if (part.hasChildNodes()) milesBody.append(part);
-          else part.remove();
+        if (samsaraOut.hasChildNodes()) milesBody.append(samsaraOut);
+        else samsaraOut.remove();
+      };
+      const paySection = section('Driver pay', seatMilesBox);
+
+      /* CLOSED, the end of the tab once the trip is back: close-out.js's list
+         read off the trip with this tab's miles and pay as typed, so a field
+         filled here counts before Save. Closed when nothing is left. */
+      const closedBox = el('div', 'scheduler-done');
+      const closedSection = section(null, closedBox);
+      const NEEDS = { bus: 'a bus on every leg', driver: 'a driver in every seat', miles: 'actual miles',
+        pay: "each driver's pay", invoice: 'an invoice', balance: 'the balance paid' };
+      const drawClosed = () => {
+        const CloseOut = window.SchedulerCloseOut;
+        closedSection.hidden = !CloseOut?.isBack(trip);
+        if (closedSection.hidden) return;
+        const typed = new Map((editing?.fleet ? fleetLegs().flatMap(leg => editing.fleet[leg]) : [])
+          .flatMap(b => ROLES.map(r => b.seats[r.role]).filter(x => x.rowId).map(x => [String(x.rowId), x.pay])));
+        const actual = money(document.getElementById('scheduler-f-actmiles')?.value ?? '');
+        const asked = CloseOut.asks({ ...trip, actual_miles: actual,
+          trip_assignments: (trip.trip_assignments || []).map(a => ({ ...a, trip_drivers: (a.trip_drivers || []).map(d =>
+            (typed.has(String(d.id)) ? { ...d, pay: typed.get(String(d.id)) } : d)) })) });
+        closedBox.classList.toggle('scheduler-done--on', !asked.length);
+        if (!asked.length) {
+          const head = el('p', 'scheduler-done__head');
+          head.append(svgUse('#m-check_circle-fill', '16', '0 0 32 32'), el('span', null, 'Closed'));
+          closedBox.replaceChildren(head);
+        } else {
+          closedBox.replaceChildren(el('p', 'rux--form__helper-text',
+            `Closes once it has ${asked.map(id => NEEDS[id]).join(', ')}.`));
         }
       };
       let samsaraFound = null;
@@ -8886,8 +8913,10 @@
         ?? (busFound(busId)?.legs.length === 1 && legFound(busId, leg) ? busFound(busId).drivers : null);
       const mi = n => `${Number(n).toLocaleString()} mi`;
 
-      /* EACH DRIVER'S MILES AND PAY, two fields per filled seat under the bus
-         and leg it drove, kept on the seat. Under the fields, the drivers' total and how
+      /* DRIVER PAY: a tile per bus and leg, titled with the bus and its
+         odometer miles, and in it each filled seat's miles and pay, kept on
+         the seat. The Driver seat's pay says whether the bus reached the
+         pickup on time, which earns that driver the on-time pay. Under the fields, the drivers' total and how
          far it is from the bus's odometer, which a driver who did not log in,
          or logged into another bus, pulls apart. Then where Samsara and the
          seats differ: who drove the bus the trip does not seat, and who the
@@ -8895,18 +8924,17 @@
          seat is put right. Under the bus's name, when it reached the leg's
          pickup, and whether that was on time, which earns the Driver seat
          its on-time pay. */
-      const pickupLine = (b, leg) => {
-        if (!b.pickupAt) return null;
+      const pickupOf = (b, leg) => {
+        if (!b.pickupAt) return { line: null, tag: null };
         const at = Date.parse(b.pickupAt);
         const late = Road.pickupLate(Road.stopsOf(trip, leg)[0]?.due ?? null, at);
-        const line = el('p', 'rux--form__helper-text');
-        line.append(`Reached the pickup at ${hhmm(Road.clockOf(at), true)}`);
+        const line = el('p', 'rux--form__helper-text', `Reached the pickup at ${hhmm(Road.clockOf(at), true)}`);
+        let tag = null;
         if (late != null) {
-          const tag = el('span', `rux--tag rux--layout--size-sm rux--tag--sm ${late ? 'rux--tag--warm-gray' : 'rux--tag--green'}`);
+          tag = el('span', `rux--tag rux--layout--size-sm rux--tag--sm ${late ? 'rux--tag--warm-gray' : 'rux--tag--green'}`);
           tag.append(el('span', 'rux--tag__label', late ? `${late} min late` : `On time, $${Road.ON_TIME_PAY}`));
-          line.append(' ', tag);
         }
-        return line;
+        return { line, tag };
       };
       const drawSeatMiles = () => {
         if (!editing?.fleet) return;
@@ -8916,8 +8944,8 @@
           editing.fleet[leg].forEach((b, i) => {
             const seats = ROLES.map(r => ({ role: r.role, seat: b.seats[r.role] })).filter(x => seatFilled(x.seat));
             const found = b.busId ? legFound(b.busId, leg) : null;
-            const pickup = pickupLine(b, leg);
-            if (!seats.length && !found && !pickup) return;
+            const pickup = pickupOf(b, leg);
+            if (!seats.length && !found && !pickup.line) return;
             const bus = b.busId ? panelIndex?.buses?.get(b.busId) : null;
             const name = `${bus ? vehicleName(bus) : 'No bus yet'}${split ? (leg === 'return' ? ', pickup' : ', drop-off') : ''}`;
             const odometer = found?.miles ?? null;
@@ -8956,10 +8984,17 @@
               });
               const payField = moneyField(`scheduler-f-seatpay-${leg}-${i}-${role}`, 'Pay', seat.pay);
               const payInput = payField.querySelector('input');
+              if (role === 'driver' && pickup.tag) {
+                const payLabel = payField.querySelector('label');
+                const row = el('div', 'scheduler-label-row');
+                payLabel.replaceWith(row);
+                row.append(payLabel, pickup.tag);
+              }
               // Dollars and cents, none below zero.
               payInput.addEventListener('input', () => {
                 const n = money(payInput.value);
                 seat.pay = n == null ? null : Math.max(0, round2(n));
+                drawClosed();
               });
               return pair(field, payField);
             });
@@ -8973,14 +9008,15 @@
               if (nobody) notes.push(`Nobody logged in: ${mi(nobody.miles)}`);
               if (unseen.length) notes.push(`On the trip, not seen in Samsara: ${unseen.join(', ')}`);
             }
-            group.append(head, ...(pickup ? [pickup] : []), ...fields);
+            group.append(head, ...(pickup.line ? [pickup.line] : []), ...fields);
             after.append(...notes.map(words => el('p', 'rux--form__helper-text', words)));
             drawTotal();
             groups.push(fieldTile(group));
           });
         }
         seatMilesBox.replaceChildren(...groups);
-        placeMilesParts();
+        paySection.hidden = !groups.length;
+        drawClosed();
       };
       seatMilesDrawn = drawSeatMiles;
 
@@ -9005,6 +9041,7 @@
         samsaraFound = r.data;
         samsaraOut.replaceChildren(...(samsaraFound.buses.length ? []
           : [el('p', 'rux--form__helper-text', 'No buses on this trip yet.')]));
+        placeMilesParts();
         /* Each seated driver Samsara saw drive the seat's bus on its leg, and
            when each bus reached the leg's pickup; an arrival Samsara cannot
            find leaves the one saved. */
@@ -9132,11 +9169,17 @@
       redrawPayments = drawMoney;
       redrawContract = drawBilling;
 
+      // What the customer pays, its Done, then what is filled in once the trip is back.
+      milesSection.classList.add('scheduler-panel-section--after');
       panelBilling.append(
         section('Billing', billList.list),
-        milesSection,
         doneSection('billing'),
+        milesSection,
+        paySection,
+        closedSection,
       );
+      drawClosed();
+      document.getElementById('scheduler-f-actmiles')?.addEventListener('input', drawClosed);
       syncEstHint();
       // The quoted price redraws the figures on `input`, so they follow each keystroke.
       document.getElementById('scheduler-f-quoted')?.addEventListener('input', drawSummary);
@@ -14330,6 +14373,7 @@
     balance: () => sectionTitled('Payments')?.querySelector('button, input'),
     hotel: () => sectionTitled('Quote')?.querySelector('button, input'),
     miles: () => document.getElementById('scheduler-f-actmiles'),
+    pay: () => [...document.querySelectorAll('[id^="scheduler-f-seatpay-"]')].find(i => !i.value.trim()),
     invoice: () => sectionTitled('Invoice sent')?.querySelector('button, input'),
   };
   /* Where a warning is put right. The itinerary slot uploads or opens the
@@ -14348,10 +14392,13 @@
     const toFix = () => {
       const tab = document.getElementById(`scheduler-tab-${go}`);
       if (tab) window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
-      // Once the tab has drawn, its field comes into view with the cursor in it.
-      setTimeout(() => {
+      /* Once the tab has drawn, its field comes into view with the cursor in it.
+         A seat's pay is drawn once the trip's buses have loaded, so the field
+         is looked for again for up to four seconds. */
+      let tries = 40;
+      const find = () => {
         const field = WARN_SPOT[spot]?.();
-        if (!field) return;
+        if (!field) { if (--tries > 0) setTimeout(find, 100); return; }
         /* The editor's own scroll box brings the field to its middle; the page
            itself is never scrolled, which slid the whole board up under the
            header. */
@@ -14362,7 +14409,8 @@
           box.scrollTop += at - box.clientHeight / 2;
         }
         field.focus({ preventScroll: true });
-      }, 0);
+      };
+      setTimeout(find, 0);
     };
     if (isEditorBar(bar)) { toFix(); return; }
     const ref = barRef(bar);

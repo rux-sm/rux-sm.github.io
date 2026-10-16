@@ -1,0 +1,163 @@
+/* ==========================================================================
+   Rux Scheduler — CLASHES, what stands in a bus's or a driver's way
+   --------------------------------------------------------------------------
+   The one reading of what a trip collides with, loaded by every page that
+   picks a bus or a driver or says a trip is short of one, so a picker, a bar
+   and Prep give one answer. `fitFor` says what stands in each bus's and
+   driver's way on one leg; `rankDrivers` puts drivers in the order to ask
+   them and `autoPicks` in the order an automatic pick takes them;
+   `restBetween` is a driver's rest between two legs; `cardLapse` says a
+   licence or medical card that runs out before a leg ends.
+
+   Nothing here reads the page or the database: each takes the trips, time
+   off and days out a page read, as `readNearby` in data.js reads them.
+   Needs week.js and leg-facts.js loaded first.
+   ========================================================================== */
+(() => {
+  'use strict';
+
+  const { legsOf } = window.SchedulerWeek;
+  const { activeRolesOf } = window.SchedulerLegFacts;
+
+  const DAY = 864e5;
+  const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const parseISO = s => { const [y, m, d] = String(s).split('-').map(Number); return new Date(y, m - 1, d); };
+  const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+  const daysBetween = (a, b) => Math.round((b - a) / DAY);
+  // The days a leg's yard return comes after its last day, the bar's +1.
+  const daysBack = leg => leg.backDays ?? 0;
+
+  // How far back a driver's days are counted, to spread work within a priority.
+  const RECENT_DAYS = 28;
+  const datesOverlap = (a, b) => a.from <= b.to && b.from <= a.to;
+
+  /* A back-to-back driver may be picked automatically only with REST_HOURS
+     between leaving one trip at the yard and leaving for the next: the earlier
+     leg's return arrival to the later leg's departure. A leg missing either
+     time cannot show the rest, so its driver is never picked automatically. */
+  const REST_HOURS = 10;
+  const clockHours = t => {
+    const m = /^(\d{1,2}):(\d{2})/.exec(t || '');
+    return m ? Number(m[1]) + Number(m[2]) / 60 : null;
+  };
+  /* Hours from the earlier leg's return to the later leg's departure, or null
+     without both times. The return is on the earlier leg's last day, or the
+     day after it when the leg comes back past midnight. Below zero, the two
+     legs overlap. */
+  const restBetween = (earlier, later) => {
+    const end = clockHours(earlier.back), start = clockHours(later.depart);
+    if (end == null || start == null) return null;
+    const backDay = addDays(parseISO(earlier.to), daysBack(earlier));
+    return daysBetween(backDay, parseISO(later.from)) * 24 - end + start;
+  };
+
+  /* What stands in each bus's and driver's way on one leg's dates. `buses`
+     and `drivers` are clashes, which a pick warns of; `near` is a trip ending
+     the day before or starting the day after, which warns but does not rule
+     the driver out, and `tight` the drivers among them whose rest is under
+     REST_HOURS or unknown; `worked` is the days each driver drove in the
+     RECENT_DAYS before the leg, which ranks drivers of one priority so the
+     work spreads. `range` is the leg's dates, with its `depart` and `back`
+     times when it has them. `skip` leaves out the editor's whole trip, whose
+     buses it holds unsaved, or the one bus a bar is. */
+  function fitFor({ trips, off, oos }, range, skip) {
+    const buses = new Map(), drivers = new Map(), near = new Map(), worked = new Map(), tight = new Set();
+    const add = (map, id, text) => { if (id == null) return; if (!map.has(id)) map.set(id, []); if (!map.get(id).includes(text)) map.get(id).push(text); };
+    if (!range) return { buses, drivers, near, tight, worked };
+    const before = iso(addDays(parseISO(range.from), -1));
+    const after = iso(addDays(parseISO(range.to), 1));
+    const recent = { from: iso(addDays(parseISO(range.from), -RECENT_DAYS)), to: before };
+    for (const t of trips) {
+      if (skip.tripId != null && String(t.id) === String(skip.tripId)) continue;
+      for (const l of legsOf(t)) {
+        const clash = datesOverlap(range, l);
+        const next = !clash && (l.to === before || l.from === after);
+        const days = [];
+        if (datesOverlap(recent, l)) {
+          for (let d = parseISO(l.from > recent.from ? l.from : recent.from); iso(d) <= (l.to < recent.to ? l.to : recent.to); d = addDays(d, 1)) days.push(iso(d));
+        }
+        if (!clash && !next && !days.length) continue;
+        for (const a of t.trip_assignments || []) {
+          if ((a.leg || 'outbound') !== l.leg) continue;
+          if (skip.assignmentId != null && String(a.id) === String(skip.assignmentId)) continue;
+          const text = `On trip ${t.destination || 'with no destination'}`;
+          const on = activeRolesOf(a);
+          const crew = (a.trip_drivers || []).filter(d => d.driver_id != null && on.has(d.role || 'driver'));
+          if (clash) {
+            add(buses, a.bus_id, text);
+            for (const d of crew) add(drivers, d.driver_id, text);
+          }
+          // A leg the day before that runs past midnight into this one is a
+          // clash, not a short rest.
+          const rest = next ? (l.to === before ? restBetween(l, range) : restBetween(range, l)) : null;
+          if (rest != null && rest < 0) {
+            add(buses, a.bus_id, text);
+            for (const d of crew) add(drivers, d.driver_id, text);
+          } else if (next) {
+            const said = rest == null ? 'rest unknown' : `${Math.round(rest * 10) / 10}h rest`;
+            for (const d of crew) {
+              add(near, d.driver_id, `Back-to-back with ${t.destination || 'a trip'}, ${said}`);
+              if (rest == null || rest < REST_HOURS) tight.add(d.driver_id);
+            }
+          }
+          for (const d of crew) {
+            if (!worked.has(d.driver_id)) worked.set(d.driver_id, new Set());
+            for (const day of days) worked.get(d.driver_id).add(day);
+          }
+        }
+      }
+    }
+    for (const r of off) if (datesOverlap(range, { from: r.start_date, to: r.end_date })) add(drivers, r.driver_id, 'Time off');
+    for (const r of oos) if (datesOverlap(range, { from: r.start_date, to: r.end_date })) add(buses, r.bus_id, 'Out of service');
+    return { buses, drivers, near, tight, worked };
+  }
+
+  /* Who to ask next, first: drivers free on the leg's dates before those on
+     another trip or away, then strictly by priority, the order the office
+     calls in; within one priority a driver with no back-to-back trip first,
+     then one back-to-back with enough rest, then one without, then whoever
+     drove the fewest days lately, so the work spreads. This is the order a
+     person picks from. `fit` is null until it is read, and then only
+     priority and name order. */
+  function rankDrivers(drivers, fit) {
+    const text = (map, id) => (map?.get(id) ?? []).join(' · ');
+    return drivers.map(d => {
+      const days = fit?.worked.get(d.id)?.size ?? 0;
+      const busy = text(fit?.drivers, d.id);
+      const near = text(fit?.near, d.id);
+      const tight = !!fit?.tight.has(d.id);
+      return {
+        d, days, busy, near, tight,
+        rank: [busy ? 1 : 0, d.priority ?? 9, near ? (tight ? 2 : 1) : 0, days],
+        detail: [
+          d.status && d.status !== 'active' ? 'Inactive' : '',
+          d.priority != null ? `Priority ${d.priority}` : '',
+          fit ? `${days} ${days === 1 ? 'day' : 'days'} in ${RECENT_DAYS / 7} weeks` : '',
+        ].filter(Boolean).join(' · '),
+      };
+    }).sort((a, b) => a.rank.reduce((c, v, i) => c || v - b.rank[i], 0)
+      || String(a.d.name ?? '').localeCompare(String(b.d.name ?? '')));
+  }
+
+  /* The order an automatic pick takes, from a ranked list: every free driver
+     with no back-to-back trip, whatever their priority, before a back-to-back
+     one, who is a last resort and only with REST_HOURS of rest. */
+  const autoPicks = ranked => [
+    ...ranked.filter(r => !r.busy && !r.near),
+    ...ranked.filter(r => !r.busy && r.near && !r.tight),
+  ];
+
+  /* What runs out before the leg ends, on its last day as saved, the licence
+     or the medical card, in words, or '' when both last the trip. A date not
+     on file says nothing. */
+  const cardDay = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  function cardLapse(d, range) {
+    return [['Licence', d.license_exp], ['Medical card', d.med_card_expiry]]
+      .map(([what, v]) => [what, String(v ?? '').slice(0, 10)])
+      .filter(([, day]) => /^\d{4}-\d{2}-\d{2}$/.test(day) && day < (range.ends ?? range.to))
+      .map(([what, day]) => `${what} ${day < range.from ? 'expired' : 'expires'} ${cardDay.format(parseISO(day))}`)
+      .join(' · ');
+  }
+
+  window.SchedulerClashes = { REST_HOURS, RECENT_DAYS, datesOverlap, restBetween, fitFor, rankDrivers, autoPicks, cardLapse };
+})();

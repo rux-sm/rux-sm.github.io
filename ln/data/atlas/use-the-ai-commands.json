@@ -980,29 +980,6 @@
       "kind": "prose",
       "tokens": [
         {
-          "t": "strong",
-          "v": "This is for someone who runs the commands."
-        },
-        {
-          "t": "text",
-          "v": " How a command like these is built, improved and removed is in "
-        },
-        {
-          "t": "link",
-          "v": "Set up a GenAI prompt",
-          "href": "set-up-a-genai-prompt.md"
-        },
-        {
-          "t": "text",
-          "v": "."
-        }
-      ],
-      "text": "This is for someone who runs the commands. How a command like these is built, improved and removed is in Set up a GenAI prompt."
-    },
-    {
-      "kind": "prose",
-      "tokens": [
-        {
           "t": "text",
           "v": "> "
         },
@@ -1130,90 +1107,168 @@
       "tokens": [
         {
           "t": "strong",
-          "v": "Each command answers one fixed question."
-        },
-        {
-          "t": "text",
-          "v": " There is nowhere to type your own, and the answer is about the record ticked and the data LN sends with it."
+          "v": "Each command answers one question about the record ticked, from the data LN sends with it."
         }
       ],
-      "text": "Each command answers one fixed question. There is nowhere to type your own, and the answer is about the record ticked and the data LN sends with it.",
+      "text": "Each command answers one question about the record ticked, from the data LN sends with it.",
       "under": "What the commands cannot do"
     },
     {
-      "kind": "prose",
-      "tokens": [
+      "kind": "reference",
+      "columns": [
+        "Limit",
+        "What it means"
+      ],
+      "rows": [
         {
-          "t": "strong",
-          "v": "Status Overview names four steps."
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "One fixed question"
+                }
+              ],
+              "text": "One fixed question"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "There is nowhere to type your own"
+                }
+              ],
+              "text": "There is nowhere to type your own"
+            }
+          ]
         },
         {
-          "t": "text",
-          "v": " They are Print Sales Order Acknowledgements/RMAs, Release Sales Orders to Warehousing, Release Sales Orders/Schedules to Invoicing and Process Delivered Sales Orders. Any other step that applies to a line is written as its session code, and no line with such a step has been tried."
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Four step names"
+                }
+              ],
+              "text": "Four step names"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status Overview names Print Sales Order Acknowledgements/RMAs, Release Sales Orders to Warehousing, Release Sales Orders/Schedules to Invoicing and Process Delivered Sales Orders. Any other step that applies to a line is written as its session code, and no line with such a step has been tried"
+                }
+              ],
+              "text": "Status Overview names Print Sales Order Acknowledgements/RMAs, Release Sales Orders to Warehousing, Release Sales Orders/Schedules to Invoicing and Process Delivered Sales Orders. Any other step that applies to a line is written as its session code, and no line with such a step has been tried"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Not tried on a blocked line"
+                }
+              ],
+              "text": "Not tried on a blocked line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The lines Status Overview was checked on were open or canceled, and none was blocked at the time"
+                }
+              ],
+              "text": "The lines Status Overview was checked on were open or canceled, and none was blocked at the time"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Repeated planned lines"
+                }
+              ],
+              "text": "Repeated planned lines"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The stock check prints some planned transactions twice"
+                }
+              ],
+              "text": "The stock check prints some planned transactions twice"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Order types as codes"
+                }
+              ],
+              "text": "Order types as codes"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The stock check prints order types as codes such as "
+                },
+                {
+                  "t": "literal",
+                  "v": "act.sls"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "literal",
+                  "v": "proj.contract"
+                },
+                {
+                  "t": "text",
+                  "v": ", and what each stands for is not read here"
+                }
+              ],
+              "text": "The stock check prints order types as codes such as act.sls and proj.contract, and what each stands for is not read here"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Shared by everyone"
+                }
+              ],
+              "text": "Shared by everyone"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The commands are set up once for the screen, so every user of it sees them"
+                }
+              ],
+              "text": "The commands are set up once for the screen, so every user of it sees them"
+            }
+          ]
         }
       ],
-      "text": "Status Overview names four steps. They are Print Sales Order Acknowledgements/RMAs, Release Sales Orders to Warehousing, Release Sales Orders/Schedules to Invoicing and Process Delivered Sales Orders. Any other step that applies to a line is written as its session code, and no line with such a step has been tried.",
-      "under": "What the commands cannot do"
-    },
-    {
-      "kind": "prose",
-      "tokens": [
-        {
-          "t": "strong",
-          "v": "Status Overview has not been tried on a line that is blocked now."
-        },
-        {
-          "t": "text",
-          "v": " The lines it was checked on were open or canceled."
-        }
-      ],
-      "text": "Status Overview has not been tried on a line that is blocked now. The lines it was checked on were open or canceled.",
-      "under": "What the commands cannot do"
-    },
-    {
-      "kind": "prose",
-      "tokens": [
-        {
-          "t": "strong",
-          "v": "The stock check prints some planned transactions twice, and order types as codes"
-        },
-        {
-          "t": "text",
-          "v": " such as "
-        },
-        {
-          "t": "literal",
-          "v": "act.sls"
-        },
-        {
-          "t": "text",
-          "v": " and "
-        },
-        {
-          "t": "literal",
-          "v": "proj.contract"
-        },
-        {
-          "t": "text",
-          "v": ". What each code stands for is not read here."
-        }
-      ],
-      "text": "The stock check prints some planned transactions twice, and order types as codes such as act.sls and proj.contract. What each code stands for is not read here.",
-      "under": "What the commands cannot do"
-    },
-    {
-      "kind": "prose",
-      "tokens": [
-        {
-          "t": "strong",
-          "v": "Every user of the two screens sees the commands."
-        },
-        {
-          "t": "text",
-          "v": " They are set up once for the screen, not for one person."
-        }
-      ],
-      "text": "Every user of the two screens sees the commands. They are set up once for the screen, not for one person.",
       "under": "What the commands cannot do"
     },
     {
@@ -1403,6 +1458,43 @@
         }
       ],
       "under": "If it does not work"
+    },
+    {
+      "kind": "variants",
+      "columns": [
+        "Variant",
+        "What changes"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Building a command"
+                }
+              ],
+              "text": "Building a command"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Set up a GenAI prompt",
+                  "href": "set-up-a-genai-prompt.md"
+                },
+                {
+                  "t": "text",
+                  "v": " builds a command like these, improves its answer and removes it"
+                }
+              ],
+              "text": "Set up a GenAI prompt builds a command like these, improves its answer and removes it"
+            }
+          ]
+        }
+      ],
+      "under": "Variants"
     }
   ],
   "verification": "Warning No phase of this procedure has yet been performed end to end against a live system. Follow it as a plan, not as a record.",

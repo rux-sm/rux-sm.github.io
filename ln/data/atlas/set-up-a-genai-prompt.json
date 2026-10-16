@@ -3001,29 +3001,6 @@
       "kind": "prose",
       "tokens": [
         {
-          "t": "strong",
-          "v": "To run a command rather than build one"
-        },
-        {
-          "t": "text",
-          "v": ", see "
-        },
-        {
-          "t": "link",
-          "v": "Use the AI commands",
-          "href": "use-the-ai-commands.md"
-        },
-        {
-          "t": "text",
-          "v": ". It covers this example's stock check and a status check on a sales order line."
-        }
-      ],
-      "text": "To run a command rather than build one, see Use the AI commands. It covers this example's stock check and a status check on a sales order line."
-    },
-    {
-      "kind": "prose",
-      "tokens": [
-        {
           "t": "text",
           "v": "> "
         },
@@ -6104,6 +6081,33 @@
                 }
               ],
               "text": "Stop after phase 5"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Running the commands, not building them"
+                }
+              ],
+              "text": "Running the commands, not building them"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Use the AI commands",
+                  "href": "use-the-ai-commands.md"
+                },
+                {
+                  "t": "text",
+                  "v": " runs this example's stock check and a status check on a sales order line, and checks each answer against the screen"
+                }
+              ],
+              "text": "Use the AI commands runs this example's stock check and a status check on a sales order line, and checks each answer against the screen"
             }
           ]
         }

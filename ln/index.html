@@ -99,7 +99,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-ln-commit="f0892fc1ba941a85bb77c8e9342d8e9115bcc0c4">
+<main id="main-content" class="rux--content" data-ln-commit="6a317005bda559897507d3ae73154668ed0328ec">
 <div class="ln-app">
   <section class="ln-screen" data-screen="home">
     <h1 class="ln-ask">What are you doing?</h1>
@@ -135,6 +135,25 @@
       <li data-t="0" data-n="1"><a class="ln-path__stop" href="./?s=use-the-ai-commands&amp;t=0"><span class="ln-path__dot">1</span><b>Run the stock check</b><small>8<span class="rux--visually-hidden"> steps</span></small></a></li>
       <li data-t="1" data-n="2"><a class="ln-path__stop" href="./?s=use-the-ai-commands&amp;t=1"><span class="ln-path__dot">2</span><b>Run Status Overview</b><small>13<span class="rux--visually-hidden"> steps</span></small></a></li>
     </ol>
+    <p><a class="rux--link" href="./?s=use-the-ai-commands&amp;r=1">Reference</a><span class="ln-quiet"> What the commands cannot do</span></p>
+    <p><a class="rux--link" href="#main-content" data-open="loose">Different cases</a></p>
+    <ul class="ln-list" data-panel="loose" hidden>
+      <li><b><span class="ln-t-named">Building a command</span></b><p><a class="rux--link" href="./?s=set-up-a-genai-prompt">Set up a GenAI prompt</a> builds a command like these, improves its answer and removes it</p></li>
+    </ul>
+  </section>
+  <section class="ln-screen" data-screen="ref" data-s="use-the-ai-commands" hidden>
+    <a class="rux--link ln-back" href="./?s=use-the-ai-commands"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Use the AI commands</a>
+    <h1 class="ln-ask">Reference</h1>
+    <h2 class="ln-ref__title">What the commands cannot do</h2>
+    <p><strong>Each command answers one question about the record ticked, from the data LN sends with it.</strong></p>
+    <ul class="ln-list">
+      <li><b>One fixed question</b><p><span class="ln-quiet">What it means</span><br>There is nowhere to type your own</p></li>
+      <li><b>Four step names</b><p><span class="ln-quiet">What it means</span><br>Status Overview names Print Sales Order Acknowledgements/RMAs, Release Sales Orders to Warehousing, Release Sales Orders/Schedules to Invoicing and Process Delivered Sales Orders. Any other step that applies to a line is written as its session code, and no line with such a step has been tried</p></li>
+      <li><b>Not tried on a blocked line</b><p><span class="ln-quiet">What it means</span><br>The lines Status Overview was checked on were open or canceled, and none was blocked at the time</p></li>
+      <li><b>Repeated planned lines</b><p><span class="ln-quiet">What it means</span><br>The stock check prints some planned transactions twice</p></li>
+      <li><b>Order types as codes</b><p><span class="ln-quiet">What it means</span><br>The stock check prints order types as codes such as <span class="ln-t-exact">act.sls</span> and <span class="ln-t-exact">proj.contract</span>, and what each stands for is not read here</p></li>
+      <li><b>Shared by everyone</b><p><span class="ln-quiet">What it means</span><br>The commands are set up once for the screen, so every user of it sees them</p></li>
+    </ul>
   </section>
   <section class="ln-screen" data-screen="task" data-s="use-the-ai-commands" data-t="0" data-title="Run the stock check" data-after="./?s=use-the-ai-commands&amp;t=1" hidden>
     <a class="rux--link ln-back" href="./?s=use-the-ai-commands"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Use the AI commands</a>
@@ -199,6 +218,7 @@
     <div class="ln-step__more">
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
+      <a class="rux--link" href="./?s=use-the-ai-commands&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>The command sends the ticked item to the model with its description and unit, its stock in each warehouse and its planned inventory transactions, and nothing else. The answer opens in a window of its own, under the sentence that says what the command does, and can be copied or downloaded from there. The command is on this screen and not on a sales order line, because an order line cannot reach its item's stock.</p></div>
@@ -293,6 +313,7 @@
     <div class="ln-step__more">
       <a class="rux--link" href="#main-content" data-open="why">Why this task</a>
       <a class="rux--link" href="#main-content" data-open="wrong">Something went wrong</a>
+      <a class="rux--link" href="./?s=use-the-ai-commands&amp;r=1">Reference</a>
       <a class="rux--link" href="#main-content" data-listen>Read it to me</a>
     </div>
     <div class="ln-why" data-panel="why" hidden><p>The command sends the ticked line to the model with its blocking records, its activities and its actual deliveries. An activity is a step of the line's ordering process, and LN lists each one with its status on the line's status screen, where the first Free activity is the next to be carried out. The answer gives five parts in a fixed order, and its last sentence names that next step or says the line is canceled.</p></div>
@@ -328,6 +349,7 @@
     <p><a class="rux--link" href="#main-content" data-open="loose">Different cases</a></p>
     <ul class="ln-list" data-panel="loose" hidden>
       <li><b><span class="ln-t-named">Keeping the prompt</span></b><p>Stop after <a class="rux--link" href="./?s=set-up-a-genai-prompt&amp;t=5">task 6</a></p></li>
+      <li><b><span class="ln-t-named">Running the commands, not building them</span></b><p><a class="rux--link" href="./?s=use-the-ai-commands">Use the AI commands</a> runs this example's stock check and a status check on a sales order line, and checks each answer against the screen</p></li>
     </ul>
   </section>
   <section class="ln-screen" data-screen="ref" data-s="set-up-a-genai-prompt" hidden>
@@ -2296,6 +2318,10 @@ Write every date as YYYY-MM-DD.
       <li data-t="0" data-n="1"><a class="ln-path__stop" href="./?s=check-item-inventory&amp;t=0"><span class="ln-path__dot">1</span><b>Find the item</b><small>3<span class="rux--visually-hidden"> steps</span></small></a></li>
       <li data-t="1" data-n="2"><a class="ln-path__stop" href="./?s=check-item-inventory&amp;t=1"><span class="ln-path__dot">2</span><b>Read the stock by warehouse</b><small>4<span class="rux--visually-hidden"> steps</span></small></a></li>
     </ol>
+    <p><a class="rux--link" href="#main-content" data-open="loose">Different cases</a></p>
+    <ul class="ln-list" data-panel="loose" hidden>
+      <li><b><span class="ln-t-named">One answer from an AI command</span></b><p>Where the stock check is set up, <a class="rux--link" href="./?s=use-the-ai-commands">Use the AI commands</a> gives each warehouse's figures and every planned receipt and issue in one answer, to check against these screens</p></li>
+    </ul>
   </section>
   <section class="ln-screen" data-screen="task" data-s="check-item-inventory" data-t="0" data-title="Find the item" data-after="./?s=check-item-inventory&amp;t=1" hidden>
     <a class="rux--link ln-back" href="./?s=check-item-inventory"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Check an item's inventory</a>

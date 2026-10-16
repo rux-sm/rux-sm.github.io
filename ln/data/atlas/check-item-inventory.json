@@ -557,29 +557,6 @@
       "kind": "prose",
       "tokens": [
         {
-          "t": "strong",
-          "v": "An AI command gives the same figures in one answer"
-        },
-        {
-          "t": "text",
-          "v": ", with each planned receipt and issue: "
-        },
-        {
-          "t": "link",
-          "v": "Use the AI commands",
-          "href": "use-the-ai-commands.md"
-        },
-        {
-          "t": "text",
-          "v": ", phase 0. Check its answer against these screens."
-        }
-      ],
-      "text": "An AI command gives the same figures in one answer, with each planned receipt and issue: Use the AI commands, phase 0. Check its answer against these screens."
-    },
-    {
-      "kind": "prose",
-      "tokens": [
-        {
           "t": "text",
           "v": "> "
         },
@@ -852,6 +829,47 @@
         }
       ],
       "under": "If it does not work"
+    },
+    {
+      "kind": "variants",
+      "columns": [
+        "Variant",
+        "What changes"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "One answer from an AI command"
+                }
+              ],
+              "text": "One answer from an AI command"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Where the stock check is set up, "
+                },
+                {
+                  "t": "link",
+                  "v": "Use the AI commands",
+                  "href": "use-the-ai-commands.md"
+                },
+                {
+                  "t": "text",
+                  "v": " gives each warehouse's figures and every planned receipt and issue in one answer, to check against these screens"
+                }
+              ],
+              "text": "Where the stock check is set up, Use the AI commands gives each warehouse's figures and every planned receipt and issue in one answer, to check against these screens"
+            }
+          ]
+        }
+      ],
+      "under": "Variants"
     }
   ],
   "verification": "Warning No phase of this procedure has yet been performed end to end against a live system. Follow it as a plan, not as a record.",

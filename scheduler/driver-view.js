@@ -309,13 +309,6 @@
     const marked = sent.size;
     const gone = chosen.filter(l => !sent.has(statusKey(l.trip.id, driver.id, l.leg, l.role))).length;
     const lost = gone ? ` The driver's seat has changed on ${tripsWord(gone)}, which ${gone === 1 ? 'was' : 'were'} not marked. Reload the page to read their trips again.` : '';
-    if (marked && !failed) {
-      const channel = client.channel('scheduler-trips');
-      channel.subscribe(state => {
-        if (state === 'SUBSCRIBED') channel.send({ type: 'broadcast', event: 'driver-status-changed', payload: { driverId: driver.id, status: 'pending-response' } })
-          .finally(() => client.removeChannel(channel));
-      });
-    }
     note.textContent = failed ? 'Some trips could not be marked Pending response. Try again, or set them from the trip.'
       : marked ? `${marked} ${marked === 1 ? 'trip is' : 'trips are'} marked Pending response.${lost}`
       : gone ? `Nothing was marked.${lost}`

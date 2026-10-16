@@ -24,37 +24,6 @@ site.
 - **A database change or a deploy is its own step,** applied on rux's yes
   before the code that reads it is pushed.
 
-### The driver
-
-- **What a driver's job reads as is one file, `scheduler/driver-job.js`,**
-  used by the driver's page and the office, so both name the same changes.
-- **A decline, and a change after a driver accepted, are each a bar alert
-  and a gap on Prep.** The gap covers legs leaving within 30 days.
-- **The flag clears when the driver accepts again, or when the office
-  answers Yes to Mark the driver as told** in the Contact list, because many
-  changes are told by phone.
-- **Copy message asks before it marks trips as sent,** as Remind does, since
-  a copied text is not a sent one.
-- **A change to a stop's time or place takes Printed and Reminded off,** as
-  a bus or date move does, because the paper now carries an old time.
-- **The driver's link shows each stop, folded,** so Stops changed can be
-  read. The page already holds them and the driver carries them on paper.
-- **A cancelled trip stays on the driver's page as a Cancelled card** until
-  its day passes, and Cancel names the drivers to tell.
-- **A file is the itinerary only when its type is Itinerary,** for the
-  driver as for the office, and the driver's link is handed no other file.
-
-### Links without a log-in
-
-- **A driver's link can be replaced with a new address, and setting a driver
-  Inactive revokes it,** so an old text stops opening trips.
-- **A trip document's address stops two days after the trip's last day, or
-  when the trip is cancelled.** Staff still open old files signed in.
-- **The two open live channels go.** The maintenance page and the old board
-  refresh every 30 seconds without them.
-- **The maintenance page shows a bus's days out as Out of service,** never
-  the reason typed, because the link needs no log-in.
-
 ### Money and the route
 
 - **The prices on a quote drawn from a trip are locked,** so a discount is
@@ -133,11 +102,6 @@ None open.
 
 ## Tasks
 
-### The driver and the links
-
-- [ ] Take out the two open channels and their senders.
-- [ ] Draw a bus's days out on the maintenance page from `outOfService`, and
-      name the bus in Recent changes.
 
 ### Money and the route
 

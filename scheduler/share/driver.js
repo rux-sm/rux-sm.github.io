@@ -39,7 +39,6 @@
 (() => {
   'use strict';
 
-  const CHANNEL = 'scheduler-trips';
   const $ = id => document.getElementById(id);
   const staffPage = document.body.dataset.driver === 'staff';
   const client = window.Rux?.account?.client;
@@ -188,7 +187,6 @@
   let statuses = new Map();
   let views = new Map();
 
-  let channel = null;
   async function answer(l, action) {
     const { data, error } = await client.rpc(action === 'accept' ? 'confirm_trip_assignment' : 'decline_trip_assignment',
       { p_token: token, p_trip_id: l.trip.id, p_leg: l.leg });
@@ -203,9 +201,6 @@
     } else {
       views.delete(key);
     }
-    // rux-ui's board listens here and redraws the driver's status.
-    channel?.send({ type: 'broadcast', event: 'driver-status-changed',
-      payload: { tripId: l.trip.id, driverId: data.driverId, leg: l.leg, role: data.role || l.role } }).catch(() => {});
   }
 
   // -- decline, confirmed first -------------------------------------------------
@@ -601,8 +596,6 @@
     token = (new URLSearchParams(location.search).get('s') ?? '').trim().toLowerCase();
     if (!token) { say('error', w.noToken, w.noTokenText); return; }
     $('scheduler-leg-language').hidden = false;
-    channel = client.channel(CHANNEL);
-    channel.subscribe();
     run(load);
     // Coming back to the page reads the trips again, so an open phone never shows yesterday's card.
     document.addEventListener('visibilitychange', () => {

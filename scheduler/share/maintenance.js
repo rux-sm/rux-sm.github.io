@@ -7,10 +7,10 @@
    get_maintenance_schedule_changes check the token and return only what this
    page draws, so it keeps working once the database admits only staff.
 
-   It redraws when the database broadcasts on maintenance-schedule-signal,
-   when the window comes back into focus, and every 30 seconds for a broadcast
-   that never arrived. A refresh that fails keeps the last schedule on screen
-   and says when it was loaded.
+   It redraws when the window comes back into focus and every 30 seconds. A
+   refresh that fails keeps the last schedule on screen and says when it was
+   loaded. A bus's days out are drawn on its row as Out of service, never with
+   the reason typed, since the link needs no log-in.
 
    The grid and bars are the schedule's own (app.css), placed by data.js's
    rules: a leg clipped to the range with a dotted edge where it runs past,
@@ -22,7 +22,6 @@
 
   const DAYS = 14;
   const POLL_MS = 30000;
-  const CHANNEL = 'maintenance-schedule-signal';
 
   const $ = id => document.getElementById(id);
   const weekEl = $('scheduler-week');
@@ -183,7 +182,12 @@
     const rows = new Map();
     for (const bus of data.buses || []) {
       if (bus?.number == null || !String(bus.number).trim()) continue;
-      rows.set(String(bus.id), { number: String(bus.number), bars: [] });
+      rows.set(String(bus.id), { number: String(bus.number), bars: [], out: [] });
+    }
+    // Each bus's days out in the two weeks, as get_maintenance_schedule gives them.
+    for (const o of data.outOfService || []) {
+      const place = clip(o.startDate, o.endDate, start, end);
+      if (place && rows.has(String(o.busId))) rows.get(String(o.busId)).out.push(place);
     }
     for (const trip of data.trips || []) {
       for (const a of trip.assignments || []) {
@@ -193,7 +197,7 @@
         const place = clip(info.from, info.to, start, end);
         if (!place) continue;
         const key = a.busId != null ? String(a.busId) : `number:${a.busNumber}`;
-        if (!rows.has(key)) rows.set(key, { number: String(a.busNumber), bars: [] });
+        if (!rows.has(key)) rows.set(key, { number: String(a.busNumber), bars: [], out: [] });
         rows.get(key).bars.push({ trip, leg, info, place });
       }
     }
@@ -240,6 +244,15 @@
       const track = el('div', 'scheduler-track');
       track.style.setProperty('--scheduler-lanes', lanes);
       track.style.setProperty('--scheduler-day-rules', dayRules);
+      for (const place of row.out) {
+        const span = el('div', 'scheduler-oos');
+        span.style.setProperty('--scheduler-start', place.start);
+        span.style.setProperty('--scheduler-span', place.span);
+        span.setAttribute('role', 'img');
+        span.setAttribute('aria-label', 'Out of service');
+        span.title = 'Out of service';
+        track.append(span);
+      }
       for (const bar of row.bars) track.append(barEl(bar));
       rowEl.append(head, track);
       gridEl.append(rowEl);
@@ -263,9 +276,10 @@
   // -- recent changes ------------------------------------------------------------
   /* Every change names the same things in the same columns: what happened,
      the trip, its dates and the bus. The history records a bus only for a bus
-     change, as "Bus 133" before and after. An added trip shows the buses it is
-     on now, read from the schedule on this page and marked "now", because a
-     later move is a row of its own; a removed trip's bus was never recorded. */
+     change, as "Bus 133" before and after. An added or changed trip shows the
+     buses it is on now, read from the schedule on this page and marked "now",
+     because a later move is a row of its own; a removed trip's bus was never
+     recorded. */
   const shortDates = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' });
   const tripDates = row => {
     if (!isDate(row.tripStartDate)) return '';
@@ -279,21 +293,22 @@
   // A bus name never breaks inside itself, so a narrow column wraps only
   // between buses: "Bus 133 →" over "Bus 506".
   const keep = s => String(s).replace(/ /g, ' ');
+  // "Bus 506", as the history writes a bus; a vehicle named rather than
+  // numbered, such as the van, keeps its name alone.
+  const busesNow = (row, tripsById) => {
+    const buses = [...new Set((tripsById.get(String(row.tripId))?.assignments || [])
+      .filter(a => a.busNumber != null)
+      .map(a => keep(/^\d/.test(String(a.busNumber)) ? `Bus ${a.busNumber}` : String(a.busNumber))))];
+    return buses.length ? `${buses.join(', ')} now` : 'No bus yet';
+  };
   const describe = (row, tripsById) => {
-    if (row.action === 'created') {
-      // "Bus 506", as the history writes a bus; a vehicle named rather than
-      // numbered, such as the van, keeps its name alone.
-      const buses = [...new Set((tripsById.get(String(row.tripId))?.assignments || [])
-        .filter(a => a.busNumber != null)
-        .map(a => keep(/^\d/.test(String(a.busNumber)) ? `Bus ${a.busNumber}` : String(a.busNumber))))];
-      return { change: 'Trip added', bus: buses.length ? `${buses.join(', ')} now` : 'No bus yet' };
-    }
+    if (row.action === 'created') return { change: 'Trip added', bus: busesNow(row, tripsById) };
     if (row.action === 'deleted') return { change: 'Trip removed', bus: 'Not recorded' };
     const bus = (row.changes || []).find(c => c.field === 'bus');
     if (bus?.before && bus?.after) return { change: 'Bus changed', bus: `${keep(bus.before)} → ${keep(bus.after)}` };
     if (bus?.after) return { change: 'Bus assigned', bus: keep(bus.after) };
     if (bus?.before) return { change: 'Bus unassigned', bus: `${keep(bus.before)} → none` };
-    return { change: 'Trip changed', bus: '' };
+    return { change: 'Trip changed', bus: busesNow(row, tripsById) };
   };
 
   /* A change belongs to these two weeks when its trip is on them, by id, or
@@ -473,10 +488,9 @@
   };
   const soon = () => { clearTimeout(timer); timer = setTimeout(refresh, 300); };
 
-  const channel = client.channel(CHANNEL).on('broadcast', { event: 'changed' }, soon).subscribe();
   addEventListener('focus', soon);
   setInterval(soon, POLL_MS);
-  addEventListener('pagehide', () => { clearTimeout(timer); client.removeChannel(channel); }, { once: true });
+  addEventListener('pagehide', () => clearTimeout(timer), { once: true });
   if (!staffPage) {
     refresh();
     return;

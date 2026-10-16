@@ -52,11 +52,6 @@ None open.
 ## Tasks
 
 
-### The connector
-
-- [ ] From a new session, call `needs_attention` and read its answer against
-      the board's To do list and Prep panel for the same days.
-
 ### Records
 
 - [ ] Build `scheduler/trip-history.js` with its check, so any difference in

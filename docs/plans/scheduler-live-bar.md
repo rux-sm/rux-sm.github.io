@@ -58,34 +58,26 @@ warning's first minute.
 - **A stop lamp is a red warning.** `live-trip.js` gains `stopLamp`, first
   in the list: title "Stop lamp", its first code as the few words, every code
   in the sentence. A check-engine lamp stays an amber icon at the
-  destination row's end, because those can stay lit for days.
+  destination row's end, Material's car under a wrench as now, because
+  those can stay lit for days.
 - **The tank is a fuel pump and its percent.** Material's
   `local_gas_station` goes on Design's sheet as a `gas-station` row.
-- **The engine lamp is Design's first drawing of its own.** Neither Carbon
-  nor Material draws an engine. So `engine.svg` is drawn in
-  `design/assets/icons-rux/`, on a 32 grid as a solid silhouette, and named in
-  the `car--front` row's rux column, the row for an engine reporting a fault.
 - **Idling is quiet until it runs long.** Idle is in the bar's ink until a
-  limit, then amber. The limit is a constant in `road-bar.js`, 30 minutes
-  until rux says otherwise.
+  limit, then amber. The limit is a constant in `road-bar.js`, 30 minutes,
+  so a normal wait at a pickup stays quiet.
 - **The legend draws the card's shade as an image layer.** Two colours
   listed as background layers are invalid and draw nothing.
 
 ## Questions
 
-- Is 30 minutes the right point for idling to turn amber?
-- The engine puts an `r-` icon on a page that otherwise draws Material, which
-  the icon sheet says an app does not do. Is that fine for an idea no family
-  draws, or should the bar keep Material's car under a wrench?
-- An earlier live panel was drawn but never committed, and this checkout
-  does not have it. The card replaces it. Can that work be dropped?
+None.
 
 ## Tasks
 
 - [ ] `live-trip.js`: the `stopLamp` warning first in the list, and `driver`
   and `bus` on `wrongBus`, with its header saying both.
-- [ ] Design: the `gas-station` row and the `engine` drawing on the sheet,
-  `npm run icons` in `design/`, then `node tools/inline-sprite.mjs` alone.
+- [ ] Design: the `gas-station` row on the sheet, `npm run icons` in
+  `design/`, then `node tools/inline-sprite.mjs` alone.
 - [ ] `road-bar.js`: the card in place of the contact, time, update and
   drivers rows; the dial, the three lines, the warning lines and the crew
   row; how many rows the view shows; the idle limit; the wrong-bus mark.

@@ -205,6 +205,39 @@
   those go in css/rux-overrides.css. No Carbon file is touched, and
   css/rux.css is the same bytes whether this file is linked or not.
 */
+
+/* A THEME ZONE INSIDE ANOTHER TAKES ITS OWN SURFACES. A custom property that
+   holds var() is resolved where it is declared and inherits as a value, so
+   Carbon's compiled themes re-declare the surface aliases — layer, field and
+   border — on each `[data-theme]` block, reading that block's -01 values. The
+   six themes here name the -01 values and not the aliases, so a zone of one
+   inside a page of another kept the page's surfaces: an apple-dark header on
+   an apple-light page drew its menu and its fields white under light text.
+   This block re-declares them as Carbon's do. It comes first, so a theme block
+   below that sets one of them outright still wins. */
+[data-theme="geist-dark"],
+[data-theme="rux-dark"],
+[data-theme="ant-dark"],
+[data-theme="spotify-dark"],
+[data-theme="apple-light"],
+[data-theme="apple-dark"] {
+  --rux-layer: var(--rux-layer-01);
+  --rux-layer-active: var(--rux-layer-active-01);
+  --rux-layer-background: var(--rux-layer-background-01);
+  --rux-layer-hover: var(--rux-layer-hover-01);
+  --rux-layer-selected: var(--rux-layer-selected-01);
+  --rux-layer-selected-hover: var(--rux-layer-selected-hover-01);
+  --rux-layer-accent: var(--rux-layer-accent-01);
+  --rux-layer-accent-hover: var(--rux-layer-accent-hover-01);
+  --rux-layer-accent-active: var(--rux-layer-accent-active-01);
+  --rux-field: var(--rux-field-01);
+  --rux-field-hover: var(--rux-field-hover-01);
+  --rux-border-subtle: var(--rux-border-subtle-00);
+  --rux-border-subtle-selected: var(--rux-border-subtle-selected-01);
+  --rux-border-strong: var(--rux-border-strong-01);
+  --rux-border-tile: var(--rux-border-tile-01);
+}
+
 [data-theme="geist-dark"] {
   /* color-scheme / brand */
   --rux-color-scheme: dark;

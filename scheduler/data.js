@@ -2677,6 +2677,12 @@
   }
 
   const clashText = (leg, kind, id) => (id == null ? '' : (fleetClashes?.[leg]?.[kind].get(id) ?? []).join(' · '));
+  // A seated driver's licence or medical card that runs out before the leg ends, in words.
+  const seatLapse = (leg, id) => {
+    const range = fleetClashes?.[leg]?.range;
+    const who = id == null ? null : panelIndex.driversById.get(id);
+    return range && who ? cardLapse(who, range) : '';
+  };
 
   // What a vehicle asks for that its bus lacks, in the bar's words.
   function busLacks(busRow, vehicle) {
@@ -2775,7 +2781,7 @@
     .filter(d => !d.status || d.status === 'active' || String(d.id) === String(currentId)), fleetClashes?.[leg] ?? null)
     .map(r => ({
       id: r.d.id, name: r.d.name || r.d.short_name || 'Unnamed driver',
-      detail: r.detail, clash: [r.busy, r.near].filter(Boolean).join(' · '),
+      detail: r.detail, clash: [r.busy, r.lapse, r.near].filter(Boolean).join(' · '),
     }));
 
   /* A status as Carbon's icon indicator: a shape per status as well as a
@@ -2837,7 +2843,7 @@
       options: fleetDriverOptions(leg, seat.driverId),
       current: seat.driverId,
       error: dup ? 'This driver is in another seat on this leg' : '',
-      warn: seat.on ? [clashText(leg, 'drivers', seat.driverId), clashText(leg, 'near', seat.driverId)].filter(Boolean).join(' · ') : '',
+      warn: seat.on ? [clashText(leg, 'drivers', seat.driverId), seatLapse(leg, seat.driverId), clashText(leg, 'near', seat.driverId)].filter(Boolean).join(' · ') : '',
       warnIcon: false,
     });
     picker.dataset.fleetLeg = leg;
@@ -2927,7 +2933,7 @@
     line.append(mark, who);
     const dup = seat.driverId != null && dups.has(`${leg}:${seat.driverId}`);
     const warn = dup ? 'In another seat on this leg'
-      : [clashText(leg, 'drivers', seat.driverId), clashText(leg, 'near', seat.driverId)].filter(Boolean).join(' · ');
+      : [clashText(leg, 'drivers', seat.driverId), seatLapse(leg, seat.driverId), clashText(leg, 'near', seat.driverId)].filter(Boolean).join(' · ');
     if (warn) line.appendChild(fleetWarn(warn));
     return line;
   }
@@ -6685,6 +6691,31 @@
     const tab = document.getElementById(`scheduler-tab-${action}`);
     if (tab) window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
   }
+  /* What a change of dates now clashes with, named in the update window
+     before it saves: each bus and driver on the trip that something stands
+     in the way of on the new dates, as the Buses tab reads it. A clash never
+     stops the save, since the other trip may be about to move; a read that
+     fails says nothing. */
+  async function datesClash(patch) {
+    if (!DONE_DATE_KEYS.some(k => k in patch) || !editing?.fleet) return null;
+    await loadFleetClashes();
+    const said = [];
+    for (const leg of fleetLegs()) {
+      for (const b of editing.fleet[leg] ?? []) {
+        const bus = b.busId != null ? clashText(leg, 'buses', b.busId) : '';
+        if (bus) said.push(`Bus ${panelIndex.buses.get(b.busId)?.number ?? ''}: ${bus}`);
+        for (const r of ROLES) {
+          const seat = b.seats[r.role];
+          const what = seatFilled(seat) ? clashText(leg, 'drivers', seat.driverId) : '';
+          const who = what ? panelIndex.driversById.get(seat.driverId) : null;
+          if (what) said.push(`${who?.short_name || who?.name || 'A driver'}: ${what}`);
+        }
+      }
+    }
+    const all = [...new Set(said)];
+    return all.length ? `The new dates clash: ${all.join(' · ')}.` : null;
+  }
+
   // The Done marks a save takes off, named in the update window before it saves.
   function doneTakenOff() {
     const on = doneState();
@@ -10423,6 +10454,7 @@
     updateText.setSelectionRange(updateText.value.length, updateText.value.length);
   }
   const tripName = t => [t?.destination, t?.customer].filter(Boolean).join(' · ') || 'New trip';
+  // `takesOff` is what else the save does that it says first: a clash the new dates make, a check it takes off.
   function askForUpdate(change, creating, trip, takesOff = null) {
     const skipped = change ? { kind: 'nothing', body: change.line, keys: change.keys } : { kind: 'none' };
     if (!updateModal || !updateText) return Promise.resolve(skipped);
@@ -11164,8 +11196,9 @@
     // Every save asks for its update first; closing the window keeps editing.
     const change = creating ? null : customerChange(patch);
     const named = k => (k in patch ? patch[k] : editing.before?.[k]);
+    const warned = answered ? null : [creating ? null : await datesClash(patch), doneTakenOff()].filter(Boolean).join(' ') || null;
     const answer = answered ?? await askForUpdate(change, creating,
-      { id: savedId, destination: named('destination'), customer: named('customer') }, doneTakenOff());
+      { id: savedId, destination: named('destination'), customer: named('customer') }, warned);
     if (!answer) return false;
     if (await movedOn()) return askConflict(answer);
     // The Done marks as they stand before anything is written, written last.
@@ -11958,7 +11991,7 @@
       .filter(d => (!d.status || d.status === 'active') && !onBus.has(String(d.id))), fit);
     // A busy driver is shown but cannot be picked, so the menu never double-books.
     const pick = r => {
-      const lapse = cardLapse(r.d, range);
+      const lapse = r.lapse;
       return assignItem(r.d.name || r.d.short_name || 'Unnamed driver', {
         id: r.busy ? null : String(r.d.id),
         icon: r.busy ? '#m-do_not_disturb_on-fill' : lapse ? lapseIcon() : r.near ? '#m-warning-fill' : '#m-person-fill',
@@ -12355,7 +12388,7 @@
         const pick = selectField(`${id}-driver`, 'Suggested driver', row.pick ? String(row.pick.d.id) : '', [
           ...(row.pick ? [] : [['', 'No rested driver: choose one']]),
           ...row.options.map(r => [String(r.d.id),
-            [r.d.name || r.d.short_name || 'Unnamed driver', r.detail, r.near].filter(Boolean).join(' · ')]),
+            [r.d.name || r.d.short_name || 'Unnamed driver', r.lapse, r.detail, r.near].filter(Boolean).join(' · ')]),
         ]);
         pick.querySelector('select').dataset.suggestPick = row.key;
         body.appendChild(pick);

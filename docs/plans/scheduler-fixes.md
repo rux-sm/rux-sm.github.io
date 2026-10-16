@@ -154,9 +154,6 @@ None open.
 
 ### Clashes
 
-- [ ] Warn at Save when a date change makes a clash.
-- [ ] Say a lapsed card in words in every picker, and leave that driver out
-      of the automatic picks.
 - [ ] Mark, on the Drivers and Fleet pages, the upcoming trips that time
       off, days out or Inactive would cover, before Save.
 - [ ] Put the seats sum in `leg-facts.js` and alert on the bar and its card.

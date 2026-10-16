@@ -89,12 +89,12 @@
      under REST_HOURS or unknown; `worked` is the days each driver drove in the
      RECENT_DAYS before the leg, which ranks drivers of one priority so the
      work spreads. `range` is the leg's dates, with its `depart` and `back`
-     times when it has them. `skip` leaves out the editor's whole trip, whose
+     times when it has them, and comes back with the answer. `skip` leaves out the editor's whole trip, whose
      buses it holds unsaved, or the one bus a bar is. */
   function fitFor({ trips, off, oos }, range, skip) {
     const buses = new Map(), drivers = new Map(), near = new Map(), worked = new Map(), tight = new Set();
     const add = (map, id, text) => { if (id == null) return; if (!map.has(id)) map.set(id, []); if (!map.get(id).includes(text)) map.get(id).push(text); };
-    if (!range) return { buses, drivers, near, tight, worked };
+    if (!range) return { buses, drivers, near, tight, worked, range };
     const before = iso(addDays(parseISO(range.from), -1));
     const recent = { from: iso(addDays(parseISO(range.from), -RECENT_DAYS)), to: before };
     for (const t of trips) {
@@ -134,7 +134,7 @@
     }
     for (const r of off) if (datesOverlap(range, { from: r.start_date, to: r.end_date })) add(drivers, r.driver_id, 'Time off');
     for (const r of oos) if (datesOverlap(range, { from: r.start_date, to: r.end_date })) add(buses, r.bus_id, 'Out of service');
-    return { buses, drivers, near, tight, worked };
+    return { buses, drivers, near, tight, worked, range };
   }
 
   /* Who to ask next, first: drivers free on the leg's dates before those on
@@ -142,8 +142,9 @@
      calls in; within one priority a driver with no back-to-back trip first,
      then one back-to-back with enough rest, then one without, then whoever
      drove the fewest days lately, so the work spreads. This is the order a
-     person picks from. `fit` is null until it is read, and then only
-     priority and name order. */
+     person picks from, each with `lapse`, a licence or medical card that runs
+     out before the leg ends, in words. `fit` is null until it is read, and
+     then only priority and name order. */
   function rankDrivers(drivers, fit) {
     const text = (map, id) => (map?.get(id) ?? []).join(' · ');
     return drivers.map(d => {
@@ -151,8 +152,9 @@
       const busy = text(fit?.drivers, d.id);
       const near = text(fit?.near, d.id);
       const tight = !!fit?.tight.has(d.id);
+      const lapse = fit?.range ? cardLapse(d, fit.range) : '';
       return {
-        d, days, busy, near, tight,
+        d, days, busy, near, tight, lapse,
         rank: [busy ? 1 : 0, d.priority ?? 9, near ? (tight ? 2 : 1) : 0, days],
         detail: [
           d.status && d.status !== 'active' ? 'Inactive' : '',
@@ -166,10 +168,12 @@
 
   /* The order an automatic pick takes, from a ranked list: every free driver
      with no back-to-back trip, whatever their priority, before a back-to-back
-     one, who is a last resort and only with REST_HOURS of rest. */
+     one, who is a last resort and only with REST_HOURS of rest. A driver
+     whose card runs out before the leg ends is never picked automatically; a
+     person can still pick them, told why, since the date on file may be old. */
   const autoPicks = ranked => [
-    ...ranked.filter(r => !r.busy && !r.near),
-    ...ranked.filter(r => !r.busy && r.near && !r.tight),
+    ...ranked.filter(r => !r.busy && !r.lapse && !r.near),
+    ...ranked.filter(r => !r.busy && !r.lapse && r.near && !r.tight),
   ];
 
   /* What runs out before the leg ends, on its last day as saved, the licence

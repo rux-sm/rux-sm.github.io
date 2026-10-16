@@ -104,6 +104,12 @@ expect('a driver\'s days in the last four weeks are counted', ranked.find(r => r
 expect('an automatic pick takes every free driver with no trip beside first, then a rested one, never a tight or busy one',
   autoPicks(ranked).map(r => r.d.id), ['free', 'worked', 'later', 'rested']);
 
+const lapsed = rankDrivers([D('lapsed', 1, { license_exp: '2026-10-01' }), D('ok', 2)], fit([], mine));
+expect('a card that runs out before the leg ends is said in words',
+  lapsed.map(r => [r.d.id, r.lapse]), [['lapsed', 'Licence expired Oct 1, 2026'], ['ok', '']]);
+expect('and that driver is never picked automatically, though a person still can', autoPicks(lapsed).map(r => r.d.id), ['ok']);
+expect('with no leg read yet, nothing is said of a card', rankDrivers([D('lapsed', 1, { license_exp: '2026-10-01' })], null)[0].lapse, '');
+
 // ── rest ────────────────────────────────────────────────────────────────────
 const leg = (from, to, depart, back, backDays = 0) => ({ from, to, depart, back, backDays });
 expect('rest is from the yard return to the next departure', restBetween(leg('2026-10-13', '2026-10-13', '08:00', '20:00'), leg('2026-10-14', '2026-10-14', '06:00', '18:00')), 10);

@@ -367,7 +367,7 @@ Deno.serve(
               .eq('trip_id', trip.id).order('leg').order('position'))
 
             const stops = orThrow(await supabase.from('trip_stops')
-              .select('leg, position, type, label, name, address, depart_prev, depart_prev_date, arrive, arrive_date, spot, spot_date, miles, drive, dwell_status')
+              .select('id, leg, position, type, label, name, address, depart_prev, depart_prev_date, arrive, arrive_date, spot, spot_date, miles, drive, dwell_status')
               .eq('trip_id', trip.id).order('leg').order('position'))
 
             // The Billing tab's lines, which add up to `quoted_price`.
@@ -644,6 +644,9 @@ Deno.serve(
               'on a round trip the destination is one of them. The editor lays them out on the Route tab, ' +
               'sets a place that is a saved location, and leaves any other for the person to choose from its list. ' +
               'bus_count adds empty vehicles up to that many and takes none away. ' +
+              'stop_changes, on draft_trip_change only, changes the trip\'s saved stops, each named by the id get_trip answers: ' +
+              '{ id, arrive, leave, date, leave_date, dwell } with at least one of the rest, times as HH:MM, days as YYYY-MM-DD, ' +
+              'and dwell what the wait counts as, on, off or sleeper; a hotel night is off. It never adds, removes or moves a stop. ' +
               'A PO or a deposit is not a field: a person enters money on the Billing tab, so say its number or amount in notes.'),
           notes: z.string().max(2000).optional()
             .describe('What you could not work out, shown at the top of the editor.'),
@@ -686,7 +689,7 @@ Deno.serve(
           {
             title: 'Draft a change to a trip',
             description:
-              'Park a change to an existing trip for the person to check. This does NOT change the trip: it returns a link that opens that trip in the editor with the changes filled in, and only their Save applies them.',
+              'Park a change to an existing trip for the person to check, its fields or its saved stops\' times and waits. This does NOT change the trip: it returns a link that opens that trip in the editor with the changes filled in and marked, and only a Save applies them. One draft is one trip; a stop on the leg the link does not open is named in the editor\'s notice.',
             inputSchema: z.object({ trip_id: z.string().uuid(), ...draftShape }),
           },
           async ({ trip_id, fields, notes }) => {

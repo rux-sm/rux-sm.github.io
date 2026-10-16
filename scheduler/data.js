@@ -6088,6 +6088,8 @@
   let seatMilesDrawn = null;
   // The open Route tab's taking of a draft's stops; it returns those still to choose.
   let routeTakesStops = null;
+  // Its taking of a draft's changes to saved stops; it returns those it could not find.
+  let routeTakesChanges = null;
 
   /* THE FUEL CARD LIMITS, the office's, kept in `settings` as `fuel-card-v1`:
      a trip longer than either suggests a fuel card on its Route tab. */
@@ -7738,6 +7740,40 @@
         touch();
         return unpicked;
       };
+      /* A DRAFT'S STOP CHANGES go onto the saved stops they name by id, each
+         a change a person could make in the stop's window: its times, its
+         days and what its wait counts as. Each changed stop is marked to
+         check. A change to a stop not in this leg's list, the drop-off, a
+         stop on the other leg or none of the trip's, is handed back in words,
+         [where, what], to be named. */
+      routeTakesChanges = changes => {
+        const clock = t => (t == null ? null : String(t).slice(0, 5).padStart(5, '0'));
+        const WAITS = { on: 'on duty', off: 'off duty', sleeper: 'in the sleeper berth' };
+        const asked = c => [
+          'arrive' in c ? `arrival ${c.arrive ?? 'none'}` : null, 'leave' in c ? `leave ${c.leave ?? 'none'}` : null,
+          'date' in c ? `day ${c.date}` : null, 'leave_date' in c ? `leave day ${c.leave_date}` : null,
+          'dwell' in c ? `wait ${WAITS[c.dwell] ?? c.dwell}` : null,
+        ].filter(Boolean).join(', ');
+        const whereOf = id => {
+          if (r.dropRow && String(r.dropRow.id) === String(id)) return `the drop-off, ${r.dropRow.name || 'unnamed'}, whose times are the trip's end`;
+          const other = (r.otherStops || []).find(x => String(x.id) === String(id));
+          if (other) return `${other.name || 'a stop'} on the other leg, opened from its own bar`;
+          return 'a stop this trip does not have';
+        };
+        const missed = [];
+        for (const c of changes) {
+          const st = r.list.find(x => String(x.id) === String(c.id));
+          if (!st) { missed.push([whereOf(c.id), asked(c)]); continue; }
+          if ('arrive' in c) st.arrive = clock(c.arrive);
+          if ('leave' in c) st.leave = clock(c.leave);
+          if ('date' in c) st.date = c.date;
+          if ('leave_date' in c) st.leaveDate = c.leave_date;
+          if ('dwell' in c) st.dwell = c.dwell;
+          st.draftChanged = true;
+        }
+        if (missed.length < changes.length) touch();
+        return missed;
+      };
       stopsBody.append(stopsList.list, listNote);
 
       /* A stop with no point on the map, a restroom break on the road, is
@@ -7851,7 +7887,7 @@
             row.querySelector('.scheduler-item__meta').appendChild(mark);
           }
           // A stop a draft laid out is marked to check until its window is Done.
-          if (st.drafted) row.classList.add('scheduler-drafted');
+          if (st.drafted || st.draftChanged) row.classList.add('scheduler-drafted');
           // No location is about the place, so it ends the name's line.
           if (!here) {
             row.querySelector('.scheduler-item__line').appendChild(warnLine('No location'));
@@ -8127,7 +8163,7 @@
             date: document.getElementById('scheduler-f-stopday')?.value || st.date || from,
             leaveDate: document.getElementById('scheduler-f-stopleaveday')?.value || null,
             dwell: document.getElementById('scheduler-f-stopdwell')?.value || null,
-            drafted: false,
+            drafted: false, draftChanged: false,
           };
           if (index === null) r.list.push(next); else r.list[index] = next;
           /* The list is the order Save writes, so it is kept in time order: by
@@ -16105,7 +16141,7 @@
      whose control is not on screen is named in the panel's notice instead,
      so nothing the connector sent goes quietly. */
   const DRAFT_CONTROLS = Object.fromEntries(window.SchedulerDraftFields.FIELDS
-    .filter(f => f.kind !== 'stops').map(f => [f.key, f]));
+    .filter(f => f.kind !== 'stops' && f.kind !== 'stopChanges').map(f => [f.key, f]));
 
   // What the notice calls a place that still needs choosing from its list.
   const PLACE_LABEL = { pickup_address: 'the pickup', dropoff_address: 'the drop-off' };
@@ -16157,6 +16193,8 @@
     const unpicked = [];
     const held = [];
     const unmarked = [];
+    // Stop changes the Route tab could not make here, each [where, what].
+    const unchanged = [];
     let newCustomer = null;
     const given = fields || {};
     // The table's order first, then what the table does not list, the stops among them.
@@ -16167,6 +16205,12 @@
       if (key === 'stops') {
         if (!Array.isArray(value) || !routeTakesStops) { missed.push([key, JSON.stringify(value)]); continue; }
         unpicked.push(...routeTakesStops(value));
+        continue;
+      }
+      // Changes to saved stops, laid onto the Route tab; one it cannot find is named with what it asked.
+      if (key === 'stop_changes') {
+        if (!Array.isArray(value) || !routeTakesChanges) { missed.push([key, JSON.stringify(value)]); continue; }
+        unchanged.push(...routeTakesChanges(value));
         continue;
       }
       const control = DRAFT_CONTROLS[key];
@@ -16222,15 +16266,15 @@
       if (control.kind === 'place') unpicked.push(PLACE_LABEL[key] ?? key);
     }
     refreshDirty();
-    return { missed, unpicked, held, unmarked, newCustomer };
+    return { missed, unpicked, held, unmarked, unchanged, newCustomer };
   }
 
   /* The notice above the fields: what Claude could not work out, or what a
      website request said beyond its fields, and anything filled that this
      panel has no field for, written out so it can be typed in by hand rather
      than lost. */
-  function draftNotice(notes, { missed, unpicked, held = [], unmarked = [], newCustomer = null }, website = false) {
-    if (!notes && !missed.length && !unpicked.length && !held.length && !unmarked.length && !newCustomer) return;
+  function draftNotice(notes, { missed, unpicked, held = [], unmarked = [], unchanged = [], newCustomer = null }, website = false) {
+    if (!notes && !missed.length && !unpicked.length && !held.length && !unmarked.length && !unchanged.length && !newCustomer) return;
     const wrap = el('div', 'scheduler-drafted-notice');
     const note = el('div', 'rux--inline-notification rux--inline-notification--info');
     const details = el('div', 'rux--inline-notification__details');
@@ -16254,6 +16298,10 @@
     if (missed.length) {
       texts.appendChild(el('div', 'rux--inline-notification__subtitle',
         `This panel has no field for: ${missed.map(([k, v]) => `${k} = ${v}`).join('; ')}.`));
+    }
+    // A stop change made nowhere here is said with where it is and what it asked.
+    for (const [where, what] of unchanged) {
+      texts.appendChild(el('div', 'rux--inline-notification__subtitle', `Not changed here: ${where}. The draft asked for ${what}.`));
     }
     if (unmarked.length) {
       texts.appendChild(el('div', 'rux--inline-notification__subtitle',

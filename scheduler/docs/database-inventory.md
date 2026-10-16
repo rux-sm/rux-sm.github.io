@@ -225,7 +225,7 @@ columns: `pickup_location`, `pickup_address`, `dropoff_location` and
 `draft_trip_change` put a row in `trip_drafts` and return
 `/scheduler/?draft=<id>`. A draft may fill only the trip fields the function
 lists, `scheduler/draft-fields.js`, which the editor reads too: each field's kind of value, checked before a draft is parked, and the control it is typed into;
-the panel's notice names any it cannot place. A drafted bus count adds empty
+the panel's notice names any it cannot place. A change's `stop_changes` sets saved stops' times, days and waits by the ids `get_trip` answers, and never adds, removes or moves one; a stop the opened leg does not list is named in the notice. A drafted bus count adds empty
 vehicles on the Buses tab, and a PO or a deposit is not a field: a person
 enters money on Billing. The editor's Save stays the only writer of a trip.
 

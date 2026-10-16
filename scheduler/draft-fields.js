@@ -8,13 +8,20 @@
 
      id, kind    the control it is typed into, and how: text, date, time
      fleet       the trip's first vehicle, its type or the `need` it carries
-     trip        a switch the editor keeps on the trip, under `key`
+     trip        a switch the editor keeps on the trip, under `tripKey`
      buses       empty vehicles added on a leg's Buses tab, up to the count
+     stops       the places between the pickup and the drop-off, which
+                 only a new trip takes, laid out on the Route tab
+     stopChanges changes to a saved trip's stops, each named by the stop's
+                 id as get_trip answers it: its arrive and leave times, its
+                 day and leave day, and what its wait counts as. A change
+                 never adds, removes or moves a stop.
 
    THE ORDER IS THE ORDER THEY ARE TYPED IN, whatever order a draft lists
    them: a field that shows or fills another comes before it, as the type
    comes before the pickup leg's dates it brings into the panel. The stops
-   come last and have no control: the Route tab lays them out.
+   and the stop changes come last and have no control: the Route tab lays
+   them out.
 
    A PO and a deposit are money a person enters on the Billing tab, so
    neither is here; a draft says them in its notes.
@@ -23,6 +30,8 @@
   'use strict';
 
   const TRIP_TYPES = ['round_trip', 'one_way', 'dropoff_pickup'];
+  // What a change to a saved stop may carry: its id and what changes.
+  const STOP_CHANGES = ['id', 'arrive', 'leave', 'date', 'leave_date', 'dwell'];
 
   /* Each kind of value, and what a value of it must be. A check answers null
      for a value that fits, or the words for what it must be. */
@@ -50,6 +59,13 @@
       && (typeof s.name === 'string' || typeof s.address === 'string')
       && (s.arrive == null || clock(s.arrive)) && (s.leave == null || clock(s.leave)))
       ? null : 'a list of up to 30 places, each { name, address, arrive, leave }: a name or an address, and times as HH:MM'),
+    stopChanges: v => (Array.isArray(v) && v.length && v.length <= 50 && v.every(c => !!c && typeof c === 'object'
+      && /^[0-9a-f-]{36}$/i.test(String(c.id ?? ''))
+      && Object.keys(c).every(k => STOP_CHANGES.includes(k)) && Object.keys(c).length > 1
+      && ['arrive', 'leave'].every(k => !(k in c) || c[k] === null || clock(c[k]))
+      && ['date', 'leave_date'].every(k => !(k in c) || (typeof c[k] === 'string' && realDate(c[k])))
+      && (!('dwell' in c) || ['on', 'off', 'sleeper'].includes(c.dwell)))
+      ? null : 'a list of up to 50 changes, each { id, arrive, leave, date, leave_date, dwell }: the stop\'s id from get_trip and at least one of the rest, times as HH:MM or null, days as YYYY-MM-DD, and dwell one of on, off, sleeper'),
   };
 
   const FIELDS = [
@@ -95,6 +111,8 @@
     { key: 'return_time', value: 'time', id: 'scheduler-f-endtrip', kind: 'time' },
     // The places between the pickup and the drop-off, which only a new trip takes.
     { key: 'stops', value: 'stops', kind: 'stops' },
+    // Changes to a saved trip's stops, which only a change to a trip takes.
+    { key: 'stop_changes', value: 'stopChanges', kind: 'stopChanges' },
   ];
   const byKey = new Map(FIELDS.map(f => [f.key, f]));
 
@@ -115,10 +133,13 @@
       if (wrong) out.push(`${key} is ${wrong}.`);
     }
     if (change && 'stops' in fields) {
-      out.push('stops can be drafted only on a new trip. Change an existing trip\'s stops on its Route tab.');
+      out.push('stops can be drafted only on a new trip. Change a saved stop\'s times or wait with stop_changes.');
+    }
+    if (!change && 'stop_changes' in fields) {
+      out.push('stop_changes changes a saved trip\'s stops, so it goes with a change to a trip; a new trip\'s are its stops.');
     }
     return out;
   }
 
-  window.SchedulerDraftFields = { FIELDS, KINDS, TRIP_TYPES, byKey, problems };
+  window.SchedulerDraftFields = { FIELDS, KINDS, TRIP_TYPES, STOP_CHANGES, byKey, problems };
 })();

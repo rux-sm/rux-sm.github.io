@@ -43,7 +43,12 @@ rux's side.
 5. Report before changing anything: what the emails say, what you would
    change, and only the questions `rules.md` does not already answer.
 6. On rux's go, make the changes, press each tab's Done once it is reviewed,
-   say exactly what Save will write, and save on his yes (see Saving).
+   say exactly what Save will write, and save on his yes (see Saving). A
+   change to saved stops' times, days or waits is drafted, not clicked:
+   `draft_trip_change` with `stop_changes`, each stop named by the `id`
+   `get_trip` answers; open its link on the published site, check the
+   stops with a blue bar and the notice, and Save on his yes. One link is
+   one trip.
 
 ## Entering a quote
 
@@ -234,7 +239,7 @@ reads only the ones before it. Nothing is written until step 10.
 - On a new trip the Files tab holds a file until Save sends it. The upload tool cannot read the Desktop: copy the PDF to the session's scratch folder, press Add file from the page's script so no file dialog opens, give the copy to the hidden file input, choose its type, then delete the copy.
 - Forms draws the saved trip, never what the editor holds: it is off on a new trip until its first save, and on a placeholder being filled in its sheets leave out every change not yet saved.
 - A click by `ref` on a tab that is not showing does nothing: take a screenshot to see which tab is open before pressing a button on it.
-- `draft_trip_change` refuses `stops`, which are drafted only on a new trip: on a placeholder add each stop with the Route tab's Add stop.
+- `draft_trip_change` refuses `stops`, which are drafted only on a new trip: on a placeholder add each stop with the Route tab's Add stop. Its `stop_changes` changes saved stops only, and a stop on the leg the link does not open, or the drop-off, is named in the notice and left for the Route tab.
 - The Route tab redraws its list as each drive is measured, so a `ref` read before a stop's Done is gone after it: scroll the tab to its end and press Add stop from a fresh screenshot.
 - Add stop pressed while the Route tab is still redrawing can open no window, and a click by coordinates then lands on the board, where it opens another trip's card and Escape asks to save or discard the whole editor: check the stop's window is showing before clicking or typing in it.
 - A vehicle comes off a trip from its tile's own menu, a right-click on the tile, then Remove, which asks first: pressing the tile opens its window, which has no remove.

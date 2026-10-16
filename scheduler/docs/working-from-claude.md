@@ -73,7 +73,14 @@ Press **Save** and the trip is written. Press **Close** and nothing is. Either
 way the draft is spent and the link does not open twice.
 
 A change to an existing trip works the same way: the link opens that trip,
-with the changes filled in over it, and Reset takes them back out.
+with the changes filled in over it, and Reset takes them back out. A change
+can set a saved stop's times, its days and what its wait counts as, such as
+a hotel night marked off duty; each changed stop carries the blue bar on the
+Route tab. It never adds, removes or moves a stop. One link is one trip, so
+a fix across several trips is a link for each.
+
+Claude can press Save on such a link too, after you say yes in chat to
+that change, as for any Save it makes.
 
 ## Keep the To do list
 

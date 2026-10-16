@@ -2113,6 +2113,19 @@
     return row;
   };
 
+  /* Fields that belong together in a tile of their own, as one contact's do:
+     the tile on the panel's next layer and its fields a layer above that, so
+     a field still stands out from the tile it sits in. */
+  const fieldTile = node => {
+    const layer = el('div', 'rux--layer-two');
+    const tile = el('div', 'rux--tile');
+    const inner = el('div', 'rux--layer-three');
+    inner.appendChild(node);
+    tile.appendChild(inner);
+    layer.appendChild(tile);
+    return layer;
+  };
+
   /* A run of fields under one heading is a fieldset, so a screen reader names
      each field with its group, "Booking contact, Name", and the labels need not
      repeat the heading. The section's spacing is on a wrapper, so the
@@ -7251,7 +7264,7 @@
       const bookingGroup = el('div');
       bookingGroup.setAttribute('role', 'group');
       bookingGroup.setAttribute('aria-labelledby', bookingTitle.id);
-      bookingGroup.append(bookingHead, bookingStack);
+      bookingGroup.append(bookingHead, fieldTile(bookingStack));
       booking.appendChild(bookingGroup);
       panelDetails.appendChild(booking);
       // Phone and email are this trip's copy; editing them never changes the
@@ -7268,7 +7281,7 @@
       const dayRows = creating ? [] : slots.slice(0, slots.findLastIndex(Boolean) + 1);
       /* A stack, 24px between contacts, each contact one row of its name
          beside its phone. */
-      const rowsHost = el('div', 'rux--stack-vertical rux--stack-scale-6');
+      const rowsHost = el('div', 'rux--stack-vertical rux--stack-scale-3');
 
       // What the drawn contacts hold, in `tripContact`'s shape.
       const readContacts = () => [...rowsHost.children].map((_, i) => {
@@ -7278,7 +7291,7 @@
                  phone: document.getElementById(`scheduler-f-dphone${i + 1}`)?.value.trim() || null };
       });
 
-      /* Each contact is a row, Name beside Phone, as a group named
+      /* Each contact is a tile, Name beside Phone, as a group named
          Contact 1 to 5, which a screen reader says before its labels, so the
          tab needs no heading between the section title and the fields. Adding
          and removing are on the overflow menu at the end of the section's title
@@ -7299,7 +7312,7 @@
           );
           row.setAttribute('role', 'group');
           row.setAttribute('aria-label', `Contact ${n}`);
-          rowsHost.appendChild(row);
+          rowsHost.appendChild(fieldTile(row));
         });
       };
       drawContacts(dayRows.length ? dayRows : [null]);

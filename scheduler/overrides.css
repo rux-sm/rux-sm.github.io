@@ -440,6 +440,14 @@
   overflow: hidden;
 }
 
+/* A field in a tile in the side panel, as a trip contact's, takes the field
+   token of the layer inside the tile, `field-03`, rather than the panel's
+   fixed `field-02`, which is the tile's own surface. One class more than the
+   side-panel rule. */
+.rux--side-panel .rux--layer-three :is(.rux--text-input, .rux--text-area, .rux--select-input) {
+  background-color: var(--rux-field);
+}
+
 /* A Fleet bus is a tile on layer two, which is `field-02`'s own colour, so its
    fields take the field token of the layer they sit on, `field-03`, rather
    than the side panel's fixed `field-02`. Two classes, the side-panel rule's

@@ -118,6 +118,32 @@ expect('once it drives on, the pickup is behind it and the arena is next', near(
 expect('a stop that is not a pickup still needs the quarter mile',
   [whereOn(stops, [...toArena.slice(0, 20), ...parkedAt(20 - 0.4, toArena[19][2] + 60e3, 5)]).reached], [0]);
 
+// A bus that loads at a lot 0.8 mi north of the pickup's pin, and drives on north.
+const NORTH = 1 / 69.05;
+const lot = [LAT + 0.8 * NORTH, at(5)[1]];
+const north = (m, ms) => [lot[0] + m * NORTH, lot[1], ms];
+const toLot = [...path(yardOut, [[0, 4]]), [LAT + 0.4 * NORTH, at(4.5)[1], yardOut + 5 * 60e3], [...lot, yardOut + 6 * 60e3]];
+// Samsara's points from a bus that sits: one every five minutes, from 16:00 to past its 16:30 spot.
+const sat = (from, n, every = 5) => Array.from({ length: n }, (_, i) => [...lot, from + i * every * 60e3]);
+const loaded = [...toLot, ...sat(T('2026-10-15', '16:00'), 9)];
+const off = loaded.at(-1)[2];
+expect('a bus standing at a lot 0.8 mi from the pickup is not at it', near(loaded), [-1, false, 0]);
+expect('driving off from there, it has not passed the pickup a mile and a half off',
+  near([...loaded, north(1, off + 60e3)]), [-1, false, 0]);
+expect('once it is two and a half miles off at highway speed, the pickup is behind it and the arena is next',
+  near([...loaded, north(1, off + 60e3), north(2, off + 2 * 60e3), north(3, off + 3 * 60e3)]), [0, false, 1]);
+expect('a bus that stood there only three minutes, as at a light, and drove on has not passed it',
+  near([...toLot, [...lot, yardOut + 9 * 60e3], north(2, yardOut + 10 * 60e3), north(4, yardOut + 12 * 60e3)]), [-1, false, 0]);
+expect('a bus driving by 0.8 mi off without stopping has not passed it',
+  near([...path(yardOut, [[0, 4]]), ...[0, 1, 2, 3, 4].map(m => north(m, yardOut + (5 + m) * 60e3))]), [-1, false, 0]);
+expect('a bus that stood there before the pickup\'s two hours has not passed it',
+  near([...toLot.map(p => [p[0], p[1], p[2] - 3 * 3600e3]), ...sat(T('2026-10-15', '13:00'), 4), north(3, T('2026-10-15', '13:20'))]), [-1, false, 0]);
+// A late bus held up six minutes in traffic 1.2 mi short of the pickup, then on toward it.
+const heldUp = [...path(yardOut, [[0, 3]]), ...parkedAt(3.8, yardOut + 4 * 60e3, 7)];
+expect('a late bus held up a mile short of the pickup, driving on toward it, still has it next',
+  near([...heldUp, [...at(4.4), heldUp.at(-1)[2] + 60e3]]), [-1, false, 0]);
+expect('and it is at the pickup when it gets there', near([...heldUp, [...at(4.4), heldUp.at(-1)[2] + 60e3], [...at(5), heldUp.at(-1)[2] + 2 * 60e3]]), [0, true, 1]);
+
 // Late.
 expect('an instant reads on the office\'s clock', [clockOf(T('2026-10-15', '17:05')), clockOf(T('2026-12-15', '00:40'))], ['17:05', '00:40']);
 expect('ten minutes after it is due is on time', lateBy(T('2026-10-15', '17:30'), T('2026-10-15', '17:40')), 0);

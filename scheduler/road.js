@@ -18,8 +18,11 @@
    order, and no sooner than two hours before it is due, so a bus driving
    past a later stop on its way has not reached it. A pickup is also reached
    by a bus that stands still for two minutes within half a mile of it, since
-   a pin on a campus or a stadium is rarely where the bus loads. The next stop is the first after
-   the last one reached that has a map point.
+   a pin on a campus or a stadium is rarely where the bus loads, and passed
+   by one that stood still five minutes within a mile and a half of it and is
+   now more than two and a half miles off, since it loaded at a lot further
+   out and drove on. The next stop is the first after the last one reached
+   that has a map point.
 
    `arrivals(drive)` works out when a bus gets to a stop from where it is,
    Geoapify's drive slowed by the office's percent, asked at most once every
@@ -47,6 +50,13 @@
   const STILL_MILES = 0.03;
   const CREPT_MILES = 0.15;
   const PARKED_MS = 2 * 60e3;
+  /* A bus that stood this long this near a pickup, and is now further off
+     than GONE_MILES, loaded there and left: long enough that a red light or
+     a slow lane does not count, far enough that a bus still finding its way
+     in has not gone. */
+  const AREA_MILES = 1.5;
+  const LOADED_MS = 5 * 60e3;
+  const GONE_MILES = 2.5;
 
   // The miles between two points as the crow flies; each is [lat, lng].
   const miles = (a, b) => {
@@ -109,15 +119,17 @@
      not reached as the bus pulls out. A path begins at most twelve hours
      back, so a stop due before it begins is taken as reached. A pickup is
      also reached by a bus that has stood still within half a mile of it,
-     and left behind once the bus is half a mile off. `bus`, samsara-now's
+     and left behind once the bus is half a mile off; and it is passed, the
+     bus never at it, once a bus that stood still five minutes within a mile
+     and a half of it is two and a half miles off. `bus`, samsara-now's
      reading, ends the path where it stands while it is stopped, idle or
-     off, parked once its engine has idled or been off two minutes by `now`,
+     off, standing as long as its engine has idled or been off by `now`,
      so a bus that sends no new points still counts its wait. */
   function whereOn(stops, path, bus = null, now = Date.now()) {
-    let reached = -1, inside = false, left = false, reach = NEAR_MILES, rest = null, before = null;
+    let reached = -1, inside = false, left = false, reach = NEAR_MILES, rest = null, before = null, waited = -1;
     const points = [...(path || [])];
     const standing = bus?.lat != null && bus?.lng != null && (bus.mph === 0 || bus.engine === 'idle' || bus.engine === 'off');
-    const idle = standing && (bus.engine === 'idle' || bus.engine === 'off') && now - Date.parse(bus.engine_at) >= PARKED_MS;
+    const still = standing && (bus.engine === 'idle' || bus.engine === 'off') ? now - Date.parse(bus.engine_at) || 0 : 0;
     let last = null;
     if (standing) {
       last = [bus.lat, bus.lng, Math.max(Date.parse(bus.seen) || now, (points.at(-1)?.[2] ?? -Infinity) + 1)];
@@ -129,18 +141,23 @@
       left ||= miles(points[0], p) > NEAR_MILES;
       // Where the bus came to rest, kept while it stays within GPS wander of it.
       if (!rest || miles(rest, p) > STILL_MILES) rest = p;
+      // How long the bus has stood here: since it came to rest, across a
+      // long quiet with little ground between two points, or as its engine says.
       const crept = before && p[2] - before[2] >= PARKED_MS && miles(before, p) <= CREPT_MILES;
+      const stood = Math.max(p[2] - rest[2], crept ? p[2] - before[2] : 0, p === last ? still : 0);
       before = p;
       if (!left) continue;
       if (inside && miles(stops[reached].point, p) > reach) inside = false;
       if (inside) continue;
-      const parked = p[2] - rest[2] >= PARKED_MS || crept || (p === last && idle);
+      if (waited > reached && miles(stops[waited].point, p) > GONE_MILES) { reached = waited; continue; }
       for (let j = reached + 1; j < stops.length; j++) {
         const s = stops[j];
         if (!s.point || (s.due != null && p[2] < s.due - EARLY_MS)) continue;
         const d = miles(s.point, p);
         if (d <= NEAR_MILES) { reached = j; inside = true; reach = NEAR_MILES; break; }
-        if (parked && s.type === 'pickup' && d <= PARKED_MILES) { reached = j; inside = true; reach = PARKED_MILES; break; }
+        if (s.type !== 'pickup') continue;
+        if (stood >= PARKED_MS && d <= PARKED_MILES) { reached = j; inside = true; reach = PARKED_MILES; break; }
+        if (stood >= LOADED_MS && d <= AREA_MILES) waited = j;
       }
     }
     const next = stops.findIndex((s, i) => i > reached && s.point);

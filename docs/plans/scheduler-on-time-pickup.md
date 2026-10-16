@@ -13,9 +13,10 @@ office sees it on the trip and where it adds up driver pay.
 
 ## Decisions
 
-- **On time is within a quarter mile of the pickup at or before its Spot
-  time,** or the leg's departure where it has no Spot; the arrival is the
-  start of the stay there, as `scheduler/samsara-miles/handler.ts` reads it.
+- **On time is reaching the pickup at or before its Spot time,** or the
+  leg's departure where it has no Spot, by the reach `scheduler/road.js`
+  keeps for the board; the arrival is the start of the stay there, as
+  `scheduler/samsara-miles/handler.ts` reads it.
 - **The arrival is kept on each bus's row of the leg,** a new
   `trip_assignments.pickup_at`; whether it was on time is worked out from it
   and the Spot, never stored, so a corrected Spot corrects it.
@@ -34,9 +35,9 @@ office sees it on the trip and where it adds up driver pay.
 
 ## Questions
 
-- Is a quarter mile right? Trips 100074, 100907 and 100908 come out late or
-  with no arrival, which a map pin away from where the buses wait would also
-  give; their GPS is too old to look at beside the pin.
+- Is that reach right? Trip 100916's buses waited 0.4 mi from its pin;
+  trips 100074, 100907 and 100908 came out late or with no arrival, and
+  their GPS is too old to look at beside the pin.
 - Where is driver pay added up once rux-ui is retired: a pay list on the
   Drivers page for a pay period, or a column in the trip export?
 

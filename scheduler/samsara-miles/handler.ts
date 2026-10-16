@@ -11,12 +11,16 @@
 // same bus's previous or next trip begins, and a bus booked on another trip
 // inside the window itself gets no miles for that leg.
 //
-// A BUS'S PICKUP ARRIVAL is when it came within a quarter mile of its leg's
-// pickup and stayed, for a stay that lasts until two hours before the pickup
-// is due or later, the reach the board's live line keeps in scheduler/road.js.
-// A bus already there when its window opens, as at a pickup in the yard,
-// arrived when the window opens. It is read across the leg's window, to
-// twelve hours past the due time at most, and while the leg is still out.
+// A BUS'S PICKUP ARRIVAL is when it reached its leg's pickup by the reach the
+// board's live line keeps in scheduler/road.js, for a stay that lasts until
+// two hours before the pickup is due or later: the first point of a stay
+// within a quarter mile of it, or when the bus came to rest where it stood
+// still two minutes within half a mile, or five minutes within a mile and a
+// half before it drove two and a half miles off. A bus already there when
+// its window opens, as at a pickup in the yard, arrived when the window
+// opens; one standing at a yard near the pickup has not. It is read across
+// the leg's window, to twelve hours past the due time at most, and while the
+// leg is still out.
 //
 // TIMES ARE THE OFFICE'S. The stops keep McAllen wall-clock times with no zone,
 // and each is turned into an instant with that date's offset.
@@ -211,6 +215,14 @@ const legsOf = (trip: Trip): ('outbound' | 'return')[] =>
 const NEAR_MILES = 0.25
 const EARLY_MS = 2 * 3600_000
 const AFTER_DUE_MS = 12 * 3600_000
+// Standing still, and how near and how long counts, as scheduler/road.js has them.
+const PARKED_MILES = 0.5
+const STILL_MILES = 0.03
+const CREPT_MILES = 0.15
+const PARKED_MS = 2 * 60_000
+const AREA_MILES = 1.5
+const LOADED_MS = 5 * 60_000
+const GONE_MILES = 2.5
 
 // The miles between two points as the crow flies; each is [lat, lng].
 export function crow(a: [number, number], b: [number, number]): number {
@@ -236,17 +248,36 @@ export function pickupOf(trip: Trip, leg: 'outbound' | 'return'): { point: [numb
   return { point, due: time && (date ?? from) ? instant((date ?? from)!, time) : null }
 }
 
-// The first point of the stay at the pickup that reaches two hours before it
-// is due, as an instant, or null. A parked bus sends few points, so a stay is
-// the points inside the reach with none outside between them.
+// When the bus reached the pickup, for a stay that reaches two hours before
+// it is due, as an instant, or null. A parked bus sends few points, so a stay
+// inside the quarter mile is the points there with none outside between
+// them, and a bus has stood still since it came to rest within GPS wander,
+// or across a long quiet with little ground between two points. Standing
+// still counts only once the bus has left where its points start, so a bus
+// waiting at a yard near the pickup has not reached it.
 export function arrivalAt(point: [number, number], due: number | null, fixes: Fix[]): number | null {
   const pts = fixes.map(f => ({ at: Date.parse(f.time), p: [f.latitude, f.longitude] as [number, number] }))
     .filter(f => Number.isFinite(f.at) && f.p.every(Number.isFinite)).sort((a, b) => a.at - b.at)
+  const early = due == null ? -Infinity : due - EARLY_MS
   let came: number | null = null
+  let left = false
+  let rest: typeof pts[number] | null = null
+  let before: typeof pts[number] | null = null
+  let waited: number | null = null
   for (const f of pts) {
-    if (crow(point, f.p) > NEAR_MILES) { came = null; continue }
-    came ??= f.at
-    if (due == null || f.at >= due - EARLY_MS) return came
+    const d = crow(point, f.p)
+    came = d > NEAR_MILES ? null : came ?? f.at
+    left ||= crow(pts[0].p, f.p) > NEAR_MILES
+    if (!rest || crow(rest.p, f.p) > STILL_MILES) rest = f
+    const crept = !!before && f.at - before.at >= PARKED_MS && crow(before.p, f.p) <= CREPT_MILES
+    const since = crept ? Math.min(rest.at, before!.at) : rest.at
+    before = f
+    if (f.at < early) continue
+    if (came != null) return came
+    if (!left) continue
+    if (f.at - since >= PARKED_MS && d <= PARKED_MILES) return since
+    if (waited == null && f.at - since >= LOADED_MS && d <= AREA_MILES) waited = since
+    if (waited != null && d > GONE_MILES) return waited
   }
   return null
 }

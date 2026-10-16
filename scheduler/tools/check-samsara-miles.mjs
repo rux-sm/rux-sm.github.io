@@ -240,6 +240,31 @@ expect('a bus parked since it came arrived when it came, whatever points it sent
 expect('a bus that never gets near has not arrived', arrivalAt(PICK, due, [
   fix('2026-10-10T11:00:00Z', YARD), fix('2026-10-10T12:00:00Z', north(0.01))]), null);
 
+// A lot `m` miles east of the pickup, where a campus may have its buses load.
+const east = m => [PICK[0], PICK[1] + m / 62.0];
+const every5 = (from, to, at) => {
+  const out = [];
+  for (let ms = Date.parse(from); ms <= Date.parse(to); ms += 5 * 60_000) out.push(fix(new Date(ms).toISOString(), at));
+  return out;
+};
+const atLot = [fix('2026-10-10T09:00:00Z', YARD), ...every5('2026-10-10T11:20:00Z', '2026-10-10T12:40:00Z', east(0.8))];
+expect('a bus that stood at a lot 0.8 mi off, then drove two and a half miles off, arrived when it came to rest there',
+  iso(arrivalAt(PICK, due, [...atLot, fix('2026-10-10T12:41:00Z', east(2)), fix('2026-10-10T12:42:00Z', east(3.5))])),
+  '2026-10-10T11:20:00.000Z');
+expect('one still standing there has not arrived yet', arrivalAt(PICK, due, atLot), null);
+expect('a bus that stood there only three minutes, as at a light, has not arrived', arrivalAt(PICK, due, [
+  fix('2026-10-10T09:00:00Z', YARD), fix('2026-10-10T11:20:00Z', east(0.8)), fix('2026-10-10T11:23:00Z', east(0.8)),
+  fix('2026-10-10T11:26:00Z', east(3.5))]), null);
+expect('a bus that stood two minutes within half a mile arrived when it came to rest there', iso(arrivalAt(PICK, due, [
+  fix('2026-10-10T09:00:00Z', YARD), fix('2026-10-10T11:20:00Z', east(0.4)), fix('2026-10-10T12:30:00Z', east(0.4))])),
+  '2026-10-10T11:20:00.000Z');
+expect('a late bus held up in traffic a mile out arrived when it reached the pickup', iso(arrivalAt(PICK, due, [
+  fix('2026-10-10T09:00:00Z', YARD), ...every5('2026-10-10T11:50:00Z', '2026-10-10T12:00:00Z', east(1.2)),
+  fix('2026-10-10T12:05:00Z', east(0.6)), fix('2026-10-10T12:08:00Z', PICK)])), '2026-10-10T12:08:00.000Z');
+expect('a bus waiting at a yard near the pickup arrived when it got there, not while it waited', iso(arrivalAt(PICK, due, [
+  fix('2026-10-10T09:00:00Z', east(0.4)), fix('2026-10-10T10:30:00Z', east(0.4)), fix('2026-10-10T12:10:00Z', east(0.4)),
+  fix('2026-10-10T12:15:00Z', PICK)])), '2026-10-10T12:15:00.000Z');
+
 const FIXES = { v101: [fix('2026-10-10T09:00:00Z', YARD), fix('2026-10-10T12:04:00Z', PICK)] };
 p = parts({ odometer, found: placed, fixes: FIXES });
 a = await milesFor(placed, p.deps);

@@ -2,7 +2,7 @@
 // buses on Friday 16 October 2026, when 14:30 UTC is 9:30 AM at the office:
 // each of the four warnings, what keeps each quiet, their order, and where
 // the bus is when nothing is wrong. road.js is loaded beside it, as the board
-// loads it.
+// loads it, and Late to spot is also read from a bus's path through it.
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
@@ -12,7 +12,8 @@ for (const file of ['road.js', 'live-trip.js']) {
   runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), context);
 }
 const { warningsOf, phaseOf, watching } = window.SchedulerLiveTrip;
-const { MARGIN } = window.SchedulerRoad;
+const Road = window.SchedulerRoad;
+const { MARGIN } = Road;
 
 let failed = 0;
 function expect(name, got, want) {
@@ -67,6 +68,34 @@ expect('the pickup reached 19 minutes after its spot warns',
 expect('late to a stop that is not the pickup is not this warning',
   kinds(look({ next: ahead({ stop: stops[1], arrival: at('20:00'), late: 30, where: { reached: 0, at: false, next: 1 } }) })), []);
 expect('at the pickup says nothing', kinds(look({ next: ahead({ at: true, late: 19, where: { reached: 0, at: true, next: 1 } }) })), []);
+
+/* From a path, as the board reads a bar: where the bus is on its leg, and
+   its next stop with when it gets there, a drive of `min` minutes from now. */
+const nextOn = (path, now, min) => {
+  const where = Road.whereOn(stops, path, null, now);
+  if (where.at) return { stops, where, stop: stops[where.reached], at: true };
+  if (where.next < 0) return { stops, where, stop: null };
+  const stop = stops[where.next], arrival = now + min * MIN;
+  return { stops, where, stop, at: false, arrival, late: Road.lateBy(stop.due, arrival) };
+};
+const pin = stops[0].point;
+const MI = 1 / 69.05;
+const lot = [pin[0] + 0.8 * MI, pin[1]];
+const p = (point, clock) => [point[0], point[1], at(clock)];
+// Out of the yard, north, then east into a lot 0.8 mi north of the pin; Samsara's
+// point every five minutes while it sits, then north at a mile a minute.
+const loadedAndGone = [p(yard, '14:20'), p([lot[0] - 2 * MI, yard[1]], '14:32'), p([lot[0], yard[1]], '14:34'), p([lot[0], -98.215], '14:35'),
+  ...['14:36', '14:40', '14:45', '14:50', '14:55', '15:00', '15:05', '15:10', '15:15', '15:20'].map(c => p(lot, c)),
+  ...[1, 2, 3, 4, 5].map(m => p([lot[0] + m * MI, lot[1]], `15:2${m}`))];
+const gone = look({ next: nextOn(loadedAndGone, at('15:26'), 270), now: at('15:26') });
+expect('a bus that loaded at a lot 0.8 mi from the pin and drove off at highway speed is not late to its spot',
+  [kinds(gone), phaseOf(gone).title], [[], 'To Alamodome']);
+// Along the road from the yard to the pin, held up six minutes 1.2 mi short of it after its spot.
+const along = f => [yard[0] + (pin[0] - yard[0]) * f, yard[1] + (pin[1] - yard[1]) * f];
+const heldUp = [p(yard, '14:20'), p(along(0.2), '14:40'), p(along(0.45), '14:50'),
+  p(along(0.677), '15:02'), p(along(0.677), '15:05'), p(along(0.677), '15:08'), p(along(0.839), '15:10')];
+expect('a bus held up a mile short of the pickup after its spot is still late to it',
+  warningsOf(look({ next: nextOn(heldUp, at('15:10'), 4), now: at('15:10') })).map(w => [w.title, w.detail]), [['Late to spot', '~14 min · spot 10:00a']]);
 
 console.log('\n  Short on hours');
 const rosa = bus({ drivers: [driver('d1', 'Rosa Peña', { left_ms: HOUR + 10 * MIN })] });

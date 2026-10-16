@@ -930,6 +930,22 @@
     row.insertBefore(lamp, row.children[1] ?? null);
   }
 
+  /* A bar coming on the road starts as a bus does: with its engine running it
+     shudders while the starter cranks and its edge flickers until the engine
+     catches, app.css's scheduler-bar--starting; with the engine off or no
+     signal its edge only fades in. Once per leg's bus a page load, so a board
+     drawn again, a save or another week, brings the bar back lit and still. */
+  const ROAD_START_MS = 1200;
+  const roadStarted = new Set();
+  function roadStart(bar, bus) {
+    const key = `${bar.dataset.tripId}:${bar.dataset.leg}:${bar.dataset.busId}`;
+    if (roadStarted.has(key)) return;
+    roadStarted.add(key);
+    const name = bus.engine === 'on' || bus.engine === 'idle' ? 'scheduler-bar--starting' : 'scheduler-bar--lit';
+    bar.classList.add(name);
+    setTimeout(() => bar.classList.remove(name), ROAD_START_MS);
+  }
+
   function roadBar(bar, bus) {
     const next = bus ? roadNext(bar, bus) : null;
     const done = bus ? roadDone(bar) : null;
@@ -940,7 +956,7 @@
     if (key) bar.dataset.road = key; else delete bar.dataset.road;
     bar.classList.toggle('scheduler-bar--road', !!bus);
     const edge = bar.querySelector(':scope > .scheduler-road__edge');
-    if (bus && !edge) bar.appendChild(el('span', 'scheduler-road__edge'));
+    if (bus && !edge) { bar.appendChild(el('span', 'scheduler-road__edge')); roadStart(bar, bus); }
     else if (!bus) edge?.remove();
     roadTimes(bar, done, !!next?.late);
     roadLamp(bar, bus);

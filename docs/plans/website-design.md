@@ -75,8 +75,6 @@ stays dark, as it is now. The launch itself is
 
 ## Tasks
 
-- [ ] Rebuild the hero as decided, and measure its words against the
-      brightest part of the fade.
 - [ ] Rebuild the Fleet page around its vehicles, with the gallery below
       under Explore the coaches.
 - [ ] Turn the four facts into a strip, Groups we serve into a two-column
@@ -91,7 +89,6 @@ stays dark, as it is now. The launch itself is
 - [ ] Give the header's logo more room and make its phone action easier to
       see.
 - [ ] Crop the empty sky from the About page's office photograph.
-- [ ] Set every button's corner to 6px.
 - [ ] Put the USDOT and MC numbers in the footer and the safety rating in
       the strip, linked to SAFER.
 - [ ] Put the photographs of a 56-seat coach and the van on the Fleet page

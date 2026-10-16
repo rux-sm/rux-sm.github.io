@@ -19,7 +19,7 @@
                   wanted
 
    Entered and Customer are the trip's, so they sit on its first leg. A
-   placeholder, a trip not quoted yet, has only Entered. Nothing here reads
+   placeholder, as billing.js reads one, has only Entered. Nothing here reads
    the database or the page: the trip row brings its own columns, and the
    page hands in each leg's buses and seats as `facts`, which leg-facts.js
    works out, so a rule lives here once whichever screen asks.
@@ -31,7 +31,7 @@
   // Where each item's button goes: an editor tab, the Forms panel, or the customer's itinerary in the document panel.
   const TABS = { route: 'route', buses: 'fleet', billing: 'billing', details: 'details', files: 'files', forms: 'forms', itinerary: 'itinerary' };
 
-  const placeholder = trip => ['amber', 'orange', 'yellow'].includes(String(trip.trip_bar_color || '').toLowerCase());
+  const placeholder = trip => window.SchedulerBilling.placeholder(trip);
   const hasItinerary = trip => (trip.trip_documents || []).some(d => String(d.label || '').toLowerCase() === 'itinerary');
   // A requirement the trip carries, from its tags, or the old column before it had them.
   const wants = (trip, id, legacy) => (trip.trip_reqs && id in trip.trip_reqs ? trip.trip_reqs[id] === true : !!trip[legacy]);
@@ -130,5 +130,5 @@
   // How many items the whole trip has left, for its card's one line.
   const leftOf = legs => legs.reduce((n, l) => n + l.left, 0);
 
-  window.SchedulerChecklist = { GROUPS, TABS, legsOf, legItems, checklist, leftOf, placeholder };
+  window.SchedulerChecklist = { GROUPS, TABS, legsOf, legItems, checklist, leftOf };
 })();

@@ -1027,11 +1027,10 @@
     bar.style.setProperty('--scheduler-span', place.span);
     bar.style.setProperty('--scheduler-lane', b.lane);
 
-    /* A PLACEHOLDER IS NOT A TRIP YET: the office paints amber on a trip that
-       has not been quoted. Nothing is due on it, so its bar is never the wrong
-       bus and draws no empty seat and no missing bus; a driver someone has named
-       still shows. */
-    const placeholder = tripColorOf(trip) === 'amber';
+    /* A PLACEHOLDER IS NOT A TRIP YET, as billing.js reads one. Nothing is
+       due on it, so its bar is never the wrong bus and draws no empty seat and
+       no missing bus; a driver someone has named still shows. */
+    const placeholder = window.SchedulerBilling.placeholder(trip);
 
     /* A leg that leaves the group or fetches it is striped at one end, as
        app.css draws it: a one-way trip and a split's drop-off where the group
@@ -5680,8 +5679,8 @@
 
   /* Brings the lines in step with the editor, and says whether any moved.
      A cost nobody typed follows the calculator when what it is priced from
-     changes, and a rental line keeps the miles, dead miles and rate it was
-     priced on. On a trip priced as lines, a leg's second driver line comes
+     changes, until the price is settled, as quote-lines.js says, and a rental
+     line keeps the miles, dead miles and rate it was priced on. On a trip priced as lines, a leg's second driver line comes
      when its co-driver seats change and one is on, and goes with the last. */
   function syncLines() {
     if (!editing) return false;
@@ -5713,11 +5712,12 @@
         }
       }
     }
+    const held = window.SchedulerQuoteLines.settled(billingNow());
     for (const l of linePending) {
       if (!window.SchedulerQuoteLines.priced(l.kind)) continue;
       const b = lineBasis(l);
       const key = JSON.stringify(b);
-      if (l.cost_typed || (l.basis === key && l.cost != null)) continue;
+      if (!window.SchedulerQuoteLines.reprices(l, { moved: l.basis !== key, settled: held })) continue;
       const cost = calcCost(l, b);
       if (cost == null) continue;
       if (cost !== money(String(l.cost ?? ''))) moved = true;
@@ -5841,6 +5841,10 @@
     const val = id => document.getElementById(id)?.value.trim() ?? '';
     const kind = val('scheduler-f-lkind') || 'other';
     const typed = money(val('scheduler-f-lcost'));
+    // A line of the same kind on a settled trip keeps its cost when Cost is left blank.
+    const was = lineEditing === null ? null : linePending[lineEditing];
+    const held = was && was.kind === kind && window.SchedulerQuoteLines.follows(was)
+      && window.SchedulerQuoteLines.settled(billingNow()) ? was.cost ?? null : null;
     const row = {
       kind,
       leg: splitNow() ? (val('scheduler-f-lleg') || 'outbound') : null,
@@ -5848,7 +5852,7 @@
       description: val('scheduler-f-ldesc') || null,
       quantity: kind === 'rental' ? null : money(val('scheduler-f-lqty')),
       // quote-lines.js says what is kept of Cost: a typed price only where a figure was typed.
-      ...window.SchedulerQuoteLines.costKept(kind, typed),
+      ...window.SchedulerQuoteLines.costKept(kind, typed, held),
     };
     if (kind === 'rental') {
       const rate = money(val('scheduler-f-lrate'));
@@ -8077,7 +8081,7 @@
          each day's miles, drive, on duty and less rest on a leg of more than
          one day, then the whole leg's. */
       /* The longest wait on duty that, counted as sleeper berth, brings every
-         day inside the second-driver rule; null when no one wait does. The
+         stretch between rests inside the second-driver rule; null when no one wait does. The
          figures are worked out again with that wait changed, longest first. */
       function sleeperRest() {
         const model = routeModel();
@@ -8175,7 +8179,8 @@
         } else fuelBox.replaceChildren();
 
         /* A second driver, by the rule the Second driver line quotes: over
-           10 hours driving, or over 15 on duty less rest, on any day. Until
+           10 hours driving, or over 15 on duty less rest, between any two
+           rests, as route-figures.js parts them. Until
            every bus on the leg has its co-driver seat on, the Summary says so
            and offers the seats, and where some buses have theirs it says how
            many do not; the Buses tab holds the seat, and the quote follows
@@ -8196,9 +8201,9 @@
           const coDriver = { label: 'Add co-driver', onClick: () => setCoDrivers(r.leg, true) };
           driverBox.replaceChildren(rest
             ? notice('warning', 'Second driver',
-              `At ${why}${each ? ' in a day' : ''}, this trip needs a second driver, or the ${hm(rest.wait)} at ${rest.stop.place?.name || 'the stop'} as rest in the sleeper.${some}`,
+              `At ${why}${fig.stretches > 1 ? ' between rests' : ''}, this trip needs a second driver, or the ${hm(rest.wait)} at ${rest.stop.place?.name || 'the stop'} as rest in the sleeper.${some}`,
               [{ label: 'Rest in the sleeper', onClick: () => takeSleeperRest(rest.stop) }, coDriver])
-            : notice('warning', 'Second driver', `At ${why}${each ? ' in a day' : ''}, this trip needs a second driver.${some}`, coDriver));
+            : notice('warning', 'Second driver', `At ${why}${fig.stretches > 1 ? ' between rests' : ''}, this trip needs a second driver.${some}`, coDriver));
         } else driverBox.replaceChildren();
       }
 
@@ -8524,12 +8529,13 @@
         if (linesLive) syncLines();
         lineList.body.replaceChildren();
         const split = splitNow();
+        const held = window.SchedulerQuoteLines.settled(billingNow());
         linePending.forEach((l, i) => {
           const cost = money(String(l.cost ?? ''));
           const amount = lineAmount(l);
           const name = l.item || lineKind(l.kind).label;
-          // A typed cost says what the calculator makes it, until the two agree.
-          const calc = l.cost_typed ? calcCost(l) : null;
+          // A typed cost, or one a settled price holds, says what the calculator makes it, until the two agree.
+          const calc = window.SchedulerQuoteLines.offers(l, held) ? calcCost(l) : null;
           const meta = [
             split && (l.kind === 'rental' || l.kind === 'second_driver') ? (l.leg === 'return' ? 'Pickup' : 'Drop-off') : null,
             cost === null ? 'No cost yet' : `${lineQty(l) ?? 1} × ${usdCents(cost)}`,
@@ -8552,7 +8558,7 @@
             edit: () => openLineDialog(i),
             items: [
               { label: 'Edit', run: () => openLineDialog(i) },
-              // A typed cost the calculator disagrees with can follow it again.
+              // A typed or held cost the calculator disagrees with can follow it again.
               ...(calc !== null && calc !== cost ? [{ label: `Use calculator price, ${usdCents(calc)}`,
                 run: () => { Object.assign(linePending[i], { cost: null, cost_typed: false, basis: null }); drawLines(); refreshDirty(); } }] : []),
               { label: 'Move up', disabled: i === 0, run: () => move(-1) },
@@ -8866,7 +8872,7 @@
             title: ['Purchase order', p.ref || 'No reference', p.date ? mdy(p.date) : null, much || 'No amount'].filter(Boolean).join(' · '),
             edit: () => openPoDialog(i),
             removeLabel: `Remove ${name}`,
-            remove: () => { poPending.splice(i, 1); drawBilling(); refreshDirty(); },
+            remove: () => { poPending.splice(i, 1); drawMoney(); refreshDirty(); },
           }));
         }
         for (const [v, i] of stepOn('invoiced') ? byDate(invPending) : []) {
@@ -8890,7 +8896,7 @@
             title: [name, when, much, p.ref ? `Ref ${p.ref}` : null].filter(Boolean).join(' · '),
             edit: () => openPaymentDialog(i),
             removeLabel: `Remove the ${name} of ${much}`,
-            remove: () => { pending.splice(i, 1); drawBilling(); refreshDirty(); },
+            remove: () => { pending.splice(i, 1); drawMoney(); refreshDirty(); },
           }));
         }
         const offers = [
@@ -8907,9 +8913,11 @@
         drawSummary();
       };
       drawBillingList = drawBilling;
-      redrawPos = drawBilling;
+      // A PO or a payment can settle the price, which holds the lines' costs.
+      const drawMoney = () => { drawBilling(); if (linesLive) redrawLines(); };
+      redrawPos = drawMoney;
       redrawInvoices = drawBilling;
-      redrawPayments = drawBilling;
+      redrawPayments = drawMoney;
       redrawContract = drawBilling;
 
       panelBilling.append(
@@ -12326,7 +12334,7 @@
   function suggestRows(range) {
     const rows = [];
     for (const trip of panelIndex.trips.values()) {
-      if (trip.cancelled_at || tripColorOf(trip) === 'amber') continue;
+      if (trip.cancelled_at || window.SchedulerBilling.placeholder(trip)) continue;
       if (editing?.id != null && String(editing.id) === String(trip.id)) continue;
       const legs = legsOf(trip);
       for (const l of legs) {

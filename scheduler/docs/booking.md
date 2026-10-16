@@ -78,9 +78,12 @@ written.
 
 If the customer has not answered after the office's follow-up wait, the trip
 shows under Needs follow-up on `trips.html`, and its bar on the board counts
-the reminder among its alerts. A trip leaving within a week that still waits on something shows there
-too, however recent its updates. A reminder cannot be dismissed: it stays
-until the missing thing arrives or an update is written. Send a short
+the reminder among its alerts. The wait runs from the last update, or from the
+day the quote is marked sent. A quote not answered yet is chased only once its
+trip is inside the office's chase window, 60 days unless the Follow-ups dialog
+says otherwise. A trip leaving within a week that still waits on something
+shows there too, however recent its updates. A reminder cannot be dismissed:
+it stays until the missing thing arrives or an update is written. Send a short
 check-in. It can say that we price-match and can work with their budget.
 
 ## 4. When the customer says yes

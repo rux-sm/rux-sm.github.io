@@ -34,6 +34,8 @@
 
   const LIGHT = ['id', 'trip_ref', 'destination', 'customer', 'start_date', 'end_date', 'return_start_date', 'return_end_date',
     'trip_type', 'confirmed', 'trip_bar_color', 'cancelled_at', 'created_at', 'bus_count', 'return_bus_count',
+    // A quote marked sent, which ends a placeholder and is the day the customer was last told.
+    'quote_sent_price', 'quote_sent_on',
     // What the follow-up rules read: the money, the itinerary and the updates.
     'quoted_price', 'itinerary_not_needed', 'contract_status', 'po_received', 'po_ref', 'po_amount', 'deposit_amount',
     'date_paid', 'balance_paid', 'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_documents(label)',

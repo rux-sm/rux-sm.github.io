@@ -8,7 +8,7 @@ import { runInNewContext } from 'node:vm';
 
 const window = {};
 runInNewContext(readFileSync(new URL('../route-figures.js', import.meta.url), 'utf8'), { window });
-const { fromStops, legFigures, roomInto, dropRoom, midnights, countsTo } = window.SchedulerRouteFigures;
+const { fromStops, legFigures, roomInto, dropRoom, midnights, countsTo, stretches } = window.SchedulerRouteFigures;
 
 let failed = 0;
 function expect(name, got, want) {
@@ -58,7 +58,16 @@ const late = fromStops({ trip_type: 'round_trip', start_date: '2026-10-03', end_
 const lateFig = legFigures(late);
 expect('a leg past midnight is one row, the sleeper taken off', table(lateFig), ['717 | 12 h 02 | 24 h 25 | 15 h 55']);
 expect('and is back the next day', [lateFig.backOn, midnights(late).get('return')], ['2026-10-04', 1]);
-expect('over 10 hours driving asks for a second driver', lateFig.over?.drive, 722);
+expect('its 8 h 30 in the sleeper is a rest, parting two stretches under the second-driver rule',
+  [stretches(late).map(c => [c.drive, c.span]), lateFig.over], [[[362, 440], [360, 515]], null]);
+const shortRest = fromStops({ trip_type: 'round_trip', start_date: '2026-10-03', end_date: '2026-10-03' }, 'outbound', rows([
+  ['pickup', 'A', '03:10', null, null, null, 152.3, '3:05', 'on', '06:15'],
+  ['stop', 'B', '06:30', '2026-10-03', '10:30', '2026-10-03', 208, '2:57', 'sleeper'],
+  ['stop', 'A', '17:30', '2026-10-03', '23:00', null, 204, '2:55', 'on'],
+  ['return', 'Y', '23:00', null, '02:05', null, 152.3, '3:05', 'on'],
+]), times);
+expect('the same day with 7 hours at the stop is one stretch, over 10 hours driving',
+  [stretches(shortRest).length, legFigures(shortRest).over?.drive], [1, 722]);
 
 // One day whose customer's times leave less than the drive.
 const tight = fromStops({ trip_type: 'round_trip', start_date: '2026-10-02', end_date: '2026-10-02' }, 'outbound', rows([
@@ -122,6 +131,36 @@ const night = legFigures(fromStops({ trip_type: 'round_trip', start_date: '2026-
 ]), times));
 expect('a two-day leg back before the hour on its second morning is one row',
   [night.days, table(night), night.legDays, night.backOn], [false, ['268 | 4 h 57 | 12 h 40 | 12 h 40'], 1, '2026-10-17']);
+
+/* A RUN THROUGH THE NIGHT. Out at 17:00, driving all night with short
+   stops, at the hotel at 6:00 the next morning and back the day after:
+   each date's row is under the rule, but the night is one stretch of 12 h
+   30 driving. */
+const nightRun = fromStops({ trip_type: 'round_trip', start_date: '2026-11-06', end_date: '2026-11-08' }, 'outbound', rows([
+  ['pickup', 'A', '16:30', '2026-11-06', null, null, 20, '0:30', 'on', '16:45'],
+  ['stop', 'B', '17:00', '2026-11-06', '21:00', '2026-11-06', 260, '4:00', 'on'],
+  ['stop', 'C', '21:30', '2026-11-06', '02:30', '2026-11-07', 330, '5:00', 'on'],
+  ['stop', 'D', '03:00', '2026-11-07', '06:00', '2026-11-07', 200, '3:00', 'on'],
+  ['stop', 'A', '08:00', '2026-11-08', '17:00', '2026-11-08', 590, '9:00', 'on'],
+  ['return', 'Y', '17:00', '2026-11-08', '17:30', '2026-11-08', 20, '0:30', 'on'],
+]), times);
+const nightFig = legFigures(nightRun);
+expect('a run through the night is one stretch over two dates, and asks for a second driver',
+  [nightFig.each.map(c => c.drive), stretches(nightRun).map(c => c.drive), nightFig.over?.drive, nightFig.stretches],
+  [[270, 480, 570], [750, 570], 750, 2]);
+// The same night broken by 8 hours at the second stop, marked on duty.
+const brokenRun = fromStops({ trip_type: 'round_trip', start_date: '2026-11-06', end_date: '2026-11-08' }, 'outbound', rows([
+  ['pickup', 'A', '16:30', '2026-11-06', null, null, 20, '0:30', 'on', '16:45'],
+  ['stop', 'B', '17:00', '2026-11-06', '21:00', '2026-11-06', 260, '4:00', 'on'],
+  ['stop', 'C', '21:30', '2026-11-06', '02:30', '2026-11-07', 330, '5:00', 'on'],
+  ['stop', 'D', '10:30', '2026-11-07', '13:30', '2026-11-07', 200, '3:00', 'on'],
+  ['stop', 'A', '08:00', '2026-11-08', '17:00', '2026-11-08', 590, '9:00', 'on'],
+  ['return', 'Y', '17:00', '2026-11-08', '17:30', '2026-11-08', 20, '0:30', 'on'],
+]), times);
+expect('8 hours waiting parts the night, whatever its mark',
+  stretches(brokenRun).map(c => [c.drive, c.span]), [[570, 600], [180, 180], [570, 570]]);
+expect('a night without its times still parts where the bus leaves on a later day',
+  stretches({ ...overnight, list: overnight.list.map((st, i) => (i === 2 ? { ...st, leave: null } : st)) }).map(c => c.drive), [303, 347]);
 
 console.log(failed ? `\n  ${failed} route figure case(s) failed` : '\n  route figures: every case passed');
 process.exit(failed ? 1 : 0);

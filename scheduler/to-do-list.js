@@ -460,7 +460,7 @@
     const trip = el('select', 'rux--select-input');
     const today = iso(new Date());
     const choices = [...(Rows?.trips().values() ?? [])].filter(t => t.id === row.trip_id
-      || ((t.return_end_date || t.end_date || t.start_date || '') >= today && !window.SchedulerChecklist.placeholder(t)));
+      || ((t.return_end_date || t.end_date || t.start_date || '') >= today && !window.SchedulerBilling.placeholder(t)));
     trip.append(option('', 'No trip', !row.trip_id),
       ...choices.map(t => option(t.id, `${t.start_date ? shortDay.format(parseISO(t.start_date)) : 'No date'} · ${tripWords(t)}`, t.id === row.trip_id)));
 

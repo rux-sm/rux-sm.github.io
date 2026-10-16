@@ -40,7 +40,7 @@ const read = {
 };
 
 expect('a leg shows on the day it leaves and on no other',
-  [legsOn([trip], day(1)).length, legsOn([trip], day(0)).length, legsOn([{ ...trip, cancelled_at: 'x' }, { ...trip, trip_bar_color: 'amber' }], day(1)).length],
+  [legsOn([trip], day(1)).length, legsOn([trip], day(0)).length, legsOn([{ ...trip, cancelled_at: 'x' }, { ...trip, confirmed: false, trip_bar_color: 'amber' }], day(1)).length],
   [1, 0, 0]);
 
 const ready = page(trip, 'outbound', read);

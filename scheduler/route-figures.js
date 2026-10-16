@@ -235,6 +235,61 @@
     return figures(legs, span, rest, wrong ? 'check' : needs && (mine.length > 0 || d === first || d === last));
   }
 
+  /* THE SECOND-DRIVER TEST'S STRETCHES. A driver's day is the time between
+     real rests, not a calendar day: any wait of 8 hours, the quote's own
+     printed figure, parts two stretches, whatever its mark, and a run
+     through the night with no such wait is one stretch over two dates. A
+     wait whose times are not in parts them where the bus leaves it on a
+     later day than it reached it. Each stretch is { drive, span, rest }:
+     its drive, on duty from its first time to its last, the pre-trip and
+     post-trip on the leg's ends, or null where its times cannot say, and its
+     shorter waits off duty or in the sleeper berth. */
+  const REST = 480;
+  function stretches(m) {
+    const t = m.times;
+    const many = manyDays(m);
+    const list = [];
+    let cur = null, prev = null;
+    const open = () => { cur = { drive: 0, rest: 0, first: null, last: null, complete: true, stops: [] }; list.push(cur); };
+    // A time as minutes from the leg's first day, rolled past midnight when it
+    // reads earlier than the time before it.
+    const put = (time, date, shift = 0) => {
+      const n = toMin(time);
+      if (n == null) return null;
+      let at = (many && date && m.from ? daysFrom(m.from, date) * 1440 : 0) + n;
+      while (prev != null && at < prev) at += 1440;
+      prev = at;
+      if (cur.first == null) cur.first = at + Math.min(shift, 0);
+      cur.last = at + Math.max(shift, 0);
+      return at;
+    };
+    const add = n => { if (n != null) cur.drive += n; };
+    open();
+    add(m.out[0]);
+    put(t.depart, m.from, -m.pre); put(t.spot, m.from); put(t.leave, m.from);
+    if (!t.leave) cur.complete = false;
+    m.list.forEach((st, i) => {
+      if (isLocated(m, st)) add(st.drive);
+      put(st.arrive, dayOf(m, st));
+      cur.stops.push(st);
+      if (isLocated(m, st) && (roomInto(m, st) ?? 0) < 0) cur.complete = false;
+      const wait = waitOf(m, st);
+      const next = m.list[i + 1] ? dayOf(m, m.list[i + 1]) : m.to;
+      const parts = wait != null ? wait >= REST : (leaveDayOf(st, m.from) ?? '') > dayOf(m, st) || (next ?? '') > (dayOf(m, st) ?? '');
+      if (parts) { open(); if (wait == null) prev = null; }
+      else if (st.dwell && st.dwell !== 'on') cur.rest += wait ?? 0;
+      put(st.leave, leaveDayOf(st, m.from));
+    });
+    if (m.dropCounts) add(m.drop[0]);
+    add(m.home[0]);
+    put(t.endtrip, m.to); put(t.back, m.to, m.post);
+    if (!t.endtrip) cur.complete = false;
+    return list.map(c => ({
+      drive: c.drive, rest: c.rest,
+      span: c.complete && timesComplete(c.stops) && c.first != null && c.last != null && c.last > c.first ? c.last - c.first : null,
+    }));
+  }
+
   /* THE LEG'S FIGURES. Miles and drive are every leg's: the yard's two and
      each stop's. On duty is the span from pre-trip to post-trip, and less
      rest is that less the waits the driver is off the clock for, the
@@ -246,9 +301,9 @@
      Returns { days, dates, each, total, backOn, dayMiles, legMiles, legDays,
      over, status, unmeasured }: `days` whether it has a row a day, `backOn`
      the day the bus is back when it is not the leg's first, `over` the first
-     row past the second-driver rule (over 10 hours driving, or over 15 on
-     duty less rest), `status` Needs times or Check times when the times
-     cannot give on duty. */
+     stretch past the second-driver rule (over 10 hours driving, or over 15
+     on duty less rest), `stretches` how many the leg has, `status` Needs
+     times or Check times when the times cannot give on duty. */
   function legFigures(m) {
     const t = m.times;
     const legs = [m.out, ...m.list.filter(st => isLocated(m, st)).map(st => [st.drive, st.miles]),
@@ -287,6 +342,7 @@
       }
     }
     const days = !!each;
+    const run = stretches(m);
     const backDays = late.get('return') ?? 0;
     return {
       days,
@@ -300,7 +356,8 @@
       dayMiles: each ? each.map(c => c.miles) : [total.miles],
       legMiles: Math.round(legs.reduce((n, [, mi]) => n + (Number(mi) || 0), 0)),
       legDays: m.from && lastRow ? daysFrom(m.from, lastRow) + 1 : 1,
-      over: (each ?? [total]).find(c => c.drive > 600 || (c.span != null && c.span - c.rest > 900)) ?? null,
+      over: run.find(c => c.drive > 600 || (c.span != null && c.span - c.rest > 900)) ?? null,
+      stretches: run.length,
       status: days ? (each.find(c => c.status === 'Check times')?.status ?? each.find(c => c.status)?.status ?? null)
         : total.status,
       unmeasured: legs.some(([n]) => n == null),
@@ -377,6 +434,6 @@
   window.SchedulerRouteFigures = {
     toMin, hm, leaveDayOf, samePlace,
     waitOf, minutesAt, timeBetween, legInto, roomInto, dropRoom, midnights, countsTo,
-    legFigures, fromStops,
+    REST, stretches, legFigures, fromStops,
   };
 })();

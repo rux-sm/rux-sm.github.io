@@ -19,8 +19,7 @@
   /* The trip colours, read by the board, the editor, the bar menu and the
      printed week. `value` is what `trips.trip_bar_color` stores and `hue` is
      the `scheduler-bar--*` class that paints it. Amber is the office's
-     placeholder, a trip not yet quoted, and its bar is never marked as the
-     wrong bus.
+     placeholder colour; billing.js says when an amber trip is a placeholder.
 
      Retired names are mapped on read and never rewritten, as rux-ui does:
      orange and yellow paint as amber, cyan as teal. */

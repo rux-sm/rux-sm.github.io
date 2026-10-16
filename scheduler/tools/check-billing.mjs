@@ -57,5 +57,15 @@ Billing.setWorkflow({ workflow: { contractSigned: { active: false } } });
 expect('a contract milestone that is off does not confirm a signed trip',
   stands({ ...quoted, contract_status: 'Signed' }), ['pending', false, 0, 1000]);
 
+// A placeholder: amber, not confirmed and with no quote marked sent.
+const amber = { trip_bar_color: 'amber', confirmed: false };
+expect('an amber trip not confirmed or sent is a placeholder, in amber\'s retired names too',
+  [Billing.placeholder(amber), Billing.placeholder({ ...amber, trip_bar_color: 'Orange' }), Billing.placeholder({ ...amber, trip_bar_color: 'yellow' })],
+  [true, true, true]);
+expect('confirmed, a quote marked sent at a price or on a day, or another colour, is not',
+  [Billing.placeholder({ ...amber, confirmed: true }), Billing.placeholder({ ...amber, quote_sent_price: 1200 }),
+    Billing.placeholder({ ...amber, quote_sent_on: '2026-10-01' }), Billing.placeholder({ ...amber, trip_bar_color: 'teal' })],
+  [false, false, false, false]);
+
 console.log(failed ? `\n  billing: ${failed} case(s) failed` : '\n  billing: every case passed');
 process.exit(failed ? 1 : 0);

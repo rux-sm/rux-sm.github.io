@@ -192,9 +192,8 @@
      assignment and the driver it is on, `what` it is, and `words`, the bus's
      number or the driver's name before it. `read` holds the page's
      `driversById` and `busesById`. */
-  const PLACEHOLDER = ['amber', 'orange', 'yellow'];
   function standing(trip, leg, nearby, { driversById = new Map(), busesById = new Map() } = {}) {
-    if (!trip || trip.cancelled_at || PLACEHOLDER.includes(String(trip.trip_bar_color || '').toLowerCase())) return [];
+    if (!trip || trip.cancelled_at || window.SchedulerBilling.placeholder(trip)) return [];
     const range = legsOf(trip).find(l => l.leg === leg);
     if (!range) return [];
     const fit = fitFor(nearby, range, { tripId: trip.id });

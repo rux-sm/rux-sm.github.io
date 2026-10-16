@@ -24,35 +24,6 @@ site.
 - **A database change or a deploy is its own step,** applied on rux's yes
   before the code that reads it is pushed.
 
-### Money and the route
-
-- **The prices on a quote drawn from a trip are locked,** so a discount is
-  a Billing line and the trip holds what the customer signs.
-- **A sent quote stays on the board until the customer cancels or the office
-  takes it off.** The one-week hold stays in `booking.md` as what the office
-  says and is on no signed sheet, because it is not enforced.
-- **An unanswered quote is chased from 60 days before its trip.** Quote sent
-  is read as a date where it is marked, never as proof a quote is unsent,
-  because most quotes out carry no mark.
-- **After a trip has run, a confirmed trip with money owed asks for it,
-  unless a PO covers it,** because a PO's payment is recorded on the printed
-  schedule and not in the scheduler.
-- **Two days are parted by any overnight wait of 8 hours,** whatever its
-  mark, in the second-driver test; 8 is the quote's own printed figure.
-- **A line that follows the calculator keeps following it** after its window
-  is opened and closed. Only a figure typed in Cost makes a typed price.
-- **A settled price holds.** Once a PO is in or the trip is paid in full, a
-  line nobody typed stops repricing and offers the calculator's figure.
-- **The customer quote's Total is the sum of the lines it prints.**
-- **A draft never changes a Quoted price the editor keeps locked.**
-- **A trip paid past its price counts as paid** when deciding Confirmed.
-- **A placeholder is an amber trip that is not confirmed and has no quote
-  marked sent;** past either, every reminder applies.
-- **A card payment carries a 4% fee, written into the agreement's Payment
-  Policy,** so the customer signs it.
-- **`emails.md` owns how a quote email is written.** `booking.md` keeps what
-  a customer must know before a trip is confirmed and links to it.
-
 ### The connector and the skills
 
 - **The fields a draft may fill are one table, `scheduler/draft-fields.js`,**
@@ -102,18 +73,6 @@ None open.
 
 ## Tasks
 
-
-### Money and the route
-
-- [ ] Define a placeholder once, in `billing.js`, and read it in the
-      follow-up, To do, checklist and Departures rules, the board and the
-      connector.
-- [ ] Ask for a balance after a trip with no PO has left, in `follow-up.js`.
-- [ ] Teach `follow-up.js` the chase window and when the customer was last
-      told, with the window in the Follow-ups dialog.
-- [ ] Hold a settled price in `syncLines`.
-- [ ] Test each stretch between real rests in `route-figures.js`, with cases
-      for a run through the night on two dates.
 
 ### The connector and the skills
 

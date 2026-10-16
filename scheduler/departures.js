@@ -83,7 +83,7 @@
   function legsOn(trips, day) {
     const out = [];
     for (const trip of trips || []) {
-      if (trip.cancelled_at || Checklist.placeholder(trip)) continue;
+      if (trip.cancelled_at || window.SchedulerBilling.placeholder(trip)) continue;
       for (const leg of Checklist.legsOf(trip)) {
         if (ToDo.legDay(trip, leg) === day) out.push({ trip, leg, day });
       }

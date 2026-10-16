@@ -60,6 +60,7 @@ expect('a co-driver turned on and not filled',
 expect('no actual miles', asks({ ...done, actual_miles: null }, after), ['miles']);
 expect('no invoice', asks({ ...done, invoice_number: null }, after), ['invoice']);
 expect('a balance still owed', asks({ ...done, trip_payments: [{ amount: 400, date: '2026-10-21' }] }, after), ['balance']);
+expect('a balance a PO covers is not asked for', asks({ ...done, po_ref: 'PO-1', trip_payments: [{ amount: 400, date: '2026-10-21' }] }, after), []);
 expect('everything at once, in the card\'s order',
   asks({ ...done, bus_count: 2, trip_assignments: [{ ...seat, trip_drivers: [] }], actual_miles: null, invoice_number: null, trip_payments: [] }, after),
   ['bus', 'driver', 'miles', 'invoice', 'balance']);

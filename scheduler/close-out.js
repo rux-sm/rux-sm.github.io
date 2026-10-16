@@ -7,7 +7,7 @@
    on the board and asks only what its record lacks, in the words every alert
    uses: a leg short of a bus or a seat with no driver, as the checklist
    counts them; no actual miles; no invoice, where the billing workflow
-   invoices; and a balance still owed. It asks while one of them is true and
+   invoices; and a balance still owed that no PO covers. It asks while one of them is true and
    closes itself once none is, so nothing is stored. Only a trip that ends on
    or after FROM asks anything, so the trips before close-out began raise
    nothing.
@@ -25,8 +25,7 @@
   // Where the trip editor puts each one right.
   const GO = { bus: 'fleet', driver: 'fleet', miles: 'billing', invoice: 'billing', balance: 'billing' };
 
-  // The office paints a trip amber, or its retired names, while it is not quoted yet.
-  const placeholder = trip => ['amber', 'orange', 'yellow'].includes(String(trip.trip_bar_color || '').toLowerCase());
+  const placeholder = trip => window.SchedulerBilling.placeholder(trip);
   const legsOf = trip => window.SchedulerWeek.legsOf(trip);
 
   // When the trip's last leg is back at the yard, or null with no dates.
@@ -55,8 +54,9 @@
     if (trip.actual_miles == null || trip.actual_miles === '') list.push('miles');
     const Billing = window.SchedulerBilling;
     if (Billing.stepOn('invoiced') && !Billing.invoicedOf(trip)) list.push('invoice');
-    const { price, remaining } = Billing.of(trip);
-    if (price > 0 && remaining > 0) list.push('balance');
+    // A PO's payment is recorded on the printed schedule, so a PO covers what is owed.
+    const { price, remaining, poReceived } = Billing.of(trip);
+    if (price > 0 && remaining > 0 && !poReceived) list.push('balance');
     return list;
   }
 

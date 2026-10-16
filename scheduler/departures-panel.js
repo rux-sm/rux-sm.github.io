@@ -110,6 +110,8 @@
   const STEPS = ['envelope_printed', 'trip_reminder_sent', 'itinerary_printed', 'hos_form_printed', 'driver_forms_printed'];
   const COLUMNS = ['id', 'trip_ref', 'destination', 'customer', 'customer_id', 'start_date', 'end_date', 'return_start_date', 'return_end_date',
     'trip_type', 'confirmed', 'trip_bar_color', 'cancelled_at', 'created_at', 'bus_count', 'return_bus_count', 'po_ref',
+    // A quote marked sent, which ends a placeholder and is the day the customer was last told.
+    'quote_sent_price', 'quote_sent_on',
     // The money, as follow-up.js reads it, for what the customer still owes.
     'quoted_price', 'contract_status', 'po_received', 'po_amount', 'deposit_amount', 'date_paid', 'balance_paid',
     'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_updates(created_at,kind)',

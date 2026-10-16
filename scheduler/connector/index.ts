@@ -121,12 +121,14 @@ function dayFrom(day: string, n: number) {
 }
 
 /**
- * A placeholder is not a trip yet: the office paints it amber (orange and
- * yellow are its retired names, as week.js maps them) before a quote is sent,
- * and the board asks no bus of it.
+ * A placeholder is not a trip yet, as billing.js reads one: amber (orange and
+ * yellow are its retired names, as week.js maps them), not confirmed, and with
+ * no quote marked sent. The board asks no bus of it.
  */
-function isPlaceholder(trip: { trip_bar_color?: string | null }) {
+function isPlaceholder(trip: { trip_bar_color?: string | null, confirmed?: boolean | null,
+  quote_sent_price?: number | null, quote_sent_on?: string | null }) {
   return ['amber', 'orange', 'yellow'].includes(String(trip.trip_bar_color ?? '').toLowerCase())
+    && !trip.confirmed && trip.quote_sent_price == null && !trip.quote_sent_on
 }
 
 type TripLegs = {
@@ -237,7 +239,7 @@ function busNeeds(trip: { req_56pax?: boolean | null; req_ada?: boolean | null; 
  * evening before, and the group let off past midnight.
  */
 function tripWarnings(
-  trip: TripLegs & { trip_bar_color?: string | null },
+  trip: TripLegs & Parameters<typeof isPlaceholder>[0],
   buses: { leg: string; buses: unknown }[],
   stops: {
     leg: string; position: number; name?: string | null
@@ -346,7 +348,7 @@ Deno.serve(
           {
             title: 'Get one trip',
             description:
-              'One trip in full, with the buses and drivers on it, its stops, its quote lines, and warnings: a leg short of buses, or a stop dated more than a day outside its leg. An amber trip_bar_color (or its old names orange and yellow) is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. updates are what has been said about the trip, newest first, as its card lists them. quote_lines are the Billing tab\'s lines, which add up to quoted_price; route_done_at, buses_done_at and billing_done_at say when each tab was marked Done, and quote_sent_price and quote_sent_on what the customer was sent. On a one-day leg a stop\'s time past midnight also has depart_prev_on, spot_on or arrive_on, the day it falls on. Give either a trip id or a trip reference.',
+              'One trip in full, with the buses and drivers on it, its stops, its quote lines, and warnings: a leg short of buses, or a stop dated more than a day outside its leg. An amber trip_bar_color (or its old names orange and yellow) on a trip not confirmed and with no quote_sent_price or quote_sent_on is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. updates are what has been said about the trip, newest first, as its card lists them. quote_lines are the Billing tab\'s lines, which add up to quoted_price; route_done_at, buses_done_at and billing_done_at say when each tab was marked Done, and quote_sent_price and quote_sent_on what the customer was sent. On a one-day leg a stop\'s time past midnight also has depart_prev_on, spot_on or arrive_on, the day it falls on. Give either a trip id or a trip reference.',
             inputSchema: z.object({
               trip_id: z.string().uuid().optional(),
               trip_ref: z.string().max(40).optional(),
@@ -416,7 +418,7 @@ Deno.serve(
               busQuery.then(orThrow),
               supabase.from('drivers').select('id, name, short_name, phone, priority')
                 .eq('status', 'active').order('sort_order').then(orThrow),
-              supabase.from('trips').select('id, trip_ref, customer, destination, trip_type, confirmed, trip_bar_color, start_date, end_date, return_start_date, return_end_date, departure_time, return_time, bus_count, return_bus_count, vehicle_type, req_56pax, req_ada, req_sleeper, trip_stops(leg, position, type, depart_prev, arrive, spot)')
+              supabase.from('trips').select('id, trip_ref, customer, destination, trip_type, confirmed, trip_bar_color, quote_sent_price, quote_sent_on, start_date, end_date, return_start_date, return_end_date, departure_time, return_time, bus_count, return_bus_count, vehicle_type, req_56pax, req_ada, req_sleeper, trip_stops(leg, position, type, depart_prev, arrive, spot)')
                 .is('cancelled_at', null).lte('start_date', until)
                 .or(`end_date.gte.${since},return_end_date.gte.${since},start_date.gte.${since}`).then(orThrow),
               supabase.from('bus_out_of_service').select('bus_id, start_date, end_date, reason').then(orThrow),

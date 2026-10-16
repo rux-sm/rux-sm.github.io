@@ -7,7 +7,10 @@
    it is priced from changes, until a figure is typed in its Cost; only that
    makes a typed price. So its window opens with Cost empty, and Done with
    nothing typed leaves it following. Any other line has the cost it was
-   given. What the calculator makes the line cost is worked out here too, on
+   given. A settled price holds: once a PO is in or the trip is paid in full,
+   a line that follows the calculator and has a cost keeps it, and Billing
+   offers the calculator's figure beside it, as it does beside a typed one.
+   What the calculator makes the line cost is worked out here too, on
    `Rux.quote`'s formulas, so Billing and the Detailed itinerary agree.
 
    Nothing here reads the page or the database: the editor and the print
@@ -21,6 +24,15 @@
   // Whether a line's cost is the calculator's to set.
   const follows = line => priced(line?.kind) && !line.cost_typed;
 
+  /* Whether the trip's price is settled, from the editor's billing: a PO in,
+     or paid in full. */
+  const settled = billing => !!(billing?.poReceived || billing?.fullyPaid);
+  /* Whether a line takes the calculator's cost now: one that follows it and
+     has no cost yet, or whose basis `moved` while the price is not settled. */
+  const reprices = (line, { moved, settled: held }) => follows(line) && (line.cost == null || (moved && !held));
+  // Whether Billing offers the calculator's figure beside a line's own cost.
+  const offers = (line, held) => priced(line?.kind) && (!!line.cost_typed || (held && line.cost != null));
+
   /* What the window's Cost opens on, `cost` being the line's cost as a number
      or null. A line that follows the calculator opens empty, or Done would
      type the calculator's own figure in and stop the line following. Any
@@ -29,9 +41,10 @@
 
   /* What Done keeps of the Cost field, `typed` being its number or null for a
      blank: a discount as a negative cost, and a typed price only where a
-     figure was typed. */
-  const costKept = (kind, typed) => ({
-    cost: typed == null ? null : (kind === 'discount' ? -Math.abs(typed) : typed),
+     figure was typed. `held` is the cost a settled price holds, which a blank
+     keeps, so opening a held line's window never moves its price. */
+  const costKept = (kind, typed, held = null) => ({
+    cost: typed == null ? held : (kind === 'discount' ? -Math.abs(typed) : typed),
     cost_typed: typed != null,
   });
 
@@ -65,5 +78,5 @@
     return amount == null ? null : round2(amount);
   };
 
-  window.SchedulerQuoteLines = { PRICED, priced, follows, costShown, costKept, milesADay, calculated };
+  window.SchedulerQuoteLines = { PRICED, priced, follows, settled, reprices, offers, costShown, costKept, milesADay, calculated };
 })();

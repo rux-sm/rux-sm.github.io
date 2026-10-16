@@ -64,7 +64,7 @@
   const legDay = (trip, leg) => (leg === 'return' ? (trip.return_start_date ?? trip.end_date) : trip.start_date) ?? null;
   // A split trip's leg in the office's words; any other trip has one leg and names none.
   const legName = (trip, leg) => (split(trip) ? (leg === 'return' ? 'Pickup' : 'Drop-off') : null);
-  const live = trip => !trip.cancelled_at && !Checklist.placeholder(trip);
+  const live = trip => !trip.cancelled_at && !window.SchedulerBilling.placeholder(trip);
 
   const needed = (trip, leg) => (leg === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1));
   const assigned = (trip, leg) => (trip.trip_assignments || [])

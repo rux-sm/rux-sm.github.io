@@ -27,7 +27,7 @@
     'departure_time', 'return_time', 'actual_miles', 'invoice_status',
     'trip_stops(leg,type,position,depart_prev,arrive,spot)',
     // What the follow-up rules read: the money, the itinerary and the updates.
-    'created_at', 'trip_bar_color', 'itinerary_not_needed', 'contract_status', 'po_received', 'po_amount',
+    'created_at', 'trip_bar_color', 'quote_sent_price', 'quote_sent_on', 'itinerary_not_needed', 'contract_status', 'po_received', 'po_amount',
     'deposit_amount', 'date_paid', 'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_documents(label)',
     'trip_updates(created_at,kind)',
   ].join(',');
@@ -223,15 +223,20 @@
   $('scheduler-trips-prev')?.addEventListener('click', () => { pageAt -= 1; drawList(); });
   $('scheduler-trips-next')?.addEventListener('click', () => { pageAt += 1; drawList(); });
 
-  /* ── Follow-ups ── The office's wait, one settings row the
-     board reads too. Saving redraws the list, whose Needs follow-up count
-     follows the new wait at once. */
+  /* ── Follow-ups ── The office's wait and chase window, one settings row
+     the board reads too. Saving redraws the list, whose Needs follow-up
+     count follows them at once. A saved figure no option offers is added. */
   let db = null;
   const waitSelect = $('scheduler-follow-wait');
+  const chaseSelect = $('scheduler-follow-chase');
+  const choose = (select, n, words) => {
+    if (![...select.options].some(o => Number(o.value) === n)) select.appendChild(el('option', null, words)).value = String(n);
+    select.value = String(n);
+  };
   $('scheduler-follow-open')?.addEventListener('click', () => {
-    const { waitDays } = FollowUp.setting;
-    if (![...waitSelect.options].some(o => Number(o.value) === waitDays)) waitSelect.appendChild(el('option', null, String(waitDays))).value = String(waitDays);
-    waitSelect.value = String(waitDays);
+    const { waitDays, chaseDays } = FollowUp.setting;
+    choose(waitSelect, waitDays, `${waitDays} days`);
+    choose(chaseSelect, chaseDays, `${chaseDays} days before`);
     $('scheduler-follow-error').textContent = '';
     window.Rux?.modal?.open?.('scheduler-follow-modal');
   });
@@ -239,7 +244,7 @@
     const save = $('scheduler-follow-save');
     save.disabled = true;
     try {
-      await FollowUp.save(db, { waitDays: Number(waitSelect.value) });
+      await FollowUp.save(db, { waitDays: Number(waitSelect.value), chaseDays: Number(chaseSelect.value) });
       window.Rux?.modal?.close?.('scheduler-follow-modal');
       drawList();
       pair.say('success', 'Follow-ups saved.', '');

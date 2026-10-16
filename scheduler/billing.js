@@ -89,9 +89,17 @@
              remaining: Math.max(0, price - paid), datePaid: trip.date_paid || dates.pop() || null };
   }
 
+  /* A placeholder is not a trip yet: the office paints it amber, or orange
+     and yellow, amber's retired names, before it is quoted. One that is
+     confirmed, or has a quote marked sent, is past that, and its colour is
+     only a colour: every reminder applies to it. */
+  const AMBER = ['amber', 'orange', 'yellow'];
+  const placeholder = trip => AMBER.includes(String(trip?.trip_bar_color || '').toLowerCase())
+    && !trip.confirmed && trip.quote_sent_price == null && !trip.quote_sent_on;
+
   window.SchedulerBilling = {
     setWorkflow: setBillingWorkflow, stepOn, status: billingStatus, confirmRungOf, confirmsTrip,
-    contractSignedOf, poReceivedOf, invoicedOf, of: billingOf,
+    contractSignedOf, poReceivedOf, invoicedOf, of: billingOf, placeholder,
     get confirmWhen() { return [...billingWorkflow.confirmWhen]; },
   };
 })();

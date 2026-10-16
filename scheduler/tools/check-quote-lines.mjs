@@ -8,7 +8,7 @@ import { runInNewContext } from 'node:vm';
 
 const window = {};
 runInNewContext(readFileSync(new URL('../quote-lines.js', import.meta.url), 'utf8'), { window });
-const { follows, costShown, costKept, milesADay, calculated } = window.SchedulerQuoteLines;
+const { follows, settled, reprices, offers, costShown, costKept, milesADay, calculated } = window.SchedulerQuoteLines;
 
 let failed = 0;
 function expect(name, got, want) {
@@ -68,6 +68,22 @@ expect('nothing is worked out with no miles, no days, no rate, no rates or anoth
   [calculated('rental', { ...basis, perDay: null }, named, q), calculated('rental', { ...basis, days: null }, named, q),
     calculated('rental', { ...basis, rate: null }, named, q), calculated('rental', basis, null, q),
     calculated('hotel', basis, named, q), asked.length], [null, null, null, null, null, 0]);
+
+// A settled price holds.
+expect('a PO in or a trip paid in full settles its price; a deposit does not',
+  [settled({ poReceived: true }), settled({ fullyPaid: true }), settled({ poReceived: false, fullyPaid: false }), settled(null)],
+  [true, true, false, false]);
+expect('a line that follows the calculator reprices when its basis moves, until the price is settled',
+  [reprices(rental, { moved: true, settled: false }), reprices(rental, { moved: true, settled: true }), reprices(rental, { moved: false, settled: false })],
+  [true, false, false]);
+expect('a line with no cost yet takes the calculator\'s even on a settled trip; a typed one never does',
+  [reprices({ ...rental, cost: null }, { moved: false, settled: true }), reprices({ ...rental, cost_typed: true }, { moved: true, settled: false })],
+  [true, false]);
+expect('a held line\'s window closed with Cost blank keeps its cost and still follows',
+  costKept('rental', null, 2420), { cost: 2420, cost_typed: false });
+expect('the calculator\'s figure is offered beside a typed cost, and beside a held one only once settled',
+  [offers({ ...rental, cost_typed: true }, false), offers(rental, true), offers(rental, false), offers({ kind: 'hotel', cost: 300, cost_typed: true }, true)],
+  [true, true, false, false]);
 
 console.log(failed ? `\n  ${failed} quote line case(s) failed` : '\n  quote lines: every case passed');
 process.exit(failed ? 1 : 0);

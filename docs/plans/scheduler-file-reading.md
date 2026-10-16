@@ -6,58 +6,55 @@ type: plan
 
 ## Goal
 
-When a trip has the customer's itinerary on its Files tab and its email
-thread linked, Claude checks the trip against those two, the customer's
-latest word, and drafts a fix for what differs. An itinerary already on a
-trip also fills the trip's route, and a PO or a signed contract fills
-Billing, each as a draft the office checks and saves. A reading says what
-the paper leaves open and where it disagrees with the trip. It saves nothing
-itself.
+Claude in the chat reads a trip's itinerary, PO or contract and drafts what
+it finds into the trip: its whole route, its purchase order and its signed
+contract, each marked to check, and the office saves. For the rare person
+with no Claude, the trip editor gets a Read button that does the same from
+the Files tab. Either way a reading says what the paper leaves open and where
+it disagrees with the trip, and saves nothing itself.
 
 ## Decisions
 
-### The customer's word as the check
+### The draft fills what a reading finds
 
-- **The authority for what a trip should be is the customer's latest word:**
-  the newest itinerary file on the trip, and its email thread, newer mail
-  over an older file. The scheduler is the office's copy of it.
-- **The connector gets `read_trip_document`,** which answers a trip
-  document's text as the person signed in may open it, so Claude in the
-  Claude app or Claude Code reads it on the person's own plan, with no API
-  key. The text is drawn from the PDF in the function itself; a scanned
-  page with no text says so.
-- **`get_trip` lists the trip's documents** with their ids and labels, and
-  already answers the thread's link, which the Missive connector reads.
-- **A trip review reads both when they are there** and lists each
-  difference with both values: a stop, a time, a day, the headcount, the
-  bus count, the price. A missing file or thread is said, never guessed
-  around. It drafts the fixes as a change to the trip, with `stop_changes`
-  for stops, and Claude presses Save on rux's yes.
-- **A review that finds a trip's thread and the trip has none links it,** in
-  the same drafted change, so the next review has it.
-- **This part comes first,** because it needs no API credits and no
-  question; the editor's Read button below follows it.
+These are the draft's own, so the chat and the Read button both use them.
+
+- **A change can carry `stops`,** and they replace the opened leg's stops
+  between the pickup and the drop-off, because a newer itinerary is the
+  whole route again. The editor asks before it replaces stops the leg
+  already has, and Reset takes them back.
+- **A drafted stop carries its day,** `date` and `leave_date` as
+  YYYY-MM-DD, because a paper for several days says which day each place is.
+- **A draft can carry `purchase_order`,** `{ ref, date, amount }`, laid onto
+  the Billing list marked to check: a purchase order with the same number is
+  filled, else the one with no number, else one is added.
+- **A draft can carry `contract`,** `{ signed_on, signed_by }`, which becomes
+  the Billing list's Contract signed row, with who signed as its note, marked
+  to check.
+- **A PO amount that differs from the quoted price is said in the notice,**
+  with both figures, and the office decides which is right.
+- **Money stays the office's to save:** a draft fills the dialog's fields a
+  person would, and nothing is written until Save.
 
 ### The editor's Read button
 
+- **It is for the rare person with no Claude,** so the chat stays the usual
+  way, on each person's own plan with no API cost.
 - **Claude reads the file through the Claude API, called from a third Edge
   Function, `trip-file-reader`,** source in `scheduler/trip-file-reader/`,
   because the key that pays for a reading cannot sit in a public page.
 - **The function runs as the person signed in and refuses anyone not staff,**
   and fetches the file from the `trip-documents` bucket itself, so a reading
   opens only what its caller could.
-- **It takes a stored file's id and answers with what it read; it writes
-  nothing.** The page lays the answer into the editor as a draft's fields
-  are, each marked to check, and the editor's Save stays the only writer of
-  a trip.
+- **It takes a stored file's id and answers with what it read, in a
+  draft's fields; it writes nothing.** The page lays the answer in as it
+  lays a draft, so everything above applies, and the editor's Save stays the
+  only writer of a trip.
 - **An itinerary answers** the pickup with its meeting and leaving times, the
   places between in order with each one's arrive and leave times, the
   return, the headcount and the day-of contacts, in the shape a draft's
   `stops` take, so the Route tab lays them out as it does a draft's: a saved
   location is set, and any other waits to be chosen from its list.
-- **A stop carries its day on a leg of more than one day,** which a draft's
-  stops do not yet, because a paper for several days says which day each
-  place is.
 - **What the paper leaves open comes back as a note, never a guess:** a time
   marked TBD, two endings that hang on a result, a place with no address.
   The note is the notice at the top of the editor, as a draft's is.
@@ -66,11 +63,6 @@ itself.
   which is what the Billing list's Contract signed row holds.
 - **A file is sent to the API only when someone presses its Read,** and rux
   has agreed that a customer's itinerary, PO or contract may be.
-- **A reading into a route that has stops asks first, then replaces them,**
-  because a newer itinerary is the whole route again; Reset takes it back.
-- **A disagreement is said, not fixed.** Where the paper's bus count, days or
-  amount differ from the trip's, Billing warns with both figures, and the
-  office decides which is right.
 - **The reading is offered where the gap is,** and waits for a press: a
   notice on the Route tab while the trip has an itinerary file and no stop
   with a time, a notice on Billing while it has a PO or contract file and a
@@ -99,6 +91,21 @@ itself.
 
 ## Tasks
 
+### The draft fills what a reading finds
+
+- [ ] Let a drafted stop carry `date` and `leave_date`, in `draft-fields.js`
+      and the Route tab's taking of a draft's stops.
+- [ ] Let a change carry `stops`, replacing the opened leg's stops after
+      asking when it has any.
+- [ ] Add `purchase_order` and `contract` to a draft, laid onto the Billing
+      list marked to check, with the amount against the quoted price in the
+      notice.
+- [ ] Teach the connector's descriptions, the `trips` skill and
+      `working-from-claude.md`, and deploy on rux's yes.
+- [ ] Check in Chrome on :8641 with drafts of invented trips: a route laid
+      onto a trip with none, one replacing stops, a stop on a second day, a
+      PO and a contract; Reset, saving nothing.
+
 ### The editor's Read button
 
 - [ ] Write five invented itineraries and three invented POs, with what each
@@ -112,18 +119,10 @@ itself.
 - [ ] Hand rux the two commands, the key as the function's secret and the
       deploy, then read each invented file through the deployed function
       and compare it with what it should read as.
-- [ ] Give a drafted stop its day, so the Route tab lays out a leg of more
-      than one day.
 - [ ] Offer the reading in the Route tab's notice and on a file's menu, lay
       the answer out marked to check, and put what it left open in the
       editor's notice.
-- [ ] Offer the reading in Billing for a PO, fill the purchase order's
-      number, date and amount marked to check, and warn where the paper and
-      the trip disagree.
-- [ ] Offer the reading in Billing for a contract, and add the Contract
-      signed row with the day it was signed and who signed in its note,
-      marked to check.
-- [ ] Ask before a reading replaces a route's stops.
+- [ ] Offer the reading in Billing for a PO or a contract file.
 - [ ] Say why where a file cannot be read: not a PDF, over the limits, or an
       answer the API declined.
 - [ ] Write the reader into `scheduler/docs/database-inventory.md` beside the

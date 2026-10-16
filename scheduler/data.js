@@ -14946,13 +14946,23 @@
      for other trips at once; the history entry says how many. The reason is
      required: Cancel trip stays disabled until the box holds some text. The
      bar menu and the editor's Cancel trip button both open the dialog
-     through here. */
+     through here. The drivers on the trip are named in the dialog, its toast
+     and its history entry, since each has to be told; their link shows the
+     trip as Cancelled until its day passes. */
+  // Each driver on a trip's buses once, by the name the board writes, in order.
+  const driverNames = (assignments, ids = null) => [...new Set((assignments || [])
+    .flatMap(a => (a.trip_drivers || []).map(d => d.driver_id)).filter(id => id != null && (!ids || ids.has(id))))]
+    .map(id => panelIndex.driversById.get(id)).filter(Boolean).map(d => d.short_name || d.name);
+  const listed = names => (names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}` : names[0] ?? '');
   function openCancelModal(tripId) {
     // The editor's own trip may be on another week than the one on screen.
     const trip = panelIndex.trips.get(tripId) ?? (panelArgs?.trip?.id === tripId ? panelArgs.trip : null);
     cancelling = tripId;
     document.getElementById('scheduler-cancel-what').textContent =
       `${trip?.destination || 'This trip'}${trip?.customer ? ` for ${trip.customer}` : ''}.`;
+    const names = driverNames(trip?.trip_assignments);
+    const tell = document.getElementById('scheduler-cancel-tell');
+    if (tell) { tell.hidden = !names.length; tell.textContent = names.length ? `Tell ${listed(names)}.` : ''; }
     document.getElementById('scheduler-cancel-reason').value = '';
     document.getElementById('scheduler-cancel-confirm').disabled = true;
     window.Rux?.modal?.open?.('scheduler-cancel-modal');
@@ -14981,10 +14991,11 @@
          trip cancelled with its rows, and says so. */
       let buses = 0;
       let drivers = 0;
+      let told = [];
       let kept = false;
       try {
         const { data: rows, error: readErr } = await withTimeout(client.from('trip_assignments')
-          .select('id,bus_id,trip_drivers(id)').eq('trip_id', id).then(r => r));
+          .select('id,bus_id,trip_drivers(id,driver_id)').eq('trip_id', id).then(r => r));
         if (readErr) throw new Error(readErr.message);
         if (rows?.length) {
           const { error: delErr } = await withTimeout(client.from('trip_assignments').delete().eq('trip_id', id).then(r => r));
@@ -14992,6 +15003,7 @@
         }
         buses = (rows || []).filter(r => r.bus_id).length;
         drivers = (rows || []).reduce((n, r) => n + (r.trip_drivers?.length ?? 0), 0);
+        told = driverNames(rows);
       } catch (err) {
         kept = true;
         console.warn('The cancelled trip\'s buses and drivers were not taken off:', err);
@@ -14999,14 +15011,14 @@
       recordHistory(id, 'cancelled', [{
         field: 'trip', label: 'Trip', before: 'Active', after: `Cancelled — ${reason}`,
       }, ...(buses ? [{ field: 'buses', label: 'Buses', before: `${buses} assigned`, after: 'Unassigned' }] : []),
-      ...(drivers ? [{ field: 'drivers', label: 'Drivers', before: `${drivers} assigned`, after: 'Unassigned' }] : [])]);
+      ...(drivers ? [{ field: 'drivers', label: 'Drivers', before: told.length ? `${listed(told)}, to tell` : `${drivers} assigned`, after: 'Unassigned' }] : [])]);
       // The reason is what the customer was told, so it is the trip's update too.
       writeUpdate(id, { kind: 'update', body: `Cancelled: ${reason}`, keys: ['cancellation'] });
       await show();
       // A cancelled trip leaves the board, and the editor with it.
       if (editing?.id === id && !panelEl.hidden) closePanel(false);
       if (kept) toast('warning', 'Cancelled with its buses and drivers', 'Restore it, free them, cancel again.');
-      else toast('success', 'Trip cancelled. It is off the schedule, and search still finds it.');
+      else toast('success', 'Trip cancelled. It is off the schedule, and search still finds it.', told.length ? `Tell ${listed(told)}.` : undefined);
     } catch (e) {
       toast('error', `The trip was not cancelled. ${e.message}`);
     }

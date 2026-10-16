@@ -135,7 +135,6 @@ None open.
 
 ### The driver and the links
 
-- [ ] Name the drivers to tell in the Cancel dialog, its toast and History.
 - [ ] Add a Replace link button in Driver view, over `replace_driver_schedule_share`.
 - [ ] End a document's address with its trip in `trip-document-link`, with a
       check of `handler.ts`, and deploy on a yes.

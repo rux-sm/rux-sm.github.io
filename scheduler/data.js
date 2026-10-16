@@ -11844,6 +11844,11 @@
       return;
     }
 
+    if (item.id === 'scheduler-bar-menu-thread-add') {
+      openOnThread(bar);
+      return;
+    }
+
     if (item.id === 'scheduler-bar-menu-contacts') {
       openContactsFrom(bar, bar);
       return;
@@ -11972,6 +11977,7 @@
     document.getElementById('scheduler-bar-menu-itinerary').hidden = !bar.dataset.itineraryId;
     document.getElementById('scheduler-bar-menu-upload').hidden = !!bar.dataset.itineraryId || !client;
     document.getElementById('scheduler-bar-menu-thread').hidden = !barThreadUrl(bar);
+    document.getElementById('scheduler-bar-menu-thread-add').hidden = !!barThreadUrl(bar) || !client;
     // Mark this leg's hotel booked or not, on a trip that needs one, and not for
     // the trip open in the editor, which has its own Booked box.
     const hotelItem = document.getElementById('scheduler-bar-menu-hotel');
@@ -12820,6 +12826,20 @@
     const ref = barRef(bar);
     selectBar(bar);
     whenSafe(() => { openRef(ref); requestAnimationFrame(toFleet); });
+  }
+
+  // Opens the bar's trip on Details with the Email thread box asking, whose
+  // Done fills the field for the trip's Save to write.
+  function openOnThread(bar) {
+    const askOnDetails = () => {
+      const tab = document.getElementById('scheduler-tab-details');
+      if (tab && tab.getAttribute('aria-selected') !== 'true') window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
+      document.querySelector('#scheduler-panel-details .scheduler-thread-add:not([hidden])')?.click();
+    };
+    if (isEditorBar(bar)) { askOnDetails(); return; }
+    const ref = barRef(bar);
+    selectBar(bar);
+    whenSafe(() => { openRef(ref); requestAnimationFrame(askOnDetails); });
   }
 
   // Takes a bar's trip off its bus, the same write as a drop on the Unassigned row.

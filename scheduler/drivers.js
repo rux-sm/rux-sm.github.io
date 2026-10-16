@@ -422,6 +422,8 @@
   const reasonText = r => REASONS.find(([v]) => v === r)?.[1] || (r ? r : 'Time off');
 
   function drawOff() {
+    // The upcoming trips say which the time off on the page now covers.
+    drawTrips();
     const list = $('scheduler-driver-off');
     list.replaceChildren();
     if (!off.length) {
@@ -628,16 +630,21 @@
   const LEG = { outbound: 'Outbound', return: 'Return' };
   // A stored role, such as `relief-driver`, as words in sentence case.
   const sentence = s => { const t = s.replace(/[-_]/g, ' '); return t[0].toUpperCase() + t.slice(1); };
-  async function drawTrips() {
-    const section = $('scheduler-driver-trips-section');
-    const list = $('scheduler-driver-trips');
+  // A day range and a list of windows, as the time off on the page keeps them.
+  const overlaps = (windows, from, to) => (windows || []).some(w => w.start_date <= (to || from) && w.end_date >= from);
+
+  /* The driver's upcoming legs, read once a load and drawn again as the time
+     off or the status on the page change, so a leg they would cover is
+     marked before Save. */
+  let legs = null;
+  let tripsFailed = false;
+  async function readTrips() {
     const { data, error } = await client.from('trip_drivers')
       .select('role,trip_assignments(leg,buses(number,type),trips(id,trip_ref,destination,customer,start_date,end_date,return_start_date,return_end_date,cancelled_at))')
       .eq('driver_id', loaded.id);
-    section.hidden = false;
-    list.replaceChildren();
+    tripsFailed = !!error;
     const now = iso(today());
-    const legs = error ? [] : (data || []).map(r => {
+    legs = error ? [] : (data || []).map(r => {
       const a = r.trip_assignments;
       const t = a?.trips;
       if (!t || t.cancelled_at) return null;
@@ -647,7 +654,19 @@
       if (!ISO.test(from) || (to || from) < now) return null;
       return { t, from, to: to || from, leg: a.leg, bus: a.buses, role: r.role };
     }).filter(Boolean).sort((a, b) => a.from.localeCompare(b.from));
+  }
 
+  // Setting the driver Inactive marks every upcoming trip before Save.
+  for (const radio of document.querySelectorAll('input[name="scheduler-d-status"]')) radio.addEventListener('change', () => drawTrips());
+
+  function drawTrips() {
+    if (!legs) return;
+    const section = $('scheduler-driver-trips-section');
+    const list = $('scheduler-driver-trips');
+    section.hidden = false;
+    list.replaceChildren();
+    const error = tripsFailed;
+    const inactive = document.querySelector('input[name="scheduler-d-status"]:checked')?.value === 'inactive';
     if (error || !legs.length) {
       const li = el('li', 'rux--contained-list-item');
       li.appendChild(el('div', 'rux--contained-list-item__content scheduler-pair-note',
@@ -668,6 +687,9 @@
         l.t.return_start_date ? LEG[l.leg] || null : null,
         l.bus?.number != null ? window.SchedulerVehicles.label(l.bus) : 'No bus',
         l.role && l.role !== 'driver' ? sentence(l.role) : null,
+        // What the page would leave the trip without, as clashes.js says it on the board.
+        overlaps(off, l.from, l.to) ? 'Time off then' : null,
+        inactive ? 'Set Inactive' : null,
       ].filter(Boolean).join(' · ');
       lines.appendChild(el('span', 'scheduler-pair-item__detail', detail));
       a.appendChild(lines);
@@ -700,7 +722,8 @@
     drawOff();
     baseline = snapshot();
     $('scheduler-driver').hidden = false;
-    if (loaded) { drawLink(); drawTrips(); }
+    legs = null;
+    if (loaded) { drawLink(); readTrips().then(drawTrips); }
     return true;
   }
 
@@ -781,7 +804,7 @@
     drawOff();
     baseline = snapshot();
     drawLink();
-    drawTrips();
+    readTrips().then(drawTrips);
   }
 
   form?.addEventListener('submit', e => {

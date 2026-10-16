@@ -118,22 +118,22 @@ Three homes, and one rule for choosing.
 | **A page** | A list, a feed or a workspace: something you navigate to. |
 | **A menu or a modal** | Options that change how the page draws, and one-off actions. |
 
-- **Trip detail goes in the panel.** One editing surface beats
-  two. A driver, a bus, a contact, a customer and a location are each edited
-  on their own page, `drivers.html?id=`, `fleet.html?id=`,
-  `contacts.html?id=`, `customers.html?id=` and `locations.html?id=`, because
-  each is a list you go to and its record opens from that list;
-  Design's `list-page.html` and `record-page.html` templates are the shape they
-  all take, and `scheduler/pair.js` what they do alike.
-- **History is a page.** It is the detail of nothing, and last in the nav:
-  it is consulted, not worked in.
-- **View options go in the toolbar's overflow menu.** Start on Sunday and the
-  bar-row toggles are there; time-aligned and two weeks join when the grid can
-  draw them. It hangs under its ⋮ and opens attached to it, one surface.
-- **The week label is the date-picker trigger.** A permanent mini calendar
-  spends standing space on an occasional action. On a phone the label is the
-  week's months and year, "Sep – Oct 2026", so Driver availability fits beside
-  it; the day header numbers the days.
+- **Trip detail goes in the panel.** One editing surface beats two. A driver, a bus, a contact, a
+  customer and a location are each edited on their own page, `drivers.html?id=`, `fleet.html?id=`,
+  `contacts.html?id=`, `customers.html?id=` and `locations.html?id=`, because each is a list you go
+  to and its record opens from that list; Design's `list-page.html` and `record-page.html` templates
+  are the shape they all take, and `scheduler/pair.js` what they do alike.
+- **A driver's and a bus's page list their upcoming trips,** each marked, before Save, where the
+  page's time off, days out or Inactive would leave it without them: Time off then or Set Inactive
+  on a driver's, Unit is out of service then or Unit is set Inactive on a bus's.
+- **History is a page.** It is the detail of nothing, and last in the nav: it is consulted, not
+  worked in.
+- **View options go in the toolbar's overflow menu.** Start on Sunday and the bar-row toggles are
+  there; time-aligned and two weeks join when the grid can draw them. It hangs under its ⋮ and opens
+  attached to it, one surface.
+- **The week label is the date-picker trigger.** A permanent mini calendar spends standing space on
+  an occasional action. On a phone the label is the week's months and year, "Sep – Oct 2026", so
+  Driver availability fits beside it; the day header numbers the days.
 - **A trip's file reads in its own panel left of the board,** beside the trip
   panel, because it is read while the trip is edited. Any file opens there,
   with its type above the destination, and so does a form `print.html` draws.

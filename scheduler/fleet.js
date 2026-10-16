@@ -774,9 +774,13 @@
   }
   /* Drawn from what was read, because a range added on the page changes which
      trips warn and nothing about which trips there are. */
+  // Setting the bus Inactive marks every upcoming trip before Save.
+  for (const radio of document.querySelectorAll('input[name="scheduler-b-status"]')) radio.addEventListener('change', () => drawTrips());
+
   function drawTrips() {
     const list = $('scheduler-bus-trips');
     list.replaceChildren();
+    const inactive = document.querySelector('input[name="scheduler-b-status"]:checked')?.value === 'inactive';
     const error = tripsFailed;
     const legs = trips;
 
@@ -798,9 +802,10 @@
       const detail = [
         l.t.customer,
         l.t.return_start_date ? LEG[l.leg] || null : null,
-        // The one thing this page can say that the board cannot: the trip
-        // runs while the bus is booked out.
+        // What the page would leave the trip without, before Save: the bus
+        // booked out while it runs, or set Inactive.
         overlaps(out, l.from, l.to) ? 'Unit is out of service then' : null,
+        inactive ? 'Unit is set Inactive' : null,
       ].filter(Boolean).join(' · ');
       lines.appendChild(el('span', 'scheduler-pair-item__detail', detail));
       a.appendChild(lines);

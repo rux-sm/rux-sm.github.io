@@ -154,8 +154,6 @@ None open.
 
 ### Clashes
 
-- [ ] Mark, on the Drivers and Fleet pages, the upcoming trips that time
-      off, days out or Inactive would cover, before Save.
 - [ ] Put the seats sum in `leg-facts.js` and alert on the bar and its card.
 
 ### The driver and the links

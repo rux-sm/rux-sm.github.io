@@ -299,7 +299,7 @@
     // hours-of-service form and the forms the customer asks for, each
     // printed or not, and how far its driver drove, which the Billing tab's
     // Miles edits.
-    'trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,fuel_card_number,pickup_at,trip_drivers(id,driver_id,role,report_time,instructions,miles,envelope_printed,itinerary_printed,hos_form_printed,driver_forms_printed,trip_reminder_sent,trip_reminder_sent_at))',
+    'trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,fuel_card_number,pickup_at,trip_drivers(id,driver_id,role,report_time,instructions,miles,pay,envelope_printed,itinerary_printed,hos_form_printed,driver_forms_printed,trip_reminder_sent,trip_reminder_sent_at))',
     // The driver details sent to the booking contact, or not, which the Contact list says and marks.
     'trip_prep(driver_info_sent,driver_info_sent_at)',
     // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
@@ -2461,7 +2461,8 @@
      the trip, a `trip_assignments` row per bus, a `trip_drivers` row per
      filled seat, and each seat's status through `sync_trip_driver_statuses`.
      The tab edits a model, `editing.fleet`, and Save writes the difference
-     from `editing.fleetBefore` by id. Pay is left to rux-ui. */
+     from `editing.fleetBefore` by id. A seat's miles and pay are typed on the
+     Billing tab. */
   const MAX_BUSES = 20;
   const SEAT_LABEL = {
     driver: 'Driver', 'co-driver': 'Co-driver',
@@ -2470,7 +2471,7 @@
   const RELIEF = new Set(['relief-start', 'relief-end']);
   let fleetSeq = 0;
 
-  const blankSeat = () => ({ on: false, rowId: null, driverId: null, reportTime: null, note: null, miles: null, status: 'off', statusDirty: false });
+  const blankSeat = () => ({ on: false, rowId: null, driverId: null, reportTime: null, note: null, miles: null, pay: null, status: 'off', statusDirty: false });
   /* A vehicle not yet on a row. `seed` is the needs and type it starts with:
      an empty slot of a trip takes the trip's, so it still asks for them, and
      only a change from them makes it worth a row. */
@@ -2506,6 +2507,7 @@
       seat.reportTime = hhmmOrNull(row.report_time);
       seat.note = row.instructions ?? null;
       seat.miles = row.miles ?? null;
+      seat.pay = row.pay ?? null;
       const saved = row.driver_id ? statuses?.get(statusKey(trip.id, row.driver_id, leg, r.role)) : null;
       const value = saved ? saved.status : on.get(r.role);
       seat.status = DRIVER_STATUSES.some(s => s.value === value) ? value : 'off';
@@ -2617,6 +2619,7 @@
             if (!same(s.reportTime, p.reportTime)) sp.report_time = s.reportTime;
             if (!same(s.note, p.note)) sp.instructions = s.note;
             if (!same(s.miles, p.miles)) sp.miles = s.miles;
+            if (!same(s.pay, p.pay)) sp.pay = s.pay;
             if (Object.keys(sp).length) seats.push({ op: 'update', id: s.rowId, patch: sp });
           } else if (seatFilled(s)) {
             seats.push({ op: 'insert', row: seatRow(r.role, s) });
@@ -2629,10 +2632,10 @@
       if (ops.inserts.length || ops.updates.length || ops.deletes.length) work.legs.push(ops);
     }
     /* Any change to who sits where, or a status picked here, sends the crew.
-       A seat's miles and a bus's pickup arrival are the close-out filling
-       in, and send nothing. */
+       A seat's miles and pay and a bus's pickup arrival are the close-out
+       filling in, and send nothing. */
     const statusPicked = fleetLegsToSave().some(leg => now[leg].some(b => ROLES.some(r => b.seats[r.role].statusDirty)));
-    const onlyMiles = s => s.op === 'update' && Object.keys(s.patch).every(k => k === 'miles');
+    const onlyMiles = s => s.op === 'update' && Object.keys(s.patch).every(k => k === 'miles' || k === 'pay');
     const moved = work.legs.some(ops => ops.inserts.length || ops.deletes.length
       || ops.updates.some(u => Object.keys(u.patch).some(k => k !== 'pickup_at') || !u.seats.every(onlyMiles)));
     work.statuses = moved || statusPicked;
@@ -2640,7 +2643,7 @@
     return work;
   }
 
-  const seatRow = (role, s) => ({ driver_id: s.driverId, role, report_time: s.reportTime, instructions: s.note, miles: s.miles ?? null });
+  const seatRow = (role, s) => ({ driver_id: s.driverId, role, report_time: s.reportTime, instructions: s.note, miles: s.miles ?? null, pay: s.pay ?? null });
 
   /* Whether the Buses tab holds changes someone made. A new trip's fleet is all
      work to Save, which writes its count and its cell's bus however untouched,
@@ -8859,8 +8862,8 @@
         ?? (busFound(busId)?.legs.length === 1 && legFound(busId, leg) ? busFound(busId).drivers : null);
       const mi = n => `${Number(n).toLocaleString()} mi`;
 
-      /* EACH DRIVER'S MILES, a field per filled seat under the bus and leg it
-         drove, kept on the seat. Under the fields, the drivers' total and how
+      /* EACH DRIVER'S MILES AND PAY, two fields per filled seat under the bus
+         and leg it drove, kept on the seat. Under the fields, the drivers' total and how
          far it is from the bus's odometer, which a driver who did not log in,
          or logged into another bus, pulls apart. Then where Samsara and the
          seats differ: who drove the bus the trip does not seat, and who the
@@ -8914,6 +8917,7 @@
               if (after.hasChildNodes()) group.append(after);
               else after.remove();
             };
+            // Each seat's miles under its driver's name, and beside them its pay.
             const fields = seats.map(({ role, seat }) => {
               const field = moneyField(`scheduler-f-seatmiles-${leg}-${i}-${role}`, seatName(seat.driverId), seat.miles);
               const input = field.querySelector('input');
@@ -8924,7 +8928,16 @@
                 seat.miles = n == null ? null : Math.max(0, Math.round(n));
                 drawTotal();
               });
-              return field;
+              const payField = moneyField(`scheduler-f-seatpay-${leg}-${i}-${role}`, 'Pay', seat.pay);
+              const payInput = payField.querySelector('input');
+              // Dollars and cents, none below zero.
+              payInput.addEventListener('input', () => {
+                const n = money(payInput.value);
+                seat.pay = n == null ? null : Math.max(0, round2(n));
+              });
+              const row = pair(field, payField);
+              row.classList.add('scheduler-pair--figures');
+              return row;
             });
             const drove = b.busId ? droveOn(b.busId, leg) : null;
             if (drove) {

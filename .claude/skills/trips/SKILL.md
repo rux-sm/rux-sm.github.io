@@ -62,9 +62,12 @@ differs.
    review found the thread and the trip has none, so the next review has it.
    Open its link on the published site, check the fields and stops with a
    blue bar and the notice, press each tab's Done once it is reviewed, say
-   exactly what Save will write, and save on his yes (see Saving). A stop to
-   add, remove or move is done on the Route tab, since a draft cannot. One
-   link is one trip.
+   exactly what Save will write, and save on his yes (see Saving). Where the
+   stops themselves differ, a place added, gone or moved, draft `stops` in
+   place of `stop_changes`: every stop of the leg, each with its day, which
+   replace the leg's once the editor's question is answered Yes. A PO or a
+   signed contract on the paper goes in as `purchase_order` or `contract`.
+   One link is one trip.
 
 ## Entering a quote
 
@@ -255,7 +258,7 @@ reads only the ones before it. Nothing is written until step 10.
 - On a new trip the Files tab holds a file until Save sends it. The upload tool cannot read the Desktop: copy the PDF to the session's scratch folder, press Add file from the page's script so no file dialog opens, give the copy to the hidden file input, choose its type, then delete the copy.
 - Forms draws the saved trip, never what the editor holds: it is off on a new trip until its first save, and on a placeholder being filled in its sheets leave out every change not yet saved.
 - A click by `ref` on a tab that is not showing does nothing: take a screenshot to see which tab is open before pressing a button on it.
-- `draft_trip_change` refuses `stops`, which are drafted only on a new trip: on a placeholder add each stop with the Route tab's Add stop. Its `stop_changes` changes saved stops only, and a stop on the leg the link does not open, or the drop-off, is named in the notice and left for the Route tab.
+- `draft_trip_change`'s `stops` replace only the leg the link opens, its first, after a Yes to the editor's question, so a drop-off and pickup trip's pickup leg is changed on its own bar. Its `stop_changes` changes saved stops only, and a stop on the leg the link does not open, or the drop-off, is named in the notice and left for the Route tab.
 - The Route tab redraws its list as each drive is measured, so a `ref` read before a stop's Done is gone after it: scroll the tab to its end and press Add stop from a fresh screenshot.
 - Add stop pressed while the Route tab is still redrawing can open no window, and a click by coordinates then lands on the board, where it opens another trip's card and Escape asks to save or discard the whole editor: check the stop's window is showing before clicking or typing in it.
 - A vehicle comes off a trip from its tile's own menu, a right-click on the tile, then Remove, which asks first: pressing the tile opens its window, which has no remove.

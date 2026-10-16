@@ -10,8 +10,11 @@
      fleet       the trip's first vehicle, its type or the `need` it carries
      trip        a switch the editor keeps on the trip, under `tripKey`
      buses       empty vehicles added on a leg's Buses tab, up to the count
-     stops       the places between the pickup and the drop-off, which
-                 only a new trip takes, laid out on the Route tab
+     billing     a purchase order or a signed contract, laid onto the
+                 Billing list as a row a person adds there
+     stops       the places between the pickup and the drop-off, each with
+                 its day, laid out on the Route tab; on a change they
+                 replace the opened leg's, after the editor asks
      stopChanges changes to a saved trip's stops, each named by the stop's
                  id as get_trip answers it: its arrive and leave times, its
                  day and leave day, and what its wait counts as. A change
@@ -19,12 +22,12 @@
 
    THE ORDER IS THE ORDER THEY ARE TYPED IN, whatever order a draft lists
    them: a field that shows or fills another comes before it, as the type
-   comes before the pickup leg's dates it brings into the panel. The stops
-   and the stop changes come last and have no control: the Route tab lays
-   them out.
+   comes before the pickup leg's dates it brings into the panel. The
+   billing rows, the stops and the stop changes come last and have no
+   control: the Billing and Route tabs lay them out.
 
-   A PO and a deposit are money a person enters on the Billing tab, so
-   neither is here; a draft says them in its notes.
+   A deposit is money a person takes, so it is not here; a draft says it in
+   its notes.
    ========================================================================== */
 (() => {
   'use strict';
@@ -32,6 +35,9 @@
   const TRIP_TYPES = ['round_trip', 'one_way', 'dropoff_pickup'];
   // What a change to a saved stop may carry: its id and what changes.
   const STOP_CHANGES = ['id', 'arrive', 'leave', 'date', 'leave_date', 'dwell'];
+  // What a purchase order and a signed contract may carry.
+  const PURCHASE_ORDER = ['ref', 'date', 'amount'];
+  const CONTRACT = ['signed_on', 'signed_by'];
 
   /* Each kind of value, and what a value of it must be. A check answers null
      for a value that fits, or the words for what it must be. */
@@ -39,6 +45,9 @@
   const realDate = v => DATE.test(v) && !Number.isNaN(Date.parse(`${v}T00:00:00Z`))
     && new Date(`${v}T00:00:00Z`).toISOString().slice(0, 10) === v;
   const clock = v => /^\d{1,2}:\d{2}$/.test(String(v)) && Number(String(v).split(':')[0]) < 24 && Number(String(v).split(':')[1]) < 60;
+  const dayOrNone = v => v == null || (typeof v === 'string' && realDate(v));
+  const only = (v, keys) => !!v && typeof v === 'object' && !Array.isArray(v)
+    && Object.keys(v).length > 0 && Object.keys(v).every(k => keys.includes(k));
   const number = v => (typeof v === 'number' ? v : typeof v === 'string' && v.trim() !== '' ? Number(v.replace(/[$,\s]/g, '')) : NaN);
   const KINDS = {
     text: v => (typeof v === 'string' && v.trim() && v.length <= 200 ? null : 'words, up to 200 characters'),
@@ -57,8 +66,9 @@
       : 'the thread\'s address in Missive, starting https://mail.missiveapp.com/'),
     stops: v => (Array.isArray(v) && v.length <= 30 && v.every(s => !!s && typeof s === 'object'
       && (typeof s.name === 'string' || typeof s.address === 'string')
-      && (s.arrive == null || clock(s.arrive)) && (s.leave == null || clock(s.leave)))
-      ? null : 'a list of up to 30 places, each { name, address, arrive, leave }: a name or an address, and times as HH:MM'),
+      && (s.arrive == null || clock(s.arrive)) && (s.leave == null || clock(s.leave))
+      && dayOrNone(s.date) && dayOrNone(s.leave_date))
+      ? null : 'a list of up to 30 places, each { name, address, arrive, leave, date, leave_date }: a name or an address, times as HH:MM, and days as YYYY-MM-DD'),
     stopChanges: v => (Array.isArray(v) && v.length && v.length <= 50 && v.every(c => !!c && typeof c === 'object'
       && /^[0-9a-f-]{36}$/i.test(String(c.id ?? ''))
       && Object.keys(c).every(k => STOP_CHANGES.includes(k)) && Object.keys(c).length > 1
@@ -66,6 +76,14 @@
       && ['date', 'leave_date'].every(k => !(k in c) || (typeof c[k] === 'string' && realDate(c[k])))
       && (!('dwell' in c) || ['on', 'off', 'sleeper'].includes(c.dwell)))
       ? null : 'a list of up to 50 changes, each { id, arrive, leave, date, leave_date, dwell }: the stop\'s id from get_trip and at least one of the rest, times as HH:MM or null, days as YYYY-MM-DD, and dwell one of on, off, sleeper'),
+    purchaseOrder: v => (only(v, PURCHASE_ORDER)
+      && (v.ref == null || (typeof v.ref === 'string' && v.ref.trim() && v.ref.length <= 60))
+      && dayOrNone(v.date) && (v.amount == null || (Number.isFinite(number(v.amount)) && number(v.amount) >= 0))
+      && (v.ref != null || v.amount != null)
+      ? null : '{ ref, date, amount }: its number or its amount at least, the day as YYYY-MM-DD and the amount in dollars'),
+    contract: v => (only(v, CONTRACT) && dayOrNone(v.signed_on)
+      && (v.signed_by == null || (typeof v.signed_by === 'string' && v.signed_by.trim() && v.signed_by.length <= 200))
+      ? null : '{ signed_on, signed_by }: the day it was signed as YYYY-MM-DD and who signed it'),
   };
 
   const FIELDS = [
@@ -109,7 +127,10 @@
     // The group's two times; the bus's own are worked out from them.
     { key: 'departure_time', value: 'time', id: 'scheduler-f-leave', kind: 'time' },
     { key: 'return_time', value: 'time', id: 'scheduler-f-endtrip', kind: 'time' },
-    // The places between the pickup and the drop-off, which only a new trip takes.
+    // A purchase order and a signed contract, rows of the Billing list.
+    { key: 'purchase_order', value: 'purchaseOrder', kind: 'billing' },
+    { key: 'contract', value: 'contract', kind: 'billing' },
+    // The places between the pickup and the drop-off; on a change, the opened leg's again.
     { key: 'stops', value: 'stops', kind: 'stops' },
     // Changes to a saved trip's stops, which only a change to a trip takes.
     { key: 'stop_changes', value: 'stopChanges', kind: 'stopChanges' },
@@ -117,8 +138,8 @@
   const byKey = new Map(FIELDS.map(f => [f.key, f]));
 
   /* What is wrong with a draft's fields, as sentences, or none. `change` is a
-     draft of an existing trip, which cannot carry stops. A null value clears
-     nothing and is refused, since a draft only fills. */
+     draft of an existing trip, which alone changes saved stops. A null value
+     clears nothing and is refused, since a draft only fills. */
   function problems(fields, { change = false } = {}) {
     if (!fields || typeof fields !== 'object' || Array.isArray(fields)) return ['fields is an object of trip fields.'];
     const keys = Object.keys(fields);
@@ -132,8 +153,8 @@
       const wrong = KINDS[byKey.get(key).value](fields[key]);
       if (wrong) out.push(`${key} is ${wrong}.`);
     }
-    if (change && 'stops' in fields) {
-      out.push('stops can be drafted only on a new trip. Change a saved stop\'s times or wait with stop_changes.');
+    if ('stops' in fields && 'stop_changes' in fields) {
+      out.push('stops replace the leg\'s stops, so a draft carries stops or stop_changes, not both.');
     }
     if (!change && 'stop_changes' in fields) {
       out.push('stop_changes changes a saved trip\'s stops, so it goes with a change to a trip; a new trip\'s are its stops.');
@@ -141,5 +162,5 @@
     return out;
   }
 
-  window.SchedulerDraftFields = { FIELDS, KINDS, TRIP_TYPES, STOP_CHANGES, byKey, problems };
+  window.SchedulerDraftFields = { FIELDS, KINDS, TRIP_TYPES, STOP_CHANGES, PURCHASE_ORDER, CONTRACT, byKey, problems };
 })();

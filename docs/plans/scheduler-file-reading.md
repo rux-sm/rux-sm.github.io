@@ -93,18 +93,8 @@ These are the draft's own, so the chat and the Read button both use them.
 
 ### The draft fills what a reading finds
 
-- [ ] Let a drafted stop carry `date` and `leave_date`, in `draft-fields.js`
-      and the Route tab's taking of a draft's stops.
-- [ ] Let a change carry `stops`, replacing the opened leg's stops after
-      asking when it has any.
-- [ ] Add `purchase_order` and `contract` to a draft, laid onto the Billing
-      list marked to check, with the amount against the quoted price in the
-      notice.
-- [ ] Teach the connector's descriptions, the `trips` skill and
-      `working-from-claude.md`, and deploy on rux's yes.
-- [ ] Check in Chrome on :8641 with drafts of invented trips: a route laid
-      onto a trip with none, one replacing stops, a stop on a second day, a
-      PO and a contract; Reset, saving nothing.
+- [ ] Deploy the connector on rux's yes, and draft one change from a new
+      chat to see the tools take `stops`, `purchase_order` and `contract`.
 
 ### The editor's Read button
 

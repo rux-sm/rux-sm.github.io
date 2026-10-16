@@ -5366,7 +5366,8 @@
       return;
     }
     if (poEditing === null) poPending.push(row);
-    else Object.assign(poPending[poEditing], row);
+    // Done on a row a draft filled is the check the mark asked for.
+    else Object.assign(poPending[poEditing], row, { drafted: false });
     window.Rux?.modal?.close?.('scheduler-po-modal');
     redrawPos();
     refreshDirty();
@@ -6096,6 +6097,8 @@
   let seatMilesDrawn = null;
   // The open Route tab's taking of a draft's stops; it returns those still to choose.
   let routeTakesStops = null;
+  // How many stops the open Route tab's leg has between its ends, which a draft's stops would replace.
+  let routeStopsHeld = () => 0;
   // Its taking of a draft's changes to saved stops; it returns those it could not find.
   let routeTakesChanges = null;
 
@@ -7722,15 +7725,21 @@
       const listNote = routeNote(canList ? '' : "This leg has no pickup or yard row, so stops can't be added here.");
       // A change to the route times redraws the figures; a new spot applies when Departs is next typed.
       routeTimesDrawn = () => drawTotals();
-      /* A DRAFT'S STOPS go into the list in the order given, each marked to
-         check. A place that is a saved location, by its address or its name,
+      /* A DRAFT'S STOPS go into the list in the order given, each on the day
+         it gives or the leg's first, and each marked to check. On a change
+         they replace the list, since a newer itinerary is the whole route
+         again. A place that is a saved location, by its address or its name,
          is set to that location. Any other keeps its words and has no point
          on the map until the person chooses it from its list, which its
-         window opens ready to search, so it is named in the draft's notice. */
-      routeTakesStops = stops => {
+         window opens ready to search, so it is named in the draft's notice.
+         A leg whose list cannot take stops takes none, and says so. */
+      routeStopsHeld = () => r.list.length;
+      routeTakesStops = (stops, replace = false) => {
+        if (!canList) return { refused: true, unpicked: [] };
         const { from } = routeDates(r.leg);
         const time = t => (/^\d{1,2}:\d{2}/.test(String(t ?? '')) ? String(t).slice(0, 5).padStart(5, '0') : null);
         const unpicked = [];
+        if (replace) r.list.length = 0;
         for (const s of stops) {
           const name = String(s?.name ?? '').trim(), address = String(s?.address ?? '').trim();
           if (!name && !address) continue;
@@ -7739,14 +7748,15 @@
           if (!loc) unpicked.push(`stop ${r.list.length + 1}${name ? `, ${name}` : ''}`);
           const stop = { id: null, open: null, placeChanged: true,
             place: loc ? savedAsPlace(loc) : { ...placeOf({}), name: name || address, address: address || null },
-            arrive: time(s.arrive), leave: time(s.leave), date: isoOrNull(s.date ?? '') ?? from, leaveDate: null,
+            arrive: time(s.arrive), leave: time(s.leave), date: isoOrNull(s.date ?? '') ?? from,
+            leaveDate: isoOrNull(s.leave_date ?? '') ?? null,
             dwell: 'on', drive: null, miles: null, driveChanged: false, drafted: true };
           // A night at the stop starts off duty, as route-figures.js reads one.
           stop.dwell = RF.nightDwell({ from }, stop);
           r.list.push(stop);
         }
         touch();
-        return unpicked;
+        return { refused: false, unpicked };
       };
       /* A DRAFT'S STOP CHANGES go onto the saved stops they name by id, each
          a change a person could make in the stop's window: its times, its
@@ -9045,6 +9055,8 @@
             removeLabel: 'Remove the signed contract',
             remove: () => { editing.contract = null; drawBilling(); refreshDirty(); },
           }));
+          // A contract a draft set is marked to check until its window is Done.
+          if (contract.drafted) rows.at(-1).classList.add('scheduler-drafted');
         }
         for (const [p, i] of stepOn('poReceived') ? byDate(poPending) : []) {
           const much = (p.amount ?? null) === null ? '' : usd(Number(p.amount) || 0);
@@ -9056,6 +9068,7 @@
             removeLabel: `Remove ${name}`,
             remove: () => { poPending.splice(i, 1); drawMoney(); refreshDirty(); },
           }));
+          if (p.drafted) rows.at(-1).classList.add('scheduler-drafted');
         }
         for (const [v, i] of stepOn('invoiced') ? byDate(invPending) : []) {
           const name = v.number ? `Invoice ${v.number}` : 'Invoice, no number';
@@ -16172,11 +16185,12 @@
 
   /* Each field a draft may fill, and the control it is typed into, in the
      order they are typed: draft-fields.js's list, which the connector reads
-     too. The stops have no control; the Route tab lays them out. A field
+     too. The stops and the billing rows have no control; the Route and
+     Billing tabs lay them out. A field
      whose control is not on screen is named in the panel's notice instead,
      so nothing the connector sent goes quietly. */
   const DRAFT_CONTROLS = Object.fromEntries(window.SchedulerDraftFields.FIELDS
-    .filter(f => f.kind !== 'stops' && f.kind !== 'stopChanges').map(f => [f.key, f]));
+    .filter(f => !['stops', 'stopChanges', 'billing'].includes(f.kind)).map(f => [f.key, f]));
 
   // What the notice calls a place that still needs choosing from its list.
   const PLACE_LABEL = { pickup_address: 'the pickup', dropoff_address: 'the drop-off' };
@@ -16223,11 +16237,15 @@
     (node.closest('.rux--form-item') ?? node).classList.add('scheduler-drafted');
   }
 
-  function applyDraft(fields) {
+  /* `change` is a draft of a saved trip, whose stops replace the leg's after
+     the person says yes. */
+  async function applyDraft(fields, change = false) {
     const missed = [];
     const unpicked = [];
     const held = [];
     const unmarked = [];
+    // Lines the notice says as they are, such as a PO's amount against the quote.
+    const said = [];
     // Stop changes the Route tab could not make here, each [where, what].
     const unchanged = [];
     let newCustomer = null;
@@ -16239,7 +16257,45 @@
       // The stops between the pickup and the drop-off, laid out on the Route tab.
       if (key === 'stops') {
         if (!Array.isArray(value) || !routeTakesStops) { missed.push([key, JSON.stringify(value)]); continue; }
-        unpicked.push(...routeTakesStops(value));
+        const names = value.map(v => v?.name || v?.address).filter(Boolean).join(', ');
+        const had = change ? routeStopsHeld() : 0;
+        if (had && !(await ask(`Replace this leg's ${had} ${had === 1 ? 'stop' : 'stops'} with the draft's ${value.length}?`,
+          'Reset brings the saved stops back.'))) {
+          unchanged.push([`the leg's ${had === 1 ? 'stop, kept' : 'stops, kept'} on your answer`, `${value.length} stops: ${names}`]);
+          continue;
+        }
+        const took = routeTakesStops(value, change);
+        if (took.refused) unchanged.push(['the stops, since this leg has no pickup or yard row', `${value.length} stops: ${names}`]);
+        unpicked.push(...took.unpicked);
+        continue;
+      }
+      /* A purchase order, onto the Billing list: the row with its number, or
+         else the one with none, or else a new row, each marked to check. Its
+         amount against the quoted price is said, and the office decides. */
+      if (key === 'purchase_order') {
+        if (!editing || !stepOn('poReceived')) { missed.push([key, JSON.stringify(value)]); continue; }
+        const ref = value.ref == null ? null : String(value.ref).trim();
+        const row = (ref && poPending.find(p => folded(p.ref ?? '') === folded(ref))) || poPending.find(p => !p.ref);
+        const fill = { drafted: true };
+        if (ref) fill.ref = ref;
+        if (value.date) fill.date = value.date;
+        if (value.amount != null) fill.amount = money(String(value.amount));
+        if (row) Object.assign(row, fill);
+        else poPending.push({ ref: null, amount: null, date: null, ...fill });
+        redrawPos();
+        const { price } = billingNow();
+        if (fill.amount != null && price > 0 && round2(fill.amount) !== round2(price)) {
+          said.push(`The purchase order is for ${usdCents(fill.amount)} and the quoted price is ${usdCents(price)}. Check which is right.`);
+        }
+        continue;
+      }
+      // A signed contract, the Billing list's Contract signed row, with who signed as its note.
+      if (key === 'contract') {
+        if (!editing || !stepOn('contractSigned')) { missed.push([key, JSON.stringify(value)]); continue; }
+        const was = editing.contract;
+        editing.contract = { on: value.signed_on ?? was?.on ?? null,
+          note: value.signed_by ? `Signed by ${String(value.signed_by).trim()}` : was?.note ?? null, drafted: true };
+        redrawContract();
         continue;
       }
       // Changes to saved stops, laid onto the Route tab; one it cannot find is named with what it asked.
@@ -16301,15 +16357,15 @@
       if (control.kind === 'place') unpicked.push(PLACE_LABEL[key] ?? key);
     }
     refreshDirty();
-    return { missed, unpicked, held, unmarked, unchanged, newCustomer };
+    return { missed, unpicked, held, unmarked, unchanged, said, newCustomer };
   }
 
   /* The notice above the fields: what Claude could not work out, or what a
      website request said beyond its fields, and anything filled that this
      panel has no field for, written out so it can be typed in by hand rather
      than lost. */
-  function draftNotice(notes, { missed, unpicked, held = [], unmarked = [], unchanged = [], newCustomer = null }, website = false) {
-    if (!notes && !missed.length && !unpicked.length && !held.length && !unmarked.length && !unchanged.length && !newCustomer) return;
+  function draftNotice(notes, { missed, unpicked, held = [], unmarked = [], unchanged = [], said = [], newCustomer = null }, website = false) {
+    if (!notes && !missed.length && !unpicked.length && !held.length && !unmarked.length && !unchanged.length && !said.length && !newCustomer) return;
     const wrap = el('div', 'scheduler-drafted-notice');
     const note = el('div', 'rux--inline-notification rux--inline-notification--info');
     const details = el('div', 'rux--inline-notification__details');
@@ -16346,6 +16402,7 @@
       texts.appendChild(el('div', 'rux--inline-notification__subtitle',
         `${newCustomer} is not on the customers list, and Save adds it. If it is there under another spelling, pick it from the Customer field first.`));
     }
+    for (const line of said) texts.appendChild(el('div', 'rux--inline-notification__subtitle', line));
     for (const price of held) {
       texts.appendChild(el('div', 'rux--inline-notification__subtitle',
         `The quoted price is the total of this trip's quote lines, so the draft's ${Number.isFinite(Number(price)) ? usdCents(Number(price)) : price} was not typed in. Change a line on the Billing tab to change the price.`));
@@ -16394,7 +16451,7 @@
 
     openDraft = row.id;
     openDraftRequest = row.quote_request_id ?? null;
-    draftNotice(row.notes, applyDraft(row.fields), !!openDraftRequest);
+    draftNotice(row.notes, await applyDraft(row.fields, !!row.trip_id), !!openDraftRequest);
   }
 
   /* Shows a trip's week with its bar selected and in view, and opens the

@@ -225,9 +225,8 @@ columns: `pickup_location`, `pickup_address`, `dropoff_location` and
 `draft_trip_change` put a row in `trip_drafts` and return
 `/scheduler/?draft=<id>`. A draft may fill only the trip fields the function
 lists, `scheduler/draft-fields.js`, which the editor reads too: each field's kind of value, checked before a draft is parked, and the control it is typed into;
-the panel's notice names any it cannot place. A change's `stop_changes` sets saved stops' times, days and waits by the ids `get_trip` answers, and never adds, removes or moves one; a stop the opened leg does not list is named in the notice. A drafted bus count adds empty
-vehicles on the Buses tab, and a PO or a deposit is not a field: a person
-enters money on Billing. The editor's Save stays the only writer of a trip.
+the panel's notice names any it cannot place. A draft's `stops` each carry their day and leave day, and on a change they replace the opened leg's stops after the editor asks; a change's `stop_changes` instead sets saved stops' times, days and waits by the ids `get_trip` answers, and never adds, removes or moves one, and a draft carries one or the other; a stop the opened leg does not list is named in the notice. A drafted bus count adds empty
+vehicles on the Buses tab. `purchase_order` fills the Billing list's purchase order with its number, else the one with none, else adds one, and the notice gives its amount against the quoted price when they differ; `contract` sets the Contract signed row with who signed as its note; each is marked to check, and a billing step the office's workflow leaves off is named in the notice. A deposit is not a field. The editor's Save stays the only writer of a trip.
 
 **Four tools are the To do list's,** on `to_dos` and nothing else.
 `list_to_dos` reads the stored rows, not the rows the scheduler works out

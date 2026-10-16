@@ -62,8 +62,7 @@ const TRIP_DETAIL = [
 ].join(', ')
 
 // The only trip fields a draft may fill, draft-fields.js's list. Anything
-// else is refused. A PO and a deposit are money a person enters on the
-// Billing tab, so neither is there.
+// else is refused. A deposit is money a person takes, so it is not there.
 const DRAFT_FIELDS: string[] = DraftFields.FIELDS.map((f: { key: string }) => f.key)
 
 const ISO_DATE = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'a date as YYYY-MM-DD')
@@ -670,14 +669,20 @@ Deno.serve(
           fields: z.record(z.string(), z.unknown())
             .describe(`Only the trip fields you are sure of. Allowed: ${[...DRAFT_FIELDS].join(', ')}. ` +
               'stops is the places between the pickup and the drop-off, in the order the bus reaches them, ' +
-              'each { name, address, arrive, leave } with a name or an address and times as HH:MM; ' +
+              'each { name, address, arrive, leave, date, leave_date } with a name or an address, times as HH:MM, ' +
+              'and on a leg of more than one day the day it is reached and the day it is left as YYYY-MM-DD; ' +
               'on a round trip the destination is one of them. The editor lays them out on the Route tab, ' +
               'sets a place that is a saved location, and leaves any other for the person to choose from its list. ' +
+              'On draft_trip_change, stops are the whole route again: they replace the stops of the leg the link opens, ' +
+              'after the editor asks, so give every stop, not only the new ones. ' +
               'bus_count adds empty vehicles up to that many and takes none away. ' +
               'stop_changes, on draft_trip_change only, changes the trip\'s saved stops, each named by the id get_trip answers: ' +
               '{ id, arrive, leave, date, leave_date, dwell } with at least one of the rest, times as HH:MM, days as YYYY-MM-DD, ' +
               'and dwell what the wait counts as, on, off or sleeper; a hotel night is off. It never adds, removes or moves a stop. ' +
-              'A PO or a deposit is not a field: a person enters money on the Billing tab, so say its number or amount in notes.'),
+              'purchase_order is { ref, date, amount }, the PO\'s number, its day and its amount, its number or amount at least; ' +
+              'it fills the Billing list\'s purchase order with that number, else one with no number, else adds one. ' +
+              'contract is { signed_on, signed_by }, a signed contract\'s day and who signed it, the Billing list\'s Contract signed row. ' +
+              'Give each only from the paper itself. A deposit is not a field, so say it in notes.'),
           notes: z.string().max(2000).optional()
             .describe('What you could not work out, shown at the top of the editor.'),
         }
@@ -719,11 +724,10 @@ Deno.serve(
           {
             title: 'Draft a change to a trip',
             description:
-              'Park a change to an existing trip for the person to check, its fields or its saved stops\' times and waits. This does NOT change the trip: it returns a link that opens that trip in the editor with the changes filled in and marked, and only a Save applies them. One draft is one trip; a stop on the leg the link does not open is named in the editor\'s notice.',
+              'Park a change to an existing trip for the person to check: its fields, its whole route again with stops, its saved stops\' times and waits with stop_changes, a purchase order or a signed contract. A draft carries stops or stop_changes, not both. This does NOT change the trip: it returns a link that opens that trip in the editor with the changes filled in and marked, and only a Save applies them. One draft is one trip, and the link opens its first leg; a stop change on the other leg is named in the editor\'s notice.',
             inputSchema: z.object({ trip_id: z.string().uuid(), ...draftShape }),
           },
           async ({ trip_id, fields, notes }) => {
-            // A trip that exists has its stops already, so a change cannot carry them.
             checkFields(fields, true)
             const trip = orThrow(await supabase.from('trips').select('id').eq('id', trip_id).maybeSingle())
             if (!trip) throw new Error('No such trip, or it is not one you can see.')

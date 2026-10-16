@@ -83,8 +83,12 @@ A change to an existing trip works the same way: the link opens that trip,
 with the changes filled in over it, and Reset takes them back out. A change
 can set a saved stop's times, its days and what its wait counts as, such as
 a hotel night marked off duty; each changed stop carries the blue bar on the
-Route tab. It never adds, removes or moves a stop. One link is one trip, so
-a fix across several trips is a link for each.
+Route tab. A change can also lay a whole route again from a newer
+itinerary: its stops replace the leg's, after the editor asks, each on its
+own day. And it can fill a purchase order's number, day and amount, or mark
+the contract signed with the day and who signed, each marked on the Billing
+list; when the PO's amount is not the quoted price, the notice gives both.
+One link is one trip, so a fix across several trips is a link for each.
 
 Claude can press Save on such a link too, after you say yes in chat to
 that change, as for any Save it makes.
@@ -132,8 +136,9 @@ server**.
   its stops, which the editor lays out on the Route tab marked to check: a
   place that is a saved location is set to it, and any other waits to be
   chosen from its list.
-- It cannot confirm a trip, mark one paid, assign a bus or a driver, or
-  upload, replace or delete a document.
+- It cannot mark a trip paid, assign a bus or a driver, or upload, replace
+  or delete a document. A drafted PO or signed contract confirms a trip only
+  once Save writes it.
 - An unopened draft is deleted after 14 days.
 
 ## Saving from Claude Code

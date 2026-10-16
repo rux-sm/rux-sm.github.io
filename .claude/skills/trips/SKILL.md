@@ -66,9 +66,11 @@ reads only the ones before it. Nothing is written until step 10.
    gives a meeting time. The drafted stops are laid out, each with a blue
    bar: check each against the itinerary and press Done in its window. One
    marked No location opens with its address searched, to choose from the
-   list. Read the Summary. On a second-driver notice follow `rules.md`:
-   press Rest in the sleeper when it is offered, which sets that wait to
-   sleeper berth and the Sleeper need on the leg's vehicles, and bring the
+   list. A night of 8 hours or more starts off duty by itself. Read the
+   Summary. On a second-driver notice follow `rules.md`: press Count as off
+   duty when it is offered for hotel nights, or Rest in the sleeper, which
+   sets that wait to sleeper berth and the Sleeper need on the leg's
+   vehicles, and bring the
    second driver to rux only when the notice offers the co-driver alone. Add
    the fuel card when the tab offers it.
 6. **Buses.** In the vehicle's window turn on any other need the route gave

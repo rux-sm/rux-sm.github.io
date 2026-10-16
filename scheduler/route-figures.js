@@ -316,6 +316,14 @@
     });
   }
 
+  /* What a wait counts as before anyone says: off duty for a night of 8
+     hours or more, as a night at a hotel is, a rest that parts two
+     stretches; on duty for any other. */
+  const nightDwell = (m, st) => {
+    const wait = waitOf(m, st);
+    return wait != null && wait >= REST && (leaveDayOf(st, m.from) ?? '') > (st.date ?? m.from ?? '') ? 'off' : 'on';
+  };
+
   /* THE LEG'S FIGURES. Miles and drive are every leg's: the yard's two and
      each stop's. On duty is the span from pre-trip to post-trip, and less
      rest is that less the waits the driver is off the clock for, the
@@ -460,6 +468,6 @@
   window.SchedulerRouteFigures = {
     toMin, hm, leaveDayOf, samePlace,
     waitOf, minutesAt, timeBetween, legInto, roomInto, dropRoom, midnights, countsTo,
-    REST, SPLIT, stretches, legFigures, fromStops,
+    REST, SPLIT, stretches, nightDwell, legFigures, fromStops,
   };
 })();

@@ -8,7 +8,7 @@ import { runInNewContext } from 'node:vm';
 
 const window = {};
 runInNewContext(readFileSync(new URL('../route-figures.js', import.meta.url), 'utf8'), { window });
-const { fromStops, legFigures, roomInto, dropRoom, midnights, countsTo, stretches } = window.SchedulerRouteFigures;
+const { fromStops, legFigures, roomInto, dropRoom, midnights, countsTo, stretches, nightDwell } = window.SchedulerRouteFigures;
 
 let failed = 0;
 function expect(name, got, want) {
@@ -183,6 +183,16 @@ expect('3 and 4 hours are not, and the run is one test, its sleeper time taken o
   split('22:00').map(c => [c.drive, c.rest]), [[870, 420], [570, 0]]);
 expect('a night without its times still parts where the bus leaves on a later day',
   stretches({ ...overnight, list: overnight.list.map((st, i) => (i === 2 ? { ...st, leave: null } : st)) }).map(c => c.drive), [303, 347]);
+
+// What a wait counts as before anyone says.
+const on = { from: '2026-11-06' };
+expect('a night of 8 hours or more starts off duty; a long day wait, a short night and a wait with no times start on duty',
+  [nightDwell(on, { date: '2026-11-06', arrive: '20:00', leave: '07:00' }),
+    nightDwell(on, { date: '2026-11-06', arrive: '19:00', leave: '16:00', leaveDate: '2026-11-09' }),
+    nightDwell(on, { date: '2026-11-06', arrive: '08:00', leave: '18:00' }),
+    nightDwell(on, { date: '2026-11-06', arrive: '23:00', leave: '05:00' }),
+    nightDwell(on, { date: '2026-11-06', arrive: '20:00', leave: null })],
+  ['off', 'off', 'on', 'on', 'on']);
 
 console.log(failed ? `\n  ${failed} route figure case(s) failed` : '\n  route figures: every case passed');
 process.exit(failed ? 1 : 0);

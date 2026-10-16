@@ -7727,10 +7727,13 @@
           const loc = savedLocationOf({ address })
             ?? (name ? (panelIndex.locations || []).find(l => folded(l.name) === folded(name)) : null) ?? null;
           if (!loc) unpicked.push(`stop ${r.list.length + 1}${name ? `, ${name}` : ''}`);
-          r.list.push({ id: null, open: null, placeChanged: true,
+          const stop = { id: null, open: null, placeChanged: true,
             place: loc ? savedAsPlace(loc) : { ...placeOf({}), name: name || address, address: address || null },
             arrive: time(s.arrive), leave: time(s.leave), date: isoOrNull(s.date ?? '') ?? from, leaveDate: null,
-            dwell: 'on', drive: null, miles: null, driveChanged: false, drafted: true });
+            dwell: 'on', drive: null, miles: null, driveChanged: false, drafted: true };
+          // A night at the stop starts off duty, as route-figures.js reads one.
+          stop.dwell = RF.nightDwell({ from }, stop);
+          r.list.push(stop);
         }
         touch();
         return unpicked;
@@ -8079,6 +8082,26 @@
           for (const input of [aDay, aTime, lTime]) input.addEventListener('input', follow);
           aDay.addEventListener('change', follow);
         }
+        /* A new stop's wait, or a drafted one's, follows its times, after the
+           leave day above has followed them, until it is picked: a night of 8
+           hours or more is off duty, as route-figures.js reads one, and any
+           other wait on duty. A saved stop keeps its own. */
+        const dwellSelect = document.getElementById('scheduler-f-stopdwell');
+        let dwellPicked = index !== null && !st.drafted;
+        dwellSelect.addEventListener('change', () => { dwellPicked = true; });
+        const dwellFollows = () => {
+          if (dwellPicked) return;
+          dwellSelect.value = RF.nightDwell({ from }, {
+            arrive: val('scheduler-f-stoparrive') || null, leave: val('scheduler-f-stopleave') || null,
+            date: document.getElementById('scheduler-f-stopday')?.value || st.date || from,
+            leaveDate: document.getElementById('scheduler-f-stopleaveday')?.value || null,
+          });
+        };
+        for (const id of ['scheduler-f-stoparrive', 'scheduler-f-stopleave', 'scheduler-f-stopday', 'scheduler-f-stopleaveday']) {
+          const input = document.getElementById(id);
+          input?.addEventListener('input', dwellFollows);
+          input?.addEventListener('change', dwellFollows);
+        }
 
         stopDone = () => {
           // Words left in the search and not picked name a stop with no location.
@@ -8154,6 +8177,21 @@
           .map(st => ({ stop: st, wait: RF.waitOf(model, st) ?? 0 }))
           .filter(w => w.wait > 0).sort((x, y) => y.wait - x.wait)
           .find(clears) ?? null;
+      }
+      /* The nights on duty, 8 hours or more past midnight, that counted as
+         off duty, as a night at a hotel is, bring every stretch inside the
+         second-driver rule; empty when they do not. */
+      function nightRests() {
+        const model = routeModel();
+        const nights = r.list.filter(st => (st.dwell ?? 'on') === 'on' && RF.nightDwell(model, st) === 'off');
+        const off = new Set(nights);
+        const clears = nights.length > 0 && !RF.legFigures({ ...model,
+          list: r.list.map(st => (off.has(st) ? { ...st, dwell: 'off' } : st)) }).over;
+        return clears ? nights.map(st => ({ stop: st, wait: RF.waitOf(model, st) ?? 0 })) : [];
+      }
+      function takeNightRests(nights) {
+        for (const n of nights) n.stop.dwell = 'off';
+        touch();
       }
       /* Taking the rest is the stop's window and each vehicle's window in one
          press: the wait counts as sleeper berth, and every vehicle on the leg
@@ -8255,14 +8293,24 @@
           ? ` ${without} of the leg's ${legFleet.length} buses ${without === 1 ? 'has' : 'have'} no co-driver seat.` : '';
         if (over && (coDrivers(r.leg) === 0 || without > 0)) {
           const why = over.drive > 600 ? `${hm(over.drive)} driving` : `${hm(over.span - over.rest)} on duty less rest`;
-          /* THE SLEEPER REST COMES FIRST, where it is enough: the leg's longest
-             wait on duty, tried as sleeper berth. When the rule then passes,
-             the notice names that stop and offers the rest before the
-             co-driver; when it does not, as on a day of too much driving, the
-             co-driver is the one offer. */
-          const rest = sleeperRest();
+          /* A NIGHT OFF DUTY COMES FIRST, then the sleeper rest, where either
+             is enough. Nights at a stop left on duty, counted as off duty as a
+             hotel night is, are offered together; else the leg's longest wait
+             on duty, tried as sleeper berth. When the rule then passes, the
+             notice names the stops and offers the rest before the co-driver;
+             when neither does, as on a day of too much driving, the co-driver
+             is the one offer. */
+          const nights = nightRests();
+          const rest = nights.length ? null : sleeperRest();
           const coDriver = { label: 'Add co-driver', onClick: () => setCoDrivers(r.leg, true) };
-          driverBox.replaceChildren(rest
+          const where = n => n.stop.place?.name || 'the stop';
+          const nightWords = nights.length === 1 ? `the night at ${where(nights[0])}`
+            : `the ${nights.length} nights at ${[...new Set(nights.map(where))].join(' and ')}`;
+          driverBox.replaceChildren(nights.length
+            ? notice('warning', 'Second driver',
+              `At ${why}${fig.stretches > 1 ? ' between rests' : ''}, this trip needs a second driver, or ${nightWords} counted off duty.${some}`,
+              [{ label: 'Count as off duty', onClick: () => takeNightRests(nights) }, coDriver])
+            : rest
             ? notice('warning', 'Second driver',
               `At ${why}${fig.stretches > 1 ? ' between rests' : ''}, this trip needs a second driver, or the ${hm(rest.wait)} at ${rest.stop.place?.name || 'the stop'} as rest in the sleeper.${some}`,
               [{ label: 'Rest in the sleeper', onClick: () => takeSleeperRest(rest.stop) }, coDriver])

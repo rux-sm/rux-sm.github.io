@@ -99,12 +99,6 @@ itself.
 
 ## Tasks
 
-### The customer's word as the check
-
-- [ ] Review three coming trips that have both, from a new session, where
-      `read_trip_document` is listed, and read each listed difference
-      against the paper and the thread.
-
 ### The editor's Read button
 
 - [ ] Write five invented itineraries and three invented POs, with what each

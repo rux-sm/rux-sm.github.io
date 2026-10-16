@@ -140,7 +140,7 @@ const nightRun = fromStops({ trip_type: 'round_trip', start_date: '2026-11-06', 
   ['pickup', 'A', '16:30', '2026-11-06', null, null, 20, '0:30', 'on', '16:45'],
   ['stop', 'B', '17:00', '2026-11-06', '21:00', '2026-11-06', 260, '4:00', 'on'],
   ['stop', 'C', '21:30', '2026-11-06', '02:30', '2026-11-07', 330, '5:00', 'on'],
-  ['stop', 'D', '03:00', '2026-11-07', '06:00', '2026-11-07', 200, '3:00', 'on'],
+  ['stop', 'D', '03:00', '2026-11-07', '06:00', '2026-11-07', 200, '3:00', 'off'],
   ['stop', 'A', '08:00', '2026-11-08', '17:00', '2026-11-08', 590, '9:00', 'on'],
   ['return', 'Y', '17:00', '2026-11-08', '17:30', '2026-11-08', 20, '0:30', 'on'],
 ]), times);
@@ -148,17 +148,39 @@ const nightFig = legFigures(nightRun);
 expect('a run through the night is one stretch over two dates, and asks for a second driver',
   [nightFig.each.map(c => c.drive), stretches(nightRun).map(c => c.drive), nightFig.over?.drive, nightFig.stretches],
   [[270, 480, 570], [750, 570], 750, 2]);
-// The same night broken by 8 hours at the second stop, marked on duty.
-const brokenRun = fromStops({ trip_type: 'round_trip', start_date: '2026-11-06', end_date: '2026-11-08' }, 'outbound', rows([
+// The same night with 8 hours at the second stop.
+const brokenRows = dwell => rows([
   ['pickup', 'A', '16:30', '2026-11-06', null, null, 20, '0:30', 'on', '16:45'],
   ['stop', 'B', '17:00', '2026-11-06', '21:00', '2026-11-06', 260, '4:00', 'on'],
-  ['stop', 'C', '21:30', '2026-11-06', '02:30', '2026-11-07', 330, '5:00', 'on'],
-  ['stop', 'D', '10:30', '2026-11-07', '13:30', '2026-11-07', 200, '3:00', 'on'],
+  ['stop', 'C', '21:30', '2026-11-06', '02:30', '2026-11-07', 330, '5:00', dwell],
+  ['stop', 'D', '10:30', '2026-11-07', '13:30', '2026-11-07', 200, '3:00', 'off'],
   ['stop', 'A', '08:00', '2026-11-08', '17:00', '2026-11-08', 590, '9:00', 'on'],
   ['return', 'Y', '17:00', '2026-11-08', '17:30', '2026-11-08', 20, '0:30', 'on'],
-]), times);
-expect('8 hours waiting parts the night, whatever its mark',
-  stretches(brokenRun).map(c => [c.drive, c.span]), [[570, 600], [180, 180], [570, 570]]);
+]);
+const brokenTrip = { trip_type: 'round_trip', start_date: '2026-11-06', end_date: '2026-11-08' };
+expect('8 hours in the sleeper or off duty part the night; 8 hours on duty is no rest',
+  ['sleeper', 'off', 'on'].map(d => stretches(fromStops(brokenTrip, 'outbound', brokenRows(d), times)).map(c => [c.drive, c.span])),
+  [[[570, 600], [180, 180], [570, 570]], [[570, 600], [180, 180], [570, 570]], [[750, 1260], [570, 570]]]);
+
+/* THE SPLIT SLEEPER REST. Out at 6:00, 3 hours in the sleeper at the
+   first stop and 5 at the second, then on through the night: the two
+   waits come to 8, so the work before and after each is tested together,
+   and neither test passes 10 hours driving. With 4 hours at the second
+   stop they come to 7, no rest, and the run is one test of 14 h 30
+   driving. */
+const splitRows = second => rows([
+  ['pickup', 'A', '05:30', '2026-11-06', null, null, 20, '0:30', 'on', '05:45'],
+  ['stop', 'B', '06:00', '2026-11-06', '11:00', '2026-11-06', 330, '5:00', 'sleeper'],
+  ['stop', 'C', '14:00', '2026-11-06', '18:00', '2026-11-06', 260, '4:00', 'sleeper'],
+  ['stop', 'D', second, '2026-11-06', '04:00', '2026-11-07', 330, '5:00', 'off'],
+  ['stop', 'A', '08:00', '2026-11-08', '17:00', '2026-11-08', 590, '9:00', 'on'],
+  ['return', 'Y', '17:00', '2026-11-08', '17:30', '2026-11-08', 20, '0:30', 'on'],
+]);
+const split = second => stretches(fromStops(brokenTrip, 'outbound', splitRows(second), times));
+expect('two sleeper waits of 3 and 5 hours are a split rest, each tested with the work on both sides',
+  split('23:00').map(c => [c.drive, c.span, c.rest]), [[570, 570, 0], [540, 540, 0], [570, 570, 0]]);
+expect('3 and 4 hours are not, and the run is one test, its sleeper time taken off',
+  split('22:00').map(c => [c.drive, c.rest]), [[870, 420], [570, 0]]);
 expect('a night without its times still parts where the bus leaves on a later day',
   stretches({ ...overnight, list: overnight.list.map((st, i) => (i === 2 ? { ...st, leave: null } : st)) }).map(c => c.drive), [303, 347]);
 

@@ -236,21 +236,29 @@
   }
 
   /* THE SECOND-DRIVER TEST'S STRETCHES. A driver's day is the time between
-     real rests, not a calendar day: any wait of 8 hours, the quote's own
-     printed figure, parts two stretches, whatever its mark, and a run
-     through the night with no such wait is one stretch over two dates. A
-     wait whose times are not in parts them where the bus leaves it on a
-     later day than it reached it. Each stretch is { drive, span, rest }:
-     its drive, on duty from its first time to its last, the pre-trip and
+     real rests, not a calendar day, as the passenger-carrier hours rule
+     counts it. A wait of 8 hours off duty or in the sleeper berth is a rest
+     and parts two stretches; a wait on duty is never one, however long. Two
+     sleeper waits of at least 2 hours each, together 8 or more, are a rest
+     too, split: the work before and after each of them is tested together,
+     as the rule asks. A run through the night with no rest is one stretch
+     over two dates, and a wait whose times are not in parts them where the
+     bus leaves it on a later day than it reached it.
+
+     Each entry is a span of work the rule tests, { drive, span, rest }: its
+     drive, on duty from its first time to its last, the pre-trip and
      post-trip on the leg's ends, or null where its times cannot say, and its
-     shorter waits off duty or in the sleeper berth. */
+     waits off duty or in the sleeper berth that are not a rest. */
   const REST = 480;
+  const SPLIT = 120;
   function stretches(m) {
     const t = m.times;
     const many = manyDays(m);
+    // Each stretch is pieces of work between sleeper waits of a split's length.
     const list = [];
-    let cur = null, prev = null;
-    const open = () => { cur = { drive: 0, rest: 0, first: null, last: null, complete: true, stops: [] }; list.push(cur); };
+    let stretch = null, cur = null, prev = null;
+    const piece = () => { cur = { drive: 0, rest: 0, first: null, last: null, complete: true, stops: [] }; stretch.pieces.push(cur); };
+    const open = () => { stretch = { pieces: [], waits: [] }; list.push(stretch); piece(); };
     // A time as minutes from the leg's first day, rolled past midnight when it
     // reads earlier than the time before it.
     const put = (time, date, shift = 0) => {
@@ -274,20 +282,38 @@
       cur.stops.push(st);
       if (isLocated(m, st) && (roomInto(m, st) ?? 0) < 0) cur.complete = false;
       const wait = waitOf(m, st);
+      const resting = !!st.dwell && st.dwell !== 'on';
       const next = m.list[i + 1] ? dayOf(m, m.list[i + 1]) : m.to;
-      const parts = wait != null ? wait >= REST : (leaveDayOf(st, m.from) ?? '') > dayOf(m, st) || (next ?? '') > (dayOf(m, st) ?? '');
-      if (parts) { open(); if (wait == null) prev = null; }
-      else if (st.dwell && st.dwell !== 'on') cur.rest += wait ?? 0;
+      if (wait == null && ((leaveDayOf(st, m.from) ?? '') > dayOf(m, st) || (next ?? '') > (dayOf(m, st) ?? ''))) { open(); prev = null; }
+      else if (wait != null && resting && wait >= REST) open();
+      else if (wait != null && st.dwell === 'sleeper' && wait >= SPLIT) { stretch.waits.push(wait); piece(); }
+      else if (resting) cur.rest += wait ?? 0;
       put(st.leave, leaveDayOf(st, m.from));
     });
     if (m.dropCounts) add(m.drop[0]);
     add(m.home[0]);
     put(t.endtrip, m.to); put(t.back, m.to, m.post);
     if (!t.endtrip) cur.complete = false;
-    return list.map(c => ({
-      drive: c.drive, rest: c.rest,
-      span: c.complete && timesComplete(c.stops) && c.first != null && c.last != null && c.last > c.first ? c.last - c.first : null,
-    }));
+
+    const spanOf = c => (c.complete && timesComplete(c.stops) && c.first != null && c.last != null && c.last > c.first ? c.last - c.first : null);
+    return list.flatMap(({ pieces, waits }) => {
+      const work = pieces.map(c => ({ drive: c.drive, rest: c.rest, span: spanOf(c) }));
+      /* A sleeper wait is half of a split rest when it and the wait before or
+         after it come to 8 hours; any other is a wait off the clock inside
+         the work around it, which joins that work. */
+      const paired = i => (i > 0 && waits[i - 1] + waits[i] >= REST) || (i < waits.length - 1 && waits[i] + waits[i + 1] >= REST);
+      const groups = [work[0]];
+      waits.forEach((w, i) => {
+        const g = groups.at(-1), next = work[i + 1];
+        if (paired(i)) { groups.push(next); return; }
+        groups[groups.length - 1] = { drive: g.drive + next.drive, rest: g.rest + w + next.rest,
+          span: g.span != null && next.span != null ? g.span + w + next.span : null };
+      });
+      // Around each half of a split rest, the work before it and after it are one test.
+      if (groups.length === 1) return groups;
+      return groups.slice(1).map((g, k) => ({ drive: groups[k].drive + g.drive, rest: groups[k].rest + g.rest,
+        span: groups[k].span != null && g.span != null ? groups[k].span + g.span : null }));
+    });
   }
 
   /* THE LEG'S FIGURES. Miles and drive are every leg's: the yard's two and
@@ -434,6 +460,6 @@
   window.SchedulerRouteFigures = {
     toMin, hm, leaveDayOf, samePlace,
     waitOf, minutesAt, timeBetween, legInto, roomInto, dropRoom, midnights, countsTo,
-    REST, stretches, legFigures, fromStops,
+    REST, SPLIT, stretches, legFigures, fromStops,
   };
 })();

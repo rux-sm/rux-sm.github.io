@@ -3,8 +3,9 @@
    --------------------------------------------------------------------------
    Every lookup of a place goes through Geoapify, whose free plan lets a place
    found be kept and shared: `search(text)` for the places matching what is
-   typed, `drive(a, b)` for the drive between two map points, and `map(host,
-   point, onSet)` for a map a point is tapped on. Its key and the yard, which
+   typed, `drive(a, b)` for the drive between two map points, `map(host,
+   point, onSet)` for a map a point is tapped on, and `baseMap(host, style)`
+   for a street map to draw on. Its key and the yard, which
    ranks nearby places first, are read from `settings` by `init(client)`, or
    handed over by `use(key, yard)` from a page that reads them itself.
 
@@ -175,16 +176,31 @@
      opens on the point, or on the yard at a region's scale when there is none,
      and a tap puts the pin there and hands `onSet` the point. `.show(point)`
      moves the pin and the view to a point, or takes the pin away for null. */
-  function map(host, point, onSet) {
+  /* A Leaflet map over Geoapify's street map, `osm-bright` or another of its
+     styles such as `dark-matter`, with the credit the free plan asks for.
+     `.style(name)` draws it in another style; null with no Leaflet or key. */
+  function baseMap(host, style = 'osm-bright', options = {}) {
     if (!window.L || !key) return null;
     const L = window.L;
-    const m = L.map(host, { attributionControl: true, scrollWheelZoom: false });
+    const m = L.map(host, { attributionControl: true, ...options });
     m.attributionControl.setPrefix(false);
-    L.tileLayer(`https://maps.geoapify.com/v1/tile/osm-bright/{z}/{x}/{y}.png?apiKey=${encodeURIComponent(key)}`, {
-      maxZoom: 20,
-      attribution: 'Powered by <a href="https://www.geoapify.com/" target="_blank" rel="noopener">Geoapify</a> · '
-        + '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
-    }).addTo(m);
+    let tiles = null;
+    m.style = name => {
+      tiles?.remove();
+      tiles = L.tileLayer(`https://maps.geoapify.com/v1/tile/${name}/{z}/{x}/{y}.png?apiKey=${encodeURIComponent(key)}`, {
+        maxZoom: 20,
+        attribution: 'Powered by <a href="https://www.geoapify.com/" target="_blank" rel="noopener">Geoapify</a> · '
+          + '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
+      }).addTo(m);
+    };
+    m.style(style);
+    return m;
+  }
+
+  function map(host, point, onSet) {
+    const m = baseMap(host, 'osm-bright', { scrollWheelZoom: false });
+    if (!m) return null;
+    const L = window.L;
     /* The pin is the sprite's location glyph copied in, since Chrome paints
        no `<use>` of the hidden sprite inside Leaflet's layers. */
     const glyph = document.getElementById('m-location_on')?.innerHTML ?? '';
@@ -315,5 +331,5 @@
     .replace(/[.,#-]/g, ' ')
     .split(/\s+/).filter(Boolean).map(w => ADDRESS_WORDS[w] ?? w).join(' ');
 
-  window.SchedulerPlaces = { init, use, search, drive, map, field, credit, creditRow, unavailable, nameIsAddress, NAME_HELP, addressKey };
+  window.SchedulerPlaces = { init, use, search, drive, baseMap, map, field, credit, creditRow, unavailable, nameIsAddress, NAME_HELP, addressKey };
 })();

@@ -25,7 +25,7 @@ the schema to match the page.
   page; section 4 covers it.
 - **Two more are Samsara's Edge Functions**: `samsara-miles`, behind the
   Billing tab's Get from Samsara, and `samsara-now`, behind a bar's line while
-  its bus is out; sections 7 and 8 cover them.
+  its bus is out and the Live map; sections 7 and 8 cover them.
 - **The old app goes through a proxy.** Its client's URL is a Cloudflare
   Worker (`../rux-ui/worker/`), a pass-through to the Supabase host plus one
   route of its own, `/ai/extract`, used only by the intake page. This app
@@ -137,7 +137,7 @@ one To do line, who the row is about ahead of its words. The RPCs a screen calls
 | Document links | the `trip-document-link` Edge Function (§5), for this app's and rux-ui's document link pages; `get_trip_document` is staff only and nothing calls it |
 | Website requests | the `quote-request` Edge Function (§6), for the company website's quote form; `quote_request_add`, which only the service role runs, is its one write |
 | Samsara miles | the `samsara-miles` Edge Function (§7), for the Billing tab's Get from Samsara; it writes nothing |
-| Samsara now | the `samsara-now` Edge Function (§8), for the board's line while a bus is out; it writes nothing |
+| Samsara now | the `samsara-now` Edge Function (§8), for the board's line while a bus is out and the Live map; it writes nothing |
 | History | `record_trip_history`, which both apps write trip entries through; `search_history` and `history_people`, the History page's read of trip and record entries together and its names; `get_trip_history`, rux-ui's read. All staff only. `record_row_history` and `record_line_history` are the trigger functions, with `history_actor` and `history_text` under them, and nobody calls those four. |
 | Vehicle types | `rename_vehicle_type`, staff only, which the Fleet page's Vehicle types list calls: it renames a type on `buses`, `trips`, `trip_assignments` and `customers`, and puts back the Buses done and Billing done the rename takes off |
 | Access, owner only, on the Account page | `is_owner`, `list_accounts`, `set_account_apps`; not callable without a log-in |
@@ -286,15 +286,14 @@ writes `trips.actual_miles` and each seat's `trip_drivers.miles`. It is deployed
 
 ## 8. Samsara now
 
-`samsara-now`, source in `scheduler/samsara-now/`, is the board's line for a
-bus out on its trip, asked once a minute while a bar is within two hours of its
-trip. It reads `buses` and `drivers` on the caller's own session, so a caller
-who is not staff finds no fleet and Samsara is never asked. For each bus
-Samsara names with its number it answers the engine, speed and place, none from
-a reading over fifteen minutes old but the engine's, stamped on a change and
-kept while the GPS reports; and the drivers logged in: each one's duty, the
-least of their three clocks as hours left, and who is at the wheel, with the
-key's Compliance permission. A Samsara driver is the scheduler's with the same
-first and last name, unless two share it. It writes nothing, is deployed with
-Verify JWT off as §5 is, and answers the site and the log-in preview.
+`samsara-now`, source in `scheduler/samsara-now/`, feeds a bar's line while its bus is out, and the
+Live map, asked once a minute while either is open. It reads `buses` and `drivers` on the caller's
+session, so a caller who is not staff finds no fleet and Samsara is never asked. For each bus
+Samsara names with its number it answers where it is; the engine, speed, place and heading, none
+from a reading over fifteen minutes old but the engine's, kept while the GPS reports; for a bus the
+body's `paths` names, its path since the time given, a point a tenth of a mile, four days back at
+most; and the drivers logged in: each one's duty, the least of their three clocks as hours left, and
+who is at the wheel, with the key's Compliance permission. A Samsara driver is the scheduler's with
+the same first and last name, unless two share it. It writes nothing, is deployed with Verify JWT
+off as §5 is, and answers the site and the log-in preview.
 `scheduler/tools/check-samsara-now.mjs` runs it against an invented fleet.

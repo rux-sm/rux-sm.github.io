@@ -1211,14 +1211,26 @@ button.scheduler-row-head__num::after {
 .scheduler-card__needs-list > .scheduler-card__row[data-go] { cursor: pointer; }
 .scheduler-card__needs-list > .scheduler-card__row[data-go]:hover { background: var(--rux-layer-hover-03); }
 .scheduler-card__needs-list > .scheduler-card__row[data-go]:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
-/* On the road: a line for each driver Samsara has in the bus, their duty's
-   mark, their name, bold at the wheel, and their duty and hours. */
+/* On the road: a line for each stop still to come, its name and the time it
+   is due, the next one bold with when the bus gets there; then a line for
+   each driver Samsara has in the bus, their duty's mark, their name, bold at
+   the wheel, and their duty and hours. */
 .scheduler-card__road { padding-block: var(--rux-spacing-03); }
 .scheduler-card__road-list { display: grid; gap: var(--rux-spacing-02); margin: 0; padding: 0; list-style: none; }
 .scheduler-card__road-driver { display: flex; align-items: center; gap: var(--rux-spacing-03); min-inline-size: 0; }
 .scheduler-card__road-name { flex: none; }
 .scheduler-card__road-driver--wheel > .scheduler-card__road-name { font-weight: 600; }
 .scheduler-card__road-words { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--rux-text-secondary); }
+.scheduler-card__road-list + .scheduler-card__road-list { margin-block-start: var(--rux-spacing-03); }
+.scheduler-card__road-stop { display: flex; align-items: baseline; justify-content: space-between; gap: var(--rux-spacing-03); min-inline-size: 0; }
+.scheduler-card__road-stop > .scheduler-card__road-name { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scheduler-card__road-stop--next > .scheduler-card__road-name { font-weight: 600; }
+/* The time keeps its room and the stop's name gives way; the next stop
+   says more, so its words take a line of their own under its name. */
+.scheduler-card__road-stop > .scheduler-card__road-words { flex: none; }
+.scheduler-card__road-stop--next { display: grid; }
+.scheduler-card__road-stop--next > .scheduler-card__road-words { flex: initial; }
+.scheduler-card__road-words--late { color: var(--rux-text-primary); font-weight: 600; }
 /* An update: its author's 16px face in the column the alerts' marks stand
    in, its words, and its age at the right of its first line, so every age
    stands in one column. */
@@ -1548,12 +1560,14 @@ button.scheduler-row-head__num::after {
 .scheduler-crew__dot { inline-size: 7px; block-size: 7px; border-radius: 50%; background: currentColor; }
 
 /* ON THE ROAD, from Samsara: while the bus is out, the update's line gives
-   way to the engine's dot, the speed, ten blocks for the ten hours a driver
-   may drive and the hours the driver at the wheel has left, and each driver
-   Samsara has in the bus wears their duty in place of their dot. Green is the
-   engine running, amber idling and under an hour left, and grey the engine off
-   or unknown during the trip's hours. A board set to hide the
-   updates hides this line with them, so every bar keeps one height. */
+   way to the engine's dot and the next stop with the time it is due, or with
+   no stop to name the speed and the place, and each driver Samsara has in the bus wears their duty in place of
+   their dot, the driver at the wheel with the hours they may still drive.
+   The dot is green with the engine running, amber idling, and grey off or
+   unknown during the trip's hours. The words take the colours the update's
+   age is written in, which every theme sets to read on its bars: green, and
+   amber for idling, a late stop and under an hour left. A board set to hide
+   the updates hides this line with them, so every bar keeps one height. */
 .scheduler-bar__road { display: none; }
 .scheduler-bar--road > .scheduler-bar__update { display: none; }
 .scheduler-bar--road > .scheduler-bar__road {
@@ -1562,11 +1576,16 @@ button.scheduler-row-head__num::after {
   justify-content: flex-start;
   gap: var(--rux-spacing-02);
   --scheduler-road: var(--scheduler-mark-success);
+  --scheduler-road-ink: var(--scheduler-age-new);
 }
-.scheduler-bar--idling > .scheduler-bar__road { --scheduler-road: var(--scheduler-mark-warning); }
-.scheduler-bar--parked > .scheduler-bar__road { --scheduler-road: color-mix(in srgb, currentColor 60%, transparent); }
+.scheduler-bar--idling > .scheduler-bar__road { --scheduler-road: var(--scheduler-mark-warning); --scheduler-road-ink: var(--scheduler-age-week); }
+.scheduler-bar--parked > .scheduler-bar__road {
+  --scheduler-road: color-mix(in srgb, currentColor 60%, transparent);
+  --scheduler-road-ink: color-mix(in srgb, currentColor 75%, transparent);
+}
 .scheduler-week--no-update .scheduler-bar__road { display: none; }
-.scheduler-road__dot {
+/* Named with its line, to outrank the row's first child, which may shrink. */
+.scheduler-bar__road > .scheduler-road__dot {
   flex: none;
   inline-size: 6px;
   block-size: 6px;
@@ -1575,18 +1594,21 @@ button.scheduler-row-head__num::after {
   background: var(--scheduler-road);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--scheduler-road) 30%, transparent);
 }
-.scheduler-road__speed, .scheduler-road__unit, .scheduler-road__who { flex: none; color: var(--scheduler-road); }
-.scheduler-road__speed, .scheduler-road__hours { font-family: var(--rux-code-01-font-family); font-variant-numeric: tabular-nums; }
+.scheduler-road__speed, .scheduler-road__unit, .scheduler-road__who { flex: none; color: var(--scheduler-road-ink); }
+.scheduler-road__speed, .scheduler-road__due, .scheduler-crew__hours { font-family: var(--rux-code-01-font-family); font-variant-numeric: tabular-nums; }
 .scheduler-road__unit { font-size: .72em; opacity: .75; margin-inline-start: calc(-1 * var(--rux-spacing-01)); }
-/* The blocks share what the line has left, up to the width they have on a
-   day-wide bar, so a bar three days wide does not stretch them. */
-.scheduler-road__blocks { flex: 1 1 0; min-inline-size: 0; max-inline-size: 6rem; display: flex; gap: 2px; block-size: 9px; }
-.scheduler-road__blocks > i { flex: 1; border-radius: 1px; background: color-mix(in srgb, currentColor 18%, transparent); }
-.scheduler-road__blocks > i.is-lit { background: var(--scheduler-mark-success); }
-.scheduler-road__hours { flex: none; color: var(--scheduler-mark-success); }
-.scheduler-road__blocks.scheduler-road--low > i.is-lit { background: var(--scheduler-mark-warning); }
-.scheduler-road__hours.scheduler-road--low { color: var(--scheduler-mark-warning); }
+/* The next stop: the arrow or At, the stop's name, cut to fit, and the time
+   it is due, which keeps its room. */
+.scheduler-road__next { display: flex; align-items: center; gap: var(--rux-spacing-02); min-inline-size: 0; margin-inline-start: var(--rux-spacing-01); }
+.scheduler-road__arrow, .scheduler-road__word { flex: none; opacity: .75; }
+.scheduler-road__stop { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scheduler-road__due { flex: none; padding-inline-start: var(--rux-spacing-01); color: var(--scheduler-age-new); }
+.scheduler-road__due--late { color: var(--scheduler-age-week); }
+.scheduler-road__due--plain { color: inherit; }
 .scheduler-road__place { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: .85; }
+/* The hours the driver at the wheel may still drive, after their name. */
+.scheduler-crew__hours { flex: none; color: var(--scheduler-age-new); }
+.scheduler-crew__hours--low { color: var(--scheduler-age-week); }
 /* A driver's duty takes the place of their dot: the wheel driving, the
    clipboard on duty, the moon in the sleeper and the power button off duty,
    each its own shape so the colour is never the only signal. */
@@ -4816,3 +4838,90 @@ html:has(.scheduler-page[data-takeover]) {
 
 /* A customer's standing notes under a trip's Customer field, its own lines kept. */
 .scheduler-customer-notes { white-space: pre-line; }
+
+/* ── The Live map ─────────────────────────────────────────────────────────
+   live.html: the map, with the buses listed beside it, in one card that
+   fills the window under the header, as the board does; on a phone the list
+   goes under the map. A bus's pin and its number in the list wear its
+   trip's colour from the bar's own palette, and grey when it is not out. */
+.scheduler-live-page [hidden] { display: none; }
+.scheduler-live__notice { margin-block-end: var(--rux-spacing-05); }
+.scheduler-live {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20rem;
+  block-size: calc(100dvh - 3rem - 2 * var(--rux-spacing-05) - var(--scheduler-safe-bottom));
+  min-block-size: 24rem;
+  border: 1px solid var(--rux-border-subtle-01);
+  background: var(--rux-layer-01);
+}
+.scheduler-live__map { isolation: isolate; min-block-size: 0; background: var(--rux-layer-02); }
+/* Leaflet sets its own face on the map; the pins take the page's. */
+.scheduler-live__map.leaflet-container { font: inherit; }
+.scheduler-live__list { margin: 0; padding: 0; list-style: none; overflow: auto; border-inline-start: 1px solid var(--rux-border-subtle-01); }
+@media (max-width: 41.98rem) {
+  .scheduler-live { grid-template-columns: minmax(0, 1fr); grid-template-rows: 60% minmax(0, 1fr); }
+  .scheduler-live__list { border-inline-start: 0; border-block-start: 1px solid var(--rux-border-subtle-01); }
+}
+.scheduler-live__bus {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--rux-spacing-03);
+  inline-size: 100%;
+  padding: var(--rux-spacing-04) var(--rux-spacing-05);
+  border: 0;
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+  background: transparent;
+  color: var(--rux-text-primary);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.scheduler-live__bus:hover { background: var(--rux-layer-hover-01); }
+.scheduler-live__bus[aria-pressed="true"] { background: var(--rux-layer-selected-01); }
+.scheduler-live__bus:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
+.scheduler-live__num {
+  align-self: start;
+  min-inline-size: 3rem;
+  padding: var(--rux-spacing-01) var(--rux-spacing-03);
+  background: var(--scheduler-bg);
+  color: var(--scheduler-fg);
+  font-weight: 600;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.scheduler-live__num--yard, .scheduler-live-pin--yard {
+  --scheduler-bg: var(--rux-tag-background-gray);
+  --scheduler-fg: var(--rux-tag-color-gray);
+}
+.scheduler-live__said { display: grid; min-inline-size: 0; }
+.scheduler-live__dest { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scheduler-live__line { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--rux-text-secondary); }
+.scheduler-live__hours, .scheduler-live__due { font-variant-numeric: tabular-nums; }
+.scheduler-live__hours--low, .scheduler-live__due--late { color: var(--rux-text-primary); font-weight: 600; }
+/* A pin: its number on the trip's colour, centred on where the bus is, the
+   chosen one ringed. Leaflet's own box around it is emptied. */
+.scheduler-live-pin-box { background: none; border: 0; }
+.scheduler-live-pin {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-01);
+  inline-size: max-content;
+  translate: -50% -50%;
+  padding: 0 var(--rux-spacing-03) 0 var(--rux-spacing-02);
+  background: var(--scheduler-bg);
+  color: var(--scheduler-fg);
+  font-size: var(--rux-label-02-font-size);
+  font-weight: 600;
+  line-height: 1.5rem;
+  white-space: nowrap;
+  box-shadow: 0 1px 4px rgb(0 0 0 / .45);
+  cursor: pointer;
+}
+.scheduler-live-pin--chosen { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
+.scheduler-live-pin__arrow { display: block; flex: none; }
+/* The chosen bus's leg: the path it drove, the dashed way on to its next
+   stop, and its stops, a ring until reached and filled after. */
+.scheduler-live-path { stroke: var(--rux-support-info); stroke-width: 4; stroke-opacity: .85; fill: none; }
+.scheduler-live-ahead { stroke: var(--rux-support-info); stroke-width: 3; stroke-dasharray: 6 6; stroke-opacity: .8; fill: none; }
+.scheduler-live-stop { stroke: var(--rux-text-primary); stroke-width: 2; fill: var(--rux-background); fill-opacity: 1; }
+.scheduler-live-stop--reached { fill: var(--rux-support-success); }

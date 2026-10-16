@@ -8825,7 +8825,6 @@
         moneyField('scheduler-f-estmiles', 'Estimated miles', editing.estFollowed ? null : trip.est_miles),
         moneyField('scheduler-f-actmiles', 'Actual miles', trip.actual_miles),
       );
-      miles.classList.add('scheduler-pair--figures');
       /* Get from Samsara, in the heading's menu, asks the samsara-miles Edge
          Function how far each bus went by its odometer, who drove it and
          when it reached each leg's pickup, on the trip as last saved. It puts
@@ -8935,9 +8934,7 @@
                 const n = money(payInput.value);
                 seat.pay = n == null ? null : Math.max(0, round2(n));
               });
-              const row = pair(field, payField);
-              row.classList.add('scheduler-pair--figures');
-              return row;
+              return pair(field, payField);
             });
             const drove = b.busId ? droveOn(b.busId, leg) : null;
             if (drove) {

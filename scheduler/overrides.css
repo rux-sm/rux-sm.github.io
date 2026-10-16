@@ -385,15 +385,9 @@
 .rux--side-panel__actions-container .rux--action-set__action-button {
   padding-inline: var(--rux-spacing-04);
 }
-/* The editor is 20rem, too narrow for two of its fields side by side: a name
-   beside a phone number cut both to an ellipsis. A pair there is one field a
-   row, except a count's: Passengers' 7rem holds any count and leaves Type the
-   126px its longest choice, Round trip, needs. */
-#scheduler-panel .scheduler-pair { grid-template-columns: minmax(0, 1fr); }
+/* A count beside its field keeps a narrow box: Passengers' 7rem holds any
+   count and leaves Type the rest. */
 #scheduler-panel .scheduler-pair--count { grid-template-columns: minmax(0, 1fr) 7rem; }
-/* Two short figures, Billing's Estimated and Actual miles, keep their two
-   columns, where each label and its widest value fit. */
-#scheduler-panel .scheduler-pair--figures { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 /* The Route tab's Summary has five columns, which Carbon's 16px a side would
    run 50px past the editor's 20rem. A group in the editor's stack may be
    narrower than its widest line, so the tile stays inside the panel; the

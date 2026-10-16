@@ -7166,8 +7166,8 @@
       ),
       colorItem,
     );
-    // The tab's name heads its first section.
-    panelDetails.appendChild(section(null, topFields));
+    // The tab's name heads its first section, the trip's own fields in a tile.
+    panelDetails.appendChild(section(null, fieldTile(topFields)));
 
     // The Buses tab is its vehicles alone; what the trip needs is on Billing and Route.
     panelFleet.querySelector(':scope > [data-fleet-needs]')?.remove();

@@ -440,11 +440,13 @@
   overflow: hidden;
 }
 
-/* A field in a tile in the side panel, as a trip contact's, takes the field
-   token of the layer inside the tile, `field-03`, rather than the panel's
-   fixed `field-02`, which is the tile's own surface. One class more than the
-   side-panel rule. */
-.rux--side-panel .rux--layer-three :is(.rux--text-input, .rux--text-area, .rux--select-input) {
+/* A field in a tile in the side panel, as the trip editor's Details fields
+   are, takes the field token of the layer inside the tile, `field-03`,
+   rather than the panel's fixed `field-02`, which is the tile's own surface.
+   Every control rux.css's side-panel rule names, one class more. */
+.rux--side-panel .rux--layer-three :is(.rux--text-input, .rux--text-area, .rux--search-input,
+  .rux--select-input, .rux--multi-select, .rux--dropdown, .rux--dropdown-list,
+  .rux--number input[type=number], .rux--date-picker__input) {
   background-color: var(--rux-field);
 }
 

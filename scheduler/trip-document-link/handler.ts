@@ -3,16 +3,40 @@
 // sends a trip document's id and gets back a link to the file that stops
 // working after ten minutes. The id stays the only secret, as it is on the
 // link pages today; the bucket itself is closed to everyone but staff.
+//
+// A DOCUMENT'S ADDRESS ENDS WITH ITS TRIP: two days after the trip's last day,
+// on the office's calendar, or once the trip is cancelled, it answers 410, so
+// a link sent for one trip does not open its files for ever. Someone signed
+// in as staff still opens it.
 
 export const LINK_SECONDS = 600
+// The days after a trip's last day its documents still open without a log-in.
+export const GRACE_DAYS = 2
 
-export type Found = { file_path: string; file_name?: string | null }
+// `ends` is the trip's last day, YYYY-MM-DD, and `cancelled` whether it was.
+export type Found = { file_path: string; file_name?: string | null; ends?: string | null; cancelled?: boolean }
 
 export type Deps = {
   // The document's file, or null when no document has that id.
   find(id: string): Promise<Found | null>
   // A link to the file signed for `seconds`, or null when storage has none.
   sign(path: string, seconds: number): Promise<string | null>
+  // Today on the office's calendar, YYYY-MM-DD.
+  today(): string
+  // Whether the caller is signed in as staff.
+  staff(): Promise<boolean>
+}
+
+// A day some days after another, both YYYY-MM-DD.
+export function dayAfter(day: string, days: number): string {
+  const [y, m, d] = day.split('-').map(Number)
+  return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10)
+}
+
+// Whether a document's address has ended with its trip.
+export function ended(found: Found, today: string): boolean {
+  if (found.cancelled) return true
+  return !!found.ends && /^\d{4}-\d{2}-\d{2}/.test(found.ends) && today > dayAfter(found.ends.slice(0, 10), GRACE_DAYS)
 }
 
 // The pages that ask: the site, and rux-ui under it, and the two local servers.
@@ -54,6 +78,7 @@ export async function handle(req: Request, deps: Deps): Promise<Response> {
   try {
     const found = await deps.find(id)
     if (!found?.file_path) return reply(404, { error: 'not-found' })
+    if (ended(found, deps.today()) && !(await deps.staff().catch(() => false))) return reply(410, { error: 'ended' })
     const url = await deps.sign(found.file_path, LINK_SECONDS)
     if (!url) return reply(404, { error: 'not-found' })
     return reply(200, { url, file_name: found.file_name ?? null })

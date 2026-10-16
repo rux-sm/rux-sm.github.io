@@ -244,14 +244,13 @@ given by a staff member's name.
 
 ## 5. The document link
 
-`trip-document-link`, source in
-`scheduler/trip-document-link/`. A page without a log-in posts a trip
-document's id to `/functions/v1/trip-document-link` and gets back a link to the
-file signed for ten minutes, or 404 for an id with no file. It reads with the
-service role, since the bucket is closed to all but staff, and it is deployed
-with Verify JWT off because the publishable key is not a token; the document's
-id is its only secret, as it is on the link pages. It answers the site's origin
-and the two local servers.
+`trip-document-link`, source in `scheduler/trip-document-link/`. A page without a log-in posts a
+trip document's id to `/functions/v1/trip-document-link` and gets back a link to the file signed for
+ten minutes, or 404 for an id with no file, or 410 once its trip is cancelled or two days past its
+last day on the office's calendar, unless the caller is signed in as staff. It reads with the
+service role, since the bucket is closed to all but staff, and it is deployed with Verify JWT off
+because the publishable key is not a token; the document's id is its only secret, as it is on the
+link pages. It answers the site's origin and the two local servers.
 
 ## 6. The website's quote requests
 

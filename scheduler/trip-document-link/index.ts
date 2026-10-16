@@ -18,12 +18,32 @@ const admin = createClient(
   { auth: { persistSession: false, autoRefreshToken: false } },
 )
 
+// The trip's last day, of its legs' dates.
+type TripDays = { cancelled_at: string | null; start_date: string | null; end_date: string | null; return_start_date: string | null; return_end_date: string | null }
+const lastDay = (t: TripDays | null) => (t ? [t.start_date, t.end_date, t.return_start_date, t.return_end_date]
+  .filter((d): d is string => !!d).sort().at(-1) ?? null : null)
+
 Deno.serve(req => handle(req, {
   async find(id) {
     const { data, error } = await admin.from('trip_documents')
-      .select('file_path, file_name').eq('id', id).maybeSingle()
+      .select('file_path, file_name, trips(cancelled_at, start_date, end_date, return_start_date, return_end_date)').eq('id', id).maybeSingle()
     if (error) throw error
-    return data
+    if (!data) return null
+    const trip = (Array.isArray(data.trips) ? data.trips[0] : data.trips) as TripDays | null
+    return { file_path: data.file_path, file_name: data.file_name, ends: lastDay(trip), cancelled: !!trip?.cancelled_at }
+  },
+  today: () => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date()),
+  // The caller's own session, with the page's publishable key it sent; a page
+  // without a log-in sends no session and is not staff.
+  async staff() {
+    const auth = req.headers.get('authorization') ?? ''
+    if (!/^Bearer\s+ey/i.test(auth)) return false
+    const caller = createClient(Deno.env.get('SUPABASE_URL')!, req.headers.get('apikey') ?? Deno.env.get('SUPABASE_ANON_KEY') ?? '', {
+      global: { headers: { Authorization: auth } },
+      auth: { persistSession: false, autoRefreshToken: false },
+    })
+    const { data } = await caller.rpc('is_staff')
+    return data === true
   },
   async sign(path, seconds) {
     const { data, error } = await admin.storage.from(BUCKET).createSignedUrl(path, seconds)

@@ -4,7 +4,8 @@
    document.html?id=<document id> opens one trip document without a log-in.
    The trip-document-link Edge Function returns a link to the file signed for
    ten minutes, since the bucket is closed, and the page moves on to it; the id
-   is the link's only secret, as on rux-ui's doc.html. A local preview other
+   is the link's only secret, as on rux-ui's doc.html. The link ends two days
+   after its trip, or when the trip is cancelled, and the page says so. A local preview other
    than the cloud preview has no client, and says so.
    ========================================================================== */
 (() => {
@@ -33,8 +34,14 @@
   (async () => {
     let result;
     try { result = await client.functions.invoke('trip-document-link', { body: { id } }); } catch (error) { result = { error }; }
-    // 404 is an id with no file; anything else is the connection or the service.
-    const missing = result.error?.context?.status === 404;
+    // 404 is an id with no file, 410 a link that ended with its trip; anything
+    // else is the connection or the service.
+    const status = result.error?.context?.status;
+    if (status === 410) {
+      say('This link has ended', 'The trip is over or was cancelled. Ask dispatch if you still need the file.');
+      return;
+    }
+    const missing = status === 404;
     if (result.error && !missing) {
       say("The document can't be opened right now", 'Check your connection, then reload the page.');
       return;

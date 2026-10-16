@@ -135,8 +135,6 @@ None open.
 
 ### The driver and the links
 
-- [ ] End a document's address with its trip in `trip-document-link`, with a
-      check of `handler.ts`, and deploy on a yes.
 - [ ] Take out the two open channels and their senders.
 - [ ] Draw a bus's days out on the maintenance page from `outOfService`, and
       name the bus in Recent changes.
